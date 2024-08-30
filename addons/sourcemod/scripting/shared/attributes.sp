@@ -147,7 +147,7 @@ stock void Attributes_SetAdd(int entity, int attrib, float amount)
 
 	WeaponAttributes[entity].SetValue(buffer, value);
 	if(!Attribute_ServerSide(attrib))
-		Attributes_Set(entity, attrib, value);
+		Attributes_Set(entity, attrib, value, true);
 }
 
 stock void Attributes_SetMulti(int entity, int attrib, float amount)
@@ -170,7 +170,7 @@ stock void Attributes_SetMulti(int entity, int attrib, float amount)
 
 	WeaponAttributes[entity].SetValue(buffer, value);
 	if(!Attribute_ServerSide(attrib))
-		Attributes_Set(entity, attrib, value);
+		Attributes_Set(entity, attrib, value, true);
 }
 
 stock bool Attributes_GetString(int entity, int attrib, char[] value, int length, int &size = 0)

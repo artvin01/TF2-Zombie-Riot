@@ -5743,6 +5743,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Merchant_Enable(client, entity);
 		Flametail_Enable(client, entity);
 		Ulpianus_Enable(client, entity);
+		BlacksmithBrew_Enable(client, entity);
 	}
 
 	return entity;
@@ -5874,6 +5875,20 @@ bool Store_PrintLevelItems(int client, int level)
 		}
 	}
 	return found;
+}
+
+int Store_GetItemName(int index, int client = 0, char[] buffer, int leng)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+
+	int level = item.Owned[client] - 1;
+	if(level < 0)
+		level = 0;
+	
+	static ItemInfo info;
+	item.GetItemInfo(level, info);
+	return strcopy(buffer, leng, TranslateItemName(client, item.Name, info.Custom_Name));
 }
 
 char[] TranslateItemName(int client, const char name[64], const char Custom_Name[64]) //Just make it 0 as a default so if its not used, fuck it

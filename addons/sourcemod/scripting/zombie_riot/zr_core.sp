@@ -541,6 +541,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_chainsaw.sp"
 #include "zombie_riot/custom/weapon_flametail.sp"
 #include "zombie_riot/custom/weapon_ulpianus.sp"
+#include "zombie_riot/custom/kit_blacksmith_brew.sp"
 
 void ZR_PluginLoad()
 {
