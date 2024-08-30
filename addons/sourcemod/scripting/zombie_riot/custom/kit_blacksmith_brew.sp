@@ -12,7 +12,6 @@ static const char AspectName[][] =
 	"Mind",
 	"Enhance",
 
-	"Chaos",
 	"Water",
 	"Void"
 };
