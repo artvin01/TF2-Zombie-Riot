@@ -815,8 +815,8 @@ static float Brew_012(char name[64], int attrib[TINKER_LIMIT], float value[TINKE
 	strcopy(name, sizeof(name), "Potion of Flexibility");
 	attrib[0] = 54;
 	value[0] = 1.05;
-	attrib[1] = 107;
-	value[1] = 1.05;
+	attrib[1] = 97;
+	value[1] = 0.85;
 	attrib[2] = 326;
 	value[2] = 1.25;
 	return 180.0;
