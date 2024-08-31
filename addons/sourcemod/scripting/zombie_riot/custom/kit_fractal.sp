@@ -629,7 +629,7 @@ static void Create_Fantasia(int client, float Loc[3])
 		
 		int dot = Ruina_Create_Entity(Offset_Loc, 0.0, false);
 
-		if(previus_dot!=INVALID_ENT_REFERENCE)
+		if(previus_dot!=INVALID_ENT_REFERENCE && !AtEdictLimit(EDICT_PLAYER))
 		{
 			int laster = ConnectWithBeamClient(previus_dot, dot, color[0], color[1], color[2], Width[0], Width[1], 0.1, LASERBEAM);
 			if(IsValidEntity(laster))
@@ -864,10 +864,14 @@ static bool Crystal_Logic(int client, int weapon, float Radius, float Start[3], 
 				Laser.End_Point = pos1;
 				Laser.Deal_Damage();
 
-				int laser;
-				laser = ConnectWithBeam(crystal, HitEntitiesSphereMlynar[entity_traced], 175, 175, 175, 3.0, 1.0, 2.5, BEAM_COMBINE_BLACK);
+				if(!AtEdictLimit(EDICT_PLAYER))
+				{
+					int laser;
+					laser = ConnectWithBeam(crystal, HitEntitiesSphereMlynar[entity_traced], 175, 175, 175, 3.0, 1.0, 2.5, BEAM_COMBINE_BLACK);
 
-				CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+				}
+				
 			}
 		}
 		else
