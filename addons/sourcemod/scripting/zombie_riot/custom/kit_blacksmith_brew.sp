@@ -348,12 +348,15 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 						}
 					}
 
-					int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-					if(owner != -1)
+					for(int client = 1; client <= MaxClients; client++)
 					{
-						char buffer2[64];
-						Store_GetItemName(brew.StoreIndex, owner, buffer2, sizeof(buffer2));
-						CPrintToChat(owner, "{yellow}%s {default}effect has ran out on {yellow}%s", buffer, buffer2);
+						if(IsClientInGame(client) && GetSteamAccountID(client, false) == brew.AccountId)
+						{
+							char buffer2[64];
+							Store_GetItemName(brew.StoreIndex, client, buffer2, sizeof(buffer2));
+							CPrintToChat(client, "{yellow}%s {default}effect has ran out on {yellow}%s", buffer, buffer2);
+							break;
+						}
 					}
 				}
 			}
