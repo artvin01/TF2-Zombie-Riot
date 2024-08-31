@@ -141,9 +141,8 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 		return false;
 	}
 
-	float time = GetGameTime() + 1.0;
-	if(Mana_Regen_Delay[client] < time)
-		Mana_Regen_Delay[client] = time;
+	SDKhooks_SetManaRegenDelayTime(client, 1.0);
+
 	
 	Mana_Hud_Delay[client] = 0.0;
 	Current_Mana[client] -= mana_cost;

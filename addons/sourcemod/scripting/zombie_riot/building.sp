@@ -2142,6 +2142,9 @@ void DeleteAndRefundBuilding(int client, int entity)
 		float RatioReturn = float(Total) / float(MaxTotal);
 		
 		int MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * RatioReturn * 0.8);
+		if(MetalReturn >= RoundToNearest(MetalSpendOnBuilding[entity] * 0.8))
+			MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * 0.8);
+
 		SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalReturn);
 		CurrentAmmo[client][3] = GetAmmo(client, 3);
 	}
