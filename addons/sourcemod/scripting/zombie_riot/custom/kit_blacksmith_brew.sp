@@ -98,7 +98,7 @@ void BlacksmithBrew_RoundStart()
 static void CacheBrewer()
 {
 	if(!BrewTimer)
-		BrewTimer = CreateTimer(1.0, BlacksmithBrew_GlobalTimer);
+		BrewTimer = CreateTimer(1.0, BlacksmithBrew_GlobalTimer, _, TIMER_REPEAT);
 	
 	if(!Brews)
 		Brews = new ArrayList(sizeof(BrewEnum));
