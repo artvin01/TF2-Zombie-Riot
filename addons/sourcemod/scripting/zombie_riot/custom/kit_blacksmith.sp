@@ -671,7 +671,7 @@ static bool AttribIsInverse(int attrib)
 {
 	switch(attrib)
 	{
-		case 5, 6, 96, 97, 205, 206, 252, 343, 412:
+		case 5, 6, 96, 97, 205, 206, 252, 343, 412, Attrib_TerrianRes:
 			return true;
 	}
 
@@ -821,6 +821,21 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 
 		case 4002:
 			Format(buffer, sizeof(buffer), "%sMore Medigun Overheal", buffer);
+
+		case Attrib_TerrianRes:
+			Format(buffer, sizeof(buffer), "%sTerrian Damage Resistance", buffer);
+
+		case Attrib_ElementalDef:
+			Format(buffer, sizeof(buffer), "%sElemental Damage Resistance", buffer);
+
+		case Attrib_SlowImmune:
+			Format(buffer, sizeof(buffer), "%sSlow Resistance", buffer);
+
+		case Attrib_ObjTerrianAbsorb:
+			Format(buffer, sizeof(buffer), "%sBuilding Terrian Absorb Chance", buffer);
+
+		case Attrib_SetArchetype:
+			Format(buffer, sizeof(buffer), "%sWeapon Archetype", buffer);
 
 	}
 	

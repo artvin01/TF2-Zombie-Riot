@@ -110,6 +110,7 @@ static void CacheBrewer()
 
 	CraftEnum c;
 	c.Add(Brew_Default, -1, -1, -1);
+
 	c.Add(Brew_012, A_Agility, A_Strength, A_Resistance);
 	c.Add(Brew_013, A_Strength, A_Mind, A_Resistance);
 	c.Add(Brew_014, A_Strength, A_Enhance, A_Resistance);
@@ -120,6 +121,13 @@ static void CacheBrewer()
 	c.Add(Brew_124, A_Resistance, A_Enhance, A_Agility);
 	c.Add(Brew_134, A_Resistance, A_Enhance, A_Mind);
 	c.Add(Brew_234, A_Agility, A_Mind, A_Enhance);
+
+	c.Add(Brew_512, A_Agility, A_Resistance, A_Water);
+	c.Add(Brew_501, A_Resistance, A_Strength, A_Water);
+	c.Add(Brew_514, A_Resistance, A_Enhance, A_Water);
+	c.Add(Brew_523, A_Agility, A_Mind, A_Water);
+	c.Add(Brew_524, A_Agility, A_Enhance, A_Water);
+	c.Add(Brew_502, A_Agility, A_Strength, A_Water);
 }
 /*
 bool BlacksmithBrew_HasEffect(int client, int index)
@@ -170,7 +178,7 @@ void BlacksmithBrew_ExtraDesc(int client, int weapon)
 						if(!attrib[b])
 							break;
 						
-						if(add[b] || Attributes_Has(weapon, attrib[b]))
+						if(add[b] || attrib[b] > 3999 || Attributes_Has(weapon, attrib[b]))
 						{
 							if(add[b])
 							{
@@ -223,7 +231,7 @@ void BlacksmithBrew_Enable(int client, int weapon)
 							value[b] *= brew.Multi;
 							Attributes_SetAdd(weapon, attrib[b], value[b]);
 						}
-						else if(Attributes_Has(weapon, attrib[b]))
+						else if(attrib[b] > 3999 || Attributes_Has(weapon, attrib[b]))
 						{
 							value[b] = 1.0 + ((value[b] - 1.0) * brew.Multi);
 							Attributes_SetMulti(weapon, attrib[b], value[b]);
@@ -315,7 +323,7 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 							value[b] *= brew.Multi;
 							Attributes_SetAdd(weapon, attrib[b], -value[b]);
 						}
-						else if(Attributes_Has(weapon, attrib[b]))
+						else if(attrib[b] > 3999 || Attributes_Has(weapon, attrib[b]))
 						{
 							value[b] = 1.0 + ((value[b] - 1.0) * brew.Multi);
 							Attributes_SetMulti(weapon, attrib[b], 1.0 / value[b]);
@@ -367,7 +375,7 @@ static void Brew_Menu(int client, int entity)
 
 		SetGlobalTransTarget(client);
 		
-		menu.SetTitle("What do you wish to do with the Brewing Stand?");
+		menu.SetTitle("What do you wish to do with the Brewing Stand?\n ");
 
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		if(owner == -1)
@@ -657,7 +665,7 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 				int attrib[TINKER_LIMIT];
 				float value[TINKER_LIMIT];
 				bool add[TINKER_LIMIT];
-				float time = LookupById(SellingType[client], buffer, attrib, value, add);
+				float time = LookupById(SellingType[owner], buffer, attrib, value, add);
 
 				bool found;
 				for(int b; b < sizeof(attrib); b++)
@@ -665,7 +673,7 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 					if(!attrib[b])
 						break;
 					
-					if(add[b] || Attributes_Has(weapon, attrib[b]))
+					if(add[b] || attrib[b] > 3999 || Attributes_Has(weapon, attrib[b]))
 					{
 						found = true;
 						break;
@@ -681,12 +689,12 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 					return;
 				}
 
-				time = time * SellingTime[client];
+				time = time * SellingTime[owner];
 
 				brew.AccountId = account;
 				brew.StoreIndex = StoreWeapon[weapon];
-				brew.TypeIndex = SellingType[client];
-				brew.Multi = SellingPower[client];
+				brew.TypeIndex = SellingType[owner];
+				brew.Multi = SellingPower[owner];
 				brew.EndAt = GetGameTimeBrew() + time;
 				Brews.PushArray(brew);
 
@@ -918,4 +926,63 @@ static float Brew_234(char name[64], int attrib[TINKER_LIMIT], float value[TINKE
 	attrib[2] = 252;
 	value[2] = 1.5;
 	return 180.0;
+}
+
+// Wat Res* Agi^
+static float Brew_512(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+{
+	strcopy(name, sizeof(name), "Flask of Assimilation");
+	attrib[0] = Attrib_TerrianRes;
+	value[0] = 0.6;
+	return 150.0;
+}
+
+// Wat Str* Res^
+static float Brew_501(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+{
+	strcopy(name, sizeof(name), "Flask of Freedom");
+	attrib[0] = Attrib_SlowImmune;
+	value[0] = 2.0;
+	add[0] = true;
+	return 150.0;
+}
+
+// Wat Res^ Enc*
+static float Brew_514(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+{
+	strcopy(name, sizeof(name), "Flask of Armor");
+	attrib[0] = Attrib_ElementalDef;
+	value[0] = 5.0;
+	add[0] = true;
+	return 150.0;
+}
+
+// Wat Agi^ Min*
+static float Brew_523(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+{
+	strcopy(name, sizeof(name), "Flask of Sanitizing");
+	attrib[0] = Attrib_ObjTerrianAbsorb;
+	value[0] = 3.0;
+	add[0] = true;
+	return 150.0;
+}
+
+// Wat Agi^ Enc*
+static float Brew_524(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+{
+	strcopy(name, sizeof(name), "Flask of Abyssal Hunter");
+	attrib[0] = Attrib_SetArchetype;
+	value[0] = 22.0;
+	add[0] = true;
+	return 150.0;
+}
+
+// Wat Str* Agi^
+static float Brew_502(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+{
+	strcopy(name, sizeof(name), "Flask of Kazimierz");
+	attrib[0] = Attrib_SetArchetype;
+	value[0] = 23.0;
+	add[0] = true;
+	return 150.0;
 }

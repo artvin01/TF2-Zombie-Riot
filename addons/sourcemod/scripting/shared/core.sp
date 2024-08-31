@@ -3653,7 +3653,14 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	}
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		if(Attributes_GetOnPlayer(client, Attrib_SlowImmune, false))
+		{
+			TF2_RemoveCondition(client, TFCond_Slowed);
+		}
+		else
+		{
+			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		}
 	}
 }
 
