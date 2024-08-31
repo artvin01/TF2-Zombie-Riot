@@ -2162,7 +2162,7 @@
 		"en"       "Beam Wand"
 		"fr"       "Baguette Rayonneuse"
 		"ru"       "Жезл луча"
-		"chi"       "光射发胀"
+		"chi"       "光之法杖"
 	}
 	"Cryo Staff"
 	{
@@ -2784,5 +2784,15 @@
 		"en"	"Vows of the Sea"
 		"fr"	"Voeu Océanique"
 		"chi"	"海之宣言"
+	}
+	"Ludomania"
+	{
+		"en"	"Ludomania"
+		"chi"	"卢多狂热"
+	}
+	"Ludomancy"
+	{
+		"en"	"Ludomancy"
+		"chi"	"「圣」卢多"
 	}
 }
