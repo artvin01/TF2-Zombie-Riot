@@ -31,7 +31,7 @@ void TheHunter_Setup()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_thehunter");
 	strcopy(data.Icon, sizeof(data.Icon), "sniper_headshot");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_SUPPORT|MVM_CLASS_FLAG_SUPPORT_LIMITED;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_BlueParadox;
 	data.Func = ClotSummon;
 	NPC_Add(data);
