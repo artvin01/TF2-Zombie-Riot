@@ -161,9 +161,9 @@ void BlacksmithBrew_ExtraDesc(int client, int weapon)
 					int attrib[TINKER_LIMIT];
 					float value[TINKER_LIMIT];
 					bool add[TINKER_LIMIT];
-					LookupById(brew.TypeIndex, _, attrib, value, add);
+					LookupById(brew.TypeIndex, name, attrib, value, add);
 
-					CPrintToChat(client, "{yellow}%s {default}(%ds Left)", name, brew.EndAt - GetGameTimeBrew());
+					CPrintToChat(client, "{yellow}%s {default}(%.0fs Left)", name, brew.EndAt - GetGameTimeBrew());
 					
 					for(int b; b < sizeof(attrib); b++)
 					{
@@ -239,7 +239,7 @@ void BlacksmithBrew_Enable(int client, int weapon)
 
 void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 {
-	if(Blacksmith_IsASmith(attacker) && Object_GetSentryBuilding(attacker) != -1)
+	if(Blacksmith_IsASmith(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
 	{
 		int random = RandomSeed + GetEntProp(victim, Prop_Data, "m_nModelIndex");
 		int aspect = random % A_Water;
@@ -255,11 +255,16 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 		//}
 
 		// Raid x100, Boss x10, Giant x2
-		float multi = b_thisNpcIsARaid[victim] ? 100.0 : (b_thisNpcIsABoss[victim] ? 10.0 : (b_IsGiant[victim] ? 2.0 : 1.0));
-		Aspects[attacker][aspect] += damage * multi / GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+		float gain = b_thisNpcIsARaid[victim] ? 100.0 : (b_thisNpcIsABoss[victim] ? 10.0 : (b_IsGiant[victim] ? 2.0 : 1.0));
+		gain = damage * gain / GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+		Aspects[attacker][aspect] += gain;
 
 		if(InMenu[attacker])
-			PotionMakingMenu(attacker);
+		{
+			char buffer[64];
+			FormatEx(buffer, sizeof(buffer), "Gained %.2f%% %s from %s", gain * 100.0 / ASPECT_REQUIRED, AspectName[aspect], c_NpcName[victim]);
+			PotionMakingMenu(attacker, buffer);
+		}
 	}
 }
 
@@ -439,7 +444,7 @@ static int Brew_MenuH(Menu menu, MenuAction action, int client, int choice)
 				}
 				case -3:
 				{
-					BlacksmithBrew_ExtraDesc(client, StoreWeapon[weapon]);
+					BlacksmithBrew_ExtraDesc(client, weapon);
 				}
 			}
 		}
@@ -451,16 +456,20 @@ static int Brew_MenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static void PotionMakingMenu(int client)
+static void PotionMakingMenu(int client, const char[] msg = "")
 {
-	for(int i = 1; i < sizeof(AspectMenu[]); i++)
+	if(AspectMenu[client][0] == AspectMenu[client][1])
 	{
-		if(AspectMenu[client][i - 1] == AspectMenu[client][i])
-		{
-			AspectMenu[client][i]++;
-			if(AspectMenu[client][i] >= Aspect_MAX)
-				AspectMenu[client][i] = 0;
-		}
+		AspectMenu[client][1]++;
+		if(AspectMenu[client][1] >= Aspect_MAX)
+			AspectMenu[client][1] = 0;
+	}
+
+	while(AspectMenu[client][0] == AspectMenu[client][2] || AspectMenu[client][1] == AspectMenu[client][2])
+	{
+		AspectMenu[client][2]++;
+		if(AspectMenu[client][2] >= Aspect_MAX)
+			AspectMenu[client][2] = 0;
 	}
 
 	CancelClientMenu(client);
@@ -470,16 +479,26 @@ static void PotionMakingMenu(int client)
 
 	Menu menu = new Menu(PotionMakingMenuH);
 
-	menu.SetTitle("Brewing Stand:\nClick on an Aspect to change,\ngain Aspect by dealing damage\n ");
+	if(msg[0])
+	{
+		menu.SetTitle("Brewing Stand:\n%s\n ", msg);
+	}
+	else
+	{
+		menu.SetTitle("Brewing Stand:\nClick on an Aspect to change, gain Aspect by dealing damage\n ");
+	}
 
 	bool failed;
 	for(int i; i < 3; i++)
 	{
-		float precent = (Aspects[client][i] - 1.0) * 100.0 / ASPECT_REQUIRED;
-		FormatEx(buffer, sizeof(buffer), "%s (%d%%)", AspectName[AspectMenu[client][i]], RoundToFloor(precent * 100.0));
+		float precent = (Aspects[client][AspectMenu[client][i]] - 1.0) * 100.0 / ASPECT_REQUIRED;
+		if(precent < 0.0)
+			precent = 0.0;
+		
+		FormatEx(buffer, sizeof(buffer), "%s (%d%%)", AspectName[AspectMenu[client][i]], RoundToFloor(precent));
 		menu.AddItem(NULL_STRING, buffer);
 
-		if(precent < 1.0)
+		if(precent < 100.0)
 			failed = true;
 	}
 
@@ -513,7 +532,7 @@ static int PotionMakingMenuH(Menu menu, MenuAction action, int client, int choic
 			InMenu[client] = false;
 			ResetStoreMenuLogic(client);
 			
-			int entity = Object_GetSentryBuilding(client);
+			int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 			if(entity == -1)
 				return 0;
 
@@ -521,21 +540,33 @@ static int PotionMakingMenuH(Menu menu, MenuAction action, int client, int choic
 			{
 				case 0, 1, 2:
 				{
-					for(int i; i < sizeof(AspectMenu[]); i++)
+					for(int a; a < sizeof(AspectMenu[]); a++)
 					{
-						if(i == choice || (i > 0 && AspectMenu[client][i - 1] == AspectMenu[client][i]))
+						if(a == choice)
+							AspectMenu[client][a]++;
+						
+						for(;;)
 						{
-							do
-							{
-								AspectMenu[client][i]++;
+							if(AspectMenu[client][a] >= Aspect_MAX)
+								AspectMenu[client][a] = 0;
 
-								if(AspectMenu[client][i] >= Aspect_MAX)
+							bool found;
+							for(int b; b < sizeof(AspectMenu[]); b++)
+							{
+								if(a != b && AspectMenu[client][a] == AspectMenu[client][b])
 								{
-									AspectMenu[client][i] = 0;
+									found = true;
 									break;
 								}
 							}
-							while(AspectMenu[client][i] >= A_Water && Aspects[client][i] < 1.0);
+
+							if(found || (AspectMenu[client][a] >= A_Water && Aspects[client][a] < 1.0))
+							{
+								AspectMenu[client][a]++;
+								continue;
+							}
+
+							break;
 						}
 					}
 
@@ -560,7 +591,7 @@ static int PotionMakingMenuH(Menu menu, MenuAction action, int client, int choic
 							float ratio2 = time / (power + time);
 							
 							power = ratio1 * limit;
-							power = ratio2 * limit;
+							time = ratio2 * limit;
 						}
 
 						power += 1.0;
@@ -575,7 +606,11 @@ static int PotionMakingMenuH(Menu menu, MenuAction action, int client, int choic
 						SellingPower[client] = power;
 						SellingTime[client] = time;
 
-						CPrintToChat(client, "Brewed %s x%d with %.0f%% power and %.0f%% duration", buffer, SellingAmount[client], power * 100.0, time * 100.0);
+						ObjectTinkerBrew_TogglePotion(entity, true);
+
+						ClientCommand(client, "playgamesound ui/chem_set_creation.wav");
+						ClientCommand(client, "playgamesound ui/chem_set_creation.wav");
+						CPrintToChat(client, "Brewed {yellow}%s {default}x%d with {yellow}%.0f%% {default}power and {yellow}%.0f%% {default}duration", buffer, SellingAmount[client], power * 100.0, time * 100.0);
 					}
 
 					BlacksmithBrew_BuildingUsed(entity, client);
@@ -661,7 +696,10 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 
 				Building_GiveRewardsUse(client, owner, 40, true, 1.0, true);
 				Store_ApplyAttribs(client);
-				Store_GiveAll(client, GetClientHealth(client));	
+				Store_GiveAll(client, GetClientHealth(client));
+
+				if(SellingAmount[owner] == 0)
+					ObjectTinkerBrew_TogglePotion(entity, false);
 
 				if(client == owner && SellingAmount[owner] == 0)
 				{

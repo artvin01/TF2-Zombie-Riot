@@ -3,7 +3,8 @@
 
 void ObjectTinkerBrew_MapStart()
 {
-	PrecacheModel("models/player/items/heavy/heavy_table_flip_joule_prop.mdl");
+	PrecacheModel("models/props_island/island_lab_equipment03.mdl");
+	PrecacheModel("models/props_halloween/hwn_flask_vial.mdl");
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Tinker Brewing Stand");
@@ -25,7 +26,7 @@ methodmap ObjectTinkerBrew < ObjectGeneric
 {
 	public ObjectTinkerBrew(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectTinkerBrew npc = view_as<ObjectTinkerBrew>(ObjectGeneric(client, vecPos, vecAng, "models/player/items/heavy/heavy_table_flip_joule_prop.mdl", _, "600",{20.0, 20.0, 42.0}));
+		ObjectTinkerBrew npc = view_as<ObjectTinkerBrew>(ObjectGeneric(client, vecPos, vecAng, "models/props_island/island_lab_equipment03.mdl", _, "600",{18.0, 25.0, 50.0}));
 
 		npc.SentryBuilding = true;
 		npc.FuncCanBuild = ObjectTinkerBrew_CanBuild;
@@ -33,7 +34,14 @@ methodmap ObjectTinkerBrew < ObjectGeneric
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCThink[npc.index] = ClotThink;
 		func_NPCInteract[npc.index] = ClotInteract;
-		SetRotateByDefaultReturn(npc.index, 90.0);
+		//SetRotateByDefaultReturn(npc.index, 90.0);
+		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
+
+		int entity = npc.EquipItemSeperate("partyhat", "models/props_halloween/hwn_flask_vial.mdl", _, _, _, 8.0);
+		//SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+		//SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
+		npc.m_iWearable5 = entity;
+		AcceptEntityInput(entity, "Disable");
 
 		return npc;
 	}
@@ -48,6 +56,13 @@ public bool ObjectTinkerBrew_CanBuild(int client, int &count, int &maxcount)
 	maxcount = Blacksmith_IsASmith(client) ? 1 : 0;
 
 	return (!count && maxcount);
+}
+
+void ObjectTinkerBrew_TogglePotion(int entity, bool enable)
+{
+	ObjectTinkerBrew npc = view_as<ObjectTinkerBrew>(entity);
+	if(IsValidEntity(npc.m_iWearable5))
+		AcceptEntityInput(npc.m_iWearable5, enable ? "Enable" : "Disable");
 }
 
 static void ClotThink(ObjectTinkerBrew npc)
@@ -75,8 +90,7 @@ static bool ClotCanUse(ObjectTinkerBrew npc, int client)
 
 static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
 {
-	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Brewing Stand Tooltip");
+	PrintCenterText(client, "Press RELOAD to apply a potion effect to your active weapon.");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectTinkerBrew npc)
