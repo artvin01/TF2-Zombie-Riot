@@ -7,8 +7,8 @@ void ObjectTinkerBrew_MapStart()
 	PrecacheModel("models/props_halloween/hwn_flask_vial.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Tinker Brewing Stand");
-	strcopy(data.Plugin, sizeof(data.Plugin), "obj_tinker_brewing");
+	strcopy(data.Name, sizeof(data.Name), "Merchant Brewing Stand");
+	strcopy(data.Plugin, sizeof(data.Plugin), "obj_brewing_stand");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -53,7 +53,7 @@ public bool ObjectTinkerBrew_CanBuild(int client, int &count, int &maxcount)
 		return false;
 	
 	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
-	maxcount = Blacksmith_IsASmith(client) ? 1 : 0;
+	maxcount = Merchant_IsAMerchant(client) ? 1 : 0;
 
 	return (!count && maxcount);
 }

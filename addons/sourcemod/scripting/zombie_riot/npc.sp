@@ -975,7 +975,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_railgun.sp"
 #include "zombie_riot/object/obj_village.sp"
 #include "zombie_riot/object/obj_barracks.sp"
-#include "zombie_riot/object/obj_tinker_brewing.sp"
+#include "zombie_riot/object/obj_brewing_stand.sp"
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
