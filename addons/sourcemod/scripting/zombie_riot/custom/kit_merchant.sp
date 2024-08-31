@@ -809,6 +809,7 @@ static void MerchantStart(int client, int slot)
 					damage *= (MerchantLevel[client] > 4 ? 1.5 : (MerchantLevel[client] == 4 ? 1.45 : 1.4));
 					MerchantAddAttrib(client, 205, MerchantLevel[client] > 4 ? 0.7 : 0.75);
 					MerchantAddAttrib(client, 206, 0.85);
+					MerchantAddAttrib(client, Attrib_SlowImmune, 1.0);
 				}
 				else
 				{

@@ -14,7 +14,7 @@
 #define MVM_CLASS_FLAG_NONE				0
 #define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
 #define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Base Support
-#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Base Support, Always Show
+#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Base Support, Flash Red
 #define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Add Red Background
 #define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Add Blue Borders
 #define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Add to Support?
@@ -541,6 +541,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_chainsaw.sp"
 #include "zombie_riot/custom/weapon_flametail.sp"
 #include "zombie_riot/custom/weapon_ulpianus.sp"
+#include "zombie_riot/custom/kit_blacksmith_brew.sp"
 
 void ZR_PluginLoad()
 {

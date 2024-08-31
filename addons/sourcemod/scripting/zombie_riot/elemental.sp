@@ -156,6 +156,10 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			}
 			else
 			{
+				damage -= Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false);
+				if(damage < 1)
+					damage = 1;
+				
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
@@ -235,6 +239,10 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			}
 			else
 			{
+				damage -= Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false);
+				if(damage < 1)
+					damage = 1;
+				
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
@@ -325,6 +333,10 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			}
 			else
 			{
+				damage -= Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false);
+				if(damage < 1)
+					damage = 1;
+				
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
