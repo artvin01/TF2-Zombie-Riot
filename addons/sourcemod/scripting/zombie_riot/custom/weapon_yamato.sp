@@ -506,8 +506,8 @@ static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], floa
 		SetVariantInt(RUINA_ZANGETSU);
 		AcceptEntityInput(ModelApply, "SetBodyGroup");
 	}
-	float Homing_Power = 3.0;
-	float Homing_Angle = 45.0;
+	float Homing_Power = 9.0;
+	float Homing_Angle = 90.0;
 	if(!IsValidEntity(i_entity_hit))
 	{
 		Homing_Power = 1.5;
@@ -771,7 +771,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		entity = Target_Hit_Wand_Detection(client, entity);
 		if(0 < entity)
 		{
-			for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{
 				if(!BEAM_BuildingHit[i])
 				{

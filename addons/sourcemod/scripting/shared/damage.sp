@@ -543,6 +543,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 		damage += basedamage * (0.1 * DamageBuffExtraScaling);
 	}
 
+	if(MoraleBoostLevelAt(attacker) > 0)
+		damage += basedamage * (EntityMoraleBoostReturn(attacker, 2) * DamageBuffExtraScaling);
+
 	if(f_EmpowerStateOther[attacker] > GameTime)
 		damage += basedamage * (0.1 * DamageBuffExtraScaling);
 	
@@ -610,15 +613,15 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 
 	if(f_LeeSuperEffect[attacker] > GameTime)
 	{
-		damage *= 0.72;
+		damage *= 0.85;
 	}
 	else if(f_LeeMajorEffect[attacker] > GameTime)
 	{
-		damage *= 0.86;
+		damage *= 0.9;
 	}
 	else if(f_LeeMinorEffect[attacker] > GameTime)
 	{
-		damage *= 0.93;
+		damage *= 0.95;
 	}
 #endif	//zr
 	return false;
@@ -628,7 +631,7 @@ stock bool Damage_BuildingAttacker(int victim, int &attacker, int &inflictor, fl
 {
 	if(b_thisNpcIsABoss[attacker])
 	{
-		damage *= 1.5;
+		damage *= 1.25;
 	}
 	return false;
 }
@@ -658,8 +661,15 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
 		}
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
+		case WEAPON_MLYNAR_PAP_2: // weapon_ark
 		{
+			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
+		}
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS:
+		{
+			if(i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_ULPIANUS)
+				Ulpianus_OnTakeDamageSelf(victim);
+			
 			return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
 		}
 		case WEAPON_GLADIIA:
@@ -1021,6 +1031,8 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 			Merchant_NPCTakeDamagePost(attacker, damage, weapon);
 		}
 	}
+
+	BlacksmithBrew_NPCTakeDamagePost(victim, attacker, damage);
 #endif
 }
 
@@ -1563,6 +1575,9 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.
 		DamageRes *= 0.93;
 
+	if(MoraleBoostLevelAt(victim) > 0)
+		DamageRes *= EntityMoraleBoostReturn(victim, 3);
+
 	if(Resistance_Overall_Low[victim] > GameTime)
 		DamageRes *= RES_MEDIGUN_LOW;
 
@@ -1690,7 +1705,7 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	float DamageBuffExtraScaling = 1.0;
 
 #if defined ZR
-	if(attacker <= MaxClients || inflictor <= MaxClients)
+	if(attacker != 0 && (attacker <= MaxClients || inflictor <= MaxClients))
 	{
 		//only scale if its a player, and if the attacking npc is red too
 		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
@@ -1753,6 +1768,10 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	if(f_CrippleDebuff[victim] > GameTime)
 	{
 		damage += basedamage * (0.3 * DamageBuffExtraScaling);
+	}
+	if(f_GoldTouchDebuff[victim] > GameTime)
+	{
+		damage += basedamage * (0.2 * DamageBuffExtraScaling);
 	}
 
 	if(f_CudgelDebuff[victim] > GameTime)
@@ -1886,6 +1905,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⯯", Debuff_Adder_left);
 	}
+	if(f_GoldTouchDebuff[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s⯏", Debuff_Adder_left);
+	}
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s‼", Debuff_Adder_left);
@@ -1905,6 +1928,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(NpcStats_IsEnemySilenced(victim))
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%sX", Debuff_Adder_left);
+	}
+	if(NpcStats_IberiaIsEnemyMarked(victim))
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%sM", Debuff_Adder_left);
 	}
 
 
@@ -1951,6 +1978,11 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		Format(Debuff_Adder_right, SizeOfChar, "S(%i)%s",VausMagicaShieldLeft(victim),Debuff_Adder_right);
 	}
 #endif
+	if(MoraleBoostLevelAt(victim) > 0) //hussar!
+	{
+		//Display morale!
+		MoraleIconShowHud(victim, Debuff_Adder_right, SizeOfChar);
+	}
 	if(f_HussarBuff[victim] > GameTime) //hussar!
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "ᐩ%s", Debuff_Adder_right);

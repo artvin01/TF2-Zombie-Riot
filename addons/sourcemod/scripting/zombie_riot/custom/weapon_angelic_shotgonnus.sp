@@ -415,10 +415,12 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 2.0;
 				else if(b_thisNpcIsABoss[enemy])
 					HealingPerHit *= 1.35;
+					
 				if(i_AbilityActiveAngelic[client])
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
+
 				HealEntityGlobal(client, client, HealingPerHit, 1.15,_,HEAL_SELFHEAL);
 			}
 		}

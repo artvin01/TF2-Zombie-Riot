@@ -151,7 +151,7 @@ methodmap Lancelot < CClotBody
 		
 	}
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -590,9 +590,18 @@ static void Lancelot_Particle_Accelerator(Lancelot npc, float Dist)
 			Ruina_Color(color);
 			int laser;
 			laser = ConnectWithBeam(npc.m_iWearable7, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, _, Boom_Loc);
-			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);	
+			
+			float Ang[3], Origin[3], Velocity[3];
+			WorldSpaceCenter(npc.index, Origin);
+			MakeVectorFromPoints(Origin, Boom_Loc, Ang);
+			GetVectorAngles(Ang, Ang);
+			Get_Fake_Forward_Vec(-900.0, Ang, Velocity, Velocity);
+			Velocity[2] += 900.0;
+			npc.Jump();
+			npc.SetVelocity(Velocity);
 
-			Explode_Logic_Custom(1000.0, npc.index, npc.index, -1, Boom_Loc, Radius, _, _, true, _, _, _, Shake_dat_client);
+			Explode_Logic_Custom(1500.0, npc.index, npc.index, -1, Boom_Loc, Radius, _, _, true, _, _, 10.0, Shake_dat_client);
 
 			EmitSoundToAll(NPC_PARTICLE_LANCE_BOOM, npc.index, SNDCHAN_STATIC, 90, _, 0.6);
 			EmitSoundToAll(NPC_PARTICLE_LANCE_BOOM, npc.index, SNDCHAN_STATIC, 90, _, 0.6);
@@ -614,6 +623,14 @@ static void Lancelot_Particle_Accelerator(Lancelot npc, float Dist)
 			fl_ruina_battery_timeout[npc.index] = GameTime + 1.0;
 		}
 	}
+}
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
 }
 static void Shake_dat_client(int entity, int victim, float damage, int weapon)
 {

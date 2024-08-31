@@ -9,6 +9,7 @@ Handle h_TimerPHLOGManagement[MAXPLAYERS+1] = {null, ...};
 static float f_PHLOGhuddelay[MAXTF2PLAYERS];
 static float f_PHLOGabilitydelay[MAXTF2PLAYERS];
 static int i_PHLOGHitsDone[MAXTF2PLAYERS];
+static float f_FlameerDelay[MAXTF2PLAYERS];
 
 void Npc_OnTakeDamage_Phlog(int attacker)
 {
@@ -45,9 +46,103 @@ void Reset_stats_PHLOG_Singular(int client) //This is on disconnect/connect
 	i_PHLOGHitsDone[client] = 0;
 }
 
+#define MAX_TARGETS_FLAME 5
+
+static int BEAM_BuildingHit[MAX_TARGETS_FLAME];
+static float BEAM_Targets_Hit[MAXTF2PLAYERS];
+
 public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 {
-	return;
+	if(f_FlameerDelay[client] > GetGameTime())
+	{
+		return;
+	}
+	f_FlameerDelay[client] = GetGameTime() + 0.15;
+	for (int building = 0; building < MAX_TARGETS_FLAME; building++)
+	{
+		BEAM_BuildingHit[building] = false;
+	}
+	float Angles[3];
+	float belowBossEyes[3];
+	GetClientEyeAngles(client, Angles);	
+	float vecForward[3];
+	GetAngleVectors(Angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+	float VectorTarget_2[3];
+	float VectorForward = 300.0; //a really high number.
+
+	VectorForward *= Attributes_Get(weapon, 4001, 1.0);
+	GetBeamDrawStartPoint_Stock(client, belowBossEyes,{0.0,0.0,0.0}, Angles);
+	VectorTarget_2[0] = belowBossEyes[0] + vecForward[0] * VectorForward;
+	VectorTarget_2[1] = belowBossEyes[1] + vecForward[1] * VectorForward;
+	VectorTarget_2[2] = belowBossEyes[2] + vecForward[2] * VectorForward;
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	Handle trace;
+	static float hullMin[3];
+	static float hullMax[3];
+	hullMin = {-20.0,-20.0,-20.0};
+	hullMax = {20.0,20.0,20.0};
+	trace = TR_TraceHullFilterEx(belowBossEyes, VectorTarget_2, hullMin, hullMax, 1073741824, Flamer_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+	FinishLagCompensation_Base_boss();
+	BEAM_Targets_Hit[client] = 1.0;
+	float damage = 25.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
+	float playerPos[3];
+
+	for (int building = 0; building < MAX_TARGETS_FLAME; building++)
+	{
+		if (BEAM_BuildingHit[building])
+		{
+			if(IsValidEntity(BEAM_BuildingHit[building]))
+			{
+				WorldSpaceCenter(BEAM_BuildingHit[building], playerPos);
+
+				float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
+				DataPack pack = new DataPack();
+				pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
+				pack.WriteCell(EntIndexToEntRef(client));
+				pack.WriteCell(EntIndexToEntRef(client));
+				pack.WriteFloat(damage*BEAM_Targets_Hit[client]);
+				pack.WriteCell(DMG_BULLET);
+				pack.WriteCell(EntIndexToEntRef(weapon));
+				pack.WriteFloat(damage_force[0]);
+				pack.WriteFloat(damage_force[1]);
+				pack.WriteFloat(damage_force[2]);
+				pack.WriteFloat(playerPos[0]);
+				pack.WriteFloat(playerPos[1]);
+				pack.WriteFloat(playerPos[2]);
+				pack.WriteCell(0);
+				RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
+				
+				BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
+			}
+			else
+				BEAM_BuildingHit[building] = false;
+		}
+	}
+ 	return;
+}
+
+static bool Flamer_TraceUsers(int entity, int contentsMask, int client)
+{
+	if (IsValidEntity(entity))
+	{
+		entity = Target_Hit_Wand_Detection(client, entity);
+		if(0 < entity)
+		{
+			for(int i=0; i < MAX_TARGETS_FLAME; i++)
+			{
+				if(!BEAM_BuildingHit[i])
+				{
+					BEAM_BuildingHit[i] = entity;
+					break;
+				}
+			}
+			
+		}
+	}
+	return false;
 }
 
 public void Enable_PHLOG(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
@@ -146,9 +241,10 @@ public void Weapon_PHLOG_Judgement(int client, int weapon, bool crit, int slot)
 		i_PHLOGHitsDone[client] = 0;
 		f_PHLOGabilitydelay[client] = GetGameTime() + 10.0; //Have a cooldown so they cannot spam it.
 		EmitSoundToAll(PHLOG_ABILITY, client, _, 75, _, 0.60);
-		TF2_AddCondition(client, TFCond_Ubercharged, 2.0); //ohboy
+		TF2_AddCondition(client, TFCond_Ubercharged, 1.0); //ohboy
 		TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 10.0);
 		TF2_AddCondition(client, TFCond_CritCanteen, 10.0);
+		ApplyTempAttrib(weapon, 2, 1.35, 10.0); //way higher damage.
 	}
 	else
 	{

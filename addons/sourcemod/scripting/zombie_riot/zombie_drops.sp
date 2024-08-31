@@ -115,9 +115,9 @@ public void DropPowerupChance(int entity)
 	{
 		return;
 	}
-	i_KilledThisMany_Grigori += 1;
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 	{
+		i_KilledThisMany_Grigori += 1;
 		if(i_KilledThisMany_Grigori > i_KillTheseManyMorePowerup_Grigori || b_ForceSpawnNextTimeGrigori)
 		{
 			if((GetRandomFloat(0.0, 1.0) * f_PowerupSpawnMulti) || b_ForceSpawnNextTimeGrigori)
@@ -444,7 +444,11 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 									{
 										int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
 										int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-										if(weaponindex == 211 || weaponindex == 998)
+										if (i_WeaponAmmoAdjustable[weapon])
+										{
+											AddAmmoClient(client_Hud, i_WeaponAmmoAdjustable[weapon] ,_,4.0);
+										}
+										else if(weaponindex == 211 || weaponindex == 998)
 										{
 											AddAmmoClient(client_Hud, 21 ,_,4.0);
 										}
@@ -455,10 +459,6 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										else if(weaponindex == 441 || weaponindex == 35)
 										{
 											AddAmmoClient(client_Hud, 23 ,_,4.0);	
-										}
-										else if (i_WeaponAmmoAdjustable[weapon])
-										{
-											AddAmmoClient(client_Hud, i_WeaponAmmoAdjustable[weapon] ,_,4.0);
 										}
 										else if(Ammo_type != -1 && Ammo_type < Ammo_Hand_Grenade) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
 										{

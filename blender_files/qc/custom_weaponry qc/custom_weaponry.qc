@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_33"
+$modelname "zombie_riot/weapons/custom_weaponry_1_34"
 
 $bodygroup "scythe"
 {
@@ -53,6 +53,12 @@ $bodygroup "newspaper"
 {
 	blank
 	studio "garbage_newspaper001a_reference.smd"
+}
+
+$bodygroup "scythe_rotate"
+{
+	blank
+	studio "scythe_model_rotate.smd"
 }
 
 $surfaceprop "weapon"

@@ -407,7 +407,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 			
 			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
 			{
-				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+				for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 				{
 					if(!BEAM_BuildingHit[i])
 					{

@@ -45,7 +45,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 			
 				Smite_Damage[client] = damage;
 					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;

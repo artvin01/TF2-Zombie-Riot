@@ -45,10 +45,7 @@ static const char g_HurtArmorSounds[][] = {
 };
 
 static const char g_AngerSounds[][] = {
-	"vo/spy_battlecry01.mp3",
-	"vo/spy_battlecry02.mp3",
-	"vo/spy_battlecry03.mp3",
-	"vo/spy_battlecry04.mp3",
+	"vo/taunts/demoman_taunts10.mp3",
 };
 
 void AnfuhrerEisenhard_OnMapStart_NPC()

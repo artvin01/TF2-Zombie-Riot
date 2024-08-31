@@ -3,7 +3,6 @@
 
 #define PARTICLE_JARATE		"peejar_impact_small"
 #define PARTICLE_MADMILK	"peejar_impact_milk"
-#define PARTICLE_ACIDPOOL	"utaunt_bubbles_glow_orange_parent"
 #define PARTICLE_SHRINK		"utaunt_arcane_green_parent"//"utaunt_merasmus"
 #define SOUND_JAREXPLODE	"weapons/jar_explode.wav"
 #define SOUND_TRANSFORM1	"ambient/halloween/thunder_04.wav"
@@ -14,6 +13,7 @@ static Handle BuffTimer[MAXENTITIES];
 static float TonicBuff[MAXTF2PLAYERS];
 static float TonicBuff_CD[MAXTF2PLAYERS];
 static Handle ShrinkTimer[MAXENTITIES];
+static float f_RaidShrinkImmunity[MAXTF2PLAYERS];
 
 bool Wands_Potions_HasBuff(int client)
 {
@@ -41,6 +41,7 @@ void Wand_Potions_Precache()
 	PrecacheSound(SOUND_TRANSFORM1);
 	PrecacheSound(SOUND_TRANSFORM2);
 	PrecacheSound(SOUND_SHRINK);
+	Zero(f_RaidShrinkImmunity);
 
 	Zero(TonicBuff_CD);
 	Zero(TonicBuff);
@@ -140,9 +141,8 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 		return false;
 	}
 
-	float time = GetGameTime() + 1.0;
-	if(Mana_Regen_Delay[client] < time)
-		Mana_Regen_Delay[client] = time;
+	SDKhooks_SetManaRegenDelayTime(client, 1.0);
+
 	
 	Mana_Hud_Delay[client] = 0.0;
 	Current_Mana[client] -= mana_cost;
@@ -201,7 +201,7 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 
 	SDKUnhook(entity, SDKHook_StartTouchPost, Weapon_Wand_PotionBasicTouch);
 
-	float pos1[3], pos2[3];
+	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 	ParticleEffectAt(pos1, PARTICLE_JARATE, 2.0);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
@@ -209,25 +209,39 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-	int count;
-	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
-	{
-		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-		if(IsValidEntity(i) && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
-		{
-			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
-			{
-				SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-				StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon, DMG_SLASH);
-				if(++count > 4)
-					break;
-			}
-		}
-	}
+	i_ExplosiveProjectileHexArray[entity] = EP_DEALS_PLASMA_DAMAGE;
+	Explode_Logic_Custom(f_WandDamage[entity],
+	owner,
+	entity,
+	weapon,
+	_,
+	_,
+	_,
+	_,
+	_,
+	5,
+	_,
+	_,
+	WandPotion_DoTrueDamageBleed,
+	_,
+	_);
 
 	RemoveEntity(entity);
 }
+
+public void WandPotion_DoTrueDamageBleed(int entity, int enemy, float damage, int weapon)
+{
+	if (!IsValidEntity(enemy))
+		return;
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+
+	if (!IsValidEntity(owner))
+		return;
+
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_SLASH);
+}
+
 
 public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 {
@@ -433,7 +447,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 
 	SDKUnhook(entity, SDKHook_StartTouchPost, Weapon_Wand_PotionUnstableTouch);
 
-	float pos1[3], pos2[3];
+	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 	ParticleEffectAt(pos1, PARTICLE_JARATE, 2.0);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
@@ -441,48 +455,55 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
-	int count;
-	char npc_classname[60];
-	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
-	{
-		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-		if(IsValidEntity(i) && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red && !b_NpcIsInvulnerable[i])
-		{
-			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
-			{
-				float damage = f_WandDamage[entity];
-				StartBleedingTimer(i, owner, damage / 8.0, 8, weapon, DMG_SLASH);
-				NPC_GetPluginById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
-				if(StrEqual(npc_classname, "npc_bloon"))
-				{
-					if(view_as<Bloon>(i).m_bFortified)
-					{
-						view_as<Bloon>(i).m_bFortified = false;
-						SetEntProp(i, Prop_Data, "m_iMaxHealth", Bloon_Health(false, view_as<Bloon>(i).m_iOriginalType));
-
-						damage = float(GetEntProp(i, Prop_Data, "m_iHealth") - Bloon_Health(false, view_as<Bloon>(i).m_iType));
-						if(f_WandDamage[entity] > damage)
-							damage = f_WandDamage[entity];
-					}
-				}
-				else
-				{
-					f_BombEntityWeaponDamageApplied[i][owner] = damage / 2.0;
-					i_HowManyBombsOnThisEntity[i][owner] += 1;
-					i_HowManyBombsHud[i] += 1;
-					Apply_Particle_Teroriser_Indicator(i);
-				}
-
-				SDKHooks_TakeDamage(i, entity, owner, damage, DMG_SLASH, weapon, _, pos1);
-
-				if(++count > 4)
-					break;
-			}
-		}
-	}
+	i_ExplosiveProjectileHexArray[entity] = EP_DEALS_PLASMA_DAMAGE;
+	Explode_Logic_Custom(f_WandDamage[entity],
+	owner,
+	entity,
+	weapon,
+	_,
+	_,
+	_,
+	_,
+	_,
+	5,
+	_,
+	_,
+	WandPotion_UnstableTouchDo,
+	_,
+	_);
 
 	RemoveEntity(entity);
+}
+
+public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontuse, int weapon)
+{
+	if (!IsValidEntity(enemy))
+		return;
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+
+	if (!IsValidEntity(owner))
+		return;
+
+	char npc_classname[60];
+	float damage = f_WandDamage[entity];
+	StartBleedingTimer(enemy, owner, damage / 16.0, 8, weapon, DMG_SLASH);
+	NPC_GetPluginById(i_NpcInternalId[enemy], npc_classname, sizeof(npc_classname));
+	if(StrEqual(npc_classname, "npc_bloon"))
+	{
+		if(view_as<Bloon>(enemy).m_bFortified)
+		{
+			view_as<Bloon>(enemy).m_bFortified = false;
+			SetEntProp(enemy, Prop_Data, "m_iMaxHealth", Bloon_Health(false, view_as<Bloon>(enemy).m_iOriginalType));
+		}
+	}
+	else
+	{
+		f_BombEntityWeaponDamageApplied[enemy][owner] = damage / 6.0;
+		i_HowManyBombsOnThisEntity[enemy][owner] += 1;
+		i_HowManyBombsHud[enemy] += 1;
+		Apply_Particle_Teroriser_Indicator(enemy);
+	}
 }
 
 public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int slot)
@@ -505,7 +526,7 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 	}
 	
 	TonicBuff_CD[client] = GetGameTime() + 10.0;
-	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
+	SDKhooks_SetManaRegenDelayTime(client, 10.0);
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 
@@ -539,7 +560,7 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 	}
 	
 	TonicBuff_CD[client] = GetGameTime() + 10.0;
-	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
+	SDKhooks_SetManaRegenDelayTime(client, 10.0);
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 	
@@ -598,49 +619,53 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 
 	SDKUnhook(entity, SDKHook_StartTouchPost, Weapon_Wand_PotionLeadTouch);
 
-	float pos1[3], pos2[3];
+	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
 
-	if(target)
-	{
-		ParticleEffectAt(pos1, PARTICLE_JARATE, 2.0);
-	}
-	else
-	{
-		ParticleEffectAt(pos1, PARTICLE_ACIDPOOL, 0.5);
-	}
-	
+	ParticleEffectAt(pos1, PARTICLE_JARATE, 2.0);
+
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
-	int count;
-	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
-	{
-		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-		if(IsValidEntity(i) && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
-		{
-			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
-			{
-				if(view_as<CClotBody>(i).m_iBleedType == BLEEDTYPE_METAL)
-				{
-					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, f_WandDamage[entity] / 2.0, 10, weapon, DMG_SLASH);
-				}
-				else
-				{
-					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon, DMG_SLASH);
-				}
-
-				if(++count > 4)
-					break;
-			}
-		}
-	}
+	i_ExplosiveProjectileHexArray[entity] = EP_DEALS_PLASMA_DAMAGE;
+	Explode_Logic_Custom(f_WandDamage[entity],
+	owner,
+	entity,
+	weapon,
+	_,
+	_,
+	_,
+	_,
+	_,
+	5,
+	_,
+	_,
+	WandPotion_PotionLead,
+	_,
+	_);
 
 	RemoveEntity(entity);
+}
+
+public void WandPotion_PotionLead(int entity, int enemy, float damage_Dontuse, int weapon)
+{
+	if (!IsValidEntity(enemy))
+		return;
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+
+	if (!IsValidEntity(owner))
+		return;
+
+	if(view_as<CClotBody>(enemy).m_iBleedType == BLEEDTYPE_METAL)
+	{
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_SLASH);
+	}
+	else
+	{
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_SLASH);
+	}
 }
 
 public void Weapon_Wand_PotionGoldTouch(int entity, int target)
@@ -656,131 +681,149 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 
 	SDKUnhook(entity, SDKHook_StartTouchPost, Weapon_Wand_PotionGoldTouch);
 
-	float pos1[3], pos2[3];
+	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
 	
-	if(target)
-	{
-		ParticleEffectAt(pos1, PARTICLE_JARATE, 2.0);
-	}
-	else
-	{
-		ParticleEffectAt(pos1, PARTICLE_ACIDPOOL, 0.5);
-	}
+	ParticleEffectAt(pos1, PARTICLE_JARATE, 2.0);
 	
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
-	int count;
-	if(IsValidEntity(weapon))
-	{
-		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
-		{
-			int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-			if(IsValidEntity(i) && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
-			{
-				GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
-				if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
-				{
-					if(view_as<CClotBody>(i).m_iBleedType == BLEEDTYPE_METAL)
-					{
-						SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-						StartBleedingTimer(i, owner, f_WandDamage[entity] / 2.0, 10, weapon, DMG_SLASH);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-						StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon, DMG_SLASH);
-					}
+	i_ExplosiveProjectileHexArray[entity] = EP_DEALS_PLASMA_DAMAGE;
+	Explode_Logic_Custom(f_WandDamage[entity],
+	owner,
+	entity,
+	weapon,
+	_,
+	_,
+	_,
+	_,
+	_,
+	5,
+	_,
+	_,
+	WandPotion_PotionGoldDo,
+	_,
+	_);
+	
+	RemoveEntity(entity);
+}
 
-					float time = GetGameTime() + 1.5;
-					if(f_CrippleDebuff[i] < time)
-						f_CrippleDebuff[i] = time;
-					
-					if(++count > 4)
-						break;
-				}
-			}
-		}
+public void WandPotion_PotionGoldDo(int entity, int enemy, float damage_Dontuse, int weapon)
+{
+	if (!IsValidEntity(enemy))
+		return;
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+
+	if (!IsValidEntity(owner))
+		return;
+
+	if(view_as<CClotBody>(enemy).m_iBleedType == BLEEDTYPE_METAL)
+	{
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_SLASH);
 	}
+	else
+	{
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_SLASH);
+	}
+	float time = GetGameTime() + 1.5;
+	if(f_GoldTouchDebuff[enemy] < time)
+		f_GoldTouchDebuff[enemy] = time;
+}
+
+bool ShrinkOnlyOneTarget = false;
+public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
+{
+
+	SDKUnhook(entity, SDKHook_StartTouchPost, Weapon_Wand_PotionShrinkTouch);
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	float pos1[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+	ParticleEffectAt(pos1, PARTICLE_SHRINK, 1.0);
+	EmitSoundToAll(SOUND_SHRINK, entity, _, _, _, _, _, _, pos1);
+	ShrinkOnlyOneTarget = false;
+	i_ExplosiveProjectileHexArray[entity] = EP_DEALS_PLASMA_DAMAGE;
+	Explode_Logic_Custom(1.0,
+	owner,
+	entity,
+	weapon,
+	_,
+	EXPLOSION_RADIUS * 2.0,
+	1.0,
+	1.0,
+	_,
+	2,
+	_,
+	_,
+	WandPotion_PotionShrinkDo,
+	_,
+	_);
 
 	RemoveEntity(entity);
 }
 
-public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
+public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontuse, int weapon)
 {
-	if(target)
+	if (!IsValidEntity(enemy))
+		return;
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+
+	if (!IsValidEntity(owner))
+		return;
+
+	if(enemy)
 	{
-		if(target <= MaxClients)
+		if(enemy <= MaxClients)
 			return;
 		
-		if(GetTeam(target) == 2)
+		if(GetTeam(enemy) == TFTeam_Red)
 			return;
 	}
 
-	SDKUnhook(entity, SDKHook_StartTouchPost, Weapon_Wand_PotionShrinkTouch);
-
-	float pos1[3], pos2[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-	ParticleEffectAt(pos1, PARTICLE_SHRINK, 1.0);
-	EmitSoundToAll(SOUND_SHRINK, entity, _, _, _, _, _, _, pos1);
-
-	int count;
-	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
+	if(b_thisNpcIsABoss[enemy] || b_StaticNPC[enemy] || b_thisNpcIsARaid[enemy])
 	{
-		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-		if(IsValidEntity(i) && !b_NpcHasDied[i] && f_MaimDebuff[i] != FAR_FUTURE && GetTeam(i) != TFTeam_Red)
+		if(!ShrinkOnlyOneTarget && f_RaidShrinkImmunity[enemy] < GetGameTime())
 		{
-			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS * 2))
+			float time = 4.0;
+			if(b_thisNpcIsARaid[enemy])
 			{
-				if(b_thisNpcIsABoss[i] || b_StaticNPC[i] || b_thisNpcIsARaid[i])
-				{
-					if(!count)
-					{
-						float time = 4.0;
-						if(b_thisNpcIsARaid[i])
-						{
-							time = 3.0;
-						}
-						if(f_PotionShrinkEffect[i] < (GetGameTime() + time))
-							f_PotionShrinkEffect[i] =  (GetGameTime() + time);
-						
-						if(ShrinkTimer[i] != null)
-							delete ShrinkTimer[i];
-						else
-						{
-							//no timer beforehand.
-							float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
-							SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.5);
-						}
-
-						DataPack pack_repack;
-						ShrinkTimer[i] = CreateDataTimer(time, Weapon_Wand_PotionEndShrink, pack_repack, TIMER_FLAG_NO_MAPCHANGE);
-						pack_repack.WriteCell(i);
-						pack_repack.WriteCell(EntIndexToEntRef(i));
-						break;
-					}
-				}
-				else
-				{
-					if(f_PotionShrinkEffect[i] < GetGameTime())
-					{
-						float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
-						SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.5);
-					}
-					
-					f_PotionShrinkEffect[i] = FAR_FUTURE;
-				}
-				
-				if(++count > 1)
-					break;
+				time = 3.0;
 			}
+			f_RaidShrinkImmunity[enemy] = GetGameTime() + (time * 3.0);
+			ShrinkOnlyOneTarget = true;
+			
+			if(f_PotionShrinkEffect[enemy] < (GetGameTime() + time))
+				f_PotionShrinkEffect[enemy] =  (GetGameTime() + time);
+			
+			if(ShrinkTimer[enemy] != null)
+				delete ShrinkTimer[enemy];
+			else
+			{
+				//no timer beforehand.
+				float scale = GetEntPropFloat(enemy, Prop_Send, "m_flModelScale");
+				SetEntPropFloat(enemy, Prop_Send, "m_flModelScale", scale * 0.5);
+			}
+			DataPack pack_repack;
+			ShrinkTimer[enemy] = CreateDataTimer(time, Weapon_Wand_PotionEndShrink, pack_repack, TIMER_FLAG_NO_MAPCHANGE);
+			pack_repack.WriteCell(enemy);
+			pack_repack.WriteCell(EntIndexToEntRef(enemy));
 		}
 	}
-
-	RemoveEntity(entity);
+	else
+	{
+		if(f_PotionShrinkEffect[enemy] < GetGameTime())
+		{
+			float scale = GetEntPropFloat(enemy, Prop_Send, "m_flModelScale");
+			SetEntPropFloat(enemy, Prop_Send, "m_flModelScale", scale * 0.5);
+		}
+		
+		f_PotionShrinkEffect[enemy] = FAR_FUTURE;
+	}
 }
 public Action Weapon_Wand_PotionEndShrink(Handle timer, DataPack pack)
 {

@@ -180,6 +180,7 @@ methodmap MedivalLightCav < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_RIDER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.m_bisWalking = false; //Animation it uses has no groundspeed, this is needed.
 		
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -342,7 +343,6 @@ public void MedivalLightCav_ClotThink(int iNPC)
 				if(!npc.m_bPathing)
 					npc.StartPathing();
 					
-				npc.m_bisWalking = true;
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
@@ -369,7 +369,6 @@ public void MedivalLightCav_ClotThink(int iNPC)
 
 					npc.m_flDoingAnimation = gameTime + 0.35;
 					npc.m_flNextMeleeAttack = gameTime + 1.5;
-					npc.m_bisWalking = true;
 				}
 			}
 		}

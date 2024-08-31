@@ -5,18 +5,6 @@
 #define TIME_TO_TICKS(%1)	RoundToZero(0.5 + %1 / GetTickInterval())
 #define TICKS_TO_TIME(%1)	(GetTickInterval() * float(%1))
 
-/* game/client/c_baseanimatingoverlay.h#L46 */
-#define MAX_LAYER_RECORDS	15
-
-/* game/server/player_lagcompensation.cpp#L45 */
-/*enum struct LayerRecord
-{
-	int m_sequence;
-	float m_cycle;
-	float m_weight;
-	int m_order;
-}*/
-
 /* game/server/player_lagcompensation.cpp#L69 */
 enum struct LagRecord
 {
@@ -46,6 +34,7 @@ static ConVar sv_maxunlag;
 
 static int TickCount[MAXTF2PLAYERS];
 static float ViewAngles[MAXTF2PLAYERS][3];
+// EntityTrack should only confine the max ticks on the server, alter this value for your server's
 static LagRecord EntityTrack[ZR_MAX_LAG_COMP][67];
 static int EntityTrackCount[ZR_MAX_LAG_COMP];
 static LagRecord EntityRestore[ZR_MAX_LAG_COMP];
@@ -72,7 +61,11 @@ void StartLagCompensation_Base_Boss(int client)
 	//	LogError("Tried to lag compensate twice, sorry! no can do.");
 //		return;
 //	}
-
+	if(DoingLagCompensation)
+	{
+		PrintToChatAll("Was alrady in DoingLagCompensation But tried doing another?");
+		FinishLagCompensation_Base_boss(-1, false);
+	}
 	DoingLagCompensation = true;
 	
 	// Get true latency
@@ -393,7 +386,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	WasBackTracked[index] = true;
 }
 
-void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1)
+void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1, bool DoReset = true)
 //public MRESReturn FinishLagCompensation(Address manager, DHookParam param)
 {
 //	if(!DoingLagCompensation)
@@ -419,7 +412,6 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1)
 #if defined ZR
 			if(GetTeam(entity) != TFTeam_Red)
 #endif
-
 			{
 				if(b_LagCompNPC_ExtendBoundingBox)
 				{
@@ -504,7 +496,7 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1)
 		}
 	}
 
-	if(ForceOptionalEntity == -1)
+	if(ForceOptionalEntity == -1 && DoReset)
 		StartLagCompResetValues();
 }
 
@@ -533,8 +525,8 @@ void LagCompensationThink_Forward()
 			// remove tail records that are too old
 			while(EntityTrackCount[index])
 			{
-				// if tail is within limits, stop
-				if(EntityTrackCount[index] < (sizeof(EntityTrack[]) - 1) &&
+				// if tail is within limits, stop, only record at max 1 seconds, either max tickrate, or max of 66 ticks
+				if((EntityTrackCount[index] < (TickrateModifyInt - 1) || EntityTrackCount[index] < (sizeof(EntityTrack[]) - 1)) &&
 				   EntityTrack[index][0].m_flSimulationTime >= deadTime)
 					break;
 				

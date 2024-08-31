@@ -36,7 +36,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 			{
 				Rogue_OnAbilityUse(weapon);
 				Ability_Apply_Cooldown(client, slot, 15.0);
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
@@ -201,7 +201,7 @@ public void Weapon_Passanger_Attack(int client, int weapon, bool crit, int slot)
 		int mana_cost = 75;
 		if(mana_cost <= Current_Mana[client])
 		{
-			Mana_Regen_Delay[client] = GetGameTime() + 2.0;
+			SDKhooks_SetManaRegenDelayTime(client, 2.0);
 			Mana_Hud_Delay[client] = 0.0;
 			
 			Current_Mana[client] -= mana_cost;
@@ -476,7 +476,7 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 		if(mana_cost <= Current_Mana[client])
 		{		
 			Rogue_OnAbilityUse(weapon);
-			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+			SDKhooks_SetManaRegenDelayTime(client, 1.0);
 			Mana_Hud_Delay[client] = 0.0;
 			
 			Current_Mana[client] -= mana_cost;

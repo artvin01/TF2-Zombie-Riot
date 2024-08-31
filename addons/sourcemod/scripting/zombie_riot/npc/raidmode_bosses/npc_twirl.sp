@@ -117,7 +117,6 @@ static const char Cosmic_Launch_Sounds[][] ={
 	"weapons/physcannon/superphys_launch3.wav",
 	"weapons/physcannon/superphys_launch4.wav"
 }; 
-
 static char gGlow1;	//blue
 #define TWIRL_THUMP_SOUND				"ambient/machines/thumper_hit.wav"
 #define TWIRL_COSMIC_GAZE_LOOP_SOUND1 	"weapons/physcannon/energy_sing_loop4.wav"
@@ -164,6 +163,11 @@ static void ClotPrecache()
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM1);
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM2);
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM3);
+
+	PrecacheSound("player/taunt_surgeons_squeezebox_draw_accordion.wav");
+	PrecacheSound("player/taunt_surgeons_squeezebox_music.wav");
+	PrecacheSound("ui/rd_2base_alarm.wav");
+	PrecacheSound("npc/attack_helicopter/aheli_charge_up.wav");
 
 	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
@@ -234,20 +238,16 @@ methodmap Twirl < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
+			
 	}
-	
+
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
@@ -781,9 +781,11 @@ methodmap Twirl < CClotBody
 				case 2: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
 				case 3: Twirl_Lines(npc, "I hope your ready for this final {purple}battle{snow}.");
 			}
+			RaidModeScaling *=0.9;
 		}
 		else	//freeplay
 		{
+			RaidModeScaling *=0.9;
 			i_ranged_ammo[npc.index] = 12;
 			switch(GetRandomInt(0, 3))
 			{
@@ -827,7 +829,7 @@ static void Twirl_WinLine(int entity)
 	if(b_wonviatimer[npc.index])
 		return;
 
-	switch(GetRandomInt(0, 9))
+	switch(GetRandomInt(0, 10))
 	{
 		case 0: Twirl_Lines(npc, "Wait, your all dead already??");
 		case 1: Twirl_Lines(npc, "This was quite fun, I thank you for the experience!");
@@ -839,6 +841,7 @@ static void Twirl_WinLine(int entity)
 		case 7: Twirl_Lines(npc, "Ah foolish Mercenary's, maybe next time think about a proper strategy");
 		case 8: Twirl_Lines(npc, "Raw power is good and all, but you know what's better? {crimson}Debuffs");
 		case 9: Twirl_Lines(npc, "Perhaps if you all had more {aqua}supports{snow} you'd might have won. Allas");
+		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 	}
 
 }
@@ -908,7 +911,7 @@ static void ClotThink(int iNPC)
 	if(LastMann && !b_lastman[npc.index])
 	{
 		b_lastman[npc.index] = true;
-		switch(GetRandomInt(0, 6))
+		switch(GetRandomInt(0, 7))
 		{
 			case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
 			case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
@@ -917,6 +920,7 @@ static void ClotThink(int iNPC)
 			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
 			case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
 			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
+			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 		}
 	}
 
@@ -929,7 +933,7 @@ static void ClotThink(int iNPC)
 		b_wonviatimer[npc.index] = true;
 		if(wave <=60)
 		{
-			switch(GetRandomInt(0, 9))
+			switch(GetRandomInt(0, 10))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
 				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
@@ -941,14 +945,16 @@ static void ClotThink(int iNPC)
 				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
 				case 8: Twirl_Lines(npc, "Tell me why your this slow?");
 				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
+				case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else	//freeplay
 		{
-			switch(GetRandomInt(0, 1))
+			switch(GetRandomInt(0, 2))
 			{
 				case 0: Twirl_Lines(npc, "Well considering you all were just some random's this was to be expected");
 				case 1: Twirl_Lines(npc, "Guess my sense of magic's been off lately, this was exceedingly boring.");
+				case 2: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		
@@ -961,7 +967,7 @@ static void ClotThink(int iNPC)
 
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
-		switch(GetRandomInt(0, 6))
+		switch(GetRandomInt(0, 7))
 		{
 			case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
 			case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
@@ -970,6 +976,7 @@ static void ClotThink(int iNPC)
 			case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
 			case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
 			case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
+			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 		}
 		fl_magia_overflow_recharge[npc.index] -= 15.0;
 		npc.m_flNextTeleport -= 10.0;
@@ -1112,7 +1119,7 @@ static void ClotThink(int iNPC)
 		{
 			Fractal_Gram(npc, PrimaryThreatIndex);
 			Cosmic_Gaze(npc, PrimaryThreatIndex);
-			Luanar_Radiance(npc);
+			lunar_Radiance(npc);
 			Magia_Overflow(npc);
 		}
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
@@ -1170,7 +1177,7 @@ static void Final_Invocation(Twirl npc)
 	Ruina_Set_Overlord(npc.index, true);
 	Ruina_Master_Rally(npc.index, true);
 	int MaxHealth = ReturnEntityMaxHealth(npc.index);
-	float Tower_Health = MaxHealth*0.2;
+	float Tower_Health = MaxHealth*0.175;
 
 	for(int i=0 ; i < 4 ; i++)
 	{
@@ -1225,20 +1232,164 @@ static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 	Custom_Knockback(entity, victim, 1000.0, true);
 }
 
-static void Luanar_Radiance(Twirl npc)
+static int i_Lunar_RadianceAmt(Twirl npc)
+{
+	int amt = (npc.Anger ? 14 : 7);
+
+	return amt;
+}
+static float fl_Lunar_RadianceTimer(Twirl npc)
+{
+	float time = (npc.Anger ? 0.7 : 1.2);
+	return time;
+}
+static float fl_lunar_throttle[MAXENTITIES];
+static int i_lunar_entities[MAXENTITIES][3];
+static float fl_lunar_loop[MAXENTITIES];
+static void lunar_Radiance(Twirl npc)
 {
 	if(i_current_wave[npc.index] <=45)
 		return;
 	float GameTime = GetGameTime(npc.index);
 	if(fl_ruina_battery_timeout[npc.index] > GameTime)
 		return;
-
+	if(npc.m_flDoingAnimation > GameTime)
+		return;
 	if(fl_lunar_timer[npc.index] > GameTime)
 		return;
 
-	int amt = (npc.Anger ? 10 : 5);
-	if(i_current_wave[npc.index]>=60)
-		amt = (npc.Anger ? 8 : 4);
+	EmitSoundToAll("player/taunt_surgeons_squeezebox_draw_accordion.wav", npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+	EmitSoundToAll("player/taunt_surgeons_squeezebox_draw_accordion.wav", npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+
+	EmitSoundToAll("npc/attack_helicopter/aheli_charge_up.wav");
+	EmitSoundToAll("npc/attack_helicopter/aheli_charge_up.wav");
+	
+	NPC_StopPathing(npc.index);
+
+	fl_lunar_loop[npc.index] = 0.0;
+
+	for(int i= 0 ; i < 3 ; i ++)	//warp
+	{
+		int ent = EntRefToEntIndex(i_lunar_entities[npc.index][i]);
+		if(IsValidEntity(ent))
+			RemoveEntity(ent);
+
+		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
+	}
+
+	switch(GetRandomInt(0, 13))
+	{
+		case 0: Twirl_Lines(npc, "These are just my own personal {crimson}ION{snow}'s. Ruina's ones are far scarier~");
+		case 2: Twirl_Lines(npc, "Watch your {crimson}Step{snow}!");
+		case 5: Twirl_Lines(npc, "Lookout {crimson}Above{snow}!");
+		case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
+		case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
+		case 11: Twirl_Lines(npc, "Dance little merc, dance...");
+		case 13: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+	}
+
+	float flPos[3], flAng[3];
+	npc.GetAttachment("effect_hand_r", flPos, flAng);
+	int ent1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+	npc.GetAttachment("effect_hand_l", flPos, flAng);
+	int ent2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
+	if(IsValidEntity(ent1) && IsValidEntity(ent2))
+	{
+		i_lunar_entities[npc.index][0] = EntIndexToEntRef(ent1);
+		i_lunar_entities[npc.index][1] = EntIndexToEntRef(ent2);
+		int color[4];
+		Ruina_Color(color);
+		int laser = ConnectWithBeamClient(ent1, ent2, color[0], color[1], color[2], 5.0, 5.0, 1.0, LASERBEAM);
+		if(IsValidEntity(laser))
+		{
+			i_lunar_entities[npc.index][2] = EntIndexToEntRef(laser);
+		}
+	}
+	else
+	{
+		if(IsValidEntity(ent1))
+			RemoveEntity(ent1);
+		if(IsValidEntity(ent2))
+			RemoveEntity(ent2);
+	}
+
+	npc.m_flRangedArmor = 0.3;
+	npc.m_flMeleeArmor = 0.5;
+
+	fl_lunar_throttle[npc.index] = GameTime + 0.5;
+	fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
+	npc.m_flDoingAnimation = GameTime + 2.5;
+
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
+
+	fl_lunar_timer[npc.index] = 0.0;
+	npc.m_bisWalking = false;
+	npc.SetPlaybackRate(1.0);	
+	npc.SetCycle(0.01);
+	npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
+
+	i_lunar_ammo[npc.index] = 0;
+
+	npc.m_flSpeed = 0.0;
+	
+	SDKUnhook(npc.index, SDKHook_Think, lunar_Radiance_Tick);
+	SDKHook(npc.index, SDKHook_Think, lunar_Radiance_Tick);
+}
+static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
+{
+	int iNPC = EntRefToEntIndex(ref);
+	if(!IsValidEntity(iNPC))
+		return Plugin_Stop;
+	
+	Twirl npc = view_as<Twirl>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+
+	npc.m_flRangedArmor = 1.0;
+	npc.m_flMeleeArmor = 1.5;
+
+	npc.m_iState = 0;
+	npc.m_flNextMeleeAttack = GameTime + 0.5;
+	npc.m_flReloadIn = GameTime + 0.5;
+	npc.m_fbGunout = true;
+	SetVariantInt(npc.i_weapon_type());
+	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+
+	npc.m_flSpeed = fl_npc_basespeed;
+	npc.StartPathing();
+
+	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+	npc.m_bisWalking = true;
+	npc.m_iChanged_WalkCycle = 1;
+	if(iActivity > 0) npc.StartActivity(iActivity);
+
+	return Plugin_Stop;
+}
+static void lunar_Radiance_Tick(int iNPC)
+{
+	Twirl npc = view_as<Twirl>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+
+	if(fl_lunar_throttle[npc.index] > GameTime)
+		return;
+
+	if(fl_lunar_loop[npc.index] < GameTime)
+	{
+		fl_lunar_loop[npc.index] = FAR_FUTURE;
+		EmitSoundToAll("player/taunt_surgeons_squeezebox_music.wav", npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+	}
+
+	fl_lunar_throttle[npc.index] = GameTime + 0.1;
+
+	fl_ruina_battery_timeout[npc.index] = GameTime + 2.0;
+	npc.m_flDoingAnimation = GameTime + 2.0;
+
+	int amt = i_Lunar_RadianceAmt(npc);
 
 	if(i_lunar_ammo[npc.index] > amt)
 	{
@@ -1246,13 +1397,38 @@ static void Luanar_Radiance(Twirl npc)
 		fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 30.0 : 45.0);
 		if(b_tripple_raid[npc.index])
 			fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 50.0 : 60.0);
+
+		StopSound(npc.index, SNDCHAN_STATIC, "player/taunt_surgeons_squeezebox_music.wav");
+
+		fl_ruina_battery_timeout[npc.index] = GameTime + 0.6;
+		npc.m_flDoingAnimation = GameTime + 0.6;
+
+		CreateTimer(0.5, Lunar_Radiance_RestoreAnim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+
+		npc.SetPlaybackRate(1.0);	
+		npc.SetCycle(0.01);
+		npc.AddActivityViaSequence("taunt_surgeons_squeezebox_outro");
+
+		for(int i= 0 ; i < 3 ; i ++)
+		{
+			int ent = EntRefToEntIndex(i_lunar_entities[npc.index][i]);
+			if(IsValidEntity(ent))
+				RemoveEntity(ent);
+
+			i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
+		}
+
+		SDKUnhook(npc.index, SDKHook_Think, lunar_Radiance_Tick);
+
 		return;
 	}
-	i_lunar_ammo[npc.index]++;
 
-	fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 0.7 : 1.2);
+	if(fl_lunar_timer[npc.index] > GameTime)
+		return;
 
-	fl_ruina_battery_timeout[npc.index] = GameTime + 1.0;
+	fl_lunar_timer[npc.index] = GameTime + fl_Lunar_RadianceTimer(npc);
+
+	i_lunar_ammo[npc.index] +=1;
 
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy_2[MAXENTITIES];
@@ -1262,10 +1438,7 @@ static void Luanar_Radiance(Twirl npc)
 		if(enemy_2[i])
 		{
 			float Radius = (npc.Anger ? 225.0 : 150.0);
-			float dmg = 20.0;
-			dmg *= RaidModeScaling;
-			if(i_current_wave[npc.index]>=60)
-				dmg *=0.7;
+			float dmg = Modify_Damage(-1, 12.0);
 			npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.4 : 1.8), Radius, dmg);
 		}
 	}
@@ -1311,7 +1484,11 @@ static bool KeepDistance(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 	return backing_up;
 }
-
+static float fl_self_defense_multiattack_speed(Twirl npc)
+{
+	float speed = (npc.Anger ? 0.2 : 0.4);
+	return speed;
+}
 static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatIndex, float vecTarget[3])
 {
 	float GameTime = GetGameTime(npc.index);
@@ -1345,7 +1522,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		if(fl_multi_attack_delay[npc.index] > GameTime)
 			return;
 
-		float	Multi_Delay = (npc.Anger ? 0.2 : 0.4),
+		float	Multi_Delay = fl_self_defense_multiattack_speed(npc),
 				Reload_Delay = (npc.Anger ? 2.0 : 4.0);
 		
 		if(npc.m_iState >= i_ranged_ammo[npc.index])	//"ammo"
@@ -1378,15 +1555,13 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		float Dmg = 21.0;
 		float Radius = (npc.Anger ? 150.0 : 100.0);
-		Dmg *=RaidModeScaling;
-
 		char Particle[50];
 		if(npc.m_iState % 2)
 			Particle = "raygun_projectile_blue";
 		else
 			Particle = "raygun_projectile_red";
 
-		npc.FireParticleRocket(target_vec, Dmg , projectile_speed , Radius , Particle, _, _, true, flPos);
+		npc.FireParticleRocket(target_vec, Modify_Damage(PrimaryThreatIndex, Dmg) , projectile_speed , Radius , Particle, _, _, true, flPos);
 	}
 	else
 	{
@@ -1404,7 +1579,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(PrimaryThreatIndex, VecEnemy);
 				npc.FaceTowards(VecEnemy, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, {125.0, 100.0, 150.0}, {-125.0, -125.0, -150.0}))
+				if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 				{	
 					int target = TR_GetEntityIndex(swingTrace);	
 					
@@ -1487,7 +1662,8 @@ static float fl_cosmic_gaze_throttle[MAXENTITIES];
 static float fl_cosmic_gaze_windup[MAXENTITIES];
 static float fl_cosmic_gaze_duration_offset[MAXENTITIES];
 static float fl_gaze_Dist[MAXENTITIES];
-static float fl_cosmic_gaze_range = 2000.0;
+static float fl_cosmic_gaze_range = 1500.0;
+static float fl_cosmic_gaze_radius = 750.0;
 static void Cosmic_Gaze(Twirl npc, int Target)
 {
 	if(i_current_wave[npc.index]<=30)
@@ -1508,6 +1684,8 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 		return;
 
 	Target = Enemy_I_See;
+
+	EmitSoundToAll("ui/rd_2base_alarm.wav");
 
 	npc.m_iState = 0;
 	npc.m_flNextMeleeAttack = GameTime + 0.5;
@@ -1532,12 +1710,10 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 
 	b_animation_set[npc.index] = false;
 	fl_cosmic_gaze_throttle[npc.index] = 0.0;
-
 	
 	npc.AddActivityViaSequence("taunt08");
 	npc.SetPlaybackRate(1.36*anim_ratio);	
 	npc.SetCycle(0.01);
-
 
 	float VecTarget[3]; WorldSpaceCenter(Target, VecTarget);
 	npc.FaceTowards(VecTarget, 10000.0);
@@ -1555,6 +1731,12 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	Start = Laser.Start_Point;
 
 	fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);
+	float Thickness = 15.0;
+	int color[4]; Ruina_Color(color);
+	TE_SetupBeamRingPoint(EndLoc, fl_cosmic_gaze_radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, (Duration + Windup-0.75), Thickness, 1.5, color, 1, 0);
+	TE_SendToAll();
+	TE_SetupBeamRingPoint(EndLoc, fl_cosmic_gaze_radius*2.0, fl_cosmic_gaze_radius*2.0+0.1, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, (Duration + Windup-0.75), Thickness, 1.5, color, 1, 0);
+	TE_SendToAll();
 
 	SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
 	SDKHook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
@@ -1642,8 +1824,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 
 				Laser.Radius = Radius;
 				Laser.damagetype = DMG_PLASMA;
-				Laser.Damage = 70.0 *RaidModeScaling;
-
+				Laser.Damage = Modify_Damage(-1, 70.0);
 				Laser.Deal_Damage();
 
 				fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);	
@@ -1729,14 +1910,12 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 			Do_Cosmic_Gaze_Explosion(npc.index, EndLoc);
 		}
 	}
-
-
 	return Plugin_Continue;
 }
 static int i_explosion_core[MAXENTITIES];
 static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 {
-	float Radius = 750.0;
+	float Radius = fl_cosmic_gaze_radius;
 
 	int create_center = Ruina_Create_Entity(Loc, 1.0, true);
 
@@ -1745,7 +1924,7 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 		i_explosion_core[client] = EntIndexToEntRef(create_center);
 	}
 
-	Explode_Logic_Custom(200.0*RaidModeScaling, client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
+	Explode_Logic_Custom(Modify_Damage(-1, 100.0), client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
 
 	int color[4]; Ruina_Color(color);
 
@@ -1838,6 +2017,17 @@ static void Cosmic_Gaze_Boom_OnHit(int entity, int victim, float damage, int wea
 		TE_SendToAll(0.0);
 	}
 }
+static int i_Fractal_Gram_Amt(Twirl npc)
+{
+	int amt = (npc.Anger ? 20 : 10);
+
+	return amt;
+}
+static float fl_Fractal_Gram_SpamTimer(Twirl npc)
+{
+	float timer = (npc.Anger ? 0.2 : 0.4);
+	return timer;
+}
 static void Fractal_Gram(Twirl npc, int Target)
 {
 	if(i_current_wave[npc.index]<=15)
@@ -1850,11 +2040,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	if(npc.m_flNextRangedBarrage_Singular > GameTime)
 		return;
 
-	int amt = (npc.Anger ? 20 : 10);
-	if(i_current_wave[npc.index]>=60)
-		amt = (npc.Anger ? 15 : 10);
-
-	
+	int amt = i_Fractal_Gram_Amt(npc);
 
 	if(i_barrage_ammo[npc.index] > amt)
 	{
@@ -1881,7 +2067,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 
 	i_barrage_ammo[npc.index]++;
 
-	npc.m_flNextRangedBarrage_Singular = GameTime + (npc.Anger ? 0.2 : 0.4);
+	npc.m_flNextRangedBarrage_Singular = GameTime + fl_Fractal_Gram_SpamTimer(npc);
 
 	float vecTarget[3];
 	WorldSpaceCenter(Target, vecTarget);
@@ -1889,7 +2075,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	float Laser_Dmg = 2.5;
 	float Speed = (npc.Anger ? 1400.0 : 1250.0);
 	float Direct_Dmg = 3.5;
-	Fractal_Attack(npc.index, vecTarget, Laser_Dmg*RaidModeScaling, Speed, 15.0, Direct_Dmg*RaidModeScaling, 0.0, 5.0);
+	Fractal_Attack(npc.index, vecTarget, Modify_Damage(-1, Laser_Dmg), Speed, 15.0, Modify_Damage(-1, Direct_Dmg), 0.0, 5.0);
 }
 static int i_laser_entity[MAXENTITIES];
 static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
@@ -1955,11 +2141,7 @@ static void Func_On_Proj_Touch(int entity, int other)
 	{
 		Twirl npc = view_as<Twirl>(owner);
 		float radius = (npc.Anger ? 300.0 : 250.0);
-		float dmg = 20.0;
-		dmg *= RaidModeScaling;
-
-		if(i_current_wave[npc.index]>=60)
-			dmg *=0.7;
+		float dmg = Modify_Damage(-1, 12.0);
 
 		float Time = (npc.Anger ? 1.45 : 1.9);
 		npc.Ion_On_Loc(ProjectileLoc, radius, dmg, Time);
@@ -2155,9 +2337,7 @@ static bool Retreat(Twirl npc, bool custom = false)
 		fl_force_ranged[npc.index] = GameTime + 8.0;	
 	}
 
-	
-
-	switch(GetRandomInt(0, 5))
+	switch(GetRandomInt(0, 10))
 	{
 		case 0: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
 		case 1: Twirl_Lines(npc, "You really think you can {purple}catch {snow}me?");
@@ -2165,6 +2345,11 @@ static bool Retreat(Twirl npc, bool custom = false)
 		case 3: Twirl_Lines(npc, "So close, yet far");
 		case 4: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
 		case 5: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
+		case 6: Twirl_Lines(npc, "Don't surround me like that.");
+		case 7: Twirl_Lines(npc, "When will you learn this,{crimson} DON'T COME NEAR ME");
+		case 8: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
+		case 9: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
+		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 	}
 	return true;
 }
@@ -2272,9 +2457,9 @@ static Action Retreat_Laser_Tick(int iNPC)
 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
-	Laser.Damage = 15.0 *RaidModeScaling;
+	Laser.Damage = Modify_Damage(-1, 15.0);
 	Laser.Radius = Radius;
-	Laser.Bonus_Damage = 15.0 *RaidModeScaling*6.0;
+	Laser.Bonus_Damage = Modify_Damage(-1, 15.0)*6.0;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage();
 
@@ -2514,9 +2699,9 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
 	if(update)
 	{
-		Laser.Damage = 2.0 * RaidModeScaling;
+		Laser.Damage = Modify_Damage(-1, 2.0);
 		Laser.Radius = Radius;
-		Laser.Bonus_Damage = 2.0 * RaidModeScaling*6.0;
+		Laser.Bonus_Damage = Modify_Damage(-1, 2.0)*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage(On_LaserHit);
 	}
@@ -2812,6 +2997,15 @@ static void NPC_Death(int entity)
 
 	Ruina_NPCDeath_Override(npc.index);
 
+	for(int i= 0 ; i < 3 ; i ++)
+	{
+		int ent = EntRefToEntIndex(i_lunar_entities[npc.index][i]);
+		if(IsValidEntity(ent))
+			RemoveEntity(ent);
+
+		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
+	}
+
 
 	int ent = EntRefToEntIndex(i_hand_particles[npc.index]);
 	if(IsValidEntity(ent))
@@ -2829,42 +3023,46 @@ static void NPC_Death(int entity)
 		int wave = i_current_wave[npc.index];
 		if(wave <=15)
 		{
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Ah, this is great, I have high hopes for our next encounter");
 				case 1: Twirl_Lines(npc, "Your strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
 				case 2: Twirl_Lines(npc, "Ahaha, toodles");
 				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
+				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else if(wave <=30)
 		{
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "This was great fun, better not let me down and not make it to our next battle!");
 				case 1: Twirl_Lines(npc, "Oh my, I may have underestimated you, this is great news");
 				case 2: Twirl_Lines(npc, "I'll have to give {aqua}Stella{snow} a little treat, this has been great fun");
 				case 3: Twirl_Lines(npc, "Most excellent, you bested me, hope to see you again!");
+				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else if(wave <=45)
 		{
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Even with my {purple}''Heavy Equipment''{snow} you bested me, good work");
 				case 1: Twirl_Lines(npc, "Your quite strong, and so am I, can't wait for our next math");
 				case 2: Twirl_Lines(npc, "I hope you all had as much fun as I did");
 				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do believe our next and final battle will be the {crimson}most fun{snow}!");
+				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else if(!b_allow_final[npc.index])
 		{
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
 				case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
 				case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
 				case 3: Twirl_Lines(npc, "toodles!");
+				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 	}

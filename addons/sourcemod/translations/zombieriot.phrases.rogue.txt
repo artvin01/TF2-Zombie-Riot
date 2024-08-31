@@ -1618,7 +1618,7 @@
 	}
 	"Hand of Incredible Speeds Desc"
 	{
-		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' weapons gain +25%% firing speed and +25%% Faster Reload Speed."
+		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' and ''Far Range'' weapons gain +25%% firing speed and +25%% Faster Reload Speed. \n''Far Range'' Weapons also gain 50%% more clipsize."
 	}
 	"Hand of Suprise"
 	{
@@ -1634,7 +1634,7 @@
 	}
 	"Hand of Revenge Desc"
 	{
-		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Abberrition'' weapons gain +150%% damage bonus while below half health."
+		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Abberrition'' and ''Crusher'' weapons gain +150%% damage bonus while below half health."
 	}
 	"Hand of Stock"
 	{

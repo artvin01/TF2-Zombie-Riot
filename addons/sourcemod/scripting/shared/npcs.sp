@@ -155,7 +155,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			}
 		}
 		//emercency stop. 
-		if(EnemyNpcAlive >= MaxEnemiesAllowedSpawnNext())
+		if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
 		{
 			return;
 		}
@@ -257,6 +257,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 				if(enemy.Is_Boss >= 2)
 				{
 					WaveStart_SubWaveStart(GetGameTime());
+					ReviveAll(true, true);
 				}
 				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)
@@ -394,6 +395,13 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			if(f_DelayNextWaveStartAdvancingDeathNpc > GetGameTime())
 			{
 				donotprogress = true;
+				if(EnemyNpcAliveStatic >= 1)
+				{
+					donotprogress = false;
+				}
+			}
+			else
+			{
 				if(EnemyNpcAliveStatic >= 1)
 				{
 					donotprogress = false;
@@ -1976,6 +1984,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_CrippleDebuff[npc] > GameTime)
 		return true;
+	else if(f_GoldTouchDebuff[npc] > GameTime)
+		return true;
 	else if(f_CudgelDebuff[npc] > GameTime)
 		return true;
 	else if(f_DuelStatus[npc] > GameTime)
@@ -2158,7 +2168,7 @@ void NPC_DeadEffects(int entity)
 			Spawns_NPCDeath(entity, client, WeaponLastHit);
 #endif
 
-			Attributes_OnKill(client, WeaponLastHit);
+			Attributes_OnKill(entity, client, WeaponLastHit);
 		}
 	}
 }
@@ -2245,6 +2255,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			MlynarReduceDamageOnKill(attacker, 1);
 		}
+		case WEAPON_MLYNAR_PAP_2:
+		{
+			MlynarReduceDamageOnKill(attacker, 2);
+		}
 		case WEAPON_CASINO:
 		{
 			CasinoSalaryPerKill(attacker, weapon);
@@ -2277,6 +2291,11 @@ stock void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int da
 		{
 			if(b_thisNpcIsARaid[victim] && (!(damage_custom_zr & ZR_DAMAGE_REFLECT_LOGIC))) //do not reduce damage if the damage type was a reflect.
 				MlynarTakeDamagePostRaid(attacker, 1);
+		}
+		case WEAPON_MLYNAR_PAP_2:
+		{
+			if(b_thisNpcIsARaid[victim] && (!(damage_custom_zr & ZR_DAMAGE_REFLECT_LOGIC))) //do not reduce damage if the damage type was a reflect.
+				MlynarTakeDamagePostRaid(attacker, 2);
 		}
 	}
 #endif

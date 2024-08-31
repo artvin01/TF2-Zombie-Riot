@@ -94,7 +94,7 @@ methodmap SaintCarmen < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
-		b_NpcIsTeamkiller[npc.index] = true;
+		b_NpcIsTeamkiller[npc.index] = ally != TFTeam_Red;
 		
 		func_NPCDeath[npc.index] = SaintCarmen_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -153,7 +153,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index, _, 500.0, true);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
-		if(npc.m_iTarget < 1)
+		if(npc.m_iTarget < 1 && GetTeam(npc.index) != TFTeam_Red)
 		{
 			// No nearby targets, kill the ocean
 			npc.m_iTarget = GetClosestAlly(npc.index, 10000.0);
@@ -206,7 +206,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 							TeleportEntity(target, _, _, vecHit, true);
 							EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
-							HealEntityGlobal(npc.index, target, -7500.0, 1.0, 0.0, HEAL_ABSOLUTE);
+							DealTruedamageToEnemy(npc.index, target, 1500.0);
 							npc.m_flDoingAnimation = gameTime + 0.35;
 						}
 						else if(!b_NpcHasDied[target])
@@ -220,7 +220,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 								PluginBot_Jump(target, vecHit);
 								EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
-								HealEntityGlobal(npc.index, target, -1500.0, 1.0, 0.0, HEAL_ABSOLUTE);
+								DealTruedamageToEnemy(npc.index, target, 7500.0);
 							}
 						}
 						npc.m_iTarget = 0;

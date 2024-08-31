@@ -92,7 +92,7 @@ methodmap AnarchyMadDoctor < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -224,9 +224,9 @@ public Action AnarchyMadDoctor_OnTakeDamage(int victim, int &attacker, int &infl
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+		WinterArcticMageHealRandomAlly(victim, 1000.0, 2);
 	}
 	//each HIT gives more. 
-	WinterArcticMageHealRandomAlly(victim, 2000.0);
 	
 	return Plugin_Changed;
 }
