@@ -217,6 +217,7 @@ void BlacksmithBrew_Enable(int client, int weapon)
 				if(brew.AccountId == account && brew.StoreIndex == StoreWeapon[weapon])
 				{
 					brew.EntRef = EntIndexToEntRef(weapon);
+					Brews.SetArray(a, brew);
 
 					int attrib[TINKER_LIMIT];
 					float value[TINKER_LIMIT];
@@ -239,7 +240,6 @@ void BlacksmithBrew_Enable(int client, int weapon)
 							Attributes_SetMulti(weapon, attrib[b], value[b]);
 						}
 					}
-
 					break;
 				}
 			}
