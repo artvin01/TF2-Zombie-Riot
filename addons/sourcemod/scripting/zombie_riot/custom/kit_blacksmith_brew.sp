@@ -151,7 +151,7 @@ bool BlacksmithBrew_HasEffect(int client, int index)
 	return false;
 }
 */
-void BlacksmithBrew_ExtraDesc(int client, int weapon)
+void BlacksmithBrew_ExtraDesc(int client, int weapon, bool first = false)
 {
 	if(Brews)
 	{
@@ -171,7 +171,7 @@ void BlacksmithBrew_ExtraDesc(int client, int weapon)
 					bool add[TINKER_LIMIT];
 					LookupById(brew.TypeIndex, name, attrib, value, add);
 
-					CPrintToChat(client, "{yellow}%s {default}(%.0fs Left)", name, brew.EndAt - GetGameTimeBrew());
+					CPrintToChat(client, "{yellow}%s {default}(%.0fs %s)", name, brew.EndAt - GetGameTimeBrew(), first ? "Duration" : "Left");
 					
 					for(int b; b < sizeof(attrib); b++)
 					{
@@ -193,11 +193,13 @@ void BlacksmithBrew_ExtraDesc(int client, int weapon)
 						}
 					}
 
-					break;
+					return;
 				}
 			}
 		}
 	}
+
+	PrintToChat(client, "No active effect");
 }
 
 void BlacksmithBrew_Enable(int client, int weapon)
@@ -253,7 +255,7 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 		int aspect = random % A_Water;
 
 		// Special Aspects
-		if(i_BleedType[victim] == BLEEDTYPE_SEABORN && (b_thisNpcIsABoss[victim] || (random % 9) == 0))
+		if(i_BleedType[victim] == BLEEDTYPE_SEABORN && !b_thisNpcIsABoss[victim] && (random % 9) == 0)
 		{
 			aspect = A_Water;
 		}
@@ -267,7 +269,23 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 		gain = damage * gain / GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 		Aspects[attacker][aspect] += gain;
 
-		if(InMenu[attacker])
+		if(b_thisNpcIsABoss[victim])
+		{
+			// +1 or -1
+			int aspect2 = (random + ((i_NpcInternalId[victim] % 2) ? 1 : -1)) % A_Water;
+			if(i_BleedType[victim] == BLEEDTYPE_SEABORN)
+				aspect2 = A_Water;
+			
+			Aspects[attacker][aspect2] += gain;
+
+			if(InMenu[attacker])
+			{
+				char buffer[64];
+				FormatEx(buffer, sizeof(buffer), "Gained %.2f%% %s and %s from %s", gain * 100.0 / ASPECT_REQUIRED, AspectName[aspect], AspectName[aspect2], c_NpcName[victim]);
+				PotionMakingMenu(attacker, buffer);
+			}
+		}
+		else if(InMenu[attacker])
 		{
 			char buffer[64];
 			FormatEx(buffer, sizeof(buffer), "Gained %.2f%% %s from %s", gain * 100.0 / ASPECT_REQUIRED, AspectName[aspect], c_NpcName[victim]);
@@ -285,7 +303,7 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 	}
 
 	if(PlayerCountBuffScaling < 1.0 && RaidBossActive != -1 && IsValidEntity(RaidBossActive))
-		ExtraGameTime += 1.0 - (1.0 / PlayerCountBuffScaling);
+		ExtraGameTime += (1.0 / PlayerCountBuffScaling) - 1.0;
 	
 	if(Waves_InSetup())
 	{
@@ -330,12 +348,15 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 						}
 					}
 
-					int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-					if(owner != -1)
+					for(int client = 1; client <= MaxClients; client++)
 					{
-						char buffer2[64];
-						Store_GetItemName(brew.StoreIndex, owner, buffer2, sizeof(buffer2));
-						CPrintToChat(owner, "{yellow}%s {default}effect has ran out on {yellow}%s", buffer, buffer2);
+						if(IsClientInGame(client) && GetSteamAccountID(client, false) == brew.AccountId)
+						{
+							char buffer2[64];
+							Store_GetItemName(brew.StoreIndex, client, buffer2, sizeof(buffer2));
+							CPrintToChat(client, "{yellow}%s {default}effect has ran out on {yellow}%s", buffer, buffer2);
+							break;
+						}
 					}
 				}
 			}
@@ -358,7 +379,14 @@ void BlacksmithBrew_BuildingUsed(int entity, int client)
 		return;
 	ClickedWithWeapon[client] = EntIndexToEntRef(weapon);
 
-	Brew_Menu(client, entity);
+	if(f_MedicCallIngore[client] > GetGameTime() && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
+	{
+		PotionMakingMenu(client, " ");
+	}
+	else
+	{
+		Brew_Menu(client, entity);
+	}
 }
 
 static void Brew_Menu(int client, int entity)
@@ -516,8 +544,20 @@ static void PotionMakingMenu(int client, const char[] msg = "")
 	
 	menu.AddItem(NULL_STRING, buffer, ITEMDRAW_SPACER);
 
-	Format(buffer, sizeof(buffer), "Brew: %s", buffer);
+	Format(buffer, sizeof(buffer), "New Brew: %s\n ", buffer);
 	menu.AddItem(NULL_STRING, buffer, failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	
+	if(SellingAmount[client] > 0)
+	{
+		LookupById(SellingType[client], buffer);
+	}
+	else
+	{
+		strcopy(buffer, sizeof(buffer), "N/A");
+	}
+
+	Format(buffer, sizeof(buffer), "Selling: %s (x%d)", buffer, SellingAmount[client]);
+	menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 	InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
 }
@@ -568,7 +608,7 @@ static int PotionMakingMenuH(Menu menu, MenuAction action, int client, int choic
 								}
 							}
 
-							if(found || (AspectMenu[client][a] >= A_Water && Aspects[client][a] < 1.0))
+							if(found || (AspectMenu[client][a] >= A_Water && Aspects[client][AspectMenu[client][a]] < 1.0))
 							{
 								AspectMenu[client][a]++;
 								continue;
@@ -700,7 +740,7 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 
 				SellingAmount[owner]--;
 
-				BlacksmithBrew_ExtraDesc(client, weapon);
+				BlacksmithBrew_ExtraDesc(client, weapon, true);
 
 				Building_GiveRewardsUse(client, owner, 40, true, 1.0, true);
 				Store_ApplyAttribs(client);
@@ -885,9 +925,9 @@ static float Brew_034(char name[64], int attrib[TINKER_LIMIT], float value[TINKE
 // Res^ Agi Min*
 static float Brew_123(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
 {
-	strcopy(name, sizeof(name), "Potion of Leech");
-	attrib[0] = 16;
-	value[0] = 3.0;
+	strcopy(name, sizeof(name), "Potion of Stock");
+	attrib[0] = 4019;
+	value[0] = 100.0;
 	add[0] = true;
 	return 180.0;
 }
