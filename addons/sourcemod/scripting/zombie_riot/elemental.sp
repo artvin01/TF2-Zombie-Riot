@@ -156,7 +156,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			}
 			else
 			{
-				damage -= Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false);
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
 				if(damage < 1)
 					damage = 1;
 				
@@ -239,7 +239,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			}
 			else
 			{
-				damage -= Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false);
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
 				if(damage < 1)
 					damage = 1;
 				
@@ -333,7 +333,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			}
 			else
 			{
-				damage -= Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false);
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
 				if(damage < 1)
 					damage = 1;
 				
