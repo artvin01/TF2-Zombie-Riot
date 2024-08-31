@@ -712,6 +712,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Flametail_SelfTakeDamage(victim, damage, damagetype);
 		}
+		case WEAPON_WRATHFUL_BLADE:
+		{
+			Player_OnTakeDamage_WrathfulBlade(victim, damage, attacker);
+		}
 	}
 	return damage;
 }

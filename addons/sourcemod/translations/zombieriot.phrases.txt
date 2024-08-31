@@ -942,6 +942,10 @@
 		"#format"	"{1:.1f}"
 		"en"		"Infernal Fury is on cooldown: {1}"
 	}
+	"Wrathful Ability Blocked"
+	{
+		"en"		"Infernal Fury cannot be used right now."
+	}
 	"Wrath Strike Fully Charged"
 	{
 		"en"		"WRATH STRIKE IS FULLY CHARGED!"
