@@ -1268,7 +1268,7 @@ static void lunar_Radiance(Twirl npc)
 
 	fl_lunar_loop[npc.index] = 0.0;
 
-	for(int i= 0 ; i < 3 ; i ++)	//warp
+	for(int i= 0 ; i < 3 ; i ++)
 	{
 		int ent = EntRefToEntIndex(i_lunar_entities[npc.index][i]);
 		if(IsValidEntity(ent))
@@ -1325,7 +1325,7 @@ static void lunar_Radiance(Twirl npc)
 
 	fl_lunar_timer[npc.index] = 0.0;
 	npc.m_bisWalking = false;
-	npc.SetPlaybackRate(1.0);	
+	npc.SetPlaybackRate(0.9);
 	npc.SetCycle(0.01);
 	npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
 
@@ -1362,10 +1362,13 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 	npc.m_flSpeed = fl_npc_basespeed;
 	npc.StartPathing();
 
-	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-	npc.m_bisWalking = true;
-	npc.m_iChanged_WalkCycle = 1;
-	if(iActivity > 0) npc.StartActivity(iActivity);
+	if(npc.m_iChanged_WalkCycle != 99)
+	{
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		npc.m_bisWalking = true;
+		npc.m_iChanged_WalkCycle = 1;
+		if(iActivity > 0) npc.StartActivity(iActivity);
+	}
 
 	return Plugin_Stop;
 }
@@ -1403,11 +1406,14 @@ static void lunar_Radiance_Tick(int iNPC)
 		fl_ruina_battery_timeout[npc.index] = GameTime + 0.6;
 		npc.m_flDoingAnimation = GameTime + 0.6;
 
-		CreateTimer(0.5, Lunar_Radiance_RestoreAnim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.6, Lunar_Radiance_RestoreAnim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 
-		npc.SetPlaybackRate(1.0);	
-		npc.SetCycle(0.01);
-		npc.AddActivityViaSequence("taunt_surgeons_squeezebox_outro");
+		if(npc.m_iChanged_WalkCycle != 99)
+		{
+			npc.SetPlaybackRate(1.0);	
+			npc.SetCycle(0.01);
+			npc.AddActivityViaSequence("taunt_surgeons_squeezebox_outro");
+		}
 
 		for(int i= 0 ; i < 3 ; i ++)
 		{
