@@ -2794,9 +2794,13 @@ void RPG_Sdkhooks_StaminaBar(int client)
 #endif
 void SDKhooks_SetManaRegenDelayTime(int client, float time)
 {
-	Mana_Regen_Delay[client] = GetGameTime() + time;
 	Mana_Hud_Delay[client] = 0.0;
-	f_TimeSinceLastRegenStop[client] = GetGameTime() + time;
+	if(Mana_Regen_Delay[client] < GetGameTime() + time)
+		Mana_Regen_Delay[client] = GetGameTime() + time;
+
+	if(f_TimeSinceLastRegenStop[client] < GetGameTime() + time)
+		f_TimeSinceLastRegenStop[client] = GetGameTime() + time;
+		
 	//Set to 0 so hud is good
 	if(!b_AggreviatedSilence[client])
 		mana_regen[client] = 0.0;
