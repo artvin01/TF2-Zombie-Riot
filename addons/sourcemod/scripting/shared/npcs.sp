@@ -2269,7 +2269,7 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		}
 		case WEAPON_WRATHFUL_BLADE:
 		{
-			WrathfulBlade_OnKill(attacker);
+			WrathfulBlade_OnKill(attacker, victim);
 		}
 	}
 }

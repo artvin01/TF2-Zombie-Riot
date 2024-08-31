@@ -39,6 +39,7 @@ static float Fury_BurningTargetsMultiplier[3] = { 1.35, 1.425, 1.5 };	//Amount t
 //Client/entity-specific global variables below, don't touch these:
 static bool Wrath_Active[MAXPLAYERS + 1] = { false, ... };
 static bool Fury_Active[MAXPLAYERS + 1] = { false, ... };
+static bool Fury_WasHitByAOE[2049][MAXPLAYERS + 1];
 static float Wrath_Multiplier[MAXPLAYERS + 1] = { 1.0, ... };
 static float Fury_StoredHealth[MAXPLAYERS + 1] = { 0.0, ... };
 static float Fury_CurrentHealthDrain[MAXPLAYERS + 1] = { 0.0, ... };
@@ -121,7 +122,7 @@ float Player_OnTakeDamage_WrathfulBlade(int victim, float &damage, int attacker)
 	return damage;
 }
 
-void WrathfulBlade_OnKill(int client)
+void WrathfulBlade_OnKill(int client, int victim)
 {
 	if (Fury_Active[client])
 	{
@@ -133,11 +134,14 @@ void WrathfulBlade_OnKill(int client)
 		cd -= Fury_CDR[Fury_Tier[client]];
 		Ability_Apply_Cooldown(client, 2, cd);
 	}
+
+	for (int i = 1; i <= MaxClients; i++)
+		Fury_WasHitByAOE[victim][i] = false;
 }
 
 public float WrathfulBlade_OnNPCDamaged(int victim, int attacker, int weapon, float damage, int inflictor)
 {
-	bool isMelee = weapon == GetPlayerWeaponSlot(attacker, 2);
+	bool isMelee = weapon == GetPlayerWeaponSlot(attacker, 2) && !Fury_WasHitByAOE[victim][attacker];
 
 	if (isMelee)
 	{
@@ -359,6 +363,11 @@ public Action Fury_Logic(Handle timelytimer, int id)
 		return Plugin_Stop;
 
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"); 
+	if (!IsValidEntity(weapon))
+	{
+		Fury_TerminateEffects(client);
+		return Plugin_Stop;
+	}
 
 	if (dieingstate[client] > 0 || i_CustomWeaponEquipLogic[weapon] != WEAPON_WRATHFUL_BLADE || !IsPlayerAlive(client))
 	{
@@ -397,13 +406,11 @@ public Action Fury_Logic(Handle timelytimer, int id)
 		DMG *= Attributes_Get(weapon, 1, 1.0);
 		DMG *= Attributes_Get(weapon, 2, 1.0);
 		DMG *= Attributes_Get(weapon, 1000, 1.0);
-		//We calculate the damage ourself so that we don't have to pass the weapon index.
-		//If we do pass the weapon index, it gets counted as melee damage which allows it to be multiplied by Infernal Fury's melee multiplier. Too cheesy!
 
 		float pos[3];
 		WorldSpaceCenter(client, pos);
 
-		Explode_Logic_Custom(DMG, client, client, 0, pos, Fury_BurnRadius[tier], Fury_BurnFalloff[tier], _, _, Fury_BurnMaxTargets[tier], true, 1.0);
+		Explode_Logic_Custom(DMG, client, client, weapon, pos, Fury_BurnRadius[tier], Fury_BurnFalloff[tier], _, _, Fury_BurnMaxTargets[tier], true, 1.0, _, view_as<Function>(Fury_AOEHit));
 
 		GetClientAbsOrigin(client, pos);
 		TE_SetupBeamRingPoint(pos, Fury_BurnRadius[tier] * 2.0, Fury_BurnRadius[tier] * 2.0 + 0.5, Beam_Laser, Beam_Glow, 0, 10, 0.11, 25.0, 2.0, {255, 120, 0, 250}, 10, 0);
@@ -433,6 +440,26 @@ public Action Fury_Logic(Handle timelytimer, int id)
 	}
 
 	return Plugin_Continue;
+}
+
+public void Fury_AOEHit(int attacker, int victim, float damage, int weapon)
+{
+	Fury_WasHitByAOE[victim][attacker] = true;
+	DataPack pack = new DataPack();
+	RequestFrame(Fury_ClearAOEHit, pack);
+	WritePackCell(pack, EntIndexToEntRef(victim));
+	WritePackCell(pack, GetClientUserId(attacker));
+}
+
+public void Fury_ClearAOEHit(DataPack pack)
+{
+	ResetPack(pack);
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	int attacker = GetClientOfUserId(ReadPackCell(pack));
+	delete pack;
+
+	if (IsValidEntity(ent) && IsValidClient(attacker))
+		Fury_WasHitByAOE[ent][attacker] = false;
 }
 
 public Action Fury_HealingTimer(Handle timelytimer, int id)
