@@ -383,7 +383,7 @@ static void Brew_Menu(int client, int entity)
 		
 		if(SellingAmount[owner] > 0)
 		{
-			LookupById(SellingType[client], buffer);
+			LookupById(SellingType[owner], buffer);
 		}
 		else
 		{
