@@ -733,6 +733,7 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 				time = time * SellingTime[owner];
 
 				brew.AccountId = account;
+				brew.EntRef = -1;
 				brew.StoreIndex = StoreWeapon[weapon];
 				brew.TypeIndex = SellingType[owner];
 				brew.Multi = SellingPower[owner];
