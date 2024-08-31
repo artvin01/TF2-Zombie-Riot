@@ -194,7 +194,8 @@ enum
 	WEAPON_WALDCH_SWORD_NOVISUAL = 114,
 	WEAPON_WALDCH_SWORD_REAL = 115,
 	WEAPON_MLYNAR_PAP_2 = 116,
-	WEAPON_ULPIANUS = 117
+	WEAPON_ULPIANUS = 117,
+	WEAPON_MAGNESIS = 119	//This will conflict with Wrathful Blade once the PR is accepted and merged, just move this one line down and it will be fine.
 }
 
 enum
