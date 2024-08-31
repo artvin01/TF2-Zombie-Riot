@@ -627,7 +627,7 @@ static int PotionMakingMenuH(Menu menu, MenuAction action, int client, int choic
 					int id = LookupByAspect(AspectMenu[client][0], AspectMenu[client][1], AspectMenu[client][2], craft, buffer);
 					if(id != -1)
 					{
-						int level = Blacksmith_Level(client);
+						int level = MerchantLevelReturn(client);
 						float limit = level > 2 ? 1.0 : (level > 1 ? 0.5 : 0.0);
 
 						float power = -0.5 + ((Aspects[client][craft.Aspect1] - 1.0) / ASPECT_REQUIRED / 2.0);
@@ -673,7 +673,8 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 {
 	if(owner != -1)
 	{
-		int level = Blacksmith_Level(owner);
+		int level = MerchantLevelReturn(owner);
+
 		if(level >= 0)
 		{
 			int account = GetSteamAccountID(client, false);

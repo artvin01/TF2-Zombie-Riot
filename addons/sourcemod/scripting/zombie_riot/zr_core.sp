@@ -562,6 +562,8 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_buy", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_guns", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
+	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");
+	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
@@ -573,7 +575,6 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
 	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
-	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
@@ -1037,7 +1038,14 @@ public Action OnReloadCommand(int args)
 }
 
 
-
+public Action Command_RTdFail(int client, int args)
+{
+	if(client)
+	{
+		PrintToChat(client, "There is no RTD, and RTD isnt supported.");
+	}
+	return Plugin_Handled;
+}
 public Action Command_AFK(int client, int args)
 {
 	if(client)

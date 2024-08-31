@@ -53,6 +53,15 @@ bool Merchant_IsAMerchant(int client)
 {
 	return view_as<bool>(EffectTimer[client]);
 }
+int MerchantLevelReturn(int client)
+{
+	if(!Merchant_IsAMerchant(client))
+		return -1;
+	else
+	{
+		return MerchantLevel[client] + 1;
+	}
+}
 
 void Merchant_Enable(int client, int weapon)
 {
