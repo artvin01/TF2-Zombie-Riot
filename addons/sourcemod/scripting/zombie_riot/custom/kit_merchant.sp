@@ -20,7 +20,7 @@ enum
 	Nothing_Res,
 }
 
-static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
+static const int SupportBuildings[] = { 1, 1, 1, 1, 1, 1 };
 static int MerchantLevel[MAXTF2PLAYERS] = {-1, ...};
 static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};
 

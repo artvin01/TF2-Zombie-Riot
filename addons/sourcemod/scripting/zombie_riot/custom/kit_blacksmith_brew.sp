@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 // Amount of aspect (kills) needed for one part of a potion
-#define ASPECT_REQUIRED	10.0
+#define ASPECT_REQUIRED	17.0
 
 static const char AspectName[][] =
 {
@@ -249,7 +249,7 @@ void BlacksmithBrew_Enable(int client, int weapon)
 
 void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 {
-	if(Blacksmith_IsASmith(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
+	if(Merchant_IsAMerchant(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
 	{
 		int random = RandomSeed + GetEntProp(victim, Prop_Data, "m_nModelIndex");
 		int aspect = random % A_Water;

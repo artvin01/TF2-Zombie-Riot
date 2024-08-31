@@ -2187,7 +2187,7 @@
 
 	"Alchemist Potion Desc"
 	{
-		"en"	"Throws potions that deal 3/4th the damage and deals the rest over bleed, deals 25%% more dmg against raids.\nAble to hit 5 targets in it's splash and bleed deals true damage.\nM2 throws a secondary potion with it's own attack delay."
+		"en"	"Throws potions that deal 3/4th the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and bleed deals true damage.\nM2 throws a secondary potion with it's own attack delay."
 	}
 	"Alchemist Potion Pap 1"
 	{
@@ -3621,8 +3621,11 @@
 	}
 	"The Merchant Desc"
 	{
-		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time."
-		"fr"	"Une clé qui ne peut pas construire de barricades ou de mitrailleuses.\nPeut supercharger une arme secondaire en échange de métal."
+		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time.\nAllows the construction of the brewing stand."
+	}
+	"Merchant Pap 0 Desc"
+	{
+		"en"	"Improves Stats Overall"
 	}
 	"Merchant Pap 1 Desc"
 	{
