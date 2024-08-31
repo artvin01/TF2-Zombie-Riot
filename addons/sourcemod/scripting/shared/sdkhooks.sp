@@ -576,7 +576,7 @@ public void OnPostThink(int client)
 			max_mana[client] *= 1.05;
 		}
 
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		/*int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
 		if(IsValidEntity(weapon))
 		{
@@ -587,7 +587,7 @@ public void OnPostThink(int client)
 					Fractal_Kit_Modify_Mana(client, weapon);
 				}
 			}
-		}
+		}*/
 
 		if(b_AggreviatedSilence[client])	
 		{

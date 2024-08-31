@@ -517,6 +517,255 @@ static int Slot(int weapon)
 	return RoundFloat(Attributes_Get(weapon, 868, 0.0));
 }
 
+#define FRACTAL_FANTASIA_AMT 4
+
+static int i_fantasia_laser_ref[MAXTF2PLAYERS][FRACTAL_FANTASIA_AMT];
+static int i_fantasia_particle[MAXTF2PLAYERS][FRACTAL_FANTASIA_AMT];
+
+static float fl_fantasia_angles[MAXTF2PLAYERS][FRACTAL_FANTASIA_AMT][3];
+
+static float fl_fantasia_cost;
+static float fl_fantasia_origin[MAXTF2PLAYERS][3];
+static float fl_fantasia_throttle[MAXTF2PLAYERS];
+static float fl_fantasia_duration[MAXTF2PLAYERS];
+static float fl_fantasia_distance = 750.0;
+static float fl_fantasia_lens = 3.0;	//the small the number, the wider, the larger the number, the narrower.
+static float fl_fantasia_duration_base = 1.7;	
+static float fl_fantasia_radius = 17.0;
+
+static void Delete_Fantasia(int client)
+{
+	for(int i=0 ; i < FRACTAL_FANTASIA_AMT ; i ++)
+	{
+		int env_beam = EntRefToEntIndex(i_fantasia_laser_ref[client][i]);
+		int particle = EntRefToEntIndex(i_fantasia_particle[client][i]);
+		
+		if(IsValidEntity(env_beam))
+		{
+			RemoveEntity(env_beam);
+		}
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+
+		i_fantasia_particle[client][i] = INVALID_ENT_REFERENCE;
+		i_fantasia_laser_ref[client][i] = INVALID_ENT_REFERENCE;
+	}
+}
+
+static float fl_fantasia_targetshit[MAXTF2PLAYERS];
+static float fl_fantasia_damage[MAXTF2PLAYERS];
+public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
+{
+	Delete_Fantasia(client);
+
+	float GameTime = GetGameTime();
+
+	fl_fantasia_duration[client] = GameTime + fl_fantasia_duration_base;
+
+	fl_fantasia_throttle[client] = 0.0;
+
+	float Origin[3];
+	GetClientEyePosition(client, Origin);
+
+	Origin[2]-=17.5;
+
+	fl_fantasia_targetshit[client] = 1.0;
+	fl_fantasia_damage[client] = 100.0;
+	fl_fantasia_damage[client] *= Attributes_Get(weapon, 410, 1.0);
+
+	Create_Fantasia(client, Origin);
+
+	fl_fantasia_origin[client] = Origin;
+
+	SDKUnhook(client, SDKHook_PreThink, Fantasia_Tick);
+	SDKHook(client, SDKHook_PreThink, Fantasia_Tick);
+}
+static void Create_Fantasia(int client, float Loc[3])
+{
+	int color[3];
+	float Width[2]; Width[0] = fl_fantasia_radius*0.5; Width[1] = fl_fantasia_radius*0.5;
+	color = {0, 200, 255};
+	
+	float ang_Look[3];
+
+	GetClientEyeAngles(client, ang_Look);
+
+	float Distancing = 50.0;
+
+	float Offset = Distancing *(FRACTAL_FANTASIA_AMT * -0.5)+Distancing*0.5;
+	
+	int previus_dot = INVALID_ENT_REFERENCE;
+
+	for(int i=0 ; i <FRACTAL_FANTASIA_AMT ; i ++)
+	{
+		float tempAngles[3], endLoc[3], Direction[3];
+		
+		tempAngles[0] = ang_Look[0];
+		tempAngles[1] = ang_Look[1];
+		tempAngles[2] = 90.0;
+
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
+		ScaleVector(Direction, Offset);
+		AddVectors(Loc, Direction, endLoc);
+
+		float Buffer_Loc[3];
+
+		//1.75
+		Get_Fake_Forward_Vec(Distancing*fl_fantasia_lens, ang_Look, Buffer_Loc, endLoc);
+
+		Offset+=Distancing;
+
+		float Angles[3];
+		MakeVectorFromPoints(Loc, Buffer_Loc, Angles);
+		GetVectorAngles(Angles, Angles);
+
+		float Offset_Loc[3];
+
+		fl_fantasia_angles[client][i] = Angles;
+
+		Get_Fake_Forward_Vec(100.0, Angles, Offset_Loc, Loc);
+		
+		int dot = Ruina_Create_Entity(Offset_Loc, 0.0, false);
+
+		if(previus_dot!=INVALID_ENT_REFERENCE)
+		{
+			int laster = ConnectWithBeamClient(previus_dot, dot, color[0], color[1], color[2], Width[0], Width[1], 0.1, LASERBEAM);
+			if(IsValidEntity(laster))
+			{
+				i_fantasia_laser_ref[client][i] = EntIndexToEntRef(laster);
+			}
+		}	
+		
+
+		if(IsValidEntity(dot))
+		{
+			i_fantasia_particle[client][i] = EntIndexToEntRef(dot);
+			previus_dot = dot;
+		}
+	}
+}
+
+static Action Fantasia_Tick(int client)
+{
+	float GameTime = GetGameTime();
+
+	if(b_invalid_client(client) || fl_fantasia_duration[client] < GameTime)
+	{
+
+		Delete_Fantasia(client);
+		SDKUnhook(client, SDKHook_PreThink, Fantasia_Tick);
+
+		return Plugin_Stop;
+	}
+
+	float Ratio = 1.0-(fl_fantasia_duration[client]-GameTime)/fl_fantasia_duration_base;
+
+	float Distance = fl_fantasia_distance*Ratio;
+
+	float Origin[3];
+	Origin = fl_fantasia_origin[client];
+
+	float Previous_Loc[3];
+
+	bool Throttle_Tick = false;
+
+	if(fl_fantasia_throttle[client] < GameTime)
+	{
+		fl_fantasia_throttle[client] = GameTime + 0.1;
+		Throttle_Tick = true;
+	}
+	
+	for(int i=0 ; i <FRACTAL_FANTASIA_AMT ; i ++)
+	{
+		float Angles[3]; Angles = fl_fantasia_angles[client][i];
+		float endLoc[3]; 
+
+		Get_Fake_Forward_Vec(Distance, Angles, endLoc, Origin);
+
+		int point = EntRefToEntIndex(i_fantasia_particle[client][i]);
+		if(IsValidEntity(point))
+		{
+			Fractal_Move_Entity(point, endLoc, NULL_VECTOR);
+		}
+		if(i>0)
+		{
+			if(Throttle_Tick)
+			{
+				Player_Laser_Logic Laser;
+				Laser.client = client;
+				Laser.Radius = fl_fantasia_radius;
+				Laser.End_Point = Previous_Loc;
+				Laser.Start_Point = endLoc;
+				Laser.Detect_Targets(OnFantasiaHit);
+			}
+		}
+		Previous_Loc = endLoc;
+	}
+	return Plugin_Continue;
+}
+void Fractal_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
+{
+	if(IsValidEntity(entity))	
+	{
+		if(old)
+		{
+			//the version bellow creates some "funny" movements/interactions..
+			float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
+					
+			MakeVectorFromPoints(Entity_Loc, loc, vecView);
+			GetVectorAngles(vecView, vecView);
+			
+			float dist = GetVectorDistance(Entity_Loc, loc);
+
+			GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
+		
+			Entity_Loc[0]+=vecFwd[0] * dist;
+			Entity_Loc[1]+=vecFwd[1] * dist;
+			Entity_Loc[2]+=vecFwd[2] * dist;
+			
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecFwd);
+			
+			SubtractVectors(Entity_Loc, vecFwd, vecVel);
+			ScaleVector(vecVel, 10.0);
+
+			TeleportEntity(entity, NULL_VECTOR, Ang, vecVel);
+		}
+		else
+		{
+			float flNewVec[3], flRocketPos[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", flRocketPos);
+			float Ratio = (GetVectorDistance(loc, flRocketPos))/250.0;
+
+			if(Ratio<0.075)
+				Ratio=0.075;
+
+			float flSpeedInit = 1250.0*Ratio;
+		
+			SubtractVectors(loc, flRocketPos, flNewVec);
+			NormalizeVector(flNewVec, flNewVec);
+			
+			float flAng[3];
+			GetVectorAngles(flNewVec, flAng);
+			
+			ScaleVector(flNewVec, flSpeedInit);
+			TeleportEntity(entity, NULL_VECTOR, Ang, flNewVec);
+		}
+	}
+}
+static void OnFantasiaHit(int client, int target, int damagetype, float damage)
+{
+	float GameTime = GetGameTime();
+		
+	if(fl_trace_target_timeout[client][target] < GameTime)
+	{
+		fl_trace_target_timeout[client][target] = GameTime + 1.0;
+		float dps = fl_fantasia_damage[client]*fl_fantasia_targetshit[client];
+		fl_fantasia_targetshit[client] *= LASER_AOE_DAMAGE_FALLOFF;
+		SDKHooks_TakeDamage(target, client, client, dps, DMG_PLASMA);
+	}
+}
 public void Kit_Fractal_Throw_Crystal(int client, int weapon, bool &result, int slot)
 {
 	if(fl_animation_cooldown[client] > GetGameTime())
@@ -756,6 +1005,25 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 	Explode_Logic_Custom(0.0, client, client, -1, Loc, Radius, _, _, _, _, _, _, AoeExplosionCheckCast);
 
 //	bool Hit = false;
+	float speed = 0.69;
+	int color[4] = {255, 255, 255, 255};
+	if(first)
+	{
+		
+		DataPack pack;
+		CreateDataTimer(speed, Timer_StarfallIon, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteFloat(damage);
+		pack.WriteFloat(Radius);
+		pack.WriteCell(cycle);
+		pack.WriteFloatArray(Loc, 3);
+		Loc[2]+=10.0;
+		TE_SetupBeamRingPoint(Loc, Radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
+		Send_Te_Client_ZR(client);
+		Loc[2]-=10.0;
+
+		return;
+	}
 	for (int entitys = 0; entitys < KRACTAL_KIT_STARFALL_JUMP_AMT; entitys++)
 	{
 		if(i_entity_targeted[entitys] > 0)
@@ -770,7 +1038,6 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 				continue;
 			
 			//CPrintToChatAll("cycle %i", cycle);
-			float speed = 0.69;
 			i_targeted_ID[client][cycle] = EntIndexToEntRef(i_entity_targeted[entitys]);
 			float pos1[3];
 			WorldSpaceCenter(i_entity_targeted[entitys], pos1);
@@ -780,27 +1047,12 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 			pack.WriteFloat(damage);
 			pack.WriteFloat(Radius);
 			pack.WriteCell(cycle);
-			int color[4] = {255, 255, 255, 255};
-			if(!first)
-			{
-				pack.WriteFloatArray(pos1, 3);
-				pos1[2]+=10.0;
-				TE_SetupBeamRingPoint(pos1, Radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
-				Send_Te_Client_ZR(client);
-				pos1[2]-=10.0;
-			}
-			else
-			{	
-				pack.WriteFloatArray(Loc, 3);
-				Loc[2]+=10.0;
-				TE_SetupBeamRingPoint(Loc, Radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
-				Send_Te_Client_ZR(client);
-				Loc[2]-=10.0;
-			}
-				
-				
+			pack.WriteFloatArray(pos1, 3);
+			pos1[2]+=10.0;
+			TE_SetupBeamRingPoint(pos1, Radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
+			Send_Te_Client_ZR(client);
+			pos1[2]-=10.0;
 			break;
-
 		}
 		else
 		{
@@ -916,31 +1168,38 @@ static void Initiate_Cannon(int client, int weapon)
 	SDKUnhook(client, SDKHook_PreThink, Fractal_Cannon_Tick);
 	SDKHook(client, SDKHook_PreThink, Fractal_Cannon_Tick);
 }
-
-static void Fractal_Cannon_Tick(int client)
+static bool b_invalid_client(int client)
 {
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(!IsValidEntity(weapon_holding))	//CLEARLY YOU DON'T OWN AN AIR FRYER
 	{
 		Kill_Cannon(client);
-		return;
+		return true;
 	}
 	if(h_TimerManagement[client] == null)	//is the timer invalid? 
+	{
+		Kill_Cannon(client);
+		return true;
+	}
+	if(i_CustomWeaponEquipLogic[weapon_holding] != WEAPON_KIT_FRACTAL)	//are you somehow holding a non fractal kit weapon?
+	{
+		return true;
+	}
+	if(!IsPlayerAlive(client) || TeutonType[client] != TEUTON_NONE || dieingstate[client] != 0)	//are you dead?
+	{
+		return true;
+	}
+	return false;
+}
+static void Fractal_Cannon_Tick(int client)
+{
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(b_invalid_client(client) || !IsValidEntity(weapon_holding))
 	{
 		Kill_Cannon(client);
 		return;
 	}
 	if(!b_cannon_animation_active[client])	//is the tick somehow active even though it shouldn't be possible?
-	{
-		Kill_Cannon(client);
-		return;
-	}
-	if(i_CustomWeaponEquipLogic[weapon_holding] != WEAPON_KIT_FRACTAL)	//are you somehow holding a non fractal kit weapon?
-	{
-		Kill_Cannon(client);
-		return;
-	}
-	if(!IsPlayerAlive(client) || TeutonType[client] != TEUTON_NONE || dieingstate[client] != 0)	//are you dead?
 	{
 		Kill_Cannon(client);
 		return;
@@ -965,7 +1224,7 @@ static void Fractal_Cannon_Tick(int client)
 
 	Turn_Animation(client, weapon_holding);
 }
-
+/*
 void Fractal_Kit_Modify_Mana(int client, int weapon_holding)
 {
 	switch(Pap(weapon_holding))
@@ -1011,7 +1270,7 @@ void Fractal_Kit_Modify_Mana(int client, int weapon_holding)
 	if(b_TwirlHairpins[client])
 		max_mana[client] *= 1.1;
 }
-
+*/
 static Action Timer_Weapon_Managment(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -1215,6 +1474,52 @@ enum struct Player_Laser_Logic
 			delete trace;
 		}
 		FinishLagCompensation_Base_boss();
+	}
+
+	void Detect_Targets(Function Attack_Function)
+	{
+
+		Zero(Player_Laser_BEAM_HitDetected);
+
+		i_targets_hit = 0;
+
+		float hullMin[3], hullMax[3];
+		hullMin[0] = -this.Radius;
+		hullMin[1] = hullMin[0];
+		hullMin[2] = hullMin[0];
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
+
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(this.client);
+		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Player_Laser_BEAM_TraceUsers, this.client);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+		FinishLagCompensation_Base_boss();
+				
+		for (int loop = 0; loop < i_targets_hit; loop++)
+		{
+			int victim = Player_Laser_BEAM_HitDetected[loop];
+			if (victim && IsValidEnemy(this.client, victim))
+			{
+				this.trace_hit_enemy=true;
+
+				float playerPos[3];
+				WorldSpaceCenter(victim, playerPos);
+
+				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
+				{	
+					Call_StartFunction(null, Attack_Function);
+					Call_PushCell(this.client);
+					Call_PushCell(victim);
+					Call_PushCell(this.damagetype);
+					Call_PushFloatRef(this.Damage);
+					Call_Finish();
+
+					//static void On_LaserHit(int client, int target, int damagetype, float &damage)
+				}
+			}
+		}
 	}
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)
