@@ -55,7 +55,7 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 
 				damage *= 1.1;
 				
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
@@ -153,7 +153,7 @@ public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;

@@ -2336,6 +2336,10 @@
 		"ru"		"Это последняя волна, приготовьтесь."
 		"chi"		"这是最后一波，准备。"
 	}
+	"Void_Help_Message"
+	{
+		"en"		"Expidonsan's are trying to send help, but the void interfeers, only guarduses could get here."
+	}
 	"Silvester Shares His Power"
 	{
 		"en"		"Silvester shares his power with you..."

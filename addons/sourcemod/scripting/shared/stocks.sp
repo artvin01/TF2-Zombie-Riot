@@ -2956,7 +2956,7 @@ bool ignite = false,
 float dmg_against_entity_multiplier = 3.0,
 Function FunctionToCallOnHit = INVALID_FUNCTION,
 Function FunctionToCallBeforeHit = INVALID_FUNCTION,
-int inflictor = -1)
+int inflictor = 0)
 {
 
 	float damage_reduction = 1.0;
@@ -3068,7 +3068,7 @@ int inflictor = -1)
 		entityToEvaluateFrom = entity;
 	}
 
-	if(inflictor == -1)
+	if(inflictor == 0)
 	{
 		inflictor = entityToEvaluateFrom;
 	}
@@ -5322,4 +5322,18 @@ stock bool FailTranslation(const char[] phrase)
 stock any GetItemInArray(any[] array, int pos)
 {
 	return array[pos];
+}
+
+//MaxNumBuffValue(0.6, 1.0, 0.0) = 1.0
+//MaxNumBuffValue(0.6, 1.0, 1.0) = 0.6
+//MaxNumBuffValue(0.6, 1.0, 1.25) = 0.55
+
+float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
+{
+	// Our base number is max, the number when valuenerf is 0
+	// Our high number is start, the number when valuenerf is 1
+
+	// start = 0.6, max = 1.0
+	//     1.0 + ((-0.4) * valuenerf)
+	return max + ((start - max) * valuenerf);
 }

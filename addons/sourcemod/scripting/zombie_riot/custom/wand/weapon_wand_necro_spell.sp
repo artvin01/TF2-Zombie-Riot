@@ -51,7 +51,7 @@ public void Weapon_Necro_FireBallSpell(int client, int weapon, bool &result, int
 				CreateTimer(0.5, Necro_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;

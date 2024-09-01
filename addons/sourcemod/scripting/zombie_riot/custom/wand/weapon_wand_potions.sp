@@ -141,9 +141,8 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 		return false;
 	}
 
-	float time = GetGameTime() + 1.0;
-	if(Mana_Regen_Delay[client] < time)
-		Mana_Regen_Delay[client] = time;
+	SDKhooks_SetManaRegenDelayTime(client, 1.0);
+
 	
 	Mana_Hud_Delay[client] = 0.0;
 	Current_Mana[client] -= mana_cost;
@@ -269,18 +268,19 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 			i_ExtraPlayerPoints[owner] += 10;
 			
 			if(BuffTimer[weapon])
+				TriggerTimer(BuffTimer[weapon]);
+			
+			float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffScaling);
+			
+			if(Attributes_Has(weapon,6))
 			{
-				delete BuffTimer[weapon];
-			}
-			else
-			{
-				if(Attributes_Has(weapon,6))
-				{
-					Attributes_Set(weapon, 6, Attributes_Get(weapon, 6, 1.0) * 0.8);
-				}
+				Attributes_SetMulti(weapon, 6, multi);
 			}
 
-			BuffTimer[weapon] = CreateTimer(5.5, Weapon_Wand_PotionBuffRemove, weapon);
+			DataPack pack;
+			BuffTimer[weapon] = CreateDataTimer(5.5, Weapon_Wand_PotionBuffRemove, pack);
+			pack.WriteCell(weapon);
+			pack.WriteFloat(multi);
 		}
 	}
 	else
@@ -298,18 +298,19 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 						i_ExtraPlayerPoints[owner] += 10;
 						
 						if(BuffTimer[weapon])
+							TriggerTimer(BuffTimer[weapon]);
+						
+						float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffScaling);
+
+						if(Attributes_Has(weapon,6))
 						{
-							delete BuffTimer[weapon];
-						}
-						else
-						{
-							if(Attributes_Has(weapon,6))
-							{
-								Attributes_Set(weapon, 6, Attributes_Get(weapon, 6, 1.0) * 0.8);
-							}
+							Attributes_SetMulti(weapon, 6, multi);
 						}
 
-						BuffTimer[weapon] = CreateTimer(5.5, Weapon_Wand_PotionBuffRemove, weapon);
+						DataPack pack;
+						BuffTimer[weapon] = CreateDataTimer(5.5, Weapon_Wand_PotionBuffRemove, pack);
+						pack.WriteCell(weapon);
+						pack.WriteFloat(multi);
 						break;
 					}
 				}
@@ -350,19 +351,19 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 					i_ExtraPlayerPoints[owner] += 12;
 					
 					if(BuffTimer[weapon])
-					{
-						delete BuffTimer[weapon];
-					}
-					else
-					{
+						TriggerTimer(BuffTimer[weapon]);
 					
-						if(Attributes_Has(weapon,6))
-						{
-							Attributes_Set(weapon, 6, Attributes_Get(weapon, 6, 1.0) * 0.8);
-						}
+					float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffScaling);
+
+					if(Attributes_Has(weapon,6))
+					{
+						Attributes_SetMulti(weapon, 6, multi);
 					}
 
-					BuffTimer[weapon] = CreateTimer(7.5, Weapon_Wand_PotionBuffRemove, weapon);
+					DataPack pack;
+					BuffTimer[weapon] = CreateDataTimer(7.5, Weapon_Wand_PotionBuffRemove, pack);
+					pack.WriteCell(weapon);
+					pack.WriteFloat(multi);
 				}
 			}
 		}
@@ -401,18 +402,19 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 					i_ExtraPlayerPoints[owner] += 20;
 					
 					if(BuffTimer[weapon])
+						TriggerTimer(BuffTimer[weapon]);
+					
+					float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffScaling);
+
+					if(Attributes_Has(weapon,6))
 					{
-						delete BuffTimer[weapon];
-					}
-					else
-					{
-						if(Attributes_Has(weapon,6))
-						{
-							Attributes_Set(weapon, 6, Attributes_Get(weapon, 6, 1.0) * 0.8);
-						}
+						Attributes_SetMulti(weapon, 6, multi);
 					}
 
-					BuffTimer[weapon] = CreateTimer(999.9, Weapon_Wand_PotionBuffRemove, weapon);
+					DataPack pack;
+					BuffTimer[weapon] = CreateDataTimer(999.9, Weapon_Wand_PotionBuffRemove, pack);
+					pack.WriteCell(weapon);
+					pack.WriteFloat(multi);
 				}
 			}
 		}
@@ -421,13 +423,15 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 	RemoveEntity(entity);
 }
 
-public Action Weapon_Wand_PotionBuffRemove(Handle timer, int entity)
+public Action Weapon_Wand_PotionBuffRemove(Handle timer, DataPack pack)
 {
+	pack.Reset();
+	int entity = pack.ReadCell();
 	if(IsValidEntity(entity))
 	{
 		if(Attributes_Has(entity,6))
 		{
-			Attributes_Set(entity, 6, Attributes_Get(entity, 6, 1.0) / 0.8);
+			Attributes_SetMulti(entity, 6, 1.0 / pack.ReadFloat());
 		}
 	}
 
@@ -527,7 +531,7 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 	}
 	
 	TonicBuff_CD[client] = GetGameTime() + 10.0;
-	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
+	SDKhooks_SetManaRegenDelayTime(client, 10.0);
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 
@@ -561,7 +565,7 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 	}
 	
 	TonicBuff_CD[client] = GetGameTime() + 10.0;
-	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
+	SDKhooks_SetManaRegenDelayTime(client, 10.0);
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 	

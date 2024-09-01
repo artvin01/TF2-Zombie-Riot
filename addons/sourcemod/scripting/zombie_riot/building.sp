@@ -22,7 +22,8 @@ static const char BuildingPlugin[][] =
 	"obj_village",
 	"obj_barracks",
 
-	"obj_tinker_anvil"
+	"obj_tinker_anvil",
+	"obj_brewing_stand"
 };
 
 
@@ -30,8 +31,8 @@ static const char BuildingPlugin[][] =
 static const int BuildingCost[sizeof(BuildingPlugin)] =
 {
 	//-50,
-	560,
-	0,
+	538,
+	4,
 
 	600,
 	400,
@@ -45,7 +46,8 @@ static const int BuildingCost[sizeof(BuildingPlugin)] =
 	1200,
 	1200,
 
-	400
+	338,
+	1200
 };
 
 // Base health of building
@@ -67,6 +69,7 @@ static const int BuildingHealth[sizeof(BuildingPlugin)] =
 	30,
 	50,
 
+	420,
 	420
 };
 
@@ -89,7 +92,8 @@ static const float BuildingCooldown[sizeof(BuildingPlugin)] =
 	30.0,
 	15.0,
 
-	15.0
+	15.0,
+	60.0
 };
 
 static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
@@ -110,7 +114,8 @@ static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
 	"ObjectGeneric_CanBuildSentry",
 	"ObjectGeneric_CanBuildSentry",
 
-	"ObjectTinkerAnvil_CanBuild"
+	"ObjectTinkerAnvil_CanBuild",
+	"ObjectTinkerBrew_CanBuild"
 };
 
 static int BuildingId[sizeof(BuildingPlugin)];
@@ -2137,6 +2142,9 @@ void DeleteAndRefundBuilding(int client, int entity)
 		float RatioReturn = float(Total) / float(MaxTotal);
 		
 		int MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * RatioReturn * 0.8);
+		if(MetalReturn >= RoundToNearest(MetalSpendOnBuilding[entity] * 0.8))
+			MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * 0.8);
+
 		SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalReturn);
 		CurrentAmmo[client][3] = GetAmmo(client, 3);
 	}

@@ -71,7 +71,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		//if its too fast, then it can cause projectile devietion
 	}
 
-	if(CustomPos[0] != 0.0 || CustomPos[1] != 0.0)
+	if(client <= MaxClients && CustomPos[0] == 0.0 && CustomPos[1] == 0.0)
 	{
 		float tmp[3];
 		float actualBeamOffset[3];

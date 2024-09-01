@@ -47,7 +47,7 @@ void SeabornEngineer_Precache()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_engineer");
 	strcopy(data.Icon, sizeof(data.Icon), "sea_engineer");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_SUPPORT|MVM_CLASS_FLAG_SUPPORT_LIMITED;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Seaborn;
 	data.Func = ClotSummon;
 	NPC_Add(data);

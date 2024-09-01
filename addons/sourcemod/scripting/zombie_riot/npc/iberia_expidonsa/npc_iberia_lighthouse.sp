@@ -346,7 +346,7 @@ public void IberiaLighthouse_NPCDeath(int entity)
 
 static char[] GetBuildingHealth()
 {
-	int health = 155;
+	int health = 120;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	
@@ -473,7 +473,7 @@ int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 			npc.PlayMeleeSound();
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 50.0 * npc.m_flWaveScale;
+				float damageDealt = 75.0 * npc.m_flWaveScale;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 5.5;
 
@@ -589,7 +589,7 @@ int IberiaLighthouseCloseDefense(IberiaLighthouse npc, float gameTime)
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 1.0 * npc.m_flWaveScale;
+				float damageDealt = 25.0 * npc.m_flWaveScale;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 5.5;
 
