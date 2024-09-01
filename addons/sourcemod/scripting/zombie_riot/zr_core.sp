@@ -194,7 +194,8 @@ enum
 	WEAPON_WALDCH_SWORD_NOVISUAL = 114,
 	WEAPON_WALDCH_SWORD_REAL = 115,
 	WEAPON_MLYNAR_PAP_2 = 116,
-	WEAPON_ULPIANUS = 117
+	WEAPON_ULPIANUS = 117,
+	WEAPON_WRATHFUL_BLADE = 118
 }
 
 enum
@@ -522,6 +523,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
 #include "zombie_riot/custom/weapon_rusty_rifle.sp"
+#include "zombie_riot/custom/weapon_wrathful_blade.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/red_blade.sp"
@@ -790,6 +792,7 @@ void ZR_MapStart()
 	ResetMapStartVictoria();
 	Obuch_Mapstart();
 	Ulpianus_MapStart();
+	Wrathful_Blade_Precache();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

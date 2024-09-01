@@ -5745,6 +5745,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Merchant_Enable(client, entity);
 		Flametail_Enable(client, entity);
 		Ulpianus_Enable(client, entity);
+		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
 	}
 

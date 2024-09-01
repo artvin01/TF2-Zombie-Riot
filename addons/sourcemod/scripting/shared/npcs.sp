@@ -2267,6 +2267,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			RapierEndDuelOnKill(attacker, victim);
 		}
+		case WEAPON_WRATHFUL_BLADE:
+		{
+			WrathfulBlade_OnKill(attacker, victim);
+		}
 	}
 }
 #endif

@@ -937,6 +937,19 @@
 		"en"		"Big Shot is on cooldown: {1}"
 		"fr"		"Big Shot se recharge: {1}"
 	}
+	"Wrathful Ability Cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Infernal Fury is on cooldown: {1}"
+	}
+	"Wrathful Ability Blocked"
+	{
+		"en"		"Infernal Fury cannot be used right now."
+	}
+	"Wrath Strike Fully Charged"
+	{
+		"en"		"WRATH STRIKE IS FULLY CHARGED!"
+	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"
