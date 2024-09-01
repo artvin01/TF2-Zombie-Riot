@@ -270,7 +270,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 			if(BuffTimer[weapon])
 				TriggerTimer(BuffTimer[weapon]);
 			
-			float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffScaling);
+			float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffAttackspeedScaling);
 			
 			if(Attributes_Has(weapon,6))
 			{
@@ -300,7 +300,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 						if(BuffTimer[weapon])
 							TriggerTimer(BuffTimer[weapon]);
 						
-						float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffScaling);
+						float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffAttackspeedScaling);
 
 						if(Attributes_Has(weapon,6))
 						{
@@ -353,7 +353,7 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 					if(BuffTimer[weapon])
 						TriggerTimer(BuffTimer[weapon]);
 					
-					float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffScaling);
+					float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffAttackspeedScaling);
 
 					if(Attributes_Has(weapon,6))
 					{
@@ -404,7 +404,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 					if(BuffTimer[weapon])
 						TriggerTimer(BuffTimer[weapon]);
 					
-					float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffScaling);
+					float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffAttackspeedScaling);
 
 					if(Attributes_Has(weapon,6))
 					{

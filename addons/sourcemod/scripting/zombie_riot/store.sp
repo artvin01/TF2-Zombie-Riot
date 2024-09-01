@@ -4814,6 +4814,8 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
+	
+	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
 	if(!StoreItems)
 	{

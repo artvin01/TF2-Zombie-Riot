@@ -420,8 +420,8 @@ void BuffBattilonsActivate(int client, int weapon)
 */
 static void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2)
 {
-	float BuffValueDo = MaxNumBuffValue(buffammount, 1.0, PlayerCountBuffScaling);
-	float BuffValueDo2 = MaxNumBuffValue(buffammount2, 1.0, PlayerCountBuffScaling);
+	float BuffValueDo = MaxNumBuffValue(buffammount, 1.0, PlayerCountBuffAttackspeedScaling);
+	float BuffValueDo2 = MaxNumBuffValue(buffammount2, 1.0, PlayerCountBuffAttackspeedScaling);
 	if(type == 1)
 	{
 		int i, weapon;

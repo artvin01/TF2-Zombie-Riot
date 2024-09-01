@@ -748,7 +748,7 @@ static void Internal_ClotThink(int iNPC)
 					NPC_StopPathing(npc.index);
 					npc.m_iChanged_WalkCycle = 99;
 					npc.SetActivity("ACT_MP_STAND_MELEE_ALLCLASS");
-					npc.m_flSpeed = 335.0;
+					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
 					CPrintToChatAll("{gold}Silvester{default}: Oh you seem to be alone, i'll wait.");
 					b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
@@ -1075,7 +1075,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.StartPathing();
-					npc.m_flSpeed = 335.0;
+					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
 				}	
 			}
@@ -1087,7 +1087,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
 					npc.StartPathing();
-					npc.m_flSpeed = 335.0;
+					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
 				}	
 			}
@@ -1409,7 +1409,7 @@ bool SilvesterTransformation(Silvester npc)
 			npc.m_bisWalking = true;
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 			i_NpcWeight[npc.index] = 4;
-			RaidModeScaling *= 1.15;	
+			RaidModeScaling *= 1.10;
 			f_BattilonsNpcBuff[npc.index] = GetGameTime() + 5.0;
 			npc.m_flDoingAnimation = 0.0;
 
