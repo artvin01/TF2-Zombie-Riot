@@ -397,6 +397,7 @@ public Action Wrath_MeleeAttack(Handle timelytimer, DataPack pack)
 		EmitSoundToAll(SND_WRATHSTRIKE_SMASH_2, client, _, _, _, 0.8);
 		EmitSoundToAll(SND_WRATHSTRIKE_SMASH, client, _, _, _, 0.8);
 		EmitSoundToAll(SND_WRATHSTRIKE_SMASH_2, client, _, _, _, 0.8);
+    
 		Client_Shake(client);
 
 		delete ordered;
@@ -604,7 +605,7 @@ public Action Fury_Logic(Handle timelytimer, int id)
 					Fury_CurrentHealthDrain[client] = Fury_HPDrain_Max[tier];
 			}
 		}
-
+    
 		ApplyTempAttrib(weapon, 734, Fury_MedicHealMultiplier[tier], 0.1);
 	}
 
