@@ -43,34 +43,49 @@ static float Newtonian_M2_Falloff_MultiHit[3] = { 0.5, 0.66, 0.75 };			//Amount 
 static float Newtonian_M2_Falloff_Distance[3] = { 0.5, 0.66, 0.75 };			//Maximum M2 damage falloff, based on distance.
 static float Newtonian_M2_Knockback_Horizontal[3] = { 200.0, 250.0, 300.0 };	//Horizontal knockback applied to enemies hit by the M2 shockwave.
 static float Newtonian_M2_Knockback_Vertical[3] = { 400.0, 500.0, 600.0 };		//Vertical knockback applied to enemies hit by the M2 shockwave.
+static float Newtonian_M2_AttackDelay[3] = { 0.66, 0.66, 0.66 };				//Duration to prevent the user from attacking with M1 after triggering a shockwave. This is to prevent cheesy combos where you press M2 and M1 at the same time.
 
 //Client/entity-specific global variables below, don't touch these:
 static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};
+static int Magnesis_ProjectileTier[2049] = { 0, ... };
+static int Magnesis_Tier[2049] = { 0, ... };
+static bool Magnesis_ProjectileIsNewtonian[2049] = { false, ... };
+static bool Newtonian_Airborne[2049] = { false, ... };
 
 public void Magnesis_ResetAll()
 {
 	Zero(ability_cooldown);
 }
 
-#define SND_MAGNESIS_M1         ")"
-#define SND_NEWTONIAN_M1		")"
+#define SND_MAGNESIS_M1         	")"
+#define SND_MAGNESIS_M1_COLLIDE		")"
+#define SND_NEWTONIAN_M1			")"
+#define SND_NEWTONIAN_M1_COLLIDE	")"
+#define SND_NEWTONIAN_M1_COMBO		")"
+#define SND_NEWTONIAN_M2			")"
 
 #define PARTICLE_MAGNESIS_M1     			"raygun_projectile_blue"
 #define PARTICLE_MAGNESIS_M1_FINALPAP		"raygun_projectile_blue_crit"
 #define PARTICLE_NEWTONIAN_M1    			"raygun_projectile_red"
 #define PARTICLE_NEWTONIAN_M1_FINALPAP    	"raygun_projectile_red_crit"
+#define PARTICLE_NEWTONIAN_M1_COLLIDE		"drg_cow_explosioncore_charged"
 
 void Magnesis_Precache()
 {
     PrecacheSound(SND_MAGNESIS_M1);
+	PrecacheSound(SND_MAGNESIS_M1_COLLIDE);
 	PrecacheSound(SND_NEWTONIAN_M1);
+	PrecacheSound(SND_NEWTONIAN_M1_COLLIDE);
+	PrecacheSound(SND_NEWTONIAN_M1_COMBO);
+	PrecacheSound(SND_NEWTONIAN_M2);
 }
 
-void Magnesis_OnKill(int client, int victim)
+void Magnesis_OnKill(int victim)
 {
+	Newtonian_Airborne[victim] = false;
 }
 
-public void Magnesis_OnNPCDamaged(int victim, int attacker, int weapon, float damage, int inflictor)
+public void Magnesis_OnNPCDamaged(int victim, float damage)
 {
 
 }
@@ -139,22 +154,22 @@ public void Magnesis_HUD(int client, int weapon, bool forced)
 	}
 }
 
-public void Magnesis_Attack_0(int client, int weapon, bool &result, int slot)
+void Magnesis_Attack_0(int client, int weapon, bool &result, int slot)
 {
     Magnesis_FireProjectile(client, weapon, 0);
 }
 
-public void Magnesis_Attack_1(int client, int weapon, bool &result, int slot)
+void Magnesis_Attack_1(int client, int weapon, bool &result, int slot)
 {
     Magnesis_FireProjectile(client, weapon, 1);
 }
 
-public void Magnesis_Attack_2(int client, int weapon, bool &result, int slot)
+void Magnesis_Attack_2(int client, int weapon, bool &result, int slot)
 {
     Magnesis_FireProjectile(client, weapon, 2);
 }
 
-public void Magnesis_FireProjectile(int client, int weapon, int tier)
+void Magnesis_FireProjectile(int client, int weapon, int tier)
 {
     float mana_cost = Magnesis_M1_Cost[tier];
 
@@ -168,40 +183,33 @@ public void Magnesis_FireProjectile(int client, int weapon, int tier)
 		
 		delay_hud[client] = 0.0;
 		
-		//TODO: Fire it.
+		Utility_FireProjectile(client, weapon, tier, false);
 
         EmitSoundToAll(SND_MAGNESIS_M1, client, _, _, _, 0.66);
 		EmitSoundToClient(client, SND_MAGNESIS_M1, _, _, _, _, 0.66);
 	}
 	else
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		
-		if (mana_cost > Current_Mana[client])
-		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-		}
+		Utility_NotEnoughMana(client, mana_cost);
 	}
 }
 
-public void Magnesis_Grab_0(int client, int weapon, bool &result, int slot)
+void Magnesis_Grab_0(int client, int weapon, bool &result, int slot)
 {
     Magnesis_AttemptGrab(client, weapon, 0);
 }
 
-public void Magnesis_Grab_1(int client, int weapon, bool &result, int slot)
+void Magnesis_Grab_1(int client, int weapon, bool &result, int slot)
 {
     Magnesis_AttemptGrab(client, weapon, 1);
 }
 
-public void Magnesis_Grab_2(int client, int weapon, bool &result, int slot)
+void Magnesis_Grab_2(int client, int weapon, bool &result, int slot)
 {
     Magnesis_AttemptGrab(client, weapon, 2);
 }
 
-public void Magnesis_AttemptGrab(int client, int weapon, int tier)
+void Magnesis_AttemptGrab(int client, int weapon, int tier)
 {
     float mana_cost = Magnesis_Grab_Requirement[tier];
 
@@ -219,33 +227,26 @@ public void Magnesis_AttemptGrab(int client, int weapon, int tier)
 	}
 	else
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		
-		if (mana_cost > Current_Mana[client])
-		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-		}
+		Utility_NotEnoughMana(client, mana_cost);
 	}
 }
 
-public void Newtonian_Attack_0(int client, int weapon, bool &result, int slot)
+void Newtonian_Attack_0(int client, int weapon, bool &result, int slot)
 {
     Newtonian_FireProjectile(client, weapon, 0);
 }
 
-public void Newtonian_Attack_1(int client, int weapon, bool &result, int slot)
+void Newtonian_Attack_1(int client, int weapon, bool &result, int slot)
 {
     Newtonian_FireProjectile(client, weapon, 1);
 }
 
-public void Newtonian_Attack_2(int client, int weapon, bool &result, int slot)
+void Newtonian_Attack_2(int client, int weapon, bool &result, int slot)
 {
     Newtonian_FireProjectile(client, weapon, 2);
 }
 
-public void Newtonian_FireProjectile(int client, int weapon, int tier)
+void Newtonian_FireProjectile(int client, int weapon, int tier)
 {
     float mana_cost = Newtonian_M1_Cost[tier];
 
@@ -259,40 +260,33 @@ public void Newtonian_FireProjectile(int client, int weapon, int tier)
 		
 		delay_hud[client] = 0.0;
 		
-		//TODO: Fire it
+		Utility_FireProjectile(client, weapon, tier, true);
 
         EmitSoundToAll(SND_NEWTONIAN_M1, client, _, _, _, 0.8);
 		EmitSoundToClient(client, SND_NEWTONIAN_M1, _, _, _, _, 0.66);
 	}
 	else
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		
-		if (mana_cost > Current_Mana[client])
-		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-		}
+		Utility_NotEnoughMana(client, mana_cost);
 	}
 }
 
-public void Newtonian_Shockwave_0(int client, int weapon, bool &result, int slot)
+void Newtonian_Shockwave_0(int client, int weapon, bool &result, int slot)
 {
     Newtonian_TryShockwave(client, weapon, 0);
 }
 
-public void Newtonian_Shockwave_1(int client, int weapon, bool &result, int slot)
+void Newtonian_Shockwave_1(int client, int weapon, bool &result, int slot)
 {
     Newtonian_TryShockwave(client, weapon, 1);
 }
 
-public void Newtonian_Shockwave_2(int client, int weapon, bool &result, int slot)
+void Newtonian_Shockwave_2(int client, int weapon, bool &result, int slot)
 {
     Newtonian_TryShockwave(client, weapon, 2);
 }
 
-public void Newtonian_TryShockwave(int client, int weapon, int tier)
+void Newtonian_TryShockwave(int client, int weapon, int tier)
 {
     float mana_cost = Newtonian_M2_Cost[tier];
 
@@ -309,16 +303,142 @@ public void Newtonian_TryShockwave(int client, int weapon, int tier)
 		delay_hud[client] = 0.0;
 
         EmitSoundToAll(SND_NEWTONIAN_M2, client);
+
+		float nextAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") + Newtonian_M2_AttackDelay[tier];
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", nextAttack);
 	}
 	else
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		
-		if (mana_cost > Current_Mana[client])
-		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-		}
+		Utility_NotEnoughMana(client, mana_cost);
 	}
+}
+
+public void Magnesis_ProjectileTouch(int entity, int target)
+{
+	float selfPos[3], ang[3], direction[3], dmgForce[3];
+	GetEntPropVector(entity, Prop_Send, "m_angRotation", ang);
+	GetAngleVectors(ang, direction, NULL_VECTOR, NULL_VECTOR);
+	CalculateDamageForce(direction, 10000.0, dmgForce);
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", selfPos);
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+
+	if (Magnesis_ProjectileIsNewtonian[entity])
+	{
+		Newtonian_ProjectileTouch(entity, selfPos, owner, weapon, target, particle, dmgForce);
+		return;
+	}
+
+	if (target >= 0)	
+	{
+		if (target > 0)
+		{
+			float targPos[3];
+			WorldSpaceCenter(target, targPos);
+			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, dmgForce, targPos, _ , ZR_DAMAGE_LASER_NO_BLAST);
+		}
+
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+
+		EmitSoundToAll(SND_MAGNESIS_M1_COLLIDE, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		RemoveEntity(entity);
+	}
+}
+
+public void Newtonian_ProjectileTouch(int entity, float selfPos[3], int owner, int weapon, int target, int particle, float dmgForce[3])
+{
+	if (target >= 0)
+	{
+		Explode_Logic_Custom(f_WandDamage[entity], owner, entity, weapon, selfPos, Newtonian_M1_Radius[Magnesis_ProjectileTier[entity]], Newtonian_M1_Falloff_MultiHit[Magnesis_ProjectileTier[entity]], Newtonian_M1_Falloff_Distance[Magnesis_ProjectileTier[entity]], false, Newtonian_M1_MaxTargets[Magnesis_ProjectileTier[entity]], _, _, view_as<Function>(Newtonian_M1Hit));
+
+		ParticleEffectAt(selfPos, PARTICLE_NEWTONIAN_M1_COLLIDE);
+		EmitSoundToAll(SND_NEWTONIAN_M1_COLLIDE, entity, SNDCHAN_STATIC);
+
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+
+		RemoveEntity(entity);
+	}
+}
+
+public float Newtonian_M1Hit(int attacker, int victim, float damage, int weapon)
+{
+	if (Newtonian_Airborne[victim])
+	{
+		damage *= Newtonian_M1_ComboMult[Magnesis_Tier[attacker]];
+		DisplayCritAboveNpc(victim, attacker, true);
+	}
+
+	return damage;
+}
+
+void Utility_FireProjectile(int client, int weapon, int tier, bool isNewtonian)
+{
+	float damage = (isNewtonian ? Newtonian_M1_DMG[tier] : Magnesis_M1_DMG[tier]);
+	damage *= Attributes_Get(weapon, 410, 1.0);
+			
+	float speed = (isNewtonian ? Newtonian_M1_Velocity[tier] : Magnesis_M1_Velocity[tier]);
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	speed *= Attributes_Get(weapon, 475, 1.0);
+	
+	float time = (isNewtonian ? Newtonian_M1_Lifespan[tier] : Magnesis_M1_Lifespan[tier]);
+	time *= Attributes_Get(weapon, 101, 1.0);
+	time *= Attributes_Get(weapon, 102, 1.0);
+		
+	char particle[64];
+	if (isNewtonian)
+	{
+		if (tier > 1)
+			particle = PARTICLE_NEWTONIAN_M1_FINALPAP;
+		else
+			particle = PARTICLE_NEWTONIAN_M1;
+	}
+	else
+	{
+		if (tier > 1)
+			particle = PARTICLE_MAGNESIS_M1_FINALPAP;
+		else
+			particle = PARTICLE_MAGNESIS_M1;
+	}
+
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_MAGNESIS, weapon, particle);
+	if (IsValidEntity(projectile))
+	{
+		Magnesis_ProjectileIsNewtonian[projectile] = isNewtonian;
+		Magnesis_ProjectileTier[projectile] = tier;
+	}
+
+	Magnesis_Tier[client] = tier;
+}
+
+void Utility_NotEnoughMana(int client, float cost)
+{
+	char text[255];
+	Format(text, sizeof(text), "%t", "Not Enough Mana", cost);
+	Utility_HUDNotification(client, text, true);
+}
+
+void Utility_HUDNotification_Translation(int client, char translation[255], bool YouCantDoThat = false)
+{
+	char text[255];
+	Format(text, sizeof(text), "%t", translation);
+	Utility_HUDNotification(client, text, YouCantDoThat);
+}
+
+void Utility_HUDNotification(int client, char message[255], bool YouCantDoThat = false)
+{
+	if (YouCantDoThat)
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+
+	SetDefaultHudPosition(client);
+	SetGlobalTransTarget(client);
+	ShowSyncHudText(client,  SyncHud_Notifaction, message);
 }
