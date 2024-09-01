@@ -566,7 +566,7 @@ public Action Fury_Logic(Handle timelytimer, int id)
 			Fury_NextRing[client] = GetGameTime() + 1.0;
 		}
 
-		if (hasWrath && Wrath_Multiplier[client] < Wrath_MaxStrength[client])
+		if (hasWrath && Wrath_Multiplier[client] < Wrath_MaxStrength[tier])
 		{
 			Wrath_Multiplier[client] += Wrath_Rise[tier];
 			if (Wrath_Multiplier[client] >= Wrath_MaxStrength[tier])
