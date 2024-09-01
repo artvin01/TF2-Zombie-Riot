@@ -6,45 +6,52 @@
 //INFERNAL FURY: While holding M2, drain your health to burn everything around you and increase your melee stats.
 //Self-damage and cooldown become higher the longer it is active. When the ability ends, heal X HP for every zombie you killed while it is active,
 //at a rate of Y HP per second, up to a maximum of Z.
-static float Fury_ATKSpeed[3] = { 1.33, 1.66, 2.0 };		//Amount to multiply the user's melee attack rate while Infernal Fury is active.
-static float Fury_ResMult[3] = { 0.5, 0.33, 0.25 };			//Amount to multiply damage taken from enemies while Infernal Fury is active. This should be fairly strong, because otherwise you can't really use the ability to be aggressive because the self-damage plus the damage you're taking from the enemies will get you killed in seconds.
-static float Fury_DMGMult[3] = { 1.5, 1.75, 2.0 };			//Amount to multiply damage dealt by the user's melee attacks while Infernal Fury is active.
-static float Fury_BurnDMG[3] = { 2.0, 3.0, 4.0 };			//Base damage dealt by Infernal Fury's AOE per 0.1s. This is affected by attributes.
-static float Fury_BurnFalloff[3] = { 0.66, 0.7, 0.75 };		//Amount to multiply Infernal Fury's AOE damage for every enemy it hits.
-static float Fury_BurnRadius[3] = { 120.0, 180.0, 240.0 };	//Infernal Fury AOE radius.
-static int Fury_BurnMaxTargets[3] = { 3, 4, 5 };			//Infernal Fury max targets hit per AOE.	
-static float Fury_HPDrain_Base[3] = { 1.0, 1.0, 1.0 };		//Base damage taken by the user per 0.1s while Infernal Fury is active.
-static float Fury_HPDrain_Rise[3] = { 2.0, 2.0, 2.0 };		//Amount to increase Infernal Fury's self-damage per second while it is active.
-static float Fury_HPDrain_Max[3] = { 30.0, 40.0, 50.0 };	//Maximum self-damage taken per 0.1s while Infernal Fury is active.
-static float Fury_HealPerKill[3] = { 20.0, 25.0, 30.0 };	//Healing stored per zombie killed while Infernal Fury is active.
-static float Fury_MaxHeals[3] = { 1000.0, 2000.0, 3000.0 };	//Maximum healing stored per Infernal Fury usage.
-static float Fury_HealRate[3] = { 2.0, 3.0, 4.0 };			//Stored healing given per 0.1s while Infernal Fury is not active.
-static float Fury_HealRate_Penalty[3] = { 0.5, 0.5, 0.5 };	//Amount to multiply Fury_HealRate if the user has taken damage within the past 3 seconds.
-static float Fury_MinCD[3] = { 10.0, 10.0, 10.0 };			//Minimum Infernal Fury cooldown.
-static float Fury_MinCDTime[3] = { 2.0, 2.0, 2.0 };			//Maximum duration Infernal Fury can be used and still have the minimum cooldown applied.
-static float Fury_CDRaise[3] = { 0.4, 0.4, 0.4 };			//Amount to increase Infernal Fury's cooldown per 0.1s of usage past the minimum CD window.
-static float Fury_MaxCD[3] = { 120.0, 120.0, 120.0 };		//Maximum cooldown applied to Infernal Fury.
-static float Fury_CDR[3] = { 0.5, 0.5, 0.5 };				//Amount to reduce Infernal Fury's remaining cooldown upon killing a zombie while Infernal Fury is not active.
+static float Fury_ATKSpeed[3] = { 1.33, 1.5, 1.66 };			//Amount to multiply the user's melee attack rate while Infernal Fury is active.
+static float Fury_ResMult[3] = { 0.5, 0.33, 0.25 };				//Amount to multiply damage taken from enemies while Infernal Fury is active. This should be fairly strong, because otherwise you can't really use the ability to be aggressive because the self-damage plus the damage you're taking from the enemies will get you killed in seconds.
+static float Fury_DMGMult[3] = { 1.25, 1.33, 1.5 };				//Amount to multiply damage dealt by the user's melee attacks while Infernal Fury is active.
+static float Fury_BurnDMG[3] = { 2.0, 3.0, 4.0 };				//Base damage dealt by Infernal Fury's AOE per 0.1s. This is affected by attributes.
+static float Fury_BurnFalloff[3] = { 0.66, 0.7, 0.75 };			//Amount to multiply Infernal Fury's AOE damage for every enemy it hits.
+static float Fury_BurnRadius[3] = { 120.0, 160.0, 200.0 };		//Infernal Fury AOE radius.
+static int Fury_BurnMaxTargets[3] = { 3, 4, 5 };				//Infernal Fury max targets hit per AOE.	
+static float Fury_HPDrain_Base[3] = { 0.2, 0.5, 1.0 };			//Base damage taken by the user per 0.1s while Infernal Fury is active.
+static float Fury_HPDrain_Rise[3] = { 0.2, 0.75, 1.5 };			//Amount to increase Infernal Fury's self-damage per second while it is active.
+static float Fury_HPDrain_Max[3] = { 10.0, 30.0, 30.0 };		//Maximum self-damage taken per 0.1s while Infernal Fury is active.
+static float Fury_HPDrain_UberMult[3] = { 0.66, 0.66, 0.66 };	//Amount to multiply self-damage taken if übercharged.
+static float Fury_HealPerKill[3] = { 20.0, 25.0, 30.0 };		//Healing stored per zombie killed while Infernal Fury is active.
+static float Fury_MaxHeals[3] = { 1000.0, 2000.0, 3000.0 };		//Maximum healing stored per Infernal Fury usage.
+static float Fury_HealRate[3] = { 2.0, 3.0, 4.0 };				//Stored healing given per 0.1s while Infernal Fury is not active.
+static float Fury_HealRate_Penalty[3] = { 0.5, 0.5, 0.5 };		//Amount to multiply Fury_HealRate if the user has taken damage within the past 3 seconds.
+static float Fury_MinCD[3] = { 10.0, 10.0, 10.0 };				//Minimum Infernal Fury cooldown.
+static float Fury_MinCDTime[3] = { 2.0, 2.0, 2.0 };				//Maximum duration Infernal Fury can be used and still have the minimum cooldown applied.
+static float Fury_CDRaise[3] = { 0.4, 0.4, 0.4 };				//Amount to increase Infernal Fury's cooldown per 0.1s of usage past the minimum CD window.
+static float Fury_MaxCD[3] = { 120.0, 120.0, 120.0 };			//Maximum cooldown applied to Infernal Fury.
+static float Fury_CDR[3] = { 0.5, 0.5, 0.5 };					//Amount to reduce Infernal Fury's remaining cooldown upon killing a zombie while Infernal Fury is not active.
 
 //WRATH STRIKE: If enabled: Infernal Fury now charges up a powerful melee hit, which is given when Infernal Fury ends.
 //The longer Infernal Fury is active, the stronger this attack becomes.
-static bool Wrath_Enabled[3] = { false, false, true };		//Is Wrath Strike enabled on this PaP tier?
-static float Wrath_MinStrength[3] = { 2.0, 2.0, 2.0 };		//The minimum possible melee damage multiplier of the Wrath Strike hit.
-static float Wrath_Rise[3] = { 0.1, 0.1, 0.1 };				//Amount to increase Wrath Strike's damage multiplier per 0.1s of Infernal Fury's use-time, after the MinStrengthTime has passed.
-static float Wrath_MaxStrength[3] = { 8.0, 8.0, 8.0 };		//Maximum melee damage multiplier.
+static bool Wrath_Enabled[3] = { false, false, true };			//Is Wrath Strike enabled on this PaP tier?
+static float Wrath_MinStrength[3] = { 2.0, 2.0, 2.0 };			//The minimum possible melee damage multiplier of the Wrath Strike hit.
+static float Wrath_Rise[3] = { 0.1, 0.1, 0.1 };					//Amount to increase Wrath Strike's damage multiplier per 0.1s of Infernal Fury's use-time, after the MinStrengthTime has passed.
+static float Wrath_MaxStrength[3] = { 8.0, 8.0, 8.0 };			//Maximum melee damage multiplier.
+static float Wrath_Width[3] = { 60.0, 60.0, 60.0 };				//Wrath Strike hitbox width.
+static float Wrath_Length[3] = { 120.0, 120.0, 120.0 };			//Wrath Strike hitbox length.
+static float Wrath_MultiHitFalloff[3] = { 0.75, 0.75, 0.75 };	//Amount to multiply damage dealt by Wrath Strike per enemy hit.
+static int Wrath_MaxTargets[3] = { 4, 4, 4 };					//Max targets hit at once by Wrath Strike.
 
 //GENERAL: Miscellaneous extra stats.
-static float Fury_BurningTargetsMultiplier[3] = { 1.35, 1.425, 1.5 };	//Amount to multiply melee damage dealt to burning targets (Wrath Strike does NOT benefit from this).
+static float Fury_BurningTargetsMultiplier[3] = { 1.35, 1.35, 1.35 };	//Amount to multiply melee damage dealt to burning targets (Wrath Strike does NOT benefit from this).
 
 //Client/entity-specific global variables below, don't touch these:
 static bool Wrath_Active[MAXPLAYERS + 1] = { false, ... };
 static bool Fury_Active[MAXPLAYERS + 1] = { false, ... };
 static bool Fury_WasHitByAOE[2049][MAXPLAYERS + 1];
+static bool WrathStrike_WasHit[2049][MAXPLAYERS + 1];
 static float Wrath_Multiplier[MAXPLAYERS + 1] = { 1.0, ... };
 static float Fury_StoredHealth[MAXPLAYERS + 1] = { 0.0, ... };
 static float Fury_CurrentHealthDrain[MAXPLAYERS + 1] = { 0.0, ... };
 static float Fury_StartTime[MAXPLAYERS + 1] = { 0.0, ... };
 static float Fury_DamagedAt[MAXPLAYERS + 1] = { 0.0, ... };
+static float Fury_NextRing[MAXPLAYERS + 1] = { 0.0, ... };
 static int Fury_Tier[MAXPLAYERS + 1] = { 0, ... };
 static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};
 
@@ -81,8 +88,12 @@ public void Wrathful_Blade_ResetAll()
 #define SND_WRATHSTRIKE_ACTIVATE		")mvm/mvm_tele_activate.wav"
 #define SND_WRATHSTRIKE_FULLYCHARGED	"mvm/mvm_tank_horn.wav"
 #define SND_WRATHSTRIKE_SMASH			")mvm/mvm_tank_smash.wav"
+#define SND_WRATHSTRIKE_SMASH_2			")mvm/giant_soldier/giant_soldier_explode.wav"
+#define SND_WRATHSTRIKE_SWING			")misc/halloween/strongman_fast_whoosh_01.wav"
 
 #define FURY_AURA						"burningplayer_red"
+#define FURY_RINGS						"heavy_ring_of_fire"
+#define WRATH_OBLITERATED				"hammer_impact_button_dust"
 
 void Wrathful_Blade_Precache()
 {
@@ -105,6 +116,8 @@ void Wrathful_Blade_Precache()
 	PrecacheSound(SND_WRATHSTRIKE_ACTIVATE);
 	PrecacheSound(SND_WRATHSTRIKE_FULLYCHARGED);
 	PrecacheSound(SND_WRATHSTRIKE_SMASH);
+	PrecacheSound(SND_WRATHSTRIKE_SMASH_2);
+	PrecacheSound(SND_WRATHSTRIKE_SWING);
 
 	Beam_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
@@ -149,16 +162,12 @@ public float WrathfulBlade_OnNPCDamaged(int victim, int attacker, int weapon, fl
 		{
 			damage *= Fury_DMGMult[Fury_Tier[attacker]];
 		}
-		
-		if (Wrath_Active[attacker])
+
+		if (WrathStrike_WasHit[victim][attacker])
 		{
-			damage *= Wrath_Multiplier[attacker];
-			Wrath_Active[attacker] = false;
-			Wrath_Multiplier[attacker] = 1.0;
-			EmitSoundToAll(SND_WRATHSTRIKE_SMASH, victim);
-			EmitSoundToClient(attacker, SND_WRATHSTRIKE_SMASH);
+			WrathStrike_WasHit[victim][attacker] = false;
 		}
-		else if(IgniteFor[victim] > 0)
+		else if (IgniteFor[victim] > 0)
 		{
 			damage *= Fury_BurningTargetsMultiplier[Fury_Tier[attacker]];
 			DisplayCritAboveNpc(victim, attacker, true, _, _, Fury_BurningTargetsMultiplier[Fury_Tier[attacker]] < 3.0);
@@ -272,10 +281,135 @@ public void Wrath_HUD(int client, int weapon, bool forced)
 
 public void Fury_Attack(int client, int weapon, bool crit)
 {
-	if (!Fury_Active[client])
-		return;
+	if (Fury_Active[client])
+	{
+		RequestFrame(Fury_AdjustAttackSpeed, GetClientUserId(client));
+	}
+	else if (Wrath_Active[client])
+	{
+		DataPack pack = new DataPack();
+		CreateDataTimer(0.2, Wrath_MeleeAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+		WritePackCell(pack, GetClientUserId(client));
+		WritePackCell(pack, EntIndexToEntRef(weapon));
+		EmitSoundToAll(SND_WRATHSTRIKE_SWING, client, _, _, _, 0.8, 80);
+		EmitSoundToAll(SND_WRATHSTRIKE_SWING, client, _, _, _, 0.8, 80);
+		Wrath_Active[client] = false;
+	}
+}
 
-	RequestFrame(Fury_AdjustAttackSpeed, GetClientUserId(client));
+static bool Wrath_Hit[2049] = { false, ... };
+
+public Action Wrath_MeleeAttack(Handle timelytimer, DataPack pack)
+{
+	ResetPack(pack);
+	int client = GetClientOfUserId(ReadPackCell(pack));
+	int weapon = EntRefToEntIndex(ReadPackCell(pack));
+
+	if (!IsValidClient(client) || !IsValidEntity(weapon))
+		return Plugin_Continue;
+
+	if (!IsPlayerAlive(client))
+		return Plugin_Continue;
+
+	b_LagCompNPC_ExtendBoundingBox = true;
+	StartLagCompensation_Base_Boss(client);
+
+	float pos[3], ang[3], endPos[3], hullMin[3], hullMax[3], direction[3];
+	GetClientEyePosition(client, pos);
+	GetClientEyeAngles(client, ang);
+
+	float width = Wrath_Width[Fury_Tier[client]];
+	float length = Wrath_Length[Fury_Tier[client]];
+
+	width *= Attributes_Get(weapon, 263, 1.0);
+	length *= Attributes_Get(weapon, 264, 1.0);
+
+	hullMin[0] = -width;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	GetAngleVectors(ang, direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(direction, length);
+	AddVectors(pos, direction, endPos);
+
+	TR_TraceHullFilter(pos, endPos, hullMin, hullMax, 1073741824, Wrath_Trace, client);
+
+	float baseDMG = 65.0 * Wrath_Multiplier[client]; 
+	baseDMG *= Attributes_Get(weapon, 2, 1.0);
+	baseDMG *= Attributes_Get(weapon, 1, 1.0);
+	baseDMG *= Attributes_Get(weapon, 1000, 1.0);
+			 
+	ArrayList victims = new ArrayList(255);
+
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (Wrath_Hit[victim])
+		{
+			Wrath_Hit[victim] = false;
+
+			if (IsValidEnemy(client, victim))
+			{
+				PushArrayCell(victims, victim);
+			}
+		}
+	}
+
+	if (GetArraySize(victims) > 0)
+	{
+		int count = Wrath_MaxTargets[Fury_Tier[client]];
+		if (count > GetArraySize(victims))
+			count = GetArraySize(victims);
+
+		ArrayList ordered = new ArrayList();
+
+		while (GetArraySize(ordered) < count)
+		{
+			int closest = BigShot_GetClosestInList(pos, victims);
+			PushArrayCell(ordered, closest);
+		}
+
+		float vecSwingForward[3];
+		GetAngleVectors(ang, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+
+		for (int i = 0; i < GetArraySize(ordered); i++)
+		{
+			int victim = GetArrayCell(ordered, i);
+			if (IsValidEnemy(client, victim))
+			{
+				float damagePos[3], damageForce[3]; 
+				WorldSpaceCenter(victim, damagePos);
+				CalculateDamageForce(vecSwingForward, 100000.0, damageForce);
+
+				WrathStrike_WasHit[victim][client] = true;
+				SDKHooks_TakeDamage(victim, client, client, baseDMG, DMG_CLUB|DMG_ALWAYSGIB, weapon, damageForce, damagePos);
+				baseDMG *= Wrath_MultiHitFalloff[Fury_Tier[client]];
+
+				ParticleEffectAt(damagePos, WRATH_OBLITERATED, 2.0);
+			}
+		}
+
+		EmitSoundToAll(SND_WRATHSTRIKE_SMASH, client, _, _, _, 0.8);
+		EmitSoundToAll(SND_WRATHSTRIKE_SMASH_2, client, _, _, _, 0.8);
+		Client_Shake(client);
+
+		delete ordered;
+	}
+
+	delete victims;
+	FinishLagCompensation_Base_boss();
+
+	return Plugin_Continue;
+}
+
+public bool Wrath_Trace(int entity, int contentsMask, int user)
+{
+	if (IsEntityAlive(entity) && entity != user)
+		Wrath_Hit[entity] = true;
+	
+	return false;
 }
 
 public void Fury_AdjustAttackSpeed(int id)
@@ -343,12 +477,20 @@ public void Fury_AttemptUse(int client, int weapon, bool crit, int tier)
 		Fury_Tier[client] = tier;
 		Fury_StartTime[client] = GetGameTime();
 		Fury_CurrentHealthDrain[client] = Fury_HPDrain_Base[tier];
+		Wrath_Active[client] = false;
+		Wrath_Multiplier[client] = 1.0;
 
 		CreateTimer(0.1, Fury_Logic, GetClientUserId(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 		Fury_Shout(client);
 		EmitSoundToAll(SND_WRATH_BEGIN, client);
 		EmitSoundToAll(SND_WRATH_LOOP, client, _, 80, _, 0.7, 70);
+
+		float pos[3];
+		GetClientAbsOrigin(client, pos);
+		ParticleEffectAt(pos, FURY_RINGS, 1.0);
+		Fury_NextRing[client] = GetGameTime() + 1.0;
+		Client_Shake(client, _, 25.0, 100.0, 3.0);
 
 		TE_SetupParticleEffect(FURY_AURA, PATTACH_ABSORIGIN_FOLLOW, client);
 		TE_WriteNum("m_bControlPoint1", client);	
@@ -415,6 +557,11 @@ public Action Fury_Logic(Handle timelytimer, int id)
 		GetClientAbsOrigin(client, pos);
 		TE_SetupBeamRingPoint(pos, Fury_BurnRadius[tier] * 2.0, Fury_BurnRadius[tier] * 2.0 + 0.5, Beam_Laser, Beam_Glow, 0, 10, 0.11, 25.0, 2.0, {255, 120, 0, 250}, 10, 0);
 		TE_SendToAll(0.0);
+		if (GetGameTime() >= Fury_NextRing[client])
+		{
+			ParticleEffectAt(pos, FURY_RINGS, 1.0);
+			Fury_NextRing[client] = GetGameTime() + 1.0;
+		}
 
 		if (hasWrath && Wrath_Multiplier[client] < Wrath_MaxStrength[client])
 		{
@@ -430,16 +577,46 @@ public Action Fury_Logic(Handle timelytimer, int id)
 			}
 		}
 
-		SDKHooks_TakeDamage(client, _, _, Fury_CurrentHealthDrain[client]);
-		if (Fury_CurrentHealthDrain[client] < Fury_HPDrain_Max[tier])
+		float dmgToTake = Fury_CurrentHealthDrain[client];
+		if (IsInvuln(client))
+			dmgToTake *= Fury_HPDrain_UberMult[Fury_Tier[client]];
+
+		int currentHP = GetEntProp(client, Prop_Data, "m_iHealth");
+		if (RoundFloat(dmgToTake) >= currentHP)
 		{
-			Fury_CurrentHealthDrain[client] += Fury_HPDrain_Rise[tier] * 0.1;
-			if (Fury_CurrentHealthDrain[client] > Fury_HPDrain_Max[tier])
-				Fury_CurrentHealthDrain[client] = Fury_HPDrain_Max[tier];
+			if (IsInvuln(client))
+				SetEntProp(client, Prop_Data, "m_iHealth", 1);
+			else
+			{
+				Fury_TerminateEffects(client);
+				DealTruedamageToEnemy(0, client, dmgToTake);
+			}
+		}
+		else
+		{
+			SetEntProp(client, Prop_Data, "m_iHealth", currentHP - RoundFloat(dmgToTake));
+			if (Fury_CurrentHealthDrain[client] < Fury_HPDrain_Max[tier])
+			{
+				Fury_CurrentHealthDrain[client] += Fury_HPDrain_Rise[tier] * 0.1;
+				if (Fury_CurrentHealthDrain[client] > Fury_HPDrain_Max[tier])
+					Fury_CurrentHealthDrain[client] = Fury_HPDrain_Max[tier];
+			}
 		}
 	}
 
 	return Plugin_Continue;
+}
+
+public void Fury_IceThisFool(int id)
+{
+	int client = GetClientOfUserId(id);
+	if (!IsValidClient(client))
+		return;
+
+	if (!IsPlayerAlive(client) || dieingstate[client] > 0)
+		return;
+
+	DealTruedamageToEnemy(0, client, 999999.0);
 }
 
 public void Fury_AOEHit(int attacker, int victim, float damage, int weapon)
