@@ -2344,7 +2344,8 @@ void DoGlobalMultiScaling()
 	MultiGlobalEnemy *= ZRModifs_MaxSpawnWaveModif();
 	MultiGlobalEnemyBoss *= ZRModifs_MaxSpawnWaveModif();
 
-	PlayerCountBuffScaling = 4.0 / playercount;
+	playercount = 14.0;
+	PlayerCountBuffScaling = 4.5 / playercount;
 	if(PlayerCountBuffScaling > 1.2)
 	{
 		PlayerCountBuffScaling = 1.2;

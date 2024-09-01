@@ -1100,12 +1100,10 @@ public Action CommandDebugHudTest(int client, int args)
         return Plugin_Handled;
     }
 
-	Rogue_Encounter_EmergencyDispatch();
-	char buf[12];
-	GetCmdArg(1, buf, sizeof(buf));
-	
-	SetHudTextParams(-1.0, -1.0, 1.0, 255, 255, 255, 255, 0, 0.01, 0.01);
-	ShowHudText(client, -1,"Debug : %s",buf);	
+	float Number = GetCmdArgFloat(1);
+	PrintToChatAll("Number %f",Number);
+
+	PrintToChatAll("MaxNumBuffValue %f",MaxNumBuffValue(0.6, 1.0, Number));
 
 	return Plugin_Handled;
 }

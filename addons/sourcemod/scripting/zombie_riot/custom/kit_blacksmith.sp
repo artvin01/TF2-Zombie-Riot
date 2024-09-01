@@ -836,6 +836,9 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 
 		case Attrib_SetArchetype:
 			Format(buffer, sizeof(buffer), "%sWeapon Archetype", buffer);
+		
+		case 4019:
+			Format(buffer, sizeof(buffer), "%sMax Mana", buffer);
 
 	}
 	
