@@ -557,6 +557,11 @@ public Action Fury_Logic(Handle timelytimer, int id)
 
 		Explode_Logic_Custom(DMG, client, client, weapon, pos, Fury_BurnRadius[tier], Fury_BurnFalloff[tier], _, _, Fury_BurnMaxTargets[tier], true, 1.0, _, view_as<Function>(Fury_AOEHit));
 
+		for (int i = 0; i <= MaxClients; i++)
+		{
+			Fury_WasHitByAOE[i][client] = false;
+		}
+
 		GetClientAbsOrigin(client, pos);
 		TE_SetupBeamRingPoint(pos, Fury_BurnRadius[tier] * 2.0, Fury_BurnRadius[tier] * 2.0 + 0.5, Beam_Laser, Beam_Glow, 0, 10, 0.11, 25.0, 2.0, {255, 120, 0, 250}, 10, 0);
 		TE_SendToAll(0.0);
@@ -629,21 +634,6 @@ public Action Wrath_Activate(Handle timer, int id)
 public void Fury_AOEHit(int attacker, int victim, float damage, int weapon)
 {
 	Fury_WasHitByAOE[victim][attacker] = true;
-	DataPack pack = new DataPack();
-	RequestFrame(Fury_ClearAOEHit, pack);
-	WritePackCell(pack, EntIndexToEntRef(victim));
-	WritePackCell(pack, GetClientUserId(attacker));
-}
-
-public void Fury_ClearAOEHit(DataPack pack)
-{
-	ResetPack(pack);
-	int ent = EntRefToEntIndex(ReadPackCell(pack));
-	int attacker = GetClientOfUserId(ReadPackCell(pack));
-	delete pack;
-
-	if (IsValidEntity(ent) && IsValidClient(attacker))
-		Fury_WasHitByAOE[ent][attacker] = false;
 }
 
 public Action Fury_HealingTimer(Handle timelytimer, int id)
