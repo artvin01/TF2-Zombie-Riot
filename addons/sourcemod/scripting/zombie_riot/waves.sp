@@ -1424,11 +1424,10 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			{
 				float delay = wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4));
 				WaveTimer = CreateTimer(delay, Waves_ProgressTimer);
+				ProgressTimerType = CurrentWave == (round.Waves.Length - 1);
+				
 				if(delay > 9.0)
-				{
 					ProgressTimerEndAt = GetGameTime() + delay;
-					ProgressTimerType = CurrentWave == (round.Waves.Length - 1);
-				}
 			}
 		}
 		else if(donotAdvanceRound)
@@ -2497,14 +2496,22 @@ static void UpdateMvMStatsFrame()
 					{
 						if(!id[b] || id[b] == wave.EnemyData.Index)
 						{
-							count[b] += num;
-							
 							if(!id[b])
 							{
-								id[b] = wave.EnemyData.Index;
 								flags[b] = SetupFlags(wave.EnemyData, false);
+
+								if(!Classic_Mode() && ((flags[b] & MVM_CLASS_FLAG_SUPPORT) || (flags[b] & MVM_CLASS_FLAG_MISSION)))
+								{
+									// Only show "Support" when actually active
+									flags[b] = 0;
+									continue;
+								}
+
+								id[b] = wave.EnemyData.Index;
 								forceflags[b] = wave.EnemyData.ignore_max_cap > 0;
 							}
+
+							count[b] += num;
 							
 							break;
 						}

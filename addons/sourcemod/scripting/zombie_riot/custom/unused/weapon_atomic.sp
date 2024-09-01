@@ -53,7 +53,7 @@ public void Weapon_Atomic_Beam(int client, int weapon, bool crit)
 
 	if (mana_cost <= Current_Mana[client])
 	{
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client]   = 0.0;
 
 		Current_Mana[client] -= mana_cost;
@@ -105,7 +105,7 @@ public void Weapon_Atomic_Beam_m2(int client, int weapon, bool crit, int slot)
 
 		if (mana_cost <= Current_Mana[client])
 		{
-			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+			SDKhooks_SetManaRegenDelayTime(client, 1.0);
 			Mana_Hud_Delay[client]   = 0.0;
 
 			Current_Mana[client] -= mana_cost;

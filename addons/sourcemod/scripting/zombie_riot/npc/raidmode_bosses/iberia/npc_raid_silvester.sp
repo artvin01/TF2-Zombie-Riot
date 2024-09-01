@@ -150,7 +150,7 @@ methodmap Silvester < CClotBody
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
-	property float m_flTimeUntillMark
+	property float m_flCurrentlySpeedRage
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
@@ -176,7 +176,7 @@ methodmap Silvester < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
-	property float m_flSilvesterSniperShotsLaserThrottle
+	property float m_flSilvesterTransformRegardless
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
@@ -187,7 +187,7 @@ methodmap Silvester < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
 
-	property float m_flSilvesterPlaceAirMines
+	property float m_flSetTargetFromWalkTarget
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
@@ -197,7 +197,7 @@ methodmap Silvester < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
-	property float m_flSilvesterSuperRes
+	property float m_flSilvesterChangeTargets
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
@@ -321,12 +321,12 @@ methodmap Silvester < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		//IDLE
-		npc.m_flTimeUntillMark = GetGameTime(npc.index) + 15.0;
+		npc.m_flCurrentlySpeedRage = 0.0;
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		b_SilvLine[npc.index] = false;
-		npc.m_flSpeed = 320.0;
+		npc.m_flSpeed = 335.0;
 		npc.i_GunMode = 0;
 		npc.m_flSilvesterSlicerCD = GetGameTime() + 6.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
@@ -339,7 +339,9 @@ methodmap Silvester < CClotBody
 		npc.AddActivityViaSequence("taunt_time_out_therapy_outro");
 		npc.SetCycle(0.5);
 		npc.SetPlaybackRate(0.45);	
+		npc.m_flSilvesterChangeTargets = 0.0;
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
+		npc.m_flSilvesterTransformRegardless = GetGameTime() + 40.0;
 		
 		b_thisNpcIsARaid[npc.index] = true;
 		b_angered_twice[npc.index] = false;
@@ -624,11 +626,31 @@ static void Internal_ClotThink(int iNPC)
 		}
 		return;
 	}
-	float TotalArmor = 1.0;
-	if(npc.m_flSilvesterSuperRes > GetGameTime())
+	if(npc.m_flSilvesterTransformRegardless < GetGameTime(npc.index))
 	{
-		TotalArmor *= 0.25;
+		if(i_RaidGrantExtra[npc.index] >= 3 && !npc.Anger)
+		{
+			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 3.0;
+			b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+			npc.PlayAngerSound();
+			npc.Anger = true; //	>:(
+			b_RageAnimated[npc.index] = false;
+			RaidModeTime += 30.0;
+			npc.m_bisWalking = false;
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				RemoveEntity(npc.m_iWearable1);
+			}
+			if(IsValidEntity(npc.m_iWearable8))
+			{
+				RemoveEntity(npc.m_iWearable8);
+			}
+			CPrintToChatAll("{gold}Silvester{default}: Youre taking to long to hurt me, ill try harder myself then.");
+			npc.m_flSilvesterTransformRegardless = FAR_FUTURE;
+			npc.i_GunMode = 0;
+		}
 	}
+	float TotalArmor = 1.0;
 
 	if(npc.Anger)
 		TotalArmor *= 0.85;
@@ -691,17 +713,32 @@ static void Internal_ClotThink(int iNPC)
 	bool ForceRedo = false;
 	if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
 	{
+		//Nemal is alive and didnt give up! Try to target someone near her....
 		CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
-		if(allynpc.m_iTarget == npc.m_iTarget)
+		if(allynpc.m_iTarget == npc.m_iTargetWalkTo)
 		{
 			ForceRedo = true;
 		}
 		if(ForceRedo || npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,allynpc.m_iTarget);
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+			//Get the next closest target!
+			static float flPos[3]; 
+			//only get nemals target every so often.
+			if(npc.m_flSilvesterChangeTargets >= 4.0)
+			{
+				GetEntPropVector(allynpc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+				npc.m_flSilvesterChangeTargets = 0.0;
+			}
+			else
+			{
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+				npc.m_flSilvesterChangeTargets += 1.0;
+			}
+			npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,allynpc.m_iTarget, flPos);
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + (GetRandomRetargetTime() * 2.0);
 		}
-		if(!IsValidEntity(npc.m_iTarget))
+		npc.m_iTarget = npc.m_iTargetWalkTo;
+		if(!IsValidEntity(npc.m_iTargetWalkTo))
 		{
 			if(npc.Anger)
 			{
@@ -711,7 +748,7 @@ static void Internal_ClotThink(int iNPC)
 					NPC_StopPathing(npc.index);
 					npc.m_iChanged_WalkCycle = 99;
 					npc.SetActivity("ACT_MP_STAND_MELEE_ALLCLASS");
-					npc.m_flSpeed = 320.0;
+					npc.m_flSpeed = 335.0;
 					npc.m_bAllowBackWalking = false;
 					CPrintToChatAll("{gold}Silvester{default}: Oh you seem to be alone, i'll wait.");
 					b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
@@ -725,7 +762,7 @@ static void Internal_ClotThink(int iNPC)
 					NPC_StopPathing(npc.index);
 					npc.m_iChanged_WalkCycle = 88;
 					npc.SetActivity("ACT_MP_STAND_MELEE");
-					npc.m_flSpeed = 320.0;
+					npc.m_flSpeed = 335.0;
 					npc.m_bAllowBackWalking = false;
 					CPrintToChatAll("{gold}Silvester{default}: Oh you seem to be alone, i'll wait.");
 					b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
@@ -755,21 +792,27 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_iTarget = GetClosestTarget(npc.index);
 			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		}
+		npc.m_iTargetWalkTo = npc.m_iTarget;
 	}
-
-	
+	if(npc.m_flSetTargetFromWalkTarget > GetGameTime(npc.index))
+	{
+		//Set attack target
+		npc.m_flSetTargetFromWalkTarget = GetGameTime(npc.index) + 1.0;
+		npc.m_iTarget = npc.m_iTargetWalkTo;
+	}
+	int SetGoalVectorIndex;
+	//What to do towards the enemy we want to attack	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int SetGoalVectorIndex = 0;
 		SetGoalVectorIndex = SilvesterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
 		if(iPitch < 0)
 			return;		
-						
+
 		//Body pitch
 		float v[3], ang[3];
 		float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
@@ -783,7 +826,31 @@ static void Internal_ClotThink(int iNPC)
 		float flPitch = npc.GetPoseParameter(iPitch);
 								
 		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
-
+	}
+	//What to do towrads the enemy we want to walk to
+	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
+	{
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		if(flDistanceToTarget > GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0) 
+		{
+			//The enemy is WAY too far away, give 2x speed.
+			if(npc.m_flCurrentlySpeedRage == 0.0)
+			{
+				npc.m_flCurrentlySpeedRage = 1.0;
+				fl_Extra_Speed[npc.index] *= 2.0; 
+			}
+		}
+		else
+		{
+			//Reduce it again if close enough
+			if(npc.m_flCurrentlySpeedRage == 1.0)
+			{
+				npc.m_flCurrentlySpeedRage = 0.0;
+				fl_Extra_Speed[npc.index] *= 0.5; 
+			}
+		}
 		switch(SetGoalVectorIndex)
 		{
 			case 0:
@@ -793,47 +860,27 @@ static void Internal_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];
-					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
 				}
 			}
 			case 1:
 			{
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
-				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
 	else
 	{
+		//theres no valid enemy somehow somewhy to walk to, reset.
 		npc.m_flGetClosestTargetTime = 0.0;
-		if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
-		{
-			CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
-			if(allynpc.m_iTarget == npc.m_iTarget)
-			{
-				ForceRedo = true;
-			}
-			if(ForceRedo || npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-			{
-				npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,allynpc.m_iTarget);
-				npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-			}
-		}
-		else
-		{
-			if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-			{
-				npc.m_iTarget = GetClosestTarget(npc.index);
-				npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-			}
-		}
 	}
 
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
@@ -876,6 +923,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			}
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/2);
 			CPrintToChatAll("{gold}Silvester{default}: Well, looks like i gotta take off the training wheels.");
+			npc.m_flSilvesterTransformRegardless = FAR_FUTURE;
 			npc.i_GunMode = 0;
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -1000,7 +1048,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 					npc.StartPathing();
-					npc.m_flSpeed = 320.0;
+					npc.m_flSpeed = 335.0;
 					npc.m_bAllowBackWalking = false;
 				}	
 			}
@@ -1012,7 +1060,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.m_iChanged_WalkCycle = 6;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE_ALLCLASS");
 					npc.StartPathing();
-					npc.m_flSpeed = 320.0;
+					npc.m_flSpeed = 335.0;
 					npc.m_bAllowBackWalking = false;
 				}	
 			}
@@ -1027,7 +1075,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.StartPathing();
-					npc.m_flSpeed = 320.0;
+					npc.m_flSpeed = 335.0;
 					npc.m_bAllowBackWalking = false;
 				}	
 			}
@@ -1039,7 +1087,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
 					npc.StartPathing();
-					npc.m_flSpeed = 320.0;
+					npc.m_flSpeed = 335.0;
 					npc.m_bAllowBackWalking = false;
 				}	
 			}
@@ -1072,7 +1120,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 					cooldownDo = 30.0;
 				else
 				{
-					cooldownDo *= 0.75;
+					cooldownDo *= 0.5;
 				}
 				if(i_RaidGrantExtra[npc.index] >= 4)
 					cooldownDo *= 0.75;
@@ -1083,7 +1131,6 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 				npc.m_iChanged_WalkCycle = 0;
 			}
 		}
-		
 	}
 	if(npc.m_flSilvesterAirbornAttack < GetGameTime(npc.index))
 	{
@@ -1118,7 +1165,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			DelaybewteenPillars,									//Extra delay between each
 			ang_Look 								/*2 dimensional plane*/,
 			pos,
-			1.0,
+			0.7,
 			0.5);	
 			
 			float cooldownDo  = 7.0;
@@ -1126,7 +1173,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 				cooldownDo = 7.0;
 			else
 			{
-				cooldownDo *= 0.75;
+				cooldownDo *= 0.5;
 			}
 			npc.m_flSilvesterAirbornAttack = GetGameTime(npc.index) + cooldownDo;
 		}
@@ -1168,7 +1215,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 
 							}
 							else
-								damage *= 1.25;
+								damage *= 1.35;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 							// Hit particle
@@ -1280,7 +1327,11 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 		}
 		else if(GetGameTime(npc.index) > npc.f_SilvesterMeleeSliceHappeningCD)
 		{				
-			if(distance > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+			{
+				return 1;
+			}
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 						
@@ -1299,7 +1350,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 						cooldownDo = 7.0;
 					else
 					{
-						cooldownDo *= 0.75;
+						cooldownDo *= 0.5;
 					}
 					if(i_RaidGrantExtra[npc.index] >= 4)
 						cooldownDo *= 0.75;
@@ -1362,7 +1413,6 @@ bool SilvesterTransformation(Silvester npc)
 			f_BattilonsNpcBuff[npc.index] = GetGameTime() + 5.0;
 			npc.m_flDoingAnimation = 0.0;
 
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");
 			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
 			{

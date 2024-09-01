@@ -1039,6 +1039,8 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 			Merchant_NPCTakeDamagePost(attacker, damage, weapon);
 		}
 	}
+
+	BlacksmithBrew_NPCTakeDamagePost(victim, attacker, damage);
 #endif
 }
 

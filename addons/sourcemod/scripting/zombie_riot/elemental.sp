@@ -67,6 +67,9 @@ static int TriggerDamage(int entity, int type)
 	if(entity <= MaxClients)
 		return MaxArmorCalculation(Armor_Level[entity], entity, 1.0);
 	
+
+	int divide = 3;
+
 	switch(type)
 	{
 		case Element_Necrosis:
@@ -79,12 +82,14 @@ static int TriggerDamage(int entity, int type)
 			
 			return b_thisNpcIsABoss[entity] ? 25000 : 12500;
 		}
+		case Element_Cyro:
+		{
+			divide = 4;
+		}
 	}
 
 	if(Citizen_IsIt(entity))
 		return view_as<Citizen>(entity).m_iGunValue / 20;
-
-	int divide = 3;
 
 	if(b_thisNpcIsARaid[entity])
 	{
@@ -95,7 +100,7 @@ static int TriggerDamage(int entity, int type)
 		divide *= 4; //Reduce way further so its good against bosses.
 	}
 
-	return ReturnEntityMaxHealth(entity) / divide;
+	return RoundToCeil(float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide;
 }
 
 bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
@@ -151,6 +156,10 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			}
 			else
 			{
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				if(damage < 1)
+					damage = 1;
+				
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
@@ -230,6 +239,10 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			}
 			else
 			{
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				if(damage < 1)
+					damage = 1;
+				
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
@@ -320,6 +333,10 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			}
 			else
 			{
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				if(damage < 1)
+					damage = 1;
+				
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{

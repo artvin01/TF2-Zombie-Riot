@@ -65,7 +65,7 @@ static void Weapon_German_M1(int client, int weapon, int maxcharge)
 		EmitGameSoundToClient(client, buffer);
 		EmitGameSoundToClient(client, buffer);
 
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		delay_hud[client] = 0.0;
 		Current_Mana[client] -= cost;
@@ -217,7 +217,7 @@ public Action Weapon_German_Timer(Handle timer, int client)
 				PrintHintText(client, "Charges: %d", GermanCharges[client]);
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				return Plugin_Continue;
 			}
 		}
@@ -339,7 +339,7 @@ public void Weapon_German_M2(int client, int weapon, bool &result, int slot)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
-			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+			SDKhooks_SetManaRegenDelayTime(client, 1.0);
 
 			TF2_AddCondition(client, TFCond_FocusBuff, 30.0);
 			Attributes_SetMulti(weapon, 6, 0.6);

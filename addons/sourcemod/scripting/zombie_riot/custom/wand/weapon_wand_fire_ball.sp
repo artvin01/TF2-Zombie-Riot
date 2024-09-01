@@ -21,13 +21,13 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, bool &result, int 
 {
 	if(weapon >= MaxClients)
 	{
-		int mana_cost = 35;
+		int mana_cost = 50;
 		if(mana_cost <= Current_Mana[client])
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
 				Rogue_OnAbilityUse(weapon);
-				Ability_Apply_Cooldown(client, slot, 5.0);
+				Ability_Apply_Cooldown(client, slot, 10.0);
 				
 				Attributes_Set(client, 698, 0.0);
 								
@@ -44,7 +44,7 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, bool &result, int 
 				CreateTimer(0.4, Fireball_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
@@ -104,7 +104,7 @@ public void Weapon_Wand_FireBallSpell2(int client, int weapon, bool &result, int
 				CreateTimer(0.4, Fireball_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
@@ -168,7 +168,7 @@ public void Weapon_Wand_FireBallSpell3(int client, int weapon, bool &result, int
 				CreateTimer(0.4, Fireball_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
@@ -232,7 +232,7 @@ public void Weapon_Wand_FireBallSpell4(int client, int weapon, bool &result, int
 				CreateTimer(0.4, Fireball_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
@@ -300,7 +300,7 @@ public Action FireMultipleFireBalls(Handle Timer, int ref)
 			if(mana_cost <= Current_Mana[client])
 			{
 
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;

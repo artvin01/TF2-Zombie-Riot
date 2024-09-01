@@ -335,8 +335,9 @@ methodmap Nemal < CClotBody
 	public void PlayMineLayed() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_MineLayed) - 1);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 120);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
 	}
 	public void PlayShootSoundNemalSnipe() 
 	{
@@ -1164,6 +1165,10 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					//Do Hit Effect
 					float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 					flMaxhealth *= 0.0025;
+					if(i_RaidGrantExtra[npc.index] >= 4)
+					{
+						flMaxhealth *= 0.75;
+					}
 					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{
@@ -1901,7 +1906,7 @@ bool NemalSnipingShots(Nemal npc)
 						int target = Can_I_See_Enemy(npc.index, Loop,_ ,SnipeTargets[Loop]);
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 50.0 * RaidModeScaling;
+							float damageDealt = 40.0 * RaidModeScaling;
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, SnipeTargets[Loop]);
 						} 

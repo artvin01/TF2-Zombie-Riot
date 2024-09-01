@@ -141,9 +141,8 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 		return false;
 	}
 
-	float time = GetGameTime() + 1.0;
-	if(Mana_Regen_Delay[client] < time)
-		Mana_Regen_Delay[client] = time;
+	SDKhooks_SetManaRegenDelayTime(client, 1.0);
+
 	
 	Mana_Hud_Delay[client] = 0.0;
 	Current_Mana[client] -= mana_cost;
@@ -527,7 +526,7 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 	}
 	
 	TonicBuff_CD[client] = GetGameTime() + 10.0;
-	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
+	SDKhooks_SetManaRegenDelayTime(client, 10.0);
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 
@@ -561,7 +560,7 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 	}
 	
 	TonicBuff_CD[client] = GetGameTime() + 10.0;
-	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
+	SDKhooks_SetManaRegenDelayTime(client, 10.0);
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 	
