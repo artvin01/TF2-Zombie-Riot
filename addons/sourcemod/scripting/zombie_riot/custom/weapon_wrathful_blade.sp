@@ -6,7 +6,7 @@
 //INFERNAL FURY: While holding M2, drain your health to burn everything around you and increase your melee stats.
 //Self-damage and cooldown become higher the longer it is active. When the ability ends, heal X HP for every zombie you killed while it is active,
 //at a rate of Y HP per second, up to a maximum of Z.
-static float Fury_ATKSpeed[3] = { 1.33, 1.5, 1.66 };			//Amount to multiply the user's melee attack rate while Infernal Fury is active.
+static float Fury_ATKSpeed[3] = { 1.33, 1.415, 1.5 };			//Amount to multiply the user's melee attack rate while Infernal Fury is active.
 static float Fury_ResMult[3] = { 0.5, 0.33, 0.25 };				//Amount to multiply damage taken from enemies while Infernal Fury is active. This should be fairly strong, because otherwise you can't really use the ability to be aggressive because the self-damage plus the damage you're taking from the enemies will get you killed in seconds.
 static float Fury_DMGMult[3] = { 1.25, 1.33, 1.5 };				//Amount to multiply damage dealt by the user's melee attacks while Infernal Fury is active.
 static float Fury_BurnDMG[3] = { 2.0, 3.0, 4.0 };				//Base damage dealt by Infernal Fury's AOE per 0.1s. This is affected by attributes.
@@ -14,8 +14,8 @@ static float Fury_BurnFalloff[3] = { 0.66, 0.7, 0.75 };			//Amount to multiply I
 static float Fury_BurnRadius[3] = { 120.0, 160.0, 200.0 };		//Infernal Fury AOE radius.
 static int Fury_BurnMaxTargets[3] = { 3, 4, 5 };				//Infernal Fury max targets hit per AOE.	
 static float Fury_HPDrain_Base[3] = { 0.2, 0.5, 1.0 };			//Base damage taken by the user per 0.1s while Infernal Fury is active.
-static float Fury_HPDrain_Rise[3] = { 0.2, 0.75, 1.5 };			//Amount to increase Infernal Fury's self-damage per second while it is active.
-static float Fury_HPDrain_Max[3] = { 10.0, 30.0, 30.0 };		//Maximum self-damage taken per 0.1s while Infernal Fury is active.
+static float Fury_HPDrain_Rise[3] = { 0.2, 0.75, 3.0 };			//Amount to increase Infernal Fury's self-damage per second while it is active.
+static float Fury_HPDrain_Max[3] = { 10.0, 30.0, 60.0 };		//Maximum self-damage taken per 0.1s while Infernal Fury is active.
 static float Fury_HPDrain_UberMult[3] = { 0.66, 0.66, 0.66 };	//Amount to multiply self-damage taken if übercharged.
 static float Fury_HealPerKill[3] = { 20.0, 25.0, 30.0 };		//Healing stored per zombie killed while Infernal Fury is active.
 static float Fury_MaxHeals[3] = { 1000.0, 2000.0, 3000.0 };		//Maximum healing stored per Infernal Fury usage.
@@ -135,6 +135,14 @@ float Player_OnTakeDamage_WrathfulBlade(int victim, float &damage, int attacker)
 	Fury_DamagedAt[victim] = GetGameTime() + 3.0;
 
 	return damage;
+}
+
+float Player_OnTakeDamage_WrathfulBlade_Hud(int victim)
+{
+	if (Fury_Active[victim])
+		return Fury_ResMult[Fury_Tier[victim]];
+
+	return 1.0;
 }
 
 void WrathfulBlade_OnKill(int client, int victim)

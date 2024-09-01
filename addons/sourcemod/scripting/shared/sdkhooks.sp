@@ -2326,6 +2326,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		{
 			return WeaponRedBlade_OnTakeDamage_Hud(victim);
 		}
+		case WEAPON_WRATHFUL_BLADE:
+		{
+			return Player_OnTakeDamage_WrathfulBlade_Hud(victim);
+		}
 	}
 	return 1.0;
 }
