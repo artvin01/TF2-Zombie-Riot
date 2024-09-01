@@ -26,6 +26,7 @@ static float Fury_MinCDTime[3] = { 2.0, 2.0, 2.0 };				//Maximum duration Infern
 static float Fury_CDRaise[3] = { 0.4, 0.4, 0.4 };				//Amount to increase Infernal Fury's cooldown per 0.1s of usage past the minimum CD window.
 static float Fury_MaxCD[3] = { 120.0, 120.0, 120.0 };			//Maximum cooldown applied to Infernal Fury.
 static float Fury_CDR[3] = { 0.5, 0.5, 0.5 };					//Amount to reduce Infernal Fury's remaining cooldown upon killing a zombie while Infernal Fury is not active.
+static float Fury_MedicHealMultiplier[3] = { 0.5, 0.5, 0.5 };	//Amount to multiply healing received from outside sources during Infernal Fury.
 
 //WRATH STRIKE: If enabled: Infernal Fury now charges up a powerful melee hit, which is given when Infernal Fury ends.
 //The longer Infernal Fury is active, the stronger this attack becomes.
@@ -36,6 +37,7 @@ static float Wrath_MaxStrength[3] = { 8.0, 8.0, 8.0 };			//Maximum melee damage 
 static float Wrath_Width[3] = { 60.0, 60.0, 60.0 };				//Wrath Strike hitbox width.
 static float Wrath_Length[3] = { 120.0, 120.0, 120.0 };			//Wrath Strike hitbox length.
 static float Wrath_MultiHitFalloff[3] = { 0.75, 0.75, 0.75 };	//Amount to multiply damage dealt by Wrath Strike per enemy hit.
+static float Wrath_Delay[3] = { 0.66, 0.66, 0.66 };				//Delay after ending Infernal Fury before Wrath Strike can be used, to prevent accidental usage.
 static int Wrath_MaxTargets[3] = { 4, 4, 4 };					//Max targets hit at once by Wrath Strike.
 
 //GENERAL: Miscellaneous extra stats.
@@ -81,7 +83,7 @@ public void Wrathful_Blade_ResetAll()
 #define SND_WRATH_SHOUT_BARNEY			")vo/k_lab2/ba_getgoing.wav"
 #define SND_WRATH_SHOUT_KLEINER			")vo/trainyard/kl_whatisit02.wav"
 #define SND_WRATH_SHOUT_SKELETON		")items/halloween/witch03.wav"
-#define SND_WRATH_SHOUT_NIKO			")misc/blank.wav"
+#define SND_WRATH_SHOUT_NIKO			")npc/stalker/go_alert2a.wav"
 #define SND_WRATH_BEGIN					")ambient_mp3/halloween/male_scream_14.mp3"
 #define SND_WRATH_LOOP					")misc/doomsday_cap_spin_loop.wav"
 #define SND_WRATH_END					")player/flame_out.wav"
@@ -268,7 +270,7 @@ public void Wrath_HUD(int client, int weapon, bool forced)
 			}
 
 			if (Fury_StoredHealth[client] > 0.0 && !Fury_Active[client])
-				Format(HUDText, sizeof(HUDText), "%s\n(Stored health is lost upon activating Infernal Fury.)", HUDText);
+				Format(HUDText, sizeof(HUDText), "%s\n(Stored health is lost upon activating Infernal Fury or being downed.)", HUDText);
 
 			PrintHintText(client, HUDText);
 
@@ -291,8 +293,8 @@ public void Fury_Attack(int client, int weapon, bool crit)
 		CreateDataTimer(0.2, Wrath_MeleeAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
 		WritePackCell(pack, GetClientUserId(client));
 		WritePackCell(pack, EntIndexToEntRef(weapon));
-		EmitSoundToAll(SND_WRATHSTRIKE_SWING, client, _, _, _, 0.8, 80);
-		EmitSoundToAll(SND_WRATHSTRIKE_SWING, client, _, _, _, 0.8, 80);
+		EmitSoundToAll(SND_WRATHSTRIKE_SWING, client, _, _, _, _, 80);
+		EmitSoundToAll(SND_WRATHSTRIKE_SWING, client, _, _, _, _, 80);
 		Wrath_Active[client] = false;
 	}
 }
@@ -393,6 +395,9 @@ public Action Wrath_MeleeAttack(Handle timelytimer, DataPack pack)
 
 		EmitSoundToAll(SND_WRATHSTRIKE_SMASH, client, _, _, _, 0.8);
 		EmitSoundToAll(SND_WRATHSTRIKE_SMASH_2, client, _, _, _, 0.8);
+		EmitSoundToAll(SND_WRATHSTRIKE_SMASH, client, _, _, _, 0.8);
+		EmitSoundToAll(SND_WRATHSTRIKE_SMASH_2, client, _, _, _, 0.8);
+    
 		Client_Shake(client);
 
 		delete ordered;
@@ -532,9 +537,7 @@ public Action Fury_Logic(Handle timelytimer, int id)
 
 		if (hasWrath)
 		{
-			Wrath_Active[client] = true;
-
-			EmitSoundToAll(SND_WRATHSTRIKE_ACTIVATE, client, _, _, _, _, 80);
+			CreateTimer(Wrath_Delay[tier], Wrath_Activate, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 
 			if (Wrath_Multiplier[client] < Wrath_MinStrength[tier])
 				Wrath_Multiplier[client] = Wrath_MinStrength[tier];
@@ -602,21 +605,25 @@ public Action Fury_Logic(Handle timelytimer, int id)
 					Fury_CurrentHealthDrain[client] = Fury_HPDrain_Max[tier];
 			}
 		}
+    
+		ApplyTempAttrib(weapon, 734, Fury_MedicHealMultiplier[tier], 0.1);
 	}
 
 	return Plugin_Continue;
 }
 
-public void Fury_IceThisFool(int id)
+public Action Wrath_Activate(Handle timer, int id)
 {
 	int client = GetClientOfUserId(id);
 	if (!IsValidClient(client))
-		return;
+		return Plugin_Continue;
+	if (!IsPlayerAlive(client))
+		return Plugin_Continue;
 
-	if (!IsPlayerAlive(client) || dieingstate[client] > 0)
-		return;
+	Wrath_Active[client] = true;
+	EmitSoundToAll(SND_WRATHSTRIKE_ACTIVATE, client, _, _, _, _, 80);
 
-	DealTruedamageToEnemy(0, client, 999999.0);
+	return Plugin_Continue;
 }
 
 public void Fury_AOEHit(int attacker, int victim, float damage, int weapon)
