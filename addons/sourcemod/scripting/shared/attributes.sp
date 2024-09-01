@@ -1,6 +1,15 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+enum
+{
+	Attrib_TerrianRes = 4022,
+	Attrib_ElementalDef = 4023,
+	Attrib_SlowImmune = 4024,
+	Attrib_ObjTerrianAbsorb = 4025,
+	Attrib_SetArchetype = 4026
+}
+
 StringMap WeaponAttributes[MAXENTITIES + 1];
 
 //4007 4008 4009 40010 Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
@@ -9,24 +18,25 @@ StringMap WeaponAttributes[MAXENTITIES + 1];
 // 4013: Override Explosion FAloff
 // 4014: Ammo consume extra in reserve
 // 4015: If set to 1, sets the weapons next attack to FAR_FUTURE, as doing 821 ; 1 ; 128 ; 1 breaks animations.
+// 4016: bonus damage to raidbosses
+// 4017: attackspeed directly converts into damage
+// 4018: allow Claiming of cades regardless
+// 4019: Mana Max Add
+// 4020: Mana Regen 
+// 4021: Override Weapon Skin To This
 bool Attribute_ServerSide(int attribute)
 {
+	if(attribute > 3999)
+		return true;
+	
 	switch(attribute)
 	{
 		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93: //gibs on hit
 		{
 			return true;
 		}
-		case 4003, 4004, 4005, 4006://rpg specific
-		{
-			return true;
-		}
-		case 4007, 4008, 4009, 4010, 4011, 4012,4013,4014,4015: 
-		{
-			return true;
-		}
 
-		case 57, 190, 191, 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412, 4001, 4002:
+		case 57, 190, 191, 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412:
 		{
 			return true;
 		}
@@ -123,6 +133,12 @@ bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = fa
 
 stock void Attributes_SetAdd(int entity, int attrib, float amount)
 {
+	if(attrib == Attrib_SetArchetype)
+	{
+		i_WeaponArchetype[entity] = RoundFloat(amount);
+		return;
+	}
+
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
 
@@ -141,7 +157,7 @@ stock void Attributes_SetAdd(int entity, int attrib, float amount)
 
 	WeaponAttributes[entity].SetValue(buffer, value);
 	if(!Attribute_ServerSide(attrib))
-		Attributes_Set(entity, attrib, value);
+		Attributes_Set(entity, attrib, value, true);
 }
 
 stock void Attributes_SetMulti(int entity, int attrib, float amount)
@@ -164,7 +180,7 @@ stock void Attributes_SetMulti(int entity, int attrib, float amount)
 
 	WeaponAttributes[entity].SetValue(buffer, value);
 	if(!Attribute_ServerSide(attrib))
-		Attributes_Set(entity, attrib, value);
+		Attributes_Set(entity, attrib, value, true);
 }
 
 stock bool Attributes_GetString(int entity, int attrib, char[] value, int length, int &size = 0)
@@ -223,7 +239,6 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		{
 			return;
 		}
-
 		if(!(damagetype & DMG_SLASH)) //Exclude itself so it doesnt do inf repeats! no weapon uses slash so we will use slash for any debuffs onto zombies that stacks
 		{
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
@@ -244,12 +259,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				
 				value = Attributes_Get(weapon, 208, 0.0);	// Set DamageType Ignite
 
-				int itemdefindex = -1;
-				if(IsValidEntity(weapon) && weapon >= MaxClients)
-				{
-					itemdefindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-				}
-				if(value || (itemdefindex ==  594 || itemdefindex == 208)) //Either this attribute, or burn damamage!
+				if(value)
 				{
 
 					if(value == 1.0)
@@ -336,6 +346,24 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		if(value)
 			view_as<CClotBody>(victim).m_bGib = true;
 		
+		value = Attributes_Get(weapon, 4016, 1.0);	// bonus damage to raids
+		if(value != 1.0)
+		{
+			if(b_thisNpcIsARaid[victim])
+			{
+				damage *= value;
+			}
+		}
+		value = Attributes_Get(weapon, 4017, 0.0);	// Attackspeed converts into damage
+		if(value)
+		{
+			value = Attributes_Get(weapon, 6, 0.0);
+			if(value)
+			{
+				damage /= value;
+			}
+		}
+		
 		value = Attributes_Get(weapon, 225, 0.0);	// if Above Half Health
 		if(value)
 		{
@@ -396,7 +424,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 	}
 }
 
-void Attributes_OnKill(int client, int weapon)
+void Attributes_OnKill(int victim, int client, int weapon)
 {
 
 	SetEntProp(client, Prop_Send, "m_iKills", GetEntProp(client, Prop_Send, "m_iKills") + 1);
@@ -419,6 +447,14 @@ void Attributes_OnKill(int client, int weapon)
 
 		if(value)
 		{
+			if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+			{
+				value *= 4.0;
+			}
+			else if(b_IsGiant[victim])
+			{
+				value *= 2.0;
+			}
 			HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
 		}
 		

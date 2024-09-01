@@ -84,6 +84,7 @@ methodmap FirstToTalk < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		i_NpcWeight[npc.index] = 4;
+		npc.m_bisWalking = true;
 		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
 		
@@ -191,6 +192,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 				if(npc.m_flNextRangedAttack < gameTime)
 				{
 					npc.PlayAngerSound();
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_SEABORN_FIRST_ATTACK_2");
 					b_NpcIsInvulnerable[npc.index] = true;
 					
@@ -218,8 +220,8 @@ public void FirstToTalk_ClotThink(int iNPC)
 
 					spawnRing_Vectors(vecTarget, 325.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 4.5, 6.0, 0.1, 1);
 
-					npc.m_flDoingAnimation = gameTime + 4.0;
-					npc.m_flNextMeleeAttack = gameTime + 6.0;
+					npc.m_flDoingAnimation = gameTime + 3.0;
+					npc.m_flNextMeleeAttack = gameTime + 5.0;
 					npc.m_flNextRangedAttack = gameTime + 35.0;
 				}
 				else
@@ -255,6 +257,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 			if(b_NpcIsInvulnerable[npc.index])
 			{
 				b_NpcIsInvulnerable[npc.index] = false;
+				npc.m_bisWalking = true;
 				npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 			}
 		}

@@ -154,7 +154,7 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 	if(mana_cost <= Current_Mana[client] && !Skulls_PlayerHasNoSkulls(client))
 	{	
 		Rogue_OnAbilityUse(weapon);
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -612,6 +612,10 @@ void Skull_AutoFire(int ent, int target, int client)
 		
 		velocity *= Attributes_Get(weapon, 475, 1.0);
 	}
+
+	int weapon1 = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(!IsValidEntity(weapon1) ||i_CustomWeaponEquipLogic[weapon1] != WEAPON_SKULL_SERVANT)
+		damage *= 0.35;
 
 	if(dist < (Skull_ShootRange[ent] * 0.5)) //If at half range, try to predict.
 	{

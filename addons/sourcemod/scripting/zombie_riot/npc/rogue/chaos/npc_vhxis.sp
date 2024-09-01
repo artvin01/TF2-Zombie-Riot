@@ -134,7 +134,7 @@ methodmap Vhxis < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -938,7 +938,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 	return false;
 }
 
-int LastEnemyTargeted[MAXENTITIES];
+static int LastEnemyTargeted[MAXENTITIES];
 //This summons the creep, and several enemies on his side!
 bool VoidVhxis_LaserPulseAttack(Vhxis npc, float gameTime)
 {

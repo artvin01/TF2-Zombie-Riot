@@ -937,6 +937,19 @@
 		"en"		"Big Shot is on cooldown: {1}"
 		"fr"		"Big Shot se recharge: {1}"
 	}
+	"Wrathful Ability Cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Infernal Fury is on cooldown: {1}"
+	}
+	"Wrathful Ability Blocked"
+	{
+		"en"		"Infernal Fury cannot be used right now."
+	}
+	"Wrath Strike Fully Charged"
+	{
+		"en"		"WRATH STRIKE IS FULLY CHARGED!"
+	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"
@@ -2323,6 +2336,10 @@
 		"ru"		"Это последняя волна, приготовьтесь."
 		"chi"		"这是最后一波，准备。"
 	}
+	"Void_Help_Message"
+	{
+		"en"		"Expidonsan's are trying to send help, but the void interfeers, only guarduses could get here."
+	}
 	"Silvester Shares His Power"
 	{
 		"en"		"Silvester shares his power with you..."
@@ -2333,6 +2350,7 @@
 	"Kahmlstein Courage"
 	{
 		"en"		"You feel Kahmlsteins Courage..."
+		"fr"		"Vous sentez le courage de Kahmlstein..."
 	}
 	"Opened store via command"
 	{
@@ -3672,4 +3690,15 @@
 		"en"	"Kleiner"
 		"fr"	"Kleiner"
 	}
+	"Iberia & Nemal"
+	{
+		"en" "Iberia & Nemal"
+		"fr" "Iberia & Nemal"
+	}
+	"Iberia Nemal Desc"
+	{
+		"en" "Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremaly seriously."
+		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
+	}
+	
 }

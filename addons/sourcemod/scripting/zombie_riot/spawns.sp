@@ -216,6 +216,11 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		RemoveEntity(spawn.EntRef);
 	}
 	spawnerSetting = spawn.SpawnSetting;
+	if(spawn.BaseBoss)
+	{
+		//never give spawnprotection if it spawns from an NPC.
+		spawnerSetting |= 1;
+	}
 	return true;
 }
 

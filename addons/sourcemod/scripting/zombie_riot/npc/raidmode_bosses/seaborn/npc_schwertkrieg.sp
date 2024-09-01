@@ -240,7 +240,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		
 	}
@@ -1730,7 +1730,7 @@ static void Schwert_SwordWings_Logic(Raidboss_Schwertkrieg npc, float npc_Vec[3]
 		}
 	}
 }
-static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float Loc[3], float Look_Vec[3], float GameTime, float spin_speed, bool damage=true, float dmg)
+static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float Loc[3], float Look_Vec[3], float GameTime, float spin_speed, bool damage=true, float dmg, bool boomerang = false)
 {
 	fl_spinning_angle[npc.index] +=spin_speed;
 
@@ -1787,7 +1787,7 @@ static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float L
 			if(fl_dance_of_light_sword_throttle[npc.index][i] < GameTime && damage)
 			{
 				fl_dance_of_light_sword_throttle[npc.index][i] = GameTime+0.1;
-				Schwertkrieg_Laser_Trace(npc, Sword_Loc, Loc2, 10.0, dmg);
+				Schwertkrieg_Laser_Trace(npc, Sword_Loc, Loc2, 10.0, dmg, boomerang);
 			}
 
 			/*
@@ -1833,12 +1833,9 @@ static void Schwertkrieg_Move_Entity(int entity, float loc[3], float Ang[3])
 	//TeleportEntity(entity, loc, NULL_VECTOR, NULL_VECTOR);
 	
 }
-static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Point[3], float End_Point[3], float Radius, float dps)
+static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Point[3], float End_Point[3], float Radius, float dps, bool boomerange)
 {
-	for (int i = 0; i < MAXENTITIES; i++)
-	{
-		Schwertkrieg_BEAM_HitDetected[i] = false;
-	}
+	Zero(Schwertkrieg_BEAM_HitDetected);
 
 	float hullMin[3], hullMax[3];
 	hullMin[0] = -Radius;
@@ -1850,14 +1847,33 @@ static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Poin
 	Handle trace = TR_TraceHullFilterEx(Start_Point, End_Point, hullMin, hullMax, 1073741824, Schwertkrieg_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	for (int victim = 0; victim < MAXTF2PLAYERS; victim++)
+	for (int victim = 0; victim < MAXENTITIES; victim++)
 	{
-		if (Schwertkrieg_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetTeam(victim))
+		if (Schwertkrieg_BEAM_HitDetected[victim] && IsValidEnemy(npc.index, victim))
 		{
 			float playerPos[3];
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 
 			float Dmg = dps;
+
+			if(boomerange && IsValidClient(victim))
+			{
+				int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+				if(IsValidEntity(weapon))
+				{
+					float Bonus_damage = 1.0;
+					char classname[32];
+					GetEntityClassname(weapon, classname, 32);
+				
+					int weapon_slot = TF2_GetClassnameSlot(classname);
+				
+					if(weapon_slot == 2 && !i_IsWandWeapon[weapon])
+					{
+						Bonus_damage = 0.5;
+					}
+					Dmg *= Bonus_damage;
+				}
+			}
 
 			SDKHooks_TakeDamage(victim, npc.index, npc.index, Dmg, DMG_PLASMA, -1, NULL_VECTOR, Start_Point);
 				
@@ -2527,9 +2543,9 @@ static Action Schwert_Spiral_Core_Projectile_Homing_Hook(int iNPC)
 
 
 	if(npc.Anger)
-		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 6.75, true, 30.0*RaidModeScaling);
+		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 6.75, true, 30.0*RaidModeScaling, true);
 	else
-		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 4.5, true, 20.0*RaidModeScaling);
+		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 4.5, true, 20.0*RaidModeScaling, true);
 
 	float dist = GetVectorDistance(Npc_Vec, Proj_Vec);
 

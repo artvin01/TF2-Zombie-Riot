@@ -885,11 +885,6 @@
 		"en"		"Mortar"
 		"fr"		"Mortier"
 	}
-	"Railgun"
-	{
-		"en"		"Railgun"
-		"fr"		"Canon à Rail"
-	}
 	"Food Fridge"
 	{
 		"en"		"Food Fridge"
@@ -2655,6 +2650,10 @@
 		"en"	"Tinker Workshop"
 		"fr"	"Laboratoire du Forgeron"
 	}
+	"Merchant Brewing Stand"
+	{
+		"en"	"Merchant Brewing Stand"
+	}
 	"Tinker Research"
 	{
 		"en"	"Tinker Research"
@@ -2726,5 +2725,10 @@
 	{
 		"en"	"Taurus Judge"
 		"fr"	"Juge Taurus"
+	}
+	"Vows of the Sea"
+	{
+		"en"	"Vows of the Sea"
+		"fr"	"Voeu Océanique"
 	}
 }

@@ -1461,6 +1461,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.50;
 		}
+		if(MoraleBoostLevelAt(this.index) > 0)
+		{
+			speed_for_return *= EntityMoraleBoostReturn(this.index, 1);
+		}
 #if defined RUINA_BASE	
 		if(f_Ruina_Speed_Buff[this.index] > Gametime)
 		{
@@ -1627,7 +1631,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
-		if(b_npcspawnprotection[this.index])
+		if(i_npcspawnprotection[this.index] == 1)
 		{
 #if defined ZR
 			if(!Rogue_Mode())
@@ -3468,6 +3472,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	if(!b_NpcHasDied[pThis])
 	{
 
+		//we push back the entity in time to when lag comp happend, so gibs actually make sense.
+		FinishLagCompensation_Base_boss(pThis);
 		int client;
 #if defined ZR
 		if(Saga_EnemyDoomed(pThis))
@@ -4649,6 +4655,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 		vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
 		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
 	}
+	
 	CClotBody npc = view_as<CClotBody>(bot_entidx);
 	npc.Jump();
 	npc.SetVelocity(vecJumpVel);
@@ -4664,6 +4671,107 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	return true;
 }
 
+
+void ArcToLocationViaSpeedProjectile(float VecStart[3], float VecEnd[3], float SpeedReturn[3], float TimeUntillReachDest = 1.0, float GravityChange = 1.0)
+{
+	float vecJumpVel[3];
+	
+	float gravity;
+	if(gravity <= 0.0)
+		gravity = FindConVar("sv_gravity").FloatValue;
+
+	gravity *= GravityChange;
+	// How fast does the headcrab need to travel to reach the position given gravity?
+	float flActualHeight = VecEnd[2] - VecStart[2];
+	float height = flActualHeight;
+	if(height < 0.0)
+	{
+		//tickrate gravity downwards is bad.
+		gravity *= TickrateModify;
+		if(height >= -20.0)
+		{
+			height = -20.0;
+
+		}
+	}
+	else
+	{
+		//invert for gravity the otherway
+		gravity *= (((TickrateModify - 1.0) * -1.0) + 1.0);
+		if(height <= 20.0)
+		{
+			height = 20.0;
+		}
+	}
+
+	float speed = SquareRoot( 2.0 * gravity * fabs(height) );
+	float time = speed / gravity;
+
+	time += SquareRoot( (2.0 * fabs(height)) / gravity );
+
+	time *= TimeUntillReachDest;
+	speed *= TimeUntillReachDest;
+	
+	// Scale the sideways velocity to get there at the right time
+	SubtractVectors( VecEnd, VecStart, vecJumpVel );
+	vecJumpVel[0] /= time;
+	vecJumpVel[1] /= time;
+	vecJumpVel[2] /= time;
+
+	// Speed to offset gravity at the desired height.
+	vecJumpVel[2] = speed;
+
+	SpeedReturn = vecJumpVel;
+
+	/*
+	float vecNPC[3], vecJumpVel[3];
+	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
+	
+	float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
+	if(gravity <= 0.0)
+		gravity = FindConVar("sv_gravity").FloatValue;
+	
+	// How fast does the headcrab need to travel to reach the position given gravity?
+	float flActualHeight = vecPos[2] - vecNPC[2];
+	float height = flActualHeight;
+	if ( height < 72 )
+	{
+		height = 72.0;
+	}
+	float additionalHeight = 0.0;
+	
+	if ( height < 35 )
+	{
+		additionalHeight = 25.0;
+	}
+	
+	height += additionalHeight;
+	
+	float speed = SquareRoot( 2 * gravity * height );
+	float time = speed / gravity;
+
+	time += SquareRoot( (2 * additionalHeight) / gravity );
+	
+	// Scale the sideways velocity to get there at the right time
+	SubtractVectors( vecPos, vecNPC, vecJumpVel );
+	vecJumpVel[0] /= time;
+	vecJumpVel[1] /= time;
+	vecJumpVel[2] /= time;
+
+	// Speed to offset gravity at the desired height.
+	vecJumpVel[2] = speed;
+	
+	// Don't jump too far/fast.
+	float flJumpSpeed = GetVectorLength(vecJumpVel);
+	float flMaxSpeed = 1250.0;
+	if ( flJumpSpeed > flMaxSpeed )
+	{
+		vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
+		vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
+		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
+	}
+	*/
+}
 stock bool IsEntityAlive(int index, bool WasValidAlready = false)
 {
 	if(WasValidAlready || IsValidEntity(index))
@@ -6194,7 +6302,7 @@ void UnstuckStuckNpc(CClotBody npc, int iNPC)
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
-			b_npcspawnprotection[iNPC] = true;
+			i_npcspawnprotection[iNPC] = 1;
 			CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
@@ -6239,7 +6347,8 @@ stock void Custom_Knockback(int attacker,
 	 bool work_on_entity = false,
 	 float PullDuration = 0.0,
 	 bool RecieveInfo = false,
-	 float RecievePullInfo[3] = {0.0,0.0,0.0})
+	 float RecievePullInfo[3] = {0.0,0.0,0.0},
+	 float OverrideLookAng[3] ={0.0,0.0,0.0})
 {
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{
@@ -6250,6 +6359,7 @@ stock void Custom_Knockback(int attacker,
 			if(PullDuration == 0.0)
 			{
 				GetClientEyeAngles(attacker, vAngles);
+				/*
 				if(vAngles[0] < -40.0) //if they look up too much, we set it.
 				{
 					vAngles[0] = -40.0;
@@ -6258,6 +6368,11 @@ stock void Custom_Knockback(int attacker,
 				{
 					vAngles[0] = -5.0;
 				}
+				*/
+				//Always launch up so people dont have to look up like a hawk.
+				vAngles[0] = -40.0;
+				if(OverrideLookAng[0] != 0.0)
+					vAngles[0] = OverrideLookAng[0];
 			}
 			else
 			{
@@ -6301,7 +6416,7 @@ stock void Custom_Knockback(int attacker,
 		else
 		{
 			CClotBody npc = view_as<CClotBody>(enemy);
-			if (!npc.IsOnGround())
+			if (TheNPCs.IsValidNPC(npc.GetBaseNPC()) && !npc.IsOnGround())
 			{
 				knockback *= 0.85; //Dont do as much knockback if they are in the air
 				if(attacker > MaxClients) //npcs have no angles up, help em.
@@ -8263,7 +8378,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_NpcImmuneToBleed[entity] = 0.0;
 	f_CreditsOnKill[entity] = 0.0;
 	i_PluginBot_ApproachDelay[entity] = 0;
-	b_npcspawnprotection[entity] = false;
+	i_npcspawnprotection[entity] = 0;
 	f_DomeInsideTest[entity] = 0.0;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
@@ -8278,6 +8393,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LudoDebuff[entity] = 0.0;
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
+	f_IberiaMarked[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_VoidAfflictionStrength[entity] = 0.0;
 	f_VoidAfflictionStrength2[entity] = 0.0;
@@ -8294,6 +8410,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_MaimDebuff[entity] = 0.0;
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
+	f_GoldTouchDebuff[entity] = 0.0;
 	f_CudgelDebuff[entity] = 0.0;
 	f_DuelStatus[entity] = 0.0;
 	f_PotionShrinkEffect[entity] = 0.0;
@@ -8938,6 +9055,26 @@ stock void NpcStats_SilenceEnemy(int enemy, float duration)
 	}
 }
 
+stock void NpcStats_IberiaMarkEnemy(int enemy, float duration)
+{
+	float GameTime = GetGameTime();
+	if(f_IberiaMarked[enemy] < (GameTime + duration))
+	{
+		f_IberiaMarked[enemy] = GameTime + duration; //make sure longer silence buff is prioritised.
+	}
+}
+stock bool NpcStats_IberiaIsEnemyMarked(int enemy)
+{
+	if(!IsValidEntity(enemy))
+		return true; //they dont exist, pretend as if they are silenced.
+
+	if(f_IberiaMarked[enemy] < GetGameTime())
+	{
+		return false;
+	}
+	return true;
+}
+
 stock bool NpcStats_IsEnemySilenced(int enemy)
 {
 	if(!IsValidEntity(enemy))
@@ -8963,6 +9100,7 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_VeryLowIceDebuff[enemy] = 0.0;
 	f_WidowsWineDebuff[enemy] = 0.0;
 	f_CrippleDebuff[enemy] = 0.0;
+	f_GoldTouchDebuff[enemy] = 0.0;
 	f_CudgelDebuff[enemy] = 0.0;
 	f_MaimDebuff[enemy] = 0.0;
 	f_PotionShrinkEffect[enemy] = 0.0;
@@ -9334,6 +9472,15 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(NpcStats_IsEnemySilenced(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "X");
+	}
+	if(MoraleBoostLevelAt(npc.index) > 0) //hussar!
+	{
+		//Display morale!
+		MoraleIconShowHud(npc.index, HealthText, sizeof(HealthText));
+	}
+	if(NpcStats_IberiaIsEnemyMarked(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "%sM",HealthText);
 	}
 
 #if defined ZR
@@ -10003,7 +10150,7 @@ public void TeleportBackToLastSavePosition(int entity)
 {
 	if(f3_VecTeleportBackSave_OutOfBounds[entity][0] != 0.0)
 	{
-		b_npcspawnprotection[entity] = true;
+		i_npcspawnprotection[entity] = 1;
 		CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + 2.0; //was stuck, lets just chill.
 		TeleportEntity(entity, f3_VecTeleportBackSave_OutOfBounds[entity], NULL_VECTOR ,{0.0,0.0,0.0});
@@ -10376,7 +10523,7 @@ void ExtinguishTarget(int target)
 void IsEntityInvincible_Shield(int entity)
 {
 	bool NpcInvulShieldDisplay;
-	if(b_npcspawnprotection[entity])
+	if(i_npcspawnprotection[entity] == 1)
 		NpcInvulShieldDisplay = true;
 
 	if(b_NpcIsInvulnerable[entity])
@@ -10399,7 +10546,7 @@ void IsEntityInvincible_Shield(int entity)
 				i_InvincibleParticlePrev[Shield] = 0;
 			}
 		}
-		else if(b_npcspawnprotection[entity])
+		else if(i_npcspawnprotection[entity] == 1)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 1)
 			{
@@ -10428,7 +10575,7 @@ void IsEntityInvincible_Shield(int entity)
 			i_InvincibleParticlePrev[Shield] = 0;
 		}
 	}
-	else if(b_npcspawnprotection[entity])
+	else if(i_npcspawnprotection[entity] == 1)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 1)
 		{
@@ -10587,7 +10734,16 @@ float custom_maxarmour = 0.0)
 	}
 	npc.m_iArmorGiven = true;
 	npc.m_iArmorType = ArmorType;
-	npc.m_flArmorProtect = ArmorProtect;
+	if(custom_maxarmour == 0.0)
+	{
+		npc.m_flArmorProtect = ArmorProtect;
+	}
+	else
+	{
+		if(npc.m_flArmorProtect == 0.0)
+			npc.m_flArmorProtect = ArmorProtect;
+	}
+	
 	if(custom_maxarmour == 0.0)
 	{
 		float flMaxHealth = ScaleMaxHealth * float(ReturnEntityMaxHealth(npc.index));
@@ -10596,8 +10752,21 @@ float custom_maxarmour = 0.0)
 	}
 	else
 	{
-		npc.m_flArmorCount = 	custom_maxarmour;
-		npc.m_flArmorCountMax = custom_maxarmour;
+		float flMaxHealth = ScaleMaxHealth * float(ReturnEntityMaxHealth(npc.index));
+		if(npc.m_flArmorCount > flMaxHealth)
+		{
+			return;
+		}
+		if(flMaxHealth <= (npc.m_flArmorCount + custom_maxarmour))
+		{
+			npc.m_flArmorCount 		= 	flMaxHealth;
+			npc.m_flArmorCountMax 	= flMaxHealth;
+			return;
+		}
+		npc.m_flArmorCount 		+= 	custom_maxarmour;
+		npc.m_flArmorCountMax += custom_maxarmour;
+		if(npc.m_flArmorCountMax >= npc.m_flArmorCount)
+			npc.m_flArmorCountMax = npc.m_flArmorCount;
 	}
 	
 	//any extra logic please add here. deivid.

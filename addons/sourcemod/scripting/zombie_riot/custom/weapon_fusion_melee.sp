@@ -16,6 +16,8 @@ static const char g_Siccerino_snapSound[][] = {
 	"physics/metal/sawblade_stick3.wav",
 };
 
+
+
 static float f_AniSoundSpam[MAXTF2PLAYERS];
 static float Duration[MAXTF2PLAYERS];
 static int Weapon_Id[MAXTF2PLAYERS];
@@ -1514,7 +1516,7 @@ static bool Siccerino_TraceUsers(int entity, int contentsMask, int client)
 		entity = Target_Hit_Wand_Detection(client, entity);
 		if(0 < entity)
 		{
-			for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{
 				if(!BEAM_BuildingHit[i])
 				{

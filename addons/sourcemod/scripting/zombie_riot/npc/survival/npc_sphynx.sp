@@ -230,7 +230,12 @@ public void Sphynx_ClotThink(int iNPC)
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.25;
-		ExpidonsaGroupHeal(npc.index, 40.0, 500, 9999.0, 1.0, false,Expidonsa_DontHealSameIndex);
+		ExpidonsaGroupHeal(npc.index, 40.0, 500, 9999.0, 1.0, false,Expidonsa_DontHealSameIndex);		
+		ChaosSupporter npc1 = view_as<ChaosSupporter>(npc.index);
+		float ProjectileLoc[3];
+		GetEntPropVector(npc1.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 125, 0, 200, 1, 0.3, 5.0, 8.0, 3, 40.0 * 2.0);	
+		npc1.PlayHealSound();
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))

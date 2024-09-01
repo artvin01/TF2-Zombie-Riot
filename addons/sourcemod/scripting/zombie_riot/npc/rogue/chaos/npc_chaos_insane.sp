@@ -82,6 +82,7 @@ methodmap ChaosInsane < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		int iActivity = npc.LookupActivity("ACT_ROGUE2_CHAOS_INSANE_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.m_bisWalking = false;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -236,7 +237,6 @@ void ChaosInsaneSelfDefense(ChaosInsane npc, float gameTime, int target, float d
 				//This lasts 73 frames
 				//at frame 61 it explodes.
 				//divide by 24 to get the accurate time!
-				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 1;
 				npc.SetActivity("ACT_ROGUE2_CHAOS_INSANE_WALK");
 				NPC_StopPathing(npc.index);
@@ -250,7 +250,6 @@ void ChaosInsaneSelfDefense(ChaosInsane npc, float gameTime, int target, float d
 				//This lasts 73 frames
 				//at frame 61 it explodes.
 				//divide by 24 to get the accurate time!
-				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 3;
 				npc.SetActivity("ACT_ROGUE2_CHAOS_INSANE_WALK");
 				npc.StartPathing();
@@ -271,12 +270,11 @@ void ChaosInsaneSelfDefense(ChaosInsane npc, float gameTime, int target, float d
 				npc.m_iTarget = Enemy_I_See;
 						
 				npc.m_flAttackHappens = gameTime + 1.1;
-				npc.m_flDoingAnimation = gameTime + 2.0;
+				npc.m_flDoingAnimation = gameTime + 1.4;
 				npc.m_flNextMeleeAttack = gameTime + 4.0;
 				//This lasts 73 frames
 				//at frame 61 it explodes.
 				//divide by 24 to get the accurate time!
-				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 4;
 				npc.SetActivity("ACT_ROGUE2_CHAOS_INSANE_ATTACK");
 				NPC_StopPathing(npc.index);

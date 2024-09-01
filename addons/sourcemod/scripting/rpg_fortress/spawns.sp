@@ -431,7 +431,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 
 				if(!b_IsAloneOnServer)
 				{
-					b_npcspawnprotection[entity] = true;
+					i_npcspawnprotection[entity] = 1;
 					CreateTimer(5.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 				}
 			}

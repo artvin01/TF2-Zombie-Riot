@@ -469,6 +469,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		float VecAbsEntity[3];
 		GetEntPropVector(iClient, Prop_Data, "m_vecAbsOrigin", VecAbsClient);
 		GetEntPropVector(iHit, Prop_Data, "m_vecAbsOrigin", VecAbsEntity);
+		flDistance *= 2.0;
 		if(GetVectorDistance(VecAbsClient, VecAbsEntity, true) < ((flDistance) * (flDistance)))
 			iReturn = iHit;
 	}
@@ -1284,13 +1285,61 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 //Heals but doesnt notify anyone
 */
 //this will return the amount of healing it actually did.
+
+void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
+{
+//	HealEntityGlobal(attacker, victim, -(truedamagedeal - 1.0), 99.0, 0.0, HEAL_ABSOLUTE | HEAL_SELFHEAL);
+	b_ThisNpcIsSawrunner[attacker] = true;
+	if(victim <= MaxClients)
+	{
+		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_DROWN, -1);
+	}
+	else
+	{
+		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_SLASH, -1);
+	}
+	b_ThisNpcIsSawrunner[attacker] = false;
+	/*
+	float AnyValueTest1 = 1.0;
+	int AnyValueTest2 = 1;
+	if(victim <= MaxClients)
+	{
+		Player_OnTakeDamageAlive_DeathCheck(victim, 
+		attacker, 
+		AnyValueTest2, 
+		AnyValueTest1, 
+		AnyValueTest2, 
+		AnyValueTest2, 
+		{0.0,0.0,0.0}, 
+		{0.0,0.0,0.0}, 
+		0);
+	}
+	else
+	{
+		NPC_OnTakeDamage_Post(victim, 
+		attacker, 
+		AnyValueTest2, 
+		AnyValueTest1, 
+		AnyValueTest2, 
+		AnyValueTest2, 
+		{0.0,0.0,0.0}, 
+		{0.0,0.0,0.0}, 
+		0);
+	}
+	*/
+}
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
 {
 	/*
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.
 	*/
-
+	if(HealTotal < 0)
+	{
+		if(healer > 0)
+			HealTotal *= fl_Extra_Damage[healer];
+		//the heal total is negative, this means this is trated as true damage.
+	}
 #if defined ZR
 	if(reciever <= MaxClients)
 		if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
@@ -1309,7 +1358,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 			HealTotal *= 0.5;
 		}
-		if(CurrentModifOn() == 2 && GetTeam(healer) != TFTeam_Red && GetTeam(reciever) != TFTeam_Red)
+		if((CurrentModifOn() == 3|| CurrentModifOn() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(reciever) != TFTeam_Red)
 		{
 			HealTotal *= 1.5;
 		}
@@ -1375,10 +1424,10 @@ void DisplayHealParticleAbove(int entity)
 		f_HealDelayParticle[entity] = GetGameTime() + 0.5;
 		float ProjLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		ProjLoc[2] += 95.0;
+		ProjLoc[2] += 70.0;
 		ProjLoc[2] += f_ExtraOffsetNpcHudAbove[entity];
 		ProjLoc[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-		ProjLoc[2] -= 10.0;
+		ProjLoc[2] += 10.0;
 		if(GetTeam(entity) != TFTeam_Red)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		else
@@ -2892,9 +2941,11 @@ int CountPlayersOnServer()
 int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
 
 stock void Explode_Logic_Custom(float damage,
-int client,
-int entity,
-int weapon,
+int client, //To get attributes from and to see what is my enemy!
+int entity,	//Entity that gets forwarded or traced from/Distance checked.
+int weapon,	//What to get attributes from aswell, if its from an npc, always -1
+//Idealy: entity is projectile if its a projectile weapon
+//If its happening from an NPC or player itself, set both client and entity to the same thing.
 float spawnLoc[3] = {0.0,0.0,0.0},
 float explosionRadius = EXPLOSION_RADIUS,
 float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
@@ -2997,6 +3048,16 @@ int inflictor = 0)
 		damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
 	}
 	int entityToEvaluateFrom = 0;
+	int EntityToForward = 0;
+
+	if(IsValidEntity(entity))
+	{
+		EntityToForward = entity;
+	}
+	else
+	{
+		EntityToForward = client;
+	}
 
 	if(IsValidEntity(client))
 	{
@@ -3006,10 +3067,12 @@ int inflictor = 0)
 	{
 		entityToEvaluateFrom = entity;
 	}
+
 	if(inflictor == 0)
 	{
 		inflictor = entityToEvaluateFrom;
 	}
+
 	if(entityToEvaluateFrom < 1)
 	{
 		//something went wrong, evacuate.
@@ -3139,7 +3202,7 @@ int inflictor = 0)
 			if(FunctionToCallBeforeHit != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, FunctionToCallBeforeHit);
-				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
 				Call_PushFloat(damage_1);
 				Call_PushCell(weapon);
@@ -3181,7 +3244,7 @@ int inflictor = 0)
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, FunctionToCallOnHit);
-				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
 				//do not allow division by 0
 				damage_1 *= damage_reduction;
@@ -5259,4 +5322,18 @@ stock bool FailTranslation(const char[] phrase)
 stock any GetItemInArray(any[] array, int pos)
 {
 	return array[pos];
+}
+
+//MaxNumBuffValue(0.6, 1.0, 0.0) = 1.0
+//MaxNumBuffValue(0.6, 1.0, 1.0) = 0.6
+//MaxNumBuffValue(0.6, 1.0, 1.25) = 0.55
+
+float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
+{
+	// Our base number is max, the number when valuenerf is 0
+	// Our high number is start, the number when valuenerf is 1
+
+	// start = 0.6, max = 1.0
+	//     1.0 + ((-0.4) * valuenerf)
+	return max + ((start - max) * valuenerf);
 }

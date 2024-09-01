@@ -665,14 +665,14 @@ bool Object_Interact(int client, int weapon, int obj)
 	Function func = func_NPCInteract[entity];
 	if((!func || func == INVALID_FUNCTION) && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
 		return false;
-
+/*
 	if(PlayerIsInNpcBattle(client, 1.0) && MountedObjectInteracted)
 	{
 		//self mounted ignores this.
 		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
 			return false;
 	}
-
+*/
 
 	bool result;
 	
@@ -683,7 +683,7 @@ bool Object_Interact(int client, int weapon, int obj)
 		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1)
 		{
 			// Claim a unclaimed building
-			if(weapon != -1 && i_IsWrench[weapon])
+			if(weapon != -1 && (i_IsWrench[weapon] || Attributes_Get(weapon, 4018, 0.0) >= 1.0))
 			{
 				if(FuncCanBuild[entity] && FuncCanBuild[entity] != INVALID_FUNCTION)
 				{
@@ -852,7 +852,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 		damage *= 0.75;
 	}
 	
-	if(CurrentModifOn() == 2)
+	if(CurrentModifOn() == 2 || CurrentModifOn() == 3)
 		damage *= 1.25;
 
 	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.

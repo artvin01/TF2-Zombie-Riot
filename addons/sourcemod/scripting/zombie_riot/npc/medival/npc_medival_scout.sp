@@ -202,6 +202,7 @@ methodmap MedivalScout < CClotBody
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 0.75;
+		npc.m_bisWalking = false;
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_scout_sword/c_scout_sword.mdl");
 		SetVariantString("0.8");
@@ -328,7 +329,6 @@ public void MedivalScout_ClotThink(int iNPC)
 				if(!npc.m_bPathing)
 					npc.StartPathing();
 					
-				npc.m_bisWalking = true;
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
@@ -355,7 +355,6 @@ public void MedivalScout_ClotThink(int iNPC)
 
 					npc.m_flDoingAnimation = gameTime + 0.35;
 					npc.m_flNextMeleeAttack = gameTime + 1.5;
-					npc.m_bisWalking = true;
 				}
 			}
 		}

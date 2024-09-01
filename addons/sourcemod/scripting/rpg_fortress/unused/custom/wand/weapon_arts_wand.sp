@@ -23,7 +23,7 @@ public Action Weapon_Arts_Wand(int client, int weapon, bool &crit, int slot)
 		damage *= 1.0 + (Stats_OriginiumPower(client) / 2.0);
 		// x1.0 to x2.5
 
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
