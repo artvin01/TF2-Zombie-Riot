@@ -255,6 +255,7 @@ float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 float PlayerCountBuffScaling = 1.0;
+float PlayerCountBuffAttackspeedScaling = 1.0;
 float PlayerCountResBuffScaling = 1.0;
 int PlayersAliveScaling;
 int PlayersInGame;

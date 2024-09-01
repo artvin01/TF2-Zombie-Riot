@@ -281,7 +281,7 @@ static float MultiScale(int attrib)
 		//all attackspeed and reload speed attribs!
 		case 6, 97:
 		{
-			return PlayerCountBuffScaling;
+			return PlayerCountBuffAttackspeedScaling;
 		}
 
 		default:
