@@ -1101,10 +1101,8 @@ public Action CommandDebugHudTest(int client, int args)
         return Plugin_Handled;
     }
 
-	float Number = GetCmdArgFloat(1);
-	PrintToChatAll("Number %f",Number);
-
-	PrintToChatAll("MaxNumBuffValue %f",MaxNumBuffValue(0.6, 1.0, Number));
+	int Number = GetCmdArgInt(1);
+	Medival_Wave_Difficulty_Riser(Number);
 
 	return Plugin_Handled;
 }
