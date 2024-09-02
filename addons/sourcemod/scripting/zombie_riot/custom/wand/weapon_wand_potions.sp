@@ -741,7 +741,15 @@ public void WandPotion_PotionGoldDo(int entity, int enemy, float damage_Dontuse,
 bool ShrinkOnlyOneTarget = false;
 public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 {
-
+	if(target)
+	{
+		if(target <= MaxClients)
+			return;
+		
+		if(GetTeam(target) == 2)
+			return;
+	}
+	
 	SDKUnhook(entity, SDKHook_StartTouchPost, Weapon_Wand_PotionShrinkTouch);
 
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);

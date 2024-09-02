@@ -123,11 +123,6 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	}
 	float GameTime = GetGameTime();
 
-	if(Medival_Difficulty_Level != 0.0)
-	{
-		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
-	}
-
 	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 	//It will just return the same damage if nothing is done.
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
@@ -558,11 +553,18 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 	//dont do reduce per player, its only 1 o 1 !!!
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)	//this doesnt get applied in groups.
 		damage += basedamage * (DMG_MEDIGUN_LOW - 1.0);
+		
 
 	#if defined RUINA_BASE
 		if(f_Ruina_Attack_Buff[attacker] > GameTime)
 			damage += basedamage * (f_Ruina_Attack_Buff_Amt[attacker] * DamageBuffExtraScaling);	//x% dmg bonus			
 	#endif
+
+	//Medieval buff stacks with any other attack buff.
+	if(GetTeam(attacker) != TFTeam_Red && Medival_Difficulty_Level != 0.0)
+	{
+		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
+	}
 	
 	return false;
 }
@@ -625,7 +627,7 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 		DamageRes *= 0.95;
 	} 
 	//if inflictor is 9999999, then that means its called by seperate code, HUD elements.
-	if(RaidbossIgnoreBuildingsLogic(1) && (inflictor >= 999999 || GetTeam(victim) == TFTeam_Red))
+	if(RaidbossIgnoreBuildingsLogic(1) && (GetTeam(victim) == TFTeam_Red))
 	{
 		//invert, then convert!
 		float NewRes = 1.0 + ((DamageRes - 1.0) * PlayerCountResBuffScaling);
