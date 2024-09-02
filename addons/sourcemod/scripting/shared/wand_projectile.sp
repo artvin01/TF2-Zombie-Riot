@@ -304,8 +304,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}
 		case 11:
 		{
+			
 			Cryo_Touch(entity, target);
 		}
+		
 		case WEAPON_GLADIIA:
 		{
 			Gladiia_WandTouch(entity, target);
@@ -345,10 +347,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_MESSENGER_LAUNCHER:
 		{
 			Gun_MessengerTouch(entity, target);
-		}
-		case WEAPON_MAGNESIS:
-		{
-			Magnesis_ProjectileTouch(entity, target);
 		}
 	}
 #endif

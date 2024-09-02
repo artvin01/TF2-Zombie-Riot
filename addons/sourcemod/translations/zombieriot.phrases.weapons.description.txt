@@ -146,10 +146,6 @@
 		"fr"		"Archetype: Sortilèges Mythiques"
 		"chi"		"类型：至尊法师"
 	}
-	"Psychic Warlord"
-	{
-		"en"		"Archetype: Psychic Warlord"
-	}
 	"Abyssal Hunter"
 	{
 		"en"		"Archetype: Abyssal Hunter"
@@ -3851,25 +3847,5 @@
 	"Trash Cannon PaP 2"
 	{
 		"en"	"''Carbon foot on the pedal, I AM TRASH METAL!''\nUnlocks two more projectiles and improves base stats further.\nAn object of unspeakable danger lurks in this trash can..."
-	}
-	"Telekinesis Desc"
-	{
-		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nRapidly fires projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw the zombie."
-	}
-	"Telekinesis PaP 1"
-	{
-		"en"	"Increases to all stats. You may now grab bosses and mini-bosses."
-	}
-	"Telekinesis PaP 2"
-	{
-		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nCan now grab raid bosses."
-	}
-	"Newtonian Knuckles Desc"
-	{
-		"en"	"''You traded your experimental drugs for an experimental weapon.''\nM2: A magnetic shockwave, launches zombies into the air.\nM1 fires a heavy explosive projectile which deals bonus damage and reduces M2 CD when airshotting zombies launched by M2."
-	}
-	"Newtonian PaP 1"
-	{
-		"en"	"''We added a bunch of extra little bits and pieces to the staff to augment its power.\nIt is ridiculously heavy now. Have fun carrying it around everywhere!''\nImprovements to all stats."
 	}
 }

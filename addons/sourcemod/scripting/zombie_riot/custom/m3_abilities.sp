@@ -163,9 +163,7 @@ public void WeakDashLogic(int client)
 	else
 		velocity[2] += 150.0; // a little boost to alleviate arcing issues
 			
-	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
-
-	Magnesis_OnBurstPack(client);
+	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);		
 }
 
 public void PlaceableTempomaryArmorGrenade(int client)
