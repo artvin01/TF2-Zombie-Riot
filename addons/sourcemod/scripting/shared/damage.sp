@@ -727,6 +727,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Player_OnTakeDamage_WrathfulBlade(victim, damage, attacker);
 		}
+		case WEAPON_MAGNESIS:
+		{
+			Player_OnTakeDamage_Magnesis(victim, damage, attacker);
+		}
 	}
 	return damage;
 }

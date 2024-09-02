@@ -974,6 +974,10 @@
 	{
 		"en"		"Not enough mana to throw! Target was dropped instead."
 	}
+	"Magnesis Grabbed Too Soon"
+	{
+		"en"		"That enemy was grabbed too recently!"
+	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"

@@ -1,0 +1,50 @@
+"Phrases"
+{
+	"Savior of Humanity"
+	{
+		"#format" "{1:s}"
+		"en"	"{rare}[Zombie Riot Trophies] {haunted}Savior of Humanity{default} - Awarded to {green}{1}{default} for {olive}performing the most healing{default}."
+	}
+
+	"Absolute Annihilator"
+	{
+		"#format" "{1:s}"
+		"en"	"{rare}[Zombie Riot Trophies] {corrupted}Absolute Annihilator{default} - Awarded to {green}{1}{default} for {olive}killing the most enemies{default}."
+	}
+
+	"Master Mitigator"
+	{
+		"#format" "{1:s}"
+		"en"	"{rare}[Zombie Riot Trophies] {unusual}Master Mitigator{default} - Awarded to {green}{1}{default} for {olive}tanking the most damage{default}."
+	}
+
+	"Engineer's Secret 12th PhD"
+	{
+		"#format" "{1:s}"
+		"en"	"{rare}[Zombie Riot Trophies] {strange}Engineer's Secret 12th PhD{default} - Awarded to {green}{1}{default} for {olive}constructing the most useful barricades{default}."
+	}
+
+	"Consolation Prize: Best Medic"
+	{
+		"#format" "{1:s}"
+		"en"	"{rare}[Zombie Riot Trophies] {haunted}Consolation Prize: Best Medic{default} - Awarded to {green}{1}{default} for {olive}performing the most healing{default}."
+	}
+
+	"Consolation Prize: Most Kills"
+	{
+		"#format" "{1:s}"
+		"en"	"{rare}[Zombie Riot Trophies] {corrupted}Consolation Prize: Most Kills{default} - Awarded to {green}{1}{default} for {olive}killing the most enemies{default}."
+	}
+
+	"Consolation Prize: Best Tank"
+	{
+		"#format" "{1:s}"
+		"en"	"{rare}[Zombie Riot Trophies] {unusual}Consolation Prize: Best Tank{default} - Awarded to {green}{1}{default} for {olive}tanking the most damage{default}."
+	}
+
+	"Consolation Prize: Best Builder"
+	{
+		"#format" "{1:s}"
+		"en"	"{rare}[Zombie Riot Trophies] {strange}Consolation Prize: Best Builder{default} - Awarded to {green}{1}{default} for {olive}constructing the most useful barricades{default}."
+	}
+}
