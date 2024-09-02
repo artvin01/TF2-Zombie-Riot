@@ -1501,7 +1501,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		if(!b_NpcIsInvulnerable[victim])
 		{
 			static int VictimCheck = 9999999;
-			Damage_NPCAttacker(attacker, VictimCheck, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+			Damage_NPCAttacker(attacker, victim, VictimCheck, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 			Damage_AnyAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 			if(GetTeam(victim) != TFTeam_Red)
 			{
