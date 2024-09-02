@@ -97,14 +97,14 @@
 		"en"		"Archetype: Duelist"
 		"fr"		"Archetype: Dueliste"
 		"ru"		"Архетип: Дуэлянт"
-		"chi"		"类型：决斗"
+		"chi"		"类型：决斗士"
 	}
 	"Lord"
 	{
 		"en"		"Archetype: Lord"
 		"fr"		"Archetype: Roi"
 		"ru"		"Архетип: Лорд"
-		"chi"		"类型：王"
+		"chi"		"类型：领主"
 	}
 	"Crusher"
 	{
@@ -150,7 +150,7 @@
 	{
 		"en"		"Archetype: Abyssal Hunter"
 		"fr"		"Archetype: Chasseur des Abîmes"
-		"chi"		"类型：深渊猎人"
+		"chi"		"类型：深海猎人"
 	}
 	"Kazimierz"
 	{
@@ -1075,19 +1075,19 @@
 	{
 		"en"	"Attacks are always ranged but with decreased fire rate.\nAbility changes to be able to pull, dealing 150%% of damage.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 		"fr"	"Cadence des attaques plus lente, mais tous les attaques lance des projectiles.\nAbilité devient une attraction, et inflige 150%% des dégats.\nVous êtes un Seaborn alors que vous portez cet arme.\nArchetype devient «Chasseur des Abîmes»"
-		"chi"	"所有攻击变为远程，但攻速降低。\n技能改为拉扯敌人，造成150%%伤害。\n装备此武器时你会被视为海嗣。\n类型更为''深渊猎人''。"
+		"chi"	"所有攻击变为远程，但攻速降低。\n技能改为拉扯敌人，造成150%%伤害。\n装备此武器时你会被视为海嗣。\n类型更为''深海猎人''。"
 	}
 	"Fractured Ark Pap 5"
 	{
 		"en"	"All Abyssal Hunter weapons gain 7.5%% damage resistance from Seaborn enemies and gain 1.5%% max health per second.\nAbility now charges faster and deals 180%% of damage.\nMain attack has longer projectile lifetime."
 		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 7.5%% contre les ennemis Seaborn et reçoivent des soins de 1.5%% max santé par seconde.\nAbilité se recharge plus rapidement et inflige 180%% des dégats.\nVos projectiles durent plus longtemps."
-		"chi"	"所有''深渊猎人''武器对所有海嗣获得7.5%%伤害抗性，每秒恢复1.5%%最高血上限。\n技能冷却降低，造成180%%伤害。\n正常攻击的投射物有更长的生命期。"
+		"chi"	"所有''深海猎人''武器对所有海嗣获得7.5%%伤害抗性，每秒恢复1.5%%最高血上限。\n技能冷却降低，造成180%%伤害。\n正常攻击的投射物有更长的生命期。"
 	}
 	"Fractured Ark Pap 6"
 	{
 		"en"	"All Abyssal Hunter weapons now gain 12.5%% damage resistance from Seaborn enemies and gain 2.5%% max health per second.\nAbility now holds a third charge and deals 190%% of damage.\nAttacks deal bonus damage to lightweight enemies."
 		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 12.5%% contre les ennemis Seaborn et reçoivent des soins de 2.5%% max santé par seconde.\nAbilité à une troisième charge et inflige 190%% des dégats.\nDégats améliorés contre les ennemis légers."
-		"chi"	"所有''深渊猎人''武器对所有海嗣获得12.5%%伤害抗性，每秒恢复2.5%%最高血上限。\n技能现有三次充能，造成190%%伤害。\n所有攻击对轻型敌人造成更多伤害。"
+		"chi"	"所有''深海猎人''武器对所有海嗣获得12.5%%伤害抗性，每秒恢复2.5%%最高血上限。\n技能现有三次充能，造成190%%伤害。\n所有攻击对轻型敌人造成更多伤害。"
 	}
 	"Fractured Ark Pap 7"
 	{
@@ -2395,7 +2395,7 @@
 	{
 		"en"	"Attacks slower but hits two targets at once.\nDeals 25%% more damage againts raids.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 		"fr"	"Frappe deux ennemis à la fois.\n+25%% dégats contre les Raids.\nVous êtes un Seaborn pendant que vous tenez cet arme.\nArchetype devient «Chasseur des Abîmes»"
-		"chi"	"超低攻速，可同时攻击两个敌人。\n对boss造成25%%额外伤害。\n手持武器时，判定为海嗣。\n类更为''深渊猎人''"
+		"chi"	"超低攻速，可同时攻击两个敌人。\n对boss造成25%%额外伤害。\n手持武器时，判定为海嗣。\n类更为''深海猎人''"
 	}
 	"Specter Pap 2a"
 	{
@@ -2422,7 +2422,7 @@
 		"en"	"Increased damage and gains the ability to self revive if enough damage is dealt\nAll Abyssal Hunter weapons gain +200 max health."
 		"fr"	"Dégats améliorés. Vous vous ressuscitera vous-même si vous avez infligé assez de dégats.\nTout porteur d'arme Chasseur des Abîmes reçoivent +200 santé maximum."
 		"ru"	"Увеличение урона и способность к самовозрождению при получении достаточного урона."
-		"chi"   "增加伤害，并获得自我复活能力，如果造成足够的伤害"
+		"chi"   "增加伤害，造成足够伤害后可复活自己。\n所有''深海猎人''武器+200血量上限"
 	}
 	"Specter Pap 5"
 	{
@@ -3792,5 +3792,112 @@
 	{
 		"en"	"A ranged super unit which will buff allies around it regularly."
 		"fr"	"Améliore les alliés qui l'entoure"
+	}
+	"Vows of the Sea Desc"
+	{
+		"en"	"Hits two targets at once, grants massive amount of health, and heal on taking damage.\nIberia will fall, but let it shine for others, The Profound Silence."
+		"fr"	"Santé améliorée. Vous soigne quand vous prenez des dégats. Frappe deux ennemis à la fois."
+		"chi"	"同时击中两个目标，大量治疗。受击后回血。\n伊比利亚虽将沦陷，但它依会闪耀。"
+	}
+	"Vows of the Sea Pap"
+	{
+		"en"	"Hits three targets at once, increases healing and health.\nAll Abyssal Hunter weapons gain massive health and damage increase."
+		"fr"	"Santé et soins améliorée. Frappe trois ennemis à la fois.\nTout arme «Chasseur des Abîmes» reçoivent des dégats et santé améliorés."
+		"chi"	"同时击中三个目标，增加治疗量和血量。\n所有''深渊猎人''武器获得大量血量/伤害提升。"
+	}
+	"Wrathful Blade Desc"
+	{
+		"en"	"Mini-crits against burning enemies.\nINFERNAL FURY: Hold M2 to burn everything nearby and gain buffs, at the\ncost of rapidly draining HP. Kills during this grant HP, given when the effect ends.\nCD is based on use time. Kills while not active reduce CD."
+		"chi"	"对点燃的敌人造成迷你暴击。\n[M2]火愤:长按M2以血量为代价在自身附近生成一个火圈并且获得增益。\n效果生效时击杀敌人积攒回血量，解除后回复。\n效果不激活时击杀敌人降低技能冷却。"
+	}
+	"Wrathful Blade PaP 1"
+	{
+		"en"	"Stat increases across the board."
+		"chi"	"属性全面加强。"
+	}
+	"Wrathful Blade PaP 2"
+	{
+		"en"	"''And as the world smoldered, he alone stood the victor, his\nfoes but scattered cinders - and yet, his bloodlust still was not sated.''\nWRATH STRIKE: Infernal Fury now charges up a very powerful melee\nattack, which is activated when Infernal Fury ends."
+		"chi"	"''世界燃尽之时，他一人为王。\n他的敌人们早已化为灰烬。\n但他的嗜血依未感受到满足。''\n[火愤]激活的同时会开始为[怒击]。解除技能后的下一击中将会造成大量aoe伤害。"
+	}
+	"Vampire Knives Desc"
+	{
+		"en"	"Applies a unique type of bleed on hit which heals you if you are close enough.\nM2 throws two knives in a tight fan pattern, twice in a row."
+		"chi"	"所有攻击将会造成流血，靠近时可回复自身血量。\n[M2]丢出两把飞刀，两次。"
+	}
+	"Swift Slicer 1 Desc"
+	{
+		"en"	"More damage, more knives, more blood."
+		"chi"	"更多伤害，更多刀，更多血。"
+	}
+	"Swift Slicer 2 Desc"
+	{
+		"en"	"Even more damage, a ridiculous number of knives, and more blood than a slasher film.\nYou heal 85% less from most sources, but you heal much more from bleeds."
+		"chi"	"更更多伤害，超多飞刀，出血量甚比恐怖电影。\n大幅度增加吸血量，但是其他回血手段-85%效率。"
+	}
+	"Swift Slicer 3 Desc"
+	{
+		"en"	"Even more damage, more blood than a slaughterhouse, and enough knives to blot out the very sun itself."
+		"chi"	"更更更多伤害，屠宰场里出的血洞比不过你。丢出的刀足以遮天蔽日。"
+	}
+	"Gore Gourmand 1 Desc"
+	{
+		"en"	"Chop 'em all to bits with powerful swings that inflict more bleed.\nTransforms into an enormous meat cleaver, which swings slowly but inflicts massive damage.\nM2 throws two giant cleavers, which are not stopped by enemies unless the enemy survives."
+		"chi"	"将你的敌人剁成肉末！\n高伤害高流血，但是攻速减慢。\nM2抛出两把刀子，击杀敌人后会继续飞行。"
+	}
+	"Gore Gourmand 2 Desc"
+	{
+		"en"	"Deals more damage and throws more cleavers on M2."
+		"chi"	"更多伤害，更多飞刀。"
+	}
+	"Gore Gourmand 3 Desc"
+	{
+		"en"	"The zombies would be very afraid of you if they could still think."
+		"chi"	"要是僵尸们还能思考的话，肯定会很怕你。"
+	}
+	"Rusty Rifle Desc"
+	{
+		"en"	"A rusty old rifle. Seems like the scope has been damaged beyond repair...\nThe rest of the gun works fine enough, though."
+		"chi"	"一把生锈的长枪。它的瞄准镜破烂不堪…\n…枪倒是还能用。"
+	}
+	"Rusty Rifle PaP 1"
+	{
+		"en"	"Now restored to its former glory, this old gun encourages the user to take bold actions.\nDamage is increased, falloff and reload time are decreased.\nM2 - BIG SHOT: Load a powerful penetrating shot which increases in damage for every zombie it headshots."
+		"chi"	"回到了昔日的辉煌，用这把枪就得浪一点。\n伤害增高，减少装弹时间以及距离衰减。\n[M2]一发入魂：一发高伤害的穿透弹。击中的头越多伤害越高。"
+	}
+	"Rusty Rifle PaP 2"
+	{
+		"en"	"Faster, stronger, and overall better! Never figured out how to fix the scope, though...\nBIG SHOT: Penetrates more zombies and deals more damage.\nBRAIN BLAST: If Big Shot headshots at least one zombie, trigger an explosion on the last zombie hit."
+		"chi"	"更快，更强，更好！\n[M2]穿透性以及伤害更高。\n爆头至少一个敌人之后，在击中的最后一名敌人产生爆炸。"
+	}
+	"Skull Servants Desc"
+	{
+		"en"	"M2 summons a skull to shoot for you, M1 launches your skulls which explode for heavy damage.\nUp to two skulls may orbit you at once. Summoning another one will launch the oldest skull.\nSkulls will automatically launch themselves after some time."
+		"chi"	"M2召唤骷髅头随从。M1可以将它们丢出去，造成大量爆炸伤害。\n最多可召唤两个骷髅，超过上限时会丢出额外的骷髅。\n骷髅在一段时间后会自行飞出去。"
+	}
+	"Skull Servants PaP 1"
+	{
+		"en"	"Skulls deal more damage, attack faster, and have better range.\nAlso enables you to have up to three skulls active at once."
+		"chi"	"骷髅造成更多伤害，攻击更快，射程更远。\n上限提升至3个骷髅。"
+	}
+	"Skull Servants PaP 2"
+	{
+		"en"	"Skulls deal even more damage, attack even faster, and have much bigger range.\nYou may now have up to four skulls active at once."
+		"chi"	"提高伤害，攻速，大幅度增加射程。\n上限提升至4个骷髅"
+	}
+	"Trash Cannon Desc"
+	{
+		"en"	"''A healthy green Earth they say is happy, but for me that sounds way too sappy...''\nFires a variety of random projectiles with different effects.\nMost projectiles travel in an arc and explode on contact."
+		"chi"	"''A healthy green Earth they say is happy, but for me that sounds way too sappy...''\n随机射出各种各样的''火箭''。每个''火箭''都有独特的效果以及抛物线。"
+	}
+	"Trash Cannon PaP 1"
+	{
+		"en"	"''I throw garbage everywhere - an ecological nightmare!''\nUnlocks new projectiles and improves base stats."
+		"chi"	"''I throw garbage everywhere - an ecological nightmare!''\n基础属性加强，垃圾桶里更多东西了。"
+	}
+	"Trash Cannon PaP 2"
+	{
+		"en"	"''Carbon foot on the pedal, I AM TRASH METAL!''\nUnlocks two more projectiles and improves base stats further.\nAn object of unspeakable danger lurks in this trash can..."
+		"chi"	"''Carbon foot on the pedal, I AM TRASH METAL!''\n获得两个新的发射物，加强基础属性。\n垃圾桶里出现一个不可名状之物……"
 	}
 }
