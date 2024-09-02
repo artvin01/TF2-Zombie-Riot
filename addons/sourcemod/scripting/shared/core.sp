@@ -261,7 +261,7 @@ public const char ItemArchetype[][] =
 	"Bloodletter",	//24, Vampire Knives fast-attack path
 	"Bloody Butcher", //25, Vampire Knives cleaver path
 	"Mythic Caster",	// 26
-	"Psychic Warlord"	//27, Experimental Syringe and Newtonian Knuckles, possibly more in the future
+	"Psychic Warlord"	//27, Psychokinesis and Newtonian Knuckles, possibly more in the future
 };
 
 public const int RenderColors_RPG[][] =
