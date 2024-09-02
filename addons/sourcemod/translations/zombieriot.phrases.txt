@@ -950,6 +950,34 @@
 	{
 		"en"		"WRATH STRIKE IS FULLY CHARGED!"
 	}
+	"Magnesis Target Immune to Knockback"
+	{
+		"en"		"Grab target is immune to knockback."
+	}
+	"Magnesis Target Invulnerable"
+	{
+		"en"		"Grab target is invulnerable."
+	}
+	"Magnesis Target Too Strong"
+	{
+		"en"		"Grab target is too strong."
+	}
+	"Magnesis No Target Found"
+	{
+		"en"		"No valid targets within range."
+	}
+	"Magnesis Already Grabbed"
+	{
+		"en"		"That enemy is already being grabbed!"
+	}
+	"Magnesis Throw Failed"
+	{
+		"en"		"Not enough mana to throw! Target was dropped instead."
+	}
+	"Magnesis Grabbed Too Soon"
+	{
+		"en"		"That enemy was grabbed too recently!"
+	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"

@@ -195,7 +195,8 @@ enum
 	WEAPON_WALDCH_SWORD_REAL = 115,
 	WEAPON_MLYNAR_PAP_2 = 116,
 	WEAPON_ULPIANUS = 117,
-	WEAPON_WRATHFUL_BLADE = 118
+	WEAPON_WRATHFUL_BLADE = 118,
+	WEAPON_MAGNESIS = 119
 }
 
 enum
@@ -544,6 +545,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_chainsaw.sp"
 #include "zombie_riot/custom/weapon_flametail.sp"
 #include "zombie_riot/custom/weapon_ulpianus.sp"
+#include "zombie_riot/custom/wand/weapon_wand_magnesis.sp"
 #include "zombie_riot/custom/kit_blacksmith_brew.sp"
 
 void ZR_PluginLoad()
@@ -792,6 +794,7 @@ void ZR_MapStart()
 	ResetMapStartVictoria();
 	Obuch_Mapstart();
 	Ulpianus_MapStart();
+	Magnesis_Precache();
 	Wrathful_Blade_Precache();
 	
 	Zombies_Currently_Still_Ongoing = 0;
