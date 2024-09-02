@@ -57,18 +57,22 @@ public void Magnesis_ResetAll()
 	Zero(ability_cooldown);
 }
 
-#define SND_MAGNESIS_M1         	")"
-#define SND_MAGNESIS_M1_COLLIDE		")"
-#define SND_NEWTONIAN_M1			")"
-#define SND_NEWTONIAN_M1_COLLIDE	")"
-#define SND_NEWTONIAN_M1_COMBO		")"
-#define SND_NEWTONIAN_M2			")"
+#define SND_MAGNESIS_M1         	")weapons/capper_shoot.wav"
+#define SND_MAGNESIS_M1_COLLIDE		")weapons/flare_detonator_explode_world.wav"
+#define SND_NEWTONIAN_M1			")weapons/cow_mangler_main_shot.wav"
+#define SND_NEWTONIAN_M1_COLLIDE	")weapons/cow_mangler_explosion_normal_01.wav"
+#define SND_NEWTONIAN_M2			")weapons/bumper_car_spawn.wav"
+#define SND_NEWTONIAN_M2_2			")weapons/cow_mangler_explode.wav"
 
 #define PARTICLE_MAGNESIS_M1     			"raygun_projectile_blue"
 #define PARTICLE_MAGNESIS_M1_FINALPAP		"raygun_projectile_blue_crit"
+#define PARTICLE_MAGNESIS_M1_COLLIDE		"impact_metal"
+#define PARTICLE_MAGNESIS_M2				"arm_muzzleflash_zap2"
+#define PARTICLE_MAGNESIS_M2_FINALPAP		"bombonomicon_spell_trail"
 #define PARTICLE_NEWTONIAN_M1    			"raygun_projectile_red"
 #define PARTICLE_NEWTONIAN_M1_FINALPAP    	"raygun_projectile_red_crit"
 #define PARTICLE_NEWTONIAN_M1_COLLIDE		"drg_cow_explosioncore_charged"
+#define PARTICLE_NEWTONIAN_M2				"mvm_soldier_shockwave"
 
 void Magnesis_Precache()
 {
@@ -76,8 +80,8 @@ void Magnesis_Precache()
 	PrecacheSound(SND_MAGNESIS_M1_COLLIDE);
 	PrecacheSound(SND_NEWTONIAN_M1);
 	PrecacheSound(SND_NEWTONIAN_M1_COLLIDE);
-	PrecacheSound(SND_NEWTONIAN_M1_COMBO);
 	PrecacheSound(SND_NEWTONIAN_M2);
+	PrecacheSound(SND_NEWTONIAN_M2_2);
 }
 
 void Magnesis_OnKill(int victim)
@@ -296,13 +300,18 @@ void Newtonian_TryShockwave(int client, int weapon, int tier)
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
-		//TODO: Shockwave
+		float pos[3];
+		GetClientAbsOrigin(client, pos);
+		ParticleEffectAt(pos, PARTICLE_NEWTONIAN_M2);
+		spawnRing_Vector(pos, 0.1, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 255, 120, 120, 255, 1, 0.33, 16.0, 6.0, 1, Newtonian_M2_Radius[tier]);
+		spawnRing_Vector(pos, 0.1, 0.0, 0.0, 0.0, "materials/sprites/glow02.vmt", 255, 120, 120, 255, 1, 0.33, 16.0, 6.0, 1, Newtonian_M2_Radius[tier]);
 
 		Current_Mana[client] -= mana_cost;
 		
 		delay_hud[client] = 0.0;
 
-        EmitSoundToAll(SND_NEWTONIAN_M2, client);
+        EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
+		EmitSoundToAll(SND_NEWTONIAN_M2_2, client, _, _, _, 0.8, 80);
 
 		float nextAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") + Newtonian_M2_AttackDelay[tier];
 		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", nextAttack);
@@ -345,7 +354,9 @@ public void Magnesis_ProjectileTouch(int entity, int target)
 			RemoveEntity(particle);
 		}
 
-		EmitSoundToAll(SND_MAGNESIS_M1_COLLIDE, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		ParticleEffectAt(selfPos, PARTICLE_MAGNESIS_M1_COLLIDE);
+
+		EmitSoundToAll(SND_MAGNESIS_M1_COLLIDE, entity, SNDCHAN_STATIC, 70, _, 0.9, GetRandomInt(80, 100));
 		RemoveEntity(entity);
 	}
 }
