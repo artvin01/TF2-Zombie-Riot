@@ -17,7 +17,7 @@ public void Weapon_Lightning_Wand(int client, int weapon, bool crit)
 	{
 		float damage = 65.0 * Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;

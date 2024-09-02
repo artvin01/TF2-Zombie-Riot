@@ -238,7 +238,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 
 					npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_2");
 					npc.m_flAttackHappens = gameTime + 0.25;
-					//npc.m_flDoingAnimation = gameTime + 0.65;
+					//npc.m_flDoingAnimation = gameTime + 0.95;
 				}
 			}
 		}

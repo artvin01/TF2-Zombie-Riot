@@ -14,7 +14,7 @@
 #define MVM_CLASS_FLAG_NONE				0
 #define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
 #define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Base Support
-#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Base Support, Always Show
+#define MVM_CLASS_FLAG_MISSION			(1 << 2)	// Base Support, Flash Red
 #define MVM_CLASS_FLAG_MINIBOSS			(1 << 3)	// Add Red Background
 #define MVM_CLASS_FLAG_ALWAYSCRIT		(1 << 4)	// Add Blue Borders
 #define MVM_CLASS_FLAG_SUPPORT_LIMITED	(1 << 5)	// Add to Support?
@@ -193,6 +193,9 @@ enum
 	WEAPON_EXPIDONSAN_REAPIR = 113,
 	WEAPON_WALDCH_SWORD_NOVISUAL = 114,
 	WEAPON_WALDCH_SWORD_REAL = 115,
+	WEAPON_MLYNAR_PAP_2 = 116,
+	WEAPON_ULPIANUS = 117,
+	WEAPON_WRATHFUL_BLADE = 118
 }
 
 enum
@@ -213,6 +216,7 @@ enum
 	Type_BlueParadox,
 	Type_Void,
 	Type_Ruina,
+	Type_IberiaExpiAlliance,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -229,7 +233,6 @@ ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_spawnprotectiontime;
-ConVar zr_viewshakeonlowhealth;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_allowfreeplay;
@@ -253,6 +256,7 @@ float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 float PlayerCountBuffScaling = 1.0;
+float PlayerCountBuffAttackspeedScaling = 1.0;
 float PlayerCountResBuffScaling = 1.0;
 int PlayersAliveScaling;
 int PlayersInGame;
@@ -519,6 +523,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
 #include "zombie_riot/custom/weapon_rusty_rifle.sp"
+#include "zombie_riot/custom/weapon_wrathful_blade.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/red_blade.sp"
@@ -538,6 +543,8 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_mg42.sp"
 #include "zombie_riot/custom/weapon_chainsaw.sp"
 #include "zombie_riot/custom/weapon_flametail.sp"
+#include "zombie_riot/custom/weapon_ulpianus.sp"
+#include "zombie_riot/custom/kit_blacksmith_brew.sp"
 
 void ZR_PluginLoad()
 {
@@ -558,6 +565,8 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_buy", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_guns", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
+	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");
+	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
@@ -569,7 +578,6 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
 	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
-	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
@@ -783,6 +791,8 @@ void ZR_MapStart()
 	Object_MapStart();
 	ResetMapStartVictoria();
 	Obuch_Mapstart();
+	Ulpianus_MapStart();
+	Wrathful_Blade_Precache();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -843,7 +853,7 @@ void ZR_ClientPutInServer(int client)
 {
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
-	if(CurrentModifOn() == 2)
+	if(CurrentModifOn() == 3)
 		i_AmountDowned[client] = 1;
 		
 	dieingstate[client] = 0;
@@ -1032,7 +1042,14 @@ public Action OnReloadCommand(int args)
 }
 
 
-
+public Action Command_RTdFail(int client, int args)
+{
+	if(client)
+	{
+		PrintToChat(client, "There is no RTD, and RTD isnt supported.");
+	}
+	return Plugin_Handled;
+}
 public Action Command_AFK(int client, int args)
 {
 	if(client)
@@ -1084,12 +1101,10 @@ public Action CommandDebugHudTest(int client, int args)
         return Plugin_Handled;
     }
 
-	Rogue_Encounter_EmergencyDispatch();
-	char buf[12];
-	GetCmdArg(1, buf, sizeof(buf));
-	
-	SetHudTextParams(-1.0, -1.0, 1.0, 255, 255, 255, 255, 0, 0.01, 0.01);
-	ShowHudText(client, -1,"Debug : %s",buf);	
+	float Number = GetCmdArgFloat(1);
+	PrintToChatAll("Number %f",Number);
+
+	PrintToChatAll("MaxNumBuffValue %f",MaxNumBuffValue(0.6, 1.0, Number));
 
 	return Plugin_Handled;
 }
@@ -1826,17 +1841,31 @@ stock void UpdatePlayerPoints(int client)
 {
 	int Points;
 	
-	Points += Healing_done_in_total[client] / 4;
-	
-	Points += RoundToCeil(Damage_dealt_in_total[client]) / 50;
+	Points += Healing_done_in_total[client] / 3;
+
+	if(Rogue_Mode())
+	{
+		Points += RoundToCeil(Damage_dealt_in_total[client]) / 250;
+	}
+	else
+	{
+		Points += RoundToCeil(Damage_dealt_in_total[client]) / 50;
+	}
 
 	i_Damage_dealt_in_total[client] = RoundToCeil(Damage_dealt_in_total[client]);
 	
 	Points += Resupplies_Supplied[client] * 2;
 	
-	Points += i_BarricadeHasBeenDamaged[client] / 6;
+	Points += i_BarricadeHasBeenDamaged[client] / 5;
 
-	Points += i_PlayerDamaged[client] / 5;
+	if(Rogue_Mode())
+	{
+		Points += i_PlayerDamaged[client] / 10;
+	}
+	else
+	{
+		Points += i_PlayerDamaged[client] / 5;
+	}
 	
 	Points += i_ExtraPlayerPoints[client] / 2;
 	
@@ -2019,10 +2048,12 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 		}
 	}
 }
-void ReviveAll(bool raidspawned = false)
+
+void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 {
 	//only set false here
-	ZombieMusicPlayed = false;
+	if(!setmusicfalse)
+		ZombieMusicPlayed = setmusicfalse;
 
 //	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -2059,7 +2090,7 @@ void ReviveAll(bool raidspawned = false)
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
 			i_AmountDowned[client] = 0;
-			if(CurrentModifOn() == 2)
+			if(CurrentModifOn() == 3)
 				i_AmountDowned[client] = 1;
 
 			DoOverlay(client, "", 2);
@@ -2175,6 +2206,8 @@ int LevelToXp(int lv)
 	return lv * lv * 200;
 }
 
+float XpFloatGive[MAXTF2PLAYERS];
+
 void GiveXP(int client, int xp)
 {
 	if(Waves_InFreeplay())
@@ -2183,13 +2216,31 @@ void GiveXP(int client, int xp)
 		return;
 	}
 
-	if(Rogue_Mode())
+	float DecimalXp = float(xp);
+
+	DecimalXp *= CvarXpMultiplier.FloatValue;
+	
+	if(DecimalXp >= 10000.0)
 	{
-		//in rogue, give much less XP
-		xp = RoundToNearest(float(xp) * 0.15);
+		//looks like someone got a bullshit amount of points somehow, ignore!
+		return;
+	}
+	
+	XpFloatGive[client] += DecimalXp;
+	
+	int XpGive = 0;
+	XpGive = RoundToFloor(DecimalXp);
+
+	XpFloatGive[client] += FloatFraction(DecimalXp);
+
+	while(XpFloatGive[client] >= 1.0)
+	{
+		XpFloatGive[client] -= 1.0;
+		XpGive += 1;
 	}
 
-	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
+	XP[client] += XpGive;
+
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
 	{

@@ -67,6 +67,9 @@ static int TriggerDamage(int entity, int type)
 	if(entity <= MaxClients)
 		return MaxArmorCalculation(Armor_Level[entity], entity, 1.0);
 	
+
+	int divide = 3;
+
 	switch(type)
 	{
 		case Element_Necrosis:
@@ -79,12 +82,14 @@ static int TriggerDamage(int entity, int type)
 			
 			return b_thisNpcIsABoss[entity] ? 25000 : 12500;
 		}
+		case Element_Cyro:
+		{
+			divide = 4;
+		}
 	}
 
 	if(Citizen_IsIt(entity))
 		return view_as<Citizen>(entity).m_iGunValue / 20;
-
-	int divide = 3;
 
 	if(b_thisNpcIsARaid[entity])
 	{
@@ -95,7 +100,7 @@ static int TriggerDamage(int entity, int type)
 		divide *= 4; //Reduce way further so its good against bosses.
 	}
 
-	return ReturnEntityMaxHealth(entity) / divide;
+	return RoundToCeil(float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide;
 }
 
 bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
@@ -151,6 +156,10 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			}
 			else
 			{
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				if(damage < 1)
+					damage = 1;
+				
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
@@ -158,11 +167,8 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 
 					TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
-					
-					bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-					b_ThisNpcIsSawrunner[attacker] = true;
-					SDKHooks_TakeDamage(victim, attacker, attacker, b_BobsTrueFear[victim] ? 400.0 : 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-					b_ThisNpcIsSawrunner[attacker] = sawrunner;
+
+					DealTruedamageToEnemy(0, victim, b_BobsTrueFear[victim] ? 400.0 : 500.0);
 				}
 			}
 			
@@ -214,7 +220,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 		int health = Object_GetRepairHealth(victim);
 		if(health < 1 || ignoreArmor)
 		{
-			SDKHooks_TakeDamage(victim, attacker, attacker, damage * 100.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+			DealTruedamageToEnemy(0, victim, damage * 100.0);
 		}
 	}
 }
@@ -233,6 +239,10 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			}
 			else
 			{
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				if(damage < 1)
+					damage = 1;
+				
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
@@ -323,6 +333,10 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			}
 			else
 			{
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				if(damage < 1)
+					damage = 1;
+				
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
@@ -394,21 +408,20 @@ static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon
 		return;
 
 	if (GetTeam(victim) != GetTeam(entity))
-		SakratanGroupDebuffInternal(victim, entity);
+		SakratanGroupDebuffInternal(victim);
 		
 }
 
-static void SakratanGroupDebuffInternal(int victim, int attacker)
+static void SakratanGroupDebuffInternal(int victim)
 {
-	bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-	b_ThisNpcIsSawrunner[attacker] = true;
-	
 	if(victim <= MaxClients && !b_BobsTrueFear[victim])
-		SDKHooks_TakeDamage(victim, attacker, attacker, 250.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+	{
+		DealTruedamageToEnemy(0, victim, 250.0);
+	}
 	else
-		SDKHooks_TakeDamage(victim, attacker, attacker, 200.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-
-	b_ThisNpcIsSawrunner[attacker] = sawrunner;
+	{
+		DealTruedamageToEnemy(0, victim, 200.0);
+	}
 	IncreaceEntityDamageTakenBy(victim, 1.30, 10.0);
 }
 

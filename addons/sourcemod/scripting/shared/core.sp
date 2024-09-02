@@ -50,10 +50,13 @@
 #define ZR_MAX_BUILDINGS	128 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS		64
 #define ZR_MAX_SPAWNERS		256
+
 #else
+
 #define ZR_MAX_NPCS		256
 #define ZR_MAX_LAG_COMP		256 
 #define ZR_MAX_BUILDINGS	256
+
 #endif
 
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
@@ -482,7 +485,7 @@ bool b_IsAMedigun[MAXENTITIES];
 int PrevOwnerMedigun[MAXENTITIES];
 float flNpcCreationTime[MAXENTITIES];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
-bool b_npcspawnprotection[MAXENTITIES];
+int i_npcspawnprotection[MAXENTITIES];
 float f_DomeInsideTest[MAXENTITIES];
 float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];
@@ -493,6 +496,7 @@ float f_HighTeslarDebuff[MAXENTITIES];
 float f_VoidAfflictionStrength[MAXENTITIES];
 float f_VoidAfflictionStrength2[MAXENTITIES];
 float f_Silenced[MAXENTITIES];
+float f_IberiaMarked[MAXENTITIES];
 float f_VeryLowIceDebuff[MAXENTITIES];
 float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];
@@ -528,6 +532,7 @@ float f_PassangerDebuff[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_CrippleDebuff[MAXENTITIES];
+float f_GoldTouchDebuff[MAXENTITIES];
 float f_CudgelDebuff[MAXENTITIES];
 float f_DuelStatus[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];
@@ -956,7 +961,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_221.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_33.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_34.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
@@ -2854,7 +2859,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		RequestFrame(SDKHook_TeamSpawn_SpawnPost, entity);
 	}
 #endif
-	
+//	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
 		b_AllowCollideWithSelfTeam[entity] = false;
@@ -2890,6 +2895,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Building_Mounted[entity] = -1;
 		EntitySpawnToDefaultSiccerino(entity);
 		b_NpcIsTeamkiller[entity] = false;
+		IberiaEntityCreated(entity);
 #endif
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;
@@ -3080,6 +3086,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "tf_ammo_pack"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+		else if(!StrContains(classname, "tf_flame_manager"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, MakeFlamesUseless);
 		}
 		else if(!StrContains(classname, "entity_revive_marker"))
 		{
@@ -3454,7 +3464,11 @@ public void Delete_instantly(int entity)
 {
 	RemoveEntity(entity);
 }
-
+public void MakeFlamesUseless(int entity)
+{
+	//This makes the flamethrower itself do nothing. we do our own logic.
+	SetEntProp(entity, Prop_Send, "m_nSolidType", 0);
+}
 public void Delete_FrameLater(int ref) //arck, they are client side...
 {
 	int entity = EntRefToEntIndex(ref);
@@ -3534,6 +3548,7 @@ void MedigunCheckAntiCrash(int entity)
 	if(b_IsAMedigun[entity])
 	{
 		GetEntProp(entity, Prop_Send, "m_bHealing", 0);
+		f_MedigunDelayAttackThink[entity] = 0.0;
 		//owner netprop doesnt work sadly.
 		int MedigunOwner = PrevOwnerMedigun[entity];
 		if(IsValidClient(MedigunOwner))
@@ -3638,7 +3653,14 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	}
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		if(Attributes_GetOnPlayer(client, Attrib_SlowImmune, false))
+		{
+			TF2_RemoveCondition(client, TFCond_Slowed);
+		}
+		else
+		{
+			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		}
 	}
 }
 
@@ -3734,7 +3756,6 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				//shouldnt invalidate clicking, makes battle hard.
 				if(!PlayerIsInNpcBattle(client) && Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
 					return false;
-
 
 				if (TeutonType[client] == TEUTON_WAITING)
 					return false;
@@ -4071,6 +4092,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
 			GiveArmorViaPercentage(target, 0.1, 1.0, false);
 			IncreaceEntityDamageTakenBy(target, 0.85, 5.0);
+			CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
 			SetDefaultHudPosition(target, 0, 0, 255, 1.5);
 			SetGlobalTransTarget(target);
 			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
@@ -4078,6 +4100,17 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	}
 }
 
+public Action ReviveDisplayMessageDelay(Handle timer, int ref)
+{
+	int target = EntRefToEntIndex(ref);
+	if(IsValidClient(target))
+	{
+		SetDefaultHudPosition(target, 0, 0, 255, 1.5);
+		SetGlobalTransTarget(target);
+		ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
+	}
+	return Plugin_Continue;
+}
 void ClientRevivalTickLogic(int client)
 {
 	if(!f_ClientBeingReviveDelay[client])

@@ -35,6 +35,11 @@ methodmap ObjectTinkerAnvil < ObjectGeneric
 		func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, 90.0);
 
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			ApplyBuildingCollectCooldown(npc.index, i, 0.0);
+		}
+
 		return npc;
 	}
 }

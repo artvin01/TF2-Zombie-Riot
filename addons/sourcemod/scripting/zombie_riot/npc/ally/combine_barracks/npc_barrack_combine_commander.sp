@@ -117,7 +117,28 @@ methodmap Barrack_Combine_Commander < BarrackBody
 			
 		f_GlobalSoundCD = GetGameTime() + 5.0;
 
-		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.5, 100);
+		static int r;
+		static int g;
+		static int b;
+		static int a = 255;
+		if(GetTeam(this.index) != TFTeam_Red)
+		{
+			r = 125;
+			g = 125;
+			b = 255;
+		}
+		else
+		{
+			r = 255;
+			g = 125;
+			b = 125;
+		}
+		static float UserLoc[3];
+		GetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin", UserLoc);
+		spawnRing(this.index, 35.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.3, 6.0, 6.1, 1);
+		spawnRing(this.index, 35.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.0, 6.0, 6.1, 1);
+
+		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.35, 100);
 	}
 
 	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3], int ally)

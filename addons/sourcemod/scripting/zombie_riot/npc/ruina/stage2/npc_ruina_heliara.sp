@@ -134,7 +134,7 @@ methodmap Heliara < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -301,7 +301,7 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
 		
-		Helia_Healing_Logic(npc.index, 500, 500.0, GameTime, 1.0, {255, 255, 255, 255});
+		Helia_Healing_Logic(npc.index, 500, 500.0, GameTime, 1.0);
 
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -326,13 +326,13 @@ static void ClotThink(int iNPC)
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 
-					Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
+					Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5);
 
 				}
 				else	
 				{
 
-					Helia_Healing_Logic(npc.index, 300, 250.0, GameTime, 3.5, {255, 155, 155, 255});
+					Helia_Healing_Logic(npc.index, 300, 250.0, GameTime, 3.5);
 	
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -345,7 +345,7 @@ static void ClotThink(int iNPC)
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 
 					
-				Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
+				Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5);
 			
 			}	
 		}

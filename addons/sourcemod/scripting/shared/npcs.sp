@@ -155,7 +155,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			}
 		}
 		//emercency stop. 
-		if(EnemyNpcAlive >= MaxEnemiesAllowedSpawnNext())
+		if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
 		{
 			return;
 		}
@@ -257,6 +257,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 				if(enemy.Is_Boss >= 2)
 				{
 					WaveStart_SubWaveStart(GetGameTime());
+					ReviveAll(true, true);
 				}
 				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)
@@ -265,9 +266,13 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					{
 						NpcAddedToZombiesLeftCurrently(entity_Spawner, false);
 					}
-					if(enemy.Is_Outlined)
+					if(enemy.Is_Outlined == 1)
 					{
 						b_thisNpcHasAnOutline[entity_Spawner] = true;
+					}
+					else if(enemy.Is_Outlined == 2)
+					{
+						b_NoHealthbar[entity_Spawner] = true;
 					}
 					
 					if(enemy.Is_Immune_To_Nuke)
@@ -345,10 +350,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1)
+					if(zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == 0)
 					{
 				
-						b_npcspawnprotection[entity_Spawner] = true;
+						i_npcspawnprotection[entity_Spawner] = 1;
 						
 						/*
 						CClotBody npc = view_as<CClotBody>(entity_Spawner);
@@ -395,6 +400,13 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					donotprogress = false;
 				}
 			}
+			else
+			{
+				if(EnemyNpcAliveStatic >= 1)
+				{
+					donotprogress = false;
+				}
+			}
 			if(f_DelayNextWaveStartAdvancing < GetGameTime())
 			{
 				Waves_Progress(donotprogress);
@@ -409,25 +421,29 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	int index = EntRefToEntIndex(ref);
 	if(IsValidEntity(index) && index>MaxClients)
 	{
-#if defined ZR
-		if(RogueTheme == BlueParadox)
-#endif	// ZR
-		{
-			if(f_DomeInsideTest[index] > GetGameTime())
-			{
-				CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(index), TIMER_FLAG_NO_MAPCHANGE);
-				return Plugin_Stop;
-			}
-		}
-		
-		CClotBody npc = view_as<CClotBody>(index);
-			
-		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
-			RemoveEntity(npc.m_iSpawnProtectionEntity);
-		
-		b_npcspawnprotection[index] = false;
+		RemoveSpawnProtectionLogic(index, false);
 	}
 	return Plugin_Stop;
+}
+void RemoveSpawnProtectionLogic(int entity, bool force)
+{
+#if defined ZR
+	if(RogueTheme == BlueParadox && !force)
+#endif	// ZR
+	{
+		if(f_DomeInsideTest[entity] > GetGameTime())
+		{
+			CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			return;
+		}
+	}
+	
+	CClotBody npc = view_as<CClotBody>(entity);
+		
+	if(IsValidEntity(npc.m_iSpawnProtectionEntity))
+		RemoveEntity(npc.m_iSpawnProtectionEntity);
+	//-1 means none, and dont apply anymore.
+	i_npcspawnprotection[entity] = -1;
 }
 
 #if defined ZR
@@ -1371,9 +1387,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 	else
 	{
 #if defined RPG
-		if(!b_npcspawnprotection[victim] || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
+		if(i_npcspawnprotection[victim] != 1 || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
 #else
-		if(!b_npcspawnprotection[victim])
+		if(i_npcspawnprotection[victim] != 1)
 #endif
 		{
 			DisplayRGBHealthValue(Health, MaxHealth, red, green,blue);
@@ -1431,7 +1447,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flMeleeArmor * 100.0;
 			percentage *= fl_Extra_MeleeArmor[victim];
 			percentage *= fl_TotalArmor[victim];
-			percentage *= percentageGlobal;
+			if(GetTeam(attacker) != GetTeam(victim))
+				percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_CLUB;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1483,7 +1500,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		BaseDamage = 100.0;
 		if(!b_NpcIsInvulnerable[victim])
 		{
-			Damage_NPCAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+			static int VictimCheck = 9999999;
+			Damage_NPCAttacker(attacker, victim, VictimCheck, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 			Damage_AnyAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 			if(GetTeam(victim) != TFTeam_Red)
 			{
@@ -1528,7 +1546,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flRangedArmor * 100.0;
 			percentage *= fl_Extra_RangedArmor[victim];
 			percentage *= fl_TotalArmor[victim];
-			percentage *= percentageGlobal;
+			if(GetTeam(attacker) != GetTeam(victim))
+				percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1824,7 +1843,7 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 	{
 		return true;
 	}	
-	if(b_npcspawnprotection[victim])
+	if(i_npcspawnprotection[victim] == 1)
 		return true;
 
 	float DamageTest = 1.0;
@@ -1965,6 +1984,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 	else if(f_WidowsWineDebuff[npc] > GameTime)
 		return true;
 	else if(f_CrippleDebuff[npc] > GameTime)
+		return true;
+	else if(f_GoldTouchDebuff[npc] > GameTime)
 		return true;
 	else if(f_CudgelDebuff[npc] > GameTime)
 		return true;
@@ -2148,7 +2169,7 @@ void NPC_DeadEffects(int entity)
 			Spawns_NPCDeath(entity, client, WeaponLastHit);
 #endif
 
-			Attributes_OnKill(client, WeaponLastHit);
+			Attributes_OnKill(entity, client, WeaponLastHit);
 		}
 	}
 }
@@ -2235,6 +2256,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			MlynarReduceDamageOnKill(attacker, 1);
 		}
+		case WEAPON_MLYNAR_PAP_2:
+		{
+			MlynarReduceDamageOnKill(attacker, 2);
+		}
 		case WEAPON_CASINO:
 		{
 			CasinoSalaryPerKill(attacker, weapon);
@@ -2242,6 +2267,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		case WEAPON_RAPIER:
 		{
 			RapierEndDuelOnKill(attacker, victim);
+		}
+		case WEAPON_WRATHFUL_BLADE:
+		{
+			WrathfulBlade_OnKill(attacker, victim);
 		}
 	}
 }
@@ -2267,6 +2296,11 @@ stock void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int da
 		{
 			if(b_thisNpcIsARaid[victim] && (!(damage_custom_zr & ZR_DAMAGE_REFLECT_LOGIC))) //do not reduce damage if the damage type was a reflect.
 				MlynarTakeDamagePostRaid(attacker, 1);
+		}
+		case WEAPON_MLYNAR_PAP_2:
+		{
+			if(b_thisNpcIsARaid[victim] && (!(damage_custom_zr & ZR_DAMAGE_REFLECT_LOGIC))) //do not reduce damage if the damage type was a reflect.
+				MlynarTakeDamagePostRaid(attacker, 2);
 		}
 	}
 #endif

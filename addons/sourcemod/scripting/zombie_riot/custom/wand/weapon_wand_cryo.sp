@@ -156,7 +156,7 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 
 	damage *= Attributes_Get(weapon, 410, 1.0);
 	
-	Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+	SDKhooks_SetManaRegenDelayTime(client, 1.0);
 	Mana_Hud_Delay[client] = 0.0;
 	
 	Current_Mana[client] -= mana_cost;
@@ -228,7 +228,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 		
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		delay_hud[client] = 0.0;

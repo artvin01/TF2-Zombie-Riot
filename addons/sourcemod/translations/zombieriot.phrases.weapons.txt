@@ -886,7 +886,8 @@
 		"fr"		"Mitrailleuse"
 		"chi"		"步哨"
 	}
-	"Mortar"
+	"
+  "
 	{
 		"en"		"Mortar"
 		"fr"		"Mortier"
@@ -2696,6 +2697,10 @@
 		"en"	"Tinker Workshop"
 		"fr"	"Laboratoire du Forgeron"
 		"chi"	"匠工坊"
+	}
+	"Merchant Brewing Stand"
+	{
+		"en"	"Merchant Brewing Stand"
 	}
 	"Tinker Research"
 	{

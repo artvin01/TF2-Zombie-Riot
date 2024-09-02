@@ -228,6 +228,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Victorian_Melee_Swing(CustomMeleeRange, CustomMeleeWide);
 			}
+			case WEAPON_ULPIANUS:
+			{
+				enemies_hit_aoe = Ulpianus_EnemyHitCount();
+			}
 		}	
 	}
 #endif

@@ -74,6 +74,10 @@
 	{
 		"en" 		"Ruina"
 	}
+	"Iberia Expidonsa Alliance"
+	{
+		"en" 		"Iberia Expidonsa Alliance"
+	}
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"
@@ -1716,7 +1720,15 @@
 	}
 	"Old Times Desc"
 	{
-		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +4%% faster.\n1 less down, enemies heal 50%% more."
+		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +25%% dmg, +25%% dmg to cades, have 2x HP, +6%% faster.\n1 less down, enemies heal 50%% more."
+	}
+	"Secondary Mercs"
+	{
+		"en"	"Secondary Mercs"
+	}
+	"Secondary Mercs Desc"
+	{
+		"en"	"First batch of mercs failed already.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +4%% faster.\nEnemies heal 50%% more."
 	}
 	"BUSTING"
 	{

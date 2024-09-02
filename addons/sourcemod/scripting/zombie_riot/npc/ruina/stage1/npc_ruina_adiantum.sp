@@ -45,7 +45,6 @@ static const char g_MeleeMissSounds[][] = {
 };
 
 
-static char gLaser1;
 static char gExplosive1;
 
 public void Adiantum_OnMapStart_NPC()
@@ -59,7 +58,7 @@ public void Adiantum_OnMapStart_NPC()
 	data.Precache = ClotPrecache;
 	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored"); 		//leaderboard_class_(insert the name)
 	data.IconCustom = false;													//download needed?
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
 static void ClotPrecache()
@@ -71,8 +70,6 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
-	
-	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt");
 	
 	PrecacheSound("misc/halloween/gotohell.wav");
 }
@@ -105,7 +102,7 @@ methodmap Adiantum < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -422,7 +419,7 @@ static void Adiantum_Summon_Ion_Barrage(int client, float vecTarget[3])
 		
 		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, endLoc);
 		
-		Adiantum_Ion_Invoke(client, endLoc, float(ion)/5.0);
+		Adiantum_Ion_Invoke(client, endLoc, float(ion)/5.0+1.0);
 	}
 }
 
@@ -440,10 +437,8 @@ public void Adiantum_Ion_Invoke(int ref, float vecTarget[3], float Time)
 		GetAbsOrigin(entity, UserLoc);
 		
 		UserLoc[2]+=75.0;
-		
-		int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
 					
-		TE_SetupBeamPoints(vecTarget, UserLoc, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
+		TE_SetupBeamPoints(vecTarget, UserLoc, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
 		TE_SendToAll();
 
 		EmitSoundToAll("misc/halloween/gotohell.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL*0.5, SNDPITCH_NORMAL, -1, vecTarget);
@@ -456,8 +451,11 @@ public void Adiantum_Ion_Invoke(int ref, float vecTarget[3], float Time)
 		WritePackFloat(data, Range); // Range
 		WritePackFloat(data, Dmg); // Damge
 		WritePackCell(data, ref);
-		
-		spawnRing_Vectors(vecTarget, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 1, 175, 255, 255, 1, Time, 6.0, 0.1, 1, 1.0);
+
+		//g_Ruina_BEAM_Diamond
+
+		TE_SetupBeamRingPoint(vecTarget, Range*2.0, 0.0, g_Ruina_BEAM_Laser, 0, 0, 1, Time, 6.0, 0.1, color, 1, 0);
+		TE_SendToAll();
 	}
 }
 
@@ -488,11 +486,11 @@ public Action Smite_Timer_Adiantum(Handle Smite_Logic, DataPack data)
 	position[1] = startPosition[1];
 	position[2] += startPosition[2] + 900.0;
 	startPosition[2] += -200;
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.75, 15.0, 1.0, 0, 0.75, {1, 175, 255, 255}, 3);
+	TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.75, 15.0, 1.0, 0, 0.75, {1, 175, 255, 255}, 3);
 	TE_SendToAll();
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.45, 25.0, 1.0, 0, 0.45, {1, 175, 255, 255}, 3);
+	TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.45, 25.0, 1.0, 0, 0.45, {1, 175, 255, 255}, 3);
 	TE_SendToAll();
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.3, 40.0, 1.0, 0, 0.3, {1, 175, 255, 255}, 3);
+	TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.3, 40.0, 1.0, 0, 0.3, {1, 175, 255, 255}, 3);
 	TE_SendToAll();
 	
 	position[2] = startPosition[2] + 50.0;

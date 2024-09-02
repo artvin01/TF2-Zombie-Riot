@@ -29,9 +29,6 @@ bool Stock_IsValidEntity(int entity)
 
 #define IsValidEntity Stock_IsValidEntity
 
-
-#define SDKHooks_TakeDamage Stock_TakeDamage
-
 stock void Stock_SetEntityMoveType(int entity, MoveType mt)
 {
 	if(b_ThisWasAnNpc[entity] && mt != MOVETYPE_CUSTOM)

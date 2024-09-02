@@ -75,7 +75,7 @@ bool b_ruina_buff_override[MAXENTITIES];
 
 #define RUINA_NORMAL_NPC_MAX_SHIELD	 	0.25
 #define RUINA_BOSS_NPC_MAX_SHIELD 		0.15
-#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	0.05
+#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	0.1
 #define RUINA_SHIELD_NPC_TIMEOUT 		7.5
 #define RUINA_SHIELD_ONTAKE_SOUND 		"weapons/flame_thrower_end.wav"			//does this work???
 
@@ -243,6 +243,7 @@ void Ruina_Ai_Core_Mapstart()
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
+	Ruina_Remove_Shield(client);
 	fl_ruina_shield_break_timeout[client] = 0.0;
 	i_npc_type[client] = type;
 	i_master_attracts[client] = type;
@@ -356,7 +357,7 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 	{
 		Shield_Power = RUINA_BOSS_NPC_MAX_SHIELD;
 	}
-	else if(b_thisNpcIsARaid[client])
+	if(b_thisNpcIsARaid[client])
 	{
 		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
 	}
@@ -538,7 +539,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	//CPrintToChatAll("Ratio %f", Ratio);
 		
 	//if the npc has less then 10% hp, is not a healer, and has no retreat set, they will retreat to the closest healer
-	if(Ratio<=0.10 && !b_ruina_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_is_a_master[npc.index])	
+	if(Ratio<=0.10 && !b_ruina_npc_healer[npc.index] && !b_npc_no_retreat[npc.index])	
 	{
 		fl_npc_healing_duration[npc.index] = GameTime + 2.5;
 		//CPrintToChatAll("Healing Duration 1 %f", fl_npc_healing_duration[npc.index]);
@@ -633,7 +634,7 @@ public void Ruina_Master_Rally(int client, bool rally)
 	- Make the npc's :)
 */
 
-public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
+void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
@@ -645,7 +646,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 
 		//CPrintToChatAll("Health %f", Health);
 		//CPrintToChatAll("Ratio %f", Ratio);
-		if(Ratio<0.5 && !b_ruina_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_is_a_master[npc.index])
+		if(Ratio<0.5 && !b_ruina_npc_healer[npc.index] && !b_npc_no_retreat[npc.index])
 		{
 			int Healer = GetClosestHealer(npc.index);
 			if(IsValidEntity(Healer))	//check if its valid in the first place, if not, likey healer doesn't exist
@@ -717,8 +718,13 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 		if(IsValidEntity(Master_Id_Main))	//get master's target
 		{
 			CClotBody npc2 = view_as<CClotBody>(Master_Id_Main);
-			PrimaryThreatIndex = npc2.m_iTarget;
 
+			//we only change targets every so often as to make it so if a player touches the npc the npc will actually attack them and not just ignore them causing infinite body blocking.
+			if(npc.m_flGetClosestTargetTime < GameTime || !IsValidEnemy(npc.index, PrimaryThreatIndex))
+			{
+				PrimaryThreatIndex = npc2.m_iTarget;
+				npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+			}
 			if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//almost final check to see if its valid, if its not, find the nearest one. there is a chance that the refind timer is still active, in this case the return logic handles it.
 			{
 				PrimaryThreatIndex = Ruina_Get_Target(npc.index, GameTime);
@@ -1679,19 +1685,14 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 		npc.m_bAllowBackWalking=false;
 	}
 }
-void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, float cylce_speed, int color[4])
+void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, float cylce_speed)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	if(fl_ruina_helia_healing_timer[npc.index]<=GameTime)
-	{
-		float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=10.0;
-		float Thickness = 6.0;
-		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.33, Thickness, 0.5, color, 1, 0);
-		TE_SendToAll();
-		
-		ExpidonsaGroupHeal(npc.index, Range, 5, float(Healing), 0.1, false, _ , Ruina_HealVisualEffect);
-
+	{	
+		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.1, false, _ , Ruina_HealVisualEffect);
+		DesertYadeamDoHealEffect(npc.index, Range);
 		fl_ruina_helia_healing_timer[npc.index]=cylce_speed+GameTime;
 	}
 }
@@ -1700,6 +1701,9 @@ void Ruina_HealVisualEffect(int healer, int victim)
 	CClotBody npc = view_as<CClotBody>(victim);
 
 	float GameTime = GetGameTime(npc.index);
+
+	if(AtEdictLimit(EDICT_NPC))
+		return;
 
 	if(fl_ruina_internal_healing_timer[npc.index]>GameTime)
 		return;
@@ -1722,7 +1726,131 @@ void Ruina_HealVisualEffect(int healer, int victim)
 
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(Healing_Effect), TIMER_FLAG_NO_MAPCHANGE);
 }
-public void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
+bool Lanius_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float Dist_Min, float Dist_Max, float recharge, float dmg = 0.0, float radius = 0.0, Function OnTeleportLaseHit = INVALID_FUNCTION)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	float flVel[3];
+	GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecAbsVelocity", flVel);
+	float abs_vel = fabs(flVel[0]) + fabs(flVel[1]) + fabs(flVel[2]);
+
+	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
+
+	float GameTime = GetGameTime(npc.index);
+
+	bool block = false;
+
+	if(npc.m_flDoingAnimation < GameTime && !npc.m_bisWalking)
+	{
+		npc.StartPathing();
+		block = true;
+		npc.m_iChanged_WalkCycle = -1;
+		npc.m_bisWalking = true;
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.0;
+	}
+
+	if (abs_vel >= 190.0)
+	{
+		if(flDistanceToTarget > Dist_Min && flDistanceToTarget < Dist_Max)
+		{
+			//CPrintToChatAll("Inrange");
+			if(npc.m_flNextTeleport > GameTime)
+				return false;
+
+			if(npc.m_flDoingAnimation < GameTime && npc.m_bisWalking && !block)
+			{
+				npc.m_flRangedArmor = 0.75;
+				npc.m_flMeleeArmor = 0.75;
+				npc.m_flDoingAnimation = GameTime + 1.0;
+				npc.SetPlaybackRate(1.0);	
+				npc.SetCycle(0.1);
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("taunt_the_trackmans_touchdown");
+				return false;
+			}	
+
+			if(npc.m_flDoingAnimation > GameTime)
+				return false;
+
+			npc.m_bisWalking = true;
+			npc.StartPathing();
+			npc.m_iChanged_WalkCycle = -1;
+
+			
+			float vPredictedPos[3],
+			SubjectAbsVelocity[3];
+			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+			SubjectAbsVelocity[2] = 0.0;
+			for(int i=0 ; i < 2 ; i++)	{SubjectAbsVelocity[i]*=-0.5;}
+			AddVectors(vecTarget, SubjectAbsVelocity, vPredictedPos);
+			float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=2.5;	
+
+			/*float Thickness = 6.0;
+			float Range = 50.0;
+			int colour[4];
+			Ruina_Color(colour);
+			vPredictedPos[2]+=10.0;
+			TE_SetupBeamRingPoint(vPredictedPos, Range*2.0, Range*2.0 + 1.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.1, Thickness, 0.5, colour, 1, 0);
+			TE_SendToAll();
+			*/
+			vPredictedPos[2]+=45.0;
+
+			npc.FaceTowards(vPredictedPos);
+			npc.FaceTowards(vPredictedPos);
+				
+			float start_offset[3], end_offset[3];
+			start_offset = Npc_Vec;
+
+			if(NPC_Teleport(npc.index, vPredictedPos))
+			{				
+				float effect_duration = 0.25;
+
+				end_offset = vPredictedPos;
+
+				if(dmg!=0.0)
+				{
+					Ruina_Laser_Logic Laser;
+					Laser.client = npc.index;
+					Laser.Start_Point = Npc_Vec;
+					Laser.End_Point = vPredictedPos;
+					Laser.Radius = radius;
+					Laser.Damage = dmg;
+					Laser.Bonus_Damage = dmg*1.5;
+					Laser.damagetype = DMG_PLASMA;
+					Laser.Deal_Damage(OnTeleportLaseHit);
+				}
+
+				npc.m_flNextTeleport = GameTime + recharge;
+
+				end_offset[2] -=45.0;
+								
+				for(int help=1 ; help<=8 ; help++)
+				{	
+					Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
+									
+					start_offset[2] += 12.5;
+					end_offset[2] += 12.5;
+				}
+				return true;
+			}
+			else
+			{
+				npc.m_flNextTeleport = GameTime + 3.0;
+				return false;
+			}
+		}
+	}
+
+	return false;
+}
+void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
@@ -2736,6 +2864,9 @@ Names per stage:
 */
 void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point[3], float end_point[3])
 {
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+
 	int part1 = CreateEntityByName("info_particle_system");
 	if(IsValidEdict(part1))
 	{

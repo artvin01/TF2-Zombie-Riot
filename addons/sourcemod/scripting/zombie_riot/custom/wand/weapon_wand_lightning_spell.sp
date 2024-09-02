@@ -42,7 +42,7 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int
 			
 				Fireball_Damage[client] = damage;
 					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;

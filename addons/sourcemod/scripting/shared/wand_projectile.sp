@@ -46,8 +46,11 @@ bool hideprojectile = true,
 float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the rest like particle effects should be handled within the plugins themselves. hopefully.
 {
 	float fAng[3], fPos[3];
-	GetClientEyeAngles(client, fAng);
-	GetClientEyePosition(client, fPos);
+	if(client <= MaxClients)
+	{
+		GetClientEyeAngles(client, fAng);
+		GetClientEyePosition(client, fPos);
+	}
 
 	if(CustomAng[0] != 0.0 || CustomAng[1] != 0.0)
 	{
@@ -68,21 +71,24 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		//if its too fast, then it can cause projectile devietion
 	}
 
-	float tmp[3];
-	float actualBeamOffset[3];
-	float BEAM_BeamOffset[3];
-	BEAM_BeamOffset[0] = 0.0;
-	BEAM_BeamOffset[1] = -8.0;
-	BEAM_BeamOffset[2] = -10.0;
+	if(client <= MaxClients && CustomPos[0] == 0.0 && CustomPos[1] == 0.0)
+	{
+		float tmp[3];
+		float actualBeamOffset[3];
+		float BEAM_BeamOffset[3];
+		BEAM_BeamOffset[0] = 0.0;
+		BEAM_BeamOffset[1] = -8.0;
+		BEAM_BeamOffset[2] = -10.0;
 
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, fAng, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	fPos[0] += actualBeamOffset[0];
-	fPos[1] += actualBeamOffset[1];
-	fPos[2] += actualBeamOffset[2];
+		tmp[0] = BEAM_BeamOffset[0];
+		tmp[1] = BEAM_BeamOffset[1];
+		tmp[2] = 0.0;
+		VectorRotate(tmp, fAng, actualBeamOffset);
+		actualBeamOffset[2] = BEAM_BeamOffset[2];
+		fPos[0] += actualBeamOffset[0];
+		fPos[1] += actualBeamOffset[1];
+		fPos[2] += actualBeamOffset[2];
+	}
 
 
 	float fVel[3], fBuf[3];

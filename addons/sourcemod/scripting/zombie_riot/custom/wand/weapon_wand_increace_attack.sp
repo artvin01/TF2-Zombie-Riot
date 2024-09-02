@@ -39,7 +39,7 @@ public void Weapon_Wand_AttackSpeed(int client, int weapon, bool &result, int sl
 				
 				CreateTimer(3.0, Reset_Wand_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 				
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
