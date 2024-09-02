@@ -194,7 +194,8 @@ enum
 	WEAPON_WALDCH_SWORD_NOVISUAL = 114,
 	WEAPON_WALDCH_SWORD_REAL = 115,
 	WEAPON_MLYNAR_PAP_2 = 116,
-	WEAPON_ULPIANUS = 117
+	WEAPON_ULPIANUS = 117,
+	WEAPON_WRATHFUL_BLADE = 118
 }
 
 enum
@@ -255,6 +256,7 @@ float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 float PlayerCountBuffScaling = 1.0;
+float PlayerCountBuffAttackspeedScaling = 1.0;
 float PlayerCountResBuffScaling = 1.0;
 int PlayersAliveScaling;
 int PlayersInGame;
@@ -521,6 +523,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
 #include "zombie_riot/custom/weapon_rusty_rifle.sp"
+#include "zombie_riot/custom/weapon_wrathful_blade.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/red_blade.sp"
@@ -562,6 +565,8 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_buy", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_guns", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
+	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");
+	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
@@ -573,7 +578,6 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
 	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
-	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
@@ -788,6 +792,7 @@ void ZR_MapStart()
 	ResetMapStartVictoria();
 	Obuch_Mapstart();
 	Ulpianus_MapStart();
+	Wrathful_Blade_Precache();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1037,7 +1042,14 @@ public Action OnReloadCommand(int args)
 }
 
 
-
+public Action Command_RTdFail(int client, int args)
+{
+	if(client)
+	{
+		PrintToChat(client, "There is no RTD, and RTD isnt supported.");
+	}
+	return Plugin_Handled;
+}
 public Action Command_AFK(int client, int args)
 {
 	if(client)
@@ -1089,12 +1101,8 @@ public Action CommandDebugHudTest(int client, int args)
         return Plugin_Handled;
     }
 
-	Rogue_Encounter_EmergencyDispatch();
-	char buf[12];
-	GetCmdArg(1, buf, sizeof(buf));
-	
-	SetHudTextParams(-1.0, -1.0, 1.0, 255, 255, 255, 255, 0, 0.01, 0.01);
-	ShowHudText(client, -1,"Debug : %s",buf);	
+	int Number = GetCmdArgInt(1);
+	Medival_Wave_Difficulty_Riser(Number);
 
 	return Plugin_Handled;
 }

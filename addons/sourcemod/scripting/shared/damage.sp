@@ -123,11 +123,6 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	}
 	float GameTime = GetGameTime();
 
-	if(Medival_Difficulty_Level != 0.0)
-	{
-		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
-	}
-
 	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 	//It will just return the same damage if nothing is done.
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
@@ -558,11 +553,18 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 	//dont do reduce per player, its only 1 o 1 !!!
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)	//this doesnt get applied in groups.
 		damage += basedamage * (DMG_MEDIGUN_LOW - 1.0);
+		
 
 	#if defined RUINA_BASE
 		if(f_Ruina_Attack_Buff[attacker] > GameTime)
 			damage += basedamage * (f_Ruina_Attack_Buff_Amt[attacker] * DamageBuffExtraScaling);	//x% dmg bonus			
 	#endif
+
+	//Medieval buff stacks with any other attack buff.
+	if(GetTeam(attacker) != TFTeam_Red && Medival_Difficulty_Level != 0.0)
+	{
+		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
+	}
 	
 	return false;
 }
@@ -595,10 +597,11 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 			damage *= 1.25;
 		}
 	}
-
+	
+	float DamageRes = 1.0;
 	if(f_PotionShrinkEffect[attacker] > GameTime)
 	{
-		damage *= 0.75;
+		DamageRes *= 0.75;
 	}
 
 	if(f_EnfeebleEffect[attacker] > GameTime)
@@ -608,21 +611,29 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 		if(resist < 0.9)
 			resist = 0.9;
 		
-		damage *= resist;
+		DamageRes *= resist;
 	}
 
 	if(f_LeeSuperEffect[attacker] > GameTime)
 	{
-		damage *= 0.85;
+		DamageRes *= 0.85;
 	}
 	else if(f_LeeMajorEffect[attacker] > GameTime)
 	{
-		damage *= 0.9;
+		DamageRes *= 0.9;
 	}
 	else if(f_LeeMinorEffect[attacker] > GameTime)
 	{
-		damage *= 0.95;
+		DamageRes *= 0.95;
+	} 
+	//if inflictor is 9999999, then that means its called by seperate code, HUD elements.
+	if(RaidbossIgnoreBuildingsLogic(1) && (GetTeam(victim) == TFTeam_Red))
+	{
+		//invert, then convert!
+		float NewRes = 1.0 + ((DamageRes - 1.0) * PlayerCountResBuffScaling);
+		DamageRes = NewRes;
 	}
+	damage *= DamageRes;	
 #endif	//zr
 	return false;
 }
@@ -711,6 +722,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_FLAMETAIL:
 		{
 			Flametail_SelfTakeDamage(victim, damage, damagetype);
+		}
+		case WEAPON_WRATHFUL_BLADE:
+		{
+			Player_OnTakeDamage_WrathfulBlade(victim, damage, attacker);
 		}
 	}
 	return damage;
@@ -1003,6 +1018,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_FLAMETAIL:
 		{
 			Flametail_NPCTakeDamage(attacker, damage, weapon, damagePosition);
+		}
+		case WEAPON_WRATHFUL_BLADE:
+		{
+			return WrathfulBlade_OnNPCDamaged(victim, attacker, weapon, damage, inflictor);
 		}
 	}
 #endif
@@ -1578,24 +1597,6 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	if(MoraleBoostLevelAt(victim) > 0)
 		DamageRes *= EntityMoraleBoostReturn(victim, 3);
 
-	if(Resistance_Overall_Low[victim] > GameTime)
-		DamageRes *= RES_MEDIGUN_LOW;
-
-
-	if(Adaptive_MedigunBuff[victim][0] > GameTime)
-		DamageRes *= 0.95;
-
-	if(damagetype & (DMG_CLUB)) // if you want anything to be melee based, just give them this.
-	{
-		if(Adaptive_MedigunBuff[victim][1] > GameTime)
-			DamageRes *= 0.85;
-	}
-	else
-	{
-		if(Adaptive_MedigunBuff[victim][2] > GameTime)
-			DamageRes *= 0.85;
-	}
-
 	if(!NpcStats_IsEnemySilenced(victim))
 	{
 		if(f_HussarBuff[victim] > GameTime) //hussar!
@@ -1659,7 +1660,24 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 
 	damage *= DamageRes;	
 
-	//this shouldnt be scaled.
+	//this shouldnt be scaled, as it only applies onto 1 target at a time.
+	if(Resistance_Overall_Low[victim] > GameTime)
+		damage *= RES_MEDIGUN_LOW;
+
+	if(Adaptive_MedigunBuff[victim][0] > GameTime)
+		damage *= 0.95;
+
+	if(damagetype & (DMG_CLUB)) // if you want anything to be melee based, just give them this.
+	{
+		if(Adaptive_MedigunBuff[victim][1] > GameTime)
+			damage *= 0.85;
+	}
+	else
+	{
+		if(Adaptive_MedigunBuff[victim][2] > GameTime)
+			damage *= 0.85;
+	}
+
 	if(f_EmpowerStateSelf[victim] > GameTime) //Allow stacking.
 		damage *= 0.9;
 		
@@ -2093,6 +2111,15 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			if(FlameTail_Global_Buff() && IsWeaponKazimierz(Victim_weapon))
 			{	
 				Format(Debuff_Adder_right, SizeOfChar, "F%s", Debuff_Adder_right);
+			}
+			if(Blacksmith_HasTinker(victim, StoreWeapon[Victim_weapon]))
+			{	
+				Format(Debuff_Adder_right, SizeOfChar, "⍡%s", Debuff_Adder_right);
+			}
+			static float DurationLeft;
+			if(BlacksmithBrew_HasEffect(victim, StoreWeapon[Victim_weapon], DurationLeft))
+			{	
+				Format(Debuff_Adder_right, SizeOfChar, "⅋(%.0fs)%s", DurationLeft, Debuff_Adder_right);
 			}
 		}
 	}

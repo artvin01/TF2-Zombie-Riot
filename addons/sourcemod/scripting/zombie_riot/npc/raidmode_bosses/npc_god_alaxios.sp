@@ -1109,7 +1109,7 @@ public void GodAlaxios_NPCDeath(int entity)
 	Citizen_MiniBossDeath(entity);
 }
 
-void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool outline = false)
+void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false)
 {
 	if(GetTeam(alaxios) == TFTeam_Red)
 	{
@@ -1144,7 +1144,7 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	{
 		enemy.Health = health;
 	}
-	enemy.Is_Outlined = outline;
+	enemy.Is_Boss = view_as<int>(is_a_boss);
 	enemy.Is_Immune_To_Nuke = true;
 	//do not bother outlining.
 	enemy.ExtraMeleeRes = 1.0;

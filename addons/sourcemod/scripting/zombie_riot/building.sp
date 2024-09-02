@@ -23,7 +23,7 @@ static const char BuildingPlugin[][] =
 	"obj_barracks",
 
 	"obj_tinker_anvil",
-	"obj_tinker_brewing"
+	"obj_brewing_stand"
 };
 
 
@@ -47,7 +47,7 @@ static const int BuildingCost[sizeof(BuildingPlugin)] =
 	1200,
 
 	338,
-	600
+	1200
 };
 
 // Base health of building
@@ -93,7 +93,7 @@ static const float BuildingCooldown[sizeof(BuildingPlugin)] =
 	15.0,
 
 	15.0,
-	15.0
+	60.0
 };
 
 static const char BuildingFuncName[sizeof(BuildingPlugin)][] =

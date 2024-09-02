@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 // Amount of aspect (kills) needed for one part of a potion
-#define ASPECT_REQUIRED	10.0
+#define ASPECT_REQUIRED	17.0
 
 static const char AspectName[][] =
 {
@@ -40,6 +40,7 @@ enum struct BrewEnum
 	float Multi;
 	float EndAt;
 	int EntRef;
+	float EntMulti[TINKER_LIMIT];
 }
 
 static const float Cooldowns[] = { 270.0, 240.0, 210.0, 180.0, 150.0, 120.0 };
@@ -129,8 +130,8 @@ static void CacheBrewer()
 	c.Add(Brew_524, A_Agility, A_Enhance, A_Water);
 	c.Add(Brew_502, A_Agility, A_Strength, A_Water);
 }
-/*
-bool BlacksmithBrew_HasEffect(int client, int index)
+
+bool BlacksmithBrew_HasEffect(int client, int index, float &duration)
 {
 	if(Brews)
 	{
@@ -143,14 +144,17 @@ bool BlacksmithBrew_HasEffect(int client, int index)
 			{
 				Brews.GetArray(a, brew);
 				if(brew.AccountId == account && brew.StoreIndex == index)
+				{
+					duration = brew.EndAt - GetGameTimeBrew();
 					return true;
+				}
 			}
 		}
 	}
 	
 	return false;
 }
-*/
+
 void BlacksmithBrew_ExtraDesc(int client, int weapon, bool first = false)
 {
 	if(Brews)
@@ -168,7 +172,7 @@ void BlacksmithBrew_ExtraDesc(int client, int weapon, bool first = false)
 					char name[64];
 					int attrib[TINKER_LIMIT];
 					float value[TINKER_LIMIT];
-					bool add[TINKER_LIMIT];
+					int add[TINKER_LIMIT];
 					LookupById(brew.TypeIndex, name, attrib, value, add);
 
 					CPrintToChat(client, "{yellow}%s {default}(%.0fs %s)", name, brew.EndAt - GetGameTimeBrew(), first ? "Duration" : "Left");
@@ -180,16 +184,16 @@ void BlacksmithBrew_ExtraDesc(int client, int weapon, bool first = false)
 						
 						if(add[b] || attrib[b] > 3999 || Attributes_Has(weapon, attrib[b]))
 						{
-							if(add[b])
+							if(add[b] == 1)
 							{
-								value[b] *= brew.Multi;
+								value[b] *= brew.Multi * MultiScale(attrib[b]);
 							}
 							else
 							{
-								value[b] = 1.0 + ((value[b] - 1.0) * brew.Multi);
+								value[b] = 1.0 + ((value[b] - 1.0) * brew.Multi * MultiScale(attrib[b]));
 							}
 
-							Blacksmith_PrintAttribValue(client, attrib[b], value[b], brew.Multi, add[b]);
+							Blacksmith_PrintAttribValue(client, attrib[b], value[b], brew.Multi * MultiScale(attrib[b]), add[b] == 1);
 						}
 					}
 
@@ -220,7 +224,7 @@ void BlacksmithBrew_Enable(int client, int weapon)
 
 					int attrib[TINKER_LIMIT];
 					float value[TINKER_LIMIT];
-					bool add[TINKER_LIMIT];
+					int add[TINKER_LIMIT];
 					LookupById(brew.TypeIndex, _, attrib, value, add);
 					
 					for(int b; b < sizeof(attrib); b++)
@@ -228,18 +232,21 @@ void BlacksmithBrew_Enable(int client, int weapon)
 						if(!attrib[b])
 							break;
 						
-						if(add[b])
+						brew.EntMulti[b] = MultiScale(attrib[b]);
+
+						if(add[b] == 1)
 						{
-							value[b] *= brew.Multi;
+							value[b] *= brew.Multi * brew.EntMulti[b];
 							Attributes_SetAdd(weapon, attrib[b], value[b]);
 						}
-						else if(attrib[b] > 3999 || Attributes_Has(weapon, attrib[b]))
+						else if(attrib[b] > 3999 || add[b] || Attributes_Has(weapon, attrib[b]))
 						{
-							value[b] = 1.0 + ((value[b] - 1.0) * brew.Multi);
+							value[b] = 1.0 + ((value[b] - 1.0) * brew.Multi * brew.EntMulti[b]);
 							Attributes_SetMulti(weapon, attrib[b], value[b]);
 						}
 					}
 
+					Brews.SetArray(a, brew);
 					break;
 				}
 			}
@@ -247,9 +254,47 @@ void BlacksmithBrew_Enable(int client, int weapon)
 	}
 }
 
+static float MultiScale(int attrib)
+{
+	// ALWAYS Return >1 for Buff, <1 for Nerf
+	// If it's reverse, do 1.0 / value
+	/*
+		Didnt include repair speed here.
+	*/
+	switch(attrib)
+	{
+		//All defensive and resistive attributes!
+		case 205, 206:
+		{
+			return PlayerCountResBuffScaling;
+		}
+		//HP values here!
+		case 26:
+		{
+			return PlayerCountResBuffScaling;
+		}
+		//All damage attribs!
+		case 410 , 2 , 1:
+		{
+			return PlayerCountBuffScaling;
+		}
+		//all attackspeed and reload speed attribs!
+		case 6, 97:
+		{
+			return PlayerCountBuffAttackspeedScaling;
+		}
+
+		default:
+		{
+			//Do nothing.
+		}
+	}
+	return 1.0;
+}
+
 void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 {
-	if(Blacksmith_IsASmith(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
+	if(Merchant_IsAMerchant(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
 	{
 		int random = RandomSeed + GetEntProp(victim, Prop_Data, "m_nModelIndex");
 		int aspect = random % A_Water;
@@ -264,9 +309,16 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 		//	aspect = A_Void;
 		//}
 
-		// Raid x100, Boss x10, Giant x2
-		float gain = b_thisNpcIsARaid[victim] ? 100.0 : (b_thisNpcIsABoss[victim] ? 10.0 : (b_IsGiant[victim] ? 2.0 : 1.0));
-		gain = damage * gain / GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+		// Raid x100, Boss x10, Giant x2.5
+		/*
+			Here we compare Hp to max hp, so you cant ov erkill
+		*/
+		int MaxHealth = ReturnEntityMaxHealth(victim);
+		if(damage >= float(MaxHealth))
+			damage = float(MaxHealth);
+			
+		float gain = b_thisNpcIsARaid[victim] ? (50.0 * MultiGlobalHighHealthBoss) : (b_thisNpcIsABoss[victim] ? (10.0 * MultiGlobalHealth) : (b_IsGiant[victim] ? 2.5 : 1.0));
+		gain = damage * gain / float(MaxHealth);
 		Aspects[attacker][aspect] += gain;
 
 		if(b_thisNpcIsABoss[victim])
@@ -302,9 +354,6 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 		return Plugin_Stop;
 	}
 
-	if(PlayerCountBuffScaling < 1.0 && RaidBossActive != -1 && IsValidEntity(RaidBossActive))
-		ExtraGameTime += (1.0 / PlayerCountBuffScaling) - 1.0;
-	
 	if(Waves_InSetup())
 	{
 		ExtraGameTime -= 1.0;
@@ -328,20 +377,20 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 					char buffer[64];
 					int attrib[TINKER_LIMIT];
 					float value[TINKER_LIMIT];
-					bool add[TINKER_LIMIT];
-					LookupById(brew.TypeIndex, _, attrib, value, add);
+					int add[TINKER_LIMIT];
+					LookupById(brew.TypeIndex, buffer, attrib, value, add);
 					
 					for(int b; b < sizeof(attrib); b++)
 					{
 						if(!attrib[b])
 							break;
 						
-						if(add[b])
+						if(add[b] == 1)
 						{
 							value[b] *= brew.Multi;
 							Attributes_SetAdd(weapon, attrib[b], -value[b]);
 						}
-						else if(attrib[b] > 3999 || Attributes_Has(weapon, attrib[b]))
+						else if(attrib[b] > 3999 || add[b] || Attributes_Has(weapon, attrib[b]))
 						{
 							value[b] = 1.0 + ((value[b] - 1.0) * brew.Multi);
 							Attributes_SetMulti(weapon, attrib[b], 1.0 / value[b]);
@@ -627,7 +676,7 @@ static int PotionMakingMenuH(Menu menu, MenuAction action, int client, int choic
 					int id = LookupByAspect(AspectMenu[client][0], AspectMenu[client][1], AspectMenu[client][2], craft, buffer);
 					if(id != -1)
 					{
-						int level = Blacksmith_Level(client);
+						int level = MerchantLevelReturn(client);
 						float limit = level > 2 ? 1.0 : (level > 1 ? 0.5 : 0.0);
 
 						float power = -0.5 + ((Aspects[client][craft.Aspect1] - 1.0) / ASPECT_REQUIRED / 2.0);
@@ -673,7 +722,8 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 {
 	if(owner != -1)
 	{
-		int level = Blacksmith_Level(owner);
+		int level = MerchantLevelReturn(owner);
+
 		if(level >= 0)
 		{
 			int account = GetSteamAccountID(client, false);
@@ -704,7 +754,7 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 				char buffer[64];
 				int attrib[TINKER_LIMIT];
 				float value[TINKER_LIMIT];
-				bool add[TINKER_LIMIT];
+				int add[TINKER_LIMIT];
 				float time = LookupById(SellingType[owner], buffer, attrib, value, add);
 
 				bool found;
@@ -732,6 +782,7 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 				time = time * SellingTime[owner];
 
 				brew.AccountId = account;
+				brew.EntRef = -1;
 				brew.StoreIndex = StoreWeapon[weapon];
 				brew.TypeIndex = SellingType[owner];
 				brew.Multi = SellingPower[owner];
@@ -787,7 +838,7 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 	ApplyBuildingCollectCooldown(entity, client, 3.0);
 }
 
-static int LookupByAspect(int a1, int a2, int a3, CraftEnum craft = {}, char name[64] = {}, int attrib[TINKER_LIMIT] = {}, float value[TINKER_LIMIT] = {}, bool add[TINKER_LIMIT] = {}, float &time = 0.0)
+static int LookupByAspect(int a1, int a2, int a3, CraftEnum craft = {}, char name[64] = {}, int attrib[TINKER_LIMIT] = {}, float value[TINKER_LIMIT] = {}, int add[TINKER_LIMIT] = {}, float &time = 0.0)
 {
 	int length = Crafts.Length;
 	for(int i; i < length; i++)
@@ -809,14 +860,14 @@ static int LookupByAspect(int a1, int a2, int a3, CraftEnum craft = {}, char nam
 	return -1;
 }
 
-static float LookupById(int id, char name[64] = {}, int attrib[TINKER_LIMIT] = {}, float value[TINKER_LIMIT] = {}, bool add[TINKER_LIMIT] = {})
+static float LookupById(int id, char name[64] = {}, int attrib[TINKER_LIMIT] = {}, float value[TINKER_LIMIT] = {}, int add[TINKER_LIMIT] = {})
 {
 	static CraftEnum craft;
 	Crafts.GetArray(id, craft);
 	return CallFunc(craft, name, attrib, value, add);
 }
 
-static float CallFunc(CraftEnum craft, char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float CallFunc(CraftEnum craft, char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	float time;
 	Call_StartFunction(null, craft.Func);
@@ -839,7 +890,7 @@ static float CallFunc(CraftEnum craft, char name[64], int attrib[TINKER_LIMIT], 
 	Aspect_Void,
 */
 
-static float Brew_Default(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_Default(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Default Stew");
 	attrib[0] = 6;
@@ -850,7 +901,7 @@ static float Brew_Default(char name[64], int attrib[TINKER_LIMIT], float value[T
 }
 
 // Str* Res Agi^
-static float Brew_012(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_012(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Flexibility");
 	attrib[0] = 54;
@@ -863,20 +914,21 @@ static float Brew_012(char name[64], int attrib[TINKER_LIMIT], float value[TINKE
 }
 
 // Str^ Res Min*
-static float Brew_013(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_013(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Barrier");
 	attrib[0] = 410;
 	value[0] = 1.1;
 	attrib[1] = 205;
 	value[1] = 0.95;
+	add[1] = 2;
 	attrib[2] = 206;
 	value[2] = 0.95;
 	return 180.0;
 }
 
 // Str^ Res Enc*
-static float Brew_014(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_014(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Strength");
 	attrib[0] = 2;
@@ -885,11 +937,12 @@ static float Brew_014(char name[64], int attrib[TINKER_LIMIT], float value[TINKE
 	value[1] = 0.95;
 	attrib[2] = 206;
 	value[2] = 0.95;
+	add[2] = 2;
 	return 180.0;
 }
 
 // Str Agi^ Min*
-static float Brew_023(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_023(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Casting");
 	attrib[0] = 6;
@@ -900,63 +953,66 @@ static float Brew_023(char name[64], int attrib[TINKER_LIMIT], float value[TINKE
 }
 
 // Str Agi* Enc^
-static float Brew_024(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_024(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Beef");
 	attrib[0] = 26;
 	value[0] = 200.0;
-	add[0] = true;
+	add[0] = 1;
 	return 180.0;
 }
 
 // Str* Min Enc^
-static float Brew_034(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_034(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Engineering");
 	attrib[0] = 8;
 	value[0] = 1.2;
 	attrib[1] = 10;
 	value[1] = 1.1;
-	attrib[2] = 94;
+	attrib[2] = 95;
 	value[2] = 1.25;
 	return 180.0;
 }
 
 // Res^ Agi Min*
-static float Brew_123(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_123(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Stock");
 	attrib[0] = 4019;
-	value[0] = 100.0;
-	add[0] = true;
+	value[0] = 1.1;
+	add[0] = 2;
 	return 180.0;
 }
 
 // Res^ Agi Enc*
-static float Brew_124(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_124(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Boulder");
 	attrib[0] = 252;
 	value[0] = 0.5;
+	add[0] = 2;
 	attrib[1] = 205;
 	value[1] = 0.95;
+	add[1] = 2;
 	attrib[2] = 206;
 	value[2] = 0.95;
+	add[2] = 2;
 	return 180.0;
 }
 
 // Res^ Min Enc*
-static float Brew_134(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_134(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Ripening");
 	attrib[0] = 57;
 	value[0] = 5.0;
-	add[0] = true;
+	add[0] = 1;
 	return 180.0;
 }
 
 // Agi^ Min* Enc
-static float Brew_234(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_234(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Velocity");
 	attrib[0] = 101;
@@ -965,64 +1021,66 @@ static float Brew_234(char name[64], int attrib[TINKER_LIMIT], float value[TINKE
 	value[1] = 1.3;
 	attrib[2] = 252;
 	value[2] = 1.5;
+	add[2] = 2;
 	return 180.0;
 }
 
 // Wat Res* Agi^
-static float Brew_512(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_512(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Flask of Assimilation");
 	attrib[0] = Attrib_TerrianRes;
 	value[0] = 0.6;
+	add[0] = 2;
 	return 150.0;
 }
 
 // Wat Str* Res^
-static float Brew_501(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_501(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Flask of Freedom");
 	attrib[0] = Attrib_SlowImmune;
 	value[0] = 2.0;
-	add[0] = true;
+	add[0] = 1;
 	return 150.0;
 }
 
 // Wat Res^ Enc*
-static float Brew_514(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_514(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Flask of Armor");
 	attrib[0] = Attrib_ElementalDef;
 	value[0] = 5.0;
-	add[0] = true;
+	add[0] = 1;
 	return 150.0;
 }
 
 // Wat Agi^ Min*
-static float Brew_523(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_523(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Flask of Sanitizing");
 	attrib[0] = Attrib_ObjTerrianAbsorb;
 	value[0] = 3.0;
-	add[0] = true;
+	add[0] = 1;
 	return 150.0;
 }
 
 // Wat Agi^ Enc*
-static float Brew_524(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_524(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Flask of Abyssal Hunter");
 	attrib[0] = Attrib_SetArchetype;
 	value[0] = 22.0;
-	add[0] = true;
+	add[0] = 1;
 	return 150.0;
 }
 
 // Wat Str* Agi^
-static float Brew_502(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], bool add[TINKER_LIMIT])
+static float Brew_502(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Flask of Kazimierz");
 	attrib[0] = Attrib_SetArchetype;
 	value[0] = 23.0;
-	add[0] = true;
+	add[0] = 1;
 	return 150.0;
 }
