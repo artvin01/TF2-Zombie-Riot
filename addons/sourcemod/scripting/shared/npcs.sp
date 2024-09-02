@@ -1500,7 +1500,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		BaseDamage = 100.0;
 		if(!b_NpcIsInvulnerable[victim])
 		{
-			Damage_NPCAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+			static int VictimCheck = 9999999;
+			Damage_NPCAttacker(attacker, victim, VictimCheck, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 			Damage_AnyAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 			if(GetTeam(victim) != TFTeam_Red)
 			{
@@ -2270,6 +2271,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		case WEAPON_MAGNESIS:
 		{
 			Magnesis_OnKill(victim);
+		}
+		case WEAPON_WRATHFUL_BLADE:
+		{
+			WrathfulBlade_OnKill(attacker, victim);
 		}
 	}
 }

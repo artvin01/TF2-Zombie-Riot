@@ -20,7 +20,7 @@ enum
 	Nothing_Res,
 }
 
-static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
+static const int SupportBuildings[] = { 1, 1, 1, 1, 1, 1 };
 static int MerchantLevel[MAXTF2PLAYERS] = {-1, ...};
 static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};
 
@@ -52,6 +52,15 @@ int Merchant_Additional_SupportBuildings(int client)
 bool Merchant_IsAMerchant(int client)
 {
 	return view_as<bool>(EffectTimer[client]);
+}
+int MerchantLevelReturn(int client)
+{
+	if(!Merchant_IsAMerchant(client))
+		return -1;
+	else
+	{
+		return MerchantLevel[client] + 1;
+	}
 }
 
 void Merchant_Enable(int client, int weapon)
@@ -809,6 +818,7 @@ static void MerchantStart(int client, int slot)
 					damage *= (MerchantLevel[client] > 4 ? 1.5 : (MerchantLevel[client] == 4 ? 1.45 : 1.4));
 					MerchantAddAttrib(client, 205, MerchantLevel[client] > 4 ? 0.7 : 0.75);
 					MerchantAddAttrib(client, 206, 0.85);
+					MerchantAddAttrib(client, Attrib_SlowImmune, 1.0);
 				}
 				else
 				{

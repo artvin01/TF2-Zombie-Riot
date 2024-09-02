@@ -2421,7 +2421,7 @@
 	}
 	"Lazines"
 	{
-		"en"	"Lazines"
+		"en"	"Laz Ines"
 	}
 	"Dronis"
 	{

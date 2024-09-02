@@ -610,6 +610,8 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 
 				if(resist)
 					damageDeal *= 0.2;
+				
+				damageDeal *= Attributes_GetOnPlayer(client, Attrib_TerrianRes);
 
 				if(damageDeal < 2.0) //whatever is higher.
 				{
@@ -703,6 +705,17 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					// 20 x 0.25 x 0.2
 
 					NervousTouching[entity] = NervousTouching[0];
+
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+					if(owner > 0 && owner <= MaxClients)
+					{
+						if(Attributes_GetOnPlayer(owner, Attrib_ObjTerrianAbsorb, false) > (GetURandomInt() % 100))
+						{
+							int id = NavList.FindValue(NervousLastTouch[entity]);
+							if(id != -1)
+								NavList.Erase(id);
+						}
+					}
 				}
 			}
 		}

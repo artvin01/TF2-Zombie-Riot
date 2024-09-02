@@ -2344,10 +2344,16 @@ void DoGlobalMultiScaling()
 	MultiGlobalEnemy *= ZRModifs_MaxSpawnWaveModif();
 	MultiGlobalEnemyBoss *= ZRModifs_MaxSpawnWaveModif();
 
-	PlayerCountBuffScaling = 4.0 / playercount;
+	PlayerCountBuffScaling = 4.5 / playercount;
 	if(PlayerCountBuffScaling > 1.2)
 	{
 		PlayerCountBuffScaling = 1.2;
+	}
+
+	PlayerCountBuffAttackspeedScaling = 6.0 / playercount;
+	if(PlayerCountBuffAttackspeedScaling > 1.2)
+	{
+		PlayerCountBuffAttackspeedScaling = 1.2;
 	}
 
 	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
@@ -2496,14 +2502,22 @@ static void UpdateMvMStatsFrame()
 					{
 						if(!id[b] || id[b] == wave.EnemyData.Index)
 						{
-							count[b] += num;
-							
 							if(!id[b])
 							{
-								id[b] = wave.EnemyData.Index;
 								flags[b] = SetupFlags(wave.EnemyData, false);
+
+								if(!Classic_Mode() && ((flags[b] & MVM_CLASS_FLAG_SUPPORT) || (flags[b] & MVM_CLASS_FLAG_MISSION)))
+								{
+									// Only show "Support" when actually active
+									flags[b] = 0;
+									continue;
+								}
+
+								id[b] = wave.EnemyData.Index;
 								forceflags[b] = wave.EnemyData.ignore_max_cap > 0;
 							}
+
+							count[b] += num;
 							
 							break;
 						}
