@@ -3862,7 +3862,6 @@
 	}
 	"Telekinesis PaP 2"
 	{
-		"en"	"''They say the withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in your own mind for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nFurther stat increases. You may now grab raid bosses."
 		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nCan now grab raid bosses."
 	}
 	"Newtonian Knuckles Desc"
