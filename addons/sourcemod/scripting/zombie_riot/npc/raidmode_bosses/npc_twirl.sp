@@ -1325,7 +1325,7 @@ static void lunar_Radiance(Twirl npc)
 
 	fl_lunar_timer[npc.index] = 0.0;
 	npc.m_bisWalking = false;
-	npc.SetPlaybackRate(0.9);
+	npc.SetPlaybackRate(0.8);
 	npc.SetCycle(0.01);
 	npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
 
@@ -1372,6 +1372,8 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 
 	return Plugin_Stop;
 }
+static int i_te_used;
+static float fl_ionuasedAt[MAXENTITIES];
 static void lunar_Radiance_Tick(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
@@ -1439,15 +1441,55 @@ static void lunar_Radiance_Tick(int iNPC)
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy_2[MAXENTITIES];
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false);
+	i_te_used = 0;
+	fl_ionuasedAt[npc.index] = GameTime;
 	for(int i; i < sizeof(enemy_2); i++)
 	{
 		if(enemy_2[i])
 		{
+			i_te_used+=8;
 			float Radius = (npc.Anger ? 225.0 : 150.0);
 			float dmg = Modify_Damage(-1, 12.0);
-			npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.4 : 1.8), Radius, dmg);
+			if(i_te_used > 31)
+			{
+				int DelayFrames = (i_te_used / 32);
+				DelayFrames *= 2;
+				DataPack pack_TE = new DataPack();
+				pack_TE.WriteCell(EntIndexToEntRef(npc.index));
+				pack_TE.WriteCell(EntIndexToEntRef(enemy_2[i]));
+				pack_TE.WriteFloat(dmg);
+				pack_TE.WriteFloat(Radius);
+				RequestFrames(Twirl_DelayIons, DelayFrames, pack_TE);
+				//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+			}
+			else
+			{
+				npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.4 : 1.8), Radius, dmg);
+			}
 		}
 	}
+}
+static void Twirl_DelayIons(DataPack pack)
+{
+	pack.Reset();
+	int iNPC = EntRefToEntIndex(pack.ReadCell());
+	int Target = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(iNPC))
+	{
+		delete pack;
+		return;
+	}
+	Twirl npc = view_as<Twirl>(iNPC);
+	if(!IsValidEnemy(npc.index, Target))
+	{
+		delete pack;
+		return;
+	}
+	float time = (fl_ionuasedAt[npc.index] - GetGameTime()) + (npc.Anger ? 1.4 : 1.8);	//get the difference in time from how long this attack was delayed. so it matches up timing wise with other ions!
+	float Radius = pack.ReadFloat();
+	float dmg = pack.ReadFloat();
+	npc.Predictive_Ion(Target, time, Radius, dmg);
+	delete pack;
 }
 
 static bool KeepDistance(Twirl npc, float flDistanceToTarget, int PrimaryThreatIndex, float Distance)
@@ -1567,7 +1609,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		else
 			Particle = "raygun_projectile_red";
 
-		npc.FireParticleRocket(target_vec, Modify_Damage(PrimaryThreatIndex, Dmg) , projectile_speed , Radius , Particle, _, _, true, flPos);
+		npc.FireParticleRocket(target_vec, Modify_Damage(-1, Dmg) , projectile_speed , Radius , Particle, _, _, true, flPos);
 	}
 	else
 	{
