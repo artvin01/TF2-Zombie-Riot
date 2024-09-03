@@ -5,9 +5,9 @@
 
 //STANDARD M1 PROJECTILE: The Magnesis Staff's primary fire is nothing special, just a generic projectile.
 static int Magnesis_M1_NumProjectiles[3] = { 6, 8, 10 };			//Number of projectiles fired.
-static float Magnesis_M1_DMG[3] = { 145.0, 220.0, 290.0 };          //M1 projectile damage.
+static float Magnesis_M1_DMG[3] = { 160.0, 240.0, 320.0 };          //M1 projectile damage.
 static float Magnesis_M1_Lifespan[3] = { 0.3, 0.3, 0.3 };          	//M1 projectile lifespan.
-static float Magnesis_M1_Velocity[3] = { 1200.0, 1400.0, 1600.0 };  //M1 projectile velocity.
+static float Magnesis_M1_Velocity[3] = { 1400.0, 1600.0, 1800.0 };  //M1 projectile velocity.
 static float Magnesis_M1_Spread[3] = { 6.0, 5.0, 4.0 };				//M1 projectile deviation.
 
 //M2 - GRAB: Clicking M2 on a living zombie allows the user to grab that zombie and hold it in front of them, provided 
@@ -17,8 +17,8 @@ static float Magnesis_M1_Spread[3] = { 6.0, 5.0, 4.0 };				//M1 projectile devia
 //that zombie took while grabbed, relative to their max health.
 static float Magnesis_Grab_WaitTime[3] = { 5.0, 5.0, 5.0 };						//Time after an enemy has been thrown/dropped before they can be grabbed again, to prevent team stacks from grabbing enemies indefinitely.
 static float Magnesis_Grab_Requirement[3] = { 50.0, 100.0, 150.0 };				//Initial mana cost in order to grab an enemy.
-static float Magnesis_Grab_Cooldown_Normal[3] = { 10.0, 10.0, 10.0 };			//Cooldown applied when grabbing normal zombies.
-static float Magnesis_Grab_Cooldown_Special[3] = { 45.0, 45.0, 45.0 };			//Cooldown applied when grabbing mini-bosses/bosses.
+static float Magnesis_Grab_Cooldown_Normal[3] = { 5.0, 5.0, 5.0 };				//Cooldown applied when grabbing normal zombies.
+static float Magnesis_Grab_Cooldown_Special[3] = { 30.0, 30.0, 30.0 };			//Cooldown applied when grabbing mini-bosses/bosses.
 static float Magnesis_Grab_Cooldown_Raids[3] = { 70.0, 70.0, 70.0 };			//Cooldown applied when grabbing raid bosses.
 static float Magnesis_Grab_Cost_Normal[3] = { 5.0, 5.0, 5.0 };					//Mana drained per 0.1s while holding a normal enemy.
 static float Magnesis_Grab_Cost_Special[3] = { 35.0, 35.0, 35.0 };				//Mana drained per 0.1s while holding a boss/mini-boss.
@@ -33,7 +33,7 @@ static float Magnesis_Grab_ThrowThreshold_Normal[3] = { 0.25, 0.2, 0.125 };		//P
 static float Magnesis_Grab_ThrowThreshold_Special[3] = { 0.25, 0.2, 0.15 };		//Throw threshold for bosses/mini-bosses.
 static float Magnesis_Grab_ThrowThreshold_Raid[3] = { 0.125, 0.1, 0.075 };		//Throw threshold for raids.
 static float Magnesis_Grab_Throw_WeightPenalty[3] = { 0.25, 0.15, 0.05 };		//Percentage to reduce throw strength per point of NPC weight above 1.
-static float Magnesis_Grab_ThrowDMG[3] = { 1000.0, 1500.0, 2000.0 };			//Damage dealt to grabbed enemies when they are thrown.
+static float Magnesis_Grab_ThrowDMG[3] = { 1250.0, 2000.0, 2500.0 };			//Damage dealt to grabbed enemies when they are thrown.
 static float Magnesis_Grab_ThrowDMG_Scale[3] = { 2000.0, 2500.0, 3000.0 };		//Maximum amount of damage to add to the throw damage. This scales in the same way as throw velocity.
 static bool Magnesis_Grab_Specials[3] = { false, true, true };					//Can the Magnesis Staff grab bosses/mini-bosses on this tier?
 static bool Magnesis_Grab_Raids[3] = { false, false, true };					//Can the Magnesis Staff grab raids on this tier?
