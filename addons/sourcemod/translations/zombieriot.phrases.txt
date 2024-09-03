@@ -9,7 +9,7 @@
 		"de"		"Artvin: NPC und Spielmodus entwickler\nBatfoxkid: Spielmodus Entwickler\nPelipoika: Original NPC basis und hilfe\nAlex: Waffen Plugins und überall plugin hilfe\nSuza: Waffe und etwas Basismaterial geholfen\nMikusch früher spieldatei helfer\nKenzzer: NPC hilfe und bug fix hilfe\nAlex Turtle, Stranger, Syko: Map Hilfe\nCrusty Model/Animationen\njDeivid: Alternative Wellen\nGMOD Zombie überleben Entwickler: Musik und Basis konzept von ihnen"
 		"pt"		"Artvin: Desenvolvimento de NPCs e Gameplay\nBatfoxkid: Desenvolvimento de Gameplay\nPelipoika: Base original de NPCs e assistencia\nAlex: Plugin de armas e assistencia no geral\nSuza: Armas e algumas assistencias com a base de stock\nMikusch: Ajudou com a gamedata inicial\nKenzzer: ajudou com NPCs e correções de bugs\nAlex Turtle & Stranger & Syko: Ajudaram no mapa\nCrusty: Modelagem e Animação\nDeivid: Ondas alternativas\nGMOD Zombie Survival Devs: Música e conceito base"
 		"nl"		"Artvin: NPC en Spelmodus Ontwikkeling\nBatfoxkid: Spelmodus Ontwikkeling\nPelipoika: Originele NPC Base en hulp\nAlex: Algemene Plugin en Wapen Plugin Assistentie\nSuza: Wapens en Basis Stock hulp\nMikusch: Vroege SpelData hulp\nKenzzer: Npc hulp en bug fixing hulp\nAlex Turtle & Stranger & Syko: Map assistentie\nCrusty: Modellen/Animaties\njDeivid: Alternatieve Golven\nGMOD Zombie Survival Devs: Muziek en basis concepten van hun"
-		"chi" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: NPC help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them\n中文汉化:蔡徐坤 Q群:962426527"
+		"chi" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: NPC help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them\n中文汉化:蔡徐坤，Snacks"
 	}
 	"Open Store"
 	{
@@ -1708,11 +1708,13 @@
 		"ru" 		"Босс"
 		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
 		"nl"		"Invalsbaas"
+		"chi"		"世界级Boss"
 	}
 	"Superboss"
 	{
 		"en" 		"Superboss"
 		"fr" 		"Super Boss"
+		"chi"		"Super-Boss"
 	}
 	"Power"
 	{
@@ -1722,7 +1724,7 @@
 		"de"		"Kraft"
 		"pt"		"Força"
 		"nl"		"Kracht"
-		"chi"       "权力"
+		"chi"       "力量"
 	}
 	"TIME LEFT"
 	{
@@ -1758,6 +1760,7 @@
 	{
 		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
 		"fr" 		"TF2: Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
+		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 	}
 	"Father Grigori's Store"
 	{
@@ -2345,40 +2348,45 @@
 	{
 		"en"		"Un-Claim a building."
 		"fr"		"Abandonner une construction."
+		"chi"		"舍弃建筑"
 	}
 	"UnClaim Current Marked Building"
 	{
 		"en"		"Un-Claim the current marked building?"
 		"fr"		"Abandonner cette construction?"
+		"chi"		"舍弃此建筑？"
 	}
 	"Extra Menu"
 	{
 		"en"		"Extra Menu"
 		"fr"		"Menu Extra"
+		"chi"		"建筑管理菜单"
 	}
 	"Destroy all your non-Mounted Buildings"
 	{
 		"en"		"Destroy all your non-Mounted, non-Visible Buildings"
 		"fr"		"Détruire tous les constructions non montés et non visibles."
+		"chi"		"摧毁所有地上建筑"
 	}
 	"Destroy all your non-Mounted Buildings Sure"
 	{
 		"en"		"Are you sure that you want to delete all your own non mounted buildings?\nThis will not delete buildings that are in your line of sight."
 		"fr"		"Détruire tous vos constructions non montés?\nLes constructions que vous sont visibles ne seront pas détruits."
+		"chi"		"确认摧毁所有地上建筑？\n！不会摧毁视野外建筑！"
 	}
 	"Final_wave_message"
 	{
 		"en"		"This is the final wave, Prepare."
 		"fr"		"Ceci est la dernière vague. Préparez-vous."
 		"ru"		"Это последняя волна, приготовьтесь."
-		"chi"		"这是最后一波，准备。"
+		"chi"		"这是最后一波，做好准备。"
 	}
 	"Silvester Shares His Power"
 	{
 		"en"		"Silvester shares his power with you..."
 		"fr"		"Silvester vous partage son pouvoir..."
 		"ru"		"Сильвестр делится с вами своей силой..."
-		"chi"		"希尔维斯特和你分享他的力量…"
+		"chi"		"西尔维斯特和你分享他的力量…"
 	}
 	"Kahmlstein Courage"
 	{
@@ -2389,7 +2397,7 @@
 		"en"		"In the future, use the TAB/Scoreboard button, it will open the shop without any commands!"
 		"fr"		"Utilisez le bouton TAB, la boutique s'ouvrira sans commandes!"
 		"ru"		"В будущем используйте кнопку TAB/таблицы очков, она откроет магазин без всяких команд!"
-		"chi"		"在未来，使用TAB/计分板按钮，它将打开商店没有任何命令!"
+		"chi"		"在未来，使用TAB/计分板按钮打开菜单，无需输入指令!"
 	}
 	"Invulnerable Npc"
 	{
@@ -2459,7 +2467,7 @@
 		"en"		"Silvester and Goggles didnt attack you for no reason."
 		"fr"		"Silvester et Goggles n'ont pas attaqué pour aucune raison."
 		"ru"		"Сильвестр и Гогглз не нападали на вас без причины."
-		"chi"		"西尔维斯特和护目镜不是无缘无故攻击你的。"
+		"chi"		"西尔维斯特和瓦德奇不是无缘无故攻击你的。"
 	}
 	"Xeno_Wave_3"
 	{
@@ -3376,31 +3384,37 @@
 	{
 		"en"	"Crouch on ground for ability"
 		"fr"	"Accroupissez-vous pour cet abilité"
+		"chi"	"蹲下时使用技能"
 	}
 	"Railcannon Charged"
 	{
 		"en"	"Railcannon is fully charged"
 		"fr"	"Canon à rail est rechargé"
+		"chi"	"轨道炮充能完毕"
 	}
 	"Default Desc"
 	{
 		"en"	"Fight against the classic zombies and combine!"
 		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
+		"chi"	"击败尸群，打败联合军！"
 	}
 	"True Fusion Warrior Desc"
 	{
 		"en"	"Raids appear at the end of every 15 waves, they get more stronger with more abilities!"
 		"fr"	"À tous les 15 vagues, des Raids vont apparaître. Leur prouesse et abilités s'amélioreront graduellement!"
+		"chi"	"每15波会出现Raidboss，每次出现都会更强，技能更多！"
 	}
 	"Alternative Desc"
 	{
 		"en"	"Fight with a new twist on the classic with magical new enemies!"
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
+		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
 	}
 	"Blitzkrieg Desc"
 	{
 		"en"	"The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
 		"fr"	"La machine qui tire rapidement des roquettes et choque les survivants hors de sa portée!\nÉvitez de se bagarrer contre lui dans des zones Expidonsannes..."
+		"chi"	"遮天蔽日的火箭和足以穿透天国的激光。\n别在Expidonsa境内招惹这家伙……"
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -3411,92 +3425,110 @@
 	{
 		"en"	"The Xeno infection has arrived, mutating enemies with new abilities!"
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
+		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 	}
 	"Silvester Waldch Desc"
 	{
 		"en"	"Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
 		"fr"	"Silvester attaque avec des rayons laser et des roches, alors que Waldch tir à distance!"
+		"chi"	"西尔维斯特用激光和土地的力量冲锋，瓦德奇则在远处使用狙击枪辅助！"
 	}
 	"Xeno Hard Desc"
 	{
 		"en"	"You enter the source of the Xeno infection, they're much stronger here, beware..."
 		"fr"	"Vouz avez trouvé la source de l'infection Xéno. Les ennemis sont beaucoup plus forts ici, gare à vous..."
+		"chi"	"你们找到了感染的来源。小心点… 它们在这里更强。"
 	}
 	"Medieval Desc"
 	{
 		"en"	"Fight against the middle-age with their armor to counter melee or ranged attacks!"
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
+		"chi"	"对抗中世纪的剑与盾！"
 	}
 	"God Alaxios Desc"
 	{
 		"en"	"Fight him and his rapidly spawning army, kill the army first whenever they show up!"
 		"fr"	"Alaxios apporte son armée, tuez ses unités en premier quand ils apparaîssent!"
+		"chi"	"准备迎接一场全面的战争。记得先处理掉他的军队！"
 	}
 	"Expidonsa Desc"
 	{
 		"en"	"Hold back against the advanced underground city, watch out for their self-healing and surprise attacks!"
 		"fr"	"Résiste cette ville souterraine avancée, faites garde à leur soins regénératifs et leurs attaques surprises!"
+		"chi"	"抵抗Expidonsa的高科技。别小看他们的盾牌，同时看好自己背后……"
 	}
 	"Sensal Desc"
 	{
 		"en"	"The scouting party operative which rapidly summons homing scythes and laser attacks!"
 		"fr"	"Le capitaine d'un groupe de scouts qui convoque des scythes chercheurs et des rayons laser!"
+		"chi"	"Expidonsa侦查队。盾，激光，和能量刃。"
 	}
 	"Deep Sea Desc"
 	{
 		"en"	"The Seaborn infection has arrived, Armor Corrosion attacks will infect your armor, cure it with armor tables!"
 		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
+		"chi"	"海嗣感染将会侵蚀你的盾。"
 	}
 	"Interitus Desc"
 	{
-		"en"	"Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"en"	"Chaos has afflicted many cities, His group is ready to serve you justices. Get ready."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
+		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 	}
 	"Schwert Donner Desc"
 	{
 		"en"	"Karlas charges you down with his Lance while Stella fires laser attacks!"
 		"fr"	"Karlas vous perce avec sa Lance alors que Stella vous vire des rayons laser!"
+		"chi"	"卡拉斯手持长剑，而斯钛拉操纵着梦魇大炮。"
 	}
 	"Khaml Desc"
 	{
 		"en"	"The judges of your actions have arrived."
 		"fr"	"Voiçi le juge de vos actions."
+		"chi"	"审判者来了。"
 	}
 	"Void Desc"
 	{
 		"en"	"Help Kahmlstein agains the void!"
 		"fr"	"Aidez Kahmlstein contre le Void!"
+		"chi"	"帮卡姆斯坦因击退深渊！"
 	}
 	"Unspeakable Raid Desc"
 	{
 		"en"	"Directly after you release the void in rogue2..."
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
+		"chi"	"深渊已被释放。"
 	}
 	"Twirl Raid Desc"
 	{
 		"en"	"A certain individual has taken an interest in your group"
 		"fr"	"Cet individuel s'est intéressé dans votre groupe."
+		"chi"	"你貌似引起了 她 的兴趣"
 	}
 	"Ruina waves Desc"
 	{
 		"en"	"Can you withstand the power of magic?"
 		"fr"	"Pouvez-vous survivre la prouesse de la magie?"
+		"chi"	"你能阻挡魔法之力吗》"
 	}
 	"CoF Normal Desc"
 	{
 		"en"	"Enter Simon's Book."
 		"fr"	"Entrez le Livre de Simon."
+		"chi"	"进入西蒙的书中。"
 	}
 	"CoF Nightmare Desc"
 	{
 		"en"	"Enter Simon's Mind."
 		"fr"	"Entrez les Pensées de Simon."
+		"chi"	"进入西蒙的噩梦。"
 	}
 	"Wait for power"
 	{
 		"#format"	"{1:.1f}"
 		"en" "You need to rest: [{1}]"
 		"fr" "Vous avez besoin de vous reposer pour [{1}]."
+		"chi"	"你需要休息！[{1}]"
 	}
 	"Stop playing with"
 	{
@@ -3563,12 +3595,14 @@
 		"#format"	"{1:s}"
 		"en"		"{darkgrey}Raidboss by: {community}{1}"
 		"fr"		"{darkgrey}Raid boss par: {community}{1}"
+		"chi"		"{darkgrey}Raidboss作者：{community}{1}"
 	}
 	"Now Playing Song"
 	{
 		"#format"	"{1:s},{2:s}"
 		"en"		"{darkgrey}Now Playing: {community}{1} {default}| {lightgreen}{2}"
 		"fr"		"{darkgrey}Musique : {community}{1} {default}| {lightgreen}{2}"
+		"chi"		"{darkgrey}现在播放：{community}{1} {default} | {lightgreen}{2}"
 	}
 	"Blacksmith Tooltip"
 	{
