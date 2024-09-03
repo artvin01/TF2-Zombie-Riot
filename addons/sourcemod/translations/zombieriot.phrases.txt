@@ -989,6 +989,7 @@
 	"Magnesis Target LOS Broken"
 	{
 		"en"		"Grab target is out of your line of sight."
+	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"
