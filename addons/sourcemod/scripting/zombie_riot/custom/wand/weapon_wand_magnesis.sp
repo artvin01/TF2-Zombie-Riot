@@ -48,14 +48,14 @@ static float Magnesis_Resistance[3] = { 0.25, 0.2, 0.15 };						//Amount to mult
 static float Newtonian_M1_DMG[3] = { 400.0, 800.0, 1200.0 };					//M1 damage.
 static float Newtonian_M1_Radius[3] = { 150.0, 165.0, 180.0 };					//M1 explosion radius.
 static float Newtonian_M1_Velocity[3] = { 1400.0, 1800.0, 2200.0 };				//M1 projectile velocity.
-static float Newtonian_M1_Lifespan[3] = { 1.0, 1.15, 1.3 };						//M1 projectile lifespan.
+static float Newtonian_M1_Lifespan[3] = { 1.0, 0.5, 0.65 };						//M1 projectile lifespan.
 static float Newtonian_M1_Falloff_MultiHit[3] = { 0.66, 0.75, 0.85 };			//Amount to multiply damage dealt by M1 per target hit.
 static float Newtonian_M1_Falloff_Distance[3] = { 0.66, 0.75, 0.85 };			//Maximum M1 damage falloff, based on distance.
 static float Newtonian_M1_ComboMult[3] = { 3.0, 3.0, 3.0 };						//Amount to multiply damage dealt by the M1 to enemies who have been knocked airborne by the M2.
-static float Newtonian_M1_ComboCDR[3] = { 5.0, 5.0, 5.0 };						//Amount to reduce remaining M2 cooldown when airshotting an enemy launched by M2.
+static float Newtonian_M1_ComboCDR[3] = { 5.0, 2.5, 2.5 };						//Amount to reduce remaining M2 cooldown when airshotting an enemy launched by M2.
 static int Newtonian_M1_MaxTargets[3] = { 4, 5, 6 };							//Max targets hit by the M1 projectile's explosion.
 static float Newtonian_M2_Cost[3] = { 200.0, 300.0, 400.0 };					//M2 cost.
-static float Newtonian_M2_Cooldown[3] = { 40.0, 40.0, 40.0 };					//M2 cooldown.
+static float Newtonian_M2_Cooldown[3] = { 40.0, 25.0, 25.0 };					//M2 cooldown.
 static float Newtonian_M2_DMG[3] = { 1600.0, 2400.0, 3500.0 };					//M2 damage.
 static float Newtonian_M2_Radius[3] = { 160.0, 180.0, 200.0 };					//M2 radius.
 static float Newtonian_M2_Falloff_MultiHit[3] = { 0.5, 0.66, 0.75 };			//Amount to multiply damage dealt by the M2 shockwave per target hit.
@@ -1006,6 +1006,9 @@ void Utility_FireProjectile(int client, int weapon, int tier, bool isNewtonian)
 
 void Utility_NotEnoughMana(int client, int cost)
 {
+	if (!IsValidClient(client))
+		return;
+
 	char text[255];
 	Format(text, sizeof(text), "%t", "Not Enough Mana", cost);
 	Utility_HUDNotification(client, text, true);
@@ -1013,6 +1016,9 @@ void Utility_NotEnoughMana(int client, int cost)
 
 void Utility_OnCooldown(int client, float cost)
 {
+	if (!IsValidClient(client))
+		return;
+
 	char text[255];
 	Format(text, sizeof(text), "%t", "Ability has cooldown", cost);
 	Utility_HUDNotification(client, text, true);
@@ -1020,6 +1026,9 @@ void Utility_OnCooldown(int client, float cost)
 
 void Utility_HUDNotification_Translation(int client, char translation[255], bool YouCantDoThat = false)
 {
+	if (!IsValidClient(client))
+		return;
+
 	char text[255];
 	Format(text, sizeof(text), "%t", translation);
 	Utility_HUDNotification(client, text, YouCantDoThat);
@@ -1027,6 +1036,9 @@ void Utility_HUDNotification_Translation(int client, char translation[255], bool
 
 void Utility_HUDNotification(int client, char message[255], bool YouCantDoThat = false)
 {
+	if (!IsValidClient(client))
+		return;
+
 	if (YouCantDoThat)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 
