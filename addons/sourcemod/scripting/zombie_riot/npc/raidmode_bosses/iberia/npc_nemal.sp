@@ -146,6 +146,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MineLayed));   i++) { PrecacheSound(g_MineLayed[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid.mp3");
+	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid_wave60.mp3");
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
 }
 
@@ -2807,6 +2808,17 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 			
 		maxhealth -= (maxhealth / 4);
 
+		if(i_RaidGrantExtra[entity] >= 4)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid_wave60.mp3");
+			music.Time = 227;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "06 Flirt With Bomb");
+			strcopy(music.Artist, sizeof(music.Artist), "???");
+			Music_SetRaidMusic(music);
+		}
 		int spawn_index;
 		switch(i_RaidGrantExtra[entity])
 		{
