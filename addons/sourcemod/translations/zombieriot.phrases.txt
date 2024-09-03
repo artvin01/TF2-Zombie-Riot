@@ -937,7 +937,13 @@
 		"en"		"Big Shot is on cooldown: {1}"
 		"fr"		"Big Shot se recharge: {1}"
 	}
-	"Wrathful Ability Cooldown"
+	"Crouch for ability"
+	{
+		"en" 		"Crouch to use this ability!"
+		"fr" 		"Accroupissez-vous pour utiliser cette abilité!"
+		"pt"		"Se abaixe pra usar essa habilidade!"
+	}
+		"Wrathful Ability Cooldown"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"Infernal Fury is on cooldown: {1}"
@@ -945,16 +951,47 @@
 	"Wrathful Ability Blocked"
 	{
 		"en"		"Infernal Fury cannot be used right now."
+		"chi"		"火愤现在无法被使用。"
 	}
 	"Wrath Strike Fully Charged"
 	{
 		"en"		"WRATH STRIKE IS FULLY CHARGED!"
+		"chi"		"！怒斩已完全蓄力！"
 	}
-	"Crouch for ability"
+	"Magnesis Target Immune to Knockback"
 	{
-		"en" 		"Crouch to use this ability!"
-		"fr" 		"Accroupissez-vous pour utiliser cette abilité!"
-		"pt"		"Se abaixe pra usar essa habilidade!"
+		"en"		"Grab target is immune to knockback."
+		"chi"		"目标免疫击退"
+	}
+	"Magnesis Target Invulnerable"
+	{
+		"en"		"Grab target is invulnerable."
+		"chi"		"目标无敌"
+	}
+	"Magnesis Target Too Strong"
+	{
+		"en"		"Grab target is too strong."
+		"chi"		"目标太强"
+	}
+	"Magnesis No Target Found"
+	{
+		"en"		"No valid targets within range."
+		"chi"		"未监测到有效目标"
+	}
+	"Magnesis Already Grabbed"
+	{
+		"en"		"That enemy is already being grabbed!"
+		"chi"		"目标已经被抓了！"
+	}
+	"Magnesis Throw Failed"
+	{
+		"en"		"Not enough mana to throw! Target was dropped instead."
+		"chi"		"MP不足！目标已被放下"
+	}
+	"Magnesis Grabbed Too Soon"
+	{
+		"en"		"That enemy was grabbed too recently!"
+		"chi"		"目标最近已经被抓了！ "
 	}
 	"Gamemode Credits"
 	{
@@ -2336,10 +2373,6 @@
 		"ru"		"Это последняя волна, приготовьтесь."
 		"chi"		"这是最后一波，准备。"
 	}
-	"Void_Help_Message"
-	{
-		"en"		"Expidonsan's are trying to send help, but the void interfeers, only guarduses could get here."
-	}
 	"Silvester Shares His Power"
 	{
 		"en"		"Silvester shares his power with you..."
@@ -2350,7 +2383,6 @@
 	"Kahmlstein Courage"
 	{
 		"en"		"You feel Kahmlsteins Courage..."
-		"fr"		"Vous sentez le courage de Kahmlstein..."
 	}
 	"Opened store via command"
 	{
@@ -3090,7 +3122,7 @@
 	{
 		"en"		"Burstpack already used this round, recharging..."	
 		"fr"		"Vous avez déja épuisé votre Burstpack cette vague, rechargement..."
-		"chi"       "Burstpack这一轮已经用过了，正在充电。。。"	
+		"chi"       "Burstpack这一轮已经用过了，冷却中。。。"	
 	}
 	"Quincy Menu First"
 	{
@@ -3542,163 +3574,193 @@
 	{
 		"en"		"Press RELOAD to apply a tinker effect to your active weapon."
 		"fr"		"Appuyez sur RELOAD pour appliquer un effet de forge sur votre arme"
+		"chi"		"按 装弹键 打开菜单，抽取随机武器属性"
 	}
 	"Blacksmith Used"
 	{
 		"en"		"Someone used your Tinker Station, you gain +20 Cash!"
 		"fr"		"Quelqu'un a utilisé votre Station de Forgerie, vous obtenez +20 Argent!"
+		"chi"		"有人用了你的铁砧，+20现金！"
 	}
 	"Blacksmith Maxed"
 	{
 		"en"		"Maximum amount of attributes applied to this weapon"
 		"fr"		"Le maximum d'effets de forge est atteint sur cet arme."
+		"chi"		"抵达武器属性上限！"
 	}
 	"Blacksmith Underleveled"
 	{
 		"en"		"You can not tinker this weapon"
 		"fr"		"Vous ne pouvez pas appliquer un effet de forge sur cet arme."
+		"chi"		"此武器无法被修改。"
 	}
 	"The Blacksmith Failed!"
 	{
 		"en"		"The blacksmith is no longer alive or a tinker, anvil broke!"
 		"fr"		"Le forgeron n'est plus présent. L'enclume s'est cassé!"
+		"chi"		"铁砧的主人已死或者已不是匠工，导致铁砧被摧毁！"
 	}
 	"Blacksmith No Attribs"
 	{
 		"en"		"You have no tinker stats."
 		"fr"		"Vous n'avez pas d'effet de forge."
+		"chi"		"你没有任何匠工效果。"
 	}
 	"Removed Tinker Attributes"
 	{
 		"en"		"Removed Tinker Attributes"
 		"fr"		"Enlevé les effets de forge."
+		"chi"		"已移除匠工效果。"
 	}
 	"View Modifiers"
 	{
 		"en"	"View Modifiers"
 		"fr"	"Voir effets de forge"
 		"de" 	"oha ein deutscher!"
+		"chi"	"查看效果"
 	}
 	"Bring up Class Change Menu"
 	{
 		"en"	"Bring up Class Change Menu"
 		"fr"	"Montrer le Menu de Changement de Classe"
+		"chi"	"打开兵种切换菜单"
 	}
 	"Corrode"
 	{
 		"en"	"Corrode"
 		"fr"	"Corrosion"
+		"chi"	"腐蚀"
 	}
 	"Chaos"
 	{
 		"en"	"Chaos"
 		"fr"	"Chaos"
+		"chi"	"混沌"
 	}
 	"Cyro"
 	{
 		"en"	"Cyro"
 		"fr"	"Cryo"
+		"chi"	"冰"
 	}
 	"Necrosis"
 	{
 		"en"	"Necrosis"
 		"fr"	"Nécrose"
+		"chi"	"咒死"
 	}
 	"Building Menu"
 	{
 		"en"	"Building Menu\nHold crouch for more info"
 		"fr"	"Menu de Construction\nAccroupissez-vous pour plus d'informations"
+		"chi"	"建筑菜单\n蹲下查看详细信息"
 	}
 	"Barracks Gained Resources"
 	{
 		"en"	"Your barracks gained resouces from this action!"
 		"fr"	"Votre caserne a reçu des ressources par cet action!"
+		"chi"	"你的兵营获得了屋子！"
 	}
 	"Resource Gain Mult Villager"
 	{
 		"#format"	"{1:.1f},{2:.1f}"
 		"en" 		"Resource Mult: {1}x\nGold Mult: {2}x"
 		"fr" 		"Revenu Ressources : {1}x\nRevenu Or : {2}x"
+		"chi"		"物资倍率：{1}x\n黄金倍率：{2}x"
 	}
 	"Barbarians Mind Warning"
 	{
 		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
 		"fr"	"Vous êtes trop enragés pour utiliser des armes autre que corps à corps!!"
+		"chi"	"你装备了野蛮人思维，无法造成近战外任何伤害！"
 	}
 	"purnell_message"
 	{
 		"en"	"Relax, I'm not one of them."
 		"fr"	"Calmez-vous, je ne suis pas avec eux."
+		"chi"	"放心。我和他们不一样。"
 	}
 	"Modifier set to"
 	{
 		"en"	"Modifier set to"
 		"fr"	"Le modifieur est maintenant"
+		"chi"	"难度已设为："
 	}
 	"Vote for the modifier"
 	{
 		"en"	"Vote for the modifier"
 		"fr"	"Votez pour le modifieur"
+		"chi"	"选择难度"
 	}
 	"Anvil Menu Main"
 	{
 		"en"	"What do you wish to do with the Anvil?"
 		"fr"	"Que voulez-vous faire avec l'enclume?"
+		"chi"	"您想对铁砧做什么？"
 	}
 	"Re-Roll Weapon Stats"
 	{
 		"en"	"Re-Roll Weapon Stats"
 		"fr"	"Obtenir des effets aléatoires"
+		"chi"	"获取新属性"
 	}
 	"Remove Weapon Stats"
 	{
 		"en"	"Remove Weapon Stats"
 		"fr"	"Enlever les effets de cet arme"
+		"chi"	"移除武器属性"
 	}
 	"Display Current Stats"
 	{
 		"en"	"Display Current Stats"
 		"fr"	"Voir les effets de cet arme"
+		"chi"	"查看当前属性"
 	}
 	"Custom Models"
 	{
 		"en"	"Custom Models"
 		"fr"	"Modèles personnalisés"
+		"chi"	"自定义模型"
 	}
 	"TF2 Class"
 	{
 		"en"	"TF2 Class"
 		"fr"	"Classes TF2"
+		"chi"	"兵种模型"
 	}
 	"Barney"
 	{
 		"en"	"Barney"
 		"fr"	"Barney"
+		"chi"	"巴尼"
 	}
 	"Niko Oneshot"
 	{
 		"en"	"Niko Oneshot"
 		"fr"	"Niko Oneshot"
+		"chi"	"Niko [Oneshot]"
 	}
 	"Skeleboy"
 	{
 		"en"	"Skeleboy"
 		"fr"	"M. Squelette"
+		"chi"	"骷髅"
 	}
 	"Kleiner"
 	{
 		"en"	"Kleiner"
 		"fr"	"Kleiner"
+		"chi"	"克莱恩"
 	}
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
 		"fr" "Iberia & Nemal"
+		"chi"	"伊比利亚 & 尼莫尔"
 	}
 	"Iberia Nemal Desc"
 	{
 		"en" "Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremaly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 	}
-	
 }
