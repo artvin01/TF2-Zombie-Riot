@@ -1096,6 +1096,7 @@ void Utility_NotEnoughMana(int client, int cost)
 	if (!IsValidClient(client))
 		return;
 
+	SetGlobalTransTarget(client);
 	char text[255];
 	Format(text, sizeof(text), "%t", "Not Enough Mana", cost);
 	Utility_HUDNotification(client, text, true);
@@ -1106,6 +1107,7 @@ void Utility_OnCooldown(int client, float cost)
 	if (!IsValidClient(client))
 		return;
 
+	SetGlobalTransTarget(client);
 	char text[255];
 	Format(text, sizeof(text), "%t", "Ability has cooldown", cost);
 	Utility_HUDNotification(client, text, true);
@@ -1116,6 +1118,7 @@ void Utility_HUDNotification_Translation(int client, char translation[255], bool
 	if (!IsValidClient(client))
 		return;
 
+	SetGlobalTransTarget(client);
 	char text[255];
 	Format(text, sizeof(text), "%t", translation);
 	Utility_HUDNotification(client, text, YouCantDoThat);
