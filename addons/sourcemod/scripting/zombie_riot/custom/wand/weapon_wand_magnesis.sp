@@ -763,10 +763,10 @@ static int Newtonian_ShockwaveTier;
 
 void Newtonian_TryShockwave(int client, int weapon, int tier)
 {
-    int mana_cost = RoundFloat(Newtonian_M2_Cost[tier]);
+	int mana_cost = RoundFloat(Newtonian_M2_Cost[tier]);
 	float remCD = Ability_Check_Cooldown(client, 2, weapon);
 
-    if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
+	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
@@ -796,7 +796,7 @@ void Newtonian_TryShockwave(int client, int weapon, int tier)
 		delay_hud[client] = 0.0;
 		Ability_Apply_Cooldown(client, 2, Newtonian_M2_Cooldown[tier], weapon);
 
-        EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
+		EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
 		EmitSoundToAll(SND_NEWTONIAN_M2_2, client, _, _, _, 0.8, 80);
 
 		float nextAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") + Newtonian_M2_AttackDelay[tier];
