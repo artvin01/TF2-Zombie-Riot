@@ -689,6 +689,12 @@ public bool Magnesis_TargetCanBeGrabbed(int client, int victim, int tier)
 		return false;
 	}
 
+	if (!Can_I_See_Enemy(client, victim))
+	{
+		Utility_HUDNotification_Translation(client, "Magnesis Target LOS Broken", true);
+		return false;
+	}
+
 	ang[0] = 90.0;
 
 	hullMin[0] = -20.0;
