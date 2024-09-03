@@ -141,7 +141,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		float Range = 750.0;
 		float Radius = 250.0;
 		Current_Mana[client] -=mana_cost;
-		Mana_Regen_Delay[client] = GetGameTime() + 2.0;
+		SDKhooks_SetManaRegenDelayTime(client, 2.0);
 		Range *= Attributes_Get(weapon, 103, 1.0);
 		Range *= Attributes_Get(weapon, 104, 1.0);
 		Range *= Attributes_Get(weapon, 475, 1.0);
@@ -441,7 +441,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		float Range = 1000.0;
 		float Radius = 300.0;
 		Current_Mana[client] -=mana_cost;
-		Mana_Regen_Delay[client] = GameTime + 2.0;
+		SDKhooks_SetManaRegenDelayTime(client, 2.0);
 
 
 		EmitSoundToAll(GRAVATON_WAND_SHOWER_CAST_SOUND1, client, _, 65, _, 1.0, SNDPITCH_NORMAL);

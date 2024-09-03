@@ -335,8 +335,9 @@ methodmap Nemal < CClotBody
 	public void PlayMineLayed() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_MineLayed) - 1);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 120);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
 	}
 	public void PlayShootSoundNemalSnipe() 
 	{
@@ -1164,6 +1165,10 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					//Do Hit Effect
 					float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 					flMaxhealth *= 0.0025;
+					if(i_RaidGrantExtra[npc.index] >= 4)
+					{
+						flMaxhealth *= 0.75;
+					}
 					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{
@@ -1901,7 +1906,7 @@ bool NemalSnipingShots(Nemal npc)
 						int target = Can_I_See_Enemy(npc.index, Loop,_ ,SnipeTargets[Loop]);
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 50.0 * RaidModeScaling;
+							float damageDealt = 40.0 * RaidModeScaling;
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, SnipeTargets[Loop]);
 						} 
@@ -2404,6 +2409,10 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 
 	MakeVectorFromPoints(vecSelf, VecTarget, TempAng);
 	GetVectorAngles(TempAng, AngleFromSelf);
+	//It should delete itself if the middle part touches a wall.
+	int MasterEntityIndex = Wand_Projectile_Spawn(iNpc, speed, 0.0, 0.0, -1, -1, "", AngleFromSelf,_,vecSelf);
+	SetEntProp(MasterEntityIndex, Prop_Send, "m_usSolidFlags", 12); 
+	WandProjectile_ApplyFunctionToEntity(MasterEntityIndex, NemalSlicerTouchOverall);
 	
 	//AngleFromSelf is the angle of where it should fire from towards to the target.
 
@@ -2450,7 +2459,9 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		switch(SitatuionCalcDo)
 		{
 			case 3:
+			{
 				tmp[0] = 0.0;
+			}
 			case 2:
 				tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
 			case 1:
@@ -2525,6 +2536,8 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		
 		DataPack pack2;
 		CreateDataTimer(0.1, Timer_NemalProjectileHitDetect, pack2, TIMER_REPEAT);
+		pack2.WriteCell(EntIndexToEntRef(MasterEntityIndex));
+		pack2.WriteCell(EntIndexToEntRef(laser));
 		pack2.WriteCell(EntIndexToEntRef(projectile));
 		pack2.WriteFloat(OverridePosOfSpawned[0]);
 		pack2.WriteFloat(OverridePosOfSpawned[1]);
@@ -2534,6 +2547,16 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 	}
 }
 
+public void NemalSlicerTouchOverall(int entity, int target)
+{
+	if(target == 0)
+	{
+		if(IsValidEntity(entity))
+		{
+			RemoveEntity(entity);
+		}
+	}
+}
 int NemalSutationSliceHelp(int CurrentJoint, int MaxJoints)
 {
 	if(CurrentJoint == (MaxJoints / 2))
@@ -2557,7 +2580,17 @@ bool DoDamageActiveHereNemal[MAXENTITIES];
 public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 {
 	pack.Reset();
+	int MasterProjEntity = EntRefToEntIndex(pack.ReadCell());
+	int LaserEntity = EntRefToEntIndex(pack.ReadCell());
 	int Projectile = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(MasterProjEntity))
+	{
+		if(IsValidEntity(LaserEntity))
+			RemoveEntity(LaserEntity);
+
+		if(IsValidEntity(Projectile))
+			RemoveEntity(Projectile);
+	}
 	float OldPositionGet[3];
 	OldPositionGet[0] = pack.ReadFloat();
 	OldPositionGet[1] = pack.ReadFloat();
@@ -2615,7 +2648,7 @@ static bool BEAM_TraceUsers(int enemy, int contentsMask, int projectile)
 	if (IsValidEntity(enemy))
 	{
 		int OwnerEntity = EntRefToEntIndex(i_WandOwner[projectile]);
-		if(IsValidEnemy(enemy, OwnerEntity, true, true)) //Must detect camo.
+		if(IsValidEnemy(enemy, OwnerEntity, true, false)) //Must detect camo.
 		{
 			int MasterIndex = EntityBelongsToMasterIndex[projectile];
 			if(!TargetsHitNemal[MasterIndex][enemy])

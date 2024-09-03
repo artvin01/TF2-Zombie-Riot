@@ -37,7 +37,6 @@ static const char g_MeleeHitSounds[][] = {
 
 static float RajulHealAlly[MAXENTITIES];
 static float RajulHealAllyCooldownAntiSpam[MAXENTITIES];
-static int RajulHealAllyDone[MAXENTITIES];
 
 void WinterArcticMage_OnMapStart_NPC()
 {
@@ -232,17 +231,16 @@ public Action WinterArcticMage_OnTakeDamage(int victim, int &attacker, int &infl
 
 void WinterArcticMageHealRandomAlly(int victim, float damage, int settingdo = 1)
 {
-	RajulHealAlly[victim] += (damage * 0.15);
+	RajulHealAlly[victim] += (damage * 0.2);
 	if(RajulHealAllyCooldownAntiSpam[victim] < GetGameTime())
 	{
-		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
 		if(settingdo == 2)
 			RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.2;
 
-		ExpidonsaGroupHeal(victim, 150.0, 3, RajulHealAlly[victim] * 0.5, 2.0, false,Expidonsa_DontHealSameIndex, WinterArcticMageAllyHealInternal);
+		ExpidonsaGroupHeal(victim, 175.0, 3, RajulHealAlly[victim], 2.0, false,Expidonsa_DontHealSameIndex, WinterArcticMageAllyHealInternal);
 		RajulHealAlly[victim] = 0.0;		
-		DesertYadeamDoHealEffect(victim, 150.0);
+		DesertYadeamDoHealEffect(victim, 175.0);
 	}
 }
 public void WinterArcticMage_NPCDeath(int entity)

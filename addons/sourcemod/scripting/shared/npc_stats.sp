@@ -6128,6 +6128,15 @@ void TeleportNpcToRandomPlayer(int iNPC)
 }
 public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 {
+	if(f_NoUnstuckVariousReasons[iNPC] > GetGameTime())
+	{
+		if(f_UnstuckSuckMonitor[iNPC] < GetGameTime())
+		{
+			npc.GetLocomotionInterface().ClearStuckStatus("UN-STUCK");
+			f_UnstuckSuckMonitor[iNPC] = GetGameTime() + 1.0;
+		}
+		return;
+	}
 	if (!b_DoNotUnStuck[iNPC])
 	{
 		if(i_FailedTriesUnstuck[iNPC][0] == 0)
@@ -6347,7 +6356,8 @@ stock void Custom_Knockback(int attacker,
 	 bool work_on_entity = false,
 	 float PullDuration = 0.0,
 	 bool RecieveInfo = false,
-	 float RecievePullInfo[3] = {0.0,0.0,0.0})
+	 float RecievePullInfo[3] = {0.0,0.0,0.0},
+	 float OverrideLookAng[3] ={0.0,0.0,0.0})
 {
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{
@@ -6358,6 +6368,7 @@ stock void Custom_Knockback(int attacker,
 			if(PullDuration == 0.0)
 			{
 				GetClientEyeAngles(attacker, vAngles);
+				/*
 				if(vAngles[0] < -40.0) //if they look up too much, we set it.
 				{
 					vAngles[0] = -40.0;
@@ -6366,6 +6377,11 @@ stock void Custom_Knockback(int attacker,
 				{
 					vAngles[0] = -5.0;
 				}
+				*/
+				//Always launch up so people dont have to look up like a hawk.
+				vAngles[0] = -40.0;
+				if(OverrideLookAng[0] != 0.0)
+					vAngles[0] = OverrideLookAng[0];
 			}
 			else
 			{
@@ -8403,6 +8419,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_MaimDebuff[entity] = 0.0;
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
+	f_GoldTouchDebuff[entity] = 0.0;
+	f_StrangleDebuff[entity] = 0.0;
 	f_CudgelDebuff[entity] = 0.0;
 	f_DuelStatus[entity] = 0.0;
 	f_PotionShrinkEffect[entity] = 0.0;
@@ -9092,6 +9110,8 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_VeryLowIceDebuff[enemy] = 0.0;
 	f_WidowsWineDebuff[enemy] = 0.0;
 	f_CrippleDebuff[enemy] = 0.0;
+	f_GoldTouchDebuff[enemy] = 0.0;
+	f_StrangleDebuff[enemy] = 0.0;
 	f_CudgelDebuff[enemy] = 0.0;
 	f_MaimDebuff[enemy] = 0.0;
 	f_PotionShrinkEffect[enemy] = 0.0;

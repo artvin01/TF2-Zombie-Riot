@@ -937,6 +937,59 @@
 		"en"		"Big Shot is on cooldown: {1}"
 		"fr"		"Big Shot se recharge: {1}"
 	}
+	"Wrathful Ability Cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Infernal Fury is on cooldown: {1}"
+	}
+	"Wrathful Ability Blocked"
+	{
+		"en"		"Infernal Fury cannot be used right now."
+	}
+	"Wrath Strike Fully Charged"
+	{
+		"en"		"WRATH STRIKE IS FULLY CHARGED!"
+	}
+	"Magnesis Target Immune to Knockback"
+	{
+		"en"		"Grab target is immune to knockback."
+	}
+	"Magnesis Target Invulnerable"
+	{
+		"en"		"Grab target is invulnerable."
+	}
+	"Magnesis Target Too Strong"
+	{
+		"en"		"Grab target is too strong."
+	}
+	"Magnesis No Target Found"
+	{
+		"en"		"No valid targets within range."
+	}
+	"Magnesis Already Grabbed"
+	{
+		"en"		"That enemy is already being grabbed!"
+	}
+	"Magnesis Throw Failed"
+	{
+		"en"		"Not enough mana to throw! Target was dropped instead."
+	}
+	"Magnesis Grabbed Too Soon"
+	{
+		"en"		"That enemy was grabbed too recently!"
+	}
+	"Magnesis Standing On Target"
+	{
+		"en"		"You are standing on the grab target."
+	}
+	"Magnesis Target Too Far"
+	{
+		"en"		"Grab target is too far away."
+	}
+	"Magnesis Target LOS Broken"
+	{
+		"en"		"Grab target is out of your line of sight."
+	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"
@@ -2322,6 +2375,10 @@
 		"fr"		"Ceci est la dernière vague. Préparez-vous."
 		"ru"		"Это последняя волна, приготовьтесь."
 		"chi"		"这是最后一波，准备。"
+	}
+	"Void_Help_Message"
+	{
+		"en"		"Expidonsan's are trying to send help, but the void interfeers, only guarduses could get here."
 	}
 	"Silvester Shares His Power"
 	{

@@ -726,11 +726,7 @@ public Action XenoSpyMainBoss_OnTakeDamage(int victim, int &attacker, int &infli
 	{
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
 
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (maxhealth / 100));
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= maxhealth)
-		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
-		}
+		HealEntityGlobal(npc.index, npc.index, float(maxhealth) * 0.01, 1.0, _,HEAL_SELFHEAL);
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);

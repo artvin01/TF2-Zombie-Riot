@@ -7,6 +7,8 @@ static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
 static float f_EntityOutOfNav[MAXTF2PLAYERS];
+static float f_LatestDamageRes[MAXTF2PLAYERS];
+static float f_TimeSinceLastRegenStop[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
@@ -130,7 +132,7 @@ public void SDKHook_ScoreThink(int entity)
 			SetEntProp(client, Prop_Send, "m_iHeadshots", i_Headshots[client]);
 
 #if defined ZR
-			SetEntProp(client, Prop_Send, "m_iDefenses", RoundToCeil(float(i_BarricadeHasBeenDamaged[client]) * 0.001));
+			SetEntProp(client, Prop_Send, "m_iDefenses", RoundToCeil(float(i_BarricadeHasBeenDamaged[client]) * 0.01));
 #endif
 
 		}
@@ -537,18 +539,23 @@ public void OnPostThink(int client)
 		
 		Mana_Regen_Tick = true;
 
+		float ManaRegenExtra = 1.0;
+		float ManaMaxExtra = 1.0;
 		int i, entity;
 		while(TF2_GetItem(client, entity, i))
 		{
 			if(i_IsWandWeapon[entity])
 			{
 				has_mage_weapon[client] = true;
-				break;
+				ManaMaxExtra *= Attributes_Get(entity, 4019, 1.0);
+				ManaRegenExtra *= Attributes_Get(entity, 4020, 1.0);
 			}
 		}
 
 		max_mana[client] = 400.0;
 		mana_regen[client] = 10.0;
+		max_mana[client] *= ManaMaxExtra;
+		mana_regen[client] *= ManaRegenExtra;
 				
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
@@ -559,6 +566,7 @@ public void OnPostThink(int client)
 		{
 			mana_regen[client] *= 0.7;
 		}
+		
 
 		mana_regen[client] *= Mana_Regen_Level[client];
 		max_mana[client] *= Mana_Regen_Level[client];
@@ -572,13 +580,32 @@ public void OnPostThink(int client)
 		{
 			mana_regen[client] *= 0.30;
 		}
+		else
+		{
+			float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
+			MultiplyRegen *= 0.5;
+			if(MultiplyRegen < 1.0)
+				MultiplyRegen = 1.0;
+
+			if(MultiplyRegen >= 3.0)
+				MultiplyRegen = 3.0;
+
+			mana_regen[client] *= MultiplyRegen;
+		}
 	
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
 		{
 			Current_Mana[client] += RoundToCeil(mana_regen[client]);
 				
 			if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
+			{
 				Current_Mana[client] = RoundToCeil(max_mana[client]);
+				mana_regen[client] = 0.0;
+			}
+		}
+		else
+		{
+			mana_regen[client] = 0.0;
 		}
 					
 		Mana_Hud_Delay[client] = 0.0;
@@ -966,55 +993,6 @@ public void OnPostThink(int client)
 			value = Attributes_Get(weapon, 4008, 0.0);	// RANGED damage resistance
 			if(value)
 				percentage *= value;
-			
-			/*
-				This ugly code is made so formatting it looks better, isntead of [res][res]
-				itll be [res-res]
-				So tis easier to read.
-
-			*/
-
-
-			/*
-				Does the client have any damage buffs? If so, display them.
-
-				CANT
-				Has to be put on the enemy as "resistance"
-				!!!!!
-				float BaseDamage = 100.0;
-				float damageBonus = 100.0;
-				Damage_AnyAttacker(0, client, testvalue, BaseDamage, damageBonus, testvalue, testvalue, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue);
-				if(damageBonus != 100.0)
-				{
-					if(had_An_ability)
-					{
-						FormatEx(buffer, sizeof(buffer), "%s|", buffer);
-						if(damageBonus < 10.0)
-						{
-							FormatEx(buffer, sizeof(buffer), "%sD%.2f%%", buffer, damageBonus);
-							had_An_ability = true;
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%sD%.0f%%", buffer, damageBonus);
-							had_An_ability = true;
-						}
-					}
-					else
-					{
-						if(damageBonus < 10.0)
-						{
-							FormatEx(buffer, sizeof(buffer), "%s [D%.2f%%", buffer, damageBonus);
-							had_An_ability = true;
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%s [D%.0f%%", buffer, damageBonus);
-							had_An_ability = true;
-						}
-					}
-				}
-			*/
 
 			DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1483,7 +1461,7 @@ public void OnPostThink(int client)
 			*/
 
 			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
-			"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+			"Credits_Menu_New", GlobalExtraCash + CashRecievedNonWave[client],	
 			"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 			PerkNames[i_CurrentEquippedPerk[client]]
 			);
@@ -1562,7 +1540,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlivePost");
 	if(!(damagetype & (DMG_DROWN|DMG_FALL)))
 	{
-		int i_damage = RoundToCeil(damage);
+		int i_damage = RoundToCeil(damage / f_LatestDamageRes[victim]);
 		//dont credit for more then 4k damage at once.
 		if(i_damage >= 4000)
 			i_damage = 4000;
@@ -1771,16 +1749,20 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				NpcStuckZoneWarning(victim, damage);
 			}
 		}
-		else
 #endif
-		{
-			damage *= 2.0;
-		}
 	}
+	
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 
 	//dmg bonus before flat res!
 	damage *= fl_Extra_Damage[attacker];
+#if defined ZR
+	if((damagetype & DMG_DROWN) && b_ThisNpcIsSawrunner[attacker])
+	{
+		//NOTHING blocks it.
+		return Plugin_Changed;
+	}
+#endif
 #if defined RPG
 	if(Ability_TrueStrength_Shield_OnTakeDamage(victim))
 	{
@@ -1788,6 +1770,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 	f_InBattleDelay[victim] = GetGameTime() + 3.0;
 #endif
+
+	float GetCurrentDamage = damage;
+	f_LatestDamageRes[victim] = 1.0;
 
 #if defined ZR || defined RPG
 	Replicate_Damage_Medications(victim, damage, damagetype);
@@ -1797,6 +1782,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		return Plugin_Handled;
 	}
+
+	f_LatestDamageRes[victim] = damage / GetCurrentDamage;
 
 #if !defined RTS
 	int ClientAttacker;
@@ -2339,6 +2326,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		{
 			return WeaponRedBlade_OnTakeDamage_Hud(victim);
 		}
+		case WEAPON_WRATHFUL_BLADE:
+		{
+			return Player_OnTakeDamage_WrathfulBlade_Hud(victim);
+		}
 	}
 	return 1.0;
 }
@@ -2803,4 +2794,18 @@ void RPG_Sdkhooks_StaminaBar(int client)
 	SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 	ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 }
+
 #endif
+void SDKhooks_SetManaRegenDelayTime(int client, float time)
+{
+	Mana_Hud_Delay[client] = 0.0;
+	if(Mana_Regen_Delay[client] < GetGameTime() + time)
+		Mana_Regen_Delay[client] = GetGameTime() + time;
+
+	if(f_TimeSinceLastRegenStop[client] < GetGameTime() + time)
+		f_TimeSinceLastRegenStop[client] = GetGameTime() + time;
+		
+	//Set to 0 so hud is good
+	if(!b_AggreviatedSilence[client])
+		mana_regen[client] = 0.0;
+}
