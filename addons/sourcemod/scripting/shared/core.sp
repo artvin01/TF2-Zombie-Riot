@@ -534,6 +534,7 @@ float f_PassangerDebuff[MAXENTITIES];
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_CrippleDebuff[MAXENTITIES];
 float f_GoldTouchDebuff[MAXENTITIES];
+float f_StrangleDebuff[MAXENTITIES];
 float f_CudgelDebuff[MAXENTITIES];
 float f_DuelStatus[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];

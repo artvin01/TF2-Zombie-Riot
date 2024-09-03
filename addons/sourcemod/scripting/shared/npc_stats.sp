@@ -8411,6 +8411,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
 	f_GoldTouchDebuff[entity] = 0.0;
+	f_StrangleDebuff[entity] = 0.0;
 	f_CudgelDebuff[entity] = 0.0;
 	f_DuelStatus[entity] = 0.0;
 	f_PotionShrinkEffect[entity] = 0.0;
@@ -9101,6 +9102,7 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_WidowsWineDebuff[enemy] = 0.0;
 	f_CrippleDebuff[enemy] = 0.0;
 	f_GoldTouchDebuff[enemy] = 0.0;
+	f_StrangleDebuff[enemy] = 0.0;
 	f_CudgelDebuff[enemy] = 0.0;
 	f_MaimDebuff[enemy] = 0.0;
 	f_PotionShrinkEffect[enemy] = 0.0;

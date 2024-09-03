@@ -4,9 +4,9 @@
 //As per usual, I'm using arrays for stats on different pap levels. First entry is pap1, then pap2, etc.
 
 //STANDARD M1 PROJECTILE: The Magnesis Staff's primary fire is nothing special, just a generic projectile.
-static int Magnesis_M1_NumProjectiles[3] = { 6, 8, 10 };			//Number of projectiles fired.
-static float Magnesis_M1_DMG[3] = { 160.0, 240.0, 320.0 };          //M1 projectile damage.
-static float Magnesis_M1_Lifespan[3] = { 0.4, 0.4, 0.4 };          	//M1 projectile lifespan.
+static int Magnesis_M1_NumProjectiles[3] = { 6, 8, 9 };				//Number of projectiles fired.
+static float Magnesis_M1_DMG[3] = { 160.0, 220.0, 300.0 };          //M1 projectile damage.
+static float Magnesis_M1_Lifespan[3] = { 0.3, 0.3, 0.3 };          	//M1 projectile lifespan.
 static float Magnesis_M1_Velocity[3] = { 1400.0, 1600.0, 1800.0 };  //M1 projectile velocity.
 static float Magnesis_M1_Spread[3] = { 6.0, 5.0, 4.0 };				//M1 projectile deviation.
 
@@ -20,13 +20,16 @@ static float Magnesis_Grab_Requirement[3] = { 50.0, 100.0, 150.0 };				//Initial
 static float Magnesis_Grab_Cooldown_Normal[3] = { 5.0, 5.0, 5.0 };				//Cooldown applied when grabbing normal zombies.
 static float Magnesis_Grab_Cooldown_Special[3] = { 30.0, 30.0, 30.0 };			//Cooldown applied when grabbing mini-bosses/bosses.
 static float Magnesis_Grab_Cooldown_Raids[3] = { 70.0, 70.0, 70.0 };			//Cooldown applied when grabbing raid bosses.
-static float Magnesis_Grab_Cost_Normal[3] = { 5.0, 5.0, 5.0 };					//Mana drained per 0.1s while holding a normal enemy.
+static float Magnesis_Grab_Cost_Normal[3] = { 5.0, 10.0, 20.0 };				//Mana drained per 0.1s while holding a normal enemy.
+static float Magnesis_Grab_Cost_Scaling_Normal[3] = { 0.01, 0.01, 0.01 };		//Additional percentage of the user's max mana to drain per 0.1s while holding a normal enemy (0.1 = 10%).
 static float Magnesis_Grab_Cost_Special[3] = { 35.0, 35.0, 35.0 };				//Mana drained per 0.1s while holding a boss/mini-boss.
+static float Magnesis_Grab_Cost_Scaling_Special[3] = { 0.01, 0.01, 0.01 };		//Additional percentage of the user's max mana to drain per 0.1s while holding a special enemy (0.1 = 10%).
 static float Magnesis_Grab_Cost_Raid[3] = { 75.0, 75.0, 75.0 };					//Mana drained per 0.1s while holding a raid.
+static float Magnesis_Grab_Cost_Scaling_Raid[3] = { 0.0, 0.0, 0.0 };			//Additional percentage of theu ser's max mana to drain per 0.1s while holding a raid.
 static float Magnesis_Grab_DragRate[3] = { 10.0, 10.0, 10.0 };					//Base speed at which grabbed targets move towards the puller, per frame.
-static float Magnesis_Grab_DragRate_WeightPenalty[3] = { 7.5, 3.25, 1.25 };		//Amount to reduce grab movement speed per point of NPC weight above 1.
+static float Magnesis_Grab_DragRate_WeightPenalty[3] = { 7.5, 3.0, 1.25 };		//Amount to reduce grab movement speed per point of NPC weight above 1.
 static float Magnesis_Grab_Range[3] = { 150.0, 200.0, 250.0 };					//Maximum distance from which enemies can be grabbed.
-static float Magnesis_Grab_Distance[3] = { 120.0, 120.0, 120.0 };				//Distance from the user to hold zombies at.
+static float Magnesis_Grab_Distance[3] = { 80.0, 80.0, 80.0 };					//Distance from the user to hold zombies at.
 static float Magnesis_Grab_MaxVel[3] = { 1000.0, 1400.0, 2000.0 };				//Maximum throw velocity.
 static float Magnesis_Grab_ThrowCost[3] = { 50.0, 100.0, 150.0 };				//Cost to throw the enemy instead of simply dropping them.
 static float Magnesis_Grab_ThrowThreshold_Normal[3] = { 0.25, 0.2, 0.125 };		//Percentage of max health taken as damage while grabbed in order for the throw to reach max velocity, for normal enemies.
@@ -36,34 +39,36 @@ static float Magnesis_Grab_Throw_WeightPenalty[3] = { 0.25, 0.15, 0.05 };		//Per
 static float Magnesis_Grab_ThrowDMG[3] = { 1250.0, 2000.0, 2500.0 };			//Damage dealt to grabbed enemies when they are thrown.
 static float Magnesis_Grab_ThrowDMG_Scale[3] = { 2000.0, 2500.0, 3000.0 };		//Maximum amount of damage to add to the throw damage. This scales in the same way as throw velocity.
 static bool Magnesis_Grab_Specials[3] = { false, true, true };					//Can the Magnesis Staff grab bosses/mini-bosses on this tier?
-static bool Magnesis_Grab_Raids[3] = { false, false, true };					//Can the Magnesis Staff grab raids on this tier?
-static float Magnesis_StunTime_Normal[3] = { 0.0, 0.0, 0.0 };					//Duration to stun enemies when they are grabbed by the Magnesis Staff (0.0 = stun until dropped, below 0.0 = no stun at all).
+static bool Magnesis_Grab_Raids[3] = { false, true, true };						//Can the Magnesis Staff grab raids on this tier?
+static float Magnesis_StunTime_Normal[3] = { 4.0, 4.0, 4.0 };					//Duration to stun enemies when they are grabbed by the Magnesis Staff (0.0 = stun until dropped, below 0.0 = no stun at all).
 static float Magnesis_StunTime_Special[3] = { 2.5, 2.5, 2.5 };					//Stun duration for bosses/mini-bosses.
 static float Magnesis_StunTime_Raid[3] = { 1.66, 1.66, 1.66 };					//Stun duration for raids.
-static float Magnesis_Resistance[3] = { 0.25, 0.2, 0.15 };						//Amount to multiply damage taken by grabbed enemies.
+static float Magnesis_Resistance[3] = { 0.75, 0.66, 0.5 };						//Amount to multiply damage taken by grabbed enemies.
+static float Magnesis_Grab_StrangleDMG[3] = { 0.0, 8.0, 12.0 };					//Damage dealt per 0.1s to enemies who are grabbed.
+static float Magnesis_Grab_Vulnerability[3] = { 1.1, 1.15, 1.2 };				//Amount to multiply all damage dealt to enemies who are grabbed.
 
 //NEWTONIAN KNUCKLES: Alternate PaP path which replaces the M1 with a far stronger explosive projectile with a slower rate of fire.
 //Replaces M2 with a shockwave that deals knockback. M1 projectile deals bonus damage if it airshots an enemy who is airborne because of the M2 attack.
 //static float Newtonian_M1_Cost[3] = { 50.0, 75.0, 100.0 };					//M1 cost.
-static float Newtonian_M1_DMG[3] = { 400.0, 800.0, 1200.0 };					//M1 damage.
+static float Newtonian_M1_DMG[3] = { 400.0, 1000.0, 1400.0 };					//M1 damage.
 static float Newtonian_M1_Radius[3] = { 150.0, 165.0, 180.0 };					//M1 explosion radius.
 static float Newtonian_M1_Velocity[3] = { 1400.0, 1800.0, 2200.0 };				//M1 projectile velocity.
-static float Newtonian_M1_Lifespan[3] = { 1.0, 1.15, 1.3 };						//M1 projectile lifespan.
+static float Newtonian_M1_Lifespan[3] = { 1.0, 0.5, 0.65 };						//M1 projectile lifespan.
 static float Newtonian_M1_Falloff_MultiHit[3] = { 0.66, 0.75, 0.85 };			//Amount to multiply damage dealt by M1 per target hit.
 static float Newtonian_M1_Falloff_Distance[3] = { 0.66, 0.75, 0.85 };			//Maximum M1 damage falloff, based on distance.
 static float Newtonian_M1_ComboMult[3] = { 3.0, 3.0, 3.0 };						//Amount to multiply damage dealt by the M1 to enemies who have been knocked airborne by the M2.
-static float Newtonian_M1_ComboCDR[3] = { 5.0, 5.0, 5.0 };						//Amount to reduce remaining M2 cooldown when airshotting an enemy launched by M2.
+static float Newtonian_M1_ComboCDR[3] = { 5.0, 2.5, 2.5 };						//Amount to reduce remaining M2 cooldown when airshotting an enemy launched by M2.
 static int Newtonian_M1_MaxTargets[3] = { 4, 5, 6 };							//Max targets hit by the M1 projectile's explosion.
 static float Newtonian_M2_Cost[3] = { 200.0, 300.0, 400.0 };					//M2 cost.
-static float Newtonian_M2_Cooldown[3] = { 40.0, 40.0, 40.0 };					//M2 cooldown.
+static float Newtonian_M2_Cooldown[3] = { 40.0, 25.0, 25.0 };					//M2 cooldown.
 static float Newtonian_M2_DMG[3] = { 1600.0, 2400.0, 3500.0 };					//M2 damage.
 static float Newtonian_M2_Radius[3] = { 160.0, 180.0, 200.0 };					//M2 radius.
 static float Newtonian_M2_Falloff_MultiHit[3] = { 0.5, 0.66, 0.75 };			//Amount to multiply damage dealt by the M2 shockwave per target hit.
 static float Newtonian_M2_Falloff_Distance[3] = { 0.5, 0.66, 0.75 };			//Maximum M2 damage falloff, based on distance.
-static float Newtonian_M2_Knockback_Horizontal[3] = { 400.0, 500.0, 600.0 };	//Horizontal knockback applied to enemies hit by the M2 shockwave.
-static float Newtonian_M2_Knockback_Vertical[3] = { 400.0, 500.0, 600.0 };		//Vertical knockback applied to enemies hit by the M2 shockwave.
-static float Newtonian_M2_Knockback_RaidMult[3] = { 0.5, 0.5, 0.5 };			//Amount to multiply knockback dealt to raids.
-static float Newtonian_M2_Knockback_WeightPenalty[3] = { 200.0, 150.0, 100.0 };	//Amount to reduce knockback per point of NPC weight above 1.0.
+static float Newtonian_M2_Knockback_Horizontal[3] = { 400.0, 600.0, 750.0 };	//Horizontal knockback applied to enemies hit by the M2 shockwave.
+static float Newtonian_M2_Knockback_Vertical[3] = { 400.0, 600.0, 750.0 };		//Vertical knockback applied to enemies hit by the M2 shockwave.
+static float Newtonian_M2_Knockback_RaidMult[3] = { 1.0, 1.0, 1.0 };			//Amount to multiply knockback dealt to raids.
+static float Newtonian_M2_Knockback_WeightPenalty[3] = { 150.0, 100.0, 100.0 };	//Amount to reduce knockback per point of NPC weight above 1.0.
 static float Newtonian_M2_AttackDelay[3] = { 0.66, 0.66, 0.66 };				//Duration to prevent the user from attacking with M1 after triggering a shockwave. This is to prevent cheesy combos where you press M2 and M1 at the same time.
 static int Newtonian_M2_MaxTargets[3] = { 4, 6, 8 };							//Max zombies hit by M2 shockwave.
 
@@ -80,7 +85,11 @@ static bool Newtonian_Airborne[2049] = { false, ... };
 static float Magnesis_CooldownToApply[MAXPLAYERS + 1] = { 0.0, ... };
 static float Magnesis_DamageTakenWhileGrabbed[2049] = { 0.0, ... };
 static float Magnesis_DroppedAt[2049] = { 0.0, ... };
+static float Magnesis_GrabbedAt[2049] = { 0.0, ... };
 static float Magnesis_NextDrainTick[MAXPLAYERS + 1] = { 0.0, ... };
+static int Magnesis_GrabberTier[2049] = { 0, ... };
+static bool Magnesis_Strangled[2049] = { false, ... };
+static float Magnesis_GrabCost_Bucket[MAXPLAYERS + 1] = { 0.0, ... };
 
 public void Magnesis_ResetAll()
 {
@@ -161,6 +170,7 @@ void Magnesis_OnKill(int victim)
 {
 	Newtonian_Airborne[victim] = false;
 	Magnesis_Grabbed[victim] = false;
+	Magnesis_Strangled[victim] = false;
 	Magnesis_DroppedAt[victim] = 0.0;
 	Magnesis_DamageTakenWhileGrabbed[victim] = 0.0;
 }
@@ -176,10 +186,21 @@ float Player_OnTakeDamage_Magnesis(int victim, float &damage, int attacker)
 	return damage;
 }
 
+public float Magnesis_StrangleDebuffMultiplier(int victim, float damage)
+{
+	if (Magnesis_Strangled[victim])
+		Magnesis_Strangled[victim] = false;
+	else
+	{
+		damage *= Magnesis_Grab_Vulnerability[Magnesis_GrabberTier[victim]];
+	}
+
+	return damage;
+}
+
 public void Magnesis_OnNPCDamaged(int victim, float damage)
 {
-	if (Magnesis_Grabbed[victim])
-		Magnesis_DamageTakenWhileGrabbed[victim] += damage;
+	Magnesis_DamageTakenWhileGrabbed[victim] += damage;
 }
 
 Handle Timer_Magnesis[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
@@ -475,8 +496,12 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 
 		Magnesis_Tier[client] = tier;
 		Magnesis_Grabbed[victim] = true;
+		Magnesis_GrabberTier[victim] = tier;
+		Magnesis_GrabCost_Bucket[client] = 0.0;
+		Magnesis_GrabbedAt[victim] = GetGameTime();
 		Magnesis_GrabTarget[client] = EntIndexToEntRef(victim);
 		Magnesis_NextDrainTick[client] = GetGameTime() + 0.1;
+		f_StrangleDebuff[victim] = GetGameTime() + 0.1;
 		float cd = Magnesis_Grab_Cooldown_Normal[tier];
 		if (b_thisNpcIsARaid[victim])
 			cd = Magnesis_Grab_Cooldown_Raids[tier];
@@ -573,25 +598,51 @@ public void Magnesis_Logic(DataPack pack)
 	{
 		int target = EntRefToEntIndex(Magnesis_GrabTarget[client]);
 
+		float manaPercentage = Magnesis_Grab_Cost_Scaling_Normal[Magnesis_Tier[client]];
 		float cost = Magnesis_Grab_Cost_Normal[Magnesis_Tier[client]];
 		if (b_thisNpcIsARaid[target])
-			cost = Magnesis_Grab_Cost_Raid[Magnesis_Tier[client]];
-		else if (b_thisNpcIsABoss[target])
-			cost = Magnesis_Grab_Cost_Special[Magnesis_Tier[client]];
-
-		int realCost = RoundFloat(cost);
-
-		if (realCost > Current_Mana[client])
 		{
-			Magnesis_TerminateEffects(client, startPart, endPart);
-			delete pack;
-			return;
+			cost = Magnesis_Grab_Cost_Raid[Magnesis_Tier[client]];
+			manaPercentage = Magnesis_Grab_Cost_Scaling_Raid[Magnesis_Tier[client]];
+		}
+		else if (b_thisNpcIsABoss[target])
+		{
+			cost = Magnesis_Grab_Cost_Special[Magnesis_Tier[client]];
+			manaPercentage = Magnesis_Grab_Cost_Scaling_Special[Magnesis_Tier[client]];
 		}
 
-		Current_Mana[client] -= realCost;
+		Magnesis_GrabCost_Bucket[client] += cost + (max_mana[client] * manaPercentage);
+
+		int realCost = RoundToFloor(Magnesis_GrabCost_Bucket[client]);
+
+		if (realCost > 0)
+		{
+			if (realCost > Current_Mana[client])
+			{
+				Magnesis_TerminateEffects(client, startPart, endPart);
+				delete pack;
+				return;
+			}
+			else
+			{
+				Current_Mana[client] -= realCost;
+				Magnesis_GrabCost_Bucket[client] -= float(realCost);
+			}
+		}
+
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Magnesis_NextDrainTick[client] = gt + 0.1;
 		Magnesis_HUD(client, weapon, false);
+		view_as<CClotBody>(target).m_iTarget = client;
+
+		float dmg = Magnesis_Grab_StrangleDMG[Magnesis_Tier[client]];
+		if (dmg > 0.0)
+		{
+			dmg *= Attributes_Get(weapon, 410, 1.0);
+			Magnesis_Strangled[target] = true;
+			f_StrangleDebuff[target] = GetGameTime() + 0.1;
+			SDKHooks_TakeDamage(target, client, client, dmg, _, weapon, _, _, false);
+		}
 	}
 
 	RequestFrame(Magnesis_Logic, pack);
@@ -619,6 +670,7 @@ void Magnesis_TerminateEffects(int client, int start, int end, bool enemyWasThro
 		if (IsValidEntity(victim))
 		{
 			Magnesis_Grabbed[victim] = false;
+			Magnesis_DamageTakenWhileGrabbed[victim] = 0.0;
 			Magnesis_DroppedAt[victim] = GetGameTime();
 			view_as<CClotBody>(victim).m_iTarget = client;
 		}
@@ -647,6 +699,36 @@ public bool Magnesis_TargetCanBeGrabbed(int client, int victim, int tier)
 	if ((b_thisNpcIsARaid[victim] && !Magnesis_Grab_Raids[tier]) || (b_thisNpcIsABoss[victim] && !Magnesis_Grab_Specials[tier]))
 	{
 		Utility_HUDNotification_Translation(client, "Magnesis Target Too Strong", true);
+		return false;
+	}
+
+	if (!Can_I_See_Enemy(client, victim))
+	{
+		Utility_HUDNotification_Translation(client, "Magnesis Target LOS Broken", true);
+		return false;
+	}
+
+	float pos[3], ang[3], direction[3], hullMin[3], hullMax[3], endPos[3];
+	WorldSpaceCenter(client, pos);
+
+	ang[0] = 90.0;
+
+	hullMin[0] = -20.0;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	GetAngleVectors(ang, direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(direction, 120.0);
+	AddVectors(pos, direction, endPos);
+
+	TR_TraceHullFilter(pos, endPos, hullMin, hullMax, 1073741824, Magnesis_GrabTrace, client);
+	int target = TR_GetEntityIndex();
+	if (victim == target)
+	{
+		Utility_HUDNotification_Translation(client, "Magnesis Standing On Target", true);
 		return false;
 	}
 
@@ -763,10 +845,10 @@ static int Newtonian_ShockwaveTier;
 
 void Newtonian_TryShockwave(int client, int weapon, int tier)
 {
-	int mana_cost = RoundFloat(Newtonian_M2_Cost[tier]);
+    int mana_cost = RoundFloat(Newtonian_M2_Cost[tier]);
 	float remCD = Ability_Check_Cooldown(client, 2, weapon);
 
-	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
+    if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
@@ -796,7 +878,7 @@ void Newtonian_TryShockwave(int client, int weapon, int tier)
 		delay_hud[client] = 0.0;
 		Ability_Apply_Cooldown(client, 2, Newtonian_M2_Cooldown[tier], weapon);
 
-		EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
+        EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
 		EmitSoundToAll(SND_NEWTONIAN_M2_2, client, _, _, _, 0.8, 80);
 
 		float nextAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") + Newtonian_M2_AttackDelay[tier];
@@ -1006,6 +1088,9 @@ void Utility_FireProjectile(int client, int weapon, int tier, bool isNewtonian)
 
 void Utility_NotEnoughMana(int client, int cost)
 {
+	if (!IsValidClient(client))
+		return;
+
 	char text[255];
 	Format(text, sizeof(text), "%t", "Not Enough Mana", cost);
 	Utility_HUDNotification(client, text, true);
@@ -1013,6 +1098,9 @@ void Utility_NotEnoughMana(int client, int cost)
 
 void Utility_OnCooldown(int client, float cost)
 {
+	if (!IsValidClient(client))
+		return;
+
 	char text[255];
 	Format(text, sizeof(text), "%t", "Ability has cooldown", cost);
 	Utility_HUDNotification(client, text, true);
@@ -1020,6 +1108,9 @@ void Utility_OnCooldown(int client, float cost)
 
 void Utility_HUDNotification_Translation(int client, char translation[255], bool YouCantDoThat = false)
 {
+	if (!IsValidClient(client))
+		return;
+
 	char text[255];
 	Format(text, sizeof(text), "%t", translation);
 	Utility_HUDNotification(client, text, YouCantDoThat);
@@ -1027,6 +1118,9 @@ void Utility_HUDNotification_Translation(int client, char translation[255], bool
 
 void Utility_HUDNotification(int client, char message[255], bool YouCantDoThat = false)
 {
+	if (!IsValidClient(client))
+		return;
+
 	if (YouCantDoThat)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 

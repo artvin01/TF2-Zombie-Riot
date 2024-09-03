@@ -1806,6 +1806,10 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	{
 		damage += basedamage * (0.2 * DamageBuffExtraScaling);
 	}
+	if (f_StrangleDebuff[victim] > GameTime)
+	{
+		damage = Magnesis_StrangleDebuffMultiplier(victim, damage);
+	}
 
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
@@ -1935,6 +1939,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_GoldTouchDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⯏", Debuff_Adder_left);
+	}
+	if(f_StrangleDebuff[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s☼", Debuff_Adder_left);
 	}
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
