@@ -982,6 +982,10 @@
 	{
 		"en"		"You are standing on the grab target."
 	}
+	"Magnesis Target Too Far"
+	{
+		"en"		"Grab target is too far away."
+	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"

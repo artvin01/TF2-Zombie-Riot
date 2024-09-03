@@ -26,7 +26,8 @@ static float Magnesis_Grab_Cost_Raid[3] = { 75.0, 75.0, 75.0 };					//Mana drain
 static float Magnesis_Grab_DragRate[3] = { 10.0, 10.0, 10.0 };					//Base speed at which grabbed targets move towards the puller, per frame.
 static float Magnesis_Grab_DragRate_WeightPenalty[3] = { 7.5, 3.0, 1.25 };		//Amount to reduce grab movement speed per point of NPC weight above 1.
 static float Magnesis_Grab_Range[3] = { 150.0, 200.0, 250.0 };					//Maximum distance from which enemies can be grabbed.
-static float Magnesis_Grab_Distance[3] = { 80.0, 80.0, 80.0 };				//Distance from the user to hold zombies at.
+static float Magnesis_Grab_Distance[3] = { 80.0, 80.0, 80.0 };					//Distance from the user to hold zombies at.
+static float Magnesis_Grab_MaxDistance[3] = { 140.0, 140.0, 140.0 };			//Distance from the user at which a held zombie will be dropped.
 static float Magnesis_Grab_MaxVel[3] = { 1000.0, 1400.0, 2000.0 };				//Maximum throw velocity.
 static float Magnesis_Grab_ThrowCost[3] = { 50.0, 100.0, 150.0 };				//Cost to throw the enemy instead of simply dropping them.
 static float Magnesis_Grab_ThrowThreshold_Normal[3] = { 0.25, 0.2, 0.125 };		//Percentage of max health taken as damage while grabbed in order for the throw to reach max velocity, for normal enemies.
@@ -678,8 +679,16 @@ public bool Magnesis_TargetCanBeGrabbed(int client, int victim, int tier)
 		return false;
 	}
 
-	float pos[3], ang[3], direction[3], hullMin[3], hullMax[3], endPos[3];
+	float pos[3], ang[3], direction[3], hullMin[3], hullMax[3], endPos[3], enemyPos[3];
 	WorldSpaceCenter(client, pos);
+	WorldSpaceCenter(victim, enemyPos);
+
+	if (GetVectorDistance(pos, enemyPos) > Magnesis_Grab_MaxDistance[tier])
+	{
+		Utility_HUDNotification_Translation(client, "Magnesis Target Too Far", true);
+		return false;
+	}
+
 	ang[0] = 90.0;
 
 	hullMin[0] = -20.0;
