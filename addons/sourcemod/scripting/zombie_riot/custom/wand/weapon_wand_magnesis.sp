@@ -21,13 +21,15 @@ static float Magnesis_Grab_Cooldown_Normal[3] = { 5.0, 5.0, 5.0 };				//Cooldown
 static float Magnesis_Grab_Cooldown_Special[3] = { 30.0, 30.0, 30.0 };			//Cooldown applied when grabbing mini-bosses/bosses.
 static float Magnesis_Grab_Cooldown_Raids[3] = { 70.0, 70.0, 70.0 };			//Cooldown applied when grabbing raid bosses.
 static float Magnesis_Grab_Cost_Normal[3] = { 5.0, 10.0, 20.0 };				//Mana drained per 0.1s while holding a normal enemy.
+static float Magnesis_Grab_Cost_Scaling_Normal[3] = { 0.01, 0.01, 0.01 };		//Additional percentage of the user's max mana to drain per 0.1s while holding a normal enemy (0.1 = 10%).
 static float Magnesis_Grab_Cost_Special[3] = { 35.0, 35.0, 35.0 };				//Mana drained per 0.1s while holding a boss/mini-boss.
+static float Magnesis_Grab_Cost_Scaling_Special[3] = { 0.01, 0.01, 0.01 };		//Additional percentage of the user's max mana to drain per 0.1s while holding a special enemy (0.1 = 10%).
 static float Magnesis_Grab_Cost_Raid[3] = { 75.0, 75.0, 75.0 };					//Mana drained per 0.1s while holding a raid.
+static float Magnesis_Grab_Cost_Scaling_Raid[3] = { 0.0, 0.0, 0.0 };			//Additional percentage of theu ser's max mana to drain per 0.1s while holding a raid.
 static float Magnesis_Grab_DragRate[3] = { 10.0, 10.0, 10.0 };					//Base speed at which grabbed targets move towards the puller, per frame.
 static float Magnesis_Grab_DragRate_WeightPenalty[3] = { 7.5, 3.0, 1.25 };		//Amount to reduce grab movement speed per point of NPC weight above 1.
 static float Magnesis_Grab_Range[3] = { 150.0, 200.0, 250.0 };					//Maximum distance from which enemies can be grabbed.
 static float Magnesis_Grab_Distance[3] = { 80.0, 80.0, 80.0 };					//Distance from the user to hold zombies at.
-static float Magnesis_Grab_MaxDistance[3] = { 140.0, 140.0, 140.0 };			//Distance from the user at which a held zombie will be dropped.
 static float Magnesis_Grab_MaxVel[3] = { 1000.0, 1400.0, 2000.0 };				//Maximum throw velocity.
 static float Magnesis_Grab_ThrowCost[3] = { 50.0, 100.0, 150.0 };				//Cost to throw the enemy instead of simply dropping them.
 static float Magnesis_Grab_ThrowThreshold_Normal[3] = { 0.25, 0.2, 0.125 };		//Percentage of max health taken as damage while grabbed in order for the throw to reach max velocity, for normal enemies.
@@ -83,9 +85,11 @@ static bool Newtonian_Airborne[2049] = { false, ... };
 static float Magnesis_CooldownToApply[MAXPLAYERS + 1] = { 0.0, ... };
 static float Magnesis_DamageTakenWhileGrabbed[2049] = { 0.0, ... };
 static float Magnesis_DroppedAt[2049] = { 0.0, ... };
+static float Magnesis_GrabbedAt[2049] = { 0.0, ... };
 static float Magnesis_NextDrainTick[MAXPLAYERS + 1] = { 0.0, ... };
 static int Magnesis_GrabberTier[2049] = { 0, ... };
 static bool Magnesis_Strangled[2049] = { false, ... };
+static float Magnesis_GrabCost_Bucket[MAXPLAYERS + 1] = { 0.0, ... };
 
 public void Magnesis_ResetAll()
 {
@@ -493,6 +497,8 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 		Magnesis_Tier[client] = tier;
 		Magnesis_Grabbed[victim] = true;
 		Magnesis_GrabberTier[victim] = tier;
+		Magnesis_GrabCost_Bucket[client] = 0.0;
+		Magnesis_GrabbedAt[victim] = GetGameTime();
 		Magnesis_GrabTarget[client] = EntIndexToEntRef(victim);
 		Magnesis_NextDrainTick[client] = GetGameTime() + 0.1;
 		f_StrangleDebuff[victim] = GetGameTime() + 0.1;
@@ -592,22 +598,38 @@ public void Magnesis_Logic(DataPack pack)
 	{
 		int target = EntRefToEntIndex(Magnesis_GrabTarget[client]);
 
+		float manaPercentage = Magnesis_Grab_Cost_Scaling_Normal[Magnesis_Tier[client]];
 		float cost = Magnesis_Grab_Cost_Normal[Magnesis_Tier[client]];
 		if (b_thisNpcIsARaid[target])
-			cost = Magnesis_Grab_Cost_Raid[Magnesis_Tier[client]];
-		else if (b_thisNpcIsABoss[target])
-			cost = Magnesis_Grab_Cost_Special[Magnesis_Tier[client]];
-
-		int realCost = RoundFloat(cost);
-
-		if (realCost > Current_Mana[client])
 		{
-			Magnesis_TerminateEffects(client, startPart, endPart);
-			delete pack;
-			return;
+			cost = Magnesis_Grab_Cost_Raid[Magnesis_Tier[client]];
+			manaPercentage = Magnesis_Grab_Cost_Scaling_Raid[Magnesis_Tier[client]];
+		}
+		else if (b_thisNpcIsABoss[target])
+		{
+			cost = Magnesis_Grab_Cost_Special[Magnesis_Tier[client]];
+			manaPercentage = Magnesis_Grab_Cost_Scaling_Special[Magnesis_Tier[client]];
 		}
 
-		Current_Mana[client] -= realCost;
+		Magnesis_GrabCost_Bucket[client] += cost + (max_mana[client] * manaPercentage);
+
+		int realCost = RoundToFloor(Magnesis_GrabCost_Bucket[client]);
+
+		if (realCost > 0)
+		{
+			if (realCost > Current_Mana[client])
+			{
+				Magnesis_TerminateEffects(client, startPart, endPart);
+				delete pack;
+				return;
+			}
+			else
+			{
+				Current_Mana[client] -= realCost;
+				Magnesis_GrabCost_Bucket[client] -= float(realCost);
+			}
+		}
+
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Magnesis_NextDrainTick[client] = gt + 0.1;
 		Magnesis_HUD(client, weapon, false);
@@ -648,6 +670,7 @@ void Magnesis_TerminateEffects(int client, int start, int end, bool enemyWasThro
 		if (IsValidEntity(victim))
 		{
 			Magnesis_Grabbed[victim] = false;
+			Magnesis_DamageTakenWhileGrabbed[victim] = 0.0;
 			Magnesis_DroppedAt[victim] = GetGameTime();
 			view_as<CClotBody>(victim).m_iTarget = client;
 		}
@@ -679,21 +702,14 @@ public bool Magnesis_TargetCanBeGrabbed(int client, int victim, int tier)
 		return false;
 	}
 
-	float pos[3], ang[3], direction[3], hullMin[3], hullMax[3], endPos[3], enemyPos[3];
-	WorldSpaceCenter(client, pos);
-	WorldSpaceCenter(victim, enemyPos);
-
-	if (GetVectorDistance(pos, enemyPos) > Magnesis_Grab_MaxDistance[tier])
-	{
-		Utility_HUDNotification_Translation(client, "Magnesis Target Too Far", true);
-		return false;
-	}
-
 	if (!Can_I_See_Enemy(client, victim))
 	{
 		Utility_HUDNotification_Translation(client, "Magnesis Target LOS Broken", true);
 		return false;
 	}
+
+	float pos[3], ang[3], direction[3], hullMin[3], hullMax[3], endPos[3];
+	WorldSpaceCenter(client, pos);
 
 	ang[0] = 90.0;
 
