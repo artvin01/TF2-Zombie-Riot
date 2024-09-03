@@ -181,21 +181,21 @@ float Player_OnTakeDamage_Magnesis(int victim, float &damage, int attacker)
 	return damage;
 }
 
-public float Magnesis_OnNPCDamaged(int victim, float damage)
+public float Magnesis_StrangleDebuffMultiplier(int victim, float damage)
 {
-	if (f_StrangleDebuff[victim] >= GetGameTime())
+	if (Magnesis_Strangled[victim])
+		Magnesis_Strangled[victim] = false;
+	else
 	{
-		if (Magnesis_Strangled[victim])
-			Magnesis_Strangled[victim] = false;
-		else
-		{
-			damage *= Magnesis_Grab_Vulnerability[Magnesis_GrabberTier[victim]];
-		}
+		damage *= Magnesis_Grab_Vulnerability[Magnesis_GrabberTier[victim]];
 	}
 
-	Magnesis_DamageTakenWhileGrabbed[victim] += damage;
-
 	return damage;
+}
+
+public void Magnesis_OnNPCDamaged(int victim, float damage)
+{
+	Magnesis_DamageTakenWhileGrabbed[victim] += damage;
 }
 
 Handle Timer_Magnesis[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
@@ -616,8 +616,8 @@ public void Magnesis_Logic(DataPack pack)
 		{
 			dmg *= Attributes_Get(weapon, 410, 1.0);
 			Magnesis_Strangled[target] = true;
-			SDKHooks_TakeDamage(target, client, client, dmg, _, weapon, _, _, false);
 			f_StrangleDebuff[target] = GetGameTime() + 0.1;
+			SDKHooks_TakeDamage(target, client, client, dmg, _, weapon, _, _, false);
 		}
 	}
 

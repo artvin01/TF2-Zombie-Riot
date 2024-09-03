@@ -1025,7 +1025,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_MAGNESIS:
 		{
-			return Magnesis_OnNPCDamaged(victim, damage);
+			Magnesis_OnNPCDamaged(victim, damage);
 		}
 		case WEAPON_WRATHFUL_BLADE:
 		{
@@ -1805,6 +1805,10 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	if(f_GoldTouchDebuff[victim] > GameTime)
 	{
 		damage += basedamage * (0.2 * DamageBuffExtraScaling);
+	}
+	if (f_StrangleDebuff[victim] > GameTime)
+	{
+		damage = Magnesis_StrangleDebuffMultiplier(victim, damage);
 	}
 
 	if(f_CudgelDebuff[victim] > GameTime)
