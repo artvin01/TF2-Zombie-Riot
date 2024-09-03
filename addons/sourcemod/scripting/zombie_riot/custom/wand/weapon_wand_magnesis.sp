@@ -17,8 +17,8 @@ static float Magnesis_M1_Spread[3] = { 6.0, 5.0, 4.0 };				//M1 projectile devia
 //that zombie took while grabbed, relative to their max health.
 static float Magnesis_Grab_WaitTime[3] = { 5.0, 5.0, 5.0 };						//Time after an enemy has been thrown/dropped before they can be grabbed again, to prevent team stacks from grabbing enemies indefinitely.
 static float Magnesis_Grab_Requirement[3] = { 50.0, 100.0, 150.0 };				//Initial mana cost in order to grab an enemy.
-static float Magnesis_Grab_Cooldown_Normal[3] = { 10.0, 10.0, 10.0 };			//Cooldown applied when grabbing normal zombies.
-static float Magnesis_Grab_Cooldown_Special[3] = { 45.0, 45.0, 45.0 };			//Cooldown applied when grabbing mini-bosses/bosses.
+static float Magnesis_Grab_Cooldown_Normal[3] = { 5.0, 5.0, 5.0 };				//Cooldown applied when grabbing normal zombies.
+static float Magnesis_Grab_Cooldown_Special[3] = { 30.0, 30.0, 30.0 };			//Cooldown applied when grabbing mini-bosses/bosses.
 static float Magnesis_Grab_Cooldown_Raids[3] = { 70.0, 70.0, 70.0 };			//Cooldown applied when grabbing raid bosses.
 static float Magnesis_Grab_Cost_Normal[3] = { 5.0, 5.0, 5.0 };					//Mana drained per 0.1s while holding a normal enemy.
 static float Magnesis_Grab_Cost_Special[3] = { 35.0, 35.0, 35.0 };				//Mana drained per 0.1s while holding a boss/mini-boss.
