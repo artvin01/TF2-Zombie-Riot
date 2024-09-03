@@ -37,7 +37,7 @@ static float Magnesis_Grab_ThrowDMG[3] = { 1250.0, 2000.0, 2500.0 };			//Damage 
 static float Magnesis_Grab_ThrowDMG_Scale[3] = { 2000.0, 2500.0, 3000.0 };		//Maximum amount of damage to add to the throw damage. This scales in the same way as throw velocity.
 static bool Magnesis_Grab_Specials[3] = { false, true, true };					//Can the Magnesis Staff grab bosses/mini-bosses on this tier?
 static bool Magnesis_Grab_Raids[3] = { false, true, true };						//Can the Magnesis Staff grab raids on this tier?
-static float Magnesis_StunTime_Normal[3] = { 0.0, 0.0, 0.0 };					//Duration to stun enemies when they are grabbed by the Magnesis Staff (0.0 = stun until dropped, below 0.0 = no stun at all).
+static float Magnesis_StunTime_Normal[3] = { 4.0, 4.0, 4.0 };					//Duration to stun enemies when they are grabbed by the Magnesis Staff (0.0 = stun until dropped, below 0.0 = no stun at all).
 static float Magnesis_StunTime_Special[3] = { 2.5, 2.5, 2.5 };					//Stun duration for bosses/mini-bosses.
 static float Magnesis_StunTime_Raid[3] = { 1.66, 1.66, 1.66 };					//Stun duration for raids.
 static float Magnesis_Resistance[3] = { 0.25, 0.2, 0.15 };						//Amount to multiply damage taken by grabbed enemies.
@@ -610,6 +610,7 @@ public void Magnesis_Logic(DataPack pack)
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Magnesis_NextDrainTick[client] = gt + 0.1;
 		Magnesis_HUD(client, weapon, false);
+		view_as<CClotBody>(target).m_iTarget = client;
 
 		float dmg = Magnesis_Grab_StrangleDMG[Magnesis_Tier[client]];
 		if (dmg > 0.0)
