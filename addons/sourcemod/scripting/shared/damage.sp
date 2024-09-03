@@ -1025,7 +1025,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_MAGNESIS:
 		{
-			Magnesis_OnNPCDamaged(victim, damage);
+			return Magnesis_OnNPCDamaged(victim, damage);
 		}
 		case WEAPON_WRATHFUL_BLADE:
 		{
@@ -1934,6 +1934,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_GoldTouchDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⯏", Debuff_Adder_left);
+	}
+	if(f_StrangleDebuff[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s☼", Debuff_Adder_left);
 	}
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
