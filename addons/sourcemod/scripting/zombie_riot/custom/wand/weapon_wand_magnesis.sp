@@ -5,8 +5,8 @@
 
 //STANDARD M1 PROJECTILE: The Magnesis Staff's primary fire is nothing special, just a generic projectile.
 static int Magnesis_M1_NumProjectiles[3] = { 6, 8, 10 };			//Number of projectiles fired.
-static float Magnesis_M1_DMG[3] = { 120.0, 180.0, 240.0 };          //M1 projectile damage.
-static float Magnesis_M1_Lifespan[3] = { 0.2, 0.2, 0.2 };          	//M1 projectile lifespan.
+static float Magnesis_M1_DMG[3] = { 145.0, 220.0, 290.0 };          //M1 projectile damage.
+static float Magnesis_M1_Lifespan[3] = { 0.3, 0.3, 0.3 };          	//M1 projectile lifespan.
 static float Magnesis_M1_Velocity[3] = { 1200.0, 1400.0, 1600.0 };  //M1 projectile velocity.
 static float Magnesis_M1_Spread[3] = { 6.0, 5.0, 4.0 };				//M1 projectile deviation.
 
@@ -125,7 +125,7 @@ static int Beam_Glow;
 
 void Magnesis_Precache()
 {
-    PrecacheSound(SND_MAGNESIS_M1);
+	PrecacheSound(SND_MAGNESIS_M1);
 	PrecacheSound(SND_MAGNESIS_M1_2);
 	PrecacheSound(SND_MAGNESIS_M1_COLLIDE);
 	PrecacheSound(SND_MAGNESIS_GRAB);
@@ -284,7 +284,7 @@ void Magnesis_FireProjectile(int client, int weapon, int tier)
 		for (int i = 0; i < Magnesis_M1_NumProjectiles[tier]; i++)
 			Utility_FireProjectile(client, weapon, tier, false);
 
-        EmitSoundToAll(SND_MAGNESIS_M1, client, _, _, _, 0.4, GetRandomInt(80, 100));
+		EmitSoundToAll(SND_MAGNESIS_M1, client, _, _, _, 0.4, GetRandomInt(80, 100));
 		EmitSoundToClient(client, SND_MAGNESIS_M1, _, _, _, _, 0.33, GetRandomInt(80, 100));
 		EmitSoundToAll(SND_MAGNESIS_M1_2, client, _, _, _, 0.4, GetRandomInt(80, 100));
 		EmitSoundToClient(client, SND_MAGNESIS_M1_2, _, _, _, _, 0.33, GetRandomInt(80, 100));
@@ -406,7 +406,6 @@ float Magnesis_GetThrowVelMultiplier(int client)
 	{
 		float weightPenalty = (weight * Magnesis_Grab_Throw_WeightPenalty[Magnesis_Tier[client]]);
 		percentage *= 1.0 - weightPenalty;
-		CPrintToChatAll("Weight penalty is %.2f, percentage is %.2f", weightPenalty, percentage);
 		if (percentage <= 0.0)
 			return 0.0;
 	}
@@ -426,10 +425,10 @@ float Magnesis_GetThrowVelMultiplier(int client)
 
 void Magnesis_AttemptGrab(int client, int weapon, int tier)
 {
-    int mana_cost = RoundFloat(Magnesis_Grab_Requirement[tier]);
+	int mana_cost = RoundFloat(Magnesis_Grab_Requirement[tier]);
 	float remCD = Ability_Check_Cooldown(client, 2, weapon);
 
-    if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
+	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
 	{
 		b_LagCompNPC_ExtendBoundingBox = true;
 		StartLagCompensation_Base_Boss(client);
@@ -724,9 +723,9 @@ public void Newtonian_Attack_2(int client, int weapon, bool &result, int slot)
 
 void Newtonian_FireProjectile(int client, int weapon, int tier)
 {
-   	int mana_cost = RoundFloat(Attributes_Get(weapon, 733, 75.0));
+	int mana_cost = RoundFloat(Attributes_Get(weapon, 733, 75.0));
 
-    if(mana_cost <= Current_Mana[client])
+	if(mana_cost <= Current_Mana[client])
 	{	
 		Rogue_OnAbilityUse(weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
@@ -737,7 +736,7 @@ void Newtonian_FireProjectile(int client, int weapon, int tier)
 		
 		Utility_FireProjectile(client, weapon, tier, true);
 
-        EmitSoundToAll(SND_NEWTONIAN_M1, client, _, _, _, 0.66);
+		EmitSoundToAll(SND_NEWTONIAN_M1, client, _, _, _, 0.66);
 	}
 	else
 	{
