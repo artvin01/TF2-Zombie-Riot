@@ -347,6 +347,7 @@ int TeamNumber[MAXENTITIES];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
+float f_NoUnstuckVariousReasons[MAXENTITIES];
 bool b_PlayerIsInAnotherPart[MAXENTITIES];
 bool b_EntityIsStairAbusing[MAXENTITIES];
 float f_EntityIsStairAbusing[MAXENTITIES];
@@ -3008,6 +3009,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
 		b_IgnoredByPlayerProjectiles[entity] = false;
 		b_DoNotUnStuck[entity] = false;
+		f_NoUnstuckVariousReasons[entity] = 0.0;
 		f_NpcImmuneToBleed[entity] = 0.0;
 		b_NpcIsInvulnerable[entity] = false;
 		b_NpcUnableToDie[entity] = false;

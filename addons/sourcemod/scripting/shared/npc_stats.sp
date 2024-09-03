@@ -6128,6 +6128,15 @@ void TeleportNpcToRandomPlayer(int iNPC)
 }
 public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 {
+	if(f_NoUnstuckVariousReasons[iNPC] > GetGameTime())
+	{
+		if(f_UnstuckSuckMonitor[iNPC] < GetGameTime())
+		{
+			npc.GetLocomotionInterface().ClearStuckStatus("UN-STUCK");
+			f_UnstuckSuckMonitor[iNPC] = GetGameTime() + 1.0;
+		}
+		return;
+	}
 	if (!b_DoNotUnStuck[iNPC])
 	{
 		if(i_FailedTriesUnstuck[iNPC][0] == 0)

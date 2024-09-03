@@ -775,6 +775,11 @@ public bool Magnesis_MoveVictim(int client)
 
 public void Magnesis_MakeNPCMove(int target, float targVel[3])
 {
+	if(f_NoUnstuckVariousReasons[target] > GetGameTime() + 1.0)
+	{
+		//make the target not stuckable.
+		f_NoUnstuckVariousReasons[target] = GetGameTime() + 1.0;
+	}
 	SDKUnhook(target, SDKHook_Think, NpcJumpThink);
 	f3_KnockbackToTake[target] = targVel;
 	SDKHook(target, SDKHook_Think, NpcJumpThink);
