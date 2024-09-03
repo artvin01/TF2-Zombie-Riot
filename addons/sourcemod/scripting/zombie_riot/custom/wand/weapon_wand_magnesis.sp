@@ -677,6 +677,29 @@ public bool Magnesis_TargetCanBeGrabbed(int client, int victim, int tier)
 		return false;
 	}
 
+	float pos[3], ang[3], direction[3], hullMin[3], hullMax[3], endPos[3];
+	WorldSpaceCenter(client, pos);
+	ang[0] = 90.0;
+
+	hullMin[0] = -20.0;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	GetAngleVectors(ang, direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(direction, 120.0);
+	AddVectors(pos, direction, endPos);
+
+	TR_TraceHullFilter(pos, endPos, hullMin, hullMax, 1073741824, Magnesis_GrabTrace, client);
+	int target = TR_GetEntityIndex();
+	if (victim == target)
+	{
+		Utility_HUDNotification_Translation(client, "Magnesis Standing On Target", true);
+		return false;
+	}
+
 	return true;
 }
 

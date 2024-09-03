@@ -978,6 +978,10 @@
 	{
 		"en"		"That enemy was grabbed too recently!"
 	}
+	"Magnesis Standing On Target"
+	{
+		"en"		"You are standing on the grab target."
+	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"
