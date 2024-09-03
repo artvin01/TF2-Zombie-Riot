@@ -45,7 +45,7 @@ static float Magnesis_StunTime_Special[3] = { 2.5, 2.5, 2.5 };					//Stun durati
 static float Magnesis_StunTime_Raid[3] = { 1.66, 1.66, 1.66 };					//Stun duration for raids.
 static float Magnesis_Resistance[3] = { 0.75, 0.66, 0.5 };						//Amount to multiply damage taken by grabbed enemies.
 static float Magnesis_Grab_StrangleDMG[3] = { 0.0, 8.0, 12.0 };					//Damage dealt per 0.1s to enemies who are grabbed.
-static float Magnesis_Grab_Vulnerability[3] = { 1.1, 1.15, 1.2 };				//Amount to multiply all damage dealt to enemies who are grabbed.
+static float Magnesis_Grab_Vulnerability[3] = { 0.1, 0.15, 0.2 };				//Amount to multiply all damage dealt to enemies who are grabbed.
 
 //NEWTONIAN KNUCKLES: Alternate PaP path which replaces the M1 with a far stronger explosive projectile with a slower rate of fire.
 //Replaces M2 with a shockwave that deals knockback. M1 projectile deals bonus damage if it airshots an enemy who is airborne because of the M2 attack.

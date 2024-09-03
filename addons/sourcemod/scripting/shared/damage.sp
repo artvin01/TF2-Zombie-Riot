@@ -1808,7 +1808,7 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	}
 	if (f_StrangleDebuff[victim] > GameTime)
 	{
-		damage = Magnesis_StrangleDebuffMultiplier(victim, damage);
+		damage += Magnesis_StrangleDebuffMultiplier(victim, basedamage);
 	}
 
 	if(f_CudgelDebuff[victim] > GameTime)
