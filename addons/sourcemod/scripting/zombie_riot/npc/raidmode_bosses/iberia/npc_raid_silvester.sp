@@ -833,7 +833,7 @@ static void Internal_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget > GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0) 
+		if(flDistanceToTarget > GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 13.0) 
 		{
 			//The enemy is WAY too far away, give 2x speed.
 			if(npc.m_flCurrentlySpeedRage == 0.0)
