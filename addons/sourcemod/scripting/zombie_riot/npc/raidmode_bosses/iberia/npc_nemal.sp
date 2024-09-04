@@ -146,7 +146,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MineLayed));   i++) { PrecacheSound(g_MineLayed[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid.mp3");
-	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid_wave60.mp3");
+	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
 }
 
@@ -545,6 +545,12 @@ methodmap Nemal < CClotBody
 		{
 			RaidModeScaling *= 0.38;
 		}
+
+		if(ZR_GetWaveCount()+1 > 55)
+		{
+			RaidModeTime = GetGameTime(npc.index) + 220.0;
+			RaidModeScaling *= 0.8;
+		}
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		if(amount_of_people > 12.0)
@@ -557,6 +563,7 @@ methodmap Nemal < CClotBody
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
 
@@ -2066,6 +2073,17 @@ bool NemalSummonSilvester(Nemal npc)
 				CPrintToChatAll("{lightblue}Nemal{default}: New phone who this? Oh, you finally came!");
 			}
 		}
+		if(i_RaidGrantExtra[npc.index] >= 3)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
+			music.Time = 227;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "06 Flirt With Bomb");
+			strcopy(music.Artist, sizeof(music.Artist), "???");
+			Music_SetRaidMusic(music);
+		}
 		npc.m_iChanged_WalkCycle = 0;
 		return true;
 	}
@@ -2808,17 +2826,6 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 			
 		maxhealth -= (maxhealth / 4);
 
-		if(i_RaidGrantExtra[entity] >= 4)
-		{
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid_wave60.mp3");
-			music.Time = 227;
-			music.Volume = 2.0;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "06 Flirt With Bomb");
-			strcopy(music.Artist, sizeof(music.Artist), "???");
-			Music_SetRaidMusic(music);
-		}
 		int spawn_index;
 		switch(i_RaidGrantExtra[entity])
 		{

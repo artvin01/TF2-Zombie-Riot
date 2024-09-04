@@ -479,8 +479,12 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 	}
 	if(b_ThisEntityIgnored[victim])
 	{
-		damage = 0.0;
-		return true;
+		//True damage ignores this.
+		if(!(damagetype & (DMG_SLASH)))
+		{
+			damage = 0.0;
+			return true;
+		}
 	}
 	OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 	return false;

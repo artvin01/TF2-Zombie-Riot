@@ -1215,7 +1215,6 @@ float fl_HeadshotCooldown[MAXENTITIES];
 bool b_CantCollidie[MAXENTITIES];
 bool b_CollidesWithEachother[MAXENTITIES];
 bool b_CantCollidieAlly[MAXENTITIES];
-bool b_bBuildingIsPlaced[MAXENTITIES];
 bool b_XenoInfectedSpecialHurt[MAXENTITIES];
 float fl_XenoInfectedSpecialHurtTime[MAXENTITIES];
 bool b_DoGibThisNpc[MAXENTITIES];

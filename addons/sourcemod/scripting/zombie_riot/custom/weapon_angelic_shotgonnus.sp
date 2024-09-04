@@ -298,6 +298,7 @@ public void Angelic_Shotgun_Cooldown_Logic(int client, int weapon)
 
 void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 {
+	PrintToChatAll("test");
 	if(b_thisNpcIsARaid[enemy])
 		damage *= 1.10;
 		

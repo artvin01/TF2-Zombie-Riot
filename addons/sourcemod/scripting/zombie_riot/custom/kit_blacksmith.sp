@@ -759,10 +759,10 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 		case 45:
 			Format(buffer, sizeof(buffer), "%sBullets Per Shot", buffer);
 		
-		case 54:
+		case 54, 107:
 			Format(buffer, sizeof(buffer), "%sMovement Speed", buffer);
 		
-		case 57, 107:
+		case 57:
 			Format(buffer, sizeof(buffer), "%sHealth Regen", buffer);
 		
 		case 95:
