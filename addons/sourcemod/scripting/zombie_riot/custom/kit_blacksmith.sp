@@ -227,10 +227,12 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 	ApplyTempAttrib(weapon, 6, 0.25, 2.0);
 }
 
+/*
 int Blacksmith_Level(int client)
 {
 	return SmithLevel[client];
 }
+*/
 
 static int AnvilClickedOn[MAXTF2PLAYERS];
 static int ClickedWithWeapon[MAXTF2PLAYERS];

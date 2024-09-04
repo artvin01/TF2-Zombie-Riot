@@ -1395,7 +1395,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 #if defined ZR
 		if(healer != reciever && healer <= MaxClients)
+		{
 			Healing_done_in_total[healer] += HealingDoneInt;
+			AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+		}
 #endif
 //only apply heal event if its not a passive self heal
 		if(!(flag_extrarules & (HEAL_PASSIVE_NO_NOTIF)))

@@ -3872,4 +3872,12 @@
 	{
 		"en"	"''We added a bunch of extra little bits and pieces to the staff to augment its power.\nIt is ridiculously heavy now. Have fun carrying it around everywhere!''\nImprovements to all stats."
 	}
+	"Super-Uber-Saw Desc"
+	{
+		"en"	"Healing allies, reviving teammates, and hurting with the battle medigun charges the ubersaw.\nThe more its charged, the stronger and more enemeis it hits with 1 attack.\nScales with medigun upgrades.\nIf above 50%% Charge, deals 2x dmg vs raids."
+	}
+	"Super-Uber-Saw Desc 1"
+	{
+		"en"	"Increaced damage and 25%% more range."
+	}
 }
