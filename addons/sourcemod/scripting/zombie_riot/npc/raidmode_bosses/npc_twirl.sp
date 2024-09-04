@@ -1325,9 +1325,9 @@ static void lunar_Radiance(Twirl npc)
 
 	fl_lunar_timer[npc.index] = 0.0;
 	npc.m_bisWalking = false;
-	npc.SetPlaybackRate(0.8);
-	npc.SetCycle(0.01);
 	npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
+	npc.SetPlaybackRate(0.7);
+	npc.SetCycle(0.01);
 
 	i_lunar_ammo[npc.index] = 0;
 
@@ -1372,8 +1372,6 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 
 	return Plugin_Stop;
 }
-static int i_te_used;
-static float fl_ionuasedAt[MAXENTITIES];
 static void lunar_Radiance_Tick(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
@@ -1412,9 +1410,9 @@ static void lunar_Radiance_Tick(int iNPC)
 
 		if(npc.m_iChanged_WalkCycle != 99)
 		{
+			npc.AddActivityViaSequence("taunt_surgeons_squeezebox_outro");
 			npc.SetPlaybackRate(1.0);	
 			npc.SetCycle(0.01);
-			npc.AddActivityViaSequence("taunt_surgeons_squeezebox_outro");
 		}
 
 		for(int i= 0 ; i < 3 ; i ++)
@@ -1441,8 +1439,7 @@ static void lunar_Radiance_Tick(int iNPC)
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy_2[MAXENTITIES];
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false);
-	i_te_used = 0;
-	fl_ionuasedAt[npc.index] = GameTime;
+	int i_te_used = 0;
 	for(int i; i < sizeof(enemy_2); i++)
 	{
 		if(enemy_2[i])
@@ -1459,6 +1456,7 @@ static void lunar_Radiance_Tick(int iNPC)
 				pack_TE.WriteCell(EntIndexToEntRef(enemy_2[i]));
 				pack_TE.WriteFloat(dmg);
 				pack_TE.WriteFloat(Radius);
+				pack_TE.WriteFloat(GameTime);
 				RequestFrames(Twirl_DelayIons, DelayFrames, pack_TE);
 				//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
 			}
@@ -1485,9 +1483,10 @@ static void Twirl_DelayIons(DataPack pack)
 		delete pack;
 		return;
 	}
-	float time = (fl_ionuasedAt[npc.index] - GetGameTime()) + (npc.Anger ? 1.4 : 1.8);	//get the difference in time from how long this attack was delayed. so it matches up timing wise with other ions!
+	
 	float Radius = pack.ReadFloat();
 	float dmg = pack.ReadFloat();
+	float time = (pack.ReadFloat() - GetGameTime(npc.index)) + (npc.Anger ? 1.4 : 1.8);	//get the difference in time from how long this attack was delayed. so it matches up timing wise with other ions!
 	npc.Predictive_Ion(Target, time, Radius, dmg);
 	delete pack;
 }
