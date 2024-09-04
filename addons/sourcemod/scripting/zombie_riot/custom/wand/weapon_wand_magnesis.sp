@@ -37,15 +37,15 @@ static float Magnesis_Grab_ThrowThreshold_Special[3] = { 0.25, 0.2, 0.15 };		//T
 static float Magnesis_Grab_ThrowThreshold_Raid[3] = { 0.125, 0.1, 0.075 };		//Throw threshold for raids.
 static float Magnesis_Grab_Throw_WeightPenalty[3] = { 0.25, 0.15, 0.05 };		//Percentage to reduce throw strength per point of NPC weight above 1.
 static float Magnesis_Grab_ThrowDMG[3] = { 1250.0, 2000.0, 2500.0 };			//Damage dealt to grabbed enemies when they are thrown.
-static float Magnesis_Grab_ThrowDMG_Scale[3] = { 2000.0, 2500.0, 3000.0 };		//Maximum amount of damage to add to the throw damage. This scales in the same way as throw velocity.
+static float Magnesis_Grab_ThrowDMG_Scale[3] = { 2500.0, 4000.0, 5000.0 };		//Maximum amount of damage to add to the throw damage. This scales in the same way as throw velocity.
 static bool Magnesis_Grab_Specials[3] = { false, true, true };					//Can the Magnesis Staff grab bosses/mini-bosses on this tier?
 static bool Magnesis_Grab_Raids[3] = { false, true, true };						//Can the Magnesis Staff grab raids on this tier?
 static float Magnesis_StunTime_Normal[3] = { 4.0, 4.0, 4.0 };					//Duration to stun enemies when they are grabbed by the Magnesis Staff (0.0 = stun until dropped, below 0.0 = no stun at all).
 static float Magnesis_StunTime_Special[3] = { 2.5, 2.5, 2.5 };					//Stun duration for bosses/mini-bosses.
 static float Magnesis_StunTime_Raid[3] = { 1.66, 1.66, 1.66 };					//Stun duration for raids.
 static float Magnesis_Resistance[3] = { 0.75, 0.66, 0.5 };						//Amount to multiply damage taken by grabbed enemies.
-static float Magnesis_Grab_StrangleDMG[3] = { 0.0, 8.0, 12.0 };					//Damage dealt per 0.1s to enemies who are grabbed.
-static float Magnesis_Grab_Vulnerability[3] = { 0.1, 0.15, 0.2 };				//Amount to multiply all damage dealt to enemies who are grabbed.
+static float Magnesis_Grab_StrangleDMG[3] = { 0.0, 50.0, 75.0 };				//Damage dealt per 0.1s to enemies who are grabbed.
+static float Magnesis_Grab_Vulnerability[3] = { 1.1, 1.15, 1.2 };				//Amount to multiply all damage dealt to enemies who are grabbed.
 
 //NEWTONIAN KNUCKLES: Alternate PaP path which replaces the M1 with a far stronger explosive projectile with a slower rate of fire.
 //Replaces M2 with a shockwave that deals knockback. M1 projectile deals bonus damage if it airshots an enemy who is airborne because of the M2 attack.
@@ -850,10 +850,10 @@ static int Newtonian_ShockwaveTier;
 
 void Newtonian_TryShockwave(int client, int weapon, int tier)
 {
-	int mana_cost = RoundFloat(Newtonian_M2_Cost[tier]);
+    int mana_cost = RoundFloat(Newtonian_M2_Cost[tier]);
 	float remCD = Ability_Check_Cooldown(client, 2, weapon);
 
-	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
+    if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
@@ -883,7 +883,7 @@ void Newtonian_TryShockwave(int client, int weapon, int tier)
 		delay_hud[client] = 0.0;
 		Ability_Apply_Cooldown(client, 2, Newtonian_M2_Cooldown[tier], weapon);
 
-		EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
+        EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
 		EmitSoundToAll(SND_NEWTONIAN_M2_2, client, _, _, _, 0.8, 80);
 
 		float nextAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") + Newtonian_M2_AttackDelay[tier];
