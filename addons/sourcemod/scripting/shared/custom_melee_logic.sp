@@ -196,6 +196,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				enemies_hit_aoe = SpecterHowManyEnemiesHit(client, weapon);
 			}	
+			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
+			{
+				enemies_hit_aoe = SuperubersawHowManyEnemiesHit(client);
+			}	
 			case WEAPON_SAGA: //yes, if we miss, then we do other stuff.
 			{
 				SagaAttackBeforeSwing(client);
@@ -429,6 +433,11 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 			{
 				PlayCustomSoundAngelica(client);
 				return ZEROSOUND;
+			}
+			case WEAPON_SUPERUBERSAW:
+			{
+				if(PlayCustomSoundSuperubersaw(client))
+					return ZEROSOUND;
 			}
 		}
 #endif
@@ -739,6 +748,15 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		for (int i = 1; i < MAXENTITIES; i++)
 		{
 			i_EntitiesHitAoeSwing[i] = -1;
+		}
+
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
+			{
+				if(PlayOnceOnly) //It hit atleast 1 target!
+					SuperUbersaw_Post(client);
+			}
 		}
 
 		if(i_EntitiesHitAtOnceMax <= 1 && target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
