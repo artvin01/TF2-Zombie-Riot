@@ -762,50 +762,6 @@
 	{
 		"en"		"Combine Collos"
 	}
-	"Barracks Iberian Runner"
-	{
-		"en"		"Iberian Runner"
-	}
-	"Barracks Iberian Gunner"
-	{
-		"en"		"Iberian Gunner"
-	}
-	"Barracks Iberian Tanker"
-	{
-		"en"		"Iberian Tanker"
-	}	
-	"Barracks Iberian Rocketeer"
-	{
-		"en"		"Iberian Rocketeer"
-	}	
-	"Barracks Iberian Healer"
-	{
-		"en"		"Iberian Healer"
-	}
-	"Barracks Iberian Healtanker"
-	{
-		"en"		"Iberian Healtanker"
-	}	
-	"Barracks Iberia Boomstick"
-	{
-		"en"		"Iberian Boomsticker"
-	}
-	"Barracks Iberian Guards"
-	{
-		"en"		"Iberian Guards"
-	}
-	"Barracks Iberian Elite Gunner"
-	{
-		"en"		"Iberian Elite Gunner"
-	}	
-	"Barracks Iberia Headhunter"
-	{
-		"en"		"Iberian Headhunter"
-	}	
-	"Barracks Iberian Lighthouse Guardian"
-	{
-		"en"		"Guardian of the Lighthouse"
-	}	
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
