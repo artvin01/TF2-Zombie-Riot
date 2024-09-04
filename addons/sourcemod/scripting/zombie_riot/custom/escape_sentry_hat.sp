@@ -145,7 +145,6 @@ public Action Event_player_builtobject(Handle event, const char[] name, bool don
 //	int owner = GetClientOfUserId(id);
 	f_ClientInvul[entity] = GetGameTime() + 0.1; //Slight invulnerability
 	CClotBody npc = view_as<CClotBody>(entity);
-	npc.bBuildingIsPlaced = true;
 	i_BeingCarried[entity] = false;
 	return Plugin_Continue;
 }
@@ -478,8 +477,6 @@ stock void EquipDispenser(int client, int target, int building_variant)
 		SetEntProp(target, Prop_Send, "m_nSolidType", 0);
 		SetEntProp(target, Prop_Send, "m_usSolidFlags", 0x0004);
 		*/
-		CClotBody npc = view_as<CClotBody>(target);
-		npc.bBuildingIsPlaced = false;
 		
 		float flPos[3];
 		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);

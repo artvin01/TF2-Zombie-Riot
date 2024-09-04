@@ -1334,11 +1334,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return b_CantCollidieAlly[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_CantCollidieAlly[this.index] = TempValueForProperty; }
 	}
-	property bool bBuildingIsPlaced
-	{
-		public get()							{ return b_bBuildingIsPlaced[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_bBuildingIsPlaced[this.index] = TempValueForProperty; }
-	}
 	property bool bXenoInfectedSpecialHurt
 	{
 		public get()							{ return b_XenoInfectedSpecialHurt[this.index]; }
@@ -6128,6 +6123,15 @@ void TeleportNpcToRandomPlayer(int iNPC)
 }
 public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 {
+	if(f_NoUnstuckVariousReasons[iNPC] > GetGameTime())
+	{
+		if(f_UnstuckSuckMonitor[iNPC] < GetGameTime())
+		{
+			npc.GetLocomotionInterface().ClearStuckStatus("UN-STUCK");
+			f_UnstuckSuckMonitor[iNPC] = GetGameTime() + 1.0;
+		}
+		return;
+	}
 	if (!b_DoNotUnStuck[iNPC])
 	{
 		if(i_FailedTriesUnstuck[iNPC][0] == 0)
@@ -8281,7 +8285,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_CantCollidie[entity] = false;
 	b_CollidesWithEachother[entity] = false;
 	b_CantCollidieAlly[entity] = false;
-	b_bBuildingIsPlaced[entity] = false;
 	b_XenoInfectedSpecialHurt[entity] = false;
 	fl_XenoInfectedSpecialHurtTime[entity] = 0.0;
 	b_DoGibThisNpc[entity] = true;
@@ -8411,6 +8414,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
 	f_GoldTouchDebuff[entity] = 0.0;
+	f_StrangleDebuff[entity] = 0.0;
 	f_CudgelDebuff[entity] = 0.0;
 	f_DuelStatus[entity] = 0.0;
 	f_PotionShrinkEffect[entity] = 0.0;
@@ -9101,6 +9105,7 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_WidowsWineDebuff[enemy] = 0.0;
 	f_CrippleDebuff[enemy] = 0.0;
 	f_GoldTouchDebuff[enemy] = 0.0;
+	f_StrangleDebuff[enemy] = 0.0;
 	f_CudgelDebuff[enemy] = 0.0;
 	f_MaimDebuff[enemy] = 0.0;
 	f_PotionShrinkEffect[enemy] = 0.0;
