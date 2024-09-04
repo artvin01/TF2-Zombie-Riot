@@ -163,7 +163,7 @@ methodmap Storm_Weaver < CClotBody
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidAllowsBuildings = false;
+			RaidAllowsBuildings = true;
 
 			RaidModeTime = FAR_FUTURE;
 

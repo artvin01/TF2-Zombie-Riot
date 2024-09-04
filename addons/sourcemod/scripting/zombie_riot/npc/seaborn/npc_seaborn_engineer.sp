@@ -145,7 +145,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 	{
 		if(IsValidEntity(npc.m_iTargetAlly) && i_IsABuilding[npc.m_iTargetAlly])
 		{
-			if(!npc.m_iTarget && b_bBuildingIsPlaced[npc.m_iTargetAlly])
+			if(!npc.m_iTarget)
 			{
 				KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
 
@@ -162,7 +162,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				}
 				else
 				{
-					SetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair", repair - 30);
+					SetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair", repair - 3);
 				}
 
 				npc.m_flNextThinkTime = gameTime + 0.4;
@@ -194,6 +194,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				//CClotBody building = view_as<CClotBody>(entity);
 				if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
 				{
+					PrintToChatAll("test4");
 					b_ThisEntityIgnored[entity] = true;
 
 					if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])

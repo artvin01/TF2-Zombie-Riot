@@ -479,8 +479,12 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 	}
 	if(b_ThisEntityIgnored[victim])
 	{
-		damage = 0.0;
-		return true;
+		//True damage ignores this.
+		if(!(damagetype & (DMG_SLASH)))
+		{
+			damage = 0.0;
+			return true;
+		}
 	}
 	OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 	return false;
@@ -1030,6 +1034,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_WRATHFUL_BLADE:
 		{
 			return WrathfulBlade_OnNPCDamaged(victim, attacker, weapon, damage, inflictor);
+		}
+		case WEAPON_SUPERUBERSAW:
+		{
+			Superubersaw_OnTakeDamage(victim, attacker, damage);
 		}
 	}
 #endif
@@ -1808,7 +1816,7 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	}
 	if (f_StrangleDebuff[victim] > GameTime)
 	{
-		damage = Magnesis_StrangleDebuffMultiplier(victim, damage);
+		damage += Magnesis_StrangleDebuffMultiplier(victim, basedamage);
 	}
 
 	if(f_CudgelDebuff[victim] > GameTime)

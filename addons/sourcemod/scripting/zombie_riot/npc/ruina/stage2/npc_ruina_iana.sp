@@ -335,7 +335,7 @@ static void ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);	//10% resistances
+		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.7);	//30% resistances
 		Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);	//5% dmg bonus
 		Master_Apply_Shield_Buff(npc.index, 250.0, 0.7);	//30% block shield
 

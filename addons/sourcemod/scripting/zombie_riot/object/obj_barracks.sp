@@ -379,6 +379,8 @@ enum
 	Thorns = 1,
 	Alternative = 2,
 	Combine = 3,
+	Iberia_Thorns = 4,
+	Iberia_Thornless = 5,
 	Civ_number_2
 }
 
@@ -422,6 +424,7 @@ static const char SummonerBaseNPC[][] =
 	"npc_barrack_villager"
 };
 
+
 static int SummonerBase[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
@@ -441,6 +444,52 @@ static int SummonerBase[][] =
 
 	{ 0, 210, 50, 20, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	{ 0, 100, 400, 15, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	
+	{ 0, 100, 500, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
+};
+
+//THIS IS THORNS ONLY.
+static const char SummonerThornsNPC[][] =
+{
+	"npc_barrack_militia",
+	
+	"npc_barrack_archer",
+	"npc_barrack_man_at_arms",
+	
+	"npc_barrack_crossbow",
+	"npc_barrack_swordsman",
+	
+	"npc_barrack_arbelast",
+	"npc_barrack_twohanded",
+	
+	"npc_barrack_longbow",
+	"npc_barrack_champion",
+	
+	"npc_barrack_thorns",	
+	
+	"npc_barrack_teutonic_knight",
+	"npc_barrack_villager"
+};
+
+static int SummonerThorns[][] =
+{
+	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
+	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+
+	{ 0, 40, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
+	{ 0, 10, 35, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+
+	{ 0, 70, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 20, 60, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
+
+	{ 0, 190, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 50, 150, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+
+	{ 0, 380, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 100, 300, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+
+	{ 0, 750, 500, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	
 	{ 0, 100, 500, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
@@ -495,50 +544,96 @@ static int SummonerCombine[][] =
 	{ 0, 750, 750, 	0, 	25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 
-static const char SummonerThornsNPC[][] =
+static const char SummonerIberiaNPC[][] =
 {
-	"npc_barrack_militia",
+	"npc_barrack_runner",
 	
-	"npc_barrack_archer",
-	"npc_barrack_man_at_arms",
+	"npc_barrack_gunner",
+	"npc_barrack_tanker",
 	
-	"npc_barrack_crossbow",
-	"npc_barrack_swordsman",
+	"npc_barrack_rocketeer",
+	"npc_barrack_healer",
 	
-	"npc_barrack_arbelast",
-	"npc_barrack_twohanded",
+	"npc_barrack_boomstick",
+	"npc_barrack_healtanker",
 	
-	"npc_barrack_longbow",
-	"npc_barrack_champion",
+	"npc_barrack_elite_gunner",
+	"npc_barrack_guards",
 	
-	"npc_barrack_thorns",
+	"npc_barrack_thorns",	
+	"npc_barrack_headhunter",
 	
-	"npc_barrack_teutonic_knight",
-	"npc_barrack_teutonic_knight",
+	"npc_barrack_lighthouse_guardian",
 	"npc_barrack_villager"
 };
 
-static int SummonerThorns[][] =
+static int SummonerIberiaComplete[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
-	{ 0, 5, 30, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 5, 15, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
 
 	{ 0, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
-	{ 0, 10, 50, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 10, 30, 0, 5, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
 
 	{ 0, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
-	{ 0, 20, 90, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 10, 45, 0, 6, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
 
 	{ 0, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES},	// Construction Worker
-	{ 0, 50, 210, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 20, 100, 0, 6, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 
 	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0, 100, 400, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 50, 200, 0, 7, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
-	{ 0, 1000, 1000, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 750, 500, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 100, 350, 	5, 8, 16, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	
+	{ 0, 900, 900, 	30, 10, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }	// Construction Expert
+};
 
-	{ 0, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 9999, 99999, 	9999, 9999, 9999, 9999, 0, 0 },	// Fillter
+
+static const char SummonerIberiaIncompleteNPC[][] =
+{
+	"npc_barrack_runner",
+	
+	"npc_barrack_gunner",
+	"npc_barrack_tanker",
+	
+	"npc_barrack_rocketeer",
+	"npc_barrack_healer",
+	
+	"npc_barrack_boomstick",
+	"npc_barrack_healtanker",
+	
+	"npc_barrack_elite_gunner",
+	"npc_barrack_guards",
+	
+	"npc_barrack_headhunter",
+	
+	"npc_barrack_lighthouse_guardian",
+	"npc_barrack_villager"
+};
+
+static int SummonerIberiaInComplete[][] =
+{
+	// NPC Index, Wood, Food, Gold, Time, Level
+	{ 0, 5, 15, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+
+	{ 0, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
+	{ 0, 10, 30, 0, 5, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+
+	{ 0, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 10, 45, 0, 6, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+
+	{ 0, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES},	// Construction Worker
+	{ 0, 20, 100, 0, 6, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+
+	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 50, 200, 0, 7, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+
+	{ 0, 100, 350, 	5, 8, 16, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	
+	{ 0, 900, 900, 	30, 10, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }	// Construction Expert
 };
 
@@ -643,9 +738,11 @@ static const int BarracksUpgrades[][] =
 static const char CivName[][] =		
 {		
 	"Standard Barracks",
-	"Iberia Barracks",
+	"Thorns Assitance",
 	"Blitzkrieg's Army",
-	"Guln's Companions"
+	"Guln's Companions",
+	"Iberia and Expidonsan's",
+	"Iberia and Expidonsan's",
 };
 
 static void SetupNPCIndexes()
@@ -669,12 +766,28 @@ static void SetupNPCIndexes()
 	{
 		SummonerAlternative[i][NPCIndex] = NPC_GetByPlugin(SummonerAlternativeNPC[i]);
 	}
+	
+	for(int i; i < sizeof(SummonerIberiaComplete); i++)
+	{
+		SummonerIberiaComplete[i][NPCIndex] = NPC_GetByPlugin(SummonerIberiaNPC[i]);
+	}
+	
+	for(int i; i < sizeof(SummonerIberiaInComplete); i++)
+	{
+		SummonerIberiaInComplete[i][NPCIndex] = NPC_GetByPlugin(SummonerIberiaIncompleteNPC[i]);
+	}
 }
 
 static int GetUnitCount(int civ)
 {
 	switch(civ)
 	{
+		case Iberia_Thornless:
+			return sizeof(SummonerIberiaInComplete);
+			
+		case Iberia_Thorns:
+			return sizeof(SummonerIberiaComplete);
+
 		case Thorns:
 			return sizeof(SummonerThorns);
 		
@@ -693,6 +806,12 @@ static int GetSData(int civ, int unit, int index)
 {
 	switch(civ)
 	{
+		case Iberia_Thornless:
+			return SummonerIberiaInComplete[unit][index];
+			
+		case Iberia_Thorns:
+			return SummonerIberiaComplete[unit][index];
+
 		case Thorns:
 			return SummonerThorns[unit][index];
 
@@ -744,6 +863,19 @@ public void Building_Summoner(int client, int entity)
 	CommandMode[client] = 0;
 	TrainingQueue[client] = -1;
 	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
+
+	if(CivType[client] == Default)
+	{
+		CivType[client] = Store_HasNamedItem(client, "Iberia and Expidonsan's Help") ? Iberia_Thornless : Default;
+		if(CivType[client] != Default)
+		{
+			//looks like they have last hope equipped! Do they also possess iberia?
+			if(Items_HasNamedItem(client, "Iberia's Last Hope"))
+			{
+				CivType[client] = Iberia_Thorns;
+			}
+		}
+	}
 
 	if(CivType[client] == Default)
 		CivType[client] = Store_HasNamedItem(client, "Blitzkrieg's Army") ? Alternative : Default;

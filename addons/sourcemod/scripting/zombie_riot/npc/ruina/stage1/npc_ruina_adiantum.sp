@@ -284,10 +284,8 @@ static void ClotThink(int iNPC)
 			
 		if(npc.m_flNextRangedBarrage_Spam < GameTime)
 		{
-
-			Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);
+			Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.75);	//25% dmg resist
 			Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);
-				
 			Adiantum_Summon_Ion_Barrage(npc.index, vecTarget);
 			npc.m_flNextRangedBarrage_Spam = GameTime + 20.0;
 		}
