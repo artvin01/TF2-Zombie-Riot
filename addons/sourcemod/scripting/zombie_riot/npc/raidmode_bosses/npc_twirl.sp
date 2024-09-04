@@ -2088,6 +2088,9 @@ static void Fractal_Gram(Twirl npc, int Target)
 	if(npc.m_flNextRangedBarrage_Singular > GameTime)
 		return;
 
+	if(fl_ruina_battery_timeout[npc.index] > GameTime)
+		return;
+
 	int amt = i_Fractal_Gram_Amt(npc);
 
 	if(i_barrage_ammo[npc.index] > amt)
@@ -2627,6 +2630,9 @@ static void Magia_Overflow(Twirl npc)
 	if(fl_magia_overflow_recharge[npc.index] > GameTime)
 		return;
 
+	if(fl_ruina_battery_timeout[npc.index] > GameTime)
+		return;
+
 	if(!Retreat(npc, true))
 		return;
 
@@ -2659,6 +2665,9 @@ static void Magia_Overflow(Twirl npc)
 
 	npc.m_bInKame = true;
 
+	npc.m_flRangedArmor = 0.9;
+	npc.m_flMeleeArmor = 1.3;
+
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 }
@@ -2677,6 +2686,8 @@ static Action Magia_Overflow_Tick(int iNPC)
 		npc.StartPathing();
 
 		npc.m_bInKame = false;
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.5;
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
