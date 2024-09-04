@@ -1960,26 +1960,23 @@ static void Astria_Teleport_Effect(char type[255], float duration = 0.0, float s
 		pack.WriteCell(duration);
 	}
 }
-public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
+void Master_Apply_Defense_Buff(int client, float range, float time, float power)
 {
 	Apply_Master_Buff(client, RUINA_DEFENSE_BUFF, range, time, power);
 }
-
-public void Master_Apply_Speed_Buff(int client, float range, float time, float power)
+void Master_Apply_Speed_Buff(int client, float range, float time, float power)
 {
 	Apply_Master_Buff(client, RUINA_SPEED_BUFF, range, time, power);
 }
-
-public void Master_Apply_Attack_Buff(int client, float range, float time, float power)
+void Master_Apply_Attack_Buff(int client, float range, float time, float power)
 {
 	Apply_Master_Buff(client, RUINA_ATTACK_BUFF, range, time, power);
 }
-
 void Master_Apply_Shield_Buff(int client, float range, float power, bool override = false)
 {
 	Apply_Master_Buff(client, RUINA_SHIELD_BUFF, range, 0.0, power, override);
 }
-public void Master_Apply_Battery_Buff(int client, float range, float power)
+void Master_Apply_Battery_Buff(int client, float range, float power)
 {
 	Apply_Master_Buff(client, RUINA_BATTERY_BUFF, range, 0.0, power);
 }
