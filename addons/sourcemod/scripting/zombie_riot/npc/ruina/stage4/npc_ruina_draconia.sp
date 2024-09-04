@@ -278,6 +278,8 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
+
+		Master_Apply_Defense_Buff(npc.index, 75.0, 5.0, 0.9);	//10% dmg resist
 			
 		if(flDistanceToTarget < 100000)
 		{

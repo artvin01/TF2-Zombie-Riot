@@ -446,6 +446,8 @@ static void ClotThink(int iNPC)
 					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 3.0);
 				else
 					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 1.75);
+
+				Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.9);	//10% dmg resist
 			}
 		}
 		else
