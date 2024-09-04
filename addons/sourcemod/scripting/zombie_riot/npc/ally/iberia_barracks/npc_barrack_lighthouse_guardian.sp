@@ -208,18 +208,13 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_batarm/bak_batarm_medic.mdl");
-		SetVariantString("2.5");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_heavy_defender/jul13_heavy_defender.mdl", "", skin);
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/fall2013_kyoto_rider/fall2013_kyoto_rider.mdl", "", skin);
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/xms2013_soldier_marshal_hat/xms2013_soldier_marshal_hat.mdl", "", skin);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_heavy_defender/jul13_heavy_defender.mdl", "", skin);
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/xms2013_soldier_marshal_hat/xms2013_soldier_marshal_hat.mdl", "", skin);
 		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl", "" , skin);
-		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_medic.mdl", "" , skin);
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_medic.mdl", "" , skin);
 		SetVariantString("0.9");
-		AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
@@ -229,8 +224,6 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		SetEntityRenderColor(npc.m_iWearable3, 0, 200, 200, 255);
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 100, 100, 100, 255);
-		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable8, 100, 100, 100, 255);
 		return npc;
 	}
 }

@@ -120,7 +120,7 @@ methodmap Barrack_Iberia_Rocketeer < BarrackBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr18_veterans_attire/spr18_veterans_attire.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2023_shortness_breath/hwn2023_shortness_breath.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2023_shortness_breath/hwn2023_shortness_breath.mdl");
 		
 		return npc;
 	}

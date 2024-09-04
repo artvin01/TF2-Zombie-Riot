@@ -135,9 +135,8 @@ methodmap  Barracks_Iberia_Healtanker < BarrackBody
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/heavy_wolf_chest.mdl", "" , skin);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop_partner/player/items/heavy/dex_sarifarm/dex_sarifarm.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/jogon/jogon_heavy.mdl");
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_war_helmet_s1/sbox2014_war_helmet_s1.mdl");
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/heavy/eotl_sheavyshirt/eotl_sheavyshirt.mdl", "" , skin);
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_war_helmet_s1/sbox2014_war_helmet_s1.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/eotl_sheavyshirt/eotl_sheavyshirt.mdl", "" , skin);
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 120, 120, 255, 255);

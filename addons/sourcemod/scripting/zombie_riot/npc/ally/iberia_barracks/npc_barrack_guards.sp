@@ -140,8 +140,7 @@ methodmap  Barracks_Iberia_Guards < BarrackBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/spr17_blast_defense/spr17_blast_defense.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/dec17_blast_blocker/dec17_blast_blocker.mdl");
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2023_warlocks_warcloak/hwn2023_warlocks_warcloak.mdl", "", skin);
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_stunt_suit_style2/hwn2023_stunt_suit_style2.mdl", "" , skin);
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_stunt_suit_style2/hwn2023_stunt_suit_style2.mdl", "" , skin);
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 120, 120, 255, 255);
