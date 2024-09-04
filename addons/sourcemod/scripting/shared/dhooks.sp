@@ -229,6 +229,13 @@ public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
 			int healTarget = GetEntPropEnt(active, Prop_Send, "m_hHealingTarget");
 			if(healTarget > 0 && healTarget <= MaxClients)
 			{
+				SavedClassForClient = GetEntProp(healTarget, Prop_Send, "m_iClass");
+				if(SavedClassForClient != view_as<int>(TFClass_Scout))
+				{
+					SavedClassForClient = -1;
+					return MRES_Ignored;
+				}
+
 				ClientThatWasChanged = healTarget;
 				SavedClassForClient = GetEntProp(healTarget, Prop_Send, "m_iClass");
 				TF2_SetPlayerClass_ZR(healTarget, TFClass_Medic, false, false);
