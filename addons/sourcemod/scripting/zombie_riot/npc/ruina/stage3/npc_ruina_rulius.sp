@@ -519,7 +519,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		int Max_Health = ReturnEntityMaxHealth(npc.index);
 		fl_ruina_battery_timer[npc.index]=GameTime+5.0;
-		int healing = RoundToFloor(i_damage_taken[npc.index]*0.5);
+		int healing = RoundToFloor(i_damage_taken[npc.index]*0.2);
 
 		if(healing > RoundToFloor(Max_Health*0.4))
 			healing = RoundToFloor(Max_Health*0.4);
