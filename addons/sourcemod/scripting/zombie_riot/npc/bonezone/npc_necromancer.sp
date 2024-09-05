@@ -290,6 +290,7 @@ methodmap NecromancerBones < CClotBody
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(NecromancerBones_SetBuffed);
+		npc.m_bisWalking = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(NecromancerBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(NecromancerBones_OnTakeDamage);

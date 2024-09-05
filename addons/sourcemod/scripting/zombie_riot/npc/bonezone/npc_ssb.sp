@@ -4062,6 +4062,8 @@ methodmap SupremeSpookmasterBones < CClotBody
 		npc.GetAttachment("righteye", rightEye, junk);
 		npc.GetAttachment("lefteye", leftEye, junk);
 
+		npc.m_bisWalking = false;
+
 		npc.m_flBoneZoneNumSummons = 0.0;
 
 		switch (SSB_WavePhase)

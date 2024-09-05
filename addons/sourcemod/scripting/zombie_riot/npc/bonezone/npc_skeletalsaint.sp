@@ -314,6 +314,7 @@ methodmap SaintBones < CClotBody
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		Is_a_Medic[npc.index] = true;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(SaintBones_SetBuffed);
+		npc.m_bisWalking = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(SaintBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(SaintBones_OnTakeDamage);

@@ -314,12 +314,14 @@ methodmap BuccaneerBones < CClotBody
 		
 		running[npc.index] = false;
 		
-		/*if (buffed)
+		if (buffed)
 		{
-			TE_SetupParticleEffect(BONES_BUCCANEER_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
-			TE_WriteNum("m_bControlPoint1", npc.index);	
-			TE_SendToAll();	
-		}*/
+			npc.m_bisWalking = false;
+		}
+		else
+		{
+			npc.m_bisWalking = true;
+		}
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -372,6 +374,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_BUFFED_SKIN);
 		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
 		SDKHook(npc.index, SDKHook_Touch, Cannon_RunOver);
+		npc.m_bisWalking = false;
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -388,6 +391,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		buccaneer_BuffedState[npc.index] = BUCCANEER_IDLE;
 		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
 		SDKUnhook(npc.index, SDKHook_Touch, Cannon_RunOver);
+		npc.m_bisWalking = true;
 	}
 	
 	running[npc.index] = false;
