@@ -182,9 +182,10 @@ static void ClotThink(int iNPC)
 				if(entity != -1)
 				{
 					i_ChaosArrowAmount[entity] = 100;
+					//max duration of 4 seconds beacuse of simply how fast they fire
+					CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					SetEntProp(entity, Prop_Send, "m_bCritical", true);
 				}
-				//max duration of 4 seconds beacuse of simply how fast they fire
-				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 
 				npc.m_iOverlordComboAttack--;
 

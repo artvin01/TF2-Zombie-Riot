@@ -3234,7 +3234,8 @@ int inflictor = 0)
 				//we apply 50% more range, reason being is that this goes for collision boxes, so it can be abit off
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
-				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+				float ExplosionRangeFalloff = Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+				damage_1 *= ExplosionRangeFalloff; //this is 1000, we use squared for optimisations sake
 
 				damage_1 *= damage_reduction;
 				
@@ -3244,8 +3245,8 @@ int inflictor = 0)
 
 				if(damage_1 != 0.0)
 					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
-					
-				Projectile_DealElementalDamage(ClosestTarget, entityToEvaluateFrom);
+
+				Projectile_DealElementalDamage(ClosestTarget, EntityToForward, ExplosionRangeFalloff);
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
