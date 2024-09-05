@@ -430,6 +430,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 			if(IsValidEntity(weapon))
 				NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 		}
+		BarracksUnitAttack_NPCTakeDamagePost(victim, inflictor, damage, damagetype);
 	}
 #endif
 

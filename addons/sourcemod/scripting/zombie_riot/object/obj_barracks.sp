@@ -851,13 +851,21 @@ public void Building_Summoner(int client, int entity)
 	BarracksCheckItems(client);
 	WoodAmount[client] *= 0.75;
 	FoodAmount[client] *= 0.75;
-//	GoldAmount[client] *= 0.75;
+	if(WoodAmount[client] < 50.0)
+		WoodAmount[client] = 50.0;
+	if(FoodAmount[client] < 50.0)
+		FoodAmount[client] = 50.0;
+		
 	if(CvarInfiniteCash.BoolValue)
 	{
 		WoodAmount[client] = 999999.0;
 		FoodAmount[client] = 999999.0;
 		GoldAmount[client] = 99999.0;
 	}
+	SetGlobalTransTarget(client);
+
+	PrintToChat(client, "%t", "Barracks Desc Extra");
+	PrintToChat(client, "%t", "Barracks Desc Extra 2");
 	TrainingIn[client] = 0.0;
 	ResearchIn[client] = 0.0;
 	CommandMode[client] = 0;
@@ -1352,7 +1360,7 @@ void CheckSummonerUpgrades(int client)
 	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
 	WildingenBuilder2[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components FREEPLAY"));
 }
-
+#define MAXRESOURCECAP 2000.0
 void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0, bool ignoresetup = false)
 {
 	bool AllowResoruceGen = false;
@@ -1373,13 +1381,14 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 
 	if(AllowResoruceGen)
 	{
-		float SupplyRateCalc = SupplyRate[client] / (LastMann ? 10.0 : 20.0);
+		float SupplyRateCalc = SupplyRate[client] / (10.0);
 
+		float SupplyRateCalcBase = SupplyRateCalc;
 		SupplyRateCalc *= multi;
 
 		SupplyRateCalc *= ResourceGenMulti(client);
-		WoodAmount[client] += SupplyRateCalc * 1.15;
-		FoodAmount[client] += SupplyRateCalc * 1.40;
+		WoodAmount[client] += SupplyRateCalc * (1.15 * 0.5);
+		FoodAmount[client] += SupplyRateCalc * (1.40 * 0.5);
 
 		if(MedievalUnlock[client] || GoldGenMulti != 1.0)
 		{
@@ -1389,6 +1398,11 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 			GoldSupplyRate *= ResourceGenMulti(client, true, true);
 			GoldAmount[client] += GoldSupplyRate;
 		}
+		if(WoodAmount[client] >= MAXRESOURCECAP * SupplyRateCalcBase)
+			WoodAmount[client] = MAXRESOURCECAP * SupplyRateCalcBase;
+
+		if(FoodAmount[client] >= MAXRESOURCECAP * SupplyRateCalcBase)
+			FoodAmount[client] = MAXRESOURCECAP * SupplyRateCalcBase;
 	}
 	if(f_VillageSavingResources[client] < GetGameTime())
 	{
@@ -2161,4 +2175,45 @@ int ActiveCurrentNpcsBarracksTotal()
 		}
 	}
 	return CurrentAlive;
+}
+
+
+
+
+
+void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage, int damagetype)
+{
+	BarrackBody npc = view_as<BarrackBody>(attacker);
+	int owner = GetClientOfUserId(npc.OwnerUserId);
+	if(IsValidClient(owner))
+	{
+		int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[owner]);
+		if(!IsValidEntity(entity))
+			return;
+
+		static char plugin[64];
+		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+		if(StrContains(plugin, "obj_barracks", false) != -1)
+		{
+
+		}
+		else
+		{
+			return;
+		}
+		//make sure they have a barracks
+
+		int MaxHealth = ReturnEntityMaxHealth(victim);
+		if(damage >= float(MaxHealth))
+			damage = float(MaxHealth);
+			
+		float gain = b_thisNpcIsARaid[victim] ? (50.0 * MultiGlobalHighHealthBoss) : (b_thisNpcIsABoss[victim] ? (10.0 * MultiGlobalHealth) : (b_IsGiant[victim] ? 2.5 : 1.0));
+		gain *= 2.5;
+		if(damagetype & DMG_CLUB)
+		{
+			gain *= 6.0;
+		}
+		gain = damage * gain / float(MaxHealth);
+		SummonerRenerateResources(owner, gain, 0.0);
+	}
 }

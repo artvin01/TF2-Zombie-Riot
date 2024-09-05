@@ -294,7 +294,7 @@ static float MultiScale(int attrib)
 
 void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 {
-	if(Merchant_IsAMerchant(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
+	if(attacker <= MaxClients && Merchant_IsAMerchant(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
 	{
 		int random = RandomSeed + GetEntProp(victim, Prop_Data, "m_nModelIndex");
 		int aspect = random % A_Water;
