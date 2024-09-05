@@ -225,6 +225,23 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 }
 
+void Projectile_DealElementalDamage(int victim, int attacker)
+{
+	if(i_ChaosArrowAmount[attacker] > 0)
+	{
+		Elemental_AddChaosDamage(victim, attacker, i_ChaosArrowAmount[attacker]);
+	}
+	if(i_VoidArrowAmount[attacker] > 0)
+	{
+		Elemental_AddVoidDamage(victim, attacker, i_VoidArrowAmount[attacker]);
+	}
+	if(i_NervousImpairmentArrowAmount[attacker] > 0)
+	{
+#if defined ZR
+		Elemental_AddNervousDamage(victim, attacker, i_NervousImpairmentArrowAmount[attacker]);
+#endif
+	}	
+}
 void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);

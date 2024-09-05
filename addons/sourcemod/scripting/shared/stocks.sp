@@ -3241,8 +3241,11 @@ int inflictor = 0)
 				float v[3];
 				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
 				//dont do damage ticks if its actually 0 dmg.
+
 				if(damage_1 != 0.0)
 					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
+					
+				Projectile_DealElementalDamage(ClosestTarget, entityToEvaluateFrom);
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{

@@ -8483,22 +8483,7 @@ public void ArrowStartTouch(int arrow, int entity)
 			inflictor = owner;
 
 		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
-		if(i_NervousImpairmentArrowAmount[arrow] > 0)
-		{
-#if defined ZR
-			Elemental_AddNervousDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
-#endif
-		}
-#if defined ZR
-		if(i_ChaosArrowAmount[arrow] > 0)
-		{
-			Elemental_AddChaosDamage(entity, owner, i_ChaosArrowAmount[arrow]);
-		}
-		if(i_VoidArrowAmount[arrow] > 0)
-		{
-			Elemental_AddVoidDamage(entity, owner, i_VoidArrowAmount[arrow]);
-		}
-#endif
+		Projectile_DealElementalDamage(entity, arrow);
 
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))
