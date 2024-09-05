@@ -5,7 +5,7 @@
 
 //STANDARD M1 PROJECTILE: The Magnesis Staff's primary fire is nothing special, just a generic projectile.
 static int Magnesis_M1_NumProjectiles[3] = { 6, 8, 9 };				//Number of projectiles fired.
-static float Magnesis_M1_DMG[3] = { 160.0, 220.0, 300.0 };          //M1 projectile damage.
+static float Magnesis_M1_DMG[3] = { 160.0, 260.0, 450.0 };          //M1 projectile damage.
 static float Magnesis_M1_Lifespan[3] = { 0.3, 0.3, 0.3 };          	//M1 projectile lifespan.
 static float Magnesis_M1_Velocity[3] = { 1400.0, 1600.0, 1800.0 };  //M1 projectile velocity.
 static float Magnesis_M1_Spread[3] = { 6.0, 5.0, 4.0 };				//M1 projectile deviation.
