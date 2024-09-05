@@ -269,7 +269,7 @@ methodmap PirateBones < CClotBody
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(PirateBones_SetBuffed);
-		npc.m_bisWalking = true;
+		npc.m_bisWalking = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(PirateBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(PirateBones_OnTakeDamage);
