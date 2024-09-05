@@ -10,7 +10,10 @@ static float BUCCANEER_NATURAL_BUFF_CHANCE = 0.05;	//Percentage chance for non-b
 static float BUCCANEER_NATURAL_BUFF_LEVEL_MODIFIER = 0.15;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float BUCCANEER_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
-#define BONES_BUCCANEER_HP				"1000"
+static int BONES_BUCCANEER_WEIGHT = 1;
+static int BONES_BUCCANEER_WEIGHT_BUFFED = 999;
+
+#define BONES_BUCCANEER_HP					"1000"
 #define BONES_BUCCANEER_HP_BUFFED			"30000"
 
 //BRIGADIER BONES (NON-BUFFED VARIANT):
@@ -313,7 +316,7 @@ methodmap BuccaneerBones < CClotBody
 		Buccaneer_GiveCosmetics(npc, buffed);
 		
 		running[npc.index] = false;
-		
+
 		if (buffed)
 		{
 			npc.m_bisWalking = false;
@@ -375,6 +378,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
 		SDKHook(npc.index, SDKHook_Touch, Cannon_RunOver);
 		npc.m_bisWalking = false;
+		i_NpcWeight[index] = BONES_BUCCANEER_WEIGHT;
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -392,6 +396,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
 		SDKUnhook(npc.index, SDKHook_Touch, Cannon_RunOver);
 		npc.m_bisWalking = true;
+		i_NpcWeight[index] = BONES_BUCCANEER_WEIGHT_BUFFED;
 	}
 	
 	running[npc.index] = false;

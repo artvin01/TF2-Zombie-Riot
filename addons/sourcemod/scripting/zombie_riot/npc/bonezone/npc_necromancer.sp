@@ -591,6 +591,7 @@ public void Necromancer_AssignSummonStats(int entity, NecromancerBones npc, floa
 	summoned.m_iBoneZoneSummoner = npc.index;
 	summoned.m_flBoneZoneSummonValue = value;
 	npc.m_flBoneZoneNumSummons += value;
+	NpcAddedToZombiesLeftCurrently(entity, true);
 }
 
 public void NecromancerBones_ClotThink(int iNPC)

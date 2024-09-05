@@ -553,6 +553,7 @@ public Action BigBones_Burst(Handle burst, int ref)
 		if (IsValidEntity(minion))
 		{
 			view_as<CClotBody>(minion).SetVelocity(vel);
+			NpcAddedToZombiesLeftCurrently(minion, true);
 		}
 	}
 

@@ -2799,6 +2799,7 @@ methodmap Summoner_Minion __nullable__
 			summoned.m_iBoneZoneSummoner = ssb.index;
 			summoned.m_flBoneZoneSummonValue = this.Value;
 			ssb.m_flBoneZoneNumSummons += this.Value;
+			NpcAddedToZombiesLeftCurrently(entity, true);
 		}
 
 		this.SummonFunction = INVALID_FUNCTION;
@@ -3053,6 +3054,7 @@ public void Spin_Begin(DataPack pack)
 		SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(user);
 
 		ssb.Unpause();
+		b_NoKnockbackFromSources[ssb.index] = true;
 
 		SSB_Movement_Data_ReadValues(ssb);
 		ssb.m_flSpeed = Spin_Speed[phase];
@@ -3135,6 +3137,8 @@ public void Spin_Logic(DataPack pack)
 
 			CreateTimer(Spin_StunTime[SSB_WavePhase], Spin_StopStun, EntIndexToEntRef(ssb.index), TIMER_FLAG_NO_MAPCHANGE);
 		}
+
+		b_NoKnockbackFromSources[ssb.index] = false;
 
 		return;
 	}
@@ -3647,6 +3651,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		SSB_Paused[this.index] = true;
 		this.StopPathing();
 		this.m_bPathing = false;
+		b_NoKnockbackFromSources[this.index] = true;
 		/*SSB_Movement_Data_ReadValues(this);
 		this.m_flSpeed = 0.0;
 		this.GetBaseNPC().flFrictionSideways = 999999.0;
@@ -3658,6 +3663,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 	{
 		//SSB_Movement_Data_RestoreFromValues(this);
 		SSB_Paused[this.index] = false;
+		b_NoKnockbackFromSources[this.index] = false;
 		this.StartPathing();
 		this.m_bPathing = true;
 	}
