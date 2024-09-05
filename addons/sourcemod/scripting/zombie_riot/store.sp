@@ -3139,28 +3139,31 @@ static void MenuPage(int client, int section)
 					ItemCost(client, item, info.Cost);
 					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost - npcwallet);
 					
-					if(Rogue_UnlockStore())
+					if(!item.BoughtBefore[client])
 					{
-						if(item.NPCSeller_First)
+						if(Rogue_UnlockStore())
 						{
-							FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
+							if(item.NPCSeller_First)
+							{
+								FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
+							}	
+							else if(item.NPCSeller_WaveStart > 0)
+							{
+								FormatEx(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$}", item.NPCSeller_WaveStart);
+							}
+						}
+						else if(item.NPCSeller_First)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
 						}	
 						else if(item.NPCSeller_WaveStart > 0)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$}", item.NPCSeller_WaveStart);
+							FormatEx(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$$}", item.NPCSeller_WaveStart);
+						}	
+						else if(item.NPCSeller)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
 						}
-					}
-					else if(item.NPCSeller_First)
-					{
-						FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
-					}	
-					else if(item.NPCSeller_WaveStart > 0)
-					{
-						FormatEx(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$$}", item.NPCSeller_WaveStart);
-					}	
-					else if(item.NPCSeller)
-					{
-						FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
 					}
 					
 					Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
@@ -3250,28 +3253,32 @@ static void MenuPage(int client, int section)
 				
 				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 
-				if(Rogue_UnlockStore())
+				//Dont show discount if bought before.
+				if(!item.BoughtBefore[client])
 				{
-					if(item.NPCSeller_First)
+					if(Rogue_UnlockStore())
 					{
-						FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
+						if(item.NPCSeller_First)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
+						}	
+						else if(item.NPCSeller_WaveStart > 0)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s {$ Waves Left: %d}", buffer, item.NPCSeller_WaveStart);
+						}
+					}
+					else if(item.NPCSeller_First)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s {$$}", buffer);
 					}	
 					else if(item.NPCSeller_WaveStart > 0)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s {$ Waves Left: %d}", buffer, item.NPCSeller_WaveStart);
+						FormatEx(buffer, sizeof(buffer), "%s {$$ Waves Left: %d}", buffer, item.NPCSeller_WaveStart);
 					}
-				}
-				else if(item.NPCSeller_First)
-				{
-					FormatEx(buffer, sizeof(buffer), "%s {$$}", buffer);
-				}	
-				else if(item.NPCSeller_WaveStart > 0)
-				{
-					FormatEx(buffer, sizeof(buffer), "%s {$$ Waves Left: %d}", buffer, item.NPCSeller_WaveStart);
-				}
-				else if(item.NPCSeller)
-				{
-					FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
+					else if(item.NPCSeller)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
+					}
 				}
 
 				menu.AddItem(info.Classname, buffer, style);
@@ -4807,6 +4814,8 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
+	
+	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
 	if(!StoreItems)
 	{
@@ -5694,6 +5703,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_PHLOG(client, entity);
 		Enable_OceanSong(client, entity);
 		Enable_SpecterAlter(client, entity);
+		Enable_SuperubersawAlter(client, entity);
 		Enable_WeaponArk(client, entity);
 		Saga_Enable(client, entity);
 //		Enable_WeaponBoard(client, entity);
@@ -5736,6 +5746,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Merchant_Enable(client, entity);
 		Flametail_Enable(client, entity);
 		Ulpianus_Enable(client, entity);
+		Enable_WrathfulBlade(client, entity);
+		BlacksmithBrew_Enable(client, entity);
 	}
 
 	return entity;
@@ -5869,6 +5881,20 @@ bool Store_PrintLevelItems(int client, int level)
 	return found;
 }
 
+int Store_GetItemName(int index, int client = 0, char[] buffer, int leng)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+
+	int level = item.Owned[client] - 1;
+	if(level < 0)
+		level = 0;
+	
+	static ItemInfo info;
+	item.GetItemInfo(level, info);
+	return strcopy(buffer, leng, TranslateItemName(client, item.Name, info.Custom_Name));
+}
+
 char[] TranslateItemName(int client, const char name[64], const char Custom_Name[64]) //Just make it 0 as a default so if its not used, fuck it
 {
 	//static int ServerLang = -1;
@@ -5968,8 +5994,10 @@ static void ItemCost(int client, Item item, int &cost)
 	//make sure anything thats additive is on the top, so sales actually help!!
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 	{
-		if(b_SpecialGrigoriStore) //during maps where he alaways sells, always sell!
+		if(b_SpecialGrigoriStore && !item.BoughtBefore[client])
 		{
+			//during maps where he alaways sells, always sell!
+			//If the client bought this weapon before, do not offer the discount anymore.
 			if(Rogue_Mode())
 			{
 				if(item.NPCSeller_WaveStart > 0)
@@ -6030,13 +6058,13 @@ static void ItemCost(int client, Item item, int &cost)
 				CheckAlivePlayers();
 			
 			case 1:
-				cost = RoundToNearest(float(cost) * 0.7);
+				cost = RoundToNearest(float(cost) * 0.9);
 			
 			case 2:
-				cost = RoundToNearest(float(cost) * 0.8);
+				cost = RoundToNearest(float(cost) * 0.92);
 			
 			case 3:
-				cost = RoundToNearest(float(cost) * 0.9);
+				cost = RoundToNearest(float(cost) * 0.95);
 		}
 	}
 	

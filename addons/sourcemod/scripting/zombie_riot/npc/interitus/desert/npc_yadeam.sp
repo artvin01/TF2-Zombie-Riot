@@ -159,10 +159,7 @@ public void DesertYadeam_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttackHappening < GetGameTime())
 	{
 		npc.m_flNextRangedAttackHappening = GetGameTime() + 2.5;
-		float ProjectileLoc[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 125, 0, 200, 1, 0.3, 5.0, 8.0, 3, 150.0 * 2.0);	
-		npc.PlayHealSound();
+		DesertYadeamDoHealEffect(npc.index, 200.0);
 	}
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -225,7 +222,7 @@ public void DesertYadeam_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.25;
-		ExpidonsaGroupHeal(npc.index, 150.0, 99, 20.0, 1.0, false,Expidonsa_DontHealSameIndex);
+		ExpidonsaGroupHeal(npc.index, 200.0, 99, 20.0, 1.0, false,Expidonsa_DontHealSameIndex);
 	}
 	DesertYadeamSelfDefense(npc,GetGameTime(npc.index)); 
 }

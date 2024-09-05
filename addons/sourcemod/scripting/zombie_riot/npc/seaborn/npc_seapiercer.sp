@@ -183,21 +183,19 @@ public void SeaPiercer_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						
-						b_ThisNpcIsSawrunner[npc.index] = true;
 
 						if(target <= MaxClients && i_HealthBeforeSuit[target] > 0)
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 199999999.9, DMG_DROWN); // Make it oneshot the enemy if they have the quantum armor
+							DealTruedamageToEnemy(npc.index, target, 199999999.9);
 							Custom_Knockback(npc.index, target, 1000.0); // Kick them away.
 						}
 						else
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_bElite ? 52.5 : 41.25, DMG_DROWN);
+							DealTruedamageToEnemy(npc.index, target, npc.m_bElite ? 52.5 : 41.25);
 							// 550 x 0.15 x 0.5
 							// 700 x 0.15 x 0.5
 						}
 
-						b_ThisNpcIsSawrunner[npc.index] = false;
 					}
 				}
 

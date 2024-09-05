@@ -146,6 +146,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MineLayed));   i++) { PrecacheSound(g_MineLayed[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid.mp3");
+	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
 }
 
@@ -335,8 +336,9 @@ methodmap Nemal < CClotBody
 	public void PlayMineLayed() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_MineLayed) - 1);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 120);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
 	}
 	public void PlayShootSoundNemalSnipe() 
 	{
@@ -543,6 +545,12 @@ methodmap Nemal < CClotBody
 		{
 			RaidModeScaling *= 0.38;
 		}
+
+		if(ZR_GetWaveCount()+1 > 55)
+		{
+			RaidModeTime = GetGameTime(npc.index) + 220.0;
+			RaidModeScaling *= 0.8;
+		}
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		if(amount_of_people > 12.0)
@@ -555,6 +563,7 @@ methodmap Nemal < CClotBody
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
 
@@ -773,7 +782,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				if(npc.Anger)
 				{			
-					npc.m_flSpeed = 350.0;
+					npc.m_flSpeed = 400.0;
 				}
 				npc.m_bAllowBackWalking = false;
 				//Get the normal prediction code.
@@ -792,7 +801,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				if(npc.Anger)
 				{			
-					npc.m_flSpeed = 300.0;
+					npc.m_flSpeed = 350.0;
 				}
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
@@ -851,7 +860,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			{
 				RemoveEntity(npc.m_iWearable8);
 			}
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/10);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/9);
 			CPrintToChatAll("{lightblue}Nemal{default}: Hey man, you're really hurting me here...");
 			npc.i_GunMode = 0;
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
@@ -860,7 +869,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	if(i_RaidGrantExtra[npc.index] == 5)
 	{
-		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
+		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 
@@ -869,12 +878,13 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			b_angered_twice[npc.index] = true; 
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
-			RaidModeTime = FAR_FUTURE;
+			RaidModeTime += 25.0;
 			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			MakeObjectIntangeable(npc.index);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			
 			CPrintToChatAll("{lightblue}Nemal{default}: Ouch ouch! Time out, time out!");
 			npc.m_iTarget = 0;
@@ -904,6 +914,7 @@ static void Internal_NPCDeath(int entity)
 	
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
+	RaidModeTime += 20.0;
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
 		
@@ -1123,16 +1134,12 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 							}
 							WorldSpaceCenter(targetTrace, vecHit);
 
-							float damage = 23.0;
+							float damage = 35.0;
 							
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 							// Hit particle
 							
-							//Do Hit Effect
-							float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-							flMaxhealth *= 0.001;
-							HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 							
 							SetColorRGBA(colorLayer4, r, g, b, 60);
 							TE_SetupBeamPoints(origin, vecHit, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer4, 3);
@@ -1163,6 +1170,14 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 				}
 				if(PlaySound)
 				{
+					//Do Hit Effect
+					float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
+					flMaxhealth *= 0.0025;
+					if(i_RaidGrantExtra[npc.index] >= 4)
+					{
+						flMaxhealth *= 0.75;
+					}
+					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{
 						npc.m_iNemalComboAttack++;
@@ -1796,7 +1811,7 @@ bool NemalTransformation(Nemal npc)
 			npc.m_flNemalSuperRes = GetGameTime() + 5.0;
 			npc.m_flDoingAnimation = 0.0;
 
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 10));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 9));
 			CPrintToChatAll("{lightblue}Nemal{default}: Here's my finest creation at work!");
 				
 			SetVariantColor(view_as<int>({255, 255, 255, 200}));
@@ -1899,7 +1914,7 @@ bool NemalSnipingShots(Nemal npc)
 						int target = Can_I_See_Enemy(npc.index, Loop,_ ,SnipeTargets[Loop]);
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 50.0 * RaidModeScaling;
+							float damageDealt = 40.0 * RaidModeScaling;
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, SnipeTargets[Loop]);
 						} 
@@ -2057,6 +2072,17 @@ bool NemalSummonSilvester(Nemal npc)
 			{
 				CPrintToChatAll("{lightblue}Nemal{default}: New phone who this? Oh, you finally came!");
 			}
+		}
+		if(i_RaidGrantExtra[npc.index] >= 3)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
+			music.Time = 227;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "06 Flirt With Bomb");
+			strcopy(music.Artist, sizeof(music.Artist), "???");
+			Music_SetRaidMusic(music);
 		}
 		npc.m_iChanged_WalkCycle = 0;
 		return true;
@@ -2243,9 +2269,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Hey hey thats my good friends weapon {gold}%N{default}! She's a very nice Iberian.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "Hey hey thats my good {snow}friends{default} weapon {gold}%N{default}! She's a very nice Iberian.",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "You a cheeky one {gold}%N{default}...",client);
+					Format(Text_Lines, sizeof(Text_Lines), "Oh {snow}Irene{default}, looks like you have a student, their name is {gold}%N{default}!",client);
 			}
 		}
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "Were here to train.... why......");
@@ -2256,7 +2282,7 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 				case 0:
 					Format(Text_Lines, sizeof(Text_Lines), "Hey thats my weapon {gold}%N{default}!",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "You a cheeky one {gold}%N{default}...",client);
+					Format(Text_Lines, sizeof(Text_Lines), "An one on one battle{gold}%N{default}?",client);
 			}
 		}
 		case WEAPON_HHH_AXE:  Format(Text_Lines, sizeof(Text_Lines), "You're just a little guy {gold}%N{default}! wait ow OW that hurts!!!",client);
@@ -2402,6 +2428,10 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 
 	MakeVectorFromPoints(vecSelf, VecTarget, TempAng);
 	GetVectorAngles(TempAng, AngleFromSelf);
+	//It should delete itself if the middle part touches a wall.
+	int MasterEntityIndex = Wand_Projectile_Spawn(iNpc, speed, 0.0, 0.0, -1, -1, "", AngleFromSelf,_,vecSelf);
+	SetEntProp(MasterEntityIndex, Prop_Send, "m_usSolidFlags", 12); 
+	WandProjectile_ApplyFunctionToEntity(MasterEntityIndex, NemalSlicerTouchOverall);
 	
 	//AngleFromSelf is the angle of where it should fire from towards to the target.
 
@@ -2448,7 +2478,9 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		switch(SitatuionCalcDo)
 		{
 			case 3:
+			{
 				tmp[0] = 0.0;
+			}
 			case 2:
 				tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
 			case 1:
@@ -2523,6 +2555,8 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		
 		DataPack pack2;
 		CreateDataTimer(0.1, Timer_NemalProjectileHitDetect, pack2, TIMER_REPEAT);
+		pack2.WriteCell(EntIndexToEntRef(MasterEntityIndex));
+		pack2.WriteCell(EntIndexToEntRef(laser));
 		pack2.WriteCell(EntIndexToEntRef(projectile));
 		pack2.WriteFloat(OverridePosOfSpawned[0]);
 		pack2.WriteFloat(OverridePosOfSpawned[1]);
@@ -2532,6 +2566,16 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 	}
 }
 
+public void NemalSlicerTouchOverall(int entity, int target)
+{
+	if(target == 0)
+	{
+		if(IsValidEntity(entity))
+		{
+			RemoveEntity(entity);
+		}
+	}
+}
 int NemalSutationSliceHelp(int CurrentJoint, int MaxJoints)
 {
 	if(CurrentJoint == (MaxJoints / 2))
@@ -2555,7 +2599,17 @@ bool DoDamageActiveHereNemal[MAXENTITIES];
 public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 {
 	pack.Reset();
+	int MasterProjEntity = EntRefToEntIndex(pack.ReadCell());
+	int LaserEntity = EntRefToEntIndex(pack.ReadCell());
 	int Projectile = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(MasterProjEntity))
+	{
+		if(IsValidEntity(LaserEntity))
+			RemoveEntity(LaserEntity);
+
+		if(IsValidEntity(Projectile))
+			RemoveEntity(Projectile);
+	}
 	float OldPositionGet[3];
 	OldPositionGet[0] = pack.ReadFloat();
 	OldPositionGet[1] = pack.ReadFloat();
@@ -2613,7 +2667,7 @@ static bool BEAM_TraceUsers(int enemy, int contentsMask, int projectile)
 	if (IsValidEntity(enemy))
 	{
 		int OwnerEntity = EntRefToEntIndex(i_WandOwner[projectile]);
-		if(IsValidEnemy(enemy, OwnerEntity, true, true)) //Must detect camo.
+		if(IsValidEnemy(enemy, OwnerEntity, true, false)) //Must detect camo.
 		{
 			int MasterIndex = EntityBelongsToMasterIndex[projectile];
 			if(!TargetsHitNemal[MasterIndex][enemy])

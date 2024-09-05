@@ -827,7 +827,7 @@ void Mr_xWalkingAnimInit(int entity)
 			{
 				npc.SetActivity("ACT_RAID_TYRANT_CHARGE_START");
 				npc.m_iChanged_WalkCycle = 10;
-				npc.m_bisWalking = true;
+				npc.m_bisWalking = false;
 				npc.m_flSpeed = 0.0;
 				NPC_StopPathing(npc.index);
 				f_NpcTurnPenalty[npc.index] = 1.0;
@@ -839,7 +839,7 @@ void Mr_xWalkingAnimInit(int entity)
 			{
 				npc.SetActivity("ACT_RAID_TYRANT_CHARGE_LOOP");
 				npc.m_iChanged_WalkCycle = 11;
-				npc.m_bisWalking = false;
+				npc.m_bisWalking = true;
 				npc.m_flSpeed = 500.0;
 				npc.StartPathing();
 				f_NpcTurnPenalty[npc.index] = 1.0;

@@ -9,7 +9,7 @@ static int Cryo_M1_Particles_Pap2 = 3; //Number of particles fired by each M1 at
 static float Cryo_M1_Damage_Pap2 = 40.0; //M1 base damage per particle (Pack-a-Punch Tier 2)
 static float Cryo_M1_Spread = 6.0;	//Random spread for particles
 static float Cryo_M1_Time = 175.0;	//Time of M1 particles
-static float Cryo_M1_Velocity = 750.0;	//Velocity of M1 particles
+static float Cryo_M1_Velocity = 1250.0;	//Velocity of M1 particles
 static float Cryo_M1_ReductionScale = 0.66; //Amount to multiply M1 damage each time it hits a zombie
 
 static float Cryo_M2_Damage = 450.0; //M2 base damage
@@ -156,7 +156,7 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 
 	damage *= Attributes_Get(weapon, 410, 1.0);
 	
-	Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+	SDKhooks_SetManaRegenDelayTime(client, 1.0);
 	Mana_Hud_Delay[client] = 0.0;
 	
 	Current_Mana[client] -= mana_cost;
@@ -228,7 +228,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 		
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		delay_hud[client] = 0.0;

@@ -193,6 +193,7 @@ public void LastKnight_ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		npc.SetActivity("ACT_RIDER_RUN");
+		npc.m_bisWalking = false; //Animation it uses has no groundspeed, this is needed.
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		npc.m_flNextThinkTime = gameTime + 0.4;
 		b_NpcIgnoresbuildings[npc.index] = true;
@@ -442,6 +443,7 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 				npc.m_iPhase = 2;
 				npc.m_flSpeed = 350.0;
 				b_NpcIsInvulnerable[npc.index] = true;
+				npc.m_bisWalking = false; //Animation it uses has no groundspeed, this is needed.
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");
 				npc.m_flNextThinkTime = gameTime + 8.3;
 				npc.StopPathing();

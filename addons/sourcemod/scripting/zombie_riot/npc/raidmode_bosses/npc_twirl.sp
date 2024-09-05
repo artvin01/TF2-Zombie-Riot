@@ -829,7 +829,7 @@ static void Twirl_WinLine(int entity)
 	if(b_wonviatimer[npc.index])
 		return;
 
-	switch(GetRandomInt(0, 9))
+	switch(GetRandomInt(0, 10))
 	{
 		case 0: Twirl_Lines(npc, "Wait, your all dead already??");
 		case 1: Twirl_Lines(npc, "This was quite fun, I thank you for the experience!");
@@ -841,6 +841,7 @@ static void Twirl_WinLine(int entity)
 		case 7: Twirl_Lines(npc, "Ah foolish Mercenary's, maybe next time think about a proper strategy");
 		case 8: Twirl_Lines(npc, "Raw power is good and all, but you know what's better? {crimson}Debuffs");
 		case 9: Twirl_Lines(npc, "Perhaps if you all had more {aqua}supports{snow} you'd might have won. Allas");
+		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 	}
 
 }
@@ -910,7 +911,7 @@ static void ClotThink(int iNPC)
 	if(LastMann && !b_lastman[npc.index])
 	{
 		b_lastman[npc.index] = true;
-		switch(GetRandomInt(0, 6))
+		switch(GetRandomInt(0, 7))
 		{
 			case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
 			case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
@@ -919,6 +920,7 @@ static void ClotThink(int iNPC)
 			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
 			case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
 			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
+			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 		}
 	}
 
@@ -931,7 +933,7 @@ static void ClotThink(int iNPC)
 		b_wonviatimer[npc.index] = true;
 		if(wave <=60)
 		{
-			switch(GetRandomInt(0, 9))
+			switch(GetRandomInt(0, 10))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
 				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
@@ -943,14 +945,16 @@ static void ClotThink(int iNPC)
 				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
 				case 8: Twirl_Lines(npc, "Tell me why your this slow?");
 				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
+				case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else	//freeplay
 		{
-			switch(GetRandomInt(0, 1))
+			switch(GetRandomInt(0, 2))
 			{
 				case 0: Twirl_Lines(npc, "Well considering you all were just some random's this was to be expected");
 				case 1: Twirl_Lines(npc, "Guess my sense of magic's been off lately, this was exceedingly boring.");
+				case 2: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		
@@ -963,7 +967,7 @@ static void ClotThink(int iNPC)
 
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
-		switch(GetRandomInt(0, 6))
+		switch(GetRandomInt(0, 7))
 		{
 			case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
 			case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
@@ -972,6 +976,7 @@ static void ClotThink(int iNPC)
 			case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
 			case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
 			case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
+			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 		}
 		fl_magia_overflow_recharge[npc.index] -= 15.0;
 		npc.m_flNextTeleport -= 10.0;
@@ -1263,7 +1268,7 @@ static void lunar_Radiance(Twirl npc)
 
 	fl_lunar_loop[npc.index] = 0.0;
 
-	for(int i= 0 ; i < 3 ; i ++)	//warp
+	for(int i= 0 ; i < 3 ; i ++)
 	{
 		int ent = EntRefToEntIndex(i_lunar_entities[npc.index][i]);
 		if(IsValidEntity(ent))
@@ -1272,7 +1277,7 @@ static void lunar_Radiance(Twirl npc)
 		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
 
-	switch(GetRandomInt(0, 11))
+	switch(GetRandomInt(0, 13))
 	{
 		case 0: Twirl_Lines(npc, "These are just my own personal {crimson}ION{snow}'s. Ruina's ones are far scarier~");
 		case 2: Twirl_Lines(npc, "Watch your {crimson}Step{snow}!");
@@ -1280,6 +1285,7 @@ static void lunar_Radiance(Twirl npc)
 		case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
 		case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
 		case 11: Twirl_Lines(npc, "Dance little merc, dance...");
+		case 13: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 	}
 
 	float flPos[3], flAng[3];
@@ -1319,9 +1325,9 @@ static void lunar_Radiance(Twirl npc)
 
 	fl_lunar_timer[npc.index] = 0.0;
 	npc.m_bisWalking = false;
-	npc.SetPlaybackRate(1.0);	
-	npc.SetCycle(0.01);
 	npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
+	npc.SetPlaybackRate(0.7);
+	npc.SetCycle(0.01);
 
 	i_lunar_ammo[npc.index] = 0;
 
@@ -1356,10 +1362,13 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 	npc.m_flSpeed = fl_npc_basespeed;
 	npc.StartPathing();
 
-	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-	npc.m_bisWalking = true;
-	npc.m_iChanged_WalkCycle = 1;
-	if(iActivity > 0) npc.StartActivity(iActivity);
+	if(npc.m_iChanged_WalkCycle != 99)
+	{
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		npc.m_bisWalking = true;
+		npc.m_iChanged_WalkCycle = 1;
+		if(iActivity > 0) npc.StartActivity(iActivity);
+	}
 
 	return Plugin_Stop;
 }
@@ -1397,11 +1406,14 @@ static void lunar_Radiance_Tick(int iNPC)
 		fl_ruina_battery_timeout[npc.index] = GameTime + 0.6;
 		npc.m_flDoingAnimation = GameTime + 0.6;
 
-		CreateTimer(0.5, Lunar_Radiance_RestoreAnim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.6, Lunar_Radiance_RestoreAnim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 
-		npc.SetPlaybackRate(1.0);	
-		npc.SetCycle(0.01);
-		npc.AddActivityViaSequence("taunt_surgeons_squeezebox_outro");
+		if(npc.m_iChanged_WalkCycle != 99)
+		{
+			npc.AddActivityViaSequence("taunt_surgeons_squeezebox_outro");
+			npc.SetPlaybackRate(1.0);	
+			npc.SetCycle(0.01);
+		}
 
 		for(int i= 0 ; i < 3 ; i ++)
 		{
@@ -1427,15 +1439,56 @@ static void lunar_Radiance_Tick(int iNPC)
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy_2[MAXENTITIES];
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false);
+	int i_te_used = 0;
 	for(int i; i < sizeof(enemy_2); i++)
 	{
 		if(enemy_2[i])
 		{
+			i_te_used+=8;
 			float Radius = (npc.Anger ? 225.0 : 150.0);
 			float dmg = Modify_Damage(-1, 12.0);
-			npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.4 : 1.8), Radius, dmg);
+			if(i_te_used > 31)
+			{
+				int DelayFrames = (i_te_used / 32);
+				DelayFrames *= 2;
+				DataPack pack_TE = new DataPack();
+				pack_TE.WriteCell(EntIndexToEntRef(npc.index));
+				pack_TE.WriteCell(EntIndexToEntRef(enemy_2[i]));
+				pack_TE.WriteFloat(dmg);
+				pack_TE.WriteFloat(Radius);
+				pack_TE.WriteFloat(GameTime);
+				RequestFrames(Twirl_DelayIons, DelayFrames, pack_TE);
+				//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+			}
+			else
+			{
+				npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.4 : 1.8), Radius, dmg);
+			}
 		}
 	}
+}
+static void Twirl_DelayIons(DataPack pack)
+{
+	pack.Reset();
+	int iNPC = EntRefToEntIndex(pack.ReadCell());
+	int Target = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(iNPC))
+	{
+		delete pack;
+		return;
+	}
+	Twirl npc = view_as<Twirl>(iNPC);
+	if(!IsValidEnemy(npc.index, Target))
+	{
+		delete pack;
+		return;
+	}
+	
+	float Radius = pack.ReadFloat();
+	float dmg = pack.ReadFloat();
+	float time = (pack.ReadFloat() - GetGameTime(npc.index)) + (npc.Anger ? 1.4 : 1.8);	//get the difference in time from how long this attack was delayed. so it matches up timing wise with other ions!
+	npc.Predictive_Ion(Target, time, Radius, dmg);
+	delete pack;
 }
 
 static bool KeepDistance(Twirl npc, float flDistanceToTarget, int PrimaryThreatIndex, float Distance)
@@ -1555,7 +1608,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		else
 			Particle = "raygun_projectile_red";
 
-		npc.FireParticleRocket(target_vec, Modify_Damage(PrimaryThreatIndex, Dmg) , projectile_speed , Radius , Particle, _, _, true, flPos);
+		npc.FireParticleRocket(target_vec, Modify_Damage(-1, Dmg) , projectile_speed , Radius , Particle, _, _, true, flPos);
 	}
 	else
 	{
@@ -1818,7 +1871,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 
 				Laser.Radius = Radius;
 				Laser.damagetype = DMG_PLASMA;
-				Laser.Damage = Modify_Damage(-1, 70.0) * RaidModeScaling;
+				Laser.Damage = Modify_Damage(-1, 70.0);
 				Laser.Deal_Damage();
 
 				fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);	
@@ -2032,6 +2085,9 @@ static void Fractal_Gram(Twirl npc, int Target)
 		return;
 	
 	if(npc.m_flNextRangedBarrage_Singular > GameTime)
+		return;
+
+	if(fl_ruina_battery_timeout[npc.index] > GameTime)
 		return;
 
 	int amt = i_Fractal_Gram_Amt(npc);
@@ -2331,7 +2387,7 @@ static bool Retreat(Twirl npc, bool custom = false)
 		fl_force_ranged[npc.index] = GameTime + 8.0;	
 	}
 
-	switch(GetRandomInt(0, 9))
+	switch(GetRandomInt(0, 10))
 	{
 		case 0: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
 		case 1: Twirl_Lines(npc, "You really think you can {purple}catch {snow}me?");
@@ -2342,7 +2398,8 @@ static bool Retreat(Twirl npc, bool custom = false)
 		case 6: Twirl_Lines(npc, "Don't surround me like that.");
 		case 7: Twirl_Lines(npc, "When will you learn this,{crimson} DON'T COME NEAR ME");
 		case 8: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
-		case 9: Twirl_Lines(npc, "Ajaya, how rude of you to come close.");
+		case 9: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
+		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 	}
 	return true;
 }
@@ -2450,9 +2507,9 @@ static Action Retreat_Laser_Tick(int iNPC)
 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
-	Laser.Damage = Modify_Damage(-1, 15.0) *RaidModeScaling;
+	Laser.Damage = Modify_Damage(-1, 15.0);
 	Laser.Radius = Radius;
-	Laser.Bonus_Damage = Modify_Damage(-1, 15.0) *RaidModeScaling*6.0;
+	Laser.Bonus_Damage = Modify_Damage(-1, 15.0)*6.0;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage();
 
@@ -2572,6 +2629,9 @@ static void Magia_Overflow(Twirl npc)
 	if(fl_magia_overflow_recharge[npc.index] > GameTime)
 		return;
 
+	if(fl_ruina_battery_timeout[npc.index] > GameTime)
+		return;
+
 	if(!Retreat(npc, true))
 		return;
 
@@ -2604,6 +2664,9 @@ static void Magia_Overflow(Twirl npc)
 
 	npc.m_bInKame = true;
 
+	npc.m_flRangedArmor = 0.9;
+	npc.m_flMeleeArmor = 1.3;
+
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 }
@@ -2622,6 +2685,8 @@ static Action Magia_Overflow_Tick(int iNPC)
 		npc.StartPathing();
 
 		npc.m_bInKame = false;
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.5;
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
@@ -2692,9 +2757,9 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
 	if(update)
 	{
-		Laser.Damage = Modify_Damage(-1, 2.0) * RaidModeScaling;
+		Laser.Damage = Modify_Damage(-1, 2.0);
 		Laser.Radius = Radius;
-		Laser.Bonus_Damage = Modify_Damage(-1, 2.0) * RaidModeScaling*6.0;
+		Laser.Bonus_Damage = Modify_Damage(-1, 2.0)*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage(On_LaserHit);
 	}
@@ -3016,42 +3081,46 @@ static void NPC_Death(int entity)
 		int wave = i_current_wave[npc.index];
 		if(wave <=15)
 		{
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Ah, this is great, I have high hopes for our next encounter");
 				case 1: Twirl_Lines(npc, "Your strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
 				case 2: Twirl_Lines(npc, "Ahaha, toodles");
 				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
+				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else if(wave <=30)
 		{
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "This was great fun, better not let me down and not make it to our next battle!");
 				case 1: Twirl_Lines(npc, "Oh my, I may have underestimated you, this is great news");
 				case 2: Twirl_Lines(npc, "I'll have to give {aqua}Stella{snow} a little treat, this has been great fun");
 				case 3: Twirl_Lines(npc, "Most excellent, you bested me, hope to see you again!");
+				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else if(wave <=45)
 		{
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Even with my {purple}''Heavy Equipment''{snow} you bested me, good work");
 				case 1: Twirl_Lines(npc, "Your quite strong, and so am I, can't wait for our next math");
 				case 2: Twirl_Lines(npc, "I hope you all had as much fun as I did");
 				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do believe our next and final battle will be the {crimson}most fun{snow}!");
+				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else if(!b_allow_final[npc.index])
 		{
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
 				case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
 				case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
 				case 3: Twirl_Lines(npc, "toodles!");
+				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 	}

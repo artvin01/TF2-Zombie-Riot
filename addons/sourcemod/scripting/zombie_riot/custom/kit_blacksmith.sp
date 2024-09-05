@@ -78,7 +78,7 @@ void Blacksmith_ExtraDesc(int client, int index)
 						if(!tinker.Attrib[b])
 							break;
 						
-						PrintAttribValue(client, tinker.Attrib[b], tinker.Value[b], tinker.Luck[b]);
+						Blacksmith_PrintAttribValue(client, tinker.Attrib[b], tinker.Value[b], tinker.Luck[b]);
 					}
 
 					break;
@@ -227,8 +227,15 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 	ApplyTempAttrib(weapon, 6, 0.25, 2.0);
 }
 
-int AnvilClickedOn[MAXTF2PLAYERS];
-int ClickedWithWeapon[MAXTF2PLAYERS];
+/*
+int Blacksmith_Level(int client)
+{
+	return SmithLevel[client];
+}
+*/
+
+static int AnvilClickedOn[MAXTF2PLAYERS];
+static int ClickedWithWeapon[MAXTF2PLAYERS];
 void Blacksmith_BuildingUsed(int entity, int client)
 {
 	AnvilClickedOn[client] = EntIndexToEntRef(entity);
@@ -596,7 +603,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 			if(!tinker.Attrib[i])
 				break;
 			
-			PrintAttribValue(client, tinker.Attrib[i], tinker.Value[i], tinker.Luck[i]);
+			Blacksmith_PrintAttribValue(client, tinker.Attrib[i], tinker.Value[i], tinker.Luck[i]);
 		}
 
 		if(found == -1)
@@ -666,14 +673,14 @@ static bool AttribIsInverse(int attrib)
 {
 	switch(attrib)
 	{
-		case 5, 6, 96, 97, 205, 206, 343, 412:
+		case 5, 6, 96, 97, 205, 206, 252, 343, 412, Attrib_TerrianRes:
 			return true;
 	}
 
 	return false;
 }
 
-static void PrintAttribValue(int client, int attrib, float value, float luck)
+void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck, bool addition = false)
 {
 	if(attrib == 264)
 	{
@@ -682,7 +689,11 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 	bool inverse = AttribIsInverse(attrib);
 
 	char buffer[64];
-	if(value < 1.0)
+	if(addition)
+	{
+		FormatEx(buffer, sizeof(buffer), "%d ", RoundToCeil(value));
+	}
+	else if(value < 1.0)
 	{
 		FormatEx(buffer, sizeof(buffer), "%d%% ", RoundToCeil((1.0 - value) * 100.0));
 	}
@@ -698,7 +709,7 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		inverse_color = true;
 	}
 
-	if(((value < 1.0) ^ inverse))
+	if(((value < (addition ? 0.0 : 1.0)) ^ inverse))
 	{
 		if(!inverse_color)
 		{
@@ -741,11 +752,20 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		case 10:
 			Format(buffer, sizeof(buffer), "%sÜberCharge Rate", buffer);
 		
+		case 16:
+			Format(buffer, sizeof(buffer), "%sHealth On Hit", buffer);
+		
 		case 26:
-			Format(buffer, sizeof(buffer), "%sMax Health Bonus", buffer);
+			Format(buffer, sizeof(buffer), "%sMax Health", buffer);
 		
 		case 45:
 			Format(buffer, sizeof(buffer), "%sBullets Per Shot", buffer);
+		
+		case 54, 107:
+			Format(buffer, sizeof(buffer), "%sMovement Speed", buffer);
+		
+		case 57:
+			Format(buffer, sizeof(buffer), "%sHealth Regen", buffer);
 		
 		case 95:
 			Format(buffer, sizeof(buffer), "%sRepair Rate", buffer);
@@ -765,9 +785,6 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		case 106:
 			Format(buffer, sizeof(buffer), "%sBullet Spread", buffer);
 		
-		case 107:
-			Format(buffer, sizeof(buffer), "%sMovement Speed", buffer);
-		
 		case 149:
 			Format(buffer, sizeof(buffer), "%sBleed Duration", buffer);
 		
@@ -777,11 +794,17 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		case 206:
 			Format(buffer, sizeof(buffer), "%sMelee Damage Resistance", buffer);
 		
+		case 252:
+			Format(buffer, sizeof(buffer), "%sKnockback Resistance", buffer);
+		
 		case 287:
 			Format(buffer, sizeof(buffer), "%sSentry Damage", buffer);
 		
 		case 319:
 			Format(buffer, sizeof(buffer), "%sBuff Duration", buffer);
+		
+		case 326:
+			Format(buffer, sizeof(buffer), "%sJump Height", buffer);
 		
 		case 343:
 			Format(buffer, sizeof(buffer), "%sSentry Firing Speed", buffer);
@@ -800,6 +823,24 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 
 		case 4002:
 			Format(buffer, sizeof(buffer), "%sMore Medigun Overheal", buffer);
+
+		case Attrib_TerrianRes:
+			Format(buffer, sizeof(buffer), "%sTerrian Damage Resistance", buffer);
+
+		case Attrib_ElementalDef:
+			Format(buffer, sizeof(buffer), "%sElemental Damage Resistance", buffer);
+
+		case Attrib_SlowImmune:
+			Format(buffer, sizeof(buffer), "%sSlow Resistance", buffer);
+
+		case Attrib_ObjTerrianAbsorb:
+			Format(buffer, sizeof(buffer), "%sBuilding Terrian Absorb Chance", buffer);
+
+		case Attrib_SetArchetype:
+			Format(buffer, sizeof(buffer), "%sWeapon Archetype", buffer);
+		
+		case 4019:
+			Format(buffer, sizeof(buffer), "%sMax Mana", buffer);
 
 	}
 	
@@ -1556,6 +1597,10 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
 		case MenuAction_Select:
 		{
 			ResetStoreMenuLogic(client);
@@ -1594,10 +1639,6 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 				case -3:
 				{
 					Blacksmith_ExtraDesc(client, StoreWeapon[weapon]);
-				}
-				default:
-				{
-					delete menu;
 				}
 			}
 		}

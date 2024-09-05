@@ -49,6 +49,7 @@ methodmap ObjectMortar < ObjectGeneric
 		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
 		func_NPCThink[npc.index] = ClotThink;
 		func_NPCInteract[npc.index] = ClotInteract;
+		npc.SetActivity("MORTAR_IDLE");
 
 		SetRotateByDefaultReturn(npc.index, 180.0);
 		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);

@@ -257,6 +257,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 				if(enemy.Is_Boss >= 2)
 				{
 					WaveStart_SubWaveStart(GetGameTime());
+					ReviveAll(true, true);
 				}
 				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)
@@ -1983,6 +1984,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_CrippleDebuff[npc] > GameTime)
 		return true;
+	else if(f_GoldTouchDebuff[npc] > GameTime)
+		return true;
 	else if(f_CudgelDebuff[npc] > GameTime)
 		return true;
 	else if(f_DuelStatus[npc] > GameTime)
@@ -2165,7 +2168,7 @@ void NPC_DeadEffects(int entity)
 			Spawns_NPCDeath(entity, client, WeaponLastHit);
 #endif
 
-			Attributes_OnKill(client, WeaponLastHit);
+			Attributes_OnKill(entity, client, WeaponLastHit);
 		}
 	}
 }
@@ -2263,6 +2266,14 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		case WEAPON_RAPIER:
 		{
 			RapierEndDuelOnKill(attacker, victim);
+		}
+		case WEAPON_MAGNESIS:
+		{
+			Magnesis_OnKill(victim);
+		}
+		case WEAPON_WRATHFUL_BLADE:
+		{
+			WrathfulBlade_OnKill(attacker, victim);
 		}
 	}
 }

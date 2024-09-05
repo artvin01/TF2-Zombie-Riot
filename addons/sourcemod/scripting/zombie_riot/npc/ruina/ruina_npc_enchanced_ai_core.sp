@@ -634,7 +634,7 @@ public void Ruina_Master_Rally(int client, bool rally)
 	- Make the npc's :)
 */
 
-public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
+void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
@@ -718,8 +718,13 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 		if(IsValidEntity(Master_Id_Main))	//get master's target
 		{
 			CClotBody npc2 = view_as<CClotBody>(Master_Id_Main);
-			PrimaryThreatIndex = npc2.m_iTarget;
 
+			//we only change targets every so often as to make it so if a player touches the npc the npc will actually attack them and not just ignore them causing infinite body blocking.
+			if(npc.m_flGetClosestTargetTime < GameTime || !IsValidEnemy(npc.index, PrimaryThreatIndex))
+			{
+				PrimaryThreatIndex = npc2.m_iTarget;
+				npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+			}
 			if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//almost final check to see if its valid, if its not, find the nearest one. there is a chance that the refind timer is still active, in this case the return logic handles it.
 			{
 				PrimaryThreatIndex = Ruina_Get_Target(npc.index, GameTime);
@@ -1685,8 +1690,8 @@ void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, flo
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	if(fl_ruina_helia_healing_timer[npc.index]<=GameTime)
-	{		
-		ExpidonsaGroupHeal(npc.index, Range, 5, float(Healing), 0.1, false, _ , Ruina_HealVisualEffect);
+	{	
+		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.1, false, _ , Ruina_HealVisualEffect);
 		DesertYadeamDoHealEffect(npc.index, Range);
 		fl_ruina_helia_healing_timer[npc.index]=cylce_speed+GameTime;
 	}
@@ -1696,6 +1701,9 @@ void Ruina_HealVisualEffect(int healer, int victim)
 	CClotBody npc = view_as<CClotBody>(victim);
 
 	float GameTime = GetGameTime(npc.index);
+
+	if(AtEdictLimit(EDICT_NPC))
+		return;
 
 	if(fl_ruina_internal_healing_timer[npc.index]>GameTime)
 		return;
@@ -1952,26 +1960,23 @@ static void Astria_Teleport_Effect(char type[255], float duration = 0.0, float s
 		pack.WriteCell(duration);
 	}
 }
-public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
+void Master_Apply_Defense_Buff(int client, float range, float time, float power)
 {
 	Apply_Master_Buff(client, RUINA_DEFENSE_BUFF, range, time, power);
 }
-
-public void Master_Apply_Speed_Buff(int client, float range, float time, float power)
+void Master_Apply_Speed_Buff(int client, float range, float time, float power)
 {
 	Apply_Master_Buff(client, RUINA_SPEED_BUFF, range, time, power);
 }
-
-public void Master_Apply_Attack_Buff(int client, float range, float time, float power)
+void Master_Apply_Attack_Buff(int client, float range, float time, float power)
 {
 	Apply_Master_Buff(client, RUINA_ATTACK_BUFF, range, time, power);
 }
-
 void Master_Apply_Shield_Buff(int client, float range, float power, bool override = false)
 {
 	Apply_Master_Buff(client, RUINA_SHIELD_BUFF, range, 0.0, power, override);
 }
-public void Master_Apply_Battery_Buff(int client, float range, float power)
+void Master_Apply_Battery_Buff(int client, float range, float power)
 {
 	Apply_Master_Buff(client, RUINA_BATTERY_BUFF, range, 0.0, power);
 }
@@ -2856,6 +2861,9 @@ Names per stage:
 */
 void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point[3], float end_point[3])
 {
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+
 	int part1 = CreateEntityByName("info_particle_system");
 	if(IsValidEdict(part1))
 	{

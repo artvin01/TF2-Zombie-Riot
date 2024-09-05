@@ -206,7 +206,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 							TeleportEntity(target, _, _, vecHit, true);
 							EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
-							HealEntityGlobal(npc.index, target, -7500.0, 1.0, 0.0, HEAL_ABSOLUTE);
+							DealTruedamageToEnemy(npc.index, target, 1500.0);
 							npc.m_flDoingAnimation = gameTime + 0.35;
 						}
 						else if(!b_NpcHasDied[target])
@@ -220,7 +220,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 								PluginBot_Jump(target, vecHit);
 								EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
-								HealEntityGlobal(npc.index, target, -1500.0, 1.0, 0.0, HEAL_ABSOLUTE);
+								DealTruedamageToEnemy(npc.index, target, 7500.0);
 							}
 						}
 						npc.m_iTarget = 0;

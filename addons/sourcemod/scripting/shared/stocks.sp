@@ -469,6 +469,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		float VecAbsEntity[3];
 		GetEntPropVector(iClient, Prop_Data, "m_vecAbsOrigin", VecAbsClient);
 		GetEntPropVector(iHit, Prop_Data, "m_vecAbsOrigin", VecAbsEntity);
+		flDistance *= 2.0;
 		if(GetVectorDistance(VecAbsClient, VecAbsEntity, true) < ((flDistance) * (flDistance)))
 			iReturn = iHit;
 	}
@@ -1284,13 +1285,61 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 //Heals but doesnt notify anyone
 */
 //this will return the amount of healing it actually did.
+
+void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
+{
+//	HealEntityGlobal(attacker, victim, -(truedamagedeal - 1.0), 99.0, 0.0, HEAL_ABSOLUTE | HEAL_SELFHEAL);
+	b_ThisNpcIsSawrunner[attacker] = true;
+	if(victim <= MaxClients)
+	{
+		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_DROWN, -1);
+	}
+	else
+	{
+		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_SLASH, -1);
+	}
+	b_ThisNpcIsSawrunner[attacker] = false;
+	/*
+	float AnyValueTest1 = 1.0;
+	int AnyValueTest2 = 1;
+	if(victim <= MaxClients)
+	{
+		Player_OnTakeDamageAlive_DeathCheck(victim, 
+		attacker, 
+		AnyValueTest2, 
+		AnyValueTest1, 
+		AnyValueTest2, 
+		AnyValueTest2, 
+		{0.0,0.0,0.0}, 
+		{0.0,0.0,0.0}, 
+		0);
+	}
+	else
+	{
+		NPC_OnTakeDamage_Post(victim, 
+		attacker, 
+		AnyValueTest2, 
+		AnyValueTest1, 
+		AnyValueTest2, 
+		AnyValueTest2, 
+		{0.0,0.0,0.0}, 
+		{0.0,0.0,0.0}, 
+		0);
+	}
+	*/
+}
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
 {
 	/*
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.
 	*/
-
+	if(HealTotal < 0)
+	{
+		if(healer > 0)
+			HealTotal *= fl_Extra_Damage[healer];
+		//the heal total is negative, this means this is trated as true damage.
+	}
 #if defined ZR
 	if(reciever <= MaxClients)
 		if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
@@ -1309,7 +1358,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 			HealTotal *= 0.5;
 		}
-		if(CurrentModifOn() == 2 && GetTeam(healer) != TFTeam_Red && GetTeam(reciever) != TFTeam_Red)
+		if((CurrentModifOn() == 3|| CurrentModifOn() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(reciever) != TFTeam_Red)
 		{
 			HealTotal *= 1.5;
 		}
@@ -1346,7 +1395,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 #if defined ZR
 		if(healer != reciever && healer <= MaxClients)
+		{
 			Healing_done_in_total[healer] += HealingDoneInt;
+			AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+		}
 #endif
 //only apply heal event if its not a passive self heal
 		if(!(flag_extrarules & (HEAL_PASSIVE_NO_NOTIF)))
@@ -2892,9 +2944,11 @@ int CountPlayersOnServer()
 int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
 
 stock void Explode_Logic_Custom(float damage,
-int client,
-int entity,
-int weapon,
+int client, //To get attributes from and to see what is my enemy!
+int entity,	//Entity that gets forwarded or traced from/Distance checked.
+int weapon,	//What to get attributes from aswell, if its from an npc, always -1
+//Idealy: entity is projectile if its a projectile weapon
+//If its happening from an NPC or player itself, set both client and entity to the same thing.
 float spawnLoc[3] = {0.0,0.0,0.0},
 float explosionRadius = EXPLOSION_RADIUS,
 float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
@@ -2997,6 +3051,16 @@ int inflictor = 0)
 		damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
 	}
 	int entityToEvaluateFrom = 0;
+	int EntityToForward = 0;
+
+	if(IsValidEntity(entity))
+	{
+		EntityToForward = entity;
+	}
+	else
+	{
+		EntityToForward = client;
+	}
 
 	if(IsValidEntity(client))
 	{
@@ -3006,10 +3070,12 @@ int inflictor = 0)
 	{
 		entityToEvaluateFrom = entity;
 	}
+
 	if(inflictor == 0)
 	{
 		inflictor = entityToEvaluateFrom;
 	}
+
 	if(entityToEvaluateFrom < 1)
 	{
 		//something went wrong, evacuate.
@@ -3139,7 +3205,7 @@ int inflictor = 0)
 			if(FunctionToCallBeforeHit != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, FunctionToCallBeforeHit);
-				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
 				Call_PushFloat(damage_1);
 				Call_PushCell(weapon);
@@ -3181,7 +3247,7 @@ int inflictor = 0)
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, FunctionToCallOnHit);
-				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
 				//do not allow division by 0
 				damage_1 *= damage_reduction;
@@ -5261,6 +5327,70 @@ stock any GetItemInArray(any[] array, int pos)
 	return array[pos];
 }
 
+//MaxNumBuffValue(0.6, 1.0, 0.0) = 1.0
+//MaxNumBuffValue(0.6, 1.0, 1.0) = 0.6
+//MaxNumBuffValue(0.6, 1.0, 1.25) = 0.55
+
+float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
+{
+	// Our base number is max, the number when valuenerf is 0
+	// Our high number is start, the number when valuenerf is 1
+
+	// start = 0.6, max = 1.0
+	//     1.0 + ((-0.4) * valuenerf)
+	return max + ((start - max) * valuenerf);
+}
+
+/**
+ * Spawns a 2-point particle (IE medigun beam, dispenser beam, etc) and connects it through 2 entities.
+ * 
+ * @param startEnt		The entity to start from.
+ * @param startPoint	The point to attach the starting entity to.
+ * @param startXOff		Starting point X-axis offset.
+ * @param startYOff		Starting point Y-axis offset.
+ * @param startZOff		Starting point Z-axis offset.
+ * @param endEnt		The entity to end at.
+ * @param endPoint		The point to attach the end entity to.
+ * @param endXOff		Ending point X-axis offset.
+ * @param endYOff		Ending point Y-axis offset.
+ * @param endZOff		Ending point Z-axis offset.
+ * @param effect		The particle to connect.
+ * @param returnStart	Return parameter for the particle created at the start of the effect.
+ * @param returnEnd		Return parameter for the particle created at the end of the effect.
+ * @param duration		The duration of the effect. <= 0.0: infinite.
+ */
+stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], float startXOff, float startYOff, float startZOff, int endEnt, char endPoint[255], float endXOff, float endYOff, float endZOff, char effect[255], int &returnStart, int &returnEnd, float duration = 0.0)
+{
+	float startPos[3], endPos[3];
+	WorldSpaceCenter(startEnt, startPos);
+	WorldSpaceCenter(endEnt, endPos);
+
+	int particle = ParticleEffectAtOcean(startPos, effect, duration, _, false);
+	int particle2 = ParticleEffectAtOcean(endPos, effect, duration, _, false);
+
+	float offsets[3];
+	offsets[0] = startXOff;
+	offsets[1] = startYOff;
+	offsets[2] = startZOff;
+	SetParent(startEnt, particle, startPoint, offsets, true);
+
+	offsets[0] = endXOff;
+	offsets[1] = endYOff;
+	offsets[2] = endZOff;
+	SetParent(endEnt, particle2, endPoint, offsets, true);
+
+	char szCtrlParti[128];
+	Format(szCtrlParti, sizeof(szCtrlParti), "tf2ctrlpart%i", EntIndexToEntRef(particle2));
+	DispatchKeyValue(particle, "targetname", szCtrlParti);
+
+	DispatchKeyValue(particle2, "cpoint1", szCtrlParti);
+
+	ActivateEntity(particle2);
+	AcceptEntityInput(particle2, "start");
+
+	returnStart = particle;
+	returnEnd = particle2;
+}
 stock void GetPointFromAngles(float startLoc[3], float angles[3], float distance, float output[3], TraceEntityFilter filter, int traceFlags)
 {
 	float endLoc[3];

@@ -293,7 +293,7 @@ void IberiaRunakaSelfDefense(IberiaRunaka npc, float gameTime, int target, float
 					}
 					if(NpcStats_IberiaIsEnemyMarked(target))
 						npc.m_flArmorToGive *= 1.25;
-					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, false,IberiaBeaconGiveArmor);
+					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, true,IberiaBeaconGiveArmor);
 					IberiaArmorEffect(npc.index, 150.0);
 				} 
 			}

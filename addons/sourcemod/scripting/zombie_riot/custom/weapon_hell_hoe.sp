@@ -131,7 +131,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 			
 			if (i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_2 && g_isPlayerInDeathMarch_HellHoe[client]) {
 				int newMana = Current_Mana[client] - 10;
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				if (newMana <= 0) {
@@ -262,7 +262,7 @@ public Action Weapon_Junker_Staff(int client, int weapon, const char[] classname
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -303,7 +303,7 @@ public Action Weapon_Junker_Staff_PAP1(int client, int weapon, const char[] clas
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -353,7 +353,7 @@ public Action Weapon_Junker_Staff_PAP2(int client, int weapon, const char[] clas
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -396,7 +396,7 @@ public Action Weapon_Angel_Sword(int client, int weapon, const char[] classname,
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -437,7 +437,7 @@ public Action Weapon_Angel_Sword_PAP(int client, int weapon, const char[] classn
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -480,7 +480,7 @@ public Action Weapon_Hell_Hoe(int client, int weapon, const char[] classname, bo
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;

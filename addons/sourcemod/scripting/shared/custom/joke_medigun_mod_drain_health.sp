@@ -10,6 +10,7 @@
 
 Handle g_DHookWeaponPostFrame;
 
+float f_MedigunDelayAttackThink[MAXENTITIES];
 
 void Medigun_PluginStart() {
 	Handle hGameConf_med = LoadGameConfigFile("zombie_riot");
@@ -29,7 +30,7 @@ void Medigun_PluginStart() {
 	if (!g_DHookWeaponPostFrame) {
 		SetFailState("Failed to setup detour for CBaseCombatWeapon::ItemPostFrame()");
 	}
-	
+	Zero(f_MedigunDelayAttackThink);
 	delete hGameConf_med;
 }
 
@@ -37,8 +38,21 @@ int MedigunModeSet[MAXTF2PLAYERS];
 
 void Medigun_OnEntityCreated(int entity) 
 {
-//	g_DHookMedigunPrimary.HookEntity(Hook_Pre, entity, DHook_MedigunPrimaryAttack);
+	g_DHookMedigunPrimary.HookEntity(Hook_Pre, entity, DHook_MedigunPrimaryAttack);
 	DHookEntity(g_DHookWeaponPostFrame, true, entity, .callback = OnMedigunPostFramePost);
+}
+
+public MRESReturn DHook_MedigunPrimaryAttack(int entity)
+{
+	if(f_MedigunDelayAttackThink[entity] < GetGameTime())
+	{
+		f_MedigunDelayAttackThink[entity] = GetGameTime() + 0.05;
+		return MRES_Ignored;
+	}
+	else
+	{
+		return MRES_Supercede;	
+	}
 }
 
 //static bool s_ForceGibRagdoll;
@@ -50,7 +64,6 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	PrevOwnerMedigun[medigun] = owner;
 	float What_type_Heal = Attributes_Get(medigun, 2046, 1.0);
-	
 	if(owner > 0 && owner<=MaxClients)
 	{
 		if(f_PreventMedigunCrashMaybe[owner] > GetGameTime())
@@ -183,7 +196,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						static float Entity_Position[3];
 						WorldSpaceCenter(healTarget, Entity_Position );
-						
+						AddHealthToUbersaw(owner, 1, 0.0015);
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime() * 3.0, DMG_PLASMA, medigun, _, Entity_Position);
 					}
 					else
@@ -207,6 +220,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						static float Entity_Position[3];
 						WorldSpaceCenter(healTarget, Entity_Position );
 						
+						AddHealthToUbersaw(owner, 1, 0.0005);
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 					}
 					

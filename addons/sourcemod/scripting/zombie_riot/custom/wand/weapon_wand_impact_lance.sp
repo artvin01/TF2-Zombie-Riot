@@ -89,7 +89,7 @@ void LanceDamageCalc(int client, int weapon, float &damage, bool checkvalidity =
 	{
 		if(!checkvalidity)
 		{
-			Mana_Regen_Delay[client] = GameTime + 1.5;
+			SDKhooks_SetManaRegenDelayTime(client, 1.5);
 			Mana_Hud_Delay[client] = 0.0;
 			
 			Current_Mana[client] -= mana_cost;
@@ -264,7 +264,7 @@ public void Impact_Lance_Throw_Lance(int client, int weapon, bool crit, int slot
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 			return;
 		}
-		Mana_Regen_Delay[client] = GameTime + 2.5;
+		SDKhooks_SetManaRegenDelayTime(client, 2.5);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;

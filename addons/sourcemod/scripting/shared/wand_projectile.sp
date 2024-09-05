@@ -71,7 +71,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		//if its too fast, then it can cause projectile devietion
 	}
 
-	if(CustomPos[0] != 0.0 || CustomPos[1] != 0.0)
+	if(client <= MaxClients && CustomPos[0] == 0.0 && CustomPos[1] == 0.0)
 	{
 		float tmp[3];
 		float actualBeamOffset[3];
@@ -304,10 +304,8 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}
 		case 11:
 		{
-			
 			Cryo_Touch(entity, target);
 		}
-		
 		case WEAPON_GLADIIA:
 		{
 			Gladiia_WandTouch(entity, target);
@@ -347,6 +345,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_MESSENGER_LAUNCHER:
 		{
 			Gun_MessengerTouch(entity, target);
+		}
+		case WEAPON_MAGNESIS:
+		{
+			Magnesis_ProjectileTouch(entity, target);
 		}
 	}
 #endif

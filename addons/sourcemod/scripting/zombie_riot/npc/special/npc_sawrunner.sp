@@ -344,8 +344,8 @@ public void SawRunner_ClotThink(int iNPC)
 									{
 										if(i_HealthBeforeSuit[target] > 0)
 										{
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 199999999.9, DMG_DROWN); //Make him oneshot the enemy if they have the quantum armor
-											Custom_Knockback(npc.index, target, 5000.0); //Kick them away.
+											DealTruedamageToEnemy(0, target, 99999999.9);
+											Custom_Knockback(npc.index, target, 1000.0); // Kick them away.
 										}
 										else
 										{
@@ -363,8 +363,7 @@ public void SawRunner_ClotThink(int iNPC)
 												Custom_Knockback(npc.index, target, 1000.0); //Give them massive knockback so they can get away/dont make this boy stuck.
 											}
 											
-											
-											SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth + 50.0, DMG_DROWN); //adding 100 damage so they cant cheese this with healing and very low hp people
+											DealTruedamageToEnemy(0, target, flMaxHealth + 50.0);
 										}
 									}
 									else

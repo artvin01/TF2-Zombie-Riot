@@ -1720,7 +1720,15 @@
 	}
 	"Old Times Desc"
 	{
-		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +4%% faster.\n1 less down, enemies heal 50%% more."
+		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +25%% dmg, +25%% dmg to cades, have 2x HP, +6%% faster.\n1 less down, enemies heal 50%% more."
+	}
+	"Secondary Mercs"
+	{
+		"en"	"Secondary Mercs"
+	}
+	"Secondary Mercs Desc"
+	{
+		"en"	"First batch of mercs failed already.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +4%% faster.\nEnemies heal 50%% more."
 	}
 	"BUSTING"
 	{
@@ -1745,5 +1753,49 @@
 	"Omega Desc"
 	{
 		"en"		"Possesses an arsenal of weapons, self-taught runaway soldier who works alone...for now."
+	}
+	"Barracks Iberian Runner Desc"
+	{
+		"en"	"Fast basic unit which has very light armor"	
+	}
+	"Barracks Iberian Gunner Desc"
+	{
+		"en"		"Basic Ranged unit which can shoot while moving. Has very slow speed"
+	}
+	"Barracks Iberian Tanker Desc"
+	{
+		"en"		"A stronger unit with basic armor"
+	}	
+	"Barracks Iberian Rocketeer Desc"
+	{
+		"en"		"Ranged unit which fires strong Rocket. It cannot predict"
+	}	
+	"Barracks Iberian Healer Desc"
+	{
+		"en"		"A melee unit that has basic armor and can heal allies on attack and death"
+	}
+	"Barracks Iberian Healtanker Desc" 
+	{
+		"en"		"Stong melee unit that has heavy armor and can heal allies on attack and death"
+	}	
+	"Barracks Iberia Boomstick Desc"
+	{
+		"en"		"Slow but strong hitting ranged unit"
+	}
+	"Barracks Iberian Guards Desc"
+	{
+		"en"		"Tanky melee units that could gain armor on hit"
+	}
+	"Barracks Iberian Elite Gunner Desc"
+	{
+		"en"		"A ranged unit that fires 6 shots very rapidly and reloads"
+	}	
+	"Barracks Iberia Headhunter Desc"
+	{
+		"en"		"Melee unit that does more damage to elite, bosses, and raidbosses and applies debuff to them"
+	}	
+	"Barracks Iberian Lighthouse Guardian Desc"
+	{
+		"en"		"Super unit that takes 2 slot. It does melee damage when it has armor. Then, it pulls out a shotgun to deal ranged damage. It will often buff near allies"
 	}
 }

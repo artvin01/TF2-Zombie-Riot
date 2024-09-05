@@ -101,7 +101,7 @@ void DHook_Setup()
 
 #if !defined RTS
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
-//	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
+	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 #endif
 
 #if defined ZR
@@ -171,6 +171,9 @@ void DHook_Setup()
 	m_Item = FindSendPropInfo("CEconEntity", "m_Item");
 	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, m_bOnlyIterateItemViewAttributes);
 	
+	//Fixes mediguns giving extra speed where it was not intended.
+	//gamedata first try!!
+	DHook_CreateDetour(gamedata, "CTFPlayer::TeamFortress_SetSpeed()", DHookCallback_TeamFortress_SetSpeed_Pre, DHookCallback_TeamFortress_SetSpeed_Post);
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -211,11 +214,58 @@ void DHook_Setup()
 	*/
 //	int ED_AllocCommentedOut;
 }
+int ClientThatWasChanged = 0;
+int SavedClassForClient = 0;
+public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
+{
+	if(pThis == -1)     
+		return MRES_Ignored;
 
+	int active = GetEntPropEnt(pThis, Prop_Send, "m_hActiveWeapon");
+	if(active != -1)
+	{
+		if(b_IsAMedigun[active])
+		{
+			int healTarget = GetEntPropEnt(active, Prop_Send, "m_hHealingTarget");
+			if(healTarget > 0 && healTarget <= MaxClients)
+			{
+				SavedClassForClient = GetEntProp(healTarget, Prop_Send, "m_iClass");
+				if(SavedClassForClient != view_as<int>(TFClass_Scout))
+				{
+					SavedClassForClient = -1;
+					return MRES_Ignored;
+				}
+
+				ClientThatWasChanged = healTarget;
+				SavedClassForClient = GetEntProp(healTarget, Prop_Send, "m_iClass");
+				TF2_SetPlayerClass_ZR(healTarget, TFClass_Medic, false, false);
+			}
+		}
+	}
+	return MRES_Ignored;
+}
+
+public MRESReturn DHookCallback_TeamFortress_SetSpeed_Post(int pThis)
+{
+	if(ClientThatWasChanged > 0 && ClientThatWasChanged <= MaxClients)
+	{
+		if(view_as<TFClassType>(SavedClassForClient) > TFClass_Unknown)
+			TF2_SetPlayerClass_ZR(ClientThatWasChanged, view_as<TFClassType>(SavedClassForClient), false, false);
+
+		SavedClassForClient = -1;
+		ClientThatWasChanged = -1;
+	}
+	return MRES_Ignored;
+}
 public MRESReturn Dhook_WantsLagCompensationOnEntity(int InitatedClient, Handle hReturn, Handle hParams)
 {
 	if(b_LagCompAlliedPlayers)
 	{
+		int target = DHookGetParam(hParams, 1);
+		if(target == InitatedClient)
+		{
+			return MRES_Ignored;
+		}
 		DHookSetReturn(hReturn, true);
 		return MRES_Supercede;
 	}
@@ -1798,7 +1848,27 @@ void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 {
-	return MRES_Supercede;	//NEVER APPLY. Causes you to not fire if accidentally pressing m2
+	RequestFrames(DHook_ScoutSecondaryFireAbilityDelay, 10, EntIndexToEntRef(entity));
+	//Allow short pushing of enemies.
+	return MRES_Ignored;
+}
+void DHook_ScoutSecondaryFireAbilityDelay(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(IsValidClient(client))
+		{
+			int Active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			if(Active != entity)
+				return;
+			
+			Enforcer_AbilityM2(client, entity, 1, 5, 1.25, true);
+			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 4.0);
+			Ability_Apply_Cooldown(client, 2, 4.0);
+		}
+	}
 }
 
 public MRESReturn Detour_MaintainBotQuota(int pThis)
