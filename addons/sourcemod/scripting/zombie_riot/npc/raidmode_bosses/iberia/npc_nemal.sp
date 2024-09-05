@@ -1095,6 +1095,7 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 				npc.DoSwingTrace(swingTrace, target,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
+				bool WasPlayerOnly = false;
 				bool DontGiveStack = false;
 				bool ResetStack = false;
 				if(npc.m_iNemalComboAttack >= 3)
@@ -1151,6 +1152,8 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 
 							TE_SetupBeamPoints(origin, vecHit, Shared_BEAM_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, colorLayer4, 1);
 							TE_SendToAll(0.0);
+							if(targetTrace <= MaxClients)
+								WasPlayerOnly = true;
 							
 										
 							if(IsValidClient(targetTrace))
@@ -1173,6 +1176,10 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					//Do Hit Effect
 					float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 					flMaxhealth *= 0.0025;
+					if(!WasPlayerOnly)
+					{
+						flMaxhealth *= 0.5;
+					}
 					if(i_RaidGrantExtra[npc.index] >= 4)
 					{
 						flMaxhealth *= 0.75;
@@ -1884,7 +1891,7 @@ bool NemalSnipingShots(Nemal npc)
 					delete hTrace;
 					if(DoLaserShow)
 					{
-						TE_SetupBeamPoints(pos_npc, SnipeTargets[Loop], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {0,0,255,255}, 3);
+						TE_SetupBeamPoints(pos_npc, SnipeTargets[Loop], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {125,125,255,255}, 3);
 						TE_SendToAll(0.0);
 					}
 				}
@@ -1915,6 +1922,8 @@ bool NemalSnipingShots(Nemal npc)
 						if(IsValidEnemy(npc.index, target))
 						{
 							float damageDealt = 40.0 * RaidModeScaling;
+							if(Loop > MaxClients)
+								damageDealt *= 0.5;
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, SnipeTargets[Loop]);
 						} 
@@ -2649,7 +2658,14 @@ public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 					int pitch = GetRandomInt(125,135);
 					EmitSoundToAll(NEMAL_AIRSLICE_HIT, Loop, SNDCHAN_AUTO, 75,_,0.8,pitch);
 					Custom_Knockback(OwnerEntity, Loop, 450.0, true);
-					SDKHooks_TakeDamage(Loop, OwnerEntity, OwnerEntity, f_WandDamage[Projectile], DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+					if(Loop <= MaxClients)
+					{
+						SDKHooks_TakeDamage(Loop, OwnerEntity, OwnerEntity, f_WandDamage[Projectile], DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+					}
+					else
+					{
+						SDKHooks_TakeDamage(Loop, OwnerEntity, OwnerEntity, f_WandDamage[Projectile] * 0.5, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+					}
 				
 					if(f_LowTeslarDebuff[Loop] - 5.0 < GetGameTime())
 						f_LowTeslarDebuff[Loop] = GetGameTime() + 5.0;
@@ -2725,6 +2741,14 @@ void NemalPlaceAirMines(int iNpc, float damage, float TimeUntillArm, float MaxDu
 			continue;
 
 		
+		if(b_ThisWasAnNpc[LoopTarget])
+		{
+			if(!Can_I_See_Enemy_Only(iNpc, LoopTarget))
+			{
+				continue;
+			}
+		}
+
 		WorldSpaceCenter(LoopTarget, PosEnemy);
 		float flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
 		float SpeedToPredict = flDistanceToTarget * 3.0;
@@ -2808,6 +2832,12 @@ float NemalMineExploder(int entity, int victim, float damage, int weapon)
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,1000.0});
 
 	NpcStats_IberiaMarkEnemy(victim, 15.0);
+	
+	//if it was a barracks units, half damage
+	if(victim > MaxClients)
+	{
+		return- (damage * 0.5);
+	}
 	return damage;
 }
 

@@ -16,7 +16,6 @@ static float Hose_HealLoss[MAXENTITIES] = { 0.0, ... };
 static float Hose_HealMin[MAXENTITIES] = { 0.0, ... };
 static int Hose_Owner[MAXENTITIES] = { -1, ... };
 static bool Hose_GiveUber[MAXENTITIES] = { false, ... };
-static bool Hose_ProjectileCharged[MAXENTITIES] = { false, ... };
 static float Hose_Uber[MAXPLAYERS + 1] = { 0.0, ... };
 static float Hose_NextHealSound[MAXPLAYERS + 1] = { 0.0, ... };
 static bool Hose_Charged[MAXPLAYERS + 1] = { false, ... };
@@ -179,7 +178,6 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 		Hose_HealMin[projectile] = minHeal;
 		Hose_Owner[projectile] = GetClientUserId(client);
 		Hose_GiveUber[projectile] = giveUber && !Hose_Charged[client];
-		Hose_ProjectileCharged[projectile] = Hose_Charged[client];
 
 		//Remove unused hook.
 		//SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);

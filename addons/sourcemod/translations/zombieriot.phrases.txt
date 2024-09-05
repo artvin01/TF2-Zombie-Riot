@@ -2558,8 +2558,8 @@
 	}
 	"Crouch To See Info Barracks"
 	{
-		"en"		"Crouch to see descriptions!\nTip:\nAmmoboxes give resources!\nPerkmachine perks work on units!"
-		"fr"		"Accroupissez-vous pour voir des descriptions!\nIndice:\nLes boîtes à munitions donne des ressources!\nLes Perks de la Machine à Perks fonctionne sur vos unités!"
+		"en"		"Crouch to see descriptions!\nTip:\nAmmoboxes give resources!"
+		"fr"		"Accroupissez-vous pour voir des descriptions!\nIndice:\nLes boîtes à munitions donne des ressources!"
 	}
 	"Toggle Upgrade Menu Barracks"
 	{
