@@ -92,6 +92,7 @@ float f_BoneZoneSummonValue[MAXENTITIES];
 float f_BoneZoneNumSummons[MAXENTITIES];
 Handle g_BoneZoneBuffers[MAXENTITIES];
 Function g_BoneZoneBuffFunction[MAXENTITIES];
+Function g_BoneZoneBuffVFX[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -226,6 +227,8 @@ void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSoundCustom(g_TankStepSound[i]);   }
 #endif
 	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
+	for (int i = 0; i < (sizeof(g_BoneZoneBuffDefaultSFX));   i++) { PrecacheSound(g_BoneZoneBuffDefaultSFX[i]);   }
+	
 	
 	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
 	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
@@ -2432,6 +2435,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	
 	//Turns a non-buffed skeleton into a buffed one, or vice-versa.
+	//Passing an invalid buffer will force the effect to go through
 	//TODO: The max health set by this will need to account for later waves where skeletons have higher HP. Probably do this by comparing
 	//its current max health to its actual max health, and then multiply the target max health accordingly.
 	public void BoneZone_SetBuffedState(bool buffed, int buffer = -1)
@@ -2442,6 +2446,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			return;
 		
 		bool AllBuffersGone = false;
+		bool hadBuffAtStart = this.BoneZone_GetBuffedState();
 		//If buffer is a valid entity, add it to the list of buffers or remove it.
 		//This way, we can force the buffed state without specifying a buffer if we so choose.
 		if (IsValidEntity(buffer))
@@ -2485,7 +2490,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		
 		//Add the buff if we are adding one, or remove it if we are trying to remove the buff and the list of buffers is empty:
-		if (buffed || AllBuffersGone && g_BoneZoneBuffFunction[this.index] != INVALID_FUNCTION)
+		if ((buffed || AllBuffersGone) && g_BoneZoneBuffFunction[this.index] != INVALID_FUNCTION)
 		{
 			Call_StartFunction(null, g_BoneZoneBuffFunction[this.index]);
 			Call_PushCell(this.index);
@@ -2496,6 +2501,36 @@ methodmap CClotBody < CBaseCombatCharacter
 			if (!buffed && GetEntProp(this.index, Prop_Data, "m_iHealth") > GetEntProp(this.index, Prop_Data, "m_iMaxHealth"))
 			{
 				SetEntProp(this.index, Prop_Data, "m_iHealth", GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
+			}
+
+			bool hasBuffNow = this.BoneZone_GetBuffedState();
+
+			if (hasBuffNow != hadBuffAtStart)
+			{
+				float skeleBuffPos[3];
+				this.GetAbsOrigin(skeleBuffPos);
+
+				if (g_BoneZoneBuffVFX[this.index] != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, g_BoneZoneBuffVFX[this.index]);
+					Call_PushCell(this.index);
+					Call_PushCell(hasBuffNow);
+					Call_PushArray(skeleBuffPos, sizeof(skeleBuffPos));
+					Call_Finish();
+				}
+				else
+				{
+					if (hasBuffNow)
+					{
+						ParticleEffectAt(skeleBuffPos, "spell_batball_impact_blue_3", 2.0);
+						EmitSoundToAll(g_BoneZoneBuffDefaultSFX[GetRandomInt(0, sizeof(g_BoneZoneBuffDefaultSFX) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, _, GetRandomInt(90, 110));
+					}
+					else
+					{
+						WorldSpaceCenter(this.index, skeleBuffPos);
+						ParticleEffectAt(skeleBuffPos, "bombinomicon_burningdebris_halloween_4", 2.0);
+					}
+				}
 			}
 		}
 	}
@@ -8382,6 +8417,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 	func_NPCActorEmoted[entity] = INVALID_FUNCTION;
 	func_NPCInteract[entity] = INVALID_FUNCTION;
 	g_BoneZoneBuffFunction[entity] = INVALID_FUNCTION;
+	g_BoneZoneBuffVFX[entity] = INVALID_FUNCTION;
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {
