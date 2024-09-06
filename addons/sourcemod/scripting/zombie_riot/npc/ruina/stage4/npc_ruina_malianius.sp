@@ -258,8 +258,8 @@ static void ClotThink(int iNPC)
 
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	
-	float radius = 250.0;
-	if(fl_ruina_battery[npc.index]>500.0)
+	float radius = 300.0;
+	if(fl_ruina_battery[npc.index]>500.0 && fl_ruina_battery_timer[npc.index] < GameTime)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
