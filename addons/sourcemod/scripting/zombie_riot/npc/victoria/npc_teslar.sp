@@ -2,77 +2,64 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/demoman_paincrticialdeath01.mp3",
-	"vo/demoman_paincrticialdeath02.mp3",
-	"vo/demoman_paincrticialdeath03.mp3",
-	"vo/demoman_paincrticialdeath04.mp3",
-	"vo/demoman_paincrticialdeath05.mp3",
+	"vo/medic_paincrticialdeath01.mp3",
+	"vo/medic_paincrticialdeath02.mp3",
+	"vo/medic_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/demoman_painsharp01.mp3",
-	"vo/demoman_painsharp02.mp3",
-	"vo/demoman_painsharp03.mp3",
-	"vo/demoman_painsharp04.mp3",
-	"vo/demoman_painsharp05.mp3",
-	"vo/demoman_painsharp06.mp3",
-	"vo/demoman_painsharp07.mp3",
+	")vo/medic_painsharp01.mp3",
+	")vo/medic_painsharp02.mp3",
+	")vo/medic_painsharp03.mp3",
+	")vo/medic_painsharp04.mp3",
+	")vo/medic_painsharp05.mp3",
+	")vo/medic_painsharp06.mp3",
+	")vo/medic_painsharp07.mp3",
+	")vo/medic_painsharp08.mp3",
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/demoman_battlecry01.mp3",
-	"vo/demoman_battlecry02.mp3",
-	"vo/demoman_battlecry03.mp3",
-	"vo/demoman_battlecry04.mp3",
+	")vo/medic_battlecry01.mp3",
+	")vo/medic_battlecry02.mp3",
+	")vo/medic_battlecry03.mp3",
+	")vo/medic_battlecry04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/knife_swing.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"weapons/airboat/airboat_gun_energy1.wav",
+	"weapons/airboat/airboat_gun_energy2.wav",
 };
 
-static const char g_AngerSounds[][] = {
-	"vo/taunts/demoman_taunts01.mp3",
-	"vo/taunts/demoman_taunts02.mp3",
-	"vo/taunts/demoman_taunts03.mp3",
-	"vo/taunts/demoman_taunts04.mp3",
-	"vo/taunts/demoman_taunts05.mp3",
-	"vo/taunts/demoman_taunts06.mp3",
-	"vo/taunts/demoman_taunts07.mp3",
-	"vo/taunts/demoman_taunts08.mp3",
-};
-
-void Victorian_Charger_OnMapStart_NPC()
+void Defanda_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_AngerSounds)); i++) { PrecacheSound(g_AngerSounds[i]); }
+	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Charger");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_charger");
-	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
-	data.IconCustom = false;
-	data.Flags = 0;
-	data.Category = Type_Victoria;
+	strcopy(data.Name, sizeof(data.Name), "Defanda");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_defanda");
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;								//download needed?
+	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Category = Type_Expidonsa;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianCharger(client, vecPos, vecAng, ally);
+	return Defanda(client, vecPos, vecAng, ally);
 }
 
-methodmap VictorianCharger < CClotBody
+methodmap Defanda < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -109,24 +96,21 @@ methodmap VictorianCharger < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
-	public void PlayAngerSound() 
-	{
-		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 75);
-	}
 	
 	
-	public VictorianCharger(int client, float vecPos[3], float vecAng[3], int ally)
+	public Defanda(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianCharger npc = view_as<VictorianCharger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "17500", ally));
+		Defanda npc = view_as<Defanda>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(0);
+		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
 		
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -134,49 +118,43 @@ methodmap VictorianCharger < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-
-		func_NPCDeath[npc.index] = view_as<Function>(VictorianCharger_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianCharger_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictorianCharger_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 50.0;
-		npc.m_flNextRangedAttack = GetGameTime();
-		npc.Anger = false;
+		npc.m_flSpeed = 180.0;
 		
-		npc.m_flMeleeArmor = 1.5;
-		npc.m_flRangedArmor = 0.9;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
-		SetVariantString("1.5");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/sept2014_poachers_safari_jacket/sept2014_poachers_safari_jacket.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2015_death_racer_helmet/hwn2015_death_racer_helmet.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/sum23_uber_wear/sum23_uber_wear.mdl");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_thunder_dome_style1/hwn2023_thunder_dome_style1.mdl");
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_stunt_suit_style2/hwn2023_stunt_suit_style2.mdl");
-
-
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 175, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 100, 175, 100, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
 		return npc;
 	}
 }
 
-public void VictorianCharger_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
-	VictorianCharger npc = view_as<VictorianCharger>(iNPC);
+	Defanda npc = view_as<Defanda>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -202,28 +180,7 @@ public void VictorianCharger_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-
-	float TimeMultiplier = 1.0;
-	TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
-
-	TimeMultiplier *= 0.50;
-
-	if(TimeMultiplier > 10.0)
-	{
-		TimeMultiplier = 10.0;
-		if(!npc.Anger)
-		{
-			npc.PlayAngerSound();
-			npc.Anger = true;
-		}
-	}
-	if(TimeMultiplier < 1.0)
-	{
-		TimeMultiplier = 1.0;
-	}
-
-	npc.m_flSpeed = (50.0 * TimeMultiplier);
-
+	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -240,7 +197,7 @@ public void VictorianCharger_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		VictorianChargerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		DefandaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -250,9 +207,9 @@ public void VictorianCharger_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictorianCharger_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianCharger npc = view_as<VictorianCharger>(victim);
+	Defanda npc = view_as<Defanda>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -266,14 +223,18 @@ public Action VictorianCharger_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void VictorianCharger_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
-	VictorianCharger npc = view_as<VictorianCharger>(entity);
+	Defanda npc = view_as<Defanda>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
+	ExpidonsaRemoveEffects(entity);
 		
+	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -283,11 +244,11 @@ public void VictorianCharger_NPCDeath(int entity)
 
 }
 
-void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int target, float distance)
+void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
-		if(npc.m_flAttackHappens < gameTime)
+		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
 			npc.m_flAttackHappens = 0.0;
 			
@@ -305,35 +266,26 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 40.0;
-					float TimeMultiplier = 1.0;
-					TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
-					TimeMultiplier *= 0.50;
-					if(TimeMultiplier > 10.0)
-					{
-						TimeMultiplier = 10.0;
-					}
-
-					damageDealt *= TimeMultiplier;
-
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 2.0;
-					if(NpcStats_IsEnemySilenced(npc.index))
-					{
-						damageDealt *= 0.75;
-					}
+
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
+					if(target <= MaxClients)
+					{
+						if(f_LowTeslarDebuff[targetTrace] - 5.0 < GetGameTime())
+							f_LowTeslarDebuff[targetTrace] = GetGameTime() + 5.0;
+					}		
 				} 
 			}
 			delete swingTrace;
-			npc.m_flNextRangedAttack = GetGameTime(npc.index);
 		}
 	}
 
-	if(gameTime > npc.m_flNextMeleeAttack)
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
@@ -345,12 +297,13 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 						
-				npc.m_flAttackHappens = gameTime + 0.1;
-				npc.m_flDoingAnimation = gameTime + 0.1;
-				npc.m_flNextMeleeAttack = gameTime + 2.4;
+				npc.m_flAttackHappens = gameTime + 0.25;
+				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}
 	}
 }
+
