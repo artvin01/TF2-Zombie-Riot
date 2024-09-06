@@ -174,9 +174,8 @@ public void SeabornEngineer_ClotThink(int iNPC)
 			}
 		}
 		
-		if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])
-			GiveNpcOutLineLastOrBoss(npc.index, false);
 		
+		b_thisNpcHasAnOutline[npc.index] = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flNextRangedAttack = FAR_FUTURE;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -194,11 +193,9 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				//CClotBody building = view_as<CClotBody>(entity);
 				if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
 				{
-					PrintToChatAll("test4");
 					b_ThisEntityIgnored[entity] = true;
 
-					if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])
-						GiveNpcOutLineLastOrBoss(npc.index, true);
+					b_thisNpcHasAnOutline[npc.index] = true;
 					
 					npc.m_iTarget = 0;
 					npc.m_iTargetAlly = entity;
