@@ -2090,7 +2090,7 @@ void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
+	if(i_npc_type[victim])//if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
 		float amt = fl_ruina_buff_amt[entity];
 		Ruina_Npc_Give_Shield(victim, amt);
