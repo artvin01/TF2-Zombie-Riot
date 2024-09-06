@@ -13,6 +13,7 @@ static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
+static bool TripleLol;
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -573,17 +574,44 @@ methodmap Nemal < CClotBody
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+		TripleLol = false;
+		if(!StrContains(data, "triple_enemies"))
+		{
+			TripleLol = true;
+			i_RaidGrantExtra[npc.index] = 4;
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Sorry {blue}Sensal's{default} he's comming a bit late.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Hey {blue}Sensal's{default}, im here.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Isnt this overkill?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Sorry but thats all.");
+				}
+			}
+		}
+		if(!TripleLol)
+		{
+			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Nemal_Win);
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid.mp3");
+			music.Time = 158;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Morning Moon");
+			strcopy(music.Artist, sizeof(music.Artist), "Hopeku");
+			Music_SetRaidMusic(music);
+		}
 
-
-		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Nemal_Win);
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid.mp3");
-		music.Time = 158;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Morning Moon");
-		strcopy(music.Artist, sizeof(music.Artist), "Hopeku");
-		Music_SetRaidMusic(music);
 		npc.m_iChanged_WalkCycle = -1;
 
 		int skin = 1;
@@ -2093,7 +2121,7 @@ bool NemalSummonSilvester(Nemal npc)
 				CPrintToChatAll("{lightblue}Nemal{default}: New phone who this? Oh, you finally came!");
 			}
 		}
-		if(i_RaidGrantExtra[npc.index] >= 3)
+		if(i_RaidGrantExtra[npc.index] >= 3 && !TripleLol)
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
@@ -2896,6 +2924,8 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
+			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
 		}
 	}
 }
