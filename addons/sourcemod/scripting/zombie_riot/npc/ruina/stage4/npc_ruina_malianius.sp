@@ -258,7 +258,7 @@ static void ClotThink(int iNPC)
 
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	
-	
+	float radius = 250.0;
 	if(fl_ruina_battery[npc.index]>500.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
@@ -273,11 +273,13 @@ static void ClotThink(int iNPC)
 
 		npc.m_flSpeed = 0.0;
 
-		TE_SetupBeamRingPoint(Npc_Vec, 250*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
+		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
 		TE_SendToAll();
 
-		npc.m_flRangedArmor = 0.25;
-		npc.m_flMeleeArmor 	= 0.25;
+		Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.9);	//10% resistances
+
+		npc.m_flRangedArmor = 0.1;
+		npc.m_flMeleeArmor 	= 0.1;
 
 		Fire_Random_Ion(npc);
 
@@ -288,7 +290,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Battery_Buff(npc.index, 250.0, 120.0);
+		Master_Apply_Battery_Buff(npc.index, radius, 120.0);
 
 		if(fl_ruina_battery_timer[npc.index] < GameTime + 3.0 && !npc.Anger && fl_ruina_battery_timer[npc.index] > GameTime + 2.0)
 		{
@@ -396,104 +398,60 @@ static void ClotThink(int iNPC)
 
 static void Fire_Random_Ion(Malianius npc)
 {
-	int target = -1;
-
-	for(int client = 1; client <= MaxClients; client++)
+	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+	int enemy_2[1];
+	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
+	for(int i; i < sizeof(enemy_2); i++)
 	{
-		if(target != -1)
-			break;
-		
-		if(!IsValidEnemy(npc.index, client))
-			continue;
-
-		int Enemy_I_See = Can_I_See_Enemy(npc.index, client);
-
-		if(IsValidEnemy(npc.index, Enemy_I_See))
+		if(enemy_2[i])
 		{
-			target = Enemy_I_See;
+			int color[4]; Ruina_Color(color);
+
+			float Predicted_Pos[3],
+			SubjectAbsVelocity[3],
+			vecTarget[3];
+			WorldSpaceCenter(enemy_2[i],vecTarget);
+
+			GetEntPropVector(enemy_2[i], Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+
+			float Time = 1.0;
+
+			ScaleVector(SubjectAbsVelocity, Time);
+			AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
+
+			//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
+
+			float Radius = 250.0;
+
+			float Thickness = 6.0;
+			TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
+			TE_SendToAll();
+			TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
+			TE_SendToAll();
+
+			EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Predicted_Pos);
+			DataPack pack;
+			CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(EntIndexToEntRef(npc.index));
+			pack.WriteFloatArray(Predicted_Pos, sizeof(Predicted_Pos));
+			pack.WriteCellArray(color, sizeof(color));
+			pack.WriteFloat(Radius);		//radius
+			pack.WriteFloat(400.0);			//dmg
+			pack.WriteFloat(0.1);			//Sickness %
+			pack.WriteCell(200);			//Sickness flat
+			pack.WriteCell(true);			//Override sickness timeout
+
+			if(!AtEdictLimit(EDICT_NPC))
+			{
+				float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
+
+				int laser;
+				laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
+
+				CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+			}
 		}
 	}
-	for(int a; a < i_MaxcountNpcTotal; a++)
-	{
-		if(target != -1)
-			break;
-
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
-
-		if(!IsValidEnemy(npc.index, entity))
-			continue;
-
-		int Enemy_I_See = Can_I_See_Enemy(npc.index, entity);
-
-		if(IsValidEnemy(npc.index, Enemy_I_See))
-		{
-			target = Enemy_I_See;
-		}
-	}
-
-	for(int a; a < i_MaxcountBuilding; a++)
-	{
-		if(target != -1)
-			break;
-
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
-		if(!IsValidEnemy(npc.index, entity))
-			continue;
-
-		int Enemy_I_See = Can_I_See_Enemy(npc.index, entity);
-
-		if(IsValidEnemy(npc.index, Enemy_I_See))
-		{
-			target = Enemy_I_See;
-		}
-	}
-
-	if(IsValidEntity(target))
-	{
-		int color[4]; Ruina_Color(color);
-
-		float Predicted_Pos[3],
-		SubjectAbsVelocity[3],
-		vecTarget[3];
-		WorldSpaceCenter(target,vecTarget);
-
-		GetEntPropVector(target, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
-
-		float Time = 1.0;
-
-		ScaleVector(SubjectAbsVelocity, Time);
-		AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
-
-		//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
-
-		float Radius = 250.0;
-
-		float Thickness = 6.0;
-		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
-		TE_SendToAll();
-		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
-		TE_SendToAll();
-
-		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Predicted_Pos);
-		DataPack pack;
-		CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(npc.index));
-		pack.WriteFloatArray(Predicted_Pos, sizeof(Predicted_Pos));
-		pack.WriteCellArray(color, sizeof(color));
-		pack.WriteFloat(Radius);		//radius
-		pack.WriteFloat(500.0);			//dmg
-		pack.WriteFloat(0.1);			//Sickness %
-		pack.WriteCell(200);			//Sickness flat
-		pack.WriteCell(true);			//Override sickness timeout
-
-		float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
-
-		int laser;
-		laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
-
-		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-	}
-
 }
 static void Malianius_Effects_Attack(Malianius npc, float Target_Vec[3], int GetClosestEnemyToAttack, float flDistanceToTarget)
 {

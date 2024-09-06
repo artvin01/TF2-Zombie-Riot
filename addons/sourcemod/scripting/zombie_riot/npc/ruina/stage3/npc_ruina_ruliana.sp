@@ -188,7 +188,10 @@ methodmap Ruliana < CClotBody
 		EmitSoundToAll(g_AngerSounds2[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_AngerSounds2[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
-		EmitSoundToAll("hl1/fvox/morphine_shot.wav", this.index, _, SNDLEVEL_ROCKET);	//EXTREME MORPHINE ADMINISTERED
+		EmitSoundToAll("hl1/fvox/morphine_shot.wav", _, _, SNDLEVEL_ROCKET);	//EXTREME MORPHINE ADMINISTERED
+		EmitSoundToAll("hl1/fvox/morphine_shot.wav", _, _, SNDLEVEL_ROCKET);	//EXTREME MORPHINE ADMINISTERED
+		EmitSoundToAll("hl1/fvox/morphine_shot.wav", _, _, SNDLEVEL_ROCKET);	//EXTREME MORPHINE ADMINISTERED
+		EmitSoundToAll("hl1/fvox/morphine_shot.wav", _, _, SNDLEVEL_ROCKET);	//EXTREME MORPHINE ADMINISTERED
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::Playnpc.AngerSound()");
@@ -300,7 +303,7 @@ methodmap Ruliana < CClotBody
 		SetVariantInt(RUINA_WINGS_1);
 		AcceptEntityInput(npc.m_iWearable3, "SetBodyGroup");
 
-		b_angered_once[npc.index] = true;
+		b_angered_once[npc.index] = false;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -443,11 +446,11 @@ static void ClotThink(int iNPC)
 			{
 				npc.m_flDoingAnimation = GameTime + 1.0;
 				if(Ratio < 0.1)
-					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 3.0);
+					Master_Apply_Speed_Buff(npc.index, 25000.0, 0.75, 3.0);
 				else
-					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 1.75);
+					Master_Apply_Speed_Buff(npc.index, 25000.0, 0.75, 1.75);
 
-				Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.9);	//10% dmg resist
+				Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.9);	//10% dmg resist
 			}
 		}
 		else
@@ -694,7 +697,7 @@ static bool Retreat(Ruliana npc, bool custom = false)
 		return true;
 
 	float radius = (npc.Anger ? 325.0 : 250.0);
-	float dmg = (npc.Anger ? 600.0 : 300.0);
+	float dmg = (npc.Anger ? 1200.0 : 600.0);
 	float Time = (npc.Anger ? 1.25 : 1.5);
 	npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 
@@ -986,24 +989,23 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 	if(Ratio < 0.5)
 	{
-		if(!npc.Anger) 
+		npc.Anger = true; //	>:(
+		if(!b_angered_once[npc.index])
 		{
-			npc.Anger = true; //	>:(
-			if(!b_angered_once[npc.index])
-			{
-				b_angered_once[npc.index] = true;
-				npc.PlayAngerSound();
+			b_angered_once[npc.index] = true;
+			npc.PlayAngerSound();
 
-				fl_npc_basespeed = 330.0;
-				
-				if(npc.m_bThisNpcIsABoss)
-				{
-					npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
-				}
+			fl_npc_basespeed = 330.0;
+			
+			if(npc.m_bThisNpcIsABoss)
+			{
+				npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 			}
 		}
-		else
-			npc.Anger = false;
+}
+	else
+	{
+		npc.Anger = false;
 	}
 	
 	

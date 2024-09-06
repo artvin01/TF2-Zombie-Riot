@@ -661,7 +661,7 @@ methodmap Blitzkrieg < CClotBody
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: My limiter's been turned off{crimson}good luck{default}.", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: My limiter's been turned off{crimson} good luck{default}.", c_NpcName[npc.index]);
 					}
 				}
 			}

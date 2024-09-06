@@ -161,7 +161,7 @@ void IberiaArmorEffect(int entity, float range)
 	npc1.PlayArmorSound();
 }
 
-void IberiaBeaconGiveArmor(int entity, int victim)
+void IberiaBeaconGiveArmor(int entity, int victim, float &healingammount)
 {
 	if(i_NpcIsABuilding[victim])
 		return;
