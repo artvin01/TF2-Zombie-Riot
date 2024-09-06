@@ -561,14 +561,19 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 2000.0*(Ratio-Difference);
+		float Give = 1500.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
 	}
 	else if(wave <=60)
 	{
-		
+		float Health_Post = (Health-damage);
+		float Difference = Health_Post/Max_Health;
+		float Give = 1750.0*(Ratio-Difference);
+		//turn damage taken into energy
+		Ruina_Add_Battery(npc.index, Give);	
+		//CPrintToChatAll("Gave %f battery",Give );
 	}
 	else	//freeplay
 	{

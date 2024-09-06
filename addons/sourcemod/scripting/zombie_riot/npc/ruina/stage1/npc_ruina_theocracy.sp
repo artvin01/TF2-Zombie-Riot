@@ -322,8 +322,8 @@ static void ClotThink(int iNPC)
 		if(npc.m_flDoingAnimation<=GetGameTime())
 			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 		
-		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.5);	//50% resistances
-		Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.20);	//25% speed bonus, going bellow 1.0 will make npc's slower
+		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.8);	//20% resistances
+		Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
 		Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.1);	//10% dmg bonus
 		Master_Apply_Shield_Buff(npc.index, 250.0, 0.5);	//50% block shield
 		
