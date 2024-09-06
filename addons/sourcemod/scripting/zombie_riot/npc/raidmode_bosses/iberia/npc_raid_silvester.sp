@@ -181,6 +181,11 @@ methodmap Silvester < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
+	property float m_flChangeTargetsSilvester
+	{
+		public get()							{ return fl_NextRangedAttack[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextRangedAttack[this.index] = TempValueForProperty; }
+	}
 	property float m_flSilvesterAirbornAttack
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
@@ -719,7 +724,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			ForceRedo = true;
 		}
-		if(ForceRedo || npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+		if(ForceRedo || npc.m_flChangeTargetsSilvester < GetGameTime(npc.index))
 		{
 			//Get the next closest target!
 			static float flPos[3]; 
@@ -735,7 +740,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_flSilvesterChangeTargets += 1.0;
 			}
 			npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,allynpc.m_iTarget, flPos);
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + (GetRandomRetargetTime() * 2.0);
+			npc.m_flChangeTargetsSilvester = GetGameTime(npc.index) + (GetRandomRetargetTime() * 1.35);
 		}
 		npc.m_iTarget = npc.m_iTargetWalkTo;
 		if(!IsValidEntity(npc.m_iTargetWalkTo))
@@ -794,7 +799,7 @@ static void Internal_ClotThink(int iNPC)
 		}
 		npc.m_iTargetWalkTo = npc.m_iTarget;
 	}
-	if(npc.m_flSetTargetFromWalkTarget > GetGameTime(npc.index))
+	if(npc.m_flSetTargetFromWalkTarget < GetGameTime(npc.index))
 	{
 		//Set attack target
 		npc.m_flSetTargetFromWalkTarget = GetGameTime(npc.index) + 1.0;
@@ -881,6 +886,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		//theres no valid enemy somehow somewhy to walk to, reset.
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flChangeTargetsSilvester = 0.0;
 	}
 
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
@@ -1138,7 +1144,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 		{
 			npc.AddGesture("ACT_MP_THROW");
 			npc.PlayRangedSound();
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			float VecEnemy[3]; WorldSpaceCenter(target, VecEnemy);
 			int MaxCount = RoundToNearest(2.0 * RaidModeScaling);
 			npc.FaceTowards(VecEnemy, 99999.9);
 			float pos[3];
@@ -1187,9 +1193,9 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				float VecEnemy[3]; WorldSpaceCenter(target, VecEnemy);
 				npc.FaceTowards(VecEnemy, 15000.0);
-				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+				npc.DoSwingTrace(swingTrace, target,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
 				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
@@ -1318,7 +1324,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 				npc.f_SilvesterMeleeSliceHappening = 0.0;
 				if(IsValidEnemy(npc.index, target))
 				{
-					float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+					float VecEnemy[3]; WorldSpaceCenter(target, VecEnemy);
 					npc.FaceTowards(VecEnemy, 15000.0);
 					float DamageCalc = 35.0 * RaidModeScaling;
 					NemalAirSlice(npc.index, target, DamageCalc, 215, 150, 0, 200.0, 6, 1000.0, "rockettrail_fire");
