@@ -454,6 +454,7 @@ public void Ruina_NPCDeath_Override(int entity)
 		//CPrintToChatAll("I died, but master was still alive: %i, now removing one, master has %i slaves left", entity, i_master_current_slaves[Master_Id_Main]);
 	}
 	Ruina_Remove_Shield(entity);
+	i_npc_type[entity] = 0;
 }
 public int Ruina_Get_Target(int iNPC, float GameTime)
 {
