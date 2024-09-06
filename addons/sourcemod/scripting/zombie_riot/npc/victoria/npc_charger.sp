@@ -37,13 +37,25 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
 
-void VictorianCharger_OnMapStart_NPC()
+static const char g_AngerSounds[][] = {
+	"vo/taunts/demoman_taunts01.mp3",
+	"vo/taunts/demoman_taunts02.mp3",
+	"vo/taunts/demoman_taunts03.mp3",
+	"vo/taunts/demoman_taunts04.mp3",
+	"vo/taunts/demoman_taunts05.mp3",
+	"vo/taunts/demoman_taunts06.mp3",
+	"vo/taunts/demoman_taunts07.mp3",
+	"vo/taunts/demoman_taunts08.mp3",
+};
+
+void Victorian_Charger_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_AngerSounds)); i++) { PrecacheSound(g_AngerSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Charger");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_charger");
@@ -97,6 +109,10 @@ methodmap VictorianCharger < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
+	public void PlayAngerSound() 
+	{
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 75);
+	}
 	
 	
 	public VictorianCharger(int client, float vecPos[3], float vecAng[3], int ally)
@@ -111,7 +127,6 @@ methodmap VictorianCharger < CClotBody
 		
 		SetVariantInt(0);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
 		
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -131,7 +146,10 @@ methodmap VictorianCharger < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 50.0;
 		npc.m_flNextRangedAttack = GetGameTime();
+		npc.Anger = false;
 		
+		npc.m_flMeleeArmor = 1.5;
+		npc.m_flRangedArmor = 0.9;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -141,9 +159,9 @@ methodmap VictorianCharger < CClotBody
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2023_clowns_coverup/hwn2023_clowns_coverup_demo.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_thunder_dome_style1/hwn2023_thunder_dome_style1.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2022_nightbane_brim/hwn2022_nightbane_brim.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_stunt_suit_style2/hwn2023_stunt_suit_style2.mdl");
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
 
@@ -195,6 +213,11 @@ public void VictorianCharger_ClotThink(int iNPC)
 	if(TimeMultiplier > 10.0)
 	{
 		TimeMultiplier = 10.0;
+		if(!npc.Anger)
+		{
+			npc.PlayAngerSound();
+			npc.Anger = true;
+		}
 	}
 	if(TimeMultiplier < 1.0)
 	{

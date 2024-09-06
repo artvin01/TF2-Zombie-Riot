@@ -3211,4 +3211,12 @@
 	{
 		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
 	}
+	"Batter"
+	{
+		"en"	"Batter"
+	}
+	"Charger"
+	{
+		"en"	"Charger"
+	}
 }

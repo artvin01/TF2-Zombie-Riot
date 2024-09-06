@@ -561,6 +561,12 @@ void NPC_ConfigSetup()
 	IberiaDeathMarker_OnMapStart_NPC();
 	Iberia_inqusitor_irene_OnMapStart_NPC();
 
+//Victorian Raid
+//wave 1~15
+	Victoria_Batter_OnMapStart_NPC();
+	Victorian_Charger_OnMapStart_NPC();
+
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -1602,3 +1608,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
+
+//Victoria
+//Wave 1~15
+#include "zombie_riot/npc/victoria/npc_batter.sp"
+#include "zombie_riot/npc/victoria/npc_charger.sp"
