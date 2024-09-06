@@ -207,6 +207,9 @@ methodmap Draconia < CClotBody
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
