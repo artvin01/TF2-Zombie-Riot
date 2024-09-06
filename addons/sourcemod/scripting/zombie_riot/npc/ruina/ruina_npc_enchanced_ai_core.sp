@@ -454,6 +454,7 @@ public void Ruina_NPCDeath_Override(int entity)
 		//CPrintToChatAll("I died, but master was still alive: %i, now removing one, master has %i slaves left", entity, i_master_current_slaves[Master_Id_Main]);
 	}
 	Ruina_Remove_Shield(entity);
+	i_npc_type[entity] = 0;
 }
 public int Ruina_Get_Target(int iNPC, float GameTime)
 {
@@ -560,7 +561,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 1000.0*(Ratio-Difference);
+		float Give = 2000.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
@@ -571,7 +572,12 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	}
 	else	//freeplay
 	{
-
+		float Health_Post = (Health-damage);
+		float Difference = Health_Post/Max_Health;
+		float Give = 3000.0*(Ratio-Difference);
+		//turn damage taken into energy
+		Ruina_Add_Battery(npc.index, Give);	
+		//CPrintToChatAll("Gave %f battery",Give );
 	}
 }
 
@@ -1691,11 +1697,24 @@ void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, flo
 
 	if(fl_ruina_helia_healing_timer[npc.index]<=GameTime)
 	{	
-		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.1, false, _ , Ruina_HealVisualEffect);
-		DesertYadeamDoHealEffect(npc.index, Range);
+		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.3, false, Ruina_NerfHealingOnBossesOrHealers , Ruina_HealVisualEffect);
+		//DesertYadeamDoHealEffect(npc.index, Range);
+		int color[4]; Ruina_Color(color);
+		float Npc_Vec[3];
+		GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=2.5;
+		TE_SetupBeamRingPoint(Npc_Vec, 0.0, Range*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, 10.0, 1.0, color, 1, 0);
+		TE_SendToAll();
 		fl_ruina_helia_healing_timer[npc.index]=cylce_speed+GameTime;
 	}
 }
+bool Ruina_NerfHealingOnBossesOrHealers(int entity, int victim, float &healingammount)
+{
+	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim] || b_ruina_npc_healer[victim])
+		healingammount *=0.5;
+
+	return false;
+}
+
 void Ruina_HealVisualEffect(int healer, int victim)
 {
 	CClotBody npc = view_as<CClotBody>(victim);
@@ -2049,7 +2068,7 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 		}
 	}
 }
-public void Ruina_Battery_Buff(int entity, int victim, float damage, int weapon)
+void Ruina_Battery_Buff(int entity, int victim, float damage, int weapon)
 {
 	if(entity==victim)
 		return;	//don't buff itself!
@@ -2063,7 +2082,7 @@ public void Ruina_Battery_Buff(int entity, int victim, float damage, int weapon)
 	
 	Ruina_Add_Battery(victim, fl_ruina_buff_amt[entity]);
 }
-public void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
+void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
 {
 	if(entity==victim)
 		return;	//don't buff itself!
@@ -2072,13 +2091,13 @@ public void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
+	if(i_npc_type[victim])//if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
 		float amt = fl_ruina_buff_amt[entity];
 		Ruina_Npc_Give_Shield(victim, amt);
 	}
 }
-public void Ruina_Teleport_Buff(int entity, int victim, float damage, int weapon)
+void Ruina_Teleport_Buff(int entity, int victim, float damage, int weapon)
 {
 	if(entity==victim)
 		return;	//don't buff itself!
@@ -2087,7 +2106,7 @@ public void Ruina_Teleport_Buff(int entity, int victim, float damage, int weapon
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
+	//if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
 		b_ruina_allow_teleport[victim]=true;
 	}
@@ -2097,7 +2116,7 @@ public void Ruina_Teleport_Buff(int entity, int victim, float damage, int weapon
 	f_Ruina_Defense_Buff[entity] = 0.0;
 	f_Ruina_Attack_Buff[entity] = 0.0;
 */
-public void Ruina_Apply_Defense_buff(int entity, int victim, float damage, int weapon)
+void Ruina_Apply_Defense_buff(int entity, int victim, float damage, int weapon)
 {
 	if(entity==victim)
 		return;	//don't buff itself!
@@ -2106,7 +2125,7 @@ public void Ruina_Apply_Defense_buff(int entity, int victim, float damage, int w
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
+	//if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
 		float time = fl_ruina_buff_time[entity];
 		float amt = fl_ruina_buff_amt[entity];
@@ -2127,7 +2146,7 @@ public void Ruina_Apply_Defense_buff(int entity, int victim, float damage, int w
 	}
 	
 }
-public void Ruina_Apply_Speed_buff(int entity, int victim, float damage, int weapon)
+void Ruina_Apply_Speed_buff(int entity, int victim, float damage, int weapon)
 {
 	if(entity==victim)
 		return;	//don't buff itself!
@@ -2137,7 +2156,7 @@ public void Ruina_Apply_Speed_buff(int entity, int victim, float damage, int wea
 	
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
+	//if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
 		float time = fl_ruina_buff_time[entity];
 		float amt = fl_ruina_buff_amt[entity];
@@ -2166,7 +2185,7 @@ void Ruina_Apply_Attack_buff(int entity, int victim, float damage, int weapon)
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
+	//if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
 		float time = fl_ruina_buff_time[entity];
 		float amt = fl_ruina_buff_amt[entity];
@@ -2209,7 +2228,7 @@ public Action Timer_Move_Particle(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-public void Ruina_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecorigin[3])
+void Ruina_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecorigin[3])
 {
 	float originalPostionTrace[3];
 	float startPostionTrace[3];

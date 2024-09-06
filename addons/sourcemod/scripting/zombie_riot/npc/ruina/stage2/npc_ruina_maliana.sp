@@ -152,6 +152,9 @@ methodmap Maliana < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 0;
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		/*
 			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");

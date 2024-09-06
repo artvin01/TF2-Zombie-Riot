@@ -509,7 +509,7 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(PrimaryThreatIndex, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, {125.0, 100.0, 150.0}, {-125.0, -125.0, -150.0}))
+			if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 			{	
 				int target = TR_GetEntityIndex(swingTrace);	
 				
