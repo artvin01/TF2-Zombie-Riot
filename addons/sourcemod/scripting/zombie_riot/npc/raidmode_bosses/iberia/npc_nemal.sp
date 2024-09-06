@@ -182,6 +182,11 @@ methodmap Nemal < CClotBody
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
+	property int m_iPlayerScaledStart
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
 	property float m_flTimeUntillMark
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -553,6 +558,9 @@ methodmap Nemal < CClotBody
 		}
 		
 		float amount_of_people = float(CountPlayersOnRed());
+
+		npc.m_iPlayerScaledStart = CountPlayersOnRed();
+		
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
@@ -1184,6 +1192,9 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					{
 						flMaxhealth *= 0.75;
 					}
+					int CurrentPlayersAlive = CountPlayersOnRed(1);
+					float HpScalingDecreace = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
+					flMaxhealth *= HpScalingDecreace;
 					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{

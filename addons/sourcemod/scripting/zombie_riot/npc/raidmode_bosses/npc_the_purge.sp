@@ -840,6 +840,9 @@ static void ClotDeath(int entity)
 {
 	ThePurge npc = view_as<ThePurge>(entity);
 	npc.PlayMinigunStopSound();
+	npc.PlayMinigunStopSound();
+	npc.StopMinigunSound();
+	npc.StopMinigunSound();
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
