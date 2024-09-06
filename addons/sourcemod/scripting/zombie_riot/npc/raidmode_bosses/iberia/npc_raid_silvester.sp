@@ -326,7 +326,7 @@ methodmap Silvester < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		b_SilvLine[npc.index] = false;
-		npc.m_flSpeed = 335.0;
+		npc.m_flSpeed = 320.0;
 		npc.i_GunMode = 0;
 		npc.m_flSilvesterSlicerCD = GetGameTime() + 6.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
@@ -762,7 +762,7 @@ static void Internal_ClotThink(int iNPC)
 					NPC_StopPathing(npc.index);
 					npc.m_iChanged_WalkCycle = 88;
 					npc.SetActivity("ACT_MP_STAND_MELEE");
-					npc.m_flSpeed = 335.0;
+					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
 					CPrintToChatAll("{gold}Silvester{default}: Oh you seem to be alone, i'll wait.");
 					b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
@@ -1048,7 +1048,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 					npc.StartPathing();
-					npc.m_flSpeed = 335.0;
+					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
 				}	
 			}
@@ -1060,7 +1060,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.m_iChanged_WalkCycle = 6;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE_ALLCLASS");
 					npc.StartPathing();
-					npc.m_flSpeed = 335.0;
+					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
 				}	
 			}
@@ -1327,7 +1327,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 		}
 		else if(GetGameTime(npc.index) > npc.f_SilvesterMeleeSliceHappeningCD)
 		{				
-			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
 			{
 				return 1;
 			}

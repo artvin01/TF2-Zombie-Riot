@@ -624,7 +624,8 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 	{
 		DamageRes *= 0.95;
 	} 
-	if(RaidbossIgnoreBuildingsLogic(1) && GetTeam(victim) == TFTeam_Red)
+	//if inflictor is 9999999, then that means its called by seperate code, HUD elements.
+	if(RaidbossIgnoreBuildingsLogic(1) && (inflictor >= 999999 || GetTeam(victim) == TFTeam_Red))
 	{
 		//invert, then convert!
 		float NewRes = 1.0 + ((DamageRes - 1.0) * PlayerCountResBuffScaling);

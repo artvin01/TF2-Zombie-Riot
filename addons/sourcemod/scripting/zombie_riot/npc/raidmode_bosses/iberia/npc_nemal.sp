@@ -2409,6 +2409,10 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 
 	MakeVectorFromPoints(vecSelf, VecTarget, TempAng);
 	GetVectorAngles(TempAng, AngleFromSelf);
+	//It should delete itself if the middle part touches a wall.
+	int MasterEntityIndex = Wand_Projectile_Spawn(iNpc, speed, 0.0, 0.0, -1, -1, "", AngleFromSelf,_,vecSelf);
+	SetEntProp(MasterEntityIndex, Prop_Send, "m_usSolidFlags", 12); 
+	WandProjectile_ApplyFunctionToEntity(MasterEntityIndex, NemalSlicerTouchOverall);
 	
 	//AngleFromSelf is the angle of where it should fire from towards to the target.
 
@@ -2455,7 +2459,9 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		switch(SitatuionCalcDo)
 		{
 			case 3:
+			{
 				tmp[0] = 0.0;
+			}
 			case 2:
 				tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
 			case 1:
@@ -2530,6 +2536,8 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		
 		DataPack pack2;
 		CreateDataTimer(0.1, Timer_NemalProjectileHitDetect, pack2, TIMER_REPEAT);
+		pack2.WriteCell(EntIndexToEntRef(MasterEntityIndex));
+		pack2.WriteCell(EntIndexToEntRef(laser));
 		pack2.WriteCell(EntIndexToEntRef(projectile));
 		pack2.WriteFloat(OverridePosOfSpawned[0]);
 		pack2.WriteFloat(OverridePosOfSpawned[1]);
@@ -2539,6 +2547,16 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 	}
 }
 
+public void NemalSlicerTouchOverall(int entity, int target)
+{
+	if(target == 0)
+	{
+		if(IsValidEntity(entity))
+		{
+			RemoveEntity(entity);
+		}
+	}
+}
 int NemalSutationSliceHelp(int CurrentJoint, int MaxJoints)
 {
 	if(CurrentJoint == (MaxJoints / 2))
@@ -2562,7 +2580,17 @@ bool DoDamageActiveHereNemal[MAXENTITIES];
 public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 {
 	pack.Reset();
+	int MasterProjEntity = EntRefToEntIndex(pack.ReadCell());
+	int LaserEntity = EntRefToEntIndex(pack.ReadCell());
 	int Projectile = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(MasterProjEntity))
+	{
+		if(IsValidEntity(LaserEntity))
+			RemoveEntity(LaserEntity);
+
+		if(IsValidEntity(Projectile))
+			RemoveEntity(Projectile);
+	}
 	float OldPositionGet[3];
 	OldPositionGet[0] = pack.ReadFloat();
 	OldPositionGet[1] = pack.ReadFloat();
@@ -2620,7 +2648,7 @@ static bool BEAM_TraceUsers(int enemy, int contentsMask, int projectile)
 	if (IsValidEntity(enemy))
 	{
 		int OwnerEntity = EntRefToEntIndex(i_WandOwner[projectile]);
-		if(IsValidEnemy(enemy, OwnerEntity, true, true)) //Must detect camo.
+		if(IsValidEnemy(enemy, OwnerEntity, true, false)) //Must detect camo.
 		{
 			int MasterIndex = EntityBelongsToMasterIndex[projectile];
 			if(!TargetsHitNemal[MasterIndex][enemy])
