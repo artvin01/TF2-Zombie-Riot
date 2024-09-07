@@ -728,6 +728,12 @@ static void Internal_ClotThink(int iNPC)
 		}
 		if((!b_SilvesterAttackSame[npc.index] && ForceRedo) || npc.m_flChangeTargetsSilvester < GetGameTime(npc.index))
 		{
+			if(b_SilvesterAttackSame[npc.index])
+			{
+				//We targeted someone before that was within nemals range...
+				//try again!
+				npc.m_flSilvesterChangeTargets = 5.0;
+			}
 			b_SilvesterAttackSame[npc.index] = false;
 			//Get the next closest target!
 			static float flPos[3]; 
@@ -750,10 +756,10 @@ static void Internal_ClotThink(int iNPC)
 			{
 				//looks like silvester found no target...
 				//Did we try to get a target near nemal?
-				//if we did. then force targetting a clos eneemy from nemal anyways.
+				//if we did. then force targetting a closet eneemy from nemal anyways.
 				if(npc.m_flSilvesterChangeTargets >= 4.0)
 				{
-					npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,700.0,_,_,_/*allynpc.m_iTarget*/, flPos);
+					npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,_/*allynpc.m_iTarget*/, flPos);
 					npc.m_flSilvesterChangeTargets = 5.0;
 					WasForcingSameTarget = true;
 					b_SilvesterAttackSame[npc.index] = true;
@@ -1182,8 +1188,8 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			{
 				MaxCount = 1;
 			}
-			if(MaxCount > 18)
-				MaxCount = 18;
+			if(MaxCount > 15)
+				MaxCount = 15;
 
 			float DelaybewteenPillars = 0.1;
 			float DelayPillars = 0.7;
@@ -1201,7 +1207,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			ang_Look 								/*2 dimensional plane*/,
 			pos,
 			0.7,
-			0.4);	
+			0.75);	
 			
 			float cooldownDo  = 7.0;
 			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
