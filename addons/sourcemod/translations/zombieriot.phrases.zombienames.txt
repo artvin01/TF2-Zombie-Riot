@@ -2983,6 +2983,14 @@
 	{
 		"en"	"Undead Deckhand"
 	}
+	"Aleraiser"
+	{
+		"en"	"Aleraiser"
+	}
+	"Bone Brewer"
+	{
+		"en"	"Bone Brewer"
+	}
 	"The Reaper"
 	{
 		"en"	"The Reaper"

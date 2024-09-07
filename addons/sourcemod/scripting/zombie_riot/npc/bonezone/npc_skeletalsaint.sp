@@ -783,9 +783,7 @@ public void Priest_EndCast(SaintBones npc, int closest)
 	}
 }
 
-//TODO: For some reason, they change their target automatically when they are damaged by an NPC, which causes them to stop healing their heal target and switch to aggro mode.
-//Figure out why this happens and fix it.
-public int Priest_GetTarget(SaintBones npc)
+public int Priest_GetTarget(CClotBody npc)
 {
 	//Check 1: Find the closest non-buffed skeleton.
 	int closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsNonBuffedSkeleton));

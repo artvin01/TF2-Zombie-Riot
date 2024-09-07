@@ -712,6 +712,7 @@ void NPC_ConfigSetup()
 	PirateBones_OnMapStart_NPC();
 	DeckhandBones_OnMapStart_NPC();
 	GrimReaper_OnMapStart_NPC();
+	AleraiserBones_OnMapStart_NPC();
 }
 
 void NPC_MapEnd()
@@ -1574,6 +1575,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/npc_ssb.sp"
 #include "zombie_riot/npc/bonezone/npc_undeaddeckhand.sp"
 #include "zombie_riot/npc/special/npc_reaper.sp"
+#include "zombie_riot/npc/bonezone/npc_aleraiser.sp"
 
 
 #include "zombie_riot/npc/survival/npc_nightmare.sp"
