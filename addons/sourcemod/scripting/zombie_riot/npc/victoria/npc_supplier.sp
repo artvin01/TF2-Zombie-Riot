@@ -247,7 +247,7 @@ public void VictorianSupplier_ClotThink(int iNPC)
 	VictorianSupplierSelfDefense(npc,GetGameTime(npc.index)); 
 }
 
-void VictorianSupplierSelfDefense(VictorianSupplier npc, float gameTime)
+void VictorianSupplierSelfDefense(VictorianSupplier npc, int target, float gameTime)
 {
 	int GetClosestEnemyToAttack;
 	//Ranged units will behave differently.

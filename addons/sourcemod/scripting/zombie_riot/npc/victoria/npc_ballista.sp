@@ -323,7 +323,7 @@ void VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime)
 						//This will predict as its relatively easy to dodge
 						float projectile_speed = 1200.0;
 
-						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+						WorldSpaceCenter(target, vecTarget);
 
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1;

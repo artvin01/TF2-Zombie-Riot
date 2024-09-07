@@ -286,8 +286,8 @@ void TeslarSelfDefense(Teslar npc, float gameTime, int target, float distance)
 					{
 						if(!NpcStats_IsEnemySilenced(npc.index))
 						{
-							if(f_LowTeslarDebuff[targetTrace] - 5.0 < GetGameTime())
-								f_LowTeslarDebuff[targetTrace] = GetGameTime() + 5.0;
+							if(f_LowTeslarDebuff[target] - 5.0 < GetGameTime())
+								f_LowTeslarDebuff[target] = GetGameTime() + 5.0;
 						}
 					}		
 				} 
