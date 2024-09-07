@@ -348,8 +348,8 @@ static void ClotThink(int iNPC)
 					Ang[0] = -45.0;
 					Projectile.Angles = Ang;
 					Projectile.speed = 750.0;
-					Projectile.radius = 300.0;
-					Projectile.damage = 600.0;
+					Projectile.radius = 250.0;
+					Projectile.damage = 300.0;
 					Projectile.bonus_dmg = 2.5;
 					Projectile.Time = 10.0;
 

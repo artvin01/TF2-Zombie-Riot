@@ -72,6 +72,7 @@ static int i_shield_color[3] = {0, 0, 0};
 float fl_ruina_buff_amt[MAXENTITIES];
 float fl_ruina_buff_time[MAXENTITIES];
 bool b_ruina_buff_override[MAXENTITIES];
+bool b_ruina_nerf_healing[MAXENTITIES];
 
 #define RUINA_NORMAL_NPC_MAX_SHIELD	 	0.25
 #define RUINA_BOSS_NPC_MAX_SHIELD 		0.15
@@ -168,7 +169,7 @@ void Ruina_Ai_Core_Mapstart()
 	data2.Flags = 0;													//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data2);
 
-
+	Zero(b_ruina_nerf_healing);
 	Zero(fl_master_change_timer);
 	Zero(i_master_target_id);
 	Zero(b_is_a_master);
@@ -244,6 +245,7 @@ void Ruina_Ai_Core_Mapstart()
 void Ruina_Set_Heirarchy(int client, int type)
 {
 	Ruina_Remove_Shield(client);
+	b_ruina_nerf_healing[client] = false;
 	fl_ruina_shield_break_timeout[client] = 0.0;
 	i_npc_type[client] = type;
 	i_master_attracts[client] = type;
@@ -255,6 +257,7 @@ void Ruina_Set_Heirarchy(int client, int type)
 	i_last_sniper_anchor_id_Ref[client]=-1;
 	fl_ruina_in_combat_timer[client]=0.0;
 	b_is_battery_buffed[client]=false;
+	b_ruina_allow_teleport[client] = false;
 
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_iTarget=-1;	//set its target as invalid on spawn
@@ -455,6 +458,7 @@ public void Ruina_NPCDeath_Override(int entity)
 	}
 	Ruina_Remove_Shield(entity);
 	i_npc_type[entity] = 0;
+	b_ruina_nerf_healing[entity] = false;
 }
 public int Ruina_Get_Target(int iNPC, float GameTime)
 {
@@ -561,7 +565,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 1500.0*(Ratio-Difference);
+		float Give = 1350.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
@@ -570,7 +574,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 1750.0*(Ratio-Difference);
+		float Give = 1500.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
@@ -579,7 +583,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 3000.0*(Ratio-Difference);
+		float Give = 2000.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
@@ -1714,7 +1718,7 @@ void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, flo
 }
 bool Ruina_NerfHealingOnBossesOrHealers(int entity, int victim, float &healingammount)
 {
-	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim] || b_ruina_npc_healer[victim])
+	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim] || b_ruina_npc_healer[victim] || b_ruina_nerf_healing[victim])
 		healingammount *=0.5;
 
 	return false;
