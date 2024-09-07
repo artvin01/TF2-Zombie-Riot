@@ -3397,7 +3397,7 @@
 	}
 	"True Fusion Warrior Desc"
 	{
-		"en"	"Raids appear at the end of every 15 waves, they get more stronger with more abilities!"
+		"en"	"(1) Raids appear at the end of every 15 waves, they get more stronger with more abilities!"
 		"fr"	"À tous les 15 vagues, des Raids vont apparaître. Leur prouesse et abilités s'amélioreront graduellement!"
 	}
 	"Alternative Desc"
@@ -3407,7 +3407,7 @@
 	}
 	"Blitzkrieg Desc"
 	{
-		"en"	"The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
+		"en"	"(2) The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
 		"fr"	"La machine qui tire rapidement des roquettes et choque les survivants hors de sa portée!\nÉvitez de se bagarrer contre lui dans des zones Expidonsannes..."
 	}
 	"Blitzkrieg Hard Desc"
@@ -3422,7 +3422,7 @@
 	}
 	"Silvester Waldch Desc"
 	{
-		"en"	"Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
+		"en"	"(3) Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
 		"fr"	"Silvester attaque avec des rayons laser et des roches, alors que Waldch tir à distance!"
 	}
 	"Xeno Hard Desc"
@@ -3437,7 +3437,7 @@
 	}
 	"God Alaxios Desc"
 	{
-		"en"	"Fight him and his rapidly spawning army, kill the army first whenever they show up!"
+		"en"	"(4) Fight him and his rapidly spawning army, kill the army first whenever they show up!"
 		"fr"	"Alaxios apporte son armée, tuez ses unités en premier quand ils apparaîssent!"
 	}
 	"Expidonsa Desc"
@@ -3447,7 +3447,7 @@
 	}
 	"Sensal Desc"
 	{
-		"en"	"The scouting party operative which rapidly summons homing scythes and laser attacks!"
+		"en"	"(5) The scouting party operative which rapidly summons homing scythes and laser attacks!"
 		"fr"	"Le capitaine d'un groupe de scouts qui convoque des scythes chercheurs et des rayons laser!"
 	}
 	"Deep Sea Desc"
@@ -3457,12 +3457,12 @@
 	}
 	"Interitus Desc"
 	{
-		"en"	"Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"en"	"(7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"Karlas charges you down with his Lance while Stella fires laser attacks!"
+		"en"	"(6) Karlas charges you down with his Lance while Stella fires laser attacks!"
 		"fr"	"Karlas vous perce avec sa Lance alors que Stella vous vire des rayons laser!"
 	}
 	"Khaml Desc"
@@ -3477,12 +3477,12 @@
 	}
 	"Unspeakable Raid Desc"
 	{
-		"en"	"Directly after you release the void in rogue2..."
+		"en"	"(8) Directly after you release the void in rogue2..."
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 	}
 	"Twirl Raid Desc"
 	{
-		"en"	"A certain individual has taken an interest in your group"
+		"en"	"(9) A certain individual has taken an interest in your group"
 		"fr"	"Cet individuel s'est intéressé dans votre groupe."
 	}
 	"Ruina waves Desc"
@@ -3737,7 +3737,7 @@
 	}
 	"Iberia Nemal Desc"
 	{
-		"en" "Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremaly seriously."
+		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremaly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 	}
 	

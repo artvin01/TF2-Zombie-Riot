@@ -14,6 +14,7 @@ static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 static bool TripleLol;
+static float NemalAntiLaserDo[MAXENTITIES];
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -380,6 +381,7 @@ methodmap Nemal < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		//IDLE
+		Zero(NemalAntiLaserDo);
 		npc.m_flTimeUntillMark = GetGameTime(npc.index) + 15.0;
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -555,7 +557,7 @@ methodmap Nemal < CClotBody
 		if(ZR_GetWaveCount()+1 > 55)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
-			RaidModeScaling *= 0.8;
+			RaidModeScaling *= 0.7;
 		}
 		
 		float amount_of_people = float(CountPlayersOnRed());
@@ -1321,7 +1323,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 			npc.m_flNemalPlaceAirMines = gameTime + 2.0;
 			npc.m_flNemalPlaceAirMinesCD = gameTime + 30.0;
 			if(i_RaidGrantExtra[npc.index] >= 4)
-				npc.m_flNemalPlaceAirMinesCD = gameTime + 20.0;
+				npc.m_flNemalPlaceAirMinesCD = gameTime + 25.0;
 
 			npc.m_flAttackHappens = 0.0;
 			NPC_StopPathing(npc.index);
@@ -1900,7 +1902,7 @@ bool NemalSnipingShots(Nemal npc)
 				GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable8);
 				for(int i; i < sizeof(enemy_2); i++)
 				{
-					if(enemy_2[i])
+					if(enemy_2[i] && NemalAntiLaserDo[enemy_2[i]] < GetGameTime())
 					{
 						int ememyTarget = enemy_2[i];
 						WorldSpaceCenter(ememyTarget, PosEnemy);
@@ -1930,7 +1932,7 @@ bool NemalSnipingShots(Nemal npc)
 					delete hTrace;
 					if(DoLaserShow)
 					{
-						TE_SetupBeamPoints(pos_npc, SnipeTargets[Loop], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {125,125,255,255}, 3);
+						TE_SetupBeamPoints(pos_npc, SnipeTargets[Loop], Shared_BEAM_Laser, 0, 0, 0, 0.1, 5.0, 5.0, 0, 0.0, {125,125,255,255}, 3);
 						TE_SendToAll(0.0);
 					}
 				}
@@ -2798,10 +2800,13 @@ void NemalPlaceAirMines(int iNpc, float damage, float TimeUntillArm, float MaxDu
 		TR_GetEndPosition(LocationOfMine, ToGroundTrace);
 		delete ToGroundTrace;
 		LocationOfMine[2] += 5.0;
+		float SaveOldLoc[3];
+		SaveOldLoc = LocationOfMine;
 
 		DataPack pack2;
 		CreateDataTimer(0.25, Timer_NemalMineLogic, pack2, TIMER_REPEAT);
 		pack2.WriteCell(EntIndexToEntRef(iNpc));
+		pack2.WriteCell(0); //0 means EVIL
 		pack2.WriteFloat(LocationOfMine[0]);
 		pack2.WriteFloat(LocationOfMine[1]);
 		pack2.WriteFloat(LocationOfMine[2]);
@@ -2809,6 +2814,33 @@ void NemalPlaceAirMines(int iNpc, float damage, float TimeUntillArm, float MaxDu
 		pack2.WriteFloat(Size);
 		pack2.WriteFloat(TimeUntillArm + GetGameTime());
 		pack2.WriteFloat(MaxDuration + GetGameTime());
+
+		
+		flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
+		SpeedToPredict = flDistanceToTarget * 1.0;
+		PredictSubjectPositionForProjectiles(npc, LoopTarget, SpeedToPredict, _,LocationOfMine);
+		LocationOfMine[2] += 1.0;
+		
+		ToGroundTrace = TR_TraceRayFilterEx(LocationOfMine, view_as<float>( { 90.0, 0.0, 0.0 } ), MASK_SOLID, RayType_Infinite, TraceRayHitWorldOnly, iNpc);
+		TR_GetEndPosition(LocationOfMine, ToGroundTrace);
+		delete ToGroundTrace;
+		LocationOfMine[2] += 5.0;
+		flDistanceToTarget = GetVectorDistance(SaveOldLoc, LocationOfMine, true);
+		//the mines are too close together, dont spawn friendly.
+		if(flDistanceToTarget < (50.0 * 50.0))
+			continue;
+		
+		DataPack pack3;
+		CreateDataTimer(0.25, Timer_NemalMineLogic, pack3, TIMER_REPEAT);
+		pack3.WriteCell(EntIndexToEntRef(iNpc));
+		pack3.WriteCell(1); //1 means GOOD.
+		pack3.WriteFloat(LocationOfMine[0]);
+		pack3.WriteFloat(LocationOfMine[1]);
+		pack3.WriteFloat(LocationOfMine[2]);
+		pack3.WriteFloat(damage);
+		pack3.WriteFloat(Size);
+		pack3.WriteFloat(TimeUntillArm + GetGameTime());
+		pack3.WriteFloat((MaxDuration * 1.5) + GetGameTime());
 	}
 }
 
@@ -2819,6 +2851,7 @@ public Action Timer_NemalMineLogic(Handle timer, DataPack pack)
 	int MasterNpc = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidEntity(MasterNpc))
 		return Plugin_Stop; 
+	bool Friendly = view_as<bool>(pack.ReadCell());
 	//the master npc isnt existant anymore, delete all mines instantly.
 		
 	float MinePositionGet[3];
@@ -2830,18 +2863,39 @@ public Action Timer_NemalMineLogic(Handle timer, DataPack pack)
 	float TimeUntillArm = pack.ReadFloat();
 	if(TimeUntillArm > GetGameTime())
 	{
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, 0.3, 2.0, 2.0, 2);
+		if(Friendly)
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 125, 50, 200, 1, 0.3, 2.0, 2.0, 2);
+		else
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, 0.3, 2.0, 2.0, 2);
 		//Do not do damage calculations yet.
 		return Plugin_Continue; 
 	}
 	DetonateCurrentMine = false;
-	spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.3, 5.0, 8.0, 2);
-	Explode_Logic_Custom(Damage_Do, 0, MasterNpc, -1, MinePositionGet, Size, 1.0, _, true, 20,_,_,_,NemalMineExploder);
+	
+	if(Friendly)
+		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 100, 255, 100, 200, 1, 0.3, 5.0, 8.0, 2);
+	else
+		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 100, 100, 200, 1, 0.3, 5.0, 8.0, 2);
+		
+	if(Friendly)
+		Explode_Logic_Custom(0.0, 0, MasterNpc, -1, MinePositionGet, Size, 1.0, _, true, 20,_,_,_,NemalMineExploderFriendly);
+	else
+		Explode_Logic_Custom(Damage_Do, 0, MasterNpc, -1, MinePositionGet, Size, 1.0, _, true, 20,_,_,_,NemalMineExploder);
+
 	if(DetonateCurrentMine)
 	{
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
+		if(Friendly)
+		{
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 100, 200, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 100, 200, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 100, 200, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+		}
+		else
+		{
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 100, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 100, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 100, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+		}
 		//It hit something, boom.
 		EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", 0, _, 80, _, 0.85,_,_,MinePositionGet);
 		return Plugin_Stop; 
@@ -2856,6 +2910,37 @@ public Action Timer_NemalMineLogic(Handle timer, DataPack pack)
 
 	return Plugin_Continue; 
 }
+
+float NemalMineExploderFriendly(int entity, int victim, float damage, int weapon)
+{
+	//Knock target up
+	if(victim <= MaxClients)
+	{
+		f_HighTeslarDebuff[victim] = 0.0;
+		f_LowTeslarDebuff[victim] = 0.0;
+		NemalAntiLaserDo[victim] = GetGameTime() + 4.0;
+		DetonateCurrentMine = true;
+		float vDirection[3];
+		vDirection[2] += 1000.0;
+		float newVel[3];
+		f_ImmuneToFalldamage[victim] = GetGameTime() + 5.0;
+				
+		newVel[0] = GetEntPropFloat(victim, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(victim, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(victim, Prop_Send, "m_vecVelocity[2]");
+						
+		for (int i = 0; i < 3; i++)
+		{
+			vDirection[i] += newVel[i];
+		}
+		vDirection[2] = 1000.0;
+		
+		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, vDirection);
+	}
+	
+	return damage;
+}
+
 
 float NemalMineExploder(int entity, int victim, float damage, int weapon)
 {
