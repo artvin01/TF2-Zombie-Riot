@@ -31,7 +31,7 @@ static const char g_ReloadSound[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/smg_shoot.wav",
+	"weapons/rocket_shoot.wav",
 };
 
 
@@ -137,7 +137,7 @@ methodmap VictorianBallista < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
-		SetVariantString("1.5");
+		SetVariantString("2.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/qc_glove.mdl");
@@ -292,7 +292,7 @@ void VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime)
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
+	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0))
 	{
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 					
@@ -308,7 +308,7 @@ void VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime)
 			}	
 			if(gameTime > npc.m_flNextMeleeAttack)
 			{
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
 				{	
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
 					npc.m_iOverlordComboAttack --;
