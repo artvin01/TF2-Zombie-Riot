@@ -105,7 +105,7 @@ methodmap VictoriaBatter < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		SetVariantInt(0);
+		SetVariantInt(31);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -137,20 +137,10 @@ methodmap VictoriaBatter < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/riflemans_rallycap/riflemans_rallycap_scout.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/jul13_the_cunningmann/jul13_the_cunningmann.mdl");
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 80, 50, 50, 255);
 
 		return npc;
 	}

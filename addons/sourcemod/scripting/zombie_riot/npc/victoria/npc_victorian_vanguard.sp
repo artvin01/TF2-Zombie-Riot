@@ -128,8 +128,8 @@ methodmap VictorianVanguard < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_knife/c_knife.mdl");
-		SetVariantString("3.0");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
+		SetVariantString("4.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/soldier_warpig/soldier_warpig.mdl");
@@ -315,7 +315,7 @@ void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, int tar
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
+				npc.AddGesture("ACT_ARKANTOS_ATTACK_FAST");
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;

@@ -106,7 +106,7 @@ methodmap VictorianBallista < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
@@ -137,7 +137,7 @@ methodmap VictorianBallista < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
-		SetVariantString("1.25");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/qc_glove.mdl");
@@ -317,7 +317,7 @@ void VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime)
 					Handle swingTrace;
 					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						npc.PlayMeleeSound();
 						//after we fire, we will have a short delay beteween the actual laser, and when it happens
 						//This will predict as its relatively easy to dodge
