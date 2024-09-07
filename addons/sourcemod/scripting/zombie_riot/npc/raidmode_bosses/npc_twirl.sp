@@ -1971,8 +1971,6 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 		i_explosion_core[client] = EntIndexToEntRef(create_center);
 	}
 
-	Explode_Logic_Custom(Modify_Damage(-1, 100.0), client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
-
 	int color[4]; Ruina_Color(color);
 
 	float Time = 0.25;
@@ -2004,6 +2002,8 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 		float Radius_Ratio = 1.0 - (Dist/Radius);
 		TE_SetupBeamRingPoint(Random_Loc, 0.0, (Radius_Ratio*Radius)*2.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, Time+0.5, Thickness, 1.0, color, 1, 0);
 		TE_SendToAll(i/10.0);
+
+		Explode_Logic_Custom(Modify_Damage(-1, 60.0), client, client, -1, Random_Loc, (Radius_Ratio*Radius), _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
 
 		char SoundString[255];
 		SoundString = TWIRL_THUMP_SOUND;
