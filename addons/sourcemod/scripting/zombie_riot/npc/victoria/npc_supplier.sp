@@ -244,7 +244,7 @@ public void VictorianSupplier_ClotThink(int iNPC)
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.00;
 		ExpidonsaGroupHeal(npc.index, 200.0, 5, 40.0, 1.0, false,SupplierGiveArmor);
 	}
-	VictorianSupplierSelfDefense(npc,GetGameTime(npc.index)); 
+	VictorianSupplierSelfDefense(npc, npc.m_iTarget, GetGameTime(npc.index)); 
 }
 
 void VictorianSupplierSelfDefense(VictorianSupplier npc, int target, float gameTime)
