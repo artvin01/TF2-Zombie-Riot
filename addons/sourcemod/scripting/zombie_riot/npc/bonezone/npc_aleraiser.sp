@@ -17,7 +17,7 @@ static float ALERAISER_RADIUS = 160.0;					//Ale effect radius.
 static float ALERAISER_HEAL_PERCENT = 0.1;				//percentage of max health to heal allies for.
 static float ALERAISER_HEAL_MINIMUM = 100.0;			//Minimum healing provided to allies who are within the ale's radius.
 static float ALERAISER_SMASH_HEALS = 2500.0;			//Amount the Aleraiser should heal itself when it enters its melee phase.
-static float ALERAISER_SPEED_NO_ALLIES = 480.0;			//Movement speed when no non-medic allies are alive.
+static float ALERAISER_SPEED_NO_ALLIES = 520.0;			//Movement speed when no non-medic allies are alive.
 static float ALERAISER_MELEE_DAMAGE = 60.0;				//Melee damage.
 static float ALERAISER_MELEE_SPEED = 1.0;				//Melee attack speed multiplier.
 static float ALERAISER_MELEE_INTERVAL = 0.1;			//Cooldown between melee attacks.
@@ -67,6 +67,13 @@ static char g_GibSounds[][] = {
 };
 
 static bool b_AleraiserGoneBerserk[2049] = { false, ... };
+static bool b_AleraiserBerserkSequence[2049] = { false, ... };
+
+#define PARTICLE_ALERAISER_BOTTLE_SMASH	"spell_skeleton_goop_green"
+
+#define SND_ALERAISER_SWING				")weapons/machete_swing.wav"
+#define SND_ALERAISER_BOTTLE_SMASH		")weapons/bottle_break.wav"
+#define SND_ALERAISER_BOTTLE_SMASH_OW	")vo/halloween_boss/knight_pain03.mp3"
 
 public void AleraiserBones_OnMapStart_NPC()
 {
@@ -78,6 +85,10 @@ public void AleraiserBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
+
+	PrecacheSound(SND_ALERAISER_BOTTLE_SMASH);
+	PrecacheSound(SND_ALERAISER_BOTTLE_SMASH_OW);
+	PrecacheSound(SND_ALERAISER_SWING);
 
 //	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 
@@ -178,6 +189,7 @@ methodmap AleraiserBones < CClotBody
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;
 		b_AleraiserGoneBerserk[npc.index] = false;
+		b_AleraiserBerserkSequence[npc.index] = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(AleraiserBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AleraiserBones_OnTakeDamage);
@@ -241,15 +253,88 @@ public int Aleraiser_GetTarget(AleraiserBones npc)
 		//Check 4: We were not able to find ANY valid allies to heal, go berserk.
 		if (closest <= 0)
 		{
-			//TODO: Bottle break sequence
-			CPrintToChatAll("Aleraiser would have just gone berserk.");
+			int iActivity = npc.LookupActivity("ACT_ALERAISER_BREAK_BOTTLE");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+
 			closest = GetClosestTarget(npc.index);
 			b_AleraiserGoneBerserk[npc.index] = true;
+			b_AleraiserBerserkSequence[npc.index] = true;
 			npc.m_flSpeed = ALERAISER_SPEED_NO_ALLIES;
+			npc.StopPathing();
+
+			DataPack pack = new DataPack();
+			RequestFrame(Aleraiser_BerserkSequence, pack);
+			WritePackCell(pack, EntIndexToEntRef(npc.index));
+			WritePackFloat(pack, GetGameTime(npc.index) + 0.25);
+			WritePackFloat(pack, GetGameTime(npc.index) + 0.5);
+			WritePackFloat(pack, GetGameTime(npc.index) + 1.25);
+			
 		}
 	}
 	
 	return closest;
+}
+
+public void Aleraiser_BerserkSequence(DataPack pack)
+{
+	ResetPack(pack);
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	float swingTime = ReadPackFloat(pack);
+	float hitTime = ReadPackFloat(pack);
+	float endTime = ReadPackFloat(pack);
+	delete pack;
+
+	if (!IsValidEntity(ent))
+		return;
+
+	AleraiserBones npc = view_as<AleraiserBones>(ent);
+	float gt = GetGameTime(npc.index);
+
+	if (gt >= swingTime)
+	{
+		EmitSoundToAll(SND_ALERAISER_SWING, npc.index);
+		swingTime = 9999999.0;
+	}
+
+	if (gt >= hitTime)
+	{
+		float pos[3], ang[3];
+		GetAttachment(npc.index, "head", pos, ang);
+
+		ParticleEffectAt(pos, PARTICLE_ALERAISER_BOTTLE_SMASH, 2.0);
+		EmitSoundToAll(SND_ALERAISER_BOTTLE_SMASH, npc.index);
+		EmitSoundToAll(SND_ALERAISER_BOTTLE_SMASH_OW, npc.index);
+
+		if (GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + ALERAISER_SMASH_HEALS);
+			if (GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			}
+		}
+
+		hitTime = 9999999.0;
+	}
+
+	if (gt >= endTime)
+	{
+		int iActivity = npc.LookupActivity("ACT_ALERAISER_RUN_BROKEN_BOTTLE");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_iTarget = Aleraiser_GetTarget(npc);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.StartPathing();
+		b_AleraiserBerserkSequence[npc.index] = false;
+		return;
+	}
+
+	pack = new DataPack();
+	RequestFrame(Aleraiser_BerserkSequence, pack);
+	WritePackCell(pack, EntIndexToEntRef(npc.index));
+	WritePackFloat(pack, swingTime);
+	WritePackFloat(pack, hitTime);
+	WritePackFloat(pack, endTime);
 }
 
 //TODO 
@@ -297,12 +382,14 @@ public void AleraiserBones_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = Aleraiser_GetTarget(npc);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
-		npc.StartPathing();
+
+		if (!b_AleraiserBerserkSequence[npc.index])
+			npc.StartPathing();
 	}
 	
 	int closest = npc.m_iTarget;
 	
-	if(IsValidEntity(closest))
+	if(IsValidEntity(closest) && !b_AleraiserBerserkSequence[npc.index])
 	{
 		float vecTarget[3], vecother[3]; 
 		WorldSpaceCenter(closest, vecTarget);
