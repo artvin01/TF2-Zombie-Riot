@@ -2259,6 +2259,8 @@ static void Func_On_Proj_Touch(int entity, int other)
 	else
 		SDKHooks_TakeDamage(other, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
 
+	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+
 	Ruina_Remove_Projectile(entity);
 
 }
