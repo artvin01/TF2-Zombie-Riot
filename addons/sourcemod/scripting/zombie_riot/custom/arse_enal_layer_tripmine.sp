@@ -684,9 +684,9 @@ void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false)
 	float damage = f_BombEntityWeaponDamageApplied[npc][client];
 	f_BombEntityWeaponDamageApplied[npc][client] = 0.0;
 	//there are too many bombs, nerf damage.
-	if(BomsToBoomCalc > 250)
+	if(BomsToBoomCalc > 200)
 	{
-		damage -= (damage * (1.0 / 350.0));
+		damage -= (damage * (1.0 / 300.0));
 		//There are too many bombs stacked, we have to nerd the damage.
 	}
 
