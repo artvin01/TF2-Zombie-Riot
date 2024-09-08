@@ -2050,6 +2050,11 @@
 		"nl"		"U hebt [{1}] voor [{2}] Gezondheidspunten genezen!"
 		"chi"       "你为[{1}]治疗了[{2}]的生命值!"
 	}
+	"You healed for NpcName"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"You Healed [{1}] for [{2}] HP!"
+	}
 	"Loadouts"
 	{
 		"en"		"Loadouts"
