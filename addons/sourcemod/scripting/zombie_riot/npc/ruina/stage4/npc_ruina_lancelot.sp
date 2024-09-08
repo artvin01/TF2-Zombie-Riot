@@ -649,7 +649,7 @@ static bool Particle_Accelerator_Check(Lancelot npc, float range, float EndLoc[3
 
 	EndLoc = Laser.End_Point;
 	//CPrintToChatAll("Targets: %i", i_targets_inrange);
-	if(i_targets_inrange > 2 || LastMann)
+	if(i_targets_inrange > 2)
 	{
 		return true;
 	}

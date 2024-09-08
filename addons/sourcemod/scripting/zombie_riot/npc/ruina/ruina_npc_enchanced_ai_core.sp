@@ -1369,6 +1369,9 @@ stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_a
 			}
 		}
 
+		if(i_BarbariansMind[Target])
+			flat_amt = RoundToFloor(flat_amt*0.9);
+
 		Current_Mana[Target] += RoundToCeil(max_mana[Target]*Multi+flat_amt);
 
 		if(OverMana_Ratio>2.0)
@@ -1439,7 +1442,10 @@ static void Apply_Sickness(int iNPC, int Target)
 	Mana_Regen_Delay[Target] = GameTime + Timeout;
 	Mana_Regen_Block_Timer[Target] = GameTime + Timeout;
 
-	TF2_StunPlayer(Target, Slow_Time, 0.6, TF_STUNFLAG_SLOWDOWN);
+	if(i_BarbariansMind[Target])
+		TF2_StunPlayer(Target, Slow_Time, 0.4, TF_STUNFLAG_SLOWDOWN);
+	else
+		TF2_StunPlayer(Target, Slow_Time, 0.6, TF_STUNFLAG_SLOWDOWN);
 
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
