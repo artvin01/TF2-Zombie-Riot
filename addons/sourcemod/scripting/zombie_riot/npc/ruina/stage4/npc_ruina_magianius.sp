@@ -510,7 +510,7 @@ static void Func_On_Proj_Touch(int projectile, int other)
 		owner = 0;
 	}
 
-	Ruina_Add_Mana_Sickness(owner, other, 0.0, 800);	//very heavy FLAT amount of mana sickness
+	Ruina_Add_Mana_Sickness(owner, other, 0.0, 400);	//very heavy FLAT amount of mana sickness
 		
 	float ProjectileLoc[3];
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
