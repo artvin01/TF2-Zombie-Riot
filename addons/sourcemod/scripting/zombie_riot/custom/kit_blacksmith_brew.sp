@@ -52,6 +52,7 @@ static int SellingAmount[MAXTF2PLAYERS];
 static float SellingPower[MAXTF2PLAYERS];
 static float SellingTime[MAXTF2PLAYERS];
 static bool InMenu[MAXTF2PLAYERS];
+static int RandomSeed;
 static ArrayList Brews;
 static ArrayList Crafts;
 static Handle BrewTimer;
@@ -92,6 +93,7 @@ void BlacksmithBrew_RoundStart()
 	delete Crafts;
 	delete BrewTimer;
 	ExtraGameTime = 0.0;
+	RandomSeed = GetURandomInt() / 2;
 }
 
 static void CacheBrewer()
@@ -294,7 +296,7 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 {
 	if(attacker <= MaxClients && Merchant_IsAMerchant(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
 	{
-		int random = i_NpcInternalId[victim];
+		int random = RandomSeed  + i_NpcInternalId[victim];
 		int aspect = random % A_Water;
 
 		// Special Aspects
