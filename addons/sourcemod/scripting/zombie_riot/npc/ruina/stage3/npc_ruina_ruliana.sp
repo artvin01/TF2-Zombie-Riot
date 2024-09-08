@@ -442,7 +442,7 @@ static void ClotThink(int iNPC)
 		{
 			Ruina_Master_Rally(npc.index, true);
 
-			if(npc.m_flDoingAnimation < GameTime)	//so allies can actually keep up
+			if(npc.m_flDoingAnimation < GameTime && !LastMann)	//so allies can actually keep up
 			{
 				npc.m_flDoingAnimation = GameTime + 1.0;
 				if(Ratio < 0.1)
@@ -567,10 +567,10 @@ static void ClotThink(int iNPC)
 			
 						int Proj = npc.FireParticleRocket(target_vec, (npc.Anger ? 125.0 : 50.0) , projectile_speed , (npc.Anger ? 150.0 : 75.0) , "raygun_projectile_blue", _, _, true, flPos);
 
-						if(battery_Ratio > 0.5 && IsValidEntity(Proj))
+						if(battery_Ratio > 0.5 && IsValidEntity(Proj) && !LastMann)
 						{
-							float Homing_Power = (npc.Anger ? 8.0 : 7.0);
-							float Homing_Lockon = (npc.Anger ? 75.0 : 50.0);
+							float Homing_Power = (npc.Anger ? 7.0 : 5.0);
+							float Homing_Lockon = (npc.Anger ? 50.0 : 30.0);
 
 							float Ang[3];
 							MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
@@ -968,7 +968,7 @@ static void Func_On_Proj_Touch(int projectile, int other)
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
 	Explode_Logic_Custom(fl_ruina_Projectile_dmg[projectile] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[projectile] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[projectile]);
-
+	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	Ruina_Remove_Projectile(projectile);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
