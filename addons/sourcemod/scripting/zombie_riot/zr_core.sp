@@ -43,7 +43,7 @@ public const int AmmoData[][] =
 	{ 10, 60 },			//SMG Magazines
 	{ 10, 14 },			//REvolver Rounds
 	{ 10, 12 },			//Shotgun Shells
-	{ 10, 400 },		//Healing Medicine
+	{ 10, 500 },		//Healing Medicine
 	{ 10, 500 },		//Medigun Fluid
 	{ 10, 80 },			//Laser Battery
 	{ 0, 0 },			//Hand Grenade
@@ -195,7 +195,10 @@ enum
 	WEAPON_WALDCH_SWORD_REAL = 115,
 	WEAPON_MLYNAR_PAP_2 = 116,
 	WEAPON_ULPIANUS = 117,
-	WEAPON_KIT_FRACTAL	= 118
+	WEAPON_WRATHFUL_BLADE = 118,
+	WEAPON_MAGNESIS = 119,
+	WEAPON_SUPERUBERSAW = 120,
+	WEAPON_KIT_FRACTAL	= 121
 }
 
 enum
@@ -256,6 +259,7 @@ float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 float PlayerCountBuffScaling = 1.0;
+float PlayerCountBuffAttackspeedScaling = 1.0;
 float PlayerCountResBuffScaling = 1.0;
 int PlayersAliveScaling;
 int PlayersInGame;
@@ -489,6 +493,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_riotshield.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
 #include "zombie_riot/custom/weapon_health_hose.sp"
+#include "zombie_riot/custom/weapon_superubersaw.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 #include "shared/custom/weapon_judgement_of_iberia.sp"
 #include "shared/custom/weapon_phlog_replacement.sp"
@@ -522,6 +527,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
 #include "zombie_riot/custom/weapon_rusty_rifle.sp"
+#include "zombie_riot/custom/weapon_wrathful_blade.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/kit_fractal.sp"
 #include "zombie_riot/custom/weapon_laz_laser_cannon.sp"
@@ -544,6 +550,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_chainsaw.sp"
 #include "zombie_riot/custom/weapon_flametail.sp"
 #include "zombie_riot/custom/weapon_ulpianus.sp"
+#include "zombie_riot/custom/wand/weapon_wand_magnesis.sp"
 #include "zombie_riot/custom/kit_blacksmith_brew.sp"
 
 void ZR_PluginLoad()
@@ -565,6 +572,8 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_buy", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_guns", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
+	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");
+	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
@@ -576,7 +585,6 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
 	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
-	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
@@ -658,6 +666,7 @@ void ZR_MapStart()
 	Rogue_OnAbilityUseMapStart();
 	Weapon_TexanBuisnesMapChange();
 	AngelicShotgun_MapStart();
+	SuperUbersaw_Mapstart();
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
@@ -793,6 +802,8 @@ void ZR_MapStart()
 	ResetMapStartVictoria();
 	Obuch_Mapstart();
 	Ulpianus_MapStart();
+	Magnesis_Precache();
+	Wrathful_Blade_Precache();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1042,7 +1053,14 @@ public Action OnReloadCommand(int args)
 }
 
 
-
+public Action Command_RTdFail(int client, int args)
+{
+	if(client)
+	{
+		PrintToChat(client, "There is no RTD, and RTD isnt supported.");
+	}
+	return Plugin_Handled;
+}
 public Action Command_AFK(int client, int args)
 {
 	if(client)
@@ -1094,12 +1112,8 @@ public Action CommandDebugHudTest(int client, int args)
         return Plugin_Handled;
     }
 
-	Rogue_Encounter_EmergencyDispatch();
-	char buf[12];
-	GetCmdArg(1, buf, sizeof(buf));
-	
-	SetHudTextParams(-1.0, -1.0, 1.0, 255, 255, 255, 255, 0, 0.01, 0.01);
-	ShowHudText(client, -1,"Debug : %s",buf);	
+	int Number = GetCmdArgInt(1);
+	Medival_Wave_Difficulty_Riser(Number);
 
 	return Plugin_Handled;
 }

@@ -73,7 +73,7 @@ stock void Music_SetRaidMusic(const MusicEnum music)
 		if(IsClientInGame(client))
 		{
 			Music_Stop_All(client); //This is actually more expensive then i thought.
-			SetMusicTimer(client, GetTime() + 3);
+			SetMusicTimer(client, GetTime() + 2);
 		}
 	}
 

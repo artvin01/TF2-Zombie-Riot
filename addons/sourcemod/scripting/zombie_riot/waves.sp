@@ -123,6 +123,7 @@ static bool ProgressTimerType;
 
 static bool UpdateFramed;
 static int WaveGiftItem;
+static char LastWaveWas[64];
 
 public Action Waves_ProgressTimer(Handle timer)
 {
@@ -274,8 +275,16 @@ bool Waves_CallVote(int client, int force = 0)
 				Voting.GetArray(i, vote);
 				vote.Name[0] = CharToUpper(vote.Name[0]);
 				
-				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
-				menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				if(vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
+				{
+					Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
+					menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
+				}
+				else
+				{
+					Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
+					menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				}
 			}
 		}
 		else
@@ -1171,6 +1180,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				
 				if(normal)
 				{
+					strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
 					PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 
 					char buffer[PLATFORM_MAX_PATH];
@@ -2344,10 +2354,16 @@ void DoGlobalMultiScaling()
 	MultiGlobalEnemy *= ZRModifs_MaxSpawnWaveModif();
 	MultiGlobalEnemyBoss *= ZRModifs_MaxSpawnWaveModif();
 
-	PlayerCountBuffScaling = 4.0 / playercount;
+	PlayerCountBuffScaling = 4.5 / playercount;
 	if(PlayerCountBuffScaling > 1.2)
 	{
 		PlayerCountBuffScaling = 1.2;
+	}
+
+	PlayerCountBuffAttackspeedScaling = 6.0 / playercount;
+	if(PlayerCountBuffAttackspeedScaling > 1.2)
+	{
+		PlayerCountBuffAttackspeedScaling = 1.2;
 	}
 
 	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;

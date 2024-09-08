@@ -260,7 +260,8 @@ public const char ItemArchetype[][] =
 	"Kazimierz",		// 23
 	"Bloodletter",	//24, Vampire Knives fast-attack path
 	"Bloody Butcher", //25, Vampire Knives cleaver path
-	"Mythic Caster"	// 26		
+	"Mythic Caster",	// 26
+	"Psychic Warlord"	//27, Psychokinesis and Magnesis Staff, possibly more in the future
 };
 
 public const int RenderColors_RPG[][] =
@@ -346,6 +347,7 @@ int TeamNumber[MAXENTITIES];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
+float f_NoUnstuckVariousReasons[MAXENTITIES];
 bool b_PlayerIsInAnotherPart[MAXENTITIES];
 bool b_EntityIsStairAbusing[MAXENTITIES];
 float f_EntityIsStairAbusing[MAXENTITIES];
@@ -533,6 +535,7 @@ float f_PassangerDebuff[MAXENTITIES];
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_CrippleDebuff[MAXENTITIES];
 float f_GoldTouchDebuff[MAXENTITIES];
+float f_StrangleDebuff[MAXENTITIES];
 float f_CudgelDebuff[MAXENTITIES];
 float f_DuelStatus[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];
@@ -1212,7 +1215,6 @@ float fl_HeadshotCooldown[MAXENTITIES];
 bool b_CantCollidie[MAXENTITIES];
 bool b_CollidesWithEachother[MAXENTITIES];
 bool b_CantCollidieAlly[MAXENTITIES];
-bool b_bBuildingIsPlaced[MAXENTITIES];
 bool b_XenoInfectedSpecialHurt[MAXENTITIES];
 float fl_XenoInfectedSpecialHurtTime[MAXENTITIES];
 bool b_DoGibThisNpc[MAXENTITIES];
@@ -3006,6 +3008,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
 		b_IgnoredByPlayerProjectiles[entity] = false;
 		b_DoNotUnStuck[entity] = false;
+		f_NoUnstuckVariousReasons[entity] = 0.0;
 		f_NpcImmuneToBleed[entity] = 0.0;
 		b_NpcIsInvulnerable[entity] = false;
 		b_NpcUnableToDie[entity] = false;
@@ -4008,7 +4011,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	}
 	if(medigun > 0)
 	{
-		speed /= 2;
+		speed = RoundToNearest(float(speed) * 0.65);
 	}
 
 	Rogue_ReviveSpeed(speed);
@@ -4018,6 +4021,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	{
 		if(WasClientReviving)
 		{
+			AddHealthToUbersaw(client, 1, 0.065);
 			i_Reviving_This_Client[client] = 0;
 			f_Reviving_This_Client[client] = 0.0;
 		}

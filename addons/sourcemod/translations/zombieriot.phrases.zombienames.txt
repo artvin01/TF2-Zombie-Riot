@@ -762,6 +762,50 @@
 	{
 		"en"		"Combine Collos"
 	}
+	"Barracks Iberian Runner"
+	{
+		"en"		"Iberian Runner"
+	}
+	"Barracks Iberian Gunner"
+	{
+		"en"		"Iberian Gunner"
+	}
+	"Barracks Iberian Tanker"
+	{
+		"en"		"Iberian Tanker"
+	}	
+	"Barracks Iberian Rocketeer"
+	{
+		"en"		"Iberian Rocketeer"
+	}	
+	"Barracks Iberian Healer"
+	{
+		"en"		"Iberian Healer"
+	}
+	"Barracks Iberian Healtanker"
+	{
+		"en"		"Iberian Healtanker"
+	}	
+	"Barracks Iberia Boomstick"
+	{
+		"en"		"Iberian Boomsticker"
+	}
+	"Barracks Iberian Guards"
+	{
+		"en"		"Iberian Guards"
+	}
+	"Barracks Iberian Elite Gunner"
+	{
+		"en"		"Iberian Elite Gunner"
+	}	
+	"Barracks Iberia Headhunter"
+	{
+		"en"		"Iberian Headhunter"
+	}	
+	"Barracks Iberian Lighthouse Guardian"
+	{
+		"en"		"Guardian of the Lighthouse"
+	}	
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
@@ -2901,7 +2945,7 @@
 	}
 	"Nemal Desc"
 	{
-		"en"		"Each 4th hit gives you a teslar debuff.\nEach 10 seconds she marks you if hit with melee.\nLaser attack predicts, anti predict it.\nWave ability predicts if youre marked.\nSimular abilities on Silvester.\nHer melee makes you glide (Silencable)"
+		"en"		"Each 4th hit gives you a teslar debuff.\nLays mines:\nRed: damages, marks you, if marked, more damage.\nGreen: Cures of teslar debuff, launches up, cant be sniped for 4 seconds and no fall damage\nEach 10 seconds she marks you if hit with melee.\nLaser attack predicts, anti predict it.\nWave ability predicts if youre marked.\nSimular abilities on Silvester.\nHer melee makes you glide (Silencable)"
 	}
 	"Sentinel"
 	{

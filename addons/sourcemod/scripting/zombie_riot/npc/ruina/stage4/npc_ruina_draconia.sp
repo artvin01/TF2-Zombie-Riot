@@ -207,6 +207,9 @@ methodmap Draconia < CClotBody
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
@@ -278,6 +281,8 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
+
+		Master_Apply_Defense_Buff(npc.index, 75.0, 5.0, 0.9);	//10% dmg resist
 			
 		if(flDistanceToTarget < 100000)
 		{

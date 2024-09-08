@@ -1082,13 +1082,9 @@ public void OnPostThink(int client)
 					FormatEx(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, GrenadeApplyCooldownReturn(client) - GetGameTime());
 				}
 			}
-			static int TaurusInt;
-			TaurusInt = TaurusExistant(client);
-			if(TaurusInt > 0)
+			if(SuperUbersaw_Existant(client))
 			{
-				int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-				int ammo = GetEntData(TaurusInt, iAmmoTable, 4);//Get ammo clip
-				FormatEx(buffer, sizeof(buffer), "%s [T %i/%i]",buffer, ammo, TaurusMaxAmmo());
+				FormatEx(buffer, sizeof(buffer), "%s [ÜS %0.f%%]",buffer, SuperUbersawPercentage(client) * 100.0);
 			}
 #endif
 
@@ -2338,6 +2334,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		case WEAPON_RED_BLADE:
 		{
 			return WeaponRedBlade_OnTakeDamage_Hud(victim);
+		}
+		case WEAPON_WRATHFUL_BLADE:
+		{
+			return Player_OnTakeDamage_WrathfulBlade_Hud(victim);
 		}
 	}
 	return 1.0;

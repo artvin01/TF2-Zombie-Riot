@@ -148,6 +148,9 @@ methodmap Aether < CClotBody
 			power spike? "models/workshop/player/items/sniper/hwn2023_power_spike_style1/hwn2023_power_spike_style1.mdl"
 		
 		*/
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

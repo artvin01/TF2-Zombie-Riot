@@ -1395,7 +1395,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 #if defined ZR
 		if(healer != reciever && healer <= MaxClients)
+		{
 			Healing_done_in_total[healer] += HealingDoneInt;
+			AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+		}
 #endif
 //only apply heal event if its not a passive self heal
 		if(!(flag_extrarules & (HEAL_PASSIVE_NO_NOTIF)))
@@ -2956,7 +2959,7 @@ bool ignite = false,
 float dmg_against_entity_multiplier = 3.0,
 Function FunctionToCallOnHit = INVALID_FUNCTION,
 Function FunctionToCallBeforeHit = INVALID_FUNCTION,
-int inflictor = -1)
+int inflictor = 0)
 {
 
 	float damage_reduction = 1.0;
@@ -3068,7 +3071,7 @@ int inflictor = -1)
 		entityToEvaluateFrom = entity;
 	}
 
-	if(inflictor == -1)
+	if(inflictor == 0)
 	{
 		inflictor = entityToEvaluateFrom;
 	}
@@ -3231,15 +3234,19 @@ int inflictor = -1)
 				//we apply 50% more range, reason being is that this goes for collision boxes, so it can be abit off
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
-				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+				float ExplosionRangeFalloff = Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+				damage_1 *= ExplosionRangeFalloff; //this is 1000, we use squared for optimisations sake
 
 				damage_1 *= damage_reduction;
 				
 				float v[3];
 				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
 				//dont do damage ticks if its actually 0 dmg.
+
 				if(damage_1 != 0.0)
 					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
+
+				Projectile_DealElementalDamage(ClosestTarget, EntityToForward, ExplosionRangeFalloff);
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -5322,4 +5329,69 @@ stock bool FailTranslation(const char[] phrase)
 stock any GetItemInArray(any[] array, int pos)
 {
 	return array[pos];
+}
+
+//MaxNumBuffValue(0.6, 1.0, 0.0) = 1.0
+//MaxNumBuffValue(0.6, 1.0, 1.0) = 0.6
+//MaxNumBuffValue(0.6, 1.0, 1.25) = 0.55
+
+float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
+{
+	// Our base number is max, the number when valuenerf is 0
+	// Our high number is start, the number when valuenerf is 1
+
+	// start = 0.6, max = 1.0
+	//     1.0 + ((-0.4) * valuenerf)
+	return max + ((start - max) * valuenerf);
+}
+
+/**
+ * Spawns a 2-point particle (IE medigun beam, dispenser beam, etc) and connects it through 2 entities.
+ * 
+ * @param startEnt		The entity to start from.
+ * @param startPoint	The point to attach the starting entity to.
+ * @param startXOff		Starting point X-axis offset.
+ * @param startYOff		Starting point Y-axis offset.
+ * @param startZOff		Starting point Z-axis offset.
+ * @param endEnt		The entity to end at.
+ * @param endPoint		The point to attach the end entity to.
+ * @param endXOff		Ending point X-axis offset.
+ * @param endYOff		Ending point Y-axis offset.
+ * @param endZOff		Ending point Z-axis offset.
+ * @param effect		The particle to connect.
+ * @param returnStart	Return parameter for the particle created at the start of the effect.
+ * @param returnEnd		Return parameter for the particle created at the end of the effect.
+ * @param duration		The duration of the effect. <= 0.0: infinite.
+ */
+stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], float startXOff, float startYOff, float startZOff, int endEnt, char endPoint[255], float endXOff, float endYOff, float endZOff, char effect[255], int &returnStart, int &returnEnd, float duration = 0.0)
+{
+	float startPos[3], endPos[3];
+	WorldSpaceCenter(startEnt, startPos);
+	WorldSpaceCenter(endEnt, endPos);
+
+	int particle = ParticleEffectAtOcean(startPos, effect, duration, _, false);
+	int particle2 = ParticleEffectAtOcean(endPos, effect, duration, _, false);
+
+	float offsets[3];
+	offsets[0] = startXOff;
+	offsets[1] = startYOff;
+	offsets[2] = startZOff;
+	SetParent(startEnt, particle, startPoint, offsets, true);
+
+	offsets[0] = endXOff;
+	offsets[1] = endYOff;
+	offsets[2] = endZOff;
+	SetParent(endEnt, particle2, endPoint, offsets, true);
+
+	char szCtrlParti[128];
+	Format(szCtrlParti, sizeof(szCtrlParti), "tf2ctrlpart%i", EntIndexToEntRef(particle2));
+	DispatchKeyValue(particle, "targetname", szCtrlParti);
+
+	DispatchKeyValue(particle2, "cpoint1", szCtrlParti);
+
+	ActivateEntity(particle2);
+	AcceptEntityInput(particle2, "start");
+
+	returnStart = particle;
+	returnEnd = particle2;
 }

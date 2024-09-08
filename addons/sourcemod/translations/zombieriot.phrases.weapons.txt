@@ -2650,9 +2650,9 @@
 		"en"	"Tinker Workshop"
 		"fr"	"Laboratoire du Forgeron"
 	}
-	"Brewing Stand"
+	"Merchant Brewing Stand"
 	{
-		"en"	"Brewing Stand"
+		"en"	"Merchant Brewing Stand"
 	}
 	"Tinker Research"
 	{

@@ -194,6 +194,9 @@ methodmap Lanius < CClotBody
 			Herzenvrecher		"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
 		
 		*/
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

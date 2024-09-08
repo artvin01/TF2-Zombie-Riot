@@ -925,9 +925,9 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 			}
 		}
 
-		npc.m_flVoidMatterAbosorb = gameTime + 4.8;
-		npc.m_flDoingAnimation = gameTime + 5.3;
-		npc.m_flVoidMatterAbosorbInternalCD = gameTime + 2.3;
+		npc.m_flVoidMatterAbosorb = gameTime + 4.5;
+		npc.m_flDoingAnimation = gameTime + 5.0;
+		npc.m_flVoidMatterAbosorbInternalCD = gameTime + 2.0;
 		npc.m_flVoidMatterAbosorbCooldown = gameTime + 35.0;
 		if(ZR_GetWaveCount()+1 > 55)
 			npc.m_flVoidMatterAbosorbCooldown = gameTime + 28.0;

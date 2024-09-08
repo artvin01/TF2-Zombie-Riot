@@ -179,6 +179,8 @@ methodmap Aetherium < CClotBody
 
 		npc.m_iChanged_WalkCycle = 1;
 		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		/*
 			//aztec aggressor			"models/workshop/player/items/heavy/fall17_aztec_aggressor/fall17_aztec_aggressor.mdl"
