@@ -112,8 +112,7 @@ static Action TimerEffect(Handle timer, int client)
 						return Plugin_Continue;
 					}
 				}
-
-				MerchantEnd(client);
+				return Plugin_Continue;
 			}
 
 			if(MerchantWeaponRef[client] == -1)
@@ -236,6 +235,39 @@ static int MerchantMenuH(Menu menu, MenuAction action, int client, int choice)
 			menu.GetItem(choice, buffer, sizeof(buffer));
 
 			MerchantStyle[client] = StringToInt(buffer);
+			switch(MerchantStyle[client])
+			{
+				case 0:
+				{
+					//fish market
+					if(MerchantLevel[client] > 2)
+					{
+						CPrintToChat(client, "{green}Fish market!{default}: Silence enemies on hit!\nCrouch on M2 to instead gain heal on hit, will heal lowest HP ally near you, or you if youre the lowest HP!");
+					}
+					else
+					{
+						CPrintToChat(client, "{green}Fish market!{default}: Silence enemies on hit!");
+					}
+				}
+				case 1:
+				{
+					if(MerchantLevel[client] > 1)
+						CPrintToChat(client, "{green}Martial Artist!{default}: If low on health, gain speed, HP, but deactivates buff.\nIf you dont attack for 4 seconds, your next attack stuns\nGain a random effect when activating:\nHeavy melee resistance\nExtra Attackspeed\nEach attack debuffs enemy.");
+					else
+						CPrintToChat(client, "{green}Martial Artist!{default}: If low on health, gain speed, HP, but deactivates buff.\nIf you dont attack for 4 seconds, your next attack stuns");
+				}
+				case 2:
+				{
+					if(MerchantLevel[client] > 2)
+						CPrintToChat(client, "{green}The Investigator!{default}: Gain overall resistances and immunity to slows!\nImplant bombs onto hit enemies\nIf hurt by enemy, debuff them and gain attackspeed.\nKnockback all light enemies slightly.\nIf slowed or stunned, stun them instead!");	
+					else
+						CPrintToChat(client, "{green}The Investigator!{default}: Gain melee resistances!\nImplant bombs onto hit enemies\nIf hurt by enemy, debuff them and gain attackspeed.\nKnockback all light enemies slightly.");	
+				}
+				case 3:
+				{
+					CPrintToChat(client, "{green}Wine market!{default}: Revive if you would have died at a cost of metal.\nGain weapons on activation in your primary slot!\nLoyalty and Generosity: Healing crossbow\nLavish and Prodigal: Strong heavy shotgun.");
+				}
+			}
 		}
 	}
 	return 0;
@@ -492,6 +524,7 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 			if(target)
 			{
 				healing *= MerchantLevel[attacker] * 25.0;
+				healing *= 0.25;
 
 				HealEntityGlobal(attacker, target, healing, 1.0, 1.0);
 			}
@@ -575,10 +608,7 @@ static void MerchantStart(int client, int slot)
 			if(MerchantLevel[client] > 2)
 			{
 				int buttons = GetClientButtons(client);
-				if(buttons & IN_JUMP)
-				{
-				}
-				else if((buttons & IN_DUCK) || (GetURandomInt() % 2))
+				if((buttons & IN_DUCK))
 				{
 					MerchantEffect[client] = 1;
 				}
@@ -628,6 +658,22 @@ static void MerchantStart(int client, int slot)
 		{
 			MerchantEffect[client] = MerchantLevel[client] > 1 ? (GetURandomInt() % 3) : -1;
 
+			switch(MerchantEffect[client])
+			{
+				case Nothing_Debuff:
+				{
+					CPrintToChat(client, "{green}Martial Artist, You recieved Debuff on hit!{default}");
+				}
+				case Nothing_Damage:
+				{
+					CPrintToChat(client, "{green}Martial Artist, You recieved Attackspeed!{default}");
+				}
+				case Nothing_Res:
+				{
+					CPrintToChat(client, "{green}Martial Artist, You recieved Heavy Melee Resistance!{default}");
+				}
+			}
+					
 			if((MerchantLeftAt[client] + 10.0) > GetGameTime())
 			{
 				// Redeploy has a discount
@@ -800,7 +846,7 @@ static void MerchantStart(int client, int slot)
 						}
 						case Nothing_Res:
 						{
-							MerchantAddAttrib(client, 206, (MerchantLevel[client] == 6 ? 0.5 : (MerchantLevel[client] == 3 ? 0.6 : 0.55)));
+							MerchantAddAttrib(client, 206, (MerchantLevel[client] == 6 ? 0.75 : (MerchantLevel[client] == 3 ? 0.8 : 0.7)));
 							strcopy(particle, sizeof(particle), "utaunt_arcane_purple_sparkle_ring");
 						}
 					}
@@ -840,7 +886,6 @@ static void MerchantStart(int client, int slot)
 				SetAmmo(client, Ammo_Merchant, 1);
 
 				Store_GiveSpecificItem(client, "Loyalty and Generosity");
-				Store_GiveSpecificItem(client, "Courtesy Gift");
 				Store_GiveSpecificItem(client, "Lavish and Prodigal");
 			}
 		}
@@ -935,7 +980,6 @@ static void MerchantEnd(int client)
 	}
 	
 	Store_RemoveSpecificItem(client, "Loyalty and Generosity");
-	Store_RemoveSpecificItem(client, "Courtesy Gift");
 	Store_RemoveSpecificItem(client, "Lavish and Prodigal");
 
 	for( int entity = 1; entity <= MAXENTITIES; entity++ ) 
