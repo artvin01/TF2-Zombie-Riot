@@ -2244,6 +2244,13 @@ static void Func_On_Proj_Touch(int entity, int other)
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
+
+	if(fl_ruina_Projectile_radius[entity]>0.0)
+		Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
+	else
+		SDKHooks_TakeDamage(other, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
+
+	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	if(i_current_wave[owner] >= 45)
 	{
 		Twirl npc = view_as<Twirl>(owner);
@@ -2253,13 +2260,6 @@ static void Func_On_Proj_Touch(int entity, int other)
 		float Time = (npc.Anger ? 1.45 : 1.9);
 		npc.Ion_On_Loc(ProjectileLoc, radius, dmg, Time);
 	}
-
-	if(fl_ruina_Projectile_radius[entity]>0.0)
-		Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
-	else
-		SDKHooks_TakeDamage(other, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
-
-	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 	Ruina_Remove_Projectile(entity);
 
@@ -2439,8 +2439,8 @@ static bool Retreat(Twirl npc, bool custom = false)
 		dmg *= RaidModeScaling;
 
 		float Time = (npc.Anger ? 1.25 : 1.5);
-		npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, aoe_check, _, _, true, _, false, _, AoeIonCast);
+		npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 		Retreat_Laser(npc, VecSelfNpc);
 		//2 second duration laser.
 		fl_force_ranged[npc.index] = GameTime + 8.0;	
