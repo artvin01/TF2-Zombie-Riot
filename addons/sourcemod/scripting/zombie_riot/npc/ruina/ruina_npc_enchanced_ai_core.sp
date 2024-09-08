@@ -1443,9 +1443,9 @@ static void Apply_Sickness(int iNPC, int Target)
 	Mana_Regen_Block_Timer[Target] = GameTime + Timeout;
 
 	if(i_BarbariansMind[Target])
-		TF2_StunPlayer(Target, Slow_Time, 0.4, TF_STUNFLAG_SLOWDOWN);
+		TF2_StunPlayer(Target, Slow_Time, 0.4, TF_STUNFLAG_SLOWDOWN);	//40% slower
 	else
-		TF2_StunPlayer(Target, Slow_Time, 0.6, TF_STUNFLAG_SLOWDOWN);
+		TF2_StunPlayer(Target, Slow_Time, 0.6, TF_STUNFLAG_SLOWDOWN);	//60% slower
 
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
