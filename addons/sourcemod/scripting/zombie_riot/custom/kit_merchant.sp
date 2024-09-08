@@ -337,10 +337,13 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		}
 		case Merchant_Lee:
 		{
-			f_BombEntityWeaponDamageApplied[victim][attacker] += damage * (MerchantLevel[attacker] > 4 ? 0.133333 : 0.1);
-			i_HowManyBombsOnThisEntity[victim][attacker]++;
-			i_HowManyBombsHud[victim]++;
-			Apply_Particle_Teroriser_Indicator(victim);
+			if(!b_NpcIsInvulnerable[victim])
+			{
+				f_BombEntityWeaponDamageApplied[victim][attacker] += damage * (MerchantLevel[attacker] > 4 ? 0.133333 : 0.1);
+				i_HowManyBombsOnThisEntity[victim][attacker]++;
+				i_HowManyBombsHud[victim]++;
+				Apply_Particle_Teroriser_Indicator(victim);
+			}
 
 			bool blocking = EntRefToEntIndex(MerchantEffect[attacker]) == victim;
 			bool elite = MerchantLevel[attacker] > 2;
