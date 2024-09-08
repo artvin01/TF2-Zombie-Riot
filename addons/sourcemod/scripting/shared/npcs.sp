@@ -802,7 +802,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				{
 					float damage_save = 50.0;
 					damage_save *= Attributes_Get(weapon, 2, 1.0);
-					f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
 					if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
 					{
@@ -816,6 +815,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					{
 						BombsToInject *= 2;
 					}
+					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
 					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
 					i_HowManyBombsHud[victim] += BombsToInject;
 					Apply_Particle_Teroriser_Indicator(victim);
@@ -860,7 +860,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				{
 					float damage_save = 50.0;
 					damage_save *= Attributes_Get(weapon, 2, 1.0);
-					f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
 					if(i_HeadshotAffinity[attacker] == 1)
 					{
@@ -875,6 +874,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					if(BombsToInject < 1)
 						BombsToInject = 1;
 						
+					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
 					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
 					i_HowManyBombsHud[victim] += BombsToInject;
 					Apply_Particle_Teroriser_Indicator(victim);
@@ -2202,15 +2202,7 @@ stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false
 			{
 				if(IsValidClient(client))
 				{
-					float flPos[3];
-					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPos);
-					flPos[2] += 40.0;
-					int BomsToBoom = i_HowManyBombsOnThisEntity[entity][client];
-					float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
-					i_HowManyBombsHud[entity] -= BomsToBoom;
-					i_HowManyBombsOnThisEntity[entity][client] = 0;
-					f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
-					Cause_Terroriser_Explosion(client, entity, damage, flPos);
+					Cause_Terroriser_Explosion(client, entity);
 				}
 			}
 		}

@@ -504,7 +504,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 	}
 	else
 	{
-		f_BombEntityWeaponDamageApplied[enemy][owner] = damage / 6.0;
+		f_BombEntityWeaponDamageApplied[enemy][owner] += damage / 6.0;
 		i_HowManyBombsOnThisEntity[enemy][owner] += 1;
 		i_HowManyBombsHud[enemy] += 1;
 		Apply_Particle_Teroriser_Indicator(enemy);
