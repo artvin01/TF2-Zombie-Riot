@@ -886,8 +886,7 @@
 		"fr"		"Mitrailleuse"
 		"chi"		"步哨"
 	}
-	"
-  "
+	"Mortar"
 	{
 		"en"		"Mortar"
 		"fr"		"Mortier"
@@ -2567,13 +2566,13 @@
 	{
 		"en"	"De Ständchen de Disharmonie"
 		"fr"	"De Ständchen de Disharmonie"
-		"chi"	""][韵文][""
+		"chi"	"][韵文]["
 	}
 	"The Standchen AltPap 2"
 	{
 		"en"	"De Ständchen de Stille"
 		"fr"	"De Ständchen de Stille"
-		"chi"	""]]韵文[["
+		"chi"	"]]韵文[["
 	}
 	"Combo Kits"
 	{
