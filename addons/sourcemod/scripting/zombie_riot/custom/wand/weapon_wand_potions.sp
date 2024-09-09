@@ -504,10 +504,13 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 	}
 	else
 	{
-		f_BombEntityWeaponDamageApplied[enemy][owner] = damage / 6.0;
-		i_HowManyBombsOnThisEntity[enemy][owner] += 1;
-		i_HowManyBombsHud[enemy] += 1;
-		Apply_Particle_Teroriser_Indicator(enemy);
+		if(!b_NpcIsInvulnerable[enemy])
+		{
+			f_BombEntityWeaponDamageApplied[enemy][owner] += damage / 6.0;
+			i_HowManyBombsOnThisEntity[enemy][owner] += 1;
+			i_HowManyBombsHud[enemy] += 1;
+			Apply_Particle_Teroriser_Indicator(enemy);
+		}
 	}
 }
 
@@ -741,7 +744,15 @@ public void WandPotion_PotionGoldDo(int entity, int enemy, float damage_Dontuse,
 bool ShrinkOnlyOneTarget = false;
 public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 {
-
+	if(target)
+	{
+		if(target <= MaxClients)
+			return;
+		
+		if(GetTeam(target) == 2)
+			return;
+	}
+	
 	SDKUnhook(entity, SDKHook_StartTouchPost, Weapon_Wand_PotionShrinkTouch);
 
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);

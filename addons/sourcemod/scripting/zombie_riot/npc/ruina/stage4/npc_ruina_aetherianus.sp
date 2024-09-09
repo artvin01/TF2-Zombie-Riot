@@ -177,6 +177,9 @@ methodmap Aetherianus < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		npc.m_fbGunout = false;
 
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		npc.m_iChanged_WalkCycle = 1;
 		
 		

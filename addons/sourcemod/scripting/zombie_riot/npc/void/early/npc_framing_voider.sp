@@ -278,7 +278,7 @@ void FramingInfestorSpread(int entity)
 	ExpidonsaGroupHeal(entity, 300.0, 5, 9999.9, 1.0, false, VoidWave_FramingVoiderBuff , _, true);
 }
 
-stock bool VoidWave_FramingVoiderBuff(int entity, int victim)
+stock bool VoidWave_FramingVoiderBuff(int entity, int victim, float &healingammount)
 {
 	if(i_NpcInternalId[entity] == i_NpcInternalId[victim])
 		return true;

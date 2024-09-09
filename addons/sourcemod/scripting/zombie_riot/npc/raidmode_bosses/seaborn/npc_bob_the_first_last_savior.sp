@@ -326,6 +326,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 5.0;
 			npc.SetPlaybackRate(2.0);
 			npc.g_TimesSummoned = 0;
+			WaveStart_SubWaveStart(GetGameTime() + 500.0);
 		}
 
 		/*
@@ -1605,8 +1606,8 @@ static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 
 	enemy.Index = NPC_GetByPlugin(plugin);
 	enemy.Is_Boss = boss;
 	enemy.Is_Health_Scaled = 1;
-	enemy.ExtraMeleeRes = 0.05;
-	enemy.ExtraRangedRes = 0.05;
+	enemy.ExtraMeleeRes = 0.02;
+	enemy.ExtraRangedRes = 0.02;
 	enemy.ExtraSpeed = 1.5;
 	enemy.ExtraDamage = 4.0;
 	enemy.ExtraSize = 1.0;

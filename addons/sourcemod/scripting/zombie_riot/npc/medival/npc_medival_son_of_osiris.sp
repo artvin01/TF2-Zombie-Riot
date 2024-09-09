@@ -201,7 +201,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 		b_CannotBeStunned[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
 		b_CannotBeSlowed[npc.index] = true;
-		Is_a_Medic[npc.index] = true; //cannot be healed
+	//	Is_a_Medic[npc.index] = true; //cannot be healed
 		
 
 		npc.StartPathing();

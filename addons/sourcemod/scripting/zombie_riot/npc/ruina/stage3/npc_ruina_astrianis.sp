@@ -197,6 +197,9 @@ methodmap Astrianis < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 1;
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
 		/*

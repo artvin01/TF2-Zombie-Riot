@@ -184,6 +184,9 @@ methodmap Loonaris < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		npc.m_iChanged_WalkCycle = 1;
 		
 		

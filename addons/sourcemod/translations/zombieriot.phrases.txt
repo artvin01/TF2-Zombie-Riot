@@ -961,6 +961,46 @@
 	"Magnesis Target Immune to Knockback"
 	{
 		"en"		"Grab target is immune to knockback."
+	}
+	"Magnesis Target Invulnerable"
+	{
+		"en"		"Grab target is invulnerable."
+	}
+	"Magnesis Target Too Strong"
+	{
+		"en"		"Grab target is too strong."
+	}
+	"Magnesis No Target Found"
+	{
+		"en"		"No valid targets within range."
+	}
+	"Magnesis Already Grabbed"
+	{
+		"en"		"That enemy is already being grabbed!"
+	}
+	"Magnesis Throw Failed"
+	{
+		"en"		"Not enough mana to throw! Target was dropped instead."
+	}
+	"Magnesis Grabbed Too Soon"
+	{
+		"en"		"That enemy was grabbed too recently!"
+	}
+	"Magnesis Standing On Target"
+	{
+		"en"		"You are standing on the grab target."
+	}
+	"Magnesis Target Too Far"
+	{
+		"en"		"Grab target is too far away."
+	}
+	"Magnesis Target LOS Broken"
+	{
+		"en"		"Grab target is out of your line of sight."
+	}
+	"Crouch for ability"
+	{
+		"en"		"Grab target is immune to knockback."
 		"chi"		"目标免疫击退"
 	}
 	"Magnesis Target Invulnerable"
@@ -2050,6 +2090,11 @@
 		"nl"		"U hebt [{1}] voor [{2}] Gezondheidspunten genezen!"
 		"chi"       "你为[{1}]治疗了[{2}]的生命值!"
 	}
+	"You healed for NpcName"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"You Healed [{1}] for [{2}] HP!"
+	}
 	"Loadouts"
 	{
 		"en"		"Loadouts"
@@ -2558,8 +2603,8 @@
 	}
 	"Crouch To See Info Barracks"
 	{
-		"en"		"Crouch to see descriptions!\nTip:\nAmmoboxes give resources!\nPerkmachine perks work on units!"
-		"fr"		"Accroupissez-vous pour voir des descriptions!\nIndice:\nLes boîtes à munitions donne des ressources!\nLes Perks de la Machine à Perks fonctionne sur vos unités!"
+		"en"		"Crouch to see descriptions!\nTip:\nAmmoboxes give resources!"
+		"fr"		"Accroupissez-vous pour voir des descriptions!\nIndice:\nLes boîtes à munitions donne des ressources!"
 	}
 	"Toggle Upgrade Menu Barracks"
 	{
@@ -3400,7 +3445,7 @@
 	}
 	"True Fusion Warrior Desc"
 	{
-		"en"	"Raids appear at the end of every 15 waves, they get more stronger with more abilities!"
+		"en"	"(1) Raids appear at the end of every 15 waves, they get more stronger with more abilities!"
 		"fr"	"À tous les 15 vagues, des Raids vont apparaître. Leur prouesse et abilités s'amélioreront graduellement!"
 		"chi"	"每15波会出现Raidboss，每次出现都会更强，技能更多！"
 	}
@@ -3412,7 +3457,7 @@
 	}
 	"Blitzkrieg Desc"
 	{
-		"en"	"The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
+		"en"	"(2) The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
 		"fr"	"La machine qui tire rapidement des roquettes et choque les survivants hors de sa portée!\nÉvitez de se bagarrer contre lui dans des zones Expidonsannes..."
 		"chi"	"遮天蔽日的火箭和足以穿透天国的激光。\n别在Expidonsa境内招惹这家伙……"
 	}
@@ -3429,7 +3474,7 @@
 	}
 	"Silvester Waldch Desc"
 	{
-		"en"	"Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
+		"en"	"(3) Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
 		"fr"	"Silvester attaque avec des rayons laser et des roches, alors que Waldch tir à distance!"
 		"chi"	"西尔维斯特用激光和土地的力量冲锋，瓦德奇则在远处使用狙击枪辅助！"
 	}
@@ -3447,7 +3492,7 @@
 	}
 	"God Alaxios Desc"
 	{
-		"en"	"Fight him and his rapidly spawning army, kill the army first whenever they show up!"
+		"en"	"(4) Fight him and his rapidly spawning army, kill the army first whenever they show up!"
 		"fr"	"Alaxios apporte son armée, tuez ses unités en premier quand ils apparaîssent!"
 		"chi"	"准备迎接一场全面的战争。记得先处理掉他的军队！"
 	}
@@ -3459,7 +3504,7 @@
 	}
 	"Sensal Desc"
 	{
-		"en"	"The scouting party operative which rapidly summons homing scythes and laser attacks!"
+		"en"	"(5) The scouting party operative which rapidly summons homing scythes and laser attacks!"
 		"fr"	"Le capitaine d'un groupe de scouts qui convoque des scythes chercheurs et des rayons laser!"
 		"chi"	"Expidonsa侦查队。盾，激光，和能量刃。"
 	}
@@ -3471,13 +3516,13 @@
 	}
 	"Interitus Desc"
 	{
-		"en"	"Chaos has afflicted many cities, His group is ready to serve you justices. Get ready."
+		"en"	"(7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"Karlas charges you down with his Lance while Stella fires laser attacks!"
+		"en"	"(6) Karlas charges you down with his Lance while Stella fires laser attacks!"
 		"fr"	"Karlas vous perce avec sa Lance alors que Stella vous vire des rayons laser!"
 		"chi"	"卡拉斯手持长剑，而斯钛拉操纵着梦魇大炮。"
 	}
@@ -3495,13 +3540,13 @@
 	}
 	"Unspeakable Raid Desc"
 	{
-		"en"	"Directly after you release the void in rogue2..."
+		"en"	"(8) Directly after you release the void in rogue2..."
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 	}
 	"Twirl Raid Desc"
 	{
-		"en"	"A certain individual has taken an interest in your group"
+		"en"	"(9) A certain individual has taken an interest in your group"
 		"fr"	"Cet individuel s'est intéressé dans votre groupe."
 		"chi"	"你貌似引起了 她 的兴趣"
 	}
@@ -3794,7 +3839,7 @@
 	}
 	"Iberia Nemal Desc"
 	{
-		"en" "Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremaly seriously."
+		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremaly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 	}
 }

@@ -43,7 +43,7 @@ public const int AmmoData[][] =
 	{ 10, 60 },			//SMG Magazines
 	{ 10, 14 },			//REvolver Rounds
 	{ 10, 12 },			//Shotgun Shells
-	{ 10, 400 },		//Healing Medicine
+	{ 10, 500 },		//Healing Medicine
 	{ 10, 500 },		//Medigun Fluid
 	{ 10, 80 },			//Laser Battery
 	{ 0, 0 },			//Hand Grenade
@@ -195,7 +195,9 @@ enum
 	WEAPON_WALDCH_SWORD_REAL = 115,
 	WEAPON_MLYNAR_PAP_2 = 116,
 	WEAPON_ULPIANUS = 117,
-	WEAPON_WRATHFUL_BLADE = 118
+	WEAPON_WRATHFUL_BLADE = 118,
+	WEAPON_MAGNESIS = 119,
+	WEAPON_SUPERUBERSAW = 120
 }
 
 enum
@@ -490,6 +492,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_riotshield.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
 #include "zombie_riot/custom/weapon_health_hose.sp"
+#include "zombie_riot/custom/weapon_superubersaw.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 #include "shared/custom/weapon_judgement_of_iberia.sp"
 #include "shared/custom/weapon_phlog_replacement.sp"
@@ -544,6 +547,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_chainsaw.sp"
 #include "zombie_riot/custom/weapon_flametail.sp"
 #include "zombie_riot/custom/weapon_ulpianus.sp"
+#include "zombie_riot/custom/wand/weapon_wand_magnesis.sp"
 #include "zombie_riot/custom/kit_blacksmith_brew.sp"
 
 void ZR_PluginLoad()
@@ -659,6 +663,7 @@ void ZR_MapStart()
 	Rogue_OnAbilityUseMapStart();
 	Weapon_TexanBuisnesMapChange();
 	AngelicShotgun_MapStart();
+	SuperUbersaw_Mapstart();
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
@@ -792,6 +797,7 @@ void ZR_MapStart()
 	ResetMapStartVictoria();
 	Obuch_Mapstart();
 	Ulpianus_MapStart();
+	Magnesis_Precache();
 	Wrathful_Blade_Precache();
 	
 	Zombies_Currently_Still_Ongoing = 0;
@@ -1101,10 +1107,8 @@ public Action CommandDebugHudTest(int client, int args)
         return Plugin_Handled;
     }
 
-	float Number = GetCmdArgFloat(1);
-	PrintToChatAll("Number %f",Number);
-
-	PrintToChatAll("MaxNumBuffValue %f",MaxNumBuffValue(0.6, 1.0, Number));
+	int Number = GetCmdArgInt(1);
+	Medival_Wave_Difficulty_Riser(Number);
 
 	return Plugin_Handled;
 }

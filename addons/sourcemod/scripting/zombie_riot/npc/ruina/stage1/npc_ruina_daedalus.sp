@@ -222,6 +222,9 @@ methodmap Daedalus < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;

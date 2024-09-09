@@ -89,7 +89,7 @@ public void VoidPortal_NPCDeath(int entity)
 	VoidPortal npc = view_as<VoidPortal>(entity);
 	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 	//a spawnpoint that only lasts for 1 spawn
-	Void_PlaceZRSpawnpoint(VecSelfNpcabs, 2, 2000000000, "utaunt_portalswirl_purple_parent", -15, true);
+	Void_PlaceZRSpawnpoint(VecSelfNpcabs, 2, 2000000000, "utaunt_portalswirl_purple_parent", 2, true);
 	if(SpawnedOneAlready > GetGameTime())
 	{
 		Event event = CreateEvent("show_annotation");

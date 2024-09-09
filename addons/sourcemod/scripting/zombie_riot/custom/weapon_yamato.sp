@@ -510,8 +510,7 @@ static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], floa
 	float Homing_Angle = 90.0;
 	if(!IsValidEntity(i_entity_hit))
 	{
-		Homing_Power = 1.5;
-		Homing_Angle = 20.0;
+		return;
 	}
 		
 

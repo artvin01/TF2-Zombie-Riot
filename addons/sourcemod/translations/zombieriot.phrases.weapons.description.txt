@@ -146,6 +146,10 @@
 		"fr"		"Archetype: Sortilèges Mythiques"
 		"chi"		"类型：至尊法师"
 	}
+	"Psychic Warlord"
+	{
+		"en"		"Archetype: Psychic Warlord"
+	}
 	"Abyssal Hunter"
 	{
 		"en"		"Archetype: Abyssal Hunter"
@@ -2282,6 +2286,10 @@
 		"fr"	"Résurrection Rapide: soigne vos unités automatiquement\nVin des Veuves: affaiblit les ennemis frappés\nDaiquiri: 1.25x dégats à distance\nDouble-Touche: 1.15x cadence des attaques\nSpeed Cola: 1.25x vitesse\nRecyclage Poiré: 1.25x gain de ressources\nJuggernog: 1.3x santé, 1.15x résistance"
 		"chi"	"快速起身：自动回复资源\n身体强化：*1.3血量，*1.15伤害抗性\n精神强化：*1.15攻击速度\n极速可乐：*1.25移动速度\n死亡宣告：*1.2远程伤害\n恶魔领域：攻击会赋予debuff"
 	}
+	"Barracks Desc Extra 2"
+	{
+		"en"	"You gain regen resources, but you also gain resources opon hurting enemies with units.\nIf youre too far away from your units they lose half their stats!\nMelee damage give 6x the resources.\nYour resources have a cap, dont hoard them! (gold excluded)"
+	}
 	"Militia Desc"
 	{
 		"en"	"Basic cheap melee unit"
@@ -3924,5 +3932,33 @@
 	{
 		"en"	"''We added a bunch of extra little bits and pieces to the staff to augment its power.\nIt is ridiculously heavy now. Have fun carrying it around everywhere!''\nImprovements to all stats."
 		"chi"	"''呱，是磁場癲佬，大家快退口牙！''\n全面加强属性。"
+	}
+	"Telekinesis Desc"
+	{
+		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw it.
+	}
+	"Telekinesis PaP 1"
+	{
+		"en"	"You may now grab bosses, raids included. Held enemies are strangled and take more damage."
+	}
+	"Telekinesis PaP 2"
+	{
+		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nIncreases to all stats."
+	}
+	"Newtonian Knuckles Desc"
+	{
+		"en"	"''You traded your experimental drugs for an experimental weapon.''\nM2: Magnetic shockwave, launches zombies.\nM1 fires an explosive projectile which deals bonus damage and reduces M2 CD when airshotting zombies launched by M2."
+	}
+	"Newtonian PaP 1"
+	{
+		"en"	"''We added a bunch of extra little bits and pieces to the staff to augment its power.\nIt is ridiculously heavy now. Have fun carrying it around everywhere!''\nImprovements to all stats."
+	}
+	"Super-Uber-Saw Desc"
+	{
+		"en"	"Healing allies, reviving teammates, and hurting with the battle medigun charges the ubersaw.\nThe more its charged, the stronger and more enemeis it hits with 1 attack.\nScales with medigun upgrades.\nIf above 50%% Charge, deals 2x dmg vs raids."
+	}
+	"Super-Uber-Saw Desc 1"
+	{
+		"en"	"Increaced damage and 25%% more range."
 	}
 }
