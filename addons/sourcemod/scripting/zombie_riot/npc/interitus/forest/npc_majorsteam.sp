@@ -163,15 +163,15 @@ static void ClotThink(int iNPC)
 					}
 				}
 
-				float damageDeal = 200.0;
-				float ProjectileSpeed = 500.0;
+				float damageDeal = 165.0;
+				float ProjectileSpeed = 450.0;
 				if(Rogue_Paradox_RedMoon())
 				{
 					ProjectileSpeed *= 1.15;
 				}
 
 				if(npc.m_iOverlordComboAttack % 3)
-					ProjectileSpeed *= 2.0;
+					ProjectileSpeed *= 1.25;
 
 				if(npc.m_iOverlordComboAttack % 2)
 					PredictSubjectPositionForProjectiles(npc, target, ProjectileSpeed, _,vecTarget);
@@ -182,9 +182,9 @@ static void ClotThink(int iNPC)
 				int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,70.0);
 				if(entity != -1)
 				{
-					i_ChaosArrowAmount[entity] = 100;
+					i_ChaosArrowAmount[entity] = 80;
 					if(Rogue_Paradox_RedMoon())
-						i_ChaosArrowAmount[entity] = 300;
+						i_ChaosArrowAmount[entity] = 125;
 
 					//max duration of 4 seconds beacuse of simply how fast they fire
 					CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
