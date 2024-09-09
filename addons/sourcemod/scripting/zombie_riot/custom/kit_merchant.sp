@@ -94,7 +94,7 @@ static Action TimerEffect(Handle timer, int client)
 				int weapon = EntRefToEntIndex(MerchantWeaponRef[client]);
 				if(weapon != -1)
 				{
-					if(MerchantStyle[client] >= 0 && (MerchantStyle[client] == Merchant_Swire || GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon))
+					if(MerchantStyle[client] >= 0)
 					{
 						b_IsCannibal[client] = true;
 
