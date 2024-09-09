@@ -94,7 +94,7 @@ static Action TimerEffect(Handle timer, int client)
 				int weapon = EntRefToEntIndex(MerchantWeaponRef[client]);
 				if(weapon != -1)
 				{
-					if(MerchantStyle[client] == Merchant_Swire || GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
+					if(MerchantStyle[client] >= 0 && (MerchantStyle[client] == Merchant_Swire || GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon))
 					{
 						b_IsCannibal[client] = true;
 
@@ -507,7 +507,7 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 			{
 				if(i != attacker && TeutonType[i] == TEUTON_NONE && !dieingstate[i] && IsClientInGame(i) && IsPlayerAlive(i))
 				{
-					GetClientAbsOrigin(attacker, pos2);
+					GetClientAbsOrigin(i, pos2);
 					if(GetVectorDistance(pos1, pos2, true) < 100000.0)	// 300 HU
 					{
 						int hp = GetClientHealth(i);
