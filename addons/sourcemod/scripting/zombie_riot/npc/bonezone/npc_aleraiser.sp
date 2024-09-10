@@ -12,11 +12,13 @@ static float BONES_ALERAISER_SPEED = 400.0;
 //If no allies are alive, they smash their bottle on their head, healing themselves, before immediately sprinting towards enemies and rapidly slashing them with the broken bottle.
 static float ALERAISER_THROW_RANGE = 400.0;				//Range at which the Aleraiser will begin throwing ale at targets.
 static float ALERAISER_THROW_COOLDOWN = 2.0;			//Cooldown between throws.
+static float ALERAISER_THROW_VELOCITY = 2400.0;			//Bottle throw velocity.
 static float ALERAISER_STOP_RANGE = 300.0;				//Distance from its target at which the Aleraiser will stop moving.
 static float ALERAISER_RADIUS = 160.0;					//Ale effect radius.
 static float ALERAISER_HEAL_PERCENT = 0.1;				//percentage of max health to heal allies for.
 static float ALERAISER_HEAL_MINIMUM = 100.0;			//Minimum healing provided to allies who are within the ale's radius.
-static float ALERAISER_SMASH_HEALS = 2500.0;			//Amount the Aleraiser should heal itself when it enters its melee phase.
+static float ALERAISER_HEAL_BUFF_CHANCE = 0.1;			//Chance for allies who are healed by thrown bottles to be instantly converted to their buffed form, permanently.
+static float ALERAISER_SMASH_HEALS = 3500.0;			//Amount the Aleraiser should heal itself when it enters its melee phase.
 static float ALERAISER_SPEED_NO_ALLIES = 520.0;			//Movement speed when no non-medic allies are alive.
 static float ALERAISER_MELEE_DAMAGE = 60.0;				//Melee damage.
 static float ALERAISER_MELEE_SPEED = 1.0;				//Melee attack speed multiplier.
@@ -68,12 +70,18 @@ static char g_GibSounds[][] = {
 
 static bool b_AleraiserGoneBerserk[2049] = { false, ... };
 static bool b_AleraiserBerserkSequence[2049] = { false, ... };
+static bool b_AleraiserThrowing[2049] = { false, ... };
 
 #define PARTICLE_ALERAISER_BOTTLE_SMASH	"spell_skeleton_goop_green"
+#define PARTICLE_ALERAISER_BOTTLE_TRAIL	"peejar_trail_blu"
+#define PARTICLE_ALERAISER_HEAL			"spell_overheal_blue"
 
 #define SND_ALERAISER_SWING				")weapons/machete_swing.wav"
 #define SND_ALERAISER_BOTTLE_SMASH		")weapons/bottle_break.wav"
 #define SND_ALERAISER_BOTTLE_SMASH_OW	")vo/halloween_boss/knight_pain03.mp3"
+#define SND_ALERAISER_HEAL				")misc/halloween/spell_overheal.wav"
+
+#define MODEL_ALERAISER_BOTTLE			"models/weapons/c_models/c_bottle/c_bottle.mdl"
 
 public void AleraiserBones_OnMapStart_NPC()
 {
@@ -89,6 +97,8 @@ public void AleraiserBones_OnMapStart_NPC()
 	PrecacheSound(SND_ALERAISER_BOTTLE_SMASH);
 	PrecacheSound(SND_ALERAISER_BOTTLE_SMASH_OW);
 	PrecacheSound(SND_ALERAISER_SWING);
+	PrecacheSound(SND_ALERAISER_HEAL);
+	PrecacheModel(MODEL_ALERAISER_BOTTLE);
 
 //	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 
@@ -280,7 +290,7 @@ public void Aleraiser_BerserkSequence(DataPack pack)
 	ResetPack(pack);
 	int ent = EntRefToEntIndex(ReadPackCell(pack));
 	float swingTime = ReadPackFloat(pack);
-	float hitTime = ReadPackFloat(pack);
+	float throwTime = ReadPackFloat(pack);
 	float endTime = ReadPackFloat(pack);
 	delete pack;
 
@@ -296,7 +306,7 @@ public void Aleraiser_BerserkSequence(DataPack pack)
 		swingTime = 9999999.0;
 	}
 
-	if (gt >= hitTime)
+	if (gt >= throwTime)
 	{
 		float pos[3], ang[3];
 		GetAttachment(npc.index, "head", pos, ang);
@@ -314,7 +324,11 @@ public void Aleraiser_BerserkSequence(DataPack pack)
 			}
 		}
 
-		hitTime = 9999999.0;
+		npc.GetAbsOrigin(pos);
+		ParticleEffectAt(pos, PARTICLE_ALERAISER_HEAL);
+		EmitSoundToAll(SND_ALERAISER_HEAL, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
+
+		throwTime = 9999999.0;
 	}
 
 	if (gt >= endTime)
@@ -333,7 +347,7 @@ public void Aleraiser_BerserkSequence(DataPack pack)
 	RequestFrame(Aleraiser_BerserkSequence, pack);
 	WritePackCell(pack, EntIndexToEntRef(npc.index));
 	WritePackFloat(pack, swingTime);
-	WritePackFloat(pack, hitTime);
+	WritePackFloat(pack, throwTime);
 	WritePackFloat(pack, endTime);
 }
 
@@ -383,7 +397,7 @@ public void AleraiserBones_ClotThink(int iNPC)
 		npc.m_iTarget = Aleraiser_GetTarget(npc);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 
-		if (!b_AleraiserBerserkSequence[npc.index])
+		if (!b_AleraiserBerserkSequence[npc.index] && !b_AleraiserThrowing[npc.index])
 			npc.StartPathing();
 	}
 	
@@ -399,23 +413,33 @@ public void AleraiserBones_ClotThink(int iNPC)
 
 		if (!b_AleraiserGoneBerserk[npc.index])
 		{
-			if (flDistanceToTarget <= ALERAISER_STOP_RANGE)
+			if (!b_AleraiserThrowing[npc.index])
 			{
-				npc.StopPathing();
-			}
-			else
-			{
-				NPC_SetGoalEntity(npc.index, closest);
-				npc.StartPathing();
-			}
+				if (flDistanceToTarget <= ALERAISER_STOP_RANGE)
+				{
+					npc.StopPathing();
+				}
+				else
+				{
+					NPC_SetGoalEntity(npc.index, closest);
+					npc.StartPathing();
+				}
 
-			if (flDistanceToTarget <= ALERAISER_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index))
-			{
-				CPrintToChatAll("Aleraiser would have just thrown a bottle.");
+				if (flDistanceToTarget <= ALERAISER_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index))
+				{
+					b_AleraiserThrowing[npc.index] = true;
 
-				//TODO: Throw logic, needs to predict.
+					int iActivity = npc.LookupActivity("ACT_ALERAISER_THROW");
+					if(iActivity > 0) npc.StartActivity(iActivity);
+					npc.StopPathing();
 
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + ALERAISER_THROW_COOLDOWN;
+					DataPack pack = new DataPack();
+					RequestFrame(Aleraiser_ThrowBottle, pack);
+					WritePackCell(pack, EntIndexToEntRef(npc.index));
+					WritePackFloat(pack, GetGameTime(npc.index) + 0.3);
+					WritePackFloat(pack, GetGameTime(npc.index) + 0.5);
+					WritePackFloat(pack, GetGameTime(npc.index) + 1.0);
+				}
 			}
 		}	
 		else
@@ -452,6 +476,131 @@ public void AleraiserBones_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
+public void Aleraiser_ThrowBottle(DataPack pack)
+{
+	ResetPack(pack);
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	float swingTime = ReadPackFloat(pack);
+	float throwTime = ReadPackFloat(pack);
+	float endTime = ReadPackFloat(pack);
+	delete pack;
+
+	if (!IsValidEntity(ent))
+		return;
+
+	if (b_AleraiserGoneBerserk[ent])
+		return;
+
+	AleraiserBones npc = view_as<AleraiserBones>(ent);
+	float gt = GetGameTime(npc.index);
+
+	if (gt >= swingTime)
+	{
+		EmitSoundToAll(SND_ALERAISER_SWING, npc.index);
+		swingTime = 9999999.0;
+	}
+
+	if (gt >= throwTime)
+	{
+		float pos[3], ang[3], vPredictedPos[3], SpeedReturn[3];
+		GetAttachment(npc.index, "handL", pos, ang);
+		PredictSubjectPosition(npc, npc.m_iTarget, 1.0, _, vPredictedPos);
+
+		int bottle = npc.FireRocket(vPredictedPos, 0.0, ALERAISER_THROW_VELOCITY);
+		SetEntityGravity(bottle, 1.0); 	
+		ArcToLocationViaSpeedProjectile(pos, vPredictedPos, SpeedReturn, 1.0, 1.0);
+		SetEntityMoveType(bottle, MOVETYPE_FLYGRAVITY);
+		TeleportEntity(bottle, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+
+		SetEntityModel(bottle, MODEL_ALERAISER_BOTTLE);
+		ParticleEffectAt_Parent(pos, PARTICLE_ALERAISER_BOTTLE_TRAIL, bottle);
+		g_DHookRocketExplode.HookEntity(Hook_Pre, bottle, Aleraiser_BottleCollide);
+
+		for (int i = 0; i < 3; i++)
+		{
+			ang[i] = GetRandomFloat(0.0, 360.0);
+		}
+
+		TeleportEntity(bottle, _, ang);
+
+		throwTime = 9999999.0;
+	}
+
+	if (gt >= endTime)
+	{
+		int iActivity = npc.LookupActivity("ACT_ALERAISER_RUN");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.StartPathing();
+		b_AleraiserThrowing[npc.index] = false;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + ALERAISER_THROW_COOLDOWN;
+		return;
+	}
+
+	pack = new DataPack();
+	RequestFrame(Aleraiser_ThrowBottle, pack);
+	WritePackCell(pack, EntIndexToEntRef(npc.index));
+	WritePackFloat(pack, swingTime);
+	WritePackFloat(pack, throwTime);
+	WritePackFloat(pack, endTime);
+}
+
+public MRESReturn Aleraiser_BottleCollide(int entity)
+{
+	float position[3];
+	
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_ALERAISER_BOTTLE_SMASH, 1.0);
+	ParticleEffectAt(position, PARTICLE_ALERAISER_HEAL, 1.0);
+	EmitSoundToAll(SND_ALERAISER_BOTTLE_SMASH, entity, SNDCHAN_STATIC, 80, _, 1.0, GetRandomInt(80, 110));
+
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		if (!IsValidEntity(i) || i_IsABuilding[i] || i == owner)
+			continue;
+			
+		if (!HasEntProp(i, Prop_Send, "m_iTeamNum"))
+			continue;
+			
+		CClotBody healTarget = view_as<CClotBody>(i);		
+		if (healTarget.BoneZone_IsASaint())
+			continue;
+			
+		float healPos[3];
+		WorldSpaceCenter(i, healPos);
+		if (GetTeam(entity) == GetTeam(i) && GetVectorDistance(position, healPos) <= ALERAISER_RADIUS)
+		{
+			float maxHP = float(GetEntProp(healTarget.index, Prop_Data, "m_iHealth"));
+			int HealingAmount = RoundFloat(maxHP * ALERAISER_HEAL_PERCENT);
+			if (HealingAmount < ALERAISER_HEAL_MINIMUM)
+				HealingAmount = ALERAISER_HEAL_MINIMUM;
+				
+			if (GetEntProp(healTarget.index, Prop_Data, "m_iHealth") < GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(healTarget.index, Prop_Data, "m_iHealth", GetEntProp(healTarget.index, Prop_Data, "m_iHealth") + HealingAmount);
+				if (GetEntProp(healTarget.index, Prop_Data, "m_iHealth") >= GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
+				{
+					SetEntProp(healTarget.index, Prop_Data, "m_iHealth", GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"));
+				}
+			}
+				
+			if (GetRandomFloat() <= ALERAISER_HEAL_BUFF_CHANCE)
+			{
+				healTarget.BoneZone_SetBuffedState(true);
+				healTarget.m_bBoneZoneNaturallyBuffed = true;
+			}
+
+			EmitSoundToAll(SND_ALERAISER_HEAL, i, _, _, _, 0.8, GetRandomInt(80, 110));
+		}
+	}
+	
+	RemoveEntity(entity);
+
+	return MRES_Supercede; //DONT.
+}
+
 public Action AleraiserBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
@@ -482,5 +631,3 @@ public void AleraiserBones_NPCDeath(int entity)
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
-
-
