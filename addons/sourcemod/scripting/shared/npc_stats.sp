@@ -1652,7 +1652,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			GetPercentageAdjust *= Zombie_DelayExtraSpeed();
 		}
-		else
+		else if(GetTeam(this.index) == TFTeam_Red)
 		{
 			if(VIPBuilding_Active())
 			{
