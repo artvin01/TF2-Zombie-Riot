@@ -394,7 +394,11 @@ public void AleraiserBones_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = Aleraiser_GetTarget(npc);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+
+		if (IsValidAlly(npc.index, npc.m_iTarget))
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 0.2;
+		else
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 
 		if (!b_AleraiserBerserkSequence[npc.index] && !b_AleraiserThrowing[npc.index])
 			npc.StartPathing();
