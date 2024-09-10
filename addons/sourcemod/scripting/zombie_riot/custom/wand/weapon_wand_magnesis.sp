@@ -775,6 +775,10 @@ public bool Magnesis_MoveVictim(int client)
 
 public void Magnesis_MakeNPCMove(int target, float targVel[3])
 {
+	//In tower defense, do not allow moving the target.
+	if(VIPBuilding_Active())
+		return;
+		
 	if(f_NoUnstuckVariousReasons[target] > GetGameTime() + 1.0)
 	{
 		//make the target not stuckable.

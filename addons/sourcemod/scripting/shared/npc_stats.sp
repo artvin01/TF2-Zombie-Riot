@@ -2281,7 +2281,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		if(ignoretime || DelayPathing(this.index))
-		{
+		{/*
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -2298,6 +2298,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					i_WasPathingToHere[this.index] = 0;
 				}
 			}
+			*/
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
@@ -2311,6 +2312,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	{	
 		if(ignoretime || DelayPathing(this.index))
 		{
+			/*
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -2327,6 +2329,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					f3_WasPathingToHere[this.index][2] = 0.0;
 				}
 			}
+			*/
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
