@@ -21,10 +21,8 @@ static float ALERAISER_HEAL_BUFF_CHANCE = 0.1;			//Chance for allies who are hea
 static float ALERAISER_SMASH_HEALS = 3500.0;			//Amount the Aleraiser should heal itself when it enters its melee phase.
 static float ALERAISER_SPEED_NO_ALLIES = 520.0;			//Movement speed when no non-medic allies are alive.
 static float ALERAISER_MELEE_DAMAGE = 60.0;				//Melee damage.
-static float ALERAISER_MELEE_SPEED = 1.0;				//Melee attack speed multiplier.
 static float ALERAISER_MELEE_INTERVAL = 0.1;			//Cooldown between melee attacks.
-static float ALERAISER_MELEE_START_RANGE = 60.0;		//Distance at which the Aleraiser will attempt to attack its target if it can.
-static float ALERAISER_MELEE_RANGE = 90.0;				//Melee attack trace hull length.
+static float ALERAISER_MELEE_START_RANGE = 80.0;		//Distance at which the Aleraiser will attempt to attack its target if it can.
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -46,7 +44,7 @@ static char g_IdleAlertedSounds[][] = {
 };
 
 static char g_MeleeHitSounds[][] = {
-	")weapons/grappling_hook_impact_flesh.wav",
+	")weapons/bottle_broken_hit_flesh1.wav",
 };
 
 static char g_MeleeAttackSounds[][] = {
@@ -78,6 +76,7 @@ static bool b_AleraiserThrowing[2049] = { false, ... };
 
 #define SND_ALERAISER_SWING				")weapons/machete_swing.wav"
 #define SND_ALERAISER_BOTTLE_SMASH		")weapons/bottle_break.wav"
+#define SND_ALERAISER_BOTTLE_SMASH_IMMINENT	")vo/halloween_boss/knight_alert02.mp3"
 #define SND_ALERAISER_BOTTLE_SMASH_OW	")vo/halloween_boss/knight_pain03.mp3"
 #define SND_ALERAISER_HEAL				")misc/halloween/spell_overheal.wav"
 
@@ -95,6 +94,7 @@ public void AleraiserBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
 	PrecacheSound(SND_ALERAISER_BOTTLE_SMASH);
+	PrecacheSound(SND_ALERAISER_BOTTLE_SMASH_IMMINENT);
 	PrecacheSound(SND_ALERAISER_BOTTLE_SMASH_OW);
 	PrecacheSound(SND_ALERAISER_SWING);
 	PrecacheSound(SND_ALERAISER_HEAL);
@@ -173,7 +173,7 @@ methodmap AleraiserBones < CClotBody
 		#endif
 	}
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 110));
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CAleraiserBones::PlayMeleeHitSound()");
@@ -272,11 +272,13 @@ public int Aleraiser_GetTarget(AleraiserBones npc)
 			npc.m_flSpeed = ALERAISER_SPEED_NO_ALLIES;
 			npc.StopPathing();
 
+			EmitSoundToAll(SND_ALERAISER_BOTTLE_SMASH_IMMINENT, npc.index, _, 120);
+
 			DataPack pack = new DataPack();
 			RequestFrame(Aleraiser_BerserkSequence, pack);
 			WritePackCell(pack, EntIndexToEntRef(npc.index));
-			WritePackFloat(pack, GetGameTime(npc.index) + 0.25);
-			WritePackFloat(pack, GetGameTime(npc.index) + 0.5);
+			WritePackFloat(pack, GetGameTime(npc.index) + 0.6);
+			WritePackFloat(pack, GetGameTime(npc.index) + 0.8);
 			WritePackFloat(pack, GetGameTime(npc.index) + 1.25);
 			
 		}
@@ -302,7 +304,7 @@ public void Aleraiser_BerserkSequence(DataPack pack)
 
 	if (gt >= swingTime)
 	{
-		EmitSoundToAll(SND_ALERAISER_SWING, npc.index);
+		EmitSoundToAll(SND_ALERAISER_SWING, npc.index, _, 120, _, _, GetRandomInt(80, 110));
 		swingTime = 9999999.0;
 	}
 
@@ -312,8 +314,9 @@ public void Aleraiser_BerserkSequence(DataPack pack)
 		GetAttachment(npc.index, "head", pos, ang);
 
 		ParticleEffectAt(pos, PARTICLE_ALERAISER_BOTTLE_SMASH, 2.0);
-		EmitSoundToAll(SND_ALERAISER_BOTTLE_SMASH, npc.index);
-		EmitSoundToAll(SND_ALERAISER_BOTTLE_SMASH_OW, npc.index);
+		EmitSoundToAll(SND_ALERAISER_BOTTLE_SMASH, npc.index, _, 120);
+		EmitSoundToAll(SND_ALERAISER_BOTTLE_SMASH, npc.index, _, 120);
+		EmitSoundToAll(SND_ALERAISER_BOTTLE_SMASH_OW, npc.index, _, 120);
 
 		if (GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
 		{
@@ -323,10 +326,6 @@ public void Aleraiser_BerserkSequence(DataPack pack)
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 			}
 		}
-
-		npc.GetAbsOrigin(pos);
-		ParticleEffectAt(pos, PARTICLE_ALERAISER_HEAL);
-		EmitSoundToAll(SND_ALERAISER_HEAL, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
 
 		throwTime = 9999999.0;
 	}
@@ -455,13 +454,18 @@ public void AleraiserBones_ClotThink(int iNPC)
 				NPC_SetGoalEntity(npc.index, closest);
 			}
 
-			if (flDistanceToTarget <= ALERAISER_MELEE_START_RANGE && npc.m_flNextMeleeAttack <= GetGameTime(npc.index))
+			if (flDistanceToTarget <= ALERAISER_MELEE_START_RANGE && npc.m_flNextMeleeAttack <= GetGameTime(npc.index) && !npc.m_flAttackHappenswillhappen)
 			{
-				CPrintToChatAll("Aleraiser would have just used a melee attack.");
+				npc.AddGesture("ACT_ALERAISER_MELEE");
+				npc.PlayMeleeSound();
+				npc.m_flAttackHappenswillhappen = true;
 
-				//TODO: Melee logic
-
-				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + ALERAISER_MELEE_INTERVAL;
+				DataPack pack = new DataPack();
+				RequestFrame(Aleraiser_MeleeLogic, pack);
+				WritePackCell(pack, EntIndexToEntRef(npc.index));
+				WritePackFloat(pack, GetGameTime(npc.index) + 0.16);
+				WritePackFloat(pack, GetGameTime(npc.index) + 0.25);
+				WritePackFloat(pack, GetGameTime(npc.index) + 0.4);
 			}
 		}
 	}
@@ -474,6 +478,69 @@ public void AleraiserBones_ClotThink(int iNPC)
 	}
 
 	npc.PlayIdleSound();
+}
+
+public void Aleraiser_MeleeLogic(DataPack pack)
+{
+	ResetPack(pack);
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	float swingTime = ReadPackFloat(pack);
+	float hitTime = ReadPackFloat(pack);
+	delete pack;
+
+	if (!IsValidEntity(ent))
+		return;
+
+	AleraiserBones npc = view_as<AleraiserBones>(ent);
+	float gt = GetGameTime(npc.index);
+
+	if (gt >= swingTime)
+	{
+		EmitSoundToAll(SND_ALERAISER_SWING, npc.index, _, 120, _, _, GetRandomInt(80, 110));
+		swingTime = 9999999.0;
+	}
+
+	if (gt >= hitTime)
+	{
+		npc.m_flAttackHappenswillhappen = false;
+		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + ALERAISER_MELEE_INTERVAL;
+
+		if (IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			float vecTarget[3];
+			WorldSpaceCenter(npc.m_iTarget, vecTarget);
+
+			Handle swingTrace;
+			npc.FaceTowards(vecTarget, 20000.0);
+
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+			{
+				int target = TR_GetEntityIndex(swingTrace);	
+				float vecHit[3];
+				TR_GetEndPosition(vecHit, swingTrace);
+				if(target > 0) 
+				{
+					if(target <= MaxClients)
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ALERAISER_MELEE_DAMAGE, DMG_CLUB, -1, _, vecHit);
+					else
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ALERAISER_MELEE_DAMAGE, DMG_CLUB, -1, _, vecHit);					
+
+					// Hit sound
+					npc.PlayMeleeHitSound();
+				}
+			}
+
+			delete swingTrace;
+		}
+
+		return;
+	}
+
+	pack = new DataPack();
+	RequestFrame(Aleraiser_MeleeLogic, pack);
+	WritePackCell(pack, EntIndexToEntRef(npc.index));
+	WritePackFloat(pack, swingTime);
+	WritePackFloat(pack, hitTime);
 }
 
 public void Aleraiser_ThrowBottle(DataPack pack)
@@ -496,7 +563,7 @@ public void Aleraiser_ThrowBottle(DataPack pack)
 
 	if (gt >= swingTime)
 	{
-		EmitSoundToAll(SND_ALERAISER_SWING, npc.index);
+		EmitSoundToAll(SND_ALERAISER_SWING, npc.index, _, 120, _, _, GetRandomInt(80, 110));
 		swingTime = 9999999.0;
 	}
 
