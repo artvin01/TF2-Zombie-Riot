@@ -2634,9 +2634,9 @@ public bool AntiTraceEntityFilterPlayer(int entity, any contentsMask) //Borrowed
 public void SpawnSmallExplosion(float DetLoc[3])
 {
 	float pos[3];
-	pos[0] += DetLoc[0] + GetRandomFloat(-80.0, 80.0);
-	pos[1] += DetLoc[1] + GetRandomFloat(-80.0, 80.0);
-	pos[2] += DetLoc[2] + GetRandomFloat(0.0, 80.0);
+	pos[0] += DetLoc[0] + GetRandomFloat(-25.0, 25.0);
+	pos[1] += DetLoc[1] + GetRandomFloat(-25.0, 25.0);
+	pos[2] += DetLoc[2] + GetRandomFloat(0.0, 25.0);
 	
 	TE_Particle(EXPLOSION_PARTICLE_SMALL_1, pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }
@@ -3234,15 +3234,19 @@ int inflictor = 0)
 				//we apply 50% more range, reason being is that this goes for collision boxes, so it can be abit off
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
-				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+				float ExplosionRangeFalloff = Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+				damage_1 *= ExplosionRangeFalloff; //this is 1000, we use squared for optimisations sake
 
 				damage_1 *= damage_reduction;
 				
 				float v[3];
 				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
 				//dont do damage ticks if its actually 0 dmg.
+
 				if(damage_1 != 0.0)
 					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
+
+				Projectile_DealElementalDamage(ClosestTarget, EntityToForward, ExplosionRangeFalloff);
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{

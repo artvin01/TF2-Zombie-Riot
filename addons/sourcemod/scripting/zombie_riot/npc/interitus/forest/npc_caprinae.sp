@@ -213,7 +213,7 @@ static void ClotThink(int iNPC)
 						fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
 						fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
 						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 1.1;
-						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] / 4.0;
+					//	fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] / 4.0;
 						view_as<CClotBody>(entity).m_flSpeed = npc.m_flSpeed;
 					}
 
@@ -251,7 +251,7 @@ static void ClotDeath(int entity)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
 	startPosition[2] += 45;
 	
-	makeexplosion(entity, entity, startPosition, "", 500, 120, _, _, true, true, 15.0);
+	makeexplosion(entity, entity, startPosition, "", 600, 150, _, _, true, true, 15.0);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

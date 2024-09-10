@@ -287,7 +287,7 @@ void VausTechicusShieldGiving(VausTechicus npc, float gameTime)
 	{
 		return;
 	}
-	if(npc.m_flNextRangedSpecialAttack > gameTime + 990.0)
+	if(npc.m_flNextRangedSpecialAttack == FAR_FUTURE)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 15.0;
 		float flPos[3];
@@ -373,6 +373,6 @@ void VausTechicusShield(int entity, int victim, float damage, int weapon)
 void VausTechicusShieldInternal(int shielder, int victim)
 {
 	VausTechicus npc = view_as<VausTechicus>(shielder);
-	npc.m_flNextRangedSpecialAttack = GetGameTime(shielder) + 999.0;
+	npc.m_flNextRangedSpecialAttack = FAR_FUTURE;
 	VausMagicaGiveShield(victim, 5);
 }

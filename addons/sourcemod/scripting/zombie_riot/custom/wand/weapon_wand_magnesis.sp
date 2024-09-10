@@ -4,8 +4,8 @@
 //As per usual, I'm using arrays for stats on different pap levels. First entry is pap1, then pap2, etc.
 
 //STANDARD M1 PROJECTILE: The Magnesis Staff's primary fire is nothing special, just a generic projectile.
-static int Magnesis_M1_NumProjectiles[3] = { 6, 8, 9 };				//Number of projectiles fired.
-static float Magnesis_M1_DMG[3] = { 160.0, 220.0, 300.0 };          //M1 projectile damage.
+static int Magnesis_M1_NumProjectiles[3] = { 6, 8, 10 };			//Number of projectiles fired.
+static float Magnesis_M1_DMG[3] = { 160.0, 260.0, 400.0 };          //M1 projectile damage.
 static float Magnesis_M1_Lifespan[3] = { 0.3, 0.3, 0.3 };          	//M1 projectile lifespan.
 static float Magnesis_M1_Velocity[3] = { 1400.0, 1600.0, 1800.0 };  //M1 projectile velocity.
 static float Magnesis_M1_Spread[3] = { 6.0, 5.0, 4.0 };				//M1 projectile deviation.
@@ -775,6 +775,10 @@ public bool Magnesis_MoveVictim(int client)
 
 public void Magnesis_MakeNPCMove(int target, float targVel[3])
 {
+	//In tower defense, do not allow moving the target.
+	if(VIPBuilding_Active())
+		return;
+		
 	if(f_NoUnstuckVariousReasons[target] > GetGameTime() + 1.0)
 	{
 		//make the target not stuckable.
@@ -850,10 +854,10 @@ static int Newtonian_ShockwaveTier;
 
 void Newtonian_TryShockwave(int client, int weapon, int tier)
 {
-    int mana_cost = RoundFloat(Newtonian_M2_Cost[tier]);
+	int mana_cost = RoundFloat(Newtonian_M2_Cost[tier]);
 	float remCD = Ability_Check_Cooldown(client, 2, weapon);
 
-    if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
+	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
@@ -883,7 +887,7 @@ void Newtonian_TryShockwave(int client, int weapon, int tier)
 		delay_hud[client] = 0.0;
 		Ability_Apply_Cooldown(client, 2, Newtonian_M2_Cooldown[tier], weapon);
 
-        EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
+		EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
 		EmitSoundToAll(SND_NEWTONIAN_M2_2, client, _, _, _, 0.8, 80);
 
 		float nextAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") + Newtonian_M2_AttackDelay[tier];

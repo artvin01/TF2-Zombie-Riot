@@ -202,6 +202,9 @@ methodmap Iana < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 1;
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
 		/*
@@ -335,7 +338,7 @@ static void ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.7);	//30% resistances
+		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.85);	//15% resistances
 		Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);	//5% dmg bonus
 		Master_Apply_Shield_Buff(npc.index, 250.0, 0.7);	//30% block shield
 

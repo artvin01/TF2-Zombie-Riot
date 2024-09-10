@@ -42,6 +42,7 @@ methodmap ObjectTinkerBrew < ObjectGeneric
 		//SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 		npc.m_iWearable5 = entity;
 		AcceptEntityInput(entity, "Disable");
+		npc.Anger = false;
 
 		return npc;
 	}
@@ -62,7 +63,18 @@ void ObjectTinkerBrew_TogglePotion(int entity, bool enable)
 {
 	ObjectTinkerBrew npc = view_as<ObjectTinkerBrew>(entity);
 	if(IsValidEntity(npc.m_iWearable5))
-		AcceptEntityInput(npc.m_iWearable5, enable ? "Enable" : "Disable");
+	{
+		if(npc.Anger && !enable)
+		{
+			AcceptEntityInput(npc.m_iWearable5, "Disable");
+			npc.Anger = false;
+		}
+		else if(!npc.Anger && enable)
+		{
+			npc.Anger = true;
+			AcceptEntityInput(npc.m_iWearable5, "Enable");
+		}
+	}
 }
 
 static void ClotThink(ObjectTinkerBrew npc)

@@ -97,14 +97,14 @@
 		"en"		"Archetype: Duelist"
 		"fr"		"Archetype: Dueliste"
 		"ru"		"Архетип: Дуэлянт"
-		"chi"		"类型：决斗"
+		"chi"		"类型：决斗士"
 	}
 	"Lord"
 	{
 		"en"		"Archetype: Lord"
 		"fr"		"Archetype: Roi"
 		"ru"		"Архетип: Лорд"
-		"chi"		"类型：王"
+		"chi"		"类型：领主"
 	}
 	"Crusher"
 	{
@@ -154,7 +154,7 @@
 	{
 		"en"		"Archetype: Abyssal Hunter"
 		"fr"		"Archetype: Chasseur des Abîmes"
-		"chi"		"类型：深渊猎人"
+		"chi"		"类型：深海猎人"
 	}
 	"Kazimierz"
 	{
@@ -336,15 +336,10 @@
 	
 	"Flamethrower Pap 1"
 	{
-		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 1.15x damage against raidbosses.\nGain additinonal 10%% Extra Range"
-	}
-	"Flamethrower Pap 1 1"
-	{
-		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses.\nGain additinonal 10%% Extra Range"
-	}
-	"Flamethrower Pap 2"
-	{
-		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses.\nGain additinonal 10%% Extra Range"
+		"en"		"Increased damage. M2 ability gives minicrits and uber for a short time."
+		"fr"		"Dégats améliorés. Abilité M2 donne des Mini-Crits et du Über pour une courte période."
+		"ru"		"Увеличенный урон. Способность на М2 даёт мини-криты и убер на короткое время."
+		"chi"       "增加伤害。鼠标右键技能在短时间内给予迷你暴击和无敌。"
 	}
 	
 	"Leone 12 Gauge Super Desc"
@@ -1084,19 +1079,19 @@
 	{
 		"en"	"Attacks are always ranged but with decreased fire rate.\nAbility changes to be able to pull, dealing 150%% of damage.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 		"fr"	"Cadence des attaques plus lente, mais tous les attaques lance des projectiles.\nAbilité devient une attraction, et inflige 150%% des dégats.\nVous êtes un Seaborn alors que vous portez cet arme.\nArchetype devient «Chasseur des Abîmes»"
-		"chi"	"所有攻击变为远程，但攻速降低。\n技能改为拉扯敌人，造成150%%伤害。\n装备此武器时你会被视为海嗣。\n类型更为''深渊猎人''。"
+		"chi"	"所有攻击变为远程，但攻速降低。\n技能改为拉扯敌人，造成150%%伤害。\n装备此武器时你会被视为海嗣。\n类型更为''深海猎人''。"
 	}
 	"Fractured Ark Pap 5"
 	{
 		"en"	"All Abyssal Hunter weapons gain 7.5%% damage resistance from Seaborn enemies and gain 1.5%% max health per second.\nAbility now charges faster and deals 180%% of damage.\nMain attack has longer projectile lifetime."
 		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 7.5%% contre les ennemis Seaborn et reçoivent des soins de 1.5%% max santé par seconde.\nAbilité se recharge plus rapidement et inflige 180%% des dégats.\nVos projectiles durent plus longtemps."
-		"chi"	"所有''深渊猎人''武器对所有海嗣获得7.5%%伤害抗性，每秒恢复1.5%%最高血上限。\n技能冷却降低，造成180%%伤害。\n正常攻击的投射物有更长的生命期。"
+		"chi"	"所有''深海猎人''武器对所有海嗣获得7.5%%伤害抗性，每秒恢复1.5%%最高血上限。\n技能冷却降低，造成180%%伤害。\n正常攻击的投射物有更长的生命期。"
 	}
 	"Fractured Ark Pap 6"
 	{
 		"en"	"All Abyssal Hunter weapons now gain 12.5%% damage resistance from Seaborn enemies and gain 2.5%% max health per second.\nAbility now holds a third charge and deals 190%% of damage.\nAttacks deal bonus damage to lightweight enemies."
 		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 12.5%% contre les ennemis Seaborn et reçoivent des soins de 2.5%% max santé par seconde.\nAbilité à une troisième charge et inflige 190%% des dégats.\nDégats améliorés contre les ennemis légers."
-		"chi"	"所有''深渊猎人''武器对所有海嗣获得12.5%%伤害抗性，每秒恢复2.5%%最高血上限。\n技能现有三次充能，造成190%%伤害。\n所有攻击对轻型敌人造成更多伤害。"
+		"chi"	"所有''深海猎人''武器对所有海嗣获得12.5%%伤害抗性，每秒恢复2.5%%最高血上限。\n技能现有三次充能，造成190%%伤害。\n所有攻击对轻型敌人造成更多伤害。"
 	}
 	"Fractured Ark Pap 7"
 	{
@@ -1558,16 +1553,18 @@
 	
 	"Cannibalism Desc"
 	{
-		"en"	"+7 HP on melee kill, You can now eat metal and flesh gibs to regain health.\nHealth Regained depends on your health on kill attribute.\nKilling bosses or raids grants 4x heal on kill.\nKilling giants grants 2x heal on kill."
-		"fr"	"+7 soins lorsque vous tuez avec une arme corps-à-corps. Mangez les morceaux de vos ennemis pour vous soigner.\nSoins reçus s'améliorent avec votre attribut Santé par victime.\n4x soins quand vous tuez un Boss ou un Raid.\n2x soins quand vous tuez un géant."
+		"en"	"+7 HP on melee kill, You can now eat metal and flesh gibs to regain health.\nHealth Regained depends on your health on kill attribute."
+		"fr"	"+7 soins lorsque vous tuez avec un coup corps-à-corps. Mangez les morceaux de vos ennemis pour vous soigner.\nSoins reçus s'améliorent avec votre attribut Santé par victime."
+		"ru"	"+7 ед. здоровья при убийстве в ближнем бою, теперь вы можете есть металлические и мясные останки от врагов для восст. здоровья.\nВосст. здоровья зависит от вашего атрибута здоровья при убийстве."
+		"chi"   "近战击杀+7 HP，你现在可以吃金属和肉来恢复生命。恢复的生命值取决于击杀目标上的生命值"
 	}
 	
 	"Copium Desc"
 	{
-		"en"	"25%% melee resistance with melee equipped"
-		"fr"	"+25%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"25%% сопр. ближнему бою при использ. оружия ближнего боя."
-		"chi"   "使用近战武器时+25%%的近战抵抗"
+		"en"	"15%% melee resistance with melee equipped"
+		"fr"	"+15%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"15%% сопр. ближнему бою при использ. оружия ближнего боя."
+		"chi"   "使用近战武器时+15%%的近战抵抗"
 	}
 	
 	"Cocain Desc"
@@ -1580,42 +1577,42 @@
 	
 	"Steroids Desc"
 	{
-		"en"	"30%% more melee damage, +4 HP on kill and +100 HP, +5%% melee resistance with melee equipped"
-		"fr"	"+30%% dégats corps-à-corps, +4 santé par victime, +100 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"На 30%% больше урона в ближнем бою, +4 ед. здоровья при убийстве и +100 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加30%%的近战伤害，杀敌后+4点生命，生命值提升100点，使用近战武器时+5%%的近战抗性"
+		"en"	"30%% more melee damage, +4 HP on kill and +50 HP, +5%% melee resistance with melee equipped"
+		"fr"	"+30%% dégats corps-à-corps, +4 santé par victime, +50 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"На 30%% больше урона в ближнем бою, +4 ед. здоровья при убийстве и +50 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加30%%的近战伤害，杀敌后+4点生命，生命值提升50点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"LSD Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +5 HP on kill and +150 HP, +3%% melee resistance with melee equipped"
-		"fr"	"+1.5x dégats corps-à-corps, +5 santé par victime, +150 santé,\n+3%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +150 ед. здоровья, +3%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加1.5倍的近战伤害，杀敌后+5点生命，生命值提升150点，使用近战武器时+5%%的近战抗性"
+		"en"	"1.5x increased Melee Damage, +5 HP on kill and +100 HP, +5%% melee resistance with melee equipped"
+		"fr"	"+1.5x dégats corps-à-corps, +5 santé par victime, +100 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +100 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.5倍的近战伤害，杀敌后+5点生命，生命值提升100点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"Crystal Meth Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +8 HP on kill and +150 HP, +3%% melee resistance with melee equipped"
-		"fr"	"+1.5x dégats corps-à-corps, +8 santé par victime, +150 santé,\n+3%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +150 ед. здоровья, +3%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加30%%的近战伤害，杀敌后+8点生命，生命值提升150点，使用近战武器时+5%%的近战抗性"
+		"en"	"1.5x increased Melee Damage, +8 HP on kill and +200 HP, +5%% melee resistance with melee equipped"
+		"fr"	"+1.5x dégats corps-à-corps, +8 santé par victime, +200 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +200 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加30%%的近战伤害，杀敌后+8点生命，生命值提升200点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"God's Might Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +12 HP on kill and +250 HP, +5%% melee resistance with melee equipped"
-		"fr"	"+1.5x dégats corps-à-corps, +12 santé par victime, +250 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +250 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加1.5倍的近战伤害，杀敌后+12点生命，生命值提升250点，使用近战武器时+5%%的近战抗性"
+		"en"	"1.5x increased Melee Damage, +12 HP on kill and +300 HP, +7%% melee resistance with melee equipped"
+		"fr"	"+1.5x dégats corps-à-corps, +12 santé par victime, +300 santé,\n+7%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +300 ед. здоровья, +7%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.5倍的近战伤害，杀敌后+12点生命，生命值提升300点，使用近战武器时+7%%的近战抗性"
 	}
 	
 	"Bob's Enhancer Desc"
 	{
-		"en"	"1.65x increased Melee Damage, +22 HP on kill and +600 HP, +6%% melee resistance with melee equipped"
-		"fr"	"+1.65x dégats corps-à-corps, +22 santé par victime, +600 santé,\n+6%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +6%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加1.65倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+6%%的近战抗性"
+		"en"	"1.65x increased Melee Damage, +22 HP on kill and +600 HP, +7%% melee resistance with melee equipped"
+		"fr"	"+1.65x dégats corps-à-corps, +22 santé par victime, +600 santé,\n+7%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +7%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.65倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+7%%的近战抗性"
 	}
 	
 	"Repair Handling book for dummies Desc"
@@ -1795,20 +1792,26 @@
 	
 	"Body armor Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +50 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
-		"fr"	"Armure reçu et armure maximalle améliorées. +50 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
+		"en"	"Increased How much armour you get per use and max cap. +50 HP"
+		"fr"	"Augmunte la durabilité de votre armure, et augmunte l'armure obtenu. +50 santé"
+		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +50 ед. здоровья"
+		"chi"   "提高护甲值,+50生命值"
 	}
 	
 	"Kevlar Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +100 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
-		"fr"	"Armure reçu et armure maximalle améliorées. +100 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
+		"en"	"Increased How much armour you get per use and max cap. +100 HP"
+		"fr"	"Augmunte la durabilité de votre armure, et augmunte l'armure obtenu. +100 santé"
+		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +100 ед. здоровья"
+		"chi"   "提高护甲值,+100生命值"
 	}
 	
 	"Heavy Vest Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
-		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
+		"en"	"Increased How much armour you get per use and max cap. +150 HP"
+		"fr"	"Augmunte la durabilité de votre armure, et augmunte l'armure obtenu. +150 santé"
+		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +150 ед. здоровья"
+		"chi"   "提高护甲值,+150生命值"
 	}
 	
 	"Jesus's Blessing Desc"
@@ -1821,8 +1824,10 @@
 	
 	"Full Riot Gear Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
-		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
+		"en"	"Increased How much armour you get per use and max cap. +150 HP"
+		"fr"	"Augmunte la durabilité de votre armure, et augmunte l'armure obtenu. +150 santé"
+		"ru"	"Увелич. кол-ва получаемой брони за одно использование и максимальный предел. +150 ед. здоровья"
+		"chi"   "提高护甲值,+150生命值"
 	}
 	
 	"Healthy Apple from Bob Desc"
@@ -1831,6 +1836,7 @@
 		"fr"	"+1500 santé"
 		"ru"	"+1500 ед. здоровья."
 		"chi"   "+1500生命值"
+
 	}
 	
 	"Doctor Certificate Desc"
@@ -2183,15 +2189,12 @@
 		"fr"	"Améliorations de cadence de tir améliore la vitesse du rayon laser.\nAméliorations de vitesse du rechargement ralentit le rechauffement de l'arme."
 	}
 
-	"Flamethrower Extra Desc"
-	{
-		"en"	"Deals 1.15x the damage against raidbosses.\nHas infinite pierce but deals low damage.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage."
-		"fr"	"1.15x dégats contre les Raids.\nPeu de dégats, mais peut percer les ennemis.\nDonne une résistance passive quand vous portez cette arme.\nLes dégats par brulûre ne sont pas affectés par les résistances."
-	}
-
 	"Alchemist Potion Desc"
 	{
-		"en"	"Throws potions that deal 3/4th the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and bleed deals true damage.\nM2 throws a secondary potion with it's own attack delay."
+		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and ignores most damage resistances.\nM2 throws a secondary potion with it's own attack delay."
+		"fr"	"Lancez des potions qui font la plupart des dégats par le saignement.\nPeut frapper jusqu'a 5 cibles, et ignore la plupart des résistances.\nAppuyez sur M2 pour lancer une potion secondaire, avec rechargement."
+		"ru"	"Бросает зелья, которые наносят половину урона, а остальной урон наносит кровотечение.\nСпособно поразить 5 целей по области и игнорирует большинство сопротивлений урону.\nM2 бросает доп. зелье с задержкой атаки."
+		"chi"   "投掷药水，造成一半的伤害，其余的造成流血伤害。\n能够在溅射中击中5个目标，并且忽略大多数伤害抗性。\nM2投掷二次药水与它自己的攻击延迟"
 	}
 	"Alchemist Potion Pap 1"
 	{
@@ -2209,9 +2212,9 @@
 	}
 	"Alchemist Potion Pap 3"
 	{
-		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x2 the damage from bleeding."
-		"fr"	"Cadence des attaques améloré. Ennemis métalliques souffrent 2x plus de dégats par le saignement. Effet de la potion dure pour plus longtemps."
-		"ru"	"Увеличивает скорострельность, эффект по области сохраняется некоторое время, а металлические враги получают х2 урона от кровотечения."
+		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x5 the damage from bleeding."
+		"fr"	"Cadence des attaques améloré. Ennemis métalliques souffrent 5x plus de dégats par le saignement. Effet de la potion dure pour plus longtemps."
+		"ru"	"Увеличивает скорострельность, эффект по области сохраняется некоторое время, а металлические враги получают х5 урона от кровотечения."
 		"chi"   "增加射速，溅射效果持续一段时间，金属敌人因流血造成的伤害增加5倍。"
 	}
 	"Alchemist Potion Pap 4"
@@ -2282,6 +2285,10 @@
 		"en"	"Quick revive: auto regen\nWidows Wine: debuff on attacking enemy\nDeadshot: 1.25x more ranged dmg\nDouble Tap: 1.15x attackspeed\nSpeed cola: 1.25x movement speed\nRecycle Porier: 1.25x resource gain\nJuggernog: 1.3x more health and 1.15x resistance"
 		"fr"	"Résurrection Rapide: soigne vos unités automatiquement\nVin des Veuves: affaiblit les ennemis frappés\nDaiquiri: 1.25x dégats à distance\nDouble-Touche: 1.15x cadence des attaques\nSpeed Cola: 1.25x vitesse\nRecyclage Poiré: 1.25x gain de ressources\nJuggernog: 1.3x santé, 1.15x résistance"
 		"chi"	"快速起身：自动回复资源\n身体强化：*1.3血量，*1.15伤害抗性\n精神强化：*1.15攻击速度\n极速可乐：*1.25移动速度\n死亡宣告：*1.2远程伤害\n恶魔领域：攻击会赋予debuff"
+	}
+	"Barracks Desc Extra 2"
+	{
+		"en"	"You gain regen resources, but you also gain resources opon hurting enemies with units.\nIf youre too far away from your units they lose half their stats!\nMelee damage give 6x the resources.\nYour resources have a cap, dont hoard them! (gold excluded)"
 	}
 	"Militia Desc"
 	{
@@ -2396,7 +2403,7 @@
 	{
 		"en"	"Attacks slower but hits two targets at once.\nDeals 25%% more damage againts raids.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 		"fr"	"Frappe deux ennemis à la fois.\n+25%% dégats contre les Raids.\nVous êtes un Seaborn pendant que vous tenez cet arme.\nArchetype devient «Chasseur des Abîmes»"
-		"chi"	"超低攻速，可同时攻击两个敌人。\n对boss造成25%%额外伤害。\n手持武器时，判定为海嗣。\n类更为''深渊猎人''"
+		"chi"	"超低攻速，可同时攻击两个敌人。\n对boss造成25%%额外伤害。\n手持武器时，判定为海嗣。\n类更为''深海猎人''"
 	}
 	"Specter Pap 2a"
 	{
@@ -2423,7 +2430,7 @@
 		"en"	"Increased damage and gains the ability to self revive if enough damage is dealt\nAll Abyssal Hunter weapons gain +200 max health."
 		"fr"	"Dégats améliorés. Vous vous ressuscitera vous-même si vous avez infligé assez de dégats.\nTout porteur d'arme Chasseur des Abîmes reçoivent +200 santé maximum."
 		"ru"	"Увеличение урона и способность к самовозрождению при получении достаточного урона."
-		"chi"   "增加伤害，并获得自我复活能力，如果造成足够的伤害"
+		"chi"   "增加伤害，造成足够伤害后可复活自己。\n所有''深海猎人''武器+200血量上限"
 	}
 	"Specter Pap 5"
 	{
@@ -2609,10 +2616,6 @@
 		"ru"	"Увеличение отдачи способности на +100%%."
 		"chi"	"技能击退+100%%。"
 	}
-	"Mlynar ExtraDesc"
-	{
-		"en"	"Reflect deals 2x dmg against raids, you take 15% more damage from raids."
-	}
 	"Mlynar Sword Desc"
 	{
 		"en"	"Gain 30%% damage & 50%% less knockback, 10%% slower\nCant Attack, reflect damage onto enemies depending on your damage(deals true damage)\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."
@@ -2624,11 +2627,6 @@
 		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids."
 		"chi"	"增加抗性，伤害，反甲伤害，更低的杀敌惩罚。"
-	}
-	"Mlynar Sword Desc pap 2"
-	{
-		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
-		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids.\nVotre charge est plus rapide, et prend moins de temps pour se recharger."
 	}
 	"Barracks Railgunner Desc"
 	{
@@ -2958,6 +2956,7 @@
 		"chi"	"R. 造成穿透性伤害，上限5名敌人。C. 冰冻敌人，T.B.O. 根据弹夹弹量造成超高伤害，血腥子弹在击杀后获得子弹。\n「连胜」：免费赌博！"
 	}
 
+	// todo: translate prismatic wand properly
 	"Neuv pap0"
 	{
 		"en"	"''Prismatic Beam Singularity Generator'', such is the full name of this spell\nCreated long ago before contact with the Ruanians...\nThe Witch who created the spell is unknown..."
@@ -3434,11 +3433,15 @@
 	}
 	"Riot Gun Pap 1"
 	{
-		"en"	"+10%% melee resistance. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown.\nR ability -> M2\nM2 Pushes enemies."
+		"en"	"Provides 10%% melee resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown."
+		"fr"	"Devient une arme principale. +10%% résistance contre les dégats corps-à-corps. Tire 3 balles à la fois.\nAbilité étonne pour plus longtemps et se recharge plus rapidement."
+		"chi"	"10%%近战抗性。每次发射3发子弹。更为主武器。\n技能眩晕更久，冷却更低。"
 	}
 	"Energized Riot Gun Desc"
 	{
-		"en"	"+10%% ranged resistance. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nHurt with shield on reduces CD by 0.5 Sec of you and ally.\nR ability -> M2\nM2 Pushes enemies."
+		"en"	"Provides 10%% ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit with your shield reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
+		"fr"	"Devient une arme principale. +10%% résistance contre les dégats corps-à-corps. Tire 3 balles à la fois.\nAbilité devient un fusil à pompe.\nLes coups sur votre bouclier réduit le temps de recharge de tous vos abilités, et celles d'un allié, par 0.5 secondes."
+		"chi"	"+10%%远程抗性，变为主武器。\n技能变为地射速穿透性霰弹枪。\n护盾受到伤害时候降自己和附近队友冷却。（0.5秒)"
 	}
 	"Armor Visualiser Desc"
 	{
@@ -3555,151 +3558,183 @@
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects."
+		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, -30s Tinker Cooldown, and Improved Tinker Attributes.\n2 Attributes: 80%% | 3 Attributes: 20%%"
+		"fr"	"+65%% durabilité pour constructions, +75% dégats, +25 regénération de métal, +4 espaces pour construction de support, -30s temps de rechargement de l'enclume et modifications améliorés\n2 Attributs : 80%% | 3 Attributs : 20%%"
+		"chi"	"+65%%建筑血量，+75%武器伤害，+25金属回复，+4辅助建筑，-30s工作台冷却，加强了可给的属性。\n2属性：80%%，3属性：20%%"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70%% Building Health, +181.25% Weapon Damage, +50 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects."
+		"en"	"+70%% Building Health, +181.25% Weapon Damage, +50 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\n2 Attributes: 57%% | 3 Attributes: 29%% | 4 Attributes: 14%%"
+		"fr"	"+70%% durabilité pour constructions, +181.25% dégats, +50 regénération de métal, +5 espaces pour construction de support, -30s temps de rechargement de l'enclume et modifications améliorés\n2 Attributs : 57%% | 3 Attributs : 29%% | 4 Attributs : 14%%"
+		"chi"	"+70%%建筑血量，+181.25%武器伤害，+50金属回复，+5辅助建筑，-30s工作台冷却，加强了可给的属性。\n2属性：57%% ｜ 3属性：29%% ｜ 4属性：14%%"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown."
+		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, -30s Tinker Cooldown, and Improved Tinker Attributes.\n2 Attributes: 40%% | 3 Attributes: 40%% | 4 Attributes: 20%%"
+		"fr"	"+40%% durabilité pour constructions, +181.25% dégats, +100 regénération de métal, -30s temps de rechargement de l'enclume et modifications améliorés\n2 Attributs : 40%% | 3 Attributs : 40%% | 4 Attributs : 20%%"
+		"chi"	"+40%%建筑血量，+181.25%武器伤害，+100金属回复，-30s工作台冷却，加强了可给的属性。\n2属性：40%% ｜ 3属性：40%% ｜ 4属性：20%%"
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown."
+		"en"	"+160% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\n3 Attributes: 67%% | 4 Attributes: 33%%"
+		"fr"	"+160% dégats, +100 regénération de métal, -30s temps de rechargement de l'enclume\n3 Attributs : 67%% | 4 Attributs : 33%%"
+		"chi"	"+160%武器伤害，+100金属回复，-30s工作台冷却，加强了可给的属性。\n3属性：67%% ｜ 4属性：33%%"
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown."
+		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown.\n3 Attributes: 67%% | 4 Attributes: 33%%"
+		"fr"	"+70%% durabilité pour constructions, +250% dégats, +100 regénération de métal, +1 espace pour construction de support, -30s temps de rechargement de l'enclume\n3 Attributs : 67%% | 4 Attributs : 33%%"
+		"chi"	"+70%%建筑血量，+250%武器伤害，+100金属回复，+1辅助建筑，-30s工作台冷却，加强了可给的属性。\n3属性：67%% ｜ 4属性：33%%"
 	}
 	"West Pap 1 Desc"
 	{
 		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nYou gain damage resistance but the weapon's dmg falloff is increased\nNew abiity: M2 for rapid fire."
 		"fr"	"Cadence de tir lente, dégats hauts.\nRésistance améliorée en échange de plus de perte de dégats avec la distance.\nAppuyez M2 pour accélérer la cadence de tir.\nUne arme du Wild West."
+		"chi"	"一把来自狂野西部的武器。\n射速低，伤害高。\n获得更高的抗性，但同时增加距离衰减。\n新技能：[M2]快速开火"
 	}
 	"West Pap 2 Desc"
 	{
 		"en"	"Increased damage,\nM2 ability will make you jump backwards on usage\nNew abiity: M3 Your aim will be fixed to nearby enemy and damage and firerate will increase dramatically."
 		"fr"	"Dégats améliorés.\nAbilité vous fera reculer avec un saut.\nAppuyez sur M3 pour viser automatiquement un ennemi. Votre cadence de tir s'améliorera considérablement."
+		"chi"	"增加伤害。\nM2技能发动时会你将会后撤一步。\n新技能：[M3]锁定附近一位敌人，大幅度增加开火速度以及伤害。"
 	}
 	"West Pap 3 Desc"
 	{
 		"en"	"Increased damage, reload speed, and firerate"
 		"fr"	"Dégats, vitesse de rechargement et cadence des attaques améliorés"
+		"chi"	"增加伤害，装弹速度，开火速度。"
 	}
 	"Railgun"
 	{
 		"en"	"Railgun"
 		"fr"	"Canon à Rail"
+		"chi"	"轨道炮"
 	}
 	"Railgun Desc"
 	{
 		"en"	"Fires a strong laser, weakened when mounted."
 		"fr"	"Tire un rayon laser puissant. Plus faible quand monté."
+		"chi"	"发射威力强大的激光，扛起时伤害降低。"
 	}
 	"Barracks"
 	{
 		"en"	"Barracks"
 		"fr"	"Caserne"
+		"chi"	"兵营"
 	}
 	"Barracks Desc"
 	{
 		"en"	"Train your own army and upgrade them."
 		"fr"	"Forme et améliore votre propre armée."
+		"chi"	"训练并升级属于你自己的军队！"
 	}
 	"Victorian 1 Desc"
 	{
 		"en"	"The pride of Victoria. A mortar that deals more damage the longer it travels, upto 1 second. \nSlow attack speed and grants heavy ranged resistance.\nYou will be vulnerable to melee damage."
 		"fr"	"Un mortier qui fais plus de dégats avec le temps pris pour frapper une cible.\nCadence de tir lente.\nRésistance contre les attaques à distance, mais donne une vulnérabilité contre les attaques corps-à-corps.\nLa fierté de Victoria."
+		"chi"	"维多利亚的骄傲。\n随着距离增加伤害的迫击炮。上限为1秒。\n装备时大幅度增加远程抗性，减少近战抗性。\n低射速。"
 	}
 	"Victorian 2 Desc"
 	{
 		"en"	"Increased damage, ranged res, and firing speed. \nNew abiity - Charged Shot: Press M2 to load up 10 powerful shells. \nWhen reaching 5, you will be able to fire all remaining shells.\n Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
+		"chi"	"增加伤害，远程抗性，以及射速。\n新技能：[M2]蓄力炮：长按M2填装炮弹，上限10发\n填入5发后可发射所有炮弹。\n[警告]发射后武器将会过热，会扣除自身血量，并且武器一段时间内将无法使用。"
 	}
 	"Victorian 3 Desc"
 	{
 		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
+		"chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
 	}
 	"The Merchant Desc"
 	{
-		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time.\nAllows the construction of the brewing stand."
-	}
-	"Merchant Pap 0 Desc"
-	{
-		"en"	"Improves Stats Overall"
+		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time."
+		"fr"	"Une clé qui ne peut pas construire de barricades ou de mitrailleuses.\nPeut supercharger une arme secondaire en échange de métal."
+		"chi"	"自带一把扳手，但无法建造路障或者步哨。\n使用副武器时可以通过消耗金属开启超载模式。"
 	}
 	"Merchant Pap 1 Desc"
 	{
 		"en"	"Base stats improved\nMartial Artist is unlocked, retreats when below 20% HP, giving health and speed"
 		"fr"	"Améliorations générales.\nAbilité karatéka donne des soins et un bonus vitesse quand vous êtes sous 20%% santé."
+		"chi"	"基础属性提升。\n解锁[武士]，生命值低于20%时撤退，增加移速以及血量。"
 	}
 	"Merchant Pap 2 Desc"
 	{
 		"en"	"Martial Artist provides a random effect and can stun enemies when you don't attack for 4 seconds\nThe Investigator is unlocked, steal attack speed when blocking an enemy"
 		"fr"	"Karatéka vous donne un effet et peut étonner les ennemis, si vous ne les attaquez pas pour 4 secondes.\nAbilité investigateur vole de la cadence des attaques des ennemis que vous bloquez."
+		"chi"	"[武士]将会提供一个随机效果，并且4秒不攻击后可眩晕敌人。\n解锁[侦探]，阻挡敌人后可复制攻速。"
 	}
 	"Merchant Pap 3 Desc"
 	{
 		"en"	"Fish Market drains less metal\nThe Investigator pushes other enemies back when attacking and can repel stuns back to the attacker\nWine Merchant is unlocked, provides 3 ranged weapons with ammo over time, self-revives at the cost of metal"
 		"fr"	"Poissonnerie utilise moins de métal.\nInvestigateur pousse les ennemis quand vous les attaquez, et peut réfléchir l'étonnement aux ennemis.\nAbilité vinier donne 3 armes des munitions et peut vous revivre du KO en échange de métal."
+		"chi"	"减少海鲜市场所消耗的金属。\n[侦探]攻击时会推走其他敌人并且弹反敌人的眩晕。\n解锁[酒商]:提供三把可恢复弹药的远程武器。可消耗金属复活自己。"
 	}
 	"Merchant Pap 4 Desc"
 	{
 		"en"	"Base stats improved\nMartial Artist drains less metal"
 		"fr"	"Améliorations générales.\Karatéka utilise moins de métal."
+		"chi"	"基础属性提升。\n[武士]消耗金属降低。"
 	}
 	"Merchant Pap 5 Desc"
 	{
 		"en"	"Martial Artist stun requires 3 instead of 4 seconds.\nThe Investigator drains less metal\nWine Merchant deals more knockback"
 		"fr"	"Karatéka étonne les ennemis après 3 secondes au lieu de 4.\nInvestigateur utilise moins de métal.\nVinier pousse les ennemis plus loin."
+		"chi"	"[武士]眩晕要求从4秒降低至3秒。\n降低[侦探]金属消耗。\n增加[酒商]击退。"
 	}
 	"Chainsaw Pap 0"
 	{
 		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 25% from eating gibs."
 		"fr"	"Arme corps-à-corps puissante qui coûte beaucoup de munitions.\nRéduira toujours les ennemis en morceaux, mais vous reçevez seulement 25%% des soins quand vous les mangez."
+		"chi"	"造成极高近战伤害，但消耗大量弹药。\n杀死的敌人必定会掉肉块，但你吃肉块只会受到25%的治疗量。"
 	}
 	"Chainsaw Pap 1"
 	{
 		"en"	"Deals more damage, attacks faster, bleed enemeis very briefly."
 		"fr"	"Dégats et cadence des attaques améliorés. Fais saigner les ennemis brièvement."
+		"chi"	"更多伤害，攻速加快，攻击会造成短暂的流血。"
 	}
 	"Chainsaw Pap 2"
 	{
 		"en"	"More damage, attacks faster, extend bleed duration."
 		"fr"	"Dégats, cadence des attaques et durée du saignement améliorés"
+		"chi"	"更多伤害，攻速加快，增加流血时长。"
 	}
 	"Pinus Knight Desc"
 	{
 		"en"	"Fast attacking melee with increased sell back value."
 		"fr"	"Arme rapide qui se revend à bon prix."
+		"chi"	"高攻速近战，更高的退款价值。"
 	}
 	"Pinus Knight Pap 1"
 	{
 		"en"	"Adds an ability, when used allows you to dodge one melee hit (does not stack)."
 		"fr"	"Abilité vous permet d'éviter une attaque corps-à-corps."
+		"chi"	"新技能：阻挡一次近战伤害。不可叠加。"
 	}
 	"Pinus Knight Pap 2"
 	{
 		"en"	"Ability now also grants 4 seconds of a 40%% (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
 		"fr"	"Abilité vous donne une chance de 40%% (x0.5 contre les Raids) d'éviter les attaques corps-à-corps.\nSi vous évitez une attaque, le prochain coup inflige double de dégats."
+		"chi"	"技能改为4秒的40%%近战闪避几率。（boss闪避几率*0.5）。\n闪避后的下一次攻击造成2*伤害。"
 	}
 	"Pinus Knight Pap 3"
 	{
 		"en"	"Allied Kazimierz weapons gain a 11%% (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while your alive.\nAbility instead grants 60%% (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
-		"fr"	"Alliés avec une arme Kazimierz ont une chance de 40%% (x0.5 contre les Raids) d'éviter les attaques corps-à-corps quand vous êtes vivant.\nAbilité vous donne une chance de 60%% (x0.5 contre les Raids) d'éviter les attaques corps-à-corps.\nSi vous évitez une attaque, le prochain coup frappera plusieurs ennemis."
+		"fr"	"Alliés avec une arme Kazimierz ont une chance de 40%% (x0.5 contre les Raids) d'éviter les attaques corps-à-corps quand vous êtes vivant.\nAbilité vous donne une chance de 60%% (x0.5 contre les Raids) d'éviter les attaquecorps-à-corps.\nSi vous évitez une attaque, le prochain coup frappera plusieurs ennemis." 
+		"chi"	"当你存活时，在场所有持有卡齐米日武器的队友获得11%%闪避概率。（boss闪避几率*0.5）（自身闪避几率*2.0）。\n技能赐予60%%闪避概率。(boss闪避几率*0.5)。闪避后第一次攻击将会带有AOE效果。"
 	}
 	"Pinus Knight Pap 4"
 	{
 		"en"	"Ability instead grants 80%% (x0.5 vs Raids) chance to dodge any attack."
 		"fr"	"Abilité vous donne une chance de 40%% (x0.5 contre les Raids) d'éviter les attaques corps-à-corps."
+		"chi"	"技能赐予80%%闪避概率。（boss闪避几率*0.5）。闪避不再限于近战攻击。"
 	}
 	"Pinus Knight Pap 5"
 	{
 		"en"	"Decreased ability cooldown and increased ability damage bonus."
 		"fr"	"Dégats et temps de recharge de votre abilité améliorés."
+		"chi"	"降低技能冷却并且增加技能伤害。"
 	}
 	"Barracks Metro Cop Desc"
 	{
@@ -3770,87 +3805,133 @@
 	{
 		"en"	"Hits two targets at once, grants massive amount of health, and heal on taking damage.\nIberia will fall, but let it shine for others, The Profound Silence."
 		"fr"	"Santé améliorée. Vous soigne quand vous prenez des dégats. Frappe deux ennemis à la fois."
+		"chi"	"同时击中两个目标，大量治疗。受击后回血。\n伊比利亚虽将沦陷，但它依会闪耀。"
 	}
 	"Vows of the Sea Pap"
 	{
 		"en"	"Hits three targets at once, increases healing and health.\nAll Abyssal Hunter weapons gain massive health and damage increase."
 		"fr"	"Santé et soins améliorée. Frappe trois ennemis à la fois.\nTout arme «Chasseur des Abîmes» reçoivent des dégats et santé améliorés."
+		"chi"	"同时击中三个目标，增加治疗量和血量。\n所有''深渊猎人''武器获得大量血量/伤害提升。"
 	}
 	"Wrathful Blade Desc"
 	{
 		"en"	"Mini-crits against burning enemies.\nINFERNAL FURY: Hold M2 to burn everything nearby and gain buffs, at the\ncost of rapidly draining HP. Kills during this grant HP, given when the effect ends.\nCD is based on use time. Kills while not active reduce CD."
+		"chi"	"对点燃的敌人造成迷你暴击。\n[M2]火愤:长按M2以血量为代价在自身附近生成一个火圈并且获得增益。\n效果生效时击杀敌人积攒回血量，解除后回复。\n效果不激活时击杀敌人降低技能冷却。"
 	}
 	"Wrathful Blade PaP 1"
 	{
 		"en"	"Stat increases across the board."
+		"chi"	"属性全面加强。"
 	}
 	"Wrathful Blade PaP 2"
 	{
 		"en"	"''And as the world smoldered, he alone stood the victor, his\nfoes but scattered cinders - and yet, his bloodlust still was not sated.''\nWRATH STRIKE: Infernal Fury now charges up a very powerful melee\nattack, which is activated when Infernal Fury ends."
+		"chi"	"''世界燃尽之时，他一人为王。\n他的敌人们早已化为灰烬。\n但他的嗜血依未感受到满足。''\n[火愤]激活的同时会开始为[怒击]。解除技能后的下一击中将会造成大量aoe伤害。"
 	}
 	"Vampire Knives Desc"
 	{
 		"en"	"Applies a unique type of bleed on hit which heals you if you are close enough.\nM2 throws two knives in a tight fan pattern, twice in a row."
+		"chi"	"所有攻击将会造成流血，靠近时可回复自身血量。\n[M2]丢出两把飞刀，两次。"
 	}
 	"Swift Slicer 1 Desc"
 	{
 		"en"	"More damage, more knives, more blood."
+		"chi"	"更多伤害，更多刀，更多血。"
 	}
 	"Swift Slicer 2 Desc"
 	{
 		"en"	"Even more damage, a ridiculous number of knives, and more blood than a slasher film.\nYou heal 85% less from most sources, but you heal much more from bleeds."
+		"chi"	"更更多伤害，超多飞刀，出血量甚比恐怖电影。\n大幅度增加吸血量，但是其他回血手段-85%效率。"
 	}
 	"Swift Slicer 3 Desc"
 	{
 		"en"	"Even more damage, more blood than a slaughterhouse, and enough knives to blot out the very sun itself."
+		"chi"	"更更更多伤害，屠宰场里出的血洞比不过你。丢出的刀足以遮天蔽日。"
 	}
 	"Gore Gourmand 1 Desc"
 	{
 		"en"	"Chop 'em all to bits with powerful swings that inflict more bleed.\nTransforms into an enormous meat cleaver, which swings slowly but inflicts massive damage.\nM2 throws two giant cleavers, which are not stopped by enemies unless the enemy survives."
+		"chi"	"将你的敌人剁成肉末！\n高伤害高流血，但是攻速减慢。\nM2抛出两把刀子，击杀敌人后会继续飞行。"
 	}
 	"Gore Gourmand 2 Desc"
 	{
 		"en"	"Deals more damage and throws more cleavers on M2."
+		"chi"	"更多伤害，更多飞刀。"
 	}
 	"Gore Gourmand 3 Desc"
 	{
 		"en"	"The zombies would be very afraid of you if they could still think."
+		"chi"	"要是僵尸们还能思考的话，肯定会很怕你。"
 	}
 	"Rusty Rifle Desc"
 	{
 		"en"	"A rusty old rifle. Seems like the scope has been damaged beyond repair...\nThe rest of the gun works fine enough, though."
+		"chi"	"一把生锈的长枪。它的瞄准镜破烂不堪…\n…枪倒是还能用。"
 	}
 	"Rusty Rifle PaP 1"
 	{
 		"en"	"Now restored to its former glory, this old gun encourages the user to take bold actions.\nDamage is increased, falloff and reload time are decreased.\nM2 - BIG SHOT: Load a powerful penetrating shot which increases in damage for every zombie it headshots."
+		"chi"	"回到了昔日的辉煌，用这把枪就得浪一点。\n伤害增高，减少装弹时间以及距离衰减。\n[M2]一发入魂：一发高伤害的穿透弹。击中的头越多伤害越高。"
 	}
 	"Rusty Rifle PaP 2"
 	{
 		"en"	"Faster, stronger, and overall better! Never figured out how to fix the scope, though...\nBIG SHOT: Penetrates more zombies and deals more damage.\nBRAIN BLAST: If Big Shot headshots at least one zombie, trigger an explosion on the last zombie hit."
+		"chi"	"更快，更强，更好！\n[M2]穿透性以及伤害更高。\n爆头至少一个敌人之后，在击中的最后一名敌人产生爆炸。"
 	}
 	"Skull Servants Desc"
 	{
 		"en"	"M2 summons a skull to shoot for you, M1 launches your skulls which explode for heavy damage.\nUp to two skulls may orbit you at once. Summoning another one will launch the oldest skull.\nSkulls will automatically launch themselves after some time."
+		"chi"	"M2召唤骷髅头随从。M1可以将它们丢出去，造成大量爆炸伤害。\n最多可召唤两个骷髅，超过上限时会丢出额外的骷髅。\n骷髅在一段时间后会自行飞出去。"
 	}
 	"Skull Servants PaP 1"
 	{
 		"en"	"Skulls deal more damage, attack faster, and have better range.\nAlso enables you to have up to three skulls active at once."
+		"chi"	"骷髅造成更多伤害，攻击更快，射程更远。\n上限提升至3个骷髅。"
 	}
 	"Skull Servants PaP 2"
 	{
 		"en"	"Skulls deal even more damage, attack even faster, and have much bigger range.\nYou may now have up to four skulls active at once."
+		"chi"	"提高伤害，攻速，大幅度增加射程。\n上限提升至4个骷髅"
 	}
 	"Trash Cannon Desc"
 	{
 		"en"	"''A healthy green Earth they say is happy, but for me that sounds way too sappy...''\nFires a variety of random projectiles with different effects.\nMost projectiles travel in an arc and explode on contact."
+		"chi"	"''A healthy green Earth they say is happy, but for me that sounds way too sappy...''\n随机射出各种各样的''火箭''。每个''火箭''都有独特的效果以及抛物线。"
 	}
 	"Trash Cannon PaP 1"
 	{
 		"en"	"''I throw garbage everywhere - an ecological nightmare!''\nUnlocks new projectiles and improves base stats."
+		"chi"	"''I throw garbage everywhere - an ecological nightmare!''\n基础属性加强，垃圾桶里更多东西了。"
 	}
 	"Trash Cannon PaP 2"
 	{
 		"en"	"''Carbon foot on the pedal, I AM TRASH METAL!''\nUnlocks two more projectiles and improves base stats further.\nAn object of unspeakable danger lurks in this trash can..."
+		"chi"	"''Carbon foot on the pedal, I AM TRASH METAL!''\n获得两个新的发射物，加强基础属性。\n垃圾桶里出现一个不可名状之物……"
+	}
+		"Telekinesis Desc"
+	{
+		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nRapidly fires projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw the zombie."
+		"chi"	"''一管试验性药剂，可增强服用者的精神力。''\n M1高速发射低射程的攻击。\n[M2]抓住一名敌人，持续消耗大量MP。被抓住的敌人会被眩晕。\n再次M2可将敌人抛出。"
+	}
+	"Telekinesis PaP 1"
+	{
+		"en"	"Increases to all stats. You may now grab bosses and mini-bosses."
+		"chi"	"全面加强属性。可抓特殊敌人以及mini-boss。"
+	}
+	"Telekinesis PaP 2"
+	{
+		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nCan now grab raid bosses."
+		"chi"	"''这款药的戒断后果十分严重。你的时间观念会降至近零。将你困在死前最后一刻，直到永恒…\n…但这些药用不完的…\n…对吧？\n现可抓RAIDBOSS。''"
+	}
+	"Newtonian Knuckles Desc"
+	{
+		"en"	"''You traded your experimental drugs for an experimental weapon.''\nM2: A magnetic shockwave, launches zombies into the air.\nM1 fires a heavy explosive projectile which deals bonus damage and reduces M2 CD when airshotting zombies launched by M2."
+		"chi"	"''一款武器取代了药剂。''\nM2释放磁场冲击波，将敌人击飞。\nM1发射高压粒子飞弹，空摘M2击飞的敌人时降低cd并且造成额外伤害。"
+	}
+	"Newtonian PaP 1"
+	{
+		"en"	"''We added a bunch of extra little bits and pieces to the staff to augment its power.\nIt is ridiculously heavy now. Have fun carrying it around everywhere!''\nImprovements to all stats."
+		"chi"	"''呱，是磁場癲佬，大家快退口牙！''\n全面加强属性。"
 	}
 	"Telekinesis Desc"
 	{

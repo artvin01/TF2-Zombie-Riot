@@ -101,6 +101,11 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float bas
 #if !defined RTS
 stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+#if defined ZR
+	if(VIPBuilding_Active())
+		return true;
+#endif
+
 #if defined RPG
 	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
 		RPG_FlatRes(victim, attacker, weapon, damage);
@@ -430,6 +435,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 			if(IsValidEntity(weapon))
 				NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 		}
+		BarracksUnitAttack_NPCTakeDamagePost(victim, inflictor, damage, damagetype);
 	}
 #endif
 

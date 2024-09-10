@@ -635,34 +635,8 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 				if(i_HowManyBombsOnThisEntity[npc][client] > 0)
 				{
 					EmitSoundToAll(TRIP_ARMED, npc, _, 85);
-					float damage = 50.0;
-					damage *= Attributes_Get(weapon, 2, 1.0);
 
-					int BomsToBoom = i_HowManyBombsOnThisEntity[npc][client];
-					int BomsToBoomCalc = BomsToBoom;
-					
-					if(BomsToBoomCalc > 250)
-					{
-						int BomsToBoomCalcPost = 250;
-						BomsToBoomCalc -= 250;
-						BomsToBoomCalc /= 4;
-						BomsToBoomCalc += BomsToBoomCalcPost;
-					}
-					else if(BomsToBoomCalc > 150)
-					{
-						int BomsToBoomCalcPost = 150;
-						BomsToBoomCalc -= 150;
-						BomsToBoomCalc /= 2;
-						BomsToBoomCalc += BomsToBoomCalcPost;
-					}
-					damage *= BomsToBoomCalc;
-
-					float EntLoc2[3];
-					
-					WorldSpaceCenter(npc, EntLoc2);
-					i_HowManyBombsHud[npc] -= BomsToBoom;
-					i_HowManyBombsOnThisEntity[npc][client] = 0;
-					Cause_Terroriser_Explosion(client, npc, damage, EntLoc2, true);
+					Cause_Terroriser_Explosion(client, npc, true);
 				}
 			}
 		}
@@ -702,9 +676,26 @@ void CleanAllApplied_Aresenal(int entity, bool force = false)
 	}
 }
 
-void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2[3], bool allowLagcomp = false)
+void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false)
 {
+	int BomsToBoom = i_HowManyBombsOnThisEntity[npc][client];
+	int BomsToBoomCalc = BomsToBoom;
+	
+	float damage = f_BombEntityWeaponDamageApplied[npc][client];
+	f_BombEntityWeaponDamageApplied[npc][client] = 0.0;
+	//there are too many bombs, nerf damage.
+	if(BomsToBoomCalc > 200)
+	{
+		damage -= (damage * (1.0 / 300.0));
+		//There are too many bombs stacked, we have to nerd the damage.
+	}
+
+	float EntLoc2[3];
+	
+	WorldSpaceCenter(npc, EntLoc2);
 	SpawnSmallExplosion(EntLoc2);
+	i_HowManyBombsHud[npc] -= BomsToBoom;
+	i_HowManyBombsOnThisEntity[npc][client] = 0;
 
 	switch(GetRandomInt(1, 3))
 	{

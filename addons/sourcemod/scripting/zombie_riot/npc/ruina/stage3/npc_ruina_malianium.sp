@@ -184,6 +184,9 @@ methodmap Malianium < CClotBody
 
 		SetVariantInt(RUINA_STAFF_1);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -256,8 +259,8 @@ static void ClotThink(int iNPC)
 
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	
-	
-	if(fl_ruina_battery[npc.index]>500.0)
+	float radius = 275.0;
+	if(fl_ruina_battery[npc.index]>500.0 && fl_ruina_battery_timer[npc.index] < GameTime)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
@@ -270,11 +273,13 @@ static void ClotThink(int iNPC)
 
 		npc.m_flSpeed = 0.0;
 
-		TE_SetupBeamRingPoint(Npc_Vec, 250*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
+		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
 		TE_SendToAll();
 
-		npc.m_flRangedArmor = 0.25;
-		npc.m_flMeleeArmor 	= 0.25;
+		npc.m_flRangedArmor = 0.15;
+		npc.m_flMeleeArmor 	= 0.15;
+
+		Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.95);	//5% resistances
 
 		npc.Anger = false;
 
@@ -283,7 +288,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Battery_Buff(npc.index, 250.0, 60.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
+		Master_Apply_Battery_Buff(npc.index, radius, 60.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
 
 		if(fl_ruina_battery_timer[npc.index] < GameTime + 3.0 && !npc.Anger && fl_ruina_battery_timer[npc.index] > GameTime + 2.0)
 		{
