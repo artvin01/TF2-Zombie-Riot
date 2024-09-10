@@ -455,6 +455,7 @@ public void DeckhandBones_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKUnhook(entity, SDKHook_Think, DeckhandBones_ClotThink);
+	npc.RemoveAllWearables();
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");

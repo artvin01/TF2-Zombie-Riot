@@ -122,7 +122,7 @@ enum BuccaneerState {
 	BUCCANEER_LOOP,
 	BUCCANEER_FIRING,
 	BUCCANEER_FLYING
-}
+};
 
 static bool running[MAXENTITIES];
 
@@ -349,8 +349,6 @@ methodmap BuccaneerBones < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_BUCCANEER_SPEED_BUFFED : BONES_BUCCANEER_SPEED);
-		
-		throwState[npc.index] = THROWSTATE_INACTIVE;
 
 		//npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		

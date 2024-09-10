@@ -645,8 +645,8 @@ public MRESReturn Aleraiser_BottleCollide(int entity)
 		{
 			float maxHP = float(GetEntProp(healTarget.index, Prop_Data, "m_iHealth"));
 			int HealingAmount = RoundFloat(maxHP * ALERAISER_HEAL_PERCENT);
-			if (HealingAmount < ALERAISER_HEAL_MINIMUM)
-				HealingAmount = ALERAISER_HEAL_MINIMUM;
+			if (HealingAmount < RoundFloat(ALERAISER_HEAL_MINIMUM))
+				HealingAmount = RoundFloat(ALERAISER_HEAL_MINIMUM);
 				
 			if (GetEntProp(healTarget.index, Prop_Data, "m_iHealth") < GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
 			{
@@ -697,6 +697,7 @@ public void AleraiserBones_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKUnhook(entity, SDKHook_Think, AleraiserBones_ClotThink);
+	npc.RemoveAllWearables();
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");

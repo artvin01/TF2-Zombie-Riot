@@ -700,6 +700,7 @@ void NPC_ConfigSetup()
 	Sphynx_OnMapStart_NPC();
 	ZombineSurvival_OnMapStart_NPC();
 
+	#if defined BONEZONE_BASE
 	BasicBones_OnMapStart_NPC();
 	BeefyBones_OnMapStart_NPC();
 	BrittleBones_OnMapStart_NPC();
@@ -713,6 +714,8 @@ void NPC_ConfigSetup()
 	DeckhandBones_OnMapStart_NPC();
 	GrimReaper_OnMapStart_NPC();
 	AleraiserBones_OnMapStart_NPC();
+	AlchemistBones_OnMapStart_NPC();
+	#endif
 }
 
 void NPC_MapEnd()
@@ -1563,20 +1566,25 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_injured_cultist.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
 
-#include "zombie_riot/npc/bonezone/npc_basicbones.sp"
-#include "zombie_riot/npc/bonezone/npc_beefybones.sp"
-#include "zombie_riot/npc/bonezone/npc_brittlebones.sp"
-#include "zombie_riot/npc/bonezone/npc_bigbones.sp"
-#include "zombie_riot/npc/bonezone/npc_archmage.sp"
-#include "zombie_riot/npc/bonezone/npc_buccaneerbones.sp"
-#include "zombie_riot/npc/bonezone/npc_calciumcorsair.sp"
-#include "zombie_riot/npc/bonezone/npc_necromancer.sp"
-#include "zombie_riot/npc/bonezone/npc_skeletalsaint.sp"
+#if defined BONEZONE_BASE
+#include "zombie_riot/npc/bonezone/wave15/npc_basicbones.sp"
+#include "zombie_riot/npc/bonezone/wave15/npc_beefybones.sp"
+#include "zombie_riot/npc/bonezone/wave15/npc_brittlebones.sp"
+#include "zombie_riot/npc/bonezone/wave15/npc_bigbones.sp"
+//////
+#include "zombie_riot/npc/bonezone/wave30/npc_buccaneerbones.sp"
+#include "zombie_riot/npc/bonezone/wave30/npc_calciumcorsair.sp"
+#include "zombie_riot/npc/bonezone/wave30/npc_undeaddeckhand.sp"
+#include "zombie_riot/npc/bonezone/wave30/npc_aleraiser.sp"
+//////
+#include "zombie_riot/npc/bonezone/wave45/npc_archmage.sp"
+#include "zombie_riot/npc/bonezone/wave45/npc_necromancer.sp"
+#include "zombie_riot/npc/bonezone/wave45/npc_skeletalsaint.sp"
+#include "zombie_riot/npc/bonezone/wave45/npc_brewer.sp"
+//////
 #include "zombie_riot/npc/bonezone/npc_ssb.sp"
-#include "zombie_riot/npc/bonezone/npc_undeaddeckhand.sp"
 #include "zombie_riot/npc/special/npc_reaper.sp"
-#include "zombie_riot/npc/bonezone/npc_aleraiser.sp"
-
+#endif
 
 #include "zombie_riot/npc/survival/npc_nightmare.sp"
 #include "zombie_riot/npc/survival/npc_petrisisbaron.sp"

@@ -1180,6 +1180,7 @@ char g_TankStepSound[][] = {
 	"infected_riot/tank/tank_walk_1_fix.mp3",
 };
 
+#if defined BONEZONE_BASE
 char g_BoneZoneBuffDefaultSFX[][] = {
 	"vo/halloween_boo1.mp3",
 	"vo/halloween_boo2.mp3",
@@ -1189,6 +1190,7 @@ char g_BoneZoneBuffDefaultSFX[][] = {
 	"vo/halloween_boo6.mp3",
 	"vo/halloween_boo7.mp3"
 };
+#endif
 
 float f_ArrowDamage[MAXENTITIES];
 int h_ArrowInflictorRef[MAXENTITIES];

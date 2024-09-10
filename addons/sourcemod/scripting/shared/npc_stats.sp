@@ -82,6 +82,7 @@ Function func_NPCAnimEvent[MAXENTITIES];
 Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
 
+#if defined BONEZONE_BASE
 bool b_BoneZoneNaturallyBuffed[MAXENTITIES];
 bool b_SetBuffedSkeletonAnimation[MAXENTITIES];
 bool b_SetNonBuffedSkeletonAnimation[MAXENTITIES];
@@ -93,6 +94,7 @@ float f_BoneZoneNumSummons[MAXENTITIES];
 Handle g_BoneZoneBuffers[MAXENTITIES];
 Function g_BoneZoneBuffFunction[MAXENTITIES];
 Function g_BoneZoneBuffVFX[MAXENTITIES];
+#endif
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -227,7 +229,9 @@ void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSoundCustom(g_TankStepSound[i]);   }
 #endif
 	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
+	#if defined BONEZONE_BASE
 	for (int i = 0; i < (sizeof(g_BoneZoneBuffDefaultSFX));   i++) { PrecacheSound(g_BoneZoneBuffDefaultSFX[i]);   }
+	#endif
 	
 	
 	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
@@ -1407,6 +1411,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		public set(bool TempValueForProperty) 	{ b_AllowBackWalking[this.index] = TempValueForProperty; }
 	}
 
+	#if defined BONEZONE_BASE
 	property bool m_bBoneZoneNaturallyBuffed
 	{
 		public get()				{ return b_BoneZoneNaturallyBuffed[this.index]; }
@@ -1454,6 +1459,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()				{ return g_BoneZoneBuffers[this.index]; }
 		public set(Handle TempValueForProperty) 	{ g_BoneZoneBuffers[this.index] = TempValueForProperty; }
 	}
+	#endif
 
 	public float GetDebuffPercentage()//For the future incase we want to alter it easier
 	{
@@ -2407,6 +2413,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.GetBaseNPC().flMaxYawRate = flPrevValue;
 	}
 
+	#if defined BONEZONE_BASE
 	//Returns whether or not the NPC is a skeleton.
 	public bool BoneZone_IsASkeleton()
 	{
@@ -2534,6 +2541,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	#endif
 	
 	public void RemoveAllWearables()
 	{
@@ -3628,7 +3636,6 @@ static void OnDestroy(CClotBody body)
 	b_ThisWasAnNpc[body.index] = false;
 	b_NpcHasDied[body.index] = true;
 	b_StaticNPC[body.index] = false;
-	b_IsSkeleton[body.index] = false;
 
 	if(IsValidEntity(body.m_iTeamGlow))
 		RemoveEntity(body.m_iTeamGlow);
@@ -3669,6 +3676,9 @@ static void OnDestroy(CClotBody body)
 	if(IsValidEntity(body.m_iWearable8))
 		RemoveEntity(body.m_iWearable8);
 
+	#if defined BONEZONE_BASE
+	b_IsSkeleton[body.index] = false;
+
 	int summoner = EntRefToEntIndex(i_BoneZoneSummoner[body.index]);
 	if (IsValidEntity(summoner))
 	{
@@ -3678,6 +3688,7 @@ static void OnDestroy(CClotBody body)
 
 		i_BoneZoneSummoner[body.index] = -1;
 	}
+	#endif
 }
 
 //Ragdoll
@@ -3807,9 +3818,13 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		RemoveNpcThingsAgain(pThis);
 		ExtinguishTarget(pThis);
 		NPCDeath(pThis);
+
+		#if defined BONEZONE_BASE
 		delete g_BoneZoneBuffers[pThis];
 		b_SetBuffedSkeletonAnimation[pThis] = false;
 		b_SetNonBuffedSkeletonAnimation[pThis] = false;
+		#endif
+		
 		NPCStats_SetFuncsToZero(pThis);
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
@@ -8416,8 +8431,11 @@ public void NPCStats_SetFuncsToZero(int entity)
 	func_NPCAnimEvent[entity] = INVALID_FUNCTION;
 	func_NPCActorEmoted[entity] = INVALID_FUNCTION;
 	func_NPCInteract[entity] = INVALID_FUNCTION;
+
+	#if defined BONEZONE_BASE
 	g_BoneZoneBuffFunction[entity] = INVALID_FUNCTION;
 	g_BoneZoneBuffVFX[entity] = INVALID_FUNCTION;
+	#endif
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {
