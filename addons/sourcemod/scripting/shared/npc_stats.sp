@@ -457,8 +457,8 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 		if(Ally != TFTeam_Red && VIPBuilding_Active())
 		{
-			baseNPC.flAcceleration = 90000.0;
-			baseNPC.flFrictionSideways = 90.0;
+			baseNPC.flAcceleration = 9000.0;
+			baseNPC.flFrictionSideways = 7.0;
 		}
 #endif
 

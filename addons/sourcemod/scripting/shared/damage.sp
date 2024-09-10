@@ -103,7 +103,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 {
 #if defined ZR
 	if(VIPBuilding_Active())
-		return false;
+		return true;
 #endif
 
 #if defined RPG
