@@ -76,10 +76,9 @@ public void VIPBuilding_ClotThink(int iNPC)
 	BarrackBody npc1 = view_as<BarrackBody>(iNPC);
 	BarrackBody_HealthHud(npc1 ,0.0);
 	
-	VIPBuilding npc = view_as<VIPBuilding>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		if(GetClosestTarget(npc.index, _, 200.0, true, .UseVectorDistance = true) > 0)
+		if(GetClosestTarget(npc.index, _, 100.0, true, .UseVectorDistance = true) > 0)
 		{
 			for (int client = 1; client <= MaxClients; client++)
 			{
@@ -123,6 +122,15 @@ void VIPBuilding_NPCDeath(int entity)
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	makeexplosion(-1, -1, pos, "", 0, 0);
 	BarrackBody_NPCDeath(npc.index);
+	if(Waves_Started())
+	{
+		int endround = CreateEntityByName("game_round_win"); 
+		DispatchKeyValue(endround, "force_map_reset", "1");
+		SetEntProp(endround, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+		DispatchSpawn(endround);
+		AcceptEntityInput(endround, "RoundWin");
+		Music_RoundEnd(endround);
+	}
 }
 
 void VIPBuilding_ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
