@@ -824,13 +824,7 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	int client = GetClientOfUserId(npc.OwnerUserId);
 	if(client > 0)
 	{
-		float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
-		float VecSelfNpc[3]; WorldSpaceCenter(victim, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget >= (600.0 * 600.0))
-		{
-			damage *= 2.0;
-		}
+
 		damage = Barracks_UnitOnTakeDamage(npc.index, client, damage);
 	}
 	damage -= Rogue_Barracks_FlatArmor();
@@ -1050,13 +1044,6 @@ float Barracks_UnitExtraDamageCalc(int entity, int client, float damage, int dam
 	if(b_ExpertTrapper[client])
 	{
 		DmgMulti *= 0.25; 
-	}
-	float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
-	float VecSelfNpc[3]; WorldSpaceCenter(entity, VecSelfNpc);
-	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget >= (600.0 * 600.0))
-	{
-		damage *= 0.5;
 	}
 	if(damagetype == 0) //0 means melee
 	{

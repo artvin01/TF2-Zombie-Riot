@@ -2294,7 +2294,7 @@
 	}
 	"Barracks Desc Extra 2"
 	{
-		"en"	"You gain regen resources, but you also gain resources opon hurting enemies with units.\nIf youre too far away from your units they lose half their stats!\nMelee damage give 6x the resources.\nYour resources have a cap, dont hoard them! (gold excluded)"
+		"en"	"You also gain resources when hurting enemies with UNITS.\nIf youre too far away from your units, they generate much less!\nMelee damage give 6x the resources.\nYour resources have a cap, dont hoard them! (gold excluded)"
 	}
 	"Militia Desc"
 	{

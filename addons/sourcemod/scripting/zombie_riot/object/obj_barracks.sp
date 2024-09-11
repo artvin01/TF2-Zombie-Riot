@@ -2214,6 +2214,13 @@ void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage
 			gain *= 6.0;
 		}
 		gain = damage * gain / float(MaxHealth);
+		float vecTarget[3]; WorldSpaceCenter(owner, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(attacker, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		if(flDistanceToTarget >= (600.0 * 600.0))
+		{
+			gain *= 0.35;
+		}
 		SummonerRenerateResources(owner, gain, 0.0);
 	}
 }
