@@ -1808,7 +1808,8 @@
 	"Heavy Vest Desc"
 	{
 		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
-		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."}
+		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
+	}
 	
 	"Jesus's Blessing Desc"
 	{
