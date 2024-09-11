@@ -3101,6 +3101,10 @@
 		"fr"		"Le meilleur des meilleurs. L'unité corps à corps ultime."	
 		"chi"       "强者中的强者。终极近战单位。"
 	}
+	"Research Troop Classes"
+	{
+		"en"		"Research Troop Classes to train units (excludes villager)"
+	}
 	"Barracks Troop Classes"
 	{
 		"en"		"Research Troop Classes to train units (excludes villager)"
