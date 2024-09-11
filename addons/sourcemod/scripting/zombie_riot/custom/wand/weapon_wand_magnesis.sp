@@ -633,7 +633,8 @@ public void Magnesis_Logic(DataPack pack)
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Magnesis_NextDrainTick[client] = gt + 0.1;
 		Magnesis_HUD(client, weapon, false);
-		view_as<CClotBody>(target).m_iTarget = client;
+		if(!VIPBuilding_Active())
+			view_as<CClotBody>(target).m_iTarget = client;
 
 		float dmg = Magnesis_Grab_StrangleDMG[Magnesis_Tier[client]];
 		if (dmg > 0.0)

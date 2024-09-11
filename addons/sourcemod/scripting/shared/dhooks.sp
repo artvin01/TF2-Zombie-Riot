@@ -219,7 +219,8 @@ int ClientThatWasChanged = 0;
 int SavedClassForClient = 0;
 public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
 {
-	if(pThis == -1)     
+	//-1 isnt enough.
+	if(!IsValidEntity(pThis))     
 		return MRES_Ignored;
 
 	int active = GetEntPropEnt(pThis, Prop_Send, "m_hActiveWeapon");
@@ -228,7 +229,7 @@ public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
 		if(b_IsAMedigun[active])
 		{
 			int healTarget = GetEntPropEnt(active, Prop_Send, "m_hHealingTarget");
-			if(healTarget > 0 && healTarget <= MaxClients)
+			if(IsValidClient(healTarget))
 			{
 				SavedClassForClient = GetEntProp(healTarget, Prop_Send, "m_iClass");
 				if(SavedClassForClient != view_as<int>(TFClass_Scout))

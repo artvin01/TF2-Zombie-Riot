@@ -943,7 +943,7 @@
 		"fr" 		"Accroupissez-vous pour utiliser cette abilité!"
 		"pt"		"Se abaixe pra usar essa habilidade!"
 	}
-		"Wrathful Ability Cooldown"
+	"Wrathful Ability Cooldown"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"Infernal Fury is on cooldown: {1}"
@@ -998,7 +998,7 @@
 	{
 		"en"		"Grab target is out of your line of sight."
 	}
-	"Crouch for ability"
+	"Magnesis Target Immune to Knockback"
 	{
 		"en"		"Grab target is immune to knockback."
 		"chi"		"目标免疫击退"
@@ -2425,6 +2425,10 @@
 		"fr"		"Ceci est la dernière vague. Préparez-vous."
 		"ru"		"Это последняя волна, приготовьтесь."
 		"chi"		"这是最后一波，做好准备。"
+	}
+	"Void_Help_Message"
+	{
+		"en"		"Expidonsan's are trying to send help, but the void interfeers, only guarduses could get here."
 	}
 	"Silvester Shares His Power"
 	{

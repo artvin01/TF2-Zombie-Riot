@@ -13,7 +13,7 @@ static Handle BuffTimer[MAXENTITIES];
 static float TonicBuff[MAXTF2PLAYERS];
 static float TonicBuff_CD[MAXTF2PLAYERS];
 static Handle ShrinkTimer[MAXENTITIES];
-static float f_RaidShrinkImmunity[MAXTF2PLAYERS];
+static float f_RaidShrinkImmunity[MAXENTITIES];
 
 bool Wands_Potions_HasBuff(int client)
 {

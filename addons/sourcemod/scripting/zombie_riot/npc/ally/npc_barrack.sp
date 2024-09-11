@@ -277,6 +277,10 @@ methodmap BarrackBody < CClotBody
 	{
 		public get()
 		{
+			if(view_as<int>(this) <= -1)
+			{
+				return -1;
+			}
 			return BarrackOwner[view_as<int>(this)];
 		}
 	}
