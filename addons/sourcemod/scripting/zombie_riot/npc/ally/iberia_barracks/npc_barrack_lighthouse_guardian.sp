@@ -90,7 +90,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
@@ -102,7 +102,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
@@ -112,7 +112,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 	
 	public void PlayNPCDeath() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -120,14 +120,14 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 	}
 
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayRangedSound2() {
-		EmitSoundToAll(g_RangedAttackSounds2[GetRandomInt(0, sizeof(g_RangedAttackSounds2) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_RangedAttackSounds2[GetRandomInt(0, sizeof(g_RangedAttackSounds2) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -135,7 +135,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 	}
 
 	public void PlayRangedAttackSecondarySound() {
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
@@ -143,7 +143,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 	}
 
 	public void PlayRangedAttackRocket() {
-		EmitSoundToAll(g_RangedAttackSRocket[GetRandomInt(0, sizeof(g_RangedAttackSRocket) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_RangedAttackSRocket[GetRandomInt(0, sizeof(g_RangedAttackSRocket) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
@@ -151,7 +151,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 	}
 
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -159,7 +159,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 	}
 	
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -168,7 +168,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 
 	public void PlayMeleeWarCry()
 	{
-		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");

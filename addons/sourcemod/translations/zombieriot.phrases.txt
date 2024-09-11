@@ -3103,21 +3103,13 @@
 	}
 	"Barracks Troop Classes"
 	{
-		"en"		"Barracks Troop Classes"
-		"fr"		"Formation d'Unités"
-		"chi"       "兵营部队等级"
-	}
-	"Barracks Troop Classes Desc"
-	{
-		"en"		"Allows the training of troops, but it will set your support building max to 1 (the villgaer is excluded from this.)"
-		"fr"		"Permet la formation d'unités, mais limite votre capacité de constructions de support à 1. ( Le villageois est exclus de ceci. )"
-		"chi"       "允许训练部队，但它会将你的支援建筑最大值设置为1.（村民不包括在内）"
-	}
-	"Research Troop Classes"
-	{
 		"en"		"Research Troop Classes to train units (excludes villager)"
 		"fr"		"Recherchez des Unités pour débuter leur formation. ( Le villageois est exclus. )"
 		"chi"       "训练士兵的专项技能（村民不包括在内）"
+	}
+	"Barracks Troop Classes Desc"
+	{
+		"en"		"Allows the training of troops, but it will set your support building max to 2, and barricades to 1 (the villager is excluded from this.)"
 	}
 	"Spike Masspickup Confirm"
 	{

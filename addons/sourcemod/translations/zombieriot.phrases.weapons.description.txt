@@ -371,19 +371,12 @@
 	}
 	"Grenade Launcher Pap 2"
 	{
-		"en"		"Reduced damage but higher attackspeed attack speed and reload speed."
-		"fr"		"Dégats réduits, cadence de tir et vitesse de rechargement améliorées."
-		"ru"		"Уменьшенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"en"		"Reduced damage but higher attackspeed attack speed and reload speed.\nNow deals 2x dmg against raids."
 	}
 	"Grenade Launcher Pap 3"
 	{
-		"en"		"Sligthty increased damage and massively increased attackspeed and reload speed."
-		"fr"		"Dégats, cadence de tir et vitesse de rechargement améliorés."
-		"ru"		"Немного увеличенный урон и крупно увеличенная скорость атаки и перезарядки."
-		"chi"       "增加伤害,大幅度增加攻击速度和装弹速度。"
+		"en"		"Sligthty increased damage and massively increased attackspeed and reload speed.\nNow deals 2x dmg against raids."
 	}
-	
 	"Tommygun Desc"
 	{
 		"en"		"While equipped and in your hand, take 20% less ranged damage."
