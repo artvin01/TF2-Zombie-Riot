@@ -79,6 +79,8 @@ methodmap MajorSteam < CClotBody
 		b_CannotBeSlowed[npc.index] = true;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
+		if(Rogue_Paradox_RedMoon())
+			IgniteTargetEffect(npc.m_iWearable1);
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/robo_soldier_fullmetaldrillhat/robo_soldier_fullmetaldrillhat.mdl", _, _, 1.001);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
@@ -161,16 +163,15 @@ static void ClotThink(int iNPC)
 					}
 				}
 
-				float damageDeal = 200.0;
-				float ProjectileSpeed = 500.0;
+				float damageDeal = 165.0;
+				float ProjectileSpeed = 450.0;
 				if(Rogue_Paradox_RedMoon())
 				{
-					damageDeal *= 2.0;
-					ProjectileSpeed *= 1.75;
+					ProjectileSpeed *= 1.15;
 				}
 
 				if(npc.m_iOverlordComboAttack % 3)
-					ProjectileSpeed *= 2.0;
+					ProjectileSpeed *= 1.25;
 
 				if(npc.m_iOverlordComboAttack % 2)
 					PredictSubjectPositionForProjectiles(npc, target, ProjectileSpeed, _,vecTarget);
@@ -181,7 +182,10 @@ static void ClotThink(int iNPC)
 				int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,70.0);
 				if(entity != -1)
 				{
-					i_ChaosArrowAmount[entity] = 100;
+					i_ChaosArrowAmount[entity] = 80;
+					if(Rogue_Paradox_RedMoon())
+						i_ChaosArrowAmount[entity] = 125;
+
 					//max duration of 4 seconds beacuse of simply how fast they fire
 					CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					SetEntProp(entity, Prop_Send, "m_bCritical", true);

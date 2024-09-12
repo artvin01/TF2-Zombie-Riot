@@ -13,6 +13,7 @@ static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 static bool b_SilvLine[MAXENTITIES];
+static bool b_SilvesterAttackSame[MAXENTITIES];
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -347,6 +348,7 @@ methodmap Silvester < CClotBody
 		npc.m_flSilvesterChangeTargets = 0.0;
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		npc.m_flSilvesterTransformRegardless = GetGameTime() + 40.0;
+		b_SilvesterAttackSame[npc.index] = false;
 		
 		b_thisNpcIsARaid[npc.index] = true;
 		b_angered_twice[npc.index] = false;
@@ -724,26 +726,58 @@ static void Internal_ClotThink(int iNPC)
 		{
 			ForceRedo = true;
 		}
-		if(ForceRedo || npc.m_flChangeTargetsSilvester < GetGameTime(npc.index))
+		if((!b_SilvesterAttackSame[npc.index] && ForceRedo) || npc.m_flChangeTargetsSilvester < GetGameTime(npc.index))
 		{
+			if(b_SilvesterAttackSame[npc.index])
+			{
+				//We targeted someone before that was within nemals range...
+				//try again!
+				npc.m_flSilvesterChangeTargets = 5.0;
+			}
+			b_SilvesterAttackSame[npc.index] = false;
 			//Get the next closest target!
 			static float flPos[3]; 
-			//only get nemals target every so often.
-			if(npc.m_flSilvesterChangeTargets >= 4.0)
+			if(npc.m_flSilvesterChangeTargets >= 3.0)
 			{
 				GetEntPropVector(allynpc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-				npc.m_flSilvesterChangeTargets = 0.0;
+				//only get nemals target every so often.
+				npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,700.0,_,_,allynpc.m_iTarget, flPos);
+				npc.m_flSilvesterChangeTargets += 1.0;
 			}
 			else
 			{
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 				npc.m_flSilvesterChangeTargets += 1.0;
+				//Gets a target near himself
+				npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,allynpc.m_iTarget, flPos);
 			}
-			npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,allynpc.m_iTarget, flPos);
-			npc.m_flChangeTargetsSilvester = GetGameTime(npc.index) + (GetRandomRetargetTime() * 1.35);
+			bool WasForcingSameTarget = false;
+			if(!IsValidEntity(npc.m_iTargetWalkTo))
+			{
+				//looks like silvester found no target...
+				//Did we try to get a target near nemal?
+				//if we did. then force targetting a closet eneemy from nemal anyways.
+				if(npc.m_flSilvesterChangeTargets >= 4.0)
+				{
+					npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,_/*allynpc.m_iTarget*/, flPos);
+					npc.m_flSilvesterChangeTargets = 5.0;
+					WasForcingSameTarget = true;
+					b_SilvesterAttackSame[npc.index] = true;
+				}
+			}
+			//We didnt force to target the same guy as nemal, we allow normal attacking.
+			if(!WasForcingSameTarget && npc.m_flSilvesterChangeTargets >= 4.0)
+			{
+				npc.m_flSilvesterChangeTargets = 0.0;
+			}
+			npc.m_flChangeTargetsSilvester = GetGameTime(npc.index) + (GetRandomRetargetTime());
 		}
-		npc.m_iTarget = npc.m_iTargetWalkTo;
-		if(!IsValidEntity(npc.m_iTargetWalkTo))
+	//cant have this here, issue being that he'll just target the wrong person.
+	//	npc.m_iTarget = npc.m_iTargetWalkTo;
+		//we STILL didnt find any target somehow, just stand still.
+		//We also stand still if the last target is not downed, and we just patiently wait.
+		int ForceStandStill = CountPlayersOnRed(2);
+		if(ForceStandStill <= 1 || !IsValidEntity(npc.m_iTargetWalkTo))
 		{
 			if(npc.Anger)
 			{
@@ -831,6 +865,11 @@ static void Internal_ClotThink(int iNPC)
 		float flPitch = npc.GetPoseParameter(iPitch);
 								
 		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+	}
+	else
+	{
+		//instantly set target!
+		npc.m_flSetTargetFromWalkTarget = 0.0;
 	}
 	//What to do towrads the enemy we want to walk to
 	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
@@ -1155,10 +1194,12 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			{
 				MaxCount = 1;
 			}
-			if(MaxCount > 25)
-				MaxCount = 25;
+			if(MaxCount > 15)
+				MaxCount = 15;
+
 			float DelaybewteenPillars = 0.1;
 			float DelayPillars = 0.7;
+
 			if(i_RaidGrantExtra[npc.index] >= 4)
 				DelayPillars = 0.55;
 
@@ -1172,7 +1213,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			ang_Look 								/*2 dimensional plane*/,
 			pos,
 			0.7,
-			0.5);	
+			0.75);	
 			
 			float cooldownDo  = 7.0;
 			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
@@ -1257,10 +1298,15 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 										
 							if(!Knocked)
 							{
-								if(!NpcStats_IberiaIsEnemyMarked(targetTrace))
+								if(npc.m_flCurrentlySpeedRage == 1.0)
+								{
+									//We REALLY want to attack someone else, give uber knockback
+									Custom_Knockback(npc.index, targetTrace, 900.0, true);
+								}
+								else
 								{
 									if(npc.Anger)
-										Custom_Knockback(npc.index, targetTrace, 275.0, true); 
+										Custom_Knockback(npc.index, targetTrace, 350.0, true); 
 									else
 										Custom_Knockback(npc.index, targetTrace, 450.0, true); 
 								}
@@ -1327,6 +1373,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 					float VecEnemy[3]; WorldSpaceCenter(target, VecEnemy);
 					npc.FaceTowards(VecEnemy, 15000.0);
 					float DamageCalc = 35.0 * RaidModeScaling;
+					npc.PlayRangedSound();
 					NemalAirSlice(npc.index, target, DamageCalc, 215, 150, 0, 200.0, 6, 1000.0, "rockettrail_fire");
 				}
 			}

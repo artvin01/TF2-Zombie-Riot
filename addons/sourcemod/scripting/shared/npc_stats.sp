@@ -457,8 +457,8 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 		if(Ally != TFTeam_Red && VIPBuilding_Active())
 		{
-			baseNPC.flAcceleration = 90000.0;
-			baseNPC.flFrictionSideways = 90.0;
+			baseNPC.flAcceleration = 9000.0;
+			baseNPC.flFrictionSideways = 7.0;
 		}
 #endif
 
@@ -1652,7 +1652,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			GetPercentageAdjust *= Zombie_DelayExtraSpeed();
 		}
-		else
+		else if(GetTeam(this.index) == TFTeam_Red)
 		{
 			if(VIPBuilding_Active())
 			{
@@ -2249,8 +2249,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(!CvarDisableThink.BoolValue)
 		{
 			this.m_bPathing = true;
-
-			this.GetPathFollower().SetMinLookAheadDistance(100.0);
+			if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
+				this.GetPathFollower().SetMinLookAheadDistance(25.0);
+			else
+				this.GetPathFollower().SetMinLookAheadDistance(100.0);
 		}
 	}
 	public void StopPathing()
@@ -2281,7 +2283,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		if(ignoretime || DelayPathing(this.index))
-		{
+		{/*
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -2298,6 +2300,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					i_WasPathingToHere[this.index] = 0;
 				}
 			}
+			*/
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
@@ -2311,6 +2314,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	{	
 		if(ignoretime || DelayPathing(this.index))
 		{
+			/*
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -2327,6 +2331,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					f3_WasPathingToHere[this.index][2] = 0.0;
 				}
 			}
+			*/
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToPos(this.GetBot(), vec);

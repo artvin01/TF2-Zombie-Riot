@@ -251,7 +251,7 @@ methodmap Storm_Weaver < CClotBody
 		b_storm_weaver_noclip[npc.index]=false;
 
 		b_IgnoreAllCollisionNPC[npc.index]=true;
-		b_ForceCollisionWithProjectile[npc.index]=true;
+		//b_ForceCollisionWithProjectile[npc.index]=true;
 
 		b_stellar_weaver_allow_attack[npc.index] = false;
 
@@ -281,7 +281,7 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 		b_stellar_weaver_allow_attack[spawn_index] = false;
 		b_storm_weaver_noclip[spawn_index]=false;
 		b_IgnoreAllCollisionNPC[spawn_index]=true;
-		b_ForceCollisionWithProjectile[spawn_index]=true;
+		//b_ForceCollisionWithProjectile[spawn_index]=true;
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		CClotBody tail = view_as<CClotBody>(spawn_index);
 		tail.m_flNextRangedAttack = GetGameTime(tail.index)+1.0+(Section/10.0);

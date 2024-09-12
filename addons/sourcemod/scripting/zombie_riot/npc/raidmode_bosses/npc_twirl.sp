@@ -383,8 +383,12 @@ methodmap Twirl < CClotBody
 				if(this.m_fbGunout)
 				{
 					this.m_fbGunout = false;
-					if(this.m_flNextMeleeAttack > GetGameTime(this.index) + 0.5)
+					/*if(this.m_flNextMeleeAttack > GetGameTime(this.index) + 0.5)
+					{
+						//CPrintToChatAll("Reset CD MELEE");
 						this.m_flNextMeleeAttack = GetGameTime(this.index) + 0.5;
+					}*/
+						
 					SetVariantInt(this.i_weapon_type());
 					AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
 					//CPrintToChatAll("Melee enemy");
@@ -397,8 +401,12 @@ methodmap Twirl < CClotBody
 				{
 					this.m_iState = 0;
 
-					if(this.m_flReloadIn > GetGameTime(this.index) + 0.5)
+					/*if(this.m_flReloadIn > GetGameTime(this.index) + 0.5)
+					{
 						this.m_flReloadIn = GetGameTime(this.index) + 0.5;
+						//CPrintToChatAll("Reset CD RANGED");
+					}*/
+						
 
 					this.m_fbGunout = true;
 					//CPrintToChatAll("Ranged enemy");
@@ -412,26 +420,39 @@ methodmap Twirl < CClotBody
 	}
 	public int i_stance_status()
 	{
-		float GameTime = GetGameTime(this.index);
-		if(fl_force_ranged[this.index] > GameTime)
-			return 1;
-
+		//Enemy npc's will always be conisdered "ranged"
 		int type = this.PlayerType();
-		if(type != 0)
+		float GameTime = GetGameTime(this.index);
+
+		//We recently retreated, so lets use ranged attacks
+		if(fl_force_ranged[this.index] > GameTime)
+			type = 1;
+
+		//the player is a "ranged" player, now do 1 extra check!
+		if(type == 1)
+		{	
+			//we are still reloading, switch to melee. add a 1s buffer.
+			if(this.m_flReloadIn > (GameTime + 1.0))
+				type = 0;	//melee
+
 			return type;
+		}
+		//now what's left is what we think is a melee player!
 		
 		float vecTarget[3]; WorldSpaceCenter(this.m_iTarget, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(this.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-		if(flDistanceToTarget > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5))	//do a range check, if the melee player is 50 miles away, use a ranged attack.
+		//do a range check, if the melee player is 50 miles away, use a ranged attack.
+		if(flDistanceToTarget > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5))	
 			type = 1;	//ranged
 		else
 			type = 0;	//melee
 
-		if(this.m_flReloadIn > (GameTime + 1.0))	//However, if we are reloading, we should probably use a melee
-			type = 1;	//ranged
+		//if the decided stance was ranged, BUT we are still reloading, go back to a melee stance.
+		if(this.m_flReloadIn > (GameTime + 1.0))
+			type = 0;	//melee
 
 		return type;
 
@@ -1483,9 +1504,8 @@ static void Twirl_DelayIons(DataPack pack)
 		delete pack;
 		return;
 	}
-	
-	float Radius = pack.ReadFloat();
 	float dmg = pack.ReadFloat();
+	float Radius = pack.ReadFloat();
 	float time = (pack.ReadFloat() - GetGameTime(npc.index)) + (npc.Anger ? 1.4 : 1.8);	//get the difference in time from how long this attack was delayed. so it matches up timing wise with other ions!
 	npc.Predictive_Ion(Target, time, Radius, dmg);
 	delete pack;
@@ -1770,12 +1790,24 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 
 	npc.m_flSpeed = 0.0;
 
+	float Angles[3], Start[3];
+	WorldSpaceCenter(npc.index, Start);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+		
+	float flPitch = npc.GetPoseParameter(iPitch);
+
+	flPitch *= -1.0;
+	if(flPitch>15.0)
+		flPitch=15.0;
+	if(flPitch <-15.0)
+		flPitch = -15.0;
+	Angles[0] = flPitch;
 	Ruina_Laser_Logic Laser;
 	Laser.client = npc.index;
-	Laser.DoForwardTrace_Basic(fl_cosmic_gaze_range);
-	float EndLoc[3], Start[3];
+	Laser.DoForwardTrace_Custom(Angles, Start, fl_cosmic_gaze_range);
+	float EndLoc[3];
 	EndLoc = Laser.End_Point;
-	Start = Laser.Start_Point;
 
 	fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);
 	float Thickness = 15.0;
@@ -1871,7 +1903,8 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 
 				Laser.Radius = Radius;
 				Laser.damagetype = DMG_PLASMA;
-				Laser.Damage = Modify_Damage(-1, 70.0);
+				Laser.Damage = Modify_Damage(-1, 35.0);
+				Laser.Bonus_Damage = Modify_Damage(-1, 60.0);
 				Laser.Deal_Damage();
 
 				fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);	
@@ -1964,14 +1997,12 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 {
 	float Radius = fl_cosmic_gaze_radius;
 
-	int create_center = Ruina_Create_Entity(Loc, 1.0, true);
+	int create_center = Ruina_Create_Entity(Loc, 3.0, true);
 
 	if(IsValidEntity(create_center))
 	{
 		i_explosion_core[client] = EntIndexToEntRef(create_center);
 	}
-
-	Explode_Logic_Custom(Modify_Damage(-1, 100.0), client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
 
 	int color[4]; Ruina_Color(color);
 
@@ -2005,6 +2036,12 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 		TE_SetupBeamRingPoint(Random_Loc, 0.0, (Radius_Ratio*Radius)*2.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, Time+0.5, Thickness, 1.0, color, 1, 0);
 		TE_SendToAll(i/10.0);
 
+		DataPack explosion;
+		CreateDataTimer(i/10.0, Delayed_Explosion, explosion, TIMER_FLAG_NO_MAPCHANGE);
+		explosion.WriteCell(EntIndexToEntRef(client));
+		explosion.WriteFloatArray(Random_Loc, 3);
+		explosion.WriteFloat((Radius_Ratio*Radius));
+
 		char SoundString[255];
 		SoundString = TWIRL_THUMP_SOUND;
 		DataPack data;
@@ -2018,6 +2055,38 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 		TE_SendToAll(i/10.0);
 
 	}
+}
+static Action Delayed_Explosion(Handle Timer, DataPack data)
+{
+	data.Reset();
+	int iNPC = EntRefToEntIndex(data.ReadCell());
+	float Loc[3];
+	data.ReadFloatArray(Loc, 3);
+	float Radius = data.ReadFloat();
+
+	if(!IsValidEntity(iNPC))
+		return Plugin_Stop;
+
+	int creater = EntRefToEntIndex(i_explosion_core[iNPC]);
+
+	if(IsValidEntity(creater))
+	{
+		int Beam_Index = g_Ruina_BEAM_Diamond;	
+
+		int color[4]; Ruina_Color(color);
+
+		int create_center = Ruina_Create_Entity(Loc, 1.0, true);
+
+		if(IsValidEntity(create_center))
+		{
+			TE_SetupBeamRing(creater, create_center, Beam_Index, g_Ruina_HALO_Laser, 0, 10, 0.75, 7.5, 1.0, color, 10, 0);	
+			TE_SendToAll(0.0);
+		}
+	}
+
+	Explode_Logic_Custom(Modify_Damage(-1, 60.0), iNPC, iNPC, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
+
+	return Plugin_Stop;
 }
 static Action Timer_Repeat_Sound(Handle Timer, DataPack data)
 {
@@ -2051,18 +2120,6 @@ static void Cosmic_Gaze_Boom_OnHit(int entity, int victim, float damage, int wea
 {
 	if(IsValidClient(victim))
 		Client_Shake(victim, 0, 7.5, 7.5, 3.0);
-
-	int creater = EntRefToEntIndex(i_explosion_core[entity]);
-
-	if(IsValidEntity(creater))
-	{
-		int Beam_Index = g_Ruina_BEAM_Diamond;	
-
-		int color[4]; Ruina_Color(color);
-
-		TE_SetupBeamRing(creater, victim, Beam_Index, g_Ruina_HALO_Laser, 0, 10, 0.75, 7.5, 1.0, color, 10, 0);	
-		TE_SendToAll(0.0);
-	}
 }
 static int i_Fractal_Gram_Amt(Twirl npc)
 {
@@ -2187,6 +2244,13 @@ static void Func_On_Proj_Touch(int entity, int other)
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
+
+	if(fl_ruina_Projectile_radius[entity]>0.0)
+		Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
+	else
+		SDKHooks_TakeDamage(other, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
+
+	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	if(i_current_wave[owner] >= 45)
 	{
 		Twirl npc = view_as<Twirl>(owner);
@@ -2196,11 +2260,6 @@ static void Func_On_Proj_Touch(int entity, int other)
 		float Time = (npc.Anger ? 1.45 : 1.9);
 		npc.Ion_On_Loc(ProjectileLoc, radius, dmg, Time);
 	}
-
-	if(fl_ruina_Projectile_radius[entity]>0.0)
-		Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
-	else
-		SDKHooks_TakeDamage(other, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
 
 	Ruina_Remove_Projectile(entity);
 
@@ -2380,8 +2439,8 @@ static bool Retreat(Twirl npc, bool custom = false)
 		dmg *= RaidModeScaling;
 
 		float Time = (npc.Anger ? 1.25 : 1.5);
-		npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, aoe_check, _, _, true, _, false, _, AoeIonCast);
+		npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 		Retreat_Laser(npc, VecSelfNpc);
 		//2 second duration laser.
 		fl_force_ranged[npc.index] = GameTime + 8.0;	

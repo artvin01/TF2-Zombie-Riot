@@ -214,6 +214,8 @@ methodmap Rulianius < CClotBody
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 10, 4);		//priority 4, just lower then the actual bosses
 
+		b_ruina_nerf_healing[npc.index] = true;
+
 		return npc;
 	}
 	//npc.AdjustWalkCycle();
