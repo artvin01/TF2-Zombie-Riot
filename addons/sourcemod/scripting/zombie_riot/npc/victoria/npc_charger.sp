@@ -159,7 +159,7 @@ methodmap VictorianCharger < CClotBody
 		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_thunder_dome_style1/hwn2023_thunder_dome_style1.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/riflemans_rallycap/riflemans_rallycap_demo.mdl");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_stunt_suit_style2/hwn2023_stunt_suit_style2.mdl");
 
@@ -167,8 +167,6 @@ methodmap VictorianCharger < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 80, 100, 175, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);

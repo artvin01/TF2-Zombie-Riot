@@ -274,7 +274,7 @@ void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, int tar
 								if (IsInvuln(target))
 								{
 									Knocked = true;
-									Custom_Knockback(npc.index, target, -300.0, true);
+									Custom_Knockback(npc.index, target, -500.0, true);
 									TF2_AddCondition(target, TFCond_LostFooting, 0.2);
 									TF2_AddCondition(target, TFCond_AirCurrent, 0.2);
 								}
@@ -286,7 +286,7 @@ void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, int tar
 							}
 										
 							if(!Knocked)
-								Custom_Knockback(npc.index, target, -50.0, true); 
+								Custom_Knockback(npc.index, target, -75.0, true); 
 						}
 					}		
 				} 

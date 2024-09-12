@@ -325,7 +325,7 @@ void VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime)
 						npc.PlayMeleeSound();
 						//after we fire, we will have a short delay beteween the actual laser, and when it happens
 						//This will predict as its relatively easy to dodge
-						float projectile_speed = 1200.0;
+						float projectile_speed = 900.0;
 
 						WorldSpaceCenter(target, vecTarget);
 

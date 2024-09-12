@@ -138,7 +138,7 @@ methodmap Teslar < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/sept2014_poachers_safari_jacket/sept2014_poachers_safari_jacket.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2015_death_racer_helmet/hwn2015_death_racer_helmet.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/riflemans_rallycap/riflemans_rallycap_medic.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/sum23_uber_wear/sum23_uber_wear.mdl");
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
