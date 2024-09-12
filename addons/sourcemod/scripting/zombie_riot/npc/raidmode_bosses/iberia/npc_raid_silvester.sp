@@ -772,7 +772,8 @@ static void Internal_ClotThink(int iNPC)
 			}
 			npc.m_flChangeTargetsSilvester = GetGameTime(npc.index) + (GetRandomRetargetTime());
 		}
-		npc.m_iTarget = npc.m_iTargetWalkTo;
+	//cant have this here, issue being that he'll just target the wrong person.
+	//	npc.m_iTarget = npc.m_iTargetWalkTo;
 		//we STILL didnt find any target somehow, just stand still.
 		//We also stand still if the last target is not downed, and we just patiently wait.
 		int ForceStandStill = CountPlayersOnRed(2);
