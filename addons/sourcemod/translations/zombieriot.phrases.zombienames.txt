@@ -2991,6 +2991,14 @@
 	{
 		"en"	"Bone Brewer"
 	}
+	"Skeletal Squire"
+	{
+		"en"	"Skeletal Squire"
+	}
+	"Knightmare"
+	{
+		"en"	"Knightmare"
+	}
 	"The Reaper"
 	{
 		"en"	"The Reaper"
