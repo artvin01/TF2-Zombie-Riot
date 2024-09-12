@@ -111,11 +111,10 @@ public void VIPBuilding_ClotThink(int iNPC)
 		}
 		else
 		{
-			int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-			health -= maxhealth / 500;
+			float health = float(maxhealth) / 500.0;
 
-			HealEntityGlobal(npc.index, npc.index, float(health), _, _, _, _);
+			HealEntityGlobal(npc.index, npc.index, health, _, _, _, _);
 		}
 	}
 }
