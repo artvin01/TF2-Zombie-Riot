@@ -5,7 +5,7 @@
 #define Silvester_BASE_RANGED_SCYTHE_DAMGAE 13.0
 #define Silvester_LASER_THICKNESS 25
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
@@ -532,13 +532,16 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	bool NemalAssistance = false;
+	if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+		NemalAssistance = true; //they are alive and helping.
 
 
 	if(npc.m_flSilvesterHudCD < GetGameTime())
 	{
 		npc.m_flSilvesterHudCD = GetGameTime() + 0.2;
 		//Set raid to this one incase the previous one has died or somehow vanished
-		if(!IsPartnerGivingUpNemalSilv(npc.index) && IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+		if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
 		{
 			for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
 			{
@@ -548,12 +551,10 @@ static void Internal_ClotThink(int iNPC)
 				}	
 			}
 		}
-		else if((EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive))) || (IsPartnerGivingUpNemalSilv(npc.index) && EntRefToEntIndex(RaidBossActive) != npc.index))
+		else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
 		{	
-			
 			RaidBossActive = EntIndexToEntRef(npc.index);
 		}
-		
 	}
 
 	if(b_angered_twice[npc.index])
@@ -689,12 +690,12 @@ static void Internal_ClotThink(int iNPC)
 		}
 		BlockLoseSay = true;
 	}
-	if(SilvesterTransformation(npc))
+	if(SilvesterTransformation(npc, NemalAssistance))
 		return;
 
 	if(npc.Anger)
 	{
-		if(SilvesterSwordSlicer(npc))
+		if(SilvesterSwordSlicer(npc, NemalAssistance))
 			return;
 	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -718,7 +719,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	bool ForceRedo = false;
-	if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+	if(NemalAssistance)
 	{
 		//Nemal is alive and didnt give up! Try to target someone near her....
 		CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
@@ -846,7 +847,7 @@ static void Internal_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		SetGoalVectorIndex = SilvesterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		SetGoalVectorIndex = SilvesterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget, NemalAssistance); 
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
 		if(iPitch < 0)
@@ -1140,7 +1141,7 @@ void SilvesterAnimationChange(Silvester npc)
 	}
 
 }
-int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distance)
+int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distance, bool NemalAssistance)
 {
 	if(npc.Anger)
 	{
@@ -1161,12 +1162,9 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 				PluginBot_Jump(npc.index, flPos);
 				npc.m_flSilvesterSlicerHappening = GetGameTime(npc.index) + 1.0;
 				float cooldownDo  = 30.0;
-				if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
-					cooldownDo = 30.0;
-				else
-				{
+				if(!NemalAssistance)
 					cooldownDo *= 0.5;
-				}
+
 				if(i_RaidGrantExtra[npc.index] >= 4)
 					cooldownDo *= 0.75;
 
@@ -1216,12 +1214,9 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			0.75);	
 			
 			float cooldownDo  = 7.0;
-			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
-				cooldownDo = 7.0;
-			else
-			{
+			if(!NemalAssistance)
 				cooldownDo *= 0.5;
-			}
+
 			npc.m_flSilvesterAirbornAttack = GetGameTime(npc.index) + cooldownDo;
 		}
 	}
@@ -1257,11 +1252,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 								damage *= 0.75;
 							}
 							
-							if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
-							{
-
-							}
-							else
+							if(!NemalAssistance)
 								damage *= 1.35;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
@@ -1398,13 +1389,10 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 							
 					npc.f_SilvesterMeleeSliceHappening = gameTime + 0.25;
 					
-					float cooldownDo  = 4.5;
-					if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
-						cooldownDo = 7.0;
-					else
-					{
+					float cooldownDo = 4.5;
+					if(!NemalAssistance)
 						cooldownDo *= 0.5;
-					}
+
 					if(i_RaidGrantExtra[npc.index] >= 4)
 						cooldownDo *= 0.75;
 
@@ -1418,7 +1406,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 	return 0;
 }
 
-bool SilvesterTransformation(Silvester npc)
+bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 {
 	if(npc.Anger)
 	{
@@ -1467,7 +1455,7 @@ bool SilvesterTransformation(Silvester npc)
 			npc.m_flDoingAnimation = 0.0;
 
 			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");
-			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+			if(NemalAssistance)
 			{
 				CPrintToChatAll("{lightblue}Nemal{default}: Guess ill try harder aswell, or try to.");
 			}
@@ -1870,7 +1858,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 
 static int LastEnemyTargeted[MAXENTITIES];
 
-bool SilvesterSwordSlicer(Silvester npc)
+bool SilvesterSwordSlicer(Silvester npc, bool NemalAssistance)
 {
 	if(npc.m_flSilvesterSlicerHappening)
 	{
@@ -1878,7 +1866,7 @@ bool SilvesterSwordSlicer(Silvester npc)
 		{
 			bool ForceRedo = false;
 			npc.m_flGetClosestTargetTime = 0.0;
-			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+			if(NemalAssistance)
 			{
 				CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
 				if(allynpc.m_iTarget == npc.m_iTarget)

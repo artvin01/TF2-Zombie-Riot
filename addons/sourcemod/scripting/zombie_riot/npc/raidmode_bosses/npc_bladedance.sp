@@ -136,6 +136,7 @@ methodmap RaidbossBladedance < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		npc.m_bDissapearOnDeath = true;
 
 		
 		bool final = StrContains(data, "final_item") != -1;
@@ -418,9 +419,15 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	Waves_ClearWave();
 
 	RaidbossBladedance npc = view_as<RaidbossBladedance>(entity);
-	if(!npc.m_bGib)
-		npc.PlayDeathSound();
-
+	
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		
+	TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", npc.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME * 2.0);
+	CPrintToChatAll("Bladedance escapes from you... and gains the ability to copy {crimson}you.");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
 	WavesUpdateDifficultyName();
 	

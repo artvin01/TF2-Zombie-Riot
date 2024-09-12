@@ -3445,9 +3445,7 @@
 	}
 	"True Fusion Warrior Desc"
 	{
-		"en"	"(1) Raids appear at the end of every 15 waves, they get more stronger with more abilities!"
-		"fr"	"À tous les 15 vagues, des Raids vont apparaître. Leur prouesse et abilités s'amélioreront graduellement!"
-		"chi"	"每15波会出现Raidboss，每次出现都会更强，技能更多！"
+		"en"	"(1) ''True fusion warrior'' Is infected with the xeno virus, his gear prevents spreading of it, it even made him forget his name."
 	}
 	"Alternative Desc"
 	{
@@ -3457,9 +3455,7 @@
 	}
 	"Blitzkrieg Desc"
 	{
-		"en"	"(2) The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
-		"fr"	"La machine qui tire rapidement des roquettes et choque les survivants hors de sa portée!\nÉvitez de se bagarrer contre lui dans des zones Expidonsannes..."
-		"chi"	"遮天蔽日的火箭和足以穿透天国的激光。\n别在Expidonsa境内招惹这家伙……"
+		"en"	"(2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -3474,9 +3470,7 @@
 	}
 	"Silvester Waldch Desc"
 	{
-		"en"	"(3) Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
-		"fr"	"Silvester attaque avec des rayons laser et des roches, alors que Waldch tir à distance!"
-		"chi"	"西尔维斯特用激光和土地的力量冲锋，瓦德奇则在远处使用狙击枪辅助！"
+		"en"	"(3) You trying to find out what xeno is... Silverster and waldch are here to stop you from getting infected."
 	}
 	"Xeno Hard Desc"
 	{
@@ -3504,9 +3498,7 @@
 	}
 	"Sensal Desc"
 	{
-		"en"	"(5) The scouting party operative which rapidly summons homing scythes and laser attacks!"
-		"fr"	"Le capitaine d'un groupe de scouts qui convoque des scythes chercheurs et des rayons laser!"
-		"chi"	"Expidonsa侦查队。盾，激光，和能量刃。"
+		"en"	"(5) The scouting party operative, you harmed silvester and waldch, but they were unable to tell sensal that this was a false alarm, brace yourself."
 	}
 	"Deep Sea Desc"
 	{
@@ -3522,9 +3514,7 @@
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"(6) Karlas charges you down with his Lance while Stella fires laser attacks!"
-		"fr"	"Karlas vous perce avec sa Lance alors que Stella vous vire des rayons laser!"
-		"chi"	"卡拉斯手持长剑，而斯钛拉操纵着梦魇大炮。"
+		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this tempomary alliance."
 	}
 	"Khaml Desc"
 	{
@@ -3839,7 +3829,7 @@
 	}
 	"Iberia Nemal Desc"
 	{
-		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremaly seriously."
+		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 	}
 }
