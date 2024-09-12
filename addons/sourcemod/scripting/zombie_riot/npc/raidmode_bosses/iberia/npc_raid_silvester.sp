@@ -866,6 +866,11 @@ static void Internal_ClotThink(int iNPC)
 								
 		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 	}
+	else
+	{
+		//instantly set target!
+		npc.m_flSetTargetFromWalkTarget = 0.0;
+	}
 	//What to do towrads the enemy we want to walk to
 	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
 	{
