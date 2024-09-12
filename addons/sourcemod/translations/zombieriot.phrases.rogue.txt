@@ -35,7 +35,7 @@
 	}
 	"Lost Ingots"
 	{
-		"#format"	"{1:t}"
+		"#format"	"{1:d}"
 		"en"		"{red}Lost {1} Australium Ingots!"
 	}
 	"Time Stands Still"

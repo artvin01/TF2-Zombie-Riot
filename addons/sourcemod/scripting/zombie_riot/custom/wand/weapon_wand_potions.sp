@@ -13,7 +13,7 @@ static Handle BuffTimer[MAXENTITIES];
 static float TonicBuff[MAXTF2PLAYERS];
 static float TonicBuff_CD[MAXTF2PLAYERS];
 static Handle ShrinkTimer[MAXENTITIES];
-static float f_RaidShrinkImmunity[MAXTF2PLAYERS];
+static float f_RaidShrinkImmunity[MAXENTITIES];
 
 bool Wands_Potions_HasBuff(int client)
 {
@@ -504,10 +504,13 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 	}
 	else
 	{
-		f_BombEntityWeaponDamageApplied[enemy][owner] = damage / 6.0;
-		i_HowManyBombsOnThisEntity[enemy][owner] += 1;
-		i_HowManyBombsHud[enemy] += 1;
-		Apply_Particle_Teroriser_Indicator(enemy);
+		if(!b_NpcIsInvulnerable[enemy])
+		{
+			f_BombEntityWeaponDamageApplied[enemy][owner] += damage / 6.0;
+			i_HowManyBombsOnThisEntity[enemy][owner] += 1;
+			i_HowManyBombsHud[enemy] += 1;
+			Apply_Particle_Teroriser_Indicator(enemy);
+		}
 	}
 }
 

@@ -294,7 +294,7 @@ methodmap Bloonarius < CClotBody
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
 				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = npc.index;
+				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
 				break;
 			}
 		}

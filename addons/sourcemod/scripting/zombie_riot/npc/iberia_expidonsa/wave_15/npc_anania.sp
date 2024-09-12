@@ -339,7 +339,7 @@ void IberiaMoraleGivingDo(int iNpc, float gameTime, bool DoSounds = true, float 
 	{
 		return;
 	}
-	if(npc.m_flNextRangedSpecialAttack > gameTime + 990.0)
+	if(npc.m_flNextRangedSpecialAttack == FAR_FUTURE)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 15.0;
 		if(DoSounds)
@@ -380,7 +380,7 @@ void IberiaMoraleGiving(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
 	{
 		IberiaMoraleGivingInternal(entity,victim);
 	}
@@ -389,6 +389,6 @@ void IberiaMoraleGiving(int entity, int victim, float damage, int weapon)
 void IberiaMoraleGivingInternal(int shielder, int victim)
 {
 	CClotBody npc = view_as<CClotBody>(shielder);
-	npc.m_flNextRangedSpecialAttack = GetGameTime(shielder) + 9999.0;
+	npc.m_flNextRangedSpecialAttack = FAR_FUTURE;
 	GiveEntityMoraleBoost(shielder, victim, f_MoraleAddAnania[shielder]);
 }

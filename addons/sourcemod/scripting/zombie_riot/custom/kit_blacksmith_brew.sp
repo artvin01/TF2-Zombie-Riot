@@ -296,7 +296,7 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 {
 	if(attacker <= MaxClients && Merchant_IsAMerchant(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
 	{
-		int random = RandomSeed + GetEntProp(victim, Prop_Data, "m_nModelIndex");
+		int random = RandomSeed  + i_NpcInternalId[victim];
 		int aspect = random % A_Water;
 
 		// Special Aspects
@@ -799,6 +799,10 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 
 				if(SellingAmount[owner] == 0)
 					ObjectTinkerBrew_TogglePotion(entity, false);
+				else if(SellingAmount[owner] > 0)
+				{
+					ObjectTinkerBrew_TogglePotion(entity, true);
+				}
 
 				if(client == owner && SellingAmount[owner] == 0)
 				{

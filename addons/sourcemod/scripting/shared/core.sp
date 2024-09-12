@@ -374,6 +374,7 @@ float DeleteAndRemoveAllNpcs = 5.0;
 
 ConVar cvarTimeScale;
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
+//Above is the actual damage to be dealing
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_HowManyBombsHud[MAXENTITIES];

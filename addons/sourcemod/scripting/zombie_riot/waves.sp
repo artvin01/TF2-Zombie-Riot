@@ -1500,10 +1500,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						ShowHudText(client, -1, "%t", round.Message);
 					}
 				}
+				CPrintToChatAll("{crimson}%t", round.Message);
 			}
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsClientInGame(client))
+				if(IsClientInGame(client) && !b_IsPlayerABot[client])
 				{
 					if(music_stop)
 					{
