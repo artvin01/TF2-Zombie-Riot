@@ -457,8 +457,8 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 		if(Ally != TFTeam_Red && VIPBuilding_Active())
 		{
-			baseNPC.flAcceleration = 90000.0;
-			baseNPC.flFrictionSideways = 90.0;
+			baseNPC.flAcceleration = 9000.0;
+			baseNPC.flFrictionSideways = 7.0;
 		}
 #endif
 
@@ -1334,11 +1334,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return b_CantCollidieAlly[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_CantCollidieAlly[this.index] = TempValueForProperty; }
 	}
-	property bool bBuildingIsPlaced
-	{
-		public get()							{ return b_bBuildingIsPlaced[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_bBuildingIsPlaced[this.index] = TempValueForProperty; }
-	}
 	property bool bXenoInfectedSpecialHurt
 	{
 		public get()							{ return b_XenoInfectedSpecialHurt[this.index]; }
@@ -1657,7 +1652,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			GetPercentageAdjust *= Zombie_DelayExtraSpeed();
 		}
-		else
+		else if(GetTeam(this.index) == TFTeam_Red)
 		{
 			if(VIPBuilding_Active())
 			{
@@ -2254,8 +2249,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(!CvarDisableThink.BoolValue)
 		{
 			this.m_bPathing = true;
-
-			this.GetPathFollower().SetMinLookAheadDistance(100.0);
+			if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
+				this.GetPathFollower().SetMinLookAheadDistance(25.0);
+			else
+				this.GetPathFollower().SetMinLookAheadDistance(100.0);
 		}
 	}
 	public void StopPathing()
@@ -2286,7 +2283,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		if(ignoretime || DelayPathing(this.index))
-		{
+		{/*
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -2303,6 +2300,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					i_WasPathingToHere[this.index] = 0;
 				}
 			}
+			*/
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
@@ -2316,6 +2314,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	{	
 		if(ignoretime || DelayPathing(this.index))
 		{
+			/*
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -2332,6 +2331,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					f3_WasPathingToHere[this.index][2] = 0.0;
 				}
 			}
+			*/
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
@@ -6128,6 +6128,15 @@ void TeleportNpcToRandomPlayer(int iNPC)
 }
 public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 {
+	if(f_NoUnstuckVariousReasons[iNPC] > GetGameTime())
+	{
+		if(f_UnstuckSuckMonitor[iNPC] < GetGameTime())
+		{
+			npc.GetLocomotionInterface().ClearStuckStatus("UN-STUCK");
+			f_UnstuckSuckMonitor[iNPC] = GetGameTime() + 1.0;
+		}
+		return;
+	}
 	if (!b_DoNotUnStuck[iNPC])
 	{
 		if(i_FailedTriesUnstuck[iNPC][0] == 0)
@@ -8281,7 +8290,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_CantCollidie[entity] = false;
 	b_CollidesWithEachother[entity] = false;
 	b_CantCollidieAlly[entity] = false;
-	b_bBuildingIsPlaced[entity] = false;
 	b_XenoInfectedSpecialHurt[entity] = false;
 	fl_XenoInfectedSpecialHurtTime[entity] = 0.0;
 	b_DoGibThisNpc[entity] = true;
@@ -8411,6 +8419,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
 	f_GoldTouchDebuff[entity] = 0.0;
+	f_StrangleDebuff[entity] = 0.0;
 	f_CudgelDebuff[entity] = 0.0;
 	f_DuelStatus[entity] = 0.0;
 	f_PotionShrinkEffect[entity] = 0.0;
@@ -8479,22 +8488,7 @@ public void ArrowStartTouch(int arrow, int entity)
 			inflictor = owner;
 
 		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
-		if(i_NervousImpairmentArrowAmount[arrow] > 0)
-		{
-#if defined ZR
-			Elemental_AddNervousDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
-#endif
-		}
-#if defined ZR
-		if(i_ChaosArrowAmount[arrow] > 0)
-		{
-			Elemental_AddChaosDamage(entity, owner, i_ChaosArrowAmount[arrow]);
-		}
-		if(i_VoidArrowAmount[arrow] > 0)
-		{
-			Elemental_AddVoidDamage(entity, owner, i_VoidArrowAmount[arrow]);
-		}
-#endif
+		Projectile_DealElementalDamage(entity, arrow);
 
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))
@@ -9101,6 +9095,7 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_WidowsWineDebuff[enemy] = 0.0;
 	f_CrippleDebuff[enemy] = 0.0;
 	f_GoldTouchDebuff[enemy] = 0.0;
+	f_StrangleDebuff[enemy] = 0.0;
 	f_CudgelDebuff[enemy] = 0.0;
 	f_MaimDebuff[enemy] = 0.0;
 	f_PotionShrinkEffect[enemy] = 0.0;

@@ -149,6 +149,8 @@ bool AmmoboxUsed(int client, int entity)
 			}
 			if(b_AggreviatedSilence[client])
 				mana_regen_temp *= 0.30;
+
+			mana_regen_temp *= 0.5;
 			
 			if(Current_Mana[client] < RoundToCeil(max_mana_temp))
 			{

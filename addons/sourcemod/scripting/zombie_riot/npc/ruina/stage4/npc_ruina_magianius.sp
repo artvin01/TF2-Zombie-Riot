@@ -348,8 +348,8 @@ static void ClotThink(int iNPC)
 					Ang[0] = -45.0;
 					Projectile.Angles = Ang;
 					Projectile.speed = 750.0;
-					Projectile.radius = 300.0;
-					Projectile.damage = 600.0;
+					Projectile.radius = 250.0;
+					Projectile.damage = 300.0;
 					Projectile.bonus_dmg = 2.5;
 					Projectile.Time = 10.0;
 
@@ -510,13 +510,13 @@ static void Func_On_Proj_Touch(int projectile, int other)
 		owner = 0;
 	}
 
-	Ruina_Add_Mana_Sickness(owner, other, 0.0, 800);	//very heavy FLAT amount of mana sickness
+	Ruina_Add_Mana_Sickness(owner, other, 0.0, 300);	//very heavy FLAT amount of mana sickness
 		
 	float ProjectileLoc[3];
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
 	Explode_Logic_Custom(fl_ruina_Projectile_dmg[projectile] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[projectile] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[projectile]);
-
+	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	Ruina_Remove_Projectile(projectile);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

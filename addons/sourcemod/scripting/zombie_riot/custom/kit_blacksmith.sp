@@ -227,10 +227,12 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 	ApplyTempAttrib(weapon, 6, 0.25, 2.0);
 }
 
+/*
 int Blacksmith_Level(int client)
 {
 	return SmithLevel[client];
 }
+*/
 
 static int AnvilClickedOn[MAXTF2PLAYERS];
 static int ClickedWithWeapon[MAXTF2PLAYERS];
@@ -759,10 +761,10 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 		case 45:
 			Format(buffer, sizeof(buffer), "%sBullets Per Shot", buffer);
 		
-		case 54:
+		case 54, 107:
 			Format(buffer, sizeof(buffer), "%sMovement Speed", buffer);
 		
-		case 57, 107:
+		case 57:
 			Format(buffer, sizeof(buffer), "%sHealth Regen", buffer);
 		
 		case 95:

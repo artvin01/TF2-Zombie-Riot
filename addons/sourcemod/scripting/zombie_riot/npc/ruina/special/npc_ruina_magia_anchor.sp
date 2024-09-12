@@ -109,8 +109,7 @@ static char[] GetBuildingHealth()
 	
 	health /= 2;
 	
-	
-	health = RoundToCeil(float(health) * 1.4);
+	health = RoundToCeil(float(health) * 1.6);
 	
 	char buffer[16];
 	IntToString(health, buffer, sizeof(buffer));
@@ -687,8 +686,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
-	if(fl_ruina_battery[npc.index] <=200.0)
-		Ruina_Add_Battery(npc.index, 1.0);	//anchor gets charge every hit. :)
+	//if(fl_ruina_battery[npc.index] <=200.0)
+		//Ruina_Add_Battery(npc.index, 1.0);	//anchor gets charge every hit. :)
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -844,7 +843,7 @@ static bool Charging(Magia_Anchor npc)
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
 				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = npc.index;
+				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
 				break;
 			}
 		}

@@ -101,6 +101,11 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float bas
 #if !defined RTS
 stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+#if defined ZR
+	if(VIPBuilding_Active())
+		return true;
+#endif
+
 #if defined RPG
 	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
 		RPG_FlatRes(victim, attacker, weapon, damage);
@@ -122,11 +127,6 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 #endif	
 	}
 	float GameTime = GetGameTime();
-
-	if(Medival_Difficulty_Level != 0.0)
-	{
-		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
-	}
 
 	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 	//It will just return the same damage if nothing is done.
@@ -435,6 +435,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 			if(IsValidEntity(weapon))
 				NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 		}
+		BarracksUnitAttack_NPCTakeDamagePost(victim, inflictor, damage, damagetype);
 	}
 #endif
 
@@ -484,8 +485,12 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 	}
 	if(b_ThisEntityIgnored[victim])
 	{
-		damage = 0.0;
-		return true;
+		//True damage ignores this.
+		if(!(damagetype & (DMG_SLASH)))
+		{
+			damage = 0.0;
+			return true;
+		}
 	}
 	OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 	return false;
@@ -558,11 +563,18 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 	//dont do reduce per player, its only 1 o 1 !!!
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)	//this doesnt get applied in groups.
 		damage += basedamage * (DMG_MEDIGUN_LOW - 1.0);
+		
 
 	#if defined RUINA_BASE
 		if(f_Ruina_Attack_Buff[attacker] > GameTime)
 			damage += basedamage * (f_Ruina_Attack_Buff_Amt[attacker] * DamageBuffExtraScaling);	//x% dmg bonus			
 	#endif
+
+	//Medieval buff stacks with any other attack buff.
+	if(GetTeam(attacker) != TFTeam_Red && Medival_Difficulty_Level != 0.0)
+	{
+		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
+	}
 	
 	return false;
 }
@@ -625,7 +637,7 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 		DamageRes *= 0.95;
 	} 
 	//if inflictor is 9999999, then that means its called by seperate code, HUD elements.
-	if(RaidbossIgnoreBuildingsLogic(1) && (inflictor >= 999999 || GetTeam(victim) == TFTeam_Red))
+	if(RaidbossIgnoreBuildingsLogic(1) && (GetTeam(victim) == TFTeam_Red))
 	{
 		//invert, then convert!
 		float NewRes = 1.0 + ((DamageRes - 1.0) * PlayerCountResBuffScaling);
@@ -724,6 +736,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_WRATHFUL_BLADE:
 		{
 			Player_OnTakeDamage_WrathfulBlade(victim, damage, attacker);
+		}
+		case WEAPON_MAGNESIS:
+		{
+			Player_OnTakeDamage_Magnesis(victim, damage, attacker);
 		}
 	}
 	return damage;
@@ -1017,9 +1033,17 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Flametail_NPCTakeDamage(attacker, damage, weapon, damagePosition);
 		}
+		case WEAPON_MAGNESIS:
+		{
+			Magnesis_OnNPCDamaged(victim, damage);
+		}
 		case WEAPON_WRATHFUL_BLADE:
 		{
 			return WrathfulBlade_OnNPCDamaged(victim, attacker, weapon, damage, inflictor);
+		}
+		case WEAPON_SUPERUBERSAW:
+		{
+			Superubersaw_OnTakeDamage(victim, attacker, damage);
 		}
 	}
 #endif
@@ -1679,6 +1703,13 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	if(f_EmpowerStateSelf[victim] > GameTime) //Allow stacking.
 		damage *= 0.9;
 		
+#if defined RUINA_BASE
+	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.
+	{
+		damage *= f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
+	}
+#endif
+		
 #if !defined RPG
 	if(attacker > MaxClients && i_npcspawnprotection[attacker] == 1)
 	{
@@ -1789,17 +1820,15 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	{
 		damage += basedamage * (0.2 * DamageBuffExtraScaling);
 	}
+	if (f_StrangleDebuff[victim] > GameTime)
+	{
+		damage += Magnesis_StrangleDebuffMultiplier(victim, basedamage);
+	}
 
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
 		damage += basedamage * (0.3 * DamageBuffExtraScaling);
 	}	
-#if defined RUINA_BASE
-	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.
-	{
-		damage -= basedamage * f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
-	}
-#endif
 }
 #endif	// Non-RTS
 
@@ -1924,6 +1953,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_GoldTouchDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⯏", Debuff_Adder_left);
+	}
+	if(f_StrangleDebuff[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s☼", Debuff_Adder_left);
 	}
 	if(f_CudgelDebuff[victim] > GameTime)
 	{

@@ -854,51 +854,61 @@
 	{
 		"en"		"Barricade"
 		"fr"		"Barrière"
+		"chi"		"路障"
 	}
 	"Armor Table"
 	{
 		"en"		"Armor Table"
 		"fr"		"Table d'Armure"
+		"chi"		"装甲柜"
 	}
 	"Ammo Box"
 	{
 		"en"		"Ammo Box"
 		"fr"		"Boîte de Munitions"
+		"chi"		"弹药箱"
 	}
 	"Perk Machine"
 	{
 		"en"		"Perk Machine"
 		"fr"		"Machine de Perks"
+		"chi"		"可乐机"
 	}
 	"Pack-a-Punch"
 	{
 		"en"		"Pack-a-Punch"
 		"fr"		"Machine Pack-a-Punch"
+		"chi"		"升级站"
 	}
 	"Sentrygun"
 	{
 		"en"		"Sentrygun"
 		"fr"		"Mitrailleuse"
+		"chi"		"步哨"
 	}
 	"Mortar"
 	{
 		"en"		"Mortar"
 		"fr"		"Mortier"
+		"chi"		"迫击炮"
 	}
 	"Food Fridge"
 	{
 		"en"		"Food Fridge"
 		"fr"		"Frigo de Bouffe"
+		"chi"		"冰箱"
 	}
 	"Village"
 	{
 		"en"        "Village"
 		"fr"        "Village"
+		"chi"		"村庄"
 	}
 	"Metal"
 	{
 		"en"		"Metal"
 		"fr"		"Métal"
+		"chi"		"金属"
 	}
 	"Chooseable Buildings (Only one)"
 	{
@@ -1804,6 +1814,7 @@
 		"de"		"Bonus-Affe! [Selten]"
 		"pt"		"Macaco Bonus! [Raro]"
 		"nl"		"Bonus Aap! [Zeldzaam]"
+		"chi"		"额外猴子！[稀有]"
 	}
 	"Big Bunch [Rare]"
 	{
@@ -1813,6 +1824,7 @@
 		"de"		"Große Menge [Selten]"
 		"pt"		"Punhado Grande [Raro]"
 		"nl"		"Grote Tros [Zeldzaam]"
+		"chi"		"大群[稀有]"
 	}
 	"Accelerated Aerodarts [Uncommon]"
 	{
@@ -1822,6 +1834,7 @@
 		"de"		"Beschleunigte Luftpfeile [Ungewöhnlich]"
 		"pt"		"Dardos Aereos Acelerados [Incomum]"
 		"nl"		"Versnelde Lucht Darts [Ongewoon]"
+		"chi"		"超速针刺[稀有]"
 	}
 	"Faster Takedowns [Common]"
 	{
@@ -1831,6 +1844,7 @@
 		"de"		"Schnellere Takedowns [Gewöhnlich]"
 		"pt"		"Derrubada Rápida [Comum]"
 		"nl"		"Snellere Neerhalingen [Gewoon]"
+		"chi"		"快速击倒[常见]"
 	}
 	"Extra Burny Stuff [Uncommon]"
 	{
@@ -1840,6 +1854,7 @@
 		"de"		"Extra Burny Stuff [Ungewöhnlich]"
 		"pt"		"Coisas Incendiárias Extras [Incomum]"
 		"nl"		"Extra brandende spullen [Ongewoon]"
+		"chi"		"可燃物[罕见]"
 	}
 	"Quad Burst [Legendary]"
 	{
@@ -1849,6 +1864,7 @@
 		"de"		"Quad Burst [Legendär]"
 		"pt"		"Rajada Quádrupla [Lendário]"
 		"nl"		"Viersuitbarsting [Legendarisch]"
+		"chi"		"四倍爆发[传奇]"
 	}
 	"Gun Coolant [Rare]"
 	{
@@ -1858,6 +1874,7 @@
 		"de"		"Waffenkühlmittel [Selten]"
 		"pt"		"Refrigerador de Armas [Raro]"
 		"nl"		"Pistool koelvloeistof [Zeldzaam]"
+		"chi"		"冷却剂[稀有]"
 	}
 	"Flanking Maneuvers [Rare]"
 	{
@@ -1867,6 +1884,7 @@
 		"de"		"Flankenmanöver [Selten]"
 		"pt"		"Manuseios de Emboscada [Raro]"
 		"nl"		"Flankerende maneuvers [Zeldzaam]"
+		"chi"		"战技：偷袭[稀有]"
 	}
 	"Charged Chinooks [Uncommon]"
 	{
@@ -1876,6 +1894,7 @@
 		"de"		"Geladene Chinooks [Ungewöhnlich]"
 		"pt"		"Chinooks Carregado [Incomum]"
 		"nl"		"Opgeladen Chinooks [Ongewoon]"
+		"chi"		"充能奇诺克[罕见]"
 	}
 	"Big Bloon Sabotage [Legendary]"
 	{
@@ -1885,6 +1904,7 @@
 		"de"		"Großer Bloon Sabotage [Legendär]"
 		"pt"		"Grande Sabotador de Bloons [Lendário]"
 		"nl"		"Groot Ballonsabotage [Legendarisch]"
+		"chi"		"大型气球毁灭者[传奇]"
 	}
 	"SUPER Range [Rare]"
 	{
@@ -1894,6 +1914,7 @@
 		"de"		"SUPER Reichweite [Selten]"
 		"pt"		"SUPER Alcançe [Raro]"
 		"nl"		"SUPER Afstand [Zeldzaam]"
+		"chi"		"超级射程[稀有]"
 	}
 	"Heavy Knockback [Legendary]"
 	{
@@ -1903,6 +1924,7 @@
 		"de"		"Starker Rückstoß [Legendär]"
 		"pt"		"Repulsão Pesada [Lendário]"
 		"nl"		"Zware terugslag [Legendarisch]"
+		"chi"		"超级击退[传奇]"
 	}
 	"Speedy Brewing [Uncommon]"
 	{
@@ -1912,6 +1934,7 @@
 	//	"de"		""
 		"pt"		"Fervura Veloz [Incomum]"
 		"nl"		"Snel Brouwen [Ongewoon]"
+		"chi"		"快速酿造[罕见]"
 	}
 	"Strike Down The False [Uncommon]"
 	{
@@ -1921,6 +1944,7 @@
 		"de"		"Schnelles Brühen [Ungewöhnlich]"
 		"pt"		"Derrube o Falso [Incomum]"
 		"nl"		"Sla neer de valse [ongewoon]"
+		"chi"		"测谎仪[罕见]"
 	}
 	"Flame Jet [Common]"
 	{
@@ -1930,6 +1954,7 @@
 		"de"		"Flammenstrahl [Gewöhnlich]"
 		"pt"		"Jato de Labaredas [Comum]"
 		"nl"		"Vlamstraal [Gewoon]"
+		"chi"		"火焰喷射器[常见]"
 	}
 	"Strong Tonic [Rare]"
 	{
@@ -1938,6 +1963,7 @@
 		"ru"		"Крепкий тоник [Редкое]"
 		"de"		"Starkes Stärkungsmittel [Selten]"
 		"nl"		"Sterke Tonic [Zeldzaam]"
+		"chi"		"高浓度汤力水[稀有]"
 	}
 	"Arcane Impale [Rare]"
 	{
@@ -1947,6 +1973,7 @@
 		"de"		"Arkanes Aufspießen [Selten]"
 		"pt"		"Impalamento Arcano [Raro]"
 		"nl"		"Geheimzinnige spietsing [Zeldzaam]"
+		"chi"		"灵力穿透[稀有]"
 	}
 	"Deadly Tranquility [Uncommon]"
 	{
@@ -1956,6 +1983,7 @@
 		"de"		"Tödliche Ruhe [Ungewöhnlich]"
 		"pt"		"Tranquilidade Mortal [Incomum]"
 		"nl"		"Dodelijke Rust [Ongewoon]"
+		"chi"		"死寂[罕见]"
 	}
 	"There Can Be Only One [Mythic]"
 	{
@@ -1965,6 +1993,7 @@
 		"de"		"Es kann nur einen geben [Mythisch]"
 		"pt"		"So Pode Existir Um [Mítico]"
 		"nl"		"Er Is Er Maar Één [Mythisch]"
+		"chi"		"There Can be Only One[神话]"
 	}
 	"Tiny Tornadoes [Rare]"
 	{
@@ -1974,6 +2003,7 @@
 		"de"		"Kleines Tornados [Selten]"
 		"pt"		"Pequenos Tornados [Raro]"
 		"nl"		"Kleine tornado's [Zeldzaam]"
+		"chi"		"迷你龙卷风[稀有]"
 	}
 	"Mana Shield [Legendary]"
 	{
@@ -1983,6 +2013,7 @@
 		"de"		"Manaschild [Legendär]"
 		"pt"		"Escudo de Mana [Lendário]"
 		"nl"		"Mana Schild [Legendarisch]"
+		"chi"		"能量盾[传说]"
 	}
 	"Vigilant Sentries [Common]"
 	{
@@ -1992,6 +2023,7 @@
 		"de"		"Wachsame Wachposten [Gewöhnlich]"
 		"pt"		"Vigilante Sentinela [Comum]"
 		"nl"		"Voorzichtige Schildwachters [Gewoon]"
+		"chi"		"高警惕步哨[常见]"
 	}
 	"To ARMS! [Legendary]"
 	{
@@ -2001,6 +2033,7 @@
 		"de"		"Zu den Waffen! [Legendär]"
 		"pt"		"Para os BRAÇOS! [Lendário]"
 		"nl"		"Ten Armen! [Legendarisch]"
+		"chi"		"预备！[传说]"
 	}
 	"Healthy Bananas [Legendary]"
 	{
@@ -2010,6 +2043,7 @@
 		"de"		"Gesunde Bananen [Legendär]"
 		"pt"		"Bananas Saúdaveis [Lendário]"
 		"nl"		"Gezonde Bananen [Legendarisch]"
+		"chi"		"健康の香蕉[常见]"
 	}
 	"Veteran Monkey Training [Uncommon]"
 	{
@@ -2019,6 +2053,7 @@
 		"de"		"Veteranen-Affentraining [Ungewöhnlich]"
 		"pt"		"Treinamento Veterano de Primata [Incomum]"
 		"nl"		"Veteraan Apentraining [Ongewoon]"
+		"chi"		"老兵猴子训练[罕见]"
 	}
 	"Pre-Game Prep [Legendary]"
 	{
@@ -2028,6 +2063,8 @@
 		"de"		"Spielvorbereitung [Legendär]"
 		"pt"		"Preparação antes Jogo [Lendário]"
 		"nl"		"Voorspel Voorbereiding [Legendarisch]"
+
+		"chi"		"提前准备[传说]"
 	}
 	"Builder Gear"
 	{
@@ -2125,7 +2162,7 @@
 		"en"       "Beam Wand"
 		"fr"       "Baguette Rayonneuse"
 		"ru"       "Жезл луча"
-		"chi"       "光射发胀"
+		"chi"       "光之法杖"
 	}
 	"Cryo Staff"
 	{
@@ -2133,7 +2170,6 @@
 		"fr"       "Bâton des Glaces"
 		"chi"       "寒冰法杖"
 	}
-
 	"Only one allowed, sell to see and buy others."
 	{
 		"en"       "Only one allowed, sell to see and buy others."
@@ -2173,6 +2209,7 @@
 	{
 		"en"       "Throwable Repair Kit"
 		"fr"       "Kit de Réparation Lançable"
+		"chi"		"维修手雷"
 	}
 	"Primary Builder Weapons"
 	{
@@ -2337,6 +2374,7 @@
 	{
 		"en"	"Barracks"
 		"fr"	"Caserne"
+		"chi"	"兵营"
 	}
 	"Nearl Silvester Spear"
 	{
@@ -2528,11 +2566,13 @@
 	{
 		"en"	"De Ständchen de Disharmonie"
 		"fr"	"De Ständchen de Disharmonie"
+		"chi"	"][韵文]["
 	}
 	"The Standchen AltPap 2"
 	{
 		"en"	"De Ständchen de Stille"
 		"fr"	"De Ständchen de Stille"
+		"chi"	"]]韵文[["
 	}
 	"Combo Kits"
 	{
@@ -2550,16 +2590,19 @@
 	{
 		"en"	"Seaborn Claws"
 		"fr"	"Griffes Seaborn"
+		"chi"	"海嗣利爪"
 	}
 	"Seaborn Spines"
 	{
 		"en"	"Seaborn Spines"
 		"fr"	"Épines Seaborn"
+		"chi"	"海嗣颈骨"
 	}
 	"Seaborn Salve"
 	{
 		"en"	"Seaborn Salve"
 		"fr"	"Baume Seaborn"
+		"chi"	"海嗣药膏"
 	}
 	"The Flagellant"
 	{
@@ -2584,18 +2627,21 @@
 		"en"	"Ion-Blitz"
 		"fr"	"Ion-Blitz"
 		"chi"	"闪光"
+		"chi"	"闪「光」"
 	}
 	"Blitz-Blade"
 	{
 		"en"	"Blitz-Blade"
 		"fr"	"Lame Blitz"
 		"chi"	"闪电刃"
+		"chi"	"电「刃」"
 	}
 	"Hurricane-Blitz"
 	{
 		"en"	"Hurricane-Blitz"
 		"fr"	"Cyclone Blitz"
 		"chi"	"闪电战"
+		"chi"	"「闪电战」"
 	}
 	"Gravaton Spell"
 	{
@@ -2649,6 +2695,7 @@
 	{
 		"en"	"Tinker Workshop"
 		"fr"	"Laboratoire du Forgeron"
+		"chi"	"匠工坊"
 	}
 	"Merchant Brewing Stand"
 	{
@@ -2670,41 +2717,49 @@
 	{
 		"en"	"The Merchant"
 		"fr"	"Le Marchand"
+		"chi"	"商人"
 	}
 	"Merchant's Wrench"
 	{
 		"en"	"Merchant's Wrench"
 		"fr"	"Clé du Marchand"
+		"chi"	"商人扳手"
 	}
 	"Merchant Emergency Button"
 	{
 		"en"	"Merchant Emergency Button"
 		"fr"	"Bouton de Secours du Marchand"
+		"chi"	"商人紧急按钮"
 	}
 	"The Merchant Skilled"
 	{
 		"en"	"The Merchant: Skilled"
 		"fr"	"Le Marchand: Qualifié"
+		"chi"	"进阶商人"
 	}
 	"The Merchant Elite"
 	{
 		"en"	"The Merchant: Elite"
 		"fr"	"Le Marchand: Élite"
+		"chi"	"精英商人"
 	}
 	"The Merchant Mastery 1"
 	{
 		"en"	"The Merchant: Mastery 1"
 		"fr"	"Le Marchand: Maître 1"
+		"chi"	"商人精通： 1"
 	}
 	"The Merchant Mastery 2"
 	{
 		"en"	"The Merchant: Mastery 2"
 		"fr"	"Le Marchand: Maître 2"
+		"chi"	"商人精通： 3"
 	}
 	"The Merchant Mastery 3"
 	{
 		"en"	"The Merchant: Mastery 3"
 		"fr"	"Le Marchand: Maître 3"
+		"chi"	"商人精通： 3"
 	}
 	//"Pinus Knight"
 	//{
@@ -2720,15 +2775,28 @@
 	{
 		"en"	"Song Of The Ocean"
 		"fr"	"Chant de l'Océan"
+		"chi"	"海洋之歌"
 	}
 	"Taurus Judge"
 	{
 		"en"	"Taurus Judge"
 		"fr"	"Juge Taurus"
+		"chi"	"金牛座法官"
 	}
 	"Vows of the Sea"
 	{
 		"en"	"Vows of the Sea"
 		"fr"	"Voeu Océanique"
+		"chi"	"海之宣言"
+	}
+	"Ludomania"
+	{
+		"en"	"Ludomania"
+		"chi"	"卢多狂热"
+	}
+	"Ludomancy"
+	{
+		"en"	"Ludomancy"
+		"chi"	"「圣」卢多"
 	}
 }

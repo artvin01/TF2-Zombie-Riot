@@ -196,6 +196,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				enemies_hit_aoe = SpecterHowManyEnemiesHit(client, weapon);
 			}	
+			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
+			{
+				enemies_hit_aoe = SuperubersawHowManyEnemiesHit(client);
+			}	
 			case WEAPON_SAGA: //yes, if we miss, then we do other stuff.
 			{
 				SagaAttackBeforeSwing(client);
@@ -311,8 +315,9 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
 	
-	if(enemies_hit_aoe < 2)
+	if(enemies_hit_aoe <= 1)
 	{
+		//not a cleave.
 		if(!Hit_ally)
 		{
 			// See if we hit anything.
@@ -375,8 +380,9 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	}
 	else
 	{
+		//This is a cleave
 		b_iHitNothing = true;
-		Handle TempTrace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEndHull, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace_Multi, client);	// 1073741824 is CONTENTS_LADDER?
+		Handle TempTrace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEndHull, vecSwingMins, vecSwingMaxs, ( 1073741824 ), BulletAndMeleeTrace_Multi, client);	// 1073741824 is CONTENTS_LADDER?
 		delete TempTrace;
 		if(b_iHitNothing) //aaa panic
 		{
@@ -427,6 +433,11 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 			{
 				PlayCustomSoundAngelica(client);
 				return ZEROSOUND;
+			}
+			case WEAPON_SUPERUBERSAW:
+			{
+				if(PlayCustomSoundSuperubersaw(client))
+					return ZEROSOUND;
 			}
 		}
 #endif
@@ -668,7 +679,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			if (i_EntitiesHitAoeSwing[counter] != -1)
 			{
-				if(IsValidEntity(i_EntitiesHitAoeSwing[counter]))
+				//make sure they are in our line of sight aswell, so it aint going through walls with AOE's
+				if(IsValidEntity(i_EntitiesHitAoeSwing[counter]) && Can_I_See_Enemy_Only(client, i_EntitiesHitAoeSwing[counter]))
 				{
 					if(!PlayOnceOnly)
 					{
@@ -738,9 +750,17 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			i_EntitiesHitAoeSwing[i] = -1;
 		}
 
-		if(target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
+		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-		//	PrintToChatAll("%i",MELEE_HIT);
+			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
+			{
+				if(PlayOnceOnly) //It hit atleast 1 target!
+					SuperUbersaw_Post(client);
+			}
+		}
+
+		if(i_EntitiesHitAtOnceMax <= 1 && target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
+		{
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
 		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
 			

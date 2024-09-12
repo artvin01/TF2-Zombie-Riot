@@ -802,7 +802,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				{
 					float damage_save = 50.0;
 					damage_save *= Attributes_Get(weapon, 2, 1.0);
-					f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
 					if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
 					{
@@ -816,6 +815,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					{
 						BombsToInject *= 2;
 					}
+					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
 					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
 					i_HowManyBombsHud[victim] += BombsToInject;
 					Apply_Particle_Teroriser_Indicator(victim);
@@ -860,7 +860,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				{
 					float damage_save = 50.0;
 					damage_save *= Attributes_Get(weapon, 2, 1.0);
-					f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
 					if(i_HeadshotAffinity[attacker] == 1)
 					{
@@ -875,6 +874,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					if(BombsToInject < 1)
 						BombsToInject = 1;
 						
+					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
 					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
 					i_HowManyBombsHud[victim] += BombsToInject;
 					Apply_Particle_Teroriser_Indicator(victim);
@@ -1437,8 +1437,19 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		if(!b_NpcIsInvulnerable[victim])
 		{
 			//we want to get the resistances
-			Damage_AnyAttacker(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
-			OnTakeDamageDamageBuffs(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, GetGameTime());	
+			if(GetTeam(attacker) != GetTeam(victim))
+			{
+				Damage_AnyAttacker(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+				OnTakeDamageDamageBuffs(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, GetGameTime());	
+			}
+			
+			BarrackBody npc1 = view_as<BarrackBody>(victim);
+			int client = GetClientOfUserId(npc1.OwnerUserId);
+			if(IsValidClient(client))
+			{
+				percentageGlobal = Barracks_UnitOnTakeDamage(victim, client, percentageGlobal, false);
+			}
+			//show barrak units res
 		}
 
 		float percentage;
@@ -1447,8 +1458,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flMeleeArmor * 100.0;
 			percentage *= fl_Extra_MeleeArmor[victim];
 			percentage *= fl_TotalArmor[victim];
-			if(GetTeam(attacker) != GetTeam(victim))
-				percentage *= percentageGlobal;
+			percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_CLUB;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1500,8 +1510,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		BaseDamage = 100.0;
 		if(!b_NpcIsInvulnerable[victim])
 		{
-			static int VictimCheck = 9999999;
-			Damage_NPCAttacker(attacker, victim, VictimCheck, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+			Damage_NPCAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 			Damage_AnyAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 			if(GetTeam(victim) != TFTeam_Red)
 			{
@@ -1510,6 +1519,14 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 					DamagePercDo *= f_FreeplayDamageExtra;
 				}
 			}
+			/*
+			BarrackBody npc = view_as<BarrackBody>(victim);
+			int client = GetClientOfUserId(npc.OwnerUserId);
+			//theres no way to tell if the unit is melee or ranged, so we shouldnt let it be on the hud.
+			if(IsValidClient(client))
+				Barracks_UnitExtraDamageCalc(victim, client, percentageGlobal, int damagetype)
+				//show barrak units res
+			*/
 		}
 
 		if((DamagePercDo != 100.0) && !b_NpcIsInvulnerable[victim])	
@@ -1546,8 +1563,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flRangedArmor * 100.0;
 			percentage *= fl_Extra_RangedArmor[victim];
 			percentage *= fl_TotalArmor[victim];
-			if(GetTeam(attacker) != GetTeam(victim))
-				percentage *= percentageGlobal;
+			percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -2186,15 +2202,7 @@ stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false
 			{
 				if(IsValidClient(client))
 				{
-					float flPos[3];
-					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPos);
-					flPos[2] += 40.0;
-					int BomsToBoom = i_HowManyBombsOnThisEntity[entity][client];
-					float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
-					i_HowManyBombsHud[entity] -= BomsToBoom;
-					i_HowManyBombsOnThisEntity[entity][client] = 0;
-					f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
-					Cause_Terroriser_Explosion(client, entity, damage, flPos);
+					Cause_Terroriser_Explosion(client, entity);
 				}
 			}
 		}
@@ -2267,6 +2275,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		case WEAPON_RAPIER:
 		{
 			RapierEndDuelOnKill(attacker, victim);
+		}
+		case WEAPON_MAGNESIS:
+		{
+			Magnesis_OnKill(victim);
 		}
 		case WEAPON_WRATHFUL_BLADE:
 		{

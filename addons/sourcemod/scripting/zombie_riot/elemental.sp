@@ -93,11 +93,15 @@ static int TriggerDamage(int entity, int type)
 
 	if(b_thisNpcIsARaid[entity])
 	{
-		divide *= 20; //Reduce way further so its good against raids.
+		divide *= RoundToCeil(12.0 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
 	}
 	else if(b_thisNpcIsABoss[entity])
 	{
-		divide *= 4; //Reduce way further so its good against bosses.
+		divide *= RoundToCeil(3.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
+	}
+	else if (b_IsGiant[entity])
+	{
+		divide *= 2;
 	}
 
 	return RoundToCeil(float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide;
@@ -225,6 +229,23 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 }
 
+void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
+{
+	if(i_ChaosArrowAmount[attacker] > 0)
+	{
+		Elemental_AddChaosDamage(victim, attacker, RoundToCeil(float(i_ChaosArrowAmount[attacker]) * Scale));
+	}
+	if(i_VoidArrowAmount[attacker] > 0)
+	{
+		Elemental_AddVoidDamage(victim, attacker, RoundToCeil(float(i_VoidArrowAmount[attacker]) * Scale));
+	}
+	if(i_NervousImpairmentArrowAmount[attacker] > 0)
+	{
+#if defined ZR
+		Elemental_AddNervousDamage(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
+#endif
+	}	
+}
 void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);

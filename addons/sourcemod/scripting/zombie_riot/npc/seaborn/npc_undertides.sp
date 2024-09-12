@@ -186,7 +186,7 @@ public void UnderTides_ClotThink(int iNPC)
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
 				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = npc.index;
+				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
 				break;
 			}
 		}
@@ -343,7 +343,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetTeam(client) != team && IsEntityAlive(client) && Can_I_See_Enemy_Only(npc.index, client))
+		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetTeam(client) != team && IsEntityAlive(client))
 		{
 			if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, client))
 				continue;
@@ -414,7 +414,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(entity) != team && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
+				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(entity) != team && IsEntityAlive(entity))
 				{
 					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
 						continue;
