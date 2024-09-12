@@ -1728,7 +1728,7 @@ static void SummonerMenu(int client, int viewer)
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", buffer2);
 
-				Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
+			//	Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
 			}
 			else if(TrainingStartedIn[client] < 0.0)
 			{
@@ -2093,6 +2093,7 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 {
 	int userid = GetClientUserId(client);
 	int personal;
+	/*
 	if(!ignore_barricades)
 	{
 		personal = ObjectBarricade_Buildings(client) * 3 / 2;
@@ -2104,6 +2105,7 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 			}
 		}
 	}
+	*/
 
 
 	int entity = MaxClients + 1;
@@ -2214,6 +2216,13 @@ void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage
 			gain *= 6.0;
 		}
 		gain = damage * gain / float(MaxHealth);
+		float vecTarget[3]; WorldSpaceCenter(owner, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(attacker, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		if(flDistanceToTarget >= (600.0 * 600.0))
+		{
+			gain *= 0.35;
+		}
 		SummonerRenerateResources(owner, gain, 0.0);
 	}
 }
