@@ -117,7 +117,7 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 
 	public Barrack_Iberia_Elite_Gunner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Elite_Gunner npc = view_as<Barrack_Iberia_Elite_Gunner>(BarrackBody(client, vecPos, vecAng, "460", "models/player/spy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Iberia_Elite_Gunner npc = view_as<Barrack_Iberia_Elite_Gunner>(BarrackBody(client, vecPos, vecAng, "350", "models/player/spy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 
@@ -179,7 +179,7 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 					if(npc.m_iAttacksTillReload < 1)
 					{
 						npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY",_,_,_,0.5);
-						npc.m_flNextRangedAttack = GameTime + 3.00;
+						npc.m_flNextRangedAttack = GameTime + (3.00 * npc.BonusFireRate);
 						npc.m_iAttacksTillReload = 6;
 						npc.PlayPistolReload();
 					}
@@ -200,7 +200,7 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (0.2 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (0.15 * npc.BonusFireRate);
 							
 							npc.m_iAttacksTillReload --;
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2100.0, 1), DMG_BULLET, -1, _, vecHit);
