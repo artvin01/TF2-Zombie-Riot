@@ -2315,7 +2315,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				{
 					ReviveAll(true);
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painfull for you.");
+						CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painful for you.");
 					else
 						CPrintToChatAll("{gold}Silvester{default}: You never listen. I will not assist you more.");
 					i_TalkDelayCheck += 1;
@@ -2323,7 +2323,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{darkblue}Waldch{default}: There is a far greater enemy then us, we can't beat him.");
+						CPrintToChatAll("{darkblue}Waldch{default}: There is a far greater enemy than us, we can't beat him.");
 					else
 						CPrintToChatAll("{darkblue}Waldch{default}: It appears like you already know what you get yourself into.");
 
@@ -2811,7 +2811,7 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 		}
 		else
 		{
-			CPrintToChatAll("{darkblue}Waldch{default}: Way better then to die to {green}Him.");
+			CPrintToChatAll("{darkblue}Waldch{default}: Way better than to die to {green}Him.");
 		}
 	}
 }
