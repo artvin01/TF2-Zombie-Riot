@@ -6,6 +6,11 @@ static char g_DeathSounds[][] = {
 	"mvm/mvm_bomb_explode.wav",
 };
 
+static const char g_DeathSounds1[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
+};
+
 static char g_HurtSounds[][] = {
 	"vo/medic_item_secop_domination01.mp3",
 	"vo/medic_item_secop_idle03.mp3",
@@ -200,6 +205,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   				}
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_DeathSounds1));   i++) { PrecacheSound(g_DeathSounds1[i]);   }
 	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
 	g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_1);
@@ -292,7 +298,13 @@ methodmap Blitzkrieg < CClotBody
 		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}
-	
+	public void PlayDeathSoundfake() {
+		
+		int sound = GetRandomInt(0, sizeof(g_DeathSounds1) - 1);
+		
+		EmitSoundToAll(g_DeathSounds1[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		
+	}
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.5);
 		
@@ -688,6 +700,7 @@ methodmap Blitzkrieg < CClotBody
 		}
 		else
 		{
+			npc.m_bDissapearOnDeath = true;
 			g_b_item_allowed=false;
 		}
 		
@@ -1844,8 +1857,16 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 static void NPC_Death(int entity)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(entity);
-	npc.PlayDeathSound();
+	if(g_b_item_allowed)
+		npc.PlayDeathSound();
+	else
+	{
+		npc.PlayDeathSoundfake();
 	
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);	
+	}
+
 //	Music_RoundEnd(entity);
 
 

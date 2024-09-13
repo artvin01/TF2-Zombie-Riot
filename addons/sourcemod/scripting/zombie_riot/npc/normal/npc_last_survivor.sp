@@ -308,8 +308,8 @@ methodmap FatherGrigori < CClotBody
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", this.index);
 			
-			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 75.0); 
-			f_CustomGrenadeDamage[entity] = 75.0;	
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 76.0); 
+			f_CustomGrenadeDamage[entity] = 76.0;	
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
