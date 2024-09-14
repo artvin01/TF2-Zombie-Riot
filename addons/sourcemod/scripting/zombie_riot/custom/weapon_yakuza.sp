@@ -1,10 +1,24 @@
-// Stand + M1 = Light
-// Duck + M1 = Grab (Pap 1)
-// Jump + M1 = Heavy
-// Duck + M2 = Block (Pap 3)
-// Stand + M2 = Style Special (Pap 2)
-// Jump + M2 = Heat Special (Pap 4)
-// R = Switch Style
+/*
+	Stand + M1 = Light
+	Duck + M1 = Grab (Pap 1)
+	(Jump + M1) M1 -> M2 = Heavy
+	//Better idea: Since melee hits take long, you'd press m1 and then quickly press m2 to ininitate a heavy hit.
+
+	Duck + M2 = Block (Pap 3)
+	Stand + M2 = Style Special (Pap 2)
+	For dragonmode: Enemy must be attacking, if they are
+	its a tigerdrop
+	how it works:
+	Activate ability, for 0.2 seconds it checks if you take damage, if you do, 
+	negate all damage for animation duration, and do attack in the direction you aimed at
+
+	(Jump + M2) M2 -> R = Heat Special (Pap 4)
+	better idea:when pressing m2 and instantly pressing r, itll do this instead
+	avoid jumping at all costs, its annoying to work with
+
+	Ducking is fine.
+	R = Switch Style
+*/
 
 enum
 {
@@ -17,7 +31,8 @@ enum
 {
 	Style_Brawler,	// Balanced
 	Style_Beast,	// Slow, AOE
-	Style_Rush,	// Fast, Evasion
+	Style_Rush,		// Fast, Evasion
+	Style_Dragon,	// Best of all, but limited time use
 
 	Style_MAX
 }
@@ -26,7 +41,8 @@ static const char StyleName[][] =
 {
 	"Brawler",
 	"Beast",
-	"Rush"
+	"Rush",
+	"Dragon"
 };
 
 static Handle WeaponTimer[MAXTF2PLAYERS];
@@ -38,6 +54,7 @@ static int LastAttack[MAXTF2PLAYERS];
 static int LastVictim[MAXTF2PLAYERS] = {-1, ...};
 static float BlockNextFor[MAXTF2PLAYERS];
 static int BlockStale[MAXTF2PLAYERS];
+static float TigerDrop_Negate[MAXTF2PLAYERS];
 
 void Yakuza_MapStart()
 {
@@ -45,6 +62,7 @@ void Yakuza_MapStart()
 	Zero(WeaponStyle);
 	Zero(BlockNextFor);
 	Zero(BlockStale);
+	Zero(TigerDrop_Negate);
 }
 
 bool Yakuza_HasCharge(int client)
@@ -102,6 +120,9 @@ static void UpdateStyle(int client)
 			
 			case Style_Rush:
 				value = 6;
+
+			case Style_Dragon:
+				value = 6; //idk which, needs to be red
 		}
 
 		Attributes_Set(weapon, 2025, 3.0);
@@ -366,6 +387,11 @@ static void Yakuza_Block(int client, int weapon, int slot)
 			cooldown = 1.5;
 			duration = 0.4;
 		}
+		case Style_Dragon:
+		{
+			cooldown = 1.5;
+			duration = 0.65;
+		}
 	}
 
 	Ability_Apply_Cooldown(client, 1, duration);
@@ -401,6 +427,9 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 				
 				case Style_Rush:
 					damage *= 0.8;
+				
+				case Style_Dragon:
+					damage *= 1.3;
 			}
 		}
 		case Attack_Heavy:
@@ -415,6 +444,9 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 				
 				case Style_Rush:
 					damage *= 2.75;
+
+				case Style_Dragon:
+					damage *= 6.0;
 			}
 		}
 		case Attack_Grab:
@@ -429,6 +461,9 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 				
 				case Style_Rush:
 					duration = 0.8;
+
+				case Style_Dragon:
+					damage *= 1.5;
 			}
 
 			FreezeNpcInTime(victim, duration);
@@ -444,9 +479,20 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 
 void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damagetype)
 {
+	//however, it cannot negate true damage, that would be dumb
+	if(TigerDrop_Negate[victim] > GetGameTime())
+	{
+		damage = 0.0;
+		return;
+	}
 	if((damagetype & DMG_SLASH) || attacker <= MaxClients)
 		return;
-
+	
+	//You actually gain alot of heat with brawler mode when blocking!
+	//todo: add logic during brawlermode and Dragon mode
+	//dragon mode has limited heatgain on block in kiwami, but with hnow ZR works and how dragonmode works here, it sohuldnt be limited.
+	
+	//With beastmode, you cant actually block youre just immune to knockback, but that in ZR sucks, so it should be the best to block with.
 	if((damagetype & DMG_CLUB) && BlockNextFor[victim] > GetGameTime())
 	{
 		damage = 0.0;
