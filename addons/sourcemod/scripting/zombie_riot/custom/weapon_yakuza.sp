@@ -131,6 +131,7 @@ void Yakuza_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_YAKUZA)
 	{
+		// Weapon Setup
 		WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 		WeaponRef[client] = EntIndexToEntRef(weapon);
 
@@ -153,6 +154,13 @@ static Action WeaponTimerFunc(Handle timer, int client)
 				PrintHintText(client, "%s - HEAT %d%%", StyleName[WeaponStyle[client]], WeaponCharge[client]);
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			}
+			else
+			{
+				// Decay HEAT while not equipped
+				WeaponCharge[client] -= 5;
+				if(WeaponCharge[client] < 0)
+					WeaponCharge[client] = 0;
+			}
 
 			return Plugin_Continue;
 		}
@@ -164,6 +172,8 @@ static Action WeaponTimerFunc(Handle timer, int client)
 
 public void Weapon_Yakuza_R(int client, int weapon, bool crit, int slot)
 {
+	// Switch styles on R
+
 	WeaponStyle[client]++;
 	if(WeaponStyle[client] >= Style_MAX)
 		WeaponStyle[client] = 0;
@@ -293,7 +303,7 @@ static void Yakuza_StyleSpecial(int client, int weapon, int slot)
 	if(CvarInfiniteCash.BoolValue && WeaponCharge[client] < 25)
 		WeaponCharge[client] = 25;
 	
-	if(WeaponCharge[client] < 100)
+	if(WeaponCharge[client] < 25)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -303,7 +313,7 @@ static void Yakuza_StyleSpecial(int client, int weapon, int slot)
 	else
 	{
 		Rogue_OnAbilityUse(weapon);
-		AddCharge(client, -999);
+		
 	}
 }
 
