@@ -7,7 +7,7 @@
 
 static bool BlockLoseSay;
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];

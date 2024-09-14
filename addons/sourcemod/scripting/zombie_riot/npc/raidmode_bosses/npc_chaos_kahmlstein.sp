@@ -101,7 +101,7 @@ static bool b_khamlWeaponRage[MAXENTITIES];
 
 static int i_khamlCutscene[MAXENTITIES];
 static float f_khamlCutscene[MAXENTITIES];
-static bool b_angered_twice[MAXENTITIES];
+
 
 static float f_KahmlResTemp[MAXENTITIES];
 static float f_TalkDelayCheck;

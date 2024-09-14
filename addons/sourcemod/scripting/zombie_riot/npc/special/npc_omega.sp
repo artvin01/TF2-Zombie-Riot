@@ -213,7 +213,6 @@ methodmap Omega < CClotBody
 		npc.m_flRangedArmor = 1.5;
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
-		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 		Zero(fl_AlreadyStrippedMusic);
 		npc.StartPathing();
 		

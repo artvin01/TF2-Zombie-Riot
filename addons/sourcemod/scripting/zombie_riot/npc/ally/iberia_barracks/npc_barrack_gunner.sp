@@ -170,7 +170,7 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 							
 							npc.m_flNextRangedAttack = GameTime + (1.00 * npc.BonusFireRate);
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 150.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 160.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}

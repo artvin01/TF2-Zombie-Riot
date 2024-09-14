@@ -116,7 +116,7 @@ static int BeamLaser;
 static float fl_focus_timer[MAXENTITIES];
 static bool b_swords_created[MAXENTITIES];
 
-static bool b_angered_twice[MAXENTITIES];
+
 static float fl_retreat_timer[MAXENTITIES];
 static bool Schwertkrieg_BEAM_HitDetected[MAXENTITIES];
 static float fl_spinning_angle[MAXENTITIES];

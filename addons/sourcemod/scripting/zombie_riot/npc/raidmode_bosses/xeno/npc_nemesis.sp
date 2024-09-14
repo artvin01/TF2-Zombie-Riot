@@ -1022,6 +1022,22 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					vecTarget[2] += GetRandomFloat(-50.0,50.0);
 
 					i_GunAmmo[npc.index] -= 1;
+					//nemesis failsafe.
+					if(npc.m_iChanged_WalkCycle != 10) 	
+					{
+						i_GunMode[npc.index] = 1;
+						i_GunAmmo[npc.index] = 250;
+						int iActivity = npc.LookupActivity("ACT_FT_WALK");
+						if(iActivity > 0) npc.StartActivity(iActivity);
+						npc.m_iChanged_WalkCycle = 10;
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 50.0;
+						if(npc.Anger)
+							npc.m_flSpeed = 100.0;
+
+						npc.StartPathing();
+						f_NpcTurnPenalty[npc.index] = 1.0;
+					}	
 						
 					float damage = 105.0;
 
@@ -1140,7 +1156,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		DispatchKeyValue(entity_death, "model", NEMESIS_MODEL);
 		DispatchSpawn(entity_death);
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.75); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 2.25); 
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("ft2_death");
 		AcceptEntityInput(entity_death, "SetAnimation");

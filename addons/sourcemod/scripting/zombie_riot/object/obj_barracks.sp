@@ -489,7 +489,7 @@ static int SummonerThorns[][] =
 	{ 0, 380, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 	{ 0, 100, 300, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 
-	{ 0, 750, 500, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 750, 500, 25, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	
 	{ 0, 100, 500, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
@@ -584,7 +584,7 @@ static int SummonerIberiaComplete[][] =
 	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	{ 0, 50, 200, 0, 7, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
-	{ 0, 750, 500, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 750, 500, 25, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	{ 0, 100, 350, 	5, 8, 16, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	
 	{ 0, 900, 900, 	30, 10, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master

@@ -188,7 +188,7 @@ public void Barrack_Iberia_Healer_ClotThink(int iNPC)
 							{
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),950.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
-								ExpidonsaGroupHeal(npc.index, 150.0, 3, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),250.0, 0), 1.0, true);
+								ExpidonsaGroupHeal(npc.index, 150.0, 3, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),200.0, 0), 1.0, true);
 								DesertYadeamDoHealEffect(npc.index, 150.0);
 							} 
 						}

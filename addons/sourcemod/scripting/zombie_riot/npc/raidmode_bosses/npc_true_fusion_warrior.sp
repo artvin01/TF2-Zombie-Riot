@@ -2,10 +2,9 @@
 #pragma newdecls required
 
 
-static char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+static const char g_DeathSounds[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
 static char g_HurtSounds[][] = {
@@ -87,7 +86,7 @@ static bool b_InKame[MAXENTITIES];
 static float fl_NextPull[MAXENTITIES];
 static int i_AmountProjectiles[MAXENTITIES];
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 
@@ -217,11 +216,6 @@ methodmap TrueFusionWarrior < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
 		
 		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_DeathSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayMeleeSound() {
@@ -401,6 +395,7 @@ methodmap TrueFusionWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -1054,10 +1049,10 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 public void TrueFusionWarrior_NPCDeath(int entity)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(entity);
-	if(!npc.m_bDissapearOnDeath)
-	{
-		npc.PlayDeathSound();
-	}
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+	npc.PlayDeathSound();
 	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
