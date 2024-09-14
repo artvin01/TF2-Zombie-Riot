@@ -141,7 +141,7 @@ static bool b_Crystal_Thrown;
 static int i_crystal_index;
 bool donner_sea_created;
 
-static bool b_angered_twice[MAXENTITIES];
+
 
 static bool b_tripple_raid[MAXENTITIES];
 //static float fl_divine_intervention_retry;

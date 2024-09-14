@@ -603,6 +603,7 @@ int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 #define ABILITY_R				(1 << 3) 	
 
 #define FL_WIDOWS_WINE_DURATION 4.0
+#define FL_WIDOWS_WINE_DURATION_NPC 0.85
 
 
 int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's damage types in cases we dont want to, i.e. too many used, we cant use more. For like white stuff and all, this is just extra on what we already have.
@@ -1274,6 +1275,7 @@ float fl_NextRangedBarrage_Singular[MAXENTITIES];
 bool b_NextRangedBarrage_OnGoing[MAXENTITIES];
 float fl_NextTeleport[MAXENTITIES];
 bool b_Anger[MAXENTITIES];
+bool b_angered_twice[MAXENTITIES];
 float fl_NextRangedSpecialAttack[MAXENTITIES];
 float fl_NextRangedSpecialAttackHappens[MAXENTITIES];
 bool b_RangedSpecialOn[MAXENTITIES];
@@ -3112,8 +3114,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-#endif
-#if defined RPG
 		else if(!StrContains(classname, "phys_bone_follower"))
 		{
 			//every prop_Dynamic that spawns these  can make upto 16 entities, holy fuck

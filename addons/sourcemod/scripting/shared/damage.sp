@@ -1255,7 +1255,7 @@ static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflict
 			EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 60, _, 1.0);
 
 			damage *= 0.5;
-			f_WidowsWineDebuff[attacker] = GameTime + FL_WIDOWS_WINE_DURATION;
+			f_WidowsWineDebuff[attacker] = GameTime + FL_WIDOWS_WINE_DURATION_NPC;
 		}
 	}
 }

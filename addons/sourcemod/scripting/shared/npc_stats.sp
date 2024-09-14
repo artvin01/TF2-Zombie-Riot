@@ -29,6 +29,7 @@ bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 int Shared_BEAM_Glow;
+
 #endif
 int i_KillsMade[MAXTF2PLAYERS];
 int i_Backstabs[MAXTF2PLAYERS];
