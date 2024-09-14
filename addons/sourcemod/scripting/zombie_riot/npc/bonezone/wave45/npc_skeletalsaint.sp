@@ -333,8 +333,7 @@ methodmap SaintBones < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_ARCHMAGE_IDLE");
 		if (iActivity > 0)npc.StartActivity(iActivity);
-		
-		npc.m_bDoSpawnGesture = true;
+
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_SAINT_SKIN_BUFFED : BONES_SAINT_SKIN);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -345,8 +344,6 @@ methodmap SaintBones < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_SAINT_SPEED_BUFFED : BONES_SAINT_SPEED);
-		
-		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
 		

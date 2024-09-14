@@ -309,9 +309,6 @@ methodmap NecromancerBones < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_ARCHMAGE_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		//NecroAnim[npc.index] = 0;
-		
-		//npc.m_bDoSpawnGesture = true;
 
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_NECROMANCER_BUFFED_SKIN : BONES_NECROMANCER_SKIN);
 
@@ -325,8 +322,6 @@ methodmap NecromancerBones < CClotBody
 		npc.m_flSpeed = (buffed ? BONES_NECROMANCER_SPEED_BUFFED : BONES_NECROMANCER_SPEED);
 		
 		throwState[npc.index] = THROWSTATE_INACTIVE;
-
-		//npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
 		

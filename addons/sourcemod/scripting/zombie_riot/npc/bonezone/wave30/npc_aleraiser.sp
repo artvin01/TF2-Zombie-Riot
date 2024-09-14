@@ -213,7 +213,6 @@ methodmap AleraiserBones < CClotBody
 		int iActivity = npc.LookupActivity("ACT_ALERAISER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_bDoSpawnGesture = false;
 		DispatchKeyValue(npc.index, "skin", BONES_ALERAISER_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
@@ -224,10 +223,6 @@ methodmap AleraiserBones < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = BONES_ALERAISER_SPEED;
-		
-		SDKHook(npc.index, SDKHook_Think, AleraiserBones_ClotThink);
-		
-		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
 
@@ -359,13 +354,6 @@ public void AleraiserBones_ClotThink(int iNPC)
 //	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
 	npc.Update();
-	
-	if(npc.m_bDoSpawnGesture)
-	{
-		npc.AddGesture("ACT_TRANSITION");
-		npc.m_bDoSpawnGesture = false;
-		npc.PlayHeIsAwake();
-	}
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -696,7 +684,7 @@ public void AleraiserBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, AleraiserBones_ClotThink);
+	
 	npc.RemoveAllWearables();
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");

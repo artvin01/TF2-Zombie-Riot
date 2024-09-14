@@ -716,6 +716,7 @@ void NPC_ConfigSetup()
 	AleraiserBones_OnMapStart_NPC();
 	AlchemistBones_OnMapStart_NPC();
 	SquireBones_OnMapStart_NPC();
+	JesterBones_OnMapStart_NPC();
 	#endif
 }
 
@@ -1583,6 +1584,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/wave45/npc_skeletalsaint.sp"
 #include "zombie_riot/npc/bonezone/wave45/npc_brewer.sp"
 #include "zombie_riot/npc/bonezone/wave45/npc_squire.sp"
+#include "zombie_riot/npc/bonezone/wave45/npc_jester.sp"
 //////
 #include "zombie_riot/npc/bonezone/npc_ssb.sp"
 #include "zombie_riot/npc/special/npc_reaper.sp"

@@ -2943,9 +2943,9 @@
 	{
 		"en"	"Spelleton"
 	}
-	"Calcified Conjurer"
+	"Alakablaster"
 	{
-		"en"	"Calcified Conjurer"
+		"en"	"Alakablaster"
 	}
 	"Profaned Priest"
 	{
@@ -2998,6 +2998,14 @@
 	"Knightmare"
 	{
 		"en"	"Knightmare"
+	}
+	"Fearsome Fool"
+	{
+		"en"	"Fearsome Fool"
+	}
+	"Servant of Mondo"
+	{
+		"en"	"Servant of Mondo"
 	}
 	"The Reaper"
 	{

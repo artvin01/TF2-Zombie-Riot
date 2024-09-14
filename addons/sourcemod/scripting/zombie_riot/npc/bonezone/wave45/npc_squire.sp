@@ -104,7 +104,6 @@ static char g_RampageEnd[][] = {
 	")vo/halloween_boss/knight_alert02.mp3"
 };
 
-static bool b_LastAttackWasLeftHand[2049] = { false, ... };
 static bool b_SquireRampage[2049] = { false, ... };
 
 public void SquireBones_OnMapStart_NPC()
@@ -589,9 +588,10 @@ public Action Squire_PlaySwingSound(Handle timer, int ref)
 {
 	int ent = EntRefToEntIndex(ref);
 	if (!IsValidEntity(ent))
-		return;
+		return Plugin_Continue;
 
 	view_as<SquireBones>(ent).PlayMeleeSound();
+	return Plugin_Continue;
 }
 
 public Action SquireBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

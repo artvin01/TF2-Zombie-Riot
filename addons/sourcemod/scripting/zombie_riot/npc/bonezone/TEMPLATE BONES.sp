@@ -220,7 +220,7 @@ methodmap TemplateBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		TemplateBones npc = view_as<TemplateBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_TEMPLATE_SCALE_BUFFED : BONES_TEMPLATE_SCALE, buffed ? BONES_TEMPLATE_HP_BUFFED : BONES_TEMPLATE_HP, ally, false));
+		TemplateBones npc = view_as<TemplateBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_TEMPLATE_SCALE_BUFFED : BONES_TEMPLATE_SCALE, buffed ? BONES_TEMPLATE_HP_BUFFED : BONES_TEMPLATE_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
@@ -237,13 +237,16 @@ methodmap TemplateBones < CClotBody
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
 		}
-		
+
+		//COMMENT THIS OUT IF YOU ARE NOT USING BASICBONES.MDL ANIMATIONS:
+		npc.m_bisWalking = false; ////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_bDoSpawnGesture = true;
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_TEMPLATE_SKIN_BUFFED : BONES_TEMPLATE_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
@@ -255,9 +258,9 @@ methodmap TemplateBones < CClotBody
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_TEMPLATE_SPEED_BUFFED : BONES_TEMPLATE_SPEED);
 		
-		SDKHook(npc.index, SDKHook_Think, TemplateBones_ClotThink);
-		
-		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
+		//UNCOMMENT IF USING DEFAULT ANIMATIONS:
+		//npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
+		//npc.m_bDoSpawnGesture = true;
 		
 		npc.StartPathing();
 		
@@ -316,12 +319,13 @@ public void TemplateBones_ClotThink(int iNPC)
 	
 	npc.Update();
 	
-	if(npc.m_bDoSpawnGesture)
+	//UNCOMMENT IF USING DEFAULT ANIMS:
+	/*if(npc.m_bDoSpawnGesture)
 	{
 		npc.AddGesture("ACT_TRANSITION");
 		npc.m_bDoSpawnGesture = false;
 		npc.PlayHeIsAwake();
-	}
+	}*/
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -469,8 +473,9 @@ public void TemplateBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, TemplateBones_ClotThink);
 	
+	npc.RemoveAllWearables();
+
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 //	AcceptEntityInput(npc.index, "KillHierarchy");

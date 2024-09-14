@@ -213,7 +213,6 @@ methodmap AlchemistBones < CClotBody
 		int iActivity = npc.LookupActivity("ACT_ALCHEMIST_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_bDoSpawnGesture = false;
 		DispatchKeyValue(npc.index, "skin", BONES_ALCHEMIST_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
@@ -224,10 +223,6 @@ methodmap AlchemistBones < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = BONES_ALCHEMIST_SPEED;
-		
-		SDKHook(npc.index, SDKHook_Think, AlchemistBones_ClotThink);
-		
-		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
 
@@ -357,13 +352,6 @@ public void AlchemistBones_ClotThink(int iNPC)
 //	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
 	npc.Update();
-	
-	if(npc.m_bDoSpawnGesture)
-	{
-		npc.AddGesture("ACT_TRANSITION");
-		npc.m_bDoSpawnGesture = false;
-		npc.PlayHeIsAwake();
-	}
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -694,7 +682,6 @@ public void AlchemistBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, AlchemistBones_ClotThink);
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");

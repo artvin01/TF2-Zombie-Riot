@@ -1993,6 +1993,17 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "v%s", Debuff_Adder_right);
 	}
+	if (view_as<CClotBody>(victim).BoneZone_IsASkeleton())
+	{
+		if (view_as<CClotBody>(victim).BoneZone_GetBuffedState())
+		{
+			Format(Debuff_Adder_right, SizeOfChar, "☠%s", Debuff_Adder_right);
+		}
+		else if (g_BoneZoneBuffFunction[victim] != INVALID_FUNCTION)
+		{
+			Format(Debuff_Adder_right, SizeOfChar, "⚜%s", Debuff_Adder_right);
+		}
+	}
 	if(Increaced_Overall_damage_Low[victim] > GameTime)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "⌃%s", Debuff_Adder_right);

@@ -163,7 +163,7 @@ public void ArchmageBones_OnMapStart_NPC()
 	NPC_Add(data);
 
 	NPCData data_buffed;
-	strcopy(data_buffed.Name, sizeof(data_buffed.Name), "Calcified Conjurer");
+	strcopy(data_buffed.Name, sizeof(data_buffed.Name), "Alakablaster");
 	strcopy(data_buffed.Plugin, sizeof(data_buffed.Plugin), "npc_archmage_buffed");
 	strcopy(data_buffed.Icon, sizeof(data_buffed.Icon), "pyro");
 	data_buffed.IconCustom = false;
@@ -314,8 +314,6 @@ methodmap ArchmageBones < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_WIZARD_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		//npc.m_bDoSpawnGesture = true;
 
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_ARCHMAGE_BUFFED_SKIN : BONES_ARCHMAGE_SKIN);
 
@@ -329,8 +327,6 @@ methodmap ArchmageBones < CClotBody
 		npc.m_flSpeed = (buffed ? BONES_ARCHMAGE_SPEED_BUFFED : BONES_ARCHMAGE_SPEED);
 		
 		throwState[npc.index] = THROWSTATE_INACTIVE;
-		
-		//npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
 		

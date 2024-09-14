@@ -20,8 +20,8 @@ static int BONES_BUCCANEER_WEIGHT_BUFFED = 999;
 //Walks around holding a Loose Cannon, which it fires at survivors within a given range.
 //As this is a ranged unit, it will try to back off if the nearest enemy is too close.
 static float BONES_BUCCANEER_ATTACKINTERVAL = 3.5;	//Time between non-buffed variant's shots.
-static float BUCCANEER_RANGE = 800.0;	//Maximum distance in which the non-buffed variant can shoot.
-static float BUCCANEER_PREDICT_RANGE = 300.0;	//Range in which the non-buffed variant will predict enemy positions when it shoots.
+static float BUCCANEER_RANGE = 400.0;	//Maximum distance in which the non-buffed variant can shoot.
+static float BUCCANEER_PREDICT_RANGE = 100.0;	//Range in which the non-buffed variant will predict enemy positions when it shoots.
 static float BUCCANEER_DAMAGE = 120.0;	//Non-buffed variant's projectile damage.
 static float BUCCANEER_RADIUS = 100.0;	//Non-buffed variant's projectile blast radius.
 static float BUCCANEER_PROJECTILE_SPEED = 1200.0;	//The speed of non-buffed projectiles.
@@ -40,7 +40,7 @@ static float BUCCANEER_GRAVITY = 0.66;			//Gravity applied to projectiles.
 static float BONES_BUCCANEER_ATTACKINTERVAL_BUFFED = 5.0;	//Time between shots.
 static float BUFFED_RANGE = 1600.0;	//Range in which shots can be fired.
 static float BUFFED_DAMAGE = 1200.0;	//Damage dealt by cannonballs.
-static float BUFFED_RADIUS = 350.0;		//Cannonball blast radius.
+static float BUFFED_RADIUS = 500.0;		//Cannonball blast radius.
 static float BUFFED_PROJECTILE_SPEED = 1800.0;	//Projectile speed.
 static float BUFFED_FALLOFF_MULTIHIT = 0.9;	//Multi-hit falloff for cannonballs.
 static float BUFFED_FALLOFF_RADIUS = 0.66;	//Radius falloff for cannonballs.
@@ -335,8 +335,6 @@ methodmap BuccaneerBones < CClotBody
 			
 			SDKHook(npc.index, SDKHook_Touch, Cannon_RunOver);
 		}
-		
-		//npc.m_bDoSpawnGesture = true;
 
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_BUCCANEER_BUFFED_SKIN : BONES_BUCCANEER_SKIN);
 
@@ -349,8 +347,6 @@ methodmap BuccaneerBones < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_BUCCANEER_SPEED_BUFFED : BONES_BUCCANEER_SPEED);
-
-		//npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
 		
