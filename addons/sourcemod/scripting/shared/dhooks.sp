@@ -929,7 +929,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #else
 		return false;
 #endif
-	}	
+	}
 	
 	for( int ent = 1; ent <= 2; ent++ ) 
 	{
@@ -954,6 +954,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif
 
 #if defined ZR
+	
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)

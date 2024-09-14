@@ -55,6 +55,7 @@ static int LastVictim[MAXTF2PLAYERS] = {-1, ...};
 static float BlockNextFor[MAXTF2PLAYERS];
 static int BlockStale[MAXTF2PLAYERS];
 static float TigerDrop_Negate[MAXTF2PLAYERS];
+static int CurrentWeaponComboAt[MAXTF2PLAYERS]
 
 void Yakuza_MapStart()
 {
@@ -342,7 +343,7 @@ static void Yakuza_HeatSpecial(int client, int weapon, int slot)
 {
 	if(WeaponLevel[client] < 4)
 	{
-		Yakuza_StyleSpecial(client, weapon);
+//		Yakuza_StyleSpecial(client, weapon);
 		return;
 	}
 
@@ -367,7 +368,7 @@ static void Yakuza_Block(int client, int weapon, int slot)
 {
 	if(WeaponLevel[client] < 3)
 	{
-		Yakuza_StyleSpecial(client, weapon);
+	//	Yakuza_StyleSpecial(client, weapon);
 		return;
 	}
 
@@ -471,7 +472,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 	}
 
 	// TODO: Adjust based on waves
-	AddCharge(client, RoundToCeil(damage * 0.001));
+	AddCharge(attacker, RoundToCeil(damage * 0.001));
 
 	// +25% damage at 100% HEAT
 	damage *= 1.0 + (WeaponCharge[attacker] * 0.0025);
@@ -499,10 +500,36 @@ void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damaget
 		return;
 	}
 
-	AddCharge(client, RoundToCeil(damage * -0.01));
+	AddCharge(victim, RoundToCeil(damage * -0.01));
 }
 
-static int SetCameraEffect(int client, const char[] animation, float duration)
+
+public void YakuzaM2Test(int client, int weapon, bool crit, int slot)
+{
+	Handle swingTrace;
+	float vecSwingForward[3];
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+				
+	int target = TR_GetEntityIndex(swingTrace);	
+	delete swingTrace;
+	
+	if(target > 0)
+	{
+		switch(GetRandomInt(1,2))
+		{
+			case 1:
+				DoSpecialActionYakuza(client, "brawler_heat_1", 2.5, target);
+			case 2:
+				DoSpecialActionYakuza(client, "brawler_heat_2", 2.1, target);
+			case 2:
+				DoSpecialActionYakuza(client, "brawler_heat_3", 2.5, target); //todo: better hurt sound and maybe leave them stunned/ragdolled
+		}
+		*/
+		
+	}
+}
+
+static int DoSpecialActionYakuza(int client, const char[] animation, float duration, int target)
 {
 	float vAngles[3];
 	float vOrigin[3];
@@ -591,7 +618,10 @@ static int SetCameraEffect(int client, const char[] animation, float duration)
 	SetVariantInt(0);
 	AcceptEntityInput(client, "SetForcedTauntCam");	
 	
-	int spawn_index = NPC_CreateByName("npc_allied_leper_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client), animation);
+	int spawn_index = NPC_CreateByName("npc_allied_kiryu_visualiser", client, vabsOrigin, vabsAngles, target, animation);
+
+	CClotBody npc = view_as<CClotBody>(spawn_index);
+	npc.m_iTargetWalkTo = viewcontrol;
 	
 	DataPack pack;
 	CreateDataTimer(duration, Leper_SuperHitInitital_After, pack, TIMER_FLAG_NO_MAPCHANGE);

@@ -54,6 +54,10 @@ void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
 	}
 }
 
+float SetAirtimeNpc(int entity, float Duration)
+{
+	f_TargetAirtime[entity] = GetGameTime() + Duration;
+}
 bool Npc_Is_Targeted_In_Air(int entity) //Anything that needs to be precaced like sounds or something.
 {
 	if(f_TargetAirtime[entity] > GetGameTime())

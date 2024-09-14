@@ -197,7 +197,8 @@ enum
 	WEAPON_ULPIANUS = 117,
 	WEAPON_WRATHFUL_BLADE = 118,
 	WEAPON_MAGNESIS = 119,
-	WEAPON_SUPERUBERSAW = 120
+	WEAPON_SUPERUBERSAW = 120,
+	WEAPON_YAKUZA = 121
 }
 
 enum
@@ -549,6 +550,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_ulpianus.sp"
 #include "zombie_riot/custom/wand/weapon_wand_magnesis.sp"
 #include "zombie_riot/custom/kit_blacksmith_brew.sp"
+#include "zombie_riot/custom/weapon_yakuza.sp"
 
 void ZR_PluginLoad()
 {
@@ -799,6 +801,7 @@ void ZR_MapStart()
 	Ulpianus_MapStart();
 	Magnesis_Precache();
 	Wrathful_Blade_Precache();
+	Yakuza_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

@@ -1086,6 +1086,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		npcBase.m_bGib = true;
 	}
+	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_CANNOTGIB_REGARDLESS))
+	{
+		npcBase.m_bGib = false;
+	}
 #endif
 	//LogEntryInvicibleTest(victim, attacker, damage, 24);
 	
