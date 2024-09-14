@@ -296,6 +296,7 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 {
 	CClotBody npc = view_as<CClotBody>(index);
 	npc.RemoveAllWearables();
+	Jester_RemoveFuseParticles(npc);
 	if (!b_BonesBuffed[index] && buffed)
 	{
 		//Tell the game the skeleton is buffed:
