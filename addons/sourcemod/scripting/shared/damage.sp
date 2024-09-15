@@ -530,6 +530,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 			damage += basedamage * (0.1 * DamageBuffExtraScaling);
 	}
 
+	if(f_SquadLeaderBuff[attacker] > GameTime)
+		damage += basedamage * (0.10 * DamageBuffExtraScaling); //10% more damage!
+	
 	if(f_CombineCommanderBuff[attacker] > GameTime)
 		damage += basedamage * (0.25 * DamageBuffExtraScaling); //25% more damage!
 	
@@ -1649,6 +1652,11 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	{
 		DamageRes *= 0.8;
 	}
+	if(f_SquadLeaderBuff[victim] > GameTime)
+	{
+		DamageRes *= 0.9;
+	}
+	
 
 #if defined ZR
 	if(GetTeam(victim) == 2 && Rogue_GetChaosLevel() > 0)
@@ -2072,6 +2080,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_CombineCommanderBuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "⛠%s", Debuff_Adder_right);
+	}
+	if(f_SquadLeaderBuff[victim] > GameTime)
+	{
+		Format(Debuff_Adder_right, SizeOfChar, "∏%s", Debuff_Adder_right);
 	}
 #endif
 #if defined RUINA_BASE

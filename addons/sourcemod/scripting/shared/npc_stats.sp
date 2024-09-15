@@ -1444,6 +1444,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.20;
 		}
+		if(f_SquadLeaderBuff[this.index] > Gametime)
+		{
+			speed_for_return *= 1.33;
+		}
 		if(f_VoidAfflictionStrength2[this.index] > Gametime)
 		{
 			speed_for_return *= 1.15;
@@ -8440,6 +8444,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	f_PernellBuff[entity] = 0.0;
 	f_HussarBuff[entity] = 0.0;
+	f_SquadLeaderBuff[entity] = 0.0;
 	f_GodAlaxiosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;

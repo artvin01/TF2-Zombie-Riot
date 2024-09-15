@@ -122,7 +122,7 @@ methodmap VictorianVanguard < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 180.0;
+		npc.m_flSpeed = 280.0;
 		
 		
 		int skin = 1;

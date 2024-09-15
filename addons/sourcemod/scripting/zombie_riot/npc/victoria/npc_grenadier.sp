@@ -2,62 +2,62 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/pyro_paincrticialdeath01.mp3",
-	"vo/pyro_paincrticialdeath02.mp3",
-	"vo/pyro_paincrticialdeath03.mp3",
+	"vo/npc/male01/no01.wav",
+	"vo/npc/male01/no02.wav",,
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/pyro_painsharp01.mp3",
-	"vo/pyro_painsharp02.mp3",
-	"vo/pyro_painsharp03.mp3",
-	"vo/pyro_painsharp04.mp3",
-	"vo/pyro_painsharp05.mp3",
+	"vo/npc/male01/pain01.wav",
+	"vo/npc/male01/pain02.wav",
+	"vo/npc/male01/pain03.wav",
+	"vo/npc/male01/pain05.wav",
+	"vo/npc/male01/pain06.wav",
+	"vo/npc/male01/pain07.wav",
+	"vo/npc/male01/pain08.wav",
+	"vo/npc/male01/pain09.wav",
 };
 
-
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/pyro_taunts01.mp3",
-	"vo/taunts/pyro_taunts02.mp3",
-	"vo/taunts/pyro_taunts03.mp3",
+	"vo/npc/male01/ohno.wav",
+	"vo/npc/male01/overthere01.wav",
+	"vo/npc/male01/overthere02.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/flaregun_shoot.wav",
+	"mvm/giant_demoman/giant_demoman_grenade_shoot.wav",
 };
 
 
-void VictoriaIgniter_OnMapStart_NPC()
+void Iberia_Victorian_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian Igniter");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_igniter");
-	strcopy(data.Icon, sizeof(data.Icon), "rifler");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	strcopy(data.Name, sizeof(data.Name), "Grenadier ");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_grenadier");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaIgniter(client, vecPos, vecAng, ally);
+	return VictorianGrenadier(client, vecPos, vecAng, ally);
 }
-
-methodmap VictoriaIgniter < CClotBody
+methodmap VictorianGrenadier < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -69,69 +69,76 @@ methodmap VictoriaIgniter < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.2);
 	}
-
-	public VictoriaIgniter(int client, float vecPos[3], float vecAng[3], int ally)
+	property float m_flWeaponSwitchCooldown
 	{
-		VictoriaIgniter npc = view_as<VictoriaIgniter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally,false));
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	
+	
+	public VictorianGrenadier(int client, float vecPos[3], float vecAng[3], int ally)
+	{
+		VictorianGrenadier npc = view_as<VictorianGrenadier>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SPEAR");
-		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		SetVariantInt(6);
-		AcceptEntityInput(npc.index, "SetBodyGroup");	
-		
-		
+		npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
+		func_NPCDeath[npc.index] = view_as<Function>(VictorianGrenadier_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianGrenadier_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VictorianGrenadier_ClotThink);
 		
-		func_NPCDeath[npc.index] = VictoriaIgniter_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaIgniter_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaIgniter_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 250.0;
+		npc.m_flSpeed = 200.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+	
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_caber/c_caber.mdl");
+		SetVariantString("1.5");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_flaregun_pyro/c_flaregun_pyro.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/invasion_phobos_filter/invasion_phobos_filter.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/sum19_spawn_camper_jacket/sum19_spawn_camper_jacket.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum24_brand_loyalist/sum24_brand_loyalist_pyro.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/dec16_bomber_knight/dec16_bomber_knight.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/demolitionists_dustcatcher/demolitionists_dustcatcher.mdl");
+		SetVariantString("0.75");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+
 		return npc;
 	}
 }
 
-public void VictoriaIgniter_ClotThink(int iNPC)
+public void VictorianGrenadier_ClotThink(int iNPC)
 {
-	VictoriaIgniter npc = view_as<VictoriaIgniter>(iNPC);
+	VictorianGrenadier npc = view_as<VictorianGrenadier>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -141,7 +148,7 @@ public void VictoriaIgniter_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
@@ -158,23 +165,77 @@ public void VictoriaIgniter_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
+	//Swtich modes depending on area.
+	if(npc.m_flWeaponSwitchCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flWeaponSwitchCooldown = GetGameTime(npc.index) + 5.0;
+		static float flMyPos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
+		static float hullcheckmaxs[3];
+		static float hullcheckmins[3];
+
+		//Defaults:
+		//hullcheckmaxs = view_as<float>( { 24.0, 24.0, 72.0 } );
+		//hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
+
+		hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
+		hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
+
+		if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
+		{
+			if(npc.m_iChanged_WalkCycle != 1)
+			{
+				npc.m_bisWalking = true;
+				npc.m_iChanged_WalkCycle = 1;
+				npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+				npc.StartPathing();
+				npc.m_flSpeed = 200.0;
+			}
+		}
+		else
+		{
+			if(npc.m_iChanged_WalkCycle != 2)
+			{
+				npc.m_bisWalking = true;
+				npc.m_iChanged_WalkCycle = 2;
+				npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+				npc.StartPathing();
+				npc.m_flSpeed = 200.0;
+			}
+		}
+	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		int ActionDo = VictorianGrenadierSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		switch(ActionDo)
 		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			case 0:
+			{
+				npc.StartPathing();
+				//We run at them.
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				}
+				npc.m_flSpeed = 200.0;
+			}
+			case 1:
+			{
+				NPC_StopPathing(npc.index);
+				npc.m_flSpeed = 0.0;
+				//Stand still.
+			}
 		}
-		else 
-		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-		}
-		VictoriaIgniterSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 	else
 	{
@@ -184,9 +245,9 @@ public void VictoriaIgniter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictoriaIgniter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VictorianGrenadier_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaIgniter npc = view_as<VictoriaIgniter>(victim);
+	VictorianGrenadier npc = view_as<VictorianGrenadier>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -200,15 +261,20 @@ public Action VictoriaIgniter_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void VictoriaIgniter_NPCDeath(int entity)
+public void VictorianGrenadier_NPCDeath(int entity)
 {
-	VictoriaIgniter npc = view_as<VictoriaIgniter>(entity);
+	VictorianGrenadier npc = view_as<VictorianGrenadier>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 		
-	
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -217,130 +283,74 @@ public void VictoriaIgniter_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-void VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime)
+int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float distance)
 {
-	int target;
-	//some Ranged units will behave differently.
-	//not this one.
-	target = npc.m_iTarget;
-	if(!IsValidEnemy(npc.index,target))
+	//Direct mode
+	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(npc.m_iChanged_WalkCycle != 4)
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
 		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_ITEM1");
-			npc.m_flSpeed = 250.0;
-			npc.StartPathing();
-		}
-		return;
-	}
-	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
+			npc.FaceTowards(VecAim, 20000.0);
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				npc.m_iTarget = Enemy_I_See;
+				npc.PlayMeleeSound();
+				float RocketDamage = 125.0;
+				float RocketSpeed = 800.0;
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+				if(npc.m_iChanged_WalkCycle == 1)
+				{
+					float SpeedReturn[3];
+					npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR",_,_,_,0.75);
 
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
-	{
-		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-		if(IsValidEnemy(npc.index, Enemy_I_See))
-		{
-			if(npc.m_iChanged_WalkCycle != 5)
-			{
-				npc.m_bisWalking = false;
-				npc.m_iChanged_WalkCycle = 5;
-				npc.SetActivity("ACT_MP_STAND_ITEM1");
-				npc.m_flSpeed = 0.0;
-				npc.StopPathing();
-			}	
-			if(gameTime > npc.m_flNextMeleeAttack)
-			{
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
-				{	
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.25;
-					npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR", false);
-					npc.PlayMeleeSound();
-					npc.FaceTowards(vecTarget, 20000.0);
-					int projectile = npc.FireParticleRocket(vecTarget, 20.0, 1000.0, 200.0, "drg_cow_rockettrail_fire_charged_blue", true);
-					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-					int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
-					CreateTimer(8.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(8.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
-					
-					SDKHook(projectile, SDKHook_StartTouch, VictoriaIgniter_Rocket_Particle_StartTouch);
-					delete swingTrace;
+					int RocketGet = npc.FireRocket(vecTarget + GetRandomFloat(-10.0,10.0);, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
+					//Reducing gravity, reduces speed, lol.
+					SetEntityGravity(RocketGet, 1.0); 	
+					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
+					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+
+					//This will return vecTarget as the speed we need.
 				}
+				else
+				{
+					npc.AddGesture("ACT_VILLAGER_ATTACK",_,_,_,0.75);
+					//They do a direct attack, slow down the rocket and make it deal less damage.
+					RocketDamage *= 0.75;
+				//	npc.PlayRangedSound();
+					npc.FireGrenade(vecTarget, 1000.0, RocketDamage, "models/workshop/weapons/c_models/c_caber/c_caber.mdl");
+				}
+						
+				npc.m_flNextMeleeAttack = gameTime + 2.00;
+				//Launch something to target, unsure if rocket or something else.
+				//idea:launch fake rocket with noclip or whatever that passes through all
+				//then whereever the orginal goal was, land there.
+				//it should be a mortar.
 			}
 		}
-		else
-		{
-			if(npc.m_iChanged_WalkCycle != 4)
-			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_MP_RUN_ITEM1");
-				npc.m_flSpeed = 250.0;
-				npc.StartPathing();
-			}
-		}
 	}
-	else
+	//No can shooty.
+	//Enemy is close enough.
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.0))
 	{
-		if(npc.m_iChanged_WalkCycle != 4)
+		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_ITEM1");
-			npc.m_flSpeed = 250.0;
-			npc.StartPathing();
+			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
+			npc.FaceTowards(VecAim, 20000.0);
+			//stand
+			return 1;
 		}
+		//cant see enemy somewhy.
+		return 0;
 	}
-}
-
-public void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
-{
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	else //enemy is too far away.
 	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsValidEntity(owner))
-		{
-			owner = 0;
-		}
-		
-		int inflictor = h_ArrowInflictorRef[entity];
-		if(inflictor != -1)
-			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
-
-		if(inflictor == -1)
-			inflictor = owner;
-			
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		float DamageDeal = fl_rocket_particle_dmg[entity];
-		if(ShouldNpcDealBonusDamage(target))
-			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
-
-
-		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
-		
-		StartBleedingTimer_Against_Client(target, owner, 3.0, 10);
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
+		return 0;
 	}
-	else
-	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		//we uhh, missed?
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-	}
-	RemoveEntity(entity);
 }

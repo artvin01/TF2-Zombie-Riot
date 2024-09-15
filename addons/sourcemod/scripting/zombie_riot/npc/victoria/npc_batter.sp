@@ -123,7 +123,7 @@ methodmap VictoriaBatter < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 320.0;
 		
 		
 		int skin = 1;
