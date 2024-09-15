@@ -852,16 +852,16 @@ static void Twirl_WinLine(int entity)
 
 	switch(GetRandomInt(0, 10))
 	{
-		case 0: Twirl_Lines(npc, "Wait, your all dead already??");
+		case 0: Twirl_Lines(npc, "Wait, you're all dead already??");
 		case 1: Twirl_Lines(npc, "This was quite fun, I thank you for the experience!");
 		case 2: Twirl_Lines(npc, "Huh, I guess this was all you were capable of, a shame");
 		case 3: Twirl_Lines(npc, "I, as the empress, thank you for this wonderful time");
 		case 4: Twirl_Lines(npc, "Ahhh, that was a great workout, time to hit the showers");
 		case 5: Twirl_Lines(npc, "You call this fighting? We call this resisting arrest");
 		case 6: Twirl_Lines(npc, "Another one bites the dust");
-		case 7: Twirl_Lines(npc, "Ah foolish Mercenary's, maybe next time think about a proper strategy");
+		case 7: Twirl_Lines(npc, "Ah foolish Mercenaries, maybe next time think about a proper strategy");
 		case 8: Twirl_Lines(npc, "Raw power is good and all, but you know what's better? {crimson}Debuffs");
-		case 9: Twirl_Lines(npc, "Perhaps if you all had more {aqua}supports{snow} you'd might have won. Allas");
+		case 9: Twirl_Lines(npc, "Perhaps if you all had more {aqua}supports{snow} you might have won. Allas");
 		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 	}
 
@@ -936,8 +936,8 @@ static void ClotThink(int iNPC)
 		{
 			case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
 			case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
-			case 2: Twirl_Lines(npc, "I know your capable more than just this");
-			case 3: Twirl_Lines(npc, "Your the last one alive, {purple}but{snow} are you the strongest?");
+			case 2: Twirl_Lines(npc, "I know you're capable more than just this");
+			case 3: Twirl_Lines(npc, "You're the last one alive, {purple}but{snow} are you the strongest?");
 			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
 			case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
 			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
@@ -964,7 +964,7 @@ static void ClotThink(int iNPC)
 				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
 				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
 				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
-				case 8: Twirl_Lines(npc, "Tell me why your this slow?");
+				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
 				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
 				case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
@@ -973,7 +973,7 @@ static void ClotThink(int iNPC)
 		{
 			switch(GetRandomInt(0, 2))
 			{
-				case 0: Twirl_Lines(npc, "Well considering you all were just some random's this was to be expected");
+				case 0: Twirl_Lines(npc, "Well considering you all were just some randoms this was to be expected");
 				case 1: Twirl_Lines(npc, "Guess my sense of magic's been off lately, this was exceedingly boring.");
 				case 2: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
@@ -3143,7 +3143,7 @@ static void NPC_Death(int entity)
 			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Ah, this is great, I have high hopes for our next encounter");
-				case 1: Twirl_Lines(npc, "Your strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
+				case 1: Twirl_Lines(npc, "You're strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
 				case 2: Twirl_Lines(npc, "Ahaha, toodles");
 				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
 				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
@@ -3165,7 +3165,7 @@ static void NPC_Death(int entity)
 			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Even with my {purple}''Heavy Equipment''{snow} you bested me, good work");
-				case 1: Twirl_Lines(npc, "Your quite strong, and so am I, can't wait for our next math");
+				case 1: Twirl_Lines(npc, "You're quite strong, and so am I, can't wait for our next match");
 				case 2: Twirl_Lines(npc, "I hope you all had as much fun as I did");
 				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do believe our next and final battle will be the {crimson}most fun{snow}!");
 				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
