@@ -32,9 +32,7 @@ enum
 	Style_Brawler,	// Balanced
 	Style_Beast,	// Slow, AOE
 	Style_Rush,		// Fast, Evasion
-	Style_Dragon,	// Best of all, but limited time use
-
-	Style_MAX
+	Style_Dragon	// Best of all, but limited time use
 }
 
 static const char StyleName[][] =
@@ -55,7 +53,9 @@ static int LastVictim[MAXTF2PLAYERS] = {-1, ...};
 static float BlockNextFor[MAXTF2PLAYERS];
 static int BlockStale[MAXTF2PLAYERS];
 static float TigerDrop_Negate[MAXTF2PLAYERS];
-static int CurrentWeaponComboAt[MAXTF2PLAYERS]
+static int CurrentWeaponComboAt[MAXTF2PLAYERS];
+static float LastDamage[MAXTF2PLAYERS];
+static float LastSpeed[MAXTF2PLAYERS];
 
 void Yakuza_MapStart()
 {
@@ -109,25 +109,40 @@ static void UpdateStyle(int client)
 	int weapon = EntRefToEntIndex(WeaponRef[client]);
 	if(weapon != -1)
 	{
-		float value;
+		float color = 4.0;
+		float damage = 1.0;
+		float speed = 1.0;
 
 		switch(WeaponStyle[client])
 		{
-			case Style_Brawler:
-				value = 1;
-			
 			case Style_Beast:
-				value = 2;
-			
+			{
+				color = 2.0;
+				damage = 1.25;
+				speed = 1.5;
+			}
 			case Style_Rush:
-				value = 6;
-
+			{
+				color = 6.0;
+				damage = 0.67;
+				speed = 0.67;
+			}
 			case Style_Dragon:
-				value = 6; //idk which, needs to be red
+			{
+				color = 1.0;
+				damage = 1.25;
+				speed = 0.67;
+			}
 		}
 
+		Attributes_SetMulti(weapon, 2, damage / LastDamage[client]);
+		LastDamage[client] = damage;
+
+		Attributes_SetMulti(weapon, 6, speed / LastSpeed[client]);
+		LastSpeed[client] = speed;
+
 		Attributes_Set(weapon, 2025, 3.0);
-		Attributes_Set(weapon, 2014, value);
+		Attributes_Set(weapon, 2014, color);
 		Attributes_Set(weapon, 2013, 2007.0);
 		ViewChange_Update(client, false);
 	}
@@ -160,21 +175,10 @@ void Yakuza_Enable(int client, int weapon)
 		delete WeaponTimer[client];
 		WeaponTimer[client] = CreateTimer(1.0, WeaponTimerFunc, client, TIMER_REPEAT);
 
+		LastDamage[client] = 1.0;
+		LastSpeed[client] = 1.0;
+
 		UpdateStyle(client);
-	}
-}
-
-public void Wepaon_Yakuza_M1Swing(int client, int weapon, bool crit, int slot)
-{
-	int MaxAttacksPossible = 1;
-
-
-	CurrentWeaponComboAt[client]++
-	if(CurrentWeaponComboAt[client] >= MaxAttacksPossible)
-	{
-		//Give bigger cd
-		float gameTime = GetGameTime();
-		float cooldown = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") - gameTime;
 	}
 }
 
@@ -211,7 +215,7 @@ public void Weapon_Yakuza_R(int client, int weapon, bool crit, int slot)
 	// Switch styles on R
 
 	WeaponStyle[client]++;
-	if(WeaponStyle[client] >= Style_MAX)
+	if(WeaponStyle[client] >= Style_Dragon)
 		WeaponStyle[client] = 0;
 	
 	TriggerTimer(WeaponTimer[client], true);
@@ -267,19 +271,25 @@ static void Yakuza_LightAttack(int client, int weapon)
 	float gameTime = GetGameTime();
 	float cooldown = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") - gameTime;
 
+	int MaxAttacksPossible = 3;
+
 	switch(WeaponStyle[client])
 	{
 		case Style_Beast:
-			cooldown *= 2.0;
+			MaxAttacksPossible = 3;
 		
 		case Style_Rush:
-			cooldown *= 0.67;
+			MaxAttacksPossible = 3;
 	}
 
-	Ability_Apply_Cooldown(client, 1, cooldown);
-	Ability_Apply_Cooldown(client, 2, cooldown);
+	CurrentWeaponComboAt[client]++
+	if(CurrentWeaponComboAt[client] >= MaxAttacksPossible)
+	{
+		Ability_Apply_Cooldown(client, 1, cooldown);
+		Ability_Apply_Cooldown(client, 2, cooldown);
 
-	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", gameTime + cooldown);
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", gameTime + cooldown);
+	}
 }
 
 static void Yakuza_HeavyAttack(int client, int weapon)
@@ -433,20 +443,6 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 
 	switch(LastAttack[victim])
 	{
-		case Attack_Light:
-		{
-			switch(WeaponStyle[attacker])
-			{
-				case Style_Beast:
-					damage *= 1.25;
-				
-				case Style_Rush:
-					damage *= 0.8;
-				
-				case Style_Dragon:
-					damage *= 1.3;
-			}
-		}
 		case Attack_Heavy:
 		{
 			switch(WeaponStyle[attacker])
@@ -455,13 +451,13 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 					damage *= 3.5;
 				
 				case Style_Beast:
-					damage *= 5.0;
+					damage *= 3.0;
 				
 				case Style_Rush:
-					damage *= 2.75;
+					damage *= 3.25;
 
 				case Style_Dragon:
-					damage *= 6.0;
+					damage *= 4.0;
 			}
 		}
 		case Attack_Grab:
@@ -485,8 +481,8 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 		}
 	}
 
-	// TODO: Adjust based on waves
-	AddCharge(attacker, RoundToCeil(damage * 0.001));
+	float scale = 30.0 + (ZR_GetWaveCount() * 1.5);
+	AddCharge(attacker, RoundToCeil(damage / scale));
 
 	// +25% damage at 100% HEAT
 	damage *= 1.0 + (WeaponCharge[attacker] * 0.0025);
