@@ -1391,10 +1391,15 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 								else
 								{
+									b_WeaponHasNoClip[entity] = false;
 									if(!info.HasNoClip)
 									{
 										RequestFrame(Delete_Clip, EntIndexToEntRef(entity));
 										Delete_Clip(EntIndexToEntRef(entity));
+									}
+									else
+									{
+										b_WeaponHasNoClip[entity] = true;
 									}
 									if(info.NoHeadshot)
 									{

@@ -856,6 +856,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 			else
 			{
+#if defined ZR
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
 					float damage_save = 50.0;
@@ -877,9 +878,10 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
 					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
 					i_HowManyBombsHud[victim] += BombsToInject;
-					Apply_Particle_Teroriser_Indicator(victim);
+					Apply_Particle_Teroriser_Indicator(victim)
 					damage = 0.0;
 				}
+#endif
 
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
@@ -1443,6 +1445,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 				OnTakeDamageDamageBuffs(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, GetGameTime());	
 			}
 			
+#if defined ZR
 			BarrackBody npc1 = view_as<BarrackBody>(victim);
 			int client = GetClientOfUserId(npc1.OwnerUserId);
 			if(IsValidClient(client))
@@ -1450,6 +1453,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 				percentageGlobal = Barracks_UnitOnTakeDamage(victim, client, percentageGlobal, false);
 			}
 			//show barrak units res
+#endif
 		}
 
 		float percentage;
@@ -1512,6 +1516,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		{
 			Damage_NPCAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 			Damage_AnyAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+#if defined ZR
 			if(GetTeam(victim) != TFTeam_Red)
 			{
 				if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[victim])
@@ -1519,6 +1524,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 					DamagePercDo *= f_FreeplayDamageExtra;
 				}
 			}
+#endif
 			/*
 			BarrackBody npc = view_as<BarrackBody>(victim);
 			int client = GetClientOfUserId(npc.OwnerUserId);
