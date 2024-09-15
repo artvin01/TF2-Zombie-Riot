@@ -164,6 +164,20 @@ void Yakuza_Enable(int client, int weapon)
 	}
 }
 
+public void Wepaon_Yakuza_M1Swing(int client, int weapon, bool crit, int slot)
+{
+	int MaxAttacksPossible = 1;
+
+
+	CurrentWeaponComboAt[client]++
+	if(CurrentWeaponComboAt[client] >= MaxAttacksPossible)
+	{
+		//Give bigger cd
+		float gameTime = GetGameTime();
+		float cooldown = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") - gameTime;
+	}
+}
+
 static Action WeaponTimerFunc(Handle timer, int client)
 {
 	if(IsClientInGame(client))
@@ -515,9 +529,8 @@ public void YakuzaM2Test(int client, int weapon, bool crit, int slot)
 	
 	if(target > 0)
 	{
-		DoSpecialActionYakuza(client, "brawler_heat_4", 0.75, target); //todo: better hurt sound and maybe leave them stunned/ragdolled
-		/*
-		switch(GetRandomInt(1,3))
+		
+		switch(GetRandomInt(1,4))
 		{
 			case 1:
 				DoSpecialActionYakuza(client, "brawler_heat_1", 2.5, target);
@@ -525,9 +538,9 @@ public void YakuzaM2Test(int client, int weapon, bool crit, int slot)
 				DoSpecialActionYakuza(client, "brawler_heat_2", 2.1, target);
 			case 3:
 				DoSpecialActionYakuza(client, "brawler_heat_3", 2.5, target); //todo: better hurt sound and maybe leave them stunned/ragdolled
+			case 4:
+				DoSpecialActionYakuza(client, "brawler_heat_4", 0.75, target); //todo: better hurt sound and maybe leave them stunned/ragdolled
 		}
-		*/
-		
 	}
 }
 
