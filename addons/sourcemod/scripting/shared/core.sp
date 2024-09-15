@@ -1776,6 +1776,7 @@ public void OnMapStart()
 	Zero(i_CustomWeaponEquipLogic);
 	Zero(Mana_Hud_Delay);
 	Zero(Mana_Regen_Delay);
+	Zero(Mana_Regen_Delay_Aggreviated);
 	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);

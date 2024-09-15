@@ -36,6 +36,7 @@ void SDKHooks_ClearAll()
 	Zero(i_WasInDefenseBuff);
 	Zero(i_WasInJarate);
 	Zero(Client_Had_ArmorDebuff);
+	Zero(f_TimeSinceLastRegenStop);
 }
 
 void SDKHook_PluginStart()
