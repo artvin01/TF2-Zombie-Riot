@@ -878,7 +878,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
 					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
 					i_HowManyBombsHud[victim] += BombsToInject;
-					Apply_Particle_Teroriser_Indicator(victim)
+					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
 #endif
