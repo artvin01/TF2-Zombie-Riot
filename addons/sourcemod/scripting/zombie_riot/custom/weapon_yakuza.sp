@@ -515,13 +515,15 @@ public void YakuzaM2Test(int client, int weapon, bool crit, int slot)
 	
 	if(target > 0)
 	{
-		switch(GetRandomInt(1,2))
+		DoSpecialActionYakuza(client, "brawler_heat_4", 0.75, target); //todo: better hurt sound and maybe leave them stunned/ragdolled
+		/*
+		switch(GetRandomInt(1,3))
 		{
 			case 1:
 				DoSpecialActionYakuza(client, "brawler_heat_1", 2.5, target);
 			case 2:
 				DoSpecialActionYakuza(client, "brawler_heat_2", 2.1, target);
-			case 2:
+			case 3:
 				DoSpecialActionYakuza(client, "brawler_heat_3", 2.5, target); //todo: better hurt sound and maybe leave them stunned/ragdolled
 		}
 		*/

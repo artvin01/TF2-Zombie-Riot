@@ -143,6 +143,17 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 			WhichStateUse = 3;
 			ModelUse = "models/player/soldier.mdl";
 		}
+		if(!StrContains(data, "brawler_heat_4"))
+		{
+			//This is action 1 as an example.
+			/*
+				heavy model:
+				taunt_headbutt_success
+			*/
+			PrintToChatAll("brawler_heat_4");
+			WhichStateUse = 4;
+			ModelUse = "models/player/medic.mdl";
+		}
 		else if(!StrContains(data, "beast"))
 		{
 
@@ -291,6 +302,17 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				FreezeNpcInTime(npc.m_iTarget, 2.5, true);
 				SetAirtimeNpc(npc.m_iTarget, 2.59);
 			}
+			case 4:
+			{
+				npc.AddActivityViaSequence("taunt_vehicle_allclass_end");
+				npc.SetCycle(0.1);
+				npc.SetPlaybackRate(0.01);
+				npc.m_flKiryuTimeUntillDone = GetGameTime() + 0.75;
+				npc.f_OffsetVertical = 0.0;
+				c_KiyruAttachmentDo[npc.index] = "";
+				FreezeNpcInTime(npc.m_iTarget, 0.75, true);
+				SetAirtimeNpc(npc.m_iTarget, 0.75);
+			}
 		}
 		npc.PlayInitSound();
 
@@ -390,6 +412,10 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 		{
 			BrawlerHeat3(owner, npc, GameTime);
 		}
+		case 4:
+		{
+			BrawlerHeat4(owner, npc, GameTime);
+		}
 	}
 }
 
@@ -398,7 +424,7 @@ void BrawlerHeat1(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 	if(npc.m_flKiryuTimeUntillDone)
 	{
 		float TimeLeft = npc.m_flKiryuTimeUntillDone - GameTime;
-		if(TimeLeft < 0.9)
+		if(TimeLeft < 1.25)
 		{
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
@@ -485,6 +511,41 @@ void BrawlerHeat3(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 				npc.SetCycle(0.25);
 				c_KiyruAttachmentDo[npc.index] = "effect_hand_l";
 				npc.f_OffsetVertical = -75.0;
+			}
+		}
+	}
+}
+
+
+void BrawlerHeat4(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
+{
+	if(npc.m_flKiryuTimeUntillDone)
+	{
+		float TimeLeft = npc.m_flKiryuTimeUntillDone - GameTime;
+		if(TimeLeft < 0.65)
+		{
+			if(npc.m_iChanged_WalkCycle != 3)
+			{
+				npc.m_iChanged_WalkCycle = 3;
+				if(IsValidEnemy(npc.index, npc.m_iTarget))
+				{
+				//	SensalCauseKnockback(npc.index, npc.m_iTarget);
+					npc.PlayHitSound();
+					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
+					float damage = 50.0;
+					CauseKiyruDamageLogic(owner, npc.m_iTarget, damage);
+					c_KiyruAttachmentDo[npc.index] = "";
+					npc.b_NoLongerResetVel = true;
+				}
+			}
+		}
+		else
+		{
+			
+			if(npc.m_iChanged_WalkCycle != 2)
+			{
+				npc.m_iChanged_WalkCycle = 2;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.2);
 			}
 		}
 	}
