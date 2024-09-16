@@ -3,7 +3,7 @@
 
 static const char g_DeathSounds[][] = {
 	"vo/npc/male01/no01.wav",
-	"vo/npc/male01/no02.wav",,
+	"vo/npc/male01/no02.wav",
 };
 
 static const char g_HurtSounds[][] = {

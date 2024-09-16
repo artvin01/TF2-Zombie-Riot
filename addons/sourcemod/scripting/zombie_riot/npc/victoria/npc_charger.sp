@@ -311,7 +311,7 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 					TimeMultiplier *= 0.50;
 					if(NpcStats_VictorianCallToArms(npc.index))
 					{
-						TimeMultiplier *= 1.50
+						TimeMultiplier *= 1.50;
 					}
 					if(TimeMultiplier > 10.0)
 					{
