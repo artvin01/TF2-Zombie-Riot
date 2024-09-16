@@ -271,7 +271,6 @@ void VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime)
 					CreateTimer(8.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 					
 					SDKHook(projectile, SDKHook_StartTouch, VictoriaIgniter_Rocket_Particle_StartTouch);
-					delete swingTrace;
 				}
 			}
 		}

@@ -43,6 +43,10 @@ static const char g_WarCry[][] = {
 	"mvm/mvm_warning.wav",
 };
 
+static int NPCId;
+static float f_GlobalSoundCD
+static int i_squadleader_particle[MAXENTITIES];
+
 void VictorianSquadleader_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -59,6 +63,8 @@ void VictorianSquadleader_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "seargent_ideal");
 	data.IconCustom = true;
 	data.Flags = 0;
+	f_GlobalSoundCD = 0.0;
+	NPCId = NPC_Add(data);
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
@@ -162,7 +168,7 @@ methodmap VictorianSquadleader < CClotBody
 		float flPos[3], flAng[3];
 				
 		npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
-		i_schwert_hand_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_pedalfly_blue_spins", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
+		i_squadleader_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_pedalfly_blue_spins", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 		
 		
@@ -284,7 +290,8 @@ public void VictorianSquadleader_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
-	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -293,6 +300,13 @@ public void VictorianSquadleader_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+
+	int particle = EntRefToEntIndex(i_squadleader_particle[npc.index]);
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+		i_squadleader_particle[npc.index]=INVALID_ENT_REFERENCE;
+	}
 
 }
 
