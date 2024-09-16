@@ -1286,10 +1286,12 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 */
 //this will return the amount of healing it actually did.
 
-void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
+stock void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 {
 //	HealEntityGlobal(attacker, victim, -(truedamagedeal - 1.0), 99.0, 0.0, HEAL_ABSOLUTE | HEAL_SELFHEAL);
+#if defined ZR
 	b_ThisNpcIsSawrunner[attacker] = true;
+#endif
 	if(victim <= MaxClients)
 	{
 		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_DROWN, -1);
@@ -1298,7 +1300,9 @@ void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 	{
 		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_SLASH, -1);
 	}
+#if defined ZR
 	b_ThisNpcIsSawrunner[attacker] = false;
+#endif
 	/*
 	float AnyValueTest1 = 1.0;
 	int AnyValueTest2 = 1;
@@ -3245,8 +3249,9 @@ int inflictor = 0)
 
 				if(damage_1 != 0.0)
 					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
-
+#if defined ZR
 				Projectile_DealElementalDamage(ClosestTarget, EntityToForward, ExplosionRangeFalloff);
+#endif
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -5363,6 +5368,7 @@ float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
  * @param returnEnd		Return parameter for the particle created at the end of the effect.
  * @param duration		The duration of the effect. <= 0.0: infinite.
  */
+#if defined ZR
 stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], float startXOff, float startYOff, float startZOff, int endEnt, char endPoint[255], float endXOff, float endYOff, float endZOff, char effect[255], int &returnStart, int &returnEnd, float duration = 0.0)
 {
 	float startPos[3], endPos[3];
@@ -5395,3 +5401,4 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], floa
 	returnStart = particle;
 	returnEnd = particle2;
 }
+#endif

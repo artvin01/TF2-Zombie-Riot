@@ -673,7 +673,8 @@ void Magnesis_TerminateEffects(int client, int start, int end, bool enemyWasThro
 			Magnesis_Grabbed[victim] = false;
 			Magnesis_DamageTakenWhileGrabbed[victim] = 0.0;
 			Magnesis_DroppedAt[victim] = GetGameTime();
-			view_as<CClotBody>(victim).m_iTarget = client;
+			if(!VIPBuilding_Active())
+				view_as<CClotBody>(victim).m_iTarget = client;
 		}
 
 		Magnesis_GrabTarget[client] = -1;

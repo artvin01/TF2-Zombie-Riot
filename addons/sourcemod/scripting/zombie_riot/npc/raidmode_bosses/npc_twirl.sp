@@ -3211,7 +3211,7 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
 }
-static bool Similar_Vec(float Vec1[3], float Vec2[3])
+bool Similar_Vec(float Vec1[3], float Vec2[3])
 {
 	bool similar = true;
 	for(int i=0 ; i < 3 ; i ++)

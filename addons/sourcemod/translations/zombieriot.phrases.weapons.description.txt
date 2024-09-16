@@ -2858,7 +2858,7 @@
 		"en"	"Deals an additional 30%% pure damage if an enemy is under an elemental effect."
 		"fr"	"+30%% dégats sur les ennemis sous un effet élémental."
 	}
-	"Sensal Desc"
+	"Sensal Scythe Wep Desc"
 	{
 		"en"	"Borrowed from sensal straight out of expidonsa."
 		"fr"	"Emprunté de Sensal, directement de Expidonsa."
