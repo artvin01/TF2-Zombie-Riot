@@ -367,10 +367,23 @@ TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 
 #if defined ZR
+int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
+bool b_IgnoreMapMusic[MAXTF2PLAYERS];
+int i_CustomModelOverrideIndex[MAXTF2PLAYERS];
+int FogEntity = INVALID_ENT_REFERENCE;
 int PlayerPoints[MAXTF2PLAYERS];
 float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 float DeleteAndRemoveAllNpcs = 5.0;
+bool b_angered_twice[MAXENTITIES];
+bool Viewchanges_PlayerModelsAnims[] =
+{
+	false,
+	true,
+	true,
+	false,
+	true,
+};
 
 ConVar cvarTimeScale;
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
@@ -380,6 +393,7 @@ int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsHud[MAXENTITIES];
 int i_PlayerToCustomBuilding[MAXTF2PLAYERS] = {0, ...};
 float f_BuildingIsNotReady[MAXTF2PLAYERS] = {0.0, ...};
+float f_AmmoConsumeExtra[MAXTF2PLAYERS];
 #endif
 
 #if defined ZR || defined RTS
@@ -412,7 +426,6 @@ int EnemyNpcAlive = 0;
 int EnemyNpcAliveStatic = 0;
 
 const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
-int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 
 float f_ClientReviveDelay[MAXENTITIES];
 float f_ClientReviveDelayMax[MAXENTITIES];
@@ -432,7 +445,6 @@ bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
 bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
 bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
 float f_ZombieVolumeSetting[MAXTF2PLAYERS];
-bool b_IgnoreMapMusic[MAXTF2PLAYERS];
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
@@ -472,15 +484,12 @@ int i_NpcInternalId[MAXENTITIES];
 bool b_IsCamoNPC[MAXENTITIES];
 bool b_NoKillFeed[MAXENTITIES];
 
-int i_CustomModelOverrideIndex[MAXTF2PLAYERS];
-
 float f_TimeUntillNormalHeal[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZone[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
 
-int RogueTheme;
 //Needs to be global.
 bool b_IsABow[MAXENTITIES];
 bool b_WeaponHasNoClip[MAXENTITIES];
@@ -605,6 +614,7 @@ int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 #define ABILITY_R				(1 << 3) 	
 
 #define FL_WIDOWS_WINE_DURATION 4.0
+#define FL_WIDOWS_WINE_DURATION_NPC 0.85
 
 
 int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's damage types in cases we dont want to, i.e. too many used, we cant use more. For like white stuff and all, this is just extra on what we already have.
@@ -670,6 +680,7 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
+int RogueTheme;
 float f_TimeSinceLastGiveWeapon[MAXENTITIES]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
 int Resupplies_Supplied[MAXTF2PLAYERS];
@@ -772,14 +783,6 @@ float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 int i_WandOwner[MAXENTITIES]; //				//785
 
 
-bool Viewchanges_PlayerModelsAnims[] =
-{
-	false,
-	true,
-	true,
-	false,
-	true,
-};
 
 float f_NpcImmuneToBleed[MAXENTITIES];
 bool b_NpcIsInvulnerable[MAXENTITIES];
@@ -1049,7 +1052,6 @@ enum
 #define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
 
 
-int FogEntity = INVALID_ENT_REFERENCE;
 
 #define RAD2DEG(%1) ((%1) * (180.0 / FLOAT_PI))
 #define DEG2RAD(%1) ((%1) * FLOAT_PI / 180.0)
@@ -1776,6 +1778,7 @@ public void OnMapStart()
 	Zero(i_CustomWeaponEquipLogic);
 	Zero(Mana_Hud_Delay);
 	Zero(Mana_Regen_Delay);
+	Zero(Mana_Regen_Delay_Aggreviated);
 	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);
@@ -2632,7 +2635,6 @@ public void Update_Ammo(DataPack pack)
 }
 #endif
 
-float f_AmmoConsumeExtra[MAXTF2PLAYERS];
 
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
 {

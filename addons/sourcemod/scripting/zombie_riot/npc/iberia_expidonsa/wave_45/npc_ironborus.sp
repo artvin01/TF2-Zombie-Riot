@@ -305,12 +305,12 @@ void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int targe
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 80.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 						
 					if(npc.Anger)
-						damageDealt *= 2.5;
+						damageDealt *= 2.0;
 						
 					if(NpcStats_IberiaIsEnemyMarked(target))
 						damageDealt *= 1.5;

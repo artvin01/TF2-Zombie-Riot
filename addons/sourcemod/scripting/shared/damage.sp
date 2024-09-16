@@ -244,7 +244,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 #endif	// ZR
 
 #if defined RPG
-	Player_Ability_Warcry_OnTakeDamage(attacker, victim, damage);
+	Player_Ability_Warcry_OnTakeDamage(victim, damage);
 
 	if(TrueStength_ClientBuff(victim))
 		damage *= 0.85;
@@ -554,9 +554,10 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 		damage += basedamage * (0.1 * DamageBuffExtraScaling);
 	}
 
+#if defined ZR
 	if(MoraleBoostLevelAt(attacker) > 0)
 		damage += basedamage * (EntityMoraleBoostReturn(attacker, 2) * DamageBuffExtraScaling);
-
+#endif
 	if(f_EmpowerStateOther[attacker] > GameTime)
 		damage += basedamage * (0.1 * DamageBuffExtraScaling);
 	
@@ -576,12 +577,13 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 			damage += basedamage * (f_Ruina_Attack_Buff_Amt[attacker] * DamageBuffExtraScaling);	//x% dmg bonus			
 	#endif
 
+#if defined ZR
 	//Medieval buff stacks with any other attack buff.
 	if(GetTeam(attacker) != TFTeam_Red && Medival_Difficulty_Level != 0.0)
 	{
 		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
 	}
-	
+#endif
 	return false;
 }
 
@@ -1261,7 +1263,7 @@ static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflict
 			EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 60, _, 1.0);
 
 			damage *= 0.5;
-			f_WidowsWineDebuff[attacker] = GameTime + FL_WIDOWS_WINE_DURATION;
+			f_WidowsWineDebuff[attacker] = GameTime + FL_WIDOWS_WINE_DURATION_NPC;
 		}
 	}
 }
@@ -1622,8 +1624,10 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.
 		DamageRes *= 0.93;
 
+#if defined ZR
 	if(MoraleBoostLevelAt(victim) > 0)
 		DamageRes *= EntityMoraleBoostReturn(victim, 3);
+#endif
 
 	if(!NpcStats_IsEnemySilenced(victim))
 	{
@@ -1831,10 +1835,12 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	{
 		damage += basedamage * (0.2 * DamageBuffExtraScaling);
 	}
+#if defined ZR	
 	if (f_StrangleDebuff[victim] > GameTime)
 	{
 		damage += Magnesis_StrangleDebuffMultiplier(victim, basedamage);
 	}
+#endif
 
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
@@ -2037,12 +2043,12 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "S(%i)%s",VausMagicaShieldLeft(victim),Debuff_Adder_right);
 	}
-#endif
 	if(MoraleBoostLevelAt(victim) > 0) //hussar!
 	{
 		//Display morale!
 		MoraleIconShowHud(victim, Debuff_Adder_right, SizeOfChar);
 	}
+#endif
 	if(f_HussarBuff[victim] > GameTime) //hussar!
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "ᐩ%s", Debuff_Adder_right);

@@ -291,7 +291,7 @@ public void NemanBoss_ClotThink(int iNPC)
 
 			if(IsValidEntity(npc.m_iTarget) && IsValidEnemy(npc.index, npc.m_iTarget))
 			{
-				NemanBoss_InitiateLightning(npc.index, npc.m_iTarget);
+				NemanBoss_InitiateLightning(npc.index);
 			}
 		}		
 	}
@@ -493,7 +493,7 @@ public void NemanBoss_NPCDeath(int entity)
 #define NEMAN_CHARGE_TIME 1.5
 #define NEMAN_CHARGE_SPAN 0.5
 
-void NemanBoss_InitiateLightning(int iNPC, int enemy)
+void NemanBoss_InitiateLightning(int iNPC)
 {
 	float vPredictedPos[3];
 

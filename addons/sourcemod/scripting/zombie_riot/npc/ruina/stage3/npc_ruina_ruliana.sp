@@ -518,9 +518,9 @@ static void ClotThink(int iNPC)
 			fl_ruina_battery_timeout[npc.index] = GameTime + 5.0;
 			Ruliana_Barrage_Invoke(npc, Battery_Cost);
 		}
-		else
+		else if(fl_ruina_battery[npc.index]<=Battery_Cost)
 		{
-			npc.m_flNextRangedBarrage_Singular = GameTime + 10.0; 
+			npc.m_flNextRangedBarrage_Singular = GameTime + 15.0; 
 		}
 
 		//Target close enough to hit
@@ -773,7 +773,7 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 	float GameTime = GetGameTime(npc.index);
 
 	bool FIREEVERYTHING = false;
-	if(npc.m_flNextRangedBarrage_Singular < GameTime)
+	if(npc.m_flNextRangedBarrage_Singular < GameTime && !LastMann)
 	{
 		minimum_targets = 1;
 		FIREEVERYTHING = true;	//OBLITERATE THEM
@@ -850,10 +850,13 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 				valid_targets[i] = previous_target;
 			else
 				previous_target = Target;
+
 		}
+		targets_aquired = (RULIANA_MAX_BARRAGE_SIZE-1);
 	}
 
-	targets_aquired = RULIANA_MAX_BARRAGE_SIZE;
+	if(targets_aquired >= RULIANA_MAX_BARRAGE_SIZE)	///somehow we have more then 15 targets?
+		targets_aquired = (RULIANA_MAX_BARRAGE_SIZE-1);
 
 	float Base_Recharge = Cost;
 	float Modify_Charge = Base_Recharge*(float(targets_aquired)/float(RULIANA_MAX_BARRAGE_SIZE));

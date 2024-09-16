@@ -279,7 +279,7 @@ void IberiaCombastiaSelfDefense(IberiaCombastia npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 115.0;
+					float damageDealt = 85.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 

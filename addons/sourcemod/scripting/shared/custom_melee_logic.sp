@@ -752,11 +752,13 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
+#if defined ZR
 			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
 			{
 				if(PlayOnceOnly) //It hit atleast 1 target!
 					SuperUbersaw_Post(client);
 			}
+#endif
 		}
 
 		if(i_EntitiesHitAtOnceMax <= 1 && target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
