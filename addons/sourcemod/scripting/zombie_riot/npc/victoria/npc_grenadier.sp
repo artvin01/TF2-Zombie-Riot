@@ -303,12 +303,17 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 				float RocketSpeed = 800.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+				float vecDest[3];
+				vecDest = vecTarget;
+				vecDest[0] += GetRandomFloat(-10.0, 10.0);
+				vecDest[1] += GetRandomFloat(-10.0, 10.0);
+				vecDest[2] += GetRandomFloat(-10.0, 10.0);
 				if(npc.m_iChanged_WalkCycle == 1)
 				{
 					float SpeedReturn[3];
 					npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR",_,_,_,0.75);
 
-					int RocketGet = npc.FireRocket(vecTarget + GetRandomFloat(-10.0,10.0), RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
+					int RocketGet = npc.FireRocket(vecDest, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
