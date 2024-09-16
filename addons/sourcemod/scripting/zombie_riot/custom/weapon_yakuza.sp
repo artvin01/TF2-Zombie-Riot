@@ -284,6 +284,8 @@ static Action WeaponTimerFunc(Handle timer, int client)
 					}
 				}
 
+				b_IsCannibal[client] = true;
+
 				PrintHintText(client, "%s - HEAT %d％", StyleName[WeaponStyle[client]], WeaponCharge[client]);
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			}
