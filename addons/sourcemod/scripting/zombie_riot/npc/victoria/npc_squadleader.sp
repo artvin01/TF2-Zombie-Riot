@@ -44,7 +44,7 @@ static const char g_WarCry[][] = {
 };
 
 static int NPCId;
-static float f_GlobalSoundCD
+static float f_GlobalSoundCD;
 static int i_squadleader_particle[MAXENTITIES];
 
 void VictorianSquadleader_OnMapStart_NPC()
