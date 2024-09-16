@@ -62,13 +62,12 @@ void VictorianSquadleader_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squadleader");
 	strcopy(data.Icon, sizeof(data.Icon), "seargent_ideal");
 	data.IconCustom = true;
+
 	data.Flags = 0;
 	f_GlobalSoundCD = 0.0;
-	NPCId = NPC_Add(data);
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
-	int id = NPC_Add(data);
-	Rogue_Paradox_AddWinterNPC(id);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
