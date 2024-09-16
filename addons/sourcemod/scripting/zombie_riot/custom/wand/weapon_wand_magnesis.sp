@@ -451,7 +451,7 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 
 	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
 	{
-		b_LagCompNPC_ExtendBoundingBox = true;
+		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 
 		float pos[3], ang[3], endPos[3], hullMin[3], hullMax[3], direction[3];

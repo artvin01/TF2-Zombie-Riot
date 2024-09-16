@@ -741,6 +741,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Player_OnTakeDamage_Magnesis(victim, damage, attacker);
 		}
+		case WEAPON_YAKUZA:
+		{
+			Yakuza_SelfTakeDamage(victim, attacker, damage, damagetype, equipped_weapon);
+		}
 	}
 	return damage;
 }

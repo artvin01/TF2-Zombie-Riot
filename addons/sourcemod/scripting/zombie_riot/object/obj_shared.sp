@@ -512,7 +512,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
 	int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
 	float Ratio = float(health) / float(maxhealth);
-
+		
 	if(Ratio < 0.15)
 	{
 		if(!objstats.m_bBurning)
@@ -841,8 +841,9 @@ float Object_GetMaxHealthMulti(int client)
 
 Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(RaidBossActive && RaidbossIgnoreBuildingsLogic(2)) //They are ignored anyways
-		return Plugin_Handled;
+	if(!(damagetype & DMG_SLASH))
+		if(RaidBossActive && RaidbossIgnoreBuildingsLogic(2)) //They are ignored anyways
+			return Plugin_Handled;
 
 	if((damagetype & DMG_CRUSH))
 		return Plugin_Handled;
@@ -884,7 +885,8 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	int Owner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
 	if(Owner > 0 && Owner <= MaxClients)
 	{
-		i_BarricadeHasBeenDamaged[Owner] += dmg;
+		if(!(damagetype & DMG_SLASH))
+			i_BarricadeHasBeenDamaged[Owner] += dmg;
 	}
 
 	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);

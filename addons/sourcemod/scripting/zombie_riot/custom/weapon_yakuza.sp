@@ -43,6 +43,9 @@ static const char StyleName[][] =
 	"Dragon"
 };
 
+// https://www.youtube.com/watch?v=VxQXaqDSNUw&t=15s
+#define INDEX_BUILDINGHOLDING	474
+
 static Handle WeaponTimer[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS] = {-1, ...};
 static int WeaponLevel[MAXTF2PLAYERS];
@@ -52,11 +55,12 @@ static int LastAttack[MAXTF2PLAYERS];
 static int LastVictim[MAXTF2PLAYERS] = {-1, ...};
 static float BlockNextFor[MAXTF2PLAYERS];
 static int BlockStale[MAXTF2PLAYERS];
-static float TigerDrop_Negate[MAXTF2PLAYERS];
 static int CurrentWeaponComboAt[MAXTF2PLAYERS];
 static float LastDamage[MAXTF2PLAYERS];
 static float LastSpeed[MAXTF2PLAYERS];
 static float CurrentlyInAttack[MAXTF2PLAYERS];
+static bool SpecialLastMan;
+static bool Precached;
 
 void Yakuza_MapStart()
 {
@@ -64,12 +68,48 @@ void Yakuza_MapStart()
 	Zero(WeaponStyle);
 	Zero(BlockNextFor);
 	Zero(BlockStale);
-	Zero(TigerDrop_Negate);
+	Precached = false;
+	SpecialLastMan = false;
+	PrecacheSound("items/pegleg_01.wav");
+	PrecacheSound("items/pegleg_02.wav");
+	PrecacheSound("items/powerup_pickup_base.wav");
 }
 
-bool Yakuza_HasCharge(int client)
+float Yakuza_DurationDoEnemy(int client, int enemy)
 {
-	return WeaponTimer[client] != null && WeaponCharge[client] < MaxCharge(client);
+	if(LastMann)
+	{
+		return 1.0;
+	}
+	if(b_thisNpcIsARaid[enemy])
+	{
+		return 0.5;
+	}
+	return 1.0;
+}
+bool Yakuza_IsBeastMode(int client)
+{
+	if(WeaponTimer[client] == null)
+		return false;
+
+	if(WeaponStyle[client] != Style_Beast)
+		return false;
+
+	return true;
+}
+
+// Is this player a Yakuza
+bool Yakuza_IsNotInJoint(int client)
+{
+	return WeaponTimer[client] != null;	
+}
+
+bool Yakuza_Lastman(any toggle = -1)
+{
+	if(toggle != -1)
+		SpecialLastMan = view_as<bool>(toggle);
+	
+	return SpecialLastMan;
 }
 
 void Yakuza_ChargeReduced(int client, float time)
@@ -78,16 +118,22 @@ void Yakuza_ChargeReduced(int client, float time)
 		WeaponCharge[client] += RoundFloat(time * 5.0);
 }
 
-void Yakuza_EnemiesHit(int client, int &enemies_hit_aoe)
+void Yakuza_EnemiesHit(int client, int weapon, int &enemies_hit_aoe)
 {
-	if(LastAttack[client] != Attack_Grab && WeaponStyle[client] == Style_Beast)
-		enemies_hit_aoe += 2;
+	if(LastAttack[client] != Attack_Grab && WeaponStyle[client] == Style_Beast && weapon != -1)
+		enemies_hit_aoe += GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING ? 4 : 2;
 }
 
-static int AddCharge(int client, int amount)
+void Yakuza_AddCharge(int client, int amount)
 {
 	if(amount)
 	{
+		if(WeaponStyle[client] == Style_Dragon)
+		{
+			//Dragon style CANNOT gain heat at all
+			if(amount >= 0)
+				amount = 0;
+		}
 		WeaponCharge[client] += amount;
 
 		if(WeaponCharge[client] < 0)
@@ -100,11 +146,16 @@ static int AddCharge(int client, int amount)
 			if(WeaponCharge[client] > maxcharge)
 				WeaponCharge[client] = maxcharge;
 		}
+
+		SetEntProp(client, Prop_Send, "m_nStreaks", WeaponCharge[client] / 20);
 	}
 
 	TriggerTimer(WeaponTimer[client], true);
 }
 
+#define BEAST_DMG_CHANGE 1.5
+#define RUSH_DMG_CHANGE 0.45
+#define DRAGON_DMG_CHANGE 1.25
 static void UpdateStyle(int client)
 {
 	int weapon = EntRefToEntIndex(WeaponRef[client]);
@@ -119,23 +170,35 @@ static void UpdateStyle(int client)
 			case Style_Beast:
 			{
 				color = 2.0;
-				damage = 1.5;
+				damage = BEAST_DMG_CHANGE;
 				speed = 1.5;
 			}
 			case Style_Rush:
 			{
 				i_MeleeAttackFrameDelay[weapon] = 6;
 				color = 6.0;
-				damage = 0.45;
+				damage = RUSH_DMG_CHANGE;
 				speed = 0.67;
 			}
 			case Style_Dragon:
 			{
+				i_MeleeAttackFrameDelay[weapon] = 9;
 				color = 1.0;
-				damage = 1.25;
+				damage = DRAGON_DMG_CHANGE;
 				speed = 0.75;
 			}
 		}
+
+		// See Yakuz_SpawnWeaponPre
+		if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
+		{
+			damage *= 1.5;
+			speed *= 1.15;
+			Attributes_Set(weapon, 54, 0.8);
+			i_WeaponFakeIndex[weapon] = 5;
+		}
+
+		SetEntProp(client, Prop_Send, "m_nStreaks", 0);
 
 		Attributes_SetMulti(weapon, 2, damage / LastDamage[client]);
 		LastDamage[client] = damage;
@@ -152,7 +215,7 @@ static void UpdateStyle(int client)
 
 static int MaxCharge(int client)
 {
-	return 100 + WeaponLevel[client] * 20;
+	return 75 + WeaponLevel[client] * 25;
 }
 
 static int PlayerState(int client)
@@ -161,6 +224,17 @@ static int PlayerState(int client)
 		return 1;
 	
 	return 0;
+}
+
+void Yakuz_SpawnWeaponPre(int client, int &index, TFClassType &class)
+{
+	if(WeaponStyle[client] == Style_Beast && IsValidEntity(i2_MountedInfoAndBuilding[1][client]) && GetEntProp(i2_MountedInfoAndBuilding[1][client], Prop_Data, "m_iHealth") > 0)
+	{
+		// Holding building? Conscientious Objector.
+		// Note: Do Store_GiveAll when removing/adding a mounted building
+		index = INDEX_BUILDINGHOLDING;
+		class = TFClass_DemoMan;
+	}
 }
 
 void Yakuza_Enable(int client, int weapon)
@@ -172,10 +246,17 @@ void Yakuza_Enable(int client, int weapon)
 		WeaponRef[client] = EntIndexToEntRef(weapon);
 
 		delete WeaponTimer[client];
-		WeaponTimer[client] = CreateTimer(1.0, WeaponTimerFunc, client, TIMER_REPEAT);
+		WeaponTimer[client] = CreateTimer(0.6, WeaponTimerFunc, client, TIMER_REPEAT);
 
 		LastDamage[client] = 1.0;
 		LastSpeed[client] = 1.0;
+
+		if(!Precached)
+		{
+			// MASS REPLACE THIS IN ALL FILES
+			PrecacheSoundCustom("#zombiesurvival/yakuza_lastman.mp3",_,1);
+			Precached = true;
+		}
 
 		UpdateStyle(client);
 	}
@@ -190,7 +271,20 @@ static Action WeaponTimerFunc(Handle timer, int client)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
-				PrintHintText(client, "%s - HEAT %d%%", StyleName[WeaponStyle[client]], WeaponCharge[client]);
+				if(LastMann)
+					TF2_AddCondition(client, TFCond_InHealRadius, 1.1);
+				
+				if(WeaponStyle[client] == Style_Dragon)
+				{
+					Yakuza_AddCharge(client, -1);
+					if(WeaponCharge[client] < 1)
+					{
+						WeaponStyle[client] = 0;
+						UpdateStyle(client);
+					}
+				}
+
+				PrintHintText(client, "%s - HEAT %d％", StyleName[WeaponStyle[client]], WeaponCharge[client]);
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			}
 			else
@@ -205,6 +299,7 @@ static Action WeaponTimerFunc(Handle timer, int client)
 		}
 	}
 
+	WeaponCharge[client] = 0;
 	WeaponTimer[client] = null;
 	return Plugin_Stop;
 }
@@ -216,7 +311,53 @@ public void Weapon_Yakuza_R(int client, int weapon, bool crit, int slot)
 
 	WeaponStyle[client]++;
 	if(WeaponStyle[client] >= Style_Dragon)
+	{
 		WeaponStyle[client] = 0;
+	}
+
+	if(PlayerState(client) == 1)
+	{
+		if(WeaponLevel[client] > 2)
+		{
+			if(WeaponCharge[client] >= 80)
+			{
+				WeaponStyle[client] = Style_Dragon;
+			}
+			else
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Requires 80%% HEAT for Dragon Style!");
+			}
+		}
+	}
+	
+	switch(WeaponStyle[client])
+	{
+		case Style_Brawler:
+			EmitSoundToClient(client, "items/powerup_pickup_base.wav", client, _, 75, _, 0.60);
+
+		case Style_Beast:
+			EmitSoundToClient(client, "items/powerup_pickup_knockout.wav", client, _, 75, _, 0.60);
+
+		case Style_Rush:
+			EmitSoundToClient(client, "items/powerup_pickup_agility.wav", client, _, 75, _, 0.60);
+
+		case Style_Dragon:
+			EmitSoundToClient(client, "items/powerup_pickup_strength.wav", client, _, 75, _, 0.60);
+		
+	}
+	
+	// Update weapon for held building
+	if(WeaponStyle[client] == Style_Beast)
+	{
+		if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
+			Store_GiveAll(client, GetClientHealth(client));
+	}
+	else if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
+	{
+		Store_GiveAll(client, GetClientHealth(client));
+	}
 	
 	TriggerTimer(WeaponTimer[client], true);
 	UpdateStyle(client);
@@ -224,11 +365,6 @@ public void Weapon_Yakuza_R(int client, int weapon, bool crit, int slot)
 
 public void Weapon_Yakuza_M1(int client, int weapon, bool crit, int slot)
 {
-	if(WeaponLevel[client] < 1)
-	{
-		Yakuza_BasicAttack(client, weapon);
-		return;
-	}
 	switch(PlayerState(client))
 	{
 		//if not ducking
@@ -252,7 +388,8 @@ public void Weapon_Yakuza_M2(int client, int weapon, bool crit, int slot)
 		//Set the current ongoing attack to heavy, critboost for visual effect
 		return;
 	}
-	if(dieingstate[client] != 0)
+	
+	if(dieingstate[client] != 0 || WeaponLevel[client] < 1)
 		return;
 	
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
@@ -311,9 +448,13 @@ static void Yakuza_BasicAttack(int client, int weapon)
 
 void Yakuza_WeaponCooldown(int client, int weapon)
 {
+	
+	DataPack pack = new DataPack();
+	RequestFrame(Yakuza_ApplyWeaponCD2, pack);
+	pack.WriteCell(EntIndexToEntRef(weapon));
+
 	float cooldown = 4.0;
 	cooldown *= Attributes_Get(weapon, 6, 1.0);
-	Ability_Apply_Cooldown(client, 1, cooldown);
 	DataPack pack2 = new DataPack();
 	RequestFrame(Yakuza_ApplyWeaponCD, pack2);
 	pack2.WriteCell(EntIndexToEntRef(weapon));
@@ -338,7 +479,7 @@ public void Yakuza_ApplyWeaponCD(DataPack pack)
 			}
 			else if(LastAttack[Owner] == Attack_Grab)
 			{
-				TimeSet *= 5.0;
+				TimeSet *= 6.0;
 				Ability_Apply_Cooldown(Owner, 1, TimeSet);
 			}
 			if(LastAttack[Owner] != Attack_Grab)
@@ -380,19 +521,31 @@ static void Yakuza_GrabAttack(int client, int weapon, int slot)
 	}
 
 	LastAttack[client] = Attack_Grab;
-	PrintToChatAll("tYakuza_GrabAttack 2");
 	TF2_AddCondition(client, TFCond_CritCanteen, 0.25);
 	Yakuza_WeaponCooldown(client, weapon);
 	//Set the current ongoing attack to heavy, critboost for visual effect
 }
+
+bool TraceStunOnly;
+bool YakuzaTestStunOnlyTrace()
+{
+	return TraceStunOnly;
+}
+
 public void Yakuza_M2Special(int client, int weapon, int slot)
 {
+	if(WeaponStyle[client] != Style_Dragon)
+		TraceStunOnly = true;
+
 	Handle swingTrace;
 	float vecSwingForward[3];
-	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0, false, 45.0, true); //infinite range, and ignore walls!
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 80.0, false, 45.0, true); //infinite range, and ignore walls!
 				
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
+	TraceStunOnly = false;
 	
 	if(target <= 0)
 	{
@@ -400,15 +553,46 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		{
 			//Allow tracing and picking up on decorative objects
 			//Code this last
+			if(MountBuildingToBackInternal(client, weapon, false, true))
+			{
+				//Hurray, no buiding was found, lets try stealing!
+				Store_GiveAll(client, GetClientHealth(client));
+				FinishLagCompensation_Base_boss();
+				return;
+			}
+			
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "STYLE: Target must be a decorative building or your own!");
+			FinishLagCompensation_Base_boss();
+			return;
 		}
-		return;
+		else if(WeaponStyle[client] == Style_Rush)
+		{
+			Rogue_OnAbilityUse(weapon);
+			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
+			Ability_Apply_Cooldown(client, 2, 6.0);
+			FinishLagCompensation_Base_boss();
+			return;
+		}
+
+		if(WeaponStyle[client] != Style_Brawler)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: No target!");
+			FinishLagCompensation_Base_boss();
+			return;
+		}
 	}
 	
 	//We found a target!
-	if(f_TimeFrozenStill[target] > GetGameTime(target) || WeaponStyle[client] == Style_Dragon)
+	if(target > 0 && (f_TimeFrozenStill[target] > GetGameTime(target) || WeaponStyle[client] == Style_Dragon))
 	{
 		//the target is stunned! Do we allow a heat action?
-		if(WeaponLevel[client] > 3)
+		if(WeaponLevel[client] > 1)
 		{
 			if(CvarInfiniteCash.BoolValue && WeaponCharge[client] < 100)
 				WeaponCharge[client] = 100;
@@ -416,86 +600,151 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			int RequiredHeat = 80;
 			//dont need extreme full heat.
 			if(WeaponStyle[client] == Style_Dragon)
+			{
+				if(GetClientButtons(client) & IN_ATTACK) //if its dragon, make it so they cant hold m1
+				{
+					FinishLagCompensation_Base_boss();
+					return;
+				}
 				RequiredHeat = 35;
+			}
 
 			if(WeaponCharge[client] >= RequiredHeat)
 			{
-				AddCharge(client, -RequiredHeat);
-				f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.5;
+				Rogue_OnAbilityUse(weapon);
+				Yakuza_AddCharge(client, -RequiredHeat);
+				f_AntiStuckPhaseThrough[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(client, target));
 				//Everything is greenlit! Yaay!
 				switch(WeaponStyle[client])
 				{
 					case Style_Brawler:
-						DoSpecialActionYakuza(client, "brawler_heat_1", 2.5, target);
+					{
+						float DamageBase = 180.0;
+						DamageBase *= 4.0;
+						DamageBase *= Attributes_Get(weapon, 2, 0.0);
+						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_1", 2.5 * Yakuza_DurationDoEnemy(client, target), target);
+					}
 
 					case Style_Beast:
-						DoSpecialActionYakuza(client, "brawler_heat_2", 2.1, target);
+					{
+						if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
+						{
+							float DamageBase = 170.0;
+							DamageBase *= 4.0;
+							DamageBase *= Attributes_Get(weapon, 2, 0.0);
+							DoSpecialActionYakuza(client, DamageBase, "beast_heat_building_1", 1.35 * Yakuza_DurationDoEnemy(client, target), target);
+						}
+						else
+						{
+							float DamageBase = 120.0;
+							DamageBase *= Attributes_Get(weapon, 2, 0.0);
+							DoSpecialActionYakuza(client, DamageBase, "brawler_heat_2", 2.1 * Yakuza_DurationDoEnemy(client, target), target);
+						}
+					}
 					
 					case Style_Rush:
-						DoSpecialActionYakuza(client, "brawler_heat_3", 2.5, target)
+					{
+						float DamageBase = 350.0;
+						DamageBase *= 4.0;
+						DamageBase *= Attributes_Get(weapon, 2, 0.0);
+						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_3", 2.5 * Yakuza_DurationDoEnemy(client, target), target);
+					}
 
 					case Style_Dragon:
 					{
+						float DamageBase = 200.0;
+						DamageBase *= 4.0;
+						DamageBase *= Attributes_Get(weapon, 2, 0.0);
 						//tiger drop negates all damage.
 						f_AntiStuckPhaseThrough[client] = 0.0;
-						IncreaceEntityDamageTakenBy(target, 0.001, 0.75);
-						DoSpecialActionYakuza(client, "brawler_heat_4", 0.75, target);
+						IncreaceEntityDamageTakenBy(client, 0.0001, 0.75);
+						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_4", 0.75, target);
 					}
 				}
+				
+				float flMaxhealth = float(ReturnEntityMaxHealth(client));
+				flMaxhealth *= 0.15;
+				if(LastMann)
+					flMaxhealth *= 2.0;
+					
+				HealEntityGlobal(client, client, flMaxhealth, 1.0, 0.0, HEAL_SELFHEAL);
+				FinishLagCompensation_Base_boss();
+				return;
 			}
+
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Requires %d%% HEAT for this!", RequiredHeat);
+			FinishLagCompensation_Base_boss();
+			return;
 		}
-	}
-}
-static void Yakuza_StyleSpecial(int client, int weapon, int slot)
-{
-	if(CvarInfiniteCash.BoolValue && WeaponCharge[client] < 25)
-		WeaponCharge[client] = 25;
-	
-	if(WeaponCharge[client] < 25)
-	{
+
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "Require 25%% HEAT for this action");
-	}
-	else
-	{
-		Rogue_OnAbilityUse(weapon);
-	}
-}
-
-static void Yakuza_HeatSpecial(int client, int weapon, int slot)
-{
-	if(WeaponLevel[client] < 4)
-	{
-//		Yakuza_StyleSpecial(client, weapon);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Ability not unlocked!");
+		FinishLagCompensation_Base_boss();
 		return;
 	}
+	if(GetClientButtons(client) & IN_ATTACK)
+	{
+		FinishLagCompensation_Base_boss();
+		return;
+	}
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0, false, 45.0, true); //infinite range, and ignore walls!
+	FinishLagCompensation_Base_boss();
+	target = TR_GetEntityIndex(swingTrace);	
+	delete swingTrace;
 
-	if(CvarInfiniteCash.BoolValue && WeaponCharge[client] < 100)
-		WeaponCharge[client] = 100;
+	if(target > 0 && WeaponStyle[client] == Style_Brawler)
+	{
+		if(i_NpcWeight[target] < 4)
+		{
+			Rogue_OnAbilityUse(weapon);
+			
+			bool halved = (b_thisNpcIsABoss[target] || i_NpcWeight[target] > 2);
+			
+			float VicLoc[3];
+			VicLoc[2] += halved ? 350.0 : 450.0; //Jump up.
+
+			SDKUnhook(target, SDKHook_Think, NpcJumpThink);
+			f3_KnockbackToTake[target] = VicLoc;
+			SDKHook(target, SDKHook_Think, NpcJumpThink);
+			FreezeNpcInTime(target, halved ? 1.0 : 1.5);
+			float DistanceCheck[3];
+			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", DistanceCheck);
+			spawnRing_Vectors(DistanceCheck, 0.0, 50.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1);	
+			EmitSoundToAll(IRENE_KICKUP_1, client, _, 75, _, 0.60);
+
+			Ability_Apply_Cooldown(client, 2, 6.0);
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "STYLE: Target too heavy!");
+		}
+		
+		return;
+	}
 	
-	if(WeaponCharge[client] < 100)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "Require 100%% HEAT for this action");
-	}
-	else
-	{
-		Rogue_OnAbilityUse(weapon);
-		AddCharge(client, -999);
-	}
+	ClientCommand(client, "playgamesound items/medshotno1.wav");
+	SetDefaultHudPosition(client);
+	SetGlobalTransTarget(client);
+	ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Target must be stunned!");
 }
 
 static void Yakuza_Block(int client, int weapon, int slot)
 {
 	if(WeaponLevel[client] < 3)
 	{
-	//	Yakuza_StyleSpecial(client, weapon);
+		Yakuza_M2Special(client, weapon, slot);
 		return;
 	}
+	
+	Rogue_OnAbilityUse(weapon);
 
 	float gameTime = GetGameTime();
 	float cooldown = 2.0;
@@ -519,13 +768,15 @@ static void Yakuza_Block(int client, int weapon, int slot)
 			duration = 0.65;
 		}
 	}
-
-	Ability_Apply_Cooldown(client, 1, duration);
+	
 	Ability_Apply_Cooldown(client, 2, cooldown * 3.0 * (1.0 + (BlockStale[client] * 0.05)));
 
 	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", gameTime + duration);
 
 	BlockStale[client] += 10;	// Every block stales by x1.5
+	int NumberRand = GetRandomInt(0,1);
+	EmitSoundToAll(NumberRand ? "items/pegleg_01.wav" : "items/pegleg_02.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 90);
+	EmitSoundToAll(NumberRand ? "items/pegleg_01.wav" : "items/pegleg_02.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 90);
 
 	if(RaidbossIgnoreBuildingsLogic(1))
 	{
@@ -541,6 +792,46 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 {
 	BlockStale[attacker]--;
 	LastVictim[attacker] = EntIndexToEntRef(victim);
+
+	if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
+	{
+		bool failed = true;
+
+		int building = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][attacker]);
+		if(building != -1)
+		{
+			int health = GetEntProp(building, Prop_Data, "m_iHealth") - (GetEntProp(building, Prop_Data, "m_iMaxHealth") / 10);
+			
+			if(health > 0)
+			{
+				SetEntProp(building, Prop_Data, "m_iHealth", health);
+				failed = false;
+			}
+			else
+			{
+				int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][attacker]);
+				if(IsValidEntity(i2_MountedInfoAndBuilding[1][attacker]))
+				{
+					float posStacked[3]; 
+					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
+					AcceptEntityInput(i2_MountedInfoAndBuilding[1][attacker], "ClearParent");
+					SDKCall_SetLocalOrigin(entity, posStacked);	
+					i2_MountedInfoAndBuilding[1][attacker] = INVALID_ENT_REFERENCE;
+				}
+				if(IsValidEntity(i2_MountedInfoAndBuilding[0][attacker]))
+				{
+					RemoveEntity(i2_MountedInfoAndBuilding[0][attacker]);
+					i2_MountedInfoAndBuilding[0][attacker] = INVALID_ENT_REFERENCE;
+				}
+				SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_SLASH);
+			}
+		}
+
+		if(failed)
+		{
+			Store_GiveAll(attacker, GetClientHealth(attacker));
+		}
+	}
 
 	switch(LastAttack[attacker])
 	{
@@ -567,12 +858,11 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 				case Style_Dragon:
 					damage *= 4.0;
 			}
-			SensalCauseKnockback(attacker, victim, 0.5, false);
+			SensalCauseKnockback(attacker, victim, 0.5, false, true);
 		}
 		case Attack_Grab:
 		{
 			damage = 1.0;
-			PrintToChatAll("test Attack_Grab takedmgae");
 
 			float duration = 1.0;
 			switch(WeaponStyle[attacker])
@@ -584,28 +874,54 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 					duration = 0.8;
 
 				case Style_Dragon:
-					damage *= 1.5;
+					duration = 1.25;
 			}
-
-			FreezeNpcInTime(victim, duration);
+			if(!LastMann && b_thisNpcIsARaid[victim])
+			{
+				//Give bigger cooldown.
+				float cooldown = 4.0;
+				cooldown *= Attributes_Get(weapon, 6, 1.0);
+				cooldown *= 6.0;
+				cooldown *= 3.0;
+				Ability_Apply_Cooldown(attacker, 1, cooldown);
+				duration *= 0.35;
+			}
+			
+			FreezeNpcInTime(victim, duration * Yakuza_DurationDoEnemy(attacker, victim));
 		}
 	}
 
-	float scale = 30.0 + (ZR_GetWaveCount() * 1.5);
-	AddCharge(attacker, RoundToCeil(damage / scale));
+	int WaveMax = ZR_GetWaveCount();
+	if(WaveMax >= 75)
+		WaveMax = 75;
+
+	float scale = 30.0 + (WaveMax * 1.5);
+	Yakuza_AddCharge(attacker, RoundToCeil(damage / scale));
 
 	// +25% damage at 100% HEAT
 	damage *= 1.0 + (WeaponCharge[attacker] * 0.0025);
 }
 
-void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damagetype)
+void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damagetype, int weapon)
 {
-	//however, it cannot negate true damage, that would be dumb
-	if(TigerDrop_Negate[victim] > GetGameTime())
+	if(LastMann)
 	{
-		damage = 0.0;
-		return;
+		damage *= 0.5;
 	}
+	if(WeaponStyle[victim] == Style_Brawler)
+		damage *= 0.90;
+
+	if(WeaponStyle[victim] == Style_Dragon)
+		damage *= 0.8;
+
+	if(WeaponStyle[victim] == Style_Beast)
+	{
+		if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
+			damage *= 0.7;
+		else
+			damage *= 0.8;
+	}
+
 	if((damagetype & DMG_SLASH) || attacker <= MaxClients)
 		return;
 	
@@ -616,15 +932,46 @@ void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damaget
 	//With beastmode, you cant actually block youre just immune to knockback, but that in ZR sucks, so it should be the best to block with.
 	if((damagetype & DMG_CLUB) && BlockNextFor[victim] > GetGameTime())
 	{
+		int rand = (GetURandomInt() % 4) + 1;
+		ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
+		ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
 		damage = 0.0;
 		return;
 	}
 
-	AddCharge(victim, RoundToCeil(damage * -0.01));
+	Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));
 }
 
-static int DoSpecialActionYakuza(int client, const char[] animation, float duration, int target)
+
+float Yakuza_SelfTakeDamageHud(int victim, int weapon)
 {
+	float damagereturn = 1.0;
+	if(LastMann)
+	{
+		damagereturn *= 0.5;
+	}
+
+	if(WeaponStyle[victim] == Style_Brawler)
+		damagereturn *= 0.90;
+
+	if(WeaponStyle[victim] == Style_Dragon)
+		damagereturn *= 0.8;
+
+	if(WeaponStyle[victim] == Style_Beast)
+	{
+		if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
+			damagereturn *= 0.7;
+		else
+			damagereturn *= 0.8;
+	}
+
+	return damagereturn;
+}
+static int DoSpecialActionYakuza(int client, float DamageBase, const char[] animation, float duration, int target)
+{
+	//Reduce the damgae they take in half during the animtion, just incase, evne though they are untargetable anyways.
+	//incase of AOE attacks and all.
+	IncreaceEntityDamageTakenBy(client, 0.5, duration);
 	b_ThisEntityIgnored[client] = true;
 	float vAngles[3];
 	float vOrigin[3];
@@ -715,8 +1062,64 @@ static int DoSpecialActionYakuza(int client, const char[] animation, float durat
 	
 	int spawn_index = NPC_CreateByName("npc_allied_kiryu_visualiser", client, vabsOrigin, vabsAngles, target, animation);
 
+	fl_AbilityOrAttack[spawn_index][3] = DamageBase;
 	CClotBody npc = view_as<CClotBody>(spawn_index);
 	npc.m_iTargetWalkTo = viewcontrol;
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+
+	if(i_OverlordComboAttack[npc.index] == 5)
+	{
+		Building_Mounted[client] = 0;
+		int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
+		if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
+		{
+			float posStacked[3]; 
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
+			AcceptEntityInput(i2_MountedInfoAndBuilding[1][client], "ClearParent");
+			SDKCall_SetLocalOrigin(entity, posStacked);	
+			i2_MountedInfoAndBuilding[1][client] = INVALID_ENT_REFERENCE;
+		}
+		if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]))
+		{
+			RemoveEntity(i2_MountedInfoAndBuilding[0][client]);
+			i2_MountedInfoAndBuilding[0][client] = INVALID_ENT_REFERENCE;
+		}
+		
+		npc.m_iWearable8 = entity;
+		float ModelScale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		ModelScale *= 3.0;
+
+		ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelScale);
+		
+		if(IsValidEntity(objstats.m_iWearable1))
+		{
+			SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
+		}
+		if(IsValidEntity(objstats.m_iWearable2))
+		{
+			SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
+		}
+	}
+
+	if(LastMann && Yakuza_Lastman())
+	{
+		// Camera for all players yippie
+		for(int other = 1; other <= MaxClients; other++)
+		{
+			if(other != client && IsClientInGame(other) && IsPlayerAlive(other))
+			{
+				SetVariantInt(0);
+				AcceptEntityInput(other, "SetForcedTauntCam");
+				SetClientViewEntity(other, viewcontrol);
+
+				CreateTimer(duration, Yakuza_ResetCameraOnly, GetClientUserId(other), TIMER_FLAG_NO_MAPCHANGE);
+			}
+		}
+	}
 	
 	DataPack pack;
 	CreateDataTimer(duration, Leper_SuperHitInitital_After, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -741,4 +1144,21 @@ static int DoSpecialActionYakuza(int client, const char[] animation, float durat
 	}
 
 	return spawn_index;
+}
+
+static Action Yakuza_ResetCameraOnly(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
+		SetClientViewEntity(client, client);
+
+		if(thirdperson[client])
+		{
+			SetVariantInt(1);
+			AcceptEntityInput(client, "SetForcedTauntCam");
+		}
+	}
+
+	return Plugin_Continue;
 }

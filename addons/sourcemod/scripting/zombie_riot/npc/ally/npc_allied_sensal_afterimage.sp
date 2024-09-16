@@ -354,7 +354,7 @@ public bool AlliedSensal_TraceWallsOnly(int entity, int contentsMask)
 #define SENSAL_KNOCKBACK		750.0	// Knockback when push level and enemy weight is the same
 #define SENSAL_STUN_RATIO		0.00075	// Knockback when push level and enemy weight is the same
 
-void SensalCauseKnockback(int attacker, int victim, float RatioExtra = 1.0, bool dostun = true)
+void SensalCauseKnockback(int attacker, int victim, float RatioExtra = 1.0, bool dostun = true, bool Kiyru = false)
 {
 	int weight = i_NpcWeight[victim];
 	if(weight > 5)
@@ -394,6 +394,8 @@ void SensalCauseKnockback(int attacker, int victim, float RatioExtra = 1.0, bool
 	{
 		knockback *= 0.65; //They take half knockback
 	}
+	if(LastMann)
+		knockback *= 2.0;
 
 	if(knockback < (SENSAL_KNOCKBACK * 2.0 * 0.25))
 	{

@@ -33,6 +33,7 @@ void AlliedKiryuVisualiserAbility_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
+		
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return AlliedKiryuVisualiserAbility(client, vecPos, vecAng, ally, data);
@@ -80,6 +81,16 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 		public get()							{ return b_FUCKYOU[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
 	}
+	property float f_SpeedAcelerateAnim
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float f_DamageDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
 
 	property int m_iWearablePlayerModel
 	{
@@ -117,7 +128,6 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				taunt_yetipunch frame 87 out of 156
 				lasts untill frame 133
 			*/
-			PrintToChatAll("brawler_heat_1");
 			WhichStateUse = 1;
 			ModelUse = "models/player/heavy.mdl";
 		}
@@ -128,7 +138,6 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				heavy model:
 				taunt_headbutt_success
 			*/
-			PrintToChatAll("brawler_heat_2");
 			WhichStateUse = 2;
 			ModelUse = "models/player/soldier.mdl";
 		}
@@ -139,7 +148,6 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				heavy model:
 				taunt_headbutt_success
 			*/
-			PrintToChatAll("brawler_heat_3");
 			WhichStateUse = 3;
 			ModelUse = "models/player/soldier.mdl";
 		}
@@ -150,21 +158,18 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				heavy model:
 				taunt_headbutt_success
 			*/
-			PrintToChatAll("brawler_heat_4");
 			WhichStateUse = 4;
 			ModelUse = "models/player/medic.mdl";
 		}
-		else if(!StrContains(data, "beast"))
+		if(!StrContains(data, "beast_heat_building_1"))
 		{
-
-		}
-		else if(!StrContains(data, "rush"))
-		{
-
-		}
-		else if(!StrContains(data, "dragon"))
-		{
-
+			//This is action 1 as an example.
+			/*
+				heavy model:
+				taunt_headbutt_success
+			*/
+			WhichStateUse = 5;
+			ModelUse = "models/player/engineer.mdl";
 		}
 
 		if(!ModelUse[0])
@@ -216,7 +221,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 			if(!ModelPath[0])
 				continue;
 
-			for(int Repeat=0; Repeat<7; Repeat++)
+			for(int Repeat=0; Repeat<6; Repeat++)
 			{
 				int WearableIndex = i_Wearable[npc.index][Repeat];
 				if(!IsValidEntity(WearableIndex))
@@ -269,49 +274,63 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 
 		npc.m_iKiryuActionWhich = WhichStateUse;
 		npc.b_NoLongerResetVel = false;
+		npc.f_SpeedAcelerateAnim = Yakuza_DurationDoEnemy(client, enemyattach);
 		switch(npc.m_iKiryuActionWhich)
 		{
 			case 1:
 			{
 				npc.AddActivityViaSequence("taunt_cheers_heavy");
 				npc.SetCycle(0.025);
-				npc.m_flKiryuTimeUntillDone = GetGameTime() + 2.5;
+				npc.SetPlaybackRate(1.0 * (1.0 / npc.f_SpeedAcelerateAnim));
+				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.5 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = -50.0;
 				c_KiyruAttachmentDo[npc.index] = "effect_hand_r";
-				FreezeNpcInTime(npc.m_iTarget, 1.75, true);
-				SetAirtimeNpc(npc.m_iTarget, 1.75);
+				FreezeNpcInTime(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim), true);
+				SetAirtimeNpc(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim));
 			}
 			case 2:
 			{
 				npc.AddActivityViaSequence("taunt_headbutt_success");
 				// frame 20 out of 135
 				npc.SetCycle(0.02);
-				npc.m_flKiryuTimeUntillDone = GetGameTime() + 2.1;
+				npc.SetPlaybackRate(1.0 * (1.0 / npc.f_SpeedAcelerateAnim));
+				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.1 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = -50.0;
 				c_KiyruAttachmentDo[npc.index] = "effect_hand_r";
-				FreezeNpcInTime(npc.m_iTarget, 1.9, true);
-				SetAirtimeNpc(npc.m_iTarget, 1.9);
+				FreezeNpcInTime(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim), true);
+				SetAirtimeNpc(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim));
 			}
 			case 3:
 			{
 				npc.AddActivityViaSequence("taunt_unleashed_rage_soldier");
 				npc.SetCycle(0.014);
-				npc.m_flKiryuTimeUntillDone = GetGameTime() + 2.5;
+				npc.SetPlaybackRate(1.0 * (1.0 / npc.f_SpeedAcelerateAnim));
+				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.5 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = 0.0;
 				c_KiyruAttachmentDo[npc.index] = "root";
-				FreezeNpcInTime(npc.m_iTarget, 2.5, true);
-				SetAirtimeNpc(npc.m_iTarget, 2.59);
+				FreezeNpcInTime(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim), true);
+				SetAirtimeNpc(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim));
 			}
 			case 4:
 			{
+				npc.f_SpeedAcelerateAnim = 1.0;
 				npc.AddActivityViaSequence("taunt_vehicle_allclass_end");
 				npc.SetCycle(0.1);
 				npc.SetPlaybackRate(0.01);
 				npc.m_flKiryuTimeUntillDone = GetGameTime() + 0.75;
 				npc.f_OffsetVertical = 0.0;
 				c_KiyruAttachmentDo[npc.index] = "";
-				FreezeNpcInTime(npc.m_iTarget, 0.75, true);
-				SetAirtimeNpc(npc.m_iTarget, 0.75);
+			}
+			case 5:
+			{
+				npc.AddActivityViaSequence("taunt07");
+				npc.SetCycle(0.82);
+				npc.SetPlaybackRate(0.5 * (1.0 / npc.f_SpeedAcelerateAnim));
+				npc.m_flKiryuTimeUntillDone = GetGameTime() + (1.35 * npc.f_SpeedAcelerateAnim);
+				npc.f_OffsetVertical = 0.0;
+				c_KiyruAttachmentDo[npc.index] = "root";
+				FreezeNpcInTime(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim), true);
+				SetAirtimeNpc(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim));
 			}
 		}
 		npc.PlayInitSound();
@@ -378,6 +397,19 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 			if(!StrContains(c_KiyruAttachmentDo[npc.index], "root"))
 			{
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);	
+				float direction[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", direction);
+				float VecForward[3];
+				float vecRight[3];
+				float vecUp[3];
+				float vecSwingEnd[3];
+						
+				GetAngleVectors(direction, VecForward, vecRight, vecUp);
+				
+				vecSwingEnd[0] = flPos[0] + VecForward[0] * (60.0);
+				vecSwingEnd[1] = flPos[1] + VecForward[1] * (60.0);
+				vecSwingEnd[2] = flPos[2];/*+ VecForward[2] * (100);*/
+				flPos = vecSwingEnd;
 			}
 			else
 				npc2.GetAttachment(c_KiyruAttachmentDo[npc.index], flPos, flAng);
@@ -416,6 +448,10 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 		{
 			BrawlerHeat4(owner, npc, GameTime);
 		}
+		case 5:
+		{
+			BeastBuildingHeat1(owner, npc, GameTime);
+		}
 	}
 }
 
@@ -424,29 +460,30 @@ void BrawlerHeat1(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 	if(npc.m_flKiryuTimeUntillDone)
 	{
 		float TimeLeft = npc.m_flKiryuTimeUntillDone - GameTime;
-		if(TimeLeft < 1.25)
+		if(TimeLeft < (1.25 * npc.f_SpeedAcelerateAnim))
 		{
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
 				npc.m_iChanged_WalkCycle = 3;
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-					SensalCauseKnockback(npc.index, npc.m_iTarget);
+				
+					SensalCauseKnockback(npc.index, npc.m_iTarget,_,_, true);
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
-					float damage = 50.0;
-					CauseKiyruDamageLogic(owner, npc.m_iTarget, damage);
+					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
 					npc.b_NoLongerResetVel = true;
 				}
 			}
 		}
-		else if(TimeLeft < 1.75)
+		else if(TimeLeft < (1.75 * npc.f_SpeedAcelerateAnim))
 		{
 			if(npc.m_iChanged_WalkCycle != 2)
 			{
 				npc.m_iChanged_WalkCycle = 2;
 				npc.AddActivityViaSequence("taunt_yetipunch");
 				npc.SetCycle(0.60);
+				npc.SetPlaybackRate(1.0 * (1.0 / npc.f_SpeedAcelerateAnim));
 				c_KiyruAttachmentDo[npc.index] = "";
 			}
 		}
@@ -458,18 +495,17 @@ void BrawlerHeat2(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 	if(npc.m_flKiryuTimeUntillDone)
 	{
 		float TimeLeft = npc.m_flKiryuTimeUntillDone - GameTime;
-		if(TimeLeft < 0.45)
+		if(TimeLeft < (0.45 * npc.f_SpeedAcelerateAnim))
 		{
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
 				npc.m_iChanged_WalkCycle = 3;
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-					SensalCauseKnockback(npc.index, npc.m_iTarget);
+					SensalCauseKnockback(npc.index, npc.m_iTarget,_,_, true);
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-					float damage = 50.0;
-					CauseKiyruDamageLogic(owner, npc.m_iTarget, damage);
+					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
 					c_KiyruAttachmentDo[npc.index] = "";
 					npc.b_NoLongerResetVel = true;
 				}
@@ -484,7 +520,7 @@ void BrawlerHeat3(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 	if(npc.m_flKiryuTimeUntillDone)
 	{
 		float TimeLeft = npc.m_flKiryuTimeUntillDone - GameTime;
-		if(TimeLeft < 0.45)
+		if(TimeLeft < (0.45 * npc.f_SpeedAcelerateAnim))
 		{
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
@@ -494,14 +530,13 @@ void BrawlerHeat3(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 				//	SensalCauseKnockback(npc.index, npc.m_iTarget);
 					npc.PlayHitSound2();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-					float damage = 50.0;
-					CauseKiyruDamageLogic(owner, npc.m_iTarget, damage);
+					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
 					c_KiyruAttachmentDo[npc.index] = "";
 					npc.b_NoLongerResetVel = true;
 				}
 			}
 		}
-		else if(TimeLeft < 1.5)
+		else if(TimeLeft < (1.5 * npc.f_SpeedAcelerateAnim))
 		{
 			if(npc.m_iChanged_WalkCycle != 2)
 			{
@@ -509,6 +544,7 @@ void BrawlerHeat3(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 				npc.AddActivityViaSequence("taunt_neck_snap_soldier_initiate");
 				// frame 27 out of 192
 				npc.SetCycle(0.25);
+				npc.SetPlaybackRate(1.0 * (1.0 / npc.f_SpeedAcelerateAnim));
 				c_KiyruAttachmentDo[npc.index] = "effect_hand_l";
 				npc.f_OffsetVertical = -75.0;
 			}
@@ -522,18 +558,17 @@ void BrawlerHeat4(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 	if(npc.m_flKiryuTimeUntillDone)
 	{
 		float TimeLeft = npc.m_flKiryuTimeUntillDone - GameTime;
-		if(TimeLeft < 0.65)
+		if(TimeLeft < (0.65 * npc.f_SpeedAcelerateAnim))
 		{
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
 				npc.m_iChanged_WalkCycle = 3;
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-				//	SensalCauseKnockback(npc.index, npc.m_iTarget);
+					SensalCauseKnockback(npc.index, npc.m_iTarget,_,_, true);
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-					float damage = 50.0;
-					CauseKiyruDamageLogic(owner, npc.m_iTarget, damage);
+					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
 					c_KiyruAttachmentDo[npc.index] = "";
 					npc.b_NoLongerResetVel = true;
 				}
@@ -541,11 +576,59 @@ void BrawlerHeat4(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 		}
 		else
 		{
-			
 			if(npc.m_iChanged_WalkCycle != 2)
 			{
 				npc.m_iChanged_WalkCycle = 2;
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.2);
+			}
+		}
+	}
+}
+void BeastBuildingHeat1(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
+{
+	if(npc.m_flKiryuTimeUntillDone)
+	{
+		float TimeLeft = npc.m_flKiryuTimeUntillDone - GameTime;
+		if(TimeLeft < (0.55 * npc.f_SpeedAcelerateAnim))
+		{
+			if(npc.m_iChanged_WalkCycle != 3)
+			{
+				npc.m_iChanged_WalkCycle = 3;
+				if(IsValidEnemy(npc.index, npc.m_iTarget))
+				{
+					npc.PlayHitSound();
+					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
+					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+					c_KiyruAttachmentDo[npc.index] = "";
+					npc.b_NoLongerResetVel = true;
+					if(IsValidEntity(npc.m_iWearable8))
+						SDKHooks_TakeDamage(npc.m_iWearable8, 0, 0, 1000000.0, DMG_SLASH);
+
+					npc.SetPlaybackRate(0.25);
+				}
+			}
+		}
+		else
+		{
+			if(npc.m_iChanged_WalkCycle != 2)
+			{
+				npc.m_iChanged_WalkCycle = 2;
+				if(IsValidEntity(npc.m_iWearable8))
+				{
+					char WhichAttachmentDo[32];
+					WhichAttachmentDo = "effect_hand_r";
+					float flPos[3];
+					float flAng[3];
+					
+					GetAttachment(npc.index, WhichAttachmentDo, flPos, flAng);
+
+					int InfoTarget = InfoTargetParentAt(flPos,"", 0.0);
+					SetParent(npc.index, InfoTarget, WhichAttachmentDo,_);
+					SDKCall_SetLocalOrigin(npc.m_iWearable8, flPos);	
+					SetEntPropVector(npc.m_iWearable8, Prop_Data, "m_angRotation", flAng);
+					SetParent(InfoTarget, npc.m_iWearable8, _, _, _);
+					npc.m_iWearable7 = InfoTarget;
+				}
 			}
 		}
 	}
@@ -586,4 +669,7 @@ public void AlliedKiryuVisualiserAbility_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 }

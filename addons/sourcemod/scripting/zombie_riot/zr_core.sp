@@ -1112,6 +1112,7 @@ public Action CommandDebugHudTest(int client, int args)
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
+	CheckAlivePlayers(0, 0, true);
 
 	return Plugin_Handled;
 }
@@ -1583,6 +1584,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
 		LastMann = false;
+		Yakuza_Lastman(false);
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -1619,6 +1621,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				else if(LastMann)
 				{
 					LastMann = false;
+					Yakuza_Lastman(false);
 				}
 				
 			}
@@ -1709,6 +1712,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							SetEntityRenderMode(client, RENDER_NORMAL);
 							SetEntityRenderColor(client, 255, 255, 255, 255);
 							SetEntityCollisionGroup(client, 5);
+						}
+
+						if(Yakuza_IsNotInJoint(client))
+						{
+							Yakuza_AddCharge(client, 99999);
+							Yakuza_Lastman(true);
+							CPrintToChatAll("{crimson}Something awakens inside %N.......",client);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)

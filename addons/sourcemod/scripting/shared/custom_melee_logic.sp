@@ -236,6 +236,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				enemies_hit_aoe = Ulpianus_EnemyHitCount();
 			}
+			case WEAPON_YAKUZA:
+			{
+				Yakuza_EnemiesHit(client, weapon, enemies_hit_aoe);
+			}
 		}	
 	}
 #endif
