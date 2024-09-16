@@ -765,6 +765,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			{
 				YakuzaWeaponSwingDid(client);
 			}
+
 		}
 
 		if(i_EntitiesHitAtOnceMax <= 1 && target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)

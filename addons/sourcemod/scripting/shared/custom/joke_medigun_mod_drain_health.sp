@@ -79,7 +79,9 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 				if (target > 0 && target <= MaxClients)
 				{
 					//dont heal downed targets that have left for dead.
+#if defined ZR
 					if(b_LeftForDead[target] && dieingstate[target] > 0)
+#endif
 					{
 						DHookSetReturn(hReturn, false);
 						return MRES_Supercede;		
@@ -196,7 +198,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						static float Entity_Position[3];
 						WorldSpaceCenter(healTarget, Entity_Position );
+#if defined ZR
 						AddHealthToUbersaw(owner, 1, 0.0015);
+#endif		
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime() * 3.0, DMG_PLASMA, medigun, _, Entity_Position);
 					}
 					else
@@ -219,8 +223,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						static float Entity_Position[3];
 						WorldSpaceCenter(healTarget, Entity_Position );
-						
+#if defined ZR
 						AddHealthToUbersaw(owner, 1, 0.0005);
+#endif		
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 					}
 					

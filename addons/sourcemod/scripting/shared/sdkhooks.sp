@@ -36,6 +36,7 @@ void SDKHooks_ClearAll()
 	Zero(i_WasInDefenseBuff);
 	Zero(i_WasInJarate);
 	Zero(Client_Had_ArmorDebuff);
+	Zero(f_TimeSinceLastRegenStop);
 }
 
 void SDKHook_PluginStart()
@@ -2802,6 +2803,7 @@ void RPG_Sdkhooks_StaminaBar(int client)
 void SDKhooks_SetManaRegenDelayTime(int client, float time)
 {
 	Mana_Hud_Delay[client] = 0.0;
+#if defined ZR
 	if(Mana_Regen_Delay[client] < GetGameTime() + time)
 		Mana_Regen_Delay[client] = GetGameTime() + time;
 
@@ -2811,4 +2813,5 @@ void SDKhooks_SetManaRegenDelayTime(int client, float time)
 	//Set to 0 so hud is good
 	if(!b_AggreviatedSilence[client])
 		mana_regen[client] = 0.0;
+#endif
 }

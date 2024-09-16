@@ -1890,8 +1890,9 @@ void DHook_ScoutSecondaryFireAbilityDelay(int ref)
 			int Active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(Active != entity)
 				return;
-			
+#if defined ZR
 			Enforcer_AbilityM2(client, entity, 1, 5, 1.25, true);
+#endif
 			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 4.0);
 			Ability_Apply_Cooldown(client, 2, 4.0);
 		}

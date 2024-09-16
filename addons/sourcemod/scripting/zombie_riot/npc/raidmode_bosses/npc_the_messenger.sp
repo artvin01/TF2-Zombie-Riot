@@ -1341,7 +1341,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: VOID, GRANT ME STRENGHT!");
+				CPrintToChatAll("{lightblue}The Messenger{default}: VOID, GRANT ME STRENGTH!");
 			}
 			case 2:
 			{
