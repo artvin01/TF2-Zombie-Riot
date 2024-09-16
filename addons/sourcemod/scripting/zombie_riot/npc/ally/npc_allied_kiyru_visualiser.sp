@@ -42,22 +42,22 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 {
 	public void PlayInitSound() 
 	{
-		EmitSoundToAll(g_InitiateSound[GetRandomInt(0, sizeof(g_InitiateSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 80);
-		EmitSoundToAll(g_InitiateSound[GetRandomInt(0, sizeof(g_InitiateSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 80);
-		EmitSoundToAll(g_InitiateSound[GetRandomInt(0, sizeof(g_InitiateSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 80);
-		EmitSoundToAll(g_InitiateSound[GetRandomInt(0, sizeof(g_InitiateSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 80);
-		EmitSoundToAll(g_InitiateSound2[GetRandomInt(0, sizeof(g_InitiateSound2) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 60);
-		EmitSoundToAll(g_InitiateSound2[GetRandomInt(0, sizeof(g_InitiateSound2) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 60);
+		EmitSoundToAll(g_InitiateSound[GetRandomInt(0, sizeof(g_InitiateSound) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 80);
+		EmitSoundToAll(g_InitiateSound[GetRandomInt(0, sizeof(g_InitiateSound) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 80);
+		EmitSoundToAll(g_InitiateSound[GetRandomInt(0, sizeof(g_InitiateSound) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 80);
+		EmitSoundToAll(g_InitiateSound[GetRandomInt(0, sizeof(g_InitiateSound) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 80);
+		EmitSoundToAll(g_InitiateSound2[GetRandomInt(0, sizeof(g_InitiateSound2) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 60);
+		EmitSoundToAll(g_InitiateSound2[GetRandomInt(0, sizeof(g_InitiateSound2) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 60);
 	}
 	public void PlayHitSound() 
 	{
-		EmitSoundToAll(g_HitSound1[GetRandomInt(0, sizeof(g_HitSound1) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 110);
-		EmitSoundToAll(g_HitSound1[GetRandomInt(0, sizeof(g_HitSound1) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 110);
+		EmitSoundToAll(g_HitSound1[GetRandomInt(0, sizeof(g_HitSound1) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 110);
+		EmitSoundToAll(g_HitSound1[GetRandomInt(0, sizeof(g_HitSound1) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 110);
 	}
 	public void PlayHitSound2() 
 	{
-		EmitSoundToAll(g_HitSound2[GetRandomInt(0, sizeof(g_HitSound2) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 90);
-		EmitSoundToAll(g_HitSound2[GetRandomInt(0, sizeof(g_HitSound2) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 90);
+		EmitSoundToAll(g_HitSound2[GetRandomInt(0, sizeof(g_HitSound2) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 90);
+		EmitSoundToAll(g_HitSound2[GetRandomInt(0, sizeof(g_HitSound2) - 1)], this.index, SNDCHAN_STATIC, 80, _, 1.0, 90);
 	}
 	//Incode defines which animation or action is used
 	property int m_iKiryuActionWhich
