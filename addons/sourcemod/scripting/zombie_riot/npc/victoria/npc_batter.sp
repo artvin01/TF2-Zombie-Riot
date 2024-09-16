@@ -108,7 +108,7 @@ methodmap VictoriaBatter < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		SetVariantInt(31);
+		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;

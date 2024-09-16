@@ -125,14 +125,14 @@ methodmap VictorianSquadleader < CClotBody
 			
 		f_GlobalSoundCD = GetGameTime() + 5.0;
 
-		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 70, _, 0.8, 100);
+		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 80, _, 0.8, 100);
 	}
 	
 	public VictorianSquadleader(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianSquadleader npc = view_as<VictorianSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
@@ -172,16 +172,15 @@ methodmap VictorianSquadleader < CClotBody
 		
 		
 		int skin = 1;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_russian_riot/c_russian_riot.mdl");
-		SetVariantString("2.0");
+		SetVariantString("2.5");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/sum19_unforgiven_glory/sum19_unforgiven_glory.mdl");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/jul13_ol_jack/jul13_ol_jack.mdl");
-		SetVariantString("1.2");
+		SetVariantString("1.05");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/demolitionists_dustcatcher/demolitionists_dustcatcher.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/demo/sum19_dynamite_abs/sum19_dynamite_abs.mdl");
@@ -189,7 +188,7 @@ methodmap VictorianSquadleader < CClotBody
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
@@ -224,6 +223,9 @@ public void VictorianSquadleader_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
+	if(npc.g_TimesSummoned == 0)
+		SergeantIdealShield(npc.index);
+		
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -290,7 +292,7 @@ public void VictorianSquadleader_NPCDeath(int entity)
 	}
 		
 	if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable4);
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))

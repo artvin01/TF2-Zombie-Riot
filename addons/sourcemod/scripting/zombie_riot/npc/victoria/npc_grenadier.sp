@@ -91,7 +91,7 @@ methodmap VictorianGrenadier < CClotBody
 	
 	public VictorianGrenadier(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianGrenadier npc = view_as<VictorianGrenadier>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally, false));
+		VictorianGrenadier npc = view_as<VictorianGrenadier>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -117,13 +117,14 @@ methodmap VictorianGrenadier < CClotBody
 		
 		
 		int skin = 1;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_caber/c_caber.mdl");
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/dec16_bomber_knight/dec16_bomber_knight.mdl");
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/demolitionists_dustcatcher/demolitionists_dustcatcher.mdl");
 		SetVariantString("0.75");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
@@ -300,7 +301,7 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				float RocketDamage = 125.0;
-				float RocketSpeed = 800.0;
+				float RocketSpeed = 1200.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				float vecDest[3];

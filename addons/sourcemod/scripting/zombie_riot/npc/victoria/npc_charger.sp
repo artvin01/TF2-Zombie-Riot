@@ -125,7 +125,7 @@ methodmap VictorianCharger < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(3);
+		SetVariantInt(0);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
