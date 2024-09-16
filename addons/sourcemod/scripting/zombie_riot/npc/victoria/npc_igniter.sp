@@ -27,7 +27,7 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 
-void VictoriaIgniter_OnMapStart_NPC()
+void VictorianIgniter_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}

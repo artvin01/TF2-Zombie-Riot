@@ -2,9 +2,10 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+	"vo/medic_negativevocalization01.mp3",
+	"vo/medic_negativevocalization02.mp3",
+	"vo/medic_negativevocalization03.mp3",
+	"vo/medic_negativevocalization04.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -20,10 +21,11 @@ static const char g_HurtSounds[][] = {
 
 
 static const char g_IdleAlertedSounds[][] = {
-	")vo/medic_battlecry01.mp3",
-	")vo/medic_battlecry02.mp3",
-	")vo/medic_battlecry03.mp3",
-	")vo/medic_battlecry04.mp3",
+	")vo/medic_mvm_heal_shield01.mp3",
+	")vo/medic_mvm_heal_shield02.mp3",
+	")vo/medic_mvm_heal_shield03.mp3",
+	")vo/medic_mvm_heal_shield04.mp3",
+	")vo/medic_mvm_heal_shield05.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -280,8 +282,16 @@ void TeslarSelfDefense(Teslar npc, float gameTime, int target, float distance)
 					{
 						if(!NpcStats_IsEnemySilenced(npc.index))
 						{
-							if(f_LowTeslarDebuff[target] - 5.0 < GetGameTime())
-								f_LowTeslarDebuff[target] = GetGameTime() + 5.0;
+							if(NpcStats_VictorianCallToArms(npc.index))
+							{
+								if(f_LowTeslarDebuff[target] - 7.5 < GetGameTime())
+								f_LowTeslarDebuff[target] = GetGameTime() + 7.5;
+							}
+							else
+							{
+								if(f_LowTeslarDebuff[target] - 5.0 < GetGameTime())
+								f_LowTeslarDebuff[target] = GetGameTime() + 5.0;	
+							}
 						}
 					}		
 				} 

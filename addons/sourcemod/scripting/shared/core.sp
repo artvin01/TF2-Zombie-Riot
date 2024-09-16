@@ -514,6 +514,7 @@ float f_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
 float f_CombineCommanderBuff[MAXENTITIES];
 float f_SquadLeaderBuff[MAXENTITIES];
+float f_VictorianCallToArms[MAXENTITIES];
 #if defined RUINA_BASE
 float f_Ruina_Speed_Buff[MAXENTITIES];
 float f_Ruina_Speed_Buff_Amt[MAXENTITIES];
@@ -2142,6 +2143,7 @@ public void OnClientPutInServer(int client)
 	f_HussarBuff[client] = 0.0;
 	f_CombineCommanderBuff[client] = 0.0;
 	f_SquadLeaderBuff[client] = 0.0;
+	f_VictorianCallToArms[client] = 0.0;
 	f_Ocean_Buff_Stronk_Buff[client] = 0.0;
 	f_Ocean_Buff_Weak_Buff[client] = 0.0;
 #if defined RUINA_BASE
@@ -2924,6 +2926,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_HussarBuff[entity] = 0.0;
 		f_CombineCommanderBuff[entity] = 0.0;
 		f_SquadLeaderBuff[entity] = 0.0;
+		f_VictorianCallToArms[entity]=0.0;
 #if defined RUINA_BASE
 		Ruina_Reset_Stats_Npc(entity);
 #endif

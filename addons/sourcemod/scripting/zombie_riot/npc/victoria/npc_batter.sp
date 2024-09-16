@@ -2,9 +2,12 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/scout_paincrticialdeath01.mp3",
-	"vo/scout_paincrticialdeath02.mp3",
-	"vo/scout_paincrticialdeath03.mp3",
+	"vo/scout_sf12_badmagic01.mp3",
+	"vo/scout_sf12_badmagic02.mp3",
+	"vo/scout_sf12_badmagic03.mp3",
+	"vo/scout_sf12_badmagic04.mp3",
+	"vo/scout_sf12_badmagic05.mp3",
+	"vo/scout_sf12_badmagic09.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -19,9 +22,9 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/scout_moveup01.mp3",
-	"vo/scout_moveup02.mp3",
-	"vo/scout_moveup03.mp3",
+	"vo/scout_sf12_badmagic05.mp3",
+	"vo/scout_sf12_badmagic06.mp3",
+	"vo/scout_sf12_badmagic06.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -198,6 +201,12 @@ public void VictoriaBatter_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
+	if(NpcStats_VictorianCallToArms(npc.index))
+	{
+		npc.m_flSpeed *= 1.25;
+	}
+	
+
 	npc.PlayIdleAlertSound();
 }
 

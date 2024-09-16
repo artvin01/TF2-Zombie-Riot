@@ -2,11 +2,8 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/demoman_paincrticialdeath01.mp3",
-	"vo/demoman_paincrticialdeath02.mp3",
-	"vo/demoman_paincrticialdeath03.mp3",
-	"vo/demoman_paincrticialdeath04.mp3",
-	"vo/demoman_paincrticialdeath05.mp3",
+	"vo/demoman_sf13_magic_reac03.mp3",
+	"vo/demoman_sf13_magic_reac05.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -20,11 +17,10 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/scout_battlecry01.mp3",
-	"vo/scout_battlecry02.mp3",
-	"vo/scout_battlecry03.mp3",
-	"vo/scout_battlecry04.mp3",
-	"vo/scout_battlecry05.mp3",
+	"vo/demoman_sf13_midnight02.mp3",
+	"vo/demoman_sf13_midnight04.mp3",
+	"vo/demoman_sf13_midnight05.mp3",
+	"vo/demoman_sf13_midnight06.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -43,6 +39,10 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_slice_4.wav",
 };
 
+static const char g_WarCry[][] = {
+	"mvm/mvm_warning.wav",
+};
+
 void VictorianSquadleader_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -51,14 +51,15 @@ void VictorianSquadleader_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_WarCry)); i++) { PrecacheSound(g_WarCry[i]); }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Frost Hunter");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_frost_hunter");
-	strcopy(data.Icon, sizeof(data.Icon), "scout_fan");
-	data.IconCustom = false;
+	strcopy(data.Name, sizeof(data.Name), "Victorian ScoutSquad Leader");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squadleader");
+	strcopy(data.Icon, sizeof(data.Icon), "seargent_ideal");
+	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Interitus;
+	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
 	Rogue_Paradox_AddWinterNPC(id);
@@ -78,7 +79,7 @@ methodmap VictorianSquadleader < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -90,13 +91,13 @@ methodmap VictorianSquadleader < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	
 	public void PlayMeleeSound()
@@ -110,12 +111,21 @@ methodmap VictorianSquadleader < CClotBody
 	}
 	public void PlayRangedSound()
 	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 70);
+	}
+	public void PlayMeleeWarCry() 
+	{
+		if(f_GlobalSoundCD > GetGameTime())
+			return;
+			
+		f_GlobalSoundCD = GetGameTime() + 5.0;
+
+		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 70, _, 0.8, 100);
 	}
 	
 	public VictorianSquadleader(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianSquadleader npc = view_as<VictorianSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "15000", ally));
+		VictorianSquadleader npc = view_as<VictorianSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -148,6 +158,12 @@ methodmap VictorianSquadleader < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.m_flAttackHappens_bullshit = GetGameTime() + 10.0;
+
+		float flPos[3], flAng[3];
+				
+		npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
+		i_schwert_hand_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_pedalfly_blue_spins", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
+		npc.GetAttachment("", flPos, flAng);
 		
 		
 		int skin = 1;
@@ -443,7 +459,7 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 	return 0;
 }
 
-void VictorianAOEbuff(VictorianSquadleader npc, float gameTime, bool mute = false)
+void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool mute = false)
 {
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -506,4 +522,40 @@ void VictorianAOEbuff(VictorianSquadleader npc, float gameTime, bool mute = fals
 			npc.m_flAttackHappens_bullshit = gameTime + 1.0; //Try again in a second.
 		}
 	}
+}
+
+void VictorianCalltoArmsRange(int iNpc)
+{
+	b_NpcIsTeamkiller[iNpc] = true;
+	Explode_Logic_Custom(0.0,
+	iNpc,
+	iNpc,
+	-1,
+	_,
+	9999.0,
+	_,
+	_,
+	false,
+	99,
+	false,
+	_,
+	VictoriaCalltoArmsGiving);
+	b_NpcIsTeamkiller[iNpc] = false;
+}
+
+void VictoriaCalltoArmsGiving(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return;
+
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
+	{
+		VictoriaCalltoArmsGivingInternal(entity,victim);
+	}
+}
+
+void VictoriaCalltoArmsGivingInternal(int shielder, int victim)
+{
+	CClotBody npc = view_as<CClotBody>(shielder);
+	f_SquadLeaderBuff[victim] = GetGameTime() + 1.0;
 }

@@ -1448,6 +1448,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.33;
 		}
+		if(f_VictorianCallToArms[this.index] > Gametime)
+		{
+			speed_for_return *= 1.15;
+		}
 		if(f_VoidAfflictionStrength2[this.index] > Gametime)
 		{
 			speed_for_return *= 1.15;
@@ -8406,6 +8410,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_IberiaMarked[entity] = 0.0;
+	f_VictorianCallToArms[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_VoidAfflictionStrength[entity] = 0.0;
 	f_VoidAfflictionStrength2[entity] = 0.0;
@@ -8445,6 +8450,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PernellBuff[entity] = 0.0;
 	f_HussarBuff[entity] = 0.0;
 	f_SquadLeaderBuff[entity] = 0.0;
+	f_VictorianCallToArms[entity] = 0.0;
 	f_GodAlaxiosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
@@ -9086,6 +9092,18 @@ stock bool NpcStats_IsEnemySilenced(int enemy)
 	return true;
 }
 
+stock bool NpcStats_VictorianCallToArms(int enemy)
+{
+	if(!IsValidEntity(enemy))
+		return true; //they dont exist, pretend as if they are silenced.
+
+	if(f_VictorianCallToArms[enemy] < GetGameTime())
+	{
+		return false;
+	}
+	return true;
+}
+
 #if defined ZR
 void NPCStats_RemoveAllDebuffs(int enemy)
 {
@@ -9481,6 +9499,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(NpcStats_IberiaIsEnemyMarked(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "%sM",HealthText);
+	}
+	if(NpcStats_VictorianCallToArms(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "%s✇",HealthText);
 	}
 
 #if defined ZR

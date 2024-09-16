@@ -2,11 +2,12 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/demoman_paincrticialdeath01.mp3",
-	"vo/demoman_paincrticialdeath02.mp3",
-	"vo/demoman_paincrticialdeath03.mp3",
-	"vo/demoman_paincrticialdeath04.mp3",
-	"vo/demoman_paincrticialdeath05.mp3",
+	"vo/demoman_negativevocalization01.mp3",
+	"vo/demoman_negativevocalization02.mp3",
+	"vo/demoman_negativevocalization03.mp3",
+	"vo/demoman_negativevocalization04.mp3",
+	"vo/demoman_negativevocalization05.mp3",
+	"vo/demoman_negativevocalization06.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -21,10 +22,9 @@ static const char g_HurtSounds[][] = {
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/demoman_battlecry01.mp3",
-	"vo/demoman_battlecry02.mp3",
-	"vo/demoman_battlecry03.mp3",
-	"vo/demoman_battlecry04.mp3",
+	"vo/demoman_moveup01.mp3",
+	"vo/demoman_moveup02.mp3",
+	"vo/demoman_moveup03.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -309,6 +309,10 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 					float TimeMultiplier = 1.0;
 					TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
 					TimeMultiplier *= 0.50;
+					if(NpcStats_VictorianCallToArms(npc.index))
+					{
+						TimeMultiplier *= 1.50
+					}
 					if(TimeMultiplier > 10.0)
 					{
 						TimeMultiplier = 10.0;

@@ -2,24 +2,25 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"npc/metropolice/die1.wav",
-	"npc/metropolice/die2.wav",
-	"npc/metropolice/die3.wav",
-	"npc/metropolice/die4.wav",
+	"vo/npc/male01/no01.wav",
+	"vo/npc/male01/no02.wav",,
 };
 
 static const char g_HurtSounds[][] = {
-	"npc/metropolice/pain1.wav",
-	"npc/metropolice/pain2.wav",
-	"npc/metropolice/pain3.wav",
-	"npc/metropolice/pain4.wav",
+	"vo/npc/male01/pain01.wav",
+	"vo/npc/male01/pain02.wav",
+	"vo/npc/male01/pain03.wav",
+	"vo/npc/male01/pain05.wav",
+	"vo/npc/male01/pain06.wav",
+	"vo/npc/male01/pain07.wav",
+	"vo/npc/male01/pain08.wav",
+	"vo/npc/male01/pain09.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfim.wav",
+	"vo/npc/male01/ohno.wav",
+	"vo/npc/male01/overthere01.wav",
+	"vo/npc/male01/overthere02.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -274,7 +275,14 @@ void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, int tar
 								if (IsInvuln(target))
 								{
 									Knocked = true;
-									Custom_Knockback(npc.index, target, -500.0, true);
+									if(NpcStats_VictorianCallToArms(npc.index))
+									{
+										Custom_Knockback(npc.index, target, -750.0, true);
+									}
+									else
+									{
+										Custom_Knockback(npc.index, target, -500.0, true);										
+									}
 									TF2_AddCondition(target, TFCond_LostFooting, 0.2);
 									TF2_AddCondition(target, TFCond_AirCurrent, 0.2);
 								}

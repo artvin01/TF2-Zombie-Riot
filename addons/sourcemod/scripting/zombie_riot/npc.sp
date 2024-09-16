@@ -569,6 +569,9 @@ void NPC_ConfigSetup()
 	VictorianBallista_OnMapStart_NPC();
 	VictorianVanguard_OnMapStart_NPC();
 	VictorianSupplier_OnMapStart_NPC();
+	VictorianIgniter_OnMapStart_NPC();
+	VictorianGrenadier_OnMapStart_NPC();
+	VictorianSquadleader_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1620,3 +1623,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_victorian_vanguard.sp"
 #include "zombie_riot/npc/victoria/npc_supplier.sp"
 #include "zombie_riot/npc/victoria/npc_ballista.sp"
+#include "zombie_riot/npc/victoria/npc_igniter.sp"
+#include "zombie_riot/npc/victoria/npc_grenadier.sp"
+#include "zombie_riot/npc/victoria/npc_squadleader.sp"

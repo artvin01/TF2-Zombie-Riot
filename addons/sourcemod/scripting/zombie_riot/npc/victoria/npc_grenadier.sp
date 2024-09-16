@@ -28,19 +28,19 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 
-void Iberia_Victorian_OnMapStart_NPC()
+void VictorianGrenadier_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Grenadier ");
+	strcopy(data.Name, sizeof(data.Name), "Grenadier");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_grenadier");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
+	strcopy(data.Icon, sizeof(data.Icon), "demo");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
