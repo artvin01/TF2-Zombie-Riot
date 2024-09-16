@@ -224,8 +224,7 @@ public void VictorianSquadleader_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
-	if(npc.g_TimesSummoned == 0)
-		VictorianCalltoArmsRange(npc.index);
+	VictorianCalltoArmsRange(npc.index);
 		
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{

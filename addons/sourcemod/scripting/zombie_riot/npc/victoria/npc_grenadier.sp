@@ -97,6 +97,9 @@ methodmap VictorianGrenadier < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+			
+		SetVariantInt(4);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -199,7 +202,7 @@ public void VictorianGrenadier_ClotThink(int iNPC)
 			{
 				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 2;
-				npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+				npc.SetActivity("ACT_ACHILLES_RUN_DAGGER");
 				npc.StartPathing();
 				npc.m_flSpeed = 200.0;
 			}
@@ -291,7 +294,7 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 30.0))
 		{
 			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
 			npc.FaceTowards(VecAim, 20000.0);
@@ -306,9 +309,9 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				float vecDest[3];
 				vecDest = vecTarget;
-				vecDest[0] += GetRandomFloat(-10.0, 10.0);
-				vecDest[1] += GetRandomFloat(-10.0, 10.0);
-				vecDest[2] += GetRandomFloat(-10.0, 10.0);
+				vecDest[0] += GetRandomFloat(-15.0, 15.0);
+				vecDest[1] += GetRandomFloat(-15.0, 15.0);
+				vecDest[2] += GetRandomFloat(-15.0, 15.0);
 				if(npc.m_iChanged_WalkCycle == 1)
 				{
 					float SpeedReturn[3];
@@ -318,7 +321,7 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.75, 1.0);
 					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 
@@ -328,9 +331,10 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 				{
 					npc.AddGesture("ACT_VILLAGER_ATTACK",_,_,_,0.75);
 					//They do a direct attack, slow down the rocket and make it deal less damage.
-					RocketDamage *= 0.75;
-				//	npc.PlayRangedSound();
-					npc.FireGrenade(vecTarget, 1000.0, RocketDamage, "models/workshop/weapons/c_models/c_caber/c_caber.mdl");
+					RocketDamage *= 0.5;
+					RocketSpeed *= 0.5;
+					//	npc.PlayRangedSound();
+					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
 				}
 						
 				npc.m_flNextMeleeAttack = gameTime + 2.00;
