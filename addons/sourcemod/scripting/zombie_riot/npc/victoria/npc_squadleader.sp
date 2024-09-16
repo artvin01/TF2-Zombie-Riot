@@ -172,6 +172,7 @@ methodmap VictorianSquadleader < CClotBody
 		
 		
 		int skin = 1;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_russian_riot/c_russian_riot.mdl");
 		SetVariantString("2.5");
@@ -224,7 +225,7 @@ public void VictorianSquadleader_ClotThink(int iNPC)
 	}
 	
 	if(npc.g_TimesSummoned == 0)
-		SergeantIdealShield(npc.index);
+		VictorianCalltoArmsRange(npc.index);
 		
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
