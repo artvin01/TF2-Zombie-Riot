@@ -271,6 +271,7 @@ static Action WeaponTimerFunc(Handle timer, int client)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
+				b_IsCannibal[client] = true;
 				if(LastMann)
 					TF2_AddCondition(client, TFCond_InHealRadius, 1.1);
 				
@@ -621,7 +622,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					{
 						float DamageBase = 180.0;
 						DamageBase *= 4.0;
-						DamageBase *= Attributes_Get(weapon, 2, 0.0);
+						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_1", 2.5 * Yakuza_DurationDoEnemy(client, target), target);
 					}
 
@@ -629,15 +630,16 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					{
 						if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 						{
-							float DamageBase = 170.0;
+							float DamageBase = 160.0;
 							DamageBase *= 4.0;
-							DamageBase *= Attributes_Get(weapon, 2, 0.0);
+							DamageBase *= Attributes_Get(weapon, 2, 1.0);
 							DoSpecialActionYakuza(client, DamageBase, "beast_heat_building_1", 1.35 * Yakuza_DurationDoEnemy(client, target), target);
 						}
 						else
 						{
 							float DamageBase = 120.0;
-							DamageBase *= Attributes_Get(weapon, 2, 0.0);
+							DamageBase *= 4.0;
+							DamageBase *= Attributes_Get(weapon, 2, 1.0);
 							DoSpecialActionYakuza(client, DamageBase, "brawler_heat_2", 2.1 * Yakuza_DurationDoEnemy(client, target), target);
 						}
 					}
@@ -646,15 +648,15 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					{
 						float DamageBase = 350.0;
 						DamageBase *= 4.0;
-						DamageBase *= Attributes_Get(weapon, 2, 0.0);
+						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_3", 2.5 * Yakuza_DurationDoEnemy(client, target), target);
 					}
 
 					case Style_Dragon:
 					{
-						float DamageBase = 200.0;
+						float DamageBase = 230.0;
 						DamageBase *= 4.0;
-						DamageBase *= Attributes_Get(weapon, 2, 0.0);
+						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						//tiger drop negates all damage.
 						f_AntiStuckPhaseThrough[client] = 0.0;
 						IncreaceEntityDamageTakenBy(client, 0.0001, 0.75);
