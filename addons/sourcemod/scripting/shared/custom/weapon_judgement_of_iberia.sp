@@ -54,7 +54,7 @@ void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
 	}
 }
 
-float SetAirtimeNpc(int entity, float Duration)
+void SetAirtimeNpc(int entity, float Duration)
 {
 	f_TargetAirtime[entity] = GetGameTime() + Duration;
 }

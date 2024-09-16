@@ -260,7 +260,8 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 
 	if(!client)
 		return Plugin_Stop;
-
+		
+	b_ThisEntityIgnored[client] = false;
 	SetClientViewEntity(client, client);
 	TF2_RemoveCondition(client, TFCond_FreezeInput);
 	SetEntProp(client, Prop_Send, "m_bIsPlayerSimulated", 1);

@@ -5680,6 +5680,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
 		}
+		if(Attributes_Get(entity, Attrib_SetSecondaryDelayInf, 0.0) >= 1.0)
+		{
+			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
+		}
 		
 		Enable_Management_Knife(client, entity);
 		Enable_Arsenal(client, entity);
@@ -5748,6 +5752,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Ulpianus_Enable(client, entity);
 		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
+		Yakuza_Enable(client, entity);
 	}
 
 	return entity;

@@ -1045,6 +1045,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Superubersaw_OnTakeDamage(victim, attacker, damage);
 		}
+		case WEAPON_YAKUZA:
+		{
+			Yakuza_NPCTakeDamage(victim, attacker, damage, weapon, damagetype);
+		}
 	}
 #endif
 
