@@ -1110,9 +1110,9 @@ static void Invoke_Heavens_Light(Raidboss_Donnerkrieg npc, float GameTime)
 	float Heavens_Duration;
 	fl_heavens_damage = 15.0 * RaidModeScaling;
 	fl_heavens_charge_time = 10.0;
-	Heavens_Duration = 30.0;
-	fl_heavens_radius = 150.0;	//This is per individual beam
-	fl_heavens_speed = 2.5;
+	Heavens_Duration = 25.0;
+	fl_heavens_radius = 125.0;	//This is per individual beam
+	fl_heavens_speed = 2.0;
 
 	b_touchdown = false;
 

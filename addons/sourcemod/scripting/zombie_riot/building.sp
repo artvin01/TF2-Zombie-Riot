@@ -1187,7 +1187,7 @@ void IsBuildingNotFloating(int building)
 			endPos2 = vecHit;
 			if(IsPointHazard(endPos2))
 			{
-				SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_SLASH);
+				DestroyBuildingDo(building);
 				return;
 			}
 			TeleportEntity(building, endPos2, NULL_VECTOR, NULL_VECTOR);
@@ -1195,7 +1195,7 @@ void IsBuildingNotFloating(int building)
 		}
 		else
 		{
-			SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_SLASH);
+			DestroyBuildingDo(building);
 			return;
 		}
 	}
@@ -1204,7 +1204,7 @@ void IsBuildingNotFloating(int building)
 	//Check if half of the top half of the building is inside a wall, if it is, detroy, if it is not, then we leave it be.
 	if(IsSpaceOccupiedWorldOnly(endPos2, m_vecMins, m_vecMaxs, building))
 	{
-		SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_SLASH);
+		DestroyBuildingDo(building);
 	}
 }
 

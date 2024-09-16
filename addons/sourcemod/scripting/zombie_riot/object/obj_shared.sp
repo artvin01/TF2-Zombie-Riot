@@ -841,9 +841,8 @@ float Object_GetMaxHealthMulti(int client)
 
 Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(!(damagetype & DMG_SLASH))
-		if(RaidBossActive && RaidbossIgnoreBuildingsLogic(2)) //They are ignored anyways
-			return Plugin_Handled;
+	if(RaidBossActive && RaidbossIgnoreBuildingsLogic(2)) //They are ignored anyways
+		return Plugin_Handled;
 
 	if((damagetype & DMG_CRUSH))
 		return Plugin_Handled;
@@ -885,27 +884,15 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	int Owner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
 	if(Owner > 0 && Owner <= MaxClients)
 	{
-		if(!(damagetype & DMG_SLASH))
-			i_BarricadeHasBeenDamaged[Owner] += dmg;
+		i_BarricadeHasBeenDamaged[Owner] += dmg;
 	}
-
-	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
 	if(health < 0)
 	{
-		objstats.PlayDeathSound();
-		float VecOrigin[3];
-		GetAbsOrigin(victim, VecOrigin);
-		VecOrigin[2] += 15.0;
-		DataPack pack = new DataPack();
-		pack.WriteFloat(VecOrigin[0]);
-		pack.WriteFloat(VecOrigin[1]);
-		pack.WriteFloat(VecOrigin[2]);
-		pack.WriteCell(0);
-		RequestFrame(MakeExplosionFrameLater, pack);
-		RemoveEntity(victim);
+		DestroyBuildingDo(victim);
 		return Plugin_Handled;
 	}
 	
+	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
 	if(objstats.PlayHurtSound())
 	{
 		damagePosition[2] -= 40.0;
@@ -915,6 +902,22 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	SetEntProp(victim, Prop_Data, "m_iHealth", health);
 	return Plugin_Handled;
+}
+
+void DestroyBuildingDo(int entity)
+{
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	objstats.PlayDeathSound();
+	float VecOrigin[3];
+	GetAbsOrigin(entity, VecOrigin);
+	VecOrigin[2] += 15.0;
+	DataPack pack = new DataPack();
+	pack.WriteFloat(VecOrigin[0]);
+	pack.WriteFloat(VecOrigin[1]);
+	pack.WriteFloat(VecOrigin[2]);
+	pack.WriteCell(0);
+	RequestFrame(MakeExplosionFrameLater, pack);
+	RemoveEntity(entity);
 }
 
 public void ObjBaseThinkPost(int building)

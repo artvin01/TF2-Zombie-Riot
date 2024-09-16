@@ -393,7 +393,6 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 		{
 			float flPos[3]; // original
 			float flAng[3]; // original
-			AlliedKiryuVisualiserAbility npc2 = view_as<AlliedKiryuVisualiserAbility>(npc.m_iWearablePlayerModel);
 			if(!StrContains(c_KiyruAttachmentDo[npc.index], "root"))
 			{
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);	
@@ -412,7 +411,7 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 				flPos = vecSwingEnd;
 			}
 			else
-				npc2.GetAttachment(c_KiyruAttachmentDo[npc.index], flPos, flAng);
+				npc.GetAttachment(c_KiyruAttachmentDo[npc.index], flPos, flAng);
 
 			flPos[2] += npc.f_OffsetVertical;
 			SDKCall_SetLocalOrigin(npc.m_iTarget, flPos);

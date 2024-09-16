@@ -61,6 +61,7 @@ static float LastSpeed[MAXTF2PLAYERS];
 static float CurrentlyInAttack[MAXTF2PLAYERS];
 static bool SpecialLastMan;
 static bool Precached;
+static float HeatActionCooldown[MAXTF2PLAYERS];
 
 void Yakuza_MapStart()
 {
@@ -68,6 +69,7 @@ void Yakuza_MapStart()
 	Zero(WeaponStyle);
 	Zero(BlockNextFor);
 	Zero(BlockStale);
+	Zero(HeatActionCooldown);
 	Precached = false;
 	SpecialLastMan = false;
 	PrecacheSound("items/pegleg_01.wav");
@@ -533,10 +535,15 @@ bool YakuzaTestStunOnlyTrace()
 	return TraceStunOnly;
 }
 
+#define HEATACTION_DMG_MULTI 6.0
 public void Yakuza_M2Special(int client, int weapon, int slot)
 {
+	if(HeatActionCooldown[client] > GetGameTime())
+		return;
+
 	if(WeaponStyle[client] != Style_Dragon)
 		TraceStunOnly = true;
+
 
 	Handle swingTrace;
 	float vecSwingForward[3];
@@ -607,8 +614,9 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					FinishLagCompensation_Base_boss();
 					return;
 				}
-				RequiredHeat = 35;
+				RequiredHeat = 45;
 			}
+			float flMaxhealth = float(ReturnEntityMaxHealth(client));
 
 			if(WeaponCharge[client] >= RequiredHeat)
 			{
@@ -616,12 +624,13 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				Yakuza_AddCharge(client, -RequiredHeat);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(client, target));
 				//Everything is greenlit! Yaay!
+				HeatActionCooldown[client] = GetGameTime() + 0.5;
 				switch(WeaponStyle[client])
 				{
 					case Style_Brawler:
 					{
 						float DamageBase = 180.0;
-						DamageBase *= 4.0;
+						DamageBase *= HEATACTION_DMG_MULTI;
 						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_1", 2.5 * Yakuza_DurationDoEnemy(client, target), target);
 					}
@@ -631,14 +640,14 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 						if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 						{
 							float DamageBase = 160.0;
-							DamageBase *= 4.0;
+							DamageBase *= HEATACTION_DMG_MULTI;
 							DamageBase *= Attributes_Get(weapon, 2, 1.0);
 							DoSpecialActionYakuza(client, DamageBase, "beast_heat_building_1", 1.35 * Yakuza_DurationDoEnemy(client, target), target);
 						}
 						else
 						{
 							float DamageBase = 120.0;
-							DamageBase *= 4.0;
+							DamageBase *= HEATACTION_DMG_MULTI;
 							DamageBase *= Attributes_Get(weapon, 2, 1.0);
 							DoSpecialActionYakuza(client, DamageBase, "brawler_heat_2", 2.1 * Yakuza_DurationDoEnemy(client, target), target);
 						}
@@ -647,7 +656,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					case Style_Rush:
 					{
 						float DamageBase = 350.0;
-						DamageBase *= 4.0;
+						DamageBase *= HEATACTION_DMG_MULTI;
 						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_3", 2.5 * Yakuza_DurationDoEnemy(client, target), target);
 					}
@@ -655,17 +664,17 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					case Style_Dragon:
 					{
 						float DamageBase = 230.0;
-						DamageBase *= 4.0;
+						DamageBase *= HEATACTION_DMG_MULTI;
 						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						//tiger drop negates all damage.
 						f_AntiStuckPhaseThrough[client] = 0.0;
 						IncreaceEntityDamageTakenBy(client, 0.0001, 0.75);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_4", 0.75, target);
+						flMaxhealth *= 0.45;
 					}
 				}
 				
-				float flMaxhealth = float(ReturnEntityMaxHealth(client));
-				flMaxhealth *= 0.15;
+				flMaxhealth *= 0.12;
 				if(LastMann)
 					flMaxhealth *= 2.0;
 					
@@ -794,6 +803,22 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 {
 	BlockStale[attacker]--;
 	LastVictim[attacker] = EntIndexToEntRef(victim);
+	int HeatGive = 5;
+
+	switch(WeaponStyle[attacker])
+	{
+		case Style_Brawler:
+			HeatGive = 4;
+
+		case Style_Beast:
+			HeatGive = 5;
+
+		case Style_Rush:
+			HeatGive = 2;
+
+		case Style_Dragon:
+			HeatGive = 0;
+	}
 
 	if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
 	{
@@ -845,6 +870,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 				PlaySound = true;
 				f_MinicritSoundDelay[attacker] = GetGameTime() + 0.01;
 			}
+			HeatGive *= 2;
 			DisplayCritAboveNpc(victim, attacker, PlaySound); //Display crit above head
 			switch(WeaponStyle[attacker])
 			{
@@ -860,12 +886,13 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 				case Style_Dragon:
 					damage *= 4.0;
 			}
-			SensalCauseKnockback(attacker, victim, 0.5, false, true);
+			if(LastMann || !b_thisNpcIsARaid[victim])
+				SensalCauseKnockback(attacker, victim, 0.5, false, true);
 		}
 		case Attack_Grab:
 		{
 			damage = 1.0;
-
+			HeatGive *= 2;
 			float duration = 1.0;
 			switch(WeaponStyle[attacker])
 			{
@@ -892,13 +919,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 			FreezeNpcInTime(victim, duration * Yakuza_DurationDoEnemy(attacker, victim));
 		}
 	}
-
-	int WaveMax = ZR_GetWaveCount();
-	if(WaveMax >= 75)
-		WaveMax = 75;
-
-	float scale = 30.0 + (WaveMax * 1.5);
-	Yakuza_AddCharge(attacker, RoundToCeil(damage / scale));
+	Yakuza_AddCharge(attacker, HeatGive);
 
 	// +25% damage at 100% HEAT
 	damage *= 1.0 + (WeaponCharge[attacker] * 0.0025);
@@ -974,7 +995,15 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 	//Reduce the damgae they take in half during the animtion, just incase, evne though they are untargetable anyways.
 	//incase of AOE attacks and all.
 	IncreaceEntityDamageTakenBy(client, 0.5, duration);
-	b_ThisEntityIgnored[client] = true;
+	if(!StrContains(animation, "brawler_heat_4"))
+	{
+
+	}
+	else
+	{
+		//tigerdrop doesnt do ignoring
+		b_ThisEntityIgnored[client] = true;
+	}
 	float vAngles[3];
 	float vOrigin[3];
 	
