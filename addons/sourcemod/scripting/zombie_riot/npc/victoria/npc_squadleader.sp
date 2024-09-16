@@ -265,7 +265,7 @@ public void VictorianSquadleader_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
-	HussarAOEBuff(npc,GetGameTime(npc.index));
+	VictorianSquadleaderAOEbuff(npc,GetGameTime(npc.index));
 }
 
 public void VictorianSquadleader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -564,12 +564,6 @@ void VictoriaCalltoArmsGiving(int entity, int victim, float damage, int weapon)
 
 	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
 	{
-		VictoriaCalltoArmsGivingInternal(entity,victim);
+		f_SquadLeaderBuff[victim] = GetGameTime() + 1.0;
 	}
-}
-
-void VictoriaCalltoArmsGivingInternal(int shielder, int victim)
-{
-	CClotBody npc = view_as<CClotBody>(shielder);
-	f_SquadLeaderBuff[victim] = GetGameTime() + 1.0;
 }
