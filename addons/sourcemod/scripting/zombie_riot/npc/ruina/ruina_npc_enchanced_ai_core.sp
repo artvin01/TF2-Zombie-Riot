@@ -1729,7 +1729,7 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 {
 	CClotBody npc = view_as<CClotBody>(healed_target);
 
-	if((fl_npc_healing_duration[npc.index] < GetGameTime(npc.index) && (b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])) 
+	if((fl_npc_healing_duration[npc.index] > GetGameTime(npc.index) && (b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])) 
 	|| b_ruina_npc_healer[healed_target] 
 	|| b_ruina_nerf_healing[healed_target])
 		healingammount *=0.5;
