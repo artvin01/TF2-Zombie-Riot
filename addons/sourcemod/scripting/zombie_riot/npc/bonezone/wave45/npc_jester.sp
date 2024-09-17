@@ -465,9 +465,10 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 static int Jester_LeftFuse[2049] = { -1, ... };
 static int Jester_RightFuse[2049] = { -1, ... };
 
-void Jester_AttachFuseParticles(CClotBody npc, bool left = true, bool right = true, bool StoppedJuggling = false)
+void Jester_AttachFuseParticles(CClotBody npc, bool left = true, bool right = true)
 {
-	float pos[3], ang[3], handPos[3], offsets[3], garbage[3];
+	float pos[3], ang[3];
+	int particle = -1;
 
 	Jester_RemoveFuseParticles(npc, left, right);
 
@@ -475,72 +476,44 @@ void Jester_AttachFuseParticles(CClotBody npc, bool left = true, bool right = tr
 	{
 		if (left)
 		{
-			int particle = -1;
-			npc.GetAttachment("handL", handPos, garbage);
-			npc.GetAttachment("bomb_left_center", pos, garbage);
-			for (int i = 0; i < 3; i++)
-				offsets[i] = handPos[i] - pos[i];
-
-			if (StoppedJuggling)
+			npc.m_iWearable1 = npc.EquipItemSeperate("bomb_left_center", MODEL_JESTER_CANNONBALL, "", 1);
+			if (IsValidEntity(npc.m_iWearable1))
 			{
-				npc.m_iWearable1 = npc.EquipItemSeperate("handL", MODEL_JESTER_CANNONBALL, "", 1);
-				SetParent(npc.index, npc.m_iWearable1, "handL", offsets);
+				SetParent(npc.index, npc.m_iWearable1, "bomb_left_center");
 				GetAttachment(npc.m_iWearable1, "attach_fuse", pos, ang);
 
 				particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE, npc.m_iWearable1, "attach_fuse");
-			}
-			else
-			{
-				npc.m_iWearable1 = npc.EquipItemSeperate("bomb_left_center", MODEL_JESTER_CANNONBALL, "", 1);
-				SetParent(npc.index, npc.m_iWearable1, "bomb_left_center", offsets);
 
-				npc.GetAttachment("bomb_fuse_left", pos, ang);
-				particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE, npc.index, "bomb_fuse_left");
-			}
-
-			if (IsValidEntity(particle))
-			{
-				Jester_LeftFuse[npc.index] = EntIndexToEntRef(particle);
-				EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5);
+				if (IsValidEntity(particle))
+				{
+					Jester_LeftFuse[npc.index] = EntIndexToEntRef(particle);
+					EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5);
+				}
 			}
 		}
 
 		if (right)
 		{
-			int particle = -1;
-			npc.GetAttachment("handR", handPos, garbage);
-			npc.GetAttachment("bomb_right_center", pos, garbage);
-			for (int i = 0; i < 3; i++)
-				offsets[i] = handPos[i] - pos[i];
-
-			if (StoppedJuggling)
+			npc.m_iWearable2 = npc.EquipItemSeperate("bomb_right_center", MODEL_JESTER_CANNONBALL, "", 1);
+			if (IsValidEntity(npc.m_iWearable2))
 			{
-				npc.m_iWearable2 = npc.EquipItemSeperate("handR", MODEL_JESTER_CANNONBALL, "", 1);
-				SetParent(npc.index, npc.m_iWearable2, "handR", offsets);
+				SetParent(npc.index, npc.m_iWearable2, "bomb_right_center");
 				GetAttachment(npc.m_iWearable2, "attach_fuse", pos, ang);
 
 				particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE, npc.m_iWearable2, "attach_fuse");
-			}
-			else
-			{
-				npc.m_iWearable2 = npc.EquipItemSeperate("bomb_right_center", MODEL_JESTER_CANNONBALL, "", 1);
-				SetParent(npc.index, npc.m_iWearable2, "bomb_right_center", offsets);
 
-				npc.GetAttachment("bomb_fuse_right", pos, ang);
-				particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE, npc.index, "bomb_fuse_right");
-			}
-
-			if (IsValidEntity(particle))
-			{
-				Jester_RightFuse[npc.index] = EntIndexToEntRef(particle);
-				EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5);
+				if (IsValidEntity(particle))
+				{
+					Jester_RightFuse[npc.index] = EntIndexToEntRef(particle);
+					EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5);
+				}
 			}
 		}
 	}
 	else
 	{
 		npc.GetAttachment("bomb_fuse_mondo", pos, ang);
-		int particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE_BUFFED, npc.index, "bomb_fuse_mondo");
+		particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE_BUFFED, npc.index, "bomb_fuse_mondo");
 		if (IsValidEntity(particle))
 		{
 			Jester_LeftFuse[npc.index] = EntIndexToEntRef(particle);
@@ -553,27 +526,42 @@ void Jester_AttachFuseParticles(CClotBody npc, bool left = true, bool right = tr
 //It needs to be done this way due to IKRules not working with hands.
 void Jester_ReplaceBomb(CClotBody npc, bool left, bool right, bool StoppedJuggling)
 {
-	Jester_RemoveFuseParticles(npc, left, right);
-
 	if (left)
 	{
 		int bomb = npc.m_iWearable1;
 		if (IsValidEntity(bomb))
-			RemoveEntity(bomb);
+		{
+			if (StoppedJuggling)
+			{
+				SetParent(npc.index, bomb, "bomb_left_holding");
+			}
+			else
+			{
+				SetParent(npc.index, bomb, "bomb_left_center");
+			}
+		}
 	}
 	if (right)
 	{
 		int bomb = npc.m_iWearable2;
 		if (IsValidEntity(bomb))
-			RemoveEntity(bomb);
+		{
+			if (StoppedJuggling)
+			{
+				SetParent(npc.index, bomb, "bomb_right_holding");
+			}
+			else
+			{
+				SetParent(npc.index, bomb, "bomb_right_center");
+			}
+		}
 	}
-
-	Jester_AttachFuseParticles(npc, left, right, StoppedJuggling);
 }
 
 void Jester_RemoveFuseParticles(CClotBody npc, bool left = true, bool right = true)
 {
 	int particle;
+	int bomb;
 	
 	if (left)
 	{
@@ -584,6 +572,12 @@ void Jester_RemoveFuseParticles(CClotBody npc, bool left = true, bool right = tr
 			StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
 			StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
 			RemoveEntity(particle);
+		}
+
+		bomb = npc.m_iWearable1;
+		if (IsValidEntity(bomb))
+		{
+			RemoveEntity(bomb);
 		}
 	}
 
@@ -596,6 +590,12 @@ void Jester_RemoveFuseParticles(CClotBody npc, bool left = true, bool right = tr
 			StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
 			StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
 			RemoveEntity(particle);
+		}
+
+		bomb = npc.m_iWearable2;
+		if (IsValidEntity(bomb))
+		{
+			RemoveEntity(bomb);
 		}
 	}
 }
