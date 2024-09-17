@@ -5424,3 +5424,54 @@ stock void SpawnBeam_Vectors(float StartLoc[3], float EndLoc[3], float beamTimin
 		TE_SendToClient(target);
 	}
 }
+
+/**
+ * Spawns the given effect multiple times in a ring surrounding the starting position.
+ */
+stock void SpawnParticlesInRing(float startPos[3], float radius, const char[] effect, int count, float duration = 2.0)
+{
+	for (float i = 0.0; i < 360.0; i += (360.0 / float(count)))
+	{
+		float spawnAng[3], endPos[3], Direction[3];
+		spawnAng[0] = 0.0;
+		spawnAng[1] = i;
+		spawnAng[2] = 0.0;
+
+		GetAngleVectors(spawnAng, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, radius);
+		AddVectors(startPos, Direction, endPos);
+
+		ParticleEffectAt(endPos, effect, duration);
+	}
+}
+
+/**
+ * Spawns the given effect multiple times in a ring surrounding the starting position, and returns all of the particles spawned by this in an ArrayList.
+ */
+stock ArrayList SpawnParticlesInRing_Return(float startPos[3], float radius, const char[] effect, int count, float duration = 2.0, bool ListShouldBeRefsAndNotIndexes = false)
+{
+	ArrayList returnValue = new ArrayList(255);
+
+	for (float i = 0.0; i < 360.0; i += (360.0 / float(count)))
+	{
+		float spawnAng[3], endPos[3], Direction[3];
+		spawnAng[0] = 0.0;
+		spawnAng[1] = i;
+		spawnAng[2] = 0.0;
+
+		GetAngleVectors(spawnAng, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, radius);
+		AddVectors(startPos, Direction, endPos);
+
+		int particle = ParticleEffectAt(endPos, effect, duration);
+		if (IsValidEntity(particle))
+		{
+			if (ListShouldBeRefsAndNotIndexes)
+				PushArrayCell(returnValue, EntIndexToEntRef(particle));
+			else
+				PushArrayCell(returnValue, particle);
+		}
+	}
+
+	return returnValue;
+}

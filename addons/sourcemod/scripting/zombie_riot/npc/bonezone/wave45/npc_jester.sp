@@ -15,6 +15,11 @@
 #define PARTICLE_JESTER_FUSE		"fuse_sparks"
 #define PARTICLE_JESTER_FUSE_BUFFED	"spell_fireball_small_red"
 
+#define PARTICLE_MONDO_SUMMON_BLAST	"merasmus_object_spawn"
+#define PARTICLE_MONDO_SUMMON_BOLTS	"merasmus_zap"
+#define PARTICLE_MONDO_BLAST_BIG	"hightower_explosion"
+#define PARTICLE_MONDO_BLAST_SMALL	"ExplosionCore_MidAir"
+
 static float BONES_JESTER_SPEED = 280.0;
 static float BONES_JESTER_SPEED_BUFFED = 180.0;
 static float JESTER_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
@@ -43,13 +48,18 @@ static float BONES_JESTER_GRAVITY = 0.66;			//Projectile gravity.
 //The bomb explodes on contact and inflicts devastating damage within an enormous radius.
 static float BONES_MONDO_ATTACKINTERVAL = 6.0;		//Delay between attacks.
 static float BONES_MONDO_RANGE = 1800.0;			//Range in which the attack will begin.
+static float BONES_MONDO_MAX_RANGE = 800.0;			//Distance from its target at which the Servant of Mondo will continue moving.
+static float BONES_MONDO_OPTIMAL_RANGE = 400.0;		//Distance from its target at which the Servant of Mondo will stop moving.
 static float BONES_MONDO_VELOCITY = 2800.0;			//Projectile velocity.
 static float BONES_MONDO_DAMAGE = 1800.0;			//Blast damage.
 static float BONES_MONDO_ENTITYMULT = 5.0;			//Amount to multiply damage dealt to entities.
-static float BONES_MONDO_RADIUS = 650.0;			//Blast radius.
+static float BONES_MONDO_RADIUS = 400.0;			//Blast radius.
 static float BONES_MONDO_FALLOFF_RADIUS = 0.5;		//Maximum damage falloff based on distance from the center of the blast.
 static float BONES_MONDO_FALLOFF_MULTIHIT = 0.9;	//Amount to multiply damage dealt per target hit.
 static float BONES_MONDO_GRAVITY = 0.66;			//Projectile gravity.
+static float BONES_MONDO_ATTACK_DELAY = 6.0;			//Delay before attacking upon spawning. Must be above 0.5 or else the cannonball doesn't show up on time.
+static float BONES_MONDO_ATTACK_DELAY_TRANSFORM = 2.0;	//Delay before attacking upon transforming. Must be above 0.5 or else the cannonball doesn't show up on time.
+static float BONES_MONDO_ATTACK_TURNRATE = 200.0;		//Rate at which the Servant of Mondo can turn to face its target while preparing to throw.
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -93,7 +103,37 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
-#define SOUND_JESTER_FUSE	"misc/halloween/hwn_bomb_fuse.wav"
+#define SOUND_JESTER_FUSE	")misc/halloween/hwn_bomb_fuse.wav"
+#define SOUND_MONDO_ATTACK_BIGSWING	")misc/halloween/strongman_fast_whoosh_01.wav"
+#define SOUND_MONDO_ATTACK_SWING	")weapons/machete_swing.wav"
+#define SOUND_MONDO_ATTACK_LAUNCH_1	")weapons/bumper_car_hit_ball.wav"
+#define SOUND_MONDO_ATTACK_LAUNCH_2	")weapons/bumper_car_jump.wav"
+#define SOUND_MONDO_ATTACK_LAUNCH_3	")misc/halloween/strongman_fast_impact.wav"
+#define SOUND_MONDO_ATTACK_SUMMON	")misc/halloween/merasmus_spell.wav"
+#define SOUND_MONDO_ATTACK_INTRO	")player/cyoa_pda_shake.wav"
+#define SOUND_MONDO_ATTACK_LAND		")weapons/bumper_car_hit1.wav"
+#define SOUND_MONDO_EXPLODE			")misc/doomsday_missile_explosion.wav"
+
+static char g_MondoGrunts[][] = {
+	")vo/halloween_boss/knight_alert01.mp3",
+	")vo/halloween_boss/knight_alert02.mp3"
+};
+
+static char g_MondoYells[][] = {
+	")vo/halloween_boss/knight_attack01.mp3",
+	")vo/halloween_boss/knight_attack02.mp3",
+	")vo/halloween_boss/knight_attack03.mp3",
+	")vo/halloween_boss/knight_attack04.mp3",
+};
+
+static char g_MondoLaughs[][] = {
+	")vo/halloween_boss/knight_laugh01.mp3",
+	")vo/halloween_boss/knight_laugh02.mp3",
+	")vo/halloween_boss/knight_laugh03.mp3",
+	")vo/halloween_boss/knight_laugh04.mp3",
+};
+
+static bool b_MondoAttacking[2049] = { false, ... };
 
 public void JesterBones_OnMapStart_NPC()
 {
@@ -105,12 +145,24 @@ public void JesterBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_MondoGrunts));   i++) { PrecacheSound(g_MondoGrunts[i]);   }
+	for (int i = 0; i < (sizeof(g_MondoYells));   i++) { PrecacheSound(g_MondoYells[i]);   }
+	for (int i = 0; i < (sizeof(g_MondoLaughs));   i++) { PrecacheSound(g_MondoLaughs[i]);   }
 
 	PrecacheSound(SOUND_JESTER_FUSE);
 
 //	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 
 	PrecacheSound("player/flow.wav");
+	PrecacheSound(SOUND_MONDO_ATTACK_BIGSWING);
+	PrecacheSound(SOUND_MONDO_ATTACK_SWING);
+	PrecacheSound(SOUND_MONDO_ATTACK_LAUNCH_1);
+	PrecacheSound(SOUND_MONDO_ATTACK_LAUNCH_2);
+	PrecacheSound(SOUND_MONDO_ATTACK_LAUNCH_3);
+	PrecacheSound(SOUND_MONDO_ATTACK_SUMMON);
+	PrecacheSound(SOUND_MONDO_ATTACK_INTRO);
+	PrecacheSound(SOUND_MONDO_ATTACK_LAND);
+	PrecacheSound(SOUND_MONDO_EXPLODE);
 	PrecacheModel("models/zombie/classic.mdl");
 
 	NPCData data;
@@ -217,7 +269,43 @@ methodmap JesterBones < CClotBody
 		#endif
 	}
 	
-	
+	public void PlayMondoAttackIntro()
+	{
+		EmitSoundToAll(SOUND_MONDO_ATTACK_BIGSWING, this.index, _, 110, _, _, GetRandomInt(80, 100));
+	}
+
+	public void PlayMondoAttackSwing()
+	{
+		EmitSoundToAll(SOUND_MONDO_ATTACK_SWING, this.index, _, 110, _, 0.66, 80);
+		EmitSoundToAll(SOUND_MONDO_ATTACK_SWING, this.index, _, 110, _, 0.66, 80);
+		EmitSoundToAll(g_MondoYells[GetRandomInt(0, sizeof(g_HeIsAwake) - 1)], this.index);
+	}
+
+	public void PlayMondoAttackLaunch()
+	{
+		EmitSoundToAll(SOUND_MONDO_ATTACK_LAUNCH_1, this.index, _, 120, _, _, GetRandomInt(90, 110));
+		EmitSoundToAll(SOUND_MONDO_ATTACK_LAUNCH_2, this.index, _, 120, _, _, GetRandomInt(90, 110));
+		EmitSoundToAll(SOUND_MONDO_ATTACK_LAUNCH_3, this.index, _, 120, _, _, GetRandomInt(80, 90));
+	}
+
+	public void PlayMondoAttackSummonStart()
+	{
+		EmitSoundToAll(SOUND_MONDO_ATTACK_SWING, this.index, _, 110, _, 0.66, 80);
+		EmitSoundToAll(SOUND_MONDO_ATTACK_SWING, this.index, _, 110, _, 0.66, 80);
+	}
+
+	public void PlayMondoAttackSummon()
+	{
+		EmitSoundToAll(SOUND_MONDO_ATTACK_SUMMON, this.index, _, _, _, _, GetRandomInt(80, 100));
+		EmitSoundToAll(g_MondoLaughs[GetRandomInt(0, sizeof(g_HeIsAwake) - 1)], this.index);
+	}
+
+	public void PlayMondoAttackEnd()
+	{
+		int pitch = GetRandomInt(80, 100);
+		EmitSoundToAll(SOUND_MONDO_ATTACK_LAND, this.index, _, _, _, _, pitch);
+		EmitSoundToAll(SOUND_MONDO_ATTACK_LAND, this.index, _, _, _, _, pitch);
+	}
 	
 	public JesterBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
@@ -254,6 +342,7 @@ methodmap JesterBones < CClotBody
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(JesterBones_SetBuffed);
+		b_MondoAttacking[npc.index] = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(JesterBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(JesterBones_OnTakeDamage);
@@ -264,11 +353,14 @@ methodmap JesterBones < CClotBody
 		{
 			int iActivity = npc.LookupActivity("ACT_JESTER_RUN_BUFFED");
 			if(iActivity > 0) npc.StartActivity(iActivity);
+			func_NPCAnimEvent[npc.index] = Mondo_AnimEvent;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_MONDO_ATTACK_DELAY;
 		}
 		else
 		{
 			int iActivity = npc.LookupActivity("ACT_JESTER_RUN");
 			if(iActivity > 0) npc.StartActivity(iActivity);
+			func_NPCAnimEvent[npc.index] = Jester_AnimEvent;
 		}
 
 		Jester_AttachFuseParticles(npc);
@@ -297,6 +389,7 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 	CClotBody npc = view_as<CClotBody>(index);
 	npc.RemoveAllWearables();
 	Jester_RemoveFuseParticles(npc);
+	b_MondoAttacking[index] = false;
 	if (!b_BonesBuffed[index] && buffed)
 	{
 		//Tell the game the skeleton is buffed:
@@ -310,6 +403,8 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		DispatchKeyValue(index, "skin", BONES_JESTER_SKIN_BUFFED);
 		int iActivity = npc.LookupActivity("ACT_JESTER_RUN_BUFFED");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		func_NPCAnimEvent[npc.index] = Mondo_AnimEvent;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_MONDO_ATTACK_DELAY_TRANSFORM;
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -325,6 +420,7 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		
 		int iActivity = npc.LookupActivity("ACT_JESTER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		func_NPCAnimEvent[npc.index] = Jester_AnimEvent;
 	}
 
 	Jester_AttachFuseParticles(npc);
@@ -344,7 +440,7 @@ void Jester_AttachFuseParticles(CClotBody npc)
 		if (IsValidEntity(particle))
 		{
 			Jester_LeftFuse[npc.index] = EntIndexToEntRef(particle);
-			EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.66);
+			EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5);
 		}
 
 		npc.GetAttachment("bomb_fuse_right", pos, ang);
@@ -352,7 +448,7 @@ void Jester_AttachFuseParticles(CClotBody npc)
 		if (IsValidEntity(particle))
 		{
 			Jester_RightFuse[npc.index] = EntIndexToEntRef(particle);
-			EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.66);
+			EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5);
 		}
 	}
 	else
@@ -362,7 +458,7 @@ void Jester_AttachFuseParticles(CClotBody npc)
 		if (IsValidEntity(particle))
 		{
 			Jester_LeftFuse[npc.index] = EntIndexToEntRef(particle);
-			EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, _, 75);
+			EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5, 75);
 		}
 	}
 }
@@ -440,35 +536,56 @@ public void JesterBones_ClotThink(int iNPC)
 			
 		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother);
 				
-		if (npc.BoneZone_GetBuffedState())
+		if (flDistanceToTarget <= (!b_BonesBuffed[npc.index] ? BONES_JESTER_OPTIMAL_RANGE : BONES_MONDO_OPTIMAL_RANGE))
 		{
-			//TODO
+			npc.StopPathing();
+			//npc.FaceTowards(vecTarget, 15000.0);
 		}
 		else
 		{
-			if (flDistanceToTarget <= BONES_JESTER_OPTIMAL_RANGE)
+			if (flDistanceToTarget > (!b_BonesBuffed[npc.index] ? BONES_JESTER_MAX_RANGE : BONES_MONDO_MAX_RANGE))
+				npc.StartPathing();
+
+			if (flDistanceToTarget < (npc.GetLeadRadius() * npc.GetLeadRadius()))
 			{
-				npc.StopPathing();
+				float vPredictedPos[3]; 
+				PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else
 			{
-				if (flDistanceToTarget > BONES_JESTER_MAX_RANGE)
-					npc.StartPathing();
-
-				if (flDistanceToTarget < (npc.GetLeadRadius() * npc.GetLeadRadius()))
-				{
-					float vPredictedPos[3]; 
-					PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-				}
-				else
-				{
-					NPC_SetGoalEntity(npc.index, closest);
-				}
+				NPC_SetGoalEntity(npc.index, closest);
 			}
 		}
 
-		npc.StartPathing();
+		if (GetGameTime(npc.index) >= npc.m_flNextRangedAttack && Can_I_See_Enemy(npc.index, npc.m_iTarget) && flDistanceToTarget <= (!b_BonesBuffed[npc.index] ? BONES_JESTER_RANGE : BONES_MONDO_RANGE) && !b_MondoAttacking[npc.index])
+		{
+			if (b_BonesBuffed[npc.index])
+			{
+				int iActivity = npc.LookupActivity("ACT_JESTER_ATTACK_BUFFED");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				EmitSoundToAll(SOUND_MONDO_ATTACK_INTRO, npc.index);
+				EmitSoundToAll(SOUND_MONDO_ATTACK_INTRO, npc.index);
+				EmitSoundToAll(g_MondoGrunts[GetRandomInt(0, sizeof(g_HeIsAwake) - 1)], npc.index);
+				npc.StopPathing();
+				npc.FaceTowards(vecTarget, 999999.0);
+			}
+			else
+			{
+				//TODO
+			}
+
+			b_MondoAttacking[npc.index] = true;
+		}
+		else if (b_MondoAttacking[npc.index] && b_BonesBuffed[npc.index])
+		{
+			npc.StopPathing();
+		}
+
+		if (!npc.m_bPathing)
+		{
+			npc.FaceTowards(vecTarget, (b_BonesBuffed[npc.index] && b_MondoAttacking[npc.index] ? BONES_MONDO_ATTACK_TURNRATE : 200.0));
+		}
 	}
 	else
 	{
@@ -478,6 +595,189 @@ public void JesterBones_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleSound();
+}
+
+public void Mondo_AnimEvent(int entity, int event)
+{
+	if (!IsValidEntity(entity))
+		return;
+
+	JesterBones npc = view_as<JesterBones>(entity);
+
+    switch(event)
+	{
+		case 1001:	//Attack sequence begins: Servant of Mondo tosses its bomb up into the air. Play HHHH grunt sound as well as necro-smasher swing sound for effect.
+		{
+			npc.PlayMondoAttackIntro();
+		}
+		case 1002:	//Servant of Mondo swings its arms to punch the bomb, play swing sound for effect.
+		{
+			npc.PlayMondoAttackSwing();
+		}
+		case 1003: 	//Servant of Mondo's fists impact the bomb, launch the bomb forward and play sounds.
+		{
+			npc.PlayMondoAttackLaunch();
+			Jester_RemoveFuseParticles(npc);
+
+			float bombPos[3], bombAng[3], launchAng[3];
+			npc.GetAttachment("bomb_mondo_center", bombPos, bombAng);
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", launchAng);
+
+			Jester_ShootProjectile(npc, bombPos, bombAng, launchAng, true);
+		}
+		case 1004:	//Servant of Mondo swings its hands upward to prepare to summon a new bomb, play sound for effect.
+		{
+			npc.PlayMondoAttackSummonStart();
+		}
+		case 1005:	//Servant of Mondo uses its arcane powers to teleport a new bomb above its head, spawn particles and play sound for effect.
+		{
+			npc.PlayMondoAttackSummon();
+			Jester_AttachFuseParticles(npc);
+
+			float bombLoc[3], handLoc[3], garbage[3];
+			npc.GetAttachment("bomb_mondo_center", bombLoc, garbage);
+			npc.GetAttachment("handL", handLoc, garbage);
+
+			ParticleEffectAt(bombLoc, PARTICLE_MONDO_SUMMON_BLAST, 2.0);
+			SpawnParticle_ControlPoints(handLoc, bombLoc, PARTICLE_MONDO_SUMMON_BOLTS, 2.0);
+			npc.GetAttachment("handR", handLoc, garbage);
+			SpawnParticle_ControlPoints(handLoc, bombLoc, PARTICLE_MONDO_SUMMON_BOLTS, 2.0);
+		}
+		case 1006:	//The new bomb lands on Servant of Mondo's back, play sound and maybe spawn a particle for effect.
+		{
+			npc.PlayMondoAttackEnd();
+		}
+		case 1007:	//Attack sequence has ended, set isAttacking to false and apply attack cooldown.
+		{
+			b_MondoAttacking[npc.index] = false;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_MONDO_ATTACKINTERVAL;
+			int iActivity = npc.LookupActivity("ACT_JESTER_RUN_BUFFED");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+			npc.StartPathing();
+		}
+	}
+}
+
+public void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bombAng[3], float launchAng[3], bool buffed)
+{
+	int entity = CreateEntityByName("zr_projectile_base");
+			
+	if (IsValidEntity(entity))
+	{
+		float vel = (buffed ? BONES_MONDO_VELOCITY : BONES_JESTER_VELOCITY);
+
+		float buffer[3], vecForward[3];
+		GetAngleVectors(launchAng, buffer, NULL_VECTOR, NULL_VECTOR);
+			
+		vecForward[0] = buffer[0] * vel;
+		vecForward[1] = buffer[1] * vel;
+		vecForward[2] = buffer[2] * vel;
+		
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+		
+		TeleportEntity(entity, bombPos, bombAng, NULL_VECTOR, true);
+		DispatchSpawn(entity);
+		
+		int g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_cannonball.mdl");
+		for(int i; i<4; i++)
+		{
+			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+		}
+		
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+		SetEntityCollisionGroup(entity, 24);
+		Set_Projectile_Collision(entity);
+		See_Projectile_Team_Player(entity);
+		
+		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue) ? 1 : 0);
+		
+		if (buffed)
+		{
+			SDKHook(entity, SDKHook_Touch, Mondo_Touch);
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Mondo_DontExplode);
+			DispatchKeyValueFloat(entity, "modelscale", 3.0);
+			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+			SetEntityGravity(entity, BONES_MONDO_GRAVITY);
+
+			ParticleEffectAt_Parent(bombPos, PARTICLE_JESTER_FUSE_BUFFED, entity, "fuse");
+			RequestFrame(Mondo_Spin, EntIndexToEntRef(entity));
+		}
+		else
+		{
+			/*SDKHook(entity, SDKHook_Touch, Buccaneer_CannonballTouch);
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Buccaneer_DontExplode);
+			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+			SetEntityGravity(entity, BUCCANEER_GRAVITY);
+			EmitSoundToAll(SOUND_CANNONBALL_SHOOT, entity);
+			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
+			
+			f_CannonballRadius[entity] = BUCCANEER_RADIUS;
+			f_CannonballDMG[entity] = BUCCANEER_DAMAGE;
+			f_CannonballFalloff_MultiHit[entity] = BUCCANEER_FALLOFF_MULTIHIT;
+			f_CannonballFalloff_Radius[entity] = BUCCANEER_FALLOFF_RADIUS;
+			f_Cannonball_EntMult[entity] = BUCCANEER_ENTITY_MULT;*/
+			//TODO
+		}
+	}
+}
+
+public Action Mondo_Touch(int entity, int other)
+{
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_MONDO_BLAST_BIG, 2.0);
+	EmitSoundToAll(SOUND_MONDO_EXPLODE, entity, _, 120);
+	SpawnParticlesInRing(position, BONES_MONDO_RADIUS, PARTICLE_MONDO_BLAST_SMALL, 8);
+	
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(BONES_MONDO_DAMAGE, IsValidEntity(owner) ? owner : entity, entity, entity, position, BONES_MONDO_RADIUS, BONES_MONDO_FALLOFF_MULTIHIT, BONES_MONDO_FALLOFF_RADIUS, isBlue, _, _, BONES_MONDO_ENTITYMULT);
+	
+	RemoveEntity(entity);
+	return Plugin_Handled; //DONT.
+}
+
+public MRESReturn Mondo_DontExplode(int entity)
+{
+	RemoveEntity(entity);
+	return MRES_Supercede; //DONT.
+}
+
+public void Mondo_Spin(int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	
+	if (!IsValidEntity(ent))
+		return;
+		
+	float ang[3];
+	GetEntPropVector(ent, Prop_Send, "m_angRotation", ang);
+	ang[0] += 20.0;
+
+	TeleportEntity(ent, NULL_VECTOR, ang, NULL_VECTOR);
+		
+	RequestFrame(Mondo_Spin, EntIndexToEntRef(ent));
+}
+
+public void Jester_AnimEvent(int entity, int event)
+{
+	return;	//REMOVE THIS LINE WHEN ANIMATIONS ARE FINISHED
+
+	if (!IsValidEntity(entity))
+		return;
+
+	JesterBones npc = view_as<JesterBones>(entity);
+
+    switch(event)
+	{
+		case 1001:
+		{
+
+		}
+	}
 }
 
 
