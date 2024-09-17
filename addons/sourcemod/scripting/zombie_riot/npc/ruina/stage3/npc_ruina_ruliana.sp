@@ -856,7 +856,7 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 	}
 
 	if(npc.m_flNextRangedBarrage_Singular < GameTime)
-		npc.m_flNextRangedBarrage_Singular = GameTime + 5.0;
+		npc.m_flNextRangedBarrage_Singular = GameTime + 10.0;
 
 	if(targets_aquired >= RULIANA_MAX_BARRAGE_SIZE)	///somehow we have more then 15 targets?
 		targets_aquired = (RULIANA_MAX_BARRAGE_SIZE-1);
