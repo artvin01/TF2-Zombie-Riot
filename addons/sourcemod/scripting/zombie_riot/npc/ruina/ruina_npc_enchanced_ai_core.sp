@@ -1729,9 +1729,9 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 {
 	CClotBody npc = view_as<CClotBody>(healed_target);
 
-	if((fl_npc_healing_duration[npc.index] > GetGameTime(npc.index) && (b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])) 
-	|| b_ruina_npc_healer[healed_target] 
-	|| b_ruina_nerf_healing[healed_target])
+	if((fl_npc_healing_duration[npc.index] < GetGameTime(npc.index) && (b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target] || b_ruina_nerf_healing[healed_target]))	//only nerf healing on these npc's if they are not looking for a healer npc
+	|| b_ruina_npc_healer[healed_target]	//always nerf healing on healer npc's
+	)
 		healingammount *=0.5;
 
 	return false;
