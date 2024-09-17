@@ -156,15 +156,16 @@ void Yakuza_AddCharge(int client, int amount)
 }
 
 #define BEAST_DMG_CHANGE 1.5
-#define RUSH_DMG_CHANGE 0.45
+#define RUSH_DMG_CHANGE 0.50
 #define DRAGON_DMG_CHANGE 1.25
 static void UpdateStyle(int client)
 {
 	int weapon = EntRefToEntIndex(WeaponRef[client]);
 	if(weapon != -1)
 	{
+		int SlowPlayer = 0;
 		float color = 4.0;
-		float damage = 1.0;
+		float damage = 1.05;
 		float speed = 1.0;
 		i_MeleeAttackFrameDelay[weapon] = 12;
 		switch(WeaponStyle[client])
@@ -174,6 +175,7 @@ static void UpdateStyle(int client)
 				color = 2.0;
 				damage = BEAST_DMG_CHANGE;
 				speed = 1.5;
+				SlowPlayer = 1;
 			}
 			case Style_Rush:
 			{
@@ -196,9 +198,14 @@ static void UpdateStyle(int client)
 		{
 			damage *= 1.5;
 			speed *= 1.15;
-			Attributes_Set(weapon, 54, 0.8);
 			i_WeaponFakeIndex[weapon] = 5;
+			SlowPlayer = 2;
 		}
+
+		if(SlowPlayer == 1)
+			Attributes_Set(weapon, 54, 0.9);
+		else if(SlowPlayer == 2)
+			Attributes_Set(weapon, 54, 0.8);
 
 		SetEntProp(client, Prop_Send, "m_nStreaks", 0);
 
@@ -431,7 +438,7 @@ static void Yakuza_BasicAttack(int client, int weapon)
 			MaxAttacksPossible = 2;
 		
 		case Style_Rush:
-			MaxAttacksPossible = 10;
+			MaxAttacksPossible = 9;
 
 		case Style_Dragon:
 			MaxAttacksPossible = 5;
@@ -579,8 +586,9 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		else if(WeaponStyle[client] == Style_Rush)
 		{
 			Rogue_OnAbilityUse(weapon);
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
-			Ability_Apply_Cooldown(client, 2, 6.0);
+			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.5);
+			ApplyTempAttrib(weapon, 6, 0.85, 1.5);
+			Ability_Apply_Cooldown(client, 2, 8.0);
 			FinishLagCompensation_Base_boss();
 			return;
 		}
@@ -629,7 +637,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				{
 					case Style_Brawler:
 					{
-						float DamageBase = 180.0;
+						float DamageBase = 200.0;
 						DamageBase *= HEATACTION_DMG_MULTI;
 						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_1", 2.5 * Yakuza_DurationDoEnemy(client, target), target);
@@ -655,7 +663,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					
 					case Style_Rush:
 					{
-						float DamageBase = 350.0;
+						float DamageBase = 300.0;
 						DamageBase *= HEATACTION_DMG_MULTI;
 						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_3", 2.5 * Yakuza_DurationDoEnemy(client, target), target);
@@ -698,11 +706,13 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		FinishLagCompensation_Base_boss();
 		return;
 	}
+
 	if(GetClientButtons(client) & IN_ATTACK)
 	{
 		FinishLagCompensation_Base_boss();
 		return;
 	}
+
 	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0, false, 45.0, true); //infinite range, and ignore walls!
 	FinishLagCompensation_Base_boss();
 	target = TR_GetEntityIndex(swingTrace);	
@@ -710,6 +720,20 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 
 	if(target > 0 && WeaponStyle[client] == Style_Brawler)
 	{
+		Rogue_OnAbilityUse(weapon);
+		float vecForward[3];
+		static float angles[3];
+		GetClientEyePosition(client, angles);
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		float damage_force[3]; CalculateDamageForce(vecForward, 40000.0, damage_force);
+		float damage = 120.0;
+		damage *= Attributes_Get(weapon, 2, 1.0);
+		float EnemyVecPos[3]; WorldSpaceCenter(target, EnemyVecPos);
+		SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, -1, damage_force, EnemyVecPos);
+		EmitSoundToAll(IRENE_KICKUP_1, client, _, 75, _, 0.60);
+		float DistanceCheck[3];
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", DistanceCheck);
+		spawnRing_Vectors(DistanceCheck, 0.0, 50.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1);	
 		if(i_NpcWeight[target] < 4)
 		{
 			Rogue_OnAbilityUse(weapon);
@@ -723,21 +747,9 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			f3_KnockbackToTake[target] = VicLoc;
 			SDKHook(target, SDKHook_Think, NpcJumpThink);
 			FreezeNpcInTime(target, halved ? 1.0 : 1.5);
-			float DistanceCheck[3];
-			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", DistanceCheck);
-			spawnRing_Vectors(DistanceCheck, 0.0, 50.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1);	
-			EmitSoundToAll(IRENE_KICKUP_1, client, _, 75, _, 0.60);
 
 			Ability_Apply_Cooldown(client, 2, 6.0);
 		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "STYLE: Target too heavy!");
-		}
-		
 		return;
 	}
 	
@@ -791,7 +803,8 @@ static void Yakuza_Block(int client, int weapon, int slot)
 
 	if(RaidbossIgnoreBuildingsLogic(1))
 	{
-		ApplyTempAttrib(weapon, 206, 0.25, duration);
+		if(BlockStale[client] < 25)
+			ApplyTempAttrib(weapon, 206, 0.25, duration);
 	}
 	else
 	{
@@ -811,13 +824,21 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 			HeatGive = 4;
 
 		case Style_Beast:
-			HeatGive = 5;
+			HeatGive = 3;
 
 		case Style_Rush:
 			HeatGive = 2;
 
 		case Style_Dragon:
 			HeatGive = 0;
+	}
+	//reward heavy hit or normal hit with rush style
+	if(CurrentWeaponComboAt[attacker] == 0)
+	{
+		if(WeaponStyle[attacker] == Style_Rush)
+		{
+			TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.5);
+		}
 	}
 
 	if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
@@ -878,10 +899,10 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 					damage *= 3.5;
 				
 				case Style_Beast:
-					damage *= 3.0;
+					damage *= 2.5;
 				
 				case Style_Rush:
-					damage *= 3.25;
+					damage *= 4.25;
 
 				case Style_Dragon:
 					damage *= 4.0;

@@ -3958,7 +3958,7 @@
 	}
 	"Yakuza Pap 2"
 	{
-		"en"	"+25 max HEAT. Now using M2 ability while not attacking will use a Style Move.\nDucking while attacking will now cause a grab punch."
+		"en"	"+25 max HEAT. Now using M2 ability while not attacking will use a Style Move.\nDucking while attacking will now cause a grab punch.\nStyle moves:\nBrawler: Deal damage and knock enemy up\nRush: Gain speed and attackspeed\nBeast: Pick up building."
 	}
 	"Yakuza Pap 3"
 	{
