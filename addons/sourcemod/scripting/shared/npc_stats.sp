@@ -1,6 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+
+#if defined ZR
+bool b_NameNoTranslation[MAXENTITIES];
+#endif
+
 #if defined ZR || defined NOG
 // Stuff that's used only for ZR but npc_stats
 // needs so it can't go into the zr_core.sp
@@ -42,7 +47,6 @@ int TeamFreeForAll = 50;
 int i_TeamGlow[MAXENTITIES]={-1, ...};
 int Shared_BEAM_Laser;
 char c_NpcName[MAXENTITIES][255];
-bool b_NameNoTranslation[MAXENTITIES];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
@@ -1526,10 +1530,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.50;
 		}
+#if defined ZR
 		if(MoraleBoostLevelAt(this.index) > 0)
 		{
 			speed_for_return *= EntityMoraleBoostReturn(this.index, 1);
 		}
+#endif
 #if defined RUINA_BASE	
 		if(f_Ruina_Speed_Buff[this.index] > Gametime)
 		{
@@ -1737,6 +1743,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
 			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 		}
+#else
+		baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
+		baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 #endif
 
 		return (this.m_flSpeed * GetPercentageAdjust);
@@ -2319,9 +2328,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(!CvarDisableThink.BoolValue)
 		{
 			this.m_bPathing = true;
+#if defined ZR
 			if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
 				this.GetPathFollower().SetMinLookAheadDistance(25.0);
 			else
+#endif
 				this.GetPathFollower().SetMinLookAheadDistance(100.0);
 		}
 	}
@@ -4911,7 +4922,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 }
 
 
-void ArcToLocationViaSpeedProjectile(float VecStart[3], float VecEnd[3], float SpeedReturn[3], float TimeUntillReachDest = 1.0, float GravityChange = 1.0)
+stock void ArcToLocationViaSpeedProjectile(float VecStart[3], float VecEnd[3], float SpeedReturn[3], float TimeUntillReachDest = 1.0, float GravityChange = 1.0)
 {
 	float vecJumpVel[3];
 	
@@ -6334,9 +6345,9 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 #endif	// Non-RTS
 }
 
-void TeleportNpcToRandomPlayer(int iNPC)
+stock void TeleportNpcToRandomPlayer(int iNPC)
 {
-			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
+	//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
 #if defined ZR
 	int target = 0;
 	for(int i=1; i<=MaxClients; i++)
@@ -6430,7 +6441,7 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 			{
 				return;
 			}
-			UnstuckStuckNpc(npc, iNPC);
+			UnstuckStuckNpc(npc);
 		}
 		else
 		{
@@ -6520,7 +6531,7 @@ public void NpcStuckInSomething(CClotBody npc, int iNPC)
 				i_FailedTriesUnstuck[iNPC][1] = 0;
 				//they are still stuck after so many tries and a second, teleport to safe location
 				//delete velocity.
-				UnstuckStuckNpc(npc, iNPC);
+				UnstuckStuckNpc(npc);
 			}
 		}
 		else
@@ -6529,7 +6540,7 @@ public void NpcStuckInSomething(CClotBody npc, int iNPC)
 		}
 	}	
 }
-void UnstuckStuckNpc(CClotBody npc, int iNPC)
+void UnstuckStuckNpc(CClotBody npc)
 {
 	static float vec3Origin[3];
 	npc.SetVelocity(vec3Origin);
@@ -6539,7 +6550,7 @@ void UnstuckStuckNpc(CClotBody npc, int iNPC)
 		//This was an enemy.
 		if(Rogue_Mode())
 		{
-			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 			return;
 		}
 		int Spawner_entity = GetRandomActiveSpawner();
@@ -6549,9 +6560,9 @@ void UnstuckStuckNpc(CClotBody npc, int iNPC)
 			float ang[3];
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-			TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
-			i_npcspawnprotection[iNPC] = 1;
-			CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
+			TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+			i_npcspawnprotection[npc.index] = 1;
+			CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 	else
@@ -6576,11 +6587,11 @@ void UnstuckStuckNpc(CClotBody npc, int iNPC)
 			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
 			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
 			ang[2] = 0.0;
-			TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+			TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
 		}
 		else
 		{
-			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		}
 	}
 #endif
@@ -8732,7 +8743,9 @@ public void ArrowStartTouch(int arrow, int entity)
 			inflictor = owner;
 
 		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
+#if defined ZR
 		Projectile_DealElementalDamage(entity, arrow);
+#endif
 
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))
@@ -9699,7 +9712,6 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 		}		
 		return;
 	}
-	VausMagicaRemoveShield(npc.index);
 	char HealthText[32];
 	int HealthColour[4];
 
@@ -9712,17 +9724,18 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "X");
 	}
-	if(MoraleBoostLevelAt(npc.index) > 0) //hussar!
-	{
-		//Display morale!
-		MoraleIconShowHud(npc.index, HealthText, sizeof(HealthText));
-	}
 	if(NpcStats_IberiaIsEnemyMarked(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "%sM",HealthText);
 	}
 
 #if defined ZR
+	VausMagicaRemoveShield(npc.index);
+	if(MoraleBoostLevelAt(npc.index) > 0) //hussar!
+	{
+		//Display morale!
+		MoraleIconShowHud(npc.index, HealthText, sizeof(HealthText));
+	}
 	if(Saga_EnemyDoomed(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "%s#",HealthText);
@@ -10960,7 +10973,7 @@ void ResetAllArmorStatues(int entiity)
 	i_ArmorSetting[entiity][1] = 0;
 }
 
-void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType,
+stock void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType,
 float custom_maxarmour = 0.0)
 {
 	CClotBody npc = view_as<CClotBody>(entity);

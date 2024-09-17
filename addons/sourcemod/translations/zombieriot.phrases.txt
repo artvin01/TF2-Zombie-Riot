@@ -3504,7 +3504,7 @@
 		"fr"	"Résiste cette ville souterraine avancée, faites garde à leur soins regénératifs et leurs attaques surprises!"
 		"chi"	"抵抗Expidonsa的高科技。别小看他们的盾牌，同时看好自己背后……"
 	}
-	"Sensal Desc"
+	"Sensal Wave Desc"
 	{
 		"en"	"(5) The scouting party operative, you harmed silvester and waldch, but they were unable to tell sensal that this was a false alarm, brace yourself."
 	}

@@ -2858,7 +2858,7 @@
 		"en"	"Deals an additional 30%% pure damage if an enemy is under an elemental effect."
 		"fr"	"+30%% dégats sur les ennemis sous un effet élémental."
 	}
-	"Sensal Desc"
+	"Sensal Scythe Wep Desc"
 	{
 		"en"	"Borrowed from sensal straight out of expidonsa."
 		"fr"	"Emprunté de Sensal, directement de Expidonsa."
@@ -3947,5 +3947,33 @@
 	"Super-Uber-Saw Desc 1"
 	{
 		"en"	"Increaced damage and 25%% more range."
+	}
+	"The Yakuza Desc"
+	{
+		"en"	"After 10 years in the joint youre back, you lost all your fighting abilities, regain them...\nA single melee weapon that does hits multiple times.\nHas a R ability to change fighting styles."
+	}
+	"Yakuza Pap 1"
+	{
+		"en"	"Gain a M2 ability which when used while attacking will do a heavy punch."
+	}
+	"Yakuza Pap 2"
+	{
+		"en"	"+25 max HEAT. Now using M2 ability while not attacking will use a Style Move.\nDucking while attacking will now cause a grab punch."
+	}
+	"Yakuza Pap 3"
+	{
+		"en"	"+25 max HEAT. Now using M2 ability while on a stunned victim will use a Heat Action.\nDucking while using M2 ability will block incoming melee attacks."
+	}
+	"Yakuza Pap 4"
+	{
+		"en"	"+25 max HEAT. Can now use the Dragon style by ducking while using R ability."
+	}
+	"Yakuza Pap 5"
+	{
+		"en"	"+25 max HEAT. Base stats increased."
+	}
+	"Yakuza Pap 6"
+	{
+		"en"	"+25 max HEAT. Base stats increased."
 	}
 }

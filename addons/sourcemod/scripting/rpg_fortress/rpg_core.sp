@@ -17,7 +17,7 @@ int BaseLuck;
 int BaseAgility;
 int BaseUpgradeCost;
 int BaseUpgradeScale;
-int BaseUpdateStats;
+//int BaseUpdateStats;
 int BaseMaxLevel;
 int BaseMaxExperience;
 int BaseMaxExperiencePerLevel;
@@ -233,7 +233,9 @@ void RPG_MapStart()
 	Zero2(f3_SpawnPosition);
 	Zero(f_ClientTargetedByNpc);
 	Fishing_OnMapStart();
+#if defined ZR
 	Medigun_PersonOnMapStart();
+#endif
 	Zones_MapStart();
 
 	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -489,7 +491,6 @@ public Action CheckClientConvars(Handle timer)
 			else if(!IsFakeClient(client))
 			{
 				QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //snd_musicvolume
-				QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //snd_ducktovolume
 			}
 			Spawns_CheckBadClient(client);
 		}
@@ -939,10 +940,10 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 		f_MasteryTextHint[client] = GetGameTime() + 5.0;
 		return;
 	}
-	bool WasGuranteed = false;
+//	bool WasGuranteed = false;
 	if(GrantGuranteed[client] >= 10)
 	{
-		WasGuranteed = true;
+//		WasGuranteed = true;
 		GrantGuranteed[client] = 0;
 	}
 	//Get the highest statt you can find.

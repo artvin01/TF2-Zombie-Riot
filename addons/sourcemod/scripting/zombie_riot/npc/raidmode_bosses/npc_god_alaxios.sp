@@ -342,11 +342,11 @@ public void GodAlaxios_ClotThink(int iNPC)
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: Your weaponry frails in comaprison to Atlantis!!");
+					CPrintToChatAll("{lightblue}God Alaxios{default}: Your weaponry frails in comparison to Atlantis!!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: Concider surrendering?!");
+					CPrintToChatAll("{lightblue}God Alaxios{default}: Consider surrendering?!");
 				}
 			}
 		}
@@ -367,7 +367,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 			}
 		}
 		ForcePlayerLoss();
-		CPrintToChatAll("{lightblue}God Alaxios{default}: No.. No No!! They are comming, prepare to fight together NOW!!!");
+		CPrintToChatAll("{lightblue}God Alaxios{default}: No.. No No!! They are coming, prepare to fight together NOW!!!");
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		for(int i; i<32; i++)
 		{
@@ -1897,7 +1897,7 @@ bool AlaxiosForceTalk()
 			}
 			case 8:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: When you invade them, we will make sure that their main forces are distracted on us.");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: When you invade them, we will make sure that their main forces are distracted by us.");
 				i_TalkDelayCheck += 1;
 			}
 			case 9:

@@ -929,7 +929,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #else
 		return false;
 #endif
-	}	
+	}
 	
 	for( int ent = 1; ent <= 2; ent++ ) 
 	{
@@ -954,6 +954,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif
 
 #if defined ZR
+	
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
@@ -1889,8 +1890,9 @@ void DHook_ScoutSecondaryFireAbilityDelay(int ref)
 			int Active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(Active != entity)
 				return;
-			
+#if defined ZR
 			Enforcer_AbilityM2(client, entity, 1, 5, 1.25, true);
+#endif
 			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 4.0);
 			Ability_Apply_Cooldown(client, 2, 4.0);
 		}

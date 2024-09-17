@@ -1187,7 +1187,7 @@ void IsBuildingNotFloating(int building)
 			endPos2 = vecHit;
 			if(IsPointHazard(endPos2))
 			{
-				SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+				DestroyBuildingDo(building);
 				return;
 			}
 			TeleportEntity(building, endPos2, NULL_VECTOR, NULL_VECTOR);
@@ -1195,7 +1195,7 @@ void IsBuildingNotFloating(int building)
 		}
 		else
 		{
-			SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+			DestroyBuildingDo(building);
 			return;
 		}
 	}
@@ -1204,7 +1204,7 @@ void IsBuildingNotFloating(int building)
 	//Check if half of the top half of the building is inside a wall, if it is, detroy, if it is not, then we leave it be.
 	if(IsSpaceOccupiedWorldOnly(endPos2, m_vecMins, m_vecMaxs, building))
 	{
-		SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+		DestroyBuildingDo(building);
 	}
 }
 
@@ -1798,32 +1798,55 @@ int i2_MountedInfoAndBuilding[2][MAXPLAYERS + 1];
 
 public void MountBuildingToBack(int client, int weapon, bool crit)
 {
+	MountBuildingToBackInternal(client, weapon, crit, false);
+}
+
+//true if mounted
+bool MountBuildingToBackInternal(int client, int weapon, bool crit, bool AllowAnyBuilding)
+{
 	if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]) || IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 	{
-		UnequipDispenser(client);
-		return;
+		if(!AllowAnyBuilding)
+			UnequipDispenser(client);
+
+		return false;
 	}
 	if(IsPlayerCarringObject(client))
 	{
 		Pickup_Building_M2(client, -1, false);
-		return;
+		return false;
 	}
 	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
 	if(entity < MaxClients)
 	{
-		return;
+		return false;
 	}
 	if (!IsValidEntity(entity))
 	{
-		return;
+		return false;
 	}
 	if(!i_IsABuilding[entity])
 	{
-		return;
+		return false;
 	}
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
 	{
-		return;
+		if(!AllowAnyBuilding)
+			return false;
+		else
+		{
+			static char plugin[64];
+			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+			if(StrContains(plugin, "obj_decorative", false) != -1)
+			{
+
+			}
+			else
+			{
+				return false;
+			}
+			//This means that we'll allow pciking up allied buildings, howedver we only allow decorative ones.
+		}
 	}
 
 	Building_RotateAllDepencencies(entity);
@@ -1881,6 +1904,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 	
 	i2_MountedInfoAndBuilding[1][client] = EntIndexToEntRef(entity);
 	//all checks succeeded, now mount the building onto their back!
+	return true;
 }
 
 //its delayed to fix various issues regarding rendering
@@ -1909,10 +1933,20 @@ void ParentDelayFrameForReasons(DataPack pack)
 
 	float flPos[3];
 	float flAng[3];
-	GetAttachment(Wearable, "flag", flPos, flAng);
+	char WhichAttachmentDo[32];
+	if(!Yakuza_IsBeastMode(client))
+	{
+		WhichAttachmentDo = "flag";
+	}
+	else
+	{
+		WhichAttachmentDo = "bread_hand_r";
+	}
+	
+	GetAttachment(Wearable, WhichAttachmentDo, flPos, flAng);
 
 	int InfoTarget = InfoTargetParentAt(flPos,"", 0.0);
-	SetParent(Wearable, InfoTarget, "flag",_);
+	SetParent(Wearable, InfoTarget, WhichAttachmentDo,_);
 	SDKCall_SetLocalOrigin(entity, flPos);	
 	SetEntPropVector(entity, Prop_Data, "m_angRotation", flAng);
 	SetParent(InfoTarget, entity, _, _, _);

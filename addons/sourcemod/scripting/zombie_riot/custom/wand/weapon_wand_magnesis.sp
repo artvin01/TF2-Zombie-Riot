@@ -451,7 +451,7 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 
 	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
 	{
-		b_LagCompNPC_ExtendBoundingBox = true;
+		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 
 		float pos[3], ang[3], endPos[3], hullMin[3], hullMax[3], direction[3];
@@ -673,7 +673,8 @@ void Magnesis_TerminateEffects(int client, int start, int end, bool enemyWasThro
 			Magnesis_Grabbed[victim] = false;
 			Magnesis_DamageTakenWhileGrabbed[victim] = 0.0;
 			Magnesis_DroppedAt[victim] = GetGameTime();
-			view_as<CClotBody>(victim).m_iTarget = client;
+			if(!VIPBuilding_Active())
+				view_as<CClotBody>(victim).m_iTarget = client;
 		}
 
 		Magnesis_GrabTarget[client] = -1;
