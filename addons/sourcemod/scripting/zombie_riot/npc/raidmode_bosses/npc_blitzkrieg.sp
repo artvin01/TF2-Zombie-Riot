@@ -655,7 +655,7 @@ methodmap Blitzkrieg < CClotBody
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Your quite the tenacious one aren't you", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: You're quite the tenacious one aren't you", c_NpcName[npc.index]);
 					}
 				}
 			}
@@ -1527,7 +1527,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: There plenty more to come {yellow}%N{default}!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: There's plenty more to come {yellow}%N{default}!", c_NpcName[npc.index], closest);
 				}
 			}
 		}
@@ -1804,7 +1804,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		if(i_currentwave[npc.index]==45 && !b_pureblitz)
 		{
-			CPrintToChatAll("{crimson}%s{default}: The minnion's have joined the battle.", c_NpcName[npc.index]);
+			CPrintToChatAll("{crimson}%s{default}: The minions have joined the battle.", c_NpcName[npc.index]);
 		}
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int heck;
@@ -1944,7 +1944,7 @@ static void NPC_Death(int entity)
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: hehe, {yellow}%N{default} I pitty you, {crimson}because next time{default} I'll be stronger.", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: hehe, {yellow}%N{default} I pity you, {crimson}because next time{default} I'll be stronger.", c_NpcName[npc.index], closest);
 				}
 			}
 		}

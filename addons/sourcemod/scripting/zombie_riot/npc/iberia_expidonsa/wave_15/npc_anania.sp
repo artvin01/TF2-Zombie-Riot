@@ -295,7 +295,7 @@ void Iberia_AnaniaSelfDefense(Iberia_Anania npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 60.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 3.5;
 

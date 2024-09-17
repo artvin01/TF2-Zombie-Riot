@@ -2799,4 +2799,12 @@
 		"en"	"Ludomancy"
 		"chi"	"「圣」卢多"
 	}
+	"The Dragon of Dojima"
+	{
+		"en"	"The Dragon of Dojima"
+	}
+	"Normal Fists"
+	{
+		"en"	"''Normal Fists''"
+	}
 }

@@ -7,7 +7,8 @@ enum
 	Attrib_ElementalDef = 4023,
 	Attrib_SlowImmune = 4024,
 	Attrib_ObjTerrianAbsorb = 4025,
-	Attrib_SetArchetype = 4026
+	Attrib_SetArchetype = 4026,
+	Attrib_SetSecondaryDelayInf = 4027
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -24,6 +25,7 @@ StringMap WeaponAttributes[MAXENTITIES + 1];
 // 4019: Mana Max Add
 // 4020: Mana Regen 
 // 4021: Override Weapon Skin To This
+// 4027: Set secondary weapon delay to FAR_FUTURE
 bool Attribute_ServerSide(int attribute)
 {
 	if(attribute > 3999)
