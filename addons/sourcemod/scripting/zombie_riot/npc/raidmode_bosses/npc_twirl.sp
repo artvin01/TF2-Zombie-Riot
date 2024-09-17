@@ -2356,7 +2356,12 @@ static bool Retreat(Twirl npc, bool custom = false)
 		float Test_Vec[3];
 		if(Directional_Trace(npc, VecSelfNpc, Angles, Test_Vec))
 		{
-			if(NPC_Teleport(npc.index, Test_Vec))
+			Test_Vec[2]+=10.0;
+			static float hullcheckmaxs[3];
+			static float hullcheckmins[3];
+			hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
+			if(Npc_Teleport_Safe(npc.index, Test_Vec, hullcheckmins, hullcheckmaxs, true))
 			{
 				//TE_SetupBeamPoints(VecSelfNpc, Test_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
 				//TE_SendToAll();
