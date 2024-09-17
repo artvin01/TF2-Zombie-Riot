@@ -294,7 +294,7 @@ methodmap JesterBones < CClotBody
 	{
 		EmitSoundToAll(SOUND_MONDO_ATTACK_SWING, this.index, _, 110, _, 0.66, 80);
 		EmitSoundToAll(SOUND_MONDO_ATTACK_SWING, this.index, _, 110, _, 0.66, 80);
-		EmitSoundToAll(g_MondoYells[GetRandomInt(0, sizeof(g_HeIsAwake) - 1)], this.index);
+		EmitSoundToAll(g_MondoYells[GetRandomInt(0, sizeof(g_MondoYells) - 1)], this.index);
 	}
 
 	public void PlayMondoAttackLaunch()
@@ -313,7 +313,7 @@ methodmap JesterBones < CClotBody
 	public void PlayMondoAttackSummon()
 	{
 		EmitSoundToAll(SOUND_MONDO_ATTACK_SUMMON, this.index, _, _, _, _, GetRandomInt(80, 100));
-		EmitSoundToAll(g_MondoLaughs[GetRandomInt(0, sizeof(g_HeIsAwake) - 1)], this.index);
+		EmitSoundToAll(g_MondoLaughs[GetRandomInt(0, sizeof(g_MondoLaughs) - 1)], this.index);
 	}
 
 	public void PlayMondoAttackEnd()
@@ -325,12 +325,12 @@ methodmap JesterBones < CClotBody
 
 	public void PlayJuggleImpactSound()
 	{
-		EmitSoundToAll(SOUND_JESTER_JUGGLE_IMPACT, this.index, _, _, _, 0.5, GetRandomInt(110, 130));
+		EmitSoundToAll(SOUND_JESTER_JUGGLE_IMPACT, this.index, _, _, _, 0.5, GetRandomInt(100, 140));
 	}
 
 	public void PlayJuggleThrowSound()
 	{
-		EmitSoundToAll(SOUND_JESTER_JUGGLE_TOSS, this.index, _, _, _, 0.66, GetRandomInt(90, 110));
+		EmitSoundToAll(SOUND_JESTER_JUGGLE_TOSS, this.index, _, _, _, 0.66, GetRandomInt(80, 120));
 	}
 	
 	public JesterBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
@@ -599,7 +599,7 @@ public void JesterBones_ClotThink(int iNPC)
 				if(iActivity > 0) npc.StartActivity(iActivity);
 				EmitSoundToAll(SOUND_MONDO_ATTACK_INTRO, npc.index);
 				EmitSoundToAll(SOUND_MONDO_ATTACK_INTRO, npc.index);
-				EmitSoundToAll(g_MondoGrunts[GetRandomInt(0, sizeof(g_HeIsAwake) - 1)], npc.index);
+				EmitSoundToAll(g_MondoGrunts[GetRandomInt(0, sizeof(g_MondoGrunts) - 1)], npc.index);
 				npc.StopPathing();
 				npc.FaceTowards(vecTarget, 999999.0);
 
