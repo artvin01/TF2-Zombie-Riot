@@ -61,6 +61,10 @@ static float BONES_MONDO_ATTACK_DELAY = 6.0;			//Delay before attacking upon spa
 static float BONES_MONDO_ATTACK_DELAY_TRANSFORM = 2.0;	//Delay before attacking upon transforming. Must be above 0.5 or else the cannonball doesn't show up on time.
 static float BONES_MONDO_ATTACK_TURNRATE = 200.0;		//Rate at which the Servant of Mondo can turn to face its target while preparing to throw.
 
+static float BONES_MONDO_MULTIPLIER_DEATH = 0.5;		//Amount to multiply damage and radius of bombs dropped when the Servant of Mondo dies.
+static float BONES_MONDO_VELOCITY_DEATH = 1200.0;		//Death bomb velocity.
+static float BONES_MONDO_GRAVITY_DEATH = 3.0;			//Death bomb gravity.
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -114,6 +118,8 @@ static char g_GibSounds[][] = {
 #define SOUND_MONDO_ATTACK_LAND		")weapons/bumper_car_hit1.wav"
 #define SOUND_MONDO_EXPLODE			")misc/doomsday_missile_explosion.wav"
 
+#define MODEL_JESTER_CANNONBALL		"models/weapons/w_models/w_cannonball.mdl"
+
 static char g_MondoGrunts[][] = {
 	")vo/halloween_boss/knight_alert01.mp3",
 	")vo/halloween_boss/knight_alert02.mp3"
@@ -134,6 +140,7 @@ static char g_MondoLaughs[][] = {
 };
 
 static bool b_MondoAttacking[2049] = { false, ... };
+static bool b_IsDeathBomb[2049] = { false, ... };
 
 public void JesterBones_OnMapStart_NPC()
 {
@@ -164,6 +171,7 @@ public void JesterBones_OnMapStart_NPC()
 	PrecacheSound(SOUND_MONDO_ATTACK_LAND);
 	PrecacheSound(SOUND_MONDO_EXPLODE);
 	PrecacheModel("models/zombie/classic.mdl");
+	PrecacheModel(MODEL_JESTER_CANNONBALL);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Fearsome Fool");
@@ -584,7 +592,7 @@ public void JesterBones_ClotThink(int iNPC)
 
 		if (!npc.m_bPathing)
 		{
-			npc.FaceTowards(vecTarget, (b_BonesBuffed[npc.index] && b_MondoAttacking[npc.index] ? BONES_MONDO_ATTACK_TURNRATE : 200.0));
+			npc.FaceTowards(vecTarget, (b_BonesBuffed[npc.index] && b_MondoAttacking[npc.index] ? BONES_MONDO_ATTACK_TURNRATE : 600.0));
 		}
 	}
 	else
@@ -619,9 +627,15 @@ public void Mondo_AnimEvent(int entity, int event)
 			npc.PlayMondoAttackLaunch();
 			Jester_RemoveFuseParticles(npc);
 
-			float bombPos[3], bombAng[3], launchAng[3];
+			float bombPos[3], bombAng[3], launchAng[3], direction[3];
 			npc.GetAttachment("bomb_mondo_center", bombPos, bombAng);
+
+			//We need to spawn the bomb a bit back because otherwise it spawns far enough ahead that players can just hug the skeleton and never get hit...
 			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", launchAng);
+			GetAngleVectors(launchAng, direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(direction, -60.0);
+			AddVectors(bombPos, direction, bombPos);
+			bombPos[2] -= 40.0;
 
 			Jester_ShootProjectile(npc, bombPos, bombAng, launchAng, true);
 		}
@@ -658,13 +672,13 @@ public void Mondo_AnimEvent(int entity, int event)
 	}
 }
 
-public void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bombAng[3], float launchAng[3], bool buffed)
+void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bombAng[3], float launchAng[3], bool buffed, bool MondoDeathBomb = false)
 {
 	int entity = CreateEntityByName("zr_projectile_base");
 			
 	if (IsValidEntity(entity))
 	{
-		float vel = (buffed ? BONES_MONDO_VELOCITY : BONES_JESTER_VELOCITY);
+		float vel = (buffed ? (MondoDeathBomb ? BONES_MONDO_VELOCITY_DEATH : BONES_MONDO_VELOCITY) : BONES_JESTER_VELOCITY);
 
 		float buffer[3], vecForward[3];
 		GetAngleVectors(launchAng, buffer, NULL_VECTOR, NULL_VECTOR);
@@ -681,11 +695,14 @@ public void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bomb
 		TeleportEntity(entity, bombPos, bombAng, NULL_VECTOR, true);
 		DispatchSpawn(entity);
 		
-		int g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_cannonball.mdl");
+		SetEntityModel(entity, MODEL_JESTER_CANNONBALL);
+
+		//I can't use this because it doesn't let me attach the fuse particle properly:
+		/*int g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_cannonball.mdl");
 		for(int i; i<4; i++)
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
-		}
+		}*/
 		
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 		SetEntityCollisionGroup(entity, 24);
@@ -700,9 +717,11 @@ public void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bomb
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Mondo_DontExplode);
 			DispatchKeyValueFloat(entity, "modelscale", 3.0);
 			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
-			SetEntityGravity(entity, BONES_MONDO_GRAVITY);
+			SetEntityGravity(entity, (MondoDeathBomb ? BONES_MONDO_GRAVITY_DEATH : BONES_MONDO_GRAVITY));
+			b_IsDeathBomb[entity] = MondoDeathBomb;
 
-			ParticleEffectAt_Parent(bombPos, PARTICLE_JESTER_FUSE_BUFFED, entity, "fuse");
+			GetAttachment(entity, "attach_fuse", bombPos, bombAng);
+			ParticleEffectAt_Parent(bombPos, PARTICLE_JESTER_FUSE_BUFFED, entity, "attach_fuse");
 			RequestFrame(Mondo_Spin, EntIndexToEntRef(entity));
 		}
 		else
@@ -732,10 +751,15 @@ public Action Mondo_Touch(int entity, int other)
 	EmitSoundToAll(SOUND_MONDO_EXPLODE, entity, _, 120);
 	SpawnParticlesInRing(position, BONES_MONDO_RADIUS, PARTICLE_MONDO_BLAST_SMALL, 8);
 	
+	float mult = 1.0;
+	if (b_IsDeathBomb[entity])
+		mult = BONES_MONDO_MULTIPLIER_DEATH;
+
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
-	Explode_Logic_Custom(BONES_MONDO_DAMAGE, IsValidEntity(owner) ? owner : entity, entity, entity, position, BONES_MONDO_RADIUS, BONES_MONDO_FALLOFF_MULTIHIT, BONES_MONDO_FALLOFF_RADIUS, isBlue, _, _, BONES_MONDO_ENTITYMULT);
+	Explode_Logic_Custom(BONES_MONDO_DAMAGE * mult, IsValidEntity(owner) ? owner : entity, entity, entity, position, BONES_MONDO_RADIUS * mult, BONES_MONDO_FALLOFF_MULTIHIT, BONES_MONDO_FALLOFF_RADIUS, isBlue, _, _, BONES_MONDO_ENTITYMULT);
 	
+	b_IsDeathBomb[entity] = false;
 	RemoveEntity(entity);
 	return Plugin_Handled; //DONT.
 }
@@ -756,6 +780,8 @@ public void Mondo_Spin(int ref)
 	float ang[3];
 	GetEntPropVector(ent, Prop_Send, "m_angRotation", ang);
 	ang[0] += 20.0;
+	ang[1] += 20.0;
+	ang[2] += 20.0;
 
 	TeleportEntity(ent, NULL_VECTOR, ang, NULL_VECTOR);
 		
@@ -807,6 +833,15 @@ public void JesterBones_NPCDeath(int entity)
 	}
 	
 	Jester_RemoveFuseParticles(npc);
+
+	float bombPos[3], bombAng[3], launchAng[3];
+	npc.GetAttachment("bomb_mondo_center", bombPos, bombAng);
+	WorldSpaceCenter(entity, bombPos);
+	bombPos[2] += 20.0;
+	launchAng[0] = -90.0;
+
+	Jester_ShootProjectile(npc, bombPos, bombAng, launchAng, true, true);
+
 	npc.RemoveAllWearables();
 
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
