@@ -5401,7 +5401,7 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], floa
 	returnStart = particle;
 	returnEnd = particle2;
 }
-#endif
+
 stock void GetPointFromAngles(float startLoc[3], float angles[3], float distance, float output[3], TraceEntityFilter filter, int traceFlags)
 {
 	float endLoc[3];
@@ -5482,3 +5482,5 @@ stock ArrayList SpawnParticlesInRing_Return(float startPos[3], float radius, con
 
 	return returnValue;
 }
+
+#endif
