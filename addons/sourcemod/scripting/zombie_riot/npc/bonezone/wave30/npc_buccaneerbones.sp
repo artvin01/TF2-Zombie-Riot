@@ -50,6 +50,7 @@ static float BUFFED_SELF_KNOCKBACK = 400.0;	//Self-knockback taken when the cann
 static float BUFFED_GRAVITY = 0.2;	//Gravity for cannonballs.
 static float BUFFED_RUN_OVER_DAMAGE = 10.0;	//Damage dealt per tick while the cannon is colliding with someone.
 static float BUFFED_RUN_OVER_FLYING = 50.0;	//Damage dealt per tick while the cannon is colliding with someone while flying through the air from self-knockback.
+static float BUFFED_TURNRATE = 150.0;		//Rate at which the buffed variant turns to face its target while charging up.
 
 #define BONES_BUCCANEER_SCALE					"1.0"
 #define BONES_BUCCANEER_BUFFED_SCALE			"1.2"
@@ -138,7 +139,7 @@ static BuccaneerState buccaneer_BuffedState[MAXENTITIES];
 #define SOUND_CANNONBALL_EXPLODE	")weapons/loose_cannon_explode.wav"
 #define PARTICLE_CANNONBALL_EXPLODE	"ExplosionCore_MidAir_underwater"
 
-#define PARTICLE_BIGBALL_EXPLODE	"hightower_explosion"
+#define PARTICLE_BIGBALL_EXPLODE	"hammer_impact_button"
 #define SOUND_BIGBALL_EXPLODE	")misc/doomsday_missile_explosion.wav"
 #define SOUND_BUFFEDBOMB_LAUNCH	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 #define SOUND_BIGBALL_PREPARE	")vo/halloween_boss/knight_alert02.mp3"
@@ -589,7 +590,7 @@ public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
 	
 	//if (buccaneer_BuffedState[npc.index] != BUCCANEER_IDLE && buccaneer_BuffedState[npc.index] != BUCCANEER_FLYING)
 	//	npc.FaceTowards(targPos, 15000.0);
-	
+
 	switch (buccaneer_BuffedState[npc.index])
 	{
 		case BUCCANEER_IDLE:
@@ -627,6 +628,8 @@ public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
 					buccaneer_BuffedState[npc.index] = BUCCANEER_FIRING;
 				}
 			}
+
+			npc.FaceTowards(targPos, BUFFED_TURNRATE);
 		}
 		case BUCCANEER_LOOP:
 		{
@@ -639,6 +642,8 @@ public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
 				buccaneer_BuffedState[npc.index] = BUCCANEER_FIRING;
 				EmitSoundToAll(SOUND_BIGBALL_FIRE, npc.index, _, 140); 
 			}
+
+			npc.FaceTowards(targPos, BUFFED_TURNRATE);
 		}
 		case BUCCANEER_FIRING:
 		{
@@ -663,6 +668,8 @@ public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
 				
 				EmitSoundToAll(SOUND_BUFFEDBOMB_LAUNCH, npc.index, _, 120);
 			}
+
+			npc.FaceTowards(targPos, BUFFED_TURNRATE);
 		}
 		case BUCCANEER_FLYING:
 		{
@@ -856,7 +863,10 @@ public Action Buccaneer_BigBallTouch(int entity, int other)
 {
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_CANNONBALL_EXPLODE);
 	ParticleEffectAt(position, PARTICLE_BIGBALL_EXPLODE, 2.0);
+	SpawnParticlesInRing(position, f_CannonballRadius[entity], PARTICLE_CANNONBALL_EXPLODE, 16);
+	SpawnParticlesInRing(position, f_CannonballRadius[entity] * 0.5, PARTICLE_CANNONBALL_EXPLODE, 8);
 	EmitSoundToAll(SOUND_BIGBALL_EXPLODE, entity, _, 120);
 	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");

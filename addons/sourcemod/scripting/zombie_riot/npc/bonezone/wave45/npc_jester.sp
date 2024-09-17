@@ -17,8 +17,9 @@
 
 #define PARTICLE_MONDO_SUMMON_BLAST	"merasmus_object_spawn"
 #define PARTICLE_MONDO_SUMMON_BOLTS	"merasmus_zap"
-#define PARTICLE_MONDO_BLAST_BIG	"hightower_explosion"
+#define PARTICLE_MONDO_BLAST_BIG	"hammer_impact_button"
 #define PARTICLE_MONDO_BLAST_SMALL	"ExplosionCore_MidAir"
+#define PARTICLE_MONDO_LAND			"taunt_flip_land_dust2"
 
 static float BONES_JESTER_SPEED = 280.0;
 static float BONES_JESTER_SPEED_BUFFED = 180.0;
@@ -29,7 +30,7 @@ static float JESTER_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which lev
 //FEARSOME FOOL (Non-Buffed Variant):
 //A jester who juggles two large cannonballs. When an enemy gets close enough, it will throw both bombs at them.
 //It must stop juggling before it can throw the bombs, which takes approximately one full second.
-static float BONES_JESTER_ATTACKINTERVAL = 1.2;		//Delay between attacks.
+static float BONES_JESTER_ATTACKINTERVAL = 3.0;		//Delay between attacks.
 static float BONES_JESTER_RANGE = 800.0;			//Attack range.
 static float BONES_JESTER_MAX_RANGE = 800.0;		//Distance from its target at which the jester will continue moving.
 static float BONES_JESTER_OPTIMAL_RANGE = 400.0;	//Distance from its target at which the jester will stop moving.
@@ -42,7 +43,8 @@ static float BONES_JESTER_FALLOFF_RADIUS = 0.8;		//Maximum damage lost based on 
 static float BONES_JESTER_FALLOFF_MULTIHIT = 0.66;	//Amount to multiply damage dealt per enemy hit by explosions.
 static float BONES_JESTER_GRAVITY = 0.66;			//Projectile gravity.
 static float BONES_JESTER_ATTACK_DELAY = 6.0;		//Delay after spawning before it can attack.
-static float BONES_JESTER_ATTACK_DELAY_TRANSFORM = 1.0;	//Delay after transforming before it can attack.
+static float BONES_JESTER_ATTACK_DELAY_TRANSFORM = 2.0;	//Delay after transforming before it can attack.
+static float BONES_JESTER_ATTACK_DELAY_HOLDING = 1.0;	//Delay after both bombs have stopped juggling before the Jester can throw its bombs.
 
 //SERVANT OF MONDO (Buffed Variant):
 //A deranged cultist who worships a figure known only as "Mondo". Moves very slowly while carrying an enormous bomb on its back.
@@ -60,7 +62,7 @@ static float BONES_MONDO_FALLOFF_RADIUS = 0.5;		//Maximum damage falloff based o
 static float BONES_MONDO_FALLOFF_MULTIHIT = 0.9;	//Amount to multiply damage dealt per target hit.
 static float BONES_MONDO_GRAVITY = 0.66;			//Projectile gravity.
 static float BONES_MONDO_ATTACK_DELAY = 12.0;			//Delay before attacking upon spawning. Must be above 0.5 or else the cannonball doesn't show up on time.
-static float BONES_MONDO_ATTACK_DELAY_TRANSFORM = 2.0;	//Delay before attacking upon transforming. Must be above 0.5 or else the cannonball doesn't show up on time.
+static float BONES_MONDO_ATTACK_DELAY_TRANSFORM = 3.0;	//Delay before attacking upon transforming. Must be above 0.5 or else the cannonball doesn't show up on time.
 static float BONES_MONDO_ATTACK_TURNRATE = 200.0;		//Rate at which the Servant of Mondo can turn to face its target while preparing to throw.
 
 static float BONES_MONDO_MULTIPLIER_DEATH = 0.5;		//Amount to multiply damage and radius of bombs dropped when the Servant of Mondo dies.
@@ -147,6 +149,7 @@ static bool b_MondoAttacking[2049] = { false, ... };
 static bool b_IsDeathBomb[2049] = { false, ... };
 static bool Jester_HoldingLeft[2049] = { false, ... };
 static bool Jester_HoldingRight[2049] = { false, ... };
+static float Jester_HoldingBothTime[2049] = { 0.0, ... };
 
 public void JesterBones_OnMapStart_NPC()
 {
@@ -323,14 +326,14 @@ methodmap JesterBones < CClotBody
 		EmitSoundToAll(SOUND_MONDO_ATTACK_LAND, this.index, _, _, _, _, pitch);
 	}
 
-	public void PlayJuggleImpactSound()
+	public void PlayJuggleImpactSound(int source)
 	{
-		EmitSoundToAll(SOUND_JESTER_JUGGLE_IMPACT, this.index, _, _, _, 0.5, GetRandomInt(100, 140));
+		EmitSoundToAll(SOUND_JESTER_JUGGLE_IMPACT, source, _, _, _, 0.5, GetRandomInt(100, 140));
 	}
 
-	public void PlayJuggleThrowSound()
+	public void PlayJuggleThrowSound(int source)
 	{
-		EmitSoundToAll(SOUND_JESTER_JUGGLE_TOSS, this.index, _, _, _, 0.66, GetRandomInt(80, 120));
+		EmitSoundToAll(SOUND_JESTER_JUGGLE_TOSS, source, _, _, _, 0.66, GetRandomInt(80, 120));
 	}
 	
 	public JesterBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
@@ -462,26 +465,76 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 static int Jester_LeftFuse[2049] = { -1, ... };
 static int Jester_RightFuse[2049] = { -1, ... };
 
-void Jester_AttachFuseParticles(CClotBody npc)
+void Jester_AttachFuseParticles(CClotBody npc, bool left = true, bool right = true, bool StoppedJuggling = false)
 {
-	float pos[3], ang[3];
+	float pos[3], ang[3], handPos[3], offsets[3], garbage[3];
+
+	Jester_RemoveFuseParticles(npc, left, right);
 
 	if (!npc.BoneZone_GetBuffedState())
 	{
-		npc.GetAttachment("bomb_fuse_left", pos, ang);
-		int particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE, npc.index, "bomb_fuse_left");
-		if (IsValidEntity(particle))
+		if (left)
 		{
-			Jester_LeftFuse[npc.index] = EntIndexToEntRef(particle);
-			EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5);
+			int particle = -1;
+			npc.GetAttachment("handL", handPos, garbage);
+			npc.GetAttachment("bomb_left_center", pos, garbage);
+			for (int i = 0; i < 3; i++)
+				offsets[i] = handPos[i] - pos[i];
+
+			if (StoppedJuggling)
+			{
+				npc.m_iWearable1 = npc.EquipItemSeperate("handL", MODEL_JESTER_CANNONBALL, "", 1);
+				SetParent(npc.index, npc.m_iWearable1, "handL", offsets);
+				GetAttachment(npc.m_iWearable1, "attach_fuse", pos, ang);
+
+				particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE, npc.m_iWearable1, "attach_fuse");
+			}
+			else
+			{
+				npc.m_iWearable1 = npc.EquipItemSeperate("bomb_left_center", MODEL_JESTER_CANNONBALL, "", 1);
+				SetParent(npc.index, npc.m_iWearable1, "bomb_left_center", offsets);
+
+				npc.GetAttachment("bomb_fuse_left", pos, ang);
+				particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE, npc.index, "bomb_fuse_left");
+			}
+
+			if (IsValidEntity(particle))
+			{
+				Jester_LeftFuse[npc.index] = EntIndexToEntRef(particle);
+				EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5);
+			}
 		}
 
-		npc.GetAttachment("bomb_fuse_right", pos, ang);
-		particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE, npc.index, "bomb_fuse_right");
-		if (IsValidEntity(particle))
+		if (right)
 		{
-			Jester_RightFuse[npc.index] = EntIndexToEntRef(particle);
-			EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5);
+			int particle = -1;
+			npc.GetAttachment("handR", handPos, garbage);
+			npc.GetAttachment("bomb_right_center", pos, garbage);
+			for (int i = 0; i < 3; i++)
+				offsets[i] = handPos[i] - pos[i];
+
+			if (StoppedJuggling)
+			{
+				npc.m_iWearable2 = npc.EquipItemSeperate("handR", MODEL_JESTER_CANNONBALL, "", 1);
+				SetParent(npc.index, npc.m_iWearable2, "handR", offsets);
+				GetAttachment(npc.m_iWearable2, "attach_fuse", pos, ang);
+
+				particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE, npc.m_iWearable2, "attach_fuse");
+			}
+			else
+			{
+				npc.m_iWearable2 = npc.EquipItemSeperate("bomb_right_center", MODEL_JESTER_CANNONBALL, "", 1);
+				SetParent(npc.index, npc.m_iWearable2, "bomb_right_center", offsets);
+
+				npc.GetAttachment("bomb_fuse_right", pos, ang);
+				particle = ParticleEffectAt_Parent(pos, PARTICLE_JESTER_FUSE, npc.index, "bomb_fuse_right");
+			}
+
+			if (IsValidEntity(particle))
+			{
+				Jester_RightFuse[npc.index] = EntIndexToEntRef(particle);
+				EmitSoundToAll(SOUND_JESTER_FUSE, particle, _, _, _, 0.5);
+			}
 		}
 	}
 	else
@@ -496,24 +549,54 @@ void Jester_AttachFuseParticles(CClotBody npc)
 	}
 }
 
-void Jester_RemoveFuseParticles(CClotBody npc)
+//Replaces the Jester's bomb prop with one which is attached to its hand instead of the bomb attachment, or vice-versa.
+//It needs to be done this way due to IKRules not working with hands.
+void Jester_ReplaceBomb(CClotBody npc, bool left, bool right, bool StoppedJuggling)
 {
-	int particle = EntRefToEntIndex(Jester_LeftFuse[npc.index]);
-	if (IsValidEntity(particle))
+	Jester_RemoveFuseParticles(npc, left, right);
+
+	if (left)
 	{
-		StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
-		StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
-		StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
-		RemoveEntity(particle);
+		int bomb = npc.m_iWearable1;
+		if (IsValidEntity(bomb))
+			RemoveEntity(bomb);
+	}
+	if (right)
+	{
+		int bomb = npc.m_iWearable2;
+		if (IsValidEntity(bomb))
+			RemoveEntity(bomb);
 	}
 
-	particle = EntRefToEntIndex(Jester_RightFuse[npc.index]);
-	if (IsValidEntity(particle))
+	Jester_AttachFuseParticles(npc, left, right, StoppedJuggling);
+}
+
+void Jester_RemoveFuseParticles(CClotBody npc, bool left = true, bool right = true)
+{
+	int particle;
+	
+	if (left)
 	{
-		StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
-		StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
-		StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
-		RemoveEntity(particle);
+		particle = EntRefToEntIndex(Jester_LeftFuse[npc.index]);
+		if (IsValidEntity(particle))
+		{
+			StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
+			StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
+			StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
+			RemoveEntity(particle);
+		}
+	}
+
+	if (right)
+	{
+		particle = EntRefToEntIndex(Jester_RightFuse[npc.index]);
+		if (IsValidEntity(particle))
+		{
+			StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
+			StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
+			StopSound(particle, SNDCHAN_AUTO, SOUND_JESTER_FUSE);
+			RemoveEntity(particle);
+		}
 	}
 }
 
@@ -603,25 +686,8 @@ public void JesterBones_ClotThink(int iNPC)
 				npc.StopPathing();
 				npc.FaceTowards(vecTarget, 999999.0);
 
-				//Comment this out once the non-buffed variant is done
 				b_MondoAttacking[npc.index] = true;
 			}
-			else
-			{
-				if (Jester_HoldingLeft[npc.index] && Jester_HoldingRight[npc.index])
-				{
-					CPrintToChatAll("Jester would have just attacked.");
-
-					npc.RemoveGesture("ACT_JESTER_HOLD_LEFT");
-					npc.RemoveGesture("ACT_JESTER_HOLD_RIGHT");
-					Jester_HoldingLeft[npc.index] = false;
-					Jester_HoldingRight[npc.index] = false;
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_JESTER_ATTACKINTERVAL;
-				}
-			}
-
-			//Un-comment this once the non-buffed variant is done
-			//b_MondoAttacking[npc.index] = true;
 		}
 		else if (b_MondoAttacking[npc.index] && b_BonesBuffed[npc.index])
 		{
@@ -698,6 +764,10 @@ public void Mondo_AnimEvent(int entity, int event)
 		case 1006:	//The new bomb lands on Servant of Mondo's back, play sound and maybe spawn a particle for effect.
 		{
 			npc.PlayMondoAttackEnd();
+			float pos[3], trash[3];
+			npc.GetAttachment("bomb_mondo_center", pos, trash);
+			pos[2] -= 20.0;
+			ParticleEffectAt(pos, PARTICLE_MONDO_LAND, 2.0);
 		}
 		case 1007:	//Attack sequence has ended, set isAttacking to false and apply attack cooldown.
 		{
@@ -785,13 +855,16 @@ public Action Mondo_Touch(int entity, int other)
 {
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_MONDO_BLAST_SMALL);
 	ParticleEffectAt(position, PARTICLE_MONDO_BLAST_BIG, 2.0);
-	EmitSoundToAll(SOUND_MONDO_EXPLODE, entity, _, 120);
-	SpawnParticlesInRing(position, BONES_MONDO_RADIUS, PARTICLE_MONDO_BLAST_SMALL, 8);
 	
 	float mult = 1.0;
 	if (b_IsDeathBomb[entity])
 		mult = BONES_MONDO_MULTIPLIER_DEATH;
+
+	EmitSoundToAll(SOUND_MONDO_EXPLODE, entity, _, 120);
+	SpawnParticlesInRing(position, BONES_MONDO_RADIUS * mult, PARTICLE_MONDO_BLAST_SMALL, 16);
+	SpawnParticlesInRing(position, BONES_MONDO_RADIUS * mult * 0.5, PARTICLE_MONDO_BLAST_SMALL, 8);
 
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
@@ -833,52 +906,91 @@ public void Jester_AnimEvent(int entity, int event)
 
 	JesterBones npc = view_as<JesterBones>(entity);
 
-    switch(event)
+	if (!b_MondoAttacking[npc.index])
 	{
-		case 1001:	//The Jester is holding the left-hand bomb, set the left-hold sequence and mark it as held if we can attack.
+		switch(event)
 		{
-			if (GetGameTime(npc.index) >= npc.m_flNextRangedAttack && !Jester_HoldingLeft[npc.index])
+			case 1001:	//The Jester is holding the left-hand bomb, set the left-hold sequence and mark it as held if we can attack.
 			{
-				npc.AddGesture("ACT_JESTER_HOLD_LEFT", false, _, false);
-				Jester_HoldingLeft[npc.index] = true;
+				if (GetGameTime(npc.index) >= npc.m_flNextRangedAttack && !Jester_HoldingLeft[npc.index])
+				{
+					npc.AddGesture("ACT_JESTER_HOLD_LEFT", false, _, false);
+					Jester_ReplaceBomb(npc, true, false, true);
+					Jester_HoldingLeft[npc.index] = true;
+					if (Jester_HoldingRight[npc.index])
+					{
+						Jester_HoldingBothTime[npc.index] = GetGameTime(npc.index) + BONES_JESTER_ATTACK_DELAY_HOLDING;
+					}
+				}
+			}
+			case 1002:	//The Jester is holding the right-hand bomb, set the right-hold sequence and mark it as held if we can attack.
+			{
+				if (GetGameTime(npc.index) >= npc.m_flNextRangedAttack && !Jester_HoldingRight[npc.index])
+				{
+					npc.AddGesture("ACT_JESTER_HOLD_RIGHT", false, _, false);
+					Jester_ReplaceBomb(npc, false, true, true);
+					Jester_HoldingRight[npc.index] = true;
+					if (Jester_HoldingLeft[npc.index])
+					{
+						Jester_HoldingBothTime[npc.index] = GetGameTime(npc.index) + BONES_JESTER_ATTACK_DELAY_HOLDING;
+					}
+				}
+			}
+			case 1003:	//The Jester is about to toss the left-hand bomb up into the air while juggling, play a sound effect.
+			{
+				if (!Jester_HoldingLeft[npc.index])
+				{
+					npc.PlayJuggleThrowSound(npc.m_iWearable1);
+				}
+			}
+			case 1004:	//The Jester is about to toss the right-hand bomb up into the air while juggling, play a sound effect.
+			{
+				if (!Jester_HoldingRight[npc.index])
+				{
+					npc.PlayJuggleThrowSound(npc.m_iWearable2);
+				}
+			}
+			case 1005:	//The Jester's left-hand bomb has landed on his hand, play a sound effect.
+			{
+				if (!Jester_HoldingLeft[npc.index])
+				{
+					npc.PlayJuggleImpactSound(npc.m_iWearable1);
+				}
+			}
+			case 1006:	//The Jester's right-hand bomb has landed on his hand, play a sound effect.
+			{
+				if (!Jester_HoldingRight[npc.index])
+				{
+					npc.PlayJuggleImpactSound(npc.m_iWearable2);
+				}
+			}
+			case 1007:	//The Jester is ready to attack, make sure we're holding both bombs and can actually attack our chosen target.
+			{
+				if ((GetGameTime(npc.index) - Jester_HoldingBothTime[npc.index]) >= BONES_JESTER_ATTACK_DELAY_HOLDING && Jester_HoldingLeft[npc.index] && Jester_HoldingRight[npc.index] && IsValidEnemy(npc.index, npc.m_iTarget) && GetGameTime(npc.index) >= npc.m_flNextRangedAttack)
+				{
+					float loc[3], vicLoc[3];
+					WorldSpaceCenter(npc.index, loc);
+					WorldSpaceCenter(npc.m_iTarget, vicLoc);
+
+					float dist = GetVectorDistance(loc, vicLoc);
+					if (Can_I_See_Enemy(npc.index, npc.m_iTarget) && dist <= BONES_JESTER_RANGE)
+					{
+						CPrintToChatAll("Jester would have just attacked.");
+
+						npc.RemoveGesture("ACT_JESTER_HOLD_LEFT");
+						npc.RemoveGesture("ACT_JESTER_HOLD_RIGHT");
+						Jester_ReplaceBomb(npc, true, true, false);
+						Jester_HoldingLeft[npc.index] = false;
+						Jester_HoldingRight[npc.index] = false;
+						npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_JESTER_ATTACKINTERVAL;
+					}
+				}
 			}
 		}
-		case 1002:	//The Jester is holding the right-hand bomb, set the right-hold sequence and mark it as held if we can attack.
-		{
-			if (GetGameTime(npc.index) >= npc.m_flNextRangedAttack && !Jester_HoldingRight[npc.index])
-			{
-				npc.AddGesture("ACT_JESTER_HOLD_RIGHT", false, _, false);
-				Jester_HoldingRight[npc.index] = true;
-			}
-		}
-		case 1003:	//The Jester is about to toss the left-hand bomb up into the air while juggling, play a sound effect.
-		{
-			if (!Jester_HoldingLeft[npc.index])
-			{
-				npc.PlayJuggleThrowSound();
-			}
-		}
-		case 1004:	//The Jester is about to toss the right-hand bomb up into the air while juggling, play a sound effect.
-		{
-			if (!Jester_HoldingRight[npc.index])
-			{
-				npc.PlayJuggleThrowSound();
-			}
-		}
-		case 1005:	//The Jester's left-hand bomb has landed on his hand, play a sound effect.
-		{
-			if (!Jester_HoldingLeft[npc.index])
-			{
-				npc.PlayJuggleImpactSound();
-			}
-		}
-		case 1006:	//The Jester's right-hand bomb has landed on his hand, play a sound effect.
-		{
-			if (!Jester_HoldingRight[npc.index])
-			{
-				npc.PlayJuggleImpactSound();
-			}
-		}
+	}
+	else
+	{
+		//TODO: Attack sequence events
 	}
 }
 

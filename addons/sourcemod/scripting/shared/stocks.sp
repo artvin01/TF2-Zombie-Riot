@@ -5435,7 +5435,7 @@ stock void SpawnBeam_Vectors(float StartLoc[3], float EndLoc[3], float beamTimin
 /**
  * Spawns the given effect multiple times in a ring surrounding the starting position.
  */
-stock void SpawnParticlesInRing(float startPos[3], float radius, const char[] effect, int count, float duration = 2.0)
+stock void SpawnParticlesInRing(float startPos[3], float radius, const char[] effect, int count, float duration = 0.2)
 {
 	for (float i = 0.0; i < 360.0; i += (360.0 / float(count)))
 	{
