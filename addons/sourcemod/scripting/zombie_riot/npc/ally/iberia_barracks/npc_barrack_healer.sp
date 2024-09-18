@@ -146,7 +146,7 @@ public void Barrack_Iberia_Healer_ClotThink(int iNPC)
 	Barrack_Iberia_Healer npc = view_as<Barrack_Iberia_Healer>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.0, 0.66, 0);
+	GrantEntityArmor(iNPC, true, 0.3, 0.66, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -186,9 +186,9 @@ public void Barrack_Iberia_Healer_ClotThink(int iNPC)
 
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),850.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),650.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
-								ExpidonsaGroupHeal(npc.index, 150.0, 2, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),100.0, 0), 1.0, true);
+								ExpidonsaGroupHeal(npc.index, 150.0, 2, 80.0, 1.0, true);
 								DesertYadeamDoHealEffect(npc.index, 150.0);
 							} 
 						}
