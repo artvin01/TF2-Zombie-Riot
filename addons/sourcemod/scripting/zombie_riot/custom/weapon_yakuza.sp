@@ -206,6 +206,8 @@ static void UpdateStyle(int client)
 			Attributes_Set(weapon, 54, 0.9);
 		else if(SlowPlayer == 2)
 			Attributes_Set(weapon, 54, 0.8);
+		else
+			Attributes_Set(weapon, 54, 1.0);
 
 		SetEntProp(client, Prop_Send, "m_nStreaks", 0);
 
