@@ -2213,7 +2213,7 @@ void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage
 		gain *= 2.5;
 		if(damagetype & DMG_CLUB)
 		{
-			gain *= 6.0;
+			gain *= 4.5;
 		}
 		gain = damage * gain / float(MaxHealth);
 		float vecTarget[3]; WorldSpaceCenter(owner, vecTarget );

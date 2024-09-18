@@ -2287,7 +2287,7 @@
 	}
 	"Barracks Desc Extra 2"
 	{
-		"en"	"You also gain resources when hurting enemies with UNITS.\nIf youre too far away from your units, they generate much less!\nMelee damage give 6x the resources.\nYour resources have a cap, dont hoard them! (gold excluded)"
+		"en"	"You also gain resources when hurting enemies with UNITS.\nIf youre too far away from your units, they generate much less!\nMelee damage give 4.5x the resources.\nYour resources have a cap, dont hoard them! (gold excluded)"
 	}
 	"Militia Desc"
 	{
