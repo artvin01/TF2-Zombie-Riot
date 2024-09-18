@@ -212,7 +212,7 @@ public void Barracks_Iberia_Healtanker_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE");
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE");
 	}
 }
 

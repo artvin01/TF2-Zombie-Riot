@@ -229,7 +229,7 @@ public void Barrack_Combine_Ddt_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 300.0, "ACT_IDLE", "ACT_RUN");
+		BarrackBody_ThinkMove(npc.index, 260.0, "ACT_IDLE", "ACT_RUN");
 	}
 }
 

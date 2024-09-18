@@ -221,7 +221,7 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_IDLE", "ACT_RUN_AIM_RIFLE", 275000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 240.0, "ACT_IDLE", "ACT_RUN_AIM_RIFLE", 275000.0,_, true);
 
 		if(npc.m_flNextRangedAttack > GameTime)
 		{

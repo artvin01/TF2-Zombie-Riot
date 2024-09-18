@@ -202,7 +202,7 @@ public void Barrack_Iberia_Tanker_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE");
+		BarrackBody_ThinkMove(npc.index, 160.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE");
 	}
 }
 

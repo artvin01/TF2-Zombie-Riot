@@ -251,7 +251,7 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_RUN");
+		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE", "ACT_RUN");
 	}
 }
 

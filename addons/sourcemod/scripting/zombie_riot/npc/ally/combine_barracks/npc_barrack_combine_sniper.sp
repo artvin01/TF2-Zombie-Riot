@@ -201,7 +201,7 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_IDLE_ANGRY_RPG", "ACT_RUN_RPG", 750000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_IDLE_ANGRY_RPG", "ACT_RUN_RPG", 750000.0,_, true);
 	}
 }
 

@@ -242,7 +242,7 @@ public void Barrack_Combine_Parry_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_IDLE", "ACT_COLOSUS_WALK");
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_IDLE", "ACT_COLOSUS_WALK");
 	}
 }
 
