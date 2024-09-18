@@ -197,7 +197,7 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 								b_ThisNpcIsImmuneToNuke[target] ||
 								b_IsGiant[target])
 								{
-									damage *= 1.5;
+									damage *= 1.25;
 									if((f_LowIceDebuff[target] - 1.0) < GetGameTime())
 									{
 										f_LowIceDebuff[target] = GetGameTime() + 1.1;
@@ -221,7 +221,7 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 300.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_ITEM1", 7500.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 300.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_ITEM1", 8000.0,_, true);
 	}
 }
 

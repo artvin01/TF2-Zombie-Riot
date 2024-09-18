@@ -144,7 +144,7 @@ methodmap Barrack_Combine_Parry < BarrackBody
 		func_NPCDeath[npc.index] = Barrack_Combine_Parry_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Parry_ClotThink;
 		func_NPCOnTakeDamage[npc.index] = Barrack_Combine_Parry_OnTakeDamage;
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 230.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;

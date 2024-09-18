@@ -534,13 +534,13 @@ static int SummonerCombine[][] =
 	{ 0, 25, 110, 0, 7, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 
 	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
-	{ 0, 100, 200, 0, 8, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 150, 250, 0, 10, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 
-	{ 0, 500, 150, 3, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0, 120, 250, 3, 10, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 500, 150, 10, 20, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 150, 300, 10, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 	
-	{ 0, 150, 350, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 750, 150, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 300, 500, 	15, 20, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 800, 600, 	30, 30, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 750, 750, 	0, 	25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 
@@ -584,8 +584,8 @@ static int SummonerIberiaComplete[][] =
 	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	{ 0, 50, 200, 0, 7, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
-	{ 0, 750, 500, 25, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0, 100, 350, 	5, 8, 16, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 750, 500, 25, 45, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 100, 350, 	5, 15, 16, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	
 	{ 0, 900, 900, 	30, 10, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }	// Construction Expert
