@@ -835,8 +835,11 @@ methodmap Twirl < CClotBody
 		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_GLOBAL_NPC, true, 999, 999);	
 
-		EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
-		EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+		if(!b_test_mode[npc.index])	//my EARS
+		{
+			EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+			EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+		}	
 
 		npc.m_flMeleeArmor = 1.5;
 
@@ -1076,7 +1079,8 @@ static void ClotThink(int iNPC)
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			npc.FaceTowards(vecTarget, (npc.Anger ? 22.5 : 17.0));
+			npc.FaceTowards(vecTarget, (npc.Anger ? 25.5 : 18.0));
+			//
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 
 			int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -1144,7 +1148,11 @@ static void ClotThink(int iNPC)
 			Fractal_Gram(npc, PrimaryThreatIndex);
 			Cosmic_Gaze(npc, PrimaryThreatIndex);
 			lunar_Radiance(npc);
-			Magia_Overflow(npc);
+			if(Magia_Overflow(npc))
+				return;
+
+			if(npc.m_flDoingAnimation > GetGameTime(npc.index))
+				return;
 		}
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
@@ -2361,11 +2369,11 @@ static bool Retreat(Twirl npc, bool custom = false)
 		float Test_Vec[3];
 		if(Directional_Trace(npc, VecSelfNpc, Angles, Test_Vec))
 		{
-			Test_Vec[2]+=10.0;	////aaaaa
+			Test_Vec[2]+=10.0;
 			static float hullcheckmaxs[3];
 			static float hullcheckmins[3];
-			hullcheckmaxs = view_as<float>( { 40.0, 40.0, 90.0 } );	//aggresive hull
-			hullcheckmins = view_as<float>( { -40.0, -40.0, 0.0 } );	
+			hullcheckmaxs = view_as<float>( { 38.0, 38.0, 85.0 } );
+			hullcheckmins = view_as<float>( { -38.0, -38.0, 0.0 } );	
 			if(Npc_Teleport_Safe(npc.index, Test_Vec, hullcheckmins, hullcheckmaxs, true))
 			{
 				//TE_SetupBeamPoints(VecSelfNpc, Test_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
@@ -2692,17 +2700,17 @@ static void On_LaserHit(int client, int target, int damagetype, float damage)
 	Ruina_Add_Mana_Sickness(npc.index, target, 0.1, (npc.Anger ? 55 : 45), true);
 }
 static float fl_magia_angle[MAXENTITIES];
-static void Magia_Overflow(Twirl npc)
+static bool Magia_Overflow(Twirl npc)
 {
 	float GameTime = GetGameTime(npc.index);
 	if(fl_magia_overflow_recharge[npc.index] > GameTime)
-		return;
+		return false;
 
 	if(fl_ruina_battery_timeout[npc.index] > GameTime)
-		return;
+		return false;
 
 	if(!Retreat(npc, true))
-		return;
+		return false;
 
 	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure he WILL get the shield.
 	Ruina_Npc_Give_Shield(npc.index, 0.45);				//give the shield to itself.
@@ -2734,10 +2742,12 @@ static void Magia_Overflow(Twirl npc)
 	npc.m_bInKame = true;
 
 	npc.m_flRangedArmor = 0.9;
-	npc.m_flMeleeArmor = 1.3;
+	npc.m_flMeleeArmor = 1.1;
 
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+
+	return true;
 }
 static Action Magia_Overflow_Tick(int iNPC)
 {
