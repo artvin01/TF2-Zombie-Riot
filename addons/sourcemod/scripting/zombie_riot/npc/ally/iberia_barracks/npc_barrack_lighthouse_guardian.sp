@@ -233,7 +233,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.25, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 1.25, 0.75, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -452,7 +452,7 @@ void GuardianAOEBuff(Barracks_Iberia_Lighthouse_Guardian npc, float gameTime)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (750 * 750))
 					{
-						GrantEntityArmor(entitycount, false, 0.5, 0.1, 0);
+						GrantEntityArmor(entitycount, false, 0.5, 0.75, 0);
 					}
 				}
 			}

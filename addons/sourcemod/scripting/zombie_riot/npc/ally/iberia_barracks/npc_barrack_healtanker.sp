@@ -152,7 +152,7 @@ public void Barracks_Iberia_Healtanker_ClotThink(int iNPC)
 	Barracks_Iberia_Healtanker npc = view_as<Barracks_Iberia_Healtanker>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.5, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 1.5, 0.75, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
