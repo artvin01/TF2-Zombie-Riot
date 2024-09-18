@@ -2361,7 +2361,7 @@ static bool Retreat(Twirl npc, bool custom = false)
 		float Test_Vec[3];
 		if(Directional_Trace(npc, VecSelfNpc, Angles, Test_Vec))
 		{
-			Test_Vec[2]+=50.0;	////aaaaa
+			Test_Vec[2]+=10.0;	////aaaaa
 			static float hullcheckmaxs[3];
 			static float hullcheckmins[3];
 			hullcheckmaxs = view_as<float>( { 40.0, 40.0, 90.0 } );	//aggresive hull
