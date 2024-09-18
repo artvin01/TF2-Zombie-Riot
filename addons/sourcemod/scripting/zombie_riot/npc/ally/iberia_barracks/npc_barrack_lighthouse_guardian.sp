@@ -177,7 +177,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 
 	public Barracks_Iberia_Lighthouse_Guardian(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "2100", "models/player/engineer.mdl", STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_resistance.mdl"));
+		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "1600", "models/player/engineer.mdl", STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_resistance.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -233,7 +233,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.25, 0.75, 0);
+	GrantEntityArmor(iNPC, true, 0.75, 0.66, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -276,10 +276,10 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),9000.0, 0), DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),8000.0, 0), DMG_CLUB, -1, _, vecHit);
 									npc.PlayMeleeHitSound();
-									ExpidonsaGroupHeal(npc.index, 150.0, 2, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),750.0, 0), 1.0, true);
-									DesertYadeamDoHealEffect(npc.index, 150.0);
+								//	ExpidonsaGroupHeal(npc.index, 150.0, 2, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),750.0, 0), 1.0, true);
+								//	DesertYadeamDoHealEffect(npc.index, 150.0);
 								} 
 							}
 							delete swingTrace;
@@ -294,8 +294,8 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 				{
 					npc.m_flNextRangedSpecialAttack = GameTime + 5.0;
-					ExpidonsaGroupHeal(npc.index, 100.0, 5, 5000.0, 0.0, false,Expidonsa_DontHealSameIndex);
-					DesertYadeamDoHealEffect(npc.index, 100.0);
+				//	ExpidonsaGroupHeal(npc.index, 100.0, 5, 5000.0, 0.0, false,Expidonsa_DontHealSameIndex);
+				//	DesertYadeamDoHealEffect(npc.index, 100.0);
 					GuardianAOEBuff(npc,GetGameTime(npc.index));
 
 					npc.PlayRangedAttackSecondarySound();
@@ -452,7 +452,7 @@ void GuardianAOEBuff(Barracks_Iberia_Lighthouse_Guardian npc, float gameTime)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (750 * 750))
 					{
-						GrantEntityArmor(entitycount, false, 0.5, 0.75, 0);
+						GrantEntityArmor(entitycount, false, 0.5, 0.66, 0);
 					}
 				}
 			}

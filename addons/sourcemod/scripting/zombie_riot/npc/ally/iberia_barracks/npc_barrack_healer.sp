@@ -146,7 +146,7 @@ public void Barrack_Iberia_Healer_ClotThink(int iNPC)
 	Barrack_Iberia_Healer npc = view_as<Barrack_Iberia_Healer>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 2.0, 0.75, 0);
+	GrantEntityArmor(iNPC, true, 1.0, 0.66, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
