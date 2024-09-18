@@ -109,7 +109,7 @@ methodmap Barrack_Iberia_Runner < BarrackBody
 
 	public Barrack_Iberia_Runner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(BarrackBody(client, vecPos, vecAng, "160", "models/player/scout.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(BarrackBody(client, vecPos, vecAng, "130", "models/player/scout.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		

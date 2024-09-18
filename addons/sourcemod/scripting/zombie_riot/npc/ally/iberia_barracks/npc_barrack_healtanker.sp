@@ -111,14 +111,14 @@ methodmap  Barracks_Iberia_Healtanker < BarrackBody
 
 	public Barracks_Iberia_Healtanker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barracks_Iberia_Healtanker npc = view_as<Barracks_Iberia_Healtanker>(BarrackBody(client, vecPos, vecAng, "550", "models/player/heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barracks_Iberia_Healtanker npc = view_as<Barracks_Iberia_Healtanker>(BarrackBody(client, vecPos, vecAng, "500", "models/player/heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barracks_Iberia_Healtanker_NPCDeath;
 		func_NPCThink[npc.index] = Barracks_Iberia_Healtanker_ClotThink;
-		npc.m_flSpeed = 220.0;
+		npc.m_flSpeed = 200.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;

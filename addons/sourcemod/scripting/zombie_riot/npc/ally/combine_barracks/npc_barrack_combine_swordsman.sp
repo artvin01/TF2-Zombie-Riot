@@ -144,7 +144,7 @@ methodmap Barrack_Combine_Sword < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Sword_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Sword_ClotThink;
-		npc.m_flSpeed = 230.0;
+		npc.m_flSpeed = 210.0;
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;

@@ -118,7 +118,7 @@ methodmap Barrack_Iberia_Tanker < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Iberia_Tanker_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Iberia_Tanker_ClotThink;
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 160.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -184,7 +184,7 @@ public void Barrack_Iberia_Tanker_ClotThink(int iNPC)
 
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),500.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),380.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
 							} 
 						}

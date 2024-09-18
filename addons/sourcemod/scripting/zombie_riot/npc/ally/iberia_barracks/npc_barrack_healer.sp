@@ -116,7 +116,7 @@ methodmap Barrack_Iberia_Healer < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Iberia_Healer_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Iberia_Healer_ClotThink;
-		npc.m_flSpeed = 220.0;
+		npc.m_flSpeed = 180.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
