@@ -1185,6 +1185,7 @@ char g_TankStepSound[][] = {
 };
 
 #if defined BONEZONE_BASE
+
 char g_BoneZoneBuffDefaultSFX[][] = {
 	"vo/halloween_boo1.mp3",
 	"vo/halloween_boo2.mp3",
@@ -1194,6 +1195,43 @@ char g_BoneZoneBuffDefaultSFX[][] = {
 	"vo/halloween_boo6.mp3",
 	"vo/halloween_boo7.mp3"
 };
+
+char g_HHHGrunts[][] = {
+	")vo/halloween_boss/knight_alert01.mp3",
+	")vo/halloween_boss/knight_alert02.mp3"
+};
+
+char g_HHHYells[][] = {
+	")vo/halloween_boss/knight_attack01.mp3",
+	")vo/halloween_boss/knight_attack02.mp3",
+	")vo/halloween_boss/knight_attack03.mp3",
+	")vo/halloween_boss/knight_attack04.mp3",
+};
+
+char g_HHHLaughs[][] = {
+	")vo/halloween_boss/knight_laugh01.mp3",
+	")vo/halloween_boss/knight_laugh02.mp3",
+	")vo/halloween_boss/knight_laugh03.mp3",
+	")vo/halloween_boss/knight_laugh04.mp3",
+};
+
+char g_HHHPain[][] = {
+	")vo/halloween_boss/knight_pain01.mp3",
+	")vo/halloween_boss/knight_pain02.mp3",
+	")vo/halloween_boss/knight_pain03.mp3"
+};
+
+char g_WitchLaughs[][] = {
+	")items/halloween/witch01.wav",
+	")items/halloween/witch02.wav",
+	")items/halloween/witch03.wav"
+};
+
+#define SOUND_HHH_DEATH												")vo/halloween_boss/knight_dying.mp3"
+#define SOUND_DANGER_BIG_GUY_IS_HERE								")mvm/mvm_cpoint_klaxon.wav"
+#define SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY						")vo/announcer_security_alert.mp3"
+#define PARTICLE_DANGER_BIG_GUY_IS_HERE								"teleportedin_blue"
+
 #endif
 
 float f_ArrowDamage[MAXENTITIES];

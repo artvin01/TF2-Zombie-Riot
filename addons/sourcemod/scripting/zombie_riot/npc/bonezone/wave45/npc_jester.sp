@@ -38,7 +38,7 @@ static float BONES_JESTER_OPTIMAL_RANGE = 400.0;	//Distance from its target at w
 static float BONES_JESTER_RANGE_PREDICT = 300.0;	//Range at which the jester will predict its target's location when throwing bombs.
 static float BONES_JESTER_VELOCITY = 1600.0;		//Projectile velocity.
 static float BONES_JESTER_DAMAGE = 140.0;			//Explosive damage.
-static float BONES_JESTER_ENTITYMULT = 8.0;			//Amount to multiply damage dealt to entities.
+static float BONES_JESTER_ENTITYMULT = 18.0;		//Amount to multiply damage dealt to entities.
 static float BONES_JESTER_RADIUS = 150.0;			//Explosive radius.
 static float BONES_JESTER_FALLOFF_RADIUS = 0.8;		//Maximum damage lost based on distance from the center of the blast.
 static float BONES_JESTER_FALLOFF_MULTIHIT = 0.66;	//Amount to multiply damage dealt per enemy hit by explosions.
@@ -46,6 +46,7 @@ static float BONES_JESTER_GRAVITY = 0.66;			//Projectile gravity.
 static float BONES_JESTER_ATTACK_DELAY = 6.0;		//Delay after spawning before it can attack.
 static float BONES_JESTER_ATTACK_DELAY_TRANSFORM = 2.0;	//Delay after transforming before it can attack.
 static float BONES_JESTER_ATTACK_DELAY_HOLDING = 0.0;	//Delay after both bombs have stopped juggling before the Jester can throw its bombs.
+static int BONES_JESTER_WEIGHT = 1;
 
 //SERVANT OF MONDO (Buffed Variant):
 //A deranged cultist who worships a figure known only as "Mondo". Moves very slowly while carrying an enormous bomb on its back.
@@ -57,7 +58,7 @@ static float BONES_MONDO_MAX_RANGE = 800.0;			//Distance from its target at whic
 static float BONES_MONDO_OPTIMAL_RANGE = 400.0;		//Distance from its target at which the Servant of Mondo will stop moving.
 static float BONES_MONDO_VELOCITY = 2800.0;			//Projectile velocity.
 static float BONES_MONDO_DAMAGE = 1800.0;			//Blast damage.
-static float BONES_MONDO_ENTITYMULT = 5.0;			//Amount to multiply damage dealt to entities.
+static float BONES_MONDO_ENTITYMULT = 24.0;			//Amount to multiply damage dealt to entities.
 static float BONES_MONDO_RADIUS = 400.0;			//Blast radius.
 static float BONES_MONDO_FALLOFF_RADIUS = 0.5;		//Maximum damage falloff based on distance from the center of the blast.
 static float BONES_MONDO_FALLOFF_MULTIHIT = 0.9;	//Amount to multiply damage dealt per target hit.
@@ -65,6 +66,7 @@ static float BONES_MONDO_GRAVITY = 0.66;			//Projectile gravity.
 static float BONES_MONDO_ATTACK_DELAY = 12.0;			//Delay before attacking upon spawning. Must be above 0.5 or else the cannonball doesn't show up on time.
 static float BONES_MONDO_ATTACK_DELAY_TRANSFORM = 3.0;	//Delay before attacking upon transforming. Must be above 0.5 or else the cannonball doesn't show up on time.
 static float BONES_MONDO_ATTACK_TURNRATE = 200.0;		//Rate at which the Servant of Mondo can turn to face its target while preparing to throw.
+static int BONES_MONDO_WEIGHT = 999;
 
 static float BONES_MONDO_MULTIPLIER_DEATH = 0.5;		//Amount to multiply damage and radius of bombs dropped when the Servant of Mondo dies.
 static float BONES_MONDO_VELOCITY_DEATH = 1200.0;		//Death bomb velocity.
@@ -129,31 +131,6 @@ static char g_GibSounds[][] = {
 
 #define MODEL_JESTER_CANNONBALL		"models/weapons/w_models/w_cannonball.mdl"
 
-static char g_MondoGrunts[][] = {
-	")vo/halloween_boss/knight_alert01.mp3",
-	")vo/halloween_boss/knight_alert02.mp3"
-};
-
-static char g_MondoYells[][] = {
-	")vo/halloween_boss/knight_attack01.mp3",
-	")vo/halloween_boss/knight_attack02.mp3",
-	")vo/halloween_boss/knight_attack03.mp3",
-	")vo/halloween_boss/knight_attack04.mp3",
-};
-
-static char g_MondoLaughs[][] = {
-	")vo/halloween_boss/knight_laugh01.mp3",
-	")vo/halloween_boss/knight_laugh02.mp3",
-	")vo/halloween_boss/knight_laugh03.mp3",
-	")vo/halloween_boss/knight_laugh04.mp3",
-};
-
-static char g_JesterLaughs[][] = {
-	")items/halloween/witch01.wav",
-	")items/halloween/witch02.wav",
-	")items/halloween/witch03.wav"
-};
-
 static bool b_MondoAttacking[2049] = { false, ... };
 static bool b_IsDeathBomb[2049] = { false, ... };
 static bool Jester_HoldingLeft[2049] = { false, ... };
@@ -170,10 +147,6 @@ public void JesterBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_MondoGrunts));   i++) { PrecacheSound(g_MondoGrunts[i]);   }
-	for (int i = 0; i < (sizeof(g_MondoYells));   i++) { PrecacheSound(g_MondoYells[i]);   }
-	for (int i = 0; i < (sizeof(g_MondoLaughs));   i++) { PrecacheSound(g_MondoLaughs[i]);   }
-	for (int i = 0; i < (sizeof(g_JesterLaughs));   i++) { PrecacheSound(g_JesterLaughs[i]);   }
 
 	PrecacheSound(SOUND_JESTER_FUSE);
 
@@ -255,7 +228,10 @@ methodmap JesterBones < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		if (!b_BonesBuffed[this.index])
+			EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		else
+			EmitSoundToAll(SOUND_HHH_DEATH, this.index, _, 120, _, _, GetRandomInt(80, 110));
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CJesterBones::PlayDeathSound()");
@@ -309,7 +285,7 @@ methodmap JesterBones < CClotBody
 	{
 		EmitSoundToAll(SOUND_MONDO_ATTACK_SWING, this.index, _, 110, _, 0.66, 80);
 		EmitSoundToAll(SOUND_MONDO_ATTACK_SWING, this.index, _, 110, _, 0.66, 80);
-		EmitSoundToAll(g_MondoYells[GetRandomInt(0, sizeof(g_MondoYells) - 1)], this.index);
+		EmitSoundToAll(g_HHHYells[GetRandomInt(0, sizeof(g_HHHYells) - 1)], this.index);
 	}
 
 	public void PlayMondoAttackLaunch()
@@ -328,7 +304,7 @@ methodmap JesterBones < CClotBody
 	public void PlayMondoAttackSummon()
 	{
 		EmitSoundToAll(SOUND_MONDO_ATTACK_SUMMON, this.index, _, _, _, _, GetRandomInt(80, 100));
-		EmitSoundToAll(g_MondoLaughs[GetRandomInt(0, sizeof(g_MondoLaughs) - 1)], this.index);
+		EmitSoundToAll(g_HHHLaughs[GetRandomInt(0, sizeof(g_HHHLaughs) - 1)], this.index);
 	}
 
 	public void PlayMondoAttackEnd()
@@ -354,7 +330,7 @@ methodmap JesterBones < CClotBody
 		EmitSoundToAll(SOUND_JESTER_JUGGLE_TOSS, source, _, 120, _, _, pitch);
 		EmitSoundToAll(SOUND_JESTER_JUGGLE_TOSS, source, _, 120, _, _, pitch);
 
-		EmitSoundToAll(g_JesterLaughs[GetRandomInt(0, sizeof(g_JesterLaughs) - 1)], this.index, SNDCHAN_VOICE, _, _, _, GetRandomInt(80, 110));
+		EmitSoundToAll(g_WitchLaughs[GetRandomInt(0, sizeof(g_WitchLaughs) - 1)], this.index, SNDCHAN_VOICE, _, _, _, GetRandomInt(80, 110));
 	}
 	
 	public JesterBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
@@ -407,6 +383,13 @@ methodmap JesterBones < CClotBody
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			func_NPCAnimEvent[npc.index] = Mondo_AnimEvent;
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_MONDO_ATTACK_DELAY;
+			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
+			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
+			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
+			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
+			float pos[3];
+			WorldSpaceCenter(npc.index, pos);
+			ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
 		}
 		else
 		{
@@ -470,6 +453,16 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		npc.m_blSetBuffedSkeletonAnimation = true;
 		npc.m_blSetNonBuffedSkeletonAnimation = false;
 
+		EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
+		EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
+		EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
+		EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
+		float pos[3];
+		WorldSpaceCenter(npc.index, pos);
+		ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
+
+		i_NpcWeight[index] = BONES_MONDO_WEIGHT;
+
 		//Jester_GiveCosmetics(npc, true);
 	}
 	else if (b_BonesBuffed[index] && !buffed)
@@ -489,6 +482,7 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		npc.m_blSetBuffedSkeletonAnimation = false;
 		npc.m_blSetNonBuffedSkeletonAnimation = true;
 
+		i_NpcWeight[index] = BONES_JESTER_WEIGHT;
 		//Jester_GiveCosmetics(npc, false);
 	}
 }
@@ -757,7 +751,7 @@ public void JesterBones_ClotThink(int iNPC)
 				if(iActivity > 0) npc.StartActivity(iActivity);
 				EmitSoundToAll(SOUND_MONDO_ATTACK_INTRO, npc.index);
 				EmitSoundToAll(SOUND_MONDO_ATTACK_INTRO, npc.index);
-				EmitSoundToAll(g_MondoGrunts[GetRandomInt(0, sizeof(g_MondoGrunts) - 1)], npc.index);
+				EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], npc.index);
 				npc.StopPathing();
 				npc.FaceTowards(vecTarget, 999999.0);
 
@@ -1176,10 +1170,7 @@ public Action JesterBones_OnTakeDamage(int victim, int &attacker, int &inflictor
 public void JesterBones_NPCDeath(int entity)
 {
 	JesterBones npc = view_as<JesterBones>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
+	npc.PlayDeathSound();
 	
 	Jester_RemoveFuseParticles(npc);
 

@@ -27,7 +27,7 @@ static float BUCCANEER_RADIUS = 100.0;	//Non-buffed variant's projectile blast r
 static float BUCCANEER_PROJECTILE_SPEED = 1200.0;	//The speed of non-buffed projectiles.
 static float BUCCANEER_FALLOFF_MULTIHIT = 0.8;	//Multi-hit falloff for non-buffed variant.
 static float BUCCANEER_FALLOFF_RADIUS = 0.8;	//Radius-based falloff for non-buffed variant.
-static float BUCCANEER_ENTITY_MULT = 6.0;		//Amount to multiply damage dealt to buildings.
+static float BUCCANEER_ENTITY_MULT = 12.0;		//Amount to multiply damage dealt to buildings.
 static float BUCCANEER_TOO_CLOSE = 200.0;		//Proximity at which Brigadier Bones begin to back off.
 static float BUCCANEER_TOO_FAR = 600.0;			//Distance at which Brigadier Bones begin to give chase.
 static float BUCCANEER_GRAVITY = 0.66;			//Gravity applied to projectiles.
@@ -44,7 +44,7 @@ static float BUFFED_RADIUS = 400.0;		//Cannonball blast radius.
 static float BUFFED_PROJECTILE_SPEED = 1800.0;	//Projectile speed.
 static float BUFFED_FALLOFF_MULTIHIT = 0.9;	//Multi-hit falloff for cannonballs.
 static float BUFFED_FALLOFF_RADIUS = 0.66;	//Radius falloff for cannonballs.
-static float BUFFED_ENTITY_MULT = 3.0;	//Amount to multiply damage dealt to buildings.
+static float BUFFED_ENTITY_MULT = 18.0;	//Amount to multiply damage dealt to buildings.
 static float BUFFED_DELAY_MULT = 1.0; //Duration to delay firing the cannon once the firing sequence begins.
 static float BUFFED_SELF_KNOCKBACK = 400.0;	//Self-knockback taken when the cannon fires.
 static float BUFFED_GRAVITY = 0.2;	//Gravity for cannonballs.
@@ -224,8 +224,10 @@ methodmap BuccaneerBones < CClotBody
 	}
 	
 	public void PlayDeathSound() {
-	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		if (!b_BonesBuffed[this.index])
+			EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		else
+			EmitSoundToAll(SOUND_HHH_DEATH, this.index, _, 120, _, _, GetRandomInt(80, 110));
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CBuccaneerBones::PlayDeathSound()");
@@ -321,6 +323,13 @@ methodmap BuccaneerBones < CClotBody
 		if (buffed)
 		{
 			npc.m_bisWalking = false;
+			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
+			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
+			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
+			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
+			float pos[3];
+			WorldSpaceCenter(npc.index, pos);
+			ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
 		}
 		else
 		{
@@ -373,7 +382,15 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
 		SDKHook(npc.index, SDKHook_Touch, Cannon_RunOver);
 		npc.m_bisWalking = false;
-		i_NpcWeight[index] = BONES_BUCCANEER_WEIGHT;
+		i_NpcWeight[index] = BONES_BUCCANEER_WEIGHT_BUFFED;
+
+		EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
+		EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
+		EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
+		EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
+		float pos[3];
+		WorldSpaceCenter(npc.index, pos);
+		ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -391,7 +408,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
 		SDKUnhook(npc.index, SDKHook_Touch, Cannon_RunOver);
 		npc.m_bisWalking = true;
-		i_NpcWeight[index] = BONES_BUCCANEER_WEIGHT_BUFFED;
+		i_NpcWeight[index] = BONES_BUCCANEER_WEIGHT;
 	}
 	
 	running[npc.index] = false;
@@ -903,10 +920,7 @@ public Action BuccaneerBones_OnTakeDamage(int victim, int &attacker, int &inflic
 public void BuccaneerBones_NPCDeath(int entity)
 {
 	BuccaneerBones npc = view_as<BuccaneerBones>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
+	npc.PlayDeathSound();	
 
 	npc.RemoveAllWearables();
 	

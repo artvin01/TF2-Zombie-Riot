@@ -236,6 +236,15 @@ void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	#if defined BONEZONE_BASE
 	for (int i = 0; i < (sizeof(g_BoneZoneBuffDefaultSFX));   i++) { PrecacheSound(g_BoneZoneBuffDefaultSFX[i]);   }
+	for (int i = 0; i < (sizeof(g_HHHGrunts));   i++) { PrecacheSound(g_HHHGrunts[i]);   }
+	for (int i = 0; i < (sizeof(g_HHHYells));   i++) { PrecacheSound(g_HHHYells[i]);   }
+	for (int i = 0; i < (sizeof(g_HHHLaughs));   i++) { PrecacheSound(g_HHHLaughs[i]);   }
+	for (int i = 0; i < (sizeof(g_HHHLaughs));   i++) { PrecacheSound(g_HHHLaughs[i]);   }
+	for (int i = 0; i < (sizeof(g_HHHPain));   i++) { PrecacheSound(g_HHHPain[i]);   }
+	for (int i = 0; i < (sizeof(g_WitchLaughs));   i++) { PrecacheSound(g_WitchLaughs[i]);   }
+	PrecacheSound(SOUND_DANGER_BIG_GUY_IS_HERE);
+	PrecacheSound(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY);
+	PrecacheSound(SOUND_HHH_DEATH);
 	#endif
 	
 	
