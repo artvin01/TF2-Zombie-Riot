@@ -749,9 +749,8 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			f3_KnockbackToTake[target] = VicLoc;
 			SDKHook(target, SDKHook_Think, NpcJumpThink);
 			FreezeNpcInTime(target, halved ? 1.0 : 1.5);
-
-			Ability_Apply_Cooldown(client, 2, 6.0);
 		}
+		Ability_Apply_Cooldown(client, 2, 6.0);
 		return;
 	}
 	
