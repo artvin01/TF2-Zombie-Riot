@@ -2514,7 +2514,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		
 		//Add the buff if we are adding one, or remove it if we are trying to remove the buff and the list of buffers is empty:
-		if ((buffed || AllBuffersGone) && g_BoneZoneBuffFunction[this.index] != INVALID_FUNCTION)
+		if (((buffed && !hadBuffAtStart) || AllBuffersGone) && g_BoneZoneBuffFunction[this.index] != INVALID_FUNCTION)
 		{
 			Call_StartFunction(null, g_BoneZoneBuffFunction[this.index]);
 			Call_PushCell(this.index);
