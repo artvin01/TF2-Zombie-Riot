@@ -2372,8 +2372,8 @@ static bool Retreat(Twirl npc, bool custom = false)
 			Test_Vec[2]+=10.0;
 			static float hullcheckmaxs[3];
 			static float hullcheckmins[3];
-			hullcheckmaxs = view_as<float>( { 38.0, 38.0, 85.0 } );
-			hullcheckmins = view_as<float>( { -38.0, -38.0, 0.0 } );	
+			hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
 			if(Npc_Teleport_Safe(npc.index, Test_Vec, hullcheckmins, hullcheckmaxs, true))
 			{
 				//TE_SetupBeamPoints(VecSelfNpc, Test_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
@@ -2641,7 +2641,7 @@ static bool Directional_Trace(Twirl npc, float Origin[3], float Angle[3], float 
 {
 	Ruina_Laser_Logic Laser;
 
-	float Distance = 950.0;
+	float Distance = 750.0;
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Custom(Angle, Origin, Distance);
 	float Dist = GetVectorDistance(Origin, Laser.End_Point);
@@ -2742,7 +2742,7 @@ static bool Magia_Overflow(Twirl npc)
 	npc.m_bInKame = true;
 
 	npc.m_flRangedArmor = 0.9;
-	npc.m_flMeleeArmor = 1.1;
+	npc.m_flMeleeArmor = 1.0;
 
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
