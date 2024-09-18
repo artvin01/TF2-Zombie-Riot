@@ -2427,7 +2427,6 @@ enum struct Ruina_Laser_Logic
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(Loc, trace);
-			delete trace;
 
 
 			if(Dist !=-1.0)
@@ -2439,10 +2438,7 @@ enum struct Ruina_Laser_Logic
 			this.trace_hit=true;
 			this.Angles = Angles;
 		}
-		else
-		{
-			delete trace;
-		}
+		delete trace;
 	}
 	void DoForwardTrace_Custom(float Angles[3], float startPoint[3], float Dist=-1.0)
 	{
@@ -2451,7 +2447,7 @@ enum struct Ruina_Laser_Logic
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(Loc, trace);
-			delete trace;
+			
 
 
 			if(Dist !=-1.0)
@@ -2463,10 +2459,7 @@ enum struct Ruina_Laser_Logic
 			this.Angles = Angles;
 			this.trace_hit=true;
 		}
-		else
-		{
-			delete trace;
-		}
+		delete trace;
 	}
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)

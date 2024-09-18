@@ -110,6 +110,7 @@ static bool b_allow_final_invocation[MAXENTITIES];
 static float fl_final_invocation_logic[MAXENTITIES];
 
 static float fl_magia_overflow_recharge[MAXENTITIES];
+static bool b_test_mode[MAXENTITIES];
 
 static const char Cosmic_Launch_Sounds[][] ={
 	"weapons/physcannon/superphys_launch1.wav",
@@ -601,6 +602,8 @@ methodmap Twirl < CClotBody
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 
 		c_NpcName[npc.index] = "Twirl";
+
+		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
 		int wave = ZR_GetWaveCount()+1;
 
@@ -1666,16 +1669,18 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(target, 40.0), DMG_CLUB, -1, _, vecHit);
 
 						Ruina_Add_Battery(npc.index, 250.0);
-
-						float Kb = (npc.Anger ? 900.0 : 450.0);
-
-						Custom_Knockback(npc.index, target, Kb, true);
-						if(target < MaxClients)
+						
+						if(!b_test_mode[npc.index])	//while testing the kb is annoying *Who would have guessed*
 						{
-							TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-							TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-						}
+							float Kb = (npc.Anger ? 900.0 : 450.0);
 
+							Custom_Knockback(npc.index, target, Kb, true);
+							if(target < MaxClients)
+							{
+								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+							}
+						}
 						Ruina_Add_Mana_Sickness(npc.index, target, 0.1, RoundToNearest(Modify_Damage(target, 7.0)));
 					}
 					npc.PlayMeleeHitSound();
@@ -2356,11 +2361,11 @@ static bool Retreat(Twirl npc, bool custom = false)
 		float Test_Vec[3];
 		if(Directional_Trace(npc, VecSelfNpc, Angles, Test_Vec))
 		{
-			Test_Vec[2]+=10.0;
+			Test_Vec[2]+=50.0;	////aaaaa
 			static float hullcheckmaxs[3];
 			static float hullcheckmins[3];
-			hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-			hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
+			hullcheckmaxs = view_as<float>( { 40.0, 40.0, 90.0 } );	//aggresive hull
+			hullcheckmins = view_as<float>( { -40.0, -40.0, 0.0 } );	
 			if(Npc_Teleport_Safe(npc.index, Test_Vec, hullcheckmins, hullcheckmaxs, true))
 			{
 				//TE_SetupBeamPoints(VecSelfNpc, Test_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
@@ -2628,7 +2633,7 @@ static bool Directional_Trace(Twirl npc, float Origin[3], float Angle[3], float 
 {
 	Ruina_Laser_Logic Laser;
 
-	float Distance = 750.0;
+	float Distance = 950.0;
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Custom(Angle, Origin, Distance);
 	float Dist = GetVectorDistance(Origin, Laser.End_Point);
@@ -3232,5 +3237,8 @@ static bool Similar(float val1, float val2)
 
 static void Twirl_Lines(Twirl npc, const char[] text)
 {
+	if(b_test_mode[npc.index])
+		return;
+
 	CPrintToChatAll("%s %s", npc.GetName(), text);
 }
