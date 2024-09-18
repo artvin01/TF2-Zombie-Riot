@@ -662,27 +662,27 @@ static const char SummonerAlternativeNPC[][] =
 
 static int SummonerAlternative[][] =
 {
-	// NPC Index, 						Wood, 	Food, 	Gold, 	Time, Level, Supply
-	{ 0 , 			10, 	40, 	0, 		5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	// NPC Index, 	Wood, 	Food, 	Gold, 	Time, Level, Supply
+	{ 0 , 			10, 	40, 	0, 		5, 		1,	 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// None
 
-	{ 0, 		50, 	10, 	1, 		7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
-	{ 0 ,	10, 	50, 	0, 		6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 			50, 	10, 	1, 		7, 		2,		1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
+	{ 0 ,			10, 	50, 	0, 		6, 		4, 		1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
 
-	{ 0, 		50, 	25, 	2, 		8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
-	{ 0,				75,		50, 	1, 		7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 			50, 	25, 	2, 		8, 		4, 		1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0,			75,		50, 	1, 		7, 		7, 		1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
 
-	{ 0 , 			100, 	50, 	2,		11, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
-	{ 0, 		250, 	100, 	0, 		7, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0 , 			100, 	50, 	2,		11,		 7, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 			250, 	100, 	0, 		7, 		11, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 
-	{ 0, 			50, 	100, 	0,		3, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert	//these ones are meant to be spammed into oblivion
-	{ 0 , 			125,	300,	0,		7, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 			250, 	100, 	0,		3, 		11, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert	//these ones are meant to be spammed into oblivion
+	{ 0 , 			125,	300,	0,		7, 		16, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
 
-	{ 0, 			175, 	350, 	15, 	12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0 , 		225, 	75, 	10, 	13, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	
-	{ 0, 	1000, 	500, 	35, 	30, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 				750, 	750, 	0,		25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
+	{ 0, 			175, 	350, 	20, 	12,		 11,	1,	 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0 , 			225, 	75, 	15, 	13,		 16,	1,	 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+
+	{ 0, 			2000, 	2000, 	90, 	30,		 16,	2,	 ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 			750, 	750, 	0,		25,		 11,	1,	 ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 
 static const int BarracksUpgrades[][] =
