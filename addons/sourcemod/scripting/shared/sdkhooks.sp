@@ -2327,6 +2327,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		{
 			return Player_OnTakeDamage_WrathfulBlade_Hud(victim);
 		}
+		case WEAPON_YAKUZA:
+		{
+			return Yakuza_SelfTakeDamageHud(victim, weapon);
+		}
 	}
 	return 1.0;
 }
@@ -2334,6 +2338,9 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 
 void ApplyLastmanOrDyingOverlay(int client)
 {
+	if(LastMann && Yakuza_Lastman())
+		return;
+	
 	DoOverlay(client, "debug/yuv");
 	if(LastMann)
 	{

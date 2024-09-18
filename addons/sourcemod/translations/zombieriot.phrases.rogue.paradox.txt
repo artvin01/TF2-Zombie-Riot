@@ -28,7 +28,7 @@
 	}
 	"Extreme Heat Desc"
 	{
-		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x2 slower and Al-Hallem units move 20%% faster"
+		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x1.25 slower and Al-Hallem units move 20%% faster"
 	}
 	"Extreme Heat Lore"
 	{

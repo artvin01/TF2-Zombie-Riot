@@ -739,11 +739,11 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 			for(int a; a < length; a++)
 			{
 				Brews.GetArray(a, brew);
-				if(brew.AccountId == account && brew.StoreIndex == StoreWeapon[weapon])
+				if(brew.AccountId == account/* && brew.StoreIndex == StoreWeapon[weapon]*/)
 				{
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 					SetDefaultHudPosition(client);
-					ShowSyncHudText(client, SyncHud_Notifaction, "An effect is already active for this weapon!");
+					ShowSyncHudText(client, SyncHud_Notifaction, "An effect is already active!");// for this weapon!");
 					ApplyBuildingCollectCooldown(entity, client, 2.0);
 					return;
 				}

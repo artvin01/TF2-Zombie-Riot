@@ -749,6 +749,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Player_OnTakeDamage_Magnesis(victim, damage, attacker);
 		}
+		case WEAPON_YAKUZA:
+		{
+			Yakuza_SelfTakeDamage(victim, attacker, damage, damagetype, equipped_weapon);
+		}
 	}
 	return damage;
 }
@@ -1052,6 +1056,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_SUPERUBERSAW:
 		{
 			Superubersaw_OnTakeDamage(victim, attacker, damage);
+		}
+		case WEAPON_YAKUZA:
+		{
+			Yakuza_NPCTakeDamage(victim, attacker, damage, weapon, damagetype);
 		}
 	}
 #endif

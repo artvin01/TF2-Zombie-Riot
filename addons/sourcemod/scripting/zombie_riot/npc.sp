@@ -218,6 +218,7 @@ void NPC_ConfigSetup()
 	BrittleBones_OnMapStart_NPC();
 	BigBones_OnMapStart_NPC();*/
 	AlliedLeperVisualiserAbility_OnMapStart_NPC();
+	AlliedKiryuVisualiserAbility_OnMapStart_NPC();
 	
 	Mecha_Engineer_OnMapStart_NPC();
 	Mecha_Heavy_OnMapStart_NPC();
@@ -1125,6 +1126,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_allied_sensal_afterimage.sp"
 #include "zombie_riot/npc/ally/npc_allied_leper_visualiser.sp"
 #include "zombie_riot/npc/ally/npc_allied_kahml_afterimage.sp"
+#include "zombie_riot/npc/ally/npc_allied_kiyru_visualiser.sp"
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"

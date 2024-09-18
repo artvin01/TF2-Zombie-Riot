@@ -496,7 +496,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		Heavens_Light_Active[npc.index]=false;
 		fl_heavens_light_use_timer[npc.index] = GameTime + 60.0;
 		b_force_heavens_light[npc.index] = false;
-		//Invoke_Heavens_Light(npc, GameTime);
+		//Invoke_Heavens_Light(npc);
 
 		fl_heavens_fall_use_timer[npc.index] = GameTime + 30.0;
 
@@ -832,7 +832,7 @@ static void Internal_ClotThink(int iNPC)
 
 				Heavens_Light_Active[npc.index]=true;
 
-				Invoke_Heavens_Light(npc, GameTime);
+				Invoke_Heavens_Light(npc);
 			}
 			if(npc.m_flAttackHappens > GameTime)
 			{
@@ -1105,24 +1105,24 @@ static bool b_touchdown;
 
 
 
-static void Invoke_Heavens_Light(Raidboss_Donnerkrieg npc, float GameTime)
+static void Invoke_Heavens_Light(Raidboss_Donnerkrieg npc)
 {
 	float Heavens_Duration;
 	fl_heavens_damage = 15.0 * RaidModeScaling;
 	fl_heavens_charge_time = 10.0;
-	Heavens_Duration = 30.0;
-	fl_heavens_radius = 150.0;	//This is per individual beam
-	fl_heavens_speed = 2.5;
+	Heavens_Duration = 25.0;
+	fl_heavens_radius = 125.0;	//This is per individual beam
+	fl_heavens_speed = 2.0;
 
 	b_touchdown = false;
 
-	fl_heavens_light_duration = GameTime + Heavens_Duration+fl_heavens_charge_time;
+	fl_heavens_light_duration = GetGameTime() + Heavens_Duration+fl_heavens_charge_time;
 	
 	Zero(i_heavens_target_id);
 	Zero(fl_heavens_rng_loc_timer);
 	fl_Heavens_Angle = 0.0;
 	
-	fl_heavens_charge_gametime = fl_heavens_charge_time + GameTime;
+	fl_heavens_charge_gametime = fl_heavens_charge_time + GetGameTime();	//if this STILL somehow insta charges, HOW?????????
 
 	//CPrintToChatAll("Timer start: %f", (fl_heavens_charge_gametime-GameTime));
 
@@ -1156,9 +1156,9 @@ public Action Heavens_TBB_Tick(int client)
 
 	//CPrintToChatAll("Timer charging: %f", (fl_heavens_charge_gametime-GameTime));
 	
-	if(fl_heavens_charge_gametime>GameTime)
+	if(fl_heavens_charge_gametime>GetGameTime())
 	{
-		float Ratio =(fl_heavens_charge_gametime - GameTime) / fl_heavens_charge_time;	//L + Ratio	//anyway, we get the ratio of how long until game time is caughtup with charge time, once fully caught up ,the ratio is well 0, once its started, the ratio is 1.0
+		float Ratio =(fl_heavens_charge_gametime - GetGameTime()) / fl_heavens_charge_time;	//L + Ratio	//anyway, we get the ratio of how long until game time is caughtup with charge time, once fully caught up ,the ratio is well 0, once its started, the ratio is 1.0
 		Heavens_Light_Charging(npc.index, Ratio);
 	}
 	else

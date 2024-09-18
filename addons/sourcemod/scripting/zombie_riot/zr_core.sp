@@ -197,7 +197,8 @@ enum
 	WEAPON_ULPIANUS = 117,
 	WEAPON_WRATHFUL_BLADE = 118,
 	WEAPON_MAGNESIS = 119,
-	WEAPON_SUPERUBERSAW = 120
+	WEAPON_SUPERUBERSAW = 120,
+	WEAPON_YAKUZA = 121
 }
 
 enum
@@ -550,6 +551,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_ulpianus.sp"
 #include "zombie_riot/custom/wand/weapon_wand_magnesis.sp"
 #include "zombie_riot/custom/kit_blacksmith_brew.sp"
+#include "zombie_riot/custom/weapon_yakuza.sp"
 
 void ZR_PluginLoad()
 {
@@ -800,6 +802,7 @@ void ZR_MapStart()
 	Ulpianus_MapStart();
 	Magnesis_Precache();
 	Wrathful_Blade_Precache();
+	Yakuza_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1110,6 +1113,7 @@ public Action CommandDebugHudTest(int client, int args)
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
+	CheckAlivePlayers(0, 0, true);
 
 	return Plugin_Handled;
 }
@@ -1581,6 +1585,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
 		LastMann = false;
+		Yakuza_Lastman(false);
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -1617,6 +1622,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				else if(LastMann)
 				{
 					LastMann = false;
+					Yakuza_Lastman(false);
 				}
 				
 			}
@@ -1707,6 +1713,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							SetEntityRenderMode(client, RENDER_NORMAL);
 							SetEntityRenderColor(client, 255, 255, 255, 255);
 							SetEntityCollisionGroup(client, 5);
+						}
+
+						if(Yakuza_IsNotInJoint(client))
+						{
+							Yakuza_AddCharge(client, 99999);
+							Yakuza_Lastman(true);
+							CPrintToChatAll("{crimson}Something awakens inside %N.......",client);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)

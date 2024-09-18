@@ -156,7 +156,7 @@ public void Barracks_Iberia_Guards_ClotThink(int iNPC)
 	Barracks_Iberia_Guards npc = view_as<Barracks_Iberia_Guards>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.5, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 0.85, 0.66, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -230,7 +230,7 @@ public Action Barrack_Iberia_Guards_OnTakeDamage(int victim, int &attacker, int 
 	
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
-		GrantEntityArmor(npc.index, false, 0.2, 0.25, 0);
+		GrantEntityArmor(npc.index, false, 0.2, 0.66, 0);
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 	}
 

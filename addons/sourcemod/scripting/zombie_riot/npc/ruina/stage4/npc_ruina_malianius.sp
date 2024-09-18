@@ -414,14 +414,14 @@ static void Fire_Random_Ion(Malianius npc)
 
 			GetEntPropVector(enemy_2[i], Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
 
-			float Time = 1.0;
+			float Time = 4.0;
 
 			ScaleVector(SubjectAbsVelocity, Time);
 			AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
 
 			//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
 
-			float Radius = 250.0;
+			float Radius = 175.0;
 
 			float Thickness = 6.0;
 			TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
@@ -436,7 +436,7 @@ static void Fire_Random_Ion(Malianius npc)
 			pack.WriteFloatArray(Predicted_Pos, sizeof(Predicted_Pos));
 			pack.WriteCellArray(color, sizeof(color));
 			pack.WriteFloat(Radius);		//radius
-			pack.WriteFloat(400.0);			//dmg
+			pack.WriteFloat(250.0);			//dmg
 			pack.WriteFloat(0.1);			//Sickness %
 			pack.WriteCell(200);			//Sickness flat
 			pack.WriteCell(true);			//Override sickness timeout

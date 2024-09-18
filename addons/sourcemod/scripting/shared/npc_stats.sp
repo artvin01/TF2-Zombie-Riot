@@ -2368,18 +2368,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.GetLocomotionInterface().FaceTowards(vecGoal);
 		this.GetBaseNPC().flMaxYawRate = flPrevValue;
 	}
-	/*
-
-		public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)
-	{
-		//Sad!
-		float flPrevValue = flTurnRate.FloatValue;
 		
-		flTurnRate.FloatValue = turnrate;
-		SDKCall(g_hFaceTowards, this.GetLocomotionInterface(), vecGoal);
-		flTurnRate.FloatValue = flPrevValue;
-	}
-	*/		
 	public float GetMaxJumpHeight()	{ return this.GetLocomotionInterface().GetMaxJumpHeight(); }
 	public float GetGroundSpeed()	{ return this.GetLocomotionInterface().GetGroundSpeed(); }
 	public int SelectWeightedSequence(any activity) { return view_as<CBaseAnimating>(view_as<int>(this)).SelectWeightedSequence(activity); }
@@ -9304,6 +9293,7 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 			delete hTrace;
 			return true;
 		}
+		delete hTrace;
 
 		//We aint done yet!
 		float Pos2Test[3];

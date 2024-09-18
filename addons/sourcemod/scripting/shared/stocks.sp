@@ -1416,6 +1416,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		if(healer > 0)
+			pack.WriteCell(EntIndexToEntRef(healer));
+		else
+			pack.WriteCell(0);
 		pack.WriteCell(EntIndexToEntRef(reciever));
 		pack.WriteFloat(HealTotal / HealTotalTimer);
 		pack.WriteCell(Maxhealth);
@@ -1430,16 +1434,17 @@ void DisplayHealParticleAbove(int entity)
 	{
 		f_HealDelayParticle[entity] = GetGameTime() + 0.5;
 		float ProjLoc[3];
+		float ProjLoc2[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		ProjLoc[2] += 70.0;
-		ProjLoc[2] += f_ExtraOffsetNpcHudAbove[entity];
-		ProjLoc[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-		ProjLoc[2] += 10.0;
+		ProjLoc2[2] += 70.0;
+		ProjLoc2[2] += f_ExtraOffsetNpcHudAbove[entity];
+		ProjLoc2[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		ProjLoc2[2] += 10.0;
+		ProjLoc[2] += ProjLoc2[2];
 		if(GetTeam(entity) != TFTeam_Red)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		else
 			TE_Particle("healthgained_red", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-
 	}
 }
 
@@ -1448,6 +1453,7 @@ float f_IncrementalSmallHeal[MAXENTITIES];
 public Action Timer_Healing(Handle timer, DataPack pack)
 {
 	pack.Reset();
+	int healer = EntRefToEntIndex(pack.ReadCell());
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity <= MaxClients)
 	{
@@ -1471,7 +1477,14 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	float HealthMaxPercentage = pack.ReadCell();
 	int HealthHealed = HealEntityViaFloat(entity, HealthToGive, HealthMaxPercentage);
 	if(HealthHealed > 0)
+	{
 		ApplyHealEvent(entity, HealthHealed);	// Show healing number
+		if(healer > 0 && healer != entity && healer <= MaxClients)
+		{
+			Healing_done_in_total[healer] += HealthHealed;
+			AddHealthToUbersaw(healer, HealthHealed, 0.0);
+		}
+	}
 
 	int current = pack.ReadCell();
 	if(current <= 1)

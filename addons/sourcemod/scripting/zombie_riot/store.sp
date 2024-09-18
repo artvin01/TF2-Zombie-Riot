@@ -5176,9 +5176,14 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				}
 
 				int GiveWeaponIndex = info.Index;
+				TFClassType class = info.WeaponForceClass;
+
 				if(GiveWeaponIndex > 0)
 				{
-					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, info.WeaponForceClass);	
+					if(info.CustomWeaponOnEquip == WEAPON_YAKUZA)
+						Yakuz_SpawnWeaponPre(client, GiveWeaponIndex, class);
+					
+					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
 					
 					HidePlayerWeaponModel(client, entity, true);
 					/*
@@ -5335,7 +5340,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 					
 					i_WeaponArchetype[entity] 				= info.WeaponArchetype;
-					i_WeaponForceClass[entity] 				= info.WeaponForceClass;
+					i_WeaponForceClass[entity] 				= class;
 					i_WeaponSoundIndexOverride[entity] 		= info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
 					Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
@@ -5680,6 +5685,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
 		}
+		if(Attributes_Get(entity, Attrib_SetSecondaryDelayInf, 0.0) >= 1.0)
+		{
+			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
+		}
 		
 		Enable_Management_Knife(client, entity);
 		Enable_Arsenal(client, entity);
@@ -5748,6 +5757,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Ulpianus_Enable(client, entity);
 		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
+		Yakuza_Enable(client, entity);
 	}
 
 	return entity;
