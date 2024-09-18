@@ -450,7 +450,7 @@ void GuardianAOEBuff(Barracks_Iberia_Lighthouse_Guardian npc, float gameTime)
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
+					if(GetVectorDistance(pos1, pos2, true) < (750 * 750))
 					{
 						GrantEntityArmor(entitycount, false, 0.5, 0.1, 0);
 					}
