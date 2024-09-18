@@ -457,6 +457,7 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is buffed:
 		b_BonesBuffed[index] = true;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_MONDO_ATTACK_DELAY_TRANSFORM;
 		
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_JESTER_SCALE_BUFFED);
@@ -465,41 +466,31 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		npc.m_flSpeed = BONES_JESTER_SPEED_BUFFED;
 		DispatchKeyValue(index, "skin", BONES_JESTER_SKIN_BUFFED);
 
-		int iActivity = npc.LookupActivity("ACT_JESTER_RUN_BUFFED");
-		if(iActivity > 0) npc.StartActivity(iActivity);
 		func_NPCAnimEvent[npc.index] = Mondo_AnimEvent;
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_MONDO_ATTACK_DELAY_TRANSFORM;
+		npc.m_blSetBuffedSkeletonAnimation = true;
+		npc.m_blSetNonBuffedSkeletonAnimation = false;
+
 		//Jester_GiveCosmetics(npc, true);
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
 		//Tell the game the skeleton is no longer buffed:
 		b_BonesBuffed[index] = false;
-		
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_JESTER_ATTACK_DELAY_TRANSFORM;
+
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_JESTER_SCALE);
 		int HP = StringToInt(BONES_JESTER_HP);
 		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_JESTER_SPEED;
 		DispatchKeyValue(index, "skin", BONES_JESTER_SKIN);
-		
-		int iActivity = npc.LookupActivity("ACT_JESTER_RUN");
-		if(iActivity > 0)
-		{
-			CPrintToChatAll("Setting activity...");
-			npc.StartActivity(iActivity);
-		}
-		else
-		{
-			CPrintToChatAll("Failed to find activity!");
-		}
 		func_NPCAnimEvent[npc.index] = Jester_AnimEvent;
 
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_JESTER_ATTACK_DELAY_TRANSFORM;
+		npc.m_blSetBuffedSkeletonAnimation = false;
+		npc.m_blSetNonBuffedSkeletonAnimation = true;
+
 		//Jester_GiveCosmetics(npc, false);
 	}
-
-	Jester_AttachFuseParticles(npc);
 }
 
 static int Jester_LeftFuse[2049] = { -1, ... };
@@ -680,6 +671,20 @@ public void JesterBones_ClotThink(int iNPC)
 	
 	npc.Update();
 	
+	if (npc.m_blSetBuffedSkeletonAnimation)
+	{
+		npc.SetActivity("ACT_JESTER_RUN_BUFFED");
+		npc.m_blSetBuffedSkeletonAnimation = false;
+		Jester_AttachFuseParticles(npc);
+	}
+
+	if (npc.m_blSetNonBuffedSkeletonAnimation)
+	{
+		npc.SetActivity("ACT_JESTER_RUN");
+		npc.m_blSetNonBuffedSkeletonAnimation = false;
+		Jester_AttachFuseParticles(npc);
+	}
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
