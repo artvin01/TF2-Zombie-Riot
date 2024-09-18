@@ -233,7 +233,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.5, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 1.25, 0.75, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -276,9 +276,9 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),8500.0, 0), DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),9000.0, 0), DMG_CLUB, -1, _, vecHit);
 									npc.PlayMeleeHitSound();
-									ExpidonsaGroupHeal(npc.index, 150.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),750.0, 0), 1.0, true);
+									ExpidonsaGroupHeal(npc.index, 150.0, 2, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),750.0, 0), 1.0, true);
 									DesertYadeamDoHealEffect(npc.index, 150.0);
 								} 
 							}
@@ -338,7 +338,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								
 								npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
 								
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3400.0, 1), DMG_BULLET, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3300.0, 1), DMG_BULLET, -1, _, vecHit);
 							} 		
 							delete swingTrace;			
 						}
@@ -450,9 +450,9 @@ void GuardianAOEBuff(Barracks_Iberia_Lighthouse_Guardian npc, float gameTime)
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
+					if(GetVectorDistance(pos1, pos2, true) < (750 * 750))
 					{
-						GrantEntityArmor(entitycount, false, 0.5, 0.1, 0);
+						GrantEntityArmor(entitycount, false, 0.5, 0.75, 0);
 					}
 				}
 			}
