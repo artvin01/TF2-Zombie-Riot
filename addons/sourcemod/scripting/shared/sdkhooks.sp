@@ -36,6 +36,7 @@ void SDKHooks_ClearAll()
 	Zero(i_WasInDefenseBuff);
 	Zero(i_WasInJarate);
 	Zero(Client_Had_ArmorDebuff);
+	Zero(f_TimeSinceLastRegenStop);
 }
 
 void SDKHook_PluginStart()
@@ -2326,6 +2327,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		{
 			return Player_OnTakeDamage_WrathfulBlade_Hud(victim);
 		}
+		case WEAPON_YAKUZA:
+		{
+			return Yakuza_SelfTakeDamageHud(victim, weapon);
+		}
 	}
 	return 1.0;
 }
@@ -2333,6 +2338,9 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 
 void ApplyLastmanOrDyingOverlay(int client)
 {
+	if(LastMann && Yakuza_Lastman())
+		return;
+	
 	DoOverlay(client, "debug/yuv");
 	if(LastMann)
 	{
@@ -2795,6 +2803,7 @@ void RPG_Sdkhooks_StaminaBar(int client)
 void SDKhooks_SetManaRegenDelayTime(int client, float time)
 {
 	Mana_Hud_Delay[client] = 0.0;
+#if defined ZR
 	if(Mana_Regen_Delay[client] < GetGameTime() + time)
 		Mana_Regen_Delay[client] = GetGameTime() + time;
 
@@ -2804,4 +2813,5 @@ void SDKhooks_SetManaRegenDelayTime(int client, float time)
 	//Set to 0 so hud is good
 	if(!b_AggreviatedSilence[client])
 		mana_regen[client] = 0.0;
+#endif
 }

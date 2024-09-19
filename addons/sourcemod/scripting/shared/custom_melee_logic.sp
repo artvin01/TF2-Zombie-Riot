@@ -236,6 +236,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				enemies_hit_aoe = Ulpianus_EnemyHitCount();
 			}
+			case WEAPON_YAKUZA:
+			{
+				Yakuza_EnemiesHit(client, weapon, enemies_hit_aoe);
+			}
 		}	
 	}
 #endif
@@ -757,6 +761,11 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 				if(PlayOnceOnly) //It hit atleast 1 target!
 					SuperUbersaw_Post(client);
 			}
+			case WEAPON_YAKUZA: //yes, if we miss, then we do other stuff.
+			{
+				YakuzaWeaponSwingDid(client);
+			}
+
 		}
 
 		if(i_EntitiesHitAtOnceMax <= 1 && target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)

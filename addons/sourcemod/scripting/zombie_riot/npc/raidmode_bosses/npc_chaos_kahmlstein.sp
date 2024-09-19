@@ -101,7 +101,7 @@ static bool b_khamlWeaponRage[MAXENTITIES];
 
 static int i_khamlCutscene[MAXENTITIES];
 static float f_khamlCutscene[MAXENTITIES];
-static bool b_angered_twice[MAXENTITIES];
+
 
 static float f_KahmlResTemp[MAXENTITIES];
 static float f_TalkDelayCheck;
@@ -628,7 +628,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 30.0)
 				{
 					i_khamlCutscene[npc.index] = 9;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: You know what mine goal is? Burn everything and turn it into ash.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: You know what my goal is? Burn everything and turn it into ash.");
 				}
 			}
 			case 9:
@@ -660,7 +660,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 12.0)
 				{
 					i_khamlCutscene[npc.index] = 5;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: The goverments? Fuck them too. Burn them to the ground.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: The governments? Fuck them too. Burn them to the ground.");
 				}
 			}
 			case 5:
@@ -749,7 +749,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 		i_SpeedUpTime[npc.index] = 2; 
 		f_MessengerSpeedUp[npc.index] *= 1.15;
 		if(i_RaidGrantExtra[npc.index] < 2)
-			CPrintToChatAll("{darkblue}Kahmlstein{default}: Even mine dead grandma is more entertaining than this.");
+			CPrintToChatAll("{darkblue}Kahmlstein{default}: Even my dead grandma is more entertaining than this.");
 	}
 	else if(RaidModeTimeLeft < 70 && i_SpeedUpTime[npc.index] == 2)
 	{
@@ -1608,7 +1608,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 			}
 			case 3:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: All your curelty, worse then states.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: All your cruelty, worse then states.");
 			}
 		}
 		RaidModeScaling *= 1.2;

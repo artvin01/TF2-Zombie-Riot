@@ -7,7 +7,7 @@
 
 static bool BlockLoseSay;
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
@@ -707,7 +707,7 @@ static void Internal_NPCDeath(int entity)
 		if(XenoExtraLogic())
 			CPrintToChatAll("{blue}Sensal{default}: This area is restricted for all of you.");
 		else
-			CPrintToChatAll("{blue}Sensal{default}: You all are comming with me.");
+			CPrintToChatAll("{blue}Sensal{default}: You all are coming with me.");
 
 		return;
 	}
@@ -1505,7 +1505,7 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of your's now aswell.");
+		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of yours now aswell.");
 	}
 	return true; //He is trying to help.
 }

@@ -489,7 +489,7 @@ static int SummonerThorns[][] =
 	{ 0, 380, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 	{ 0, 100, 300, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 
-	{ 0, 750, 500, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 750, 500, 25, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	
 	{ 0, 100, 500, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
@@ -534,13 +534,13 @@ static int SummonerCombine[][] =
 	{ 0, 25, 110, 0, 7, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 
 	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
-	{ 0, 100, 200, 0, 8, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 150, 250, 0, 10, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 
-	{ 0, 500, 150, 3, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0, 120, 250, 3, 10, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 500, 150, 10, 20, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 150, 300, 10, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 	
-	{ 0, 150, 350, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 750, 150, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 300, 500, 	15, 20, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 800, 600, 	30, 30, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 750, 750, 	0, 	25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 
@@ -584,8 +584,8 @@ static int SummonerIberiaComplete[][] =
 	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	{ 0, 50, 200, 0, 7, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
-	{ 0, 750, 500, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0, 100, 350, 	5, 8, 16, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 750, 500, 25, 45, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 100, 350, 	5, 15, 16, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	
 	{ 0, 900, 900, 	30, 10, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }	// Construction Expert
@@ -662,27 +662,27 @@ static const char SummonerAlternativeNPC[][] =
 
 static int SummonerAlternative[][] =
 {
-	// NPC Index, 						Wood, 	Food, 	Gold, 	Time, Level, Supply
-	{ 0 , 			10, 	40, 	0, 		5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	// NPC Index, 	Wood, 	Food, 	Gold, 	Time, Level, Supply
+	{ 0 , 			10, 	40, 	0, 		5, 		1,	 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// None
 
-	{ 0, 		50, 	10, 	1, 		7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
-	{ 0 ,	10, 	50, 	0, 		6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 			50, 	10, 	1, 		7, 		2,		1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
+	{ 0 ,			10, 	50, 	0, 		6, 		4, 		1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
 
-	{ 0, 		50, 	25, 	2, 		8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
-	{ 0,				75,		50, 	1, 		7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 			50, 	25, 	2, 		8, 		4, 		1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0,			75,		50, 	1, 		7, 		7, 		1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
 
-	{ 0 , 			100, 	50, 	2,		11, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
-	{ 0, 		250, 	100, 	0, 		7, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0 , 			100, 	50, 	2,		11,		 7, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 			250, 	100, 	0, 		7, 		11, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 
-	{ 0, 			50, 	100, 	0,		3, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert	//these ones are meant to be spammed into oblivion
-	{ 0 , 			125,	300,	0,		7, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 			250, 	100, 	0,		3, 		11, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert	//these ones are meant to be spammed into oblivion
+	{ 0 , 			125,	300,	0,		7, 		16, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
 
-	{ 0, 			175, 	350, 	15, 	12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0 , 		225, 	75, 	10, 	13, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	
-	{ 0, 	1000, 	500, 	35, 	30, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 				750, 	750, 	0,		25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
+	{ 0, 			175, 	350, 	20, 	12,		 11,	1,	 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0 , 			225, 	75, 	15, 	13,		 16,	1,	 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+
+	{ 0, 			2000, 	2000, 	90, 	30,		 16,	2,	 ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 			750, 	750, 	0,		25,		 11,	1,	 ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 
 static const int BarracksUpgrades[][] =
@@ -851,13 +851,21 @@ public void Building_Summoner(int client, int entity)
 	BarracksCheckItems(client);
 	WoodAmount[client] *= 0.75;
 	FoodAmount[client] *= 0.75;
-//	GoldAmount[client] *= 0.75;
+	if(WoodAmount[client] < 50.0)
+		WoodAmount[client] = 50.0;
+	if(FoodAmount[client] < 50.0)
+		FoodAmount[client] = 50.0;
+		
 	if(CvarInfiniteCash.BoolValue)
 	{
 		WoodAmount[client] = 999999.0;
 		FoodAmount[client] = 999999.0;
 		GoldAmount[client] = 99999.0;
 	}
+	SetGlobalTransTarget(client);
+
+	PrintToChat(client, "%t", "Barracks Desc Extra");
+	PrintToChat(client, "%t", "Barracks Desc Extra 2");
 	TrainingIn[client] = 0.0;
 	ResearchIn[client] = 0.0;
 	CommandMode[client] = 0;
@@ -1352,7 +1360,7 @@ void CheckSummonerUpgrades(int client)
 	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
 	WildingenBuilder2[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components FREEPLAY"));
 }
-
+#define MAXRESOURCECAP 2000.0
 void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0, bool ignoresetup = false)
 {
 	bool AllowResoruceGen = false;
@@ -1373,13 +1381,14 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 
 	if(AllowResoruceGen)
 	{
-		float SupplyRateCalc = SupplyRate[client] / (LastMann ? 10.0 : 20.0);
+		float SupplyRateCalc = SupplyRate[client] / (10.0);
 
+		float SupplyRateCalcBase = SupplyRateCalc;
 		SupplyRateCalc *= multi;
 
 		SupplyRateCalc *= ResourceGenMulti(client);
-		WoodAmount[client] += SupplyRateCalc * 1.15;
-		FoodAmount[client] += SupplyRateCalc * 1.40;
+		WoodAmount[client] += SupplyRateCalc * (1.15 * 0.5);
+		FoodAmount[client] += SupplyRateCalc * (1.40 * 0.5);
 
 		if(MedievalUnlock[client] || GoldGenMulti != 1.0)
 		{
@@ -1389,6 +1398,11 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 			GoldSupplyRate *= ResourceGenMulti(client, true, true);
 			GoldAmount[client] += GoldSupplyRate;
 		}
+		if(WoodAmount[client] >= MAXRESOURCECAP * SupplyRateCalcBase)
+			WoodAmount[client] = MAXRESOURCECAP * SupplyRateCalcBase;
+
+		if(FoodAmount[client] >= MAXRESOURCECAP * SupplyRateCalcBase)
+			FoodAmount[client] = MAXRESOURCECAP * SupplyRateCalcBase;
 	}
 	if(f_VillageSavingResources[client] < GetGameTime())
 	{
@@ -1714,7 +1728,7 @@ static void SummonerMenu(int client, int viewer)
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", buffer2);
 
-				Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
+			//	Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
 			}
 			else if(TrainingStartedIn[client] < 0.0)
 			{
@@ -2079,6 +2093,7 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 {
 	int userid = GetClientUserId(client);
 	int personal;
+	/*
 	if(!ignore_barricades)
 	{
 		personal = ObjectBarricade_Buildings(client) * 3 / 2;
@@ -2090,6 +2105,7 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 			}
 		}
 	}
+	*/
 
 
 	int entity = MaxClients + 1;
@@ -2161,4 +2177,53 @@ int ActiveCurrentNpcsBarracksTotal()
 		}
 	}
 	return CurrentAlive;
+}
+
+
+
+
+
+void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage, int damagetype)
+{
+	BarrackBody npc = view_as<BarrackBody>(attacker);
+	int owner = GetClientOfUserId(npc.OwnerUserId);
+	if(IsValidClient(owner))
+	{
+		int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[owner]);
+		if(!IsValidEntity(entity))
+			return;
+
+		static char plugin[64];
+		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+		if(StrContains(plugin, "obj_barracks", false) != -1)
+		{
+
+		}
+		else
+		{
+			return;
+		}
+		//make sure they have a barracks
+
+		int MaxHealth = ReturnEntityMaxHealth(victim);
+		if(damage >= float(MaxHealth))
+			damage = float(MaxHealth);
+			
+		float gain = b_thisNpcIsARaid[victim] ? (25.0 * MultiGlobalHighHealthBoss) : (b_thisNpcIsABoss[victim] ? (10.0 * MultiGlobalHealth) : (b_IsGiant[victim] ? 2.5 : 1.0));
+		gain *= 2.5;
+		if(damagetype & DMG_CLUB)
+		{
+			gain *= 4.5;
+		}
+		gain = damage * gain / float(MaxHealth);
+		float vecTarget[3]; WorldSpaceCenter(owner, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(attacker, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		if(flDistanceToTarget >= (600.0 * 600.0))
+		{
+			gain *= 0.35;
+		}
+		gain *= 0.85;
+		SummonerRenerateResources(owner, gain, 0.0);
+	}
 }

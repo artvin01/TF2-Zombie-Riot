@@ -275,6 +275,7 @@ static void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 		Call_StartFunction(null, func);
 		Call_PushCell(HealerNpc);
 		Call_PushCell(victim);
+		Call_PushFloatRef(heal);
 		Call_Finish(CancelHeal);
 	}
 	if(CancelHeal)
@@ -294,7 +295,7 @@ static void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 		Call_Finish();
 	}
 }
-stock bool Expidonsa_DontHealSameIndex(int entity, int victim)
+stock bool Expidonsa_DontHealSameIndex(int entity, int victim, float &healingammount)
 {
 	if(i_NpcInternalId[entity] == i_NpcInternalId[victim])
 		return true;
@@ -307,7 +308,7 @@ float ExpidonsanShieldBroke(int entity)
 	return(f_Expidonsa_ShieldBroke[entity]);
 }
 
-stock bool Expidonsa_DontHealBosses(int entity, int victim)
+stock bool Expidonsa_DontHealBosses(int entity, int victim, float &healingammount)
 {
 	if(b_thisNpcIsABoss[victim] ||
 		b_thisNpcIsARaid[victim] ||

@@ -179,6 +179,8 @@ methodmap Aetherium < CClotBody
 
 		npc.m_iChanged_WalkCycle = 1;
 		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		/*
 			//aztec aggressor			"models/workshop/player/items/heavy/fall17_aztec_aggressor/fall17_aztec_aggressor.mdl"
@@ -593,7 +595,7 @@ static void Fire_Hyper_Arrow(Aetherium npc, float Npc_Vec[3], int target, float 
 	Ruina_Projectiles Projectile;
 	float Projectile_Time = 2.5;
 
-	float projectile_speed = 2500.0;	
+	float projectile_speed = 1750.0;	
 	float target_vec[3];
 	PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,target_vec);
 
@@ -605,7 +607,7 @@ static void Fire_Hyper_Arrow(Aetherium npc, float Npc_Vec[3], int target, float 
 	Projectile.Angles = Ang;
 	Projectile.speed = projectile_speed;
 	Projectile.radius = 0.0;
-	Projectile.damage = 750.0;
+	Projectile.damage = 600.0;
 	Projectile.bonus_dmg = 900.0;
 	Projectile.Time = Projectile_Time;
 	Projectile.visible = false;

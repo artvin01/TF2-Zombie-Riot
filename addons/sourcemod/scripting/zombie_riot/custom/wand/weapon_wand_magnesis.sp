@@ -45,7 +45,7 @@ static float Magnesis_StunTime_Special[3] = { 2.5, 2.5, 2.5 };					//Stun durati
 static float Magnesis_StunTime_Raid[3] = { 1.66, 1.66, 1.66 };					//Stun duration for raids.
 static float Magnesis_Resistance[3] = { 0.75, 0.66, 0.5 };						//Amount to multiply damage taken by grabbed enemies.
 static float Magnesis_Grab_StrangleDMG[3] = { 0.0, 50.0, 75.0 };				//Damage dealt per 0.1s to enemies who are grabbed.
-static float Magnesis_Grab_Vulnerability[3] = { 1.1, 1.15, 1.2 };				//Amount to multiply all damage dealt to enemies who are grabbed.
+static float Magnesis_Grab_Vulnerability[3] = { 0.1, 0.15, 0.2 };				//Amount to multiply all damage dealt to enemies who are grabbed.
 
 //NEWTONIAN KNUCKLES: Alternate PaP path which replaces the M1 with a far stronger explosive projectile with a slower rate of fire.
 //Replaces M2 with a shockwave that deals knockback. M1 projectile deals bonus damage if it airshots an enemy who is airborne because of the M2 attack.
@@ -451,7 +451,7 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 
 	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
 	{
-		b_LagCompNPC_ExtendBoundingBox = true;
+		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 
 		float pos[3], ang[3], endPos[3], hullMin[3], hullMax[3], direction[3];
@@ -633,7 +633,8 @@ public void Magnesis_Logic(DataPack pack)
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Magnesis_NextDrainTick[client] = gt + 0.1;
 		Magnesis_HUD(client, weapon, false);
-		view_as<CClotBody>(target).m_iTarget = client;
+		if(!VIPBuilding_Active())
+			view_as<CClotBody>(target).m_iTarget = client;
 
 		float dmg = Magnesis_Grab_StrangleDMG[Magnesis_Tier[client]];
 		if (dmg > 0.0)
@@ -672,7 +673,8 @@ void Magnesis_TerminateEffects(int client, int start, int end, bool enemyWasThro
 			Magnesis_Grabbed[victim] = false;
 			Magnesis_DamageTakenWhileGrabbed[victim] = 0.0;
 			Magnesis_DroppedAt[victim] = GetGameTime();
-			view_as<CClotBody>(victim).m_iTarget = client;
+			if(!VIPBuilding_Active())
+				view_as<CClotBody>(victim).m_iTarget = client;
 		}
 
 		Magnesis_GrabTarget[client] = -1;
@@ -775,6 +777,10 @@ public bool Magnesis_MoveVictim(int client)
 
 public void Magnesis_MakeNPCMove(int target, float targVel[3])
 {
+	//In tower defense, do not allow moving the target.
+	if(VIPBuilding_Active())
+		return;
+		
 	if(f_NoUnstuckVariousReasons[target] > GetGameTime() + 1.0)
 	{
 		//make the target not stuckable.
@@ -850,10 +856,10 @@ static int Newtonian_ShockwaveTier;
 
 void Newtonian_TryShockwave(int client, int weapon, int tier)
 {
-    int mana_cost = RoundFloat(Newtonian_M2_Cost[tier]);
+	int mana_cost = RoundFloat(Newtonian_M2_Cost[tier]);
 	float remCD = Ability_Check_Cooldown(client, 2, weapon);
 
-    if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
+	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
@@ -883,7 +889,7 @@ void Newtonian_TryShockwave(int client, int weapon, int tier)
 		delay_hud[client] = 0.0;
 		Ability_Apply_Cooldown(client, 2, Newtonian_M2_Cooldown[tier], weapon);
 
-        EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
+		EmitSoundToAll(SND_NEWTONIAN_M2, client, _, _, _, 0.8);
 		EmitSoundToAll(SND_NEWTONIAN_M2_2, client, _, _, _, 0.8, 80);
 
 		float nextAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") + Newtonian_M2_AttackDelay[tier];

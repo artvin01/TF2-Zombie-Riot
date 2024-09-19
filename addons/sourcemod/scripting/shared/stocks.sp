@@ -1286,10 +1286,12 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 */
 //this will return the amount of healing it actually did.
 
-void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
+stock void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 {
 //	HealEntityGlobal(attacker, victim, -(truedamagedeal - 1.0), 99.0, 0.0, HEAL_ABSOLUTE | HEAL_SELFHEAL);
+#if defined ZR
 	b_ThisNpcIsSawrunner[attacker] = true;
+#endif
 	if(victim <= MaxClients)
 	{
 		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_DROWN, -1);
@@ -1298,7 +1300,9 @@ void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 	{
 		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_SLASH, -1);
 	}
+#if defined ZR
 	b_ThisNpcIsSawrunner[attacker] = false;
+#endif
 	/*
 	float AnyValueTest1 = 1.0;
 	int AnyValueTest2 = 1;
@@ -1412,6 +1416,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		if(healer > 0)
+			pack.WriteCell(EntIndexToEntRef(healer));
+		else
+			pack.WriteCell(0);
 		pack.WriteCell(EntIndexToEntRef(reciever));
 		pack.WriteFloat(HealTotal / HealTotalTimer);
 		pack.WriteCell(Maxhealth);
@@ -1426,16 +1434,17 @@ void DisplayHealParticleAbove(int entity)
 	{
 		f_HealDelayParticle[entity] = GetGameTime() + 0.5;
 		float ProjLoc[3];
+		float ProjLoc2[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		ProjLoc[2] += 70.0;
-		ProjLoc[2] += f_ExtraOffsetNpcHudAbove[entity];
-		ProjLoc[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-		ProjLoc[2] += 10.0;
+		ProjLoc2[2] += 70.0;
+		ProjLoc2[2] += f_ExtraOffsetNpcHudAbove[entity];
+		ProjLoc2[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		ProjLoc2[2] += 10.0;
+		ProjLoc[2] += ProjLoc2[2];
 		if(GetTeam(entity) != TFTeam_Red)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		else
 			TE_Particle("healthgained_red", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-
 	}
 }
 
@@ -1444,6 +1453,7 @@ float f_IncrementalSmallHeal[MAXENTITIES];
 public Action Timer_Healing(Handle timer, DataPack pack)
 {
 	pack.Reset();
+	int healer = EntRefToEntIndex(pack.ReadCell());
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity <= MaxClients)
 	{
@@ -1467,7 +1477,14 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	float HealthMaxPercentage = pack.ReadCell();
 	int HealthHealed = HealEntityViaFloat(entity, HealthToGive, HealthMaxPercentage);
 	if(HealthHealed > 0)
+	{
 		ApplyHealEvent(entity, HealthHealed);	// Show healing number
+		if(healer > 0 && healer != entity && healer <= MaxClients)
+		{
+			Healing_done_in_total[healer] += HealthHealed;
+			AddHealthToUbersaw(healer, HealthHealed, 0.0);
+		}
+	}
 
 	int current = pack.ReadCell();
 	if(current <= 1)
@@ -2634,9 +2651,9 @@ public bool AntiTraceEntityFilterPlayer(int entity, any contentsMask) //Borrowed
 public void SpawnSmallExplosion(float DetLoc[3])
 {
 	float pos[3];
-	pos[0] += DetLoc[0] + GetRandomFloat(-80.0, 80.0);
-	pos[1] += DetLoc[1] + GetRandomFloat(-80.0, 80.0);
-	pos[2] += DetLoc[2] + GetRandomFloat(0.0, 80.0);
+	pos[0] += DetLoc[0] + GetRandomFloat(-25.0, 25.0);
+	pos[1] += DetLoc[1] + GetRandomFloat(-25.0, 25.0);
+	pos[2] += DetLoc[2] + GetRandomFloat(0.0, 25.0);
 	
 	TE_Particle(EXPLOSION_PARTICLE_SMALL_1, pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }
@@ -3234,15 +3251,20 @@ int inflictor = 0)
 				//we apply 50% more range, reason being is that this goes for collision boxes, so it can be abit off
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
-				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+				float ExplosionRangeFalloff = Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+				damage_1 *= ExplosionRangeFalloff; //this is 1000, we use squared for optimisations sake
 
 				damage_1 *= damage_reduction;
 				
 				float v[3];
 				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
 				//dont do damage ticks if its actually 0 dmg.
+
 				if(damage_1 != 0.0)
 					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
+#if defined ZR
+				Projectile_DealElementalDamage(ClosestTarget, EntityToForward, ExplosionRangeFalloff);
+#endif
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -5359,6 +5381,7 @@ float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
  * @param returnEnd		Return parameter for the particle created at the end of the effect.
  * @param duration		The duration of the effect. <= 0.0: infinite.
  */
+#if defined ZR
 stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], float startXOff, float startYOff, float startZOff, int endEnt, char endPoint[255], float endXOff, float endYOff, float endZOff, char effect[255], int &returnStart, int &returnEnd, float duration = 0.0)
 {
 	float startPos[3], endPos[3];
@@ -5391,3 +5414,4 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], floa
 	returnStart = particle;
 	returnEnd = particle2;
 }
+#endif

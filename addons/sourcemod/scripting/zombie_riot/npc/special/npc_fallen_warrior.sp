@@ -540,6 +540,10 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	float VecSelfNpcabs[3];
+	if(Waves_InSetup())
+	{
+		return Plugin_Stop;
+	}
 	for(int i; i < 3; i++)
 	{
 		VecSelfNpcabs[i] = pack.ReadFloat();

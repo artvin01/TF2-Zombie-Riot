@@ -388,8 +388,8 @@ static void Primary_Attack_BEAM_Iku_Ability(int client, float GameTime)
 	
 	Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(client);
 
-	Ikunagae_BEAM_CloseDPT[client] = 5625.0*npc.BonusDamageBonus;
-	Ikunagae_BEAM_FarDPT[client] = 1875.0*npc.BonusDamageBonus;
+	Ikunagae_BEAM_CloseDPT[client] = 3000.0;
+	Ikunagae_BEAM_FarDPT[client] = 1500.0;
 	Ikunagae_BEAM_MaxDistance[client] = 500;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
@@ -406,13 +406,11 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	{
 		Ikunagae_BEAM_BuildingHit[building] = false;
 	}
-			
-	Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(client);
 	
 	Ikunagae_BEAM_IsUsing[client] = false;
 
-	Ikunagae_BEAM_CloseDPT[client] = 5625.0* npc.BonusDamageBonus;	//what the fuck
-	Ikunagae_BEAM_FarDPT[client] = 3750.0* npc.BonusDamageBonus;
+	Ikunagae_BEAM_CloseDPT[client] = 3500.0;	//what the fuck
+	Ikunagae_BEAM_FarDPT[client] = 2250.0;
 	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 5;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("c22b2b");

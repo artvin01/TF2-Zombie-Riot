@@ -48,6 +48,7 @@ static int g_OffsetWeaponMode;
 static int g_OffsetWeaponInfo;
 static int g_OffsetWeaponPunchAngle;
 */
+static bool GrenadeExplodedAlready[MAXENTITIES];
 
 //#include <dhooks_gameconf_shim>
 
@@ -218,7 +219,8 @@ int ClientThatWasChanged = 0;
 int SavedClassForClient = 0;
 public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
 {
-	if(pThis == -1)     
+	//-1 isnt enough.
+	if(!IsValidEntity(pThis))     
 		return MRES_Ignored;
 
 	int active = GetEntPropEnt(pThis, Prop_Send, "m_hActiveWeapon");
@@ -227,7 +229,7 @@ public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
 		if(b_IsAMedigun[active])
 		{
 			int healTarget = GetEntPropEnt(active, Prop_Send, "m_hHealingTarget");
-			if(healTarget > 0 && healTarget <= MaxClients)
+			if(IsValidClient(healTarget))
 			{
 				SavedClassForClient = GetEntProp(healTarget, Prop_Send, "m_iClass");
 				if(SavedClassForClient != view_as<int>(TFClass_Scout))
@@ -444,14 +446,19 @@ MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 
 public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 {
+	GrenadeExplodedAlready[entity] = false;
 	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
 	g_DHookGrenade_Detonate.HookEntity(Hook_Pre, entity, DHook_GrenadeDetonatePre);
-	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch);
+	if(Sticky)
+		DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch);
+	else
+		DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch_Grenade);
 	
 	if(Sticky)
 	{
 		SDKHook(entity, SDKHook_StartTouch, SdkHook_StickStickybombToBaseBoss);
 	}
+
 	
 	//Hacky? yes, But i gotta.
 	
@@ -570,6 +577,19 @@ static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle param
 	}
 	return MRES_Ignored;
 }
+static MRESReturn GrenadePipebombProjectile_PipebombTouch_Grenade(int self, Handle params) 
+{
+	int other = DHookGetParam(params, 1);
+
+	bool result = PassfilterGlobal(self, other, true);
+	SetEntProp(self, Prop_Send, "m_bTouched", false);
+
+	if(!result)
+	{
+		return MRES_Supercede;
+	}
+	return MRES_Ignored;
+}
 /*
 	GrenadePipebombProjectile_PipebombTouch is from From:
 	
@@ -608,6 +628,11 @@ public MRESReturn DHook_GrenadeDetonatePre(int entity)
 float f_SameExplosionSound[MAXENTITIES];
 void DoGrenadeExplodeLogic(int entity)
 {
+	if(GrenadeExplodedAlready[entity])
+	{
+		return;
+	}
+	GrenadeExplodedAlready[entity] = true;
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hThrower");
 	//do not allow normal explosion, this causes screenshake, which in zr is a problem as many happen, and can cause headaches.
 	float GrenadePos[3];
@@ -668,6 +693,7 @@ void DoGrenadeExplodeLogic(int entity)
 		if(f_CustomGrenadeDamage[entity] < 999999.9)
 		{
 			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
+			
 			if(f_CustomGrenadeDamage[entity] > 1.0)
 			{
 				original_damage = f_CustomGrenadeDamage[entity];
@@ -903,7 +929,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #else
 		return false;
 #endif
-	}	
+	}
 	
 	for( int ent = 1; ent <= 2; ent++ ) 
 	{
@@ -928,6 +954,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif
 
 #if defined ZR
+	
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
@@ -1775,14 +1802,14 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 				ammo_amount_left = Health_To_Max;
 			}
 
-			int HealDone = HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
+			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
 			
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 			SetGlobalTransTarget(owner);
 			
-			PrintHintText(owner, "%t", "You healed for", target, HealDone);
+			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
 			SetAmmo(owner, 21, new_ammo);
 			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
 			Increaced_Overall_damage_Low[target] = GameTime + 15.0;
@@ -1863,8 +1890,9 @@ void DHook_ScoutSecondaryFireAbilityDelay(int ref)
 			int Active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(Active != entity)
 				return;
-			
+#if defined ZR
 			Enforcer_AbilityM2(client, entity, 1, 5, 1.25, true);
+#endif
 			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 4.0);
 			Ability_Apply_Cooldown(client, 2, 4.0);
 		}

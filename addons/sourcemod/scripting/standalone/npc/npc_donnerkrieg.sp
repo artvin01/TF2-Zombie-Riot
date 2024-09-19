@@ -109,7 +109,7 @@ bool b_Crystal_active;
 static bool b_Crystal_Thrown;
 static int i_crystal_index;
 
-static bool b_angered_twice[MAXENTITIES];
+
 
 //static float fl_divine_intervention_retry;
 

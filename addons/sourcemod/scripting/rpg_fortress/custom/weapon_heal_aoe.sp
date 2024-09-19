@@ -75,7 +75,7 @@ public float AbilityHolyLight(int client, int index, char name[48])
 
 	damageDelt *= 0.5;
 
-	Weapon_HolyLightInit(client, weapon, 1, damageDelt);
+	Weapon_HolyLightInit(client, weapon,/* 1,*/ damageDelt);
 	float time = 30.0;
 	RPGCore_ResourceReduction(client, StatsForCalcMultiAdd_Capacity);
 	if(ChronoShiftReady(client) == 2)
@@ -90,7 +90,7 @@ public float AbilityHolyLight(int client, int index, char name[48])
 	return (GetGameTime() + time);
 }
 
-void Weapon_HolyLightInit(int client, int weapon, int level, float damage)
+void Weapon_HolyLightInit(int client, int weapon/*, int level*/, float damage)
 {
 	static float startPos[3];
 	GetClientEyePosition(client, startPos);
@@ -136,6 +136,7 @@ static Action Timer_AoeHealHolyLight(Handle dashHud, DataPack pack)
 	TE_SendToAll();
 	spawnRing_Vectors(VectorPos, /*RANGE*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, /*DURATION*/ 0.25, 12.0, 0.1, 1, RangeHeal * 2.0);
 	HolyLightHealLogic(client, RangeHeal, VectorPos);
+	return Plugin_Handled;
 }
 
 

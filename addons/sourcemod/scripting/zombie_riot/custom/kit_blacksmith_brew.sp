@@ -294,9 +294,9 @@ static float MultiScale(int attrib)
 
 void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 {
-	if(Merchant_IsAMerchant(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
+	if(attacker <= MaxClients && Merchant_IsAMerchant(attacker) && EntRefToEntIndex(i_PlayerToCustomBuilding[attacker]) != -1)
 	{
-		int random = RandomSeed + GetEntProp(victim, Prop_Data, "m_nModelIndex");
+		int random = RandomSeed  + i_NpcInternalId[victim];
 		int aspect = random % A_Water;
 
 		// Special Aspects
@@ -739,11 +739,11 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 			for(int a; a < length; a++)
 			{
 				Brews.GetArray(a, brew);
-				if(brew.AccountId == account && brew.StoreIndex == StoreWeapon[weapon])
+				if(brew.AccountId == account/* && brew.StoreIndex == StoreWeapon[weapon]*/)
 				{
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 					SetDefaultHudPosition(client);
-					ShowSyncHudText(client, SyncHud_Notifaction, "An effect is already active for this weapon!");
+					ShowSyncHudText(client, SyncHud_Notifaction, "An effect is already active!");// for this weapon!");
 					ApplyBuildingCollectCooldown(entity, client, 2.0);
 					return;
 				}
@@ -799,6 +799,10 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 
 				if(SellingAmount[owner] == 0)
 					ObjectTinkerBrew_TogglePotion(entity, false);
+				else if(SellingAmount[owner] > 0)
+				{
+					ObjectTinkerBrew_TogglePotion(entity, true);
+				}
 
 				if(client == owner && SellingAmount[owner] == 0)
 				{
