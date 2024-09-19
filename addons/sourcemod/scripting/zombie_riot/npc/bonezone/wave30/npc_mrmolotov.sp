@@ -5,24 +5,20 @@
 #define BONES_MOLOTOV_SKIN		"1"
 #define BONES_MOLOTOV_SCALE		"1.0"
 
-static float BONES_MOLOTOV_SPEED = 400.0;
+static float BONES_MOLOTOV_SPEED = 280.0;
 
-//The Molotov is a ranged support unit who stays at a distance and tosses bottles of ale at allies.
-//These bottles shatter on contact, providing a small amount of healing in a radius with a chance to permanently buff those who are healed.
-//If no allies are alive, they smash their bottle on their head, healing themselves, before immediately sprinting towards enemies and rapidly slashing them with the broken bottle.
-static float MOLOTOV_THROW_RANGE = 400.0;				//Range at which the Molotov will begin throwing ale at targets.
-static float MOLOTOV_THROW_COOLDOWN = 2.0;			//Cooldown between throws.
-static float MOLOTOV_THROW_VELOCITY = 2400.0;			//Bottle throw velocity.
-static float MOLOTOV_STOP_RANGE = 300.0;				//Distance from its target at which the Molotov will stop moving.
-static float MOLOTOV_RADIUS = 160.0;					//Ale effect radius.
-static float MOLOTOV_HEAL_PERCENT = 0.1;				//percentage of max health to heal allies for.
-static float MOLOTOV_HEAL_MINIMUM = 100.0;			//Minimum healing provided to allies who are within the ale's radius.
-static float MOLOTOV_HEAL_BUFF_CHANCE = 0.1;			//Chance for allies who are healed by thrown bottles to be instantly converted to their buffed form, permanently.
-static float MOLOTOV_SMASH_HEALS = 3500.0;			//Amount the Molotov should heal itself when it enters its melee phase.
-static float MOLOTOV_SPEED_NO_ALLIES = 520.0;			//Movement speed when no non-medic allies are alive.
-static float MOLOTOV_MELEE_DAMAGE = 60.0;				//Melee damage.
-static float MOLOTOV_MELEE_INTERVAL = 0.1;			//Cooldown between melee attacks.
-static float MOLOTOV_MELEE_START_RANGE = 80.0;		//Distance at which the Molotov will attempt to attack its target if it can.
+//Mr. Molotov is the ranged explosive unit of the Mafia era. He tosses molotovs, which explode and deal AOE damage. Survivors are ignited.
+static float MOLOTOV_THROW_RANGE = 400.0;				//Range at which Mr. Molotov will begin throwing molotovs at targets.
+static float MOLOTOV_THROW_COOLDOWN = 2.0;				//Cooldown between throws.
+static float MOLOTOV_THROW_VELOCITY = 1200.0;			//Bottle throw velocity.
+static float MOLOTOV_STOP_RANGE = 300.0;				//Distance from its target at which Mr. Molotov will stop moving.
+static float MOLOTOV_RADIUS = 100.0;					//Molotov blast radius.
+static float MOLOTOV_DAMAGE = 90.0;						//Molotov damage.
+static float MOLOTOV_ENTITYMULT = 10.0;					//Amount to multiply damage dealt to entities.
+static float MOLOTOV_FALLOFF_RADIUS = 0.8;				//Range-based falloff multiplier.
+static float MOLOTOV_FALLOFF_MULTIHIT = 0.9;			//Amount to multiply blast damage per target hit.
+static float MOLOTOV_GRAVITY = 1.0;						//Molotov projectile gravity.
+static float MOLOTOV_PREDICT_RANGE = 300.0;				//Range in which the projectile predicts its target's location.
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -66,21 +62,16 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
-static bool b_MolotovGoneBerserk[2049] = { false, ... };
-static bool b_MolotovBerserkSequence[2049] = { false, ... };
 static bool b_MolotovThrowing[2049] = { false, ... };
 
-#define PARTICLE_MOLOTOV_BOTTLE_SMASH	"spell_skeleton_goop_green"
-#define PARTICLE_MOLOTOV_BOTTLE_TRAIL	"peejar_trail_blu"
-#define PARTICLE_MOLOTOV_HEAL			"spell_overheal_blue"
+#define PARTICLE_MOLOTOV_BOTTLE_SMASH		"spell_fireball_tendril_parent_red"
+#define PARTICLE_MOLOTOV_BOTTLE_TRAIL		"fuse_sparks"
 
-#define SND_MOLOTOV_SWING				")weapons/machete_swing.wav"
-#define SND_MOLOTOV_BOTTLE_SMASH		")weapons/bottle_break.wav"
-#define SND_MOLOTOV_BOTTLE_SMASH_IMMINENT	")vo/halloween_boss/knight_alert02.mp3"
-#define SND_MOLOTOV_BOTTLE_SMASH_OW	")vo/halloween_boss/knight_pain03.mp3"
-#define SND_MOLOTOV_HEAL				")misc/halloween/spell_overheal.wav"
+#define SND_MOLOTOV_SWING					")weapons/machete_swing.wav"
+#define SND_MOLOTOV_BOTTLE_SMASH			")weapons/bottle_break.wav"
+#define SND_MOLOTOV_BOTTLE_SMASH_2			")misc/halloween/spell_fireball_impact.wav"
 
-#define MODEL_MOLOTOV_BOTTLE			"models/weapons/c_models/c_bottle/c_bottle.mdl"
+#define MODEL_MOLOTOV_BOTTLE				"models/weapons/c_models/c_bottle/c_bottle.mdl"
 
 public void MolotovBones_OnMapStart_NPC()
 {
@@ -94,10 +85,7 @@ public void MolotovBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
 	PrecacheSound(SND_MOLOTOV_BOTTLE_SMASH);
-	PrecacheSound(SND_MOLOTOV_BOTTLE_SMASH_IMMINENT);
-	PrecacheSound(SND_MOLOTOV_BOTTLE_SMASH_OW);
 	PrecacheSound(SND_MOLOTOV_SWING);
-	PrecacheSound(SND_MOLOTOV_HEAL);
 	PrecacheModel(MODEL_MOLOTOV_BOTTLE);
 
 //	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -107,7 +95,7 @@ public void MolotovBones_OnMapStart_NPC()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mr. Molotov");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mrmolotov");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_molotov");
 	strcopy(data.Icon, sizeof(data.Icon), "pyro");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -198,19 +186,15 @@ methodmap MolotovBones < CClotBody
 		
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;
-		b_MolotovGoneBerserk[npc.index] = false;
-		b_MolotovBerserkSequence[npc.index] = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(MolotovBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(MolotovBones_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(MolotovBones_ClotThink);
-
-		Is_a_Medic[npc.index] = true;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.m_bisWalking = false;
 
-		int iActivity = npc.LookupActivity("ACT_MOLOTOV_RUN");
+		int iActivity = npc.LookupActivity("ACT_ALERAISER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		DispatchKeyValue(npc.index, "skin", BONES_MOLOTOV_SKIN);
@@ -226,123 +210,13 @@ methodmap MolotovBones < CClotBody
 		
 		npc.StartPathing();
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/xms2013_soviet_stache/xms2013_soviet_stache_sniper.mdl");
+		//TODO: Replace
+		/*npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/xms2013_soviet_stache/xms2013_soviet_stache_sniper.mdl");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/tomb_readers/tomb_readers_sniper.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/sniper/bio_sniper_boater.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/sniper/bio_sniper_boater.mdl");*/
 		
 		return npc;
 	}
-}
-
-public int Molotov_GetTarget(MolotovBones npc)
-{
-	int closest = -1;
-
-	if (b_MolotovGoneBerserk[npc.index])
-	{
-		closest = GetClosestTarget(npc.index);
-	}
-	else
-	{
-		//Check 1: Find the closest non-buffed skeleton.
-		closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsNonBuffedSkeleton));
-		
-		//Check 2: There are no non-buffed skeletons, find the closest skeleton.
-		if (closest <= 0)
-			closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsASkeleton));
-		
-		//Check 3: There are no skeletons, find the closest ally who is not a healer.
-		if (closest <= 0)
-			closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsNotAHealer));
-		
-		//Check 4: We were not able to find ANY valid allies to heal, go berserk.
-		if (closest <= 0)
-		{
-			int iActivity = npc.LookupActivity("ACT_MOLOTOV_BREAK_BOTTLE");
-			if(iActivity > 0) npc.StartActivity(iActivity);
-
-			closest = GetClosestTarget(npc.index);
-			b_MolotovGoneBerserk[npc.index] = true;
-			b_MolotovBerserkSequence[npc.index] = true;
-			npc.m_flSpeed = MOLOTOV_SPEED_NO_ALLIES;
-			npc.StopPathing();
-
-			EmitSoundToAll(SND_MOLOTOV_BOTTLE_SMASH_IMMINENT, npc.index, _, 120);
-
-			DataPack pack = new DataPack();
-			RequestFrame(Molotov_BerserkSequence, pack);
-			WritePackCell(pack, EntIndexToEntRef(npc.index));
-			WritePackFloat(pack, GetGameTime(npc.index) + 0.6);
-			WritePackFloat(pack, GetGameTime(npc.index) + 0.8);
-			WritePackFloat(pack, GetGameTime(npc.index) + 1.25);
-			
-		}
-	}
-	
-	return closest;
-}
-
-public void Molotov_BerserkSequence(DataPack pack)
-{
-	ResetPack(pack);
-	int ent = EntRefToEntIndex(ReadPackCell(pack));
-	float swingTime = ReadPackFloat(pack);
-	float throwTime = ReadPackFloat(pack);
-	float endTime = ReadPackFloat(pack);
-	delete pack;
-
-	if (!IsValidEntity(ent))
-		return;
-
-	MolotovBones npc = view_as<MolotovBones>(ent);
-	float gt = GetGameTime(npc.index);
-
-	if (gt >= swingTime)
-	{
-		EmitSoundToAll(SND_MOLOTOV_SWING, npc.index, _, 120, _, _, GetRandomInt(80, 110));
-		swingTime = 9999999.0;
-	}
-
-	if (gt >= throwTime)
-	{
-		float pos[3], ang[3];
-		GetAttachment(npc.index, "head", pos, ang);
-
-		ParticleEffectAt(pos, PARTICLE_MOLOTOV_BOTTLE_SMASH, 2.0);
-		EmitSoundToAll(SND_MOLOTOV_BOTTLE_SMASH, npc.index, _, 120);
-		EmitSoundToAll(SND_MOLOTOV_BOTTLE_SMASH, npc.index, _, 120);
-		EmitSoundToAll(SND_MOLOTOV_BOTTLE_SMASH_OW, npc.index, _, 120);
-
-		if (GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + MOLOTOV_SMASH_HEALS);
-			if (GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-			{
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			}
-		}
-
-		throwTime = 9999999.0;
-	}
-
-	if (gt >= endTime)
-	{
-		int iActivity = npc.LookupActivity("ACT_MOLOTOV_RUN_BROKEN_BOTTLE");
-		if(iActivity > 0) npc.StartActivity(iActivity);
-
-		npc.m_iTarget = Molotov_GetTarget(npc);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
-		npc.StartPathing();
-		b_MolotovBerserkSequence[npc.index] = false;
-		return;
-	}
-
-	pack = new DataPack();
-	RequestFrame(Molotov_BerserkSequence, pack);
-	WritePackCell(pack, EntIndexToEntRef(npc.index));
-	WritePackFloat(pack, swingTime);
-	WritePackFloat(pack, throwTime);
-	WritePackFloat(pack, endTime);
 }
 
 //TODO 
@@ -381,20 +255,14 @@ public void MolotovBones_ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = Molotov_GetTarget(npc);
-
-		if (IsValidAlly(npc.index, npc.m_iTarget))
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 0.2;
-		else
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
-
-		if (!b_MolotovBerserkSequence[npc.index] && !b_MolotovThrowing[npc.index])
-			npc.StartPathing();
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.StartPathing();
 	}
 	
 	int closest = npc.m_iTarget;
 	
-	if(IsValidEntity(closest) && !b_MolotovBerserkSequence[npc.index])
+	if(IsValidEntity(closest))
 	{
 		float vecTarget[3], vecother[3]; 
 		WorldSpaceCenter(closest, vecTarget);
@@ -402,137 +270,44 @@ public void MolotovBones_ClotThink(int iNPC)
 			
 		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother);
 
-		if (!b_MolotovGoneBerserk[npc.index])
+		if (!b_MolotovThrowing[npc.index])
 		{
-			if (!b_MolotovThrowing[npc.index])
+			if (flDistanceToTarget <= MOLOTOV_STOP_RANGE)
 			{
-				if (flDistanceToTarget <= MOLOTOV_STOP_RANGE)
-				{
-					npc.StopPathing();
-				}
-				else
-				{
-					NPC_SetGoalEntity(npc.index, closest);
-					npc.StartPathing();
-				}
-
-				if (flDistanceToTarget <= MOLOTOV_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index))
-				{
-					b_MolotovThrowing[npc.index] = true;
-
-					int iActivity = npc.LookupActivity("ACT_MOLOTOV_THROW");
-					if(iActivity > 0) npc.StartActivity(iActivity);
-					npc.StopPathing();
-
-					DataPack pack = new DataPack();
-					RequestFrame(Molotov_ThrowBottle, pack);
-					WritePackCell(pack, EntIndexToEntRef(npc.index));
-					WritePackFloat(pack, GetGameTime(npc.index) + 0.3);
-					WritePackFloat(pack, GetGameTime(npc.index) + 0.5);
-					WritePackFloat(pack, GetGameTime(npc.index) + 1.0);
-				}
-			}
-		}	
-		else
-		{
-			if((flDistanceToTarget * flDistanceToTarget) < npc.GetLeadRadius())
-			{
-				float vPredictedPos[3]; 
-				PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.StopPathing();
 			}
 			else
 			{
 				NPC_SetGoalEntity(npc.index, closest);
+				npc.StartPathing();
 			}
 
-			if (flDistanceToTarget <= MOLOTOV_MELEE_START_RANGE && npc.m_flNextMeleeAttack <= GetGameTime(npc.index) && !npc.m_flAttackHappenswillhappen)
+			if (flDistanceToTarget <= MOLOTOV_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index) && Can_I_See_Enemy(npc.index, closest))
 			{
-				npc.AddGesture("ACT_MOLOTOV_MELEE");
-				npc.PlayMeleeSound();
-				npc.m_flAttackHappenswillhappen = true;
+				b_MolotovThrowing[npc.index] = true;
+
+				int iActivity = npc.LookupActivity("ACT_ALERAISER_THROW");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				npc.StopPathing();
 
 				DataPack pack = new DataPack();
-				RequestFrame(Molotov_MeleeLogic, pack);
+				RequestFrame(Molotov_ThrowBottle, pack);
 				WritePackCell(pack, EntIndexToEntRef(npc.index));
-				WritePackFloat(pack, GetGameTime(npc.index) + 0.16);
-				WritePackFloat(pack, GetGameTime(npc.index) + 0.25);
-				WritePackFloat(pack, GetGameTime(npc.index) + 0.4);
+				WritePackFloat(pack, GetGameTime(npc.index) + 0.3);
+				WritePackFloat(pack, GetGameTime(npc.index) + 0.5);
+				WritePackFloat(pack, GetGameTime(npc.index) + 1.0);
 			}
-		}
+		}	
 	}
 	else
 	{
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = Molotov_GetTarget(npc);
+		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
 	npc.PlayIdleSound();
-}
-
-public void Molotov_MeleeLogic(DataPack pack)
-{
-	ResetPack(pack);
-	int ent = EntRefToEntIndex(ReadPackCell(pack));
-	float swingTime = ReadPackFloat(pack);
-	float hitTime = ReadPackFloat(pack);
-	delete pack;
-
-	if (!IsValidEntity(ent))
-		return;
-
-	MolotovBones npc = view_as<MolotovBones>(ent);
-	float gt = GetGameTime(npc.index);
-
-	if (gt >= swingTime)
-	{
-		EmitSoundToAll(SND_MOLOTOV_SWING, npc.index, _, 120, _, _, GetRandomInt(80, 110));
-		swingTime = 9999999.0;
-	}
-
-	if (gt >= hitTime)
-	{
-		npc.m_flAttackHappenswillhappen = false;
-		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + MOLOTOV_MELEE_INTERVAL;
-
-		if (IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			float vecTarget[3];
-			WorldSpaceCenter(npc.m_iTarget, vecTarget);
-
-			Handle swingTrace;
-			npc.FaceTowards(vecTarget, 20000.0);
-
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
-			{
-				int target = TR_GetEntityIndex(swingTrace);	
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				if(target > 0) 
-				{
-					if(target <= MaxClients)
-						SDKHooks_TakeDamage(target, npc.index, npc.index, MOLOTOV_MELEE_DAMAGE, DMG_CLUB, -1, _, vecHit);
-					else
-						SDKHooks_TakeDamage(target, npc.index, npc.index, MOLOTOV_MELEE_DAMAGE, DMG_CLUB, -1, _, vecHit);					
-
-					// Hit sound
-					npc.PlayMeleeHitSound();
-				}
-			}
-
-			delete swingTrace;
-		}
-
-		return;
-	}
-
-	pack = new DataPack();
-	RequestFrame(Molotov_MeleeLogic, pack);
-	WritePackCell(pack, EntIndexToEntRef(npc.index));
-	WritePackFloat(pack, swingTime);
-	WritePackFloat(pack, hitTime);
 }
 
 public void Molotov_ThrowBottle(DataPack pack)
@@ -545,9 +320,6 @@ public void Molotov_ThrowBottle(DataPack pack)
 	delete pack;
 
 	if (!IsValidEntity(ent))
-		return;
-
-	if (b_MolotovGoneBerserk[ent])
 		return;
 
 	MolotovBones npc = view_as<MolotovBones>(ent);
@@ -563,10 +335,21 @@ public void Molotov_ThrowBottle(DataPack pack)
 	{
 		float pos[3], ang[3], vPredictedPos[3], SpeedReturn[3];
 		GetAttachment(npc.index, "handL", pos, ang);
-		PredictSubjectPosition(npc, npc.m_iTarget, 1.0, _, vPredictedPos);
+
+		if (IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			float myPos[3], theirPos[3];
+			WorldSpaceCenter(npc.index, myPos);
+			WorldSpaceCenter(npc.m_iTarget, theirPos);
+
+			if (GetVectorDistance(myPos, theirPos) <= MOLOTOV_PREDICT_RANGE)
+				PredictSubjectPosition(npc, npc.m_iTarget, 1.0, _, vPredictedPos);
+			else
+				vPredictedPos = theirPos;
+		}
 
 		int bottle = npc.FireRocket(vPredictedPos, 0.0, MOLOTOV_THROW_VELOCITY);
-		SetEntityGravity(bottle, 1.0); 	
+		SetEntityGravity(bottle, MOLOTOV_GRAVITY); 	
 		ArcToLocationViaSpeedProjectile(pos, vPredictedPos, SpeedReturn, 1.0, 1.0);
 		SetEntityMoveType(bottle, MOVETYPE_FLYGRAVITY);
 		TeleportEntity(bottle, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
@@ -587,7 +370,7 @@ public void Molotov_ThrowBottle(DataPack pack)
 
 	if (gt >= endTime)
 	{
-		int iActivity = npc.LookupActivity("ACT_MOLOTOV_RUN");
+		int iActivity = npc.LookupActivity("ACT_ALERAISER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.StartPathing();
@@ -610,52 +393,14 @@ public MRESReturn Molotov_BottleCollide(int entity)
 	
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	ParticleEffectAt(position, PARTICLE_MOLOTOV_BOTTLE_SMASH, 1.0);
-	ParticleEffectAt(position, PARTICLE_MOLOTOV_HEAL, 1.0);
 	EmitSoundToAll(SND_MOLOTOV_BOTTLE_SMASH, entity, SNDCHAN_STATIC, 80, _, 1.0, GetRandomInt(80, 110));
+	EmitSoundToAll(SND_MOLOTOV_BOTTLE_SMASH_2, entity, SNDCHAN_STATIC, 80, _, 1.0, GetRandomInt(80, 110));
 
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-
-	for (int i = 1; i < MAXENTITIES; i++)
-	{
-		if (!IsValidEntity(i) || i_IsABuilding[i] || i == owner)
-			continue;
-			
-		if (!HasEntProp(i, Prop_Send, "m_iTeamNum"))
-			continue;
-			
-		CClotBody healTarget = view_as<CClotBody>(i);		
-		if (healTarget.BoneZone_IsASaint())
-			continue;
-			
-		float healPos[3];
-		WorldSpaceCenter(i, healPos);
-		if (GetTeam(entity) == GetTeam(i) && GetVectorDistance(position, healPos) <= MOLOTOV_RADIUS)
-		{
-			float maxHP = float(GetEntProp(healTarget.index, Prop_Data, "m_iHealth"));
-			int HealingAmount = RoundFloat(maxHP * MOLOTOV_HEAL_PERCENT);
-			if (HealingAmount < RoundFloat(MOLOTOV_HEAL_MINIMUM))
-				HealingAmount = RoundFloat(MOLOTOV_HEAL_MINIMUM);
-				
-			if (GetEntProp(healTarget.index, Prop_Data, "m_iHealth") < GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
-			{
-				SetEntProp(healTarget.index, Prop_Data, "m_iHealth", GetEntProp(healTarget.index, Prop_Data, "m_iHealth") + HealingAmount);
-				if (GetEntProp(healTarget.index, Prop_Data, "m_iHealth") >= GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"))
-				{
-					SetEntProp(healTarget.index, Prop_Data, "m_iHealth", GetEntProp(healTarget.index, Prop_Data, "m_iMaxHealth"));
-				}
-			}
-				
-			if (GetRandomFloat() <= MOLOTOV_HEAL_BUFF_CHANCE)
-			{
-				healTarget.BoneZone_SetBuffedState(true);
-				healTarget.m_bBoneZoneNaturallyBuffed = true;
-			}
-
-			EmitSoundToAll(SND_MOLOTOV_HEAL, i, _, _, _, 0.8, GetRandomInt(80, 110));
-		}
-	}
+	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(MOLOTOV_DAMAGE, IsValidEntity(owner) ? owner : entity, entity, entity, position, MOLOTOV_RADIUS, MOLOTOV_FALLOFF_MULTIHIT, MOLOTOV_FALLOFF_RADIUS, isBlue, _, true, MOLOTOV_ENTITYMULT);
 	
-	RemoveEntity(entity);
+	RemoveEntity(entity); 
 
 	return MRES_Supercede; //DONT.
 }
