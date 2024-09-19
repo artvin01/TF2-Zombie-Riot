@@ -303,6 +303,7 @@ methodmap NecromancerBones < CClotBody
 			TE_SetupParticleEffect(BONES_NECROMANCER_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
+			npc.BoneZone_SetExtremeDangerState(true);
 		}
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -349,6 +350,8 @@ public void NecromancerBones_SetBuffed(int index, bool buffed)
 		TE_SetupParticleEffect(BONES_NECROMANCER_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
 		TE_WriteNum("m_bControlPoint1", index);	
 		TE_SendToAll();
+
+		npc.BoneZone_SetExtremeDangerState(true);
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -369,6 +372,8 @@ public void NecromancerBones_SetBuffed(int index, bool buffed)
 		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_NECROMANCER_BUFFPARTICLE));
 		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 		TE_SendToAll();
+
+		npc.BoneZone_SetExtremeDangerState(false);
 	}
 }
 
@@ -637,20 +642,28 @@ public void NecromancerBones_ClotThink(int iNPC)
 			
 		float flDistanceToTarget = GetVectorDistance(targPos, pos);
 		
-		if (flDistanceToTarget < Necromancer_Hover_MinDist)
-		{
-			npc.StartPathing();
-			BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-			NPC_SetGoalVector(npc.index, optimalPos, true);
-		}
-		else if (flDistanceToTarget > Necromancer_Hover_MaxDist)
+		if (!Can_I_See_Enemy_Only(npc.index, closest))
 		{
 			npc.StartPathing();
 			NPC_SetGoalEntity(npc.index, closest);
 		}
 		else
 		{
-			npc.StopPathing();
+			if (flDistanceToTarget < Necromancer_Hover_MinDist)
+			{
+				npc.StartPathing();
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
+				NPC_SetGoalVector(npc.index, optimalPos, true);
+			}
+			else if (flDistanceToTarget > Necromancer_Hover_MaxDist)
+			{
+				npc.StartPathing();
+				NPC_SetGoalEntity(npc.index, closest);
+			}
+			else
+			{
+				npc.StopPathing();
+			}
 		}
 		
 		if (NecroCastState[npc.index] != NECRO_CASTSTATE_INACTIVE)

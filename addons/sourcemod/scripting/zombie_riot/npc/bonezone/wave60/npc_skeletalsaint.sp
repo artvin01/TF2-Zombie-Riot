@@ -325,6 +325,7 @@ methodmap SaintBones < CClotBody
 			TE_SetupParticleEffect(BONES_SAINTBONES_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);
 			TE_SendToAll();
+			npc.BoneZone_SetExtremeDangerState(true);
 		}
 		
 		Saint_GiveCosmetics(npc, buffed);
@@ -371,6 +372,8 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 		TE_SetupParticleEffect(BONES_SAINTBONES_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
 		TE_WriteNum("m_bControlPoint1", index);
 		TE_SendToAll();
+
+		npc.BoneZone_SetExtremeDangerState(true);
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -391,6 +394,8 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_SAINTBONES_BUFFPARTICLE));
 		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 		TE_SendToAll();
+
+		npc.BoneZone_SetExtremeDangerState(false);
 	}
 }
 
@@ -910,7 +915,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		NPC_SetGoalEntity(npc.index, closest);
 		
 		//Only walk up to 66% the healing distance away from the target, we don't want to be *too* close to them.
-		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE * 0.66)
+		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE * 0.66 && Can_I_See_Ally(npc.index, closest))
 		{
 			npc.StopPathing();
 		}
@@ -991,20 +996,28 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		
 		float optimalPos[3];
 		
-		if (flDistanceToTarget < Priest_EnemyHover_MinDist)
-		{
-			npc.StartPathing();
-			BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-			NPC_SetGoalVector(npc.index, optimalPos, true);
-		}
-		else if (flDistanceToTarget > Priest_EnemyHover_MaxDist)
+		if (!Can_I_See_Enemy_Only(npc.index, closest))
 		{
 			npc.StartPathing();
 			NPC_SetGoalEntity(npc.index, closest);
 		}
 		else
 		{
-			npc.StopPathing();
+			if (flDistanceToTarget < Priest_EnemyHover_MinDist)
+			{
+				npc.StartPathing();
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
+				NPC_SetGoalVector(npc.index, optimalPos, true);
+			}
+			else if (flDistanceToTarget > Priest_EnemyHover_MaxDist)
+			{
+				npc.StartPathing();
+				NPC_SetGoalEntity(npc.index, closest);
+			}
+			else
+			{
+				npc.StopPathing();
+			}
 		}
 	}
 	
@@ -1053,7 +1066,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		NPC_SetGoalEntity(npc.index, closest);
 		
 		//Only walk up to 80% the healing distance away from the target, we don't want to be *too* close to them.
-		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE_BUFFED * 0.5)
+		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE_BUFFED * 0.5 && Can_I_See_Ally(npc.index, closest))
 		{
 			npc.StopPathing();
 		}

@@ -758,20 +758,28 @@ public void ArchmageBones_ClotThink(int iNPC)
 			
 		float flDistanceToTarget = GetVectorDistance(targPos, pos);
 					
-		if (flDistanceToTarget < ARCHMAGE_HOVER_MINDIST)
-		{
-			npc.StartPathing();
-			BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-			NPC_SetGoalVector(npc.index, optimalPos, true);
-		}
-		else if (flDistanceToTarget > ARCHMAGE_HOVER_MAXDIST)
+		if (!Can_I_See_Enemy_Only(npc.index, closest))
 		{
 			npc.StartPathing();
 			NPC_SetGoalEntity(npc.index, closest);
 		}
 		else
 		{
-			npc.StopPathing();
+			if (flDistanceToTarget < ARCHMAGE_HOVER_MINDIST)
+			{
+				npc.StartPathing();
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
+				NPC_SetGoalVector(npc.index, optimalPos, true);
+			}
+			else if (flDistanceToTarget > ARCHMAGE_HOVER_MAXDIST)
+			{
+				npc.StartPathing();
+				NPC_SetGoalEntity(npc.index, closest);
+			}
+			else
+			{
+				npc.StopPathing();
+			}
 		}
 	}
 	else

@@ -2567,6 +2567,23 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+
+	public void BoneZone_SetExtremeDangerState(bool dangerous)
+	{
+		if (dangerous)
+		{
+			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, this.index, _, 120, _, _, 80);
+			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, this.index, _, 120, _, _, 80);
+			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, this.index, _, 120);
+			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, this.index, _, 120);
+			float pos[3];
+			WorldSpaceCenter(this.index, pos);
+			ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
+		}
+
+		b_thisNpcIsABoss[this.index] = dangerous;
+		GiveNpcOutLineLastOrBoss(this.index, dangerous);
+	}
 	#endif
 	
 	public void RemoveAllWearables()

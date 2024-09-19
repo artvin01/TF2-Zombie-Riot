@@ -385,13 +385,7 @@ methodmap JesterBones < CClotBody
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			func_NPCAnimEvent[npc.index] = Mondo_AnimEvent;
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_MONDO_ATTACK_DELAY;
-			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
-			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
-			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
-			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
-			float pos[3];
-			WorldSpaceCenter(npc.index, pos);
-			ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
+			npc.BoneZone_SetExtremeDangerState(true);
 		}
 		else
 		{
@@ -457,13 +451,7 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		npc.m_blSetBuffedSkeletonAnimation = true;
 		npc.m_blSetNonBuffedSkeletonAnimation = false;
 
-		EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
-		EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
-		EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
-		EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
-		float pos[3];
-		WorldSpaceCenter(npc.index, pos);
-		ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
+		npc.BoneZone_SetExtremeDangerState(true);
 
 		i_NpcWeight[index] = BONES_MONDO_WEIGHT;
 		b_IsGiant[npc.index] = true;
@@ -489,6 +477,7 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 
 		i_NpcWeight[index] = BONES_JESTER_WEIGHT;
 		b_IsGiant[npc.index] = false;
+		npc.BoneZone_SetExtremeDangerState(false);
 		//Jester_GiveCosmetics(npc, false);
 	}
 }

@@ -323,13 +323,7 @@ methodmap BuccaneerBones < CClotBody
 		if (buffed)
 		{
 			npc.m_bisWalking = false;
-			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
-			EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
-			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
-			EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
-			float pos[3];
-			WorldSpaceCenter(npc.index, pos);
-			ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
+			npc.BoneZone_SetExtremeDangerState(true);
 		}
 		else
 		{
@@ -386,13 +380,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		npc.m_bisWalking = false;
 		i_NpcWeight[index] = BONES_BUCCANEER_WEIGHT_BUFFED;
 
-		EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
-		EmitSoundToAll(SOUND_DANGER_BIG_GUY_IS_HERE, npc.index, _, 120, _, _, 80);
-		EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
-		EmitSoundToAll(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY, npc.index, _, 120);
-		float pos[3];
-		WorldSpaceCenter(npc.index, pos);
-		ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
+		npc.BoneZone_SetExtremeDangerState(true);
 		b_IsGiant[npc.index] = true;
 	}
 	else if (b_BonesBuffed[index] && !buffed)
@@ -413,6 +401,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		npc.m_bisWalking = true;
 		i_NpcWeight[index] = BONES_BUCCANEER_WEIGHT;
 		b_IsGiant[npc.index] = false;
+		npc.BoneZone_SetExtremeDangerState(false);
 	}
 	
 	running[npc.index] = false;
