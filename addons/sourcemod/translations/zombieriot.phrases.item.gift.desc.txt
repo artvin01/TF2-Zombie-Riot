@@ -1036,7 +1036,7 @@
 	}
 	"God Alaxios Desc"
 	{
-		"en"		"Summons his army, each time he comes back he gains extra abilities.\nKill his army before him, otherwise he will revive and spawn more.\nCan buff his allies with a buff after wave 30 (silence will make him unable to buff himself when buffing allies)."
+		"en"		"Summons his army, each time he comes back he gains extra abilities.\nKill his army before him, otherwise he will revive and spawn more.\nCan buff his allies with a buff after wave 30 (Silence decreases battle cry buff on himself in half)."
 	}
 	"Seaborn Scout Desc"
 	{
@@ -1288,7 +1288,7 @@
 	}
 	"Sensal Desc"
 	{
-		"en"	"The leader of the scouting group and a friend of silvester and goggles, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using some abilities.\nMost of his group targetting attacks go onto the people with the highest health.\n(silencing removes his melee making you unable to air controll.)"
+		"en"	"The leader of the scouting group and a friend of silvester and goggles, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using some abilities.\nMost of his group targetting attacks go onto the people with the highest health.\n(silence makes him loses slide on melee hit.)"
 	}
 	"Dual Rea Desc"
 	{
@@ -1584,7 +1584,7 @@
 	}
 	"The Purge Desc"
 	{
-		"en"	"A machine to help the efforts of the Interitus group.\nHas a great arsenal of weapons.\nHeals when low enough and gains massive power everytime he has his fists out.\nFinish the fight fast before he becomes too strong."
+		"en"	"A machine to help the efforts of the Interitus group.\nHas a great arsenal of weapons.\nHeals when low enough and gains massive power everytime he has his fists out.\nFinish the fight fast before he becomes too strong.\n(Silence)Decreases his healing abit"
 	}
 	"Rouge Expidonsan Doctor Desc"
 	{
@@ -1616,7 +1616,7 @@
 	}
 	"Mr.X Desc"
 	{
-		"en"	"Activator of the xeno infection source, real name was Virothorn.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE."
+		"en"	"Activator of the xeno infection source, real name was Virothorn.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
 	}
 	"Lex Desc"
 	{
@@ -1628,7 +1628,7 @@
 	}
 	"Stella Desc"
 	{
-		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: Lowers the ''corosion'' index by 1)"
+		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10% slower)"
 	}
 	"Karlas Desc"
 	{
