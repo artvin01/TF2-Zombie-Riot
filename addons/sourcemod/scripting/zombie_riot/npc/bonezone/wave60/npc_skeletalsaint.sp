@@ -559,7 +559,7 @@ public void Priest_AttemptCast(SaintBones npc, int closest)
 	if (npc.m_flNextMeleeAttack >= GetGameTime(npc.index) || !IsValidEnemy(npc.index, closest) || NpcStats_IsEnemySilenced(npc.index) || Priest_IsHealing[npc.index])
 		return;
 
-	if (!Can_I_See_Enemy(npc.index, closest))
+	if (!Can_I_See_Enemy_Only(npc.index, closest))
 		return;
 	
 	float userLoc[3], otherLoc[3];

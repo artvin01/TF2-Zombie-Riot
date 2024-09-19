@@ -616,7 +616,7 @@ public void Buccaneer_BuffedLogic(BuccaneerBones npc, int closest)
 	{
 		case BUCCANEER_IDLE:
 		{
-			if (gt >= npc.m_flNextRangedAttack && flDistanceToTarget <= BUFFED_RANGE && Can_I_See_Enemy(npc.index, closest) && GetEntityFlags(npc.index) & FL_ONGROUND != 0)
+			if (gt >= npc.m_flNextRangedAttack && flDistanceToTarget <= BUFFED_RANGE && Can_I_See_Enemy_Only(npc.index, closest) && GetEntityFlags(npc.index) & FL_ONGROUND != 0)
 			{
 				int iActivity = npc.LookupActivity("ACT_CANNON_FIRE_INTRO");
 				if(iActivity > 0) npc.StartActivity(iActivity);
@@ -764,7 +764,7 @@ public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
 	}
 	
 	float gt = GetGameTime(npc.index);
-	if (gt >= npc.m_flNextRangedAttack && flDistanceToTarget <= BUCCANEER_RANGE && Can_I_See_Enemy(npc.index, closest))
+	if (gt >= npc.m_flNextRangedAttack && flDistanceToTarget <= BUCCANEER_RANGE && Can_I_See_Enemy_Only(npc.index, closest))
 	{
 		if (flDistanceToTarget <= BUCCANEER_PREDICT_RANGE)
 		{

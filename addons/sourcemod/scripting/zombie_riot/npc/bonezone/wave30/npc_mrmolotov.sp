@@ -282,7 +282,7 @@ public void MolotovBones_ClotThink(int iNPC)
 				npc.StartPathing();
 			}
 
-			if (flDistanceToTarget <= MOLOTOV_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index) && Can_I_See_Enemy(npc.index, closest))
+			if (flDistanceToTarget <= MOLOTOV_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index) && Can_I_See_Enemy_Only(npc.index, closest))
 			{
 				b_MolotovThrowing[npc.index] = true;
 

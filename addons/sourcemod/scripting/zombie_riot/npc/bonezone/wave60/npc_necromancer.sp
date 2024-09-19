@@ -444,7 +444,7 @@ public void Necromancer_SeekTarget(NecromancerBones npc, int closest)
 		if (GetVectorDistance(userLoc, targLoc) > (b_BonesBuffed[npc.index] ? Necromancer_AttackRange_Buffed : Necromancer_AttackRange))
 			return;
 		
-		if (!Can_I_See_Enemy(npc.index, closest))
+		if (!Can_I_See_Enemy_Only(npc.index, closest))
 			return;
 
 		NecroCastState[npc.index] = NECRO_CASTSTATE_INTRO;

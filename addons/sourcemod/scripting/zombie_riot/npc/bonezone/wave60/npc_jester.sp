@@ -747,7 +747,7 @@ public void JesterBones_ClotThink(int iNPC)
 			}
 		}
 
-		if (GetGameTime(npc.index) >= npc.m_flNextRangedAttack && Can_I_See_Enemy(npc.index, npc.m_iTarget) && flDistanceToTarget <= (!b_BonesBuffed[npc.index] ? BONES_JESTER_RANGE : BONES_MONDO_RANGE) && !b_MondoAttacking[npc.index])
+		if (GetGameTime(npc.index) >= npc.m_flNextRangedAttack && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget) && flDistanceToTarget <= (!b_BonesBuffed[npc.index] ? BONES_JESTER_RANGE : BONES_MONDO_RANGE) && !b_MondoAttacking[npc.index])
 		{
 			if (b_BonesBuffed[npc.index])
 			{
@@ -1062,7 +1062,7 @@ public void Jester_AnimEvent(int entity, int event)
 					WorldSpaceCenter(npc.m_iTarget, vicLoc);
 
 					float dist = GetVectorDistance(loc, vicLoc);
-					if (Can_I_See_Enemy(npc.index, npc.m_iTarget) && dist <= BONES_JESTER_RANGE)
+					if (Can_I_See_Enemy_Only(npc.index, npc.m_iTarget) && dist <= BONES_JESTER_RANGE)
 					{
 						npc.RemoveGesture("ACT_JESTER_HOLD_LEFT");
 						npc.RemoveGesture("ACT_JESTER_HOLD_RIGHT");
@@ -1126,12 +1126,12 @@ public void Jester_AnimEvent(int entity, int event)
 public void Jester_FireNonBuffed(JesterBones npc)
 {
 	float bombPos[3], shootAng[3], direction[3], targPos[3], selfAng[3];
-	WorldSpaceCenter(npc, bombPos);
+	WorldSpaceCenter(npc.index, bombPos);
 	bool foundTarget = false;
 
 	if (IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		if (Can_I_See_Enemy(npc.index, npc.m_iTarget, true))
+		if (Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
 			WorldSpaceCenter(npc.m_iTarget, targPos);
 			if (GetVectorDistance(bombPos, targPos) <= BONES_JESTER_RANGE_PREDICT)
