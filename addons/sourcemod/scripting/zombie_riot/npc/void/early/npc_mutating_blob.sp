@@ -246,10 +246,12 @@ public void VoidMutatingBlob_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
-	//a spawnpoint that only lasts for 1 spawn
-	Void_PlaceZRSpawnpoint(VecSelfNpcabs, 0, 1, "utaunt_hands_purple_parent", 5, false);
+	if(Rogue_Mode())
+	{
+		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+		//a spawnpoint that only lasts for 1 spawn
+		Void_PlaceZRSpawnpoint(VecSelfNpcabs, 0, 1, "utaunt_hands_purple_parent", 5, false, 1);
+	}
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
