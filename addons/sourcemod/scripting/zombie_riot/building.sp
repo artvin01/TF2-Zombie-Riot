@@ -311,7 +311,12 @@ static int GetCost(int id, float multi)
 			cost_extra = 0;
 		}
 		buildCost = buildCost + cost_extra;
+		if(!Waves_Started())
+		{
+			buildCost /= 3;
+		}
 	}
+
 
 	if(Rogue_Mode())
 		buildCost /= 3;
