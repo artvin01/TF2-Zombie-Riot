@@ -158,6 +158,10 @@ static void ClotThink(int iNPC)
 			Is_a_Medic[npc.index] = false;
 			b_NpcIsInvulnerable[npc.index] = false;
 
+			//remove from static.
+			RemoveFromNpcAliveList(npc.index);
+			AddNpcToAliveList(npc.index, 0);
+
 			float pos[3];
 			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 			SeaFounder_SpawnNethersea(pos);
@@ -169,6 +173,7 @@ static void ClotThink(int iNPC)
 			RaidAllowsBuildings = true;
 
 			CPrintToChatAll("{darkred}Wildingen Hitman{default}: {black}It's inside me");
+
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{

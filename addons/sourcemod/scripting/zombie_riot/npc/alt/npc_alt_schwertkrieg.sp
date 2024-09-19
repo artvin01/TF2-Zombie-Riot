@@ -186,6 +186,9 @@ methodmap Schwertkrieg < CClotBody
 		
 		if(final)
 		{
+			if(g_b_item_allowed)
+				b_NpcUnableToDie[npc.index] = true;
+				
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		else
