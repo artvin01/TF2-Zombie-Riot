@@ -51,8 +51,8 @@ static float NECROMANCER_MAX_SUMMONS_BUFFED = 8.0;
 #define PARTICLE_NECROMANCER_CAST_BUFFED		"raygun_projectile_blue"
 #define PARTICLE_NECROMANCER_CAST				"raygun_projectile_red"
 
-#define SOUND_BOLT_IMPACT		"misc/halloween/spell_spawn_boss.wav"
-#define SOUND_BOLT_CAST			"misc/halloween/spell_mirv_cast.wav"
+#define SOUND_BOLT_IMPACT		")misc/halloween/spell_spawn_boss.wav"
+#define SOUND_BOLT_CAST			")misc/halloween/spell_mirv_cast.wav"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -443,7 +443,10 @@ public void Necromancer_SeekTarget(NecromancerBones npc, int closest)
 
 		if (GetVectorDistance(userLoc, targLoc) > (b_BonesBuffed[npc.index] ? Necromancer_AttackRange_Buffed : Necromancer_AttackRange))
 			return;
-			
+		
+		if (!Can_I_See_Enemy(npc.index, closest))
+			return;
+
 		NecroCastState[npc.index] = NECRO_CASTSTATE_INTRO;
 		cast_Target[npc.index] = EntIndexToEntRef(closest);
 		npc.m_flAttackHappens = GetGameTime(npc.index) + 0.1;

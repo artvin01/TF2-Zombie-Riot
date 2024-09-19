@@ -399,6 +399,8 @@ methodmap JesterBones < CClotBody
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_JESTER_ATTACK_DELAY;
 		}
 
+		b_IsGiant[npc.index] = buffed;
+
 		Jester_AttachFuseParticles(npc);
 		//Jester_GiveCosmetics(npc, buffed);
 
@@ -462,6 +464,7 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
 
 		i_NpcWeight[index] = BONES_MONDO_WEIGHT;
+		b_IsGiant[npc.index] = true;
 
 		//Jester_GiveCosmetics(npc, true);
 	}
@@ -483,6 +486,7 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		npc.m_blSetNonBuffedSkeletonAnimation = true;
 
 		i_NpcWeight[index] = BONES_JESTER_WEIGHT;
+		b_IsGiant[npc.index] = false;
 		//Jester_GiveCosmetics(npc, false);
 	}
 }

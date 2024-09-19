@@ -120,13 +120,13 @@ static int Priest_HealingParticle[MAXENTITIES];
 static bool Priest_IsHealing[MAXENTITIES];
 static float Priest_LoopHealingGesture[MAXENTITIES];
 
-#define SOUND_CAST_ACTIVATED		"weapons/physcannon/superphys_launch2.wav"
-#define SOUND_CAST_ACTIVATED_BUFFED	"misc/halloween_eyeball/book_exit.wav"
-#define SOUND_CAST_ACTIVATED_BUFFED_2	"misc/halloween/merasmus_hiding_explode.wav"
-#define SOUND_CAST_ACTIVATED_BUFFED_3	"misc/halloween/spell_lightning_ball_cast.wav"
-#define SOUND_CAST					"weapons/physcannon/energy_sing_flyby1.wav"
-#define SOUND_CAST_BUFFED			"misc/halloween/strongman_fast_whoosh_01.wav"
-#define SOUND_THUNDER_CHARGEUP		"misc/halloween/gotohell.wav"
+#define SOUND_CAST_ACTIVATED		")weapons/physcannon/superphys_launch2.wav"
+#define SOUND_CAST_ACTIVATED_BUFFED	")misc/halloween_eyeball/book_exit.wav"
+#define SOUND_CAST_ACTIVATED_BUFFED_2	")misc/halloween/merasmus_hiding_explode.wav"
+#define SOUND_CAST_ACTIVATED_BUFFED_3	")misc/halloween/spell_lightning_ball_cast.wav"
+#define SOUND_CAST					")weapons/physcannon/energy_sing_flyby1.wav"
+#define SOUND_CAST_BUFFED			")misc/halloween/strongman_fast_whoosh_01.wav"
+#define SOUND_THUNDER_CHARGEUP		")misc/halloween/gotohell.wav"
 
 static float Priest_BoltAngles[MAXENTITIES][3];
 static float castTime[MAXENTITIES];
@@ -557,6 +557,9 @@ public void Priest_AttemptCast(SaintBones npc, int closest)
 {
 	//Do not attack if your next attack is not ready, your target is not a valid enemy, you are silenced, or you are healing.
 	if (npc.m_flNextMeleeAttack >= GetGameTime(npc.index) || !IsValidEnemy(npc.index, closest) || NpcStats_IsEnemySilenced(npc.index) || Priest_IsHealing[npc.index])
+		return;
+
+	if (!Can_I_See_Enemy(npc.index, closest))
 		return;
 	
 	float userLoc[3], otherLoc[3];

@@ -346,6 +346,8 @@ methodmap BuccaneerBones < CClotBody
 			SDKHook(npc.index, SDKHook_Touch, Cannon_RunOver);
 		}
 
+		b_IsGiant[npc.index] = buffed;
+
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_BUCCANEER_BUFFED_SKIN : BONES_BUCCANEER_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
@@ -391,6 +393,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		float pos[3];
 		WorldSpaceCenter(npc.index, pos);
 		ParticleEffectAt(pos, PARTICLE_DANGER_BIG_GUY_IS_HERE);
+		b_IsGiant[npc.index] = true;
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -409,6 +412,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		SDKUnhook(npc.index, SDKHook_Touch, Cannon_RunOver);
 		npc.m_bisWalking = true;
 		i_NpcWeight[index] = BONES_BUCCANEER_WEIGHT;
+		b_IsGiant[npc.index] = false;
 	}
 	
 	running[npc.index] = false;

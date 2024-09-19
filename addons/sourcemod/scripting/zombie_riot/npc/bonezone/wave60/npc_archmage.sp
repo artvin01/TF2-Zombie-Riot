@@ -121,13 +121,13 @@ float throwThrowTime[MAXENTITIES + 1] = { 0.0, ... };
 float chargeLoopTime[MAXENTITIES + 1] = { 0.0, ... };
 int throwParticle[MAXENTITIES + 1] = { -1, ... };
 
-#define SOUND_SPELL_CHARGEUP		"items/powerup_pickup_base.wav"
-#define SOUND_SPELL_THROW			"weapons/cleaver_throw.wav"
-#define SOUND_SPELL_THROW_BUFFED	"misc/halloween/strongman_fast_whoosh_01.wav"
-#define SOUND_SPELL_CAST			"misc/halloween/spell_meteor_cast.wav"
-#define SOUND_SPELL_CAST_BUFFED		"misc/halloween/spell_meteor_impact.wav"
-#define SOUND_FIREBALL_HIT			"weapons/dragons_fury_impact_bonus_damage.wav"
-#define SOUND_FIREBALL_EXPLODE		"misc/halloween/spell_fireball_impact.wav"
+#define SOUND_SPELL_CHARGEUP		")items/powerup_pickup_base.wav"
+#define SOUND_SPELL_THROW			")weapons/cleaver_throw.wav"
+#define SOUND_SPELL_THROW_BUFFED	")misc/halloween/strongman_fast_whoosh_01.wav"
+#define SOUND_SPELL_CAST			")misc/halloween/spell_meteor_cast.wav"
+#define SOUND_SPELL_CAST_BUFFED		")misc/halloween/spell_meteor_impact.wav"
+#define SOUND_FIREBALL_HIT			")weapons/dragons_fury_impact_bonus_damage.wav"
+#define SOUND_FIREBALL_EXPLODE		")misc/halloween/spell_fireball_impact.wav"
 
 public void ArchmageBones_OnMapStart_NPC()
 {
@@ -449,6 +449,9 @@ public void Archmage_CheckThrow(ArchmageBones npc, int closest)
 {
 	if (npc.m_flNextMeleeAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index))
 	{
+		if (!Can_I_See_Enemy(npc.index, closest))
+			return;
+			
 		float userLoc[3], targLoc[3];
 		WorldSpaceCenter(npc.index, userLoc);
 		WorldSpaceCenter(closest, targLoc);
