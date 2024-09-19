@@ -718,6 +718,7 @@ void NPC_ConfigSetup()
 	AlchemistBones_OnMapStart_NPC();
 	SquireBones_OnMapStart_NPC();
 	JesterBones_OnMapStart_NPC();
+	MolotovBones_OnMapStart_NPC();
 	#endif
 }
 
@@ -1576,17 +1577,19 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/wave15/npc_brittlebones.sp"
 #include "zombie_riot/npc/bonezone/wave15/npc_bigbones.sp"
 //////
-#include "zombie_riot/npc/bonezone/wave30/npc_buccaneerbones.sp"
-#include "zombie_riot/npc/bonezone/wave30/npc_calciumcorsair.sp"
-#include "zombie_riot/npc/bonezone/wave30/npc_undeaddeckhand.sp"
-#include "zombie_riot/npc/bonezone/wave30/npc_aleraiser.sp"
+#include "zombie_riot/npc/bonezone/wave30/npc_mrmolotov.sp"
 //////
-#include "zombie_riot/npc/bonezone/wave45/npc_archmage.sp"
-#include "zombie_riot/npc/bonezone/wave45/npc_necromancer.sp"
-#include "zombie_riot/npc/bonezone/wave45/npc_skeletalsaint.sp"
-#include "zombie_riot/npc/bonezone/wave45/npc_brewer.sp"
-#include "zombie_riot/npc/bonezone/wave45/npc_squire.sp"
-#include "zombie_riot/npc/bonezone/wave45/npc_jester.sp"
+#include "zombie_riot/npc/bonezone/wave45/npc_buccaneerbones.sp"
+#include "zombie_riot/npc/bonezone/wave45/npc_calciumcorsair.sp"
+#include "zombie_riot/npc/bonezone/wave45/npc_undeaddeckhand.sp"
+#include "zombie_riot/npc/bonezone/wave45/npc_aleraiser.sp"
+//////
+#include "zombie_riot/npc/bonezone/wave60/npc_archmage.sp"
+#include "zombie_riot/npc/bonezone/wave60/npc_necromancer.sp"
+#include "zombie_riot/npc/bonezone/wave60/npc_skeletalsaint.sp"
+#include "zombie_riot/npc/bonezone/wave60/npc_brewer.sp"
+#include "zombie_riot/npc/bonezone/wave60/npc_squire.sp"
+#include "zombie_riot/npc/bonezone/wave60/npc_jester.sp"
 //////
 #include "zombie_riot/npc/bonezone/npc_ssb.sp"
 #include "zombie_riot/npc/special/npc_reaper.sp"
