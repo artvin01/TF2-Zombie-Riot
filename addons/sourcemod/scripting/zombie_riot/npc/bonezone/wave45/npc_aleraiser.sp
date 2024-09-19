@@ -406,7 +406,7 @@ public void AleraiserBones_ClotThink(int iNPC)
 		{
 			if (!b_AleraiserThrowing[npc.index])
 			{
-				if (flDistanceToTarget <= ALERAISER_STOP_RANGE)
+				if (flDistanceToTarget <= ALERAISER_STOP_RANGE && Can_I_See_Ally(npc.index, npc.m_iTarget))
 				{
 					npc.StopPathing();
 				}
@@ -416,10 +416,11 @@ public void AleraiserBones_ClotThink(int iNPC)
 					npc.StartPathing();
 				}
 
-				if (flDistanceToTarget <= ALERAISER_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index))
+				if (flDistanceToTarget <= ALERAISER_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index) && Can_I_See_Ally(npc.index, npc.m_iTarget))
 				{
 					b_AleraiserThrowing[npc.index] = true;
 
+					npc.FaceTowards(vecTarget, 15000.0);
 					int iActivity = npc.LookupActivity("ACT_ALERAISER_THROW");
 					if(iActivity > 0) npc.StartActivity(iActivity);
 					npc.StopPathing();
@@ -583,6 +584,12 @@ public void Aleraiser_ThrowBottle(DataPack pack)
 		TeleportEntity(bottle, _, ang);
 
 		throwTime = 9999999.0;
+	}
+	else if (IsValidAlly(npc.index, npc.m_iTarget))
+	{
+		float vecTarget[3];
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		npc.FaceTowards(vecTarget, 400.0);
 	}
 
 	if (gt >= endTime)

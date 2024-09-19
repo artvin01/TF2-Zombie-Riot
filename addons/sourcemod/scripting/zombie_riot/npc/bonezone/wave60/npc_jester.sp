@@ -46,6 +46,7 @@ static float BONES_JESTER_GRAVITY = 0.66;			//Projectile gravity.
 static float BONES_JESTER_ATTACK_DELAY = 6.0;		//Delay after spawning before it can attack.
 static float BONES_JESTER_ATTACK_DELAY_TRANSFORM = 2.0;	//Delay after transforming before it can attack.
 static float BONES_JESTER_ATTACK_DELAY_HOLDING = 0.0;	//Delay after both bombs have stopped juggling before the Jester can throw its bombs.
+static float BONES_JESTER_TOO_CLOSE = 200.0;		//Range at which the Jester will attempt to run away if an enemy is too close.
 static int BONES_JESTER_WEIGHT = 1;
 
 //SERVANT OF MONDO (Buffed Variant):
@@ -67,6 +68,7 @@ static float BONES_MONDO_ATTACK_DELAY = 12.0;			//Delay before attacking upon sp
 static float BONES_MONDO_ATTACK_DELAY_TRANSFORM = 3.0;	//Delay before attacking upon transforming. Must be above 0.5 or else the cannonball doesn't show up on time.
 static float BONES_MONDO_ATTACK_TURNRATE = 200.0;		//Rate at which the Servant of Mondo can turn to face its target while preparing to throw.
 static int BONES_MONDO_WEIGHT = 999;
+static float BONES_MONDO_TOO_CLOSE = 200.0;			//Range at which the Servant of Mondo will attempt to run away if an enemy is too close.
 
 static float BONES_MONDO_MULTIPLIER_DEATH = 0.5;		//Amount to multiply damage and radius of bombs dropped when the Servant of Mondo dies.
 static float BONES_MONDO_VELOCITY_DEATH = 1200.0;		//Death bomb velocity.
@@ -725,25 +727,41 @@ public void JesterBones_ClotThink(int iNPC)
 			
 		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother);
 				
-		if (flDistanceToTarget <= (!b_BonesBuffed[npc.index] ? BONES_JESTER_OPTIMAL_RANGE : BONES_MONDO_OPTIMAL_RANGE))
+		if (!Can_I_See_Enemy_Only(npc.index, closest))
 		{
-			npc.StopPathing();
-			//npc.FaceTowards(vecTarget, 15000.0);
+			NPC_SetGoalEntity(npc.index, closest);
+			npc.StartPathing();
 		}
 		else
 		{
-			if (flDistanceToTarget > (!b_BonesBuffed[npc.index] ? BONES_JESTER_MAX_RANGE : BONES_MONDO_MAX_RANGE))
+			if (flDistanceToTarget <= (!b_BonesBuffed[npc.index] ? BONES_JESTER_TOO_CLOSE : BONES_MONDO_TOO_CLOSE))
+			{
 				npc.StartPathing();
 
-			if (flDistanceToTarget < (npc.GetLeadRadius() * npc.GetLeadRadius()))
+				float optimalPos[3];
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
+				NPC_SetGoalVector(npc.index, optimalPos, true);
+			}
+			else if (flDistanceToTarget <= (!b_BonesBuffed[npc.index] ? BONES_JESTER_OPTIMAL_RANGE : BONES_MONDO_OPTIMAL_RANGE))
 			{
-				float vPredictedPos[3]; 
-				PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.StopPathing();
+				//npc.FaceTowards(vecTarget, 15000.0);
 			}
 			else
 			{
-				NPC_SetGoalEntity(npc.index, closest);
+				if (flDistanceToTarget > (!b_BonesBuffed[npc.index] ? BONES_JESTER_MAX_RANGE : BONES_MONDO_MAX_RANGE))
+					npc.StartPathing();
+
+				if (flDistanceToTarget < (npc.GetLeadRadius() * npc.GetLeadRadius()))
+				{
+					float vPredictedPos[3]; 
+					PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else
+				{
+					NPC_SetGoalEntity(npc.index, closest);
+				}
 			}
 		}
 

@@ -404,7 +404,7 @@ public void AlchemistBones_ClotThink(int iNPC)
 		{
 			if (!b_AlchemistThrowing[npc.index])
 			{
-				if (flDistanceToTarget <= ALCHEMIST_STOP_RANGE)
+				if (flDistanceToTarget <= ALCHEMIST_STOP_RANGE && Can_I_See_Ally(npc.index, npc.m_iTarget))
 				{
 					npc.StopPathing();
 				}
@@ -414,10 +414,11 @@ public void AlchemistBones_ClotThink(int iNPC)
 					npc.StartPathing();
 				}
 
-				if (flDistanceToTarget <= ALCHEMIST_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index))
+				if (flDistanceToTarget <= ALCHEMIST_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index) && Can_I_See_Ally(npc.index, npc.m_iTarget))
 				{
 					b_AlchemistThrowing[npc.index] = true;
 
+					npc.FaceTowards(vecTarget, 15000.0);
 					int iActivity = npc.LookupActivity("ACT_ALCHEMIST_THROW");
 					if(iActivity > 0) npc.StartActivity(iActivity);
 					npc.StopPathing();
@@ -581,6 +582,12 @@ public void Alchemist_ThrowBottle(DataPack pack)
 		TeleportEntity(bottle, _, ang);
 
 		throwTime = 9999999.0;
+	}
+	else if (IsValidAlly(npc.index, npc.m_iTarget))
+	{
+		float vecTarget[3];
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		npc.FaceTowards(vecTarget, 400.0);
 	}
 
 	if (gt >= endTime)

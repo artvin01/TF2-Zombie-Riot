@@ -713,30 +713,38 @@ public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
 			
 	float flDistanceToTarget = GetVectorDistance(targPos, pos);
 		
-	if (flDistanceToTarget <= BUCCANEER_TOO_CLOSE)
+	if (Can_I_See_Enemy_Only(npc.index, closest))
 	{
-		BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-		NPC_SetGoalVector(npc.index, optimalPos, true);
-		npc.StartPathing();
-	}
-	else if (flDistanceToTarget >= BUCCANEER_TOO_FAR)
-	{
-		if (flDistanceToTarget < npc.GetLeadRadius())
+		if (flDistanceToTarget <= BUCCANEER_TOO_CLOSE)
 		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
+			NPC_SetGoalVector(npc.index, optimalPos, true);
+			npc.StartPathing();
+		}
+		else if (flDistanceToTarget >= BUCCANEER_TOO_FAR)
+		{
+			if (flDistanceToTarget < npc.GetLeadRadius())
+			{
+				float vPredictedPos[3];
+				PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else
+			{
+				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.StartPathing();
+			}
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-			npc.StartPathing();
+			npc.StopPathing();
+			npc.FaceTowards(targPos, 15000.0);
 		}
 	}
 	else
 	{
-		npc.StopPathing();
-		npc.FaceTowards(targPos, 15000.0);
+		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+		npc.StartPathing();
 	}
 	
 	//npc.FaceTowards(targPos, 15000.0);

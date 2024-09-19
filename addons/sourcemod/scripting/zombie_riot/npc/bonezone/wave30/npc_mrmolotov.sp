@@ -12,6 +12,7 @@ static float MOLOTOV_THROW_RANGE = 400.0;				//Range at which Mr. Molotov will b
 static float MOLOTOV_THROW_COOLDOWN = 2.0;				//Cooldown between throws.
 static float MOLOTOV_THROW_VELOCITY = 1200.0;			//Bottle throw velocity.
 static float MOLOTOV_STOP_RANGE = 300.0;				//Distance from its target at which Mr. Molotov will stop moving.
+static float MOLOTOV_TOO_CLOSE = 150.0;					//Distance from the nearest enemy at which Mr. Molotov will begin to run away.
 static float MOLOTOV_RADIUS = 100.0;					//Molotov blast radius.
 static float MOLOTOV_DAMAGE = 90.0;						//Molotov damage.
 static float MOLOTOV_ENTITYMULT = 10.0;					//Amount to multiply damage dealt to entities.
@@ -272,20 +273,36 @@ public void MolotovBones_ClotThink(int iNPC)
 
 		if (!b_MolotovThrowing[npc.index])
 		{
-			if (flDistanceToTarget <= MOLOTOV_STOP_RANGE)
-			{
-				npc.StopPathing();
-			}
-			else
+			if (!Can_I_See_Enemy_Only(npc.index, closest))
 			{
 				NPC_SetGoalEntity(npc.index, closest);
 				npc.StartPathing();
+			}
+			else
+			{
+				if (flDistanceToTarget <= MOLOTOV_TOO_CLOSE)
+				{
+					npc.StartPathing();
+					BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, vecTarget);
+					NPC_SetGoalVector(npc.index, vecTarget, true);
+				}
+				else if (flDistanceToTarget <= MOLOTOV_STOP_RANGE)
+				{
+					npc.StopPathing();
+				}
+				else
+				{
+					NPC_SetGoalEntity(npc.index, closest);
+					npc.StartPathing();
+				}
 			}
 
 			if (flDistanceToTarget <= MOLOTOV_THROW_RANGE && npc.m_flNextRangedAttack <= GetGameTime(npc.index) && Can_I_See_Enemy_Only(npc.index, closest))
 			{
 				b_MolotovThrowing[npc.index] = true;
 
+				WorldSpaceCenter(closest, vecTarget);
+				npc.FaceTowards(vecTarget, 15000.0);
 				int iActivity = npc.LookupActivity("ACT_ALERAISER_THROW");
 				if(iActivity > 0) npc.StartActivity(iActivity);
 				npc.StopPathing();
@@ -366,6 +383,12 @@ public void Molotov_ThrowBottle(DataPack pack)
 		TeleportEntity(bottle, _, ang);
 
 		throwTime = 9999999.0;
+	}
+	else if (IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+		float vecTarget[3];
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		npc.FaceTowards(vecTarget, 400.0);
 	}
 
 	if (gt >= endTime)
