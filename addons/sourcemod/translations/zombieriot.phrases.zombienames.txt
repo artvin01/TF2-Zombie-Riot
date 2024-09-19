@@ -3007,6 +3007,10 @@
 	{
 		"en"	"Servant of Mondo"
 	}
+	"Mr. Molotov"
+	{
+		"en"	"Mr. Molotov"
+	}
 	"The Reaper"
 	{
 		"en"	"The Reaper"
