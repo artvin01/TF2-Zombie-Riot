@@ -24,9 +24,9 @@
 
 static float BONES_JESTER_SPEED = 280.0;
 static float BONES_JESTER_SPEED_BUFFED = 180.0;
-static float JESTER_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
-static float JESTER_NATURAL_BUFF_LEVEL_MODIFIER = 0.05;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
-static float JESTER_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
+static float JESTER_NATURAL_BUFF_CHANCE = 0.025;			//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float JESTER_NATURAL_BUFF_LEVEL_MODIFIER = 0.025;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float JESTER_NATURAL_BUFF_LEVEL = 100.0;				//The average level at which level_modifier reaches its max.
 
 //FEARSOME FOOL (Non-Buffed Variant):
 //A jester who juggles two large cannonballs. When an enemy gets close enough, it will throw both bombs at them.

@@ -3,9 +3,9 @@
 
 static float BONES_NECROMANCER_SPEED = 220.0;
 static float BONES_NECROMANCER_SPEED_BUFFED = 260.0;
-static float NECROMANCER_NATURAL_BUFF_CHANCE = 0.01;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
-static float NECROMANCER_NATURAL_BUFF_LEVEL_MODIFIER = 0.09;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
-static float NECROMANCER_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
+static float NECROMANCER_NATURAL_BUFF_CHANCE = 0.0;			//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float NECROMANCER_NATURAL_BUFF_LEVEL_MODIFIER = 0.0;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float NECROMANCER_NATURAL_BUFF_LEVEL = 100.0;		//The average level at which level_modifier reaches its max.
 
 #define BONES_NECROMANCER_HP				"5000"
 #define BONES_NECROMANCER_HP_BUFFED			"25000"
