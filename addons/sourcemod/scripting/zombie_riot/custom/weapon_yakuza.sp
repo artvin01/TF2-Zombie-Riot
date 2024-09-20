@@ -740,15 +740,17 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		{
 			Rogue_OnAbilityUse(weapon);
 			
-			bool halved = (b_thisNpcIsABoss[target] || i_NpcWeight[target] > 2);
+			bool halved = (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] || i_NpcWeight[target] > 2);
 			
 			float VicLoc[3];
-			VicLoc[2] += halved ? 350.0 : 450.0; //Jump up.
-
-			SDKUnhook(target, SDKHook_Think, NpcJumpThink);
-			f3_KnockbackToTake[target] = VicLoc;
-			SDKHook(target, SDKHook_Think, NpcJumpThink);
-			FreezeNpcInTime(target, halved ? 1.0 : 1.5);
+			VicLoc[2] += halved ? 250.0 : 450.0; //Jump up.
+			if(!VIPBuilding_Active())
+			{
+				SDKUnhook(target, SDKHook_Think, NpcJumpThink);
+				f3_KnockbackToTake[target] = VicLoc;
+				SDKHook(target, SDKHook_Think, NpcJumpThink);
+			}
+			FreezeNpcInTime(target, halved ? 0.75 : 1.5);
 		}
 		Ability_Apply_Cooldown(client, 2, 6.0);
 		return;

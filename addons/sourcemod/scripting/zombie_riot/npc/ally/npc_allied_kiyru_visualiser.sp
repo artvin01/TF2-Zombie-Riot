@@ -253,6 +253,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 		npc.m_iNpcStepVariation = 0;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
+		b_CannotBeStunned[npc.index] = true;
 		
 		func_NPCDeath[npc.index] = AlliedKiryuVisualiserAbility_NPCDeath;
 		func_NPCThink[npc.index] = AlliedKiryuVisaluser_ClotThink;
@@ -285,8 +286,11 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.5 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = -50.0;
 				c_KiyruAttachmentDo[npc.index] = "effect_hand_r";
-				FreezeNpcInTime(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim), true);
-				SetAirtimeNpc(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim));
+				if(!VIPBuilding_Active())
+				{
+					FreezeNpcInTime(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim), true);
+					SetAirtimeNpc(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim));
+				}
 			}
 			case 2:
 			{
@@ -297,8 +301,11 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.1 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = -50.0;
 				c_KiyruAttachmentDo[npc.index] = "effect_hand_r";
-				FreezeNpcInTime(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim), true);
-				SetAirtimeNpc(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim));
+				if(!VIPBuilding_Active())
+				{
+					FreezeNpcInTime(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim), true);
+					SetAirtimeNpc(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim));
+				}
 			}
 			case 3:
 			{
@@ -308,8 +315,11 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.5 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = 0.0;
 				c_KiyruAttachmentDo[npc.index] = "root";
-				FreezeNpcInTime(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim), true);
-				SetAirtimeNpc(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim));
+				if(!VIPBuilding_Active())
+				{
+					FreezeNpcInTime(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim), true);
+					SetAirtimeNpc(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim));
+				}
 			}
 			case 4:
 			{
@@ -329,8 +339,11 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				npc.m_flKiryuTimeUntillDone = GetGameTime() + (1.35 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = 0.0;
 				c_KiyruAttachmentDo[npc.index] = "root";
-				FreezeNpcInTime(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim), true);
-				SetAirtimeNpc(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim));
+				if(!VIPBuilding_Active())
+				{
+					FreezeNpcInTime(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim), true);
+					SetAirtimeNpc(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim));
+				}
 			}
 		}
 		npc.PlayInitSound();
@@ -375,7 +388,7 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 			TeleportEntity(npc.m_iTargetWalkTo, NULL_VECTOR, flAngles, NULL_VECTOR);
 		}
 	}
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active())
 	{	
 
 		if(f_NoUnstuckVariousReasons[npc.m_iTarget] < GetGameTime() + 0.5)
