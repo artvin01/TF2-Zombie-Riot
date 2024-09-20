@@ -2416,12 +2416,12 @@ int Rogue_GetWave()	// Waves_GetWave()
 {
 	return ProgressTimer ? CurrentCount : CurrentWave;
 }
-
+/*
 int Rogue_GetCount()
 {
 	return CurrentCount;
 }
-
+*/
 int Rogue_GetRoundScale()
 {
 	if(Rogue_Started())

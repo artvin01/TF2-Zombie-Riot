@@ -400,6 +400,8 @@ methodmap Nemal < CClotBody
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_bThisNpcIsABoss = true;
+		
 		b_angered_twice[npc.index] = false;
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{
