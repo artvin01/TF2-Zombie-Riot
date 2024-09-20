@@ -77,7 +77,7 @@ void Yakuza_MapStart()
 	PrecacheSound("items/powerup_pickup_base.wav");
 }
 
-float Yakuza_DurationDoEnemy(int client, int enemy)
+float Yakuza_DurationDoEnemy(int enemy)
 {
 	if(LastMann)
 	{
@@ -112,12 +112,6 @@ bool Yakuza_Lastman(any toggle = -1)
 		SpecialLastMan = view_as<bool>(toggle);
 	
 	return SpecialLastMan;
-}
-
-void Yakuza_ChargeReduced(int client, float time)
-{
-	if(WeaponTimer[client] != null)
-		WeaponCharge[client] += RoundFloat(time * 5.0);
 }
 
 void Yakuza_EnemiesHit(int client, int weapon, int &enemies_hit_aoe)
@@ -396,7 +390,7 @@ public void Weapon_Yakuza_M2(int client, int weapon, bool crit, int slot)
 		CurrentWeaponComboAt[client] = 0;
 		LastAttack[client] = Attack_Heavy;
 		TF2_AddCondition(client, TFCond_CritCanteen, 0.25);
-		Yakuza_WeaponCooldown(client, weapon);
+		Yakuza_WeaponCooldown(weapon);
 		//Set the current ongoing attack to heavy, critboost for visual effect
 		return;
 	}
@@ -454,11 +448,11 @@ static void Yakuza_BasicAttack(int client, int weapon)
 	{
 		CurrentWeaponComboAt[client] = 0;
 		
-		Yakuza_WeaponCooldown(client, weapon);
+		Yakuza_WeaponCooldown(weapon);
 	}
 }
 
-void Yakuza_WeaponCooldown(int client, int weapon)
+void Yakuza_WeaponCooldown(int weapon)
 {
 	
 	DataPack pack = new DataPack();
@@ -534,7 +528,7 @@ static void Yakuza_GrabAttack(int client, int weapon, int slot)
 
 	LastAttack[client] = Attack_Grab;
 	TF2_AddCondition(client, TFCond_CritCanteen, 0.25);
-	Yakuza_WeaponCooldown(client, weapon);
+	Yakuza_WeaponCooldown(weapon);
 	//Set the current ongoing attack to heavy, critboost for visual effect
 }
 
@@ -570,7 +564,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		{
 			//Allow tracing and picking up on decorative objects
 			//Code this last
-			if(MountBuildingToBackInternal(client, weapon, false, true))
+			if(MountBuildingToBackInternal(client, true))
 			{
 				//Hurray, no buiding was found, lets try stealing!
 				Store_GiveAll(client, GetClientHealth(client));
@@ -632,7 +626,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			{
 				Rogue_OnAbilityUse(weapon);
 				Yakuza_AddCharge(client, -RequiredHeat);
-				f_AntiStuckPhaseThrough[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(client, target));
+				f_AntiStuckPhaseThrough[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
 				//Everything is greenlit! Yaay!
 				HeatActionCooldown[client] = GetGameTime() + 0.5;
 				switch(WeaponStyle[client])
@@ -642,7 +636,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 						float DamageBase = 200.0;
 						DamageBase *= HEATACTION_DMG_MULTI;
 						DamageBase *= Attributes_Get(weapon, 2, 1.0);
-						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_1", 2.5 * Yakuza_DurationDoEnemy(client, target), target);
+						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_1", 2.5 * Yakuza_DurationDoEnemy(target), target);
 					}
 
 					case Style_Beast:
@@ -652,14 +646,14 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 							float DamageBase = 160.0;
 							DamageBase *= HEATACTION_DMG_MULTI;
 							DamageBase *= Attributes_Get(weapon, 2, 1.0);
-							DoSpecialActionYakuza(client, DamageBase, "beast_heat_building_1", 1.35 * Yakuza_DurationDoEnemy(client, target), target);
+							DoSpecialActionYakuza(client, DamageBase, "beast_heat_building_1", 1.35 * Yakuza_DurationDoEnemy(target), target);
 						}
 						else
 						{
 							float DamageBase = 120.0;
 							DamageBase *= HEATACTION_DMG_MULTI;
 							DamageBase *= Attributes_Get(weapon, 2, 1.0);
-							DoSpecialActionYakuza(client, DamageBase, "brawler_heat_2", 2.1 * Yakuza_DurationDoEnemy(client, target), target);
+							DoSpecialActionYakuza(client, DamageBase, "brawler_heat_2", 2.1 * Yakuza_DurationDoEnemy(target), target);
 						}
 					}
 					
@@ -668,7 +662,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 						float DamageBase = 300.0;
 						DamageBase *= HEATACTION_DMG_MULTI;
 						DamageBase *= Attributes_Get(weapon, 2, 1.0);
-						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_3", 2.5 * Yakuza_DurationDoEnemy(client, target), target);
+						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_3", 2.5 * Yakuza_DurationDoEnemy(target), target);
 					}
 
 					case Style_Dragon:
@@ -815,7 +809,7 @@ static void Yakuza_Block(int client, int weapon, int slot)
 	}
 }
 
-void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, int damagetype)
+void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 {
 	BlockStale[attacker]--;
 	LastVictim[attacker] = EntIndexToEntRef(victim);
@@ -911,7 +905,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 					damage *= 4.0;
 			}
 			if(LastMann || !b_thisNpcIsARaid[victim])
-				SensalCauseKnockback(attacker, victim, 0.5, false, true);
+				SensalCauseKnockback(attacker, victim, 0.5, false);
 		}
 		case Attack_Grab:
 		{
@@ -940,7 +934,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon, i
 				duration *= 0.35;
 			}
 			
-			FreezeNpcInTime(victim, duration * Yakuza_DurationDoEnemy(attacker, victim));
+			FreezeNpcInTime(victim, duration * Yakuza_DurationDoEnemy(victim));
 		}
 	}
 	Yakuza_AddCharge(attacker, HeatGive);

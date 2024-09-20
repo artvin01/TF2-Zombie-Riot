@@ -476,7 +476,7 @@
 	
 	"IEM Launcher Desc"
 	{
-		"en"		"Engi says to not touch his stuff, but you don't care"
+		"en"		"Engi says to not touch his stuff, but you don't care\nFull charge to attack.\nProjectile speed actually makes it slower.\nReload speed and attackspeed buff its damage."
 		"fr"		"L'Engineer vous demande de pas toucher ses choses, mais vous vous foutez de lui."
 		"ru"		"Инженер говорит не трогать его вещи, но вам всё равно."
 		"chi"       "工程师说不要碰他的东西，但你不在乎"
