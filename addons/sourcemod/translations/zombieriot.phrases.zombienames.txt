@@ -2857,7 +2857,7 @@
 	}
 	"Vhxis Desc"
 	{
-		"en"	"The void keeper, killing him is not a good idea..."
+		"en"	"The void keeper, killing him is not a good idea...\n(Silence makes voidbuff weaker)"
 	}
 	"Chaos Mage"
 	{
