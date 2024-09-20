@@ -260,8 +260,12 @@ static void ClotThink(int iNPC)
 					int health = GetEntProp(target, Prop_Data, "m_iHealth");
 					if(health > maxhealth)
 						health = maxhealth;
-					
-					health -= maxhealth / 60;
+					float ScalingDo = MultiGlobalHealthBoss;
+					if(ScalingDo <= 0.75)
+						ScalingDo = 0.75;
+
+					health -= maxhealth / RoundToNearest(60.0 / ScalingDo);
+
 					if(health < 1)
 					{
 						// 300 seconds to kill Goggles
