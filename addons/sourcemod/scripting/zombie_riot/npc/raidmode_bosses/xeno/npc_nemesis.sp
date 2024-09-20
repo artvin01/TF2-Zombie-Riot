@@ -34,7 +34,10 @@ static char g_RangedAttackSounds[][] =
 	"npc/zombie_poison/pz_throw2.wav",
 	"npc/zombie_poison/pz_throw3.wav",
 };
-
+static char g_RangedAttackSounds2[][] =
+{
+	"weapons/csgo_awp_shoot.wav",
+};
 static char g_RangedSpecialAttackSounds[][] =
 {
 	"npc/fast_zombie/leap1.wav",
@@ -126,6 +129,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));    i++) { PrecacheSound(g_MeleeHitSounds[i]);    }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));    i++) { PrecacheSound(g_MeleeAttackSounds[i]);    }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds2));   i++) { PrecacheSound(g_RangedAttackSounds2[i]);   }
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
 	PrecacheModel(INFECTION_MODEL);
@@ -164,6 +168,10 @@ methodmap RaidbossNemesis < CClotBody
 	public void PlayRangedSound()
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,65);
+	}
+	public void PlayRangedSoundMinigun()
+	{
+		EmitSoundToAll(g_RangedAttackSounds2[GetRandomInt(0, sizeof(g_RangedAttackSounds2) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.5,65);
 	}
 	public void PlayRangedSpecialSound()
 	{
@@ -1011,6 +1019,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0, _,vecTarget);
 				float VecSave[3];
 				VecSave = vecTarget;
+				npc.PlayRangedSoundMinigun();
 
 				for(int repeat = 1; repeat <= 2; repeat++)
 				{
