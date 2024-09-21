@@ -292,13 +292,13 @@ bool Waves_CallVote(int client, int force = 0)
 			Format(vote.Name, sizeof(vote.Name), "Standard (Lv %d)", WaveLevel);
 			menu.AddItem(NULL_STRING, vote.Name);
 
-			float multi = float(vote.Level) / 1000.0;
-
 			int length = VotingMods.Length;
 			for(int i = 1; i < length; i++)
 			{
 				VotingMods.GetArray(i, vote);
 				vote.Name[0] = CharToUpper(vote.Name[0]);
+				
+				float multi = float(vote.Level) / 1000.0;
 				
 				int level = WaveLevel;
 				if(level < 10)
@@ -1197,7 +1197,8 @@ public Action Waves_EndVote(Handle timer, float time)
 					vote.Name[0] = CharToUpper(vote.Name[0]);
 
 					Queue_DifficultyVoteEnded();
-					Native_OnDifficultySet(highest, vote.Name, vote.Level);
+					if(!VotingMods)
+						Native_OnDifficultySet(highest, vote.Name, vote.Level);
 					
 					if(highest > 3)
 						highest = 3;
@@ -1245,6 +1246,8 @@ public Action Waves_EndVote(Handle timer, float time)
 							level = 10;
 						
 						WaveLevel += RoundFloat(level * multi);
+
+						Native_OnDifficultySet(-1, WhatDifficultySetting_Internal, WaveLevel);
 						
 						FormatEx(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s [%s]", WhatDifficultySetting_Internal, vote.Name);
 						Waves_SetDifficultyName(WhatDifficultySetting);
