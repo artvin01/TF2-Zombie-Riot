@@ -736,6 +736,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							damage *= 0.5;
 						}
+						case WEAPON_SPECTER:
+						{
+							damage *= 0.8; //each target hit reduces damage done.
+						}	
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
 							Angelic_Shotgun_Meleetrace_Hit_After(client, damage);
