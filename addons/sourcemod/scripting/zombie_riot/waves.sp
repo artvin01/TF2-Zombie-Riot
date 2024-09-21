@@ -1197,7 +1197,7 @@ public Action Waves_EndVote(Handle timer, float time)
 					vote.Name[0] = CharToUpper(vote.Name[0]);
 
 					Queue_DifficultyVoteEnded();
-					Native_OnDifficultySet(highest, vote.Name);
+					Native_OnDifficultySet(highest, vote.Name, vote.Level);
 					
 					if(highest > 3)
 						highest = 3;
