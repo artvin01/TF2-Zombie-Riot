@@ -1193,14 +1193,15 @@ public Action Waves_EndVote(Handle timer, float time)
 						kv.ExportToFile(buffer);
 						delete kv;
 					}
+					
+					vote.Name[0] = CharToUpper(vote.Name[0]);
 
 					Queue_DifficultyVoteEnded();
-					Native_OnDifficultySet(highest);
+					Native_OnDifficultySet(highest, vote.Name);
 					
 					if(highest > 3)
 						highest = 3;
 					
-					vote.Name[0] = CharToUpper(vote.Name[0]);
 					Waves_SetDifficultyName(vote.Name);
 					WaveLevel = vote.Level;
 					

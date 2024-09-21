@@ -12,14 +12,15 @@ void Natives_PluginLoad()
 	CreateNative("ZR_HasNamedItem", Native_HasNamedItem);
 	CreateNative("ZR_GiveNamedItem", Native_GiveNamedItem);
 
-	OnDifficultySet = new GlobalForward("ZR_OnDifficultySet", ET_Ignore, Param_Cell);
+	OnDifficultySet = new GlobalForward("ZR_OnDifficultySet", ET_Ignore, Param_Cell, Param_String);
 	OnClientLoaded = new GlobalForward("ZR_OnClientLoaded", ET_Ignore, Param_Cell);
 }
 
-void Native_OnDifficultySet(int level)
+void Native_OnDifficultySet(int level, const char[] name)
 {
 	Call_StartForward(OnDifficultySet);
 	Call_PushCell(level);
+	Call_PushString(name);
 	Call_Finish();
 }
 
