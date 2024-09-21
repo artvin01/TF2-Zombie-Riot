@@ -242,7 +242,7 @@ public void Weapon_SpecterSurvive(int client, int weapon, bool &result, int slot
 		SpecterSurviveFor[client] = GetGameTime() + 9.8;
 
 		ApplyTempAttrib(weapon, 2, 2.3, 10.0);
-		ApplyTempAttrib(weapon, 6, 1.5, 10.0);
+		ApplyTempAttrib(weapon, 6, 1.6, 10.0);
 		ApplyTempAttrib(weapon, 412, 0.333, 10.0);
 		ApplyTempAttrib(weapon, 740, 0.333, 10.0);
 		Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 11.0 : 109.8);
