@@ -96,6 +96,8 @@ public Action VoidArea_RenderTimer(Handle timer, DataPack pack)
 			}
 		}
 
+		//If Only allow 25 navs to spread at once
+		int AllowMaxSpread = 0;
 		int length = NavList.Length;
 		for(int a; a < length; a++)	// Spread creap to all tiles it touches
 		{
@@ -108,9 +110,16 @@ public Action VoidArea_RenderTimer(Handle timer, DataPack pack)
 					int count = nav1.GetAdjacentCount(b);
 					for(int c; c < count; c++)
 					{
+						if(AllowMaxSpread >= 25)
+						{
+							break;
+						}
 						CNavArea nav2 = nav1.GetAdjacentArea(b, c);
 						if(nav2 != NULL_AREA && !nav2.HasAttributes(NAV_MESH_NO_HOSTAGES) && NavList.FindValue(nav2) == -1)
+						{
+							AllowMaxSpread++;
 							NavList.Push(nav2);
+						}
 					}
 				}
 			}
@@ -343,7 +352,7 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 
 
 //This places a spawnpoint somewhere on the map.
-void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, int SpawnsMax, char[] ParticleToSpawn, int ParticleOffset = 0, bool SpreadVoid = false)
+void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, int SpawnsMax, char[] ParticleToSpawn, int ParticleOffset = 0, bool SpreadVoid = false, int MaxWaves = 2)
 {
 	// info_player_teamspawn
 	int ref = CreateEntityByName("info_player_teamspawn");
@@ -353,7 +362,7 @@ void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, in
 		DispatchKeyValueVector(ref, "origin", SpawnPos);
 		DispatchSpawn(ref);
 	}
-	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax, 1);
+	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax, 1, MaxWaves);
 
 	if(WaveDuration >= 1 || ParticleToSpawn[0])
 	{

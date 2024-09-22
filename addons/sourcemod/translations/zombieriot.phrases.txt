@@ -3443,9 +3443,9 @@
 		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
 		"chi"	"击败尸群，打败联合军！"
 	}
-	"True Fusion Warrior Desc"
+	"True Fusion Warrior Wave Desc"
 	{
-		"en"	"(1) ''True fusion warrior'' Is infected with the xeno virus, his gear prevents spreading of it, it even made him forget his name."
+		"en"	"(1) ''True fusion warrior'' Is infected with the xeno virus, his gear prevents spreading of it, it even made him forget his name.\nGround slam(can be silenced)"
 	}
 	"Alternative Desc"
 	{
@@ -3453,9 +3453,9 @@
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
 	}
-	"Blitzkrieg Desc"
+	"Blitzkrieg Wave Desc"
 	{
-		"en"	"(2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
+		"en"	"(2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas...\nTeleport and jump during moonlight(Can be silenced)"
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -3484,7 +3484,7 @@
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
 		"chi"	"对抗中世纪的剑与盾！"
 	}
-	"God Alaxios Desc"
+	"God Alaxios Wave Desc"
 	{
 		"en"	"(4) Fight him and his rapidly spawning army, kill the army first whenever they show up!"
 		"fr"	"Alaxios apporte son armée, tuez ses unités en premier quand ils apparaîssent!"

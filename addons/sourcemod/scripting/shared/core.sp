@@ -2825,7 +2825,7 @@ void SDKHook_TeamSpawn_SpawnPost(int entity)
 {
 	SDKHook_TeamSpawn_SpawnPostInternal(entity);
 }
-void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000, int i_SpawnSetting = 0)
+void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000, int i_SpawnSetting = 0, int MaxWaves = 999)
 {
 	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -2842,7 +2842,7 @@ void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000,
 			if(GetTeam(entity) == TFTeam_Red)
 				Allyspawn = true;
 
-			Spawns_AddToArray(entity,_, Allyspawn, SpawnsMax, i_SpawnSetting);
+			Spawns_AddToArray(entity,_, Allyspawn, SpawnsMax, i_SpawnSetting, MaxWaves);
 			
 			i_ObjectsSpawners[i] = entity;
 			return;

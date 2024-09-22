@@ -2209,11 +2209,11 @@ void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage
 		if(damage >= float(MaxHealth))
 			damage = float(MaxHealth);
 			
-		float gain = b_thisNpcIsARaid[victim] ? (50.0 * MultiGlobalHighHealthBoss) : (b_thisNpcIsABoss[victim] ? (10.0 * MultiGlobalHealth) : (b_IsGiant[victim] ? 2.5 : 1.0));
+		float gain = b_thisNpcIsARaid[victim] ? (25.0 * MultiGlobalHighHealthBoss) : (b_thisNpcIsABoss[victim] ? (10.0 * MultiGlobalHealth) : (b_IsGiant[victim] ? 2.5 : 1.0));
 		gain *= 2.5;
 		if(damagetype & DMG_CLUB)
 		{
-			gain *= 6.0;
+			gain *= 4.5;
 		}
 		gain = damage * gain / float(MaxHealth);
 		float vecTarget[3]; WorldSpaceCenter(owner, vecTarget );
@@ -2223,6 +2223,7 @@ void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage
 		{
 			gain *= 0.35;
 		}
+		gain *= 0.85;
 		SummonerRenerateResources(owner, gain, 0.0);
 	}
 }

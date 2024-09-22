@@ -91,6 +91,8 @@ static int Magnesis_GrabberTier[2049] = { 0, ... };
 static bool Magnesis_Strangled[2049] = { false, ... };
 static float Magnesis_GrabCost_Bucket[MAXPLAYERS + 1] = { 0.0, ... };
 
+static int Magnesis_GrabWeapon[MAXPLAYERS + 1] = { -1, ... };
+
 public void Magnesis_ResetAll()
 {
 	Zero(ability_cooldown);
@@ -498,6 +500,7 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 		Magnesis_Grabbed[victim] = true;
 		Magnesis_GrabberTier[victim] = tier;
 		Magnesis_GrabCost_Bucket[client] = 0.0;
+		Magnesis_GrabWeapon[client] = EntIndexToEntRef(weapon);
 		Magnesis_GrabbedAt[victim] = GetGameTime();
 		Magnesis_GrabTarget[client] = EntIndexToEntRef(victim);
 		Magnesis_NextDrainTick[client] = GetGameTime() + 0.1;
@@ -665,7 +668,11 @@ void Magnesis_TerminateEffects(int client, int start, int end, bool enemyWasThro
 		else
 			EmitSoundToAll(SND_MAGNESIS_THROW, client);
 
-		Ability_Apply_Cooldown(client, 2, Magnesis_CooldownToApply[client]);
+		int weapon = EntRefToEntIndex(Magnesis_GrabWeapon[client]);
+		if (!IsValidEntity(weapon))
+			Ability_Apply_Cooldown(client, 2, Magnesis_CooldownToApply[client]);
+		else
+			Ability_Apply_Cooldown(client, 2, Magnesis_CooldownToApply[client], weapon);
 
 		int victim = EntRefToEntIndex(Magnesis_GrabTarget[client]);
 		if (IsValidEntity(victim))

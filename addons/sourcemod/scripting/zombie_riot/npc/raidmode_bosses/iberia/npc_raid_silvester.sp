@@ -351,6 +351,8 @@ methodmap Silvester < CClotBody
 		b_SilvesterAttackSame[npc.index] = false;
 		
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_bThisNpcIsABoss = true;
+		
 		b_angered_twice[npc.index] = false;
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{

@@ -476,7 +476,7 @@
 	
 	"IEM Launcher Desc"
 	{
-		"en"		"Engi says to not touch his stuff, but you don't care"
+		"en"		"Engi says to not touch his stuff, but you don't care\nFull charge to attack.\nProjectile speed actually makes it slower.\nReload speed and attackspeed buff its damage."
 		"fr"		"L'Engineer vous demande de pas toucher ses choses, mais vous vous foutez de lui."
 		"ru"		"Инженер говорит не трогать его вещи, но вам всё равно."
 		"chi"       "工程师说不要碰他的东西，但你不在乎"
@@ -2287,7 +2287,7 @@
 	}
 	"Barracks Desc Extra 2"
 	{
-		"en"	"You also gain resources when hurting enemies with UNITS.\nIf youre too far away from your units, they generate much less!\nMelee damage give 6x the resources.\nYour resources have a cap, dont hoard them! (gold excluded)"
+		"en"	"You also gain resources when hurting enemies with UNITS.\nIf youre too far away from your units, they generate much less!\nMelee damage give 4.5x the resources.\nYour resources have a cap, dont hoard them! (gold excluded)"
 	}
 	"Militia Desc"
 	{
@@ -2433,10 +2433,7 @@
 	}
 	"Specter Pap 5"
 	{
-		"en"	"Replaces ability from being intangible to triple damage, resistance, and attack a 4th target\nHealth is only lost when attacking enemies with a lower precent health than you, otherwise deal bonus damage\nYou do more dmg, and take less damage."
-		"fr"	"Dégats et résistance améliorés. Remplace l'abilité de l'intagibilité pour tripler les dégats et votre résistance. Frappe un quatrième ennemi.\nVotre santé est seulement perdu si vous frappez des ennemis avec moins de santé que vous, dégats sont améliorés contre les ennemis avec plus de santé."
-		"ru"	"Заменяет способность от нематериальности на тройной урон, сопротивление и атаку 4-й цели\nПрочность теряется только при атаке врагов с меньшим процентом здоровья, чем у вас, иначе наносится бонусный урон\nВы наносите больше урона и получаете меньше урона."
-		"chi"   "将技能从无形变为三倍伤害，抗性，攻击第4个目标\n生命值只在攻击比你生命值低的敌人时损失，否则造成额外伤害\n你造成更多伤害，会使你受到更少伤害。"
+		"en"	"Replaces ability. Use old ability with same button and crouching. \nDeal bonus damage if the enemy has enough lower %% hp then you otherwise deal bonus damage\nYou do more dmg, and take less damage."
 	}
 	"Lantean Staff Desc pap2"
 	{

@@ -125,6 +125,7 @@ methodmap AlliedSensalAbility < CClotBody
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
+		b_CannotBeStunned[npc.index] = true;
 		func_NPCDeath[npc.index] = AlliedSensalAbility_NPCDeath;
 		func_NPCThink[npc.index] = AlliedSensalAbility_ClotThink;
 
@@ -354,7 +355,7 @@ public bool AlliedSensal_TraceWallsOnly(int entity, int contentsMask)
 #define SENSAL_KNOCKBACK		750.0	// Knockback when push level and enemy weight is the same
 #define SENSAL_STUN_RATIO		0.00075	// Knockback when push level and enemy weight is the same
 
-void SensalCauseKnockback(int attacker, int victim, float RatioExtra = 1.0, bool dostun = true, bool Kiyru = false)
+void SensalCauseKnockback(int attacker, int victim, float RatioExtra = 1.0, bool dostun = true)
 {
 	int weight = i_NpcWeight[victim];
 	if(weight > 5)

@@ -170,12 +170,6 @@ static void Dome_Frame_Shrink()
 
 static Action Dome_TimerBleed(Handle hTimer)
 {
-	if (g_hDomeTimerBleed != hTimer)
-	{
-		g_hDomeTimerBleed = null;
-		return Plugin_Stop;
-	}
-
 	for (int iClient = 1; iClient <= MaxClients; iClient++)
 	{
 		if (IsClientInGame(iClient) && IsPlayerAlive(iClient))
