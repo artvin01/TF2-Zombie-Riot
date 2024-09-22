@@ -50,7 +50,7 @@ int LeperEnemyAoeHit(int client)
 
 int MaxCurrentHitsNeededSolemnity(int client)
 {
-	if(Leper_SolemnyCharge[client] < LEPER_SOLEMNY_MAX_HITS)
+	if(Leper_SolemnyUses[client] < LEPER_SOLEMNY_MAX)
 	{
 		return LEPER_SOLEMNY_MAX_HITS;
 	}
