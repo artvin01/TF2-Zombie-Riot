@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_35"
+$modelname "zombie_riot/weapons/custom_weaponry_1_36"
 
 $bodygroup "scythe"					//1
 {
@@ -72,13 +72,6 @@ $bodygroup "fusion_blade2"			//2048
 	blank
 	studio "fusion_blade2.smd"
 }
-
-$bodygroup "fusion_wings"			//4096
-{
-	blank
-	studio "fusion_wings.smd"
-}
-
 $surfaceprop "weapon"
 
 $contents "solid"
@@ -93,9 +86,6 @@ $cdmaterials "models\weapons\v_crossbow\"
 $cdmaterials "models\weapons\w_annabelle\"
 $cdmaterials "models\Weapons\V_shotgun\"
 $cdmaterials "models\items\"
-
-$cdmaterials "passtime\neons\"
-//neon_yellow_solid, neon_blue_solid
 
 $cdmaterials ""
 

@@ -969,12 +969,22 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_221.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_35.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_36.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
 */
 //#define ZR_TEST_MODEL	"models/zombie_riot/weapons/test_models9.mdl"
+
+#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1.mdl"
+enum
+{
+	WINGS_FUSION 	= 1,
+	WINGS_LANCELOT	= 2,
+	WINGS_RULIANA	= 4,
+	WINGS_TWIRL		= 8,
+	WINGS_HELIA		= 16
+}
 
 #define RUINA_CUSTOM_MODELS_1			"models/zombie_riot/weapons/ruina_models_1_1.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out
@@ -1768,6 +1778,7 @@ public void OnMapStart()
 
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
+	PrecacheModel(WINGS_MODELS_1);
 	
 	//PrecacheModel(ZR_TEST_MODEL);
 
