@@ -1,22 +1,32 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/test_models9.mdl"
+$modelname "zombie_riot/weapons/custom_wings_1.mdl"
 
-$bodygroup "fusion_blade1_1"
-{
-	blank
-	studio "fusion_blade1_1.smd"
-}
-$bodygroup "fusion_blade2"
-{
-	blank
-	studio "fusion_blade2.smd"
-}
-$bodygroup "fusion_wings"
+$bodygroup "fusion_wings"			//1
 {
 	blank
 	studio "fusion_wings.smd"
+}
+$bodygroup "lancelot_wings"			//2
+{
+	blank
+	studio "lancelot_wings.smd"
+}
+$bodygroup "ruliana_wings"			//4
+{
+	blank
+	studio "ruliana_wings.smd"
+}
+$bodygroup "twirl_wings"			//8
+{
+	blank
+	studio "twirl_wings.smd"
+}
+$bodygroup "helia_wings"			//16
+{
+	blank
+	studio "helia_wings.smd"
 }
 
 
