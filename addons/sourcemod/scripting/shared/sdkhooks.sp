@@ -14,6 +14,8 @@ bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
 #if defined ZR
 int Armor_WearableModelIndex;
+int Wing_WearlbeIndex;
+
 #endif
 
 bool ClientPassAliveCheck[MAXTF2PLAYERS];
@@ -61,6 +63,7 @@ void SDKHook_MapStart()
 	Zero(Mana_Loss_Delay);
 	Zero(Mana_Regen_Block_Timer);
 	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
+	Wing_WearlbeIndex = PrecacheModel(WINGS_MODELS_1, true);
 #endif
 
 #if defined ZR || defined RPG
@@ -2533,9 +2536,75 @@ float ArmorPlayerReduction(int victim)
 	}
 }
 
+void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
+{
+	int entity;
+	if(deleteOverride)
+	{
+		if(IsValidEntity(Cosmetic_WearableExtra[client]))
+		{
+			entity = EntRefToEntIndex(Cosmetic_WearableExtra[client]);
+			if(entity > MaxClients)
+				TF2_RemoveWearable(client, entity);
+		}
+		return;
+	}
+	int SettingDo;
+	if(MagiaWingsDo(client))
+		SettingDo = 1;
+	if(SilvesterWingsDo(client))
+		SettingDo = 2;
+
+	if(SettingDo == 0)
+		return;
+
+	if(IsValidEntity(Cosmetic_WearableExtra[client]))
+	{
+		return;
+	}
+
+	entity = CreateEntityByName("tf_wearable");
+	if(entity > MaxClients)
+	{
+		int team = GetClientTeam(client);
+		SetEntProp(entity, Prop_Send, "m_nModelIndex", Wing_WearlbeIndex);
+
+		switch(SettingDo)
+		{
+			case 1:
+			{
+				SetEntProp(entity, Prop_Send, "m_nBody", 2);
+			}
+			case 2:
+			{
+				SetEntProp(entity, Prop_Send, "m_nBody", 1);
+			}
+		}
+		SetTeam(entity, team);
+		SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+		SetEntityCollisionGroup(entity, 11);
+		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+		
+		DispatchSpawn(entity);
+		SetVariantString("!activator");
+		ActivateEntity(entity);
+
+		Cosmetic_WearableExtra[client] = EntIndexToEntRef(entity);
+		SDKCall_EquipWearable(client, entity);
+
+		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+		SetVariantString("!activator");
+		AcceptEntityInput(entity, "SetParent", client);
+		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(entity, 255, 255, 255, 100);
+	}	
+}
 
 void ArmorDisplayClient(int client, bool deleteOverride = false)
 {
+	//update aswell.
+	DisplayCosmeticExtraClient(client, deleteOverride);
 	int ShieldLogicDo;
 	if(Armor_Charge[client] > 0)
 	{

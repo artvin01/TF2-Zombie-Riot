@@ -594,19 +594,23 @@ bool FusionWeaponCheckEffects_IfNotAvaiable(int iNpc, int weapon)
 	{
 		case WEAPON_FUSION:
 		{
-			thingsToLoop = 7;
+			thingsToLoop = 0;
+		//	thingsToLoop = 7;
 		}
 		case WEAPON_FUSION_PAP1:
 		{
-			thingsToLoop = 14;
+			thingsToLoop = 0;
+		//	thingsToLoop = 14;
 		}
 		case WEAPON_FUSION_PAP2:
 		{
-			thingsToLoop = 24;
+			thingsToLoop = 9;
+		//	thingsToLoop = 24;
 		}
 		case WEAPON_NEARL:
 		{
-			thingsToLoop = 24;
+			thingsToLoop = 9;
+		//	thingsToLoop = 24;
 		}
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
 		{
@@ -657,14 +661,16 @@ void FusionWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
+		/*
 		case WEAPON_FUSION:
 		{
-			FusionWeaponEffectPap0(owner, client, Wearable, attachment);
+	//		FusionWeaponEffectPap0(owner, client, Wearable, attachment);
 		}
 		case WEAPON_FUSION_PAP1:
 		{
-			FusionWeaponEffectPap1(owner, client, Wearable, attachment);
+	//		FusionWeaponEffectPap1(owner, client, Wearable, attachment);
 		}
+		*/
 		case WEAPON_FUSION_PAP2:
 		{
 			FusionWeaponEffectPap2(owner, client, Wearable, attachment);
@@ -795,6 +801,7 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
+	/*
 	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	
 	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
@@ -848,7 +855,7 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_1_1);
 	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_1);
 	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_1);
-
+	*/
 	
 	int particle_1_l = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	int particle_2_l = InfoTargetParentAt({-5.0,-5.0,25.0},"", 0.0); 
@@ -878,7 +885,17 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	Custom_SDKCall_SetLocalOrigin(particle_1_l, flPos);
 	SetEntPropVector(particle_1_l, Prop_Data, "m_angRotation", flAng); 
 	SetParent(Wearable, particle_1_l, "effect_hand_l",_);
-
+	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1_l);
+	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2_l);
+	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3_l);
+	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4_l);
+	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5_l);
+	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(Laser_1_l);
+	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_2_l);
+	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_3_l);
+	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(Laser_4_l);
+	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(Laser_5_l);
+	/*
 	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(particle_1_l);
 	i_FusionEnergyEffect[client][16] = EntIndexToEntRef(particle_2_l);
 	i_FusionEnergyEffect[client][17] = EntIndexToEntRef(particle_3_l);
@@ -889,6 +906,7 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][22] = EntIndexToEntRef(Laser_3_l);
 	i_FusionEnergyEffect[client][23] = EntIndexToEntRef(Laser_4_l);
 	i_FusionEnergyEffect[client][24] = EntIndexToEntRef(Laser_5_l);
+	*/
 
 }
 
@@ -899,6 +917,7 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
+	/*
 	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	
 	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
@@ -953,7 +972,7 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_1);
 	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_1);
 
-	
+	*/
 	int particle_1_l = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	int particle_2_l = InfoTargetParentAt({-5.0,-5.0,25.0},"", 0.0); 
 	int particle_3_l = InfoTargetParentAt({-5.0,-5.0,-25.0},"", 0.0);
@@ -983,6 +1002,17 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	SetEntPropVector(particle_1_l, Prop_Data, "m_angRotation", flAng); 
 	SetParent(Wearable, particle_1_l, "effect_hand_l",_);
 
+	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1_l);
+	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2_l);
+	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3_l);
+	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4_l);
+	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5_l);
+	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(Laser_1_l);
+	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_2_l);
+	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_3_l);
+	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(Laser_4_l);
+	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(Laser_5_l);
+	/*
 	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(particle_1_l);
 	i_FusionEnergyEffect[client][16] = EntIndexToEntRef(particle_2_l);
 	i_FusionEnergyEffect[client][17] = EntIndexToEntRef(particle_3_l);
@@ -993,6 +1023,7 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][22] = EntIndexToEntRef(Laser_3_l);
 	i_FusionEnergyEffect[client][23] = EntIndexToEntRef(Laser_4_l);
 	i_FusionEnergyEffect[client][24] = EntIndexToEntRef(Laser_5_l);
+	*/
 
 }
 

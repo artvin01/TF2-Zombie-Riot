@@ -424,7 +424,11 @@ methodmap TrueFusionWarrior < CClotBody
 		npc.m_bInKame = false;
 		
 		Citizen_MiniBossSpawn();
-		FusionApplyEffects(npc.index, 0);
+		npc.m_iWearable7 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+		SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 2);
+		SetVariantInt(2048);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+	//	FusionApplyEffects(npc.index, 0);
 		return npc;
 	}
 }
@@ -968,7 +972,10 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		SetEntPropVector(npc.index, Prop_Send, "m_vecMins", minbounds);
 		SetEntPropVector(npc.index, Prop_Send, "m_vecMaxs", maxbounds);
 		*/
-		FusionApplyEffects(npc.index, 1);
+		if(IsValidEntity(npc.m_iWearable7))
+			SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 3);
+
+		//FusionApplyEffects(npc.index, 1);
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -1015,20 +1022,15 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 			{
 				RemoveEntity(npc.m_iWearable1);
 			}
+			if(IsValidEntity(npc.m_iWearable7))
+			{
+				RemoveEntity(npc.m_iWearable7);
+			}
 
 
 			SetVariantColor(view_as<int>({150, 150, 0, 150}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 			ExpidonsaRemoveEffects(npc.index);
-
-/*
-			float flPos[3]; // original
-			float flAng[3]; // original
-
-			npc.GetAttachment("head", flPos, flAng);
-		
-			npc.m_iWearable6 = InfoTargetParentAt_Parent(flPos, "utaunt_astralbodies_greenorange_parent", npc.index, "head", {0.0,0.0,0.0});
-*/
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
 		}
