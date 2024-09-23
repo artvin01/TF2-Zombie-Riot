@@ -63,6 +63,9 @@ void ObjectVillage_MapStart()
 }
 int Building_GetClientVillageFlags(int client)
 {
+	if(!Village_Effects)
+		return 0;
+	
 	int applied;
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 
