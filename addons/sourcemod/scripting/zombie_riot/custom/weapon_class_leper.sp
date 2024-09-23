@@ -151,13 +151,6 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 		Leper_Hud_Logic(client, weapon, true);
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			/*
-			if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				return;
-			}
-			*/
 			if(Leper_SolemnyCharge[client] < MaxCurrentHitsNeededSolemnity(client))
 			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
