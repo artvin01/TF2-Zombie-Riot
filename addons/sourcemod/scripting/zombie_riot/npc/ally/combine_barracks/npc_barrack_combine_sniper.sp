@@ -80,9 +80,7 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayPistolReload()
 	{
@@ -201,7 +199,7 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_IDLE_ANGRY_RPG", "ACT_RUN_RPG", 750000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_IDLE_ANGRY_RPG", "ACT_RUN_RPG", 750000.0,_, true);
 	}
 }
 

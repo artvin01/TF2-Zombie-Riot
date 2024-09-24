@@ -1,66 +1,77 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_34"
+$modelname "zombie_riot/weapons/custom_weaponry_1_36"
 
-$bodygroup "scythe"
+$bodygroup "scythe"					//1
 {
 	blank
 	studio "scythe_model.smd"
 }
 
-$bodygroup "scythe_throw"
+$bodygroup "scythe_throw"			//2
 {
 	blank
 	studio "scythe_model_throw.smd"
 }
 
-$bodygroup "crossbow"
+$bodygroup "crossbow"				//4
 {
 	blank
 	studio "w_crossbow_reference.smd"
 }
 
-$bodygroup "annabelle"
+$bodygroup "annabelle"				//8
 {
 	blank
 	studio "w_annabelle_reference.smd"
 }
 
-$bodygroup "Shotgun_boomstick"
+$bodygroup "Shotgun_boomstick"		//16	
 {
 	blank
-	studio "Shotgun_reference.smd"
+	studio "Shotgun_reference.smd"			
 }
 
-$bodygroup "mg42"
+$bodygroup "mg42"					//32
 {
 	blank
 	studio "mg42.smd"
 }
 
-$bodygroup "chainsaw"
+$bodygroup "chainsaw"				//64
 {
 	blank
 	studio "chainsaw.smd"
 }
-$bodygroup "medikit"
+$bodygroup "medikit"				//128
 {
 	blank
 	studio "healthKit_reference.smd"
 }
 
-$bodygroup "newspaper"
+$bodygroup "newspaper"				//256
 {
 	blank
 	studio "garbage_newspaper001a_reference.smd"
 }
 
-$bodygroup "scythe_rotate"
+$bodygroup "scythe_rotate"			//512	
 {
 	blank
 	studio "scythe_model_rotate.smd"
 }
+//the .blend files are located: "blender_files/jdeivid/test models/"
+$bodygroup "fusion_blade1_1"		//1024
+{
+	blank
+	studio "fusion_blade1_1.smd"
+}
 
+$bodygroup "fusion_blade2"			//2048
+{
+	blank
+	studio "fusion_blade2.smd"
+}
 $surfaceprop "weapon"
 
 $contents "solid"
@@ -75,6 +86,7 @@ $cdmaterials "models\weapons\v_crossbow\"
 $cdmaterials "models\weapons\w_annabelle\"
 $cdmaterials "models\Weapons\V_shotgun\"
 $cdmaterials "models\items\"
+
 $cdmaterials ""
 
 $cbox 0 0 0 0 0 0

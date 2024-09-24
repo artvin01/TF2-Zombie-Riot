@@ -278,6 +278,8 @@ void PlayTeamDeadSound()
 void Music_RoundEnd(int victim, bool music = true)
 {
 	ExcuteRelay("zr_gamelost");
+	//lastman fail. end music.
+	Music_EndLastmann();
 	
 	for(int client=1; client<=MaxClients; client++)
 	{

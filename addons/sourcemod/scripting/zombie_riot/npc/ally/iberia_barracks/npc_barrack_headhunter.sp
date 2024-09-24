@@ -95,17 +95,13 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public Barrack_Iberia_Headhunter(int client, float vecPos[3], float vecAng[3], int ally)
@@ -165,7 +161,7 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
-					float damage = 10000.0;
+					float damage = 5000.0;
 
 					if(!npc.m_flAttackHappenswillhappen)
 					{
@@ -190,7 +186,7 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								/*
+								
 								if(b_thisNpcIsABoss[target] ||
 								b_thisNpcIsARaid[target] ||
 								b_StaticNPC[target] ||
@@ -198,16 +194,17 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 								b_ThisNpcIsImmuneToNuke[target] ||
 								b_IsGiant[target])
 								{
-									damage *= 1.25;
-									
+									damage *= 2.5;
+									/*
 									if((f_LowIceDebuff[target] - 1.0) < GetGameTime())
 									{
 										f_LowIceDebuff[target] = GetGameTime() + 1.1;
 									}
+									*/
 									//random debuff is random
 									
 								}
-								*/
+								
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 

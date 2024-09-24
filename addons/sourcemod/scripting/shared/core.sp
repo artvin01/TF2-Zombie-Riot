@@ -593,7 +593,7 @@ bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
 
 bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
-int i_Wearable[MAXENTITIES][8];
+int i_Wearable[MAXENTITIES][9];
 int i_FreezeWearable[MAXENTITIES];
 int i_InvincibleParticle[MAXENTITIES];
 int i_InvincibleParticlePrev[MAXENTITIES];
@@ -971,11 +971,22 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_221.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_34.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_36.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
 */
+//#define ZR_TEST_MODEL	"models/zombie_riot/weapons/test_models9.mdl"
+
+#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1.mdl"
+enum
+{
+	WINGS_FUSION 	= 1,
+	WINGS_LANCELOT	= 2,
+	WINGS_RULIANA	= 4,
+	WINGS_TWIRL		= 8,
+	WINGS_HELIA		= 16
+}
 
 #define RUINA_CUSTOM_MODELS_1			"models/zombie_riot/weapons/ruina_models_1_1.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out
@@ -1366,6 +1377,7 @@ float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 #if defined ZR
 float f_DelayNextWaveStartAdvancingDeathNpc;
 int Armor_Wearable[MAXTF2PLAYERS];
+int Cosmetic_WearableExtra[MAXTF2PLAYERS];
 #endif
 
 /*
@@ -1769,6 +1781,9 @@ public void OnMapStart()
 
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
+	PrecacheModel(WINGS_MODELS_1);
+	
+	//PrecacheModel(ZR_TEST_MODEL);
 
 	PrecacheModel(RUINA_CUSTOM_MODELS_1);
 	PrecacheModel(RUINA_CUSTOM_MODELS_2);
@@ -2829,7 +2844,7 @@ void SDKHook_TeamSpawn_SpawnPost(int entity)
 {
 	SDKHook_TeamSpawn_SpawnPostInternal(entity);
 }
-void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000, int i_SpawnSetting = 0)
+void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000, int i_SpawnSetting = 0, int MaxWaves = 999)
 {
 	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -2846,7 +2861,7 @@ void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000,
 			if(GetTeam(entity) == TFTeam_Red)
 				Allyspawn = true;
 
-			Spawns_AddToArray(entity,_, Allyspawn, SpawnsMax, i_SpawnSetting);
+			Spawns_AddToArray(entity,_, Allyspawn, SpawnsMax, i_SpawnSetting, MaxWaves);
 			
 			i_ObjectsSpawners[i] = entity;
 			return;
