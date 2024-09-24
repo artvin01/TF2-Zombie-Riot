@@ -783,6 +783,8 @@ public Action Rogue_EndVote(Handle timer, float time)
 			
 			if(VoteFunc == INVALID_FUNCTION)
 			{
+				Native_OnDifficultySet(highest, vote.Name, vote.Level);
+				
 				Rogue_GiveNamedArtifact(vote.Name);
 				strcopy(StartingItem, sizeof(StartingItem), vote.Name);
 				Waves_SetReadyStatus(1);
@@ -2416,12 +2418,12 @@ int Rogue_GetWave()	// Waves_GetWave()
 {
 	return ProgressTimer ? CurrentCount : CurrentWave;
 }
-
+/*
 int Rogue_GetCount()
 {
 	return CurrentCount;
 }
-
+*/
 int Rogue_GetRoundScale()
 {
 	if(Rogue_Started())

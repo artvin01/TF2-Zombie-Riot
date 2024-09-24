@@ -288,7 +288,7 @@ stock bool VoidWave_FramingVoiderBuff(int entity, int victim, float &healingammo
 	if(NpcStats_IsEnemySilenced(entity))
 		Duration = 1.0;
 
-	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID)
+	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
 		VoidWave_ApplyBuff(victim, Duration, 1);
 	
 

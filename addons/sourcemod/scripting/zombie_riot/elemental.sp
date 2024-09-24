@@ -86,6 +86,10 @@ static int TriggerDamage(int entity, int type)
 		{
 			divide = 4;
 		}
+		case Element_Void:
+		{
+			divide = 2;
+		}
 	}
 
 	if(Citizen_IsIt(entity))
@@ -93,11 +97,11 @@ static int TriggerDamage(int entity, int type)
 
 	if(b_thisNpcIsARaid[entity])
 	{
-		divide *= RoundToCeil(12.0 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
+		divide *= RoundToCeil(5.0 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
 	}
 	else if(b_thisNpcIsABoss[entity])
 	{
-		divide *= RoundToCeil(3.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
+		divide *= RoundToCeil(2.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
 	}
 	else if (b_IsGiant[entity])
 	{
@@ -152,7 +156,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	if(victim <= MaxClients && victim > 0)
 	{
 		Armor_DebuffType[victim] = 1;
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
+		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
@@ -252,7 +256,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 2;
-		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
@@ -342,11 +346,16 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 
 void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
+		return;
+	//cant void other voids!
+
+
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 3;
-		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
@@ -407,6 +416,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 				ProjectileLoc[2] += 5.0;
 				EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 				VoidArea_SpawnNethersea(ProjectileLoc);
+				//do not spread.
 				FramingInfestorSpread(victim);
 			}
 		}

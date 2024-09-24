@@ -139,16 +139,12 @@ methodmap Magianas < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -363,7 +359,7 @@ static void ClotThink(int iNPC)
 							AcceptEntityInput(ModelApply, "SetBodyGroup");
 						}
 
-						float 	Homing_Power = 15.0,
+						float 	Homing_Power = 10.0,
 								Homing_Lockon = 90.0;
 
 						Initiate_HomingProjectile(Proj,

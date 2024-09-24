@@ -116,16 +116,12 @@ methodmap HeavyGiant < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {

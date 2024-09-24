@@ -311,7 +311,12 @@ static int GetCost(int id, float multi)
 			cost_extra = 0;
 		}
 		buildCost = buildCost + cost_extra;
+		if(!Waves_Started())
+		{
+			buildCost /= 3;
+		}
 	}
+
 
 	if(Rogue_Mode())
 		buildCost /= 3;
@@ -1798,11 +1803,11 @@ int i2_MountedInfoAndBuilding[2][MAXPLAYERS + 1];
 
 public void MountBuildingToBack(int client, int weapon, bool crit)
 {
-	MountBuildingToBackInternal(client, weapon, crit, false);
+	MountBuildingToBackInternal(client, false);
 }
 
 //true if mounted
-bool MountBuildingToBackInternal(int client, int weapon, bool crit, bool AllowAnyBuilding)
+bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 {
 	if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]) || IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 	{

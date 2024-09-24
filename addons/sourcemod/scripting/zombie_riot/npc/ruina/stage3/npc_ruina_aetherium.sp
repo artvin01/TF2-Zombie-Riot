@@ -124,9 +124,7 @@ methodmap Aetherium < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
@@ -595,7 +593,7 @@ static void Fire_Hyper_Arrow(Aetherium npc, float Npc_Vec[3], int target, float 
 	Ruina_Projectiles Projectile;
 	float Projectile_Time = 2.5;
 
-	float projectile_speed = 2500.0;	
+	float projectile_speed = 1750.0;	
 	float target_vec[3];
 	PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,target_vec);
 
@@ -607,7 +605,7 @@ static void Fire_Hyper_Arrow(Aetherium npc, float Npc_Vec[3], int target, float 
 	Projectile.Angles = Ang;
 	Projectile.speed = projectile_speed;
 	Projectile.radius = 0.0;
-	Projectile.damage = 750.0;
+	Projectile.damage = 600.0;
 	Projectile.bonus_dmg = 900.0;
 	Projectile.Time = Projectile_Time;
 	Projectile.visible = false;

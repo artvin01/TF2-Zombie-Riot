@@ -2817,7 +2817,7 @@
 	}
 	"Unspeakable Desc"
 	{
-		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks."
+		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
 	}
 	"Voided Diversionistico"
 	{
@@ -2857,7 +2857,7 @@
 	}
 	"Vhxis Desc"
 	{
-		"en"	"The void keeper, killing him is not a good idea..."
+		"en"	"The void keeper, killing him is not a good idea...\n(Silence makes voidbuff weaker)"
 	}
 	"Chaos Mage"
 	{

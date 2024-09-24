@@ -31,7 +31,6 @@ static char g_TeleportSounds[][] = {
 
 static int Ikunagae_BEAM_Laser;
 static float fl_self_heal_timer[MAXENTITIES];
-static float fl_emergency_tele_CD[MAXENTITIES];
 
 public void Barrack_Alt_Shwertkrieg_MapStart()
 {
@@ -94,9 +93,7 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public Barrack_Alt_Shwertkrieg(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -157,8 +154,6 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 		fl_self_heal_timer[npc.index] = GetGameTime(npc.index) + 1.0;
 		
-		fl_emergency_tele_CD[npc.index] = 0.0;
-		
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
 		return npc;
@@ -175,183 +170,159 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 		int PrimaryThreatIndex = npc.m_iTarget;
 		
 		
-		bool Emergency_Teleport = false;
 		float Health =float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 		float MaxHealth =  float(ReturnEntityMaxHealth(npc.index));
-		float H_Amt = (Health / MaxHealth) * 100.0;
-		if(fl_emergency_tele_CD[npc.index] < GameTime && H_Amt<10.0)	//if npc health is less then 10% AND is in combat the npc will teleport to the barracks or owner
-		{
-			Emergency_Teleport = true;
-			fl_emergency_tele_CD[npc.index] = GameTime + 45.0;
-		}
 			
-		if(npc.m_flNextTeleport < GameTime || Emergency_Teleport)
+		if(npc.m_flNextTeleport < GameTime)
 		{
-				float teleport_target_vec[3];
-				float teletime;
-				int type;
-				bool teleport = false;
-				
-				int command = Command_Aggressive;
-				int npc_owner = GetClientOfUserId(npc.OwnerUserId);
-				if(!IsValidClient(npc_owner))
+			float teleport_target_vec[3];
+			float teletime;
+			int type;
+			bool teleport = false;
+			
+			int command = Command_Aggressive;
+			int npc_owner = GetClientOfUserId(npc.OwnerUserId);
+			if(!IsValidClient(npc_owner))
+			{
+				npc.m_flNextTeleport = GameTime + 300.0;
+			}
+			
+			command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(npc_owner) : npc.CmdOverride;
+			if(command==Command_Aggressive)
+			{
+				type = 2;
+			}
+			else if(command==Command_Defensive)
+			{
+				type = 3;
+			}
+			else if(command==Command_Retreat || command==Command_RetreatPlayer)
+			{
+				type = 4;
+			}
+			if(command == Command_HoldPos || command == Command_HoldPosBarracks)
+			{
+				type = 5;
+			}
+			bool vaild = false;
+			float vecTarget[3];
+			if(PrimaryThreatIndex>0)
+			{
+				vaild = true;
+				WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			}
+			
+			
+			switch(type)
+			{
+				case 2:	//aggresive
 				{
-					Emergency_Teleport = false;
-					fl_emergency_tele_CD[npc.index] = GameTime + 300.0;
-					npc.m_flNextTeleport = GameTime + 300.0;
-				}
-				
-				command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(npc_owner) : npc.CmdOverride;
-				if(command==Command_Aggressive)
-				{
-					type = 2;
-				}
-				else if(command==Command_Defensive)
-				{
-					type = 3;
-				}
-				else if(command==Command_Retreat || command==Command_RetreatPlayer)
-				{
-					type = 4;
-				}
-				if(command == Command_HoldPos || command == Command_HoldPosBarracks)
-				{
-					type = 5;
-				}
-				
-				if(Emergency_Teleport)	//overrides all teleprot types
-				{
-					type = 1;
-				}
-				bool vaild = false;
-				float vecTarget[3];
-				if(PrimaryThreatIndex>0)
-				{
-					vaild = true;
-				 	WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-				}
-				
-				
-				switch(type)
-				{
-					case 1:	//emergency
+					if(vaild)
 					{
-						//CPrintToChatAll("emergency tele");
-						npc.CmdOverride = Command_RetreatPlayer;	//npc retreats to the player
-						teleport = true;
-						teletime = 45.0;
-						Emergency_Teleport = false;
-						WorldSpaceCenter(npc_owner, teleport_target_vec);
-						teleport_target_vec[2] += 200.0;
-					}
-					case 2:	//aggresive
-					{
-						if(vaild)
+						float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);		
+						float target_dist = GetVectorDistance(WorldSpaceVec, vecTarget);
+						if (target_dist < 2500.0)	//target is within range, Murder
 						{
-							float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);		
-							float target_dist = GetVectorDistance(WorldSpaceVec, vecTarget);
-							if (target_dist < 2500.0)	//target is within range, Murder
-							{
-								teletime = 15.0;
-								teleport = true;
-								teleport_target_vec = vecTarget;
-								//CPrintToChatAll("aggresive tele");
-								teleport_target_vec[2] += 200.0;
-							}
-							else
-							{
-								teleport = false;
-								npc.m_flNextTeleport = GameTime + 1.0;
-							}
-							
+							teletime = 15.0;
+							teleport = true;
+							teleport_target_vec = vecTarget;
+							//CPrintToChatAll("aggresive tele");
+							teleport_target_vec[2] += 200.0;
 						}
 						else
 						{
 							teleport = false;
 							npc.m_flNextTeleport = GameTime + 1.0;
 						}
-					}
-					case 3:	//defensive
-					{
-						if(vaild)
-						{
-							float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-							float target_dist = GetVectorDistance(WorldSpaceVec, vecTarget);
-							if (target_dist < 300.0)	//target is within range, Murder
-							{
-								//CPrintToChatAll("Defensive tele");
-								teletime = 15.0;
-								teleport = true;
-								teleport_target_vec = vecTarget;
-								teleport_target_vec[2] += 200.0;
-							}
-							else	//not within range, ignore
-							{
-								teleport = false;
-								npc.m_flNextTeleport = GameTime + 1.0;
-							}
-						}
-						else
-						{
-							teleport = false;
-							npc.m_flNextTeleport = GameTime + 1.0;
-						}
-					}
-					case 4:	//retreat to player
-					{
 						
-						//CPrintToChatAll("retreat tele");
-						teletime = 20.0;
-						teleport = true;
-						WorldSpaceCenter(npc_owner, teleport_target_vec);
-						
-						teleport_target_vec[2] += 200.0;
 					}
-					case 5:	//if hold position, do nothing
+					else
 					{
 						teleport = false;
-						npc.m_flNextTeleport = GameTime + 2.5;
+						npc.m_flNextTeleport = GameTime + 1.0;
 					}
 				}
-				
-				if(teleport)
+				case 3:	//defensive
+				{
+					if(vaild)
+					{
+						float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+						float target_dist = GetVectorDistance(WorldSpaceVec, vecTarget);
+						if (target_dist < 300.0)	//target is within range, Murder
+						{
+							//CPrintToChatAll("Defensive tele");
+							teletime = 15.0;
+							teleport = true;
+							teleport_target_vec = vecTarget;
+							teleport_target_vec[2] += 200.0;
+						}
+						else	//not within range, ignore
+						{
+							teleport = false;
+							npc.m_flNextTeleport = GameTime + 1.0;
+						}
+					}
+					else
+					{
+						teleport = false;
+						npc.m_flNextTeleport = GameTime + 1.0;
+					}
+				}
+				case 4:	//retreat to player
 				{
 					
+					//CPrintToChatAll("retreat tele");
+					teletime = 20.0;
+					teleport = true;
+					WorldSpaceCenter(npc_owner, teleport_target_vec);
 					
-					npc.FaceTowards(teleport_target_vec);
-					npc.FaceTowards(teleport_target_vec);
-					float current_loc[3]; WorldSpaceCenter(npc.index, current_loc);
-					npc.m_flNextTeleport = GameTime + teletime * npc.BonusFireRate;
-					float Tele_Check = GetVectorDistance(current_loc, teleport_target_vec);
-					
-					//TE_SetupBeamPoints(current_loc, teleport_target_vec, Ikunagae_BEAM_Laser, 0, 0, 0, 2.5, 10.0, 10.0, 0, 1.0, {145, 47, 47, 255}, 3);
-					//TE_SendToAll(0.0);
-					
-					if(Tele_Check > 120.0)
+					teleport_target_vec[2] += 200.0;
+				}
+				case 5:	//if hold position, do nothing
+				{
+					teleport = false;
+					npc.m_flNextTeleport = GameTime + 2.5;
+				}
+			}
+			
+			if(teleport)
+			{
+				
+				
+				npc.FaceTowards(teleport_target_vec);
+				npc.FaceTowards(teleport_target_vec);
+				float current_loc[3]; WorldSpaceCenter(npc.index, current_loc);
+				npc.m_flNextTeleport = GameTime + teletime * npc.BonusFireRate;
+				float Tele_Check = GetVectorDistance(current_loc, teleport_target_vec);
+				
+				//TE_SetupBeamPoints(current_loc, teleport_target_vec, Ikunagae_BEAM_Laser, 0, 0, 0, 2.5, 10.0, 10.0, 0, 1.0, {145, 47, 47, 255}, 3);
+				//TE_SendToAll(0.0);
+				
+				if(Tele_Check > 120.0)
+				{
+					//CPrintToChatAll("tele checked");
+					bool Succeed = NPC_Teleport(npc.index, teleport_target_vec);
+					if(Succeed)
 					{
-						//CPrintToChatAll("tele checked");
-						bool Succeed = NPC_Teleport(npc.index, teleport_target_vec);
-						if(Succeed)
-						{
-							npc.PlayTeleportSound();
-							
-							float time = 1.0;
-							WorldSpaceCenter(npc.index, current_loc);
-							spawnRing_Vectors(current_loc, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, time, 4.0, 0.1, 1, 1.0);
-							Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),15000.0, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, current_loc, 325*2.0 ,_,0.8, false);
-							current_loc[2] -= 500.0;
-							float sky_loc[3]; sky_loc = current_loc; sky_loc[2] += 5000.0;
-							TE_SetupBeamPoints(current_loc, sky_loc, Ikunagae_BEAM_Laser, 0, 0, 0, 2.5, 10.0, 10.0, 0, 1.0, {145, 47, 47, 255}, 3);
-							TE_SendToAll(0.0);
-							
-						}
-						else
-						{
-							npc.m_flNextTeleport = GameTime + 0.5;
-							//CPrintToChatAll("tele failed");
-						}
+						npc.PlayTeleportSound();
+						
+						float time = 1.0;
+						WorldSpaceCenter(npc.index, current_loc);
+						spawnRing_Vectors(current_loc, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, time, 4.0, 0.1, 1, 1.0);
+						Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2000.0, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, current_loc, 325*2.0 ,_,0.8, false);
+						current_loc[2] -= 500.0;
+						float sky_loc[3]; sky_loc = current_loc; sky_loc[2] += 5000.0;
+						TE_SetupBeamPoints(current_loc, sky_loc, Ikunagae_BEAM_Laser, 0, 0, 0, 2.5, 10.0, 10.0, 0, 1.0, {145, 47, 47, 255}, 3);
+						TE_SendToAll(0.0);
+						
+					}
+					else
+					{
+						npc.m_flNextTeleport = GameTime + 0.5;
+						//CPrintToChatAll("tele failed");
 					}
 				}
+			}
 		}
 			
 		if(PrimaryThreatIndex > 0)
@@ -393,7 +364,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),17500.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),6000.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}

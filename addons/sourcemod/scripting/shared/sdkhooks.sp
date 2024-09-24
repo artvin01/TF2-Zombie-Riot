@@ -14,6 +14,8 @@ bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
 #if defined ZR
 int Armor_WearableModelIndex;
+int Wing_WearlbeIndex;
+
 #endif
 
 bool ClientPassAliveCheck[MAXTF2PLAYERS];
@@ -61,6 +63,7 @@ void SDKHook_MapStart()
 	Zero(Mana_Loss_Delay);
 	Zero(Mana_Regen_Block_Timer);
 	Armor_WearableModelIndex = PrecacheModel("models/effects/resist_shield/resist_shield.mdl", true);
+	Wing_WearlbeIndex = PrecacheModel(WINGS_MODELS_1, true);
 #endif
 
 #if defined ZR || defined RPG
@@ -708,6 +711,16 @@ public void OnPostThink(int client)
 
 				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
+		}
+		
+		if(ClientPossesesVoidBlade(client) >= 2 && (f_VoidAfflictionStrength[client] > GetGameTime() || f_VoidAfflictionStrength2[client] > GetGameTime()))
+		{
+			float HealingAmount = float(ReturnEntityMaxHealth(client)) * 0.01;
+
+			if(f_VoidAfflictionStrength2[client] > GetGameTime())
+				HealingAmount *= 1.5;
+			
+			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 		}
 
 		Armor_regen_delay[client] = GameTime + 1.0;
@@ -2331,6 +2344,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		{
 			return Yakuza_SelfTakeDamageHud(victim, weapon);
 		}
+		case WEAPON_EXPLORER:
+		{
+			return Player_OnTakeDamage_VoidBlade_Hud(victim);
+		}
 	}
 	return 1.0;
 }
@@ -2533,9 +2550,76 @@ float ArmorPlayerReduction(int victim)
 	}
 }
 
+void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
+{
+	int entity;
+	if(deleteOverride)
+	{
+		if(IsValidEntity(Cosmetic_WearableExtra[client]))
+		{
+			entity = EntRefToEntIndex(Cosmetic_WearableExtra[client]);
+			if(entity > MaxClients)
+				TF2_RemoveWearable(client, entity);
+		}
+		return;
+	}
+	int SettingDo;
+	if(MagiaWingsDo(client))
+		SettingDo = 1;
+	if(SilvesterWingsDo(client))
+		SettingDo = 2;
+
+	if(SettingDo == 0)
+		return;
+
+	if(IsValidEntity(Cosmetic_WearableExtra[client]))
+	{
+		return;
+	}
+
+	entity = CreateEntityByName("tf_wearable");
+	if(entity > MaxClients)
+	{
+		int team = GetClientTeam(client);
+		SetEntProp(entity, Prop_Send, "m_nModelIndex", Wing_WearlbeIndex);
+
+		switch(SettingDo)
+		{
+			case 1:
+			{
+				SetEntProp(entity, Prop_Send, "m_nBody", 2);
+			}
+			case 2:
+			{
+				SetEntProp(entity, Prop_Send, "m_nBody", 1);
+			}
+		}
+		SetTeam(entity, team);
+		SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+		SetEntityCollisionGroup(entity, 11);
+		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+		
+		DispatchSpawn(entity);
+		SetVariantString("!activator");
+		ActivateEntity(entity);
+
+		Cosmetic_WearableExtra[client] = EntIndexToEntRef(entity);
+		i_WeaponVMTExtraSetting[entity] = 100; //This makes sure to not reset the alpha.
+		SDKCall_EquipWearable(client, entity);
+
+		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+		SetVariantString("!activator");
+		AcceptEntityInput(entity, "SetParent", client);
+	//	SetEntityRenderMode(entity, RENDER_NORMAL);
+		SetEntityRenderColor(entity, 255, 255, 255, 100);
+	}	
+}
 
 void ArmorDisplayClient(int client, bool deleteOverride = false)
 {
+	//update aswell.
+	DisplayCosmeticExtraClient(client, deleteOverride);
 	int ShieldLogicDo;
 	if(Armor_Charge[client] > 0)
 	{

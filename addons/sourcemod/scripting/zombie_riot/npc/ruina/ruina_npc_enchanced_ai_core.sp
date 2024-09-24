@@ -550,6 +550,9 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 		//CPrintToChatAll("Healing Duration 1 %f", fl_npc_healing_duration[npc.index]);
 	}
 
+	if(b_is_battery_buffed[npc.index] && fl_ruina_battery_timer[npc.index] > GameTime)
+		return;
+
 	int wave = ZR_GetWaveCount()+1;
 	//whats a "switch" statement??
 	if(wave<=15)	
@@ -1722,9 +1725,13 @@ void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, flo
 		fl_ruina_helia_healing_timer[npc.index]=cylce_speed+GameTime;
 	}
 }
-bool Ruina_NerfHealingOnBossesOrHealers(int entity, int victim, float &healingammount)
+bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &healingammount)
 {
-	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim] || b_ruina_npc_healer[victim] || b_ruina_nerf_healing[victim])
+	CClotBody npc = view_as<CClotBody>(healed_target);
+
+	if((fl_npc_healing_duration[npc.index] < GetGameTime(npc.index) && (b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target] || b_ruina_nerf_healing[healed_target]))	//only nerf healing on these npc's if they are not looking for a healer npc
+	|| b_ruina_npc_healer[healed_target]	//always nerf healing on healer npc's
+	)
 		healingammount *=0.5;
 
 	return false;
@@ -2420,7 +2427,6 @@ enum struct Ruina_Laser_Logic
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(Loc, trace);
-			delete trace;
 
 
 			if(Dist !=-1.0)
@@ -2432,10 +2438,7 @@ enum struct Ruina_Laser_Logic
 			this.trace_hit=true;
 			this.Angles = Angles;
 		}
-		else
-		{
-			delete trace;
-		}
+		delete trace;
 	}
 	void DoForwardTrace_Custom(float Angles[3], float startPoint[3], float Dist=-1.0)
 	{
@@ -2444,7 +2447,7 @@ enum struct Ruina_Laser_Logic
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(Loc, trace);
-			delete trace;
+			
 
 
 			if(Dist !=-1.0)
@@ -2456,10 +2459,7 @@ enum struct Ruina_Laser_Logic
 			this.Angles = Angles;
 			this.trace_hit=true;
 		}
-		else
-		{
-			delete trace;
-		}
+		delete trace;
 	}
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)

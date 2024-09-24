@@ -260,30 +260,22 @@ methodmap TheGambler < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedTwoSound() {
 		EmitSoundToAll(g_RangeAttackTwo[GetRandomInt(0, sizeof(g_RangeAttackTwo) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedThirdSound() {
 		EmitSoundToAll(g_RangeAttackThird[GetRandomInt(0, sizeof(g_RangeAttackThird) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);

@@ -362,7 +362,7 @@ static void ClotThink(int iNPC)
 							AcceptEntityInput(ModelApply, "SetBodyGroup");
 						}
 
-						float 	Homing_Power = 15.0,
+						float 	Homing_Power = 8.0,
 								Homing_Lockon = 90.0;
 
 						Initiate_HomingProjectile(Proj,
