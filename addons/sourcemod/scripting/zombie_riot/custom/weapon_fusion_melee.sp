@@ -1626,6 +1626,8 @@ public Action Timer_Management_VoidWeapon(Handle timer, DataPack pack)
 	{
 		h_TimerFusionWeaponManagement[client] = null;
 		b_HasVoidBladeInHand[client] = false;
+		if(IsValidClient(client))
+			TF2_RemoveCondition(client, TFCond_RuneResist);
 		return Plugin_Stop;
 	}	
 
@@ -1637,6 +1639,7 @@ public Action Timer_Management_VoidWeapon(Handle timer, DataPack pack)
 	}
 	else
 	{
+		TF2_RemoveCondition(client, TFCond_RuneResist);
 		b_HasVoidBladeInHand[client] = false;
 	}
 		
@@ -1648,9 +1651,14 @@ void VoidTimerHudShow(int client, int weapon)
 	if(f_VoidHudDelay[client] < GetGameTime())
 	{
 		f_VoidHudDelay[client] = GetGameTime() + 0.5;
+		
 		if(i_VoidCurrentPap[client] < 1)
 			return;
 			
+		if(i_VoidCurrentShields[client] >= 1)
+		{
+			TF2_AddCondition(client, TFCond_RuneResist);
+		}
 		char SensalHud[255];
 		FormatEx(SensalHud, sizeof(SensalHud), "Shield Charge [%.0f％]", f_VoidShieldTillCharge[client] * 100.0);		
 		FormatEx(SensalHud, sizeof(SensalHud), "%s\nShields [%i / %i]",SensalHud, i_VoidCurrentShields[client], MAX_VOID_SHIELD_ALLOW);		
@@ -1691,6 +1699,8 @@ void WeaponVoidBlade_OnTakeDamage(int attacker, int victim,int weapon, int zr_da
 	{
 		f_VoidShieldTillCharge[attacker] -= 1.0;
 		i_VoidCurrentShields[attacker]++;
+		//atleast has 1 shield
+		TF2_AddCondition(attacker, TFCond_RuneResist, 999999.9);
 		if(i_VoidCurrentShields[attacker] >= MAX_VOID_SHIELD_ALLOW)
 			i_VoidCurrentShields[attacker] = MAX_VOID_SHIELD_ALLOW;
 	}
@@ -1721,6 +1731,11 @@ public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attack
 	{
 		damage *= 0.25;
 		i_VoidCurrentShields[victim]--;
+		if(i_VoidCurrentShields[victim] <= 0)
+		{
+			i_WasInResPowerup[victim] = 0.0;
+			TF2_RemoveCondition(victim, TFCond_RuneResist);
+		}
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
 			f_AniSoundSpam[victim] = GetGameTime() + 0.2;

@@ -14,7 +14,7 @@ bool VoidArea_TouchingNethersea(int entity)
 
 void VoidArea_ClearnNethersea()
 {
-	RenderToAll = 0;
+	RenderToAll = 0.0;
 	delete NavList;
 }
 
