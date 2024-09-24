@@ -1271,7 +1271,7 @@ public void Blighted_Anims(int entity, int event)
 				float fizzle[3], ang[3];
 				npc.GetAttachment("healing_staff_1", fizzle, ang);
 				ParticleEffectAt(fizzle, PARTICLE_PRIEST_FIZZLE);
-				EmitSoundToAll(SOUND_PRIEST_FIZZLE, npc.index, _, _, _, GetRandomInt(80, 110));
+				EmitSoundToAll(SOUND_PRIEST_FIZZLE, npc.index, _, _, _, _, GetRandomInt(80, 110));
 			}
 			else
 			{

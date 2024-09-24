@@ -719,6 +719,7 @@ void NPC_ConfigSetup()
 	SquireBones_OnMapStart_NPC();
 	JesterBones_OnMapStart_NPC();
 	MolotovBones_OnMapStart_NPC();
+	PeasantBones_OnMapStart_NPC();
 	#endif
 }
 
@@ -1590,6 +1591,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/wave60/npc_brewer.sp"
 #include "zombie_riot/npc/bonezone/wave60/npc_squire.sp"
 #include "zombie_riot/npc/bonezone/wave60/npc_jester.sp"
+#include "zombie_riot/npc/bonezone/wave60/npc_peasant.sp"
 //////
 #include "zombie_riot/npc/bonezone/npc_ssb.sp"
 #include "zombie_riot/npc/special/npc_reaper.sp"
