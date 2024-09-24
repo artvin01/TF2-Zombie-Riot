@@ -2553,6 +2553,10 @@ float ArmorPlayerReduction(int victim)
 void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 {
 	int entity;
+	//no wings as teuton
+	if(TeutonType[client] != TEUTON_NONE)
+		deleteOverride = true;
+	
 	if(deleteOverride)
 	{
 		if(IsValidEntity(Cosmetic_WearableExtra[client]))
@@ -2574,6 +2578,21 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 
 	if(IsValidEntity(Cosmetic_WearableExtra[client]))
 	{
+		entity = Cosmetic_WearableExtra[client];
+		if(GetEntProp(entity, Prop_Send, "m_nBody") != SettingDo)
+		{
+			switch(SettingDo)
+			{
+				case WINGS_FUSION:
+				{
+					SetEntProp(entity, Prop_Send, "m_nBody", WINGS_FUSION);
+				}
+				case WINGS_TWIRL, WINGS_RULIANA, WINGS_LANCELOT:
+				{
+					SetEntProp(entity, Prop_Send, "m_nBody", SettingDo);
+				}
+			}
+		}
 		return;
 	}
 
