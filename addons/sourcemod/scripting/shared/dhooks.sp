@@ -2062,6 +2062,15 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 	if(ClientHasBannersWithCD(client) == 0)
 		return Plugin_Continue;
 
+	int SettingDo;
+	if(MagiaWingsDo(client))
+		SettingDo = 1;
+	if(SilvesterWingsDo(client))
+		SettingDo = 2;
+	//no equipping this wearable.
+	if(SettingDo != 0)
+		return Plugin_Continue;
+
 	entity = CreateEntityByName("tf_wearable");
 	if(entity > MaxClients)
 	{

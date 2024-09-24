@@ -1267,6 +1267,10 @@ public Action Waves_EndVote(Handle timer, float time)
 							Call_Finish();
 						}
 					}
+					else
+					{
+						Native_OnDifficultySet(-1, WhatDifficultySetting_Internal, WaveLevel);
+					}
 
 					Waves_SetReadyStatus(1);
 					DoGlobalMultiScaling();

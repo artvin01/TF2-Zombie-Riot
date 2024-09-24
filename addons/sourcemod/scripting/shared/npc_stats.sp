@@ -2056,6 +2056,24 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	property int m_iWearable9
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][8]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][8] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][8] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property int m_iFreezeWearable
 	{
 		public get()		 
@@ -3463,6 +3481,8 @@ static void OnDestroy(CClotBody body)
 		RemoveEntity(body.m_iWearable7);
 	if(IsValidEntity(body.m_iWearable8))
 		RemoveEntity(body.m_iWearable8);
+	if(IsValidEntity(body.m_iWearable9))
+		RemoveEntity(body.m_iWearable9);
 
 }
 
@@ -8250,6 +8270,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][5] = -1;
 	i_Wearable[entity][6] = -1;
 	i_Wearable[entity][7] = -1;
+	i_Wearable[entity][8] = -1;
 	i_OverlordComboAttack[entity] = 0;
 	i_FreezeWearable[entity] = -1;
 	i_InvincibleParticle[entity] = -1;

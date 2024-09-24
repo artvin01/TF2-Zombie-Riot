@@ -343,6 +343,10 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 			CNavArea nav = TheNavMesh.GetNavArea(pos, 70.0);
 			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
 			{
+				if(ClientPossesesVoidBlade(client))
+				{
+					VoidWave_ApplyBuff(client, 1.0);
+				}
 				NervousTouching[client] = NervousTouching[0];
 			}
 		}
