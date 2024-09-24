@@ -25,7 +25,7 @@ int MagiaWingsType(int client)
 	if(!IsValidEntity(weapon))
 		return type;
 
-	switch(weapon)
+	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_IMPACT_LANCE: type = WINGS_LANCELOT;	//time to cosplay as a lancelot.
 		case WEAPON_GRAVATON_WAND: type = WINGS_RULIANA;
