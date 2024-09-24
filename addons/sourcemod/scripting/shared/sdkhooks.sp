@@ -2564,10 +2564,10 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 		return;
 	}
 	int SettingDo;
-	if(MagiaWingsDo(client))
-		SettingDo = 1;
+	if(MagiaWingsDo(client))	//do we even have the wings item?
+		SettingDo = MagiaWingsType(client);	//we do, what type of wings do we want?
 	if(SilvesterWingsDo(client))
-		SettingDo = 2;
+		SettingDo = WINGS_FUSION;
 
 	if(SettingDo == 0)
 		return;
@@ -2585,13 +2585,13 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 
 		switch(SettingDo)
 		{
-			case 1:
+			case WINGS_FUSION:
 			{
-				SetEntProp(entity, Prop_Send, "m_nBody", 2);
+				SetEntProp(entity, Prop_Send, "m_nBody", WINGS_FUSION);
 			}
-			case 2:
+			case WINGS_TWIRL, WINGS_RULIANA, WINGS_LANCELOT:
 			{
-				SetEntProp(entity, Prop_Send, "m_nBody", 1);
+				SetEntProp(entity, Prop_Send, "m_nBody", SettingDo);
 			}
 		}
 		SetTeam(entity, team);
