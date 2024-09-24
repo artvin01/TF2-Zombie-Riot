@@ -127,6 +127,8 @@ static float Priest_LoopHealingGesture[MAXENTITIES];
 #define SOUND_CAST					")weapons/physcannon/energy_sing_flyby1.wav"
 #define SOUND_CAST_BUFFED			")misc/halloween/strongman_fast_whoosh_01.wav"
 #define SOUND_THUNDER_CHARGEUP		")misc/halloween/gotohell.wav"
+#define SOUND_PRIEST_FIZZLE			")player/taunt_sorcery_fail.wav"
+#define PARTICLE_PRIEST_FIZZLE		"spell_skeleton_goop_green"
 
 static float Priest_BoltAngles[MAXENTITIES][3];
 static float castTime[MAXENTITIES];
@@ -167,11 +169,12 @@ public void SaintBones_OnMapStart_NPC()
 	PrecacheSound(SOUND_CAST);
 	PrecacheSound(SOUND_CAST_BUFFED);
 	PrecacheSound(SOUND_THUNDER_CHARGEUP);
+	PrecacheSound(SOUND_PRIEST_FIZZLE);
 	PrecacheModel("models/zombie/classic.mdl");
 	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Profaned Priest");
+	strcopy(data.Name, sizeof(data.Name), "Blighted Bones");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_skeletalsaint");
 	strcopy(data.Icon, sizeof(data.Icon), "medic");
 	data.IconCustom = false;
@@ -181,7 +184,7 @@ public void SaintBones_OnMapStart_NPC()
 	NPC_Add(data);
 
 	NPCData data_buffed;
-	strcopy(data_buffed.Name, sizeof(data_buffed.Name), "Skeletal Saint");
+	strcopy(data_buffed.Name, sizeof(data_buffed.Name), "Profaned Priest");
 	strcopy(data_buffed.Plugin, sizeof(data_buffed.Plugin), "npc_skeletalsaint_buffed");
 	strcopy(data_buffed.Icon, sizeof(data_buffed.Icon), "medic");
 	data_buffed.IconCustom = false;
@@ -276,7 +279,10 @@ methodmap SaintBones < CClotBody
 		#endif
 	}
 	
-	
+	public void PlayPriestSwingSound()
+	{
+		EmitSoundToAll(SOUND_CAST, this.index, _, _, _, _, GetRandomInt(80, 120));
+	}
 	
 	public SaintBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
@@ -326,14 +332,20 @@ methodmap SaintBones < CClotBody
 			TE_WriteNum("m_bControlPoint1", npc.index);
 			TE_SendToAll();
 			npc.BoneZone_SetExtremeDangerState(true);
+			int iActivity = npc.LookupActivity("ACT_ARCHMAGE_IDLE");
+			if (iActivity > 0)npc.StartActivity(iActivity);
+			func_NPCAnimEvent[npc.index] = INVALID_FUNCTION;
+		}
+		else
+		{
+			int iActivity = npc.LookupActivity("ACT_BLIGHTED_RUN");
+			if (iActivity > 0)npc.StartActivity(iActivity);
+			func_NPCAnimEvent[npc.index] = Blighted_Anims;
 		}
 		
 		Saint_GiveCosmetics(npc, buffed);
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
-		int iActivity = npc.LookupActivity("ACT_ARCHMAGE_IDLE");
-		if (iActivity > 0)npc.StartActivity(iActivity);
 
 		DispatchKeyValue(npc.index, "skin", buffed ? BONES_SAINT_SKIN_BUFFED : BONES_SAINT_SKIN);
 		
@@ -355,6 +367,7 @@ methodmap SaintBones < CClotBody
 public void SaintBones_SetBuffed(int index, bool buffed)
 {
 	CClotBody npc = view_as<CClotBody>(index);
+	npc.RemoveAllWearables();
 	if (!b_BonesBuffed[index] && buffed)
 	{
 		//Tell the game the skeleton is buffed:
@@ -373,7 +386,11 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 		TE_WriteNum("m_bControlPoint1", index);
 		TE_SendToAll();
 
+		int iActivity = npc.LookupActivity("ACT_ARCHMAGE_IDLE");
+		if (iActivity > 0)npc.StartActivity(iActivity);
+
 		npc.BoneZone_SetExtremeDangerState(true);
+		func_NPCAnimEvent[npc.index] = INVALID_FUNCTION;
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -395,7 +412,11 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 		TE_SendToAll();
 
+		int iActivity = npc.LookupActivity("ACT_BLIGHTED_RUN");
+		if (iActivity > 0)npc.StartActivity(iActivity);
+
 		npc.BoneZone_SetExtremeDangerState(false);
+		func_NPCAnimEvent[npc.index] = Blighted_Anims;
 	}
 }
 
@@ -407,15 +428,10 @@ stock void Saint_GiveCosmetics(CClotBody npc, bool buffed)
 	{
 		npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/spy/mbsf_spy.mdl");
 		npc.m_iWearable2 = npc.EquipItem("spine3", "models/workshop/player/items/sniper/spr17_guilden_guardian/spr17_guilden_guardian.mdl");
+
+		DispatchKeyValue(npc.m_iWearable1, "skin", "1");
+		DispatchKeyValue(npc.m_iWearable2, "skin", "1");
 	}
-	else
-	{
-		npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/demo/demo_hood.mdl");
-		npc.m_iWearable2 = npc.EquipItem("spine3", "models/workshop/player/items/sniper/sum23_glorious_gambeson/sum23_glorious_gambeson.mdl");
-	}
-	
-	DispatchKeyValue(npc.m_iWearable1, "skin", "1");
-	DispatchKeyValue(npc.m_iWearable2, "skin", "1");
 }
 
 stock int Priest_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
@@ -576,6 +592,14 @@ public void Priest_AttemptCast(SaintBones npc, int closest)
 		//Do not begin Thunder Clap if the enemy is too far away for it to reasonably hit.
 		if (GetVectorDistance(userLoc, otherLoc) > THUNDER_RADIUS * 0.4)
 			return;
+
+		npc.FaceTowards(otherLoc, 15000.0);
+		npc.m_flAttackHappens = GetGameTime(npc.index) + 0.4;
+		castState[npc.index] = CASTSTATE_INTRO;
+		npc.m_flAttackHappenswillhappen = true;
+		npc.AddGesture("ACT_PRIEST_THUNDERBOLT_INTRO");
+		CastParticle_L[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_PRIEST_CHARGEUP_BUFFED : PARTICLE_PRIEST_CHARGEUP, _, "handL"));
+		CastParticle_R[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_PRIEST_CHARGEUP_BUFFED : PARTICLE_PRIEST_CHARGEUP, _, "handR"));
 	}
 	else
 	{
@@ -589,15 +613,16 @@ public void Priest_AttemptCast(SaintBones npc, int closest)
 		start[2] += 20.0;
 		target[2] += 20.0;
 		Priest_GetAngleToPoint(npc.index, start, target, dummy, Priest_BoltAngles[npc.index]);
+
+		npc.FaceTowards(otherLoc, 15000.0);
+		castState[npc.index] = CASTSTATE_INTRO;
+		npc.m_flAttackHappenswillhappen = true;
+
+		int iActivity = npc.LookupActivity("ACT_BLIGHTED_ATTACK");
+		if (iActivity > 0)npc.StartActivity(iActivity);
+
+		CastParticle_L[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_PRIEST_CHARGEUP_BUFFED : PARTICLE_PRIEST_CHARGEUP, _, "healing_staff_1"));
 	}
-	
-	npc.FaceTowards(otherLoc, 15000.0);
-	npc.m_flAttackHappens = GetGameTime(npc.index) + 0.4;
-	castState[npc.index] = CASTSTATE_INTRO;
-	npc.m_flAttackHappenswillhappen = true;
-	npc.AddGesture("ACT_PRIEST_THUNDERBOLT_INTRO");
-	CastParticle_L[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_PRIEST_CHARGEUP_BUFFED : PARTICLE_PRIEST_CHARGEUP, _, "handL"));
-	CastParticle_R[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_PRIEST_CHARGEUP_BUFFED : PARTICLE_PRIEST_CHARGEUP, _, "handR"));
 }
 
 void Priest_GetAngleToPoint(int ent, float pos[3], float TargetLoc[3], float DummyAngles[3], const float Output[3])
@@ -616,6 +641,9 @@ void Priest_GetAngleToPoint(int ent, float pos[3], float TargetLoc[3], float Dum
 
 public void Priest_EndIntro(SaintBones npc, int closest)
 {
+	if (!b_BonesBuffed[npc.index])
+		return;
+
 	if (GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen)
 	{
 		if (b_BonesBuffed[npc.index])
@@ -635,6 +663,9 @@ public void Priest_EndIntro(SaintBones npc, int closest)
 
 public void Priest_ChargeUp(SaintBones npc, int closest)
 {
+	if (!b_BonesBuffed[npc.index])
+		return;
+
 	//If we are ready to throw, or we can't cast our giant lightning bolt for some reason, stop charging.
 	if ((GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen) || !IsValidEnemy(npc.index, closest) || !b_BonesBuffed[npc.index] || NpcStats_IsEnemySilenced(npc.index) || Priest_IsHealing[npc.index])
 	{
@@ -649,6 +680,9 @@ public void Priest_ChargeUp(SaintBones npc, int closest)
 
 public void Priest_Cast(SaintBones npc, int closest)
 {
+	if (!b_BonesBuffed[npc.index])
+		return;
+
 	npc.RemoveGesture("ACT_PRIEST_THUNDERBOLT_CHARGEUP");
 	
 	float duration;
@@ -686,6 +720,9 @@ public bool Priest_LightningTrace(int entity, int contentsMask, int user)
 
 public void Priest_CheckCast(SaintBones npc, int closest)
 {
+	if (!b_BonesBuffed[npc.index])
+		return;
+
 	if (GetGameTime(npc.index) >= castTime[npc.index] && npc.m_flAttackHappenswillhappen)
 	{
 		if (b_BonesBuffed[npc.index])
@@ -780,6 +817,9 @@ public void Priest_CheckCast(SaintBones npc, int closest)
 
 public void Priest_EndCast(SaintBones npc, int closest)
 {
+	if (!b_BonesBuffed[npc.index])
+		return;
+
 	if (GetGameTime(npc.index) >= castEndTime[npc.index])
 	{
 		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? THUNDER_INTERVAL : LIGHTNING_INTERVAL);
@@ -883,7 +923,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		if (Priest_IsHealing[npc.index])
 		{
 			Priest_RemoveHealingParticle(npc.index);
-			npc.RemoveGesture("ACT_PRIEST_HEALING");
+			npc.RemoveGesture("ACT_BLIGHTED_HEALING_LOOP");
 			Priest_IsHealing[npc.index] = false;
 		}
 		
@@ -928,8 +968,8 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		{
 			if (!Priest_IsHealing[npc.index])
 			{
-				Priest_HealingParticle[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, PRIEST_HEALINGPARTICLE, _, "handR"));
-				npc.AddGesture("ACT_PRIEST_HEALING");
+				Priest_HealingParticle[npc.index] = EntIndexToEntRef(Priest_AttachParticle(npc.index, PRIEST_HEALINGPARTICLE, _, "healing_staff_1"));
+				npc.AddGesture("ACT_BLIGHTED_HEALING_LOOP");
 				Priest_LoopHealingGesture[npc.index] = GetGameTime(npc.index) + 0.7;
 				Priest_IsHealing[npc.index] = true;
 			}
@@ -937,7 +977,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			{
 				if (GetGameTime(npc.index) >= Priest_LoopHealingGesture[npc.index])
 				{
-					npc.AddGesture("ACT_PRIEST_HEALING");
+					npc.AddGesture("ACT_BLIGHTED_HEALING_LOOP");
 					Priest_LoopHealingGesture[npc.index] = GetGameTime(npc.index) + 0.7;
 				}
 			}
@@ -977,7 +1017,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			if (Priest_IsHealing[npc.index])
 			{
 				Priest_RemoveHealingParticle(npc.index);
-				npc.RemoveGesture("ACT_PRIEST_HEALING");
+				npc.RemoveGesture("ACT_BLIGHTED_HEALING_LOOP");
 				Priest_IsHealing[npc.index] = false;
 			}
 			
@@ -990,7 +1030,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		if (Priest_IsHealing[npc.index])
 		{
 			Priest_RemoveHealingParticle(npc.index);
-			npc.RemoveGesture("ACT_PRIEST_HEALING");
+			npc.RemoveGesture("ACT_BLIGHTED_HEALING_LOOP");
 			Priest_IsHealing[npc.index] = false;
 		}
 		
@@ -1203,6 +1243,102 @@ public Action SaintBones_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	}
 	//	
 	return Plugin_Changed;
+}
+
+public void Blighted_Anims(int entity, int event)
+{
+	if (!IsValidEntity(entity))
+		return;
+
+	SaintBones npc = view_as<SaintBones>(entity);
+
+	if (b_BonesBuffed[entity])
+		return;
+
+	if (castState[entity] == CASTSTATE_INACTIVE)
+		return;
+
+	switch(event)
+	{
+		case 1001:	//Blighted Bones swings its staff, play a sound.
+		{
+			npc.PlayPriestSwingSound();
+		}
+		case 1002:	//Blighted Bones casts its spell, do damage and VFX.
+		{
+			if (NpcStats_IsEnemySilenced(npc.index))
+			{
+				float fizzle[3], ang[3];
+				npc.GetAttachment("healing_staff_1", fizzle, ang);
+				ParticleEffectAt(fizzle, PARTICLE_PRIEST_FIZZLE);
+				EmitSoundToAll(SOUND_PRIEST_FIZZLE, npc.index, _, _, _, GetRandomInt(80, 110));
+			}
+			else
+			{
+				float startLoc[3], endLoc[3], center[3], vicLoc[3];
+				WorldSpaceCenter(npc.index, center);
+				center[2] += 20.0;
+				
+				TR_TraceRayFilter(center, Priest_BoltAngles[npc.index], MASK_SHOT, RayType_Infinite, Priest_OnlyHitWorld);
+				TR_GetEndPosition(endLoc);
+				startLoc = endLoc;
+				constrainDistance(center, startLoc, GetVectorDistance(center, startLoc), 20.0);
+				constrainDistance(center, endLoc, GetVectorDistance(center, endLoc), LIGHTNING_RANGE);
+				
+				float hullMin[3], hullMax[3];
+				
+				hullMin[0] = -LIGHTNING_WIDTH;
+				hullMin[1] = hullMin[0];
+				hullMin[2] = hullMin[0];
+				hullMax[0] = -hullMin[0];
+				hullMax[1] = -hullMin[1];
+				hullMax[2] = -hullMin[2];
+				
+				//We use center instead of startLoc because otherwise players can avoid the beam by being at point-blank:
+				TR_TraceHullFilter(center, endLoc, hullMin, hullMax, 1073741824, Priest_LightningTrace, npc.index);
+				
+				for (int victim = 1; victim < MAXENTITIES; victim++)
+				{
+					if (Priest_LightningHit[victim])
+					{
+						Priest_LightningHit[victim] = false;
+						
+						if (IsValidEnemy(npc.index, victim))
+						{
+							float damage = LIGHTNING_DAMAGE;
+							
+							if (ShouldNpcDealBonusDamage(victim))
+							{
+								damage *= LIGHTNING_DAMAGE_ENTITYMULT;
+							}
+							
+							WorldSpaceCenter(victim, vicLoc);
+							SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_PLASMA, _, NULL_VECTOR, vicLoc);
+						}
+					}
+				}
+				
+				npc.GetAttachment("healing_staff_1", startLoc, center);
+				ParticleEffectAt(startLoc, PARTICLE_GREENBLAST, 2.0);
+				SpawnBeam_Vectors(startLoc, endLoc, 0.25, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
+				SpawnBeam_Vectors(startLoc, endLoc, 0.25, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 12.0, 12.0, _, 0.0);
+				SpawnBeam_Vectors(startLoc, endLoc, 0.25, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 6.0, 6.0, _, 10.0);
+				SpawnBeam_Vectors(startLoc, endLoc, 0.25, 20, 255, 120, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 20.0);
+
+				EmitSoundToAll(SOUND_CAST_ACTIVATED, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL + (b_BonesBuffed[npc.index] ? 0 : 20), _, NORMAL_ZOMBIE_VOLUME);
+			}
+
+			npc.m_flAttackHappenswillhappen = false;
+			Priest_RemoveThunderParticles(npc.index);
+		}
+		case 1003:	//End of attack sequence, apply attack interval and revert to run cycle.
+		{
+			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? THUNDER_INTERVAL : LIGHTNING_INTERVAL);
+			castState[npc.index] = CASTSTATE_INACTIVE;
+			int iActivity = npc.LookupActivity("ACT_BLIGHTED_RUN");
+			if (iActivity > 0)npc.StartActivity(iActivity);
+		}
+	}
 }
 
 public void SaintBones_NPCDeath(int entity)

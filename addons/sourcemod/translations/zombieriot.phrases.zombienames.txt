@@ -2951,9 +2951,9 @@
 	{
 		"en"	"Profaned Priest"
 	}
-	"Skeletal Saint"
+	"Blighted Bones"
 	{
-		"en"	"Skeletal Saint"
+		"en"	"Blighted Bones"
 	}
 	"Novice Necromancer"
 	{
