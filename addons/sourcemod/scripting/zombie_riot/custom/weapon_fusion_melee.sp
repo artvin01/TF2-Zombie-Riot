@@ -1635,6 +1635,10 @@ public Action Timer_Management_VoidWeapon(Handle timer, DataPack pack)
 		VoidTimerHudShow(client, weapon_holding);
 		b_HasVoidBladeInHand[client] = true;
 	}
+	else
+	{
+		b_HasVoidBladeInHand[client] = false;
+	}
 		
 	return Plugin_Continue;
 }
@@ -1657,7 +1661,7 @@ void VoidTimerHudShow(int client, int weapon)
 
 void WeaponVoidBlade_OnTakeDamagePost(int attacker, int victim, float damage)
 {
-	Elemental_AddVoidDamage(victim, attacker, RoundToCeil(damage));
+	Elemental_AddVoidDamage(victim, attacker, RoundToCeil(damage),_,_, true);
 }
 void WeaponVoidBlade_OnTakeDamage(int attacker, int victim,int weapon, int zr_damage_custom, float damage)
 {
