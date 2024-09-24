@@ -712,6 +712,16 @@ public void OnPostThink(int client)
 				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
 		}
+		
+		if(ClientPossesesVoidBlade(client) >= 2 && (f_VoidAfflictionStrength[client] > GetGameTime() || f_VoidAfflictionStrength2[client] > GetGameTime()))
+		{
+			float HealingAmount = float(ReturnEntityMaxHealth(client)) * 0.01;
+
+			if(f_VoidAfflictionStrength2[client] > GetGameTime())
+				HealingAmount *= 1.5;
+			
+			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
+		}
 
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
@@ -2334,6 +2344,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		{
 			return Yakuza_SelfTakeDamageHud(victim, weapon);
 		}
+		case WEAPON_EXPLORER:
+		{
+			return Player_OnTakeDamage_VoidBlade_Hud(victim);
+		}
 	}
 	return 1.0;
 }
@@ -2591,12 +2605,13 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 		ActivateEntity(entity);
 
 		Cosmetic_WearableExtra[client] = EntIndexToEntRef(entity);
+		i_WeaponVMTExtraSetting[entity] = 100; //This makes sure to not reset the alpha.
 		SDKCall_EquipWearable(client, entity);
 
 		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 		SetVariantString("!activator");
 		AcceptEntityInput(entity, "SetParent", client);
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+	//	SetEntityRenderMode(entity, RENDER_NORMAL);
 		SetEntityRenderColor(entity, 255, 255, 255, 100);
 	}	
 }

@@ -1599,7 +1599,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 			return;
 		}
 		int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-		SetParent(entity, particle_1, "effect_hand_L",_);
+		SetParent(entity, particle_1, "effect_hand_l",_);
 		
 		int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
 		int particle_3 = InfoTargetParentAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
