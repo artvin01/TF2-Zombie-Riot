@@ -620,7 +620,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 33.0)
 				{
 					i_khamlCutscene[npc.index] = 10;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: Now, the real deal stands before you.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: You killed my men, {crimson}YOU KILLED MY PUP{default}, BUT YOU ARE TOO SCARED OF ME?!");
 				}
 			}
 			case 10:
@@ -628,7 +628,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 30.0)
 				{
 					i_khamlCutscene[npc.index] = 9;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: ou killed my men, {crimson}YOU KILLED MY PUP{default}, BUT YOU ARE TOO SCARED OF ME?!");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will burn everything until there's nothing left, but ash. And from that ash...");
 				}
 			}
 			case 9:
@@ -636,7 +636,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 26.0)
 				{
 					i_khamlCutscene[npc.index] = 8;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will burn everything until there's nothing left, but ash. And from that ash...");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: A BRAND NEW FREE WORLD WILL BE BORN!! A WORLD WITH NO ONE TO COMMAND YOU AGAIN!");
 				}
 			}
 			case 8:
@@ -644,7 +644,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 22.0)
 				{
 					i_khamlCutscene[npc.index] = 7;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: A BRAND NEW FREE WORLD WILL BE BORN!! A WORLD WITH NO ONE TO COMMAND YOU AGAIN!");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: A WORLD RID OF THESE FUCKING PARASITES CALLED POLITICIANS! FREE FROM GOVERNMENTS!");
 				}
 			}
 			case 7:
@@ -652,7 +652,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 18.0)
 				{
 					i_khamlCutscene[npc.index] = 6;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: A WORLD RID OF THESE FUCKING PARASITES CALLED POLITICIANS! FREE FROM GOVERNMENTS!");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: AN IDEAL WORLD, A PARADISE!!! SO STOP RESISTING AND ACCEPT IT DAMMIT!!");
 				}
 			}
 			case 6:
@@ -660,7 +660,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 12.0)
 				{
 					i_khamlCutscene[npc.index] = 5;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: AN IDEAL WORLD, A PARADISE!!! SO STOP RESISTING AND ACCEPT IT DAMMIT!!");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: ....no, this new world isn't going to welcome you anyway...");
 				}
 			}
 			case 5:
@@ -668,7 +668,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 9.0)
 				{
 					i_khamlCutscene[npc.index] = 4;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: ....no, this new world isn't going to welcome you anyway...");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: Because you know what I hate the most, more than governments? {crimson}Violence against animals..");
 				}
 			}
 			case 4:
@@ -676,7 +676,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 4.0)
 				{
 					i_khamlCutscene[npc.index] = 3;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: Because you know what I hate the most, more than governments? {crimson}Violence against animals..");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: {crimson}You murdered these cats in cold blood. And now I'm going to do the same with you.");
 				}
 			}
 			case 3:
@@ -684,7 +684,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 2.0)
 				{
 					i_khamlCutscene[npc.index] = 2;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: {crimson}You murdered these cats in cold blood. And now I'm going to do the same with you.\nI will avenge you my dear companion, I will avenge everything.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will avenge you my dear companion, I will avenge everything.");
 				}
 			}
 			case 2:
