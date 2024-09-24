@@ -220,7 +220,6 @@ static void Internal_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	ExpidonsaRemoveEffects(entity);
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))

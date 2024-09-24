@@ -573,6 +573,7 @@ void NPC_ConfigSetup()
 	VictorianIgniter_OnMapStart_NPC();
 	VictorianGrenadier_OnMapStart_NPC();
 	VictorianSquadleader_OnMapStart_NPC();
+	VictorianSignaller_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
