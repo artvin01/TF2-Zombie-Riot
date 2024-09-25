@@ -66,9 +66,9 @@ methodmap VictorianSignaller < CClotBody
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -93,9 +93,11 @@ methodmap VictorianSignaller < CClotBody
 		SetVariantString("0.9");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl");
+		SetVariantString("1.75");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl");
         SetVariantString("1.75");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/invasion_final_frontiersman/invasion_final_frontiersman.mdl");
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/sniper/spr17_down_under_duster/spr17_down_under_duster.mdl");

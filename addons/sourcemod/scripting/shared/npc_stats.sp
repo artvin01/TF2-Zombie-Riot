@@ -9521,7 +9521,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	}
 	if(NpcStats_VictorianCallToArms(npc.index))
 	{
-		Format(HealthText, sizeof(HealthText), "%s✇",HealthText);
+		Format(HealthText, sizeof(HealthText), "✇",HealthText);
 	}
 
 #if defined ZR
