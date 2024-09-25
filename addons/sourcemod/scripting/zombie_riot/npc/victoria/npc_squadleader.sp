@@ -224,7 +224,7 @@ public void VictorianSquadleader_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
-	VictorianCalltoArmsRange(npc.index);
+	//VictorianCalltoArmsRange(npc.index);
 		
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -539,6 +539,7 @@ void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool 
 	}
 }
 
+/*
 void VictorianCalltoArmsRange(int iNpc)
 {
 	b_NpcIsTeamkiller[iNpc] = true;
@@ -558,7 +559,6 @@ void VictorianCalltoArmsRange(int iNpc)
 	b_NpcIsTeamkiller[iNpc] = false;
 }
 
-/*
 void VictoriaCalltoArmsGiving(int entity, int victim, float damage, int weapon)
 {
 	if(entity == victim)
@@ -569,7 +569,7 @@ void VictoriaCalltoArmsGiving(int entity, int victim, float damage, int weapon)
 		f_SquadLeaderBuff[victim] = GetGameTime() + 1.0;
 	}
 }
-*/
+
 
 void VictoriaCalltoArmsGiving(int entity, int victim, float gameTime)
 {
@@ -592,3 +592,5 @@ void VictoriaCalltoArmsGiving(int entity, int victim, float gameTime)
 	}
 	npc.PlayMeleeWarCry();
 }
+
+*/
