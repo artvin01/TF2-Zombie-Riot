@@ -2,10 +2,9 @@
 #pragma newdecls required
 
 
-static char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+static const char g_DeathSounds[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
 static char g_HurtSounds[][] = {
@@ -87,13 +86,25 @@ static bool Silvester_BEAM_UseWeapon[MAXENTITIES];
 static float fl_Timebeforekamehameha[MAXENTITIES];
 static int i_InKame[MAXENTITIES];
 static bool b_RageAnimated[MAXENTITIES];
-static bool b_angered_twice[MAXENTITIES];
+
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
+static int i_SadText;
+static int i_ColoursTEPillars[4];
 bool AlreadySaidWin;
 bool AlreadySaidLastmann;
 
 static int Silvester_TE_Used;
+
+void ResetTEStatusSilvester()
+{
+	Silvester_TE_Used = 0;
+}
+void SetSilvesterPillarColour(int colours[4])
+{
+	i_ColoursTEPillars = colours;
+}
+
 public void RaidbossSilvester_OnMapStart()
 {
 	NPCData data;
@@ -122,6 +133,8 @@ public void RaidbossSilvester_OnMapStart()
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 }
+static bool b_said_player_weaponline[MAXTF2PLAYERS];
+static float fl_said_player_weaponline_time[MAXENTITIES];
 
 void Silvester_TBB_Precahce()
 {
@@ -175,10 +188,6 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll(g_IdleSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_IdleSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	
 	}
 	
@@ -191,10 +200,6 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_IdleAlertedSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayHurtSound() {
@@ -204,10 +209,6 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_HurtSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayDeathSound() {
@@ -215,19 +216,12 @@ methodmap RaidbossSilvester < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
 		
 		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_DeathSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	
 	public void PlayAngerSound() {
@@ -235,21 +229,12 @@ methodmap RaidbossSilvester < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
 		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_AngerSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayAngerSoundPassed() {
 	
 		int sound = GetRandomInt(0, sizeof(g_AngerSoundsPassed) - 1);
 		EmitSoundToAll(g_AngerSoundsPassed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_AngerSoundsPassed[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav", this.index, SNDCHAN_STATIC, 80, _, 0.8);
 	}
 	
@@ -259,9 +244,7 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayPullSound() {
@@ -284,17 +267,13 @@ methodmap RaidbossSilvester < CClotBody
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -327,13 +306,16 @@ methodmap RaidbossSilvester < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Waldch Arrived.");
 			}
 		}
 		bool final = StrContains(data, "final_item") != -1;
 		
+		Zero(b_said_player_weaponline);
+		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		if(final)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		b_thisNpcIsARaid[npc.index] = true;
@@ -341,6 +323,8 @@ methodmap RaidbossSilvester < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
+		i_SadText = false;
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_bThisNpcIsABoss = true;
 		
@@ -358,7 +342,6 @@ methodmap RaidbossSilvester < CClotBody
 		{
 			RaidModeScaling *= 0.38;
 		}
-		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		if(amount_of_people > 12.0)
@@ -372,6 +355,7 @@ methodmap RaidbossSilvester < CClotBody
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 
+		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 	
@@ -381,11 +365,11 @@ methodmap RaidbossSilvester < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
+		/*
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_buttler/bak_buttler_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
+		*/
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_hat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
@@ -417,8 +401,6 @@ methodmap RaidbossSilvester < CClotBody
 		npc.GetAttachment("head", flPos, flAng);
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,0.0});
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
@@ -427,6 +409,8 @@ methodmap RaidbossSilvester < CClotBody
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
+
+
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -436,15 +420,23 @@ methodmap RaidbossSilvester < CClotBody
 
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
-		music.Time = 117;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
-		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
-		Music_SetRaidMusic(music);
+		bool ingoremusic = StrContains(data, "triple_enemies") != -1;
+		
+		if(!ingoremusic)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
+			music.Time = 117;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
+			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			Music_SetRaidMusic(music);
+		}
+		else
+		{
+			RaidModeTime = GetGameTime(npc.index) + 450.0;
+		}
 		
 		npc.Anger = false;
 		//IDLE
@@ -467,6 +459,7 @@ methodmap RaidbossSilvester < CClotBody
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 		
 		RequestFrame(Silvester_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
+		npc.m_flNextDelayTime = GetGameTime() + 0.2;
 		if(XenoExtraLogic())
 		{
 			switch(GetRandomInt(1,3))
@@ -600,6 +593,7 @@ static void Internal_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 			npc.SetCycle(0.01);
 			b_RageAnimated[npc.index] = true;
@@ -637,7 +631,7 @@ static void Internal_ClotThink(int iNPC)
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Angeled Silvester");
 			i_NpcWeight[npc.index] = 4;
 
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 			SilvesterApplyEffects(npc.index, false);
 
 			int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
@@ -854,6 +848,34 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
+		if(!i_SadText)
+		{
+			i_SadText = true;
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: N-No!");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}..?");
+				}
+				case 2:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: Why him?? Attack me you bunch of cowards!");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: Dont faint, im here, im here!");
+				}
+				case 3:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: Hang on, i got this, rest.");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: ... if you think ill let that slide...");
+				}
+			}
+		}
 		if(IsValidEntity(i_LaserEntityIndex[npc.index]))
 		{
 			RemoveEntity(i_LaserEntityIndex[npc.index]);
@@ -1115,6 +1137,7 @@ static void Internal_ClotThink(int iNPC)
 						npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 						Silvester_TBB_Ability(npc.index);
 						npc.m_iInKame = 2;
+						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("taunt_doctors_defibrillators");
 					//	npc.AddGesture("ACT_MP_RUN_MELEE");
 						npc.SetPlaybackRate(0.5);	
@@ -1132,6 +1155,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 					Silvester_TBB_Ability(npc.index);
 					npc.m_iInKame = 2;
+					npc.m_bisWalking = false;
 					npc.AddActivityViaSequence("taunt_doctors_defibrillators");
 					//npc.AddGesture("ACT_MP_RUN_MELEE");
 					npc.SetPlaybackRate(0.5);	
@@ -1168,6 +1192,7 @@ static void Internal_ClotThink(int iNPC)
 					MaxCount = 1;
 				}
 				Silvester_TE_Used = 0;
+				SetSilvesterPillarColour({212, 150, 0, 200});
 				if(ZR_GetWaveCount()+1 >= 60 && i_TimesSummoned[npc.index] >= 3)
 				{
 					i_TimesSummoned[npc.index] = 0;
@@ -1217,6 +1242,7 @@ static void Internal_ClotThink(int iNPC)
 
 				float DelayPillars = 3.0;
 				float DelaybewteenPillars = 0.2;
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_the_fist_bump");
 				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 				npc.SetPlaybackRate(0.5);
@@ -1269,6 +1295,7 @@ static void Internal_ClotThink(int iNPC)
 				}
 				
 				Silvester_TE_Used = 0;
+				SetSilvesterPillarColour({212, 150, 0, 200});
 				for(int Repeat; Repeat <= 7; Repeat++)
 				{
 					Silvester_Damaging_Pillars_Ability(npc.index,
@@ -1322,6 +1349,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	Internal_Weapon_Lines(npc, attacker);
 
 	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
@@ -1354,7 +1382,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(victim);
 	if(ZR_GetWaveCount()+1 > 35)
 	{
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
 			SilvesterApplyEffects(npc.index, true);
 			if(IsValidEntity(i_LaserEntityIndex[npc.index]))
@@ -1415,10 +1443,10 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 static void Internal_NPCDeath(int entity)
 {
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
-	if(!npc.m_bDissapearOnDeath)
-	{
-		npc.PlayDeathSound();
-	}
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 	StopSound(entity, SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
@@ -1444,6 +1472,8 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;
@@ -1651,12 +1681,7 @@ public Action contact_throw_Silvester_entity(int client)
 							int damage;
 							if(client <= MaxClients)
 							{
-								damage = SDKCall_GetMaxHealth(client) / 3;
-
-							}
-							else
-							{
-								damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
+								damage = ReturnEntityMaxHealth(client) / 3;
 							}
 							if(damage > 2000)
 							{
@@ -1724,6 +1749,10 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 		if(spawn_index > MaxClients)
 		{
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
+			if(i_RaidGrantExtra[spawn_index] == 1)
+			{
+				b_NpcUnableToDie[spawn_index] = true;
+			}
 			i_RaidDuoAllyIndex = EntIndexToEntRef(spawn_index);
 			Goggles_SetRaidPartner(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -1762,7 +1791,12 @@ float extra_pillar_size = 1.0)
 
 	float origin_altered[3];
 	origin_altered = origin;
-
+	bool DontClipOrMove = false;
+	if(count == 0)
+	{
+		DontClipOrMove = true;
+		count = 1;
+	}
 	for(int Repeats; Repeats < count; Repeats++)
 	{
 		float VecForward[3];
@@ -1777,6 +1811,8 @@ float extra_pillar_size = 1.0)
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 		origin_altered = vecSwingEnd;
+		if(DontClipOrMove)
+			origin_altered = origin;
 
 		//Clip to ground, its like stepping on stairs, but for these rocks.
 
@@ -1785,6 +1821,7 @@ float extra_pillar_size = 1.0)
 		Range *= extra_pillar_size;
 
 		Range += (float(Repeats) * 10.0);
+		Range += 10.0;
 		Silvester_TE_Used += 1;
 		if(Silvester_TE_Used > 31)
 		{
@@ -1801,21 +1838,8 @@ float extra_pillar_size = 1.0)
 		}
 		else
 		{
-			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
+			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
 		}
-		/*
-		int laser;
-		RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
-
-		int red = 212;
-		int green = 155;
-		int blue = 0;
-
-		laser = ConnectWithBeam(npc.m_iWearable6, -1, red, green, blue, 5.0, 5.0, 0.0, LINKBEAM,_, origin_altered);
-
-		CreateTimer(delay, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-		*/
-
 	}
 }
 
@@ -1866,7 +1890,7 @@ public void Silvester_DelayTE(DataPack pack)
 	Origin[2] = pack.ReadCell();
 	float Range = pack.ReadCell();
 	float Delay = pack.ReadCell();
-	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, Delay, 5.0, 0.0, 1);	
+	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, Delay, 5.0, 0.0, 1);	
 		
 	delete pack;
 }
@@ -1897,6 +1921,11 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 	{
 		return Plugin_Continue;
 	}
+	bool DontClipOrMove = false;
+	if(countMax == 0)
+	{
+		DontClipOrMove = true;
+	}
 
 	count += 1;
 	pack.Position = countPos;
@@ -1913,6 +1942,8 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 		vecSwingEnd[0] = origin[0] + VecForward[0] * (PILLAR_SPACING * PillarSizeEdit);
 		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING * PillarSizeEdit);
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+		if(DontClipOrMove)
+			vecSwingEnd = origin;
 
 		Silvester_ClipPillarToGround({24.0,24.0,24.0}, 300.0, vecSwingEnd);
 
@@ -1943,7 +1974,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			float SizeScale = 0.9;
 			SizeScale *= PillarSizeEdit; 
 
-			SizeScale += (count * 0.1);
+			SizeScale += (float(count -1) * 0.1);
 
 			char FloatString[8];
 			FloatToString(SizeScale, FloatString, sizeof(FloatString));
@@ -1956,7 +1987,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			DispatchSpawn(prop);
 			TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(prop, 215, 200, 0, 200);
+			SetEntityRenderColor(prop, i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3]);
 			SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 			SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
@@ -1964,7 +1995,8 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			float Range = 100.0;
 			Range *= PillarSizeEdit;
 
-			Range += (float(count) * 10.0);
+			Range += (float(count -1) * 10.0);
+			Range += 10.0;
 			
 			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
 	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);
@@ -1979,7 +2011,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			}
 		
 		//	spawnRing_Vectors(vecSwingEnd, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 1.0, 12.0, 6.1, 1);
-			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
+			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 3.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
 
 			CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -2024,7 +2056,7 @@ void Silvester_TBB_Ability(int client)
 	Silvester_BEAM_MaxDistance[client] = 2000;
 	Silvester_BEAM_BeamRadius[client] = 45;
 	Silvester_BEAM_ColorHex[client] = ParseColor("EEDD44");
-	Silvester_BEAM_ChargeUpTime[client] = 200;
+	Silvester_BEAM_ChargeUpTime[client] = RoundToFloor(200*TickrateModify);
 	Silvester_BEAM_CloseBuildingDPT[client] = 0.0;
 	Silvester_BEAM_FarBuildingDPT[client] = 0.0;
 	Silvester_BEAM_Duration[client] = 6.0;
@@ -2219,6 +2251,7 @@ public Action Silvester_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
+					damage /= TickrateModify;
 					float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, vic_vec);	// 2048 is DMG_NOGIB?
 				}
@@ -2282,7 +2315,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				{
 					ReviveAll(true);
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painfull for you.");
+						CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painful for you.");
 					else
 						CPrintToChatAll("{gold}Silvester{default}: You never listen. I will not assist you more.");
 					i_TalkDelayCheck += 1;
@@ -2290,16 +2323,16 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{darkblue}Blue Goggles{default}: There is a far greater enemy then us, we can't beat him.");
+						CPrintToChatAll("{darkblue}Waldch{default}: There is a far greater enemy than us, we can't beat him.");
 					else
-						CPrintToChatAll("{darkblue}Blue Goggles{default}: It appears like you already know what you get yourself into.");
+						CPrintToChatAll("{darkblue}Waldch{default}: It appears like you already know what you get yourself into.");
 
 					i_TalkDelayCheck += 1;
 				}
 				case 2:
 				{
 					
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
+					CPrintToChatAll("{darkblue}Waldch{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
 					i_TalkDelayCheck += 1;
 				}
 				case 3:
@@ -2331,12 +2364,21 @@ void SilvesterApplyEffects(int entity, bool withoutweapon = false)
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
 	if(!npc.Anger)
 	{
+		if(IsValidEntity(npc.m_iWearable8))
+			RemoveEntity(npc.m_iWearable8);
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+
 		ExpidonsaRemoveEffects(entity);
 		if(!withoutweapon)
 			SilvesterApplyEffectsForm1(entity);
 	}
 	else
 	{
+		if(IsValidEntity(npc.m_iWearable8))
+			RemoveEntity(npc.m_iWearable8);
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
 		ExpidonsaRemoveEffects(entity);
 		SilvesterApplyEffectsForm2(entity, withoutweapon);			
 	}
@@ -2347,6 +2389,16 @@ void SilvesterApplyEffectsForm1(int entity)
 	if(AtEdictLimit(EDICT_RAID))
 		return;
 	
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
+	if(IsValidEntity(npc.m_iWearable1))
+	{
+		RemoveEntity(npc.m_iWearable1);
+	}
+	npc.m_iWearable1 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
+	SetVariantInt(2048);
+	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");	
+	/*
 	int red = 255;
 	int green = 255;
 	int blue = 255;
@@ -2405,6 +2457,7 @@ void SilvesterApplyEffectsForm1(int entity)
 	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
 	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
 	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
+	*/
 }
 
 
@@ -2412,7 +2465,7 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 {
 	if(AtEdictLimit(EDICT_RAID))
 		return;
-	
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
 	int red = 255;
 	int green = 255;
 	int blue = 0;
@@ -2420,6 +2473,16 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	float flAng[3];
 	if(!withoutweapon)
 	{
+		
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			RemoveEntity(npc.m_iWearable1);
+		}
+		npc.m_iWearable1 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 3);
+		SetVariantInt(2048);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");	
+		/*
 		int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 		
 		int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
@@ -2473,9 +2536,20 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 		i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
 		i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
 		i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
+		*/
 			
 	}
 
+	if(IsValidEntity(npc.m_iWearable8))
+	{
+		RemoveEntity(npc.m_iWearable8);
+	}
+	npc.m_iWearable8 = npc.EquipItem("head", WINGS_MODELS_1);
+	SetVariantInt(1);
+	AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");	
+	SetVariantString("1.35");
+	AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
+//	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
 	//possible loop function?
 
 	/*
@@ -2486,6 +2560,7 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 		2nd: Up and down, negative up, positive down.
 		3rd: front and back, negative goes back.
 	*/
+	/*
 	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	GetAttachment(entity, "flag", flPos, flAng);
 	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
@@ -2700,29 +2775,6 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	i_ExpidonsaEnergyEffect[entity][67] = EntIndexToEntRef(Laser_3_Wingset_6);
 	i_ExpidonsaEnergyEffect[entity][68] = EntIndexToEntRef(Laser_4_Wingset_6);
 	i_ExpidonsaEnergyEffect[entity][69] = EntIndexToEntRef(ParticleOffsetMain);
-
-
-
-
-
-/*
-
-	//XYZ
-	int particle_1_Wingset_99 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_2_Wingset_99 = InfoTargetParentAt({0.0,-50.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_3_Wingset_99 = InfoTargetParentAt({0.0,50.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_4_Wingset_99 = InfoTargetParentAt({-50.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_5_Wingset_99 = InfoTargetParentAt({50.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int Laser_1_Wingset_99 = ConnectWithBeamClient(particle_2_Wingset_99, particle_3_Wingset_99, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_99 = ConnectWithBeamClient(particle_4_Wingset_99, particle_5_Wingset_99, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-
-	SetParent(particle_1_Wingset_99, particle_2_Wingset_99, "",_, true);
-	SetParent(particle_1_Wingset_99, particle_3_Wingset_99, "",_, true);
-	SetParent(particle_1_Wingset_99, particle_4_Wingset_99, "",_, true);
-	SetParent(particle_1_Wingset_99, particle_5_Wingset_99, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_99, flPos);
-	SetParent(entity, particle_1_Wingset_99, "flag",_);
 */
 }
 
@@ -2774,11 +2826,11 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{darkblue}Blue Goggles{default}: Too far.");
+			CPrintToChatAll("{darkblue}Waldch{default}: Too far.");
 		}
 		else
 		{
-			CPrintToChatAll("{darkblue}Blue Goggles{default}: Way better then to die to {green}Him.");
+			CPrintToChatAll("{darkblue}Waldch{default}: Way better than to die to {green}Him.");
 		}
 	}
 }
@@ -2808,3 +2860,51 @@ void SharedTimeLossSilvesterDuo(int entity)
 	}
 }
 
+static void Internal_Weapon_Lines(RaidbossSilvester npc, int client)
+{
+	if(client > MaxClients)
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	if(!IsValidEntity(weapon))	//invalid weapon, go back and get a valid one you <...>
+		return;
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	Text_Lines = "";
+
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		
+		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
+		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You have his weapon yet none of his strength.");
+		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "{blue}Sensal{default} gave you this {gold}%N{default}? cant be.", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2, WEAPON_NEARL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You little stealers arent you?");
+		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "Hey thats my weapon!");}
+		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "Oh you beat him up? Thats good.");
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "that gun aint got ANYTHING ON ME!!!");
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "{lightblue}Her{default} gun...? uh...");
+
+		default:
+		{
+			valid = false;
+		}
+	}
+
+	if(valid)
+	{
+		CPrintToChatAll("{gold}Silvester{default}: %s", Text_Lines);
+		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
+		b_said_player_weaponline[client] = true;
+	}
+}

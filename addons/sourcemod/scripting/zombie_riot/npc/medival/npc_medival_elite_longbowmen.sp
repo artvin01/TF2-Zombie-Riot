@@ -19,7 +19,7 @@ static const char g_IdleSounds[][] = {
 	"npc/combine_soldier/vo/alert1.wav",
 	"npc/combine_soldier/vo/bouncerbouncer.wav",
 	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -106,9 +106,7 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -120,42 +118,32 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	public MedivalEliteLongbowmen(int client, float vecPos[3], float vecAng[3], int ally)
@@ -180,6 +168,7 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		func_NPCDeath[npc.index] = MedivalEliteLongbowmen_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MedivalEliteLongbowmen_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalEliteLongbowmen_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventMedivalEliteLongbowmen;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
 		SetVariantString("1.3");

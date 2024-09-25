@@ -1,23 +1,77 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+enum
+{
+	Attrib_TerrianRes = 4022,
+	Attrib_ElementalDef = 4023,
+	Attrib_SlowImmune = 4024,
+	Attrib_ObjTerrianAbsorb = 4025,
+	Attrib_SetArchetype = 4026,
+	Attrib_SetSecondaryDelayInf = 4027
+}
+
 StringMap WeaponAttributes[MAXENTITIES + 1];
 
+//4007 4008 4009 40010 Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
+// 4011: Explosive enemeis hit MAX
+// 4012: redued healing from gibs
+// 4013: Override Explosion FAloff
+// 4014: Ammo consume extra in reserve
+// 4015: If set to 1, sets the weapons next attack to FAR_FUTURE, as doing 821 ; 1 ; 128 ; 1 breaks animations.
+// 4016: bonus damage to raidbosses
+// 4017: attackspeed directly converts into damage
+// 4018: allow Claiming of cades regardless
+// 4019: Mana Max Add
+// 4020: Mana Regen 
+// 4021: Override Weapon Skin To This
+// 4027: Set secondary weapon delay to FAR_FUTURE
 bool Attribute_ServerSide(int attribute)
 {
+	if(attribute > 3999)
+		return true;
+	
 	switch(attribute)
 	{
-		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319: //gibs on hit
+		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93: //gibs on hit
 		{
 			return true;
 		}
-		case 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412, 4001, 4002:
+
+		case 57, 190, 191, 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412:
 		{
 			return true;
 		}
 	}
 	return false;
 }
+
+bool Attribute_IntAttribute(int attribute)
+{
+	switch(attribute)
+	{
+		case 834, 866, 867:
+			return true;
+	}
+
+	return false;
+}
+
+/*
+	There are attributes that are used only for ZR that dont actually exist
+	there are described here:
+	4001: Extra melee range
+	4002: Medigun overheal
+	4007: Melee resisance while equipped in hand
+	4008: Ranged resistance while equipped in hand
+	4009: total damage reduced while in hand
+	4010: RPG ONLY!!! Stats to use while in hand only such as STR or END or DEX
+	4011: Explosive weapon limit on hit if its not on default, default is 10 (hits only 10 enemies.), you can reduce it to 2 for example, if your explosive weapon has tiny AOE
+	733: Magic shot cost
+	410: Magic damage % 
+
+	most of these are via %, 1.0 means just 100% normal, 0.5 means half, 1.5 means 50% more
+*/
 void Attributes_EntityDestroyed(int entity)
 {
 	delete WeaponAttributes[entity];
@@ -54,17 +108,26 @@ float Attributes_Get(int entity, int attrib, float defaul = 1.0)
 	return defaul;
 }
 
-bool Attributes_Set(int entity, int attrib, float value)
+bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = false)
 {
-	if(!WeaponAttributes[entity])
-		WeaponAttributes[entity] = new StringMap();
-	
-	char buffer[6];
-	IntToString(attrib, buffer, sizeof(buffer));
-	WeaponAttributes[entity].SetValue(buffer, value);
+	if(!DoOnlyTf2Side)
+	{
+		if(!WeaponAttributes[entity])
+			WeaponAttributes[entity] = new StringMap();
+		
+		char buffer[6];
+		IntToString(attrib, buffer, sizeof(buffer));
+		WeaponAttributes[entity].SetValue(buffer, value);
 
-	if(Attribute_ServerSide(attrib))
-		return false;
+		if(Attribute_ServerSide(attrib))
+			return false;
+	}
+	
+	if(Attribute_IntAttribute(attrib))
+	{
+		TF2Attrib_SetByDefIndex(entity, attrib, view_as<float>(RoundFloat(value)));
+		return true;
+	}
 	
 	TF2Attrib_SetByDefIndex(entity, attrib, value);
 	return true;
@@ -72,6 +135,12 @@ bool Attributes_Set(int entity, int attrib, float value)
 
 stock void Attributes_SetAdd(int entity, int attrib, float amount)
 {
+	if(attrib == Attrib_SetArchetype)
+	{
+		i_WeaponArchetype[entity] = RoundFloat(amount);
+		return;
+	}
+
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
 
@@ -90,7 +159,7 @@ stock void Attributes_SetAdd(int entity, int attrib, float amount)
 
 	WeaponAttributes[entity].SetValue(buffer, value);
 	if(!Attribute_ServerSide(attrib))
-		Attributes_Set(entity, attrib, value);
+		Attributes_Set(entity, attrib, value, true);
 }
 
 stock void Attributes_SetMulti(int entity, int attrib, float amount)
@@ -113,7 +182,7 @@ stock void Attributes_SetMulti(int entity, int attrib, float amount)
 
 	WeaponAttributes[entity].SetValue(buffer, value);
 	if(!Attribute_ServerSide(attrib))
-		Attributes_Set(entity, attrib, value);
+		Attributes_Set(entity, attrib, value, true);
 }
 
 stock bool Attributes_GetString(int entity, int attrib, char[] value, int length, int &size = 0)
@@ -136,7 +205,7 @@ stock void Attributes_SetString(int entity, int attrib, const char[] value)
 	WeaponAttributes[entity].SetString(buffer, value);
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 bool Attributes_Fire(int weapon)
 {
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
@@ -165,14 +234,13 @@ int Attributes_Airdashes(int client)
 }
 #endif
 
-void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype, bool &guraneedGib)
+void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
 	{
 		if(weapon < 1)
 		{
 			return;
 		}
-
 		if(!(damagetype & DMG_SLASH)) //Exclude itself so it doesnt do inf repeats! no weapon uses slash so we will use slash for any debuffs onto zombies that stacks
 		{
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
@@ -193,12 +261,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				
 				value = Attributes_Get(weapon, 208, 0.0);	// Set DamageType Ignite
 
-				int itemdefindex = -1;
-				if(IsValidEntity(weapon) && weapon >= MaxClients)
-				{
-					itemdefindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-				}
-				if(value || (itemdefindex ==  594 || itemdefindex == 208)) //Either this attribute, or burn damamage!
+				if(value)
 				{
 
 					if(value == 1.0)
@@ -283,9 +346,26 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 
 		value = Attributes_Get(weapon, 309, 0.0);	// Gib on crit, in this case, guranted gibs
 		if(value)
-			guraneedGib = true;
-
-			
+			view_as<CClotBody>(victim).m_bGib = true;
+		
+		value = Attributes_Get(weapon, 4016, 1.0);	// bonus damage to raids
+		if(value != 1.0)
+		{
+			if(b_thisNpcIsARaid[victim])
+			{
+				damage *= value;
+			}
+		}
+		value = Attributes_Get(weapon, 4017, 0.0);	// Attackspeed converts into damage
+		if(value)
+		{
+			value = Attributes_Get(weapon, 6, 0.0);
+			if(value)
+			{
+				damage /= value;
+			}
+		}
+		
 		value = Attributes_Get(weapon, 225, 0.0);	// if Above Half Health
 		if(value)
 		{
@@ -313,7 +393,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		{
 			if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
 			{
-				value /= 2.0;
+				value *= 0.5;
 			}
 
 			if(b_thisNpcIsARaid[victim])
@@ -346,7 +426,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 	}
 }
 
-void Attributes_OnKill(int client, int weapon)
+void Attributes_OnKill(int victim, int client, int weapon)
 {
 
 	SetEntProp(client, Prop_Send, "m_iKills", GetEntProp(client, Prop_Send, "m_iKills") + 1);
@@ -369,6 +449,14 @@ void Attributes_OnKill(int client, int weapon)
 
 		if(value)
 		{
+			if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+			{
+				value *= 4.0;
+			}
+			else if(b_IsGiant[victim])
+			{
+				value *= 2.0;
+			}
 			HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
 		}
 		
@@ -493,4 +581,50 @@ stock float Attributes_FindOnPlayerZR(int client, int index, bool multi=false, f
 		return Attributes_GetOnWeapon(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), index, multi);
 	
 	return Attributes_GetOnPlayer(client, index, multi, IgnoreWeaponsEquipped);
+}
+
+/*
+
+#define MULTIDMG_NONE 		 ( 1<<0 )
+#define MULTIDMG_MAGIC_WAND  ( 1<<1 )
+#define MULTIDMG_BLEED 		 ( 1<<2 )
+#define MULTIDMG_BUILDER 	 ( 1<<3 )
+
+*/
+float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, int client = 0)
+{
+	float DamageBonusLogic = 1.0;
+	if((Flags & MULTIDMG_BUILDER))
+	{
+		if(client > 0)
+		{
+			float attack_speed;		
+			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
+							
+			DamageBonusLogic = attack_speed * DamageBonusLogic * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			return DamageBonusLogic;	
+		}
+	}
+	DamageBonusLogic *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
+#if defined ZR
+	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_TEUTON_DEAD)
+#endif
+	{
+		DamageBonusLogic *= Attributes_Get(weapon, 476, 1.0); //global dmg multi
+	}
+
+	if(!(Flags & MULTIDMG_BLEED))
+	{
+		DamageBonusLogic *= Attributes_Get(weapon, 1, 1.0); //only base damage
+	}
+
+	if((Flags & MULTIDMG_MAGIC_WAND))
+	{
+		DamageBonusLogic *= Attributes_Get(weapon, 410, 1.0); //wand damage multi
+	}
+	else if(!(Flags & MULTIDMG_BUILDER))
+	{
+		DamageBonusLogic *= Attributes_Get(weapon, 2, 1.0); //non wand dmg multi
+	}
+	return DamageBonusLogic;
 }

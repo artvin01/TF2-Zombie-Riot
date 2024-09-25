@@ -20,6 +20,8 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/medic_battlecry04.mp3",
 };
 
+static float fl_npc_basespeed;
+
 public void Barrack_Alt_Intermediate_Mage_MapStart()
 {
 	PrecacheModel("models/player/medic.mdl");
@@ -64,9 +66,7 @@ methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public Barrack_Alt_Intermediate_Mage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -79,6 +79,7 @@ methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
 		func_NPCThink[npc.index] = Barrack_Alt_Intermediate_Mage_ClotThink;
 
 		npc.m_flSpeed = 200.0;
+		fl_npc_basespeed = 200.0;
 		
 		
 		
@@ -154,7 +155,7 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 						float flAng[3]; // original
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 							
-						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),600.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),450.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 						npc.m_flNextMeleeAttack = GameTime + (2.25 * npc.BonusFireRate);
 						npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 					}
@@ -167,6 +168,15 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 300000.0, _, false);
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 

@@ -36,7 +36,33 @@ static const char g_RangedReloadSound[][] = {
 	"weapons/dragons_fury_pressure_build.wav",
 };
 
+static const char g_HyperArrowSound[][] = {
+	"ambient_mp3/halloween/thunder_01.mp3",
+	"ambient_mp3/halloween/thunder_02.mp3",
+	"ambient_mp3/halloween/thunder_03.mp3",
+	"ambient_mp3/halloween/thunder_04.mp3",
+	"ambient_mp3/halloween/thunder_05.mp3",
+	"ambient_mp3/halloween/thunder_06.mp3",
+	"ambient_mp3/halloween/thunder_07.mp3",
+	"ambient_mp3/halloween/thunder_08.mp3",
+	"ambient_mp3/halloween/thunder_09.mp3",
+	"ambient_mp3/halloween/thunder_10.mp3"
+};
+
 void Aetheria_OnMapStart_NPC()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Aetheria");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_aetheria");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_bow_multi"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -44,24 +70,27 @@ void Aetheria_OnMapStart_NPC()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
+	PrecacheSoundArray(g_HyperArrowSound);
 
 	PrecacheModel("models/player/sniper.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Aetheria");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_aetheria");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Aetheria(client, vecPos, vecAng, ally);
 }
 
+static float fl_npc_basespeed;
 methodmap Aetheria < CClotBody
 {
 	
+	public void PlayHyperArrowSound() {
+		EmitSoundToAll(g_HyperArrowSound[GetRandomInt(0, sizeof(g_HyperArrowSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayHyperArrowSound()");
+		#endif
+	}
+
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -80,9 +109,7 @@ methodmap Aetheria < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -94,33 +121,54 @@ methodmap Aetheria < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+		
+	}
+
+	public void Set_WalkCycle()
+	{
+		bool Aimed = false;
+
+		float GameTime = GetGameTime(this.index);
+
+		if(this.m_flNextRangedAttack < (GameTime + 1.0))	//we are about to fire a arrow, aim.
+			Aimed = true;
+
+		if(Aimed)
+		{
+			if(!this.m_fbGunout)
+			{
+				int iActivity = this.LookupActivity("ACT_MP_DEPLOYED_ITEM2");	//OR ACT_MP_DEPLOYED_ITEM2
+				if(iActivity > 0) this.StartActivity(iActivity);
+				this.m_fbGunout = true;
+			}
+		}
+		else
+		{
+			if(this.m_fbGunout)
+			{
+				int iActivity = this.LookupActivity("ACT_MP_RUN_ITEM2");
+				if(iActivity > 0) this.StartActivity(iActivity);
+				this.m_fbGunout = false;
+			}
+		}
 	}
 	
 	
@@ -132,73 +180,62 @@ methodmap Aetheria < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM2");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		/*
-			C_Bet_Brinkhood	models/workshop_partner/player/items/sniper/c_bet_brinkhood/c_bet_brinkhood.mdl
-			"models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl"
-			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl"
-			Hwn_Spy_Misc2 "models/player/items/spy/hwn_spy_misc2.mdl"
-			Hazeguard "models/workshop/player/items/pyro/hazeguard/hazeguard.mdl"
-
-			power spike? "models/workshop/player/items/sniper/hwn2023_power_spike_style1/hwn2023_power_spike_style1.mdl"
+			//Blighted beak 			"models/player/items/medic/medic_blighted_beak.mdl"
+			//Whiskey Bib				"models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl"
+			//Intangible Ascot 			"models/player/items/spy/hwn_spy_misc2.mdl"
+			//Gentleman's Ushanka		"models/player/items/medic/medic_ushanka.mdl"
+			//power spike 				"models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl"
+			//Triggerman's tacticals	"models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl"
 		
 		*/
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		
-		
+
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 200.0;
+		fl_npc_basespeed = 200.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/sniper/c_bet_brinkhood/c_bet_brinkhood.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/spy/hwn_spy_misc2.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+		static const char Items[][] = {
+			"models/player/items/medic/medic_blighted_beak.mdl",
+			"models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl",
+			"models/player/items/spy/hwn_spy_misc2.mdl",
+			"models/player/items/medic/medic_ushanka.mdl",
+			"models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl",
+			"models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl",
+			RUINA_CUSTOM_MODELS_1
+		};
 
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/pyro/hazeguard/hazeguard.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		
-		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-				
-				
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+
+		SetVariantInt(RUINA_QUINCY_BOW_1);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+			
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -251,16 +288,13 @@ static void ClotThink(int iNPC)
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
-	
-	/*if(fl_ruina_battery[npc.index]>500.0)
-	{
-		fl_ruina_battery[npc.index] = 0.0;
-		
-	}*/
+
+	Ruina_Add_Battery(npc.index, 1.0);
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			
+		npc.Set_WalkCycle();
+		
 		int Anchor_Id=-1;
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
 
@@ -271,7 +305,7 @@ static void ClotThink(int iNPC)
 
 		if(!IsValidEntity(Anchor_Id))
 		{
-			if(flDistanceToTarget < (2000.0*2000.0))
+			if(flDistanceToTarget < (500.0*500.0))
 			{
 				int Enemy_I_See;
 				
@@ -279,7 +313,7 @@ static void ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 				{
-					if(flDistanceToTarget < (750.0*750.0))
+					if(flDistanceToTarget < (300.0*300.0))
 					{
 						npc.m_bAllowBackWalking=true;
 						Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
@@ -309,6 +343,14 @@ static void ClotThink(int iNPC)
 		{
 			npc.m_bAllowBackWalking=false;
 		}
+
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}	
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
 		
 		Aetheria_SelfDefense(npc, GameTime, Anchor_Id);
 	}
@@ -331,7 +373,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);	//ruina logic happens first, then npc
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -350,8 +392,8 @@ static void NPC_Death(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	Ruina_NPCDeath_Override(entity);
-		
+	Ruina_NPCDeath_Override(npc.index);
+
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
@@ -364,8 +406,9 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }
-
 static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//ty artvin
 {
 	int GetClosestEnemyToAttack;
@@ -379,27 +422,28 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
-	if(flDistanceToTarget < (2250.0*2250.0))
+	
+	if(flDistanceToTarget < (1500.0*1500.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
 		{
 			fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
-			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
+			npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
 			npc.PlayRangedSound();
 			//after we fire, we will have a short delay beteween the actual laser, and when it happens
 			//This will predict as its relatively easy to dodge
-			float projectile_speed = 1250.0;
+			float projectile_speed = 2000.0;
 			//lets pretend we have a projectile.
-			if(flDistanceToTarget < 1250.0*1250.0)
+			if(flDistanceToTarget < 750.0*750.0)
 				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 			{
 				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 			}
-			float DamageDone = 25.0;
+			float DamageDone = 50.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;	
 		}
 	}
 	else
@@ -419,23 +463,23 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
+					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
 					npc.PlayRangedSound();
 					//after we fire, we will have a short delay beteween the actual laser, and when it happens
 					//This will predict as its relatively easy to dodge
-					float projectile_speed = 1250.0;
+					float projectile_speed = 2000.0;
 					//lets pretend we have a projectile.
-					if(flDistanceToTarget < 1250.0*1250.0)
+					if(flDistanceToTarget < 750.0*750.0)
 						PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 					{
 						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 					}
-					float DamageDone = 25.0;
+					float DamageDone = 50.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
-					npc.PlayRangedReloadSound();
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
+					npc.PlayRangedReloadSound();			
 				}
 			}
 		}

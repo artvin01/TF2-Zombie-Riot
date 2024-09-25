@@ -41,7 +41,8 @@ void Addiction_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Addiction");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_addiction");
-	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	strcopy(data.Icon, sizeof(data.Icon), "psycho");
+	//already downlowded for psycho
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_COF;
@@ -181,7 +182,7 @@ public void Addicition_ClotThink(int iNPC)
 		npc.m_flMeleeArmor = Armor_Stats;
 		npc.m_flRangedArmor = Armor_Stats;
 	}
-	else if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2)
+	else if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < ReturnEntityMaxHealth(npc.index)/2)
 	{
 		npc.SetHalfLifeStats();
 	}
@@ -473,28 +474,5 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 
 	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
 	
-	TE_SendToAll();
-}
-
-static void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
-{
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
-			
-	int ICE_INT = PrecacheModel(sprite);
-		
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = alpha;
-		
-	if (endRange == -69.0)
-	{
-		endRange = range + 0.5;
-	}
-	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }

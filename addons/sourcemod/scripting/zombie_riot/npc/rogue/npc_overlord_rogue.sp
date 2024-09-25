@@ -18,7 +18,7 @@ static const char g_IdleSounds[][] = {
 	")npc/combine_soldier/vo/alert1.wav",
 	")npc/combine_soldier/vo/bouncerbouncer.wav",
 	")npc/combine_soldier/vo/boomer.wav",
-	")npc/combine_soldier/vo/contactconfirm.wav",
+	")npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -81,9 +81,15 @@ void OverlordRogue_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("#zombiesurvival/wave_music/bat_talulha.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -111,9 +117,7 @@ methodmap OverlordRogue < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -125,41 +129,31 @@ methodmap OverlordRogue < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)]);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedAttackSecondarySound() {
 		
@@ -171,25 +165,19 @@ methodmap OverlordRogue < CClotBody
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlaySpecialChargeSound() {
 		EmitSoundToAll(g_ChargeSounds[GetRandomInt(0, sizeof(g_ChargeSounds) - 1)], this.index, _, 110, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	public OverlordRogue(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -217,10 +205,22 @@ methodmap OverlordRogue < CClotBody
 		func_NPCThink[npc.index] = OverlordRogue_ClotThink;
 		
 		bool final = StrContains(data, "final_item") != -1;
+		bool final2 = StrContains(data, "music_do") != -1;
 		
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
+		}
+		if(final2)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/wave_music/bat_talulha.mp3");
+			music.Time = 209;
+			music.Volume = 1.75;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Arknights bat_talulha (no Official name.)");
+			strcopy(music.Artist, sizeof(music.Artist), "Arknights");
+			Music_SetRaidMusic(music);
 		}
 		
 		strcopy(SpawnPoint, sizeof(SpawnPoint), data);
@@ -245,7 +245,7 @@ methodmap OverlordRogue < CClotBody
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.7");
+		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 2);

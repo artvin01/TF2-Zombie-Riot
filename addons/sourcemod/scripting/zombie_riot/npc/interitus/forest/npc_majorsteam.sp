@@ -50,6 +50,7 @@ methodmap MajorSteam < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		b_NpcUnableToDie[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -78,6 +79,8 @@ methodmap MajorSteam < CClotBody
 		b_CannotBeSlowed[npc.index] = true;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
+		if(Rogue_Paradox_RedMoon())
+			IgniteTargetEffect(npc.m_iWearable1);
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/robo_soldier_fullmetaldrillhat/robo_soldier_fullmetaldrillhat.mdl", _, _, 1.001);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
@@ -104,6 +107,7 @@ static void ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		SDKHooks_TakeDamage(npc.index, 0, 0, 1000000.0, DMG_BLAST);
+		SmiteNpcToDeath(npc.index);
 		return;
 	}
 
@@ -159,30 +163,43 @@ static void ClotThink(int iNPC)
 					}
 				}
 
+				float damageDeal = 165.0;
+				float ProjectileSpeed = 450.0;
+				if(Rogue_Paradox_RedMoon())
+				{
+					ProjectileSpeed *= 1.15;
+				}
+
+				if(npc.m_iOverlordComboAttack % 3)
+					ProjectileSpeed *= 1.25;
+
 				if(npc.m_iOverlordComboAttack % 2)
-					PredictSubjectPositionForProjectiles(npc, target, (npc.m_iOverlordComboAttack % 3) ? 350.0 : 1100.0, _,vecTarget);
+					PredictSubjectPositionForProjectiles(npc, target, ProjectileSpeed, _,vecTarget);
 
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.PlayMeleeSound();
 
-				int entity = npc.FireRocket(vecTarget, 200.0, 350.0,_,_,_,70.0);
+				int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,70.0);
 				if(entity != -1)
 				{
-					i_ChaosArrowAmount[entity] = 100;
+					i_ChaosArrowAmount[entity] = 80;
+					if(Rogue_Paradox_RedMoon())
+						i_ChaosArrowAmount[entity] = 125;
+
+					//max duration of 4 seconds beacuse of simply how fast they fire
+					CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					SetEntProp(entity, Prop_Send, "m_bCritical", true);
 				}
 
 				npc.m_iOverlordComboAttack--;
 
-				if(!Rogue_Paradox_RedMoon())
+				if(npc.m_iOverlordComboAttack < 1)
 				{
-					if(npc.m_iOverlordComboAttack < 1)
-					{
-						npc.m_flAttackHappens = 0.0;
-					}
-					else
-					{
-						npc.m_flAttackHappens = gameTime + 0.15;
-					}
+					npc.m_flAttackHappens = 0.0;
+				}
+				else
+				{
+					npc.m_flAttackHappens = gameTime + 0.15;
 				}
 			}
 		}
@@ -248,8 +265,8 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			return Plugin_Handled;
 		}
 		
-		npc.m_flMeleeArmor += 0.001 / MultiGlobal;
-		npc.m_flRangedArmor += 0.001 / MultiGlobal;
+		npc.m_flMeleeArmor += 0.001 / MultiGlobalEnemy;
+		npc.m_flRangedArmor += 0.001 / MultiGlobalEnemy;
 
 		if(npc.m_flMeleeArmor > 2.0)
 			npc.m_flMeleeArmor = 2.0;
@@ -277,7 +294,7 @@ static void ClotDeath(int entity)
 	Explode_Logic_Custom(999999.9, npc.index, npc.index, -1, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 40, _, _, _, MajorSteamExplodePre);
 	b_NpcIsTeamkiller[npc.index] = false;
 
-	int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4;
+	int health = ReturnEntityMaxHealth(npc.index) / 4;
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	

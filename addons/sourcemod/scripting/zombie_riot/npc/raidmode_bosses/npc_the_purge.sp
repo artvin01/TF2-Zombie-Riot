@@ -34,7 +34,7 @@ void ThePurge_MapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "the_purge");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -140,9 +140,10 @@ methodmap ThePurge < CClotBody
 	{
 		ThePurge npc = view_as<ThePurge>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "25000", team, false, true, true, true));
 		
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		npc.m_bisWalking = true;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		npc.AddGesture("ACT_MP_CYOA_PDA_OUTRO");
 
@@ -268,6 +269,7 @@ static void ClotThink(int iNPC)
 			npc.m_flNextMeleeAttack = gameTime + 1.0;
 			npc.m_flSwitchCooldown = FAR_FUTURE;
 			npc.m_flSpeed = 450.0;
+			npc.m_bisWalking = true;
 			npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
 			npc.SetWeaponModel("models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
 			npc.StartPathing();
@@ -319,6 +321,11 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
+	if(npc.m_iGunType == 0)
+	{
+		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ RaidModeScaling * 5.0);
+	}
+
 	if(target > 0)
 	{
 		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
@@ -347,6 +354,7 @@ static void ClotThink(int iNPC)
 						npc.PlayMinigunStopSound();
 					
 					npc.m_iGunType++;
+					npc.m_bisWalking = true;
 					npc.SetWeaponModel("models/workshop/weapons/c_models/c_russian_riot/c_russian_riot.mdl");
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.m_flNextMeleeAttack = gameTime + 0.5;
@@ -359,6 +367,7 @@ static void ClotThink(int iNPC)
 				case 1, 4, 7:	// Shotgun -> SMG
 				{
 					npc.m_iGunType++;
+					npc.m_bisWalking = true;
 					npc.SetWeaponModel("models/workshop/weapons/c_models/c_trenchgun/c_trenchgun.mdl");
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.m_flNextMeleeAttack = gameTime + 0.5;
@@ -371,6 +380,7 @@ static void ClotThink(int iNPC)
 				case 2:	// SMG/Healing -> Minigun
 				{
 					npc.m_iGunType = 3;
+					npc.m_bisWalking = true;
 					npc.SetWeaponModel("models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
 					npc.SetActivity("ACT_MP_CROUCH_DEPLOYED_IDLE");
 					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.5 : 1.0);
@@ -387,6 +397,7 @@ static void ClotThink(int iNPC)
 				{
 					npc.m_iGunType = 6;
 					npc.SetWeaponModel("");
+					npc.m_bisWalking = false;
 					npc.SetActivity("taunt_burstchester_heavy", true);
 					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 1.65 : 3.25);
 					npc.m_flSpeed = 1.0;
@@ -394,7 +405,7 @@ static void ClotThink(int iNPC)
 					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Activation: Rocket barrage.");
 
 					if(npc.Anger)
-						npc.SetPlaybackRate(0.5);
+						npc.SetPlaybackRate(2.0);
 
 					npc.m_flRangedArmor = 0.25;
 					npc.m_flMeleeArmor = 0.375;
@@ -404,6 +415,7 @@ static void ClotThink(int iNPC)
 				case 8:	// SMG -> Grenade
 				{
 					npc.m_iGunType = 9;
+					npc.m_bisWalking = true;
 					npc.SetWeaponModel("models/workshop/weapons/c_models/c_quadball/c_quadball.mdl");
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.m_flNextMeleeAttack = gameTime + 1.0;
@@ -412,6 +424,8 @@ static void ClotThink(int iNPC)
 
 					npc.m_flRangedArmor = 1.0;
 					npc.m_flMeleeArmor = 1.5;
+					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Quad Burst Launcher online.");
 				}
 				case 9:	// Grenade -> Fists
 				{
@@ -420,19 +434,23 @@ static void ClotThink(int iNPC)
 
 					npc.m_iGunType = 0;
 					npc.SetWeaponModel("");
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					cooldown = 3.0;
 
 					npc.m_flRangedArmor = 1.5;
 					npc.m_flMeleeArmor = 2.25;
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Weapons Error. Run over targets.");
 				}
 				case 10:	// Healing -> Fists
 				{
 					npc.m_iGunType = 0;
 					npc.SetWeaponModel("");
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flSpeed = 400.0;
 					cooldown = 5.0;
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Re-Oiling Complete. Run over targets.");
 				}
 			}
 
@@ -577,7 +595,7 @@ static void ClotThink(int iNPC)
 					
 					float vecDir[3];
 
-					float damage = RaidModeScaling * 0.05;
+					float damage = RaidModeScaling * 0.15;
 					
 					npc.m_flSpeed -= 1.0;
 					if(npc.m_flSpeed < 0.0)
@@ -645,7 +663,15 @@ static void ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
 						PredictSubjectPositionForProjectiles(npc, target, 1000.0, _,vecTarget);
-						npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
+						npc.FireRocket(vecTarget, RaidModeScaling, 1000.0);
+						PredictSubjectPositionForProjectiles(npc, target, 800.0, _,vecTarget);
+						npc.FireRocket(vecTarget, RaidModeScaling, 800.0);
+						PredictSubjectPositionForProjectiles(npc, target, 600.0, _,vecTarget);
+						npc.FireRocket(vecTarget, RaidModeScaling, 600.0);
+						PredictSubjectPositionForProjectiles(npc, target, 350.0, _,vecTarget);
+						npc.FireRocket(vecTarget, RaidModeScaling, 350.0);
+
+					//	npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
 
 						npc.m_flNextMeleeAttack = gameTime + 0.45;
 					}
@@ -654,7 +680,9 @@ static void ClotThink(int iNPC)
 			case 10:	// Healing
 			{
 				npc.StopPathing();
+				npc.m_bisWalking = false;
 				npc.SetActivity("taunt_cheers_heavy", true);
+				npc.SetWeaponModel("models/workshop/weapons/c_models/c_scotland_shard/c_scotland_shard.mdl");
 			}
 			case 11:	// Minigun
 			{
@@ -708,7 +736,7 @@ static void ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-
+		npc.m_bisWalking = false;
 		npc.SetActivity("taunt02", true);
 		npc.SetPlaybackRate(0.5);
 		npc.SetWeaponModel("models/workshop/weapons/c_models/c_russian_riot/c_russian_riot.mdl");
@@ -721,8 +749,10 @@ static void ClotDeathStartThink(int iNPC)
 	ThePurge npc = view_as<ThePurge>(iNPC);
 	
 	CPrintToChatAll("{crimson}The Purge{default}: {crimson}ERROR ERROR ERROR.");
+	npc.m_bisWalking = false;
 	npc.SetActivity("taunt_mourning_mercs_heavy", true);
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.5;
+	npc.StopPathing();
 	func_NPCThink[npc.index] = ClotDeathLoopThink;
 	ClotDeathLoopThink(npc.index);
 }
@@ -781,7 +811,7 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			return Plugin_Handled;
 		}
 
-		if(!npc.Anger && health < (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4))
+		if(!npc.Anger && health < (ReturnEntityMaxHealth(npc.index) / 4))
 		{
 			npc.Anger = true;
 			npc.PlayAngerSound();
@@ -798,9 +828,9 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			npc.m_flRangedArmor = 0.25;
 			npc.m_flMeleeArmor = 0.375;
 
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 8.0, _, 3.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 15.0, _, 13.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 15.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
+			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 8.0, _, 3.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 15.0, _, 13.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 15.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
 		}
 	}
 	return Plugin_Changed;
@@ -810,6 +840,9 @@ static void ClotDeath(int entity)
 {
 	ThePurge npc = view_as<ThePurge>(entity);
 	npc.PlayMinigunStopSound();
+	npc.PlayMinigunStopSound();
+	npc.StopMinigunSound();
+	npc.StopMinigunSound();
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

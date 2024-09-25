@@ -2,10 +2,9 @@
 #pragma newdecls required
 
 
-static char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+static const char g_DeathSounds[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
 static char g_HurtSounds[][] = {
@@ -87,7 +86,7 @@ static bool b_InKame[MAXENTITIES];
 static float fl_NextPull[MAXENTITIES];
 static int i_AmountProjectiles[MAXENTITIES];
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 
@@ -99,7 +98,7 @@ public void TrueFusionWarrior_OnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "fusion_warrior");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -217,19 +216,12 @@ methodmap TrueFusionWarrior < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
 		
 		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_DeathSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	
 	public void PlayAngerSound() {
@@ -246,9 +238,7 @@ methodmap TrueFusionWarrior < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayPullSound() {
@@ -270,17 +260,13 @@ methodmap TrueFusionWarrior < CClotBody
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -316,6 +302,7 @@ methodmap TrueFusionWarrior < CClotBody
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 		
 		b_thisNpcIsARaid[npc.index] = true;
@@ -406,6 +393,7 @@ methodmap TrueFusionWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -436,7 +424,11 @@ methodmap TrueFusionWarrior < CClotBody
 		npc.m_bInKame = false;
 		
 		Citizen_MiniBossSpawn();
-		FusionApplyEffects(npc.index, 0);
+		npc.m_iWearable7 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+		SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 2);
+		SetVariantInt(2048);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+	//	FusionApplyEffects(npc.index, 0);
 		return npc;
 	}
 }
@@ -967,7 +959,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 
 	f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
@@ -980,7 +972,10 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		SetEntPropVector(npc.index, Prop_Send, "m_vecMins", minbounds);
 		SetEntPropVector(npc.index, Prop_Send, "m_vecMaxs", maxbounds);
 		*/
-		FusionApplyEffects(npc.index, 1);
+		if(IsValidEntity(npc.m_iWearable7))
+			SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 3);
+
+		//FusionApplyEffects(npc.index, 1);
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -992,7 +987,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 	}
 	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
-		if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/20) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
+		if(((ReturnEntityMaxHealth(npc.index)/20) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 
@@ -1027,20 +1022,15 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 			{
 				RemoveEntity(npc.m_iWearable1);
 			}
+			if(IsValidEntity(npc.m_iWearable7))
+			{
+				RemoveEntity(npc.m_iWearable7);
+			}
 
 
 			SetVariantColor(view_as<int>({150, 150, 0, 150}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 			ExpidonsaRemoveEffects(npc.index);
-
-/*
-			float flPos[3]; // original
-			float flAng[3]; // original
-
-			npc.GetAttachment("head", flPos, flAng);
-		
-			npc.m_iWearable6 = InfoTargetParentAt_Parent(flPos, "utaunt_astralbodies_greenorange_parent", npc.index, "head", {0.0,0.0,0.0});
-*/
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
 		}
@@ -1059,10 +1049,10 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 public void TrueFusionWarrior_NPCDeath(int entity)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(entity);
-	if(!npc.m_bDissapearOnDeath)
-	{
-		npc.PlayDeathSound();
-	}
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+	npc.PlayDeathSound();
 	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
@@ -1106,7 +1096,7 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 45;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("EEDD44");
-	FusionWarrior_BEAM_ChargeUpTime[client] = 200;
+	FusionWarrior_BEAM_ChargeUpTime[client] = RoundToFloor(200 * TickrateModify);
 	FusionWarrior_BEAM_CloseBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_FarBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_Duration[client] = 6.0;
@@ -1169,7 +1159,7 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 25;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	FusionWarrior_BEAM_ChargeUpTime[client] = 200;
+	FusionWarrior_BEAM_ChargeUpTime[client] = RoundToFloor(200*TickrateModify);
 	FusionWarrior_BEAM_CloseBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_FarBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_Duration[client] = 4.0;
@@ -1365,6 +1355,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
+					damage /= TickrateModify;
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
 
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?

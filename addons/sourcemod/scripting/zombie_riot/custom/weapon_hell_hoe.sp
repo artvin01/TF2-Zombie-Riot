@@ -131,7 +131,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 			
 			if (i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_2 && g_isPlayerInDeathMarch_HellHoe[client]) {
 				int newMana = Current_Mana[client] - 10;
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				if (newMana <= 0) {
@@ -235,11 +235,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 				
 				if (flHealToGainNotRounded > 0.0) {
 					int playerMaxHp = SDKCall_GetMaxHealth(client);
-					int healingdone = HealEntityGlobal(client, client, flHealToGainNotRounded, 1.0,_,HEAL_ABSOLUTE|HEAL_SELFHEAL, playerMaxHp/2);
-					if(healingdone > 0)
-					{
-						ApplyHealEvent(client, healingdone);
-					}
+					HealEntityGlobal(client, client, flHealToGainNotRounded, 1.0,_,HEAL_ABSOLUTE|HEAL_SELFHEAL, playerMaxHp/2);
 				}
 			}
 		}
@@ -266,7 +262,7 @@ public Action Weapon_Junker_Staff(int client, int weapon, const char[] classname
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -307,7 +303,7 @@ public Action Weapon_Junker_Staff_PAP1(int client, int weapon, const char[] clas
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -357,7 +353,7 @@ public Action Weapon_Junker_Staff_PAP2(int client, int weapon, const char[] clas
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -400,7 +396,7 @@ public Action Weapon_Angel_Sword(int client, int weapon, const char[] classname,
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -441,7 +437,7 @@ public Action Weapon_Angel_Sword_PAP(int client, int weapon, const char[] classn
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -484,7 +480,7 @@ public Action Weapon_Hell_Hoe(int client, int weapon, const char[] classname, bo
 		float damage = 65.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -657,11 +653,7 @@ public void Weapon_Angel_Sword_PAP_M2(int client, int weapon, const char[] class
 						int playerMaxHp = SDKCall_GetMaxHealth(ally);
 						if (playerMaxHp<clientMaxHp)
 							playerMaxHp=clientMaxHp;
-						int healingdone = HealEntityGlobal(client, ally, playerMaxHp * 0.3, 10.0,_,HEAL_ABSOLUTE);
-						if(healingdone > 0)
-						{
-							ApplyHealEvent(ally, healingdone);
-						}
+						HealEntityGlobal(client, ally, playerMaxHp * 0.3, 10.0,_,HEAL_ABSOLUTE);
 						
 						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
 					}
@@ -739,11 +731,7 @@ public void Weapon_DRMad_Reload(int client, int weapon, bool crit, int slot)
 						int playerMaxHp = SDKCall_GetMaxHealth(ally);
 						if (playerMaxHp<clientMaxHp)
 							playerMaxHp=clientMaxHp;
-						int healingdone = HealEntityGlobal(client, ally, playerMaxHp * 0.5, 10.0,_,HEAL_ABSOLUTE);
-						if(healingdone > 0)
-						{
-							ApplyHealEvent(ally, healingdone);
-						}
+						HealEntityGlobal(client, ally, playerMaxHp * 0.5, 10.0,_,HEAL_ABSOLUTE);
 						
 						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
 					}
@@ -791,11 +779,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 						int playerMaxHp = SDKCall_GetMaxHealth(ally);
 						if (playerMaxHp<clientMaxHp)
 							playerMaxHp=clientMaxHp;
-						int healingdone = HealEntityGlobal(client, ally, playerMaxHp * 0.1, 10.0,_,HEAL_ABSOLUTE);
-						if(healingdone > 0)
-						{
-							ApplyHealEvent(ally, healingdone);
-						}
+						HealEntityGlobal(client, ally, playerMaxHp * 0.1, 10.0,_,HEAL_ABSOLUTE);
 						
 						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
 					}
@@ -901,16 +885,14 @@ public Action Event_Hell_Hoe_OnHatTouch(int entity, int other)
 		//Code to do damage position and ragdolls
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
-	
+
+		Damage_Projectile[entity] *= 0.5;
+		
 		if (Healing_Projectile[entity] > 0.0) {
 			int client = Projectile_To_Client[entity];
 			int flMaxHealth = SDKCall_GetMaxHealth(client);
 			
-			int healingdone = HealEntityGlobal(client, client, flMaxHealth * Healing_Projectile[entity], 1.0,_, HEAL_ABSOLUTE|HEAL_SELFHEAL);
-			if(healingdone > 0)
-			{
-				ApplyHealEvent(client, healingdone);
-			}
+			HealEntityGlobal(client, client, flMaxHealth * Healing_Projectile[entity], 1.0,_, HEAL_ABSOLUTE|HEAL_SELFHEAL);
 		}
 		else if (Healing_Projectile[entity] == -2.0) {
 			int client = Projectile_To_Client[entity];

@@ -84,6 +84,7 @@ methodmap FirstToTalk < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		i_NpcWeight[npc.index] = 4;
+		npc.m_bisWalking = true;
 		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
 		
@@ -134,12 +135,12 @@ public void FirstToTalk_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
 	
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
+		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
@@ -184,13 +185,14 @@ public void FirstToTalk_ClotThink(int iNPC)
 		if(distance < 250000.0 && npc.m_flNextMeleeAttack < gameTime)	// 2.5 * 200
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-			if(IsValidEnemy(npc.index, target, true))
+			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
 
 				if(npc.m_flNextRangedAttack < gameTime)
 				{
 					npc.PlayAngerSound();
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_SEABORN_FIRST_ATTACK_2");
 					b_NpcIsInvulnerable[npc.index] = true;
 					
@@ -218,8 +220,8 @@ public void FirstToTalk_ClotThink(int iNPC)
 
 					spawnRing_Vectors(vecTarget, 325.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 4.5, 6.0, 0.1, 1);
 
-					npc.m_flDoingAnimation = gameTime + 4.0;
-					npc.m_flNextMeleeAttack = gameTime + 6.0;
+					npc.m_flDoingAnimation = gameTime + 3.0;
+					npc.m_flNextMeleeAttack = gameTime + 5.0;
 					npc.m_flNextRangedAttack = gameTime + 35.0;
 				}
 				else
@@ -255,6 +257,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 			if(b_NpcIsInvulnerable[npc.index])
 			{
 				b_NpcIsInvulnerable[npc.index] = false;
+				npc.m_bisWalking = true;
 				npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 			}
 		}
@@ -348,7 +351,7 @@ public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 			SDKHooks_TakeDamage(victim, npc.index, npc.index, 90.0, DMG_BULLET);
 			// 600 x 0.15
 			
-			SeaSlider_AddNeuralDamage(victim, npc.index, 36);
+			Elemental_AddNervousDamage(victim, npc.index, 36);
 			// 600 x 0.4 x 0.15
 		}
 	}

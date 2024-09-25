@@ -182,7 +182,7 @@ static void ClotThink(int iNPC)
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecTarget, false);
 
 				float damage = Rogue_Paradox_RedMoon() ? 100.0 : 50.0;
-				if(ShouldNpcDealBonusDamage(target))
+				if(target > MaxClients)
 					damage *= Rogue_Paradox_RedMoon() ? 250.0 : 50.0;
 				
 				npc.PlayMeleeHitSound();

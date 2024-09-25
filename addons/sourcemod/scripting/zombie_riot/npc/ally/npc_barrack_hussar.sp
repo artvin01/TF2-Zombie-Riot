@@ -83,14 +83,14 @@ public void BarrackHussar_ClotThink(int iNPC)
 						npc.AddGesture("ACT_RIDER_ATTACK");
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.4;
-						npc.m_flAttackHappens_bullshit = GameTime + 0.54;
+						npc.m_flNextRangedSpecialAttack = GameTime + 0.54;
 						npc.m_flDoingAnimation = GameTime + 0.6;
 						npc.m_flReloadDelay = GameTime + 0.6;
 						npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
-					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
+					if(npc.m_flAttackHappens < GameTime && npc.m_flNextRangedSpecialAttack >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -103,14 +103,14 @@ public void BarrackHussar_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),15000.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),14500.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
+					else if(npc.m_flNextRangedSpecialAttack < GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
 					}

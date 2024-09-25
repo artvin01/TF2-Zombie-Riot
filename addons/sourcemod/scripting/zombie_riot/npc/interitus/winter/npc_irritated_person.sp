@@ -448,7 +448,7 @@ void WinterIrritatedPersonSelfDefense(WinterIrritatedPerson npc, float gameTime,
 public void WinterIrritatedPerson_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	WinterIrritatedPerson npc = view_as<WinterIrritatedPerson>(victim);
-	float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float maxhealth = float(ReturnEntityMaxHealth(npc.index));
 	float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float Ratio = health / maxhealth;
 	if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)

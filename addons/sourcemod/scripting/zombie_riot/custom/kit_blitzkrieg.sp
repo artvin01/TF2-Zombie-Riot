@@ -5,7 +5,8 @@ static Handle h_TimerKitBlitzkriegManagement[MAXPLAYERS+1] = {null, ...};
 static float fl_hud_timer[MAXPLAYERS+1];
 static float fl_primary_reloading[MAXPLAYERS+1];
 static bool b_primary_lock[MAXPLAYERS+1];
-static int i_ion_charge[MAXPLAYERS+1];
+static float fl_ion_charge[MAXPLAYERS+1];
+static float fl_ion_gain_multi[MAXPLAYERS+1];
 static int i_patten_type[MAXPLAYERS+1];
 static float fl_ammo_efficiency[MAXPLAYERS+1];
 static int i_ion_effects[MAXPLAYERS+1];
@@ -18,8 +19,8 @@ static int g_particleImpactTornado;
 static char gExplosive1;
 static char gLaser1;
 
-#define BLITZKRIEG_KIT_MAX_ION_CHARGES 256
-#define BLITZKREIG_KIT_ION_COST_CHARGE 128
+#define BLITZKRIEG_KIT_MAX_ION_CHARGES 128.0
+#define BLITZKREIG_KIT_ION_COST_CHARGE 64.0
 #define BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION 1.0
 
 #define BLITZKRIEG_KIT_ION_CHARGE_TIME 3.5
@@ -38,7 +39,7 @@ public void Kit_Blitzkrieg_Precache()
 {
 	Zero(fl_primary_reloading);
 	Zero(fl_hud_timer);
-	Zero(i_ion_charge);
+	Zero(fl_ion_charge);
 	Zero(fl_ammo_efficiency);
 	Zero(fl_ion_timer_recharge);
 	Zero(b_was_lastman);
@@ -122,6 +123,7 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 
 	float GameTime = GetGameTime();
 
+/*
 	if(LastMann)	//if lastman triggers and we happen to be reloading, insta reload it!
 	{
 		if(!b_was_lastman[client])
@@ -134,6 +136,7 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 		}
 	}
 	else
+	*/
 	{
 		if(b_was_lastman[client])
 		{
@@ -190,7 +193,7 @@ static void BlitzHud(int client, float GameTime, int wep)
 
 	char HUDText[255] = "";
 
-	Format(HUDText, sizeof(HUDText), "%sIon Charge: [%i/%i]", HUDText, i_ion_charge[client], BLITZKRIEG_KIT_MAX_ION_CHARGES);
+	Format(HUDText, sizeof(HUDText), "%sIon Charge: [%.0f/%.0f]", HUDText, fl_ion_charge[client], BLITZKRIEG_KIT_MAX_ION_CHARGES);
 	
 	if(wep==1)
 	{
@@ -273,10 +276,10 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 	
 	if(time>120.0)	//incase somehow it goes insanely high.
 		time=30.0;
-
+/*
 	if(LastMann)
 		time /=4.0;
-
+*/
 	fl_primary_reloading[client] = GameTime + time;
 
 	//8 is rockets ammo
@@ -306,37 +309,37 @@ public void Blitzkrieg_Kit_Switch_Mode(int client, int weapon, const char[] clas
 }
 public void Blitzkrieg_Kit_Primary_Fire_1(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.2, 3, 19.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.1, 1, 19.0, 2.0);
 }
 public void Blitzkrieg_Kit_Primary_Fire_2(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 3, 19.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.175, 2, 19.0, 1.0);
 }
 public void Blitzkrieg_Kit_Primary_Fire_3(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.40, 5, 14.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.2, 3, 19.0, 0.66);
 }
 public void Blitzkrieg_Kit_Primary_Fire_4(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.55, 7, 10.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.275, 4, 19.0, 0.5);
 }
 public void Blitzkrieg_Kit_Primary_Fire_5(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.65, 7, 10.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.325, 5, 12.0, 0.4);
 }
 public void Blitzkrieg_Kit_Primary_Fire_6(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.7, 7, 10.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 6, 12.0, 0.33);
 }
 public void Blitzkrieg_Kit_Primary_Fire_7(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.75, 9, 7.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.375, 7, 10.0, 0.285);
 }
 
 
 
 
-static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int spread, float spacing)
+static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int spread, float spacing, float ion_multi)
 {
 	
 	float speedMult = 1000.0;
@@ -384,6 +387,8 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 	fPos[1] += actualBeamOffset[1];
 	fPos[2] += actualBeamOffset[2];
 
+	fl_ion_gain_multi[client] = ion_multi;
+
 	switch(i_patten_type[client])
 	{
 		case 0:
@@ -391,6 +396,13 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 			int type=3;
 			for(int i=0 ; i<spread ; i++)
 			{
+				if((spread % 2) == 0)
+				{
+					//its an even one! do extra logic, ignore the middle rocket!
+					spread++;
+					type=1;
+					continue;
+				}
 				float end_vec[3];
 				Do_Vector_Stuff(i, fPos, end_vec, fAng, spread, type, spacing);
 				Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, fAng, end_vec);
@@ -423,6 +435,13 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 			delete swingTrace;
 			for(int i=0 ; i<spread ; i++)
 			{
+				if((spread % 2) == 0)
+				{
+					//its an even one! do extra logic, ignore the middle rocket!
+					spread++;
+					type=1;
+					continue;
+				}
 				float end_vec[3];
 				Do_Vector_Stuff(i, fPos, end_vec, fAng, spread, type, spacing*1.25);
 				float ang_Look[3];
@@ -511,11 +530,11 @@ public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 
 		if(IsValidClient(owner))
 		{
-			i_ion_charge[owner]++;
+			fl_ion_charge[owner]+=fl_ion_gain_multi[owner];
 
-			if(BLITZKRIEG_KIT_MAX_ION_CHARGES <= i_ion_charge[owner])
+			if(BLITZKRIEG_KIT_MAX_ION_CHARGES <= fl_ion_charge[owner])
 			{
-				i_ion_charge[owner] = BLITZKRIEG_KIT_MAX_ION_CHARGES;
+				fl_ion_charge[owner] = BLITZKRIEG_KIT_MAX_ION_CHARGES;
 			}
 		}	
 		
@@ -590,12 +609,12 @@ public void Blitzkrieg_Kit_Seconadry_Ion_8(int client, int weapon, bool &result,
 static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 {
 
-	if(i_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
+	if(fl_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", i_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", RoundToFloor(fl_ion_charge[client]), RoundToFloor(BLITZKREIG_KIT_ION_COST_CHARGE));
 		return;
 	}
 	float GameTime = GetGameTime();
@@ -663,7 +682,7 @@ public void Blitzkrieg_Kit_IOC_Invoke(int client, float vecTarget[3], float ion_
 
 	float GameTime = GetGameTime();
 
-	i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
+	fl_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
 
 	fl_ion_timer_recharge[client] = GameTime +BLITZKRIEG_KIT_ION_COOLDOWN;
 
@@ -786,25 +805,34 @@ public void Blitzkrieg_Kit_Custom_Melee_Logic(int client, float &CustomMeleeRang
 	}
 }
 
-public void Blitzkrieg_Kit_OnHitEffect(int client, int weapon, float &damage)
+void Blitzkrieg_Kit_ModifyMeleeDmg(int client, float &damage)
 {
 	float GameTime = GetGameTime();
 
 	if(fl_primary_reloading[client]>GameTime)
 	{
 		damage *=1.25;
+	}
+}
 
+void Blitzkrieg_Kit_OnHitEffect(int client)
+{
+	float GameTime = GetGameTime();
+
+	if(fl_primary_reloading[client]>GameTime)
+	{
+		/*
 		if(LastMann)
 		{
 			fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*2.0;
 			fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*2.0;	//Reduce the cooldowns by a bit if you hit something!
 		}
 		else
+		*/
 		{
 			fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;
 			fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;	//Reduce the cooldowns by a bit if you hit something!
 		}
-		
 	}
 }
 static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location

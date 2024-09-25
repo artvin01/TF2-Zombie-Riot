@@ -22,17 +22,6 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/heavy_taunts19.mp3",
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	"vo/heavy_meleeing01.mp3",
-	"vo/heavy_meleeing02.mp3",
-	"vo/heavy_meleeing03.mp3",
-	"vo/heavy_meleeing04.mp3",
-	"vo/heavy_meleeing05.mp3",
-	"vo/heavy_meleeing06.mp3",
-	"vo/heavy_meleeing07.mp3",
-	"vo/heavy_meleeing08.mp3",
-};
-
 static const char g_MeleeHitSounds[][] = {
 	"weapons/shotgun_shoot.wav",
 };
@@ -43,7 +32,6 @@ void WinterSnoweyGunner_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 
 	NPCData data;
@@ -92,10 +80,6 @@ methodmap WinterSnoweyGunner < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public void PlayMeleeSound()
-	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);

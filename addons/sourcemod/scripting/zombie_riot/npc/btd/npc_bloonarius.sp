@@ -143,9 +143,6 @@ static int i_PlayMusicSound;
 
 void Bloonarius_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/bloonarius.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bloonarius");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloonarius");
@@ -286,11 +283,21 @@ methodmap Bloonarius < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "Tim Haywood");
 		Music_SetRaidMusic(music);
 		
-		RaidModeTime = (elite ? 0.0 : GetGameTime() + 200.0);
+		RaidModeTime = 9999999.9; //cant afford to delete it, since duo.
 
 		i_PlayMusicSound = 0;
 		ToggleMapMusic(false);
 		npc.m_flMeleeArmor = 1.15;
+		
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				Spawns_AddToArray(npc.index, true);
+				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
+				break;
+			}
+		}
 		
 		//ExcuteRelay("zr_btdraid", "FireUser1");
 		return npc;
@@ -352,11 +359,11 @@ public void Bloonarius_ClotThink(int iNPC)
 	if(npc.m_bStaticNPC)
 	{
 		if(npc.m_iLivesLost < 7)
-			nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (7 - npc.m_iLivesLost) / 8;
+			nextLoss = ReturnEntityMaxHealth(npc.index) * (7 - npc.m_iLivesLost) / 8;
 	}
 	else if(npc.m_iLivesLost < 4)
 	{
-		nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (3 - npc.m_iLivesLost) / 4;
+		nextLoss = ReturnEntityMaxHealth(npc.index) * (3 - npc.m_iLivesLost) / 4;
 	}
 	
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
@@ -404,7 +411,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	
 	if(npc.m_iMiniLivesLost < 99 && !NpcStats_IsEnemySilenced(npc.index))
 	{
-		nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.m_iMiniLivesLost) / 100;
+		nextLoss = ReturnEntityMaxHealth(npc.index) * (99 - npc.m_iMiniLivesLost) / 100;
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
 		{
 			npc.m_iMiniLivesLost++;
@@ -564,7 +571,7 @@ public void Bloonarius_NPCDeath(int entity)
 		AcceptEntityInput(entitygame, "RoundWin");
 	}
 	
-	/*Spawns_RemoveFromArray(entity);
+	Spawns_RemoveFromArray(entity);
 	
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -573,7 +580,7 @@ public void Bloonarius_NPCDeath(int entity)
 			i_ObjectsSpawners[i] = 0;
 			break;
 		}
-	}*/
+	}
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))

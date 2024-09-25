@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Rogue_BonusLife_Collect()
 {
 	Rogue_AddBonusLife(1);
@@ -18,7 +21,7 @@ public void Rogue_Gathering_Collect()
 public void Rogue_Support_Collect()
 {
 	Rogue_AddBonusLife(1);
-	Rogue_AddIngots(20);
+	Rogue_AddIngots(20, true);
 
 	GlobalExtraCash += 250;
 	
@@ -54,7 +57,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 			npc.m_fGunRangeBonus *= 1.15;
 
 			// +50 max health
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") + 50;
+			int health = ReturnEntityMaxHealth(npc.index) + 50;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
@@ -67,18 +70,16 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 				npc.BonusDamageBonus *= 1.15;
 
 				// +50 max health
-				int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") + 50;
+				int health = ReturnEntityMaxHealth(npc.index) + 50;
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}
 		}
 	}
-	/*
 	else if(i_IsABuilding[entity])	// Building
 	{
 
 	}
-	*/
 }
 
 public void Rogue_Spearhead_Weapon(int entity)

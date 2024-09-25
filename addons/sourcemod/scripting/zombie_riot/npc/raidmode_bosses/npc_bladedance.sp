@@ -47,7 +47,7 @@ void RaidbossBladedance_MapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -136,6 +136,7 @@ methodmap RaidbossBladedance < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		npc.m_bDissapearOnDeath = true;
 
 		
 		bool final = StrContains(data, "final_item") != -1;
@@ -288,7 +289,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			{
 				if(!b_NpcHasDied[entity] && GetTeam(entity) == team)
 				{
-					f_GodArkantosBuff[entity] = GetGameTime() + 16.0;
+					f_GodAlaxiosBuff[entity] = GetGameTime() + 16.0;
 					ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 				}
 			}
@@ -311,7 +312,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 				npc.FireRocket(vPredictedPos, 1000.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 
-				SeaSlider_AddNeuralDamage(npc.m_iTarget, npc.index, 200);
+				Elemental_AddNervousDamage(npc.m_iTarget, npc.index, 200);
 			}
 		}
 	}
@@ -418,14 +419,21 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	Waves_ClearWave();
 
 	RaidbossBladedance npc = view_as<RaidbossBladedance>(entity);
-	if(!npc.m_bGib)
-		npc.PlayDeathSound();
-
+	
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		
+	TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", npc.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME * 2.0);
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
 	WavesUpdateDifficultyName();
 	
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
+		CPrintToChatAll("{crimson}Bladedance{default}: You and Bob the first.. you both missunderstand who the enemy is.. its {white}Whiteflower{default} you fools! He betrayed {crimson}Guln{default} aswell!");
+		CPrintToChatAll("{crimson}Bladedance{default} escapes from you... and gains the ability to copy {crimson}you.");
 		for (int client = 0; client < MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)

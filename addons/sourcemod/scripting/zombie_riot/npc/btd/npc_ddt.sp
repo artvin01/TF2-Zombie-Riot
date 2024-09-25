@@ -62,9 +62,6 @@ static int MoabHealth(bool fortified)
 
 void DDT_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/ddt.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Dark Dirigible Titan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ddt");
@@ -79,6 +76,18 @@ void DDT_MapStart()
 
 static void ClotPrecache()
 {
+	for(int i; i<sizeof(SoundMoabHit); i++)
+	{
+		PrecacheSoundCustom(SoundMoabHit[i]);
+	}
+	for(int i; i<sizeof(SoundLead); i++)
+	{
+		PrecacheSoundCustom(SoundLead[i]);
+	}
+	for(int i; i<sizeof(SoundMoabPop); i++)
+	{
+		PrecacheSoundCustom(SoundMoabPop[i]);
+	}
 	PrecacheModel("models/zombie_riot/btd/ddt.mdl");
 }
 
@@ -376,7 +385,7 @@ public void DDT_PostDeath(const char[] output, int caller, int activator, float 
 	GetEntPropVector(caller, Prop_Send, "m_vecOrigin", pos);
 	RemoveEntity(caller);
 	
-	TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("ExplosionCore_MidAir", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9rc");
 	if(spawn_index > MaxClients)
@@ -390,7 +399,7 @@ public void DDT_PostFortifiedDeath(const char[] output, int caller, int activato
 	GetEntPropVector(caller, Prop_Send, "m_vecOrigin", pos);
 	RemoveEntity(caller);
 	
-	TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("ExplosionCore_MidAir", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9frc");
 	if(spawn_index > MaxClients)

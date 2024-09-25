@@ -54,8 +54,8 @@ public void L4D2_Tank_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "L4D2 Tank");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_l4d2_tank");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "l4d2_tank");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
@@ -63,9 +63,9 @@ public void L4D2_Tank_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return L4D2_Tank(client, vecPos, vecAng, ally);
+	return L4D2_Tank(client, vecPos, vecAng, ally, data);
 }
 
 static int i_TankAntiStuck[MAXENTITIES];
@@ -98,9 +98,7 @@ methodmap L4D2_Tank < CClotBody
 		
 		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 
 	public void PlayDeathSound() {
@@ -108,26 +106,20 @@ methodmap L4D2_Tank < CClotBody
 		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 
 	public void PlaySpawnSound() {
 	
 		EmitCustomToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, 80, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	public void PlayMeleeHitSound() {
 		
@@ -136,17 +128,13 @@ methodmap L4D2_Tank < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, Random_pitch);
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, Random_pitch);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	property int m_iPlayMusicSound
 	{
@@ -157,18 +145,22 @@ methodmap L4D2_Tank < CClotBody
 		if(this.m_iPlayMusicSound > GetTime())
 			return;
 		
+		if(i_RaidGrantExtra[this.index] == 1)
+			return;
+			
 		EmitCustomToAll(g_IdleMusic, this.index, SNDCHAN_VOICE, SNDLEVEL_NONE, _, BOSS_ZOMBIE_VOLUME, 100);
 
 		this.m_iPlayMusicSound = GetTime() + 52;
 		
 	}
 	
-	public L4D2_Tank(int client, float vecPos[3], float vecAng[3], int ally)
+	public L4D2_Tank(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", GetTankHealth(), ally, false, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		KillFeed_SetKillIcon(npc.index, "fists");
@@ -193,6 +185,7 @@ methodmap L4D2_Tank < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
+		npc.m_bisWalking = false;
 		npc.m_flSpeed = 0.0;
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 3.0;
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 3.0;
@@ -216,6 +209,13 @@ methodmap L4D2_Tank < CClotBody
 		i_ThrowAlly[npc.index] = false;
 		i_IWantToThrowHim[npc.index] = -1;
 		fl_ThrowDelay[npc.index] = GetGameTime(npc.index) + 3.0;
+
+		if(StrContains(data, "no_music") != -1)
+		{
+			npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.0;
+			npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 0.0;
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 
 		
 		float wave = float(ZR_GetWaveCount()+1);
@@ -252,12 +252,14 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	
 	if(npc.m_bDoSpawnGesture)
 	{
+		npc.m_bisWalking = false;
 		npc.PlaySpawnSound();
 		npc.AddGesture("ACT_SPAWN");
 		npc.m_bDoSpawnGesture = false;
 	}
 	if(npc.m_bUseDefaultAnim)
 	{
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		npc.m_bUseDefaultAnim = false;
@@ -293,17 +295,19 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-		
-		for(int client=1; client<=MaxClients; client++)
+		if(i_RaidGrantExtra[npc.index] != 1)
 		{
-			if(IsClientInGame(client))
+			for(int client=1; client<=MaxClients; client++)
 			{
-				if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+				if(IsClientInGame(client))
 				{
-					Music_Stop_All(client); //This is actually more expensive then i thought.
+					if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+					{
+						Music_Stop_All(client); //This is actually more expensive then i thought.
+					}
+					SetMusicTimer(client, GetTime() + 6);
+					fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 				}
-				SetMusicTimer(client, GetTime() + 6);
-				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 			}
 		}
 		//PluginBot_NormalJump(npc.index);
@@ -682,7 +686,7 @@ public Action L4D2_Tank_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 public void L4D2_Tank_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	L4D2_Tank npc = view_as<L4D2_Tank>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
 	{
 //		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 1.5;
 	//	npc.AddGesture("ACT_PANZER_STAGGER");
@@ -704,8 +708,8 @@ public void L4D2_Tank_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	Music_Stop_All_Tank(entity);
+	if(i_RaidGrantExtra[npc.index] != 1)
+		Music_Stop_All_Tank(entity);
 	int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
 	
 	if(IsValidClient(client))
@@ -807,11 +811,7 @@ static char[] GetTankHealth()
 
 void Music_Stop_All_Tank(int entity)
 {
-	StopSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3");
+	StopCustomSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3", 5.0);
 }
 
 
@@ -931,7 +931,7 @@ public Action contact_throw_tank_entity(int client)
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client && i_TankThrewThis[client] != entity)
 						{		
-							int damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
+							int damage = ReturnEntityMaxHealth(client) / 3;
 							
 							if(damage > 2000)
 							{

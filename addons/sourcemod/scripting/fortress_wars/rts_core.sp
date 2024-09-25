@@ -150,7 +150,6 @@ int TeamClass[MAX_TEAMS];
 Function FuncSkills[MAXENTITIES];
 StatEnum Stats[MAXENTITIES];
 Function FuncSound[MAXENTITIES][Sound_MAX];
-ConVar CvarInfiniteCash;
 
 #include "fortress_wars/classes.sp"
 #include "fortress_wars/object.sp"
@@ -223,7 +222,7 @@ void RTS_PlayerResupply(int client)
 		int active = SpawnWeapon(client, "tf_weapon_pistol", 209, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 4);
 		int last = SpawnWeapon(client, "tf_weapon_wrench", 197, 1, 0, {128, 821, 2}, {1.0, 1.0, 0.0}, 3);
 
-		TF2Util_SetPlayerActiveWeapon(client, active);
+		SetPlayerActiveWeapon(client, active);
 		SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", last);
 	}
 */
@@ -277,12 +276,12 @@ void RTS_NPCHealthBar(CClotBody npc)
 
 	static const int HealthBarDivide = 10;
 
-	int maxBars = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / HealthBarDivide;
+	int maxBars = ReturnEntityMaxHealth(npc.index) / HealthBarDivide;
 	int bars = GetEntProp(npc.index, Prop_Data, "m_iHealth") / HealthBarDivide;
 
 	if(maxBars > sizeof(display))
 	{
-		maxBars = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / sizeof(display);
+		maxBars = ReturnEntityMaxHealth(npc.index) / sizeof(display);
 		bars = GetEntProp(npc.index, Prop_Data, "m_iHealth") / sizeof(display);
 	}
 
@@ -344,7 +343,7 @@ bool RTS_HasFlag(int entity, int type)
 void RTS_AddMaxHealth(int entity, int amount)
 {
 	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
-	int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(entity);
 
 	SetEntProp(entity, Prop_Data, "m_iHealth", health + amount);
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth + amount);

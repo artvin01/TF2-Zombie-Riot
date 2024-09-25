@@ -312,7 +312,7 @@ void AnarchyRunoverSelfDefense(AnarchyRunover npc, float gameTime, int target, f
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, NeutralDmg, true);
+					Elemental_AddChaosDamage(target, npc.index, NeutralDmg, true);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

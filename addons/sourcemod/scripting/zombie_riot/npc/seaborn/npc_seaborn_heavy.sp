@@ -181,7 +181,7 @@ public void SeabornHeavy_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 10);
+						Elemental_AddNervousDamage(target, npc.index, 10);
 					}
 				}
 
@@ -213,7 +213,7 @@ public void SeabornHeavy_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornHeavy_OnTakeDamage(int victim, int attacker, int damagetype)
+void SeabornHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker > 0)
 	{
@@ -244,11 +244,14 @@ void SeabornHeavy_OnTakeDamage(int victim, int attacker, int damagetype)
 			{
 				npc.m_flRangedArmor -= 0.05;
 				if(npc.m_flRangedArmor < 0.05)
+				{
 					npc.m_flRangedArmor = 0.05;
-				
+				}
 				npc.m_flMeleeArmor += 0.05;
 				if(npc.m_flMeleeArmor > 1.5)
+				{
 					npc.m_flMeleeArmor = 1.5;
+				}
 			}
 		}
 	}

@@ -112,7 +112,7 @@ public void FatherGrigori_OnMapStart_NPC()
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	PrecacheModel("models/monk.mdl");
+	PrecacheModel("models/zombie_riot/hl2/monk.mdl");
 	PrecacheSound("ambient/explosions/explode_9.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
@@ -153,9 +153,7 @@ methodmap FatherGrigori < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 14.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -167,26 +165,20 @@ methodmap FatherGrigori < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayAngerSound() {
@@ -202,9 +194,7 @@ methodmap FatherGrigori < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayPullSound() {
@@ -226,22 +216,18 @@ methodmap FatherGrigori < CClotBody
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	public FatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
+		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -316,8 +302,8 @@ methodmap FatherGrigori < CClotBody
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", this.index);
 			
-			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 75.0); 
-			f_CustomGrenadeDamage[entity] = 75.0;	
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 76.0); 
+			f_CustomGrenadeDamage[entity] = 76.0;	
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
@@ -794,7 +780,7 @@ public Action FatherGrigori_OnTakeDamage(int victim, int &attacker, int &inflict
 public void FatherGrigori_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	FatherGrigori npc = view_as<FatherGrigori>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();

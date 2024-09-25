@@ -28,14 +28,14 @@ public void Vampire_Knives_Precache()
 //that damage, up to a cap.
 static float Vamp_BleedDMGMax[4] = { 99999.0, 99999.0, 99999.0, 99999.0 };	//The absolute maximum damage a single Bloodlust tick can inflict.
 static float Vamp_BleedRate[4] = { 0.33, 0.275, 0.25, 0.2 }; //The rate at which Bloodlust deals damage.
-static float Vamp_BleedHeal[4] = { 0.17, 0.085, 0.0475, 0.0475 };	//Portion of Bloodlust damage to heal the user for.
-static float Vamp_HealRadius[4] = { 300.0, 330.0, 360.0, 390.0 };	//Max distance from the victim to heal the user in.
-static float Vamp_HealMultIfHurt[4] = { 0.25, 0.25, 0.25, 0.25 };	//Amount to multiply healing received by Bloodlust if recently harmed.
+static float Vamp_BleedHeal[4] = { 0.25, 0.125, 0.0655, 0.0655 };	//Portion of Bloodlust damage to heal the user for.
+static float Vamp_HealRadius[4] = { 330.0, 350.0, 400.0, 420.0 };	//Max distance from the victim to heal the user in.
+static float Vamp_HealMultIfHurt[4] = { 0.33, 0.33, 0.33, 0.33 };	//Amount to multiply healing received by Bloodlust if recently harmed.
 
 //Default + Pap Route 1 - Vampire Knives: Fast melee swing speed, low melee damage, M2 throws X knives in a fan pattern which inflict Y* your melee damage.
-static float Vamp_MaxHeal_Normal[4] = { 3.0, 2.5, 2.0, 1.8 };	//Max heal per tick.
-static float Vamp_MinHeal_Normal[4] = { 1.5, 1.25, 1.1, 1.0 };	//Minimum healing received per Bloodlust tick.
-static float Vamp_BleedDMG_Normal[4] = { 5.0, 6.5, 7.0, 8.5 }; //The base damage dealt per Bloodlust tick.
+static float Vamp_MaxHeal_Normal[4] = { 5.0, 4.5, 4.0, 3.25 };	//Max heal per tick.
+static float Vamp_MinHeal_Normal[4] = { 2.5, 2.25, 2.1, 2.0 };	//Minimum healing received per Bloodlust tick.
+static float Vamp_BleedDMG_Normal[4] = { 6.0, 7.5, 8.0, 9.5 }; //The base damage dealt per Bloodlust tick.
 static int Vamp_BleedStacksOnMelee_Normal[4] = { 7, 10, 12, 14 }; //Number of Bloodlust stacks applied on a melee hit.
 static int Vamp_BleedStacksOnThrow_Normal[4] = { 3, 4, 5, 6 }; //Number of Bloodlust stacks applied on a throw hit.
 static float Vamp_ThrowMultiplier_Normal[4] = { 2.0, 3.0, 3.75, 4.25 }; //Amount to multiply damage dealt by thrown knives.
@@ -62,7 +62,7 @@ static int Vamp_ThrowWaves_Cleaver[4] = { 1, 2, 2, 2 }; //Same as pap route 1, b
 static float Vamp_ThrowRate_Cleaver[4] = { 0.0, 0.66, 0.4, 0.3 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowSpread_Cleaver[4] = { 0.0, 0.0, 20.0, 20.0 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowVelocity_Cleaver[4] = { 1800.0, 2200.0, 2600.0, 2600.0 }; //Same as pap route 1, but for pap route 2.
-static float Vamp_ThrowDMGMultPerKill[4] = { 0.0, 0.66, 0.8, 0.8 }; //Amount to multiply the damage dealt by thrown cleavers every time they kill a zombie.
+static float Vamp_ThrowDMGMultPerKill[4] = { 0.0, 0.4, 0.45, 0.5 }; //Amount to multiply the damage dealt by thrown cleavers every time they kill a zombie.
 
 int i_VampThrowType[MAXENTITIES] = { 0, ... };
 int i_VampThrowProp[MAXENTITIES] = { 0, ... };
@@ -156,7 +156,7 @@ public void Vamp_ActivateThrow(int client, int weapon, int pap, bool cleaver)
 		float DMG_Final = 65 * DMGMult;
 		DMG_Final *= Attributes_Get(weapon, 1, 1.0);
 		DMG_Final *= Attributes_Get(weapon, 2, 1.0);
-		DMG_Final *= Attributes_Get(weapon, 476, 1.0);
+		DMG_Final *= Attributes_Get(weapon, 1000, 1.0);
 
 		if(cleaver)
 			DMG_Final *= 0.85;
@@ -416,7 +416,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	if (IsValidEntity(weapon))
 	{
 		DMG_Final *= Attributes_Get(weapon, 2, 1.0);
-		DMG_Final *= Attributes_Get(weapon, 476, 1.0);
+		DMG_Final *= Attributes_Get(weapon, 1000, 1.0);
 	}
 	
 	if (DMG_Final > MaxDMG)
@@ -432,6 +432,10 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		vicloc[i] += GetRandomFloat(-45.0, 45.0);
 	}
 	
+	if (b_thisNpcIsARaid[victim])
+	{
+		DMG_Final *= 0.65;
+	}
 	SDKHooks_TakeDamage(victim, attacker, attacker, DMG_Final, DMG_CLUB, _, _, vicloc, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 	
 	if (dist <= Radius && dieingstate[attacker] == 0)
@@ -454,10 +458,13 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		{
 			heal *= HealMultIfHurt;
 		}
+		//against raidbosses, you heal less, or else you just outheal 24/7.
+		if (b_thisNpcIsARaid[victim])
+		{
+			heal *= 0.7;
+		}
 
-		int healingdone = HealEntityGlobal(attacker, attacker, heal, _,1.0,HEAL_SELFHEAL);
-		if(healingdone > 0)
-			ApplyHealEvent(attacker, healingdone);
+		HealEntityGlobal(attacker, attacker, heal, _,1.0,HEAL_SELFHEAL);
 	}
 	
 	NumHits++;
@@ -537,7 +544,7 @@ public bool Vamp_CleaverHit(int entity, int target)
 		float position[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 		EmitSoundToAll(SND_KNIFE_MISS, entity, SNDCHAN_STATIC, 80, _, 1.0);
-		ParticleEffectAt(position, "ExplosionCore_buildings", 1.0);
+		ParticleEffectAt(position, "ExplosionCore_MidAir", 1.0);
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))

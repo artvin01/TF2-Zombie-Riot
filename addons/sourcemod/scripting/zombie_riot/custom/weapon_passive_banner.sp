@@ -3,15 +3,16 @@
 
 Handle Timer_Banner_Management[MAXPLAYERS+1] = {null, ...};
 int i_SetBannerType[MAXPLAYERS+1];
-bool b_ClientHasAncientBanner[MAXENTITIES];
-bool b_EntityRecievedBuff[MAXENTITIES];
+static bool b_ClientHasAncientBanner[MAXENTITIES];
+static float b_EntityRecievedBuff[MAXENTITIES];
+static float b_EntityRecievedBuff2[MAXENTITIES];
 Handle Timer_AncientBanner = null;
 Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
 Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 
 float BannerDefaultRange(int client)
 {
-	if(b_ArkantosBuffItem[client])
+	if(b_AlaxiosBuffItem[client])
 	{
 		return 511225.0; //1.1x range
 	}
@@ -23,7 +24,7 @@ float BannerDefaultRange(int client)
 void BannerOnEntityCreated(int entity)
 {
 	b_ClientHasAncientBanner[entity] = false;
-	b_EntityRecievedBuff[entity] = false;
+	b_EntityRecievedBuff[entity] = 0.0;
 	f_AncientBannerNpcBuff[entity] = 0.0;
 }
 
@@ -341,7 +342,6 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
 				{
 					ModifyEntityAncientBuff(ally, 1, 0.8, true, 1.2);
-
 				}
 				else
 				{
@@ -418,43 +418,47 @@ void BuffBattilonsActivate(int client, int weapon)
 	1: client
 	2: entity
 */
-void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2)
+static void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2)
 {
+	float BuffValueDo = MaxNumBuffValue(buffammount, 1.0, PlayerCountBuffAttackspeedScaling);
+	float BuffValueDo2 = MaxNumBuffValue(buffammount2, 1.0, PlayerCountBuffAttackspeedScaling);
 	if(type == 1)
 	{
 		int i, weapon;
 		while(TF2_GetItem(entity, weapon, i))
 		{
-			if(!b_EntityRecievedBuff[weapon])
+			if(b_EntityRecievedBuff[weapon] == 0.0)
 			{
 				if(GrantBuff)
 				{
-					b_EntityRecievedBuff[weapon] = true;
+					b_EntityRecievedBuff[weapon] = BuffValueDo;
+					b_EntityRecievedBuff2[weapon] = BuffValueDo2;
 					if(Attributes_Has(weapon, 6))
-						Attributes_SetMulti(weapon, 6, buffammount);	// Fire Rate
+						Attributes_SetMulti(weapon, 6, BuffValueDo);	// Fire Rate
 					
 					if(Attributes_Has(weapon, 97))
-						Attributes_SetMulti(weapon, 97, buffammount);	// Reload Time
+						Attributes_SetMulti(weapon, 97, BuffValueDo);	// Reload Time
 					
 					if(Attributes_Has(weapon, 8))
-						Attributes_SetMulti(weapon, 8, buffammount2);	// Heal Rate
+						Attributes_SetMulti(weapon, 8, BuffValueDo2);	// Heal Rate
 				}
 			}
 			else
 			{
 				if(!GrantBuff)
 				{
-					if(b_EntityRecievedBuff[weapon])
+					if(b_EntityRecievedBuff[weapon] != 0.0)
 					{
-						b_EntityRecievedBuff[weapon] = false;
 						if(Attributes_Has(weapon, 6))
-							Attributes_SetMulti(weapon, 6, 1.0 / buffammount);	// Fire Rate
+							Attributes_SetMulti(weapon, 6, 1.0 / (b_EntityRecievedBuff[weapon]));	// Fire Rate
 						
 						if(Attributes_Has(weapon, 97))
-							Attributes_SetMulti(weapon, 97, 1.0 / buffammount);	// Reload Time
+							Attributes_SetMulti(weapon, 97, 1.0 / (b_EntityRecievedBuff[weapon]));	// Reload Time
 						
 						if(Attributes_Has(weapon, 8))
-							Attributes_SetMulti(weapon, 8, 1.0 / buffammount2);	// Heal Rate
+							Attributes_SetMulti(weapon, 8, 1.0 / (b_EntityRecievedBuff2[weapon]));	// Heal Rate
+
+						b_EntityRecievedBuff[weapon] = 0.0;
 					}
 				}
 			}
@@ -467,42 +471,42 @@ void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool Grant
 		if(StrEqual(npc_classname, "npc_citizen"))
 		{
 			Citizen npc = view_as<Citizen>(entity);
-			if(!b_EntityRecievedBuff[entity])
+			if(b_EntityRecievedBuff[entity] == 0.0)
 			{
 				if(GrantBuff)
 				{
-					b_EntityRecievedBuff[entity] = true;
-					npc.m_fGunFirerate *= buffammount;
-					npc.m_fGunReload *= buffammount;
+					b_EntityRecievedBuff[entity] = BuffValueDo;
+					npc.m_fGunFirerate *= BuffValueDo;
+					npc.m_fGunReload *= BuffValueDo;
 				}
 			}
 			else
 			{
 				if(!GrantBuff)
 				{
-					b_EntityRecievedBuff[entity] = false;
-					npc.m_fGunFirerate /= buffammount;
-					npc.m_fGunReload /= buffammount;
+					npc.m_fGunFirerate /= (b_EntityRecievedBuff[entity]);
+					npc.m_fGunReload /= (b_EntityRecievedBuff[entity]);
+					b_EntityRecievedBuff[entity] = 0.0;
 				}
 			}
 		}
 		else if(entity > MaxClients)
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(!b_EntityRecievedBuff[entity])
+			if(b_EntityRecievedBuff[entity] == 0.0)
 			{
 				if(GrantBuff)
 				{
-					b_EntityRecievedBuff[entity] = true;
-					npc.BonusFireRate *= buffammount;
+					b_EntityRecievedBuff[entity] = BuffValueDo;
+					npc.BonusFireRate *= BuffValueDo;
 				}
 			}
 			else
 			{
 				if(!GrantBuff)
 				{
-					b_EntityRecievedBuff[entity] = false;
-					npc.BonusFireRate /= buffammount;
+					npc.BonusFireRate /= (b_EntityRecievedBuff[entity]);
+					b_EntityRecievedBuff[entity] = 0.0;
 				}
 			}
 		}

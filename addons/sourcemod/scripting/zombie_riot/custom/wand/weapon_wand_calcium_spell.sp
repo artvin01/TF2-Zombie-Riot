@@ -51,7 +51,7 @@ public void Weapon_Calcium_FireBallSpell(int client, int weapon, bool &result, i
 				CreateTimer(0.5, Calcium_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
@@ -106,10 +106,6 @@ public Action Calcium_Remove_Spell(Handle Calcium_Remove_SpellHandle, int client
 	if (IsValidClient(client))
 	{
 		Spawn_Calcium(client);
-		if(LastMann)
-		{
-			Spawn_Calcium(client);			
-		}
 		Attributes_Set(client, 698, 0.0);
 		FakeClientCommand(client, "use tf_weapon_bonesaw");
 		Attributes_Set(client, 178, 1.0);
@@ -125,5 +121,5 @@ public void Spawn_Calcium(int client)
 	GetClientAbsAngles(client, flAng);
 	
 	int npc = NPC_CreateByName("npc_necromancy_calcium", client, flPos, flAng, TFTeam_Red);
-	fl_ExtraDamage[npc] = Necro_Damage[client];
+	fl_Extra_Damage[npc] = Necro_Damage[client];
 }

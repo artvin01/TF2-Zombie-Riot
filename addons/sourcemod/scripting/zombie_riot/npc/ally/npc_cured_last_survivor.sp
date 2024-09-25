@@ -318,14 +318,12 @@ methodmap CuredFatherGrigori < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	public CuredFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally, true, false));
+		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally, true, false));
 		
 		i_NpcWeight[npc.index] = 999;
 		

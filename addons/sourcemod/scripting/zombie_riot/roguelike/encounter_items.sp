@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static ArrayList ShopListing;
 static bool FirstSuperSale;
 
@@ -92,11 +95,11 @@ public void Rogue_Vote_ShopEncounter(const Vote vote)
 		if(FirstSuperSale && index == 0)
 		{
 			FirstSuperSale = false;
-			Rogue_AddIngots(-artifact.ShopCost * 7 / 10);
+			Rogue_AddIngots(-artifact.ShopCost * 7 / 10, true);
 		}
 		else
 		{
-			Rogue_AddIngots(-artifact.ShopCost);
+			Rogue_AddIngots(-artifact.ShopCost, true);
 		}
 
 		StartShopVote();

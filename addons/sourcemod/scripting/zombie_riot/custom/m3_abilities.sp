@@ -163,7 +163,9 @@ public void WeakDashLogic(int client)
 	else
 		velocity[2] += 150.0; // a little boost to alleviate arcing issues
 			
-	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);		
+	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+
+	Magnesis_OnBurstPack(client);
 }
 
 public void PlaceableTempomaryArmorGrenade(int client)
@@ -541,18 +543,27 @@ public void BuilderMenu(int client)
 	{	
 		CancelClientMenu(client);
 		SetStoreMenuLogic(client, false);
-		static char buffer[64];
+		static char buffer[128];
 		Menu menu = new Menu(BuilderMenuM);
 
 		SetGlobalTransTarget(client);
 		
-		menu.SetTitle("%t", "Builder Extra Gear Menu");
+		menu.SetTitle("%t", "Extra Menu");
+		
+		FormatEx(buffer, sizeof(buffer), "%t", "Deleting buildings refunds text");
+		menu.AddItem("-999", buffer, ITEMDRAW_DISABLED);
 
 		FormatEx(buffer, sizeof(buffer), "%t", "Mark Building For Deletion");
 		menu.AddItem("-1", buffer);
 
 		FormatEx(buffer, sizeof(buffer), "%t", "Un-Claim Building");
 		menu.AddItem("-2", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Destroy all your non-Mounted Buildings");
+		menu.AddItem("-3", buffer);
+									
+		FormatEx(buffer, sizeof(buffer), "%t", "Bring up Class Change Menu");
+		menu.AddItem("-4", buffer);
 									
 		menu.ExitButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -589,6 +600,20 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 						Un_ClaimBuildingLookedAt(client);
 					}
 				}
+				case -3:
+				{
+					if(IsValidClient(client))
+					{
+						DestroyAllBuildings_ClientSelf(client);
+					}
+				}
+				case -4:
+				{
+					if(IsValidClient(client))
+					{
+						ShowVGUIPanel(client, GetTeam(client) == TFTeam_Red ? "class_red" : "class_blue");
+					}
+				}
 				default:
 				{
 					delete menu;
@@ -598,6 +623,254 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Cancel:
 		{
 			ResetStoreMenuLogic(client);
+		}
+	}
+	return 0;
+}
+
+
+int i_BuildingSelectedToBeDeleted[MAXPLAYERS + 1];
+int i_BuildingSelectedToBeUnClaimed[MAXPLAYERS + 1];
+
+
+public void Un_ClaimBuildingLookedAt(int client)
+{
+	int entity = GetClientPointVisible(client, _ , true, true);
+	if(entity > MaxClients)
+	{
+		if (IsValidEntity(entity))
+		{
+			if(!BuildingIsSupport(entity))
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "This building cannot be unclaimed, only destroyed.");
+				return;
+			}
+			static char buffer[64];
+			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
+			{
+				if(!StrContains(buffer, "obj_"))
+				{
+					if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
+					{
+						i_BuildingSelectedToBeUnClaimed[client] = EntIndexToEntRef(entity);
+						DataPack pack;
+						CreateDataTimer(0.1, UnclaimBuildingTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+						pack.WriteCell(client);
+						pack.WriteCell(EntIndexToEntRef(entity));
+						pack.WriteCell(GetClientUserId(client));
+						Menu menu = new Menu(UnClaimBuildingMenu);
+						CancelClientMenu(client);
+						SetStoreMenuLogic(client, false);
+
+						SetGlobalTransTarget(client);
+						
+						menu.SetTitle("%t", "UnClaim Current Marked Building");
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Yes");
+						menu.AddItem("-1", buffer);
+						FormatEx(buffer, sizeof(buffer), "%t", "No");
+						menu.AddItem("-2", buffer);
+									
+						menu.ExitButton = true;
+						menu.Display(client, MENU_TIME_FOREVER);
+						
+						i_BuildingSelectedToBeUnClaimed[client] = EntIndexToEntRef(entity);
+					}
+				}
+			}
+		}
+	}
+}
+
+public Action UnclaimBuildingTimer(Handle sentryHud, DataPack pack)
+{
+	pack.Reset();
+	int original_index = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = GetClientOfUserId(pack.ReadCell());
+
+	if(IsValidClient(client))
+	{
+		if (IsValidEntity(entity) && entity == EntRefToEntIndex(i_BuildingSelectedToBeUnClaimed[client]))
+		{
+			static float m_vecMaxs[3];
+			static float m_vecMins[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecMins", m_vecMins);
+			GetEntPropVector(entity, Prop_Send, "m_vecMaxs", m_vecMaxs);
+			float fPos[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", fPos);
+			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
+			return Plugin_Continue;
+		}
+		else
+		{
+			i_BuildingSelectedToBeUnClaimed[original_index] = -1;
+			return Plugin_Stop;
+		}
+	}
+	else
+	{
+		i_BuildingSelectedToBeUnClaimed[original_index] = -1;
+		return Plugin_Stop;
+	}
+}
+
+public Action DeleteBuildingTimer(Handle sentryHud, DataPack pack)
+{
+	pack.Reset();
+	int original_index = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = GetClientOfUserId(pack.ReadCell());
+
+	if(IsValidClient(client))
+	{
+		if (IsValidEntity(entity) && entity == EntRefToEntIndex(i_BuildingSelectedToBeDeleted[client]))
+		{
+			static float m_vecMaxs[3];
+			static float m_vecMins[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecMins", m_vecMins);
+			GetEntPropVector(entity, Prop_Send, "m_vecMaxs", m_vecMaxs);
+			float fPos[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", fPos);
+			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
+			return Plugin_Continue;
+		}
+		else
+		{
+			i_BuildingSelectedToBeDeleted[original_index] = -1;
+			return Plugin_Stop;
+		}
+	}
+	else
+	{
+		i_BuildingSelectedToBeDeleted[original_index] = -1;
+		return Plugin_Stop;
+	}
+}
+
+public void DeleteBuildingLookedAt(int client)
+{
+	int entity = GetClientPointVisible(client, _ , true, true);
+	if(entity > MaxClients)
+	{
+		if (IsValidEntity(entity))
+		{
+			static char buffer[64];
+			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
+			{
+				if(!StrContains(buffer, "obj_"))
+				{
+					if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
+					{
+						i_BuildingSelectedToBeDeleted[client] = EntIndexToEntRef(entity);
+						DataPack pack;
+						CreateDataTimer(0.1, DeleteBuildingTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+						pack.WriteCell(client);
+						pack.WriteCell(EntIndexToEntRef(entity));
+						pack.WriteCell(GetClientUserId(client));
+						Menu menu = new Menu(DeleteBuildingMenu);
+						CancelClientMenu(client);
+						SetStoreMenuLogic(client, false);
+
+						SetGlobalTransTarget(client);
+						
+						menu.SetTitle("%t", "Delete Current Marked Building");
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Yes");
+						menu.AddItem("-1", buffer);
+						FormatEx(buffer, sizeof(buffer), "%t", "No");
+						menu.AddItem("-2", buffer);
+									
+						menu.ExitButton = true;
+						menu.Display(client, MENU_TIME_FOREVER);
+						
+						i_BuildingSelectedToBeDeleted[client] = EntIndexToEntRef(entity);
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+public void DestroyAllBuildings_ClientSelf(int client)
+{
+	Menu menu = new Menu(DestroyAllSelfBuildings_Menu);
+	CancelClientMenu(client);
+	SetStoreMenuLogic(client, false);
+	SetGlobalTransTarget(client);
+
+	static char buffer[64];
+	menu.SetTitle("%t", "Destroy all your non-Mounted Buildings Sure");
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Yes");
+	menu.AddItem("-1", buffer);
+	
+	FormatEx(buffer, sizeof(buffer), "%t", "No");
+	menu.AddItem("-2", buffer);
+				
+	menu.ExitButton = true;
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			if(IsValidClient(client))
+			{
+				ResetStoreMenuLogic(client);	
+			}
+		}
+		case MenuAction_Cancel:
+		{
+			if(IsValidClient(client))
+			{
+				ResetStoreMenuLogic(client);		
+			}
+		}
+		case MenuAction_Select:
+		{
+			ResetStoreMenuLogic(client);
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -1:
+				{
+					if(IsValidClient(client))
+					{
+						int mountedentity = EntRefToEntIndex(Building_Mounted[client]);
+						for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+						{
+							int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+							if(IsValidEntity(entity) && entity != 0)
+							{
+								if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client && mountedentity != entity)
+								{
+									if(!Can_I_See_Enemy_Only(client, entity))
+									{
+										DeleteAndRefundBuilding(client, entity);
+									}
+								}
+							}
+						}
+					}
+				}
+				default:
+				{
+					if(IsValidClient(client))
+					{
+						ResetStoreMenuLogic(client);
+					}
+				}
+			}
 		}
 	}
 	return 0;
@@ -641,6 +914,8 @@ public void GearTesting(int client)
 			{
 				b_ActivatedDuringLastMann[client] = true;
 			}
+			if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
+				IncreaceEntityDamageTakenBy(client, 0.5, 3.0);
 			
 			CreateTimer(3.0, QuantumActivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		//	ClientCommand(client, "playgamesound mvm/mvm_tank_start.wav");
@@ -700,7 +975,9 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			float HealthMulti = float(CashSpentTotal[client]);
 			HealthMulti = Pow(HealthMulti, 1.2);
 			HealthMulti *= 0.025;
-
+			if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
+				HealthMulti *= 1.1;
+				
 			SetEntityHealth(client, RoundToCeil(HealthMulti));
 
 			SetEntityMoveType(client, MOVETYPE_WALK);
@@ -907,8 +1184,10 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 1.0, color, 0, 0);
 	   			TE_SendToAll();
 				bool Repaired_Building = false;
-				float RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, true);
-				int healing_Amount = RoundToCeil(200.0 * RepairRateBonus);
+
+				//just get highest value
+				float RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, false);
+				int healing_Amount = RoundToCeil(20.0 * RepairRateBonus);
 				int CurrentMetal = GetAmmo(client, 3);
 
 				CurrentMetal *= 5;
@@ -929,17 +1208,15 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 							}
 							if(CurrentMetal > 0)
 							{
-								int HealthBefore = GetEntProp(entity_close, Prop_Send, "m_iHealth");
-								SetVariantInt(healing_Amount);
-								AcceptEntityInput(entity_close, "AddHealth");
-								int HealthAfter = GetEntProp(entity_close, Prop_Send, "m_iHealth");
+								int HealthAfter = HealEntityGlobal(client, entity_close, float(healing_Amount), _, _, _, _);
 
-								CurrentMetal -= (HealthAfter - HealthBefore) / 5;
+								CurrentMetal -= (HealthAfter) / 5;
 							}
 							Resistance_for_building_High[entity_close] = GetGameTime() + 1.1; 
 						}
 					}
 				}
+
 				CurrentMetal /= 5;
 				SetAmmo(client, 3, CurrentMetal);
 				CurrentAmmo[client][3] = GetAmmo(client, 3);
@@ -965,4 +1242,114 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 	{
 		return Plugin_Stop;	
 	}
+}
+
+
+public int UnClaimBuildingMenu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			if(IsValidClient(client))
+			{
+				ResetStoreMenuLogic(client);
+				i_BuildingSelectedToBeUnClaimed[client] = -1;		
+			}
+		}
+		case MenuAction_Cancel:
+		{
+			if(IsValidClient(client))
+			{
+				ResetStoreMenuLogic(client);
+				i_BuildingSelectedToBeUnClaimed[client] = -1;		
+			}
+		}
+		case MenuAction_Select:
+		{
+			ResetStoreMenuLogic(client);
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -1:
+				{
+					if(IsValidClient(client))
+					{
+						int entity = EntRefToEntIndex(i_BuildingSelectedToBeUnClaimed[client]);
+						if (IsValidEntity(entity))
+						{
+							int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+							if(builder_owner == client)
+							{
+								SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", -1);
+							}
+						}
+						i_BuildingSelectedToBeUnClaimed[client] = -1;	
+					}
+				}
+				default:
+				{
+					if(IsValidClient(client))
+					{
+						i_BuildingSelectedToBeUnClaimed[client] = -1;		
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+public int DeleteBuildingMenu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			if(IsValidClient(client))
+			{
+				ResetStoreMenuLogic(client);
+				i_BuildingSelectedToBeDeleted[client] = -1;		
+			}
+		}
+		case MenuAction_Cancel:
+		{
+			if(IsValidClient(client))
+			{
+				ResetStoreMenuLogic(client);
+				i_BuildingSelectedToBeDeleted[client] = -1;		
+			}
+		}
+		case MenuAction_Select:
+		{
+			ResetStoreMenuLogic(client);
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -1:
+				{
+					if(IsValidClient(client))
+					{
+						int entity = EntRefToEntIndex(i_BuildingSelectedToBeDeleted[client]);
+						if (IsValidEntity(entity))
+						{
+							DeleteAndRefundBuilding(client, entity);
+						}
+					}
+				}
+				default:
+				{
+					if(IsValidClient(client))
+					{
+						i_BuildingSelectedToBeDeleted[client] = -1;		
+					}
+				}
+			}
+		}
+	}
+	return 0;
 }

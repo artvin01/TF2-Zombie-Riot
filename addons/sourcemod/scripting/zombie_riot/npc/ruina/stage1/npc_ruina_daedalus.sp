@@ -53,6 +53,22 @@ static char g_TeleportSounds[][] = {
 
 void Daedalus_OnMapStart_NPC()
 {
+	
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Daedalus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_daedalus");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_buff"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static float fl_npc_basespeed;
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -63,12 +79,6 @@ void Daedalus_OnMapStart_NPC()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
 
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Daedalus");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_daedalus");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -104,9 +114,7 @@ methodmap Daedalus < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -118,41 +126,31 @@ methodmap Daedalus < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	
@@ -170,7 +168,7 @@ methodmap Daedalus < CClotBody
 		
 		/*
 			b'aaarrgh-n-britches	models/workshop/player/items/scout/hwn2015_bargain_britches/hwn2015_bargain_britches.mdl
-			berliner's bazooka		models/player/items/medic/berliners_bucket_helm.mdl
+			berliner's 				models/player/items/medic/berliners_bucket_helm.mdl
 			Sole Saviors			models/workshop/player/items/all_class/sbox2014_armor_shoes/sbox2014_armor_shoes_demo.mdl
 
 			beggars 				models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl
@@ -187,7 +185,8 @@ methodmap Daedalus < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 300.0;
+		fl_npc_basespeed = 250.0;
+		npc.m_flSpeed = 250.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -219,6 +218,9 @@ methodmap Daedalus < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
@@ -264,7 +266,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 0.75);
+	Ruina_Add_Battery(npc.index, 1.0);
 
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
@@ -275,7 +277,7 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		Master_Apply_Shield_Buff(npc.index, 250.0, 0.7);	//30% block shield
+		Master_Apply_Shield_Buff(npc.index, 250.0, 0.3);	//70% block shield
 		
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
@@ -318,6 +320,14 @@ static void ClotThink(int iNPC)
 			npc.m_bPathing = true;
 			npc.m_bAllowBackWalking=false;
 		}
+
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
 			
 		//Target close enough to hit
 		if(flDistanceToTarget < 1000000 || npc.m_flAttackHappenswillhappen)
@@ -334,7 +344,7 @@ static void ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 100000.0);
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayMeleeSound();
-					npc.m_flNextMeleeAttack = GameTime+1.0;
+					npc.m_flNextMeleeAttack = GameTime+3.0;
 					npc.m_flAttackHappenswillhappen = true;
 					float flPos[3]; // original
 					float flAng[3]; // original
@@ -342,12 +352,10 @@ static void ClotThink(int iNPC)
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						
 					float projectile_speed = 750.0;
-					float target_vec[3];
-					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _, target_vec);
 		
-					float dmg = 30.0;
+					float dmg = 20.0;
 					float radius = 150.0;
-					npc.FireParticleRocket(target_vec, dmg , projectile_speed , radius , "raygun_projectile_blue", _, _, true, flPos);
+					npc.FireParticleRocket(vecTarget, dmg , projectile_speed , radius , "raygun_projectile_blue", _, _, true, flPos);
 						
 				}
 				else
@@ -384,7 +392,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

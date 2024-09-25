@@ -174,6 +174,9 @@ public void SepcialBackstabLaughSpy(int attacker)
 {
 	EmitSoundToAll(g_WeebKnifeLaughBackstab[GetRandomInt(0, sizeof(g_WeebKnifeLaughBackstab) - 1)], attacker, SNDCHAN_VOICE, 70, _, 1.0);
 }
+#if defined RPG
+#define WEAPON_BOOM_HAMMER 10000
+#endif
 
 #define MELEE_RANGE 64.0
 #define MELEE_BOUNDS 22.0
@@ -192,6 +195,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
 			{
 				enemies_hit_aoe = SpecterHowManyEnemiesHit(client, weapon);
+			}	
+			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
+			{
+				enemies_hit_aoe = SuperubersawHowManyEnemiesHit(client);
 			}	
 			case WEAPON_SAGA: //yes, if we miss, then we do other stuff.
 			{
@@ -220,6 +227,18 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			case WEAPON_KIT_BLITZKRIEG_CORE:
 			{
 				Blitzkrieg_Kit_Custom_Melee_Logic(client, CustomMeleeRange, CustomMeleeWide, enemies_hit_aoe);
+			}
+			case WEAPON_VICTORIAN_LAUNCHER:
+			{
+				Victorian_Melee_Swing(CustomMeleeRange, CustomMeleeWide);
+			}
+			case WEAPON_ULPIANUS:
+			{
+				enemies_hit_aoe = Ulpianus_EnemyHitCount();
+			}
+			case WEAPON_YAKUZA:
+			{
+				Yakuza_EnemiesHit(client, weapon, enemies_hit_aoe);
 			}
 		}	
 	}
@@ -264,7 +283,11 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	float vecSwingEndHull[3];
 	float vecSwingEndHullHeadshot[3];
 	
-	float ExtraMeleeRange = Attributes_Get(weapon, 4001, 1.0);
+	float ExtraMeleeRange = 1.0;
+	if(weapon > 0)
+	{
+		ExtraMeleeRange = Attributes_Get(weapon, 4001, 1.0);
+	}
 	if(CustomMeleeRange)
 	{
 		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * ExtraMeleeRange);
@@ -296,8 +319,9 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
 	
-	if(enemies_hit_aoe < 2)
+	if(enemies_hit_aoe <= 1)
 	{
+		//not a cleave.
 		if(!Hit_ally)
 		{
 			// See if we hit anything.
@@ -360,8 +384,9 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	}
 	else
 	{
+		//This is a cleave
 		b_iHitNothing = true;
-		Handle TempTrace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEndHull, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace_Multi, client);	// 1073741824 is CONTENTS_LADDER?
+		Handle TempTrace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEndHull, vecSwingMins, vecSwingMaxs, ( 1073741824 ), BulletAndMeleeTrace_Multi, client);	// 1073741824 is CONTENTS_LADDER?
 		delete TempTrace;
 		if(b_iHitNothing) //aaa panic
 		{
@@ -384,7 +409,7 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 	if(target == -1)
 		return ZEROSOUND;
 
-	if(target > 0 && !b_NpcHasDied[target])
+	if(target > 0 && (!b_NpcHasDied[target] || target <= MaxClients))
 	{
 		switch(weapon_index)
 		{
@@ -408,6 +433,16 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 				PlayCustomSoundSpecter(client);
 				return ZEROSOUND;
 			}	
+			case WEAPON_ANGELIC_SHOTGUN:
+			{
+				PlayCustomSoundAngelica(client);
+				return ZEROSOUND;
+			}
+			case WEAPON_SUPERUBERSAW:
+			{
+				if(PlayCustomSoundSuperubersaw(client))
+					return ZEROSOUND;
+			}
 		}
 #endif
 		return MELEE_HIT;
@@ -533,12 +568,25 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		}						
 		float vecHit[3];
 		TR_GetEndPosition(vecHit, swingTrace);	
+		bool DontPlaySound = false;
 #if defined ZR		
 		//We want extra rules!, do we have a melee that acts differently when we didnt hit an enemy or ally?
 		if(target < 1)
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
+				case WEAPON_CHAINSAW:
+				{
+					DontPlaySound = true;
+					if(target == 0)
+					{
+						EmitSoundChainsaw(client, 0);
+					}
+					else
+					{
+						EmitSoundChainsaw(client, 1);
+					}
+				}
 				case WEAPON_LAPPLAND: //yes, if we miss, then we do other stuff.
 				{
 					Weapon_ark_LapplandRangedAttack(client, weapon);
@@ -568,7 +616,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 #endif
 		int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 		int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index, weapon);	
-		if(soundIndex > 0)
+		if(soundIndex > 0 && !DontPlaySound)
 		{
 			char SoundStringToPlay[256];
 			if(soundIndex == MELEE_HIT && c_WeaponSoundOverrideString[weapon][0])
@@ -599,28 +647,21 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			damage = 40.0;
 		}
-
+		
 		if(Item_Index != 155)
 		{
-			damage *= Attributes_Get(weapon, 2, 1.0);
+			damage *= WeaponDamageAttributeMultipliers(weapon);
 		}
 		else
 		{
-			damage = 30.0;
-			float attack_speed;		
-			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
-						
-			damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			damage = 30.0;	
+			damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_BUILDER, client);
 
 #if defined ZR
 			damage *= BuildingWeaponDamageModif(1);
 			damage *= 0.5;
 #endif
-
 		}
-		
-			
-		damage *= Attributes_Get(weapon, 1, 1.0);
 
 #if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])
@@ -631,7 +672,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			}
 			case WEAPON_KIT_BLITZKRIEG_CORE:
 			{
-				Blitzkrieg_Kit_OnHitEffect(client, weapon, damage);
+				Blitzkrieg_Kit_ModifyMeleeDmg(client, damage);
 			}
 		}
 #endif
@@ -642,7 +683,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			if (i_EntitiesHitAoeSwing[counter] != -1)
 			{
-				if(IsValidEntity(i_EntitiesHitAoeSwing[counter]))
+				//make sure they are in our line of sight aswell, so it aint going through walls with AOE's
+				if(IsValidEntity(i_EntitiesHitAoeSwing[counter]) && Can_I_See_Enemy_Only(client, i_EntitiesHitAoeSwing[counter]))
 				{
 					if(!PlayOnceOnly)
 					{
@@ -674,6 +716,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							Angelic_Shotgun_Meleetrace_Hit_Before(client, damage, i_EntitiesHitAoeSwing[counter]);
 						}
+						case WEAPON_KIT_BLITZKRIEG_CORE:
+						{
+							Blitzkrieg_Kit_OnHitEffect(client);
+						}
 						default:
 						{
 							
@@ -690,6 +736,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							damage *= 0.5;
 						}
+						case WEAPON_SPECTER:
+						{
+							damage *= 0.8; //each target hit reduces damage done.
+						}	
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
 							Angelic_Shotgun_Meleetrace_Hit_After(client, damage);
@@ -708,16 +758,29 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			i_EntitiesHitAoeSwing[i] = -1;
 		}
 
-		if(target > 0 && IsValidEntity(target) && Item_Index != 214)
+		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-		//	PrintToChatAll("%i",MELEE_HIT);
+			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
+			{
+				if(PlayOnceOnly) //It hit atleast 1 target!
+					SuperUbersaw_Post(client);
+			}
+			case WEAPON_YAKUZA: //yes, if we miss, then we do other stuff.
+			{
+				YakuzaWeaponSwingDid(client);
+			}
+
+		}
+
+		if(i_EntitiesHitAtOnceMax <= 1 && target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
+		{
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
 		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
 			
 			float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
 			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, vecHit);	
 		}
-		else if(target > -1 && Item_Index == 214)
+		else if(target > -1 && i_CustomWeaponEquipLogic[weapon] == WEAPON_BOOM_HAMMER)
 		{
 			i_ExplosiveProjectileHexArray[weapon] = 0;
 			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;

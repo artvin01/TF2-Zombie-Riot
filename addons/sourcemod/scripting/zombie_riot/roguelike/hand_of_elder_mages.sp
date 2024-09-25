@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 float f_HandOfElderMagesAntiSpam[MAXENTITIES];
 void OnTakeDamage_HandOfElderMages(int client, int holding_weapon)
 {

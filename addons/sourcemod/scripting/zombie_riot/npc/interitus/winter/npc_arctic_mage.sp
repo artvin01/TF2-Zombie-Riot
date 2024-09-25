@@ -37,7 +37,6 @@ static const char g_MeleeHitSounds[][] = {
 
 static float RajulHealAlly[MAXENTITIES];
 static float RajulHealAllyCooldownAntiSpam[MAXENTITIES];
-static int RajulHealAllyDone[MAXENTITIES];
 
 void WinterArcticMage_OnMapStart_NPC()
 {
@@ -230,18 +229,20 @@ public Action WinterArcticMage_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-void WinterArcticMageHealRandomAlly(int victim, float damage)
+void WinterArcticMageHealRandomAlly(int victim, float damage, int settingdo = 1)
 {
-	RajulHealAlly[victim] += (damage * 0.15);
+	RajulHealAlly[victim] += (damage * 0.2);
 	if(RajulHealAllyCooldownAntiSpam[victim] < GetGameTime())
 	{
-		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
-		ExpidonsaGroupHeal(victim, RajulHealAlly[victim] * 0.5, 3, 150.0, 99.0, false,Expidonsa_DontHealSameIndex, WinterArcticMageAllyHealInternal);
-		RajulHealAlly[victim] = 0.0;
+		if(settingdo == 2)
+			RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.2;
+
+		ExpidonsaGroupHeal(victim, 175.0, 3, RajulHealAlly[victim], 2.0, false,Expidonsa_DontHealSameIndex, WinterArcticMageAllyHealInternal);
+		RajulHealAlly[victim] = 0.0;		
+		DesertYadeamDoHealEffect(victim, 175.0);
 	}
 }
-
 public void WinterArcticMage_NPCDeath(int entity)
 {
 	WinterArcticMage npc = view_as<WinterArcticMage>(entity);
@@ -286,11 +287,11 @@ void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int targe
 				{
 					float damageDealt = 125.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 3.5;
+						damageDealt *= 1.75;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, 40);
+					Elemental_AddCyroDamage(target, npc.index, 40, 1);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -326,7 +327,7 @@ void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int targe
 void WinterArcticMageAllyHealInternal(int entity, int victim)
 {
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
-	int flMaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+	int flMaxHealth = ReturnEntityMaxHealth(victim);
 
 	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
 	{

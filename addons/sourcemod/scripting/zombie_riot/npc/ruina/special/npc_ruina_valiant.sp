@@ -51,10 +51,29 @@ static char g_TeleportSounds[][] = {
 
 static int i_anchor_id[MAXENTITIES];
 static int i_failsafe[MAXENTITIES];
+static float fl_spawn_timeout[MAXENTITIES];
 
 #define RUINA_ANCHOR_FAILSAFE_AMMOUNT 33
 
+#define VENIUM_SPAWN_SOUND	"hl1/ambience/particle_suck2.wav"
+static float fl_last_summon;
+
 void Venium_OnMapStart_NPC()
+{
+	fl_last_summon = 0.1;
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Valiant");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_valiant");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "engineer"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -65,17 +84,25 @@ void Venium_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/engineer.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Valiant");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_valiant");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
+	PrecacheSound(VENIUM_SPAWN_SOUND);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Valiant(client, vecPos, vecAng, ally);
+	bool random = StrContains(data, "rng") != -1;
+
+	if(random)
+	{
+		float roll = GetRandomFloat(0.0, 1.0);
+	//	CPrintToChatAll("Chance: %f", fl_last_summon);
+	//	CPrintToChatAll("Rolled: %f", roll);
+		if(roll > fl_last_summon)
+		{
+			fl_last_summon += 0.1;
+			return -1;
+		}
+	}
+	fl_last_summon = 0.1;
+	return Valiant(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Valiant < CClotBody
@@ -107,9 +134,7 @@ methodmap Valiant < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -121,45 +146,35 @@ methodmap Valiant < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	
-	public Valiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public Valiant(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Valiant npc = view_as<Valiant>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -182,8 +197,14 @@ methodmap Valiant < CClotBody
 		
 		/*
 			
-		
 		*/
+
+		float timeout_duration = 7.0;
+
+		fl_spawn_timeout[npc.index] = GetGameTime() + timeout_duration;
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -251,6 +272,29 @@ methodmap Valiant < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_No_Retreat(npc.index);	//no running away to heal!
+
+		if(ally != TFTeam_Red)
+		{
+			
+			EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);	
+			EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);	
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "voice_player", 1, "%t", "Venium Spawn");	
+				}
+			}
+			TeleportDiversioToRandLocation(npc.index);
+		}
+
+		float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec); float sky_loc[3]; sky_loc = npc_vec; sky_loc[2]+=999.0;
+		float diameter = 25.0;
+		int color[4]; Ruina_Color(color);
+		TE_SetupBeamPoints(npc_vec, sky_loc, g_Ruina_BEAM_lightning, 0, 0, 0, timeout_duration, diameter, diameter*0.25, 0, 0.25, color, 24);
+		TE_SendToAll();
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		return npc;
 	}
@@ -316,7 +360,7 @@ static void ClotThink(int iNPC)
 			{
 				if(dist <= (145.0*145.0))
 				{
-					Ruina_Add_Battery(Anchor, 1.0);
+					Ruina_Add_Battery(Anchor, 0.2);
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					npc.FaceTowards(Anchor_Loc, 15000.0);
@@ -365,7 +409,7 @@ static void ClotThink(int iNPC)
 		}
 		
 	}
-	else if(fl_ruina_battery_timer[npc.index] < GameTime && i_magia_anchors_active < 5)
+	else if(fl_ruina_battery_timer[npc.index] < GameTime)
 	{
 		Venium_Build_Anchor(npc);	//build anchor.
 	}
@@ -424,7 +468,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -461,6 +505,13 @@ static void NPC_Death(int entity)
 
 static void Venium_Build_Anchor(Valiant npc)
 {
+	if(fl_spawn_timeout[npc.index] > GetGameTime())
+	{
+		//CPrintToChatAll("timeout");
+		return;
+	}
+		
+
 	float AproxRandomSpaceToWalkTo[3];
 
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
@@ -471,7 +522,7 @@ static void Venium_Build_Anchor(Valiant npc)
 	AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 800.0),(AproxRandomSpaceToWalkTo[1] + 800.0));
 
 	Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-		
+	
 	TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
 	delete ToGroundTrace;
 
@@ -484,17 +535,17 @@ static void Venium_Build_Anchor(Valiant npc)
 	{
 		return;
 	}
-			
+		
 
 	area.GetCenter(AproxRandomSpaceToWalkTo);
 
 	AproxRandomSpaceToWalkTo[2] += 18.0;
-		
+	
 	static float hullcheckmaxs_Player_Again[3];
 	static float hullcheckmins_Player_Again[3];
 
-	hullcheckmaxs_Player_Again = view_as<float>( { 45.0, 45.0, 82.0 } ); //Fat. very fett indeed
-	hullcheckmins_Player_Again = view_as<float>( { -45.0, -45.0, 0.0 } );	
+	hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
+	hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
 
 	if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 	{
@@ -504,33 +555,32 @@ static void Venium_Build_Anchor(Valiant npc)
 	if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
 		return;
 
-		
-	AproxRandomSpaceToWalkTo[2] += 18.0;
-	if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-		return;
-
-		
-	AproxRandomSpaceToWalkTo[2] -= 18.0;
-	AproxRandomSpaceToWalkTo[2] -= 18.0;
-	AproxRandomSpaceToWalkTo[2] -= 18.0;
-
-	if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-		return;
-
-		
-	AproxRandomSpaceToWalkTo[2] += 18.0;
-	AproxRandomSpaceToWalkTo[2] += 18.0;
 	
-	float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, npc_vec, true);
-		
-	if(flDistanceToBuild < (2000.0 * 2000.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
+	AproxRandomSpaceToWalkTo[2] += 18.0;
+	if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+		return;
+
+	
+	AproxRandomSpaceToWalkTo[2] -= 18.0;
+	AproxRandomSpaceToWalkTo[2] -= 18.0;
+	AproxRandomSpaceToWalkTo[2] -= 18.0;
+
+	if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+		return;
+
+	
+	AproxRandomSpaceToWalkTo[2] += 18.0;
+	AproxRandomSpaceToWalkTo[2] += 18.0;
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+
+	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceVec, true);
+	
+	if(flDistanceToBuild < (500.0 * 500.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
 	{
 		i_failsafe[npc.index]++;
 		return; //The building is too close, we want to retry! it is unfair otherwise.
 	}
 	//Retry.
-
 
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
@@ -543,9 +593,6 @@ static void Venium_Build_Anchor(Valiant npc)
 		fl_ruina_battery[spawn_index]=10.0;
 		SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(spawn_index, 255, 255, 255, 1);
-
-		SetEntProp(spawn_index, Prop_Data, "m_iHealth", 50000);
-		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 50000);
 	}
 }
 static void Venium_Post_Bult_Logic(Valiant npc, int PrimaryThreatIndex, float GameTime)

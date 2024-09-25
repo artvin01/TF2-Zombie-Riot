@@ -122,7 +122,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 	{
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 5;
+		int maxhealth = ReturnEntityMaxHealth(npc.index) / 5;
 		
 		int entity = NPC_CreateByName("npc_tidelinkedarchon", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
@@ -157,7 +157,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 		}
 
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 
 		health += maxhealth / 200;	// 20 seconds
 		if(health >= (maxhealth / 2))
@@ -238,7 +238,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 
 					npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_2");
 					npc.m_flAttackHappens = gameTime + 0.25;
-					//npc.m_flDoingAnimation = gameTime + 0.65;
+					//npc.m_flDoingAnimation = gameTime + 0.95;
 				}
 			}
 		}
@@ -273,7 +273,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 public void TidelinkedBishop_DownedThink(int entity)
 {
 	TidelinkedBishop npc = view_as<TidelinkedBishop>(entity);
-	npc.SetActivity("ACT_MUDROCK_RAGE");
+	npc.SetActivity("ACT_TrueStrength_RAGE");
 	npc.SetPlaybackRate(0.5);
 	SDKUnhook(entity, SDKHook_Think, TidelinkedBishop_DownedThink);
 }

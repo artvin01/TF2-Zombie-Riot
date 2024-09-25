@@ -313,7 +313,7 @@ void DesertAncientDemonSelfDefense(DesertAncientDemon npc, float gameTime, int t
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, ElementalDamage, true, true);
+					Elemental_AddChaosDamage(target, npc.index, ElementalDamage, true, true);
 					
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -440,7 +440,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	float AllyAng[3];
 	GetEntPropVector(ally, Prop_Data, "m_angRotation", AllyAng);
 	int flMaxHealth = GetEntProp(self, Prop_Data, "m_iMaxHealth");
-	int flMaxHealthally = GetEntProp(ally, Prop_Data, "m_iMaxHealth");
+	int flMaxHealthally = ReturnEntityMaxHealth(ally);
 	float pos[3]; 
 	WorldSpaceCenter(ally, pos);
 	pos[2] -= 10.0;

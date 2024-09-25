@@ -54,9 +54,6 @@ static int MoabHealth(bool fortified)
 
 void Moab_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/boab.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Massive Ornery Air Blimp");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_moab");
@@ -214,8 +211,6 @@ public void Moab_ClotThink(int iNPC)
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			
-			
 			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
 			NPC_SetGoalVector(npc.index, VecPredictPos);
 		}

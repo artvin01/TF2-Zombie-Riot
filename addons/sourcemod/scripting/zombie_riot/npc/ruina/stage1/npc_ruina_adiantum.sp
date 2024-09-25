@@ -45,10 +45,23 @@ static const char g_MeleeMissSounds[][] = {
 };
 
 
-static char gLaser1;
 static char gExplosive1;
 
 public void Adiantum_OnMapStart_NPC()
+{
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Adiantum");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_adiantum");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
 {
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
@@ -58,15 +71,7 @@ public void Adiantum_OnMapStart_NPC()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	
-	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt");
-	
 	PrecacheSound("misc/halloween/gotohell.wav");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Adiantum");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_adiantum");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -93,32 +98,24 @@ methodmap Adiantum < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(4.0, 7.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	public void PlayDeathSound() {
 		
@@ -136,9 +133,7 @@ methodmap Adiantum < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	public Adiantum(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -217,7 +212,7 @@ methodmap Adiantum < CClotBody
 		
 		Ruina_Master_Rally(npc.index, true);	//this npc is always rallying ranged npc's
 		
-		npc.m_flSpeed = 250.0;
+		npc.m_flSpeed = 225.0;
 		
 		npc.m_flCharge_Duration = 0.0;
 		npc.m_flCharge_delay = GetGameTime(npc.index) + 2.0;
@@ -285,12 +280,10 @@ static void ClotThink(int iNPC)
 			
 		if(npc.m_flNextRangedBarrage_Spam < GameTime)
 		{
-
-			Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);
+			Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.75);	//25% dmg resist
 			Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);
-				
 			Adiantum_Summon_Ion_Barrage(npc.index, vecTarget);
-			npc.m_flNextRangedBarrage_Spam = GameTime + 15.0;
+			npc.m_flNextRangedBarrage_Spam = GameTime + 20.0;
 		}
 
 		Ruina_Self_Defense Melee;
@@ -420,7 +413,7 @@ static void Adiantum_Summon_Ion_Barrage(int client, float vecTarget[3])
 		
 		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, endLoc);
 		
-		Adiantum_Ion_Invoke(client, endLoc, float(ion)/5.0);
+		Adiantum_Ion_Invoke(client, endLoc, float(ion)/5.0+1.0);
 	}
 }
 
@@ -438,10 +431,8 @@ public void Adiantum_Ion_Invoke(int ref, float vecTarget[3], float Time)
 		GetAbsOrigin(entity, UserLoc);
 		
 		UserLoc[2]+=75.0;
-		
-		int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
 					
-		TE_SetupBeamPoints(vecTarget, UserLoc, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
+		TE_SetupBeamPoints(vecTarget, UserLoc, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
 		TE_SendToAll();
 
 		EmitSoundToAll("misc/halloween/gotohell.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL*0.5, SNDPITCH_NORMAL, -1, vecTarget);
@@ -454,8 +445,11 @@ public void Adiantum_Ion_Invoke(int ref, float vecTarget[3], float Time)
 		WritePackFloat(data, Range); // Range
 		WritePackFloat(data, Dmg); // Damge
 		WritePackCell(data, ref);
-		
-		spawnRing_Vectors(vecTarget, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 1, 175, 255, 255, 1, Time, 6.0, 0.1, 1, 1.0);
+
+		//g_Ruina_BEAM_Diamond
+
+		TE_SetupBeamRingPoint(vecTarget, Range*2.0, 0.0, g_Ruina_BEAM_Laser, 0, 0, 1, Time, 6.0, 0.1, color, 1, 0);
+		TE_SendToAll();
 	}
 }
 
@@ -486,11 +480,11 @@ public Action Smite_Timer_Adiantum(Handle Smite_Logic, DataPack data)
 	position[1] = startPosition[1];
 	position[2] += startPosition[2] + 900.0;
 	startPosition[2] += -200;
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.75, 15.0, 1.0, 0, 0.75, {1, 175, 255, 255}, 3);
+	TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.75, 15.0, 1.0, 0, 0.75, {1, 175, 255, 255}, 3);
 	TE_SendToAll();
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.45, 25.0, 1.0, 0, 0.45, {1, 175, 255, 255}, 3);
+	TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.45, 25.0, 1.0, 0, 0.45, {1, 175, 255, 255}, 3);
 	TE_SendToAll();
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.3, 40.0, 1.0, 0, 0.3, {1, 175, 255, 255}, 3);
+	TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.3, 40.0, 1.0, 0, 0.3, {1, 175, 255, 255}, 3);
 	TE_SendToAll();
 	
 	position[2] = startPosition[2] + 50.0;

@@ -51,7 +51,7 @@ public void Weapon_Necro_FireBallSpell(int client, int weapon, bool &result, int
 				CreateTimer(0.5, Necro_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
@@ -106,10 +106,6 @@ public Action Necro_Remove_Spell(Handle Necro_Remove_SpellHandle, int client)
 	if (IsValidClient(client))
 	{
 		Spawn_Necromancy(client);
-		if(LastMann)
-		{
-			Spawn_Necromancy(client);			
-		}
 		Attributes_Set(client, 698, 0.0);
 		FakeClientCommand(client, "use tf_weapon_bonesaw");
 		Attributes_Set(client, 178, 1.0);
@@ -125,5 +121,5 @@ public void Spawn_Necromancy(int client)
 	GetClientAbsAngles(client, flAng);
 	
 	int npc = NPC_CreateByName("npc_necromancy_combine", client, flPos, flAng, TFTeam_Red);
-	fl_ExtraDamage[npc] = Necro_Damage[client];
+	fl_Extra_Damage[npc] = Necro_Damage[client];
 }

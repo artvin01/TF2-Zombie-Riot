@@ -249,9 +249,7 @@ methodmap TrueZerofuse < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -260,51 +258,37 @@ methodmap TrueZerofuse < CClotBody
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	public void PlayDeathSound() {
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], _, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRocketGunThrow() {
 		EmitSoundToAll(g_RangeAttackTwo[GetRandomInt(0, sizeof(g_RangeAttackTwo) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	public void PlayBalanceSound() {
 		EmitSoundToAll(g_BalanceSound[GetRandomInt(0, sizeof(g_BalanceSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
@@ -686,7 +670,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		}
 		if(fl_MinionSummon[npc.index] <= gameTime)
 		{
-			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int maxhealth = ReturnEntityMaxHealth(npc.index);
 			float startPosition[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 			maxhealth /= 9;//if they are somehow weak do 6 or 7 if they are strong reduce it more
@@ -806,7 +790,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 	if(fl_DefenseHealing_Timer[npc.index] <= gameTime && b_DefenseHealing[npc.index])
 	{
 		fl_DefenseHealing_Timer[npc.index] = gameTime + 0.2;//52 times intotal yeah i am quite retarded... BUT i like the "slow" regen gain :)
-		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int MaxHealth = ReturnEntityMaxHealth(npc.index);
 		if(b_HealingIsTooStrong)
 		{
 			//SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + 500);
@@ -1104,7 +1088,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 							{
 								if(b_AbilityWrathRage[npc.index])
 								{
-									int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+									int MaxHealth = ReturnEntityMaxHealth(npc.index);
 									if(b_HealingIsTooStrongOnMelee)
 									{
 										SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + 1400);//obviously not that low
@@ -1169,7 +1153,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 							{
 								if(b_AbilityWrathRage[npc.index])
 								{
-									int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+									int MaxHealth = ReturnEntityMaxHealth(npc.index);
 									/*
 									if(b_HealingIsTooStrongOnMelee[npc.index])//meh npcs can suffer
 									{
@@ -1257,7 +1241,7 @@ public Action Set_TrueZerofuse_HP(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(entity>MaxClients && IsValidEntity(entity))
 	{
-		SetEntProp(entity, Prop_Data, "m_iHealth", (GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2));
+		SetEntProp(entity, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(entity) / 2));
 	}
 	return Plugin_Stop;
 }
@@ -1266,7 +1250,7 @@ public void TrueZerofuse_ClotDamaged_Post(int iNPC, int attacker, int inflictor,
 {
 	TrueZerofuse npc = view_as<TrueZerofuse>(iNPC);
 	//zero is about to become even stronger
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index) / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:( your mother
 		b_FakeUber[npc.index] = true;
@@ -1278,7 +1262,7 @@ public void TrueZerofuse_ClotDamaged_Post(int iNPC, int attacker, int inflictor,
 		npc.m_flMeleeArmor = 0.0;
 		npc.PlayLifelossSound();
 	}
-	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 	//SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + MaxHealth / 200000);
 	if(!b_ForceWrath[npc.index])//If he somehow gonna disable this instantly if he uses forcewrath
 	{

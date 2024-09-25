@@ -135,17 +135,13 @@ methodmap Ikunagae < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(4.0, 7.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayDeathSound() {
 		
@@ -163,9 +159,7 @@ methodmap Ikunagae < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -177,9 +171,7 @@ methodmap Ikunagae < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	//static bool b_scaramouche_used[MAXENTITIES] = { false, ... };
 	public Ikunagae(int client, float vecPos[3], float vecAng[3], int ally)
@@ -847,7 +839,7 @@ public Action Spin_To_Win_TBB_Tick(int client)
 		fl_Spin_to_win_Angle[npc.index] = 0.0;
 	}
 	int testing = i_spin_to_win_Severity[npc.index];
-	if(i_spin_to_win_throttle[npc.index]>15)//Very fast
+	if(i_spin_to_win_throttle[npc.index]> RoundToFloor(15*TickrateModify))//Very fast
 	{
 		i_spin_to_win_throttle[npc.index] = 0;
 		if(b_spin_to_win_Alternate[npc.index])
@@ -1115,7 +1107,7 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 	Ikunagae npc = view_as<Ikunagae>(client);
 	
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 	
 	float Health_Current = Health * 100 / MaxHealth;
 	
@@ -1208,7 +1200,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_MaxDistance[client] = 1000;
 	Ikunagae_BEAM_BeamRadius[client] = 10;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("c1f7f4");
-	Ikunagae_BEAM_ChargeUpTime[client] = 12;
+	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
 	Ikunagae_BEAM_CloseBuildingDPT[client] = 0.0;
 	Ikunagae_BEAM_FarBuildingDPT[client] = 0.0;
 	Ikunagae_BEAM_Duration[client] = 0.25;
@@ -1411,7 +1403,7 @@ static Action Ikunagae_TBB_Tick(int client)
 static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 {
 	Ikunagae npc = view_as<Ikunagae>(client);
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	
 	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)

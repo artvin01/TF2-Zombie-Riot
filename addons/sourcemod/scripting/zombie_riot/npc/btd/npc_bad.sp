@@ -52,9 +52,6 @@ static int MoabHealth(bool fortified)
 
 void Bad_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/bad.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Big Airship of Doom");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bad");
@@ -72,6 +69,10 @@ static void ClotPrecache()
 	for(int i; i<sizeof(SoundZomgPop); i++)
 	{
 		PrecacheSoundCustom(SoundZomgPop[i]);
+	}
+	for(int i; i<sizeof(SoundMoabHit); i++)
+	{
+		PrecacheSoundCustom(SoundMoabHit[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/bad.mdl");

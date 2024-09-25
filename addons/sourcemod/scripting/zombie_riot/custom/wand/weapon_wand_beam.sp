@@ -52,7 +52,7 @@ public void Weapon_Wand_Beam(int client, int weapon, bool crit)
 	if(mana_cost <= Current_Mana[client])
 	{
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -86,7 +86,7 @@ public void Weapon_Wand_Beam_pap(int client, int weapon, bool crit)
 	if(mana_cost <= Current_Mana[client])
 	{
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -150,7 +150,7 @@ public void Weapon_BeamWand_M2(int client, int weapon, bool &result, int slot)
 				
 				CreateTimer(3.0, Reset_BeamWand_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 				
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
@@ -210,7 +210,7 @@ public void Weapon_BeamWand_M2_pap(int client, int weapon, bool &result, int slo
 				
 				CreateTimer(3.0, Reset_BeamWand_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 				
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				
 				Current_Mana[client] -= mana_cost;
@@ -399,7 +399,7 @@ static bool BeamWand_TraceUsers(int entity, int contentsMask, int client)
 		entity = Target_Hit_Wand_Detection(client, entity);
 		if(0 < entity)
 		{
-			for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{
 				if(!BeamWand_BuildingHit[i])
 				{
@@ -538,7 +538,7 @@ static void TBB_Tick(int client)
 					pack.WriteCell(EntIndexToEntRef(BeamWand_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));
 					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteFloat(damage/BeamWand_Targets_Hit[client]);
+					pack.WriteFloat(damage*BeamWand_Targets_Hit[client]);
 					pack.WriteCell(DMG_PLASMA);
 					pack.WriteCell(EntIndexToEntRef(weapon_active));
 					pack.WriteFloat(damage_force[0]);

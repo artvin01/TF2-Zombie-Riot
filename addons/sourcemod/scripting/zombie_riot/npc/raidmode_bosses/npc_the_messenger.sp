@@ -90,7 +90,7 @@ void TheMessenger_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "messenger");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
@@ -583,6 +583,7 @@ bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_roar_owar");
 		npc.m_flAttackHappens = 0.0;
 		npc.SetCycle(0.01);
@@ -685,6 +686,7 @@ bool Messanger_Elemental_Attack_TempPowerup(TheMessenger npc)
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_cheers_demo");
 		npc.m_flAttackHappens = 0.0;
 		npc.SetCycle(0.01);
@@ -1130,7 +1132,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 								if(NpcStats_IsEnemySilenced(npc.index))
 									ChaosDamage = 100;
 
-								Sakratan_AddNeuralDamage(targetTrace, npc.index, ChaosDamage, true, true);
+								Elemental_AddChaosDamage(targetTrace, npc.index, ChaosDamage, true, true);
 							}
 
 							if(!Knocked)
@@ -1233,7 +1235,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 					ChaosDamage = 30;
 			}
 
-			Sakratan_AddNeuralDamage(target, owner, ChaosDamage, true, true);
+			Elemental_AddChaosDamage(target, owner, ChaosDamage, true, true);
 		}
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
@@ -1313,7 +1315,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 	TheMessenger npc = view_as<TheMessenger>(victim);
 	if(npc.g_TimesSummoned < 99)
 	{
-		int nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.g_TimesSummoned) / 100;
+		int nextLoss = ReturnEntityMaxHealth(npc.index) * (99 - npc.g_TimesSummoned) / 100;
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
 		{
 			npc.g_TimesSummoned++;
@@ -1323,7 +1325,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 		}
 	}
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.0;
@@ -1339,7 +1341,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}The Messenger{default}: VOID, GRANT ME STRENGHT!");
+				CPrintToChatAll("{lightblue}The Messenger{default}: VOID, GRANT ME STRENGTH!");
 			}
 			case 2:
 			{

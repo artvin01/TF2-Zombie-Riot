@@ -305,6 +305,9 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 			return 0;
 		}
 	}
+	if(RogueTheme == BlueParadox && i_npcspawnprotection[npc.index] == 1)
+		return 0;
+
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 	npc.FaceTowards(VecEnemy, 15000.0);
 
@@ -315,7 +318,17 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
-			 WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
+			WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
+			float pos_npc[3];
+			WorldSpaceCenter(npc.index, pos_npc);
+			float AngleAim[3];
+			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			if(TR_DidHit(hTrace))
+			{
+				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+			}
+			delete hTrace;	
 		}
 	}
 	else
@@ -327,12 +340,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-			int Traced_Target = TR_GetEntityIndex(hTrace);
-			if(Traced_Target > 0)
-			{
-				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
-			}
-			else if(TR_DidHit(hTrace))
+			if(TR_DidHit(hTrace))
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
@@ -352,8 +360,23 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
 			
-			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
 			ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
+			float pos_npc[3];
+			WorldSpaceCenter(npc.index, pos_npc);
+			float AngleAim[3];
+			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			int Traced_Target = TR_GetEntityIndex(hTrace);
+			if(Traced_Target > 0)
+			{
+				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
+			}
+			else if(TR_DidHit(hTrace))
+			{
+				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+			}
+			delete hTrace;	
+			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
 			npc.PlayMeleeSound();
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
@@ -363,7 +386,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 					damageDealt *= 10.0;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				Sakratan_AddNeuralDamage(target, npc.index, 90);
+				Elemental_AddCyroDamage(target, npc.index, 90, 1);
 			} 
 		}
 	}
@@ -372,7 +395,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 	{
 		
 		npc.m_flAttackHappens = gameTime + 1.25;
-		npc.m_flDoingAnimation = gameTime + 0.65;
+		npc.m_flDoingAnimation = gameTime + 0.95;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 1;

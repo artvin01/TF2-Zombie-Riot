@@ -220,20 +220,20 @@ public void SeabornGuard_ClotThink(int iNPC)
 							{
 								SetEntityRenderColor(npc.m_iWearable1, 255, 55, 55, 255);
 
-								SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * 0.25));
+								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.25));
 							}
 							case 3:
 							{
 								SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 								npc.m_iOverlordComboAttack = 0;
-								SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack));
+								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack));
 							}
 							default:
 							{
 								SetEntityRenderColor(npc.m_iWearable1, 255, 200, 200, 255);
 
-								SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * 0.25));
+								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.25));
 							}
 						}
 					}
@@ -249,7 +249,7 @@ public void SeabornGuard_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
-				npc.m_flNextMeleeAttack = gameTime + 1.05;
+				npc.m_flNextMeleeAttack = gameTime + 0.6;
 
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_CUSTOM_ATTACK_SWORD");

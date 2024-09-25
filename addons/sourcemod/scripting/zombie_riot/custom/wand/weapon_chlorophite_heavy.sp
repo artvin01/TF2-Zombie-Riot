@@ -3,7 +3,7 @@
 
 
 static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
-static int attacks_made[MAXPLAYERS+1]={12, ...};
+static int attacks_made[MAXPLAYERS+1]={8, ...};
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 

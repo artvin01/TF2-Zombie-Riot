@@ -43,8 +43,16 @@ methodmap AlliedKahmlAbility < CClotBody
 		char ModelPath[255];
 		int entity, i;
 			
-		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		if((i_CustomModelOverrideIndex[client] < BARNEY || !b_HideCosmeticsPlayer[client]))
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
+			SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		}
+		else
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
+			SetEntityRenderColor(npc.index, 21, 71, 171, 125);
+		}
 
 		func_NPCDeath[npc.index] = Internal_Npc_NPCDeath;
 		func_NPCThink[npc.index] = Internal_Npc_ClotThink;
@@ -60,14 +68,17 @@ methodmap AlliedKahmlAbility < CClotBody
 			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
 				continue;
 				
-			ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
-			if(ModelIndex < 0)
+			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) != entity || (i_CustomModelOverrideIndex[client] < BARNEY || !b_HideCosmeticsPlayer[client]))
 			{
-				GetEntPropString(entity, Prop_Data, "m_ModelName", ModelPath, sizeof(ModelPath));
-			}
-			else
-			{
-				ModelIndexToString(ModelIndex, ModelPath, sizeof(ModelPath));
+				ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
+				if(ModelIndex < 0)
+				{
+					GetEntPropString(entity, Prop_Data, "m_ModelName", ModelPath, sizeof(ModelPath));
+				}
+				else
+				{
+					ModelIndexToString(ModelIndex, ModelPath, sizeof(ModelPath));
+				}
 			}
 			if(!ModelPath[0])
 				continue;
@@ -109,6 +120,7 @@ methodmap AlliedKahmlAbility < CClotBody
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
+		b_CannotBeStunned[npc.index] = true;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 450.0;
@@ -293,14 +305,15 @@ int ChaosKahmlsteinAllySelfDefense(AlliedKahmlAbility npc, int target, float dis
 				case 1:
 				{
 					projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_blue_crit", false,
-					_,_,_,_,owner);
+					_,_,_,EP_DEALS_CLUB_DAMAGE,owner);
 				}
 				case 2:
 				{
 					projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_red_crit", false,
-					_,_,_,_,owner);
+					_,_,_,EP_DEALS_CLUB_DAMAGE,owner);
 				}
 			}
+			
 			DataPack pack;
 			CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			pack.WriteCell(EntIndexToEntRef(projectile)); //projectile

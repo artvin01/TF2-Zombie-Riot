@@ -79,7 +79,7 @@ methodmap Caprinae < CClotBody
 	{
 		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "99000", ally, _, true));
 		
-		npc.Anger = (data[0] && !Rogue_Paradox_RedMoon());
+		npc.Anger = (data[0]/* && !Rogue_Paradox_RedMoon()*/);
 		i_NpcWeight[npc.index] = npc.Anger ? 1 : 3;
 		npc.SetActivity("ACT_MP_RUN_PASSTIME");
 		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
@@ -197,7 +197,7 @@ static void ClotThink(int iNPC)
 				{
 					npc.PlayMeleeHitSound();
 
-					int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10;
+					int health = ReturnEntityMaxHealth(npc.index) / 10;
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 					
@@ -205,15 +205,15 @@ static void ClotThink(int iNPC)
 					if(entity > MaxClients)
 					{
 						if(GetTeam(npc.index) != TFTeam_Red)
-							Zombies_Currently_Still_Ongoing++;
-						
+							NpcAddedToZombiesLeftCurrently(entity, true);
+
 						SetEntProp(entity, Prop_Data, "m_iHealth", health);
 						SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 						
 						fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
 						fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
 						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 1.1;
-						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] / 4.0;
+					//	fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] / 4.0;
 						view_as<CClotBody>(entity).m_flSpeed = npc.m_flSpeed;
 					}
 
@@ -251,7 +251,7 @@ static void ClotDeath(int entity)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
 	startPosition[2] += 45;
 	
-	makeexplosion(entity, entity, startPosition, "", 500, 120, _, _, true, true, 15.0);
+	makeexplosion(entity, entity, startPosition, "", 600, 150, _, _, true, true, 15.0);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

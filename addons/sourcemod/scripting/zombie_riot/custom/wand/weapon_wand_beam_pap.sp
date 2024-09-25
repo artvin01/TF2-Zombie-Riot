@@ -425,7 +425,7 @@ public Action Beam_Wand_pap_Tick(int client)
 														
 								fl_beam_overdrive_damage[client] = damage;
 								
-								Mana_Regen_Delay[client] = gametime + 1.0;
+								SDKhooks_SetManaRegenDelayTime(client, 1.0);
 								Mana_Hud_Delay[client] = 0.0;
 								
 								Current_Mana[client] -= manacost;
@@ -651,7 +651,7 @@ static void Beam_Wand_Laser_Attack(int client, float endVec_2[3], int num, float
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));
 					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteFloat(damage/BEAM_Targets_Hit[client]);
+					pack.WriteFloat(damage*BEAM_Targets_Hit[client]);
 					pack.WriteCell(DMG_PLASMA);
 					pack.WriteCell(EntIndexToEntRef(weapon_active));
 					pack.WriteFloat(damage_force[0]);

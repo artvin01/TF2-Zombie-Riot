@@ -117,9 +117,7 @@ methodmap XenoSpyMainBoss < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -131,26 +129,20 @@ methodmap XenoSpyMainBoss < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	
 	public void PlayAngerSound() {
@@ -166,32 +158,24 @@ methodmap XenoSpyMainBoss < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	public void PlayDecloakSound() {
@@ -199,9 +183,7 @@ methodmap XenoSpyMainBoss < CClotBody
 		EmitSoundToAll(g_decloak[GetRandomInt(0, sizeof(g_decloak) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_decloak[GetRandomInt(0, sizeof(g_decloak) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	public XenoSpyMainBoss(int client, float vecPos[3], float vecAng[3], int ally)
@@ -799,7 +781,7 @@ public Action XenoSpyMainBoss_OnTakeDamage(int victim, int &attacker, int &infli
 public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	XenoSpyMainBoss npc = view_as<XenoSpyMainBoss>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index) / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
@@ -808,7 +790,7 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 		if(EscapeModeForNpc)
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 ));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2 ));
 			CreateTimer(0.1, XenoSpyMainBoss_Set_Spymain_HP, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 			int amount_of_people;
 			
@@ -832,8 +814,8 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					XenoSpyMainBoss npc_minion = view_as<XenoSpyMainBoss>(spawn_index);
 					TeleportEntity(spawn_index, NULL_VECTOR, ang, NULL_VECTOR);
-					SetEntProp(spawn_index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10);
-					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10);
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/10);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/10);
 					npc_minion.m_bThisNpcIsABoss = true;
 					GiveNpcOutLineLastOrBoss(spawn_index, true);
 					Allies_Alive += 1;
@@ -873,7 +855,7 @@ public Action XenoSpyMainBoss_Set_Spymain_HP(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(entity>MaxClients && IsValidEntity(entity))
 	{
-		SetEntProp(entity, Prop_Data, "m_iHealth", (GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2));
+		SetEntProp(entity, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(entity) / 2));
 	}
 	return Plugin_Stop;
 }

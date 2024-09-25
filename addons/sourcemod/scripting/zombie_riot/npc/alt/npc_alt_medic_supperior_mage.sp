@@ -123,17 +123,13 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -141,43 +137,33 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	
@@ -404,7 +390,7 @@ static void Internal_ClotThink(int iNPC)
 				if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 				{
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
 					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,1))
@@ -446,7 +432,7 @@ static void Internal_ClotThink(int iNPC)
 		else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GameTime)
 		{
 			float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-			float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 			float crocket = 25.0 / (1.0+(1-(Health/MaxHealth))*2);
 			float dmg = 20.0*(1.0+(1-(Health/MaxHealth))*2);
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
@@ -493,7 +479,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) && ZR_GetWaveCount()>40 ) //npc.Anger after half hp/400 hp
+	if(((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) && ZR_GetWaveCount()>40 ) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:( <- He is  very angy, but who wouldn't be, they literally lost half of there blood, id say if they weren't angry it would be a real surprise.
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
@@ -548,7 +534,7 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(int client)
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 750;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ChargeUpTime[client] = 33;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ChargeUpTime[client] = RoundToFloor(33 * TickrateModify);
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseBuildingDPT[client] = 0.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarBuildingDPT[client] = 0.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_Duration[client] = 1.5;
@@ -607,7 +593,7 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability(int client)
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 500;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("0509FA");
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ChargeUpTime[client] = 33;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ChargeUpTime[client] = RoundToFloor(33 * TickrateModify);
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseBuildingDPT[client] = 0.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarBuildingDPT[client] = 0.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_Duration[client] = 1.5;

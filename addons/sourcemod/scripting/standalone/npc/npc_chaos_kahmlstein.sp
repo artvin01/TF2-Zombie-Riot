@@ -421,11 +421,9 @@ methodmap ChaosKahmlstein < CClotBody
 	
 		npc.GetAttachment("effect_hand_r", flPos, flAng);
 		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
 		
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
 		npc.m_iWearable3 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
@@ -1225,7 +1223,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(victim);
 	if(npc.g_TimesSummoned < 199)
 	{
-		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (199 - npc.g_TimesSummoned) / 200;
+		int nextLoss = (ReturnEntityMaxHealth(npc.index) / 10) * (199 - npc.g_TimesSummoned) / 200;
 		if((GetEntProp(npc.index, Prop_Data, "m_iHealth") / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;
@@ -1260,7 +1258,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 		}
 	}
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		f_MessengerSpeedUp[npc.index] *= 1.15;
 		switch(GetRandomInt(0,3))
@@ -1339,7 +1337,7 @@ void KahmlsteinInitiatePunch(int entity, float VectorTarget[3], float VectorStar
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * 66.0);
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
 
 	float vecForward[3], Angles[3];
 

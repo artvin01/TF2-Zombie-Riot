@@ -187,7 +187,7 @@ public void Pathshaper_ClotThink(int iNPC)
 
 				if(++npc.m_iAttacksTillMegahit > 2)
 				{
-					int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 4 / 7;
+					int health = ReturnEntityMaxHealth(npc.index) * 4 / 7;
 					Pathshaper_SpawnFractal(npc, health, 8);
 					npc.m_iAttacksTillMegahit = 0;
 				}
@@ -230,7 +230,7 @@ void Pathshaper_OnTakeDamage(int victim, int attacker)
 
 			if(++npc.m_iAttacksTillReload > 9)
 			{
-				int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 4 / 7;
+				int health = ReturnEntityMaxHealth(npc.index) * 4 / 7;
 				Pathshaper_SpawnFractal(npc, health, 8);
 				npc.m_iAttacksTillReload = 0;
 			}

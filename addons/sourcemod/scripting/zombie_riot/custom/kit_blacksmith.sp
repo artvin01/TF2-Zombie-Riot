@@ -10,10 +10,12 @@ enum struct TinkerEnum
 	int Attrib[TINKER_LIMIT];
 	float Value[TINKER_LIMIT];
 	float Luck[TINKER_LIMIT];
+	char Name[64];
+	int Rarity;
 }
 
 static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
-static const int MetalGain[] = { 10, 25, 50, 100, 200, 300 };
+static const int MetalGain[] = { 5, 8, 11, 15, 20, 35 };
 static const float Cooldowns[] = { 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
 static int SmithLevel[MAXTF2PLAYERS] = {-1, ...};
 static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};
@@ -69,12 +71,14 @@ void Blacksmith_ExtraDesc(int client, int index)
 				Tinkers.GetArray(a, tinker);
 				if(tinker.AccountId == account && tinker.StoreIndex == index)
 				{
+					CPrintToChat(client, "{yellow}%s (Tier %d)", tinker.Name, tinker.Rarity + 1);
+
 					for(int b; b < sizeof(tinker.Attrib); b++)
 					{
 						if(!tinker.Attrib[b])
 							break;
 						
-						PrintAttribValue(client, tinker.Attrib[b], tinker.Value[b], tinker.Luck[b]);
+						Blacksmith_PrintAttribValue(client, tinker.Attrib[b], tinker.Value[b], tinker.Luck[b]);
 					}
 
 					break;
@@ -82,6 +86,11 @@ void Blacksmith_ExtraDesc(int client, int index)
 			}
 		}
 	}
+}
+
+bool Blacksmith_IsASmith(int client)
+{
+	return view_as<bool>(EffectTimer[client]);
 }
 
 void Blacksmith_Enable(int client, int weapon)
@@ -128,7 +137,7 @@ void Blacksmith_Enable(int client, int weapon)
 
 public Action Blacksmith_TimerEffect(Handle timer, int client)
 {
-	if(IsClientInGame(client))
+	if(IsClientInGame(client) && SmithLevel[client] > -1)
 	{
 		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_HealthBeforeSuit[client] == 0)
 		{
@@ -140,6 +149,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 					if(!Waves_InSetup() && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 					{
 						SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalGain[SmithLevel[client]]);
+						CurrentAmmo[client][3] = GetAmmo(client, 3);
 					}
 
 					i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];
@@ -149,7 +159,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 						float pos[3]; GetClientAbsOrigin(client, pos);
 						pos[2] += 1.0;
 
-						int entity = ParticleEffectAt(pos, "utaunt_hellpit_firering", -1.0);
+						int entity = ParticleEffectAt(pos, "utaunt_hands_floor2_red", -1.0);
 						if(entity > MaxClients)
 						{
 							SetParent(client, entity);
@@ -160,23 +170,23 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 					return Plugin_Continue;
 				}
 			}
-			i_AdditionalSupportBuildings[client] = 0;
-			SmithLevel[client] = -1;
 		}
-		
-		if(ParticleRef[client] != -1)
+		else
 		{
-			int entity = EntRefToEntIndex(ParticleRef[client]);
-			if(entity > MaxClients)
+			if(ParticleRef[client] != -1)
 			{
-				TeleportEntity(entity, OFF_THE_MAP);
-				RemoveEntity(entity);
+				int entity = EntRefToEntIndex(ParticleRef[client]);
+				if(entity > MaxClients)
+				{
+					TeleportEntity(entity, OFF_THE_MAP);
+					RemoveEntity(entity);
+				}
+
+				ParticleRef[client] = -1;
 			}
 
-			ParticleRef[client] = -1;
+			return Plugin_Continue;
 		}
-
-		return Plugin_Continue;
 	}
 
 	SmithLevel[client] = -1;
@@ -217,56 +227,33 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 	ApplyTempAttrib(weapon, 6, 0.25, 2.0);
 }
 
-public Action Blacksmith_BuildingTimer(Handle timer, int ref)
+/*
+int Blacksmith_Level(int client)
 {
-	int entity = EntRefToEntIndex(ref);
-	if(entity == -1)
-		return Plugin_Stop;
-	
-	int maxRepair = Building_Max_Health[entity] * 2;
-
-	if(Building_cannot_be_repaired[entity])
-	{
-		int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth") + (maxRepair / 1500);
-		if(maxhealth >= Building_Max_Health[entity])
-		{
-			Building_Repair_Health[entity] += Building_Max_Health[entity] - maxhealth;
-			if(Building_Repair_Health[entity] >= maxRepair)
-				Building_Repair_Health[entity] = maxRepair - 1;
-			
-			maxhealth = Building_Max_Health[entity];
-			Building_cannot_be_repaired[entity] = false;
-		}
-
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-	}
-	else if(Building_Repair_Health[entity] < maxRepair)
-	{
-		Building_Repair_Health[entity] += (maxRepair / 1500);
-		if(Building_Repair_Health[entity] > maxRepair)
-			Building_Repair_Health[entity] = maxRepair;
-		
-		int progress = (Building_Repair_Health[entity] - 1) * 100 / Building_Max_Health[entity];
-		SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress + 1);
-	}
-
-	return Plugin_Continue;
+	return SmithLevel[client];
 }
+*/
 
-void Blacksmith_BuildingUsed(int entity, int client, int owner)
+static int AnvilClickedOn[MAXTF2PLAYERS];
+static int ClickedWithWeapon[MAXTF2PLAYERS];
+void Blacksmith_BuildingUsed(int entity, int client)
+{
+	AnvilClickedOn[client] = EntIndexToEntRef(entity);
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon == -1)
+		return;
+	ClickedWithWeapon[client] = EntIndexToEntRef(weapon);
+
+	Anvil_Menu(client);
+}
+void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int owner, bool reset)
 {
 	if(owner == -1 || SmithLevel[owner] < 0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "The Blacksmith Failed!");
 		ApplyBuildingCollectCooldown(entity, client, FAR_FUTURE);
-		return;
-	}
-
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon == -1)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		ApplyBuildingCollectCooldown(entity, client, 1.0);
 		return;
 	}
 	
@@ -302,8 +289,8 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 	
 	Zero(tinker.Attrib);
 
-	int rarity;
-	if(GetClientButtons(client) & IN_DUCK)
+	tinker.Rarity = 0;
+	if(reset)
 	{
 		SetGlobalTransTarget(client);
 		
@@ -317,7 +304,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			return;
 		}
 
-		rarity = -1;
+		tinker.Rarity = -1;
 		Tinkers.Erase(found);
 		PrintToChat(client, "%t", "Removed Tinker Attributes");
 	}
@@ -332,18 +319,18 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			case 2:
 			{
 				if((GetURandomInt() % 4) == 0)
-					rarity = 1;
+					tinker.Rarity = 1;
 			}
 			case 3:
 			{
 				int rand = GetURandomInt();
 				if((rand % 7) == 0)
 				{
-					rarity = 2;
+					tinker.Rarity = 2;
 				}
 				else if((rand % 3) == 0)
 				{
-					rarity = 1;
+					tinker.Rarity = 1;
 				}
 			}
 			case 4:
@@ -351,22 +338,22 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				int rand = GetURandomInt();
 				if((rand % 5) == 0)
 				{
-					rarity = 2;
+					tinker.Rarity = 2;
 				}
 				else if((rand % 2) == 0)
 				{
-					rarity = 1;
+					tinker.Rarity = 1;
 				}
 			}
 			default:
 			{
 				if((GetURandomInt() % 3) == 0)
 				{
-					rarity = 2;
+					tinker.Rarity = 2;
 				}
 				else
 				{
-					rarity = 1;
+					tinker.Rarity = 1;
 				}
 			}
 		}
@@ -379,8 +366,27 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		char classname[64];
 		GetEntityClassname(weapon, classname, sizeof(classname));
 		int slot = TF2_GetClassnameSlot(classname);
-		
-		if(Attributes_Has(weapon, 8) && !i_IsWrench[weapon]) //any medic weapon
+
+		if(i_OverrideWeaponSlot[weapon] != -1)
+		{
+			slot = i_OverrideWeaponSlot[weapon];
+		}
+		if(i_IsWandWeapon[weapon])
+		{
+			// Mage Weapon
+			switch(GetURandomInt() % 4)
+			{
+				case 0:
+					TinkerHastyMage(tinker.Rarity, tinker);
+				case 1:
+					TinkerHeavyMage(tinker.Rarity, tinker);
+				case 2:
+					TinkerConcentrationMage(tinker.Rarity, tinker);
+				case 3:
+					TinkerTankMage(tinker.Rarity, tinker);
+			}
+		}
+		else if(Attributes_Get(weapon, 8, 0.0) != 0.0)
 		{
 			//mediguns, they work uniqurely
 			if(StrEqual(classname, "tf_weapon_medigun"))
@@ -388,27 +394,27 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				switch(GetURandomInt() % 3)
 				{
 					case 0:
-						TinkerMedigun_FastHeal(rarity, tinker);
+						TinkerMedigun_FastHeal(tinker.Rarity, tinker);
 					case 1:
-						TinkerMedigun_Overhealer(rarity, tinker);
+						TinkerMedigun_Overhealer(tinker.Rarity, tinker);
 					case 2:
-						TinkerMedigun_Uberer(rarity, tinker);
+						TinkerMedigun_Uberer(tinker.Rarity, tinker);
 				}
 			}
 			else
 			{
 				if(slot == TFWeaponSlot_Melee)
 				{
-					TinkerMedicWeapon_GlassyMedic(rarity, tinker);
+					TinkerMedicWeapon_GlassyMedic(tinker.Rarity, tinker);
 				}
 				else
 				{
 					switch(GetURandomInt() % 2)
 					{
 						case 0:
-							TinkerMedicWeapon_GlassyMedic(rarity, tinker);
+							TinkerMedicWeapon_GlassyMedic(tinker.Rarity, tinker);
 						case 1:
-							TinkerMedicWeapon_BurstHealMedic(rarity, tinker);
+							TinkerMedicWeapon_BurstHealMedic(tinker.Rarity, tinker);
 					}					
 				}
 
@@ -418,7 +424,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		else if(i_IsWrench[weapon] && slot != TFWeaponSlot_Melee)
 		{
 			//any wrench weapon that isnt melee?
-			TinkerBuilderRepairMaster(rarity, tinker);
+			TinkerBuilderRepairMaster(tinker.Rarity, tinker);
 		}
 		else if(slot == TFWeaponSlot_Melee)
 		{
@@ -429,9 +435,9 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 					switch(GetURandomInt() % 2)
 					{
 						case 0:
-							TinkerBuilderRepairMaster(rarity, tinker);
+							TinkerBuilderRepairMaster(tinker.Rarity, tinker);
 						case 1:
-							TinkerBuilderLongSwing(rarity, tinker);
+							TinkerBuilderLongSwing(tinker.Rarity, tinker);
 					}
 				}
 				else
@@ -439,27 +445,12 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 					switch(GetURandomInt() % 2)
 					{
 						case 0:
-							TinkerBuilderRepairMaster(rarity, tinker);
+							TinkerBuilderRepairMaster(tinker.Rarity, tinker);
 						case 1:
-							TinkerBuilderLongSwing(rarity, tinker);
+							TinkerBuilderLongSwing(tinker.Rarity, tinker);
 					}					
 				}
 				// Wrench Weapon
-			}
-			else if(i_IsWandWeapon[weapon])
-			{
-				// Mage Weapon
-				switch(GetURandomInt() % 4)
-				{
-					case 0:
-						TinkerHastyMage(rarity, tinker);
-					case 1:
-						TinkerHeavyMage(rarity, tinker);
-					case 2:
-						TinkerConcentrationMage(rarity, tinker);
-					case 3:
-						TinkerTankMage(rarity, tinker);
-				}
 			}
 			else
 			{
@@ -467,13 +458,13 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				switch(GetURandomInt() % 4)
 				{
 					case 0:
-						TinkerMeleeGlassy(rarity, tinker);
+						TinkerMeleeGlassy(tinker.Rarity, tinker);
 					case 1:
-						TinkerMeleeRapidSwing(rarity, tinker);
+						TinkerMeleeRapidSwing(tinker.Rarity, tinker);
 					case 2:
-						TinkerMeleeHeavySwing(rarity, tinker);
+						TinkerMeleeHeavySwing(tinker.Rarity, tinker);
 					case 3:
-						TinkerMeleeLongSwing(rarity, tinker);
+						TinkerMeleeLongSwing(tinker.Rarity, tinker);
 				}
 			}
 		}
@@ -488,31 +479,33 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 					switch(GetURandomInt() % 4)
 					{
 						case 0:
-							TinkerMeleeRapidSwing(rarity, tinker);
+							TinkerMeleeRapidSwing(tinker.Rarity, tinker);
 						case 1:
-							TinkerRangedSlowHeavyProj(rarity, tinker);
+							TinkerRangedSlowHeavyProj(tinker.Rarity, tinker);
 						case 2:
-							TinkerRangedFastProj(rarity, tinker);
+							TinkerRangedFastProj(tinker.Rarity, tinker);
 						case 3:
-							TinkerHeavyTrigger(rarity, tinker);
+							TinkerHeavyTrigger(tinker.Rarity, tinker);
 					}
 				}
 				else
 				{
-					switch(GetURandomInt() % 5)
+					switch(GetURandomInt() % 6)
 					{
 						case 0:
-							TinkerMeleeRapidSwing(rarity, tinker);
+							TinkerMeleeRapidSwing(tinker.Rarity, tinker);
 						case 1:
-							TinkerRangedSlowHeavyProj(rarity, tinker);
+							TinkerRangedSlowHeavyProj(tinker.Rarity, tinker);
 						case 2:
-							TinkerRangedFastProj(rarity, tinker);
+							TinkerRangedFastProj(tinker.Rarity, tinker);
 						case 3:
-							TinkerIntensiveClip(rarity, tinker);
+							TinkerIntensiveClip(tinker.Rarity, tinker);
 						case 4:
-							TinkerConcentratedClip(rarity, tinker);
+							TinkerConcentratedClip(tinker.Rarity, tinker);
 						case 5:
-							TinkerHeavyTrigger(rarity, tinker);
+							TinkerHeavyTrigger(tinker.Rarity, tinker);
+						case 6:
+							TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
 					}
 				}
 				// Projectile Weapon
@@ -528,12 +521,12 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 						{
 							case 0:
 							{
-								TinkerMeleeRapidSwing(rarity, tinker);
+								TinkerMeleeRapidSwing(tinker.Rarity, tinker);
 								RetryTillWin = 11;
 							}
 							case 1:
 							{
-								TinkerHeavyTrigger(rarity, tinker);
+								TinkerHeavyTrigger(tinker.Rarity, tinker);
 								RetryTillWin = 11;
 							}
 							case 2:
@@ -541,7 +534,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 								if(Attributes_Get(weapon, 45, 0.0) > 0.0)
 								{
 									RetryTillWin = 11;
-									TinkerSprayAndPray(rarity, tinker);
+									TinkerSprayAndPray(tinker.Rarity, tinker);
 								}
 							}
 						}	
@@ -551,34 +544,39 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 				{
 					for(int RetryTillWin; RetryTillWin < 10; RetryTillWin++)
 					{
-						switch(GetURandomInt() % 5)
+						switch(GetURandomInt() % 6)
 						{
 							case 0:
 							{
-								TinkerMeleeRapidSwing(rarity, tinker);
+								TinkerMeleeRapidSwing(tinker.Rarity, tinker);
 								RetryTillWin = 11;
 							}
 							case 1:
 							{
-								TinkerIntensiveClip(rarity, tinker);
+								TinkerIntensiveClip(tinker.Rarity, tinker);
 								RetryTillWin = 11;
 							}
 							case 2:
 							{
-								TinkerConcentratedClip(rarity, tinker);
+								TinkerConcentratedClip(tinker.Rarity, tinker);
 								RetryTillWin = 11;
 							}
 							case 3:
 							{
-								TinkerHeavyTrigger(rarity, tinker);
+								TinkerHeavyTrigger(tinker.Rarity, tinker);
 								RetryTillWin = 11;
 							}
 							case 4:
 							{
-								if(Attributes_Get(weapon, 45, 0.0) > 0.0)
+								TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
+								RetryTillWin = 11;
+							}
+							case 5:
+							{
+								if(Attributes_Get(weapon, 45, 0.0) > 0.1)
 								{
 									RetryTillWin = 11;
-									TinkerSprayAndPray(rarity, tinker);
+									TinkerSprayAndPray(tinker.Rarity, tinker);
 								}
 							}
 						}	
@@ -598,12 +596,14 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			return;
 		}
 
+		CPrintToChat(client, "{yellow}%s (Tier %d)", tinker.Name, tinker.Rarity + 1);
+
 		for(int i; i < sizeof(tinker.Attrib); i++)
 		{
 			if(!tinker.Attrib[i])
 				break;
 			
-			PrintAttribValue(client, tinker.Attrib[i], tinker.Value[i], tinker.Luck[i]);
+			Blacksmith_PrintAttribValue(client, tinker.Attrib[i], tinker.Value[i], tinker.Luck[i]);
 		}
 
 		if(found == -1)
@@ -619,10 +619,11 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		}
 	}
 
+	Building_GiveRewardsUse(client, owner, 25, true, 0.6, true);
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
 
-	switch(rarity)
+	switch(tinker.Rarity)
 	{
 		case -1:
 		{
@@ -650,17 +651,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 	if(!Rogue_Mode() && owner != client)
 	{
-		if(i_Healing_station_money_limit[owner][client] < 20)
-		{
-			i_Healing_station_money_limit[owner][client]++;
-			Resupplies_Supplied[owner] += 2;
-			GiveCredits(owner, 20, true);
-			SetDefaultHudPosition(owner);
-			SetGlobalTransTarget(owner);
-			ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Blacksmith Used");
-		}
-
-		switch(rarity)
+		switch(tinker.Rarity)
 		{
 			case 0:
 			{
@@ -682,19 +673,27 @@ static bool AttribIsInverse(int attrib)
 {
 	switch(attrib)
 	{
-		case 5, 6, 96, 97, 205, 206, 343, 412:
+		case 5, 6, 96, 97, 205, 206, 252, 343, 412, Attrib_TerrianRes:
 			return true;
 	}
 
 	return false;
 }
 
-static void PrintAttribValue(int client, int attrib, float value, float luck)
+void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck, bool addition = false)
 {
+	if(attrib == 264)
+	{
+		return;
+	}
 	bool inverse = AttribIsInverse(attrib);
-	
+
 	char buffer[64];
-	if(value < 1.0)
+	if(addition)
+	{
+		FormatEx(buffer, sizeof(buffer), "%d ", RoundToCeil(value));
+	}
+	else if(value < 1.0)
 	{
 		FormatEx(buffer, sizeof(buffer), "%d%% ", RoundToCeil((1.0 - value) * 100.0));
 	}
@@ -710,7 +709,7 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		inverse_color = true;
 	}
 
-	if(((value < 1.0) ^ inverse))
+	if(((value < (addition ? 0.0 : 1.0)) ^ inverse))
 	{
 		if(!inverse_color)
 		{
@@ -753,13 +752,22 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		case 10:
 			Format(buffer, sizeof(buffer), "%sÜberCharge Rate", buffer);
 		
+		case 16:
+			Format(buffer, sizeof(buffer), "%sHealth On Hit", buffer);
+		
 		case 26:
-			Format(buffer, sizeof(buffer), "%sMax Health Bonus", buffer);
+			Format(buffer, sizeof(buffer), "%sMax Health", buffer);
 		
 		case 45:
 			Format(buffer, sizeof(buffer), "%sBullets Per Shot", buffer);
 		
-		case 94:
+		case 54, 107:
+			Format(buffer, sizeof(buffer), "%sMovement Speed", buffer);
+		
+		case 57:
+			Format(buffer, sizeof(buffer), "%sHealth Regen", buffer);
+		
+		case 95:
 			Format(buffer, sizeof(buffer), "%sRepair Rate", buffer);
 		
 		case 96, 97:
@@ -773,9 +781,9 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		
 		case 103, 104:
 			Format(buffer, sizeof(buffer), "%sProjectile Speed", buffer);
-		
-		case 107:
-			Format(buffer, sizeof(buffer), "%sMovement Speed", buffer);
+
+		case 106:
+			Format(buffer, sizeof(buffer), "%sBullet Spread", buffer);
 		
 		case 149:
 			Format(buffer, sizeof(buffer), "%sBleed Duration", buffer);
@@ -786,11 +794,17 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		case 206:
 			Format(buffer, sizeof(buffer), "%sMelee Damage Resistance", buffer);
 		
+		case 252:
+			Format(buffer, sizeof(buffer), "%sKnockback Resistance", buffer);
+		
 		case 287:
 			Format(buffer, sizeof(buffer), "%sSentry Damage", buffer);
 		
 		case 319:
 			Format(buffer, sizeof(buffer), "%sBuff Duration", buffer);
+		
+		case 326:
+			Format(buffer, sizeof(buffer), "%sJump Height", buffer);
 		
 		case 343:
 			Format(buffer, sizeof(buffer), "%sSentry Firing Speed", buffer);
@@ -810,13 +824,32 @@ static void PrintAttribValue(int client, int attrib, float value, float luck)
 		case 4002:
 			Format(buffer, sizeof(buffer), "%sMore Medigun Overheal", buffer);
 
-	}
+		case Attrib_TerrianRes:
+			Format(buffer, sizeof(buffer), "%sTerrian Damage Resistance", buffer);
 
+		case Attrib_ElementalDef:
+			Format(buffer, sizeof(buffer), "%sElemental Damage Resistance", buffer);
+
+		case Attrib_SlowImmune:
+			Format(buffer, sizeof(buffer), "%sSlow Resistance", buffer);
+
+		case Attrib_ObjTerrianAbsorb:
+			Format(buffer, sizeof(buffer), "%sBuilding Terrian Absorb Chance", buffer);
+
+		case Attrib_SetArchetype:
+			Format(buffer, sizeof(buffer), "%sWeapon Archetype", buffer);
+		
+		case 4019:
+			Format(buffer, sizeof(buffer), "%sMax Mana", buffer);
+
+	}
+	
 	CPrintToChat(client, "%s {yellow}(%d%%)", buffer, RoundToCeil(luck * 100.0));
 }
 
 static void TinkerMeleeGlassy(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Glassy");
 	tinker.Attrib[0] = 2;
 	tinker.Attrib[1] = 205;
 	tinker.Attrib[2] = 206;
@@ -850,6 +883,7 @@ static void TinkerMeleeGlassy(int rarity, TinkerEnum tinker)
 
 static void TinkerMeleeRapidSwing(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Rapid Haste");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 6; //attackspeed
 	//less damage
@@ -880,6 +914,7 @@ static void TinkerMeleeRapidSwing(int rarity, TinkerEnum tinker)
 
 static void TinkerMeleeHeavySwing(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Heavy Swings");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 6; //attackspeed
 	//less damage
@@ -910,6 +945,7 @@ static void TinkerMeleeHeavySwing(int rarity, TinkerEnum tinker)
 
 static void TinkerMeleeLongSwing(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Extended Hands");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 6; //attackspeed
 	tinker.Attrib[2] = 4001; //ExtraMeleeRange
@@ -943,6 +979,7 @@ static void TinkerMeleeLongSwing(int rarity, TinkerEnum tinker)
 
 static void TinkerHastyMage(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Hasty Mage");
 	tinker.Attrib[0] = 6;
 	tinker.Attrib[1] = 733;
 	float AttackspeedLuck = (0.1 * (tinker.Luck[1]));
@@ -969,6 +1006,7 @@ static void TinkerHastyMage(int rarity, TinkerEnum tinker)
 }
 static void TinkerHeavyMage(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Heavy Mage");
 	tinker.Attrib[0] = 6;
 	tinker.Attrib[1] = 733;
 	tinker.Attrib[2] = 410;
@@ -1001,6 +1039,7 @@ static void TinkerHeavyMage(int rarity, TinkerEnum tinker)
 
 static void TinkerConcentrationMage(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Concentrated Magic");
 	tinker.Attrib[0] = 103;
 	tinker.Attrib[1] = 410;
 	float ProjectileSpeed = (0.1 * (tinker.Luck[0]));
@@ -1029,6 +1068,7 @@ static void TinkerConcentrationMage(int rarity, TinkerEnum tinker)
 
 static void TinkerTankMage(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Resistive Mage");
 	tinker.Attrib[0] = 733;
 	tinker.Attrib[1] = 410;
 	tinker.Attrib[2] = 205;
@@ -1067,6 +1107,7 @@ static void TinkerTankMage(int rarity, TinkerEnum tinker)
 
 static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Healing Overdrive");
 	tinker.Attrib[0] = 8; //more heal rate
 	tinker.Attrib[1] = 10; //Less uber rate
 	tinker.Attrib[2] = 4002; //Less Overheal
@@ -1098,6 +1139,7 @@ static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
 }
 static void TinkerMedigun_Overhealer(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Omega Overheal");
 	tinker.Attrib[0] = 8;
 	tinker.Attrib[1] = 4002; 
 	float LessHealRateLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
@@ -1126,6 +1168,7 @@ static void TinkerMedigun_Overhealer(int rarity, TinkerEnum tinker)
 
 static void TinkerMedigun_Uberer(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Pure Uberer");
 	tinker.Attrib[0] = 8;
 	tinker.Attrib[1] = 10;
 	float LessHealRate = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
@@ -1154,6 +1197,7 @@ static void TinkerMedigun_Uberer(int rarity, TinkerEnum tinker)
 
 static void TinkerMedicWeapon_GlassyMedic(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Glassy");
 	tinker.Attrib[0] = 8; //more heal rate
 	tinker.Attrib[1] = 6; 
 	tinker.Attrib[2] = 205;
@@ -1192,6 +1236,7 @@ static void TinkerMedicWeapon_GlassyMedic(int rarity, TinkerEnum tinker)
 
 static void TinkerMedicWeapon_BurstHealMedic(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Burst Heal");
 	tinker.Attrib[0] = 8; //more heal rate
 	tinker.Attrib[1] = 6; 
 	tinker.Attrib[2] = 97; 
@@ -1225,6 +1270,7 @@ static void TinkerMedicWeapon_BurstHealMedic(int rarity, TinkerEnum tinker)
 
 static void TinkerBuilderLongSwing(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Building Extention");
 	tinker.Attrib[0] = 6; //attackspeed
 	tinker.Attrib[1] = 264; //ExtraMeleeRange
 	tinker.Attrib[2] = 4001; //ExtraMeleeRange
@@ -1260,6 +1306,7 @@ static void TinkerBuilderLongSwing(int rarity, TinkerEnum tinker)
 
 static void TinkerBuilderRepairMaster(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Repair Master");
 	tinker.Attrib[0] = 95; //RepairRate
 	tinker.Attrib[1] = 107; //movementspeed
 	
@@ -1290,6 +1337,7 @@ static void TinkerBuilderRepairMaster(int rarity, TinkerEnum tinker)
 
 static void TinkerRangedSlowHeavyProj(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Slow Heavy Energy");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 103; //ProjectileSpeed
 	tinker.Attrib[2] = 6; //attackspeed
@@ -1323,6 +1371,7 @@ static void TinkerRangedSlowHeavyProj(int rarity, TinkerEnum tinker)
 
 static void TinkerRangedFastProj(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Speeding Bullets");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 103; //ProjectileSpeed
 	tinker.Attrib[2] = 6; //attackspeed
@@ -1357,13 +1406,14 @@ static void TinkerRangedFastProj(int rarity, TinkerEnum tinker)
 
 static void TinkerIntensiveClip(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Intensive Clip");
 	tinker.Attrib[0] = 6; //attackspeed
 	tinker.Attrib[1] = 4; //Clipsize
 	tinker.Attrib[2] = 97; //ReloadSpeed
 	
 	float AttackSpeedLuck = (0.07 * (tinker.Luck[0]));
 	float ClipSizeLuck = (0.15 * (tinker.Luck[1]));
-	float ReloadSpeedLuck = (0.3 * (1.0 + (-1.0*(tinker.Luck[2]))));
+	float ReloadSpeedLuck = (0.15 * (1.0 + (-1.0*(tinker.Luck[2]))));
 
 	switch(rarity)
 	{
@@ -1371,30 +1421,31 @@ static void TinkerIntensiveClip(int rarity, TinkerEnum tinker)
 		{
 			tinker.Value[0] = 0.95 - AttackSpeedLuck;
 			tinker.Value[1] = 1.5 + ClipSizeLuck;
-			tinker.Value[2] = 1.8 + ReloadSpeedLuck;
+			tinker.Value[2] = 1.7 + ReloadSpeedLuck;
 		}
 		case 1:
 		{
 			tinker.Value[0] = 0.93 - AttackSpeedLuck;
 			tinker.Value[1] = 1.65 + ClipSizeLuck;
-			tinker.Value[2] = 1.9 + ReloadSpeedLuck;
+			tinker.Value[2] = 1.8 + ReloadSpeedLuck;
 		}
 		case 2:
 		{
 			tinker.Value[0] = 0.92 - AttackSpeedLuck;
 			tinker.Value[1] = 1.75 + ClipSizeLuck;
-			tinker.Value[2] = 2.0 + ReloadSpeedLuck;
+			tinker.Value[2] = 1.9 + ReloadSpeedLuck;
 		}
 	}
 }
 
 static void TinkerConcentratedClip(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Concentrated Clip");
 	tinker.Attrib[0] = 2; //Damage
-	tinker.Attrib[2] = 97; //ReloadSpeed
+	tinker.Attrib[1] = 97; //ReloadSpeed
 	
 	float ExtraDamage = (0.1 * (tinker.Luck[0]));
-	float ReloadSpeedLuck = (0.2 * (1.0 + (-1.0*(tinker.Luck[2]))));
+	float ReloadSpeedLuck = (0.2 * (1.0 + (-1.0*(tinker.Luck[1]))));
 
 	switch(rarity)
 	{
@@ -1419,56 +1470,182 @@ static void TinkerConcentratedClip(int rarity, TinkerEnum tinker)
 
 static void TinkerHeavyTrigger(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Heavy Trigger");
 	tinker.Attrib[0] = 2; //Damage
-	tinker.Attrib[2] = 6; //attackspeed
+	tinker.Attrib[1] = 6; //attackspeed
+	tinker.Attrib[2] = 97; //Reload speed
 	
 	float ExtraDamage = (0.1 * (tinker.Luck[0]));
-	float attackspeedSpeedLuck = (0.2 * (1.0 + (-1.0*(tinker.Luck[2]))));
+	float attackspeedSpeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float reloadSpeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[2]))));
 
 	switch(rarity)
 	{
 		case 0:
 		{
-			tinker.Value[0] = 1.15 + ExtraDamage;
-			tinker.Value[1] = 1.35 + attackspeedSpeedLuck;
+			tinker.Value[0] = 1.2 + ExtraDamage;
+			tinker.Value[1] = 1.1 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.1 + reloadSpeedLuck;
 		}
 		case 1:
 		{
-			tinker.Value[0] = 1.2 + ExtraDamage;
-			tinker.Value[1] = 1.4 + attackspeedSpeedLuck;
+			tinker.Value[0] = 1.25 + ExtraDamage;
+			tinker.Value[1] = 1.15 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.15 + reloadSpeedLuck;
 		}
 		case 2:
 		{
-			tinker.Value[0] = 1.25 + ExtraDamage;
-			tinker.Value[1] = 1.5 + attackspeedSpeedLuck;
+			tinker.Value[0] = 1.3 + ExtraDamage;
+			tinker.Value[1] = 1.2 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.2 + reloadSpeedLuck;
 		}
 	}
 }
 
 static void TinkerSprayAndPray(int rarity, TinkerEnum tinker)
 {
+	strcopy(tinker.Name, sizeof(tinker.Name), "Spray and Pray");
 	tinker.Attrib[0] = 45; //BulletsPetShot
-	tinker.Attrib[2] = 106; //Accuracy
+	tinker.Attrib[1] = 2; //damage
 	
 	float BulletPetShotBonus = (0.1 * (tinker.Luck[0]));
-	float AccuracySuffering = (0.2 * (1.0 + (-1.0*(tinker.Luck[2]))));
+	float AccuracySuffering = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
 
 	switch(rarity)
 	{
 		case 0:
 		{
-			tinker.Value[0] = 1.25 + BulletPetShotBonus;
-			tinker.Value[1] = 1.35 + AccuracySuffering;
+			tinker.Value[0] = 1.35 + BulletPetShotBonus;
+			tinker.Value[1] = 0.85 - AccuracySuffering;
 		}
 		case 1:
 		{
-			tinker.Value[0] = 1.3 + BulletPetShotBonus;
-			tinker.Value[1] = 1.40 + AccuracySuffering;
+			tinker.Value[0] = 1.4 + BulletPetShotBonus;
+			tinker.Value[1] = 0.83 - AccuracySuffering;
 		}
 		case 2:
 		{
-			tinker.Value[0] = 1.35 + BulletPetShotBonus;
-			tinker.Value[1] = 1.45 + AccuracySuffering;
+			tinker.Value[0] = 1.45 + BulletPetShotBonus;
+			tinker.Value[1] = 0.8 - AccuracySuffering;
 		}
 	}
+}
+
+static void TinkerSmallerSmarterBullets(int rarity, TinkerEnum tinker)
+{
+	strcopy(tinker.Name, sizeof(tinker.Name), "Smaller Smarter Bullets");
+	tinker.Attrib[0] = 2; //Less Damage
+	tinker.Attrib[1] = 6; //Faster Shooting
+	tinker.Attrib[2] = 97; //faster Reload
+	
+	float DamageLuck = (0.1 * (tinker.Luck[0]));
+	float AttackSpeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float FasterReloadLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[2]))));
+
+	switch(rarity)
+	{
+		case 0:
+		{
+			tinker.Value[0] = 0.85 + DamageLuck;
+			tinker.Value[1] = 0.8 + AttackSpeedLuck;
+			tinker.Value[2] = 0.8 + FasterReloadLuck;
+		}
+		case 1:
+		{
+			tinker.Value[0] = 0.8 + DamageLuck;
+			tinker.Value[1] = 0.7 + AttackSpeedLuck;
+			tinker.Value[2] = 0.7 + FasterReloadLuck;
+		}
+		case 2:
+		{
+			tinker.Value[0] = 0.7 + DamageLuck;
+			tinker.Value[1] = 0.6 + AttackSpeedLuck;
+			tinker.Value[2] = 0.6 + FasterReloadLuck;
+		}
+	}
+}
+
+
+public void Anvil_Menu(int client)
+{
+	if(dieingstate[client] == 0)
+	{	
+		CancelClientMenu(client);
+		SetStoreMenuLogic(client, false);
+		static char buffer[128];
+		Menu menu = new Menu(Anvil_MenuH);
+
+		SetGlobalTransTarget(client);
+		
+		menu.SetTitle("%t", "Anvil Menu Main");
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Re-Roll Weapon Stats");
+		menu.AddItem("-1", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Remove Weapon Stats");
+		menu.AddItem("-2", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Display Current Stats");
+		menu.AddItem("-3", buffer);
+									
+		menu.ExitButton = true;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
+}
+
+public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			ResetStoreMenuLogic(client);
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			int weapon;
+			int anvil;
+			int owner;
+			
+			if(IsValidClient(client))
+			{
+				weapon = EntRefToEntIndex(ClickedWithWeapon[client]);
+				anvil = EntRefToEntIndex(AnvilClickedOn[client]);
+			}
+			else
+				return 0;
+
+			if(!IsValidEntity(weapon) || !IsValidEntity(anvil))
+				return 0;
+			else
+			{
+				owner = GetEntPropEnt(anvil, Prop_Send, "m_hOwnerEntity");
+			}
+
+			switch(id)
+			{
+				case -1:
+				{
+					Blacksmith_BuildingUsed_Internal(weapon, anvil, client, owner, false);
+				}
+				case -2:
+				{
+					Blacksmith_BuildingUsed_Internal(weapon, anvil, client, owner, true);
+				}
+				case -3:
+				{
+					Blacksmith_ExtraDesc(client, StoreWeapon[weapon]);
+				}
+			}
+		}
+		case MenuAction_Cancel:
+		{
+			ResetStoreMenuLogic(client);
+		}
+	}
+	return 0;
 }

@@ -1,11 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static char g_DeathSounds[][] =
-{
-	"vo/sniper_paincrticialdeath01.mp3",
-	"vo/sniper_paincrticialdeath02.mp3",
-	"vo/sniper_paincrticialdeath03.mp3"
+static const char g_DeathSounds[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
 static char g_HurtSounds[][] =
@@ -75,7 +73,7 @@ static char g_HappySounds[][] =
 	"vo/compmode/cm_sniper_matchwon_14.mp3"
 };
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static int i_RaidDuoAllyIndex = INVALID_ENT_REFERENCE;
 static float f_HurtRecentlyAndRedirected[MAXENTITIES]={-1.0, ...};
@@ -85,12 +83,12 @@ static int i_GogglesHurtTalkMessage[MAXENTITIES];
 void RaidbossBlueGoggles_OnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Blue Goggles");
+	strcopy(data.Name, sizeof(data.Name), "Waldch");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_infected_goggles");
 	strcopy(data.Icon, sizeof(data.Icon), "goggles");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -227,6 +225,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		
 		if(final)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		/*
@@ -246,6 +245,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		npc.m_bDissapearOnDeath = true;
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr18_antarctic_eyewear/spr18_antarctic_eyewear_scout.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
@@ -317,11 +317,11 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			if(!XenoExtraLogic())
 			{
-				CPrintToChatAll("{darkblue}Blue Goggles{default}: Here or not, infections are no joke.");
+				CPrintToChatAll("{darkblue}Waldch{default}: Here or not, infections are no joke.");
 			}
 			else
 			{
-				CPrintToChatAll("{darkblue}Blue Goggles{default}: Giving up saves your life.");		
+				CPrintToChatAll("{darkblue}Waldch{default}: Giving up saves your life.");		
 			}
 		}
 	}
@@ -359,7 +359,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	bool alonecheck = !IsEntityAlive(AllyEntity);
 	if(!alonecheck)
 	{
-		float MaxHealthCalc = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float MaxHealthCalc = float(ReturnEntityMaxHealth(npc.index));
 		switch(i_GogglesHurtTalkMessage[npc.index])
 		{
 			case 0:
@@ -372,15 +372,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: Stop seperating yourself from me {darkblue}Blue Goggles{default}!!");
+							CPrintToChatAll("{gold}Silvester{default}: Stop seperating yourself from me {darkblue}Waldch{default}!!");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} get back to me now!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get back to me now!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} get here or ill teleport you here!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get here or ill teleport you here!");
 						}
 					}
 				}
@@ -395,15 +395,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: God dammit {darkblue}Blue Goggles{default}!");
+							CPrintToChatAll("{gold}Silvester{default}: God dammit {darkblue}Waldch{default}!");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default}... NOW!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}... NOW!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} here, now STAY NEAR ME!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} here, now STAY NEAR ME!");
 						}
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
@@ -427,7 +427,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		return;
 	
 	if(npc.m_flNextThinkTime == FAR_FUTURE)
+	{
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
+	}
 
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
@@ -489,6 +492,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.SetVelocity({0.0,0.0,0.0});
 			TeleportEntity(npc.index, flPos, NULL_VECTOR, _);
 		}
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		npc.StopPathing();
 		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
@@ -522,15 +526,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Not here, not with him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: Not here, not with him!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You fight like you want to kill him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You fight like you want to kill him!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just you and me!");
+					CPrintToChatAll("{darkblue}Waldch{default}: Just you and me!");
 				}
 			}
 		}
@@ -540,19 +544,19 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You really shouldn't have done that!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You really shouldn't have done that!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You'll pay for picking on him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You'll pay for picking on him!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Quit this right now!");
+					CPrintToChatAll("{darkblue}Waldch{default}: Quit this right now!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You little ****!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You little ****!");
 				}
 			}
 		}
@@ -963,6 +967,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				{
 					if(npc.m_flNextMeleeAttack && npc.m_flNextMeleeAttack < gameTime)
 					{
+						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
 						npc.m_flNextMeleeAttack = 0.0;
 					}
@@ -994,6 +999,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		{
 			case 0:	// Melee
 			{
+				npc.m_bisWalking = true;
 				npc.SetActivity("ACT_MP_RUN_MELEE");
 				if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 					npc.StartPathing();
@@ -1002,23 +1008,27 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				if(npc.m_flPiggyFor)
 				{
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_MP_CROUCH_DEPLOYED_IDLE");
 					npc.StopPathing();
 				}
 				else if(alone)
 				{
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
 					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 						npc.StartPathing();
 				}
 				else if(npc.m_flNextMeleeAttack < gameTime)
 				{
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
 					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 						npc.StartPathing();
 				}
 				else
 				{
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_MP_DEPLOYED_IDLE");
 					npc.StopPathing();
 				}
@@ -1027,11 +1037,13 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				if(npc.m_flPiggyFor)
 				{
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_MP_CROUCH_SECONDARY");
 					npc.StopPathing();
 				}
 				else
 				{
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 						npc.StartPathing();
@@ -1045,6 +1057,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	}
 	else
 	{
+		npc.m_bisWalking = false;
 		npc.StopPathing();
 		npc.SetActivity("ACT_MP_COMPETITIVE_LOSERSTATE");
 	}
@@ -1074,7 +1087,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(28.0);
 			damage = 0.0;
-			CPrintToChatAll("{darkblue}Blue Goggles{default}: You win, I won't stop you no more...");
+			CPrintToChatAll("{darkblue}Waldch{default}: You win, I won't stop you no more...");
 			return Plugin_Handled;
 		}
 
@@ -1114,10 +1127,10 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 public void RaidbossBlueGoggles_NPCDeath(int entity)
 {
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(entity);
-	if(!npc.m_bDissapearOnDeath)
-	{
-		npc.PlayDeathSound();
-	}
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+	npc.PlayDeathSound();
 	
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.

@@ -43,8 +43,8 @@ void SawRunner_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Sawrunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sawrunner");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "sawrunner");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
@@ -165,7 +165,6 @@ methodmap SawRunner < CClotBody
 		
 		npc.m_iPlayMusicSound = 0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_bisGiantWalkCycle = 1.5;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -345,8 +344,8 @@ public void SawRunner_ClotThink(int iNPC)
 									{
 										if(i_HealthBeforeSuit[target] > 0)
 										{
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 199999999.9, DMG_DROWN); //Make him oneshot the enemy if they have the quantum armor
-											Custom_Knockback(npc.index, target, 5000.0); //Kick them away.
+											DealTruedamageToEnemy(0, target, 99999999.9);
+											Custom_Knockback(npc.index, target, 1000.0); // Kick them away.
 										}
 										else
 										{
@@ -364,13 +363,12 @@ public void SawRunner_ClotThink(int iNPC)
 												Custom_Knockback(npc.index, target, 1000.0); //Give them massive knockback so they can get away/dont make this boy stuck.
 											}
 											
-											
-											SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth + 50.0, DMG_DROWN); //adding 100 damage so they cant cheese this with healing and very low hp people
+											DealTruedamageToEnemy(0, target, flMaxHealth + 50.0);
 										}
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 99999.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									// Hit particle
@@ -500,13 +498,5 @@ public Action Timer_RemoveEntitySawrunner_Tantrum(Handle timer, any entid)
 
 void Music_Stop_All_Sawrunner(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopCustomSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3", 9.0);
 }

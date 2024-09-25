@@ -123,8 +123,10 @@ public void Weapon_IEM_Launcher_PAP(int client, int weapon, const char[] classna
 		AcceptEntityInput(iRot, "Open");
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
-		float damage = 50.0;
+		float damage = 30.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+		damage *= (1.0 / Attributes_Get(weapon, 97, 1.0));
 		
 		float fAng[3];
 		GetClientEyeAngles(client, fAng);
@@ -171,8 +173,11 @@ public void Weapon_IEM_Launcher_PAP_Star(int client, int weapon, const char[] cl
 		AcceptEntityInput(iRot, "Open");
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
-		float damage = 50.0;
+		float damage = 30.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+		damage *= (1.0 / Attributes_Get(weapon, 97, 1.0));
+		
 		
 		float fAng[3];
 		GetClientEyeAngles(client, fAng);
@@ -205,8 +210,11 @@ public void Weapon_IEM_Cutter(int client, int weapon, const char[] classname, bo
 		
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
-		float damage = 50.0;
+		float damage = 30.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+		damage *= (1.0 / Attributes_Get(weapon, 97, 1.0));
+		
 		
 		Laser_Cutter_Static[client] = false;
 		Wand_Launch_Cutter_IEM(client, speed, 15.0, damage, false);
@@ -252,8 +260,11 @@ public void Weapon_IEM_Cutter_PAP(int client, int weapon, const char[] classname
 		
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
-		float damage = 50.0;
+		float damage = 30.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+		damage *= (1.0 / Attributes_Get(weapon, 97, 1.0));
+		
 		
 		Wand_Launch_Cutter_IEM(client, speed, 15.0, damage, true);
 	}
@@ -330,11 +341,14 @@ public void Weapon_Charged_Handgun(int client, int weapon, const char[] classnam
 		AcceptEntityInput(iRot, "Open");
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
-		float damage = 50.0;
+		float damage = 30.0;
 		if (HasEntProp(weapon, Prop_Send, "m_flChargeBeginTime"))
-			damage = 120.0;
+			damage = 70.0;
 		
 		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+		damage *= (1.0 / Attributes_Get(weapon, 97, 1.0));
+		
 		
 		Wand_Launch(client, iRot, speed, 2.0, damage);
 	}
@@ -627,7 +641,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 						//Code to do damage position and ragdolls
 						
 						float damage_1 = Damage_Tornado[iCarrier];
-						damage_1 /= Damage_Reduction[iCarrier];
+						damage_1 *= Damage_Reduction[iCarrier];
 						float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, Dmg_Force, targPos);
 						
@@ -815,7 +829,7 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 						//Code to do damage position and ragdolls
 						
 						float damage_1 = Damage_Tornado[iCarrier];		
-						damage_1 /= Damage_Reduction[iCarrier];
+						damage_1 *= Damage_Reduction[iCarrier];
 						float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, Dmg_Force, targPos, _ , ZR_DAMAGE_LASER_NO_BLAST);
 						

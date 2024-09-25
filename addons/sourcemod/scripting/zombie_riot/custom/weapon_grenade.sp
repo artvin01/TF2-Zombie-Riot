@@ -84,6 +84,7 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 		weapon_id[client] = weapon;
 		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Grenade, client, TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(15.0, Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
+	//	CreateTimer(14.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 		GrenadeApplyCooldownHud(client, 15.0);
 		if(Handle_on[client])
 		{
@@ -94,7 +95,7 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 	//	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Threw Grenade");
 		Handle_on[client] = true;
 		SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
-		CurrentAmmo[client][Ammo_Hand_Grenade] = GetAmmo(client, Ammo_Hand_Grenade);
+		CurrentAmmo[client][Ammo_Hand_Grenade] = 0;
 	}
 }
 
@@ -110,7 +111,7 @@ static Action Give_Back_Grenade(Handle cut_timer, int client)
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		SetAmmo(client, Ammo_Hand_Grenade, 1); //Give ammo back that they just spend like an idiot
-		CurrentAmmo[client][Ammo_Hand_Grenade] = GetAmmo(client, Ammo_Hand_Grenade);
+		CurrentAmmo[client][Ammo_Hand_Grenade] = 1;
 	//	ClientCommand(client, "playgamesound items/gunpickup2.wav");
 	//	SetHudTextParams(-1.0, 0.45, 3.01, 34, 139, 34, 255);
 	//	SetGlobalTransTarget(client);
@@ -126,6 +127,7 @@ public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool
 	{
 		weapon_id[client] = weapon;
 		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Pipebomb, client, TIMER_FLAG_NO_MAPCHANGE);
+	//	CreateTimer(14.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 		GrenadeApplyCooldownHud(client, 15.0);
 		if(Handle_on[client])
 		{
@@ -135,7 +137,7 @@ public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool
 	//	SetGlobalTransTarget(client);
 	//	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Threw Pipebomb");
 		SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
-		CurrentAmmo[client][Ammo_Hand_Grenade] = GetAmmo(client, Ammo_Hand_Grenade);
+		CurrentAmmo[client][Ammo_Hand_Grenade] = 0;
 		Handle_on[client] = true;
 	}
 }
@@ -172,7 +174,7 @@ static Action Give_Back_Pipebomb(Handle cut_timer, int client)
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		SetAmmo(client, Ammo_Hand_Grenade, 1); //Give ammo back that they just spend like an idiot
-		CurrentAmmo[client][Ammo_Hand_Grenade] = GetAmmo(client, Ammo_Hand_Grenade);
+		CurrentAmmo[client][Ammo_Hand_Grenade] = 1;
 	//	ClientCommand(client, "playgamesound items/gunpickup2.wav");
 	//	SetDefaultHudPosition(client);
 	//	SetGlobalTransTarget(client);

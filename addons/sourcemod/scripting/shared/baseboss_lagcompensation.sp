@@ -5,18 +5,6 @@
 #define TIME_TO_TICKS(%1)	RoundToZero(0.5 + %1 / GetTickInterval())
 #define TICKS_TO_TIME(%1)	(GetTickInterval() * float(%1))
 
-/* game/client/c_baseanimatingoverlay.h#L46 */
-#define MAX_LAYER_RECORDS	15
-
-/* game/server/player_lagcompensation.cpp#L45 */
-/*enum struct LayerRecord
-{
-	int m_sequence;
-	float m_cycle;
-	float m_weight;
-	int m_order;
-}*/
-
 /* game/server/player_lagcompensation.cpp#L69 */
 enum struct LagRecord
 {
@@ -46,6 +34,7 @@ static ConVar sv_maxunlag;
 
 static int TickCount[MAXTF2PLAYERS];
 static float ViewAngles[MAXTF2PLAYERS][3];
+// EntityTrack should only confine the max ticks on the server, alter this value for your server's
 static LagRecord EntityTrack[ZR_MAX_LAG_COMP][67];
 static int EntityTrackCount[ZR_MAX_LAG_COMP];
 static LagRecord EntityRestore[ZR_MAX_LAG_COMP];
@@ -68,8 +57,15 @@ void OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 void StartLagCompensation_Base_Boss(int client)
 {
 //	if(DoingLagCompensation)
-//		ThrowError("Already in BaseBoss Lag Comp");
-
+//	{
+	//	LogError("Tried to lag compensate twice, sorry! no can do.");
+//		return;
+//	}
+	if(DoingLagCompensation)
+	{
+		PrintToChatAll("Was alrady in DoingLagCompensation But tried doing another?");
+		FinishLagCompensation_Base_boss(-1, false);
+	}
 	DoingLagCompensation = true;
 	
 	// Get true latency
@@ -131,9 +127,12 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 #else
 	bool allied = GetTeam(entity) == GetTeam(player);
 #endif
-
+	
 	if(b_LagCompNPC_OnlyAllies ^ allied)
-		return false;
+	{
+		if(!b_DoNotIgnoreDuringLagCompAlly[entity])
+			return false;
+	}
 
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos1);
@@ -169,6 +168,11 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 {
 	if(EntityTrackCount[index] < 1)
 	{
+		return;
+	}
+	if(WasBackTracked[index])
+	{
+		//they were already compensated, do not.
 		return;
 	}
 	
@@ -382,24 +386,32 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	WasBackTracked[index] = true;
 }
 
-void FinishLagCompensation_Base_boss(/*DHookParam param*/)
+void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1, bool DoReset = true)
 //public MRESReturn FinishLagCompensation(Address manager, DHookParam param)
 {
 //	if(!DoingLagCompensation)
 //		ThrowError("Not in BaseBoss Lag Comp");
 	
-	DoingLagCompensation = false;
+	if(ForceOptionalEntity == -1)
+		DoingLagCompensation = false;
 
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
-		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		int entity;
+		
+		entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		//if its a selected entity:
+		if(ForceOptionalEntity != -1)
+		{
+			if(entity != ForceOptionalEntity)
+				continue;
+		}
+
 		if(IsValidEntity(entity) && WasBackTracked[index])
 		{
-
 #if defined ZR
 			if(GetTeam(entity) != TFTeam_Red)
 #endif
-
 			{
 				if(b_LagCompNPC_ExtendBoundingBox)
 				{
@@ -478,10 +490,14 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 			}
 
 			WasBackTracked[index] = false;
+			//we only wanted to lag comp this entity, were done.
+			if(ForceOptionalEntity == entity)
+				return;
 		}
 	}
 
-	StartLagCompResetValues();
+	if(ForceOptionalEntity == -1 && DoReset)
+		StartLagCompResetValues();
 }
 
 /* game/server/player_lagcompensation.cpp#L233 */
@@ -509,8 +525,8 @@ void LagCompensationThink_Forward()
 			// remove tail records that are too old
 			while(EntityTrackCount[index])
 			{
-				// if tail is within limits, stop
-				if(EntityTrackCount[index] < (sizeof(EntityTrack[]) - 1) &&
+				// if tail is within limits, stop, only record at max 1 seconds, either max tickrate, or max of 66 ticks
+				if((EntityTrackCount[index] < (TickrateModifyInt - 1) || EntityTrackCount[index] < (sizeof(EntityTrack[]) - 1)) &&
 				   EntityTrack[index][0].m_flSimulationTime >= deadTime)
 					break;
 				
@@ -613,9 +629,10 @@ void AddEntityToLagCompList(int entity)
 		{
 			EntityTrackCount[i] = -1;
 			i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
+			WasBackTracked[i] = false;
 			break;
 		}
-	}	
+	}
 }
 
 void RemoveEntityToLagCompList(int entity)
@@ -625,6 +642,7 @@ void RemoveEntityToLagCompList(int entity)
 		if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) == entity)
 		{
 			i_Objects_Apply_Lagcompensation[i] = -1;
+			WasBackTracked[i] = false;
 			break;
 		}
 	}	

@@ -37,7 +37,7 @@ methodmap CitizenRunner < CClotBody
 
 		int seed = GetURandomInt();
 		Citizen_GenerateModel(seed, view_as<bool>(seed % 2), Cit_Unarmed, buffer, sizeof(buffer));
-		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", TFTeam_Red, false,_,_,_,_,_,true));
+		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", TFTeam_Red, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN_PROTECTED");
@@ -150,7 +150,7 @@ void CitizenRunner_NPCDeath(int entit)
 		{
 			Zombies_Currently_Still_Ongoing++;
 			
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 30;
+			int health = ReturnEntityMaxHealth(npc.index) * 30;
 			SetEntProp(entity, Prop_Data, "m_iHealth", health);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 			

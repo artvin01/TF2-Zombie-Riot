@@ -209,7 +209,7 @@ public void SeaFounder_ClotThink(int iNPC)
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 
-						SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * (npc.m_bCarrier ? 0.2 : 0.1)));
+						Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * (npc.m_bCarrier ? 0.2 : 0.1)));
 						// 450 x 0.1 x 0.15
 						// 600 x 0.1 x 0.15
 						// 450 x 0.2 x 0.15
@@ -370,6 +370,8 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 			}
 		}
 
+		//If Only allow 25 navs to spread at once
+		int AllowMaxSpread = 0;
 		int length = NavList.Length;
 		for(int a; a < length; a++)	// Spread creap to all tiles it touches
 		{
@@ -382,9 +384,16 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 					int count = nav1.GetAdjacentCount(b);
 					for(int c; c < count; c++)
 					{
+						if(AllowMaxSpread >= 25)
+						{
+							break;
+						}
 						CNavArea nav2 = nav1.GetAdjacentArea(b, c);
 						if(nav2 != NULL_AREA && !nav2.HasAttributes(NAV_MESH_NO_HOSTAGES) && NavList.FindValue(nav2) == -1)
+						{
+							AllowMaxSpread++;
 							NavList.Push(nav2);
+						}
 					}
 				}
 			}
@@ -610,6 +619,8 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 
 				if(resist)
 					damageDeal *= 0.2;
+				
+				damageDeal *= Attributes_GetOnPlayer(client, Attrib_TerrianRes);
 
 				if(damageDeal < 2.0) //whatever is higher.
 				{
@@ -620,20 +631,9 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				// 120 x 0.25 x 0.2
 
 				if(!resist)
-					SeaSlider_AddNeuralDamage(client, 0, RoundToCeil(damageDeal / 4.0), false);
+					Elemental_AddNervousDamage(client, 0, RoundToCeil(damageDeal / 6.0), false);
 					// 20 x 0.25 x 0.2
  
-/*
-				bool resist = Building_NeatherseaReduced(client);
-
-				SDKHooks_TakeDamage(client, 0, 0, resist ? 1.2 : 6.0, DMG_BULLET);
-				// 120 x 0.25 x 0.2
-
-				if(!resist)
-					SeaSlider_AddNeuralDamage(client, 0, 1);
-					// 20 x 0.25 x 0.2
-				*/
-
 				int entity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 				if(!IsValidEntity(entity))
 				{
@@ -678,35 +678,28 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				NervousLastTouch[entity] = TheNavMesh.GetNavArea(pos, 5.0);
 				if(NervousLastTouch[entity] != NULL_AREA && NavList.FindValue(NervousLastTouch[entity]) != -1)
 				{
+					/*
 					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
 					// 120 x 0.25 x 0.2
 
-					SeaSlider_AddNeuralDamage(entity, 0, 1, false);
+					Elemental_AddNervousDamage(entity, 0, 1, false);
 					// 20 x 0.25 x 0.2
-		/*	
-					bool resist = Building_NeatherseaReduced(entity);
-
-					SDKHooks_TakeDamage(entity, 0, 0, resist ? 1.2 : 6.0, DMG_BULLET);
-					// 120 x 0.25 x 0.2
-
-					if(!resist)
-						SeaSlider_AddNeuralDamage(entity, 0, 1);
-						// 20 x 0.25 x 0.2
-						*/
+					*/
+					if(f_LowTeslarDebuff[entity] - 1.0 < GetGameTime())
+						f_LowTeslarDebuff[entity] = GetGameTime() + 1.0;
 
 					NervousTouching[entity] = NervousTouching[0];
 				}
 			}
 		}
 	}
-	
+
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
 		if(entity != INVALID_ENT_REFERENCE)
 		{
-			CClotBody npc = view_as<CClotBody>(entity);
-			if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+			if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
 			{
 				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
@@ -717,10 +710,21 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET, _, _, pos);
 					// 120 x 0.25 x 0.2
 
-					SeaSlider_AddNeuralDamage(entity, 0, 1, false);
+					Elemental_AddNervousDamage(entity, 0, 1, false);
 					// 20 x 0.25 x 0.2
 
 					NervousTouching[entity] = NervousTouching[0];
+
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+					if(owner > 0 && owner <= MaxClients)
+					{
+						if(Attributes_GetOnPlayer(owner, Attrib_ObjTerrianAbsorb, false) > (GetURandomInt() % 100))
+						{
+							int id = NavList.FindValue(NervousLastTouch[entity]);
+							if(id != -1)
+								NavList.Erase(id);
+						}
+					}
 				}
 			}
 		}

@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Rogue_HandMulti_Weapon(int entity)
 {
 	if(i_WeaponArchetype[entity] == 1 || i_WeaponArchetype[entity] == 2)	// Multi Pellet
@@ -8,7 +11,7 @@ public void Rogue_HandMulti_Weapon(int entity)
 	}
 }
 
-public void Rogue_HandGrenade_Weapon(int entity)
+public void Rogue_HandExplosive_Weapon(int entity)
 {
 	char classname[36];
 	GetEntityClassname(entity, classname, sizeof(classname));
@@ -20,7 +23,7 @@ public void Rogue_HandGrenade_Weapon(int entity)
 	}
 }
 
-public void Rogue_HandSupport_HealTick(int client)
+public void Rogue_HandSupport_HealTick(int client, int &healing_Amount)
 {
 	if(!b_SupportHealHandPassive)
 		return;
@@ -32,8 +35,7 @@ public void Rogue_HandSupport_HealTick(int client)
 		if(i_WeaponArchetype[weapon] == 9 || i_WeaponArchetype[weapon] == 25 || i_WeaponArchetype[weapon] == 24 ||i_WeaponArchetype[weapon] == 22)	// Team Support and vamp knives
 		{
 			// +10 health regen
-			int healing_Amount = HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);		
-			ApplyHealEvent(client, healing_Amount);	
+			healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);
 		}
 	}
 }
@@ -104,11 +106,13 @@ public void Rogue_HandTrap_Weapon(int entity)
 
 public void Rogue_HandleBrawler_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 11 || i_WeaponArchetype[entity] == 5)	// Or Single Pellet
+	if(i_WeaponArchetype[entity] == 11 || i_WeaponArchetype[entity] == 5 || i_WeaponArchetype[entity] == 6)	// Or Single Pellet
 	{
 		// +25% fire rate
 		Attributes_SetMulti(entity, 6, 0.75);
 		Attributes_SetMulti(entity, 97, 0.75);
+		if(i_WeaponArchetype[entity] == 6)
+			Attributes_SetMulti(entity, 4, 1.5);
 	}
 }
 
@@ -133,7 +137,7 @@ public void Rogue_HandInfinite_Weapon(int entity)
 
 public void Rogue_HandDuelist_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 15 || i_WeaponArchetype[entity] == 14)	// Duelist and abberition
+	if(i_WeaponArchetype[entity] == 15 || i_WeaponArchetype[entity] == 14 || i_WeaponArchetype[entity] == 17)	// Duelist and abberition
 	{
 		// +150% damage bonus when half health
 		Attributes_SetMulti(entity, 224, 2.5);
@@ -152,7 +156,7 @@ public void Rogue_HandCaster_Weapon(int entity)
 
 public void Rogue_HandKazimierz_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 23 || i_WeaponArchetype[entity] == 16)	// Kazimierz and Lord
+	if(IsWeaponKazimierz(entity) || i_WeaponArchetype[entity] == 16)	// Kazimierz and Lord
 	{
 		// +75% damage bonus while over half health
 		Attributes_SetMulti(entity, 225, 1.75);

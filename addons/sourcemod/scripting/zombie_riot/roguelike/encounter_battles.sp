@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Rogue_Vote_BattleEncounter(const Vote vote)
 {
 	if(vote.Config[0])

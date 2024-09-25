@@ -7,15 +7,19 @@
 
 #define LEPER_SOLEMNY_MAX		2
 #define LEPER_SOLEMNY_MAX_HITS	10
+#define LEPER_SOLEMNY_MAX_INCREACE	5
+
 
 #define LEPER_NORMAL_SWING 0
 #define LEPER_AOE_HEW 1
+
 int LeperSwingType[MAXPLAYERS+1];
 bool LeperSwingEffect[MAXPLAYERS+1];
 Handle Timer_Leper_Management[MAXPLAYERS+1] = {null, ...};
 float Leper_HudDelay[MAXPLAYERS+1];
 int Leper_SolemnyUses[MAXPLAYERS+1];
 int Leper_SolemnyCharge[MAXPLAYERS+1];
+float Leper_SolemnyChargeCD[MAXPLAYERS+1];
 float Leper_InAnimation[MAXPLAYERS+1];
 
 void OnMapStartLeper()
@@ -26,6 +30,7 @@ void OnMapStartLeper()
 	Zero(LeperSwingEffect);
 	Zero(LeperSwingType);
 	Zero(Timer_Leper_Management);
+	Zero(Leper_SolemnyChargeCD);
 	Zero(Leper_HudDelay);
 	Zero(Leper_InAnimation);
 }
@@ -41,6 +46,18 @@ int LeperEnemyAoeHit(int client)
 			return 5;
 	}
 	return 1;
+}
+
+int MaxCurrentHitsNeededSolemnity(int client)
+{
+	if(Leper_SolemnyUses[client] < LEPER_SOLEMNY_MAX)
+	{
+		return LEPER_SOLEMNY_MAX_HITS;
+	}
+	else
+	{
+		return (LEPER_SOLEMNY_MAX_HITS + ((Leper_SolemnyUses[client] - 2) * LEPER_SOLEMNY_MAX_INCREACE));
+	}
 }
 
 bool IsLeperInAnimation(int client)
@@ -134,12 +151,7 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 		Leper_Hud_Logic(client, weapon, true);
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				return;
-			}
-			if(Leper_SolemnyCharge[client] < LEPER_SOLEMNY_MAX_HITS)
+			if(Leper_SolemnyCharge[client] < MaxCurrentHitsNeededSolemnity(client))
 			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				return;
@@ -258,7 +270,10 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 
 	if(!client)
 		return Plugin_Stop;
-
+		
+	if(dieingstate[client] == 0)
+		b_ThisEntityIgnored[client] = false;
+		
 	SetClientViewEntity(client, client);
 	TF2_RemoveCondition(client, TFCond_FreezeInput);
 	SetEntProp(client, Prop_Send, "m_bIsPlayerSimulated", 1);
@@ -268,12 +283,21 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
 	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 0);
 //its too offset, clientside prediction makes this impossible
-	if(!b_IsPlayerNiko[client] && !b_HideCosmeticsPlayer[client])
+	if(!b_HideCosmeticsPlayer[client])
 	{
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
+	else
+	{
+		int entity, i;
+		while(TF2U_GetWearable(client, entity, i))
+		{
+			if(Viewchanges_NotAWearable(client, entity))
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}
 	SetEntityMoveType(client, MOVETYPE_WALK);
@@ -549,10 +573,14 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		Leper_SolemnyCharge[client]--;
-		if(Leper_SolemnyCharge[client] <= 0)
-			Leper_SolemnyCharge[client] = 0;
-			
+		if(Leper_SolemnyChargeCD[client] < GetGameTime())
+		{
+			Leper_SolemnyCharge[client] --;
+			if(Leper_SolemnyCharge[client] <= 0)
+				Leper_SolemnyCharge[client] = 0;
+
+			Leper_SolemnyChargeCD[client] = GetGameTime() + 3.5;
+		}
 		Leper_HudDelay[client] = GetGameTime() + 0.5;
 
 		return;
@@ -570,19 +598,26 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 			Format(LeperHud, sizeof(LeperHud), "Hew ACTIVE [R]\n");
 		}
 	}
-	if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
+	if(Leper_SolemnyCharge[client] >= MaxCurrentHitsNeededSolemnity(client))
 	{
-		Format(LeperHud, sizeof(LeperHud), "%sSolemny MAX USES", LeperHud);
-	}
-	else
-	{
-		if(Leper_SolemnyCharge[client] >= LEPER_SOLEMNY_MAX_HITS)
+		if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
 		{
-			Format(LeperHud, sizeof(LeperHud), "%sSolemny [M2] %i", LeperHud,LEPER_SOLEMNY_MAX - Leper_SolemnyUses[client]);
+			Format(LeperHud, sizeof(LeperHud), "%sSolemnity OVER [M2] %i", LeperHud,Leper_SolemnyUses[client]);
 		}
 		else
 		{
-			Format(LeperHud, sizeof(LeperHud), "%sSolemny (%i/%i)", LeperHud,Leper_SolemnyCharge[client], LEPER_SOLEMNY_MAX_HITS);	
+			Format(LeperHud, sizeof(LeperHud), "%sSolemnity [M2] %i", LeperHud,LEPER_SOLEMNY_MAX - Leper_SolemnyUses[client]);
+		}
+	}
+	else
+	{
+		if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
+		{
+			Format(LeperHud, sizeof(LeperHud), "%sSolemnity OVER (%i/%i)", LeperHud,Leper_SolemnyCharge[client], MaxCurrentHitsNeededSolemnity(client));	
+		}
+		else
+		{
+			Format(LeperHud, sizeof(LeperHud), "%sSolemnity (%i/%i)", LeperHud,Leper_SolemnyCharge[client], MaxCurrentHitsNeededSolemnity(client));	
 		}
 	}
 
@@ -619,13 +654,14 @@ void WeaponLeper_OnTakeDamage(int attacker, float &damage, int weapon, int zr_da
 	}
 
 	Leper_SolemnyCharge[attacker]++;
-	if(Leper_SolemnyCharge[attacker] > LEPER_SOLEMNY_MAX_HITS)
-		Leper_SolemnyCharge[attacker] = LEPER_SOLEMNY_MAX_HITS;
+	if(Leper_SolemnyCharge[attacker] > MaxCurrentHitsNeededSolemnity(attacker))
+		Leper_SolemnyCharge[attacker] = MaxCurrentHitsNeededSolemnity(attacker);
 
 	Leper_Hud_Logic(attacker, weapon, true);
 }
 
 void LeperResetUses()
 {
+
 	Zero(Leper_SolemnyUses);
 }

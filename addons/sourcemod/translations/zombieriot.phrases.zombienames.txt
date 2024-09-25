@@ -568,7 +568,10 @@
 		"pt"		"Xeno Spy Main do X10"
 		"nl"		"Xeno X10 Spion Main"
 	}
-
+	"Xeno Malfunctioning Robot"
+	{
+		"en" 		"Xeno Malfunctioning Robot"
+	}
 	"Nazi Panzer"
 	{
 		"en" 		"Nazi Panzer"
@@ -707,9 +710,106 @@
 		"pt"		"Milícia"
 		"nl"		"Militie"
 	}
+	"Barracks Metro Cop"
+	{
+		"en" 		"Metro Cop"
+	}
+	"Barracks Combine Swordsman"
+	{
+		"en" 		"Combine Swordsman"
+	}
+	"Barracks Metro Raider"
+	{
+		"en" 		"Metro Raider"
+	}
+	"Barracks Combine Shotgunner"
+	{
+		"en" 		"Combine Shotgunner"
+	}
+	"Barracks Combine Soldier"
+	{
+		"en" 		"Combine Soldier"
+	}
+	"Barracks Combine DDT"
+	{
+		"en" 		"Combine DDT"
+	}
+	"Barracks Combine Elite"
+	{
+		"en" 		"Combine Elite"
+	}
+	"Barracks Combine Deflector"
+	{
+		"en" 		"Combine Deflector"
+	}
+	"Barracks Combine Sniper"
+	{
+		"en" 		"Combine Sniper"
+	}
+	"Barracks Combine Super"
+	{
+		"en" 		"Combine Warrior"
+	}
+	"Barracks Combine Commander"
+	{
+		"en" 		"Combine Commander"
+	}
+	"Barracks Combine Giant ddt"
+	{
+		"en" 		"Combine Giant DDT"
+	}
+	"Barracks Combine Collos"
+	{
+		"en"		"Combine Collos"
+	}
+	"Barracks Iberian Runner"
+	{
+		"en"		"Iberian Runner"
+	}
+	"Barracks Iberian Gunner"
+	{
+		"en"		"Iberian Gunner"
+	}
+	"Barracks Iberian Tanker"
+	{
+		"en"		"Iberian Tanker"
+	}	
+	"Barracks Iberian Rocketeer"
+	{
+		"en"		"Iberian Rocketeer"
+	}	
+	"Barracks Iberian Healer"
+	{
+		"en"		"Iberian Healer"
+	}
+	"Barracks Iberian Healtanker"
+	{
+		"en"		"Iberian Healtanker"
+	}	
+	"Barracks Iberia Boomstick"
+	{
+		"en"		"Iberian Boomsticker"
+	}
+	"Barracks Iberian Guards"
+	{
+		"en"		"Iberian Guards"
+	}
+	"Barracks Iberian Elite Gunner"
+	{
+		"en"		"Iberian Elite Gunner"
+	}	
+	"Barracks Iberia Headhunter"
+	{
+		"en"		"Iberian Headhunter"
+	}	
+	"Barracks Iberian Lighthouse Guardian"
+	{
+		"en"		"Guardian of the Lighthouse"
+	}	
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
+		"fr" 		"Milice"
 	}
 	"Barracks Militia Desc"
 	{
@@ -718,6 +818,7 @@
 	"Archer"
 	{
 		"en" 		"Archer"
+		"fr" 		"Archer"
 		"ru" 		"Лучник"
 		"pt"		"Arqueiro"
 		"nl"		"Boogschutter"
@@ -725,6 +826,7 @@
 	"Man-At-Arms"
 	{
 		"en" 		"Man-At-Arms"
+		"fr" 		"Homme-aux-Armes"
 		"ru" 		"Гвардеец"
 		"pt"		"Homem de armas"
 		"nl"		"Krijgsman te paard"
@@ -732,6 +834,7 @@
 	"Skirmisher"
 	{
 		"en" 		"Skirmisher"
+		"fr"		"Tirailleur"
 		"ru" 		"Разбойник"
 		"pt"		"Escaramuça"
 		"nl"		"Tirailleur"
@@ -739,6 +842,7 @@
 	"Long Swordsman"
 	{
 		"en" 		"Long Swordsman"
+		"fr" 		"Épéiste"
 		"ru" 		"Длинномечник"
 		"pt"		"Espadachim com Espada longa"
 		"nl"		"Lange Zwaardvechter"
@@ -746,6 +850,7 @@
 	"Twohanded Swordsman"
 	{
 		"en" 		"Twohanded Swordsman"
+		"fr" 		"Épéiste Double"
 		"ru" 		"Двуручный мечник"
 		"pt"		"Espadachim de 2 espadas"
 		"nl"		"Twee Handige Zwaardvechter"
@@ -753,6 +858,7 @@
 	"Crossbow Man"
 	{
 		"en" 		"Crossbow Man"
+		"fr" 		"Arbalétrier"
 		"ru" 		"Арбалетчик"
 		"pt"		"Cara da Besta"
 		"nl"		"Kruisboogman"
@@ -760,6 +866,7 @@
 	"Spearman"
 	{
 		"en" 		"Spearman"
+		"fr" 		"Harponneur"
 		"ru" 		"Копьеносец"
 		"pt"		"Lanceiro"
 		"nl"		"Speerman"
@@ -767,6 +874,7 @@
 	"Hand Cannoneer"
 	{
 		"en" 		"Hand Cannoneer"
+		"fr" 		"Cannoneur"
 		"ru" 		"Пушечник"
 		"pt"		"Canhoneiro de mão"
 		"nl"		"Hand Kanonnier"
@@ -774,6 +882,7 @@
 	"Elite Skirmisher"
 	{
 		"en" 		"Elite Skirmisher"
+		"fr"		"Tirailleur Élite"
 		"ru" 		"Элитный разбойник"
 		"pt"		"Escaramuça de Elite"
 		"nl"		"Elite Tirailleur"
@@ -781,9 +890,19 @@
 	"Blitzkrieg"
 	{
 		"en" 		"Blitzkrieg"
+		"fr" 		"Blitzkrieg"
 		"ru" 		"Блицкриг"
 		"pt"		"Blitzkrieg"
 		"nl"		"Blitzkrieg"
+	}
+	"Hyper Blitzkrieg"
+	{
+		"en"		"Hyper Blitzkrieg"
+		"fr"		"Hyper-Blitzkrieg"
+	}
+	"TRUE BLITZKRIEG"
+	{
+		"en"		"TRUE BLITZKRIEG"
 	}
 	"Pikeman"
 	{
@@ -827,12 +946,12 @@
 		"pt"		"O Viciado"
 		"nl"		"De Verslaving"
 	}
-	"The Doctor"
+	"Doctor Purnell"
 	{
-		"en" 		"The Doctor"
-		"ru" 		"Доктор"
-		"pt"		"O Doutor"
-		"nl"		"De Dokter"
+		"en" 		"Doctor Purnell"
+		"ru" 		"Доктор Пурнелл"
+		"pt"		"Doutor Purnell"
+		"nl"		"Dokter Purnell"
 	}
 	"Book Simon"
 	{
@@ -840,6 +959,38 @@
 		"ru" 		"Книжный Саймон"
 		"pt"		"Simon do Livro"
 		"nl"		"Boek Simon"
+	}
+	"Crazy Lady"
+	{
+		"en" 		"Crazy Lady"
+	}
+	"Faster"
+	{
+		"en" 		"Faster"
+	}
+	"Psycho"
+	{
+		"en" 		"Psycho"
+	}
+	"Sewmo"
+	{
+		"en" 		"Sewmo"
+	}
+	"Suicider"
+	{
+		"en" 		"Suicider"
+	}
+	"Cured Purnell"
+	{
+		"en" 		"Cured Purnell"
+	}
+	"Corrupted Barney"
+	{
+		"en" 		"Corrupted Barney"
+	}
+	"Voided Vanguard"
+	{
+		"en" 		"Voided Vanguard"
 	}
 	"Kahmlstein"
 	{
@@ -855,6 +1006,7 @@
 	"L4D2 Tank"
 	{
 		"en"		"Tank"
+		"fr"		"Tank"
 		"ru"		"Танк"
 		"pt"		"Tanque"
 		"nl"		"Tank"
@@ -876,6 +1028,7 @@
 	"Soldier Barrager"
 	{
 		"en"		"Soldier Barrager"
+		"fr"		"Soldier Barrageur"
 		"ru"		"Солдат-бомбардир"
 		"pt"		"Soldado de Barragem"
 		"nl"		"Soldaten spervuurder"
@@ -1281,11 +1434,9 @@
 		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
 	}
-	"Spawned Blue Goggles"
+	"Machina Waldch"
 	{
-		"en"		"Spawned Blue Goggles"
-		"pt"		"Blue Goggles Gerado"
-		"ru"		"Созданный Блу Гогглз"
+		"en"		"Machina Waldch"
 	}
 	"Silvester"
 	{
@@ -1293,11 +1444,10 @@
 		"pt"		"Silvester"
 		"ru"		"Сильвестр"
 	}
-	"Blue Goggles"
+	"Waldch"
 	{
-		"en"		"Blue Goggles"
-		"pt"		"Blue Goggles"
-		"ru"		"Блу Гогглз"
+		"en"		"Waldch"
+		"pt"		"Waldch"
 	}
 	"Angeled Silvester"
 	{
@@ -1578,9 +1728,9 @@
 		"ru"		"Шипы"
 		"chi"		"棘刺"
 	}
-	"God Arkantos"
+	"God Alaxios"
 	{
-		"en"		"God Arkantos"
+		"en"		"God Alaxios"
 		"ru"		"Бог Аркантос"
 	}
 	"Seaborn Scout"
@@ -1833,9 +1983,9 @@
 	{
 		"en"	"Heavy Punuel"
 	}
-	"Seargent Ideal"
+	"Sergeant Ideal"
 	{
-		"en"	"Seargent Ideal"
+		"en"	"Sergeant Ideal"
 	}
 	"VIP Building, The Objective"
 	{
@@ -1940,6 +2090,18 @@
 	"Stella"
 	{
 		"en"	"Stella"
+	}
+	"Karlas"
+	{
+		"en"	"Karlas"
+	}
+	"Heliara"
+	{
+		"en"	"Heliara"
+	}
+	"Helia"
+	{
+		"en"	"Helia"
 	}
 	"Astria"
 	{
@@ -2149,10 +2311,6 @@
 	{
 		"en"	"Ransacker"
 	}
-	"Stellar Weaver"
-	{
-		"en"	"Stellar Weaver"
-	}
 	"Runover"
 	{
 		"en"	"Runover"
@@ -2177,9 +2335,9 @@
 	{
 		"en"	"Braindead"
 	}
-	"Behemonth"
+	"Behemoth"
 	{
-		"en"	"Behemonth"
+		"en"	"Behemoth"
 	}
 	"Absolute Incinirator"
 	{
@@ -2224,5 +2382,833 @@
 	"Bob the Second"
 	{
 		"en"	"Bob the Second"
+	}
+	"Wildingen Hitman"
+	{
+		"en"	"Wildingen Hitman"
+	}
+	"Mr.X"
+	{
+		"en"	"Mr.X"
+	}
+	"Xeno Acclaimed Swordsman"
+	{
+		"en"	"Xeno Acclaimed Swordsman"
+	}
+	"Xeno Early Infected"
+	{
+		"en"	"Xeno Early Infected"
+	}
+	"Xeno Patient Few"
+	{
+		"en"	"Xeno Patient Few"
+	}
+	"Ouroboros Ekas"
+	{
+		"en"	"Ouroboros Ekas"
+	}
+	"Wandering Spirit"
+	{
+		"en"	"Wandering Spirit"
+	}
+	"Vengefull Spirit"
+	{
+		"en"	"Vengefull Spirit"
+	}
+	"Fallen Warrior"
+	{
+		"en"	"Guln the Fallen One"
+	}
+	"Lex"
+	{
+		"en"	"Lex"
+	}
+	"Iana"
+	{
+		"en"	"Iana"
+	}
+	"Magianas"
+	{
+		"en"	"Magianas"
+	}
+	"Loonaris"
+	{
+		"en"	"Loonaris"
+	}
+	"Heliaris"
+	{
+		"en"	"Heliaris"
+	}
+	"Astrianis"
+	{
+		"en"	"Astrianis"
+	}
+	"Eurainis"
+	{
+		"en"	"Eurainis"
+	}
+	"Draeonis"
+	{
+		"en"	"Draeonis"
+	}
+	"Aetherium"
+	{
+		"en"	"Aetherium"
+	}
+	"Malianium"
+	{
+		"en"	"Malianium"
+	}
+	"Rulius"
+	{
+		"en"	"Rulius"
+	}
+	"Lazines"
+	{
+		"en"	"Laz Ines"
+	}
+	"Dronis"
+	{
+		"en"	"Dronis"
+	}
+	"Ruliana"
+	{
+		"en"	"Ruliana"
+	}
+	"Aetherianus"
+	{
+		"en"	"Aetherianus"
+	}
+	"Aetherianus Desc"
+	{
+		"en"	"Is a stronger variant\nIn addition it buffs the damage of other neavy aether class npc's"
+	}
+	"Astrianious"
+	{
+		"en"	"Astrianious"
+	}
+	"Astrianious Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Draconia"
+	{
+		"en"	"Draconia"
+	}
+	"Draconia Desc"
+	{
+		"en"	"Is a stronger variant\nIn addition, it can refresh ANY shields, regardless of cooldowns\nEliminate as soon as possible"
+	}
+	"Dronianis"
+	{
+		"en"	"Dronianis"
+	}
+	"Dronianis Desc"
+	{
+		"en"	"Is a stronger variant\nAlso gives a 25% dmg bonus to everyone around it. self not included"
+	}
+	"Euranionis"
+	{
+		"en"	"Euranionis"
+	}
+	"Euranionis Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Heliarionus"
+	{
+		"en"	"Heliarionus"
+	}
+	"Heliarionus Desc"
+	{
+		"en"	"Is a stronger variant\nAdditionally gives a 50% dmg bonus to nearby npc's, self not included"
+	}
+	"Lazurus"
+	{
+		"en"	"Lazurus"
+	}
+	"Lazurus Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Loonarionus"
+	{
+		"en"	"Loonarionus"
+	}
+	"Loonarionus Desc"
+	{
+		"en"	"Is a stronger variant\nAdditionally, can heal other nearby lanius type npc's whenever it teleports or activates its battery."
+	}
+	"Magianius"
+	{
+		"en"	"Magianius"
+	}
+	"Magianius Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Malianius"
+	{
+		"en"	"Malianius"
+	}
+	"Malianius Desc"
+	{
+		"en"	"A stronger Variant"
+	}
+	"Rulianius"
+	{
+		"en"	"Rulianius"
+	}
+	"Rulianius Desc"
+	{
+		"en"	"A stronger variant\nAdditionally, poses a short range laser pulse"
+	}
+	"Lancelot"
+	{
+		"en"	"Lancelot"
+	}
+	"Lancelot Desc"
+	{
+		"en"	"Highly dangerous upclose\nOnly has short range attacks\nAlso poses a powerfull particle accelerator, you can tell when its ready due to the particle effect on his hand"
+	}
+	"Twirl"
+	{
+		"en"	"Twirl"
+	}
+	"Twirl Desc"
+	{
+		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
+	}
+	"Ealing"
+	{
+		"en"	"Ealing"
+	}
+	"Ealing Desc"
+	{
+		"en"	"Void Spawn.\nBleeds on hit."
+	}
+	"Framing Voider"
+	{
+		"en"	"Framing Voider"
+	}
+	"Framing Voider Desc"
+	{
+		"en"	"Void Spawn.\nBuffs enemies around itself on death."
+	}
+	"Growing Exat"
+	{
+		"en"	"Growing Exat"
+	}
+	"Growing Exat Desc"
+	{
+		"en"	"Void Spawn.\nEach singular hit makes it grow in size, the bigger, the stronger."
+	}
+	"Mutating Blob"
+	{
+		"en"	"Mutating Blob"
+	}
+	"Mutating Blob Desc"
+	{
+		"en"	"Void Spawn.\nWhen dead, corpse acts as a spawnpoint for 1 enemy."
+	}
+	"Void Spreader"
+	{
+		"en"	"Void Spreader"
+	}
+	"Void Spreader Desc"
+	{
+		"en"	"Void Spawn.\nDeals immensive void damage."
+	}
+	"Void Infestor"
+	{
+		"en"	"Void Infestor"
+	}
+	"Void Infestor Desc"
+	{
+		"en"	"Void Spawn.\nWhen dead, spreads void onto the floor, This void spreads at all times and cannot be halted. (Can be silenced)"
+	}
+	"Voided Hard Crust"
+	{
+		"en"	"Voided Hard Crust"
+	}
+	"Voided Hard Crust Desc"
+	{
+		"en"	"Void Spawn.\nHas Hard flat resistance, attack with high damage single target weapons."
+	}
+	"Void Carrier"
+	{
+		"en"	"Void Carrier"
+	}
+	"Void Carrier Desc"
+	{
+		"en"	"Void Spawn.\nGoes to 1 ally, picks them up and throws them at a player."
+	}
+	"Void Ixufan"
+	{
+		"en"	"Void Ixufan"
+	}
+	"Void Ixufan Desc"
+	{
+		"en"	"Void Mother Spawn.\nIs extra buffed in void terretory, deals immensive void damage."
+	}
+	"Enframed Voider"
+	{
+		"en"	"Enframed Voider"
+	}
+	"Enframed Voider Desc"
+	{
+		"en"	"Their intelligence grows.\nBuffs enemies on death."
+	}
+	"Blood Pollutor"
+	{
+		"en"	"Blood Pollutor"
+	}
+	"Blood Pollutor Desc"
+	{
+		"en"	"Deals heavy bleed on hit."
+	}
+	"Voided Expidonsan Fortifier"
+	{
+		"en"	"Voided Expidonsan Fortifier"
+	}
+	"Voided Expidonsan Fortifier Desc"
+	{
+		"en"	"An expidonsan fell against the void.\nHas flat resistance, and gains a shield on spawn."
+	}
+	"Void Particle"
+	{
+		"en"	"Void Particle"
+	}
+	"Void Particle Desc"
+	{
+		"en"	"Spreads void on death (can be silenced)"
+	}
+	"Hosting Blob"
+	{
+		"en"	"Hosting Blob"
+	}
+	"Hosting Blob Desc"
+	{
+		"en"	"On death, acts as 2 spawns."
+	}
+	"Blobbing Monster"
+	{
+		"en"	"Blobbing Monster"
+	}
+	"Blobbing Monster Desc"
+	{
+		"en"	"Each hit makes it stronger and have more resistance."
+	}
+	"Void Sprayer"
+	{
+		"en"	"Void Sprayer"
+	}
+	"Void Sprayer Desc"
+	{
+		"en"	"Jumps at you, and deals immensive void damage."
+	}
+	"Void Encasualtor"
+	{
+		"en"	"Void Encasualtor"
+	}
+	"Void Encasualtor Desc"
+	{
+		"en"	"Teleports to a target they try to attack if they are in void terretory.\nif they didnt attack for a while, then their next attack will make them rapdily attack."
+	}
+	"Voided Expidonsan Cleaner"
+	{
+		"en"	"Voided Expidonsan Cleaner"
+	}
+	"Voided Expidonsan Cleaner Desc"
+	{
+		"en"	"Too many expidonsens fell to them.\nJumps at you, and deals immensive void damage."
+	}
+	"Voided Expidonsan Container"
+	{
+		"en"	"Voided Expidonsan Container"
+	}
+	"Voided Expidonsan Container Desc"
+	{
+		"en"	"Deals immensive bleed damage on hit."
+	}
+	"Sacraficer"
+	{
+		"en"	"Sacraficer"
+	}
+	"Sacraficer Desc"
+	{
+		"en"	"On death, buffs allies heavily."
+	}
+	"Voiding Bedrock"
+	{
+		"en"	"Voiding Bedrock"
+	}
+	"Voiding Bedrock Desc"
+	{
+		"en"	"Has heavy flat resistance."
+	}
+	"Heavy Perisher"
+	{
+		"en"	"Heavy Perisher"
+	}
+	"Heavy Perisher Desc"
+	{
+		"en"	"Grows with each hit recieved."
+	}
+	"Void Mini-Gatekeeper"
+	{
+		"en"	"Void Mini-Gatekeeper"
+	}
+	"Void Mini-Gatekeeper Desc"
+	{
+		"en"	"Acts as 2 spawnpoints on death."
+	}
+	"Brooding Petra"
+	{
+		"en"	"Brooding Petra"
+	}
+	"Brooding Petra Desc"
+	{
+		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime.\nIts suprisingly Extreamly light."
+	}
+	"Kunul"
+	{
+		"en"	"Kunul"
+	}
+	"Kunul Desc"
+	{
+		"en"	"Deals extreme bleed damage on hit."
+	}
+	"Total Growth"
+	{
+		"en"	"Total Growth"
+	}
+	"Total Growth Desc"
+	{
+		"en"	"Grows with each hit it recieves."
+	}
+	"Void's Offspring"
+	{
+		"en"	"Void's Offspring"
+	}
+	"Void's Offspring Desc"
+	{
+		"en"	"Buffs all void entities on death."
+	}
+	"Voided Expidonsan Rejuvinator"
+	{
+		"en"	"Voided Expidonsan Rejuvinator"
+	}
+	"Voided Expidonsan Rejuvinator Desc"
+	{
+		"en"	"One of the finest expidonsan doctors fell to the void.\nheals almost any ally instantly and overheals them, will try to heal every target (silence makes the heal 5x slower)\nHas extreme speeds, will suicide if its alone."
+	}
+	"Voided Expidonsan Explorer"
+	{
+		"en"	"Voided Expidonsan Explorer"
+	}
+	"Voided Expidonsan Explorer Desc"
+	{
+		"en"	"One of the first expidonsans to try to explore the void.\nEach hit it does gives it a shield.\nFires an expidonsan laser if too far away, that also regens it shield.\nHas extreme speeds even with such power."
+	}
+	"Unspeakable"
+	{
+		"en"	"Unspeakable"
+	}
+	"Unspeakable Desc"
+	{
+		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
+	}
+	"Voided Diversionistico"
+	{
+		"en"	"Voided Diversionistico"
+	}
+	"Voided Diversionistico Desc"
+	{
+		"en"	"Elite forces, taken by the void.\nActs equal to normal ones, but they are slower , visible from longer ranges and deal void damage aswell."
+	}
+	"Void Portal"
+	{
+		"en"	"Void Portal"
+	}
+	"Void Portal Desc"
+	{
+		"en"	"Summons near enemies, stays for 2 waves and spreads void where it stands.\nIt also acts as a spawnpoint for enemies aswell."
+	}
+	"Void Creep"
+	{
+		"en"	"Void Creep"
+	}
+	"Void Creep Desc"
+	{
+		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15%%), regen, damage(20%%) and speed(5%%)."
+	}
+	"Void Elemental Damage"
+	{
+		"en"	"Void Elemental Damage"
+	}
+	"Void Elemental Damage Desc"
+	{
+		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
+	}
+	"Vhxis"
+	{
+		"en"	"Vhxis"
+	}
+	"Vhxis Desc"
+	{
+		"en"	"The void keeper, killing him is not a good idea...\n(Silence makes voidbuff weaker)"
+	}
+	"Chaos Mage"
+	{
+		"en"	"Chaos Mage"
+	}
+	"Chaos Mage Desc"
+	{
+		"en"	"Its mind fell.\nDeals heavy chaos damage, revives once."
+	}
+	"Chaos Supporter"
+	{
+		"en"	"Chaos Supporter"
+	}
+	"Chaos Supporter Desc"
+	{
+		"en"	"Its mind fell.\nDeals heavy chaos damage, Heals all allies around itself."
+	}
+	"Chaos Insane"
+	{
+		"en"	"Chaos Insane"
+	}
+	"Chaos Insane Desc"
+	{
+		"en"	"Its mind fell.\nCauses Earthquakes underneath enemies."
+	}
+	"Chaos Knight?"
+	{
+		"en"	"Chaos Knight?"
+	}
+	"Chaos Knight? Desc"
+	{
+		"en"	"a very sick knight, who knows what he could do if not for his sickness.\nDeals heavy chaos damage, Very slow but strong attacks.\nCan go into a defensive state and heal up abit.\nAfter some time, recives a coughting fit, attack it during it, or heal up."
+	}
+	"Chaos Injured Cultist"
+	{
+		"en"	"Chaos Injured Cultist"
+	}
+	"Chaos Injured Cultist Desc"
+	{
+		"en"	"Hes on the brink of death.\nSummons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage.\nKicks very strongly."
+	}
+	"Voided Erasus"
+	{
+		"en"	"Voided Erasus"
+	}
+	"Voided Erasus Desc"
+	{
+		"en"	"Fallen. to the void."
+	}
+	"Sphynx"
+	{
+		"en" 		"Sphynx"
+	}
+	"Sphynx Spawned"
+	{
+		"en" 		"Zombies refuse to stay down..."
+	}
+	"Petrisis' Baron"
+	{
+		"en" 		"Petrisis' Baron"
+	}
+	"Petrisis' Baron Spawned"
+	{
+		"en" 		"Your barricades cry in fear."
+	}
+	"Nightmare"
+	{
+		"en" 		"Nightmare"
+	}
+	"Nightmare Spawned"
+	{
+		"en" 		"Nightmares will haunt you."
+	}
+	"Zombine"
+	{
+		"en" 		"Zombine"
+	}
+	"Omega"
+	{
+		"en"		"Omega"
+	}
+	"Nemal"
+	{
+		"en"		"Nemal"
+	}
+	"Nemal Desc"
+	{
+		"en"		"Each 4th hit gives you a teslar debuff.\nLays mines:\nRed: damages, marks you, if marked, more damage.\nGreen: Cures of teslar debuff, launches up, cant be sniped for 4 seconds and no fall damage\nEach 10 seconds she marks you if hit with melee.\nLaser attack predicts, anti predict it.\nWave ability predicts if youre marked.\nSimular abilities on Silvester.\nHer melee makes you glide (Silencable)"
+	}
+	"Sentinel"
+	{
+		"en"		"Sentinel"
+	}
+	"Sentinel Desc"
+	{
+		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
+	}
+	"Ironborus"
+	{
+		"en"		"Ironborus"
+	}
+	"Ironborus Desc"
+	{
+		"en"		"Gives itself Quantum suit after some time."
+	}
+	"Destructius"
+	{
+		"en"		"Destructius"
+	}
+	"Destructius Desc"
+	{
+		"en"		"Foccuses buildings and deals massive damage to them."
+	}
+	"Iberia Beacon"
+	{
+		"en"		"Iberia Beacon"
+	}
+	"Iberia Beacon Desc"
+	{
+		"en"		"after 4 seconds, each 2 seconds it gives armor and morale to nearby enemies.\nMorale:\nW buff, Each number means its stronger upto 4.\nIt buffs movementspeed, damage and resistance Exponentially the higher the morale.\nAt morale 4, they scream."
+	}
+	"Beacon Constructor"
+	{
+		"en"		"Beacon Constructor"
+	}
+	"Beacon Constructor Desc"
+	{
+		"en"		"Places Beacons if close enough, has 50%% resistance and reduced speed while it carries one."
+	}
+	"Iberia Lighthouse"
+	{
+		"en"		"Iberia Lighthouse"
+	}
+	"Iberia Lighthouse Desc"
+	{
+		"en"		"Gives morale to any NPC in its line of sight, snipes enemies from afar, has a secondary shortrange gun.\nIf low enough or enough time passes, Huirgrajo appears."
+	}
+	"Huirgrajo"
+	{
+		"en"		"Huirgrajo"
+	}
+	"Huirgrajo Desc"
+	{
+		"en"		"Protects the lighthouse, If the lighthouse dies, gets stronger, eliminate him before the lighthouse.\nHas bad predictive aiming and summons holy lights like grigori."
+	}
+	"Cambino"
+	{
+		"en"		"Cambino"
+	}
+	"Cambino Desc"
+	{
+		"en"		"If its with melee, attacks with a gun 3 times. Deals no melee knockback (silenceable)"
+	}
+	"Irani"
+	{
+		"en"		"Irani"
+	}
+	"Irani Desc"
+	{
+		"en"		"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+	}
+	"Kinat"
+	{
+		"en"		"Kinat"
+	}
+	"Kinat Desc"
+	{
+		"en"		"Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead.\nIf enemy is marked, gains bullet on melee hit."
+	}
+	"Ginus"
+	{
+		"en"		"Ginus"
+	}
+	"Ginus Desc"
+	{
+		"en"		"Shoots with 1 bullet, then melees.\nIf enemy is marked, has better aim."
+	}
+	"Speedus Initus"
+	{
+		"en"		"Speedus Initus"
+	}
+	"Speedus Initus Desc"
+	{
+		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
+	}
+	"Anania"
+	{
+		"en"		"Anania"
+	}
+	"Anania Desc"
+	{
+		"en"		"Gives morale to nearby enemies when it screams its horn."
+	}
+	"Victorian"
+	{
+		"en"		"Victorian"
+	}
+	"Victorian Desc"
+	{
+		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
+	}
+	"Inquisitor IIdutas"
+	{
+		"en"		"Inquisitor IIdutas"
+	}
+	"Inquisitor IIdutas Desc"
+	{
+		"en"		"If its knife is burning, next melee hit launches you up and marks you.\nIf enemy is marked, gains more ammo aswell.\nIf enemy is marked, shoots 3x faster."
+	}
+	"Vivintu"
+	{
+		"en"		"Vivintu"
+	}
+	"Vivintu Desc"
+	{
+		"en"		"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+	}
+	"Cenula"
+	{
+		"en"		"Cenula"
+	}
+	"Cenula Desc"
+	{
+		"en"		"Shoots with 2 bullets, then melees.\nIf enemy is marked, has better aim."
+	}
+	"Kumbai"
+	{
+		"en"		"Kumbai"
+	}
+	"Kumbai Desc"
+	{
+		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback (silenceable)"
+	}
+	"Speedus Instantus"
+	{
+		"en"		"Speedus Instantus"
+	}
+	"Speedus Instantus Desc"
+	{
+		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
+	}
+	"Sea-Xploder"
+	{
+		"en"		"Sea-Xploder"
+	}
+	"Sea-Xploder Desc"
+	{
+		"en"		"Shoots a delayed C4, If enemy is killed, C4 despawns."
+	}
+	"Anti Sea Robot"
+	{
+		"en"		"Anti Sea Robot"
+	}
+	"Anti Sea Robot Desc"
+	{
+		"en"		"Deals immensive damage and takes 2x Melee dmg\nTakes 0 dmg outside of its red radius."
+	}
+	"Ranka S"
+	{
+		"en"		"Ranka S"
+	}
+	"Ranka S Desc"
+	{
+		"en"		"Gives armor to all allies near it if it hits something, reduced if its an ubered enemy or a building."
+	}
+	"Murdarato"
+	{
+		"en"		"Murdarato"
+	}
+	"Murdarato Desc"
+	{
+		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
+	}
+	"Ibira Kinat"
+	{
+		"en"		"Ibira Kinat"
+	}
+	"Ibira Kinat Desc"
+	{
+		"en"		"Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead, Has 2 bullets instead.\nIf enemy is marked, gains bullet on melee hit."
+	}
+	"Iberia-Expidonsan Seaborn Eradicator"
+	{
+		"en"		"Iberia-Expidonsan Seaborn Eradicator"
+	}
+	"Iberia-Expidonsan Seaborn Eradicator Desc"
+	{
+		"en"		"Acts as a spawnpoint, unkillable and oneshots anything.\nOnce most allies died, it enrages, loses all its resistance and 99% hp and gets very fast, loses alot of damage too."
+	}
+	"Combastia"
+	{
+		"en"		"Combastia"
+	}
+	"Combastia Desc"
+	{
+		"en"		"Buffs allies once it screams\nImmune to most bleeds and fire."
+	}
+	"Morato"
+	{
+		"en"		"Morato"
+	}
+	"Morato Desc"
+	{
+		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
+	}
+	"Speedus Itus"
+	{
+		"en"		"Speedus Itus"
+	}
+	"Speedus Itus Desc"
+	{
+		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
+	}
+	"Speedus Elitus"
+	{
+		"en"		"Speedus Elitus"
+	}
+	"Speedus Elitus Desc"
+	{
+		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
+	}
+	"Sea Dryer"
+	{
+		"en"		"Sea Dryer"
+	}
+	"Sea Dryer Desc"
+	{
+		"en"		"Shoots a delayed C4, If enemy is killed, C4 despawns."
+	}
+	"Runaka"
+	{
+		"en"		"Runaka"
+	}
+	"Runaka Desc"
+	{
+		"en"		"Gives armor to all allies near it if it hits something, reduced if its an ubered enemy or a building."
+	}
+	"Inquisitor Irene"
+	{
+		"en"		"Inquisitor Irene"
+	}
+	"Inquisitor Irene Desc"
+	{
+		"en"		"If its knife is burning, next melee hit launches you up and marks you.\nIf enemy is marked, gains more ammo aswell.\nIf enemy is marked, shoots 3x faster.\nCan activate judgement of iberia if close to enemies with a cooldown."
+	}
+	"Death Marker"
+	{
+		"en"	"Death Marker"
+	}
+	"Death Marker Desc"
+	{
+		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
 	}
 }

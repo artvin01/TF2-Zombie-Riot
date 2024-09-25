@@ -157,7 +157,7 @@ public void Isharmla_ClotThink(int iNPC)
 		b_ThisEntityIgnored[npc.index] = false;
 		
 		// Recover 2% HP
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 50));
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (ReturnEntityMaxHealth(npc.index) / 50));
 		return;
 	}
 
@@ -180,7 +180,7 @@ public void Isharmla_ClotThink(int iNPC)
 		
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3;
+		int maxhealth = ReturnEntityMaxHealth(npc.index) / 3;
 		
 		int entity = NPC_CreateByName("npc_isharmla_trans", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
@@ -299,7 +299,7 @@ public void Isharmla_ClotThink(int iNPC)
 					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
 					NPCStats_RemoveAllDebuffs(npc.m_iTarget);
-					f_GodArkantosBuff[npc.m_iTarget] = GetGameTime() + 7.0;
+					f_GodAlaxiosBuff[npc.m_iTarget] = GetGameTime() + 7.0;
 				}
 				
 				int ally = GetClosestAlly(npc.index, _, npc.m_iTarget);
@@ -316,7 +316,7 @@ public void Isharmla_ClotThink(int iNPC)
 					
 					if(healing > 0)
 					{
-						int maxhealth = GetEntProp(ally, Prop_Data, "m_iMaxHealth");
+						int maxhealth = ReturnEntityMaxHealth(ally);
 						int health = GetEntProp(ally, Prop_Data, "m_iHealth") + healing;
 						if(health > maxhealth)
 							health = maxhealth;
@@ -337,7 +337,7 @@ public void Isharmla_ClotThink(int iNPC)
 					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
 					NPCStats_RemoveAllDebuffs(ally);
-					f_GodArkantosBuff[ally] = GetGameTime() + 7.0;
+					f_GodAlaxiosBuff[ally] = GetGameTime() + 7.0;
 				}
 			}
 		}
@@ -385,7 +385,7 @@ void Isharmla_OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 	if(!npc.Anger)
 	{
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2))
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (ReturnEntityMaxHealth(npc.index) / 2))
 		{
 			npc.Anger = true;
 			npc.m_bSpeed = true;

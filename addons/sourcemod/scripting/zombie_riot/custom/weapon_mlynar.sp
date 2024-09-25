@@ -164,7 +164,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		
 		damage *= Attributes_Get(weapon, 1, 1.0);
 		damage *= Attributes_Get(weapon, 2, 1.0);
-		damage *= Attributes_Get(weapon, 476, 1.0);
+		damage *= Attributes_Get(weapon, 1000, 1.0);
 
 
 		damage *= f_MlynarDmgMultiPassive[client];
@@ -266,7 +266,14 @@ public void Weapon_MlynarAttackM2_pap(int client, int weapon, bool &result, int 
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME);
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
+		{
+			Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME - 5.0);
+		}
+		else
+		{
+			Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME);
+		}
 		f_MlynarAbilityActiveTime[client] = GetGameTime() + 15.0;
 		b_MlynarResetStats[client] = true;
 		float flPos[3];
@@ -275,7 +282,16 @@ public void Weapon_MlynarAttackM2_pap(int client, int weapon, bool &result, int 
 		SetParent(client, particle_Sing);
 		EmitSoundToAll("items/powerup_pickup_knockout.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
 		MakePlayerGiveResponseVoice(client, 1); //haha!
-		int weapon_new = Store_GiveSpecificItem(client, "Mlynar's Greatsword Pap");
+		int weapon_new;
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
+		{
+			weapon_new = Store_GiveSpecificItem(client, "Mlynar's Greatsword Pap 2");
+
+		}
+		else
+		{
+			weapon_new = Store_GiveSpecificItem(client, "Mlynar's Greatsword Pap");
+		}
 		i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
 		ViewChange_Switch(client, weapon_new, "tf_weapon_sword");
@@ -301,7 +317,7 @@ public void Enable_Mlynar(int client, int weapon)
 	if (h_TimerMlynarManagement[client] != null)
 	{
 		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP) 
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2) 
 		{
 			//Is the weapon it again?
 			//Yes?
@@ -315,7 +331,7 @@ public void Enable_Mlynar(int client, int weapon)
 		return;
 	}
 		
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP)  //9 Is for Passanger
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)   //9 Is for Passanger
 	{
 		DataPack pack;
 		h_TimerMlynarManagement[client] = CreateDataTimer(0.1, Timer_Management_Mlynar, pack, TIMER_REPEAT);
@@ -358,6 +374,10 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 			}
 			b_MlynarResetStats[client] = false;
 			f_MlynarDmgMultiPassive[client] += 0.0015;
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
+			{
+				f_MlynarDmgMultiPassive[client] += 0.00025;
+			}
 			if(f_MlynarDmgMultiPassive[client] > 2.0)
 			{
 				f_MlynarDmgMultiPassive[client] = 2.0;
@@ -406,6 +426,10 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 					GatherPower = 10;
 				}
 				f_MlynarDmgMultiAgressiveClose[client] += (0.0015 * float(GatherPower));
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
+				{
+					f_MlynarDmgMultiAgressiveClose[client] += (0.00025 * float(GatherPower));
+				}
 				if(f_MlynarDmgMultiAgressiveClose[client] > 3.0)
 				{
 					f_MlynarDmgMultiAgressiveClose[client] = 3.0;
@@ -418,6 +442,10 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 				if(RaidbossIgnoreBuildingsLogic(1)) //During raids, give power 2x as fast.
 				{
 					f_MlynarDmgMultiHurt[client] += 0.01;
+				}
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
+				{
+					f_MlynarDmgMultiHurt[client] += 0.0025;
 				}
 				if(f_MlynarDmgMultiHurt[client] > 3.0)
 				{
@@ -480,13 +508,21 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		{
 			damageModif = 20.0;
 		}
+		else if(pap == 2)
+		{
+			damageModif = 25.0;
+		}
 		damageModif *= Attributes_Get(weapon, 1, 1.0);
 		damageModif *= Attributes_Get(weapon, 2, 1.0);
-		damageModif *= Attributes_Get(weapon, 476, 1.0);
+		damageModif *= Attributes_Get(weapon, 1000, 1.0);
 
 		damageModif *= f_MlynarDmgMultiPassive[victim];
 		damageModif *= f_MlynarDmgMultiAgressiveClose[victim];
 		damageModif *= f_MlynarDmgMultiHurt[victim];
+		if(b_thisNpcIsARaid[attacker])
+		{
+			damageModif *= 2.0;
+		}
 
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
@@ -522,6 +558,7 @@ public void Mlynar_Think(int client)
 	{
 		Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
 		Store_RemoveSpecificItem(client, "Mlynar's Greatsword Pap");
+		Store_RemoveSpecificItem(client, "Mlynar's Greatsword Pap 2");
 		//We are Done, kill think.
 		int TemomaryGun = EntRefToEntIndex(i_RefWeaponDelete[client]);
 		if(IsValidEntity(TemomaryGun))
@@ -551,6 +588,12 @@ void MlynarTakeDamagePostRaid(int client, int pap = 0)
 			f_MlynarDmgMultiPassive[client] -= 0.015;
 			f_MlynarDmgMultiAgressiveClose[client] -= 0.015;
 			f_MlynarDmgMultiHurt[client] -= 0.015;
+		}
+		else if(pap == 2)
+		{
+			f_MlynarDmgMultiPassive[client] -= 0.0125;
+			f_MlynarDmgMultiAgressiveClose[client] -= 0.0125;
+			f_MlynarDmgMultiHurt[client] -= 0.0125;
 		}
 
 		if(f_MlynarDmgMultiPassive[client] < 1.0)
@@ -583,6 +626,12 @@ void MlynarReduceDamageOnKill(int client, int pap = 0)
 			f_MlynarDmgMultiPassive[client] -= 0.03;
 			f_MlynarDmgMultiAgressiveClose[client] -= 0.03;
 			f_MlynarDmgMultiHurt[client] -= 0.03;
+		}
+		else if(pap == 2)
+		{
+			f_MlynarDmgMultiPassive[client] -= 0.025;
+			f_MlynarDmgMultiAgressiveClose[client] -= 0.025;
+			f_MlynarDmgMultiHurt[client] -= 0.025;
 		}
 
 		if(f_MlynarDmgMultiPassive[client] < 1.0)

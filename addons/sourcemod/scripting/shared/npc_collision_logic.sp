@@ -10,6 +10,11 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	if(b_NpcIsTeamkiller[bot_entidx] && bot_entidx == otherindex)
 		return false;
 
+	//When in tank grab, dont collide with anythin!
+	if(f_TankGrabbedStandStill[bot_entidx] > GetGameTime())
+	{
+		return false;
+	}
 	//bots will always collide with brushes, and not ignored.
 	if(b_is_a_brush[otherindex])
 	{
@@ -20,6 +25,9 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	{
 		return false;
 	}
+	//it ignores all npc collisions
+	if(b_ThisEntityIgnoredBeingCarried[bot_entidx])
+		return false;
 
 #if defined ZR
 	//if the bots team is player team, then they cant collide with any entities that have this flag.
@@ -28,6 +36,13 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		if(b_CantCollidieAlly[otherindex])
 			return false;
 	}	
+	if(b_ThisEntityIgnoredByOtherNpcsAggro[otherindex])
+	{
+		if(GetTeam(otherindex) == TFTeam_Stalkers && GetTeam(bot_entidx) != TFTeam_Red)
+		{
+			return false;
+		}
+	}
 	if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
 	{
 		CClotBody npc = view_as<CClotBody>(bot_entidx);
@@ -39,8 +54,19 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
 			{
+				if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[bot_entidx])
+				{
+					return false;
+				}
+				if(b_ThisEntityIgnoredBeingCarried[otherindex])
+					return false;
+
+				if(b_ThisEntityIgnored[otherindex])
+					return false;
+
 				if(extrarules == 0)
 					NpcStartTouch(bot_entidx,otherindex);
+					
 				return true;
 			}
 		}
@@ -56,6 +82,10 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return true;
 		}
+		if(/*extrarules == 0 && */b_AllowCollideWithSelfTeam[bot_entidx] && b_AllowCollideWithSelfTeam[otherindex])
+		{
+			return true;
+		}
 		return false;
 	}
 	//the collided index is a player.
@@ -66,6 +96,10 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return false;
 		}
+#if defined RPG
+		if(OnTakeDamageRpgPartyLogic(bot_entidx, otherindex, GetGameTime()))
+			return false;
+#endif
 		//we collided with a player, change target.
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
@@ -77,8 +111,15 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return false;
 		}
+		if(b_ThisEntityIgnoredBeingCarried[otherindex])
+			return false;
+
+		if(b_ThisEntityIgnored[otherindex])
+			return false;
+					
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
+			
 		return true;
 	}
 	//always collide with vehicles if on opesite teams.
@@ -86,6 +127,7 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	{
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
+		
 		return true;
 	}
 	//other entity is an npc

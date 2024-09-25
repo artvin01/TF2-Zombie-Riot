@@ -7,11 +7,13 @@
 
 static bool BlockLoseSay;
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
+static bool b_said_player_weaponline[MAXTF2PLAYERS];
+static float fl_said_player_weaponline_time[MAXENTITIES];
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -213,7 +215,9 @@ methodmap Sensal < CClotBody
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}
 	
@@ -283,6 +287,8 @@ methodmap Sensal < CClotBody
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
 		BlockLoseSay = false;
+		Zero(b_said_player_weaponline);
+		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -299,13 +305,19 @@ methodmap Sensal < CClotBody
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 		bool cutscene = StrContains(data, "duo_cutscene") != -1;
 		if(cutscene)
 		{
 			i_RaidGrantExtra[npc.index] = 50;
 		}
-		
+		bool tripple = StrContains(data, "triple_enemies") != -1;
+		if(tripple)
+		{
+			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
+			GiveOneRevive(true);
+		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -352,7 +364,7 @@ methodmap Sensal < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.65;
 		}
-		if(!cutscene)
+		if(!cutscene && !tripple)
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 			MusicEnum music;
@@ -387,9 +399,6 @@ methodmap Sensal < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_caws_of_death/hw2013_the_caws_of_death_soldier.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr18_veterans_attire/spr18_veterans_attire.mdl");
 		SetVariantString("1.0");
@@ -398,9 +407,13 @@ methodmap Sensal < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 		SensalEffects(npc.index, view_as<int>(npc.Anger));
+		
+		float flPos[3]; // original
+		float flAng[3]; // original
+		npc.GetAttachment("head", flPos, flAng);
+		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
@@ -470,7 +483,7 @@ static void Internal_ClotThink(int iNPC)
 				{
 					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
 				}
-				case 3:
+				case 2:
 				{
 					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
 				}
@@ -479,6 +492,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
@@ -492,6 +506,7 @@ static void Internal_ClotThink(int iNPC)
 		mp_bonusroundtime.IntValue = (12 * 2);
 		ZR_NpcTauntWinClear();
 		ForcePlayerLoss();
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -544,6 +559,11 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+
+	if(!IsValidEntity(RaidBossActive))
+	{
+		RaidBossActive = EntIndexToEntRef(npc.index);
+	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -610,9 +630,10 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
+	Sensal_Weapon_Lines(npc, attacker);
 	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
-		if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
+		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 
@@ -627,7 +648,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			
-			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Blue Goggles, what is the meaning of this?");
+			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Waldch, what is the meaning of this?");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -657,6 +678,8 @@ static void Internal_NPCDeath(int entity)
 	RaidBossActive = INVALID_ENT_REFERENCE;
 		
 	
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))
@@ -684,7 +707,7 @@ static void Internal_NPCDeath(int entity)
 		if(XenoExtraLogic())
 			CPrintToChatAll("{blue}Sensal{default}: This area is restricted for all of you.");
 		else
-			CPrintToChatAll("{blue}Sensal{default}: You all are comming with me.");
+			CPrintToChatAll("{blue}Sensal{default}: You all are coming with me.");
 
 		return;
 	}
@@ -817,10 +840,12 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			{
 				RemoveEntity(npc.m_iWearable7);
 			}
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt05");
 			npc.m_flAttackHappens = 0.0;
 			EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
+			npc.m_flReloadIn = gameTime + 3.0;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			SensalGiveShield(npc.index, CountPlayersOnRed(1) * 3); //Give self a shield
@@ -830,9 +855,12 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flAngerDelay = gameTime + 60.0;
 
 			if(ZR_GetWaveCount()+1 >= 60)
+			{
+				npc.m_flReloadIn = gameTime + 1.5;
+				npc.SetPlaybackRate(2.0);
 				npc.m_flAngerDelay = gameTime + 30.0;
+			}
 
-			npc.m_flReloadIn = gameTime + 3.0;
 		}
 		else
 		{
@@ -876,15 +904,21 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 				RemoveEntity(npc.m_iWearable7);
 			}
 			npc.m_flRangedSpecialDelay = gameTime + 15.5;
-			npc.m_flAttackHappens_2 = gameTime + 1.4;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flDoingAnimation = gameTime + 99.0;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
 			npc.m_flAttackHappens = 0.0;
+			npc.m_flAttackHappens_2 = gameTime + 1.4;
 			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 2);
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
+			if(ZR_GetWaveCount()+1 >= 60)
+			{
+				npc.m_flAttackHappens_2 = gameTime + 1.275;
+				npc.SetPlaybackRate(1.25);
+			}
 			float flPos[3];
 			float flAng[3];
 			npc.m_iChanged_WalkCycle = 0;
@@ -893,10 +927,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 			else
 				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "flaregun_trail_red", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-
-			/*
-				Fire a shitretlrrsgtrsglsoads of lasers
-			*/
 
 		}
 	}	
@@ -1063,7 +1093,7 @@ public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflic
 	Sensal npc = view_as<Sensal>(victim);
 	if(ZR_GetWaveCount()+1 >= 45)
 	{
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 3.0;
 			b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
@@ -1424,7 +1454,7 @@ bool SensalTalkPostWin(Sensal npc)
 			RemoveEntity(npc.m_iWearable7);
 		}
 		SensalEffects(npc.index, view_as<int>(npc.Anger));
-		npc.m_bisWalking = true;
+		npc.m_bisWalking = false;
 		npc.m_iChanged_WalkCycle = 6;
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
@@ -1475,7 +1505,7 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of your's now aswell.");
+		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of yours now aswell.");
 	}
 	return true; //He is trying to help.
 }
@@ -1488,6 +1518,7 @@ bool SensalTransformation(Sensal npc)
 		{
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_profane_puppeteer");
 			npc.m_flAttackHappens = 0.0;
 			npc.SetCycle(0.01);
@@ -1543,7 +1574,7 @@ bool SensalTransformation(Sensal npc)
 			npc.m_flRangedArmor = 0.7;
 			npc.m_flMeleeArmor = 0.875;		
 
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 
 				
 			SetVariantColor(view_as<int>({255, 35, 35, 200}));
@@ -1644,9 +1675,13 @@ bool SensalMassLaserAttack(Sensal npc)
 			}
 			if(foundEnemy)
 			{
-				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME);
-				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME);
-				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME);
+				int Pitch = 100;
+				if(ZR_GetWaveCount()+1 >= 60)
+					Pitch = 125;
+
+				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME, Pitch);
+				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME, Pitch);
+				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME, Pitch);
 			}
 			else
 			{
@@ -1957,11 +1992,11 @@ void SensalGiveShield(int sensal, int shieldcount)
 	Sensal npc = view_as<Sensal>(sensal);
 	if(ZR_GetWaveCount()+1 >= 60)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.55);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.4);
 	}
 	else if(ZR_GetWaveCount()+1 >= 45)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.45);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.3);
 	}
 	else if(ZR_GetWaveCount()+1 >= 30)
 	{
@@ -1971,13 +2006,66 @@ void SensalGiveShield(int sensal, int shieldcount)
 	{
 		shieldcount = RoundToNearest(float(shieldcount) * 0.75);
 	}
+
 	if(npc.Anger)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.15);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.1);
 	}
 
-	if(LastMann)
-		shieldcount *= 2;
-
 	VausMagicaGiveShield(sensal, shieldcount); //Give self a shield
+}
+
+static void Sensal_Weapon_Lines(Sensal npc, int client)
+{
+	if(client > MaxClients)
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	if(!IsValidEntity(weapon))	//invalid weapon, go back and get a valid one you <...>
+		return;
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	Text_Lines = "";
+
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		
+		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
+		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You are trying to wield my weapon, {gold}%N{default}? You do not have the expertiese in it.", client);
+		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "You think you can use it to its fullest potentnial {gold}%N{default}? You dont even own the {gold}Manifestation glove.", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvesters{default} blade? Why is he so nice to everyone...");
+		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}, you...");}
+		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "How do you have access to such expidonsan weaponry{gold}%N{default}?",client);
+		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "What? How did you get this elite blade {gold}%N{default}?",client);
+		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} decided to visit Kazimierz?");
+		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "Kahmlstein caused enough problems as it is.");
+		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "This machine is gone now, use it better then it has {gold}%N{default}.",client);
+		case WEAPON_IRENE:  Format(Text_Lines, sizeof(Text_Lines), "Iberia's Weapons!? Looks like the secret is out of the bag now...");
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "OH MY GOD, {snow}BOB THE FIRST{default} IS ON YOUR SIDE?!");
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "Howd you get {lightblue}Nemal's{default} Weapon{gold}%N{default}?",client);
+		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "The lance... the only weapon that was forged from both ruina and {gold}expidonsa{default}...");
+
+		default:
+		{
+			valid = false;
+		}
+	}
+
+	if(valid)
+	{
+		CPrintToChatAll("{blue}Sensal{default}: %s", Text_Lines);
+		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
+		b_said_player_weaponline[client] = true;
+	}
 }

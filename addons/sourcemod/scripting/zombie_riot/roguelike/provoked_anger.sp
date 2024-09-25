@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 
 
 void OnTakeDamage_ProvokedAnger(int holding_weapon)

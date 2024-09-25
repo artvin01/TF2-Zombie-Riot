@@ -1,0 +1,1383 @@
+//-----------------------------------------------------------------------------
+// common attenuation values
+//-----------------------------------------------------------------------------
+//
+// DON'T USE THESE - USE SNDLVL_ INSTEAD!!!
+//	ATTN_NONE		0.0f	
+//	ATTN_NORM		0.8f
+//	ATTN_IDLE		2.0f
+//	ATTN_STATIC		1.25f 
+//	ATTN_RICOCHET	1.5f
+//	ATTN_GUNFIRE	0.27f
+//
+//	SNDLVL_NONE		= 0,
+//	SNDLVL_25dB		= 25,
+//	SNDLVL_30dB		= 30,
+//	SNDLVL_35dB		= 35,
+//	SNDLVL_40dB		= 40,
+//	SNDLVL_45dB		= 45,
+//	SNDLVL_50dB		= 50,	= 3.9
+//	SNDLVL_55dB		= 55,	= 3.0
+//	SNDLVL_IDLE		= 60,	= 2.0
+//	SNDLVL_TALKING		= 60,	= 2.0
+//	SNDLVL_60dB		= 60,	= 2.0
+//	SNDLVL_65dB		= 65,	= 1.5
+//	SNDLVL_STATIC		= 66,	= 1.25
+//	SNDLVL_70dB		= 70,	= 1.0
+//	SNDLVL_NORM		= 75,
+//	SNDLVL_75dB		= 75,	= 0.8
+//	SNDLVL_80dB		= 80,	= 0.7
+//	SNDLVL_85dB		= 85,	= 0.6
+//	SNDLVL_90dB		= 90,	= 0.5
+//	SNDLVL_95dB		= 95,
+//	SNDLVL_100dB	= 100,	= 0.4
+//	SNDLVL_105dB	= 105,
+//	SNDLVL_120dB	= 120,
+//	SNDLVL_130dB	= 130,
+//	SNDLVL_GUNFIRE	= 140, = 0.27
+//	SNDLVL_140dB	= 140,	= 0.2
+//	SNDLVL_150dB	= 150,	= 0.2
+//
+
+"Rpgfortress.EngineerShopKeeper.Passive"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/engineer_mvm_wave_end07.mp3"
+		"wave"  "vo/engineer_mvm_wave_end06.mp3"
+		"wave"  "vo/engineer_mvm_wave_end03.mp3"
+		"wave"  "vo/engineer_mvm_wave_end02.mp3"
+	}
+}
+
+"Rpgfortress.SoldierShopKeeper.Passive"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_mvm_wave_end07.mp3"
+		"wave"  "vo/soldier_mvm_wave_end06.mp3"
+		"wave"  "vo/soldier_mvm_wave_end03.mp3"
+		"wave"  "vo/soldier_mvm_wave_end01.mp3"
+		"wave"  "vo/soldier_mvm_wave_end10.mp3"
+	}
+}
+
+"Rpgfortress.SpyShopKeeper.Passive"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_tietaunt03.mp3"
+		"wave"  "vo/spy_tietaunt02.mp3"
+		"wave"  "vo/spy_tietaunt09.mp3"
+		"wave"  "vo/spy_tietaunt01.mp3"
+	}
+}
+
+"Rpgfortress.HHHKeeper.Passive"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/halloween_boss/knight_laugh01.mp3"
+		"wave"  "vo/halloween_boss/knight_laugh02.mp3"
+		"wave"  "vo/halloween_boss/knight_laugh03.mp3"
+		"wave"  "vo/halloween_boss/knight_laugh04.mp3"
+	}
+}
+"Rpgfortress.EngineerQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/engineer_yes01.mp3"
+		"wave"  "vo/engineer_yes02.mp3"
+	}
+}
+
+"Rpgfortress.EngineerQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/engineer_laughshort01.mp3"
+		"wave"  "vo/engineer_laughshort02.mp3"
+		"wave"  "vo/engineer_laughshort03.mp3"
+		"wave"  "vo/engineer_laughshort04.mp3"
+	}
+}
+
+"Rpgfortress.EngineerQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/engineer_go01.mp3"
+		"wave"  "vo/engineer_go02.mp3"
+		"wave"  "vo/engineer_go03.mp3"
+	}
+}
+
+"Rpgfortress.EngineerQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/engineer_goodjob01.mp3"
+		"wave"  "vo/engineer_goodjob02.mp3"
+		"wave"  "vo/engineer_goodjob03.mp3"
+	}
+}
+
+"Rpgfortress.MedicQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/medic_yes01.mp3"
+		"wave"  "vo/medic_yes02.mp3"
+		"wave"  "vo/medic_yes03.mp3"
+	}
+}
+
+"Rpgfortress.MedicQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/medic_thanks02.mp3"
+	}
+}
+
+"Rpgfortress.MedicQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/medic_go05.mp3"
+	}
+}
+
+"Rpgfortress.MedicQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/medic_cheers03.mp3"
+	}
+}
+
+
+"Rpgfortress.SniperQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/sniper_yes01.mp3"
+		"wave"  "vo/sniper_yes02.mp3"
+		"wave"  "vo/sniper_yes03.mp3"
+	}
+}
+
+"Rpgfortress.SniperQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/sniper_thanks02.mp3"
+	}
+}
+
+"Rpgfortress.SniperQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/sniper_go03.mp3"
+	}
+}
+
+"Rpgfortress.SniperQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/sniper_cheers03.mp3"
+	}
+}
+
+
+
+
+"Rpgfortress.HeavyQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/heavy_yes01.mp3"
+		"wave"  "vo/heavy_yes02.mp3"
+		"wave"  "vo/heavy_yes03.mp3"
+	}
+}
+
+"Rpgfortress.HeavyQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/heavy_thanks02.mp3"
+	}
+}
+
+"Rpgfortress.HeavyQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/heavy_go03.mp3"
+	}
+}
+
+"Rpgfortress.HeavyQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/heavy_cheers03.mp3"
+	}
+}
+
+"Rpgfortress.SpyQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_yes01.mp3"
+		"wave"  "vo/spy_yes02.mp3"
+		"wave"  "vo/spy_yes03.mp3"
+	}
+}
+
+"Rpgfortress.SpyQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_thanks02.mp3"
+	}
+}
+
+"Rpgfortress.SpyQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_go03.mp3"
+	}
+}
+
+"Rpgfortress.SpyQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_cheers03.mp3"
+	}
+}
+
+"Rpgfortress.ScoutQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/scout_go03.mp3"
+	}
+}
+
+"Rpgfortress.ScoutQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/scout_cheers03.mp3"
+	}
+}
+
+"Rpgfortress.ScoutQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/scout_thanks02.mp3"
+	}
+}
+
+"Rpgfortress.ScoutQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/scout_yes01.mp3"
+		"wave"  "vo/scout_yes02.mp3"
+		"wave"  "vo/scout_yes03.mp3"
+	}
+}
+
+
+"Rpgfortress.SoldierQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_go03.mp3"
+	}
+}
+
+"Rpgfortress.SoldierQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_cheers03.mp3"
+	}
+}
+
+"Rpgfortress.SoldierQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_thanks02.mp3"
+	}
+}
+
+"Rpgfortress.SoldierQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_yes01.mp3"
+		"wave"  "vo/soldier_yes02.mp3"
+		"wave"  "vo/soldier_yes03.mp3"
+	}
+}
+
+"Rpgfortress.Kleiner.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/k_lab/kl_almostforgot.wav"
+		"wave"  "vo/k_lab/kl_almostforgot.wav"
+		"wave"  "vo/k_lab/kl_almostforgot.wav"
+		"wave"  "vo/k_lab/kl_almostforgot.wav"
+		"wave"  "vo/k_lab/kl_fewmoments01.wav"
+		"wave"  "vo/k_lab/kl_fewmoments01.wav"
+		"wave"  "vo/k_lab/kl_fewmoments01.wav"
+		"wave"  "vo/k_lab/kl_fewmoments01.wav"
+		"wave"  "vo/k_lab/kl_holdup01.wav"
+		"wave"  "vo/k_lab/kl_holdup01.wav"
+		"wave"  "vo/k_lab/kl_holdup01.wav"
+		"wave"  "vo/k_lab/kl_holdup01.wav"
+		"wave"  "vo/k_lab2/kl_notallhopeless_b.wav"
+		"wave"  "vo/k_lab2/kl_notallhopeless_b.wav"
+		"wave"  "vo/k_lab2/kl_notallhopeless_b.wav"
+		"wave"  "vo/k_lab2/kl_notallhopeless_b.wav"
+		"wave"  "vo/trainyard/kl_morewarn03.wav"
+		"wave"  "vo/trainyard/kl_morewarn03.wav"
+		"wave"  "vo/trainyard/kl_morewarn03.wav"
+		"wave"  "vo/trainyard/kl_morewarn03.wav"
+		"wave"  "vo/k_lab2/kl_givenuphope.wav"
+	}
+}
+
+"Rpgfortress.Kleiner.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/k_lab/kl_delaydanager.wav"
+		"wave"  "vo/k_lab/kl_delaydanager.wav"
+		"wave"  "vo/k_lab/kl_delaydanager.wav"
+		"wave"  "vo/k_lab/kl_fewmoments02.wav"
+		"wave"  "vo/k_lab/kl_fewmoments02.wav"
+		"wave"  "vo/k_lab/kl_fewmoments02.wav"
+		"wave"  "vo/k_lab/kl_fewmoments02.wav"
+		"wave"  "vo/k_lab/kl_nonsense.wav"
+		"wave"  "vo/k_lab/kl_nonsense.wav"
+		"wave"  "vo/k_lab/kl_nonsense.wav"
+		"wave"  "vo/k_lab/kl_nonsense.wav"
+		"wave"  "vo/trainyard/kl_whatisit02.wav"
+		"wave"  "vo/trainyard/kl_whatisit02.wav"
+		"wave"  "vo/trainyard/kl_whatisit02.wav"
+		"wave"  "vo/trainyard/kl_whatisit02.wav"
+		"wave"  "vo/k_lab/kl_coaxherout.wav"
+		"wave"  "vo/trainyard/kl_verywell.wav"
+	}
+}
+
+"Rpgfortress.Kleiner.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/k_lab/kl_fruitlessly.wav"
+		"wave"  "vo/k_lab/kl_gordongo.wav"
+		"wave"  "vo/k_lab2/kl_noallhopeless.wav"
+		"wave"  "vo/trainyard/kl_alyxaround.wav"
+	}
+}
+
+"Rpgfortress.Kleiner.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/k_lab/kl_credit.wav"
+		"wave"  "vo/k_lab/kl_diditwork.wav"
+		"wave"  "vo/k_lab/kl_excellent.wav"
+		"wave"  "vo/k_lab/kl_modifications01.wav"
+	}
+}
+
+"Rpgfortress.Kleiner.LastAccept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/k_lab/kl_masslessfieldflux.wav"
+	}
+}
+
+"Rpgfortress.Kleiner.LastTurnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/k_lab/kl_relieved.wav"
+	}
+}
+
+"Rpgfortress.DemoQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/demo_go03.mp3"
+	}
+}
+
+"Rpgfortress.DemoQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/demo_cheers03.mp3"
+	}
+}
+
+"Rpgfortress.DemoQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/demo_thanks02.mp3"
+	}
+}
+
+"Rpgfortress.DemoQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/demo_yes01.mp3"
+		"wave"  "vo/demo_yes02.mp3"
+		"wave"  "vo/demo_yes03.mp3"
+	}
+}
+
+"Rpgfortress.PissCakehole.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/sniper_laughevil01.mp3"
+		"wave"  "vo/sniper_laughevil02.mp3"
+		"wave"  "vo/sniper_laughevil03.mp3"
+	}
+}
+
+"Rpgfortress.PissCakehole.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/sniper_laughhappy01.mp3"
+		"wave"  "vo/sniper_laughhappy01.mp3"
+		"wave"  "vo/sniper_laughhappy02.mp3"
+		"wave"  "vo/sniper_laughhappy02.mp3"
+		"wave"  "vo/sniper_meleedare04.mp3"
+	}
+}
+
+"Rpgfortress.PissCakehole.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/sniper_laughlong01.mp3"
+		"wave"  "vo/sniper_meleedare06.mp3"
+	}
+}
+
+"Rpgfortress.PissCakehole.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/sniper_mvm_loot_common03.mp3"
+		"wave"  "vo/sniper_meleedare09.mp3"
+		"wave"  "vo/sniper_award04.mp3"
+		"wave"  "vo/sniper_award06.mp3"
+		"wave"  "vo/sniper_award10.mp3"
+	}
+}
+
+"Rpgfortress.Alyx.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/eli_lab/al_hazmat.wav"
+		"wave"  "vo/eli_lab/al_hums.wav"
+		"wave"  "vo/eli_lab/al_hums_b.wav"
+		"wave"  "vo/eli_lab/al_metmossman04.wav"
+		"wave"  "vo/eli_lab/al_ravenholm02.wav"
+		"wave"  "vo/eli_lab/al_ravenholm06.wav"
+		"wave"  "vo/eli_lab/al_scanners02.wav"
+		"wave"  "vo/eli_lab/al_scanners06.wav"
+		"wave"  "vo/eli_lab/al_scrapyard.wav"
+		"wave"  "vo/eli_lab/al_soquickly03.wav"
+		"wave"  "vo/novaprospekt/al_gladtoseeyou.wav"
+		"wave"  "vo/novaprospekt/al_gladtoseeyourok.wav"
+	}
+}
+
+"Rpgfortress.Alyx.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/eli_lab/al_cmongord02.wav"
+		"wave"  "vo/eli_lab/al_letmedo.wav"
+		"wave"  "vo/eli_lab/al_ugh.wav"
+		"wave"  "vo/k_lab/al_aboutthecat.wav"
+		"wave"  "vo/k_lab/al_docsays01.wav"
+		"wave"  "vo/k_lab/al_whatcat01.wav"
+		"wave"  "vo/k_lab/al_whatcat02.wav"
+		"wave"  "vo/k_lab/al_hmm.wav"
+		"wave"  "vo/k_lab/al_hmm.wav"
+		"wave"  "vo/k_lab/al_hmm.wav"
+		"wave"  "vo/k_lab/al_hmm.wav"
+	}
+}
+
+"Rpgfortress.Alyx.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/eli_lab/al_giveittry.wav"
+		"wave"  "vo/eli_lab/al_hereyougo02.wav"
+		"wave"  "vo/eli_lab/al_intoairlock04.wav"
+		"wave"  "vo/citadel/al_comeon.wav"
+	}
+}
+
+"Rpgfortress.Alyx.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/eli_lab/al_awesome.wav"
+		"wave"  "vo/eli_lab/al_earnedit01.wav"
+		"wave"  "vo/eli_lab/al_excellent01.wav"
+		"wave"  "vo/eli_lab/al_somethingelse.wav"
+		"wave"  "vo/eli_lab/al_sweet.wav"
+		"wave"  "vo/eli_lab/al_thyristor02.wav"
+	}
+}
+
+"Rpgfortress.Alyx.LastAccept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/eli_lab/al_getitopen02.wav"
+		"wave"  "vo/citadel/al_cantshutdown.wav"
+		"wave"  "vo/citadel/al_doworst.wav"
+	}
+}
+
+"Rpgfortress.Alyx.LastTurnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/eli_lab/al_havefun.wav"
+		"wave"  "vo/citadel/al_buyyoudrink03.wav"
+	}
+}
+
+
+"Rpgfortress.SoldierQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_yes02.mp3"
+		"wave"  "vo/soldier_yes03.mp3"
+		"wave"  "vo/soldier_yes04.mp3"
+	}
+}
+
+"Rpgfortress.SoldierQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_helpmedefend01.mp3"
+		"wave"  "vo/soldier_helpmedefend02.mp3"
+		"wave"  "vo/soldier_helpmedefend03.mp3"
+		"wave"  "vo/soldier_helpmedefend04.mp3"
+	}
+}
+
+"Rpgfortress.SoldierQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_go01.mp3"
+		"wave"  "vo/soldier_go02.mp3"
+		"wave"  "vo/soldier_go03.mp3"
+	}
+}
+
+"Rpgfortress.SoldierQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_goodjob01.mp3"
+		"wave"  "vo/soldier_goodjob02.mp3"
+		"wave"  "vo/soldier_goodjob03.mp3"
+	}
+}
+
+
+
+"Rpgfortress.BarneyQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/barney/ba_hurryup.wav"
+		"wave"  "vo/npc/barney/ba_danger02.wav"
+		"wave"  "vo/npc/barney/ba_bringiton.wav"
+	}
+}
+
+"Rpgfortress.BarneyQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/barney/ba_letsdoit.wav"
+		"wave"  "vo/npc/barney/ba_letsgo.wav"
+	}
+}
+
+"Rpgfortress.BarneyQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/barney/ba_openfiregord.wav"
+		"wave"  "vo/npc/barney/ba_imwithyou.wav"
+	}
+}
+
+"Rpgfortress.BarneyQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/barney/ba_ohyeah.wav"
+		"wave"  "vo/npc/barney/ba_oldtimes.wav"
+		"wave"  "vo/npc/barney/ba_yell.wav"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_stabtaunt05.mp3"
+		"wave"  "vo/spy_tietaunt01.mp3"
+		"wave"  "vo/spy_tietaunt02.mp3"
+		"wave"  "vo/spy_tietaunt03.mp3"
+		"wave"  "vo/spy_tietaunt04.mp3"
+		"wave"  "vo/spy_tietaunt05.mp3"
+		"wave"  "vo/spy_tietaunt06.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_rpsstart01.mp3"
+		"wave"  "vo/spy_mvm_loot_common02.mp3"
+		"wave"  "vo/spy_laughshort01.mp3"
+		"wave"  "vo/spy_laughshort02.mp3"
+		"wave"  "vo/spy_laughshort03.mp3"
+		"wave"  "vo/spy_laughshort04.mp3"
+		"wave"  "vo/spy_laughshort05.mp3"
+		"wave"  "vo/spy_laughshort06.mp3"
+		"wave"	"vo/spy_sf12_dancing01.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.ProblemTurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_sf12_badmagic07.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.KillAccept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_tietaunt09.mp3"
+		"wave"  "vo/spy_tietaunt09.mp3"
+		"wave"  "vo/spy_tietaunt09.mp3"
+		"wave"	"vo/spy_activatecharge02.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.ClueAccept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_mvm_loot_rare01.mp3"
+		"wave"  "vo/spy_go01.mp3"
+		"wave"	"vo/spy_go03.mp3"
+		"wave"	"vo/spy_activatecharge02.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.TurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_paulingkilltaunt03.mp3"
+		"wave"  "vo/spy_rpswin01.mp3"
+		"wave"  "vo/spy_sf12_goodmagic01.mp3"
+		"wave"  "vo/spy_sf12_goodmagic02.mp3"
+		"wave"  "vo/spy_sf12_goodmagic03.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.SemiFinalTurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_sf13_magic_reac01.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.FinalAccept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_sf12_scared01.mp3"
+		"wave"  "vo/spy_sf13_magic_reac04.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.FinalTurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_sf13_magic_reac06.mp3"
+	}
+}
+
+"Rpgfortress.RebelMale.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"	"vo/npc/male01/question01.wav"
+		"wave"	"vo/npc/male01/question02.wav"
+		"wave"	"vo/npc/male01/question03.wav"
+		"wave"	"vo/npc/male01/question04.wav"
+		"wave"	"vo/npc/male01/question05.wav"
+		"wave"	"vo/npc/male01/question06.wav"
+		"wave"	"vo/npc/male01/question07.wav"
+		"wave"	"vo/npc/male01/question09.wav"
+		"wave"	"vo/npc/male01/question13.wav"
+		"wave"	"vo/npc/male01/question15.wav"
+		"wave"	"vo/npc/male01/question17.wav"
+		"wave"	"vo/npc/male01/question18.wav"
+		"wave"	"vo/npc/male01/question19.wav"
+		"wave"	"vo/npc/male01/question20.wav"
+		"wave"	"vo/npc/male01/question23.wav"
+		"wave"	"vo/npc/male01/question25.wav"
+		"wave"	"vo/npc/male01/question26.wav"
+		"wave"	"vo/npc/male01/question27.wav"
+		"wave"	"vo/npc/male01/question28.wav"
+		"wave"	"vo/npc/male01/question31.wav"
+	}
+}
+
+"Rpgfortress.RebelMale.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/male01/illstayhere01.wav"
+		"wave"  "vo/npc/male01/imstickinghere01.wav"
+		"wave"	"vo/npc/male01/question14.wav"
+		"wave"	"vo/npc/male01/question22.wav"
+		"wave"	"vo/npc/male01/answer01.wav"
+		"wave"	"vo/npc/male01/answer02.wav"
+		"wave"	"vo/npc/male01/answer03.wav"
+		"wave"	"vo/npc/male01/answer04.wav"
+		"wave"	"vo/npc/male01/answer07.wav"
+		"wave"	"vo/npc/male01/answer08.wav"
+		"wave"	"vo/npc/male01/answer12.wav"
+		"wave"	"vo/npc/male01/answer13.wav"
+		"wave"	"vo/npc/male01/answer14.wav"
+		"wave"	"vo/npc/male01/answer16.wav"
+		"wave"	"vo/npc/male01/answer18.wav"
+		"wave"	"vo/npc/male01/answer19.wav"
+		"wave"	"vo/npc/male01/answer20.wav"
+		"wave"	"vo/npc/male01/answer21.wav"
+		"wave"	"vo/npc/male01/answer22.wav"
+		"wave"	"vo/npc/male01/answer23.wav"
+		"wave"	"vo/npc/male01/answer24.wav"
+		"wave"	"vo/npc/male01/answer25.wav"
+		"wave"	"vo/npc/male01/answer28.wav"
+		"wave"	"vo/npc/male01/answer29.wav"
+		"wave"	"vo/npc/male01/answer32.wav"
+		"wave"	"vo/npc/male01/answer33.wav"
+		"wave"	"vo/npc/male01/answer34.wav"
+		"wave"	"vo/npc/male01/answer35.wav"
+		"wave"	"vo/npc/male01/answer36.wav"
+		"wave"	"vo/npc/male01/answer37.wav"
+		"wave"	"vo/npc/male01/answer38.wav"
+		"wave"	"vo/npc/male01/answer40.wav"
+	}
+}
+
+"Rpgfortress.RebelMale.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"	"vo/npc/male01/question11.wav"
+		"wave"	"vo/npc/male01/question16.wav"
+		"wave"	"vo/npc/male01/question21.wav"
+	}
+}
+
+"Rpgfortress.RebelMale.TurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/male01/fantastic01.wav"
+		"wave"  "vo/npc/male01/fantastic02.wav"
+		"wave"	"vo/npc/male01/nice.wav"
+		"wave"	"vo/npc/male01/question12.wav"
+		"wave"	"vo/npc/male01/question29.wav"
+		"wave"	"vo/npc/male01/question30.wav"
+	}
+}
+
+"Rpgfortress.RebelFemale.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"	"vo/npc/female01/question01.wav"
+		"wave"	"vo/npc/female01/question02.wav"
+		"wave"	"vo/npc/female01/question03.wav"
+		"wave"	"vo/npc/female01/question04.wav"
+		"wave"	"vo/npc/female01/question05.wav"
+		"wave"	"vo/npc/female01/question06.wav"
+		"wave"	"vo/npc/female01/question07.wav"
+		"wave"	"vo/npc/female01/question09.wav"
+		"wave"	"vo/npc/female01/question13.wav"
+		"wave"	"vo/npc/female01/question15.wav"
+		"wave"	"vo/npc/female01/question17.wav"
+		"wave"	"vo/npc/female01/question18.wav"
+		"wave"	"vo/npc/female01/question19.wav"
+		"wave"	"vo/npc/female01/question20.wav"
+		"wave"	"vo/npc/female01/question23.wav"
+		"wave"	"vo/npc/female01/question25.wav"
+		"wave"	"vo/npc/female01/question26.wav"
+		"wave"	"vo/npc/female01/question27.wav"
+		"wave"	"vo/npc/female01/question28.wav"
+		"wave"	"vo/npc/female01/question31.wav"
+	}
+}
+
+"Rpgfortress.RebelFemale.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/female01/illstayhere01.wav"
+		"wave"  "vo/npc/female01/imstickinghere01.wav"
+		"wave"	"vo/npc/female01/question14.wav"
+		"wave"	"vo/npc/female01/question22.wav"
+		"wave"	"vo/npc/female01/answer01.wav"
+		"wave"	"vo/npc/female01/answer02.wav"
+		"wave"	"vo/npc/female01/answer03.wav"
+		"wave"	"vo/npc/female01/answer04.wav"
+		"wave"	"vo/npc/female01/answer07.wav"
+		"wave"	"vo/npc/female01/answer08.wav"
+		"wave"	"vo/npc/female01/answer12.wav"
+		"wave"	"vo/npc/female01/answer13.wav"
+		"wave"	"vo/npc/female01/answer14.wav"
+		"wave"	"vo/npc/female01/answer16.wav"
+		"wave"	"vo/npc/female01/answer18.wav"
+		"wave"	"vo/npc/female01/answer19.wav"
+		"wave"	"vo/npc/female01/answer20.wav"
+		"wave"	"vo/npc/female01/answer21.wav"
+		"wave"	"vo/npc/female01/answer22.wav"
+		"wave"	"vo/npc/female01/answer23.wav"
+		"wave"	"vo/npc/female01/answer24.wav"
+		"wave"	"vo/npc/female01/answer25.wav"
+		"wave"	"vo/npc/female01/answer28.wav"
+		"wave"	"vo/npc/female01/answer29.wav"
+		"wave"	"vo/npc/female01/answer32.wav"
+		"wave"	"vo/npc/female01/answer33.wav"
+		"wave"	"vo/npc/female01/answer34.wav"
+		"wave"	"vo/npc/female01/answer35.wav"
+		"wave"	"vo/npc/female01/answer36.wav"
+		"wave"	"vo/npc/female01/answer37.wav"
+		"wave"	"vo/npc/female01/answer38.wav"
+		"wave"	"vo/npc/female01/answer40.wav"
+	}
+}
+
+"Rpgfortress.RebelFemale.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"	"vo/npc/female01/question11.wav"
+		"wave"	"vo/npc/female01/question16.wav"
+		"wave"	"vo/npc/female01/question21.wav"
+	}
+}
+
+"Rpgfortress.RebelFemale.TurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/female01/fantastic01.wav"
+		"wave"  "vo/npc/female01/fantastic02.wav"
+		"wave"	"vo/npc/female01/nice.wav"
+		"wave"	"vo/npc/female01/question12.wav"
+		"wave"	"vo/npc/female01/question29.wav"
+		"wave"	"vo/npc/female01/question30.wav"
+	}
+}
+
+"Rpgfortress.Eli.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/k_lab/eli_allset.wav"
+		"wave"	"vo/eli_lab/eli_welcometolab.wav"
+	}
+}
+
+"Rpgfortress.Eli.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/eli_lab/eli_gowithalyx01.wav"
+		"wave"  "vo/eli_lab/eli_gowithalyx02.wav"
+		"wave"  "vo/eli_lab/eli_gowithalyx03.wav"
+		"wave"	"vo/eli_lab/eli_portal02.wav"
+		"wave"	"vo/citadel/eli_dontworryboutme.wav"
+		"wave"	"vo/novaprospekt/eli_wherewillyougo01.wav"
+	}
+}
+
+"Rpgfortress.Eli.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/eli_lab/eli_goodvort.wav"
+		"wave"	"vo/novaprospekt/eli_iknow.wav"
+	}
+}
+
+"Rpgfortress.Eli.TurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/k_lab/eli_seeforyourself.wav"
+		"wave"	"vo/eli_lab/eli_thing.wav"
+		"wave"	"vo/k_lab/eli_phenom02.wav"
+	}
+}

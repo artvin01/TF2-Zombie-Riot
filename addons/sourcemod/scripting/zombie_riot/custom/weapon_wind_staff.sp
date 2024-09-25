@@ -172,7 +172,7 @@ public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bo
 		float damage = 125.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -253,7 +253,7 @@ public void Weapon_Wind_StaffM2(int client, int weapon, const char[] classname, 
 
 		i_WeaponRefM2[client] = EntIndexToEntRef(weapon);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		i_TornadoManaCost[client] = mana_cost / 8;
 		f_TornadoDamage[client] = damage * 0.25;
@@ -292,10 +292,10 @@ public void WindStaffM2_Think(int client)
 			if(i_TornadoManaCost[client] <= Current_Mana[client])
 			{
 				Current_Mana[client] -= i_TornadoManaCost[client];
-				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
 				float TornadoRange = 300.0;
-				Explode_Logic_Custom(f_TornadoDamage[client], client, client, weapon, _, TornadoRange,1.9,_,false);
+				Explode_Logic_Custom(f_TornadoDamage[client], client, client, weapon, _, TornadoRange,0.52,_,false, 4);
 				float flCarrierPos[3];//, targPos[3];
 				GetEntPropVector(client, Prop_Send, "m_vecOrigin", flCarrierPos);
 				flCarrierPos[2] += 15.0;
@@ -399,7 +399,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		entity = Target_Hit_Wand_Detection(client, entity);
 		if(0 < entity)
 		{
-			for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{
 				if(!BEAM_BuildingHit[i])
 				{
@@ -510,7 +510,7 @@ static void TBB_Tick(int client)
 						damage *= -1.0;
 
 					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
-					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage/BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, damage_force, playerPos);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage*BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, damage_force, playerPos);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF; //sneaky. DONT do 1.25.
 				}
 				else
@@ -730,8 +730,9 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 			
 		Damage_Tornado[iCarrier] = damage;
 		Duration_Tornado[iCarrier] = GetGameTime() + 5.0;
+		flCarrierPos[2] += 5.0;
 		
-		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 250}, 10, 0);
+		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 85}, 10, 0);
 		TE_SendToAll(0.0);
 		
 		CreateTimer(0.5, Timer_Tornado_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
@@ -780,7 +781,7 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 
 //	i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_PLASMA_DAMAGE;
 	
-	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],2.2,_,false);
+	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],0.45,_,false, 4);
 	
 	return Plugin_Continue;
 }

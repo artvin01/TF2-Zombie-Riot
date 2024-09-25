@@ -78,6 +78,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return Barrack_Alt_Ikunagae(client, vecPos, vecAng, ally);
 }
 
+static float fl_npc_basespeed;
+
 methodmap Barrack_Alt_Ikunagae < BarrackBody
 {
 	property int m_iAmountProjectiles
@@ -111,9 +113,7 @@ methodmap Barrack_Alt_Ikunagae < BarrackBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public Barrack_Alt_Ikunagae(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -125,6 +125,7 @@ methodmap Barrack_Alt_Ikunagae < BarrackBody
 		func_NPCDeath[npc.index] = Barrack_Alt_Ikunagae_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Alt_Ikunagae_ClotThink;
 
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = 250.0;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -198,6 +199,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 	{
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
+
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
@@ -296,7 +298,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 			}
 			int Enemy_I_See;		
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-			if(IsValidEnemy(npc.index, Enemy_I_See))
+			if(flDistanceToTarget < 562500 && IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
 				{	
@@ -308,7 +310,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 					float flAng[3]; // original
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 								
-					npc.FireParticleRocket(vecTarget, 1250.0 * npc.BonusDamageBonus , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					npc.FireParticleRocket(vecTarget, 937.5 * npc.BonusDamageBonus , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 					if (npc.m_iAmountProjectiles >= 10)
 					{
 						npc.m_iAmountProjectiles = 0;
@@ -321,6 +323,15 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 		{
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
 			npc.PlayIdleSound();
+		}
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
 		}
 	}
 }
@@ -344,12 +355,12 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_TicksActive[client] = 0;
 
 	Ikunagae_BEAM_CanUse[client] = true;
-	Ikunagae_BEAM_CloseDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),12500.0, 1);	//what the fuck
-	Ikunagae_BEAM_FarDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2500.0, 1);
+	Ikunagae_BEAM_CloseDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),9375.0, 1);	//what the fuck
+	Ikunagae_BEAM_FarDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1875.0, 1);
 	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
-	Ikunagae_BEAM_ChargeUpTime[client] = 12;
+	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
 	Ikunagae_BEAM_CloseBuildingDPT[client] = 0.0;
 	Ikunagae_BEAM_FarBuildingDPT[client] = 0.0;
 	Ikunagae_BEAM_Duration[client] = 0.25;
@@ -494,7 +505,7 @@ static Action Ikunagae_TBB_Tick(int client)
 						inflictor=client;
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
-					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1)/6)/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, inflictor, (damage/6)*BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 			}

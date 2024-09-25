@@ -101,7 +101,6 @@ static const char g_BobSuperMeleeCharge_Hit[][] =
 	"player/taunt_yeti_standee_break.wav",
 };
 
-//static int BobHitDetected[MAXENTITIES];
 
 void RaidbossBobTheFirst_OnMapStart()
 {
@@ -271,6 +270,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MUDROCK_RAGE");
 		b_NpcIsInvulnerable[npc.index] = true;
 
@@ -279,9 +279,11 @@ methodmap RaidbossBobTheFirst < CClotBody
 		func_NPCDeath[npc.index] = RaidbossBobTheFirst_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = RaidbossBobTheFirst_OnTakeDamage;
 		func_NPCThink[npc.index] = RaidbossBobTheFirst_ClotThink;
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 		
 		if(StrContains(data, "final_item") != -1)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_BobFirst_Win);
 			i_RaidGrantExtra[npc.index] = 1;
 			npc.m_flNextDelayTime = GetGameTime(npc.index) + 10.0;
@@ -324,6 +326,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 5.0;
 			npc.SetPlaybackRate(2.0);
 			npc.g_TimesSummoned = 0;
+			WaveStart_SubWaveStart(GetGameTime() + 500.0);
 		}
 
 		/*
@@ -367,7 +370,15 @@ methodmap RaidbossBobTheFirst < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_iPullCount = 0;
-		
+
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		SetVariantString("1.0");
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable1, "Enable");
+		IgniteTargetEffect(npc.m_iWearable1);
+		npc.b_SwordIgnition = true;
+
 		if(!npc.m_bFakeClone)
 		{
 			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
@@ -388,28 +399,29 @@ methodmap RaidbossBobTheFirst < CClotBody
 			RaidModeScaling = 9999999.99;
 		}
 
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("1.0");
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		AcceptEntityInput(npc.m_iWearable1, "Disable");
-		npc.b_SwordIgnition = false;
 		strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "?????????????");
 		if(SmittenNpc)
 		{
-			switch(GetRandomInt(0,2))
+			if(CurrentModifOn() == 1)
 			{
-				case 0:
+				CPrintToChatAll("{white}%s{default}: The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.", c_NpcName[npc.index]);
+			}
+			else
+			{
+				switch(GetRandomInt(0,2))
 				{
-					CPrintToChatAll("{white}%s{default}: I'll Handle this one.", c_NpcName[npc.index]);
-				}
-				case 1:
-				{
-					CPrintToChatAll("{white}%s{default}: Schwert and Donner, you did enough, stand back.", c_NpcName[npc.index]);
-				}
-				case 3:
-				{
-					CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", c_NpcName[npc.index]);
+					case 0:
+					{
+						CPrintToChatAll("{white}%s{default}: I'll Handle this one.", c_NpcName[npc.index]);
+					}
+					case 1:
+					{
+						CPrintToChatAll("{white}%s{default}: Schwert and Donner, you did enough, stand back.", c_NpcName[npc.index]);
+					}
+					case 3:
+					{
+						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", c_NpcName[npc.index]);
+					}
 				}
 			}
 		}
@@ -460,7 +472,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						}
 						else
 						{
-							healthPoints = GetEntProp(other, Prop_Data, "m_iHealth") * 20 / GetEntProp(other, Prop_Data, "m_iMaxHealth");
+							healthPoints = GetEntProp(other, Prop_Data, "m_iHealth") * 20 / ReturnEntityMaxHealth(other);
 						}
 						
 						break;
@@ -471,10 +483,11 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	}
 	else
 	{
-		healthPoints = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 20 / GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		healthPoints = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 20 / ReturnEntityMaxHealth(npc.index);
 	}
 	if(npc.m_bFakeClone)
 	{
+		bool FellowBobFound = false;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
@@ -485,12 +498,16 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					if(!view_as<RaidbossBobTheFirst>(other).m_bFakeClone && IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
 					{
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(other, Prop_Data, "m_iHealth"));
-						SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetEntProp(other, Prop_Data, "m_iMaxHealth"));
-						
+						SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(other));
+						FellowBobFound = true;
 						break;
 					}
 				}
 			}
+		}
+		if(!FellowBobFound)
+		{
+			SmiteNpcToDeath(npc.index);
 		}
 	}
 	if(!npc.m_bFakeClone && LastMann)
@@ -546,20 +563,19 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			// Play funny animation intro
 			NPC_StopPathing(npc.index);
 			npc.m_flNextThinkTime = FAR_FUTURE;
+			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_IDLE_ZOMBIE");
 		}
 		else
 		{
 
-			CPrintToChatAll("{white}%s{default}: I guess you werent infected, i'm sorry.", c_NpcName[npc.index]);
+			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", c_NpcName[npc.index]);
 			
-			// Play funny animation intro
-			NPC_StopPathing(npc.index);
-			npc.m_flNextThinkTime = FAR_FUTURE;
-			GivePlayerItems(1);
-			ForcePlayerWin();
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) -1);
+			fl_Extra_Damage[npc.index] = 999.9;
+			fl_Extra_Speed[npc.index] = 5.0;
+			RaidModeTime = FAR_FUTURE;
 		}
-
 	}
 
 	if(npc.m_flNextDelayTime > gameTime)
@@ -577,6 +593,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		NPC_StopPathing(npc.index);
 		npc.m_flNextThinkTime = FAR_FUTURE;
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_IDLE_SHIELDZOBIE");
 		RaidModeTime += 1000.0;
 
@@ -618,14 +635,14 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					Enemy enemy;
 
 					enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-					enemy.Health = 40000000;
+					enemy.Health = 2099999999;
 					enemy.Is_Boss = 2;
 					enemy.ExtraSpeed = 1.5;
 					enemy.ExtraDamage = 3.0;
 					enemy.ExtraMeleeRes = 0.5;
 					enemy.ExtraRangedRes = 0.5;
 					enemy.ExtraSize = 1.0;
-					enemy.Team = GetTeam(npc.index);
+					enemy.Team = 3;
 
 					Waves_AddNextEnemy(enemy);
 
@@ -695,6 +712,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							TeleportEntity(npc.index, pos);
 
 							npc.m_iState = -1;
+							npc.m_bisWalking = false;
 							npc.SetActivity("ACT_PUSH_PLAYER");
 							npc.SetPlaybackRate(3.0);
 
@@ -748,7 +766,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		if(!Waves_IsEmpty())
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 17 / 20);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) * 17 / 20);
 			return;
 		}
 
@@ -764,7 +782,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		npc.Anger = false;
 		npc.m_bSecondPhase = true;
 		strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Bob the First");
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 17 / 20);
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) * 17 / 20);
 
 		if(XenoExtraLogic())
 		{
@@ -815,6 +833,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(!npc.m_bFakeClone)
 	{
+		if(healthPoints < 20)
+		{
+			if(b_ThisEntityIgnoredByOtherNpcsAggro[npc.index])
+			{
+				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
+				if(CurrentModifOn() == 1 && i_RaidGrantExtra[npc.index] == 1)
+					CPrintToChatAll("{white}%s{default}: Nevermind then, you're one of the affected.", c_NpcName[npc.index]);
+			}
+		}
 		int summon;
 
 		switch(npc.g_TimesSummoned)
@@ -870,6 +897,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			RaidModeTime += 260.0;
 
 			npc.Anger = true;
+			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_IDLE_ZOMBIE");
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "??? the First");
 
@@ -1130,6 +1158,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				}
 
 				npc.StartPathing();
+				npc.m_bisWalking = true;
 				npc.SetActivity("ACT_DARIO_WALK");
 
 				if(npc.m_iAttackType == 12)
@@ -1169,6 +1198,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					{
 						npc.m_iAttackType = 14;
 						npc.m_iState = -1;	// Replay the animation regardless
+						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_PUSH_PLAYER");
 						npc.SetPlaybackRate(2.0);
 						npc.m_flAttackHappens = gameTime + 0.2;
@@ -1287,6 +1317,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						{
 							case 0:
 							{
+								npc.m_bisWalking = false;
 								npc.SetActivity("ACT_COMBO1_BOBPRIME");
 								npc.m_iAttackType = 2;
 								npc.m_flAttackHappens = gameTime + 0.916;
@@ -1295,6 +1326,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							}
 							case 1:
 							{
+								npc.m_bisWalking = false;
 								npc.SetActivity("ACT_COMBO2_BOBPRIME");
 								npc.m_iAttackType = 4;
 								npc.m_flAttackHappens = gameTime + 0.5;
@@ -1303,6 +1335,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							}
 							case 2:
 							{
+								npc.m_bisWalking = false;
 								npc.SetActivity("ACT_COMBO3_BOBPRIME");
 								npc.m_flAttackHappens = gameTime + 3.25;
 								
@@ -1318,7 +1351,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.m_flNextRangedAttack = gameTime + (healthPoints < 9 ? 6.0 : 12.0);
 						npc.PlayRangedSound();
 						npc.StopPathing();
-
+						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_METROPOLICE_DEPLOY_MANHACK");
 						npc.m_iAttackType = 8;
 						npc.m_flAttackHappens = gameTime + 1.0;
@@ -1331,7 +1364,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.m_flNextRangedSpecialAttack = gameTime + (healthPoints < 7 ? 15.0 : 27.0);
 						npc.StopPathing();
 						npc.PlaySkyShieldSound();
-
+						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_METROPOLICE_DEPLOY_MANHACK");
 						npc.m_iAttackType = 10;
 						npc.m_flAttackHappens = gameTime + 1.0;
@@ -1347,6 +1380,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 						npc.m_iAttackType = 13;
 						npc.m_iPullCount = 0;
+						npc.m_bisWalking = false;
 						//npc.m_flAttackHappens = gameTime + 1.0;
 					}
 					else if(healthPoints < 3 && npc.m_bFakeClone)
@@ -1393,6 +1427,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						}
 
 						npc.StartPathing();
+						npc.m_bisWalking = true;
 						
 						if(distance < 10000.0)	// 100 HU
 						{
@@ -1400,6 +1435,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							
 							npc.SetActivity("ACT_RUN_BOB");
 							npc.AddGesture("ACT_MELEE_BOB");
+							npc.m_bisWalking = false;
 							npc.m_iAttackType = 9;
 							npc.m_flAttackHappens = gameTime + 0.35;
 							npc.PlayMeleeHitSound();
@@ -1429,11 +1465,12 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		}
 		
 		npc.StopPathing();
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_IDLE_BOBPRIME");
 	}
 }
 
-static void GiveOneRevive()
+void GiveOneRevive(bool ignorelimit = false)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -1468,7 +1505,7 @@ static void GiveOneRevive()
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 			
 			i_AmountDowned[client]--;
-			if(i_AmountDowned[client] < 0)
+			if(!ignorelimit && i_AmountDowned[client] < 0)
 				i_AmountDowned[client] = 0;
 			
 			DoOverlay(client, "", 2);
@@ -1569,8 +1606,8 @@ static void AddBobEnemy(int bobindx, const char[] plugin, int count, int boss = 
 	enemy.Index = NPC_GetByPlugin(plugin);
 	enemy.Is_Boss = boss;
 	enemy.Is_Health_Scaled = 1;
-	enemy.ExtraMeleeRes = 0.05;
-	enemy.ExtraRangedRes = 0.05;
+	enemy.ExtraMeleeRes = 0.02;
+	enemy.ExtraRangedRes = 0.02;
 	enemy.ExtraSpeed = 1.5;
 	enemy.ExtraDamage = 4.0;
 	enemy.ExtraSize = 1.0;
@@ -1594,6 +1631,15 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 	{
 		damage = 0.0;
 		return Plugin_Handled;
+	}
+
+	if(b_ThisEntityIgnoredByOtherNpcsAggro[npc.index])
+	{
+		if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
+		{	
+			damage = 0.0;
+			return Plugin_Handled;
+		}
 	}
 
 	if(i_RaidGrantExtra[npc.index] == 1 && Waves_GetRound() > 55)
@@ -1664,6 +1710,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 			}
 		}
 	}
+	
 }
 
 static Action Bob_DeathCutsceneCheck(Handle timer)
@@ -1802,30 +1849,6 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 	
 	TE_SendToAll();
 }
-
-static void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
-{
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
-			
-	int ICE_INT = PrecacheModel(sprite);
-		
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = alpha;
-		
-	if (endRange == -69.0)
-	{
-		endRange = range + 0.5;
-	}
-	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
-}
-
 stock void BobPullTarget(int bobnpc, int enemy)
 {
 	CClotBody npc = view_as<CClotBody>(bobnpc);
@@ -1878,7 +1901,7 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * 66.0);
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
 
 	float vecForward[3], Angles[3];
 
@@ -2029,11 +2052,11 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 			float damage = damagedata;
 
 			if(victim > MaxClients) //make sure barracks units arent bad
-				damage *= 0.5;
+				damage *= 0.35;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_CLUB, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			
-			if(kick)
+			if(kick && victim <= MaxClients)
 			{
 				if(victim <= MaxClients)
 				{
@@ -2094,10 +2117,15 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
 
+		if(target > MaxClients) //make sure barracks units arent shit
+		{
+			DamageDeal *= 0.4;
+		}
+
 		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
 		{
 			i_ExplosiveProjectileHexArray[owner] = i_ExplosiveProjectileHexArray[entity];
-			Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+			Explode_Logic_Custom(DamageDeal, inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 		}
 		else
 		{

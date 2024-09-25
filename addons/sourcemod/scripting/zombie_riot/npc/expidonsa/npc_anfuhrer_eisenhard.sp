@@ -45,10 +45,7 @@ static const char g_HurtArmorSounds[][] = {
 };
 
 static const char g_AngerSounds[][] = {
-	"vo/spy_battlecry01.mp3",
-	"vo/spy_battlecry02.mp3",
-	"vo/spy_battlecry03.mp3",
-	"vo/spy_battlecry04.mp3",
+	"vo/taunts/demoman_taunts10.mp3",
 };
 
 void AnfuhrerEisenhard_OnMapStart_NPC()
@@ -128,21 +125,6 @@ methodmap AnfuhrerEisenhard < CClotBody
 		PrintToServer("CClot::PlayAngerSound()");
 		#endif
 	}
-	property float m_flArmorCountMax
-	{
-		public get()							{ return fl_NextRangedAttack[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttack[this.index] = TempValueForProperty; }
-	}
-	property float m_flArmorCount
-	{
-		public get()							{ return fl_NextRangedAttackHappening[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttackHappening[this.index] = TempValueForProperty; }
-	}
-	property bool m_bArmorGiven
-	{
-		public get()							{ return b_Gunout[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
-	}
 	
 	
 	public AnfuhrerEisenhard(int client, float vecPos[3], float vecAng[3], int ally)
@@ -155,7 +137,7 @@ methodmap AnfuhrerEisenhard < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		func_NPCDeath[npc.index] = AnfuhrerEisenhard_NPCDeath;
@@ -173,7 +155,6 @@ methodmap AnfuhrerEisenhard < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		npc.m_bArmorGiven = true;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -308,23 +289,12 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 			
 			DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
 		}
-		damage *= 1.5;
+		damage *= 1.35;
 	}
 	
 	if(npc.m_flArmorCount > 0.0)
 	{
-		if(damagetype & DMG_CLUB)
-		{
-			npc.m_flArmorCount -= (damage * 0.9) * 2.0;
-		}
-		else
-		{
-			npc.m_flArmorCount -= damage * 0.9;
-		}
-		damage *= 0.1; //negate damage heavy.
-		npc.PlayHurtArmorSound();
 		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
-
 		if(percentageArmorLeft <= 0.0)
 		{
 			if(IsValidEntity(npc.m_iWearable2))
@@ -349,19 +319,26 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 	}
 	else if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		if(npc.Anger)
+		{
+			if(IsValidEntity(npc.m_iWearable2))
+				RemoveEntity(npc.m_iWearable2);
+			if(IsValidEntity(npc.m_iWearable3))
+				RemoveEntity(npc.m_iWearable3);
+			if(IsValidEntity(npc.m_iWearable4))
+				RemoveEntity(npc.m_iWearable4);
+		}
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index) / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
 		
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
-		int flMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		npc.m_flArmorCount = float(flMaxHealth) * 0.5;
-		npc.m_flArmorCountMax = float(flMaxHealth) * 0.5;
+		GrantEntityArmor(npc.index, true, 0.5, 0.1, 0);
 	}
 	return Plugin_Changed;
 }

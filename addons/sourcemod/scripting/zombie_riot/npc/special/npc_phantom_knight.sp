@@ -17,7 +17,7 @@ static const char g_IdleSounds[][] = {
 	"npc/combine_soldier/vo/alert1.wav",
 	"npc/combine_soldier/vo/bouncerbouncer.wav",
 	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -76,8 +76,8 @@ void PhantomKnight_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Phantom Knight");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_phantom_knight");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "phantom");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
@@ -303,6 +303,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed = 0.0;
 		NPC_StopPathing(npc.index);
+		npc.m_bisWalking = false;
 		npc.m_bPathing = false;	
 	}
 	//No else, We will set the speed and pathing ourselves down below.
@@ -595,7 +596,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 							NpcAddedToZombiesLeftCurrently(fake_spawned, true);
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;
 
-							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+							int maxhealth = ReturnEntityMaxHealth(npc.index);
 
 							maxhealth /= 6;
 

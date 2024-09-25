@@ -46,7 +46,7 @@ void AnarchyBehemoth_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Behemonth");
+	strcopy(data.Name, sizeof(data.Name), "Behemoth");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_behemoth");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_chief");
 	data.IconCustom = false;
@@ -268,7 +268,7 @@ void AnarchyBehemothSelfDefense(AnarchyBehemoth npc, float gameTime, int target,
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, 60);
+					Elemental_AddChaosDamage(target, npc.index, 60);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

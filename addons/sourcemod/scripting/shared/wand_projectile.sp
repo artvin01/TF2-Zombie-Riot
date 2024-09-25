@@ -1,12 +1,18 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#if defined ZR
+#if defined ZR || defined RPG
 static int i_ProjectileIndex;
+Function func_WandOnTouch[MAXENTITIES];
 
 void WandStocks_Map_Precache()
 {
 	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
+}
+
+stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
+{
+	func_WandOnTouch[projectile] = Function;
 }
 #endif
 
@@ -27,8 +33,8 @@ void WandProjectile_GamedataInit()
 	EntityFactory.Install();
 }
 
-#if defined ZR
-int Wand_Projectile_Spawn(int client,
+#if defined ZR || defined RPG
+stock int Wand_Projectile_Spawn(int client,
 float speed,
 float time,
 float damage,
@@ -40,8 +46,11 @@ bool hideprojectile = true,
 float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the rest like particle effects should be handled within the plugins themselves. hopefully.
 {
 	float fAng[3], fPos[3];
-	GetClientEyeAngles(client, fAng);
-	GetClientEyePosition(client, fPos);
+	if(client <= MaxClients)
+	{
+		GetClientEyeAngles(client, fAng);
+		GetClientEyePosition(client, fPos);
+	}
 
 	if(CustomAng[0] != 0.0 || CustomAng[1] != 0.0)
 	{
@@ -62,21 +71,24 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		//if its too fast, then it can cause projectile devietion
 	}
 
-	float tmp[3];
-	float actualBeamOffset[3];
-	float BEAM_BeamOffset[3];
-	BEAM_BeamOffset[0] = 0.0;
-	BEAM_BeamOffset[1] = -8.0;
-	BEAM_BeamOffset[2] = -10.0;
+	if(client <= MaxClients && CustomPos[0] == 0.0 && CustomPos[1] == 0.0)
+	{
+		float tmp[3];
+		float actualBeamOffset[3];
+		float BEAM_BeamOffset[3];
+		BEAM_BeamOffset[0] = 0.0;
+		BEAM_BeamOffset[1] = -8.0;
+		BEAM_BeamOffset[2] = -10.0;
 
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, fAng, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	fPos[0] += actualBeamOffset[0];
-	fPos[1] += actualBeamOffset[1];
-	fPos[2] += actualBeamOffset[2];
+		tmp[0] = BEAM_BeamOffset[0];
+		tmp[1] = BEAM_BeamOffset[1];
+		tmp[2] = 0.0;
+		VectorRotate(tmp, fAng, actualBeamOffset);
+		actualBeamOffset[2] = BEAM_BeamOffset[2];
+		fPos[0] += actualBeamOffset[0];
+		fPos[1] += actualBeamOffset[1];
+		fPos[2] += actualBeamOffset[2];
+	}
 
 
 	float fVel[3], fBuf[3];
@@ -136,7 +148,18 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			i_WandParticle[entity] = EntIndexToEntRef(particle);
 		}
 
-		if(time < 60.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
+		if(time > 60.0)
+		{
+			time = 60.0;
+		}
+#if defined RPG
+		//average is 10.
+		if(time < 0.1)
+		{
+			time = 10.0;
+		}
+#endif
+		if(time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
 		{
 			DataPack pack;
 			CreateDataTimer(time, Timer_RemoveEntity_CustomProjectileWand, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -144,7 +167,8 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			pack.WriteCell(EntIndexToEntRef(particle));
 		}
 		//so they dont get stuck on entities in the air.
-		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
+		//todo: Fix them
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
 
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
@@ -179,10 +203,23 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 	return Plugin_Stop; 
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
+	Function func = func_WandOnTouch[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_PushCell(target);
+		Call_Finish();
+		//todo: convert all on death and on take damage to this.
+		return;
+	}
+#if defined ZR
+	//OLD CODE!!! DONT USE BELOW!!!
+	//USE WandProjectile_ApplyFunctionToEntity
 	switch(i_WandIdNumber[entity])
 	{
 		case 0:
@@ -267,10 +304,8 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}
 		case 11:
 		{
-			
 			Cryo_Touch(entity, target);
 		}
-		
 		case WEAPON_GLADIIA:
 		{
 			Gladiia_WandTouch(entity, target);
@@ -303,10 +338,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_Heavy_Particle_Rifle(entity, target);
 		}
-		case WEAPON_QUINCY_BOW:
-		{
-			Quincy_Touch(entity, target);
-		}
 		case WEAPON_KAHMLFIST:
 		{
 			Melee_KahmlFistTouch(entity, target);
@@ -315,7 +346,12 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Gun_MessengerTouch(entity, target);
 		}
+		case WEAPON_MAGNESIS:
+		{
+			Magnesis_ProjectileTouch(entity, target);
+		}
 	}
+#endif
 }
 #endif
 
@@ -335,6 +371,9 @@ static void OnDestroy_Proj(CClotBody body)
 		RemoveEntity(extra_index);
 
 	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+#if defined ZR || defined RPG
+	func_WandOnTouch[body.index] = INVALID_FUNCTION;
+#endif
 	return;
 }
 

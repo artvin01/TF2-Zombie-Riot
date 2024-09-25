@@ -150,12 +150,20 @@ public void UnderTides_ClotThink(int iNPC)
 		
 		npc.m_flNextThinkTime = gameTime + 0.1;
 
-		int Decicion = TeleportDiversioToRandLocation(npc.index, true);
+		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1250.0, 500.0);
 		switch(Decicion)
 		{
 			case 2:
 			{
-				return; //Retry, This can infinitly loop, yes, however, we have to.
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, 500.0, 350.0);
+				if(Decicion == 2)
+				{
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 350.0, 150.0);
+					if(Decicion == 2)
+					{
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 150.0, 0.0);
+					}
+				}
 			}
 			case 3:
 			{
@@ -178,7 +186,7 @@ public void UnderTides_ClotThink(int iNPC)
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
 				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = npc.index;
+				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
 				break;
 			}
 		}
@@ -205,7 +213,7 @@ public void UnderTides_ClotThink(int iNPC)
 					SDKHooks_TakeDamage(enemy[i], npc.index, npc.index, 57.0, DMG_BULLET);
 					// 380 * 0.15
 
-					SeaSlider_AddNeuralDamage(enemy[i], npc.index, 57);
+					Elemental_AddNervousDamage(enemy[i], npc.index, 57);
 					// 380 * 0.15
 
 					if(!i)
@@ -335,7 +343,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetTeam(client) != team && IsEntityAlive(client) && Can_I_See_Enemy_Only(npc.index, client))
+		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetTeam(client) != team && IsEntityAlive(client))
 		{
 			if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, client))
 				continue;
@@ -406,7 +414,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
-				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(entity) != team && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
+				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(entity) != team && IsEntityAlive(entity))
 				{
 					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
 						continue;
@@ -421,7 +429,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 
 					for(int i; i < count; i++)
 					{
-						int defense = b_npcspawnprotection[entity] ? 8 : 0;
+						int defense = i_npcspawnprotection[entity] ? 8 : 0;
 						
 						if(fl_RangedArmor[entity] < 1.0)
 							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);

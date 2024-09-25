@@ -50,6 +50,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 static int i_ammo_count[MAXENTITIES];
 static bool b_we_are_reloading[MAXENTITIES];
+static float fl_npc_basespeed;
 
 methodmap Barrack_Alt_Barrager < BarrackBody
 {
@@ -65,16 +66,12 @@ methodmap Barrack_Alt_Barrager < BarrackBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public Barrack_Alt_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -86,7 +83,8 @@ methodmap Barrack_Alt_Barrager < BarrackBody
 		func_NPCDeath[npc.index] = Barrack_Alt_Barrager_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Alt_Barrager_ClotThink;
 
-		npc.m_flSpeed = 175.0;
+		fl_npc_basespeed = 175.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -154,6 +152,7 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 		{
 			b_we_are_reloading[npc.index]=false;
 		}
+
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
@@ -162,14 +161,14 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			if(b_we_are_reloading[npc.index])
 			{
-				
+				npc.m_flSpeed = fl_npc_basespeed*0.5;
 				int Enemy_I_See;
 				
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 				{
-					BarrackBody_ThinkMove(npc.index, 175.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 999999.0, _, false);
+					BarrackBody_ThinkMove(npc.index, fl_npc_basespeed*0.5, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 999999.0, _, false);
 				}
 			}
 			else if(flDistanceToTarget < 750000 && !b_we_are_reloading[npc.index])
@@ -193,7 +192,7 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayRangedSound();
 						//npc.FireRocket(vecTarget, 500.0 * npc.BonusDamageBonus, 1200.0, _, _, _, _, GetClientOfUserId(npc.OwnerUserId));
-						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 375.0, 1) ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, true, flPos,_, GetClientOfUserId(npc.OwnerUserId));
+						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 281.25, 1) ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, true, flPos,_, GetClientOfUserId(npc.OwnerUserId));
 						npc.m_flNextMeleeAttack = GameTime + 0.45* npc.BonusFireRate;
 						npc.m_flReloadIn = GameTime + 1.25* npc.BonusFireRate;
 						i_ammo_count[npc.index]--;
@@ -209,6 +208,17 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 		{
 			BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 700000.0, _, false);
 			npc.PlayIdleSound();
+		}
+		if(!b_we_are_reloading[npc.index])
+		{
+			if(npc.m_flNextMeleeAttack > GameTime)
+			{
+				npc.m_flSpeed = 10.0;
+			}
+			else
+			{
+				npc.m_flSpeed = fl_npc_basespeed;
+			}
 		}
 	}
 }

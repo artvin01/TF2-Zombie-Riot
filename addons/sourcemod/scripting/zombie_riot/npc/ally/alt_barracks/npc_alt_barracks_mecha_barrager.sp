@@ -22,7 +22,7 @@ static const char g_IdleAlertedSounds[][] =
 static const char g_RangedReloadSound[][] = {
 	"weapons/bison_reload.wav",
 };
-
+static float fl_npc_basespeed;
 
 public void Barrack_Alt_Mecha_Barrager_MapStart()
 {
@@ -67,16 +67,12 @@ methodmap Barrack_Alt_Mecha_Barrager < BarrackBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public Barrack_Alt_Mecha_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -89,6 +85,7 @@ methodmap Barrack_Alt_Mecha_Barrager < BarrackBody
 		func_NPCThink[npc.index] = Barrack_Alt_Mecha_Barrager_ClotThink;
 
 		npc.m_flSpeed = 175.0;
+		fl_npc_basespeed = 175.0;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY2");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -165,17 +162,19 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 			{
 				
 				int Enemy_I_See;
+
+				npc.m_flSpeed = fl_npc_basespeed;
 				
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 				{
-					BarrackBody_ThinkMove(npc.index, 175.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 999999.0, _, false);
+					BarrackBody_ThinkMove(npc.index, fl_npc_basespeed*0.5, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 999999.0, _, false);
 				}
 			}
 			else if(flDistanceToTarget < 750000 && !b_we_are_reloading[npc.index])
 			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 700000.0, _, false);
+				BarrackBody_ThinkMove(npc.index, fl_npc_basespeed, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 700000.0, _, false);
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				//Can we attack right now?
@@ -190,7 +189,7 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1100.0,_, vecTarget );
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayRangedSound();
-						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),75.0, 1) ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));
+						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),56.25, 1) ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));
 						npc.m_flNextMeleeAttack = GameTime + 0.5* npc.BonusFireRate;
 						npc.m_flReloadIn = GameTime + 1.75* npc.BonusFireRate;
 						i_ammo_count[npc.index]--;
@@ -207,7 +206,20 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 			BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 700000.0, _, false);
 			npc.PlayIdleSound();
 		}
+		if(!b_we_are_reloading[npc.index])
+		{
+			if(npc.m_flNextMeleeAttack > GameTime)
+			{
+				npc.m_flSpeed = 10.0;
+			}
+			else
+			{
+				npc.m_flSpeed = fl_npc_basespeed;
+			}
+		}
 	}
+	
+	
 }
 
 void Barrack_Alt_Mecha_Barrager_NPCDeath(int entity)

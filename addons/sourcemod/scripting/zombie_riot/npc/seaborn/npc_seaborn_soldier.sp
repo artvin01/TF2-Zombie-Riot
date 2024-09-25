@@ -187,11 +187,11 @@ public void SeabornSoldier_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 22);
+						Elemental_AddNervousDamage(target, npc.index, 22);
 
 						if(!NpcStats_IsEnemySilenced(npc.index) && !IsValidEnemy(npc.index, target))	// Killed target, spawn 3 copies
 						{
-							int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+							int health = ReturnEntityMaxHealth(npc.index);
 
 							bool regrow = true;
 							Building_CamoOrRegrowBlocker(npc.index, _, regrow);
@@ -211,8 +211,8 @@ public void SeabornSoldier_ClotThink(int iNPC)
 								{
 									fl_Extra_Speed[npc.index] *= 1.1;
 									fl_Extra_Damage[npc.index] *= 1.05;
-									SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.1));
-									SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.1));
+									SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 1.1));
+									SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 1.1));
 									continue;
 								}
 

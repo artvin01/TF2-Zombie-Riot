@@ -47,7 +47,7 @@ void IsharmlaTrans_MapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_isharmla_trans");
 	strcopy(data.Icon, sizeof(data.Icon), "sea_isharmla");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_SUPPORT|MVM_CLASS_FLAG_SUPPORT_LIMITED|MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Flags = MVM_CLASS_FLAG_MISSION|MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -110,6 +110,7 @@ methodmap IsharmlaTrans < CClotBody
 
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
+		f_ExtraOffsetNpcHudAbove[npc.index] = 35.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 55, 55, 255, 255);

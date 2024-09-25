@@ -70,6 +70,21 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 	}
 }
 
+
+public void Weapon_ManglerLol(int client, int weapon, const char[] classname, bool &result)
+{
+	BEAM_Targets_Hit[client] = 0.0;
+	
+	Strength[client] = 112.0;
+			
+	Strength[client] *= Attributes_Get(weapon, 1, 1.0);
+				
+	Strength[client] *= Attributes_Get(weapon, 2, 1.0);
+		
+	//TBB_Ability(client);
+	TBB_Ability_Mangler_1(client);
+}
+
 static void TBB_Precahce_Mangler_1()
 {
 	Beam_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -107,29 +122,7 @@ static void TBB_Ability_Mangler_1(int client)
 
 	BEAM_IsUsing[client] = true;
 	BEAM_TicksActive[client] = 0;
-	/*
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 75);
-	
-	switch(GetRandomInt(1, 4))
-	{
-		case 1:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, 80, _, _, 1.0);					
-		}
-		case 2:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, 80, _, _, 1.0);
-		}
-		case 3:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, 80, _, _, 1.0);			
-		}
-		case 4:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, 80, _, _, 1.0);
-		}		
-	}
-			*/
+
 	TBB_Tick(client);
 //	SDKHook(client, SDKHook_PreThink, TBB_Tick);
 	
@@ -148,7 +141,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		entity = Target_Hit_Wand_Detection(client, entity);
 		if(0 < entity)
 		{
-			for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{
 				if(!BEAM_BuildingHit[i])
 				{
@@ -267,7 +260,7 @@ static void TBB_Tick(int client)
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));
 					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteFloat(damage/BEAM_Targets_Hit[client]);
+					pack.WriteFloat(damage*BEAM_Targets_Hit[client]);
 					pack.WriteCell(DMG_PLASMA);
 					pack.WriteCell(EntIndexToEntRef(weapon_active));
 					pack.WriteFloat(damage_force[0]);

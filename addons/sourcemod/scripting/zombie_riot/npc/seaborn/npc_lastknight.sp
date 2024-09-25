@@ -193,9 +193,12 @@ public void LastKnight_ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		npc.SetActivity("ACT_RIDER_RUN");
+		npc.m_bisWalking = false; //Animation it uses has no groundspeed, this is needed.
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		npc.m_flNextThinkTime = gameTime + 0.4;
-
+		b_NpcIgnoresbuildings[npc.index] = true;
+		npc.m_iTarget = 0;
+		
 		if(!IsValidEntity(npc.m_iWearable6))
 		{
 			npc.m_iWearable6 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
@@ -242,7 +245,7 @@ public void LastKnight_ClotThink(int iNPC)
 					if(IsClientInGame(client) && GetClientTeam(client) == 2)
 					{
 						int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
-						if(entity != INVALID_ENT_REFERENCE && i_WhatBuilding[entity] == BuildingSummoner)
+						if(entity != INVALID_ENT_REFERENCE/* && i_WhatBuilding[entity] == BuildingSummoner*/)
 						{
 							owner = client;
 							break;
@@ -277,7 +280,7 @@ public void LastKnight_ClotThink(int iNPC)
 
 		// Won't attack runners, find players
 		if(npc.m_iTarget < 1)
-			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, _, false, true);
+			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2);
 	}
 
 	if(aggressive)
@@ -421,7 +424,7 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	int ratio = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 5 / GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int ratio = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 5 / ReturnEntityMaxHealth(npc.index);
 	switch(npc.m_iPhase)
 	{
 		case 0:
@@ -440,6 +443,7 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 				npc.m_iPhase = 2;
 				npc.m_flSpeed = 350.0;
 				b_NpcIsInvulnerable[npc.index] = true;
+				npc.m_bisWalking = false; //Animation it uses has no groundspeed, this is needed.
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");
 				npc.m_flNextThinkTime = gameTime + 8.3;
 				npc.StopPathing();
@@ -490,7 +494,7 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 	else if(attacker > MaxClients)
 	{
 		if(!b_NpcHasDied[attacker] && f_TimeFrozenStill[attacker] < gameTime)
-			Cryo_FreezeZombie(attacker);
+			Cryo_FreezeZombie(attacker, npc.m_iPhase ? 1 : 0);
 	}
 	else if(!TF2_IsPlayerInCondition(attacker, TFCond_Dazed))
 	{

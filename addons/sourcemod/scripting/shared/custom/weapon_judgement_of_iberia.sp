@@ -23,7 +23,6 @@
 Handle h_TimerIreneManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Irenehuddelay[MAXTF2PLAYERS];
 static int i_IreneHitsDone[MAXTF2PLAYERS];
-bool b_WeaponAttackSpeedModified[MAXENTITIES];
 int i_NextAttackDoubleHit[MAXENTITIES];
 static bool b_WeaponAttackSpeedModifiedSeaborn[MAXENTITIES];
 static int i_IreneTargetsAirborn[MAXTF2PLAYERS][IRENE_MAX_HITUP];
@@ -37,6 +36,11 @@ static bool b_SeabornDetected;
 
 static int LaserSprite;
 
+int IreneReturnLaserSprite()
+{
+	return LaserSprite;	
+}
+
 void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
 {
 	if(damagetype & DMG_CLUB) //We only count normal melee hits.
@@ -49,6 +53,10 @@ void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
 	}
 }
 
+void SetAirtimeNpc(int entity, float Duration)
+{
+	f_TargetAirtime[entity] = GetGameTime() + Duration;
+}
 bool Npc_Is_Targeted_In_Air(int entity) //Anything that needs to be precaced like sounds or something.
 {
 	if(f_TargetAirtime[entity] > GetGameTime())
@@ -111,7 +119,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
 	bool ThereWasSeaborn = false;
-	if(!StrContains(WhatDifficultySetting_Internal, "Schwert & Donner") || !StrContains(WhatDifficultySetting_Internal, "You."))
+	if(!StrContains(WhatDifficultySetting_Internal, "Stella & Karlas") || !StrContains(WhatDifficultySetting_Internal, "You."))
 	{
 		ThereWasSeaborn = true;
 	}
@@ -138,7 +146,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 				{
 					switch(i_CustomWeaponEquipLogic[Active_weapon])
 					{
-						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA:
+						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS:
 						{
 							ThereWasSeaborn = true;
 							break;
@@ -313,7 +321,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 				if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED)
 				{
 					bool Hitlimit = true;
-					for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+					for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 					{
 						if(!i_IreneTargetsAirborn[client][i])
 						{
@@ -403,7 +411,7 @@ public void Npc_Irene_Launch_client(int client)
 		//Gather all allive airborn-ed entities.
 		int count;
 		int targets[MAX_TARGETS_HIT];
-		for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+		for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 		{
 			// Check if it's a valid target
 			if(i_IreneTargetsAirborn[client][i] && IsValidEntity(i_IreneTargetsAirborn[client][i]) && !b_NpcHasDied[i_IreneTargetsAirborn[client][i]])

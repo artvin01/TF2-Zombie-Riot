@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define NPC_CAMERA
+
 void NPCCamera_PluginStart()
 {
 	AddCommandListener(NPCCamera_SpecNext, "spec_next");

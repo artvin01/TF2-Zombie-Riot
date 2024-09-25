@@ -170,9 +170,6 @@ int Bloon_Health(bool fortified, int type)
 
 void Bloon_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/bloons_hitbox.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bloon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloon");
@@ -554,7 +551,7 @@ public void Bloon_ClotThink(int iNPC)
 	if(regrow)
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		if(health < maxhealth)
 		{
 			health += BloonRegrowRate[npc.m_iOriginalType];

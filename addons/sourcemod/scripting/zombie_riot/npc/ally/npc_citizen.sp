@@ -840,7 +840,6 @@ static float TalkTurnPos[MAXENTITIES][3];
 static float TalkTurningFor[MAXENTITIES];
 static float HealingCooldown[MAXENTITIES];
 static bool IgnorePlayer[MAXTF2PLAYERS];
-static int ArmorErosion[MAXENTITIES];
 
 void Citizen_OnMapStart()
 {
@@ -934,6 +933,7 @@ methodmap Citizen < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;	
+		b_NpcUnableToDie[npc.index] = true;
 		
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		
@@ -963,7 +963,6 @@ methodmap Citizen < CClotBody
 		npc.m_bSeakingMedic = false;
 		npc.m_bSeakingGeneric = false;
 		npc.m_iHasPerk = Cit_None;
-		npc.m_iArmorErosion = 0;
 		GunBonusFireRate[npc.index] = 1.0;
 		GunBonusReload[npc.index] = 1.0;
 		
@@ -1102,11 +1101,6 @@ methodmap Citizen < CClotBody
 	{
 		public get()		{ return HasPerk[this.index]; }
 		public set(int value) 	{ HasPerk[this.index] = value; }
-	}
-	property int m_iArmorErosion
-	{
-		public get()		{ return ArmorErosion[this.index]; }
-		public set(int value) 	{ ArmorErosion[this.index] = value; }
 	}
 	property float m_flSpeed
 	{
@@ -1489,7 +1483,7 @@ int Citizen_ShowInteractionHud(int entity, int client)
 	}
 	return 0;
 }
-
+/*
 int Citizen_BuildingInteract(int entity)
 {
 	if(i_NpcInternalId[entity] == NPCId)
@@ -1503,7 +1497,7 @@ int Citizen_BuildingInteract(int entity)
 	}
 	return 0;
 }
-
+*/
 bool Citizen_Interact(int client, int entity)
 {
 	if(i_NpcInternalId[entity] == NPCId)
@@ -1549,7 +1543,7 @@ bool Citizen_GivePerk(int entity, int type)
 	flPos[2] += 100.0;
 
 	npc.m_bRebelAgressive = false;
-
+/*
 	switch(npc.m_iBuildingType)
 	{
 		case 1:
@@ -1587,6 +1581,7 @@ bool Citizen_GivePerk(int entity, int type)
 		SDKUnhook(npc.m_iWearable2, SDKHook_SetTransmit, ParticleTransmit);
 		SDKHook(npc.m_iWearable2, SDKHook_SetTransmit, ParticleTransmitCitizen);
 	}
+*/
 	return true;
 }
 
@@ -1672,6 +1667,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.m_fGunDamage *= 1.0 + float(wave / 15);
 
 	Rogue_AllySpawned(npc.index);
+	Waves_AllySpawned(npc.index);
 	
 	npc.UpdateModel();
 	npc.PlaySound(Cit_NewWeapon);
@@ -1756,12 +1752,12 @@ void Citizen_SetupStart()
 				
 				static char buffer[32];
 				entity = MaxClients + 1;
-				while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+				while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 				{
-					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-					if(!StrContains(buffer, "zr_packapunch"))
+					NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+					if(!StrContains(buffer, "obj_packapunch"))
 					{
-						WorldSpaceCenter(entity, vecTarget);
+						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(!found || dist < distance)
 						{
@@ -1770,7 +1766,7 @@ void Citizen_SetupStart()
 						}
 					}
 				}
-				
+				/*
 				for(int client = 1; client <= MaxClients; client++)
 				{
 					if(IsClientInGame(client))
@@ -1792,6 +1788,7 @@ void Citizen_SetupStart()
 						}
 					}
 				}
+					*/
 				
 				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(npc.m_bAlyx ? 0.3 : 0.22, npc.m_bAlyx ? 0.4 : 0.3)), view_as<bool>(found)))
 				{
@@ -1891,7 +1888,7 @@ public void Citizen_ClotThink(int iNPC)
 								npc.PlaySound(Cit_FirstBlood);
 							}
 							
-							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+							int maxhealth = ReturnEntityMaxHealth(npc.index);
 							int health = GetEntProp(npc.index, Prop_Data, "m_iHealth") + (maxhealth / 15);
 							if(health > maxhealth)
 								health = maxhealth;
@@ -1979,7 +1976,7 @@ public void Citizen_ClotThink(int iNPC)
 
 	bool combat = !Waves_InSetup();
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	bool injured = (health < 60) || (health < (maxhealth / 5));
 	float distance = 100000000.0;
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
@@ -2031,14 +2028,14 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_sentrygun")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "zr_healingstation"))
+				NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+				if(!StrContains(buffer, "obj_healingstation"))
 				{
-					WorldSpaceCenter(entity, vecTarget);
+					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2048,7 +2045,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-		
+		/*
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
@@ -2070,8 +2067,8 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
+		*/
 	}
-
 	if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
 	{
 		npc.m_flidle_talk = FAR_FUTURE;
@@ -2731,14 +2728,14 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "zr_perkmachine"))
+				NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+				if(!StrContains(buffer, "obj_perkmachine"))
 				{
-					WorldSpaceCenter(entity, vecTarget);
+					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2749,7 +2746,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-		
+		/*
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
@@ -2772,7 +2769,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-
+		*/
 		if(npc.m_bSeakingGeneric)
 		{
 			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
@@ -2781,7 +2778,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 	}
 
-	if(!walkStatus && npc.m_bGetClosestTargetTimeAlly && npc.m_iArmorErosion > 0)
+	if(!walkStatus && npc.m_bGetClosestTargetTimeAlly && Elemental_HasDamage(npc.index))
 	{
 		distance = 100000000.0;
 		int entity = MaxClients + 1;
@@ -2801,14 +2798,14 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "zr_armortable"))
+				NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+				if(!StrContains(buffer, "obj_armortable"))
 				{
-					WorldSpaceCenter(entity, vecTarget);
+					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2819,7 +2816,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-		
+		/*
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
@@ -2842,12 +2839,12 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-
+		*/
 		if(npc.m_bSeakingGeneric)
 		{
 			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
 			walkStatus = 5;	// Run to ally (activity handled)
-			npc.m_iArmorErosion = 0;
+			Elemental_ClearDamage(npc.index);
 		}
 	}
 
@@ -3353,15 +3350,15 @@ static bool RunFromNPC(int entity)
 {
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-	if(StrContains(npc_classname, "npc_sawrunner"))
+	if(StrContains(npc_classname, "npc_sawrunner") != -1)
 	{
 		return true;
 	}
-	else if(StrContains(npc_classname, "npc_stalker_combine") && b_StaticNPC[entity])
+	else if(StrContains(npc_classname, "npc_stalker_combine") != -1 && b_StaticNPC[entity])
 	{
 		return true;
 	}
-	else if(StrContains(npc_classname, "npc_stalker_father") && b_StaticNPC[entity] && !b_movedelay[entity])
+	else if(StrContains(npc_classname, "npc_stalker_father") != -1 && b_StaticNPC[entity] && !b_movedelay[entity])
 	{
 		return true;
 	}
@@ -3386,7 +3383,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			{
 				damage *= 0.85;
 			}
-			int value = npc.m_iGunValue - npc.m_iArmorErosion;
+			int value = npc.m_iGunValue;
 			if(value > 10000)
 			{
 				damage *= 0.75;

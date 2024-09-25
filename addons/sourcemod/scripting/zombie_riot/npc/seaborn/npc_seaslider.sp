@@ -191,7 +191,7 @@ public void SeaSlider_ClotThink(int iNPC)
 						// 280 x 0.15
 						// 360 x 0.15
 
-						SeaSlider_AddNeuralDamage(target, npc.index, npc.m_bElite ? 9 : 7);
+						Elemental_AddNervousDamage(target, npc.index, npc.m_bElite ? 9 : 7);
 						// 280 x 0.15 x 0.15
 						// 360 x 0.15 x 0.15
 					}
@@ -248,78 +248,4 @@ void SeaSlider_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-}
-
-void SeaSlider_AddNeuralDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
-{
-	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(victim <= MaxClients)
-	{
-		Armor_DebuffType[victim] = 1;
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
-		{
-			Armor_Charge[victim] -= damage;
-			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
-			{
-				Armor_Charge[victim] = 0;
-
-				if(!b_BobsTrueFear[victim])
-					TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
-				else
-					TF2_StunPlayer(victim, 3.0, 0.9, TF_STUNFLAG_SLOWDOWN);
-
-				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-				b_ThisNpcIsSawrunner[attacker] = true;
-				if(!b_BobsTrueFear[victim])
-					SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-				else
-					SDKHooks_TakeDamage(victim, attacker, attacker, 400.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-				b_ThisNpcIsSawrunner[attacker] = sawrunner;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
-			}
-			
-			if(sound || !Armor_Charge[victim])
-				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
-		}
-	}
-	else if(!b_NpcHasDied[victim])	// NPCs
-	{
-		if(Citizen_IsIt(victim))	// Rebels
-		{
-			Citizen npc = view_as<Citizen>(victim);
-			
-			npc.m_iArmorErosion += damage * 50;
-			if(npc.m_iArmorErosion > npc.m_iGunValue)
-			{
-				npc.m_iArmorErosion = 0;
-
-				FreezeNpcInTime(victim, 3.0);
-
-				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-				b_ThisNpcIsSawrunner[attacker] = true;
-				SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-				b_ThisNpcIsSawrunner[attacker] = sawrunner;
-			}
-		}
-		else if(view_as<BarrackBody>(victim).OwnerUserId)	// Barracks Unit
-		{
-			int health = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-			if(health > 0)
-			{
-				health -= damage;
-				if(health < 1)
-					health = 1;
-				
-				SetEntProp(victim, Prop_Data, "m_iMaxHealth", health);
-			}
-		}
-	}
-	else if(i_IsABuilding[victim])	// Buildings
-	{
-		int health = Building_GetBuildingRepair(victim);
-		if(health < 1)
-		{
-			SDKHooks_TakeDamage(victim, attacker, attacker, damage * 100.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-		}
-	}
 }

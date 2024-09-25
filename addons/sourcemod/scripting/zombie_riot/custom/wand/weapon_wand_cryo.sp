@@ -9,7 +9,7 @@ static int Cryo_M1_Particles_Pap2 = 3; //Number of particles fired by each M1 at
 static float Cryo_M1_Damage_Pap2 = 40.0; //M1 base damage per particle (Pack-a-Punch Tier 2)
 static float Cryo_M1_Spread = 6.0;	//Random spread for particles
 static float Cryo_M1_Time = 175.0;	//Time of M1 particles
-static float Cryo_M1_Velocity = 750.0;	//Velocity of M1 particles
+static float Cryo_M1_Velocity = 1250.0;	//Velocity of M1 particles
 static float Cryo_M1_ReductionScale = 0.66; //Amount to multiply M1 damage each time it hits a zombie
 
 static float Cryo_M2_Damage = 450.0; //M2 base damage
@@ -26,7 +26,7 @@ static float Cryo_M2_Radius_Pap2 = 600.0;
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Cryo_M2_Cooldown = 15.0;	//M2 Cooldown
 
-static float Cryo_FreezeRequirement = 0.30; //% of target's max health M1 must do in order to trigger the freeze
+//static float Cryo_FreezeRequirement = 0.30; //% of target's max health M1 must do in order to trigger the freeze
 static float Cryo_FreezeDuration = 1.5; //Duration to freeze zombies when the threshold is surpassed
 static float Cryo_FreezeDuration_Pap1 = 2.0; //Duration to freeze zombies when the threshold is surpassed
 static float Cryo_FreezeDuration_Pap2 = 2.5; //Duration to freeze zombies when the threshold is surpassed
@@ -156,7 +156,7 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 
 	damage *= Attributes_Get(weapon, 410, 1.0);
 	
-	Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+	SDKhooks_SetManaRegenDelayTime(client, 1.0);
 	Mana_Hud_Delay[client] = 0.0;
 	
 	Current_Mana[client] -= mana_cost;
@@ -212,53 +212,9 @@ void CryoWandHitM2(int entity, int victim, float damage, int weapon)
 	{
 		if (!Cryo_Slowed[victim])
 		{
-			float Health_After_Hurt = float(GetEntProp(victim, Prop_Data, "m_iHealth"));
-
-			Cryo_FreezeLevel[victim] += (f_HealthBeforeHurt[victim] - Health_After_Hurt);
-			float maxHealth = float(GetEntProp(victim, Prop_Data, "m_iMaxHealth"));
-			float damageRequiredForFreeze = Cryo_FreezeRequirement;
-			if(b_thisNpcIsARaid[victim])
-			{
-				damageRequiredForFreeze *= 0.05; //Reduce way further so its good against raids.
-			}
-			else if(b_thisNpcIsABoss[victim])
-			{
-				damageRequiredForFreeze *= 0.25; //Reduce way further so its good against bosses.
-			}
-
-			if (Cryo_FreezeLevel[victim] >= maxHealth * damageRequiredForFreeze)
-			{
-				Cryo_SlowType_Zombie[victim] = Cryo_SlowType[entity];
-				if(Health_After_Hurt > 0)
-				{
-					Cryo_FreezeZombie(victim);
-				}
-			}
+			Elemental_AddCyroDamage(victim, entity, RoundFloat(damage), Cryo_SlowType[entity]);
 		}
 	}
-}
-
-static void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
-{
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
-			
-	int ICE_INT = PrecacheModel(sprite);
-		
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = alpha;
-		
-	if (endRange == -69.0)
-	{
-		endRange = range + 0.5;
-	}
-	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
 }
 
 public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, float damage, int NumParticles, char ParticleName[255], int SlowType)
@@ -272,7 +228,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 		
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		delay_hud[client] = 0.0;
@@ -382,7 +338,7 @@ public void Cryo_Touch(int entity, int target)
 				}
 			}
 			
-			float Health_Before_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
+			//float Health_Before_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 
 			int owner = EntRefToEntIndex(i_WandOwner[entity]);
 			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
@@ -398,29 +354,11 @@ public void Cryo_Touch(int entity, int target)
 			
 			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, {0.0,0.0,0.0}, VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 			
-			float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
+			//float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 			
 			if (!Cryo_Frozen[target] && !Cryo_Slowed[target])
 			{
-				Cryo_FreezeLevel[target] += (Health_Before_Hurt - Health_After_Hurt);
-				float maxHealth = float(GetEntProp(target, Prop_Data, "m_iMaxHealth"));
-				float damageRequiredForFreeze = Cryo_FreezeRequirement;
-				if(b_thisNpcIsARaid[target])
-				{
-					damageRequiredForFreeze *= 0.05; //Reduce way further so its good against raids.
-				}
-				else if(b_thisNpcIsABoss[target])
-				{
-					damageRequiredForFreeze *= 0.25; //Reduce way further so its good against bosses.
-				}
-				if (Cryo_FreezeLevel[target] >= maxHealth * damageRequiredForFreeze)
-				{
-					Cryo_SlowType_Zombie[target] = Cryo_SlowType[entity];
-					if(Health_After_Hurt > 0)
-					{
-						Cryo_FreezeZombie(target);
-					}
-				}
+				Elemental_AddCyroDamage(target, owner, RoundFloat(f_WandDamage[entity]), Cryo_SlowType[entity]);
 			}
 			
 			Cryo_AlreadyHit[entity][target] = true;
@@ -429,10 +367,12 @@ public void Cryo_Touch(int entity, int target)
 	}
 }
 
-public void Cryo_FreezeZombie(int zombie)
+public void Cryo_FreezeZombie(int zombie, int type)
 {
 	if (!IsValidEntity(zombie))
 	return;
+
+	Cryo_SlowType_Zombie[zombie] = type;
 	
 	EmitSoundToAll(SOUND_WAND_CRYO_FREEZE, zombie, SNDCHAN_STATIC, 80);
 	CClotBody ZNPC = view_as<CClotBody>(zombie);

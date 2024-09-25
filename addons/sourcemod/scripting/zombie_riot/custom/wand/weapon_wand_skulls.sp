@@ -47,11 +47,11 @@ float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
-float Skulls_ShootDMG[3] = { 350.0, 700.0, 1200.0 };	//Damage dealt by projectiles fired by skulls
-float Skulls_ShootVelocity[3] = { 800.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
-float Skulls_ShootRange[3] = { 500.0, 600.0, 700.0 };	//Max range in which skulls will auto-fire at zombies
-float Skulls_ShootFrequency[3] = { 1.5, 1.2, 1.1 };	//Time it takes for skulls to auto-fire
-float Skulls_LaunchVel[3] = { 800.0, 1200.0, 1600.0 };	//Velocity of skulls which get launched
+float Skulls_ShootDMG[3] = { 350.0, 750.0, 1300.0 };	//Damage dealt by projectiles fired by skulls
+float Skulls_ShootVelocity[3] = { 950.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
+float Skulls_ShootRange[3] = { 600.0, 600.0, 700.0 };	//Max range in which skulls will auto-fire at zombies
+float Skulls_ShootFrequency[3] = { 1.35, 1.2, 1.1 };	//Time it takes for skulls to auto-fire
+float Skulls_LaunchVel[3] = { 1000.0, 1200.0, 1600.0 };	//Velocity of skulls which get launched
 float Skulls_LaunchDMG[3] = { 600.0, 2250.0, 3000.0 };	//Damage of skulls which get launched
 float Skulls_Lifespan[3] = { 20.0, 30.0, 40.0 };	//Time until skulls automatically launch themselves
 float Skulls_ShootPenaltyPerSkull[3] = { 0.0, 0.1, 0.08 };
@@ -154,7 +154,7 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 	if(mana_cost <= Current_Mana[client] && !Skulls_PlayerHasNoSkulls(client))
 	{	
 		Rogue_OnAbilityUse(weapon);
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -245,47 +245,45 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 		}
 	}
 	
-	int projectile = Wand_Projectile_Spawn(client, velocity, 15.0, damage, 18, weapon, particle, ang, false);
+	int projectile = Wand_Projectile_Spawn(client, velocity, 15.0, damage, 18, weapon, particle, ang);
 	
 	if (IsValidEdict(projectile))
 	{	
 		TeleportEntity(projectile, pos, NULL_VECTOR, NULL_VECTOR);
-		
-		SetEntityModel(projectile, SKULL_MODEL);
-		DispatchKeyValue(projectile, "modelscale", "1.25");
+		int ModelApply = ApplyCustomModelToWandProjectile(projectile, SKULL_MODEL, 1.25, "");
 		
 		switch(tier)
 		{
 			case 0:
 			{
-				SetEntityRenderColor(projectile, 100, 255, 180, 255);
+				SetEntityRenderColor(ModelApply, 100, 255, 180, 255);
 			}
 			case 1:
 			{
-				SetEntityRenderColor(projectile, 255, 140, 70, 255);
+				SetEntityRenderColor(ModelApply, 255, 140, 70, 255);
 			}
 			case 2:
 			{
-				SetEntityRenderColor(projectile, 120, 200, 255, 255);
+				SetEntityRenderColor(ModelApply, 120, 200, 255, 255);
 			}
 		}
 		
-		SetEntityRenderFx(projectile, RENDERFX_GLOWSHELL);
+		SetEntityRenderFx(ModelApply, RENDERFX_GLOWSHELL);
 		
-		EmitSoundToAll(SKULL_SOUND_LAUNCH, projectile);
+		EmitSoundToAll(SKULL_SOUND_LAUNCH, ModelApply);
 		switch(GetRandomInt(1, 3))
 		{
 			case 1:
 			{
-				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_1, projectile);
+				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_1, ModelApply);
 			}
 			case 2:
 			{
-				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_2, projectile);
+				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_2, ModelApply);
 			}
 			case 3:
 			{
-				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_3, projectile);
+				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_3, ModelApply);
 			}
 		}
 	}
@@ -615,6 +613,10 @@ void Skull_AutoFire(int ent, int target, int client)
 		velocity *= Attributes_Get(weapon, 475, 1.0);
 	}
 
+	int weapon1 = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(!IsValidEntity(weapon1) ||i_CustomWeaponEquipLogic[weapon1] != WEAPON_SKULL_SERVANT)
+		damage *= 0.35;
+
 	if(dist < (Skull_ShootRange[ent] * 0.5)) //If at half range, try to predict.
 	{
 		CClotBody npc = view_as<CClotBody>(ent);
@@ -680,11 +682,7 @@ void Skull_SetNextShootTime(int ent)
 	{
 		BuffAmt = Attributes_Get(weapon, 6, 1.0);
 	}
-	
-	if (LastMann)
-	{
-		BuffAmt = BuffAmt / 2.0;
-	}
+
 	
 	Skull_NextShootTime[ent] = (Skull_ShootFrequency[ent] * BuffAmt) + GetGameTime();
 }
@@ -933,8 +931,8 @@ stock void Skull_AttachParticle(int entity, char type[255], float duration = 0.0
 			DispatchKeyValue(part1, "effect_name", type);
 			SetVariantString("!activator");
 			AcceptEntityInput(part1, "SetParent", entity, part1);
-			SetVariantString(point);
-			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
+		//	SetVariantString(point);
+		//	AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
 			DispatchKeyValue(part1, "targetname", "present");
 			DispatchSpawn(part1);
 			ActivateEntity(part1);
@@ -1065,25 +1063,50 @@ public void Wand_Skulls_Touch(int entity, int target)
 
 public void Wand_Skulls_Touch_Launched(int entity, int target)
 {
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		
-	int owner = EntRefToEntIndex(i_WandOwner[entity]);
-	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-
-	if(IsValidEntity(particle))
+	if (target > 0)	
 	{
-		RemoveEntity(particle);
-	}
-	float position[3];
-	
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-	ParticleEffectAt(position, SKULL_PARTICLE_EXPLOSION, 1.0);
-	EmitSoundToAll(SKULL_SOUND_EXPLODE, entity, SNDCHAN_STATIC, 80, _, 1.0);
-	EmitSoundToAll(SKULL_SOUND_EXPLODE_BONES, entity, SNDCHAN_STATIC, 80, _, 1.0);
-	
-	Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, position, 280.0, _, _, false);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+			
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		float position[3];
 		
-	RemoveEntity(entity);
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		ParticleEffectAt(position, SKULL_PARTICLE_EXPLOSION, 1.0);
+		EmitSoundToAll(SKULL_SOUND_EXPLODE, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SKULL_SOUND_EXPLODE_BONES, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		
+		Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, position, 280.0, _, _, false);
+			
+		RemoveEntity(entity);
+	}
+	else if(target == 0)
+	{
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+			
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		float position[3];
+		
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		ParticleEffectAt(position, SKULL_PARTICLE_EXPLOSION, 1.0);
+		EmitSoundToAll(SKULL_SOUND_EXPLODE, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SKULL_SOUND_EXPLODE_BONES, entity, SNDCHAN_STATIC, 80, _, 1.0);
+		
+		Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, position, 280.0, _, _, false);
+			
+		RemoveEntity(entity);
+	}
 }
 
 

@@ -83,8 +83,8 @@ public void NaziPanzer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nazi Panzer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_panzer");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "nazipanzer_icon");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
@@ -144,9 +144,7 @@ methodmap NaziPanzer < CClotBody
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	public void PlayFlameSound() {
 		if(this.m_flNextFlameSound > GetGameTime(this.index))
@@ -156,50 +154,38 @@ methodmap NaziPanzer < CClotBody
 		
 		EmitSoundToAll(g_FlameSounds[GetRandomInt(0, sizeof(g_FlameSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	public void PlayDeathSound() {
 	
 		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	public void PlayGrappleSound() {
 	
 		EmitSoundToAll(g_GrappleSound[GetRandomInt(0, sizeof(g_GrappleSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_GrappleSound[GetRandomInt(0, sizeof(g_GrappleSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	public void PlaySpawnSound() {
 	
 		EmitCustomToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, 80, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, 80, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, 80, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	public void PlayAngerSound() {
 	
@@ -213,9 +199,7 @@ methodmap NaziPanzer < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	public void FireHook(float vecTarget[3])
 	{
@@ -290,6 +274,7 @@ methodmap NaziPanzer < CClotBody
 		func_NPCDeath[npc.index] = NaziPanzer_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = NaziPanzer_OnTakeDamage;
 		func_NPCThink[npc.index] = NaziPanzer_ClotThink;
+		f_HeadshotDamageMultiNpc[npc.index] = 0.7;
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
@@ -631,13 +616,13 @@ public void NaziPanzer_ClotThink(int iNPC)
 						}
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7;
 					npc.m_flAttackHappenswillhappen = false;
 				}
 				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7;
 				}
 			}
 			
@@ -743,7 +728,7 @@ public Action NaziPanzer_OnTakeDamage(int victim, int &attacker, int &inflictor,
 public void NaziPanzer_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	NaziPanzer npc = view_as<NaziPanzer>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
 	{
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 1.5;
 	//	npc.AddGesture("ACT_PANZER_STAGGER");
@@ -765,7 +750,7 @@ public void NaziPanzer_ClotDamagedPost(int victim, int attacker, int inflictor, 
 	if(npc.m_bGrabbedSomeone || npc.m_bDuringHook)
 	{
 		npc.m_flHookDamageTaken += damage;
-		if(npc.m_flHookDamageTaken > GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10)
+		if(npc.m_flHookDamageTaken > ReturnEntityMaxHealth(npc.index)/10)
 		{
 			npc.m_bUseDefaultAnim = true;
 			npc.m_bGrabbedSomeone = false;
@@ -971,7 +956,7 @@ public Action Timer_Pull_Target(Handle timer, DataPack pack)
 	float velocity[3];
 	MakeVectorFromPoints(pos, cpos, velocity);
 	NormalizeVector(velocity, velocity);
-	ScaleVector(velocity, -450.0);
+	ScaleVector(velocity, -800.0);
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	return Plugin_Continue;
 }

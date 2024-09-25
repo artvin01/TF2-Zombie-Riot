@@ -52,9 +52,6 @@ static int MoabHealth(bool fortified)
 
 void Zomg_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/zomg.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Zeppelin of Mighty Gargantuaness");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zomg");
@@ -72,6 +69,10 @@ static void ClotPrecache()
 	for(int i; i<sizeof(SoundZomgPop); i++)
 	{
 		PrecacheSoundCustom(SoundZomgPop[i]);
+	}
+	for(int i; i<sizeof(SoundMoabHit); i++)
+	{
+		PrecacheSoundCustom(SoundMoabHit[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/zomg.mdl");

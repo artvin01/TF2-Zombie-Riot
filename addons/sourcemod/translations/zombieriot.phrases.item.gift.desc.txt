@@ -8,52 +8,80 @@
 	"Allies"
 	{
 		"en" 		"Allies"
+		"fr" 		"Alliés"
 		"pt"		"Aliados"
 	}
 	"Raid Bosses"
 	{
 		"en" 		"Raid Bosses"
+		"fr" 		"Boss de Raid"
 		"pt"		"Chefes de Invasão"
 	}
 	"Special Enemies"
 	{
 		"en" 		"Special Enemies"
+		"fr" 		"Ennemis Spéciaux"
 		"pt"		"Inimigos Especiais"
 	}
 	"Common Infection"
 	{
 		"en" 		"Common Infection"
+		"fr" 		"Infectés Communs"
 		"pt"		"Infectados Comuns"
 	}
 	"Blitz Controlled"
 	{
 		"en" 		"Blitz Controlled"
+		"fr" 		"Controllés par Blitz"
 		"pt"		"Controlados por Blitz"
 	}
 	"Xeno Infection"
 	{
 		"en" 		"Xeno Infection"
+		"fr" 		"Infectés par Xéno"
 		"pt"		"Xeno Infecção"
 	}
 	"Medieval Empire"
 	{
 		"en" 		"Medieval Empire"
+		"fr" 		"Empire du Moyen-Âge"
 		"pt"		"Império Medieval"
 	}
 	"Seaborn Infection"
 	{
 		"en" 		"Seaborn Infection"
+		"fr" 		"Infectés par Seaborn"
 		"pt"		"Infecção do Mar"
 	}
 	"Bloons"
 	{
 		"en" 		"Bloons"
+		"fr" 		"Bloons"
 		"pt"		"Balões"
 	}
 	"Cry of Fear"
 	{
 		"en" 		"Cry of Fear"
+		"fr" 		"Cry of Fear"
 		"pt"		"Cry of Fear"
+	}
+	"Voided Subjects"
+	{
+		"en" 		"Voided Subjects"
+		"fr" 		"Disciples du Void"
+	}
+	"Ruina"
+	{
+		"en" 		"Ruina"
+	}
+	"Iberia Expidonsa Alliance"
+	{
+		"en" 		"Iberia Expidonsa Alliance"
+	}
+	"Chaos Allience"
+	{
+		"en" 		"Chaos Allience"
+		"fr" 		"Alliance du Chaos"
 	}
 	"Expidonsa"
 	{
@@ -63,10 +91,12 @@
 	"Interitus Alliances"
 	{
 		"en"		"interitus Alliances"
+		"fr"		"Alliés de Interitus"
 	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
+		"fr" 		"Le zombie le plus commun. Rien de spécial."
 	}
 	"Fortified Headcrab Zombie Desc"
 	{
@@ -222,7 +252,7 @@
 	}
 	"X10 Spy Main Desc"
 	{
-		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half heatlh those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65%% of the damage.\nDeadringer gives 90%% resistance (resistsance can be silenced)."
+		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half health those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65%% of the damage.\nDeadringer gives 90%% resistance (resistsance can be silenced)."
 	}
 		
 	//XENO
@@ -387,7 +417,6 @@
 	{
 		"en" 		"Is this the first infected Merc of the xeno virus? This would explain why the spy's are unaffected.\nHeals on deadringer, takes no damage while deadringered (resistance can be silenced)"
 	}
-
 	"Nazi Panzer Desc"
 	{
 		"en" 		"Nazi Panzer Soldat from Origins, seems to have teleported here via the 115 teleporter experiments, they are unaffected by the xeno infection."
@@ -407,6 +436,10 @@
 	"Cured Father Grigori Desc"
 	{
 		"en" 		"You Managed to heal grigori of the virus. He will assist you in Battle.\nDuring Setup times he will sell random weapons for 20%% off."
+	}
+	"Cured Purnell Desc"
+	{
+		"en"		"He was always on your side."
 	}
 	"Combine Mage Desc"
 	{
@@ -462,7 +495,7 @@
 	}
 	"Medic Berserker Desc"
 	{
-		"en" 		"They seem to feed off of blood. \nThe lower heatlh he has, the deadlier he becomes."
+		"en" 		"They seem to feed off of blood. \nThe lower health he has, the deadlier he becomes."
 	}
 	"Militia Desc"
 	{
@@ -506,7 +539,11 @@
 	}
 	"Blitzkrieg Desc"
 	{
-		"en" 		"A supreme being of rockets, capable of outputing extremely high damage, its also said he owns his own personal army. He posses's multiple lives, usually melee is a death sentance.\nTeleport (can be silenced)."
+		"en" 		"A supreme being of rockets, capable of outputing extremely high damage, its also said he owns his own personal army. He posses's multiple lives, usually melee is a death sentance.\nTeleport (can be silenced).\nDo not fight him in any expidonsan areas..."
+	}
+	"Hyper Blitzkrieg Desc"
+	{
+		"en"		"Blitzkrieg but at full power."
 	}
 	"Pikeman Desc"
 	{
@@ -532,13 +569,41 @@
 	{
 		"en" 		"Kill zombies before him, otherwise he will gain major power, in nightmare this doesnt matter, youre in for a fight."
 	}
-	"The Doctor Desc"
+	"Doctor Purnell Desc"
 	{
 		"en" 		"Shoots and melees you, if he melees he will reload 1 bullet, he will buff allied zombies one at a time forever."
 	}
 	"Book Simon Desc"
 	{
 		"en" 		"Do not let him escape, do not let him down you."
+	}
+	"Sewmo Desc"
+	{
+		"en" 		"Tanky, attacks with its tongue, therefore it has extra melee range."
+	}
+	"Faster Desc"
+	{
+		"en" 		"Dangerous when groupped with other Faster(s), its bleed stacks."
+	}
+	"Psycho Desc"
+	{
+		"en" 		"Fast and deadly if not taken care of fast enough."
+	}
+	"Suicider Desc"
+	{
+		"en" 		"Scarily accurate with its gun, if you come too close, it'll kill itself."
+	}
+	"Crazy Lady Desc"
+	{
+		"en" 		"Prevents you from running away, don't let it stab you."
+	}
+	"Corrupted Barney Desc"
+	{
+		"en" 		"I̶̡̡͕̟̍͋͑̒ț̵̜̈̉̉'̶̹̃͜s̸̟̗̺̀͐͠ ̵͐̃͜m̴̹̩̓̏̑̕è̷̖͍ ̵̡̮̟̑̾͝G̷͚͍̈́͆͜ő̶̡̧̀̃͒r̵̛̘̙̳̐͝d̵̹̼̭̃̌̀͘ö̶̙͖̬́̄n̷̫̾̈,̸̨̻̲̩̿͛̒͠ ̴̢̼̝̗͛͊͋͠B̸̩̜̲̔a̵̙̜͈͔̐r̵̜͂ṇ̵̥̯̥͊́̏̎e̵̦̙͘y̸̪̏͌ f̷̭̋͆̌ŕ̵͇̦͈͎͗͝ó̶̞̐̇m̵̡̭͔̦̃̚̚ ̶̠̞̝̓̈̎̀B̵͚̼̯̕ľ̴̝̙͕̭́a̷̬̔c̸̟̅́k̶ M̴̬̐͘͝e̶̺̹͋̌͆s̷̻͔̙̅͗͜a̵̢͔̍͛̚
+	}
+	"Xeno Malfunctioning Robot Desc"
+	{
+		"en"		"A Xeno Robot that overheats after hitting enough targets. Overheat releases a shockwave that deals massive AoE damage. Figment of Simon's Mind."
 	}
 	"Kahmlstein Desc"
 	{
@@ -598,11 +663,11 @@
 	}
 	"Donnerkrieg Desc"
 	{
-		"en"		"A minion of Blitzkrieg, he has mastered the art of light and energy\nThanks to those arts he posses an EXTREMELY dangerous ''Nightmare Cannon''\nAvoid line of sight at all costs"
+		"en"		"Forced into servitutde by Blitzkrieg\nPosses a powerful ''Nightmare Cannon''\nIt is advised to not touch it.."
 	}
 	"Schwertkrieg Desc"
 	{
-		"en"		"A minion of Blitzkrieg, He poses the ability to teleport long distances\nHighly dangerous up close."
+		"en"		"Forced into servitutde by Blitzkrieg\nHe completely lost his individuality\nHe poses the ability to teleport long distances\nHighly dangerous up close."
 	}
 	"Phantom Knight Desc"
 	{
@@ -789,7 +854,7 @@
 	{
 		"en"		"A different kind of infection on Father Grigori. Silent man.\nCan only attack by attacking or blocking him and loses immunity with the fall of Combines."
 	}
-	"Spawned Blue Goggles Desc"
+	"Machina Waldch Desc"
 	{
 		"en"		"Switches between going a charger melee with limited seeing range.\nAnd a standing still infinite range sniper.\nPrehaps stopping him before Wave 60 yields a different result?"
 	}
@@ -797,7 +862,7 @@
 	{
 		"en"		"The superpowered warrior returns but something is up. You cured him yes?\nHe brought along a friend this time to help.\nLaser resistance (can be silenced)."
 	}
-	"Blue Goggles Desc"
+	"Waldch Desc"
 	{
 		"en"		"A friend to Silvester and a gunslinger to various weapons and support tools.\nWhat are they doing fighting you?\nSniper attack prediction (can be silenced)."
 	}
@@ -807,7 +872,7 @@
 	}
 	"Nemesis Desc"
 	{
-		"en"		"The originator of the Xeno infection.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
+		"en"		"The originator of the Xeno infection, Real name was Calmaticus.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
 	}
 	"Shell Sea Runner Desc"
 	{
@@ -969,9 +1034,9 @@
 	{
 		"en"		"Last hope against the deep sea.\nHas an ability when attacking enough, regens out of battle."
 	}
-	"God Arkantos Desc"
+	"God Alaxios Desc"
 	{
-		"en"		"Summons his army, each time he comes back he gains extra abilities.\nKill his army before him, otherwise he will revive and spawn more.\nCan buff his allies with a buff after wave 30 (silence will make him unable to buff himself when buffing allies)."
+		"en"		"Summons his army, each time he comes back he gains extra abilities.\nKill his army before him, otherwise he will revive and spawn more.\nCan buff his allies with a buff after wave 30 (Silence decreases battle cry buff on himself in half)."
 	}
 	"Seaborn Scout Desc"
 	{
@@ -1031,11 +1096,11 @@
 	}
 	"Barracks SchwertKrieg Desc"
 	{
-		"en"		"the only humans from blitz's army, from a city unknown now fighting with you together."
+		"en"		"the only human-like indivdual from blitz's army, from a city unknown, now fighting with you together."
 	}
 	"Barracks Donnerkrieg Desc"
 	{
-		"en"		"the only humans from blitz's army, from a city unknown now fighting with you together."
+		"en"		"the only human-like indivdual from blitz's army, from a city unknown, now fighting with you together."
 	}
 	"Barracks Holy Knight Desc"
 	{
@@ -1131,7 +1196,7 @@
 	}
 	"Theocracy Desc"
 	{
-		"en"		"A pseudo magic knight, the first half of itself.\nBattery: The npc's Melee hits gain the ability to hit multipl targets, however each target takes the same amount of damage\nAdditionally, that damage is reduced for targets hit by the ''strings''\nMaster: Commands Melee npc's"
+		"en"		"A pseudo magic knight, the first half of itself.\nBattery: The npc's Melee hits gain the ability to hit multiple targets, however each target takes the same amount of damage\nAdditionally, that damage is reduced for targets hit by the ''strings''\nMaster: Commands Melee npc's"
 	}
 	"Benera Desc"
 	{
@@ -1167,19 +1232,19 @@
 	}
 	"Lanius Desc"
 	{
-		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems having warriors are inevitable...\nBattery: boosts the speed of friendly melee units"
+		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems that warriors are inevitable no matter the culture...\nBattery: boosts the speed of friendly melee units"
 	}
 	"Magia Desc"
 	{
-		"en"	"A Basic Mage of the Ruanians\nStays holds a magic crest\nBattery: boosts the speed of friendly ranged units"
+		"en"	"A Basic Mage of the Ruanians\nHolds a magic crest\nBattery: boosts the speed of friendly ranged units"
 	}
 	"Heavy Punuel Desc"
 	{
 		"en"	"A heavily armored enemy, once armor breaks, he will gain high speeds.\nMelee deals 2x as much damage to the armor."
 	}
-	"Seargent Ideal Desc"
+	"Sergeant Ideal Desc"
 	{
-		"en"	"A seargent who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
+		"en"	"A sergeant who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
 	}
 	"VIP Building, The Objective Desc"
 	{
@@ -1223,7 +1288,7 @@
 	}
 	"Sensal Desc"
 	{
-		"en"	"The leader of the scouting group and a friend of silvester and goggles, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using some abilities.\nMost of his group targetting attacks go onto the people with the highest health.\n(silencing removes his melee making you unable to air controll.)"
+		"en"	"The leader of the scouting group and a friend of silvester and goggles, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using any ability.\nSlide on hit (can be silenced)"
 	}
 	"Dual Rea Desc"
 	{
@@ -1255,7 +1320,7 @@
 	}
 	"Giant Tankus Desc"
 	{
-		"en"	"A aboslute giant of a tank."
+		"en"	"A absolute giant of a tank."
 	}
 	"Anfuhrer Eisenhard Desc"
 	{
@@ -1273,7 +1338,7 @@
 	{
 		"en"	"What can be as strong as Bob?"
 	}
-	"Stella Desc"
+	"Helia Desc"
 	{
 		"en"		"This npc stays at a distance from the main fight.\nAny npc's within range of it are healed passively\nBattery: Heals a group of npc's regardless of range"
 	}
@@ -1295,7 +1360,7 @@
 	}
 	"Ruriana Desc"
 	{
-		"en"		"A more powerful Lanius, however lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10%% of the npc's health"
+		"en"		"A more powerful Lanius, additionally lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10%% of the npc's health"
 	}
 	"Valiant Desc"
 	{
@@ -1303,11 +1368,11 @@
 	}	
 	"Magia Anchor Desc"
 	{
-		"en"		"A magia anchor, spawns drones, and controls an ION beam\nOnce 4 of them are fully active something dangerous spawns..."
+		"en"		"A magia anchor, spawns drones\nOnce a tower has been active for long enough something dangerous spawns...\n\nThese anchors serve as a miniturized version of Teleportation Anchors, and due to that they are one way"
 	}
-	"Storm Weaver Desc"
+	"Stellar Weaver Desc"
 	{
-		"en"		"A servant of The Scourge" 	//NEED DESC
+		"en"		"A powerfull tool of Ruina\nCreated to guard teleportation anchors that lead to the main city's Teleportation Hub"
 	}
 	"Daedalus Desc"
 	{
@@ -1315,55 +1380,55 @@
 	}
 	"Malius Desc"
 	{
-		"en"	"Has the ability to boost nearby npc's battery"
+		"en"	"Has the ability to boost nearby npc's battery\nIts best to take these out first..."
 	}
 	"Laz Desc"
 	{
-		"en"	"A magical laser wielding mage"
+		"en"	"A magical laser wielding mage\nIts laser acts moreso like a rocket with slight homing\nRemember that when trying to dodge!"
 	}
 	"Laniun Desc"	//Need descs
 	{
-		"en"	"A stronger variant of Lanius"
+		"en"	"A stronger variant of Lanius\nHowever, anything inbetween where it teleported takes a bit of damage."
 	}
 	"Magnium Desc"
 	{
-		"en"	"A stronger magia, has a special magic ICBM, very dangerous"
+		"en"	"A stronger magia\nIt casts spell's slower, but can cast 2 of them in a short burst before needing to recharged\nin addition, it has a special magic homing ICBM, very dangerous"
 	}
-	"Stellaria Desc"
+	"Heliara Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Helia"
 	}
 	"Astriana Desc"
 	{
-		"en"	"Aya"
+		"en"	"Stronger variant"
 	}
 	"Europis Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Europa, can summon Laz and Magia alonside its drones randomly\nIt also weilds a pizza cutter as its magic weapon!"
 	}
 	"Draedon Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Daedalus\nthats it, oh also it holds a magic gun instead of a magic dumpster device"
 	}
 	"Aetheria Desc"
 	{
-		"en"	"Aya"
+		"en"	"Now wields a bow."
 	}
 	"Maliana Desc"
 	{
-		"en"	"Aya"
+		"en"	"While it is standing still it creates an aura that makes nearby Ruina npc's batteries charge faster\nAdvisable to take these out first..."
 	}
 	"Ruianus Desc"
 	{
-		"en"	"Aya"
+		"en"	"Stronger Variant"
 	}
 	"Lazius Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Laz, additionally it has the ability to fire an EVEN STRONGER laser!!! As its battery."
 	}
 	"Dronian Desc"
 	{
-		"en"	"Aya"
+		"en"	"He will shank you with his dagger."
 	}
 	"Archosauria Desc"
 	{
@@ -1451,7 +1516,7 @@
 	}
 	"Snowey Gunner Desc" 
 	{
-		"en"	"Tries to kite you, and has great heatlh and ranged damage."
+		"en"	"Tries to kite you, and has great health and ranged damage."
 	}
 	"Freezing Cleaner Desc" 
 	{
@@ -1505,7 +1570,7 @@
 	{
 		"en"	"Shoots 10 shots very fast with high damage, and then reloads for a long time."
 	}
-	"Behemonth Desc"
+	"Behemoth Desc"
 	{
 		"en"	"Has very high health and chaos damage.\nIs entirely immune to headshots."
 	}
@@ -1519,10 +1584,218 @@
 	}
 	"The Purge Desc"
 	{
-		"en"	"A machine to help the efforts of the Interitus group.\nHas a great arsenal of weapons.\nHeals when low enough and gains massive power everytime he has his fists out.\nFinish the fight fast before he becomes too strong."
+		"en"	"A machine to help the efforts of the Interitus group.\nHas a great arsenal of weapons.\nHeals when low enough and gains massive power everytime he has his fists out.\nFinish the fight fast before he becomes too strong.\n(Silence)Decreases his healing abit"
 	}
 	"Rouge Expidonsan Doctor Desc"
 	{
 		"en"	"An Rouge Expidonsan Doctor who refused to stay with his people, he hates them, he hates everyone.\nSimular to doctor pernell, he buffs allies."
+	}
+	"Fallen Warrior Desc"
+	{
+		"en"	"An elite Combine knight who was sent to battlement to deal with Chaos. \nHe fought for day and night, but he couldn't beat endless waves of chaos affliceted army. \n He now became one of the troops who spread chaos. \n He gains more speed, strength, and resistance when below half health, He slows down attackspeed when near his aura, stays on death."
+	}
+	"Xeno Acclaimed Swordsman Desc"
+	{
+		"en"	"Takes no damage after taking damage, Deals massive damage and prepares an assult of pulse attacks."
+	}
+	"Wandering Spirit Desc"
+	{
+		"en"	"Spirit that couldnt move on, free it.\nDeals Massive damage, heals on attack, if it hits 4 players it splits apart."
+	}
+	"Ouroboros Ekas Desc"
+	{
+		"en"	"Buffs all enemies on the field massively (Can be silenced), if its the last one alive, it gains 5x speed, 2x res."
+	}
+	"Xeno Patient Few Desc"
+	{
+		"en"	"Oneshots any player that isnt ubered.\nDeals massive damage to cades.\nWhen hurt, gains a short burst of speed."
+	}
+	"Xeno Early Infected Desc"
+	{
+		"en"	"Very fast but loses its speed once hit."
+	}
+	"Mr.X Desc"
+	{
+		"en"	"Activator of the xeno infection source, real name was Virothorn.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
+	}
+	"Lex Desc"
+	{
+		"en"	"The first half of Lexiana"
+	}
+	"Iana Desc"
+	{
+		"en"	"The second half of Lexiana"
+	}
+	"Stella Desc"
+	{
+		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10% slower and lowers the ''corrosion'' index by 1)"
+	}
+	"Karlas Desc"
+	{
+		"en"		"The true name of ''Schwertkrieg''\nAlongside his teleport strike becoming stronger, he gains the ability to manipulate multiple swords around himself\nThese swords have a duration, every time Karlas preforms a strike, these swords ''regenerate''"
+	}
+	"Magianas Desc"
+	{
+		"en"	"A stronger Variant"
+	}
+	"Loonaris Desc"
+	{
+		"en"	"A stronger Variant"
+	}
+	"Heliaris Desc"
+	{
+		"en"	"A stronger Variant"
+	}
+	"Astrianis Desc"
+	{
+		"en"	"A stronger Variant"
+	}
+	"Eurainis Desc"
+	{
+		"en"	"Stronger variant, alongside that it creates a powerfull buff field after duplicating itself"
+	}
+	"Draeonis Desc"
+	{
+		"en"	"Stronger variant"
+	}
+	"Aetherium Desc"
+	{
+		"en"	"A stronger variant, its battery allows it to fire a powerfull laser.\nCaution is advised"
+	}
+	"Malianium Desc"
+	{
+		"en"	"Stronger variant"
+	}
+	"Rulius Desc"
+	{
+		"en"	"Alongside what the previou one was capable of but stronger\nThis variant can every 20 seconds fire a Fantasmal wave, its best to avoid it\nIts possible to jump across the wave if you time it right!"
+	}
+	"Lazines Desc"
+	{
+		"en"	"A stronger variant"
+	}
+	"Dronis Desc"
+	{
+		"en"	"A stronger variant"
+	}
+	"Ruliana Desc"
+	{
+		"en"	"Once Power hits 100% and there are more then 4 targets infront-in line of sight, she fires several ICBM's\nThse ICBM's hurt like a truck\nOnce she goes bellow 25% hp, she will start to suck up nearby ally hp to heal herself\nOnce she reaches 10% hp, all npc's within line of sight gain a large speed boost"
+	}
+	"Mana Overload"
+	{
+		"en"	"Mana Overload"
+	}
+	"Master System"
+	{
+		"en"	"Master System"
+	}
+	"Mana Overload Desc"
+	{
+		"en"	"Certain npc's can add mana to you. once you have over 2x you max mana, you are slowed and then an ion cannon is fired onto your location\nThe damage of this ion cannon scales on how much max mana you have. it also deals true damage\nit has a timeout period of where it can't be reapplied.\nNon mages overmana decays far faster then players who are mages"
+	}
+	"Master System Desc"
+	{
+		"en"	"Certain npc's are ''Masters'', these npc's can command lower level npc's to attak the same targets as them\nThey can also buff them in various ways\nMake them rally to the master"
+	}
+	"Chaos Intrusion"
+	{
+		"en"	"Chaos Intrusion"
+	}
+	"Chaos Intrusion Desc"
+	{
+		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25%% more enemies, spawn 15%% faster, and 10%% more zombies are alive at once.\nEnemeis deal 12%% more damage, have 30%% more HP and are 3%% faster."
+	}
+	"Standard"
+	{
+		"en"	"Standard"
+	}
+	"Standard Desc"
+	{
+		"en"	"Play as intended!"
+	}
+	"Old Times"
+	{
+		"en"	"Old Times"
+	}
+	"Old Times Desc"
+	{
+		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +25%% dmg, +25%% dmg to cades, have 2x HP, +6%% faster.\n1 less down, enemies heal 50%% more."
+	}
+	"Secondary Mercs"
+	{
+		"en"	"Secondary Mercs"
+	}
+	"Secondary Mercs Desc"
+	{
+		"en"	"First batch of mercs failed already.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +4%% faster.\nEnemies heal 50%% more."
+	}
+	"BUSTING"
+	{
+		"en"	"BUSTING"
+	}
+	"BUSTING Desc"
+	{
+		"en"	"Bustin' makes me feel good"
+	}
+	"Sphynx Desc"
+	{
+		"en"		Rumors say this beast was created in the Abandoned Lab. It emits noxious gasses and heals zombies.
+	}
+	"Petrisis' Baron Desc"
+	{
+		"en"		It's neverending hunger works very well against barricades. The ability to regenerate health per barricade hit makes it very dangerous. Not very effective against humans.
+	}
+	"Nightmare Desc"
+	{
+		"en"		Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person.
+	}
+	"Omega Desc"
+	{
+		"en"		"Possesses an arsenal of weapons, self-taught runaway soldier who works alone...for now."
+	}
+	"Barracks Iberian Runner Desc"
+	{
+		"en"	"Fast basic unit which has very light armor"	
+	}
+	"Barracks Iberian Gunner Desc"
+	{
+		"en"		"Basic Ranged unit which can shoot while moving. Has very slow speed"
+	}
+	"Barracks Iberian Tanker Desc"
+	{
+		"en"		"A stronger unit with basic armor"
+	}	
+	"Barracks Iberian Rocketeer Desc"
+	{
+		"en"		"Ranged unit which fires strong Rocket. It cannot predict"
+	}	
+	"Barracks Iberian Healer Desc"
+	{
+		"en"		"A melee unit that has basic armor and can heal allies on attack and death"
+	}
+	"Barracks Iberian Healtanker Desc" 
+	{
+		"en"		"Stong melee unit that has heavy armor and can heal allies on attack and death"
+	}	
+	"Barracks Iberia Boomstick Desc"
+	{
+		"en"		"Slow but strong hitting ranged unit"
+	}
+	"Barracks Iberian Guards Desc"
+	{
+		"en"		"Tanky melee units that could gain armor on hit"
+	}
+	"Barracks Iberian Elite Gunner Desc"
+	{
+		"en"		"A ranged unit that fires 6 shots very rapidly and reloads"
+	}	
+	"Barracks Iberia Headhunter Desc"
+	{
+		"en"		"Melee unit that does more damage to elite, bosses, and raidbosses and applies debuff to them"
+	}	
+	"Barracks Iberian Lighthouse Guardian Desc"
+	{
+		"en"		"Super unit that takes 2 slot. It does melee damage when it has armor. Then, it pulls out a shotgun to deal ranged damage. It will often buff near allies"
 	}
 }

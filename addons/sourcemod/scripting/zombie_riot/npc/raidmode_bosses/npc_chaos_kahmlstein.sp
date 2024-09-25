@@ -101,7 +101,7 @@ static bool b_khamlWeaponRage[MAXENTITIES];
 
 static int i_khamlCutscene[MAXENTITIES];
 static float f_khamlCutscene[MAXENTITIES];
-static bool b_angered_twice[MAXENTITIES];
+
 
 static float f_KahmlResTemp[MAXENTITIES];
 static float f_TalkDelayCheck;
@@ -117,7 +117,7 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
@@ -333,6 +333,7 @@ methodmap ChaosKahmlstein < CClotBody
 			f_khamlCutscene[npc.index] = GetGameTime() + 45.0;
 			i_khamlCutscene[npc.index] = 14;
 			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 
 		if(StrContains(data, "fake_2") != -1)
@@ -394,15 +395,24 @@ methodmap ChaosKahmlstein < CClotBody
 			}
 			else
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
-				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
-				music.Time = 294;
-				music.Volume = 1.5;
-				music.Custom = true;
-				strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
-				strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
-				Music_SetRaidMusic(music);
+				bool TotalShits = StrContains(data, "no_music_blitz") != -1;
+				if(!TotalShits)
+				{
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
+					MusicEnum music;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
+					music.Time = 294;
+					music.Volume = 1.5;
+					music.Custom = true;
+					strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
+					strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+					Music_SetRaidMusic(music);
+				}
+				else
+				{
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: Ahahahahahah!!! LETS GET THIS PARTY STARTED!!!!!");
+					f_MessengerSpeedUp[npc.index] *= 2.0;
+				}
 			}
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -488,11 +498,11 @@ methodmap ChaosKahmlstein < CClotBody
 	
 		npc.GetAttachment("effect_hand_r", flPos, flAng);
 		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 		
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
 		npc.m_iWearable3 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
@@ -570,7 +580,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				i_khamlCutscene[npc.index] = 13;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: That's enough. You have done well beyond my expectations.... {crimson}Which were very low from the start.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have seen enough.. I knew I should've stepped in from the start. {crimson} You made a mistake of sending him out alone.");
 			}
 			else
 			{
@@ -594,7 +604,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 41.0)
 				{
 					i_khamlCutscene[npc.index] = 12;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: You. You must remember me don't you?");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: You. Come closer and look me in the face... {crimson} Or are you too scared?");
 				}
 			}
 			case 12:
@@ -602,7 +612,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 37.0)
 				{
 					i_khamlCutscene[npc.index] = 11;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: My almost ideal copy of myself gave you a hard time before, didn't it?");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: Brave against some cheap copy, but too scared of the real deal?");
 				}
 			}
 			case 11:
@@ -610,7 +620,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 33.0)
 				{
 					i_khamlCutscene[npc.index] = 10;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: Now, the real deal stands before you.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: You killed my men, {crimson}YOU KILLED MY PUP{default}, BUT YOU ARE TOO SCARED OF ME?!");
 				}
 			}
 			case 10:
@@ -618,7 +628,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 30.0)
 				{
 					i_khamlCutscene[npc.index] = 9;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: You know what mine goal is? Burn everything and turn it into ash.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will burn everything until there's nothing left, but ash. And from that ash...");
 				}
 			}
 			case 9:
@@ -626,7 +636,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 26.0)
 				{
 					i_khamlCutscene[npc.index] = 8;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: From all of the ashes, a new world will be born.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: A BRAND NEW FREE WORLD WILL BE BORN!! A WORLD WITH NO ONE TO COMMAND YOU AGAIN!");
 				}
 			}
 			case 8:
@@ -634,7 +644,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 22.0)
 				{
 					i_khamlCutscene[npc.index] = 7;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: I really hate this world.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: A WORLD RID OF THESE FUCKING PARASITES CALLED POLITICIANS! FREE FROM GOVERNMENTS!");
 				}
 			}
 			case 7:
@@ -642,7 +652,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 18.0)
 				{
 					i_khamlCutscene[npc.index] = 6;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: hate these fucks who think so high of themselves. {crimson}Politicans.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: AN IDEAL WORLD, A PARADISE!!! SO STOP RESISTING AND ACCEPT IT DAMMIT!!");
 				}
 			}
 			case 6:
@@ -650,7 +660,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 12.0)
 				{
 					i_khamlCutscene[npc.index] = 5;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: The goverments? Fuck them too. Burn them to the ground.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: ....no, this new world isn't going to welcome you anyway...");
 				}
 			}
 			case 5:
@@ -658,7 +668,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 9.0)
 				{
 					i_khamlCutscene[npc.index] = 4;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: And you know what I hate the most?");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: Because you know what I hate the most, more than governments? {crimson}Violence against animals..");
 				}
 			}
 			case 4:
@@ -666,7 +676,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 4.0)
 				{
 					i_khamlCutscene[npc.index] = 3;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: {crimson}V i o l e n c e.... a g a i n s t.. a n i m a l s.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: {crimson}You murdered these cats in cold blood. And now I'm going to do the same with you.");
 				}
 			}
 			case 3:
@@ -674,7 +684,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 2.0)
 				{
 					i_khamlCutscene[npc.index] = 2;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will purge this world from everything I hate, including you.");
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will avenge you my dear companion, I will avenge everything.");
 				}
 			}
 			case 2:
@@ -739,7 +749,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 		i_SpeedUpTime[npc.index] = 2; 
 		f_MessengerSpeedUp[npc.index] *= 1.15;
 		if(i_RaidGrantExtra[npc.index] < 2)
-			CPrintToChatAll("{darkblue}Kahmlstein{default}: Even mine dead grandma is more entertaining than this.");
+			CPrintToChatAll("{darkblue}Kahmlstein{default}: Even my dead grandma is more entertaining than this.");
 	}
 	else if(RaidModeTimeLeft < 70 && i_SpeedUpTime[npc.index] == 2)
 	{
@@ -950,6 +960,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump");
 			npc.m_flAttackHappens = 0.0;
 			npc.SetCycle(0.01);
@@ -1019,6 +1030,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown_outro");
 		npc.m_flAttackHappens = 0.0;
 		npc.SetCycle(0.01);
@@ -1066,6 +1078,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_yetipunch");
 		npc.m_flAttackHappens = 0.0;
 		if(i_RaidGrantExtra[npc.index] < 2)
@@ -1489,7 +1502,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 								}
 							}
 
-							Sakratan_AddNeuralDamage(targetTrace, npc.index, 100, true, true);
+							Elemental_AddChaosDamage(targetTrace, npc.index, 100, true, true);
 
 							if(!Knocked)
 								Custom_Knockback(npc.index, targetTrace, 650.0); 
@@ -1541,7 +1554,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(victim);
 	if(npc.g_TimesSummoned < 100)
 	{
-		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (100 - npc.g_TimesSummoned) / 100;
+		int nextLoss = (ReturnEntityMaxHealth(npc.index) / 10) * (100 - npc.g_TimesSummoned) / 100;
 		if((GetEntProp(npc.index, Prop_Data, "m_iHealth") / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;
@@ -1576,7 +1589,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 		}
 	}
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		f_MessengerSpeedUp[npc.index] *= 1.15;
 		switch(GetRandomInt(0,3))
@@ -1595,7 +1608,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 			}
 			case 3:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: All your curelty, worse then states.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: All your cruelty, worse then states.");
 			}
 		}
 		RaidModeScaling *= 1.2;
@@ -1632,6 +1645,7 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 	{
 		MakeObjectIntangeable(KamlcloneSpawn);
 		b_DoNotUnStuck[KamlcloneSpawn] = true;
+		b_NpcIsInvulnerable[KamlcloneSpawn] = true;
 		b_ThisNpcIsImmuneToNuke[KamlcloneSpawn] = true;
 		b_NoKnockbackFromSources[KamlcloneSpawn] = true;
 		b_ThisEntityIgnored[KamlcloneSpawn] = true;
@@ -1655,7 +1669,7 @@ void KahmlsteinInitiatePunch(int entity, float VectorTarget[3], float VectorStar
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * 66.0);
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
 
 	float vecForward[3], Angles[3];
 
@@ -1812,7 +1826,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 			float damage = damagedata;
 
 			if(victim > MaxClients) //make sure barracks units arent bad
-				damage *= 0.5;
+				damage *= 0.35;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_CLUB, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			
@@ -1860,6 +1874,7 @@ bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown");
 		npc.m_flAttackHappens = 0.0;
 		npc.SetCycle(0.01);
@@ -1947,6 +1962,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 		{
 			case 0:
 			{
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_heavy_workout_end");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.25);
@@ -1962,6 +1978,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 			}
 			case 2:
 			{
+				npc.m_bisWalking = false;
 				npc.SetActivity("ACT_MP_STAND_MELEE");
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: The chaos, it has left me completely it seems.");
 				i_TalkDelayCheck += 1;
@@ -2028,6 +2045,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have something to attend to now, {crimson}some unfinished business.{default}");
 				i_TalkDelayCheck += 1;
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_cyoa_PDA_intro");
 				npc.SetCycle(0.05);
 				f_TalkDelayCheck = GetGameTime() + 1.5;

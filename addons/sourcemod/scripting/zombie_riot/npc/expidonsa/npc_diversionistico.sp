@@ -170,6 +170,7 @@ methodmap Diversionistico < CClotBody
 		
 		if(final)
 		{
+			b_FaceStabber[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 
@@ -484,6 +485,12 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		if(RandomArea == NULL_AREA) 
 			break; //No nav?
 
+		int NavAttribs = RandomArea.GetAttributes();
+		if(NavAttribs & NAV_MESH_AVOID)
+		{
+			continue;
+		}
+
 		RandomArea.GetCenter(AproxRandomSpaceToWalkTo);
 		bool DoNotTeleport = false;
 		int WasTooFarAway = 0;
@@ -516,11 +523,19 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		if(RespectOutOfBounds && IsPointOutsideMap(AproxRandomSpaceToWalkTo))
 			continue;
 
-		AproxRandomSpaceToWalkTo[2] += 20.0;
+		AproxRandomSpaceToWalkTo[2] += 1.0;
 		static float hullcheckmaxs_Player_Again[3];
 		static float hullcheckmins_Player_Again[3];
-		hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
-		hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
+		if(b_IsGiant[npc.index])
+		{
+			hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 120.0 } );
+			hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
+		}			
+		else
+		{
+			hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
+		}
 		if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 			continue;
 			
@@ -541,6 +556,7 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		AproxRandomSpaceToWalkTo[2] += 18.0;
 		//everything is valid, now we check if we are too close to the enemy, or too far away.
 		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
+		RemoveSpawnProtectionLogic(npc.index, true);
 		return 1;
 	}
 	return 2;

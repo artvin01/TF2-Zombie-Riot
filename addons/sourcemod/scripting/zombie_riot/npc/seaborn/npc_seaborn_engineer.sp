@@ -47,7 +47,7 @@ void SeabornEngineer_Precache()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_engineer");
 	strcopy(data.Icon, sizeof(data.Icon), "sea_engineer");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_SUPPORT|MVM_CLASS_FLAG_SUPPORT_LIMITED;
+	data.Flags = MVM_CLASS_FLAG_MISSION;
 	data.Category = Type_Seaborn;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -145,7 +145,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 	{
 		if(IsValidEntity(npc.m_iTargetAlly) && i_IsABuilding[npc.m_iTargetAlly])
 		{
-			if(!npc.m_iTarget && b_bBuildingIsPlaced[npc.m_iTargetAlly])
+			if(!npc.m_iTarget)
 			{
 				KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
 
@@ -155,14 +155,14 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				ParticleEffectAt(self_vec, "water_bulletsplash01", 3.0);
 				ParticleEffectAt(trg_vec, "water_bulletsplash01", 3.0);
 
-				int repair = Building_GetBuildingRepair(npc.m_iTargetAlly);
+				int repair = GetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair");
 				if(repair < 1)
 				{
-					SeaSlider_AddNeuralDamage(npc.m_iTargetAlly, npc.index, 75);
+					Elemental_AddNervousDamage(npc.m_iTargetAlly, npc.index, 75);
 				}
 				else
 				{
-					Building_SetBuildingRepair(npc.m_iTargetAlly, repair - 150);
+					SetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair", repair - 3);
 				}
 
 				npc.m_flNextThinkTime = gameTime + 0.4;
@@ -174,9 +174,8 @@ public void SeabornEngineer_ClotThink(int iNPC)
 			}
 		}
 		
-		if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])
-			GiveNpcOutLineLastOrBoss(npc.index, false);
 		
+		b_thisNpcHasAnOutline[npc.index] = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flNextRangedAttack = FAR_FUTURE;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -191,13 +190,12 @@ public void SeabornEngineer_ClotThink(int iNPC)
 			int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 			if(entity != INVALID_ENT_REFERENCE)
 			{
-				CClotBody building = view_as<CClotBody>(entity);
-				if(!building.bBuildingIsStacked && building.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+				//CClotBody building = view_as<CClotBody>(entity);
+				if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
 				{
 					b_ThisEntityIgnored[entity] = true;
 
-					if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])
-						GiveNpcOutLineLastOrBoss(npc.index, true);
+					b_thisNpcHasAnOutline[npc.index] = true;
 					
 					npc.m_iTarget = 0;
 					npc.m_iTargetAlly = entity;
@@ -263,7 +261,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 150.0 : 75.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 15);
+						Elemental_AddNervousDamage(target, npc.index, 15);
 					}
 				}
 
