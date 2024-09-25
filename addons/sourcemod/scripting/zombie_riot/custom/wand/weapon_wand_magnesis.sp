@@ -96,6 +96,7 @@ static int Magnesis_GrabWeapon[MAXPLAYERS + 1] = { -1, ... };
 public void Magnesis_ResetAll()
 {
 	Zero(ability_cooldown);
+	Zero(Magnesis_NextDrainTick);
 
 	for (int i = 0; i < 2049; i++)
 	{
