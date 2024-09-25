@@ -20,6 +20,8 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/sniper_mvm_mannhattan_gate_atk02.mp3",
 };
 
+static int i_signaller_particle[MAXENTITIES];
+
 void VictorianSignaller_OnMapStart_NPC()
 {
 	NPCData data;
@@ -68,7 +70,8 @@ methodmap VictorianSignaller < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+		int skin = 1;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		func_NPCDeath[npc.index] = VictorianSignaller_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -82,7 +85,7 @@ methodmap VictorianSignaller < CClotBody
         float flPos[3], flAng[3];
 				
 		npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
-		i_squadleader_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
+		i_signaller_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 
 
@@ -202,4 +205,11 @@ void VictorianSignaller_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+
+	int particle = EntRefToEntIndex(i_signaller_particle[npc.index]);
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+		i_signaller_particle[npc.index]=INVALID_ENT_REFERENCE;
+	}
 }
