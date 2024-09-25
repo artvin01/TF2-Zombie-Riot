@@ -1,27 +1,23 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] =
-{
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3"
+static const char g_DeathSounds[][] = {
+	"vo/sniper_paincrticialdeath01.mp3",
+	"vo/sniper_paincrticialdeath02.mp3",
+	"vo/sniper_paincrticialdeath03.mp3",
 };
 
-static const char g_HurtSounds[][] =
-{
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3"
+static const char g_HurtSounds[][] = {
+	"vo/sniper_painsharp01.mp3",
+	"vo/sniper_painsharp02.mp3",
+	"vo/sniper_painsharp03.mp3",
+	"vo/sniper_painsharp04.mp3",
 };
 
-static const char g_IdleAlertedSounds[][] =
-{
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3"
+
+static const char g_IdleAlertedSounds[][] = {
+	"vo/sniper_mvm_mannhattan_gate_atk01.mp3",
+	"vo/sniper_mvm_mannhattan_gate_atk02.mp3",
 };
 
 void VictorianSignaller_OnMapStart_NPC()

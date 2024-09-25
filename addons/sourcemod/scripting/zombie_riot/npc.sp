@@ -1629,3 +1629,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_igniter.sp"
 #include "zombie_riot/npc/victoria/npc_grenadier.sp"
 #include "zombie_riot/npc/victoria/npc_squadleader.sp"
+#include "zombie_riot/npc/victoria/npc_signaller.sp"
