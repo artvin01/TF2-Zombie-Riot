@@ -141,9 +141,7 @@ methodmap Soldier_Barrager < CClotBody
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public Soldier_Barrager(int client, float vecPos[3], float vecAng[3], int ally)

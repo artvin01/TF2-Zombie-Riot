@@ -171,24 +171,18 @@ methodmap BobTheGod < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, 80, _, 0.7);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, 80, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, 80, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {

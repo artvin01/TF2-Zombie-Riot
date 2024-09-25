@@ -1750,8 +1750,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		if(Timer_Show < 0.0)
 			Timer_Show = 0.0;
 
-		if(Timer_Show > 800.0)
+		//if raid is on red, dont do timer.
+		if(Timer_Show > 800.0 || GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red)
+		{
 			RaidModeTime = 99999999.9;
+		}
 
 		float HudOffset = ZR_DEFAULT_HUD_OFFSET;
 		float HudY = -1.0;

@@ -351,6 +351,8 @@ methodmap Silvester < CClotBody
 		b_SilvesterAttackSame[npc.index] = false;
 		
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_bThisNpcIsABoss = true;
+		
 		b_angered_twice[npc.index] = false;
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{
@@ -462,11 +464,11 @@ methodmap Silvester < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		npc.m_fbGunout = false;
-		
+		/*
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_buttler/bak_buttler_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
+		*/
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_hat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
@@ -496,9 +498,10 @@ methodmap Silvester < CClotBody
 		float flAng[3]; // original
 		npc.GetAttachment("head", flPos, flAng);
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,0.0});
-		
+		/*
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 192, 192, 192, 255);
+		*/
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
@@ -1024,6 +1027,8 @@ static void Internal_NPCDeath(int entity)
 	RaidBossActive = INVALID_ENT_REFERENCE;
 		
 	
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
@@ -1540,9 +1545,11 @@ static void Silvester_Weapon_Lines(Silvester npc, int client)
 
 void Nemal_SilvesterApplyEffects(int entity, bool withoutweapon = false)
 {
-	Silvester npc = view_as<Silvester>(entity);
+	Silvester npc = view_as<Silvester>(entity);	
 	if(npc.Anger)
 	{
+		if(IsValidEntity(npc.m_iWearable9))
+			RemoveEntity(npc.m_iWearable9);
 		ExpidonsaRemoveEffects(entity);
 		if(withoutweapon)
 			Nemal_SilvesterApplyEffectsForm2(entity, 0);	
@@ -1551,6 +1558,8 @@ void Nemal_SilvesterApplyEffects(int entity, bool withoutweapon = false)
 	}
 	else
 	{
+		if(IsValidEntity(npc.m_iWearable9))
+			RemoveEntity(npc.m_iWearable9);
 		ExpidonsaRemoveEffects(entity);
 		if(withoutweapon)
 			Nemal_SilvesterApplyEffectsForm2(entity, 0);	
@@ -1563,14 +1572,32 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 {
 	if(AtEdictLimit(EDICT_RAID))
 		return;
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
 	
 	int red = 255;
 	int green = 255;
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
+
+	npc.m_iWearable9 = npc.EquipItem("head", WINGS_MODELS_1);
+	SetVariantInt(1);
+	AcceptEntityInput(npc.m_iWearable9, "SetBodyGroup");	
+	SetVariantString("1.35");
+	AcceptEntityInput(npc.m_iWearable9, "SetModelScale");
+	
 	if(WeaponSettingDo == 1 || WeaponSettingDo == 2)
 	{
+		if(WeaponSettingDo == 1)
+		{
+			npc.m_iWearable1 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 3);
+			SetVariantInt(2048);
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");	
+			return;
+		}
 		int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 		
 		int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
@@ -1596,10 +1623,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 
 		Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
 		SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-		if(WeaponSettingDo == 1)
-			SetParent(entity, particle_1, "effect_hand_R",_);
-		else
-			SetParent(entity, particle_1, "effect_hand_L",_);
+		SetParent(entity, particle_1, "effect_hand_l",_);
 
 
 		int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
@@ -1626,8 +1650,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 		i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_5_1);
 		i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
 		i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
-		i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
-			
+		i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);	
 	}
 
 	//possible loop function?
@@ -1640,6 +1663,8 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 		2nd: Up and down, negative up, positive down.
 		3rd: front and back, negative goes back.
 	*/
+
+	/*
 	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	GetAttachment(entity, "flag", flPos, flAng);
 	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
@@ -1854,6 +1879,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 	i_ExpidonsaEnergyEffect[entity][67] = EntIndexToEntRef(Laser_3_Wingset_6);
 	i_ExpidonsaEnergyEffect[entity][68] = EntIndexToEntRef(Laser_4_Wingset_6);
 	i_ExpidonsaEnergyEffect[entity][69] = EntIndexToEntRef(ParticleOffsetMain);
+	*/
 }
 
 static int LastEnemyTargeted[MAXENTITIES];
