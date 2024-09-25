@@ -45,8 +45,6 @@ static float f_ArchmageFireballDMG[2049] = { 0.0, ... };
 
 #define PARTICLE_ARCHMAGE_FIREBALL			"flaregun_trail_red"
 #define PARTICLE_ARCHMAGE_FIREBALL_BUFFED	"spell_fireball_small_blue"
-#define PARTICLE_FIREBALL_HIT				"flaregun_destroyed"
-#define PARTICLE_FIREBALL_EXPLODE			"spell_fireball_tendril_parent_blue"
 
 #define BONES_ARCHMAGE_BUFFPARTICLE			"utaunt_runeprison_teamcolor_blue"//"utaunt_auroraglow_purple_parent"
 
@@ -142,7 +140,7 @@ public void ArchmageBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
-	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
+	PrecacheModel(BONEZONE_MODEL);
 	
 	PrecacheSound(SOUND_SPELL_CHARGEUP);
 	PrecacheSound(SOUND_SPELL_THROW);
@@ -289,7 +287,7 @@ methodmap ArchmageBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		ArchmageBones npc = view_as<ArchmageBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_ARCHMAGE_BUFFED_SCALE : BONES_ARCHMAGE_SCALE, buffed ? BONES_ARCHMAGE_HP_BUFFED : BONES_ARCHMAGE_HP, ally, false));
+		ArchmageBones npc = view_as<ArchmageBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_ARCHMAGE_BUFFED_SCALE : BONES_ARCHMAGE_SCALE, buffed ? BONES_ARCHMAGE_HP_BUFFED : BONES_ARCHMAGE_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;

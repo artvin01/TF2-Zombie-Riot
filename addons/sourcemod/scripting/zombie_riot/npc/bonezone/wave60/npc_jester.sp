@@ -151,10 +151,6 @@ public void JesterBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
 	PrecacheSound(SOUND_JESTER_FUSE);
-
-//	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-
-	PrecacheSound("player/flow.wav");
 	PrecacheSound(SOUND_MONDO_ATTACK_BIGSWING);
 	PrecacheSound(SOUND_MONDO_ATTACK_SWING);
 	PrecacheSound(SOUND_MONDO_ATTACK_LAUNCH_1);
@@ -168,7 +164,6 @@ public void JesterBones_OnMapStart_NPC()
 	PrecacheSound(SOUND_JESTER_JUGGLE_TOSS);
 	PrecacheSound(SOUND_JESTER_BOMB_TELEPORT);
 	PrecacheSound(SOUND_JESTER_EXPLODE);
-	PrecacheModel("models/zombie/classic.mdl");
 	PrecacheModel(MODEL_JESTER_CANNONBALL);
 
 	NPCData data;
@@ -364,7 +359,7 @@ methodmap JesterBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		JesterBones npc = view_as<JesterBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_JESTER_SCALE_BUFFED : BONES_JESTER_SCALE, buffed ? BONES_JESTER_HP_BUFFED : BONES_JESTER_HP, ally, false));
+		JesterBones npc = view_as<JesterBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_JESTER_SCALE_BUFFED : BONES_JESTER_SCALE, buffed ? BONES_JESTER_HP_BUFFED : BONES_JESTER_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;

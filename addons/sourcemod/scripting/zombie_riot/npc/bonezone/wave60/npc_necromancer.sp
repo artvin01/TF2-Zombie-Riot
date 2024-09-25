@@ -142,8 +142,6 @@ public void NecromancerBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
-	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
-	
 	PrecacheSound(SOUND_BOLT_IMPACT);
 	PrecacheSound(SOUND_BOLT_CAST);
 
@@ -284,7 +282,7 @@ methodmap NecromancerBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		NecromancerBones npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false, false, true));
+		NecromancerBones npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false, false, true));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;

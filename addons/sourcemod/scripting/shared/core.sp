@@ -1197,6 +1197,8 @@ char g_TankStepSound[][] = {
 
 #if defined BONEZONE_BASE
 
+#define BONEZONE_MODEL	"models/zombie_riot/the_bone_zone/basic_bones.mdl"
+
 char g_BoneZoneBuffDefaultSFX[][] = {
 	"vo/halloween_boo1.mp3",
 	"vo/halloween_boo2.mp3",

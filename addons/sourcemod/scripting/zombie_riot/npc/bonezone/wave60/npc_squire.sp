@@ -121,11 +121,6 @@ public void SquireBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RampageStart));   i++) { PrecacheSound(g_RampageStart[i]);   }
 	for (int i = 0; i < (sizeof(g_RampageEnd));   i++) { PrecacheSound(g_RampageEnd[i]);   }
 
-//	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-
-	PrecacheSound("player/flow.wav");
-	PrecacheModel("models/zombie/classic.mdl");
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Skeletal Squire");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_skeletalsquire");
@@ -284,7 +279,7 @@ methodmap SquireBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		SquireBones npc = view_as<SquireBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_SQUIRE_SCALE_BUFFED : BONES_SQUIRE_SCALE, buffed ? BONES_SQUIRE_HP_BUFFED : BONES_SQUIRE_HP, ally, false));
+		SquireBones npc = view_as<SquireBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SQUIRE_SCALE_BUFFED : BONES_SQUIRE_SCALE, buffed ? BONES_SQUIRE_HP_BUFFED : BONES_SQUIRE_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;

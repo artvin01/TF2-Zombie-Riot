@@ -159,9 +159,6 @@ public void SaintBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds)); i++) { PrecacheSound(g_MeleeMissSounds[i]); }
 	for (int i = 0; i < (sizeof(g_GibSounds)); i++) { PrecacheSound(g_GibSounds[i]); }
 	
-	//	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-	
-	PrecacheSound("player/flow.wav");
 	PrecacheSound(SOUND_CAST_ACTIVATED);
 	PrecacheSound(SOUND_CAST_ACTIVATED_BUFFED);
 	PrecacheSound(SOUND_CAST_ACTIVATED_BUFFED_2);
@@ -170,8 +167,6 @@ public void SaintBones_OnMapStart_NPC()
 	PrecacheSound(SOUND_CAST_BUFFED);
 	PrecacheSound(SOUND_THUNDER_CHARGEUP);
 	PrecacheSound(SOUND_PRIEST_FIZZLE);
-	PrecacheModel("models/zombie/classic.mdl");
-	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Blighted Bones");
@@ -313,7 +308,7 @@ methodmap SaintBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		SaintBones npc = view_as<SaintBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE, buffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, ally, false));
+		SaintBones npc = view_as<SaintBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE, buffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;

@@ -80,11 +80,6 @@ public void TemplateBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
-//	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-
-	PrecacheSound("player/flow.wav");
-	PrecacheModel("models/zombie/classic.mdl");
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Template Bones");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_basicbones");
@@ -220,7 +215,7 @@ methodmap TemplateBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		TemplateBones npc = view_as<TemplateBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_TEMPLATE_SCALE_BUFFED : BONES_TEMPLATE_SCALE, buffed ? BONES_TEMPLATE_HP_BUFFED : BONES_TEMPLATE_HP, ally, false));
+		TemplateBones npc = view_as<TemplateBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_TEMPLATE_SCALE_BUFFED : BONES_TEMPLATE_SCALE, buffed ? BONES_TEMPLATE_HP_BUFFED : BONES_TEMPLATE_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;

@@ -89,11 +89,6 @@ public void MolotovBones_OnMapStart_NPC()
 	PrecacheSound(SND_MOLOTOV_SWING);
 	PrecacheModel(MODEL_MOLOTOV_BOTTLE);
 
-//	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-
-	PrecacheSound("player/flow.wav");
-	PrecacheModel("models/zombie/classic.mdl");
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mr. Molotov");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_molotov");
@@ -183,7 +178,7 @@ methodmap MolotovBones < CClotBody
 	
 	public MolotovBones(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
-		MolotovBones npc = view_as<MolotovBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", BONES_MOLOTOV_SCALE, BONES_MOLOTOV_HP, ally, false));
+		MolotovBones npc = view_as<MolotovBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_MOLOTOV_SCALE, BONES_MOLOTOV_HP, ally, false));
 		
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;

@@ -106,11 +106,6 @@ public void PirateBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RampageStart));   i++) { PrecacheSound(g_RampageStart[i]);   }
 	for (int i = 0; i < (sizeof(g_RampageEnd));   i++) { PrecacheSound(g_RampageEnd[i]);   }
 
-//	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-
-	PrecacheSound("player/flow.wav");
-	PrecacheModel("models/zombie/classic.mdl");
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Buccaneer Bones");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_calciumcorsair");
@@ -263,7 +258,7 @@ methodmap PirateBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		PirateBones npc = view_as<PirateBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_PIRATE_SCALE_BUFFED : BONES_PIRATE_SCALE, buffed ? BONES_PIRATE_HP_BUFFED : BONES_PIRATE_HP, ally, false));
+		PirateBones npc = view_as<PirateBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_PIRATE_SCALE_BUFFED : BONES_PIRATE_SCALE, buffed ? BONES_PIRATE_HP_BUFFED : BONES_PIRATE_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;

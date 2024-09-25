@@ -107,28 +107,6 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
-enum Rattler_ThrowState
-{
-	THROWSTATE_INACTIVE,
-	THROWSTATE_INTRO,
-	THROWSTATE_CHARGING,
-	THROWSTATE_THROWING
-};
-
-Rattler_ThrowState throwState[MAXENTITIES] = { THROWSTATE_INACTIVE, ... };
-float throwEndTime[MAXENTITIES + 1] = { 0.0, ... };
-float throwThrowTime[MAXENTITIES + 1] = { 0.0, ... };
-float chargeLoopTime[MAXENTITIES + 1] = { 0.0, ... };
-int throwParticle[MAXENTITIES + 1] = { -1, ... };
-
-#define SOUND_SPELL_CHARGEUP		")items/powerup_pickup_base.wav"
-#define SOUND_SPELL_THROW			")weapons/cleaver_throw.wav"
-#define SOUND_SPELL_THROW_BUFFED	")misc/halloween/strongman_fast_whoosh_01.wav"
-#define SOUND_SPELL_CAST			")misc/halloween/spell_meteor_cast.wav"
-#define SOUND_SPELL_CAST_BUFFED		")misc/halloween/spell_meteor_impact.wav"
-#define SOUND_FIREBALL_HIT			")weapons/dragons_fury_impact_bonus_damage.wav"
-#define SOUND_FIREBALL_EXPLODE		")misc/halloween/spell_fireball_impact.wav"
-
 public void RattlerBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -141,16 +119,6 @@ public void RattlerBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
-
-	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
-	
-	PrecacheSound(SOUND_SPELL_CHARGEUP);
-	PrecacheSound(SOUND_SPELL_THROW);
-	PrecacheSound(SOUND_SPELL_THROW_BUFFED);
-	PrecacheSound(SOUND_SPELL_CAST);
-	PrecacheSound(SOUND_SPELL_CAST_BUFFED);
-	PrecacheSound(SOUND_FIREBALL_HIT);
-	PrecacheSound(SOUND_FIREBALL_EXPLODE);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Rattler");
@@ -289,7 +257,7 @@ methodmap RattlerBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		RattlerBones npc = view_as<RattlerBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_RATTLER_BUFFED_SCALE : BONES_RATTLER_SCALE, buffed ? BONES_RATTLER_HP_BUFFED : BONES_RATTLER_HP, ally, false));
+		RattlerBones npc = view_as<RattlerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_RATTLER_BUFFED_SCALE : BONES_RATTLER_SCALE, buffed ? BONES_RATTLER_HP_BUFFED : BONES_RATTLER_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
@@ -326,8 +294,6 @@ methodmap RattlerBones < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_RATTLER_SPEED_BUFFED : BONES_RATTLER_SPEED);
-		
-		throwState[npc.index] = THROWSTATE_INACTIVE;
 		
 		npc.StartPathing();
 		
@@ -435,112 +401,12 @@ stock int Rattler_AttachParticle(int entity, char type[255], float duration = 0.
 	return -1;
 }
 
-//All rattler variants will float a short distance above the ground and attempt to keep a distance from survivors.
-//Both variants throw fireballs. 
-//Skeletal Mages (the non-buffed variant of the rattler) toss smaller red fireballs which deal 75 damage each and do not explode.
-//Skeletal Rattlers toss large blue fireballs which deal a base damage of 300 and DO explode within a small radius, with up to 66% falloff. Rattlers need to charge these fireballs, during which they suffer a 50% movement speed penalty.
-
 public void Rattler_CheckThrow(RattlerBones npc, int closest)
 {
-	if (npc.m_flNextMeleeAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index))
+	if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		if (!Can_I_See_Enemy_Only(npc.index, closest))
 			return;
-			
-		float userLoc[3], targLoc[3];
-		WorldSpaceCenter(npc.index, userLoc);
-		WorldSpaceCenter(closest, targLoc);
-		//Don't try to throw a fireball if the target is too far away.
-		if (GetVectorDistance(userLoc, targLoc) > RATTLER_HOVER_MAXDIST)
-			return;
-			
-		throwState[npc.index] = THROWSTATE_INTRO;
-		npc.m_flAttackHappens = GetGameTime(npc.index) + 0.1;
-		npc.m_flAttackHappenswillhappen = true;
-		
-		npc.AddGesture("ACT_MP_PASSTIME_THROW_BEGIN");
-		throwParticle[npc.index] = EntIndexToEntRef(Rattler_AttachParticle(npc.index, b_BonesBuffed[npc.index] ? PARTICLE_RATTLER_FIREBALL_BUFFED : PARTICLE_RATTLER_FIREBALL, _, "handR"));
-	}
-}
-
-public void Rattler_EndIntro(RattlerBones npc, int closest)
-{
-	if (GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen)
-	{
-		if (b_BonesBuffed[npc.index])
-		{
-			npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
-			chargeLoopTime[npc.index] = GetGameTime(npc.index) + 1.8;
-			throwState[npc.index] = THROWSTATE_CHARGING;
-			npc.m_flAttackHappens = GetGameTime(npc.index) + RATTLER_CHARGE_DURATION;
-			EmitSoundToAll(SOUND_SPELL_CHARGEUP, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME - 0.1, 90);
-		}
-		else
-		{
-			Rattler_Throw(npc, closest);
-		}
-	}
-}
-
-public void Rattler_ChargeUp(RattlerBones npc, int closest)
-{
-	//If we are ready to throw, or we can't throw the big blue fireball for some reason, stop charging and attempt to throw.
-	if ((GetGameTime(npc.index) >= npc.m_flAttackHappens && npc.m_flAttackHappenswillhappen) || !IsValidEnemy(npc.index, closest) || !b_BonesBuffed[npc.index] || NpcStats_IsEnemySilenced(npc.index))
-	{
-		Rattler_Throw(npc, closest);
-	}
-	else if (GetGameTime(npc.index) >= chargeLoopTime[npc.index])
-	{
-		npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
-		chargeLoopTime[npc.index] = GetGameTime(npc.index) + 1.8;
-	}
-}
-
-public void Rattler_Throw(RattlerBones npc, int closest)
-{
-	npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
-	
-	float duration;
-	if (IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index))
-	{
-		npc.AddGesture("ACT_MP_PASSTIME_THROW_END");
-		duration = 0.46;
-		throwThrowTime[npc.index] = GetGameTime(npc.index) + 0.1;
-		EmitSoundToAll(b_BonesBuffed[npc.index] ? SOUND_SPELL_THROW_BUFFED : SOUND_SPELL_THROW, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME - 0.25);
-	}
-	else
-	{
-		npc.AddGesture("ACT_MP_PASSTIME_THROW_CANCEL");
-		npc.m_flAttackHappenswillhappen = false;
-		duration = 0.1;
-		Rattler_RemoveParticle(npc.index);
-	}
-	
-	throwState[npc.index] = THROWSTATE_THROWING;
-	throwEndTime[npc.index] = GetGameTime(npc.index) + duration;
-}
-
-public void Rattler_CheckLaunch(RattlerBones npc, int closest)
-{
-	if (GetGameTime(npc.index) >= throwThrowTime[npc.index] && npc.m_flAttackHappenswillhappen)
-	{
-		float vicLoc[3];
-		WorldSpaceCenter(closest, vicLoc);
-		
-		float vel = b_BonesBuffed[npc.index] ? BONES_RATTLER_PROJECTILE_VELOCITY_BUFFED : BONES_RATTLER_PROJECTILE_VELOCITY;
-		float damage = b_BonesBuffed[npc.index] ? BONES_RATTLER_PLAYERDAMAGE_BUFFED : BONES_RATTLER_PLAYERDAMAGE;
-		
-		//The buffed variant predicts the victim's location, non-buffed does not.
-		if (b_BonesBuffed[npc.index])
-		{
-			PredictSubjectPositionForProjectiles(npc, closest, vel, _, vicLoc);
-		}
-		
-		Rattler_ShootProjectile(npc, vicLoc, vel, damage);
-		
-		EmitSoundToAll(b_BonesBuffed[npc.index] ? SOUND_SPELL_CAST_BUFFED : SOUND_SPELL_CAST, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - (b_BonesBuffed[npc.index] ? 15 : 30), _, NORMAL_ZOMBIE_VOLUME - (b_BonesBuffed[npc.index] ? 0.25 : 0.5));
-		npc.m_flAttackHappenswillhappen = false;
-		Rattler_RemoveParticle(npc.index);
 	}
 }
 
@@ -611,8 +477,6 @@ public Action Rattler_FireballTouch(int entity, int other)
 	{
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		SDKHooks_TakeDamage(other, entity, IsValidEntity(owner) ? owner : entity, f_RattlerFireballDMG[entity]);
-		if (IsValidClient(other))
-			EmitSoundToClient(other, SOUND_FIREBALL_HIT);
 			
 		float position[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
@@ -633,7 +497,6 @@ public MRESReturn Rattler_Explode(int entity)
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	ParticleEffectAt(position, PARTICLE_FIREBALL_EXPLODE, 2.0);
-	EmitSoundToAll(SOUND_FIREBALL_EXPLODE, entity, SNDCHAN_STATIC, 80, _, 1.0);
 	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
@@ -641,22 +504,6 @@ public MRESReturn Rattler_Explode(int entity)
 	
 	RemoveEntity(entity);
 	return MRES_Supercede; //DONT.
-}
-
-public void Rattler_RemoveParticle(int index)
-{
-	int particle = EntRefToEntIndex(throwParticle[index]);
-	if (IsValidEntity(particle))
-		RemoveEntity(particle);
-}
-
-public void Rattler_EndThrow(RattlerBones npc, int closest)
-{
-	if (GetGameTime(npc.index) >= throwEndTime[npc.index])
-	{
-		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? BONES_RATTLER_ATTACKINTERVAL_BUFFED : BONES_RATTLER_ATTACKINTERVAL);
-		throwState[npc.index] = THROWSTATE_INACTIVE;
-	}
 }
 
 public void Rattler_LookAtPoint(RattlerBones npc, int closest)
@@ -739,6 +586,8 @@ public void RattlerBones_ClotThink(int iNPC)
 			{
 				npc.StopPathing();
 			}
+
+			Rattler_CheckThrow(npc, closest);
 		}
 	}
 	else
@@ -747,30 +596,6 @@ public void RattlerBones_ClotThink(int iNPC)
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
-	}
-	
-	switch(throwState[npc.index])
-	{
-		case THROWSTATE_INACTIVE:
-		{
-			Rattler_CheckThrow(npc, closest);
-		}
-		case THROWSTATE_INTRO:
-		{
-			Rattler_EndIntro(npc, closest);
-			Rattler_LookAtPoint(npc, closest);
-		}
-		case THROWSTATE_CHARGING:
-		{
-			Rattler_ChargeUp(npc, closest);
-			Rattler_LookAtPoint(npc, closest);
-		}
-		case THROWSTATE_THROWING:
-		{
-			Rattler_CheckLaunch(npc, closest);
-			Rattler_EndThrow(npc, closest);
-			Rattler_LookAtPoint(npc, closest);
-		}
 	}
 	
 	npc.PlayIdleSound();
@@ -834,10 +659,6 @@ public void RattlerBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-
-	int particle = EntRefToEntIndex(throwParticle[entity]);
-	if (IsValidEntity(particle))
-		RemoveEntity(particle);
 		
 	npc.RemoveAllWearables();
 	

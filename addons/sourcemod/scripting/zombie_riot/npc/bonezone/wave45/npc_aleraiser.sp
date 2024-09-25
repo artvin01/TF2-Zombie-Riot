@@ -100,11 +100,6 @@ public void AleraiserBones_OnMapStart_NPC()
 	PrecacheSound(SND_ALERAISER_HEAL);
 	PrecacheModel(MODEL_ALERAISER_BOTTLE);
 
-//	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-
-	PrecacheSound("player/flow.wav");
-	PrecacheModel("models/zombie/classic.mdl");
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aleraiser");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aleraiser");
@@ -194,7 +189,7 @@ methodmap AleraiserBones < CClotBody
 	
 	public AleraiserBones(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
-		AleraiserBones npc = view_as<AleraiserBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", BONES_ALERAISER_SCALE, BONES_ALERAISER_HP, ally, false));
+		AleraiserBones npc = view_as<AleraiserBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALERAISER_SCALE, BONES_ALERAISER_HP, ally, false));
 		
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;

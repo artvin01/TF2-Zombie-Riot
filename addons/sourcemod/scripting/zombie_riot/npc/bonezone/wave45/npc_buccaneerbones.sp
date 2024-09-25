@@ -158,7 +158,6 @@ public void BuccaneerBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
-	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
 	PrecacheSound(SOUND_CANNONBALL_SHOOT);
 	PrecacheSound(SOUND_CANNONBALL_EXPLODE);
 	PrecacheSound(SOUND_BIGBALL_EXPLODE);
@@ -305,7 +304,7 @@ methodmap BuccaneerBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 		
-		BuccaneerBones npc = view_as<BuccaneerBones>(CClotBody(vecPos, vecAng, buffed ? "models/zombie_riot/the_bone_zone/basic_bones.mdl" : "models/player/demo.mdl", buffed ? BONES_BUCCANEER_BUFFED_SCALE : BONES_BUCCANEER_SCALE, buffed ? BONES_BUCCANEER_HP_BUFFED : BONES_BUCCANEER_HP, ally, false));
+		BuccaneerBones npc = view_as<BuccaneerBones>(CClotBody(vecPos, vecAng, buffed ? BONEZONE_MODEL : "models/player/demo.mdl", buffed ? BONES_BUCCANEER_BUFFED_SCALE : BONES_BUCCANEER_SCALE, buffed ? BONES_BUCCANEER_HP_BUFFED : BONES_BUCCANEER_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
@@ -435,8 +434,8 @@ stock void Buccaneer_GiveCosmetics(CClotBody npc, bool buffed)
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 9999.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 9999.0);
 		
-		DispatchKeyValue(npc.index, "model", "models/zombie_riot/the_bone_zone/basic_bones.mdl");
-		view_as<CBaseCombatCharacter>(npc).SetModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
+		DispatchKeyValue(npc.index, "model", BONEZONE_MODEL);
+		view_as<CBaseCombatCharacter>(npc).SetModel(BONEZONE_MODEL);
 		
 		int iActivity = npc.LookupActivity("ACT_CANNON_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -457,7 +456,7 @@ stock void Buccaneer_GiveCosmetics(CClotBody npc, bool buffed)
 		
 		DispatchKeyValue(npc.m_iWearable1, "skin", "1");
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl");
-		npc.m_iWearable3 = npc.EquipItem("pelvis", "models/zombie_riot/the_bone_zone/basic_bones.mdl");
+		npc.m_iWearable3 = npc.EquipItem("pelvis", BONEZONE_MODEL);
 		DispatchKeyValue(npc.m_iWearable3, "skin", BONES_BUCCANEER_SKIN);
 	}
 }

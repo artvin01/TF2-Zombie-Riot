@@ -100,11 +100,6 @@ public void AlchemistBones_OnMapStart_NPC()
 	PrecacheSound(SND_ALCHEMIST_HEAL);
 	PrecacheModel(MODEL_ALCHEMIST_BOTTLE);
 
-//	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-
-	PrecacheSound("player/flow.wav");
-	PrecacheModel("models/zombie/classic.mdl");
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bone Brewer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alchemist");
@@ -194,7 +189,7 @@ methodmap AlchemistBones < CClotBody
 	
 	public AlchemistBones(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
-		AlchemistBones npc = view_as<AlchemistBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", BONES_ALCHEMIST_SCALE, BONES_ALCHEMIST_HP, ally, false));
+		AlchemistBones npc = view_as<AlchemistBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALCHEMIST_SCALE, BONES_ALCHEMIST_HP, ally, false));
 		
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;
