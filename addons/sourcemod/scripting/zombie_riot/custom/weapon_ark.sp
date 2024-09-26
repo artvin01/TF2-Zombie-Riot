@@ -197,6 +197,48 @@ public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) /
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 	}
 }
+public void Ark_empower_ability_4(int client, int weapon, bool crit, int slot) // the main ability used to recover the unique mana needed to for the weapon to fire projectiles
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, 15.0);
+		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+
+		Ark_Level[client] = 3;
+		
+		weapon_id[client] = weapon;
+
+		Ark_Hits[client] = 15;
+				
+				
+		ApplyTempAttrib(weapon, 6, 0.75, 3.0);
+
+		float flPos[3]; // original
+		float flAng[3]; // original
+		GetAttachment(client, "effect_hand_r", flPos, flAng);
+			
+		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 1.0);
+				
+		SetParent(client, particler, "effect_hand_r");
+				
+
+		//PrintToChatAll("test empower");
+
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+	}
+}
 
 public void Ark_attack0(int client, int weapon, bool crit, int slot) // stats for the base version of the weapon
 {       
@@ -283,6 +325,36 @@ public void Ark_attack2(int client, int weapon, bool crit, int slot) //second pa
 		Ark_Lauch_projectile(client, weapon, true, speed, time, damage);
 	}
 }
+public void Ark_attack3(int client, int weapon, bool crit, int slot) //second pap version
+{
+
+	if(Ark_Hits[client] >= 1)
+	{
+
+		Ark_Hits[client] -= 1;
+
+		float damage = 60.0;
+			
+		float speed = 1100.0;
+		damage *= Attributes_Get(weapon, 2, 1.0);
+
+		speed *= Attributes_Get(weapon, 103, 1.0);
+	
+		speed *= Attributes_Get(weapon, 104, 1.0);
+	
+		speed *= Attributes_Get(weapon, 475, 1.0);
+	
+	
+		float time = 1000.0/speed;
+		time *= Attributes_Get(weapon, 101, 1.0);
+	
+		time *= Attributes_Get(weapon, 102, 1.0);
+			
+		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
+		Ark_Lauch_projectile(client, weapon, false, speed, time, damage);
+		Ark_Lauch_projectile(client, weapon, true, speed, time, damage);
+	}
+}
 
 
 void Ark_Lauch_projectile(int client, int weapon, bool multi, float speed, float time, float damage)
@@ -291,12 +363,12 @@ void Ark_Lauch_projectile(int client, int weapon, bool multi, float speed, float
 
 	if(multi)
 	{	
+		damage *= 0.25;
 		float Angles[3];
 		GetClientEyeAngles(client, Angles);
 		Format(Particle, sizeof(Particle), "%s", "unusual_robot_radioactive2");
 		for (int i = 1; i <= 4; i++)
 		{
-			damage *= 0.25;
 			
 			for (int spread = 0; spread < 3; spread++)
 			{
@@ -416,7 +488,17 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 	{
 		float damage_reflected = damage;
 		//PrintToChatAll("parry worked");
-		if(Ark_Level[victim] == 2)
+		if(Ark_Level[victim] == 3)
+		{
+			damage_reflected *= 40.0;
+			
+			if(Ark_Hits[victim] < 25)
+			{
+				Ark_Hits[victim] = 25;
+			}
+			Ark_Hits[victim] += 1;
+		}
+		else if(Ark_Level[victim] == 2)
 		{
 			damage_reflected *= 40.0;
 			
@@ -424,7 +506,7 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 			{
 				Ark_Hits[victim] = 20;
 			}
-			Ark_Hits[victim] += 1;
+			Ark_Hits[victim] += 1;		
 		}
 		else if(Ark_Level[victim] == 1)
 		{
@@ -433,7 +515,6 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 			if(Ark_Hits[victim] < 12)
 			{
 				Ark_Hits[victim] = 12;
-
 			}
 			Ark_Hits[victim] += 1;		
 		}
@@ -444,7 +525,6 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 			if(Ark_Hits[victim] < 3)
 			{
 				Ark_Hits[victim] = 3;
-
 			}
 			Ark_Hits[victim] += 1;	
 		}
@@ -584,6 +664,90 @@ void TeleportParticleArk(DataPack pack)
 		TeleportEntity(particleEntity, Vec_Pos);
 	}
 	delete pack;
+}
+
+
+public void Arkoftheelements_Explosion(int client, int weapon, bool crit, int slot)
+{
+	if(Ark_Hits[client] >= 10)
+	{
+		if (Ability_Check_Cooldown(client, slot) < 0.0)
+		{
+			Ark_Hits[client] -= 5;
+			//float fPos[3];
+			//bool RaidActive = false;//normally we assume there isnt a raid boss alive
+			float damage = 500.0;
+			if(RaidbossIgnoreBuildingsLogic(1))//checks if a raid boss is alive
+			{
+				//RaidActive = true;
+				damage = 750.0;
+			}
+
+			Rogue_OnAbilityUse(weapon);
+			Ability_Apply_Cooldown(client, slot, 15.0);
+			
+			damage *= Attributes_Get(weapon, 2, 1.0);
+
+			i_ExplosiveProjectileHexArray[weapon] = 0;
+			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
+
+			//Explode_Logic_Custom(damage, client, client, weapon, fPos, Explosion radious, _, _, _, 15);
+			Explode_Logic_Custom(damage, client, client, weapon, _, 500.0, _, _, false, 15);
+
+			//float Duration_Stun = 1.2;
+			//float Duration_Stun_Boss = 0.6;
+
+			b_LagCompNPC_No_Layers = true;
+			StartLagCompensation_Base_Boss(client);
+			//float EnemyPos[3];
+			float UserLoc[3];
+			GetClientAbsOrigin(client, UserLoc);
+			//spawn location, particle name, particle duration
+			ParticleEffectAt(UserLoc, "Explosion_ShockWave_01", 1.0);
+			ParticleEffectAt(UserLoc, "eyeboss_tp_escape", 1.0);
+			ClientCommand(client, "playgamesound weapons/bombinomicon_explode1.wav");
+			/*	stun on ability would be funny but arvan would skin me alive so sadly no		
+			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)//cycles through all npcs
+			{
+				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+				if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
+				{
+					GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", EnemyPos);
+					if (GetVectorDistance(EnemyPos, UserLoc, true) <= (NEARL_STUN_RANGE * NEARL_STUN_RANGE))//check if the npc is close enough to the caster
+					{
+						if(!b_thisNpcIsABoss[baseboss_index] && !RaidActive)//stun :D
+						{
+							FreezeNpcInTime(baseboss_index,Duration_Stun);
+						}
+						else
+						{
+							FreezeNpcInTime(baseboss_index,Duration_Stun_Boss);
+						}
+					}
+				}
+			}
+			*/
+		}
+		else
+		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}
+	}
+	else
+	{			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not enough charge");
+	}
 }
 
 
