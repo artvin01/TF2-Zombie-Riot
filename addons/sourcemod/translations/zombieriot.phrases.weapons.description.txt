@@ -3148,9 +3148,9 @@
 	}
 	"Impact Lance Desc 2"
 	{
-		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n15% melee Resistance"
-		"fr"	"+15%% résistance contre les dégats corps-à-corps\nAbilité accélère un particule vers l'ennemi que vous visez.\nAbilité vous inflige du recul."
-		"chi"	"你现在可以加速能量，发射出去。只能面对敌人时使用，会对你造成击退。\+15%近战抗性。"
+		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n25% melee Resistance"
+		"fr"	"+25%% résistance contre les dégats corps-à-corps\nAbilité accélère un particule vers l'ennemi que vous visez.\nAbilité vous inflige du recul."
+		"chi"	"你现在可以加速能量，发射出去。只能面对敌人时使用，会对你造成击退。\+25%近战抗性。"
 	}
 	"Impact Lance Desc 3"
 	{
