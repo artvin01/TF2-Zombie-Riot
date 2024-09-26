@@ -673,7 +673,7 @@ public void Arkoftheelements_Explosion(int client, int weapon, bool crit, int sl
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Ark_Hits[client] -= 5;
+			Ark_Hits[client] -= 10;
 			//float fPos[3];
 			//bool RaidActive = false;//normally we assume there isnt a raid boss alive
 			float damage = 500.0;
