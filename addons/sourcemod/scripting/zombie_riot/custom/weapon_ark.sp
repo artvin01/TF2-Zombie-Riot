@@ -52,6 +52,7 @@ void Ark_autoaim_Map_Precache()
 	PrecacheSound(SOUND_LAPPLAND_SHOT);
 	PrecacheSound(SOUND_QUIBAI_SHOT);
 	PrecacheSound(SOUND_LAPPLAND_ABILITY);
+	PrecacheSound("weapons/bombinomicon_explode1.wav");
 	Zero(f_AniSoundSpam);
 	Zero(h_TimerLappLandManagement);
 	Zero(i_LappLandHitsDone);
@@ -487,6 +488,9 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 	if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
 	{
 		float damage_reflected = damage;
+		if(damage_reflected >= 300.0)
+			damage_reflected = 300.0;
+
 		//PrintToChatAll("parry worked");
 		if(Ark_Level[victim] == 3)
 		{
@@ -500,7 +504,7 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 		}
 		else if(Ark_Level[victim] == 2)
 		{
-			damage_reflected *= 40.0;
+			damage_reflected *= 30.0;
 			
 			if(Ark_Hits[victim] < 20)
 			{
@@ -691,21 +695,21 @@ public void Arkoftheelements_Explosion(int client, int weapon, bool crit, int sl
 			i_ExplosiveProjectileHexArray[weapon] = 0;
 			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
 
-			//Explode_Logic_Custom(damage, client, client, weapon, fPos, Explosion radious, _, _, _, 15);
-			Explode_Logic_Custom(damage, client, client, weapon, _, 500.0, _, _, false, 15);
-
-			//float Duration_Stun = 1.2;
-			//float Duration_Stun_Boss = 0.6;
-
 			b_LagCompNPC_No_Layers = true;
 			StartLagCompensation_Base_Boss(client);
+
+			//Explode_Logic_Custom(damage, client, client, weapon, fPos, Explosion radious, _, _, _, 15);
+			Explode_Logic_Custom(damage, client, client, weapon, _, 500.0, _, _, false, 15);
+			FinishLagCompensation_Base_boss();
+
 			//float EnemyPos[3];
 			float UserLoc[3];
 			GetClientAbsOrigin(client, UserLoc);
 			//spawn location, particle name, particle duration
 			ParticleEffectAt(UserLoc, "Explosion_ShockWave_01", 1.0);
 			ParticleEffectAt(UserLoc, "eyeboss_tp_escape", 1.0);
-			ClientCommand(client, "playgamesound weapons/bombinomicon_explode1.wav");
+			EmitSoundToAll("weapons/bombinomicon_explode1.wav", client, _, 75, _, 0.55, 100);
+			
 			/*	stun on ability would be funny but arvan would skin me alive so sadly no		
 			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)//cycles through all npcs
 			{
