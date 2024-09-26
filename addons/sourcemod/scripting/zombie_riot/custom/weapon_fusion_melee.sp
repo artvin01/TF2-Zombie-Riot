@@ -1714,7 +1714,10 @@ public float Player_OnTakeDamage_VoidBlade_Hud(int victim)
 	float damage = 1.0;
 	if(i_VoidCurrentShields[victim] >= 1)
 	{
-		damage *= 0.25;
+		if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
+			damage *= 0.25;
+		else
+			damage *= 0.6;
 	}
 	return damage;
 }
@@ -1723,13 +1726,22 @@ public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attack
 	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 	{
 		if(i_VoidCurrentShields[victim] >= 1)
-			damage *= 0.25;
+		{
+			if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
+				damage *= 0.6;
+			else
+				damage *= 0.25;
+		}
 
 		return damage;
 	}
 	if(i_VoidCurrentShields[victim] >= 1)
 	{
-		damage *= 0.25;
+		if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
+			damage *= 0.6;
+		else
+			damage *= 0.25;
+			
 		i_VoidCurrentShields[victim]--;
 		if(i_VoidCurrentShields[victim] <= 0)
 		{

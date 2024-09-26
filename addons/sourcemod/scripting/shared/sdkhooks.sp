@@ -901,9 +901,8 @@ public void OnPostThink(int client)
 #if defined ZR
 			percentage_Global *= ArmorPlayerReduction(client);
 			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
-			float BaseDamage = 1.0;
 			int testvalue1 = 0;
-			OnTakeDamageDamageBuffs(client, testvalue1, testvalue1, BaseDamage, percentage_Global, testvalue1, testvalue1, GetGameTime());	
+			OnTakeDamageDamageBuffs(client, testvalue1, testvalue1, percentage_Global, testvalue1, testvalue1, GetGameTime());	
 #endif
 			
 			if(IsInvuln(client, true) || f_ClientInvul[client] > GetGameTime())
@@ -1794,7 +1793,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	Replicate_Damage_Medications(victim, damage, damagetype);
 #endif
 
-	if(Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
 		return Plugin_Handled;
 	}
