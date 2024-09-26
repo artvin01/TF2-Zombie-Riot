@@ -792,8 +792,11 @@ bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype
 					slot = i_OverrideWeaponSlot[weapon];
 				}
 			}	
+			bool DoNotPass = false;
+			if(IsValidEntity(weapon) && i_IsWandWeapon[weapon])
+				DoNotPass = true;
 
-			if((!i_IsWandWeapon[weapon]) && (slot == 2 || (damagetype & (DMG_CLUB|DMG_SLASH)))) // if you want anything to be melee based, just give them this.
+			if((!DoNotPass) && (slot == 2 || (damagetype & (DMG_CLUB|DMG_SLASH)))) // if you want anything to be melee based, just give them this.
 			{
 				damage *= 1.1;
 			}
