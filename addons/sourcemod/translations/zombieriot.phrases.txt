@@ -931,6 +931,10 @@
 		"en"		"You can't do that right now!"
 		"fr"		"Vous êtes incapable de faire ça maintenant!"
 	}
+	"Not enough charge"
+	{
+		"en"		"Not enough charge."
+	}
 	"Rusty Ability Cooldown"
 	{
 		"#format"	"{1:.1f}"
