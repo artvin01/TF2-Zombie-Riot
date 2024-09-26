@@ -68,7 +68,7 @@ static int TriggerDamage(int entity, int type)
 		return MaxArmorCalculation(Armor_Level[entity], entity, 1.0);
 	
 
-	int divide = 3;
+	float divide = 3.0;
 
 	switch(type)
 	{
@@ -84,31 +84,32 @@ static int TriggerDamage(int entity, int type)
 		}
 		case Element_Cyro:
 		{
-			divide = 4;
+			divide = 4.0;
 		}
 		case Element_Void:
 		{
-			divide = 2;
+			divide = 2.0;
 		}
 	}
 
 	if(Citizen_IsIt(entity))
 		return view_as<Citizen>(entity).m_iGunValue / 20;
 
-	if(b_thisNpcIsARaid[entity])
+	//also works against superbosses.
+	if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
 	{
-		divide *= RoundToCeil(5.0 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
+		divide *= (5.2 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
 	}
 	else if(b_thisNpcIsABoss[entity])
 	{
-		divide *= RoundToCeil(2.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
+		divide *= (3.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
 	}
 	else if (b_IsGiant[entity])
 	{
-		divide *= 2;
+		divide *= 2.0;
 	}
 
-	return RoundToCeil(float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide;
+	return RoundToCeil((float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide);
 }
 
 bool Elemental_HurtHud(int entity, char Debuff_Adder[64])

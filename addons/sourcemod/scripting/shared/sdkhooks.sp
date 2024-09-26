@@ -37,6 +37,7 @@ void SDKHooks_ClearAll()
 	Zero(i_WasInMarkedForDeath);
 	Zero(i_WasInDefenseBuff);
 	Zero(i_WasInJarate);
+	Zero(i_WasInResPowerup);
 	Zero(Client_Had_ArmorDebuff);
 	Zero(f_TimeSinceLastRegenStop);
 }
@@ -900,9 +901,8 @@ public void OnPostThink(int client)
 #if defined ZR
 			percentage_Global *= ArmorPlayerReduction(client);
 			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
-			float BaseDamage = 1.0;
 			int testvalue1 = 0;
-			OnTakeDamageDamageBuffs(client, testvalue1, testvalue1, BaseDamage, percentage_Global, testvalue1, testvalue1, GetGameTime());	
+			OnTakeDamageDamageBuffs(client, testvalue1, testvalue1, percentage_Global, testvalue1, testvalue1, GetGameTime());	
 #endif
 			
 			if(IsInvuln(client, true) || f_ClientInvul[client] > GetGameTime())
@@ -1600,10 +1600,15 @@ void RegainTf2Buffs(int victim)
 	{
 		TF2_AddCondition(victim, TFCond_DefenseBuffed, i_WasInDefenseBuff[victim]);
 	}
+	if(i_WasInResPowerup[victim])
+	{
+		TF2_AddCondition(victim, TFCond_RuneResist, i_WasInResPowerup[victim]);
+	}
 	i_WasInUber[victim] = 0.0;
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 	i_WasInJarate[victim] = 0.0;
+	i_WasInResPowerup[victim] = 0.0;
 }
 #endif
 
@@ -1788,7 +1793,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	Replicate_Damage_Medications(victim, damage, damagetype);
 #endif
 
-	if(Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
 		return Plugin_Handled;
 	}
@@ -2038,6 +2043,12 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		i_WasInDefenseBuff[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_DefenseBuffed);
 		TF2_RemoveCondition(victim, TFCond_DefenseBuffed);
 		damage *= 0.65;
+	}
+	if(TF2_IsPlayerInCondition(victim, TFCond_RuneResist))
+	{
+		i_WasInResPowerup[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_RuneResist);
+		TF2_RemoveCondition(victim, TFCond_RuneResist);
+		//This is purely visual, it doesnt grant anything by itself.
 	}
 	float value;
 	if(damagetype & (DMG_CLUB|DMG_SLASH))

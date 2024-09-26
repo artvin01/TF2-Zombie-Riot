@@ -56,7 +56,7 @@ int MaxCurrentHitsNeededSolemnity(int client)
 	}
 	else
 	{
-		return (LEPER_SOLEMNY_MAX_HITS + ((Leper_SolemnyUses[client] - 2) * LEPER_SOLEMNY_MAX_INCREACE));
+		return (LEPER_SOLEMNY_MAX_HITS + ((Leper_SolemnyUses[client] - 1) * LEPER_SOLEMNY_MAX_INCREACE));
 	}
 }
 

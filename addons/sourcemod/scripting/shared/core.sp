@@ -285,6 +285,7 @@ float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 float f_PreventMedigunCrashMaybe[MAXTF2PLAYERS];
 int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
+float i_WasInResPowerup[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
 #if !defined NOG
