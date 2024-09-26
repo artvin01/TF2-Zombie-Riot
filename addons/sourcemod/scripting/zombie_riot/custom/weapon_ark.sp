@@ -334,7 +334,7 @@ public void Ark_attack3(int client, int weapon, bool crit, int slot) //second pa
 
 		Ark_Hits[client] -= 1;
 
-		float damage = 60.0;
+		float damage = 50.0;
 			
 		float speed = 1100.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
@@ -364,7 +364,7 @@ void Ark_Lauch_projectile(int client, int weapon, bool multi, float speed, float
 
 	if(multi)
 	{	
-		damage *= 0.25;
+		damage *= 0.20;
 		float Angles[3];
 		GetClientEyeAngles(client, Angles);
 		Format(Particle, sizeof(Particle), "%s", "unusual_robot_radioactive2");
@@ -681,11 +681,13 @@ public void Arkoftheelements_Explosion(int client, int weapon, bool crit, int sl
 			//float fPos[3];
 			//bool RaidActive = false;//normally we assume there isnt a raid boss alive
 			float damage = 500.0;
+			/*
 			if(RaidbossIgnoreBuildingsLogic(1))//checks if a raid boss is alive
 			{
 				//RaidActive = true;
 				damage = 750.0;
 			}
+			*/
 
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 15.0);
