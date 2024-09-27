@@ -1712,7 +1712,7 @@
 	}
 	"Standard Desc"
 	{
-		"en"	"Play as intended!\nAny other Modifcation might go off the rails.\nBe warned!!!!"
+		"en"	"Play as intended!"
 	}
 	"Old Times"
 	{

@@ -291,7 +291,7 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 	}
 	return spawn_index;
 }
-public void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3], bool Los)
+void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3], bool Los)
 {
 	float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
 	

@@ -16,58 +16,58 @@ void DamageModifMapStart()
 	Zero(BarbariansMindNotif);
 }
 
-stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//LogEntryInvicibleTest(victim, attacker, damage, 5);
 	
-	if(Damage_AnyVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+	if(Damage_AnyVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		return true;
 
 	//LogEntryInvicibleTest(victim, attacker, damage, 6);
 	if(victim <= MaxClients)
 	{
 #if !defined RTS
-		if(Damage_PlayerVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+		if(Damage_PlayerVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
 		//LogEntryInvicibleTest(victim, attacker, damage, 7);
 #endif
 	}
 	else if(!b_NpcHasDied[victim])
 	{
-		if(Damage_NPCVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+		if(Damage_NPCVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
 		//LogEntryInvicibleTest(victim, attacker, damage, 8);
 	}
 	else if(i_IsABuilding[victim])
 	{
-		if(Damage_BuildingVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+		if(Damage_BuildingVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
 		//LogEntryInvicibleTest(victim, attacker, damage, 9);
 	}
 
 	if(attacker > 0)
 	{
-		if(Damage_AnyAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+		if(Damage_AnyAttacker(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
 
 		//LogEntryInvicibleTest(victim, attacker, damage, 13);
 		if(attacker <= MaxClients)
 		{
 #if !defined RTS
-			if(Damage_PlayerAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+			if(Damage_PlayerAttacker(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
 #endif
 			//LogEntryInvicibleTest(victim, attacker, damage, 14);
 		}
 		else if(!b_NpcHasDied[attacker])
 		{
-			if(Damage_NPCAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+			if(Damage_NPCAttacker(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
 			//LogEntryInvicibleTest(victim, attacker, damage, 15);
 		}
 		else if(i_IsABuilding[attacker])
 		{
-			if(Damage_BuildingAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+			if(Damage_BuildingAttacker(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
 			//LogEntryInvicibleTest(victim, attacker, damage, 16);
 		}
@@ -76,7 +76,7 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float based
 	return false;
 }
 
-stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 //	float GameTime = GetGameTime();
 
@@ -99,7 +99,7 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float bas
 }
 
 #if !defined RTS
-stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
 	if(VIPBuilding_Active())
@@ -269,10 +269,9 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 }
 #endif	// Non-RTS
 
-stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	view_as<CClotBody>(victim).m_bGib = false;
-
 	float GameTime = GetGameTime();
 	
 #if defined ZR
@@ -350,7 +349,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 
 
 #if !defined RTS
-		OnTakeDamageDamageBuffs(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, GameTime);
+		OnTakeDamageDamageBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 
 		OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 		
@@ -450,6 +449,25 @@ void NpcArmorExtra(int victim, int &attacker, int &inflictor, float &damage, int
 		if(damagetype & DMG_CLUB)
 		{
 			npc.m_flArmorCount -= ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)) * 1.35);
+			//armored enemies get more damage.
+			int DisplayCritSoundTo;
+			if(attacker <= MaxClients)
+				DisplayCritSoundTo = attacker;
+			else if(inflictor <= MaxClients)
+				DisplayCritSoundTo = inflictor;
+				
+			if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
+			{
+				bool PlaySound = false;
+				if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
+				{
+					PlaySound = true;
+					f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
+				}
+				
+				DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
+			}
+
 		}
 		else
 		{
@@ -468,7 +486,7 @@ void NpcArmorExtra(int victim, int &attacker, int &inflictor, float &damage, int
 	}
 }
 
-stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	float GameTime = GetGameTime();
 
@@ -496,9 +514,10 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 	return false;
 }
 
-stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	float GameTime = GetGameTime();
+	float basedamage = damage;
 	
 	float DamageBuffExtraScaling = 1.0;
 
@@ -582,7 +601,7 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 }
 
 #if !defined RTS
-stock bool Damage_PlayerAttacker(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock bool Damage_PlayerAttacker(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	float GameTime = GetGameTime();
 
@@ -597,7 +616,7 @@ stock bool Damage_PlayerAttacker(int victim, int &attacker, int &inflictor, floa
 }
 #endif
 
-stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
 	float GameTime = GetGameTime();
@@ -637,7 +656,7 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 	else if(f_LeeMinorEffect[attacker] > GameTime)
 	{
 		DamageRes *= 0.95;
-	} 
+	}
 	//if inflictor is 9999999, then that means its called by seperate code, HUD elements.
 	if(RaidbossIgnoreBuildingsLogic(1) && (GetTeam(victim) == TFTeam_Red))
 	{
@@ -650,7 +669,7 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 	return false;
 }
 
-stock bool Damage_BuildingAttacker(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock bool Damage_BuildingAttacker(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(b_thisNpcIsABoss[attacker])
 	{
@@ -671,6 +690,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_NEARL, WEAPON_FUSION_PAP2:
 		{
 			return Player_OnTakeDamage_Fusion(victim, damage, attacker, equipped_weapon, damagePosition);
+		}
+		case WEAPON_EXPLORER:
+		{
+			return Player_OnTakeDamage_VoidBlade(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
 		case WEAPON_RIOT_SHIELD:
 		{
@@ -768,9 +791,12 @@ bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype
 				{
 					slot = i_OverrideWeaponSlot[weapon];
 				}
-			}
+			}	
+			bool DoNotPass = false;
+			if(IsValidEntity(weapon) && i_IsWandWeapon[weapon])
+				DoNotPass = true;
 
-			if(slot == 2 || (damagetype & (DMG_CLUB|DMG_SLASH))) // if you want anything to be melee based, just give them this.
+			if((!DoNotPass) && (slot == 2 || (damagetype & (DMG_CLUB|DMG_SLASH)))) // if you want anything to be melee based, just give them this.
 			{
 				damage *= 1.1;
 			}
@@ -987,6 +1013,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			WeaponSensal_Scythe_OnTakeDamage(attacker, victim,weapon, zr_custom_damage);
 		}
+		case WEAPON_EXPLORER:
+		{
+			WeaponVoidBlade_OnTakeDamage(attacker, victim,weapon, zr_custom_damage, damage);
+		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{
 			WeaponLeper_OnTakeDamage(attacker, damage,weapon, zr_custom_damage);
@@ -1080,6 +1110,10 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 		case WEAPON_MERCHANT:
 		{
 			Merchant_NPCTakeDamagePost(attacker, damage, weapon);
+		}
+		case WEAPON_EXPLORER:
+		{
+			WeaponVoidBlade_OnTakeDamagePost(attacker, victim, damage);
 		}
 	}
 
@@ -1639,22 +1673,22 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		}
 		if(f_VoidAfflictionStrength2[victim] > GameTime)
 		{
-			DamageRes *= 0.8;
+			DamageRes *= ((victim <= MaxClients) ? 0.85 : 0.8);
 		}
 		else if(f_VoidAfflictionStrength[victim] > GameTime)
 		{
-			DamageRes *= 0.85;
+			DamageRes *= ((victim <= MaxClients) ? 0.9 : 0.85);
 		}
 	}
 	else
 	{
 		if(f_VoidAfflictionStrength2[victim] > GameTime)
 		{
-			DamageRes *= 0.85;
+			DamageRes *= ((victim <= MaxClients) ? 0.9 : 0.85);
 		}
 		else if(f_VoidAfflictionStrength[victim] > GameTime)
 		{
-			DamageRes *= 0.9;
+			DamageRes *= ((victim <= MaxClients) ? 0.95 : 0.9);
 		}
 	}
 	if(f_CombineCommanderBuff[victim] > GameTime)
@@ -1743,9 +1777,10 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 #endif
 }
 
-stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float GameTime)
+stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
 #if defined ZR
+	float basedamage = damage;
 	if(inflictor > 0)
 	{
 		if(b_ThisWasAnNpc[inflictor])
