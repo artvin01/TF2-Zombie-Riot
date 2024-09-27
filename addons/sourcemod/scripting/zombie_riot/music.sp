@@ -650,8 +650,17 @@ void Music_PostThink(int client)
 		}
 		if(RaidbossIgnoreBuildingsLogic())
 		{
-			f_intencity += 9999.9; //absolute max.
-			GlobalIntencity += 9999;
+			//if they arent on red, do this.
+			if(GetTeam(EntRefToEntIndex(RaidBossActive)) != TFTeam_Red)
+			{
+				f_intencity += 9999.9; //absolute max.
+				GlobalIntencity += 9999;
+			}
+			else
+			{
+				//thes are on red, set this.
+				RaidAllowsBuildings = true;
+			}
 		}
 
 		if(!ZombieMusicPlayed)//once set in a wave, it should stay untill the next mass revive.

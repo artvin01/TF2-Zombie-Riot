@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/test_models1.mdl"
+$modelname "zombie_riot/weapons/test_models9.mdl"
 
 $bodygroup "fusion_blade1_1"
 {
