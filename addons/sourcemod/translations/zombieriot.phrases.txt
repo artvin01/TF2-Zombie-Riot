@@ -3445,7 +3445,7 @@
 	}
 	"True Fusion Warrior Wave Desc"
 	{
-		"en"	"(1) ''True fusion warrior'' Is infected with the xeno virus, his gear prevents spreading of it, it even made him forget his name.\nGround slam(can be silenced)"
+		"en"	"(1) ''True fusion warrior'' Is infected with the xeno virus, his gear prevents spreading of it, it even made him forget his name."
 	}
 	"Alternative Desc"
 	{
@@ -3455,7 +3455,7 @@
 	}
 	"Blitzkrieg Wave Desc"
 	{
-		"en"	"(2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas...\nTeleport and jump during moonlight(Can be silenced)"
+		"en"	"(2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 	}
 	"Blitzkrieg Hard Desc"
 	{
