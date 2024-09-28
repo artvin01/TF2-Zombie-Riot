@@ -62,7 +62,7 @@ static float CurrentlyInAttack[MAXTF2PLAYERS];
 static bool SpecialLastMan;
 static bool Precached;
 static float HeatActionCooldown[MAXTF2PLAYERS];
-static float HeatActionCooldownEnemy[MAXTF2PLAYERS];
+static float HeatActionCooldownEnemy[MAXENTITIES];
 
 void Yakuza_MapStart()
 {

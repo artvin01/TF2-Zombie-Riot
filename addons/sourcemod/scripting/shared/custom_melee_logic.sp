@@ -240,6 +240,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Yakuza_EnemiesHit(client, weapon, enemies_hit_aoe);
 			}
+			case WEAPON_FULLMOON:
+			{
+				FullMoon_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
+			}
 		}	
 	}
 #endif
@@ -427,6 +431,11 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 				PlayCustomSoundLeper(client, target);
 				PlayOnceOnly = false;
 				return ZEROSOUND;
+			}
+			case WEAPON_FULLMOON:
+			{
+				if(FullMoonAbilityOn(client))
+					return ZEROSOUND;
 			}
 			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
 			{
@@ -720,6 +729,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							Blitzkrieg_Kit_OnHitEffect(client);
 						}
+						case WEAPON_FULLMOON:
+						{
+							FullMoon_Meleetrace_Hit_Before(client, damage, i_EntitiesHitAoeSwing[counter]);
+						}
 						default:
 						{
 							
@@ -743,6 +756,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
 							Angelic_Shotgun_Meleetrace_Hit_After(client, damage);
+						}
+						case WEAPON_FULLMOON:
+						{
+							FullMoon_Meleetrace_Hit_After(client, damage);
 						}
 						default:
 						{
@@ -769,7 +786,6 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			{
 				YakuzaWeaponSwingDid(client);
 			}
-
 		}
 
 		if(i_EntitiesHitAtOnceMax <= 1 && target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
@@ -779,6 +795,14 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			
 			float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
 			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, vecHit);	
+			//this only happens if it only tried to hit 1 target anyways.
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_FULLMOON:
+				{
+					FullMoon_Meleetrace_Hit_Before(client, damage, target);
+				}
+			}
 		}
 		else if(target > -1 && i_CustomWeaponEquipLogic[weapon] == WEAPON_BOOM_HAMMER)
 		{

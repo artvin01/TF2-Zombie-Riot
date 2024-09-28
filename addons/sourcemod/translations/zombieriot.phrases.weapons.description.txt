@@ -3251,6 +3251,18 @@
 		"fr"	"Dégats, chance d'attaque critique et santé bonus par soins améliorés.\nVous frappez plus d'ennemis à la fois."
 		"chi"	"提高伤害，技能赋予更多双击子弹。\n加强穿透力，更高的超量上限。\n随机暴击概率提高。"
 	}
+	"Half Moon Desc1"
+	{
+		"en" 	"Weapon changes:\nM2 Ability causes multi 3 hit, with more damage & cooldown\nGain 2.4x max HP and 2x Vuln\nHheal on hit, Lower hp = faster atk.\nYou cant gain armor.\nArmor -> Hp."
+	}
+	"Half Moon Desc2"
+	{
+		"en" 	"Increaces heal on hit\nIf below 30%% HP, you gain 25%% resistance, if you stand near no enemy, you heal."
+	}
+	"Half Moon Desc3"
+	{
+		"en" 	"Increaces heal on hit\nIncreaces threshhold to 35%%, if at threshhold, heal regardless."
+	}
 	"Angelic Shotgonnus Desc Pap 2"
 	{
 		"en"	"You deal more damage, you heal more, your range increaces and your ability holds more charge.\nCrit Chance Increaces."

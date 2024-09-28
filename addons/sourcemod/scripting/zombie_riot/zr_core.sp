@@ -199,7 +199,8 @@ enum
 	WEAPON_MAGNESIS = 119,
 	WEAPON_SUPERUBERSAW = 120,
 	WEAPON_YAKUZA = 121,
-	WEAPON_EXPLORER = 122
+	WEAPON_EXPLORER = 122,
+	WEAPON_FULLMOON = 123
 }
 
 enum
@@ -531,6 +532,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_wrathful_blade.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
+#include "zombie_riot/custom/weapon_fullmoon.sp"
 #include "zombie_riot/custom/red_blade.sp"
 #include "zombie_riot/custom/weapon_rapier.sp"
 #include "zombie_riot/custom/wand/weapon_wand_gravaton.sp"
@@ -666,6 +668,7 @@ void ZR_MapStart()
 	Rogue_OnAbilityUseMapStart();
 	Weapon_TexanBuisnesMapChange();
 	AngelicShotgun_MapStart();
+	FullMoon_MapStart();
 	SuperUbersaw_Mapstart();
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
@@ -1983,6 +1986,12 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 		else
 		{
 			ArmorToGive = float(Armor_Max) * multiplyier;
+		}
+			
+		if(FullMoonIs(client))
+		{
+			HealEntityGlobal(client, client, ArmorToGive * 0.5, 1.0,_,HEAL_SELFHEAL);
+			return;
 		}
 		Armor_Charge[client] += RoundToNearest(ArmorToGive);
 

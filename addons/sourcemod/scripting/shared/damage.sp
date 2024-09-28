@@ -770,6 +770,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Yakuza_SelfTakeDamage(victim, attacker, damage, damagetype, equipped_weapon);
 		}
+		case WEAPON_FULLMOON:
+		{
+			FullMoon_SanctuaryApplyBuffs(victim, damage);
+		}
 	}
 	return damage;
 }
