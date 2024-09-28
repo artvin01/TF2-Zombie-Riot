@@ -413,6 +413,14 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 	if(target == -1)
 		return ZEROSOUND;
 
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_FULLMOON:
+		{
+			if(FullMoonAbilityOn(client))
+				return ZEROSOUND;
+		}
+	}
 	if(target > 0 && (!b_NpcHasDied[target] || target <= MaxClients))
 	{
 		switch(weapon_index)
@@ -431,11 +439,6 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 				PlayCustomSoundLeper(client, target);
 				PlayOnceOnly = false;
 				return ZEROSOUND;
-			}
-			case WEAPON_FULLMOON:
-			{
-				if(FullMoonAbilityOn(client))
-					return ZEROSOUND;
 			}
 			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
 			{
