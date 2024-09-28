@@ -178,7 +178,7 @@ public void FullMoon_Cooldown_Logic(int client, int weapon)
 		MakeBladeBloddy(client, false, weapon);
 	}
 
-	if(f_FullMoonHudCD[client] < GetGameTime())
+	if(f_FullMoonHudCD[client] < GetGameTime() && i_Current_Pap[client] > 1)
 	{
 		f_FullMoonHudCD[client] = GetGameTime() + 0.25;
 		
@@ -197,7 +197,8 @@ public void FullMoon_Cooldown_Logic(int client, int weapon)
 		}
 		if(!HitAnyEnemy)
 		{
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.0025, 1.0,_,HEAL_SELFHEAL);
+			if(dieingstate[client] == 0)
+				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.0025, 1.0,_,HEAL_SELFHEAL);
 		}
 	}
 }
