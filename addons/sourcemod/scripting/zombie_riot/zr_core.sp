@@ -1929,7 +1929,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 }
 
 float f_IncrementalSmallArmor[MAXENTITIES];
-stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false)
+stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false, bool HealCorrosion = false)
 {
 	int Armor_Max;
 	
@@ -1988,13 +1988,21 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 			ArmorToGive = float(Armor_Max) * multiplyier;
 		}
 			
-		if(FullMoonIs(client))
+		if(FullMoonIs(client) && !HealCorrosion)
 		{
-			HealEntityGlobal(client, client, ArmorToGive * 0.5, 1.0,_,HEAL_SELFHEAL);
+			if(dieingstate[client] == 0)
+				HealEntityGlobal(client, client, ArmorToGive * 0.5, 1.0,_,HEAL_SELFHEAL);
+
 			return;
 		}
 		Armor_Charge[client] += RoundToNearest(ArmorToGive);
-
+		if(HealCorrosion)
+		{
+			if(Armor_Charge[client] >= 0)
+			{
+				Armor_Charge[client] = 0;
+			}
+		}
 		if(Armor_Charge[client] >= Armor_Max)
 		{
 			Armor_Charge[client] = Armor_Max;

@@ -200,6 +200,14 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	if(owner == -1)
 		return;
 		
+	if((GetEntityFlags(client) & FL_DUCKING))
+	{
+		SetGlobalTransTarget(client);
+		PrintToChat(client, "{green} %t", PerkNames_Recieved[what_perk]);
+		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
+		ClotInteract(client, -1, npc);
+		return;
+	}
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 	ApplyBuildingCollectCooldown(entity, client, 40.0);
 	

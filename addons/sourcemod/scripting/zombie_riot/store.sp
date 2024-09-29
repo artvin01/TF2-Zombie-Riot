@@ -473,7 +473,6 @@ enum struct Item
 	bool ChildKit;
 	bool MaxBarricadesBuild;
 	bool Hidden;
-	bool NoPrivatePlugin;
 	bool WhiteOut;
 	bool IgnoreSlots;
 	char Tags[256];

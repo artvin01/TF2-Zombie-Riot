@@ -762,7 +762,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						}
 						case WEAPON_FULLMOON:
 						{
-							FullMoon_Meleetrace_Hit_After(client, damage);
+							FullMoon_Meleetrace_Hit_After(damage);
 						}
 						default:
 						{
