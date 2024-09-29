@@ -1568,7 +1568,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 		}
 	}
 	
-	if((damagetype & DMG_DROWN))
+	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
 	{
 		//the player has died to a stuckzone.
 		if(dieingstate[victim] > 0)
