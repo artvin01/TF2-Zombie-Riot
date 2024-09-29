@@ -1567,7 +1567,7 @@ void WeaponVoidBlade_OnTakeDamagePost(int attacker, int victim, float damage)
 {
 	Elemental_AddVoidDamage(victim, attacker, RoundToCeil(damage),_,_, true);
 }
-void WeaponVoidBlade_OnTakeDamage(int attacker, int victim,int weapon, int zr_damage_custom)
+void WeaponVoidBlade_OnTakeDamage(int attacker, int victim, int zr_damage_custom)
 {
 	if(zr_damage_custom & ZR_DAMAGE_REFLECT_LOGIC)
 		return;

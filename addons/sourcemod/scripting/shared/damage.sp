@@ -1019,7 +1019,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_EXPLORER:
 		{
-			WeaponVoidBlade_OnTakeDamage(attacker, victim,weapon, zr_custom_damage);
+			WeaponVoidBlade_OnTakeDamage(attacker, victim, zr_custom_damage);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{
