@@ -829,7 +829,13 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 	{
 		if(!ingore_glass)
-			maxAllowed = 2;
+		{
+			if(maxAllowed > 2)
+			{
+				maxAllowed = 2;
+
+			}
+		}
 	}
 	return maxAllowed;
 }

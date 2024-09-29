@@ -770,6 +770,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Yakuza_SelfTakeDamage(victim, attacker, damage, damagetype, equipped_weapon);
 		}
+		case WEAPON_FULLMOON:
+		{
+			FullMoon_SanctuaryApplyBuffs(victim, damage);
+		}
 	}
 	return damage;
 }
@@ -791,9 +795,12 @@ bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype
 				{
 					slot = i_OverrideWeaponSlot[weapon];
 				}
-			}
+			}	
+			bool DoNotPass = false;
+			if(IsValidEntity(weapon) && i_IsWandWeapon[weapon])
+				DoNotPass = true;
 
-			if(slot == 2 || (damagetype & (DMG_CLUB|DMG_SLASH))) // if you want anything to be melee based, just give them this.
+			if((!DoNotPass) && (slot == 2 || (damagetype & (DMG_CLUB|DMG_SLASH)))) // if you want anything to be melee based, just give them this.
 			{
 				damage *= 1.1;
 			}

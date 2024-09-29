@@ -487,7 +487,7 @@
 	}
 	"True Fusion Warrior Desc"
 	{
-		"en" 		"A Superpowered Warrior with the abilities of many arts. He Gets stronger everytime he comes back. His halo is his powersource, headshots are neccecary, he is very tanky.\nCan you cure him?\nHis pull attack (can be silenced)."
+		"en" 		"A Superpowered Warrior with the abilities of many arts. He Gets stronger everytime he comes back. His halo is his powersource, headshots are neccecary, he is very tanky.\nCan you cure him?\nHis ground slam (can be silenced)."
 	}
 	"Medic Charger Desc"
 	{
@@ -539,7 +539,7 @@
 	}
 	"Blitzkrieg Desc"
 	{
-		"en" 		"A supreme being of rockets, capable of outputing extremely high damage, its also said he owns his own personal army. He posses's multiple lives, usually melee is a death sentance.\nTeleport (can be silenced).\nDo not fight him in any expidonsan areas..."
+		"en" 		"A supreme being of rockets, capable of outputing extremely high damage, its also said he owns his own personal army. He posses's multiple lives, usually melee is a death sentance.\nTeleport and dash during moonlight (can be silenced).\nDo not fight him in any expidonsan areas..."
 	}
 	"Hyper Blitzkrieg Desc"
 	{

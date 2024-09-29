@@ -1746,6 +1746,7 @@ public void OnMapStart()
 	PrecacheSound("weapons/capper_shoot.wav");
 	PrecacheSound("ambient/explosions/explode_3.wav");
 	PrecacheSound("ui/medic_alert.wav");
+	PrecacheSound("weapons/drg_wrench_teleport.wav");
 
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
@@ -2746,6 +2747,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			float attack_speed;
 			
 			attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+			attack_speed *= (1.0 / Attributes_FindOnWeapon(client, weapon, 396, true, 1.0));
 
 			if(f_ModifThirdPersonAttackspeed[weapon] != 1.0)
 				attack_speed *= f_ModifThirdPersonAttackspeed[weapon];
@@ -2774,8 +2776,12 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				if(flpercenthpfrommax >= 1.0)
 					flpercenthpfrommax = 1.0; //maths to not allow negative suuuper slow attack speed
 					
-				float Attack_speed = flpercenthpfrommax / Panic_Attack[weapon];
+				float Attack_speed = flpercenthpfrommax / 0.65;
 				
+				if(Panic_Attack[weapon] <= 0.6)
+				{
+					Attack_speed *= 0.7;
+				}
 				if(Attack_speed <= Panic_Attack[weapon])
 				{
 					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY INCREACED ATTACK SPEED.
