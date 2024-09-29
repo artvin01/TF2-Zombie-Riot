@@ -785,7 +785,7 @@ static void Yakuza_Block(int client, int weapon, int slot)
 	Rogue_OnAbilityUse(weapon);
 
 	float gameTime = GetGameTime();
-	float cooldown = 2.0;
+//	float cooldown = 2.0;
 	float duration = 0.5;
 	if(BlockStale[client] > 0)
 	{

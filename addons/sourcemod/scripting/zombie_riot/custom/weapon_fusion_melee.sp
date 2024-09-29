@@ -1602,7 +1602,7 @@ void WeaponVoidBlade_OnTakeDamage(int attacker, int victim,int weapon, int zr_da
 	}
 
 	f_VoidHudDelay[attacker] = 0.0;
-	VoidTimerHudShow(attacker, weapon);
+	VoidTimerHudShow(attacker);
 }
 
 public float Player_OnTakeDamage_VoidBlade_Hud(int victim)
