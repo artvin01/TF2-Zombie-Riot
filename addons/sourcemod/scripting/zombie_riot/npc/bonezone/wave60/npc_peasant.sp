@@ -261,7 +261,7 @@ public void Peasant_Transform(int ref)
 
 	int spawned;
 
-	switch(GetRandomInt(1, 2))
+	switch(GetRandomInt(1, 3))
 	{
 		case 1:
 		{

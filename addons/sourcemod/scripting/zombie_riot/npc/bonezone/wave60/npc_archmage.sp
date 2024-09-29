@@ -7,8 +7,8 @@ static float BONES_ARCHMAGE_SPEED_BUFFED = 320.0;
 #define BONES_ARCHMAGE_HP				"900"
 #define BONES_ARCHMAGE_HP_BUFFED		"4500"
 
-static float BONES_ARCHMAGE_PLAYERDAMAGE = 40.0;
-static float BONES_ARCHMAGE_PLAYERDAMAGE_BUFFED = 400.0;
+static float BONES_ARCHMAGE_PLAYERDAMAGE = 100.0;
+static float BONES_ARCHMAGE_PLAYERDAMAGE_BUFFED = 800.0;
 static float ARCHMAGE_NATURAL_BUFF_CHANCE = 0.05;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
 static float ARCHMAGE_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float ARCHMAGE_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.

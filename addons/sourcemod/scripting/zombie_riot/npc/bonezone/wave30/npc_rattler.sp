@@ -7,33 +7,39 @@ static float BONES_RATTLER_SPEED_BUFFED = 320.0;
 #define BONES_RATTLER_HP				"900"
 #define BONES_RATTLER_HP_BUFFED		"4500"
 
-static float BONES_RATTLER_PLAYERDAMAGE = 40.0;
-static float BONES_RATTLER_PLAYERDAMAGE_BUFFED = 400.0;
+//RATTLER: Basic ranged unit. Wields an SMG with a large clip and high rate of fire, but low damage.
+//When their SMG is loaded, they will run towards the nearest target. Then, when within range, they will stop and unload their clip on that target.
+//Once they run out of ammo, they will initiate a reload phase, running away if an enemy is too close.
+static float RATTLER_DAMAGE = 20.0;		//Projectile damage for Rattlers.
+static float RATTLER_VELOCITY = 800.0;	//Projectile velocity.
+static float RATTLER_LIFESPAN = 1.0;	//Projectile lifespan.
+static float RATTLER_ENTITYMULT = 2.0;	//Amount to multiply damage dealt by Rattler projectiles to enemies.
+static float RATTLER_RANGE = 500.0;		//Range in which Rattlers will shoot.
+static int RATTLER_CLIP = 12;			//Clip size.
+static float RATTLER_RELOADTIME = 3.0;	//Reload duration.
+
+//HOLLOW HITMAN: Buffed range unit, slowly fires powerful explosive projectiles from a revolver. Predicts within a large radius.
+//Functions similarly to Rattlers in that it will run away while charging up its next shot, then chase the nearest target until in-range once its shot is fully charged.
+static float HITMAN_RANGE = 1500.0;			//Range in which Hollow Hitmen will shoot.
+static float HITMAN_PREDICT_RANGE = 600.0;	//Range in which Hollow Hitmen will predict their target's position.
+static float HITMAN_VELOCITY = 1200.0;		//Projectile velocity.
+static float HITMAN_DMG = 400.0;			//Blast damage.
+static float HITMAN_RADIUS = 140.0;			//Blast radius.
+static float HITMAN_FALLOFF_MULTIHIT = 0.8;	//Amount to multiply damage dealt per target hit by the blast.
+static float HITMAN_FALLOFF_RADIUS = 0.66;	//Maximum damage falloff, based on radius.
+static float HITMAN_CHARGE_TIME = 3.0;		//Time it takes for Hollow Hitmen to charge a shot.
+static float HITMAN_ENTITYMULT = 4.0;		//Damage multiplier for buildings.
+
 static float RATTLER_NATURAL_BUFF_CHANCE = 0.05;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
 static float RATTLER_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float RATTLER_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
-//static float BONES_RATTLER_BUILDINGDAMAGE = 120.0;
-//static float BONES_RATTLER_BUILDINGDAMAGE_BUFFED = 800.0;
-
-static float BONES_RATTLER_PROJECTILE_VELOCITY = 800.0;
-static float BONES_RATTLER_PROJECTILE_VELOCITY_BUFFED = 1400.0;
-static float BONES_RATTLER_PROJECTILE_LIFESPAN = 1.2;
-//No lifespan variable for buffed rattlers because their projectiles don't disappear.
-
-static float RATTLER_FIREBALL_BLAST_RADIUS = 200.0;
-static float RATTLER_FIREBALL_FALLOFF_MULTIHIT = 0.8;
-static float RATTLER_FIREBALL_FALLOFF_RADIUS = 0.66;
-static float RATTLER_FIREBALL_ENTITY_MULTIPLIER = 3.0;
-
-static float BONES_RATTLER_ATTACKINTERVAL = 0.5;
+static float BONES_RATTLER_ATTACKINTERVAL = 0.33;
 static float BONES_RATTLER_ATTACKINTERVAL_BUFFED = 1.0;
 
 static float RATTLER_HOVER_MINDIST = 400.0;
 static float RATTLER_HOVER_MAXDIST = 700.0;
 //static float RATTLER_HOVER_OPTIMALDIST = 550.0;
-
-static float RATTLER_CHARGE_DURATION = 3.0;
 
 static float f_RattlerFireballDMG[2049] = { 0.0, ... };
 
@@ -43,10 +49,14 @@ static float f_RattlerFireballDMG[2049] = { 0.0, ... };
 #define BONES_RATTLER_SKIN						"0"
 #define BONES_RATTLER_BUFFED_SKIN				"1"
 
-#define PARTICLE_RATTLER_FIREBALL			"flaregun_trail_red"
+#define SND_RATTLER_SHOOT					")weapons/doom_sniper_smg.wav"
+#define SND_RATTLER_HIT						")player/pain.wav"
+
+#define PARTICLE_RATTLER_FIREBALL			"nailtrails_medic_red_crit"
 #define PARTICLE_RATTLER_FIREBALL_BUFFED	"spell_fireball_small_blue"
 #define PARTICLE_FIREBALL_HIT				"flaregun_destroyed"
 #define PARTICLE_FIREBALL_EXPLODE			"spell_fireball_tendril_parent_blue"
+#define PARTICLE_RATTLER_MUZZLE				"muzzle_pistol"
 
 #define BONES_RATTLER_BUFFPARTICLE			"utaunt_runeprison_teamcolor_blue"//"utaunt_auroraglow_purple_parent"
 
@@ -119,6 +129,8 @@ public void RattlerBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
+	PrecacheSound(SND_RATTLER_SHOOT);
+	PrecacheSound(SND_RATTLER_HIT);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Rattler");
@@ -401,16 +413,33 @@ stock int Rattler_AttachParticle(int entity, char type[255], float duration = 0.
 	return -1;
 }
 
-public void Rattler_CheckThrow(RattlerBones npc, int closest)
+public void Rattler_CheckShoot(RattlerBones npc, int closest)
 {
 	if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		if (!Can_I_See_Enemy_Only(npc.index, closest))
 			return;
+
+		if (!b_BonesBuffed[npc.index])
+		{
+			float vicPos[3], userPos[3];
+			WorldSpaceCenter(closest, vicPos);
+			WorldSpaceCenter(npc.index, userPos);
+			if (GetVectorDistance(vicPos, userPos) <= RATTLER_RANGE)
+			{
+				npc.AddGesture("ACT_RATTLER_SHOOT");
+				EmitSoundToAll(SND_RATTLER_SHOOT, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
+				float pos[3], ang[3];
+				npc.GetAttachment("smg_muzzle_left", pos, ang);
+				ParticleEffectAt(pos, PARTICLE_RATTLER_MUZZLE);
+				Rattler_ShootProjectile(npc, vicPos, RATTLER_VELOCITY, RATTLER_DAMAGE, pos);
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_RATTLER_ATTACKINTERVAL;
+			}
+		}
 	}
 }
 
-public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel, float damage)
+public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel, float damage, float startPos[3])
 {
 	int entity = CreateEntityByName("zr_projectile_base");
 			
@@ -419,8 +448,7 @@ public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		npc.GetVectors(vecForward, vecSwingStart, vecAngles);
 
-		GetAbsOrigin(npc.index, vecSwingStart);
-		vecSwingStart[2] += 54.0;
+		vecSwingStart = startPos;
 
 		MakeVectorFromPoints(vecSwingStart, vicLoc, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
@@ -452,15 +480,15 @@ public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel
 		
 		if (b_BonesBuffed[npc.index])
 		{
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_Explode);
-			Rattler_AttachParticle(entity, PARTICLE_RATTLER_FIREBALL_BUFFED, _, "");
+			//g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_Explode);
+			//Rattler_AttachParticle(entity, PARTICLE_RATTLER_FIREBALL_BUFFED, _, "");
 		}
 		else
 		{
 			SDKHook(entity, SDKHook_Touch, Rattler_FireballTouch);
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
 			Rattler_AttachParticle(entity, PARTICLE_RATTLER_FIREBALL, _, "");
-			CreateTimer(BONES_RATTLER_PROJECTILE_LIFESPAN, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(RATTLER_LIFESPAN, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 }
@@ -476,11 +504,15 @@ public Action Rattler_FireballTouch(int entity, int other)
 	if (team1 != team2)
 	{
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		SDKHooks_TakeDamage(other, entity, IsValidEntity(owner) ? owner : entity, f_RattlerFireballDMG[entity]);
+		float damage = (ShouldNpcDealBonusDamage(other) ? f_RattlerFireballDMG[entity] * RATTLER_ENTITYMULT : f_RattlerFireballDMG[entity]);
+		SDKHooks_TakeDamage(other, entity, IsValidEntity(owner) ? owner : entity, damage);
 			
 		float position[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 		ParticleEffectAt(position, PARTICLE_FIREBALL_HIT, 2.0);
+		EmitSoundToAll(SND_RATTLER_HIT, entity, _, _, _, 0.8, GetRandomInt(80, 110));
+
+		RemoveEntity(entity);
 	}
 		
 	return Plugin_Continue;
@@ -587,7 +619,7 @@ public void RattlerBones_ClotThink(int iNPC)
 				npc.StopPathing();
 			}
 
-			Rattler_CheckThrow(npc, closest);
+			Rattler_CheckShoot(npc, closest);
 		}
 	}
 	else

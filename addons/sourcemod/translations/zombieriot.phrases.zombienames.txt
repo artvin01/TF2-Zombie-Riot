@@ -3011,6 +3011,14 @@
 	{
 		"en"	"Mr. Molotov"
 	}
+	"Rattler"
+	{
+		"en"	"Rattler"
+	}
+	"Hollow Hitman"
+	{
+		"en"	"Hollow Hitman"
+	}
 	"The Reaper"
 	{
 		"en"	"The Reaper"
