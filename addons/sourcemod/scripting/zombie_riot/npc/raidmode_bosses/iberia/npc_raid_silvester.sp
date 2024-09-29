@@ -1599,7 +1599,6 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 			return;
 		}
 		int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-		SetParent(entity, particle_1, "effect_hand_l",_);
 		
 		int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
 		int particle_3 = InfoTargetParentAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
@@ -1624,6 +1623,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 
 		Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
 		SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+		SetParent(entity, particle_1, "effect_hand_l",_);
 
 
 		int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);

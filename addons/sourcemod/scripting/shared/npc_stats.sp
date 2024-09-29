@@ -7369,14 +7369,17 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 		
 		if (tracerEffect[0])
 		{
-			if ( nDamageType & DMG_CRIT )
+			if(IsValidEntity(iWeapon))
 			{
-				Format( effect, sizeof(effect), "%s_crit", tracerEffect );
-			}
+				if ( nDamageType & DMG_CRIT )
+				{
+					Format( effect, sizeof(effect), "%s_crit", tracerEffect );
+				}
 
-			float origin[3], angles[3];
-			view_as<CClotBody>(iWeapon).GetAttachment(szAttachment, origin, angles);
-			ShootLaser(iWeapon, effect, origin, endpos, false );
+				float origin[3], angles[3];
+				view_as<CClotBody>(iWeapon).GetAttachment(szAttachment, origin, angles);
+				ShootLaser(iWeapon, effect, origin, endpos, false );
+			}
 		}
 		
 	//	TE_SetupBeamPoints(m_vecSrc, endpos, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 0.1, 0.1, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
