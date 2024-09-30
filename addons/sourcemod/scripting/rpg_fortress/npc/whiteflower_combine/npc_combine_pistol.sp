@@ -94,7 +94,6 @@ public void CombinePistol_ClotThink(int iNPC)
 		bool shouldGun = !npc.m_iTargetWalk;
 		if(!shouldGun && !b_NpcIsInADungeon[npc.index])
 		{
-			bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 			int count = i_MaxcountNpcTotal;
 
 			for(int i; i < count; i++)

@@ -4922,7 +4922,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 #if defined RPG
 			if(GetTeam(index) != GetTeam(enemy))
 			{
-				if(OnTakeDamageRpgPartyLogic(enemy, index, GetGameTime()))
+				if(OnTakeDamageRpgPartyLogic(enemy, index, GetGameTime(), true))
 				{
 					return false;
 				}
@@ -8769,7 +8769,7 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool
 		delete trace;
 						
 		//Can i see This enemy, is something in the way of us?
-		//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+		//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 
 		if(Traced_Target != -1) //We wanna make sure that whever we teleport, nothing has collided with us. (Mainly world)
 		{	

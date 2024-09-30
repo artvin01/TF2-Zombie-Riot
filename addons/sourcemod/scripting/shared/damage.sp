@@ -1126,7 +1126,7 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 }
 
 #if defined RPG
-stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime)
+stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime, bool donotset = false)
 {
 	if(attacker > MaxClients && victim <= MaxClients)
 	{
@@ -1149,8 +1149,12 @@ stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime)
 
 	if(RPGCore_ClientAllowedToTargetNpc(victim, attacker))
 	{
-		i_NpcFightOwner[victim] = attacker;
-		f_NpcFightTime[victim] = GameTime + 10.0;
+		if(!donotset)
+		{
+			i_NpcFightOwner[victim] = attacker;
+			f_NpcFightTime[victim] = GameTime + 10.0;
+
+		}
 	}
 	else
 	{

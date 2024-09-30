@@ -282,6 +282,7 @@ void BaseSquad_MapStart()
 
 	OnMapStartCombinePistol();
 	OnMapStartCombineSMG();
+	OnMapStartCombineSwordsmen();
 }
 
 methodmap BaseSquad < CClotBody
@@ -659,9 +660,8 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidEnemy(npc.index, ally.m_iTargetAttack)/* && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack)*/)
 							{
 								WorldSpaceCenter(ally.index, vecTarget);
-								if(GetVectorDistance(vecMe, vecTarget, true) < (200.0 * 200.0))	// 250 HU
+								if(GetVectorDistance(vecMe, vecTarget, true) < (400.0 * 400.0))
 								{
-									PrintToChatAll("Diustance %0.f",GetVectorDistance(vecMe, vecTarget, true));
 									npc.m_iTargetAttack = ally.m_iTargetAttack;
 									npc.m_iTargetWalk = ally.m_iTargetAttack;
 									break;
@@ -672,12 +672,12 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 				}
 			}
 		}
-
+/*
 		// We can't run after them, stand still and do shooty logic
 		if(npc.m_iTargetWalk)
 		{
 			float length;
-			if(!(GetEntityFlags(npc.index) & (FL_SWIM|FL_INWATER))/* && PF_IsPathToEntityPossible(npc.index, npc.m_iTargetWalk, length)*/)
+			if(!(GetEntityFlags(npc.index) & (FL_SWIM|FL_INWATER)) && PF_IsPathToEntityPossible(npc.index, npc.m_iTargetWalk, length))
 			{
 				// Players can be above a nav mesh and a "path" is possible
 				// Check if the target is above a place
@@ -693,6 +693,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 				npc.m_iTargetWalk = 0;
 			}
 		}
+*/
 	}
 }
 

@@ -562,6 +562,7 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/whiteflower_combine/npc_basesquad.sp"
 #include "rpg_fortress/npc/whiteflower_combine/npc_combine_pistol.sp"
 #include "rpg_fortress/npc/whiteflower_combine/npc_combine_smg.sp"
+#include "rpg_fortress/npc/whiteflower_combine/npc_combine_swordsman.sp"
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"

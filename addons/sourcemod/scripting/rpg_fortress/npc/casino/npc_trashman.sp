@@ -3,37 +3,53 @@
 
 static const char g_DeathSounds[][] =
 {
-	"npc/headcrab/die1.wav",
-	"npc/headcrab/die2.wav"
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSound[][] =
 {
-	"npc/headcrab/pain1.wav",
-	"npc/headcrab/pain2.wav",
-	"npc/headcrab/pain3.wav"
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3"
 };
 
 static const char g_IdleSound[][] =
 {
-	"npc/headcrab/idle1.wav",
-	"npc/headcrab/idle2.wav",
-	"npc/headcrab/idle3.wav"
+	"vo/spy_stabtaunt01.mp3",
+	"vo/spy_stabtaunt02.mp3",
+	"vo/spy_stabtaunt03.mp3",
+	"vo/spy_stabtaunt04.mp3",
+	"vo/spy_stabtaunt05.mp3",
+	"vo/spy_stabtaunt06.mp3",
+	"vo/spy_stabtaunt07.mp3",
+	"vo/spy_stabtaunt08.mp3",
+	"vo/spy_stabtaunt09.mp3",
+	"vo/spy_stabtaunt10.mp3",
+	"vo/spy_stabtaunt11.mp3",
+	"vo/spy_stabtaunt12.mp3",
+	"vo/spy_stabtaunt13.mp3",
+	"vo/spy_stabtaunt14.mp3",
+	"vo/spy_stabtaunt15.mp3",
+	"vo/spy_stabtaunt16.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
 {
-	"npc/headcrab/headbite.wav"
+	"weapons/blade_hit1.wav",
+	"weapons/blade_hit2.wav",
+	"weapons/blade_hit3.wav",
+	"weapons/blade_hit4.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"npc/headcrab/attack1.wav",
-	"npc/headcrab/attack2.wav",
-	"npc/headcrab/attack3.wav"
+	"weapons/knife_swing.wav"
 };
 
-void CasinoRat_Setup()
+void TrashMan_Setup()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSound);
@@ -42,18 +58,18 @@ void CasinoRat_Setup()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Rat");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_casinorat");
+	strcopy(data.Name, sizeof(data.Name), "Trash Mann");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_trashman");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return CasinoRat(client, vecPos, vecAng, ally);
+	return TrashMan(client, vecPos, vecAng, ally);
 }
 
-methodmap CasinoRat < CClotBody
+methodmap TrashMan < CClotBody
 {
 	public void PlayIdleSound() 
 	{
@@ -80,20 +96,21 @@ methodmap CasinoRat < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public CasinoRat(int client, float vecPos[3], float vecAng[3], int team)
+	public TrashMan(int client, float vecPos[3], float vecAng[3], int team)
 	{
-		CasinoRat npc = view_as<CasinoRat>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", "300", team));
+		TrashMan npc = view_as<TrashMan>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "300", team));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		npc.SetActivity("ACT_IDLE");
-		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
-		KillFeed_SetKillIcon(npc.index, "bread_bite");
+		npc.SetActivity("ACT_MP_STAND_PRIMARY");
+		KillFeed_SetKillIcon(npc.index, "dumpster_device");
+		//ACT_MP_RELOAD_STAND_SECONDARY2
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_iAttacksTillReload = 0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		f3_SpawnPosition[npc.index] = vecPos;	
@@ -102,6 +119,15 @@ methodmap CasinoRat < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
+		int skin = GetURandomInt() % 2;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+	
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl", _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2019_racc_mann/hwn2019_racc_mann.mdl", _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum24_justice_johns_style2/sum24_justice_johns_style2.mdl", _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum24_pathfinder_style2/sum24_pathfinder_style2.mdl", _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2020_trappers_hat/hwn2020_trappers_hat.mdl", _, skin);
+		
 		return npc;
 	}
 	
@@ -109,7 +135,7 @@ methodmap CasinoRat < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	CasinoRat npc = view_as<CasinoRat>(iNPC);
+	TrashMan npc = view_as<TrashMan>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -120,6 +146,9 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
+		if(npc.m_flDoingAnimation < gameTime)
+			npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
+		
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -130,7 +159,7 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(npc.index, 350.0, "ACT_RUN", "ACT_IDLE", 100.0, gameTime);
+	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_STAND_PRIMARY", 240.0, gameTime);
 
 	int target = npc.m_iTarget;
 	
@@ -138,6 +167,8 @@ static void ClotThink(int iNPC)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
+			npc.m_flAttackHappens = 0.0;
+			
 			if(IsValidEnemy(npc.index, target))
 			{
 				float vecTarget[3]; 
@@ -154,19 +185,13 @@ static void ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						npc.m_flAttackHappens = 0.0;
-
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 1.0), DMG_CLUB, _, _, vecHit);
+						CasinoShared_RobMoney(npc, target, 5);
+						CasinoShared_StealNearbyItems(npc, vecHit);
 					}
 				}
 				delete swingTrace;
-			}
-
-			if(npc.m_flAttackHappens && (npc.m_flAttackHappens + 0.3) < gameTime)
-			{
-				// Attack lasts for 0.3s until it hits something
-				npc.m_flAttackHappens = 0.0;
 			}
 		}
 	}
@@ -191,29 +216,36 @@ static void ClotThink(int iNPC)
 		}
 
 		npc.StartPathing();
-		npc.SetActivity("ACT_RUN");
+		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		if(distance < (250.0 * 250.0) && npc.m_flNextMeleeAttack < gameTime)
+		if(npc.m_flNextMeleeAttack < gameTime)
 		{
+			if(npc.m_iAttacksTillReload < 3)
+			{
+				npc.PlayReloadSound();
+				npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY2");
+				npc.m_iAttacksTillReload++;
+				npc.m_flDoingAnimation = gameTime + 0.7;
+				npc.m_flNextMeleeAttack = gameTime + 0.75;
+			}
+
 			target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
 
-				npc.AddGesture("ACT_RANGE_ATTACK1");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.PlayMeleeSound();
 				
 				npc.m_flAttackHappens = gameTime + 0.45;
 				npc.m_flDoingAnimation = gameTime + 1.0;
-				npc.m_flNextMeleeAttack = gameTime + 1.45;
-
-				if(!NpcStats_IsEnemySilenced(npc.index))
-				{
-					WorldSpaceCenter(target, vecTarget);
-					PluginBot_Jump(target, vecTarget);
-				}
+				npc.m_flNextMeleeAttack = gameTime + 1.05;
 			}
 		}
+	}
+	else if(npc.m_iAttacksTillReload > 0)
+	{
+		npc.m_flAttackHappens = gameTime;
 	}
 
 	npc.PlayIdleSound();
@@ -221,7 +253,16 @@ static void ClotThink(int iNPC)
 
 static void ClotDeath(int entity)
 {
-	CasinoRat npc = view_as<CasinoRat>(entity);
+	TrashMan npc = view_as<TrashMan>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
+
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }
