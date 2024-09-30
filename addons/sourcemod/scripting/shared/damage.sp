@@ -770,6 +770,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Yakuza_SelfTakeDamage(victim, attacker, damage, damagetype, equipped_weapon);
 		}
+		case WEAPON_FULLMOON:
+		{
+			FullMoon_SanctuaryApplyBuffs(victim, damage);
+		}
 	}
 	return damage;
 }
@@ -1015,7 +1019,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_EXPLORER:
 		{
-			WeaponVoidBlade_OnTakeDamage(attacker, victim,weapon, zr_custom_damage, damage);
+			WeaponVoidBlade_OnTakeDamage(attacker, victim, zr_custom_damage);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{
@@ -1779,8 +1783,8 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 
 stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
-#if defined ZR
 	float basedamage = damage;
+#if defined ZR
 	if(inflictor > 0)
 	{
 		if(b_ThisWasAnNpc[inflictor])

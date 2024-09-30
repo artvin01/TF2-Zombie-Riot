@@ -1960,12 +1960,7 @@
 	}
 	"Which perk do you desire?"
 	{
-		"en"		"Which Bottle do you wish to drink?"
-		"fr"		"Que voulez-vous boire?"
-		"ru"		"Какую бутылку вы хотите выпить?"
-		"pt"		"Qual garrafa você quer beber?"
-		"nl"		"Uit welke fles wil je drinken?"
-		"chi"       "你想喝哪一瓶?"
+		"en"		"Which Bottle do you wish to drink?\nCrouch and click to see what it does."
 	}	
 	"Reviving"
 	{

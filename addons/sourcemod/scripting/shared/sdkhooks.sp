@@ -1344,6 +1344,13 @@ public void OnPostThink(int client)
 		{
 			blue = 255;
 		}
+		if(FullMoonIs(client))
+		{
+			if(Armor_Charge[armorEnt] > 0)
+			{
+				Armor_Charge[armorEnt] = 0;
+			}
+		}
 
 		ArmorDisplayClient(client);
 
@@ -1561,7 +1568,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 		}
 	}
 	
-	if((damagetype & DMG_DROWN))
+	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
 	{
 		//the player has died to a stuckzone.
 		if(dieingstate[victim] > 0)
@@ -2358,6 +2365,12 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		case WEAPON_EXPLORER:
 		{
 			return Player_OnTakeDamage_VoidBlade_Hud(victim);
+		}
+		case WEAPON_FULLMOON:
+		{
+			float damage = 1.0;
+			FullMoon_SanctuaryApplyBuffs(victim, damage);
+			return damage;
 		}
 	}
 	return 1.0;

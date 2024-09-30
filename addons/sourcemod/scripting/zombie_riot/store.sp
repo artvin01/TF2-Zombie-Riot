@@ -473,7 +473,6 @@ enum struct Item
 	bool ChildKit;
 	bool MaxBarricadesBuild;
 	bool Hidden;
-	bool NoPrivatePlugin;
 	bool WhiteOut;
 	bool IgnoreSlots;
 	char Tags[256];
@@ -4557,7 +4556,9 @@ void Store_ApplyAttribs(int client)
 
 	if(i_HealthBeforeSuit[client] == 0)
 	{
-		map.SetValue("26", RemoveExtraHealth(ClassForStats, 200.0) + Extra_Juggernog_Hp);		// Health
+		float HealthDoLogic = RemoveExtraHealth(ClassForStats, 0.1);
+		map.SetValue("125", HealthDoLogic);
+		map.SetValue("26", (200.0 + Extra_Juggernog_Hp));		// Health
 	}
 	else
 	{
@@ -4713,6 +4714,7 @@ void Store_ApplyAttribs(int client)
 
 	Rogue_ApplyAttribs(client, map);
 	Waves_ApplyAttribs(client, map);
+	FullMoonDoubleHp(client, map);
 
 	int entity = -1;
 	while(TF2_GetWearable(client, entity))
@@ -4936,6 +4938,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
+	FullmoonEarlyReset(client);
 
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
@@ -5738,6 +5741,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Blitzkrieg_Kit(client, entity);
 		Enable_Quibai(client, entity);
 		AngelicShotgun_Enable(client, entity);
+		FullMoon_Enable(client, entity);
 		Enable_RedBladeWeapon(client, entity);
 		Enable_Gravaton_Wand(client, entity);
 		Enable_Dimension_Wand(client, entity);
