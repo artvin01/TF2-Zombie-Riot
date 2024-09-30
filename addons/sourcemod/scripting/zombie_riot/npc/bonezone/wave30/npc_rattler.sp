@@ -33,7 +33,7 @@ static float HITMAN_DMG = 400.0;			//Blast damage.
 static float HITMAN_RADIUS = 140.0;			//Blast radius.
 static float HITMAN_FALLOFF_MULTIHIT = 0.8;	//Amount to multiply damage dealt per target hit by the blast.
 static float HITMAN_FALLOFF_RADIUS = 0.66;	//Maximum damage falloff, based on radius.
-static float HITMAN_CHARGE_TIME = 3.0;		//Time it takes for Hollow Hitmen to charge a shot.
+static float HITMAN_CHARGE_TIME = 4.0;		//Time it takes for Hollow Hitmen to charge a shot.
 static float HITMAN_ENTITYMULT = 4.0;		//Damage multiplier for buildings.
 
 static float RATTLER_NATURAL_BUFF_CHANCE = 0.05;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
@@ -189,6 +189,7 @@ static int i_RattlerDryShots[MAXENTITIES] = { 0, ... };
 static bool b_RattlerAttacking[MAXENTITIES] = { false, ... };
 static bool b_RattlerWindupPhase[MAXENTITIES] = { false, ... };
 static float f_ReloadAt[MAXENTITIES] = { 0.0, ... };
+static float f_HitmanChargeTime[MAXENTITIES] = { 0.0, ... };
 
 methodmap RattlerBones < CClotBody
 {
@@ -363,6 +364,7 @@ public void RattlerBones_SetBuffed(int index, bool buffed)
 	b_HitmanCharging[npc.index] = false;
 	b_RattlerAttacking[npc.index] = false;
 	b_RattlerWindupPhase[npc.index] = false;
+	npc.RemoveGesture("ACT_HITMAN_CHARGE_GUN");
 
 	if (GetGameTime(npc.index) - npc.m_flNextRangedAttack < 0.5)
 	{
@@ -472,7 +474,7 @@ stock int Rattler_AttachParticle(int entity, char type[255], float duration = 0.
 
 public void Rattler_CheckShoot(RattlerBones npc, int closest)
 {
-	if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index) && !b_RattlerAttacking[npc.index] && !b_RattlerWindupPhase[npc.index])
+	if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index) && !b_RattlerAttacking[npc.index] && !b_RattlerWindupPhase[npc.index] && !b_HitmanCharging[npc.index])
 	{
 		if (!Can_I_See_Enemy_Only(npc.index, closest))
 			return;
@@ -492,7 +494,15 @@ public void Rattler_CheckShoot(RattlerBones npc, int closest)
 				b_RattlerWindupPhase[npc.index] = true;
 				npc.FaceTowards(vicPos, 15000.0);
 				i_RattlerDryShots[npc.index] = RATTLER_EMPTY;
+				npc.StopPathing();
 			}
+		}
+		else
+		{
+			npc.AddGesture("ACT_HITMAN_DEPLOY_GUN");
+			b_HitmanCharging[npc.index] = true;
+			f_HitmanChargeTime[npc.index] = GetGameTime(npc.index) + HITMAN_CHARGE_TIME;
+			CPrintToChatAll("Deploy");
 		}
 	}
 }
@@ -621,9 +631,79 @@ public void Hitman_AnimEvent(int entity, int event)
 	if (!b_BonesBuffed[entity])
 		return;
 
-    switch(event)
+	if (b_HitmanCharging[npc.index])
 	{
+		switch(event)
+		{
+			case 1001:		//Sound
+			{
 
+			}
+			case 1002:		//Sound
+			{
+
+			}
+			case 1003:		//Gun is being held by both hands, switch to the loop sequence.
+			{
+				npc.AddGesture("ACT_HITMAN_CHARGE_GUN", false, _, false);
+				CPrintToChatAll("Charging");
+			}
+		}
+	}
+    else if (b_RattlerWindupPhase[npc.index])
+	{
+		switch(event)
+		{
+			case 1001:		//Hitman swings gun upward, play sounds.
+			{
+
+			}
+			case 1002:		//Attack intro sequence ends, switch to attack sequence and fire projectile.
+			{
+				int iActivity = npc.LookupActivity("ACT_HITMAN_SHOOT");
+				if (iActivity > 0)
+					npc.StartActivity(iActivity);
+
+				b_RattlerWindupPhase[npc.index] = false;
+				b_RattlerAttacking[npc.index] = true;
+				CPrintToChatAll("Shooting");
+			}
+		}
+	}
+	else if (b_RattlerAttacking[npc.index])
+	{
+		switch(event)
+		{
+			case 1001:		//Hitman's torso is spinning, play sound.
+			{
+
+			}
+			case 1002:		//Hitman is about to stomp, play sound.
+			{
+
+			}
+			case 1003:		//Remove smoke particle from gun barrel.
+			{
+
+			}
+			case 1004:		//Hitman's foot hits the ground, play sound.
+			{
+
+			}
+			case 1005:		//Hitman laughs, play sound.
+			{
+
+			}
+			case 1006:		//Attack animation ends, revert to walk cycle.
+			{
+				b_RattlerAttacking[npc.index] = false;
+				int iActivity = npc.LookupActivity("ACT_HITMAN_RUN");
+				if (iActivity > 0)
+					npc.StartActivity(iActivity);
+				npc.StartPathing();
+				CPrintToChatAll("Shoot ends");
+			}
+		}
 	}
 }
 
@@ -721,7 +801,7 @@ public void RattlerBones_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + (b_RattlerAttacking[npc.index] ? 0.01 : 0.1);
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + (b_RattlerAttacking[npc.index] || b_HitmanCharging[npc.index] ? 0.01 : 0.1);
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -730,64 +810,76 @@ public void RattlerBones_ClotThink(int iNPC)
 	}
 	
 	int closest = npc.m_iTarget;
-	
-	if (b_RattlerAttacking[npc.index] || b_RattlerWindupPhase[npc.index])
+
+	if (b_HitmanCharging[npc.index] && b_BonesBuffed[npc.index])
 	{
-		npc.StopPathing();
-
-		if (b_RattlerAttacking[npc.index] && !b_BonesBuffed[npc.index] && GetGameTime(npc.index) >= npc.m_flNextRangedAttack)
+		if (GetGameTime(npc.index) >= f_HitmanChargeTime[npc.index])
 		{
-			float vicPos[3];
+			int iActivity = npc.LookupActivity("ACT_HITMAN_ATTACK_IMMINENT");
+			if (iActivity > 0)
+				npc.StartActivity(iActivity);
 
-			if (IsValidEnemy(npc.index, closest) && Can_I_See_Enemy_Only(npc.index, closest))
-			{
-				WorldSpaceCenter(closest, vicPos);
-				npc.FaceTowards(vicPos, RATTLER_TURNRATE);
-			}
-			else
-			{
-				float ang[3], Direction[3], startPos[3];
-				WorldSpaceCenter(npc.index, startPos);
-				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			npc.RemoveGesture("ACT_HITMAN_CHARGE_GUN");
 
-				GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
-				ScaleVector(Direction, 200.0);
-				AddVectors(startPos, Direction, vicPos);
-			}
+			b_HitmanCharging[npc.index] = false;
+			b_RattlerWindupPhase[npc.index] = true;
+			npc.StopPathing();
+			CPrintToChatAll("Imminent");
+		}
+	}
+	
+	if (b_RattlerAttacking[npc.index] && !b_BonesBuffed[npc.index] && GetGameTime(npc.index) >= npc.m_flNextRangedAttack)
+	{
+		float vicPos[3];
 
-			if (npc.IHaveAmmo())
-			{
-				npc.AddGesture("ACT_RATTLER_SHOOT");
-				EmitSoundToAll(SND_RATTLER_SHOOT, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
-				float pos[3], ang[3];
-				npc.GetAttachment("smg_muzzle_left", pos, ang);
-				ParticleEffectAt(pos, PARTICLE_RATTLER_MUZZLE);
+		if (IsValidEnemy(npc.index, closest) && Can_I_See_Enemy_Only(npc.index, closest))
+		{
+			WorldSpaceCenter(closest, vicPos);
+			npc.FaceTowards(vicPos, RATTLER_TURNRATE);
+		}
+		else
+		{
+			float ang[3], Direction[3], startPos[3];
+			WorldSpaceCenter(npc.index, startPos);
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-				Rattler_ShootProjectile(npc, vicPos, RATTLER_VELOCITY, RATTLER_DAMAGE, pos);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_RATTLER_ATTACKINTERVAL;
+			GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(Direction, 200.0);
+			AddVectors(startPos, Direction, vicPos);
+		}
 
-				i_RattlerAmmo[npc.index]--;
-			}
-			else if (i_RattlerDryShots[npc.index] > 0)
-			{
-				npc.AddGesture("ACT_RATTLER_SHOOT_NO_AMMO");
-				EmitSoundToAll(SND_RATTLER_SHOOT_NO_AMMO, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
-				i_RattlerDryShots[npc.index]--;
+		if (npc.IHaveAmmo())
+		{
+			npc.AddGesture("ACT_RATTLER_SHOOT");
+			EmitSoundToAll(SND_RATTLER_SHOOT, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
+			float pos[3], ang[3];
+			npc.GetAttachment("smg_muzzle_left", pos, ang);
+			ParticleEffectAt(pos, PARTICLE_RATTLER_MUZZLE);
 
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_RATTLER_ATTACKINTERVAL;
-			}
-			else
-			{
-				int iActivity = npc.LookupActivity("ACT_RATTLER_RUN");
-				if (iActivity > 0)
-					npc.StartActivity(iActivity);
-				npc.m_flSpeed = BONES_RATTLER_SPEED_NO_AMMO;
+			Rattler_ShootProjectile(npc, vicPos, RATTLER_VELOCITY, RATTLER_DAMAGE, pos);
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_RATTLER_ATTACKINTERVAL;
 
-				b_RattlerAttacking[npc.index] = false;
-				f_ReloadAt[npc.index] = GetGameTime(npc.index) + RATTLER_RELOADTIME;
+			i_RattlerAmmo[npc.index]--;
+		}
+		else if (i_RattlerDryShots[npc.index] > 0)
+		{
+			npc.AddGesture("ACT_RATTLER_SHOOT_NO_AMMO");
+			EmitSoundToAll(SND_RATTLER_SHOOT_NO_AMMO, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
+			i_RattlerDryShots[npc.index]--;
 
-				EmitSoundToAll(SND_RATTLER_SCARED, npc.index, _, _, _, _, GetRandomInt(80, 100));
-			}
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_RATTLER_ATTACKINTERVAL;
+		}
+		else
+		{
+			int iActivity = npc.LookupActivity("ACT_RATTLER_RUN");
+			if (iActivity > 0)
+				npc.StartActivity(iActivity);
+			npc.m_flSpeed = BONES_RATTLER_SPEED_NO_AMMO;
+
+			b_RattlerAttacking[npc.index] = false;
+			f_ReloadAt[npc.index] = GetGameTime(npc.index) + RATTLER_RELOADTIME;
+
+			EmitSoundToAll(SND_RATTLER_SCARED, npc.index, _, _, _, _, GetRandomInt(80, 100));
 		}
 	}
 	else if(IsValidEnemy(npc.index, closest))
@@ -828,7 +920,7 @@ public void RattlerBones_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
-	if (GetGameTime(npc.index) >= f_ReloadAt[npc.index] && f_ReloadAt[npc.index] > 0.0 && !npc.IHaveAmmo())
+	if (GetGameTime(npc.index) >= f_ReloadAt[npc.index] && f_ReloadAt[npc.index] > 0.0 && !npc.IHaveAmmo() && !b_BonesBuffed[npc.index])
 	{
 		npc.AddGesture("ACT_RATTLER_RELOAD");
 		f_ReloadAt[npc.index] = 0.0;
