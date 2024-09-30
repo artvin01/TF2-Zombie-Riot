@@ -10633,6 +10633,10 @@ static int BadSpotPoints[MAXTF2PLAYERS];
 void Spawns_CheckBadClient(int client)
 {
 #if defined ZR
+	if(CvarInfiniteCash.BoolValue)
+	{
+		return;
+	}
 	if(!IsPlayerAlive(client) || TeutonType[client] != TEUTON_NONE)
 	{
 		BadSpotPoints[client] = 0;

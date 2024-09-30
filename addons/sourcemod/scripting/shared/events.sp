@@ -70,6 +70,17 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Merchant_RoundStart();
 	Flametail_RoundStart();
 	BlacksmithBrew_RoundStart();
+
+	//FOR ZR
+	KeyValues kv;
+	FileNetwork_MapEnd();
+	Waves_MapEnd();
+	FileNetwork_ConfigSetup(kv);
+	Waves_SetupVote(kv);
+	Waves_SetupMiniBosses(kv);
+	delete kv;
+	Core_PrecacheGlobalCustom();
+	PrecacheMusicZr();
 #endif
 
 #if defined RPG
@@ -163,6 +174,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	CurrentGame = 0;
+	RoundStartTime = 0.0;
 	if(event != INVALID_HANDLE && event.GetInt("team") == 3)
 	{
 		//enemy team won due to timer or something else.

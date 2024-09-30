@@ -17,7 +17,7 @@ int BaseLuck;
 int BaseAgility;
 int BaseUpgradeCost;
 int BaseUpgradeScale;
-//int BaseUpdateStats;
+int BaseUpdateStats;
 int BaseMaxLevel;
 int BaseMaxExperience;
 int BaseMaxExperiencePerLevel;

@@ -75,12 +75,12 @@ void NPC_ConfigSetup()
 	RookieGambler_Setup();
 	BuckshotGambler_Setup();
 
+	BaseSquad_MapStart();
 /*
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
 	ArkSlugAcid_MapStart();
 	ArkSlugInfused_MapStart();
-	BaseSquad_MapStart();
 	CombineTurtle_MapStart();
 */
 }
@@ -559,6 +559,9 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/casino/npc_rookiegambler.sp"
 #include "rpg_fortress/npc/casino/npc_buckshotgambler.sp"
 
+#include "rpg_fortress/npc/whiteflower_combine/npc_basesquad.sp"
+#include "rpg_fortress/npc/whiteflower_combine/npc_combine_pistol.sp"
+#include "rpg_fortress/npc/whiteflower_combine/npc_combine_smg.sp"
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"

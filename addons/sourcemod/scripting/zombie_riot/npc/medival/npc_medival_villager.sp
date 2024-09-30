@@ -226,61 +226,74 @@ methodmap MedivalVillager < CClotBody
 				}
 
 				float vecGoal[3]; RandomArea.GetCenter(vecGoal);
+				vecGoal[2] += 1.0;
 
-				vecGoal[2] += 20.0;
+				if(IsPointHazard(vecGoal)) //Retry.
+					continue;
+				if(IsPointHazard(vecGoal)) //Retry.
+					continue;
+
 				static float hullcheckmaxs_Player_Again[3];
 				static float hullcheckmins_Player_Again[3];
 
 				hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
 				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
+				
 				if(IsPointHazard(vecGoal)) //Retry.
+					continue;
+				
+				vecGoal[2] += 18.0;
+				if(IsPointHazard(vecGoal)) //Retry.
+					continue;
+				
+				vecGoal[2] -= 18.0;
+				vecGoal[2] -= 18.0;
+				vecGoal[2] -= 18.0;
+				if(IsPointHazard(vecGoal)) //Retry.
+					continue;
+				vecGoal[2] += 18.0;
+				vecGoal[2] += 18.0;
+				if(IsSpaceOccupiedIgnorePlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 				{
 					continue;
 				}
-				else if(IsSpaceOccupiedIgnorePlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+				float Accumulated_Points;
+				for(int client_check=1; client_check<=MaxClients; client_check++)
 				{
-					continue;
-				}
-				else
-				{
-					float Accumulated_Points;
-					for(int client_check=1; client_check<=MaxClients; client_check++)
-					{
-						if(IsClientInGame(client_check) && IsPlayerAlive(client_check) && GetClientTeam(client_check)==2 && TeutonType[client_check] == TEUTON_NONE && dieingstate[client_check] == 0)
-						{		
-							float f3_PositionTemp[3];
-							GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-							float distance = GetVectorDistance( f3_PositionTemp, vecGoal, true); 
-							//leave it all squared for optimsation sake!
-							float inverting_score_calc;
+					if(IsClientInGame(client_check) && IsPlayerAlive(client_check) && GetClientTeam(client_check)==2 && TeutonType[client_check] == TEUTON_NONE && dieingstate[client_check] == 0)
+					{		
+						float f3_PositionTemp[3];
+						GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+						float distance = GetVectorDistance( f3_PositionTemp, vecGoal, true); 
+						//leave it all squared for optimsation sake!
+						float inverting_score_calc;
 
-							inverting_score_calc = ( distance / 100000000.0);
+						inverting_score_calc = ( distance / 100000000.0);
 
-							if(ally == TFTeam_Red)
-							{
-								inverting_score_calc -= 1;
-
-								inverting_score_calc *= -1.0;					
-							}
-
-							Accumulated_Points += inverting_score_calc;
-						}
-					}
-					if(Accumulated_Points > CurrentPoints)
-					{
-						vecGoal[2] -= 20.0;
-						f3_AreasCollected = vecGoal;
-						CurrentPoints = Accumulated_Points;
-					}
-					AreasCollected += 1;
-					if(AreasCollected >= MAXTRIESVILLAGER)
-					{
-						if(vecGoal[0])
+						if(ally == TFTeam_Red)
 						{
-							TeleportEntity(npc.index, f3_AreasCollected, NULL_VECTOR, NULL_VECTOR);
+							inverting_score_calc -= 1;
+
+							inverting_score_calc *= -1.0;					
 						}
-						break;
+
+						Accumulated_Points += inverting_score_calc;
 					}
+				}
+				if(Accumulated_Points > CurrentPoints)
+				{
+					vecGoal[2] -= 20.0;
+					f3_AreasCollected = vecGoal;
+					CurrentPoints = Accumulated_Points;
+				}
+				AreasCollected += 1;
+				if(AreasCollected >= MAXTRIESVILLAGER)
+				{
+					if(vecGoal[0])
+					{
+						TeleportEntity(npc.index, f3_AreasCollected, NULL_VECTOR, NULL_VECTOR);
+					}
+					break;
 				}
 			}
 		}
