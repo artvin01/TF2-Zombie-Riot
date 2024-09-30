@@ -10,105 +10,125 @@
 		"en" 		"Allies"
 		"fr" 		"Alliés"
 		"pt"		"Aliados"
+		"ru"            "Союзники"
 	}
 	"Raid Bosses"
 	{
 		"en" 		"Raid Bosses"
 		"fr" 		"Boss de Raid"
 		"pt"		"Chefes de Invasão"
+		"ru"		"Рейд Боссы"
 	}
 	"Special Enemies"
 	{
 		"en" 		"Special Enemies"
 		"fr" 		"Ennemis Spéciaux"
 		"pt"		"Inimigos Especiais"
+		"ru"		"Особые Противники"
 	}
 	"Common Infection"
 	{
 		"en" 		"Common Infection"
 		"fr" 		"Infectés Communs"
 		"pt"		"Infectados Comuns"
+		"ru"		"Обычные Заражённые"
 	}
 	"Blitz Controlled"
 	{
 		"en" 		"Blitz Controlled"
 		"fr" 		"Controllés par Blitz"
 		"pt"		"Controlados por Blitz"
+		"ru"		"Подконтрольные Блитзкрига"
 	}
 	"Xeno Infection"
 	{
 		"en" 		"Xeno Infection"
 		"fr" 		"Infectés par Xéno"
 		"pt"		"Xeno Infecção"
+		"ru"		"Ксено инфекция"
 	}
 	"Medieval Empire"
 	{
 		"en" 		"Medieval Empire"
 		"fr" 		"Empire du Moyen-Âge"
 		"pt"		"Império Medieval"
+		"ru"		"Средневековая империя"
 	}
 	"Seaborn Infection"
 	{
 		"en" 		"Seaborn Infection"
 		"fr" 		"Infectés par Seaborn"
 		"pt"		"Infecção do Mar"
+		"ru"		"Морская инфекция"
 	}
 	"Bloons"
 	{
 		"en" 		"Bloons"
 		"fr" 		"Bloons"
 		"pt"		"Balões"
+		"ru"		"Воздушные шары"
 	}
 	"Cry of Fear"
 	{
 		"en" 		"Cry of Fear"
 		"fr" 		"Cry of Fear"
 		"pt"		"Cry of Fear"
+		"ru"		"Cry of Fear"
 	}
 	"Voided Subjects"
 	{
 		"en" 		"Voided Subjects"
 		"fr" 		"Disciples du Void"
+		"ru"		"Cубъкеты Бездны"
 	}
 	"Ruina"
 	{
 		"en" 		"Ruina"
+		"ru"		"Руина"
 	}
 	"Iberia Expidonsa Alliance"
 	{
 		"en" 		"Iberia Expidonsa Alliance"
+		"ru"		"Альянс Иберии и Экспидонсы"
 	}
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"
 		"fr" 		"Alliance du Chaos"
+		"ru"		"Альянс Хаоса"
 	}
 	"Expidonsa"
 	{
 		"en" 		"Expidonsa"
 		"pt"		"Expidonsa"
+		"ru"		"Экспидонса"
 	}
 	"Interitus Alliances"
 	{
 		"en"		"interitus Alliances"
 		"fr"		"Alliés de Interitus"
+		"ru"		"Альянс Разрушения"
 	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
 		"fr" 		"Le zombie le plus commun. Rien de spécial."
+		"ru"		"Обычный зомби без особых способностей.Самый часто встречаемый вид зараженных"
 	}
 	"Fortified Headcrab Zombie Desc"
 	{
 		"en" 		"Stronger version of the normal Headcrab Zombie."
+		"ru"		"Усиленная версия обычного зомби."
 	}
 	"Fast Zombie Desc"
 	{
 		"en" 		"A very fast zombie that can also jump at you.\nTheir damage is low but they quickly pile up."
+		"ru"		"Очень быстрый зомби который может прыгнуть на вас.\nИх урон слабый но они быстро накапливаются"
 	}
 	"Fortified Fast Zombie Desc"
 	{
 		"en" 		"Stronger version of the normal Fast Zombie."
+		"ru"		"Усиленная версия обычного быстрого зомби."
 	}
 	"Torsoless Headcrab Zombie Desc"
 	{
