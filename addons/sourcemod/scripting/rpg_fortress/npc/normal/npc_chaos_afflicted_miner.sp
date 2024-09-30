@@ -44,7 +44,6 @@ static const char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
 };
 static int i_HealthMainMaster;
-static int i_OwnerToGoTo[MAXENTITIES];
 
 public void ChaosAfflictedMiner_OnMapStart_NPC()
 {

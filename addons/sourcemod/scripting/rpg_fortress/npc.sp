@@ -415,7 +415,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 	{
 		if(npc.m_flDoingAnimation < GetGameTime())
 		{
-			if(ShouldNpcJumpAtThisClient(npc.m_iTarget))
+			if(ShouldNpcJumpAtThisClient(npc.index, npc.m_iTarget))
 			{
 				float vecMe[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe);
@@ -482,7 +482,7 @@ void RPGNpc_UpdateHpHud(int entity)
 	}
 }
 
-stock bool ShouldNpcJumpAtThisClient(int client)
+stock bool ShouldNpcJumpAtThisClient(int iNpc, int client)
 {
 	bool AllowJump = true;
 	
@@ -490,6 +490,8 @@ stock bool ShouldNpcJumpAtThisClient(int client)
 	{
 		AllowJump = false;
 	}
+	if(i_NpcIsABuilding[iNpc])
+		AllowJump = false;
 	
 	return AllowJump;
 }
@@ -558,11 +560,17 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/casino/npc_casinoshared.sp"
 #include "rpg_fortress/npc/casino/npc_rookiegambler.sp"
 #include "rpg_fortress/npc/casino/npc_buckshotgambler.sp"
+#include "rpg_fortress/npc/casino/npc_heavygambler.sp"
+#include "rpg_fortress/npc/casino/npc_bigwins.sp"
+#include "rpg_fortress/npc/casino/npc_casinorat.sp"
+#include "rpg_fortress/npc/casino/npc_casinoratboom.sp"
+#include "rpg_fortress/npc/casino/npc_trashman.sp"
 
 #include "rpg_fortress/npc/whiteflower_combine/npc_basesquad.sp"
 #include "rpg_fortress/npc/whiteflower_combine/npc_combine_pistol.sp"
 #include "rpg_fortress/npc/whiteflower_combine/npc_combine_smg.sp"
 #include "rpg_fortress/npc/whiteflower_combine/npc_combine_swordsman.sp"
+#include "rpg_fortress/npc/whiteflower_combine/npc_tank.sp"
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"

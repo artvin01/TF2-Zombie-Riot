@@ -94,11 +94,12 @@ methodmap BigWins < CClotBody
 	
 	public BigWins(int client, float vecPos[3], float vecAng[3], int team)
 	{
-		BigWins npc = view_as<BigWins>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.3", "300", ally, false, true));
+		BigWins npc = view_as<BigWins>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.3", "300", team, false, true));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.SetActivity("ACT_MP_STAND_MELEE_ALLCLASS");
 		KillFeed_SetKillIcon(npc.index, "frying_pan");
+		i_NpcWeight[npc.index] = 3;
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -151,7 +152,7 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_STAND_MELE_ALLCLASS", 240.0, gameTime);
+	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_STAND_MELE_ALLCLASS", 290.0, gameTime);
 
 	int target = npc.m_iTarget;
 	
@@ -182,6 +183,9 @@ static void ClotThink(int iNPC)
 						CasinoShared_RobMoney(npc, target, 50);
 						CasinoShared_StealNearbyItems(npc, vecHit);
 						Custom_Knockback(npc.index, target, 1500.0);
+
+						if(target <= MaxClients)
+							Client_Shake(target, 0, 35.0, 20.0, 0.8);
 					}
 				}
 				delete swingTrace;

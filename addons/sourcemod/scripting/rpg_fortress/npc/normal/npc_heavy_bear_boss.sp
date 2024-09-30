@@ -42,7 +42,7 @@ static char g_MeleeAttackSounds[][] = {
 	")weapons/boxing_gloves_swing4.wav",
 };
 
-static int i_OwnerToGoTo[MAXENTITIES];
+int i_OwnerToGoTo[MAXENTITIES];
 
 public void HeavyBearBoss_OnMapStart_NPC()
 {

@@ -283,6 +283,7 @@ void BaseSquad_MapStart()
 	OnMapStartCombinePistol();
 	OnMapStartCombineSMG();
 	OnMapStartCombineSwordsmen();
+	WhiteflowerTank_OnMapStart_NPC();
 }
 
 methodmap BaseSquad < CClotBody

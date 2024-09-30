@@ -3,50 +3,47 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/spy_paincrticialdeath01.mp3",
-	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3"
+	"vo/soldier_paincrticialdeath01.mp3",
+	"vo/soldier_paincrticialdeath02.mp3",
+	"vo/soldier_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSound[][] =
 {
-	"vo/spy_painsharp01.mp3",
-	"vo/spy_painsharp02.mp3",
-	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3"
+	"vo/soldier_painsharp01.mp3",
+	"vo/soldier_painsharp02.mp3",
+	"vo/soldier_painsharp03.mp3",
+	"vo/soldier_painsharp04.mp3",
+	"vo/soldier_painsharp05.mp3"
 };
 
 static const char g_IdleSound[][] =
 {
-	"vo/spy_stabtaunt01.mp3",
-	"vo/spy_stabtaunt02.mp3",
-	"vo/spy_stabtaunt03.mp3",
-	"vo/spy_stabtaunt04.mp3",
-	"vo/spy_stabtaunt05.mp3",
-	"vo/spy_stabtaunt06.mp3",
-	"vo/spy_stabtaunt07.mp3",
-	"vo/spy_stabtaunt08.mp3",
-	"vo/spy_stabtaunt09.mp3",
-	"vo/spy_stabtaunt10.mp3",
-	"vo/spy_stabtaunt11.mp3",
-	"vo/spy_stabtaunt12.mp3",
-	"vo/spy_stabtaunt13.mp3",
-	"vo/spy_stabtaunt14.mp3",
-	"vo/spy_stabtaunt15.mp3",
-	"vo/spy_stabtaunt16.mp3"
+	"vo/soldier_item_maggot_idle01.mp3",
+	"vo/soldier_item_maggot_idle02.mp3",
+	"vo/soldier_item_maggot_idle03.mp3",
+	"vo/soldier_item_maggot_idle04.mp3",
+	"vo/soldier_item_maggot_idle05.mp3",
+	"vo/soldier_item_maggot_idle06.mp3",
+	"vo/soldier_item_maggot_idle07.mp3",
+	"vo/soldier_item_maggot_idle08.mp3",
+	"vo/soldier_item_maggot_idle09.mp3",
+	"vo/soldier_item_maggot_idle10.mp3"
 };
 
-static const char g_MeleeHitSounds[][] =
+static const char g_WinSounds[][] =
 {
-	"weapons/blade_hit1.wav",
-	"weapons/blade_hit2.wav",
-	"weapons/blade_hit3.wav",
-	"weapons/blade_hit4.wav"
+	"vo/soldier_mvm_collect_credits01.mp3"
+};
+
+static const char g_ReloadSounds[][] =
+{
+	"weapons/dumpster_rocket_reload.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/knife_swing.wav"
+	"weapons/doom_rocket_launcher.wav"
 };
 
 void TrashMan_Setup()
@@ -54,7 +51,8 @@ void TrashMan_Setup()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSound);
 	PrecacheSoundArray(g_IdleSound);
-	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_WinSounds);
+	PrecacheSoundArray(g_ReloadSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	
 	NPCData data;
@@ -87,9 +85,13 @@ methodmap TrashMan < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_DeathSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeHitSound()
+	public void PlayWinSound() 
+	{
+		EmitSoundToAll(g_WinSounds[GetURandomInt() % sizeof(g_WinSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlayReloadSound()
  	{
-		EmitSoundToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_ReloadSounds[GetURandomInt() % sizeof(g_ReloadSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
  	{
@@ -103,7 +105,7 @@ methodmap TrashMan < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.SetActivity("ACT_MP_STAND_PRIMARY");
 		KillFeed_SetKillIcon(npc.index, "dumpster_device");
-		//ACT_MP_RELOAD_STAND_SECONDARY2
+		i_NpcWeight[npc.index] = 4;
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -167,31 +169,63 @@ static void ClotThink(int iNPC)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, target))
+			npc.m_iAttacksTillReload--;
+
+			if(npc.m_iAttacksTillReload > 0)
 			{
-				float vecTarget[3]; 
-				WorldSpaceCenter(target, vecTarget);
-				npc.FaceTowards(vecTarget, 15000.0);
+				npc.m_flAttackHappens = gameTime + 0.25;
+			}
+			else
+			{
+				npc.m_flAttackHappens = 0.0;
+			}
+			
+			float vecTarget[3];
+			bool targeted = IsValidEnemy(npc.index, target);
+			
+			if(targeted)
+			{
+				PredictSubjectPositionForProjectiles(npc, target, 600.0, _, vecTarget);
+				npc.FaceTowards(vecTarget, 20000.0);
+			}
+			else
+			{
+				WorldSpaceCenter(npc.index, vecTarget);
+			}
 
-				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, target))
+			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", _, _, _, 3.0);
+			npc.PlayMeleeSound();
+
+			if(targeted && (GetURandomInt() % 5))
+			{
+				npc.FireRocket(vecTarget, CasinoShared_GetDamage(npc, 0.8), 600.0);
+			}
+			else
+			{
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				pos[2] += 30.0;
+				
+				int summon = NPC_CreateByName("npc_casinoratboom", -1, pos, ang, GetTeam(npc.index));
+				if(summon > MaxClients)
 				{
-					target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
+					int health = ReturnEntityMaxHealth(npc.index) / 30;
 
-					if(target > 0) 
+					Level[summon] = Level[npc.index];
+					i_OwnerToGoTo[summon] = EntIndexToEntRef(npc.index);
+					i_HpRegenInBattle[summon] = i_HpRegenInBattle[summon] / 30;
+
+					Apply_Text_Above_Npc(summon, 0, health);
+					CreateTimer(0.1, TimerHeavyBearBossInitiateStuff, EntIndexToEntRef(summon), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+					SetEntProp(summon, Prop_Data, "m_iHealth", health);
+					SetEntProp(summon, Prop_Data, "m_iMaxHealth", health);
+
+					if(targeted)
 					{
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 1.0), DMG_CLUB, _, _, vecHit);
-						CasinoShared_RobMoney(npc, target, 5);
-						CasinoShared_StealNearbyItems(npc, vecHit);
+						WorldSpaceCenter(summon, vecTarget);
+						PluginBot_Jump(summon, vecTarget);
 					}
 				}
-				delete swingTrace;
 			}
 		}
 	}
@@ -216,36 +250,31 @@ static void ClotThink(int iNPC)
 		}
 
 		npc.StartPathing();
-		npc.SetActivity("ACT_MP_RUN_MELEE");
+		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
 			if(npc.m_iAttacksTillReload < 3)
 			{
 				npc.PlayReloadSound();
-				npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY2");
+				npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY2", _, _, _, 1.8);
 				npc.m_iAttacksTillReload++;
-				npc.m_flDoingAnimation = gameTime + 0.7;
-				npc.m_flNextMeleeAttack = gameTime + 0.75;
+				npc.m_flDoingAnimation = gameTime + 0.4;
+				npc.m_flNextMeleeAttack = gameTime + 0.45;
 			}
-
-			target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-			if(IsValidEnemy(npc.index, target))
+			else
 			{
-				npc.m_iTarget = target;
-
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-				npc.PlayMeleeSound();
-				
-				npc.m_flAttackHappens = gameTime + 0.45;
-				npc.m_flDoingAnimation = gameTime + 1.0;
-				npc.m_flNextMeleeAttack = gameTime + 1.05;
+				npc.m_flAttackHappens = gameTime;
+				npc.m_flNextMeleeAttack = gameTime + 1.15;
 			}
 		}
 	}
 	else if(npc.m_iAttacksTillReload > 0)
 	{
 		npc.m_flAttackHappens = gameTime;
+		npc.m_flNextMeleeAttack = gameTime + 0.85;
+
+		npc.PlayWinSound();
 	}
 
 	npc.PlayIdleSound();
@@ -265,4 +294,10 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 }

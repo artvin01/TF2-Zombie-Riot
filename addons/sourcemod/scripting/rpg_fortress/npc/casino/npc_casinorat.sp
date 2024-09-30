@@ -88,6 +88,7 @@ methodmap CasinoRat < CClotBody
 		npc.SetActivity("ACT_IDLE");
 		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
+		i_NpcWeight[npc.index] = 0;
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -209,8 +210,8 @@ static void ClotThink(int iNPC)
 
 				if(!NpcStats_IsEnemySilenced(npc.index))
 				{
-					WorldSpaceCenter(target, vecTarget);
-					PluginBot_Jump(target, vecTarget);
+					WorldSpaceCenter(npc.index, vecTarget);
+					PluginBot_Jump(npc.index, vecTarget);
 				}
 			}
 		}

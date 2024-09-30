@@ -93,6 +93,7 @@ methodmap HeavyGambler < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.SetActivity("ACT_MP_STAND_MELEE");
 		KillFeed_SetKillIcon(npc.index, "eviction_notice");
+		i_NpcWeight[npc.index] = 2;
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;

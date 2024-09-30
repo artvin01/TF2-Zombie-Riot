@@ -74,6 +74,7 @@ methodmap CasinoRatBoom < CClotBody
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.SetActivity("ACT_IDLE");
+		i_NpcWeight[npc.index] = 0;
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -151,7 +152,7 @@ static void ClotThink(int iNPC)
 						{
 							KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 
-							makeexplosion(entity, _, vecHit, _, CasinoShared_GetDamage(npc, 0.7), 100, _, _, true);
+							makeexplosion(npc.index, _, vecHit, _, CasinoShared_GetDamage(npc, 0.7), 100, _, _, true);
 						}
 					}
 				}
