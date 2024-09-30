@@ -139,7 +139,7 @@ void Passanger_Lightning_Effect(float belowBossEyes[3], float vecHit[3], int Pow
 		SetColorRGBA(glowColor, r, g, b, 125);
 		TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Glow, 0, 0, 0, 0.1, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 		TE_SendToAll(0.0);
-		return,
+		return;
 	}
 	if(Power == 2)
 	{
