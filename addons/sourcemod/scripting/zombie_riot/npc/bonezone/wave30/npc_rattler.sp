@@ -1,8 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float BONES_RATTLER_SPEED = 250.0;
-static float BONES_RATTLER_SPEED_BUFFED = 320.0;
+static float BONES_RATTLER_SPEED = 360.0;	//Rattler movement speed while it has ammo
+static float BONES_RATTLER_SPEED_NO_AMMO = 230.0;	//Rattler movement speed while it has no ammo
+static float BONES_RATTLER_SPEED_BUFFED = 260.0;	//Hitman movement speed while it is not charging its gun
+static float BONES_RATTLER_SPEED_BUFFED_CHARGING = 400.0;	//Hitman movement speed while it is charging its gun
 
 #define BONES_RATTLER_HP				"900"
 #define BONES_RATTLER_HP_BUFFED		"4500"
@@ -15,8 +17,12 @@ static float RATTLER_VELOCITY = 800.0;	//Projectile velocity.
 static float RATTLER_LIFESPAN = 1.0;	//Projectile lifespan.
 static float RATTLER_ENTITYMULT = 2.0;	//Amount to multiply damage dealt by Rattler projectiles to enemies.
 static float RATTLER_RANGE = 500.0;		//Range in which Rattlers will shoot.
-static int RATTLER_CLIP = 12;			//Clip size.
-static float RATTLER_RELOADTIME = 3.0;	//Reload duration.
+static int RATTLER_CLIP = 24;			//Clip size.
+static float RATTLER_RELOADTIME = 3.0;	//Time after attack finishes before the NPC will reload.
+static float RATTLER_TURNRATE = 1200.0;	//Rate at which the NPC turns to face its target while firing.
+static int RATTLER_EMPTY = 3;			//Number of times the Rattler will attempt to fire its gun once it runs out of ammo. This is used to indicate it has run out with a unique animation and sound effect, so players can react.
+static float RATTLER_SPREAD = 4.0;		//Random spread.
+static float RATTLER_RELOAD_DELAY = 1.0;	//Delay after the reload finishes before the Rattler can attack again.
 
 //HOLLOW HITMAN: Buffed range unit, slowly fires powerful explosive projectiles from a revolver. Predicts within a large radius.
 //Functions similarly to Rattlers in that it will run away while charging up its next shot, then chase the nearest target until in-range once its shot is fully charged.
@@ -34,7 +40,7 @@ static float RATTLER_NATURAL_BUFF_CHANCE = 0.05;	//Percentage chance for non-buf
 static float RATTLER_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float RATTLER_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
-static float BONES_RATTLER_ATTACKINTERVAL = 0.33;
+static float BONES_RATTLER_ATTACKINTERVAL = 0.125;
 static float BONES_RATTLER_ATTACKINTERVAL_BUFFED = 1.0;
 
 static float RATTLER_HOVER_MINDIST = 400.0;
@@ -50,7 +56,14 @@ static float f_RattlerFireballDMG[2049] = { 0.0, ... };
 #define BONES_RATTLER_BUFFED_SKIN				"1"
 
 #define SND_RATTLER_SHOOT					")weapons/doom_sniper_smg.wav"
+#define SND_RATTLER_SHOOT_NO_AMMO			")weapons/shotgun_empty.wav"
 #define SND_RATTLER_HIT						")player/pain.wav"
+#define SND_RATTLER_RELOAD_FINISH			")weapons/sniper_bolt_forward.wav"
+#define SND_RATTLER_RELOAD_START			")weapons/sniper_bolt_back.wav"
+#define SND_RATTLER_SCARED					")vo/scout_sf12_scared01.mp3"
+#define SND_RATTLER_SWING					")weapons/machete_swing.wav"
+#define SND_RATTLER_SWING_BIG				")misc/halloween/strongman_fast_whoosh_01.wav"
+#define SND_RATTLER_STOMP					")weapons/push_impact.wav"
 
 #define PARTICLE_RATTLER_FIREBALL			"nailtrails_medic_red_crit"
 #define PARTICLE_RATTLER_FIREBALL_BUFFED	"spell_fireball_small_blue"
@@ -131,6 +144,13 @@ public void RattlerBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 	PrecacheSound(SND_RATTLER_SHOOT);
 	PrecacheSound(SND_RATTLER_HIT);
+	PrecacheSound(SND_RATTLER_SHOOT_NO_AMMO);
+	PrecacheSound(SND_RATTLER_RELOAD_START);
+	PrecacheSound(SND_RATTLER_RELOAD_FINISH);
+	PrecacheSound(SND_RATTLER_SCARED);
+	PrecacheSound(SND_RATTLER_SWING);
+	PrecacheSound(SND_RATTLER_SWING_BIG);
+	PrecacheSound(SND_RATTLER_STOMP);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Rattler");
@@ -162,6 +182,13 @@ static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return RattlerBones(client, vecPos, vecAng, ally, true);
 }
+
+static bool b_HitmanCharging[MAXENTITIES] = { false, ... };
+static int i_RattlerAmmo[MAXENTITIES] = { 0, ... };
+static int i_RattlerDryShots[MAXENTITIES] = { 0, ... };
+static bool b_RattlerAttacking[MAXENTITIES] = { false, ... };
+static bool b_RattlerWindupPhase[MAXENTITIES] = { false, ... };
+static float f_ReloadAt[MAXENTITIES] = { 0.0, ... };
 
 methodmap RattlerBones < CClotBody
 {
@@ -238,7 +265,15 @@ methodmap RattlerBones < CClotBody
 		#endif
 	}
 	
-	
+	public bool IHaveAmmo()
+	{
+		if (b_BonesBuffed[this.index])
+		{
+			return b_HitmanCharging[this.index];
+		}
+		
+		return i_RattlerAmmo[this.index] > 0;
+	}
 	
 	public RattlerBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
@@ -276,6 +311,7 @@ methodmap RattlerBones < CClotBody
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(RattlerBones_SetBuffed);
 		npc.m_bisWalking = false;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.5;
 
 		func_NPCDeath[npc.index] = view_as<Function>(RattlerBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(RattlerBones_OnTakeDamage);
@@ -287,12 +323,19 @@ methodmap RattlerBones < CClotBody
 		{
 			int iActivity = npc.LookupActivity("ACT_HITMAN_RUN");
 			if(iActivity > 0) npc.StartActivity(iActivity);
+			func_NPCAnimEvent[npc.index] = Hitman_AnimEvent;
 		}
 		else
 		{
-			int iActivity = npc.LookupActivity("ACT_RATTLER_RUN");
+			int iActivity = npc.LookupActivity("ACT_RATTLER_RUN_LOADED");
 			if(iActivity > 0) npc.StartActivity(iActivity);
+			func_NPCAnimEvent[npc.index] = Rattler_AnimEvent;
 		}
+
+		i_RattlerAmmo[npc.index] = RATTLER_CLIP;
+		b_HitmanCharging[npc.index] = false;
+		b_RattlerAttacking[npc.index] = false;
+		b_RattlerWindupPhase[npc.index] = false;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
@@ -316,6 +359,16 @@ methodmap RattlerBones < CClotBody
 public void RattlerBones_SetBuffed(int index, bool buffed)
 {
 	CClotBody npc = view_as<CClotBody>(index);
+	i_RattlerAmmo[npc.index] = RATTLER_CLIP;
+	b_HitmanCharging[npc.index] = false;
+	b_RattlerAttacking[npc.index] = false;
+	b_RattlerWindupPhase[npc.index] = false;
+
+	if (GetGameTime(npc.index) - npc.m_flNextRangedAttack < 0.5)
+	{
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.5;
+	}
+
 	if (!b_BonesBuffed[index] && buffed)
 	{
 		//Tell the game the skeleton is buffed:
@@ -331,6 +384,8 @@ public void RattlerBones_SetBuffed(int index, bool buffed)
 
 		int iActivity = npc.LookupActivity("ACT_HITMAN_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		func_NPCAnimEvent[npc.index] = Hitman_AnimEvent;
 	}
 	else if (b_BonesBuffed[index] && !buffed)
 	{
@@ -345,8 +400,10 @@ public void RattlerBones_SetBuffed(int index, bool buffed)
 		Rattler_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_RATTLER_SKIN);
 
-		int iActivity = npc.LookupActivity("ACT_RATTLER_RUN");
+		int iActivity = npc.LookupActivity("ACT_RATTLER_RUN_LOADED");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		func_NPCAnimEvent[npc.index] = Rattler_AnimEvent;
 	}
 }
 
@@ -356,15 +413,15 @@ stock void Rattler_GiveCosmetics(CClotBody npc, bool buffed)
 	
 	if (buffed)
 	{
-		npc.m_iWearable1 = npc.EquipItem("hat", "models/workshop/player/items/sniper/hwn2023_sightseer_style1/hwn2023_sightseer_style1.mdl");
+		/*npc.m_iWearable1 = npc.EquipItem("hat", "models/workshop/player/items/sniper/hwn2023_sightseer_style1/hwn2023_sightseer_style1.mdl");
 		npc.m_iWearable2 = npc.EquipItem("spine3", "models/workshop/player/items/sniper/hwn2023_sharpshooters_shroud/hwn2023_sharpshooters_shroud.mdl");
 		
 		DispatchKeyValue(npc.m_iWearable1, "skin", "1");
-		DispatchKeyValue(npc.m_iWearable2, "skin", "1");
+		DispatchKeyValue(npc.m_iWearable2, "skin", "1");*/
 	}
 	else
 	{
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/sniper/headhunters_wrap/headhunters_wrap.mdl");
+		//npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/sniper/headhunters_wrap/headhunters_wrap.mdl");
 	}
 }
 
@@ -415,25 +472,26 @@ stock int Rattler_AttachParticle(int entity, char type[255], float duration = 0.
 
 public void Rattler_CheckShoot(RattlerBones npc, int closest)
 {
-	if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index))
+	if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && IsValidEnemy(npc.index, closest) && !NpcStats_IsEnemySilenced(npc.index) && !b_RattlerAttacking[npc.index] && !b_RattlerWindupPhase[npc.index])
 	{
 		if (!Can_I_See_Enemy_Only(npc.index, closest))
 			return;
 
 		if (!b_BonesBuffed[npc.index])
 		{
+			if (!npc.IHaveAmmo())
+				return;
+
 			float vicPos[3], userPos[3];
 			WorldSpaceCenter(closest, vicPos);
 			WorldSpaceCenter(npc.index, userPos);
 			if (GetVectorDistance(vicPos, userPos) <= RATTLER_RANGE)
 			{
-				npc.AddGesture("ACT_RATTLER_SHOOT");
-				EmitSoundToAll(SND_RATTLER_SHOOT, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
-				float pos[3], ang[3];
-				npc.GetAttachment("smg_muzzle_left", pos, ang);
-				ParticleEffectAt(pos, PARTICLE_RATTLER_MUZZLE);
-				Rattler_ShootProjectile(npc, vicPos, RATTLER_VELOCITY, RATTLER_DAMAGE, pos);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_RATTLER_ATTACKINTERVAL;
+				int iActivity = npc.LookupActivity("ACT_RATTLER_ATTACK_IMMINENT");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				b_RattlerWindupPhase[npc.index] = true;
+				npc.FaceTowards(vicPos, 15000.0);
+				i_RattlerDryShots[npc.index] = RATTLER_EMPTY;
 			}
 		}
 	}
@@ -445,17 +503,22 @@ public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel
 			
 	if (IsValidEntity(entity))
 	{
-		float vecForward[3], vecSwingStart[3], vecAngles[3];
-		npc.GetVectors(vecForward, vecSwingStart, vecAngles);
+		float vecForward[3], vecAngles[3], currentAngles[3], buffer[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", currentAngles);
+		Priest_GetAngleToPoint(npc.index, startPos, vicLoc, buffer, vecAngles);
+		vecAngles[1] = currentAngles[1];
+		vecAngles[2] = currentAngles[2];
 
-		vecSwingStart = startPos;
-
-		MakeVectorFromPoints(vecSwingStart, vicLoc, vecAngles);
-		GetVectorAngles(vecAngles, vecAngles);
-		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*vel;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*vel;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-vel;
+		if (!b_BonesBuffed[npc.index])
+		{
+			for(int i = 0; i < 3; i++)
+				vecAngles[i] += GetRandomFloat(-RATTLER_SPREAD, RATTLER_SPREAD);
+		}
+			
+		GetAngleVectors(vecAngles, buffer, NULL_VECTOR, NULL_VECTOR);
+		vecForward[0] = buffer[0] * vel;
+		vecForward[1] = buffer[1] * vel;
+		vecForward[2] = buffer[2] * vel;
 		
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
@@ -464,7 +527,7 @@ public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel
 		
 		f_RattlerFireballDMG[entity] = damage;
 
-		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
+		TeleportEntity(entity, startPos, vecAngles, NULL_VECTOR, true);
 		DispatchSpawn(entity);
 		
 		int g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_drg_ball.mdl");
@@ -530,9 +593,9 @@ public MRESReturn Rattler_Explode(int entity)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	ParticleEffectAt(position, PARTICLE_FIREBALL_EXPLODE, 2.0);
 	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
-	Explode_Logic_Custom(f_RattlerFireballDMG[entity], IsValidEntity(owner) ? owner : entity, entity, entity, position, RATTLER_FIREBALL_BLAST_RADIUS, RATTLER_FIREBALL_FALLOFF_MULTIHIT, RATTLER_FIREBALL_FALLOFF_RADIUS, isBlue, _, true, RATTLER_FIREBALL_ENTITY_MULTIPLIER);
+	//int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	//bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	//Explode_Logic_Custom(f_RattlerFireballDMG[entity], IsValidEntity(owner) ? owner : entity, entity, entity, position, RATTLER_FIREBALL_BLAST_RADIUS, RATTLER_FIREBALL_FALLOFF_MULTIHIT, RATTLER_FIREBALL_FALLOFF_RADIUS, isBlue, _, true, RATTLER_FIREBALL_ENTITY_MULTIPLIER);
 	
 	RemoveEntity(entity);
 	return MRES_Supercede; //DONT.
@@ -545,6 +608,90 @@ public void Rattler_LookAtPoint(RattlerBones npc, int closest)
 		float targLoc[3];
 		WorldSpaceCenter(closest, targLoc);
 		npc.FaceTowards(targLoc, 15000.0);
+	}
+}
+
+public void Hitman_AnimEvent(int entity, int event)
+{
+	if (!IsValidEntity(entity))
+		return;
+
+	RattlerBones npc = view_as<RattlerBones>(entity);
+
+	if (!b_BonesBuffed[entity])
+		return;
+
+    switch(event)
+	{
+
+	}
+}
+
+public void Rattler_AnimEvent(int entity, int event)
+{
+	if (!IsValidEntity(entity))
+		return;
+
+	RattlerBones npc = view_as<RattlerBones>(entity);
+
+	if (b_BonesBuffed[entity])
+		return;
+
+	if (b_RattlerWindupPhase[npc.index])
+	{
+		switch(event)
+		{
+			case 1001:		//Rattler swings its gun up into the air, play a sound effect.
+			{
+				EmitSoundToAll(SND_RATTLER_SWING, npc.index, _, _, _, _, GetRandomInt(80, 90));
+			}
+			case 1002:		//Rattler is about to stomp its foot on the ground, play a sound effect.
+			{
+				EmitSoundToAll(SND_RATTLER_SWING_BIG, npc.index, _, _, _, _, GetRandomInt(80, 90));
+			}
+			case 1003:		//Rattler's foot hits the ground, play a sound effect.
+			{
+				EmitSoundToAll(SND_RATTLER_STOMP, npc.index, _, _, _, _, GetRandomInt(80, 90));
+			}
+			case 1004:		//Intro sequence ends, transition to active attack sequence.
+			{
+				b_RattlerWindupPhase[npc.index] = false;
+				b_RattlerAttacking[npc.index] = true;
+
+				int iActivity = npc.LookupActivity("ACT_RATTLER_FIRING_POSE");
+				if (iActivity > 0)
+					npc.StartActivity(iActivity);
+
+				EmitSoundToAll(SOUND_HHH_DEATH, npc.index, _, _, _, _, GetRandomInt(120, 130));
+			}
+		}
+	}
+	else if (!b_RattlerAttacking[npc.index])
+	{
+		switch(event)
+		{
+			case 1002:		//Reload sequence part 1, play sound effect.
+			{
+				EmitSoundToAll(SND_RATTLER_RELOAD_START, npc.index);
+			}
+			case 1003:		//Reload sequence part 2, play sound effect.
+			{
+				EmitSoundToAll(SND_RATTLER_RELOAD_FINISH, npc.index);
+				EmitSoundToAll(g_HHHLaughs[GetRandomInt(0, sizeof(g_HHHLaughs) - 1)], npc.index, _, _, _, _, GetRandomInt(120, 130));
+
+				int iActivity = npc.LookupActivity("ACT_RATTLER_RUN_LOADED");
+				if (iActivity > 0)
+					npc.StartActivity(iActivity);
+				npc.m_flSpeed = BONES_RATTLER_SPEED;
+
+				if (GetGameTime(npc.index) - npc.m_flNextRangedAttack < RATTLER_RELOAD_DELAY)
+				{
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + RATTLER_RELOAD_DELAY;
+				}
+
+				i_RattlerAmmo[npc.index] = RATTLER_CLIP;
+			}
+		}
 	}
 }
 
@@ -574,8 +721,7 @@ public void RattlerBones_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + (b_RattlerAttacking[npc.index] ? 0.01 : 0.1);
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -585,10 +731,66 @@ public void RattlerBones_ClotThink(int iNPC)
 	
 	int closest = npc.m_iTarget;
 	
-	//Rattlers will always attempt to stay a certain distance away from their target, not too far but not too close.
-	//If they are too far/too close, they will move closer/further as needed.
-	//They will still, however, always choose the nearest enemy as their target.
-	if(IsValidEnemy(npc.index, closest))
+	if (b_RattlerAttacking[npc.index] || b_RattlerWindupPhase[npc.index])
+	{
+		npc.StopPathing();
+
+		if (b_RattlerAttacking[npc.index] && !b_BonesBuffed[npc.index] && GetGameTime(npc.index) >= npc.m_flNextRangedAttack)
+		{
+			float vicPos[3];
+
+			if (IsValidEnemy(npc.index, closest) && Can_I_See_Enemy_Only(npc.index, closest))
+			{
+				WorldSpaceCenter(closest, vicPos);
+				npc.FaceTowards(vicPos, RATTLER_TURNRATE);
+			}
+			else
+			{
+				float ang[3], Direction[3], startPos[3];
+				WorldSpaceCenter(npc.index, startPos);
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
+				GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
+				ScaleVector(Direction, 200.0);
+				AddVectors(startPos, Direction, vicPos);
+			}
+
+			if (npc.IHaveAmmo())
+			{
+				npc.AddGesture("ACT_RATTLER_SHOOT");
+				EmitSoundToAll(SND_RATTLER_SHOOT, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
+				float pos[3], ang[3];
+				npc.GetAttachment("smg_muzzle_left", pos, ang);
+				ParticleEffectAt(pos, PARTICLE_RATTLER_MUZZLE);
+
+				Rattler_ShootProjectile(npc, vicPos, RATTLER_VELOCITY, RATTLER_DAMAGE, pos);
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_RATTLER_ATTACKINTERVAL;
+
+				i_RattlerAmmo[npc.index]--;
+			}
+			else if (i_RattlerDryShots[npc.index] > 0)
+			{
+				npc.AddGesture("ACT_RATTLER_SHOOT_NO_AMMO");
+				EmitSoundToAll(SND_RATTLER_SHOOT_NO_AMMO, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
+				i_RattlerDryShots[npc.index]--;
+
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_RATTLER_ATTACKINTERVAL;
+			}
+			else
+			{
+				int iActivity = npc.LookupActivity("ACT_RATTLER_RUN");
+				if (iActivity > 0)
+					npc.StartActivity(iActivity);
+				npc.m_flSpeed = BONES_RATTLER_SPEED_NO_AMMO;
+
+				b_RattlerAttacking[npc.index] = false;
+				f_ReloadAt[npc.index] = GetGameTime(npc.index) + RATTLER_RELOADTIME;
+
+				EmitSoundToAll(SND_RATTLER_SCARED, npc.index, _, _, _, _, GetRandomInt(80, 100));
+			}
+		}
+	}
+	else if(IsValidEnemy(npc.index, closest))
 	{
 		float pos[3], targPos[3], optimalPos[3]; 
 		WorldSpaceCenter(npc.index, pos);
@@ -603,20 +805,16 @@ public void RattlerBones_ClotThink(int iNPC)
 		}
 		else
 		{
-			if (flDistanceToTarget < RATTLER_HOVER_MINDIST)
+			if (flDistanceToTarget < RATTLER_HOVER_MINDIST || !npc.IHaveAmmo())
 			{
 				npc.StartPathing();
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
 				NPC_SetGoalVector(npc.index, optimalPos, true);
 			}
-			else if (flDistanceToTarget > RATTLER_HOVER_MAXDIST)
+			else if (flDistanceToTarget > RATTLER_HOVER_MAXDIST || npc.IHaveAmmo())
 			{
 				npc.StartPathing();
 				NPC_SetGoalEntity(npc.index, closest);
-			}
-			else
-			{
-				npc.StopPathing();
 			}
 
 			Rattler_CheckShoot(npc, closest);
@@ -628,6 +826,12 @@ public void RattlerBones_ClotThink(int iNPC)
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
+	}
+
+	if (GetGameTime(npc.index) >= f_ReloadAt[npc.index] && f_ReloadAt[npc.index] > 0.0 && !npc.IHaveAmmo())
+	{
+		npc.AddGesture("ACT_RATTLER_RELOAD");
+		f_ReloadAt[npc.index] = 0.0;
 	}
 	
 	npc.PlayIdleSound();

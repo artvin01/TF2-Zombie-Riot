@@ -2995,6 +2995,10 @@
 	{
 		"en"	"Bone Brewer"
 	}
+	"Unpleasant Peasant"
+	{
+		"en"	"Unpleasant Peasant"
+	}
 	"Skeletal Squire"
 	{
 		"en"	"Skeletal Squire"
