@@ -1783,8 +1783,8 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 
 stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
-#if defined ZR
 	float basedamage = damage;
+#if defined ZR
 	if(inflictor > 0)
 	{
 		if(b_ThisWasAnNpc[inflictor])

@@ -1453,7 +1453,9 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 		if(healer > 0 && healer != entity && healer <= MaxClients)
 		{
 			Healing_done_in_total[healer] += HealthHealed;
+#if defined ZR
 			AddHealthToUbersaw(healer, HealthHealed, 0.0);
+#endif
 		}
 	}
 
