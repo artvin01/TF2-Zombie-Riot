@@ -40,7 +40,7 @@ stock void CasinoShared_RobMoney(CClotBody npc, int victim, int steal)
 		static float StealCooldown[MAXTF2PLAYERS];
 		float gameTime = GetGameTime();
 
-		if(StealCooldown[victim] < gameTime)
+		if(fabs(StealCooldown[victim] - gameTime) > 2.0)
 		{
 			StealCooldown[victim] = gameTime + 2.0;
 

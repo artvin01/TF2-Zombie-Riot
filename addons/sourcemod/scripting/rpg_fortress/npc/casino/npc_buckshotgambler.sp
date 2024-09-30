@@ -195,7 +195,7 @@ static void ClotThink(int iNPC)
 				else
 				{
 					npc.PlayRangeSound();
-					SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 3.0), DMG_BULLET);
+					SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 3.0), DMG_BULLET, _, _, vecTarget);
 				}
 			}
 		}

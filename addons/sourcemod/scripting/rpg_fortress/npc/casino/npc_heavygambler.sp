@@ -172,7 +172,7 @@ static void ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 0.6), DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 0.6), DMG_CLUB, _, _, vecHit);
 						CasinoShared_RobMoney(npc, target, 10);
 						CasinoShared_StealNearbyItems(npc, vecHit);
 					}
@@ -214,7 +214,7 @@ static void ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", _, _, _, 2.0);
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = 0.25;
+				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.5;
 				npc.m_flNextMeleeAttack = gameTime + 0.45;
 			}
