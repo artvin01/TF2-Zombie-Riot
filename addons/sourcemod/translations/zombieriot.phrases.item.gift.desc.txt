@@ -1058,31 +1058,37 @@
 	"Waldch Desc"
 	{
 		"en"		"A friend to Silvester and a gunslinger to various weapons and support tools.\nWhat are they doing fighting you?\nSniper attack prediction (can be silenced)."
-		"ru"		"Друг Сильвестера и оружейник различным оружия и инструментов поддержки.\nЧто они делают сражаясь с вами?\n
+		"ru"		"Друг Сильвестера и оружейник различным оружия и инструментов поддержки.\nЧто они делают сражаясь с вами?\nПредугадывание передвижение (можно заткнуть)."
 	}
 	"Angeled Silvester Desc"
 	{
 		"en"		"A higher tier form of Silvester, what is this, magic or technology?\nWhere does he come from?"
+		"ru"		"Более высокая форма Сильвестера,что это,Магия или Технология?\nОткуда он появился?"
 	}
 	"Nemesis Desc"
 	{
 		"en"		"The originator of the Xeno infection, Real name was Calmaticus.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
+		"ru"		"Создатель Ксено инфекции,Настоящие имя Было Калматикус.\nОни попытались предупредить тебя,ты не послушал.\nЕго сопротивление во время регенрациии (можно заткнуть на половину)."
 	}
 	"Shell Sea Runner Desc"
 	{
 		"en"		"A very fast sea creature that can dodge sentry fire.\n''A Sea Terror that grew four limbs, but lacks an internal skeleton.''\n''It seems to have once hunted quadrupeds on land.''"
+		"ru"		"Оченьы быстрые морские создание которые могут избегать огня турели.\nМорское ужас которое отростило четыре конечности,но недостаёт внетренего скелета.\n''похоже они однажды охотились на четвероногих на суше.''"
 	}
 	"Nourished Runner Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that grew four limbs and has sated its hunger.''\n''It controls its body's movements using hydraulic pressure and possesses superior reflexes.''"
+		"ru"		"Улучшенный вариант с большем уроном и здоровьем.\n''Морской ужас который отростил 4 конечности и утолил свой голод.''\n''Оно контолирует свои движения тела используя гидравлическое давление и имеет высшее рефлексы''"
 	}
 	"Deep Sea Slider Desc"
 	{
 		"en"		"Attacks inflict armor erosion.\n''A Sea Terror that crawled onto the shore.''\n''It brandishes its tough appendages menacingly.''"
+		"ru"		"Атаки наносят эрозию брони.\n''Морской ужас которое запалзло на берег.''\n''Он угрожающе размахивает своими жесткими отростками.''"
 	}
 	"Nourished Slider Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that crawled onto the shore and has sated its hunger.''\n''Its appendages can cause protein denaturation.''"
+		"ru"		"Улучшенный вариант с большим уроном и здоровьем.\n''Морской ужас которое заползло на берег и насытила свой голод.''\n''Его придатки могут вызвать денатурацию белка.''"
 	}
 	"Ridge Sea Spitter Desc"
 	{
@@ -1091,6 +1097,7 @@
 	"Nourished Spitter Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A mysterious Sea Terror that has sated its hunger.''\n''Its spit is a way to deal with natural disasters, rather than as a means of hunting.''"
+		"ru"		"Улучшенный вариант с большим уроном и здоровльем.\n''Мистический Морской ужас который насытился.''\n''его хароч это решение всех стихийных бедствий,нежели путь охоты.''"
 	}
 	"Basin Sea Reaper Desc"
 	{
