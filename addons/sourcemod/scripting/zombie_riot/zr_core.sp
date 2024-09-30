@@ -638,7 +638,6 @@ void ZR_MapStart()
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	WavesUpdateDifficultyName();
-	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
 	Zero(f_Reviving_This_Client);
@@ -822,6 +821,7 @@ void ZR_MapStart()
 	//SetVariantString("ForceEnableUpgrades(2)");
 	//AcceptEntityInput(0, "RunScriptCode");
 	CreateMVMPopulator();
+	RoundStartTime = FAR_FUTURE;
 	
 	//Store_RandomizeNPCStore(1);
 }
