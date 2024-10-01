@@ -109,11 +109,8 @@ static const char g_LastMannAnnouncer[][] =
 
 int g_iSoundEnts[MAXENTITIES];
 int g_iNumSounds;
-
-void Music_MapStart()
+void PrecacheMusicZr()
 {
-	Zero(DelayStopSoundAll);
-	PrecacheSoundArray(g_LastMannAnnouncer);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/1.mp3",_,0);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/2.mp3",_,0);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/3.mp3",_,0);
@@ -148,7 +145,14 @@ void Music_MapStart()
 		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/inside_lab.mp3",_,1);
 		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/outside_wasteland.mp3",_,1);
 	}
+}
+void Music_MapStart()
+{
+	Zero(DelayStopSoundAll);
+	PrecacheSoundArray(g_LastMannAnnouncer);
+	
 	EventRoundStartMusicFilter();
+	PrecacheMusicZr();
 }
 
 void EventRoundStartMusicFilter()

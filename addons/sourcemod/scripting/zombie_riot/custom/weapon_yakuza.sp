@@ -62,6 +62,7 @@ static float CurrentlyInAttack[MAXTF2PLAYERS];
 static bool SpecialLastMan;
 static bool Precached;
 static float HeatActionCooldown[MAXTF2PLAYERS];
+static float HeatActionCooldownEnemy[MAXENTITIES];
 
 void Yakuza_MapStart()
 {
@@ -70,6 +71,7 @@ void Yakuza_MapStart()
 	Zero(BlockNextFor);
 	Zero(BlockStale);
 	Zero(HeatActionCooldown);
+	Zero(HeatActionCooldownEnemy);
 	Precached = false;
 	SpecialLastMan = false;
 	PrecacheSound("items/pegleg_01.wav");
@@ -620,6 +622,19 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				}
 				RequiredHeat = 45;
 			}
+			else
+			{
+				if(HeatActionCooldownEnemy[target] > GetGameTime())
+				{
+					//cant spam heat actions.
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetDefaultHudPosition(client);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Enemy was recently in HEAT ability! Wait!");
+					FinishLagCompensation_Base_boss();
+					return;
+				}
+			}
 			float flMaxhealth = float(ReturnEntityMaxHealth(client));
 
 			if(WeaponCharge[client] >= RequiredHeat)
@@ -629,6 +644,9 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
 				//Everything is greenlit! Yaay!
 				HeatActionCooldown[client] = GetGameTime() + 0.5;
+				if(WeaponStyle[client] != Style_Dragon)
+					HeatActionCooldownEnemy[target] = GetGameTime() + 5.0;
+				//cant spam heat action.
 				switch(WeaponStyle[client])
 				{
 					case Style_Brawler:
@@ -767,41 +785,48 @@ static void Yakuza_Block(int client, int weapon, int slot)
 	Rogue_OnAbilityUse(weapon);
 
 	float gameTime = GetGameTime();
-	float cooldown = 2.0;
+//	float cooldown = 2.0;
 	float duration = 0.5;
-
+	if(BlockStale[client] > 0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Cannot Block! Attack to regain block count!");
+		return;		
+	}
 	switch(WeaponStyle[client])
 	{
 		case Style_Beast:
 		{
-			cooldown = 2.5;
+		//	cooldown = 2.5;
 			duration = 0.8;
 		}
 		case Style_Rush:
 		{
-			cooldown = 1.5;
+	//		cooldown = 1.5;
 			duration = 0.4;
 		}
 		case Style_Dragon:
 		{
-			cooldown = 1.5;
+	//		cooldown = 1.5;
 			duration = 0.65;
 		}
 	}
 	
-	Ability_Apply_Cooldown(client, 2, cooldown * 3.0 * (1.0 + (BlockStale[client] * 0.05)));
+//	Ability_Apply_Cooldown(client, 2, cooldown * 3.0 * (1.0 + (BlockStale[client] * 0.05)));
 
 	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", gameTime + duration);
 
 	BlockStale[client] += 10;	// Every block stales by x1.5
+
 	int NumberRand = GetRandomInt(0,1);
 	EmitSoundToAll(NumberRand ? "items/pegleg_01.wav" : "items/pegleg_02.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 90);
 	EmitSoundToAll(NumberRand ? "items/pegleg_01.wav" : "items/pegleg_02.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 90);
 
 	if(RaidbossIgnoreBuildingsLogic(1))
 	{
-		if(BlockStale[client] < 25)
-			ApplyTempAttrib(weapon, 206, 0.25, duration);
+		ApplyTempAttrib(weapon, 206, 0.25, duration);
 	}
 	else
 	{
@@ -812,6 +837,9 @@ static void Yakuza_Block(int client, int weapon, int slot)
 void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 {
 	BlockStale[attacker]--;
+	if(BlockStale[attacker] <= 0)
+		BlockStale[attacker] = 0;
+		
 	LastVictim[attacker] = EntIndexToEntRef(victim);
 	int HeatGive = 5;
 
@@ -828,6 +856,10 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 
 		case Style_Dragon:
 			HeatGive = 0;
+	}
+	if(b_thisNpcIsARaid[victim])
+	{
+		HeatGive = RoundToNearest(float(HeatGive) * 1.5);
 	}
 	//reward heavy hit or normal hit with rush style
 	if(CurrentWeaponComboAt[attacker] == 0)
@@ -931,7 +963,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 				cooldown *= 6.0;
 				cooldown *= 3.0;
 				Ability_Apply_Cooldown(attacker, 1, cooldown);
-				duration *= 0.35;
+				duration *= 0.85;
 			}
 			
 			FreezeNpcInTime(victim, duration * Yakuza_DurationDoEnemy(victim));
@@ -947,7 +979,7 @@ void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damaget
 {
 	if(LastMann)
 	{
-		damage *= 0.5;
+		damage *= 0.75;
 	}
 	if(WeaponStyle[victim] == Style_Brawler)
 		damage *= 0.90;
@@ -989,7 +1021,7 @@ float Yakuza_SelfTakeDamageHud(int victim, int weapon)
 	float damagereturn = 1.0;
 	if(LastMann)
 	{
-		damagereturn *= 0.5;
+		damagereturn *= 0.75;
 	}
 
 	if(WeaponStyle[victim] == Style_Brawler)
