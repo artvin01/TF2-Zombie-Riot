@@ -1073,7 +1073,7 @@
 	"Shell Sea Runner Desc"
 	{
 		"en"		"A very fast sea creature that can dodge sentry fire.\n''A Sea Terror that grew four limbs, but lacks an internal skeleton.''\n''It seems to have once hunted quadrupeds on land.''"
-		"ru"		"Оченьы быстрые морские создание которые могут избегать огня турели.\nМорское ужас которое отростило четыре конечности,но недостаёт внетренего скелета.\n''похоже они однажды охотились на четвероногих на суше.''"
+		"ru"		"Оченьы быстрые морские создание которые могут избегать огня турели.\nМорское ужас которое отростило четыре конечности,но недостаёт внутренего скелета.\n''похоже они однажды охотились на четвероногих на суше.''"
 	}
 	"Nourished Runner Desc"
 	{
@@ -1088,7 +1088,7 @@
 	"Nourished Slider Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that crawled onto the shore and has sated its hunger.''\n''Its appendages can cause protein denaturation.''"
-		"ru"		"Улучшенный вариант с большим уроном и здоровьем.\n''Морской ужас которое заползло на берег и насытила свой голод.''\n''Его придатки могут вызвать денатурацию белка.''"
+		"ru"		"Улучшенный вариант с большим уроном и здоровьем.\n''Морской ужас которое заползло на берег и утолила свой голод.''\n''Его придатки могут вызвать денатурацию белка.''"
 	}
 	"Ridge Sea Spitter Desc"
 	{
@@ -1102,14 +1102,17 @@
 	"Basin Sea Reaper Desc"
 	{
 		"en"		"Starts passive and slow, enrages damaged enough. Rage increases speed and causes AOE armor erosion.\n''A Sea Terror that emits ear-splitting screeches.''\n''Should its nourishment be interrupted, it will immediately counterattack any nearby threats, until all other signs of life have ceased.''"
+		"ru"		"Начинает пассивно и медленно,разозлится если нанесено достаточно урона.Ярость увеличивает скорость и наносит Корозию брони в радиусе.\n''Морской ужас который который издает оглушительный визг.''\n''Если его трапеза будет прервана,Оно сразу контр-атакует ближайшие угрозы, пока все признаки жизни не буду стёрты.''"
 	}
 	"Nourished Reaper Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that emits ear-splitting screeches and has sated its hunger.''\n''It is essentially harmless if you don't disturb it.''"
+		"ru"		"Улучшенная версия наносщая больше урона и имеет больше здоровья.\n''Морской которое издаёт оглушающий крик и уталило свой голод.''\n''Оно безобидно если не беспокоить это.''"
 	}
 	"Pocket Sea Crawler Desc"
 	{
 		"en"		"When taken enough damage, will cause an AOE damage and armor erosion attack.\n''A Sea Terror imbued with impurities.''\n''The density of its body tissue surpasses that of some alloys.''\n''Victims stabbed by it will feel as if they have been set alight.''"
+		"ru"		"Когда получит достаточно урона,Создаст волну которая нанесёт урон по области и создаст корозию в броне.\n''Морской ужас пропитанный нечистотами.''\n''Плонтность этого тела превосходит плотность некоторых сплавов.''\n''Жертвы проткнутые этим существом они будут чувствовать себя так, как будто их подожгли.''"
 	}
 	"Nourished Crawler Desc"
 	{
