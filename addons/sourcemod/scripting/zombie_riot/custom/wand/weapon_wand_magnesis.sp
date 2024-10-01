@@ -1044,9 +1044,7 @@ public float Newtonian_M1Hit(int attacker, int victim, float damage, int weapon)
 {
 	if (Newtonian_Airborne[victim])
 	{
-		CPrintToChatAll("Damage is %.2f", damage);
 		damage *= (2.0 * Newtonian_M1_ComboMult[Magnesis_Tier[attacker]]);
-		CPrintToChatAll("Damage is %.2f after combo mult", damage);
 		DisplayCritAboveNpc(victim, attacker, true);
 
 		float cd = Ability_Check_Cooldown(attacker, 2, weapon);
