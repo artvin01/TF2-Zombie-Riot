@@ -653,10 +653,10 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 						BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
 						if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
 						{
-							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidEnemy(npc.index, ally.m_iTargetAttack)/* && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack)*/)
+							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidEnemy(npc.index, ally.m_iTargetAttack) && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack))
 							{
 								WorldSpaceCenter(ally.index, vecTarget);
-								if(GetVectorDistance(vecMe, vecTarget, true) < (400.0 * 400.0))
+								if(GetVectorDistance(vecMe, vecTarget, true) < (300.0 * 300.0))
 								{
 									npc.m_iTargetAttack = ally.m_iTargetAttack;
 									npc.m_iTargetWalk = ally.m_iTargetAttack;

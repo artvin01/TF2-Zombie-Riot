@@ -9,10 +9,10 @@ static char g_DeathSounds[][] = {
 	"npc/combine_soldier/die3.wav",
 };
 
-static char g_HurtSound[][] = {
-	"npc/combine_soldier/pain1.wav",
-	"npc/combine_soldier/pain2.wav",
-	"npc/combine_soldier/pain3.wav",
+static const char g_HurtSound[][] = {
+	")physics/metal/metal_box_impact_bullet1.wav",
+	")physics/metal/metal_box_impact_bullet2.wav",
+	")physics/metal/metal_box_impact_bullet3.wav",
 };
 
 static char g_IdleSound[][] = {
@@ -43,7 +43,10 @@ static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
 };
 
-public void Whiteflower_Hitman_OnMapStart_NPC()
+static char g_RangedAttack[][] = {
+	"weapons/ar2/fire1.wav",
+};
+public void Whiteflower_PrototypeDDT_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -52,19 +55,20 @@ public void Whiteflower_Hitman_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
+	for (int i = 0; i < (sizeof(g_RangedAttack));	i++) { PrecacheSound(g_RangedAttack[i]);	}
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "W.F. Hitman");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_hitman");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Prototype DDT");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_prototype_titan");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Whiteflower_Hitman(client, vecPos, vecAng, ally);
+	return Whiteflower_PrototypeDDT(client, vecPos, vecAng, ally);
 }
 
-methodmap Whiteflower_Hitman < CClotBody
+methodmap Whiteflower_PrototypeDDT < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -83,13 +87,15 @@ methodmap Whiteflower_Hitman < CClotBody
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-
 	}
 	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+	}
+	public void PlayGunShot() 
+	{
+		EmitSoundToAll(g_RangedAttack[GetRandomInt(0, sizeof(g_RangedAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayKilledEnemySound(int target) 
 	{
@@ -106,11 +112,11 @@ methodmap Whiteflower_Hitman < CClotBody
 					switch(GetRandomInt(0,2))
 					{
 						case 0:
-							NpcSpeechBubble(this.index, "Iberians...", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Iberians are like ants.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 						case 1:
-							NpcSpeechBubble(this.index, "Here comes payday.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Like sand in the desert, iberians in the water.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
-							NpcSpeechBubble(this.index, "Foolish Avians.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Annoying birds.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					}
 					return;
 				}
@@ -119,11 +125,11 @@ methodmap Whiteflower_Hitman < CClotBody
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
-					NpcSpeechBubble(this.index, "Not on my hitlist, but regardless.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "How frail.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 				case 1:
-					NpcSpeechBubble(this.index, "In my way? Extra pay.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "They beat the elites? Hardly believeable.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 				case 2:
-					NpcSpeechBubble(this.index, "I wonder how much is put on their head.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "Such weaklings.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			}
 			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
@@ -138,10 +144,15 @@ methodmap Whiteflower_Hitman < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	
-	public Whiteflower_Hitman(int client, float vecPos[3], float vecAng[3], int ally)
+	property float m_flCooldownDurationHurt
 	{
-		Whiteflower_Hitman npc = view_as<Whiteflower_Hitman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	
+	public Whiteflower_PrototypeDDT(int client, float vecPos[3], float vecAng[3], int ally)
+	{
+		Whiteflower_PrototypeDDT npc = view_as<Whiteflower_PrototypeDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "300", ally, false, true));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
@@ -150,16 +161,15 @@ methodmap Whiteflower_Hitman < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
 
-		int iActivity = npc.LookupActivity("ACT_MP_STAND_ITEM2");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.SetActivity("ACT_COLOSUS_IDLE");
 
 		npc.m_bisWalking = false;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = false;
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_METAL;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
@@ -167,28 +177,22 @@ methodmap Whiteflower_Hitman < CClotBody
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
 
-		func_NPCDeath[npc.index] = Whiteflower_Hitman_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Whiteflower_Hitman_OnTakeDamage;
-		func_NPCThink[npc.index] = Whiteflower_Hitman_ClotThink;
+		func_NPCDeath[npc.index] = Whiteflower_PrototypeDDT_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Whiteflower_PrototypeDDT_OnTakeDamage;
+		func_NPCThink[npc.index] = Whiteflower_PrototypeDDT_ClotThink;
 		
 	
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-
-		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
-	
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum21_roaming_roman/sum21_roaming_roman.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
+		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
@@ -199,9 +203,9 @@ methodmap Whiteflower_Hitman < CClotBody
 
 //TODO 
 //Rewrite
-public void Whiteflower_Hitman_ClotThink(int iNPC)
+public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 {
-	Whiteflower_Hitman npc = view_as<Whiteflower_Hitman>(iNPC);
+	Whiteflower_PrototypeDDT npc = view_as<Whiteflower_PrototypeDDT>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -215,7 +219,7 @@ public void Whiteflower_Hitman_ClotThink(int iNPC)
 	
 	npc.Update();	
 
-	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime) //Dont play dodge anim if we are in an animation.
+	if(npc.m_blPlayHurtAnimation) 
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
 		npc.PlayHurtSound();
@@ -229,8 +233,59 @@ public void Whiteflower_Hitman_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	if(npc.m_flCooldownDurationHurt)
+	{
+		if(npc.m_flCooldownDurationHurt < gameTime)
+		{
+			npc.m_flCooldownDurationHurt = 0.0;
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				RemoveEntity(npc.m_iWearable1);
+			}
+			npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
+			SetVariantString("1.15");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		}
+		return;
+	}
+
+	if(npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
+	{
+		//Reset anger.
+		npc.Anger = false;
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			RemoveEntity(npc.m_iWearable1);
+		}
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		SetVariantString("0.8");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+	}
+
+	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (ReturnEntityMaxHealth(npc.index) * 0.5))
+	{
+		if(!npc.Anger)
+		{
+			npc.Anger = true;
+			npc.m_flCooldownDurationHurt = gameTime + 3.0;
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				RemoveEntity(npc.m_iWearable1);
+			}
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 7;
+			npc.m_flSpeed = 0.0;
+			npc.SetActivity("ACT_PICKUP_RACK");
+			npc.SetPlaybackRate(0.35);
+			return;
+		}
+	}
+
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "ACT_MP_STAND_ITEM2", 260.0, gameTime);
+	if(!npc.Anger)
+		Npc_Base_Thinking(iNPC, 400.0, "ACT_COLOSUS_WALK", "ACT_COLOSUS_IDLE", 0.0, gameTime);
+	else
+		Npc_Base_Thinking(iNPC, 400.0, "ACT_RUN_AIM_RIFLE", "ACT_IDLE_ANGRY", 0.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -251,8 +306,6 @@ public void Whiteflower_Hitman_ClotThink(int iNPC)
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 300.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damage *= 1.3;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -260,8 +313,6 @@ public void Whiteflower_Hitman_ClotThink(int iNPC)
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						// Hit sound
 						npc.PlayMeleeHitSound();
-						if(target <= MaxClients)
-							Client_Shake(target, 0, 25.0, 25.0, 0.5, false);
 
 						npc.PlayKilledEnemySound(npc.m_iTarget);
 					}
@@ -271,68 +322,6 @@ public void Whiteflower_Hitman_ClotThink(int iNPC)
 		}
 	}
 
-	if(npc.m_flNextRangedSpecialAttack)
-	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			npc.FaceTowards(vecTarget, 20000.0);
-		}
-		if(npc.m_flRangedSpecialDelay < gameTime)
-		{
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
-			{
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-				npc.FaceTowards(vecTarget, 20000.0);
-				npc.PlayRangedAttackSecondarySound();
-				
-				float vecSpread = 0.1;
-				
-				npc.FaceTowards(vecTarget, 20000.0);
-				
-				float eyePitch[3];
-				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-
-				float x, y;
-				
-				float vecDirShooting[3], vecRight[3], vecUp[3];
-
-				vecTarget[2] += 15.0;
-				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
-				GetVectorAngles(vecDirShooting, vecDirShooting);
-				vecDirShooting[1] = eyePitch[1];
-				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-				
-				//add the spray
-				float vecDir[3];
-				vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-				vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-				vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
-				NormalizeVector(vecDir, vecDir);
-				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 300.0, 400.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
-
-				npc.PlayKilledEnemySound(npc.m_iTarget);
-			}
-			npc.m_flDoingAnimation = 0.0;
-		}
-		if(npc.m_flDoingAnimation < gameTime)
-		{
-			npc.m_flDoingAnimation = gameTime + 0.2;
-			npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,2.0);
-			npc.m_flRangedSpecialDelay = gameTime + 0.20;
-		}
-		if(npc.m_flNextRangedSpecialAttack < gameTime)
-		{
-			npc.m_flDoingAnimation = gameTime + 0.25;
-			npc.m_flNextRangedSpecialAttack = 0.0;
-		}
-		return;
-	}
-	
-	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3];
@@ -355,22 +344,32 @@ public void Whiteflower_Hitman_ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
-
+		
 		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && npc.m_flNextRangedAttack < gameTime)
+		else if(!npc.Anger)
 		{
-			npc.m_iState = 2; //enemy is abit further away.
+			if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+			{
+				npc.m_iState = 1; //Engage in Close Range Destruction.
+			}
+			else 
+			{
+				npc.m_iState = 0; //stand and look if close enough.
+			}
 		}
-		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+		else
 		{
-			npc.m_iState = 1; //Engage in Close Range Destruction.
-		}
-		else 
-		{
-			npc.m_iState = 0; //stand and look if close enough.
+			if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0) && npc.m_flNextMeleeAttack < gameTime)
+			{
+				npc.m_iState = 2; //Engage in Close Range Destruction.
+			}
+			else 
+			{
+				npc.m_iState = 3; //stand and look if close enough.
+			}
 		}
 		
 		switch(npc.m_iState)
@@ -385,12 +384,27 @@ public void Whiteflower_Hitman_ClotThink(int iNPC)
 				if(!npc.m_bPathing)
 					npc.StartPathing();
 					
+				if(npc.m_iChanged_WalkCycle != 6) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 6;
+					npc.SetActivity("ACT_COLOSUS_WALK");
+					npc.m_flSpeed = 345.0;
+					NPC_StartPathing(iNPC);
+				}
+			}
+			case 3:
+			{
+				//Walk to target
+				if(!npc.m_bPathing)
+					npc.StartPathing();
+					
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 320.0;
+					npc.SetActivity("ACT_RUN_AIM_RIFLE");
+					npc.m_flSpeed = 345.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
@@ -417,20 +431,66 @@ public void Whiteflower_Hitman_ClotThink(int iNPC)
 			}
 			case 2:
 			{
-				if(npc.m_iChanged_WalkCycle != 7) 	
+				int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);	
+				if(IsValidEnemy(npc.index, target))
 				{
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 7;
-					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					if(npc.m_iChanged_WalkCycle != 9) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 9;
+						npc.SetActivity("ACT_IDLE_ANGRY_AR2");
+						npc.m_flSpeed = 0.0;
+						NPC_StopPathing(npc.index);
+					}
+					npc.FaceTowards(vecTarget, 15000.0); //Snap to the enemy. make backstabbing hard to do.
+
+					float eyePitch[3], vecDirShooting[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+					
+					vecTarget[2] += 15.0;
+					MakeVectorFromPoints(vecSelf, vecTarget, vecDirShooting);
+					GetVectorAngles(vecDirShooting, vecDirShooting);
+					vecDirShooting[1] = eyePitch[1];
+
+					npc.m_flNextRangedAttack = gameTime + 0.1;
+					
+					float x = GetRandomFloat( -0.03, 0.03 );
+					float y = GetRandomFloat( -0.03, 0.03 );
+					
+					float vecRight[3], vecUp[3];
+					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+					
+					float vecDir[3];
+					for(int i; i < 3; i++)
+					{
+						vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
+					}
+
+					NormalizeVector(vecDir, vecDir);
+					
+					// E2 L0 = 6.0, E2 L5 = 7.0
+					KillFeed_SetKillIcon(npc.index, "pistol");
+					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, 185000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					npc.PlayKilledEnemySound(npc.m_iTarget);
+
+					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
+					npc.PlayGunShot();
 				}
-				npc.m_flDoingAnimation = gameTime + 1.0;
-				//how long do they do their pulse attack barrage?
-				npc.m_flNextRangedSpecialAttack = gameTime + 2.0;
-				npc.m_flRangedSpecialDelay = gameTime + 1.0;
-				npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.4);
-				npc.m_flNextRangedAttack = gameTime + 10.35;
+				else
+				{
+					//Walk to target
+					if(!npc.m_bPathing)
+						npc.StartPathing();
+						
+					if(npc.m_iChanged_WalkCycle != 8) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_iChanged_WalkCycle = 8;
+						npc.SetActivity("ACT_RUN_AIM_RIFLE");
+						npc.m_flSpeed = 340.0;
+						NPC_StartPathing(iNPC);
+					}
+				}
 			}
 		}
 	}
@@ -438,13 +498,13 @@ public void Whiteflower_Hitman_ClotThink(int iNPC)
 }
 
 
-public Action Whiteflower_Hitman_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Whiteflower_PrototypeDDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	Whiteflower_Hitman npc = view_as<Whiteflower_Hitman>(victim);
+	Whiteflower_PrototypeDDT npc = view_as<Whiteflower_PrototypeDDT>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -456,9 +516,9 @@ public Action Whiteflower_Hitman_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-public void Whiteflower_Hitman_NPCDeath(int entity)
+public void Whiteflower_PrototypeDDT_NPCDeath(int entity)
 {
-	Whiteflower_Hitman npc = view_as<Whiteflower_Hitman>(entity);
+	Whiteflower_PrototypeDDT npc = view_as<Whiteflower_PrototypeDDT>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();

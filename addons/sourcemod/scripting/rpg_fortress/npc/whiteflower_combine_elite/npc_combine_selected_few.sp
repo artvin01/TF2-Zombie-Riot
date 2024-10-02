@@ -43,7 +43,7 @@ static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
 };
 
-public void Whiteflower_AcclaimedSwordsman_OnMapStart_NPC()
+public void Whiteflower_selected_few_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -53,18 +53,18 @@ public void Whiteflower_AcclaimedSwordsman_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "W.F. Acclaimed Swordsman");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_acclaimed_swordsman");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Selected Few");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_selected_few");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Whiteflower_AcclaimedSwordsman(client, vecPos, vecAng, ally);
+	return Whiteflower_selected_few(client, vecPos, vecAng, ally);
 }
 
-methodmap Whiteflower_AcclaimedSwordsman < CClotBody
+methodmap Whiteflower_selected_few < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -106,11 +106,11 @@ methodmap Whiteflower_AcclaimedSwordsman < CClotBody
 					switch(GetRandomInt(0,2))
 					{
 						case 0:
-							NpcSpeechBubble(this.index, "Iberians are like ants.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Iberians...", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 						case 1:
-							NpcSpeechBubble(this.index, "Like sand in the desert, iberians in the water.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Here comes payday.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
-							NpcSpeechBubble(this.index, "Annoying birds.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Foolish Avians.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					}
 					return;
 				}
@@ -119,11 +119,11 @@ methodmap Whiteflower_AcclaimedSwordsman < CClotBody
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
-					NpcSpeechBubble(this.index, "How frail.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "Not on my hitlist, but regardless.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 				case 1:
-					NpcSpeechBubble(this.index, "They beat the elites? Hardly believeable.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "In my way? Extra pay.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 				case 2:
-					NpcSpeechBubble(this.index, "Such weaklings.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "I wonder how much is put on their head.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			}
 			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
@@ -139,9 +139,9 @@ methodmap Whiteflower_AcclaimedSwordsman < CClotBody
 	}
 	
 	
-	public Whiteflower_AcclaimedSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_selected_few(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Whiteflower_AcclaimedSwordsman npc = view_as<Whiteflower_AcclaimedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
+		Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
@@ -150,7 +150,8 @@ methodmap Whiteflower_AcclaimedSwordsman < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
 
-		npc.SetActivity("ACT_IDLE");
+		int iActivity = npc.LookupActivity("ACT_MP_STAND_ITEM2");
+		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_bisWalking = false;
 
@@ -166,23 +167,28 @@ methodmap Whiteflower_AcclaimedSwordsman < CClotBody
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
 
-		func_NPCDeath[npc.index] = Whiteflower_AcclaimedSwordsman_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Whiteflower_AcclaimedSwordsman_OnTakeDamage;
-		func_NPCThink[npc.index] = Whiteflower_AcclaimedSwordsman_ClotThink;
+		func_NPCDeath[npc.index] = Whiteflower_selected_few_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Whiteflower_selected_few_OnTakeDamage;
+		func_NPCThink[npc.index] = Whiteflower_selected_few_ClotThink;
 		
 	
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/spr17_flash_of_inspiration/spr17_flash_of_inspiration.mdl");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/pyro/hero_academy_pyro/hero_academy_pyro.mdl");
+		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
+	
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
@@ -193,9 +199,9 @@ methodmap Whiteflower_AcclaimedSwordsman < CClotBody
 
 //TODO 
 //Rewrite
-public void Whiteflower_AcclaimedSwordsman_ClotThink(int iNPC)
+public void Whiteflower_selected_few_ClotThink(int iNPC)
 {
-	Whiteflower_AcclaimedSwordsman npc = view_as<Whiteflower_AcclaimedSwordsman>(iNPC);
+	Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -224,7 +230,7 @@ public void Whiteflower_AcclaimedSwordsman_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(iNPC, 400.0, "ACT_RUN", "ACT_IDLE", 0.0, gameTime);
+	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "ACT_MP_STAND_ITEM2", 260.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -432,13 +438,13 @@ public void Whiteflower_AcclaimedSwordsman_ClotThink(int iNPC)
 }
 
 
-public Action Whiteflower_AcclaimedSwordsman_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Whiteflower_selected_few_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	Whiteflower_AcclaimedSwordsman npc = view_as<Whiteflower_AcclaimedSwordsman>(victim);
+	Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -450,9 +456,9 @@ public Action Whiteflower_AcclaimedSwordsman_OnTakeDamage(int victim, int &attac
 	return Plugin_Changed;
 }
 
-public void Whiteflower_AcclaimedSwordsman_NPCDeath(int entity)
+public void Whiteflower_selected_few_NPCDeath(int entity)
 {
-	Whiteflower_AcclaimedSwordsman npc = view_as<Whiteflower_AcclaimedSwordsman>(entity);
+	Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();
