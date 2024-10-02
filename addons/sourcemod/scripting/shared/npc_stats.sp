@@ -1633,17 +1633,17 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
+#if defined ZR
 		if(i_npcspawnprotection[this.index] == 1)
 		{
-#if defined ZR
 			if(!Rogue_Mode())
 				return 400.0;
 			else
 				return 1200.0;
-#else
+
 			return 400.0;
-#endif
 		}
+#endif
 		
 		float GetPercentageAdjust = 1.0;
 		GetPercentageAdjust = this.GetDebuffPercentage();	
@@ -2274,16 +2274,13 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void StartPathing()
 	{
-		if(!CvarDisableThink.BoolValue)
-		{
-			this.m_bPathing = true;
+		this.m_bPathing = true;
 #if defined ZR
-			if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
-				this.GetPathFollower().SetMinLookAheadDistance(25.0);
-			else
+		if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
+			this.GetPathFollower().SetMinLookAheadDistance(25.0);
+		else
 #endif
-				this.GetPathFollower().SetMinLookAheadDistance(100.0);
-		}
+			this.GetPathFollower().SetMinLookAheadDistance(100.0);
 	}
 	public void StopPathing()
 	{
@@ -5974,10 +5971,13 @@ public void NpcBaseThink(int iNPC)
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
 
-		HealEntityGlobal(iNPC, iNPC, float(i_HpRegenInBattle[iNPC]), 1.0, 0.0, HEAL_SELFHEAL);
+		HealEntityGlobal(iNPC, iNPC, float(i_HpRegenInBattle[iNPC]), 1.0, 0.0, HEAL_SELFHEAL | HEAL_PASSIVE_NO_NOTIF);
 		RPGNpc_UpdateHpHud(iNPC);
 	}
 #endif
+
+	if(CvarDisableThink.BoolValue)
+		return;
 
 	//Is the NPC out of bounds, or inside a player
 	NpcOutOfBounds(npc,iNPC);
@@ -7252,8 +7252,50 @@ stock void CreateParticle(const char[] particle, const float pos[3], const float
 	}
 }
 
+float ShootLaterShotgunLogic[MAXENTITIES];
+int ShootLaterShotgunLogic_Frames[MAXENTITIES];
+
+
+void Requestframe_Shootlater(DataPack pack)
+{
+	pack.Reset();
+	char StrParticle[255];
+	float flStartPos[3];
+	float flEndPos[3];
+	int weapon;
+	weapon = EntRefToEntIndex(pack.ReadCell());
+	pack.ReadString(StrParticle, 255);
+	flStartPos[0] = pack.ReadFloat();
+	flStartPos[1] = pack.ReadFloat();
+	flStartPos[2] = pack.ReadFloat();
+	flEndPos[0] = pack.ReadFloat();
+	flEndPos[1] = pack.ReadFloat();
+	flEndPos[2] = pack.ReadFloat();
+	delete pack;
+
+	if(IsValidEntity(weapon))
+		ShootLaser(weapon, StrParticle, flStartPos, flEndPos, false);
+}
 stock void ShootLaser(int weapon, const char[] strParticle, float flStartPos[3], float flEndPos[3], bool bResetParticles = false)
 {
+	if(ShootLaterShotgunLogic[weapon] == GetGameTime())
+	{
+		DataPack pack_TE = new DataPack();
+		pack_TE.WriteCell(EntRefToEntIndex(weapon));
+		pack_TE.WriteString(strParticle);
+		pack_TE.WriteFloat(flStartPos[0]);
+		pack_TE.WriteFloat(flStartPos[1]);
+		pack_TE.WriteFloat(flStartPos[2]);
+		pack_TE.WriteFloat(flEndPos[0]);
+		pack_TE.WriteFloat(flEndPos[1]);
+		pack_TE.WriteFloat(flEndPos[2]);
+		RequestFrames(Requestframe_Shootlater, ShootLaterShotgunLogic_Frames[weapon], pack_TE);
+		ShootLaterShotgunLogic_Frames[weapon]++;
+		return;
+	}
+
+	ShootLaterShotgunLogic[weapon] = GetGameTime();
+	ShootLaterShotgunLogic_Frames[weapon] = 1;
 	int tblidx = FindStringTable("ParticleEffectNames");
 	if (tblidx == INVALID_STRING_TABLE) 
 	{

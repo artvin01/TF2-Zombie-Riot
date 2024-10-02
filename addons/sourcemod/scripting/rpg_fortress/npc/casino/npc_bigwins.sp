@@ -72,24 +72,24 @@ methodmap BigWins < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IdleSound[GetURandomInt() % sizeof(g_IdleSound)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleSound[GetURandomInt() % sizeof(g_IdleSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSound[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSound[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_DeathSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_DeathSounds)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound()
  	{
-		EmitSoundToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public BigWins(int client, float vecPos[3], float vecAng[3], int team)
@@ -108,7 +108,7 @@ methodmap BigWins < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		f3_SpawnPosition[npc.index] = vecPos;	
+		f3_SpawnPosition[npc.index] = vecPos;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -152,7 +152,7 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_STAND_MELE_ALLCLASS", 290.0, gameTime);
+	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_STAND_MELEE_ALLCLASS", 290.0, gameTime);
 
 	int target = npc.m_iTarget;
 	
@@ -169,7 +169,7 @@ static void ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, target))
+				if(npc.DoSwingTrace(swingTrace, target, .Npc_type = 1))
 				{
 					target = TR_GetEntityIndex(swingTrace);	
 					
@@ -182,7 +182,7 @@ static void ClotThink(int iNPC)
 						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 3.0), DMG_CLUB, _, _, vecHit);
 						CasinoShared_RobMoney(npc, target, 50);
 						CasinoShared_StealNearbyItems(npc, vecHit);
-						Custom_Knockback(npc.index, target, 1500.0);
+						Custom_Knockback(npc.index, target, 2000.0);
 
 						if(target <= MaxClients)
 							Client_Shake(target, 0, 35.0, 20.0, 0.8);
@@ -214,8 +214,9 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		npc.m_bisWalking = true;
 
-		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))

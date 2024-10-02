@@ -4,36 +4,23 @@
 // this should vary from npc to npc as some are in a really small area.
 
 static char g_DeathSounds[][] = {
-	"vo/sniper_paincrticialdeath01.mp3",
-	"vo/sniper_paincrticialdeath02.mp3",
-	"vo/sniper_paincrticialdeath03.mp3",
+	"npc/combine_gunship/gunship_explode2.wav",
 };
 
 static char g_HurtSound[][] = {
-	"vo/sniper_painsharp01.mp3",
-	"vo/sniper_painsharp02.mp3",
-	"vo/sniper_painsharp03.mp3",
-	"vo/sniper_painsharp04.mp3",
+	")physics/metal/metal_box_impact_bullet1.wav",
+	")physics/metal/metal_box_impact_bullet2.wav",
+	")physics/metal/metal_box_impact_bullet3.wav",
 };
 
-static char g_IdleSound[][] = {
-	"vo/sniper_battlecry01.mp3",
-	"vo/sniper_battlecry02.mp3",
-	"vo/sniper_battlecry03.mp3",
-	"vo/sniper_battlecry04.mp3",
+static char g_RocketBarrageInit[][] = {
+	"npc/attack_helicopter/aheli_charge_up.wav",
 };
 
-static char g_IdleAlertedSounds[][] = {
-	"vo/sniper_battlecry01.mp3",
-	"vo/sniper_battlecry02.mp3",
-	"vo/sniper_battlecry03.mp3",
-	"vo/sniper_battlecry04.mp3",
+static char g_RocketBarrageShoot[][] = {
+	"npc/env_headcrabcanister/launch.wav",
 };
 
-static char g_MeleeHitSounds[][] = {
-	"weapons/cbar_hit1.wav",
-	"weapons/cbar_hit2.wav",
-};
 static char g_MeleeAttackSounds[][] = {
 	"weapons/ar2/fire1.wav"
 };
@@ -43,16 +30,17 @@ public void WhiteflowerTank_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
+	for (int i = 0; i < (sizeof(g_RocketBarrageInit));	i++) { PrecacheSound(g_RocketBarrageInit[i]);	}
+	for (int i = 0; i < (sizeof(g_RocketBarrageShoot));	i++) { PrecacheSound(g_RocketBarrageShoot[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Tank");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_tank");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 	PrecacheModel("models/combine_apc.mdl");
+	PrecacheSound("weapons/sentry_spot_client.wav");
+	PrecacheSound("weapons/sentry_rocket.wav");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -62,15 +50,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap WhiteflowerTank < CClotBody
 {
-	public void PlayIdleSound()
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
-
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-	}
 	
 	public void PlayHurtSound()
 	{
@@ -81,18 +60,33 @@ methodmap WhiteflowerTank < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
-	public void PlayKilledEnemySound() 
-	{
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
-	}
 	public void PlayMeleeSound()
  	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
-	public void PlayMeleeHitSound()
+	public void PlayRocketBarrageInit()
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
+		EmitSoundToAll(g_RocketBarrageInit[GetRandomInt(0, sizeof(g_RocketBarrageInit) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
+		EmitSoundToAll(g_RocketBarrageInit[GetRandomInt(0, sizeof(g_RocketBarrageInit) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
+	}
+	public void PlayRocketBarrageShoot()
+	{
+		EmitSoundToAll(g_RocketBarrageShoot[GetRandomInt(0, sizeof(g_RocketBarrageShoot) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
+	}
+	property float m_flRocketCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flRocketBarrageDoTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flRocketBarrageBetweenShots
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
 	
 	
@@ -115,6 +109,8 @@ methodmap WhiteflowerTank < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
+		npc.m_flRocketCD = 0.0;
+		npc.m_bDissapearOnDeath = true;
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -122,6 +118,7 @@ methodmap WhiteflowerTank < CClotBody
 		func_NPCDeath[npc.index] = WhiteflowerTank_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = WhiteflowerTank_OnTakeDamage;
 		func_NPCThink[npc.index] = WhiteflowerTank_ClotThink;
+		f_ExtraOffsetNpcHudAbove[npc.index] = 50.0;
 	
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -165,7 +162,7 @@ public void WhiteflowerTank_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(iNPC, 0.0, "ACT_IDLE", "ACT_IDLE", 0.0, gameTime);
+	Npc_Base_Thinking(iNPC, 750.0, "ACT_IDLE", "ACT_IDLE", 0.0, gameTime);
 
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -204,30 +201,6 @@ public void WhiteflowerTank_ClotThink(int iNPC)
 					
 					npc.PlayMeleeSound();
 					
-					/*
-		// npc_peashooter Reference
-
-		float vecMe[3], vecTarget[3], vecAngles[3];
-		WorldSpaceCenter(npc.index, vecMe);
-		WorldSpaceCenter(target, vecTarget);
-
-		MakeVectorFromPoints(vecMe, vecTarget, vecAngles);
-		GetVectorAngles(vecAngles, vecAngles);
-
-		if(vecAngles[0] > 180.0)
-			vecAngles[0] -= 360.0;
-		
-		vecAngles[0] = -vecAngles[0];
-		vecAngles[1] = fixAngle(vecAngles[1]);
-		vecAngles[1] = -vecAngles[1];
-		
-		if(AimPitch >= 0)
-			npc.SetPoseParameter(AimPitch, vecAngles[0]);
-		
-		if(AimYaw >= 0)
-			npc.SetPoseParameter(AimYaw, vecAngles[1]);
-					*/
-				
 					npc.m_flNextMeleeAttack = gameTime + 0.1;
 					//shot heavily, no CD
 					//Body pitch
@@ -260,7 +233,7 @@ public void WhiteflowerTank_ClotThink(int iNPC)
 					vecDir[1] = DirShoot[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = DirShoot[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					FireBullet(npc.index, npc.index, vecSelf, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					FireBullet(npc.index, npc.index, vecSelf, vecDir, 100000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					
 
 					float npcAng[3];
@@ -284,11 +257,136 @@ public void WhiteflowerTank_ClotThink(int iNPC)
 				}
 			}
 		}
+		WhiteflowerTank_RocketBarrageDo(npc, gameTime);
 	}
-	npc.PlayIdleSound();
+}
+
+void WhiteflowerTank_RocketBarrageDo(WhiteflowerTank npc, float gameTime)
+{
+	//do not do anything.
+	if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
+	{
+		return;
+	}
+	if(npc.m_flRocketCD < gameTime)
+	{
+		//We initiate the rocket barrage, warning before barrage
+		npc.m_flRocketBarrageDoTime = gameTime + 4.0;
+		npc.m_flRocketCD = gameTime + 12.0;
+		npc.m_flRocketBarrageBetweenShots = gameTime + 2.0;
+		npc.PlayRocketBarrageInit();
+	}
+	if(npc.m_flRocketBarrageDoTime)
+	{
+		if(npc.m_flRocketBarrageBetweenShots < gameTime)
+		{
+			//Fire rocket shot, upwards.
+			//then freeze the rocket, make them aimbot onto the player
+			//after 1 second, shoot towards target with insane speeds.
+			npc.PlayRocketBarrageShoot();
+			float vecSelf[3];
+			WorldSpaceCenter(npc.index, vecSelf);
+			vecSelf[2] += 50.0;
+			vecSelf[0] += GetRandomFloat(-10.0, 10.0);
+			vecSelf[1] += GetRandomFloat(-10.0, 10.0);
+			float RocketDamage = 500000.0;
+			int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 150.0);
+			DataPack pack;
+			CreateDataTimer(1.0, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(EntIndexToEntRef(RocketGet));
+			pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
+			npc.m_flRocketBarrageBetweenShots = gameTime + 0.25;
+		}
+		if(npc.m_flRocketBarrageDoTime < gameTime)
+		{
+			npc.m_flRocketBarrageDoTime = 0.0;
+			//Ability ends.
+		}
+	}
+}
+public Action WhiteflowerTank_Rocket_Stand(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int RocketEnt = EntRefToEntIndex(pack.ReadCell());
+	int EnemyEnt = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(RocketEnt))
+		return Plugin_Stop;
+		
+	if(!IsValidEntity(EnemyEnt))
+	{
+		RemoveEntity(RocketEnt);
+		return Plugin_Stop;
+	}
+	EmitSoundToAll("weapons/sentry_spot_client.wav", RocketEnt, SNDCHAN_AUTO, 90, _, 1.0,_);	
+
+	float vecSelf[3];
+	WorldSpaceCenter(RocketEnt, vecSelf);
+	float vecEnemy[3];
+	WorldSpaceCenter(EnemyEnt, vecEnemy);
+	
+	TE_SetupBeamPoints(vecSelf, vecEnemy, Shared_BEAM_Laser, 0, 0, 0, 0.11, 3.0, 3.0, 0, 0.0, {0,0,255,255}, 3);
+	TE_SendToAll(0.0);
+	float vecAngles[3];
+	MakeVectorFromPoints(vecSelf, vecEnemy, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+	TeleportEntity(RocketEnt, NULL_VECTOR, vecAngles, {0.0,0.0,0.0});
+	//look at target constantly.
+	DataPack pack2;
+	CreateDataTimer(0.1, WhiteflowerTank_Rocket_Stand_Fire, pack2, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	pack2.WriteCell(EntIndexToEntRef(RocketEnt));
+	pack2.WriteCell(EntIndexToEntRef(EnemyEnt));
+	pack2.WriteFloat(GetGameTime() + 1.0); //time till rocketing to enemy
 }
 
 
+public Action WhiteflowerTank_Rocket_Stand_Fire(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int RocketEnt = EntRefToEntIndex(pack.ReadCell());
+	int EnemyEnt = EntRefToEntIndex(pack.ReadCell());
+	float TimeTillRocketing = pack.ReadFloat();
+	if(!IsValidEntity(RocketEnt))
+		return Plugin_Stop;
+		
+	if(!IsValidEntity(EnemyEnt))
+	{
+		RemoveEntity(RocketEnt);
+		return Plugin_Stop;
+	}
+
+	//keep looking at them
+	float vecSelf[3];
+	WorldSpaceCenter(RocketEnt, vecSelf);
+	float vecEnemy[3];
+	WorldSpaceCenter(EnemyEnt, vecEnemy);
+	
+	float VecSpeedToDo[3];
+	float vecAngles[3];
+	MakeVectorFromPoints(vecSelf, vecEnemy, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+	if(TimeTillRocketing < GetGameTime())
+	{
+		float SpeedApply = 1500.0;
+		VecSpeedToDo[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*SpeedApply;
+		VecSpeedToDo[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*SpeedApply;
+		VecSpeedToDo[2] = Sine(DegToRad(vecAngles[0]))*-SpeedApply;
+		TE_SetupBeamPoints(vecSelf, vecEnemy, Shared_BEAM_Laser, 0, 0, 0, 0.11, 3.0, 3.0, 0, 0.0, {255,0,0,255}, 3);
+		TE_SendToAll(0.0);
+		EmitSoundToAll("weapons/sentry_rocket.wav", RocketEnt, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
+	}
+	else
+	{
+		
+		TE_SetupBeamPoints(vecSelf, vecEnemy, Shared_BEAM_Laser, 0, 0, 0, 0.11, 3.0, 3.0, 0, 0.0, {0,0,255,255}, 3);
+		TE_SendToAll(0.0);
+	}
+	TeleportEntity(RocketEnt, NULL_VECTOR, vecAngles, VecSpeedToDo);
+	if(TimeTillRocketing < GetGameTime())
+	{
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
 public Action WhiteflowerTank_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
@@ -310,10 +408,10 @@ public Action WhiteflowerTank_OnTakeDamage(int victim, int &attacker, int &infli
 public void WhiteflowerTank_NPCDeath(int entity)
 {
 	WhiteflowerTank npc = view_as<WhiteflowerTank>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();
-	}
+	npc.PlayDeathSound();
+
+	float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

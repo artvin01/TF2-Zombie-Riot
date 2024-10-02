@@ -42,7 +42,7 @@ stock void CasinoShared_RobMoney(CClotBody npc, int victim, int steal)
 
 		if(fabs(StealCooldown[victim] - gameTime) > 2.0)
 		{
-			StealCooldown[victim] = gameTime + 2.0;
+			StealCooldown[victim] = gameTime;// + 2.0;
 
 			int cash = TextStore_Cash(victim);
 			if(cash >= steal)

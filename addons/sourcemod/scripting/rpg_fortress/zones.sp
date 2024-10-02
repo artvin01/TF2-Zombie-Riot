@@ -14,6 +14,7 @@ void Zones_PluginStart()
 	.DefineStringField("m_nItemKey")
 	.DefineStringField("m_nQuestKey")
 	.DefineStringField("m_nMusicFile")
+	.DefineStringField("m_nMusicDesc")
 	.DefineIntField("m_iMusicDuration")
 	.DefineFloatField("m_fMusicVolume")
 	.DefineBoolField("m_bMusicCustom")
@@ -109,7 +110,7 @@ void Zones_Rebuild()
 					}
 
 					DispatchKeyValueVector(entity, "origin", pos);
-					DispatchKeyValue(entity, "spawnflags", "1");
+					DispatchKeyValue(entity, "spawnflags", ZonesKv.GetNum("despawn") ? "3" : "1");
 					DispatchKeyValue(entity, "targetname", buffer);
 
 					DispatchSpawn(entity);
@@ -144,6 +145,8 @@ void Zones_Rebuild()
 					SetEntProp(entity, Prop_Data, "m_bPvpZone", ZonesKv.GetNum("pvp_zone"));
 					
 					int custom = ZonesKv.GetNum("download");
+					ZonesKv.GetString("sounddesc", buffer, sizeof(buffer));
+					SetEntPropString(entity, Prop_Data, "m_nMusicDesc", buffer);
 					ZonesKv.GetString("sound", buffer, sizeof(buffer));
 					SetEntPropString(entity, Prop_Data, "m_nMusicFile", buffer);
 					SetEntProp(entity, Prop_Data, "m_iMusicDuration", ZonesKv.GetNum("duration"));
@@ -177,7 +180,8 @@ static void OnEnter(int entity, const char[] name, int zone)
 {
 	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
-		//NPC_Despawn_Zone(entity, name);
+		if(GetTeam(entity) != TFTeam_Red)
+			NPC_Despawn(entity);
 	}
 	else if(entity > 0 && entity <= MaxClients)
 	{
@@ -420,7 +424,6 @@ void Zones_EditorMenu(int client)
 		FormatEx(buffer, sizeof(buffer), "Point 2: %.0f %.0f %.0f", pos2[0], pos2[1], pos2[2]);
 		menu.AddItem("point2", buffer);
 		
-		
 		ZonesKv.GetString("sound", buffer, sizeof(buffer));
 		if(buffer[0])
 		{
@@ -433,6 +436,10 @@ void Zones_EditorMenu(int client)
 			Format(buffer, sizeof(buffer), "Music Volume: %f", ZonesKv.GetFloat("volume", 1.0));
 			menu.AddItem("volume", buffer);
 			
+			ZonesKv.GetString("sounddesc", buffer, sizeof(buffer), "\" (Song Author - Song Name)");
+			Format(buffer, sizeof(buffer), "Music Author: \"%s\"", buffer);
+			menu.AddItem("sounddesc", buffer);
+			
 			int custom = ZonesKv.GetNum("download");
 			if(custom)
 			{
@@ -443,12 +450,6 @@ void Zones_EditorMenu(int client)
 				Format(buffer, sizeof(buffer), "Music Custom: Is Base Game");
 			}
 			menu.AddItem("download", buffer);
-
-			Format(buffer, sizeof(buffer), "Key Print: %s", ZonesKv.GetNum("silent") ? "None" : "HUD Message");
-			menu.AddItem("silent", buffer);
-
-			Format(buffer, sizeof(buffer), "PVP Zone: %s", ZonesKv.GetNum("pvp_zone") ? "On" : "Off");
-			menu.AddItem("pvp_zone", buffer);
 		}
 		else
 		{
@@ -465,6 +466,7 @@ void Zones_EditorMenu(int client)
 			menu.AddItem("telepos", buffer);
 
 			ZonesKv.GetString("quest", buffer, sizeof(buffer));
+			bool hasKey = view_as<bool>(buffer[0]);
 			if(buffer[0] && !Quests_KV().JumpToKey(buffer))
 			{
 				Format(buffer, sizeof(buffer), "Quest Key: \"%s\" {WARNING: Quest does not exist}", buffer);
@@ -476,6 +478,9 @@ void Zones_EditorMenu(int client)
 			menu.AddItem("quest", buffer);
 
 			ZonesKv.GetString("item", buffer, sizeof(buffer));
+			if(!hasKey)
+				hasKey = view_as<bool>(buffer[0]);
+			
 			if(buffer[0] && !TextStore_IsValidName(buffer))
 			{
 				Format(buffer, sizeof(buffer), "Item Key: \"%s\" {WARNING: Item does not exist}", buffer);
@@ -486,12 +491,15 @@ void Zones_EditorMenu(int client)
 			}
 			menu.AddItem("item", buffer);
 
-			Format(buffer, sizeof(buffer), "Key Print: %s", ZonesKv.GetNum("silent") ? "None" : "HUD Message");
-			menu.AddItem("silent", buffer);
-
-			Format(buffer, sizeof(buffer), "PVP Zone: %s", ZonesKv.GetNum("pvp_zone") ? "On" : "Off");
-			menu.AddItem("pvp_zone", buffer);
+			if(hasKey)
+			{
+				Format(buffer, sizeof(buffer), "Key Print: %s", ZonesKv.GetNum("silent") ? "None" : "HUD Message");
+				menu.AddItem("silent", buffer);
+			}
 		}
+
+		Format(buffer, sizeof(buffer), "Type: %s%s", ZonesKv.GetNum("pvp_zone") ? "PvP" : "", ZonesKv.GetNum("despawn") ? "Despawner" : "");
+		menu.AddItem("_extra", buffer);
 
 		ZonesKv.GetString("skybox_override", buffer, sizeof(buffer));
 
@@ -506,7 +514,7 @@ void Zones_EditorMenu(int client)
 		Zones_RenderZone(client, CurrentZoneEditing[client], telepos, true);
 
 		delete TimerZoneEditing[client];
-		TimerZoneEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
+		TimerZoneEditing[client] = CreateTimer(3.0, Timer_RefreshHud, client);
 	}
 	else
 	{
@@ -653,13 +661,25 @@ static void AdjustZone(int client, const char[] buffer)
 				ZonesKv.SetVector("teleang", pos);
 			}
 		}
-		else if(StrEqual(buffer, "silent"))
+		else if(StrEqual(buffer, "silent") || StrEqual(buffer, "pvp_zone") || StrEqual(buffer, "despawn"))
 		{
 			ZonesKv.SetNum(buffer, ZonesKv.GetNum(buffer) ? 0 : 1);
 		}
-		else if(StrEqual(buffer, "pvp_zone"))
+		else if(StrEqual(buffer, "_extra"))
 		{
-			ZonesKv.SetNum(buffer, ZonesKv.GetNum(buffer) ? 0 : 1);
+			if(ZonesKv.GetNum("pvp_zone"))
+			{
+				ZonesKv.SetNum("pvp_zone", 0);
+				ZonesKv.SetNum("despawn", 1);
+			}
+			else if(ZonesKv.GetNum("despawn"))
+			{
+				ZonesKv.SetNum("despawn", 0);
+			}
+			else
+			{
+				ZonesKv.SetNum("pvp_zone", 1);
+			}
 		}
 		else if(StrEqual(buffer, "delete"))
 		{
@@ -714,6 +734,7 @@ static void AdjustZoneKey(int client, const char[] buffer)
 	ZonesKv.Rewind();
 	ZonesKv.ExportToFile(filepath);
 
+	Zones_Rebuild();
 	Zones_EditorMenu(client);
 }
 
@@ -742,7 +763,7 @@ void Zones_RenderZone(int client, const char[] name, const float telepos[3] = NU
 
 			vec2[i] = pos2[i];
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 20.0, 20.0, 0, 0.0, {255, 255, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 20.0, 20.0, 0, 0.0, {255, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			vec1 = pos2;
@@ -750,7 +771,7 @@ void Zones_RenderZone(int client, const char[] name, const float telepos[3] = NU
 
 			vec2[i] = pos1[i];
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 20.0, 20.0, 0, 0.0, {255, 255, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 20.0, 20.0, 0, 0.0, {255, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			if(points)
@@ -763,7 +784,7 @@ void Zones_RenderZone(int client, const char[] name, const float telepos[3] = NU
 
 				vec2[i] += 5.0;
 
-				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 30.0, 10.0, 0, 0.0, {255, 0, 255, 255}, 0);
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 30.0, 10.0, 0, 0.0, {255, 0, 255, 255}, 0);
 				TE_SendToClient(client);
 
 				vec1 = pos1;
@@ -771,7 +792,7 @@ void Zones_RenderZone(int client, const char[] name, const float telepos[3] = NU
 
 				vec2[i] -= 5.0;
 
-				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 30.0, 10.0, 0, 0.0, {255, 0, 255, 255}, 0);
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 30.0, 10.0, 0, 0.0, {255, 0, 255, 255}, 0);
 				TE_SendToClient(client);
 
 				/*
@@ -782,7 +803,7 @@ void Zones_RenderZone(int client, const char[] name, const float telepos[3] = NU
 
 				vec2[i] += 5.0;
 
-				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 30.0, 10.0, 0, 0.0, {0, 255, 255, 255}, 0);
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 30.0, 10.0, 0, 0.0, {0, 255, 255, 255}, 0);
 				TE_SendToClient(client);
 
 				vec1 = pos2;
@@ -790,7 +811,7 @@ void Zones_RenderZone(int client, const char[] name, const float telepos[3] = NU
 
 				vec2[i] -= 5.0;
 
-				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 30.0, 10.0, 0, 0.0, {0, 255, 255, 255}, 0);
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 30.0, 10.0, 0, 0.0, {0, 255, 255, 255}, 0);
 				TE_SendToClient(client);
 			}
 
@@ -806,7 +827,7 @@ void Zones_RenderZone(int client, const char[] name, const float telepos[3] = NU
 
 				vec2[i] += i == 2 ? 95.0 : 57.0;
 
-				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
 				TE_SendToClient(client);
 				
 				vec1 = telepos;
@@ -817,7 +838,7 @@ void Zones_RenderZone(int client, const char[] name, const float telepos[3] = NU
 
 				vec2[i] -= i == 2 ? 95.0 : 57.0;
 
-				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
 				TE_SendToClient(client);
 			}
 		}

@@ -120,6 +120,7 @@ enum struct SpawnEnum
 }
 
 static ArrayList SpawnList;
+static StringMap DespawnTimers;
 static Handle h_SpawnTimer;
 static int SpawnCycle;
 
@@ -167,6 +168,7 @@ void Spawns_ConfigSetup()
 void Spawns_MapEnd()
 {
 	delete h_SpawnTimer;
+	delete DespawnTimers;
 }
 
 void Spawns_ClientEnter(int client, const char[] name)
@@ -214,6 +216,17 @@ void Spawns_ClientLeave(int client, const char[] name)
 
 void Spawns_EnableZone(const char[] name)
 {
+	if(DespawnTimers)
+	{
+		// Stop the despawn timer
+		Handle timer;
+		if(DespawnTimers.GetValue(name, timer))
+		{
+			delete timer;
+			DespawnTimers.Remove(name);
+		}
+	}
+	
 	int length = SpawnList.Length;
 	for(int i; i < length; i++)
 	{
@@ -256,6 +269,25 @@ bool RPGSpawns_GivePrioLevel(int spawnlevel, int playerlevel)
 
 void Spawns_DisableZone(const char[] name)
 {
+	if(DespawnTimers)
+	{
+		// Cancel current despawn timer
+		Handle timer;
+		if(DespawnTimers.GetValue(name, timer))
+			delete timer;
+	}
+	else
+	{
+		DespawnTimers = new StringMap();
+	}
+
+	// Despawn NPCs in 4s
+	Handle timer = CreateTimer(4.0, Spawner_DespawnTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	DespawnTimers.SetValue(name, timer);
+}
+
+void Spawns_DisableZoneNow(const char[] name)
+{
 	ArrayList list = new ArrayList();
 
 	int length = SpawnList.Length;
@@ -272,10 +304,42 @@ void Spawns_DisableZone(const char[] name)
 	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
 		if(list.FindValue(hFromSpawnerIndex[i]) != -1)
+		{
 			NPC_Despawn(i);
+		}
 	}
 
 	delete list;
+
+	if(DespawnTimers)
+		DespawnTimers.Remove(name);
+}
+
+public Action Spawner_DespawnTimer(Handle timer)
+{
+	// Find the timer inside our StringMap
+	Handle timer2;
+	StringMapSnapshot snap = DespawnTimers.Snapshot();
+	int length = snap.Length;
+	for(int i; i < length; i++)
+	{
+		int size = snap.KeyBufferSize(i);
+		char[] name = new char[size];
+		snap.GetKey(i, name, size);
+
+		DespawnTimers.GetValue(name, timer2);
+
+		if(timer == timer2)
+		{
+			// Removes the StringMap entry
+			Spawns_DisableZoneNow(name);
+			break;
+		}
+	}
+
+	delete snap;
+	
+	return Plugin_Continue;
 }
 
 public Action Spawner_Timer(Handle timer)
@@ -379,7 +443,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 			{
 				static float ang[3];
 				ang[1] = spawn.Angle;
-				if(ang[1] < 0.0)
+				if(ang[1] == -1.0)
 					ang[1] = GetURandomFloat() * 360.0;
 				
 				int entity = NPC_CreateById(spawn.Index, 0, spawn.Pos, ang, false);
@@ -460,6 +524,7 @@ stock void Apply_Text_Above_Npc(int entity,int strength, int health)
 	float OffsetFromHead[3];
 
 	OffsetFromHead[2] = 95.0;
+	OffsetFromHead[2] += f_ExtraOffsetNpcHudAbove[npc.index];
 	OffsetFromHead[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 
 //	OffsetFromHead[2] += 10.0;
@@ -763,6 +828,35 @@ void Spawns_EditorMenu(int client)
 		
 		FormatEx(buffer2, sizeof(buffer2), "Position: %s", CurrentSpawnEditing[client]);
 		menu.AddItem("pos", buffer2);
+		
+		/*
+			Teleport Box
+		*/
+		float telepos[3], vec1[3], vec2[3];
+		ExplodeStringFloat(CurrentSpawnEditing[client], " ", telepos, sizeof(telepos));
+		for(int i; i < 3; i++)
+		{
+			vec1 = telepos;
+			vec1[0] -= 23.5;
+			vec1[1] -= 23.5;
+			vec2 = vec1;
+
+			vec2[i] += i == 2 ? 95.0 : 57.0;
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 5.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
+			TE_SendToClient(client);
+			
+			vec1 = telepos;
+			vec1[0] += 23.5;
+			vec1[1] += 23.5;
+			vec1[2] += 95.0;
+			vec2 = vec1;
+
+			vec2[i] -= i == 2 ? 95.0 : 57.0;
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 5.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
+			TE_SendToClient(client);
+		}
 
 		kv.GetString("name", buffer1, sizeof(buffer1));
 		bool valid = NPC_GetByPlugin(buffer1) != -1;
@@ -784,19 +878,25 @@ void Spawns_EditorMenu(int client)
 
 		menu.AddItem("time", buffer2, ITEMDRAW_SPACER);
 
-		FormatEx(buffer2, sizeof(buffer2), "Level: %d", kv.GetNum("level", kv.GetNum("low_level")));
+		IntToString(kv.GetNum("level", kv.GetNum("low_level")), buffer2, sizeof(buffer2));
+		ThousandString(buffer2, sizeof(buffer2));
+		Format(buffer2, sizeof(buffer2), "Level: %s", buffer2);
 		menu.AddItem("level", buffer2);
 
 		//FormatEx(buffer2, sizeof(buffer2), "Max Level: %d", kv.GetNum("high_level"));
 		//menu.AddItem("high_level", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Health: %d", kv.GetNum("health", kv.GetNum("low_health")));
+		IntToString(kv.GetNum("health", kv.GetNum("low_health")), buffer2, sizeof(buffer2));
+		ThousandString(buffer2, sizeof(buffer2));
+		Format(buffer2, sizeof(buffer2), "Health: %s", buffer2);
 		menu.AddItem("health", buffer2);
 
 		//FormatEx(buffer2, sizeof(buffer2), "Max Health: %d", kv.GetNum("high_health"));
 		//menu.AddItem("high_health", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "XP: %d", kv.GetNum("xp", kv.GetNum("low_xp")));
+		IntToString(kv.GetNum("xp", kv.GetNum("low_xp")), buffer2, sizeof(buffer2));
+		ThousandString(buffer2, sizeof(buffer2));
+		Format(buffer2, sizeof(buffer2), "XP: %s", buffer2);
 		menu.AddItem("xp", buffer2);
 
 		//FormatEx(buffer2, sizeof(buffer2), "Max XP: %d", kv.GetNum("high_xp"));
@@ -804,13 +904,17 @@ void Spawns_EditorMenu(int client)
 
 		//menu.AddItem("high_xp", buffer2, ITEMDRAW_SPACER);
 
-		FormatEx(buffer2, sizeof(buffer2), "Cash: %d", kv.GetNum("cash", kv.GetNum("low_cash")));
+		IntToString(kv.GetNum("cash", kv.GetNum("low_cash")), buffer2, sizeof(buffer2));
+		ThousandString(buffer2, sizeof(buffer2));
+		Format(buffer2, sizeof(buffer2), "Cash: %s", buffer2);
 		menu.AddItem("cash", buffer2);
 
 		//FormatEx(buffer2, sizeof(buffer2), "Max Cash: %d", kv.GetNum("high_cash"));
 		//menu.AddItem("high_cash", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "HP Regen: %d", kv.GetNum("hpregen", kv.GetNum("low_hpregen")));
+		IntToString(kv.GetNum("hpregen", kv.GetNum("low_hpregen")), buffer2, sizeof(buffer2));
+		ThousandString(buffer2, sizeof(buffer2));
+		Format(buffer2, sizeof(buffer2), "HP Regen: %s", buffer2);
 		menu.AddItem("hpregen", buffer2);
 
 		//FormatEx(buffer2, sizeof(buffer2), "High Hp Regen: %d", kv.GetNum("high_hpregen"));
@@ -1063,7 +1167,13 @@ static void AdjustSpawnKey(int client, const char[] key)
 
 	if(key[0])
 	{
-		kv.SetString(CurrentKeyEditing[client], key);
+		// Remove ","
+		int length = strlen(key) + 1;
+		char[] buffer = new char[length];
+		strcopy(buffer, length, key);
+		ReplaceString(buffer, length, ",", "");
+
+		kv.SetString(CurrentKeyEditing[client], buffer);
 	}
 	else
 	{

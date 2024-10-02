@@ -175,12 +175,14 @@ enum struct StageEnum
 	int MusicEasyTime;
 	float MusicEasyVolume;
 	bool MusicEasyCustom;
+	char MusicEasyDesc[PLATFORM_MAX_PATH];
 
 	int MusicTier;
 	char MusicHard[PLATFORM_MAX_PATH];
 	int MusicHardTime;
 	float MusicHardVolume;
 	bool MusicHardCustom;
+	char MusicHardDesc[PLATFORM_MAX_PATH];
 
 	ArrayList ModList;
 	ArrayList WaveList;
@@ -240,6 +242,7 @@ enum struct StageEnum
 		this.MusicEasyTime = kv.GetNum("music_easy_duration");
 		this.MusicEasyVolume = kv.GetFloat("music_easy_volume", 1.0);
 		this.MusicEasyCustom = view_as<bool>(kv.GetNum("music_easy_download"));
+		kv.GetString("music_easy_desc", this.MusicEasyDesc, PLATFORM_MAX_PATH);
 
 		if(this.MusicEasy[0])
 		{
@@ -258,6 +261,7 @@ enum struct StageEnum
 		this.MusicHardVolume = kv.GetFloat("music_hard_volume", 1.0);
 		this.MusicHardCustom = view_as<bool>(kv.GetNum("music_hard_download"));
 		this.MusicTier = kv.GetNum("music_hard_cap", 99999);
+		kv.GetString("music_hard_desc", this.MusicHardDesc, PLATFORM_MAX_PATH);
 
 		if(this.MusicHard[0])
 		{
@@ -1344,11 +1348,11 @@ static void StartDungeon(const char[] name)
 				if(stage.MusicTier > tier)
 				{
 					if(stage.MusicEasy[0])
-						Music_SetOverride(clients[c], stage.MusicEasy, stage.MusicEasyTime, stage.MusicEasyCustom, stage.MusicEasyVolume);	
+						Music_SetOverride(clients[c], stage.MusicEasy, stage.MusicEasyTime, stage.MusicEasyCustom, stage.MusicEasyVolume, stage.MusicEasyDesc);	
 				}
 				else if(stage.MusicHard[0])
 				{
-					Music_SetOverride(clients[c], stage.MusicHard, stage.MusicHardTime, stage.MusicHardCustom, stage.MusicHardVolume);	
+					Music_SetOverride(clients[c], stage.MusicHard, stage.MusicHardTime, stage.MusicHardCustom, stage.MusicHardVolume, stage.MusicHardDesc);	
 				}
 			}
 			

@@ -3644,9 +3644,9 @@
 	"Now Playing Song"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"{darkgrey}Now Playing: {community}{1} {default}| {lightgreen}{2}"
-		"fr"		"{darkgrey}Musique : {community}{1} {default}| {lightgreen}{2}"
-		"chi"		"{darkgrey}现在播放：{community}{1} {default} | {lightgreen}{2}"
+		"en"		"{darkgrey}Now Playing: {community}{1} {default}- {lightgreen}{2}"
+		"fr"		"{darkgrey}Musique : {community}{1} {default}- {lightgreen}{2}"
+		"chi"		"{darkgrey}现在播放：{community}{1} {default}- {lightgreen}{2}"
 	}
 	"Blacksmith Tooltip"
 	{

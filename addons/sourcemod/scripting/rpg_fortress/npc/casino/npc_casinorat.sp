@@ -35,6 +35,7 @@ static const char g_MeleeAttackSounds[][] =
 
 void CasinoRat_Setup()
 {
+	PrecacheModel("models/headcrabclassic.mdl");
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSound);
 	PrecacheSoundArray(g_IdleSound);
@@ -97,7 +98,7 @@ methodmap CasinoRat < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		f3_SpawnPosition[npc.index] = vecPos;	
+		f3_SpawnPosition[npc.index] = vecPos;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -193,8 +194,9 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 		npc.SetActivity("ACT_RUN");
+		npc.m_bisWalking = true;
 
-		if(distance < (250.0 * 250.0) && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < (300.0 * 300.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
@@ -206,13 +208,10 @@ static void ClotThink(int iNPC)
 				
 				npc.m_flAttackHappens = gameTime + 0.45;
 				npc.m_flDoingAnimation = gameTime + 1.0;
-				npc.m_flNextMeleeAttack = gameTime + 1.45;
+				npc.m_flNextMeleeAttack = gameTime + 2.05;
 
 				if(!NpcStats_IsEnemySilenced(npc.index))
-				{
-					WorldSpaceCenter(npc.index, vecTarget);
 					PluginBot_Jump(npc.index, vecTarget);
-				}
 			}
 		}
 	}

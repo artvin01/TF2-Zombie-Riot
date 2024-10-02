@@ -112,7 +112,7 @@ methodmap RookieGambler < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		f3_SpawnPosition[npc.index] = vecPos;	
+		f3_SpawnPosition[npc.index] = vecPos;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -125,9 +125,9 @@ methodmap RookieGambler < CClotBody
 		{
 			"models/workshop/player/items/all_class/hwn2022_beaten_bruised/hwn2022_beaten_bruised_spy.mdl",
 			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style2_spy.mdl",
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style3_spy.mdl",
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style4_spy.mdl",
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style5_spy.mdl"
+			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style3/hwn2022_beaten_bruised_style3_spy.mdl",
+			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style4/hwn2022_beaten_bruised_style4_spy.mdl",
+			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style5/hwn2022_beaten_bruised_style5_spy.mdl"
 		};
 	
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_eternal_reward/c_eternal_reward.mdl", _, skin);
@@ -223,6 +223,7 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 		npc.SetActivity("ACT_MP_RUN_MELEE");
+		npc.m_bisWalking = true;
 
 		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{

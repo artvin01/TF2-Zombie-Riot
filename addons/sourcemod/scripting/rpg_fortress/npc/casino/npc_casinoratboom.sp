@@ -28,6 +28,7 @@ static const char g_MeleeAttackSounds[][] =
 
 void CasinoRatBoom_Setup()
 {
+	PrecacheModel("models/headcrab.mdl");
 	PrecacheSoundArray(g_HurtSound);
 	PrecacheSoundArray(g_IdleSound);
 	PrecacheSoundArray(g_MeleeHitSounds);
@@ -83,7 +84,7 @@ methodmap CasinoRatBoom < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		f3_SpawnPosition[npc.index] = vecPos;	
+		f3_SpawnPosition[npc.index] = vecPos;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -182,6 +183,7 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 		npc.SetActivity("ACT_RUN");
+		npc.m_bisWalking = true;
 
 		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{

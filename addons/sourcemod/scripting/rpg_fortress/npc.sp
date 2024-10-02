@@ -74,8 +74,17 @@ void NPC_ConfigSetup()
 
 	RookieGambler_Setup();
 	BuckshotGambler_Setup();
+	HeavyGambler_Setup();
+	BigWins_Setup();
+	CasinoRat_Setup();
+	CasinoRatBoom_Setup();
+	TrashMan_Setup();
 
 	BaseSquad_MapStart();
+	Whiteflower_AcclaimedSwordsman_OnMapStart_NPC();
+	Whiteflower_Ekas_Piloteer_OnMapStart_NPC();
+	Whiteflower_Rocketeer_OnMapStart_NPC();
+	Whiteflower_Hitman_OnMapStart_NPC();
 /*
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
@@ -570,7 +579,16 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/whiteflower_combine/npc_combine_pistol.sp"
 #include "rpg_fortress/npc/whiteflower_combine/npc_combine_smg.sp"
 #include "rpg_fortress/npc/whiteflower_combine/npc_combine_swordsman.sp"
+#include "rpg_fortress/npc/whiteflower_combine/npc_combine_ar2.sp"
 #include "rpg_fortress/npc/whiteflower_combine/npc_tank.sp"
+#include "rpg_fortress/npc/whiteflower_combine/npc_combine_shotgun.sp"
+#include "rpg_fortress/npc/whiteflower_combine/npc_combine_elite.sp"
+#include "rpg_fortress/npc/whiteflower_combine/npc_combine_giant.sp"
+#include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_acclaimed_swordsman.sp"
+#include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_ekas_piloteer.sp"
+#include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_rocketeer.sp"
+#include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_hitman.sp"
+
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"

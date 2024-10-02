@@ -240,7 +240,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 				npc.PlaySwordFire();
 
 				npc.m_flAttackHappens = gameTime + 0.35;
-				npc.m_flNextMeleeAttack = gameTime + 0.85;
+				npc.m_flNextMeleeAttack = gameTime + 0.65;
 			}
 		}
 		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))

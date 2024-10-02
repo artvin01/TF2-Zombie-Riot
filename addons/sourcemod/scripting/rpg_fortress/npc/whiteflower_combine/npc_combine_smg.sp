@@ -31,7 +31,7 @@ methodmap CombineSMG < CombinePolice
 
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 45;
-		func_NPCDeath[npc.index] = CombinePistol_NPCDeath;
+		func_NPCDeath[npc.index] = CombineSMG_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = BaseSquad_TakeDamage;
 		func_NPCThink[npc.index] = CombineSMG_ClotThink;
 		
