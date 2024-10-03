@@ -56,7 +56,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	}
 	int limit = 0;
 	
-	if(CvarNoSpecialZombieSpawn.BoolValue)//PLEASE ASK CRUSTY FOR MODELS
+	//incase you hate minibosses
+	if(CvarNoSpecialZombieSpawn.BoolValue)
 	{		
 		panzer = false;
 		panzer_warning = false;

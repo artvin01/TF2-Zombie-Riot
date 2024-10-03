@@ -785,7 +785,7 @@ static void Yakuza_Block(int client, int weapon, int slot)
 	Rogue_OnAbilityUse(weapon);
 
 	float gameTime = GetGameTime();
-	float cooldown = 2.0;
+//	float cooldown = 2.0;
 	float duration = 0.5;
 	if(BlockStale[client] > 0)
 	{
@@ -799,17 +799,17 @@ static void Yakuza_Block(int client, int weapon, int slot)
 	{
 		case Style_Beast:
 		{
-			cooldown = 2.5;
+		//	cooldown = 2.5;
 			duration = 0.8;
 		}
 		case Style_Rush:
 		{
-			cooldown = 1.5;
+	//		cooldown = 1.5;
 			duration = 0.4;
 		}
 		case Style_Dragon:
 		{
-			cooldown = 1.5;
+	//		cooldown = 1.5;
 			duration = 0.65;
 		}
 	}
@@ -979,7 +979,7 @@ void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damaget
 {
 	if(LastMann)
 	{
-		damage *= 0.5;
+		damage *= 0.75;
 	}
 	if(WeaponStyle[victim] == Style_Brawler)
 		damage *= 0.90;
@@ -1021,7 +1021,7 @@ float Yakuza_SelfTakeDamageHud(int victim, int weapon)
 	float damagereturn = 1.0;
 	if(LastMann)
 	{
-		damagereturn *= 0.5;
+		damagereturn *= 0.75;
 	}
 
 	if(WeaponStyle[victim] == Style_Brawler)

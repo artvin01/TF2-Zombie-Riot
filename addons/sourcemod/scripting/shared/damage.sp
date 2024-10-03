@@ -1019,7 +1019,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_EXPLORER:
 		{
-			WeaponVoidBlade_OnTakeDamage(attacker, victim,weapon, zr_custom_damage, damage);
+			WeaponVoidBlade_OnTakeDamage(attacker, victim, zr_custom_damage);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{
@@ -1126,7 +1126,7 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 }
 
 #if defined RPG
-stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime)
+stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime, bool donotset = false)
 {
 	if(attacker > MaxClients && victim <= MaxClients)
 	{
@@ -1149,8 +1149,12 @@ stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime)
 
 	if(RPGCore_ClientAllowedToTargetNpc(victim, attacker))
 	{
-		i_NpcFightOwner[victim] = attacker;
-		f_NpcFightTime[victim] = GameTime + 10.0;
+		if(!donotset)
+		{
+			i_NpcFightOwner[victim] = attacker;
+			f_NpcFightTime[victim] = GameTime + 10.0;
+
+		}
 	}
 	else
 	{
@@ -1783,8 +1787,8 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 
 stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
-#if defined ZR
 	float basedamage = damage;
+#if defined ZR
 	if(inflictor > 0)
 	{
 		if(b_ThisWasAnNpc[inflictor])

@@ -247,10 +247,12 @@ void FullMoon_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 
 	if(dieingstate[client] == 0)
 		HealEntityGlobal(client, client, TotalHealDoPerHit, 1.0,_,HEAL_SELFHEAL);
+	
+	GiveArmorViaPercentage(client, 0.02, 1.0, false, true);
 }
 
 
-void FullMoon_Meleetrace_Hit_After(int client, float &damage)
+void FullMoon_Meleetrace_Hit_After(float &damage)
 {
 	damage *= 0.5;
 }

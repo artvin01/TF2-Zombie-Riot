@@ -1728,6 +1728,12 @@ public void OnPluginEnd()
 	*/
 }
 
+void Core_PrecacheGlobalCustom()
+{
+	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
+	PrecacheSoundCustom("zombiesurvival/headshot2.wav");
+	PrecacheSoundCustom("zombiesurvival/hm.mp3");
+}
 public void OnMapStart()
 {
 	PrecacheSound("weapons/knife_swing_crit.wav");
@@ -1767,9 +1773,7 @@ public void OnMapStart()
 	Zero(f_PreventMedigunCrashMaybe);
 
 #if defined ZR || defined RPG
-	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
-	PrecacheSoundCustom("zombiesurvival/headshot2.wav");
-	PrecacheSoundCustom("zombiesurvival/hm.mp3");
+	Core_PrecacheGlobalCustom();
 #endif
 
 	PrecacheSound("weapons/explode1.wav");
