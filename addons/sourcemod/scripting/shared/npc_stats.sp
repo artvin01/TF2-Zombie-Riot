@@ -1640,8 +1640,6 @@ methodmap CClotBody < CBaseCombatCharacter
 				return 400.0;
 			else
 				return 1200.0;
-
-			return 400.0;
 		}
 #endif
 		
