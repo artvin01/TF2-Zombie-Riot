@@ -246,7 +246,7 @@ public void VoidMutatingBlob_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	if(Rogue_Mode())
+	if(!Rogue_Mode())
 	{
 		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 		//a spawnpoint that only lasts for 1 spawn
