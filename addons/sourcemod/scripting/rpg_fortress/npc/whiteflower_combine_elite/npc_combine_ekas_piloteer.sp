@@ -36,6 +36,9 @@ static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing3.wav",
 };
 
+static char g_RocketSound[][] = {
+	"weapons/rpg/rocketfire1.wav",
+};
 static char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
@@ -56,6 +59,7 @@ public void Whiteflower_Ekas_Piloteer_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttack));	i++) { PrecacheSound(g_RangedAttack[i]);	}
+	for (int i = 0; i < (sizeof(g_RocketSound));	i++) { PrecacheSound(g_RocketSound[i]);	}
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Ekas Piloteer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_ekas_piloteer");
@@ -149,6 +153,10 @@ methodmap Whiteflower_Ekas_Piloteer < CClotBody
 	public void PlayMeleeSound()
  	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+	}
+	public void PlayRocketSound()
+ 	{
+		EmitSoundToAll(g_RocketSound[GetRandomInt(0, sizeof(g_RocketSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayMeleeHitSound()
 	{
@@ -303,6 +311,7 @@ public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 			npc.m_iAttacksTillReload = 6;
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
+				npc.PlayRocketSound();
 				float vecSelf[3];
 				WorldSpaceCenter(npc.index, vecSelf);
 				vecSelf[2] += 50.0;

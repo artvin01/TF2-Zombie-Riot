@@ -42,6 +42,9 @@ static char g_MeleeHitSounds[][] = {
 static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
 };
+static char g_RocketSound[][] = {
+	"weapons/rpg/rocketfire1.wav",
+};
 
 public void Whiteflower_selected_few_OnMapStart_NPC()
 {
@@ -52,6 +55,7 @@ public void Whiteflower_selected_few_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
+	for (int i = 0; i < (sizeof(g_RocketSound));	i++) { PrecacheSound(g_RocketSound[i]);	}
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Selected Few");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_selected_few");
@@ -71,7 +75,7 @@ methodmap Whiteflower_selected_few < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
@@ -79,17 +83,17 @@ methodmap Whiteflower_selected_few < CClotBody
 	public void PlayHurtSound()
 	{
 		
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayRangedAttackSecondarySound() {
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayKilledEnemySound(int target) 
 	{
@@ -125,19 +129,33 @@ methodmap Whiteflower_selected_few < CClotBody
 				case 2:
 					NpcSpeechBubble(this.index, "I wonder how much is put on their head.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			}
-			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
 		}
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+	}
+	public void PlayRocketSound()
+ 	{
+		EmitSoundToAll(g_RocketSound[GetRandomInt(0, sizeof(g_RocketSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
 	}
 	public void PlayMeleeHitSound()
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
+	property float m_flJumpCooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flJumpHappening
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public Whiteflower_selected_few(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -231,6 +249,22 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "ACT_MP_STAND_ITEM2", 260.0, gameTime);
+
+	if(npc.m_flJumpHappening)
+	{
+		if(IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			float WorldSpaceCenterVec[3]; 
+			WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+			npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
+		}
+		//We want to jump at the enemy the moment we are allowed to!
+		if(npc.m_flJumpHappening < gameTime)
+		{
+
+		}
+		return;
+	}
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -270,67 +304,6 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			}
 		}
 	}
-
-	if(npc.m_flNextRangedSpecialAttack)
-	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			npc.FaceTowards(vecTarget, 20000.0);
-		}
-		if(npc.m_flRangedSpecialDelay < gameTime)
-		{
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
-			{
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-				npc.FaceTowards(vecTarget, 20000.0);
-				npc.PlayRangedAttackSecondarySound();
-				
-				float vecSpread = 0.1;
-				
-				npc.FaceTowards(vecTarget, 20000.0);
-				
-				float eyePitch[3];
-				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-
-				float x, y;
-				
-				float vecDirShooting[3], vecRight[3], vecUp[3];
-
-				vecTarget[2] += 15.0;
-				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
-				GetVectorAngles(vecDirShooting, vecDirShooting);
-				vecDirShooting[1] = eyePitch[1];
-				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-				
-				//add the spray
-				float vecDir[3];
-				vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-				vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-				vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
-				NormalizeVector(vecDir, vecDir);
-				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 300.0, 400.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
-
-				npc.PlayKilledEnemySound(npc.m_iTarget);
-			}
-			npc.m_flDoingAnimation = 0.0;
-		}
-		if(npc.m_flDoingAnimation < gameTime)
-		{
-			npc.m_flDoingAnimation = gameTime + 0.2;
-			npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,2.0);
-			npc.m_flRangedSpecialDelay = gameTime + 0.20;
-		}
-		if(npc.m_flNextRangedSpecialAttack < gameTime)
-		{
-			npc.m_flDoingAnimation = gameTime + 0.25;
-			npc.m_flNextRangedSpecialAttack = 0.0;
-		}
-		return;
-	}
 	
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -360,8 +333,10 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && npc.m_flNextRangedAttack < gameTime)
+		else if (npc.m_flJumpCooldown < gameTime)
 		{
+			//We jump, no matter if far or close, see state to see more logic.
+			//we melee them!
 			npc.m_iState = 2; //enemy is abit further away.
 		}
 		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
@@ -396,9 +371,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
 				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
@@ -412,25 +385,50 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					npc.m_flAttackHappens = gameTime + 0.5;
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_flNextMeleeAttack = gameTime + 1.0;
-					npc.m_bisWalking = true;
 				}
 			}
 			case 2:
-			{
-				if(npc.m_iChanged_WalkCycle != 7) 	
+			{		
+				//Jump at enemy	
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 7;
-					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.m_iTarget = Enemy_I_See;
+
+					npc.m_flAttackHappens = gameTime + 0.5;
+					npc.m_flDoingAnimation = gameTime + 0.5;
+					npc.m_flNextMeleeAttack = 0.0;
+					npc.m_flJumpCooldown = gameTime + 7.5;
+					//if enemy 
+					npc.PlayRocketSound();
+					for(float loopDo = 1.0; loopDo <= 2.0; loopDo += 0.5)
+					{
+						float vecSelf[3];
+						WorldSpaceCenter(npc.index, vecSelf);
+						vecSelf[2] += 50.0;
+						vecSelf[0] += GetRandomFloat(-10.0, 10.0);
+						vecSelf[1] += GetRandomFloat(-10.0, 10.0);
+						float RocketDamage = 700000.0;
+						int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 200.0);
+						DataPack pack;
+						CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+						pack.WriteCell(EntIndexToEntRef(RocketGet));
+						pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
+					}
+					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
+					{
+						//enemy is indeed to far away, jump at them
+						npc.m_flJumpHappening = gameTime + 1.0;
+						if(npc.m_iChanged_WalkCycle != 4) 	
+						{
+							npc.m_bisWalking = false;
+							npc.m_iChanged_WalkCycle = 4;
+							npc.SetActivity("ACT_RUN");
+							npc.m_flSpeed = 0.0;
+							NPC_StartPathing(iNPC);
+						}
+					}
 				}
-				npc.m_flDoingAnimation = gameTime + 1.0;
-				//how long do they do their pulse attack barrage?
-				npc.m_flNextRangedSpecialAttack = gameTime + 2.0;
-				npc.m_flRangedSpecialDelay = gameTime + 1.0;
-				npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.4);
-				npc.m_flNextRangedAttack = gameTime + 10.35;
 			}
 		}
 	}
