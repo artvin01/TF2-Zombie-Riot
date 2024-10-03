@@ -373,7 +373,7 @@ static void Rulius_Special(CClotBody npc, int PrimaryThreatIndex)
 	float type = (wide_set*2) / RUINA_RUIANUS_LOOP_AMT;
 	ang_Look[1] -= type;
 	
-	float Timer = 2.5;
+	float Timer = 1.5;
 	fl_ability_timer[npc.index] = Timer + GetGameTime();
 	int Last_Proj = -1;
 	for(int i=0 ; i<RUINA_RUIANUS_LOOP_AMT; i++)
@@ -402,7 +402,7 @@ static void Rulius_Special(CClotBody npc, int PrimaryThreatIndex)
 		Projectile.iNPC = npc.index;
 		Projectile.Start_Loc = Npc_Vec;
 		Projectile.Angles = Proj_Ang;
-		Projectile.speed = 500.0;
+		Projectile.speed = 300.0;
 		Projectile.Time = Timer+0.1;
 
 		int Proj = Projectile.Launch_Projectile();

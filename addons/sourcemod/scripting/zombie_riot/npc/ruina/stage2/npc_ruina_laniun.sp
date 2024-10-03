@@ -298,7 +298,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Speed_Buff(npc.index, 130.0, 1.0, 1.3);
+		Master_Apply_Speed_Buff(npc.index, 130.0, 1.0, 1.1);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
@@ -306,12 +306,12 @@ static void ClotThink(int iNPC)
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
-		float Range_Min = (125.0*125.0);
+		/*float Range_Min = (125.0*125.0);
 		float Range_Max = (1000.0 * 1000.0);
 
 		if(Lanius_Teleport_Logic(npc.index, PrimaryThreatIndex, Range_Min, Range_Max, (npc.Anger ? 25.0 : 35.0), 30.0, 7.5, On_LaserHit))
 			npc.PlayTeleportSound();
-
+		*/
 		Ruina_Self_Defense Melee;
 
 		Melee.iNPC = npc.index;
@@ -353,10 +353,10 @@ static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
 	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 25);
 }
-static void On_LaserHit(int client, int Target, int damagetype, float damage)
+/*static void On_LaserHit(int client, int Target, int damagetype, float damage)
 {
 	Ruina_Add_Mana_Sickness(client, Target, 0.1, 50);
-}
+}*/
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 
