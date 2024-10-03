@@ -56,7 +56,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	}
 	int limit = 0;
 	
-	if(CvarNoSpecialZombieSpawn.BoolValue)//PLEASE ASK CRUSTY FOR MODELS
+	//incase you hate minibosses
+	if(CvarNoSpecialZombieSpawn.BoolValue)
 	{		
 		panzer = false;
 		panzer_warning = false;
@@ -1025,7 +1026,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	else if(damage < 9999999.9)
 	{
-		if(Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+		if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		{
 			return Plugin_Handled;
 		}
@@ -1437,7 +1438,6 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 
 #endif
 		float percentageGlobal = 1.0;
-		float BaseDamage = 1.0;
 		int testvalue1 = 1;
 
 		if(!b_NpcIsInvulnerable[victim])
@@ -1445,8 +1445,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			//we want to get the resistances
 			if(GetTeam(attacker) != GetTeam(victim))
 			{
-				Damage_AnyAttacker(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
-				OnTakeDamageDamageBuffs(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, GetGameTime());	
+				Damage_AnyAttacker(victim, attacker, attacker, percentageGlobal, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+				OnTakeDamageDamageBuffs(victim, attacker, attacker, percentageGlobal, testvalue1, testvalue1, GetGameTime());	
 			}
 			
 #if defined ZR
@@ -1515,11 +1515,10 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			armor_added = true;
 		}
 		float DamagePercDo = 100.0;
-		BaseDamage = 100.0;
 		if(!b_NpcIsInvulnerable[victim])
 		{
-			Damage_NPCAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
-			Damage_AnyAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+			Damage_NPCAttacker(attacker, victim, victim, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+			Damage_AnyAttacker(attacker, victim, victim, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 #if defined ZR
 			if(GetTeam(victim) != TFTeam_Red)
 			{
@@ -1750,8 +1749,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		if(Timer_Show < 0.0)
 			Timer_Show = 0.0;
 
-		if(Timer_Show > 800.0)
+		//if raid is on red, dont do timer.
+		if(Timer_Show > 800.0 || GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red)
+		{
 			RaidModeTime = 99999999.9;
+		}
 
 		float HudOffset = ZR_DEFAULT_HUD_OFFSET;
 		float HudY = -1.0;

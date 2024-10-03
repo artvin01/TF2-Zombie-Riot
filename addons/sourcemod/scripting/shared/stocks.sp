@@ -1288,7 +1288,6 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 
 stock void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 {
-//	HealEntityGlobal(attacker, victim, -(truedamagedeal - 1.0), 99.0, 0.0, HEAL_ABSOLUTE | HEAL_SELFHEAL);
 #if defined ZR
 	b_ThisNpcIsSawrunner[attacker] = true;
 #endif
@@ -1303,34 +1302,6 @@ stock void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 #if defined ZR
 	b_ThisNpcIsSawrunner[attacker] = false;
 #endif
-	/*
-	float AnyValueTest1 = 1.0;
-	int AnyValueTest2 = 1;
-	if(victim <= MaxClients)
-	{
-		Player_OnTakeDamageAlive_DeathCheck(victim, 
-		attacker, 
-		AnyValueTest2, 
-		AnyValueTest1, 
-		AnyValueTest2, 
-		AnyValueTest2, 
-		{0.0,0.0,0.0}, 
-		{0.0,0.0,0.0}, 
-		0);
-	}
-	else
-	{
-		NPC_OnTakeDamage_Post(victim, 
-		attacker, 
-		AnyValueTest2, 
-		AnyValueTest1, 
-		AnyValueTest2, 
-		AnyValueTest2, 
-		{0.0,0.0,0.0}, 
-		{0.0,0.0,0.0}, 
-		0);
-	}
-	*/
 }
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
 {
@@ -1482,7 +1453,9 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 		if(healer > 0 && healer != entity && healer <= MaxClients)
 		{
 			Healing_done_in_total[healer] += HealthHealed;
+#if defined ZR
 			AddHealthToUbersaw(healer, HealthHealed, 0.0);
+#endif
 		}
 	}
 
@@ -4131,7 +4104,6 @@ public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
 			bool didHit = TR_DidHit(trace);
 			delete trace;
-			
 			if (didHit)
 			{
 				HazardResult = true;
