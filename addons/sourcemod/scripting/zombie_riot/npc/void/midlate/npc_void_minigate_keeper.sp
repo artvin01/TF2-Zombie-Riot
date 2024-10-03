@@ -232,7 +232,7 @@ public void VoidMinigateKeeper_NPCDeath(int entity)
 	
 	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 	//a spawnpoint that only lasts for 1 spawn
-	Void_PlaceZRSpawnpoint(VecSelfNpcabs, 0, 2, "utaunt_hands_purple_parent", 5, false);
+	Void_PlaceZRSpawnpoint(VecSelfNpcabs, 0, 2, "utaunt_hands_purple_parent", 5, false, 1);
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);

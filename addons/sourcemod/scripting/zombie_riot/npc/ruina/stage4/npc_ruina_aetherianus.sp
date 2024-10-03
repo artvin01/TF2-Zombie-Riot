@@ -124,9 +124,7 @@ methodmap Aetherianus < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
@@ -656,7 +654,7 @@ static void Fire_Hyper_Arrow(Aetherianus npc, float Npc_Vec[3], int target, floa
 	Ruina_Projectiles Projectile;
 	float Projectile_Time = 2.5;
 
-	float projectile_speed = 2500.0;	
+	float projectile_speed = 1750.0;	
 	float target_vec[3];
 	PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,target_vec);
 

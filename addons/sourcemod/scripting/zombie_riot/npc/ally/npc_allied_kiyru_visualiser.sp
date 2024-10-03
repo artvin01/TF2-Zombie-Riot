@@ -253,6 +253,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 		npc.m_iNpcStepVariation = 0;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
+		b_CannotBeStunned[npc.index] = true;
 		
 		func_NPCDeath[npc.index] = AlliedKiryuVisualiserAbility_NPCDeath;
 		func_NPCThink[npc.index] = AlliedKiryuVisaluser_ClotThink;
@@ -274,7 +275,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 
 		npc.m_iKiryuActionWhich = WhichStateUse;
 		npc.b_NoLongerResetVel = false;
-		npc.f_SpeedAcelerateAnim = Yakuza_DurationDoEnemy(client, enemyattach);
+		npc.f_SpeedAcelerateAnim = Yakuza_DurationDoEnemy(enemyattach);
 		switch(npc.m_iKiryuActionWhich)
 		{
 			case 1:
@@ -285,8 +286,11 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.5 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = -50.0;
 				c_KiyruAttachmentDo[npc.index] = "effect_hand_r";
-				FreezeNpcInTime(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim), true);
-				SetAirtimeNpc(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim));
+				if(!VIPBuilding_Active())
+				{
+					FreezeNpcInTime(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim), true);
+					SetAirtimeNpc(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim));
+				}
 			}
 			case 2:
 			{
@@ -297,8 +301,11 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.1 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = -50.0;
 				c_KiyruAttachmentDo[npc.index] = "effect_hand_r";
-				FreezeNpcInTime(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim), true);
-				SetAirtimeNpc(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim));
+				if(!VIPBuilding_Active())
+				{
+					FreezeNpcInTime(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim), true);
+					SetAirtimeNpc(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim));
+				}
 			}
 			case 3:
 			{
@@ -308,8 +315,11 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.5 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = 0.0;
 				c_KiyruAttachmentDo[npc.index] = "root";
-				FreezeNpcInTime(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim), true);
-				SetAirtimeNpc(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim));
+				if(!VIPBuilding_Active())
+				{
+					FreezeNpcInTime(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim), true);
+					SetAirtimeNpc(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim));
+				}
 			}
 			case 4:
 			{
@@ -329,8 +339,11 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				npc.m_flKiryuTimeUntillDone = GetGameTime() + (1.35 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = 0.0;
 				c_KiyruAttachmentDo[npc.index] = "root";
-				FreezeNpcInTime(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim), true);
-				SetAirtimeNpc(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim));
+				if(!VIPBuilding_Active())
+				{
+					FreezeNpcInTime(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim), true);
+					SetAirtimeNpc(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim));
+				}
 			}
 		}
 		npc.PlayInitSound();
@@ -375,7 +388,7 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 			TeleportEntity(npc.m_iTargetWalkTo, NULL_VECTOR, flAngles, NULL_VECTOR);
 		}
 	}
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active())
 	{	
 
 		if(f_NoUnstuckVariousReasons[npc.m_iTarget] < GetGameTime() + 0.5)
@@ -467,7 +480,7 @@ void BrawlerHeat1(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
 				
-					SensalCauseKnockback(npc.index, npc.m_iTarget,_,_, true);
+					SensalCauseKnockback(npc.index, npc.m_iTarget,_,_);
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
@@ -501,7 +514,7 @@ void BrawlerHeat2(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 				npc.m_iChanged_WalkCycle = 3;
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-					SensalCauseKnockback(npc.index, npc.m_iTarget,_,_, true);
+					SensalCauseKnockback(npc.index, npc.m_iTarget,_,_);
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
@@ -564,7 +577,7 @@ void BrawlerHeat4(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 				npc.m_iChanged_WalkCycle = 3;
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-					SensalCauseKnockback(npc.index, npc.m_iTarget,_,false, true);
+					SensalCauseKnockback(npc.index, npc.m_iTarget,_,false);
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);

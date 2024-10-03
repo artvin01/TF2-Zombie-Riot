@@ -476,7 +476,7 @@
 	
 	"IEM Launcher Desc"
 	{
-		"en"		"Engi says to not touch his stuff, but you don't care"
+		"en"		"Engi says to not touch his stuff, but you don't care\nFull charge to attack.\nProjectile speed actually makes it slower.\nReload speed and attackspeed buff its damage."
 		"fr"		"L'Engineer vous demande de pas toucher ses choses, mais vous vous foutez de lui."
 		"ru"		"Инженер говорит не трогать его вещи, но вам всё равно."
 		"chi"       "工程师说不要碰他的东西，但你不在乎"
@@ -2078,7 +2078,7 @@
 	
 	"Fusion Blade Pap 1"
 	{
-		"en"	"Active a long cooldown m2 ability.\nWhich buffs your damage and abit less resistance by 15%%, and allies by 10%% this stacks with 2 on eachother.\nThis works with allied npcs aswell."
+		"en"	"Active a long cooldown m2 ability.\nWhich buffs your damage and abit less resistance by 15%%, and allies by 10%% this stacks with 2 on eachother.."
 		"fr"	"Appuyez M2 pour une abilité qui améliore vos dégats.\nAbilité vous donne 15%% résistance, et donne à vos alliés 10%% résistance.\nJusqu'a 2 utilisateurs de cet abilité peuvent fonctionner en même temps."
 		"ru"	"Активирует способность на M2 с длительным временем восст.\nКоторая увелич. ваш урон и сопр. на 15%%, а союзников на 10%%, при этом эфф. накаплив. по 2 на каждого.\nТакже действует на дружественных NPC."
 		"chi"   "按右键可以激活技能，但却时间较长。\n可以提高你的一点伤害和增大15%%的伤害抗性，队友可以获得10%%的增益(可叠加)。\n这也适用于友方npc。"
@@ -2089,6 +2089,18 @@
 		"fr"	"Dégats améliorés."
 		"ru"	"Увеличение урона."
 		"chi"   "增加伤害。"
+	}
+	"Expidonsan Explorer Pap 1"
+	{
+		"en"	"Harness the void power!\nYou now inflict the void elemental debuff onto enemies, void entities cannot void eachother, you are immune to void and so are they to yours, rest explained in void wavetype."
+	}
+	"Expidonsan Explorer Pap 2"
+	{
+		"en"	"You now gain shield on hits.\nStronger enemies give more shield.\nM2 ability: Makes you doublestrike for 10 seconds."
+	}
+	"Expidonsan Explorer Pap 3"
+	{
+		"en"	"You now gain regeneration while having the void buff."
 	}
 	"Fusion Blade Pap 2"
 	{
@@ -2287,7 +2299,7 @@
 	}
 	"Barracks Desc Extra 2"
 	{
-		"en"	"You also gain resources when hurting enemies with UNITS.\nIf youre too far away from your units, they generate much less!\nMelee damage give 6x the resources.\nYour resources have a cap, dont hoard them! (gold excluded)"
+		"en"	"You also gain resources when hurting enemies with UNITS.\nIf youre too far away from your units, they generate much less!\nMelee damage give 4.5x the resources.\nYour resources have a cap, dont hoard them! (gold excluded)"
 	}
 	"Militia Desc"
 	{
@@ -2433,10 +2445,7 @@
 	}
 	"Specter Pap 5"
 	{
-		"en"	"Replaces ability from being intangible to triple damage, resistance, and attack a 4th target\nHealth is only lost when attacking enemies with a lower precent health than you, otherwise deal bonus damage\nYou do more dmg, and take less damage."
-		"fr"	"Dégats et résistance améliorés. Remplace l'abilité de l'intagibilité pour tripler les dégats et votre résistance. Frappe un quatrième ennemi.\nVotre santé est seulement perdu si vous frappez des ennemis avec moins de santé que vous, dégats sont améliorés contre les ennemis avec plus de santé."
-		"ru"	"Заменяет способность от нематериальности на тройной урон, сопротивление и атаку 4-й цели\nПрочность теряется только при атаке врагов с меньшим процентом здоровья, чем у вас, иначе наносится бонусный урон\nВы наносите больше урона и получаете меньше урона."
-		"chi"   "将技能从无形变为三倍伤害，抗性，攻击第4个目标\n生命值只在攻击比你生命值低的敌人时损失，否则造成额外伤害\n你造成更多伤害，会使你受到更少伤害。"
+		"en"	"Replaces ability. Use old ability with same button and crouching. \nDeal bonus damage if the enemy has enough lower %% hp then you otherwise deal bonus damage\nYou do more dmg, and take less damage."
 	}
 	"Lantean Staff Desc pap2"
 	{
@@ -3958,7 +3967,7 @@
 	}
 	"Yakuza Pap 2"
 	{
-		"en"	"+25 max HEAT. Now using M2 ability while not attacking will use a Style Move.\nDucking while attacking will now cause a grab punch."
+		"en"	"+25 max HEAT. Now using M2 ability while not attacking will use a Style Move.\nDucking while attacking will now cause a grab punch.\nStyle moves:\nBrawler: Deal damage and knock enemy up\nRush: Gain speed and attackspeed\nBeast: Pick up building."
 	}
 	"Yakuza Pap 3"
 	{

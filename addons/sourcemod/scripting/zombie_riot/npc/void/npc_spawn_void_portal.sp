@@ -70,7 +70,7 @@ methodmap VoidPortal < CClotBody
 				ShowGameText(client_check, "voice_player", 1, "%t", "A Void Gate Apeared...");
 			}
 		}
-		if(TeleportDiversioToRandLocation(npc.index,true,850.0, 500.0) == 2)
+		if(TeleportDiversioToRandLocation(npc.index,true,1000.0, 700.0) == 2)
 		{
 			TeleportDiversioToRandLocation(npc.index, true);
 		}
@@ -89,7 +89,7 @@ public void VoidPortal_NPCDeath(int entity)
 	VoidPortal npc = view_as<VoidPortal>(entity);
 	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 	//a spawnpoint that only lasts for 1 spawn
-	Void_PlaceZRSpawnpoint(VecSelfNpcabs, 2, 2000000000, "utaunt_portalswirl_purple_parent", 2, true);
+	Void_PlaceZRSpawnpoint(VecSelfNpcabs, 2, 2000000000, "utaunt_portalswirl_purple_parent", 2, true, 2);
 	if(SpawnedOneAlready > GetGameTime())
 	{
 		Event event = CreateEvent("show_annotation");

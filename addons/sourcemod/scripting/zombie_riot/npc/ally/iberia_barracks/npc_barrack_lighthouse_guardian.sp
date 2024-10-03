@@ -122,57 +122,43 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayRangedSound2() {
 		EmitSoundToAll(g_RangedAttackSounds2[GetRandomInt(0, sizeof(g_RangedAttackSounds2) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 
 	public void PlayRangedAttackRocket() {
 		EmitSoundToAll(g_RangedAttackSRocket[GetRandomInt(0, sizeof(g_RangedAttackSRocket) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeWarCry()
 	{
 		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public Barracks_Iberia_Lighthouse_Guardian(int client, float vecPos[3], float vecAng[3], int ally)
@@ -233,7 +219,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.5, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 0.75, 0.66, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -276,10 +262,10 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),8500.0, 0), DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),10000.0, 0), DMG_CLUB, -1, _, vecHit);
 									npc.PlayMeleeHitSound();
-									ExpidonsaGroupHeal(npc.index, 150.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),750.0, 0), 1.0, true);
-									DesertYadeamDoHealEffect(npc.index, 150.0);
+								//	ExpidonsaGroupHeal(npc.index, 150.0, 2, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),750.0, 0), 1.0, true);
+								//	DesertYadeamDoHealEffect(npc.index, 150.0);
 								} 
 							}
 							delete swingTrace;
@@ -294,7 +280,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 				{
 					npc.m_flNextRangedSpecialAttack = GameTime + 5.0;
-					ExpidonsaGroupHeal(npc.index, 100.0, 5, 5000.0, 0.0, false,Expidonsa_DontHealSameIndex);
+					ExpidonsaGroupHeal(npc.index, 100.0, 5, 7500.0, 0.0, false,Expidonsa_DontHealSameIndex);
 					DesertYadeamDoHealEffect(npc.index, 100.0);
 					GuardianAOEBuff(npc,GetGameTime(npc.index));
 
@@ -338,7 +324,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								
 								npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
 								
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3400.0, 1), DMG_BULLET, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3300.0, 1), DMG_BULLET, -1, _, vecHit);
 							} 		
 							delete swingTrace;			
 						}
@@ -430,7 +416,7 @@ void Barracks_Iberia_Lighthouse_Guardian_NPCDeath(int entity)
 {
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	ExpidonsaGroupHeal(npc.index, 300.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),3000.0, 0), 1.0, true);
+//	ExpidonsaGroupHeal(npc.index, 300.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1000.0, 0), 1.0, true);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	npc.PlayNPCDeath();
@@ -450,9 +436,10 @@ void GuardianAOEBuff(Barracks_Iberia_Lighthouse_Guardian npc, float gameTime)
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
+					if(GetVectorDistance(pos1, pos2, true) < (750 * 750))
 					{
-						GrantEntityArmor(entitycount, false, 0.5, 0.1, 0);
+						//give 200 armor at most.
+						GrantEntityArmor(entitycount, false, 0.5, 0.66, 0, .custom_maxarmour = 300.0);
 					}
 				}
 			}

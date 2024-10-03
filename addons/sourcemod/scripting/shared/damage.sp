@@ -637,7 +637,7 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 	else if(f_LeeMinorEffect[attacker] > GameTime)
 	{
 		DamageRes *= 0.95;
-	} 
+	}
 	//if inflictor is 9999999, then that means its called by seperate code, HUD elements.
 	if(RaidbossIgnoreBuildingsLogic(1) && (GetTeam(victim) == TFTeam_Red))
 	{
@@ -671,6 +671,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_NEARL, WEAPON_FUSION_PAP2:
 		{
 			return Player_OnTakeDamage_Fusion(victim, damage, attacker, equipped_weapon, damagePosition);
+		}
+		case WEAPON_EXPLORER:
+		{
+			return Player_OnTakeDamage_VoidBlade(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
 		case WEAPON_RIOT_SHIELD:
 		{
@@ -987,6 +991,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			WeaponSensal_Scythe_OnTakeDamage(attacker, victim,weapon, zr_custom_damage);
 		}
+		case WEAPON_EXPLORER:
+		{
+			WeaponVoidBlade_OnTakeDamage(attacker, victim,weapon, zr_custom_damage, damage);
+		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{
 			WeaponLeper_OnTakeDamage(attacker, damage,weapon, zr_custom_damage);
@@ -1053,7 +1061,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_YAKUZA:
 		{
-			Yakuza_NPCTakeDamage(victim, attacker, damage, weapon, damagetype);
+			Yakuza_NPCTakeDamage(victim, attacker, damage, weapon);
 		}
 	}
 #endif
@@ -1080,6 +1088,10 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 		case WEAPON_MERCHANT:
 		{
 			Merchant_NPCTakeDamagePost(attacker, damage, weapon);
+		}
+		case WEAPON_EXPLORER:
+		{
+			WeaponVoidBlade_OnTakeDamagePost(attacker, victim, damage);
 		}
 	}
 
@@ -1639,22 +1651,22 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		}
 		if(f_VoidAfflictionStrength2[victim] > GameTime)
 		{
-			DamageRes *= 0.8;
+			DamageRes *= ((victim <= MaxClients) ? 0.85 : 0.8);
 		}
 		else if(f_VoidAfflictionStrength[victim] > GameTime)
 		{
-			DamageRes *= 0.85;
+			DamageRes *= ((victim <= MaxClients) ? 0.9 : 0.85);
 		}
 	}
 	else
 	{
 		if(f_VoidAfflictionStrength2[victim] > GameTime)
 		{
-			DamageRes *= 0.85;
+			DamageRes *= ((victim <= MaxClients) ? 0.9 : 0.85);
 		}
 		else if(f_VoidAfflictionStrength[victim] > GameTime)
 		{
-			DamageRes *= 0.9;
+			DamageRes *= ((victim <= MaxClients) ? 0.95 : 0.9);
 		}
 	}
 	if(f_CombineCommanderBuff[victim] > GameTime)

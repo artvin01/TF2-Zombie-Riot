@@ -84,9 +84,7 @@ methodmap Barrack_Combine_Elite < BarrackBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10 , _, NORMAL_ZOMBIE_VOLUME- 0.2, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayPistolReload()
 	{
@@ -108,9 +106,7 @@ methodmap Barrack_Combine_Elite < BarrackBody
 	{
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 
 	public Barrack_Combine_Elite(int client, float vecPos[3], float vecAng[3], int ally)
@@ -221,7 +217,7 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_IDLE", "ACT_RUN_AIM_RIFLE", 275000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 240.0, "ACT_IDLE", "ACT_RUN_AIM_RIFLE", 275000.0,_, true);
 
 		if(npc.m_flNextRangedAttack > GameTime)
 		{

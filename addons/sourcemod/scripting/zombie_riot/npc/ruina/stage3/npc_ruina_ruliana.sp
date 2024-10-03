@@ -162,16 +162,12 @@ methodmap Ruliana < CClotBody
 	public void PlayPrimaryFireSound() {
 		EmitSoundToAll(g_PrimaryFireSounds[GetRandomInt(0, sizeof(g_PrimaryFireSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -854,6 +850,9 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 		}
 		targets_aquired = (RULIANA_MAX_BARRAGE_SIZE-1);
 	}
+
+	if(npc.m_flNextRangedBarrage_Singular < GameTime)
+		npc.m_flNextRangedBarrage_Singular = GameTime + 10.0;
 
 	if(targets_aquired >= RULIANA_MAX_BARRAGE_SIZE)	///somehow we have more then 15 targets?
 		targets_aquired = (RULIANA_MAX_BARRAGE_SIZE-1);
