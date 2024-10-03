@@ -1117,226 +1117,283 @@
 	"Nourished Crawler Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror imbued with impurities that has had its hunger sated.''\n''Such Sea Terrors are rarely seen nowadays, as they are gradually evolving to become more nimble.''"
+		"ru"		"Улучшенный вариант с большим количеством урона и здоровья.\n''Морской ужас, пропитанный нечистотами, который утолил свой голод''.\n ''Такие морские ужасы редко встречаются в наши дни, поскольку они постепенно эволюционируют и становятся более проворными.''"
+
 	}
 	"Primal Sea Piercer Desc"
 	{
 		"en"		"Long range, avoids enemy fire, and ignores resistances.\n''A Sea Terror that grew a solid organ.''\n''The other parts of its body seem to be forming impregnable outer spikes.''"
+		"ru"		"Дальнобойный, избегает вражеского огня и игнорирует сопротивление.\n''Морской ужас, у которого вырос твердый орган''.\n ''Другие части его тела, похоже, образуют неприступные внешние шипы.''"
 	}
 	"Nourished Piercer Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that grew a solid organ and has had its hunger sated.''\n''It sways gently beneath the moonlight.''"
+		"ru"		"Улучшенный вариант с большим количеством урона и здоровья.\n ''Морское чудовище, у которого вырос твердый орган и который утолил свой голод.''\n ''Оно мягко покачивается в лунном свете.''"
 	}
 	"The First To Talk Desc"
 	{
 		"en"		"Fires projectiles with armor erosion, can fire rapid amounts in AOE area.\n''The first beautiful living being to speak human language before civilized man.''\n''Seaborn.''"
+		"ru"		"Стреляет снарядами, вызывающими эрозию брони, может вести интенсивный огонь в зоне AOE.\n''Первое прекрасное живое существо, заговорившее на человеческом языке раньше цивилизованного человека''.\n "Морской житель.''"
 	}
 	"Sal Viento Bishop Quintus Desc"
 	{
 		"en"		"Fires multiple projectiles at targets with highest resistance.\nWill cause AOE attacks with more time alive.\n''A member of the Church of the Deep who snuck into disaster-ravaged Iberia.''\n''He changed the law of the land through his sincere beliefs, in pursuit of the perfect form, yet he was unable to fathom the will of the ocean.''\n''Then again, who could?''"
+		"ru"		"Выпускает несколько снарядов по целям с наибольшим сопротивлением.\nбудет вызывать AOE-атаки с большим количеством времени жизни.''Член Церкви Глубин, который пробрался в разрушенную стихийным бедствием Иберию''. ''Он изменил законы этой страны благодаря своим искренним убеждениям, в погоне за совершенной формой, но он был неспособен понять волю океана''. ''И снова, кто бы мог?''"
 	}
 	"Armorless Union Knight Desc"
 	{
 		"en"		"Melee attacks get parried, dodge!"
+		"ru"		"Атаки ближнего боя парируются, уворачивайтесь!"
 	}
 	"Roar Knightclub Trainee Desc"
 	{
 		"en"		"High flat shield damage reduction for a time on spawning."
+		"ru"		"Высокое снижение урона от щита на время со времени появления."
 	}
 	"Bloodboil Knightclub Trainee Desc"
 	{
 		"en"		"Gets more and more powerfull each time an ally dies around it, dont let it get angry."
+		"ru"		"Становится сильнее и сильнее с каждым разом когда рядом умирает союзник,не дайте ему разозлится."
 	}
 	"Armorless Union Cleanup Squad Desc"
 	{
 		"en"		"Invis from afar and deal immensive damage."
+		"ru"		"Невидим из дали и наносит внушительный урон."
 	}
 	"Consumable Remains Desc"
 	{
 		"en"		"Ready to be eaten by we many."
+		"ru"		"Остатки которые готовые быть поглащены ''многими из нас.''"
 	}
 	"The Endspeaker, Will of We Many Desc"
 	{
 		"en"		"Starts weak with no attacks but evolves from it's last standing spot.\nConsumes remains on the field to gain it's effects.\n''The tiny Seaborn that haunted the mighty Stultifera, the blood of its parents once strewn across the ocean's waters.''\n''The revelation reaches not the ears of the children, their kind's destiny quietly continuing to flow.''"
+		"ru"		"Начинает слабо, без атак, но развивается со своего последнего места.\nпозволяет оставаться на поле, чтобы получить его эффекты.''Крошечный морской зверек, который преследовал могучую Стультиферу, кровь его родителей когда-то была залита океанскими водами.'' ''Это откровение не достигло ушей детей, судьба их рода спокойно продолжает течь своим чередом.''"
 	}
 	"Nethersea Founder Desc"
 	{
 		"en"		"Range resistant, drops Nethersea Brand on death without silence or levitation.\n''A Sea Terror that has inexplicably grown a chitinous skull.''\n''There is no corresponding organ to be found beneath it.''"
+		"ru"		"Устойчив к дальнобойности, наносит метку Преисподней на смерть без шума и левитации.\n ''Морское чудовище, у которого необъяснимым образом вырос хитиновый череп.''\n ''Под ним не обнаружено соответствующего органа.''"
 	}
 	"Nourished Founder Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that generally only metamorphoses within an abundance of the nethersea brand.''\n''They can on exceptionally rare occasions be born from the remains of their multiple kin.''"
+		"ru"		""Улучшенный вариант с большим количеством урона и здоровья.\n ''Морской ужас, который, как правило, претерпевает метаморфозы только в пределах ассортимента бренда nethersea.''\n ''В исключительно редких случаях они могут появиться на свет из останков своих многочисленных сородичей.''"
 	}
 	"Regressed Founder Desc"
 	{
 		"en"		"Drops remains, when consumed, provides range resistance.\n''A special individual among the Founders.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+		"ru"		"Остатки капель при употреблении обеспечивают устойчивость к дальнему бою.\n ''Особенный среди Основателей''.\n ''Вняв призыву многих из нас, его тело готово к тому, чтобы на него охотились.''"
 	}
 	"Nethersea Predator Desc"
 	{
 		"en"		"Dodges when not stunned, frozen, or silenced.\nIgnores buildings while on Nethersea Brand.\n''A Sea Terror that has learned to use its chitinous skull to deal physical attacks, storing scraps of food in its body comprised of countless tiny creatures.''"
+		"ru"		"Уклоняется, если его не оглушить, не заморозить или не заставить замолчать.\nРазрушает здания, находясь на марке Nethersea.\n ''Морской ужас, который научился использовать свой хитиновый череп для нанесения физических ударов, запасая остатки пищи в своем теле, состоящем из бесчисленных крошечных существ.''"
 	}
 	"Nourished Predator Desc"
 	{
 		"en"		"An upgraded variant with more damage, health, and evasion.\n''A Sea Terror that has learned to hunt efficiently.''\n''They themselves do not appear to require nutrients, instead reserving them for their lower-level kin.''\n''Before they die, they turn themselves into one last food source.''"
+		"ru"		"Улучшенный вариант с большим уроном, здоровьем и уклонением.\n ''Морское чудовище, научившееся эффективно охотиться''.\n ''Сами они, по-видимому, не нуждаются в питательных веществах, вместо этого приберегая их для своих сородичей более низкого уровня''.\n ''Перед смертью они превращают себя в последний источник пищи.''"
 	}
 	"Regressed Predator Desc"
 	{
 		"en"		"Drops remains, when consumed, provides a 50%% dodge chance.\n''A special individual among the Predators.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+		"ru"		"Выпавшие остатки при употреблении дают 50%-ный шанс уклониться.\n ''Особенный экземпляр среди хищников.''\n ''Вняв призыву многих из нас, его тело готово к тому, чтобы на него охотились.''"
 	}
 	"Nethersea Brandguider Desc"
 	{
 		"en"		"When below half health, constantly drops Nethersea Brand, gains melee resistance, ignores buildings.\n''A new type of Sea Terror formed from a colony that was about to decay and die.''\n''In order to effectively utilize the last bit of nutrients in their bodies, all they need to do is smear themselves across the ground.''"
+		"ru"		"Когда уровень здоровья падает ниже половины,постоянно сбрасывает марку Nethersea, повышается сопротивляемость в ближнем бою, он игнорирует здания.\n''Новый вид морского ужаса сформировался из колонии, которая была на грани распада и гибели.''\n ''Чтобы эффективно использовать последние остатки питательных веществ в своем организме, все, что им нужно сделать, это размазаться по земле.''"
 	}
 	"Nourished Brandguider Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''Even if not on the verge of death, they will still choose to expand the survival range of their kin using their own flesh and blood.''\n''Reminiscent of the Bishop's final journey back to Iberia.''"
+		"ru"		"Улучшенный вариант с большим количеством урона и здоровья.\n ''Даже если они не на грани смерти, они все равно решат расширить диапазон выживания своих сородичей, используя собственную плоть и кровь.''\n ''Напоминает о последнем путешествии епископа обратно в Иберию.''"
 	}
 	"Regressed Brandguider Desc"
 	{
 		"en"		"Drops remains, when consumed and below 40%% health, provides melee resistance and ignore buildings.\n''A special individual among the Brandguiders.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+		"ru"		"Остатки Капель, когда они употреблены и уровень здоровья составляет менее 40%, обеспечивают сопротивление в ближнем бою и игнорируют здания.\n ''Особенный персонаж среди Брендгайдеров.''\n ''Вняв призыву многих из нас, его тело готово к тому, чтобы на него охотились.''"
 	}
 	"Armorless Union Assassin Desc"
 	{
 		"en"		"Gets more damage the more he stays invis, deals one massive blow afterwards."
+		"ru"		"Чем дольше он остается невидимым, тем больше получает урона, а затем наносит один мощный удар."
 	}
 	"Nethersea Spewer Desc"
 	{
 		"en"		"Attacks 3 targets at once with poor range.\nCan fire at targets on Nethersea Brand.\n''Possesses a hard, chitinous shell that it uses to protect itself, possibly capable of sporulation or a similar function.''\n''A commonly seen Sea Terror where the nethersea brand proliferates.''"
+		"ru"		"Атакует сразу 3 цели с мадлй дальностью.\n Может вести огонь по целям на марке Nethersea.\n ''Обладает твердым хитиновым панцирем, который он использует для самозащиты, возможно, способным к спорообразованию или выполнению аналогичной функции.'' \n ''Часто встречающийся морской ужас, при котором размножается бренд nethersea.''"
 	}
 	"Nourished Spewer Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that has largely lost control of its functions, spewing out its spore-like progeny at a rate that surpasses its physical capacity, causing it to wear itself out prematurely.''"
+		"ru"		"Улучшенный вариант с большим количеством урона и здоровья.\n ''Морской ужас, который в значительной степени утратил контроль над своими функциями, извергает спорообразное потомство со скоростью, превышающей его физические возможности, что приводит к преждевременному износу.''"
 	}
 	"Regressed Spewer Desc"
 	{
 		"en"		"Drops remains, when consumed, provides AOE attacks.\n''A special individual among the Spewers.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+		"ru"		"Остатки капель при употреблении обеспечивают AOE-атаки.\n ''Особенный персонаж среди Извергающих.''\n ''Вняв призыву многих из нас, его тело готово к тому, чтобы на него охотились.''"
 	}
 	"Nethersea Swarmcaller Desc"
 	{
 		"en"		"Deals constant AOE damage, immune to slow, and resistant to status effects.\n''A rare Sea Terror, able to manipulate the tiny creatures in the air and on the ground to eat away at their surroundings even in the absence of the nethersea brand.''\n''They seem to call the brand itself to life, hence their name.''"
+		"ru"		"Наносит постоянный AOE-урон, невосприимчив к замедлению и устойчив к статусным эффектам.\n''Редкий морской ужас, способный манипулировать крошечными существами в воздухе и на земле, чтобы пожирать окружающую среду даже в отсутствие бренда nethersea.''\n ''Кажется, они оживляют сам бренд, отсюда и их название.''"
 	}
 	"Nourished Swarmcaller Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A special and extremely-rare individual, boasting incredible destructive power and far-reaching transmission range.''\n''They are unable to be dealt with through conventional means, Inquisitors must be extra vigilant around them.''"
+		"ru"		"Улучшенный вариант с большим количеством урона и здоровья.\n''Особый и чрезвычайно редкий персонаж, обладающий невероятной разрушительной силой и дальним радиусом действия.''\n ''С ними невозможно справиться обычными средствами, инквизиторы должны быть особенно бдительны в отношении них.''"
 	}
 	"Regressed Swarmcaller Desc"
 	{
 		"en"		"Drops remains, when consumed, provides immunity to slow and resistance to status effect.\n''A special individual among the Swarmcallers.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+		"ru"		"Остатки капель при употреблении дают иммунитет к эффекту замедления и устойчивость к эффекту статуса.\n''Особенный особь среди Призывателей Роя.'' ''Вняв призыву Многих из нас, его тело готово к тому, чтобы на него охотились.''"
 	}
 	"Nethersea Reefbreaker Desc"
 	{
 		"en"		"Gains increased attack the more it attacks, decays over time when passive.\nGains camo while on Nethersea Brand.\n''An extremely aggressive individual born from the nethersea brand, capable of inflicting tremendous damage to its surrounding environment for its kin to transform.''\n''Lifeforms not considered kin fall under this category.''"
+		"ru"		"Увеличивает силу атаки, чем больше он атакует, и со временем ослабевает при пассивном использовании.\nПолучает камуфляж, находясь под брендом Nethersea.\n''Чрезвычайно агрессивный индивид, порожденный брендом nethersea, способный нанести огромный ущерб окружающей среде, чтобы его сородичи трансформировались.''\n''Формы жизни, которые не считаются сородичами, подпадают под эту категорию.''"
 	}
 	"Nourished Reefbreaker Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror born from the nethersea brand, used to expel entities that pose a significant threat to its kin, or to completely destroy environments unsuitable for sustaining life.''\n''All civilizations on land fall under this category.''"
+		"ru"		"Улучшенный вариант с большим уроном и здоровьем.\n''Морской ужас, порожденный брендом nethersea, используемый для изгнания существ, представляющих серьезную угрозу для его сородичей, или для полного уничтожения окружающей среды, непригодной для поддержания жизни.''\n''Все цивилизации на суше подпадают под эту категорию.''"
 	}
 	"Regressed Reefbreaker Desc"
 	{
 		"en"		"Drops remains, when consumed, provides increased attack the more it attacks, decays over time when passive.\n''A special individual among the Reefbreakers.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+		"ru"		"Капли, которые остаются при употреблении, усиливают атаку по мере того, как он атакует, и со временем распадаются, когда он пассивен.\n''Особенный среди Рифбрейкеров.''\n''Вняв призыву многих из нас, его тело готово к тому, чтобы на него охотились.''"
 	}
 	"Thorns Desc"
 	{
 		"en"		"Last hope against the deep sea.\nHas an ability when attacking enough, regens out of battle."
+		"ru"		"Последняя надежда против глубокого моря.\nАктивирует способность когда наносит достаточное количество ударов,Лечится вне боя."
 	}
 	"God Alaxios Desc"
 	{
 		"en"		"Summons his army, each time he comes back he gains extra abilities.\nKill his army before him, otherwise he will revive and spawn more.\nCan buff his allies with a buff after wave 30 (Silence decreases battle cry buff on himself in half)."
+		"ru"		"Призывает свою армию,каждое возвращение даёт ему дополнительную способность.\nСначала уничтожьте его армию,Или он их возродит и призовёт ещё больше.\nМожет усились своих союзников после 30 волны(Если заткнуть его действия усиления на нём будет сокращено наполовину)."
 	}
 	"Seaborn Scout Desc"
 	{
 		"en"		"Very fast movement speed, inflicting armor erosion.\n''Seaborn infects those, they may still appear human.''"
+		"ru"		"Очень быстрый,Удары вызывают корозию брони.\n''Рождённые в море заражют тех,кто ещё выглядиь как человек.''"
 	}
 	"Seaborn Soldier Desc"
 	{
 		"en"		"Upon a kill, duplicates into three more and restores all health when not silenced.\n''To those, they spread onto others, continuing the chain.''"
+		"ru"		"При убийстве дублирует себя на 3 копии себя и восстонавливает всё здоровье если не заткнут.\n''От одних они распространяются на других, продолжая цепочку.''"
 	}
 	"Seaborn Pyro Desc"
 	{
 		"en"		"Ignites targets on hit, explodes on death when not silenced.\n''Even if it means death upon those infected.''"
+		"ru"		"Поджигает цели при ударе,взрывается после смерти если не заткнут.\n''Даже если это озночает смерть этим заражённым.''"
 	}
 	"Seaborn Demoman Desc"
 	{
 		"en"		"Explodes on death, hitting a target kills itself, can both be silenced.\n''But through death shall it live on, through the sea.''"
+		"ru"		"Взрывается после смерти,При ударе об цель,взрывается,можно заткнуть.\n''Но через смерть оно будет жить дальше, через море.''"
 	}
 	"Seaborn Heavy Desc"
 	{
 		"en"		"Gains resistance to either melee or ranged when damaged by the corresponding type, loses other type.\n''We adapt to what comes, sharing the knowledge.''"
+		"ru"		"Получает сопротивление либо к ближнему либо к дальнему бою когда получает урон одного типа,теряет устойчивость к другому.\n''Мы адаптируемся к грядущему,делясь знаниями.''"
 	}
 	"Seaborn Engineer Desc"
 	{
 		"en"		"Targets a random building, disabling it and deals armor erosion over time.\n''Not even man kind's technology can surpass We Many.''"
+		"ru"		"Нацеливается на случайное здание, выводит его из строя и со временем наносит урон броне.\n''Даже технологии человеческого рода не могут превзойти нас многих.''"
 	}
 	"Seaborn Medic Desc"
 	{
 		"en"		"Buffs all active seaborn while not silenced, stacks with others.\n''We Many makes us strong, together as one.''"
+		"ru"		"Поддерживает всех активных морских жителей, но не заставляет их замолчать, объединяется с другими.\n''Нас много, и это делает нас сильными, когда мы вместе, как одно целое/''"
 	}
 	"Seaborn Sniper Desc"
 	{
 		"en"		"First hit applies Jarate debuff on the target.\n''Through weaking dread on man, We Many will stand.''"
+		"ru"		"Первое попадание накладывает на цель дебафф банкате.\n''Ослабляя страх перед человеком, многие из нас выстоят.''"
 	}
 	"Seaborn Spy Desc"
 	{
 		"en"		"Gains camo when not attacking for several seconds when not debuffed.\n''From the deep sea, We Many will rise.''"
+		"ru"		"Получает камуфляж, если не атакует в течение нескольких секунд, если не снят блокирующий эффект.\n''Из морских глубин восстанут многие из нас.''"
 	}
 	"Citizen Desc"
 	{
 		"en"		"NEED DESC"
+		"ru"		"Нужно Описание"
 	}
 	"Barracks Railgunner Desc"
 	{
 		"en"		"Heavy damage on attack, far ranged ally"
+		"ru"		"Внушительный урон при атаке,Дальнобойний союзник"
 	}
 	"Barracks Basic Mage Desc"
 	{
 		"en"		"Basic unit to blast the enemy with"
+		"ru"		"Базовый юнит с помощью которого можно уничтожать противников"
 	}
 	"Barracks Intermediate Mage Desc"
 	{
 		"en"		"Stronger basic mage"
+		"ru"		"Более сильный бызовый маг"
 	}
 	"Barracks Ikunagae Desc"
 	{
-		"en"		"Ikunake made ally, now he will magic bolt the enemy to death instead."
+		"en"		"Ikunagae made ally, now he will magic bolt the enemy to death instead."
+		"ru"		"Ику Нагае но теперь союзник,Теперь будет забивать магические болты во врагов."
 	}
 	"Barracks SchwertKrieg Desc"
 	{
-		"en"		"the only human-like indivdual from blitz's army, from a city unknown, now fighting with you together."
+		"en"		"the only human-like indivdual from blitz's army,from expidonsa, now fighting with you together."
+		"ru"		"Единственный человоко-подобный индивид из армии блитзкрига,Из экспидонсы,теперь сражается вместе с вами."
 	}
 	"Barracks Donnerkrieg Desc"
 	{
-		"en"		"the only human-like indivdual from blitz's army, from a city unknown, now fighting with you together."
+		"en"		"the only human-like indivdual from blitz's army, from ruina, now fighting with you together."
+		"ru"		"Единственный человоко-подобный индивид из армии блитзкрига,из руины,теперь сражается вместе с вами."
 	}
 	"Barracks Holy Knight Desc"
 	{
-		"en"		"Extreme strength and magic abilities."
+		"en"		"Extreme strength and has magic abilities."
+		"ru"		"Очень силён и имеет магические способности."
 	}
 	"Barracks Mecha Barrager Desc"
 	{
 		"en"		"Good ambush or barricade defense."
+		"ru"		"Хорош для засады или для защиты барикад."
 	}
 	"Barracks Barrager Desc"
 	{
 		"en"		"Good ambush or barricade defense."
+		"ru"		"Хорош для засады или защиты барикад."
 	}
 	"Barracks Berserker Desc"
 	{
-		"en"		"Strong fodder unit to rush enemies with."
+		"en"		"Strong swarm unit to rush enemies with."
+		"ru"		"Сильный в большом количестве с которым можно набросится на врагов."
 	}
 	"Barracks Crossbow Medic Desc"
 	{
 		"en"		"Far ranged ally, unused unit from blitz's army, why was it unused?"
+		"ru"		"Дальбойний союзник,Не использованный юнит из армии блитзкрига,Почему он не был использован?"
 	}
 	"The Last Knight Desc"
 	{
 		"en"		"Attacks enemies and allies.\nDealing damage to The Last Knight applies freeze buff for one second (two when below 3/5 HP).\nDeals extra damage to frozen targets. Ignores buildings when below 1/5 HP.\n''The basis of a well-known folk tale in Kazimierz.''\n''The past died on the land, and neither the present nor the future have any meaning.''\n''Only the ocean, kill the ocean.''"
+		"ru"		"Атакует врагов и союзников.\nПри нанесении урона Последнему рыцарю эффект замораживания накладывается на одну секунду (две, если у него меньше 3/5 здоровья).\nНаносит дополнительный урон замороженным целям. Игнорирует здания, если его здоровье ниже 1/5 от максимального\n''Это основа известной казимежской народной сказки.''\n''Прошлое умерло на земле, и ни настоящее, ни будущее не имеют никакого значения.''\n ''Только океан, убей океан.''"
 	}
 	"Tide-Hunt Knight Desc"
 	{
 		"en"		"NEED DESC"
+		"ru"		"Нужно описание"
 	}
 	"Saint Carmen Desc"
 	{
 		"en"		"Attacks enemies and allies.\nHits levitate the target and deals extra hit of True damage.\n''The last surviving Saint of Iberia, living well past mortal life expectancy.''\n''His longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.''"
+		"ru"		"Атакует врагов и союзников.\nУдары поднимают цель в воздух и наносят дополнительный чистый урон.\n"Последний выживший святой из Иберии, живущий намного дольше, чем положено смертным.''\n''За его долголетие пришлось заплатить высокую цену, но он помнит о своем долге и своих врагах, несмотря на то, что потерял рассудок.''"
 	}
 	"Pathshaper Desc"
 	{
@@ -1345,202 +1402,252 @@
 	"Pathshaper Fractal Desc"
 	{
 		"en"		"Attacking will spawn a Pathshaper Fractal, loses health over time.\n''Fractals left behind by the Seaborn Pathshaper.''\n''Illusions must eventually vanish.''\n''The path is not clear.''\n''Search on, search on.''"
+		"ru"		"Атака приведет к появлению Фрактала Создателя пути, который со временем потеряет здоровье.\n''Фракталы, оставленные Создателем пути, рожденным в море.''\n''Иллюзии рано или поздно должны исчезнуть.''\n''Путь неясен.''\n''Продолжайте поиск.''"
 	}
 	"Barracks Teutonic Knight Desc"
 	{
 		"en"		"Immensive strength thanks to your castle."
+		"ru"		"Огромная сила благодаря вашему замку."
 	}
 	"Barracks Villager Desc"
 	{
 		"en"		"Builds a tower, repairs, and gatheres resoruces."
+		"ru"		"Может построить башню,чинить и собирать ресурсы."
 	}
 	"Barracks Building Desc"
 	{
 		"en"		"A tower on your side."
+		"ru"		"Башня которая на вашей старане."
 	}
 	"Tidelinked Bishop Desc"
 	{
 		"en"		"When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max.\n''A bishop that has partially mutated.''\n''It is partly human, partly—''"
+		"ru"		"Когда его 'Вторая половина' жива и не находится в коме, впадает в кому, когда здоровье достигает 0, и начинает регенерировать, оживает, когда здоровье достигает максимума.\n''Епископ, который частично мутировал".\n ''Он частично человек, частично...''"
 	}
 	"Tidelinked Archon Desc"
 	{
 		"en"		"When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max.\n''—Sea Terror. Even AEgir technology has a role to play in the evolution of we many.''"
+		"ru"		"Когда его 'Вторая половина' жива и не находится в коме, впадает в кому, когда здоровье достигает 0, и начинает регенерировать, оживает, когда здоровье достигает максимума.\n''Епископ, который частично мутировал".\n ''...Морской ужас. Даже технология AEgir может сыграть свою роль в эволюции многих из нас.''"
 	}
 	"Scientific Witchery Desc"
 	{
 		"en"	"Experiemental, created by donner and schwert to assist you."
+		"ru"	"Эксперемент,Созданный доннером и швертом что бы помочь вам."
 	}
 	"Ishar'mla, Heart of Corruption Desc"
 	{
 		"en"		"Heals and buffs nearby seaborn, partially ignores Regrow Blocker.\nGains power over time, boosted by standing on Nethersea Brands.\nWhen at full power, will transform into a Leviathan.\nLeviathan will instead deal AOE damage that ignores resistances.\n''It speaks for we many.''"
+		"ru"		"Исцеляет и усиливает находящихся поблизости морерождённых, частично игнорирует блокиратор отрастания.Со временем обретает силу, усиливаемую, если стоять на Брендах Нижнего Моря.При полной мощности превращается в Левиафана.\nЛевиафан вместо этого будет наносить AOE-урон, игнорирующий сопротивление.\n''Это говорит о многих из нас.''"
 	}
 	"Seaborn Guard Desc"
 	{
 		"en"		"Deals critical damage on it's 3rd hit.\n''They infect, swarming us like hell. What can we do now?''"
+		"ru"		"Наночит критический урон каждым 3-им ударом.\n''Они заражют и огружают нас как черти.что нам делать?''"
 	}
 	"Seaborn Defender Desc"
 	{
 		"en"		"Resists a certain damage type depending on the wave.\n''I feel... so weak...''"
+		"ru"		"Устойчив к определённому типу урона в зависимотри от волны.\n''Я чувствуя себя...Таким слабым...''"
 	}
 	"Seaborn Vanguard Desc"
 	{
 		"en"		"Grants increased movement speed to all enemies while alive, stacks with others.\n''We must stick together, or is it that what he wants.''"
+		"ru"		"Даёт дополнительную скорость передвежения всем противникам пока жив,эффект складывается.\n''Мы должны держатся вместе,или это то что он хочет.''"
 	}
 	"Seaborn Caster Desc"
 	{
 		"en"		"Deals AOE damage that ignores resistances.\n''No, no. I can't be them, I can't!''"
+		"ru"		"Наносит АОЕ урон который игнорирует сопротивления.\n''Нет,нет.я не могу быть как они,я не могу!''"
 	}
 	"Seaborn Specialist Desc"
 	{
 		"en"		"Spawns to a seaborn with lowest precentage health.\n''I'm not infected, I'm not seaborn! Please god!''"
+		"ru"		"Появляется у морерождённого с самым низким процентом здоровья.\m''Я не заражён,я не морерождённый! Пожалуйста боже!''"
 	}
 	"Seaborn Supporter Desc"
 	{
 		"en"		"Spawns Nourished Runner drones while alive.\n''I'm not We Many, I'm not We Many, We Many, We Many...''\n''...''\n''...''\n''Sea... the sea of we many...''"
+		"ru"		"Призывает дронов бегунов Nourished пока жив.\n''Я не мы много,Я не мы много,мы много,мы много,мы много...''\n''...''\n''...''\n''Море...Море где нас много...''"
 	}
 	"Theocracy Desc"
 	{
 		"en"		"A pseudo magic knight, the first half of itself.\nBattery: The npc's Melee hits gain the ability to hit multiple targets, however each target takes the same amount of damage\nAdditionally, that damage is reduced for targets hit by the ''strings''\nMaster: Commands Melee npc's"
+		"ru"		"Псведо магический рыцарь,первая половина себя.\nБатарея:Его атаки ближнего боя могут наносить урон нескольком целям сразу,Но каждая цель получает тот же урон\nДополнительно этот урон уменьшен для целей ударенный ''струнами''\nМастер:Коммандует юнитами ближнего боя"
 	}
 	"Benera Desc"
 	{
 		"en" 		"An expidonsan with a shotgun."
+		"ru"		"Экспидонец с дробовиком."
 	}
 	"Pental Desc"
 	{
 		"en" 		"a lightsaber, its dangerous."
+		"ru"		"лазерный меч,он опасен."
 	}
 	"Defanda Desc"
 	{
 		"en" 		"A heavy tank, heals all allied around itself when hitting an enemy."
+		"ru"		"Тяжелый танк который лечит союзников вокруг его когда бьёт по противникам."
 	}
 	"Selfam Ire Desc"
 	{
 		"en" 		"Gains high speeds upon getting close to an enemy."
+		"ru"		"Получает бонус к скорости когда подходит к врагам."
 	}
 	"Vaus Magica Desc"
 	{
 		"en" 		"Grants a shield to all allied around it."
+		"ru"		"Дарует щиты всем союзникам рядом."
 	}
 	"Pistoleer Desc"
 	{
 		"en" 		"A easily dodgeable laser, but not so easily dodgeable with everything else going on."
+		"ru"		"Лазер от которого легко уклонится, но не так легко со всем другим что происходит."
 	}
 	"Diversionistico Desc"
 	{
 		"en" 		"An enemy that comes from time to time, Will try to backstab you. (Backstabbing can be silenced)"
+		"ru"		"Противник который приходит время от времени,попытаются ударить вас в спину.(Удары в спину могут быть заткнуты)"
 	}
 	"Adiantum Desc"
 	{
-		"en"	"The other half of Theocracy, doesn't have a battery\nWields a powerfull ion barrage, with a heafty cooldown\Master: Ranged npc's follow his orders..."
+		"en"	"The other half of Theocracy, doesn't have a battery\nWields a powerfull ion barrage, with a heafty cooldown\nMaster: Ranged npc's follow his orders."
+		"ru"	"Другая часть Теократии,Не имеет батареи\nНосит мощный шквал ионных пушек,с долгой перезарядкой\nМастер:Враги дальнего боя следуют его командам."
 	}
 	"Lanius Desc"
 	{
-		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems that warriors are inevitable no matter the culture...\nBattery: boosts the speed of friendly melee units"
+		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems that warriors are neccecary no matter the culture...\nBattery: boosts the speed of friendly melee units"
+		"ru"	"Обычный воин Руины\nДовольно забавно,даже если они предпочитают магию,похоже что воины необходимы вне зависимости от культуры...\nБатарея:увеличивает скорость союзных юнитов ближнего боя"
 	}
 	"Magia Desc"
 	{
 		"en"	"A Basic Mage of the Ruanians\nHolds a magic crest\nBattery: boosts the speed of friendly ranged units"
+		"ru"	"Базовый маг руины\nДержит магический крест\nБатарея:увеличивает скорость союзных дальних юнитов"
 	}
 	"Heavy Punuel Desc"
 	{
 		"en"	"A heavily armored enemy, once armor breaks, he will gain high speeds.\nMelee deals 2x as much damage to the armor."
+		"ru"	"Противник в тяжёлой броне,когда броня будет сломана,получит большую скорость.\nБлжиний бой наносит двойно урон по броне."
 	}
 	"Sergeant Ideal Desc"
 	{
 		"en"	"A sergeant who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
+		"ru"	"Сержант который будет защищать своих союзников стоимостью своего здоровья.\nего щит будет защищать любого союзника внутри него и получать урон вместо него."
 	}
 	"VIP Building, The Objective Desc"
 	{
 		"en"	"Tower defense objective, defend it, if it dies you lose!"
+		"ru"	"Цель защиты башни, защищайте ее, если она погибнет, вы проиграете!"
 	}
 	"Rifal Manu Desc"
 	{
 		"en"	"A rifle holder, it deals high ranged damage."
+		"ru"	"Держит винтовку,наносит высокий дальний урон."
 	}
 	"Siccerino Desc"
 	{
 		"en"	"A trained pental."
+		"ru"	"Тренированный пентал."
 	}
 	"Soldine Prototype Desc"
 	{
 		"en"	"A prototype made by sensal on the way to you.\nShoots rockets slowly."
+		"ru"	"Прототип сделанный Сенсалом по пути к вам.\nМедленно стреляет ракетами."
 	}
 	"Soldine Desc"
 	{
 		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump (can be silenced)\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
+		"ru"	"Воссозданный Сенсалом по пути к вам.\nМожет Рокетджампнуть(можно заткнуть)\nСтреляет ракетами\nМожет аттаковать в ближнем бою с перезарядкой,эта атака нанесёт огромный урон."
 	}
 	"Protecta Desc"
 	{
 		"en"	"A better defenda, Altough on death will also heal allies (can be silenced)"
+		"ru"	"Улучшенный защитник,хотя может вылечить при смерти(можно заткнуть)"
 	}
 	"Sniponeer Desc"
 	{
 		"en"	"A far ranged and better version of the pistoleers' their delay upon hurting is also less."
+		"en"	"Дальнобольний и улучшенный вариант пистолетчиков' их задержка перед выстрелом так же уменьшена."
 	}
 	"Ega Bunar Desc"
 	{
 		"en"	"An enemy with heavy armor, although when it breaks they lose all their speed.\nMelee deals 2x as much damage to the armor."
+		"ru"	"Противник с тяжёлой бронёй,хотя если её сломать они потеряют всю скорость.\nБлижний бой наносит двойной урон броне."
 	}
 	"Enega Kapus Desc"
 	{
 		"en"	"A cyborg with a heavy shield that destoys most projectiles and bullets and has heavy ranged resistance.\n(once silenced, the shield breaks and never returns)"
+		"ru"	"Киборг с тяжёлыми щитами которые уничтоножают большинство снарядов и пуль и крайне устойчив к дальним атакам.\n(если заткнуть единожды щит ломается и не возвращается)"
 	}
 	"Captino Agentus Desc"
 	{
 		"en"	"A captain of the scouting party, he teleports and backstabs, once teleporting he will call reinforcements inform of diversionisticos.\n(Backstab can be silenced)"
+		"ru"	"Капитан разведёчной партии,он телепортируется и бьёт в спину,когда телепортируется он вызовет подкрепление в виде диверсантов.\n(Удары в спину можно заткнуть)"
 	}
 	"Sensal Desc"
 	{
-		"en"	"The leader of the scouting group and a friend of silvester and goggles, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using any ability.\nSlide on hit (can be silenced)"
+		"en"	"The leader of the scouting group and a friend of silvester and Waldch, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using any ability.\nSlide on hit (can be silenced)"
+		"ru"	"Лидер разведёчной группы и друг Силвьестера и Валдча,Он здесь из-за того что вы сделали.\nКаждый раз когда он возвращается он получает новые способности и становится сильнее.\nОн призывает Самонаводящиеся Косы ,призывает порталы которые призывают Косы,Стреляет лазерами во всех противников в радиусе.\nПолучает щиты такого же типа что и у ваус Волшебника  при использовании любой способности.\nСкольжение при удари(можно затнкуть)"
 	}
 	"Dual Rea Desc"
 	{
 		"en"	"an elite version of the pentals."
+		"ru"	"Элитные версии Пенталов."
 	}
 	"Guardus Desc"
 	{
 		"en"	"A robotic giant with the same abiltiies as the protecta."
+		"ru"	"Гигантский робот с теми же способностями что и защитник."
 	}
 	"Vaus Techicus Desc"
 	{
 		"en"	"A better version of the vaus magica's, grants more shield stacks."
+		"ru"	"Улучшенная версия ваус Волшебника 
 	}
 	"Minigun Assisa Desc"
 	{
 		"en"	"A minigun maniac, he will shred anything."
+		"ru"	"Миниганный маньяк,он разнесёт всё что угодно."
 	}
 	"Ignitus Desc"
 	{
 		"en"	"A giant that ignites upon attacking."
+		"ru"	"Гигант который поджигает при ударе."
 	}
 	"Helena Desc"
 	{
 		"en"	"A field medic that enrages when its patient dies, or you get too close to it."
+		"ru"	"Полевой медик который разозлится если его пациет умрёт,или если вы подойдёте слишком близко."
 	}
 	"Erasus Desc"
 	{
 		"en"	"The best of the best of pantals."
+		"ru"	"Лучшие из лучших пентиналов."
 	}
 	"Giant Tankus Desc"
 	{
 		"en"	"A absolute giant of a tank."
+		"ru"	"Абсолютный танк гигант."
 	}
 	"Anfuhrer Eisenhard Desc"
 	{
 		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health, takes 50%% more dmg from the back, once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 2x as much damage to the armor."
+		"ru"	"Под лидер Разведочной группы.\nИмеет высокий уровень здоровья и большой урон,получает 50%% урона со спины,когда теряет половину здоровья получает огромный бонус к скорости и броне,сломайте броню что бы убрать эффекты.\nБлижний бой наноси двойной урон броне."
 	}
 	"Speedus Adivus Desc"
 	{
 		"en"	"A high speed saber-ist."
+		"ru"	"Лазерный мечник с высокой скоростью."
 	}
 	"Overlord The Last Desc"
 	{
 		"en"	"You took it all from him, now he returns a favor."
+		"ru"	"Вы забрали всё что у него было и он возвращает должок."
 	}
 	"Bladedance The Combine Desc"
 	{
 		"en"	"What can be as strong as Bob?"
+		"ru"	"что может быть таким же сильным как и боб?"
 	}
 	"Helia Desc"
 	{
