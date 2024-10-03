@@ -808,16 +808,11 @@ methodmap Twirl < CClotBody
 				{
 					switch(GetRandomInt(0, 10000))
 					{
-						case 6:	//the likely hoods of this triggering are near non existant, so most likely you will see this whenever your editing the code or just browsing it, well now you see this. have fun figuring out the mental state I was in when I wrote this.
+						case 6:	//the likely hoods of this triggering are near non existant, so most likely you will see this whenever your editing the code or just browsing it
 						{
 							Twirl_Lines(npc, "You know, its hard sometimes, its hard being what I am. It's hard...");
 							Twirl_Lines(npc, "Not being able to explain, that the mistakes you make are because of mental \"problems\"..");
 							Twirl_Lines(npc, "And that there's practially nothing you can do to fix them");
-							/*
-								Emotions are funny riiiiight????
-								and somehow im using this as a way to vent. how "profesional", welp next time I edit twirl ima probably delete these. maybe.
-								Artvin, you did nothing wrong, its just that im too much of a wuss to stand up for myself and take valid critisim head on. guess thats what happens when you live a fairy tale for too long.
-							*/
 						}  
 						default: Twirl_Lines(npc, "Kuru Kuru~");
 					}
