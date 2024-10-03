@@ -721,6 +721,9 @@ void NPC_ConfigSetup()
 	MolotovBones_OnMapStart_NPC();
 	PeasantBones_OnMapStart_NPC();
 	RattlerBones_OnMapStart_NPC();
+	SluggerBones_OnMapStart_NPC();
+	CriminalBones_OnMapStart_NPC();
+	FlintlockBones_OnMapStart_NPC();
 	#endif
 }
 
@@ -1581,11 +1584,14 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 //////
 #include "zombie_riot/npc/bonezone/wave30/npc_mrmolotov.sp"
 #include "zombie_riot/npc/bonezone/wave30/npc_rattler.sp"
+#include "zombie_riot/npc/bonezone/wave30/npc_slugger.sp"
+#include "zombie_riot/npc/bonezone/wave30/npc_criminal.sp"
 //////
 #include "zombie_riot/npc/bonezone/wave45/npc_buccaneerbones.sp"
 #include "zombie_riot/npc/bonezone/wave45/npc_calciumcorsair.sp"
 #include "zombie_riot/npc/bonezone/wave45/npc_undeaddeckhand.sp"
 #include "zombie_riot/npc/bonezone/wave45/npc_aleraiser.sp"
+#include "zombie_riot/npc/bonezone/wave45/npc_flintlock.sp"
 //////
 #include "zombie_riot/npc/bonezone/wave60/npc_archmage.sp"
 #include "zombie_riot/npc/bonezone/wave60/npc_necromancer.sp"

@@ -1,22 +1,22 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define BONES_DECKHAND_HP			"900"
-#define BONES_DECKHAND_SKIN		"2"
-#define BONES_DECKHAND_SCALE		 "1.0"
+#define BONES_CRIMINAL_HP			"900"
+#define BONES_CRIMINAL_SKIN		"2"
+#define BONES_CRIMINAL_SCALE		 "1.0"
 
 #define SND_TRANSFORM		")vo/halloween_boss/knight_alert.mp3"
 #define PARTICLE_TRANSFORM	"ghost_appearation"
 
-static float BONES_DECKHAND_SPEED = 220.0;
-static float DECKHAND_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
-static float DECKHAND_NATURAL_BUFF_LEVEL_MODIFIER = 0.2;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
-static float DECKHAND_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
-static float DECKHAND_TRANSFORM_BUFFCHANCE = 0.1;	//Chance to make the skeleton transform into a random buffed variant instead of just a normal skeleton.
+static float BONES_CRIMINAL_SPEED = 220.0;
+static float CRIMINAL_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float CRIMINAL_NATURAL_BUFF_LEVEL_MODIFIER = 0.2;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float CRIMINAL_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
+static float CRIMINAL_TRANSFORM_BUFFCHANCE = 0.1;	//Chance to make the skeleton transform into a random buffed variant instead of just a normal skeleton.
 
-static float BONES_DECKHAND_PLAYERDAMAGE = 60.0;
-static float BONES_DECKHAND_BUILDINGDAMAGE = 100.0;
-static float BONES_DECKHAND_ATTACKINTERVAL = 1.2;
+static float BONES_CRIMINAL_PLAYERDAMAGE = 60.0;
+static float BONES_CRIMINAL_BUILDINGDAMAGE = 100.0;
+static float BONES_CRIMINAL_ATTACKINTERVAL = 1.2;
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -60,7 +60,7 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
-public void DeckhandBones_OnMapStart_NPC()
+public void CriminalBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -74,8 +74,8 @@ public void DeckhandBones_OnMapStart_NPC()
 	PrecacheSound(SND_TRANSFORM);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Undead Deckhand");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_undeaddeckhand");
+	strcopy(data.Name, sizeof(data.Name), "Calcium Criminal");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_criminal");
 	strcopy(data.Icon, sizeof(data.Icon), "pyro");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -86,10 +86,10 @@ public void DeckhandBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return DeckhandBones(client, vecPos, vecAng, ally, false);
+	return CriminalBones(client, vecPos, vecAng, ally, false);
 }
 
-methodmap DeckhandBones < CClotBody
+methodmap CriminalBones < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -98,7 +98,7 @@ methodmap DeckhandBones < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CDeckhandBones::PlayIdleSound()");
+		PrintToServer("CCriminalBones::PlayIdleSound()");
 		#endif
 	}
 	
@@ -111,7 +111,7 @@ methodmap DeckhandBones < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(80, 110));
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CDeckhandBones::PlayHurtSound()");
+		PrintToServer("CCriminalBones::PlayHurtSound()");
 		#endif
 	}
 	
@@ -120,7 +120,7 @@ methodmap DeckhandBones < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CDeckhandBones::PlayDeathSound()");
+		PrintToServer("CCriminalBones::PlayDeathSound()");
 		#endif
 	}
 	
@@ -129,7 +129,7 @@ methodmap DeckhandBones < CClotBody
 		EmitSoundToAll(g_GibSounds[GetRandomInt(0, sizeof(g_GibSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CDeckhandBones::PlayGibSound()");
+		PrintToServer("CCriminalBones::PlayGibSound()");
 		#endif
 	}
 	
@@ -137,14 +137,14 @@ methodmap DeckhandBones < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CDeckhandBones::PlayMeleeHitSound()");
+		PrintToServer("CCriminalBones::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CDeckhandBones::PlayMeleeHitSound()");
+		PrintToServer("CCriminalBones::PlayMeleeHitSound()");
 		#endif
 	}
 
@@ -164,12 +164,12 @@ methodmap DeckhandBones < CClotBody
 	
 	
 	
-	public DeckhandBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public CriminalBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		if (!buffed)
 		{
-			float chance = DECKHAND_NATURAL_BUFF_CHANCE;
-			if (DECKHAND_NATURAL_BUFF_LEVEL_MODIFIER > 0.0)
+			float chance = CRIMINAL_NATURAL_BUFF_CHANCE;
+			if (CRIMINAL_NATURAL_BUFF_LEVEL_MODIFIER > 0.0)
 			{
 				float total;
 				float players;
@@ -183,30 +183,30 @@ methodmap DeckhandBones < CClotBody
 				}
 				
 				float average = total / players;
-				float mult = average / DECKHAND_NATURAL_BUFF_LEVEL;
+				float mult = average / CRIMINAL_NATURAL_BUFF_LEVEL;
 				if (mult > 1.0)
 					mult = 1.0;
 					
-				chance += (mult * DECKHAND_NATURAL_BUFF_LEVEL_MODIFIER);
+				chance += (mult * CRIMINAL_NATURAL_BUFF_LEVEL_MODIFIER);
 			}
 			
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		DeckhandBones npc = view_as<DeckhandBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_DECKHAND_SCALE, BONES_DECKHAND_HP, ally, false));
+		CriminalBones npc = view_as<CriminalBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_CRIMINAL_SCALE, BONES_CRIMINAL_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
-		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(Deckhand_SetBuffed);
+		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(Criminal_SetBuffed);
 
-		func_NPCDeath[npc.index] = view_as<Function>(DeckhandBones_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DeckhandBones_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(DeckhandBones_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(CriminalBones_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(CriminalBones_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(CriminalBones_ClotThink);
 		
 		if (buffed)
 		{
-			Deckhand_SetBuffed(npc.index, true);
+			Criminal_SetBuffed(npc.index, true);
 		}
 		else
 		{
@@ -220,7 +220,7 @@ methodmap DeckhandBones < CClotBody
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			
 			npc.m_bDoSpawnGesture = true;
-			DispatchKeyValue(npc.index, "skin", BONES_DECKHAND_SKIN);
+			DispatchKeyValue(npc.index, "skin", BONES_CRIMINAL_SKIN);
 
 			npc.m_flNextMeleeAttack = 0.0;
 			
@@ -229,7 +229,7 @@ methodmap DeckhandBones < CClotBody
 			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 			
 			//IDLE
-			npc.m_flSpeed = (BONES_DECKHAND_SPEED);
+			npc.m_flSpeed = (BONES_CRIMINAL_SPEED);
 			
 			npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 			
@@ -240,21 +240,21 @@ methodmap DeckhandBones < CClotBody
 	}
 }
 
-public void Deckhand_SetBuffed(int index, bool buffed)
+public void Criminal_SetBuffed(int index, bool buffed)
 {
 	if (buffed)
 	{
-		RequestFrame(Deckhand_Transform, EntIndexToEntRef(index));
+		RequestFrame(Criminal_Transform, EntIndexToEntRef(index));
 	}
 }
 
-public void Deckhand_Transform(int ref)
+public void Criminal_Transform(int ref)
 {
 	int ent = EntRefToEntIndex(ref);
 	if (!IsValidEntity(ent))
 		return;
 
-	DeckhandBones npc = view_as<DeckhandBones>(ent);
+	CriminalBones npc = view_as<CriminalBones>(ent);
 
 	float pos[3], ang[3], vel[3];
 	npc.GetAbsOrigin(pos);
@@ -263,20 +263,19 @@ public void Deckhand_Transform(int ref)
 
 	int spawned;
 
-	//TODO: Add more pirates later, maybe?
 	switch(GetRandomInt(1, 3))
 	{
 		case 1:
 		{
-			spawned = BuccaneerBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
+			spawned = RattlerBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= CRIMINAL_TRANSFORM_BUFFCHANCE).index;
 		}
 		case 2:
 		{
-			spawned = FlintlockBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
+			spawned = MolotovBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= CRIMINAL_TRANSFORM_BUFFCHANCE).index;
 		}
 		default:
 		{
-			spawned = PirateBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
+			spawned = SluggerBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= CRIMINAL_TRANSFORM_BUFFCHANCE).index;
 		}
 	}
 
@@ -293,9 +292,9 @@ public void Deckhand_Transform(int ref)
 
 //TODO 
 //Rewrite
-public void DeckhandBones_ClotThink(int iNPC)
+public void CriminalBones_ClotThink(int iNPC)
 {
-	DeckhandBones npc = view_as<DeckhandBones>(iNPC);
+	CriminalBones npc = view_as<CriminalBones>(iNPC);
 	
 //	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
@@ -394,9 +393,9 @@ public void DeckhandBones_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							if(target <= MaxClients)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, BONES_DECKHAND_PLAYERDAMAGE, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, BONES_CRIMINAL_PLAYERDAMAGE, DMG_CLUB, -1, _, vecHit);
 							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, BONES_DECKHAND_BUILDINGDAMAGE, DMG_CLUB, -1, _, vecHit);					
+								SDKHooks_TakeDamage(target, npc.index, npc.index, BONES_CRIMINAL_BUILDINGDAMAGE, DMG_CLUB, -1, _, vecHit);					
 
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -407,13 +406,13 @@ public void DeckhandBones_ClotThink(int iNPC)
 						}
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + BONES_DECKHAND_ATTACKINTERVAL;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + BONES_CRIMINAL_ATTACKINTERVAL;
 					npc.m_flAttackHappenswillhappen = false;
 				}
 				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + BONES_DECKHAND_ATTACKINTERVAL;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + BONES_CRIMINAL_ATTACKINTERVAL;
 				}
 			}
 			
@@ -430,13 +429,13 @@ public void DeckhandBones_ClotThink(int iNPC)
 }
 
 
-public Action DeckhandBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CriminalBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	DeckhandBones npc = view_as<DeckhandBones>(victim);
+	CriminalBones npc = view_as<CriminalBones>(victim);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -447,9 +446,9 @@ public Action DeckhandBones_OnTakeDamage(int victim, int &attacker, int &inflict
 	return Plugin_Changed;
 }
 
-public void DeckhandBones_NPCDeath(int entity)
+public void CriminalBones_NPCDeath(int entity)
 {
-	DeckhandBones npc = view_as<DeckhandBones>(entity);
+	CriminalBones npc = view_as<CriminalBones>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
