@@ -333,9 +333,10 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				Whiteflower_selected_few prop = view_as<Whiteflower_selected_few>(entity_death);
 				float pos[3];
 				float Angles[3];
-				GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
 
-				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+				GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+				SetEntPropEnt(entity_death, Prop_Send, "m_hOwnerEntity", npc.index);			
 				TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 				
 				DispatchKeyValue(entity_death, "model", COMBINE_CUSTOM_MODEL);
@@ -343,13 +344,14 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				AcceptEntityInput(entity_death, "SetBodyGroup");	
 				DispatchSpawn(entity_death);
 
-				prop.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
-				SetVariantString("0.7");
-				AcceptEntityInput(prop.m_iWearable1, "SetModelScale");
+
+				prop.m_iWearable2 = prop.EquipItem("partyhat", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
+				SetVariantString("1.0");
+				AcceptEntityInput(prop.m_iWearable2, "SetModelScale");
 
 				prop.m_iWearable3 = prop.EquipItem("partyhat", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");
 				SetVariantString("1.25");
-				AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+				AcceptEntityInput(prop.m_iWearable3, "SetModelScale");
 
 				prop.m_iWearable4 = prop.EquipItem("partyhat", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
 				SetVariantString("1.25");
@@ -360,16 +362,17 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				SetEntityCollisionGroup(entity_death, 2);
 
 				CreateTimer(2.0, Timer_RemoveEntity_SelectedFew, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable1), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
-				SetVariantString("Lucian_Death_Real");
+				SetVariantString("forcescanner");
+				AcceptEntityInput(entity_death, "SetAnimation");
 			}
 		}
 	}
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "ACT_MP_STAND_ITEM2", 260.0, gameTime);
+	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "p_jumpuploop", 260.0, gameTime, _ , true);
 
 	if(npc.m_flJumpHappening)
 	{
@@ -416,7 +419,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						if(npc.Anger)
-							DealTruedamageToEnemy(npc.index, victim, damage);
+							DealTruedamageToEnemy(npc.index, target, damage);
 						else
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
@@ -610,7 +613,15 @@ public Action Timer_RemoveEntity_SelectedFew(Handle timer, any entid)
 		int Owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		if(IsValidEntity(Owner))
 		{
-
+			float abspos[3]; 
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", abspos);
+			abspos[2] += 45.0;
+			float Range = 100.0;
+			float Time = 0.25;
+			float DamageDeal = 300000.0;
+			Explode_Logic_Custom(DamageDeal, Owner, Owner, -1, abspos, Range);
+			EmitSoundToAll("ambient/explosions/explode_4.wav", -1, _, 80, _, _, _, _,abspos);
+			SpawnSmallExplosionNotRandom(abspos);
 		}
 		RemoveEntity(entity);
 	}
