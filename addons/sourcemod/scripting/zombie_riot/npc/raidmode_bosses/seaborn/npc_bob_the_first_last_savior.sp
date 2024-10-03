@@ -416,9 +416,9 @@ methodmap RaidbossBobTheFirst < CClotBody
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: Schwert and Donner, you did enough, stand back.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: Stella and Karlas, you did enough, stand back.", c_NpcName[npc.index]);
 					}
-					case 3:
+					case 2:
 					{
 						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", c_NpcName[npc.index]);
 					}
@@ -525,7 +525,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					CPrintToChatAll("{white}%s{default}: This nightmare ends soon.", c_NpcName[npc.index]);
 				}
-				case 3:
+				case 2:
 				{
 					CPrintToChatAll("{white}%s{default}: Last. Infected. Left.", c_NpcName[npc.index]);
 				}

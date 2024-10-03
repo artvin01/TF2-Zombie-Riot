@@ -5,6 +5,7 @@ static Handle DamageTimer;
 static float NervousTouching[MAXENTITIES + 1];
 static CNavArea NervousLastTouch[MAXENTITIES + 1];
 static int SpreadTicks;
+static float RenderToAll;
 
 bool VoidArea_TouchingNethersea(int entity)
 {
@@ -13,11 +14,17 @@ bool VoidArea_TouchingNethersea(int entity)
 
 void VoidArea_ClearnNethersea()
 {
+	RenderToAll = 0.0;
 	delete NavList;
 }
 
-void VoidArea_SpawnNethersea(const float pos[3])
+void VoidArea_SpawnNethersea(const float pos[3], bool WasWeapon = false)
 {
+	if(!WasWeapon)
+	{
+		//Make sure to render for a LONG time
+		RenderToAll = GetGameTime() + 600.0;
+	}
 	if(!NavList)
 		NavList = new ArrayList();
 	
@@ -295,7 +302,23 @@ public void VoidArea_RenderFrame(DataPack pack)
 	delete pack;
 
 	TE_SetupBeamPoints(pos1, pos2, Silvester_BEAM_Laser_1, Silvester_BEAM_Laser_1, 0, 0, 4.0, 5.0/*Width*/, 5.0/*end Width*/, 0, 0.0, {200, 0, 25, 125}, 0);
-	TE_SendToAll();
+	if(RenderToAll < GetGameTime())
+	{	
+		int total = 0;
+		int[] clients = new int[MaxClients];
+		//it will render only to players with the blade
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && ClientPossesesVoidBlade(client))
+			{
+				clients[total++] = client;
+			}
+		}
+		if(total > 0)
+			TE_Send(clients, total, 0.0);
+	}
+	else
+		TE_SendToAll();
 }
 
 public Action VoidArea_DamageTimer(Handle timer, DataPack pack)

@@ -135,7 +135,7 @@ void Queue_Menu(int client)
 	menu.AddItem("sm_encyclopedia", "Encyclopedia");
 	
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
-	if(StrContains(buffer, "private", false) == -1)
+	if(StrContains(buffer, "nominigames", false) == -1)
 	{
 		menu.AddItem("sm_idlemine", "Idle Miner");
 		menu.AddItem("sm_tetris", "Tetris");

@@ -931,6 +931,10 @@
 		"en"		"You can't do that right now!"
 		"fr"		"Vous êtes incapable de faire ça maintenant!"
 	}
+	"Not enough charge"
+	{
+		"en"		"Not enough charge."
+	}
 	"Rusty Ability Cooldown"
 	{
 		"#format"	"{1:.1f}"
@@ -1842,6 +1846,16 @@
 		"nl"		"Alle items hier hebben een 20%% korting! {$}\nÉén item heeft een 30%% korting! {$$}"
 		"chi"       "所有商品在这都会打8折 {$}\n一件物品打7折 {$$}"
 	}	
+	"All Items are 10%% off here!"
+	{
+		"en"		"All Items are 10%% off here! {$}\nOne Item is 15%% off! {$$}"
+		"fr"		"Tous achats ont un rabais de 10%%! {$}\nUn achat a un rabais de 15%%! {$$}"
+		"ru"		"На все товары скидка 10%%! {$}\nНа один товар скидка 15%! {$$}"
+//		"de"		"All Gegenstände sind 20%% off hier!"
+		"pt"		"Todos os itens estão com 10%% de desconto aqui! {$}\n1 Item está a 15%% de desconto {$$}"
+		"nl"		"Alle items hier hebben een 10%% korting! {$}\nÉén item heeft een 15%% korting! {$$}"
+		"chi"       "所有商品在这都会打8折 {$}\n一件物品打7折 {$$}"
+	}	
 	"Can Be Pack-A-Punched"
 	{
 		"en"		"Can Be Pack-A-Punched"
@@ -1956,12 +1970,7 @@
 	}
 	"Which perk do you desire?"
 	{
-		"en"		"Which Bottle do you wish to drink?"
-		"fr"		"Que voulez-vous boire?"
-		"ru"		"Какую бутылку вы хотите выпить?"
-		"pt"		"Qual garrafa você quer beber?"
-		"nl"		"Uit welke fles wil je drinken?"
-		"chi"       "你想喝哪一瓶?"
+		"en"		"Which Bottle do you wish to drink?\nCrouch and click to see what it does."
 	}	
 	"Reviving"
 	{
@@ -3445,7 +3454,7 @@
 	}
 	"True Fusion Warrior Wave Desc"
 	{
-		"en"	"(1) ''True fusion warrior'' Is infected with the xeno virus, his gear prevents spreading of it, it even made him forget his name.\nGround slam(can be silenced)"
+		"en"	"(1) ''True fusion warrior'' Is infected with the xeno virus, his gear prevents spreading of it, it even made him forget his name."
 	}
 	"Alternative Desc"
 	{
@@ -3455,7 +3464,7 @@
 	}
 	"Blitzkrieg Wave Desc"
 	{
-		"en"	"(2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas...\nTeleport and jump during moonlight(Can be silenced)"
+		"en"	"(2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -3635,9 +3644,9 @@
 	"Now Playing Song"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"{darkgrey}Now Playing: {community}{1} {default}| {lightgreen}{2}"
-		"fr"		"{darkgrey}Musique : {community}{1} {default}| {lightgreen}{2}"
-		"chi"		"{darkgrey}现在播放：{community}{1} {default} | {lightgreen}{2}"
+		"en"		"{darkgrey}Now Playing: {community}{1} {default}- {lightgreen}{2}"
+		"fr"		"{darkgrey}Musique : {community}{1} {default}- {lightgreen}{2}"
+		"chi"		"{darkgrey}现在播放：{community}{1} {default}- {lightgreen}{2}"
 	}
 	"Blacksmith Tooltip"
 	{

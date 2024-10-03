@@ -1049,21 +1049,21 @@
 	
 	"Fractured Ark Desc"
 	{
-		"en"	"A legendary blade with magical properties, can parry with m2\nParry to get weak projectiles."
+		"en"	"A legendary blade with magical properties, can parry with m2\nParry to get energy which allows you to fire weak projectiles."
 		"fr"	"Épée légendaire aves des propriétés magiques. Bloquez des attaques avec M2.\nCrée des projectiles quand vouz bloquez avec succès."
 		"ru"	"Легендарный клинок с магическими свойствами, может парировать с помощью М2.\nПарируйте, чтобы отбить слабые снаряды."
 		"chi"   "一把具有魔法属性的传奇剑，可以用m2格挡"
 	}
 	"Fractured Ark Pap 1"
 	{
-		"en"	"Increased damage and attackspeed, M2 Gives Projectiles, parrying something successfully gives more projectiles.\nParry reflect power increased"
+		"en"	"Increased damage and attackspeed, M2 gives more energy, parrying something successfully gives more energy.\nParry reflect power increased"
 		"fr"	"Dégats et cadence des attaques améliorés. Crée d'avantage de projectiles quand wous bloquez avec succès.\nRetourne plus de dégats quand vous bloquez."
 		"ru"	"Увеличенный урон и скорость атаки, М2 - даёт снаряды, успешное парирование чего-либо даёт больше снарядов.\nУвеличенная сила отражения парирования."
 		"chi"   "增加伤害和攻击速度，M2提供炮弹，格挡成功提供更多炮弹。格挡后能量增加"
 	}
 	"Fractured Ark Pap 2"
 	{
-		"en"	"Increased damage, attackspeed, and ability power."
+		"en"	"Increased damage, attackspeed, and ability power.\nYour empowered swings now also fire small homing projectiles with lower damage"
 		"fr"	"Dégats, cadence de tir et bloquage améliorés"
 		"chi"   "增加伤害，攻击速度，和技能效果。"
 	}
@@ -1120,6 +1120,10 @@
 		"en"	"Your ability is now a manual activation but takes longer to charge.\nEach hit during the ability massively increases your attackspeed upto a limit.\nYou fire 2 projectiles at once while having the ability on.\nYour silence lasts abit longer."
 		"fr"	"Abilité est activé manuellement, mais prends plus de temps pour se charger.\nChaque coup pendant l'abilité améliore la cadence des attaques.\nAbilité vous permet de lancer deux attaques à la fois.\nLes ennemis sont silencés pour plus longtemps."
 		"chi"	"你的技能现在是手动触发，但充能时间更久。\n每次技能时击中敌人都可以增加攻速。\n技能时可以同时发射两个远程。\n沉默效果持续时间加长。"
+	}
+	"Fractured Ark Pap 12"
+	{
+		"en"	"Increased damage, energy gain and parry reflect power increased.\nYou unlock a new ability which costs energy to use"
 	}
 	
 	"Longsword Desc"
@@ -3148,9 +3152,9 @@
 	}
 	"Impact Lance Desc 2"
 	{
-		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n15% melee Resistance"
-		"fr"	"+15%% résistance contre les dégats corps-à-corps\nAbilité accélère un particule vers l'ennemi que vous visez.\nAbilité vous inflige du recul."
-		"chi"	"你现在可以加速能量，发射出去。只能面对敌人时使用，会对你造成击退。\+15%近战抗性。"
+		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n25% melee Resistance"
+		"fr"	"+25%% résistance contre les dégats corps-à-corps\nAbilité accélère un particule vers l'ennemi que vous visez.\nAbilité vous inflige du recul."
+		"chi"	"你现在可以加速能量，发射出去。只能面对敌人时使用，会对你造成击退。\+25%近战抗性。"
 	}
 	"Impact Lance Desc 3"
 	{
@@ -3246,6 +3250,18 @@
 		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increaced.\nCrit Chance Increaces."
 		"fr"	"Dégats, chance d'attaque critique et santé bonus par soins améliorés.\nVous frappez plus d'ennemis à la fois."
 		"chi"	"提高伤害，技能赋予更多双击子弹。\n加强穿透力，更高的超量上限。\n随机暴击概率提高。"
+	}
+	"Half Moon Desc1"
+	{
+		"en" 	"Weapon changes:\nM2 Ability causes multi 3 hit, with more damage & cooldown\nGain 2.4x max HP and 2x Vuln\nHheal on hit, Lower hp = faster atk.\nYou cant gain armor.\nArmor -> Hp."
+	}
+	"Half Moon Desc2"
+	{
+		"en" 	"Increaces heal on hit\nIf below 30%% HP, you gain 25%% resistance, if you stand near no enemy, you heal."
+	}
+	"Half Moon Desc3"
+	{
+		"en" 	"Increaces heal on hit\nIncreaces threshhold to 35%%, if at threshhold, heal regardless."
 	}
 	"Angelic Shotgonnus Desc Pap 2"
 	{

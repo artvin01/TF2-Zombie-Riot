@@ -97,7 +97,7 @@ void Games_Blackjack(int client, bool results = false)
 		menu.AddItem(NULL_STRING, "Hit");
 
 		Format(buffer, sizeof(buffer), "Double Down (-$%d)", CurrentBet[client]);
-		menu.AddItem(NULL_STRING, buffer, TextStore_Cash(client) < CurrentBet[client] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, buffer, (!firstTurn || TextStore_Cash(client) < CurrentBet[client]) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		Format(buffer, sizeof(buffer), "Split (-$%d)", CurrentBet[client]);
 		menu.AddItem(NULL_STRING, buffer, (!firstTurn || TextStore_Cash(client) < CurrentBet[client]) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);

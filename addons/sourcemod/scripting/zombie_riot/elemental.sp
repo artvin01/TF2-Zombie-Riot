@@ -68,7 +68,7 @@ static int TriggerDamage(int entity, int type)
 		return MaxArmorCalculation(Armor_Level[entity], entity, 1.0);
 	
 
-	int divide = 3;
+	float divide = 3.0;
 
 	switch(type)
 	{
@@ -84,31 +84,32 @@ static int TriggerDamage(int entity, int type)
 		}
 		case Element_Cyro:
 		{
-			divide = 4;
+			divide = 4.0;
 		}
 		case Element_Void:
 		{
-			divide = 2;
+			divide = 2.0;
 		}
 	}
 
 	if(Citizen_IsIt(entity))
 		return view_as<Citizen>(entity).m_iGunValue / 20;
 
-	if(b_thisNpcIsARaid[entity])
+	//also works against superbosses.
+	if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
 	{
-		divide *= RoundToCeil(5.0 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
+		divide *= (5.2 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
 	}
 	else if(b_thisNpcIsABoss[entity])
 	{
-		divide *= RoundToCeil(2.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
+		divide *= (3.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
 	}
 	else if (b_IsGiant[entity])
 	{
-		divide *= 2;
+		divide *= 2.0;
 	}
 
-	return RoundToCeil(float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide;
+	return RoundToCeil((float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide);
 }
 
 bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
@@ -344,7 +345,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 }
 
 
-void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
+void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, bool VoidWeaponDo = false)
 {
 	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
 		return;
@@ -374,7 +375,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 					float ProjectileLoc[3];
 					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 					ProjectileLoc[2] += 5.0;
-					VoidArea_SpawnNethersea(ProjectileLoc);
+					VoidArea_SpawnNethersea(ProjectileLoc, VoidWeaponDo);
 					FramingInfestorSpread(victim);
 					EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
@@ -415,7 +416,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 				ProjectileLoc[2] += 5.0;
 				EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-				VoidArea_SpawnNethersea(ProjectileLoc);
+				VoidArea_SpawnNethersea(ProjectileLoc, VoidWeaponDo);
 				//do not spread.
 				FramingInfestorSpread(victim);
 			}
