@@ -45,6 +45,8 @@ public void Weapon_German_M1_AltModule2(int client, int weapon, bool &result, in
 static void Weapon_German_M1(int client, int weapon, int maxcharge)
 {
 	int cost = GermanSilence[client] ? 75 : 100;
+	cost = RoundToNearest(Attributes_Get(weapon, 733, 1.0) * float(cost));
+
 	if(Current_Mana[client] < cost)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");

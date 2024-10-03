@@ -156,6 +156,17 @@ methodmap Whiteflower_selected_few < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
+	property float m_flCooldownDurationHurt
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flSpawnTempClone
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	
 	
 	public Whiteflower_selected_few(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -246,6 +257,116 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	
+	if(npc.m_flCooldownDurationHurt)
+	{
+		if(npc.m_flCooldownDurationHurt < gameTime)
+		{
+			npc.m_flCooldownDurationHurt = 0.0;
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				RemoveEntity(npc.m_iWearable1);
+			}
+			npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
+			SetVariantString("1.15");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		}
+		return;
+	}
+
+	if(npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
+	{
+		//Reset anger.
+		npc.Anger = false;
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			RemoveEntity(npc.m_iWearable1);
+		}
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		SetVariantString("0.8");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+	}
+
+	
+	if(npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
+	{
+		//Reset anger.
+		npc.Anger = false;
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			RemoveEntity(npc.m_iWearable1);
+		}
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		SetVariantString("0.8");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+	}
+
+	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (ReturnEntityMaxHealth(npc.index) * 0.5))
+	{
+		if(!npc.Anger)
+		{
+			npc.Anger = true;
+			npc.m_flCooldownDurationHurt = gameTime + 3.0;
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				RemoveEntity(npc.m_iWearable1);
+			}
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 7;
+			npc.m_flSpeed = 0.0;
+			npc.SetActivity("ACT_PICKUP_RACK");
+			npc.SetPlaybackRate(0.35);
+			return;
+		}
+	}
+
+	if(npc.Anger)
+	{
+		if(npc.m_flSpawnTempClone < gameTime)
+		{
+			npc.m_flSpawnTempClone = gameTime + 3.0;
+			npc.PlayRocketSound();
+			
+			int entity_death = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(entity_death))
+			{
+				Whiteflower_selected_few prop = view_as<Whiteflower_selected_few>(entity_death);
+				float pos[3];
+				float Angles[3];
+				GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
+
+				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+				TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
+				
+				DispatchKeyValue(entity_death, "model", COMBINE_CUSTOM_MODEL);
+				SetVariantInt(1);
+				AcceptEntityInput(entity_death, "SetBodyGroup");	
+				DispatchSpawn(entity_death);
+
+				prop.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
+				SetVariantString("0.7");
+				AcceptEntityInput(prop.m_iWearable1, "SetModelScale");
+
+				prop.m_iWearable3 = prop.EquipItem("partyhat", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");
+				SetVariantString("1.25");
+				AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+				prop.m_iWearable4 = prop.EquipItem("partyhat", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
+				SetVariantString("1.25");
+				AcceptEntityInput(prop.m_iWearable4, "SetModelScale");
+				//Cape
+
+				SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
+				SetEntityCollisionGroup(entity_death, 2);
+
+				CreateTimer(2.0, Timer_RemoveEntity_SelectedFew, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable1), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
+				SetVariantString("Lucian_Death_Real");
+			}
+		}
+	}
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "ACT_MP_STAND_ITEM2", 260.0, gameTime);
@@ -285,13 +406,20 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 300.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damage *= 1.3;
+					
+					if(npc.Anger)
+					{
+						damage = 40000.0;
+					}
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						if(npc.Anger)
+							DealTruedamageToEnemy(npc.index, victim, damage);
+						else
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+
 						// Hit sound
 						npc.PlayMeleeHitSound();
 						if(target <= MaxClients)
@@ -471,3 +599,20 @@ public void Whiteflower_selected_few_NPCDeath(int entity)
 }
 
 
+
+
+//TODO: Make kaboom
+public Action Timer_RemoveEntity_SelectedFew(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity))
+	{
+		int Owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(IsValidEntity(Owner))
+		{
+
+		}
+		RemoveEntity(entity);
+	}
+	return Plugin_Stop;
+}
