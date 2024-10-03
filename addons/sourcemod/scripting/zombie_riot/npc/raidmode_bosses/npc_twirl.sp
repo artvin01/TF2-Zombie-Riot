@@ -798,12 +798,25 @@ methodmap Twirl < CClotBody
 		else if(wave <=60)
 		{	
 			i_ranged_ammo[npc.index] = 12;
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope your all as excited as I am{snow}!");
 				case 1: Twirl_Lines(npc, "Ah, it was a {purple}brilliant idea to not use my powers {snow}and only use this crest instead.");
 				case 2: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
 				case 3: Twirl_Lines(npc, "I hope your ready for this final {purple}battle{snow}.");
+				case 4:
+				{
+					switch(GetRandomInt(0, 10000))
+					{
+						case 6:	//the likely hoods of this triggering are near non existant, so most likely you will see this whenever your editing the code or just browsing it
+						{
+							Twirl_Lines(npc, "You know, its hard sometimes, its hard being what I am. It's hard...");
+							Twirl_Lines(npc, "Not being able to explain, that the mistakes you make are because of mental \"problems\"..");
+							Twirl_Lines(npc, "And that there's practially nothing you can do to fix them");
+						}  
+						default: Twirl_Lines(npc, "Kuru Kuru~");
+					}
+				}
 			}
 			RaidModeScaling *=0.9;
 		}
@@ -840,6 +853,11 @@ methodmap Twirl < CClotBody
 			EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
 			EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
 		}	
+
+		if(b_test_mode[npc.index])
+		{
+			RaidModeTime = FAR_FUTURE;
+		}
 
 		npc.m_flMeleeArmor = 1.5;
 
@@ -923,7 +941,7 @@ static void ClotThink(int iNPC)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
 							Items_GiveNamedItem(client, "Twirl's Hairpins");
-							CPrintToChat(client,"You have been give {purple}%s{snow}'s hairpins...", c_NpcName[npc.index]);
+							CPrintToChat(client,"You have been given {purple}%s{snow}'s hairpins...", c_NpcName[npc.index]);
 						}
 					}
 					Twirl_Lines(npc, "Make sure to take good care of them... or else.");
@@ -2973,6 +2991,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			b_NpcIsInvulnerable[npc.index] = true;
 			damage = 0.0;
 
+			ReviveAll(true);
+
 			npc.m_flSpeed = 0.0;
 			f_NpcTurnPenalty[npc.index] = 0.0;
 
@@ -2980,6 +3000,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			if(timer < 75.0)	//to avoid the "you are running out of time" thing.
 				timer = 75.0;
 			fl_raidmode_freeze[npc.index] = timer;
+
+			RaidModeTime +=0.1;
 
 			Kill_Abilities(npc);
 			return Plugin_Changed;
