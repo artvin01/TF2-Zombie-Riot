@@ -128,12 +128,12 @@ public void Chainsaw_SawAttack(int client, int weapon)
 	{
 		return;
 	}
-	int AmmoConsumption = 3;
+	int AmmoConsumption = 1;
 	if(BarneyItem[client])
 	{
 		if(BarneyItemSave[client])
 		{
-			AmmoConsumption = 2;
+			AmmoConsumption = 0;
 			BarneyItemSave[client] = false;
 		}
 		else

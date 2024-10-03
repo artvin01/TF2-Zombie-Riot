@@ -1088,7 +1088,7 @@ void Barracks_BuildingThink(int entity)
 		if(InMenu[i] == client)
 			OpenSummonerMenu(client, i);
 	}
-			
+
 	//they do not even have the first upgrade, do not think, but dont cancel.
 	if(!(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER))
 		return;
@@ -1786,7 +1786,7 @@ static void SummonerMenu(int client, int viewer)
 
 			if(ResearchRequirement_internal & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
 			{
-				if(BarrackVillager_ID() == GetSData(CivType[client], TrainingIndex[client], NPCIndex) && TrainingIn[client] >= GetGameTime())
+				if(TrainingIn[client] >= GetGameTime() && BarrackVillager_ID() == GetSData(CivType[client], TrainingIndex[client], NPCIndex))
 				{
 					//dont train more then one at a time
 					poor = true;

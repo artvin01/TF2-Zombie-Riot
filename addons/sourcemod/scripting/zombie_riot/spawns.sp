@@ -131,6 +131,8 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				if(WavesLeft >= WavesAllow)
 				{
 					//Delete the spawner, we dont allow spawners that exeed their max duration.
+
+					//This somehow causes SPAWN FAILED ()
 					SpawnerList.Erase(i);
 					i--;
 					length--;

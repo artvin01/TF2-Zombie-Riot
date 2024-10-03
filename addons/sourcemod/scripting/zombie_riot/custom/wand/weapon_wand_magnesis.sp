@@ -24,8 +24,8 @@ static float Magnesis_Grab_Cost_Normal[3] = { 5.0, 10.0, 20.0 };				//Mana drain
 static float Magnesis_Grab_Cost_Scaling_Normal[3] = { 0.01, 0.01, 0.01 };		//Additional percentage of the user's max mana to drain per 0.1s while holding a normal enemy (0.1 = 10%).
 static float Magnesis_Grab_Cost_Special[3] = { 35.0, 35.0, 35.0 };				//Mana drained per 0.1s while holding a boss/mini-boss.
 static float Magnesis_Grab_Cost_Scaling_Special[3] = { 0.01, 0.01, 0.01 };		//Additional percentage of the user's max mana to drain per 0.1s while holding a special enemy (0.1 = 10%).
-static float Magnesis_Grab_Cost_Raid[3] = { 75.0, 75.0, 75.0 };					//Mana drained per 0.1s while holding a raid.
-static float Magnesis_Grab_Cost_Scaling_Raid[3] = { 0.0, 0.0, 0.0 };			//Additional percentage of theu ser's max mana to drain per 0.1s while holding a raid.
+static float Magnesis_Grab_Cost_Raid[3] = { 35.0, 35.0, 35.0 };					//Mana drained per 0.1s while holding a raid.
+static float Magnesis_Grab_Cost_Scaling_Raid[3] = { 0.025, 0.025, 0.025 };		//Additional percentage of the user's max mana to drain per 0.1s while holding a raid.
 static float Magnesis_Grab_DragRate[3] = { 10.0, 10.0, 10.0 };					//Base speed at which grabbed targets move towards the puller, per frame.
 static float Magnesis_Grab_DragRate_WeightPenalty[3] = { 7.5, 3.0, 1.25 };		//Amount to reduce grab movement speed per point of NPC weight above 1.
 static float Magnesis_Grab_Range[3] = { 150.0, 200.0, 250.0 };					//Maximum distance from which enemies can be grabbed.
@@ -96,6 +96,7 @@ static int Magnesis_GrabWeapon[MAXPLAYERS + 1] = { -1, ... };
 public void Magnesis_ResetAll()
 {
 	Zero(ability_cooldown);
+	Zero(Magnesis_NextDrainTick);
 
 	for (int i = 0; i < 2049; i++)
 	{
