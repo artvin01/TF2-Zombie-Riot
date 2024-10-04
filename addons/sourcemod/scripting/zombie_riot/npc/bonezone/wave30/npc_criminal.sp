@@ -193,6 +193,9 @@ methodmap CriminalBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_CRIMINAL_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_CRIMINAL_HP);
 
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Calcium Criminal");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Calcium Criminal");
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;

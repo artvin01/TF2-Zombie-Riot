@@ -310,10 +310,15 @@ methodmap SaintBones < CClotBody
 			
 		SaintBones npc = view_as<SaintBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE, buffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, ally, false));
 		
+		b_BonesBuffed[npc.index] = buffed;
+
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_SAINT_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_SAINT_HP_BUFFED);
 
-		b_BonesBuffed[npc.index] = buffed;
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Skeletal Saint");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Blighted Bones");
+		npc.BoneZone_UpdateName();
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		Is_a_Medic[npc.index] = true;

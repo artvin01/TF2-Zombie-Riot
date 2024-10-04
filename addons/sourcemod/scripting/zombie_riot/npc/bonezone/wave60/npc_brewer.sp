@@ -194,6 +194,9 @@ methodmap AlchemistBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ALCHEMIST_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ALCHEMIST_HP);
 
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Bone Brewer");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Bone Brewer");
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;
 		b_AlchemistGoneBerserk[npc.index] = false;

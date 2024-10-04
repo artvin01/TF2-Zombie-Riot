@@ -259,11 +259,16 @@ methodmap SluggerBones < CClotBody
 		}
 			
 		SluggerBones npc = view_as<SluggerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SLUGGER_SCALE_BUFFED : BONES_SLUGGER_SCALE, buffed ? BONES_SLUGGER_HP_BUFFED : BONES_SLUGGER_HP, ally, false));
-		
+
+		b_BonesBuffed[npc.index] = buffed;
+
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_SLUGGER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_SLUGGER_HP_BUFFED);
 
-		b_BonesBuffed[npc.index] = buffed;
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Spinal Slugger");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Bone Breaker");
+		npc.BoneZone_UpdateName();
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(SluggerBones_SetBuffed);

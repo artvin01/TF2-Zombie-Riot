@@ -361,10 +361,15 @@ methodmap JesterBones < CClotBody
 			
 		JesterBones npc = view_as<JesterBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_JESTER_SCALE_BUFFED : BONES_JESTER_SCALE, buffed ? BONES_JESTER_HP_BUFFED : BONES_JESTER_HP, ally, false));
 		
+		b_BonesBuffed[npc.index] = buffed;
+
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_JESTER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_JESTER_HP_BUFFED);
 
-		b_BonesBuffed[npc.index] = buffed;
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Servant of Mondo");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Fearsome Fool");
+		npc.BoneZone_UpdateName();
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(JesterBones_SetBuffed);

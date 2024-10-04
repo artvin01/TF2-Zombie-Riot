@@ -234,10 +234,15 @@ methodmap BigBones < CClotBody
 			
 		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE, buffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
 		
+		b_BonesBuffed[npc.index] = buffed;
+
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_BIG_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_BIG_HP_BUFFED);
 
-		b_BonesBuffed[npc.index] = buffed;
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Buffed Big Bones");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Big Bones");
+		npc.BoneZone_UpdateName();
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(BigBones_SetBuffed);

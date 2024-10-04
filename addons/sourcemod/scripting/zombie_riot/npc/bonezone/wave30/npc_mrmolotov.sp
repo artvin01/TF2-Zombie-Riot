@@ -183,6 +183,9 @@ methodmap MolotovBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_MOLOTOV_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_MOLOTOV_HP);
 
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Mr. Molotov");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Mr. Molotov");
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;
 

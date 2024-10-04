@@ -289,10 +289,15 @@ methodmap ArchmageBones < CClotBody
 			
 		ArchmageBones npc = view_as<ArchmageBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_ARCHMAGE_BUFFED_SCALE : BONES_ARCHMAGE_SCALE, buffed ? BONES_ARCHMAGE_HP_BUFFED : BONES_ARCHMAGE_HP, ally, false));
 		
+		b_BonesBuffed[npc.index] = buffed;
+
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ARCHMAGE_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ARCHMAGE_HP_BUFFED);
 
-		b_BonesBuffed[npc.index] = buffed;
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Alakablaster");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Spelleton");
+		npc.BoneZone_UpdateName();
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(ArchmageBones_SetBuffed);

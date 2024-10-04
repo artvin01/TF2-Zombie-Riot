@@ -160,7 +160,7 @@ public void FlintlockBones_OnMapStart_NPC()
 	PrecacheSound(SND_DEADEYE_FIRE_2);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Flintlock Freak");
+	strcopy(data.Name, sizeof(data.Name), "Swashbuckler Skelebones");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_flintlock");
 	strcopy(data.Icon, sizeof(data.Icon), "pyro");
 	data.IconCustom = false;
@@ -316,10 +316,15 @@ methodmap FlintlockBones < CClotBody
 			
 		FlintlockBones npc = view_as<FlintlockBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_FLINTLOCK_BUFFED_SCALE : BONES_FLINTLOCK_SCALE, buffed ? BONES_FLINTLOCK_HP_BUFFED : BONES_FLINTLOCK_HP, ally, false));
 		
+		b_BonesBuffed[npc.index] = buffed;
+
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_FLINTLOCK_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_FLINTLOCK_HP_BUFFED);
 
-		b_BonesBuffed[npc.index] = buffed;
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Deadeye");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Swashbuckler Skelebones");
+		npc.BoneZone_UpdateName();
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(FlintlockBones_SetBuffed);

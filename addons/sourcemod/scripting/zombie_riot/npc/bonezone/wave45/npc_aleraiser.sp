@@ -194,6 +194,9 @@ methodmap AleraiserBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ALERAISER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ALERAISER_HP);
 
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Aleraiser");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Aleraiser");
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;
 		b_AleraiserGoneBerserk[npc.index] = false;

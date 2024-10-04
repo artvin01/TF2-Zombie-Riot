@@ -260,10 +260,15 @@ methodmap PirateBones < CClotBody
 			
 		PirateBones npc = view_as<PirateBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_PIRATE_SCALE_BUFFED : BONES_PIRATE_SCALE, buffed ? BONES_PIRATE_HP_BUFFED : BONES_PIRATE_HP, ally, false));
 		
+		b_BonesBuffed[npc.index] = buffed;
+
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_PIRATE_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_PIRATE_HP_BUFFED);
 
-		b_BonesBuffed[npc.index] = buffed;
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Calcium Corsair");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Buccaneer Bones");
+		npc.BoneZone_UpdateName();
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(PirateBones_SetBuffed);

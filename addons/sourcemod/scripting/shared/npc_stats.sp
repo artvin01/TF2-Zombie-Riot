@@ -47,6 +47,12 @@ int TeamFreeForAll = 50;
 int i_TeamGlow[MAXENTITIES]={-1, ...};
 int Shared_BEAM_Laser;
 char c_NpcName[MAXENTITIES][255];
+
+#if defined BONEZONE_BASE
+char c_BoneZoneBuffedName[MAXENTITIES][255];
+char c_BoneZoneNonBuffedName[MAXENTITIES][255];
+#endif
+
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
@@ -2483,6 +2489,12 @@ methodmap CClotBody < CBaseCombatCharacter
 
 	#if defined BONEZONE_BASE
 
+	//Updates the skeleton's name, depending on whether or not it is in its buffed form.
+	public void BoneZone_UpdateName()
+	{
+		strcopy(c_NpcName[this.index], sizeof(c_NpcName[]), (b_BonesBuffed[this.index] ? c_BoneZoneBuffedName[this.index] : c_BoneZoneNonBuffedName[this.index]));
+	}
+
 	//Returns whether or not the NPC is a skeleton.
 	public bool BoneZone_IsASkeleton()
 	{
@@ -2593,6 +2605,8 @@ methodmap CClotBody < CBaseCombatCharacter
 				{
 					SetEntProp(this.index, Prop_Data, "m_iHealth", GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
 				}
+
+				this.BoneZone_UpdateName();
 
 				float skeleBuffPos[3];
 				this.GetAbsOrigin(skeleBuffPos);

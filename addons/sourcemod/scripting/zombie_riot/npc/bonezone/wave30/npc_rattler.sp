@@ -320,10 +320,15 @@ methodmap RattlerBones < CClotBody
 			
 		RattlerBones npc = view_as<RattlerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_RATTLER_BUFFED_SCALE : BONES_RATTLER_SCALE, buffed ? BONES_RATTLER_HP_BUFFED : BONES_RATTLER_HP, ally, false));
 		
+		b_BonesBuffed[npc.index] = buffed;
+
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_RATTLER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_RATTLER_HP_BUFFED);
 
-		b_BonesBuffed[npc.index] = buffed;
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Hollow Hitman");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Rattler");
+		npc.BoneZone_UpdateName();
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(RattlerBones_SetBuffed);

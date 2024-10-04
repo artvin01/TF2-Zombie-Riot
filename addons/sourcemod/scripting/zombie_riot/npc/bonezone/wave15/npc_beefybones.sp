@@ -222,9 +222,15 @@ methodmap BeefyBones < CClotBody
 			
 		BeefyBones npc = view_as<BeefyBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BEEFY_SCALE_BUFFED : BONES_BEEFY_SCALE, buffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, ally, false));
 		
+		b_BonesBuffed[npc.index] = buffed;
+
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_BEEFY_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_BEEFY_HP_BUFFED);
-		b_BonesBuffed[npc.index] = buffed;
+
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Buffed Beefy Bones");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Beefy Bones");
+		npc.BoneZone_UpdateName();
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(BeefyBones_SetBuffed);

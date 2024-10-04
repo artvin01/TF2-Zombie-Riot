@@ -3039,9 +3039,9 @@
 	{
 		"en"	"Calcium Criminal"
 	}
-	"Flintlock Freak"
+	"Swashbuckler Skelebones"
 	{
-		"en"	"Flintlock Freak"
+		"en"	"Swashbuckler Skelebones"
 	}
 	"Deadeye"
 	{
