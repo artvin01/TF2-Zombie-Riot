@@ -107,6 +107,20 @@ float f_BoneZoneNumSummons[MAXENTITIES];
 Handle g_BoneZoneBuffers[MAXENTITIES];
 Function g_BoneZoneBuffFunction[MAXENTITIES];
 Function g_BoneZoneBuffVFX[MAXENTITIES];
+
+public void BoneZone_SetRandomBuffedHP(CClotBody npc)
+{
+	if (!IsValidEntity(npc.index))
+		return;
+
+	float current = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float defaultMax = float(npcthis.m_iBoneZoneNonBuffedMaxHealth);
+	float targetMax = float(npc.m_iBoneZoneBuffedMaxHealth);
+	float multiplier = current / defaultMax;
+	
+	SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
+}
+
 #endif
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.

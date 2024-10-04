@@ -220,8 +220,9 @@ methodmap BasicBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		BasicBones npc = view_as<BasicBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BASIC_SCALE_BUFFED : BONES_BASIC_SCALE, buffed ? BONES_BASIC_HP_BUFFED : BONES_BASIC_HP, ally, false));
-		
+		BasicBones npc = view_as<BasicBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BASIC_SCALE_BUFFED : BONES_BASIC_SCALE, BONES_BASIC_HP, ally, false));
+		RequestFrame(BoneZone_SetRandomBuffedHP, npc);
+
 		b_BonesBuffed[npc.index] = buffed;
 
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_BASIC_HP);
