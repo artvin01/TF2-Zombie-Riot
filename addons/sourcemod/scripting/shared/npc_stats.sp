@@ -94,6 +94,7 @@ Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
 
 #if defined BONEZONE_BASE
+
 bool b_BoneZoneNaturallyBuffed[MAXENTITIES];
 bool b_SetBuffedSkeletonAnimation[MAXENTITIES];
 bool b_SetNonBuffedSkeletonAnimation[MAXENTITIES];
@@ -117,7 +118,7 @@ public void BoneZone_SetRandomBuffedHP(CClotBody npc)
 	float defaultMax = float(npcthis.m_iBoneZoneNonBuffedMaxHealth);
 	float targetMax = float(npc.m_iBoneZoneBuffedMaxHealth);
 	float multiplier = current / defaultMax;
-	
+
 	SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
 }
 
