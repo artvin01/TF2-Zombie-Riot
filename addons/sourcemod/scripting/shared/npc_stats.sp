@@ -120,6 +120,10 @@ public void BoneZone_SetRandomBuffedHP(CClotBody npc)
 	float multiplier = current / defaultMax;
 
 	SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
+	if (GetEntProp(npc.index, Prop_Data, "m_iHealth") > GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+	{
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	}
 }
 
 #endif
