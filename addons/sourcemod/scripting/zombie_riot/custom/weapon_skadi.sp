@@ -89,7 +89,11 @@ public Action Timer_Management_Skadi(Handle timer, DataPack pack)
 	}	
 
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	{
+		CreateSkadiEffect(client);
+	}
+	else
 	{
 		b_AbilityActivated[client] = false;
 		DestroySkadiEffect(client);
@@ -98,7 +102,7 @@ public Action Timer_Management_Skadi(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void WeaponSkadi_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapon, float &damage)
+void WeaponSkadi_OnTakeDamageNpc(int attacker,int victim, float &damage)
 {
 	if(b_AbilityActivated[attacker] && b_thisNpcIsARaid[victim])
 	{
