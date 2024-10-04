@@ -289,6 +289,9 @@ methodmap ArchmageBones < CClotBody
 			
 		ArchmageBones npc = view_as<ArchmageBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_ARCHMAGE_BUFFED_SCALE : BONES_ARCHMAGE_SCALE, buffed ? BONES_ARCHMAGE_HP_BUFFED : BONES_ARCHMAGE_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ARCHMAGE_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ARCHMAGE_HP_BUFFED);
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
@@ -342,8 +345,6 @@ public void ArchmageBones_SetBuffed(int index, bool buffed)
 		
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_ARCHMAGE_BUFFED_SCALE);
-		int HP = StringToInt(BONES_ARCHMAGE_HP_BUFFED);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_ARCHMAGE_SPEED_BUFFED;
 		Archmage_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_ARCHMAGE_BUFFED_SKIN);
@@ -360,8 +361,6 @@ public void ArchmageBones_SetBuffed(int index, bool buffed)
 		
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_ARCHMAGE_SCALE);
-		int HP = StringToInt(BONES_ARCHMAGE_HP);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_ARCHMAGE_SPEED;
 		Archmage_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_ARCHMAGE_SKIN);

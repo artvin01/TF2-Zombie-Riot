@@ -190,6 +190,9 @@ methodmap PeasantBones < CClotBody
 			
 		PeasantBones npc = view_as<PeasantBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_PEASANT_SCALE, BONES_PEASANT_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_PEASANT_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_PEASANT_HP);
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;

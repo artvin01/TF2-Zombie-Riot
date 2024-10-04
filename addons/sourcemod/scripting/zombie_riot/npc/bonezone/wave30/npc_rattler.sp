@@ -320,6 +320,9 @@ methodmap RattlerBones < CClotBody
 			
 		RattlerBones npc = view_as<RattlerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_RATTLER_BUFFED_SCALE : BONES_RATTLER_SCALE, buffed ? BONES_RATTLER_HP_BUFFED : BONES_RATTLER_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_RATTLER_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_RATTLER_HP_BUFFED);
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
@@ -405,8 +408,6 @@ public void RattlerBones_SetBuffed(int index, bool buffed)
 		
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_RATTLER_BUFFED_SCALE);
-		int HP = StringToInt(BONES_RATTLER_HP_BUFFED);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_RATTLER_SPEED_BUFFED;
 		Rattler_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_RATTLER_BUFFED_SKIN);
@@ -422,8 +423,6 @@ public void RattlerBones_SetBuffed(int index, bool buffed)
 		
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_RATTLER_SCALE);
-		int HP = StringToInt(BONES_RATTLER_HP);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_RATTLER_SPEED;
 		Rattler_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_RATTLER_SKIN);

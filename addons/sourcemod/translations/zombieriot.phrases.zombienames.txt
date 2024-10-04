@@ -3027,6 +3027,26 @@
 	{
 		"en"	"Hollow Hitman"
 	}
+	"Bone Breaker"
+	{
+		"en"	"Bone Breaker"
+	}
+	"Spinal Slugger"
+	{
+		"en"	"Spinal Slugger"
+	}
+	"Calcium Criminal"
+	{
+		"en"	"Calcium Criminal"
+	}
+	"Flintlock Freak"
+	{
+		"en"	"Flintlock Freak"
+	}
+	"Deadeye"
+	{
+		"en"	"Deadeye"
+	}
 	"The Reaper"
 	{
 		"en"	"The Reaper"

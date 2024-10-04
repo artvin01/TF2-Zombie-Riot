@@ -180,6 +180,9 @@ methodmap MolotovBones < CClotBody
 	{	
 		MolotovBones npc = view_as<MolotovBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_MOLOTOV_SCALE, BONES_MOLOTOV_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_MOLOTOV_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_MOLOTOV_HP);
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;
 

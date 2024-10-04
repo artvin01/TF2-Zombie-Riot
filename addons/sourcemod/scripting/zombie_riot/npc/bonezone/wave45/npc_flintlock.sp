@@ -316,6 +316,9 @@ methodmap FlintlockBones < CClotBody
 			
 		FlintlockBones npc = view_as<FlintlockBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_FLINTLOCK_BUFFED_SCALE : BONES_FLINTLOCK_SCALE, buffed ? BONES_FLINTLOCK_HP_BUFFED : BONES_FLINTLOCK_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_FLINTLOCK_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_FLINTLOCK_HP_BUFFED);
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
@@ -401,8 +404,6 @@ public void FlintlockBones_SetBuffed(int index, bool buffed)
 		
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_FLINTLOCK_BUFFED_SCALE);
-		int HP = StringToInt(BONES_FLINTLOCK_HP_BUFFED);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_FLINTLOCK_SPEED_BUFFED;
 		Flintlock_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_FLINTLOCK_BUFFED_SKIN);
@@ -418,8 +419,6 @@ public void FlintlockBones_SetBuffed(int index, bool buffed)
 		
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_FLINTLOCK_SCALE);
-		int HP = StringToInt(BONES_FLINTLOCK_HP);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_FLINTLOCK_SPEED;
 		Flintlock_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_FLINTLOCK_SKIN);

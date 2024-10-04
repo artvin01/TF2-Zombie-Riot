@@ -259,6 +259,9 @@ methodmap BrittleBones < CClotBody
 			
 		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_BRITTLE_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_BRITTLE_HP_BUFFED);
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
@@ -311,8 +314,6 @@ public void BrittleBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = true;
 		
 		//Apply buffed stats:
-		int HP = StringToInt(BONES_BRITTLE_HP_BUFFED);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_BRITTLE_SPEED_BUFFED;
 		
 		//Apply buffed particle:
@@ -324,8 +325,6 @@ public void BrittleBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = false;
 		
 		//Remove buffed stats:
-		int HP = StringToInt(BONES_BRITTLE_HP);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_BRITTLE_SPEED;
 		
 		//Remove buffed particle:

@@ -361,6 +361,9 @@ methodmap JesterBones < CClotBody
 			
 		JesterBones npc = view_as<JesterBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_JESTER_SCALE_BUFFED : BONES_JESTER_SCALE, buffed ? BONES_JESTER_HP_BUFFED : BONES_JESTER_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_JESTER_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_JESTER_HP_BUFFED);
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
@@ -437,8 +440,6 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_JESTER_SCALE_BUFFED);
-		int HP = StringToInt(BONES_JESTER_HP_BUFFED);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_JESTER_SPEED_BUFFED;
 		DispatchKeyValue(index, "skin", BONES_JESTER_SKIN_BUFFED);
 
@@ -461,8 +462,6 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_JESTER_SCALE);
-		int HP = StringToInt(BONES_JESTER_HP);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_JESTER_SPEED;
 		DispatchKeyValue(index, "skin", BONES_JESTER_SKIN);
 		func_NPCAnimEvent[npc.index] = Jester_AnimEvent;

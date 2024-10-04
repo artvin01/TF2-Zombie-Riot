@@ -94,6 +94,8 @@ bool b_SetNonBuffedSkeletonAnimation[MAXENTITIES];
 bool b_IsSkeleton[MAXENTITIES];
 bool b_BonesBuffed[MAXENTITIES];
 int i_BoneZoneSummoner[MAXENTITIES];
+int i_BoneZoneNonBuffedMaxHealth[MAXENTITIES];
+int i_BoneZoneBuffedMaxHealth[MAXENTITIES];
 float f_BoneZoneSummonValue[MAXENTITIES];
 float f_BoneZoneNumSummons[MAXENTITIES];
 Handle g_BoneZoneBuffers[MAXENTITIES];
@@ -1428,6 +1430,25 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 
 	#if defined BONEZONE_BASE
+
+	property int m_iBoneZoneNonBuffedMaxHealth
+	{
+		public get() 			{ return i_BoneZoneNonBuffedMaxHealth[this.index]; }
+		public set(int value)
+		{ 
+			i_BoneZoneNonBuffedMaxHealth[this.index] = value; 
+		}
+	}
+
+	property int m_iBoneZoneBuffedMaxHealth
+	{
+		public get() 			{ return i_BoneZoneBuffedMaxHealth[this.index]; }
+		public set(int value)
+		{ 
+			i_BoneZoneBuffedMaxHealth[this.index] = value; 
+		}
+	}
+
 	property bool m_bBoneZoneNaturallyBuffed
 	{
 		public get()				{ return b_BoneZoneNaturallyBuffed[this.index]; }
@@ -1475,6 +1496,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()				{ return g_BoneZoneBuffers[this.index]; }
 		public set(Handle TempValueForProperty) 	{ g_BoneZoneBuffers[this.index] = TempValueForProperty; }
 	}
+
 	#endif
 
 	public float GetDebuffPercentage()//For the future incase we want to alter it easier
@@ -2460,6 +2482,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 
 	#if defined BONEZONE_BASE
+
 	//Returns whether or not the NPC is a skeleton.
 	public bool BoneZone_IsASkeleton()
 	{
@@ -2549,17 +2572,28 @@ methodmap CClotBody < CBaseCombatCharacter
 			Call_PushCell(this.index);
 			Call_PushCell(buffed);
 			Call_Finish();
-			
-			//Don't let skeletons keep excess health when they lose their buffed state.
-			if (!buffed && GetEntProp(this.index, Prop_Data, "m_iHealth") > GetEntProp(this.index, Prop_Data, "m_iMaxHealth"))
-			{
-				SetEntProp(this.index, Prop_Data, "m_iHealth", GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
-			}
 
 			bool hasBuffNow = this.BoneZone_GetBuffedState();
 
 			if (hasBuffNow != hadBuffAtStart)
 			{
+				//Calculates the max health to give a skeleton based on scaling.
+				//Example: In the waves config I specify Basic Bones should spawn with 1000 max health, when he normally has 500. This means he has double his max health.
+				//Therefore, if we convert him to his buffed state, he needs to have double the buffed state's max health too.
+				//Without this, wave config based health scaling does not play nice with the buffed forms gimmick. Also, barracks would be monstrously OP!
+				//NOTE: DO NOT MODIFY MAX HEALTH IN THE SKELETON'S BUFF FUNCTION! THIS WILL CAUSE UNINTENDED RESULTS!
+				float current = float(GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
+				float defaultMax = float((hadBuffAtStart ? this.m_iBoneZoneBuffedMaxHealth : this.m_iBoneZoneNonBuffedMaxHealth));
+				float targetMax = float((hasBuffNow ? this.m_iBoneZoneBuffedMaxHealth : this.m_iBoneZoneNonBuffedMaxHealth));
+				float multiplier = current / defaultMax;
+				SetEntProp(this.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
+
+				//Don't let skeletons keep excess health when they lose their buffed state.
+				if (!buffed && GetEntProp(this.index, Prop_Data, "m_iHealth") > GetEntProp(this.index, Prop_Data, "m_iMaxHealth"))
+				{
+					SetEntProp(this.index, Prop_Data, "m_iHealth", GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
+				}
+
 				float skeleBuffPos[3];
 				this.GetAbsOrigin(skeleBuffPos);
 

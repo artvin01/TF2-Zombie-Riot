@@ -191,6 +191,9 @@ methodmap AleraiserBones < CClotBody
 	{	
 		AleraiserBones npc = view_as<AleraiserBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALERAISER_SCALE, BONES_ALERAISER_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ALERAISER_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ALERAISER_HP);
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;
 		b_AleraiserGoneBerserk[npc.index] = false;

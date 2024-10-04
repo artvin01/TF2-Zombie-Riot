@@ -284,6 +284,9 @@ methodmap NecromancerBones < CClotBody
 			
 		NecromancerBones npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false, false, true));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_NECROMANCER_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_NECROMANCER_HP_BUFFED);
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
@@ -338,8 +341,6 @@ public void NecromancerBones_SetBuffed(int index, bool buffed)
 
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_NECROMANCER_BUFFED_SCALE);
-		int HP = StringToInt(BONES_NECROMANCER_HP_BUFFED);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_NECROMANCER_SPEED_BUFFED;
 		Necromancer_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_NECROMANCER_BUFFED_SKIN);
@@ -358,8 +359,6 @@ public void NecromancerBones_SetBuffed(int index, bool buffed)
 
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_NECROMANCER_SCALE);
-		int HP = StringToInt(BONES_NECROMANCER_HP);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_NECROMANCER_SPEED;
 		Necromancer_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_NECROMANCER_SKIN);

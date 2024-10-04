@@ -234,6 +234,9 @@ methodmap BigBones < CClotBody
 			
 		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE, buffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_BIG_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_BIG_HP_BUFFED);
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
@@ -285,8 +288,6 @@ public void BigBones_SetBuffed(int index, bool buffed)
 		
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_BIG_SCALE_BUFFED);
-		int HP = StringToInt(BONES_BIG_HP_BUFFED);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_BIG_SPEED_BUFFED;
 		DispatchKeyValue(index, "skin", BONES_BIG_SKIN_BUFFED);
 		
@@ -302,8 +303,6 @@ public void BigBones_SetBuffed(int index, bool buffed)
 		
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_BIG_SCALE);
-		int HP = StringToInt(BONES_BIG_HP);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_BIG_SPEED;
 		DispatchKeyValue(index, "skin", BONES_BIG_SKIN);
 		

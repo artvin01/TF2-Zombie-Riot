@@ -190,6 +190,9 @@ methodmap DeckhandBones < CClotBody
 			
 		DeckhandBones npc = view_as<DeckhandBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_DECKHAND_SCALE, BONES_DECKHAND_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_DECKHAND_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_DECKHAND_HP);
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;

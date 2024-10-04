@@ -306,6 +306,9 @@ methodmap BuccaneerBones < CClotBody
 		
 		BuccaneerBones npc = view_as<BuccaneerBones>(CClotBody(vecPos, vecAng, buffed ? BONEZONE_MODEL : "models/player/demo.mdl", buffed ? BONES_BUCCANEER_BUFFED_SCALE : BONES_BUCCANEER_SCALE, buffed ? BONES_BUCCANEER_HP_BUFFED : BONES_BUCCANEER_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_BUCCANEER_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_BUCCANEER_HP_BUFFED);
+
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
@@ -369,8 +372,6 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_BUCCANEER_BUFFED_SCALE);
-		int HP = StringToInt(BONES_BUCCANEER_HP_BUFFED);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_BUCCANEER_SPEED_BUFFED;
 		Buccaneer_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_BUFFED_SKIN);
@@ -389,8 +390,6 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_BUCCANEER_SCALE);
-		int HP = StringToInt(BONES_BUCCANEER_HP);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
 		npc.m_flSpeed = BONES_BUCCANEER_SPEED;
 		Buccaneer_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_SKIN);

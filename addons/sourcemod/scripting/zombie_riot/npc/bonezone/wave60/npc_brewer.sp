@@ -191,6 +191,9 @@ methodmap AlchemistBones < CClotBody
 	{	
 		AlchemistBones npc = view_as<AlchemistBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALCHEMIST_SCALE, BONES_ALCHEMIST_HP, ally, false));
 		
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ALCHEMIST_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ALCHEMIST_HP);
+
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = true;
 		b_AlchemistGoneBerserk[npc.index] = false;
