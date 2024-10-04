@@ -267,27 +267,21 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			{
 				RemoveEntity(npc.m_iWearable1);
 			}
-			npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
-			SetVariantString("1.15");
+			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+			SetVariantString("0.8");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			if(npc.m_iChanged_WalkCycle != 4) 	
+			{
+				npc.m_bisWalking = true;
+				npc.m_iChanged_WalkCycle = 4;
+				npc.SetActivity("ACT_RUN");
+				npc.m_flSpeed = 350.0;
+				NPC_StartPathing(iNPC);
+			}
 		}
 		return;
 	}
 
-	if(npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
-	{
-		//Reset anger.
-		npc.Anger = false;
-		if(IsValidEntity(npc.m_iWearable1))
-		{
-			RemoveEntity(npc.m_iWearable1);
-		}
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.8");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-	}
-
-	
 	if(npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
 	{
 		//Reset anger.
@@ -385,7 +379,23 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 		//We want to jump at the enemy the moment we are allowed to!
 		if(npc.m_flJumpHappening < gameTime)
 		{
-
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				//da jump!
+				npc.m_flDoingAnimation = gameTime + 1.0;
+				float WorldSpaceCenterVec[3]; 
+				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+				PluginBot_Jump(npc.index, WorldSpaceCenterVec);
+				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				if(npc.m_iChanged_WalkCycle != 7) 	
+				{
+					npc.m_bisWalking = false;
+					npc.m_iChanged_WalkCycle = 7;
+					npc.SetActivity("ACT_RUN");
+					npc.m_flSpeed = 0.0;
+					NPC_StartPathing(iNPC);
+				}
+			}
 		}
 		return;
 	}
@@ -496,7 +506,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 320.0;
+					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
@@ -550,10 +560,10 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					{
 						//enemy is indeed to far away, jump at them
 						npc.m_flJumpHappening = gameTime + 1.0;
-						if(npc.m_iChanged_WalkCycle != 4) 	
+						if(npc.m_iChanged_WalkCycle != 6) 	
 						{
 							npc.m_bisWalking = false;
-							npc.m_iChanged_WalkCycle = 4;
+							npc.m_iChanged_WalkCycle = 6;
 							npc.SetActivity("ACT_RUN");
 							npc.m_flSpeed = 0.0;
 							NPC_StartPathing(iNPC);
