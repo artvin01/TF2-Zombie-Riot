@@ -294,6 +294,9 @@ public void Criminal_Transform(int ref)
 		if (GetEntProp(spawnedNPC.index, Prop_Data, "m_iHealth") > GetEntProp(spawnedNPC.index, Prop_Data, "m_iMaxHealth"))
 			SetEntProp(spawnedNPC.index, Prop_Data, "m_iHealth", GetEntProp(spawnedNPC.index, Prop_Data, "m_iMaxHealth"));
 
+		if (IsValidEntity(npc.m_iBoneZoneSummoner))
+			spawnedNPC.m_iBoneZoneSummoner = npc.m_iBoneZoneSummoner;
+
 		RemoveEntity(ent);
 
 		pos[2] += 40.0;

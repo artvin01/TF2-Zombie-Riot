@@ -299,6 +299,9 @@ public void Peasant_Transform(int ref)
 			
 		RemoveEntity(ent);
 
+		if (IsValidEntity(npc.m_iBoneZoneSummoner))
+			spawnedNPC.m_iBoneZoneSummoner = npc.m_iBoneZoneSummoner;
+
 		pos[2] += 40.0;
 		ParticleEffectAt(pos, PARTICLE_TRANSFORM);
 		EmitSoundToAll(SND_TRANSFORM, spawned, _, 120);

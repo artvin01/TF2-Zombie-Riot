@@ -255,6 +255,7 @@ void OnMapStart_NPC_Base()
 	PrecacheSound(SOUND_HHH_DEATH);
 	PrecacheModel(BONEZONE_MODEL);
 	PrecacheSound(SND_TRANSFORM);
+	PrecacheSound(SND_GIB_SKELETON);
 	#endif
 	
 	
@@ -629,11 +630,20 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get() { return view_as<int>(this); } 
 	}
 	public void PlayGibSound() { //ehehee this sound is funny 
-		int sound = GetRandomInt(0, sizeof(g_GibSound) - 1);
-	
-		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+
+		if (this.m_iBleedType != BLEEDTYPE_SKELETON)
+		{
+			int sound = GetRandomInt(0, sizeof(g_GibSound) - 1);
+		
+			EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+			EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+			EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+		}
+		else
+		{
+			EmitSoundToAll(SND_GIB_SKELETON, this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+			EmitSoundToAll(SND_GIB_SKELETON, this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+		}
 	}
 	public void PlayGibSoundMetal() { //ehehee this sound is funny 
 		int sound = GetRandomInt(0, sizeof(g_GibSoundMetal) - 1);
@@ -4191,26 +4201,31 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		}
 		case BLEEDTYPE_SKELETON:
 		{
+			int skin = GetEntProp(pThis, Prop_Send, "m_nSkin");
 			npc.PlayGibSound();
 			if(npc.m_bIsGiant)
 			{
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 64;
 				GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+				SetEntProp(GibAny, Prop_Send, "m_nSkin", skin);
 				f_GibHealingAmount[GibAny] *= GibAmount;
 				startPosition[2] -= 15;
 				GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+				SetEntProp(GibAny, Prop_Send, "m_nSkin", skin);
 				f_GibHealingAmount[GibAny] *= GibAmount;
 				startPosition[2] += 44;
 				if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 				{
 					npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
 					GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, false, true);	
+					SetEntProp(GibAny, Prop_Send, "m_nSkin", skin);
 					f_GibHealingAmount[GibAny] *= GibAmount;
 				}
 				else
 				{
 					GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+					SetEntProp(GibAny, Prop_Send, "m_nSkin", skin);
 					f_GibHealingAmount[GibAny] *= GibAmount;		
 				}
 			}
@@ -4219,20 +4234,24 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 42;
 				GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, true, _, _, _, _, false, true);
+				SetEntProp(GibAny, Prop_Send, "m_nSkin", skin);
 				f_GibHealingAmount[GibAny] *= GibAmount;
 				startPosition[2] -= 10;
 				GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
+				SetEntProp(GibAny, Prop_Send, "m_nSkin", skin);
 				f_GibHealingAmount[GibAny] *= GibAmount;
 				startPosition[2] += 34;
 				if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 				{
 					npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
 					GibAny = Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, false, true);
+					SetEntProp(GibAny, Prop_Send, "m_nSkin", skin);
 					f_GibHealingAmount[GibAny] *= GibAmount;
 				}
 				else
 				{
 					GibAny = Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
+					SetEntProp(GibAny, Prop_Send, "m_nSkin", skin);
 					f_GibHealingAmount[GibAny] *= GibAmount;
 				}
 			}	

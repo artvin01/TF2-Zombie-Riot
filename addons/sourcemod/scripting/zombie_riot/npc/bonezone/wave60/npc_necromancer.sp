@@ -559,12 +559,16 @@ public void Necromancer_Summon(NecromancerBones npc)
 		float randAng[3];
 		randAng[1] = GetRandomFloat(0.0, 360.0);
 		
-		//This can be expanded to allow Necromancers to summon more types of NPCs.
+		//TODO: MAYBE let necromancers summon fodder skeletons from *all* skeleton types? Would require some max health tomfoolery though.
+		entity = PeasantBones(npc.index, Necro_TargetLoc[npc.index], randAng, GetTeam(npc.index), b_BonesBuffed[npc.index]);
+		Necromancer_AssignSummonStats(entity, npc, 1.0);
+
+		//The following switch statement can be uncommented and expanded to allow Necromancers to summon more types of NPCs.
 		//For obvious reasons, you should NEVER allow Necromancers to summon more Necromancers.
 		//I also recommend you don't allow them to summon Skeletal Saints or Profaned Priests unless the necromancer is already buffed. Nothing will break if you do, it would just be too strong.
 		//Aside from that, any NPC is fair game.
 		
-		switch(GetRandomInt(1, 3))
+		/*switch(GetRandomInt(1, 3))
 		{
 			case 1:
 			{
@@ -586,7 +590,7 @@ public void Necromancer_Summon(NecromancerBones npc)
 				entity = BrittleBones(npc.index, Necro_TargetLoc[npc.index], randAng, GetTeam(npc.index), b_BonesBuffed[npc.index]);
 				Necromancer_AssignSummonStats(entity, npc, 0.5);
 			}
-		}
+		}*/
 	}
 }
 

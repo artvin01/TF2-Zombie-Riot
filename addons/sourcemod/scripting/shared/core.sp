@@ -1201,6 +1201,7 @@ char g_TankStepSound[][] = {
 #define BONEZONE_MODEL		"models/zombie_riot/the_bone_zone/basic_bones.mdl"
 #define SND_TRANSFORM		")vo/halloween_boss/knight_alert.mp3"
 #define PARTICLE_TRANSFORM	"ghost_appearation"
+#define SND_GIB_SKELETON	")misc/halloween/skeleton_break.wav"
 
 char g_BoneZoneBuffDefaultSFX[][] = {
 	"vo/halloween_boo1.mp3",
