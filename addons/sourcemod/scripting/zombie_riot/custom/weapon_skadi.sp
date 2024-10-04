@@ -1,86 +1,65 @@
 #pragma semicolon 1
 #pragma newdecls required
-static Handle h_TimerRedBladeWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static Handle h_TimerSkadiWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static int i_VictoriaParticle[MAXTF2PLAYERS];
+static bool b_AbilityActivated[MAXPLAYERS];
 
-void ResetMapStartRedBladeWeapon()
+void ResetMapStartSkadiWeapon()
 {
-	RedBlade_Map_Precache();
+	Skadi_Map_Precache();
 }
 
-void RedBlade_Map_Precache() //Anything that needs to be precaced like sounds or something.
+void Skadi_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
-	PrecacheSound("ambient/cp_harbor/furnace_1_shot_02.wav");
-	PrecacheSound("items/powerup_pickup_supernova_activate.wav");
+	PrecacheSound("ambient/lair/perimeter_waves_close.wav");
 
 }
 
-public void Red_charge_ability(int client, int weapon, bool crit, int slot) // the main ability used to recover the unique mana needed to for the weapon to fire projectiles
+public void Skadi_Ability_M2(int client, int weapon, bool crit, int slot)
 {
-	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	if(IsValidEntity(client))
 	{
-		Handle swingTrace;
-		b_LagCompNPC_No_Layers = true;
-		float vecSwingForward[3];
-		StartLagCompensation_Base_Boss(client);
-		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 1500.0, false, 45.0, true); //infinite range, and ignore walls!
-		FinishLagCompensation_Base_boss();
-
-		int target = TR_GetEntityIndex(swingTrace);	
-		delete swingTrace;
-		if(!IsValidEnemy(client, target, true))
+		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			return;
+			Rogue_OnAbilityUse(weapon);
+			Ability_Apply_Cooldown(client, slot, 75.0);
+			EmitSoundToAll("ambient/lair/perimeter_waves_close.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
+			//PrintToChatAll("Rapid Shot Activated");
+			ApplyTempAttrib(weapon, 6, 1.2, 15.0);
+			CreateTimer(15.0, Timer_Bool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+			float flPos[3]; // original
+			float flAng[3]; // original
+			GetAttachment(client, "m_vecAbsOrigin", flPos, flAng);
+			int particle_Base = ParticleEffectAt(flPos, "medic_resist_fire", 30.0);
+			SetParent(client, particle_Base, "m_vecAbsOrigin");
 		}
-		i_RedBladeNpcToCharge[client] = EntIndexToEntRef(target);
-
-		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 10.0);
-		EmitSoundToAll("items/powerup_pickup_supernova_activate.wav", client, _, 80, _, 0.8, 100);
-
-		static float anglesB[3];
-		GetClientEyeAngles(client, anglesB);
-		static float velocity[3];
-		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = 300.0;
-		// knockback is the overall force with which you be pushed, don't touch other stuff
-		ScaleVector(velocity, knockback);
-		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
-			velocity[2] = fmax(velocity[2], 300.0);
 		else
-			velocity[2] += 100.0;    // a little boost to alleviate arcing issues
-
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+	
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
 		
-	//	ApplyTempAttrib(weapon, 852, 0.5, 5.0);
-
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, slot);
-		
-		if(Ability_CD <= 0.0)
-			Ability_CD = 0.0;
-			
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+		}
 	}
 }
-public void Enable_RedBladeWeapon(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+public void Enable_SkadiWeapon(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (h_TimerRedBladeWeaponManagement[client] != null)
+	if (h_TimerSkadiWeaponManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SKADI)
 		{
 			//Is the weapon it again?
 			//Yes?
-			delete h_TimerRedBladeWeaponManagement[client];
-			h_TimerRedBladeWeaponManagement[client] = null;
+			delete h_TimerSkadiWeaponManagement[client];
+			h_TimerSkadiWeaponManagement[client] = null;
 			DataPack pack;
-			h_TimerRedBladeWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_RedBlade, pack, TIMER_REPEAT);
+			h_TimerSkadiWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_Skadi, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -90,64 +69,85 @@ public void Enable_RedBladeWeapon(int client, int weapon) // Enable management, 
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SKADI)
 	{
 		DataPack pack;
-		h_TimerRedBladeWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_RedBlade, pack, TIMER_REPEAT);
+		h_TimerSkadiWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_Skadi, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
 
-public Action Timer_Management_RedBlade(Handle timer, DataPack pack)
+public Action Timer_Management_Skadi(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		DestroyRedBladeEffect(client);
-		h_TimerRedBladeWeaponManagement[client] = null;
+		DestroySkadiEffect(client);
+		b_AbilityActivated[client] = false;
+		h_TimerSkadiWeaponManagement[client] = null;
 		return Plugin_Stop;
 	}	
 
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		RedBladeHudShow(client, weapon);
+		b_AbilityActivated[client] = false;
+		DestroySkadiEffect(client);
 	}
-	else
-	{
-		DestroyRedBladeEffect(client);
-	}
-		
+
 	return Plugin_Continue;
 }
 
-void WeaponRedBlade_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapon, float &damage)
+void WeaponSkadi_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapon, float &damage)
 {
-	if(HALFORNO[attacker] && b_thisNpcIsARaid[victim])
+	if(b_AbilityActivated[attacker] && b_thisNpcIsARaid[victim])
 	{
-		damage *= 0.75;
+		damage *= 1.5;
 	}
-
-	
-	if(damagetype & DMG_CLUB)
-		NPC_Ignite(victim, attacker, 3.0, weapon);
 }
 
-void CreateRedBladeEffect(int client)
+void  WeaponSkadi_OnTakeDamage(int attacker, int victim, float &damage)
 {
-	
-	DestroyRedBladeEffect(client);
+	if(b_AbilityActivated[victim])
+	{
+		damage *= 0.66;
+		if(b_thisNpcIsARaid[attacker])
+		{
+			damage *= 1.1;
+		}
+	}
+}
+
+public Action Timer_Bool(Handle timer, any userid)
+{
+	int client = GetClientOfUserId(userid);
+	b_AbilityActivated[client] = false;
+	return Plugin_Stop;
+}
+
+void CreateSkadiEffect(int client)
+{
+	if(!IsValidEntity(i_VictoriaParticle[client]))
+	{
+		return;
+	}
+	DestroySkadiEffect(client);
 	
 	float flPos[3];
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-
-	
-	int particle = ParticleEffectAt(flPos, "utaunt_tarotcard_red_glow", 0.0);
+	float flAng[3];
+	GetAttachment (client, "m_vecAbsOrigin", flPos, flAng);
+	int particle = ParticleEffectAt(flPos, "eye_powerup_red_lvl_2", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(client, particle);
+	SetParent(client, particle, "m_vecAbsOrigin");
+	i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
 }
 
-void DestroyRedBladeEffect(int client)
+void DestroySkadiEffect(int client)
 {
-
+	int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+	if(IsValidEntity(entity))
+	{
+		RemoveEntity(entity);
+	}
+	i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;
 }
