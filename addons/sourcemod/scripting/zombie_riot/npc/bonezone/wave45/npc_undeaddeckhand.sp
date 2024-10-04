@@ -266,7 +266,6 @@ public void Deckhand_Transform(int ref)
 
 	int spawned;
 
-	//TODO: Add more pirates later, maybe?
 	switch(GetRandomInt(1, 3))
 	{
 		case 1:
@@ -285,6 +284,18 @@ public void Deckhand_Transform(int ref)
 
 	if (IsValidEntity(spawned))
 	{
+		CClotBody spawnedNPC = view_as<CClotBody>(spawned);
+
+		float current = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float defaultMax = float(npc.m_iBoneZoneNonBuffedMaxHealth);
+		float targetMax = float((spawnedNPC.BoneZone_GetBuffedState() ? spawnedNPC.m_iBoneZoneBuffedMaxHealth : spawnedNPC.m_iBoneZoneNonBuffedMaxHealth));
+		float multiplier = current / defaultMax;
+		if (multiplier != 1.0)
+			SetEntProp(spawned, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
+
+		if (GetEntProp(spawnedNPC.index, Prop_Data, "m_iHealth") > GetEntProp(spawnedNPC.index, Prop_Data, "m_iMaxHealth"))
+			SetEntProp(spawnedNPC.index, Prop_Data, "m_iHealth", GetEntProp(spawnedNPC.index, Prop_Data, "m_iMaxHealth"));
+
 		RemoveEntity(ent);
 
 		pos[2] += 40.0;

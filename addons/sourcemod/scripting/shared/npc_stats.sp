@@ -2598,7 +2598,9 @@ methodmap CClotBody < CBaseCombatCharacter
 				float defaultMax = float((hadBuffAtStart ? this.m_iBoneZoneBuffedMaxHealth : this.m_iBoneZoneNonBuffedMaxHealth));
 				float targetMax = float((hasBuffNow ? this.m_iBoneZoneBuffedMaxHealth : this.m_iBoneZoneNonBuffedMaxHealth));
 				float multiplier = current / defaultMax;
-				SetEntProp(this.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
+
+				if (multiplier != 1.0)
+					SetEntProp(this.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
 
 				//Don't let skeletons keep excess health when they lose their buffed state.
 				if (!buffed && GetEntProp(this.index, Prop_Data, "m_iHealth") > GetEntProp(this.index, Prop_Data, "m_iMaxHealth"))
