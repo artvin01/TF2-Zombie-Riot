@@ -1611,9 +1611,9 @@ public float Player_OnTakeDamage_VoidBlade_Hud(int victim)
 	if(i_VoidCurrentShields[victim] >= 1)
 	{
 		if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
-			damage *= 0.25;
-		else
 			damage *= 0.6;
+		else
+			damage *= 0.25;
 	}
 	return damage;
 }
