@@ -18,7 +18,7 @@ methodmap CombineSMG < CombinePolice
 {
 	public CombineSMG(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		CombineSMG npc = view_as<CombineSMG>(BaseSquad(vecPos, vecAng, "models/police.mdl", "1.15", ally, false));
+ 		CombineSMG npc = view_as<CombineSMG>(BaseSquad(vecPos, vecAng, "models/police.mdl", "1.15", ally, false));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "smg");
@@ -31,7 +31,7 @@ methodmap CombineSMG < CombinePolice
 
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 45;
-		func_NPCDeath[npc.index] = CombinePistol_NPCDeath;
+		func_NPCDeath[npc.index] = CombineSMG_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = BaseSquad_TakeDamage;
 		func_NPCThink[npc.index] = CombineSMG_ClotThink;
 		

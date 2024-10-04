@@ -568,26 +568,27 @@ static void Spawning_Logic(Magia_Anchor npc)
 		Ratio=-0.5;
 	float Time = 1.0 + Ratio;
 	fl_ruina_battery_timer[npc.index] = GameTime + Time;
+	int health = RoundToFloor(20000.0/(wave));
 	//whats a "switch" statement??
 	if(wave<=15)	
 	{
-		Spawn_Anchor_NPC(npc.index, "npc_ruina_drone", 750, 1, true);
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_drone", health, 1, true);
 	}
 	else if(wave <=30)	
 	{
-		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronian", 4000, 2, true);
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronian", health, 2, true);
 	}
 	else if(wave <= 45)	
 	{
-		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronis", 7500, 2, true);
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronis", health, 2, true);
 	}
 	else if(wave <=60)
 	{
-		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronianis", 15000, 3, true);
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronianis", health, 3, true);
 	}
 	else	//freeplay
 	{
-		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronianis", 35000, 3, true);
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronianis", health, 3, true);
 	}
 }
 static void Spawn_Anchor_NPC(int iNPC, char[] plugin_name, int health = 0, int count, bool self = false)
