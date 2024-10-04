@@ -5,9 +5,6 @@
 #define BONES_CRIMINAL_SKIN		"2"
 #define BONES_CRIMINAL_SCALE		 "1.0"
 
-#define SND_TRANSFORM		")vo/halloween_boss/knight_alert.mp3"
-#define PARTICLE_TRANSFORM	"ghost_appearation"
-
 static float BONES_CRIMINAL_SPEED = 220.0;
 static float CRIMINAL_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
 static float CRIMINAL_NATURAL_BUFF_LEVEL_MODIFIER = 0.2;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
@@ -70,8 +67,6 @@ public void CriminalBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
-
-	PrecacheSound(SND_TRANSFORM);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Calcium Criminal");
@@ -271,7 +266,7 @@ public void Criminal_Transform(int ref)
 		}
 		case 2:
 		{
-			spawned = MolotovBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= CRIMINAL_TRANSFORM_BUFFCHANCE).index;
+			spawned = MolotovBones(npc.index, pos, ang, GetTeam(npc.index)).index;
 		}
 		default:
 		{

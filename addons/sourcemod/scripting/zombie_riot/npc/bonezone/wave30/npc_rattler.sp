@@ -26,8 +26,8 @@ static float RATTLER_RELOAD_DELAY = 1.0;	//Delay after the reload finishes befor
 
 //HOLLOW HITMAN: Buffed range unit, slowly fires powerful explosive projectiles from a revolver. Predicts within a large radius.
 //Functions similarly to Rattlers in that it will run away while charging up its next shot, then chase the nearest target until in-range once its shot is fully charged.
-static float HITMAN_RANGE = 1500.0;			//Range in which Hollow Hitmen will shoot.
-static float HITMAN_PREDICT_RANGE = 600.0;	//Range in which Hollow Hitmen will predict their target's position.
+static float HITMAN_RANGE = 1000.0;			//Range in which Hollow Hitmen will shoot.
+//static float HITMAN_PREDICT_RANGE = 600.0;	//Range in which Hollow Hitmen will predict their target's position.
 static float HITMAN_VELOCITY = 1200.0;		//Projectile velocity.
 static float HITMAN_DMG = 400.0;			//Blast damage.
 static float HITMAN_RADIUS = 140.0;			//Blast radius.
@@ -44,7 +44,7 @@ static float BONES_RATTLER_ATTACKINTERVAL = 0.125;
 static float BONES_RATTLER_ATTACKINTERVAL_BUFFED = 2.0;
 
 static float RATTLER_HOVER_MINDIST = 400.0;
-static float RATTLER_HOVER_MAXDIST = 700.0;
+//static float RATTLER_HOVER_MAXDIST = 700.0;
 //static float RATTLER_HOVER_OPTIMALDIST = 550.0;
 
 static float f_RattlerFireballDMG[2049] = { 0.0, ... };
@@ -370,13 +370,13 @@ methodmap RattlerBones < CClotBody
 	}
 }
 
-public void ApplyBarrelEffect(RattlerBones npc, char type[255])
+public void ApplyBarrelEffect(CClotBody npc, char type[255])
 {
 	RemoveBarrelEffect(npc);
 	i_BarrelEffect[npc.index] = EntIndexToEntRef(Rattler_AttachParticle(npc.index, type, _, "revolver_muzzle"));
 }
 
-public void RemoveBarrelEffect(RattlerBones npc)
+public void RemoveBarrelEffect(CClotBody npc)
 {
 	int ent = EntRefToEntIndex(i_BarrelEffect[npc.index]);
 	if (IsValidEntity(ent))
@@ -505,25 +505,20 @@ public void Rattler_CheckShoot(RattlerBones npc, int closest)
 		if (!Can_I_See_Enemy_Only(npc.index, closest))
 			return;
 
-		if (!b_BonesBuffed[npc.index])
-		{
-			if (!npc.IHaveAmmo())
-				return;
+		float vicPos[3], userPos[3];
+		WorldSpaceCenter(closest, vicPos);
+		WorldSpaceCenter(npc.index, userPos);
 
-			float vicPos[3], userPos[3];
-			WorldSpaceCenter(closest, vicPos);
-			WorldSpaceCenter(npc.index, userPos);
-			if (GetVectorDistance(vicPos, userPos) <= RATTLER_RANGE)
-			{
-				int iActivity = npc.LookupActivity("ACT_RATTLER_ATTACK_IMMINENT");
-				if(iActivity > 0) npc.StartActivity(iActivity);
-				b_RattlerWindupPhase[npc.index] = true;
-				npc.FaceTowards(vicPos, 15000.0);
-				i_RattlerDryShots[npc.index] = RATTLER_EMPTY;
-				npc.StopPathing();
-			}
+		if (!b_BonesBuffed[npc.index] && GetVectorDistance(vicPos, userPos) <= RATTLER_RANGE && npc.IHaveAmmo())
+		{
+			int iActivity = npc.LookupActivity("ACT_RATTLER_ATTACK_IMMINENT");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+			b_RattlerWindupPhase[npc.index] = true;
+			npc.FaceTowards(vicPos, 15000.0);
+			i_RattlerDryShots[npc.index] = RATTLER_EMPTY;
+			npc.StopPathing();
 		}
-		else
+		else if (b_BonesBuffed[npc.index] && GetVectorDistance(vicPos, userPos) <= HITMAN_RANGE)
 		{
 			npc.AddGesture("ACT_HITMAN_DEPLOY_GUN");
 			b_HitmanCharging[npc.index] = true;
@@ -880,6 +875,11 @@ public void RattlerBones_ClotThink(int iNPC)
 		Hitman_Whooshes[npc.index] = 5;
 
 		b_ForceShootAnim[npc.index] = false;
+	}
+
+	if (b_BonesBuffed[npc.index])
+	{
+		npc.m_flSpeed = (b_HitmanCharging[npc.index] ? BONES_RATTLER_SPEED_BUFFED_CHARGING : BONES_RATTLER_SPEED_BUFFED);
 	}
 
 	int closest = npc.m_iTarget;

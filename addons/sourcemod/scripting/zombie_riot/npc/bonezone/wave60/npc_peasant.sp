@@ -68,8 +68,6 @@ public void PeasantBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
-	PrecacheSound(SND_TRANSFORM);
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Unpleasant Peasant");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_peasant");
