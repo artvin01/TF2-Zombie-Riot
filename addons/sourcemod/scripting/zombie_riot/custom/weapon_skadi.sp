@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 static Handle h_TimerSkadiWeaponManagement[MAXPLAYERS+1] = {null, ...};
-static int i_VictoriaParticle[MAXTF2PLAYERS];
+static int i_SkadiParticle[MAXTF2PLAYERS];
 static bool b_AbilityActivated[MAXPLAYERS];
 
 void ResetMapStartSkadiWeapon()
@@ -30,7 +30,7 @@ public void Skadi_Ability_M2(int client, int weapon, bool crit, int slot)
 			float flPos[3]; // original
 			float flAng[3]; // original
 			GetAttachment(client, "m_vecAbsOrigin", flPos, flAng);
-			int particle_Base = ParticleEffectAt(flPos, "medic_resist_fire", 30.0);
+			int particle_Base = ParticleEffectAt(flPos, "utaunt_god_aquatic_crack3", 15.0);
 			SetParent(client, particle_Base, "m_vecAbsOrigin");
 		}
 		else
@@ -131,7 +131,7 @@ public Action Timer_Bool(Handle timer, any userid)
 
 void CreateSkadiEffect(int client)
 {
-	if(!IsValidEntity(i_VictoriaParticle[client]))
+	if(!IsValidEntity(i_SkadiParticle[client]))
 	{
 		return;
 	}
@@ -140,18 +140,18 @@ void CreateSkadiEffect(int client)
 	float flPos[3];
 	float flAng[3];
 	GetAttachment (client, "m_vecAbsOrigin", flPos, flAng);
-	int particle = ParticleEffectAt(flPos, "eye_powerup_red_lvl_2", 0.0);
+	int particle = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle, "m_vecAbsOrigin");
-	i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
+	i_SkadiParticle[client][0] = EntIndexToEntRef(particle);
 }
 
 void DestroySkadiEffect(int client)
 {
-	int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+	int entity = EntRefToEntIndex(i_SkadiParticle[client]);
 	if(IsValidEntity(entity))
 	{
 		RemoveEntity(entity);
 	}
-	i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;
+	i_SkadiParticle[client] = INVALID_ENT_REFERENCE;
 }
