@@ -807,6 +807,7 @@ void ZR_MapStart()
 	Magnesis_Precache();
 	Wrathful_Blade_Precache();
 	Yakuza_MapStart();
+	ResetMapStartSkadiWeapon();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
