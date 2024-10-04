@@ -85,8 +85,8 @@ public void Ion_Beam_Wand_MapStart()
 #define NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER 1.5	//THIS MUST ALWAYS BE LESS THEN THE ONE ABOVE IT
 //Tottal charge time is these 2 combined
 
-#define NEUVELLETE_BASELINE_ION_DMG 750.0
-#define NEUVELLETE_BASELINE_ION_RANGE 15.0
+#define NEUVELLETE_BASELINE_ION_DMG 350.0
+#define NEUVELLETE_BASELINE_ION_RANGE 200.0
 
 #define NEUVELLETE_BASELINE_DAMAGE 140.0
 #define NEUVELLETE_BASELINE_RANGE 1000.0				//how far the laser can reach
@@ -139,9 +139,20 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 
 	if(RaidbossIgnoreBuildingsLogic(1))
 	{
-		DamagE *=1.33;
-		Turn_Speed += 1.25;
-		Pitch_Speed += 1.25;
+		DamagE *=1.22;
+		if(IsValidEntity(weapon))
+		{
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ION_BEAM_PULSE)
+			{	//turn speed is useless for the pulse cannon. so instead Slightly buff the damage.
+				DamagE *=1.1;
+			}
+			else if(i_CustomWeaponEquipLogic[weapon] != WEAPON_ION_BEAM_NIGHT)	//Don't buff turn speed.
+			{
+				Turn_Speed += 1.25;
+				Pitch_Speed += 1.25;
+			}
+		}
+		
 	}
 
 
@@ -157,7 +168,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_1_MANA_EFFICIENCY)
 	{
-		Mana_Cost -= RoundToFloor(float(Mana_Cost) * 0.25);
+		Mana_Cost -= RoundToFloor(float(Mana_Cost) * 0.2);
 		Effects |= (1 << 1); //adds the spinning shape
 	}
 	
@@ -199,7 +210,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	if(flags & FLAG_NEUVELLETE_PAP_4_TURNRATE)
 	{
 		Turn_Speed += 0.25;
-		Pitch_Speed += 0.1;
+		Pitch_Speed += 0.25;
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_4_PENETRATION)
 	{
@@ -207,10 +218,10 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_4_MANA_EFFICIENCY)
 	{
-		Mana_Cost -= RoundToFloor(float(Mana_Cost) * 0.25);
+		Mana_Cost -= RoundToFloor(float(Mana_Cost) * 0.2);
 		Effects |= (1 << 5);	//adds +1 to the spinning shape
 	}
-
+	//somehow invalid weapon, just buff dmg by 2x and hope for the best.
 	if(!IsValidEntity(weapon))
 	{
 		if(i_pap[client]>=5)
@@ -228,8 +239,8 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 			float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
 			float Ration = Duration*1.15 - Duration;
 			
-			if(Ration>2.5)
-				Ration = 2.5;
+			if(Ration>2.2)
+				Ration = 2.2;
 			
 			DamagE *= Ration;
 
@@ -247,7 +258,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 			Turn_Speed *= 0.5;
 			Pitch_Speed *= 0.5;
 			
-			DamagE *= 2.1;
+			DamagE *= 1.9;
 
 			Mana_Cost -= RoundToFloor(float(Mana_Cost)*0.1);
 			
@@ -262,7 +273,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 			}
 			Mana_Cost += RoundToFloor(float(Mana_Cost)*0.1);
 			
-			DamagE *= 1.9;
+			DamagE *= 1.7;
 			
 			Effects |= (1 << 7); //
 			
@@ -721,7 +732,7 @@ static Action Hexagon_Witchery_Tick(int client)
 						tempAngles[2] = 0.0;
 						
 						GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-						ScaleVector(Direction, range*2.0);
+						ScaleVector(Direction, range);
 						AddVectors(origin_vec, Direction, EndLoc);
 						vec_temp[i] = EndLoc;
 					}			
@@ -776,7 +787,7 @@ static Action Hexagon_Witchery_Tick(int client)
 					tempAngles[2] = 0.0;
 					
 					GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-					ScaleVector(Direction, range*2.0);
+					ScaleVector(Direction, range);
 					AddVectors(origin_vec, Direction, EndLoc);
 					vec_temp[i] = EndLoc;
 				}			
@@ -1071,7 +1082,7 @@ public Action Neuvellete_tick(int client)
 		int Effects = i_Effect_Hex[client];	
 
 		Current_Mana[client] -=mana_cost;
-		SDKhooks_SetManaRegenDelayTime(client, 1.0);
+		SDKhooks_SetManaRegenDelayTime(client, 2.0);
 
 		if(IsValidEntity(weapon_active) && i_CustomWeaponEquipLogic[weapon_active] == WEAPON_ION_BEAM_PULSE)
 		{

@@ -311,7 +311,8 @@ methodmap Ruliana < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		fl_npc_basespeed = 250.0;
+		//speed is low since otherwise allied npc's can't keep up with her.
+		fl_npc_basespeed = 225.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -442,7 +443,7 @@ static void ClotThink(int iNPC)
 			{
 				npc.m_flDoingAnimation = GameTime + 1.0;
 
-				Master_Apply_Defense_Buff(npc.index, 150.0, 5.0, 0.9);	//10% dmg resist
+				Master_Apply_Defense_Buff(npc.index, 325.0, 5.0, 0.9);	//10% dmg resist
 			}
 		}
 		else
@@ -993,7 +994,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			b_angered_once[npc.index] = true;
 			npc.PlayAngerSound();
 
-			fl_npc_basespeed = 270.0;
+			fl_npc_basespeed = 245.0;
 			
 			if(npc.m_bThisNpcIsABoss)
 			{

@@ -764,57 +764,62 @@ methodmap Twirl < CClotBody
 		else if(wave <=15)
 		{
 			i_ranged_ammo[npc.index] = 5;
-			switch(GetRandomInt(0, 4))
+			switch(GetRandomInt(0, 5))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, it feels nice to venture out into the world every once in a while...");
 				case 1: Twirl_Lines(npc, "Oh the joy I will get from {crimson}fighting{snow} you all");
 				case 2: Twirl_Lines(npc, "From what {aqua}Stella{snow}'s told, this should be great {purple}fun{snow}..");
 				case 3: Twirl_Lines(npc, "Let's see who dies {crimson}first{snow}!");
 				case 4: Twirl_Lines(npc, "Huh interesting, who might you be? no matter, you look strong, {crimson}ima fight you");	//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
+				case 5: Twirl_Lines(npc, "Its time to \"Twirl\" like a beyblade");
 			}
 		}
 		else if(wave <=30)
 		{
 			i_ranged_ammo[npc.index] = 7;
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Last time, it was a great workout, {crimson}Time to do it again{snow}!");
 				case 1: Twirl_Lines(npc, "Our last fight was so fun, I hope this fight is as fun as the last one!");
 				case 2: Twirl_Lines(npc, "{aqua}Stella{snow} was right, you all ARE great fun to play with!");
 				case 3: Twirl_Lines(npc, "Ehe, now who will die {crimson}last{snow}?");
+				case 4: Twirl_Lines(npc, "You spin me right round..");
 			}
 		}
 		else if(wave <=45)
 		{
 			i_ranged_ammo[npc.index] = 9;
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "My Oh my, your still here, {purple}how wonderful!");
+				case 0: Twirl_Lines(npc, "My Oh my, you're still here, {purple}how wonderful!");
 				case 1: Twirl_Lines(npc, "You must enjoy fighting as much as {purple}I do{snow}, considering you've made it this far!");
 				case 2: Twirl_Lines(npc, "{aqua}Stella{snow}, you understated how {purple}fun{snow} this would be!");
 				case 3: Twirl_Lines(npc, "I've brought some {purple}Heavy Equipment{snow} heh");
+				case 4: Twirl_Lines(npc, "Time to \"Twirl\", heh");
 			}
 		}
 		else if(wave <=60)
 		{	
 			i_ranged_ammo[npc.index] = 12;
-			switch(GetRandomInt(0, 4))
+			switch(GetRandomInt(0, 5))
 			{
-				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope your all as excited as I am{snow}!");
+				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope yoyou're all as excited as I am{snow}!");
 				case 1: Twirl_Lines(npc, "Ah, it was a {purple}brilliant idea to not use my powers {snow}and only use this crest instead.");
 				case 2: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
-				case 3: Twirl_Lines(npc, "I hope your ready for this final {purple}battle{snow}.");
-				case 4:
+				case 3: Twirl_Lines(npc, "I hope you're ready for this final {purple}battle{snow}.");
+				case 4: Twirl_Lines(npc, "Kuru Kuru~");
+				case 5:
 				{
-					switch(GetRandomInt(0, 10000))
+					switch(GetRandomInt(0, 2))
 					{
-						case 6:	//the likely hoods of this triggering are near non existant, so most likely you will see this whenever your editing the code or just browsing it
+						case 1:	//1/6*1/3 ~ 5.(5)% of it happening
 						{
-							Twirl_Lines(npc, "You know, its hard sometimes, its hard being what I am. It's hard...");
-							Twirl_Lines(npc, "Not being able to explain, that the mistakes you make are because of mental \"problems\"..");
-							Twirl_Lines(npc, "And that there's practially nothing you can do to fix them");
-						}  
-						default: Twirl_Lines(npc, "Kuru Kuru~");
+							Twirl_Lines(npc, "You know, there's something I've always wondered about, why do you people keep on calling me a masochist.");
+							Twirl_Lines(npc, "Since like, I'm not one for the record, and yet some of the \"people\" I've fought in the past keep calling me that.");
+							Twirl_Lines(npc, "And I'm at a loss as to WHY they say that, if anything it would be more accurate to call me a sadist, for the record, I'm not..");
+							Twirl_Lines(npc, "So yaknow, if you can, try and explain it, please?");
+						}
+						default: Twirl_Lines(npc, "Kururing~");
 					}
 				}
 			}
@@ -885,8 +890,9 @@ static void Twirl_WinLine(int entity)
 		case 6: Twirl_Lines(npc, "Another one bites the dust");
 		case 7: Twirl_Lines(npc, "Ah foolish Mercenaries, maybe next time think about a proper strategy");
 		case 8: Twirl_Lines(npc, "Raw power is good and all, but you know what's better? {crimson}Debuffs");
-		case 9: Twirl_Lines(npc, "Perhaps if you all had more {aqua}supports{snow} you might have won. Allas");
+		case 9: Twirl_Lines(npc, "Perhaps if you all had more {aqua}supports{snow} you'd might have won. Allas");
 		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+		case 11: Twirl_Lines(npc, "And you're all supposed to be strong?");
 	}
 
 }
@@ -1327,7 +1333,7 @@ static void lunar_Radiance(Twirl npc)
 		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
 
-	switch(GetRandomInt(0, 13))
+	switch(GetRandomInt(0, 17))
 	{
 		case 0: Twirl_Lines(npc, "These are just my own personal {crimson}ION{snow}'s. Ruina's ones are far scarier~");
 		case 2: Twirl_Lines(npc, "Watch your {crimson}Step{snow}!");
@@ -1336,6 +1342,8 @@ static void lunar_Radiance(Twirl npc)
 		case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
 		case 11: Twirl_Lines(npc, "Dance little merc, dance...");
 		case 13: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+		case 15: Twirl_Lines(npc, "Annihilation in {crimson}F# {snow}Minor");
+		case 17: Twirl_Lines(npc, "Oh, {crimson}poor{snow} you...");
 	}
 
 	float flPos[3], flAng[3];
@@ -2482,7 +2490,7 @@ static bool Retreat(Twirl npc, bool custom = false)
 		fl_force_ranged[npc.index] = GameTime + 8.0;	
 	}
 
-	switch(GetRandomInt(0, 10))
+	switch(GetRandomInt(0, 13))
 	{
 		case 0: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
 		case 1: Twirl_Lines(npc, "You really think you can {purple}catch {snow}me?");
@@ -2495,6 +2503,10 @@ static bool Retreat(Twirl npc, bool custom = false)
 		case 8: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
 		case 9: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
 		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+		case 11: Twirl_Lines(npc, "{crimson}Kururing{snow}~");
+		case 12: Twirl_Lines(npc, "{crimson}Kuru Kuru{snow}~");
+		case 13: Twirl_Lines(npc, "{crimson}Twirly Wirly{snow}~");
+		case 14: Twirl_Lines(npc, "Aaa, hai hai~");
 	}
 	return true;
 }
@@ -3027,8 +3039,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		b_allow_final_invocation[npc.index] = true;
 	}
 
-	if(!npc.Anger && (MaxHealth/2) >= Health && i_current_wave[npc.index] >=30 && npc.m_flDoingAnimation < GetGameTime(npc.index)) //Anger after half hp
+	if(!npc.Anger && (MaxHealth/2) >= Health && i_current_wave[npc.index] >=30) //Anger after half hp
 	{
+		Kill_Abilities(npc);	//force kill abilities when entering a transformation.
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
 
@@ -3101,12 +3114,12 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		
-		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, {gold}%N{snow}, your trying to copy the Machine?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, how foolish {gold}%N{snow} Blitzkrieg was a poor mistake to copy...", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, {gold}%N{snow}, you're trying to copy the Machine?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, how foolish {gold}%N{snow} Blitzkrieg was a poor mistake to copy...", client);}	//IT ACTUALLY WORKS, LMFAO
 		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, the Cosmic Terror, haven't seen that relic in a long while"); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "The moon is a deadly laser, am I right {gold}%N{snow}?",client);}
-		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, {gold}%N{snow}, Those drones, {crimson}how cute...", client); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "I applaud you're efforts {gold}%N{snow} for trying to use the Lantean staff here...", client);}
+		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, {gold}%N{snow}, Those drones, {crimson}how cute...", client); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "I applaud your efforts {gold}%N{snow} for trying to use the Lantean staff here...", client);}
 		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s a little {aqua}Motivated", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "Go fourth {gold}%N{snow}, AND BECOME {aqua}THE STORM THAT IS APROACHING{crimson}!", client);}
 		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, dual energy Pylons, nice choice {gold}%N", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "So, are you Team {aqua}Particle Cannon{snow} or Team{orange} Particle Beam{gold} %N{snow}?", client);}	
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh how {crimson}cute{gold} %N{snow}, your using {crimson}Karlas's{snow} Old blade", client); 			case 1: Format(Text_Lines, sizeof(Text_Lines), "The Fantasy blade is quite the weapon, {gold}%N{snow} but your not using it correctly.", client);}	
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh how {crimson}cute{gold} %N{snow}, you're using {crimson}Karlas's{snow} Old blade", client); 			case 1: Format(Text_Lines, sizeof(Text_Lines), "The Fantasy blade is quite the weapon, {gold}%N{snow} but you're not using it correctly.", client);}	
 		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s being a {aqua}Quincy{snow}, quick call the {crimson}Shinigami{snow}!", client);	case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, what a shame {gold}%N{snow} Here I thought you were a true {aqua}Quincy", client);}	
 		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "That laser is still quite young {gold}%N{snow} It needs more upgrades",client); 						case 1: Format(Text_Lines, sizeof(Text_Lines), "Your Prismatic Laser has potential {gold}%N{snow}!", client);}	
 		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "I see, {gold}%N{snow}, You decided to go down the pulse path!", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I do quite enjoy a faster pulsating laser, just like you {gold}%N{snow} by the looks of it", client);}	
@@ -3117,7 +3130,7 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 
 		/*can't think of any lines */ //case WEAPON_HEAVY_PARTICLE_RIFLE: switch(GetRandomInt(0,1)) {case 0: Format(Text_Lines, sizeof(Text_Lines), ""); case 1: Format(Text_Lines, sizeof(Text_Lines), "");}		
 		
-		//case WEAPON_KIT_FRACTAL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so your trying to use my own power's aggainst me {gold}%N{snow}?", client); 				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Have you mastered {gold}Nuclear Fusion{snow} that the Fractal Holds?", client);}
+		//case WEAPON_KIT_FRACTAL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so you're trying to use my own power's aggainst me {gold}%N{snow}?", client); 				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Have you mastered {gold}Nuclear Fusion{snow} that the Fractal Holds?", client);}
 
 		default:
 		{
@@ -3138,6 +3151,20 @@ static void Kill_Abilities(Twirl npc)
 	SDKUnhook(npc.index, SDKHook_Think, Retreat_Laser_Tick);
 	SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+
+	for(int i= 0 ; i < 3 ; i ++)
+	{
+		int ent = EntRefToEntIndex(i_lunar_entities[npc.index][i]);
+		if(IsValidEntity(ent))
+			RemoveEntity(ent);
+
+		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
+	}
+
+	StopSound(npc.index, SNDCHAN_STATIC, "player/taunt_surgeons_squeezebox_music.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
+
 	npc.m_bInKame = false;
 }
 
@@ -3151,19 +3178,7 @@ static void NPC_Death(int entity)
 
 	Kill_Abilities(npc);
 
-	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
-	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
-
 	Ruina_NPCDeath_Override(npc.index);
-
-	for(int i= 0 ; i < 3 ; i ++)
-	{
-		int ent = EntRefToEntIndex(i_lunar_entities[npc.index][i]);
-		if(IsValidEntity(ent))
-			RemoveEntity(ent);
-
-		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
-	}
 
 
 	int ent = EntRefToEntIndex(i_hand_particles[npc.index]);
@@ -3189,6 +3204,7 @@ static void NPC_Death(int entity)
 				case 2: Twirl_Lines(npc, "Ahaha, toodles");
 				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
 				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				case 5: Twirl_Lines(npc, "");
 			}
 		}
 		else if(wave <=30)
