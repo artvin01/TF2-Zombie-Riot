@@ -582,10 +582,10 @@ static void Neuvellete_Hud(int client, int weapon)
 			float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
 			float Ration = Duration*1.15 - Duration;
 			
-			if(Ration>2.5)
-				Ration = 2.5;
+			if(Ration>2.2)
+				Ration = 2.2;
 				
-			Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online | Power: (%.1f/2.5)]", HUDText, Ration);
+			Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online | Power: (%.1f/2.2)]", HUDText, Ration);
 		}
 		else
 		{
