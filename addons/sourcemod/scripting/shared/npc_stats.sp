@@ -2659,19 +2659,16 @@ methodmap CClotBody < CBaseCombatCharacter
 				float defaultMax = float((hadBuffAtStart ? this.m_iBoneZoneBuffedMaxHealth : this.m_iBoneZoneNonBuffedMaxHealth));
 				float targetMax = float((hasBuffNow ? this.m_iBoneZoneBuffedMaxHealth : this.m_iBoneZoneNonBuffedMaxHealth));
 				float multiplier = current / defaultMax;
-
-				if (multiplier != 1.0)
-					SetEntProp(this.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
-
-				SetEntPropFloat(this.index, Prop_Send, "m_flModelScale", (hasBuffNow ? this.m_flBoneZoneBuffedScale : this.m_flBoneZoneNonBuffedScale));
-
-				this.m_flSpeed = (hasBuffNow ? this.m_flBoneZoneBuffedSpeed : this.m_flBoneZoneNonBuffedSpeed);
-
+				
+				SetEntProp(this.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
 				//Don't let skeletons keep excess health when they lose their buffed state.
 				if (!buffed && GetEntProp(this.index, Prop_Data, "m_iHealth") > GetEntProp(this.index, Prop_Data, "m_iMaxHealth"))
 				{
 					SetEntProp(this.index, Prop_Data, "m_iHealth", GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
 				}
+
+				SetEntPropFloat(this.index, Prop_Send, "m_flModelScale", (hasBuffNow ? this.m_flBoneZoneBuffedScale : this.m_flBoneZoneNonBuffedScale));
+				this.m_flSpeed = (hasBuffNow ? this.m_flBoneZoneBuffedSpeed : this.m_flBoneZoneNonBuffedSpeed);
 
 				this.BoneZone_UpdateName();
 
