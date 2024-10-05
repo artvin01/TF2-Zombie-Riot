@@ -320,7 +320,7 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		npc.m_flNextTeleport = GameTime + 20.0;
+		npc.m_flNextTeleport = GameTime + 70.0;
 
 		int color[4];
 		Ruina_Color(color);

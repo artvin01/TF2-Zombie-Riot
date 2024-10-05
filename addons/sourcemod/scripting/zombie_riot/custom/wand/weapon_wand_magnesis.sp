@@ -56,8 +56,9 @@ static float Newtonian_M1_Velocity[3] = { 1400.0, 1800.0, 2200.0 };				//M1 proj
 static float Newtonian_M1_Lifespan[3] = { 1.0, 0.5, 0.65 };						//M1 projectile lifespan.
 static float Newtonian_M1_Falloff_MultiHit[3] = { 0.66, 0.75, 0.85 };			//Amount to multiply damage dealt by M1 per target hit.
 static float Newtonian_M1_Falloff_Distance[3] = { 0.66, 0.75, 0.85 };			//Maximum M1 damage falloff, based on distance.
-static float Newtonian_M1_ComboMult[3] = { 3.0, 3.0, 3.0 };						//Amount to multiply damage dealt by the M1 to enemies who have been knocked airborne by the M2.
-static float Newtonian_M1_ComboCDR[3] = { 5.0, 2.5, 2.5 };						//Amount to reduce remaining M2 cooldown when airshotting an enemy launched by M2.
+static float Newtonian_M1_ComboMult[3] = { 4.0, 4.0, 4.0 };						//Amount to multiply damage dealt by the M1 to enemies who have been knocked airborne by the M2.
+static float Newtonian_M1_ComboCDR[3] = { 5.0, 5.0, 5.0 };						//Amount to reduce remaining M2 cooldown when airshotting an enemy launched by M2.
+static float Newtonian_M1_ComboCDR_Raids[3] = { 10.0, 10.0, 10.0 };				//Amount to reduce remaining M2 cooldown when airshotting a raid launched by M2 (does not stack with the other cdr). 
 static int Newtonian_M1_MaxTargets[3] = { 4, 5, 6 };							//Max targets hit by the M1 projectile's explosion.
 static float Newtonian_M2_Cost[3] = { 200.0, 300.0, 400.0 };					//M2 cost.
 static float Newtonian_M2_Cooldown[3] = { 40.0, 25.0, 25.0 };					//M2 cooldown.
@@ -1056,13 +1057,13 @@ public float Newtonian_M1Hit(int attacker, int victim, float damage, int weapon)
 {
 	if (Newtonian_Airborne[victim])
 	{
-		damage *= Newtonian_M1_ComboMult[Magnesis_Tier[attacker]];
+		damage *= (2.0 * Newtonian_M1_ComboMult[Magnesis_Tier[attacker]]);
 		DisplayCritAboveNpc(victim, attacker, true);
 
 		float cd = Ability_Check_Cooldown(attacker, 2, weapon);
 		if (cd > 0.0)
 		{
-			cd -= Newtonian_M1_ComboCDR[attacker];
+			cd -= (b_thisNpcIsARaid[victim] ? Newtonian_M1_ComboCDR_Raids[Magnesis_Tier[attacker]] : Newtonian_M1_ComboCDR[Magnesis_Tier[attacker]]);
 			Ability_Apply_Cooldown(attacker, 2, cd, weapon);
 		}
 	}

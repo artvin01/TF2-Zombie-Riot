@@ -325,7 +325,7 @@ static void ClotThink(int iNPC)
 					Projectile.Angles = Ang;
 					Projectile.speed = projectile_speed;
 					Projectile.radius = 0.0;
-					Projectile.damage = 50.0;
+					Projectile.damage = 40.0;
 					Projectile.bonus_dmg = 100.0;
 					Projectile.Time = Laser_Time;
 					Projectile.visible = false;
@@ -343,8 +343,8 @@ static void ClotThink(int iNPC)
 
 						Initiate_HomingProjectile(Proj,
 						npc.index,
-						75.0,			// float lockonAngleMax,
-						7.5,			// float homingaSec,
+						80.0,			// float lockonAngleMax,
+						5.5,			// float homingaSec,
 						true,			// bool LockOnlyOnce,
 						true,			// bool changeAngles,
 						Ang);			// float AnglesInitiate[3]);
