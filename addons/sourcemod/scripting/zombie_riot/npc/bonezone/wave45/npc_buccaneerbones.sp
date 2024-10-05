@@ -315,6 +315,11 @@ methodmap BuccaneerBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_BUCCANEER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_BUCCANEER_HP_BUFFED);
 
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_BUCCANEER_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_BUCCANEER_BUFFED_SCALE);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_BUCCANEER_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_BUCCANEER_SPEED_BUFFED;
+
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Boner Bomber");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Brigadier Bones");
 		npc.BoneZone_UpdateName();
@@ -380,8 +385,6 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = true;
 
 		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_BUCCANEER_BUFFED_SCALE);
-		npc.m_flSpeed = BONES_BUCCANEER_SPEED_BUFFED;
 		Buccaneer_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_BUFFED_SKIN);
 		npc.m_flNextRangedAttack = GetGameTime() + BONES_BUCCANEER_ATTACKINTERVAL_BUFFED;
@@ -398,8 +401,6 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = false;
 
 		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_BUCCANEER_SCALE);
-		npc.m_flSpeed = BONES_BUCCANEER_SPEED;
 		Buccaneer_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_BUCCANEER_SKIN);
 		buccaneer_BuffedState[npc.index] = BUCCANEER_IDLE;

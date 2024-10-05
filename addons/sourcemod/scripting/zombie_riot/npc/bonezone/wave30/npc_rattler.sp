@@ -329,6 +329,11 @@ methodmap RattlerBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_RATTLER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_RATTLER_HP_BUFFED);
 
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_RATTLER_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_RATTLER_BUFFED_SCALE);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_RATTLER_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_RATTLER_SPEED_BUFFED;
+
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Hollow Hitman");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Rattler");
 		npc.BoneZone_UpdateName();
@@ -416,8 +421,6 @@ public void RattlerBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = true;
 		
 		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_RATTLER_BUFFED_SCALE);
-		npc.m_flSpeed = BONES_RATTLER_SPEED_BUFFED;
 		Rattler_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_RATTLER_BUFFED_SKIN);
 
@@ -431,8 +434,6 @@ public void RattlerBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = false;
 		
 		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_RATTLER_SCALE);
-		npc.m_flSpeed = BONES_RATTLER_SPEED;
 		Rattler_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_RATTLER_SKIN);
 

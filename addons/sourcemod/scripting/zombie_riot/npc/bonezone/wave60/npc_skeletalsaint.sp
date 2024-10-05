@@ -319,6 +319,10 @@ methodmap SaintBones < CClotBody
 
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_SAINT_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_SAINT_HP_BUFFED);
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_SAINT_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_SAINT_SCALE_BUFFED);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_SAINT_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_SAINT_SPEED_BUFFED;
 
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Skeletal Saint");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Blighted Bones");
@@ -382,8 +386,6 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = true;
 
 		//Apply buffed stats:
-		DispatchKeyValue(index, "modelscale", BONES_SAINT_SCALE_BUFFED);
-		npc.m_flSpeed = BONES_SAINT_SPEED_BUFFED;
 		Saint_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_SAINT_SKIN_BUFFED);
 		
@@ -404,8 +406,6 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = false;
 
 		//Remove buffed stats:
-		DispatchKeyValue(index, "modelscale", BONES_SAINT_SCALE);
-		npc.m_flSpeed = BONES_SAINT_SPEED;
 		Saint_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_SAINT_SKIN);
 		

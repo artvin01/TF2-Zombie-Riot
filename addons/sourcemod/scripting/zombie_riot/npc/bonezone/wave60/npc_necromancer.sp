@@ -292,6 +292,10 @@ methodmap NecromancerBones < CClotBody
 
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_NECROMANCER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_NECROMANCER_HP_BUFFED);
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_NECROMANCER_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_NECROMANCER_BUFFED_SCALE);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_NECROMANCER_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_NECROMANCER_SPEED_BUFFED;
 
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Bringer of Bones");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Novice Necromancer");
@@ -349,8 +353,6 @@ public void NecromancerBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = true;
 
 		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_NECROMANCER_BUFFED_SCALE);
-		npc.m_flSpeed = BONES_NECROMANCER_SPEED_BUFFED;
 		Necromancer_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_NECROMANCER_BUFFED_SKIN);
 		
@@ -367,8 +369,6 @@ public void NecromancerBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = false;
 
 		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_NECROMANCER_SCALE);
-		npc.m_flSpeed = BONES_NECROMANCER_SPEED;
 		Necromancer_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_NECROMANCER_SKIN);
 		

@@ -231,6 +231,11 @@ methodmap BasicBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_BASIC_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_BASIC_HP_BUFFED);
 
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_BASIC_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_BASIC_SCALE_BUFFED);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_BASIC_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_BASIC_SPEED_BUFFED;
+
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Buffed Basic Bones");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Basic Bones");
 		npc.BoneZone_UpdateName();
@@ -277,15 +282,11 @@ methodmap BasicBones < CClotBody
 
 public void BasicBones_SetBuffed(int index, bool buffed)
 {
-	CClotBody npc = view_as<CClotBody>(index);
 	if (!b_BonesBuffed[index] && buffed)
 	{
 		//Tell the game the skeleton is buffed:
 		b_BonesBuffed[index] = true;
 		
-		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_BASIC_SCALE_BUFFED);
-		npc.m_flSpeed = BONES_BASIC_SPEED_BUFFED;
 		DispatchKeyValue(index, "skin", BONES_BASIC_SKIN_BUFFED);
 		
 		//Apply buffed particle:
@@ -298,9 +299,6 @@ public void BasicBones_SetBuffed(int index, bool buffed)
 		//Tell the game the skeleton is no longer buffed:
 		b_BonesBuffed[index] = false;
 		
-		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_BASIC_SCALE);
-		npc.m_flSpeed = BONES_BASIC_SPEED;
 		DispatchKeyValue(index, "skin", BONES_BASIC_SKIN);
 		
 		//Remove buffed particle:

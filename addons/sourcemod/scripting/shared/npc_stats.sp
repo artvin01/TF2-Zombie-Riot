@@ -105,6 +105,10 @@ int i_BoneZoneNonBuffedMaxHealth[MAXENTITIES];
 int i_BoneZoneBuffedMaxHealth[MAXENTITIES];
 float f_BoneZoneSummonValue[MAXENTITIES];
 float f_BoneZoneNumSummons[MAXENTITIES];
+float f_BoneZoneBuffedScale[MAXENTITIES];
+float f_BoneZoneNonBuffedScale[MAXENTITIES];
+float f_BoneZoneBuffedSpeed[MAXENTITIES];
+float f_BoneZoneNonBuffedSpeed[MAXENTITIES];
 Handle g_BoneZoneBuffers[MAXENTITIES];
 Function g_BoneZoneBuffFunction[MAXENTITIES];
 Function g_BoneZoneBuffVFX[MAXENTITIES];
@@ -1488,6 +1492,30 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 	}
 
+	property float m_flBoneZoneBuffedScale
+	{
+		public get()			{ return f_BoneZoneBuffedScale[this.index]; }
+		public set(float value)	{ f_BoneZoneBuffedScale[this.index] = value; }
+	}
+
+	property float m_flBoneZoneNonBuffedScale
+	{
+		public get()			{ return f_BoneZoneNonBuffedScale[this.index]; }
+		public set(float value)	{ f_BoneZoneNonBuffedScale[this.index] = value; }
+	}
+
+	property float m_flBoneZoneBuffedSpeed
+	{
+		public get()			{ return f_BoneZoneBuffedSpeed[this.index]; }
+		public set(float value)	{ f_BoneZoneBuffedSpeed[this.index] = value; }
+	}
+
+	property float m_flBoneZoneNonBuffedSpeed
+	{
+		public get()			{ return f_BoneZoneNonBuffedSpeed[this.index]; }
+		public set(float value)	{ f_BoneZoneNonBuffedSpeed[this.index] = value; }
+	}
+
 	property bool m_bBoneZoneNaturallyBuffed
 	{
 		public get()				{ return b_BoneZoneNaturallyBuffed[this.index]; }
@@ -2634,6 +2662,10 @@ methodmap CClotBody < CBaseCombatCharacter
 
 				if (multiplier != 1.0)
 					SetEntProp(this.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
+
+				SetEntPropFloat(this.index, Prop_Send, "m_flModelScale", (hasBuffNow ? this.m_flBoneZoneBuffedScale : this.m_flBoneZoneNonBuffedScale));
+
+				this.m_flSpeed = (hasBuffNow ? this.m_flBoneZoneBuffedSpeed : this.m_flBoneZoneNonBuffedSpeed);
 
 				//Don't let skeletons keep excess health when they lose their buffed state.
 				if (!buffed && GetEntProp(this.index, Prop_Data, "m_iHealth") > GetEntProp(this.index, Prop_Data, "m_iMaxHealth"))

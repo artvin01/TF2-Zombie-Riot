@@ -298,6 +298,11 @@ methodmap ArchmageBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ARCHMAGE_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ARCHMAGE_HP_BUFFED);
 
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_ARCHMAGE_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_ARCHMAGE_BUFFED_SCALE);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_ARCHMAGE_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_ARCHMAGE_SPEED_BUFFED;
+
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Alakablaster");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Spelleton");
 		npc.BoneZone_UpdateName();
@@ -353,8 +358,6 @@ public void ArchmageBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = true;
 		
 		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_ARCHMAGE_BUFFED_SCALE);
-		npc.m_flSpeed = BONES_ARCHMAGE_SPEED_BUFFED;
 		Archmage_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_ARCHMAGE_BUFFED_SKIN);
 		
@@ -369,8 +372,6 @@ public void ArchmageBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = false;
 		
 		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_ARCHMAGE_SCALE);
-		npc.m_flSpeed = BONES_ARCHMAGE_SPEED;
 		Archmage_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_ARCHMAGE_SKIN);
 		

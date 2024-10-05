@@ -369,6 +369,10 @@ methodmap JesterBones < CClotBody
 
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_JESTER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_JESTER_HP_BUFFED);
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_JESTER_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_JESTER_SCALE_BUFFED);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_JESTER_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_JESTER_SPEED_BUFFED;
 
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Servant of Mondo");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Fearsome Fool");
@@ -448,8 +452,6 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_MONDO_ATTACK_DELAY_TRANSFORM;
 		
 		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_JESTER_SCALE_BUFFED);
-		npc.m_flSpeed = BONES_JESTER_SPEED_BUFFED;
 		DispatchKeyValue(index, "skin", BONES_JESTER_SKIN_BUFFED);
 
 		func_NPCAnimEvent[npc.index] = Mondo_AnimEvent;
@@ -470,8 +472,6 @@ public void JesterBones_SetBuffed(int index, bool buffed)
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_JESTER_ATTACK_DELAY_TRANSFORM;
 
 		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_JESTER_SCALE);
-		npc.m_flSpeed = BONES_JESTER_SPEED;
 		DispatchKeyValue(index, "skin", BONES_JESTER_SKIN);
 		func_NPCAnimEvent[npc.index] = Jester_AnimEvent;
 

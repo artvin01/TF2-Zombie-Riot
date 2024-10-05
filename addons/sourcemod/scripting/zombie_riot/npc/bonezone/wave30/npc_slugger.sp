@@ -269,6 +269,11 @@ methodmap SluggerBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_SLUGGER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_SLUGGER_HP_BUFFED);
 
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_SLUGGER_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_SLUGGER_SCALE_BUFFED);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_SLUGGER_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_SLUGGER_SPEED_BUFFED;
+
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Spinal Slugger");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Bone Breaker");
 		npc.BoneZone_UpdateName();
@@ -348,10 +353,6 @@ public void SluggerBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is buffed:
 		b_BonesBuffed[index] = true;
-		
-		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_SLUGGER_SCALE_BUFFED);
-		npc.m_flSpeed = BONES_SLUGGER_SPEED_BUFFED;
 
 		Slugger_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_SLUGGER_SKIN_BUFFED);
@@ -360,10 +361,6 @@ public void SluggerBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is no longer buffed:
 		b_BonesBuffed[index] = false;
-		
-		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_SLUGGER_SCALE);
-		npc.m_flSpeed = BONES_SLUGGER_SPEED;
 
 		Slugger_GiveCosmetics(npc, false);
 		

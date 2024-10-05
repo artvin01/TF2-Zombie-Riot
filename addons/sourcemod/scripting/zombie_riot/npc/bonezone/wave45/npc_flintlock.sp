@@ -325,6 +325,11 @@ methodmap FlintlockBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_FLINTLOCK_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_FLINTLOCK_HP_BUFFED);
 
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_FLINTLOCK_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_FLINTLOCK_BUFFED_SCALE);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_FLINTLOCK_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_FLINTLOCK_SPEED_BUFFED;
+
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Deadeye");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Swashbuckler Skelebones");
 		npc.BoneZone_UpdateName();
@@ -412,8 +417,6 @@ public void FlintlockBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = true;
 		
 		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_FLINTLOCK_BUFFED_SCALE);
-		npc.m_flSpeed = BONES_FLINTLOCK_SPEED_BUFFED;
 		Flintlock_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_FLINTLOCK_BUFFED_SKIN);
 
@@ -427,8 +430,6 @@ public void FlintlockBones_SetBuffed(int index, bool buffed)
 		b_BonesBuffed[index] = false;
 		
 		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_FLINTLOCK_SCALE);
-		npc.m_flSpeed = BONES_FLINTLOCK_SPEED;
 		Flintlock_GiveCosmetics(npc, false);
 		DispatchKeyValue(index, "skin", BONES_FLINTLOCK_SKIN);
 

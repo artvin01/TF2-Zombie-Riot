@@ -289,6 +289,10 @@ methodmap SquireBones < CClotBody
 
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_SQUIRE_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_SQUIRE_HP_BUFFED);
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_SQUIRE_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_SQUIRE_SCALE_BUFFED);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_SQUIRE_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_SQUIRE_SPEED_BUFFED;
 
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Knightmare");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Skeletal Squire");
@@ -369,10 +373,6 @@ public void SquireBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is buffed:
 		b_BonesBuffed[index] = true;
-		
-		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_SQUIRE_SCALE_BUFFED);
-		npc.m_flSpeed = BONES_SQUIRE_SPEED_BUFFED;
 
 		Squire_GiveCosmetics(npc, true);
 		DispatchKeyValue(index, "skin", BONES_SQUIRE_SKIN_BUFFED);
@@ -381,10 +381,6 @@ public void SquireBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is no longer buffed:
 		b_BonesBuffed[index] = false;
-		
-		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_SQUIRE_SCALE);
-		npc.m_flSpeed = BONES_SQUIRE_SPEED;
 
 		Squire_GiveCosmetics(npc, false);
 		

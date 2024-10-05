@@ -268,6 +268,11 @@ methodmap BrittleBones < CClotBody
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_BRITTLE_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_BRITTLE_HP_BUFFED);
 
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_BRITTLE_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_BRITTLE_SCALE);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_BRITTLE_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_BRITTLE_SPEED_BUFFED;
+
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Buffed Brittle Bones");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Brittle Bones");
 		npc.BoneZone_UpdateName();
@@ -322,9 +327,6 @@ public void BrittleBones_SetBuffed(int index, bool buffed)
 		//Tell the game the skeleton is buffed:
 		b_BonesBuffed[index] = true;
 		
-		//Apply buffed stats:
-		npc.m_flSpeed = BONES_BRITTLE_SPEED_BUFFED;
-		
 		//Apply buffed particle:
 		Brittle_Particle[index] = EntIndexToEntRef(Brittle_AttachParticle(npc.index, BONES_BRITTLE_BUFFPARTICLE, _, "eyes"));
 	}
@@ -332,9 +334,6 @@ public void BrittleBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is no longer buffed:
 		b_BonesBuffed[index] = false;
-		
-		//Remove buffed stats:
-		npc.m_flSpeed = BONES_BRITTLE_SPEED;
 		
 		//Remove buffed particle:
 		int particle = EntRefToEntIndex(Brittle_Particle[index]);
