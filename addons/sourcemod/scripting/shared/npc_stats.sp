@@ -109,21 +109,25 @@ Handle g_BoneZoneBuffers[MAXENTITIES];
 Function g_BoneZoneBuffFunction[MAXENTITIES];
 Function g_BoneZoneBuffVFX[MAXENTITIES];
 
+//This is used exclusively for handling skeleton spawns via wave or command.
+//If we spawn a NON-BUFFED skeleton with health different from its default max health, and the random buff chance succeeds and forces the buff,
+//we need to make sure the buffed form's HP reflects the change. IE if Basic Bones, which normally has 300 HP, is spawned via wave config with 600 HP,
+//that means it has double max HP. If the random buff chance happens, we need to make sure the buffed form also has double HP.
 public void BoneZone_SetRandomBuffedHP(CClotBody npc)
 {
 	if (!IsValidEntity(npc.index))
 		return;
 
+	if (!npc.BoneZone_GetBuffedState())
+		return;
+
 	float current = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-	float defaultMax = float(npcthis.m_iBoneZoneNonBuffedMaxHealth);
+	float defaultMax = float(npc.m_iBoneZoneNonBuffedMaxHealth);
 	float targetMax = float(npc.m_iBoneZoneBuffedMaxHealth);
 	float multiplier = current / defaultMax;
 
 	SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundFloat(targetMax * multiplier));
-	if (GetEntProp(npc.index, Prop_Data, "m_iHealth") > GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-	{
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-	}
+	SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 }
 
 #endif

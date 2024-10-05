@@ -189,7 +189,7 @@ methodmap CriminalBones < CClotBody
 		}
 			
 		CriminalBones npc = view_as<CriminalBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_CRIMINAL_SCALE, BONES_CRIMINAL_HP, ally, false));
-		
+
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_CRIMINAL_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_CRIMINAL_HP);
 

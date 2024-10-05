@@ -231,6 +231,7 @@ methodmap PirateBones < CClotBody
 	
 	public PirateBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
+		bool randomlyBuffed = false;
 		if (!buffed)
 		{
 			float chance = PIRATE_NATURAL_BUFF_CHANCE;
@@ -256,10 +257,13 @@ methodmap PirateBones < CClotBody
 			}
 			
 			buffed = (GetRandomFloat() <= chance);
+			randomlyBuffed = buffed;
 		}
 			
-		PirateBones npc = view_as<PirateBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_PIRATE_SCALE_BUFFED : BONES_PIRATE_SCALE, buffed ? BONES_PIRATE_HP_BUFFED : BONES_PIRATE_HP, ally, false));
-		
+		PirateBones npc = view_as<PirateBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_PIRATE_SCALE_BUFFED : BONES_PIRATE_SCALE, buffed && !randomlyBuffed ? BONES_PIRATE_HP_BUFFED : BONES_PIRATE_HP, ally, false));
+		if (randomlyBuffed)
+			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
+
 		b_BonesBuffed[npc.index] = buffed;
 
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_PIRATE_HP);

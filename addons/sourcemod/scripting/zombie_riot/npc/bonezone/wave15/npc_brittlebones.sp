@@ -230,6 +230,7 @@ methodmap BrittleBones < CClotBody
 	
 	public BrittleBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
+		bool randomlyBuffed = false;
 		if (!buffed)
 		{
 			float chance = BRITTLE_NATURAL_BUFF_CHANCE;
@@ -255,9 +256,12 @@ methodmap BrittleBones < CClotBody
 			}
 			
 			buffed = (GetRandomFloat() <= chance);
+			randomlyBuffed = buffed;
 		}
 			
-		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
+		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed && !randomlyBuffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
+		if (randomlyBuffed)
+			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 
 		b_BonesBuffed[npc.index] = buffed;
 
