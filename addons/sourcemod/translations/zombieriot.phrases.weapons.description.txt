@@ -4003,7 +4003,7 @@
 	}
 	"Abyssal Greatsword desc"
 	{
-		"en"	"A worn sword covered with blue goo. Once used by a great abyssal hunter\nGain Faster attack speed and higher damage as a cost of aoe attack and Solemny. \n weapon's Archetype changed to "Abyssal hunters" and all abyssal hunter weapons will receive 10% damage bonus"
+		"en"	"A worn sword covered with blue goo. Once used by a great abyssal hunter\nGain Faster attack speed and higher damage as a cost of aoe attack and Solemny. \n weapon's Archetype changed to Abyssal hunters and all abyssal hunter weapons will receive 10% damage bonus"
 	}
 	"Abyssal Greatsword Pap 1 desc"
 	{
