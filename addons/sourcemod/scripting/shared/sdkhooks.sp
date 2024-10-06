@@ -2332,9 +2332,14 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
 		{
-			return Gladiia_OnTakeDamageAlly_Hud(victim);
+			float DmgMulti = 1.0;
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SKADI)
+			{
+				WeaponSkadi_OnTakeDamage(1,victim, DmgMulti);
+			}
+			return (DmgMulti * Gladiia_OnTakeDamageAlly_Hud(victim));
 		}
 		case WEAPON_GLADIIA:
 		{
