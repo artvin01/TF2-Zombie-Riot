@@ -4001,4 +4001,12 @@
 	{
 		"en"	"+25 max HEAT. Base stats increased."
 	}
+	"Abyssal Greatsword desc"
+	{
+		"en"	"A worn sword covered with blue goo. Once used by a great abyssal hunter\nGain Faster attack speed and higher damage as a cost of aoe attack and Solemny. \n weapon's Archetype changed to "Abyssal hunters" and all abyssal hunter weapons will receive 10% damage bonus"
+	}
+	"Abyssal Greatsword Pap 1 desc"
+	{
+		"en"	"She always wished to keep her teams safe and strong. Now, her dream is fulfilled. \n Unlock new ability: When used, gain 10% damage buff every hit that adds up(Max x2.0 dmg) and gain slight resistance \nWhile ability is buffed, all abyssal hunter weapon's damage increase is buffed to 20%"
+	}
 }
