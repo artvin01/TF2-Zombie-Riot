@@ -1095,7 +1095,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_SKADI:
 		{
-			WeaponSkadi_OnTakeDamageNpc(attacker,victim, damage);
+			WeaponSkadi_OnTakeDamageNpc(attacker,damage);
 		}
 	}
 #endif

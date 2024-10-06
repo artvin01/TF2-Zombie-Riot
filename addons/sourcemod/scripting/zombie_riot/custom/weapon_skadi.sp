@@ -82,7 +82,7 @@ public void Enable_SkadiWeapon(int client, int weapon) // Enable management, han
 		for(int i = 1; i <= MaxClients; i++)
 		{
 			b_WeaponSpecificClassBuff[weapon][0] = true;
-			if(b_AbilityActivated[weapon] = true)
+			if(b_AbilityActivated[weapon])
 				Attributes_Set(weapon, 2, 1.2);
 			else
 				Attributes_Set(weapon, 2, 1.1);
@@ -120,7 +120,7 @@ public Action Timer_Management_Skadi(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void WeaponSkadi_OnTakeDamageNpc(int attacker,int victim, float &damage)
+void WeaponSkadi_OnTakeDamageNpc(int attacker,float &damage)
 {
 	if(b_AbilityActivated[attacker])
 	{
