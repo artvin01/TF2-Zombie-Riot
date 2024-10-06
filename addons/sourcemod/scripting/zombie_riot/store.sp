@@ -5776,6 +5776,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
 		Yakuza_Enable(client, entity);
+		Enable_SkadiWeapon(client, entity);
 	}
 
 	return entity;
