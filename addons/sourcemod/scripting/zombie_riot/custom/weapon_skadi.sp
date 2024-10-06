@@ -28,6 +28,7 @@ public void Skadi_Ability_M2(int client, int weapon, bool crit, int slot)
 			EmitSoundToAll("ambient/cp_harbor/furnace_1_shot_05.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
 			//PrintToChatAll("Rapid Shot Activated");
 			ApplyTempAttrib(weapon, 6, 1.1, 15.0);
+			b_AbilityActivated[client] = true;
 			CreateTimer(15.0, Timer_Bool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			float flPos[3]; // original
 			float flAng[3]; // original
@@ -147,19 +148,16 @@ public Action Timer_Bool(Handle timer, any userid)
 }
 
 void CreateSkadiEffect(int client)
-{
-	if(!IsValidEntity(i_SkadiParticle[client]))
-	{
-		return;
-	}
+{	
 	DestroySkadiEffect(client);
 	
 	float flPos[3];
-	float flAng[3];
-	GetAttachment (client, "m_vecAbsOrigin", flPos, flAng);
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+
+	
 	int particle = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(client, particle, "m_vecAbsOrigin");
+	SetParent(client, particle);
 	i_SkadiParticle[client][0] = EntIndexToEntRef(particle);
 }
 
