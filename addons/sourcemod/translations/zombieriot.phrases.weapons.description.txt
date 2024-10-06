@@ -4007,6 +4007,6 @@
 	}
 	"Abyssal Greatsword Pap 1 desc"
 	{
-		"en"	"She always wished to keep her teams safe and strong. Now, her dream is fulfilled. \n Unlock new ability: When used, gain 10% damage buff every hit that adds up(Max x2.0 dmg) and gain slight resistance"
+		"en"	"She always wished to keep her teams safe and strong. Now, her dream is fulfilled. \n Unlock new ability: When used, gain 10% damage buff every hit that adds up(Max x2.0 dmg) and gain slight resistance \nWhile ability is buffed, all abyssal hunter weapon's damage increase is buffed to 25%"
 	}
 }
