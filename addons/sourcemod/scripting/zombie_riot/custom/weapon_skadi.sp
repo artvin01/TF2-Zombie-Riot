@@ -13,7 +13,7 @@ void ResetMapStartSkadiWeapon()
 
 void Skadi_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
-	PrecacheSound("ambient/lair/perimeter_waves_close.wav");
+	PrecacheSound("ambient/cp_harbor/furnace_1_shot_05.wav");
 
 }
 
@@ -25,7 +25,7 @@ public void Skadi_Ability_M2(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
-			EmitSoundToAll("ambient/lair/perimeter_waves_close.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
+			EmitSoundToAll("ambient/cp_harbor/furnace_1_shot_05.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
 			//PrintToChatAll("Rapid Shot Activated");
 			ApplyTempAttrib(weapon, 6, 1.1, 15.0);
 			CreateTimer(15.0, Timer_Bool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
