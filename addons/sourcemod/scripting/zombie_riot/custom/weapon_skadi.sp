@@ -3,10 +3,12 @@
 static Handle h_TimerSkadiWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static int i_SkadiParticle[MAXTF2PLAYERS];
 static bool b_AbilityActivated[MAXPLAYERS];
+static float i_Swings[MAXPLAYERS+1]={0.0, ...};
 
 void ResetMapStartSkadiWeapon()
 {
 	Skadi_Map_Precache();
+	Zero(i_Swings);
 }
 
 void Skadi_Map_Precache() //Anything that needs to be precaced like sounds or something.
@@ -22,10 +24,10 @@ public void Skadi_Ability_M2(int client, int weapon, bool crit, int slot)
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
 			Rogue_OnAbilityUse(weapon);
-			Ability_Apply_Cooldown(client, slot, 75.0);
+			Ability_Apply_Cooldown(client, slot, 50.0);
 			EmitSoundToAll("ambient/lair/perimeter_waves_close.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
 			//PrintToChatAll("Rapid Shot Activated");
-			ApplyTempAttrib(weapon, 6, 1.2, 15.0);
+			ApplyTempAttrib(weapon, 6, 1.1, 15.0);
 			CreateTimer(15.0, Timer_Bool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			float flPos[3]; // original
 			float flAng[3]; // original
@@ -73,6 +75,16 @@ public void Enable_SkadiWeapon(int client, int weapon) // Enable management, han
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
+
+	if(i_WeaponArchetype[weapon] == 22)	// Abyssal Hunter
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			b_WeaponSpecificClassBuff[weapon][0] = true;
+			Attributes_Set(weapon, 2, 1.1);
+			break;
+		}
+	}
 }
 
 public Action Timer_Management_Skadi(Handle timer, DataPack pack)
@@ -97,6 +109,7 @@ public Action Timer_Management_Skadi(Handle timer, DataPack pack)
 	{
 		b_AbilityActivated[client] = false;
 		DestroySkadiEffect(client);
+		Zero(i_Swings);
 	}
 
 	return Plugin_Continue;
@@ -104,9 +117,12 @@ public Action Timer_Management_Skadi(Handle timer, DataPack pack)
 
 void WeaponSkadi_OnTakeDamageNpc(int attacker,int victim, float &damage)
 {
-	if(b_AbilityActivated[attacker] && b_thisNpcIsARaid[victim])
+	if(b_AbilityActivated[attacker])
 	{
-		damage *= 1.5;
+		i_Swings[attacker] += 1.0;
+		if(i_Swings[attacker] > 10.0)
+			i_Swings[attacker] = 10.0;
+		damage *= (1.0 + (i_Swings[attacker] * 0.1));
 	}
 }
 
@@ -114,7 +130,7 @@ void  WeaponSkadi_OnTakeDamage(int attacker, int victim, float &damage)
 {
 	if(b_AbilityActivated[victim])
 	{
-		damage *= 0.66;
+		damage *= 0.80;
 		if(b_thisNpcIsARaid[attacker])
 		{
 			damage *= 1.1;
@@ -126,6 +142,7 @@ public Action Timer_Bool(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
 	b_AbilityActivated[client] = false;
+	Zero(i_Swings);
 	return Plugin_Stop;
 }
 
