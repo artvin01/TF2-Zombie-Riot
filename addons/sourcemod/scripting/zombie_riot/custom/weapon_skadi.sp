@@ -14,7 +14,6 @@ void ResetMapStartSkadiWeapon()
 void Skadi_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
 	PrecacheSound("ambient/cp_harbor/furnace_1_shot_05.wav");
-
 }
 
 public void Skadi_Ability_M2(int client, int weapon, bool crit, int slot)
@@ -66,28 +65,28 @@ public void Enable_SkadiWeapon(int client, int weapon) // Enable management, han
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
-		return;
 	}
-		
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SKADI)
+	else
 	{
-		DataPack pack;
-		h_TimerSkadiWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_Skadi, pack, TIMER_REPEAT);
-		pack.WriteCell(client);
-		pack.WriteCell(EntIndexToEntRef(weapon));
-	}
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SKADI)
+		{
+			DataPack pack;
+			h_TimerSkadiWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_Skadi, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		
+	}	
 
 	if(i_WeaponArchetype[weapon] == 22)	// Abyssal Hunter
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
-			b_WeaponSpecificClassBuff[weapon][0] = true;
-			if(b_AbilityActivated[weapon])
-				Attributes_Set(weapon, 2, 1.2);
-			else
-				Attributes_Set(weapon, 2, 1.1);
-
-			break;
+			if(h_TimerSkadiWeaponManagement[i])
+			{
+				b_WeaponSpecificClassBuff[weapon][2] = true;
+				Attributes_SetMulti(weapon, 2, 1.1);
+			}
 		}
 	}
 }
@@ -131,7 +130,7 @@ void WeaponSkadi_OnTakeDamageNpc(int attacker,float &damage)
 	}
 }
 
-void  WeaponSkadi_OnTakeDamage(int attacker, int victim, float &damage)
+void WeaponSkadi_OnTakeDamage(int attacker, int victim, float &damage)
 {
 	if(b_AbilityActivated[victim])
 	{
@@ -153,6 +152,10 @@ public Action Timer_Bool(Handle timer, any userid)
 
 void CreateSkadiEffect(int client)
 {	
+	if(IsValidEntity(i_SkadiParticle[client][0]))
+	{
+		return;
+	}
 	DestroySkadiEffect(client);
 	
 	float flPos[3];

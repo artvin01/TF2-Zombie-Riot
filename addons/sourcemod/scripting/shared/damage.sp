@@ -711,10 +711,13 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
 		}
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
 		{
 			if(i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_ULPIANUS)
 				Ulpianus_OnTakeDamageSelf(victim);
+				
+			if(i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_SKADI)
+				WeaponSkadi_OnTakeDamage(attacker, victim, damage);
 			
 			return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
 		}
@@ -773,10 +776,6 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_FULLMOON:
 		{
 			FullMoon_SanctuaryApplyBuffs(victim, damage);
-		}
-		case WEAPON_SKADI:
-		{
-			WeaponSkadi_OnTakeDamage(attacker, victim, damage);
 		}
 	}
 	return damage;
@@ -2203,6 +2202,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			if(b_WeaponSpecificClassBuff[Victim_weapon][0])
 			{
 				Format(Debuff_Adder_right, SizeOfChar, "S%s", Debuff_Adder_right);
+			}
+			if(b_WeaponSpecificClassBuff[Victim_weapon][2])
+			{
+				Format(Debuff_Adder_right, SizeOfChar, "✣%s", Debuff_Adder_right);
 			}
 			if(FlameTail_Global_Buff() && IsWeaponKazimierz(Victim_weapon))
 			{	
