@@ -2203,6 +2203,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			{
 				Format(Debuff_Adder_right, SizeOfChar, "S%s", Debuff_Adder_right);
 			}
+			if(b_WeaponSpecificClassBuff[Victim_weapon][1])
+			{
+				Format(Debuff_Adder_right, SizeOfChar, "UL%s", Debuff_Adder_right);
+			}
 			if(b_WeaponSpecificClassBuff[Victim_weapon][2])
 			{
 				Format(Debuff_Adder_right, SizeOfChar, "✣%s", Debuff_Adder_right);

@@ -2337,7 +2337,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 			float DmgMulti = 1.0;
 			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SKADI)
 			{
-				WeaponSkadi_OnTakeDamageNpc(1, DmgMulti);
+				WeaponSkadi_OnTakeDamage(1,victim, DmgMulti);
 			}
 			return (DmgMulti * Gladiia_OnTakeDamageAlly_Hud(victim));
 		}

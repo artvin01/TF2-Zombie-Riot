@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 static Handle h_TimerSkadiWeaponManagement[MAXPLAYERS+1] = {null, ...};
-static int i_SkadiParticle[MAXTF2PLAYERS];
 static bool b_AbilityActivated[MAXPLAYERS];
 static float i_Swings[MAXPLAYERS+1]={0.0, ...};
 
@@ -28,11 +27,11 @@ public void Skadi_Ability_M2(int client, int weapon, bool crit, int slot)
 			//PrintToChatAll("Rapid Shot Activated");
 			ApplyTempAttrib(weapon, 6, 1.1, 15.0);
 			b_AbilityActivated[client] = true;
-			CreateTimer(15.0, Timer_Bool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(15.0, Timer_Bool_Skadi, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			float flPos[3]; // original
 			float flAng[3]; // original
 			GetAttachment(client, "m_vecAbsOrigin", flPos, flAng);
-			int particle_Base = ParticleEffectAt(flPos, "utaunt_god_aquatic_crack3", 15.0);
+			int particle_Base = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow", 15.0);
 			SetParent(client, particle_Base, "m_vecAbsOrigin");
 		}
 		else
@@ -98,7 +97,6 @@ public Action Timer_Management_Skadi(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		DestroySkadiEffect(client);
 		b_AbilityActivated[client] = false;
 		h_TimerSkadiWeaponManagement[client] = null;
 		return Plugin_Stop;
@@ -107,12 +105,11 @@ public Action Timer_Management_Skadi(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		CreateSkadiEffect(client);
+	//	CreateSkadiEffect(client);
 	}
 	else
 	{
 		b_AbilityActivated[client] = false;
-		DestroySkadiEffect(client);
 		Zero(i_Swings);
 	}
 
@@ -142,38 +139,10 @@ void WeaponSkadi_OnTakeDamage(int attacker, int victim, float &damage)
 	}
 }
 
-public Action Timer_Bool(Handle timer, any userid)
+public Action Timer_Bool_Skadi(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
 	b_AbilityActivated[client] = false;
 	Zero(i_Swings);
 	return Plugin_Stop;
-}
-
-void CreateSkadiEffect(int client)
-{	
-	if(IsValidEntity(i_SkadiParticle[client][0]))
-	{
-		return;
-	}
-	DestroySkadiEffect(client);
-	
-	float flPos[3];
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-
-	
-	int particle = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow", 0.0);
-	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(client, particle);
-	i_SkadiParticle[client][0] = EntIndexToEntRef(particle);
-}
-
-void DestroySkadiEffect(int client)
-{
-	int entity = EntRefToEntIndex(i_SkadiParticle[client]);
-	if(IsValidEntity(entity))
-	{
-		RemoveEntity(entity);
-	}
-	i_SkadiParticle[client] = INVALID_ENT_REFERENCE;
 }
