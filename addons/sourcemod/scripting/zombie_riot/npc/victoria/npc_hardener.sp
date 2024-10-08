@@ -216,7 +216,6 @@ methodmap VictorianHardener < CClotBody
 			RemoveEntity(iBeam);
 			
 			EmitSoundToAll("weapons/medigun_no_target.wav", this.index, SNDCHAN_WEAPON);
-			npc.PlayFuckyouSound();
 			
 		//	StopSound(this.index, SNDCHAN_m_iWearable3, "m_iWearable3s/medigun_heal.wav");
 			
