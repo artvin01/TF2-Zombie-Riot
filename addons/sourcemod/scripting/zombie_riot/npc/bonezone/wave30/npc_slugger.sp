@@ -12,9 +12,9 @@
 
 #define BONES_SLUGGER_RAMPAGEPARTICLE	"utaunt_glitter_teamcolor_red"
 
-static float BONES_SLUGGER_MELEE_HIT_DELAY =  0.35;
-static float BONES_SLUGGER_MELEE_HIT_DELAY_BUFFED = 0.35;
-static float BONES_SLUGGER_MELEE_HIT_DELAY_BUFFED_RAMPAGE = 0.2;
+static float BONES_SLUGGER_ATTACKSPEED	= 1.0;	//Melee attack speed multiplier
+static float BONES_SLUGGER_ATTACKSPEED_BUFFED	= 1.0; //Melee attack speed multiplier, buffed
+static float BONES_SLUGGER_ATTACKSPEED_BUFFED_RAMPAGE	= 1.5;	//Melee attack speed multiplier while the buffed form is in a rampage.
 
 static float BONES_SLUGGER_SPEED = 220.0;
 static float BONES_SLUGGER_SPEED_BUFFED = 260.0;
@@ -91,6 +91,12 @@ static char g_RampageEnd[][] = {
 };
 
 static bool b_SluggerRampage[2049] = { false, ... };
+static bool b_SluggerAttacking[2049] = { false, ... };
+
+#define SOUND_SLUGGER_SWING		")weapons/machete_swing.wav"
+#define SOUND_SLUGGER_SWING_BUFFED	")misc/halloween/strongman_fast_whoosh_01.wav"
+#define SOUND_SLUGGER_HIT		")weapons/bat_hit.wav"
+#define SOUND_SLUGGER_HIT_BUFFED	")items/powerup_pickup_knockout_melee_hit.wav"
 
 public void SluggerBones_OnMapStart_NPC()
 {
@@ -104,6 +110,11 @@ public void SluggerBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RampageStart));   i++) { PrecacheSound(g_RampageStart[i]);   }
 	for (int i = 0; i < (sizeof(g_RampageEnd));   i++) { PrecacheSound(g_RampageEnd[i]);   }
+
+	PrecacheSound(SOUND_SLUGGER_HIT);
+	PrecacheSound(SOUND_SLUGGER_HIT_BUFFED);
+	PrecacheSound(SOUND_SLUGGER_SWING);
+	PrecacheSound(SOUND_SLUGGER_SWING_BUFFED);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bone Breaker");
@@ -181,15 +192,36 @@ methodmap SluggerBones < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, (b_BonesBuffed[this.index] ? GetRandomInt(80, 100) : GetRandomInt(120, 140)));
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CSluggerBones::PlayMeleeHitSound()");
 		#endif
 	}
 
-	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	public void PlayMeleeSwingSound()
+	{
+		if (b_BonesBuffed[this.index])
+		{
+			EmitSoundToAll(SOUND_SLUGGER_SWING_BUFFED, this.index, _, 120, _, _, GetRandomInt(80, 110));
+		}
+		else
+		{
+			EmitSoundToAll(SOUND_SLUGGER_SWING, this.index, _, 120, _, _, GetRandomInt(80, 110));
+		}
+	}
+
+	public void PlayMeleeHitSound() 
+	{
+		if (b_BonesBuffed[this.index])
+		{
+			EmitSoundToAll(SOUND_SLUGGER_HIT_BUFFED, this.index, _, 80, _, 0.8, GetRandomInt(80, 110));
+			EmitSoundToAll(SOUND_SLUGGER_HIT, this.index, _, _, _, _, GetRandomInt(60, 80));
+		}
+		else
+		{
+			EmitSoundToAll(SOUND_SLUGGER_HIT, this.index, _, _, _, _, GetRandomInt(80, 110));
+		}
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CSluggerBones::PlayMeleeHitSound()");
@@ -264,6 +296,7 @@ methodmap SluggerBones < CClotBody
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 
 		b_BonesBuffed[npc.index] = buffed;
+		b_SluggerAttacking[npc.index] = false;
 
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_SLUGGER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_SLUGGER_HP_BUFFED);
@@ -287,6 +320,7 @@ methodmap SluggerBones < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(SluggerBones_ClotThink);
 
 		b_SluggerRampage[npc.index] = false;
+		func_NPCAnimEvent[npc.index] = Slugger_AnimEvent;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -347,6 +381,7 @@ stock void Slugger_GiveCosmetics(CClotBody npc, bool buffed)
 public void SluggerBones_SetBuffed(int index, bool buffed)
 {
 	CClotBody npc = view_as<CClotBody>(index);
+	b_SluggerAttacking[npc.index] = false;
 
 	if (!b_BonesBuffed[index] && buffed)
 	{
@@ -491,7 +526,7 @@ public void SluggerBones_ClotThink(int iNPC)
 		
 		//Target close enough to hit
 		
-		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen && !b_SluggerAttacking[npc.index])
 		{
 			//Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 20000.0);
@@ -502,48 +537,14 @@ public void SluggerBones_ClotThink(int iNPC)
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					if (b_BonesBuffed[npc.index])
-						npc.AddGesture("ACT_BREAKER_ATTACK");
+						npc.AddGesture("ACT_BREAKER_ATTACK", _, _, _, (b_SluggerRampage[npc.index] ? BONES_SLUGGER_ATTACKSPEED_BUFFED_RAMPAGE : BONES_SLUGGER_ATTACKSPEED_BUFFED));
 					else
-						npc.AddGesture("ACT_SLUGGER_ATTACK");
+						npc.AddGesture("ACT_SLUGGER_ATTACK", _, _, _, BONES_SLUGGER_ATTACKSPEED);
 
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? (b_SluggerRampage[npc.index] ? BONES_SLUGGER_MELEE_HIT_DELAY_BUFFED_RAMPAGE : BONES_SLUGGER_MELEE_HIT_DELAY_BUFFED) : BONES_SLUGGER_MELEE_HIT_DELAY);
 					npc.m_flAttackHappens_bullshit = npc.m_flAttackHappens + 0.15;
 					npc.m_flAttackHappenswillhappen = true;
-				}
-				//Can we attack right now?
-				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-				{
-					Handle swingTrace;
-					npc.FaceTowards(vecTarget, 20000.0);
-					if(npc.DoSwingTrace(swingTrace, closest))
-					{
-						int target = TR_GetEntityIndex(swingTrace);	
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						if(target > 0) 
-						{
-							if(target <= MaxClients)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? (b_SluggerRampage[npc.index] ? BONES_SLUGGER_PLAYERDAMAGE_BUFFED_RAMPAGE : BONES_SLUGGER_PLAYERDAMAGE_BUFFED) : BONES_SLUGGER_PLAYERDAMAGE, DMG_CLUB, -1, _, vecHit);
-							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? (b_SluggerRampage[npc.index] ? BONES_SLUGGER_BUILDINGDAMAGE_BUFFED_RAMPAGE : BONES_SLUGGER_BUILDINGDAMAGE_BUFFED) : BONES_SLUGGER_BUILDINGDAMAGE, DMG_CLUB, -1, _, vecHit);					
-
-							// Hit sound
-							npc.PlayMeleeHitSound();
-						}
-						else
-						{
-							npc.PlayMeleeMissSound();
-						}
-					}
-					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? (b_SluggerRampage[npc.index] ? BONES_SLUGGER_ATTACKINTERVAL_BUFFED_RAMPAGE : BONES_SLUGGER_ATTACKINTERVAL_BUFFED) : BONES_SLUGGER_ATTACKINTERVAL);
-					npc.m_flAttackHappenswillhappen = false;
-				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-				{
-					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? (b_SluggerRampage[npc.index] ? BONES_SLUGGER_ATTACKINTERVAL_BUFFED_RAMPAGE : BONES_SLUGGER_ATTACKINTERVAL_BUFFED) : BONES_SLUGGER_ATTACKINTERVAL);
+					b_SluggerAttacking[npc.index] = true;
 				}
 			}
 			
@@ -593,4 +594,56 @@ public void SluggerBones_NPCDeath(int entity)
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 
+public void Slugger_AnimEvent(int entity, int event)
+{
+	if (!IsValidEntity(entity))
+		return;
 
+	SluggerBones npc = view_as<SluggerBones>(entity);
+
+	if (!b_SluggerAttacking[npc.index])
+		return;
+
+	switch(event)
+	{
+		case 1001:	//The bat has been swung, play a sound.
+		{
+			npc.PlayMeleeSwingSound();
+		}
+		case 1002:	//Time to deal damage.
+		{
+			int closest = npc.m_iTarget;
+			if (!IsValidEnemy(npc.index, closest))
+				return;
+
+			float vecTarget[3];
+			WorldSpaceCenter(closest, vecTarget);
+
+			Handle swingTrace;
+			npc.FaceTowards(vecTarget, 20000.0);
+			if(npc.DoSwingTrace(swingTrace, closest))
+			{
+				int target = TR_GetEntityIndex(swingTrace);	
+				float vecHit[3];
+				TR_GetEndPosition(vecHit, swingTrace);
+				if(target > 0) 
+				{
+					if(target <= MaxClients)
+						SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? (b_SluggerRampage[npc.index] ? BONES_SLUGGER_PLAYERDAMAGE_BUFFED_RAMPAGE : BONES_SLUGGER_PLAYERDAMAGE_BUFFED) : BONES_SLUGGER_PLAYERDAMAGE, DMG_CLUB, -1, _, vecHit);
+					else
+						SDKHooks_TakeDamage(target, npc.index, npc.index, b_BonesBuffed[npc.index] ? (b_SluggerRampage[npc.index] ? BONES_SLUGGER_BUILDINGDAMAGE_BUFFED_RAMPAGE : BONES_SLUGGER_BUILDINGDAMAGE_BUFFED) : BONES_SLUGGER_BUILDINGDAMAGE, DMG_CLUB, -1, _, vecHit);					
+
+					// Hit sound
+					npc.PlayMeleeHitSound();
+				}
+			}
+			delete swingTrace;
+		}
+		case 1003:	//The attack sequence is over.
+		{
+			npc.m_flAttackHappenswillhappen = false;
+			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? (b_SluggerRampage[npc.index] ? BONES_SLUGGER_ATTACKINTERVAL_BUFFED_RAMPAGE : BONES_SLUGGER_ATTACKINTERVAL_BUFFED) : BONES_SLUGGER_ATTACKINTERVAL);
+			b_SluggerAttacking[npc.index] = false;
+		}
+	}
+}
