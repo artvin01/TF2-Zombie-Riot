@@ -578,7 +578,8 @@ void NPC_ConfigSetup()
 	VictorianHumbee_MapStart();
 	VictorianShotgunner_OnMapStart_NPC();
 	Bulldozer_OnMapStart_NPC();
-	
+	VictorianHardener_OnMapStart_NPC();
+	VictorianRaider_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1640,3 +1641,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_humbee.sp"
 #include "zombie_riot/npc/victoria/npc_shotgunner.sp"
 #include "zombie_riot/npc/victoria/npc_bulldozer.sp"
+#include "zombie_riot/npc/victoria/npc_hardener.sp"
+#include "zombie_riot/npc/victoria/npc_raider.sp"
