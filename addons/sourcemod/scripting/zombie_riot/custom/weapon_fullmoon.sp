@@ -6,7 +6,6 @@ static int i_Current_Pap[MAXPLAYERS+1] = {0, ...};
 static float f_FullMoonAbility[MAXPLAYERS+1] = {0.0, ...};
 static bool Precached;
 
-#define ANGELIC_HIT_1	"npc/scanner/scanner_electric1.wav"
 #define FullMoon_ABILTIY_SOUND_1	"npc/scanner/scanner_electric1.wav"
 
 public void FullMoon_MapStart()

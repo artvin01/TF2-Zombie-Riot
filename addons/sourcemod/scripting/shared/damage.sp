@@ -777,10 +777,6 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			FullMoon_SanctuaryApplyBuffs(victim, damage);
 		}
-		case WEAPON_SKADI:
-		{
-			WeaponSkadi_OnTakeDamage(attacker, victim, damage);
-		}
 	}
 	return damage;
 }
