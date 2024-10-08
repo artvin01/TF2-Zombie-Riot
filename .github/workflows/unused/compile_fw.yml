@@ -1,10 +1,10 @@
-name: Compile NOG
+name: Compile FW
 
 on:
-  push:
-    branches:
-      - 'master'
-  pull_request:
+#  push:
+#    branches:
+#      - 'master'
+#  pull_request:
 
 jobs:
   build:
@@ -76,5 +76,5 @@ jobs:
       
       - name: Compile ${{ matrix.sm-version }}
         run: |
-          spcomp -O2 -v2 -i "include" -o npc_framework.smx npc_framework.sp
+          spcomp -O2 -v2 -i "include" -o fortress_wars.smx fortress_wars.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
