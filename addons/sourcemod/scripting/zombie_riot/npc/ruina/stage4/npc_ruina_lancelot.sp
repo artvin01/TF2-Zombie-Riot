@@ -665,7 +665,7 @@ static float Modify_Damage(Lancelot npc, int Target, float damage)
 		damage *=0.5;
 
 	if(npc.Anger)
-		damage *=1.5;
+		damage *=1.3;
 
 	if(Target > MaxClients)
 		return damage;
@@ -681,7 +681,7 @@ static float Modify_Damage(Lancelot npc, int Target, float damage)
 	int weapon_slot = TF2_GetClassnameSlot(classname);
 
 	if(weapon_slot != 2 || i_IsWandWeapon[weapon])
-		damage *= 2.0;
+		damage *= 1.7;
 
 	return damage;
 }

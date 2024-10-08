@@ -125,9 +125,8 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 					Call_Finish();
 				}
 
-				if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
-					if(EditorMenu[client] == INVALID_FUNCTION)
-						CvarDisableThink.BoolValue = false;
+				if(CvarRPGInfiniteLevelAndAmmo.BoolValue && EditorMenu[client] == INVALID_FUNCTION)
+					CvarDisableThink.BoolValue = false;
 			}
 		}
 		case MenuAction_Select:
@@ -145,9 +144,8 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 				Call_PushString(buffer);
 				Call_Finish();
 
-				if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
-					if(EditorMenu[client] == INVALID_FUNCTION)
-						CvarDisableThink.BoolValue = false;
+				if(CvarRPGInfiniteLevelAndAmmo.BoolValue && EditorMenu[client] == INVALID_FUNCTION)
+					CvarDisableThink.BoolValue = false;
 			}
 		}
 	}
@@ -211,16 +209,16 @@ static void MainMenuHandler(int client, const char[] buffer)
 			case 0:
 				PickRange[client] = 5000;
 			
-			case 1:
+			case 5000:
 				PickRange[client] = 2000;
 			
-			case 2:
+			case 2000:
 				PickRange[client] = 1000;
 			
-			case 3:
+			case 1000:
 				PickRange[client] = 600;
 			
-			case 4:
+			case 600:
 				PickRange[client] = 300;
 			
 			default:

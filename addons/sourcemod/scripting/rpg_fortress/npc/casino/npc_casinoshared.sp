@@ -3,7 +3,7 @@
 
 stock float CasinoShared_GetDamage(CClotBody npc, float multi)
 {
-	return Level[npc.index] * 10.0 * multi;
+	return Level[npc.index] * 30.0 * multi;
 }
 
 stock void CasinoShared_StealNearbyItems(CClotBody npc, const float pos1[3])
@@ -40,9 +40,9 @@ stock void CasinoShared_RobMoney(CClotBody npc, int victim, int steal)
 		static float StealCooldown[MAXTF2PLAYERS];
 		float gameTime = GetGameTime();
 
-		if(StealCooldown[victim] < gameTime)
+		if(fabs(StealCooldown[victim] - gameTime) > 2.0)
 		{
-			StealCooldown[victim] = gameTime + 2.0;
+			StealCooldown[victim] = gameTime;// + 2.0;
 
 			int cash = TextStore_Cash(victim);
 			if(cash >= steal)

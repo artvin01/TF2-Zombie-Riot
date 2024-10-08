@@ -44,11 +44,10 @@ public void Fists_of_Kahml(int client, int weapon, bool crit, int slot)
 		
 		EmitSoundToAll("weapons/gauss/fire1.wav", client, _, 75, _, 0.25, GetRandomInt(90, 110));
 
-		float damage = 20.0;
+		float damage = 17.5;
 				
 		float speed = 1100.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
-		damage *= Attributes_Get(weapon, 1, 1.0);
 		speed *= Attributes_Get(weapon, 103, 1.0);
 
 		speed *= Attributes_Get(weapon, 104, 1.0);
@@ -125,10 +124,9 @@ public void Fists_of_Kahml(int client, int weapon, bool crit, int slot)
 					
 			SetParent(viewmodelModel, particlel, "effect_hand_l");			
 		}
-		Attributes_Set(weapon, 1, 3.0);
+		Attributes_Set(weapon, 1, 2.75);
 		
 		CreateTimer(0.2, Apply_cool_effects_kahml, client, TIMER_FLAG_NO_MAPCHANGE);
-		Attributes_Set(weapon, 1, 3.0);
 		how_many_times_fisted[client] = 0;
 	}
 	else
@@ -185,13 +183,15 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		float flPos[3];
 		GetClientEyeAngles(client, fAng);
 		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-		float damage = 15.0;
+		float damage = 10.0;
 		fAng[0] = 0.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
 		int spawn_index = NPC_CreateByName("npc_allied_kahml_afterimage", client, flPos, fAng, GetTeam(client));
 		f_DurationOfProjectileAttack[client] = GetGameTime() + 10.0;
 		if(spawn_index > 0)
 		{
+			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
+			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 			float SelfNewPos[3]; WorldSpaceCenter(spawn_index, SelfNewPos);
 			ParticleEffectAt(SelfNewPos, "teleported_blue", 0.5);

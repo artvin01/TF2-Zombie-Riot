@@ -3111,6 +3111,10 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		ExcuteRelay("zr_wavedone");
 		CurrentRound++;
 		CurrentWave = -1;
+		
+		int TestVal = 0;
+		Spawns_GetNextPos({0.0,0.0,0.0}, {0.0,0.0,0.0}, "",_,TestVal);
+		//This ensures no invalid spawn happens.
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))
