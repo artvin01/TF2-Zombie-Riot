@@ -221,7 +221,7 @@ static void ClotThink(int iNPC)
 static void VictorianHumbee_DownedThink(int entity)
 {
 	VictorianHumbee npc = view_as<VictorianHumbee>(entity);
-	npc.AddActivityViaSequence("layer_taunt_the_road_rager_outro",_,_,_,1.5);
+	npc.AddActivityViaSequence("layer_taunt_the_road_rager_outro");
 	npc.Update();
 	func_NPCThink[npc.index] = ClotThink;
 }
