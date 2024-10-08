@@ -35,7 +35,7 @@ static float BONES_SLUGGER_ATTACKINTERVAL = 1.2;
 static float BONES_SLUGGER_ATTACKINTERVAL_BUFFED = 0.8;
 static float BONES_SLUGGER_ATTACKINTERVAL_BUFFED_RAMPAGE = 0.2;
 
-static float BONES_SLUGGER_RAMPAGE_THRESHOLD = 0.5;		//HP threshold at which the buffed variant enters a rampage state.
+static float BONES_SLUGGER_RAMPAGE_THRESHOLD = 0.35;		//HP threshold at which the buffed variant enters a rampage state.
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -90,7 +90,6 @@ static char g_RampageEnd[][] = {
 	")vo/halloween_boss/knight_alert02.mp3"
 };
 
-static bool b_LastAttackWasLeftHand[2049] = { false, ... };
 static bool b_SluggerRampage[2049] = { false, ... };
 
 public void SluggerBones_OnMapStart_NPC()
@@ -426,13 +425,13 @@ public void SluggerBones_ClotThink(int iNPC)
 
 	if (npc.m_blSetBuffedSkeletonAnimation)
 	{
-		npc.SetActivity("ACT_SLUGGER_RUN");
+		npc.SetActivity("ACT_BREAKER_RUN");
 		npc.m_blSetBuffedSkeletonAnimation = false;
 	}
 
 	if (npc.m_blSetNonBuffedSkeletonAnimation)
 	{
-		npc.SetActivity("ACT_SLUGGER_RUN_NON_BUFFED");
+		npc.SetActivity("ACT_SLUGGER_RUN");
 		npc.m_blSetNonBuffedSkeletonAnimation = false;
 	}
 	
@@ -503,21 +502,9 @@ public void SluggerBones_ClotThink(int iNPC)
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					if (b_BonesBuffed[npc.index])
-					{
-						if (b_LastAttackWasLeftHand[npc.index])
-						{
-							//npc.AddGesture("ACT_SLUGGER_ATTACK_RIGHT");
-							npc.AddGesture("ACT_SLUGGER_ATTACK_RIGHT_NON_BUFFED");	//This one looks better
-						}
-						else
-						{
-							npc.AddGesture("ACT_SLUGGER_ATTACK_LEFT");
-						}
-
-						b_LastAttackWasLeftHand[npc.index] = !b_LastAttackWasLeftHand[npc.index];
-					}
+						npc.AddGesture("ACT_BREAKER_ATTACK");
 					else
-						npc.AddGesture("ACT_SLUGGER_ATTACK_RIGHT_NON_BUFFED");
+						npc.AddGesture("ACT_SLUGGER_ATTACK");
 
 					npc.PlayMeleeSound();
 					npc.m_flAttackHappens = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? (b_SluggerRampage[npc.index] ? BONES_SLUGGER_MELEE_HIT_DELAY_BUFFED_RAMPAGE : BONES_SLUGGER_MELEE_HIT_DELAY_BUFFED) : BONES_SLUGGER_MELEE_HIT_DELAY);
