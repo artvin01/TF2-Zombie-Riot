@@ -1,6 +1,5 @@
 "Phrases"
 {
-
 	"Multi Pellet"
 	{
 		"en"		"Archetype: Multi Pellet"
