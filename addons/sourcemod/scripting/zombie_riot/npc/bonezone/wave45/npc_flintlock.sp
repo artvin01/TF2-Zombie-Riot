@@ -4,7 +4,7 @@
 static float BONES_FLINTLOCK_SPEED = 360.0;	//Flintlock movement speed while it has ammo
 static float BONES_FLINTLOCK_SPEED_NO_AMMO = 230.0;	//Flintlock movement speed while it has no ammo
 static float BONES_FLINTLOCK_SPEED_BUFFED = 260.0;	//Deadeye movement speed while it is not charging its gun
-static float BONES_FLINTLOCK_SPEED_BUFFED_CHARGING = 400.0;	//Deadeye movement speed while it is charging its gun
+static float BONES_FLINTLOCK_SPEED_BUFFED_CHARGING = 360.0;	//Deadeye movement speed while it is charging its gun
 
 #define BONES_FLINTLOCK_HP				"900"
 #define BONES_FLINTLOCK_HP_BUFFED		"4500"
@@ -12,16 +12,18 @@ static float BONES_FLINTLOCK_SPEED_BUFFED_CHARGING = 400.0;	//Deadeye movement s
 //FLINTLOCK: Basic ranged unit. Wields an SMG with a large clip and high rate of fire, but low damage.
 //When their SMG is loaded, they will run towards the nearest target. Then, when within range, they will stop and unload their clip on that target.
 //Once they run out of ammo, they will initiate a reload phase, running away if an enemy is too close.
-static float FLINTLOCK_DAMAGE = 20.0;		//Projectile damage for Flintlocks.
-static float FLINTLOCK_VELOCITY = 800.0;	//Projectile velocity.
-static float FLINTLOCK_LIFESPAN = 1.0;	//Projectile lifespan.
+static float FLINTLOCK_DAMAGE = 40.0;		//Projectile damage for Flintlocks.
+static float FLINTLOCK_VELOCITY = 1000.0;	//Projectile velocity.
+static int FLINTLOCK_COUNT = 8;				//Number of projectiles fired per shot.
+static float FLINTLOCK_LIFESPAN = 1.33;	//Projectile lifespan.
 static float FLINTLOCK_ENTITYMULT = 2.0;	//Amount to multiply damage dealt by Flintlock projectiles to enemies.
 static float FLINTLOCK_RANGE = 500.0;		//Range in which Flintlocks will shoot.
-static int FLINTLOCK_CLIP = 24;			//Clip size.
-static float FLINTLOCK_RELOADTIME = 3.0;	//Time after attack finishes before the NPC will reload.
-static float FLINTLOCK_TURNRATE = 1200.0;	//Rate at which the NPC turns to face its target while firing.
-static int FLINTLOCK_EMPTY = 3;			//Number of times the Flintlock will attempt to fire its gun once it runs out of ammo. This is used to indicate it has run out with a unique animation and sound effect, so players can react.
-static float FLINTLOCK_SPREAD = 4.0;		//Random spread.
+static int FLINTLOCK_CLIP = 6;			//Clip size.
+static float FLINTLOCK_RELOADTIME = 2.0;	//Time after attack finishes before the NPC will reload.
+static float FLINTLOCK_RELOADSPEED = 1.0;	//Reload animation speed multiplier.
+static float FLINTLOCK_TURNRATE = 2000.0;	//Rate at which the NPC turns to face its target while firing.
+static int FLINTLOCK_EMPTY = 2;			//Number of times the Flintlock will attempt to fire its gun once it runs out of ammo. This is used to indicate it has run out with a unique animation and sound effect, so players can react.
+static float FLINTLOCK_SPREAD = 6.0;		//Random spread.
 static float FLINTLOCK_RELOAD_DELAY = 1.0;	//Delay after the reload finishes before the Flintlock can attack again.
 
 //HOLLOW DEADEYE: Buffed range unit, slowly fires powerful explosive projectiles from a revolver. Predicts within a large radius.
@@ -40,7 +42,7 @@ static float FLINTLOCK_NATURAL_BUFF_CHANCE = 0.05;	//Percentage chance for non-b
 static float FLINTLOCK_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float FLINTLOCK_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
-static float BONES_FLINTLOCK_ATTACKINTERVAL = 0.125;
+static float BONES_FLINTLOCK_ATTACKINTERVAL = 0.75;
 static float BONES_FLINTLOCK_ATTACKINTERVAL_BUFFED = 2.0;
 
 static float FLINTLOCK_HOVER_MINDIST = 400.0;
@@ -54,7 +56,7 @@ static float f_FlintlockFireballDMG[2049] = { 0.0, ... };
 #define BONES_FLINTLOCK_SKIN						"0"
 #define BONES_FLINTLOCK_BUFFED_SKIN				"1"
 
-#define SND_FLINTLOCK_SHOOT					")weapons/doom_sniper_smg.wav"
+#define SND_FLINTLOCK_SHOOT					")weapons/shotgun_shoot.wav"
 #define SND_FLINTLOCK_SHOOT_NO_AMMO			")weapons/shotgun_empty.wav"
 #define SND_FLINTLOCK_HIT						")player/pain.wav"
 #define SND_FLINTLOCK_RELOAD_FINISH			")weapons/sniper_bolt_forward.wav"
@@ -67,6 +69,7 @@ static float f_FlintlockFireballDMG[2049] = { 0.0, ... };
 #define SND_DEADEYE_EXPLODE					")misc/halloween/spell_fireball_impact.wav"
 #define SND_DEADEYE_FIRE						")weapons/diamond_back_03_crit.wav"
 #define SND_DEADEYE_FIRE_2					")misc/halloween/spell_fireball_cast.wav"
+#define SND_FLINTLOCK_MOVE_GUN				")player/cyoa_pda_draw.wav"
 
 #define PARTICLE_FLINTLOCK_FIREBALL			"nailtrails_medic_red_crit"
 #define PARTICLE_FLINTLOCK_FIREBALL_BUFFED	"spell_fireball_small_blue"
@@ -158,6 +161,7 @@ public void FlintlockBones_OnMapStart_NPC()
 	PrecacheSound(SND_DEADEYE_EXPLODE);
 	PrecacheSound(SND_DEADEYE_FIRE);
 	PrecacheSound(SND_DEADEYE_FIRE_2);
+	PrecacheSound(SND_FLINTLOCK_MOVE_GUN);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Swashbuckler Skelebones");
@@ -195,6 +199,7 @@ static int i_FlintlockAmmo[MAXENTITIES] = { 0, ... };
 static int i_FlintlockDryShots[MAXENTITIES] = { 0, ... };
 static bool b_FlintlockAttacking[MAXENTITIES] = { false, ... };
 static bool b_FlintlockWindupPhase[MAXENTITIES] = { false, ... };
+static bool b_ReloadAnimNeeded[MAXENTITIES] = { false, ... };
 static float f_ReloadAtFlintlock[MAXENTITIES] = { 0.0, ... };
 static float f_DeadeyeChargeTime[MAXENTITIES] = { 0.0, ... };
 static bool b_ForceShootAnimFlintlock[MAXENTITIES] = { false, ...};
@@ -354,7 +359,7 @@ methodmap FlintlockBones < CClotBody
 		}
 		else
 		{
-			int iActivity = npc.LookupActivity("ACT_FLINTLOCK_RUN_LOADED");
+			int iActivity = npc.LookupActivity("ACT_SWASHBUCKLER_RUN_LOADED");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			func_NPCAnimEvent[npc.index] = Flintlock_AnimEvent;
 		}
@@ -363,6 +368,7 @@ methodmap FlintlockBones < CClotBody
 		b_DeadeyeCharging[npc.index] = false;
 		b_FlintlockAttacking[npc.index] = false;
 		b_FlintlockWindupPhase[npc.index] = false;
+		b_ReloadAnimNeeded[npc.index] = false;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
@@ -403,6 +409,7 @@ public void FlintlockBones_SetBuffed(int index, bool buffed)
 	b_DeadeyeCharging[npc.index] = false;
 	b_FlintlockAttacking[npc.index] = false;
 	b_FlintlockWindupPhase[npc.index] = false;
+	b_ReloadAnimNeeded[npc.index] = false;
 	npc.RemoveGesture("ACT_DEADEYE_CHARGE_GUN");
 	RemoveBarrelEffect(npc);
 
@@ -514,9 +521,9 @@ public void Flintlock_CheckShoot(FlintlockBones npc, int closest)
 		WorldSpaceCenter(closest, vicPos);
 		WorldSpaceCenter(npc.index, userPos);
 
-		if (!b_BonesBuffed[npc.index] && GetVectorDistance(vicPos, userPos) <= FLINTLOCK_RANGE && npc.IHaveAmmo())
+		if (!b_BonesBuffed[npc.index] && GetVectorDistance(vicPos, userPos) <= FLINTLOCK_RANGE && i_FlintlockAmmo[npc.index] >= FLINTLOCK_CLIP)
 		{
-			int iActivity = npc.LookupActivity("ACT_FLINTLOCK_ATTACK_IMMINENT");
+			int iActivity = npc.LookupActivity("ACT_SWASHBUCKLER_ATTACK_INTRO");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			b_FlintlockWindupPhase[npc.index] = true;
 			npc.FaceTowards(vicPos, 15000.0);
@@ -775,20 +782,24 @@ public void Flintlock_AnimEvent(int entity, int event)
 			{
 				EmitSoundToAll(SND_FLINTLOCK_SWING, npc.index, _, _, _, _, GetRandomInt(80, 90));
 			}
-			case 1002:		//Flintlock is about to stomp its foot on the ground, play a sound effect.
-			{
-				EmitSoundToAll(SND_FLINTLOCK_SWING_BIG, npc.index, _, _, _, _, GetRandomInt(80, 90));
-			}
-			case 1003:		//Flintlock's foot hits the ground, play a sound effect.
+			case 1002:		//Flintlock's foot hits the ground, play a sound effect.
 			{
 				EmitSoundToAll(SND_FLINTLOCK_STOMP, npc.index, _, 120, _, _, GetRandomInt(80, 90));
 			}
-			case 1004:		//Intro sequence ends, transition to active attack sequence.
+			case 1003:		//Moving gun into place, play sound.
+			{
+				EmitSoundToAll(SND_FLINTLOCK_MOVE_GUN, npc.index, _, _, _, _, 60);
+			}
+			case 1004:		//Moving gun into place, play sound.
+			{
+				EmitSoundToAll(SND_FLINTLOCK_MOVE_GUN, npc.index, _, _, _, _, 90);
+			}
+			case 1005:		//Intro sequence ends, transition to active attack sequence.
 			{
 				b_FlintlockWindupPhase[npc.index] = false;
 				b_FlintlockAttacking[npc.index] = true;
 
-				int iActivity = npc.LookupActivity("ACT_FLINTLOCK_FIRING_POSE");
+				int iActivity = npc.LookupActivity("ACT_SWASHBUCKLER_ATTACK_LOOP");
 				if (iActivity > 0)
 					npc.StartActivity(iActivity);
 
@@ -800,6 +811,10 @@ public void Flintlock_AnimEvent(int entity, int event)
 	{
 		switch(event)
 		{
+			case 1001:		//Reload sequence intro is over, begin cocking the gun.
+			{
+				b_ReloadAnimNeeded[npc.index] = true;
+			}
 			case 1002:		//Reload sequence part 1, play sound effect.
 			{
 				EmitSoundToAll(SND_FLINTLOCK_RELOAD_START, npc.index);
@@ -807,19 +822,38 @@ public void Flintlock_AnimEvent(int entity, int event)
 			case 1003:		//Reload sequence part 2, play sound effect.
 			{
 				EmitSoundToAll(SND_FLINTLOCK_RELOAD_FINISH, npc.index);
-				EmitSoundToAll(g_HHHLaughs[GetRandomInt(0, sizeof(g_HHHLaughs) - 1)], npc.index, _, _, _, _, GetRandomInt(120, 130));
+			}
+			case 1004:		//Reload sequence ends.
+			{
+				i_FlintlockAmmo[npc.index]++;
 
-				int iActivity = npc.LookupActivity("ACT_FLINTLOCK_RUN_LOADED");
-				if (iActivity > 0)
-					npc.StartActivity(iActivity);
-				npc.m_flSpeed = BONES_FLINTLOCK_SPEED;
-
-				if (GetGameTime(npc.index) - npc.m_flNextRangedAttack < FLINTLOCK_RELOAD_DELAY)
+				if (i_FlintlockAmmo[npc.index] >= FLINTLOCK_CLIP)
 				{
+					EmitSoundToAll(g_HHHLaughs[GetRandomInt(0, sizeof(g_HHHLaughs) - 1)], npc.index, _, _, _, _, GetRandomInt(120, 130));
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + FLINTLOCK_RELOAD_DELAY;
-				}
+					
+					npc.m_flSpeed = BONES_FLINTLOCK_SPEED;
 
-				i_FlintlockAmmo[npc.index] = FLINTLOCK_CLIP;
+					b_ReloadAnimNeeded[npc.index] = true;
+				}
+				else
+				{
+					b_ReloadAnimNeeded[npc.index] = true;
+				}
+			}
+		}
+	}
+	else
+	{
+		switch(event)
+		{
+			case 1001:		//Cocks gun, play sound
+			{
+				EmitSoundToAll(SND_FLINTLOCK_RELOAD_START, npc.index);
+			}
+			case 1002:		//Cocks gun, play sound
+			{
+				EmitSoundToAll(SND_FLINTLOCK_RELOAD_FINISH, npc.index);
 			}
 		}
 	}
@@ -859,18 +893,28 @@ public void FlintlockBones_ClotThink(int iNPC)
 
 	if (npc.m_blSetNonBuffedSkeletonAnimation)
 	{
-		npc.SetActivity("ACT_FLINTLOCK_RUN_LOADED");
+		npc.SetActivity("ACT_SWASHBUCKLER_RUN_LOADED");
 		npc.m_blSetNonBuffedSkeletonAnimation = false;
 	}
 
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + (b_FlintlockAttacking[npc.index] || b_FlintlockWindupPhase[npc.index] || b_DeadeyeCharging[npc.index] ? 0.01 : 0.1);
-	
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + (b_FlintlockAttacking[npc.index] || b_FlintlockWindupPhase[npc.index] || b_DeadeyeCharging[npc.index] || (!b_BonesBuffed[npc.index] && i_FlintlockAmmo[npc.index] < FLINTLOCK_CLIP) ? 0.01 : 0.1);
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
+	if (b_ReloadAnimNeeded[npc.index])
+	{
+		if (i_FlintlockAmmo[npc.index] >= FLINTLOCK_CLIP)
+			npc.AddGesture("ACT_SWASHBUCKLER_RELOAD_END");
+		else
+			npc.AddGesture("ACT_SWASHBUCKLER_RELOAD_PUMP", _, _, _, FLINTLOCK_RELOADSPEED);
+
+		b_ReloadAnimNeeded[npc.index] = false;
+	}
+
 	if (b_ForceShootAnimFlintlock[npc.index])
 	{
 		int iActivity = npc.LookupActivity("ACT_DEADEYE_SHOOT");
@@ -937,20 +981,22 @@ public void FlintlockBones_ClotThink(int iNPC)
 
 		if (npc.IHaveAmmo())
 		{
-			npc.AddGesture("ACT_FLINTLOCK_SHOOT");
+			npc.AddGesture("ACT_SWASHBUCKLER_ATTACK_SHOOT", _, _, _, 0.833 / BONES_FLINTLOCK_ATTACKINTERVAL);
 			EmitSoundToAll(SND_FLINTLOCK_SHOOT, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
 			float pos[3], ang[3];
-			npc.GetAttachment("smg_muzzle_left", pos, ang);
+			npc.GetAttachment("shotgun_muzzle", pos, ang);
 			ParticleEffectAt(pos, PARTICLE_FLINTLOCK_MUZZLE);
 
-			Flintlock_ShootProjectile(npc, vicPos, FLINTLOCK_VELOCITY, FLINTLOCK_DAMAGE, pos);
+			for (int i = 0; i < FLINTLOCK_COUNT; i++)
+				Flintlock_ShootProjectile(npc, vicPos, FLINTLOCK_VELOCITY, FLINTLOCK_DAMAGE, pos);
+
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + BONES_FLINTLOCK_ATTACKINTERVAL;
 
 			i_FlintlockAmmo[npc.index]--;
 		}
 		else if (i_FlintlockDryShots[npc.index] > 0)
 		{
-			npc.AddGesture("ACT_FLINTLOCK_SHOOT_NO_AMMO");
+			npc.AddGesture("ACT_SWASHBUCKLER_ATTACK_SHOOT_NO_AMMO");
 			EmitSoundToAll(SND_FLINTLOCK_SHOOT_NO_AMMO, npc.index, _, _, _, 0.8, GetRandomInt(80, 110));
 			i_FlintlockDryShots[npc.index]--;
 
@@ -958,7 +1004,7 @@ public void FlintlockBones_ClotThink(int iNPC)
 		}
 		else
 		{
-			int iActivity = npc.LookupActivity("ACT_FLINTLOCK_RUN");
+			int iActivity = npc.LookupActivity("ACT_SWASHBUCKLER_RUN_LOADED");
 			if (iActivity > 0)
 				npc.StartActivity(iActivity);
 			npc.m_flSpeed = BONES_FLINTLOCK_SPEED_NO_AMMO;
@@ -984,7 +1030,7 @@ public void FlintlockBones_ClotThink(int iNPC)
 		}
 		else
 		{
-			if (flDistanceToTarget < FLINTLOCK_HOVER_MINDIST && !npc.IHaveAmmo())
+			if (flDistanceToTarget < FLINTLOCK_HOVER_MINDIST && (!npc.IHaveAmmo() || i_FlintlockAmmo[npc.index] < FLINTLOCK_CLIP))
 			{
 				npc.StartPathing();
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
@@ -1009,7 +1055,7 @@ public void FlintlockBones_ClotThink(int iNPC)
 
 	if (GetGameTime(npc.index) >= f_ReloadAtFlintlock[npc.index] && f_ReloadAtFlintlock[npc.index] > 0.0 && !npc.IHaveAmmo() && !b_BonesBuffed[npc.index])
 	{
-		npc.AddGesture("ACT_FLINTLOCK_RELOAD");
+		npc.AddGesture("ACT_SWASHBUCKLER_RELOAD_INTRO");
 		f_ReloadAtFlintlock[npc.index] = 0.0;
 	}
 	
