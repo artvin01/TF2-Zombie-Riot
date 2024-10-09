@@ -580,6 +580,8 @@ void NPC_ConfigSetup()
 	Bulldozer_OnMapStart_NPC();
 	VictorianHardener_OnMapStart_NPC();
 	VictorianRaider_OnMapStart_NPC();
+	Zapper_OnMapStart_NPC();
+	VictorianVanguard_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
