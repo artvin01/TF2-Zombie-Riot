@@ -3200,7 +3200,7 @@ static void NPC_Death(int entity)
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 
-	if(!b_wonviakill[npc.index] && !b_wonviatimer[npc.index])
+	if(!b_wonviakill[npc.index] && !b_wonviatimer[npc.index] && !b_allow_final[npc.index])
 	{	
 		int wave = i_current_wave[npc.index];
 		if(wave <=15)
@@ -3237,7 +3237,7 @@ static void NPC_Death(int entity)
 				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
-		else if(!b_allow_final[npc.index])
+		else
 		{
 			switch(GetRandomInt(0, 4))
 			{
