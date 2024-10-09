@@ -269,8 +269,7 @@ void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, int tar
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
-					npc.PlayMeleeHitSound();
-					if(target <= MaxClients)	
+					npc.PlayMeleeHitSound();	
 				} 
 			}
 			delete swingTrace;
