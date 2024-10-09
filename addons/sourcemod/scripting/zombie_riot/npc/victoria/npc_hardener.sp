@@ -78,6 +78,12 @@ methodmap VictorianHardener < CClotBody
 		
 		
 	}
+
+	property float m_flArmorToGive
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -298,7 +304,8 @@ public void VictorianHardener_ClotThink(int iNPC)
 						SetEntityRenderColor(npc.m_iWearable4, 255, 215, 0, 255);
 					}
 					HealEntityGlobal(npc.index, PrimaryThreatIndex, 75.0, 1.0);
-					IberiaBeaconGiveArmor(npc.index, PrimaryThreatIndex, 50);
+					npc.m_flArmorToGive = 50.0;
+					IberiaBeaconGiveArmor(npc.index, PrimaryThreatIndex, npc.m_flArmorToGive);
 				}
 				else
 				{
