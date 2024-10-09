@@ -2,15 +2,13 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
-static const char g_MeleeAttackSounds[] = "mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav";
+static const char g_MeleeAttackSounds[] = "mvm/giant_soldier/giant_soldier_rocket_shoot.wav";
 
 void VictorianHumbee_MapStart()
 {
 	PrecacheModel("models/player/heavy.mdl");
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_MeleeAttackSounds);
-	PrecacheSound("misc/halloween/hwn_dance_howl.wav");
-	PrecacheSound("weapons/barret_arm_zap.wav");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Humbee");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_humbee");
@@ -30,17 +28,13 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap VictorianHumbee < CClotBody
 {
-	public void PlayHurtSound()
-	{
-		EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
 	}
 	
 	public VictorianHumbee(int client, float vecPos[3], float vecAng[3], int ally)

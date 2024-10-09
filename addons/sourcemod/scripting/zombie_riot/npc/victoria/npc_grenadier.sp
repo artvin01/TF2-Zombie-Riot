@@ -317,9 +317,9 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 				if(npc.m_iChanged_WalkCycle == 1)
 				{
 					float SpeedReturn[3];
-					npc.AddGesture("ACT_RANGE_ATTACK_THROW",_,_,_,0.75);
+					npc.AddGesture("ACT_RANGE_ATTACK_THROW",_,_,_,1.5);
 
-					int RocketGet = npc.FireRocket(vecDest, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 0.75);
+					int RocketGet = npc.FireRocket(vecDest, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
@@ -331,12 +331,12 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 				}
 				else
 				{
-					npc.AddGesture("ACT_VILLAGER_ATTACK",_,_,_,0.75);
+					npc.AddGesture("ACT_VILLAGER_ATTACK",_,_,_,1.5);
 					//They do a direct attack, slow down the rocket and make it deal less damage.
 					RocketDamage *= 0.5;
 					RocketSpeed *= 0.5;
 					//	npc.PlayRangedSound();
-					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 0.75);
+					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
 				}
 						
 				npc.m_flNextMeleeAttack = gameTime + 1.75;

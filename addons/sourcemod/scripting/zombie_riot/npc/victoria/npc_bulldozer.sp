@@ -264,9 +264,9 @@ public Action Bulldozer_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		{
 			damage *= 0.1;
 
-			damagePosition[2] += 30.0;
+			damagePosition[2] += 60.0;
 			npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
-			damagePosition[2] -= 30.0;
+			damagePosition[2] -= 60.0;
 		}
 	}
 	else
