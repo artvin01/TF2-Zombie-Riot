@@ -616,6 +616,7 @@ methodmap Twirl < CClotBody
 		if(StrContains(data, "force60") != -1)
 			wave = 60;
 
+		npc.m_bDissapearOnDeath = true;
 		npc.m_fbGunout = true;
 		i_current_wave[npc.index] = wave;
 
@@ -662,6 +663,11 @@ methodmap Twirl < CClotBody
 		}
 		
 		b_allow_final[npc.index] = StrContains(data, "final_item") != -1;
+
+		if(b_allow_final[npc.index])
+		{
+			b_NpcUnableToDie[npc.index] = true;
+		}
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flReloadIn = 0.0;
@@ -940,6 +946,8 @@ static void ClotThink(int iNPC)
 
 					RaidBossActive = INVALID_ENT_REFERENCE;
 					func_NPCThink[npc.index] = INVALID_FUNCTION;
+
+					b_NpcUnableToDie[npc.index] = false;
 
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 					for (int client = 0; client < MaxClients; client++)

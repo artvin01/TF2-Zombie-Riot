@@ -312,7 +312,7 @@ methodmap Ruliana < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		//speed is low since otherwise allied npc's can't keep up with her.
-		fl_npc_basespeed = 225.0;
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -989,21 +989,21 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(Ratio < 0.5)
 	{
 		npc.Anger = true; //	>:(
+		fl_npc_basespeed = 350.0;
 		if(!b_angered_once[npc.index])
 		{
 			b_angered_once[npc.index] = true;
 			npc.PlayAngerSound();
-
-			fl_npc_basespeed = 245.0;
 			
 			if(npc.m_bThisNpcIsABoss)
 			{
 				npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 			}
 		}
-}
+	}
 	else
 	{
+		fl_npc_basespeed = 250.0;
 		npc.Anger = false;
 	}
 	

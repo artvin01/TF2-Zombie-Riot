@@ -1740,20 +1740,24 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 
 	if(Ratio > 1.0)
 	{//the target npc has overheal, nerf the healing ratio
-		healingammount*=0.25;
+		healingammount*=0.2;
 	}
 	
 	if(fl_npc_healing_duration[npc.index] < GetGameTime(npc.index))
 	{//the npc is not retreating to a healer npc. simply put, if the npc is running towards a healer npc, they won't get their healing nerfed from this specific value.
-
-		if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target] || b_ruina_nerf_healing[healed_target])
-		{//this npc is a raid/boss/nerfed healing target
+		
+		if(b_ruina_nerf_healing[healed_target])
+		{//the npc is a special case that needs to get less healing otherwise unfun balance happens
+			healingammount *=0.7;
+		}
+		else if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])
+		{//this npc is a raid/boss healing target
 			healingammount *=0.5;
 		}
 	}
 	if(b_ruina_npc_healer[healed_target])
-	{//this npc MUST have less healing. AND BY A LOT
-		healingammount *=0.1;
+	{//this npc MUST have less healing.
+		healingammount *=0.5;
 	}
 
 	if(!b_ruina_npc[healed_target])
