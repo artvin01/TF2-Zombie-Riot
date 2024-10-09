@@ -6,7 +6,6 @@ static int i_Current_Pap[MAXPLAYERS+1] = {0, ...};
 static float f_FullMoonAbility[MAXPLAYERS+1] = {0.0, ...};
 static bool Precached;
 
-#define ANGELIC_HIT_1	"npc/scanner/scanner_electric1.wav"
 #define FullMoon_ABILTIY_SOUND_1	"npc/scanner/scanner_electric1.wav"
 
 public void FullMoon_MapStart()
@@ -73,8 +72,10 @@ void FullMoon_Enable(int client, int weapon)
 		{
 			// MASS REPLACE THIS IN ALL FILES
 			PrecacheSoundCustom("zombie_riot/weapons/hellagur_attack.mp3",_,1);
+			/*
 			PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry1.mp3",_,1);
 			PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry2.mp3",_,1);
+			*/
 			Precached = true;
 		}
 	}
@@ -336,8 +337,8 @@ public void FullMoonAbilityM2(int client, int weapon, bool crit, int slot)
 	Rogue_OnAbilityUse(weapon);
 	Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
 //	MakePlayerGiveResponseVoice(client, 1); //haha!
-	EmitCustomToAll(GetRandomInt(0,1) ? "zombie_riot/weapons/hellagur_warcry1.mp3" : "zombie_riot/weapons/hellagur_warcry2.mp3", 
-	client, _, 85, _, 1.0);
+//	EmitCustomToAll(GetRandomInt(0,1) ? "zombie_riot/weapons/hellagur_warcry1.mp3" : "zombie_riot/weapons/hellagur_warcry2.mp3", 
+//	client, _, 85, _, 1.0);
 	EmitSoundToAll("items/powerup_pickup_strength.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
 	f_FullMoonAbility[client] = GetGameTime() + 10.0;
 }

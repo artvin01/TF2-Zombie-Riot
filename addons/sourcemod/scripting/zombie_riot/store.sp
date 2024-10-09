@@ -5776,6 +5776,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
 		Yakuza_Enable(client, entity);
+		Enable_SkadiWeapon(client, entity);
 	}
 
 	return entity;
@@ -6007,7 +6008,7 @@ char[] TranslateItemDescription(int client, const char Desc[256], const char Rog
 static void ItemCost(int client, Item item, int &cost)
 {
 	bool Setup = !Waves_Started() || (!Rogue_NoDiscount() && Waves_InSetup());
-//	bool GregSale = false;
+	bool GregSale = false;
 
 	//these should account for selling.
 	int scaled = item.Scaled[client];
@@ -6054,8 +6055,8 @@ static void ItemCost(int client, Item item, int &cost)
 				cost = RoundToCeil(float(cost) * 0.8);
 			}
 			
-		//	if(item.NPCSeller)
-		//		GregSale = true;
+			if(item.NPCSeller)
+				GregSale = true;
 		}
 	}
 	
@@ -6077,7 +6078,7 @@ static void ItemCost(int client, Item item, int &cost)
 				cost = RoundToCeil(float(cost) * 0.7);
 			}
 		}
-		else
+		else if(!GregSale) //dont do this if already on sale.
 		{
 			cost = RoundToCeil(float(cost) * 0.9);
 		}
