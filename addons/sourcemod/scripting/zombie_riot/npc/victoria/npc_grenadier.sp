@@ -311,9 +311,9 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				float vecDest[3];
 				vecDest = vecTarget;
-				vecDest[0] += GetRandomFloat(-100.0, 100.0);
-				vecDest[1] += GetRandomFloat(-100.0, 100.0);
-				vecDest[2] += GetRandomFloat(-100.0, 100.0);
+				vecDest[0] += GetRandomFloat(-200.0, 200.0);
+				vecDest[1] += GetRandomFloat(-200.0, 200.0);
+				vecDest[2] += GetRandomFloat(-200.0, 200.0);
 				if(npc.m_iChanged_WalkCycle == 1)
 				{
 					float SpeedReturn[3];

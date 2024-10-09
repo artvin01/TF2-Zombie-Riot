@@ -1645,3 +1645,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_raider.sp"
 #include "zombie_riot/npc/victoria/npc_zapper.sp"
 #include "zombie_riot/npc/victoria/npc_payback.sp"
+
