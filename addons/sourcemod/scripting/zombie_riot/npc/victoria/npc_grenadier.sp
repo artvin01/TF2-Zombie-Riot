@@ -248,15 +248,6 @@ public void VictorianGrenadier_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-
-	if(npc.m_flNextMeleeAttack > GameTime)
-	{
-		npc.m_flSpeed = 0.0;
-	}
-	else
-	{
-		npc.m_flSpeed = fl_npc_basespeed;
-	}
 	npc.PlayIdleAlertSound();
 }
 
@@ -373,5 +364,13 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 	else //enemy is too far away.
 	{
 		return 0;
+	}
+	if(npc.m_flNextMeleeAttack > GameTime)
+	{
+		npc.m_flSpeed = 0.0;
+	}
+	else
+	{
+		npc.m_flSpeed = fl_npc_basespeed;
 	}
 }
