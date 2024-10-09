@@ -298,7 +298,7 @@ public void VictorianHardener_ClotThink(int iNPC)
 						SetEntityRenderColor(npc.m_iWearable4, 255, 215, 0, 255);
 					}
 					HealEntityGlobal(npc.index, PrimaryThreatIndex, 75.0, 1.0);
-					IberiaBeaconGiveArmor(npc.index, PrimaryThreatIndex, 50.0);
+					IberiaBeaconGiveArmor(npc.index, PrimaryThreatIndex, 50);
 				}
 				else
 				{
