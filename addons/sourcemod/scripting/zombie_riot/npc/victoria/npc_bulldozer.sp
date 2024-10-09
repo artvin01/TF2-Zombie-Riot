@@ -132,8 +132,6 @@ methodmap Bulldozer < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(4);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		/*
 			Slow and has armor
@@ -168,7 +166,7 @@ methodmap Bulldozer < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_stunt_suit_style2/hwn2023_stunt_suit_style2.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/spr18_frag_proof_fragger/spr18_frag_proof_fragger.mdl");
 		SetVariantString("1.0");
