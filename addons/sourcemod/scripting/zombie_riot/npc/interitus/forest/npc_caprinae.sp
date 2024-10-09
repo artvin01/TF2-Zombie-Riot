@@ -79,7 +79,14 @@ methodmap Caprinae < CClotBody
 	{
 		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "99000", ally, _, true));
 		
-		npc.Anger = (data[0]/* && !Rogue_Paradox_RedMoon()*/);
+		if(!data[0])
+		{
+			npc.Anger = false;
+		}
+		else
+		{
+			npc.Anger = true;
+		}
 		i_NpcWeight[npc.index] = npc.Anger ? 1 : 3;
 		npc.SetActivity("ACT_MP_RUN_PASSTIME");
 		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");

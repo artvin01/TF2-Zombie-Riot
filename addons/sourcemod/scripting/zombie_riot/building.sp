@@ -300,7 +300,7 @@ static bool HasWrench(int client)
 	return true;
 }
 
-static int GetCost(int id, float multi)
+static int GetCost(int client, int id, float multi)
 {
 	int buildCost = BuildingCost[id];
 	if(id <= 1 || id == 12)
@@ -318,8 +318,19 @@ static int GetCost(int id, float multi)
 	}
 
 
-	if(Rogue_Mode())
+	if(Rogue_Mode() && (GameRules_GetRoundState() != RoundState_BetweenRounds))
 		buildCost /= 3;
+	else if(GameRules_GetRoundState() == RoundState_BetweenRounds)
+	{
+		int metal = GetAmmo(client, Ammo_Metal);
+		if(metal < 400)
+		{
+			//anti abuse.
+			buildCost += 200;
+		}
+	}
+
+		
 	
 	return buildCost;
 }
@@ -363,7 +374,7 @@ static void BuildingMenu(int client)
 	int items;
 	for(int i; i < sizeof(BuildingPlugin); i++)
 	{
-		int cost = GetCost(i, multi);
+		int cost = GetCost(client, i, multi);
 		int count;
 		int maxcount = 99;
 		bool allowed;
@@ -516,7 +527,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 							}
 
 							int metal = GetAmmo(client, Ammo_Metal);
-							int cost = GetCost(id, Object_GetMaxHealthMulti(client));
+							int cost = GetCost(client, id, Object_GetMaxHealthMulti(client));
 
 							if(metal >= cost && (BuildingFunc[id] == INVALID_FUNCTION || Object_CanBuild(BuildingFunc[id], client)))
 							{

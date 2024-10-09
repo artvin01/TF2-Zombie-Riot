@@ -91,6 +91,7 @@ methodmap BuckshotGambler < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.SetActivity("ACT_MP_STAND_PRIMARY");
 		KillFeed_SetKillIcon(npc.index, "headshot");
+		i_NpcWeight[npc.index] = 1;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -98,7 +99,7 @@ methodmap BuckshotGambler < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		f3_SpawnPosition[npc.index] = vecPos;	
+		f3_SpawnPosition[npc.index] = vecPos;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -149,7 +150,7 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_STAND_PRIMARY", 230.0, gameTime);
+	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_STAND_PRIMARY", 260.0, gameTime);
 
 	int target = npc.m_iTarget;
 	
@@ -174,6 +175,7 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
+		npc.m_bisWalking = true;
 
 		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
@@ -195,7 +197,7 @@ static void ClotThink(int iNPC)
 				else
 				{
 					npc.PlayRangeSound();
-					SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 3.0), DMG_BULLET);
+					SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 3.0), DMG_BULLET, _, _, vecTarget);
 				}
 			}
 		}
