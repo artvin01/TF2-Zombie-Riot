@@ -339,13 +339,21 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 0.75);
 				}
 						
-				npc.m_flNextMeleeAttack = gameTime + 2.00;
+				npc.m_flNextMeleeAttack = gameTime + 1.75;
 				//Launch something to target, unsure if rocket or something else.
 				//idea:launch fake rocket with noclip or whatever that passes through all
 				//then whereever the orginal goal was, land there.
 				//it should be a mortar.
 			}
 		}
+	}
+	if(npc.m_flNextMeleeAttack > gameTime)
+	{
+		npc.m_flSpeed = 0.0;
+	}
+	else
+	{
+		npc.m_flSpeed = fl_npc_basespeed;
 	}
 	//No can shooty.
 	//Enemy is close enough.
@@ -364,13 +372,5 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 	else //enemy is too far away.
 	{
 		return 0;
-	}
-	if(npc.m_flNextMeleeAttack > GameTime)
-	{
-		npc.m_flSpeed = 0.0;
-	}
-	else
-	{
-		npc.m_flSpeed = fl_npc_basespeed;
 	}
 }
