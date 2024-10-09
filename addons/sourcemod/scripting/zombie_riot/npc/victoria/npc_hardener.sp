@@ -305,7 +305,8 @@ public void VictorianHardener_ClotThink(int iNPC)
 					}
 					HealEntityGlobal(npc.index, PrimaryThreatIndex, 75.0, 1.0);
 					npc.m_flArmorToGive = 50.0;
-					IberiaBeaconGiveArmor(npc.index, PrimaryThreatIndex, npc.m_flArmorToGive);
+					GrantEntityArmor(PrimaryThreatIndex, false, 0.01, 0.75, 0, 1.5);
+					//IberiaBeaconGiveArmor(npc.index, PrimaryThreatIndex, npc.m_flArmorToGive);
 				}
 				else
 				{
