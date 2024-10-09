@@ -52,7 +52,7 @@ public void Whiteflower_Nano_Blaster_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Nano Blaster");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Whiteflower_nano_blaster");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_nano_blaster");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -151,7 +151,7 @@ methodmap Whiteflower_Nano_Blaster < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
 
-		int iActivity = npc.LookupActivity("ACT_IDLE_RPG");
+		int iActivity = npc.LookupActivity("ACT_IDLE_PISTOL");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_bisWalking = false;
@@ -173,16 +173,16 @@ methodmap Whiteflower_Nano_Blaster < CClotBody
 		func_NPCThink[npc.index] = Whiteflower_Nano_Blaster_ClotThink;
 		
 	
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_invasion_pistol/c_invasion_pistol.mdl");
-		SetVariantString("1.0");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/w_pistol.mdl");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2015_iron_lung/hwn2015_iron_lung.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/spy/dex_belltower/dex_belltower.mdl");
-		SetVariantString("1.35");
+		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/sum19_brain_interface/sum19_brain_interface.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		NPC_StopPathing(npc.index);
@@ -226,7 +226,8 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	npc.PlayKilledEnemySound(npc.m_iTarget);
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(iNPC, 400.0, "ACT_RUN_RPG_RELAXED", "ACT_IDLE_RPG", 0.0, gameTime);
+	Npc_Base_Thinking(iNPC, 400.0, "ACT_RUN_PISTOL", "ACT_IDLE_PISTOL", 0.0, gameTime);
+	
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -255,14 +256,14 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0) && npc.m_flNextRangedAttack < gameTime)
 		{
-			npc.m_iState = -1;
-			npc.FaceTowards(vecTarget, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-			if(npc.m_flNextMeleeAttack < gameTime)
-			{
-				npc.m_iState = 1; //Engage in Close Range Destruction.
-			}
+			//npc.m_iAttacksTillReload <= 0
+			npc.m_iState = 1; //Engage in Close Range Destruction.
+		}
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0))
+		{
+			npc.m_iState = -1; //Engage in Close Range Destruction.
 		}
 		else 
 		{
@@ -285,49 +286,81 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 				{
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_RUN_RPG");
-					npc.m_flSpeed = 320.0;
+					npc.SetActivity("ACT_RUN_PISTOL");
+					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
 			case 1:
 			{			
-				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);	
+				if(IsValidEnemy(npc.index, target))
 				{
-					npc.m_iTarget = Enemy_I_See;
-
-					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
-
-					npc.PlayMeleeSound();
-					float DamageDeal = 500000.0;
-					int RocketGet = npc.FireRocket(vecTarget, DamageDeal, 1100.0);
-					npc.m_iAttacksTillReload++;
-
-					if(npc.m_iAttacksTillReload >= 3)
+					if(npc.m_iChanged_WalkCycle != 7) 	
 					{
-						npc.m_iAttacksTillReload = 0;
-						DataPack pack;
-						CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-						pack.WriteCell(EntIndexToEntRef(RocketGet));
-						pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 7;
+						npc.SetActivity("ACT_IDLE_ANGRY_PISTOL");
+						npc.m_flSpeed = 0.0;
+						NPC_StopPathing(npc.index);
 					}
+					npc.FaceTowards(vecTarget, 15000.0); //Snap to the enemy. make backstabbing hard to do.
+
+					float eyePitch[3], vecDirShooting[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
 					
-					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
-					if(npc.m_iChanged_WalkCycle != 5) 	
+					vecTarget[2] += 15.0;
+					MakeVectorFromPoints(vecSelf, vecTarget, vecDirShooting);
+					GetVectorAngles(vecDirShooting, vecDirShooting);
+					vecDirShooting[1] = eyePitch[1];
+
+					npc.m_flNextRangedAttack = gameTime + 0.1;
+					npc.m_iAttacksTillReload--;
+					
+					float x = GetRandomFloat( -0.03, 0.03 );
+					float y = GetRandomFloat( -0.03, 0.03 );
+					
+					float vecRight[3], vecUp[3];
+					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+					
+					float vecDir[3];
+					for(int i; i < 3; i++)
+					{
+						vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
+					}
+
+					NormalizeVector(vecDir, vecDir);
+					
+					// E2 L0 = 6.0, E2 L5 = 7.0
+					KillFeed_SetKillIcon(npc.index, "pistol");
+					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					npc.PlayKilledEnemySound(npc.m_iTarget);
+
+					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
+				//	npc.PlayGunShot();
+				}
+				else
+				{
+					//Walk to target
+					if(!npc.m_bPathing)
+						npc.StartPathing();
+						
+					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
 						npc.m_bisWalking = true;
-						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_WALK_AIM_RIFLE");
-						npc.m_flSpeed = 150.0;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_RUN_PISTOL");
+						npc.m_flSpeed = 350.0;
 						NPC_StartPathing(iNPC);
 					}
 				}
 			}
 		}
+	}
+	else
+	{
+		npc.m_flSpeed = 260.0;
+		npc.m_iChanged_WalkCycle = 0;
 	}
 	npc.PlayIdleSound();
 }

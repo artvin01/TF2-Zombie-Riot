@@ -575,13 +575,13 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					npc.PlayRocketSound();
 					for(float loopDo = 1.0; loopDo <= 2.0; loopDo += 0.5)
 					{
-						float vecSelf[3];
-						WorldSpaceCenter(npc.index, vecSelf);
-						vecSelf[2] += 50.0;
-						vecSelf[0] += GetRandomFloat(-10.0, 10.0);
-						vecSelf[1] += GetRandomFloat(-10.0, 10.0);
+						float vecSelf2[3];
+						WorldSpaceCenter(npc.index, vecSelf2);
+						vecSelf2[2] += 50.0;
+						vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
+						vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
 						float RocketDamage = 700000.0;
-						int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 200.0);
+						int RocketGet = npc.FireRocket(vecSelf2, RocketDamage, 200.0);
 						DataPack pack;
 						CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
 						pack.WriteCell(EntIndexToEntRef(RocketGet));
