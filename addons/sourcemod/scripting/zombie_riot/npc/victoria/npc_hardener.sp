@@ -57,7 +57,7 @@ void VictorianHardener_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "medic");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Expidonsa;
+	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -297,8 +297,8 @@ public void VictorianHardener_ClotThink(int iNPC)
 						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(npc.m_iWearable4, 255, 215, 0, 255);
 					}
-					HealEntityGlobal(npc.index, PrimaryThreatIndex, 100.0, 1.0);
-					GrantEntityArmor(PrimaryThreatIndex, false, 0.02, 0.8, 0);
+					HealEntityGlobal(npc.index, PrimaryThreatIndex, 75.0, 1.0);
+					IberiaBeaconGiveArmor(npc.index, PrimaryThreatIndex, 50.0);
 				}
 				else
 				{

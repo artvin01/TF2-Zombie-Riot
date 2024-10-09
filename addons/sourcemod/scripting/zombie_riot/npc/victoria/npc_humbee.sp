@@ -16,7 +16,7 @@ void VictorianHumbee_MapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_humbee");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
 	data.IconCustom = false;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	NPC_Add(data);
