@@ -33,7 +33,7 @@ static const char g_MeleeHitSounds[][] = {
 
 static float f_SavedDamage;
 
-void VictorianVanguard_OnMapStart_NPC()
+void VictorianPayback_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -42,8 +42,8 @@ void VictorianVanguard_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian Vanguard");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_vanguard");
+	strcopy(data.Name, sizeof(data.Name), "Payback");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_payback");
 	strcopy(data.Icon, sizeof(data.Icon), "medic"); 		//leaderboard_class_(insert the name)
 	data.IconCustom = false;								//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
@@ -54,10 +54,10 @@ void VictorianVanguard_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianVanguard(client, vecPos, vecAng, ally);
+	return VictorianPayback(client, vecPos, vecAng, ally);
 }
 
-methodmap VictorianVanguard < CClotBody
+methodmap VictorianPayback < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -96,9 +96,9 @@ methodmap VictorianVanguard < CClotBody
 	}
 	
 	
-	public VictorianVanguard(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianPayback(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianVanguard npc = view_as<VictorianVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.35", "15000", ally, false, true));
+		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.35", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -150,7 +150,7 @@ methodmap VictorianVanguard < CClotBody
 
 static void Internal_ClotThink(int iNPC)
 {
-	VictorianVanguard npc = view_as<VictorianVanguard>(iNPC);
+	VictorianPayback npc = view_as<VictorianPayback>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -193,7 +193,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		VictorianVanguardSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		VictorianPaybackSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -205,7 +205,7 @@ static void Internal_ClotThink(int iNPC)
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianVanguard npc = view_as<VictorianVanguard>(victim);
+	VictorianPayback npc = view_as<VictorianPayback>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -221,7 +221,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 static void Internal_NPCDeath(int entity)
 {
-	VictorianVanguard npc = view_as<VictorianVanguard>(entity);
+	VictorianPayback npc = view_as<VictorianPayback>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -239,7 +239,7 @@ static void Internal_NPCDeath(int entity)
 
 }
 
-void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, int target, float distance)
+void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
