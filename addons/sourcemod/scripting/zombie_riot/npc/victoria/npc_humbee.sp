@@ -50,11 +50,10 @@ methodmap VictorianHumbee < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_KART_IDLE");
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
-		b_NpcUnableToDie[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
-		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
+		npc.m_iNpcStepVariation = 0;
 		
 	//	SetVariantInt(1);
 	//	AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -62,7 +61,7 @@ methodmap VictorianHumbee < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
 		func_NPCDeath[npc.index] = ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
 		npc.m_flSpeed = 210.0;
@@ -80,7 +79,7 @@ methodmap VictorianHumbee < CClotBody
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec2014_copilot_2014/dec2014_copilot_2014_heavy.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/road_rager/road_rager.mdl");
+		npc.m_iWearable2 = npc.EquipItem("m_vecAbsOrigin", "models/workshop/player/items/heavy/road_rager/road_rager.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/cc_summer2015_el_duderino/cc_summer2015_el_duderino.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
@@ -102,14 +101,6 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
-	
-	if(npc.Anger)
-	{
-		b_NpcIsInvulnerable[npc.index] = false;
-		SDKHooks_TakeDamage(npc.index, 0, 0, 1000000.0, DMG_BLAST);
-		SmiteNpcToDeath(npc.index);
-		return;
-	}
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
@@ -216,43 +207,6 @@ static void ClotThink(int iNPC)
 	{
 		npc.StopPathing();
 	}
-}
-
-static void VictorianHumbee_DownedThink(int entity)
-{
-	VictorianHumbee npc = view_as<VictorianHumbee>(entity);
-	npc.AddActivityViaSequence("layer_taunt_the_road_rager_outro");
-	npc.Update();
-	func_NPCThink[npc.index] = ClotThink;
-}
-
-static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	if(attacker > 0)
-	{
-		VictorianHumbee npc = view_as<VictorianHumbee>(victim);
-		
-		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
-		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
-			b_NpcIsInvulnerable[npc.index] = true;
-
-			npc.Anger = true;
-			npc.PlayHurtSound();
-			npc.StopPathing();
-			npc.m_flNextThinkTime = GetGameTime(npc.index) + 1.0;
-
-			func_NPCThink[npc.index] = VictorianHumbee_DownedThink;
-			
-			if(IsValidEntity(npc.m_iWearable2))
-				RemoveEntity(npc.m_iWearable2);
-			
-			damage = 0.0;
-			return Plugin_Handled;
-		}
-	}
-
-	return Plugin_Changed;
 }
 
 static void ClotDeath(int entity)

@@ -48,6 +48,7 @@ void VictorianRaider_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_ReloadSound)); i++) { PrecacheSound(g_ReloadSound[i]); }
 	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
+	PrecacheModel("models/player/Soldier.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Raider");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_raider");
@@ -103,7 +104,7 @@ methodmap VictorianRaider < CClotBody
 
 	public VictorianRaider(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianRaider npc = view_as<VictorianRaider>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "1.1", "8000", ally));
+		VictorianRaider npc = view_as<VictorianRaider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "8000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -151,8 +152,10 @@ methodmap VictorianRaider < CClotBody
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_armor/tw_soldierbot_armor.mdl");
 
+		npc.m_iWearable6 = npc.EquipItem("head", "models/bots/soldier_boss/bot_soldier_boss.mdl");
+
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
+		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 50, 150, 150, 255);
@@ -163,9 +166,12 @@ methodmap VictorianRaider < CClotBody
         SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-        SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 80, 50, 50, 255);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable6, 80, 50, 50, 255);
 		return npc;
 	}
 }

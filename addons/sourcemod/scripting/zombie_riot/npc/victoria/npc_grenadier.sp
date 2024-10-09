@@ -45,6 +45,7 @@ void VictorianGrenadier_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
+static float fl_npc_basespeed;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -116,7 +117,8 @@ methodmap VictorianGrenadier < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 180.0;
+		fl_npc_basespeed = 180.0;
 		
 		
 		int skin = 1;
@@ -246,6 +248,15 @@ public void VictorianGrenadier_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
+
+	if(npc.m_flNextMeleeAttack > GameTime)
+	{
+		npc.m_flSpeed = 0.0;
+	}
+	else
+	{
+		npc.m_flSpeed = fl_npc_basespeed;
+	}
 	npc.PlayIdleAlertSound();
 }
 
@@ -304,20 +315,20 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				float RocketDamage = 125.0;
-				float RocketSpeed = 1200.0;
+				float RocketSpeed = 900.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				float vecDest[3];
 				vecDest = vecTarget;
-				vecDest[0] += GetRandomFloat(-50.0, 50.0);
-				vecDest[1] += GetRandomFloat(-50.0, 50.0);
-				vecDest[2] += GetRandomFloat(-50.0, 50.0);
+				vecDest[0] += GetRandomFloat(-100.0, 100.0);
+				vecDest[1] += GetRandomFloat(-100.0, 100.0);
+				vecDest[2] += GetRandomFloat(-100.0, 100.0);
 				if(npc.m_iChanged_WalkCycle == 1)
 				{
 					float SpeedReturn[3];
-					npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR",_,_,_,0.75);
+					npc.AddGesture("ACT_RANGE_ATTACK_THROW",_,_,_,0.75);
 
-					int RocketGet = npc.FireRocket(vecDest, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
+					int RocketGet = npc.FireRocket(vecDest, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 0.75);
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
@@ -334,7 +345,7 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 					RocketDamage *= 0.5;
 					RocketSpeed *= 0.5;
 					//	npc.PlayRangedSound();
-					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
+					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 0.75);
 				}
 						
 				npc.m_flNextMeleeAttack = gameTime + 2.00;
