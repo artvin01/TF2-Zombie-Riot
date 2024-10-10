@@ -21,7 +21,7 @@ void VictorianHumbee_MapStart()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return VictorianHumbee(client, vecPos, vecAng, ally, data);
 }
