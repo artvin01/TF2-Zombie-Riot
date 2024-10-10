@@ -180,7 +180,7 @@ methodmap VictoriaBirdeye < CClotBody
 
 public void Birdeye_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
-	Birdeye npc = view_as<Birdeye>(victim);
+	VictoriaBirdeye npc = view_as<VictoriaBirdeye>(victim);
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
