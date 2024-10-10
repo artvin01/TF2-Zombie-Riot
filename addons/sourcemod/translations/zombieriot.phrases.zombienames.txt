@@ -3051,6 +3051,10 @@
 	{
 		"en"	"The Reaper"
 	}
+	"Godfather Grimme"
+	{
+		"en"	"Godfather Grimme"
+	}
 	"Supreme Spookmaster Bones"
 	{
 		"en"	"Supreme Spookmaster Bones"

@@ -106,7 +106,7 @@ public void AlchemistBones_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "pyro");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Necropolain;
 	data.Func = Summon_Alchemist;
 	NPC_Add(data);
 }

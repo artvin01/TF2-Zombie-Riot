@@ -724,6 +724,7 @@ void NPC_ConfigSetup()
 	SluggerBones_OnMapStart_NPC();
 	CriminalBones_OnMapStart_NPC();
 	FlintlockBones_OnMapStart_NPC();
+	Godfather_OnMapStart_NPC();
 	#endif
 }
 
@@ -1586,6 +1587,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/wave30/npc_rattler.sp"
 #include "zombie_riot/npc/bonezone/wave30/npc_slugger.sp"
 #include "zombie_riot/npc/bonezone/wave30/npc_criminal.sp"
+#include "zombie_riot/npc/bonezone/wave30/npc_boss_godfather.sp"
 //////
 #include "zombie_riot/npc/bonezone/wave45/npc_buccaneerbones.sp"
 #include "zombie_riot/npc/bonezone/wave45/npc_calciumcorsair.sp"

@@ -168,7 +168,7 @@ public void RattlerBones_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "pyro");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Necropolain;
 	data.Func = Summon_Normal;
 	NPC_Add(data);
 
@@ -178,7 +178,7 @@ public void RattlerBones_OnMapStart_NPC()
 	strcopy(data_buffed.Icon, sizeof(data_buffed.Icon), "pyro");
 	data_buffed.IconCustom = false;
 	data_buffed.Flags = 0;
-	data_buffed.Category = Type_Common;
+	data_buffed.Category = Type_Necropolain;
 	data_buffed.Func = Summon_Buffed;
 	NPC_Add(data_buffed);
 }

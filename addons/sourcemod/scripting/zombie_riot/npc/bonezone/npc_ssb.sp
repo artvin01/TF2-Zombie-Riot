@@ -412,7 +412,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "sniper");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Raid;
 	data.Func = Summon_SSB;
 	NPC_Add(data);
 
