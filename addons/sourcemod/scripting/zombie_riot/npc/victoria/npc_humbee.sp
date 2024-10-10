@@ -84,7 +84,7 @@ methodmap VictorianHumbee < CClotBody
 
 		if(npc.g_TimesSummoned == 0)
 		{
-			npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/workshop/player/items/heavy/road_rager/road_rager.mdl",_,_,_,_, true);
+			npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/workshop/player/items/heavy/road_rager/road_rager.mdl",_,_,_,-100, true);
 		}
 
 		return npc;
@@ -101,7 +101,7 @@ static void ClotThink(int iNPC)
 		{
 			if(!IsValidEntity(npc.m_iWearable2))
 			{
-				npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/workshop/player/items/heavy/road_rager/road_rager.mdl",_,_,_,_,true);
+				npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/workshop/player/items/heavy/road_rager/road_rager.mdl",_,_,_,-100,true);
 			}
 			else
 			{

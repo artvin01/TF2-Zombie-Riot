@@ -1,102 +1,141 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] =
-{
+static const char g_DeathSounds[][] = {
 	"vo/sniper_paincrticialdeath01.mp3",
 	"vo/sniper_paincrticialdeath02.mp3",
 	"vo/sniper_paincrticialdeath03.mp3",
 };
 
-static const char g_HurtSounds[][] =
-{
+static const char g_HurtSounds[][] = {
 	"vo/sniper_painsharp01.mp3",
 	"vo/sniper_painsharp02.mp3",
 	"vo/sniper_painsharp03.mp3",
 	"vo/sniper_painsharp04.mp3",
 };
-
-static const char g_MeleeAttackSounds[][] =
-{
-	"weapons/sniper_railgun_single_crit.wav",
-	"weapons/sniper_railgun_single_crit_02.wav"
+static const char g_IdleAlertedSounds[][] = {
+	"vo/sniper_battlecry01.mp3",
+	"vo/sniper_battlecry02.mp3",
+	"vo/sniper_battlecry03.mp3",
+	"vo/sniper_battlecry04.mp3",
 };
 
-void Birdeye_OnMapStart_NPC()
-{
-	PrecacheSoundArray(g_MeleeAttackSounds);
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/csgo_awp_shoot.wav",
+};
 
+static const char g_TeleportSounds[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
+};
+
+
+
+void VictoriaBirdeye_OnMapStart_NPC()
+{
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_TeleportSounds)); i++) { PrecacheSound(g_TeleportSounds[i]); }
+	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Birdeye");
+	strcopy(data.Name, sizeof(data.Name), "Anarchist Enforcer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_birdeye");
-	strcopy(data.Icon, sizeof(data.Icon), "sniper_headshot");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MISSION;
-	data.Category = Type_BlueParadox;
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Birdeye(client, vecPos, vecAng, ally);
+	return VictoriaBirdeye(client, vecPos, vecAng, ally);
 }
 
-methodmap Birdeye < CClotBody
+methodmap VictoriaBirdeye < CClotBody
 {
+	public void PlayIdleAlertSound() 
+	{
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+		
+	}
+	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		
 	}
+	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public Birdeye(int client, float vecPos[3], float vecAng[3], int ally)
+	public void PlayTeleportSound()
 	{
-		Birdeye npc = view_as<Birdeye>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "50000", ally));
+		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	
+	public VictoriaBirdeye(int client, float vecPos[3], float vecAng[3], int ally)
+	{
+		VictoriaBirdeye npc = view_as<VictoriaBirdeye>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "4000", ally));
 		
-		i_NpcWeight[npc.index] = 3;
+		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.SetActivity("ACT_MP_RUN_PRIMARY");
-
-		KillFeed_SetKillIcon(npc.index, "headshot");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		func_NPCDeath[npc.index] = view_as<Function>(Birdeye_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Birdeye_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Birdeye_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VictoriaBirdeye_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaBirdeye_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VictoriaBirdeye_ClotThink);
 		
 		npc.m_iChanged_WalkCycle = 0;
 
-		npc.m_flNextMeleeAttack = GetGameTime() + 5.0;
+		if(npc.m_iChanged_WalkCycle != 1)
+		{
+			npc.m_bisWalking = true;
+			npc.m_iChanged_WalkCycle = 1;
+			npc.SetActivity("ACT_MP_RUN_PRIMARY");
+			npc.StartPathing();
+			npc.m_flSpeed = 200.0;
+		}	
+		npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		Is_a_Medic[npc.index] = true;
+		
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Birdeye_ClotDamaged_Post);
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_bStaticNPC = true;
-		npc.g_TimesSummoned = 0;
-
-		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Birdeye_ClotDamaged_Post);
 		
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+		
+		int skin = 1;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_pro_rifle/c_pro_rifle.mdl");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/cc_summer2015_the_rotation_sensation_style2/cc_summer2015_the_rotation_sensation_style2_sniper.mdl");
@@ -127,7 +166,7 @@ methodmap Birdeye < CClotBody
 					if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 					{
 						SetGlobalTransTarget(client_check);
-						ShowGameText(client_check, "voice_player", 1, "%t", "Elite sniper has appeared");
+						ShowGameText(client_check, "voice_player", 1, "%t", "Birdeye Appears");
 					}
 				}
 			}
@@ -139,9 +178,32 @@ methodmap Birdeye < CClotBody
 	}
 }
 
-public void Birdeye_ClotThink(int iNPC)
+public void Birdeye_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
-	Birdeye npc = view_as<Birdeye>(iNPC);
+	Birdeye npc = view_as<Birdeye>(victim);
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
+		
+		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
+		if(0.8(npc.g_TimesSummoned*0.2) > ratio)
+		{
+			npc.PlayTeleportSound();
+			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
+			float self_vec[3]; WorldSpaceCenter(npc.index, self_vec);
+			ParticleEffectAt(self_vec, "teleported_blue", 0.5);
+			npc.g_TimesSummoned++;
+		}
+	}
+	else
+	{
+		fl_TotalArmor[npc.index] = 1.0;
+	}
+}
+
+public void VictoriaBirdeye_ClotThink(int iNPC)
+{
+	VictoriaBirdeye npc = view_as<VictoriaBirdeye>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -162,19 +224,6 @@ public void Birdeye_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(Rogue_InSetup())
-	{
-		if(npc.m_iChanged_WalkCycle != 2)
-		{
-			npc.m_bisWalking = false;
-			npc.m_iChanged_WalkCycle = 2;
-			npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
-			npc.StopPathing();
-			npc.m_flSpeed = 0.0;
-		}
-		return;
-	}
-
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
@@ -183,11 +232,11 @@ public void Birdeye_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
 	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget);
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ExtraBehavior = BirdeyeSelfDefense(npc,GetGameTime(npc.index)); 
+		int ExtraBehavior = VictoriaBirdeyeSelfDefense(npc,GetGameTime(npc.index)); 
 
 		switch(ExtraBehavior)
 		{
@@ -199,7 +248,7 @@ public void Birdeye_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 1;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
 					npc.StartPathing();
-					npc.m_flSpeed = 100.0;
+					npc.m_flSpeed = 200.0;
 				}	
 			}
 			case 1:
@@ -231,11 +280,12 @@ public void Birdeye_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 	}
+	npc.PlayIdleAlertSound();
 }
 
-public Action Birdeye_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VictoriaBirdeye_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Birdeye npc = view_as<Birdeye>(victim);
+	VictoriaBirdeye npc = view_as<VictoriaBirdeye>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -249,16 +299,16 @@ public Action Birdeye_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-public void Birdeye_NPCDeath(int entity)
+public void VictoriaBirdeye_NPCDeath(int entity)
 {
-	Birdeye npc = view_as<Birdeye>(entity);
+	VictoriaBirdeye npc = view_as<VictoriaBirdeye>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-
-	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Birdeye_ClotDamaged_Post);
 		
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
@@ -272,27 +322,7 @@ public void Birdeye_NPCDeath(int entity)
 
 }
 
-public void Birdeye_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
-{
-	Birdeye npc = view_as<Birdeye>(victim);
-	if(!NpcStats_IsEnemySilenced(npc.index))
-	{
-		int maxhealth = ReturnEntityMaxHealth(npc.index);
-		
-		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
-		if(0.5-(npc.g_TimesSummoned*0.2) > ratio)
-		{
-			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
-			npc.g_TimesSummoned++;
-		}
-	}
-	else
-	{
-		fl_TotalArmor[npc.index] = 1.0;
-	}
-}
-
-int BirdeyeSelfDefense(Birdeye npc, float gameTime)
+int VictoriaBirdeyeSelfDefense(VictoriaBirdeye npc, float gameTime)
 {
 	if(!npc.m_flAttackHappens)
 	{
@@ -316,6 +346,9 @@ int BirdeyeSelfDefense(Birdeye npc, float gameTime)
 			return 0;
 		}
 	}
+	if(RogueTheme == BlueParadox && i_npcspawnprotection[npc.index] == 1)
+		return 0;
+		
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 	npc.FaceTowards(VecEnemy, 15000.0);
 
@@ -326,7 +359,16 @@ int BirdeyeSelfDefense(Birdeye npc, float gameTime)
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
-			 WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
+			WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
+			float pos_npc[3];
+			WorldSpaceCenter(npc.index, pos_npc);
+			float AngleAim[3];
+			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			if(TR_DidHit(hTrace))
+			{
+				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+			}
 		}
 	}
 	else
@@ -338,13 +380,6 @@ int BirdeyeSelfDefense(Birdeye npc, float gameTime)
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-			/*
-			int Traced_Target = TR_GetEntityIndex(hTrace);
-			if(Traced_Target > 0)
-			{
-				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
-			}
-			*/
 			if(TR_DidHit(hTrace))
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
@@ -354,7 +389,7 @@ int BirdeyeSelfDefense(Birdeye npc, float gameTime)
 	}
 	if(npc.m_flAttackHappens)
 	{
-		TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {255,0,0,255}, 3);
+		TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {0,0,255,255}, 3);
 		TE_SendToAll(0.0);
 	}
 			
@@ -364,7 +399,6 @@ int BirdeyeSelfDefense(Birdeye npc, float gameTime)
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-			
 			ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
 			float pos_npc[3];
 			WorldSpaceCenter(npc.index, pos_npc);
@@ -381,14 +415,18 @@ int BirdeyeSelfDefense(Birdeye npc, float gameTime)
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
 			delete hTrace;	
+
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
-			
+			npc.PlayMeleeSound();
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				if(!dieingstate[target] && IsPlayerAlive(target))
-					TF2_AddCondition(target, TFCond_MarkedForDeath, 60.0);
+				float damageDealt = 250.0;
+				if(ShouldNpcDealBonusDamage(target))
+					damageDealt *= 99.0;
+				
+				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
+				TF2_AddCondition(target, TFCond_MarkedForDeath, 60.0);
 			} 
 		}
 	}
@@ -396,8 +434,8 @@ int BirdeyeSelfDefense(Birdeye npc, float gameTime)
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		npc.m_flAttackHappens = gameTime + 1.25;
-		npc.m_flDoingAnimation = gameTime + 1.25;
-		npc.m_flNextMeleeAttack = gameTime + 6.0;
+		npc.m_flDoingAnimation = gameTime + 0.95;
+		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 1;
 }

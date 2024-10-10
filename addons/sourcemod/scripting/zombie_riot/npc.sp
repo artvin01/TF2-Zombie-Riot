@@ -583,7 +583,7 @@ void NPC_ConfigSetup()
 	Zapper_OnMapStart_NPC();
 	VictorianPayback_OnMapStart_NPC();
 	Blocker_OnMapStart_NPC();
-	Birdeye_OnMapStart_NPC();
+	VictoriaBirdeye_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
