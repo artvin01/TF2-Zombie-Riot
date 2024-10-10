@@ -324,6 +324,8 @@ methodmap SaintBones < CClotBody
 		npc.m_flBoneZoneNonBuffedSpeed = BONES_SAINT_SPEED;
 		npc.m_flBoneZoneBuffedSpeed = BONES_SAINT_SPEED_BUFFED;
 
+		b_DoNotChangeTargetTouchNpc[npc.index] = true;
+
 		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Skeletal Saint");
 		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Blighted Bones");
 		npc.BoneZone_UpdateName();
@@ -847,7 +849,10 @@ public int Priest_GetTarget(CClotBody npc)
 	
 	//Check 4: We were not able to find ANY valid allies to heal, start zapping survivors.	
 	if (closest <= 0)
+	{
+		b_DoNotChangeTargetTouchNpc[npc.index] = false;
 		closest = GetClosestTarget(npc.index);
+	}
 	//Check 5: If we are already healing something, compare its priority level to the new target's to determine whether or not we should switch our heal target.
 	else if (closest > 0 && Priest_IsHealing[npc.index] && IsValidEntity(npc.m_iTarget))
 	{

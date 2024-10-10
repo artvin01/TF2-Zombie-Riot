@@ -256,6 +256,7 @@ methodmap Godfather < CClotBody
 			{
 				mobster.m_iTarget = victim;
 				mobster.m_flGetClosestTargetTime = GetGameTime(mobster.index) + Offer_Duration;
+				fl_GetClosestTargetTimeTouch[mobster.index] = GetGameTime(mobster.index) + Offer_Duration;
 				EmitSoundToAll(g_WitchLaughs[GetRandomInt(0, sizeof(g_WitchLaughs) - 1)], mobster.index, _, _, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 120));
 			}
 		}
