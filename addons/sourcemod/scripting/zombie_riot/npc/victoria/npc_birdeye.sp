@@ -112,6 +112,7 @@ methodmap VictoriaBirdeye < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VictoriaBirdeye_ClotThink);
 		
 		npc.m_iChanged_WalkCycle = 0;
+		npc.g_TimesSummoned = 0;
 
 		if(npc.m_iChanged_WalkCycle != 1)
 		{
