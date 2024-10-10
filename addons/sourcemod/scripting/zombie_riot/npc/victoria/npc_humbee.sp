@@ -23,7 +23,7 @@ void VictorianHumbee_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianHumbee(client, vecPos, vecAng, ally);
+	return VictorianHumbee(client, vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianHumbee < CClotBody
