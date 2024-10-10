@@ -176,7 +176,7 @@ methodmap Blocker < CClotBody
 		
 	}
 	
-	public Blocker(int client, float vecPos[3], float vecAng[3], int ally)
+	public Blocker(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Blocker npc = view_as<Blocker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.1", "7500", ally, false, true));
 		

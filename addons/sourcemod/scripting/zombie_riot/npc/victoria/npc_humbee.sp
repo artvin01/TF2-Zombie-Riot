@@ -37,7 +37,7 @@ methodmap VictorianHumbee < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
 	}
 	
-	public VictorianHumbee(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianHumbee(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianHumbee npc = view_as<VictorianHumbee>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "20000", ally, _, true));
 		
