@@ -187,7 +187,7 @@ public void Birdeye_ClotDamaged_Post(int victim, int attacker, int inflictor, fl
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		
 		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
-		if(0.8(npc.g_TimesSummoned*0.2) > ratio)
+		if(0.8 - (npc.g_TimesSummoned*0.2) > ratio)
 		{
 			npc.PlayTeleportSound();
 			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
@@ -309,7 +309,7 @@ public void VictoriaBirdeye_NPCDeath(int entity)
 	}
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Birdeye_ClotDamaged_Post);
-	
+
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
