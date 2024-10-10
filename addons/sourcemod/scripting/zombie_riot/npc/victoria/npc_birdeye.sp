@@ -27,8 +27,8 @@ void Birdeye_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Wildingen Hitman");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Birdeye");
+	strcopy(data.Name, sizeof(data.Name), "Birdeye");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_birdeye");
 	strcopy(data.Icon, sizeof(data.Icon), "sniper_headshot");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION;
