@@ -251,8 +251,8 @@ methodmap Blocker < CClotBody
 			npc.m_iWearable5 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
 			SetVariantString("1.5");
 			AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable1, 0, 50, 50, 200);
+			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable5, 0, 50, 50, 200);
 		}
 		
 		return npc;
