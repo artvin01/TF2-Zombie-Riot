@@ -307,7 +307,9 @@ public void VictoriaBirdeye_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-		
+	
+	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Birdeye_ClotDamaged_Post);
+	
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
