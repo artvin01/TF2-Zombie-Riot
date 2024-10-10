@@ -504,7 +504,7 @@ float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_WeaponSpecificClassBuff[MAXENTITIES][1];
-bool b_WeaponSpecificClassBuff[MAXENTITIES][1];
+bool b_WeaponSpecificClassBuff[MAXENTITIES][3];
 float f_HighTeslarDebuff[MAXENTITIES];
 float f_VoidAfflictionStrength[MAXENTITIES];
 float f_VoidAfflictionStrength2[MAXENTITIES];
@@ -1783,6 +1783,12 @@ public void OnPluginEnd()
 	*/
 }
 
+void Core_PrecacheGlobalCustom()
+{
+	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
+	PrecacheSoundCustom("zombiesurvival/headshot2.wav");
+	PrecacheSoundCustom("zombiesurvival/hm.mp3");
+}
 public void OnMapStart()
 {
 	PrecacheSound("weapons/knife_swing_crit.wav");
@@ -1822,9 +1828,7 @@ public void OnMapStart()
 	Zero(f_PreventMedigunCrashMaybe);
 
 #if defined ZR || defined RPG
-	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
-	PrecacheSoundCustom("zombiesurvival/headshot2.wav");
-	PrecacheSoundCustom("zombiesurvival/hm.mp3");
+	Core_PrecacheGlobalCustom();
 #endif
 
 	PrecacheSound("weapons/explode1.wav");

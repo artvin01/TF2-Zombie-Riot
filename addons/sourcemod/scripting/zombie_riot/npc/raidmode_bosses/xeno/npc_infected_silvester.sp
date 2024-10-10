@@ -2466,11 +2466,7 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	if(AtEdictLimit(EDICT_RAID))
 		return;
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
-	int red = 255;
-	int green = 255;
-	int blue = 0;
-	float flPos[3];
-	float flAng[3];
+	
 	if(!withoutweapon)
 	{
 		

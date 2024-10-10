@@ -473,7 +473,6 @@ enum struct Item
 	bool ChildKit;
 	bool MaxBarricadesBuild;
 	bool Hidden;
-	bool NoPrivatePlugin;
 	bool WhiteOut;
 	bool IgnoreSlots;
 	char Tags[256];
@@ -2718,7 +2717,14 @@ static void MenuPage(int client, int section)
 			{
 				if(NPCOnly[client] == 1)
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
+					if(Rogue_Mode())
+					{
+						FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);	
+					}
 				}
 				else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 				{
@@ -2733,7 +2739,14 @@ static void MenuPage(int client, int section)
 			{
 				if(NPCOnly[client] == 1)
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+					if(Rogue_Mode())
+					{
+						FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+					}
 				}
 				else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 				{
@@ -5763,6 +5776,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
 		Yakuza_Enable(client, entity);
+		Enable_SkadiWeapon(client, entity);
 	}
 
 	return entity;
@@ -6017,9 +6031,13 @@ static void ItemCost(int client, Item item, int &cost)
 			{
 				if(item.NPCSeller_WaveStart > 0)
 				{
-					cost = RoundToCeil(float(cost) * 0.8);
+					cost = RoundToCeil(float(cost) * 0.85);
 				}
 				else if(item.NPCSeller_First)
+				{
+					cost = RoundToCeil(float(cost) * 0.85);
+				}
+				else if(item.NPCSeller)
 				{
 					cost = RoundToCeil(float(cost) * 0.9);
 				}
@@ -6042,7 +6060,8 @@ static void ItemCost(int client, Item item, int &cost)
 		}
 	}
 	
-	if(Setup && !GregSale)
+	//allow greg sales here.
+	if(Setup/* && !GregSale*/)
 	{
 		if(Rogue_Mode() && !Rogue_Started())
 		{
@@ -6059,7 +6078,7 @@ static void ItemCost(int client, Item item, int &cost)
 				cost = RoundToCeil(float(cost) * 0.7);
 			}
 		}
-		else
+		else if(!GregSale) //dont do this if already on sale.
 		{
 			cost = RoundToCeil(float(cost) * 0.9);
 		}
