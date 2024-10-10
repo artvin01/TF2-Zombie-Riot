@@ -110,7 +110,7 @@ void Blocker_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Blocker(client, vecPos, vecAng, ally, data);
+	return Blocker(client, vecPos, vecAng, ally);
 }
 methodmap Blocker < CClotBody
 {
@@ -191,9 +191,6 @@ methodmap Blocker < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.g_TimesSummoned = 0;
-
-		if(data[0])
-			npc.g_TimesSummoned = StringToInt(data);
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
