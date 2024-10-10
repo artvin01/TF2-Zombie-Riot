@@ -108,7 +108,7 @@ void Blocker_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Blocker(client, vecPos, vecAng, ally, data);
 }
@@ -176,9 +176,9 @@ methodmap Blocker < CClotBody
 		
 	}
 	
-	public Blocker(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Blocker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Blocker npc = view_as<Blocker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.1", "7500", ally, false, true));
+		Blocker npc = view_as<Blocker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "7500", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -245,15 +245,6 @@ methodmap Blocker < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 80, 50, 50, 255);
-
-		if(npc.g_TimesSummoned == 0)
-		{
-			npc.m_iWearable5 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
-			SetVariantString("1.5");
-			AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable5, 0, 50, 50, 200);
-		}
 		
 		return npc;
 	}
@@ -267,26 +258,6 @@ public void Blocker_ClotThink(int iNPC)
 {
 	Blocker npc = view_as<Blocker>(iNPC);
 	
-	if(npc.g_TimesSummoned == 0)
-	{
-		if(npc.m_fbRangedSpecialOn)
-		{
-			if(!IsValidEntity(npc.m_iWearable5))
-			{
-				npc.m_iWearable5 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
-				SetVariantString("1.5");
-				AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-				SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
-			}
-			else
-			{
-				float vecTarget[3];
-				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
-				vecTarget[2] -= 100.0;
-				Custom_SDKCall_SetLocalOrigin(npc.m_iWearable5, vecTarget);
-			}
-		}
-	}
 
 	if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 	{

@@ -39,7 +39,7 @@ methodmap VictorianHumbee < CClotBody
 	
 	public VictorianHumbee(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianHumbee npc = view_as<VictorianHumbee>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "20000", ally, _, true));
+		VictorianHumbee npc = view_as<VictorianHumbee>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "20000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_KART_IDLE");
@@ -99,7 +99,7 @@ static void ClotThink(int iNPC)
 	{
 		if(npc.m_fbRangedSpecialOn)
 		{
-			if(!IsValidEntity(npc.m_iWearable5))
+			if(!IsValidEntity(npc.m_iWearable2))
 			{
 				npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/workshop/player/items/heavy/road_rager/road_rager.mdl",_,_,_,_,true);
 			}
