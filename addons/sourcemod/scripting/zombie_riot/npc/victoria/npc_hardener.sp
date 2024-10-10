@@ -137,6 +137,8 @@ methodmap VictorianHardener < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		func_NPCDeath[npc.index] = VictorianHardener_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = VictorianHardener_OnTakeDamage;
@@ -191,7 +193,7 @@ methodmap VictorianHardener < CClotBody
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 8);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 8);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
 		

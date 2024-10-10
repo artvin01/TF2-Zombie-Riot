@@ -106,7 +106,7 @@ methodmap VictorianPayback < CClotBody
 		int iActivity = npc.LookupActivity("ACT_CHAMPION_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(4);
+		SetVariantInt(16);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		

@@ -48,6 +48,11 @@ methodmap VictorianHumbee < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = 0;
+
+		npc.g_TimesSummoned = 0;
+
+		if(data[0])
+			npc.g_TimesSummoned = StringToInt(data);
 		
 	//	SetVariantInt(1);
 	//	AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -73,10 +78,14 @@ methodmap VictorianHumbee < CClotBody
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec2014_copilot_2014/dec2014_copilot_2014_heavy.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		npc.m_iWearable2 = npc.EquipItem("m_vecAbsOrigin", "models/workshop/player/items/heavy/road_rager/road_rager.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/cc_summer2015_el_duderino/cc_summer2015_el_duderino.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+
+		if(npc.g_TimesSummoned == 0)
+		{
+			npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/workshop/player/items/heavy/road_rager/road_rager.mdl",_,_,_,_, true);
+		}
 
 		return npc;
 	}
@@ -85,6 +94,23 @@ methodmap VictorianHumbee < CClotBody
 static void ClotThink(int iNPC)
 {
 	VictorianHumbee npc = view_as<VictorianHumbee>(iNPC);
+
+	if(npc.g_TimesSummoned == 0)
+	{
+		if(npc.m_fbRangedSpecialOn)
+		{
+			if(!IsValidEntity(npc.m_iWearable5))
+			{
+				npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/workshop/player/items/heavy/road_rager/road_rager.mdl",_,_,_,_,true);
+			}
+			else
+			{
+				float vecTarget[3];
+				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
+				Custom_SDKCall_SetLocalOrigin(npc.m_iWearable2, vecTarget);
+			}
+		}
+	}
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)

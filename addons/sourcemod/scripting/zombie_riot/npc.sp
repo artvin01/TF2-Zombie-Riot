@@ -582,6 +582,7 @@ void NPC_ConfigSetup()
 	VictorianRaider_OnMapStart_NPC();
 	Zapper_OnMapStart_NPC();
 	VictorianPayback_OnMapStart_NPC();
+	Blocker_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1647,4 +1648,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_raider.sp"
 #include "zombie_riot/npc/victoria/npc_zapper.sp"
 #include "zombie_riot/npc/victoria/npc_payback.sp"
+#include "zombie_riot/npc/victoria/npc_blocker.sp"
 

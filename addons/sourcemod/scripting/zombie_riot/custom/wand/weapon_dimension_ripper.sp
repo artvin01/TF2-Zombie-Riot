@@ -365,9 +365,9 @@ public void Weapon_Dimension_Summon_Blitz_PAP(int client, int weapon, bool &resu
 		case 3:
 			Dimension_Summon_Npc(client, "npc_alt_combine_soldier_deutsch_ritter" ,weapon, 1.3, 1.2, "teleporter_red_exit_level3");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_alt_ikunagae" ,weapon, 2.0, 1.8, "teleporter_red_exit_level3");
+			Dimension_Summon_Npc(client, "npc_alt_ikunagae" ,weapon, 2.0, 1.6, "teleporter_red_exit_level3");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_alt_schwertkrieg" ,weapon, 2.0, 1.75, "teleporter_red_exit_level3");
+			Dimension_Summon_Npc(client, "npc_alt_schwertkrieg" ,weapon, 1.5, 1.3, "teleporter_red_exit_level3");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -448,7 +448,7 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 		case 3:
 			Dimension_Summon_Npc(client, "npc_medival_ram" ,weapon, 0.5, 0.4, "npc_boss_bomb_alert");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_medival_son_of_osiris" ,weapon, 1.8, 1.3, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, "npc_medival_son_of_osiris" ,weapon, 1.5, 1.1, "npc_boss_bomb_alert");
 		case 5:
 			Dimension_Summon_Npc(client, "npc_medival_knight" ,weapon, 1.5, 1.35, "npc_boss_bomb_alert");
 		default: //This should not happen
@@ -529,9 +529,9 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 		case 3:
 			Dimension_Summon_Npc(client, "npc_diversionistico" ,weapon, 1.2, 1.4, "eyeboss_death_vortex");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_soldine" ,weapon, 1.5, 1.5, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, "npc_soldine" ,weapon, 1.4, 1.4, "eyeboss_death_vortex");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_guardus" ,weapon, 1.6, 1.3, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, "npc_guardus" ,weapon, 1.5, 1.3, "eyeboss_death_vortex");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -544,7 +544,7 @@ public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &resu
 	switch(GetRandomInt(1, 5))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_khazaan" ,weapon, 1.2, 1.2, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_khazaan" ,weapon, 1.1, 1.2, "teleported_blue");
 		case 2:
 			Dimension_Summon_Npc(client, "npc_yadeam" ,weapon, 1.0, 1.4, "teleported_blue");
 		case 3:
@@ -594,7 +594,7 @@ public void Weapon_Dimension_Summon_Twirl(int client, int weapon, bool &result, 
 		case 4:
 			Dimension_Summon_Npc(client, "npc_ruina_heliara" ,weapon, 1.3, 1.3, "teleported_blue");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_ruina_theocracy" ,weapon, 1.8, 1.4, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_ruina_theocracy" ,weapon, 1.7, 1.4, "teleported_blue");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
