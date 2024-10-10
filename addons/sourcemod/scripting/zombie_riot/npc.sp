@@ -562,6 +562,29 @@ void NPC_ConfigSetup()
 	IberiaDeathMarker_OnMapStart_NPC();
 	Iberia_inqusitor_irene_OnMapStart_NPC();
 
+//Victorian Raid
+//wave 1~15
+	Victoria_Batter_OnMapStart_NPC();
+	Victorian_Charger_OnMapStart_NPC();
+	Victorian_Teslar_OnMapStart_NPC();
+	VictorianBallista_OnMapStart_NPC();
+	VictorianVanguard_OnMapStart_NPC();
+	VictorianSupplier_OnMapStart_NPC();
+	VictorianIgniter_OnMapStart_NPC();
+	VictorianGrenadier_OnMapStart_NPC();
+	VictorianSquadleader_OnMapStart_NPC();
+	VictorianSignaller_OnMapStart_NPC();
+//wave 16~30
+	VictorianHumbee_MapStart();
+	VictorianShotgunner_OnMapStart_NPC();
+	Bulldozer_OnMapStart_NPC();
+	VictorianHardener_OnMapStart_NPC();
+	VictorianRaider_OnMapStart_NPC();
+	Zapper_OnMapStart_NPC();
+	VictorianPayback_OnMapStart_NPC();
+	Blocker_OnMapStart_NPC();
+	VictoriaBirdeye_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -1604,3 +1627,28 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
+
+//Victoria
+//Wave 1~15
+#include "zombie_riot/npc/victoria/npc_batter.sp"
+#include "zombie_riot/npc/victoria/npc_charger.sp"
+#include "zombie_riot/npc/victoria/npc_teslar.sp"
+#include "zombie_riot/npc/victoria/npc_victorian_vanguard.sp"
+#include "zombie_riot/npc/victoria/npc_supplier.sp"
+#include "zombie_riot/npc/victoria/npc_ballista.sp"
+#include "zombie_riot/npc/victoria/npc_igniter.sp"
+#include "zombie_riot/npc/victoria/npc_grenadier.sp"
+#include "zombie_riot/npc/victoria/npc_squadleader.sp"
+#include "zombie_riot/npc/victoria/npc_signaller.sp"
+
+//wave 16~30
+#include "zombie_riot/npc/victoria/npc_humbee.sp"
+#include "zombie_riot/npc/victoria/npc_shotgunner.sp"
+#include "zombie_riot/npc/victoria/npc_bulldozer.sp"
+#include "zombie_riot/npc/victoria/npc_hardener.sp"
+#include "zombie_riot/npc/victoria/npc_raider.sp"
+#include "zombie_riot/npc/victoria/npc_zapper.sp"
+#include "zombie_riot/npc/victoria/npc_payback.sp"
+#include "zombie_riot/npc/victoria/npc_blocker.sp"
+#include "zombie_riot/npc/victoria/npc_birdeye.sp"
+
