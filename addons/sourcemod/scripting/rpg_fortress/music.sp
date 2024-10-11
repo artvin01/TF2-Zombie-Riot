@@ -44,11 +44,22 @@ static float MusicDelay[MAXTF2PLAYERS];
 
 void Music_ZoneEnter(int client, int entity)
 {
-	// TODO: Set all oberservers too
 	static char newSong[PLATFORM_MAX_PATH];
 	GetEntPropString(entity, Prop_Data, "m_nMusicFile", newSong, sizeof(newSong));
+
 	if(newSong[0])
-		NextZone[client] = EntIndexToEntRef(entity);
+	{
+		for(int target = 1; target <= MaxClients; target++)
+		{
+			if(client != target)
+			{
+				if(!IsClientInGame(target) || !IsClientObserver(target) || GetEntPropEnt(target, Prop_Send, "m_hObserverTarget") != client)
+					continue;
+			}
+
+			NextZone[target] = EntIndexToEntRef(entity);
+		}
+	}
 }
 
 void Music_ClientDisconnect(int client)
@@ -59,7 +70,7 @@ void Music_ClientDisconnect(int client)
 	OverrideSong[client][0] = 0;
 }
 
-void Music_SetOverride(int client, const char[] file = "", int time = 0, bool custom = false, float volume = 1.0)
+void Music_SetOverride(int client, const char[] file = "", int time = 0, bool custom = false, float volume = 1.0, const char[] desc = "")
 {
 	if(OverrideSong[client][0])
 	{
@@ -71,6 +82,8 @@ void Music_SetOverride(int client, const char[] file = "", int time = 0, bool cu
 	OverrideTime[client] = time;
 	OverrideCustom[client] = custom;
 	OverrideVolume[client] = volume;
+	if(desc[0])
+		CPrintToChat(client, "{darkgrey}Now Playing: {community}%s", desc);
 }
 
 void Music_PlayerRunCmd(int client)
@@ -133,6 +146,10 @@ void Music_PlayerRunCmd(int client)
 					}
 
 					EmitMusicToClient(client, newSong, view_as<bool>(GetEntProp(entity, Prop_Data, "m_bMusicCustom")), volume, SND_CHANGEVOL);
+					
+					GetEntPropString(entity, Prop_Data, "m_nMusicDesc", newSong, sizeof(newSong));
+					if(newSong[0])
+						CPrintToChat(client, "{darkgrey}Now Playing: {community}%s", newSong);
 				}
 			}
 			
@@ -198,7 +215,6 @@ void Music_PlayerRunCmd(int client)
 				EmitMusicToClient(client, OverrideSong[client], OverrideCustom[client], OverrideVolume[client]);
 				NextSoundIn[client] = time + OverrideTime[client];
 				CurrentZone[client] = -1;
-				//PrintToChat(client, "DEBUG: Override Start");
 			}
 			else if(CurrentZone[client] != -1)
 			{

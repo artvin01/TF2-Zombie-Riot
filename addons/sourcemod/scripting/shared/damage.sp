@@ -711,10 +711,13 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
 		}
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
 		{
 			if(i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_ULPIANUS)
 				Ulpianus_OnTakeDamageSelf(victim);
+				
+			if(i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_SKADI)
+				WeaponSkadi_OnTakeDamage(attacker, victim, damage);
 			
 			return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
 		}
@@ -1089,6 +1092,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Yakuza_NPCTakeDamage(victim, attacker, damage, weapon);
 		}
+		case WEAPON_SKADI:
+		{
+			WeaponSkadi_OnTakeDamageNpc(attacker,damage);
+		}
 	}
 #endif
 
@@ -1126,7 +1133,7 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 }
 
 #if defined RPG
-stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime)
+stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime, bool donotset = false)
 {
 	if(attacker > MaxClients && victim <= MaxClients)
 	{
@@ -1149,8 +1156,12 @@ stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime)
 
 	if(RPGCore_ClientAllowedToTargetNpc(victim, attacker))
 	{
-		i_NpcFightOwner[victim] = attacker;
-		f_NpcFightTime[victim] = GameTime + 10.0;
+		if(!donotset)
+		{
+			i_NpcFightOwner[victim] = attacker;
+			f_NpcFightTime[victim] = GameTime + 10.0;
+
+		}
 	}
 	else
 	{
@@ -2191,6 +2202,14 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			if(b_WeaponSpecificClassBuff[Victim_weapon][0])
 			{
 				Format(Debuff_Adder_right, SizeOfChar, "S%s", Debuff_Adder_right);
+			}
+			if(b_WeaponSpecificClassBuff[Victim_weapon][1])
+			{
+				Format(Debuff_Adder_right, SizeOfChar, "UL%s", Debuff_Adder_right);
+			}
+			if(b_WeaponSpecificClassBuff[Victim_weapon][2])
+			{
+				Format(Debuff_Adder_right, SizeOfChar, "✣%s", Debuff_Adder_right);
 			}
 			if(FlameTail_Global_Buff() && IsWeaponKazimierz(Victim_weapon))
 			{	

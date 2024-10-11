@@ -294,7 +294,7 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 
 	int Max_Health = ReturnEntityMaxHealth(entity);
 
-	float healing = float(Max_Health)*0.25;
+	float healing = float(Max_Health)*0.1;
 	
 	HealEntityGlobal(entity, victim, healing, 0.1);
 
@@ -350,7 +350,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Speed_Buff(npc.index, 140.0, 1.0, 1.3);
+		Master_Apply_Speed_Buff(npc.index, 140.0, 1.0, 1.2);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
@@ -361,7 +361,7 @@ static void ClotThink(int iNPC)
 		float Range_Min = (125.0*125.0);
 		float Range_Max = (1500.0*1500.0);
 
-		if(Lanius_Teleport_Logic(npc.index, PrimaryThreatIndex, Range_Min, Range_Max, (npc.Anger ? 22.5 : 30.0), 100.0, 7.5, On_LaserHit))
+		if(Lanius_Teleport_Logic(npc.index, PrimaryThreatIndex, Range_Min, Range_Max, (npc.Anger ? 35.5 : 60.0), 100.0, 7.5, On_LaserHit))
 			npc.PlayTeleportSound();
 
 		Ruina_Self_Defense Melee;
