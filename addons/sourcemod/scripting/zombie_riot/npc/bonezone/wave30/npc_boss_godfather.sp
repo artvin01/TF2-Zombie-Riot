@@ -103,6 +103,7 @@ static char g_GibSounds[][] = {
 
 #define PARTICLE_OFFER_MARKED		"teleportedin_red"
 #define PARTICLE_OFFER_MARKED_TRAIL	"player_recent_teleport_red"
+#define PARTICLE_OFFER_RECEIVED		"spell_batball_impact_blue_3"
 
 public void Godfather_OnMapStart_NPC()
 {
@@ -244,20 +245,21 @@ methodmap Godfather < CClotBody
 
 		for (int i = 1; i < MAXENTITIES; i++)
 		{
-			if (!IsValidEntity(i) || i_IsABuilding[i] || i == this.index)
+			if (!IsValidEntity(i) || i_IsABuilding[i] || i == this.index || IsValidClient(i))
 				continue;
 			
 			if (!IsValidAlly(this.index, i))
 				continue;
 			
 			CClotBody mobster = view_as<CClotBody>(i);
-			mobster.WorldSpaceCenter(allyPos);
+			GetEntPropVector(mobster.index, Prop_Data, "m_vecAbsOrigin", allyPos);
 			if (GetVectorDistance(pos, allyPos) <= Offer_Radius)
 			{
 				mobster.m_iTarget = victim;
 				mobster.m_flGetClosestTargetTime = GetGameTime(mobster.index) + Offer_Duration;
 				fl_GetClosestTargetTimeTouch[mobster.index] = GetGameTime(mobster.index) + Offer_Duration;
 				EmitSoundToAll(g_WitchLaughs[GetRandomInt(0, sizeof(g_WitchLaughs) - 1)], mobster.index, _, _, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 120));
+				ParticleEffectAt(allyPos, PARTICLE_OFFER_RECEIVED);
 			}
 		}
 
