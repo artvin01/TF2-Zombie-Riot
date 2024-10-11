@@ -32,10 +32,13 @@ static float Friends_StartingCooldown = 20.0;	//Cooldown upon spawning.
 //This can only be used against players, and has a slow wind-up phase. If it hits, he will always follow up with LITTLE FRIENDS, unless it's on cooldown in which he will
 //use NORMAL KICK.
 static float Dirty_DMG = 120.0;			//Dirty Kick damage.
-static float Dirty_Stun = 6.0;			//Dirty Kick stun duration.
+static float Dirty_EntityDMG = 1000.0;	//Dirty Kick damage to entities.
+static float Dirty_Stun = 4.0;			//Dirty Kick stun duration.
 static float Dirty_Length = 120.0;		//Dirty Kick hitbox length.
 static float Dirty_Width = 45.0;		//Dirty Kick hitbox width.
-static float Dirty_Cooldown = 30.0;		//Dirty Kick cooldown.
+static float Dirty_Range = 80.0;		//Range in which the kick will be used, if it can be used.
+static float Dirty_Cooldown = 12.0;		//Dirty Kick cooldown.
+static float Dirty_StartingCooldown = 6.0;	//Starting cooldown.
 
 //NORMAL KICK: Godfather Grimme's other melee attack, where he kicks his target in the gut, dealing heavy damage in addition to knockback.
 static float Kick_DMG = 120.0;			//Normal Kick damage.
@@ -99,7 +102,23 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
-#define SOUND_OFFER_MARKED		")mvm/mvm_cpoint_klaxon.wav"
+#define SOUND_OFFER_MARKED			")mvm/mvm_cpoint_klaxon.wav"
+#define SOUND_GODFATHER_KICK_SWING	")weapons/machete_swing.wav"
+#define SOUND_DIRTYKICK_HIT			")weapons/fist_hit_world1.wav"
+#define SOUND_DIRTYKICK_HIT_PLAYER	")ambient/rottenburg/rottenburg_belltower.wav"
+#define SOUND_DIRTYKICK_STUNNED_SCOUT		")vo/scout_painsevere01.mp3"
+#define SOUND_DIRTYKICK_STUNNED_SOLDIER		")vo/soldier_painsevere03.mp3"
+#define SOUND_DIRTYKICK_STUNNED_PYRO		")vo/pyro_paincrticialdeath01.mp3"
+#define SOUND_DIRTYKICK_STUNNED_DEMOMAN		")vo/demoman_painsevere02.mp3"
+#define SOUND_DIRTYKICK_STUNNED_HEAVY		")vo/heavy_paincrticialdeath01.mp3"
+#define SOUND_DIRTYKICK_STUNNED_ENGINEER	")vo/engineer_painsevere06.mp3"
+#define SOUND_DIRTYKICK_STUNNED_MEDIC		")vo/medic_painsevere04.mp3"
+#define SOUND_DIRTYKICK_STUNNED_SNIPER		")vo/sniper_sf13_scared03.mp3"
+#define SOUND_DIRTYKICK_STUNNED_SPY			")vo/spy_paincrticialdeath01.mp3"
+#define SOUND_DIRTYKICK_STUNNED_KLEINER		")vo/k_lab/kl_ohdear.wav"
+#define SOUND_DIRTYKICK_STUNNED_BARNEY		")vo/npc/barney/ba_pain06.wav"
+#define SOUND_DIRTYKICK_STUNNED_NIKO		")vo/npc/vortigaunt/tothevoid.wav"	//nik o
+#define SOUND_DIRTYKICK_STUNNED_SKELETON	")vo/halloween_boss/knight_pain03.mp3"
 
 #define PARTICLE_OFFER_MARKED		"teleportedin_red"
 #define PARTICLE_OFFER_MARKED_TRAIL	"player_recent_teleport_red"
@@ -117,6 +136,22 @@ public void Godfather_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
 	PrecacheSound(SOUND_OFFER_MARKED);
+	PrecacheSound(SOUND_GODFATHER_KICK_SWING);
+	PrecacheSound(SOUND_DIRTYKICK_HIT);
+	PrecacheSound(SOUND_DIRTYKICK_HIT_PLAYER);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_SCOUT);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_SOLDIER);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_PYRO);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_DEMOMAN);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_HEAVY);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_ENGINEER);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_MEDIC);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_SNIPER);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_SPY);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_KLEINER);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_BARNEY);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_NIKO);
+	PrecacheSound(SOUND_DIRTYKICK_STUNNED_SKELETON);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Godfather Grimme");
@@ -135,6 +170,10 @@ static any Summon_Godfather(int client, float vecPos[3], float vecAng[3], int al
 }
 
 static float f_NextOffer[MAXENTITIES] = { 0.0, ... };
+static float f_NextDirtyKick[MAXENTITIES] = { 0.0, ... };
+
+static bool Godfather_Attacking[MAXENTITIES] = { false, ... };
+static bool Godfather_ResetAnimation[MAXENTITIES] = { false, ... };
 
 methodmap Godfather < CClotBody
 {
@@ -274,6 +313,7 @@ methodmap Godfather < CClotBody
 		npc.m_bBoneZoneNaturallyBuffed = true;
 		b_IsSkeleton[npc.index] = true;
 		b_thisNpcIsABoss[npc.index] = true;
+		func_NPCAnimEvent[npc.index] = Godfather_AnimEvent;
 		f_NextOffer[npc.index] = GetGameTime(npc.index) + Offer_StartingCooldown;
 		npc.m_bisWalking = false;
 
@@ -298,6 +338,9 @@ methodmap Godfather < CClotBody
 
 		npc.StartPathing();
 		
+		Godfather_Attacking[npc.index] = false;
+		f_NextDirtyKick[npc.index] = GetGameTime(npc.index) + Dirty_StartingCooldown;
+
 		return npc;
 	}
 }
@@ -317,6 +360,15 @@ public void Godfather_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
+	if (Godfather_ResetAnimation[npc.index])
+	{
+		int iActivity = npc.LookupActivity("ACT_GODFATHER_RUN");
+		if (iActivity > 0)
+			npc.StartActivity(iActivity);
+			
+		Godfather_ResetAnimation[npc.index] = false;
+	}
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
@@ -347,9 +399,9 @@ public void Godfather_ClotThink(int iNPC)
 		WorldSpaceCenter(closest, vecTarget);
 		WorldSpaceCenter(npc.index, vecother);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother);
 				
-		if(flDistanceToTarget < npc.GetLeadRadius())
+		if(flDistanceToTarget * flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
@@ -376,6 +428,19 @@ public void Godfather_ClotThink(int iNPC)
 			else
 				npc.MakeAnOfferTheyCantRefuse(closest);
 		}
+
+		if (flDistanceToTarget <= Dirty_Range && GetGameTime(npc.index) >= f_NextDirtyKick[npc.index] && !Godfather_Attacking[npc.index] && IsValidClient(closest))
+		{
+			int iActivity = npc.LookupActivity("ACT_GODFATHER_KICK_DIRTY");
+			if (iActivity > 0)
+				npc.StartActivity(iActivity);
+
+			npc.FaceTowards(vecTarget, 15000.0);
+			npc.StopPathing();
+
+			EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], npc.index, _, _, _, _, 80);
+			Godfather_Attacking[npc.index] = true;
+		}
 	}
 	else
 	{
@@ -388,6 +453,132 @@ public void Godfather_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
+public void Godfather_AnimEvent(int entity, int event)
+{
+	if (!IsValidEntity(entity))
+		return;
+
+	Godfather npc = view_as<Godfather>(entity);
+
+	switch(event)	//Events 1001-1003 are for Dirty Kick, events 1004-1006 are for normal kick.
+	{
+		case 1001:	//Leg swing, play sound.
+		{
+			EmitSoundToAll(SOUND_GODFATHER_KICK_SWING, npc.index, _, 120, _, _, 80);
+		}
+		case 1002:	//Impact, run melee logic and play sound.
+		{
+			int closest = npc.m_iTarget;
+			if (!IsValidEntity(closest))
+				return;
+
+			Handle swingTrace;
+
+			if(npc.DoSwingTrace(swingTrace, closest))
+			{
+				int target = TR_GetEntityIndex(swingTrace);	
+				float vecHit[3];
+				TR_GetEndPosition(vecHit, swingTrace);
+				if(target > 0) 
+				{
+					EmitSoundToAll(g_HHHLaughs[GetRandomInt(0, sizeof(g_HHHLaughs) - 1)], npc.index, _, _, _, _, 80);
+
+					if(target <= MaxClients)
+					{
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Dirty_DMG, DMG_CLUB, -1, _, vecHit);
+						TF2_StunPlayer(target, Dirty_Stun, _, TF_STUNFLAG_BONKSTUCK);
+
+						char sound[255];
+						if (i_CustomModelOverrideIndex[target] < BARNEY)
+						{
+							switch (view_as<int>(CurrentClass[target]))
+							{
+								case 1:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_SCOUT;
+								}
+								case 2:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_SNIPER;
+								}
+								case 3:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_SOLDIER;
+								}
+								case 4:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_DEMOMAN;
+								}
+								case 5:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_MEDIC;
+								}
+								case 6:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_HEAVY;
+								}
+								case 7:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_PYRO;
+								}
+								case 8:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_SPY;
+								}
+								case 9:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_ENGINEER;
+								}
+							}
+						}
+						else
+						{
+							switch(i_CustomModelOverrideIndex[target])
+							{
+								case 1:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_BARNEY;
+								}
+								case 2:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_NIKO;
+								}
+								case 3:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_SKELETON;
+								}
+								case 4:
+								{
+									sound = SOUND_DIRTYKICK_STUNNED_KLEINER;
+								}
+							}
+						}
+
+
+						EmitSoundToAll(sound, target, _, 120, _, _, 110);
+						EmitSoundToAll(SOUND_DIRTYKICK_HIT_PLAYER, target, _, 120, _, _, 80);
+						EmitSoundToAll(SOUND_DIRTYKICK_HIT, target);
+						Client_Shake(target, _, _, _, 1.5);
+					}
+					else
+					{
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Dirty_EntityDMG, DMG_CLUB, -1, _, vecHit);
+						EmitSoundToAll(SOUND_DIRTYKICK_HIT, target);
+					}
+				}
+			}
+
+			delete swingTrace;
+		}
+		case 1003:	//Kick is over, resume pathing and revert to walk cycle.
+		{
+			Godfather_ResetAnimation[npc.index] = true;
+			Godfather_Attacking[npc.index] = false;
+			f_NextDirtyKick[npc.index] = GetGameTime(npc.index) + Dirty_Cooldown;
+			npc.StartPathing();
+		}
+	}
+}
 
 public Action Godfather_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
