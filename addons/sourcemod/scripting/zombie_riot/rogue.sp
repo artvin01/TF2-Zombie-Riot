@@ -655,6 +655,7 @@ static void DisplayHintVote()
 	}
 }
 
+
 void Rogue_StartSetup()	// Waves_RoundStart()
 {
 	Rogue_RoundEnd();
@@ -717,6 +718,7 @@ void Rogue_RoundEnd()
 
 		delete CurrentCollection;
 	}
+	StartingItem[0] = 0;
 	
 	if(CurseOne != -1)
 	{

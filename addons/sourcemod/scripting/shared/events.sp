@@ -59,10 +59,6 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	
 	CreateMVMPopulator();
 	
-	if(RoundStartTime > GetGameTime())
-		return;
-	
-	RoundStartTime = GetGameTime()+0.1;
 	
 	Escape_RoundStart();
 	Waves_RoundStart();
@@ -71,16 +67,53 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Flametail_RoundStart();
 	BlacksmithBrew_RoundStart();
 
+	if(RoundStartTime > GetGameTime())
+		return;
+	
+	RoundStartTime = FAR_FUTURE;
 	//FOR ZR
+	char mapname[64];
+	char buffer[PLATFORM_MAX_PATH];
 	KeyValues kv;
-	FileNetwork_MapEnd();
+	
+	if(!zr_ignoremapconfig.BoolValue)
+	{
+		GetCurrentMap(mapname, sizeof(mapname));
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/maps");
+		DirectoryListing dir = OpenDirectory(buffer);
+		if(dir != INVALID_HANDLE)
+		{
+			FileType file;
+			char filename[68];
+			while(dir.GetNext(filename, sizeof(filename), file))
+			{
+				if(file != FileType_File)
+					continue;
+
+				if(SplitString(filename, ".cfg", filename, sizeof(filename)) == -1)
+					continue;
+					
+				if(StrContains(mapname, filename))
+					continue;
+
+				kv = new KeyValues("Map");
+				Format(buffer, sizeof(buffer), "%s/%s.cfg", buffer, filename);
+				if(!kv.ImportFromFile(buffer))
+					LogError("[Config] Found '%s' but was unable to read", buffer);
+
+				break;
+			}
+			delete dir;
+		}
+	}
+//	FileNetwork_MapEnd();
 	Waves_MapEnd();
-	FileNetwork_ConfigSetup(kv);
+//	FileNetwork_ConfigSetup(kv);
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 	delete kv;
-	Core_PrecacheGlobalCustom();
-	PrecacheMusicZr();
+//	Core_PrecacheGlobalCustom();
+//	PrecacheMusicZr();
 #endif
 
 #if defined RPG

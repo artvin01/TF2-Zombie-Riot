@@ -1759,11 +1759,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 #if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker] && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
-#else
-	if((damagetype & DMG_DROWN) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
-#endif
 	{
-#if defined ZR
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
 			if(damage < 10000.0)
@@ -1771,9 +1767,19 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				NpcStuckZoneWarning(victim, damage);
 			}
 		}
-#endif
 	}
+#endif
 	
+#if defined RPG
+	if((damagetype & DMG_DROWN|DMG_DROWNRECOVER) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+	{
+		if(damage < 1000.0)
+		{
+			damage = 1000.0;
+		}
+	}
+#endif
+
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 
 	//dmg bonus before flat res!
@@ -2326,9 +2332,14 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
 		{
-			return Gladiia_OnTakeDamageAlly_Hud(victim);
+			float DmgMulti = 1.0;
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SKADI)
+			{
+				WeaponSkadi_OnTakeDamage(1,victim, DmgMulti);
+			}
+			return (DmgMulti * Gladiia_OnTakeDamageAlly_Hud(victim));
 		}
 		case WEAPON_GLADIIA:
 		{
@@ -2454,6 +2465,12 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 
 void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 {
+	if(GetEntityMoveType(client) == MOVETYPE_NOCLIP)
+	{
+		damage = 0.0;
+		return;
+	}
+	
 	SetGlobalTransTarget(client);
 	switch(TypeOfAbuse)
 	{
