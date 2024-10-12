@@ -162,14 +162,6 @@ methodmap VictoriaBirdeye < CClotBody
 			{
 				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, _, _, _, 1.0);	
 				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, _, _, _, 1.0);	
-				for(int client_check=1; client_check<=MaxClients; client_check++)
-				{
-					if(IsClientInGame(client_check) && !IsFakeClient(client_check))
-					{
-						SetGlobalTransTarget(client_check);
-						ShowGameText(client_check, "voice_player", 1, "%t", "Birdeye Appears");
-					}
-				}
 			}
 			LastSpawnDiversio = GetGameTime() + 20.0;
 			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
@@ -179,6 +171,7 @@ methodmap VictoriaBirdeye < CClotBody
 	}
 }
 
+/*
 public void Birdeye_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	VictoriaBirdeye npc = view_as<VictoriaBirdeye>(victim);
@@ -201,6 +194,7 @@ public void Birdeye_ClotDamaged_Post(int victim, int attacker, int inflictor, fl
 		fl_TotalArmor[npc.index] = 1.0;
 	}
 }
+*/
 
 public void VictoriaBirdeye_ClotThink(int iNPC)
 {
@@ -295,6 +289,18 @@ public Action VictoriaBirdeye_OnTakeDamage(int victim, int &attacker, int &infli
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+	}
+
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
+	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
+	if (ratio<0.5)
+	{
+		if (npc.Anger = false)
+		{
+			npc.PlayTeleportSound();
+			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
+			npc.Anger = true;
+		}
 	}
 	
 	return Plugin_Changed;
