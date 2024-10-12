@@ -2,92 +2,28 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"npc/metropolice/die1.wav",
-	"npc/metropolice/die2.wav",
-	"npc/metropolice/die3.wav",
-	"npc/metropolice/die4.wav",
+	"npc/scanner/scanner_explode_crash2.wav",
 };
 
 static const char g_HurtSounds[][] = {
-	"npc/metropolice/pain1.wav",
-	"npc/metropolice/pain2.wav",
-	"npc/metropolice/pain3.wav",
-	"npc/metropolice/pain4.wav",
+	"npc/scanner/scanner_pain1.wav",
+	"npc/scanner/scanner_pain2.wav",
 };
 
-static const char g_IdleSounds[][] = {
-	"npc/metropolice/vo/affirmative.wav",
-	"npc/metropolice/vo/affirmative2.wav",
-	"npc/metropolice/vo/canalblock.wav",
-	"npc/metropolice/vo/chuckle.wav",
-	"npc/metropolice/vo/citizen.wav",
-	"npc/metropolice/vo/code7.wav",
-	"npc/metropolice/vo/code100.wav",
-	"npc/metropolice/vo/copy.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/help.wav",
-	"npc/metropolice/vo/hesgone148.wav",
-	"npc/metropolice/vo/hesrunning.wav",
-	"npc/metropolice/vo/infection.wav",
-	"npc/metropolice/vo/king.wav",
-	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-
-	"npc/metropolice/vo/pickupthecan2.wav",
-	"npc/metropolice/vo/sociocide.wav",
-	"npc/metropolice/vo/watchit.wav",
-	"npc/metropolice/vo/xray.wav",
-	"npc/metropolice/vo/youknockeditover.wav",
-};
 
 static const char g_IdleAlertedSounds[][] = {
-	"npc/metropolice/vo/affirmative.wav",
-	"npc/metropolice/vo/affirmative2.wav",
-	"npc/metropolice/vo/canalblock.wav",
-	"npc/metropolice/vo/chuckle.wav",
-	"npc/metropolice/vo/citizen.wav",
-	"npc/metropolice/vo/code7.wav",
-	"npc/metropolice/vo/code100.wav",
-	"npc/metropolice/vo/copy.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/help.wav",
-	"npc/metropolice/vo/hesgone148.wav",
-	"npc/metropolice/vo/hesrunning.wav",
-	"npc/metropolice/vo/infection.wav",
-	"npc/metropolice/vo/king.wav",
-	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-	"npc/metropolice/vo/pickupthecan1.wav",
-
-	"npc/metropolice/vo/pickupthecan3.wav",
-	"npc/metropolice/vo/sociocide.wav",
-	"npc/metropolice/vo/watchit.wav",
-	"npc/metropolice/vo/xray.wav",
-	"npc/metropolice/vo/youknockeditover.wav",
-	"npc/metropolice/takedown.wav",
-};
-
-static const char g_MeleeHitSounds[][] = {
-	"weapons/cleaver_hit_02.wav",
-	"weapons/cleaver_hit_03.wav",
-	"weapons/cleaver_hit_05.wav",
-	"weapons/cleaver_hit_06.wav",
-	"weapons/cleaver_hit_07.wav",
+	"npc/scanner/scanner_alert1.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"ambient/materials/metal_groan.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
+static const char g_MeleeHitSounds[][] = {
+	"npc/scanner/cbot_discharge1.wav",
 };
 
-static const char g_MeleeDeflectAttack[][] = {
-	"physics/metal/metal_box_impact_bullet1.wav",
-};
-
-void VictorianIronGate_OnMapStart_NPC()
+void VictorianIronShield_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -95,11 +31,9 @@ void VictorianIronGate_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "VictorianIronGate");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_irongate");
+	strcopy(data.Name, sizeof(data.Name), "IronShield");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ironshield");
 	strcopy(data.Icon, sizeof(data.Icon), "obuch");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -110,9 +44,9 @@ void VictorianIronGate_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianIronGate(client, vecPos, vecAng, ally);
+	return VictorianIronShield(client, vecPos, vecAng, ally);
 }
-methodmap VictorianIronGate < CClotBody
+methodmap VictorianIronShield < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -164,21 +98,10 @@ methodmap VictorianIronGate < CClotBody
 		
 
 	}
-
-	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		
-	}
-	public void PlayDeflectSound() 
-	{
-		EmitSoundToAll(g_MeleeDeflectAttack[GetRandomInt(0, sizeof(g_MeleeDeflectAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		
-	}
 	
-	public VictorianIronGate(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianIronShield(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianIronGate npc = view_as<VictorianIronGate>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.3", "7500", ally, false, true));
+		VictorianIronShield npc = view_as<VictorianIronShield>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.3", "7500", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -199,9 +122,9 @@ methodmap VictorianIronGate < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		func_NPCDeath[npc.index] = VictorianIronGate_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictorianIronGate_OnTakeDamage;
-		func_NPCThink[npc.index] = VictorianIronGate_ClotThink;
+		func_NPCDeath[npc.index] = VictorianIronShield_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictorianIronShield_OnTakeDamage;
+		func_NPCThink[npc.index] = VictorianIronShield_ClotThink;
 		
 		
 		//IDLE
@@ -244,9 +167,9 @@ methodmap VictorianIronGate < CClotBody
 
 //TODO 
 //Rewrite
-public void VictorianIronGate_ClotThink(int iNPC)
+public void VictorianIronShield_ClotThink(int iNPC)
 {
-	VictorianIronGate npc = view_as<VictorianIronGate>(iNPC);
+	VictorianIronShield npc = view_as<VictorianIronShield>(iNPC);
 	
 
 	if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
@@ -314,7 +237,7 @@ public void VictorianIronGate_ClotThink(int iNPC)
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
-			VictorianIronGateSelfdefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+			VictorianIronShieldSelfdefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		}
 	else
 	{
@@ -324,7 +247,7 @@ public void VictorianIronGate_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-void VictorianIronGateSelfdefense(VictorianIronGate npc, float gameTime, int target, float distance)
+void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -394,23 +317,12 @@ void VictorianIronGateSelfdefense(VictorianIronGate npc, float gameTime, int tar
 	}
 }
 
-public Action VictorianIronGate_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VictorianIronShield_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianIronGate npc = view_as<VictorianIronGate>(victim);
+	VictorianIronShield npc = view_as<VictorianIronShield>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-	
-	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
-	{
-		if(IsValidEntity(npc.m_iWearable5))
-				RemoveEntity(npc.m_iWearable5);
-		npc.m_fbRangedSpecialOn = false;
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
-		damage = 0.0;
-		npc.PlayDeflectSound();
-	}
-
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -420,9 +332,9 @@ public Action VictorianIronGate_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-public void VictorianIronGate_NPCDeath(int entity)
+public void VictorianIronShield_NPCDeath(int entity)
 {
-	VictorianIronGate npc = view_as<VictorianIronGate>(entity);
+	VictorianIronShield npc = view_as<VictorianIronShield>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
