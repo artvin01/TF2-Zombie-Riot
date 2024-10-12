@@ -128,8 +128,6 @@ methodmap VictoriaBirdeye < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Birdeye_ClotDamaged_Post);
-		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -295,7 +293,7 @@ public Action VictoriaBirdeye_OnTakeDamage(int victim, int &attacker, int &infli
 	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 	if (ratio<0.5)
 	{
-		if (npc.Anger = false)
+		if (!npc.Anger)
 		{
 			npc.PlayTeleportSound();
 			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
@@ -314,7 +312,6 @@ public void VictoriaBirdeye_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Birdeye_ClotDamaged_Post);
 
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);

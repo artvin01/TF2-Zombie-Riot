@@ -10,6 +10,12 @@ static const char g_HurtSounds[][] = {
 	"npc/scanner/scanner_pain2.wav",
 };
 
+static const char g_IdleSounds[][] = {
+	"vo/mvm/norm/heavy_mvm_jeers03.mp3",	
+	"vo/mvm/norm/heavy_mvm_jeers04.mp3",	
+	"vo/mvm/norm/heavy_mvm_jeers06.mp3",
+	"vo/mvm/norm/heavy_mvm_jeers09.mp3",	
+};
 
 static const char g_IdleAlertedSounds[][] = {
 	"npc/scanner/scanner_alert1.wav",
@@ -35,7 +41,7 @@ void VictorianIronShield_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "IronShield");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ironshield");
 	strcopy(data.Icon, sizeof(data.Icon), "obuch");
-	data.IconCustom = false;
+	data.IconCustom = false;	
 	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
