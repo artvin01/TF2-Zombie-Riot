@@ -2055,7 +2055,13 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "OH MY GOD, {snow}BOB THE FIRST{default} IS ON YOUR SIDE?!");
 		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "Howd you get {lightblue}Nemal's{default} Weapon{gold}%N{default}?",client);
 		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "The lance... the only weapon that was forged from both ruina and {gold}expidonsa{default}...");
-
+		/*
+		//uncomment on release
+		case WEAPON_NECRO_WANDS:
+		{
+			Format(Text_Lines, sizeof(Text_Lines), "What is this, the dead, an imitation...? Is this a prank again{green} Spookmaster Bones{default}?");
+		}
+		*/
 		default:
 		{
 			valid = false;

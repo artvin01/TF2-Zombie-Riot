@@ -887,13 +887,13 @@ public void OnPostThink(int client)
 				IsReady = false;
 				had_An_ability = true;
 			}
+#endif
 			
 			if(had_An_ability)
 			{
 				HudY -= 0.035;
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
 			}
-#endif
 			float percentage = 100.0;
 			float percentage_Global = 1.0;
 			float value = 1.0;

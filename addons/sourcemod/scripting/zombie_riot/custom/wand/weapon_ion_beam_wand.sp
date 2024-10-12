@@ -32,7 +32,7 @@ static float fl_m2_timer[MAXTF2PLAYERS + 1];
 static int i_Neuvellete_penetration[MAXTF2PLAYERS + 1];
 
 static float fl_Neuvellete_Beam_Timeout[MAXTF2PLAYERS + 1];
-static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][6];
+static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][5];
 static int i_skill_point_used[MAXTF2PLAYERS + 1];
 static int i_Neuvellete_HEX_Array[MAXTF2PLAYERS + 1];
 static int i_Neuvellete_Skill_Points[MAXTF2PLAYERS + 1];
@@ -294,7 +294,7 @@ public void Activate_Neuvellete(int client, int weapon)
 			h_TimerNeuvellete_Management[client] = null;
 			
 			int pap = Get_Pap(weapon);
-			if(pap!=0 && pap < 6)
+			if(pap!=0 && pap < 5)
 				Give_Skill_Points(client, pap);
 
 			i_pap[client] = pap;
@@ -310,7 +310,7 @@ public void Activate_Neuvellete(int client, int weapon)
 	if(IsPrismatic(weapon))
 	{
 		int pap = Get_Pap(weapon);
-		if(pap!=0 && pap < 6)
+		if(pap!=0 && pap < 5)
 			Give_Skill_Points(client, pap);
 
 		i_pap[client] = pap;
@@ -617,6 +617,11 @@ static void Neuvellete_Hud(int client, int weapon)
 			Format(HUDText, sizeof(HUDText), "%s\nHexagon Cannon: [Recharging | %.1f] ", HUDText, duration);
 		}
 	}
+
+	if(i_Neuvellete_Skill_Points[client])
+	{
+		Format(HUDText, sizeof(HUDText), "%s\nYou have [%.i] Unused Skill points\nHold M2 and interact with the pack-a-punch to use them!", HUDText, i_Neuvellete_Skill_Points[client]);
+	}
 	
 	
 	PrintHintText(client, HUDText);
@@ -732,7 +737,7 @@ static Action Hexagon_Witchery_Tick(int client)
 						tempAngles[2] = 0.0;
 						
 						GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-						ScaleVector(Direction, range);
+						ScaleVector(Direction, range*0.25);
 						AddVectors(origin_vec, Direction, EndLoc);
 						vec_temp[i] = EndLoc;
 					}			
@@ -787,7 +792,7 @@ static Action Hexagon_Witchery_Tick(int client)
 					tempAngles[2] = 0.0;
 					
 					GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-					ScaleVector(Direction, range);
+					ScaleVector(Direction, range*0.25);
 					AddVectors(origin_vec, Direction, EndLoc);
 					vec_temp[i] = EndLoc;
 				}			
@@ -904,7 +909,7 @@ public void Ion_Beam_On_Buy_Reset(int client)
 	i_Neuvellete_HEX_Array[client] = 0;
 	i_Neuvellete_Skill_Points[client] = 0;
 	i_skill_point_used[client] = 0;
-	for(int i=0 ; i < 6 ; i++)
+	for(int i=0 ; i < 5 ; i++)
 	{
 		b_skill_points_give_at_pap[client][i] = false;
 	}
