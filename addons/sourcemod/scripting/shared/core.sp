@@ -1562,7 +1562,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons");
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
-	LoadTranslations("realtime.phrases");
+//	LoadTranslations("realtime.phrases");
 	LoadTranslations("common.phrases");
 	
 	DHook_Setup();
