@@ -134,6 +134,8 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 					SpawnerList.Erase(i);
 					i--; //we try again.
 					length--;
+					
+					//EDIT:looks like deleting it is bad.
 					continue;
 				}
 			}

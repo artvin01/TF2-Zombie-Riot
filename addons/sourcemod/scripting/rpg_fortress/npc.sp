@@ -84,8 +84,10 @@ void NPC_ConfigSetup()
 	Whiteflower_AcclaimedSwordsman_OnMapStart_NPC();
 	Whiteflower_Ekas_Piloteer_OnMapStart_NPC();
 	Whiteflower_Rocketeer_OnMapStart_NPC();
-	Whiteflower_selected_few_OnMapStart_NPC();
 	Whiteflower_PrototypeDDT_OnMapStart_NPC();
+	Whiteflower_Nano_Blaster_OnMapStart_NPC();
+
+	Whiteflower_selected_few_OnMapStart_NPC();
 /*
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
@@ -590,6 +592,7 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_rocketeer.sp"
 #include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_selected_few.sp"
 #include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_prototype_durable_titan.sp"
+#include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_nano_blaster.sp"
 
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
