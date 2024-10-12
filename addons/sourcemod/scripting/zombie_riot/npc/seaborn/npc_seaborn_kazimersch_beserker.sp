@@ -457,7 +457,7 @@ public void KazimierzBeserker_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 }
 
-public void KazimierzBeserker_AllyDeath(int ally, int self)
+public void KazimierzBeserker_AllyDeath(int self, int ally)
 {
 	KazimierzBeserker npc = view_as<KazimierzBeserker>(self);
 

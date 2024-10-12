@@ -5155,6 +5155,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		return -1; //STOP. BAD!
 	}
+	//incase.
+	TF2_RemoveCondition(client, TFCond_Taunting);
 	int slot = -1;
 	int entity = -1;
 	static ItemInfo info;
