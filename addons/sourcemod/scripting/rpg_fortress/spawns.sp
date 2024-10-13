@@ -216,12 +216,15 @@ void Spawns_ClientLeave(int client, const char[] name)
 
 void Spawns_EnableZone(const char[] name)
 {
+	bool start = true;
+
 	if(DespawnTimers)
 	{
 		// Stop the despawn timer
 		Handle timer;
 		if(DespawnTimers.GetValue(name, timer))
 		{
+			start = false;
 			delete timer;
 			DespawnTimers.Remove(name);
 		}
@@ -239,7 +242,7 @@ void Spawns_EnableZone(const char[] name)
 		}
 */
 		if(StrEqual(spawn.Zone, name))
-			UpdateSpawn(i, spawn, true);
+			UpdateSpawn(i, spawn, start);
 	}
 }
 
