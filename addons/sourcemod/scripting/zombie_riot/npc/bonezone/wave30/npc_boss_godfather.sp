@@ -17,16 +17,21 @@ static bool Offer_AllowEntities_Friendly = true;	//Whether or not this ability c
 static bool Offer_AllowEntities_Hostile = false;	//Whether or not this ability can target entities and not just clients when Grimme is on the zombies' team. 
 static bool Offer_AllowEntities_NoTeam = true;		//Whether or not this ability can target entities and not just clients when Grimme is on nobody's team and is trying to kill everyone.
 
-//LITTLE FRIENDS: Godfather Grimme slows down and aims both of his guns at the same target, then rapidly unloads them onto the poor bastard.
-//Godfather Grimme has incredible aim and will predict his target's location at any distance, but his guns are not as accurate as he is and have a large spread penalty.
-static float Friends_DMG = 40.0;				//Projectile damage.
+//LITTLE FRIENDS: Godfather Grimme slows down and aims his guns at the nearest 2 targets, rapidly firing them the entire time.
+//He will path towards the absolute closest target. If only one valid target is within range and visible, he will aim both guns at that target.
+//A target must be visible and within a 90-degree cone of one of the guns to be considered a "valid" target for that gun.
+//EX: A target is in front of Godfather Grimme, to his left. That target is considered valid for his left-hand gun, but not the right-hand gun.
+static float Friends_DMG = 20.0;				//Projectile damage.
+static float Friends_EntityDMG = 60.0;			//Projectile damage VS entities.
 static float Friends_Velocity = 1200.0;			//Projectile velocity.
 static float Friends_Spread = 9.0;				//Projectile spread.
 static float Friends_Lifespan = 2.5;			//Projectile lifespan.
 static float Friends_AttackRate = 0.08;			//Attack interval.
-static float Friends_Duration = 6.0;			//Attack duration.
-static float Friends_Cooldown = 20.0;			//Attack cooldown.
-static float Friends_StartingCooldown = 20.0;	//Cooldown upon spawning.
+static float Friends_Duration = 9.0;			//Attack duration.
+static float Friends_Cooldown = 15.0;			//Attack cooldown.
+static float Friends_StartingCooldown = 10.0;	//Cooldown upon spawning.
+static float Friends_Range = 900.0;				//Range in which the ability will be used, if it can.
+static float Friends_Speed = 100.0;				//Movement speed while active.
 
 //DIRTY KICK: One of Godfather Grimme's melee attacks, in which he delivers a swift kick in the dick to his target. This deals low damage, but hard-stuns the victim.
 static float Dirty_DMG = 60.0;			//Dirty Kick damage.
@@ -55,6 +60,12 @@ static char g_OfferDialogue[][] = {
 
 static char g_OfferDialogue_Wounded[][] = {
 	"{corrupted}Godfather Grimme{default}: I want {orangered}%s{default} dead! I want their family dead! I want their house burned to the ground!"
+};
+
+static char g_FriendsDialogue[][] = {
+	"{corrupted}Godfather Grimme{default}: SAY HELLO TO MY LITTLE FRIENDS!",
+	"{corrupted}Godfather Grimme{default}: These guns ain't just for show, pal...",
+	"{corrupted}Godfather Grimme{default}: RATTLE 'EM, BOYS!"
 };
 
 /*static char g_MobsterTargeting[][] = {
@@ -122,10 +133,17 @@ static char g_GibSounds[][] = {
 #define SOUND_DIRTYKICK_STUNNED_NIKO		")vo/npc/vortigaunt/tothevoid.wav"	//nik o
 #define SOUND_DIRTYKICK_STUNNED_SKELETON	")vo/halloween_boss/knight_pain03.mp3"
 #define SOUND_NORMALKICK_HIT				")misc/halloween/strongman_fast_impact_01.wav"
+#define SOUND_GODFATHER_GUN_CLICK			")weapons/sniper_bolt_back.wav"
+#define SOUND_GODFATHER_GUNS_SWING			")weapons/machete_swing.wav"
+#define SOUND_GODFATHER_SHOOT				")weapons/doom_sniper_smg.wav"
+#define SOUND_GODFATHER_GUNS_HIT			")player/pain.wav"
 
 #define PARTICLE_OFFER_MARKED		"teleportedin_red"
 #define PARTICLE_OFFER_MARKED_TRAIL	"player_recent_teleport_red"
 #define PARTICLE_OFFER_RECEIVED		"spell_batball_impact_blue_3"
+#define PARTICLE_GODFATHER_MUZZLE	"muzzle_pistol"
+#define PARTICLE_GODFATHER_GUNS_HIT	"flaregun_destroyed"
+#define PARTICLE_GODFATHER_PROJECTILE	"nailtrails_medic_red_crit"
 
 public void Godfather_OnMapStart_NPC()
 {
@@ -157,6 +175,10 @@ public void Godfather_OnMapStart_NPC()
 	PrecacheSound(SOUND_DIRTYKICK_STUNNED_NIKO);
 	PrecacheSound(SOUND_DIRTYKICK_STUNNED_SKELETON);
 	PrecacheSound(SOUND_NORMALKICK_HIT);
+	PrecacheSound(SOUND_GODFATHER_GUN_CLICK);
+	PrecacheSound(SOUND_GODFATHER_GUNS_SWING);
+	PrecacheSound(SOUND_GODFATHER_SHOOT);
+	PrecacheSound(SOUND_GODFATHER_GUNS_HIT);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Godfather Grimme");
@@ -177,9 +199,16 @@ static any Summon_Godfather(int client, float vecPos[3], float vecAng[3], int al
 static float f_NextOffer[MAXENTITIES] = { 0.0, ... };
 static float f_NextDirtyKick[MAXENTITIES] = { 0.0, ... };
 static float f_NextKick[MAXENTITIES] = { 0.0, ... };
+static float f_NextGuns[MAXENTITIES] = { 0.0, ... };
+static float f_GunsEndTime[MAXENTITIES] = { 0.0, ... };
+
+static int i_GunsRightTarget[MAXENTITIES] = { -1, ... };
+static int i_GunsLeftTarget[MAXENTITIES] = { -1, ... };
 
 static bool Godfather_Attacking[MAXENTITIES] = { false, ... };
 static bool Godfather_ResetAnimation[MAXENTITIES] = { false, ... };
+static bool Friends_SetGestures[MAXENTITIES] = { false, ... };
+static bool b_FriendsActive[MAXENTITIES] = { false, ... };
 
 methodmap Godfather < CClotBody
 {
@@ -251,6 +280,67 @@ methodmap Godfather < CClotBody
 		#if defined DEBUG_SOUND
 		PrintToServer("CBunkerSkeleton::PlayHeIsAwakeSound()");
 		#endif
+	}
+
+	public void SetArmAim(bool left, float override = -1.0)
+	{
+		char param[255];
+		if (left)
+			param = "godfather_aim_left";
+		else
+			param = "godfather_aim_right";
+
+		if (override >= 0.0)
+		{
+			this.SetPoseParameter(this.LookupPoseParameter(param), override);
+		}
+		else
+		{
+			
+		}
+	}
+
+	public int GetGunTarget(bool left = true)
+	{
+		if (left)
+		{
+			int target = EntRefToEntIndex(i_GunsLeftTarget[this.index]);
+			if (IsValidEntity(target))
+				return target;
+			else
+				return this.m_iTarget;
+		}
+		else
+		{
+			int target = EntRefToEntIndex(i_GunsRightTarget[this.index]);
+			if (IsValidEntity(target))
+				return target;
+			else
+				return this.m_iTarget;
+		}
+	}
+
+	public void GetGunTargetPos(bool left, float buffer[3])
+	{
+		int target = this.GetGunTarget(left);
+		if (IsValidEnemy(this.index, target) && Can_I_See_Enemy_Only(this.index, target))
+		{
+			WorldSpaceCenter(target, buffer);
+		}
+		else
+		{
+			float ang[3], Direction[3], startPos[3];
+			this.GetAttachment((left ? "godfather_aim_left" : "godfather_aim_right"), startPos, ang);
+
+			GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(Direction, 200.0);
+			AddVectors(startPos, Direction, buffer);
+		}
+	}
+
+	public void PlayFriendsIntro()
+	{
+		CPrintToChatAll(g_FriendsDialogue[GetRandomInt(0, sizeof(g_FriendsDialogue) - 1)]);
 	}
 
 	public void MakeAnOfferTheyCantRefuse(int victim)
@@ -347,6 +437,7 @@ methodmap Godfather < CClotBody
 		Godfather_Attacking[npc.index] = false;
 		f_NextDirtyKick[npc.index] = GetGameTime(npc.index) + Dirty_StartingCooldown;
 		f_NextKick[npc.index] = GetGameTime(npc.index) + Kick_StartingCooldown;
+		f_NextGuns[npc.index] = GetGameTime(npc.index) + Friends_StartingCooldown;
 
 		return npc;
 	}
@@ -365,7 +456,7 @@ public void Godfather_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + (Godfather_Attacking[npc.index] ? 0.0 : DEFAULT_UPDATE_DELAY_FLOAT);
 	
 	if (Godfather_ResetAnimation[npc.index])
 	{
@@ -374,6 +465,58 @@ public void Godfather_ClotThink(int iNPC)
 			npc.StartActivity(iActivity);
 			
 		Godfather_ResetAnimation[npc.index] = false;
+	}
+
+	if (Friends_SetGestures[npc.index])
+	{
+		npc.AddGesture("ACT_GODFATHER_AIM_POSE", false, _, false);
+		npc.AddGesture("ACT_GODFATHER_AIM_RIGHT", false, _, false);
+		npc.AddGesture("ACT_GODFATHER_AIM_LEFT", false, _, false);
+		npc.SetArmAim(true, 0.0);
+		npc.SetArmAim(false, 0.0);
+
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + Friends_AttackRate;
+
+		Friends_SetGestures[npc.index] = false;
+		b_FriendsActive[npc.index] = true;
+	}
+
+	if (Godfather_Attacking[npc.index] && b_FriendsActive[npc.index])
+	{
+		if (GetGameTime(npc.index) > f_GunsEndTime[npc.index])
+		{
+			b_FriendsActive[npc.index] = false;
+			Godfather_Attacking[npc.index] = false;
+			npc.m_flSpeed = GODFATHER_SPEED;
+			npc.RemoveAllGestures();
+			f_NextGuns[npc.index] = GetGameTime(npc.index) + Friends_Cooldown;
+		}
+		else if (GetGameTime(npc.index) >= npc.m_flNextRangedAttack)
+		{
+			float pos[3], ang[3], vicPos[3];
+			npc.GetAttachment("smg_muzzle_left", pos, ang);
+			ang[1] -= 90.0;
+			npc.GetGunTargetPos(true, vicPos);
+
+			Godfather_ShootProjectile(npc, vicPos, pos, ang);
+
+			int flash = ParticleEffectAt(pos, PARTICLE_GODFATHER_MUZZLE);
+			if (IsValidEntity(flash))
+				EmitSoundToAll(SOUND_GODFATHER_SHOOT, flash, _, _, _, _, GetRandomInt(80, 120));
+
+			npc.GetAttachment("smg_muzzle_right", pos, ang);
+			npc.GetGunTargetPos(false, vicPos);
+			ang[1] -= 90.0;
+			Godfather_ShootProjectile(npc, vicPos, pos, ang);
+
+			flash = ParticleEffectAt(pos, PARTICLE_GODFATHER_MUZZLE);
+			if (IsValidEntity(flash))
+				EmitSoundToAll(SOUND_GODFATHER_SHOOT, flash, _, _, _, _, GetRandomInt(80, 120));
+
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + Friends_AttackRate;
+		}
+
+		//TODO: Use pose parameters to move the guns towards their targets
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -389,7 +532,7 @@ public void Godfather_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + (Godfather_Attacking[npc.index] ? 0.0 : 0.1);
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -460,6 +603,16 @@ public void Godfather_ClotThink(int iNPC)
 
 			EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], npc.index, _, _, _, _, 80);
 			Godfather_Attacking[npc.index] = true;
+		}
+
+		if (flDistanceToTarget <= Friends_Range && GetGameTime(npc.index) >= f_NextGuns[npc.index] && !Godfather_Attacking[npc.index])
+		{
+			npc.AddGesture("ACT_GODFATHER_TAKE_AIM");
+			f_GunsEndTime[npc.index] = GetGameTime() + Friends_Duration + 0.5;
+			Godfather_Attacking[npc.index] = true;
+			npc.m_flSpeed = Friends_Speed;
+			npc.PlayFriendsIntro();
+			EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], npc.index, _, _, _, _, 80);
 		}
 	}
 	else
@@ -669,7 +822,90 @@ public void Godfather_AnimEvent(int entity, int event)
 			f_NextKick[npc.index] = GetGameTime(npc.index) + Kick_Cooldown;
 			npc.StartPathing();
 		}
+		case 1007:	//Swings guns up, play sound
+		{
+			EmitSoundToAll(SOUND_GODFATHER_GUNS_SWING, npc.index);
+		}
+		case 1008:	//Play gun click sound
+		{
+			EmitSoundToAll(SOUND_GODFATHER_GUN_CLICK, npc.index, _, _, _, _, GetRandomInt(80, 120));
+		}
+		case 1009:	//Guns are in place, start aiming/firing
+		{
+			Friends_SetGestures[npc.index] = true;
+		}
 	}
+}
+
+public void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float startPos[3], float startAng[3])
+{
+	int entity = CreateEntityByName("zr_projectile_base");
+			
+	if (IsValidEntity(entity))
+	{
+		float vecForward[3], vecAngles[3], currentAngles[3], buffer[3];
+		currentAngles = startAng;
+		Priest_GetAngleToPoint(npc.index, startPos, vicLoc, buffer, vecAngles);
+		vecAngles[1] = currentAngles[1];
+		vecAngles[2] = currentAngles[2];
+
+		for(int i = 0; i < 3; i++)
+			vecAngles[i] += GetRandomFloat(-Friends_Spread, Friends_Spread);
+			
+		GetAngleVectors(vecAngles, buffer, NULL_VECTOR, NULL_VECTOR);
+		vecForward[0] = buffer[0] * Friends_Velocity;
+		vecForward[1] = buffer[1] * Friends_Velocity;
+		vecForward[2] = buffer[2] * Friends_Velocity;
+		
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+
+		TeleportEntity(entity, startPos, vecAngles, NULL_VECTOR, true);
+		DispatchSpawn(entity);
+		
+		int g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_drg_ball.mdl");
+		for(int i; i<4; i++)
+		{
+			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+		}
+		
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+		SetEntityCollisionGroup(entity, 24);
+		Set_Projectile_Collision(entity);
+		See_Projectile_Team_Player(entity);
+		
+		SDKHook(entity, SDKHook_Touch, Godfather_ProjectileHit);
+		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
+		ParticleEffectAt_Parent(startPos, PARTICLE_GODFATHER_PROJECTILE, entity);
+		CreateTimer(Friends_Lifespan, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
+
+public Action Godfather_ProjectileHit(int entity, int other)
+{
+	if (!IsValidEntity(other))
+		return Plugin_Continue;
+		
+	int team1 = GetEntProp(entity, Prop_Send, "m_iTeamNum");
+	int team2 = GetEntProp(other, Prop_Send, "m_iTeamNum");
+	
+	if (team1 != team2)
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		float damage = (ShouldNpcDealBonusDamage(other) ? Friends_EntityDMG : Friends_DMG);
+		SDKHooks_TakeDamage(other, entity, IsValidEntity(owner) ? owner : entity, damage);
+			
+		float position[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		ParticleEffectAt(position, PARTICLE_GODFATHER_GUNS_HIT, 2.0);
+		EmitSoundToAll(SOUND_GODFATHER_GUNS_HIT, entity, _, _, _, 0.8, GetRandomInt(80, 110));
+
+		RemoveEntity(entity);
+	}
+		
+	return Plugin_Continue;
 }
 
 public Action Godfather_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
