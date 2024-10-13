@@ -22,7 +22,7 @@ static bool Offer_AllowEntities_NoTeam = true;		//Whether or not this ability ca
 //A target must be visible and within a 90-degree cone of one of the guns to be considered a "valid" target for that gun.
 //EX: A target is in front of Godfather Grimme, to his left. That target is considered valid for his left-hand gun, but not the right-hand gun.
 static float Friends_DMG = 20.0;				//Projectile damage.
-static float Friends_EntityDMG = 60.0;			//Projectile damage VS entities.
+static float Friends_EntityDMG = 120.0;			//Projectile damage VS entities.
 static float Friends_Velocity = 1200.0;			//Projectile velocity.
 static float Friends_Spread = 9.0;				//Projectile spread.
 static float Friends_Lifespan = 2.5;			//Projectile lifespan.
@@ -37,20 +37,16 @@ static float Friends_Speed = 100.0;				//Movement speed while active.
 static float Dirty_DMG = 60.0;			//Dirty Kick damage.
 static float Dirty_EntityDMG = 1000.0;	//Dirty Kick damage to entities.
 static float Dirty_Stun = 4.0;			//Dirty Kick stun duration.
-//static float Dirty_Length = 120.0;		//Dirty Kick hitbox length.
-//static float Dirty_Width = 45.0;		//Dirty Kick hitbox width.
 static float Dirty_Range = 80.0;		//Range in which the kick will be used, if it can be used.
-static float Dirty_Cooldown = 12.0;		//Dirty Kick cooldown.
-static float Dirty_StartingCooldown = 6.0;	//Starting cooldown.
+static float Dirty_Cooldown = 10.0;		//Dirty Kick cooldown.
+static float Dirty_StartingCooldown = 4.0;	//Starting cooldown.
 
 //NORMAL KICK: Godfather Grimme's other melee attack, where he kicks his target in the gut, dealing heavy damage in addition to knockback.
 static float Kick_DMG = 200.0;			//Normal Kick damage.
 static float Kick_EntityDMG = 2000.0;				//Normal Kick damage versus entities.
 static float Kick_Knockback = 900.0;	//Normal Kick knockback force.
-//static float Kick_Length = 140.0;		//Normal Kick hitbox length.
-//static float Kick_Width = 60.0;		//Normal Kick hitbox width.
 static float Kick_Range = 90.0;			//Range in which the kick will be used, if it can be used.
-static float Kick_Cooldown = 6.0;		//Normal Kick cooldown.
+static float Kick_Cooldown = 5.0;		//Normal Kick cooldown.
 static float Kick_StartingCooldown = 2.0;	//Starting cooldown.
 
 static char g_OfferDialogue[][] = {
@@ -282,7 +278,7 @@ methodmap Godfather < CClotBody
 		#endif
 	}
 
-	public void SetArmAim(bool left, float override = -1.0)
+	public void SetArmAim(bool left, float override)
 	{
 		char param[255];
 		if (left)
@@ -290,14 +286,7 @@ methodmap Godfather < CClotBody
 		else
 			param = "godfather_aim_right";
 
-		if (override >= 0.0)
-		{
-			this.SetPoseParameter(this.LookupPoseParameter(param), override);
-		}
-		else
-		{
-			
-		}
+		this.SetPoseParameter(this.LookupPoseParameter(param), override);
 	}
 
 	public int GetGunTarget(bool left = true)
