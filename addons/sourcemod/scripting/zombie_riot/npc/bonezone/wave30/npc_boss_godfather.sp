@@ -448,17 +448,9 @@ methodmap Godfather < CClotBody
 			target = this.m_iTarget;
 
 		if (left)
-		{
-			if (i_GunsLeftTarget[this.index] != target)
-				CPrintToChatAll("{blue}Left hand is now targeting {yellow}%i", target);
 			i_GunsLeftTarget[this.index] = target;
-		}
 		else
-		{
-			if (i_GunsLeftTarget[this.index] != target)
-				CPrintToChatAll("{red}Right hand is now targeting {yellow}%i", target);
 			i_GunsRightTarget[this.index] = target;
-		}
 	}
 
 	public void AimGunAtTarget(bool left)
@@ -479,7 +471,7 @@ methodmap Godfather < CClotBody
 
 		for (int i = 0; i < 3; i++)
 			targAng[i] = fixAngle(targAng[i]);
-			
+
 		if (left)
 			SubtractVectors(targAng, ang, buffer);
 		else
