@@ -589,6 +589,10 @@ public void TouchHealthKit(int entity, int other)
 		{
 			HealingAmount /= 2.0;
 		}
+		if(!IsValidEntity(Owner))
+		{
+			Owner = other; //if there is no invalid owner, just make the one that picks it up the owner
+		}
 		int healing_done = HealEntityGlobal(Owner, other, HealingAmount, 1.0, _, _);
 		if(healing_done <= 0)
 		{
