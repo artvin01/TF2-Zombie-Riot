@@ -2211,6 +2211,10 @@ public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
 
+#if defined VIEW_CHANGES
+	ViewChange_ClientDisconnect(client);
+#endif
+
 #if defined ZR || defined RPG
 	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);

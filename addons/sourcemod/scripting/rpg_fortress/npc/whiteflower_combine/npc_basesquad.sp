@@ -382,7 +382,7 @@ methodmap BaseSquad < CClotBody
 	public BaseSquad(float vecPos[3], float vecAng[3],
 						const char[] model,
 						const char[] modelscale = "1.0",
-						bool Ally = false,
+						any Ally = false,
 						bool Ally_Invince = false,
 						bool isGiant = false,
 						bool IgnoreBuildings = false,
@@ -723,7 +723,6 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 
 				if(GetVectorDistance(vecTarget, vecMe, true) < npc.GetLeadRadius())
 				{
-					float vPredictedPos[3]; 
 					PredictSubjectPosition(npc, npc.m_iTargetWalk, _, _, vecTarget);
 					NPC_SetGoalVector(npc.index, vecTarget);
 				}

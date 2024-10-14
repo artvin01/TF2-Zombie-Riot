@@ -1961,7 +1961,7 @@ public void ClearDungeonStats(int entity)
 	}
 }
 
-void RPG_ChaosSurgance(int victim, int attacker, int weapon, float &damage)
+stock void RPG_ChaosSurgance(int victim, int attacker, int weapon, float &damage)
 {
 	if(b_JunalSpecialGear100k[victim])
 	{

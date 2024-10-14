@@ -17,7 +17,7 @@ int BaseLuck;
 int BaseAgility;
 int BaseUpgradeCost;
 int BaseUpgradeScale;
-int BaseUpdateStats;
+int BaseUpdateStats = 1;
 int BaseMaxLevel;
 int BaseMaxExperience;
 int BaseMaxExperiencePerLevel;
@@ -155,6 +155,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/transform_iberian.sp"
 #include "rpg_fortress/custom/transform_merc_human.sp"
 #include "rpg_fortress/custom/transform_ruianian.sp"
+#include "rpg_fortress/custom/transform_seaborn.sp"
 
 void RPG_PluginStart()
 {
@@ -242,10 +243,13 @@ void RPG_MapStart()
 	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	Wand_Map_Precache();
+	
 	Transform_Expidonsa_MapStart();
 	Transform_Iberian_MapStart();
 	Transform_MercHuman_MapStart();
 	Transform_Ruianian_MapStart();
+	Transform_Seaborn_MapStart();
+
 	SamuraiSword_Map_Precache();
 	GroundSlam_Map_Precache();
 	Mortar_MapStart();

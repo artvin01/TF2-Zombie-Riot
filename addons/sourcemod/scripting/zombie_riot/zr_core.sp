@@ -898,7 +898,6 @@ void ZR_ClientDisconnect(int client)
 	DataBase_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
-	ViewChange_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);

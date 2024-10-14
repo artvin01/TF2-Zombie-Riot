@@ -23,7 +23,7 @@ void Stats_PluginStart()
 	RegConsoleCmd("rpg_stat", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_stats", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_stat", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
-	RegConsoleCmd("sm_give_mastery", Command_Give_Mastery, "Force gives mastery to current form", FCVAR_HIDDEN);
+	RegAdminCmd("sm_give_mastery", Command_Give_Mastery, ADMFLAG_RCON, "Force gives mastery to current form");
 }
 
 void Stats_EnableCharacter(int client)
@@ -47,6 +47,18 @@ void Stats_EnableCharacter(int client)
 	ReskillPoints[client] = kv.GetNum("reskills");
 
 	delete Mastery[client];
+
+	Race race;
+	Races_GetClientInfo(client, race);
+	if(race.StartLevel > 0)
+	{
+		int stats = Stats_GetStatCount(client) + ReskillPoints[client];
+		int minStats = race.StartLevel * BaseUpdateStats;
+		if(stats < minStats)
+		{
+			ReskillPoints[client] = minStats - stats;
+		}
+	}
 
 	if(kv.JumpToKey("mastery") && kv.GotoFirstSubKey(false))
 	{
@@ -425,13 +437,7 @@ void Stats_ApplyAttribsPre(int client)
 
 void Stats_ReskillEverything(int client)
 {
-	int stats = StatStrength[client]
-		+ StatPrecision[client]
-		+ StatArtifice[client]
-		+ StatEndurance[client]
-		+ StatStructure[client]
-		+ StatIntelligence[client]
-		+ StatCapacity[client];
+	int stats = Stats_GetStatCount(client);
 	
 	StatStrength[client] = 0;
 	StatPrecision[client] = 0;
@@ -1000,9 +1006,9 @@ float RPGStats_FlatDamageResistance(int client)
 	return (float(total) * 1.85);
 }
 
-void Stats_UpdateLevel(int client)
+int Stats_GetStatCount(int client)
 {
-	int stats = StatStrength[client]
+	return StatStrength[client]
 		+ StatPrecision[client]
 		+ StatArtifice[client]
 		+ StatEndurance[client]
@@ -1010,10 +1016,12 @@ void Stats_UpdateLevel(int client)
 		+ StatIntelligence[client]
 		+ StatCapacity[client]
 		+ ReskillPoints[client];
-
-	Level[client] = stats / 5;
 }
 
+void Stats_UpdateLevel(int client)
+{
+	Level[client] = Stats_GetStatCount(client) / BaseUpdateStats;
+}
 
 void RPGStats_GiveTempomaryStatsToItem(int weaponindx, int statindx, int StatAmount, float duration)
 {

@@ -823,7 +823,7 @@ bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype
 }
 #endif	// ZR
 
-static bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
+static stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
 {
 #if defined ZR
 	if(BarbariansMindLogic(attacker, weapon, damage, damagetype))

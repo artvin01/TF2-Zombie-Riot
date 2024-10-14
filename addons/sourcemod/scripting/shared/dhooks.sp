@@ -1582,10 +1582,11 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		else
 		{
 			Race race;
-			if(Races_GetClientInfo(client, race) && race.StartPos[0])
+			Races_GetClientInfo(client, race);
+			if(race.StartPos[0])
 			{
 				float ang[3];
-				ang[1] = race.StartAng;
+				ang[1] = race.StartAngle;
 				TeleportEntity(client, race.StartPos, ang, NULL_VECTOR);
 			}
 		}

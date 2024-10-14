@@ -87,7 +87,9 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 						return MRES_Supercede;		
 
 					}
+#if defined ZR
 					return MRES_Ignored;
+#endif
 					//This is just normal code, let it be itself.
 				}
 				else if(b_ThisWasAnNpc[target] && !b_NpcHasDied[target] && GetTeam(target) == TFTeam_Red)

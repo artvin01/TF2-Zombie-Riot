@@ -121,7 +121,7 @@ public void CombineGiant_ClotThink(int iNPC)
 						TR_GetEndPosition(vecTarget, swingTrace);
 
 						// E2 L15 = 270, E2 L20 = 300
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 350000, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 350000.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlaySwordHit();
 					}
 				}

@@ -175,7 +175,7 @@ enum struct Race
 		kv.GetString("desc", this.Desc, sizeof(this.Desc));
 		this.StartLevel = kv.GetNum("startlevel");
 		kv.GetVector("startpos", this.StartPos);
-		this.StartAngle = kv.GetNum("startangle");
+		this.StartAngle = kv.GetFloat("startangle");
 
 		if(kv.JumpToKey("Stat Multi"))
 		{
@@ -254,7 +254,7 @@ void Races_ConfigSetup()
 		BaseAgility = kv.GetNum("Agility");
 		BaseUpgradeCost = kv.GetNum("Base Experience Upgrade Cost");
 		BaseUpgradeScale = kv.GetNum("Experience Cost Increace Per Level");
-		BaseUpdateStats = kv.GetNum("Stats Into Level Needed");
+		BaseUpdateStats = kv.GetNum("Stats Into Level Needed", 1);
 		BaseMaxLevel = kv.GetNum("Max Level");
 		BaseMaxExperience = kv.GetNum("Max Experience At Once Allowed");
 		BaseMaxExperiencePerLevel = kv.GetNum("Max Experience At Once Allowed Per Level Increace");

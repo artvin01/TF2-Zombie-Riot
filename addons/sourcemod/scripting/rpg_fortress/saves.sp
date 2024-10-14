@@ -598,7 +598,7 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 				Race race;
 				for(int i; Races_GetRaceByIndex(i, race); i++)
 				{
-					if(!race.Key[0] || TextStore_GetItemCount(client, race.Key) < 1)
+					if(!race.Key[0] || TextStore_GetItemCount(client, race.Key) > 0)
 					{
 						menu.AddItem(id, race.Name);
 					}

@@ -38,22 +38,22 @@ public void TrueStrengthShieldEquip(int client, int weapon, int index)
 	}
 }
 
-void Abiltity_TrueStrength_Shield_Shield_PluginStart()
+void Abiltity_TrueStrength_Shield_Shield_MapStart()
 {
-	PrecacheSound("player/resistance_light1.wav", true);
-	PrecacheSound("player/resistance_light2.wav", true);
-	PrecacheSound("player/resistance_light3.wav", true);
-	PrecacheSound("player/resistance_light4.wav", true);
-	PrecacheSound("player/resistance_medium1.wav", true);
-	PrecacheSound("player/resistance_medium2.wav", true);
-	PrecacheSound("player/resistance_medium3.wav", true);
-	PrecacheSound("player/resistance_medium4.wav", true);
-	PrecacheSound("player/resistance_heavy1.wav", true);
-	PrecacheSound("player/resistance_heavy2.wav", true);
-	PrecacheSound("player/resistance_heavy3.wav", true);
-	PrecacheSound("player/resistance_heavy4.wav", true);
-	PrecacheSound("weapons/medi_shield_deploy.wav", true);
-	PrecacheSound("weapons/medi_shield_retract.wav", true);
+	PrecacheSound("player/resistance_light1.wav");
+	PrecacheSound("player/resistance_light2.wav");
+	PrecacheSound("player/resistance_light3.wav");
+	PrecacheSound("player/resistance_light4.wav");
+	PrecacheSound("player/resistance_medium1.wav");
+	PrecacheSound("player/resistance_medium2.wav");
+	PrecacheSound("player/resistance_medium3.wav");
+	PrecacheSound("player/resistance_medium4.wav");
+	PrecacheSound("player/resistance_heavy1.wav");
+	PrecacheSound("player/resistance_heavy2.wav");
+	PrecacheSound("player/resistance_heavy3.wav");
+	PrecacheSound("player/resistance_heavy4.wav");
+	PrecacheSound("weapons/medi_shield_deploy.wav");
+	PrecacheSound("weapons/medi_shield_retract.wav");
 }
 
 bool Ability_TrueStrength_Shield_OnTakeDamage(int victim)

@@ -5325,7 +5325,7 @@ stock any GetItemInArray(any[] array, int pos)
 //MaxNumBuffValue(0.6, 1.0, 1.0) = 0.6
 //MaxNumBuffValue(0.6, 1.0, 1.25) = 0.55
 
-float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
+stock float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
 {
 	// Our base number is max, the number when valuenerf is 0
 	// Our high number is start, the number when valuenerf is 1

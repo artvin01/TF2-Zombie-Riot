@@ -182,9 +182,9 @@ stock void SDKHook_HookClient(int client)
 #endif
 }
 
+#if defined ZR 
 bool WeaponWasGivenAmmo[MAXENTITIES];
 
-#if defined ZR 
 void WeaponWeaponAdditionOnRemoved(int entity)
 {
 	WeaponWasGivenAmmo[entity] = false;
@@ -2032,8 +2032,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		}
 	}
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 14");
-	return Plugin_Changed;
 #endif	// ZR
+	return Plugin_Changed;
 }
 
 #if defined ZR || defined RPG
@@ -2833,12 +2833,10 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 	if(f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())
 	{
 		//regen health if they werent in battle!
-		int healing_Amount;
-		
 		if(i_TransformationLevel[client] > 0)
-			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		else
-			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
 	}
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{
@@ -2944,7 +2942,7 @@ void RPG_Sdkhooks_StaminaBar(int client)
 }
 
 #endif
-void SDKhooks_SetManaRegenDelayTime(int client, float time)
+stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 {
 	Mana_Hud_Delay[client] = 0.0;
 #if defined ZR
