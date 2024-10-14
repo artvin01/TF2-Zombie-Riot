@@ -32,6 +32,7 @@ static float Friends_Cooldown = 15.0;			//Attack cooldown.
 static float Friends_StartingCooldown = 10.0;	//Cooldown upon spawning.
 static float Friends_Range = 900.0;				//Range in which the ability will be used, if it can.
 static float Friends_Speed = 100.0;				//Movement speed while active.
+static float Friends_TurnRate = 2.0;
 
 //DIRTY KICK: One of Godfather Grimme's melee attacks, in which he delivers a swift kick in the dick to his target. This deals low damage, but hard-stuns the victim.
 static float Dirty_DMG = 60.0;			//Dirty Kick damage.
@@ -206,6 +207,8 @@ static bool Godfather_ResetAnimation[MAXENTITIES] = { false, ... };
 static bool Friends_SetGestures[MAXENTITIES] = { false, ... };
 static bool b_FriendsActive[MAXENTITIES] = { false, ... };
 
+static bool CheckingLeft = false;
+
 methodmap Godfather < CClotBody
 {
 	public void PlayIdleSound() {
@@ -278,7 +281,7 @@ methodmap Godfather < CClotBody
 		#endif
 	}
 
-	public void SetArmAim(bool left, float override)
+	public void SetArmAim(bool left, float override, bool ignoreTurnRate = false)
 	{
 		char param[255];
 		if (left)
@@ -286,7 +289,32 @@ methodmap Godfather < CClotBody
 		else
 			param = "godfather_aim_right";
 
-		this.SetPoseParameter(this.LookupPoseParameter(param), override);
+		if (override > 90.0)
+			override = 90.0;
+		if (override < 0.0)
+			override = 0.0;
+
+		if (ignoreTurnRate)
+			this.SetPoseParameter(this.LookupPoseParameter(param), override);
+		else
+		{
+			float current = this.GetPoseParameter(this.LookupPoseParameter(param));
+			if (current < override)
+			{
+				current += Friends_TurnRate;
+			}
+			else if (current > override)
+			{
+				current -= Friends_TurnRate;
+			}
+
+			if (current > 90.0)
+				current = 90.0;
+			if (current < 0.0)
+				current = 0.0;
+
+			this.SetPoseParameter(this.LookupPoseParameter(param), current);
+		}
 	}
 
 	public int GetGunTarget(bool left = true)
@@ -319,7 +347,7 @@ methodmap Godfather < CClotBody
 		else
 		{
 			float ang[3], Direction[3], startPos[3];
-			this.GetAttachment((left ? "godfather_aim_left" : "godfather_aim_right"), startPos, ang);
+			this.GetAttachment((left ? "smg_muzzle_left" : "smg_muzzle_right"), startPos, ang);
 
 			GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
 			ScaleVector(Direction, 200.0);
@@ -390,6 +418,99 @@ methodmap Godfather < CClotBody
 		f_NextOffer[this.index] = GetGameTime(this.index) + Offer_Cooldown;
 	}
 
+	public bool IsVictimValidForGun(int victim, bool left)
+	{
+		if (!IsValidEnemy(this.index, victim) || !Can_I_See_Enemy_Only(this.index, victim))
+			return false;
+
+		float vicPos[3], myPos[3], diff[3], ang[3];
+		WorldSpaceCenter(victim, vicPos);
+		WorldSpaceCenter(this.index, myPos);
+		GetEntPropVector(this.index, Prop_Data, "m_angRotation", ang);
+
+		if (left)
+			ang[1] += 45.0;
+		else
+			ang[1] -= 45.0;
+
+		GetAngleVectors(ang, ang, NULL_VECTOR, NULL_VECTOR);
+
+		SubtractVectors(vicPos, myPos, diff);
+
+		float cosDiff = GetVectorDotProduct(ang, diff);
+	
+		if (cosDiff < 0.0)
+			return false;
+
+		float flLen2 = GetVectorLength(diff, true);
+
+		float width = Cosine(45.0);
+
+		// a/sqrt(b) > c  == a^2 > b * c ^2
+		return ( cosDiff * cosDiff >= flLen2 * width * width );
+	}
+
+	public void SetVictimForGun(bool left)
+	{
+		int target = (left ? i_GunsLeftTarget[this.index] : i_GunsRightTarget[this.index]);
+		if (this.IsVictimValidForGun(target, left))	//Don't set a new target if our current target is valid *and* visible
+			return;
+
+		float pos[3], ang[3];
+		this.GetAttachment((left ? "smg_muzzle_left" : "smg_muzzle_right"), pos, ang);
+		
+		CheckingLeft = left;
+		target = GetClosestTarget(this.index, _, _, _, _, _, pos, true, _, _, _, _, Godfather_CheckClosestIsValid);
+		if (!IsValidEnemy(this.index, target))
+			target = this.m_iTarget;
+
+		if (left)
+			i_GunsLeftTarget[this.index] = target;
+		else
+			i_GunsRightTarget[this.index] = target;
+
+		//this.AimGunAtTarget(left);
+	}
+
+	public void AimGunAtTarget(bool left)
+	{
+		int target = (left ? i_GunsLeftTarget[this.index] : i_GunsRightTarget[this.index]);
+		if (!IsValidEnemy(this.index, target) || !Can_I_See_Enemy_Only(this.index, target))
+			return;
+
+		float pos[3], vicPos[3], ang[3], targAng[3], buffer[3];
+		this.WorldSpaceCenter(pos);
+		WorldSpaceCenter(target, vicPos);
+		GetEntPropVector(this.index, Prop_Data, "m_angRotation", ang);
+
+		for (int i = 0; i < 3; i++)
+			ang[i] = fixAngle(ang[i]);
+
+		GetVectorAnglesTwoPoints(pos, vicPos, targAng);
+
+		for (int i = 0; i < 3; i++)
+			targAng[i] = fixAngle(targAng[i]);
+		//Priest_GetAngleToPoint(this.index, pos, vicPos, buffer, targAng);
+		//CPrintToChatAll("Yaw is %.2f off", targAng[1]);
+
+		//NormalizeVector(targAng, targAng);
+		//NormalizeVector(ang, ang);
+		SubtractVectors(ang, targAng, buffer);
+		//NormalizeVector(buffer, buffer);
+
+		//CPrintToChatAll("%s yaw is %.2f off", (left ? "left" : "right"), buffer[1]);
+		
+		float param = buffer[1];
+		if (param < 0.0)
+			param += 360.0;
+		if (param > 360.0)
+			param -= 360.0;
+
+		CPrintToChatAll("Setting anim for %s arm to %.2f (originally %.2f)", (left ? "left" : "right"), param, buffer[1]);
+
+		this.SetArmAim(left, param);
+	}
+
 	public Godfather(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
 		Godfather npc = view_as<Godfather>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, GODFATHER_SCALE, GODFATHER_HP, ally));
@@ -432,6 +553,12 @@ methodmap Godfather < CClotBody
 	}
 }
 
+public bool Godfather_CheckClosestIsValid(int user, int target)
+{
+	Godfather npc = view_as<Godfather>(user);
+	return npc.IsVictimValidForGun(target, CheckingLeft);
+}
+
 //TODO 
 //Rewrite
 public void Godfather_ClotThink(int iNPC)
@@ -461,8 +588,8 @@ public void Godfather_ClotThink(int iNPC)
 		npc.AddGesture("ACT_GODFATHER_AIM_POSE", false, _, false);
 		npc.AddGesture("ACT_GODFATHER_AIM_RIGHT", false, _, false);
 		npc.AddGesture("ACT_GODFATHER_AIM_LEFT", false, _, false);
-		npc.SetArmAim(true, 0.0);
-		npc.SetArmAim(false, 0.0);
+		npc.SetArmAim(true, 0.0, true);
+		npc.SetArmAim(false, 0.0, true);
 
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + Friends_AttackRate;
 
@@ -472,6 +599,11 @@ public void Godfather_ClotThink(int iNPC)
 
 	if (Godfather_Attacking[npc.index] && b_FriendsActive[npc.index])
 	{
+		npc.SetVictimForGun(true);
+		npc.SetVictimForGun(false);
+		npc.AimGunAtTarget(true);
+		npc.AimGunAtTarget(false);
+
 		if (GetGameTime(npc.index) > f_GunsEndTime[npc.index])
 		{
 			b_FriendsActive[npc.index] = false;
@@ -504,8 +636,6 @@ public void Godfather_ClotThink(int iNPC)
 
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + Friends_AttackRate;
 		}
-
-		//TODO: Use pose parameters to move the guns towards their targets
 	}
 
 	if(npc.m_blPlayHurtAnimation)
