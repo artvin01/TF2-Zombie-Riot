@@ -1,33 +1,32 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-void OnMapStartCombine_Dreadlander()
+void OnMapStartCombine_ThreatCleaner()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "W.F. Dreadlander");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_dreadlander");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Threat Cleaner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_threat_cleaner");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Combine_Dreadlander(client, vecPos, vecAng, ally);
+	return Combine_ThreatCleaner(client, vecPos, vecAng, ally);
 }
 
-methodmap Combine_Dreadlander < CombineSoldier
+methodmap Combine_ThreatCleaner < CombineSoldier
 {
-	public Combine_Dreadlander(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_ThreatCleaner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Combine_Dreadlander npc = view_as<Combine_Dreadlander>(BaseSquad(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", ally, false));
+		Combine_ThreatCleaner npc = view_as<Combine_ThreatCleaner>(BaseSquad(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", ally, false));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		npc.m_bRanged = true;
+		npc.m_bRanged = false;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -37,12 +36,9 @@ methodmap Combine_Dreadlander < CombineSoldier
 
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
-		
-		
-		func_NPCDeath[npc.index] = Combine_Dreadlander_NPCDeath;
+		func_NPCDeath[npc.index] = Combine_ThreatCleaner_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = BaseSquad_TakeDamage;
-		func_NPCThink[npc.index] = Combine_Dreadlander_ClotThink;
-
+		func_NPCThink[npc.index] = Combine_ThreatCleaner_ClotThink;
 
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
 		SetVariantString("1.15");
@@ -51,9 +47,9 @@ methodmap Combine_Dreadlander < CombineSoldier
 	}
 }
 
-public void Combine_Dreadlander_ClotThink(int iNPC)
+public void Combine_ThreatCleaner_ClotThink(int iNPC)
 {
-	Combine_Dreadlander npc = view_as<Combine_Dreadlander>(iNPC);
+	Combine_ThreatCleaner npc = view_as<Combine_ThreatCleaner>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -79,45 +75,10 @@ public void Combine_Dreadlander_ClotThink(int iNPC)
 	BaseSquad_BaseThinking(npc, vecMe);
 
 	bool canWalk = (npc.m_iTargetWalk || !npc.m_iTargetAttack);
-	bool duckAnim;
 	if(npc.m_iTargetAttack)
 	{
 		float vecTarget[3];
 		WorldSpaceCenter(npc.m_iTargetAttack, vecTarget);
-
-		float distance = GetVectorDistance(vecTarget, vecMe, true);
-
-		bool shouldGun = !npc.m_iTargetWalk;
-		if(!b_NpcIsInADungeon[npc.index])
-		{
-			if(!shouldGun)
-			{
-				int count = i_MaxcountNpcTotal;
-
-				for(int i; i < count; i++)
-				{
-					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
-					if(ally.index != -1 && ally.index != npc.index)
-					{
-						if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && GetTeam(npc.index) == GetTeam(ally.index))
-						{
-							shouldGun = true;	// An ally rushing with a melee, I should cover them
-							break;
-						}
-					}
-				}
-			}
-
-			if(!shouldGun)
-			{
-				if(distance > (npc.m_bRanged ? 70000.0 : 125000.0))	// 265, 355  HU
-				{
-					shouldGun = true;
-				}
-			}
-		}
-
-		npc.m_bRanged = shouldGun;
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -138,9 +99,9 @@ public void Combine_Dreadlander_ClotThink(int iNPC)
 
 						// E2 L5 = 105, E2 L10 = 120
 						KillFeed_SetKillIcon(npc.index, "club");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 165000.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 225000.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
-						KillFeed_SetKillIcon(npc.index, "taunt_soldier");
+						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 					}
 				}
 
@@ -153,13 +114,14 @@ public void Combine_Dreadlander_ClotThink(int iNPC)
 			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 			{
 				npc.m_flNextRangedSpecialAttackHappens = 0.0;
-				
+
 				// E2 L5 = 280, E2 L10 = 320
-				PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 800.0,_,vecTarget);
-				npc.FireGrenade(vecTarget, 800.0, 400000.0, "models/weapons/w_grenade.mdl");
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 500.0,_,vecTarget);
+				npc.FireRocket(vecTarget, 200000.0, 500.0, "models/effects/combineball.mdl");
 			}
 		}
 
+		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(npc.m_flNextRangedAttack > gameTime)
 		{
 			canWalk = false;
@@ -167,7 +129,7 @@ public void Combine_Dreadlander_ClotThink(int iNPC)
 			if(Can_I_See_Enemy(npc.index, npc.m_iTargetAttack) == npc.m_iTargetAttack)
 				npc.FaceTowards(vecTarget, 2000.0);
 		}
-		else if(distance < 10000.0)	// 100 HU
+		else if(distance < 15000.0)	// 122 HU
 		{
 			if(npc.m_flNextMeleeAttack < gameTime && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{
@@ -180,15 +142,28 @@ public void Combine_Dreadlander_ClotThink(int iNPC)
 		}
 		else if(distance < 250000.0 || !npc.m_iTargetWalk)	// 500 HU
 		{
-			if(npc.m_flNextMeleeAttack < gameTime)
+			if(!b_NpcIsInADungeon[npc.index] && npc.m_flNextRangedSpecialAttack < gameTime)
+			{
+				if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+				{
+					npc.AddGesture("ACT_COMBINE_AR2_ALTFIRE");
+					npc.PlayAR2Special();
+
+					npc.m_flNextMeleeAttack = gameTime + 1.05;
+					npc.m_flNextRangedAttack = gameTime + 1.05;
+					npc.m_flNextRangedSpecialAttackHappens = gameTime + 0.45;
+					npc.m_flNextRangedSpecialAttack = gameTime + 10.5;
+				}
+			}
+			else if(npc.m_flNextMeleeAttack < gameTime)
 			{
 				if(npc.m_iAttacksTillReload < 1)
 				{
 					canWalk = false;
 					
-					npc.AddGesture((npc.m_flNextRangedSpecialAttack > gameTime && npc.m_bRanged && distance > 20000.0) ? "ACT_RELOAD_LOW" : "ACT_RELOAD");	// 141 HU
-					npc.m_flNextMeleeAttack = gameTime + 1.85;
-					npc.m_flNextRangedAttack = gameTime + 2.15;
+					npc.AddGesture("ACT_RELOAD");
+					npc.m_flNextMeleeAttack = gameTime + 1.75;
+					npc.m_flNextRangedAttack = gameTime + 2.05;
 					npc.m_iAttacksTillReload = 30;
 					npc.PlayAR2Reload();
 				}
@@ -197,7 +172,7 @@ public void Combine_Dreadlander_ClotThink(int iNPC)
 					int target = Can_I_See_Enemy(npc.index, npc.m_iTargetAttack);
 					if(IsValidEnemy(npc.index, target))
 					{
-						if(npc.m_bRanged)
+						if(!b_NpcIsInADungeon[npc.index])
 						{
 							npc.FaceTowards(vecTarget, 2000.0);
 							canWalk = false;
@@ -214,11 +189,11 @@ public void Combine_Dreadlander_ClotThink(int iNPC)
 						{
 							vecDirShooting[1] = eyePitch[1];
 
-							//npc.m_flNextRangedAttack = gameTime + 0.05;
+							//npc.m_flNextRangedAttack = gameTime + 0.09;
 							npc.m_iAttacksTillReload--;
 							
-							float x = GetRandomFloat( -0.05, 0.05 );
-							float y = GetRandomFloat( -0.05, 0.05 );
+							float x = GetRandomFloat( -0.04, 0.04 );
+							float y = GetRandomFloat( -0.04, 0.04 );
 							
 							float vecRight[3], vecUp[3];
 							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -233,8 +208,8 @@ public void Combine_Dreadlander_ClotThink(int iNPC)
 							
 							// E2 L5 = 5.25, E2 L10 = 6
 							KillFeed_SetKillIcon(npc.index, "smg");
-							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-							KillFeed_SetKillIcon(npc.index, "taunt_soldier");
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 150000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
 							npc.PlayAR2Fire();
@@ -242,60 +217,69 @@ public void Combine_Dreadlander_ClotThink(int iNPC)
 					}
 				}
 			}
-			else if(npc.m_bRanged)
-			{
-				npc.FaceTowards(vecTarget, 1500.0);
-				canWalk = false;
-			}
 		}
-		else if(!b_NpcIsInADungeon[npc.index] && npc.m_flNextRangedSpecialAttack < gameTime)
+		else if((npc.m_flNextRangedAttack + 6.0) < gameTime)
 		{
-			if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+			canWalk = false;
+
+			npc.AddGesture("ACT_SIGNAL_ADVANCE");
+			npc.PlaySpecial();
+
+			npc.m_flNextMeleeAttack = gameTime + 0.95;
+			npc.m_flNextRangedAttack = gameTime + 1.15;
+			
+			if(!b_NpcIsInADungeon[npc.index])
 			{
-				npc.FaceTowards(vecTarget, 2000.0);
-				canWalk = false;
+				int count = i_MaxcountNpcTotal;
 
-				npc.AddGesture("ACT_COMBINE_THROW_GRENADE");
-				npc.PlayFistFire();
-
-				npc.m_flNextMeleeAttack = gameTime + 0.95;
-				npc.m_flNextRangedAttack = gameTime + 1.15;
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 0.55;
-				npc.m_flNextRangedSpecialAttack = gameTime + 19.5;
+				for(int i; i < count; i++)
+				{
+					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
+					if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
+					{
+						if(ally.m_bIsSquad)
+						{
+							WorldSpaceCenter(ally.index, vecTarget);
+							if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
+							{
+								ally.m_flRangedArmor = 0.00001;
+								ally.m_flMeleeArmor = 0.00001;
+								ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
+								break;
+							}
+						}
+					}
+				}
 			}
 		}
-
-		if(npc.m_flNextRangedSpecialAttack > gameTime && !npc.m_flAttackHappens && (!canWalk || npc.m_flNextMeleeAttack < gameTime) && npc.m_bRanged && distance > 20000.0)	// 141 HU
-			duckAnim = true;
 	}
 
 	if(canWalk)
 	{
-		BaseSquad_BaseWalking(npc, vecMe);
+		BaseSquad_BaseWalking(npc, vecMe, true);
 	}
 	else
 	{
 		npc.StopPathing();
 	}
 
-	bool anger = BaseSquad_BaseAnim(npc, 89.60, "ACT_IDLE", "ACT_WALK_EASY", 108.20, duckAnim ? "ACT_COVER" : "ACT_IDLE_ANGRY", duckAnim ? "ACT_WALK_CROUCH_RIFLE" : "ACT_WALK_AIM_RIFLE");
+	bool anger = BaseSquad_BaseAnim(npc, 0.0, "ACT_IDLE", "ACT_WALK_EASY", 330.00, "ACT_IDLE_ANGRY", "ACT_RUN_AIM_RIFLE");
 	npc.PlayIdle(anger);
 
 	if(!anger && !npc.m_bPathing && npc.m_iAttacksTillReload < 31)
 	{
 		npc.AddGesture("ACT_RELOAD");
-		npc.m_flNextMeleeAttack = gameTime + 1.85;
-		npc.m_flNextRangedAttack = gameTime + 2.15;
+		npc.m_flNextMeleeAttack = gameTime + 1.75;
+		npc.m_flNextRangedAttack = gameTime + 2.05;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_iAttacksTillReload = 31;
 		npc.PlayAR2Reload();
 	}
 }
 
-void Combine_Dreadlander_NPCDeath(int entity)
+void Combine_ThreatCleaner_NPCDeath(int entity)
 {
-	Combine_Dreadlander npc = view_as<Combine_Dreadlander>(entity);
-	
+	Combine_ThreatCleaner npc = view_as<Combine_ThreatCleaner>(entity);
 
 	if(!npc.m_bGib)
 		npc.PlayDeath();
