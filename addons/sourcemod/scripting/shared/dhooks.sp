@@ -1579,6 +1579,16 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		{
 			TeleportEntity(client, f3_PositionArrival[client], NULL_VECTOR, NULL_VECTOR);
 		}
+		else
+		{
+			Race race;
+			if(Races_GetClientInfo(client, race) && race.StartPos[0])
+			{
+				float ang[3];
+				ang[1] = race.StartAng;
+				TeleportEntity(client, race.StartPos, ang, NULL_VECTOR);
+			}
+		}
 #endif
 	}
 	return Plugin_Stop;

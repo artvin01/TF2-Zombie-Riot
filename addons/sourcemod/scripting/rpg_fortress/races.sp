@@ -154,6 +154,9 @@ enum struct Race
 	char Key[64];
 	char Desc[256];
 	ArrayList Forms;
+	int StartLevel;
+	float StartPos[3];
+	float StartAngle;
 
 	float StrengthMulti;
 	float PrecisionMulti;
@@ -170,6 +173,9 @@ enum struct Race
 		kv.GetSectionName(this.Name, sizeof(this.Name));
 		kv.GetString("key", this.Key, sizeof(this.Key));
 		kv.GetString("desc", this.Desc, sizeof(this.Desc));
+		this.StartLevel = kv.GetNum("startlevel");
+		kv.GetVector("startpos", this.StartPos);
+		this.StartAngle = kv.GetNum("startangle");
 
 		if(kv.JumpToKey("Stat Multi"))
 		{
