@@ -281,7 +281,7 @@ methodmap Godfather < CClotBody
 		#endif
 	}
 
-	public void SetArmAim(bool left, float override, bool ignoreTurnRate = false)
+	public void SetArmAim(bool left, float override)
 	{
 		char param[255];
 		if (left)
@@ -294,27 +294,7 @@ methodmap Godfather < CClotBody
 		if (override < 0.0)
 			override = 0.0;
 
-		if (ignoreTurnRate)
-			this.SetPoseParameter(this.LookupPoseParameter(param), override);
-		else
-		{
-			float current = this.GetPoseParameter(this.LookupPoseParameter(param));
-			if (current < override)
-			{
-				current += Friends_TurnRate;
-			}
-			else if (current > override)
-			{
-				current -= Friends_TurnRate;
-			}
-
-			if (current > 90.0)
-				current = 90.0;
-			if (current < 0.0)
-				current = 0.0;
-
-			this.SetPoseParameter(this.LookupPoseParameter(param), current);
-		}
+		this.SetPoseParameter(this.LookupPoseParameter(param), override);
 	}
 
 	public int GetGunTarget(bool left = true)
@@ -423,6 +403,9 @@ methodmap Godfather < CClotBody
 		if (!IsValidEnemy(this.index, victim) || !Can_I_See_Enemy_Only(this.index, victim))
 			return false;
 
+		if (left && victim == i_GunsRightTarget[this.index] || !left && victim == i_GunsLeftTarget[this.index])
+			return false;
+
 		float vicPos[3], myPos[3], diff[3], ang[3];
 		WorldSpaceCenter(victim, vicPos);
 		WorldSpaceCenter(this.index, myPos);
@@ -431,7 +414,7 @@ methodmap Godfather < CClotBody
 		if (left)
 			ang[1] += 45.0;
 		else
-			ang[1] -= 45.0;
+			ang[1] += 315.0;
 
 		GetAngleVectors(ang, ang, NULL_VECTOR, NULL_VECTOR);
 
@@ -465,11 +448,17 @@ methodmap Godfather < CClotBody
 			target = this.m_iTarget;
 
 		if (left)
+		{
+			if (i_GunsLeftTarget[this.index] != target)
+				CPrintToChatAll("{blue}Left hand is now targeting {yellow}%i", target);
 			i_GunsLeftTarget[this.index] = target;
+		}
 		else
+		{
+			if (i_GunsLeftTarget[this.index] != target)
+				CPrintToChatAll("{red}Right hand is now targeting {yellow}%i", target);
 			i_GunsRightTarget[this.index] = target;
-
-		//this.AimGunAtTarget(left);
+		}
 	}
 
 	public void AimGunAtTarget(bool left)
@@ -490,23 +479,13 @@ methodmap Godfather < CClotBody
 
 		for (int i = 0; i < 3; i++)
 			targAng[i] = fixAngle(targAng[i]);
-		//Priest_GetAngleToPoint(this.index, pos, vicPos, buffer, targAng);
-		//CPrintToChatAll("Yaw is %.2f off", targAng[1]);
+			
+		if (left)
+			SubtractVectors(targAng, ang, buffer);
+		else
+			SubtractVectors(ang, targAng, buffer);
 
-		//NormalizeVector(targAng, targAng);
-		//NormalizeVector(ang, ang);
-		SubtractVectors(ang, targAng, buffer);
-		//NormalizeVector(buffer, buffer);
-
-		//CPrintToChatAll("%s yaw is %.2f off", (left ? "left" : "right"), buffer[1]);
-		
-		float param = buffer[1];
-		if (param < 0.0)
-			param += 360.0;
-		if (param > 360.0)
-			param -= 360.0;
-
-		CPrintToChatAll("Setting anim for %s arm to %.2f (originally %.2f)", (left ? "left" : "right"), param, buffer[1]);
+		float param = ApproachAngle(buffer[1], this.GetPoseParameter(this.LookupPoseParameter((left ? "godfather_aim_left" : "godfather_aim_right"))), Friends_TurnRate);
 
 		this.SetArmAim(left, param);
 	}
@@ -588,8 +567,8 @@ public void Godfather_ClotThink(int iNPC)
 		npc.AddGesture("ACT_GODFATHER_AIM_POSE", false, _, false);
 		npc.AddGesture("ACT_GODFATHER_AIM_RIGHT", false, _, false);
 		npc.AddGesture("ACT_GODFATHER_AIM_LEFT", false, _, false);
-		npc.SetArmAim(true, 0.0, true);
-		npc.SetArmAim(false, 0.0, true);
+		npc.SetArmAim(true, 0.0);
+		npc.SetArmAim(false, 0.0);
 
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + Friends_AttackRate;
 
