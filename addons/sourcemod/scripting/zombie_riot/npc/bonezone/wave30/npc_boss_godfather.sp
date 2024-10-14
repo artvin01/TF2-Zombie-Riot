@@ -50,6 +50,15 @@ static float Kick_Range = 90.0;			//Range in which the kick will be used, if it 
 static float Kick_Cooldown = 5.0;		//Normal Kick cooldown.
 static float Kick_StartingCooldown = 2.0;	//Starting cooldown.
 
+//DEATH RATTLE: When Godfather Grimme dies, he drops a molotov which deals massive building damage.
+static float GodfatherMolotov_Velocity = 1200.0;
+static float GodfatherMolotov_Gravity = 2.33;
+static float GodfatherMolotov_DMG = 150.0;
+static float GodfatherMolotov_EntityMult = 20.0;
+static float GodfatherMolotov_Radius = 200.0;
+static float GodfatherMolotov_Falloff_MultiHit = 0.66;
+static float GodfatherMolotov_Falloff_Range = 0.66;
+
 static char g_OfferDialogue[][] = {
 	"{corrupted}Godfather Grimme{default}: Go make {orangered}%s{default} an offer they can't refuse...",
 	"{corrupted}Godfather Grimme{default}: It's not personal, {orangered}%s{default}. It's strictly business."
@@ -134,6 +143,8 @@ static char g_GibSounds[][] = {
 #define SOUND_GODFATHER_GUNS_SWING			")weapons/machete_swing.wav"
 #define SOUND_GODFATHER_SHOOT				")weapons/doom_sniper_smg.wav"
 #define SOUND_GODFATHER_GUNS_HIT			")player/pain.wav"
+#define SOUND_GODFATHER_MOLOTOV_EXPLODE_1	")weapons/bottle_break.wav"
+#define SOUND_GODFATHER_MOLOTOV_EXPLODE_2	")misc/halloween/spell_fireball_impact.wav"
 
 #define PARTICLE_OFFER_MARKED		"teleportedin_red"
 #define PARTICLE_OFFER_MARKED_TRAIL	"player_recent_teleport_red"
@@ -141,6 +152,10 @@ static char g_GibSounds[][] = {
 #define PARTICLE_GODFATHER_MUZZLE	"muzzle_pistol"
 #define PARTICLE_GODFATHER_GUNS_HIT	"flaregun_destroyed"
 #define PARTICLE_GODFATHER_PROJECTILE	"nailtrails_medic_red_crit"
+#define PARTICLE_GODFATHER_MOLOTOV_EXPLODE	"heavy_ring_of_fire"
+#define PARTICLE_GODFATHER_MOLOTOV			"fuse_sparks"
+
+#define MODEL_MOLOTOV				"models/weapons/c_models/c_bottle/c_bottle.mdl"
 
 public void Godfather_OnMapStart_NPC()
 {
@@ -176,6 +191,8 @@ public void Godfather_OnMapStart_NPC()
 	PrecacheSound(SOUND_GODFATHER_GUNS_SWING);
 	PrecacheSound(SOUND_GODFATHER_SHOOT);
 	PrecacheSound(SOUND_GODFATHER_GUNS_HIT);
+
+	PrecacheModel(MODEL_MOLOTOV);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Godfather Grimme");
@@ -927,25 +944,33 @@ public void Godfather_AnimEvent(int entity, int event)
 	}
 }
 
-public void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float startPos[3], float startAng[3])
+void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float startPos[3], float startAng[3], bool molotov = false)
 {
 	int entity = CreateEntityByName("zr_projectile_base");
 			
 	if (IsValidEntity(entity))
 	{
 		float vecForward[3], vecAngles[3], currentAngles[3], buffer[3];
-		currentAngles = startAng;
-		Priest_GetAngleToPoint(npc.index, startPos, vicLoc, buffer, vecAngles);
-		vecAngles[1] = currentAngles[1];
-		vecAngles[2] = currentAngles[2];
 
-		for(int i = 0; i < 3; i++)
-			vecAngles[i] += GetRandomFloat(-Friends_Spread, Friends_Spread);
+		if (!molotov)
+		{
+			currentAngles = startAng;
+			Priest_GetAngleToPoint(npc.index, startPos, vicLoc, buffer, vecAngles);
+			vecAngles[1] = currentAngles[1];
+			vecAngles[2] = currentAngles[2];
+
+			for(int i = 0; i < 3; i++)
+				vecAngles[i] += GetRandomFloat(-Friends_Spread, Friends_Spread);
+		}
+		else
+		{
+			vecAngles[0] = -90.0;
+		}
 			
 		GetAngleVectors(vecAngles, buffer, NULL_VECTOR, NULL_VECTOR);
-		vecForward[0] = buffer[0] * Friends_Velocity;
-		vecForward[1] = buffer[1] * Friends_Velocity;
-		vecForward[2] = buffer[2] * Friends_Velocity;
+		vecForward[0] = buffer[0] * (molotov ? GodfatherMolotov_Velocity : Friends_Velocity);
+		vecForward[1] = buffer[1] * (molotov ? GodfatherMolotov_Velocity : Friends_Velocity);
+		vecForward[2] = buffer[2] * (molotov ? GodfatherMolotov_Velocity : Friends_Velocity);
 		
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
@@ -955,7 +980,7 @@ public void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float star
 		TeleportEntity(entity, startPos, vecAngles, NULL_VECTOR, true);
 		DispatchSpawn(entity);
 		
-		int g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_drg_ball.mdl");
+		int g_ProjectileModelRocket = PrecacheModel((molotov ? MODEL_MOLOTOV : "models/weapons/w_models/w_drg_ball.mdl"));
 		for(int i; i<4; i++)
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
@@ -966,11 +991,40 @@ public void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float star
 		Set_Projectile_Collision(entity);
 		See_Projectile_Team_Player(entity);
 		
-		SDKHook(entity, SDKHook_Touch, Godfather_ProjectileHit);
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
-		ParticleEffectAt_Parent(startPos, PARTICLE_GODFATHER_PROJECTILE, entity);
-		CreateTimer(Friends_Lifespan, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+
+		if (!molotov)
+		{
+			SDKHook(entity, SDKHook_Touch, Godfather_ProjectileHit);
+			ParticleEffectAt_Parent(startPos, PARTICLE_GODFATHER_PROJECTILE, entity);
+			CreateTimer(Friends_Lifespan, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		else
+		{
+			SDKHook(entity, SDKHook_Touch, GodfatherMolotov_ProjectileHit);
+			ParticleEffectAt_Parent(startPos, PARTICLE_GODFATHER_MOLOTOV, entity);
+			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+			SetEntityGravity(entity, GodfatherMolotov_Gravity);
+			DispatchKeyValueFloat(entity, "modelscale", 1.66);
+		}
 	}
+}
+
+public Action GodfatherMolotov_ProjectileHit(int entity, int other)
+{
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_GODFATHER_MOLOTOV_EXPLODE, 2.0);
+	EmitSoundToAll(SOUND_GODFATHER_MOLOTOV_EXPLODE_1, entity, _, _, _, 0.8, GetRandomInt(80, 110));
+	EmitSoundToAll(SOUND_GODFATHER_MOLOTOV_EXPLODE_2, entity, _, _, _, 0.8, GetRandomInt(80, 110));
+
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(GodfatherMolotov_DMG, IsValidEntity(owner) ? owner : entity, entity, entity, position, GodfatherMolotov_Radius, GodfatherMolotov_Falloff_MultiHit, GodfatherMolotov_Falloff_Range, isBlue, _, true, GodfatherMolotov_EntityMult);
+
+	RemoveEntity(entity);
+		
+	return Plugin_Continue;
 }
 
 public Action Godfather_ProjectileHit(int entity, int other)
@@ -1017,6 +1071,10 @@ public void Godfather_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	float pos[3];
+	WorldSpaceCenter(entity, pos);
+	Godfather_ShootProjectile(npc, pos, pos, NULL_VECTOR, true);
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
