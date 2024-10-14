@@ -3101,13 +3101,15 @@
 	}
 	"Barracks Villager Desc"
 	{
-		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."	
+		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."
+		"ru" 		"Вспомогательная рука которая чинит,собирает ресурсы,И строит 1 башню для вас."	
 		"fr"		"Un assistant qui répare vos constructions, collectionne des ressources, et construit une tour pour vous."
 		"chi"       "一个修理、收集资源，为你建造一座塔的帮手。"
 	}
 	"Barracks Teutonic Knight Desc"
 	{
 		"en"		"The strongest of the strongest. Ultimate melee unit."	
+		"ru" 		"Сильнейший из сильнейших.Ультимативный блжиний юнит."
 		"fr"		"Le meilleur des meilleurs. L'unité corps à corps ultime."	
 		"chi"       "强者中的强者。终极近战单位。"
 	}
@@ -3118,6 +3120,7 @@
 	"Barracks Troop Classes"
 	{
 		"en"		"Research Troop Classes to train units (excludes villager)"
+		"ru" 		"Исследовать классы войск что бы тренеровать их (кроме жителя)"
 		"fr"		"Recherchez des Unités pour débuter leur formation. ( Le villageois est exclus. )"
 		"chi"       "训练士兵的专项技能（村民不包括在内）"
 	}
@@ -3127,29 +3130,34 @@
 	}
 	"Spike Masspickup Confirm"
 	{
-		"en"		"Look up and Press M2 again to confirm picking up all your spikes!"		
+		"en"		"Look up and Press M2 again to confirm picking up all your spikes!"
+		"ru" 		"Посмотрите вверх и снова нажмите M2 что бы подтвердить что вы взяли все шипы!"	
 		"fr"		"Visez vers le haut et appuyez sur M2 encore pour ramasser vos piques!"
 	}
 	"Spike Masspickup Done"
 	{
-		"en"		"Picked up all your spikes!"		
+		"en"		"Picked up all your spikes!"
+		"ru" 		"Вы подняли все ваши шипы!"		
 		"fr"		"Vous avez ramassé vos piques!"
 	}
 	"Spike Masspickup None"
 	{
-		"en"		"There are no spikes left to pick up."		
+		"en"		"There are no spikes left to pick up."	
+		"ru" 		"Больше нет шипов которые можно подобрать."	
 		"fr"		"Pas de piques à ramasser."
 		"chi"       "没有钉子可捡了。"
 	}
 	"Pre Round Pap Limit"
 	{
-		"en"		"The PAP is still booting up, wait untill the round starts."		
+		"en"		"The PAP is still booting up, wait untill the round starts."
+		"ru" 		"Машина улучшения все ещё загружается,Подождите пока начнётся раунд."		
 		"fr"		"La machine Pack-a-Punch se démarre, attendez pour le début du jeu."
 		"chi"       "PAP仍在启动，请等待回合开始。"
 	}
 	"Zombie Volume Setting Show"
 	{
 		"en"		"Zombie Volume Setting"
+		"ru" 		"Настройка Громкости Зомби"
 		"fr"		"Paramètres Volume des Zombies"
 		"chi"       "僵尸声音设置"
 	}
@@ -3162,6 +3170,7 @@
 	"Zombie In Battle Show"
 	{
 		"en"		"Zombie In Battle Time"
+		"ru" 		"Зомби во время битвы"
 		"fr"		"Temps en Combat pour Zombies"
 	}
 	"Zombie In Battle Logic Setting"
