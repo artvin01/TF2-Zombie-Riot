@@ -54,7 +54,7 @@ static float Kick_StartingCooldown = 2.0;	//Starting cooldown.
 static float GodfatherMolotov_Velocity = 1200.0;
 static float GodfatherMolotov_Gravity = 2.33;
 static float GodfatherMolotov_DMG = 150.0;
-static float GodfatherMolotov_EntityMult = 20.0;
+static float GodfatherMolotov_EntityMult = 25.0;
 static float GodfatherMolotov_Radius = 200.0;
 static float GodfatherMolotov_Falloff_MultiHit = 0.66;
 static float GodfatherMolotov_Falloff_Range = 0.66;
@@ -501,7 +501,7 @@ methodmap Godfather < CClotBody
 
 	public Godfather(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
-		Godfather npc = view_as<Godfather>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, GODFATHER_SCALE, GODFATHER_HP, ally));
+		Godfather npc = view_as<Godfather>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, GODFATHER_SCALE, GODFATHER_HP, ally));
 
 		b_BonesBuffed[npc.index] = false;
 		npc.m_bBoneZoneNaturallyBuffed = true;

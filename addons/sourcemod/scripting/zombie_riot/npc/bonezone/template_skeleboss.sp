@@ -150,7 +150,7 @@ methodmap BossBones < CClotBody
 
 	public BossBones(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
-		BossBones npc = view_as<BossBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BOSSBONES_SCALE, BOSSBONES_HP, ally));
+		BossBones npc = view_as<BossBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, BOSSBONES_SCALE, BOSSBONES_HP, ally));
 
 		b_BonesBuffed[npc.index] = false;
 		npc.m_bBoneZoneNaturallyBuffed = true;
