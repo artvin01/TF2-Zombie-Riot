@@ -35,7 +35,7 @@ methodmap CombinePenetrator < CombineSoldier
 		func_NPCOnTakeDamage[npc.index] = BaseSquad_TakeDamage;
 		func_NPCThink[npc.index] = CombinePenetrator_ClotThink;
 
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", 0);
 
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_shotgun.mdl");
 		SetVariantString("1.15");

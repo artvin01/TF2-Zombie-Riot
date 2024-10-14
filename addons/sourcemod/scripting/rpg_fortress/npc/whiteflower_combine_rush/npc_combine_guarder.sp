@@ -4,8 +4,8 @@
 void OnMapStartCombine_Guarder()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "W.F. Honorable Swordsmen");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_honor_swordsmen");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Guarder");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_guarder");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

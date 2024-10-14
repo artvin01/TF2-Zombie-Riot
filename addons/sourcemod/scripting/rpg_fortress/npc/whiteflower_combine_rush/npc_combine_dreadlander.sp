@@ -37,6 +37,7 @@ methodmap Combine_Dreadlander < CombineSoldier
 
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
 		
 		func_NPCDeath[npc.index] = Combine_Dreadlander_NPCDeath;
