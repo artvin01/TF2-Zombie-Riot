@@ -233,15 +233,6 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 	}
 	
 }
-
-void RPGDoHealEffect(int entity, float range)
-{
-	float ProjectileLoc[3];
-	Whiteflower_OutlanderLeader npc1 = view_as<Whiteflower_OutlanderLeader>(entity);
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 125, 0, 200, 1, 0.3, 5.0, 8.0, 3, range * 2.0);	
-	npc1.PlayHealSound();
-}
 //TODO 
 //Rewrite
 public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
@@ -641,29 +632,4 @@ public void Whiteflower_OutlanderLeader_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
-}
-
-
-//TODO: Make kaboom
-public Action Timer_RemoveEntity_SelectedFew(Handle timer, any entid)
-{
-	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity))
-	{
-		int Owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(IsValidEntity(Owner))
-		{
-			float abspos[3]; 
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", abspos);
-			abspos[2] += 45.0;
-			float Range = 100.0;
-			float Time = 0.25;
-			float DamageDeal = 300000.0;
-			Explode_Logic_Custom(DamageDeal, Owner, Owner, -1, abspos, Range);
-			EmitSoundToAll("ambient/explosions/explode_4.wav", -1, _, 80, _, _, _, _,abspos);
-			SpawnSmallExplosionNotRandom(abspos);
-		}
-		RemoveEntity(entity);
-	}
-	return Plugin_Stop;
 }

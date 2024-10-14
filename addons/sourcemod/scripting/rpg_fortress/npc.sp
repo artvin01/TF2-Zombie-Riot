@@ -594,6 +594,14 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_prototype_durable_titan.sp"
 #include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_nano_blaster.sp"
 
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_aggrat.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_bloomer.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_dreadlander.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_guarder.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_outlander_leader.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_penetrator.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_threat_cleaner.sp"
+
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"

@@ -288,6 +288,15 @@ void BaseSquad_MapStart()
 	OnMapStartCombineShotgun();
 	OnMapStartCombineElite();
 	OnMapStartCombineGiantSwordsman();
+
+	OnMapStartCombinePenetrator();
+	OnMapStartCombine_Aggrat();
+	OnMapStartCombine_Bloomer();
+	OnMapStartCombine_Dreadlander();
+	OnMapStartCombine_Guarder();
+	OnMapStartCombine_ThreatCleaner();
+	
+	Whiteflower_OutlanderLeader_OnMapStart_NPC();
 }
 
 methodmap BaseSquad < CClotBody

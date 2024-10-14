@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-void OnMapStartCombineSwordsmen()
+void OnMapStartCombine_Guarder()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Honorable Swordsmen");
