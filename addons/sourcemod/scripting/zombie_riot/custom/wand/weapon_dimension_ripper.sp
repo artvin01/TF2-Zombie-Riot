@@ -442,15 +442,15 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 	switch(GetRandomInt(1, 5))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_medival_crossbow_giant" ,weapon, 1.2, 1.35, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, "npc_medival_crossbow_giant" ,weapon, 1.2, 1.2, "npc_boss_bomb_alert");
 		case 2:
 			Dimension_Summon_Npc(client, "npc_medival_swordsman_giant" ,weapon, 1.3, 1.2, "npc_boss_bomb_alert");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_medival_ram" ,weapon, 0.5, 0.4, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, "npc_medival_achilles" ,weapon, 0.5, 1.4, "npc_boss_bomb_alert");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_medival_son_of_osiris" ,weapon, 1.5, 1.1, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, "npc_medival_son_of_osiris" ,weapon, 1.5, 1.0, "npc_boss_bomb_alert");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_medival_knight" ,weapon, 1.5, 1.35, "npc_boss_bomb_alert");
+			Dimension_Summon_Npc(client, "npc_medival_knight" ,weapon, 1.5, 1.3, "npc_boss_bomb_alert");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -482,7 +482,7 @@ public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &re
 	switch(GetRandomInt(1, 5))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_seaborn_guard" ,weapon, 1.3, 1.2, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_seaborn_guard" ,weapon, 1.3, 1.0, "utaunt_spirit_winter_rings");
 		case 2:
 			Dimension_Summon_Npc(client, "npc_seaborn_caster" ,weapon, 1.0, 1.2, "utaunt_spirit_winter_rings");
 		case 3:
@@ -508,7 +508,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 		case 3:
 			Dimension_Summon_Npc(client, "npc_rifal_manu" ,weapon, 1.0, 1.5, "eyeboss_death_vortex");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_sergeant_ideal" ,weapon, 2.2, 1.3, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, "npc_sergeant_ideal" ,weapon, 2.0, 1.3, "eyeboss_death_vortex");
 		case 5:
 			Dimension_Summon_Npc(client, "npc_vaus_magica" ,weapon, 1.2, 1.3, "eyeboss_death_vortex");
 		default: //This should not happen
@@ -525,7 +525,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 		case 1:
 			Dimension_Summon_Npc(client, "npc_ega_bunar" ,weapon, 1.2, 1.2, "eyeboss_death_vortex");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_minigun_assisa" ,weapon, 1.0, 1.2, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, "npc_minigun_assisa" ,weapon, 1.0, 1.1, "eyeboss_death_vortex");
 		case 3:
 			Dimension_Summon_Npc(client, "npc_diversionistico" ,weapon, 1.2, 1.4, "eyeboss_death_vortex");
 		case 4:
@@ -552,7 +552,7 @@ public void Weapon_Dimension_Summon_Interitus(int client, int weapon, bool &resu
 		case 4:
 			Dimension_Summon_Npc(client, "npc_airborn_explorer" ,weapon, 1.3, 1.5, "teleported_blue");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_ancient_demon" ,weapon, 1.6, 1.3, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_irritated_person" ,weapon, 1.6, 1.3, "teleported_blue");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -567,7 +567,7 @@ public void Weapon_Dimension_Summon_Interitus_PAP(int client, int weapon, bool &
 		case 1:
 			Dimension_Summon_Npc(client, "npc_perro" ,weapon, 1.3, 1.3, "teleported_blue");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_irritated_person" ,weapon, 1.3, 1.3, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_abomination" ,weapon, 1.5, 1.2, "teleported_blue");
 		case 3:
 			Dimension_Summon_Npc(client, "npc_enforcer" ,weapon, 1.0, 1.6, "teleported_blue");
 		case 4:
@@ -594,7 +594,7 @@ public void Weapon_Dimension_Summon_Twirl(int client, int weapon, bool &result, 
 		case 4:
 			Dimension_Summon_Npc(client, "npc_ruina_heliara" ,weapon, 1.3, 1.3, "teleported_blue");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_ruina_theocracy" ,weapon, 1.7, 1.4, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_ruina_lex" ,weapon, 1.7, 1.4, "teleported_blue");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -653,7 +653,7 @@ public void Weapon_Dimension_Summon_Void_PAP(int client, int weapon, bool &resul
 		case 2:
 			Dimension_Summon_Npc(client, "npc_void_erasus" ,weapon, 1.0, 1.3, "teleported_blue");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_void_total_growth" ,weapon, 1.5, 1.2, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_void_total_growth" ,weapon, 1.5, 1.3, "teleported_blue");
 		case 4:
 			Dimension_Summon_Npc(client, "npc_voids_offspring" ,weapon, 1.2, 1.3, "teleported_blue");
 		case 5:
@@ -699,7 +699,7 @@ public void Weapon_Dimension_Summon_Iberia_PAP(int client, int weapon, bool &res
 		case 4:
 			Dimension_Summon_Npc(client, "npc_elite_kinat" ,weapon, 1.2, 1.4, "teleported_blue");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_anti_sea_robot" ,weapon, 1.75, 1.2, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_anti_sea_robot" ,weapon, 1.75, 1.1, "teleported_blue");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -753,7 +753,7 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 					b_ThisEntityIgnored[entity] = true;
 
 					CreateTimer(60.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(3.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					//CreateTimer(3.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 					b_thisNpcIsABoss[entity] = false;
 					b_thisNpcIsARaid[entity] = false;
@@ -779,7 +779,7 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 		}
 	}
 }
-
+/*
 public Action Dimension_GiveStrength(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -794,3 +794,4 @@ public Action Dimension_GiveStrength(Handle timer, int ref)
 	
 	return Plugin_Stop;
 }
+*/
