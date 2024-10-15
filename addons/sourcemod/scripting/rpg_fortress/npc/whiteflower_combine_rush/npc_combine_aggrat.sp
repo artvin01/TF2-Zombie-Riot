@@ -47,7 +47,6 @@ methodmap Combine_Aggrat < CombinePolice
 		npc.m_iWearable2 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_stunbaton.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 50, 50, 255);
@@ -60,7 +59,6 @@ methodmap Combine_Aggrat < CombinePolice
 		return npc;
 	}
 }
-
 public void Combine_Aggrat_ClotThink(int iNPC)
 {
 	Combine_Aggrat npc = view_as<Combine_Aggrat>(iNPC);
@@ -266,7 +264,6 @@ public void Combine_Aggrat_ClotThink(int iNPC)
 	bool anger = BaseSquad_BaseAnim(npc, 80.0, npc.m_bRanged ? "ACT_IDLE_PISTOL" : "ACT_IDLE", npc.m_bRanged ? "ACT_WALK_PISTOL" : "ACT_WALK_ANGRY", 300.0, npc.m_bRanged ? "ACT_IDLE_ANGRY_PISTOL" : "ACT_IDLE_ANGRY_MELEE", npc.m_bRanged ? "ACT_RUN_PISTOL" : "ACT_RUN");
 	npc.PlayIdle(anger);
 }
-
 void Combine_Aggrat_NPCDeath(int entity)
 {
 	Combine_Aggrat npc = view_as<Combine_Aggrat>(entity);

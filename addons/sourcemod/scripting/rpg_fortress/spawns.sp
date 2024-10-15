@@ -16,6 +16,7 @@ enum struct SpawnEnum
 	
 	int LowLevelClientAreaCount;
 	
+	char CustomName[64];
 	bool Boss;
 	int Level[2];
 	int Health[2];
@@ -54,6 +55,8 @@ enum struct SpawnEnum
 		this.LowLevelClientAreaCount = 0;
 
 		this.Index = NPC_GetByPlugin(this.Item1);
+
+		kv.GetString("custom_name", this.CustomName, 64);
 		
 		this.Angle = kv.GetFloat("angle", -1.0);
 		this.Count = kv.GetNum("count", 1);
@@ -475,6 +478,9 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				fl_Extra_RangedArmor[entity] = spawn.ExtraRangedRes;
 				fl_Extra_Speed[entity] = spawn.ExtraSpeed;
 				fl_Extra_Damage[entity] = spawn.ExtraDamage;
+
+				if(spawn.CustomName[0])
+					strcopy(c_NpcName[entity], sizeof(c_NpcName[]), spawn.CustomName);
 
 				if(spawn.ExtraSize != 1.0)
 				{
@@ -940,6 +946,10 @@ void Spawns_EditorMenu(int client)
 
 		FormatEx(buffer2, sizeof(buffer2), "Size Multi: %f", kv.GetFloat("extra_size", 1.0));
 		menu.AddItem("extra_size", buffer2);
+
+		kv.GetString("custom_name", buffer1, sizeof(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Custom Name: \"%s\"", buffer1);
+		menu.AddItem("custom_name", buffer2);
 
 		kv.GetString("drop_name_1", buffer1, sizeof(buffer1));
 		valid = (!buffer1[0] || TextStore_IsValidName(buffer1));

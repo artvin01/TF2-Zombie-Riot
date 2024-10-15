@@ -296,7 +296,6 @@ public void Combine_Dreadlander_ClotThink(int iNPC)
 void Combine_Dreadlander_NPCDeath(int entity)
 {
 	Combine_Dreadlander npc = view_as<Combine_Dreadlander>(entity);
-	
 
 	if(!npc.m_bGib)
 		npc.PlayDeath();
