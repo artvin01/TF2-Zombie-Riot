@@ -6,6 +6,11 @@
 #define MIN_FADE_DISTANCE 3000.0
 #define MAX_FADE_DISTANCE 3700.0
 
+enum
+{
+	WEAPON_BIGFRYINGPAN = 1,
+}
+
 int BaseStrength;
 int BasePrecision;
 int BaseArtifice;

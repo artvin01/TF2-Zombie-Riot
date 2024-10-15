@@ -1102,7 +1102,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 #if defined RPG
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-
+		case WEAPON_BIGFRYINGPAN:
+		{
+			Custom_Knockback(attacker, victim, 2000.0);
+		}
 	}
 #endif
 
