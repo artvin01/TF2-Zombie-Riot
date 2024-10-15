@@ -7,6 +7,7 @@
 #define SOUND_BET	"ui/duel_score_behind.wav"
 #define SOUND_MATCH	"mvm/mvm_money_pickup.wav"
 #define SOUND_EVENT	"ui/quest_alert.wav"
+#define ITEM_CHIP	"Casino Chips"
 
 enum
 {

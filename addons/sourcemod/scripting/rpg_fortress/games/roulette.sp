@@ -85,11 +85,11 @@ static void RouletteMenu(int client)
 			}
 		}
 
-		int cash = TextStore_Cash(client);
-		menu.AddItem(NULL_STRING, "10 Credits Bet", cash < 10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "100 Credits Bet", cash < 100 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "1000 Credits Bet", cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "10000 Credits Bet\n ", cash < 10000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		int cash = TextStore_GetItemCount(client, ITEM_CHIP);
+		menu.AddItem(NULL_STRING, "1 Chip Bet", cash < 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "10 Chip Bet", cash < 10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "100 Chip Bet", cash < 100 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "1000 Chip Bet\n ", cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		
 		menu.ExitBackButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -165,19 +165,19 @@ public int RouletteTableMenu(Menu menu, MenuAction action, int client, int choic
 					Option[client]--;
 				
 				case 3:
-					cash = 10;
+					cash = 1;
 				
 				case 4:
-					cash = 100;
+					cash = 10;
 				
 				case 5:
-					cash = 1000;
+					cash = 100;
 				
 				case 6:
-					cash = 10000;
+					cash = 1000;
 			}
 
-			if(cash && TextStore_Cash(client) >= cash)
+			if(cash && TextStore_GetItemCount(client, ITEM_CHIP) >= cash)
 			{
 				LastNumber[client] = GetURandomInt() % 37;
 
@@ -242,7 +242,7 @@ public int RouletteTableMenu(Menu menu, MenuAction action, int client, int choic
 
 				if(win)
 				{
-					TextStore_AddItemCount(client, ITEM_CASH, cash);
+					TextStore_AddItemCount(client, ITEM_CHIP, cash);
 					if(MenuType[client] == Roulette_Number)
 					{
 						ClientCommand(client, "playgamesound misc/achievement_earned.wav");
@@ -254,8 +254,8 @@ public int RouletteTableMenu(Menu menu, MenuAction action, int client, int choic
 				}
 				else
 				{
-					TextStore_Cash(client, -cash);
-					SPrintToChat(client, "You lost %d credits", cash);
+					TextStore_AddItemCount(client, ITEM_CHIP, -cash, true);
+					SPrintToChat(client, "You lost %s x%d", ITEM_CHIP, cash);
 					ClientCommand(client, "playgamesound ui/chime_rd_2base_neg.wav");
 				}
 			}
