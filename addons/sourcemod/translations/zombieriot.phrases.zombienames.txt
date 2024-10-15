@@ -3055,6 +3055,10 @@
 	{
 		"en"	"Godfather Grimme"
 	}
+	"Captain Faux-Beard, Terror of the Dead Sea"
+	{
+		"en"	"Captain Faux-Beard, Terror of the Dead Sea"
+	}
 	"Supreme Spookmaster Bones"
 	{
 		"en"	"Supreme Spookmaster Bones"

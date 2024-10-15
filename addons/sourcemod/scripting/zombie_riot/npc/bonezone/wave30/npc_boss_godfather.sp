@@ -512,7 +512,6 @@ methodmap Godfather < CClotBody
 		npc.m_bisWalking = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Godfather_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Godfather_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Godfather_ClotThink);
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -1050,17 +1049,6 @@ public Action Godfather_ProjectileHit(int entity, int other)
 	}
 		
 	return Plugin_Continue;
-}
-
-public Action Godfather_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	if(attacker <= 0)
-		return Plugin_Continue;
-
-	Godfather npc = view_as<Godfather>(victim);
-	//TODO: Fill this out if needed, scrap if not
-
-	return Plugin_Changed;
 }
 
 public void Godfather_NPCDeath(int entity)
