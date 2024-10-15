@@ -201,7 +201,8 @@ enum
 	WEAPON_YAKUZA = 121,
 	WEAPON_EXPLORER = 122,
 	WEAPON_FULLMOON = 123,
-	WEAPON_SKADI = 124
+	WEAPON_SKADI = 124,
+	WEAPON_HUNTING_RIFLE = 125
 }
 
 enum
@@ -556,6 +557,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/kit_blacksmith_brew.sp"
 #include "zombie_riot/custom/weapon_yakuza.sp"
 #include "zombie_riot/custom/weapon_skadi.sp"
+#include "zombie_riot/custom/weapon_hunting_rifle.sp"
 
 void ZR_PluginLoad()
 {

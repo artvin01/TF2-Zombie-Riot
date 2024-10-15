@@ -4008,4 +4008,16 @@
 	{
 		"en"	"She always wished to keep her teams safe and strong. Now, her dream is fulfilled. \n Unlock new ability: When used, gain 10% damage buff every hit that adds up(Max x2.0 dmg) and gain slight resistance"
 	}
+	"Hunting Rifle desc"
+	{
+		"en"	"A hunting rifle with a small clip size, reloads slowly but each bullet packs a punch."
+	}
+	"Hunting Rifle Pap 1 desc"
+	{
+		"en"	"Clip size, damage increased. \nUnlocks an ability which boosts reload speed and increases damage."
+	}
+	"Hunting Rifle Pap 2 desc"
+	{
+		"en"	"Clip size, damage and ability duration increased."
+	}
 }
