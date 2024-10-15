@@ -7,6 +7,67 @@
 
 static float CAPTAIN_SPEED = 260.0;
 
+//ANCHOR BREAKER: Faux-Beard slams the anchor down, hitting all enemies within a small range for 80% of their max HP + 200. This attack can be activated from a distance. If this happens, Faux-Beard will sprint straight to his target before attacking.
+//The sprint has its own independent cooldown, separate from the melee attack itself.
+static float Anchor_DMG_Flat = 200.0;		//Flat damage dealt by the attack.
+static float Anchor_DMG_Percent = 0.8;		//Percentage of the target's HP added to the attack's damage (DOES NOT AFFECT BUILDINGS).
+static float Anchor_DMG_Buildings = 4000.0;	//Damage dealt to buildings.
+static float Anchor_Length = 120.0;			//Hitbox length.
+static float Anchor_Width = 60.0;			//Hitbox width.
+static float Anchor_HitRange = 90.0;		//Range in which the melee attack will begin.
+static float Anchor_SprintRange = 1200.0;	//Range in which Faux-Beard will begin sprinting to his target if they are out of range when the ability is activated.
+static float Anchor_SprintSpeed = 520.0;	//Speed while sprinting to the target.
+static float Anchor_Cooldown_Sprint = 20.0;	//Sprint cooldown.
+static float Anchor_Cooldown = 5.0;			//Attack cooldown.
+static float Anchor_StartingCooldown = 4.0;	//Starting cooldown.
+
+//KEELHAUL: Faux-Beard throws his anchor forwards, dealing damage and knockback to whoever it hits. Once the anchor hits the floor, Faux-Beard waits X seconds before pulling it back with a chain, dealing rapid damage to anyone the anchor hits
+//on the way back, pulling them with it. He will always follow up with Anchor Breaker if at least one enemy who was pulled is within melee range after the attack ends.
+static float Keelhaul_DMG_Out = 200.0;		//Damage dealt if the anchor hits someone while it is not being pulled back.
+static float Keelhaul_DMG_In = 20.0;		//Damage dealt if the anchor hits someone while being pulled back.
+static float Keelhaul_KB_Out = 600.0;		//Knockback inflicted to enemies who are hit by the anchor when it is thrown out.
+static float Keelhaul_KB_In = 900.0;		//Strength with which enemies are pulled towards Faux-Beard when they are hit by the anchor while it is being reeled in.
+static float Keelhaul_PullIn_TickRate = 0.33;	//Interval in which the anchor hits enemies and drags them with it while it is being pulled in.
+static float Keelhaul_Velocity_Out = 1600.0;	//Velocity with which the anchor is thrown out.
+static float Keelhaul_Velocity_In = 900.0;		//Velocity with which the anchor is pulled in.
+static float Keelhaul_Pull_Delay = 1.0;			//Delay after the anchor hits the floor before Faux-Beard will pull it back in.
+static float Keelhaul_Cooldown = 15.0;		//Ability cooldown.
+static float Keelhaul_StartingCooldown = 10.0;	//Starting cooldown.
+
+//MORALE BOOST: Faux-Beard rallies his allies with a battle cry, permanently buffing all allies within a large radius and healing them for a percentage of their max HP.
+static float Morale_Radius = 600.0;			//Ability radius.
+static float Morale_Heal = 0.66;			//Percentage of allied HP to heal for.
+static float Morale_MinHeal = 1000.0;		//Minimum HP to heal allies for.
+static float Morale_MaxHeal = 20000.0;		//Maximum HP to heal allies for.
+static float Morale_Cooldown = 20.0;		//Ability cooldown.
+static float Morale_StartingCooldown = 10.0;	//Starting cooldown.
+static int Morale_MinAllies = 3;			//Minimum allies required to be in range before this ability can be used.
+
+//BLACK PEARLS: Faux-Beard rapidly fires a ton of bombs from his Loose Cannon, which explode on impact and deal heavy damage within a small radius. He is slowed down during this.
+static float Pearls_Duration = 6.0;			//Attack duration.
+static float Pearls_Interval = 0.33;		//Interval between shots while active.
+static float Pearls_Velocity = 1200.0;		//Bomb velocity.
+static float Pearls_Gravity = 0.5;			//Bomb gravity.
+static float Pearls_DMG = 120.0;			//Bomb damage.
+static float Pearls_EntityMult = 3.0;		//Entity damage multiplier.
+static float Pearls_Radius = 140.0;			//Bomb radius.
+static float Pearls_Falloff_Radius = 0.66;	//Falloff based on distance.
+static float Pearls_Falloff_MultiHit = 0.8;	//Multi-hit falloff.
+static float Pearls_Speed = 130.0;			//Movement speed while firing bombs.
+static float Pearls_Cooldown = 30.0;		//Cooldown.
+static float Pearls_StartingCooldown = 30.0;	//Starting cooldown.
+
+//CANNONKART: Faux-Beard jumps up and summons a cannon beneath his feet, which then rolls forward very quickly, flattening any enemy it collides with. If he collides with a wall or a building, Faux-Beard is briefly stunned.
+static float Kart_Velocity = 2000.0;		//Speed with which the kart zooms forward.
+static float Kart_Duration = 2.0;			//Active duration.
+static float Kart_DMG = 500.0;				//Damage dealt to anyone the kart hits.
+static float Kart_EntityDMG = 6000.0;		//Damage dealt to entities.
+static float Kart_Stun = 4.0;				//Stun duration upon colliding with a wall.
+static float Kart_Cooldown = 25.0;			//Cooldown.
+static float Kart_StartingCooldown = 20.0;	//Starting cooldown.
+
+//DEATH RATTLE: When killed, Faux-Beard stumbles forward, slamming his anchor into the ground for one final Anchor-Breaker before collapsing.
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -48,6 +109,15 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode2.wav",
 	"items/pumpkin_explode3.wav",
 };
+
+static float f_NextAnchor[MAXENTITIES] = { 0.0, ... };
+static float f_NextAnchorSprint[MAXENTITIES] = { 0.0, ... };
+static float f_NextMorale[MAXENTITIES] = { 0.0, ... };
+static float f_NextPearls[MAXENTITIES] = { 0.0, ... };
+static float f_NextKeelhaul[MAXENTITIES] = { 0.0, ... };
+static float f_NextKart[MAXENTITIES] = { 0.0, ... };
+
+static bool Captain_Attacking[MAXENTITIES] = { false, ... };
 
 public void Captain_OnMapStart_NPC()
 {
@@ -178,6 +248,15 @@ methodmap Captain < CClotBody
 		npc.m_flSpeed = CAPTAIN_SPEED;
 
 		npc.StartPathing();
+
+		f_NextAnchor[npc.index] = GetGameTime(npc.index) + Anchor_StartingCooldown;
+		f_NextAnchorSprint[npc.index] = GetGameTime(npc.index) + Anchor_StartingCooldown;
+		f_NextMorale[npc.index] = GetGameTime(npc.index) + Morale_StartingCooldown;
+		f_NextPearls[npc.index] = GetGameTime(npc.index) + Pearls_StartingCooldown;
+		f_NextKeelhaul[npc.index] = GetGameTime(npc.index) + Keelhaul_StartingCooldown;
+		f_NextKart[npc.index] = GetGameTime(npc.index) + Kart_StartingCooldown;
+
+		Captain_Attacking[npc.index] = false;
 		
 		return npc;
 	}
