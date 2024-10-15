@@ -334,6 +334,7 @@ public Action WhiteflowerTank_Rocket_Stand(Handle timer, DataPack pack)
 	pack2.WriteCell(EntIndexToEntRef(RocketEnt));
 	pack2.WriteCell(EntIndexToEntRef(EnemyEnt));
 	pack2.WriteFloat(GetGameTime() + 1.0); //time till rocketing to enemy
+	return Plugin_Stop;
 }
 
 

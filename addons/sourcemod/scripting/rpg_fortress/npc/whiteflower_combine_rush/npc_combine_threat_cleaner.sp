@@ -48,8 +48,6 @@ methodmap Combine_ThreatCleaner < CombineSoldier
 		SetEntityRenderColor(npc.index, 100, 100, 100, 255);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 100, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 100, 255);
 
 		return npc;
 	}

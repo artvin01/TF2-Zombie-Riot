@@ -625,7 +625,8 @@ static void ImportSkinAttribs(int wearable, int weapon)
 	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));
 #if defined RPG
 	char buffer[2];
-	Saves_ClientCharId(client, buffer, sizeof(buffer));
+	int PleaseFixCommentTy;
+//	Saves_ClientCharId(client, buffer, sizeof(buffer));
 	Attributes_Set(wearable, 866, buffer[0]);
 #elseif defined ZR
 	Attributes_Set(wearable, 866, float(CurrentGame))
