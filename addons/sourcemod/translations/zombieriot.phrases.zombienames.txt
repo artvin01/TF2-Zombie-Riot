@@ -3215,4 +3215,48 @@
 	{
 		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
 	}
+	"Batter"
+	{
+		"en"	"Leatherboots ScoutSquad Batter"
+	}
+	"Charger"
+	{
+		"en"	"Leatherboots ScoutSquad Charger"
+	}
+	"Teslar"
+	{
+		"en"	"Leatherboots ScoutSquad Teslar"
+	}
+	"Victorian Vanguard"
+	{
+		"en"	"Leatherboots ScoutSquad Vanguard"
+	}
+	"Victorian Igniter"
+	{
+		"en"	"Leatherboots ScoutSquad Igniter"
+	}
+	"Grenadier"
+	{
+		"en"	"Leatherboots ScoutSquad Grenadier"
+	}
+	"Victorian ScoutSquad Leader"
+	{
+		"en"	"Leatherboots ScoutSquad Leader"
+	}
+	"Supplier"
+	{
+		"en"	"Leatherboots ScoutSquad Supplier"
+	}
+	"Ballista"
+	{
+		"en"	"Leatherboots ScoutSquad Ballista"
+	}
+	"Teslar"
+	{
+		"en"	"Teslar"
+	}
+	"Teslar"
+	{
+		"en"	"Teslar"
+	}
 }
