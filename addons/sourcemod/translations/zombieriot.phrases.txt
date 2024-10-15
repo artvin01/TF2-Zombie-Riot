@@ -1336,7 +1336,7 @@
 	{
 		"en" 		"Special Zombies Help?"
 		"fr" 		"Aide Zombies Spéciaux?"
-		"ru" 		"Особые зомби?"
+		"ru" 		"Помощь с Особыми зомби?"
 		"de"		"Speziale Zombies Hilfe?"
 		"pt"		"Ajuda com zumbis especiais?"
 		"nl"		"Hulp met speciale zombies?"
@@ -1346,7 +1346,7 @@
 	{
 		"en" 		"Revival Help?"
 		"fr" 		"Aide Résurrection?"
-		"ru" 		"Оживл. игрока?"
+		"ru" 		"Оживление игрока?"
 		"de"		"Wiederbelebungshilfe?"
 		"pt"		"Ajuda com Ressureções?"
 		"nl"		"Hulp met het tot leven brengen?"
@@ -1691,7 +1691,7 @@
 	{
 		"en" 		"Connect 4"
 		"fr" 		"Puissance 4"
-		"ru" 		"Собери 4"
+		"ru" 		"Соедени 4"
 		"de"		"Verbinden 4"
 		"pt"		"Conecte-4"
 		"nl"		"Connect Vier"
@@ -1750,7 +1750,7 @@
 	{
 		"en" 		"Raidboss"
 		"fr" 		"Boss de Raid"
-		"ru" 		"Босс"
+		"ru" 		"Рейд Босс"
 		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
 		"nl"		"Invalsbaas"
 		"chi"		"世界级Boss"
@@ -1758,6 +1758,7 @@
 	"Superboss"
 	{
 		"en" 		"Superboss"
+		"ru" 		"Супер босс"
 		"fr" 		"Super Boss"
 		"chi"		"Super-Boss"
 	}
@@ -1775,7 +1776,7 @@
 	{
 		"en" 		"TIME LEFT"
 		"fr" 		"TEMPS RESTANT"
-		"ru" 		"ОСТАЛОСЬ"
+		"ru" 		"ОСТАЛОСЬ ВРЕМЕНИ"
 		"de"		"ZEIT VERBLEIBT"
 		"pt"		"TEMPO RESTANTE"
 		"nl"		"OVERIGE TIJD"
@@ -1804,6 +1805,7 @@
 	"TF2: Zombie Riot"
 	{
 		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
+		"ru" 		"TF2: Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
 		"fr" 		"TF2: Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 	}
@@ -1890,6 +1892,7 @@
 	{
 
 	//	"en"		"Your last equipped level perks were restored"
+	//	"ru"		"Ваш последний экипированный Навык уровня был восстоновлен"
 	//	"de"		"Ihre letzten level perks wurden wiederhergestellt."
 	//	"pt"		"Sua ultima habilidade de nível foi restaurada"
 	//	"nl"		"Uw laatste gebruike level perks werden herstelt
@@ -1945,7 +1948,7 @@
 	{
 		"en"		"Difficulty set to"
 		"fr"		"La difficulté est maintenant"
-		"ru"		"Установлена сложность"
+		"ru"		"Сложность установлена на"
 		"de"		"Schwierigkeitgrad eingestellt auf"
 		"pt"		"Dificuldade definida para"
 		"nl"		"Moeilijkheidsgraad werd gesteld op"
@@ -1998,7 +2001,7 @@
 		"#format"	"{1:d}"
 		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
 		"fr"		"L'ennemi à recherché le niveau {1} pour leur technologie!!!!"
-		"ru"		"Враг исследовал своё снаряжение до уров. {1}!!!"
+		"ru"		"Враг исследовал своё снаряжение до {1}!!! уровня"
 		"pt"		"O adversario pesquisou seu equipamento para duelar {1}!!!"
 		"nl"		"De vijand heeft hun uitrusting naar level {1} gebracht!!!"
 		"chi"       "僵尸的装备已升级!!!{1}"
@@ -2126,7 +2129,7 @@
 	{
 		"en"		"Buy Only Free Items"
 		"fr"		"Recevoir Seulement Gratuit"
-		"ru"		"Купить бесплатные"
+		"ru"		"Купить только бесплатные"
 		"pt"		"Comprar apenas os itens grátis"
 		"nl"		"Koop alleen graties artikelen"
 		"chi"       "只购买免费商品"
@@ -2170,7 +2173,7 @@
 		"#format"	"{1:d}"
 		"en"		"{1} Loadout Slot(s)"
 		"fr"		"{1} Espace(s) de Chargement"
-		"ru"		"Ячеек: {1}"
+		"ru"		"Ячеек снаряжения: {1}"
 		"pt"		"Vagas para Loadout: {1}"
 		"nl"		"{1} Loadout Slot(en)"
 	}
@@ -2216,7 +2219,7 @@
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
 		"fr"		"Vous ne pouvez plus équipper plus d'armes, des armes pourraient être pas équippés."
-		"ru"		"Вы достигли максимального количества оружия, некоторые из них могли быть не выданы."
+		"ru"		"Вы достигли максимального количества оружия, некоторые из них могли быть не экипированны."
 		"pt"		"Você alcançou o numero maximo de armas que você pode segurar, algumas podem não ter sido equipadas."
 		"nl"		"Je hebt het maximaal toegelaten wapens dat je mag dragen berijkt. Sommige werden niet gedragen."
 		"chi"       "你的武器数量达到了最大值，有些可能还没有装备。"
