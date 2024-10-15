@@ -135,6 +135,7 @@ static Action TrueStrengthTimer(Handle dashHud, DataPack pack)
 			int StengthStats = Stats_Strength(o_attacker);
 			float damageDelt = RPGStats_FlatDamageSetStats(o_attacker, 0, StengthStats);
 			damageDelt *= 0.25;
+			damageDelt *= 0.35;
 			damageDelt *= float(i_BleedStackLogic[o_attacker][victim]) / float(i_BleedStackLogicMax[o_attacker]);
 			float pos[3];
 			WorldSpaceCenter(victim, pos);

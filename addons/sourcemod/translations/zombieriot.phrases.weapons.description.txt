@@ -1,6 +1,5 @@
 "Phrases"
 {
-
 	"Multi Pellet"
 	{
 		"en"		"Archetype: Multi Pellet"
@@ -3152,9 +3151,9 @@
 	}
 	"Impact Lance Desc 2"
 	{
-		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n15% melee Resistance"
-		"fr"	"+15%% résistance contre les dégats corps-à-corps\nAbilité accélère un particule vers l'ennemi que vous visez.\nAbilité vous inflige du recul."
-		"chi"	"你现在可以加速能量，发射出去。只能面对敌人时使用，会对你造成击退。\+15%近战抗性。"
+		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n25% melee Resistance"
+		"fr"	"+25%% résistance contre les dégats corps-à-corps\nAbilité accélère un particule vers l'ennemi que vous visez.\nAbilité vous inflige du recul."
+		"chi"	"你现在可以加速能量，发射出去。只能面对敌人时使用，会对你造成击退。\+25%近战抗性。"
 	}
 	"Impact Lance Desc 3"
 	{
@@ -3250,6 +3249,18 @@
 		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increaced.\nCrit Chance Increaces."
 		"fr"	"Dégats, chance d'attaque critique et santé bonus par soins améliorés.\nVous frappez plus d'ennemis à la fois."
 		"chi"	"提高伤害，技能赋予更多双击子弹。\n加强穿透力，更高的超量上限。\n随机暴击概率提高。"
+	}
+	"Half Moon Desc1"
+	{
+		"en" 	"Weapon changes:\nM2 Ability causes multi 3 hit, with more damage & cooldown\nGain 2.4x max HP and 2x Vuln\nHheal on hit, Lower hp = faster atk.\nYou cant gain armor.\nArmor -> Hp."
+	}
+	"Half Moon Desc2"
+	{
+		"en" 	"Increaces heal on hit\nIf below 30%% HP, you gain 25%% resistance, if you stand near no enemy, you heal."
+	}
+	"Half Moon Desc3"
+	{
+		"en" 	"Increaces heal on hit\nIncreaces threshhold to 35%%, if at threshhold, heal regardless."
 	}
 	"Angelic Shotgonnus Desc Pap 2"
 	{
@@ -3988,5 +3999,13 @@
 	"Yakuza Pap 6"
 	{
 		"en"	"+25 max HEAT. Base stats increased."
+	}
+	"Abyssal Greatsword desc"
+	{
+		"en"	"A worn sword covered with blue goo. Once used by a great abyssal hunter\nGain Faster attack speed and higher damage as a cost of aoe attack and Solemny. \n weapon's Archetype changed to Abyssal hunters and all abyssal hunter weapons will receive 10% damage bonus"
+	}
+	"Abyssal Greatsword Pap 1 desc"
+	{
+		"en"	"She always wished to keep her teams safe and strong. Now, her dream is fulfilled. \n Unlock new ability: When used, gain 10% damage buff every hit that adds up(Max x2.0 dmg) and gain slight resistance"
 	}
 }

@@ -4,27 +4,33 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"{red}Gained {1} Chaos Instability!"
+		"ru"		"{red}Получено {1} Хаосовой нестабильности!"
 	}
 	"Lost Chaos"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Lost {1} Chaos Instability!"
+		"ru"		"{green}Потеряно {1} Хаосовой нестабильности!"
 	}
 	"Heavy Rain"
 	{
 		"en"	"Heavy Rain"
+		"ru"	"Тяжелый дождь"
 	}
 	"Heavy Rain Desc"
 	{
 		"en"	"{yellow}All units move 20%% slower, Seaborn units instead move 10%% faster"
+		"ru"	"{yellow}Все юниты двигають медленее на 20%%,Морерождённые двигаются на 10%% быстрее"
 	}
 	"Heavy Rain Lore"
 	{
 		"en"	"It begins to rain heavily, you can feel it's weight."
+		"ru"	"Начался ливень,Ты можешь почуствовать его тяжесть"
 	}
 	"Extreme Heat"
 	{
 		"en"	"Extreme Heat"
+		"ru"	"Экстремальная жара"
 	}
 	"Extreme Heat Desc"
 	{
@@ -428,7 +434,7 @@
 	}
 	"Empty Fowlbeast Desc"
 	{
-		"en"	"{green}Limited lifetime allies (non citizen and barracks) gain +30%% max health and +30%% damage, the owner gains +60%% damage for 10 seconds when summoned."
+		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30%% max health and +30%% damage, the owner gains +60%% damage for 10 seconds when summoned."
 	}
 	"Acahuallan Bowl"
 	{

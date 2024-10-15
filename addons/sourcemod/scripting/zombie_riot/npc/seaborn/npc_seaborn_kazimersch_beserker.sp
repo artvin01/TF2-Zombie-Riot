@@ -377,11 +377,9 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 					npc.SetActivity("ACT_SEABORN_WALK_BESERK");
 				}	
 
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
@@ -459,7 +457,7 @@ public void KazimierzBeserker_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 }
 
-public void KazimierzBeserker_AllyDeath(int ally, int self)
+public void KazimierzBeserker_AllyDeath(int self, int ally)
 {
 	KazimierzBeserker npc = view_as<KazimierzBeserker>(self);
 

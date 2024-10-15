@@ -311,7 +311,8 @@ methodmap Ruliana < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		fl_npc_basespeed = 290.0;
+		//speed is low since otherwise allied npc's can't keep up with her.
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -438,15 +439,11 @@ static void ClotThink(int iNPC)
 		{
 			Ruina_Master_Rally(npc.index, true);
 
-			if(npc.m_flDoingAnimation < GameTime && !LastMann)	//so allies can actually keep up
+			if(npc.m_flDoingAnimation < GameTime)
 			{
 				npc.m_flDoingAnimation = GameTime + 1.0;
-				if(Ratio < 0.1)
-					Master_Apply_Speed_Buff(npc.index, 25000.0, 0.75, 3.0);
-				else
-					Master_Apply_Speed_Buff(npc.index, 25000.0, 0.75, 1.75);
 
-				Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.9);	//10% dmg resist
+				Master_Apply_Defense_Buff(npc.index, 325.0, 5.0, 0.9);	//10% dmg resist
 			}
 		}
 		else
@@ -699,19 +696,6 @@ static bool Retreat(Ruliana npc, bool custom = false)
 
 
 	return true;
-}
-static bool Similar_Vec(float Vec1[3], float Vec2[3])
-{
-	bool similar = true;
-	for(int i=0 ; i < 3 ; i ++)
-	{
-		similar = Similar(Vec1[i], Vec2[i]);
-	}
-	return similar;
-}
-static bool Similar(float val1, float val2)
-{
-	return fabs(val1 - val2) < 2.0;
 }
 static bool Directional_Trace(Ruliana npc, float Origin[3], float Angle[3], float Result[3])
 {
@@ -992,21 +976,21 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(Ratio < 0.5)
 	{
 		npc.Anger = true; //	>:(
+		fl_npc_basespeed = 350.0;
 		if(!b_angered_once[npc.index])
 		{
 			b_angered_once[npc.index] = true;
 			npc.PlayAngerSound();
-
-			fl_npc_basespeed = 330.0;
 			
 			if(npc.m_bThisNpcIsABoss)
 			{
 				npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 			}
 		}
-}
+	}
 	else
 	{
+		fl_npc_basespeed = 250.0;
 		npc.Anger = false;
 	}
 	

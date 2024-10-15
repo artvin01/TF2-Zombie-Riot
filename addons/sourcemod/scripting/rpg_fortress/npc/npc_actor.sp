@@ -168,7 +168,7 @@ static void ClotThink(int iNPC)
 
 	//Give actors a way bigger delay, they arent important at all.
 	
-	npc.m_flNextThinkTime = gameTime + 0.35;
+	npc.m_flNextThinkTime = gameTime + 0.1;
 	int target = npc.m_flGetClosestTargetTime > gameTime ? npc.m_iTargetAlly : 0;
 
 	if(target > 0)

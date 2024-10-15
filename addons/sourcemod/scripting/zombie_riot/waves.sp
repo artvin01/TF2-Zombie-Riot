@@ -679,6 +679,7 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 	if(!length)
 		return false;
 
+	/*
 	int level;
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -688,13 +689,13 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 				level = Level[client];
 		}
 	}
-
 	level = level / 10 - 10;
 	if(level < 0)
 		return false;
 
 	if(length > level)
 		length = level;
+	*/
 
 	MiniBosses.GetArray(GetURandomInt() % length, boss);
 	return true;
@@ -3110,6 +3111,10 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		ExcuteRelay("zr_wavedone");
 		CurrentRound++;
 		CurrentWave = -1;
+		
+		int TestVal = 0;
+		Spawns_GetNextPos({0.0,0.0,0.0}, {0.0,0.0,0.0}, "",_,TestVal);
+		//This ensures no invalid spawn happens.
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))

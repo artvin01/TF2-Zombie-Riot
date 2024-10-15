@@ -21,7 +21,7 @@ stock void Ulpianus_Enable(int client, int weapon)
 	}
 	else if(Elited && i_WeaponArchetype[weapon] == 22)	// Abyssal Hunter
 	{
-		b_WeaponSpecificClassBuff[weapon][0] = true;
+		b_WeaponSpecificClassBuff[weapon][1] = true;
 		Attributes_SetMulti(weapon, 6, 0.8);
 		Attributes_Set(weapon, 140, 540.0);
 	}

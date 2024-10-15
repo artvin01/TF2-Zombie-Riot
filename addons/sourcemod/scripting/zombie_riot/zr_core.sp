@@ -199,7 +199,9 @@ enum
 	WEAPON_MAGNESIS = 119,
 	WEAPON_SUPERUBERSAW = 120,
 	WEAPON_YAKUZA = 121,
-	WEAPON_EXPLORER = 122
+	WEAPON_EXPLORER = 122,
+	WEAPON_FULLMOON = 123,
+	WEAPON_SKADI = 124
 }
 
 enum
@@ -531,6 +533,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_wrathful_blade.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
+#include "zombie_riot/custom/weapon_fullmoon.sp"
 #include "zombie_riot/custom/red_blade.sp"
 #include "zombie_riot/custom/weapon_rapier.sp"
 #include "zombie_riot/custom/wand/weapon_wand_gravaton.sp"
@@ -552,6 +555,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/wand/weapon_wand_magnesis.sp"
 #include "zombie_riot/custom/kit_blacksmith_brew.sp"
 #include "zombie_riot/custom/weapon_yakuza.sp"
+#include "zombie_riot/custom/weapon_skadi.sp"
 
 void ZR_PluginLoad()
 {
@@ -636,7 +640,6 @@ void ZR_MapStart()
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	WavesUpdateDifficultyName();
-	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
 	Zero(f_Reviving_This_Client);
@@ -666,6 +669,7 @@ void ZR_MapStart()
 	Rogue_OnAbilityUseMapStart();
 	Weapon_TexanBuisnesMapChange();
 	AngelicShotgun_MapStart();
+	FullMoon_MapStart();
 	SuperUbersaw_Mapstart();
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
@@ -803,6 +807,7 @@ void ZR_MapStart()
 	Magnesis_Precache();
 	Wrathful_Blade_Precache();
 	Yakuza_MapStart();
+	ResetMapStartSkadiWeapon();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -819,6 +824,7 @@ void ZR_MapStart()
 	//SetVariantString("ForceEnableUpgrades(2)");
 	//AcceptEntityInput(0, "RunScriptCode");
 	CreateMVMPopulator();
+	RoundStartTime = FAR_FUTURE;
 	
 	//Store_RandomizeNPCStore(1);
 }
@@ -1926,7 +1932,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 }
 
 float f_IncrementalSmallArmor[MAXENTITIES];
-stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false)
+stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false, bool HealCorrosion = false)
 {
 	int Armor_Max;
 	
@@ -1984,8 +1990,22 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 		{
 			ArmorToGive = float(Armor_Max) * multiplyier;
 		}
-		Armor_Charge[client] += RoundToNearest(ArmorToGive);
+			
+		if(FullMoonIs(client) && !HealCorrosion)
+		{
+			if(dieingstate[client] == 0)
+				HealEntityGlobal(client, client, ArmorToGive * 0.5, 1.0,_,HEAL_SELFHEAL);
 
+			return;
+		}
+		Armor_Charge[client] += RoundToNearest(ArmorToGive);
+		if(HealCorrosion)
+		{
+			if(Armor_Charge[client] >= 0)
+			{
+				Armor_Charge[client] = 0;
+			}
+		}
 		if(Armor_Charge[client] >= Armor_Max)
 		{
 			Armor_Charge[client] = Armor_Max;

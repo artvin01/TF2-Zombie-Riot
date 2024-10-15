@@ -17,7 +17,7 @@ int BaseLuck;
 int BaseAgility;
 int BaseUpgradeCost;
 int BaseUpgradeScale;
-//int BaseUpdateStats;
+int BaseUpdateStats;
 int BaseMaxLevel;
 int BaseMaxExperience;
 int BaseMaxExperiencePerLevel;
@@ -286,7 +286,7 @@ void RPG_MapEnd()
 	MapConfig[0] = 0;
 }
 
-void RPG_ConfigSetup(const char[] mapname)
+void RPG_SetupMapSpecific(const char[] mapname)
 {
 	bool found;
 	char buffer[PLATFORM_MAX_PATH];
@@ -311,6 +311,11 @@ void RPG_ConfigSetup(const char[] mapname)
 
 	if(!found)
 		SetFailState("Can not find folder in '%s' for map '%s'", buffer, mapname);
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
+	LoadSoundScript(buffer);
+}
+void RPG_ConfigSetup()
+{
 
 	Zones_ConfigSetup();
 	Actor_ConfigSetup();
@@ -329,8 +334,7 @@ void RPG_ConfigSetup(const char[] mapname)
 	
 	TextStore_ConfigSetup();
 
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
-	LoadSoundScript(buffer);
+
 }
 
 bool RPG_BuildPath(char[] buffer, int length, const char[] name)

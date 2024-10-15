@@ -887,13 +887,13 @@ public void OnPostThink(int client)
 				IsReady = false;
 				had_An_ability = true;
 			}
+#endif
 			
 			if(had_An_ability)
 			{
 				HudY -= 0.035;
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
 			}
-#endif
 			float percentage = 100.0;
 			float percentage_Global = 1.0;
 			float value = 1.0;
@@ -901,9 +901,8 @@ public void OnPostThink(int client)
 #if defined ZR
 			percentage_Global *= ArmorPlayerReduction(client);
 			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
-			float BaseDamage = 1.0;
 			int testvalue1 = 0;
-			OnTakeDamageDamageBuffs(client, testvalue1, testvalue1, BaseDamage, percentage_Global, testvalue1, testvalue1, GetGameTime());	
+			OnTakeDamageDamageBuffs(client, testvalue1, testvalue1, percentage_Global, testvalue1, testvalue1, GetGameTime());	
 #endif
 			
 			if(IsInvuln(client, true) || f_ClientInvul[client] > GetGameTime())
@@ -1345,6 +1344,13 @@ public void OnPostThink(int client)
 		{
 			blue = 255;
 		}
+		if(FullMoonIs(client))
+		{
+			if(Armor_Charge[armorEnt] > 0)
+			{
+				Armor_Charge[armorEnt] = 0;
+			}
+		}
 
 		ArmorDisplayClient(client);
 
@@ -1562,7 +1568,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 		}
 	}
 	
-	if((damagetype & DMG_DROWN))
+	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
 	{
 		//the player has died to a stuckzone.
 		if(dieingstate[victim] > 0)
@@ -1753,11 +1759,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 #if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker] && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
-#else
-	if((damagetype & DMG_DROWN) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
-#endif
 	{
-#if defined ZR
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
 			if(damage < 10000.0)
@@ -1765,9 +1767,19 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				NpcStuckZoneWarning(victim, damage);
 			}
 		}
-#endif
 	}
+#endif
 	
+#if defined RPG
+	if((damagetype & DMG_DROWN|DMG_DROWNRECOVER) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+	{
+		if(damage < 1000.0)
+		{
+			damage = 1000.0;
+		}
+	}
+#endif
+
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 
 	//dmg bonus before flat res!
@@ -1794,7 +1806,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	Replicate_Damage_Medications(victim, damage, damagetype);
 #endif
 
-	if(Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
 		return Plugin_Handled;
 	}
@@ -2320,9 +2332,14 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
 		{
-			return Gladiia_OnTakeDamageAlly_Hud(victim);
+			float DmgMulti = 1.0;
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SKADI)
+			{
+				WeaponSkadi_OnTakeDamage(1,victim, DmgMulti);
+			}
+			return (DmgMulti * Gladiia_OnTakeDamageAlly_Hud(victim));
 		}
 		case WEAPON_GLADIIA:
 		{
@@ -2359,6 +2376,12 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		case WEAPON_EXPLORER:
 		{
 			return Player_OnTakeDamage_VoidBlade_Hud(victim);
+		}
+		case WEAPON_FULLMOON:
+		{
+			float damage = 1.0;
+			FullMoon_SanctuaryApplyBuffs(victim, damage);
+			return damage;
 		}
 	}
 	return 1.0;
@@ -2442,6 +2465,12 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 
 void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 {
+	if(GetEntityMoveType(client) == MOVETYPE_NOCLIP)
+	{
+		damage = 0.0;
+		return;
+	}
+	
 	SetGlobalTransTarget(client);
 	switch(TypeOfAbuse)
 	{

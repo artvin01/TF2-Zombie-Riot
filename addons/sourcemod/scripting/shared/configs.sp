@@ -59,6 +59,10 @@ void Configs_ConfigsExecuted()
 	}
 	
 #if defined RPG
+	RPG_SetupMapSpecific(mapname);
+#endif
+
+#if defined RPG
 	FileNetwork_ConfigSetup();
 	NPC_ConfigSetup();
 #else
@@ -73,9 +77,8 @@ void Configs_ConfigsExecuted()
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 #endif
-	
 #if defined RPG
-	RPG_ConfigSetup(mapname);
+	RPG_ConfigSetup();
 #endif
 
 #if defined RTS
