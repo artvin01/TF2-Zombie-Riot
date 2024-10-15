@@ -118,6 +118,7 @@ static float f_NextKeelhaul[MAXENTITIES] = { 0.0, ... };
 static float f_NextKart[MAXENTITIES] = { 0.0, ... };
 
 static bool Captain_Attacking[MAXENTITIES] = { false, ... };
+static bool Captain_RevertSequence[MAXENTITIES] = { false, ... };
 
 public void Captain_OnMapStart_NPC()
 {
@@ -218,6 +219,34 @@ methodmap Captain < CClotBody
 		#endif
 	}
 
+	public bool CanUseMoraleBoost()
+	{
+		if (GetGameTime(this.index) < f_NextMorale[this.index] || Captain_Attacking[this.index])
+			return false;
+
+		int numAllies;
+
+		float myPos[3], allyPos[3];
+		WorldSpaceCenter(this.index, myPos);
+
+		for (int i = 1; i < MAXENTITIES; i++)
+		{
+			if (!IsValidEntity(i) || i_IsABuilding[i] || i == this.index)
+				continue;
+			
+			if (!IsValidAlly(this.index, i))
+				continue;
+
+			WorldSpaceCenter(i, allyPos);
+			if (GetVectorDistance(myPos, allyPos) <= Morale_Radius)
+			{
+				numAllies++;
+			}
+		}
+
+		return numAllies >= Morale_MinAllies;
+	}
+
 	public Captain(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
 		Captain npc = view_as<Captain>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, CAPTAIN_SCALE, CAPTAIN_HP, ally));
@@ -231,6 +260,7 @@ methodmap Captain < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Captain_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Captain_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Captain_ClotThink);
+		func_NPCAnimEvent[npc.index] = Captain_AnimEvent;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -257,6 +287,7 @@ methodmap Captain < CClotBody
 		f_NextKart[npc.index] = GetGameTime(npc.index) + Kart_StartingCooldown;
 
 		Captain_Attacking[npc.index] = false;
+		Captain_RevertSequence[npc.index] = false;
 		
 		return npc;
 	}
@@ -275,7 +306,16 @@ public void Captain_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	if (Captain_RevertSequence[npc.index])
+	{
+		int activity = npc.LookupActivity("ACT_CAPTAIN_WALK");
+		if (activity > 0)
+			npc.StartActivity(activity);
+
+		Captain_RevertSequence[npc.index] = false;
+	}
+
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + (Captain_Attacking[npc.index] ? 0.0 : DEFAULT_UPDATE_DELAY_FLOAT);
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -290,7 +330,7 @@ public void Captain_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + (Captain_Attacking[npc.index] ? 0.0 : 0.1);
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -299,6 +339,18 @@ public void Captain_ClotThink(int iNPC)
 		npc.StartPathing();
 	}
 	
+	if (npc.CanUseMoraleBoost())
+	{
+		int activity = npc.LookupActivity("ACT_CAPTAIN_RALLY");
+		if (activity > 0)
+			npc.StartActivity(activity);
+
+		npc.StopPathing();
+
+		Captain_Attacking[npc.index] = true;
+		//TODO: VFX, SFX, ring effect
+	}
+
 	int closest = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, closest))
@@ -331,6 +383,78 @@ public void Captain_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
+public void Captain_AnimEvent(int entity, int event)
+{
+	if (!IsValidEntity(entity))
+		return;
+
+	Captain npc = view_as<Captain>(entity);
+
+	switch(event)
+	{
+		case 1001:	//Morale Boost: Faux-Beard thrusts his anchor up into the air, play a sound.
+		{
+			//TODO: Sound
+		}
+		case 1002:	//Morale Boost: Activate buff, play a sound, do VFX, apply buff effects.
+		{
+			float myPos[3], allyPos[3];
+			WorldSpaceCenter(npc.index, myPos);
+
+			for (int i = 1; i < MAXENTITIES; i++)
+			{
+				if (!IsValidEntity(i) || i_IsABuilding[i] || i == npc.index)
+					continue;
+				
+				if (!IsValidAlly(npc.index, i))
+					continue;
+
+				WorldSpaceCenter(i, allyPos);
+				if (GetVectorDistance(myPos, allyPos) <= Morale_Radius)
+				{
+					CClotBody ally = view_as<CClotBody>(i);
+					if (ally.BoneZone_IsASkeleton() && !ally.BoneZone_GetBuffedState())
+						ally.BoneZone_SetBuffedState(true);
+
+					float health = float(GetEntProp(i, Prop_Data, "m_iHealth"));
+					float maxhealth;
+
+					if (IsValidClient(i) && dieingstate[i] == 0)
+					{
+						maxhealth = float(SDKCall_GetMaxHealth(i));
+					}
+					else if (!IsValidClient(i))
+					{
+						maxhealth = float(ReturnEntityMaxHealth(i));
+					}
+
+					if (maxhealth > 0.0 && health < maxhealth)
+					{
+						float heals = maxHealth * Morale_Heal;
+						if (heals < Morale_MinHeal)
+							heals = Morale_MinHeal;
+						if (heals > Morale_MaxHeal)
+							heals = Morale_MaxHeal;
+
+						health += heals;
+						if (health > maxhealth)
+							health = maxhealth;
+
+						SetEntProp(i, Prop_Data, "m_iHealth", RoundToFloor(health));
+					}
+
+					//TODO: VFX, SFX
+				}
+			}
+		}
+		case 1003:	//Morale Boost sequence has ended, revert sequence.
+		{
+			Captain_RevertSequence[npc.index] = true;
+			f_NextMorale[npc.index] = GetGameTime(npc.index) + Morale_Cooldown;
+			Captain_Attacking[npc.index] = false;
+		}
+	}
+}
 
 public Action Captain_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
