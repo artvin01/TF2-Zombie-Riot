@@ -3,59 +3,51 @@
 
 static float	 Timetillnextbullet[MAXTF2PLAYERS];
 static int		 IsAbilityActive[MAXTF2PLAYERS];
-static int		 BulletsLoaded[MAXTF2PLAYERS]={5, ...};
-static int		 CurrentMaxBullets[MAXTF2PLAYERS];
+static float		 BulletsLoaded[MAXTF2PLAYERS]={5.0, ...};
+static float		 CurrentMaxBullets[MAXTF2PLAYERS];
 static int		 IsCurrentlyReloading[MAXTF2PLAYERS];
+static float		AttackedRecently[MAXTF2PLAYERS];
 static float	 AmmoHudDelay[MAXPLAYERS+1]={0.0, ...};
+float reload_speed_bonus[MAXPLAYERS+1]={1.0, ...};
+float clip_size_bonus[MAXPLAYERS+1]={1.0, ...};
+float temporarythingy[MAXPLAYERS+1]; //we do this so we can round the float to a whole number, we dont want 5,7 bullets being a possibility or everything breaks
 
 Handle			 Timer_Hunting_Rifle_Management[MAXPLAYERS + 1] = { null, ... };
 
 public void Hunting_Rifle_Attack_Main(int client, int weapon, bool crit, int slot)  // stuff that happens when you press m1
 {
 	Enable_Hunting_Rifle(client, weapon);
-	CurrentMaxBullets[client] = 5;
-	BulletsLoaded[client] -= 1;
+	clip_size_bonus[client] = Attributes_Get(weapon, 4, 1.0);
+	temporarythingy[client] = 5.0 * clip_size_bonus[client];
+	RoundToNearest(temporarythingy[client]);
+	CurrentMaxBullets[client] = temporarythingy[client];
+	BulletsLoaded[client] -= 1.0;
 	ClientCommand(client, "playgamesound weapons/enforcer_shoot.wav");
-	if (IsAbilityActive[client] == 1)
-	{
-		Timetillnextbullet[client] = GetGameTime() + 1.0;	  // reset the reload cooldown if you attack >:3
-	}
-	else
-	{
-		Timetillnextbullet[client] = GetGameTime() + 1.25;	 // reset the reload cooldown if you attack >:3
-	}
+	AttackedRecently[client] = GetGameTime() + 0.5;
 }
 
 public void Hunting_Rifle_Attack_Main_PAP1(int client, int weapon, bool crit, int slot)	// stuff that happens when you press m1
 {
 	Enable_Hunting_Rifle(client, weapon);
-	CurrentMaxBullets[client] = 7;
-	BulletsLoaded[client] -= 1;
+	clip_size_bonus[client] = Attributes_Get(weapon, 4, 1.0);
+	temporarythingy[client] = 7.0 * clip_size_bonus[client];
+	RoundToNearest(temporarythingy[client]);
+	CurrentMaxBullets[client] = temporarythingy[client];
+	BulletsLoaded[client] -= 1.0;
 	ClientCommand(client, "playgamesound weapons/enforcer_shoot.wav");
-	if(IsAbilityActive[client] == 1)
-	{
-		Timetillnextbullet[client] = GetGameTime() + 1.0;	  // reset the reload cooldown if you attack >:3
-	}
-	else
-	{
-		Timetillnextbullet[client] = GetGameTime() + 1.25;	 // reset the reload cooldown if you attack >:3
-	}
+	AttackedRecently[client] = GetGameTime() + 0.5;
 }
 
 public void Hunting_Rifle_Attack_Main_PAP2(int client, int weapon, bool crit, int slot)	// stuff that happens when you press m1
 {
 	Enable_Hunting_Rifle(client, weapon);
-	CurrentMaxBullets[client] = 9;
-	BulletsLoaded[client] -= 1;
+	clip_size_bonus[client] = Attributes_Get(weapon, 4, 1.0);
+	temporarythingy[client] = 9.0 * clip_size_bonus[client];
+	RoundToNearest(temporarythingy[client]);
+	CurrentMaxBullets[client] = temporarythingy[client];
+	BulletsLoaded[client] -= 1.0;
 	ClientCommand(client, "playgamesound weapons/enforcer_shoot.wav");
-	if(IsAbilityActive[client] == 1)
-	{
-		Timetillnextbullet[client] = GetGameTime() + 1.0;	  // reset the reload cooldown if you attack >:3
-	}
-	else
-	{
-		Timetillnextbullet[client] = GetGameTime() + 1.25;	 // reset the reload cooldown if you attack >:3
-	}
+	AttackedRecently[client] = GetGameTime() + 0.5;
 }
 
 public void Hunting_Rifle_Ability(int client, int weapon, bool crit, int slot)	   // ability stuff here
@@ -165,27 +157,33 @@ public Action Timer_Management_Hunting_Rifle(Handle timer, DataPack pack)	  // t
 		{
 			if (IsAbilityActive[client] == 1)	 // makes the reload quicker if ability is activated
 			{
-				Timetillnextbullet[client] = GetGameTime() + 0.3;
+				reload_speed_bonus[client] = Attributes_Get(weapon, 97, 1.0);
+				Timetillnextbullet[client] = GetGameTime() + 0.3 * reload_speed_bonus[client];
 				IsCurrentlyReloading[client] = 1;
 			}
 			else
 			{
-				Timetillnextbullet[client] = GetGameTime() + 1.2;
+				reload_speed_bonus[client] = Attributes_Get(weapon, 97, 1.0);
+				Timetillnextbullet[client] = GetGameTime() + 1.2 * reload_speed_bonus[client];
 				IsCurrentlyReloading[client] = 1;
 			}
 		}
 
 		if (Timetillnextbullet[client] < GetGameTime())
 		{
-			BulletsLoaded[client] += 1;	   // add 1 ammo
-			IsCurrentlyReloading[client] = 0;
-			if(weapon_holding == weapon) //Only play if you are holding the weapon, but you can still reload while not equiped
+			if(AttackedRecently[client] < GetGameTime())
 			{
-			ClientCommand(client, "playgamesound weapons/default_reload.wav");
+				BulletsLoaded[client] += 1.0;	   // add 1 ammo
+				IsCurrentlyReloading[client] = 0;
+				if(weapon_holding == weapon) //Only play if you are holding the weapon, but you can still reload while not equiped
+				{
+				ClientCommand(client, "playgamesound weapons/default_reload.wav");
+				}
 			}
+			
 		}
 	}
-	if (BulletsLoaded[client] == 0)
+	if (BulletsLoaded[client] == 0.0)
 	{
 		TF2Attrib_SetByDefIndex(client, 821, 1.0);	  // makes the weapon unable to fire
 	}
@@ -196,64 +194,18 @@ public Action Timer_Management_Hunting_Rifle(Handle timer, DataPack pack)	  // t
 	return Plugin_Continue;
 }
 
-void HuntingRifleAmmoDisplay(int client)
+void HuntingRifleAmmoDisplay(int client)// ty for code arvan :D
 {
 	
 	if(AmmoHudDelay[client] < GetGameTime())
 	{
 		AmmoHudDelay[client] = GetGameTime() + 0.5;
-		switch (BulletsLoaded[client])	  // i am sorry for doing this but i dunno of a better way to achieve this result
+		char buffer[128];
+		for(int i; i < BulletsLoaded[client]; i++)
 		{
-			case 0:
-			{
-				PrintHintText(client, "X");
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-			}
-			case 1:
-			{
-				PrintHintText(client, "I");
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-			}
-			case 2:
-			{
-				PrintHintText(client, "II");
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-			}
-			case 3:
-			{
-				PrintHintText(client, "III");
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-			}
-			case 4:
-			{
-				PrintHintText(client, "IIII");
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-			}
-			case 5:
-			{
-				PrintHintText(client, "IIIII");
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-			}
-			case 6:
-			{
-				PrintHintText(client, "IIIIII");
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-			}
-			case 7:
-			{
-				PrintHintText(client, "IIIIIII");
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-			}
-			case 8:
-			{
-				PrintHintText(client, "IIIIIIII");
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-			}
-			case 9:
-			{
-				PrintHintText(client, "IIIIIIIII");
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-			}
+			buffer[i] = 'I';
 		}
+		PrintHintText(client, buffer);
+		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 }
