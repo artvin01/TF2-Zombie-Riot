@@ -88,6 +88,9 @@ void NPC_ConfigSetup()
 	Whiteflower_Nano_Blaster_OnMapStart_NPC();
 
 	Whiteflower_selected_few_OnMapStart_NPC();
+
+	Whiteflower_Mage_Blaster_OnMapStart_NPC();
+	Whiteflower_ExtremeKnight_OnMapStart_NPC();
 /*
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
@@ -366,9 +369,9 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 			{
 				npc.SetGoalVector(f3_SpawnPosition[npc.index]);
 				npc.m_bisWalking = true;
-				if(npc.m_iChanged_WalkCycle != 4) 	
+				if(npc.m_iChanged_WalkCycle != -1) 	
 				{
-					npc.m_iChanged_WalkCycle = 4;
+					npc.m_iChanged_WalkCycle = -1;
 					if(walkback_use_sequence)
 					{
 						npc.AddActivityViaSequence(WalkBack);
@@ -406,9 +409,9 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 				Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 				npc.m_bisWalking = false;
-				if(npc.m_iChanged_WalkCycle != 5) 	//Stand still.
+				if(npc.m_iChanged_WalkCycle != -2) 	//Stand still.
 				{
-					npc.m_iChanged_WalkCycle = 5;
+					npc.m_iChanged_WalkCycle = -2;
 					if(standstill_use_sequence)
 					{
 						npc.AddActivityViaSequence(StandStill);
@@ -601,6 +604,10 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_outlander_leader.sp"
 #include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_penetrator.sp"
 #include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_threat_cleaner.sp"
+
+
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_mage.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_extreme_knight.sp"
 
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"

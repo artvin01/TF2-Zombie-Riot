@@ -101,28 +101,20 @@ methodmap NPCActor < CClotBody
 		kv.GetString("wear1", buffer1, sizeof(buffer1));
 		if(buffer1[0])
 		{
-			npc.m_iWearable1 = npc.EquipItem("head", buffer1);
-			SetVariantFloat(kv.GetFloat("wear1_size", 1.0));
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+			npc.m_iWearable1 = npc.EquipItem("head", buffer1, _, skin, kv.GetFloat("wear1_size", 1.0));
 		}
 
 		kv.GetString("wear2", buffer1, sizeof(buffer1));
 		if(buffer1[0])
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", buffer1);
-			SetVariantFloat(kv.GetFloat("wear2_size", 1.0));
-			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+			npc.m_iWearable2 = npc.EquipItem("head", buffer1, _, skin, kv.GetFloat("wear2_size", 1.0));
 			SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		}
 
 		kv.GetString("wear3", buffer1, sizeof(buffer1));
 		if(buffer1[0])
 		{
-			npc.m_iWearable3 = npc.EquipItem("head", buffer1);
-			SetVariantFloat(kv.GetFloat("wear3_size", 1.0));
-			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-			SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+			npc.m_iWearable3 = npc.EquipItem("head", buffer1, _, skin, kv.GetFloat("wear3_size", 1.0));
 		}
 
 		SetVariantInt(kv.GetNum("bodygroup"));

@@ -1930,6 +1930,11 @@ static Action TextStore_ItemTimer(Handle timer)
 	return Plugin_Continue;
 }
 
+void TextStore_DelayMenuHud(int client, float time = 1.0)
+{
+	RefreshAt[client] = GetGameTime() + time;
+}
+
 void TextStore_PlayerRunCmd(int client)
 {
 	if((InMenu[client] || GetClientMenu(client) == MenuSource_None))

@@ -131,6 +131,9 @@ static void EnableCharacter(int client, const char[] id)
 			}
 
 			Stats_EnableCharacter(client);
+			TextStore_DelayMenuHud(client);
+			Mana_Hud_Delay[client] = GetGameTime() + 2.0;
+			delay_hud[client] = GetGameTime() + 2.5;
 		}
 
 		int uniques, count;

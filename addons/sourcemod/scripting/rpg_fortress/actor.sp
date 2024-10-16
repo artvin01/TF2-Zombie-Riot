@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 static KeyValues ActorKv;
-static bool ForcedMenu[MAXTF2PLAYERS];
+//static bool ForcedMenu[MAXTF2PLAYERS];
 //static float DelayTalkFor[MAXTF2PLAYERS];
 static char CurrentChat[MAXTF2PLAYERS][128];
 static char CurrentNPC[MAXTF2PLAYERS][128];
@@ -189,7 +189,7 @@ bool Actor_Interact(int client, int entity)
 			}
 
 			ActorKv.GetSectionName(CurrentNPC[client], sizeof(CurrentNPC[]));
-			CurrentRef[client] = EntIndexToEntRef(client);
+			CurrentRef[client] = EntIndexToEntRef(entity);
 			StartChat(client);
 			return true;
 		}
@@ -375,7 +375,7 @@ void Actor_ReopenMenu(int client)
 	}
 }
 
-static void StartChat(int client, const char[] override = "")
+static bool StartChat(int client, const char[] override = "")
 {
 	if(override[0])
 	{
@@ -385,7 +385,7 @@ static void StartChat(int client, const char[] override = "")
 	{
 		// Should never call anyways
 		Actor_ReopenMenu(client);
-		return;
+		return true;
 	}
 
 	ActorKv.Rewind();
@@ -414,7 +414,7 @@ static void StartChat(int client, const char[] override = "")
 					if(CheckCondKv(client))
 					{
 						OpenChatLineKv(client, entity, false);
-						return;
+						return true;
 					}
 					
 					ActorKv.GetString("altchat", buffer, sizeof(buffer));
@@ -437,11 +437,13 @@ static void StartChat(int client, const char[] override = "")
 		}
 	}
 
-	if(ForcedMenu[client])
+	//if(ForcedMenu[client])
 	{
-		ForcedMenu[client] = false;
+		//ForcedMenu[client] = false;
 		SetEntityMoveType(client, MOVETYPE_WALK);
 	}
+
+	return false;
 }
 
 static bool ShouldShowPointerKv(int client)
@@ -681,11 +683,11 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		{
 		//	DelayTalkFor[client] = GetGameTime() + 1.5;
 			
-			ForcedMenu[client] = true;
+			/*ForcedMenu[client] = true;
 			SetEntityMoveType(client, MOVETYPE_NONE);
 			RPGCore_CancelMovementAbilities(client);
 			TeleportEntity(client, _, _, {0.0, 0.0, 0.0});
-			ActorKv.GetSectionName(CurrentChat[client], sizeof(CurrentChat[]));
+			ActorKv.GetSectionName(CurrentChat[client], sizeof(CurrentChat[]));*/
 			
 		}
 		else
@@ -693,15 +695,15 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		// DelayTalkFor[client] = 0.0;
 			menu.AddItem(NULL_STRING, "...");
 			
-			if(ForcedMenu[client])
+			/*if(ForcedMenu[client])
 			{
 				ForcedMenu[client] = false;
 				SetEntityMoveType(client, MOVETYPE_WALK);
 			}
-			
+			*/
 		}
 
-		ForcedMenu[client] = true;
+		//ForcedMenu[client] = true;
 		RPGCore_CancelMovementAbilities(client);
 		SetEntityMoveType(client, MOVETYPE_NONE);
 		TeleportEntity(client, _, _, {0.0, 0.0, 0.0});
@@ -738,12 +740,12 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 		{
 			if(choice == MenuCancel_Disconnected)
 			{
-				ForcedMenu[client] = false;
+				//ForcedMenu[client] = false;
 				CurrentNPC[client][0] = 0;
 				CurrentChat[client][0] = 0;
 			}
 
-			if(!CurrentNPC[client][0] || !ForcedMenu[client])
+			if(!CurrentNPC[client][0]/* || !ForcedMenu[client]*/)
 			{
 				CurrentNPC[client][0] = 0;
 
@@ -783,16 +785,16 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 						ActorKv.GetString("chat", buffer, sizeof(buffer));
 						if(buffer[0])
 						{
-							StartChat(client, buffer);
-							return 0;
+							if(StartChat(client, buffer))
+								return 0;
 						}
 					}
 				}
 			}
 
-			if(ForcedMenu[client])
+			//if(ForcedMenu[client])
 			{
-				ForcedMenu[client] = false;
+				//ForcedMenu[client] = false;
 				SetEntityMoveType(client, MOVETYPE_WALK);
 			}
 
