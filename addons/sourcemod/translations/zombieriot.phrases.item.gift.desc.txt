@@ -234,6 +234,7 @@
 	{
 		"en" 		"Very Fast, Very high damage, but low health zombies, take them out before they rid your buildings and you to shreds.\nExplodes on death (can be silenced)."
 		"ru"		"Очень быстрые,Очень высокий урон,но мало здоровья,Убейте их до того как они доберутся до вас и ваших построек.\nВзрыв после смерти (Может быть заглушено)."
+	}
 	"Medic Supporter Desc"
 	{
 		"en" 		"This medic will heal (can be silenced) any zombie near it, killing the healing target will enrage the medic.\nIts better to kill the medic beforehand, enraged ones are very powerful."
@@ -732,7 +733,7 @@
 	{
 		"en" 		"Scarily accurate with its gun, if you come too close, it'll kill itself."
 		"ru"		"Ужачно точные с их оружием, если подойти слишком близко,он убьёт себя."
-	
+	}
 	"Crazy Lady Desc"
 	{
 		"en" 		"Prevents you from running away, don't let it stab you."
@@ -2076,8 +2077,8 @@
 	}
 	"Ruliana Desc"
 	{
-		"en"	"Once Power hits 100% and there are more then 4 targets infront-in line of sight, she fires several ICBM's\nThse ICBM's hurt like a truck\nOnce she goes bellow 25% hp, she will start to suck up nearby ally hp to heal herself\nOnce she reaches 10% hp, all npc's within line of sight gain a large speed boost"
-		"ru"	"Когда Сила достигнет 100%% и когда перед ней больше 4 целей в видимости,Она стрельнет несколькими балистическими снарядами\nЭти снаряди наносят как будто вас сбил грузовик\nКогда здоровье ниже 25%% она начнёт высасывать здоровье у ближайших союзников\nКогда здоровье достигает 10%% все союзники в видимости ускоряются"
+		"en"	"Once Power hits 100% and there are more then 4 targets infront-in line of sight, she fires several ICBM's\nThse ICBM's hurt like a truck\nOnce she goes bellow 50% hp, she will start to suck up nearby ally hp to heal herself"
+		"ru"	"Когда Сила достигнет 100% и когда перед ней больше 4 целей в видимости,Она стрельнет несколькими балистическими снарядами\nЭти снаряди наносят как будто вас сбил грузовик\nКогда здоровье ниже 50%% она начнёт высасывать здоровье у ближайших союзников"
 	}
 	"Mana Overload"
 	{
@@ -2171,7 +2172,6 @@
 	{
 		"en"	"Fast basic unit which has very light armor"
 		"ru"	"Быстрый базовый юнит с маленькой бронёй"
-	
 	}
 	"Barracks Iberian Gunner Desc"
 	{
