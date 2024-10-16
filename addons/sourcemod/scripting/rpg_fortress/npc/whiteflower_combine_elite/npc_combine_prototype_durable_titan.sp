@@ -299,7 +299,7 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 				float WorldSpaceCenterVec[3]; 
 				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
 				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget) )
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, .Npc_type = 1) )
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					

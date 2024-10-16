@@ -297,6 +297,7 @@ void BaseSquad_MapStart()
 	OnMapStartCombine_ThreatCleaner();
 	
 	Whiteflower_OutlanderLeader_OnMapStart_NPC();
+	OnMapStartCombine_Whiteflower_Master_Mage();
 }
 
 methodmap BaseSquad < CClotBody

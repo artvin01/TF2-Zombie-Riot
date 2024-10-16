@@ -93,7 +93,7 @@ void ConVar_PluginStart()
 
 #if defined ZR || defined RPG
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
-	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
+	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Debug", FCVAR_DONTRECORD);
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
 	

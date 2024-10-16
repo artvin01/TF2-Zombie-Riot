@@ -44,7 +44,7 @@ static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_bounce2.wav",
 };
 
-public void Whiteflower_ExtremeKnight_OnMapStart_NPC()
+public void Whiteflower_ExtremeKnightGiant_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -54,18 +54,18 @@ public void Whiteflower_ExtremeKnight_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "W.F. Extreme Knight");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_extreme_knight");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Extreme Knight Giant");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_extreme_knight_giant");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Whiteflower_ExtremeKnight(client, vecPos, vecAng, ally);
+	return Whiteflower_ExtremeKnightGiant(client, vecPos, vecAng, ally);
 }
 
-methodmap Whiteflower_ExtremeKnight < CClotBody
+methodmap Whiteflower_ExtremeKnightGiant < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -146,9 +146,9 @@ methodmap Whiteflower_ExtremeKnight < CClotBody
 	}
 	
 	
-	public Whiteflower_ExtremeKnight(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_ExtremeKnightGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Whiteflower_ExtremeKnight npc = view_as<Whiteflower_ExtremeKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
+		Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "300", ally, false, true));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
@@ -173,9 +173,9 @@ methodmap Whiteflower_ExtremeKnight < CClotBody
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
 
-		func_NPCDeath[npc.index] = Whiteflower_ExtremeKnight_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Whiteflower_ExtremeKnight_OnTakeDamage;
-		func_NPCThink[npc.index] = Whiteflower_ExtremeKnight_ClotThink;
+		func_NPCDeath[npc.index] = Whiteflower_ExtremeKnightGiant_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Whiteflower_ExtremeKnightGiant_OnTakeDamage;
+		func_NPCThink[npc.index] = Whiteflower_ExtremeKnightGiant_ClotThink;
 		
 	
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
@@ -200,9 +200,9 @@ methodmap Whiteflower_ExtremeKnight < CClotBody
 
 //TODO 
 //Rewrite
-public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
+public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 {
-	Whiteflower_ExtremeKnight npc = view_as<Whiteflower_ExtremeKnight>(iNPC);
+	Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -246,7 +246,7 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 				float WorldSpaceCenterVec[3]; 
 				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
 				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget) )
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, .Npc_type = 1) )
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
@@ -287,7 +287,11 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 				
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.FireParticleRocket(vecTarget, 500000.0 , 800.0 , 100.0 , "raygun_projectile_red");
+				int projectile = npc.FireParticleRocket(vecTarget, 500000.0 , 800.0 , 100.0 , "raygun_projectile_red");
+				DataPack pack;
+				CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+				pack.WriteCell(EntIndexToEntRef(projectile));
+				pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
 
 			}
 			npc.m_flDoingAnimation = 0.0;
@@ -334,11 +338,11 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 2; //enemy is abit further away.
 		}
-		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -364,7 +368,7 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 320.0;
+					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
@@ -410,13 +414,13 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 }
 
 
-public Action Whiteflower_ExtremeKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Whiteflower_ExtremeKnightGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	Whiteflower_ExtremeKnight npc = view_as<Whiteflower_ExtremeKnight>(victim);
+	Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -428,9 +432,9 @@ public Action Whiteflower_ExtremeKnight_OnTakeDamage(int victim, int &attacker, 
 	return Plugin_Changed;
 }
 
-public void Whiteflower_ExtremeKnight_NPCDeath(int entity)
+public void Whiteflower_ExtremeKnightGiant_NPCDeath(int entity)
 {
-	Whiteflower_ExtremeKnight npc = view_as<Whiteflower_ExtremeKnight>(entity);
+	Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();

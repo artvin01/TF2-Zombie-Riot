@@ -31,20 +31,23 @@ static char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 static char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/boxing_gloves_swing1.wav",
+	"weapons/boxing_gloves_swing2.wav",
+	"weapons/boxing_gloves_swing4.wav",
 };
 
 static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"weapons/boxing_gloves_hit1.wav",
+	"weapons/boxing_gloves_hit2.wav",
+	"weapons/boxing_gloves_hit3.wav",
+	"weapons/boxing_gloves_hit4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_bounce1.wav",
 	"weapons/physcannon/energy_bounce2.wav",
 };
 
-public void Whiteflower_ExtremeKnight_OnMapStart_NPC()
+public void Whiteflower_ExpertFighter_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -54,18 +57,18 @@ public void Whiteflower_ExtremeKnight_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "W.F. Extreme Knight");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_extreme_knight");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Expert Fighter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_expert_fighter");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Whiteflower_ExtremeKnight(client, vecPos, vecAng, ally);
+	return Whiteflower_ExpertFighter(client, vecPos, vecAng, ally);
 }
 
-methodmap Whiteflower_ExtremeKnight < CClotBody
+methodmap Whiteflower_ExpertFighter < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -146,9 +149,9 @@ methodmap Whiteflower_ExtremeKnight < CClotBody
 	}
 	
 	
-	public Whiteflower_ExtremeKnight(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_ExpertFighter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Whiteflower_ExtremeKnight npc = view_as<Whiteflower_ExtremeKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
+		Whiteflower_ExpertFighter npc = view_as<Whiteflower_ExpertFighter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
@@ -173,22 +176,19 @@ methodmap Whiteflower_ExtremeKnight < CClotBody
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
 
-		func_NPCDeath[npc.index] = Whiteflower_ExtremeKnight_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Whiteflower_ExtremeKnight_OnTakeDamage;
-		func_NPCThink[npc.index] = Whiteflower_ExtremeKnight_ClotThink;
+		func_NPCDeath[npc.index] = Whiteflower_ExpertFighter_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Whiteflower_ExpertFighter_OnTakeDamage;
+		func_NPCThink[npc.index] = Whiteflower_ExpertFighter_ClotThink;
 		
 	
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
-		SetVariantString("0.8");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/player/items/soldier/hw2013_rocket_ranger/hw2013_rocket_ranger.mdl");
+		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/inquisitor/inquisitor.mdl");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/spy/dec2014_stealthy_scarf/dec2014_stealthy_scarf.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/demo/tw_kingcape/tw_kingcape.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -200,9 +200,9 @@ methodmap Whiteflower_ExtremeKnight < CClotBody
 
 //TODO 
 //Rewrite
-public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
+public void Whiteflower_ExpertFighter_ClotThink(int iNPC)
 {
-	Whiteflower_ExtremeKnight npc = view_as<Whiteflower_ExtremeKnight>(iNPC);
+	Whiteflower_ExpertFighter npc = view_as<Whiteflower_ExpertFighter>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -232,7 +232,7 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 
 	npc.PlayKilledEnemySound(npc.m_iTarget);
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(iNPC, 400.0, "ACT_RUN", "ACT_IDLE", 0.0, gameTime);
+	Npc_Base_Thinking(iNPC, 400.0, "ACT_BRAWLER_RUN", "ACT_IDLE", 0.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -270,41 +270,6 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 		}
 	}
 
-	if(npc.m_flNextRangedSpecialAttack)
-	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			npc.FaceTowards(vecTarget, 20000.0);
-		}
-		if(npc.m_flRangedSpecialDelay < gameTime)
-		{
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
-			{
-				float vecTarget[3];
-				npc.PlayRangedAttackSecondarySound();
-				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				
-				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
-				npc.FaceTowards(vecTarget, 20000.0);
-				npc.FireParticleRocket(vecTarget, 500000.0 , 800.0 , 100.0 , "raygun_projectile_red");
-
-			}
-			npc.m_flDoingAnimation = 0.0;
-		}
-		if(npc.m_flDoingAnimation < gameTime)
-		{
-			npc.m_flDoingAnimation = gameTime + 0.2;
-			npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,2.0);
-			npc.m_flRangedSpecialDelay = gameTime + 0.20;
-		}
-		if(npc.m_flNextRangedSpecialAttack < gameTime)
-		{
-			npc.m_flDoingAnimation = gameTime + 0.25;
-			npc.m_flNextRangedSpecialAttack = 0.0;
-		}
-		return;
-	}
 	
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -334,10 +299,6 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && npc.m_flNextRangedAttack < gameTime)
-		{
-			npc.m_iState = 2; //enemy is abit further away.
-		}
 		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
@@ -363,7 +324,7 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 				{
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_RUN");
+					npc.SetActivity("ACT_BRAWLER_RUN");
 					npc.m_flSpeed = 320.0;
 					NPC_StartPathing(iNPC);
 				}
@@ -377,46 +338,39 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", _,_,_,0.8);
+					switch(GetRandomInt(0,1))
+					{
+						case 0:
+						{
+							npc.AddGesture("ACT_BRAWLER_ATTACK_LEFT");
+						}
+						case 1:
+						{
+							npc.AddGesture("ACT_BRAWLER_ATTACK_RIGHT");
+						}
+					}
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.5;
-					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flAttackHappens = gameTime + 0.25;
+					npc.m_flDoingAnimation = gameTime + 0.25;
+					npc.m_flNextMeleeAttack = gameTime + 0.35;
 					npc.m_bisWalking = true;
 				}
-			}
-			case 2:
-			{
-				if(npc.m_iChanged_WalkCycle != 7) 	
-				{
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 7;
-					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
-				}
-				npc.m_flDoingAnimation = gameTime + 1.0;
-				//how long do they do their pulse attack barrage?
-				npc.m_flNextRangedSpecialAttack = gameTime + 2.0;
-				npc.m_flRangedSpecialDelay = gameTime + 1.0;
-				npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.4);
-				npc.m_flNextRangedAttack = gameTime + 10.35;
-			}
+			}	
 		}
 	}
 	npc.PlayIdleSound();
 }
 
 
-public Action Whiteflower_ExtremeKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Whiteflower_ExpertFighter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	Whiteflower_ExtremeKnight npc = view_as<Whiteflower_ExtremeKnight>(victim);
+	Whiteflower_ExpertFighter npc = view_as<Whiteflower_ExpertFighter>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -428,9 +382,9 @@ public Action Whiteflower_ExtremeKnight_OnTakeDamage(int victim, int &attacker, 
 	return Plugin_Changed;
 }
 
-public void Whiteflower_ExtremeKnight_NPCDeath(int entity)
+public void Whiteflower_ExpertFighter_NPCDeath(int entity)
 {
-	Whiteflower_ExtremeKnight npc = view_as<Whiteflower_ExtremeKnight>(entity);
+	Whiteflower_ExpertFighter npc = view_as<Whiteflower_ExpertFighter>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();

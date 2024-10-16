@@ -134,6 +134,9 @@ void Games_ClientEnter(int client, const char[] name)
 
 static void StartGame(int client, const char[] game)
 {
+	if(GetEntityMoveType(client) == MOVETYPE_NOCLIP)
+		return;
+	
 	int index = StringToInt(game);
 	switch(index)
 	{

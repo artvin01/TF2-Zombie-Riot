@@ -255,7 +255,7 @@ public int RouletteTableMenu(Menu menu, MenuAction action, int client, int choic
 				else
 				{
 					TextStore_AddItemCount(client, ITEM_CHIP, -cash, true);
-					SPrintToChat(client, "You lost %s x%d", ITEM_CHIP, cash);
+					SPrintToChat(client, "You lost %s x%d (%d)", ITEM_CHIP, cash, TextStore_GetItemCount(client, ITEM_CHIP));
 					ClientCommand(client, "playgamesound ui/chime_rd_2base_neg.wav");
 				}
 			}

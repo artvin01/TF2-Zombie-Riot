@@ -718,9 +718,9 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 {
 	if(StrEqual(name, ITEM_CASH, false))
 	{
-		TextStore_Cash(client, amount);
+		int total = TextStore_Cash(client, amount);
 		if(amount > 0 && !silent)
-			SPrintToChat(client, "You gained %d credits", amount);
+			SPrintToChat(client, "You gained %d credits (%d)", amount, total);
 	}
 	else if(StrEqual(name, ITEM_XP, false))
 	{
@@ -730,7 +730,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 		if(xp > 0 && !silent)
 		{
 			if(quest)
-				SPrintToChat(client, "You gained %d XP", xp);
+				SPrintToChat(client, "You gained %d XP (%d)", xp, XP[client]);
 			else
 				RPGTextstore_XpToChat(client, xp);
 		}
@@ -752,11 +752,18 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 				}
 				else if(amount == 1)
 				{
-					SPrintToChat(client, "You gained %s", buffer);
+					if(length > 1)
+					{
+						SPrintToChat(client, "You gained %s (%d)", buffer, length + amount);
+					}
+					else
+					{
+						SPrintToChat(client, "You gained %s", buffer);
+					}
 				}
 				else if(amount > 1)
 				{
-					SPrintToChat(client, "You gained %s x%d", buffer, amount);
+					SPrintToChat(client, "You gained %s x%d (%d)", buffer, amount, length + amount);
 				}
 
 				Quests_MarkBookDirty(client);

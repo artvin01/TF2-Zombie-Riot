@@ -91,6 +91,8 @@ void NPC_ConfigSetup()
 
 	Whiteflower_Mage_Blaster_OnMapStart_NPC();
 	Whiteflower_ExtremeKnight_OnMapStart_NPC();
+	Whiteflower_ExtremeKnightGiant_OnMapStart_NPC();
+	Whiteflower_ExpertFighter_OnMapStart_NPC();
 /*
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
@@ -608,6 +610,9 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_mage.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_extreme_knight.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_extreme_knight_giant.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_expert_fighter.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_master_mage.sp"
 
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
