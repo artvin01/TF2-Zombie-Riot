@@ -20,6 +20,8 @@ static float Anchor_SprintSpeed = 520.0;	//Speed while sprinting to the target.
 static float Anchor_Cooldown_Sprint = 20.0;	//Sprint cooldown.
 static float Anchor_Cooldown = 5.0;			//Attack cooldown.
 static float Anchor_StartingCooldown = 4.0;	//Starting cooldown.
+static float Anchor_SpeedMult = 2.0;		//Maximum animation speed multiplier based on health lost.
+static float Anchor_MinHP = 0.25;			//Percentage of max HP at which animation speed reaches max.
 
 //KEELHAUL: Faux-Beard throws his anchor forwards, dealing damage and knockback to whoever it hits. Once the anchor hits the floor, Faux-Beard waits X seconds before pulling it back with a chain, dealing rapid damage to anyone the anchor hits
 //on the way back, pulling them with it. He will always follow up with Anchor Breaker if at least one enemy who was pulled is within melee range after the attack ends.
@@ -49,13 +51,13 @@ static float Pearls_Interval = 0.33;		//Interval between shots while active.
 static float Pearls_Velocity = 1200.0;		//Bomb velocity.
 static float Pearls_Gravity = 0.5;			//Bomb gravity.
 static float Pearls_DMG = 120.0;			//Bomb damage.
-static float Pearls_EntityMult = 3.0;		//Entity damage multiplier.
-static float Pearls_Radius = 140.0;			//Bomb radius.
-static float Pearls_Falloff_Radius = 0.66;	//Falloff based on distance.
+static float Pearls_EntityMult = 24.0;		//Entity damage multiplier.
+static float Pearls_Radius = 80.0;			//Bomb radius.
+static float Pearls_Falloff_Radius = 0.5;	//Falloff based on distance.
 static float Pearls_Falloff_MultiHit = 0.8;	//Multi-hit falloff.
 static float Pearls_Speed = 130.0;			//Movement speed while firing bombs.
-static float Pearls_Cooldown = 30.0;		//Cooldown.
-static float Pearls_StartingCooldown = 30.0;	//Starting cooldown.
+static float Pearls_Cooldown = 25.0;		//Cooldown.
+static float Pearls_StartingCooldown = 25.0;	//Starting cooldown.
 
 //CANNONKART: Faux-Beard jumps up and summons a cannon beneath his feet, which then rolls forward very quickly, flattening any enemy it collides with. If he collides with a wall or a building, Faux-Beard is briefly stunned.
 static float Kart_Velocity = 2000.0;		//Speed with which the kart zooms forward.
@@ -120,10 +122,17 @@ static char g_MoraleBoostDialogue[][] = {
 
 #define SOUND_CAPTAIN_HEAVY_WHOOSH		")misc/halloween/strongman_fast_whoosh_01.wav"
 #define SOUND_MORALE_BOOST				")misc/halloween/spell_lightning_ball_cast.wav"
+#define SOUND_PEARLS_FIRE				")weapons/loose_cannon_shoot.wav"
+#define SOUND_PEARLS_EXPLODE			")weapons/loose_cannon_explode.wav"
 
 #define PARTICLE_MORALE_BOOST_RED		"spell_cast_wheel_red"
 #define PARTICLE_MORALE_BOOST_BLUE		"spell_cast_wheel_blue"
 #define PARTICLE_MORALE_BOOST_BLAST		"doomsday_tentpole_vanish01"
+#define PARTICLE_PEARLS_MUZZLE			"muzzle_bignasty"
+#define PARTICLE_PEARLS_EXPLODE			"ExplosionCore_MidAir_underwater"
+#define PARTICLE_PEARLS_TRAIL			"fuse_sparks"
+
+#define MODEL_PEARLS					"models/weapons/w_models/w_cannonball.mdl"
 
 static float f_NextAnchor[MAXENTITIES] = { 0.0, ... };
 static float f_NextAnchorSprint[MAXENTITIES] = { 0.0, ... };
@@ -131,10 +140,13 @@ static float f_NextMorale[MAXENTITIES] = { 0.0, ... };
 static float f_NextPearls[MAXENTITIES] = { 0.0, ... };
 static float f_NextKeelhaul[MAXENTITIES] = { 0.0, ... };
 static float f_NextKart[MAXENTITIES] = { 0.0, ... };
+static float Captain_PearlsEndTime[MAXENTITIES] = { 0.0, ... };
 
 static bool Captain_Attacking[MAXENTITIES] = { false, ... };
 static bool Captain_RevertSequence[MAXENTITIES] = { false, ... };
 static bool Captain_StopMoving[MAXENTITIES] = { false, ... };
+static bool Captain_UsingPearls[MAXENTITIES] = { false, ... };
+static bool Captain_SetPearlsLoop[MAXENTITIES] = { false, ... };
 
 public void Captain_OnMapStart_NPC()
 {
@@ -149,6 +161,10 @@ public void Captain_OnMapStart_NPC()
 
 	PrecacheSound(SOUND_CAPTAIN_HEAVY_WHOOSH);
 	PrecacheSound(SOUND_MORALE_BOOST);
+	PrecacheSound(SOUND_PEARLS_FIRE);
+	PrecacheSound(SOUND_PEARLS_EXPLODE);
+
+	PrecacheModel(MODEL_PEARLS);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Captain Faux-Beard, Terror of the Dead Sea");
@@ -266,6 +282,33 @@ methodmap Captain < CClotBody
 		return numAllies >= Morale_MinAllies;
 	}
 
+	public bool CanUsePearls()
+	{
+		if (GetGameTime(this.index) < f_NextPearls[this.index] || Captain_Attacking[this.index])
+			return false;
+
+		return true;
+	}
+
+	public void GetPearlsTarget(float buffer[3])
+	{
+		int target = this.m_iTarget;
+		if (IsValidEnemy(this.index, target) && Can_I_See_Enemy_Only(this.index, target))
+		{
+			WorldSpaceCenter(target, buffer);
+		}
+		else
+		{
+			float ang[3], Direction[3], startPos[3];
+			this.GetAttachment("muzzle_cannon", startPos, ang);
+			GetEntPropVector(this.index, Prop_Data, "m_angRotation", ang);
+
+			GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(Direction, 200.0);
+			AddVectors(startPos, Direction, buffer);
+		}
+	}
+
 	public Captain(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
 		Captain npc = view_as<Captain>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, CAPTAIN_SCALE, CAPTAIN_HP, ally));
@@ -308,6 +351,8 @@ methodmap Captain < CClotBody
 		Captain_Attacking[npc.index] = false;
 		Captain_RevertSequence[npc.index] = false;
 		Captain_StopMoving[npc.index] = false;
+		Captain_UsingPearls[npc.index] = false;
+		Captain_SetPearlsLoop[npc.index] = false;
 		
 		return npc;
 	}
@@ -359,6 +404,12 @@ public void Captain_ClotThink(int iNPC)
 		npc.StartPathing();
 	}
 	
+	if (Captain_SetPearlsLoop[npc.index])
+	{
+		npc.AddGesture("ACT_CAPTAIN_HOLD_GUN", false, _, false);
+		Captain_SetPearlsLoop[npc.index] = false;
+	}
+
 	if (npc.CanUseMoraleBoost())
 	{
 		int activity = npc.LookupActivity("ACT_CAPTAIN_RALLY");
@@ -371,8 +422,48 @@ public void Captain_ClotThink(int iNPC)
 		Captain_Attacking[npc.index] = true;
 
 		CPrintToChatAll(g_MoraleBoostDialogue[GetRandomInt(0, sizeof(g_MoraleBoostDialogue) - 1)]);
+	}
 
-		//TODO: VFX, SFX, ring effect
+	if (npc.CanUsePearls())
+	{
+		npc.AddGesture("ACT_CAPTAIN_DEPLOY_GUN");
+
+		npc.m_flSpeed = Pearls_Speed;
+
+		Captain_Attacking[npc.index] = true;
+
+		EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], npc.index, _, _, _, _, 80);
+	}
+
+	if (Captain_UsingPearls[npc.index])
+	{
+		if (GetGameTime(npc.index) > Captain_PearlsEndTime[npc.index])
+		{
+			npc.RemoveAllGestures();
+			Captain_UsingPearls[npc.index] = false;
+			Captain_Attacking[npc.index] = false;
+			f_NextPearls[npc.index] = GetGameTime(npc.index) + Pearls_Cooldown;
+			npc.m_flSpeed = CAPTAIN_SPEED;
+		}
+		else if (GetGameTime(npc.index) >= npc.m_flNextRangedAttack)
+		{
+			npc.AddGesture("ACT_CAPTAIN_SHOOT_GUN", _, _, _, (Pearls_Interval < 0.41 ? 0.41 / Pearls_Interval : 1.0));
+
+			float pos[3], ang[3], vicPos[3];
+			npc.GetAttachment("cannon_muzzle", pos, ang);
+			ParticleEffectAt(pos, PARTICLE_PEARLS_MUZZLE);
+
+			npc.GetPearlsTarget(vicPos);
+			npc.FaceTowards(vicPos, 15000.0);
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
+			Captain_ShootProjectile(npc, vicPos, pos, ang);
+
+			EmitSoundToAll(SOUND_PEARLS_FIRE, npc.index, _, _, _, _, GetRandomInt(80, 110));
+			EmitSoundToAll(g_HHHYells[GetRandomInt(0, sizeof(g_HHHYells) - 1)], npc.index, _, _, _, _, GetRandomInt(70, 90));
+
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + Pearls_Interval;
+		}
 	}
 
 	int closest = npc.m_iTarget;
@@ -493,7 +584,71 @@ public void Captain_AnimEvent(int entity, int event)
 			Captain_Attacking[npc.index] = false;
 			Captain_StopMoving[npc.index] = false;
 		}
+		case 1004:	//Black Pearls intro sequence finished, transition to loop sequence and start firing.
+		{
+			Captain_SetPearlsLoop[npc.index] = true;
+			Captain_UsingPearls[npc.index] = true;
+			Captain_PearlsEndTime[npc.index] = GetGameTime(npc.index) + Pearls_Duration;
+			npc.m_flNextRangedAttack = 0.0;
+		}
 	}
+}
+
+void Captain_ShootProjectile(Captain npc, float vicLoc[3], float startPos[3], float startAng[3])
+{
+	int entity = CreateEntityByName("zr_projectile_base");
+			
+	if (IsValidEntity(entity))
+	{
+		float vecForward[3], vecAngles[3], currentAngles[3], buffer[3];
+
+		currentAngles = startAng;
+		Priest_GetAngleToPoint(npc.index, startPos, vicLoc, buffer, vecAngles);
+		vecAngles[1] = currentAngles[1];
+		vecAngles[2] = currentAngles[2];
+			
+		GetAngleVectors(vecAngles, buffer, NULL_VECTOR, NULL_VECTOR);
+		vecForward[0] = buffer[0] * Pearls_Velocity;
+		vecForward[1] = buffer[1] * Pearls_Velocity;
+		vecForward[2] = buffer[2] * Pearls_Velocity;
+		
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+
+		TeleportEntity(entity, startPos, vecAngles, NULL_VECTOR, true);
+		DispatchSpawn(entity);
+		
+		SetEntityModel(entity, MODEL_PEARLS);
+		
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+		SetEntityCollisionGroup(entity, 24);
+		Set_Projectile_Collision(entity);
+		See_Projectile_Team_Player(entity);
+		
+		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
+		SDKHook(entity, SDKHook_Touch, Captain_BombHit);
+		ParticleEffectAt_Parent(startPos, PARTICLE_PEARLS_TRAIL, entity, "attach_fuse");
+		SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+		SetEntityGravity(entity, Pearls_Gravity);
+		DispatchKeyValueFloat(entity, "modelscale", 1.25);
+	}
+}
+
+public Action Captain_BombHit(int entity, int other)
+{
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_PEARLS_EXPLODE);
+	EmitSoundToAll(SOUND_PEARLS_EXPLODE, entity, _, 120, _, _, GetRandomInt(80, 110));
+
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(Pearls_DMG, IsValidEntity(owner) ? owner : entity, entity, entity, position, Pearls_Radius, Pearls_Falloff_MultiHit, Pearls_Falloff_Radius, isBlue, _, _, Pearls_EntityMult);
+
+	RemoveEntity(entity);
+	return Plugin_Handled; //DONT.
 }
 
 public Action Captain_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
