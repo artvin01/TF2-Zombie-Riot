@@ -17,11 +17,11 @@ public void Hunting_Rifle_Attack_Main(int client, int weapon, bool crit, int slo
 	ClientCommand(client, "playgamesound weapons/enforcer_shoot.wav");
 	if (IsAbilityActive[client] == 1)
 	{
-		Timetillnextbullet[client] = GetGameTime() + 0.75;	  // reset the reload cooldown if you attack >:3
+		Timetillnextbullet[client] = GetGameTime() + 1.0;	  // reset the reload cooldown if you attack >:3
 	}
 	else
 	{
-		Timetillnextbullet[client] = GetGameTime() + 1.5;	 // reset the reload cooldown if you attack >:3
+		Timetillnextbullet[client] = GetGameTime() + 1.25;	 // reset the reload cooldown if you attack >:3
 	}
 }
 
@@ -33,11 +33,11 @@ public void Hunting_Rifle_Attack_Main_PAP1(int client, int weapon, bool crit, in
 	ClientCommand(client, "playgamesound weapons/enforcer_shoot.wav");
 	if(IsAbilityActive[client] == 1)
 	{
-		Timetillnextbullet[client] = GetGameTime() + 0.75;	  // reset the reload cooldown if you attack >:3
+		Timetillnextbullet[client] = GetGameTime() + 1.0;	  // reset the reload cooldown if you attack >:3
 	}
 	else
 	{
-		Timetillnextbullet[client] = GetGameTime() + 1.5;	 // reset the reload cooldown if you attack >:3
+		Timetillnextbullet[client] = GetGameTime() + 1.25;	 // reset the reload cooldown if you attack >:3
 	}
 }
 
@@ -49,11 +49,11 @@ public void Hunting_Rifle_Attack_Main_PAP2(int client, int weapon, bool crit, in
 	ClientCommand(client, "playgamesound weapons/enforcer_shoot.wav");
 	if(IsAbilityActive[client] == 1)
 	{
-		Timetillnextbullet[client] = GetGameTime() + 0.75;	  // reset the reload cooldown if you attack >:3
+		Timetillnextbullet[client] = GetGameTime() + 1.0;	  // reset the reload cooldown if you attack >:3
 	}
 	else
 	{
-		Timetillnextbullet[client] = GetGameTime() + 1.5;	 // reset the reload cooldown if you attack >:3
+		Timetillnextbullet[client] = GetGameTime() + 1.25;	 // reset the reload cooldown if you attack >:3
 	}
 }
 
