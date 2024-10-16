@@ -110,6 +110,21 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
+static char g_MoraleBoostDialogue[][] = {
+	"{vintage}Captain Faux-Beard, Terror of the Dead Sea{default}: LET'S KEELHAUL THE POOR BASTARDS, LADDIES!",
+	"{vintage}Captain Faux-Beard, Terror of the Dead Sea{default}: YARR, THEIR BODIES’LL BE NOT OF ONE PIECE WHENCE WE BE DONE WITH ‘EM!",
+	"{vintage}Captain Faux-Beard, Terror of the Dead Sea{default}: LET’S SHOW THESE LANDLUBBERS THE MIGHT OF THE DEAD SEA!",
+	"{vintage}Captain Faux-Beard, Terror of the Dead Sea{default}: LET’S MAKE ‘EM WISH THEY COULD STILL WALK THE PLANK!",
+	"{vintage}Captain Faux-Beard, Terror of the Dead Sea{default}: THERE BE NO SCURVY FOR BONES, LADS! NOT A THING CAN STOP US NOW!"
+};
+
+#define SOUND_CAPTAIN_HEAVY_WHOOSH		")misc/halloween/strongman_fast_whoosh_01.wav"
+#define SOUND_MORALE_BOOST				")misc/halloween/spell_lightning_ball_cast.wav"
+
+#define PARTICLE_MORALE_BOOST_RED		"spell_cast_wheel_red"
+#define PARTICLE_MORALE_BOOST_BLUE		"spell_cast_wheel_blue"
+#define PARTICLE_MORALE_BOOST_BLAST		"doomsday_tentpole_vanish01"
+
 static float f_NextAnchor[MAXENTITIES] = { 0.0, ... };
 static float f_NextAnchorSprint[MAXENTITIES] = { 0.0, ... };
 static float f_NextMorale[MAXENTITIES] = { 0.0, ... };
@@ -119,6 +134,7 @@ static float f_NextKart[MAXENTITIES] = { 0.0, ... };
 
 static bool Captain_Attacking[MAXENTITIES] = { false, ... };
 static bool Captain_RevertSequence[MAXENTITIES] = { false, ... };
+static bool Captain_StopMoving[MAXENTITIES] = { false, ... };
 
 public void Captain_OnMapStart_NPC()
 {
@@ -130,6 +146,9 @@ public void Captain_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
+
+	PrecacheSound(SOUND_CAPTAIN_HEAVY_WHOOSH);
+	PrecacheSound(SOUND_MORALE_BOOST);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Captain Faux-Beard, Terror of the Dead Sea");
@@ -288,6 +307,7 @@ methodmap Captain < CClotBody
 
 		Captain_Attacking[npc.index] = false;
 		Captain_RevertSequence[npc.index] = false;
+		Captain_StopMoving[npc.index] = false;
 		
 		return npc;
 	}
@@ -347,7 +367,11 @@ public void Captain_ClotThink(int iNPC)
 
 		npc.StopPathing();
 
+		Captain_StopMoving[npc.index] = true;
 		Captain_Attacking[npc.index] = true;
+
+		CPrintToChatAll(g_MoraleBoostDialogue[GetRandomInt(0, sizeof(g_MoraleBoostDialogue) - 1)]);
+
 		//TODO: VFX, SFX, ring effect
 	}
 
@@ -380,6 +404,9 @@ public void Captain_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
+	if (Captain_StopMoving[npc.index])
+		npc.StopPathing();
+
 	npc.PlayIdleSound();
 }
 
@@ -394,12 +421,22 @@ public void Captain_AnimEvent(int entity, int event)
 	{
 		case 1001:	//Morale Boost: Faux-Beard thrusts his anchor up into the air, play a sound.
 		{
-			//TODO: Sound
+			EmitSoundToAll(SOUND_CAPTAIN_HEAVY_WHOOSH, npc.index, _, _, _, _, GetRandomInt(90, 120));
+			EmitSoundToAll(g_HHHYells[GetRandomInt(0, sizeof(g_HHHYells) - 1)], npc.index, _, 120, _, _, GetRandomInt(80, 90));
 		}
 		case 1002:	//Morale Boost: Activate buff, play a sound, do VFX, apply buff effects.
 		{
+			int chosen = GetRandomInt(0, sizeof(g_HHHLaughs) - 1);
+			EmitSoundToAll(g_HHHLaughs[chosen], npc.index, _, 120, _, _, GetRandomInt(100, 120));
+			EmitSoundToAll(g_HHHLaughs[chosen], npc.index, _, 120, _, _, GetRandomInt(80, 100));
+			EmitSoundToAll(g_HHHLaughs[chosen], npc.index, _, 120, _, _, GetRandomInt(60, 80));
+
 			float myPos[3], allyPos[3];
-			WorldSpaceCenter(npc.index, myPos);
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", myPos);
+
+			ParticleEffectAt(myPos, PARTICLE_MORALE_BOOST_BLAST);
+			EmitSoundToAll(SOUND_MORALE_BOOST, npc.index, _, _, _, _, 80);
+			EmitSoundToAll(SOUND_MORALE_BOOST, npc.index, _, 120);
 
 			for (int i = 1; i < MAXENTITIES; i++)
 			{
@@ -409,7 +446,7 @@ public void Captain_AnimEvent(int entity, int event)
 				if (!IsValidAlly(npc.index, i))
 					continue;
 
-				WorldSpaceCenter(i, allyPos);
+				GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", allyPos);
 				if (GetVectorDistance(myPos, allyPos) <= Morale_Radius)
 				{
 					CClotBody ally = view_as<CClotBody>(i);
@@ -430,7 +467,7 @@ public void Captain_AnimEvent(int entity, int event)
 
 					if (maxhealth > 0.0 && health < maxhealth)
 					{
-						float heals = maxHealth * Morale_Heal;
+						float heals = maxhealth * Morale_Heal;
 						if (heals < Morale_MinHeal)
 							heals = Morale_MinHeal;
 						if (heals > Morale_MaxHeal)
@@ -443,15 +480,18 @@ public void Captain_AnimEvent(int entity, int event)
 						SetEntProp(i, Prop_Data, "m_iHealth", RoundToFloor(health));
 					}
 
-					//TODO: VFX, SFX
+					ParticleEffectAt(allyPos, (GetTeam(i) != 2 ? PARTICLE_MORALE_BOOST_BLUE : PARTICLE_MORALE_BOOST_RED));
+					EmitSoundToAll(g_WitchLaughs[GetRandomInt(0, sizeof(g_WitchLaughs) - 1)], i, _, _, _, _, GetRandomInt(80, 120));
 				}
 			}
 		}
 		case 1003:	//Morale Boost sequence has ended, revert sequence.
 		{
-			Captain_RevertSequence[npc.index] = true;
 			f_NextMorale[npc.index] = GetGameTime(npc.index) + Morale_Cooldown;
+
+			Captain_RevertSequence[npc.index] = true;
 			Captain_Attacking[npc.index] = false;
+			Captain_StopMoving[npc.index] = false;
 		}
 	}
 }
