@@ -156,6 +156,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/weapon_semi_auto.sp"
 #include "rpg_fortress/custom/wand/weapon_sword_wand.sp"
 */
+#include "rpg_fortress/custom/weapon_coin_flip.sp"
 #include "rpg_fortress/custom/transform_expidonsan.sp"
 #include "rpg_fortress/custom/transform_iberian.sp"
 #include "rpg_fortress/custom/transform_merc_human.sp"
@@ -272,6 +273,7 @@ void RPG_MapStart()
 	Wand_BubbleProctection_Map_Precache();
 	BoomStick_MapPrecache();
 	BigBang_Map_Precache();
+	Abiltity_Coin_Flip_Map_Change();
 
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
 

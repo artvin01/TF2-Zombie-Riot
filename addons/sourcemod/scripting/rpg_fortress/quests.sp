@@ -751,11 +751,12 @@ void Quests_EditorMenu(int client)
 				QuestKv.GetSectionName(buffer1, sizeof(buffer1));
 				if(first)
 				{
-					menu.InsertItem(1, buffer1, buffer1);
+					menu.AddItem(buffer1, buffer1);
+					first = false;
 				}
 				else
 				{
-					menu.AddItem(buffer1, buffer1);
+					menu.InsertItem(1, buffer1, buffer1);
 				}
 			}
 			while(QuestKv.GotoNextKey());

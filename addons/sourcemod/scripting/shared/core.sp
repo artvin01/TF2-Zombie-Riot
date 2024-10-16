@@ -2922,6 +2922,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Resistance_for_building_High[entity] = 0.0;
 		Building_Mounted[entity] = 0;
 		BarracksEntityCreated(entity);
+#endif
+#if defined ZR || defined RPG
 		CoinEntityCreated(entity);
 #endif
 		b_ThisWasAnNpc[entity] = false;
