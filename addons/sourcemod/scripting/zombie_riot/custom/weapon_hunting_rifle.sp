@@ -3,9 +3,10 @@
 
 static float	 Timetillnextbullet[MAXTF2PLAYERS];
 static int		 IsAbilityActive[MAXTF2PLAYERS];
-static int		 BulletsLoaded[MAXTF2PLAYERS] = 5;
+static int		 BulletsLoaded[MAXTF2PLAYERS]={5, ...};
 static int		 CurrentMaxBullets[MAXTF2PLAYERS];
 static int		 IsCurrentlyReloading[MAXTF2PLAYERS];
+static float	 AmmoHudDelay[MAXPLAYERS+1]={0.0, ...};
 
 Handle			 Timer_Hunting_Rifle_Management[MAXPLAYERS + 1] = { null, ... };
 
@@ -147,70 +148,29 @@ public Action Timer_Management_Hunting_Rifle(Handle timer, DataPack pack)	  // t
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if (!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		Timer_Hunting_Rifle_Management[client] = null;
 		return Plugin_Stop;
 	}
-	// ammo logic here, love how nicely this works :D
-	switch (BulletsLoaded[client])	  // i am sorry for doing this but i dunno of a better way to achieve this result
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		case 0:
-		{
-			PrintHintText(client, "X");
-		}
-		case 1:
-		{
-			PrintHintText(client, "I");
-		}
-		case 2:
-		{
-			PrintHintText(client, "II");
-		}
-		case 3:
-		{
-			PrintHintText(client, "III");
-		}
-		case 4:
-		{
-			PrintHintText(client, "IIII");
-		}
-		case 5:
-		{
-			PrintHintText(client, "IIIII");
-		}
-		case 6:
-		{
-			PrintHintText(client, "IIIIII");
-		}
-		case 7:
-		{
-			PrintHintText(client, "IIIIIII");
-		}
-		case 8:
-		{
-			PrintHintText(client, "IIIIIIII");
-		}
-		case 9:
-		{
-			PrintHintText(client, "IIIIIIIII");
-		}
+		HuntingRifleAmmoDisplay(client); //function to display current ammo in your gun
 	}
-
-	// PrintHintText(client, "Ark Energy [%d]", BulletsLoaded[client]);
-
+	// ammo logic here, love how nicely this works :D
 	if (BulletsLoaded[client] < CurrentMaxBullets[client])	  // if we have less bullets loaded than our max bullet amount
 	{
 		if (IsCurrentlyReloading[client] == 0)	  // only trigger if not currently reloading otherwise the timer will reset infinitely
 		{
 			if (IsAbilityActive[client] == 1)	 // makes the reload quicker if ability is activated
 			{
-				Timetillnextbullet[client]	 = GetGameTime() + 0.3;
+				Timetillnextbullet[client] = GetGameTime() + 0.3;
 				IsCurrentlyReloading[client] = 1;
 			}
 			else
 			{
-				Timetillnextbullet[client]	 = GetGameTime() + 1.2;
+				Timetillnextbullet[client] = GetGameTime() + 1.2;
 				IsCurrentlyReloading[client] = 1;
 			}
 		}
@@ -219,7 +179,10 @@ public Action Timer_Management_Hunting_Rifle(Handle timer, DataPack pack)	  // t
 		{
 			BulletsLoaded[client] += 1;	   // add 1 ammo
 			IsCurrentlyReloading[client] = 0;
+			if(weapon_holding == weapon) //Only play if you are holding the weapon, but you can still reload while not equiped
+			{
 			ClientCommand(client, "playgamesound weapons/default_reload.wav");
+			}
 		}
 	}
 	if (BulletsLoaded[client] == 0)
@@ -231,4 +194,66 @@ public Action Timer_Management_Hunting_Rifle(Handle timer, DataPack pack)	  // t
 		TF2Attrib_SetByDefIndex(client, 821, 0.0);	  // makes the user to fire the weapon again
 	}
 	return Plugin_Continue;
+}
+
+void HuntingRifleAmmoDisplay(int client)
+{
+	
+	if(AmmoHudDelay[client] < GetGameTime())
+	{
+		AmmoHudDelay[client] = GetGameTime() + 0.5;
+		switch (BulletsLoaded[client])	  // i am sorry for doing this but i dunno of a better way to achieve this result
+		{
+			case 0:
+			{
+				PrintHintText(client, "X");
+				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			}
+			case 1:
+			{
+				PrintHintText(client, "I");
+				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			}
+			case 2:
+			{
+				PrintHintText(client, "II");
+				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			}
+			case 3:
+			{
+				PrintHintText(client, "III");
+				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			}
+			case 4:
+			{
+				PrintHintText(client, "IIII");
+				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			}
+			case 5:
+			{
+				PrintHintText(client, "IIIII");
+				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			}
+			case 6:
+			{
+				PrintHintText(client, "IIIIII");
+				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			}
+			case 7:
+			{
+				PrintHintText(client, "IIIIIII");
+				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			}
+			case 8:
+			{
+				PrintHintText(client, "IIIIIIII");
+				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			}
+			case 9:
+			{
+				PrintHintText(client, "IIIIIIIII");
+				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			}
+		}
+	}
 }
