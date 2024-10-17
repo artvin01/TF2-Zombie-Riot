@@ -12,6 +12,7 @@ float reload_speed_bonus[MAXPLAYERS+1]={1.0, ...};
 float clip_size_bonus[MAXPLAYERS+1]={1.0, ...};
 float temporarythingy[MAXPLAYERS+1]; //we do this so we can round the float to a whole number, we dont want 5,7 bullets being a possibility or everything breaks
 
+
 Handle			 Timer_Hunting_Rifle_Management[MAXPLAYERS + 1] = { null, ... };
 
 public void Hunting_Rifle_Attack_Main(int client, int weapon, bool crit, int slot)  // stuff that happens when you press m1
@@ -24,6 +25,7 @@ public void Hunting_Rifle_Attack_Main(int client, int weapon, bool crit, int slo
 	BulletsLoaded[client] -= 1.0;
 	ClientCommand(client, "playgamesound weapons/enforcer_shoot.wav");
 	AttackedRecently[client] = GetGameTime() + 0.5;
+
 }
 
 public void Hunting_Rifle_Attack_Main_PAP1(int client, int weapon, bool crit, int slot)	// stuff that happens when you press m1
@@ -36,6 +38,7 @@ public void Hunting_Rifle_Attack_Main_PAP1(int client, int weapon, bool crit, in
 	BulletsLoaded[client] -= 1.0;
 	ClientCommand(client, "playgamesound weapons/enforcer_shoot.wav");
 	AttackedRecently[client] = GetGameTime() + 0.5;
+
 }
 
 public void Hunting_Rifle_Attack_Main_PAP2(int client, int weapon, bool crit, int slot)	// stuff that happens when you press m1
@@ -48,6 +51,7 @@ public void Hunting_Rifle_Attack_Main_PAP2(int client, int weapon, bool crit, in
 	BulletsLoaded[client] -= 1.0;
 	ClientCommand(client, "playgamesound weapons/enforcer_shoot.wav");
 	AttackedRecently[client] = GetGameTime() + 0.5;
+
 }
 
 public void Hunting_Rifle_Ability(int client, int weapon, bool crit, int slot)	   // ability stuff here

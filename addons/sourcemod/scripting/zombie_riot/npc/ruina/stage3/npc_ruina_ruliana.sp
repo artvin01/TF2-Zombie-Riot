@@ -449,7 +449,7 @@ static void ClotThink(int iNPC)
 		else
 			Ruina_Master_Rally(npc.index, false);
 			
-		if(Ratio < 0.25)
+		if(Ratio < 0.35)
 			SacrificeAllies(npc.index);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
 
 	}
