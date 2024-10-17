@@ -13,7 +13,7 @@ float clip_size_bonus[MAXPLAYERS+1]={1.0, ...};
 float temporarythingy[MAXPLAYERS+1]; //we do this so we can round the float to a whole number, we dont want 5,7 bullets being a possibility or everything breaks
 
 
-Handle			 Timer_Hunting_Rifle_Management[MAXPLAYERS + 1] = { null, ... };
+Handle	 Timer_Hunting_Rifle_Management[MAXPLAYERS + 1] = { null, ... };
 
 public void Hunting_Rifle_Attack_Main(int client, int weapon, bool crit, int slot)  // stuff that happens when you press m1
 {
