@@ -7,21 +7,22 @@
 
 static float CAPTAIN_SPEED = 260.0;
 
-//ANCHOR BREAKER: Faux-Beard slams the anchor down, hitting all enemies within a small range for 80% of their max HP + 200. This attack can be activated from a distance. If this happens, Faux-Beard will sprint straight to his target before attacking.
+//ANCHOR BREAKER: Faux-Beard slams the anchor down, hitting all enemies within a small range for ENORMOUS damage. This attack can be activated from a distance. If this happens, Faux-Beard will sprint straight to his target before attacking.
 //The sprint has its own independent cooldown, separate from the melee attack itself.
-static float Anchor_DMG_Flat = 200.0;		//Flat damage dealt by the attack.
-static float Anchor_DMG_Percent = 0.8;		//Percentage of the target's HP added to the attack's damage (DOES NOT AFFECT BUILDINGS).
-static float Anchor_DMG_Buildings = 4000.0;	//Damage dealt to buildings.
-static float Anchor_Length = 120.0;			//Hitbox length.
-static float Anchor_Width = 60.0;			//Hitbox width.
+static float Anchor_DMG = 1600.0;			//Damage dealt.
+static float Anchor_EntityMult = 4.0;		//Entity multiplier.
+static float Anchor_Falloff_Range = 0.5;	//Falloff based on range.
+static float Anchor_Falloff_MultiHit = 0.75;	//Falloff based on number of hits.
+static float Anchor_Radius = 85.0;			//Damage radius.
 static float Anchor_HitRange = 90.0;		//Range in which the melee attack will begin.
 static float Anchor_SprintRange = 1200.0;	//Range in which Faux-Beard will begin sprinting to his target if they are out of range when the ability is activated.
 static float Anchor_SprintSpeed = 520.0;	//Speed while sprinting to the target.
 static float Anchor_Cooldown_Sprint = 20.0;	//Sprint cooldown.
 static float Anchor_Cooldown = 5.0;			//Attack cooldown.
 static float Anchor_StartingCooldown = 4.0;	//Starting cooldown.
-static float Anchor_SpeedMult = 2.0;		//Maximum animation speed multiplier based on health lost.
+static float Anchor_SpeedMult = 0.66;		//Maximum additional animation speed multiplier based on health lost.
 static float Anchor_MinHP = 0.25;			//Percentage of max HP at which animation speed reaches max.
+static int Anchor_MaxTargets = 4;			//Maximum targets hit at once by Anchor Breaker.
 
 //KEELHAUL: Faux-Beard throws his anchor forwards, dealing damage and knockback to whoever it hits. Once the anchor hits the floor, Faux-Beard waits X seconds before pulling it back with a chain, dealing rapid damage to anyone the anchor hits
 //on the way back, pulling them with it. He will always follow up with Anchor Breaker if at least one enemy who was pulled is within melee range after the attack ends.
@@ -124,6 +125,8 @@ static char g_MoraleBoostDialogue[][] = {
 #define SOUND_MORALE_BOOST				")misc/halloween/spell_lightning_ball_cast.wav"
 #define SOUND_PEARLS_FIRE				")weapons/loose_cannon_shoot.wav"
 #define SOUND_PEARLS_EXPLODE			")weapons/loose_cannon_explode.wav"
+#define SOUND_ANCHOR_BREAKER_IMPACT_1	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
+#define SOUND_ANCHOR_BREAKER_IMPACT_2	")weapons/demo_charge_hit_world3.wav"
 
 #define PARTICLE_MORALE_BOOST_RED		"spell_cast_wheel_red"
 #define PARTICLE_MORALE_BOOST_BLUE		"spell_cast_wheel_blue"
@@ -131,6 +134,7 @@ static char g_MoraleBoostDialogue[][] = {
 #define PARTICLE_PEARLS_MUZZLE			"muzzle_bignasty"
 #define PARTICLE_PEARLS_EXPLODE			"ExplosionCore_MidAir_underwater"
 #define PARTICLE_PEARLS_TRAIL			"fuse_sparks"
+#define PARTICLE_ANCHOR_BREAKER_IMPACT	"hammer_impact_button_dust2"
 
 #define MODEL_PEARLS					"models/weapons/w_models/w_cannonball.mdl"
 
@@ -147,6 +151,7 @@ static bool Captain_RevertSequence[MAXENTITIES] = { false, ... };
 static bool Captain_StopMoving[MAXENTITIES] = { false, ... };
 static bool Captain_UsingPearls[MAXENTITIES] = { false, ... };
 static bool Captain_SetPearlsLoop[MAXENTITIES] = { false, ... };
+static bool b_AnchorSprinting[MAXENTITIES] = { false, ... };
 
 public void Captain_OnMapStart_NPC()
 {
@@ -163,6 +168,8 @@ public void Captain_OnMapStart_NPC()
 	PrecacheSound(SOUND_MORALE_BOOST);
 	PrecacheSound(SOUND_PEARLS_FIRE);
 	PrecacheSound(SOUND_PEARLS_EXPLODE);
+	PrecacheSound(SOUND_ANCHOR_BREAKER_IMPACT_1);
+	PrecacheSound(SOUND_ANCHOR_BREAKER_IMPACT_2);
 
 	PrecacheModel(MODEL_PEARLS);
 
@@ -290,6 +297,49 @@ methodmap Captain < CClotBody
 		return true;
 	}
 
+	public bool CanUseAnchor()
+	{
+		if (GetGameTime(this.index) < f_NextAnchor[this.index] || (!b_AnchorSprinting[this.index] && Captain_Attacking[this.index]))
+			return false;
+
+		return true;
+	}
+
+	public void AnchorBreaker(int target)
+	{
+		Captain_Attacking[this.index] = true;
+		Captain_StopMoving[this.index] = true;
+		b_AnchorSprinting[this.index] = false;
+
+		float pos[3];
+		WorldSpaceCenter(target, pos);
+		this.FaceTowards(pos, 15000.0);
+
+		int activity = this.LookupActivity("ACT_CAPTAIN_ANCHOR_BREAKER");
+		if (activity > 0)
+		{
+			float hp = float(GetEntProp(this.index, Prop_Data, "m_iHealth"));
+			float maxHP = float(GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
+
+			float ratio = hp / maxHP;
+
+			float rate = 1.0;
+			if (ratio < 1.0)
+			{
+				if (ratio < Anchor_MinHP)
+					rate += Anchor_SpeedMult;
+				else
+				{
+					float diff = (1.0 - ratio) / (1.0 - Anchor_MinHP);
+					rate += Anchor_SpeedMult * diff;
+				}
+			}
+
+			this.StartActivity(activity);
+			this.SetPlaybackRate(rate);
+		}
+	}
+
 	public void GetPearlsTarget(float buffer[3])
 	{
 		int target = this.m_iTarget;
@@ -353,6 +403,7 @@ methodmap Captain < CClotBody
 		Captain_StopMoving[npc.index] = false;
 		Captain_UsingPearls[npc.index] = false;
 		Captain_SetPearlsLoop[npc.index] = false;
+		b_AnchorSprinting[npc.index] = false;
 		
 		return npc;
 	}
@@ -474,9 +525,9 @@ public void Captain_ClotThink(int iNPC)
 		WorldSpaceCenter(closest, vecTarget);
 		WorldSpaceCenter(npc.index, vecother);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother);
 				
-		if(flDistanceToTarget < npc.GetLeadRadius())
+		if(flDistanceToTarget * flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
@@ -485,6 +536,25 @@ public void Captain_ClotThink(int iNPC)
 		else
 		{
 			NPC_SetGoalEntity(npc.index, closest);
+		}
+
+		if (npc.CanUseAnchor())
+		{
+			if (flDistanceToTarget <= Anchor_HitRange)
+			{
+				npc.AnchorBreaker(closest);
+			}
+			else if (flDistanceToTarget <= Anchor_SprintRange && GetGameTime(npc.index) >= f_NextAnchorSprint[npc.index] && !b_AnchorSprinting[npc.index])
+			{
+				f_NextAnchorSprint[npc.index] = GetGameTime(npc.index) + Anchor_Cooldown_Sprint;
+				npc.m_flSpeed = Anchor_SprintSpeed;
+				Captain_Attacking[npc.index] = true;
+				EmitSoundToAll(g_HHHYells[GetRandomInt(0, sizeof(g_HHHYells) - 1)], npc.index, _, 120, _, _, 80);
+				b_AnchorSprinting[npc.index] = true;
+				int activity = npc.LookupActivity("ACT_CAPTAIN_RUN");
+				if (activity > 0)
+					npc.StartActivity(activity);
+			}
 		}
 	}
 	else
@@ -590,6 +660,42 @@ public void Captain_AnimEvent(int entity, int event)
 			Captain_UsingPearls[npc.index] = true;
 			Captain_PearlsEndTime[npc.index] = GetGameTime(npc.index) + Pearls_Duration;
 			npc.m_flNextRangedAttack = 0.0;
+		}
+		case 1005:	//Anchor Breaker "whoosh" effect.
+		{
+			EmitSoundToAll(SOUND_CAPTAIN_HEAVY_WHOOSH, npc.index);
+		}
+		case 1006:	//Anchor Breaker final "whoosh".
+		{
+			EmitSoundToAll(SOUND_CAPTAIN_HEAVY_WHOOSH, npc.index);
+			EmitSoundToAll(g_HHHYells[GetRandomInt(0, sizeof(g_HHHYells) - 1)], npc.index, _, 120, _, _, 80);
+		}
+		case 1007:	//Anchor Breaker hits the floor, deal damage and VFX.
+		{
+			float pos[3], ang[3];
+			npc.GetAttachment("anchor_impact_point", pos, ang);
+
+			bool isBlue = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+			Explode_Logic_Custom(Anchor_DMG, npc.index, npc.index, npc.index, pos, Anchor_Radius, Anchor_Falloff_MultiHit, Anchor_Falloff_Range, isBlue, _, _, Anchor_EntityMult);
+
+			EmitSoundToAll(g_HHHLaughs[GetRandomInt(0, sizeof(g_HHHLaughs) - 1)], npc.index, _, 120, _, _, 80);
+
+			int particle = ParticleEffectAt(pos, PARTICLE_ANCHOR_BREAKER_IMPACT);
+			if (IsValidEntity(particle))
+			{
+				EmitSoundToAll(SOUND_ANCHOR_BREAKER_IMPACT_1, particle, _, 120);
+				EmitSoundToAll(SOUND_ANCHOR_BREAKER_IMPACT_2, particle, _, 120);
+			}
+			
+		}
+		case 1008:	//Anchor Breaker is over, revert to normal behavior.
+		{
+			b_AnchorSprinting[npc.index] = false;
+			Captain_Attacking[npc.index] = false;
+			Captain_StopMoving[npc.index] = false;
+			Captain_RevertSequence[npc.index] = true;
+			npc.m_flSpeed = CAPTAIN_SPEED;
+			f_NextAnchor[npc.index] = GetGameTime(npc.index) + Anchor_Cooldown;
 		}
 	}
 }
