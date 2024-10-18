@@ -56,9 +56,9 @@ public void Hunting_Rifle_Ability(int client, int weapon, bool crit, int slot)	 
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 30.0);
+		Ability_Apply_Cooldown(client, slot, 45.0);
 		ClientCommand(client, "playgamesound weapons/recon_ping.wav");
-		ApplyTempAttrib(weapon, 2, 3.0, 10.0);					// 200% dmg buff while ability is activated
+		ApplyTempAttrib(weapon, 2, 2.2, 10.0);					// dmg buff while ability is activated
 		IsAbilityActive[client] = 1;							// 1 for enabled, 0 for disabled
 		//BulletsLoaded[client]	= CurrentMaxBullets[client];	// insantly fills out clip
 		CreateTimer(10.0, Disable_Hunting_Rifle_Ability, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -81,9 +81,9 @@ public void Hunting_Rifle_Ability2(int client, int weapon, bool crit, int slot)	
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 30.0);
+		Ability_Apply_Cooldown(client, slot, 45.0);
 		ClientCommand(client, "playgamesound weapons/recon_ping.wav");
-		ApplyTempAttrib(weapon, 2, 3.0, 15.0);					// 200% dmg buff while ability is activated
+		ApplyTempAttrib(weapon, 2, 3.0, 15.0);					// dmg buff while ability is activated
 		IsAbilityActive[client] = 1;							// 1 for enabled, 0 for disabled
 		//BulletsLoaded[client]	= CurrentMaxBullets[client];	// insantly fills out clip
 		CreateTimer(15.0, Disable_Hunting_Rifle_Ability, client, TIMER_FLAG_NO_MAPCHANGE);
