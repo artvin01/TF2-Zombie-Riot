@@ -73,6 +73,53 @@ public void CombineGiant_ClotThink(int iNPC)
 	bool canWalk = true;
 	if(npc.m_iTargetAttack)
 	{
+
+		if(npc.m_flNextRangedBarrage_Singular < gameTime)
+		{
+			static float victimPos[3];
+			static float partnerPos[3];
+			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
+			spawnRing_Vectors(partnerPos, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 0.4, 6.0, 0.1, 1, 1.0);
+
+			npc.m_flNextRangedBarrage_Singular = gameTime + 3.5;
+				
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if (IsClientInGame(client) && GetTeam(client) == TFTeam_Red)
+				{				
+					if(!Can_I_See_Enemy_Only(npc.index, client))
+					{
+						return;
+					}
+					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", victimPos); 
+
+					//from 
+					//https://github.com/Batfoxkid/FF2-Library/blob/edited/addons/sourcemod/scripting/freaks/ff2_sarysamods9.sp
+					float Distance = GetVectorDistance(victimPos, partnerPos);
+					if(Distance < 1250.0)
+					{				
+						static float angles[3];
+						GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
+
+						if (GetEntityFlags(client) & FL_ONGROUND)
+							angles[0] = 0.0; // toss out pitch if on ground
+
+						static float velocity[3];
+						GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+						float attraction_intencity = 2.0;
+						ScaleVector(velocity, Distance * attraction_intencity);
+										
+										
+						// min Z if on ground
+						if (GetEntityFlags(client) & FL_ONGROUND)
+							velocity[2] = fmax(325.0, velocity[2]);
+									
+						// apply velocity
+						TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);       
+					}
+				}
+			}	
+		}
 		float vecTarget[3];
 		WorldSpaceCenter(npc.m_iTargetAttack, vecTarget);
 

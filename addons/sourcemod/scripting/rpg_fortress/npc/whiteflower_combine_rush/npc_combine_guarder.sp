@@ -21,6 +21,16 @@ methodmap Combine_Guarder < CombineWarrior
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flTimeTillSelfExplode
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flTimeTillSelfExplodeCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
 	public Combine_Guarder(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Combine_Guarder npc = view_as<Combine_Guarder>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
@@ -84,6 +94,15 @@ public void Combine_Guarder_ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(npc.m_flTimeTillSelfExplode)
+	{
+		if(npc.m_flTimeTillSelfExplode < gameTime)
+		{
+			//Do kaboom
+		}
+		return;
+	}
 
 	float vecMe[3];
 	WorldSpaceCenter(npc.index, vecMe);
@@ -150,6 +169,31 @@ public void Combine_Guarder_ClotThink(int iNPC)
 						NpcSpeechBubble(npc.index, "Daring to fight me?", 7, {255,125,125,255}, {0.0,0.0,120.0}, "");
 					case 2:
 						NpcSpeechBubble(npc.index, "You stand no chance against my might!", 7, {255,125,125,255}, {0.0,0.0,120.0}, "");
+				}
+			}
+		}
+
+
+		if(!npc.m_bRanged)
+		{
+			//This means i attack.
+			if(npc.m_flTimeTillSelfExplodeCD < gameTime)
+			{
+				PrintToChatAll("Please finish me, combine guarder!");
+				if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
+				{
+					//close enough.
+					npc.m_flTimeTillSelfExplode = gameTime + 1.5;
+					if(npc.m_iChanged_WalkCycle != 8)
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 8;
+						npc.AddActivityViaSequence("taunt_bubbles");
+				//		npc.SetCycle(0.62);
+					//	npc.SetPlaybackRate(0.0);	
+						NPC_StopPathing(npc.index);
+						npc.m_bPathing = false;
+					}
 				}
 			}
 		}
