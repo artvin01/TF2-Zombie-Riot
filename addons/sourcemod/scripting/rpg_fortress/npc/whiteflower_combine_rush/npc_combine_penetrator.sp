@@ -131,7 +131,7 @@ public void CombinePenetrator_ClotThink(int iNPC)
 						{
 							vecDirShooting[1] = eyePitch[1];
 
-							npc.m_flNextRangedAttack = gameTime + 1.0;
+							npc.m_flNextRangedAttack = gameTime + 0.5;
 							npc.m_iAttacksTillReload--;
 							
 							float vecRight[3], vecUp[3];

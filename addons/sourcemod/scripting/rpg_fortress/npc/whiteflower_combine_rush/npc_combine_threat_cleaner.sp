@@ -214,7 +214,11 @@ public void Combine_ThreatCleaner_ClotThink(int iNPC)
 							
 							// E2 L5 = 5.25, E2 L10 = 6
 							KillFeed_SetKillIcon(npc.index, "smg");
-							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 150000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							if(distance > (300.0 * 300.0))	// extra damage when too far away.
+								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 220000.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
+							else
+								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 150000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+
 							KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
