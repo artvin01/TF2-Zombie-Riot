@@ -94,13 +94,10 @@ void NPC_ConfigSetup()
 	Whiteflower_ExtremeKnightGiant_OnMapStart_NPC();
 	Whiteflower_ExpertFighter_OnMapStart_NPC();
 	Whiteflower_FloweringDarkness_OnMapStart_NPC();
-/*
-	ArkSlug_MapStart();
-	ArkSinger_MapStart();
-	ArkSlugAcid_MapStart();
-	ArkSlugInfused_MapStart();
-	CombineTurtle_MapStart();
-*/
+
+	RiverSeaMelee_Setup();
+	RiverSeaRanged_Setup();
+	RiverSeaFast_Setup();
 }
 
 int NPC_Add(NPCData data)
@@ -299,7 +296,7 @@ stock void NPC_Despawn(int entity)
 	}
 }
 
-stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
+stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false, Function ExtraValidityFunction = INVALID_FUNCTION)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 	
@@ -309,7 +306,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 		{
 			distance = 99999.9;
 		}
-		int entity_found = GetClosestTarget(npc.index, false, distance, .UseVectorDistance = true);
+		int entity_found = GetClosestTarget(npc.index, false, distance, .UseVectorDistance = true, .ExtraValidityFunction = ExtraValidityFunction);
 		if(npc.m_flGetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
 		{
 			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
@@ -614,7 +611,12 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_extreme_knight_giant.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_expert_fighter.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_master_mage.sp"
-#include "rpg_fortress/npc/whiteflower_combine_bodyguards/noc_combine_flowering_darkness.sp"
+//#include "rpg_fortress/npc/whiteflower_combine_bodyguards/noc_combine_flowering_darkness.sp"
+
+#include "rpg_fortress/npc/seaborn/npc_sea_shared.sp"
+#include "rpg_fortress/npc/seaborn/npc_riversea_melee.sp"
+#include "rpg_fortress/npc/seaborn/npc_riversea_ranged.sp"
+#include "rpg_fortress/npc/seaborn/npc_riversea_fast.sp"
 
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"

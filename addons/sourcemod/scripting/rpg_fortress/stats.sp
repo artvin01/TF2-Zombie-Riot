@@ -253,6 +253,7 @@ void Stats_ClearCustomStats(int entity)
 	Agility[entity] = 0;
 	Luck[entity] = 0;
 //	Level[entity] = 0;
+	ArmorCorrosion[entity] = 0;
 }
 
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
@@ -579,7 +580,7 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multirace 
 	Races_GetClientInfo(client, race, form);
 
 	base = BaseEndurance + StatEndurance[client];
-	bonus = Endurance[client];
+	bonus = Endurance[client] - ArmorCorrosion[client];
 	multirace = race.EnduranceMulti;
 	multiform = form.GetFloatStat(Form::EnduranceMulti, Stats_GetFormMastery(client, form.Name));
 
@@ -1002,7 +1003,7 @@ float RPGStats_FlatDamageResistance(int client)
 	if(client <= MaxClients)
 		total = Stats_Endurance(client);
 	else
-		total = Endurance[client];
+		total = Endurance[client] - ArmorCorrosion[client];
 	return (float(total) * 1.85);
 }
 

@@ -8553,9 +8553,7 @@ public void ArrowStartTouch(int arrow, int entity)
 			inflictor = owner;
 
 		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
-#if defined ZR
 		Projectile_DealElementalDamage(entity, arrow);
-#endif
 
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))

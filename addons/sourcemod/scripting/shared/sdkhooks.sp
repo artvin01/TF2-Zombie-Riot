@@ -2834,9 +2834,19 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 	{
 		//regen health if they werent in battle!
 		if(i_TransformationLevel[client] > 0)
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
-		else
+		{
+			if(ArmorCorrosion[client] > 0)
+				ArmorCorrosion[client]--;
+			
 			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
+		}
+		else
+		{
+			if(ArmorCorrosion[client] > 0)
+				ArmorCorrosion[client] /= 2;
+			
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
+		}
 	}
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{
@@ -2934,9 +2944,24 @@ void RPG_Sdkhooks_StaminaBar(int client)
 			Format(buffer, sizeof(buffer), "%s\n", buffer);
 		}
 	}
+	
 	int red = 255;
 	int green = 165;
 	int blue = 0;
+
+	if(ArmorCorrosion[client] > 0)
+	{
+		int endurance = Stats_Endurance(client) + ArmorCorrosion[client];
+
+		float precent = float(ArmorCorrosion[client]) / float(endurnace);
+		if(precent > 1.0)
+			precent = 1.0;
+
+		red -= RoundToFloor(255 * precent);
+		green -= RoundToFloor(165 * precent);
+		blue = RoundToFloor(255 * precent);
+	}
+
 	SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 	ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 }

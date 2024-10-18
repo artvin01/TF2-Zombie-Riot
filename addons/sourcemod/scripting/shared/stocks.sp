@@ -2931,6 +2931,28 @@ int CountPlayersOnServer()
 	
 }
 
+void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
+{
+#if defined ZR
+	if(i_ChaosArrowAmount[attacker] > 0)
+	{
+		Elemental_AddChaosDamage(victim, attacker, RoundToCeil(float(i_ChaosArrowAmount[attacker]) * Scale));
+	}
+	if(i_VoidArrowAmount[attacker] > 0)
+	{
+		Elemental_AddVoidDamage(victim, attacker, RoundToCeil(float(i_VoidArrowAmount[attacker]) * Scale));
+	}
+#endif
+	if(i_NervousImpairmentArrowAmount[attacker] > 0)
+	{
+#if defined ZR
+		Elemental_AddNervousDamage(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
+#elseif defined RPG
+		SeaShared_DealCorrosion(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
+#endif
+	}
+}
+
 int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
 
 stock void Explode_Logic_Custom(float damage,
@@ -3235,9 +3257,8 @@ int inflictor = 0)
 
 				if(damage_1 != 0.0)
 					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
-#if defined ZR
+
 				Projectile_DealElementalDamage(ClosestTarget, EntityToForward, ExplosionRangeFalloff);
-#endif
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{

@@ -66,23 +66,10 @@ int Intelligence[MAXENTITIES];
 int Capacity[MAXENTITIES];
 int Agility[MAXENTITIES];
 int Luck[MAXENTITIES];
+int ArmorCorrosion[MAXENTITIES];
 
 float f_ClientSinceLastHitNpc[MAXENTITIES][MAXTF2PLAYERS];
 float f_FlatDamagePiercing[MAXENTITIES];
-
-//This is for keeping track of what weapons have what stats already applied to them.
-/* OLD CODE
-int BackpackBonus2[MAXENTITIES];
-int Strength2[MAXENTITIES];
-int Precision2[MAXENTITIES];
-int Artifice2[MAXENTITIES];
-int Endurance2[MAXENTITIES];
-int Structure2[MAXENTITIES];
-int Intelligence2[MAXENTITIES];
-int Capacity2[MAXENTITIES];
-int Agility2[MAXENTITIES];
-int Luck2[MAXENTITIES];
-*/
 
 //CC CONTRACT DIFFICULTIES!
 bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];
