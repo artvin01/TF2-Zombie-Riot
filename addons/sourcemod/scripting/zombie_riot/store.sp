@@ -5780,6 +5780,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Yakuza_Enable(client, entity);
 		Enable_SkadiWeapon(client, entity);
 		Enable_Hunting_Rifle(client, entity);
+		Weapon_Anti_Material_Rifle_Deploy(client, entity);
 	}
 
 	return entity;

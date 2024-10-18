@@ -202,7 +202,8 @@ enum
 	WEAPON_EXPLORER = 122,
 	WEAPON_FULLMOON = 123,
 	WEAPON_SKADI = 124,
-	WEAPON_HUNTING_RIFLE = 125
+	WEAPON_HUNTING_RIFLE = 125,
+	WEAPON_URANIUM_RIFLE = 126
 }
 
 enum
@@ -738,6 +739,7 @@ void ZR_MapStart()
 //	Weapon_Pipe_Shoot_Map_Precache();
 	Survival_Knife_Map_Precache();
 	Aresenal_Weapons_Map_Precache();
+	Uranium_MapStart();
 	Wand_Elemental_Map_Precache();
 	Wand_Elemental_2_Map_Precache();
 	Map_Precache_Zombie_Drops();

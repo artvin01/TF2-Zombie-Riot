@@ -228,10 +228,7 @@
 	}
 	"Sniper Rifle Pap 3"
 	{
-		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged."
-		"fr"		"5 balles utilisées par tir.\nDes lunettes pourrait améliorer les dégats pour des charges pleines"
-		"ru"		"Дорогое суперулучшение, 5 пуль одновременно для нанес. огромн. урона.\nНекоторые очки могут ещё больше увелич. урон при полном заряде."
-		"chi"       "昂贵的超级升级，5发子弹一次造成极端伤害。\n有些护目镜在充满电时可能会进一步增加伤害。"
+		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged.\nDeals extreme damage to any enemy not hit by your rifle within 20 seconds!"
 	}
 	"Sniper Rifle Pap 4"
 	{
@@ -545,10 +542,7 @@
 	
 	"Terroriser Bomb Implanter Sniperrifle Desc"
 	{
-		"en"	"Implant a bomb onto the target you hit, press R to detonate them.\nImplant multiple for more dmg. More charge = more bombs, headshot = more bombs"
-		"fr"	"Plante une bombe dans vos cibles, appuyez sur R pour les détoner.\nPlantez plus de bombes pour plus de dégats. Les tirs en pleine tête et une charge plus grande augmuntent le nombre de bombes."
-		"ru"	"Устанавливает бомбу на цель, в которую вы попали, нажмите R, чтобы взорвать её.\nУстановите несколько бомб для большего урона. Больше зарядов = больше бомб, выстрел в голову = больше бомб."
-		"chi"   "射击将会发出黏弹，按R引爆它们。\n部下多颗黏弹可造成更多伤害.更多的冲锋=更多的炸弹，爆头=更多的炸弹"
+		"en"	"Implant a bomb onto the target you hit, press R to detonate them.\nImplant multiple for more dmg. More charge = more bombs, headshot = more bombs\nBombs dont suffer from downed dmg reduction."
 	}
 	"Terroriser Bomb Implanter Sniperrifle Desc PaP 1"
 	{
