@@ -7057,7 +7057,7 @@ stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float sta
 		}
 	}
 
-	if(clientspec != 0)
+	if(clientspec == 0)
 		TE_SendToAll(delay);
 	else
 	{
