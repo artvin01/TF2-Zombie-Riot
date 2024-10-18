@@ -1,6 +1,23 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static const char g_ChargeExplodeIn[][] = {
+	"weapons/cow_mangler_explosion_normal_01.wav",
+	"weapons/cow_mangler_explosion_normal_02.wav",
+	"weapons/cow_mangler_explosion_normal_03.wav",
+	"weapons/cow_mangler_explosion_normal_04.wav",
+	"weapons/cow_mangler_explosion_normal_05.wav",
+	"weapons/cow_mangler_explosion_normal_06.wav",
+};
+static const char g_DoExplodeSound[][] = {
+	"weapons/cow_mangler_explosion_normal_01.wav",
+	"weapons/cow_mangler_explosion_normal_02.wav",
+	"weapons/cow_mangler_explosion_normal_03.wav",
+	"weapons/cow_mangler_explosion_normal_04.wav",
+	"weapons/cow_mangler_explosion_normal_05.wav",
+	"weapons/cow_mangler_explosion_normal_06.wav",
+};
+
 void OnMapStartCombine_Guarder()
 {
 	NPCData data;
@@ -8,6 +25,8 @@ void OnMapStartCombine_Guarder()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_guarder");
 	data.Func = ClotSummon;
 	NPC_Add(data);
+	PrecacheSoundArray(g_ChargeExplodeIn);
+	PrecacheSoundArray(g_DoExplodeSound);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -16,6 +35,14 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap Combine_Guarder < CombineWarrior
 {
+	public void PlayChargeExplode()
+	{
+		EmitSoundToAll(g_ChargeExplodeIn[GetRandomInt(0, sizeof(g_ChargeExplodeIn) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 70);
+	}
+	public void PlayExplodeSound()
+	{
+		EmitSoundToAll(g_DoExplodeSound[GetRandomInt(0, sizeof(g_DoExplodeSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 70);
+	}
 	property float m_flSayLineCD
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -99,6 +126,11 @@ public void Combine_Guarder_ClotThink(int iNPC)
 	{
 		if(npc.m_flTimeTillSelfExplode < gameTime)
 		{
+			npc.PlayExplodeSound();
+			float damageDealt = 1000000.0;
+			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, _, 300.0, 1.0, _, true, 20);
+			//TODO
+			PrintToChatAll("Give me effects on kaboom, combine guarder");
 			//Do kaboom
 		}
 		return;
@@ -179,10 +211,12 @@ public void Combine_Guarder_ClotThink(int iNPC)
 			//This means i attack.
 			if(npc.m_flTimeTillSelfExplodeCD < gameTime)
 			{
-				PrintToChatAll("Please finish me, combine guarder!");
 				if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 				{
+					npc.PlayChargeExplode();
 					//close enough.
+					//TODO
+					PrintToChatAll("Give me effects on charge, combine guarder");
 					npc.m_flTimeTillSelfExplode = gameTime + 1.5;
 					if(npc.m_iChanged_WalkCycle != 8)
 					{

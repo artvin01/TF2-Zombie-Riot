@@ -1,6 +1,15 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static const char g_SuckEnemiesIn[][] = {
+	"weapons/cow_mangler_explosion_normal_01.wav",
+	"weapons/cow_mangler_explosion_normal_02.wav",
+	"weapons/cow_mangler_explosion_normal_03.wav",
+	"weapons/cow_mangler_explosion_normal_04.wav",
+	"weapons/cow_mangler_explosion_normal_05.wav",
+	"weapons/cow_mangler_explosion_normal_06.wav",
+};
+
 void OnMapStartCombineGiantSwordsman()
 {
 	NPCData data;
@@ -8,14 +17,18 @@ void OnMapStartCombineGiantSwordsman()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_giant_swordsman");
 	data.Func = ClotSummon;
 	NPC_Add(data);
+	PrecacheSoundArray(g_SuckEnemiesIn);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return CombineGiant(client, vecPos, vecAng, ally);
 }
-
 methodmap CombineGiant < CombineWarrior
 {
+	public void PlaySuckSound()
+	{
+		EmitSoundToAll(g_SuckEnemiesIn[GetRandomInt(0, sizeof(g_SuckEnemiesIn) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 70);
+	}
 	public CombineGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineGiant npc = view_as<CombineGiant>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", ally, false, true));
@@ -73,15 +86,16 @@ public void CombineGiant_ClotThink(int iNPC)
 	bool canWalk = true;
 	if(npc.m_iTargetAttack)
 	{
-
 		if(npc.m_flNextRangedBarrage_Singular < gameTime)
 		{
+
 			static float victimPos[3];
 			static float partnerPos[3];
 			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
 			spawnRing_Vectors(partnerPos, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 0.4, 6.0, 0.1, 1, 1.0);
 
 			npc.m_flNextRangedBarrage_Singular = gameTime + 3.5;
+			npc.PlaySuckSound();
 				
 			for(int client = 1; client <= MaxClients; client++)
 			{
