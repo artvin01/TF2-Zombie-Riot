@@ -12,7 +12,8 @@ float reload_speed_bonus[MAXPLAYERS+1]={1.0, ...};
 float clip_size_bonus[MAXPLAYERS+1]={1.0, ...};
 float temporarythingy[MAXPLAYERS+1]; //we do this so we can round the float to a whole number, we dont want 5,7 bullets being a possibility or everything breaks
 
-Handle			 Timer_Hunting_Rifle_Management[MAXPLAYERS + 1] = { null, ... };
+
+Handle	 Timer_Hunting_Rifle_Management[MAXPLAYERS + 1] = { null, ... };
 
 public void Hunting_Rifle_Attack_Main(int client, int weapon, bool crit, int slot)  // stuff that happens when you press m1
 {
@@ -140,12 +141,12 @@ public Action Timer_Management_Hunting_Rifle(Handle timer, DataPack pack)	  // t
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if (!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		Timer_Hunting_Rifle_Management[client] = null;
 		return Plugin_Stop;
 	}
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
 		HuntingRifleAmmoDisplay(client); //function to display current ammo in your gun
