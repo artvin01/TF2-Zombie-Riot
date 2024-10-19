@@ -84,6 +84,11 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
+	property float m_flEnrageTele
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
 	public void PlayHurtSound()
 	{
@@ -107,6 +112,9 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 	}
 	public void PlayKilledEnemySound(int target) 
 	{
+		if(!IsValidEntity(target))
+			return;
+
 		int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 		
 		if(Health <= 0)
@@ -120,11 +128,11 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 					switch(GetRandomInt(0,2))
 					{
 						case 0:
-							NpcSpeechBubble(this.index, "Iberians...", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Would have hoped you were Irene.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 						case 1:
-							NpcSpeechBubble(this.index, "Here comes payday.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Why do these birds still try?", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
-							NpcSpeechBubble(this.index, "Foolish Avians.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Hey, i was told iberians are too scared.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					}
 					return;
 				}
@@ -133,11 +141,11 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
-					NpcSpeechBubble(this.index, "Not on my hitlist, but regardless.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "Threat cleaners, how did that one get through?", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 				case 1:
-					NpcSpeechBubble(this.index, "In my way? Extra pay.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "Thanks for the warmup.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 				case 2:
-					NpcSpeechBubble(this.index, "I wonder how much is put on their head.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "Cease to exist.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			}
 			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
@@ -156,25 +164,20 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
-	property float m_flJumpCooldown
+	property float m_flSpawnTempClone
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	property float m_flJumpHappening
+	property float m_flCloneRageInit
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
-	property float m_flCooldownDurationHurt
+	property float m_flCloneRageDo
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
-	}
-	property float m_flSpawnTempClone
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	public Whiteflower_OutlanderLeader(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -239,6 +242,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 		return;
 	}
 
+	npc.PlayKilledEnemySound(npc.m_iTarget);
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
@@ -257,164 +261,9 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_flCooldownDurationHurt)
-	{
-		if(npc.m_flCooldownDurationHurt < gameTime)
-		{
-			npc.m_flCooldownDurationHurt = 0.0;
-			if(IsValidEntity(npc.m_iWearable1))
-			{
-				RemoveEntity(npc.m_iWearable1);
-			}
-			if(IsValidEntity(npc.m_iWearable4))
-			{
-				RemoveEntity(npc.m_iWearable4);
-			}
-			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-			flMaxhealth *= 0.15;
-			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 35.9, 0.0, HEAL_SELFHEAL);
-			RPGDoHealEffect(npc.index, 150.0);
-			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-			SetVariantString("0.8");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
-			if(npc.m_iChanged_WalkCycle != 4) 	
-			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_RUN");
-				npc.m_flSpeed = 350.0;
-				NPC_StartPathing(iNPC);
-			}
-		}
-		return;
-	}
-
-	if(npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
-	{
-		//Reset anger.
-		npc.Anger = false;
-		if(IsValidEntity(npc.m_iWearable1))
-		{
-			RemoveEntity(npc.m_iWearable1);
-		}
-		if(IsValidEntity(npc.m_iWearable4))
-		{
-			RemoveEntity(npc.m_iWearable4);
-		}
-		
-		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.8");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
-	}
-
-	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (ReturnEntityMaxHealth(npc.index) * 0.5))
-	{
-		if(!npc.Anger)
-		{
-			npc.Anger = true;
-			npc.m_flCooldownDurationHurt = gameTime + 0.75;
-			
-	
-			if(IsValidEntity(npc.m_iWearable1))
-			{
-				RemoveEntity(npc.m_iWearable1);
-			}
-			npc.m_bisWalking = false;
-			npc.m_iChanged_WalkCycle = 7;
-			npc.m_flSpeed = 0.0;
-			npc.AddActivityViaSequence("preSkewer");
-			npc.SetPlaybackRate(0.35);
-			NPC_StopPathing(npc.index);
-			return;
-		}
-	}
-
-	if(npc.Anger)
-	{
-		if(npc.m_flSpawnTempClone < gameTime)
-		{
-			npc.m_flSpawnTempClone = gameTime + 1.5;
-			npc.PlayRocketSound();
-			
-			int entity_death = CreateEntityByName("prop_dynamic_override");
-			if(IsValidEntity(entity_death))
-			{
-				Whiteflower_OutlanderLeader prop = view_as<Whiteflower_OutlanderLeader>(entity_death);
-				float pos[3];
-				float Angles[3];
-				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-
-				GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-				SetEntPropEnt(entity_death, Prop_Send, "m_hOwnerEntity", npc.index);			
-				TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
-				
-				DispatchKeyValue(entity_death, "model", COMBINE_CUSTOM_MODEL);
-				SetVariantInt(1);
-				AcceptEntityInput(entity_death, "SetBodyGroup");	
-				DispatchSpawn(entity_death);
-
-
-				prop.m_iWearable2 = prop.EquipItem("partyhat", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
-				SetVariantString("1.0");
-				AcceptEntityInput(prop.m_iWearable2, "SetModelScale");
-
-				prop.m_iWearable3 = prop.EquipItem("partyhat", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");
-				SetVariantString("1.25");
-				AcceptEntityInput(prop.m_iWearable3, "SetModelScale");
-
-				//Cape
-
-				SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
-				SetEntityCollisionGroup(entity_death, 2);
-
-				CreateTimer(2.0, Timer_RemoveEntity_SelectedFew, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
-				SetVariantString("forcescanner");
-				AcceptEntityInput(entity_death, "SetAnimation");
-			}
-		}
-	}
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "p_jumpuploop", 0.0, gameTime, _ , true);
-	if(npc.m_flJumpHappening)
-	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			float WorldSpaceCenterVec[3]; 
-			WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
-			npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-		}
-		//We want to jump at the enemy the moment we are allowed to!
-		if(npc.m_flJumpHappening < gameTime)
-		{
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
-			{
-				npc.m_flJumpHappening = 0.0;
-				//da jump!
-				npc.m_flDoingAnimation = gameTime + 0.45;
-				float WorldSpaceCenterVec[3]; 
-				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
-				PluginBot_Jump(npc.index, WorldSpaceCenterVec);
-				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.m_iChanged_WalkCycle != 7) 	
-				{
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 7;
-					npc.SetActivity("ACT_JUMP");
-					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
-				}
-			}
-		}
-		return;
-	}
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -443,16 +292,12 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
-						if(npc.Anger)
-							DealTruedamageToEnemy(npc.index, target, damage);
-						else
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						// Hit sound
 						npc.PlayMeleeHitSound();
 						if(target <= MaxClients)
 							Client_Shake(target, 0, 25.0, 25.0, 0.5, false);
 
-						npc.PlayKilledEnemySound(npc.m_iTarget);
 					}
 				}
 				delete swingTrace;
@@ -490,8 +335,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 		}
 		else if (npc.m_flJumpCooldown < gameTime)
 		{
-			//We jump, no matter if far or close, see state to see more logic.
-			//we melee them!
+			//try to teleport
 			npc.m_iState = 2; //enemy is abit further away.
 		}
 		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
@@ -548,41 +392,33 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					npc.m_iTarget = Enemy_I_See;
+					static float hullcheckmaxs[3];
+					static float hullcheckmins[3];
+					hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+					hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
 
-					npc.m_flAttackHappens = gameTime + 0.5;
-					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_flNextMeleeAttack = 0.0;
-					npc.m_flJumpCooldown = gameTime + 7.5;
-					//if enemy 
-					npc.PlayRocketSound();
-					for(float loopDo = 1.0; loopDo <= 2.0; loopDo += 0.5)
+					float PreviousPos[3];
+					WorldSpaceCenter(npc.index, PreviousPos);
+					
+					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
+					if(Succeed)
 					{
-						float vecSelf2[3];
-						WorldSpaceCenter(npc.index, vecSelf2);
-						vecSelf2[2] += 50.0;
-						vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
-						vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
-						float RocketDamage = 700000.0;
-						int RocketGet = npc.FireRocket(vecSelf2, RocketDamage, 200.0);
-						DataPack pack;
-						CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-						pack.WriteCell(EntIndexToEntRef(RocketGet));
-						pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
+						float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+						float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
+						ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						
+						float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+						ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+						npc.FaceTowards(VecEnemy, 15000.0);
+						npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.5;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
+						WF_Outlander_LeaderInitiateLaserAttack(npc.index, WorldSpaceVec, PreviousPos);
 					}
-					if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
+					else
 					{
-						//enemy is indeed to far away, jump at them
-						npc.m_flJumpHappening = gameTime + 0.5;
-						if(npc.m_iChanged_WalkCycle != 6) 	
-						{
-							npc.m_bisWalking = false;
-							npc.m_iChanged_WalkCycle = 6;
-							npc.AddActivityViaSequence("citizen4_preaction");
-							npc.SetPlaybackRate(0.0);
-							npc.m_flSpeed = 0.0;
-							NPC_StopPathing(npc.index);
-						}
+						npc.m_flJumpCooldown = GetGameTime(npc.index) + 1.0; //Retry in a second
 					}
 				}
 			}
@@ -624,4 +460,151 @@ public void Whiteflower_OutlanderLeader_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+}
+
+
+int WF_Outlander_LeaderHitDetected[MAXENTITIES];
+//copied code.
+
+void WF_Outlander_LeaderInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
+{
+
+	float vecForward[3], vecRight[3], Angles[3];
+
+	MakeVectorFromPoints(VectorStart, VectorTarget, vecForward);
+	GetVectorAngles(vecForward, Angles);
+	GetAngleVectors(vecForward, vecForward, vecRight, VectorTarget);
+
+	Handle trace = TR_TraceRayFilterEx(VectorStart, Angles, 11, RayType_Infinite, WF_Outlander_Leader_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		TR_GetEndPosition(VectorTarget, trace);
+		
+		float lineReduce = 10.0 * 2.0 / 3.0;
+		float curDist = GetVectorDistance(VectorStart, VectorTarget, false);
+		if (curDist > lineReduce)
+		{
+			ConformLineDistance(VectorTarget, VectorStart, VectorTarget, curDist - lineReduce);
+		}
+	}
+	delete trace;
+
+	int red = 200;
+	int green = 200;
+	int blue = 255;
+	int colorLayer4[4];
+	float diameter = float(10 * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, 100);
+	//we set colours of the differnet laser effects to give it more of an effect
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.4, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.2, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	int glowColor[4];
+	SetColorRGBA(glowColor, red, green, blue, 100);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Glow, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
+	TE_SendToAll(0.0);
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(VectorTarget[0]);
+	pack.WriteFloat(VectorTarget[1]);
+	pack.WriteFloat(VectorTarget[2]);
+	pack.WriteFloat(VectorStart[0]);
+	pack.WriteFloat(VectorStart[1]);
+	pack.WriteFloat(VectorStart[2]);
+	RequestFrames(WF_Outlander_LeaderInitiateLaserAttack_DamagePart, 50, pack);
+}
+
+void WF_Outlander_LeaderInitiateLaserAttack_DamagePart(DataPack pack)
+{
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		WF_Outlander_LeaderHitDetected[i] = false;
+	}
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(entity))
+		entity = 0;
+
+	float VectorTarget[3];
+	float VectorStart[3];
+	VectorTarget[0] = pack.ReadFloat();
+	VectorTarget[1] = pack.ReadFloat();
+	VectorTarget[2] = pack.ReadFloat();
+	VectorStart[0] = pack.ReadFloat();
+	VectorStart[1] = pack.ReadFloat();
+	VectorStart[2] = pack.ReadFloat();
+
+	int red = 100;
+	int green = 25;
+	int blue = 255;
+	int colorLayer4[4];
+	float diameter = float(10 * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, 100);
+	//we set colours of the differnet laser effects to give it more of an effect
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+
+	float hullMin[3];
+	float hullMax[3];
+	hullMin[0] = -float(10);
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	Handle trace;
+	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, WF_Outlander_Leader_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+			
+	float CloseDamage = 25.0;
+	float FarDamage = 15.0;
+	float MaxDistance = 1000.0;
+	float playerPos[3];
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (WF_Outlander_LeaderHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		{
+			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+			float distance = GetVectorDistance(VectorStart, playerPos, false);
+			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
+			if (damage < 0)
+				damage *= -1.0;
+
+			
+			if(ShouldNpcDealBonusDamage(victim))
+				damage *= 3.0;
+
+			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
+				
+		}
+	}
+	delete pack;
+}
+
+
+public bool WF_Outlander_Leader_BEAM_TraceUsers(int entity, int contentsMask, int client)
+{
+	if (IsEntityAlive(entity))
+	{
+		WF_Outlander_LeaderHitDetected[entity] = true;
+	}
+	return false;
+}
+
+public bool WF_Outlander_Leader_TraceWallsOnly(int entity, int contentsMask)
+{
+	return !entity;
 }

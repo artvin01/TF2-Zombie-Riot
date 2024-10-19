@@ -2,20 +2,12 @@
 #pragma newdecls required
 
 static const char g_ChargeExplodeIn[][] = {
-	"weapons/cow_mangler_explosion_normal_01.wav",
-	"weapons/cow_mangler_explosion_normal_02.wav",
-	"weapons/cow_mangler_explosion_normal_03.wav",
-	"weapons/cow_mangler_explosion_normal_04.wav",
-	"weapons/cow_mangler_explosion_normal_05.wav",
-	"weapons/cow_mangler_explosion_normal_06.wav",
+	"weapons/dragon_gun_motor_start.wav",
 };
 static const char g_DoExplodeSound[][] = {
 	"weapons/cow_mangler_explosion_normal_01.wav",
 	"weapons/cow_mangler_explosion_normal_02.wav",
 	"weapons/cow_mangler_explosion_normal_03.wav",
-	"weapons/cow_mangler_explosion_normal_04.wav",
-	"weapons/cow_mangler_explosion_normal_05.wav",
-	"weapons/cow_mangler_explosion_normal_06.wav",
 };
 
 void OnMapStartCombine_Guarder()
@@ -58,6 +50,50 @@ methodmap Combine_Guarder < CombineWarrior
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_flTimeTillAllowAction
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	public void PlayKilledEnemySound(int target) 
+	{
+		if(!IsValidEntity(target))
+			return;
+
+		int Health = GetEntProp(target, Prop_Data, "m_iHealth");
+		
+		if(Health <= 0)
+		{
+			if(target <= MaxClients)
+			{
+				static Race race;
+				Races_GetClientInfo(target, race);
+				if(StrEqual(race.Name, "Iberian"))
+				{
+					switch(GetRandomInt(0,2))
+					{
+						case 0:
+							NpcSpeechBubble(this.index, "Ew, i hate birds.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+						case 1:
+							NpcSpeechBubble(this.index, "I thought we cleansed this bird infestation?", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+						case 2:
+							NpcSpeechBubble(this.index, "Flying dirtbags.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					}
+					return;
+				}
+			}
+
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					NpcSpeechBubble(this.index, "Oh well.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+				case 1:
+					NpcSpeechBubble(this.index, "Pahahhahah..", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+				case 2:
+					NpcSpeechBubble(this.index, "Weak.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+			}
+		}
+	}
 	public Combine_Guarder(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Combine_Guarder npc = view_as<Combine_Guarder>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
@@ -92,9 +128,10 @@ methodmap Combine_Guarder < CombineWarrior
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/jul13_trojan_helmet/jul13_trojan_helmet.mdl");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/all_class/voodoojuju_hat_heavy.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
 		return npc;
 	}
 }
@@ -122,16 +159,41 @@ public void Combine_Guarder_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	npc.PlayKilledEnemySound(npc.m_iTargetAttack);
+
 	if(npc.m_flTimeTillSelfExplode)
 	{
+		float NpcLoc[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", NpcLoc);
+		spawnRing_Vectors(NpcLoc, 300.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 50, 50, 200, 1, 0.3, 5.0, 8.0, 3);	
+		spawnRing_Vectors(NpcLoc, 300.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 200, 50, 50, 200, 1, 0.3, 5.0, 8.0, 3);	
 		if(npc.m_flTimeTillSelfExplode < gameTime)
 		{
+			SpawnSmallExplosionNotRandom(NpcLoc);
 			npc.PlayExplodeSound();
+			//kabomm
 			float damageDealt = 1000000.0;
 			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, _, 300.0, 1.0, _, true, 20);
-			//TODO
-			PrintToChatAll("Give me effects on kaboom, combine guarder");
+			npc.m_flTimeTillAllowAction = gameTime + 1.0;
+			if(npc.m_iChanged_WalkCycle != 9)
+			{
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 9;
+				npc.AddActivityViaSequence("Crouch_to_stand");
+				npc.SetPlaybackRate(0.0);	
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+			}
 			//Do kaboom
+		}
+		return;
+	}
+	
+	if(npc.m_flTimeTillAllowAction)
+	{
+		if(npc.m_flTimeTillAllowAction < gameTime)
+		{
+			npc.m_flTimeTillAllowAction = 0.0;
 		}
 		return;
 	}
@@ -183,11 +245,11 @@ public void Combine_Guarder_ClotThink(int iNPC)
 				switch(GetRandomInt(0,2))
 				{
 					case 0:
-						NpcSpeechBubble(npc.index, "A battle worthy of honoring from afar.", 7, {255,255,255,255}, {0.0,0.0,120.0}, "");
+						NpcSpeechBubble(npc.index, "Ill give you a chance.", 7, {255,255,255,255}, {0.0,0.0,120.0}, "");
 					case 1:
-						NpcSpeechBubble(npc.index, "Whiteflowers orders mean nothing to me.", 7, {255,255,255,255}, {0.0,0.0,120.0}, "");
+						NpcSpeechBubble(npc.index, "Looking cool.", 7, {255,255,255,255}, {0.0,0.0,120.0}, "");
 					case 2:
-						NpcSpeechBubble(npc.index, "A battle is a battle, alas we will take turns.", 7, {255,255,255,255}, {0.0,0.0,120.0}, "");
+						NpcSpeechBubble(npc.index, "I only do this for your sanity's sake.", 7, {255,255,255,255}, {0.0,0.0,120.0}, "");
 				}
 			}
 			else
@@ -196,11 +258,11 @@ public void Combine_Guarder_ClotThink(int iNPC)
 				switch(GetRandomInt(0,2))
 				{
 					case 0:
-						NpcSpeechBubble(npc.index, "See who shall win!", 7, {255,125,125,255}, {0.0,0.0,120.0}, "");
+						NpcSpeechBubble(npc.index, "My turn.", 7, {255,125,125,255}, {0.0,0.0,120.0}, "");
 					case 1:
-						NpcSpeechBubble(npc.index, "Daring to fight me?", 7, {255,125,125,255}, {0.0,0.0,120.0}, "");
+						NpcSpeechBubble(npc.index, "Come here.", 7, {255,125,125,255}, {0.0,0.0,120.0}, "");
 					case 2:
-						NpcSpeechBubble(npc.index, "You stand no chance against my might!", 7, {255,125,125,255}, {0.0,0.0,120.0}, "");
+						NpcSpeechBubble(npc.index, "I dont care anymore, fight me.", 7, {255,125,125,255}, {0.0,0.0,120.0}, "");
 				}
 			}
 		}
@@ -216,15 +278,14 @@ public void Combine_Guarder_ClotThink(int iNPC)
 					npc.PlayChargeExplode();
 					//close enough.
 					//TODO
-					PrintToChatAll("Give me effects on charge, combine guarder");
-					npc.m_flTimeTillSelfExplode = gameTime + 1.5;
+					npc.m_flTimeTillSelfExplode = gameTime + 1.0;
 					if(npc.m_iChanged_WalkCycle != 8)
 					{
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 8;
-						npc.AddActivityViaSequence("taunt_bubbles");
-				//		npc.SetCycle(0.62);
-					//	npc.SetPlaybackRate(0.0);	
+						npc.AddActivityViaSequence("Stand_to_crouch");
+					//	npc.SetCycle(0.62);
+						npc.SetPlaybackRate(0.0);	
 						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
 					}
@@ -378,11 +439,11 @@ public void Combine_Guarder_TakeDamagePost(int victim, int attacker, int inflict
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
-					NpcSpeechBubble(npc.index, "You dare break the oath!?", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(npc.index, "Youre an idiot.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 				case 1:
-					NpcSpeechBubble(npc.index, "You are no honorable man!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(npc.index, "You really want to fight me aswell?", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 				case 2:
-					NpcSpeechBubble(npc.index, "You are a distain to us all!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(npc.index, "Ahahahahaha!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			}
 		}
 		// He hit me, no 1v1 honor

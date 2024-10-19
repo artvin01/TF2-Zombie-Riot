@@ -2,9 +2,6 @@
 #pragma newdecls required
 
 static const char g_SuckEnemiesIn[][] = {
-	"weapons/cow_mangler_explosion_normal_01.wav",
-	"weapons/cow_mangler_explosion_normal_02.wav",
-	"weapons/cow_mangler_explosion_normal_03.wav",
 	"weapons/cow_mangler_explosion_normal_04.wav",
 	"weapons/cow_mangler_explosion_normal_05.wav",
 	"weapons/cow_mangler_explosion_normal_06.wav",
@@ -28,6 +25,45 @@ methodmap CombineGiant < CombineWarrior
 	public void PlaySuckSound()
 	{
 		EmitSoundToAll(g_SuckEnemiesIn[GetRandomInt(0, sizeof(g_SuckEnemiesIn) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 70);
+	}
+	public void PlayKilledEnemySound(int target) 
+	{
+		if(!IsValidEntity(target))
+			return;
+
+		int Health = GetEntProp(target, Prop_Data, "m_iHealth");
+		
+		if(Health <= 0)
+		{
+			if(target <= MaxClients)
+			{
+				static Race race;
+				Races_GetClientInfo(target, race);
+				if(StrEqual(race.Name, "Iberian"))
+				{
+					switch(GetRandomInt(0,2))
+					{
+						case 0:
+							NpcSpeechBubble(this.index, "Stepped on a bird, oops.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+						case 1:
+							NpcSpeechBubble(this.index, "Didnt mean to fry that chicken.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+						case 2:
+							NpcSpeechBubble(this.index, "Iberians are bye-irans.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					}
+					return;
+				}
+			}
+
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					NpcSpeechBubble(this.index, "Tiny man.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+				case 1:
+					NpcSpeechBubble(this.index, "Maybe try dodging.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+				case 2:
+					NpcSpeechBubble(this.index, "Am i too big for you?", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+			}
+		}
 	}
 	public CombineGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -83,6 +119,7 @@ public void CombineGiant_ClotThink(int iNPC)
 	WorldSpaceCenter(npc.index, vecMe);
 	BaseSquad_BaseThinking(npc, vecMe);
 
+	npc.PlayKilledEnemySound(npc.m_iTargetAttack);
 	bool canWalk = true;
 	if(npc.m_iTargetAttack)
 	{

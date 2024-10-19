@@ -31,17 +31,20 @@ static char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 static char g_MeleeAttackSounds[][] = {
-	"weapons/capper_shoot.wav",
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
 };
 
 static char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
-	"weapons/physcannon/energy_sing_explosion2.wav",
+	"weapons/physcannon/energy_bounce1.wav",
+	"weapons/physcannon/energy_bounce2.wav",
 };
 
-public void Whiteflower_Mage_Blaster_OnMapStart_NPC()
+public void Whiteflower_RagingBlader_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -51,18 +54,18 @@ public void Whiteflower_Mage_Blaster_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "W.F. Mage");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_mage");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Raging Blader");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_raging_blader");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Whiteflower_Mage_Blaster(client, vecPos, vecAng, ally);
+	return Whiteflower_RagingBlader(client, vecPos, vecAng, ally);
 }
 
-methodmap Whiteflower_Mage_Blaster < CClotBody
+methodmap Whiteflower_RagingBlader < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -80,8 +83,11 @@ methodmap Whiteflower_Mage_Blaster < CClotBody
 		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayRangedAttackSecondarySound() {
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
+		int RandomInt = GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[RandomInt], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, 80);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[RandomInt], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, 80);
+
 
 	}
 	
@@ -102,16 +108,16 @@ methodmap Whiteflower_Mage_Blaster < CClotBody
 			{
 				static Race race;
 				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Ruanian"))
+				if(StrEqual(race.Name, "Iberian"))
 				{
 					switch(GetRandomInt(0,2))
 					{
 						case 0:
-							NpcSpeechBubble(this.index, "My magic is superior!", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Iberians are like ants.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 						case 1:
-							NpcSpeechBubble(this.index, "Ruanians arent the only ones!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Like sand in the desert, iberians in the water.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
-							NpcSpeechBubble(this.index, "Weak magic!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Annoying birds.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					}
 					return;
 				}
@@ -120,11 +126,11 @@ methodmap Whiteflower_Mage_Blaster < CClotBody
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
-					NpcSpeechBubble(this.index, "uh oh.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "How frail.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 				case 1:
-					NpcSpeechBubble(this.index, "EXA- oh wait youre dead.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "They beat the elites? Hardly believeable.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 				case 2:
-					NpcSpeechBubble(this.index, "VULM- Oh, dead already.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "Such weaklings.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			}
 			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
@@ -140,9 +146,9 @@ methodmap Whiteflower_Mage_Blaster < CClotBody
 	}
 	
 	
-	public Whiteflower_Mage_Blaster(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_RagingBlader(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Whiteflower_Mage_Blaster npc = view_as<Whiteflower_Mage_Blaster>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
+		Whiteflower_RagingBlader npc = view_as<Whiteflower_RagingBlader>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
@@ -151,8 +157,7 @@ methodmap Whiteflower_Mage_Blaster < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
 
-		int iActivity = npc.LookupActivity("ACT_IDLE");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.SetActivity("ACT_IDLE");
 
 		npc.m_bisWalking = false;
 
@@ -167,18 +172,20 @@ methodmap Whiteflower_Mage_Blaster < CClotBody
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
+		//prevent a oneshot.
+		b_NpcUnableToDie[npc.index] = true;
 
-		func_NPCDeath[npc.index] = Whiteflower_Mage_Blaster_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Whiteflower_Mage_Blaster_OnTakeDamage;
-		func_NPCThink[npc.index] = Whiteflower_Mage_Blaster_ClotThink;
+		func_NPCDeath[npc.index] = Whiteflower_RagingBlader_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Whiteflower_RagingBlader_OnTakeDamage;
+		func_NPCThink[npc.index] = Whiteflower_RagingBlader_ClotThink;
 		
 	
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
-		SetVariantString("0.7");
-		AcceptEntityInput(npc.m_iWearable1 , "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/all_class/trn_wiz_hat_spy.mdl");
-		SetVariantString("1.25");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
+		SetVariantString("0.8");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/engineer/clockwerk_hat.mdl");
+		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		NPC_StopPathing(npc.index);
@@ -191,9 +198,9 @@ methodmap Whiteflower_Mage_Blaster < CClotBody
 
 //TODO 
 //Rewrite
-public void Whiteflower_Mage_Blaster_ClotThink(int iNPC)
+public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 {
-	Whiteflower_Mage_Blaster npc = view_as<Whiteflower_Mage_Blaster>(iNPC);
+	Whiteflower_RagingBlader npc = view_as<Whiteflower_RagingBlader>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -220,30 +227,58 @@ public void Whiteflower_Mage_Blaster_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
 	npc.PlayKilledEnemySound(npc.m_iTarget);
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 400.0, "ACT_RUN", "ACT_IDLE", 0.0, gameTime);
+	if(!b_NpcUnableToDie[npc.index])
+	{
+		if(!IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(ally.index))
+			{
+				b_NpcUnableToDie[npc.index] = true;
+				ExtinguishTarget(npc.index);
+			}
+		}
+	}
 	
 	if(npc.m_flAttackHappens)
 	{
-		float vecTarget[3];
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
-			npc.FaceTowards(vecTarget, 20000.0);
-		}
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
 			
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
-				npc.PlayMeleeSound();
-				
-				npc.FireParticleRocket(vecTarget, 500000.0 , 800.0 , 100.0 , "raygun_projectile_blue");
+				Handle swingTrace;
+				float WorldSpaceCenterVec[3]; 
+				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget) )
+				{
+					int target = TR_GetEntityIndex(swingTrace);	
+					
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					float damage = 300.0;
+					if(!b_NpcUnableToDie[npc.index])
+						damage *= 1.3;
+
+					npc.PlayMeleeHitSound();
+					if(target > 0) 
+					{
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						// Hit sound
+						npc.PlayMeleeHitSound();
+
+					}
+				}
+				delete swingTrace;
 			}
 		}
 	}
+	
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -272,14 +307,9 @@ public void Whiteflower_Mage_Blaster_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && npc.m_flNextRangedAttack < gameTime)
 		{
-			//npc.m_iAttacksTillReload <= 0
-			npc.m_iState = 1; //Engage in Close Range Destruction.
-		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0))
-		{
-			npc.m_iState = -1; //Engage in Close Range Destruction.
+			npc.m_iState = 2; //enemy is abit further away.
 		}
 		else 
 		{
@@ -303,63 +333,55 @@ public void Whiteflower_Mage_Blaster_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 350.0;
+					npc.m_flSpeed = 360.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
 			case 1:
 			{			
-				int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);	
-				if(IsValidEnemy(npc.index, target))
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				//Can i see This enemy, is something in the way of us?
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					if(npc.m_iChanged_WalkCycle != 7) 	
+					npc.m_iTarget = Enemy_I_See;
+
+					float AccelerateAttackspeed = 1.0;
+					int Health = GetEntProp(target, Prop_Data, "m_iHealth");
+					float Percentage = float(Health) / float(ReturnEntityMaxHealth(entity));
+					
+					float PercentageInvert = Percentage;
+					if(Percentage <= 0.2)
 					{
-						npc.m_bisWalking = false;
-						npc.m_iChanged_WalkCycle = 7;
-						npc.m_iState = -1; //makes sure the below works even if its the same animation.
-						npc.SetActivity("ACT_IDLE");
-						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
+						Percentage = 0.2;
 					}
-					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-					npc.m_flAttackHappens = gameTime + 0.25;
-					npc.m_flNextRangedAttack = gameTime + 0.65;
-					npc.m_flDoingAnimation = gameTime + 0.25;
-				}
-				else
-				{
-					//Walk to target
-					if(!npc.m_bPathing)
-						npc.StartPathing();
-						
-					if(npc.m_iChanged_WalkCycle != 4) 	
-					{
-						npc.m_bisWalking = true;
-						npc.m_iChanged_WalkCycle = 4;
-						npc.SetActivity("ACT_RUN");
-						npc.m_flSpeed = 350.0;
-						NPC_StartPathing(iNPC);
-					}
+					PercentageInvert -= 1.0;
+					PercentageInvert *= -1.0;
+					PercentageInvert += 1.0;
+
+					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", _,_,_,(0.8 * Percentage));
+
+					npc.PlayMeleeSound();
+					
+					npc.m_flAttackHappens = gameTime + (0.5 * Percentage);
+					npc.m_flDoingAnimation = gameTime + (0.5 * Percentage);
+					npc.m_flNextMeleeAttack = gameTime + (1.0 * Percentage);
+					npc.m_bisWalking = true;
 				}
 			}
 		}
-	}
-	else
-	{
-		npc.m_flSpeed = 260.0;
-		npc.m_iChanged_WalkCycle = 0;
 	}
 	npc.PlayIdleSound();
 }
 
 
-public Action Whiteflower_Mage_Blaster_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Whiteflower_RagingBlader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	Whiteflower_Mage_Blaster npc = view_as<Whiteflower_Mage_Blaster>(victim);
+	Whiteflower_RagingBlader npc = view_as<Whiteflower_RagingBlader>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -368,12 +390,25 @@ public Action Whiteflower_Mage_Blaster_OnTakeDamage(int victim, int &attacker, i
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	if(b_NpcUnableToDie[npc.index])
+	{
+		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		{
+			b_NpcUnableToDie[npc.index] = false;
+			damage = 1.0;
+			float flMaxhealth = float(ReturnEntityMaxHealth(ally.index));
+			flMaxhealth *= 0.45;
+			HealEntityGlobal(ally.index, ally.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);
+			RPGDoHealEffect(npc.index, 250.0);
+			IgniteTargetEffect(npc.index);
+		}
+	}
 	return Plugin_Changed;
 }
 
-public void Whiteflower_Mage_Blaster_NPCDeath(int entity)
+public void Whiteflower_RagingBlader_NPCDeath(int entity)
 {
-	Whiteflower_Mage_Blaster npc = view_as<Whiteflower_Mage_Blaster>(entity);
+	Whiteflower_RagingBlader npc = view_as<Whiteflower_RagingBlader>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();
