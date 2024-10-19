@@ -263,7 +263,7 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
 		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
-		if(Zombies_Currently_Still_Ongoing < RoundToFloor(NPC_HARD_LIMIT*0.5))
+		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
 			Euranionis_Spawn_Minnions(npc);
 		}
