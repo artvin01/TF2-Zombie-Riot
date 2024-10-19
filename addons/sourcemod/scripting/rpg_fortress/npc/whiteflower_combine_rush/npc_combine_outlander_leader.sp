@@ -48,6 +48,12 @@ static char g_RocketSound[][] = {
 static const char g_HealSound[][] = {
 	"items/medshot4.wav",
 };
+static char g_TeleportSound[][] = {
+	"plats/elevator_stop.wav",
+};
+static char g_LaserSound[][] = {
+	"ambient/energy/whiteflash.wav",
+};
 
 
 public void Whiteflower_OutlanderLeader_OnMapStart_NPC()
@@ -55,12 +61,15 @@ public void Whiteflower_OutlanderLeader_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_TeleportSound));	i++) { PrecacheSound(g_TeleportSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	for (int i = 0; i < (sizeof(g_RocketSound));	i++) { PrecacheSound(g_RocketSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HealSound)); i++) { PrecacheSound(g_HealSound[i]); }
+	for (int i = 0; i < (sizeof(g_TeleportSound)); i++) { PrecacheSound(g_TeleportSound[i]); }
+	for (int i = 0; i < (sizeof(g_LaserSound)); i++) { PrecacheSound(g_LaserSound[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Outlander Leader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_outlander_leader");
@@ -163,6 +172,14 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
+	public void PlayTeleportSound()
+	{
+		EmitSoundToAll(g_TeleportSound[GetRandomInt(0, sizeof(g_TeleportSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,110);	
+	}
+	public void PlayLaserSound()
+	{
+		EmitSoundToAll(g_LaserSound[GetRandomInt(0, sizeof(g_LaserSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,160);	
+	}
 	
 	property float m_flSpawnTempClone
 	{
@@ -263,6 +280,17 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	if(npc.m_flCloneRageInit)
+	{
+
+		if(npc.m_flCloneRageInit < gameTime)
+		{
+			//Enrage and keep teleporting
+			npc.m_flCloneRageDo = gameTime + 4.0;
+		}
+		return;
+	}
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
@@ -338,7 +366,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if (npc.m_flCloneRageInit < gameTime)
+		else if (npc.m_flSpawnTempClone < gameTime || npc.m_flCloneRageDo)
 		{
 			//try to teleport
 			npc.m_iState = 2; //enemy is abit further away.
@@ -398,7 +426,29 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 			}
 			case 2:
 			{		
-				//Jump at enemy	
+				if(npc.m_flCloneRageDo)
+				{
+					//In ragemode we want different logic.
+					if(npc.m_flSpawnTempClone < gameTime)
+					{
+						return;
+					}
+					if(npc.m_flCloneRageDo < gameTime)
+					{
+						npc.m_flCloneRageDo = 0.0;
+						//end.
+						
+						if(npc.m_iChanged_WalkCycle != 4) 	
+						{
+							npc.m_bisWalking = true;
+							npc.m_iChanged_WalkCycle = 4;
+							npc.SetActivity("ACT_RUN");
+							npc.m_flSpeed = 350.0;
+							NPC_StartPathing(iNPC);
+						}
+						return;
+					}
+				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
@@ -422,26 +472,31 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 						ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 						npc.FaceTowards(VecEnemy, 15000.0);
-						npc.m_flCloneRageInit = GetGameTime(npc.index) + 5.5;
+						npc.m_flSpawnTempClone = GetGameTime(npc.index) + 5.5;
+
+						if(npc.m_flCloneRageDo)
+							npc.m_flSpawnTempClone = GetGameTime(npc.index) + 0.25;
+
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
 						WF_Outlander_LeaderInitiateLaserAttack(npc.index, WorldSpaceVec, PreviousPos);
 					}
 					else
 					{
-						npc.m_flCloneRageInit = GetGameTime(npc.index) + 1.0; //Retry in a second
+						if(!npc.m_flCloneRageDo)
+							npc.m_flSpawnTempClone = GetGameTime(npc.index) + 1.0; //Retry in a second
 					}
 				}
 			}
 			case 3:
 			{
-				if(npc.m_iChanged_WalkCycle != 4) 	
+				if(npc.m_iChanged_WalkCycle != 8)
 				{
-					PrintToChatAll("make me stand still, outlander leader");
 					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					npc.m_iChanged_WalkCycle = 8;
+					npc.AddActivityViaSequence("Stand_to_crouch");
+					npc.SetPlaybackRate(0.0);	
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
 				}
 				npc.m_flCloneRageInit = gameTime + 2.0;
 				npc.m_flCloneRageCD = gameTime + 15.0;
@@ -518,16 +573,13 @@ void WF_Outlander_LeaderInitiateLaserAttack(int entity, float VectorTarget[3], f
 	int blue = 255;
 	int colorLayer4[4];
 	float diameter = float(10 * 4);
-	SetColorRGBA(colorLayer4, red, green, blue, 100);
+	SetColorRGBA(colorLayer4, red, green, blue, 150);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
 	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
 	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.4, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.2, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
+
 	int glowColor[4];
 	SetColorRGBA(glowColor, red, green, blue, 100);
 	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Glow, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
@@ -555,6 +607,10 @@ void WF_Outlander_LeaderInitiateLaserAttack_DamagePart(DataPack pack)
 	if(!IsValidEntity(entity))
 		entity = 0;
 
+	Whiteflower_OutlanderLeader npc = view_as<Whiteflower_OutlanderLeader>(entity);
+	npc.PlayLaserSound();
+
+
 	float VectorTarget[3];
 	float VectorStart[3];
 	VectorTarget[0] = pack.ReadFloat();
@@ -564,20 +620,18 @@ void WF_Outlander_LeaderInitiateLaserAttack_DamagePart(DataPack pack)
 	VectorStart[1] = pack.ReadFloat();
 	VectorStart[2] = pack.ReadFloat();
 
-	int red = 100;
-	int green = 25;
+	int red = 255;
+	int green = 255;
 	int blue = 255;
 	int colorLayer4[4];
-	float diameter = float(10 * 4);
+	float diameter = 30.0;
 	SetColorRGBA(colorLayer4, red, green, blue, 100);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
 	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.35), 0, 5.0, colorLayer1, 3);
 	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.25), 0, 5.0, colorLayer1, 3);
 	TE_SendToAll(0.0);
 
 	float hullMin[3];
@@ -593,6 +647,7 @@ void WF_Outlander_LeaderInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, WF_Outlander_Leader_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
+		
 	float CloseDamage = 25.0;
 	float FarDamage = 15.0;
 	float MaxDistance = 1000.0;
@@ -606,10 +661,6 @@ void WF_Outlander_LeaderInitiateLaserAttack_DamagePart(DataPack pack)
 			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
 			if (damage < 0)
 				damage *= -1.0;
-
-			
-			if(ShouldNpcDealBonusDamage(victim))
-				damage *= 3.0;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 				

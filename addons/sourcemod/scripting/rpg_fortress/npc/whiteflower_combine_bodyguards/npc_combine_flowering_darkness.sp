@@ -156,25 +156,16 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
-	property float m_flJumpCooldown
+	property float m_flAirPushHappening
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	property float m_flJumpHappening
+	
+	property float m_flNextAirPush
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
-	}
-	property float m_flCooldownDurationHurt
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
-	}
-	property float m_flSpawnTempClone
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	public Whiteflower_FloweringDarkness(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -400,38 +391,6 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "p_jumpuploop", 0.0, gameTime, _ , true);
-	if(npc.m_flJumpHappening)
-	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			float WorldSpaceCenterVec[3]; 
-			WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
-			npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-		}
-		//We want to jump at the enemy the moment we are allowed to!
-		if(npc.m_flJumpHappening < gameTime)
-		{
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
-			{
-				npc.m_flJumpHappening = 0.0;
-				//da jump!
-				npc.m_flDoingAnimation = gameTime + 0.45;
-				float WorldSpaceCenterVec[3]; 
-				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
-				PluginBot_Jump(npc.index, WorldSpaceCenterVec);
-				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.m_iChanged_WalkCycle != 7) 	
-				{
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 7;
-					npc.SetActivity("ACT_JUMP");
-					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
-				}
-			}
-		}
-		return;
-	}
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -505,11 +464,9 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if (npc.m_flJumpCooldown < gameTime)
+		else if(npc.m_flNextAirPush < gameTime)
 		{
-			//We jump, no matter if far or close, see state to see more logic.
-			//we melee them!
-			npc.m_iState = 2; //enemy is abit further away.
+			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
 		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
@@ -561,46 +518,18 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 			}
 			case 2:
 			{		
-				//Jump at enemy	
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				//Can i see This enemy, is something in the way of us?
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.m_flAttackHappens = gameTime + 0.5;
+					npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.7);
+					
+					npc.m_flAirPushHappening = gameTime + 0.5;
 					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_flNextMeleeAttack = 0.0;
-					npc.m_flJumpCooldown = gameTime + 7.5;
-					//if enemy 
-					npc.PlayRocketSound();
-					for(float loopDo = 1.0; loopDo <= 2.0; loopDo += 0.5)
-					{
-						float vecSelf2[3];
-						WorldSpaceCenter(npc.index, vecSelf2);
-						vecSelf2[2] += 50.0;
-						vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
-						vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
-						float RocketDamage = 700000.0;
-						int RocketGet = npc.FireRocket(vecSelf2, RocketDamage, 200.0);
-						DataPack pack;
-						CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-						pack.WriteCell(EntIndexToEntRef(RocketGet));
-						pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
-					}
-					if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
-					{
-						//enemy is indeed to far away, jump at them
-						npc.m_flJumpHappening = gameTime + 0.5;
-						if(npc.m_iChanged_WalkCycle != 6) 	
-						{
-							npc.m_bisWalking = false;
-							npc.m_iChanged_WalkCycle = 6;
-							npc.AddActivityViaSequence("citizen4_preaction");
-							npc.SetPlaybackRate(0.0);
-							npc.m_flSpeed = 0.0;
-							NPC_StopPathing(npc.index);
-						}
-					}
+					npc.m_flNextAirPush = gameTime + 1.0;
 				}
 			}
 		}
