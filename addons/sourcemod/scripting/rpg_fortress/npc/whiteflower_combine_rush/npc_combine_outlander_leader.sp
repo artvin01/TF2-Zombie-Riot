@@ -169,15 +169,20 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	property float m_flCloneRageInit
+	property float m_flCloneRageCD
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
-	property float m_flCloneRageDo
+	property float m_flCloneRageInit
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flCloneRageDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	public Whiteflower_OutlanderLeader(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -333,10 +338,15 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if (npc.m_flJumpCooldown < gameTime)
+		else if (npc.m_flCloneRageInit < gameTime)
 		{
 			//try to teleport
 			npc.m_iState = 2; //enemy is abit further away.
+		}
+		else if (npc.m_flCloneRageCD < gameTime)
+		{
+			//try to teleport
+			npc.m_iState = 3; //enemy is abit further away.
 		}
 		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
@@ -412,15 +422,29 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 						ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 						npc.FaceTowards(VecEnemy, 15000.0);
-						npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.5;
+						npc.m_flCloneRageInit = GetGameTime(npc.index) + 5.5;
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
 						WF_Outlander_LeaderInitiateLaserAttack(npc.index, WorldSpaceVec, PreviousPos);
 					}
 					else
 					{
-						npc.m_flJumpCooldown = GetGameTime(npc.index) + 1.0; //Retry in a second
+						npc.m_flCloneRageInit = GetGameTime(npc.index) + 1.0; //Retry in a second
 					}
 				}
+			}
+			case 3:
+			{
+				if(npc.m_iChanged_WalkCycle != 4) 	
+				{
+					PrintToChatAll("make me stand still, outlander leader");
+					npc.m_bisWalking = false;
+					npc.m_iChanged_WalkCycle = 4;
+					npc.SetActivity("ACT_RUN");
+					npc.m_flSpeed = 350.0;
+					NPC_StartPathing(iNPC);
+				}
+				npc.m_flCloneRageInit = gameTime + 2.0;
+				npc.m_flCloneRageCD = gameTime + 15.0;
 			}
 		}
 	}
