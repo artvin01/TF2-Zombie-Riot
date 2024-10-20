@@ -3762,6 +3762,7 @@
 	"Barbarians Mind Warning"
 	{
 		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
+		"ru" 	"Вы Слишком Глупы что бы наносить урон чем либо кроме Ближнего боя!!"
 		"fr"	"Vous êtes trop enragés pour utiliser des armes autre que corps à corps!!"
 		"chi"	"你装备了野蛮人思维，无法造成近战外任何伤害！"
 	}
@@ -3774,6 +3775,7 @@
 	"Modifier set to"
 	{
 		"en"	"Modifier set to"
+		"ru" 	"Модификатор установлен на"
 		"fr"	"Le modifieur est maintenant"
 		"chi"	"难度已设为："
 	}
@@ -3846,6 +3848,7 @@
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
+		"ru" "Иберия & Немал"
 		"fr" "Iberia & Nemal"
 		"chi"	"伊比利亚 & 尼莫尔"
 	}
