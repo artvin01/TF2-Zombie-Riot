@@ -98,10 +98,10 @@ public void Seaborn_Activation_Enable_form_3(int client)
 
 	EmitSoundToAll("ambient/halloween/male_scream_13.wav", client, SNDCHAN_AUTO, 80);
 	
-	GetClientAbsOrigin(client, CreepPos);
-	CreepPos[2] += 1.0;
+	GetClientAbsOrigin(client, CreepPos[client]);
+	CreepPos[client][2] += 1.0;
 
-	int entity = ParticleEffectAt(CreepPos, "utaunt_fish_parent", -1.0);
+	int entity = ParticleEffectAt(CreepPos[client], "utaunt_fish_parent", -1.0);
 	if(entity > MaxClients)
 	{
 		SetParent(client, entity);

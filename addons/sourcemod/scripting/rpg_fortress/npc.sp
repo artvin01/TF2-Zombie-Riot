@@ -94,6 +94,7 @@ void NPC_ConfigSetup()
 	Whiteflower_ExtremeKnightGiant_OnMapStart_NPC();
 	Whiteflower_ExpertFighter_OnMapStart_NPC();
 	Whiteflower_FloweringDarkness_OnMapStart_NPC();
+	Whiteflower_RagingBlader_OnMapStart_NPC();
 
 	RiverSeaMelee_Setup();
 	RiverSeaRanged_Setup();
@@ -611,6 +612,7 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_extreme_knight.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_extreme_knight_giant.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_expert_fighter.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_raging_blader.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_master_mage.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_flowering_darkness.sp"
 

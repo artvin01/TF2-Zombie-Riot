@@ -235,7 +235,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 	{
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(ally.index))
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
 			{
 				b_NpcUnableToDie[npc.index] = true;
 				ExtinguishTarget(npc.index);
@@ -347,8 +347,8 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 					npc.m_iTarget = Enemy_I_See;
 
 					float AccelerateAttackspeed = 1.0;
-					int Health = GetEntProp(target, Prop_Data, "m_iHealth");
-					float Percentage = float(Health) / float(ReturnEntityMaxHealth(entity));
+					int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+					float Percentage = float(Health) / float(ReturnEntityMaxHealth(npc.index));
 					
 					float PercentageInvert = Percentage;
 					if(Percentage <= 0.2)
@@ -396,9 +396,9 @@ public Action Whiteflower_RagingBlader_OnTakeDamage(int victim, int &attacker, i
 		{
 			b_NpcUnableToDie[npc.index] = false;
 			damage = 1.0;
-			float flMaxhealth = float(ReturnEntityMaxHealth(ally.index));
+			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 			flMaxhealth *= 0.45;
-			HealEntityGlobal(ally.index, ally.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);
+			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);
 			RPGDoHealEffect(npc.index, 250.0);
 			IgniteTargetEffect(npc.index);
 		}

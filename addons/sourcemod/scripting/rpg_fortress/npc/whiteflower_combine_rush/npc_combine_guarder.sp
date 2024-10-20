@@ -268,6 +268,8 @@ public void Combine_Guarder_ClotThink(int iNPC)
 		}
 
 
+		float distance = GetVectorDistance(vecTarget, vecMe, true);
+
 		if(!npc.m_bRanged)
 		{
 			//This means i attack.
@@ -292,8 +294,6 @@ public void Combine_Guarder_ClotThink(int iNPC)
 				}
 			}
 		}
-
-		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		
 		if(npc.m_flAttackHappens)
 		{

@@ -238,7 +238,7 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
 
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/demo/crown.mdl");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/sniper/hwn_sniper_hat.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
@@ -287,7 +287,9 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 		if(npc.m_flCloneRageInit < gameTime)
 		{
 			//Enrage and keep teleporting
-			npc.m_flCloneRageDo = gameTime + 4.0;
+			npc.m_flCloneRageDo = gameTime + 2.0;
+			npc.m_flCloneRageInit = 0.0;
+			npc.SetPlaybackRate(0.0);	
 		}
 		return;
 	}
@@ -415,13 +417,13 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", _,_,_,0.8);
+					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", _,_,_,1.2);
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.5;
-					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flAttackHappens = gameTime + 0.3;
+					npc.m_flDoingAnimation = gameTime + 0.3;
+					npc.m_flNextMeleeAttack = gameTime + 0.6;
 				}
 			}
 			case 2:
@@ -429,7 +431,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 				if(npc.m_flCloneRageDo)
 				{
 					//In ragemode we want different logic.
-					if(npc.m_flSpawnTempClone < gameTime)
+					if(npc.m_flSpawnTempClone > gameTime)
 					{
 						return;
 					}
@@ -452,6 +454,10 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
+					
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
 					static float hullcheckmaxs[3];
 					static float hullcheckmins[3];
 					hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -463,21 +469,25 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
 					if(Succeed)
 					{
+						npc.PlayTeleportSound();
 						float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 						float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-
-						ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						
 						float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-						ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						TE_Particle("pyro_blast", PreviousPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+						TE_Particle("pyro_blast_lines", PreviousPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+						TE_Particle("pyro_blast_warp", PreviousPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+						TE_Particle("pyro_blast_flash", PreviousPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 						float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 						npc.FaceTowards(VecEnemy, 15000.0);
 						npc.m_flSpawnTempClone = GetGameTime(npc.index) + 5.5;
 
 						if(npc.m_flCloneRageDo)
-							npc.m_flSpawnTempClone = GetGameTime(npc.index) + 0.25;
+							npc.m_flSpawnTempClone = GetGameTime(npc.index) + 0.3;
 
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
+						vPredictedPos[2] += 45.0;
+						WF_Outlander_LeaderInitiateLaserAttack(npc.index, VecEnemy, PreviousPos);
 						WF_Outlander_LeaderInitiateLaserAttack(npc.index, WorldSpaceVec, PreviousPos);
 					}
 					else
@@ -489,17 +499,18 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 			}
 			case 3:
 			{
-				if(npc.m_iChanged_WalkCycle != 8)
+				if(npc.m_iChanged_WalkCycle != 9)
 				{
 					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 8;
+					npc.m_iChanged_WalkCycle = 9;
 					npc.AddActivityViaSequence("Stand_to_crouch");
-					npc.SetPlaybackRate(0.0);	
+					npc.SetPlaybackRate(0.6);	
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 				npc.m_flCloneRageInit = gameTime + 2.0;
 				npc.m_flCloneRageCD = gameTime + 15.0;
+				npc.m_flSpawnTempClone = 0.0;
 			}
 		}
 	}

@@ -33,7 +33,6 @@ bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
-int Shared_BEAM_Glow;
 
 #endif
 int i_KillsMade[MAXTF2PLAYERS];
@@ -45,6 +44,7 @@ int TeamFreeForAll = 50;
 #endif
 
 int i_TeamGlow[MAXENTITIES]={-1, ...};
+int Shared_BEAM_Glow;
 int Shared_BEAM_Laser;
 char c_NpcName[MAXENTITIES][255];
 int i_SpeechBubbleEntity[MAXENTITIES];
@@ -233,10 +233,7 @@ void OnMapStart_NPC_Base()
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	Shared_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-#if defined ZR
 	Shared_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
-#endif
-
 	PrecacheModel(ARROW_TRAIL);
 	PrecacheDecal(ARROW_TRAIL, true);
 	PrecacheModel(ARROW_TRAIL_RED);
@@ -10844,4 +10841,21 @@ int ReturnEntityMaxHealth(int entity)
 		return SDKCall_GetMaxHealth(entity);
 	}
 	return GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+}
+
+
+float[] GetBehindTarget(int target, float Distance, float origin[3])
+{
+	float VecForward[3];
+	float vecRight[3];
+	float vecUp[3];
+	
+	GetVectors(target, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
+	
+	float vecSwingEnd[3];
+	vecSwingEnd[0] = origin[0] - VecForward[0] * (Distance);
+	vecSwingEnd[1] = origin[1] - VecForward[1] * (Distance);
+	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+
+	return vecSwingEnd;
 }

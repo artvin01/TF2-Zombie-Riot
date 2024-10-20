@@ -40,7 +40,7 @@ static char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
-	"weapons/physcannon/energy_sing_explosion2.wav",
+	"common/wpn_hudoff.wav",
 };
 static char g_RocketSound[][] = {
 	"weapons/rpg/rocketfire1.wav",
@@ -87,11 +87,12 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 	
 	public void PlayHurtSound()
 	{
-		
 		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayRangedAttackSecondarySound() {
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
 		
 
 	}
@@ -204,17 +205,13 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
 
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
-		SetVariantString("1.0");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/mvm_loot/heavy/robo_ushanka.mdl");
+		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");
-		SetVariantString("1.25");
+		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/sniper/thief_sniper_cape/thief_sniper_cape.mdl");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 	
 		NPC_StopPathing(npc.index);
@@ -225,14 +222,6 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 	
 }
 
-void RPGDoHealEffect(int entity, float range)
-{
-	float ProjectileLoc[3];
-	Whiteflower_FloweringDarkness npc1 = view_as<Whiteflower_FloweringDarkness>(entity);
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 125, 0, 200, 1, 0.3, 5.0, 8.0, 3, range * 2.0);	
-	npc1.PlayHealSound();
-}
 //TODO 
 //Rewrite
 public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
@@ -264,130 +253,6 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
-
-	if(npc.m_flCooldownDurationHurt)
-	{
-		if(npc.m_flCooldownDurationHurt < gameTime)
-		{
-			npc.m_flCooldownDurationHurt = 0.0;
-			if(IsValidEntity(npc.m_iWearable1))
-			{
-				RemoveEntity(npc.m_iWearable1);
-			}
-			if(IsValidEntity(npc.m_iWearable4))
-			{
-				RemoveEntity(npc.m_iWearable4);
-			}
-			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-			flMaxhealth *= 0.15;
-			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 35.9, 0.0, HEAL_SELFHEAL);
-			RPGDoHealEffect(npc.index, 150.0);
-			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-			SetVariantString("0.8");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
-			if(npc.m_iChanged_WalkCycle != 4) 	
-			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_RUN");
-				npc.m_flSpeed = 350.0;
-				NPC_StartPathing(iNPC);
-			}
-		}
-		return;
-	}
-
-	if(npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
-	{
-		//Reset anger.
-		npc.Anger = false;
-		if(IsValidEntity(npc.m_iWearable1))
-		{
-			RemoveEntity(npc.m_iWearable1);
-		}
-		if(IsValidEntity(npc.m_iWearable4))
-		{
-			RemoveEntity(npc.m_iWearable4);
-		}
-		
-		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.8");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
-	}
-
-	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (ReturnEntityMaxHealth(npc.index) * 0.5))
-	{
-		if(!npc.Anger)
-		{
-			npc.Anger = true;
-			npc.m_flCooldownDurationHurt = gameTime + 0.75;
-			
-	
-			if(IsValidEntity(npc.m_iWearable1))
-			{
-				RemoveEntity(npc.m_iWearable1);
-			}
-			npc.m_bisWalking = false;
-			npc.m_iChanged_WalkCycle = 7;
-			npc.m_flSpeed = 0.0;
-			npc.AddActivityViaSequence("preSkewer");
-			npc.SetPlaybackRate(0.35);
-			NPC_StopPathing(npc.index);
-			return;
-		}
-	}
-
-	if(npc.Anger)
-	{
-		if(npc.m_flSpawnTempClone < gameTime)
-		{
-			npc.m_flSpawnTempClone = gameTime + 1.5;
-			npc.PlayRocketSound();
-			
-			int entity_death = CreateEntityByName("prop_dynamic_override");
-			if(IsValidEntity(entity_death))
-			{
-				Whiteflower_FloweringDarkness prop = view_as<Whiteflower_FloweringDarkness>(entity_death);
-				float pos[3];
-				float Angles[3];
-				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-
-				GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-				SetEntPropEnt(entity_death, Prop_Send, "m_hOwnerEntity", npc.index);			
-				TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
-				
-				DispatchKeyValue(entity_death, "model", COMBINE_CUSTOM_MODEL);
-				SetVariantInt(1);
-				AcceptEntityInput(entity_death, "SetBodyGroup");	
-				DispatchSpawn(entity_death);
-
-
-				prop.m_iWearable2 = prop.EquipItem("partyhat", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
-				SetVariantString("1.0");
-				AcceptEntityInput(prop.m_iWearable2, "SetModelScale");
-
-				prop.m_iWearable3 = prop.EquipItem("partyhat", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");
-				SetVariantString("1.25");
-				AcceptEntityInput(prop.m_iWearable3, "SetModelScale");
-
-				//Cape
-
-				SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
-				SetEntityCollisionGroup(entity_death, 2);
-
-				CreateTimer(2.0, Timer_RemoveEntity_SelectedFew, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
-				SetVariantString("forcescanner");
-				AcceptEntityInput(entity_death, "SetAnimation");
-			}
-		}
-	}
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "p_jumpuploop", 0.0, gameTime, _ , true);
@@ -436,6 +301,70 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 		}
 	}
 	
+	if(npc.m_flAirPushHappening)
+	{
+		float vecTarget[3];
+		if(IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
+			npc.FaceTowards(vecTarget, 20000.0);
+		}
+		if(npc.m_flAirPushHappening < gameTime)
+		{
+			npc.m_flAirPushHappening = 0.0;
+			
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				npc.PlayRangedAttackSecondarySound();
+				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+				
+				//This is the primary projectile in the middle.
+				float SpeedProjectile = 1000.0;
+				float ProjectileDamage = 500.0;
+				int Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_red");
+
+				ProjectileDamage *= 0.95;
+				SpeedProjectile *= 0.65;
+				float vecForward[3];
+
+				float vAngles[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
+				for(int LoopDo = 1 ; LoopDo <= 2; LoopDo++)
+				{
+					Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_blue");
+					float vAnglesProj[3];
+					GetEntPropVector(Projectile, Prop_Data, "m_angRotation", vAnglesProj);
+					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
+					vAnglesProj[1] = vAngles[1];
+					switch(LoopDo)
+					{
+						case 1:
+							vAnglesProj[1] -= 30.0;
+
+						case 2:
+							vAnglesProj[1] += 30.0;
+					}
+					
+					vecForward[0] = Cosine(DegToRad(vAnglesProj[0]))*Cosine(DegToRad(vAnglesProj[1]))*SpeedProjectile;
+					vecForward[1] = Cosine(DegToRad(vAnglesProj[0]))*Sine(DegToRad(vAnglesProj[1]))*SpeedProjectile;
+					vecForward[2] = Sine(DegToRad(vAnglesProj[0]))*-SpeedProjectile;
+
+					TeleportEntity(Projectile, NULL_VECTOR, vAnglesProj, vecForward); 
+
+					Initiate_HomingProjectile(Projectile,
+					npc.index,
+					9999.0,			// float lockonAngleMax,
+					13.0,			// float homingaSec,
+					false,			// bool LockOnlyOnce,
+					true,			// bool changeAngles,
+					vAnglesProj,
+					npc.m_iTarget);			// float AnglesInitiate[3]);
+					
+				}
+			}
+		}
+	}
+	
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -466,7 +395,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 		}
 		else if(npc.m_flNextAirPush < gameTime)
 		{
-			npc.m_iState = 1; //Engage in Close Range Destruction.
+			npc.m_iState = 2; //Engage in Close Range Destruction.
 		}
 		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
@@ -500,6 +429,18 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
+				//Walk to target
+				if(!npc.m_bPathing)
+					npc.StartPathing();
+					
+				if(npc.m_iChanged_WalkCycle != 4) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 4;
+					npc.SetActivity("ACT_RUN");
+					npc.m_flSpeed = 350.0;
+					NPC_StartPathing(iNPC);
+				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
 				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
@@ -523,13 +464,21 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
+					if(npc.m_iChanged_WalkCycle != 7) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 7;
+						npc.SetActivity("ACT_RUN");
+						npc.m_flSpeed = 0.0;
+						NPC_StopPathing(npc.index);
+					}
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.7);
+					npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,1.2);
 					
 					npc.m_flAirPushHappening = gameTime + 0.5;
 					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_flNextAirPush = gameTime + 1.0;
+					npc.m_flNextAirPush = gameTime + 3.0;
 				}
 			}
 		}
@@ -570,29 +519,4 @@ public void Whiteflower_FloweringDarkness_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
-}
-
-
-//TODO: Make kaboom
-public Action Timer_RemoveEntity_SelectedFew(Handle timer, any entid)
-{
-	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity))
-	{
-		int Owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(IsValidEntity(Owner))
-		{
-			float abspos[3]; 
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", abspos);
-			abspos[2] += 45.0;
-			float Range = 100.0;
-			float Time = 0.25;
-			float DamageDeal = 300000.0;
-			Explode_Logic_Custom(DamageDeal, Owner, Owner, -1, abspos, Range);
-			EmitSoundToAll("ambient/explosions/explode_4.wav", -1, _, 80, _, _, _, _,abspos);
-			SpawnSmallExplosionNotRandom(abspos);
-		}
-		RemoveEntity(entity);
-	}
-	return Plugin_Stop;
 }

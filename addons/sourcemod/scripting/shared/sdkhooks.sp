@@ -2953,7 +2953,7 @@ void RPG_Sdkhooks_StaminaBar(int client)
 	{
 		int endurance = Stats_Endurance(client) + ArmorCorrosion[client];
 
-		float precent = float(ArmorCorrosion[client]) / float(endurnace);
+		float precent = float(ArmorCorrosion[client]) / float(endurance);
 		if(precent > 1.0)
 			precent = 1.0;
 
