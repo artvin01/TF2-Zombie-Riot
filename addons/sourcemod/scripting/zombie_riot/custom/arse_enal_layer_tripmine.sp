@@ -715,6 +715,7 @@ void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false)
 	CleanAllApplied_Aresenal(npc);
 	float radius = 100.0;
 	spawnRing_Vectors(EntLoc2, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 6.0, 2.1, 1, radius);	
+	i_ExplosiveProjectileHexArray[client] |= ZR_DAMAGE_IGNORE_DEATH_PENALTY;
 	if(allowLagcomp)
 	{
 		b_LagCompNPC_No_Layers = true;
@@ -732,6 +733,6 @@ void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false)
 	if(!b_NpcHasDied[npc]) //Incase it gets called later.
 	{
 		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage delt by by secondary internal combustion too.
-		SDKHooks_TakeDamage(npc, client, client, damage * 0.5, DMG_BLAST); //extra damage to the target that was hit cus yeah.
+		SDKHooks_TakeDamage(npc, client, client, damage * 0.5, DMG_BLAST | ZR_DAMAGE_IGNORE_DEATH_PENALTY); //extra damage to the target that was hit cus yeah.
 	}
 }

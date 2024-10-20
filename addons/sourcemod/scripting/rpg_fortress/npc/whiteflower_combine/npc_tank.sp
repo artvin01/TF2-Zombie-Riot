@@ -364,7 +364,7 @@ public Action WhiteflowerTank_Rocket_Stand_Fire(Handle timer, DataPack pack)
 	GetVectorAngles(vecAngles, vecAngles);
 	if(TimeTillRocketing < GetGameTime())
 	{
-		float SpeedApply = 1500.0;
+		float SpeedApply = 1000.0;
 		VecSpeedToDo[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*SpeedApply;
 		VecSpeedToDo[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*SpeedApply;
 		VecSpeedToDo[2] = Sine(DegToRad(vecAngles[0]))*-SpeedApply;

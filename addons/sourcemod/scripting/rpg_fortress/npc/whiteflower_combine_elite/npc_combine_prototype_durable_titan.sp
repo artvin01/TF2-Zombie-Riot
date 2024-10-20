@@ -267,7 +267,7 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 		if(!npc.Anger)
 		{
 			npc.Anger = true;
-			npc.m_flCooldownDurationHurt = gameTime + 3.0;
+			npc.m_flCooldownDurationHurt = gameTime + 2.0;
 			if(IsValidEntity(npc.m_iWearable1))
 			{
 				RemoveEntity(npc.m_iWearable1);
@@ -275,8 +275,8 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 7;
 			npc.m_flSpeed = 0.0;
-			npc.SetActivity("ACT_PICKUP_RACK");
-			npc.SetPlaybackRate(0.35);
+			npc.SetActivity("ACT_PICKUP_GROUND");
+			npc.SetPlaybackRate(0.5);
 			return;
 		}
 	}

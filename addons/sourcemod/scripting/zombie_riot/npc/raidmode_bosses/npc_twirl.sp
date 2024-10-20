@@ -3279,12 +3279,12 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 }
 bool Similar_Vec(float Vec1[3], float Vec2[3])
 {
-	bool similar = true;
 	for(int i=0 ; i < 3 ; i ++)
 	{
-		similar = Similar(Vec1[i], Vec2[i]);
+		if(!Similar(Vec1[i], Vec2[i]))
+			return false;
 	}
-	return similar;
+	return true;
 }
 static bool Similar(float val1, float val2)
 {

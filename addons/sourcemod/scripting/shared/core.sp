@@ -1562,7 +1562,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons");
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
-	LoadTranslations("realtime.phrases");
+//	LoadTranslations("realtime.phrases");
 	LoadTranslations("common.phrases");
 	
 	DHook_Setup();
@@ -3518,6 +3518,7 @@ void RemoveNpcThingsAgain(int entity)
 	CleanAllApplied_Aresenal(entity, true);
 	b_NpcForcepowerupspawn[entity] = 0;	
 	CleanAllApplied_Cryo(entity);
+	EnemyResetUranium(entity);
 #endif
 	i_HexCustomDamageTypes[entity] = 0;
 }
