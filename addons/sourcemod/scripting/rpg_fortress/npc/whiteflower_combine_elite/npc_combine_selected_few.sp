@@ -37,7 +37,10 @@ static char g_MeleeAttackSounds[][] = {
 };
 
 static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
@@ -457,7 +460,8 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					{
 						damage = 40000.0;
 					}
-					npc.PlayMeleeHitSound();
+						
+					
 					if(target > 0) 
 					{
 						if(npc.Anger)
@@ -466,8 +470,6 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						// Hit sound
 						npc.PlayMeleeHitSound();
-						if(target <= MaxClients)
-							Client_Shake(target, 0, 25.0, 25.0, 0.5, false);
 
 						npc.PlayKilledEnemySound(npc.m_iTarget);
 					}

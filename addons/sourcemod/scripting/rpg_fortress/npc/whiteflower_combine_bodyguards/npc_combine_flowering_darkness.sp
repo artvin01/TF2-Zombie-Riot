@@ -37,7 +37,10 @@ static char g_MeleeAttackSounds[][] = {
 };
 
 static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
 	"common/wpn_hudoff.wav",
@@ -68,9 +71,9 @@ public void Whiteflower_FloweringDarkness_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Whiteflower_FloweringDarkness(client, vecPos, vecAng, ally);
+	return Whiteflower_FloweringDarkness(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Whiteflower_FloweringDarkness < CClotBody
@@ -80,19 +83,20 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayRangedAttackSecondarySound() {
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
+		EmitSoundToAll(g_RocketSound[GetRandomInt(0, sizeof(g_RocketSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,150);
 		
 
 	}
@@ -104,7 +108,7 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayKilledEnemySound(int target) 
 	{
@@ -140,21 +144,17 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 				case 2:
 					NpcSpeechBubble(this.index, "I wonder how much is put on their head.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			}
-			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
 		}
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
-	}
-	public void PlayRocketSound()
- 	{
-		EmitSoundToAll(g_RocketSound[GetRandomInt(0, sizeof(g_RocketSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayMeleeHitSound()
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
 	property float m_flAirPushHappening
@@ -168,7 +168,22 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
-	public Whiteflower_FloweringDarkness(int client, float vecPos[3], float vecAng[3], int ally)
+	property float m_flCloneSuicide
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flDoAnimClone
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property float m_flCloneSpawnDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	public Whiteflower_FloweringDarkness(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -193,6 +208,7 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
+
 		
 
 		func_NPCDeath[npc.index] = Whiteflower_FloweringDarkness_NPCDeath;
@@ -216,6 +232,18 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 	
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
+		bool CloneDo = StrContains(data, "clone_ability") != -1;
+		if(CloneDo)
+		{
+			MakeObjectIntangeable(npc.index);
+			b_DoNotUnStuck[npc.index] = true;
+			b_NoKnockbackFromSources[npc.index] = true;
+			b_ThisEntityIgnored[npc.index] = true;
+			b_thisNpcIsARaid[npc.index] = true;
+			b_NoKillFeed[npc.index] = true;
+			npc.m_flCloneSuicide = GetGameTime() + 1.0;
+			npc.m_flDoAnimClone = GetGameTime() + 0.1;
+		}
 		
 		return npc;
 	}
@@ -251,11 +279,37 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 	{
 		return;
 	}
+	if(npc.m_flDoAnimClone)
+	{
+		if(npc.m_flDoAnimClone < gameTime)
+		{
+			npc.m_flDoAnimClone = 0.0;
+
+			if(npc.m_iChanged_WalkCycle != 7) 	
+			{
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 7;
+				npc.SetActivity("ACT_IDLE");
+				npc.m_flSpeed = 0.0;
+				NPC_StopPathing(npc.index);
+			}
+
+			npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,1.2);
+			
+			npc.m_flAirPushHappening = gameTime + 0.5;
+			npc.m_flDoingAnimation = gameTime + 0.5;
+			npc.m_flNextAirPush = gameTime + 3.0;
+				
+		}
+		return;
+	}
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "p_jumpuploop", 0.0, gameTime, _ , true);
+	if(!npc.m_flCloneSuicide)
+		Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "p_jumpuploop", 0.0, gameTime, _ , true);
+
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -281,7 +335,6 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 					{
 						damage = 40000.0;
 					}
-					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
 						if(npc.Anger)
@@ -364,7 +417,28 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 			}
 		}
 	}
+	if(npc.m_flCloneSuicide)
+	{	
+		if(npc.m_flCloneSuicide < gameTime)
+		{
+			float pos[3];
+			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+			pos[2] += 10.0;
+			TE_Particle("mvm_cash_explosion_smoke", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			SmiteNpcToDeath(npc.index);
+		}
+		return;
+	}
 	
+	if(npc.m_iTarget <= 0)
+	{
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+		{
+			npc.m_flCloneSpawnDo = gameTime + 4.0;
+			npc.m_flNextAirPush = gameTime + 2.0;
+			//we can presume that they are fully healed and didnt attack anyone, its best to reseit their abilites to the default.
+		}
+	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -388,6 +462,14 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
+
+		if(npc.m_flCloneSpawnDo < gameTime)
+		{
+			float SelfPos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+			npc.m_flCloneSpawnDo = gameTime + 4.0;
+			CreateCloneFake_FloweringDarkness(npc.index, npc.m_iTarget, SelfPos);
+		}
 
 		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
 		{
@@ -423,7 +505,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 350.0;
+					npc.m_flSpeed = 380.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
@@ -438,7 +520,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 350.0;
+					npc.m_flSpeed = 380.0;
 					NPC_StartPathing(iNPC);
 				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -448,13 +530,13 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", _,_,_,0.8);
+					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", _,_,_,1.0);
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.5;
-					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flAttackHappens = gameTime + 0.35;
+					npc.m_flDoingAnimation = gameTime + 0.35;
+					npc.m_flNextMeleeAttack = gameTime + 0.65;
 				}
 			}
 			case 2:
@@ -519,4 +601,22 @@ public void Whiteflower_FloweringDarkness_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+}
+
+
+void CreateCloneFake_FloweringDarkness(int entity, int enemySelect, float SelfPos[3])
+{
+	int CloneSpawn;
+	
+	CloneSpawn = NPC_CreateByName("npc_whiteflower_flowering_darkness", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "clone_ability"); //can only be enemy
+	if(IsValidEntity(CloneSpawn))
+	{
+		MakeObjectIntangeable(CloneSpawn);
+		b_DoNotUnStuck[CloneSpawn] = true;
+		b_NoKnockbackFromSources[CloneSpawn] = true;
+		b_ThisEntityIgnored[CloneSpawn] = true;
+		Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(CloneSpawn);
+		npc.m_iTarget = enemySelect;
+		npc.m_bDissapearOnDeath = true;
+	}
 }

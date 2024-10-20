@@ -40,7 +40,10 @@ static char g_RocketSound[][] = {
 	"weapons/rpg/rocketfire1.wav",
 };
 static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
@@ -277,14 +280,12 @@ public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 1.3;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						// Hit sound
 						npc.PlayMeleeHitSound();
-						if(target <= MaxClients)
-							Client_Shake(target, 0, 25.0, 25.0, 0.5, false);
 
 						npc.PlayKilledEnemySound(npc.m_iTarget);
 					}

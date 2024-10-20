@@ -256,7 +256,7 @@ public void Whiteflower_ExpertFighter_ClotThink(int iNPC)
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 1.3;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
