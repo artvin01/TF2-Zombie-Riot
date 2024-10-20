@@ -341,13 +341,14 @@ void Stats_SetCustomStats(int entity, int attrib, float value)
 	}
 }
 
-float Stats_GetCurrentFormMastery(int client)
+float Stats_GetCurrentFormMastery(int client, float &maxvalue = 0.0)
 {
 	float mastery;
 	
 	Form form;
 	if(Races_GetClientInfo(client, _, form))
 	{
+		maxvalue = form.Mastery;
 		if(Mastery[client])
 			Mastery[client].GetValue(form.Name, mastery);
 	}

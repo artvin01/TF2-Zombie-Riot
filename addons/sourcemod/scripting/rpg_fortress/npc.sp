@@ -98,6 +98,7 @@ void NPC_ConfigSetup()
 	RiverSeaMelee_Setup();
 	RiverSeaRanged_Setup();
 	RiverSeaFast_Setup();
+	RiverSeaTank_Setup();
 }
 
 int NPC_Add(NPCData data)
@@ -611,29 +612,10 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_extreme_knight_giant.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_expert_fighter.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_master_mage.sp"
-//#include "rpg_fortress/npc/whiteflower_combine_bodyguards/noc_combine_flowering_darkness.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_flowering_darkness.sp"
 
 #include "rpg_fortress/npc/seaborn/npc_sea_shared.sp"
 #include "rpg_fortress/npc/seaborn/npc_riversea_melee.sp"
 #include "rpg_fortress/npc/seaborn/npc_riversea_ranged.sp"
 #include "rpg_fortress/npc/seaborn/npc_riversea_fast.sp"
-
-/*
-#include "rpg_fortress/npc/normal/npc_ark_slug.sp"
-#include "rpg_fortress/npc/normal/npc_ark_singer.sp"
-#include "rpg_fortress/npc/normal/npc_ark_slug_acid.sp"
-#include "rpg_fortress/npc/normal/npc_ark_slug_infused.sp"
-
-#include "rpg_fortress/npc/combine/npc_basesquad.sp"
-#include "rpg_fortress/npc/combine/npc_combine_pistol.sp"
-#include "rpg_fortress/npc/combine/npc_combine_smg.sp"
-#include "rpg_fortress/npc/combine/npc_combine_ar2.sp"
-#include "rpg_fortress/npc/combine/npc_combine_elite.sp"
-#include "rpg_fortress/npc/combine/npc_combine_shotgun.sp"
-#include "rpg_fortress/npc/combine/npc_combine_swordsman.sp"
-#include "rpg_fortress/npc/combine/npc_combine_giant.sp"
-#include "rpg_fortress/npc/combine/npc_combine_overlord.sp"
-#include "rpg_fortress/npc/combine/npc_townguard_pistol.sp"
-#include "rpg_fortress/npc/combine/npc_combine_overlord_cc.sp"
-#include "rpg_fortress/npc/combine/npc_combine_turtle.sp"
-*/
+#include "rpg_fortress/npc/seaborn/npc_riversea_tank.sp"
