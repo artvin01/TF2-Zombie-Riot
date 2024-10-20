@@ -2526,9 +2526,9 @@
 	}
 	"Xeno_Wave_2"
 	{
-		"en"		"Silvester and Goggles didnt attack you for no reason."
+		"en"		"Silvester and Waldch didnt attack you for no reason."
 		"fr"		"Silvester et Goggles n'ont pas attaqué pour aucune raison."
-		"ru"		"Сильвестр и Гогглз не нападали на вас без причины."
+		"ru"		"Сильвестр и Валдч не нападали на вас без причины."
 		"chi"		"西尔维斯特和瓦德奇不是无缘无故攻击你的。"
 	}
 	"Xeno_Wave_3"
@@ -2557,7 +2557,7 @@
 		"#format"	"{1:d},{2:d}"
 		"en"		"You have summoned {1}/{2} Skull Servant(s)."
 		"fr"		"Vous avez convoqué {1}/{2} Crâne(s) Esclaves."
-		"ru"		"Вы вызвали {1}/{2} слуг черепа."
+		"ru"		"Вы вызвали {1}/{2} слугу череп."
 		"chi"		"你已经召唤了{1}/{2}骷髅仆人."
 	}
 	"Npc Stuck Spot Warning"
