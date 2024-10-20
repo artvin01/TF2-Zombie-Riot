@@ -7,36 +7,43 @@
 	"Headcrab Zombie"
 	{
 		"en" 		"Headcrab Zombie"
+		"ru" 		"Зомби"
 		"fr" 		"Zombie"
 	}
 	"Metro Cop"
 	{
 		"en"		"Metro Cop"
+		"ru" 		"Метро Коп"
 		"fr"		"Métro-police"
 	}
 	"Sensal"
 	{
 		"en"		"Sensal"
+		"ru" 		"Сенсал"
 		"fr"		"Sensal"
 	}
 	"Bob The First"
 	{
 		"en"		"Bob The First"
+		"ru" 		"боб первый"
 		"fr"		"Bob I"
 	}
 	"??????? First"
 	{
 		"en"		"??????? First"
+		"ru" 		"??????? Первый"
 		"fr"		"??????? I"
 	}
 	"??? the First"
 	{
 		"en"		"??? the First"
+		"ru" 		"??? Первый"
 		"fr"		"??? I"
 	}
 	"Chaos Kahmlstein"
 	{
 		"en"		"Chaos Kahmlstein"
+		"ru" 		"Хаос Кахмлстейн"
 		"fr"		"Kahmlstein Chaos"
 	}
 	"Donnerkrieg"

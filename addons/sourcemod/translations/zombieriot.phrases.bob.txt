@@ -182,7 +182,7 @@
 	{
 		"en"	"I'm pretty bored..."
 		"fr"	"Je m'ennuie..."
-		"ru"	"Мне довльно скучно..."
+		"ru"	"Мне довольно скучно..."
 		"de"	"ich bin so gelangweilt..."
 		"pl"    "jestem dość znudzony..."
 		"pt"	"Tem nada pra fazer..."
