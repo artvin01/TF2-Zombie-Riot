@@ -309,7 +309,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 		}
 		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && npc.m_flNextRangedAttack < gameTime)
 		{
-			npc.m_iState = 2; //enemy is abit further away.
+			npc.m_iState = 1; //enemy is abit further away.
 		}
 		else 
 		{
@@ -349,17 +349,18 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 					float AccelerateAttackspeed = 1.0;
 					int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 					float Percentage = float(Health) / float(ReturnEntityMaxHealth(npc.index));
+					if(Percentage <= 0.35)
+					{
+						Percentage = 0.35;
+					}
 					
 					float PercentageInvert = Percentage;
-					if(Percentage <= 0.2)
-					{
-						Percentage = 0.2;
-					}
 					PercentageInvert -= 1.0;
 					PercentageInvert *= -1.0;
 					PercentageInvert += 1.0;
+					PercentageInvert *= 1.5;
 
-					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", _,_,_,(0.8 * Percentage));
+					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", _,_,_,(0.8 * PercentageInvert));
 
 					npc.PlayMeleeSound();
 					
