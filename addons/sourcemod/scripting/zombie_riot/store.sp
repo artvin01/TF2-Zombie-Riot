@@ -6036,22 +6036,7 @@ static void ItemCost(int client, Item item, int &cost)
 		{
 			//during maps where he alaways sells, always sell!
 			//If the client bought this weapon before, do not offer the discount anymore.
-			if(Rogue_Mode())
-			{
-				if(item.NPCSeller_WaveStart > 0)
-				{
-					cost = RoundToCeil(float(cost) * 0.85);
-				}
-				else if(item.NPCSeller_First)
-				{
-					cost = RoundToCeil(float(cost) * 0.85);
-				}
-				else if(item.NPCSeller)
-				{
-					cost = RoundToCeil(float(cost) * 0.9);
-				}
-			}
-			else if(item.NPCSeller_WaveStart > 0)
+			if(item.NPCSeller_WaveStart > 0)
 			{
 				cost = RoundToCeil(float(cost) * 0.7);
 			}

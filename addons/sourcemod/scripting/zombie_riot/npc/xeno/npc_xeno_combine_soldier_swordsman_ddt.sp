@@ -78,7 +78,7 @@ public void XenoCombineDDT_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine DDT");
+	strcopy(data.Name, sizeof(data.Name), "Xeno DDT");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_swordsman_ddt");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;

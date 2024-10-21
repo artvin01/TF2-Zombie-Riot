@@ -1049,6 +1049,42 @@
 	{
 		"en"	"Broken Bridge"
 	}
+	"Home Sick"
+	{
+		"en"	"Home Sick"
+	}
+	"Home Sick!"
+	{
+		"en"	"Home Sick ⚠"
+	}
+	"A Lost War"
+	{
+		"en"	"A Lost War"
+	}
+	"A Lost War!"
+	{
+		"en"	"A Lost War ⚠"
+	}
+	"Falling Hazard"
+	{
+		"en"	"Falling Hazard"
+	}
+	"Falling Hazard!"
+	{
+		"en"	"Falling Hazard ⚠"
+	}
+	"Whiteflower Mercenaries"
+	{
+		"en"	"Whiteflower Mercenaries ☠"
+	}
+	"City Hall"
+	{
+		"en"	"City Hall"
+	}
+	"City Hall!"
+	{
+		"en"	"City Hall ⚠"
+	}
 
 	// Curses
 	"Bewildered"
@@ -1069,7 +1105,7 @@
 	}
 	"Sensitive Desc"
 	{
-		"en"	"{red}Players take +25%% more damage {green}but heal +100%% more{yellow}."
+		"en"	"{red}Players take +25%% more damage {green}but heal +100%% more."
 	}
 	"Sensitive Lore"
 	{
@@ -1081,7 +1117,7 @@
 	}
 	"Obsessed Desc"
 	{
-		"en"	"{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next{yellow}."
+		"en"	"{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next."
 	}
 	"Obsessed Lore"
 	{
@@ -1742,6 +1778,34 @@
 	}
 	"Bob's Orders Desc"
 	{
-		"en"	"Eliminate Whiteflower.\n{green}All Allies receive +15%% damage bonus and +20%% movement speed {blue}and the ending is changed."
+		"en"	"Eliminate Whiteflower.\n{blue}The ending is changed."
+	}
+	"But Nobody Is Here"
+	{
+		"en"	"But nobody is here..."
+	}
+	"Whiteflower Mercenary Eradicator"
+	{
+		"en"	"Whiteflower Mercenary Eradicator"
+	}
+	"Guln"
+	{
+		"en"	"Guln"
+	}
+	"Cursed Relic"
+	{
+		"en"	"Cursed Relic"
+	}
+	"Cursed Relic Desc"
+	{
+		"en"	"From the back of the bin in the shop.\n{green}Players gain +8%% firing speed {red}most of the time"
+	}
+	"Australium Printer"
+	{
+		"en"	"Australium Printer"
+	}
+	"Australium Printer Desc"
+	{
+		"en"	"Convert that australium into shop money!\n{yellow}Australium Ingots are converted into 200 credits each"
 	}
 }

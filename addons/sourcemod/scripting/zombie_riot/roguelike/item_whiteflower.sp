@@ -11,10 +11,21 @@ enum struct SoulBuff
 }
 
 static ArrayList AnnouncedBuff;
+static bool CoinExchanger;
 
 void Rogue_Whiteflower_Reset()
 {
 	delete AnnouncedBuff;
+}
+
+void Rogue_Whiteflower_IngotGiven(int &ingots)
+{
+	if(CoinExchanger)
+	{
+		CurrentCash += 200 * ingots;
+		GlobalExtraCash += 200 * ingots;
+		ingots = 0;
+	}
 }
 
 static void AnnounceSoulBuff(int client, int entity, int type)
@@ -109,6 +120,7 @@ public void Rogue_SoulBTD_Weapon(int entity, int client)
 	{
 		AnnounceSoulBuff(client, entity, 2);
 
+		SoulBuff buff;
 		float multi = 1.0;
 		int length = AnnouncedBuff.Length;
 		for(int i; i < length; i++)
@@ -233,4 +245,32 @@ public void Rogue_AntiSeaborn_Enemy(int entity)
 		fl_Extra_MeleeArmor[entity] *= 1.75;
 		fl_Extra_RangedArmor[entity] *= 1.75;
 	}
+}
+
+public void Rogue_CursedRelic_Weapon(int entity, int client)
+{
+	if(GetURandomInt() % 9)
+	{
+		Attributes_SetMulti(entity, 6, 0.92);
+	}
+	else
+	{
+		Attributes_SetMulti(entity, 6, 3.0);
+	}
+}
+
+public void Rogue_Exchanger_Collect()
+{
+	int ingots = Rogue_GetIngots();
+	Rogue_AddIngots(-ingots, true);
+	
+	CurrentCash += 200 * ingots;
+	GlobalExtraCash += 200 * ingots;
+
+	CoinExchanger = true;
+}
+
+public void Rogue_Exchanger_Remove()
+{
+	CoinExchanger = false;
 }

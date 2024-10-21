@@ -78,7 +78,7 @@ public void NecroCombine_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Revived Combine DDT");
+	strcopy(data.Name, sizeof(data.Name), "Revived DDT");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_necromancy_combine");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;

@@ -84,7 +84,7 @@ public void XenoCombineElite_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Elite");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Elite");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_elite");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_elite");
 	data.IconCustom = true;

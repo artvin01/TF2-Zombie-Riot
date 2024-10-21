@@ -2267,7 +2267,10 @@ int Rogue_GetIngots()
 
 void Rogue_AddIngots(int amount, bool silent = false)
 {
-	CurrentIngots += amount;
+	int given = amount;
+	Rogue_Whiteflower_IngotGiven(given);
+
+	CurrentIngots += given;
 	Waves_UpdateMvMStats();
 
 	if(!silent)
@@ -2677,6 +2680,7 @@ static void ClearStats()
 
 	Rogue_Barracks_Reset();
 	Rogue_StoryTeller_Reset();
+	Rogue_Whiteflower_Reset();
 }
 
 bool IS_MusicReleasingRadio()
