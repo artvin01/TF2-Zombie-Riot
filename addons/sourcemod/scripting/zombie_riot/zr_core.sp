@@ -2126,7 +2126,8 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 			SetEntityRenderMode(client, RENDER_NORMAL);
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
-			i_AmountDowned[client] = 0;
+			if(i_AmountDowned[client] > 0)
+				i_AmountDowned[client] = 0;
 			if(CurrentModifOn() == 3)
 				i_AmountDowned[client] = 1;
 
