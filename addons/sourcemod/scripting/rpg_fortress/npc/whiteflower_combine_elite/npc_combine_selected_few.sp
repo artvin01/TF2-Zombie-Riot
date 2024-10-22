@@ -454,12 +454,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
-					
-					if(npc.Anger)
-					{
-						damage = 40000.0;
-					}
+					float damage = 450000.0;
 						
 					
 					if(target > 0) 
@@ -582,7 +577,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 						vecSelf2[2] += 50.0;
 						vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
 						vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
-						float RocketDamage = 700000.0;
+						float RocketDamage = 500000.0;
 						int RocketGet = npc.FireRocket(vecSelf2, RocketDamage, 200.0);
 						DataPack pack;
 						CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -660,7 +655,7 @@ public Action Timer_RemoveEntity_SelectedFew(Handle timer, any entid)
 			abspos[2] += 45.0;
 			float Range = 100.0;
 			float Time = 0.25;
-			float DamageDeal = 300000.0;
+			float DamageDeal = 350000.0;
 			Explode_Logic_Custom(DamageDeal, Owner, Owner, -1, abspos, Range);
 			EmitSoundToAll("ambient/explosions/explode_4.wav", -1, _, 80, _, _, _, _,abspos);
 			SpawnSmallExplosionNotRandom(abspos);

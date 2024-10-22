@@ -488,8 +488,7 @@ void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 	
-	Attributes_SetMulti(client, 205, form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
-	Attributes_SetMulti(client, 206, form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+	Attributes_SetMulti(client, Attrib_FormRes, form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
 }
 
 int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)
@@ -1005,7 +1004,7 @@ float RPGStats_FlatDamageResistance(int client)
 		total = Stats_Endurance(client);
 	else
 		total = Endurance[client] - ArmorCorrosion[client];
-	return (float(total) * 1.85);
+	return (float(total) * 2.4);
 }
 
 int Stats_GetStatCount(int client)

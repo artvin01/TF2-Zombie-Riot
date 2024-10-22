@@ -1003,6 +1003,7 @@ public void OnPostThink(int client)
 			value = Attributes_FindOnPlayerZR(client, 205, true, 0.0, true, true);	// MELEE damage resistance
 			if(value)
 				percentage *= value;
+				
 
 			value = Attributes_Get(weapon, 4008, 0.0);	// RANGED damage resistance
 			if(value)
@@ -1045,6 +1046,19 @@ public void OnPostThink(int client)
 				if(had_An_ability)
 					FormatEx(buffer, sizeof(buffer), "%s]", buffer);
 			}
+			
+			percentage = 1.0;
+			value = Attributes_FindOnPlayerZR(client, Attrib_FormRes, true, 0.0, true, true);	// MELEE damage resistance
+			if(value)
+				percentage *= value;
+
+			if(percentage != 1.0 && percentage > 0.0)
+			{
+				percentage = 1.0 / percentage;
+				FormatEx(buffer, sizeof(buffer), "%s[HP x%.1f]", buffer, percentage);
+				had_An_ability = true;
+			}
+
 			if(percentage_Global <= 0.0)
 			{
 				FormatEx(buffer, sizeof(buffer), "%s %t",buffer, "Invulnerable Npc");
@@ -1644,6 +1658,26 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 #endif
+	//dmg bonus before everything!
+	if(attacker > 0 && attacker <= MAXENTITIES)
+		damage *= fl_Extra_Damage[attacker];
+#if defined RPG
+	if(attacker <= MaxClients)
+	{
+		//in pvp, we half the damage. this is also BEFORE flat resistance.
+		damage *= 0.5;
+	}
+	//needs to be above everything aside extra damage
+	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
+		RPG_FlatRes(victim, attacker, weapon, damage);
+
+	float value = Attributes_FindOnPlayerZR(victim, Attrib_FormRes, true, 0.0, true, true);
+	if(value)
+	{
+		damage *= value;
+	}
+#endif
+
 
 #if defined ZR
 	if(TeutonType[victim])
@@ -1782,8 +1816,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 
-	//dmg bonus before flat res!
-	damage *= fl_Extra_Damage[attacker];
 #if defined ZR
 	if((damagetype & DMG_DROWN) && b_ThisNpcIsSawrunner[attacker])
 	{

@@ -308,7 +308,7 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
+					float damage = 440000.0;
 
 					
 					if(target > 0) 
@@ -471,7 +471,8 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 					
 					// E2 L0 = 6.0, E2 L5 = 7.0
 					KillFeed_SetKillIcon(npc.index, "pistol");
-					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, 185000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					float damage = 280000.0;
+					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					npc.PlayKilledEnemySound(npc.m_iTarget);
 
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");

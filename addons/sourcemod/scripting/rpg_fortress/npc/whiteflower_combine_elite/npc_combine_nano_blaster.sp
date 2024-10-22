@@ -348,7 +348,8 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 					
 					// E2 L0 = 6.0, E2 L5 = 7.0
 					KillFeed_SetKillIcon(npc.index, "pistol");
-					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer02_blue");
+					float damage = 280000.0;
+					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer02_blue");
 					npc.PlayKilledEnemySound(npc.m_iTarget);
 
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");

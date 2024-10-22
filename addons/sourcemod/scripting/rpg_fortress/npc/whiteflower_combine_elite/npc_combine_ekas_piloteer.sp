@@ -276,9 +276,7 @@ public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damage *= 1.3;
+					float damage = 375000.0;
 
 					
 					if(target > 0) 
@@ -318,7 +316,7 @@ public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 				vecSelf[2] += 50.0;
 				vecSelf[0] += GetRandomFloat(-10.0, 10.0);
 				vecSelf[1] += GetRandomFloat(-10.0, 10.0);
-				float RocketDamage = 700000.0;
+				float RocketDamage = 350000.0;
 				int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 300.0);
 				DataPack pack;
 				CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -442,7 +440,8 @@ public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 					
 					// E2 L0 = 6.0, E2 L5 = 7.0
 					KillFeed_SetKillIcon(npc.index, "pistol");
-					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					float damage = 210000.0;
+					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					npc.PlayKilledEnemySound(npc.m_iTarget);
 
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");

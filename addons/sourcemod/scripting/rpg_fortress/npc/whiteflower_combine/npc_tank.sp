@@ -231,7 +231,7 @@ public void WhiteflowerTank_ClotThink(int iNPC)
 					vecDir[1] = DirShoot[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = DirShoot[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					FireBullet(npc.index, npc.index, vecSelf, vecDir, 100000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					FireBullet(npc.index, npc.index, vecSelf, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					
 
 					float npcAng[3];
@@ -287,7 +287,7 @@ void WhiteflowerTank_RocketBarrageDo(WhiteflowerTank npc, float gameTime)
 			vecSelf[2] += 50.0;
 			vecSelf[0] += GetRandomFloat(-10.0, 10.0);
 			vecSelf[1] += GetRandomFloat(-10.0, 10.0);
-			float RocketDamage = 500000.0;
+			float RocketDamage = 250000.0;
 			int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 150.0);
 			DataPack pack;
 			CreateDataTimer(1.0, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);

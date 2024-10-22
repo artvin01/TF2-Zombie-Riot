@@ -247,10 +247,7 @@ public void Whiteflower_AcclaimedSwordsman_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damage *= 1.3;
-
+					float damage = 335000.0;
 					
 					if(target > 0) 
 					{
@@ -307,7 +304,8 @@ public void Whiteflower_AcclaimedSwordsman_ClotThink(int iNPC)
 				NormalizeVector(vecDir, vecDir);
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 300.0, 400.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+				float damage = 250000.0;
+				FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, damage, 400.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 
 				npc.PlayKilledEnemySound(npc.m_iTarget);
 			}

@@ -106,11 +106,6 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		return true;
 #endif
 
-#if defined RPG
-	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
-		RPG_FlatRes(victim, attacker, weapon, damage);
-#endif
-
 #if defined ZR
 	if(attacker > MaxClients && b_ThisNpcIsSawrunner[attacker])
 		return false;
@@ -418,7 +413,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	RPG_ChaosSurgance(victim, attacker, weapon, damage);
 	RPG_BobsPureRage(victim, attacker, damage);
 
-	//this should be last.
+	//this should be last for npcs.
 	RPG_FlatRes(victim, attacker, weapon, damage);
 #endif
 
