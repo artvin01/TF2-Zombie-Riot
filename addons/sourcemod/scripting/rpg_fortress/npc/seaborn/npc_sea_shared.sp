@@ -12,7 +12,7 @@ void SeaShared_Thinking(int entity, float distance, const char[] WalkBack, const
 	}
 	else
 	{
-		distance = CheckDistance;
+		CheckDistance = distance;
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", CheckPos);
 		Npc_Base_Thinking(entity, distance * 2.0, WalkBack, StandStill, walkspeedback, gameTime, walkback_use_sequence, standstill_use_sequence, SeaShared_ClosestTargetValidity);
 	}
