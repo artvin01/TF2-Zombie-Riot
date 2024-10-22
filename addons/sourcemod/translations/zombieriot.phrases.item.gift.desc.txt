@@ -165,45 +165,44 @@
 		"en" 		"Raiders are unable to melee you, thus will only shoot at close range.\nMelee resistances will not help against this zombie."
 		"ru"		"Рейдеры не могут ударить вас в рукопашную,И поэтому будут стрелять вас с билзкой дистанции.\nСопротивление ближнему урону не помогут от этого зомби."
 	}
-	"Combine Rifler Desc"
+	"Whiteflower Rifler Desc"
 	{
 		"en" 		"Losing most of his cognitive function he is barely able to use his rifle.\nHe will still shoot you from time to time."
 		"ru"		"Потеряв большую часть его разума он еле как может использовать его винтовку.\nОн все ещё будет стрелять в вас время от времени."
 	}
-	"Combine Shotgunner Desc"
+	"Whiteflower Shotgunner Desc"
 	{
 		"en" 		"Very fast and shooting zombies, any melee class will be eliminated quickly as their bullets dont get resisted by melee resistance."
 		"ru"		"Очень быстрый и стреляющий зомби, Любой ближний класс будет убит быстро так как их пули не поддаются сопративлению ближнего боя."
 	}
-	"Combine Swordsman Desc"
+	"Whiteflower Swordsman Desc"
 	{
 		"en" 		"Combine imbued with Knightly powers, although still infected.\nThier pulse attack gives them bonus resistances (can be silenced) for a short time."
 		"ru"		"Комбайн пропитанный рыцарскими силами, хотя все ещё заражённый.\nИх атака Пульсом даёт им дополнительное сопротивление урону(может быть заткнуто) на небольшой промежуток времени."
 	}
-	"Combine Elite Desc"
+	"Whiteflower Elite Desc"
 	{
 		"en" 		"Combine Elites were able to slightly resist the cognitive deterioation.\nThey shoot and also fire combine energy balls.\nOverall a better Combine Rifler."
 		"ru"		"Элитные комбайны были способны немного сопротивлятся потери разума.\mОни будут стрелять и запускать Энергетические шары в вас.\nВ целом улучшенный комбайн стерлок."
 	}
-	"Combine Giant Swordsman Desc"
+	"Whiteflower Giant Swordsman Desc"
 	{
-		"en" 		"Giant Combine Swordsman genetically enhanced to be more resistable.\nPulse attack resistance still applies (can be silenced)."
+		"en" 		"Giant Swordsman genetically enhanced to be more resistable.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Гигантский комбайн рыцарь генетически улучшен что бы быть более устойчивым.\nСопротивление урону от атаки пульсом все ещё применяется (Моежт быть заглушено)."
 	}
-	"Combine DDT Desc"
+	"Whiteflower DDT Desc"
 	{
 		"en" 		"Robot Build by the combine against the infection, sadly they also got infected.\nThey are very fast and hit rapidly.\nThey are the melee versions of the Combine shotgunners."
 		"ru"		"Робот построенный комбайнами против инфекции,к сожелению они тоже были заражены.\nОни очень быстрые и бьют часто.\nОни являються версией комбайна с доробовиком но в ближнем бою."
 	}
-	"Combine Golden Collos Desc"
+	"Whiteflower Golden Collos Desc"
 	{
 		"en" 		"Combines tried using ancient rome magic to summon strong allies, thus the golden collos was born.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Комбайны попытались использовать древнию римскую магию что бы призвать сильных союзников, так и появились Золотые Коллосы.\nСопротивление от атаки пульсом так же применяться(может быть заглушено)."
 	}
-	"Combine Overlord Desc"
+	"Whiteflower Overlord Desc"
 	{
-		"en" 		"He Leads the combines specifically on earth.\nAlthough all combine forces have been infected, including him.\n Resistance on pulse attack and rage (can be silenced)."
-		"ru"		"Он ведёт комбайнов на только на планете.\nХотя все силы комбайнов были заражены, включяя его.\mСопротивление на атаки пульса и ярости(Может быть заглушено.)
+		"en" 		"He leads Whiteflower's Army over the world.\nResistance on pulse attack and rage (can be silenced)."
 	}
 	"Scout Assulter Desc"
 	{
@@ -234,6 +233,7 @@
 	{
 		"en" 		"Very Fast, Very high damage, but low health zombies, take them out before they rid your buildings and you to shreds.\nExplodes on death (can be silenced)."
 		"ru"		"Очень быстрые,Очень высокий урон,но мало здоровья,Убейте их до того как они доберутся до вас и ваших построек.\nВзрыв после смерти (Может быть заглушено)."
+	}
 	"Medic Supporter Desc"
 	{
 		"en" 		"This medic will heal (can be silenced) any zombie near it, killing the healing target will enrage the medic.\nIts better to kill the medic beforehand, enraged ones are very powerful."
@@ -299,7 +299,7 @@
 		"en" 		"Giant pyro's made by merasmus, the thought was flamethrower wielding zombie erasers.\nThis backfired. Literally."
 		"ru"		"Гигантский Пиро сделанный Маразмусом,это была мысль о зомби с огнеметами.\nЭто привело к обртаным результатам."
 	}
-	"Combine Deutsch Ritter Desc"
+	"Whiteflower Deutsch Ritter Desc"
 	{
 		"en" 		"An extreamly powerfull and tanky Combine german soldier. Its better to just run at this point."
 		"ru"		"Очень сильный и устойчивый Немецский Комбайн.В таком случае лучше бежать."
@@ -368,42 +368,42 @@
 		"en" 		"When hurt, they will attack 10x as fast, shredding everything (can be silenced)."
 		"ru"		"Когда получает урон они будут атаковать в десять раз быстрее,разнося все что можно(Можно заглушить)."
 	}
-	"Xeno Combine Rifler Desc"
+	"Xeno Rifler Desc"
 	{
 		"en" 		"All their abilities have been enhanced by the Xeno infection."
 		"ru"		"Все их способности были улучшенны Ксено инфекцией."
 	}
-	"Xeno Combine Shotgunner Desc"
+	"Xeno Shotgunner Desc"
 	{
 		"en" 		"Faster and more deadly Shotgunners, they also attack 2x as fast as normal."
 		"ru"		"Более быстрее и смертоносные Пехотинцы,также атакуют в два раза быстрее."
 	}
-	"Xeno Combine Swordsman Desc"
+	"Xeno Swordsman Desc"
 	{
 		"en" 		"The xeno infection even was able to infect roman powers.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Ксено инфекция смогла заразить даже римские силы.\nСопротивление от атаки пульсом(Можно заглушить)."
 	}
-	"Xeno Combine Elite Desc"
+	"Xeno Elite Desc"
 	{
 		"en" 		"Xeno infection didnt seem to alter much in this one."
 		"ru"		"Ксено инфекция похоже не смогла улучшить этого солдата."
 	}
-	"Xeno Combine Giant Swordsman Desc"
+	"Xeno Giant Swordsman Desc"
 	{
 		"en" 		"The xeno infection caused these roman ancients to be able to run and attack way faster!.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Ксено инфекция смогла дать Древним Римлиням способность бежать и атаковать намного быстрее!.\nСопротивление от атаки пульсом(Можно заглушить)."
 	}
-	"Xeno Combine DDT Desc"
+	"Xeno DDT Desc"
 	{
 		"en" 		"They gained cloak abilities, once hurt they will go almost invis for a short time (can be silenced)."
 		"ru"		"Они получили способности невидимости, когда получат урон они получат почти полную невидимости на короткий промежуток времени (можно заглушить)."
 	}
-	"Xeno Combine Golden Collos Desc"
+	"Xeno Golden Collos Desc"
 	{
 		"en" 		"Even statues of pure gold can be infected by the Xeno Radiation.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Даже статуи из чистого золота могут быть заражены Ксено радиацией.\nСопротивление урону от атаки пульсом (можно заглушить)."
 	}
-	"Xeno Combine Overlord Desc"
+	"Xeno Overlord Desc"
 	{
 		"en" 		"The overlord got faster, his pulse attack combos you in the air and glitches you around, and he rages 2x as fast.\nPulse attack resistance still applies (can be silenced).\n Rage reisstance is high (can be silenced)."
 		"ru"		"Повелитель стал быстрее, его атака пульсом отталкивает вас в воздух и глючит вас покругу, Он злится в 2 раза быстрее.\nСопротивление от пульс атаки (может быть заткнуто).\nСопротивление урону в ярости велико(можно заглушить)."
@@ -503,7 +503,7 @@
 		"en" 		"Stronger, faster, hits harder."
 		"ru"		"Сильнее,Быстрее,Бьёт больнее."
 	}
-	"Xeno Combine Deutsch Ritter Desc"
+	"Xeno Deutsch Ritter Desc"
 	{
 		"en" 		"Infected, the german Knights become even more powerfull."
 		"ru"		"Заражены,Немецкие рыцари стали ещё сильнее."
@@ -523,7 +523,7 @@
 		"en" 		"The Highest of the highest. Be glad that he is on your side."
 		"ru"		"Сильнейший из сильнейших. Будь рад что он на твоей стороне."
 	}
-	"Revived Combine DDT Desc"
+	"Revived DDT Desc"
 	{
 		"en" 		"You were able to reanimate these contraptions."
 		"ru"		"Вы смогли реанимировать эти хитроумные приспособления."
@@ -543,7 +543,7 @@
 		"en"		"He was always on your side."
 		"ru"		"Он всегда был на вашей стороне."
 	}
-	"Combine Mage Desc"
+	"Whiteflower Mage Desc"
 	{
 		"en" 		"Combines that have the ability to wield magic.\nThe infection seems to alter their mindset..."
 		"ru"		"Комбайны которые имеют способность к магии.\nИнфекция похоже искожает их разум..."
@@ -732,7 +732,7 @@
 	{
 		"en" 		"Scarily accurate with its gun, if you come too close, it'll kill itself."
 		"ru"		"Ужачно точные с их оружием, если подойти слишком близко,он убьёт себя."
-	
+	}
 	"Crazy Lady Desc"
 	{
 		"en" 		"Prevents you from running away, don't let it stab you."
@@ -740,7 +740,7 @@
 	}
 	"Corrupted Barney Desc"
 	{
-		"en" 		"I̶̡̡͕̟̍͋͑̒ț̵̜̈̉̉'̶̹̃͜s̸̟̗̺̀͐͠ ̵͐̃͜m̴̹̩̓̏̑̕è̷̖͍ ̵̡̮̟̑̾͝G̷͚͍̈́͆͜ő̶̡̧̀̃͒r̵̛̘̙̳̐͝d̵̹̼̭̃̌̀͘ö̶̙͖̬́̄n̷̫̾̈,̸̨̻̲̩̿͛̒͠ ̴̢̼̝̗͛͊͋͠B̸̩̜̲̔a̵̙̜͈͔̐r̵̜͂ṇ̵̥̯̥͊́̏̎e̵̦̙͘y̸̪̏͌ f̷̭̋͆̌ŕ̵͇̦͈͎͗͝ó̶̞̐̇m̵̡̭͔̦̃̚̚ ̶̠̞̝̓̈̎̀B̵͚̼̯̕ľ̴̝̙͕̭́a̷̬̔c̸̟̅́k̶ M̴̬̐͘͝e̶̺̹͋̌͆s̷̻͔̙̅͗͜a̵̢͔̍͛̚
+		"en" 		"I̶̡̡͕̟̍͋͑̒ț̵̜̈̉̉'̶̹̃͜s̸̟̗̺̀͐͠ ̵͐̃͜m̴̹̩̓̏̑̕è̷̖͍ ̵̡̮̟̑̾͝G̷͚͍̈́͆͜ő̶̡̧̀̃͒r̵̛̘̙̳̐͝d̵̹̼̭̃̌̀͘ö̶̙͖̬́̄n̷̫̾̈,̸̨̻̲̩̿͛̒͠ ̴̢̼̝̗͛͊͋͠B̸̩̜̲̔a̵̙̜͈͔̐r̵̜͂ṇ̵̥̯̥͊́̏̎e̵̦̙͘y̸̪̏͌ f̷̭̋͆̌ŕ̵͇̦͈͎͗͝ó̶̞̐̇m̵̡̭͔̦̃̚̚ ̶̠̞̝̓̈̎̀B̵͚̼̯̕ľ̴̝̙͕̭́a̷̬̔c̸̟̅́k̶ M̴̬̐͘͝e̶̺̹͋̌͆s̷̻͔̙̅͗͜a̵̢͔̍͛̚"
 	}
 	"Xeno Malfunctioning Robot Desc"
 	{
@@ -1035,15 +1035,14 @@
 		"en"		"A distacting sword for enemies to hurt it, when enemies attack it, any fusion max pap blade will deal 2x dmg to them."
 		"ru"		"Искажающий меч отвлекающий врагов на себя,когда враги атакуют его,любое максимальное улучшение энергетического клинка будет наносить в 2 раза больше урона им."
 	}
-	"Spawned Combine Desc"
+	"Whiteflower Subject Desc"
 	{
 		"en"		"Unknown creature, caused by something, giving it immunity to damage.\nCan only attack by seeing you and more so hates monks."
 		"ru"		"Неизвестное создание,Причина неуязвимости неизвестна.\nМожет только атаковать если увидет тебя и ненавидет монахов."
 	}
-	"Spawned Father Grigori Desc"
+	"Corrupted Father Grigori Desc"
 	{
-		"en"		"A different kind of infection on Father Grigori. Silent man.\nCan only attack by attacking or blocking him and loses immunity with the fall of Combines."
-		"ru"		"Другой вид инфекции на Отце Григории. Тихий мужик.\nМожет атаковать тебя если только увидет или блокировать его теряет имунитет с падение комбайнов."
+		"en"		"A different kind of infection on Father Grigori. Silent man.\nCan only attack by attacking or blocking him and loses immunity with the fall an Overlord."
 	}
 	"Machina Waldch Desc"
 	{
@@ -1646,7 +1645,7 @@
 		"en"	"You took it all from him, now he returns a favor."
 		"ru"	"Вы забрали всё что у него было и он возвращает должок."
 	}
-	"Bladedance The Combine Desc"
+	"Bladedance The Betrayed Desc"
 	{
 		"en"	"What can be as strong as Bob?"
 		"ru"	"что может быть таким же сильным как и боб?"
@@ -1724,12 +1723,12 @@
 	"Heliara Desc"
 	{
 		"en"	"A stronger Helia"
-		"ru"	"Усиленный Хелия
+		"ru"	"Усиленный Хелия"
 	}
 	"Astriana Desc"
 	{
 		"en"	"Stronger variant"
-		"ru"	"Усиленный вариант
+		"ru"	"Усиленный вариант"
 	}
 	"Europis Desc"
 	{
@@ -2132,7 +2131,7 @@
 	"Secondary Mercs"
 	{
 		"en"	"Secondary Mercs"
-		"ru"	"Вторичные наёмники
+		"ru"	"Вторичные наёмники"
 	}
 	"Secondary Mercs Desc"
 	{

@@ -42,7 +42,7 @@ void RaidbossBladedance_MapStart()
 	for (int i = 0; i < (sizeof(g_RangedSpecialAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedSpecialAttackSoundsSecondary[i]);	}
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bladedance The Combine");
+	strcopy(data.Name, sizeof(data.Name), "Bladedance The Betrayed");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bladedance");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;

@@ -1869,6 +1869,15 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Handled;
 		}
+		else if(TF2_IsPlayerInCondition(victim, TFCond_PreventDeath))
+		{
+			TF2_RemoveCondition(victim, TFCond_PreventDeath);
+
+			damage = 0.0;
+			SetEntityHealth(victim, 1);
+			GiveCompleteInvul(victim, 0.1);
+			return Plugin_Handled;
+		}
 		//the client was the last man on the server, or alone, give them spawn protection
 		//dont do this if they are under specter saw revival
 		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))

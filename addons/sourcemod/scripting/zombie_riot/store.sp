@@ -5912,7 +5912,7 @@ bool Store_PrintLevelItems(int client, int level)
 	return found;
 }
 
-int Store_GetItemName(int index, int client = 0, char[] buffer, int leng)
+int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool translate = true)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -5923,7 +5923,14 @@ int Store_GetItemName(int index, int client = 0, char[] buffer, int leng)
 	
 	static ItemInfo info;
 	item.GetItemInfo(level, info);
-	return strcopy(buffer, leng, TranslateItemName(client, item.Name, info.Custom_Name));
+
+	if(translate)
+		return strcopy(buffer, leng, TranslateItemName(client, item.Name, info.Custom_Name));
+	
+	if(info.Custom_Name[0])
+		return strcopy(buffer, leng, info.Custom_Name);
+	
+	return strcopy(buffer, leng, item.Name);
 }
 
 char[] TranslateItemName(int client, const char name[64], const char Custom_Name[64]) //Just make it 0 as a default so if its not used, fuck it
@@ -6029,22 +6036,7 @@ static void ItemCost(int client, Item item, int &cost)
 		{
 			//during maps where he alaways sells, always sell!
 			//If the client bought this weapon before, do not offer the discount anymore.
-			if(Rogue_Mode())
-			{
-				if(item.NPCSeller_WaveStart > 0)
-				{
-					cost = RoundToCeil(float(cost) * 0.85);
-				}
-				else if(item.NPCSeller_First)
-				{
-					cost = RoundToCeil(float(cost) * 0.85);
-				}
-				else if(item.NPCSeller)
-				{
-					cost = RoundToCeil(float(cost) * 0.9);
-				}
-			}
-			else if(item.NPCSeller_WaveStart > 0)
+			if(item.NPCSeller_WaveStart > 0)
 			{
 				cost = RoundToCeil(float(cost) * 0.7);
 			}

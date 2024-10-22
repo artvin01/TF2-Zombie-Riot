@@ -249,7 +249,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	}
 	else
 	{
-		Enemy enemy;
+		static Enemy enemy;
 		if(Waves_GetNextEnemy(enemy))
 		{
 			int SpawnSettingsSee = 0;
@@ -285,6 +285,11 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					{
 						SetEntProp(entity_Spawner, Prop_Data, "m_iMaxHealth", enemy.Health);
 						SetEntProp(entity_Spawner, Prop_Data, "m_iHealth", enemy.Health);
+					}
+
+					if(enemy.CustomName[0])
+					{
+						strcopy(c_NpcName[entity_Spawner], sizeof(c_NpcName[]), enemy.CustomName);
 					}
 					
 					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);

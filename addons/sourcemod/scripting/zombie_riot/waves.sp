@@ -21,6 +21,7 @@ enum struct Enemy
 	float ExtraSpeed;
 	float ExtraDamage;
 	char Spawn[64];
+	char CustomName[64];
 }
 
 enum struct MiniBoss
@@ -842,6 +843,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
+						kv.GetString("custom_name", enemy.CustomName, sizeof(enemy.CustomName));
 
 						if(!enemy.Credits)
 							nonBosses++;
@@ -2548,7 +2550,7 @@ static void UpdateMvMStatsFrame()
 
 		if(Enemies)
 		{
-			Enemy enemy;
+			static Enemy enemy;
 			int length = Enemies.Length;
 			for(int a; a < length; a++)
 			{

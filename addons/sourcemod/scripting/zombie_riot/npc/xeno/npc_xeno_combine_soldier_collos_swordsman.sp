@@ -79,7 +79,7 @@ public void XenoCombineCollos_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Golden Collos");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Golden Collos");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_collos_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_gold");
 	data.IconCustom = true;
