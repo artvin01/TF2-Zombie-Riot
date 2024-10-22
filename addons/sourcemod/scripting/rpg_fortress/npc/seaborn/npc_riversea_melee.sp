@@ -91,7 +91,6 @@ methodmap RiverSeaMelee < CClotBody
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.SetActivity("ACT_ZOMBIE_TANTRUM");
-		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		i_NpcWeight[npc.index] = 1;
 
