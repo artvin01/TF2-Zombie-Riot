@@ -86,7 +86,8 @@ methodmap RiverSeaFast < CClotBody
 		RiverSeaFast npc = view_as<RiverSeaFast>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.35", "300", team));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		npc.SetActivity("ACT_RUN");
+		npc.SetActivity("ACT_IDLE");
+		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		i_NpcWeight[npc.index] = 0;
 
