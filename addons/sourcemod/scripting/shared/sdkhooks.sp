@@ -2845,14 +2845,14 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 		if(i_TransformationLevel[client] > 0)
 		{
 			if(ArmorCorrosion[client] > 0)
-				ArmorCorrosion[client]--;
+				ArmorCorrosion[client] = ArmorCorrosion[client] * 9 / 10;
 			
 			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		}
 		else
 		{
 			if(ArmorCorrosion[client] > 0)
-				ArmorCorrosion[client] /= 2;
+				ArmorCorrosion[client] = ArmorCorrosion[client] * 2 / 3;
 			
 			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		}
