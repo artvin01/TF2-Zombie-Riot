@@ -1191,6 +1191,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver_mid.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_twirl.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_levita.sp"
 
 #endif
 
