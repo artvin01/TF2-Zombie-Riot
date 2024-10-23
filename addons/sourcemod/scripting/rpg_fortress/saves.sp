@@ -86,6 +86,7 @@ static void EnableCharacter(int client, const char[] id)
 		if(kv.JumpToKey(id))
 		{
 			mp_disable_respawn_times.ReplicateToClient(client, "0");
+			ChangeClientTeam(client, TFTeam_Red);
 			strcopy(CharacterId[client], sizeof(CharacterId[]), id);
 			RaceIndex[client] = kv.GetNum("race");
 
@@ -227,7 +228,10 @@ static void SaveCharacter(int client, bool remove)
 	if(remove)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
 			ForcePlayerSuicide(client);
+			ChangeClientTeam(client, TFTeam_Spectator);
+		}
 	}
 }
 

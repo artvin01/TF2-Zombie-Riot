@@ -380,7 +380,7 @@ public Action TextStore_OnClientSave(int client, char file[PLATFORM_MAX_PATH])
 						TextStore_GetItemData(i, buffer, sizeof(buffer));
 						
 						DataBase.Format(buffer, sizeof(buffer), "INSERT INTO unique_items (steamid, item, name, equip, data, universe) VALUES ('%d', '%s', '%s', '%d', '%s', '%d')", id, item, name, equipped, buffer, CurrentUniverse[client]);
-						PrintToServer(buffer);
+						LogMessage(buffer);
 						tr.AddQuery(buffer);
 					}
 					else

@@ -75,6 +75,30 @@ enum struct BuildEnum
 	int Ang[3];
 
 	int EntRef;
+
+	void SetupEnum(KeyValues kv)
+	{
+		kv.GetSectionName(this.Item, 48);
+		ExplodeStringInt(this.Item, " ", this.Pos, 3);
+
+		kv.GetString("ang", this.Item, 48);
+		ExplodeStringInt(this.Item, " ", this.Ang, 3);
+
+		kv.GetString("name", this.Item, 48);
+	}
+	void AddEntry(KeyValues kv)
+	{
+		static char buffer[48];
+		Format(buffer, sizeof(buffer), "%d %d %d", this.Pos[0], this.Pos[1], this.Pos[2]);
+		kv.JumpToKey(buffer, true);
+
+		Format(buffer, sizeof(buffer), "%d %d %d", this.Ang[0], this.Ang[1], this.Ang[2]);
+		kv.SetString("ang", buffer);
+
+		kv.SetString("name", this.Item);
+
+		kv.GoBack();
+	}
 }
 
 enum
@@ -90,6 +114,7 @@ static ArrayList BuildList;
 static char BlockZone[32];
 static int MaxBlocks;
 static int MaxRange;
+static float BlockDistance;
 static int CurrentEdicts;
 
 static char InPlot[MAXENTITIES+1][32];
@@ -118,9 +143,10 @@ void Plots_ConfigSetup(KeyValues map)
 	delete PlotOwner;
 	PlotOwner = new StringMap();
 
-	MaxBlocks = kv.GetNum("maxblocks", 80);
+	MaxBlocks = kv.GetNum("maxblocks", 50);
 	kv.GetString("zoneprefix", BlockZone, sizeof(BlockZone));
 	MaxRange = kv.GetNum("maxrange", 9) / 2;
+	BlockDistance = kv.GetFloat("blocksize", 50.0);
 	
 	delete BlockList;
 	BlockList = new ArrayList(sizeof(BlockEnum));
@@ -202,10 +228,9 @@ void Plots_ClientLeave(int client, const char[] name)
 
 void Plots_DisableZone(const char[] name)
 {
-	int owner;
-	if(PlotOwner.GetValue(name, owner) && (owner = GetClientOfUserId(owner)))
-	{
-	}
+	int userid;
+	if(PlotOwner.GetValue(name, userid))
+		UnloadPlot(userid, name);
 }
 
 bool Plots_CanShowMenu(int client)
@@ -249,7 +274,7 @@ bool Plots_ShowMenu(int client)
 			static BlockEnum block;
 			BlockList.GetArray(i, block);
 
-			int limit = TextStore_GetItemCount(client, block.Item);
+			int limit = TextStore_GetItemCount(owner, block.Item);
 			if(limit > 0)
 			{
 				bool same = (!page && StrEqual(block.Item, CurrentItem[client]));
@@ -276,14 +301,18 @@ bool Plots_ShowMenu(int client)
 		Menu menu = new Menu(Plots_MainMenu);
 
 		menu.SetTitle("RPG Fortress\n \nPlot:\n ");
-
-		if(TextStore_GetItemCount(client, "Plot Building Permit"))
+		
+		if(!TextStore_GetItemCount(client, "Plot Building Permit"))
 		{
-			menu.AddItem(NULL_STRING, "Claim Plot");
+			menu.AddItem(NULL_STRING, "Claim Plot (Requires Plot Building Permit)", ITEMDRAW_DISABLED);
+		}
+		else if(CurrentEdicts > 1699)
+		{
+			menu.AddItem(NULL_STRING, "Claim Plot (Server Too Full)", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			menu.AddItem(NULL_STRING, "Claim Plot (Requires Plot Building Permit)", ITEMDRAW_DISABLED);
+			menu.AddItem(NULL_STRING, "Claim Plot");
 		}
 
 		menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_DISABLED);
@@ -291,13 +320,7 @@ bool Plots_ShowMenu(int client)
 		menu.AddItem(NULL_STRING, "These plots will be saved each time you reclaim a plot.", ITEMDRAW_DISABLED);
 		menu.AddItem(NULL_STRING, "You can use this land to show off and build special objects.", ITEMDRAW_DISABLED);
 		menu.AddItem(NULL_STRING, "You can choose how you want party members to interact with your land.", ITEMDRAW_DISABLED);
-		menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_DISABLED);
-		menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_DISABLED);
-		menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_DISABLED);
-
-		menu.AddItem(NULL_STRING, "Items");
-
-		menu.Pagination = 0;
+		
 		menu.Display(client, MENU_TIME_FOREVER);
 	}
 
@@ -315,13 +338,16 @@ public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Cancel:
 		{
 			InMenu[client] = false;
-			TextStore_Inspect(client);
+
+			if(choice == MenuCancel_Exit)
+				TextStore_Inspect(client);
 		}
 		case MenuAction_Select:
 		{
 			if(InMenu[client])
 			{
 				InMenu[client] = false;
+				// Menu stuff
 			}
 			else if(choice)
 			{
@@ -329,24 +355,7 @@ public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
 			}
 			else
 			{
-				StringMapSnapshot snap = PlotOwner.Snapshot();
-				int length = snap.Length;
-				for(int i; i < length; i++)
-				{
-					int size = snap.KeyBufferSize(i) + 1;
-					char[] buffer = new char[size];
-					snap.GetKey(i, buffer, size);
-					
-					if(!PlotOwner.GetValue(buffer, size))
-					{
-						PlotOwner.Erase(buffer);
-					}
-					else if(GetClientOfUserId(size) == client)
-					{
-						Plots_DisableZone(buffer);
-						break;
-					}
-				}
+				LoadPlot(client);
 			}
 		}
 	}
@@ -366,7 +375,179 @@ static int GetBlockByName(const char[] item, BlockEnum block)
 	return -1;
 }
 
-static int GetBlockSpace(int client, int[] blocks = 0, bool countBlocks = false)
+static void LoadPlot(int client, const char[] zone)
+{
+	static char id[32];
+	if(GetClientAuthId(client, AuthId_Steam3, id, sizeof(id)) && strlen(id) > 9)
+	{
+		// Check for existing owner
+		int length;
+		if(PlotOwner.GetValue(zone, length))
+			UnloadPlot(length, zone);
+		
+		int userid = GetClientUserId(client);
+		PlotOwner.SetNum(zone, userid);
+		
+		KeyValues kv = Saves_Kv("plots");
+		if(kv.JumpToKey(id))
+		{
+			if(kv.GotoFirstSubKey())
+			{
+				length = BlockList.Length;
+				int[] blocks = new int[length];
+				int[] count = new int[length];
+				bool[] cached = new bool[length];
+
+				for(int i; i < length; i++)
+				{
+					cached[i] = false;
+				}
+
+				build.UserID = userid;
+				build.EntRef = -1;
+
+				do
+				{
+					build.SetupEnum(kv);
+
+					static BlockEnum block;
+					int id = GetBlockByName(build.Item, block);
+					if(id == -1)
+						continue;
+					
+					blocks[id]++;
+					
+					if(!cached[id])
+						count[id] = TextStore_GetItemCount(client, build.Item);
+					
+					if(count >= blocks[id])
+						BuildList.PushArray(build);
+				}
+				while(kv.GotoNextKey());
+
+				RenderPlot(userid);
+			}
+		}
+	}
+}
+
+static void UnloadPlot(int userid, const char[] zone = "")
+{
+	if(zone[0])
+	{
+		PlotOwner.Erase(zone);
+	}
+	else
+	{
+		StringMapSnapshot snap = PlotOwner.Snapshot();
+		int length = snap.Length;
+		for(int i; i < length; i++)
+		{
+			int size = snap.KeyBufferSize(i) + 1;
+			char[] buffer = new char[size];
+			snap.GetKey(i, buffer, size);
+			
+			if(!PlotOwner.GetValue(buffer, size))
+			{
+				// Should never happen
+				PlotOwner.Erase(buffer);
+			}
+			else if(size == userid)
+			{
+				// This plot owned by this player
+				PlotOwner.Erase(buffer);
+				break;
+			}
+		}
+		delete snap;
+	}
+	
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
+		static char id[32];
+		if(GetClientAuthId(client, AuthId_Steam3, id, sizeof(id)) && strlen(id) > 9)
+		{
+			KeyValues kv = Saves_Kv("plots");
+			kv.Erase(id);
+			kv.JumpToKey(id, true);
+
+			int length = BuildList.Length;
+			for(int i; i < length; i++)
+			{
+				static BuildEnum build;
+				BuildList.GetArray(i, build);
+				if(build.UserID == userid)
+				{
+					build.AddEntry(kv);
+
+					int entity = build.EntRef;
+					if(entity != -1)
+						RemoveEntity(entity);
+
+					BuildList.Erase(i);
+				}
+			}
+
+			return;
+		}
+	}
+
+	int length = BuildList.Length;
+	for(int i; i < length; i++)
+	{
+		static BuildEnum build;
+		BuildList.GetArray(i, build);
+		if(build.UserID == userid)
+		{
+			int entity = build.EntRef;
+			if(entity != -1)
+				RemoveEntity(entity);
+
+			BuildList.Erase(i);
+		}
+	}
+}
+
+static void RenderPlot(int userid, const float center[3], const float angles[3] = {})
+{
+	float pos[3], ang[3];
+	int amount;
+	int length = BuildList.Length;
+	for(int i; i < length; i++)
+	{
+		static BuildEnum build;
+		BuildList.GetArray(i, build);
+		if(build.UserID == userid)
+		{
+			if(build.EntRef == -1 || !IsValidEntity(build.EntRef))
+			{
+				static BlockEnum block;
+				int id = GetBlockByName(build.Item, block);
+				if(id != -1)
+				{
+					pos = center;
+					ang = angles;
+
+					for(int b; b < 3; b++)
+					{
+						pos[b] += build.Pos[b] * BlockDistance;
+						ang[b] += float(build.Ang[b]);
+					}
+
+					int entity = block.Spawn(pos, ang);
+					if(entity != -1)
+					{
+						build.EntRef = EntIndexToEntRef(entity);
+						BuildList.SetArray(i, build);
+					}
+				}
+			}
+		}
+	}
+}
+
+static int GetBlockSpace(int userid, int[] blocks = {}, bool countBlocks = false)
 {
 	int amount;
 	int length = BuildList.Length;
@@ -374,15 +555,11 @@ static int GetBlockSpace(int client, int[] blocks = 0, bool countBlocks = false)
 	{
 		static BuildEnum build;
 		BuildList.GetArray(i, build);
-		if(build.Owner == owner)
+		if(build.UserID == userid)
 		{
 			static BlockEnum block;
 			int id = GetBlockByName(build.Item, block);
-			if(id == -1)
-			{
-				BuildList.Erase(i);
-			}
-			else
+			if(id != -1)
 			{
 				amount += block.Space;
 				if(countBlocks)
@@ -390,6 +567,7 @@ static int GetBlockSpace(int client, int[] blocks = 0, bool countBlocks = false)
 			}
 		}
 	}
+	return amount;
 }
 
 static bool CanInteractHere(int client)

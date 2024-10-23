@@ -409,7 +409,7 @@ static void ToMetaData(const WeaponEnum weapon, char data[512])
 		static TinkerEnum tinker;
 		TinkerList.GetArray(weapon.Perks[i], tinker);
 		Format(data, sizeof(data), "%s:%s", data, tinker.Name);
-		sell += tinker.Credits - (tinker.Levels * 200);
+		sell += tinker.Credits;
 	}
 
 	if(weapon.ForgeCount)

@@ -909,6 +909,9 @@ static void TextStore_ShowSellMenu(int client)
 			
 			if(market)
 			{
+				if(MarketCount[client] > MARKET_CAP)
+					MarketCount[client] = MARKET_CAP;
+				
 				amount = kv.GetNum("cost");
 				kv.GetString("storetags", buffer, sizeof(buffer));
 				if(buffer[0])
@@ -1053,18 +1056,27 @@ static int TextStore_SellMenuHandle(Menu menu, MenuAction action, int client, in
 										int oldPrice = MarketKv.GetNum("price");
 										if(oldPrice == MarketSell[client])
 										{
+											int current = MarketKv.GetNum("amount");
+
+											if((current + MarketCount[client]) > MARKET_CAP)
+											{
+												SPrintToChat(client, "%d items were returned to you as hit the quantity cap of %d.", (current + MarketCount[client]) - MARKET_CAP, MARKET_CAP);
+												MarketCount[client] = MARKET_CAP - current;
+											}
+
 											amount -= MarketCount[client];
-											MarketKv.SetNum("amount", MarketKv.GetNum("amount") + MarketCount[client]);
+											MarketKv.SetNum("amount", current + MarketCount[client]);
 										}
 										else
 										{
 											int refund = MarketKv.GetNum("amount");
 											amount -= MarketCount[client] - refund;
-											MarketKv.SetNum("amount", MarketCount[client]);
-											MarketKv.SetNum("price", MarketSell[client]);
 
 											if(refund)
 												SPrintToChat(client, "%d items were placed at %d credits and were returned to you.", refund, oldPrice);
+
+											MarketKv.SetNum("amount", MarketCount[client]);
+											MarketKv.SetNum("price", MarketSell[client]);
 										}
 
 										TextStore_SetInv(client, MarketItem[client], amount);

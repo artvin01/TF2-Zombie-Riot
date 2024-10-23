@@ -1482,7 +1482,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 
 #if defined RPG
 	if(!Saves_HasCharacter(client))
+	{
+		ChangeClientTeam(client, TFTeam_Spectator);
 		return MRES_Supercede;
+	}
 	
 	if(!Dungeon_CanClientRespawn(client))
 		return MRES_Supercede;

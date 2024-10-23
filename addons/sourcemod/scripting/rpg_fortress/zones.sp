@@ -73,10 +73,17 @@ void Zones_Rebuild()
 	delete ActiveZones;
 	ActiveZones = new ArrayList(ByteCountToCells(64));
 
-	int entity;
+	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "trigger_rpgzone")) != -1)
 	{
 		RemoveEntity(entity);
+	}
+
+	entity = -1;
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	{
+		if(hFromSpawnerIndex[entity] != -1)
+			NPC_Despawn(entity);
 	}
 	
 	ZonesKv.Rewind();
