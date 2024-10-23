@@ -96,6 +96,7 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Extra Cash: +{1}"
+		"ru"		"Дополнительные кредиты: +{1}"
 		"fr"		"Argent Extra: +{1}"
 		"pt"		"Crédito Extra: +{1}"
 	}
@@ -159,7 +160,7 @@
 		"#format"	"{1:d}"
 		"en"		"Healing Done: {1}"
 		"it"		"Guarigione Compiuta: {1}"
-		"ru"		"Ед. здор. вылечено: {1}"
+		"ru"		"вылечено: {1}"
 		"pl"		"Uleczono: {1}"
 		"es"		"Curación total: {1}"
 		"fr"		"Soins Donnés: {1}"
@@ -254,7 +255,7 @@
 		"en"		"Buy with scrap"
 		"fr"		"Acheter avec Feraille"
 		"pt"		"Comprar com sucata"
-		"ru"		"Куп. за металл"
+		"ru"		"Купить за металл"
 		"nl"		"Koop met scrap"
 		"chi"       "使用废料购买"
 	}

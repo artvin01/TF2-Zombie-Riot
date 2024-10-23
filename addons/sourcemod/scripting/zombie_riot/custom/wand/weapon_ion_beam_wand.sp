@@ -142,11 +142,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		DamagE *=1.22;
 		if(IsValidEntity(weapon))
 		{
-			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ION_BEAM_PULSE)
-			{	//turn speed is useless for the pulse cannon. so instead Slightly buff the damage.
-				DamagE *=1.1;
-			}
-			else if(i_CustomWeaponEquipLogic[weapon] != WEAPON_ION_BEAM_NIGHT)	//Don't buff turn speed.
+			if(i_CustomWeaponEquipLogic[weapon] != WEAPON_ION_BEAM_NIGHT)	//Don't buff turn speed.
 			{
 				Turn_Speed += 1.25;
 				Pitch_Speed += 1.25;
@@ -234,13 +230,13 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_ION_BEAM_FEED:
+		case WEAPON_ION_BEAM_FEED:	//Higher max damage, dmg takes time to ramp up, mana cost ramps up alongside damage.
 		{
 			float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
 			float Ration = Duration*1.15 - Duration;
 			
-			if(Ration>2.2)
-				Ration = 2.2;
+			if(Ration>2.0)
+				Ration = 2.0;
 			
 			DamagE *= Ration;
 
@@ -251,20 +247,20 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		
 			Effects |= (1 << 8); //feedback
 		}
-		case WEAPON_ION_BEAM_NIGHT:
+		case WEAPON_ION_BEAM_NIGHT:	//Instant high dps, Lower mana cost, More Range. Non-existant turn speed. cool looking pattern
 		{
 			Range *= 1.25;
 		
 			Turn_Speed *= 0.5;
 			Pitch_Speed *= 0.5;
 			
-			DamagE *= 1.9;
+			DamagE *= 1.8;
 
 			Mana_Cost -= RoundToFloor(float(Mana_Cost)*0.1);
 			
 			Effects |= (1 << 6);	//nightmare
 		}
-		case WEAPON_ION_BEAM_PULSE:
+		case WEAPON_ION_BEAM_PULSE:	//Lowest damage, higher mana cost, Instant turn speed, "timeout" is lessened, need to hold M1 to have the beam active. very cool looking pattern
 		{
 			if(GameTime > fl_Special_Timer[client] + 1.75)
 			{
@@ -273,9 +269,9 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 			}
 			Mana_Cost += RoundToFloor(float(Mana_Cost)*0.1);
 			
-			DamagE *= 1.7;
+			DamagE *= 1.45;
 			
-			Effects |= (1 << 7); //
+			Effects |= (1 << 7); //pulse
 			
 		}
 	}
@@ -582,8 +578,8 @@ static void Neuvellete_Hud(int client, int weapon)
 			float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
 			float Ration = Duration*1.15 - Duration;
 			
-			if(Ration>2.2)
-				Ration = 2.2;
+			if(Ration>2.0)
+				Ration = 2.0;
 				
 			Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online | Power: (%.1f/2.2)]", HUDText, Ration);
 		}
