@@ -333,7 +333,8 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 
 					i_ExplosiveProjectileHexArray[weapon] = 0;
 					i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
-					Explode_Logic_Custom(f_SpecterDeadDamage[client] * 3.5, client, weapon, weapon, flPos, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
+					i_ExplosiveProjectileHexArray[weapon] |= ZR_DAMAGE_IGNORE_DEATH_PENALTY;
+					Explode_Logic_Custom(f_SpecterDeadDamage[client], client, weapon, weapon, flPos, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
 					//Bleed sucks but thats on purpose
 
 					float vecTarget[3];

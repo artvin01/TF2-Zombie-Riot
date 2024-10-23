@@ -955,14 +955,14 @@ void NPCDeath(int entity)
 	}
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		int DeathNoticer = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(DeathNoticer) && !b_NpcHasDied[DeathNoticer])
 		{
-			Function func = func_NPCDeathForward[baseboss_index];
+			Function func = func_NPCDeathForward[DeathNoticer];
 			if(func && func != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, func);
-				Call_PushCell(baseboss_index);
+				Call_PushCell(DeathNoticer);
 				Call_PushCell(entity);
 				Call_Finish();
 			}

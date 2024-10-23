@@ -45,6 +45,10 @@ static char g_RangedAttackSoundsSecondary[][] = {
 static char g_RocketSound[][] = {
 	"weapons/rpg/rocketfire1.wav",
 };
+static const char g_HealSound[][] = {
+	"items/medshot4.wav",
+};
+
 
 public void Whiteflower_selected_few_OnMapStart_NPC()
 {
@@ -56,6 +60,7 @@ public void Whiteflower_selected_few_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	for (int i = 0; i < (sizeof(g_RocketSound));	i++) { PrecacheSound(g_RocketSound[i]);	}
+	for (int i = 0; i < (sizeof(g_HealSound)); i++) { PrecacheSound(g_HealSound[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Selected Few");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_selected_few");
@@ -88,6 +93,11 @@ methodmap Whiteflower_selected_few < CClotBody
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
+
+	}
+	public void PlayHealSound() 
+	{
+		EmitSoundToAll(g_HealSound[GetRandomInt(0, sizeof(g_HealSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.1, 110);
 
 	}
 	
@@ -166,8 +176,6 @@ methodmap Whiteflower_selected_few < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
-	
-	
 	public Whiteflower_selected_few(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
@@ -179,8 +187,7 @@ methodmap Whiteflower_selected_few < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
 
-		int iActivity = npc.LookupActivity("ACT_MP_STAND_ITEM2");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.AddActivityViaSequence("p_jumpuploop");
 
 		npc.m_bisWalking = false;
 
@@ -204,6 +211,7 @@ methodmap Whiteflower_selected_few < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
 
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
 		SetVariantString("1.0");
@@ -226,6 +234,14 @@ methodmap Whiteflower_selected_few < CClotBody
 	
 }
 
+void RPGDoHealEffect(int entity, float range)
+{
+	float ProjectileLoc[3];
+	Whiteflower_selected_few npc1 = view_as<Whiteflower_selected_few>(entity);
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 125, 0, 200, 1, 0.3, 5.0, 8.0, 3, range * 2.0);	
+	npc1.PlayHealSound();
+}
 //TODO 
 //Rewrite
 public void Whiteflower_selected_few_ClotThink(int iNPC)
@@ -257,7 +273,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
-	
+
 	if(npc.m_flCooldownDurationHurt)
 	{
 		if(npc.m_flCooldownDurationHurt < gameTime)
@@ -267,9 +283,18 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			{
 				RemoveEntity(npc.m_iWearable1);
 			}
+			if(IsValidEntity(npc.m_iWearable4))
+			{
+				RemoveEntity(npc.m_iWearable4);
+			}
+			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
+			flMaxhealth *= 0.15;
+			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 35.9, 0.0, HEAL_SELFHEAL);
+			RPGDoHealEffect(npc.index, 150.0);
 			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 			SetVariantString("0.8");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
 			if(npc.m_iChanged_WalkCycle != 4) 	
 			{
 				npc.m_bisWalking = true;
@@ -290,9 +315,18 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 		{
 			RemoveEntity(npc.m_iWearable1);
 		}
+		if(IsValidEntity(npc.m_iWearable4))
+		{
+			RemoveEntity(npc.m_iWearable4);
+		}
+		
+		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
 	}
 
 	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (ReturnEntityMaxHealth(npc.index) * 0.5))
@@ -300,7 +334,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 		if(!npc.Anger)
 		{
 			npc.Anger = true;
-			npc.m_flCooldownDurationHurt = gameTime + 3.0;
+			npc.m_flCooldownDurationHurt = gameTime + 0.75;
+			
+	
 			if(IsValidEntity(npc.m_iWearable1))
 			{
 				RemoveEntity(npc.m_iWearable1);
@@ -308,8 +344,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 7;
 			npc.m_flSpeed = 0.0;
-			npc.SetActivity("ACT_PICKUP_RACK");
+			npc.AddActivityViaSequence("preSkewer");
 			npc.SetPlaybackRate(0.35);
+			NPC_StopPathing(npc.index);
 			return;
 		}
 	}
@@ -318,7 +355,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 	{
 		if(npc.m_flSpawnTempClone < gameTime)
 		{
-			npc.m_flSpawnTempClone = gameTime + 3.0;
+			npc.m_flSpawnTempClone = gameTime + 1.5;
 			npc.PlayRocketSound();
 			
 			int entity_death = CreateEntityByName("prop_dynamic_override");
@@ -347,9 +384,6 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				SetVariantString("1.25");
 				AcceptEntityInput(prop.m_iWearable3, "SetModelScale");
 
-				prop.m_iWearable4 = prop.EquipItem("partyhat", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
-				SetVariantString("1.25");
-				AcceptEntityInput(prop.m_iWearable4, "SetModelScale");
 				//Cape
 
 				SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
@@ -358,7 +392,6 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				CreateTimer(2.0, Timer_RemoveEntity_SelectedFew, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
 				SetVariantString("forcescanner");
 				AcceptEntityInput(entity_death, "SetAnimation");
 			}
@@ -366,8 +399,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 	}
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "p_jumpuploop", 260.0, gameTime, _ , true);
-
+	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "p_jumpuploop", 0.0, gameTime, _ , true);
 	if(npc.m_flJumpHappening)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -381,8 +413,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 		{
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
+				npc.m_flJumpHappening = 0.0;
 				//da jump!
-				npc.m_flDoingAnimation = gameTime + 1.0;
+				npc.m_flDoingAnimation = gameTime + 0.45;
 				float WorldSpaceCenterVec[3]; 
 				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
 				PluginBot_Jump(npc.index, WorldSpaceCenterVec);
@@ -391,9 +424,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				{
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 7;
-					npc.SetActivity("ACT_RUN");
+					npc.SetActivity("ACT_JUMP");
 					npc.m_flSpeed = 0.0;
-					NPC_StartPathing(iNPC);
+					NPC_StopPathing(npc.index);
 				}
 			}
 		}
@@ -424,7 +457,6 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					{
 						damage = 40000.0;
 					}
-
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
@@ -432,7 +464,6 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 							DealTruedamageToEnemy(npc.index, target, damage);
 						else
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-
 						// Hit sound
 						npc.PlayMeleeHitSound();
 						if(target <= MaxClients)
@@ -544,29 +575,30 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					npc.PlayRocketSound();
 					for(float loopDo = 1.0; loopDo <= 2.0; loopDo += 0.5)
 					{
-						float vecSelf[3];
-						WorldSpaceCenter(npc.index, vecSelf);
-						vecSelf[2] += 50.0;
-						vecSelf[0] += GetRandomFloat(-10.0, 10.0);
-						vecSelf[1] += GetRandomFloat(-10.0, 10.0);
+						float vecSelf2[3];
+						WorldSpaceCenter(npc.index, vecSelf2);
+						vecSelf2[2] += 50.0;
+						vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
+						vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
 						float RocketDamage = 700000.0;
-						int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 200.0);
+						int RocketGet = npc.FireRocket(vecSelf2, RocketDamage, 200.0);
 						DataPack pack;
 						CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
 						pack.WriteCell(EntIndexToEntRef(RocketGet));
 						pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
 					}
-					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
+					if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
 					{
 						//enemy is indeed to far away, jump at them
-						npc.m_flJumpHappening = gameTime + 1.0;
+						npc.m_flJumpHappening = gameTime + 0.5;
 						if(npc.m_iChanged_WalkCycle != 6) 	
 						{
 							npc.m_bisWalking = false;
 							npc.m_iChanged_WalkCycle = 6;
-							npc.SetActivity("ACT_RUN");
+							npc.AddActivityViaSequence("citizen4_preaction");
+							npc.SetPlaybackRate(0.0);
 							npc.m_flSpeed = 0.0;
-							NPC_StartPathing(iNPC);
+							NPC_StopPathing(npc.index);
 						}
 					}
 				}
@@ -610,8 +642,6 @@ public void Whiteflower_selected_few_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 }
-
-
 
 
 //TODO: Make kaboom

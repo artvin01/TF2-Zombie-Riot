@@ -449,7 +449,7 @@ static void ClotThink(int iNPC)
 		else
 			Ruina_Master_Rally(npc.index, false);
 			
-		if(Ratio < 0.25)
+		if(Ratio < 0.35)
 			SacrificeAllies(npc.index);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
 
 	}
@@ -696,19 +696,6 @@ static bool Retreat(Ruliana npc, bool custom = false)
 
 
 	return true;
-}
-static bool Similar_Vec(float Vec1[3], float Vec2[3])
-{
-	bool similar = true;
-	for(int i=0 ; i < 3 ; i ++)
-	{
-		similar = Similar(Vec1[i], Vec2[i]);
-	}
-	return similar;
-}
-static bool Similar(float val1, float val2)
-{
-	return fabs(val1 - val2) < 2.0;
 }
 static bool Directional_Trace(Ruliana npc, float Origin[3], float Angle[3], float Result[3])
 {
