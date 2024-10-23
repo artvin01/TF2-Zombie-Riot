@@ -317,7 +317,7 @@ void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTime, int
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				npc.m_flNextMeleeAttack = gameTime + 1.5;
 			}
 		}
 	}

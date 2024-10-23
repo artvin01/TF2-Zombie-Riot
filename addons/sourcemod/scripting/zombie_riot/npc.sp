@@ -583,8 +583,12 @@ void NPC_ConfigSetup()
 	Zapper_OnMapStart_NPC();
 	VictorianPayback_OnMapStart_NPC();
 	Blocker_OnMapStart_NPC();
+	VictorianIronShield_OnMapStart_NPC();
 	
 //wave 31~45
+	Victoria_BaseBreaker_OnMapStart_NPC();
+	VictoriaBigPipe_OnMapStart_NPC();
+	VictoriaHarbringer_OnMapStart_NPC();
 	VictoriaBirdeye_OnMapStart_NPC();
 
 	//Alt Barracks
@@ -1655,5 +1659,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_ironshield.sp"
 
 //wave 31~45
+#include "zombie_riot/npc/victoria/npc_basebreaker.sp"
 #include "zombie_riot/npc/victoria/npc_birdeye.sp"
+#include "zombie_riot/npc/victoria/npc_harbringer.sp"
+#include "zombie_riot/npc/victoria/npc_bigpipe.sp"
 
