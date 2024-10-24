@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 #define MARKET_TAX	10
+#define MARKET_CAP	10
 
 static const char RarityName[][] = 
 {
@@ -2211,11 +2212,11 @@ static void ShowMenu(int client, int page = 0)
 		}
 		case MENU_BUILDING:
 		{
-			/*if(Plots_ShowMenu(client))
+			if(Plots_CanShowMenu(client) && Plots_ShowMenu(client))
 			{
 				InMenu[client] = true;
 			}
-			else*/
+			else
 			{
 				MenuType[client] = MENU_SPELLS;
 				InMenu[client] = false;

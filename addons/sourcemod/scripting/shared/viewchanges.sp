@@ -624,10 +624,8 @@ static void ImportSkinAttribs(int wearable, int weapon)
 	Attributes_Set(wearable, 834, Attributes_Get(weapon, 834, 0.0));
 	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));
 #if defined RPG
-	char buffer[2];
-	int PleaseFixCommentTy;
-//	Saves_ClientCharId(client, buffer, sizeof(buffer));
-	Attributes_Set(wearable, 866, float(buffer[0]));
+	// TODO: Add proper randomizing
+	Attributes_Set(wearable, 866, float(index));
 #elseif defined ZR
 	Attributes_Set(wearable, 866, float(CurrentGame));
 #endif

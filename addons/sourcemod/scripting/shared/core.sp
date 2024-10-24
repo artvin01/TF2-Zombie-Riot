@@ -2313,6 +2313,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	Tutorial_MakeClientNotMove(client);
 #endif
 
+#if defined RPG
+	if(Plots_PlayerRunCmd(client, buttons))
+		return Plugin_Changed;
+#endif
+
 #if defined ZR || defined RPG
 	if(buttons & IN_ATTACK)
 	{
@@ -2335,7 +2340,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-
 	static int holding[MAXTF2PLAYERS];
 	if(holding[client] & IN_ATTACK)
 	{

@@ -45,7 +45,7 @@ float Animal_Happy[MAXTF2PLAYERS][10][3];
 float f3_PositionArrival[MAXENTITIES][3];
 int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 
-bool b_PlayerIsPVP[MAXENTITIES];
+int b_PlayerIsPVP[MAXENTITIES];
 int i_CurrentStamina[MAXTF2PLAYERS];
 int i_MaxStamina[MAXTF2PLAYERS];
 float f_ClientTargetedByNpc[MAXTF2PLAYERS];
@@ -97,6 +97,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/mining.sp"
 #include "rpg_fortress/music.sp"
 #include "rpg_fortress/party.sp"
+#include "rpg_fortress/plots.sp"
 #include "rpg_fortress/quests.sp"
 #include "rpg_fortress/saves.sp"
 #include "rpg_fortress/spawns.sp"
@@ -314,7 +315,6 @@ void RPG_SetupMapSpecific(const char[] mapname)
 }
 void RPG_ConfigSetup()
 {
-
 	Zones_ConfigSetup();
 	Actor_ConfigSetup();
 	Crafting_ConfigSetup();
@@ -324,6 +324,7 @@ void RPG_ConfigSetup()
 	Garden_ConfigSetup();
 	Mining_ConfigSetup();
 	Quests_ConfigSetup();
+	Plots_ConfigSetup();
 	Races_ConfigSetup();
 	Saves_ConfigSetup();
 	Spawns_ConfigSetup();
@@ -331,8 +332,6 @@ void RPG_ConfigSetup()
 	Worldtext_ConfigSetup();
 	
 	TextStore_ConfigSetup();
-
-
 }
 
 bool RPG_BuildPath(char[] buffer, int length, const char[] name)
@@ -433,6 +432,7 @@ void RPG_EntityCreated(int entity, const char[] classname)
 	StoreWeapon[entity][0] = 0;
 	hFromSpawnerIndex[entity] = -1;
 	Dungeon_ResetEntity(entity);
+	Plots_EntityCreated(entity);
 	Stats_ClearCustomStats(entity);
 	Zones_EntityCreated(entity, classname);
 	OnEntityCreatedMeleeWarcry(entity);
