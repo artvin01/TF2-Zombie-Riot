@@ -305,7 +305,7 @@ public void Whiteflower_Rocketeer_ClotThink(int iNPC)
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
 
 					npc.PlayMeleeSound();
-					float DamageDeal = 400000.0;
+					float DamageDeal = 350000.0;
 					int RocketGet = npc.FireRocket(vecTarget, DamageDeal, 1100.0);
 					npc.m_iAttacksTillReload++;
 

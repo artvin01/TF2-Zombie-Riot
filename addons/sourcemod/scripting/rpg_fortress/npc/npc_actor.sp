@@ -102,19 +102,21 @@ methodmap NPCActor < CClotBody
 		if(buffer1[0])
 		{
 			npc.m_iWearable1 = npc.EquipItem("head", buffer1, _, skin, kv.GetFloat("wear1_size", 1.0));
+			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", kv.GetNum("wear1_skin", 0));
 		}
 
 		kv.GetString("wear2", buffer1, sizeof(buffer1));
 		if(buffer1[0])
 		{
 			npc.m_iWearable2 = npc.EquipItem("head", buffer1, _, skin, kv.GetFloat("wear2_size", 1.0));
-			SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+			SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", kv.GetNum("wear2_skin", 0));
 		}
 
 		kv.GetString("wear3", buffer1, sizeof(buffer1));
 		if(buffer1[0])
 		{
 			npc.m_iWearable3 = npc.EquipItem("head", buffer1, _, skin, kv.GetFloat("wear3_size", 1.0));
+			SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", kv.GetNum("wear3_skin", 0));
 		}
 
 		SetVariantInt(kv.GetNum("bodygroup"));

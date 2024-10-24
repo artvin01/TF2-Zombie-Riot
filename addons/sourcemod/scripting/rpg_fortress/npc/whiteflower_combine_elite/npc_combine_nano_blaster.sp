@@ -302,7 +302,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN_PISTOL");
-					npc.m_flSpeed = 350.0;
+					npc.m_flSpeed = 300.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
@@ -316,7 +316,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 						npc.m_bisWalking = true;
 						npc.m_iChanged_WalkCycle = 7;
 						npc.SetActivity("ACT_WALK_AIM_PISTOL");
-						npc.m_flSpeed = 150.0;
+						npc.m_flSpeed = 125.0;
 						NPC_StartPathing(iNPC);
 					}
 					npc.FaceTowards(vecTarget, 15000.0); //Snap to the enemy. make backstabbing hard to do.
@@ -348,7 +348,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 					
 					// E2 L0 = 6.0, E2 L5 = 7.0
 					KillFeed_SetKillIcon(npc.index, "pistol");
-					float damage = 280000.0;
+					float damage = 210000.0;
 					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer02_blue");
 					npc.PlayKilledEnemySound(npc.m_iTarget);
 
@@ -366,7 +366,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 						npc.m_bisWalking = true;
 						npc.m_iChanged_WalkCycle = 4;
 						npc.SetActivity("ACT_RUN_PISTOL");
-						npc.m_flSpeed = 350.0;
+						npc.m_flSpeed = 300.0;
 						NPC_StartPathing(iNPC);
 					}
 				}
@@ -375,7 +375,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 	}
 	else
 	{
-		npc.m_flSpeed = 260.0;
+		npc.m_flSpeed = 300.0;
 		npc.m_iChanged_WalkCycle = 0;
 	}
 	npc.PlayIdleSound();

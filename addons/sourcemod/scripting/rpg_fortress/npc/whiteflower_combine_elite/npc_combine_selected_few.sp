@@ -584,7 +584,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 						pack.WriteCell(EntIndexToEntRef(RocketGet));
 						pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
 					}
+					/*
 					if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
+					*/
 					{
 						//enemy is indeed to far away, jump at them
 						npc.m_flJumpHappening = gameTime + 0.5;
@@ -654,7 +656,7 @@ public Action Timer_RemoveEntity_SelectedFew(Handle timer, any entid)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", abspos);
 			abspos[2] += 45.0;
 			float Range = 100.0;
-			float Time = 0.25;
+			float Time = 0.35;
 			float DamageDeal = 350000.0;
 			Explode_Logic_Custom(DamageDeal, Owner, Owner, -1, abspos, Range);
 			EmitSoundToAll("ambient/explosions/explode_4.wav", -1, _, 80, _, _, _, _,abspos);

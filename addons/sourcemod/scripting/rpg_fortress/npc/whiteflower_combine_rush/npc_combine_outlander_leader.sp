@@ -324,12 +324,8 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
-					
-					if(npc.Anger)
-					{
-						damage = 40000.0;
-					}
+					float damage = 550000.0;
+
 					
 					if(target > 0) 
 					{
@@ -608,7 +604,7 @@ void WF_Outlander_LeaderInitiateLaserAttack(int entity, float VectorTarget[3], f
 	pack.WriteFloat(VectorStart[0]);
 	pack.WriteFloat(VectorStart[1]);
 	pack.WriteFloat(VectorStart[2]);
-	RequestFrames(WF_Outlander_LeaderInitiateLaserAttack_DamagePart, 50, pack);
+	RequestFrames(WF_Outlander_LeaderInitiateLaserAttack_DamagePart, 40, pack);
 }
 
 void WF_Outlander_LeaderInitiateLaserAttack_DamagePart(DataPack pack)
@@ -663,8 +659,8 @@ void WF_Outlander_LeaderInitiateLaserAttack_DamagePart(DataPack pack)
 	delete trace;
 			
 		
-	float CloseDamage = 25.0;
-	float FarDamage = 15.0;
+	float CloseDamage = 600000.0;
+	float FarDamage = 650000.0;
 	float MaxDistance = 1000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)

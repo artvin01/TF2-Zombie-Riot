@@ -1479,12 +1479,18 @@ void Actor_EditorMenu(int client)
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 1 Scale: %f", ActorKv.GetFloat("wear1_size", 1.0));
 			menu.AddItem("_wear1_size", buffer2);
 
+			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 1 Skin: %i", ActorKv.GetNum("wear1_skin", 0));
+			menu.AddItem("_wear1_skin", buffer2);
+
 			ActorKv.GetString("wear2", buffer1, sizeof(buffer1));
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2: \"%s\"%s", buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
 			menu.AddItem("_wear2", buffer2);
 
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2 Scale: %f", ActorKv.GetFloat("wear2_size", 1.0));
 			menu.AddItem("_wear2_size", buffer2);
+			
+			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2 Skin: %i", ActorKv.GetNum("wear2_skin", 0));
+			menu.AddItem("_wear2_skin", buffer2);
 
 			ActorKv.GetString("wear3", buffer1, sizeof(buffer1));
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3: \"%s\"%s", buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
@@ -1492,6 +1498,9 @@ void Actor_EditorMenu(int client)
 
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3 Scale: %f", ActorKv.GetFloat("wear3_size", 1.0));
 			menu.AddItem("_wear3_size", buffer2);
+			
+			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3 Skin: %i", ActorKv.GetNum("wear3_skin", 0));
+			menu.AddItem("_wear3_skin", buffer2);
 
 			FormatEx(buffer2, sizeof(buffer2), "Bodygroup: %d", ActorKv.GetNum("bodygroup"));
 			menu.AddItem("_bodygroup", buffer2);

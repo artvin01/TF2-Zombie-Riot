@@ -1102,12 +1102,12 @@ public Action Command_Give_Mastery(int client, int args)
 	{
 		if(money > 0.0)
 		{
-			PrintToChat(targets[target], "You got %0.2f  Mastery from the admin %N!", money, client);
+			PrintToChat(targets[target], "You got %0.2f  Mastery from the admin %N!", money, targets[target]);
 			float MasteryAdd = money;
-			float MasteryCurrent = Stats_GetCurrentFormMastery(client);
+			float MasteryCurrent = Stats_GetCurrentFormMastery(targets[target]);
 			MasteryCurrent += MasteryAdd;
-			SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",MasteryAdd);
-			Stats_SetCurrentFormMastery(client, MasteryCurrent);
+			SPrintToChat(targets[target], "Your current form obtained %0.2f Mastery points.",MasteryAdd);
+			Stats_SetCurrentFormMastery(targets[target], MasteryCurrent);
 		}
 	}
 	
