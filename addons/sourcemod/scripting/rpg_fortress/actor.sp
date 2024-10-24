@@ -89,7 +89,7 @@ void Actor_EnterZone(int client, const char[] name)
 				{
 					ActorKv.SetNum("_entref", EntIndexToEntRef(entity));
 
-					pos[2] += 110.0;
+				/*	pos[2] += 110.0;
 
 					int particle = ParticleEffectAt(pos, "powerup_icon_regen", 0.0);
 					
@@ -108,7 +108,8 @@ void Actor_EnterZone(int client, const char[] name)
 					b_ParticleToOwner[particle] = EntIndexToEntRef(entity);
 					b_OwnerToParticle[entity] = EntIndexToEntRef(particle);
 					b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointerKv(client);
-					
+					//as of now, this code is useless as it doesnt check for quests, just if you can talk.
+				*/
 				}
 			}
 			else
