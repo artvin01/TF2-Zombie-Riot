@@ -79,7 +79,7 @@ public void XenoCombineDeutsch_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Deutsch Ritter");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Deutsch Ritter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_deutsch_ritter");
 	strcopy(data.Icon, sizeof(data.Icon), "teutons");
 	data.IconCustom = true;

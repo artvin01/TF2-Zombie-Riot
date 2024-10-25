@@ -16,6 +16,7 @@ enum struct CraftEnum
 	char Wear2[PLATFORM_MAX_PATH];
 	char Wear3[PLATFORM_MAX_PATH];
 	char QuestReq[PLATFORM_MAX_PATH];
+	float AxisOffset[3];
 
 	int EntRef;
 
@@ -43,6 +44,7 @@ enum struct CraftEnum
 		}
 
 		kv.GetVector("ang", this.Ang);
+		kv.GetVector("axis_offset", this.AxisOffset);
 		kv.GetString("anim_idle", this.Idle, 64);
 		this.Scale = kv.GetFloat("scale", 1.0);
 		kv.GetString("model", this.Model, sizeof(this.Model));
@@ -99,11 +101,18 @@ enum struct CraftEnum
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);				
 				DispatchSpawn(entity);
-				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR, true);
+				float PosChange[3];
+				PosChange = this.Pos;
+
+				TeleportEntity(entity, PosChange, this.Ang, NULL_VECTOR, true);
 
 				SetEntityCollisionGroup(entity, 2);
 
 				int brush = SpawnSeperateCollisionBox(entity);
+				PosChange[0] += this.AxisOffset[0];
+				PosChange[1] += this.AxisOffset[1];
+				PosChange[2] += this.AxisOffset[2];
+				TeleportEntity(entity, PosChange, NULL_VECTOR, NULL_VECTOR, true);
 				//Just reuse it.
 				b_BrushToOwner[brush] = EntIndexToEntRef(entity);
 				b_OwnerToBrush[entity] = EntIndexToEntRef(brush);
@@ -697,6 +706,10 @@ void Crafting_EditorMenu(int client)
 				kv.GetVector("ang", vec);
 				FormatEx(buffer2, sizeof(buffer2), "Angle: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
 				menu.AddItem("_ang", buffer2);
+
+				kv.GetVector("axis_offset", vec);
+				FormatEx(buffer2, sizeof(buffer2), "Axis Offset MDL: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
+				menu.AddItem("_axis_offset", buffer2);
 
 				kv.GetString("zone", buffer1, sizeof(buffer1), missing ? CurrentSectionEditing[client] : "");
 				FormatEx(buffer2, sizeof(buffer2), "Zone: \"%s\"", buffer1);

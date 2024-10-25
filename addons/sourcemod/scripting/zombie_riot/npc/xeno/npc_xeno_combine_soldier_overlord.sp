@@ -84,7 +84,7 @@ public void XenoCombineOverlord_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Overlord");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Overlord");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_overlord");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_overlord");
 	data.IconCustom = true;

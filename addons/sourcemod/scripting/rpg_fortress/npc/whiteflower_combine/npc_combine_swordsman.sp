@@ -206,7 +206,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 
 						// E2 L15 = 225, E2 L20 = 250
 						KillFeed_SetKillIcon(npc.index, "taunt_pyro");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 500000.0, DMG_BULLET, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 300000.0, DMG_BULLET, -1, _, vecTarget);
 					}
 				}
 

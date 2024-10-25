@@ -3,7 +3,7 @@
 
 stock float CasinoShared_GetDamage(CClotBody npc, float multi)
 {
-	return Level[npc.index] * 30.0 * multi;
+	return Level[npc.index] * 20.0 * multi;
 }
 
 stock void CasinoShared_StealNearbyItems(CClotBody npc, const float pos1[3])

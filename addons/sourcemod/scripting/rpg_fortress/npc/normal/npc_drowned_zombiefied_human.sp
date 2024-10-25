@@ -33,7 +33,10 @@ static const char g_IdleSound[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -262,9 +265,10 @@ public void DrowedZombieHuman_ClotThink(int iNPC)
 					if(npc.m_flDoingSpecial)
 						damage = 75000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						KillFeed_SetKillIcon(npc.index, "sword");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 

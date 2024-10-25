@@ -106,11 +106,6 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		return true;
 #endif
 
-#if defined RPG
-	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
-		RPG_FlatRes(victim, attacker, weapon, damage);
-#endif
-
 #if defined ZR
 	if(attacker > MaxClients && b_ThisNpcIsSawrunner[attacker])
 		return false;
@@ -418,7 +413,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	RPG_ChaosSurgance(victim, attacker, weapon, damage);
 	RPG_BobsPureRage(victim, attacker, damage);
 
-	//this should be last.
+	//this should be last for npcs.
 	RPG_FlatRes(victim, attacker, weapon, damage);
 #endif
 
@@ -823,7 +818,7 @@ bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype
 }
 #endif	// ZR
 
-static bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
+static stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
 {
 #if defined ZR
 	if(BarbariansMindLogic(attacker, weapon, damage, damagetype))
@@ -1106,7 +1101,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 #if defined RPG
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-
+		case WEAPON_BIGFRYINGPAN:
+		{
+			Custom_Knockback(attacker, victim, 2000.0);
+		}
 	}
 #endif
 

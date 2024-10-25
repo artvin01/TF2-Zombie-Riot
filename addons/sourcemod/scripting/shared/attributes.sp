@@ -8,7 +8,8 @@ enum
 	Attrib_SlowImmune = 4024,
 	Attrib_ObjTerrianAbsorb = 4025,
 	Attrib_SetArchetype = 4026,
-	Attrib_SetSecondaryDelayInf = 4027
+	Attrib_SetSecondaryDelayInf = 4027,
+	Attrib_FormRes = 4028
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

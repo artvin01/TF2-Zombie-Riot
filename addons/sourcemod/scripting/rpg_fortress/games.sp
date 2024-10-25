@@ -7,6 +7,7 @@
 #define SOUND_BET	"ui/duel_score_behind.wav"
 #define SOUND_MATCH	"mvm/mvm_money_pickup.wav"
 #define SOUND_EVENT	"ui/quest_alert.wav"
+#define ITEM_CHIP	"Casino Chips"
 
 enum
 {
@@ -133,6 +134,9 @@ void Games_ClientEnter(int client, const char[] name)
 
 static void StartGame(int client, const char[] game)
 {
+	if(GetEntityMoveType(client) == MOVETYPE_NOCLIP)
+		return;
+	
 	int index = StringToInt(game);
 	switch(index)
 	{
