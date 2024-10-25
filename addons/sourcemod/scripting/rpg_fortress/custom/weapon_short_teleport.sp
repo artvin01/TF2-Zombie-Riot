@@ -3,7 +3,6 @@
 
 static int ST_HitEntitiesTeleportTrace[MAXENTITIES];
 
-#define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 #define WAND_TELEPORT_SOUND "misc/halloween/spell_teleport.wav"
 
 static int ShortTeleportLaserIndex;

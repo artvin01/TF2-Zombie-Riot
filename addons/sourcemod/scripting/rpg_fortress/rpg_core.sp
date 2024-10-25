@@ -262,7 +262,7 @@ void RPG_MapStart()
 	BoomStick_MapPrecache();
 	BigBang_Map_Precache();
 	Abiltity_Coin_Flip_Map_Change();
-
+	Abiltity_TrueStrength_Shield_Shield_MapStart();
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
 
 	/*

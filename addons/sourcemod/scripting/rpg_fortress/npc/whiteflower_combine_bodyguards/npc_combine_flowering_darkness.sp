@@ -27,9 +27,7 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
+
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
