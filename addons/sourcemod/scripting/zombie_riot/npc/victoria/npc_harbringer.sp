@@ -49,17 +49,19 @@ void VictoriaHarbringer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static int i_ally_index;
+//static int i_ally_index;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return VictoriaHarbringer(client, vecPos, vecAng, ally);
 }
 
+/*
 public void VictoriaHarbringer_Set_Ally_Index(int ref)
 {	
 	i_ally_index = EntIndexToEntRef(ref);
 }
+*/
 
 methodmap VictoriaHarbringer < CClotBody
 {

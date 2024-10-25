@@ -29,7 +29,7 @@ static const char g_TeleportSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
-static int i_ally_index;
+//static int i_ally_index;
 
 void VictoriaBirdeye_OnMapStart_NPC()
 {
@@ -465,7 +465,7 @@ void VictoriaBirdeye_SpawnAllyDuo(int ref)
 		int spawn_index2 = NPC_CreateByName("npc_bigpipe", entity, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
-			i_ally_index = EntIndexToEntRef(spawn_index);
+			//i_ally_index = EntIndexToEntRef(spawn_index);
 			VictoriaHarbringer_Set_Ally_Index(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
@@ -473,7 +473,7 @@ void VictoriaBirdeye_SpawnAllyDuo(int ref)
 		}
 		if(spawn_index2 > MaxClients)
 		{
-			i_ally_index = EntIndexToEntRef(spawn_index2);
+			//i_ally_index = EntIndexToEntRef(spawn_index2);
 			VictoriaBigPipe_Set_Ally_Index(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index2, true);
 			SetEntProp(spawn_index2, Prop_Data, "m_iHealth", maxhealth);

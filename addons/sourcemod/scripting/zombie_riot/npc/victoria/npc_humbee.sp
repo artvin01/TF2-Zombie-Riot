@@ -34,7 +34,7 @@ methodmap VictorianHumbee < CClotBody
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6, _);
 	}
 	
 	public VictorianHumbee(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -190,7 +190,7 @@ static void ClotThink(int iNPC)
 				npc.AddActivityViaSequence("taunt_vehicle_allclass_honk");
 				npc.PlayMeleeSound();
 
-				int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,10.0);
+				int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,7.5);
 				if(entity != -1)
 				{
 					//max duration of 4 seconds beacuse of simply how fast they fire
@@ -211,11 +211,11 @@ static void ClotThink(int iNPC)
 		}
 		else if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			npc.m_iOverlordComboAttack += 2;
+			npc.m_iOverlordComboAttack += 1;
 			npc.m_flNextMeleeAttack = gameTime + 0.45;
 			//npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
 
-			if(npc.m_iOverlordComboAttack > 5)
+			if(npc.m_iOverlordComboAttack > 1)
 			{
 				target = Can_I_See_Enemy(npc.index, target);
 				if(IsValidEnemy(npc.index, target))
