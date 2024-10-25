@@ -164,7 +164,7 @@ methodmap VictorianIronShield < CClotBody
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 80, 50, 50, 255);
 
-        npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec17_polar_bear/dec17_polar_bear.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec17_polar_bear/dec17_polar_bear.mdl");
 		
 		return npc;
 	}
