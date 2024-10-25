@@ -31,8 +31,6 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/bat_baseball_hit_flesh.wav",
 };
 
-static float f_SavedDamage;
-
 void VictorianPayback_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }

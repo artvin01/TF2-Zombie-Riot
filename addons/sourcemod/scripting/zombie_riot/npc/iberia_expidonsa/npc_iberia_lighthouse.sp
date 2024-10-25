@@ -23,7 +23,7 @@ static const char g_MeleeAttackShortSounds[][] = {
 	"weapons/sniper_rifle_classic_shoot.wav",
 };
 int LighthouseID;
-int LighthouseGlobaID()
+//int LighthouseGlobaID()
 {
 	return LighthouseID;
 }
