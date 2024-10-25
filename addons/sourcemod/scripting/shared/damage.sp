@@ -1023,6 +1023,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			WeaponLeper_OnTakeDamage(attacker, damage,weapon, zr_custom_damage);
 		}
+		case WEAPON_URANIUM_RIFLE:
+		{
+			WeaponUranium_OnTakeDamage(attacker,victim, damage,weapon, damagePosition);
+		}
 		case WEAPON_TEXAN_BUISNESS:
 		{
 			Weapon_TexanBuisness(attacker, damage, damagetype);

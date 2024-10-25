@@ -3528,6 +3528,7 @@ void RemoveNpcThingsAgain(int entity)
 	CleanAllApplied_Aresenal(entity, true);
 	b_NpcForcepowerupspawn[entity] = 0;	
 	CleanAllApplied_Cryo(entity);
+	EnemyResetUranium(entity);
 #endif
 	i_HexCustomDamageTypes[entity] = 0;
 }

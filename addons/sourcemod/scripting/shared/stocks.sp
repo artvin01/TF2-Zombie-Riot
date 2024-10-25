@@ -3057,10 +3057,14 @@ int inflictor = 0)
 	{
 		custom_flags |= ZR_DAMAGE_ICE;
 	}
-	
-	if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+	if((i_ExplosiveProjectileHexArray[entity] & EP_IS_ICE_DAMAGE))
 	{
-		damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
+		custom_flags |= ZR_DAMAGE_ICE;
+	}
+	
+	if((i_ExplosiveProjectileHexArray[entity] & ZR_DAMAGE_IGNORE_DEATH_PENALTY))
+	{
+		custom_flags |= ZR_DAMAGE_IGNORE_DEATH_PENALTY;
 	}
 	int entityToEvaluateFrom = 0;
 	int EntityToForward = 0;

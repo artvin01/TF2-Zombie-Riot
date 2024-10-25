@@ -1133,7 +1133,7 @@
 	"The First To Talk Desc"
 	{
 		"en"		"Fires projectiles with armor erosion, can fire rapid amounts in AOE area.\n''The first beautiful living being to speak human language before civilized man.''\n''Seaborn.''"
-		"ru"		"Стреляет снарядами, вызывающими эрозию брони, может вести интенсивный огонь в зоне AOE.\n''Первое прекрасное живое существо, заговорившее на человеческом языке раньше цивилизованного человека''.\n "Морской житель.''"
+		"ru"		"Стреляет снарядами, вызывающими эрозию брони, может вести интенсивный огонь в зоне AOE.\n''Первое прекрасное живое существо, заговорившее на человеческом языке раньше цивилизованного человека''.\n ''Морской житель.''"
 	}
 	"Sal Viento Bishop Quintus Desc"
 	{
@@ -1178,7 +1178,7 @@
 	"Nourished Founder Desc"
 	{
 		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that generally only metamorphoses within an abundance of the nethersea brand.''\n''They can on exceptionally rare occasions be born from the remains of their multiple kin.''"
-		"ru"		""Улучшенный вариант с большим количеством урона и здоровья.\n ''Морской ужас, который, как правило, претерпевает метаморфозы только в пределах ассортимента бренда nethersea.''\n ''В исключительно редких случаях они могут появиться на свет из останков своих многочисленных сородичей.''"
+		"ru"		"Улучшенный вариант с большим количеством урона и здоровья.\n ''Морской ужас, который, как правило, претерпевает метаморфозы только в пределах ассортимента бренда nethersea.''\n ''В исключительно редких случаях они могут появиться на свет из останков своих многочисленных сородичей.''"
 	}
 	"Regressed Founder Desc"
 	{
@@ -1393,7 +1393,7 @@
 	"Saint Carmen Desc"
 	{
 		"en"		"Attacks enemies and allies.\nHits levitate the target and deals extra hit of True damage.\n''The last surviving Saint of Iberia, living well past mortal life expectancy.''\n''His longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.''"
-		"ru"		"Атакует врагов и союзников.\nУдары поднимают цель в воздух и наносят дополнительный чистый урон.\n"Последний выживший святой из Иберии, живущий намного дольше, чем положено смертным.''\n''За его долголетие пришлось заплатить высокую цену, но он помнит о своем долге и своих врагах, несмотря на то, что потерял рассудок.''"
+		"ru"		"Атакует врагов и союзников.\nУдары поднимают цель в воздух и наносят дополнительный чистый урон.\n''Последний выживший святой из Иберии, живущий намного дольше, чем положено смертным.''\n''За его долголетие пришлось заплатить высокую цену, но он помнит о своем долге и своих врагах, несмотря на то, что потерял рассудок.''"
 	}
 	"Pathshaper Desc"
 	{
@@ -1423,12 +1423,12 @@
 	"Tidelinked Bishop Desc"
 	{
 		"en"		"When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max.\n''A bishop that has partially mutated.''\n''It is partly human, partly—''"
-		"ru"		"Когда его 'Вторая половина' жива и не находится в коме, впадает в кому, когда здоровье достигает 0, и начинает регенерировать, оживает, когда здоровье достигает максимума.\n''Епископ, который частично мутировал".\n ''Он частично человек, частично...''"
+		"ru"		"Когда его 'Вторая половина' жива и не находится в коме, впадает в кому, когда здоровье достигает 0, и начинает регенерировать, оживает, когда здоровье достигает максимума.\n''Епископ, который частично мутировал''.\n ''Он частично человек, частично...''"
 	}
 	"Tidelinked Archon Desc"
 	{
 		"en"		"When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max.\n''—Sea Terror. Even AEgir technology has a role to play in the evolution of we many.''"
-		"ru"		"Когда его 'Вторая половина' жива и не находится в коме, впадает в кому, когда здоровье достигает 0, и начинает регенерировать, оживает, когда здоровье достигает максимума.\n''Епископ, который частично мутировал".\n ''...Морской ужас. Даже технология AEgir может сыграть свою роль в эволюции многих из нас.''"
+		"ru"		"Когда его 'Вторая половина' жива и не находится в коме, впадает в кому, когда здоровье достигает 0, и начинает регенерировать, оживает, когда здоровье достигает максимума.\n''Епископ, который частично мутировал''.\n ''...Морской ужас. Даже технология AEgir может сыграть свою роль в эволюции многих из нас.''"
 	}
 	"Scientific Witchery Desc"
 	{
@@ -2012,8 +2012,8 @@
 	}
 	"Stella Desc"
 	{
-		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10%% slower and lowers the ''corrosion'' index by 1)
-		"ru"		"Настоящие имя ''Доннеркрига''\nЕё заклинания намного сильнее и ''чище'' по сравнению с её поробащённой формой\nВместе с этим она владеет наиболее современную Руиновскую моду и защитное снаряжение\nТолько смотри, чтобы она не теребила тебя за уши...\n(Заглушение:Делает скорость и скорость поворота 10%% медленее и снижает индекс ''корозии'' на 1)
+		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10%% slower and lowers the ''corrosion'' index by 1)"
+		"ru"		"Настоящие имя ''Доннеркрига''\nЕё заклинания намного сильнее и ''чище'' по сравнению с её поробащённой формой\nВместе с этим она владеет наиболее современную Руиновскую моду и защитное снаряжение\nТолько смотри, чтобы она не теребила тебя за уши...\n(Заглушение:Делает скорость и скорость поворота 10%% медленее и снижает индекс ''корозии'' на 1)"
 	}
 	"Karlas Desc"
 	{
@@ -2075,8 +2075,8 @@
 	}
 	"Ruliana Desc"
 	{
-		"en"	"Once Power hits 100% and there are more then 4 targets infront-in line of sight, she fires several ICBM's\nThse ICBM's hurt like a truck\nOnce she goes bellow 25% hp, she will start to suck up nearby ally hp to heal herself\nOnce she reaches 10% hp, all npc's within line of sight gain a large speed boost"
-		"ru"	"Когда Сила достигнет 100%% и когда перед ней больше 4 целей в видимости,Она стрельнет несколькими балистическими снарядами\nЭти снаряди наносят как будто вас сбил грузовик\nКогда здоровье ниже 25%% она начнёт высасывать здоровье у ближайших союзников\nКогда здоровье достигает 10%% все союзники в видимости ускоряются"
+		"en"	"Once Power hits 100% and there are more then 4 targets infront-in line of sight, she fires several ICBM's\nThse ICBM's hurt like a truck\nOnce she goes bellow 50% hp, she will start to suck up nearby ally hp to heal herself"
+		"ru"	"Когда Сила достигнет 100% и когда перед ней больше 4 целей в видимости,Она стрельнет несколькими балистическими снарядами\nЭти снаряди наносят как будто вас сбил грузовик\nКогда здоровье ниже 50%% она начнёт высасывать здоровье у ближайших союзников"
 	}
 	"Mana Overload"
 	{
@@ -2148,18 +2148,18 @@
 	}
 	"Sphynx Desc"
 	{
-		"en"		Rumors say this beast was created in the Abandoned Lab. It emits noxious gasses and heals zombies.
-		"ru"		Слухи говорят этот зверь был созда в заброшенной лабаратории.он испускает ядовитые газы и лечит зомби.
+		"en"		"Rumors say this beast was created in the Abandoned Lab. It emits noxious gasses and heals zombies."
+		"ru"		"Слухи говорят этот зверь был созда в заброшенной лабаратории.он испускает ядовитые газы и лечит зомби."
 	}
 	"Petrisis' Baron Desc"
 	{
-		"en"		It's neverending hunger works very well against barricades. The ability to regenerate health per barricade hit makes it very dangerous. Not very effective against humans./
-		"ru"		Его ненасытный голод работает в его пользу против барикад. Способность лечится с каждой атакой по барикадам делает его очень опасным.Не слишком хорош против людей.
+		"en"		"It's neverending hunger works very well against barricades. The ability to regenerate health per barricade hit makes it very dangerous. Not very effective against humans."
+		"ru"		"Его ненасытный голод работает в его пользу против барикад. Способность лечится с каждой атакой по барикадам делает его очень опасным.Не слишком хорош против людей."
 	}
 	"Nightmare Desc"
 	{
-		"en"		Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person.
-		"ru"		Сильнее чем любой другой зомби во всём,Кошмар-это сила с которой нужно считатся.1 взмах его когтей может положить почти любого.
+		"en"		"Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person."
+		"ru"		"Сильнее чем любой другой зомби во всём,Кошмар-это сила с которой нужно считатся.1 взмах его когтей может положить почти любого."
 	}
 	"Omega Desc"
 	{
@@ -2170,7 +2170,6 @@
 	{
 		"en"	"Fast basic unit which has very light armor"
 		"ru"	"Быстрый базовый юнит с маленькой бронёй"
-	
 	}
 	"Barracks Iberian Gunner Desc"
 	{
