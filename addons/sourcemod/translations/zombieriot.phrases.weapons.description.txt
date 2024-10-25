@@ -3746,12 +3746,12 @@
 		"en"	"Ranged Basic combine unit. It reloads when his clip is empty"
 		"fr"	"Combine qui fait le combat à distance. Recharge quand son chargeur est vide."
 	}
-	"Barracks Combine Shotgunner Desc"
+	"Barracks Shotgunner Desc"
 	{
 		"en"	"Ranged unit but it tends to get close to the target"
 		"fr"	"Unité à portée qui s'approche des cibles."
 	}
-	"Barracks Combine Swordsman Desc"
+	"Barracks Swordsman Desc"
 	{
 		"en"	"Melee unit which will regularly gain an armor while attacking"
 		"fr"	"Unité corps-à-corps qui reçoit de l'armure pour ses attaques."
@@ -3761,47 +3761,47 @@
 		"en"	"Upgraded unit of Metro Cop. Has better clip and damage"
 		"fr"	"Un Métro-police avec dégats et chargeur amélioré."
 	}
-	"Barracks Combine Soldier Desc"
+	"Barracks Soldier Desc"
 	{
 		"en"	"Upgraded unit of Metro Raider. Has better clip, damage, and armor"
 		"fr"	"Un Métro-Raider avec dégats, chargeur et armure amélioré."
 	}
-	"Barracks Combine DDT Desc"
+	"Barracks DDT Desc"
 	{
 		"en"	"Fast and hard hitting robotic Combine Unit"
 		"fr"	"Combine robotique qui va vite et frappe fort."
 	}
-	"Barracks Combine Elite Desc"
+	"Barracks Elite Desc"
 	{
 		"en"	"Ranged Combine unit which will often fire explosive combine energy ball"
 		"fr"	"Combine qui tire des balles énergétiques explosives"
 	}
-	"Barracks Combine Deflector Desc"
+	"Barracks Deflector Desc"
 	{
 		"en"	"Armored Combine knight who will regularly parry melee attacks"
 		"fr"	"Chevalier Combine qui bloque les attaques corps-à-corps"
 	}
-	"Barracks Combine Sniper Desc"
+	"Barracks Sniper Desc"
 	{
 		"en"	"Super Ranged unit with high damage but slow attack speed"
 		"fr"	"Hauts dégats, cadence d'attaque lente"
 	}
-	"Barracks Combine Collos Desc"
+	"Barracks Collos Desc"
 	{
 		"en"	"Giant Combine swordsman which has better armor and damage"
 		"fr"	"Épéiste Combine avec bons armure et dégats"
 	}
-	"Barracks Combine Giant ddt Desc"
+	"Barracks Giant ddt Desc"
 	{
 		"en"	"Giant robotic unit with fast speed, damage, and armor"
 		"fr"	"Combine robotique géant. Beacoup d'armure, va vite et frappe fort."
 	}
-	"Barracks Combine Super Desc"
+	"Barracks Super Desc"
 	{
 		"en"	"A melee unit which will gain resistance and chance to evade when below half health."
 		"fr"	"Quand sous moitié santé, reçoit de la résistance et une chance d'éviter les attaques."
 	}
-	"Barracks Combine Commander Desc"
+	"Barracks Commander Desc"
 	{
 		"en"	"A ranged super unit which will buff allies around it regularly."
 		"fr"	"Améliore les alliés qui l'entoure"

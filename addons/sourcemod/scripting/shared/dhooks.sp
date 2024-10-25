@@ -1482,7 +1482,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 
 #if defined RPG
 	if(!Saves_HasCharacter(client))
+	{
+		ChangeClientTeam(client, TFTeam_Spectator);
 		return MRES_Supercede;
+	}
 	
 	if(!Dungeon_CanClientRespawn(client))
 		return MRES_Supercede;
@@ -1578,6 +1581,17 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		else if(f3_PositionArrival[client][0])
 		{
 			TeleportEntity(client, f3_PositionArrival[client], NULL_VECTOR, NULL_VECTOR);
+		}
+		else
+		{
+			Race race;
+			Races_GetClientInfo(client, race);
+			if(race.StartPos[0])
+			{
+				float ang[3];
+				ang[1] = race.StartAngle;
+				TeleportEntity(client, race.StartPos, ang, NULL_VECTOR);
+			}
 		}
 #endif
 	}

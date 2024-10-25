@@ -182,9 +182,9 @@ stock void SDKHook_HookClient(int client)
 #endif
 }
 
+#if defined ZR 
 bool WeaponWasGivenAmmo[MAXENTITIES];
 
-#if defined ZR 
 void WeaponWeaponAdditionOnRemoved(int entity)
 {
 	WeaponWasGivenAmmo[entity] = false;
@@ -1003,6 +1003,7 @@ public void OnPostThink(int client)
 			value = Attributes_FindOnPlayerZR(client, 205, true, 0.0, true, true);	// MELEE damage resistance
 			if(value)
 				percentage *= value;
+				
 
 			value = Attributes_Get(weapon, 4008, 0.0);	// RANGED damage resistance
 			if(value)
@@ -1045,6 +1046,19 @@ public void OnPostThink(int client)
 				if(had_An_ability)
 					FormatEx(buffer, sizeof(buffer), "%s]", buffer);
 			}
+			
+			percentage = 1.0;
+			value = Attributes_FindOnPlayerZR(client, Attrib_FormRes, true, 0.0, true, true);	// MELEE damage resistance
+			if(value)
+				percentage *= value;
+
+			if(percentage != 1.0 && percentage > 0.0)
+			{
+				percentage = 1.0 / percentage;
+				FormatEx(buffer, sizeof(buffer), "%s[HP x%.1f]", buffer, percentage);
+				had_An_ability = true;
+			}
+
 			if(percentage_Global <= 0.0)
 			{
 				FormatEx(buffer, sizeof(buffer), "%s %t",buffer, "Invulnerable Npc");
@@ -1644,6 +1658,26 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 #endif
+	//dmg bonus before everything!
+	if(attacker > 0 && attacker <= MAXENTITIES)
+		damage *= fl_Extra_Damage[attacker];
+#if defined RPG
+	if(attacker <= MaxClients)
+	{
+		//in pvp, we half the damage. this is also BEFORE flat resistance.
+		damage *= 0.5;
+	}
+	//needs to be above everything aside extra damage
+	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
+		RPG_FlatRes(victim, attacker, weapon, damage);
+
+	float value = Attributes_FindOnPlayerZR(victim, Attrib_FormRes, true, 0.0, true, true);
+	if(value)
+	{
+		damage *= value;
+	}
+#endif
+
 
 #if defined ZR
 	if(TeutonType[victim])
@@ -1782,8 +1816,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 
-	//dmg bonus before flat res!
-	damage *= fl_Extra_Damage[attacker];
 #if defined ZR
 	if((damagetype & DMG_DROWN) && b_ThisNpcIsSawrunner[attacker])
 	{
@@ -1867,6 +1899,15 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
+			return Plugin_Handled;
+		}
+		else if(TF2_IsPlayerInCondition(victim, TFCond_PreventDeath))
+		{
+			TF2_RemoveCondition(victim, TFCond_PreventDeath);
+
+			damage = 0.0;
+			SetEntityHealth(victim, 1);
+			GiveCompleteInvul(victim, 0.1);
 			return Plugin_Handled;
 		}
 		//the client was the last man on the server, or alone, give them spawn protection
@@ -2032,8 +2073,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		}
 	}
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 14");
-	return Plugin_Changed;
 #endif	// ZR
+	return Plugin_Changed;
 }
 
 #if defined ZR || defined RPG
@@ -2281,10 +2322,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 #if defined ZR
 		if(i_SemiAutoWeapon[weapon])
 		{
-			char classname[64];
-			GetEntityClassname(weapon, classname, sizeof(classname));
-			int slot = TF2_GetClassnameSlot(classname);
-			if(i_SemiAutoWeapon_AmmoCount[client][slot] > 0)
+			if(i_SemiAutoWeapon_AmmoCount[weapon] > 0)
 			{
 				Attributes_Set(weapon, 821, 0.0);
 			}
@@ -2833,12 +2871,20 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 	if(f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())
 	{
 		//regen health if they werent in battle!
-		int healing_Amount;
-		
 		if(i_TransformationLevel[client] > 0)
-			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
+		{
+			if(ArmorCorrosion[client] > 0)
+				ArmorCorrosion[client] = ArmorCorrosion[client] * 9 / 10;
+			
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
+		}
 		else
-			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
+		{
+			if(ArmorCorrosion[client] > 0)
+				ArmorCorrosion[client] = ArmorCorrosion[client] * 2 / 3;
+			
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
+		}
 	}
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{
@@ -2936,15 +2982,30 @@ void RPG_Sdkhooks_StaminaBar(int client)
 			Format(buffer, sizeof(buffer), "%s\n", buffer);
 		}
 	}
+	
 	int red = 255;
 	int green = 165;
 	int blue = 0;
+
+	if(ArmorCorrosion[client] > 0)
+	{
+		int endurance = Stats_Endurance(client) + ArmorCorrosion[client];
+
+		float precent = float(ArmorCorrosion[client]) / float(endurance);
+		if(precent > 1.0)
+			precent = 1.0;
+
+		red -= RoundToFloor(255 * precent);
+		green -= RoundToFloor(165 * precent);
+		blue = RoundToFloor(255 * precent);
+	}
+
 	SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 	ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 }
 
 #endif
-void SDKhooks_SetManaRegenDelayTime(int client, float time)
+stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 {
 	Mana_Hud_Delay[client] = 0.0;
 #if defined ZR

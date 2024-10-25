@@ -90,7 +90,7 @@ public float AbilityHolyLight(int client, int index, char name[48])
 	return (GetGameTime() + time);
 }
 
-void Weapon_HolyLightInit(int client, int weapon/*, int level*/, float damage)
+stock void Weapon_HolyLightInit(int client, int weapon/*, int level*/, float damage)
 {
 	static float startPos[3];
 	GetClientEyePosition(client, startPos);

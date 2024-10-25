@@ -249,7 +249,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	}
 	else
 	{
-		Enemy enemy;
+		static Enemy enemy;
 		if(Waves_GetNextEnemy(enemy))
 		{
 			int SpawnSettingsSee = 0;
@@ -285,6 +285,11 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					{
 						SetEntProp(entity_Spawner, Prop_Data, "m_iMaxHealth", enemy.Health);
 						SetEntProp(entity_Spawner, Prop_Data, "m_iHealth", enemy.Health);
+					}
+
+					if(enemy.CustomName[0])
+					{
+						strcopy(c_NpcName[entity_Spawner], sizeof(c_NpcName[]), enemy.CustomName);
 					}
 					
 					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);
@@ -426,7 +431,8 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	}
 	return Plugin_Stop;
 }
-void RemoveSpawnProtectionLogic(int entity, bool force)
+
+stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
 	if(RogueTheme == BlueParadox && !force)
@@ -1413,8 +1419,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 	char Debuff_Adder[64];
 	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right);
 	
+#if defined ZR
 	float GameTime = GetGameTime();
-
+#endif
 	
 	CClotBody npc = view_as<CClotBody>(victim);
 	
