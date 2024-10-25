@@ -2589,7 +2589,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	 float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 },
 	  float vecSwingMins[3] = { -64.0, -64.0, -128.0 },
 	   float vecSwingStartOffset = 55.0,
-	    int Npc_type = 0,
+		int Npc_type = 0,
 		 int Ignore_Buildings = 0,
 		  int countAoe = 0)
 	{
@@ -5009,7 +5009,7 @@ stock int GetClosestTarget(int entity,
  bool IgnoreBuildings = false,
   float fldistancelimit = 99999.9,
    bool camoDetection=false,
-    bool onlyPlayers = false,
+	bool onlyPlayers = false,
 	 int ingore_client = -1, 
 	 float EntityLocation[3] = {0.0,0.0,0.0},
 	  bool CanSee = false,
@@ -6376,7 +6376,7 @@ stock void Custom_Knockback(int attacker,
  int enemy,
   float knockback,
    bool ignore_attribute = false,
-    bool override = false,
+	bool override = false,
 	 bool work_on_entity = false,
 	 float PullDuration = 0.0,
 	 bool RecieveInfo = false,
@@ -7183,11 +7183,11 @@ stock bool makeexplosion(
 	int attacker = 0,
 	 int inflictor = -1,
 	  float attackposition[3],
-	    char[] weaponname = "",
+		char[] weaponname = "",
 		 int Damage_for_boom = 200,
 		  int Range_for_boom = 200,
 		   float Knockback = 200.0,
-		    int flags = 0,
+			int flags = 0,
 			 bool FromNpcForced = false,
 			  bool do_explosion_effect = true,
 			  float dmg_against_entity_multiplier = 3.0)
@@ -8477,7 +8477,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_IberiaMarked[entity] = 0.0;
-	f_VictorianCallToArms[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_VoidAfflictionStrength[entity] = 0.0;
 	f_VoidAfflictionStrength2[entity] = 0.0;
@@ -8836,15 +8835,15 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool
 
 
 bool TraceFilterClients(int entity, int mask, any data)
-{    
-    if (entity > 0 && entity <= MAXENTITIES) 
-    { 
-        return false; 
-    }
-    else 
-    { 
-        return true; 
-    } 
+{	
+	if (entity > 0 && entity <= MAXENTITIES) 
+	{ 
+		return false; 
+	}
+	else 
+	{ 
+		return true; 
+	} 
 } 
 
 
@@ -9518,7 +9517,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 	{
 		char sColor[32];
 		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
-		DispatchKeyValue(npc.m_iTextEntity5,     "color", sColor);
+		DispatchKeyValue(npc.m_iTextEntity5,	 "color", sColor);
 		DispatchKeyValue(npc.m_iTextEntity5, "message", HealthText);
 	}
 	else
@@ -9624,7 +9623,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		//	char sColor[32];
 		//	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
-		//	DispatchKeyValue(npc.m_iTextEntity1,     "color", sColor);
+		//	DispatchKeyValue(npc.m_iTextEntity1,	 "color", sColor);
 		// Colour will never be Edited probably.
 		DispatchKeyValue(npc.m_iTextEntity4, "message", HealthText);
 	}

@@ -86,21 +86,21 @@ methodmap VictorianSignaller < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		
-        float flPos[3], flAng[3];
+		float flPos[3], flAng[3];
 				
 		npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
 		i_signaller_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 
 
-        npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_spikewrench/c_spikewrench.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_spikewrench/c_spikewrench.mdl");
 		SetVariantString("0.9");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl");
 		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl");
-        SetVariantString("1.75");
+		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/invasion_final_frontiersman/invasion_final_frontiersman.mdl");
@@ -111,8 +111,6 @@ methodmap VictorianSignaller < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-
-		return npc;
 
 		npc.StartPathing();
 		return npc;
