@@ -38,6 +38,7 @@ void VictorianIronShield_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	NPCData data;
+	PrecacheModel("models/bots/heavy_boss/bot_heavy_boss.mdl");
 	strcopy(data.Name, sizeof(data.Name), "IronShield");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ironshield");
 	strcopy(data.Icon, sizeof(data.Icon), "obuch");
@@ -107,7 +108,7 @@ methodmap VictorianIronShield < CClotBody
 	
 	public VictorianIronShield(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianIronShield npc = view_as<VictorianIronShield>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.3", "7500", ally, false, true));
+		VictorianIronShield npc = view_as<VictorianIronShield>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.5", "7500", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		
