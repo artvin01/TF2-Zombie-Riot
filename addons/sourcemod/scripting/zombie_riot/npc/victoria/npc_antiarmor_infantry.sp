@@ -293,7 +293,7 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 	{
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		npc.SetActivity("ACT_ACHILLES_RUN_DAGGER");
 		npc.m_flSpeed = 375.0;
 		return;
 	}

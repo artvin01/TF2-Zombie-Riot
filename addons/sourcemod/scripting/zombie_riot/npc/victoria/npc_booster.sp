@@ -16,10 +16,11 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	")vo/taunt/medic_taunts01.mp3",
-	")vo/taunt/medic_taunts02.mp3",
-	")vo/taunt/medic_taunts03.mp3",
-	")vo/taunt/medic_taunts04.mp3",
+	")vo/medic_mvm_heal_shield01.mp3",
+	")vo/medic_mvm_heal_shield02.mp3",
+	")vo/medic_mvm_heal_shield03.mp3",
+	")vo/medic_mvm_heal_shield04.mp3",
+	")vo/medic_mvm_heal_shield05.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -182,7 +183,7 @@ methodmap VictorianBooster < CClotBody
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_contaminated_carryall/hwn2024_contaminated_carryall.mdl");
-		SetVariantString("1.0");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 80, 50, 50, 255);

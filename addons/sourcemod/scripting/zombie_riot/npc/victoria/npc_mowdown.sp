@@ -2,24 +2,23 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/heavy_paincrticialdeath01.mp3",
-	"vo/heavy_paincrticialdeath02.mp3",
-	"vo/heavy_paincrticialdeath03.mp3",
+	"vo/mvm/norm/heavy_mvm_paincrticialdeath01.mp3",
+	"vo/mvm/norm/heavy_mvm_paincrticialdeath02.mp3",
+	"vo/mvm/norm/heavy_mvm_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/heavy_painsharp01.mp3",
-	"vo/heavy_painsharp02.mp3",
-	"vo/heavy_painsharp03.mp3",
-	"vo/heavy_painsharp04.mp3",
-	"vo/heavy_painsharp05.mp3",
+	"vo/mvm/norm/heavy_mvm_painsharp01.mp3",
+	"vo/mvm/norm/heavy_mvm_painsharp02.mp3",
+	"vo/mvm/norm/heavy_mvm_painsharp03.mp3",
+	"vo/mvm/norm/heavy_mvm_painsharp04.mp3",
+	"vo/mvm/norm/heavy_mvm_painsharp05.mp3",
 };
 
-
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/heavy_taunts16.mp3",
-	"vo/taunts/heavy_taunts18.mp3",
-	"vo/taunts/heavy_taunts19.mp3",
+	"vo/mvm/norm/taunts/heavy_mvm_taunts16.mp3",
+	"vo/mvm/norm/taunts/heavy_mvm_taunts18.mp3",
+	"vo/mvm/norm/taunts/heavy_mvm_taunts19.mp3",
 };
 
 
@@ -105,7 +104,7 @@ methodmap VictoriaMowdown < CClotBody
 
 	public VictoriaMowdown(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "10000", ally));
+		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.0", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -120,9 +119,9 @@ methodmap VictoriaMowdown < CClotBody
 		func_NPCThink[npc.index] = VictoriaMowdown_ClotThink;
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 
 		
 		//IDLE

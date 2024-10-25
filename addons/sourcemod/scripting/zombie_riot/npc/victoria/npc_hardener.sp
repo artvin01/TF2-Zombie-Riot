@@ -16,10 +16,11 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunt/medic_taunts01.mp3",
-	"vo/taunt/medic_taunts02.mp3",
-	"vo/taunt/medic_taunts03.mp3",
-	"vo/taunt/medic_taunts04.mp3",
+	")vo/medic_mvm_heal_shield01.mp3",
+	")vo/medic_mvm_heal_shield02.mp3",
+	")vo/medic_mvm_heal_shield03.mp3",
+	")vo/medic_mvm_heal_shield04.mp3",
+	")vo/medic_mvm_heal_shield05.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
