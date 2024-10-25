@@ -5289,7 +5289,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 										i_SemiAutoWeapon[entity] = true;
 										int slot_weapon_ammo = TF2_GetClassnameSlot(info.Classname);
 										
-										i_SemiAutoWeapon_AmmoCount[client][slot_weapon_ammo] = 0; //Set the ammo to 0 so they cant abuse it.
+										i_SemiAutoWeapon_AmmoCount[entity] = 0; //Set the ammo to 0 so they cant abuse it.
 										
 										f_SemiAutoStats_FireRate[entity] = info.SemiAutoStats_FireRate;
 										i_SemiAutoStats_MaxAmmo[entity] = info.SemiAutoStats_MaxAmmo;
