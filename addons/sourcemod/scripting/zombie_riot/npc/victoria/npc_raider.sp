@@ -100,7 +100,7 @@ methodmap VictorianRaider < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 60, _, 0.5, 80);
 	}
 
 	public VictorianRaider(int client, float vecPos[3], float vecAng[3], int ally)
@@ -275,7 +275,8 @@ public void VictorianRaider_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
-	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))

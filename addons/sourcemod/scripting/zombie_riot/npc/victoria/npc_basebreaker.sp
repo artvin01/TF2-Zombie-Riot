@@ -139,15 +139,15 @@ methodmap VictoriaBaseBreaker < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/sept2014_pyro_radioactive_mask/sept2014_pyro_radioactive_mask.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/medieval_glory_armor/medieval_glory_armor.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum23_preventative_measure/sum23_preventative_measure.mdl");
-        npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-        SetVariantString("0.8");
+		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-        SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 
 		return npc;
 	}
@@ -271,7 +271,7 @@ void VictoriaBaseBreakerSelfDefense(VictoriaBaseBreaker npc, float gameTime, int
 					float damageDealt = 45.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
+						damageDealt *= 4.0;
 
 					int DamageType = DMG_CLUB;
 					

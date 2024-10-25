@@ -135,7 +135,7 @@ methodmap VictorianIronShield < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = 275.0;
+		npc.m_flSpeed = 150.0;
 		npc.m_iState = 0;
 		npc.m_fbRangedSpecialOn = true;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -148,6 +148,8 @@ methodmap VictorianIronShield < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 50, 150, 150, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");
 		SetVariantString("1.2");
@@ -158,13 +160,13 @@ methodmap VictorianIronShield < CClotBody
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/big_jaw.mdl");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest.mdl");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2016_mad_mask/hwn2016_mad_mask.mdl");
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 80, 50, 50, 255);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2016_mad_mask/hwn2016_mad_mask.mdl");
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec17_polar_bear/dec17_polar_bear.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec17_polar_bear/dec17_polar_bear.mdl");
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 50, 150, 150, 255);
 		
 		return npc;
 	}
@@ -279,6 +281,7 @@ void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTime, int
 					{
 						float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
 						makeexplosion(npc.index, npc.index, npc_vec, "", RoundToCeil(HitDamage * 4.0), 150,_,_,_, false, 10.0);
+						npc.m_iOverlordComboAttack = 2;
 					}
 					else
 					{

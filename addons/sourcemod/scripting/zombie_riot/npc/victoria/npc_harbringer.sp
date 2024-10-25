@@ -123,7 +123,7 @@ methodmap VictoriaHarbringer < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
-		SetVariantString("1.2");
+		SetVariantString("0.9");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
         SetVariantInt(32);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
@@ -263,7 +263,7 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 			{
 				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 5;
-				npc.SetActivity("ACT_MP_RUN_PRIMARY");
+				npc.SetActivity("ACT_MP_RUN_SECONDARY");
 				npc.m_flSpeed = 100.0;
 				npc.StartPathing();
 			}	
@@ -284,7 +284,7 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 						float origin[3], angles[3];
 						view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 						ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, vecHit, false );
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.25;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1;
 
 						if(IsValidEnemy(npc.index, target))
 						{

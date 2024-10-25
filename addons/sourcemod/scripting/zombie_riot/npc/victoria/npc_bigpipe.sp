@@ -102,12 +102,12 @@ methodmap VictoriaBigPipe < CClotBody
 	
 	public VictoriaBigPipe(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaBigPipe npc = view_as<VictoriaBigPipe>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally,false));
+		VictoriaBigPipe npc = view_as<VictoriaBigPipe>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+		npc.SetActivity("ACT_MP_RUN_SECONDARY");
 			
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -152,9 +152,11 @@ methodmap VictoriaBigPipe < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_mad_lad/hwn2023_mad_lad.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 3);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 50, 150, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 50, 150, 255, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
