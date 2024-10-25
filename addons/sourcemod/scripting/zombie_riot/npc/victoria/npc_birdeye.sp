@@ -164,6 +164,8 @@ methodmap VictoriaBirdeye < CClotBody
 			LastSpawnDiversio = GetGameTime() + 20.0;
 			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
 		}
+
+		RequestFrame(VictoriaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index)); 
 		
 		return npc;
 	}
@@ -444,4 +446,38 @@ int VictoriaBirdeyeSelfDefense(VictoriaBirdeye npc, float gameTime)
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 1;
+}
+
+void VictoriaBirdeye_SpawnAllyDuo(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+		int maxhealth;
+
+		maxhealth = GetEntProp(entity, Prop_Data, "m_iHealth");
+		
+		maxhealth = RoundToFloor(maxhealth*2.0);
+
+		int spawn_index = NPC_CreateByName("npc_harbringer", entity, pos, ang, GetTeam(entity));
+		int spawn_index2 = NPC_CreateByName("npc_bigpipe", entity, pos, ang, GetTeam(entity));
+		if(spawn_index > MaxClients)
+		{
+			i_ally_index = EntIndexToEntRef(spawn_index);
+			Schwertkrieg_Set_Ally_Index(entity);
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+		}
+		if(spawn_index2 > MaxClients)
+		{
+			i_ally_index = EntIndexToEntRef(spawn_index2);
+			Schwertkrieg_Set_Ally_Index(entity);
+			NpcAddedToZombiesLeftCurrently(spawn_index2, true);
+			SetEntProp(spawn_index2, Prop_Data, "m_iHealth", maxhealth);
+			SetEntProp(spawn_index2, Prop_Data, "m_iMaxHealth", maxhealth);
+		}
+	}
 }
