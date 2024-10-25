@@ -23,10 +23,12 @@ static const char g_MeleeAttackShortSounds[][] = {
 	"weapons/sniper_rifle_classic_shoot.wav",
 };
 int LighthouseID;
-//int LighthouseGlobaID()
+/*
+int LighthouseGlobaID()
 {
 	return LighthouseID;
 }
+*/
 void Iberia_Lighthouse_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
