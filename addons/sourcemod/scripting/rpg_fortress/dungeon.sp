@@ -1747,9 +1747,18 @@ public void Dungeon_Spawn_75HP(int entity)
 	SetEntProp(entity, Prop_Data, "m_iHealth", health);
 }
 
+public void Dungeon_Spawn_DmgBonus15(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.15;
+}
 public void Dungeon_Spawn_DmgBonus25(int entity)
 {
 	fl_Extra_Damage[entity] *= 1.25;
+}
+
+public void Dungeon_Spawn_DmgBonus35(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.35;
 }
 
 public void Dungeon_Spawn_DmgBonus40(int entity)
@@ -1774,11 +1783,15 @@ public void Dungeon_JunalEnhancedSuperGear(int entity)
 
 public void Dungeon_Spawn_FlatRes(int entity)
 {
-	Endurance[entity] += 645;
+	Endurance[entity] += 300;
 }
 public void Dungeon_Spawn_FlatResZombie(int entity)
 {
-	Endurance[entity] += 4500;
+	Endurance[entity] += 1000;
+}
+public void Dungeon_Spawn_FlatResWF1(int entity)
+{
+	Endurance[entity] += 3000;
 }
 
 public void Dungeon_Spawn_BuffBosses1(int entity)

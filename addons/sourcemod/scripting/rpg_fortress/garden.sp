@@ -149,6 +149,7 @@ void Garden_PlayerRunCmd(int client)
 			UpdateTrace[client] = gameTime + 3.0;
 			
 			int length = GardenList.Length;
+			int DelayFrameDo = 0;
 			for(int i; i < length; i++)
 			{
 				static GardenEnum garden;
@@ -163,7 +164,15 @@ void Garden_PlayerRunCmd(int client)
 						if(stage > 4)
 							stage = 4;
 						
-						PlantHasBeenPlanted(client, garden.Pos, stage);
+						DelayFrameDo += 2;
+						
+						DataPack pack = new DataPack();
+						pack.WriteCell(EntIndexToEntRef(client));
+						pack.WriteFloat(garden.Pos[0]);
+						pack.WriteFloat(garden.Pos[1]);
+						pack.WriteFloat(garden.Pos[2]);
+						pack.WriteCell(stage);
+						RequestFrames(PlantHasBeenPlanted, DelayFrameDo, pack);
 					}
 					else
 					{
@@ -181,15 +190,34 @@ void Garden_PlayerRunCmd(int client)
 
 stock void NoPlantPlanted(int client, float pos[3])
 {
+	/*
 	static float m_vecMaxs[3];
 	static float m_vecMins[3];
 	m_vecMaxs = view_as<float>( { 10.0, 10.0, -5.0 } );
 	m_vecMins = view_as<float>( { -10.0, -10.0, 5.0 } );	
 	TE_DrawBox(client, pos, m_vecMins, m_vecMaxs, 3.5, view_as<int>({255, 0, 0, 255}));
+	*/
+	float temp[3];
+	temp = pos;
+	temp[2] += 5.0;
+	TE_SendBeam(client, pos, temp, 3.5, {255, 0, 0, 255}); //it grew abit, make it abit more yellow.
 }
-
-stock void PlantHasBeenPlanted(int client, float pos[3], int stage)
+stock void PlantHasBeenPlanted(DataPack pack)
 {
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(client))
+	{
+		delete pack;
+		return;
+	}
+	float pos[3];
+	pos[0] = pack.ReadFloat();
+	pos[1] = pack.ReadFloat();
+	pos[2] = pack.ReadFloat();
+	int stage = pack.ReadCell();
+	delete pack;
+
 	float temp[3];
 	static float m_vecMaxs[3];
 	static float m_vecMins[3];	
