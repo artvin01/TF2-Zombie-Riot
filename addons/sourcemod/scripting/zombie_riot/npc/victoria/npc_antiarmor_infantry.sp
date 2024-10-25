@@ -279,7 +279,7 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 			{
 				RemoveEntity(npc.m_iWearable1);
 			}
-			int entity = npc.FireRocket(EnemyPos, 500, 1500,_,_,_,70.0);
+			int entity = npc.FireRocket(EnemyPos, 500.0, 1500.0,_,_,_,70.0);
 			if(entity != -1)
 			{
 				SetEntProp(entity, Prop_Send, "m_bCritical", true);
