@@ -366,6 +366,7 @@ void BlockerSelfdefense(Blocker npc, float gameTime, int target, float distance)
 						SDKHooks_TakeDamage(target, npc.index, npc.index, HitDamage, DMG_CLUB, -1, _, vecHit);
 					}
 					else
+						HitDamage *= 1.5;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, HitDamage, DMG_CLUB, -1, _, vecHit);
 
 					npc.PlayMeleeHitSound();
