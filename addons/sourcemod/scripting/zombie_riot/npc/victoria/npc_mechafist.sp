@@ -147,7 +147,7 @@ methodmap VictorianMechafist < CClotBody
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum22_lawnmaker_style2/sum22_lawnmaker_style2.mdl");
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 100, 100, 100, 255);
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/fall2013_the_cuban_coverup/fall2013_the_cuban_coverup_engineer.mdl");
 

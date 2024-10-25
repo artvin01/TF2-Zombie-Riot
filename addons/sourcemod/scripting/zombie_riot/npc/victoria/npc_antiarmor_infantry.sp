@@ -149,7 +149,7 @@ methodmap VictoriaAntiarmorInfantry < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetVariantString("1.2");
+		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		return npc;
@@ -253,7 +253,7 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 {
 	if(!npc.m_flNextRangedAttackHappening)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
 		{
 			int Enemy_I_See;
 								

@@ -35,7 +35,7 @@ void VictoriaMowdown_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mowdown");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy");
 	data.IconCustom = false;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -96,7 +96,7 @@ methodmap VictoriaMowdown < CClotBody
 			if(this.i_GunMode != 1)
 			{
 				StopSound(this.index, SNDCHAN_STATIC, "weapons/minigun_shoot.wav");
-				EmitSoundToAll("weapons/minigun_spin.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
+				EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
 			}
 			this.i_GunMode = 1;
 		}
@@ -104,9 +104,9 @@ methodmap VictoriaMowdown < CClotBody
 
 	public VictoriaMowdown(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.0", "10000", ally));
+		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.4", "10000", ally));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_DEPLOYED_PRIMARY");
@@ -120,19 +120,22 @@ methodmap VictoriaMowdown < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
+		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 150.0;
+		npc.m_flSpeed = 100.0;
 		
+		f_HeadshotDamageMultiNpc[npc.index] = 0.25;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
 		SetVariantString("1.0");
@@ -145,7 +148,7 @@ methodmap VictoriaMowdown < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum20_breach_and_bomb/sum20_breach_and_bomb.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
+		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
@@ -234,9 +237,9 @@ public void VictoriaMowdown_NPCDeath(int entity)
 	}
 		
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/minigun_spin.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/minigun_shoot.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunfire.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/minigun_spin.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/minigun_shoot.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunfire.wav");
 	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
@@ -277,7 +280,7 @@ void VictoriaMowdownSelfDefense(VictoriaMowdown npc)
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 15.0;
+					float damageDealt = 25.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 

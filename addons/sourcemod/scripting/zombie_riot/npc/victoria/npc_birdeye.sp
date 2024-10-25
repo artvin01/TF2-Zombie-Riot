@@ -127,6 +127,8 @@ methodmap VictoriaBirdeye < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
+		f_HeadshotDamageMultiNpc[npc.index] = 1.25;
 		
 		//IDLE
 		npc.m_iState = 0;

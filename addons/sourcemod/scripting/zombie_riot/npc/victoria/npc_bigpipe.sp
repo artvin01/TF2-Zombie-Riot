@@ -2,25 +2,25 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/npc/male01/no01.wav",
-	"vo/npc/male01/no02.wav",
+	"vo/demoman_sf13_magic_reac03.mp3",
+	"vo/demoman_sf13_magic_reac05.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/npc/male01/pain01.wav",
-	"vo/npc/male01/pain02.wav",
-	"vo/npc/male01/pain03.wav",
-	"vo/npc/male01/pain05.wav",
-	"vo/npc/male01/pain06.wav",
-	"vo/npc/male01/pain07.wav",
-	"vo/npc/male01/pain08.wav",
-	"vo/npc/male01/pain09.wav",
+	"vo/demoman_painsharp01.mp3",
+	"vo/demoman_painsharp02.mp3",
+	"vo/demoman_painsharp03.mp3",
+	"vo/demoman_painsharp04.mp3",
+	"vo/demoman_painsharp05.mp3",
+	"vo/demoman_painsharp06.mp3",
+	"vo/demoman_painsharp07.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/npc/male01/ohno.wav",
-	"vo/npc/male01/overthere01.wav",
-	"vo/npc/male01/overthere02.wav",
+	"vo/demoman_sf13_midnight02.mp3",
+	"vo/demoman_sf13_midnight04.mp3",
+	"vo/demoman_sf13_midnight05.mp3",
+	"vo/demoman_sf13_midnight06.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -145,8 +145,6 @@ methodmap VictoriaBigPipe < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl");
 		SetVariantString("1.25");
@@ -384,7 +382,7 @@ int VictoriaBigPipeSelfDefense(VictoriaBigPipe npc, float gameTime, float distan
 					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY",_,_,_,1.5);
 					//They do a direct attack, slow down the rocket and make it deal less damage.
 					RocketDamage *= 0.75;
-					RocketSpeed *= 0.75;
+					RocketSpeed *= 1.25;
 					//	npc.PlayRangedSound();
 					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl", 1.2);
 				}
