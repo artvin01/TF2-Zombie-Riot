@@ -49,9 +49,16 @@ void VictoriaHarbringer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
+static int i_ally_index;
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return VictoriaHarbringer(client, vecPos, vecAng, ally);
+}
+
+public void VictoriaHarbringer_Set_Ally_Index(int ref)
+{	
+	i_ally_index = EntIndexToEntRef(ref);
 }
 
 methodmap VictoriaHarbringer < CClotBody
@@ -125,7 +132,7 @@ methodmap VictoriaHarbringer < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
 		SetVariantString("0.9");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-        SetVariantInt(32);
+		SetVariantInt(32);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");

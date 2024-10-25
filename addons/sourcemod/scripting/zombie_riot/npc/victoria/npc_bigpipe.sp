@@ -55,6 +55,15 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return VictoriaBigPipe(client, vecPos, vecAng, ally);
 }
+
+static int i_ally_index;
+
+
+public void VictoriaBigPipe_Set_Ally_Index(int ref)
+{	
+	i_ally_index = EntIndexToEntRef(ref);
+}
+
 methodmap VictoriaBigPipe < CClotBody
 {
 	public void PlayIdleAlertSound() 

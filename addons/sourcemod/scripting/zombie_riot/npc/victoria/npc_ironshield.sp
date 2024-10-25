@@ -149,14 +149,14 @@ methodmap VictorianIronShield < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 50, 150, 150, 255);
+		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 50, 80, 0, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/big_jaw.mdl");
 		
@@ -166,7 +166,7 @@ methodmap VictorianIronShield < CClotBody
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec17_polar_bear/dec17_polar_bear.mdl");
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 50, 150, 150, 255);
+		SetEntityRenderColor(npc.m_iWearable4, 80, 50, 50, 255);
 		
 		return npc;
 	}
