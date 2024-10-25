@@ -466,7 +466,7 @@ void VictoriaBirdeye_SpawnAllyDuo(int ref)
 		if(spawn_index > MaxClients)
 		{
 			//i_ally_index = EntIndexToEntRef(spawn_index);
-			VictoriaHarbringer_Set_Ally_Index(entity);
+			//VictoriaHarbringer_Set_Ally_Index(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -474,7 +474,7 @@ void VictoriaBirdeye_SpawnAllyDuo(int ref)
 		if(spawn_index2 > MaxClients)
 		{
 			//i_ally_index = EntIndexToEntRef(spawn_index2);
-			VictoriaBigPipe_Set_Ally_Index(entity);
+			//VictoriaBigPipe_Set_Ally_Index(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index2, true);
 			SetEntProp(spawn_index2, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index2, Prop_Data, "m_iMaxHealth", maxhealth);

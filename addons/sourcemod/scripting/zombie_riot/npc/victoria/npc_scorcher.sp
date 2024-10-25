@@ -305,13 +305,13 @@ public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if(target > MaxClients)
 		{
-			StartBleedingTimer_Against_Client(target, npc.index, 4.0, 10);
+			StartBleedingTimer_Against_Client(target, entity, 4.0, 10);
 		}
 		else
 		{
 			if (!IsInvuln(target))
 			{
-				StartBleedingTimer_Against_Client(target, npc.index, 4.0, 10);
+				StartBleedingTimer_Against_Client(target, entity, 4.0, 10);
 				TF2_IgnitePlayer(target, target, 5.0);
 			}
 		}

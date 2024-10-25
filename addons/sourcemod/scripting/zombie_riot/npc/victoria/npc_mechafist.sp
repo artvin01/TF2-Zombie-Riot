@@ -284,7 +284,6 @@ void VictorianMechafistSelfDefense(VictorianMechafist npc, float gameTime, int t
 								Knocked = true;
 								if(npc.m_iOverlordComboAttack <= 0)
 								{
-									HitDamage *= 5.0;
 									npc.m_iOverlordComboAttack = 3;
 									if(NpcStats_VictorianCallToArms(npc.index))
 									{
