@@ -1025,7 +1025,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_URANIUM_RIFLE:
 		{
-			WeaponUranium_OnTakeDamage(attacker,victim, damage,weapon, damagePosition);
+			WeaponUranium_OnTakeDamage(attacker,victim, damage, damagePosition);
 		}
 		case WEAPON_TEXAN_BUISNESS:
 		{

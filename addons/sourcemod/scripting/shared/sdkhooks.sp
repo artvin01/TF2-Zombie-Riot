@@ -2322,10 +2322,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 #if defined ZR
 		if(i_SemiAutoWeapon[weapon])
 		{
-			char classname[64];
-			GetEntityClassname(weapon, classname, sizeof(classname));
-			int slot = TF2_GetClassnameSlot(classname);
-			if(i_SemiAutoWeapon_AmmoCount[client][slot] > 0)
+			if(i_SemiAutoWeapon_AmmoCount[weapon] > 0)
 			{
 				Attributes_Set(weapon, 821, 0.0);
 			}
