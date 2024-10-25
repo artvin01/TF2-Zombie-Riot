@@ -346,7 +346,7 @@ void BlockerSelfdefense(Blocker npc, float gameTime, int target, float distance)
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
-				float Damage = 50.0;
+				float HitDamage = 50.0;
 				float vecHit[3];
 				TR_GetEndPosition(vecHit, swingTrace);
 				
@@ -354,7 +354,7 @@ void BlockerSelfdefense(Blocker npc, float gameTime, int target, float distance)
 				{
 					if(npc.m_iOverlordComboAttack <= 0)
 					{
-						Damage *= 3.0;
+						HitDamage *= 3.0;
 						npc.m_iOverlordComboAttack = 3;
 					}
 					else
@@ -363,10 +363,10 @@ void BlockerSelfdefense(Blocker npc, float gameTime, int target, float distance)
 					}
 					if(!ShouldNpcDealBonusDamage(target))
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Damage, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, HitDamage, DMG_CLUB, -1, _, vecHit);
 					}
 					else
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Damage, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, HitDamage, DMG_CLUB, -1, _, vecHit);
 
 					npc.PlayMeleeHitSound();
 				} 

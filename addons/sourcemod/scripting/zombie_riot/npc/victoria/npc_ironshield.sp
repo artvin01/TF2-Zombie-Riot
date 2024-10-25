@@ -268,7 +268,7 @@ void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTime, int
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
-				float Damage = 100.0;
+				float HitDamage = 100.0;
 				float vecHit[3];
 				TR_GetEndPosition(vecHit, swingTrace);
 				
@@ -277,7 +277,7 @@ void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTime, int
 					if(npc.m_iOverlordComboAttack <= 0)
 					{
 						float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-						makeexplosion(npc.index, npc.index, npc_vec, "", RoundToCeil(Damage * 4.0), 150,_,_,_, false, 10.0);
+						makeexplosion(npc.index, npc.index, npc_vec, "", RoundToCeil(HitDamage * 4.0), 150,_,_,_, false, 10.0);
 					}
 					else
 					{
@@ -286,10 +286,10 @@ void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTime, int
 	
 					if(!ShouldNpcDealBonusDamage(target))
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Damage, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, HitDamage, DMG_CLUB, -1, _, vecHit);
 					}
 					else
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Damage, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, HitDamage, DMG_CLUB, -1, _, vecHit);
 
 					npc.PlayMeleeHitSound();
 				} 
