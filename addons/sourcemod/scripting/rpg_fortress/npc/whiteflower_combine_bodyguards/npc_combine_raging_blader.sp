@@ -27,9 +27,6 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
@@ -349,7 +346,6 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					float AccelerateAttackspeed = 1.0;
 					int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 					float Percentage = float(Health) / float(ReturnEntityMaxHealth(npc.index));
 					if(Percentage <= 0.35)
