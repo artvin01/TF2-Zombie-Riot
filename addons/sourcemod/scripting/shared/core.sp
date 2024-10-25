@@ -2215,6 +2215,10 @@ public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
 
+#if defined VIEW_CHANGES
+	ViewChange_ClientDisconnect(client);
+#endif
+
 #if defined ZR || defined RPG
 	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
@@ -2313,6 +2317,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	Tutorial_MakeClientNotMove(client);
 #endif
 
+#if defined RPG
+	if(Plots_PlayerRunCmd(client, buttons))
+		return Plugin_Changed;
+#endif
+
 #if defined ZR || defined RPG
 	if(buttons & IN_ATTACK)
 	{
@@ -2335,7 +2344,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-
 	static int holding[MAXTF2PLAYERS];
 	if(holding[client] & IN_ATTACK)
 	{
@@ -2922,6 +2930,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Resistance_for_building_High[entity] = 0.0;
 		Building_Mounted[entity] = 0;
 		BarracksEntityCreated(entity);
+#endif
+#if defined ZR || defined RPG
 		CoinEntityCreated(entity);
 #endif
 		b_ThisWasAnNpc[entity] = false;

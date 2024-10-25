@@ -241,7 +241,7 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 1.5;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);

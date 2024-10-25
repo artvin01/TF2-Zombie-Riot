@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 #define MARKET_TAX	10
+#define MARKET_CAP	10
 
 static const char RarityName[][] = 
 {
@@ -718,9 +719,9 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 {
 	if(StrEqual(name, ITEM_CASH, false))
 	{
-		TextStore_Cash(client, amount);
+		int total = TextStore_Cash(client, amount);
 		if(amount > 0 && !silent)
-			SPrintToChat(client, "You gained %d credits", amount);
+			SPrintToChat(client, "You gained %d credits (%d)", amount, total);
 	}
 	else if(StrEqual(name, ITEM_XP, false))
 	{
@@ -730,7 +731,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 		if(xp > 0 && !silent)
 		{
 			if(quest)
-				SPrintToChat(client, "You gained %d XP", xp);
+				SPrintToChat(client, "You gained %d XP (%d)", xp, XP[client]);
 			else
 				RPGTextstore_XpToChat(client, xp);
 		}
@@ -752,11 +753,18 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 				}
 				else if(amount == 1)
 				{
-					SPrintToChat(client, "You gained %s", buffer);
+					if(length > 1)
+					{
+						SPrintToChat(client, "You gained %s (%d)", buffer, length + amount);
+					}
+					else
+					{
+						SPrintToChat(client, "You gained %s", buffer);
+					}
 				}
 				else if(amount > 1)
 				{
-					SPrintToChat(client, "You gained %s x%d", buffer, amount);
+					SPrintToChat(client, "You gained %s x%d (%d)", buffer, amount, length + amount);
 				}
 
 				Quests_MarkBookDirty(client);
@@ -902,6 +910,9 @@ static void TextStore_ShowSellMenu(int client)
 			
 			if(market)
 			{
+				if(MarketCount[client] > MARKET_CAP)
+					MarketCount[client] = MARKET_CAP;
+				
 				amount = kv.GetNum("cost");
 				kv.GetString("storetags", buffer, sizeof(buffer));
 				if(buffer[0])
@@ -1046,18 +1057,27 @@ static int TextStore_SellMenuHandle(Menu menu, MenuAction action, int client, in
 										int oldPrice = MarketKv.GetNum("price");
 										if(oldPrice == MarketSell[client])
 										{
+											int current = MarketKv.GetNum("amount");
+
+											if((current + MarketCount[client]) > MARKET_CAP)
+											{
+												SPrintToChat(client, "%d items were returned to you as hit the quantity cap of %d.", (current + MarketCount[client]) - MARKET_CAP, MARKET_CAP);
+												MarketCount[client] = MARKET_CAP - current;
+											}
+
 											amount -= MarketCount[client];
-											MarketKv.SetNum("amount", MarketKv.GetNum("amount") + MarketCount[client]);
+											MarketKv.SetNum("amount", current + MarketCount[client]);
 										}
 										else
 										{
 											int refund = MarketKv.GetNum("amount");
 											amount -= MarketCount[client] - refund;
-											MarketKv.SetNum("amount", MarketCount[client]);
-											MarketKv.SetNum("price", MarketSell[client]);
 
 											if(refund)
 												SPrintToChat(client, "%d items were placed at %d credits and were returned to you.", refund, oldPrice);
+
+											MarketKv.SetNum("amount", MarketCount[client]);
+											MarketKv.SetNum("price", MarketSell[client]);
 										}
 
 										TextStore_SetInv(client, MarketItem[client], amount);
@@ -1930,6 +1950,11 @@ static Action TextStore_ItemTimer(Handle timer)
 	return Plugin_Continue;
 }
 
+void TextStore_DelayMenuHud(int client, float time = 1.0)
+{
+	RefreshAt[client] = GetGameTime() + time;
+}
+
 void TextStore_PlayerRunCmd(int client)
 {
 	if((InMenu[client] || GetClientMenu(client) == MenuSource_None))
@@ -2187,11 +2212,11 @@ static void ShowMenu(int client, int page = 0)
 		}
 		case MENU_BUILDING:
 		{
-			/*if(Plots_ShowMenu(client))
+			if(Plots_CanShowMenu(client) && Plots_ShowMenu(client))
 			{
 				InMenu[client] = true;
 			}
-			else*/
+			else
 			{
 				MenuType[client] = MENU_SPELLS;
 				InMenu[client] = false;

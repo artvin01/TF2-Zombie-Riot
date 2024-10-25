@@ -210,9 +210,10 @@ public void SniperAccuracy_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 150000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						StartBleedingTimer_Against_Client(target, npc.index, 100000.0, 5);
 					}

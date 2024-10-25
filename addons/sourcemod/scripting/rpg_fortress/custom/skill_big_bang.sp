@@ -104,7 +104,7 @@ void PlayerAnimationSettingFreeze(int client, int type, float damage)
 public Action PlayerAnimationSettingFreezePost(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int clientindex = pack.ReadCell();
+	pack.ReadCell();
 	int client = GetClientOfUserId(pack.ReadCell());
 	int camreadelete = EntRefToEntIndex(pack.ReadCell());
 	int DeleteKillEntity = EntRefToEntIndex(pack.ReadCell());

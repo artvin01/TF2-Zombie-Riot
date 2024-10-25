@@ -80,7 +80,7 @@ public void XenoCombineSoldierShotgun_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Shotgunner");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Shotgunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_shotgun");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_shotgun");
 	data.IconCustom = true;

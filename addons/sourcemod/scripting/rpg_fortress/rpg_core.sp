@@ -6,6 +6,11 @@
 #define MIN_FADE_DISTANCE 3000.0
 #define MAX_FADE_DISTANCE 3700.0
 
+enum
+{
+	WEAPON_BIGFRYINGPAN = 1,
+}
+
 int BaseStrength;
 int BasePrecision;
 int BaseArtifice;
@@ -17,7 +22,7 @@ int BaseLuck;
 int BaseAgility;
 int BaseUpgradeCost;
 int BaseUpgradeScale;
-int BaseUpdateStats;
+int BaseUpdateStats = 1;
 int BaseMaxLevel;
 int BaseMaxExperience;
 int BaseMaxExperiencePerLevel;
@@ -40,7 +45,7 @@ float Animal_Happy[MAXTF2PLAYERS][10][3];
 float f3_PositionArrival[MAXENTITIES][3];
 int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 
-bool b_PlayerIsPVP[MAXENTITIES];
+int b_PlayerIsPVP[MAXENTITIES];
 int i_CurrentStamina[MAXTF2PLAYERS];
 int i_MaxStamina[MAXTF2PLAYERS];
 float f_ClientTargetedByNpc[MAXTF2PLAYERS];
@@ -61,23 +66,10 @@ int Intelligence[MAXENTITIES];
 int Capacity[MAXENTITIES];
 int Agility[MAXENTITIES];
 int Luck[MAXENTITIES];
+int ArmorCorrosion[MAXENTITIES];
 
 float f_ClientSinceLastHitNpc[MAXENTITIES][MAXTF2PLAYERS];
 float f_FlatDamagePiercing[MAXENTITIES];
-
-//This is for keeping track of what weapons have what stats already applied to them.
-/* OLD CODE
-int BackpackBonus2[MAXENTITIES];
-int Strength2[MAXENTITIES];
-int Precision2[MAXENTITIES];
-int Artifice2[MAXENTITIES];
-int Endurance2[MAXENTITIES];
-int Structure2[MAXENTITIES];
-int Intelligence2[MAXENTITIES];
-int Capacity2[MAXENTITIES];
-int Agility2[MAXENTITIES];
-int Luck2[MAXENTITIES];
-*/
 
 //CC CONTRACT DIFFICULTIES!
 bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];
@@ -105,6 +97,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/mining.sp"
 #include "rpg_fortress/music.sp"
 #include "rpg_fortress/party.sp"
+#include "rpg_fortress/plots.sp"
 #include "rpg_fortress/quests.sp"
 #include "rpg_fortress/saves.sp"
 #include "rpg_fortress/spawns.sp"
@@ -151,10 +144,12 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/weapon_semi_auto.sp"
 #include "rpg_fortress/custom/wand/weapon_sword_wand.sp"
 */
+#include "rpg_fortress/custom/weapon_coin_flip.sp"
 #include "rpg_fortress/custom/transform_expidonsan.sp"
 #include "rpg_fortress/custom/transform_iberian.sp"
 #include "rpg_fortress/custom/transform_merc_human.sp"
 #include "rpg_fortress/custom/transform_ruianian.sp"
+#include "rpg_fortress/custom/transform_seaborn.sp"
 
 void RPG_PluginStart()
 {
@@ -242,10 +237,13 @@ void RPG_MapStart()
 	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	Wand_Map_Precache();
+	
 	Transform_Expidonsa_MapStart();
 	Transform_Iberian_MapStart();
 	Transform_MercHuman_MapStart();
 	Transform_Ruianian_MapStart();
+	Transform_Seaborn_MapStart();
+
 	SamuraiSword_Map_Precache();
 	GroundSlam_Map_Precache();
 	Mortar_MapStart();
@@ -263,6 +261,7 @@ void RPG_MapStart()
 	Wand_BubbleProctection_Map_Precache();
 	BoomStick_MapPrecache();
 	BigBang_Map_Precache();
+	Abiltity_Coin_Flip_Map_Change();
 
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
 
@@ -316,7 +315,6 @@ void RPG_SetupMapSpecific(const char[] mapname)
 }
 void RPG_ConfigSetup()
 {
-
 	Zones_ConfigSetup();
 	Actor_ConfigSetup();
 	Crafting_ConfigSetup();
@@ -326,6 +324,7 @@ void RPG_ConfigSetup()
 	Garden_ConfigSetup();
 	Mining_ConfigSetup();
 	Quests_ConfigSetup();
+	Plots_ConfigSetup();
 	Races_ConfigSetup();
 	Saves_ConfigSetup();
 	Spawns_ConfigSetup();
@@ -333,8 +332,6 @@ void RPG_ConfigSetup()
 	Worldtext_ConfigSetup();
 	
 	TextStore_ConfigSetup();
-
-
 }
 
 bool RPG_BuildPath(char[] buffer, int length, const char[] name)
@@ -435,6 +432,7 @@ void RPG_EntityCreated(int entity, const char[] classname)
 	StoreWeapon[entity][0] = 0;
 	hFromSpawnerIndex[entity] = -1;
 	Dungeon_ResetEntity(entity);
+	Plots_EntityCreated(entity);
 	Stats_ClearCustomStats(entity);
 	Zones_EntityCreated(entity, classname);
 	OnEntityCreatedMeleeWarcry(entity);

@@ -76,7 +76,7 @@ public void XenoCombineSoldierAr2_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Rifler");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Rifler");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_ar2");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_rifle");
 	data.IconCustom = true;

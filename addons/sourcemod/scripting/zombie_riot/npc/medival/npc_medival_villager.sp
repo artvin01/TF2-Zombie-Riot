@@ -780,9 +780,10 @@ void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 35.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						if(!ShouldNpcDealBonusDamage(target))
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB);

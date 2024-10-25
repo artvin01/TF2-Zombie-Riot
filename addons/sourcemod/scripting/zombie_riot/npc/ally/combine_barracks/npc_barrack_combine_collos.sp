@@ -55,7 +55,7 @@ void Barracks_Combine_Collos_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Collos");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Collos");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_collos");
 	data.IconCustom = false;
 	data.Flags = 0;

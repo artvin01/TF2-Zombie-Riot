@@ -94,6 +94,7 @@ methodmap PlayerAnimatorNPC < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
+		npc.m_bisWalking = false;
 
 		b_NpcIsInvulnerable[npc.index] = true;
 		b_IgnorePlayerCollisionNPC[npc.index] = true;
