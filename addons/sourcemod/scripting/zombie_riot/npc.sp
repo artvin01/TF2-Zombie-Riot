@@ -587,6 +587,12 @@ void NPC_ConfigSetup()
 	
 //wave 31~45
 	Victoria_BaseBreaker_OnMapStart_NPC();
+	VictoriaAntiarmorInfantry_OnMapStart_NPC();
+	RifalManu_OnMapStart_NPC();
+	VictorianMechafist_OnMapStart_NPC();
+	VictorianBooster_OnMapStart_NPC();
+	VictoriaScorcher_OnMapStart_NPC();
+	VictoriaMowdown_OnMapStart_NPC();
 	VictoriaBigPipe_OnMapStart_NPC();
 	VictoriaHarbringer_OnMapStart_NPC();
 	VictoriaBirdeye_OnMapStart_NPC();
@@ -1660,6 +1666,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 //wave 31~45
 #include "zombie_riot/npc/victoria/npc_basebreaker.sp"
+#include "zombie_riot/npc/victoria/npc_booster.sp"
+#include "zombie_riot/npc/victoria/npc_scorcher.sp"
+#include "zombie_riot/npc/victoria/npc_mowdown.sp"
+#include "zombie_riot/npc/victoria/npc_mechafist.sp"
+#include "zombie_riot/npc/victoria/npc_assaulter.sp"
+#include "zombie_riot/npc/victoria/npc_antiarmor_infantry.sp"
 #include "zombie_riot/npc/victoria/npc_birdeye.sp"
 #include "zombie_riot/npc/victoria/npc_harbringer.sp"
 #include "zombie_riot/npc/victoria/npc_bigpipe.sp"

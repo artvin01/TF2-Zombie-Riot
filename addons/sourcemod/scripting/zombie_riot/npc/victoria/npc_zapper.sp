@@ -339,7 +339,7 @@ void ZapperSelfdefense(Zapper npc, float gameTime, int target, float distance)
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 0.8;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}
 	}

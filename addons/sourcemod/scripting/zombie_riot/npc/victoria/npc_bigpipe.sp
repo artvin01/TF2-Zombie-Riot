@@ -356,14 +356,14 @@ int VictoriaBigPipeSelfDefense(VictoriaBigPipe npc, float gameTime, float distan
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				float RocketDamage = 100.0;
-				float RocketSpeed = 1100.0;
+				float RocketDamage = 200.0;
+				float RocketSpeed = 1500.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				float vecDest[3];
 				vecDest = vecTarget;
-				vecDest[0] += GetRandomFloat(-100.0, 100.0);
-				vecDest[1] += GetRandomFloat(-100.0, 100.0);
+				vecDest[0] += GetRandomFloat(-50.0, 50.0);
+				vecDest[1] += GetRandomFloat(-50.0, 50.0);
 				if(npc.m_iChanged_WalkCycle == 1)
 				{
 					float SpeedReturn[3];
@@ -383,14 +383,14 @@ int VictoriaBigPipeSelfDefense(VictoriaBigPipe npc, float gameTime, float distan
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY",_,_,_,1.5);
 					//They do a direct attack, slow down the rocket and make it deal less damage.
-					RocketDamage *= 0.5;
-					RocketSpeed *= 0.5;
+					RocketDamage *= 0.75;
+					RocketSpeed *= 0.75;
 					//	npc.PlayRangedSound();
 					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl", 1.2);
 				}
 				npc.m_iOverlordComboAttack --;
 						
-				npc.m_flNextMeleeAttack = gameTime + 0.45;
+				npc.m_flNextMeleeAttack = gameTime + 0.25;
 				//Launch something to target, unsure if rocket or something else.
 				//idea:launch fake rocket with noclip or whatever that passes through all
 				//then whereever the orginal goal was, land there.

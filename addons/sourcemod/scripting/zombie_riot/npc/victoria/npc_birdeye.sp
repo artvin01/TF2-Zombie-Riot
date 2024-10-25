@@ -40,7 +40,7 @@ void VictoriaBirdeye_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_TeleportSounds)); i++) { PrecacheSound(g_TeleportSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Anarchist Enforcer");
+	strcopy(data.Name, sizeof(data.Name), "Birdeye");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_birdeye");
 	strcopy(data.Icon, sizeof(data.Icon), "sniper");
 	data.IconCustom = false;
