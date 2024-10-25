@@ -588,7 +588,7 @@ void NPC_ConfigSetup()
 //wave 31~45
 	Victoria_BaseBreaker_OnMapStart_NPC();
 	VictoriaAntiarmorInfantry_OnMapStart_NPC();
-	RifalManu_OnMapStart_NPC();
+	VictoriaAssulter_OnMapStart_NPC();
 	VictorianMechafist_OnMapStart_NPC();
 	VictorianBooster_OnMapStart_NPC();
 	VictoriaScorcher_OnMapStart_NPC();

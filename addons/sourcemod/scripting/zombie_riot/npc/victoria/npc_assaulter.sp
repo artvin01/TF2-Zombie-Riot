@@ -27,7 +27,7 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 
-void RifalManu_OnMapStart_NPC()
+void VictoriaAssulter_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -35,8 +35,8 @@ void RifalManu_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Rifal Manu");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_rifal_manu");
+	strcopy(data.Name, sizeof(data.Name), "Assulter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_assaulter");
 	strcopy(data.Icon, sizeof(data.Icon), "rifler");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -47,10 +47,10 @@ void RifalManu_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return RifalManu(client, vecPos, vecAng, ally);
+	return VictoriaAssulter(client, vecPos, vecAng, ally);
 }
 
-methodmap RifalManu < CClotBody
+methodmap VictoriaAssulter < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -83,9 +83,9 @@ methodmap RifalManu < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public RifalManu(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaAssulter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		RifalManu npc = view_as<RifalManu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1000", ally));
+		VictoriaAssulter npc = view_as<VictoriaAssulter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -104,9 +104,9 @@ methodmap RifalManu < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		func_NPCDeath[npc.index] = RifalManu_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = RifalManu_OnTakeDamage;
-		func_NPCThink[npc.index] = RifalManu_ClotThink;
+		func_NPCDeath[npc.index] = VictoriaAssulter_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaAssulter_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaAssulter_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -138,9 +138,9 @@ methodmap RifalManu < CClotBody
 	}
 }
 
-public void RifalManu_ClotThink(int iNPC)
+public void VictoriaAssulter_ClotThink(int iNPC)
 {
-	RifalManu npc = view_as<RifalManu>(iNPC);
+	VictoriaAssulter npc = view_as<VictoriaAssulter>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -183,7 +183,7 @@ public void RifalManu_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		RifalManuSelfDefense(npc,GetGameTime(npc.index)); 
+		VictoriaAssulterSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 	else
 	{
@@ -193,9 +193,9 @@ public void RifalManu_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action RifalManu_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VictoriaAssulter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	RifalManu npc = view_as<RifalManu>(victim);
+	VictoriaAssulter npc = view_as<VictoriaAssulter>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -209,9 +209,9 @@ public Action RifalManu_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	return Plugin_Changed;
 }
 
-public void RifalManu_NPCDeath(int entity)
+public void VictoriaAssulter_NPCDeath(int entity)
 {
-	RifalManu npc = view_as<RifalManu>(entity);
+	VictoriaAssulter npc = view_as<VictoriaAssulter>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -229,7 +229,7 @@ public void RifalManu_NPCDeath(int entity)
 
 }
 
-void RifalManuSelfDefense(RifalManu npc, float gameTime)
+void VictoriaAssulterSelfDefense(VictoriaAssulter npc, float gameTime)
 {
 	int target;
 	//some Ranged units will behave differently.
