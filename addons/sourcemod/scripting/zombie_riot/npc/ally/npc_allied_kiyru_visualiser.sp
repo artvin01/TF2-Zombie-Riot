@@ -394,8 +394,8 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 		if(f_NoUnstuckVariousReasons[npc.m_iTarget] < GetGameTime() + 0.5)
 			f_NoUnstuckVariousReasons[npc.m_iTarget] = GetGameTime() + 0.5;
 
-		if(f_DoNotUnstuckDuration[npc.m_iTarget][1] < GetGameTime() + 0.5)
-			f_DoNotUnstuckDuration[npc.m_iTarget][1] = GetGameTime() + 0.5;
+		if(f_DoNotUnstuckDuration[npc.m_iTarget] < GetGameTime() + 0.5)
+			f_DoNotUnstuckDuration[npc.m_iTarget] = GetGameTime() + 0.5;
 
 		if(f_TankGrabbedStandStill[npc.m_iTarget] < GetGameTime() + 0.1)
 			f_TankGrabbedStandStill[npc.m_iTarget] = GetGameTime() + 0.1;

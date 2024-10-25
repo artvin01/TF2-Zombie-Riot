@@ -6225,7 +6225,7 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 }
 public void NpcStuckInSomething(CClotBody npc, int iNPC)
 {
-	if (!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC][1] < GetGameTime())
+	if (!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
 	{
 		if(i_FailedTriesUnstuck[iNPC][1] == 0)
 		{
