@@ -142,13 +142,15 @@ methodmap VictoriaAntiarmorInfantry < CClotBody
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/soldier/grfs_soldier.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr18_head_hedge/spr18_head_hedge_soldier.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum24_aimframe/sum24_aimframe.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		return npc;
 	}
