@@ -133,6 +133,7 @@ methodmap VictoriaBigPipe < CClotBody
 		
 		
 		int skin = 1;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
 
@@ -345,7 +346,7 @@ int VictoriaBigPipeSelfDefense(VictoriaBigPipe npc, float gameTime, float distan
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				float RocketDamage = 100.0;
-				float RocketSpeed = 1000.0;
+				float RocketSpeed = 1100.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				float vecDest[3];

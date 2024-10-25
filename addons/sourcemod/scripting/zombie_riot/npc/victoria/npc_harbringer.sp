@@ -84,7 +84,7 @@ methodmap VictoriaHarbringer < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.6);
 	}
 
 	public VictoriaHarbringer(int client, float vecPos[3], float vecAng[3], int ally)
@@ -282,13 +282,13 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
 						float origin[3], angles[3];
-						view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-						ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, vecHit, false );
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1;
+						view_as<CClotBody>(npc.index).GetAttachment("head", origin, angles);
+						ShootLaser(npc.index, "bullet_tracer02_blue_crit", origin, vecHit, false );
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.05;
 
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 35.0;
+							float damageDealt = 20.0;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 3.0;
 
