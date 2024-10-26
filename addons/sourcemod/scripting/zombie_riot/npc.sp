@@ -593,6 +593,7 @@ void NPC_ConfigSetup()
 	VictorianBooster_OnMapStart_NPC();
 	VictoriaScorcher_OnMapStart_NPC();
 	VictoriaMowdown_OnMapStart_NPC();
+	VictoriaMortar_OnMapStart_NPC();
 	VictoriaBigPipe_OnMapStart_NPC();
 	VictoriaHarbringer_OnMapStart_NPC();
 	VictoriaBirdeye_OnMapStart_NPC();
