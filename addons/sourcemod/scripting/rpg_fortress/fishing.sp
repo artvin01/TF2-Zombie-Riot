@@ -463,6 +463,9 @@ public void FishingRodSetRarity(int client, int weapon, int index)
 {
 	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
 	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	int totalInt = Stats_Intelligence(client);
+	if(totalInt >= 5000)
+		FishingRate[client] *= 0.75;
 	Desired_FishingTier[client] = FishingTier[client]; //Set the desired fishing tier to the tier of the rod.
 }
 
@@ -470,6 +473,10 @@ public void FishingRodCycleRarity(int client, int weapon, int index)
 {
 	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
 	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	int totalInt = Stats_Intelligence(client);
+	if(totalInt >= 5000)
+		FishingRate[client] *= 0.75;
+		
 	Desired_FishingTier[client] -= 1;
 	if(Desired_FishingTier[client] < 1)
 	{

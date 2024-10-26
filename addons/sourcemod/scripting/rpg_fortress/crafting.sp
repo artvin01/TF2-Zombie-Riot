@@ -418,20 +418,14 @@ static void CraftMenu(int client)
 
 		Menu menu = new Menu(CraftRecipe);
 	//	menu.SetTitle("RPG Fortress\n \nCraft & Shop: %s\n \n%s\n \n%s\n ", CurrentRecipe[client], cost, result);
-		menu.SetTitle("RPG Fortress\n \nCraft & Shop: \n%s\n \n%s\n ", cost, result);
-
 		if(nonMoney)
-		{
-			menu.AddItem("1", "Craft x1", failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("5", "Craft x5", failed5 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("10", "Craft x10", failed10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		}
+			menu.SetTitle("RPG Fortress\n \nCraft: \n%s\n \n%s\nCraft:\n", cost, result);
 		else
-		{
-			menu.AddItem("1", "Buy x1", failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("5", "Buy x5", failed5 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("10", "Buy x10", failed10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		}
+			menu.SetTitle("RPG Fortress\n \nShop: \n%s\n \n%s\nBuy:\n", cost, result);
+
+		menu.AddItem("1", "x1", failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("5", "x5", failed5 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("10", "x10", failed10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);

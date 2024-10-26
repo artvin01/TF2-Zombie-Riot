@@ -345,7 +345,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 		Handle tr;
 		float forwar[3];
 		DoSwingTrace_Custom(tr, client, forwar);
-
+		int totalInt = Stats_Intelligence(client);
 		int target = TR_GetEntityIndex(tr);
 		if(target != -1)
 		{
@@ -454,8 +454,16 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 							if(f_clientFoundRareRockSpot[client] < GetGameTime())
 							{
 								f_clientFoundRareRockSpot[client] = GetGameTime() + 10.0;
+								if(totalInt >= 4000)
+								{
+									f_clientFoundRareRockSpot[client] = GetGameTime() + 5.0;
+								}
 								DataPack pack_repack;
-								CreateDataTimer((5.0 * attackspeed), ApplyRareMiningChance, pack_repack, TIMER_FLAG_NO_MAPCHANGE);
+								if(totalInt >= 4000)
+									CreateDataTimer((2.5 * attackspeed), ApplyRareMiningChance, pack_repack, TIMER_FLAG_NO_MAPCHANGE);
+								else
+									CreateDataTimer((5.0 * attackspeed), ApplyRareMiningChance, pack_repack, TIMER_FLAG_NO_MAPCHANGE);
+
 								pack_repack.WriteCell(EntIndexToEntRef(client));
 								pack_repack.WriteCell(EntIndexToEntRef(i_entity_hit));
 								pack_repack.WriteFloat(f_resulthit[0]);
@@ -471,6 +479,9 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 					if(Rare_hit)
 					{
 						damage *= 6;
+						if(totalInt >= 4000)
+							damage *= 2;
+							
 						Tinker_GainXP(client, weapon);
 					}
 

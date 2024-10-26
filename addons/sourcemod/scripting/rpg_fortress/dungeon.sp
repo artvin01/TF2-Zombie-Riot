@@ -174,14 +174,14 @@ enum struct StageEnum
 	char MusicEasy[PLATFORM_MAX_PATH];
 	int MusicEasyTime;
 	float MusicEasyVolume;
-	bool MusicEasyCustom;
+	int MusicEasyCustom;
 	char MusicEasyDesc[PLATFORM_MAX_PATH];
 
 	int MusicTier;
 	char MusicHard[PLATFORM_MAX_PATH];
 	int MusicHardTime;
 	float MusicHardVolume;
-	bool MusicHardCustom;
+	int MusicHardCustom;
 	char MusicHardDesc[PLATFORM_MAX_PATH];
 
 	ArrayList ModList;
@@ -241,14 +241,14 @@ enum struct StageEnum
 		kv.GetString("music_easy_file", this.MusicEasy, PLATFORM_MAX_PATH);
 		this.MusicEasyTime = kv.GetNum("music_easy_duration");
 		this.MusicEasyVolume = kv.GetFloat("music_easy_volume", 1.0);
-		this.MusicEasyCustom = view_as<bool>(kv.GetNum("music_easy_download"));
+		this.MusicEasyCustom = kv.GetNum("music_easy_download");
 		kv.GetString("music_easy_desc", this.MusicEasyDesc, PLATFORM_MAX_PATH);
 
 		if(this.MusicEasy[0])
 		{
 			if(this.MusicEasyCustom)
 			{
-				PrecacheSoundCustom(this.MusicEasy, _, this.Level);
+				PrecacheSoundCustom(this.MusicEasy, _, this.MusicEasyCustom);
 			}
 			else
 			{
@@ -259,7 +259,7 @@ enum struct StageEnum
 		kv.GetString("music_hard_file", this.MusicHard, PLATFORM_MAX_PATH);
 		this.MusicHardTime = kv.GetNum("music_hard_duration");
 		this.MusicHardVolume = kv.GetFloat("music_hard_volume", 1.0);
-		this.MusicHardCustom = view_as<bool>(kv.GetNum("music_hard_download"));
+		this.MusicHardCustom = kv.GetNum("music_hard_download");
 		this.MusicTier = kv.GetNum("music_hard_cap", 99999);
 		kv.GetString("music_hard_desc", this.MusicHardDesc, PLATFORM_MAX_PATH);
 
@@ -267,7 +267,7 @@ enum struct StageEnum
 		{
 			if(this.MusicHardCustom)
 			{
-				PrecacheSoundCustom(this.MusicHard, _, this.Level);
+				PrecacheSoundCustom(this.MusicHard, _, this.MusicHardCustom);
 			}
 			else
 			{

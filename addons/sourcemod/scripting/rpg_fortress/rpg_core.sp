@@ -961,7 +961,12 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 		}
 		MasteryAdd += GetRandomFloat(0.11, 0.13);
 		int totalInt = Stats_Intelligence(client);
-		if(totalInt >= 1000)
+		if(totalInt >= 6000)
+		{
+			MasteryAdd *= 1.6875;
+			SPrintToChat(client, "Your Extreme intellect boosts you, your current form obtained %0.2f (1.6875x) Mastery points.",MasteryAdd);
+		}
+		else if(totalInt >= 1000)
 		{
 			MasteryAdd *= 1.25;
 			SPrintToChat(client, "Your intellect boosts you, your current form obtained %0.2f (1.25x) Mastery points.",MasteryAdd);

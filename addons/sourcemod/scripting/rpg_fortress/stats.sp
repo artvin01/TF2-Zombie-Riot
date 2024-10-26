@@ -17,6 +17,9 @@ static int StatIntelligence[MAXTF2PLAYERS];
 static int StatCapacity[MAXTF2PLAYERS];
 static int ReskillPoints[MAXTF2PLAYERS];
 
+#define INTELLIGENCE_1ST_STAT_MULTI 3000
+#define INTELLIGENCE_2ST_STAT_MULTI 8000
+
 void Stats_PluginStart()
 {
 	RegConsoleCmd("rpg_stats", Stats_ShowStats, "Shows your RPG stats");
@@ -516,7 +519,14 @@ int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multirace =
 	bonus = Strength[client];
 	multirace = race.StrengthMulti;
 	multiform = form.GetFloatStat(Form::StrengthMulti, Stats_GetFormMastery(client, form.Name));
-
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multiform *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multiform *= 1.05;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -541,7 +551,14 @@ int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multirace 
 	bonus = Precision[client];
 	multirace = race.PrecisionMulti;
 	multiform = form.GetFloatStat(Form::PrecisionMulti, Stats_GetFormMastery(client, form.Name));
-
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multiform *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multiform *= 1.05;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -562,7 +579,14 @@ int Stats_Artifice(int client, int &base = 0, int &bonus = 0, float &multirace =
 	bonus = Artifice[client];
 	multirace = race.ArtificeMulti;
 	multiform = form.GetFloatStat(Form::ArtificeMulti, Stats_GetFormMastery(client, form.Name));
-
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multiform *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multiform *= 1.05;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -583,7 +607,14 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multirace 
 	bonus = Endurance[client] - ArmorCorrosion[client];
 	multirace = race.EnduranceMulti;
 	multiform = form.GetFloatStat(Form::EnduranceMulti, Stats_GetFormMastery(client, form.Name));
-
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multiform *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multiform *= 1.05;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -610,7 +641,14 @@ int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multirace 
 	bonus = Structure[client];
 	multirace = race.StructureMulti;
 	multiform = form.GetFloatStat(Form::StructureMulti, Stats_GetFormMastery(client, form.Name));
-
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multiform *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multiform *= 1.05;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -650,6 +688,14 @@ int Stats_Capacity(int client, int &base = 0, int &bonus = 0, float &multi = 0.0
 	base = BaseCapacity + StatCapacity[client];
 	bonus = Capacity[client];
 	multi = race.CapacityMulti;
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multi *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multi *= 1.05;
+	}
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -670,7 +716,14 @@ int Stats_Agility(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 	base = BaseAgility;
 	bonus = Agility[client] + form.GetIntStat(Form::AgilityAdd, Stats_GetFormMastery(client, form.Name));
 	multi = race.AgilityMulti;
-
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		bonus += 2;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		bonus += 1;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -691,6 +744,14 @@ int Stats_Luck(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 	base = BaseLuck;
 	bonus = Luck[client] + form.GetIntStat(Form::LuckAdd, Stats_GetFormMastery(client, form.Name));
 	multi = race.LuckMulti;
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		bonus += 2;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		bonus += 1;
+	}
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
