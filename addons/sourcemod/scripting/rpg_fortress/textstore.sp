@@ -725,6 +725,11 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 	}
 	else if(StrEqual(name, ITEM_XP, false))
 	{
+		int totalInt = Stats_Intelligence(client);
+		if(!quest && totalInt >= 10000)
+		{
+			amount = RoundToNearest(float(amount) * (1.05));
+		}
 		int xp = amount;
 
 		Stats_GiveXP(client, xp, quest);
