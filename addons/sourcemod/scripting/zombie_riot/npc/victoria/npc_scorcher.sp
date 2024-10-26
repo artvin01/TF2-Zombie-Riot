@@ -111,7 +111,7 @@ methodmap VictoriaScorcher < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(0);
+		SetVariantInt(5);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		

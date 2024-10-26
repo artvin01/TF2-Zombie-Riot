@@ -1672,6 +1672,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_mechafist.sp"
 #include "zombie_riot/npc/victoria/npc_assaulter.sp"
 #include "zombie_riot/npc/victoria/npc_antiarmor_infantry.sp"
+#include "zombie_riot/npc/victoria/npc_mortar.sp"
 #include "zombie_riot/npc/victoria/npc_birdeye.sp"
 #include "zombie_riot/npc/victoria/npc_harbringer.sp"
 #include "zombie_riot/npc/victoria/npc_bigpipe.sp"

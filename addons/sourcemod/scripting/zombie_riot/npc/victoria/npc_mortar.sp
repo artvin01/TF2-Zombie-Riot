@@ -2,71 +2,65 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/demoman_sf13_magic_reac03.mp3",
-	"vo/demoman_sf13_magic_reac05.mp3",
+	"vo/medic_paincrticialdeath01.mp3",
+	"vo/medic_paincrticialdeath02.mp3",
+	"vo/medic_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/demoman_painsharp01.mp3",
-	"vo/demoman_painsharp02.mp3",
-	"vo/demoman_painsharp03.mp3",
-	"vo/demoman_painsharp04.mp3",
-	"vo/demoman_painsharp05.mp3",
-	"vo/demoman_painsharp06.mp3",
-	"vo/demoman_painsharp07.mp3",
+	")vo/medic_painsharp01.mp3",
+	")vo/medic_painsharp02.mp3",
+	")vo/medic_painsharp03.mp3",
+	")vo/medic_painsharp04.mp3",
+	")vo/medic_painsharp05.mp3",
+	")vo/medic_painsharp06.mp3",
+	")vo/medic_painsharp07.mp3",
+	")vo/medic_painsharp08.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/demoman_sf13_midnight02.mp3",
-	"vo/demoman_sf13_midnight04.mp3",
-	"vo/demoman_sf13_midnight05.mp3",
-	"vo/demoman_sf13_midnight06.mp3",
+	")vo/medic_battlecry01.mp3",
+	")vo/medic_battlecry02.mp3",
+	")vo/medic_battlecry03.mp3",
+	")vo/medic_battlecry04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
 	"mvm/giant_demoman/giant_demoman_grenade_shoot.wav",
 };
 
-static const char g_ReloadSound[][] = {
-	"weapons/ar2/npc_ar2_reload.wav",
+static const char g_MeleeHitSounds[][] = {
+	"weapons/cleaver_hit_02.wav",
+	"weapons/cleaver_hit_03.wav",
+	"weapons/cleaver_hit_05.wav",
+	"weapons/cleaver_hit_06.wav",
+	"weapons/cleaver_hit_07.wav",
 };
 
-
-void VictoriaBigPipe_OnMapStart_NPC()
+void VictoriaMortar_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bigpipe");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bigpipe");
-	strcopy(data.Icon, sizeof(data.Icon), "demo");
+	strcopy(data.Name, sizeof(data.Name), "Mortar");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mortar");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Victoria;
+	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
-static float fl_npc_basespeed;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaBigPipe(client, vecPos, vecAng, ally);
+	return VictoriaMortar(client, vecPos, vecAng, ally);
 }
-
-/*
-static int i_ally_index;
-
-
-public void VictoriaBigPipe_Set_Ally_Index(int ref)
-{	
-	i_ally_index = EntIndexToEntRef(ref);
-}
-*/
-
-methodmap VictoriaBigPipe < CClotBody
+methodmap VictoriaMortar < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -88,12 +82,6 @@ methodmap VictoriaBigPipe < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
-
-	public void PlayReloadSound() 
-	{
-		EmitSoundToAll(g_ReloadSound[GetRandomInt(0, sizeof(g_ReloadSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-
 	
 	public void PlayDeathSound() 
 	{
@@ -104,6 +92,11 @@ methodmap VictoriaBigPipe < CClotBody
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.2);
 	}
+	public void PlayMeleeHitSound() 
+	{
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+
+	}
 	property float m_flWeaponSwitchCooldown
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -111,16 +104,15 @@ methodmap VictoriaBigPipe < CClotBody
 	}
 	
 	
-	public VictoriaBigPipe(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaMortar(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaBigPipe npc = view_as<VictoriaBigPipe>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally,false));
+		VictoriaMortar npc = view_as<VictoriaMortar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "9500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.SetActivity("ACT_MP_RUN_SECONDARY");
-			
-		SetVariantInt(4);
+		npc.SetActivity("ACT_MP_RUN_MELEE");
+		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -129,44 +121,38 @@ methodmap VictoriaBigPipe < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictoriaBigPipe_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaBigPipe_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictoriaBigPipe_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VictoriaMortar_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaMortar_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VictoriaMortar_ClotThink);
 		
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 180.0;
-		fl_npc_basespeed = 180.0;
-		npc.m_iOverlordComboAttack = 6;
+		npc.m_flSpeed = 200.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+	
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_blackbox/c_blackbox.mdl");
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_flameball/c_flameball.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/soldier/soldier_warpig_s2.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/sbox2014_antarctic_researcher/sbox2014_antarctic_researcher.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/sum20_flatliner/sum20_flatliner.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum19_dancing_doe/sum19_dancing_doe.mdl");
-		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/demo_beardpipe_s2/demo_beardpipe_s2.mdl");
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum19_staplers_specs/sum19_staplers_specs_demo.mdl");
-		SetVariantString("1.1");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_mad_lad/hwn2023_mad_lad.mdl");
-
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 3);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 50, 150, 255, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
+		SetVariantString("1.5");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
+		SetVariantString("1.5");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
@@ -175,9 +161,9 @@ methodmap VictoriaBigPipe < CClotBody
 	}
 }
 
-public void VictoriaBigPipe_ClotThink(int iNPC)
+public void VictoriaMortar_ClotThink(int iNPC)
 {
-	VictoriaBigPipe npc = view_as<VictoriaBigPipe>(iNPC);
+	VictoriaMortar npc = view_as<VictoriaMortar>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -204,22 +190,6 @@ public void VictoriaBigPipe_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
-	if(npc.m_iOverlordComboAttack < 1)
-	{
-		if(npc.m_iChanged_WalkCycle != 6)
-		{
-			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.5;
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 6;
-			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY", true,_,_,0.37);
-			npc.m_flSpeed = 0.0;
-			npc.StopPathing();
-			npc.PlayReloadSound();
-			npc.m_iOverlordComboAttack = 6;
-		}
-		return;
-	}
-
 	//Swtich modes depending on area.
 	if(npc.m_flWeaponSwitchCooldown < GetGameTime(npc.index))
 	{
@@ -242,9 +212,9 @@ public void VictoriaBigPipe_ClotThink(int iNPC)
 			{
 				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 1;
-				npc.SetActivity("ACT_MP_RUN_SECONDARY");
+				npc.SetActivity("ACT_MP_RUN_MELEE");
 				npc.StartPathing();
-				npc.m_flSpeed = 275.0;
+				npc.m_flSpeed = 200.0;
 			}
 		}
 		else
@@ -253,9 +223,9 @@ public void VictoriaBigPipe_ClotThink(int iNPC)
 			{
 				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 2;
-				npc.SetActivity("ACT_MP_RUN_SECONDARY");
+				npc.SetActivity("ACT_MP_RUN_PRIMARY");
 				npc.StartPathing();
-				npc.m_flSpeed = 310.0;
+				npc.m_flSpeed = 200.0;
 			}
 		}
 	}
@@ -265,7 +235,7 @@ public void VictoriaBigPipe_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = VictoriaBigPipeSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		int ActionDo = VictoriaMortarSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -286,9 +256,8 @@ public void VictoriaBigPipe_ClotThink(int iNPC)
 			}
 			case 1:
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_flSpeed = 0.0;
-				//Stand still.
+				npc.m_flSpeed = 100.0;
+				//Move slower.
 			}
 		}
 	}
@@ -300,9 +269,9 @@ public void VictoriaBigPipe_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictoriaBigPipe_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VictoriaMortar_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaBigPipe npc = view_as<VictoriaBigPipe>(victim);
+	VictoriaMortar npc = view_as<VictoriaMortar>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -316,9 +285,9 @@ public Action VictoriaBigPipe_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void VictoriaBigPipe_NPCDeath(int entity)
+public void VictoriaMortar_NPCDeath(int entity)
 {
-	VictoriaBigPipe npc = view_as<VictoriaBigPipe>(entity);
+	VictoriaMortar npc = view_as<VictoriaMortar>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -340,12 +309,12 @@ public void VictoriaBigPipe_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int VictoriaBigPipeSelfDefense(VictoriaBigPipe npc, float gameTime, float distance)
+int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance)
 {
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 100.0))
 		{
 			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
 			npc.FaceTowards(VecAim, 20000.0);
@@ -354,24 +323,22 @@ int VictoriaBigPipeSelfDefense(VictoriaBigPipe npc, float gameTime, float distan
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				float RocketDamage = 200.0;
-				float RocketSpeed = 1500.0;
+				float RocketDamage = 500.0;
+				float RocketSpeed = 1200.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
-				float vecDest[3];
-				vecDest = vecTarget;
-				vecDest[0] += GetRandomFloat(-50.0, 50.0);
-				vecDest[1] += GetRandomFloat(-50.0, 50.0);
 				if(npc.m_iChanged_WalkCycle == 1)
 				{
 					float SpeedReturn[3];
-					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.25);
 
-					int RocketGet = npc.FireRocket(vecDest, RocketDamage, RocketSpeed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl", 1.2);
+					int RocketGet = npc.FireRocket(vecTarget, RocketDamage, RocketSpeed);
+					SetEntProp(RocketGet, Prop_Send, "m_rCritical", true);
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.75, 1.0);
+					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, RocketSpeed,_,vecTarget);
+					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
 					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 
@@ -379,16 +346,15 @@ int VictoriaBigPipeSelfDefense(VictoriaBigPipe npc, float gameTime, float distan
 				}
 				else
 				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY",_,_,_,1.5);
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY",_,_,_,0.75);
 					//They do a direct attack, slow down the rocket and make it deal less damage.
 					RocketDamage *= 0.75;
-					RocketSpeed *= 1.25;
-					//	npc.PlayRangedSound();
-					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl", 1.2);
+					RocketSpeed *= 0.75;
+				//	npc.PlayRangedSound();
+					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed);
 				}
-				npc.m_iOverlordComboAttack --;
 						
-				npc.m_flNextMeleeAttack = gameTime + 0.25;
+				npc.m_flNextMeleeAttack = gameTime + 5.00;
 				//Launch something to target, unsure if rocket or something else.
 				//idea:launch fake rocket with noclip or whatever that passes through all
 				//then whereever the orginal goal was, land there.
@@ -396,17 +362,9 @@ int VictoriaBigPipeSelfDefense(VictoriaBigPipe npc, float gameTime, float distan
 			}
 		}
 	}
-	if(npc.m_flNextMeleeAttack > gameTime)
-	{
-		npc.m_flSpeed = 0.0;
-	}
-	else
-	{
-		npc.m_flSpeed = fl_npc_basespeed;
-	}
 	//No can shooty.
 	//Enemy is close enough.
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 100.0))
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{

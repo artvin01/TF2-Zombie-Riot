@@ -253,7 +253,7 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 {
 	if(!npc.m_flNextRangedAttackHappening)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 30.0))
 		{
 			int Enemy_I_See;
 								
@@ -281,7 +281,7 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 			{
 				RemoveEntity(npc.m_iWearable1);
 			}
-			int entity = npc.FireRocket(EnemyPos, 500.0, 1500.0,_,_,_,70.0);
+			int entity = npc.FireRocket(EnemyPos, 500.0, 1500.0);
 			if(entity != -1)
 			{
 				SetEntProp(entity, Prop_Send, "m_bCritical", true);
