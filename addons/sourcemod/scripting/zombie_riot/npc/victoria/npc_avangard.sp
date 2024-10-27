@@ -55,7 +55,7 @@ methodmap VictorianAvangard < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
 		func_NPCDeath[npc.index] = ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);;
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = ClotThink;
 		
 		npc.m_flSpeed = 100.0;
