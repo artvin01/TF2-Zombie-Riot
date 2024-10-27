@@ -245,6 +245,8 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 {
 	VictorianCaffeinator npc = view_as<VictorianCaffeinator>(iNPC);
 	
+	float GameTime = GetGameTime(iNPC);
+	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
