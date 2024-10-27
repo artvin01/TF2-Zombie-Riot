@@ -93,8 +93,9 @@ methodmap VictorianAvangard < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 75, 175, 100, 255);
 		
 		float flPos[3];
+		float flAng[3];
 				
-		npc.GetAttachment("m_vecAbsOrigin", flPos);
+		npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
 
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "teleporter_mvm_bot_persist", npc.index, "", {0.0,0.0,0.0});
 		CreateTimer(5.0, Timer_RemoveEntity, EntIndexToEntRef(npc.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
