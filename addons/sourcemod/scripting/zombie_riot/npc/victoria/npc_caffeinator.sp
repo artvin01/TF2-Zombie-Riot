@@ -246,7 +246,7 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 	VictorianCaffeinator npc = view_as<VictorianCaffeinator>(iNPC);
 	
 	float GameTime = GetGameTime(iNPC);
-	
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -380,8 +380,6 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 			ExpidonsaGroupHeal(npc.index, 150.0, 5, 1500.0, 0.0, false,Expidonsa_DontHealSameIndex);
 			DesertYadeamDoHealEffect(npc.index, 100.0);
 			VictoriaCaffeinatorAOEBuff(npc,GetGameTime(npc.index));
-
-			npc.PlayRangedAttackSecondarySound();
 		}
 		
 		int PrimaryThreatIndex = npc.m_iTarget;
@@ -551,5 +549,4 @@ void VictoriaCaffeinatorAOEBuff(VictorianCaffeinator npc, float gameTime)
 			}
 		}
 	}
-	npc.PlayMeleeWarCry();
 }
