@@ -3825,6 +3825,9 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			if(TextStore_Interact(client, entity, Is_Reload_Button))
 				return true;
 			
+			if(Plots_Interact(client, entity, weapon))
+				return true;
+			
 			if(Mining_Interact(client, entity, weapon))
 				return true;
 			
