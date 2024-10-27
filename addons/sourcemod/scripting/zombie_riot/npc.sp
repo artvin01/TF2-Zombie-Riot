@@ -1688,4 +1688,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_caffeinator.sp"
 #include "zombie_riot/npc/victoria/npc_welder.sp"
 #include "zombie_riot/npc/victoria/npc_mechanist.sp"
-#include "zombie_riot/npc/victoria/npc_avanguard.sp"
+#include "zombie_riot/npc/victoria/npc_avangard.sp"
