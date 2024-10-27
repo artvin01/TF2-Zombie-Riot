@@ -86,11 +86,6 @@ methodmap VictorianAvangard < CClotBody
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum19_peacebreaker/sum19_peacebreaker.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2022_safety_stripes/hwn2022_safety_stripes.mdl");
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 75, 175, 100, 255);
 		
 		float flPos[3];
 		float flAng[3];
@@ -130,9 +125,6 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	
-	if(i_AttacksTillMegahit[npc.index] < 255)
-		return;
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
@@ -255,4 +247,7 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }

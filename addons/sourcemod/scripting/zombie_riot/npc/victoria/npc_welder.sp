@@ -155,8 +155,8 @@ methodmap VictorianWelder < CClotBody
 		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 0, 255);
 
 		npc.m_iWearable5= npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_nuclear_necessity/hwn2024_nuclear_necessity.mdl");
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 150, 150, 150, 255);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 
 		return npc;
 	}
@@ -241,7 +241,8 @@ static void Internal_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
-	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -276,9 +277,10 @@ void VictorianWelderSelfDefense(VictorianWelder npc, float gameTime, int target,
 				{
 					float damageDealt = 75.0;
 					if(ShouldNpcDealBonusDamage(target))
+					{
 						damageDealt *= 5.0;
 						GrantEntityArmor(npc.index, false, 1.5, 0.5, 0, 500.0);
-
+					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
