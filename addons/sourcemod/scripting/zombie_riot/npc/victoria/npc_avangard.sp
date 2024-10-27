@@ -77,6 +77,8 @@ methodmap VictorianAvangard < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_blackbox/c_blackbox.mdl");
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 100, 255);
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_atom_launcher/c_atom_launcher.mdl");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
@@ -86,6 +88,8 @@ methodmap VictorianAvangard < CClotBody
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum19_peacebreaker/sum19_peacebreaker.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+		SetVariantString("0.75");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		float flPos[3];
 		float flAng[3];
@@ -250,4 +254,15 @@ static void ClotDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }

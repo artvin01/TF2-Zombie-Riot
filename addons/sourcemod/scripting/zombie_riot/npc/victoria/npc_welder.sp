@@ -151,6 +151,7 @@ methodmap VictorianWelder < CClotBody
 		SetEntityRenderColor(npc.m_iWearable3, 50, 50, 50, 255);
 		
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2020_gourd_grin/hwn2020_gourd_grin_engineer.mdl");
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 0, 255);
 

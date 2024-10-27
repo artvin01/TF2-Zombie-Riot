@@ -227,7 +227,7 @@ static void Internal_ClotThink(int iNPC)
 				
 				if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
 				{
-					int entity = NPC_CreateByName("npc_avanguard", -1, pos, ang, GetTeam(npc.index));
+					int entity = NPC_CreateByName("npc_avangard", -1, pos, ang, GetTeam(npc.index));
 					if(entity > MaxClients)
 					{
 						NpcAddedToZombiesLeftCurrently(entity, true);
@@ -241,7 +241,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flNextRangedAttack = 0.0;
 				}
 			}
-			if(flDistanceToTarget < 125000) //too close, back off!! Now! /uhhh something range
+			if(flDistanceToTarget < 255000) //too close, back off!! Now! /uhhh something range
 			{
 				npc.StartPathing();
 				
@@ -347,4 +347,11 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }
