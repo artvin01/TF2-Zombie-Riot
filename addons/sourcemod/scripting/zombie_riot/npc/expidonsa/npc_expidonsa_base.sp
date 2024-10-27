@@ -11,6 +11,8 @@ int i_Expidonsa_ShieldEffect[MAXENTITIES];
 float f_Expidonsa_ShieldBroke[MAXENTITIES];
 bool EnemyShieldCantBreak[MAXENTITIES];
 
+
+#if defined ZR
 stock void ExpidonsaRemoveEffects(int iNpc)
 {
 	for(int loop = 0; loop<MAX_EXPI_ENERGY_EFFECTS; loop++)
@@ -32,7 +34,6 @@ void Expidonsa_SetToZero(int iNpc)
 	VausMagicaRemoveShield(iNpc);
 	EnemyShieldCantBreak[iNpc] = false;
 }
-
 bool ExpidonsaDepletedShieldShow(int victim)
 {
 	//false means delete shield.
@@ -188,6 +189,7 @@ void VausMagicaRemoveShield(int entity, bool force = false)
 		i_Expidonsa_ShieldEffect[entity] = INVALID_ENT_REFERENCE;
 	}
 }
+#endif
 
 
 float f_Expidonsa_HealingAmmount[MAXENTITIES];

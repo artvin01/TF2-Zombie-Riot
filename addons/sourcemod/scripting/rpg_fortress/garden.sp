@@ -200,7 +200,7 @@ stock void NoPlantPlanted(int client, float pos[3])
 	float temp[3];
 	temp = pos;
 	temp[2] += 5.0;
-	TE_SendBeam(client, pos, temp, 3.5, {255, 0, 0, 255}); //it grew abit, make it abit more yellow.
+	TE_SendBeam(client, pos, temp, 3.5, {255, 255, 255, 255}); //it grew abit, make it abit more yellow.
 }
 stock void PlantHasBeenPlanted(DataPack pack)
 {

@@ -2861,7 +2861,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		return -1;
 	}
-	public void FireGrenade(float vecTarget[3], float grenadespeed = 800.0, float damage, char[] model)
+	public int FireGrenade(float vecTarget[3], float grenadespeed = 800.0, float damage, char[] model)
 	{
 		int entity = CreateEntityByName("tf_projectile_pipe");
 		if(IsValidEntity(entity))
@@ -2902,7 +2902,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			SetEntProp(entity, Prop_Send, "m_bTouched", true);
 			SetEntityCollisionGroup(entity, 1);
+			return entity;
 		}
+		return -1;
 	}
 	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE, int entitytofirefrom = -1) //No defaults, otherwise i cant even judge.
 	{
@@ -9621,6 +9623,18 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 
 static int b_TouchedEntity[MAXENTITIES];
 
+void ResetTouchedentityResolve()
+{
+	Zero(b_TouchedEntity);
+}
+bool TouchedNpcResolve(int entity)
+{
+	return b_TouchedEntity[entity];
+}
+int ConvertTouchedResolve(int index)
+{
+	return b_TouchedEntity[index];
+}
 //TODO: teleport entities instead, but this is easier to i sleep :)
 stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockback = true)
 {
@@ -9702,7 +9716,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 		if(!b_TouchedEntity[entity_traced])
 			break;
 
-		if(i_IsABuilding[entity_traced])
+		if(i_IsABuilding[b_TouchedEntity[entity_traced]])
 			continue;
 
 		if(b_TouchedEntity[entity_traced] <= MaxClients)

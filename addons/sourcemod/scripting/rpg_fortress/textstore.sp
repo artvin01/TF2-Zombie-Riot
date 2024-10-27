@@ -4,6 +4,8 @@
 #define MARKET_TAX	10
 #define MARKET_CAP	10
 
+float MenuDelayDo[MAXTF2PLAYERS];
+
 static const char RarityName[][] = 
 {
 	"Common",
@@ -527,6 +529,7 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 void TextStore_ClientDisconnect(int client)
 {
 	MenuType[client] = 0;
+	MenuDelayDo[client] = 0.0;
 	
 	for(int i = SpellList.Length - 1; i >= 0; i--)
 	{
@@ -2019,6 +2022,21 @@ void TextStore_PlayerRunCmd(int client)
 
 static void ShowMenu(int client, int page = 0)
 {
+	if(MenuDelayDo[client] > GetGameTime())
+	{
+		return;
+	}
+	//Set ammo to inf!
+	SetAmmo(client, 1, 9999);
+	SetAmmo(client, 2, 9999);
+	SetAmmo(client, Ammo_Metal, 9999);
+	SetAmmo(client, Ammo_Jar, 1);
+	for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
+	{
+		SetAmmo(client, i, 9999);
+	}
+	MenuDelayDo[client] = GetGameTime() + 0.25;
+
 	if(!SpellList || Dungeon_MenuOverride(client))
 	{
 		InMenu[client] = false;

@@ -92,7 +92,7 @@ methodmap WhiteflowerTank < CClotBody
 	
 	public WhiteflowerTank(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		WhiteflowerTank npc = view_as<WhiteflowerTank>(CClotBody(vecPos, vecAng, "models/combine_apc.mdl", "1.0", "300", ally, _, true, .CustomThreeDimensions = {100.0, 100.0, 100.0}));
+		WhiteflowerTank npc = view_as<WhiteflowerTank>(CClotBody(vecPos, vecAng, "models/combine_apc.mdl", "1.0", "300", ally, _, true, .CustomThreeDimensions = {60.0, 60.0, 80.0}));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 

@@ -558,7 +558,9 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 	if(!noActions && ActorKv.JumpToKey("actions"))
 	{
 		if(ActorKv.GetNum("deposit"))
-			TextStore_DepositBackpack(client, false, true);
+		{
+			TF2_RegeneratePlayer(client);
+		}
 		
 		if(ActorKv.JumpToKey("setquest"))
 		{

@@ -1865,7 +1865,7 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 		return true;
 #endif
 
-#if defined MAX_EXPI_ENERGY_EFFECTS
+#if defined ZR
 	if(VausMagicaShieldLogicEnabled(victim))
 		return true;
 #endif

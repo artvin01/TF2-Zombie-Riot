@@ -977,7 +977,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 //BASES FOR ENEMIES
 
-#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
+#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp" //ALSO IN RPG!
 #include "zombie_riot/npc/seaborn/npc_nethersea_shared.sp"
 
 //BUILDINGS

@@ -1348,11 +1348,11 @@ static void StartDungeon(const char[] name)
 				if(stage.MusicTier > tier)
 				{
 					if(stage.MusicEasy[0])
-						Music_SetOverride(clients[c], stage.MusicEasy, stage.MusicEasyTime, stage.MusicEasyCustom, stage.MusicEasyVolume, stage.MusicEasyDesc);	
+						Music_SetOverride(clients[c], stage.MusicEasy, stage.MusicEasyTime, view_as<bool>(stage.MusicEasyCustom), stage.MusicEasyVolume, stage.MusicEasyDesc);	
 				}
 				else if(stage.MusicHard[0])
 				{
-					Music_SetOverride(clients[c], stage.MusicHard, stage.MusicHardTime, stage.MusicHardCustom, stage.MusicHardVolume, stage.MusicHardDesc);	
+					Music_SetOverride(clients[c], stage.MusicHard, stage.MusicHardTime, view_as<bool>(stage.MusicHardCustom), stage.MusicHardVolume, stage.MusicHardDesc);	
 				}
 			}
 			
