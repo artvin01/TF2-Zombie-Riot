@@ -2042,6 +2042,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_VictorianCallToArms[npc] > GameTime)
 		return true;
+	else if(f_CaffeinatorBuff[npc] > GameTime)
+		return true;
 	else if(f_PernellBuff[npc])
 		return true;
 	else if(f_PotionShrinkEffect[npc] > GameTime)

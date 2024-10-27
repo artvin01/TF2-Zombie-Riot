@@ -556,6 +556,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 	if(f_PernellBuff[attacker] > GameTime)
 		damage += basedamage * (0.5 * DamageBuffExtraScaling); //50% more damage!
 	
+	if(f_CaffeinatorBuff[attacker] > GameTime)
+		damage += basedamage * (0.5 * DamageBuffExtraScaling); //50% more damage!
+	
 	if(f_GodAlaxiosBuff[attacker] > GameTime)
 		damage += basedamage * (0.5 * DamageBuffExtraScaling); //50% more damage!
 	
@@ -1722,6 +1725,10 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	{
 		DamageRes *= 0.9;
 	}
+	if(f_CaffeinatorBuff[victim] > GameTime)
+	{
+		DamageRes *= 1.25;
+	}
 	
 
 #if defined ZR
@@ -2157,6 +2164,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_VictorianCallToArms[victim] > GameTime)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "✇%s", Debuff_Adder_right);
+	}
+	if(f_CaffeinatorBuff[victim] > GameTime)
+	{
+		Format(Debuff_Adder_right, SizeOfChar, "♨%s", Debuff_Adder_right);
 	}
 	
 #endif

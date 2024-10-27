@@ -598,6 +598,9 @@ void NPC_ConfigSetup()
 	VictoriaHarbringer_OnMapStart_NPC();
 	VictoriaBirdeye_OnMapStart_NPC();
 
+//wave 46~60
+	VictorianCaffeinator_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -1678,3 +1681,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_harbringer.sp"
 #include "zombie_riot/npc/victoria/npc_bigpipe.sp"
 
+//wave 46~60
+#include "zombie_riot/npc/victoria/npc_caffeinator.sp"

@@ -324,7 +324,7 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				float RocketDamage = 500.0;
-				float RocketSpeed = 1200.0;
+				float RocketSpeed = 650.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				if(npc.m_iChanged_WalkCycle == 1)
@@ -332,8 +332,8 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 					float SpeedReturn[3];
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.25);
 
-					int RocketGet = npc.FireRocket(vecTarget, RocketDamage, RocketSpeed);
-					SetEntProp(RocketGet, Prop_Send, "m_rCritical", true);
+					int RocketGet = npc.FireRocket(vecTarget, RocketDamage, RocketSpeed,_,1.5);
+					SetEntProp(RocketGet, Prop_Send, "m_bCritical", true);
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
@@ -364,7 +364,7 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 	}
 	//No can shooty.
 	//Enemy is close enough.
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 100.0))
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
