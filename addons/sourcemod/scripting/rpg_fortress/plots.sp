@@ -7,7 +7,12 @@ enum struct BlockEnum
 	int Space;
 
 	char Model[PLATFORM_MAX_PATH];
-	char Skin[4];
+	int Skin;
+	int Render;
+	float Scale;
+	float Offset[3];
+	char Color[16];
+	Function Func;
 
 	int Rotate;
 	
@@ -19,26 +24,36 @@ enum struct BlockEnum
 		if(!this.Model[0])
 			SetFailState("Missing model in plots.cfg");
 		
-		kv.GetString("skin", this.Skin, 4, "0");
+		this.Skin = kv.GetNum("skin");
+		this.Render = kv.GetNum("render", 255);
+		this.Scale = kv.GetFloat("scale", 1.0);
 		this.Rotate = kv.GetNum("rotate");
 		this.Space = kv.GetNum("space", 1);
+		kv.GetVector("offset", this.Offset);
+		kv.GetString("color", this.Color, 16, "255 255 255");
+		this.Func = KvGetFunction(kv, "func");
 	}
 	
-	int Spawn(const float pos[3], float ang[3])
+	int Spawn(float pos[3], float ang[3])
 	{
 		int entity = CreateEntityByName("prop_dynamic_override");
 		if(entity != -1)
 		{
 			DispatchKeyValue(entity, "targetname", "rpg_fortress");
 			DispatchKeyValue(entity, "model", this.Model);
-			DispatchKeyValue(entity, "skin", this.Skin);
+			DispatchKeyValueInt(entity, "skin", this.Skin);
 			DispatchKeyValue(entity, "solid", "6");
+			DispatchKeyValueInt(entity, "renderamt", this.Render);
+			DispatchKeyValueFloat(entity, "modelscale", this.Scale);
+			DispatchKeyValue(entity, "rendercolor", this.Color);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);
 			DispatchSpawn(entity);
 
 			for(int i; i < 3; i++)
 			{
+				pos[i] += this.Offset[i];
+
 				if(i == 1)
 				{
 					if(this.Rotate == 1)
@@ -64,12 +79,30 @@ enum struct BlockEnum
 		}
 		return entity;
 	}
+
+	bool CallFunc(int entity, BuildEnum build, int client = 0, int weapon = -1)
+	{
+		bool result;
+
+		if(this.Func != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, this.Func);
+			Call_PushCell(entity);
+			Call_PushArrayEx(build, sizeof(build), SM_PARAM_COPYBACK);
+			Call_PushCell(client);
+			Call_PushCell(weapon);
+			Call_Finish(result);
+		}
+
+		return result;
+	}
 }
 
 enum struct BuildEnum
 {
 	int UserID;
 	char Item[48];
+	int Flags;
 
 	int Pos[3];
 	int Ang[3];
@@ -85,6 +118,8 @@ enum struct BuildEnum
 		ExplodeStringInt(this.Item, " ", this.Ang, 3);
 
 		kv.GetString("name", this.Item, 48);
+
+		this.Flags = kv.GetNum("flags");
 	}
 	void AddEntry(KeyValues kv)
 	{
@@ -96,6 +131,7 @@ enum struct BuildEnum
 		kv.SetString("ang", buffer);
 
 		kv.SetString("name", this.Item);
+		kv.SetNum("flags", this.Flags);
 
 		kv.GoBack();
 	}
@@ -133,6 +169,10 @@ enum
 	Build_Interact,
 	Build_All
 }
+
+#include "rpg_fortress/plots/crafting.sp"
+#include "rpg_fortress/plots/misc.sp"
+#include "rpg_fortress/plots/skinswap.sp"
 
 static KeyValues PlotKv;
 static ArrayList BlockList;
@@ -237,9 +277,43 @@ void Plots_DisableZone(int ref)
 		UnloadPlot(userid, ref);
 }
 
+int Plots_ZoneOwner(int client)
+{
+	int owner;
+	if(InPlot[client])
+	{
+		if(PlotOwner.GetValue(InPlot[client], owner))
+			owner = GetClientOfUserId(owner);
+	}
+
+	return owner;
+}
+
+int Plots_ZoneName(int client, char[] name, int length)
+{
+	if(InPlot[client])
+	{
+		int entity = EntRefToEntIndex(InPlot[client]);
+		if(entity != -1)
+			return GetEntPropString(entity, Prop_Data, "m_iName", name, length);
+	}
+
+	return 0;
+}
+
 bool Plots_CanShowMenu(int client)
 {
-	return (CanClaimHere(client) || CanBuildHere(client));
+	if(InPlot[client])
+	{
+		int owner;
+		if(!PlotOwner.GetValue(InPlot[client], owner) || !(owner = GetClientOfUserId(owner)))
+			return true;
+		
+		if(owner == client || (Party_IsClientMember(client, owner) && PartyMode[owner] == Build_All))
+			return true;
+	}
+	return false;
+	//return (CanClaimHere(client) || CanBuildHere(client));
 }
 
 bool Plots_ShowMenu(int client)
@@ -547,6 +621,8 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 						{
 							InPlot[entity] = InPlot[client];
 							build.EntRef = EntIndexToEntRef(entity);
+
+							block.CallFunc(entity, build);
 							BuildList.PushArray(build);
 						}
 					}
@@ -557,6 +633,33 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 
 	buttons &= ~(IN_ATTACK|IN_ATTACK2|IN_RELOAD|IN_ATTACK3);
 	return true;
+}
+
+bool Plots_Interact(int client, int entity, int weapon)
+{
+	if(InPlot[client] == InPlot[entity])
+	{
+		int pos = BuildList.FindValue(EntIndexToEntRef(entity), BuildEnum::EntRef);
+		if(pos != -1)
+		{
+			static BuildEnum build;
+			BuildList.GetArray(pos, build);
+
+			static BlockEnum block;
+			int id = GetBlockByName(build.Item, block);
+			if(id != -1)
+			{
+				bool result = block.CallFunc(entity, build, client, weapon);
+				if(result)
+				{
+					BuildList.SetArray(pos, build);
+					return result;
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 static int FireBlockTrace(int client, float pos[3] = {}, float ang[3] = {})
@@ -775,6 +878,8 @@ static void RenderPlot(int userid, int zone)
 					{
 						InPlot[entity] = zone;
 						build.EntRef = EntIndexToEntRef(entity);
+
+						block.CallFunc(entity, build);
 						BuildList.SetArray(i, build);
 					}
 				}
@@ -834,7 +939,7 @@ static bool CanBuildHere(int client)
 	return false;
 }
 
-static bool CanClaimHere(int client)
+static stock bool CanClaimHere(int client)
 {
 	if(InPlot[client])
 	{

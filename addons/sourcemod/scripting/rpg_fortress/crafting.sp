@@ -142,7 +142,7 @@ enum struct CraftEnum
 
 static ArrayList CraftList;
 static StringMap BluePrints;
-static int CurrentMenu[MAXTF2PLAYERS] = {-1, ...};
+static ArrayList CurrentMenu[MAXTF2PLAYERS];
 static int CurrentPrint[MAXTF2PLAYERS];
 static char CurrentRecipe[MAXTF2PLAYERS][64];
 
@@ -343,10 +343,13 @@ bool Crafting_Interact(int client, int entity)
 				return false;
 			}
 
-			if(CurrentMenu[client] != -1)
+			if(CurrentMenu[client])
+			{
 				CancelClientMenu(client);
+				delete CurrentMenu[client];
+			}
 			
-			CurrentMenu[client] = i;
+			CurrentMenu[client] = craft.List;
 			CurrentPrint[client] = -1;
 			CraftMenu(client);
 			return true;
@@ -356,17 +359,28 @@ bool Crafting_Interact(int client, int entity)
 	return false;
 }
 
+void Crafting_SetCustomMenu(int client, ArrayList list)
+{
+	if(CurrentMenu[client])
+	{
+		CancelClientMenu(client);
+		delete CurrentMenu[client];
+	}
+	
+	CurrentMenu[client] = list;
+	CurrentPrint[client] = -1;
+	CraftMenu(client);
+}
+
 static void CraftMenu(int client)
 {
-	static CraftEnum craft;
-	CraftList.GetArray(CurrentMenu[client], craft);
-
+	char buffer[64];
 	if(CurrentRecipe[client][0])
 	{
-		craft.List.GetString(CurrentPrint[client], craft.Model, sizeof(craft.Model));
+		CurrentMenu[client].GetString(CurrentPrint[client], buffer, sizeof(buffer));
 
 		StringMap map;
-		BluePrints.GetValue(craft.Model, map);
+		BluePrints.GetValue(buffer, map);
 		map.GetValue(CurrentRecipe[client], map);
 		StringMapSnapshot snap = map.Snapshot();
 
@@ -379,12 +393,12 @@ static void CraftMenu(int client)
 		int length = snap.Length;
 		for(int i; i < length; i++)
 		{
-			snap.GetKey(i, craft.Model, sizeof(craft.Model));
-			map.GetValue(craft.Model, amount);
+			snap.GetKey(i, buffer, sizeof(buffer));
+			map.GetValue(buffer, amount);
 
 			if(amount > 0)
 			{
-				int count = TextStore_GetItemCount(client, craft.Model);
+				int count = TextStore_GetItemCount(client, buffer);
 				if(count < amount)
 					failed = true;
 				
@@ -394,23 +408,23 @@ static void CraftMenu(int client)
 				if(count < (amount * 10))
 					failed10 = true;
 				
-				if(!nonMoney && !StrEqual(craft.Model, ITEM_CASH, false))
+				if(!nonMoney && !StrEqual(buffer, ITEM_CASH, false))
 					nonMoney = true;
 
-				Format(cost, sizeof(cost), "%s\n%s (%d / %d)", cost, craft.Model, count, amount);
+				Format(cost, sizeof(cost), "%s\n%s (%d / %d)", cost, buffer, count, amount);
 			}
 			else if(amount < 0)
 			{
-				int count = TextStore_GetItemCount(client, craft.Model);
-				Format(result, sizeof(result), "%s\n%s (%d -> %d)", result, craft.Model, count, count - amount);
+				int count = TextStore_GetItemCount(client, buffer);
+				Format(result, sizeof(result), "%s\n%s (%d -> %d)", result, buffer, count, count - amount);
 			}
 			else
 			{
-				int count = TextStore_GetItemCount(client, craft.Model);
+				int count = TextStore_GetItemCount(client, buffer);
 				if(count < 1)
 					failed = true;
 				
-				Format(cost, sizeof(cost), "%s\n%s [TOOL%s]", cost, craft.Model, count < 1 ? " MISSING" : "");
+				Format(cost, sizeof(cost), "%s\n%s [TOOL%s]", cost, buffer, count < 1 ? " MISSING" : "");
 			}
 		}
 
@@ -432,20 +446,20 @@ static void CraftMenu(int client)
 	}
 	else if(CurrentPrint[client] != -1)
 	{
-		craft.List.GetString(CurrentPrint[client], craft.Model, sizeof(craft.Model));
+		CurrentMenu[client].GetString(CurrentPrint[client], buffer, sizeof(buffer));
 
 		StringMap map;
-		BluePrints.GetValue(craft.Model, map);
+		BluePrints.GetValue(buffer, map);
 		StringMapSnapshot snap = map.Snapshot();
 
 		Menu menu = new Menu(SelectRecipe);
-		menu.SetTitle("RPG Fortress\n \nCraft & Shop: %s\n ", craft.Model);
+		menu.SetTitle("RPG Fortress\n \nCraft & Shop: %s\n ", buffer);
 
 		int length = snap.Length;
 		for(int i; i < length; i++)
 		{
-			snap.GetKey(i, craft.Model, sizeof(craft.Model));
-			menu.AddItem(craft.Model, craft.Model);
+			snap.GetKey(i, buffer, sizeof(buffer));
+			menu.AddItem(buffer, buffer);
 		}
 
 		delete snap;
@@ -458,11 +472,11 @@ static void CraftMenu(int client)
 		Menu menu = new Menu(SelectBlueprint);
 		menu.SetTitle("RPG Fortress\n \nCraft & Shop\n ");
 
-		int length = craft.List.Length;
+		int length = CurrentMenu[client].Length;
 		for(int i; i < length; i++)
 		{
-			craft.List.GetString(i, craft.Model, sizeof(craft.Model));
-			menu.AddItem(craft.Model, craft.Model);
+			CurrentMenu[client].GetString(i, buffer, sizeof(buffer));
+			menu.AddItem(buffer, buffer);
 		}
 
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -479,7 +493,7 @@ static int SelectBlueprint(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			CurrentMenu[client] = -1;
+			delete CurrentMenu[client];
 		}
 		case MenuAction_Select:
 		{
@@ -508,7 +522,7 @@ static int SelectRecipe(Menu menu, MenuAction action, int client, int choice)
 			}
 			else
 			{
-				CurrentMenu[client] = -1;
+				delete CurrentMenu[client];
 			}
 		}
 		case MenuAction_Select:
@@ -539,7 +553,7 @@ static int CraftRecipe(Menu menu, MenuAction action, int client, int choice)
 			else
 			{
 				CurrentPrint[client] = -1;
-				CurrentMenu[client] = -1;
+				delete CurrentMenu[client];
 			}
 		}
 		case MenuAction_Select:
@@ -548,12 +562,10 @@ static int CraftRecipe(Menu menu, MenuAction action, int client, int choice)
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int multi = StringToInt(buffer);
 			
-			static CraftEnum craft;
-			CraftList.GetArray(CurrentMenu[client], craft);
-			craft.List.GetString(CurrentPrint[client], craft.Model, sizeof(craft.Model));
+			CurrentMenu[client].GetString(CurrentPrint[client], buffer, sizeof(buffer));
 
 			StringMap map;
-			BluePrints.GetValue(craft.Model, map);
+			BluePrints.GetValue(buffer, map);
 			map.GetValue(CurrentRecipe[client], map);
 			StringMapSnapshot snap = map.Snapshot();
 
@@ -563,12 +575,12 @@ static int CraftRecipe(Menu menu, MenuAction action, int client, int choice)
 			int length = snap.Length;
 			for(int i; i < length; i++)
 			{
-				snap.GetKey(i, craft.Model, sizeof(craft.Model));
-				map.GetValue(craft.Model, amount);
+				snap.GetKey(i, buffer, sizeof(buffer));
+				map.GetValue(buffer, amount);
 
 				if(amount > 0)
 				{
-					int count = TextStore_GetItemCount(client, craft.Model);
+					int count = TextStore_GetItemCount(client, buffer);
 					if(count < (amount * multi))
 					{
 						failed = true;
@@ -577,7 +589,7 @@ static int CraftRecipe(Menu menu, MenuAction action, int client, int choice)
 				}
 				else if(amount == 0)
 				{
-					int count = TextStore_GetItemCount(client, craft.Model);
+					int count = TextStore_GetItemCount(client, buffer);
 					if(count < 1)
 					{
 						failed = true;
@@ -592,11 +604,11 @@ static int CraftRecipe(Menu menu, MenuAction action, int client, int choice)
 				
 				for(int i; i < length; i++)
 				{
-					snap.GetKey(i, craft.Model, sizeof(craft.Model));
-					map.GetValue(craft.Model, amount);
+					snap.GetKey(i, buffer, sizeof(buffer));
+					map.GetValue(buffer, amount);
 
 					if(amount)
-						TextStore_AddItemCount(client, craft.Model, -(amount * multi), true);
+						TextStore_AddItemCount(client, buffer, -(amount * multi), true);
 				}
 			}
 

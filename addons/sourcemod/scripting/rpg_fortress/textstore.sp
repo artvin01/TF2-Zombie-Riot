@@ -242,6 +242,7 @@ static ArrayList SpellList;
 static StringMap StoreList;
 static char InStore[MAXTF2PLAYERS][32];
 static char InStoreTag[MAXTF2PLAYERS][16];
+static char InStoreExtra[MAXTF2PLAYERS][32];
 static int ItemIndex[MAXENTITIES];
 static int ItemCount[MAXENTITIES];
 static int ItemOwner[MAXENTITIES];
@@ -804,34 +805,7 @@ void TextStore_ZoneEnter(int client, const char[] name)
 		else
 		{
 			store.PlayEnter(client);
-			strcopy(InStore[client], sizeof(InStore[]), name);
-			strcopy(InStoreTag[client], sizeof(InStoreTag[]), store.Tag);
-
-			if(StrEqual(store.Tag, "market", false) && GetClientAuthId(client, AuthId_Steam3, store.Enter, sizeof(store.Enter)))
-			{
-				MarketKv.Rewind();
-				if(MarketKv.JumpToKey("Payout") && MarketKv.JumpToKey(store.Enter))
-				{
-					if(MarketKv.GotoFirstSubKey())
-					{
-						do
-						{
-							int cash = MarketKv.GetNum("cash");
-							MarketKv.GetSectionName(store.Enter, sizeof(store.Enter));
-							SPrintToChat(client, "%d of your %s were sold for %d credits", MarketKv.GetNum("amount"), store.Enter, cash);
-							TextStore_Cash(client, cash);
-						}
-						while(MarketKv.GotoNextKey());
-
-						MarketKv.GoBack();
-					}
-
-					MarketKv.DeleteThis();
-					SaveMarket(client);
-				}
-			}
-			
-			FakeClientCommand(client, "sm_buy");
+			TextStore_ForceEnterStore(client, name, store.Tag);
 		}
 	}
 }
@@ -854,6 +828,40 @@ void TextStore_ZoneAllLeave(const char[] name)
 		store.Despawn();
 		StoreList.SetArray(name, store, sizeof(store));
 	}
+}
+
+void TextStore_ForceEnterStore(int client, const char[] zone, const char[] tag, const char[] extra = "")
+{
+	strcopy(InStore[client], sizeof(InStore[]), zone);
+	strcopy(InStoreTag[client], sizeof(InStoreTag[]), tag);
+	strcopy(InStoreExtra[client], sizeof(InStoreExtra[]), extra);
+	
+	char buffer[64];
+	if(StrEqual(tag, "market", false) && GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)))
+	{
+		MarketKv.Rewind();
+		if(MarketKv.JumpToKey("Payout") && MarketKv.JumpToKey(buffer))
+		{
+			if(MarketKv.GotoFirstSubKey())
+			{
+				do
+				{
+					int cash = MarketKv.GetNum("cash");
+					MarketKv.GetSectionName(buffer, sizeof(buffer));
+					SPrintToChat(client, "%d of your %s were sold for %d credits", MarketKv.GetNum("amount"), buffer, cash);
+					TextStore_Cash(client, cash);
+				}
+				while(MarketKv.GotoNextKey());
+
+				MarketKv.GoBack();
+			}
+
+			MarketKv.DeleteThis();
+			SaveMarket(client);
+		}
+	}
+	
+	FakeClientCommand(client, "sm_buy");
 }
 
 public Action TextStore_OnSellItem(int client, int item, int cash, int &count, int &sell)
@@ -1155,7 +1163,17 @@ public void TextStore_OnCatalog(int client)
 					kv.GetSectionName(buffer, sizeof(buffer));
 					if(MarketKv.JumpToKey(buffer))
 					{
-						if(MarketKv.GotoFirstSubKey())
+						if(InStoreExtra[client][0])
+						{
+							if(MarketKv.JumpToKey(InStoreExtra[client]))
+							{
+								if(MarketKv.GetNum("amount"))
+									block = false;
+								
+								MarketKv.GoBack();
+							}
+						}
+						else if(MarketKv.GotoFirstSubKey())
 						{
 							do
 							{
@@ -1210,7 +1228,15 @@ public Action TextStore_OnPriceItem(int client, int item, int &price)
 	TextStore_GetItemName(item, buffer, sizeof(buffer));
 	if(MarketKv.JumpToKey(buffer))
 	{
-		if(MarketKv.GotoFirstSubKey())
+		if(InStoreExtra[client][0])
+		{
+			if(MarketKv.JumpToKey(InStoreExtra[client]))
+			{
+				if(MarketKv.GetNum("amount"))
+					price = MarketKv.GetNum("price");
+			}
+		}
+		else if(MarketKv.GotoFirstSubKey())
 		{
 			do
 			{
@@ -1253,7 +1279,14 @@ static void TextStore_ShowBuyMenu(int client)
 
 			if(market)
 			{
-				menu.SetTitle("Buying %s in market:\n ", buffer);
+				if(InStoreExtra[client][0])
+				{
+					menu.SetTitle("Buying %s in %N's Market:\n ", buffer, Plots_ZoneOwner(client));
+				}
+				else
+				{
+					menu.SetTitle("Buying %s in market:\n ", buffer);
+				}
 			}
 			else
 			{
@@ -1276,7 +1309,26 @@ static void TextStore_ShowBuyMenu(int client)
 					if(!GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
 						steamid[0] = 0;
 
-					if(MarketKv.GotoFirstSubKey())
+					if(InStoreExtra[client][0])
+					{
+						if(MarketKv.JumpToKey(InStoreExtra[client]))
+						{
+							if(StrEqual(steamid, InStoreExtra[client], false))
+							{
+								MarketSell[client] = 0;
+								amount = MarketKv.GetNum("amount");
+								kv.GetSectionName(buffer, sizeof(buffer));
+								menu.SetTitle("Unlisting %s from market:\n ", buffer);
+								unlist = true;
+							}
+							else
+							{
+								amount = MarketKv.GetNum("amount");
+								MarketSell[client] = MarketKv.GetNum("price");
+							}
+						}
+					}
+					else if(MarketKv.GotoFirstSubKey())
 					{
 						do
 						{
@@ -1405,11 +1457,35 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 									kv.GetSectionName(buffer, sizeof(buffer));
 									MarketKv.JumpToKey(buffer, true);
 
-									if(MarketKv.GotoFirstSubKey())
-									{
-										static MarketEnum market;
-										ArrayList list = new ArrayList(sizeof(MarketEnum));
+									static MarketEnum market;
+									ArrayList list = new ArrayList(sizeof(MarketEnum));
 
+									if(InStoreExtra[client][0])
+									{
+										if(MarketKv.JumpToKey(InStoreExtra[client]))
+										{
+											if(MarketKv.GetNum("price") == MarketSell[client])
+											{
+												int amount = MarketKv.GetNum("amount");
+												market.Amount = amount;
+												if(market.Amount > MarketCount[client])
+													market.Amount = MarketCount[client];
+												
+												MarketCount[client] -= market.Amount;
+												MarketKv.SetNum("amount", amount - market.Amount);
+
+												strcopy(market.SteamID, sizeof(market.SteamID), InStoreExtra[client]);
+												market.NowEmpty = market.Amount == amount;
+												list.PushArray(market);
+												
+												TextStore_GetInv(client, MarketItem[client], amount);
+												TextStore_SetInv(client, MarketItem[client], amount + market.Amount);
+												TextStore_Cash(client, -(market.Amount * market.Price));
+											}
+										}
+									}
+									else if(MarketKv.GotoFirstSubKey())
+									{
 										do
 										{
 											market.Price = MarketKv.GetNum("price");
@@ -1433,8 +1509,13 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 											}
 										}
 										while(MarketKv.GotoNextKey());
-										
-										int length = list.Length;
+									}
+
+									int length = list.Length;
+									if(length)
+									{
+										int tax = InStoreExtra[client][0] ? 0 : MARKET_TAX;
+
 										for(int i; i < length; i++)
 										{
 											list.GetArray(i, market);
@@ -1443,7 +1524,7 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 											MarketKv.JumpToKey("Payout", true);
 											MarketKv.JumpToKey(market.SteamID, true);
 											MarketKv.JumpToKey(buffer, true);
-											MarketKv.SetNum("cash", MarketKv.GetNum("cash") + ((market.Price - MARKET_TAX) * market.Amount));
+											MarketKv.SetNum("cash", MarketKv.GetNum("cash") + ((market.Price - tax) * market.Amount));
 											MarketKv.SetNum("amount", MarketKv.GetNum("amount") +  market.Amount);
 
 											if(market.NowEmpty)
@@ -1455,10 +1536,10 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 											}
 										}
 
-										delete list;
-
 										SaveMarket(client);
 									}
+
+									delete list;
 								}
 								else
 								{
