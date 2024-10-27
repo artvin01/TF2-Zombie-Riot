@@ -155,7 +155,7 @@ methodmap VictorianCaffeinator < CClotBody
 		Is_a_Medic[npc.index] = true;
 		npc.m_bFUCKYOU = false;
 		npc.m_bFUCKYOU_move_anim = false;
-		npc.m_flNextRangedSpecialAttack = 0.0
+		npc.m_flNextRangedSpecialAttack = 0.0;
 		
 		npc.m_bnew_target = false;
 		npc.StartPathing();
