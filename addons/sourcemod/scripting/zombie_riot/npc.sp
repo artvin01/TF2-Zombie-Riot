@@ -602,6 +602,7 @@ void NPC_ConfigSetup()
 	VictorianCaffeinator_OnMapStart_NPC();
 	VictorianMechanist_OnMapStart_NPC();
 	VictorianAvangard_MapStart();
+	VictorianWelder_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
