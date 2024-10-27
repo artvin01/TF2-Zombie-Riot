@@ -98,35 +98,28 @@ void Stats_GiveXP(int client, int xp, int quest = 0)
 	int XPToGive;
 	if(xp > 0 && !quest)
 	{
-		int maxXP = RPGStats_MaxXPAllowed(client);
-
+		int CurrentXp = XP[client];
 		XPToGive = RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
-		if(quest == 1)
+
+		if(quest == 2)
 		{
-			maxXP *= 3.0;
+			//We were in a CC
+			if(XPToGive >= CurrentXp)
+			{
+				SPrintToChat(client, "You are unable to gain XP from Chaos Surgance's untill you spend your XP.");
+			}
 		}
-		else if(quest == 2)
+		int CalculatedXP;
+		CalculatedXP += XPToGive;
+		if(CalculatedXP <= XPToGive || CalculatedXP >= 2000000000)
 		{
-			maxXP *= 0.25;
+			XP[client] = 2000000000;
+			SPrintToChat(client, "You hit the MAX XP cap, spend your XP.");
+			//we did an overflow. set to 2billion.
 		}
-		
-		if(XP[client] < maxXP)
-			XP[client] += XPToGive;
 		else
 		{
-			if(quest == 1)
-			{
-				SPrintToChat(client, "You have hit the XP cap of %i at your level. Quests will no longer grant you XP, use your XP.", maxXP);
-			}
-			else if(quest == 2)
-			{
-				SPrintToChat(client, "You have hit the XP cap of %i at your level, you wont get anymore XP untill you spend it. Chaos Surgances have a lower cap by 0.25x.", maxXP);
-			}
-			else
-			{
-				SPrintToChat(client, "You have hit the XP cap of %i at your level, you wont get anymore XP untill you spend it. Quests have a higher cap by 3x.", maxXP);
-			}
-			XPToGive = 0;
+			XP[client] += XPToGive;
 		}
 	}
 	else

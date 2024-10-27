@@ -52,7 +52,7 @@ static const char g_HealSound[][] = {
 	"items/medshot4.wav",
 };
 
-bool b_TouchedEnemyTarget[MAXENTITIES];
+static bool b_TouchedEnemyTarget[MAXENTITIES];
 public void Whiteflower_Boss_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -520,11 +520,11 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 			//we melee them!
 			npc.m_iState = 3; //enemy is abit further away.
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0) && npc.m_flThrowSupportGrenadeHappeningCD < gameTime)
+		else if(b_thisNpcIsABoss[npc.index] && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0) && npc.m_flThrowSupportGrenadeHappeningCD < gameTime)
 		{
 			npc.m_iState = 2;
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.8) && npc.m_flKickUpCD < gameTime)
+		else if(b_thisNpcIsABoss[npc.index] && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.8) && npc.m_flKickUpCD < gameTime)
 		{
 			npc.m_iState = 4; //Engage in Close Range Destruction.
 		}
@@ -671,21 +671,26 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_flNextMeleeAttack = 0.0;
 					npc.m_flJumpCooldown = gameTime + 5.0;
+					if(!b_thisNpcIsABoss[npc.index])
+						npc.m_flJumpCooldown = gameTime + 8.0;
 					//if enemy 
 					npc.PlayRocketSound();
-					for(float loopDo = 1.0; loopDo <= 2.0; loopDo += 0.5)
+					if(b_thisNpcIsABoss[npc.index])
 					{
-						float vecSelf2[3];
-						WorldSpaceCenter(npc.index, vecSelf2);
-						vecSelf2[2] += 50.0;
-						vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
-						vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
-						float RocketDamage = 500000.0;
-						int RocketGet = npc.FireRocket(vecSelf2, RocketDamage, 200.0);
-						DataPack pack;
-						CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-						pack.WriteCell(EntIndexToEntRef(RocketGet));
-						pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
+						for(float loopDo = 1.0; loopDo <= 2.0; loopDo += 0.5)
+						{
+							float vecSelf2[3];
+							WorldSpaceCenter(npc.index, vecSelf2);
+							vecSelf2[2] += 50.0;
+							vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
+							vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
+							float RocketDamage = 500000.0;
+							int RocketGet = npc.FireRocket(vecSelf2, RocketDamage, 200.0);
+							DataPack pack;
+							CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+							pack.WriteCell(EntIndexToEntRef(RocketGet));
+							pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
+						}
 					}
 					/*
 					if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))

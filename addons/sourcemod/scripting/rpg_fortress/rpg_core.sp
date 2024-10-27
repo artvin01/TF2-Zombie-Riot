@@ -123,6 +123,10 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/emblem_doublejump.sp"
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
 #include "rpg_fortress/custom/skill_big_bang.sp"
+#include "rpg_fortress/custom/octane_kick_melee.sp"
+#include "rpg_fortress/custom/ranged_back_rocket.sp"
+#include "rpg_fortress/custom/mage_skill_oblitiration_shot.sp"
+
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -263,6 +267,9 @@ void RPG_MapStart()
 	BigBang_Map_Precache();
 	Abiltity_Coin_Flip_Map_Change();
 	Abiltity_TrueStrength_Shield_Shield_MapStart();
+	OctaneKick_Map_Precache();
+	BackRockets_MapStart();
+	Mage_Oblitiration_Shot_Map_Precache();
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
 
 	/*

@@ -7728,7 +7728,7 @@ stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, floa
 	lead[0] = leadTime * SubjectAbsVelocity[0];
 	lead[1] = leadTime * SubjectAbsVelocity[1];
 	lead[2] = 0.0;	
-
+	/*
 	if(GetVectorDotProduct(to, lead) < 0.0)
 	{
 		// the subject is moving towards us - only pay attention 
@@ -7746,6 +7746,7 @@ stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, floa
 		lead[0] = enemyGroundSpeed * perp[0];
 		lead[1] = enemyGroundSpeed * perp[1];
 	}
+	*/
 
 	// compute our desired destination
 	AddVectors(subjectPos, lead, pathTarget);

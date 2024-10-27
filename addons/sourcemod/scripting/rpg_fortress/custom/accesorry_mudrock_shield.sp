@@ -92,7 +92,7 @@ bool Ability_TrueStrength_Shield_OnTakeDamage(int victim)
 			int MaxHealth = SDKCall_GetMaxHealth(victim);
 			int Health = GetEntProp(victim, Prop_Send, "m_iHealth");
 
-			float PercentageHeal = 0.2;
+			float PercentageHeal = 0.1;
 			
 			int NewHealth = Health + RoundToCeil(float(MaxHealth) * PercentageHeal);
 

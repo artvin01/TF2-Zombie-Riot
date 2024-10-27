@@ -24,6 +24,7 @@ enum struct Form
 	int AgilityAdd[2];
 	Function Func_FormActivate;
 	Function Func_FormDeactivate;
+	Function Func_FormBeforeDeTransform;
 	int Form_RGBA[4];
 
 	void SetupKV(KeyValues kv)
@@ -36,6 +37,7 @@ enum struct Form
 		this.Func_Requirement = KvGetFunction(kv, "Form Function Requirement");
 		this.Func_FormActivate = KvGetFunction(kv, "Form Activation Func");
 		this.Func_FormDeactivate = KvGetFunction(kv, "Form Disable Func");
+		this.Func_FormBeforeDeTransform = KvGetFunction(kv, "Form Before DeTransform");
 		
 		kv.GetString("Questline", this.Questline, sizeof(this.Questline));
 

@@ -2607,15 +2607,40 @@ void TransformButton(int client)
 	{
 		if(i_TransformationSelected[client] > 0 && i_TransformationSelected[client] <= race.Forms.Length)
 		{
+			Form form;
+			race.Forms.GetArray(i_TransformationSelected[client] - 1, form);
+
 			if(i_TransformationSelected[client] == i_TransformationLevel[client])
 			{
-				De_TransformClient(client);
+				//Before we de-transform the client, maybe theres an extra effect?
+				bool Cancel = false;
+				if(form.Func_FormBeforeDeTransform != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, form.Func_FormBeforeDeTransform);
+					Call_PushCell(client);
+					Call_Finish(Cancel);
+				}
+				if(!Cancel)
+				{
+					De_TransformClient(client);
+				}
+				return;
+			}
+			
+			bool AllowTrans = true;
+			if(form.Func_Requirement != INVALID_FUNCTION)
+			{
+				AllowTrans = false;
+				Call_StartFunction(null, form.Func_Requirement);
+				Call_PushCell(client);
+				Call_Finish(AllowTrans);
+			}
+			
+			if(!AllowTrans)
+			{
 				return;
 			}
 			i_TransformationLevel[client] = i_TransformationSelected[client];
-			Form form;
-			race.Forms.GetArray(i_TransformationLevel[client] - 1, form);
-			
 			if(form.Func_FormActivate != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, form.Func_FormActivate);
