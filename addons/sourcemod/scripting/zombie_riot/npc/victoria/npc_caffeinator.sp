@@ -187,8 +187,8 @@ methodmap VictorianCaffeinator < CClotBody
 		npc.m_iWearable6	= npc.EquipItem("head", "models/workshop/player/items/medic/dec15_berlin_brain_bowl/dec15_berlin_brain_bowl.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 50, 50, 50, 255);
+		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable6, 50, 50, 50, 255);
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/scout/jul13_koolboy_2/jul13_koolboy_2.mdl");
 		SetVariantString("1.2");
