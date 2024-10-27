@@ -600,6 +600,8 @@ void NPC_ConfigSetup()
 
 //wave 46~60
 	VictorianCaffeinator_OnMapStart_NPC();
+	VictorianMechanist_OnMapStart_NPC();
+	VictorianAvangard_MapStart();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1683,3 +1685,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 //wave 46~60
 #include "zombie_riot/npc/victoria/npc_caffeinator.sp"
+#include "zombie_riot/npc/victoria/npc_welder.sp"
+#include "zombie_riot/npc/victoria/npc_mechanist.sp"
+#include "zombie_riot/npc/victoria/npc_avanguard.sp"
