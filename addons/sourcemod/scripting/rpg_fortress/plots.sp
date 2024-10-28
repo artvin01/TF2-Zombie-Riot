@@ -75,6 +75,10 @@ enum struct BlockEnum
 				{
 					ang[i] = (RoundToNearest(ang[i] / 90.0) * 90.0) + 180.0;
 				}
+				else
+				{
+					ang[i] = 0.0;
+				}
 			}
 			
 			TeleportEntity(entity, pos, ang, NULL_VECTOR, true);
@@ -185,6 +189,9 @@ static char BlockZone[32];
 static int MaxBlocks;
 static int MaxRange;
 static float BlockSize;
+static float PlatformOffset[3];
+static char PlatformModel[PLATFORM_MAX_PATH];
+static float PlatformScale;
 
 static int InPlot[MAXENTITIES+1];
 static bool InMenu[MAXTF2PLAYERS];
@@ -193,6 +200,9 @@ static int PartyMode[MAXTF2PLAYERS];
 
 void Plots_ConfigSetup()
 {
+	delete BuildList;
+	BuildList = new ArrayList(sizeof(BuildEnum));
+
 	char buffer[PLATFORM_MAX_PATH];
 	RPG_BuildPath(buffer, sizeof(buffer), "plots");
 	KeyValues kv = new KeyValues("Plots");
@@ -210,6 +220,13 @@ void Plots_ConfigSetup()
 	kv.GetString("zoneprefix", BlockZone, sizeof(BlockZone));
 	MaxRange = kv.GetNum("maxrange", 9);
 	BlockSize = kv.GetFloat("blocksize", 50.0);
+
+	kv.GetString("platform_model", PlatformModel, sizeof(PlatformModel));
+	if(PlatformModel[0])
+		PrecacheModel(PlatformModel);
+	
+	kv.GetVector("platform_offset", PlatformOffset);
+	PlatformScale = kv.GetFloat("platform_scale", 1.0);
 
 	delete kv;
 }
@@ -241,6 +258,43 @@ void Plots_StoreCached()
 	}
 }
 
+void Plots_ZoneCached()
+{
+	if(!PlatformModel[0])
+		return;
+	
+	char buffer[64];
+	float pos[3], ang[3];
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "trigger_rpgzone")) != -1)
+	{
+		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+		if(Plots_IsPlotZone(buffer))
+		{
+			GetPlotData(entity, pos, ang);
+
+			int prop = CreateEntityByName("prop_dynamic_override");
+			if(prop != -1)
+			{
+				DispatchKeyValue(prop, "targetname", "rpg_fortress");
+				DispatchKeyValue(prop, "model", PlatformModel);
+				DispatchKeyValue(prop, "solid", "2");
+				DispatchKeyValueFloat(prop, "modelscale", PlatformScale);
+				DispatchSpawn(prop);
+				
+				for(int i; i < 3; i++)
+				{
+					pos[i] += PlatformOffset[i];
+				}
+
+				TeleportEntity(prop, pos, ang, NULL_VECTOR, true);
+
+				list.Push(EntIndexToEntRef(prop));
+			}
+		}
+	}
+}
+
 void Plots_EntityCreated(int entity)
 {
 	InPlot[entity] = 0;
@@ -264,7 +318,7 @@ void Plots_ClientEnter(int client, int ref, const char[] name)
 				PrintCenterText(client, "This plot is owned by %N", owner);
 			}
 		}
-		else
+		else if(Editor_MenuFunc(client) == INVALID_FUNCTION)
 		{
 			Plots_ShowMenu(client);
 		}
@@ -277,7 +331,7 @@ void Plots_ClientLeave(int client, int ref)
 	{
 		InPlot[client] = 0;
 		if(InMenu[client])
-			CancelClientMenu(client);
+			TextStore_Inspect(client);
 	}
 }
 
@@ -312,11 +366,10 @@ int Plots_ZoneName(int client, char[] name, int length)
 	return 0;
 }
 
-bool Plots_CanShowMenu(int client)
+bool Plots_CanShowMenu(int client, int &owner = 0)
 {
 	if(InPlot[client])
 	{
-		int owner;
 		if(!PlotOwner.GetValue(InPlot[client], owner) || !(owner = GetClientOfUserId(owner)))
 			return true;
 		
@@ -330,35 +383,28 @@ bool Plots_CanShowMenu(int client)
 bool Plots_ShowMenu(int client)
 {
 	int owner;
-	if(PlotOwner.GetValue(InPlot[client], owner) && (owner = GetClientOfUserId(owner)))
+	if(CanBuildHere(client, owner))
 	{
 		int length = BlockList.Length;
 		int[] blocks = new int[length];
 		int total = GetBlockSpace(owner, blocks, true);
 
-		Menu menu;
+		Menu menu = new Menu(Plots_MainMenu);
 
 		if(owner == client)
 		{
-			menu = new Menu(Plots_MainMenu);
 			menu.SetTitle("RPG Fortress\n \nPlot:\n%d / %d Space", total, MaxBlocks);
 
 			static const char Settings[][] = { "Party Setting: None", "Party Setting: Interact Only", "Party Setting: Allow Building" };
 			menu.AddItem(NULL_STRING, Settings[PartyMode[client]]);
 		}
-		else if(CanBuildHere(client))
+		else
 		{
-			menu = new Menu(Plots_MainMenu);
 			menu.SetTitle("RPG Fortress\n \n%N's Plot:\n%d / %d Space", owner, total, MaxBlocks);
 			
 			menu.AddItem(NULL_STRING, "Nothing");
 		}
-		else
-		{
-			return false;
-		}
 
-		char num[12];
 		int page;
 		for(int i; i < length; i++)
 		{
@@ -372,24 +418,31 @@ bool Plots_ShowMenu(int client)
 			{
 				bool same = (page == 0 && StrEqual(block.Item, CurrentItem[client]));
 
-				Format(block.Item, sizeof(block.Item), "%s (%d / %d)", block.Item, blocks[i], limit);
+				Format(block.Model, sizeof(block.Model), "%s (%d / %d)", block.Item, blocks[i], limit);
 
 				if(same)
 				{
 					page = i + 1;
-					menu.AddItem(NULL_STRING, block.Item, ITEMDRAW_DISABLED);
+					menu.AddItem(NULL_STRING, block.Model, ITEMDRAW_DISABLED);
+
+					if(blocks[i] >= limit)	// Too many blocks
+						CurrentItem[client][0] = 0;
 				}
 				else
 				{
-					IntToString(i, num, sizeof(num));
-					menu.AddItem(num, block.Item);
+					menu.AddItem(block.Item, block.Model);
 				}
 			}
 		}
 
+		if(total >= MaxBlocks)	// Too many total blocks
+			CurrentItem[client][0] = 0;
+
 		InMenu[client] = menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER);
+		return InMenu[client];
 	}
-	else
+
+	if(CanClaimHere(client))
 	{
 		Menu menu = new Menu(Plots_MainMenu);
 
@@ -414,10 +467,10 @@ bool Plots_ShowMenu(int client)
 		menu.AddItem(NULL_STRING, "You can use this land to show off and build special objects.", ITEMDRAW_DISABLED);
 		menu.AddItem(NULL_STRING, "You can choose how you want party members to interact with your land.", ITEMDRAW_DISABLED);
 		
-		menu.Display(client, MENU_TIME_FOREVER);
+		return menu.Display(client, MENU_TIME_FOREVER);
 	}
 
-	return true;
+	return false;
 }
 
 public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
@@ -468,14 +521,11 @@ public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
 					Plots_ShowMenu(client);
 				}
 			}
-			else if(choice)
-			{
-				TextStore_Inspect(client);
-			}
-			else if(InPlot[client])
+			else if(!choice)
 			{
 				PartyMode[client] = 0;
 				LoadPlot(client, InPlot[client]);
+				TextStore_OpenSpecificMenu(client, MENU_BUILDING);
 			}
 		}
 	}
@@ -484,7 +534,7 @@ public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
 
 bool Plots_PlayerRunCmd(int client, int &buttons)
 {
-	if(!InMenu[client] || !CurrentItem[client][0])
+	if(!InMenu[client] || !CurrentItem[client][0] || InPlot[client] == -1)
 		return false;
 	
 	float gameTime = GetGameTime();
@@ -507,6 +557,7 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 			{
 				RemoveEntity(entity);
 				BuildList.Erase(pos);
+				Plots_ShowMenu(client);
 			}
 		}
 	}
@@ -571,22 +622,19 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 				{
 					GetEntPropVector(target, Prop_Send, "m_vecOrigin", center);
 
-					for(int i; i < 2; i++)
+					failed = true;
+					for(int i; i < 3; i++)
 					{
 						// 24.0 maxs, -24.0 mins
 						// 82.0 maxs, 0 mins
-						static float offsets[] = {0.0, 0.0, 41.0};
-						static float box[] = {24.0, 24.0, 41.0};
+						static const float offsets[] = {0.0, 0.0, 41.0};
+						static const float box[] = {24.0, 24.0, 41.0};
 
-						if(fabs(center[i] + offsets[i] - (pos[i] + (BlockSize / 2))) < box[i])
-						{
-							failed = true;
-							break;
-						}
+						float blockPos = i == 2 ? BlockSize / 2.0 : 0.0;	// Both ents have feet origin
 
-						if(fabs(center[i] + offsets[i] - (pos[i] - (BlockSize / 2))) < box[i])
+						if(fabs((center[i] + offsets[i]) - (pos[i] + blockPos)) > ((BlockSize / 2.0) + box[i]))
 						{
-							failed = true;
+							failed = false;
 							break;
 						}
 					}
@@ -637,6 +685,7 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 
 							block.CallFunc(entity, build);
 							BuildList.PushArray(build);
+							Plots_ShowMenu(client);
 						}
 					}
 				}
@@ -650,8 +699,7 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 
 bool Plots_Interact(int client, int entity, int weapon)
 {
-	return false;
-	
+
 	if(InPlot[client] == InPlot[entity])
 	{
 		int pos = BuildList.FindValue(EntIndexToEntRef(entity), BuildEnum::EntRef);
@@ -752,7 +800,10 @@ static void LoadPlot(int client, int zone)
 					blocks[id]++;
 					
 					if(!cached[id])
+					{
 						TextStore_GetInv(client, block.Store, count[id]);
+						cached[id] = true;
+					}
 					
 					if(count[id] >= blocks[id])
 						BuildList.PushArray(build);
@@ -803,7 +854,13 @@ static void UnloadPlot(int userid, int zone)
 		if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && strlen(buffer) > 9)
 		{
 			PlotKv.Rewind();
-			PlotKv.DeleteKey(buffer);
+			if(PlotKv.JumpToKey(buffer))
+			{
+				if(!PlotKv.DeleteThis())
+					PrintToChatAll("PLOT SAVE ERROR");
+			}
+
+			PlotKv.Rewind();
 			PlotKv.JumpToKey(buffer, true);
 
 			int length = BuildList.Length;
@@ -820,6 +877,8 @@ static void UnloadPlot(int userid, int zone)
 						RemoveEntity(entity);
 
 					BuildList.Erase(i);
+					i--;
+					length--;
 				}
 			}
 
@@ -843,6 +902,8 @@ static void UnloadPlot(int userid, int zone)
 				RemoveEntity(entity);
 
 			BuildList.Erase(i);
+			i--;
+			length--;
 		}
 	}
 }
@@ -854,9 +915,10 @@ static void GetPlotData(int zone, float center[3], float angles[3])
 	GetEntPropVector(zone, Prop_Send, "m_vecMaxs", maxs);
 	GetEntPropVector(zone, Prop_Data, "m_vecOrigin", center);
 
+	center[2] += mins[2];
+
 	for(int i; i < 3; i++)
 	{
-		center[i] += mins[i];
 		angles[i] = 0.0;
 	}
 }
@@ -940,11 +1002,10 @@ bool Plots_CanInteractHere(int client)
 	return false;
 }
 
-static bool CanBuildHere(int client)
+static bool CanBuildHere(int client, int &owner = 0)
 {
 	if(InPlot[client])
 	{
-		int owner;
 		if(PlotOwner.GetValue(InPlot[client], owner) && (owner = GetClientOfUserId(owner)))
 		{
 			if(owner == client || (Party_IsClientMember(client, owner) && PartyMode[owner] == Build_All))
@@ -954,7 +1015,7 @@ static bool CanBuildHere(int client)
 	return false;
 }
 
-static stock bool CanClaimHere(int client)
+static bool CanClaimHere(int client)
 {
 	if(InPlot[client])
 	{

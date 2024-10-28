@@ -372,8 +372,9 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 				if(IsValidEntity(weapon))
 				{
 
-#if defined ZR
 					damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, i_HexCustomDamageTypes[victim]);
+
+#if defined ZR
 					OnTakeDamage_HandOfElderMages(attacker, weapon);
 #endif
 
@@ -421,7 +422,6 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 	//Do armor.
-#if defined ZR
 	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 	{
 		if(attacker <= MaxClients && attacker > 0)
@@ -429,9 +429,10 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 			if(IsValidEntity(weapon))
 				NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 		}
+#if defined ZR
 		BarracksUnitAttack_NPCTakeDamagePost(victim, inflictor, damage, damagetype);
-	}
 #endif
+	}
 
 	return false;
 }

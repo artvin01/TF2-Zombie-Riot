@@ -288,12 +288,22 @@ void WhiteflowerTank_RocketBarrageDo(WhiteflowerTank npc, float gameTime)
 			vecSelf[0] += GetRandomFloat(-10.0, 10.0);
 			vecSelf[1] += GetRandomFloat(-10.0, 10.0);
 			float RocketDamage = 250000.0;
-			int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 150.0);
+			float RocketSpeed = 150.0;
+			
+			if(npc.m_iOverlordComboAttack == 1)
+				RocketSpeed *= 2.0;
+			int RocketGet = npc.FireRocket(vecSelf, RocketDamage, RocketSpeed);
 			DataPack pack;
-			CreateDataTimer(1.0, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+			if(npc.m_iOverlordComboAttack != 1)
+				CreateDataTimer(1.0, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+			else
+				CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+
 			pack.WriteCell(EntIndexToEntRef(RocketGet));
 			pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
 			npc.m_flRocketBarrageBetweenShots = gameTime + 0.25;
+			if(npc.m_iOverlordComboAttack == 1)
+				npc.m_flRocketBarrageBetweenShots = gameTime + 0.125;
 		}
 		if(npc.m_flRocketBarrageDoTime < gameTime)
 		{

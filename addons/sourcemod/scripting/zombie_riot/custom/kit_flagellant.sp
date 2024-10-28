@@ -835,7 +835,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		i_CurrentEquippedPerk[client] = i_CurrentEquippedPerkPreviously[client];
 		ForcePlayerCrouch(client, false);
 		Store_ApplyAttribs(client);
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		SDKCall_SetSpeed(client);
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{

@@ -82,7 +82,7 @@ void PostThink_GoldenAgility(int client)
 			//if they dont hold a ranged weapon, then they dont get anything. Fuck u
 			
 			ApplyTempAttrib(client, 442, 1.35, 17.9);
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+			SDKCall_SetSpeed(client);
 			ApplyTempAttrib(weapon, 2, 1.35, 18.0);	
 			ApplyTempAttrib(weapon, 6, 0.75, 18.0);
 			ApplyTempAttrib(weapon, 97, 0.75, 18.0);

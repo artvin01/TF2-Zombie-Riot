@@ -181,6 +181,8 @@ void Zones_Rebuild()
 		}
 		while(ZonesKv.GotoNextKey());
 	}
+
+	Plots_ZoneCached();
 }
 
 static void OnEnter(int entity, const char[] name, int zone)

@@ -362,7 +362,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 550000.0;
+					float damage = 1000000.0;
 					
 					if(target > 0) 
 					{
@@ -401,7 +401,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 550000.0;
+					float damage = 1200000.0;
 					
 					if(target > 0) 
 					{
@@ -684,7 +684,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 							vecSelf2[2] += 50.0;
 							vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
 							vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
-							float RocketDamage = 500000.0;
+							float RocketDamage = 2000000.0;
 							int RocketGet = npc.FireRocket(vecSelf2, RocketDamage, 200.0);
 							DataPack pack;
 							CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -784,7 +784,7 @@ void WF_ThrowGrenadeHappening(Whiteflower_Boss npc)
 			int Grenade = npc.FireGrenade(vecTarget);
 			float GrenadeRangeSupport = 600.0;
 			float GrenadeRangeDamage = 0.0;
-			float HealDo = 500000.0;
+			float HealDo = 1000000.0;
 			WF_GrenadeSupportDo(npc.index, Grenade, GrenadeRangeDamage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
 			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
@@ -884,7 +884,7 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 		//This enemy only appears in a dungeon anyways.
 		return;
 	}
-	fl_TotalArmor[self] = fl_TotalArmor[self] * 1.05;
+	fl_TotalArmor[self] = fl_TotalArmor[self] * 1.1;
 	if(fl_TotalArmor[self] >= 1.0)
 	{
 		fl_TotalArmor[self] = 1.0;
@@ -910,7 +910,7 @@ static void Whiteflower_KickTouched(int entity, int enemy)
 	
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);
-	SDKHooks_TakeDamage(enemy, entity, entity, 1000000.0, DMG_CLUB, -1, NULL_VECTOR, targPos);
+	SDKHooks_TakeDamage(enemy, entity, entity, 1500000.0, DMG_CLUB, -1, NULL_VECTOR, targPos);
 	ParticleEffectAt(targPos, "skull_island_embers", 2.0);
 	npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 	EmitSoundToAll("plats/tram_hit4.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);

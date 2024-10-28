@@ -4,12 +4,14 @@ static bool TrueStrengthShield[MAXPLAYERS+1] = {false, ...};
 static int TrueStrengthShieldCounter[MAXPLAYERS+1] = {0, ...};
 
 static bool BobsPureRage[MAXPLAYERS+1] = {false, ...};
+static bool BobsPocketPhone[MAXPLAYERS+1] = {false, ...};
 
 public void TrueStrengthShieldUnequip(int client)
 {
 	TrueStrengthShieldCounter[client] = 0;
 	TrueStrengthShield[client] = false;
 	BobsPureRage[client] = false;
+	BobsPocketPhone[client] = false;
 	TF2_RemoveCondition(client, TFCond_UberFireResist);
 
 	if (TrueStrengthShieldHandle[client] != INVALID_HANDLE)
@@ -22,6 +24,7 @@ public void TrueStrengthShieldDisconnect(int client)
 	TrueStrengthShield[client] = false;
 	TrueStrengthShieldHandle[client] = INVALID_HANDLE;
 	BobsPureRage[client] = false;
+	BobsPocketPhone[client] = false;
 }
 
 public void TrueStrengthShieldEquip(int client, int weapon, int index)
@@ -181,4 +184,19 @@ bool RPG_BobsPureRage(int victim, int attacker, float &damage)
 		}
 	}
 	return ReturnVal;
+}
+
+
+public void RPG_PocketPhone(int client, int weapon, int index)
+{
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		BobsPocketPhone[client] = true;
+	}
+}
+
+bool BobsPhoneReduceCooldown(int client)
+{
+	return BobsPocketPhone[client];
 }

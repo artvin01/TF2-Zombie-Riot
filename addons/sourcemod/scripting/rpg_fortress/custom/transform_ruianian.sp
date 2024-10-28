@@ -91,6 +91,7 @@ public void Ruianian_4thFormStatMulti(int client, int WhatStat, float StatNum,  
 		}
 	}
 }
+
 public void Ruianian_Activation_Enable_Global(int client, int level)
 {
 	Expidonsa_InRageMode[client] = false;
@@ -253,6 +254,19 @@ public Action TimerRuianian_Transform(Handle timer, DataPack pack)
 			static Form form;
 			Races_GetClientInfo(client, race, form);
 			Attributes_Set(client, Attrib_FormRes, form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+			char LeperHud[256];
+			//This is the 4th form, just a hud, nothing else.
+			if(EnergyLooseCooldown[client] > GetGameTime())
+			{
+				Format(LeperHud, sizeof(LeperHud), "Ruanian Astral Vision [%.1fs]",EnergyLooseCooldown[client] - GetGameTime());
+			}
+			else
+			{
+				Format(LeperHud, sizeof(LeperHud), "Ruanian Astral Vision");
+			}
+			PrintHintText(client,"%s",LeperHud);
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			UpdateLevelAbovePlayerText(client);
 		}
 	}
 	return Plugin_Continue;

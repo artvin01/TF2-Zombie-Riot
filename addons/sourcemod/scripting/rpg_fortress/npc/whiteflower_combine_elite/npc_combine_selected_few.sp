@@ -288,8 +288,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				RemoveEntity(npc.m_iWearable4);
 			}
 			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-			flMaxhealth *= 0.15;
-			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 35.9, 0.0, HEAL_SELFHEAL);
+			if(npc.m_iOverlordComboAttack != 1)
+				flMaxhealth *= 0.15;
+			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.0, 0.0, HEAL_SELFHEAL);
 			RPGDoHealEffect(npc.index, 150.0);
 			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 			SetVariantString("0.8");
@@ -356,6 +357,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 		if(npc.m_flSpawnTempClone < gameTime)
 		{
 			npc.m_flSpawnTempClone = gameTime + 1.5;
+			if(npc.m_iOverlordComboAttack == 1)
+				npc.m_flSpawnTempClone = gameTime + 0.75;
+
 			npc.PlayRocketSound();
 			
 			int entity_death = CreateEntityByName("prop_dynamic_override");
@@ -416,6 +420,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				npc.m_flJumpHappening = 0.0;
 				//da jump!
 				npc.m_flDoingAnimation = gameTime + 0.45;
+				if(npc.m_iOverlordComboAttack == 1)
+					npc.m_flDoingAnimation = gameTime + 0.215;
+
 				float WorldSpaceCenterVec[3]; 
 				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
 				PluginBot_Jump(npc.index, WorldSpaceCenterVec);

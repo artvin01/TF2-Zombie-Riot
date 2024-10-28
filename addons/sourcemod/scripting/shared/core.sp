@@ -3691,7 +3691,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		SDKCall_SetSpeed(client);
 	}
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
@@ -3701,7 +3701,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		}
 		else
 		{
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+			SDKCall_SetSpeed(client);
 		}
 	}
 }
@@ -3720,12 +3720,12 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 				{
 					SetVariantInt(1);
 					AcceptEntityInput(client, "SetForcedTauntCam");
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+					SDKCall_SetSpeed(client);
 				}
 			}
 			case TFCond_Slowed:
 			{
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 			}
 			case TFCond_Taunting:
 			{

@@ -1658,6 +1658,7 @@ public Action Dungeon_Timer(Handle timer)
 							{
 								time = stage.ModList ? 30 : 5;
 								dungeon.StartTime = GetGameTime() + time;
+								dungeon.LastSoundTime = -1;
 							}
 						}
 					}
@@ -1994,4 +1995,126 @@ stock void RPG_ChaosSurgance(int victim, int attacker, int weapon, float &damage
 			damage = damageOverLimit + DamageMaxPunish;
 		}
 	}
+}
+
+
+
+public void Dungeon_Spawn_HyperElite(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_whiteflower_elite"))
+	{
+		int health = ReturnEntityMaxHealth(entity);
+		
+		health = RoundToNearest(float(health) * 2.5);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.2;
+		fl_Extra_Speed[entity] *= 0.5;
+	}
+}
+public void Dungeon_Spawn_MasterBlaster(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_whiteflower_nano_blaster"))
+	{
+		int health = ReturnEntityMaxHealth(entity);
+		
+		health = RoundToNearest(float(health) * 2.0);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.4;
+		fl_Extra_Speed[entity] *= 1.2;
+	}
+}
+
+public void Dungeon_MasterCamo(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 400.0);
+	SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1200.0);
+		
+	if(IsValidEntity(npc.m_iWearable1))
+	{
+		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 400.0);
+		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 1200.0);
+	}
+	if(IsValidEntity(npc.m_iWearable2))
+	{
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 400.0);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 1200.0);
+	}
+	if(IsValidEntity(npc.m_iWearable3))
+	{
+		SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 400.0);
+		SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 1200.0);
+	}
+	if(IsValidEntity(npc.m_iWearable4))
+	{
+		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 400.0);
+		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 1200.0);
+	}
+	if(IsValidEntity(npc.m_iWearable5))
+	{
+		SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 400.0);
+		SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 1200.0);
+	}
+}
+public void Dungeon_Spawn_SelectedOne(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_whiteflower_selected_few"))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+		npc.m_iOverlordComboAttack = 1;
+	}
+}
+
+
+public void Dungeon_Spawn_AntiIberianTank(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_whiteflower_tank"))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+		npc.m_iOverlordComboAttack = 1;
+		int health = ReturnEntityMaxHealth(entity);
+		health = RoundToNearest(float(health) * 2.0);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.2;
+	}
+}
+
+
+public void Dungeon_Spawn_SecondGiant(ArrayList list)
+{
+	static WaveEnum wave;
+	if(!wave.Index)
+	{	
+		wave.Delay = 45.0;
+		wave.Index = NPC_GetByPlugin("npc_whiteflower_giant_swordsman");
+		wave.Pos = {-5253.514648, -10782.250976, 3264.031250};
+		wave.Angle = -130.0;
+		wave.Boss = true;
+		wave.Level = 12000;
+		wave.Health = 15000000;
+		wave.Rarity = 1;
+		wave.HPRegen= 30000;
+
+		wave.ExtraMeleeRes = 1.0;
+		wave.ExtraRangedRes = 1.0;
+		wave.ExtraSpeed = 1.4;
+		wave.ExtraDamage = 1.4;
+		wave.CustomName = "Copied W.F. Giant Man";
+	}
+	list.PushArray(wave);
 }

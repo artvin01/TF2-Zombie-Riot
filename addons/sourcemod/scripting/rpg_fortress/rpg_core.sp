@@ -9,6 +9,7 @@
 enum
 {
 	WEAPON_BIGFRYINGPAN = 1,
+	WEAPON_LANTEAN = 2,
 }
 
 int BaseStrength;
@@ -109,6 +110,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/worldtext.sp"
 #include "rpg_fortress/zones.sp"
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
+#include "rpg_fortress/custom/wand/weapon_lantean_wand.sp"
 #include "rpg_fortress/custom/weapon_samurai_sword.sp"
 #include "rpg_fortress/custom/weapon_brick.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
@@ -270,6 +272,8 @@ void RPG_MapStart()
 	OctaneKick_Map_Precache();
 	BackRockets_MapStart();
 	Mage_Oblitiration_Shot_Map_Precache();
+	Weapon_lantean_Wand_ClearAll();
+	Weapon_lantean_Wand_Map_Precache();
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
 
 	/*

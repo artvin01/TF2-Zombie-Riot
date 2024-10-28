@@ -262,9 +262,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
-					if(!b_NpcUnableToDie[npc.index])
-						damage *= 1.3;
+					float damage = 400000.0;
 
 					
 					if(target > 0) 

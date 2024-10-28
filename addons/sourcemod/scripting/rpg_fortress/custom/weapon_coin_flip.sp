@@ -173,6 +173,8 @@ public Action flip_extra(Handle timer, int client)
 			damage_multiplier[entity] = 40.0;
 			
 			damage_multiplier[entity] *= Attributes_Get(weapon, 2, 1.0);
+			
+			damage_multiplier[entity] /= Attributes_Get(weapon, 6, 1.0);
 				
 			damage_multiplier[entity] *= 2.0;
 			

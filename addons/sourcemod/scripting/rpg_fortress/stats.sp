@@ -110,7 +110,7 @@ void Stats_GiveXP(int client, int xp, int quest = 0)
 			}
 		}
 		int CalculatedXP;
-		CalculatedXP += XPToGive;
+		CalculatedXP = XP[client] + XPToGive;
 		if(CalculatedXP <= XPToGive || CalculatedXP >= 2000000000)
 		{
 			XP[client] = 2000000000;
@@ -140,6 +140,9 @@ void Stats_GiveXP(int client, int xp, int quest = 0)
 
 float AgilityMulti(int amount)
 {
+	if(amount < -16)
+		amount = -16;
+	
 	return 3.73333*Pow(amount + 16.0, -0.475);
 }
 
@@ -457,6 +460,19 @@ void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
 	//Give complete immunity to all normal knockback.
 	//in RPG we will give knockback another way.
 
+	Stats_ApplyMovementSpeedUpdate(client, class);
+	
+	Attributes_SetMulti(client, 442, SpeedExtra);
+
+	static Race race;
+	static Form form;
+	Races_GetClientInfo(client, race, form);
+	
+	Attributes_SetMulti(client, Attrib_FormRes, form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+}
+
+void Stats_ApplyMovementSpeedUpdate(int client, TFClassType class)
+{
 	float speed = 300.0 + float(Stats_Agility(client) * 2);
 	
 	//CC DIFFICULTY, 15% SLOWER!
@@ -476,15 +492,7 @@ void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
 			speed *= 0.85; 
 		}
 	}
-	
-	Attributes_SetMulti(client, 107, RemoveExtraSpeed(class, speed));
-	Attributes_SetMulti(client, 442, SpeedExtra);
-
-	static Race race;
-	static Form form;
-	Races_GetClientInfo(client, race, form);
-	
-	Attributes_SetMulti(client, Attrib_FormRes, form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+	Attributes_Set(client, 107, RemoveExtraSpeed(class, speed));
 }
 
 int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)

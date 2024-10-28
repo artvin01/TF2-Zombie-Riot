@@ -323,8 +323,7 @@ static Action TextStore_HelpCommand(int client, int args)
 
 static Action TextStore_QuestCommand(int client, int args)
 {
-	MenuType[client] = MENU_QUESTBOOK;
-	RefreshAt[client] = 1.0;
+	TextStore_OpenSpecificMenu(client, MENU_QUESTBOOK);
 	return Plugin_Handled;
 }
 
@@ -2052,6 +2051,13 @@ void TextStore_PlayerRunCmd(int client)
 {
 	if((InMenu[client] || GetClientMenu(client) == MenuSource_None))
 	{
+		if(MenuDelayDo[client] > GetGameTime())
+		{
+			// GetClientMenu can fail somehow
+			return;
+		}
+		MenuDelayDo[client] = GetGameTime() + 0.25;
+
 		if(!IsPlayerAlive(client))
 		{
 			if(!Saves_HasCharacter(client))
@@ -2107,10 +2113,6 @@ void TextStore_PlayerRunCmd(int client)
 
 static void ShowMenu(int client, int page = 0)
 {
-	if(MenuDelayDo[client] > GetGameTime())
-	{
-		return;
-	}
 	//Set ammo to inf!
 	
 	SetAmmo(client, 1, 9999);
@@ -2122,7 +2124,6 @@ static void ShowMenu(int client, int page = 0)
 		SetAmmo(client, i, 9999);
 	}
 	
-	MenuDelayDo[client] = GetGameTime() + 0.25;
 
 	if(!SpellList || Dungeon_MenuOverride(client))
 	{
@@ -2322,14 +2323,11 @@ static void ShowMenu(int client, int page = 0)
 		}
 		case MENU_BUILDING:
 		{
-			if(Plots_CanShowMenu(client) && Plots_ShowMenu(client))
-			{
-				InMenu[client] = true;
-			}
-			else
+			InMenu[client] = false;
+
+			if(!Plots_ShowMenu(client))
 			{
 				MenuType[client] = MENU_SPELLS;
-				InMenu[client] = false;
 			}
 		}
 		default:
@@ -2465,7 +2463,7 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 					}
 					case -2:
 					{
-						MenuType[client] = MENU_TRANSFORM;
+						TextStore_OpenSpecificMenu(client, MENU_TRANSFORM);
 						RefreshAt[client] = 1.0;
 						return 0;
 					}
@@ -2476,8 +2474,7 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 					}
 					case -4:
 					{
-						MenuType[client] = MENU_BACKPACK;
-						RefreshAt[client] = 1.0;
+						TextStore_OpenSpecificMenu(client, MENU_BACKPACK);
 						return 0;
 					}
 					default:
@@ -2505,6 +2502,12 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 									{
 										float calc = cooldownSet - GetGameTime();
 										calc *= 1.4;	
+										cooldownSet = calc + GetGameTime();
+									}
+									if(BobsPhoneReduceCooldown(client))
+									{
+										float calc = cooldownSet - GetGameTime();
+										calc *= 0.8;	
 										cooldownSet = calc + GetGameTime();
 									}
 									
@@ -2552,30 +2555,45 @@ static int TextStore_TransformMenu(Menu menu, MenuAction action, int client, int
 	return 0;
 }
 
+void TextStore_OpenSpecificMenu(int client, int type)
+{
+	MenuType[client] = type;
+	RefreshAt[client] = 1.0;
+}
+
 void TextStore_Inspect(int client)
 {
 	switch(MenuType[client])
 	{
 		case MENU_SPELLS:
 		{
-			FakeClientCommandEx(client, "sm_store");
-			RefreshAt[client] = 1.0;
+			if(Plots_CanShowMenu(client))
+			{
+				TextStore_OpenSpecificMenu(client, MENU_BUILDING);
+			}
+			else
+			{
+				FakeClientCommandEx(client, "sm_store");
+				RefreshAt[client] = 1.0;
+			}
 		}
 		case MENU_BACKPACK:
 		{
-			MenuType[client] = MENU_SPELLS;
-			RefreshAt[client] = 1.0;
+			TextStore_OpenSpecificMenu(client, MENU_SPELLS);
 		}
 		case MENU_QUESTBOOK:
 		{
 			FakeClientCommandEx(client, "sm_store");
-			MenuType[client] = MENU_SPELLS;
 			RefreshAt[client] = 1.0;
+		}
+		case MENU_BUILDING:
+		{
+			FakeClientCommandEx(client, "sm_store");
+			TextStore_OpenSpecificMenu(client, MENU_SPELLS);
 		}
 		default://case MENU_QUESTBOOK, MENU_TRANSFORM, MENU_BUILDING:
 		{
-			MenuType[client] = MENU_SPELLS;
-			RefreshAt[client] = 1.0;
+			TextStore_OpenSpecificMenu(client, MENU_SPELLS);
 		}
 	}
 }

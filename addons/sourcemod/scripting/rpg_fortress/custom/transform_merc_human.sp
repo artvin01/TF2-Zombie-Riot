@@ -47,7 +47,7 @@ public void MercHuman_Activation_DEEnable_form_4(int client)
 	Expidonsa_InRageMode[client] = false;
 }
 
-public void MercHuman_TakeDamage4th(int victim, float &damage)
+public void MercHuman_TakeDamage4th(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(Expidonsa_InRageMode[victim])
 	{

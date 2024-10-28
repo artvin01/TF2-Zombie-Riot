@@ -345,8 +345,8 @@ bool Crafting_Interact(int client, int entity)
 
 			if(CurrentMenu[client])
 			{
-				CancelClientMenu(client);
 				delete CurrentMenu[client];
+				CancelClientMenu(client);
 			}
 			
 			CurrentMenu[client] = craft.List;
@@ -363,8 +363,8 @@ void Crafting_SetCustomMenu(int client, ArrayList list)
 {
 	if(CurrentMenu[client])
 	{
-		CancelClientMenu(client);
 		delete CurrentMenu[client];
+		CancelClientMenu(client);
 	}
 	
 	CurrentMenu[client] = list;

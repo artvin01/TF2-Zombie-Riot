@@ -1875,22 +1875,32 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 #endif
 #if defined RPG
-	Race race;
-	if(Races_GetRaceByIndex(RaceIndex[victim], race) && race.Forms)
+	if(i_TransformationLevel[victim] > 0)
 	{
-		Form form;
-		race.Forms.GetArray(i_TransformationLevel[victim] - 1, form);
-		
-		if(form.Func_FormTakeDamage != INVALID_FUNCTION)
+		Race race;
+		if(Races_GetRaceByIndex(RaceIndex[victim], race) && race.Forms)
 		{
-			Call_StartFunction(null, form.Func_FormTakeDamage);
-			Call_PushCell(victim);
-			Call_PushFloatRef(damage);
-			Call_Finish();
-
-			if(damage <= 0.0)
+			Form form;
+			race.Forms.GetArray(i_TransformationLevel[victim] - 1, form);
+			
+			if(form.Func_FormTakeDamage != INVALID_FUNCTION)
 			{
-				return Plugin_Handled;
+				Call_StartFunction(null, form.Func_FormTakeDamage);
+				Call_PushCell(victim);
+				Call_PushCellRef(attacker);
+				Call_PushCellRef(inflictor);
+				Call_PushFloatRef(damage);
+				Call_PushCellRef(damagetype);
+				Call_PushCellRef(weapon);
+				Call_PushArrayEx(damageForce, sizeof(damageForce), SM_PARAM_COPYBACK);
+				Call_PushArrayEx(damagePosition, sizeof(damagePosition), SM_PARAM_COPYBACK);
+				Call_PushCell(damagecustom);
+				Call_Finish();
+
+				if(damage <= 0.0)
+				{
+					return Plugin_Handled;
+				}
 			}
 		}
 	}
