@@ -230,7 +230,7 @@ public VictoriaTaser_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public ActionVictoriaTaser_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VictoriaTaser_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictoriaTaser npc = view_as<VictoriaTaser>(victim);
 		
@@ -246,7 +246,7 @@ public ActionVictoriaTaser_OnTakeDamage(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public VictoriaTaser_NPCDeath(int entity)
+public void VictoriaTaser_NPCDeath(int entity)
 {
 	VictoriaTaser npc = view_as<VictoriaTaser>(entity);
 	if(!npc.m_bGib)
