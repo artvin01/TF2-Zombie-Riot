@@ -15,6 +15,9 @@ static bool SkinSwap(int entity, BuildEnum build, int client, int cap)
 {
 	if(client)
 	{
+		if(!Plots_CanInteractHere(client))
+			return false;
+		
 		build.Flags++;
 		if(build.Flags >= cap)
 			build.Flags = 0;

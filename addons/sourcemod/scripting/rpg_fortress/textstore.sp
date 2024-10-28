@@ -285,6 +285,7 @@ static void HashCheck()
 				Store_Reset();
 				RPG_PluginEnd();
 				Tinker_ResetAll();
+				Plots_StoreCached();
 
 				for(int client = 1; client <= MaxClients; client++)
 				{
@@ -576,7 +577,10 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 		kv.GetString("plugin", buffer, sizeof(buffer));
 		if(StrEqual(buffer, "rpg_fortress"))
 		{
-			if(item < 0)
+			if(kv.GetNum("plots"))
+			{
+			}
+			else if(item < 0)
 			{
 				Tinker_DescItem(item, desc);
 			}
