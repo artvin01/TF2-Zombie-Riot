@@ -182,7 +182,7 @@ public void VIctorianTanker_ClotThink(int iNPC)
 		{
 			if(!IsValidEntity(npc.m_iWearable6))
 			{
-				npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/props_mvm/mvm_player_shield2.mdl",_,_,_,40,true);
+				npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/props_mvm/mvm_player_shield2.mdl",_,_,_,40.0,true);
 				SetVariantString("0.7");
 				AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
