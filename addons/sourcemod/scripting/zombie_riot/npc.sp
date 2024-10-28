@@ -606,6 +606,8 @@ void NPC_ConfigSetup()
 	VIctorianTanker_OnMapStart_NPC();
 	VictorianPulverizer_OnMapStart_NPC();
 	VIctorianAmbusher_OnMapStart_NPC();
+	VictoriaTank_MapStart();
+	VictoriaTaser_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1695,3 +1697,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_tanker.sp"
 #include "zombie_riot/npc/victoria/npc_pulverizer.sp"
 #include "zombie_riot/npc/victoria/npc_ambusher.sp"
+#include "zombie_riot/npc/victoria/npc_taser.sp"
+#include "zombie_riot/npc/victoria/npc_victorian_tank.sp"

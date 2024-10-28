@@ -213,7 +213,7 @@ static void Internal_ClotThink(int iNPC)
 			if(npc.m_flNextRangedAttack < GameTime)
 			{
 				npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-				npc.m_flNextRangedAttack = GameTime + 45.0;
+				npc.m_flNextRangedAttack = GameTime + 20.0;
 
 				int health = ReturnEntityMaxHealth(npc.index) * 5;
 

@@ -134,23 +134,18 @@ methodmap VIctorianTanker < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum23_hazard_handler_style1/sum23_hazard_handler_style1.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.2");
+		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 100, 100, 100, 255);
+		SetEntityRenderColor(npc.m_iWearable4, 10, 10, 10, 255);
 		
         if(npc.g_TimesSummoned == 0)
 		{
-			npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/props_mvm/mvm_player_shield2.mdl",_,_,_,40.0, true);
+			npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/props_mvm/mvm_player_shield2.mdl",_,_,_,_, true);
 			SetVariantString("0.7");
 			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 			SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable6, 0, 0, 255, 255);
-		}
-
-        if(npc.g_TimesSummoned == 0)
-		{
-			SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 		}
 
 		return npc;
@@ -167,23 +162,11 @@ public void VIctorianTanker_ClotThink(int iNPC)
 
     if(npc.g_TimesSummoned == 0)
 	{
-		if(f_TimeFrozenStill[iNPC])
-		{
-			if(IsValidEntity(npc.m_iWearable6))
-			{
-				RemoveEntity(npc.m_iWearable6);
-			}
-		//	if(IsValidEntity(npc.m_iWearable7))
-		//	{
-		//		RemoveEntity(npc.m_iWearable7);
-		//	}
-		}	
-		else
+		if(npc.m_fbRangedSpecialOn)
 		{
 			if(!IsValidEntity(npc.m_iWearable6))
 			{
-				npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/props_mvm/mvm_player_shield2.mdl",_,_,_,40.0,true);
-				SetVariantString("0.7");
+				npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/props_mvm/mvm_player_shield2.mdl",_,_,_,-100.0);
 				AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
@@ -193,7 +176,6 @@ public void VIctorianTanker_ClotThink(int iNPC)
 			{
 				float vecTarget[3];
 				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
-				vecTarget[2] -= 100.0;
 				Custom_SDKCall_SetLocalOrigin(npc.m_iWearable6, vecTarget);
 			}
 		}

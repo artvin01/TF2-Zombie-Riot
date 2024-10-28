@@ -44,7 +44,7 @@ void VIctorianAmbusher_OnMapStart_NPC()
 	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ambusher");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Ambusher");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ambusher");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -187,58 +187,100 @@ public void VIctorianAmbusher_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-
-	int PrimaryThreatIndex = npc.m_iTarget;
-
-
-	if(npc.m_iOverlordComboAttack <= 0)
-	{
-		if(npc.m_iChanged_WalkCycle != 6)
-		{
-			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 2.6;
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 6;
-			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY", true,_,_,0.37);
-			npc.m_flSpeed = 350.0;
-			npc.StopPathing();
-			npc.PlayReloadSound();
-            int Enemy_I_See;
-			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-			//Target close enough to hit
-			if(IsValidEnemy(npc.index, Enemy_I_See)) 
-			{
-				float vBackoffPos[3];
-				
-				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-				
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
-			}
-			npc.m_iOverlordComboAttack = 30;
-		}
-		return;
-	}
-	if(npc.m_flNextChargeSpecialAttack > GetGameTime(npc.index))
-	{
-		return;
-	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		
+		int NowIDO = VIctorianAmbusherSelfDefense(npc.index, npc.m_iTarget, GetGameTime(npc.index));
+		switch(NowIDO)
 		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			case 0:
+			{
+				if(npc.m_iChanged_WalkCycle != 0)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 0;
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
+					npc.StartPathing();
+					npc.m_flSpeed = 200.0;
+				}
+			}
+			case 1:
+			{
+				if(npc.m_iChanged_WalkCycle != 1)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
+					npc.StartPathing();
+					npc.m_flSpeed = 300.0;
+				}
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				}
+			}
+			case 2:
+			{
+				if(npc.m_iChanged_WalkCycle != 2)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 2;
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
+					npc.StartPathing();
+					npc.m_flSpeed = 150.0;
+				}
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				}
+			}
+			case 3:
+			{
+				if(npc.m_iChanged_WalkCycle != 3)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 3;
+					npc.StartPathing();
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.5;
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
+					npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY", true,_,_,0.37);
+					npc.m_flSpeed = 350.0;
+					npc.PlayReloadSound();
+
+                    DataPack ReloadAmmo;
+                    CreateDataTimer(2.5, Timer_Runaway, ReloadAmmo, TIMER_FLAG_NO_MAPCHANGE);
+                    ReloadAmmo.WriteCell(npc.index);
+                    ReloadAmmo.WriteCell(30);
+				}
+				int Enemy_I_See;
+				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				if(IsValidEnemy(npc.index, Enemy_I_See)) 
+				{
+					float vBackoffPos[3];
+					
+					BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
+					
+					NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				}
+			}
 		}
-		else 
-		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-		}
-		VIctorianAmbusherSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 	else
 	{
@@ -246,6 +288,14 @@ public void VIctorianAmbusher_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+}
+
+public Action Timer_Runaway(Handle timer, DataPack pack)
+{
+    pack.Reset();
+    VIctorianAmbusher npc = view_as<VIctorianAmbusher>(pack.ReadCell());
+    if(IsValidEntity(npc.index)) npc.m_iOverlordComboAttack = pack.ReadCell();
+    return Plugin_Stop;
 }
 
 public Action VIctorianAmbusher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -286,111 +336,66 @@ public void VIctorianAmbusher_NPCDeath(int entity)
 
 }
 
-void VIctorianAmbusherSelfDefense(VIctorianAmbusher npc, float gameTime)
+int VIctorianAmbusherSelfDefense(int iNPC, int target, float gameTime)
 {
-	int target;
-	//some Ranged units will behave differently.
-	//not this one.
-	target = npc.m_iTarget;
-	if(!IsValidEnemy(npc.index,target))
-	{
-		if(npc.m_iChanged_WalkCycle != 4)
-		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_SECONDARY");
-			npc.m_flSpeed = 300.0;
-			npc.StartPathing();
-		}
-		return;
-	}
+	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(iNPC);
+	if(npc.m_iOverlordComboAttack < 1)
+		return 3;
 	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
+	if(npc.m_flCharge_delay < GetGameTime(npc.index))
 	{
-		if(npc.m_flCharge_delay < GetGameTime(npc.index))
+		if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 		{
-			if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
-			{
-				npc.PlayChargeSound();
-				npc.m_flCharge_delay = GetGameTime(npc.index) + 90.0;
-				PluginBot_Jump(npc.index, vecTarget);
-				float flPos[3];
-				float flAng[3];
-				int Particle_1;
-				npc.GetAttachment("flag", flPos, flAng);
-				Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "flag", {0.0,0.0,0.0});
-				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
-			}
+			npc.PlayChargeSound();
+			npc.m_flCharge_delay = GetGameTime(npc.index) + 90.0;
+			PluginBot_Jump(npc.index, vecTarget);
+			float flPos[3];
+			float flAng[3];
+			int Particle_1;
+			npc.GetAttachment("flag", flPos, flAng);
+			Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "flag", {0.0,0.0,0.0});
+			CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
 		}
-		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-		if(IsValidEnemy(npc.index, Enemy_I_See))
+	}
+	if(gameTime > npc.m_flNextMeleeAttack)
+	{
+		if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 		{
-			if(npc.m_iChanged_WalkCycle != 5)
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
-				npc.m_bisWalking = false;
-				npc.m_iChanged_WalkCycle = 5;
-				npc.SetActivity("ACT_MP_STAND_SECONDARY");
-				npc.m_flSpeed = 0.0;
-				npc.StopPathing();
-			}	
-			if(gameTime > npc.m_flNextMeleeAttack)
-			{
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
-				{	
-					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", true);
-					npc.m_iOverlordComboAttack --;
-					npc.PlayMeleeSound();
-					npc.FaceTowards(vecTarget, 20000.0);
-					Handle swingTrace;
-					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+				npc.PlayMeleeSound();
+				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", true);
+				npc.m_iTarget = Enemy_I_See;
+				npc.m_iOverlordComboAttack--;
+				npc.FaceTowards(vecTarget, 20000.0);
+				Handle swingTrace;
+				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+				{
+					target = TR_GetEntityIndex(swingTrace);	
+						
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					float origin[3], angles[3];
+					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, vecHit, false);
+					npc.m_flNextMeleeAttack = gameTime + 0.1;
+
+					if(IsValidEnemy(npc.index, target))
 					{
-						target = TR_GetEntityIndex(swingTrace);	
-							
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						float origin[3], angles[3];
-						view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-						ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, vecHit, false );
-
-						if(IsValidEnemy(npc.index, target))
-						{
-							float damageDealt = 15.0;
-							if(ShouldNpcDealBonusDamage(target))
-								damageDealt *= 3.0;
-
-
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
-						}
+						float damageDealt = 15.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt *= 3.0;
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}
-					delete swingTrace;
 				}
+				delete swingTrace;
 			}
+			return 2;
 		}
-		else
-		{
-			if(npc.m_iChanged_WalkCycle != 4)
-			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_MP_RUN_SECONDARY");
-				npc.m_flSpeed = 250.0;
-				npc.StartPathing();
-			}
-		}
+		return 1;
 	}
-	else
-	{
-		if(npc.m_iChanged_WalkCycle != 4)
-		{
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_SECONDARY");
-			npc.m_flSpeed = 250.0;
-			npc.StartPathing();
-		}
-	}
+	return 0;
 }

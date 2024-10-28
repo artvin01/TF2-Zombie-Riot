@@ -2,33 +2,24 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath01.mp3",
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath02.mp3",
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath03.mp3",
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/mvm/norm/soldier_mvm_painsevere01.mp3",
-	"vo/mvm/norm/soldier_mvm_painsevere02.mp3",
-	"vo/mvm/norm/soldier_mvm_painsevere03.mp3",
-	"vo/mvm/norm/soldier_mvm_painsevere04.mp3",
-	"vo/mvm/norm/soldier_mvm_painsevere05.mp3",
-	"vo/mvm/norm/soldier_mvm_painsevere06.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp01.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp02.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp03.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp04.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp05.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp06.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp07.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp08.mp3",
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3",
 };
 
+
 static const char g_IdleAlertedSounds[][] = {
-	"vo/mvm/norm/taunts/soldier_mvm_taunts18.mp3",
-	"vo/mvm/norm/taunts/soldier_mvm_taunts19.mp3",
-	"vo/mvm/norm/taunts/soldier_mvm_taunts20.mp3",
-	"vo/mvm/norm/taunts/soldier_mvm_taunts21.mp3",
+	"vo/spy_battlecry01.mp3",
+	"vo/spy_battlecry02.mp3",
+	"vo/spy_battlecry03.mp3",
+	"vo/spy_battlecry04.mp3",
 };
 
 static const char g_ReloadSound[][] = {
@@ -36,12 +27,11 @@ static const char g_ReloadSound[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav",
-	"mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav",
+	"weapons/capper_shoot.wav",
 };
 
 
-void VictorianRaider_OnMapStart_NPC()
+void VictoriaTaser_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -51,8 +41,8 @@ void VictorianRaider_OnMapStart_NPC()
 	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
 	PrecacheModel("models/player/Soldier.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Raider");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_raider");
+	strcopy(data.Name, sizeof(data.Name), "Taser");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_taser");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -63,10 +53,10 @@ void VictorianRaider_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianRaider(client, vecPos, vecAng, ally);
+	returnVictoriaTaser(client, vecPos, vecAng, ally);
 }
 
-methodmap VictorianRaider < CClotBody
+methodmapVictoriaTaser < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -103,83 +93,72 @@ methodmap VictorianRaider < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 60, _, 0.5, 80);
 	}
 
-	public VictorianRaider(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaTaser(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianRaider npc = view_as<VictorianRaider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "8000", ally));
+		VictoriaTaser npc = view_as<VictoriaTaser>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "8000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
-		func_NPCDeath[npc.index] = view_as<Function>(VictorianRaider_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianRaider_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictorianRaider_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VictoriaTaser_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaTaser_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VictoriaTaser_ClotThink);
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_iOverlordComboAttack = 3;
+		npc.m_iOverlordComboAttack = 1;
 		
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 250.0;
+		npc.m_flSpeed = 310.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_dex_arm/c_dex_arm.mdl");
+		SetVariantString("2.5");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2023_shortness_breath/hwn2023_shortness_breath.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_bet_rocketlauncher/c_bet_rocketlauncher.mdl");
-		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/majors_mark/majors_mark.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sf14_beep_man/sf14_beep_man.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum24_daring_dell_style4/sum24_daring_dell_style4.mdl");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_batarm/bak_batarm_soldier.mdl");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_armor/tw_soldierbot_armor.mdl");
-
-		npc.m_iWearable6 = npc.EquipItem("head", "models/bots/soldier_boss/bot_soldier_boss.mdl");
-
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 50, 150, 150, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 215, 0, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 50, 150, 150, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-        SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 80, 50, 50, 255);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable6, 80, 50, 50, 255);
 		return npc;
 	}
 }
 
-public void VictorianRaider_ClotThink(int iNPC)
+public VictoriaTaser_ClotThink(int iNPC)
 {
-	VictorianRaider npc = view_as<VictorianRaider>(iNPC);
+	VictoriaTaser npc = view_as<VictoriaTaser>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -212,11 +191,11 @@ public void VictorianRaider_ClotThink(int iNPC)
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 2.0;
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 6;
-			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY", true,_,_,0.5);
+			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY", true);
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 			npc.PlayReloadSound();
-			npc.m_iOverlordComboAttack = 3;
+			npc.m_iOverlordComboAttack = 1;
 		}
 		return;
 	}
@@ -241,7 +220,7 @@ public void VictorianRaider_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		VictorianRaiderSelfDefense(npc,GetGameTime(npc.index)); 
+		VictoriaTaserSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 	else
 	{
@@ -251,9 +230,9 @@ public void VictorianRaider_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictorianRaider_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public ActionVictoriaTaser_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianRaider npc = view_as<VictorianRaider>(victim);
+	VictoriaTaser npc = view_as<VictoriaTaser>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -267,9 +246,9 @@ public Action VictorianRaider_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void VictorianRaider_NPCDeath(int entity)
+public VictoriaTaser_NPCDeath(int entity)
 {
-	VictorianRaider npc = view_as<VictorianRaider>(entity);
+	VictoriaTaser npc = view_as<VictoriaTaser>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -290,7 +269,7 @@ public void VictorianRaider_NPCDeath(int entity)
 
 }
 
-void VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime)
+void VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime)
 {
 	int target;
 	//some Ranged units will behave differently.
@@ -302,7 +281,7 @@ void VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime)
 		{
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_PRIMARY");
+			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 			npc.m_flSpeed = 250.0;
 			npc.StartPathing();
 		}
@@ -322,7 +301,7 @@ void VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime)
 			{
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 5;
-				npc.SetActivity("ACT_MP_STAND_PRIMARY");
+				npc.SetActivity("ACT_MP_STAND_SECONDARY");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 			}	
@@ -330,25 +309,27 @@ void VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime)
 			{
 				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
 				{	
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
+					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", true);
 					npc.m_iOverlordComboAttack --;
 					npc.PlayMeleeSound();
 					npc.FaceTowards(vecTarget, 20000.0);
 					Handle swingTrace;
 					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 						npc.PlayMeleeSound();
 						//after we fire, we will have a short delay beteween the actual laser, and when it happens
 						//This will predict as its relatively easy to dodge
-						float projectile_speed = 450.0;
+						float projectile_speed = 600.0;
 
 						WorldSpaceCenter(target, vecTarget);
 
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-						npc.FireParticleRocket(vecTarget, 30.0 , projectile_speed , 150.0 , "drg_cow_rockettrail_normal_blue");
+						int projectile = npc.FireParticleRocket(vecTarget, 45.0 , projectile_speed , 150.0 , "raygun_projectile_blue_crit");
+						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 						npc.PlayIdleAlertSound();
+						SDKHook(projectile, SDKHook_StartTouch, VictoriaTaser_Rocket_Particle_StartTouch);
 					}
 					delete swingTrace;
 				}
@@ -360,7 +341,7 @@ void VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime)
 			{
 				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_MP_RUN_PRIMARY");
+				npc.SetActivity("ACT_MP_RUN_SECONDARY");
 				npc.m_flSpeed = 250.0;
 				npc.StartPathing();
 			}
@@ -372,9 +353,68 @@ void VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime)
 		{
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 4;
-			npc.SetActivity("ACT_MP_RUN_PRIMARY");
+			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 			npc.m_flSpeed = 250.0;
 			npc.StartPathing();
 		}
 	}
+}
+
+public void VictoriaTaser_Rocket_Particle_StartTouch(int entity, int target)
+{
+	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
+		
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+		if(inflictor == -1)
+			inflictor = owner;
+			
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		float DamageDeal = fl_rocket_particle_dmg[entity];
+		if(ShouldNpcDealBonusDamage(target))
+			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
+
+
+		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
+		if (!IsInvuln(target))
+		{
+			if(NpcStats_VictorianCallToArms(npc.index))
+			{
+				if(f_HighTeslarDebuff[target] - 4.0 < GetGameTime())
+				f_HighTeslarDebuff[target] = GetGameTime() + 4.0;
+				TF2_StunPlayer(attacker, f_HighTeslarDebuff[attacker] - gameTime, 0.8, TF_STUNFLAG_SLOWDOWN);
+			}
+			else
+			{
+				if(f_HighTeslarDebuff[target] - 3.0 < GetGameTime())
+				f_HighTeslarDebuff[target] = GetGameTime() + 3.0;	
+				TF2_StunPlayer(attacker, f_HighTeslarDebuff[attacker] - gameTime, 0.8, TF_STUNFLAG_SLOWDOWN);
+			}
+		}
+
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+	}
+	else
+	{
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		//we uhh, missed?
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+	}
+	RemoveEntity(entity);
 }

@@ -133,7 +133,7 @@ methodmap VictorianWelder < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_dex_arm/c_dex_arm.mdl");
-		SetVariantString("2.0");
+		SetVariantString("2.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
@@ -156,6 +156,7 @@ methodmap VictorianWelder < CClotBody
 		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 0, 255);
 
 		npc.m_iWearable5= npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_nuclear_necessity/hwn2024_nuclear_necessity.mdl");
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 
