@@ -3977,7 +3977,7 @@ float RPGStocks_CalculatePowerLevel(int client)
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 	float ResMulti;
-	ResMulti = form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
+	ResMulti = form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
 	
 	BigTotal *= (1.0 / ResMulti);
 

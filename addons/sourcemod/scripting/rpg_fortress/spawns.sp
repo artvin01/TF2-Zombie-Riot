@@ -549,6 +549,8 @@ void RPGSpawns_UpdateHealthNpc(int entity)
 	if(!IsValidEntity(npc.m_iTextEntity3))
 		return;
 		
+	if(entity <= MaxClients)
+		return;		
 	int MaxHealth = ReturnEntityMaxHealth(entity);
 	int Health = GetEntProp(entity, Prop_Data, "m_iHealth");
 	char HealthString[64];

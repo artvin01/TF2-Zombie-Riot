@@ -1259,6 +1259,10 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	ReApplyTransformation(client);
 	RPGCore_StaminaAddition(client, 999999999);
 	RPGCore_ResourceAddition(client, 999999999);
+	if(f_TransformationDelay[client] == FAR_FUTURE)
+	{
+		f_TransformationDelay[client] = 0.0;
+	}
 }
 
 void Delete_Clip(int ref)

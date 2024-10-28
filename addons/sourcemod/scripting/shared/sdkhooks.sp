@@ -1243,7 +1243,19 @@ public void OnPostThink(int client)
 			ThousandString(c_CurrentMana[offset], sizeof(c_CurrentMana) - offset);
 
 			if(form.Name[0])
-				Format(buffer, sizeof(buffer), "%s: %s\n%s", form.Name, c_CurrentMana, buffer);
+			{
+				char NameOverride[256];
+				NameOverride = form.Name;
+				if(form.Func_FormNameOverride != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, form.Func_FormNameOverride);
+					Call_PushCell(client);
+					Call_PushStringEx(NameOverride, sizeof(NameOverride), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+					Call_Finish();
+				}
+				Format(buffer, sizeof(buffer), "%s: %s\n%s", NameOverride, c_CurrentMana, buffer);
+
+			}
 			else
 				Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
 #endif
@@ -1859,6 +1871,27 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
 			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
+		}
+	}
+#endif
+#if defined RPG
+	Race race;
+	if(Races_GetRaceByIndex(RaceIndex[victim], race) && race.Forms)
+	{
+		Form form;
+		race.Forms.GetArray(i_TransformationLevel[victim] - 1, form);
+		
+		if(form.Func_FormTakeDamage != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, form.Func_FormTakeDamage);
+			Call_PushCell(victim);
+			Call_PushFloatRef(damage);
+			Call_Finish();
+
+			if(damage <= 0.0)
+			{
+				return Plugin_Handled;
+			}
 		}
 	}
 #endif
@@ -2912,7 +2945,7 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			float Drain = 0.0;
 			Form form;
 			Races_GetClientInfo(client, _, form);
-			Drain = form.GetFloatStat(Form::DrainRate, Stats_GetFormMastery(client, form.Name));
+			Drain = form.GetFloatStat(client, Form::DrainRate, Stats_GetFormMastery(client, form.Name));
 			Drain *= 0.015; //drains are too high!
 
 			int StatsForDrainMulti;
@@ -2928,6 +2961,14 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 
 			//We take the base drain rate and multiply it by all the base stats.
 			Drain *= float(StatsForDrainMulti);
+
+			if(form.Func_ExtraDrainLogic != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, form.Func_ExtraDrainLogic);
+				Call_PushCell(client);
+				Call_PushFloatRef(Drain);
+				Call_Finish();
+			}
 
 			
 			//if it isnt 0, do nothing

@@ -25,6 +25,10 @@ enum struct Form
 	Function Func_FormActivate;
 	Function Func_FormDeactivate;
 	Function Func_FormBeforeDeTransform;
+	Function Func_ExtraDrainLogic;
+	Function Func_FormNameOverride;
+	Function Func_FormExtraMultiLogic;
+	Function Func_FormTakeDamage;
 	int Form_RGBA[4];
 
 	void SetupKV(KeyValues kv)
@@ -38,6 +42,11 @@ enum struct Form
 		this.Func_FormActivate = KvGetFunction(kv, "Form Activation Func");
 		this.Func_FormDeactivate = KvGetFunction(kv, "Form Disable Func");
 		this.Func_FormBeforeDeTransform = KvGetFunction(kv, "Form Before DeTransform");
+		this.Func_ExtraDrainLogic = KvGetFunction(kv, "Extra Drain Logic");
+		this.Func_FormNameOverride = KvGetFunction(kv, "Form Name Override");
+		this.Func_FormExtraMultiLogic = KvGetFunction(kv, "Extra Multi Logic");
+		this.Func_FormTakeDamage = KvGetFunction(kv, "Form Take Damage Logic");
+
 		
 		kv.GetString("Questline", this.Questline, sizeof(this.Questline));
 
@@ -76,7 +85,7 @@ enum struct Form
 		this.AgilityAdd[0] = kv.GetNum("Min_Agility");
 		this.AgilityAdd[1] = kv.GetNum("Max_Agility");
 	}
-	float GetFloatStat(int stat, float mastery)
+	float GetFloatStat(int client, int stat, float mastery)
 	{
 		float minval = GetItemInArray(this, stat);
 		float maxval = GetItemInArray(this, stat + 1);
@@ -88,9 +97,22 @@ enum struct Form
 		if(percent > 1.0)
 			percent = 1.0;
 		
+		if(this.Func_FormExtraMultiLogic != INVALID_FUNCTION)
+		{
+			float MultiExtra = 1.0;
+			Call_StartFunction(null, this.Func_FormExtraMultiLogic);
+			Call_PushCell(client);
+			Call_PushCell(stat);
+			Call_PushFloat(minval);
+			Call_PushFloatRef(MultiExtra);
+			Call_Finish();
+			minval *= MultiExtra;
+			maxval *= MultiExtra;
+		}
+		
 		return minval + ((maxval - minval) * percent);
 	}
-	int GetIntStat(int stat, float mastery)
+	int GetIntStat(int client, int stat, float mastery)
 	{
 		int minval = GetItemInArray(this, stat);
 		int maxval = GetItemInArray(this, stat + 1);
@@ -101,6 +123,20 @@ enum struct Form
 		float percent = mastery / this.Mastery;
 		if(percent > 1.0)
 			percent = 1.0;
+
+
+		if(this.Func_FormExtraMultiLogic != INVALID_FUNCTION)
+		{
+			float MultiExtra = 1.0;
+			Call_StartFunction(null, this.Func_FormExtraMultiLogic);
+			Call_PushCell(client);
+			Call_PushCell(stat);
+			Call_PushFloat(1.0);
+			Call_PushFloatRef(MultiExtra);
+			Call_Finish();
+			minval = RoundToNearest(float(minval) * MultiExtra);
+			maxval = RoundToNearest(float(maxval) * MultiExtra);
+		}
 
 		return minval + RoundFloat(float(maxval - minval) * percent);
 	}

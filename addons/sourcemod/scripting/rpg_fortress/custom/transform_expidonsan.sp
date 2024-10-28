@@ -5,6 +5,7 @@ static bool Expidonsa_MegaForm[MAXPLAYERS+1];
 static float Ability4thFormCooldown[MAXPLAYERS+1];
 static bool Expidonsa_InRageMode[MAXPLAYERS+1];
 
+#define COOLDOWN_OF_OVERSTRESS 120.0
 void Transform_Expidonsa_MapStart()
 {
 	PrecacheSound("player/taunt_wormshhg.wav");
@@ -12,6 +13,7 @@ void Transform_Expidonsa_MapStart()
 	PrecacheSound("weapons/sentry_explode.wav");
 	PrecacheSound("misc/halloween/spell_mirv_explode_secondary.wav");
 	Zero(Ability4thFormCooldown);
+	PrecacheSound("items/powerup_pickup_strength.wav");
 }
 
 public void Halo_Activation_Enable_form_1(int client)
@@ -33,6 +35,19 @@ public void Halo_Activation_Enable_form_4(int client)
 	Halo_Activation_Enable_Global(client, 4);
 }
 
+public void Halo_Activation_Disable_form_4(int client)
+{
+	Expidonsa_InRageMode[client] = false;
+}
+
+public void Expidonsan_4thFormNameSpecial(int client, char name[256])
+{
+	if(Expidonsa_InRageMode[client])
+	{
+		strcopy(name, sizeof(name), "Unleashed Expidonsan Power");
+	}
+}
+
 public bool Expidonsan_4thFormTransSpecial(int client)
 {
 	if(Ability4thFormCooldown[client] < GetGameTime())
@@ -42,14 +57,80 @@ public bool Expidonsan_4thFormTransSpecial(int client)
 
 		if((float(Health) / float(MaxHealth)) <= 0.25)
 		{
-			PrintToChatAll("TODO: Expidonsan_4thFormTransSpecial Do effect, double drain, regen 25% health and give a buff of like 25% extra stats or something");
-			Ability4thFormCooldown[client] = GetGameTime() + 120.0;
+			HealEntityGlobal(client, client, float(MaxHealth) / 2, 1.0, 4.0, HEAL_SELFHEAL);
+			RPGCore_StaminaAddition(client, 999999999);
+			RPGCore_ResourceAddition(client, 999999999);
+			
+			//Fill up everytning out max!
+			Ability4thFormCooldown[client] = GetGameTime() + COOLDOWN_OF_OVERSTRESS;
 			Expidonsa_InRageMode[client] = true;
+			EmitSoundToAll("items/powerup_pickup_strength.wav", client, SNDCHAN_AUTO, 80, _, 1.0, 90);
+
+			//YOU CANNOT TRANSFORM UNTILL YOU RUN OUT !!!!
+			f_TransformationDelay[client] = FAR_FUTURE;
+			
+			CreateTimer(0.1, Timer_RemoveEntityParticle, iref_Halo[client][1], TIMER_FLAG_NO_MAPCHANGE);
+
+			
+			float flPos[3];
+			int viewmodelModel;
+			viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+			if(IsValidEntity(viewmodelModel))
+			{
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+				int particler = ParticleEffectAt(flPos, "utaunt_elebound_yellow_parent", 0.0);
+				SetParent(client, particler);
+				iref_Halo[client][1] = EntIndexToEntRef(particler);
+				AddEntityToThirdPersonTransitMode(client, particler);
+			}
+			Store_ApplyAttribs(client);
+			UpdateLevelAbovePlayerText(client);
+
 			return true;
 		}
 	}
 	return false;
 }
+
+public void Expidonsan_4thFormStatMulti(int client, int WhatStat, float StatNum,  float &MultiCurrent)
+{
+	if(!Expidonsa_InRageMode[client])
+	{
+		return;
+	}
+	switch(WhatStat)
+	{
+		default:
+		{
+			if(StatNum >= 1.0)
+				MultiCurrent *= 1.2;
+			else
+				MultiCurrent *= 0.8;
+		}
+	}
+}
+
+public void Expidonsan_4thFormDrainSpecial(int client, float &DrainCurrent)
+{
+	if(!Expidonsa_InRageMode[client])
+	{
+		return;
+	}
+	DrainCurrent *= 1.2;
+
+	float TimeLeft = GetGameTime() - Ability4thFormCooldown[client];
+	if(TimeLeft >= 0.0)
+	{
+		//They stayed in it too long.
+		De_TransformClient(client);
+	}
+
+	TimeLeft *= -1.0;
+	TimeLeft = COOLDOWN_OF_OVERSTRESS / TimeLeft;
+	TimeLeft *= 1.5;
+	DrainCurrent *= TimeLeft;
+}
+
 public bool Expidonsan_4thFormTransReq(int client)
 {
 	Race race;
@@ -65,7 +146,6 @@ public bool Expidonsan_4thFormTransReq(int client)
 		if(MasteryHas / MasteryMax >= 0.75)
 		{
 			return true;
-
 		}
 		else
 		{
@@ -264,7 +344,7 @@ public Action TimerExpidonsan_Transform(Handle timer, DataPack pack)
 		}
 		else
 		{
-			Format(LeperHud, sizeof(LeperHud), "Overstress Cooldown[%1.fs]", Ability4thFormCooldown[client] - GetGameTime());
+			Format(LeperHud, sizeof(LeperHud), "Overstress Cooldown[%.1fs]", Ability4thFormCooldown[client] - GetGameTime());
 		}
 		//This is the 4th form, just a hud, nothing else.
 		PrintHintText(client,"%s",LeperHud);

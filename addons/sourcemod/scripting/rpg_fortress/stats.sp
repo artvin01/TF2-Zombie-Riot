@@ -484,7 +484,7 @@ void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 	
-	Attributes_SetMulti(client, Attrib_FormRes, form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+	Attributes_SetMulti(client, Attrib_FormRes, form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
 }
 
 int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)
@@ -511,7 +511,7 @@ int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multirace =
 	base = BaseStrength + StatStrength[client];
 	bonus = Strength[client];
 	multirace = race.StrengthMulti;
-	multiform = form.GetFloatStat(Form::StrengthMulti, Stats_GetFormMastery(client, form.Name));
+	multiform = form.GetFloatStat(client, Form::StrengthMulti, Stats_GetFormMastery(client, form.Name));
 	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
 	{
 		multiform *= 1.1;
@@ -543,7 +543,7 @@ int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multirace 
 	base = BasePrecision + StatPrecision[client];
 	bonus = Precision[client];
 	multirace = race.PrecisionMulti;
-	multiform = form.GetFloatStat(Form::PrecisionMulti, Stats_GetFormMastery(client, form.Name));
+	multiform = form.GetFloatStat(client,Form::PrecisionMulti, Stats_GetFormMastery(client, form.Name));
 	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
 	{
 		multiform *= 1.1;
@@ -571,7 +571,7 @@ int Stats_Artifice(int client, int &base = 0, int &bonus = 0, float &multirace =
 	base = BaseArtifice + StatArtifice[client];
 	bonus = Artifice[client];
 	multirace = race.ArtificeMulti;
-	multiform = form.GetFloatStat(Form::ArtificeMulti, Stats_GetFormMastery(client, form.Name));
+	multiform = form.GetFloatStat(client,Form::ArtificeMulti, Stats_GetFormMastery(client, form.Name));
 	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
 	{
 		multiform *= 1.1;
@@ -599,7 +599,7 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multirace 
 	base = BaseEndurance + StatEndurance[client];
 	bonus = Endurance[client] - ArmorCorrosion[client];
 	multirace = race.EnduranceMulti;
-	multiform = form.GetFloatStat(Form::EnduranceMulti, Stats_GetFormMastery(client, form.Name));
+	multiform = form.GetFloatStat(client,Form::EnduranceMulti, Stats_GetFormMastery(client, form.Name));
 	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
 	{
 		multiform *= 1.1;
@@ -633,7 +633,7 @@ int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multirace 
 	base = BaseStructure + StatStructure[client];
 	bonus = Structure[client];
 	multirace = race.StructureMulti;
-	multiform = form.GetFloatStat(Form::StructureMulti, Stats_GetFormMastery(client, form.Name));
+	multiform = form.GetFloatStat(client,Form::StructureMulti, Stats_GetFormMastery(client, form.Name));
 	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
 	{
 		multiform *= 1.1;
@@ -661,7 +661,7 @@ int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, float &multira
 	base = BaseIntelligence + StatIntelligence[client];
 	bonus = Intelligence[client];
 	multirace = race.IntelligenceMulti;
-	multiform = form.GetFloatStat(Form::IntelligenceMulti, Stats_GetFormMastery(client, form.Name));
+	multiform = form.GetFloatStat(client,Form::IntelligenceMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -707,7 +707,7 @@ int Stats_Agility(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 	Races_GetClientInfo(client, race, form);
 
 	base = BaseAgility;
-	bonus = Agility[client] + form.GetIntStat(Form::AgilityAdd, Stats_GetFormMastery(client, form.Name));
+	bonus = Agility[client] + form.GetIntStat(client,Form::AgilityAdd, Stats_GetFormMastery(client, form.Name));
 	multi = race.AgilityMulti;
 	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
 	{
@@ -735,7 +735,7 @@ int Stats_Luck(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 	Races_GetClientInfo(client, race, form);
 
 	base = BaseLuck;
-	bonus = Luck[client] + form.GetIntStat(Form::LuckAdd, Stats_GetFormMastery(client, form.Name));
+	bonus = Luck[client] + form.GetIntStat(client, Form::LuckAdd, Stats_GetFormMastery(client, form.Name));
 	multi = race.LuckMulti;
 	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
 	{
@@ -854,7 +854,7 @@ public Action Stats_ShowStats(int client, int args)
 			static Race race;	
 			static Form form;
 			Races_GetClientInfo(client, race, form);
-			multiform = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
+			multiform = form.GetFloatStat(client,Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
 			FormatEx(buffer, sizeof(buffer), "Capacity: [%d x%.2f] + %d = [%d]", amount, multirace * multiform, bonus, total);
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
@@ -904,7 +904,7 @@ public Action Stats_ShowStats(int client, int args)
 			static Race race;	
 			static Form form;
 			Races_GetClientInfo(client, race, form);
-			multiform = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
+			multiform = form.GetFloatStat(client,Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
 			FormatEx(buffer, sizeof(buffer), "CAP: [R:x%.2f F:x%.2f] (%.0f Energy)", multirace, multiform, RPGStats_RetrieveMaxEnergy(total));
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 

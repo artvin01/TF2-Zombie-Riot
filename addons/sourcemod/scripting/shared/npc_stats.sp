@@ -9630,7 +9630,7 @@ void ResetTouchedentityResolve()
 }
 bool TouchedNpcResolve(int entity)
 {
-	return b_TouchedEntity[entity];
+	return view_as<bool>(b_TouchedEntity[entity]);
 }
 int ConvertTouchedResolve(int index)
 {

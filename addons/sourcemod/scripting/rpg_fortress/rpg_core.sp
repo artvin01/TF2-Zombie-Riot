@@ -730,7 +730,7 @@ void RPGCore_ResourceReduction(int client, int amount, bool isformdrain = false)
 
 	float multi = 1.0;
 	if(!isformdrain)
-		multi = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
+		multi = form.GetFloatStat(client, Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
 	
 	Current_Mana[client] -= RoundToNearest(float(amount) * (1.0 / multi));
 	if(Current_Mana[client] <= 0)

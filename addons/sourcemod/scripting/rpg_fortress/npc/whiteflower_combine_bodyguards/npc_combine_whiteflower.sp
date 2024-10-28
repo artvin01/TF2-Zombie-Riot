@@ -857,7 +857,6 @@ public Action Timer_WF_SupportGrenade(Handle timer, DataPack pack)
 
 public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 {
-	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
 	
 	if(GetTeam(ally) != GetTeam(self))
 	{
