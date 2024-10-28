@@ -199,13 +199,13 @@ public void VIctorianAmbusher_ClotThink(int iNPC)
 			npc.StopPathing();
 			npc.PlayReloadSound();
             int Enemy_I_See;
-			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			Enemy_I_See = Can_I_See_Enemy(npc.index, m_iTarget);
 			//Target close enough to hit
 			if(IsValidEnemy(npc.index, Enemy_I_See)) 
 			{
 				float vBackoffPos[3];
 				
-				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, m_iTarget,_,vBackoffPos);
 				
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
 			}
