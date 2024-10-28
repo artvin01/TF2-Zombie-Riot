@@ -633,7 +633,8 @@ int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multirace 
 	base = BaseStructure + StatStructure[client];
 	bonus = Structure[client];
 	multirace = race.StructureMulti;
-	multiform = form.GetFloatStat(client,Form::StructureMulti, Stats_GetFormMastery(client, form.Name));
+	//donnt form multi
+	multiform = form.GetFloatStat(-1,Form::StructureMulti, Stats_GetFormMastery(client, form.Name));
 	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
 	{
 		multiform *= 1.1;

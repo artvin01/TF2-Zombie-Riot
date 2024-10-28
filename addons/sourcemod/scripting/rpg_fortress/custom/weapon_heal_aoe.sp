@@ -112,7 +112,7 @@ stock void Weapon_HolyLightInit(int client, int weapon/*, int level*/, float dam
 		MagicFocusUse(client);
 		b_WasMagicFocus[client] = true;
 	}
-	if(b_WasMagicFocus[client])
+	if(!b_WasMagicFocus[client])
 	{
 		spawnRing_Vectors(endPos, /*RANGE*/ RadiusHeal * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, /*DURATION*/ DurationUntill, 12.0, 0.1, 1);
 		spawnRing_Vectors(endPos, /*RANGE*/ RadiusHeal * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, /*DURATION*/ DurationUntill, 12.0, 0.1, 1, 1.0);

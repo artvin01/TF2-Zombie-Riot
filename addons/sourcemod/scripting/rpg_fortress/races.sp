@@ -29,6 +29,7 @@ enum struct Form
 	Function Func_FormNameOverride;
 	Function Func_FormExtraMultiLogic;
 	Function Func_FormTakeDamage;
+	Function Func_FormEnergyRunOutLogic;
 	int Form_RGBA[4];
 
 	void SetupKV(KeyValues kv)
@@ -46,6 +47,7 @@ enum struct Form
 		this.Func_FormNameOverride = KvGetFunction(kv, "Form Name Override");
 		this.Func_FormExtraMultiLogic = KvGetFunction(kv, "Extra Multi Logic");
 		this.Func_FormTakeDamage = KvGetFunction(kv, "Form Take Damage Logic");
+		this.Func_FormEnergyRunOutLogic = KvGetFunction(kv, "Form Energy Drop Logic");
 
 		
 		kv.GetString("Questline", this.Questline, sizeof(this.Questline));
@@ -97,7 +99,7 @@ enum struct Form
 		if(percent > 1.0)
 			percent = 1.0;
 		
-		if(this.Func_FormExtraMultiLogic != INVALID_FUNCTION)
+		if(client != -1 && this.Func_FormExtraMultiLogic != INVALID_FUNCTION)
 		{
 			float MultiExtra = 1.0;
 			Call_StartFunction(null, this.Func_FormExtraMultiLogic);

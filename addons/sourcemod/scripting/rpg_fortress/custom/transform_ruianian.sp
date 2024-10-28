@@ -1,12 +1,20 @@
 static Handle Timer_Expidonsan_Transform[MAXPLAYERS+1] = {null, ...};
 static int i_TransformInitLevel[MAXPLAYERS+1];
 static int iref_Halo[MAXPLAYERS+1][2];
+static bool Expidonsa_InRageMode[MAXPLAYERS+1];
+static float EnergyLooseCooldown[MAXPLAYERS+1];
 
 void Transform_Ruianian_MapStart()
 {
 	PrecacheSound("misc/halloween/spell_pickup.wav");
 	PrecacheSound("misc/halloween/spell_meteor_impact.wav");
+	PrecacheSound("misc/halloween/spell_lightning_ball_cast.wav");
 	PrecacheSound("ui/killsound_space.wav");
+	PrecacheSound("misc/ks_tier_04_death.wav");
+	PrecacheSound("ui/killsound_electro.wav");
+	PrecacheSound("weapons/physcannon/energy_bounce1.wav");
+	PrecacheSound("weapons/physcannon/energy_bounce2.wav");
+	Zero(EnergyLooseCooldown);
 }
 
 public void Ruianian_Activation_Enable_form_1(int client)
@@ -26,8 +34,66 @@ public void Ruianian_Activation_Enable_form_3(int client)
 	Ruianian_Activation_Enable_Global(client, 3);
 }
 
+public void Ruianian_Activation_Enable_form_4(int client)
+{
+	Ruianian_Activation_Enable_Global(client, 4);
+}
+
+public void Ruianian_Activation_Deactivate_form_4(int client)
+{
+	Expidonsa_InRageMode[client] = false;
+}
+public void Ruianian_4thFormNameSpecial(int client, char name[256])
+{
+	if(Expidonsa_InRageMode[client])
+	{
+		strcopy(name, sizeof(name), "Astral Acceptance");
+	}
+}
+public bool Ruianian_EnergyRunOutLogic(int client)
+{
+	if(!Expidonsa_InRageMode[client])
+	{
+		return false;
+	}
+	if(EnergyLooseCooldown[client] < GetGameTime())
+	{
+		EmitSoundToAll("misc/halloween/spell_lightning_ball_cast.wav", client, SNDCHAN_AUTO, 80, _, 0.5, 110);
+		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 2.0));
+		EnergyLooseCooldown[client] = GetGameTime() + 120.0;
+		int MaxHealth = ReturnEntityMaxHealth(client);
+		HealEntityGlobal(client, client, float(MaxHealth) / 10, 1.0, 4.0, HEAL_SELFHEAL);
+		return true;
+	}
+	return false;
+}
+public void Ruianian_4thFormStatMulti(int client, int WhatStat, float StatNum,  float &MultiCurrent)
+{
+	if(!Expidonsa_InRageMode[client])
+	{
+		return;
+	}
+
+	float RateLeft = (Current_Mana[client] + 1) / (max_mana[client] + 1);
+	RateLeft -= 1.0;
+	RateLeft *= -1.0;
+	RateLeft *= 0.33;
+	RateLeft += 1.0;
+	switch(WhatStat)
+	{
+		default:
+		{
+			if(StatNum >= 1.0)
+				MultiCurrent *= RateLeft;
+			else
+				MultiCurrent *= 1.0 / RateLeft;
+		}
+	}
+}
 public void Ruianian_Activation_Enable_Global(int client, int level)
 {
+	Expidonsa_InRageMode[client] = false;
 	switch(level)
 	{
 		case 1:
@@ -41,6 +107,33 @@ public void Ruianian_Activation_Enable_Global(int client, int level)
 		case 3:
 		{
 			EmitSoundToAll("ui/killsound_space.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
+		}
+		case 4:
+		{
+			
+			Race race;
+			if(Races_GetRaceByIndex(RaceIndex[client], race) && race.Forms)
+			{
+				//we want the 3rd form to be at atleast 150 mastery.
+				Form form;
+				race.Forms.GetArray(3, form);
+
+				float MasteryHas = Stats_GetFormMastery(client, form.Name);
+				float MasteryMax = form.Mastery;
+				
+				if(MasteryHas / MasteryMax >= 0.25)
+				{
+					EmitSoundToAll("weapons/physcannon/energy_bounce1.wav", client, SNDCHAN_AUTO, 80, _, 0.7, 70);
+					EmitSoundToAll("weapons/physcannon/energy_bounce2.wav", client, SNDCHAN_AUTO, 80, _, 0.7, 70);
+					Expidonsa_InRageMode[client] = true;
+				}
+				else
+				{
+					
+					EmitSoundToAll("misc/halloween/spell_meteor_impact.wav", client, SNDCHAN_AUTO, 80, _, 1.0, 140);
+					EmitSoundToAll("ui/killsound_electro.wav", client, SNDCHAN_AUTO, 80, _, 0.5, 80);
+				}
+			}
 		}
 	}
 	delete Timer_Expidonsan_Transform[client];
@@ -90,6 +183,38 @@ public void Ruianian_Activation_Enable_Global(int client, int level)
 			iref_Halo[client][0] = EntIndexToEntRef(particler);
 			AddEntityToThirdPersonTransitMode(client, particler);
 		}
+		if(level == 4)
+		{
+			if(!Expidonsa_InRageMode[client])
+			{
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+				int particler = ParticleEffectAt(flPos, "utaunt_spirit_winter_rings", 0.0);
+				SetParent(client, particler);
+				iref_Halo[client][0] = EntIndexToEntRef(particler);
+				AddEntityToThirdPersonTransitMode(client, particler);
+				
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+				particler = ParticleEffectAt(flPos, "utaunt_spirits_blue_glow", 0.0);
+				SetParent(client, particler);
+				iref_Halo[client][1] = EntIndexToEntRef(particler);
+				AddEntityToThirdPersonTransitMode(client, particler);
+			}
+			else
+			{
+
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+				int particler = ParticleEffectAt(flPos, "utaunt_mysticfusion_glow", 0.0);
+				SetParent(client, particler);
+				iref_Halo[client][0] = EntIndexToEntRef(particler);
+				AddEntityToThirdPersonTransitMode(client, particler);
+
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+				particler = ParticleEffectAt(flPos, "utaunt_spirits_blue_glow", 0.0);
+				SetParent(client, particler);
+				iref_Halo[client][1] = EntIndexToEntRef(particler);
+				AddEntityToThirdPersonTransitMode(client, particler);
+			}
+		}
 	}
 }
 
@@ -120,5 +245,15 @@ public Action TimerRuianian_Transform(Handle timer, DataPack pack)
 		Timer_Expidonsan_Transform[client] = null;
 		return Plugin_Stop;
 	}	
+	if(i_TransformationLevel[client] == 4)
+	{
+		if(Expidonsa_InRageMode[client])
+		{
+			static Race race;
+			static Form form;
+			Races_GetClientInfo(client, race, form);
+			Attributes_Set(client, Attrib_FormRes, form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+		}
+	}
 	return Plugin_Continue;
 }

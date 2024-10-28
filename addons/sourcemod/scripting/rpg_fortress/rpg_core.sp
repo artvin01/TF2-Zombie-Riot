@@ -736,6 +736,15 @@ void RPGCore_ResourceReduction(int client, int amount, bool isformdrain = false)
 	if(Current_Mana[client] <= 0)
 	{
 		Current_Mana[client] = 0;
+		bool CancelDeform = false;
+		if(form.Func_FormEnergyRunOutLogic != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, form.Func_FormEnergyRunOutLogic);
+			Call_PushCell(client);
+			Call_Finish(CancelDeform);
+		}
+		if(CancelDeform)
+			return;
 		//De-Transform logic.
 		De_TransformClient(client);
 		TF2_StunPlayer(client, 5.0, 0.25, TF_STUNFLAGS_LOSERSTATE|TF_STUNFLAG_SLOWDOWN);

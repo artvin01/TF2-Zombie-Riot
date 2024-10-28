@@ -2601,7 +2601,7 @@ void ReApplyTransformation(int client)
 		Store_ApplyAttribs(client);
 	}
 	UpdateLevelAbovePlayerText(client);
-}
+}			
 void TransformButton(int client)
 {
 	if(f_TransformationDelay[client] > GetGameTime())
