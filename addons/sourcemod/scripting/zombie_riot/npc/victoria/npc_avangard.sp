@@ -86,10 +86,24 @@ methodmap VictorianAvangard < CClotBody
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum19_peacebreaker/sum19_peacebreaker.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2022_alcoholic_automaton/hwn2022_alcoholic_automaton.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		SetVariantString("0.75");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum19_brain_interface/sum19_brain_interface.mdl");
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 100, 100, 100, 255);
+
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_armor/tw_soldierbot_armor.mdl");
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
 		
 		float flPos[3];
 		float flAng[3];
@@ -265,4 +279,6 @@ static void ClotDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 }

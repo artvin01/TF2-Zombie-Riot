@@ -603,6 +603,9 @@ void NPC_ConfigSetup()
 	VictorianMechanist_OnMapStart_NPC();
 	VictorianAvangard_MapStart();
 	VictorianWelder_OnMapStart_NPC();
+	VIctorianTanker_OnMapStart_NPC();
+	VictorianPulverizer_OnMapStart_NPC();
+	VIctorianAmbusher_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1689,3 +1692,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_welder.sp"
 #include "zombie_riot/npc/victoria/npc_mechanist.sp"
 #include "zombie_riot/npc/victoria/npc_avangard.sp"
+#include "zombie_riot/npc/victoria/npc_tanker.sp"
+#include "zombie_riot/npc/victoria/npc_pulverizer.sp"
+#include "zombie_riot/npc/victoria/npc_ambusher.sp"

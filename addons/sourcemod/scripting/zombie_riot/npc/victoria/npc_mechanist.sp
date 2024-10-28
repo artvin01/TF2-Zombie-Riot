@@ -140,20 +140,15 @@ methodmap VictorianMechanist < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_delldozer_style3/hwn2024_delldozer_style3.mdl");
-		SetVariantString("1.0");
+		
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_contaminated_carryall/hwn2024_contaminated_carryall.mdl");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
-		
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_contaminated_carryall/hwn2024_contaminated_carryall.mdl");
-		SetVariantString("1.5");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable7 = npc.EquipItem("head", "models/weapons/c_models/c_pda_engineer/c_pda_engineer.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_pda_engineer/c_pda_engineer.mdl");
 		SetVariantString("2.0");
-		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
 		return npc;
 	}

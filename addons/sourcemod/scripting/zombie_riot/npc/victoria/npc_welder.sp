@@ -133,7 +133,7 @@ methodmap VictorianWelder < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_dex_arm/c_dex_arm.mdl");
-		SetVariantString("1.5");
+		SetVariantString("2.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
