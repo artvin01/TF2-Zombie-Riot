@@ -320,7 +320,7 @@ int VIctorianTankerSelfDefense(VIctorianTanker npc, float gameTime, int target, 
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
-					npc.m_flNextMeleeAttack = gameTime + 4.0;
+					npc.m_flNextMeleeAttack = gameTime + 0.75;
 
 					if(IsValidEnemy(npc.index, target))
 					{

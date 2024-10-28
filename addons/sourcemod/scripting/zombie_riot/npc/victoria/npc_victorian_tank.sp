@@ -47,11 +47,7 @@ methodmap VictoriaTank < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;
 		npc.m_iNpcStepVariation = 0;
-
-		npc.g_TimesSummoned = 0;
-
-		if(data[0])
-			npc.g_TimesSummoned = StringToInt(data);
+        npc.m_bDissapearOnDeath = true;
 		
 	//	SetVariantInt(1);
 	//	AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -148,7 +144,7 @@ static void ClotThink(int iNPC)
 
 				npc.m_iOverlordComboAttack--;
 
-				if(npc.m_iOverlordComboAttack < 1)
+				if(npc.m_iOverlordComboAttack < 0)
 				{
 					npc.m_flAttackHappens = 0.0;
 				}
