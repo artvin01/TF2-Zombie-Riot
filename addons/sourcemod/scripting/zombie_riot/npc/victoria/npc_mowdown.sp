@@ -29,9 +29,9 @@ void VictoriaMowdown_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	PrecacheModel("models/player/heavy.mdl");
 	PrecacheSound("weapons/minigun_spin.wav");
-	PrecacheSound("weapons/minigun_shoot.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_gunfire.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Mowwdown");
+	strcopy(data.Name, sizeof(data.Name), "Mowdown");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mowdown");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy");
 	data.IconCustom = false;
@@ -95,7 +95,7 @@ methodmap VictoriaMowdown < CClotBody
 		{
 			if(this.i_GunMode != 1)
 			{
-				StopSound(this.index, SNDCHAN_STATIC, "weapons/minigun_shoot.wav");
+				StopSound(this.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunfire.wav");
 				EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
 			}
 			this.i_GunMode = 1;

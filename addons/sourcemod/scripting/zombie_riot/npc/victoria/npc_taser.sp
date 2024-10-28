@@ -56,7 +56,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	returnVictoriaTaser(client, vecPos, vecAng, ally);
 }
 
-methodmapVictoriaTaser < CClotBody
+methodmap VictoriaTaser < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
