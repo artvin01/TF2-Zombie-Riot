@@ -3,6 +3,7 @@
 
 enum struct BlockEnum
 {
+	int Store;
 	char Item[48];
 	int Space;
 
@@ -16,13 +17,13 @@ enum struct BlockEnum
 
 	int Rotate;
 	
-	void SetupEnum(KeyValues kv)
+	bool SetupEnum(KeyValues kv)
 	{
 		kv.GetSectionName(this.Item, 48);
 
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
 		if(!this.Model[0])
-			SetFailState("Missing model in plots.cfg");
+			return false;
 		
 		this.Skin = kv.GetNum("skin");
 		this.Render = kv.GetNum("render", 255);
@@ -32,6 +33,7 @@ enum struct BlockEnum
 		kv.GetVector("offset", this.Offset);
 		kv.GetString("color", this.Color, 16, "255 255 255");
 		this.Func = KvGetFunction(kv, "func");
+		return true;
 	}
 	
 	int Spawn(float pos[3], float ang[3])
@@ -171,6 +173,7 @@ enum
 }
 
 #include "rpg_fortress/plots/crafting.sp"
+#include "rpg_fortress/plots/mining.sp"
 #include "rpg_fortress/plots/misc.sp"
 #include "rpg_fortress/plots/skinswap.sp"
 
@@ -207,27 +210,35 @@ void Plots_ConfigSetup()
 	kv.GetString("zoneprefix", BlockZone, sizeof(BlockZone));
 	MaxRange = kv.GetNum("maxrange", 9);
 	BlockSize = kv.GetFloat("blocksize", 50.0);
-	
+
+	delete kv;
+}
+
+void Plots_StoreCached()
+{
 	delete BlockList;
 	BlockList = new ArrayList(sizeof(BlockEnum));
 
 	BlockEnum block;
 
-	if(kv.JumpToKey("Blocks"))
+	char buffer[64];
+	int length = TextStore_GetItems();
+	for(int i; i < length; i++)
 	{
-		if(kv.GotoFirstSubKey())
+		KeyValues kv = TextStore_GetItemKv(i);
+		if(kv && kv.GetNum("plots"))
 		{
-			do
+			kv.GetString("plugin", buffer, sizeof(buffer));
+			if(StrEqual(buffer, "rpg_fortress"))
 			{
-				block.SetupEnum(kv);
-				BlockList.PushArray(block);
+				if(block.SetupEnum(kv))
+				{
+					block.Store = i;
+					BlockList.PushArray(block);
+				}
 			}
-			while(kv.GotoNextKey());
-			kv.GoBack();
 		}
 	}
-
-	delete kv;
 }
 
 void Plots_EntityCreated(int entity)
@@ -354,7 +365,9 @@ bool Plots_ShowMenu(int client)
 			static BlockEnum block;
 			BlockList.GetArray(i, block);
 
-			int limit = TextStore_GetItemCount(owner, block.Item);
+			int limit;
+			TextStore_GetInv(owner, block.Store, limit);
+
 			if(limit > 0)
 			{
 				bool same = (page == 0 && StrEqual(block.Item, CurrentItem[client]));
@@ -737,7 +750,7 @@ static void LoadPlot(int client, int zone)
 					blocks[id]++;
 					
 					if(!cached[id])
-						count[id] = TextStore_GetItemCount(client, build.Item);
+						TextStore_GetInv(client, block.Store, count[id]);
 					
 					if(count[id] >= blocks[id])
 						BuildList.PushArray(build);
@@ -911,7 +924,7 @@ static int GetBlockSpace(int userid, int[] blocks = {}, bool countBlocks = false
 	return amount;
 }
 
-static stock bool CanInteractHere(int client)
+bool Plots_CanInteractHere(int client)
 {
 	if(InPlot[client])
 	{
