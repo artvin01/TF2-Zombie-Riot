@@ -53,7 +53,7 @@ void VictoriaTaser_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	returnVictoriaTaser(client, vecPos, vecAng, ally);
+	return VictoriaTaser(client, vecPos, vecAng, ally);
 }
 
 methodmap VictoriaTaser < CClotBody
@@ -387,17 +387,17 @@ public void VictoriaTaser_Rocket_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if (!IsInvuln(target))
 		{
-			if(NpcStats_VictorianCallToArms(npc.index))
+			if(NpcStats_VictorianCallToArms(entity))
 			{
 				if(f_HighTeslarDebuff[target] - 4.0 < GetGameTime())
 				f_HighTeslarDebuff[target] = GetGameTime() + 4.0;
-				TF2_StunPlayer(attacker, f_HighTeslarDebuff[attacker] - gameTime, 0.8, TF_STUNFLAG_SLOWDOWN);
+				TF2_StunPlayer(target, f_HighTeslarDebuff[target] - GetGameTime(), 0.8, TF_STUNFLAG_SLOWDOWN);
 			}
 			else
 			{
 				if(f_HighTeslarDebuff[target] - 3.0 < GetGameTime())
 				f_HighTeslarDebuff[target] = GetGameTime() + 3.0;	
-				TF2_StunPlayer(attacker, f_HighTeslarDebuff[attacker] - gameTime, 0.8, TF_STUNFLAG_SLOWDOWN);
+				TF2_StunPlayer(target, f_HighTeslarDebuff[target] - GetGameTime(), 0.8, TF_STUNFLAG_SLOWDOWN);
 			}
 		}
 
