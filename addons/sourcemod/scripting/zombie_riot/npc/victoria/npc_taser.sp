@@ -156,7 +156,7 @@ methodmap VictoriaTaser < CClotBody
 	}
 }
 
-public VictoriaTaser_ClotThink(int iNPC)
+public void VictoriaTaser_ClotThink(int iNPC)
 {
 	VictoriaTaser npc = view_as<VictoriaTaser>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
