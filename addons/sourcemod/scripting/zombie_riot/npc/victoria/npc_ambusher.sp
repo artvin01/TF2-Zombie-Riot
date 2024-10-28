@@ -181,12 +181,16 @@ public void VIctorianAmbusher_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
+	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
+
+	int PrimaryThreatIndex = npc.m_iTarget;
+
+
 	if(npc.m_iOverlordComboAttack <= 0)
 	{
 		if(npc.m_iChanged_WalkCycle != 6)
@@ -199,13 +203,13 @@ public void VIctorianAmbusher_ClotThink(int iNPC)
 			npc.StopPathing();
 			npc.PlayReloadSound();
             int Enemy_I_See;
-			Enemy_I_See = Can_I_See_Enemy(npc.index, m_iTarget);
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 			//Target close enough to hit
 			if(IsValidEnemy(npc.index, Enemy_I_See)) 
 			{
 				float vBackoffPos[3];
 				
-				BackoffFromOwnPositionAndAwayFromEnemy(npc, m_iTarget,_,vBackoffPos);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 				
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
 			}
