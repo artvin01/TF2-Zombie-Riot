@@ -650,7 +650,6 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 
 bool Plots_Interact(int client, int entity, int weapon)
 {
-	return false;
 	
 	if(InPlot[client] == InPlot[entity])
 	{

@@ -2112,6 +2112,7 @@ static void ShowMenu(int client, int page = 0)
 		return;
 	}
 	//Set ammo to inf!
+	
 	SetAmmo(client, 1, 9999);
 	SetAmmo(client, 2, 9999);
 	SetAmmo(client, Ammo_Metal, 9999);
@@ -2120,6 +2121,7 @@ static void ShowMenu(int client, int page = 0)
 	{
 		SetAmmo(client, i, 9999);
 	}
+	
 	MenuDelayDo[client] = GetGameTime() + 0.25;
 
 	if(!SpellList || Dungeon_MenuOverride(client))
