@@ -172,11 +172,6 @@ public void VictoriaHarbringer_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(NpcStats_VictorianCallToArms(npc.index))
-	{
-		npc.m_flSpeed *= 1.25;
-	}
-
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);

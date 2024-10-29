@@ -412,7 +412,7 @@ public Action Blocker_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		{
 			Cooltime -= 4.0;
 		}
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + Cooltime;
 		damage = 0.0;
 		npc.PlayDeflectSound();
 	}

@@ -205,10 +205,6 @@ public void VictoriaBaseBreaker_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	if(NpcStats_VictorianCallToArms(npc.index))
-	{
-		npc.m_flSpeed *= 1.25;
-	}
 	
 
 	npc.PlayIdleAlertSound();

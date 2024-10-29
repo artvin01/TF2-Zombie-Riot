@@ -264,7 +264,7 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 2.0;
 					if(NpcStats_VictorianCallToArms(npc.index))
-						damageDealt *= 1.5;
+						damageDealt *= 1.25;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
