@@ -602,8 +602,8 @@ void NPC_ConfigSetup()
 
 //wave 46~60
 	VictorianCaffeinator_OnMapStart_NPC();
-	VictorianMechanist_OnMapStart_NPC();
-	VictorianAvangard_MapStart();
+	VictorianMechanist_as_OnMapStart_NPC();
+	VictorianOfflineAvangard_MapStart();
 	VictorianWelder_OnMapStart_NPC();
 	VIctorianTanker_OnMapStart_NPC();
 	VictorianPulverizer_OnMapStart_NPC();

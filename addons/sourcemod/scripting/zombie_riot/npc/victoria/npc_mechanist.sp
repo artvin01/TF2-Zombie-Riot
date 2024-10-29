@@ -53,7 +53,7 @@ void VictorianMechanist_as_OnMapStart_NPC()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mechanist");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mechanist_builder");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mechanist");
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	strcopy(data.Icon, sizeof(data.Icon), "engineer"); 		//leaderboard_class_(insert the name)

@@ -12,7 +12,7 @@ void VictorianOfflineAvangard_MapStart()
 	PrecacheSound(g_MeleeAttackSounds);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Avangard");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_offline_avangard");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_avangard");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
 	data.IconCustom = false;
 	data.Flags = 0;
