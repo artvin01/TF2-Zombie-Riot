@@ -325,6 +325,10 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 				npc.PlayMeleeSound();
 				float RocketDamage = 500.0;
 				float RocketSpeed = 650.0;
+				if(NpcStats_VictorianCallToArms(npc.index))
+				{
+					RocketDamage *= 0.33;
+				}
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				if(npc.m_iChanged_WalkCycle == 1)
@@ -353,8 +357,13 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 				//	npc.PlayRangedSound();
 					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed);
 				}
-						
-				npc.m_flNextMeleeAttack = gameTime + 5.00;
+				
+				float RocketCooldown = 5.00;
+				if(NpcStats_VictorianCallToArms(npc.index))
+				{
+					RocketCooldown *= 0.2;
+				}
+				npc.m_flNextMeleeAttack = gameTime + RocketCooldown;
 				//Launch something to target, unsure if rocket or something else.
 				//idea:launch fake rocket with noclip or whatever that passes through all
 				//then whereever the orginal goal was, land there.

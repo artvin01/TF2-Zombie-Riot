@@ -305,15 +305,20 @@ public void VictorianPulverizer_Rocket_Particle_StartTouch(int entity, int targe
 
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
+		int BurninHell = 1;
+		if(NpcStats_VictorianCallToArms(npc.index))
+		{
+			BurninHell *= 3;
+		}
 		if(target > MaxClients)
 		{
-			StartBleedingTimer_Against_Client(target, entity, 5.0, 1);
+			StartBleedingTimer_Against_Client(target, entity, 5.0, BurninHell);
 		}
 		else
 		{
 			if (!IsInvuln(target))
 			{
-				StartBleedingTimer_Against_Client(target, entity, 5.0, 1);
+				StartBleedingTimer_Against_Client(target, entity, 5.0, BurninHell);
 				TF2_IgnitePlayer(target, target, 2.0);
 			}
 		}

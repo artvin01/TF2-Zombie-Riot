@@ -341,13 +341,19 @@ void VictorianRaiderSelfDefense(VictorianRaider npc, float gameTime)
 						npc.PlayMeleeSound();
 						//after we fire, we will have a short delay beteween the actual laser, and when it happens
 						//This will predict as its relatively easy to dodge
-						float projectile_speed = 450.0;
+						float projectile_speed = 500.0;
+						float Hitdamage = 40.0;
 
 						WorldSpaceCenter(target, vecTarget);
 
+						if(NpcStats_VictorianCallToArms(npc.index))
+						{
+							Hitdamage *= 2.0;
+						}
+
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-						npc.FireParticleRocket(vecTarget, 30.0 , projectile_speed , 150.0 , "drg_cow_rockettrail_normal_blue");
+						npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 150.0 , "drg_cow_rockettrail_normal_blue");
 						npc.PlayIdleAlertSound();
 					}
 					delete swingTrace;

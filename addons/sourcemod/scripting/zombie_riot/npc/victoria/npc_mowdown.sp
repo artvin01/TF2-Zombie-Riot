@@ -166,6 +166,12 @@ public void VictoriaMowdown_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
+	f_HeadshotDamageMultiNpc[npc.index] = 1.0;
+	if(NpcStats_VictorianCallToArms(npc.index))
+	{
+		f_HeadshotDamageMultiNpc[npc.index] = 0.0;
+	}
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -235,7 +241,8 @@ public void VictoriaMowdown_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-		
+	npc.PlayMinigunSound(false);
+
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/minigun_spin.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunfire.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/minigun_spin.wav");

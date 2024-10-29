@@ -286,6 +286,11 @@ void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTime, int
 					else
 					{
 						npc.m_iOverlordComboAttack --;
+						if(NpcStats_VictorianCallToArms(npc.index))
+						{
+							npc.m_iOverlordComboAttack --;
+							npc.m_iOverlordComboAttack --;
+						}
 					}
 	
 					if(!ShouldNpcDealBonusDamage(target))

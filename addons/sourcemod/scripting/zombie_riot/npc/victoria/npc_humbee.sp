@@ -178,14 +178,13 @@ static void ClotThink(int iNPC)
 					}
 				}
 
-				float damageDeal = 25.0;
+				float damageDeal = 15.0;
 				float ProjectileSpeed = 600.0;
 
-				if(npc.m_iOverlordComboAttack % 3)
-					ProjectileSpeed *= 1.25;
-
-				if(npc.m_iOverlordComboAttack % 2)
-					PredictSubjectPositionForProjectiles(npc, target, ProjectileSpeed, _,vecTarget);
+				if(NpcStats_VictorianCallToArms(npc.index))
+				{
+					ProjectileSpeed *= 1.5;
+				}
 
 				npc.AddActivityViaSequence("taunt_vehicle_allclass_honk");
 				npc.PlayMeleeSound();

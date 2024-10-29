@@ -208,7 +208,11 @@ public void VictoriaBigPipe_ClotThink(int iNPC)
 	{
 		if(npc.m_iChanged_WalkCycle != 6)
 		{
-			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.5;
+			if(!NpcStats_VictorianCallToArms(npc.index))
+			{
+				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
+			}
+			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.5;
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 6;
 			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY", true,_,_,0.37);

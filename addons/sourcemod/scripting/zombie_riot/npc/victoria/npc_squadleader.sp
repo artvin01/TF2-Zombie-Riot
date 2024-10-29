@@ -401,7 +401,10 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 				Handle swingTrace;
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 				{
-					npc.m_iOverlordComboAttack--;
+					if(!NpcStats_VictorianCallToArms(npc.index))
+					{
+						npc.m_iOverlordComboAttack--;
+					}
 					target = TR_GetEntityIndex(swingTrace);	
 						
 					float vecHit[3];
@@ -504,8 +507,13 @@ void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool 
 		}
 		if(buffed_anyone)
 		{
+			float bufftime = 25.0;
 			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-			npc.m_flAttackHappens_bullshit = gameTime + 25.0;
+			if(NpcStats_VictorianCallToArms(npc.index))
+			{
+				bufftime -= 10.0;
+			}
+			npc.m_flAttackHappens_bullshit = gameTime + bufftime;
 			static int r;
 			static int g;
 			static int b ;

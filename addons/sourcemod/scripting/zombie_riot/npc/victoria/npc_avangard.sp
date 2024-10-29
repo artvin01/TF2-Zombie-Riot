@@ -143,7 +143,6 @@ static void ClotThink(int iNPC)
 		if(i_AttacksTillMegahit[iNPC] <= 600)
 		{
 			EmitSoundToAll("mvm/mvm_tank_horn.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("mvm/mvm_tank_horn.wav", _, _, _, _, 1.0);
 			IncreaceEntityDamageTakenBy(npc.index, 0.000001, 1.0);
 			i_AttacksTillMegahit[iNPC] = 601;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_blackbox/c_blackbox.mdl");
@@ -197,19 +196,6 @@ static void ClotThink(int iNPC)
 			{
 				if(npc.m_flAttackHappens < gameTime)
 				{
-					if(Rogue_Paradox_RedMoon())
-					{
-						target = Can_I_See_Enemy(npc.index, target);
-						if(IsValidEnemy(npc.index, target))
-						{
-							npc.m_iTarget = target;
-							npc.m_flGetClosestTargetTime = gameTime + 0.45;
-						}
-						else
-						{
-							npc.m_flAttackHappens = 0.0;
-						}
-					}
 
 					float damageDeal = 150.0;
 					float ProjectileSpeed = 700.0;

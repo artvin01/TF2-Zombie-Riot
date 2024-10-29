@@ -172,6 +172,11 @@ public void VictoriaHarbringer_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
+	if(NpcStats_VictorianCallToArms(npc.index))
+	{
+		npc.m_flSpeed *= 1.25;
+	}
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -215,6 +220,15 @@ public Action VictoriaHarbringer_OnTakeDamage(int victim, int &attacker, int &in
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+	}
+	if(NpcStats_VictorianCallToArms(npc.index))
+	{
+		int health = ReturnEntityMaxHealth(npc.index) / 10;
+
+		if(damage > float(health))
+		{
+			damage = float(health)
+		}
 	}
 	
 	return Plugin_Changed;
@@ -281,7 +295,7 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 			{
 				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 				{	
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY",_,_,_,2.00);
 					npc.PlayMeleeSound();
 					npc.FaceTowards(vecTarget, 20000.0);
 					Handle swingTrace;

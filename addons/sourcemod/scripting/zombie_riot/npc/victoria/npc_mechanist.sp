@@ -518,6 +518,10 @@ static void Internal_ClotThink(int iNPC)
 							SetEntProp(buildingentity, Prop_Data, "m_iHealth",healthbuilding);
 						}
 						i_AttacksTillMegahit[buildingentity] += 1;
+						if(NpcStats_VictorianCallToArms(npc.index))
+						{
+							i_AttacksTillMegahit[buildingentity] += 1;
+						}
 						npc.FaceTowards(WorldSpaceVec, 15000.0);
 					}
 					else

@@ -285,12 +285,22 @@ void VictoriaAssulterSelfDefense(VictoriaAssulter npc, float gameTime)
 						if(npc.m_iOverlordComboAttack <= 0)
 						{
 							npc.m_iOverlordComboAttack = 2;
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.3;
+							float Cooldown = 0.3;
+							if(NpcStats_VictorianCallToArms(npc.index))
+							{
+								Cooldown *= 0.5;
+							}
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + Cooldown;
 						}
 						else
 						{
 							npc.m_iOverlordComboAttack --;
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1;
+							float ShorterFire = 0.1;
+							if(NpcStats_VictorianCallToArms(npc.index))
+							{
+								ShorterFire *= 0.5;
+							}
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + ShorterFire;
 						}
 
 						if(IsValidEnemy(npc.index, target))

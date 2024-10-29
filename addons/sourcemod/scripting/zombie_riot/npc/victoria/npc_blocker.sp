@@ -84,7 +84,8 @@ static const char g_MeleeMissSounds[][] = {
 };
 
 static const char g_MeleeDeflectAttack[][] = {
-	"physics/metal/metal_box_impact_bullet1.wav",
+	"weapons/rescue_ranger_charge_01.wav",
+	"weapons/rescue_ranger_charge_02.wav",
 };
 
 void Blocker_OnMapStart_NPC()
@@ -207,7 +208,6 @@ methodmap Blocker < CClotBody
 		//IDLE
 		npc.m_flSpeed = 275.0;
 		npc.m_iState = 0;
-		npc.m_fbRangedSpecialOn = true;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_iOverlordComboAttack = 3;
 		
@@ -254,12 +254,6 @@ methodmap Blocker < CClotBody
 public void Blocker_ClotThink(int iNPC)
 {
 	Blocker npc = view_as<Blocker>(iNPC);
-	
-
-	if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
-	{
-		npc.m_fbRangedSpecialOn = true;
-	}
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -412,7 +406,12 @@ public Action Blocker_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	{
 		if(IsValidEntity(npc.m_iWearable5))
 				RemoveEntity(npc.m_iWearable5);
-		npc.m_fbRangedSpecialOn = false;
+
+		float Cooltime = 7.5;
+		if(NpcStats_VictorianCallToArms(npc.index))
+		{
+			Cooltime -= 4.0;
+		}
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
 		damage = 0.0;
 		npc.PlayDeflectSound();

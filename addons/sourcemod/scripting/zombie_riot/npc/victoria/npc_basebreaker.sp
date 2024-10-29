@@ -271,7 +271,14 @@ void VictoriaBaseBreakerSelfDefense(VictoriaBaseBreaker npc, float gameTime, int
 					float damageDealt = 45.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
+					{
 						damageDealt *= 4.0;
+						if(NpcStats_VictorianCallToArms(npc.index))
+						{
+							damageDealt *= 1.5;
+						}
+					}
+						
 
 					int DamageType = DMG_CLUB;
 					

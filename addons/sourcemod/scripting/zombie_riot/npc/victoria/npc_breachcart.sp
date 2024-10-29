@@ -166,7 +166,12 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 		{
-			npc.m_flNextRangedAttack = gameTime + 5.0;
+			float Cooldown = 5.0;
+			if(NpcStats_VictorianCallToArms(npc.index))
+			{
+				Cooldown *= 0.5;
+			}
+			npc.m_flNextRangedAttack = gameTime + Cooldown;
 
 			npc.PlayMeleeSound();
 

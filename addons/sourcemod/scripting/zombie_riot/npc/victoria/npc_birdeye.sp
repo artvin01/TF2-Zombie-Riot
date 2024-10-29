@@ -436,14 +436,21 @@ int VictoriaBirdeyeSelfDefense(VictoriaBirdeye npc, float gameTime)
 					damageDealt *= 99.0;
 				
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				TF2_AddCondition(target, TFCond_MarkedForDeath, 60.0);
+				IncreaceEntityDamageTakenBy(target, 0.5, 5.0, true);
 			} 
 		}
 	}
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		npc.m_flAttackHappens = gameTime + 1.25;
+		if(NpcStats_VictorianCallToArms(npc.index))
+		{
+			npc.m_flAttackHappens = gameTime + 0.65;
+		}
+		else if(!NpcStats_VictorianCallToArms(npc.index))
+		{
+			npc.m_flAttackHappens = gameTime + 1.25;
+		}
 		npc.m_flDoingAnimation = gameTime + 0.95;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}

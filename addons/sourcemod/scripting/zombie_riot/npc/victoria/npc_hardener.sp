@@ -79,12 +79,6 @@ methodmap VictorianHardener < CClotBody
 		
 		
 	}
-
-	property float m_flArmorToGive
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
-	}
 	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -307,8 +301,14 @@ public void VictorianHardener_ClotThink(int iNPC)
 						SetEntityRenderColor(npc.m_iWearable4, 255, 215, 0, 255);
 					}
 					HealEntityGlobal(npc.index, PrimaryThreatIndex, 75.0, 1.0);
-					npc.m_flArmorToGive = 50.0;
-					GrantEntityArmor(PrimaryThreatIndex, false, 1.5, 0.75, 0, 75.0);
+					
+					float Armortogive = 75.0;
+					if(NpcStats_VictorianCallToArms(npc.index))
+					{
+						Armortogive *= 2.0;
+					}
+
+					GrantEntityArmor(PrimaryThreatIndex, false, 1.5, 0.75, 0, Armortogive);
 				}
 				else
 				{

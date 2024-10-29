@@ -326,7 +326,12 @@ void VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime)
 						WorldSpaceCenter(target, vecTarget);
 
 						npc.FaceTowards(vecTarget, 20000.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
+						float ShootFaster = 1.0;
+						if(NpcStats_VictorianCallToArms(npc.index))
+						{
+							ShootFaster *= 0.75;
+						}
+						npc.m_flNextMeleeAttack = gameTime + ShootFaster;
 						int projectile = npc.FireParticleRocket(vecTarget, 45.0 , projectile_speed , 150.0 , "raygun_projectile_blue_crit");
 						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 						npc.PlayIdleAlertSound();

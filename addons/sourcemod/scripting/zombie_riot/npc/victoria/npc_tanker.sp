@@ -117,10 +117,10 @@ methodmap VIctorianTanker < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 250.0;
+		npc.m_flSpeed = 230.0;
 		
-		npc.m_flMeleeArmor = 0.4;
-		npc.m_flRangedArmor = 0.5;
+		npc.m_flMeleeArmor = 0.9;
+		npc.m_flRangedArmor = 0.9;
 
 		
 		int skin = 1;
@@ -129,24 +129,16 @@ methodmap VIctorianTanker < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_reserve_shooter/c_reserve_shooter.mdl");
 		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_batarm/bak_batarm_heavy.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/pyro/bio_fireman.mdl");
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_hog_heels/sum23_hog_heels.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum23_hazard_handler_style1/sum23_hazard_handler_style1.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/Robo_Heavy_Chief/Robo_Heavy_Chief.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.3");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 10, 10, 10, 255);
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		
-		if(npc.g_TimesSummoned == 0)
-		{
-			npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/props_mvm/mvm_player_shield2.mdl",_,_,_,_, true);
-			SetVariantString("0.7");
-			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-			SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable6, 0, 0, 255, 255);
-		}
+		npc.m_iWearable6 = npc.EquipItemSeperate("m_vecAbsOrigin", "models/buildables/sentry_shield.mdl",_,1,1.3)
 
 		return npc;
 	}
@@ -160,27 +152,6 @@ public void VIctorianTanker_ClotThink(int iNPC)
 		return;
 	}
 
-	if(npc.g_TimesSummoned == 0)
-	{
-		if(npc.m_fbRangedSpecialOn)
-		{
-			if(!IsValidEntity(npc.m_iWearable6))
-			{
-				npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/props_mvm/mvm_player_shield2.mdl",_,_,_,-100.0);
-				AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(npc.m_iWearable6, 0, 0, 255, 255);
-			}
-			else
-			{
-				float vecTarget[3];
-				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
-				Custom_SDKCall_SetLocalOrigin(npc.m_iWearable6, vecTarget);
-			}
-		}
-	}
-
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
@@ -192,6 +163,14 @@ public void VIctorianTanker_ClotThink(int iNPC)
 			npc.FaceTowards(WorldSpaceVec, 150.0);
 		}
 	}
+
+	float TrueArmor = 1.0;
+
+	if(NpcStats_VictorianCallToArms(npc.index))
+	{
+		TrueArmor *= 0.5;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
 
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -260,10 +239,14 @@ public Action VIctorianTanker_OnTakeDamage(int victim, int &attacker, int &infli
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-	if(IsBehindAndFacingTarget(attacker, victim))
+
+	int health = ReturnEntityMaxHealth(npc.index) / 5;
+
+	if(damage > float(health))
 	{
-		damage *= 2.25;
+		damage = float(health)
 	}
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;

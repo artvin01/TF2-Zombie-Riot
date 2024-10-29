@@ -311,7 +311,12 @@ public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 		{
 			if (!IsInvuln(target))
 			{
-				StartBleedingTimer_Against_Client(target, entity, 4.0, 1);
+				int Burntime = 1;
+				if(NpcStats_VictorianCallToArms(npc.index))
+				{
+					Burntime *= 2;
+				}
+				StartBleedingTimer_Against_Client(target, entity, 4.0, Burntime);
 				TF2_IgnitePlayer(target, target, 2.0);
 			}
 		}

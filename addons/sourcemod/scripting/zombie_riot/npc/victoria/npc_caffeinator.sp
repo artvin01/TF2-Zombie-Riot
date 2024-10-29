@@ -314,6 +314,10 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 					}
 					HealEntityGlobal(npc.index, PrimaryThreatIndex, 750.0, 1.0);
 					f_CaffeinatorBuff[PrimaryThreatIndex] = GetGameTime() + 1.1;
+					if(NpcStats_VictorianCallToArms(npc.index))
+					{
+						f_HussarBuff[PrimaryThreatIndex] = GetGameTime() + 1.1;
+					}
 				}
 				else
 				{
@@ -544,6 +548,10 @@ void VictoriaCaffeinatorAOEBuff(VictorianCaffeinator npc, float gameTime)
 					{
 						//give 200 armor at most.
 						f_CaffeinatorBuff[entitycount] = GetGameTime() + 2.6;
+						if(NpcStats_VictorianCallToArms(npc.index))
+						{
+							f_BuffBannerNpcBuff[PrimaryThreatIndex] = GetGameTime() + 2.6;
+						}
 					}
 				}
 			}

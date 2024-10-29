@@ -211,7 +211,15 @@ public void Bulldozer_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	
+	float TrueArmor = 1.0;
 
+	if(NpcStats_VictorianCallToArms(npc.index))
+	{
+		TrueArmor *= 0.7;
+	}
+	fl_TotalArmor[npc.index] = TrueArmor;
+	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
