@@ -594,16 +594,16 @@ void NPC_ConfigSetup()
 	VictoriaScorcher_OnMapStart_NPC();
 	VictoriaMowdown_OnMapStart_NPC();
 	VictoriaMortar_OnMapStart_NPC();
-	VictoriaBreachcart_MapStart();
-	VictoriaBombcart_Precache();
+	//VictoriaBreachcart_MapStart();
+	//VictoriaBombcart_Precache();
 	VictoriaBigPipe_OnMapStart_NPC();
 	VictoriaHarbringer_OnMapStart_NPC();
 	VictoriaBirdeye_OnMapStart_NPC();
 
 //wave 46~60
 	VictorianCaffeinator_OnMapStart_NPC();
-	VictorianMechanist_as_OnMapStart_NPC();
-	VictorianOfflineAvangard_MapStart();
+	//VictorianMechanist_as_OnMapStart_NPC();
+	//VictorianOfflineAvangard_MapStart();
 	VictorianWelder_OnMapStart_NPC();
 	VIctorianTanker_OnMapStart_NPC();
 	VictorianPulverizer_OnMapStart_NPC();
@@ -1687,8 +1687,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_assaulter.sp"
 #include "zombie_riot/npc/victoria/npc_antiarmor_infantry.sp"
 #include "zombie_riot/npc/victoria/npc_mortar.sp"
-#include "zombie_riot/npc/victoria/npc_bombcart.sp"
-#include "zombie_riot/npc/victoria/npc_breachcart.sp"
+//#include "zombie_riot/npc/victoria/npc_bombcart.sp"
+//#include "zombie_riot/npc/victoria/npc_breachcart.sp"
 #include "zombie_riot/npc/victoria/npc_birdeye.sp"
 #include "zombie_riot/npc/victoria/npc_harbringer.sp"
 #include "zombie_riot/npc/victoria/npc_bigpipe.sp"
@@ -1696,8 +1696,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 //wave 46~60
 #include "zombie_riot/npc/victoria/npc_caffeinator.sp"
 #include "zombie_riot/npc/victoria/npc_welder.sp"
-#include "zombie_riot/npc/victoria/npc_mechanist.sp"
-#include "zombie_riot/npc/victoria/npc_avangard.sp"
+//#include "zombie_riot/npc/victoria/npc_mechanist.sp"
+//#include "zombie_riot/npc/victoria/npc_avangard.sp"
 #include "zombie_riot/npc/victoria/npc_tanker.sp"
 #include "zombie_riot/npc/victoria/npc_pulverizer.sp"
 #include "zombie_riot/npc/victoria/npc_ambusher.sp"
