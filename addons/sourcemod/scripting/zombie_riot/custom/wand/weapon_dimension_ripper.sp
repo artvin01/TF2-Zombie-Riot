@@ -88,7 +88,7 @@ public void Dimension_Cooldown_Logic(int client, int weapon)
 				}
 				else
 				{
-					PrintHintText(client,"Summon Ready");
+					PrintHintText(client,"Summon Charged");
 				}
 			}
 			else
