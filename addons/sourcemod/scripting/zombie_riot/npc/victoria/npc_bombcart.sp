@@ -14,6 +14,7 @@ static const char g_MeleeHitSounds[][] = {
 void VictoriaBombcart_Precache()
 {
 	NPCData data;
+	PrecacheModel("models/combine_apc_dynamic.mdl");
 	strcopy(data.Name, sizeof(data.Name), "Bomb Cart");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bombcart");
 	strcopy(data.Icon, sizeof(data.Icon), "demo");
@@ -49,7 +50,7 @@ methodmap VictoriaBombcart < CClotBody
 	
 	public VictoriaBombcart(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaBombcart npc = view_as<VictoriaBombcart>(CClotBody(vecPos, vecAng, NPCModel, "0.25", "750", ally));
+		VictoriaBombcart npc = view_as<VictoriaBombcart>(CClotBody(vecPos, vecAng, "models/combine_apc_dynamic.mdl", "0.25", "750", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		

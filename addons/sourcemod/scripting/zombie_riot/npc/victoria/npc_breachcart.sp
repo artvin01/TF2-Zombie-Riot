@@ -9,6 +9,7 @@ void VictoriaBreachcart_MapStart()
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_MeleeAttackSounds);
 	NPCData data;
+	PrecacheModel("models/bots/tw2/boss_bot/static_boss_tank.mdl");
 	strcopy(data.Name, sizeof(data.Name), "Breachcart");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_breachcart");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
