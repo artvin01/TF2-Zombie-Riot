@@ -30,11 +30,11 @@ methodmap VictoriaTank < CClotBody
 {
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	
 	public VictoriaTank(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -58,7 +58,7 @@ methodmap VictoriaTank < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
-		npc.m_flSpeed = 100.0;
+		npc.m_flSpeed = 90.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
@@ -79,7 +79,7 @@ static void ClotThink(int iNPC)
 {
 	VictoriaTank npc = view_as<VictoriaTank>(iNPC);
 
-    ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);
+    ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 20.0);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)

@@ -113,7 +113,7 @@ methodmap VictoriaAssulter < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
-		npc.m_iOverlordComboAttack = 3;
+		npc.m_iOverlordComboAttack = 2;
 		
 		
 		int skin = 1;
@@ -284,7 +284,7 @@ void VictoriaAssulterSelfDefense(VictoriaAssulter npc, float gameTime)
 						ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, vecHit, false );
                         if(npc.m_iOverlordComboAttack <= 0)
 						{
-							npc.m_iOverlordComboAttack = 3;
+							npc.m_iOverlordComboAttack = 2;
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.3;
 						}
 						else

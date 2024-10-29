@@ -152,6 +152,7 @@ methodmap VictoriaTaser < CClotBody
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
 		return npc;
 	}
 }

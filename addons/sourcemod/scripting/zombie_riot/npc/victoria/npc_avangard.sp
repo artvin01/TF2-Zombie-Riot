@@ -4,14 +4,15 @@
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
 static const char g_MeleeAttackSounds[] = "mvm/giant_soldier/giant_soldier_rocket_shoot.wav";
 
-void VictorianAvangard_MapStart()
+void VictorianOfflineAvangard_MapStart()
 {
+	PrecacheSound("mvm/mvm_tank_horn.wav");
 	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_MeleeAttackSounds);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Avangard");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_avangard");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_offline_avangard");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -20,13 +21,12 @@ void VictorianAvangard_MapStart()
 	NPC_Add(data);
 }
 
-
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianAvangard(client, vecPos, vecAng, ally);
+	return VictorianOfflineAvangard(client, vecPos, vecAng, ally);
 }
 
-methodmap VictorianAvangard < CClotBody
+methodmap VictorianOfflineAvangard < CClotBody
 {
 	public void PlayDeathSound() 
 	{
@@ -37,9 +37,9 @@ methodmap VictorianAvangard < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);
 	}
 	
-	public VictorianAvangard(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianOfflineAvangard(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianAvangard npc = view_as<VictorianAvangard>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "1.75", "100000", ally, _, true));
+		VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "1.75", "100000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
@@ -73,18 +73,6 @@ methodmap VictorianAvangard < CClotBody
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
-		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_blackbox/c_blackbox.mdl");
-		SetVariantString("1.5");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 100, 255);
-
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_atom_launcher/c_atom_launcher.mdl");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 100, 255);
-		SetVariantString("1.5");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2022_alcoholic_automaton/hwn2022_alcoholic_automaton.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
@@ -135,7 +123,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 static void ClotThink(int iNPC)
 {
-	VictorianAvangard npc = view_as<VictorianAvangard>(iNPC);
+	VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -148,113 +136,153 @@ static void ClotThink(int iNPC)
 		return;
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
-
-	int target = npc.m_iTarget;
-	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
-	{
-		i_Target[npc.index] = -1;
-		npc.m_flAttackHappens = 0.0;
-	}
 	
-	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
+	
+	if(i_AttacksTillMegahit[iNPC] >= 255)
 	{
-		target = GetClosestTarget(npc.index);
-		npc.m_iTarget = target;
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
-	}
-
-	if(target > 0)
-	{
-		npc.SetActivity("ACT_MP_RUN_PRIMARY");
-
-		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
-		
-		if(distance < npc.GetLeadRadius())
+		if(i_AttacksTillMegahit[iNPC] <= 600)
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
-		}
-		else 
-		{
-			NPC_SetGoalEntity(npc.index, target);
+			EmitSoundToAll("mvm/mvm_tank_horn.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("mvm/mvm_tank_horn.wav", _, _, _, _, 1.0);
+			IncreaceEntityDamageTakenBy(npc.index, 0.000001, 1.0);
+			i_AttacksTillMegahit[iNPC] = 601;
+			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_blackbox/c_blackbox.mdl");
+			SetVariantString("1.5");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 100, 255);
+
+			npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_atom_launcher/c_atom_launcher.mdl");
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 100, 100, 100, 255);
+			SetVariantString("1.5");
+			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		}
 
-		npc.StartPathing();
-		
-		if(npc.m_flAttackHappens)
+		int target = npc.m_iTarget;
+		if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
 		{
-			if(npc.m_flAttackHappens < gameTime)
+			i_Target[npc.index] = -1;
+			npc.m_flAttackHappens = 0.0;
+		}
+		
+		if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
+		{
+			target = GetClosestTarget(npc.index);
+			npc.m_iTarget = target;
+			npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		}
+
+		if(target > 0)
+		{
+			npc.SetActivity("ACT_MP_RUN_PRIMARY");
+
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
+			
+			if(distance < npc.GetLeadRadius())
 			{
-				if(Rogue_Paradox_RedMoon())
+				float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				NPC_SetGoalEntity(npc.index, target);
+			}
+
+			npc.StartPathing();
+			
+			if(npc.m_flAttackHappens)
+			{
+				if(npc.m_flAttackHappens < gameTime)
+				{
+					if(Rogue_Paradox_RedMoon())
+					{
+						target = Can_I_See_Enemy(npc.index, target);
+						if(IsValidEnemy(npc.index, target))
+						{
+							npc.m_iTarget = target;
+							npc.m_flGetClosestTargetTime = gameTime + 0.45;
+						}
+						else
+						{
+							npc.m_flAttackHappens = 0.0;
+						}
+					}
+
+					float damageDeal = 150.0;
+					float ProjectileSpeed = 700.0;
+
+					PredictSubjectPositionForProjectiles(npc, target, ProjectileSpeed, _,vecTarget);
+
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+					npc.PlayMeleeSound();
+
+					int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,"models/buildables/sentry3_rockets.mdl",_,_,60.0);
+					if(entity != -1)
+					{
+						//max duration of 4 seconds beacuse of simply how fast they fire
+						CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					}
+
+					npc.m_iOverlordComboAttack--;
+
+					if(npc.m_iOverlordComboAttack < 1)
+					{
+						npc.m_flAttackHappens = 0.0;
+					}
+					else
+					{
+						npc.m_flAttackHappens = gameTime + 0.5;
+					}
+				}
+			}
+			else if(npc.m_flNextMeleeAttack < gameTime)
+			{
+				npc.m_iOverlordComboAttack += 2;
+				npc.m_flNextMeleeAttack = gameTime + 0.45;
+				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
+
+				if(npc.m_iOverlordComboAttack > 4)
 				{
 					target = Can_I_See_Enemy(npc.index, target);
 					if(IsValidEnemy(npc.index, target))
 					{
 						npc.m_iTarget = target;
-						npc.m_flGetClosestTargetTime = gameTime + 0.45;
+						npc.m_flGetClosestTargetTime = gameTime + 2.45;
+						npc.m_flAttackHappens = gameTime + 0.5;
 					}
-					else
-					{
-						npc.m_flAttackHappens = 0.0;
-					}
-				}
-
-				float damageDeal = 150.0;
-				float ProjectileSpeed = 700.0;
-
-				PredictSubjectPositionForProjectiles(npc, target, ProjectileSpeed, _,vecTarget);
-
-				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-				npc.PlayMeleeSound();
-
-				int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,"models/buildables/sentry3_rockets.mdl",_,_,60.0);
-				if(entity != -1)
-				{
-					//max duration of 4 seconds beacuse of simply how fast they fire
-					CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-				}
-
-				npc.m_iOverlordComboAttack--;
-
-				if(npc.m_iOverlordComboAttack < 1)
-				{
-					npc.m_flAttackHappens = 0.0;
-				}
-				else
-				{
-					npc.m_flAttackHappens = gameTime + 0.5;
 				}
 			}
 		}
-		else if(npc.m_flNextMeleeAttack < gameTime)
+		else
 		{
-			npc.m_iOverlordComboAttack += 2;
-			npc.m_flNextMeleeAttack = gameTime + 0.45;
-			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-
-			if(npc.m_iOverlordComboAttack > 4)
-			{
-				target = Can_I_See_Enemy(npc.index, target);
-				if(IsValidEnemy(npc.index, target))
-				{
-					npc.m_iTarget = target;
-					npc.m_flGetClosestTargetTime = gameTime + 2.45;
-					npc.m_flAttackHappens = gameTime + 0.5;
-				}
-			}
+			npc.StopPathing();
 		}
 	}
 	else
 	{
-		npc.StopPathing();
+		bool villagerexists = false;
+		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianMechanist_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
+			{
+				villagerexists = true;
+			}
+		}
+		if(!villagerexists)
+		{
+			SmiteNpcToDeath(iNPC);
+			return;
+		}
 	}
 }
 
 static void ClotDeath(int entity)
 {
-	VictorianAvangard npc = view_as<VictorianAvangard>(entity);
+	VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(entity);
 
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
