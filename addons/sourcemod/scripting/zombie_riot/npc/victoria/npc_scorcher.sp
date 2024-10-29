@@ -312,7 +312,7 @@ public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 			if (!IsInvuln(target))
 			{
 				int Burntime = 1;
-				if(NpcStats_VictorianCallToArms(npc.index))
+				if(NpcStats_VictorianCallToArms(entity))
 				{
 					Burntime *= 2;
 				}

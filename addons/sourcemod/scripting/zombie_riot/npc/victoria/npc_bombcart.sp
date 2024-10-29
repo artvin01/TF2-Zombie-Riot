@@ -196,7 +196,7 @@ void VictoriaBombcart_NPCDeath(int entity)
 	if(NpcStats_VictorianCallToArms(npc.index))
 	{
 		Explode_Logic_Custom(75.0, -1, npc.index, -1, startPosition, 150.0, _, _, true, _, false, 1.0);
-		ParticleEffectAt(EnemyVecPos, "rd_robot_explosion_smoke_linger", 2.0);
+		ParticleEffectAt(startPosition, "rd_robot_explosion_smoke_linger", 2.0);
 		npc.PlayMeleeHitSound();
 	}	
 }

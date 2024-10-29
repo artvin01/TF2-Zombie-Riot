@@ -227,7 +227,7 @@ public Action VictoriaHarbringer_OnTakeDamage(int victim, int &attacker, int &in
 
 		if(damage > float(health))
 		{
-			damage = float(health)
+			damage = float(health);
 		}
 	}
 	

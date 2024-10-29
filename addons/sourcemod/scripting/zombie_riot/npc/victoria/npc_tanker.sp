@@ -138,7 +138,7 @@ methodmap VIctorianTanker < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		
-		npc.m_iWearable6 = npc.EquipItemSeperate("m_vecAbsOrigin", "models/buildables/sentry_shield.mdl",_,1,1.3)
+		npc.m_iWearable6 = npc.EquipItemSeperate("m_vecAbsOrigin", "models/buildables/sentry_shield.mdl",_,1,1.3);
 
 		return npc;
 	}
@@ -244,7 +244,7 @@ public Action VIctorianTanker_OnTakeDamage(int victim, int &attacker, int &infli
 
 	if(damage > float(health))
 	{
-		damage = float(health)
+		damage = float(health);
 	}
 
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))

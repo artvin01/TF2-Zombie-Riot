@@ -306,7 +306,7 @@ public void VictorianPulverizer_Rocket_Particle_StartTouch(int entity, int targe
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		int BurninHell = 1;
-		if(NpcStats_VictorianCallToArms(npc.index))
+		if(NpcStats_VictorianCallToArms(owner))
 		{
 			BurninHell *= 3;
 		}
