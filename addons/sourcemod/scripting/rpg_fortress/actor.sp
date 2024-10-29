@@ -8,8 +8,8 @@ static char CurrentChat[MAXTF2PLAYERS][128];
 static char CurrentNPC[MAXTF2PLAYERS][128];
 static int CurrentRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static bool b_NpcHasQuestForPlayer[MAXENTITIES][MAXTF2PLAYERS];
-static int b_ParticleToOwner[MAXENTITIES];
-static int b_OwnerToParticle[MAXENTITIES];
+//static int b_ParticleToOwner[MAXENTITIES];
+//static int b_OwnerToParticle[MAXENTITIES];
 
 void Actor_ConfigSetup()
 {
@@ -121,6 +121,7 @@ void Actor_EnterZone(int client, const char[] name)
 	while(ActorKv.GotoNextKey());
 }
 
+/*
 static Action QuestIndicatorTransmit(int entity, int client)
 {
 //	return Plugin_Handled;
@@ -138,6 +139,7 @@ static Action QuestIndicatorTransmit(int entity, int client)
 	}
 	return Plugin_Continue;
 }
+*/
 
 void Actor_DisableZone(const char[] name)
 {
@@ -152,11 +154,13 @@ void Actor_DisableZone(const char[] name)
 			int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
 			if(entity != INVALID_ENT_REFERENCE)
 			{
+				/*
 				int particle = EntRefToEntIndex(b_OwnerToParticle[entity]);
 				if(IsValidEntity(particle))
 				{
 					RemoveEntity(particle);
 				}
+				*/
 				int brush = EntRefToEntIndex(b_OwnerToBrush[entity]);
 				if(IsValidEntity(brush))
 				{

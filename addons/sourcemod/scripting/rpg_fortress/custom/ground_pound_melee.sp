@@ -20,9 +20,6 @@ static float f_OriginalDamage[MAXTF2PLAYERS];
 static bool b_GroundPoundHit[MAXTF2PLAYERS][MAXENTITIES];
 
 
-#define spirite "spirites/zerogxplode.spr"
-
-#define EarthStyleShockwaveRange 250.0
 void GroundSlam_Map_Precache()
 {
 	PrecacheSound("ambient/explosions/explode_3.wav", true);

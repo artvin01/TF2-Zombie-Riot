@@ -27,9 +27,6 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
@@ -392,9 +389,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
 				SetEntityCollisionGroup(entity_death, 2);
 
-				CreateTimer(2.0, Timer_RemoveEntity_SelectedFew, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(2.7, Timer_RemoveEntity_SelectedFew, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(2.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(2.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
 				SetVariantString("forcescanner");
 				AcceptEntityInput(entity_death, "SetAnimation");
 			}
@@ -656,7 +653,6 @@ public Action Timer_RemoveEntity_SelectedFew(Handle timer, any entid)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", abspos);
 			abspos[2] += 45.0;
 			float Range = 100.0;
-			float Time = 0.35;
 			float DamageDeal = 350000.0;
 			Explode_Logic_Custom(DamageDeal, Owner, Owner, -1, abspos, Range);
 			EmitSoundToAll("ambient/explosions/explode_4.wav", -1, _, 80, _, _, _, _,abspos);
