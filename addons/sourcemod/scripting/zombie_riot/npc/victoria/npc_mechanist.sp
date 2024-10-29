@@ -644,7 +644,7 @@ static void Internal_ClotThink(int iNPC)
 
 				//Timeout
 				//npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
-				int spawn_index = NPC_CreateByName("npc_offline_avangard", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+				int spawn_index = NPC_CreateByName("npc_avangard", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					int health = ReturnEntityMaxHealth(npc.index) * 5;

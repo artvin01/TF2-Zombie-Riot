@@ -80,15 +80,18 @@ methodmap VictoriaBreachcart < CClotBody
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/w_models/w_bat.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sum20_hazard_headgear/sum20_hazard_headgear.mdl");
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		if(npc.g_TimesSummoned == 0)
 		{
 			npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/bots/tw2/boss_bot/static_boss_tank.mdl");
-			SetVariantString("0.35");
+			SetVariantString("0.3");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		}
 
 		return npc;
+
 	}
 }
 
@@ -105,7 +108,7 @@ static void ClotThink(int iNPC)
 			if(!IsValidEntity(npc.m_iWearable2))
 			{
 				npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/bots/tw2/boss_bot/static_boss_tank.mdl");
-				SetVariantString("0.35");
+				SetVariantString("0.3");
 				AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			}
 			else
@@ -145,6 +148,22 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
+		
+		if(distance < npc.GetLeadRadius())
+		{
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else 
+		{
+			NPC_SetGoalEntity(npc.index, target);
+		}
+
+		npc.StartPathing();
+
 		if(npc.m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 		{
 			npc.m_flNextRangedAttack = gameTime + 5.0;

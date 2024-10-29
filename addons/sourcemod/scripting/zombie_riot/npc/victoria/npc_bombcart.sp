@@ -14,6 +14,8 @@ static const char g_MeleeHitSounds[][] = {
 void VictoriaBombcart_Precache()
 {
 	NPCData data;
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheModel("models/combine_apc_dynamic.mdl");
 	strcopy(data.Name, sizeof(data.Name), "Bomb Cart");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bombcart");
@@ -71,7 +73,7 @@ methodmap VictoriaBombcart < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		
-		npc.m_iWearable1 = npc.EquipItemSeperate("m_vecAbsOrigin", "models/workshop/player/items/demo/sum22_head_banger/sum22_head_banger.mdl",_,1,1.75,-30.0);
+		npc.m_iWearable1 = npc.EquipItemSeperate("m_vecAbsOrigin", "models/workshop/player/items/demo/sum22_head_banger/sum22_head_banger.mdl",_,1,1.75,-120.0);
 
 		return npc;
 	}

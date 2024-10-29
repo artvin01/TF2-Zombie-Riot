@@ -61,8 +61,6 @@ methodmap VictoriaTank < CClotBody
 		npc.m_flSpeed = 90.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_iOverlordComboAttack = 0;
-		npc.m_flAttackHappens = 0.0;
 
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 0.7;
@@ -125,51 +123,21 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 		
-		if(npc.m_flAttackHappens)
+		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			if(npc.m_flAttackHappens < gameTime)
+
+			float damageDeal = 600.0;
+			float ProjectileSpeed = 1200.0;
+
+			npc.PlayMeleeSound();
+
+			int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,45.0);
+			if(entity != -1)
 			{
-
-				float damageDeal = 600.0;
-				float ProjectileSpeed = 1200.0;
-
-				npc.PlayMeleeSound();
-
-				int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,45.0);
-				if(entity != -1)
-				{
-					//max duration of 4 seconds beacuse of simply how fast they fire
-					CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-				}
-
-				npc.m_iOverlordComboAttack--;
-
-				if(npc.m_iOverlordComboAttack < 0)
-				{
-					npc.m_flAttackHappens = 0.0;
-				}
-				else
-				{
-					npc.m_flAttackHappens = gameTime + 0.15;
-				}
+				//max duration of 4 seconds beacuse of simply how fast they fire
+				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			}
-		}
-		else if(npc.m_flNextMeleeAttack < gameTime)
-		{
-			npc.m_iOverlordComboAttack += 1;
-			npc.m_flNextMeleeAttack = gameTime + 0.45;
-			//npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-
-			if(npc.m_iOverlordComboAttack > 1)
-			{
-				target = Can_I_See_Enemy(npc.index, target);
-				if(IsValidEnemy(npc.index, target))
-				{
-					npc.m_iTarget = target;
-					npc.m_flGetClosestTargetTime = gameTime + 2.45;
-					npc.m_flAttackHappens = gameTime + 3.00;
-				}
-			}
+			npc.m_flNextMeleeAttack = gameTime + 3.00;
 		}
 	}
 	else
