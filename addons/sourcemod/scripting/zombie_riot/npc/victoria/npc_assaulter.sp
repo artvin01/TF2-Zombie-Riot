@@ -61,7 +61,7 @@ methodmap VictoriaAssulter < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
-	
+
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -72,12 +72,12 @@ methodmap VictoriaAssulter < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
-	
+
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
+
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -154,7 +154,7 @@ public void VictoriaAssulter_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -166,11 +166,11 @@ public void VictoriaAssulter_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
+
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
@@ -205,19 +205,19 @@ public Action VictoriaAssulter_OnTakeDamage(int victim, int &attacker, int &infl
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
-	return Plugin_Changed;
-}
 
-public void VictoriaAssulter_NPCDeath(int entity)
-{
+	return Plugin_Changed;
+	}
+
+	public void VictoriaAssulter_NPCDeath(int entity)
+	{
 	VictoriaAssulter npc = view_as<VictoriaAssulter>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 		
-	
+
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -282,7 +282,7 @@ void VictoriaAssulterSelfDefense(VictoriaAssulter npc, float gameTime)
 						float origin[3], angles[3];
 						view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 						ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, vecHit, false );
-                        if(npc.m_iOverlordComboAttack <= 0)
+						if(npc.m_iOverlordComboAttack <= 0)
 						{
 							npc.m_iOverlordComboAttack = 2;
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.3;

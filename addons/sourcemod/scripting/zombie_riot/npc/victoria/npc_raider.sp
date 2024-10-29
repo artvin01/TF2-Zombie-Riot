@@ -164,7 +164,7 @@ methodmap VictorianRaider < CClotBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 50, 150, 150, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-        SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);

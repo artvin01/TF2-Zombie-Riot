@@ -33,7 +33,7 @@ methodmap VictoriaTank < CClotBody
 		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
- 	{
+	{
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	
@@ -47,7 +47,7 @@ methodmap VictoriaTank < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;
 		npc.m_iNpcStepVariation = 0;
-        npc.m_bDissapearOnDeath = true;
+		npc.m_bDissapearOnDeath = true;
 		
 	//	SetVariantInt(1);
 	//	AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -79,7 +79,7 @@ static void ClotThink(int iNPC)
 {
 	VictoriaTank npc = view_as<VictoriaTank>(iNPC);
 
-    ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 20.0);
+	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 20.0);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)

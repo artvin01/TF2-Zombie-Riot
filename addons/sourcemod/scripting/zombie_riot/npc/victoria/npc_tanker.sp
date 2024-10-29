@@ -139,7 +139,7 @@ methodmap VIctorianTanker < CClotBody
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 10, 10, 10, 255);
 		
-        if(npc.g_TimesSummoned == 0)
+		if(npc.g_TimesSummoned == 0)
 		{
 			npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/props_mvm/mvm_player_shield2.mdl",_,_,_,_, true);
 			SetVariantString("0.7");
@@ -160,7 +160,7 @@ public void VIctorianTanker_ClotThink(int iNPC)
 		return;
 	}
 
-    if(npc.g_TimesSummoned == 0)
+	if(npc.g_TimesSummoned == 0)
 	{
 		if(npc.m_fbRangedSpecialOn)
 		{

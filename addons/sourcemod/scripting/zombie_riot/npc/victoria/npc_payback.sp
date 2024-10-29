@@ -137,7 +137,7 @@ methodmap VictorianPayback < CClotBody
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-        npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_heavy_harness/fall17_heavy_harness.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_heavy_harness/fall17_heavy_harness.mdl");
 		SetVariantString("0.9");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
@@ -260,7 +260,7 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 40.0;
-                    damageDealt *=  (1.0+(1-(Health/MaxHealth))*4);
+					damageDealt *=  (1.0+(1-(Health/MaxHealth))*4);
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 2.0;
 
