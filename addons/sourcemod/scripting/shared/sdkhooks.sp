@@ -1670,9 +1670,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 #endif
+#if defined RPG
 	//dmg bonus before everything!
+	//this is only for zr! RPG handles it som
 	if(attacker > 0 && attacker <= MAXENTITIES)
 		damage *= fl_Extra_Damage[attacker];
+#endif
 #if defined RPG
 	if(attacker <= MaxClients)
 	{

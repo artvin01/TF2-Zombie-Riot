@@ -1321,8 +1321,20 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 				value = GetRandomFloat(forge.Low, forge.High);
 			}
 		}
+		
+		int compress = RoundFloat(value * 100.0);
 
-		weapon.Value[weapon.ForgeCount++] = value;
+		if(fails < 29)
+		{
+			if((compress == 0 && forge.Type == 2) ||
+				(compress == 100 && forge.Type != 2))
+			{
+				fails++;
+				continue;
+			}
+		}
+		
+		weapon.Value[weapon.ForgeCount++] = compress / 100.0;
 
 		if(weapon.ForgeCount > 1 && GetURandomInt() % 2)
 			break;

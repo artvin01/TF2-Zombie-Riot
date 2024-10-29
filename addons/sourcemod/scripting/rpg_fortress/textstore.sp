@@ -216,6 +216,7 @@ enum struct SpellEnum
 	Function Func;
 	float Cooldown;
 	int Store;
+	bool Skill;
 }
 
 enum struct MarketEnum
@@ -255,6 +256,7 @@ static int MarketItem[MAXTF2PLAYERS];
 static int MarketCount[MAXTF2PLAYERS];
 static int MarketSell[MAXTF2PLAYERS];
 static int SkillRand[MAXTF2PLAYERS];
+static bool SkillType[MAXTF2PLAYERS];
 
 static void SaveMarket(int client)
 {
@@ -513,6 +515,7 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 		spell.Owner = client;
 		spell.Store = index;
 		spell.Active = false;
+		spell.Skill = item.GetNum("skill");
 		strcopy(spell.Name, 64, name);
 		
 		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
@@ -2148,7 +2151,6 @@ static void ShowMenu(int client, int page = 0)
 		{
 			Menu menu = new Menu(TextStore_SpellMenu);
 
-			char TitleChar[64];
 			char LVLBuffer[64];
 			IntToString(Level[client],LVLBuffer, sizeof(LVLBuffer));
 			ThousandString(LVLBuffer, sizeof(LVLBuffer));
@@ -2156,10 +2158,9 @@ static void ShowMenu(int client, int page = 0)
 			char c_Powerlevel[255];
 			Format(c_Powerlevel, sizeof(c_Powerlevel), "%.0f", Powerlevel);
 			ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
-			Format(TitleChar, sizeof(TitleChar), "RPG Fortress%s\nPower: %s\nLVL: %s\n \nSkills:", CvarRPGInfiniteLevelAndAmmo.BoolValue ? " DEBUG" : "", c_Powerlevel,LVLBuffer);
-			menu.SetTitle("%s",TitleChar);
+			menu.SetTitle("RPG Fortress%s\nPower: %s\nLVL: %s\n \n%s (F):", CvarRPGInfiniteLevelAndAmmo.BoolValue ? " DEBUG" : "", c_Powerlevel,LVLBuffer, SkillType[client] ? "Skills" : "Items");
 
-			static const int MaxSkills = 6;
+			int maxSkills = SkillType[client] ? 6 : 4;
 
 			int amount;
 			float gameTime = GetGameTime();
@@ -2168,7 +2169,7 @@ static void ShowMenu(int client, int page = 0)
 			{
 				static SpellEnum spell;
 				SpellList.GetArray(i, spell);
-				if(spell.Active && spell.Owner == client)
+				if(spell.Active && spell.Owner == client && spell.Skill == SkillType[client])
 				{
 					static char index[12];
 					IntToString(spell.Store, index, sizeof(index));
@@ -2176,7 +2177,7 @@ static void ShowMenu(int client, int page = 0)
 					int cooldown = RoundToCeil(spell.Cooldown - gameTime);
 					if(!spell.Display[0] || cooldown > 999)
 					{
-						if(amount < MaxSkills)
+						if(amount < maxSkills)
 						{
 							amount++;
 							menu.AddItem(index, spell.Display, ITEMDRAW_DISABLED);
@@ -2187,7 +2188,7 @@ static void ShowMenu(int client, int page = 0)
 					if(cooldown > 0)
 						Format(spell.Display, sizeof(spell.Display), "%s [%ds]", spell.Display, cooldown);
 					
-					if(++amount > MaxSkills)
+					if(++amount > maxSkills)
 					{
 						menu.InsertItem((SkillRand[client] + i) % amount, index, spell.Display);
 					}
@@ -2198,14 +2199,19 @@ static void ShowMenu(int client, int page = 0)
 				}
 			}
 
-			for(; amount < MaxSkills; amount++)
+			for(; amount < maxSkills; amount++)
 			{
 				menu.AddItem("0", "");
 			}
 
-			for(; amount > MaxSkills; amount--)
+			for(; amount > maxSkills; amount--)
 			{
 				menu.RemoveItem(amount);
+			}
+
+			for(; amount < 6; amount++)
+			{
+				menu.AddItem("0", "", ITEMDRAW_SPACER);
 			}
 
 			//menu.AddItem("-3", "Main Menu", ITEMDRAW_SPACER);
@@ -2386,7 +2392,7 @@ static int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 			InMenu[client] = false;
 
 			if(choice == MenuCancel_Exit)
-				TextStore_Inspect(client);
+				TextStore_SwapMenu(client);
 		}
 		case MenuAction_Select:
 		{
@@ -2453,7 +2459,7 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 			InMenu[client] = false;
 
 			if(choice == MenuCancel_Exit)
-				TextStore_Inspect(client);
+				TextStore_SwapMenu(client);
 		}
 		case MenuAction_Select:
 		{
@@ -2551,7 +2557,7 @@ static int TextStore_TransformMenu(Menu menu, MenuAction action, int client, int
 			InMenu[client] = false;
 
 			if(choice == MenuCancel_Exit)
-				TextStore_Inspect(client);
+				TextStore_SwapMenu(client);
 		}
 		case MenuAction_Select:
 		{
@@ -2574,6 +2580,12 @@ void TextStore_OpenSpecificMenu(int client, int type)
 
 void TextStore_Inspect(int client)
 {
+	SkillType[client] = !SkillType[client];
+	TextStore_OpenSpecificMenu(client, MENU_SPELLS);
+}
+
+void TextStore_SwapMenu(int client)
+{
 	switch(MenuType[client])
 	{
 		case MENU_SPELLS:
@@ -2592,12 +2604,7 @@ void TextStore_Inspect(int client)
 		{
 			TextStore_OpenSpecificMenu(client, MENU_SPELLS);
 		}
-		case MENU_QUESTBOOK:
-		{
-			FakeClientCommandEx(client, "sm_store");
-			RefreshAt[client] = 1.0;
-		}
-		case MENU_BUILDING:
+		case MENU_QUESTBOOK, MENU_BUILDING:
 		{
 			FakeClientCommandEx(client, "sm_store");
 			TextStore_OpenSpecificMenu(client, MENU_SPELLS);

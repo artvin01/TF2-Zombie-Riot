@@ -64,10 +64,38 @@ enum struct MealEnum
 	}
 }
 
+static StringMap LevelBalance;
 static ArrayList MealList;
 static int CurrentMeal[MAXTF2PLAYERS] = {-1, ...};
 static int CurrentChoice[MAXTF2PLAYERS] = {-1, ...};
+static int CurrentLevelBuff[MAXTF2PLAYERS];
 static int CurrentFood[MAXTF2PLAYERS][16];
+
+void Cooking_ConfigSetup()
+{
+	char buffer[PLATFORM_MAX_PATH];
+	RPG_BuildPath(buffer, sizeof(buffer), "cooking");
+	KeyValues kv = new KeyValues("Cooking");
+	kv.ImportFromFile(buffer);
+	
+	delete LevelBalance;
+	
+	if(kv.JumpToKey("LevelAdjust"))
+	{
+		LevelBalance = new StringMap();
+
+		char buffer2[16];
+		kv.GotoFirstSubKey(false);
+		do
+		{
+			kv.GetSectionName(buffer2, sizeof(buffer2));
+			LevelBalance.SetValue(buffer2, kv.GetFloat(NULL_STRING));
+		}
+		while(kv.GotoNextKey(false));
+	}
+
+	delete kv;
+}
 
 void Cooking_StoreCached()
 {
@@ -137,18 +165,28 @@ static void CookingMenu(int client)
 			if(kv)
 			{
 				int type = kv.GetNum("foodtype", -1);
-				if(type >= 0 && (type >= Food_MAX || meal.Bonuses[type] > 0.0))
+				if(CurrentChoice[client] == meals.Foods)
 				{
-					TextStore_GetInv(client, i, type);
-					if(type)
-					{
-						IntToString(i, num, sizeof(num));
-						TextStore_GetItemName(i, buffer, sizeof(buffer));
-						menu.AddItem(num, buffer);
-					}
+					if(meal.Extra != type)
+						continue;
+				}
+				else if(type < 0 || (type < Food_MAX && meal.Bonuses[type] <= 0.0))
+				{
+					continue;
+				}
+
+				TextStore_GetInv(client, i, type);
+				if(type)
+				{
+					IntToString(i, num, sizeof(num));
+					TextStore_GetItemName(i, buffer, sizeof(buffer));
+					menu.AddItem(num, buffer);
 				}
 			}
 		}
+
+		if(!menu.ItemCount)
+			menu.AddItem("-1", "No Foods", ITEMDRAW_DISABLED);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -159,6 +197,12 @@ static void CookingMenu(int client)
 
 		Menu menu = new Menu(SelectChoice);
 		menu.SetTitle("RPG Fortress\n \nCooking: %s\n ", CurrentMeal[client]);
+
+		if(LevelBalance)
+		{
+			Format(buffer, sizeof(buffer), "Level: %d", meal.Level + CurrentLevelBuff[client]);
+			menu.AddItem("-1", buffer);
+		}
 
 		bool failed;
 
@@ -173,7 +217,7 @@ static void CookingMenu(int client)
 				Format(buffer, sizeof(buffer), "%s (Required)", meal.Required);
 			}
 
-			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
+			menu.AddItem("-1", buffer, ITEMDRAW_DISABLED);
 
 			failed = TextStore_GetItemCount(client, meal.Required) < meal.RequireAmount;
 		}
@@ -194,9 +238,23 @@ static void CookingMenu(int client)
 			}
 		}
 
+		if(meal.Extra != -1)
+		{
+			if(CurrentFood[client][meal.Foods])
+			{
+				TextStore_GetItemName(CurrentFood[client][meal.Foods], buffer, sizeof(buffer));
+				StrCat(buffer, sizeof(buffer), " (Extra)")
+				menu.AddItem(num, buffer);
+			}
+			else
+			{
+				menu.AddItem(num, "X (Extra)");
+			}
+		}
+
 		if(failed)
 		{
-			menu.AddItem(NULL_STRING, "Craft Food", ITEMDRAW_DISABLED);
+			menu.AddItem("-1", "Craft Food", ITEMDRAW_DISABLED);
 		}
 		else
 		{
@@ -262,6 +320,7 @@ static int SelectChoice(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Cancel:
 		{
 			CurrentMeal[client] = -1;
+			CurrentLevelBuff[client] = 0;
 
 			for(int i; i < sizeof(CurrentFood[]); i++)
 			{
@@ -282,6 +341,25 @@ static int SelectChoice(Menu menu, MenuAction action, int client, int choice)
 			else
 			{
 				CurrentChoice[client] = StringToInt(num);
+				if(CurrentChoice[client] == -1)
+				{
+					MealEnum meal;
+					MealList.GetArray(CurrentMeal[client], meal);
+
+					if(CurrentLevelBuff[client] == 0)
+					{
+						CurrentLevelBuff[client] = (Level[client] - meal.Level) / 2500 * 2500;
+						if(CurrentLevelBuff[client] < 2500)
+							CurrentLevelBuff[client] = 2500;
+					}
+					else
+					{
+						CurrentLevelBuff[client] -= 2500;
+						if(CurrentLevelBuff[client] < 0)
+							CurrentLevelBuff[client] = 0;
+					}
+				}
+
 				CookingMenu(client);
 			}
 		}
@@ -308,6 +386,7 @@ static int SelectFood(Menu menu, MenuAction action, int client, int choice)
 			else
 			{
 				CurrentMeal[client] = -1;
+				CurrentLevelBuff[client] = 0;
 
 				for(int i; i < sizeof(CurrentFood[]); i++)
 				{
@@ -320,6 +399,12 @@ static int SelectFood(Menu menu, MenuAction action, int client, int choice)
 			char num[16];
 			menu.GetItem(choice, num, sizeof(num));
 			CurrentFood[client][CurrentChoice[client]] = StringToInt(num);
+		
+			for(int i; i <= meal.Foods; i++)
+			{
+				if(CurrentChoice[client] != i && CurrentFood[client][i] == CurrentFood[client][CurrentChoice[client]])
+					CurrentFood[client][i] = 0;
+			}
 
 			CurrentChoice[client] = -1;
 			CookingMenu(client);
@@ -333,5 +418,60 @@ static void CookProduct(int client)
 	MealEnum meal;
 	MealList.GetArray(CurrentMeal[client], meal);
 
-	
+	int level = meal.Level;
+	float globalBuff = 1.0;
+
+	if(LevelBalance)
+	{
+		level += CurrentLevelBuff[client];
+
+		int lowLv = -1;
+		int highLv = 1999999999;
+		float lowBuff = 1.0;
+		float highBuff = 1.0;
+		
+		StringMapSnapshot snap = LevelBalance.Snapshot();
+		
+		int length = snap.Length;
+		for(int i; i < length; i++)
+		{
+			int size = snap.KeyBufferSize(i) + 1;
+			char[] name = new char[size];
+			snap.GetKey(i, name, size);
+			
+			int lv = StringToInt(name);
+
+			if(lv > lowLv && lv < level)
+			{
+				lowLv = lv;
+				LevelBalance.GetValue(name, lowBuff);
+			}
+			else if(lv < highLv && lv > level)
+			{
+				highLv = lv;
+				LevelBalance.GetValue(name, highBuff);
+			}
+		}
+
+		delete snap;
+
+		globalBuff = lowBuff + (((level - lowKv) / (highLv - lowLv)) * (highBuff - lowBuff));
+	}
+
+	for(int i; i <= meal.Foods; i++)
+	{
+		if(CurrentFood[client][i])
+		{
+			KeyValues kv = TextStore_GetItemKv(CurrentFood[client][i]);
+			if(kv)
+			{
+				
+			}
+		}
+	}
+
+	if(meal.Required[0] && meal.RequireAmount > 0)
+	{
+		TextStore_AddItemCount(client, meal.Required, -meal.RequireAmount);
+	}
 }

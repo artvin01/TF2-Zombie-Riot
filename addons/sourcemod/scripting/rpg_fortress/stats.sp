@@ -109,13 +109,20 @@ void Stats_GiveXP(int client, int xp, int quest = 0)
 				SPrintToChat(client, "You are unable to gain XP from Chaos Surgance's untill you spend your XP.");
 			}
 		}
-		int CalculatedXP;
-		CalculatedXP = XP[client] + XPToGive;
-		if(CalculatedXP <= XPToGive || CalculatedXP >= 2000000000)
+		if(xp > 0)
 		{
-			XP[client] = 2000000000;
-			SPrintToChat(client, "You hit the MAX XP cap, spend your XP.");
-			//we did an overflow. set to 2billion.
+			int CalculatedXP;
+			CalculatedXP = XP[client] + XPToGive;
+			if(CalculatedXP <= XPToGive || CalculatedXP >= 2000000000)
+			{
+				XP[client] = 2000000000;
+				SPrintToChat(client, "You hit the MAX XP cap, spend your XP.");
+				//we did an overflow. set to 2billion.
+			}
+			else
+			{
+				XP[client] += XPToGive;
+			}
 		}
 		else
 		{
@@ -124,24 +131,31 @@ void Stats_GiveXP(int client, int xp, int quest = 0)
 	}
 	else
 	{
-		int CalculatedXP;
-		XPToGive = RoundToNearest(xp);
-		CalculatedXP = XP[client] + XPToGive;
-		if(CalculatedXP <= XPToGive || CalculatedXP >= 2000000000)
+		if(xp > 0)
 		{
-			XP[client] = 2000000000;
-			SPrintToChat(client, "You hit the MAX XP cap, spend your XP.");
-			//we did an overflow. set to 2billion.
+			int CalculatedXP;
+			XPToGive = RoundToNearest(xp);
+			CalculatedXP = XP[client] + XPToGive;
+			if(CalculatedXP <= XPToGive || CalculatedXP >= 2000000000)
+			{
+				XP[client] = 2000000000;
+				SPrintToChat(client, "You hit the MAX XP cap, spend your XP.");
+				//we did an overflow. set to 2billion.
+			}
+			else
+			{
+				XP[client] += XPToGive;
+			}
 		}
 		else
 		{
-			XP[client] += XPToGive;
+			XP[client] += xp;
 		}
 	}
 
 	if(XP[client] > SaveIn[client])
 	{
-		SaveClientStats(client);
+		Stats_SaveClientStats(client);
 		SaveIn[client] = BaseUpgradeCost + (Level[client] * BaseUpgradeScale);
 	}
 	else
@@ -158,7 +172,7 @@ float AgilityMulti(int amount)
 	return 3.73333*Pow(amount + 16.0, -0.475);
 }
 
-static void SaveClientStats(int client)
+void Stats_SaveClientStats(int client)
 {
 	KeyValues kv = Saves_Kv("stats");
 
@@ -414,7 +428,7 @@ void Stats_SetCurrentFormMastery(int client, float mastery)
 			mastery = form.Mastery;
 		}
 		Mastery[client].SetValue(form.Name, mastery);
-		SaveClientStats(client);
+		Stats_SaveClientStats(client);
 	}
 }
 /*
@@ -424,7 +438,7 @@ void Stats_SetFormMastery(int client, const char[] name, float mastery)
 		Mastery[client] = new StringMap();
 	
 	Mastery[client].SetValue(name, mastery);
-	SaveClientStats(client);
+	Stats_SaveClientStats(client);
 }
 */
 bool Stats_GetHasKill(int client, const char[] name)
@@ -461,7 +475,7 @@ void Stats_ReskillEverything(int client)
 	StatCapacity[client] = 0;
 	ReskillPoints[client] += stats;
 
-	SaveClientStats(client);
+	Stats_SaveClientStats(client);
 	FakeClientCommandEx(client, "rpg_stats");
 }
 
@@ -1038,7 +1052,7 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 
 			ClientCommand(client, "playgamesound ui/mm_medal_click.wav");
 			UpdateLevelAbovePlayerText(client);
-			SaveClientStats(client);
+			Stats_SaveClientStats(client);
 			Stats_ShowStats(client, 0);
 		}
 	}

@@ -524,7 +524,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 		{
 			npc.m_iState = 2;
 		}
-		else if(b_thisNpcIsABoss[npc.index] && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.8) && npc.m_flKickUpCD < gameTime)
+		else if(b_thisNpcIsABoss[npc.index] && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.65) && npc.m_flKickUpCD < gameTime)
 		{
 			npc.m_iState = 4; //Engage in Close Range Destruction.
 		}
@@ -612,7 +612,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flKickUpHappening = gameTime + 0.15;
+					npc.m_flKickUpHappening = gameTime + 0.1;
 					npc.m_flDoingAnimation = gameTime + 0.35;
 					npc.m_flKickUpCD = gameTime + 4.0;
 					if(npc.m_iChanged_WalkCycle != 8) 	
@@ -757,6 +757,8 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 }
 
 

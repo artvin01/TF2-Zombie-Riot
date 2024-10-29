@@ -343,12 +343,7 @@ bool Crafting_Interact(int client, int entity)
 				return false;
 			}
 
-			if(CurrentMenu[client])
-			{
-				delete CurrentMenu[client];
-				CancelClientMenu(client);
-			}
-			
+			delete CurrentMenu[client];
 			CurrentMenu[client] = craft.List;
 			CurrentPrint[client] = -1;
 			CraftMenu(client);
@@ -361,12 +356,7 @@ bool Crafting_Interact(int client, int entity)
 
 void Crafting_SetCustomMenu(int client, ArrayList list)
 {
-	if(CurrentMenu[client])
-	{
-		delete CurrentMenu[client];
-		CancelClientMenu(client);
-	}
-	
+	delete CurrentMenu[client];
 	CurrentMenu[client] = list;
 	CurrentPrint[client] = -1;
 	CraftMenu(client);
@@ -491,10 +481,6 @@ static int SelectBlueprint(Menu menu, MenuAction action, int client, int choice)
 		{
 			delete menu;
 		}
-		case MenuAction_Cancel:
-		{
-			delete CurrentMenu[client];
-		}
 		case MenuAction_Select:
 		{
 			CurrentPrint[client] = choice;
@@ -519,10 +505,6 @@ static int SelectRecipe(Menu menu, MenuAction action, int client, int choice)
 			if(choice == MenuCancel_ExitBack)
 			{
 				CraftMenu(client);
-			}
-			else
-			{
-				delete CurrentMenu[client];
 			}
 		}
 		case MenuAction_Select:
@@ -553,7 +535,6 @@ static int CraftRecipe(Menu menu, MenuAction action, int client, int choice)
 			else
 			{
 				CurrentPrint[client] = -1;
-				delete CurrentMenu[client];
 			}
 		}
 		case MenuAction_Select:

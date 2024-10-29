@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#include <adt_trie_sort>
+
 #define QUEUE_TIME	60.0
 
 static const char RoundRetryWin[][] =
@@ -101,6 +103,7 @@ enum struct WaveEnum
 	float ExtraSpeed;
 	float ExtraDamage;
 	char CustomName[64];
+	char Data[512];
 
 	void SetupEnum(KeyValues kv, char[] buffer, int length)
 	{
@@ -123,6 +126,7 @@ enum struct WaveEnum
 		this.ExtraSpeed = kv.GetFloat("extra_speed", 1.0);
 		this.ExtraDamage = kv.GetFloat("extra_damage", 1.0);
 		kv.GetString("custom_name", this.CustomName, sizeof(this.CustomName));
+		kv.GetString("data", this.Data, sizeof(this.Data));
 	}
 }
 
@@ -134,6 +138,8 @@ enum struct StageEnum
 	int Level;
 	int MaxLevel;
 	int MaxPlayers;
+	int MinRisk;
+	char Quest[64];
 
 	char DropName1[48];
 	float DropChance1;
@@ -201,6 +207,9 @@ enum struct StageEnum
 		this.Level = kv.GetNum("level");
 		this.MaxLevel = kv.GetNum("maxlevel", this.Level * 21 / 20);
 		this.MaxPlayers = kv.GetNum("maxplayers", 10);
+		this.MinRisk = kv.GetNum("minrisk", -1);
+
+		kv.GetString("quest", this.Quest, 64);
 
 		kv.GetString("drop_name_1", this.DropName1, 48);
 		this.DropChance1 = kv.GetFloat("drop_chance_1", 1.0);
@@ -243,6 +252,7 @@ enum struct StageEnum
 		this.MusicEasyVolume = kv.GetFloat("music_easy_volume", 1.0);
 		int download = kv.GetNum("music_easy_download");
 		kv.GetString("music_easy_desc", this.MusicEasyDesc, PLATFORM_MAX_PATH);
+		this.MusicEasyCustom = false;
 
 		if(this.MusicEasy[0])
 		{
@@ -263,6 +273,7 @@ enum struct StageEnum
 		download = kv.GetNum("music_hard_download");
 		this.MusicTier = kv.GetNum("music_hard_cap", 99999);
 		kv.GetString("music_hard_desc", this.MusicHardDesc, PLATFORM_MAX_PATH);
+		this.MusicHardCustom = false;
 
 		if(this.MusicHard[0])
 		{
@@ -681,7 +692,7 @@ void Dungeon_DeleteChar(const char[] id)
 
 int Dungeon_GetClientRank(int client, const char[] name, const char[] stage)
 {
-	int rank;
+	int rank = -1;
 
 	KeyValues kv = Saves_Kv("dungeon");
 	if(kv.JumpToKey(name) && kv.JumpToKey(stage))
@@ -794,11 +805,18 @@ static void ShowMenu(int client, int page)
 			{
 				time = -time;
 
-				ArrayList slots = new ArrayList ();
-				int tier = dungeon.TierLevel(slots);
-				menu.SetTitle("RPG Fortress\n \nChaos Surgence:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, tier, time / 60, time % 60);
-
 				dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage));
+
+				ArrayList slots = new ArrayList();
+				int tier = dungeon.TierLevel(slots);
+				if(tier < stage.MinRisk)
+				{
+					menu.SetTitle("RPG Fortress\n \nChaos Surgence:\n%s △%d\nRequires △%d to Start\n ", dungeon.CurrentStage, tier, stage.MinRisk);
+				}
+				else
+				{
+					menu.SetTitle("RPG Fortress\n \nChaos Surgence:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, tier, time / 60, time % 60);
+				}
 
 				if(AltMenu[client] ==  2)
 				{
@@ -998,7 +1016,7 @@ static void ShowMenu(int client, int page)
 				menu.SetTitle("RPG Fortress\n \nChaos Surgence:\nYour Party Leader is %N", leader);
 			}
 
-			StringMapSnapshot snap = dungeon.StageList.Snapshot();
+			SortedSnapshot snap = CreateSortedSnapshot(dungeon.StageList);
 
 			int length = snap.Length;
 			for(int i; i < length; i++)
@@ -1009,8 +1027,11 @@ static void ShowMenu(int client, int page)
 
 				if(dungeon.StageList.GetArray(name, stage, sizeof(stage)))
 				{
-					Format(stage.MusicEasy, sizeof(stage.MusicEasy), "%s (Level %d)", name, stage.Level);
-					menu.AddItem(name, stage.MusicEasy, (stage.Level > LowestLevel(client) || client != leader) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					if(!stage.Quest[0] || Quests_GetStatus(client, stage.Quest) == Status_Completed)
+					{
+						Format(stage.MusicEasy, sizeof(stage.MusicEasy), "%s (Level %d)", name, stage.Level);
+						menu.AddItem(name, stage.MusicEasy, (stage.Level > LowestLevel(client) || client != leader) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					}
 				}
 			}
 
@@ -1562,7 +1583,7 @@ public Action Dungeon_Timer(Handle timer)
 							if(ang[1] < 0.0)
 								ang[1] = GetURandomFloat() * 360.0;
 
-							entity = NPC_CreateById(wave.Index, 0, wave.Pos, ang, false);
+							entity = NPC_CreateById(wave.Index, 0, wave.Pos, ang, false, wave.Data);
 							if(entity != -1)
 							{
 								Level[entity] = wave.Level;
@@ -1648,42 +1669,66 @@ public Action Dungeon_Timer(Handle timer)
 				int time = RoundToCeil(dungeon.StartTime - GetGameTime());
 				if(time > 0)
 				{
-					if(time > 30)
+					static StageEnum stage;
+					if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
 					{
-						static StageEnum stage;
-						if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
+						int tier = dungeon.TierLevel(null);
+						if(tier < stage.MinRisk)
 						{
-							if(b_IsAloneOnServer || StageSlotsLeft(name, stage) < 1)
+							dungeon.StartTime = GetGameTime() + QUEUE_TIME;
+							DungeonList.SetArray(name, dungeon, sizeof(dungeon));
+
+							for(int client = 1; client <= MaxClients; client++)
 							{
-								time = stage.ModList ? 30 : 5;
-								dungeon.StartTime = GetGameTime() + time;
-								dungeon.LastSoundTime = -1;
+								if(StrEqual(InDungeon[client], name))
+								{
+									SetHudTextParams(-1.0, 0.08, 0.3, 200, 69, 0, 200);
+									ShowSyncHudText(client, SyncHud, "Waiting...\n%s △%d", dungeon.CurrentStage, tier);
+								}
 							}
 						}
-					}
-
-					for(int client = 1; client <= MaxClients; client++)
-					{
-						if(StrEqual(InDungeon[client], name))
+						else
 						{
-							if(dungeon.LastSoundTime != time)
+							if(time > 30)
 							{
-								switch(time)
+								if(StageSlotsLeft(name, stage) < 1)
 								{
-									case 30, 20, 10, 5, 4, 3, 2, 1:
-										ClientCommand(client, "playgamesound vo/announcer_begins_%dsec.mp3", time);
+									time = stage.ModList ? 10 : 5;
+									dungeon.StartTime = GetGameTime() + time;
+									dungeon.LastSoundTime = -1;
+								}
+								else if(b_IsAloneOnServer)
+								{
+									time = stage.ModList ? 30 : 5;
+									dungeon.StartTime = GetGameTime() + time;
+									dungeon.LastSoundTime = -1;
 								}
 							}
 
-							SetHudTextParams(-1.0, 0.08, 0.3, 200, 69, 0, 200);
-							ShowSyncHudText(client, SyncHud, "%d:%02d\n%s △%d", time / 60, time % 60, dungeon.CurrentStage, dungeon.TierLevel(null));
-						}
-					}
+							for(int client = 1; client <= MaxClients; client++)
+							{
+								if(StrEqual(InDungeon[client], name))
+								{
+									if(dungeon.LastSoundTime != time)
+									{
+										switch(time)
+										{
+											case 30, 20, 10, 5, 4, 3, 2, 1:
+												ClientCommand(client, "playgamesound vo/announcer_begins_%dsec.mp3", time);
+										}
+									}
 
-					if(dungeon.LastSoundTime != time)
-					{
-						dungeon.LastSoundTime = time;
-						DungeonList.SetArray(name, dungeon, sizeof(dungeon));
+									SetHudTextParams(-1.0, 0.08, 0.3, 200, 69, 0, 200);
+									ShowSyncHudText(client, SyncHud, "%d:%02d\n%s △%d", time / 60, time % 60, dungeon.CurrentStage, tier);
+								}
+							}
+
+							if(dungeon.LastSoundTime != time)
+							{
+								dungeon.LastSoundTime = time;
+								DungeonList.SetArray(name, dungeon, sizeof(dungeon));
+							}
+						}
 					}
 				}
 				else
@@ -2116,4 +2161,143 @@ public void Dungeon_Spawn_SecondGiant(ArrayList list)
 		wave.CustomName = "Copied W.F. Giant Man";
 	}
 	list.PushArray(wave);
+}
+
+public void Dungeon_Expidonsa_ScaleLevel_10000(int entity)
+{
+	int health = ReturnEntityMaxHealth(entity);
+	health = RoundToNearest(float(health) * 2.0);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+	fl_Extra_Damage[entity] *= 2.0;
+	i_HpRegenInBattle[entity] *= 4;
+	fl_Extra_Speed[entity] *= 1.1;
+
+	// Strip "!"
+	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
+	
+	// Add " 10k"
+	StrCat(c_NpcName[entity], sizeof(c_NpcName[]), " 10k");
+
+	// Add "!"
+	if(found)
+		StrCat(c_NpcName[entity], sizeof(c_NpcName[]), "!");
+}
+
+public void Dungeon_Expidonsa_ScaleLevel_15000(int entity)
+{
+	int health = ReturnEntityMaxHealth(entity);
+	health = RoundToNearest(float(health) * 5.0);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+	fl_Extra_Damage[entity] *= 4.0;
+	i_HpRegenInBattle[entity] *= 10;
+	fl_Extra_Speed[entity] *= 1.125;
+	
+	// Strip "!"
+	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
+	
+	// Add " 10k"
+	StrCat(c_NpcName[entity], sizeof(c_NpcName[]), " 15k");
+
+	// Add "!"
+	if(found)
+		StrCat(c_NpcName[entity], sizeof(c_NpcName[]), "!");
+}
+
+public void Dungeon_Expidonsa_ScaleLevel_20000(int entity)
+{
+	int health = ReturnEntityMaxHealth(entity);
+	health = RoundToNearest(float(health) * 8.0);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+	fl_Extra_Damage[entity] *= 6.0;
+	i_HpRegenInBattle[entity] *= 20;
+	fl_Extra_Speed[entity] *= 1.175;	
+	// Strip "!"
+	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
+	
+	// Add " 10k"
+	StrCat(c_NpcName[entity], sizeof(c_NpcName[]), " 20k");
+
+	// Add "!"
+	if(found)
+		StrCat(c_NpcName[entity], sizeof(c_NpcName[]), "!");
+}
+public void Dungeon_Expidonsa_ScaleLevel_25000(int entity)
+{
+	int health = ReturnEntityMaxHealth(entity);
+	health = RoundToNearest(float(health) * 10.0);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+	fl_Extra_Damage[entity] *= 8.0;
+	i_HpRegenInBattle[entity] *= 28;
+	fl_Extra_Speed[entity] *= 1.2;	
+	// Strip "!"
+	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
+	
+	// Add " 10k"
+	StrCat(c_NpcName[entity], sizeof(c_NpcName[]), " 25k");
+
+	// Add "!"
+	if(found)
+		StrCat(c_NpcName[entity], sizeof(c_NpcName[]), "!");
+}
+
+public void Dungeon_Expidonsa_ScaleLevel_30000(int entity)
+{
+	int health = ReturnEntityMaxHealth(entity);
+	health = RoundToNearest(float(health) * 13.0);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+	fl_Extra_Damage[entity] *= 10.0;
+	i_HpRegenInBattle[entity] *= 38;
+	fl_Extra_Speed[entity] *= 1.22;	
+	// Strip "!"
+	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
+	
+	// Add " 10k"
+	StrCat(c_NpcName[entity], sizeof(c_NpcName[]), " 30k");
+
+	// Add "!"
+	if(found)
+		StrCat(c_NpcName[entity], sizeof(c_NpcName[]), "!");
+}
+public void Dungeon_Expidonsa_ScaleLevel_35000(int entity)
+{
+	int health = ReturnEntityMaxHealth(entity);
+	health = RoundToNearest(float(health) * 15.0);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+	fl_Extra_Damage[entity] *= 12.0;
+	i_HpRegenInBattle[entity] *= 50;
+	fl_Extra_Speed[entity] *= 1.25;	
+	// Strip "!"
+	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
+	
+	// Add " 10k"
+	StrCat(c_NpcName[entity], sizeof(c_NpcName[]), " 35k");
+
+	// Add "!"
+	if(found)
+		StrCat(c_NpcName[entity], sizeof(c_NpcName[]), "!");
+}
+public void Dungeon_Expidonsa_ScaleLevel_40000(int entity)
+{
+	int health = ReturnEntityMaxHealth(entity);
+	health = RoundToNearest(float(health) * 18.0);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+	fl_Extra_Damage[entity] *= 14.0;
+	i_HpRegenInBattle[entity] *= 70;
+	fl_Extra_Speed[entity] *= 1.3;	
+	// Strip "!"
+	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
+	
+	// Add " 10k"
+	StrCat(c_NpcName[entity], sizeof(c_NpcName[]), " 40k");
+
+	// Add "!"
+	if(found)
+		StrCat(c_NpcName[entity], sizeof(c_NpcName[]), "!");
 }

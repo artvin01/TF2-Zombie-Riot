@@ -1295,10 +1295,12 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 		if(fl_TotalArmor[victim] > 1.0)
 			damage *= fl_TotalArmor[victim];
 	}
+#if defined ZR
 	if(!trueArmorOnly)
 	{
 		damage *= fl_Extra_Damage[attacker];
 	}
+#endif
 }
 
 #if defined ZR
@@ -1845,29 +1847,33 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	{
 		damage += basedamage * (0.35 * DamageBuffExtraScaling);
 	}
-#if defined ZR	
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
+#if defined ZR	
 		if(IsZombieFrozen(victim))
 			damage += basedamage * (0.30 * DamageBuffExtraScaling);
 		else
+#endif
 			damage += basedamage * (0.15 * DamageBuffExtraScaling);
 	}
 	else if(f_LowIceDebuff[victim] > GameTime)
 	{
+#if defined ZR	
 		if(IsZombieFrozen(victim))
 			damage += basedamage * (0.20 * DamageBuffExtraScaling);
 		else
+#endif
 			damage += basedamage * (0.10 * DamageBuffExtraScaling);
 	}
 	else if(f_VeryLowIceDebuff[victim] > GameTime)
 	{
+#if defined ZR	
 		if(IsZombieFrozen(victim))
 			damage += basedamage * (0.10 * DamageBuffExtraScaling);
 		else
+#endif
 			damage += basedamage * (0.05 * DamageBuffExtraScaling);
 	}
-#endif
 	if(f_BuildingAntiRaid[victim] > GameTime)
 	{
 		damage += basedamage * ((DMG_ANTI_RAID - 1.0)* DamageBuffExtraScaling);
