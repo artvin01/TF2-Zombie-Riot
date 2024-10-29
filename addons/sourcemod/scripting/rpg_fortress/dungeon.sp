@@ -361,7 +361,6 @@ enum struct StageEnum
 			Format(name, sizeof(name), "%d Credits", this.Cash * (10 + tier) / 10);
 			return 1.0;
 		}
-		
 		float multi = (1.0 + (float(tier - required) * 0.1)) * chance * (float(300 + luck) / 300.0);
 		if(multi > 1.0)
 			multi = 1.0;

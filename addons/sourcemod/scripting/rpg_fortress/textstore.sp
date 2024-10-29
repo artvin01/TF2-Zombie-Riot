@@ -684,6 +684,9 @@ bool TextStore_IsValidName(const char[] name)
 	
 	if(StrEqual(name, ITEM_XP, false))
 		return true;
+
+	if(StrEqual(name, ITEM_MASTERY, false))
+		return true;
 	
 	int length = TextStore_GetItems();
 	for(int i; i < length; i++)
@@ -704,6 +707,7 @@ int TextStore_GetItemCount(int client, const char[] name)
 	
 	if(StrEqual(name, ITEM_XP, false))
 		return XP[client];
+
 	
 	int amount = -1;
 	
@@ -747,6 +751,13 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 			else
 				RPGTextstore_XpToChat(client, xp);
 		}
+	}
+	else if(StrEqual(name, ITEM_MASTERY, false))
+	{
+		float MasteryCurrent = Stats_GetCurrentFormMastery(client);
+		MasteryCurrent += float(amount);
+		SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",float(amount));
+		Stats_SetCurrentFormMastery(client, MasteryCurrent);
 	}
 	else
 	{

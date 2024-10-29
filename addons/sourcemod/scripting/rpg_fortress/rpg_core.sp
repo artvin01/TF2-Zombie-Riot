@@ -3,6 +3,7 @@
 
 #define ITEM_CASH	"Credits"
 #define ITEM_XP		"XP"
+#define ITEM_MASTERY	"Form Mastery"
 #define MIN_FADE_DISTANCE 3000.0
 #define MAX_FADE_DISTANCE 3700.0
 

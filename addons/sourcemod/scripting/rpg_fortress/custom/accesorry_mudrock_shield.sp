@@ -5,6 +5,7 @@ static int TrueStrengthShieldCounter[MAXPLAYERS+1] = {0, ...};
 
 static bool BobsPureRage[MAXPLAYERS+1] = {false, ...};
 static bool BobsPocketPhone[MAXPLAYERS+1] = {false, ...};
+static bool FlowerItem[MAXPLAYERS+1] = {false, ...};
 
 public void TrueStrengthShieldUnequip(int client)
 {
@@ -12,6 +13,7 @@ public void TrueStrengthShieldUnequip(int client)
 	TrueStrengthShield[client] = false;
 	BobsPureRage[client] = false;
 	BobsPocketPhone[client] = false;
+	FlowerItem[client] = false;
 	TF2_RemoveCondition(client, TFCond_UberFireResist);
 
 	if (TrueStrengthShieldHandle[client] != INVALID_HANDLE)
@@ -199,4 +201,16 @@ public void RPG_PocketPhone(int client, int weapon, int index)
 bool BobsPhoneReduceCooldown(int client)
 {
 	return BobsPocketPhone[client];
+}
+public void FlowerCooldownReduction(int client, int weapon, int index)
+{
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		FlowerItem[client] = true;
+	}
+}
+bool FlowerReduceCooldown(int client)
+{
+	return FlowerItem[client];
 }
