@@ -342,6 +342,7 @@ float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
 float f_AntiStuckPhaseThrough[MAXTF2PLAYERS];
 float f_MultiDamageTaken[MAXENTITIES];
 float f_MultiDamageTaken_Flat[MAXENTITIES];
+float f_MultiDamageDealt[MAXENTITIES];
 float f_ExtraOffsetNpcHudAbove[MAXENTITIES];
 int i_OwnerEntityEnvLaser[MAXENTITIES];
 int TeamNumber[MAXENTITIES];
@@ -2172,6 +2173,7 @@ public void OnClientPutInServer(int client)
 #endif
 	f_MultiDamageTaken[client] = 1.0;
 	f_MultiDamageTaken_Flat[client] = 1.0;
+	f_MultiDamageDealt[client] = 1.0;
 	
 #if defined ZR
 	f_TutorialUpdateStep[client] = 0.0;
@@ -2980,6 +2982,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		LastHitRef[entity] = -1;
 		f_MultiDamageTaken[entity] = 1.0;
 		f_MultiDamageTaken_Flat[entity] = 1.0;
+		f_MultiDamageDealt[entity] = 1.0;
 		DamageBits[entity] = -1;
 		Damage[entity] = 0.0;
 		LastHitWeaponRef[entity] = -1;

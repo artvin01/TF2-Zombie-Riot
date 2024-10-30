@@ -90,6 +90,7 @@ Cookie HudSettingsExtra_Cookies;
 
 #include "rpg_fortress/races.sp"
 #include "rpg_fortress/actor.sp"
+#include "rpg_fortress/cooking.sp"
 #include "rpg_fortress/crafting.sp"
 #include "rpg_fortress/dungeon.sp"
 #include "rpg_fortress/editor.sp"
@@ -329,6 +330,7 @@ void RPG_ConfigSetup()
 {
 	Zones_ConfigSetup();
 	Actor_ConfigSetup();
+	Cooking_ConfigSetup();
 	Crafting_ConfigSetup();
 	Dungeon_ConfigSetup();
 	Fishing_ConfigSetup();

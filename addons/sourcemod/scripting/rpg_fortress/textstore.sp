@@ -288,6 +288,7 @@ static void HashCheck()
 				RPG_PluginEnd();
 				Tinker_ResetAll();
 				Plots_StoreCached();
+				Cooking_StoreCached();
 
 				for(int client = 1; client <= MaxClients; client++)
 				{
@@ -515,7 +516,7 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 		spell.Owner = client;
 		spell.Store = index;
 		spell.Active = false;
-		spell.Skill = item.GetNum("skill");
+		spell.Skill = view_as<bool>(item.GetNum("skill"));
 		strcopy(spell.Name, 64, name);
 		
 		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
@@ -584,7 +585,14 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 			}
 			else if(item < 0)
 			{
-				Tinker_DescItem(item, desc);
+				if(Cooking_IsCookItem(kv))
+				{
+					Cooking_DescItem(item, kv, desc);
+				}
+				else
+				{
+					Tinker_DescItem(item, desc);
+				}
 			}
 			else
 			{

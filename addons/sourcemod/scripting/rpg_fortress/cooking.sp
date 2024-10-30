@@ -1,6 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
-
+/*
 static const char FoodType[][] =
 {
 	"Meat",
@@ -13,7 +13,7 @@ static const char FoodType[][] =
 	"Sweet",
 	"Seafood"
 };
-
+*/
 enum
 {
 	Food_Meat = 0,
@@ -26,7 +26,7 @@ enum
 	Food_Sweet = 7,
 	Food_Seafood = 8,
 
-	Food_MAX = 15
+	Food_MAX = 16
 }
 
 enum struct MealEnum
@@ -131,16 +131,6 @@ void Cooking_StoreCached()
 	}
 }
 
-public float Cooking_UseFunction(int client, int index, char name[48])
-{
-	KeyValues kv = TextStore_GetItemKv(index);
-	if(kv)
-	{
-		return GetGameTime() + 5.0;
-	}
-	return FAR_FUTURE;
-}
-
 void Cooking_OpenMenu(int client)
 {
 	CookingMenu(client);
@@ -165,7 +155,7 @@ static void CookingMenu(int client)
 			if(kv)
 			{
 				int type = kv.GetNum("foodtype", -1);
-				if(CurrentChoice[client] == meals.Foods)
+				if(CurrentChoice[client] == meal.Foods)
 				{
 					if(meal.Extra != type)
 						continue;
@@ -240,10 +230,12 @@ static void CookingMenu(int client)
 
 		if(meal.Extra != -1)
 		{
+			IntToString(meal.Foods, num, sizeof(num));
+
 			if(CurrentFood[client][meal.Foods])
 			{
 				TextStore_GetItemName(CurrentFood[client][meal.Foods], buffer, sizeof(buffer));
-				StrCat(buffer, sizeof(buffer), " (Extra)")
+				StrCat(buffer, sizeof(buffer), " (Extra)");
 				menu.AddItem(num, buffer);
 			}
 			else
@@ -254,11 +246,11 @@ static void CookingMenu(int client)
 
 		if(failed)
 		{
-			menu.AddItem("-1", "Craft Food", ITEMDRAW_DISABLED);
+			menu.AddItem("-1", "Create Meal", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			menu.AddItem("F", "Craft Food");
+			menu.AddItem("F", "Create Meal");
 		}
 
 		menu.ExitBackButton = true;
@@ -400,7 +392,7 @@ static int SelectFood(Menu menu, MenuAction action, int client, int choice)
 			menu.GetItem(choice, num, sizeof(num));
 			CurrentFood[client][CurrentChoice[client]] = StringToInt(num);
 		
-			for(int i; i <= meal.Foods; i++)
+			for(int i; i < sizeof(CurrentFood[]); i++)
 			{
 				if(CurrentChoice[client] != i && CurrentFood[client][i] == CurrentFood[client][CurrentChoice[client]])
 					CurrentFood[client][i] = 0;
@@ -419,9 +411,9 @@ static void CookProduct(int client)
 	MealList.GetArray(CurrentMeal[client], meal);
 
 	int level = meal.Level;
-	float globalBuff = 1.0;
+	float multi = 1.0;
 
-	if(LevelBalance)
+	if(LevelBalance && CurrentLevelBuff[client])
 	{
 		level += CurrentLevelBuff[client];
 
@@ -453,10 +445,53 @@ static void CookProduct(int client)
 			}
 		}
 
-		delete snap;
+		// New Level Multi
+		multi = lowBuff + (((level - lowLv) / (highLv - lowLv)) * (highBuff - lowBuff));
 
-		globalBuff = lowBuff + (((level - lowKv) / (highLv - lowLv)) * (highBuff - lowBuff));
+		lowLv = -1;
+		highLv = 1999999999;
+		lowBuff = 1.0;
+		highBuff = 1.0;
+		
+		for(int i; i < length; i++)
+		{
+			int size = snap.KeyBufferSize(i) + 1;
+			char[] name = new char[size];
+			snap.GetKey(i, name, size);
+			
+			int lv = StringToInt(name);
+
+			if(lv > lowLv && lv < meal.Level)
+			{
+				lowLv = lv;
+				LevelBalance.GetValue(name, lowBuff);
+			}
+			else if(lv < highLv && lv > meal.Level)
+			{
+				highLv = lv;
+				LevelBalance.GetValue(name, highBuff);
+			}
+		}
+
+		// Old Level Multi
+		multi /= lowBuff + (((meal.Level - lowLv) / (highLv - lowLv)) * (highBuff - lowBuff));
 	}
+
+	char buffer[32];
+	StringMap map = new StringMap();
+
+	map.SetValue("uses", float(meal.Uses));
+
+	if(multi != 1.0)
+	{
+		map.SetValue("healing", multi);
+		map.SetValue("stamina", multi);
+		map.SetValue("energy", multi);
+	}
+
+	char name[256], short[48], good[128], bad[128];
+	strcopy(name, sizeof(name), meal.Item);
+	strcopy(short, sizeof(short), meal.Item);
 
 	for(int i; i <= meal.Foods; i++)
 	{
@@ -465,7 +500,80 @@ static void CookProduct(int client)
 			KeyValues kv = TextStore_GetItemKv(CurrentFood[client][i]);
 			if(kv)
 			{
+				kv.GetSectionName(buffer, sizeof(buffer));
+				Format(name, sizeof(name), "%s %s", buffer, name);
+				Format(short, sizeof(short), "%s. %s", buffer[0], short);
 				
+				int type = i == meal.Foods ? (Food_MAX-1) : kv.GetNum("foodtype");
+
+				if(meal.Bonuses[type] > 1.0)
+				{
+					if(StrContains(good, " and ") != -1)
+					{
+						
+					}
+					else if(good[0])
+					{
+						Format(good, sizeof(good), "%s and %s", good, buffer);
+					}
+					else
+					{
+						strcopy(good, sizeof(good), buffer);
+					}
+				}
+				else if(meal.Bonuses[type] < 1.0)
+				{
+					if(StrContains(bad, " and ") != -1)
+					{
+						
+					}
+					else if(bad[0])
+					{
+						Format(bad, sizeof(bad), "%s and %s", bad, buffer);
+					}
+					else
+					{
+						strcopy(bad, sizeof(bad), buffer);
+					}
+				}
+
+				if(kv.GotoFirstSubKey(false))
+				{
+					do
+					{
+						kv.GetSectionName(buffer, sizeof(buffer));
+						if(!StrContains(buffer, "food_", false))
+						{
+							multi = 1.0;
+							map.GetValue(buffer, multi);
+							multi *= 1.0 + ((kv.GetFloat(NULL_STRING, 1.0) - 1.0) * meal.Bonuses[type]);
+							map.SetValue(buffer, multi);
+						}
+					}
+					while(kv.GotoNextKey(false));
+				}
+
+				TextStore_GetInv(client, CurrentFood[client][i], type);
+				TextStore_SetInv(client, CurrentFood[client][i], type - 1);
+
+				/*
+				healing *= MuKv(kv, "foodhealing", meal.Bonuses[type]);
+				stamina *= MuKv(kv, "foodstamina", meal.Bonuses[type]);
+				energy *= MuKv(kv, "foodenergy", meal.Bonuses[type]);
+				duration *= MuKv(kv, "foodduration", meal.Bonuses[type]);
+				usage *= MuKv(kv, "foodusage", meal.Bonuses[type]);
+				resist *= MuKv(kv, "foodresist", meal.Bonuses[type]);
+				damage *= MuKv(kv, "fooddamage", meal.Bonuses[type]);
+				strength *= MuKv(kv, "foodstrength", meal.Bonuses[type]);
+				precision *= MuKv(kv, "foodprecision", meal.Bonuses[type]);
+				artifice *= MuKv(kv, "foodartifice", meal.Bonuses[type]);
+				endurnace *= MuKv(kv, "foodendurnace", meal.Bonuses[type]);
+				structure *= MuKv(kv, "foodstructure", meal.Bonuses[type]);
+				intelligence *= MuKv(kv, "foodintelligence", meal.Bonuses[type]);
+				capacity *= MuKv(kv, "foodcapacity", meal.Bonuses[type]);
+				agility *= MuKv(kv, "foodagility", meal.Bonuses[type]);
+				luck *= MuKv(kv, "foodluck", meal.Bonuses[type]);
+				*/
 			}
 		}
 	}
@@ -474,4 +582,308 @@ static void CookProduct(int client)
 	{
 		TextStore_AddItemCount(client, meal.Required, -meal.RequireAmount);
 	}
+
+	char data[512];
+
+	StringMapSnapshot snap = map.Snapshot();
+
+	int length = snap.Length;
+	for(int i; i < length; i++)
+	{
+		snap.GetKey(i, buffer, sizeof(buffer));
+		map.GetValue(buffer, multi);
+
+		if(i)
+		{
+			Format(data, sizeof(data), "%s:%s:%.2f", data, buffer, multi);
+		}
+		else
+		{
+			Format(data, sizeof(data), "%s:%.2f", buffer, multi);
+		}
+	}
+
+	delete map;
+
+	int index = TextStore_CreateUniqueItem(client, meal.Store, data, strlen(name) > 46 ? short : name);
+	TextStore_UseItem(client, index, false);
+
+	SPrintToChat(client, "You prepared a %s%s", STORE_COLOR2, name);
+
+	if(good[0] && bad[0])
+	{
+		if(CurrentFood[client][meal.Foods])
+		{
+			TextStore_GetItemName(CurrentFood[client][meal.Foods], buffer, sizeof(buffer));
+			SPrintToChat(client, "The %s%s%s you added worked really good, the %s%s%s doesn't work as good but the %s%s%s seemed to help.",
+				STORE_COLOR2, good, STORE_COLOR, STORE_COLOR2, bad, STORE_COLOR, STORE_COLOR2, buffer, STORE_COLOR);
+		}
+		else
+		{
+			SPrintToChat(client, "The %s%s%s you added worked really good but the %s%s%s doesn't work as good.",
+				STORE_COLOR2, good, STORE_COLOR, STORE_COLOR2, bad, STORE_COLOR);
+		}
+	}
+	else if(good[0])
+	{
+		if(CurrentFood[client][meal.Foods])
+		{
+			TextStore_GetItemName(CurrentFood[client][meal.Foods], buffer, sizeof(buffer));
+			SPrintToChat(client, "The %s%s%s you added worked really good with this meal and even some %s%s%s.",
+				STORE_COLOR2, good, STORE_COLOR, STORE_COLOR2, buffer, STORE_COLOR);
+		}
+		else
+		{
+			SPrintToChat(client, "The %s%s%s you added worked really good with this meal.",
+				STORE_COLOR2, good, STORE_COLOR);
+		}
+	}
+	else if(bad[0])
+	{
+		if(CurrentFood[client][meal.Foods])
+		{
+			SPrintToChat(client, "The %s%s%s doesn't work as good with this but the %s%s%s seemed to help.",
+				STORE_COLOR2, bad, STORE_COLOR, STORE_COLOR2, buffer, STORE_COLOR);
+		}
+		else
+		{
+			SPrintToChat(client, "The %s%s%s doesn't work as good with this meal.",
+				STORE_COLOR2, bad, STORE_COLOR);
+		}
+	}
+	else if(CurrentFood[client][meal.Foods])
+	{
+		SPrintToChat(client, "The %s%s%s you added help with this meal.",
+			STORE_COLOR2, buffer, STORE_COLOR);
+	}
+	else
+	{
+		SPrintToChat(client, "This meal works pretty good with your ingredients.");
+	}
+}
+
+bool Cooking_IsCookItem(KeyValues kv)
+{
+	char buffer[64];
+	//kv.GetString("plugin", buffer, sizeof(buffer));
+	//if(StrEqual(buffer, "rpg_fortress"))
+	{
+		kv.GetString("type", buffer, sizeof(buffer));
+		if(!StrContains(buffer, "healing", false) || !StrContains(buffer, "spell", false))
+		{
+			if(KvGetFunction(kv, "func") == Cooking_UseFunction)
+				return true;
+		}
+	}
+	return false;
+}
+
+void Cooking_DescItem(int index, KeyValues kv, char[] desc)
+{
+	static char data[512];
+	TextStore_GetItemData(index, data, sizeof(data));
+	
+	static char buffer[512], buffers[32][16];
+	StringMap map = new StringMap();
+
+	TextStore_GetItemData(index, buffer, sizeof(buffer));
+	
+	int count = ExplodeString(buffer, ":", buffers, sizeof(buffers), sizeof(buffers[]));
+	for(int i = 1; i < count; i += 2)
+	{
+		map.SetValue(buffers[i - 1], StringToFloat(buffers[i]));
+	}
+	
+	float uses;
+	map.GetValue("uses", uses);
+	float duration = MergMult(kv, map, "duration");
+	float healing = MergMult(kv, map, "healing");
+	float overheal = MergMult(kv, map, "overheal");
+
+	Format(desc, 512, "Uses Left: %d\nHeals %.0f HP over %.0f seconds (%d%% Overheal)", RoundToCeil(uses), healing, duration, RoundFloat(overheal * 100.0));
+
+	float value = MergMult(kv, map, "resist");
+	if(value != 1.0)
+		Format(desc, 512, "%s\n%s%.0f%% Damage Resistance", desc, value < 1.0 ? "+" : "", 100.0 - (value * 100.0));
+
+	value = MergMult(kv, map, "damage");
+	if(value != 1.0)
+		Format(desc, 512, "%s\n%s%.0f%% Damage Dealt", desc, value > 1.0 ? "+" : "", value * 100.0);
+	
+	value = MergMult(kv, map, "strength");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Strength", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+	
+	value = MergMult(kv, map, "precision");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Precision", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+	
+	value = MergMult(kv, map, "artifice");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Artifice", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+	
+	value = MergMult(kv, map, "endurnace");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Endurnace", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+	
+	value = MergMult(kv, map, "structure");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Structure", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+	
+	value = MergMult(kv, map, "intelligence");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Intelligence", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+	
+	value = MergMult(kv, map, "capacity");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Capacity", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+	
+	value = MergMult(kv, map, "luck");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Luck", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+	
+	value = MergMult(kv, map, "agility");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Agility", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+
+	delete map;
+}
+
+public float Cooking_UseFunction(int client, int index, char name[48])
+{
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		static char buffer[512], buffers[32][16];
+		StringMap map = new StringMap();
+		int count;
+
+		if(index < 0)
+		{
+			TextStore_GetItemData(index, buffer, sizeof(buffer));
+			
+			count = ExplodeString(buffer, ":", buffers, sizeof(buffers), sizeof(buffers[]));
+			for(int i = 1; i < count; i += 2)
+			{
+				map.SetValue(buffers[i - 1], StringToFloat(buffers[i]));
+			}
+		}
+
+		float duration = MergMult(kv, map, "duration");
+		float healing = MergMult(kv, map, "healing");
+		float overheal = MergMult(kv, map, "overheal");
+
+		HealEntityGlobal(client, client, healing, overheal, duration, HEAL_SELFHEAL);
+
+		float value = MergMult(kv, map, "resist");
+		if(value != 1.0)
+			IncreaceEntityDamageTakenBy(client, value, duration);
+
+		value = MergMult(kv, map, "damage");
+		if(value != 1.0)
+			IncreaceEntityDamageDealtBy(client, value, duration);
+		
+		value = MergMult(kv, map, "strength");
+		if(value)
+			ApplyTempStat(client, -2, value, duration);
+		
+		value = MergMult(kv, map, "precision");
+		if(value)
+			ApplyTempStat(client, -3, value, duration);
+		
+		value = MergMult(kv, map, "artifice");
+		if(value)
+			ApplyTempStat(client, -4, value, duration);
+		
+		value = MergMult(kv, map, "endurnace");
+		if(value)
+			ApplyTempStat(client, -5, value, duration);
+		
+		value = MergMult(kv, map, "structure");
+		if(value)
+			ApplyTempStat(client, -6, value, duration);
+		
+		value = MergMult(kv, map, "intelligence");
+		if(value)
+			ApplyTempStat(client, -7, value, duration);
+		
+		value = MergMult(kv, map, "capacity");
+		if(value)
+			ApplyTempStat(client, -8, value, duration);
+		
+		value = MergMult(kv, map, "luck");
+		if(value)
+			ApplyTempStat(client, -9, value, duration);
+		
+		value = MergMult(kv, map, "agility");
+		if(value)
+			ApplyTempStat(client, -10, value, duration);
+
+		kv.GetString("sound", buffer, sizeof(buffer));
+		if(buffer[0])
+			ClientCommand(client, "playgamesound %s", buffer);
+		
+		if(!map.GetValue("uses", value) || value <= 1.0)
+		{
+			int amount;
+			TextStore_GetInv(client, index, amount);
+			TextStore_SetInv(client, index, amount - 1, amount < 2 ? 0 : -1);
+
+			name[0] = 0;
+			return FAR_FUTURE;
+		}
+
+		if(index < 0)
+		{
+			for(int i = 1; i < count; i += 2)
+			{
+				if(StrEqual(buffers[i - 1], "uses"))
+				{
+					FloatToString(value - 1.0, buffers[i], sizeof(buffers[]));
+				}
+
+				if(i == 1)
+				{
+					Format(buffer, sizeof(buffer), "%s:%s", buffers[i - 1], buffers[i]);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s:%s:%s", buffer, buffers[i - 1], buffers[i]);
+				}
+			}
+		}
+		
+		return GetGameTime() + MergMult(kv, map, "cooldown") + duration;
+	}
+	return FAR_FUTURE;
+}
+
+static float MergMult(KeyValues kv, StringMap map, const char[] name, float defaul = 1.0)
+{
+	float multi = 1.0;
+	map.GetValue(name, multi);
+	return multi * kv.GetFloat(name, defaul);
+}
+
+static void ApplyTempStat(int entity, int index, float amount, float duration)
+{
+	Stats_SetCustomStats(entity, index, amount);
+
+	DataPack pack;
+	CreateDataTimer(duration, TimerRestoreStat, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(index);
+	pack.WriteFloat(amount);
+}
+
+static Action TimerRestoreStat(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity != -1)
+	{
+		int index = pack.ReadCell();
+		Stats_SetCustomStats(entity, index, -pack.ReadFloat());
+	}
+	return Plugin_Stop;
 }

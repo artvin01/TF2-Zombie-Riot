@@ -6,7 +6,7 @@
 #pragma newdecls required
 
 //#define DEBUG
-#define PLUGIN_VERSION	"1.6.1"
+#define PLUGIN_VERSION	"1.6"
 
 enum struct LastItem
 {
@@ -15,12 +15,22 @@ enum struct LastItem
 	bool Equipped;
 }
 
+enum struct LastUnique
+{
+	char Item[48];
+	bool Equipped;
+	char Name[48];
+	char Data[512];
+}
+
 //ConVar CvarBackup;
 Database DataBase;
 bool IgnoreLoad;
 bool InQuery;
-int CurrentUniverse[MAXPLAYERS];
-ArrayList LastItems[MAXPLAYERS];
+int QueryCount;
+int CurrentUniverse[MAXPLAYERS+1];
+ArrayList LastItems[MAXPLAYERS+1];
+ArrayList LastUniques[MAXPLAYERS+1];
 GlobalForward UniverseForward;
 
 public Plugin myinfo =
@@ -89,14 +99,6 @@ public void OnPluginStart()
 	... "data TEXT NOT NULL, "
 	... "universe INTEGER NOT NULL);");
 	
-	tr.AddQuery("CREATE TABLE IF NOT EXISTS unique_backup ("
-	... "steamid INTEGER NOT NULL, "
-	... "item TEXT NOT NULL, "
-	... "name TEXT NOT NULL, "
-	... "equip INTEGER NOT NULL, "
-	... "data TEXT NOT NULL, "
-	... "universe INTEGER NOT NULL);");
-	
 	db.Execute(tr, Database_SetupSuccess, Database_SetupFail, db);
 }
 
@@ -139,6 +141,7 @@ public Action TextStore_OnClientLoad(int client, char file[PLATFORM_MAX_PATH])
 		return Plugin_Continue;
 	
 	delete LastItems[client];
+	delete LastUniques[client];
 	
 	if(DataBase)
 	{
@@ -188,7 +191,7 @@ public void Database_ClientSetup1(Database db, any userid, int numQueries, DBRes
 		{
 			Transaction tr = new Transaction();
 			
-			Format(data, sizeof(data), "INSERT INTO misc_data (steamid, universe) VALUES ('%d', '%d')", GetSteamAccountID(client), CurrentUniverse[client]);
+			Format(data, sizeof(data), "INSERT INTO misc_data (steamid, universe) VALUES ('%d', '%d');", GetSteamAccountID(client), CurrentUniverse[client]);
 			tr.AddQuery(data);
 			
 			AddToQueryQueue(tr, Database_Success, Database_Fail);
@@ -266,54 +269,9 @@ public void Database_ClientSetup3(Database db, any userid, int numQueries, DBRes
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		bool found;
+		delete LastUniques[client];
+		LastUniques[client] = new ArrayList(sizeof(LastUnique));
 		
-		while(results[0].MoreRows)
-		{
-			if(results[0].FetchRow())
-			{
-				static char item[48], name[48], data[256];
-				results[0].FetchString(1, item, sizeof(item));
-				results[0].FetchString(2, name, sizeof(name));
-				results[0].FetchString(4, data, sizeof(data));
-				
-				GiveNamedUnique(client, item, name, view_as<bool>(results[0].FetchInt(3)), data);
-				found = true;
-			}
-		}
-		
-		if(found)
-		{
-			TextStore_SetClientLoad(client, true);
-		}
-		else
-		{
-			int id = GetSteamAccountID(client);
-			if(id)
-			{
-				Transaction tr = new Transaction();
-				
-				char buffer[256];
-				FormatEx(buffer, sizeof(buffer), "SELECT * FROM unique_backup WHERE steamid = %d AND universe = %d;", id, CurrentUniverse[client]);
-				tr.AddQuery(buffer);
-				
-				AddToQueryQueue(tr, Database_ClientSetup4, Database_Fail, GetClientUserId(client));
-			}
-		}
-	}
-}
-
-public void Database_ClientSetup4(Database db, any userid, int numQueries, DBResultSet[] results, any[] queryData)
-{
-	InQuery = false;
-	
-	#if defined DEBUG
-	PrintToServer("Database_ClientSetup4");
-	#endif
-	
-	int client = GetClientOfUserId(userid);
-	if(client)
-	{
 		while(results[0].MoreRows)
 		{
 			if(results[0].FetchRow())
@@ -339,7 +297,7 @@ public Action TextStore_OnClientSave(int client, char file[PLATFORM_MAX_PATH])
 	PrintToServer("TextStore_OnClientSave");
 	#endif
 	
-	if(DataBase && LastItems[client])
+	if(DataBase && LastItems[client] && LastUniques[client])
 	{
 		int id = GetSteamAccountID(client);
 		if(!id)
@@ -353,71 +311,81 @@ public Action TextStore_OnClientSave(int client, char file[PLATFORM_MAX_PATH])
 		
 		AddToQueryQueue(tr, Database_Success, Database_Fail);
 		
-		tr = new Transaction();
-		
-		LastItem last;
-		ArrayList list = new ArrayList(sizeof(LastItem));
-		
 		int amount;
 		int uniques;
 		int items = TextStore_GetItems(uniques);
-		for(int i; i<items; i++)
+		
 		{
-			bool equipped = TextStore_GetInv(client, i, amount);
-			int index = LastItems[client].FindValue(i, LastItem::Item);
-			if(index == -1)
+			tr = new Transaction();
+			
+			LastItem last;
+			ArrayList list = new ArrayList(sizeof(LastItem));
+			
+			for(int i; i<items; i++)
 			{
-				if(amount > 0)
+				bool equipped = TextStore_GetInv(client, i, amount);
+				int index = LastItems[client].FindValue(i, LastItem::Item);
+				if(index == -1)
 				{
-					TextStore_GetItemName(i, buffer, sizeof(buffer));
-					DataBase.Format(buffer, sizeof(buffer), "INSERT INTO common_items (steamid, universe, item, count, equip) VALUES ('%d', '%d', '%s', '%d', '%d')", id, CurrentUniverse[client], buffer, amount, equipped);
-					
-					tr.AddQuery(buffer);
+					if(amount > 0)
+					{
+						TextStore_GetItemName(i, buffer, sizeof(buffer));
+						DataBase.Format(buffer, sizeof(buffer), "INSERT INTO common_items (steamid, universe, item, count, equip) VALUES ('%d', '%d', '%s', '%d', '%d');", id, CurrentUniverse[client], buffer, amount, equipped);
+						
+						tr.AddQuery(buffer);
+					}
+					else
+					{
+						continue;
+					}
+				}
+				else if(amount > 0)
+				{
+					LastItems[client].GetArray(index, last);
+					if(last.Count != amount || last.Equipped != equipped)
+					{
+						TextStore_GetItemName(i, buffer, sizeof(buffer));
+						DataBase.Format(buffer, sizeof(buffer), "UPDATE common_items SET count = '%d', equip = '%d' WHERE steamid = %d AND universe = %d AND item = '%s';", amount, equipped, id, CurrentUniverse[client], buffer);
+						
+						tr.AddQuery(buffer);
+					}
 				}
 				else
 				{
-					continue;
-				}
-			}
-			else if(amount > 0)
-			{
-				LastItems[client].GetArray(index, last);
-				if(last.Count != amount || last.Equipped != equipped)
-				{
 					TextStore_GetItemName(i, buffer, sizeof(buffer));
-					DataBase.Format(buffer, sizeof(buffer), "UPDATE common_items SET count = '%d', equip = '%d' WHERE steamid = %d AND universe = %d AND item = '%s';", amount, equipped, id, CurrentUniverse[client], buffer);
+					DataBase.Format(buffer, sizeof(buffer), "DELETE FROM common_items WHERE steamid = %d AND universe = %d AND item = '%s';", id, CurrentUniverse[client], buffer);
 					
 					tr.AddQuery(buffer);
+					continue;
 				}
-			}
-			else
-			{
-				TextStore_GetItemName(i, buffer, sizeof(buffer));
-				DataBase.Format(buffer, sizeof(buffer), "DELETE FROM common_items WHERE steamid = %d AND universe = %d AND item = '%s';", id, CurrentUniverse[client], buffer);
 				
-				tr.AddQuery(buffer);
-				continue;
+				last.Item = i;
+				last.Count = amount;
+				last.Equipped = equipped;
+				list.PushArray(last);
 			}
 			
-			last.Item = i;
-			last.Count = amount;
-			last.Equipped = equipped;
-			list.PushArray(last);
+			AddToQueryQueue(tr, Database_Success, Database_Fail);
+			
+			delete LastItems[client];
+			LastItems[client] = list;
 		}
-		
-		AddToQueryQueue(tr, Database_Success, Database_Fail);
-		
-		delete LastItems[client];
-		LastItems[client] = list;
 		
 		if(uniques)
 		{
 			tr = new Transaction();
 			
+			LastUnique last;
+			ArrayList list = new ArrayList(sizeof(LastUnique));
+			int length = LastUniques[client].Length;
+			
 			uniques = -uniques;
 			
-			FormatEx(buffer, sizeof(buffer), "DELETE FROM unique_items WHERE steamid = %d AND universe = %d;", id, CurrentUniverse[client]);
-			tr.AddQuery(buffer);
+			// Remaining "LastUniques" will be deleted
+			// New "list" will replace the uniques
+			
+			//FormatEx(buffer, sizeof(buffer), "DELETE FROM unique_items WHERE steamid = %d AND universe = %d;", id, CurrentUniverse[client]);
+			//tr.AddQuery(buffer);
 			
 			char item[48], name[48];
 			for(int i=-1; i>=uniques; i--)
@@ -433,8 +401,34 @@ public Action TextStore_OnClientSave(int client, char file[PLATFORM_MAX_PATH])
 						
 						TextStore_GetItemData(i, buffer, sizeof(buffer));
 						
-						DataBase.Format(buffer, sizeof(buffer), "INSERT INTO unique_backup (steamid, item, name, equip, data, universe) VALUES ('%d', '%s', '%s', '%d', '%s', '%d')", id, item, name, equipped, buffer, CurrentUniverse[client]);
+						bool found;
+						for(int b; b < length; b++)
+						{
+							LastUniques[client].GetArray(b, last);
+							if(StrEqual(last.Item, item, false) &&
+								last.Equipped == equipped &&
+								StrEqual(last.Name, name) &&
+								StrEqual(last.Data, buffer))
+							{
+								found = true;
+								list.PushArray(last);
+								LastUniques[client].Erase(b);
+								length--;
+								break;
+							}
+						}
+						
+						if(found)
+							continue;
+						
+						DataBase.Format(buffer, sizeof(buffer), "INSERT INTO unique_items (steamid, item, name, equip, data, universe) VALUES ('%d', '%s', '%s', '%d', '%s', '%d');", id, item, name, equipped, buffer, CurrentUniverse[client]);
 						tr.AddQuery(buffer);
+						
+						strcopy(last.Item, sizeof(last.Item), item);
+						last.Equipped = equipped;
+						strcopy(last.Name, sizeof(last.Name), name);
+						strcopy(last.Data, sizeof(last.Data), buffer);
+						list.PushArray(last);
 					}
 					else
 					{
@@ -443,62 +437,24 @@ public Action TextStore_OnClientSave(int client, char file[PLATFORM_MAX_PATH])
 				}
 			}
 			
-			DataPack pack = new DataPack();
-			Format(buffer, sizeof(buffer), "INSERT INTO unique_items SELECT * FROM unique_backup WHERE steamid = %d AND universe = %d;", id, CurrentUniverse[client]);
-			pack.WriteString(buffer);
-			pack.WriteCell(id);
-			pack.WriteCell(CurrentUniverse[client]);
-			AddToQueryQueue(tr, Database_ClientSave1, Database_FailHandle, pack);
+			for(int i; i < length; i++)
+			{
+				LastUniques[client].GetArray(i, last);
+				
+				DataBase.Format(buffer, sizeof(buffer), "DELETE FROM unique_items WHERE steamid = %d AND item = '%s' AND name = '%s' AND equip = %d AND data = '%s' AND universe = %d;", id, last.Item, last.Name, last.Equipped, last.Data, CurrentUniverse[client]);
+				tr.AddQuery(buffer);
+			}
+			
+			AddToQueryQueue(tr, Database_Success, Database_Fail);
+			
+			delete LastUniques[client];
+			LastUniques[client] = list;
 		}
 		
 //		if(!CvarBackup.BoolValue)
 		return Plugin_Handled;
 	}
 	return Plugin_Continue;
-}
-
-public void Database_ClientSave1(Database db, any pack, int numQueries, DBResultSet[] results, any[] queryData)
-{
-	InQuery = false;
-	
-	#if defined DEBUG
-	PrintToServer("Database_ClientSave1");
-	#endif
-	
-	static char buffer[1024];
-	
-	ResetPack(pack);
-	ReadPackString(pack, buffer, sizeof(buffer));
-	int id = ReadPackCell(pack);
-	int universe = ReadPackCell(pack);
-	CloseHandle(pack);
-	
-	Transaction tr = new Transaction();
-	tr.AddQuery(buffer);
-	
-	DataPack pack2 = new DataPack();
-	Format(buffer, sizeof(buffer), "DELETE FROM unique_backup WHERE steamid = %d AND universe = %d;", id, universe);
-	pack2.WriteString(buffer);
-	AddToQueryQueue(tr, Database_ClientSave2, Database_FailHandle, pack2);
-}
-
-public void Database_ClientSave2(Database db, any pack, int numQueries, DBResultSet[] results, any[] queryData)
-{
-	InQuery = false;
-	
-	#if defined DEBUG
-	PrintToServer("Database_ClientSave2");
-	#endif
-	
-	static char buffer[1024];
-	
-	ResetPack(pack);
-	ReadPackString(pack, buffer, sizeof(buffer));
-	CloseHandle(pack);
-	
-	Transaction tr = new Transaction();
-	tr.AddQuery(buffer);
-	AddToQueryQueue(tr, Database_Success, Database_Fail);
 }
 
 public void Database_Success(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
@@ -521,19 +477,6 @@ public void Database_Fail(Database db, any data, int numQueries, const char[] er
 	LogError(error);
 }
 
-public void Database_FailHandle(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
-{
-	InQuery = false;
-	
-	#if defined DEBUG
-	PrintToServer("Database_FailHandle");
-	#endif
-	
-	CloseHandle(data);
-	
-	LogError(error);
-}
-
 public void Database_FailPrint(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
 {
 	InQuery = false;
@@ -546,7 +489,6 @@ void GiveNamedItem(int client, const char[] item, int amount, bool equipped)
 	PrintToServer("GiveNamedItem");
 	#endif
 	
-	LastItem last;
 	int items = TextStore_GetItems();
 	for(int i; i<items; i++)
 	{
@@ -558,9 +500,10 @@ void GiveNamedItem(int client, const char[] item, int amount, bool equipped)
 			if(equipped)
 				TextStore_UseItem(client, i, true);
 			
+			LastItem last;
 			last.Item = i;
 			last.Count = amount;
-			last.Equipped = false;
+			last.Equipped = equipped;
 			LastItems[client].PushArray(last);
 			break;
 		}
@@ -584,6 +527,12 @@ void GiveNamedUnique(int client, const char[] item, const char[] name, bool equi
 			if(equipped)
 				TextStore_UseItem(client, id, true);
 			
+			LastUnique last;
+			strcopy(last.Item, sizeof(last.Item), item);
+			last.Equipped = equipped;
+			strcopy(last.Name, sizeof(last.Name), name);
+			strcopy(last.Data, sizeof(last.Data), data);
+			LastUniques[client].PushArray(last);
 			break;
 		}
 	}
@@ -593,40 +542,24 @@ void GiveNamedUnique(int client, const char[] item, const char[] name, bool equi
 	https://github.com/alliedmodders/sourcemod/issues/1505
 */
 
-enum struct QueueInfo
-{
-	Transaction Tr;
-	SQLTxnSuccess OnSuccess;
-	SQLTxnFailure OnError;
-	any Data;
-	DBPriority Priority;
-}
-
-ArrayList QueueList;
-Handle QueueTimer;
-
 void AddToQueryQueue(Transaction tr, SQLTxnSuccess onSuccess = INVALID_FUNCTION, SQLTxnFailure onError = INVALID_FUNCTION, any data = 0, DBPriority priority = DBPrio_Normal)
 {
+	QueryCount++;
+	
 	#if defined DEBUG
 	PrintToServer("Timer_QueryQueue -> New Added");
 	#endif
 	
-	if(!QueueList)
-		QueueList = new ArrayList(sizeof(QueueInfo));
-	
-	if(!QueueTimer)
-		QueueTimer = CreateTimer(0.2, Timer_QueryQueue, _, TIMER_REPEAT);
-	
-	static QueueInfo info;
-	info.Tr = tr;
-	info.OnSuccess = onSuccess;
-	info.OnError = onError;
-	info.Data = data;
-	info.Priority = priority;
-	QueueList.PushArray(info);
+	DataPack pack;
+	CreateDataTimer(0.3, Timer_QueryQueue, pack, TIMER_REPEAT);
+	pack.WriteCell(tr);
+	pack.WriteFunction(onSuccess);
+	pack.WriteFunction(onError);
+	pack.WriteCell(data);
+	pack.WriteCell(priority);
 }
 
-public Action Timer_QueryQueue(Handle timer)
+public Action Timer_QueryQueue(Handle timer, DataPack pack)
 {
 	#if defined DEBUG
 	PrintToServer("Timer_QueryQueue -> Pending");
@@ -635,24 +568,21 @@ public Action Timer_QueryQueue(Handle timer)
 	if(InQuery)
 		return Plugin_Continue;
 	
-	if(!QueueList.Length)
-	{
-		QueueTimer = null;
-		return Plugin_Stop;
-	}
-	
-	static QueueInfo info;
-	QueueList.GetArray(0, info);
-	QueueList.Erase(0);
+	QueryCount--;
 	
 	InQuery = true;
+	pack.Reset();
+	Transaction tr = pack.ReadCell();
+	SQLTxnSuccess onSuccess = view_as<any>(pack.ReadFunction());
+	SQLTxnFailure onError = view_as<any>(pack.ReadFunction());
+	any data = pack.ReadCell();
 	
 	#if defined DEBUG
-	PrintToServer("Timer_QueryQueue -> Started New | %x %d %d", info.Tr, view_as<int>(info.OnSuccess), view_as<int>(info.OnError));
+	PrintToServer("Timer_QueryQueue -> Started New | %x %d %d", tr, view_as<int>(onSuccess), view_as<int>(onError));
 	#endif
 	
-	DataBase.Execute(info.Tr, info.OnSuccess, info.OnError, info.Data, info.Priority);
-	return Plugin_Continue;
+	DataBase.Execute(tr, onSuccess, onError, data, pack.ReadCell());
+	return Plugin_Stop;
 }
 
 /*

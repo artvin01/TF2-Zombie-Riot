@@ -2615,7 +2615,6 @@ void UpdatePlayerFakeModel(int client)
 	}
 }
 
-
 stock void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
 	if(!Flat)
@@ -2643,6 +2642,29 @@ public Action RevertDamageTakenAgain(Handle final, any pack)
 			f_MultiDamageTaken[entity] /= damagemulti;
 		else
 			f_MultiDamageTaken_Flat[entity] -= damagemulti;
+	}
+	return Plugin_Continue;
+}
+
+stock void IncreaceEntityDamageDealtBy(int entity, float amount, float duration)
+{
+	f_MultiDamageDealt[entity] *= amount;
+	
+	Handle pack;
+	CreateDataTimer(duration, RevertDamageDealtAgain, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntIndexToEntRef(entity));
+	WritePackFloat(pack, amount);
+}
+
+public Action RevertDamageDealtAgain(Handle final, any pack)
+{
+	ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	float damagemulti = ReadPackFloat(pack);
+	
+	if (IsValidEntity(entity))
+	{
+		f_MultiDamageDealt[entity] /= damagemulti;
 	}
 	return Plugin_Continue;
 }
