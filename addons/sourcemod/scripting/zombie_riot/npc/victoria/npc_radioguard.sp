@@ -48,11 +48,10 @@ void Victorian_Radioguard_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_ReloadSound)); i++) { PrecacheSound(g_ReloadSound[i]); }
-	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
-	PrecacheModel("models/player/Soldier.mdl");
+	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Raider");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_raider");
+	strcopy(data.Name, sizeof(data.Name), "Radio Guard");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_radioguard");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -107,7 +106,7 @@ methodmap Victorian_Radioguard < CClotBody
 
 	public Victorian_Radioguard(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Victorian_Radioguard npc = view_as<Victorian_Radioguard>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.3", "80000", ally));
+		Victorian_Radioguard npc = view_as<Victorian_Radioguard>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "80000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -403,25 +402,25 @@ public void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 			if(NpcStats_VictorianCallToArms(entity))
 			{
 				bool Knocked = false;
-				if(IsValidClient(target_hit))
+				if(IsValidClient(target))
 				{
 					Knocked = true;
-					Custom_Knockback(npc.index, target, 2000.0, true);
+					Custom_Knockback(owner, target, 2000.0, true);
 					TF2_AddCondition(target, TFCond_LostFooting, 2.5);
 					TF2_AddCondition(target, TFCond_AirCurrent, 2.5);
 				}
 				if(!Knocked)
-					Custom_Knockback(npc.index, target_hit, 2000.0, true); 
+					Custom_Knockback(owner, target, 2000.0, true); 
 			}
 			if(target > MaxClients)
 			{
-				StartBleedingTimer_Against_Client(target, npc.index, 8.0, 5);
+				StartBleedingTimer_Against_Client(target, owner, 8.0, 5);
 			}
 			else
 			{
 				if (!IsInvuln(target))
 				{
-					StartBleedingTimer_Against_Client(target, npc.index, 8.0, 5);
+					StartBleedingTimer_Against_Client(target, owner, 8.0, 5);
 				}
 			}
 		}

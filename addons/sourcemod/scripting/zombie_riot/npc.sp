@@ -611,6 +611,8 @@ void NPC_ConfigSetup()
 	VictoriaTank_MapStart();
 	VictoriaTaser_OnMapStart_NPC();
 	VictoriaRadiomast_OnMapStart_NPC();
+	VictoriaRepair_OnMapStart_NPC();
+	Victorian_Radioguard_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1705,3 +1707,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_taser.sp"
 #include "zombie_riot/npc/victoria/npc_victorian_tank.sp"
 #include "zombie_riot/npc/victoria/npc_victoria_radiomast.sp"
+#include "zombie_riot/npc/victoria/npc_radioguard.sp"
+#include "zombie_riot/npc/victoria/npc_radio_repair.sp"

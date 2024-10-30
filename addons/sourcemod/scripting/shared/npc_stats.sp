@@ -8225,7 +8225,7 @@ stock int GetClosestBuilding(int entity, float limitsquared = 99999999.9, int in
 			}
 		}
 	}
-	return ClosestTarget; 
+	return ClosestTarget1; 
 }
 
 

@@ -53,8 +53,8 @@ void VictoriaRepair_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LASERBEAM);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Booster");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_booster");
+	strcopy(data.Name, sizeof(data.Name), "Radio Repair");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_radio_repair");
 	strcopy(data.Icon, sizeof(data.Icon), "medic");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -375,6 +375,8 @@ public void VictoriaRepair_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	npc.StopHealing();
 }
 
