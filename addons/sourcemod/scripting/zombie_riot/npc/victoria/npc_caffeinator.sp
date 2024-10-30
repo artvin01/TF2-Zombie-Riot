@@ -381,7 +381,7 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 		if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 		{
 			npc.m_flNextRangedSpecialAttack = GameTime + 2.5;
-			ExpidonsaGroupHeal(npc.index, 400.0, 5, 1500.0, 0.0, false,Expidonsa_DontHealSameIndex);
+			ExpidonsaGroupHeal(npc.index, 400.0, 5, 2500.0, 0.0, false,Expidonsa_DontHealSameIndex);
 			DesertYadeamDoHealEffect(npc.index, 100.0);
 			VictoriaCaffeinatorAOEBuff(npc,GetGameTime(npc.index));
 		}
@@ -544,7 +544,7 @@ void VictoriaCaffeinatorAOEBuff(VictorianCaffeinator npc, float gameTime)
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (20 * 20))
+					if(GetVectorDistance(pos1, pos2, true) < (150 * 150))
 					{
 						//give 200 armor at most.
 						f_CaffeinatorBuff[entitycount] = GetGameTime() + 2.6;
