@@ -8180,6 +8180,54 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	return ClosestTarget; 
 }
 
+stock int GetClosestBuilding(int entity, float limitsquared = 99999999.9, int ingore_thisAlly = 0,Function ExtraValidityFunction = INVALID_FUNCTION)
+{
+	float TargetDistancetoBuilding = 0.0; 
+	int ClosestTarget1 = 0; 
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if (IsValidEntity(i) && i != entity && i != ingore_thisAlly && (i <= MaxClients || !b_NpcHasDied[i]))
+		{
+			if(GetTeam(entity) == GetTeam(i) && !Is_a_Medic[i] && IsEntityAlive(i, true) && i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i] && !b_NpcIsInvulnerable[i])  //Making go for the building
+			{
+				if(ExtraValidityFunction != INVALID_FUNCTION)
+				{
+					bool WasValid1;
+					Call_StartFunction(null, ExtraValidityFunction);
+					Call_PushCell(entity);
+					Call_PushCell(i);
+					Call_Finish(WasValid1);
+
+					if(!WasValid1)
+						continue;
+				}
+				float EntityLocation[3], TargetLocation[3]; 
+				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+				GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+				if( distance < limitsquared )
+				{
+					if( TargetDistancetoBuilding ) 
+					{
+						if( distance < TargetDistancetoBuilding ) 
+						{
+							ClosestTarget1 = i; 
+							TargetDistancetoBuilding = distance;		  
+						}
+					} 
+					else 
+					{
+						ClosestTarget1 = i; 
+						TargetDistancetoBuilding = distance;
+					}			
+				}
+			}
+		}
+	}
+	return ClosestTarget; 
+}
+
 
 stock bool IsValidAlly(int index, int ally)
 {

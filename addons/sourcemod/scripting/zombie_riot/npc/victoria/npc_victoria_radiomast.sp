@@ -92,6 +92,8 @@ methodmap VictoriaRadiomast < CClotBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		npc.m_bDissapearOnDeath = true;
+		npc.m_bLostHalfHealth = false;
+		npc.Anger = false;
 
 		Is_a_Medic[npc.index] = true;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 200.0;
@@ -171,6 +173,8 @@ methodmap VictoriaRadiomast < CClotBody
 public void VictoriaRadiomast_ClotThink(int iNPC)
 {
 	VictoriaRadiomast npc = view_as<VictoriaRadiomast>(iNPC);
+	float gameTime = GetGameTime(npc.index);
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -190,12 +194,70 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.05;
 	//global range.
 	npc.m_flNextRangedSpecialAttack = 0.0;
+
+	gameTime = GetGameTime() + 0.5;
+
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		int team = GetTeam(npc.index);
+		if(team == 2)
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
+				{
+					f_VictorianCallToArms[client] = gameTime;
+				}
+			}
+		}
+
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
+			{
+				f_VictorianCallToArms[entity] = gameTime;
+			}
+		}
+	}
+
+	if(!npc.Anger && npc.m_bLostHalfHealth)
+	{
+		int team = GetTeam(npc.index);
+
+		int health = ReturnEntityMaxHealth(npc.index) / 10;
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+		
+		int other = NPC_CreateByName("npc_shotgunner", -1, pos, ang, team, "EX");
+		if(other > MaxClients)
+		{
+			if(team != TFTeam_Red)
+				Zombies_Currently_Still_Ongoing++;
+			
+			SetEntProp(other, Prop_Data, "m_iHealth", health);
+			SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
+			NpcAddedToZombiesLeftCurrently(other, true);
+			fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
+			b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
+			b_StaticNPC[other] = b_StaticNPC[npc.index];
+		}
+	}
+
 }
 
 public Action VictoriaRadiomast_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictoriaRadiomast npc = view_as<VictoriaRadiomast>(victim);
-		
+	
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) 
+	{
+		npc.m_bLostHalfHealth = true;
+	}
+
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
