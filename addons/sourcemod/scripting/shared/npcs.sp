@@ -929,9 +929,15 @@ public void Func_Breakable_Post(int victim, int attacker, int inflictor, float d
 	Event event = CreateEvent("npc_hurt");
 	if (event) 
 	{
+		int display = RoundToFloor(damage);
+		while(display > 32000)
+		{
+			display /= 10;
+		}
+
 		event.SetInt("entindex", victim);
 		event.SetInt("health", Health > 0 ? Health : 0);
-		event.SetInt("damageamount", RoundToFloor(damage));
+		event.SetInt("damageamount", display);
 		event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
 
 		if (attacker > 0 && attacker <= MaxClients)
@@ -1151,9 +1157,15 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		Event event = CreateEvent("npc_hurt");
 		if(event) 
 		{
+			int display = RoundToFloor(Damageaftercalc);
+			while(display > 32000)
+			{
+				display /= 10;
+			}
+
 			event.SetInt("entindex", victim);
 			event.SetInt("health", health);
-			event.SetInt("damageamount", RoundToFloor(Damageaftercalc));
+			event.SetInt("damageamount", display);
 			event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
 
 			if(attacker > 0 && attacker <= MaxClients)

@@ -437,6 +437,7 @@ void RPG_ClientDisconnect_Post()
 
 void RPG_EntityCreated(int entity, const char[] classname)
 {
+	Level[entity] = 0;
 	f_MomentumAntiOpSpam[entity] = 0.0;
 	b_NpcIsInADungeon[entity] = false;
 	i_NpcFightOwner[entity] = false;

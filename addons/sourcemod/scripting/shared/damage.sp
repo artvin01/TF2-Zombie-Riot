@@ -1152,7 +1152,7 @@ stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime, b
 		The attacker is not an npc
 		The enemy is in a debug level state
 	*/
-	if(b_NpcIsInADungeon[victim] || attacker > MaxClients || Level[victim] > 1000000)
+	if(b_NpcIsInADungeon[victim] || attacker > MaxClients || b_NpcHasDied[victim] || Level[victim] > 1000000)
 	{
 		return false;	
 	}
