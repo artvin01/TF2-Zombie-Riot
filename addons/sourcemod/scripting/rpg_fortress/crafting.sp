@@ -352,6 +352,7 @@ bool Crafting_Interact(int client, int entity)
 			
 			CurrentMenu[client] = craft.List;
 			CurrentPrint[client] = -1;
+			CurrentRecipe[client][0] = 0;
 			CraftMenu(client);
 			return true;
 		}
@@ -371,6 +372,7 @@ void Crafting_SetCustomMenu(int client, ArrayList list)
 	CurrentCustom[client] = true;
 	CurrentMenu[client] = list;
 	CurrentPrint[client] = -1;
+	CurrentRecipe[client][0] = 0;
 	CraftMenu(client);
 }
 
