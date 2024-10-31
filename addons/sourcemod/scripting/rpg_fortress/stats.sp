@@ -111,7 +111,7 @@ void Stats_GiveXP(int client, int xp, int quest = 0)
 		}
 		int CalculatedXP;
 		CalculatedXP = XP[client] + XPToGive;
-		if(CalculatedXP <= XPToGive || CalculatedXP >= 2000000000)
+		if(CalculatedXP < XPToGive || CalculatedXP >= 2000000000)
 		{
 			XP[client] = 2000000000;
 			SPrintToChat(client, "You hit the MAX XP cap, spend your XP.");
