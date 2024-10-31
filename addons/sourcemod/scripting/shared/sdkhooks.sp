@@ -902,7 +902,7 @@ public void OnPostThink(int client)
 			percentage_Global *= ArmorPlayerReduction(client);
 			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
 			int testvalue1 = 0;
-			OnTakeDamageDamageBuffs(client, testvalue1, testvalue1, percentage_Global, testvalue1, testvalue1, GetGameTime());	
+			OnTakeDamageDamageBuffs(client, testvalue1, testvalue1, percentage_Global, testvalue1, testvalue1, GetGameTime(), NULL_VECTOR);	
 #endif
 			
 			if(IsInvuln(client, true) || f_ClientInvul[client] > GetGameTime())

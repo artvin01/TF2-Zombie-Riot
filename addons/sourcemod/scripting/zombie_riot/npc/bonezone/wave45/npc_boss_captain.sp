@@ -9,65 +9,59 @@ static float CAPTAIN_SPEED = 260.0;
 
 //ANCHOR BREAKER: Faux-Beard slams the anchor down, hitting all enemies within a small range for ENORMOUS damage. This attack can be activated from a distance. If this happens, Faux-Beard will sprint straight to his target before attacking.
 //The sprint has its own independent cooldown, separate from the melee attack itself.
-static float Anchor_DMG = 1600.0;			//Damage dealt.
-static float Anchor_EntityMult = 4.0;		//Entity multiplier.
-static float Anchor_Falloff_Range = 0.5;	//Falloff based on range.
+static float Anchor_DMG = 1600.0;				//Damage dealt.
+static float Anchor_EntityMult = 4.0;			//Entity multiplier.
+static float Anchor_Falloff_Range = 0.5;		//Falloff based on range.
 static float Anchor_Falloff_MultiHit = 0.75;	//Falloff based on number of hits.
-static float Anchor_Radius = 85.0;			//Damage radius.
-static float Anchor_HitRange = 90.0;		//Range in which the melee attack will begin.
-static float Anchor_SprintRange = 1200.0;	//Range in which Faux-Beard will begin sprinting to his target if they are out of range when the ability is activated.
-static float Anchor_SprintSpeed = 520.0;	//Speed while sprinting to the target.
-static float Anchor_Cooldown_Sprint = 20.0;	//Sprint cooldown.
-static float Anchor_Cooldown = 5.0;			//Attack cooldown.
-static float Anchor_StartingCooldown = 4.0;	//Starting cooldown.
-static float Anchor_SpeedMult = 0.66;		//Maximum additional animation speed multiplier based on health lost.
-static float Anchor_MinHP = 0.25;			//Percentage of max HP at which animation speed reaches max.
-static int Anchor_MaxTargets = 4;			//Maximum targets hit at once by Anchor Breaker.
+static float Anchor_Radius = 85.0;				//Damage radius.
+static float Anchor_HitRange = 90.0;			//Range in which the melee attack will begin.
+static float Anchor_SprintRange = 1200.0;		//Range in which Faux-Beard will begin sprinting to his target if they are out of range when the ability is activated.
+static float Anchor_SprintSpeed = 520.0;		//Speed while sprinting to the target.
+static float Anchor_Cooldown_Sprint = 20.0;		//Sprint cooldown.
+static float Anchor_Cooldown = 5.0;				//Attack cooldown.
+static float Anchor_StartingCooldown = 4.0;		//Starting cooldown.
+static float Anchor_SpeedMult = 0.66;			//Maximum additional animation speed multiplier based on health lost.
+static float Anchor_CDMult = 0.66;				//Maximum cooldown reduction multiplier based on health lost.
+static float Anchor_MinHP = 0.25;				//Percentage of max HP at which animation speed reaches max.
+static int Anchor_MaxTargets = 4;				//Maximum targets hit at once by Anchor Breaker.
 
 //KEELHAUL: Faux-Beard throws his anchor forwards, dealing damage and knockback to whoever it hits. Once the anchor hits the floor, Faux-Beard waits X seconds before pulling it back with a chain, dealing rapid damage to anyone the anchor hits
 //on the way back, pulling them with it. He will always follow up with Anchor Breaker if at least one enemy who was pulled is within melee range after the attack ends.
-static float Keelhaul_DMG_Out = 200.0;		//Damage dealt if the anchor hits someone while it is not being pulled back.
-static float Keelhaul_DMG_In = 20.0;		//Damage dealt if the anchor hits someone while being pulled back.
-static float Keelhaul_KB_Out = 600.0;		//Knockback inflicted to enemies who are hit by the anchor when it is thrown out.
-static float Keelhaul_KB_In = 900.0;		//Strength with which enemies are pulled towards Faux-Beard when they are hit by the anchor while it is being reeled in.
+static float Keelhaul_DMG_Out = 200.0;			//Damage dealt if the anchor hits someone while it is not being pulled back.
+static float Keelhaul_DMG_In = 20.0;			//Damage dealt if the anchor hits someone while being pulled back.
+static float Keelhaul_KB_Out = 600.0;			//Knockback inflicted to enemies who are hit by the anchor when it is thrown out.
+static float Keelhaul_KB_In = 900.0;			//Strength with which enemies are pulled towards Faux-Beard when they are hit by the anchor while it is being reeled in.
 static float Keelhaul_PullIn_TickRate = 0.33;	//Interval in which the anchor hits enemies and drags them with it while it is being pulled in.
 static float Keelhaul_Velocity_Out = 1600.0;	//Velocity with which the anchor is thrown out.
 static float Keelhaul_Velocity_In = 900.0;		//Velocity with which the anchor is pulled in.
+static float Keelhaul_Gravity = 4.0;			//Anchor gravity.
 static float Keelhaul_Pull_Delay = 1.0;			//Delay after the anchor hits the floor before Faux-Beard will pull it back in.
-static float Keelhaul_Cooldown = 15.0;		//Ability cooldown.
-static float Keelhaul_StartingCooldown = 10.0;	//Starting cooldown.
+static float Keelhaul_Cooldown = 5.0;			//Ability cooldown.
+static float Keelhaul_StartingCooldown = 2.0;	//Starting cooldown.
+static float Keelhaul_Range = 1400.0;			//Maximum range in which this ability can be used.
 
 //MORALE BOOST: Faux-Beard rallies his allies with a battle cry, permanently buffing all allies within a large radius and healing them for a percentage of their max HP.
-static float Morale_Radius = 600.0;			//Ability radius.
-static float Morale_Heal = 0.66;			//Percentage of allied HP to heal for.
-static float Morale_MinHeal = 1000.0;		//Minimum HP to heal allies for.
-static float Morale_MaxHeal = 20000.0;		//Maximum HP to heal allies for.
-static float Morale_Cooldown = 20.0;		//Ability cooldown.
+static float Morale_Radius = 600.0;				//Ability radius.
+static float Morale_Heal = 0.66;				//Percentage of allied HP to heal for.
+static float Morale_MinHeal = 1000.0;			//Minimum HP to heal allies for.
+static float Morale_MaxHeal = 20000.0;			//Maximum HP to heal allies for.
+static float Morale_Cooldown = 20.0;			//Ability cooldown.
 static float Morale_StartingCooldown = 10.0;	//Starting cooldown.
-static int Morale_MinAllies = 3;			//Minimum allies required to be in range before this ability can be used.
+static int Morale_MinAllies = 3;				//Minimum allies required to be in range before this ability can be used.
 
 //BLACK PEARLS: Faux-Beard rapidly fires a ton of bombs from his Loose Cannon, which explode on impact and deal heavy damage within a small radius. He is slowed down during this.
-static float Pearls_Duration = 6.0;			//Attack duration.
-static float Pearls_Interval = 0.33;		//Interval between shots while active.
-static float Pearls_Velocity = 1200.0;		//Bomb velocity.
-static float Pearls_Gravity = 0.5;			//Bomb gravity.
-static float Pearls_DMG = 120.0;			//Bomb damage.
-static float Pearls_EntityMult = 24.0;		//Entity damage multiplier.
-static float Pearls_Radius = 80.0;			//Bomb radius.
-static float Pearls_Falloff_Radius = 0.5;	//Falloff based on distance.
-static float Pearls_Falloff_MultiHit = 0.8;	//Multi-hit falloff.
-static float Pearls_Speed = 130.0;			//Movement speed while firing bombs.
-static float Pearls_Cooldown = 25.0;		//Cooldown.
+static float Pearls_Duration = 6.0;				//Attack duration.
+static float Pearls_Interval = 0.33;			//Interval between shots while active.
+static float Pearls_Velocity = 1200.0;			//Bomb velocity.
+static float Pearls_Gravity = 0.5;				//Bomb gravity.
+static float Pearls_DMG = 120.0;				//Bomb damage.
+static float Pearls_EntityMult = 24.0;			//Entity damage multiplier.
+static float Pearls_Radius = 80.0;				//Bomb radius.
+static float Pearls_Falloff_Radius = 0.5;		//Falloff based on distance.
+static float Pearls_Falloff_MultiHit = 0.8;		//Multi-hit falloff.
+static float Pearls_Speed = 130.0;				//Movement speed while firing bombs.
+static float Pearls_Cooldown = 25.0;			//Cooldown.
 static float Pearls_StartingCooldown = 25.0;	//Starting cooldown.
-
-//CANNONKART: Faux-Beard jumps up and summons a cannon beneath his feet, which then rolls forward very quickly, flattening any enemy it collides with. If he collides with a wall or a building, Faux-Beard is briefly stunned.
-static float Kart_Velocity = 2000.0;		//Speed with which the kart zooms forward.
-static float Kart_Duration = 2.0;			//Active duration.
-static float Kart_DMG = 500.0;				//Damage dealt to anyone the kart hits.
-static float Kart_EntityDMG = 6000.0;		//Damage dealt to entities.
-static float Kart_Stun = 4.0;				//Stun duration upon colliding with a wall.
-static float Kart_Cooldown = 25.0;			//Cooldown.
-static float Kart_StartingCooldown = 20.0;	//Starting cooldown.
 
 //DEATH RATTLE: When killed, Faux-Beard stumbles forward, slamming his anchor into the ground for one final Anchor-Breaker before collapsing.
 
@@ -127,6 +121,7 @@ static char g_MoraleBoostDialogue[][] = {
 #define SOUND_PEARLS_EXPLODE			")weapons/loose_cannon_explode.wav"
 #define SOUND_ANCHOR_BREAKER_IMPACT_1	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 #define SOUND_ANCHOR_BREAKER_IMPACT_2	")weapons/demo_charge_hit_world3.wav"
+#define SOUND_CAPTAIN_RUSTLE			")player/cyoa_pda_draw.wav"
 
 #define PARTICLE_MORALE_BOOST_RED		"spell_cast_wheel_red"
 #define PARTICLE_MORALE_BOOST_BLUE		"spell_cast_wheel_blue"
@@ -143,7 +138,6 @@ static float f_NextAnchorSprint[MAXENTITIES] = { 0.0, ... };
 static float f_NextMorale[MAXENTITIES] = { 0.0, ... };
 static float f_NextPearls[MAXENTITIES] = { 0.0, ... };
 static float f_NextKeelhaul[MAXENTITIES] = { 0.0, ... };
-static float f_NextKart[MAXENTITIES] = { 0.0, ... };
 static float Captain_PearlsEndTime[MAXENTITIES] = { 0.0, ... };
 
 static bool Captain_Attacking[MAXENTITIES] = { false, ... };
@@ -152,6 +146,9 @@ static bool Captain_StopMoving[MAXENTITIES] = { false, ... };
 static bool Captain_UsingPearls[MAXENTITIES] = { false, ... };
 static bool Captain_SetPearlsLoop[MAXENTITIES] = { false, ... };
 static bool b_AnchorSprinting[MAXENTITIES] = { false, ... };
+
+static char s_CaptainSequence[MAXENTITIES][255];
+static bool b_CaptainForceSequence[MAXENTITIES] = { false, ... };
 
 public void Captain_OnMapStart_NPC()
 {
@@ -170,6 +167,7 @@ public void Captain_OnMapStart_NPC()
 	PrecacheSound(SOUND_PEARLS_EXPLODE);
 	PrecacheSound(SOUND_ANCHOR_BREAKER_IMPACT_1);
 	PrecacheSound(SOUND_ANCHOR_BREAKER_IMPACT_2);
+	PrecacheSound(SOUND_CAPTAIN_RUSTLE);
 
 	PrecacheModel(MODEL_PEARLS);
 
@@ -305,6 +303,14 @@ methodmap Captain < CClotBody
 		return true;
 	}
 
+	public bool CanUseKeelhaul(float dist)
+	{
+		if (GetGameTime(this.index) < f_NextKeelhaul[this.index] || Captain_Attacking[this.index] || dist > Keelhaul_Range)
+			return false;
+
+		return true;
+	}
+
 	public void AnchorBreaker(int target)
 	{
 		Captain_Attacking[this.index] = true;
@@ -396,7 +402,6 @@ methodmap Captain < CClotBody
 		f_NextMorale[npc.index] = GetGameTime(npc.index) + Morale_StartingCooldown;
 		f_NextPearls[npc.index] = GetGameTime(npc.index) + Pearls_StartingCooldown;
 		f_NextKeelhaul[npc.index] = GetGameTime(npc.index) + Keelhaul_StartingCooldown;
-		f_NextKart[npc.index] = GetGameTime(npc.index) + Kart_StartingCooldown;
 
 		Captain_Attacking[npc.index] = false;
 		Captain_RevertSequence[npc.index] = false;
@@ -429,6 +434,15 @@ public void Captain_ClotThink(int iNPC)
 			npc.StartActivity(activity);
 
 		Captain_RevertSequence[npc.index] = false;
+	}
+
+	if (b_CaptainForceSequence[npc.index])
+	{
+		int activity = npc.LookupActivity(s_CaptainSequence[npc.index]);
+		if (activity > 0)
+			npc.StartActivity(activity);
+
+		b_CaptainForceSequence[npc.index] = false;
 	}
 
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + (Captain_Attacking[npc.index] ? 0.0 : DEFAULT_UPDATE_DELAY_FLOAT);
@@ -555,6 +569,18 @@ public void Captain_ClotThink(int iNPC)
 				if (activity > 0)
 					npc.StartActivity(activity);
 			}
+		}
+
+		if (npc.CanUseKeelhaul(flDistanceToTarget))
+		{
+			int activity = npc.LookupActivity("ACT_CAPTAIN_THROW_ANCHOR");
+			if (activity > 0)
+				npc.StartActivity(activity);
+
+			Captain_StopMoving[npc.index] = true;
+			npc.m_flSpeed = 0.0;
+			Captain_Attacking[npc.index] = true;
+			EmitSoundToAll(SOUND_CAPTAIN_RUSTLE, npc.index, _, 120);
 		}
 	}
 	else
@@ -695,9 +721,111 @@ public void Captain_AnimEvent(int entity, int event)
 			Captain_StopMoving[npc.index] = false;
 			Captain_RevertSequence[npc.index] = true;
 			npc.m_flSpeed = CAPTAIN_SPEED;
-			f_NextAnchor[npc.index] = GetGameTime(npc.index) + Anchor_Cooldown;
+
+			float cd = Anchor_Cooldown;
+
+			float hp = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+			float maxHP = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+
+			float ratio = hp / maxHP;
+
+			float mult = 1.0;
+			if (ratio < 1.0)
+			{
+				if (ratio < Anchor_MinHP)
+					mult = Anchor_CDMult;
+				else
+				{
+					float diff = (1.0 - ratio) / (1.0 - Anchor_MinHP);
+					mult -= Anchor_CDMult * diff;
+				}
+			}
+
+			f_NextAnchor[npc.index] = GetGameTime(npc.index) + (cd * mult);
+		}
+		case 1009:	//Anchor toss begins, play sound.
+		{
+			EmitSoundToAll(SOUND_CAPTAIN_HEAVY_WHOOSH, npc.index, _, _, _, _, GetRandomInt(90, 120));
+			EmitSoundToAll(g_HHHYells[GetRandomInt(0, sizeof(g_HHHYells) - 1)], npc.index, _, 120, _, _, GetRandomInt(80, 90));
+		}
+		case 1010:	//Anchor has been tossed, play sound and fire projectile.
+		{
+			float pos[3], ang[3], targPos[3], Direction[3], vel[3];
+			WorldSpaceCenter(npc.index, pos);
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
+			GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(Direction, Keelhaul_Range);
+			AddVectors(pos, Direction, targPos);
+
+			npc.GetAttachment("handR", pos, ang);
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
+			int anchor = npc.FireRocket(targPos, 0.0, Keelhaul_Velocity_Out, "models/weapons/w_models/w_drg_ball.mdl");
+			if (IsValidEntity(anchor))
+			{
+				SetEntityGravity(anchor, Keelhaul_Gravity); 	
+				ArcToLocationViaSpeedProjectile(pos, targPos, vel, 2.0, 1.0);
+				SetEntityMoveType(anchor, MOVETYPE_FLYGRAVITY);
+				TeleportEntity(anchor, pos, ang, vel);
+
+				int prop = CreateEntityByName("prop_dynamic_override");
+				if (IsValidEntity(prop))
+				{
+					SetEntityModel(prop, BONEZONE_MODEL_BOSS);
+
+					DispatchSpawn(prop);
+					ActivateEntity(prop);
+
+					SetVariantString("captain_anchor_flying");
+					AcceptEntityInput(prop, "SetAnimation");
+
+					TeleportEntity(prop, pos, ang);
+					SetParent(anchor, prop);
+
+					DispatchKeyValueFloat(prop, "modelscale", StringToFloat(CAPTAIN_SCALE));
+				}
+
+				/*int prop = FauxBeardAnchorVisualiser(npc.index, pos, ang, GetTeam(npc.index)).index;
+				if (IsValidEntity(prop))
+				{
+					SetParent(anchor, prop);
+				}*/
+
+				g_DHookRocketExplode.HookEntity(Hook_Pre, anchor, Captain_AnchorCollide);
+			}
+		}
+		case 1011:	//Anchor toss animation is finished, switch to waiting phase.
+		{
+			s_CaptainSequence[npc.index] = "ACT_CAPTAIN_WAIT_FOR_ANCHOR";
+			b_CaptainForceSequence[npc.index] = true;
 		}
 	}
+}
+
+public MRESReturn Captain_AnchorCollide(int entity)
+{
+	float position[3];
+	
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	int particle = ParticleEffectAt(position, PARTICLE_ANCHOR_BREAKER_IMPACT);
+	if (IsValidEntity(particle))
+	{
+		EmitSoundToAll(SOUND_ANCHOR_BREAKER_IMPACT_1, particle, _, 120);
+		EmitSoundToAll(SOUND_ANCHOR_BREAKER_IMPACT_2, particle, _, 120);
+	}
+
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	//TODO: Damage
+	//Explode_Logic_Custom(MOLOTOV_DAMAGE, IsValidEntity(owner) ? owner : entity, entity, entity, position, MOLOTOV_RADIUS, MOLOTOV_FALLOFF_MULTIHIT, MOLOTOV_FALLOFF_RADIUS, isBlue, _, true, MOLOTOV_ENTITYMULT);
+	
+	SetEntityMoveType(entity, MOVETYPE_NONE);
+
+	//RemoveEntity(entity);
+	//TODO: Pull anchor back after delay
+
+	return MRES_Supercede; //DONT.
 }
 
 void Captain_ShootProjectile(Captain npc, float vicLoc[3], float startPos[3], float startAng[3])
