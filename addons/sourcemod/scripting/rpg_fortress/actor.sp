@@ -178,6 +178,9 @@ void Actor_DisableZone(const char[] name)
 /* Must be first interactable */
 bool Actor_Interact(int client, int entity)
 {
+	if(Dungeon_IsDungeon(client))
+		return false;
+	
 	if(CurrentChat[client][0])
 		return true;
 	
