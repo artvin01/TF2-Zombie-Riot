@@ -130,6 +130,8 @@ static char g_MoraleBoostDialogue[][] = {
 #define PARTICLE_PEARLS_EXPLODE			"ExplosionCore_MidAir_underwater"
 #define PARTICLE_PEARLS_TRAIL			"fuse_sparks"
 #define PARTICLE_ANCHOR_BREAKER_IMPACT	"hammer_impact_button_dust2"
+#define PARTICLE_CAPTAIN_ANCHOR_CHAIN	"utaunt_chain_chain_green"
+#define PARTICLE_CAPTAIN_ANCHOR_CHAIN_SPAWN	"merasmus_zap"
 
 #define MODEL_PEARLS					"models/weapons/w_models/w_cannonball.mdl"
 
@@ -139,6 +141,7 @@ static float f_NextMorale[MAXENTITIES] = { 0.0, ... };
 static float f_NextPearls[MAXENTITIES] = { 0.0, ... };
 static float f_NextKeelhaul[MAXENTITIES] = { 0.0, ... };
 static float Captain_PearlsEndTime[MAXENTITIES] = { 0.0, ... };
+static float f_YankAt[MAXENTITIES] = { 0.0, ... };
 
 static bool Captain_Attacking[MAXENTITIES] = { false, ... };
 static bool Captain_RevertSequence[MAXENTITIES] = { false, ... };
@@ -146,9 +149,15 @@ static bool Captain_StopMoving[MAXENTITIES] = { false, ... };
 static bool Captain_UsingPearls[MAXENTITIES] = { false, ... };
 static bool Captain_SetPearlsLoop[MAXENTITIES] = { false, ... };
 static bool b_AnchorSprinting[MAXENTITIES] = { false, ... };
+static bool Anchor_Yanked[MAXENTITIES] = { false, ... };
 
 static char s_CaptainSequence[MAXENTITIES][255];
 static bool b_CaptainForceSequence[MAXENTITIES] = { false, ... };
+
+static int Anchor_Prop[MAXENTITIES] = { -1, ... };
+static int Captain_Chain_Start[MAXENTITIES] = { -1, ... };
+static int Captain_Chain_End[MAXENTITIES] = { -1, ... };
+static int Captain_Anchor[MAXENTITIES] = { -1, ... };
 
 public void Captain_OnMapStart_NPC()
 {
@@ -500,6 +509,17 @@ public void Captain_ClotThink(int iNPC)
 		EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], npc.index, _, _, _, _, 80);
 	}
 
+	if (GetGameTime(npc.index) >= f_YankAt[npc.index] && f_YankAt[npc.index] > 0.0)
+	{
+		int act = npc.LookupActivity("ACT_CAPTAIN_YANK_ANCHOR");
+		if (act > 0)
+			npc.StartActivity(act);
+
+		EmitSoundToAll(SOUND_CAPTAIN_HEAVY_WHOOSH, npc.index, _, 120);
+		f_YankAt[npc.index] = 0.0;
+		//TODO: Pull projectile
+	}
+
 	if (Captain_UsingPearls[npc.index])
 	{
 		if (GetGameTime(npc.index) > Captain_PearlsEndTime[npc.index])
@@ -784,6 +804,8 @@ public void Captain_AnimEvent(int entity, int event)
 					SetParent(anchor, prop);
 
 					DispatchKeyValueFloat(prop, "modelscale", StringToFloat(CAPTAIN_SCALE));
+
+					Anchor_Prop[anchor] = EntIndexToEntRef(prop);
 				}
 
 				/*int prop = FauxBeardAnchorVisualiser(npc.index, pos, ang, GetTeam(npc.index)).index;
@@ -793,11 +815,19 @@ public void Captain_AnimEvent(int entity, int event)
 				}*/
 
 				g_DHookRocketExplode.HookEntity(Hook_Pre, anchor, Captain_AnchorCollide);
+
+				Captain_Anchor[npc.index] = EntIndexToEntRef(anchor);
+				Anchor_Yanked[entity] = false;
 			}
 		}
 		case 1011:	//Anchor toss animation is finished, switch to waiting phase.
 		{
 			s_CaptainSequence[npc.index] = "ACT_CAPTAIN_WAIT_FOR_ANCHOR";
+			b_CaptainForceSequence[npc.index] = true;
+		}
+		case 1012:
+		{
+			s_CaptainSequence[npc.index] = "ACT_CAPTAIN_WAIT_FOR_ANCHOR_YANKED";
 			b_CaptainForceSequence[npc.index] = true;
 		}
 	}
@@ -816,14 +846,37 @@ public MRESReturn Captain_AnchorCollide(int entity)
 	}
 
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
-	//TODO: Damage
-	//Explode_Logic_Custom(MOLOTOV_DAMAGE, IsValidEntity(owner) ? owner : entity, entity, entity, position, MOLOTOV_RADIUS, MOLOTOV_FALLOFF_MULTIHIT, MOLOTOV_FALLOFF_RADIUS, isBlue, _, true, MOLOTOV_ENTITYMULT);
-	
-	SetEntityMoveType(entity, MOVETYPE_NONE);
+	if (!IsValidEntity(owner))
+		RemoveEntity(entity);
+	else if (!Anchor_Yanked[entity])
+	{
+		bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+		//TODO: Damage
+		//Explode_Logic_Custom(MOLOTOV_DAMAGE, IsValidEntity(owner) ? owner : entity, entity, entity, position, MOLOTOV_RADIUS, MOLOTOV_FALLOFF_MULTIHIT, MOLOTOV_FALLOFF_RADIUS, isBlue, _, true, MOLOTOV_ENTITYMULT);
+		
+		f_YankAt[owner] = GetGameTime(owner) + Keelhaul_Pull_Delay;
 
-	//RemoveEntity(entity);
-	//TODO: Pull anchor back after delay
+		SetEntityMoveType(entity, MOVETYPE_NONE);
+
+		int prop = EntRefToEntIndex(Anchor_Prop[entity]);
+		if (IsValidEntity(prop))
+		{
+			SetVariantString("captain_anchor_in_ground");
+			AcceptEntityInput(prop, "SetAnimation");
+
+			int start, end;
+			AttachParticle_ControlPoints(owner, "handR", 0.0, 0.0, 0.0, prop, "captain_anchor_chain", 0.0, 0.0, 0.0, PARTICLE_CAPTAIN_ANCHOR_CHAIN, start, end);
+			Captain_Chain_Start[owner] = EntIndexToEntRef(start);
+			Captain_Chain_End[owner] = EntIndexToEntRef(end);
+
+			float startPos[3], endPos[3], junk[3];
+			GetAttachment(owner, "handR", startPos, junk);
+			GetAttachment(prop, "captain_anchor_chain", endPos, junk);
+			SpawnParticle_ControlPoints(startPos, endPos, PARTICLE_CAPTAIN_ANCHOR_CHAIN_SPAWN, 0.66);
+		}
+
+		Anchor_Yanked[entity] = true;
+	}
 
 	return MRES_Supercede; //DONT.
 }
@@ -896,6 +949,21 @@ public Action Captain_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
+public void Captain_TerminateKeelhaul(int entity)
+{
+	int target = EntIndexToEntRef(Captain_Anchor[entity]);
+	if (IsValidEntity(target))
+		RemoveEntity(target);
+
+	target = EntIndexToEntRef(Captain_Chain_Start[entity]);
+	if (IsValidEntity(target))
+		RemoveEntity(target);
+
+	target = EntIndexToEntRef(Captain_Chain_Start[entity]);
+	if (IsValidEntity(target))
+		RemoveEntity(target);
+}
+
 public void Captain_NPCDeath(int entity)
 {
 	Captain npc = view_as<Captain>(entity);
@@ -904,6 +972,8 @@ public void Captain_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	Captain_TerminateKeelhaul(entity);
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
