@@ -1,17 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char MiningLevels[][] =
-{
-	"Wooden (0)",
-	"Stone (1)",
-	"Bronze (2)",
-	"Iron (3)",
-	"Steel (4)",
-	"Diamond (5)",
-	"Emerald (6)",
-	"Obsidian (7)"
-};
 
 static float f_clientFoundRareRockSpot[MAXTF2PLAYERS];
 static float f_clientFoundRareRockSpotPos[MAXTF2PLAYERS][3];
@@ -283,9 +272,7 @@ void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int
 				}
 				case 2017:
 				{
-					int pos = RoundFloat(value[i]);
-					if(pos < sizeof(MiningLevels))
-						Format(desc, 512, "%s\nMining Level: %s", desc, MiningLevels[pos]);
+					Format(desc, 512, "%s\nMining Level: Tier %d", desc, RoundFloat(value[i]));
 				}
 			}
 		}
@@ -373,7 +360,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 				float attackspeed = Attributes_FindOnWeapon(client, weapon, 6 , true, 1.0);
 				if(tier < mine.Tier)
 				{
-					ShowGameText(client, "ico_metal", 0, "You need atleast %s tier to mine this!", MiningLevels[mine.Tier]);
+					ShowGameText(client, "ico_metal", 0, "You need atleast Tier %d to mine this!", mine.Tier);
 				}
 				else
 				{

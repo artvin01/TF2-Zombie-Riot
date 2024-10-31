@@ -324,7 +324,10 @@ void Plots_ClientEnter(int client, int ref, const char[] name)
 		}
 		else if(Editor_MenuFunc(client) == INVALID_FUNCTION)
 		{
-			Plots_ShowMenu(client);
+			if(TextStore_GetItemCount(client, "Plot Building Permit"))
+				PrintCenterText(client, "This plot is unclaimed");
+			
+			//Plots_ShowMenu(client);
 		}
 	}
 }
@@ -333,6 +336,7 @@ void Plots_ClientLeave(int client, int ref)
 {
 	if(InPlot[client] == ref)
 	{
+		PrintCenterText(client, "");
 		InPlot[client] = 0;
 		if(InMenu[client])
 			TextStore_SwapMenu(client);
