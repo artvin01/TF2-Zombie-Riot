@@ -1227,6 +1227,11 @@ void Dungeon_ResetEntity(int entity)
 	InDungeon[entity][0] = 0;
 }
 
+bool Dungeon_IsDungeon(int client)
+{
+	return view_as<bool>(InDungeon[client][0]);
+}
+
 void Dungeon_ClientDisconnect(int client, bool alive = false)
 {
 	AltMenu[client] = 0;
@@ -1330,6 +1335,7 @@ static void StartDungeon(const char[] name)
 			{
 				if(StrEqual(InDungeon[client], name))
 				{
+					CancelClientMenu(client);
 					mp_disable_respawn_times.ReplicateToClient(client, "1");
 					f3_SpawnPosition[client] = stage.StartPos;
 					ClientCommand(client, "playgamesound vo/compmode/cm_admin_round_start_%02d.mp3", rand + 1);
