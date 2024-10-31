@@ -1820,7 +1820,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 	
 #if defined RPG
-	if((damagetype & DMG_DROWN|DMG_DROWNRECOVER) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+	if((damagetype & DMG_DROWN) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
 		if(damage < 1000.0)
 		{

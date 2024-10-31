@@ -261,9 +261,9 @@ public void DrowedZombieHuman_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 70000.0;
+					float damage = 60000.0;
 					if(npc.m_flDoingSpecial)
-						damage = 75000.0;
+						damage = 65000.0;
 
 					
 					if(target > 0) 
