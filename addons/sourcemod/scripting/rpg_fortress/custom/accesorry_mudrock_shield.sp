@@ -6,7 +6,9 @@ static int TrueStrengthShieldCounter[MAXPLAYERS+1] = {0, ...};
 static bool BobsPureRage[MAXPLAYERS+1] = {false, ...};
 static bool BobsPocketPhone[MAXPLAYERS+1] = {false, ...};
 static bool FlowerItem[MAXPLAYERS+1] = {false, ...};
+static bool BobsWetstone[MAXPLAYERS+1] = {false, ...};
 
+#define SOUND_CRIT_DEAL_BOB		"weapons/rescue_ranger_charge_01.wav"
 public void TrueStrengthShieldUnequip(int client)
 {
 	TrueStrengthShieldCounter[client] = 0;
@@ -14,6 +16,7 @@ public void TrueStrengthShieldUnequip(int client)
 	BobsPureRage[client] = false;
 	BobsPocketPhone[client] = false;
 	FlowerItem[client] = false;
+	BobsWetstone[client] = false;
 	TF2_RemoveCondition(client, TFCond_UberFireResist);
 
 	if (TrueStrengthShieldHandle[client] != INVALID_HANDLE)
@@ -27,6 +30,7 @@ public void TrueStrengthShieldDisconnect(int client)
 	TrueStrengthShieldHandle[client] = INVALID_HANDLE;
 	BobsPureRage[client] = false;
 	BobsPocketPhone[client] = false;
+	BobsWetstone[client] = false;
 }
 
 public void TrueStrengthShieldEquip(int client, int weapon, int index)
@@ -59,6 +63,7 @@ void Abiltity_TrueStrength_Shield_Shield_MapStart()
 	PrecacheSound("player/resistance_heavy4.wav");
 	PrecacheSound("weapons/medi_shield_deploy.wav");
 	PrecacheSound("weapons/medi_shield_retract.wav");
+	PrecacheSound(SOUND_CRIT_DEAL_BOB);
 }
 
 bool Ability_TrueStrength_Shield_OnTakeDamage(int victim)
@@ -213,4 +218,39 @@ public void FlowerCooldownReduction(int client, int weapon, int index)
 bool FlowerReduceCooldown(int client)
 {
 	return FlowerItem[client];
+}
+
+public void RPG_BobWetstone(int client, int weapon, int index)
+{
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		BobsWetstone[client] = true;
+	}
+}
+
+int CurrentHitBobWetstone[MAXTF2PLAYERS];
+
+public float RPG_BobWetstoneTakeDamage(int attacker, int victim, float damagePosition[3])
+{
+	if(attacker > MaxClients)
+		return 1.0;
+
+	if(!BobsWetstone[attacker])
+		return 1.0;
+
+	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		return 1.0;
+
+
+	CurrentHitBobWetstone[attacker]++;
+
+	if(CurrentHitBobWetstone[attacker] >= 6)
+	{
+		CurrentHitBobWetstone[attacker] = 0;
+		DisplayHitEnemyTarget(attacker, damagePosition, false);
+		EmitSoundToClient(attacker, SOUND_CRIT_DEAL_BOB, attacker,_,70,_,0.65);
+		return 3.0;
+	}
+	return 1.0;
 }

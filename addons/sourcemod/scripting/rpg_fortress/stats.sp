@@ -87,42 +87,35 @@ void Stats_EnableCharacter(int client)
 	
 	Stats_UpdateLevel(client);
 }
-
+/*
 int RPGStats_MaxXPAllowed(int client)
 {
 	return (BaseMaxExperience + (BaseMaxExperiencePerLevel * Level[client]));
 }
-
+*/
 void Stats_GiveXP(int client, int xp, int quest = 0)
 {
 	int XPToGive;
-	if(xp > 0 && !quest)
+	if(xp > 0)
 	{
 		int CurrentXp = XP[client];
 		XPToGive = RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
-
 		if(quest == 2)
 		{
 			//We were in a CC
-			if(XPToGive >= CurrentXp)
+			if(CurrentXp >= XPToGive)
 			{
 				SPrintToChat(client, "You are unable to gain XP from Chaos Surgance's untill you spend your XP.");
+				return;
 			}
 		}
-		if(xp > 0)
+		int CalculatedXP;
+		CalculatedXP = XP[client] + XPToGive;
+		if(CalculatedXP <= XPToGive || CalculatedXP >= 2000000000)
 		{
-			int CalculatedXP;
-			CalculatedXP = XP[client] + XPToGive;
-			if(CalculatedXP <= XPToGive || CalculatedXP >= 2000000000)
-			{
-				XP[client] = 2000000000;
-				SPrintToChat(client, "You hit the MAX XP cap, spend your XP.");
-				//we did an overflow. set to 2billion.
-			}
-			else
-			{
-				XP[client] += XPToGive;
-			}
+			XP[client] = 2000000000;
+			SPrintToChat(client, "You hit the MAX XP cap, spend your XP.");
+			//we did an overflow. set to 2billion.
 		}
 		else
 		{
@@ -131,26 +124,8 @@ void Stats_GiveXP(int client, int xp, int quest = 0)
 	}
 	else
 	{
-		if(xp > 0)
-		{
-			int CalculatedXP;
-			XPToGive = RoundToNearest(xp);
-			CalculatedXP = XP[client] + XPToGive;
-			if(CalculatedXP <= XPToGive || CalculatedXP >= 2000000000)
-			{
-				XP[client] = 2000000000;
-				SPrintToChat(client, "You hit the MAX XP cap, spend your XP.");
-				//we did an overflow. set to 2billion.
-			}
-			else
-			{
-				XP[client] += XPToGive;
-			}
-		}
-		else
-		{
-			XP[client] += xp;
-		}
+		//if its negative, just give minus.
+		XP[client] += XPToGive;
 	}
 
 	if(XP[client] > SaveIn[client])

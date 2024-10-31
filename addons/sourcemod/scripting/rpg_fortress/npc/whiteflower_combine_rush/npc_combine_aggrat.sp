@@ -169,6 +169,10 @@ public void Combine_Aggrat_ClotThink(int iNPC)
 
 						npc.m_flNextRangedAttack = gameTime + 0.2;
 						npc.m_iAttacksTillReload--;
+						if(npc.m_iOverlordComboAttack == 1)
+						{
+							npc.m_flNextRangedAttack = gameTime + 0.1;
+						}
 						
 						float x = GetRandomFloat( -0.03, 0.03 );
 						float y = GetRandomFloat( -0.03, 0.03 );

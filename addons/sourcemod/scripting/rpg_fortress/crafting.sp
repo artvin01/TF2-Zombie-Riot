@@ -142,6 +142,7 @@ enum struct CraftEnum
 
 static ArrayList CraftList;
 static StringMap BluePrints;
+static bool CurrentCustom[MAXTF2PLAYERS];
 static ArrayList CurrentMenu[MAXTF2PLAYERS];
 static int CurrentPrint[MAXTF2PLAYERS];
 static char CurrentRecipe[MAXTF2PLAYERS][64];
@@ -343,7 +344,12 @@ bool Crafting_Interact(int client, int entity)
 				return false;
 			}
 
-			delete CurrentMenu[client];
+			if(CurrentCustom[client])
+			{
+				delete CurrentMenu[client];
+				CurrentCustom[client] = false;
+			}
+			
 			CurrentMenu[client] = craft.List;
 			CurrentPrint[client] = -1;
 			CraftMenu(client);
@@ -356,7 +362,13 @@ bool Crafting_Interact(int client, int entity)
 
 void Crafting_SetCustomMenu(int client, ArrayList list)
 {
-	delete CurrentMenu[client];
+	if(CurrentCustom[client])
+	{
+		delete CurrentMenu[client];
+		CurrentCustom[client] = false;
+	}
+	
+	CurrentCustom[client] = true;
 	CurrentMenu[client] = list;
 	CurrentPrint[client] = -1;
 	CraftMenu(client);
@@ -376,7 +388,7 @@ static void CraftMenu(int client)
 
 		bool nonMoney, failed, failed5, failed10;
 		int amount;
-		char cost[192], result[64];
+		char cost[384], result[64];
 		strcopy(cost, sizeof(cost), "Cost:");
 		strcopy(result, sizeof(result), "Result:");
 

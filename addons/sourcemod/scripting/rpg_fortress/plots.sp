@@ -294,9 +294,6 @@ void Plots_ZoneCached()
 				}
 
 				TeleportEntity(prop, pos, ang, NULL_VECTOR, true);
-
-				int FIXMEPLEASEERROR_LIST_THING;
-			//	list.Push(EntIndexToEntRef(prop));
 			}
 		}
 	}

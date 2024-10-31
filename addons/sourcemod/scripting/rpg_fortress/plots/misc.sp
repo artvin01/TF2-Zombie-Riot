@@ -46,3 +46,12 @@ public bool Plots_PersonalMarket(int entity, BuildEnum build, int client)
 	TextStore_ForceEnterStore(client, zone, "market", id);
 	return true;
 }
+
+public bool Plots_CookingMenu(int entity, BuildEnum build, int client)
+{
+	if(!client)
+		return false;
+	
+	Cooking_OpenMenu(client);
+	return true;
+}

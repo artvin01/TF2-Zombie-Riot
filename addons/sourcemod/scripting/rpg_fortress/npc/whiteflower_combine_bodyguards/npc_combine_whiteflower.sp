@@ -27,9 +27,6 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
@@ -673,6 +670,11 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					npc.m_flJumpCooldown = gameTime + 5.0;
 					if(!b_thisNpcIsABoss[npc.index])
 						npc.m_flJumpCooldown = gameTime + 8.0;
+
+					if(npc.m_iOverlordComboAttack == 1)
+					{
+						npc.m_flJumpCooldown = gameTime + 4.0;
+					}
 					//if enemy 
 					npc.PlayRocketSound();
 					if(b_thisNpcIsABoss[npc.index])
@@ -870,7 +872,11 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 		return;
 	}
 	*/
-
+	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
+	if(npc.m_iOverlordComboAttack == 1)
+	{
+		return;
+	}
 	float AllyPos[3];
 	GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", AllyPos);
 	float SelfPos[3];

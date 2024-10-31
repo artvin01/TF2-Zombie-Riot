@@ -436,7 +436,6 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
 	if(RogueTheme == BlueParadox && !force)
-#endif	// ZR
 	{
 		if(f_DomeInsideTest[entity] > GetGameTime())
 		{
@@ -444,6 +443,7 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 			return;
 		}
 	}
+#endif	// ZR
 	
 	CClotBody npc = view_as<CClotBody>(entity);
 		
@@ -1446,6 +1446,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 #endif
 		float percentageGlobal = 1.0;
 		int testvalue1 = 1;
+		float testvaluealot[3];
+		testvaluealot[2] = 6969420.0;
 
 		if(!b_NpcIsInvulnerable[victim])
 		{
@@ -1453,7 +1455,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			if(GetTeam(attacker) != GetTeam(victim))
 			{
 				Damage_AnyAttacker(victim, attacker, attacker, percentageGlobal, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
-				OnTakeDamageDamageBuffs(victim, attacker, attacker, percentageGlobal, testvalue1, testvalue1, GetGameTime());	
+				OnTakeDamageDamageBuffs(victim, attacker, attacker, percentageGlobal, testvalue1, testvalue1, GetGameTime(), testvaluealot);	
 			}
 			
 #if defined ZR

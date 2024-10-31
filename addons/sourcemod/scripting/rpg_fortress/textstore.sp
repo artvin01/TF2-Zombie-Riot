@@ -217,6 +217,7 @@ enum struct SpellEnum
 	float Cooldown;
 	int Store;
 	bool Skill;
+	int Slot;
 }
 
 enum struct MarketEnum
@@ -394,11 +395,29 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 	if(auto)
 		return Item_None;
 	
-	static char buffer[256];
+	static char buffer[512];
 
 	if(!equipped && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 	{
 		int level = item.GetNum("level");
+
+		if(index < 0)
+		{
+			TextStore_GetItemData(index, buffer, sizeof(buffer));
+			int pos = StrContains(buffer, "level");
+			if(pos != -1)
+			{
+				if(IsCharNumeric(buffer[pos + 5]))
+				{
+					level += StringToInt(buffer[pos + 5]);
+				}
+				else
+				{
+					level += StringToInt(buffer[pos + 6]);
+				}
+			}
+		}
+
 		if(level > Level[client])
 		{
 			SPrintToChat(client, "You must be Level %d to use this.", level);
@@ -513,10 +532,15 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 				return Item_On;
 		}
 
+		int slot = item.GetNum("slot", -1);
+		Store_EquipSlotCheck(client, slot);
+		TextStore_EquipSlotCheck(client, slot);
+
 		spell.Owner = client;
 		spell.Store = index;
 		spell.Active = false;
 		spell.Skill = view_as<bool>(item.GetNum("skill"));
+		spell.Slot = slot;
 		strcopy(spell.Name, 64, name);
 		
 		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
@@ -529,6 +553,27 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 		return Item_None;
 	}
 	return Item_On;
+}
+
+void TextStore_EquipSlotCheck(int client, int slot)
+{
+	if(slot >= 0)
+	{
+		static SpellEnum spell;
+		int length = SpellList.Length;
+		for(int i; i < length; i++)
+		{
+			SpellList.GetArray(i, spell);
+			if(spell.Owner == client && spell.Slot == slot)
+			{
+				if(TextStore_GetInv(client, spell.Store))
+				{
+					SPrintToChat(client, "%s was unequipped", spell.Name);
+					TextStore_SetInv(client, spell.Store, _, false);
+				}
+			}
+		}
+	}
 }
 
 void TextStore_ClientDisconnect(int client)
@@ -2533,6 +2578,12 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 									{
 										float calc = cooldownSet - GetGameTime();
 										calc *= 0.8;	
+										cooldownSet = calc + GetGameTime();
+									}
+									if(FlowerReduceCooldown(client))
+									{
+										float calc = cooldownSet - GetGameTime();
+										calc *= 0.95;	
 										cooldownSet = calc + GetGameTime();
 									}
 									

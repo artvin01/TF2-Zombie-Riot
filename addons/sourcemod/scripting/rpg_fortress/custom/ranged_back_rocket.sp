@@ -31,10 +31,10 @@ public float AbilityBackRockets(int client, int index, char name[48])
 		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Ranged Weapon.");
 		return 0.0;
 	}
-	if(Stats_Intelligence(client) < 25)
+	if(Stats_Intelligence(client) < 1250)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [25]");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [1250]");
 		return 0.0;
 	}
 
@@ -341,10 +341,10 @@ public float Ability_ExplosiveStickyBall(int client, int index, char name[48])
 		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Ranged Weapon.");
 		return 0.0;
 	}
-	if(Stats_Intelligence(client) < 25)
+	if(Stats_Intelligence(client) < 750)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [25]");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [750]");
 		return 0.0;
 	}
 	
@@ -384,7 +384,6 @@ public float Ability_ExplosiveStickyBall(int client, int index, char name[48])
 	return (GetGameTime() + time);
 }
 
-Handle BombTimerOnClient[MAXTF2PLAYERS];
 public float Ability_ExplosiveBall(int client, int level, int weapon)
 {
 	float vecSwingForward[3];

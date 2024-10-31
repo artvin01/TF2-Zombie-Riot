@@ -78,10 +78,10 @@ public float AbilityMagicFocus(int client, int index, char name[48])
 		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Magic Wand.");
 		return 0.0;
 	}
-	if(Stats_Intelligence(client) < 25)
+	if(Stats_Intelligence(client) < 1250)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [25]");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [1250]");
 		return 0.0;
 	}
 

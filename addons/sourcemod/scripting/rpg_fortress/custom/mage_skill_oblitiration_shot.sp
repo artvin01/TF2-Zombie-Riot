@@ -35,10 +35,10 @@ public float AbilityOblitirationShot(int client, int index, char name[48])
 		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Magic Wand.");
 		return 0.0;
 	}
-	if(Stats_Intelligence(client) < 25)
+	if(Stats_Intelligence(client) < 750)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [25]");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [750]");
 		return 0.0;
 	}
 
@@ -68,8 +68,6 @@ public float AbilityOblitirationShot(int client, int index, char name[48])
 		return 0.0;
 	}
 	float Time = 20.0;
-	Time = 0.0;
-	int REMOVEMECOOLDOWNAAA;
 	if(ChronoShiftReady(client) == 2)
 	{
 		ChronoShiftDoCooldown(client);

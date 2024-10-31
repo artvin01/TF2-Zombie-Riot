@@ -58,6 +58,7 @@ public void Iberian_TakeDamage4th(int victim, int &attacker, int &inflictor, flo
 		float HitChance = 0.8;
 		int MaxHealth = ReturnEntityMaxHealth(victim);
 		int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+		Health *= 1.3;
 
 		HitChance *=float(Health) / float(MaxHealth);
 

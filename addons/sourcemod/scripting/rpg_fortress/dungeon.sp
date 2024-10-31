@@ -1843,24 +1843,30 @@ public void Dungeon_Spawn_FlatResWF1(int entity)
 
 public void Dungeon_Spawn_BuffBosses1(int entity)
 {
-	int health = ReturnEntityMaxHealth(entity);
-	
-	health = RoundToNearest(float(health) * 1.1);
-	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-	SetEntProp(entity, Prop_Data, "m_iHealth", health);
-	fl_Extra_Damage[entity] *= 1.1;
-	fl_Extra_Speed[entity] *= 1.1;
+	if(b_thisNpcIsABoss[entity])
+	{
+		int health = ReturnEntityMaxHealth(entity);
+		
+		health = RoundToNearest(float(health) * 1.1);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.1;
+		fl_Extra_Speed[entity] *= 1.1;
+	}
 }
 
 public void Dungeon_Spawn_BuffBosses2(int entity)
 {
-	int health = ReturnEntityMaxHealth(entity);
-	
-	health = RoundToNearest(float(health) * 1.2);
-	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-	SetEntProp(entity, Prop_Data, "m_iHealth", health);
-	fl_Extra_Damage[entity] *= 1.2;
-	fl_Extra_Speed[entity] *= 1.2;
+	if(b_thisNpcIsABoss[entity])
+	{
+		int health = ReturnEntityMaxHealth(entity);
+		
+		health = RoundToNearest(float(health) * 1.2);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.2;
+		fl_Extra_Speed[entity] *= 1.2;
+	}
 }
 
 public void Dungeon_Spawn_MegaEnslaver(int entity)
@@ -2120,6 +2126,51 @@ public void Dungeon_Spawn_SelectedOne(int entity)
 	}
 }
 
+public void Dungeon_Spawn_WhiteflowerLeadersStrong(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_whiteflower_boss") || StrEqual(npc_classname, "npc_whiteflower_outlander_leader") || StrEqual(npc_classname, "npc_whiteflower_flowering_darkness"))
+	{
+		int health = ReturnEntityMaxHealth(entity);
+		health = RoundToNearest(float(health) * 2.0);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Speed[entity] *= 1.05;
+		f_HussarBuff[entity] = GetGameTime() + 15.0;
+	}
+}
+
+public void Dungeon_Spawn_Aggrated(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_whiteflower_aggrat"))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+		npc.m_iOverlordComboAttack = 1;
+		fl_Extra_Damage[entity] *= 2.0;
+	}
+}
+
+public void Dungeon_Spawn_NormalEnemyBuffWF(int entity)
+{
+	if(!b_thisNpcIsABoss[entity])
+	{
+		fl_Extra_Damage[entity] *= 1.15;
+		i_HpRegenInBattle[entity] *= 3;
+		fl_Extra_Speed[entity] *= 1.15;
+	}
+}
+
+public void Dungeon_Spawn_TempMegaBuff(int entity)
+{
+	f_BuffBannerNpcBuff[entity] = GetGameTime() + 5.0;
+	f_BattilonsNpcBuff[entity] = GetGameTime() + 5.0;
+}
+
 
 public void Dungeon_Spawn_AntiIberianTank(int entity)
 {
@@ -2137,7 +2188,6 @@ public void Dungeon_Spawn_AntiIberianTank(int entity)
 		fl_Extra_Damage[entity] *= 1.2;
 	}
 }
-
 
 public void Dungeon_Spawn_SecondGiant(ArrayList list)
 {
@@ -2159,6 +2209,30 @@ public void Dungeon_Spawn_SecondGiant(ArrayList list)
 		wave.ExtraSpeed = 1.4;
 		wave.ExtraDamage = 1.4;
 		wave.CustomName = "Copied W.F. Giant Man";
+	}
+	list.PushArray(wave);
+}
+
+public void Dungeon_Spawn_SecondGiantStrong(ArrayList list)
+{
+	static WaveEnum wave;
+	if(!wave.Index)
+	{	
+		wave.Delay = 45.0;
+		wave.Index = NPC_GetByPlugin("npc_whiteflower_giant_swordsman");
+		wave.Pos = {-5253.514648, -10782.250976, 3264.031250};
+		wave.Angle = -130.0;
+		wave.Boss = true;
+		wave.Level = 20000;
+		wave.Health = 70000000;
+		wave.Rarity = 1;
+		wave.HPRegen= 70000;
+
+		wave.ExtraMeleeRes = 1.0;
+		wave.ExtraRangedRes = 1.0;
+		wave.ExtraSpeed = 1.5;
+		wave.ExtraDamage = 3.0;
+		wave.CustomName = "W.F. Giant Man";
 	}
 	list.PushArray(wave);
 }

@@ -47,7 +47,7 @@ enum struct MealEnum
 		kv.GetSectionName(this.Item, 48);
 
 		this.Uses = kv.GetNum("uses", 1);
-		this.Foods = kv.GetNum("food", 1);
+		this.Foods = kv.GetNum("foods", 1);
 		kv.GetString("required", this.Required, 48);
 		this.RequireAmount = kv.GetNum("requiredamount");
 		this.Level = kv.GetNum("level");
@@ -133,6 +133,14 @@ void Cooking_StoreCached()
 
 void Cooking_OpenMenu(int client)
 {
+	CurrentChoice[client] = -1;
+	CurrentMeal[client] = -1;
+	CurrentLevelBuff[client] = 0;
+	for(int i; i < sizeof(CurrentFood[]); i++)
+	{
+		CurrentFood[client][i] = 0;
+	}
+
 	CookingMenu(client);
 }
 
@@ -411,7 +419,8 @@ static void CookProduct(int client)
 	MealList.GetArray(CurrentMeal[client], meal);
 
 	int level = meal.Level;
-	float multi = 1.0;
+	float statsBuff = 1.0;
+	float healingBuff = 1.0;
 
 	if(LevelBalance && CurrentLevelBuff[client])
 	{
@@ -446,7 +455,7 @@ static void CookProduct(int client)
 		}
 
 		// New Level Multi
-		multi = lowBuff + (((level - lowLv) / (highLv - lowLv)) * (highBuff - lowBuff));
+		statsBuff = lowBuff + (((level - lowLv) / (highLv - lowLv)) * (highBuff - lowBuff));
 
 		lowLv = -1;
 		highLv = 1999999999;
@@ -474,7 +483,7 @@ static void CookProduct(int client)
 		}
 
 		// Old Level Multi
-		multi /= lowBuff + (((meal.Level - lowLv) / (highLv - lowLv)) * (highBuff - lowBuff));
+		healingBuff = statsBuff / (lowBuff + (((meal.Level - lowLv) / (highLv - lowLv)) * (highBuff - lowBuff)));
 	}
 
 	char buffer[32];
@@ -482,11 +491,11 @@ static void CookProduct(int client)
 
 	map.SetValue("uses", float(meal.Uses));
 
-	if(multi != 1.0)
+	if(healingBuff != 1.0)
 	{
-		map.SetValue("healing", multi);
-		map.SetValue("stamina", multi);
-		map.SetValue("energy", multi);
+		map.SetValue("healing", healingBuff);
+		map.SetValue("stamina", healingBuff);
+		map.SetValue("energy", healingBuff);
 	}
 
 	char name[256], short[48], good[128], bad[128];
@@ -542,12 +551,19 @@ static void CookProduct(int client)
 					do
 					{
 						kv.GetSectionName(buffer, sizeof(buffer));
-						if(!StrContains(buffer, "food_", false))
+						if(!StrContains(buffer, "food_a_", false))
 						{
-							multi = 1.0;
-							map.GetValue(buffer, multi);
+							float multi = 0.0;
+							map.GetValue(buffer[7], multi);
+							multi += kv.GetFloat(NULL_STRING, 1.0) * meal.Bonuses[type];
+							map.SetValue(buffer[7], multi);
+						}
+						else if(!StrContains(buffer, "food_", false))
+						{
+							float multi = 1.0;
+							map.GetValue(buffer[5], multi);
 							multi *= 1.0 + ((kv.GetFloat(NULL_STRING, 1.0) - 1.0) * meal.Bonuses[type]);
-							map.SetValue(buffer, multi);
+							map.SetValue(buffer[5], multi);
 						}
 					}
 					while(kv.GotoNextKey(false));
@@ -555,25 +571,6 @@ static void CookProduct(int client)
 
 				TextStore_GetInv(client, CurrentFood[client][i], type);
 				TextStore_SetInv(client, CurrentFood[client][i], type - 1);
-
-				/*
-				healing *= MuKv(kv, "foodhealing", meal.Bonuses[type]);
-				stamina *= MuKv(kv, "foodstamina", meal.Bonuses[type]);
-				energy *= MuKv(kv, "foodenergy", meal.Bonuses[type]);
-				duration *= MuKv(kv, "foodduration", meal.Bonuses[type]);
-				usage *= MuKv(kv, "foodusage", meal.Bonuses[type]);
-				resist *= MuKv(kv, "foodresist", meal.Bonuses[type]);
-				damage *= MuKv(kv, "fooddamage", meal.Bonuses[type]);
-				strength *= MuKv(kv, "foodstrength", meal.Bonuses[type]);
-				precision *= MuKv(kv, "foodprecision", meal.Bonuses[type]);
-				artifice *= MuKv(kv, "foodartifice", meal.Bonuses[type]);
-				endurnace *= MuKv(kv, "foodendurnace", meal.Bonuses[type]);
-				structure *= MuKv(kv, "foodstructure", meal.Bonuses[type]);
-				intelligence *= MuKv(kv, "foodintelligence", meal.Bonuses[type]);
-				capacity *= MuKv(kv, "foodcapacity", meal.Bonuses[type]);
-				agility *= MuKv(kv, "foodagility", meal.Bonuses[type]);
-				luck *= MuKv(kv, "foodluck", meal.Bonuses[type]);
-				*/
 			}
 		}
 	}
@@ -587,11 +584,23 @@ static void CookProduct(int client)
 
 	StringMapSnapshot snap = map.Snapshot();
 
+	float multi = 1.0;
 	int length = snap.Length;
 	for(int i; i < length; i++)
 	{
 		snap.GetKey(i, buffer, sizeof(buffer));
 		map.GetValue(buffer, multi);
+
+		if(StrEqual(buffer, "strength") ||
+			StrEqual(buffer, "precision") || 
+			StrEqual(buffer, "artifice") || 
+			StrEqual(buffer, "endurnace") || 
+			StrEqual(buffer, "structure") || 
+			StrEqual(buffer, "intelligence") || 
+			StrEqual(buffer, "capacity"))
+		{
+			multi *= statsBuff;
+		}
 
 		if(i)
 		{
@@ -608,7 +617,7 @@ static void CookProduct(int client)
 	int index = TextStore_CreateUniqueItem(client, meal.Store, data, strlen(name) > 46 ? short : name);
 	TextStore_UseItem(client, index, false);
 
-	SPrintToChat(client, "You prepared a %s%s", STORE_COLOR2, name);
+	SPrintToChat(client, "You prepared a %s%s%s and equipped it", STORE_COLOR2, name, STORE_COLOR);
 
 	if(good[0] && bad[0])
 	{
@@ -700,9 +709,17 @@ void Cooking_DescItem(int index, KeyValues kv, char[] desc)
 	float healing = MergMult(kv, map, "healing");
 	float overheal = MergMult(kv, map, "overheal");
 
-	Format(desc, 512, "Uses Left: %d\nHeals %.0f HP over %.0f seconds (%d%% Overheal)", RoundToCeil(uses), healing, duration, RoundFloat(overheal * 100.0));
+	Format(desc, 512, "Uses Left: %d | Level: %.0f\nHeals %.0f HP over %.0f seconds (%d%% Overheal)", RoundToCeil(uses), MergAdd(kv, map, "level"), healing, duration, RoundFloat(overheal * 100.0));
 
-	float value = MergMult(kv, map, "resist");
+	float value = MergMult(kv, map, "stamina");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Stats of Stamina", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+	
+	value = MergMult(kv, map, "energy");
+	if(value)
+		Format(desc, 512, "%s\n%s%d Stats of Energy", desc, value > 0.0 ? "+" : "", RoundFloat(value));
+	
+	value = MergMult(kv, map, "resist");
 	if(value != 1.0)
 		Format(desc, 512, "%s\n%s%.0f%% Damage Resistance", desc, value < 1.0 ? "+" : "", 100.0 - (value * 100.0));
 
@@ -710,39 +727,39 @@ void Cooking_DescItem(int index, KeyValues kv, char[] desc)
 	if(value != 1.0)
 		Format(desc, 512, "%s\n%s%.0f%% Damage Dealt", desc, value > 1.0 ? "+" : "", value * 100.0);
 	
-	value = MergMult(kv, map, "strength");
+	value = MergAdd(kv, map, "strength");
 	if(value)
 		Format(desc, 512, "%s\n%s%d Strength", desc, value > 0.0 ? "+" : "", RoundFloat(value));
 	
-	value = MergMult(kv, map, "precision");
+	value = MergAdd(kv, map, "precision");
 	if(value)
 		Format(desc, 512, "%s\n%s%d Precision", desc, value > 0.0 ? "+" : "", RoundFloat(value));
 	
-	value = MergMult(kv, map, "artifice");
+	value = MergAdd(kv, map, "artifice");
 	if(value)
 		Format(desc, 512, "%s\n%s%d Artifice", desc, value > 0.0 ? "+" : "", RoundFloat(value));
 	
-	value = MergMult(kv, map, "endurnace");
+	value = MergAdd(kv, map, "endurnace");
 	if(value)
 		Format(desc, 512, "%s\n%s%d Endurnace", desc, value > 0.0 ? "+" : "", RoundFloat(value));
 	
-	value = MergMult(kv, map, "structure");
+	value = MergAdd(kv, map, "structure");
 	if(value)
 		Format(desc, 512, "%s\n%s%d Structure", desc, value > 0.0 ? "+" : "", RoundFloat(value));
 	
-	value = MergMult(kv, map, "intelligence");
+	value = MergAdd(kv, map, "intelligence");
 	if(value)
 		Format(desc, 512, "%s\n%s%d Intelligence", desc, value > 0.0 ? "+" : "", RoundFloat(value));
 	
-	value = MergMult(kv, map, "capacity");
+	value = MergAdd(kv, map, "capacity");
 	if(value)
 		Format(desc, 512, "%s\n%s%d Capacity", desc, value > 0.0 ? "+" : "", RoundFloat(value));
 	
-	value = MergMult(kv, map, "luck");
+	value = MergAdd(kv, map, "luck");
 	if(value)
 		Format(desc, 512, "%s\n%s%d Luck", desc, value > 0.0 ? "+" : "", RoundFloat(value));
 	
-	value = MergMult(kv, map, "agility");
+	value = MergAdd(kv, map, "agility");
 	if(value)
 		Format(desc, 512, "%s\n%s%d Agility", desc, value > 0.0 ? "+" : "", RoundFloat(value));
 
@@ -775,7 +792,15 @@ public float Cooking_UseFunction(int client, int index, char name[48])
 
 		HealEntityGlobal(client, client, healing, overheal, duration, HEAL_SELFHEAL);
 
-		float value = MergMult(kv, map, "resist");
+		float value = MergMult(kv, map, "stamina");
+		if(value)
+			RPGCore_StaminaAddition(client, RPGStats_RetrieveMaxStamina(RoundFloat(value)));
+
+		value = MergMult(kv, map, "energy");
+		if(value)
+			RPGCore_ResourceAddition(client, RoundToNearest(RPGStats_RetrieveMaxEnergy(RoundFloat(value))));
+
+		value = MergMult(kv, map, "resist");
 		if(value != 1.0)
 			IncreaceEntityDamageTakenBy(client, value, duration);
 
@@ -783,39 +808,39 @@ public float Cooking_UseFunction(int client, int index, char name[48])
 		if(value != 1.0)
 			IncreaceEntityDamageDealtBy(client, value, duration);
 		
-		value = MergMult(kv, map, "strength");
+		value = MergAdd(kv, map, "strength");
 		if(value)
 			ApplyTempStat(client, -2, value, duration);
 		
-		value = MergMult(kv, map, "precision");
+		value = MergAdd(kv, map, "precision");
 		if(value)
 			ApplyTempStat(client, -3, value, duration);
 		
-		value = MergMult(kv, map, "artifice");
+		value = MergAdd(kv, map, "artifice");
 		if(value)
 			ApplyTempStat(client, -4, value, duration);
 		
-		value = MergMult(kv, map, "endurnace");
+		value = MergAdd(kv, map, "endurnace");
 		if(value)
 			ApplyTempStat(client, -5, value, duration);
 		
-		value = MergMult(kv, map, "structure");
+		value = MergAdd(kv, map, "structure");
 		if(value)
 			ApplyTempStat(client, -6, value, duration);
 		
-		value = MergMult(kv, map, "intelligence");
+		value = MergAdd(kv, map, "intelligence");
 		if(value)
 			ApplyTempStat(client, -7, value, duration);
 		
-		value = MergMult(kv, map, "capacity");
+		value = MergAdd(kv, map, "capacity");
 		if(value)
 			ApplyTempStat(client, -8, value, duration);
 		
-		value = MergMult(kv, map, "luck");
+		value = MergAdd(kv, map, "luck");
 		if(value)
 			ApplyTempStat(client, -9, value, duration);
 		
-		value = MergMult(kv, map, "agility");
+		value = MergAdd(kv, map, "agility");
 		if(value)
 			ApplyTempStat(client, -10, value, duration);
 
@@ -856,6 +881,13 @@ public float Cooking_UseFunction(int client, int index, char name[48])
 		return GetGameTime() + MergMult(kv, map, "cooldown") + duration;
 	}
 	return FAR_FUTURE;
+}
+
+static float MergAdd(KeyValues kv, StringMap map, const char[] name, float defaul = 0.0)
+{
+	float value = 0.0;
+	map.GetValue(name, value);
+	return value + kv.GetFloat(name, defaul);
 }
 
 static float MergMult(KeyValues kv, StringMap map, const char[] name, float defaul = 1.0)

@@ -296,8 +296,6 @@ void Races_ConfigSetup()
 		BaseUpgradeScale = kv.GetNum("Experience Cost Increace Per Level");
 		BaseUpdateStats = kv.GetNum("Stats Into Level Needed", 1);
 		BaseMaxLevel = kv.GetNum("Max Level");
-		BaseMaxExperience = kv.GetNum("Max Experience At Once Allowed");
-		BaseMaxExperiencePerLevel = kv.GetNum("Max Experience At Once Allowed Per Level Increace");
 
 		kv.GoBack();
 	}

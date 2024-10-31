@@ -10601,9 +10601,11 @@ void ExtinguishTarget(int target)
 void IsEntityInvincible_Shield(int entity)
 {
 	bool NpcInvulShieldDisplay;
+#if defined ZR
+//This is not neccecary in RPG.
 	if(i_npcspawnprotection[entity] == 1)
 		NpcInvulShieldDisplay = true;
-
+#endif
 	if(b_NpcIsInvulnerable[entity])
 		NpcInvulShieldDisplay = true;
 	

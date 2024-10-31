@@ -7,7 +7,7 @@ public bool Plots_Crafting_Smithing1(int entity, BuildEnum build, int client)
 		return false;
 	
 	ArrayList list = new ArrayList(ByteCountToCells(64));
-	list.PushString("Smelting Tier 1");
+	list.PushString("Smithing Tier 1");
 	Crafting_SetCustomMenu(client, list);
 	return true;
 }
@@ -18,8 +18,8 @@ public bool Plots_Crafting_Smithing2(int entity, BuildEnum build, int client)
 		return false;
 	
 	ArrayList list = new ArrayList(ByteCountToCells(64));
-	list.PushString("Smelting Tier 1");
-	list.PushString("Smelting Tier 2");
+	list.PushString("Smithing Tier 1");
+	list.PushString("Smithing Tier 2");
 	Crafting_SetCustomMenu(client, list);
 	return true;
 }
@@ -30,9 +30,9 @@ public bool Plots_Crafting_Smithing3(int entity, BuildEnum build, int client)
 		return false;
 	
 	ArrayList list = new ArrayList(ByteCountToCells(64));
-	list.PushString("Smelting Tier 1");
-	list.PushString("Smelting Tier 2");
-	list.PushString("Smelting Tier 3");
+	list.PushString("Smithing Tier 1");
+	list.PushString("Smithing Tier 2");
+	list.PushString("Smithing Tier 3");
 	Crafting_SetCustomMenu(client, list);
 	return true;
 }

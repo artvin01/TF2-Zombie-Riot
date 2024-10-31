@@ -4,6 +4,9 @@
 
 #define MAX_EXPI_ENERGY_EFFECTS 71
 
+
+
+#if defined ZR
 int i_ExpidonsaEnergyEffect[MAXENTITIES][MAX_EXPI_ENERGY_EFFECTS];
 int i_ExpidonsaShieldCapacity[MAXENTITIES];
 int i_ExpidonsaShieldCapacity_Mini[MAXENTITIES];
@@ -11,8 +14,6 @@ int i_Expidonsa_ShieldEffect[MAXENTITIES];
 float f_Expidonsa_ShieldBroke[MAXENTITIES];
 bool EnemyShieldCantBreak[MAXENTITIES];
 
-
-#if defined ZR
 stock void ExpidonsaRemoveEffects(int iNpc)
 {
 	for(int loop = 0; loop<MAX_EXPI_ENERGY_EFFECTS; loop++)
@@ -305,12 +306,12 @@ stock bool Expidonsa_DontHealSameIndex(int entity, int victim, float &healingamm
 
 	return false;
 }
-
+#if defined ZR
 float ExpidonsanShieldBroke(int entity)
 {
 	return(f_Expidonsa_ShieldBroke[entity]);
 }
-
+#endif
 stock bool Expidonsa_DontHealBosses(int entity, int victim, float &healingammount)
 {
 	if(b_thisNpcIsABoss[victim] ||

@@ -2714,6 +2714,10 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 #endif
 
 #if defined RPG
+	//Set ammo to inf here.
+	SetAmmo(client, 1, 9999);
+	SetAmmo(client, 2, 9999);
+
 	RPGStore_SetWeaponDamageToDefault(weapon, client, classname);
 	WeaponAttackResourceReduction(client, weapon);
 #endif

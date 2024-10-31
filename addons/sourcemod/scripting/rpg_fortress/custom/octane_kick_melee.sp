@@ -3,7 +3,6 @@ float f_OctaneDashDamage[MAXTF2PLAYERS];
 float f_OctaneDashDuration[MAXTF2PLAYERS];
 
 
-static bool b_TouchedEnemyTarget[MAXENTITIES];
 void OctaneKick_Map_Precache()
 {
 	PrecacheSound("ambient/explosions/explode_3.wav", true);
@@ -35,10 +34,10 @@ public float AbilityOctaneKick(int client, int index, char name[48])
 		return 0.0;
 	}
 
-	if(Stats_Intelligence(client) < 25)
+	if(Stats_Intelligence(client) < 1250)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [25]");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [1250]");
 		return 0.0;
 	}
 	
@@ -85,7 +84,15 @@ public void Ability_OnAbility_OctaneKick(int client, int level, int weapon, floa
 	int particle = ParticleEffectAt(flPos, "scout_dodge_red", 3.0);
 	SetParent(viewmodelModel, particle);
 	i_ParticleIndex[client] = EntIndexToEntRef(particle);
-	Zero(b_TouchedEnemyTarget);
+	
+	for(int i = 1; i < MAXENTITIES; i++)
+	{
+		if(f_OctaneDashHitTarget[client][i])
+		{
+			f_OctaneDashHitTarget[client][i] = false;
+		}
+	}
+
 	SDKUnhook(client, SDKHook_PreThink, OctaneKick_ClientPrethink);
 	SDKHook(client, SDKHook_PreThink, OctaneKick_ClientPrethink);
 	EmitCustomToAll("rpg_fortress/enemy/whiteflower_dash.mp3", client, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.2, 100);
@@ -174,10 +181,10 @@ static void OctaneKick_KickTouched(int entity, int enemy)
 	if(!IsValidEnemy(entity, enemy))
 		return;
 
-	if(b_TouchedEnemyTarget[enemy])
+	if(f_OctaneDashHitTarget[entity][enemy])
 		return;
 
-	b_TouchedEnemyTarget[enemy] = true;
+	f_OctaneDashHitTarget[entity][enemy] = true;
 	
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);

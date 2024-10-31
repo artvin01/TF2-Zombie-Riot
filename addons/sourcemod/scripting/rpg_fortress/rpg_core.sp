@@ -26,8 +26,6 @@ int BaseUpgradeCost;
 int BaseUpgradeScale;
 int BaseUpdateStats = 1;
 int BaseMaxLevel;
-int BaseMaxExperience;
-int BaseMaxExperiencePerLevel;
 ConVar mp_disable_respawn_times;
 ConVar CvarSkyName;
 
@@ -754,7 +752,9 @@ void RPGCore_ResourceReduction(int client, int amount, bool isformdrain = false)
 			return;
 		//De-Transform logic.
 		De_TransformClient(client);
-		TF2_StunPlayer(client, 5.0, 0.25, TF_STUNFLAGS_LOSERSTATE|TF_STUNFLAG_SLOWDOWN);
+		TF2_StunPlayer(client, 3.0, 0.75, TF_STUNFLAGS_LOSERSTATE|TF_STUNFLAG_SLOWDOWN);
+		f_TransformationDelay[client] = GetGameTime() + 6.0;
+		//less punishment.
 		int i, entity;
 		while(TF2_GetItem(client, entity, i))
 		{
@@ -868,7 +868,7 @@ bool RPGCore_ClientAllowedToTargetNpc(int victim, int attacker)
 		}
 	}
 	//if someone attacked them while in a party, then allow.
-	if(!EnemyWasAttackedBefore && i_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] > 0)
+	if(!EnemyWasAttackedBefore && i_npcspawnprotection[victim] != -1 && i_NpcIsUnderSpawnProtectionInfluence[victim] > 0)
 	{
 		if(!RPGSpawns_GivePrioLevel(Level[victim], Level[attacker]))
 		{

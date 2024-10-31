@@ -61,8 +61,9 @@ public void MercHuman_TakeDamage4th(int victim, int &attacker, int &inflictor, f
 			GiveCompleteInvul(victim, 2.0);
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 			int MaxHealth = ReturnEntityMaxHealth(victim);
-			HealEntityGlobal(victim, victim, float(MaxHealth) / 2, 1.0, 4.0, HEAL_SELFHEAL);
+			HealEntityGlobal(victim, victim, float(MaxHealth) / 2.0, 1.0, 4.0, HEAL_SELFHEAL);
 			RPGCore_StaminaAddition(victim, i_MaxStamina[victim] / 2);
+			HealEntityGlobal(victim, victim, float(MaxHealth) / 1.4, 1.0, 10.0, HEAL_SELFHEAL);
 			RPGCore_ResourceAddition(victim, RoundToCeil(max_mana[victim] / 2.0));
 			MakePlayerGiveResponseVoice(victim, 4); //haha!
 		}

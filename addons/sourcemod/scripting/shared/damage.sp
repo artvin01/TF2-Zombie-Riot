@@ -344,7 +344,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 
 
 #if !defined RTS
-		OnTakeDamageDamageBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
+		OnTakeDamageDamageBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime, damagePosition);
 
 		OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 		
@@ -1797,7 +1797,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 #endif
 }
 
-stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
+stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime, float damagePosition[3])
 {
 	float basedamage = damage;
 #if defined ZR
@@ -1902,6 +1902,13 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	{
 		damage += basedamage * (0.3 * DamageBuffExtraScaling);
 	}	
+#if defined RPG	
+	if(damagePosition[2] != 6969420.0)
+	{
+		//There is crit damage from this item.
+		damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);
+	}
+#endif
 }
 #endif	// Non-RTS
 
