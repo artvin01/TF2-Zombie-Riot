@@ -73,16 +73,48 @@ void Zones_Rebuild()
 	delete ActiveZones;
 	ActiveZones = new ArrayList(ByteCountToCells(64));
 
-	int entity;
+	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "trigger_rpgzone")) != -1)
 	{
 		RemoveEntity(entity);
+	}
+
+	entity = -1;
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	{
+		if(hFromSpawnerIndex[entity] != -1)
+			NPC_Despawn(entity);
+	}
+	
+	char buffer[PLATFORM_MAX_PATH];
+	for(int i=MAXENTITIES; i>MaxClients; i--)
+	{
+		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
+		{
+			if(!StrContains(buffer, "prop_dynamic") || !StrContains(buffer, "point_worldtext") || !StrContains(buffer, "info_particle_system"))
+			{
+				GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(!StrEqual(buffer, "rpg_fortress"))
+					continue;
+			}
+			else if(!StrContains(buffer, "prop_physics"))
+			{
+				GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(StrContains(buffer, "rpg_item"))
+					continue;
+			}
+			else
+			{
+				continue;
+			}
+
+			RemoveEntity(i);
+		}
 	}
 	
 	ZonesKv.Rewind();
 	if(ZonesKv.GotoFirstSubKey())
 	{
-		char buffer[PLATFORM_MAX_PATH];
 		float pos[3], mins[3], maxs[3];
 		
 		do
@@ -174,6 +206,8 @@ void Zones_Rebuild()
 		}
 		while(ZonesKv.GotoNextKey());
 	}
+
+	Plots_ZoneCached();
 }
 
 static void OnEnter(int entity, const char[] name, int zone)
@@ -189,12 +223,13 @@ static void OnEnter(int entity, const char[] name, int zone)
 		Games_ClientEnter(entity, name);
 		Garden_ClientEnter(entity, name);
 		Music_ZoneEnter(entity, zone);
+		Plots_ClientEnter(entity, EntIndexToEntRef(zone), name);
 		Spawns_ClientEnter(entity, name);
-		TextStore_ZoneEnter(entity, name);		
+		TextStore_ZoneEnter(entity, name);
 	}
 }
 
-static void OnLeave(int entity, const char[] name)
+static void OnLeave(int entity, const char[] name, int zone)
 {
 	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
@@ -202,6 +237,7 @@ static void OnLeave(int entity, const char[] name)
 	else if(entity > 0 && entity <= MaxClients)
 	{
 		Garden_ClientLeave(entity, name);
+		Plots_ClientLeave(entity, EntIndexToEntRef(zone));
 		Spawns_ClientLeave(entity, name);
 		TextStore_ZoneLeave(entity, name);	
 	}
@@ -217,12 +253,13 @@ static void OnEnable(const char[] name)
 	Worldtext_EnableZone(name);
 }
 
-static void OnDisable(const char[] name)
+static void OnDisable(const char[] name, int zone)
 {
 	Actor_DisableZone(name);
 	Crafting_DisableZone(name);
 	Dungeon_DisableZone(name);
 	Mining_DisableZone(name);
+	Plots_DisableZone(EntIndexToEntRef(zone));
 	Spawns_DisableZone(name);
 	TextStore_ZoneAllLeave(name);
 	Tinker_DisableZone(name);
@@ -260,7 +297,7 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 		if(caller <= MaxClients)
 		{
 			if(GetEntProp(entity, Prop_Data, "m_bPvpZone"))
-				b_PlayerIsPVP[caller] = true;
+				b_PlayerIsPVP[caller]++;
 		}
 
 		GetEntPropString(entity, Prop_Data, "m_nSkyBoxOverride", name, sizeof(name));
@@ -293,11 +330,11 @@ public Action Zones_EndTouch(const char[] output, int entity, int caller, float 
 		if(caller <= MaxClients)
 		{
 			if(GetEntProp(entity, Prop_Data, "m_bPvpZone"))
-				b_PlayerIsPVP[caller] = false;
+				b_PlayerIsPVP[caller]--;
 		}
 		char name[64];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
-			OnLeave(caller, name);
+			OnLeave(caller, name, entity);
 	}
 	return Plugin_Continue;
 }
@@ -327,7 +364,7 @@ public Action Zones_EndTouchAll(const char[] output, int entity, int caller, flo
 			if(pos != -1)
 			{
 				ActiveZones.Erase(pos);
-				OnDisable(name);
+				OnDisable(name, entity);
 			}
 		}
 	}
@@ -837,6 +874,48 @@ void Zones_RenderZone(int client, const char[] name, const float telepos[3] = NU
 				vec2 = vec1;
 
 				vec2[i] -= i == 2 ? 95.0 : 57.0;
+
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
+				TE_SendToClient(client);
+			}
+			/*
+				Plot Building Box
+			*/
+			else if(Plots_IsPlotZone(name))
+			{
+				vec1 = pos1;
+				vec2 = pos2;
+
+				for(int b; b < 2; b++)
+				{
+					if(vec1[b] < vec2[b])
+					{
+						float val = vec1[b];
+						vec1[b] = vec2[b];
+						vec2[b] = val;
+					}
+
+					vec2[b] = (vec1[b] - vec2[b]) / 2.0;
+					vec1[b] -= vec2[b];
+				}
+
+				vec1[0] -= Plots_MaxSize() / 2;	// Bottom
+				vec1[1] -= Plots_MaxSize() / 2;	// Left
+				if(vec1[2] > vec2[2])		// Floor
+					vec1[2] = vec2[2];
+				
+				vec2 = vec1;
+				vec2[i] += Plots_MaxSize();
+
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
+				TE_SendToClient(client);
+				
+				vec1[0] += Plots_MaxSize();	// Top
+				vec1[1] += Plots_MaxSize();	// Right
+				vec1[2] += Plots_MaxSize();	// Ceiling
+
+				vec2 = vec1;
+				vec2[i] -= Plots_MaxSize();
 
 				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 3.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
 				TE_SendToClient(client);

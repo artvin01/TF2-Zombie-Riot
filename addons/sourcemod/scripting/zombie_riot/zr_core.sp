@@ -201,7 +201,9 @@ enum
 	WEAPON_YAKUZA = 121,
 	WEAPON_EXPLORER = 122,
 	WEAPON_FULLMOON = 123,
-	WEAPON_SKADI = 124
+	WEAPON_SKADI = 124,
+	WEAPON_HUNTING_RIFLE = 125,
+	WEAPON_URANIUM_RIFLE = 126
 }
 
 enum
@@ -557,6 +559,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/kit_blacksmith_brew.sp"
 #include "zombie_riot/custom/weapon_yakuza.sp"
 #include "zombie_riot/custom/weapon_skadi.sp"
+#include "zombie_riot/custom/weapon_hunting_rifle.sp"
 
 void ZR_PluginLoad()
 {
@@ -737,6 +740,7 @@ void ZR_MapStart()
 //	Weapon_Pipe_Shoot_Map_Precache();
 	Survival_Knife_Map_Precache();
 	Aresenal_Weapons_Map_Precache();
+	Uranium_MapStart();
 	Wand_Elemental_Map_Precache();
 	Wand_Elemental_2_Map_Precache();
 	Map_Precache_Zombie_Drops();
@@ -899,7 +903,6 @@ void ZR_ClientDisconnect(int client)
 	DataBase_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
-	ViewChange_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
@@ -1707,7 +1710,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							dieingstate[client] = 0;
 							Store_ApplyAttribs(client);
-							TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+							SDKCall_SetSpeed(client);
 							int entity, i;
 							while(TF2U_GetWearable(client, entity, i))
 							{
@@ -2112,7 +2115,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 			if(IsPlayerAlive(client))
 			{
 				SetEntityMoveType(client, MOVETYPE_WALK);
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -2128,7 +2131,8 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 			SetEntityRenderMode(client, RENDER_NORMAL);
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
-			i_AmountDowned[client] = 0;
+			if(i_AmountDowned[client] > 0)
+				i_AmountDowned[client] = 0;
 			if(CurrentModifOn() == 3)
 				i_AmountDowned[client] = 1;
 
@@ -2159,7 +2163,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 					
 
 					Store_ApplyAttribs(client);
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+					SDKCall_SetSpeed(client);
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{

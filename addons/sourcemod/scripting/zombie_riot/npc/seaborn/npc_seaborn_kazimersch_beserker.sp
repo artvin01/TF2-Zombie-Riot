@@ -302,9 +302,10 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 						damage *= 4.0;
 					}
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
 					Custom_Knockback(npc.index, target, 250.0);
@@ -457,7 +458,7 @@ public void KazimierzBeserker_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 }
 
-public void KazimierzBeserker_AllyDeath(int ally, int self)
+public void KazimierzBeserker_AllyDeath(int self, int ally)
 {
 	KazimierzBeserker npc = view_as<KazimierzBeserker>(self);
 

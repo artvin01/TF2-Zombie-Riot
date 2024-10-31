@@ -30,7 +30,6 @@ void OnEntityCreatedMeleeWarcry(int entity)
 		delete h_WarcryTimerBuff[entity];
 }
 
-#define TRUE_STRENGTH_SOUND "items/powerup_pickup_strength.wav"
 
 public float AbilityMeleeWarcry(int client, int index, char name[48])
 {

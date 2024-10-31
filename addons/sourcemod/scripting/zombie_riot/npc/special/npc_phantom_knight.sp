@@ -331,9 +331,10 @@ public void PhantomKnight_ClotThink(int iNPC)
 						damage = 33.0;
 					}
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 						if(!ShouldNpcDealBonusDamage(target))
 						{

@@ -5155,6 +5155,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		return -1; //STOP. BAD!
 	}
+	//incase.
+	TF2_RemoveCondition(client, TFCond_Taunting);
 	int slot = -1;
 	int entity = -1;
 	static ItemInfo info;
@@ -5285,9 +5287,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									if(info.SemiAuto)
 									{
 										i_SemiAutoWeapon[entity] = true;
-										int slot_weapon_ammo = TF2_GetClassnameSlot(info.Classname);
 										
-										i_SemiAutoWeapon_AmmoCount[client][slot_weapon_ammo] = 0; //Set the ammo to 0 so they cant abuse it.
+										i_SemiAutoWeapon_AmmoCount[entity] = 0; //Set the ammo to 0 so they cant abuse it.
 										
 										f_SemiAutoStats_FireRate[entity] = info.SemiAutoStats_FireRate;
 										i_SemiAutoStats_MaxAmmo[entity] = info.SemiAutoStats_MaxAmmo;
@@ -5777,6 +5778,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		BlacksmithBrew_Enable(client, entity);
 		Yakuza_Enable(client, entity);
 		Enable_SkadiWeapon(client, entity);
+		Enable_Hunting_Rifle(client, entity);
+		Weapon_Anti_Material_Rifle_Deploy(client, entity);
 	}
 
 	return entity;
@@ -5910,7 +5913,7 @@ bool Store_PrintLevelItems(int client, int level)
 	return found;
 }
 
-int Store_GetItemName(int index, int client = 0, char[] buffer, int leng)
+int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool translate = true)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -5921,7 +5924,14 @@ int Store_GetItemName(int index, int client = 0, char[] buffer, int leng)
 	
 	static ItemInfo info;
 	item.GetItemInfo(level, info);
-	return strcopy(buffer, leng, TranslateItemName(client, item.Name, info.Custom_Name));
+
+	if(translate)
+		return strcopy(buffer, leng, TranslateItemName(client, item.Name, info.Custom_Name));
+	
+	if(info.Custom_Name[0])
+		return strcopy(buffer, leng, info.Custom_Name);
+	
+	return strcopy(buffer, leng, item.Name);
 }
 
 char[] TranslateItemName(int client, const char name[64], const char Custom_Name[64]) //Just make it 0 as a default so if its not used, fuck it
@@ -6027,22 +6037,7 @@ static void ItemCost(int client, Item item, int &cost)
 		{
 			//during maps where he alaways sells, always sell!
 			//If the client bought this weapon before, do not offer the discount anymore.
-			if(Rogue_Mode())
-			{
-				if(item.NPCSeller_WaveStart > 0)
-				{
-					cost = RoundToCeil(float(cost) * 0.85);
-				}
-				else if(item.NPCSeller_First)
-				{
-					cost = RoundToCeil(float(cost) * 0.85);
-				}
-				else if(item.NPCSeller)
-				{
-					cost = RoundToCeil(float(cost) * 0.9);
-				}
-			}
-			else if(item.NPCSeller_WaveStart > 0)
+			if(item.NPCSeller_WaveStart > 0)
 			{
 				cost = RoundToCeil(float(cost) * 0.7);
 			}

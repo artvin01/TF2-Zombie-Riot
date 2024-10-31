@@ -342,6 +342,7 @@ float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
 float f_AntiStuckPhaseThrough[MAXTF2PLAYERS];
 float f_MultiDamageTaken[MAXENTITIES];
 float f_MultiDamageTaken_Flat[MAXENTITIES];
+float f_MultiDamageDealt[MAXENTITIES];
 float f_ExtraOffsetNpcHudAbove[MAXENTITIES];
 int i_OwnerEntityEnvLaser[MAXENTITIES];
 int TeamNumber[MAXENTITIES];
@@ -1618,7 +1619,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons");
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
-	LoadTranslations("realtime.phrases");
+//	LoadTranslations("realtime.phrases");
 	LoadTranslations("common.phrases");
 	
 	DHook_Setup();
@@ -2229,6 +2230,7 @@ public void OnClientPutInServer(int client)
 #endif
 	f_MultiDamageTaken[client] = 1.0;
 	f_MultiDamageTaken_Flat[client] = 1.0;
+	f_MultiDamageDealt[client] = 1.0;
 	
 #if defined ZR
 	f_TutorialUpdateStep[client] = 0.0;
@@ -2267,6 +2269,10 @@ public void OnClientCookiesCached(int client)
 public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
+
+#if defined VIEW_CHANGES
+	ViewChange_ClientDisconnect(client);
+#endif
 
 #if defined ZR || defined RPG
 	KillFeed_ClientDisconnect(client);
@@ -2366,6 +2372,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	Tutorial_MakeClientNotMove(client);
 #endif
 
+#if defined RPG
+	if(Plots_PlayerRunCmd(client, buttons))
+		return Plugin_Changed;
+#endif
+
 #if defined ZR || defined RPG
 	if(buttons & IN_ATTACK)
 	{
@@ -2388,7 +2399,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-
 	static int holding[MAXTF2PLAYERS];
 	if(holding[client] & IN_ATTACK)
 	{
@@ -2761,6 +2771,10 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 #endif
 
 #if defined RPG
+	//Set ammo to inf here.
+	SetAmmo(client, 1, 9999);
+	SetAmmo(client, 2, 9999);
+
 	RPGStore_SetWeaponDamageToDefault(weapon, client, classname);
 	WeaponAttackResourceReduction(client, weapon);
 #endif
@@ -2975,6 +2989,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Resistance_for_building_High[entity] = 0.0;
 		Building_Mounted[entity] = 0;
 		BarracksEntityCreated(entity);
+#endif
+#if defined ZR || defined RPG
 		CoinEntityCreated(entity);
 #endif
 		b_ThisWasAnNpc[entity] = false;
@@ -3027,6 +3043,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		LastHitRef[entity] = -1;
 		f_MultiDamageTaken[entity] = 1.0;
 		f_MultiDamageTaken_Flat[entity] = 1.0;
+		f_MultiDamageDealt[entity] = 1.0;
 		DamageBits[entity] = -1;
 		Damage[entity] = 0.0;
 		LastHitWeaponRef[entity] = -1;
@@ -3575,6 +3592,7 @@ void RemoveNpcThingsAgain(int entity)
 	CleanAllApplied_Aresenal(entity, true);
 	b_NpcForcepowerupspawn[entity] = 0;	
 	CleanAllApplied_Cryo(entity);
+	EnemyResetUranium(entity);
 #endif
 	i_HexCustomDamageTypes[entity] = 0;
 }
@@ -3737,7 +3755,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		SDKCall_SetSpeed(client);
 	}
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
@@ -3747,7 +3765,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		}
 		else
 		{
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+			SDKCall_SetSpeed(client);
 		}
 	}
 }
@@ -3766,12 +3784,12 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 				{
 					SetVariantInt(1);
 					AcceptEntityInput(client, "SetForcedTauntCam");
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+					SDKCall_SetSpeed(client);
 				}
 			}
 			case TFCond_Slowed:
 			{
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 			}
 			case TFCond_Taunting:
 			{
@@ -3869,6 +3887,9 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				return true;
 			
 			if(TextStore_Interact(client, entity, Is_Reload_Button))
+				return true;
+			
+			if(Plots_Interact(client, entity, weapon))
 				return true;
 			
 			if(Mining_Interact(client, entity, weapon))

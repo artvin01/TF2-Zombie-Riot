@@ -26,7 +26,7 @@
 	{
 		"en"	"Pistol Ammo"
 		"fr"	"Munitions Pistolet"
-		"ru"	"Пистолет"
+		"ru"	"Патроны в Пистолете"
 		"de"	"Pistolen Munition"
 		"pl"    "Amunicja do pistoletu"
 		"pt"	"Munição da Pistola"
@@ -48,7 +48,7 @@
 	{
 		"en"	"Use voice Commands to command him!"
 		"fr"	"Utilisez vos commandes vocales pour le commander!"
-		"ru"	"Голосовые команды - отдать команду!"
+		"ru"	"Используйте Голосовые команды что бы командывать им!"
 		"de"	"Benutze Sprach Befehle um ihn zu befehlen!"
 		"pl"    "Używaj komend głowosych aby jemu rozkazywać!"
 		"pt"	"Use comandos de voz para o comandar!"
@@ -182,7 +182,7 @@
 	{
 		"en"	"I'm pretty bored..."
 		"fr"	"Je m'ennuie..."
-		"ru"	"Мне это уже начинает надоедать..."
+		"ru"	"Мне довльно скучно..."
 		"de"	"ich bin so gelangweilt..."
 		"pl"    "jestem dość znudzony..."
 		"pt"	"Tem nada pra fazer..."
@@ -193,7 +193,7 @@
 	{
 		"en"	"Reloading near you, sir!"
 		"fr"	"Je recharge mon arme!"
-		"ru"	"Перезаряжаю рядом с вами, сэр!"
+		"ru"	"Перезаряжаюсь рядом с вами, сэр!"
 		"de"	"ich lade bei dir nach, sir!"
 		"pl"    "Przeładowuje obok ciebie!"
 		"pt"	"Recarregando próximo a você, senhor!"
@@ -204,7 +204,7 @@
 	{
 		"en"	"I hope your day is going well!"
 		"fr"	"J'espère que vous vous portez bien, aujourd'hui!"
-		"ru"	"Надеюсь, у вас всё хорошо!"
+		"ru"	"Надеюсь, что у вас хороший день!"
 		"de"	"Ich Hoffe dein tag geht gut!"
 		"pl"    "Mam nadzieje, że ci dobrze mija dzień!"
 		"pt"	"Eu espero que seu dia esteja indo bem!"
@@ -237,7 +237,7 @@
 	{
 		"en"	"Could i borrow your gun perhaps?"
 		"fr"	"Pourrais-je prêter votre arme?"
-		"ru"	"Могу я одолжить ваше оружие?"
+		"ru"	"Могу ли я одолжить ваше оружие?"
 		"de"	"kann ich vielleicht deine waffe ausleihen?"
 		"pl"    "Czy mógłbym porzyczyć twoją broń?"
 		"pt"	"Talvez você poderia me emprestar sua arma?"
@@ -512,7 +512,7 @@
 	{
 		"en"	"I try my best to aim well!"
 		"fr"	"Je place mon meilleur effort dans ma visée!"
-		"ru"	"Я постараюсь изо всех сил, чтобы хорошо прицелиться!"
+		"ru"	"Я стараюсь изо всех сил, чтобы хорошо целиться!"
 		"de"	"Ich werde mein bestes versuchen um gut zu zielen!"
 		"pl"    "Staram się dobrze celować!"
 		"pt"	"Eu dou meu melhor pra mirar!"
@@ -643,7 +643,7 @@
 	{
 		"en"	"I'm glad to help!"
 		"fr"	"Heureux de pouvoir aider!"
-		"ru"	"Был рад помочь!"
+		"ru"	"Рад помочь!"
 		"pt"	"Fico feliz em ajudar!"
 		"nl"	"Ik ben blij om te helpen!"
 		"chi"   "我很乐意帮忙!"

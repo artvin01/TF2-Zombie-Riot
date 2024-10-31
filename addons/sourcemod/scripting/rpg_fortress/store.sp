@@ -3,15 +3,6 @@
 
 #define SELL_AMOUNT	0.7
 
-static const int SlotLimits[] =
-{
-	1,	// 0	Primary
-	1,	// 1	Secondary
-	1,	// 2	Melee
-	1,	// 3	Pickaxe
-	1	// 4	Fishing Gear
-};
-
 enum struct ItemInfo
 {
 	bool HasNoClip;
@@ -322,6 +313,7 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name)
 	info.SetupKV(kv, name);
 
 	Store_EquipSlotCheck(client, info.Slot);
+	TextStore_EquipSlotCheck(client, info.Slot);
 	
 	info.Owner = client;
 	info.Store = index;
@@ -410,8 +402,6 @@ void Store_EquipSlotCheck(int client, int slot)
 {
 	if(slot >= 0)
 	{
-		int count;
-
 		int length = EquippedItems.Length;
 		static ItemInfo info;
 		for(int i; i < length; i++)
@@ -419,14 +409,10 @@ void Store_EquipSlotCheck(int client, int slot)
 			EquippedItems.GetArray(i, info);
 			if(info.Owner == client && info.Slot == slot)
 			{
-				count++;
-				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
+				if(TextStore_GetInv(client, info.Store))
 				{
-					if(TextStore_GetInv(client, info.Store))
-					{
-						PrintToChat(client, "%s was unequipped", info.Custom_Name);
-						TextStore_SetInv(client, info.Store, _, false);
-					}
+					SPrintToChat(client, "%s was unequipped", info.Custom_Name);
+					TextStore_SetInv(client, info.Store, _, false);
 				}
 			}
 		}
@@ -1259,6 +1245,10 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	ReApplyTransformation(client);
 	RPGCore_StaminaAddition(client, 999999999);
 	RPGCore_ResourceAddition(client, 999999999);
+	if(f_TransformationDelay[client] == FAR_FUTURE)
+	{
+		f_TransformationDelay[client] = 0.0;
+	}
 }
 
 void Delete_Clip(int ref)
@@ -1408,9 +1398,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									if(info.SemiAuto)
 									{
 										i_SemiAutoWeapon[entity] = true;
-										int slot_weapon_ammo = TF2_GetClassnameSlot(info.Classname);
 										
-										i_SemiAutoWeapon_AmmoCount[client][slot_weapon_ammo] = 0; //Set the ammo to 0 so they cant abuse it.
+										i_SemiAutoWeapon_AmmoCount[entity] = 0; //Set the ammo to 0 so they cant abuse it.
 										
 										f_SemiAutoStats_FireRate[entity] = info.SemiAutoStats_FireRate;
 										i_SemiAutoStats_MaxAmmo[entity] = info.SemiAutoStats_MaxAmmo;

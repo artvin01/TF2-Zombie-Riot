@@ -5,12 +5,10 @@
 #define RANGE_BUBBLE_PROC 220.0
 
 static float f_HealAmount[MAXTF2PLAYERS];
-static char gLaser1;
 
 
 void Wand_BubbleProctection_Map_Precache()
 {
-	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	PrecacheSound(BUBBLE_INIT_SOUND);
 	Zero(f_HealAmount);
 }
@@ -88,7 +86,7 @@ public float AbilityBubbleProctection(int client, int index, char name[48])
 	return (GetGameTime() + time);
 }
 
-void Weapon_BubbleProctectionInit(int client, int weapon, int level)
+stock void Weapon_BubbleProctectionInit(int client, int weapon, int level)
 {
 	int entity;		
 	entity = CreateEntityByName("tf_projectile_pipe_remote");

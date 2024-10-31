@@ -224,7 +224,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					if(ShouldNpcDealBonusDamage(target))
 						damage = 2500.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);

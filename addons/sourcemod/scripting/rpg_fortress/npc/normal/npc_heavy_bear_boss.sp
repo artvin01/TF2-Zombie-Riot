@@ -220,9 +220,10 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 200.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						if(npc.m_iAttacksTillMegahit > 3)
 						{
 							npc.m_iAttacksTillMegahit = 0;

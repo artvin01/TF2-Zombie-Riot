@@ -545,6 +545,18 @@
 	{
 		"en"	"It could just be out of power or prehaps just turned it off earlier. Moving on."
 	}
+	"Bob Final Option 3"
+	{
+		"en"	"I do remember"
+	}
+	"Bob Final Desc 3"
+	{
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+	}
+	"Bob Final Lore 3"
+	{
+		"en"	"Those that we lost. Bladedance... Guln... Finish the job."
+	}
 	"Mediveal Ally Title"
 	{
 		"en"	"A group of Medievalists seem to be fighting a group of seaborn and they're losing."
@@ -1037,6 +1049,42 @@
 	{
 		"en"	"Broken Bridge"
 	}
+	"Home Sick"
+	{
+		"en"	"Home Sick"
+	}
+	"Home Sick!"
+	{
+		"en"	"Home Sick ⚠"
+	}
+	"A Lost War"
+	{
+		"en"	"A Lost War"
+	}
+	"A Lost War!"
+	{
+		"en"	"A Lost War ⚠"
+	}
+	"Falling Hazard"
+	{
+		"en"	"Falling Hazard"
+	}
+	"Falling Hazard!"
+	{
+		"en"	"Falling Hazard ⚠"
+	}
+	"Whiteflower Mercenaries"
+	{
+		"en"	"Whiteflower Mercenaries ☠"
+	}
+	"City Hall"
+	{
+		"en"	"City Hall"
+	}
+	"City Hall!"
+	{
+		"en"	"City Hall ⚠"
+	}
 
 	// Curses
 	"Bewildered"
@@ -1057,7 +1105,7 @@
 	}
 	"Sensitive Desc"
 	{
-		"en"	"{red}Players take +25%% more damage {green}but heal +100%% more{yellow}."
+		"en"	"{red}Players take +25%% more damage {green}but heal +100%% more."
 	}
 	"Sensitive Lore"
 	{
@@ -1069,7 +1117,7 @@
 	}
 	"Obsessed Desc"
 	{
-		"en"	"{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next{yellow}."
+		"en"	"{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next."
 	}
 	"Obsessed Lore"
 	{
@@ -1651,5 +1699,113 @@
 	"Hand of the Elite Desc"
 	{
 		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75%% damage bonus while over half health"
+	}
+	"Soul of Boss vs Boss"
+	{
+		"en"	"Soul of Boss vs Boss"
+	}
+	"Soul of Boss vs Boss Desc"
+	{
+		"en"	"Every creation starts from somewhere.\n{green}Specific themed weapons gain +100%% jump height"
+	}
+	"Soul of Arknights"
+	{
+		"en"	"Soul of Arknights"
+	}
+	"Soul of Arknights Desc"
+	{
+		"en"	"Is this your final choice?\n{green}Specific themed weapons remove the down limit"
+	}
+	"Soul of Bloons Tower Defense"
+	{
+		"en"	"Soul of Bloons Tower Defense"
+	}
+	"Soul of Bloons Tower Defense Desc"
+	{
+		"en"	"Better build that temple.\n{green}Specific themed weapons grant +20%% damage to each other, stacking"
+	}
+	"Soul of Yakuza"
+	{
+		"en"	"Soul of Yakuza"
+	}
+	"Soul of Yakuza Desc"
+	{
+		"en"	"10 years.\n{green}Specific themed weapons allow their special stance to always gain HEAT"
+	}
+	"Soul of Darkest Dungeon"
+	{
+		"en"	"Soul of Darkest Dungeon"
+	}
+	"Soul of Darkest Dungeon Desc"
+	{
+		"en"	"Face the light or be consumed.\n{green}Specific themed weapons have a chance to prevent dying and instead remain at one health"
+	}
+	"Soul of Terraria"
+	{
+		"en"	"Soul of Terraria"
+	}
+	"Soul of Terraria Desc"
+	{
+		"en"	"And there will be mods.\n{green}Specific themed weapons grant 1000 HP every so often"
+	}
+	"Xeno Anti-Vial"
+	{
+		"en"	"Xeno Anti-Vial"
+	}
+	"Xeno Anti-Vial Desc"
+	{
+		"en"	"Suppresses the effects of Xeno, for a moment.\n{green}Xeno enemies take +75%% damage"
+	}
+	"Seaborn Anti-Vial"
+	{
+		"en"	"Seaborn Anti-Vial"
+	}
+	"Seaborn Anti-Vial Desc"
+	{
+		"en"	"A lantern that even Seaborn fear.\n{green}Seaborn enemies take +75%% damage"
+	}
+	"Revenge Squad"
+	{
+		"en"	"Revenge Squad"
+	}
+	"Revenge Squad Desc"
+	{
+		"en"	"{blue}You remember what happened, to all of them."
+	}
+	"Bob's Orders"
+	{
+		"en"	"Bob's Orders"
+	}
+	"Bob's Orders Desc"
+	{
+		"en"	"Eliminate Whiteflower.\n{blue}The ending is changed."
+	}
+	"But Nobody Is Here"
+	{
+		"en"	"But nobody is here..."
+	}
+	"Whiteflower Mercenary Eradicator"
+	{
+		"en"	"Whiteflower Mercenary Eradicator"
+	}
+	"Guln"
+	{
+		"en"	"Guln"
+	}
+	"Cursed Relic"
+	{
+		"en"	"Cursed Relic"
+	}
+	"Cursed Relic Desc"
+	{
+		"en"	"From the back of the bin in the shop.\n{green}Players gain +8%% firing speed {red}most of the time"
+	}
+	"Australium Printer"
+	{
+		"en"	"Australium Printer"
+	}
+	"Australium Printer Desc"
+	{
+		"en"	"Convert that australium into shop money!\n{yellow}Australium Ingots are converted into 200 credits each"
 	}
 }
