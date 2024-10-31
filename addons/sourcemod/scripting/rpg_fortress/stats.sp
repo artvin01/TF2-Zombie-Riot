@@ -125,7 +125,7 @@ void Stats_GiveXP(int client, int xp, int quest = 0)
 	else
 	{
 		//if its negative, just give minus.
-		XP[client] += XPToGive;
+		XP[client] += xp;
 	}
 
 	if(XP[client] > SaveIn[client])
