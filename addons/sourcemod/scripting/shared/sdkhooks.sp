@@ -1243,7 +1243,19 @@ public void OnPostThink(int client)
 			ThousandString(c_CurrentMana[offset], sizeof(c_CurrentMana) - offset);
 
 			if(form.Name[0])
-				Format(buffer, sizeof(buffer), "%s: %s\n%s", form.Name, c_CurrentMana, buffer);
+			{
+				char NameOverride[256];
+				NameOverride = form.Name;
+				if(form.Func_FormNameOverride != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, form.Func_FormNameOverride);
+					Call_PushCell(client);
+					Call_PushStringEx(NameOverride, sizeof(NameOverride), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+					Call_Finish();
+				}
+				Format(buffer, sizeof(buffer), "%s: %s\n%s", NameOverride, c_CurrentMana, buffer);
+
+			}
 			else
 				Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
 #endif
@@ -1658,9 +1670,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 #endif
+#if defined RPG
 	//dmg bonus before everything!
+	//this is only for zr! RPG handles it som
 	if(attacker > 0 && attacker <= MAXENTITIES)
 		damage *= fl_Extra_Damage[attacker];
+#endif
 #if defined RPG
 	if(attacker <= MaxClients)
 	{
@@ -1859,6 +1874,37 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
 			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
+		}
+	}
+#endif
+#if defined RPG
+	if(i_TransformationLevel[victim] > 0)
+	{
+		Race race;
+		if(Races_GetRaceByIndex(RaceIndex[victim], race) && race.Forms)
+		{
+			Form form;
+			race.Forms.GetArray(i_TransformationLevel[victim] - 1, form);
+			
+			if(form.Func_FormTakeDamage != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, form.Func_FormTakeDamage);
+				Call_PushCell(victim);
+				Call_PushCellRef(attacker);
+				Call_PushCellRef(inflictor);
+				Call_PushFloatRef(damage);
+				Call_PushCellRef(damagetype);
+				Call_PushCellRef(weapon);
+				Call_PushArrayEx(damageForce, sizeof(damageForce), SM_PARAM_COPYBACK);
+				Call_PushArrayEx(damagePosition, sizeof(damagePosition), SM_PARAM_COPYBACK);
+				Call_PushCell(damagecustom);
+				Call_Finish();
+
+				if(damage <= 0.0)
+				{
+					return Plugin_Handled;
+				}
+			}
 		}
 	}
 #endif
@@ -2569,7 +2615,6 @@ void UpdatePlayerFakeModel(int client)
 	}
 }
 
-
 stock void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
 	if(!Flat)
@@ -2597,6 +2642,29 @@ public Action RevertDamageTakenAgain(Handle final, any pack)
 			f_MultiDamageTaken[entity] /= damagemulti;
 		else
 			f_MultiDamageTaken_Flat[entity] -= damagemulti;
+	}
+	return Plugin_Continue;
+}
+
+stock void IncreaceEntityDamageDealtBy(int entity, float amount, float duration)
+{
+	f_MultiDamageDealt[entity] *= amount;
+	
+	Handle pack;
+	CreateDataTimer(duration, RevertDamageDealtAgain, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntIndexToEntRef(entity));
+	WritePackFloat(pack, amount);
+}
+
+public Action RevertDamageDealtAgain(Handle final, any pack)
+{
+	ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	float damagemulti = ReadPackFloat(pack);
+	
+	if (IsValidEntity(entity))
+	{
+		f_MultiDamageDealt[entity] /= damagemulti;
 	}
 	return Plugin_Continue;
 }
@@ -2912,7 +2980,7 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			float Drain = 0.0;
 			Form form;
 			Races_GetClientInfo(client, _, form);
-			Drain = form.GetFloatStat(Form::DrainRate, Stats_GetFormMastery(client, form.Name));
+			Drain = form.GetFloatStat(-1, Form::DrainRate, Stats_GetFormMastery(client, form.Name));
 			Drain *= 0.015; //drains are too high!
 
 			int StatsForDrainMulti;
@@ -2928,6 +2996,14 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 
 			//We take the base drain rate and multiply it by all the base stats.
 			Drain *= float(StatsForDrainMulti);
+
+			if(form.Func_ExtraDrainLogic != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, form.Func_ExtraDrainLogic);
+				Call_PushCell(client);
+				Call_PushFloatRef(Drain);
+				Call_Finish();
+			}
 
 			
 			//if it isnt 0, do nothing

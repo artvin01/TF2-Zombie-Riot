@@ -558,7 +558,9 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 	if(!noActions && ActorKv.JumpToKey("actions"))
 	{
 		if(ActorKv.GetNum("deposit"))
-			TextStore_DepositBackpack(client, false, true);
+		{
+			TF2_RegeneratePlayer(client);
+		}
 		
 		if(ActorKv.JumpToKey("setquest"))
 		{
@@ -608,7 +610,10 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		}
 
 		if(ActorKv.GetNum("resetspawn"))
+		{
 			f3_PositionArrival[client][0] = 0.0;
+			Stats_SaveClientStats(client);
+		}
 
 		float pos[3];
 		ActorKv.GetVector("teleport", pos);
@@ -620,11 +625,15 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
 
 			if(ActorKv.GetNum("setspawn"))
+			{
 				f3_PositionArrival[client] = pos;
+				Stats_SaveClientStats(client);
+			}
 		}
 		else if(ActorKv.GetNum("setspawn"))
 		{
 			GetClientAbsOrigin(client, f3_PositionArrival[client]);
+			Stats_SaveClientStats(client);
 		}
 
 		if(ActorKv.GetNum("reskillpoints"))

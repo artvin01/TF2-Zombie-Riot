@@ -27,6 +27,7 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
+
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
@@ -252,9 +253,7 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damage *= 1.3;
+					float damage = 750000.0;
 
 					
 					if(target > 0) 
@@ -287,7 +286,7 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 				
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
-				int projectile = npc.FireParticleRocket(vecTarget, 500000.0 , 800.0 , 100.0 , "raygun_projectile_red");
+				int projectile = npc.FireParticleRocket(vecTarget, 750000.0 , 800.0 , 100.0 , "raygun_projectile_red");
 				DataPack pack;
 				CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
 				pack.WriteCell(EntIndexToEntRef(projectile));

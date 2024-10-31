@@ -2986,6 +2986,9 @@ int inflictor = 0)
 
 		if(ExplosionDmgMultihitFalloff == EXPLOSION_AOE_DAMAGE_FALLOFF)
 			ExplosionDmgMultihitFalloff = Attributes_Get(weapon, 4013, EXPLOSION_AOE_DAMAGE_FALLOFF);
+
+		if(explosion_range_dmg_falloff == EXPLOSION_RANGE_FALLOFF)
+			explosion_range_dmg_falloff = Attributes_Get(weapon, Attrib_OverrideExplodeDmgRadiusFalloff, EXPLOSION_RANGE_FALLOFF);
 	}
 #endif
 
@@ -3974,7 +3977,7 @@ float RPGStocks_CalculatePowerLevel(int client)
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 	float ResMulti;
-	ResMulti = form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
+	ResMulti = form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
 	
 	BigTotal *= (1.0 / ResMulti);
 

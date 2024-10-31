@@ -348,7 +348,7 @@ public void Rapier_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		int Health = GetEntProp(client, Prop_Send, "m_iHealth");
 		float MaxHealth = float(SDKCall_GetMaxHealth(client));
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		SDKCall_SetSpeed(client);
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			i_Current_Pap_Rapier[client] = Rapier_Get_Pap(weapon);

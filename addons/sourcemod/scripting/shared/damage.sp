@@ -344,7 +344,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 
 
 #if !defined RTS
-		OnTakeDamageDamageBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
+		OnTakeDamageDamageBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime, damagePosition);
 
 		OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 		
@@ -372,8 +372,9 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 				if(IsValidEntity(weapon))
 				{
 
-#if defined ZR
 					damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, i_HexCustomDamageTypes[victim]);
+
+#if defined ZR
 					OnTakeDamage_HandOfElderMages(attacker, weapon);
 #endif
 
@@ -421,7 +422,6 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 	//Do armor.
-#if defined ZR
 	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 	{
 		if(attacker <= MaxClients && attacker > 0)
@@ -429,9 +429,10 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 			if(IsValidEntity(weapon))
 				NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 		}
+#if defined ZR
 		BarracksUnitAttack_NPCTakeDamagePost(victim, inflictor, damage, damagetype);
-	}
 #endif
+	}
 
 	return false;
 }
@@ -1294,10 +1295,12 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 		if(fl_TotalArmor[victim] > 1.0)
 			damage *= fl_TotalArmor[victim];
 	}
+#if defined ZR
 	if(!trueArmorOnly)
 	{
 		damage *= fl_Extra_Damage[attacker];
 	}
+#endif
 }
 
 #if defined ZR
@@ -1794,7 +1797,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 #endif
 }
 
-stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
+stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime, float damagePosition[3])
 {
 	float basedamage = damage;
 #if defined ZR
@@ -1844,29 +1847,33 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	{
 		damage += basedamage * (0.35 * DamageBuffExtraScaling);
 	}
-#if defined ZR	
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
+#if defined ZR	
 		if(IsZombieFrozen(victim))
 			damage += basedamage * (0.30 * DamageBuffExtraScaling);
 		else
+#endif
 			damage += basedamage * (0.15 * DamageBuffExtraScaling);
 	}
 	else if(f_LowIceDebuff[victim] > GameTime)
 	{
+#if defined ZR	
 		if(IsZombieFrozen(victim))
 			damage += basedamage * (0.20 * DamageBuffExtraScaling);
 		else
+#endif
 			damage += basedamage * (0.10 * DamageBuffExtraScaling);
 	}
 	else if(f_VeryLowIceDebuff[victim] > GameTime)
 	{
+#if defined ZR	
 		if(IsZombieFrozen(victim))
 			damage += basedamage * (0.10 * DamageBuffExtraScaling);
 		else
+#endif
 			damage += basedamage * (0.05 * DamageBuffExtraScaling);
 	}
-#endif
 	if(f_BuildingAntiRaid[victim] > GameTime)
 	{
 		damage += basedamage * ((DMG_ANTI_RAID - 1.0)* DamageBuffExtraScaling);
@@ -1895,6 +1902,13 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	{
 		damage += basedamage * (0.3 * DamageBuffExtraScaling);
 	}	
+#if defined RPG	
+	if(damagePosition[2] != 6969420.0)
+	{
+		//There is crit damage from this item.
+		damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);
+	}
+#endif
 }
 #endif	// Non-RTS
 

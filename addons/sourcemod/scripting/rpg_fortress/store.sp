@@ -3,15 +3,6 @@
 
 #define SELL_AMOUNT	0.7
 
-static const int SlotLimits[] =
-{
-	1,	// 0	Primary
-	1,	// 1	Secondary
-	1,	// 2	Melee
-	1,	// 3	Pickaxe
-	1	// 4	Fishing Gear
-};
-
 enum struct ItemInfo
 {
 	bool HasNoClip;
@@ -322,6 +313,7 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name)
 	info.SetupKV(kv, name);
 
 	Store_EquipSlotCheck(client, info.Slot);
+	TextStore_EquipSlotCheck(client, info.Slot);
 	
 	info.Owner = client;
 	info.Store = index;
@@ -410,8 +402,6 @@ void Store_EquipSlotCheck(int client, int slot)
 {
 	if(slot >= 0)
 	{
-		int count;
-
 		int length = EquippedItems.Length;
 		static ItemInfo info;
 		for(int i; i < length; i++)
@@ -419,14 +409,10 @@ void Store_EquipSlotCheck(int client, int slot)
 			EquippedItems.GetArray(i, info);
 			if(info.Owner == client && info.Slot == slot)
 			{
-				count++;
-				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
+				if(TextStore_GetInv(client, info.Store))
 				{
-					if(TextStore_GetInv(client, info.Store))
-					{
-						PrintToChat(client, "%s was unequipped", info.Custom_Name);
-						TextStore_SetInv(client, info.Store, _, false);
-					}
+					SPrintToChat(client, "%s was unequipped", info.Custom_Name);
+					TextStore_SetInv(client, info.Store, _, false);
 				}
 			}
 		}
@@ -1259,6 +1245,10 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	ReApplyTransformation(client);
 	RPGCore_StaminaAddition(client, 999999999);
 	RPGCore_ResourceAddition(client, 999999999);
+	if(f_TransformationDelay[client] == FAR_FUTURE)
+	{
+		f_TransformationDelay[client] = 0.0;
+	}
 }
 
 void Delete_Clip(int ref)

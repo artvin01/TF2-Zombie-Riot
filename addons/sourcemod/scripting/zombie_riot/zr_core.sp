@@ -1709,7 +1709,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							dieingstate[client] = 0;
 							Store_ApplyAttribs(client);
-							TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+							SDKCall_SetSpeed(client);
 							int entity, i;
 							while(TF2U_GetWearable(client, entity, i))
 							{
@@ -2114,7 +2114,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 			if(IsPlayerAlive(client))
 			{
 				SetEntityMoveType(client, MOVETYPE_WALK);
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -2162,7 +2162,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 					
 
 					Store_ApplyAttribs(client);
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+					SDKCall_SetSpeed(client);
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{

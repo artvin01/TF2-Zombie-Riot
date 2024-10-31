@@ -27,6 +27,7 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
+
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
@@ -326,7 +327,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 600000.0;
+					float damage = 900000.0;
 					
 					if(target > 0) 
 					{
@@ -366,7 +367,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 				
 				//This is the primary projectile in the middle.
 				float SpeedProjectile = 1000.0;
-				float ProjectileDamage = 450000.0;
+				float ProjectileDamage = 850000.0;
 				int Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_red");
 
 				ProjectileDamage *= 0.95;

@@ -104,7 +104,7 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 	/*
 	SetEntPropFloat(entity, Prop_Send, "m_flChargeBeginTime", 0.0);
 	SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.0001);
+	SDKCall_SetSpeed(client);
 	TF2_RemoveCondition(client, TFCond_Slowed);
 	return MRES_Supercede;
 	*/

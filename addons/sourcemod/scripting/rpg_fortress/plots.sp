@@ -3,42 +3,59 @@
 
 enum struct BlockEnum
 {
+	int Store;
 	char Item[48];
 	int Space;
 
 	char Model[PLATFORM_MAX_PATH];
-	char Skin[4];
+	int Skin;
+	int Render;
+	float Scale;
+	float Offset[3];
+	char Color[16];
+	Function Func;
 
 	int Rotate;
 	
-	void SetupEnum(KeyValues kv)
+	bool SetupEnum(KeyValues kv)
 	{
 		kv.GetSectionName(this.Item, 48);
 
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
 		if(!this.Model[0])
-			SetFailState("Missing model in plots.cfg");
+			return false;
 		
-		kv.GetString("skin", this.Skin, 4, "0");
+		this.Skin = kv.GetNum("skin");
+		this.Render = kv.GetNum("render", 255);
+		this.Scale = kv.GetFloat("scale", 1.0);
 		this.Rotate = kv.GetNum("rotate");
 		this.Space = kv.GetNum("space", 1);
+		kv.GetVector("offset", this.Offset);
+		kv.GetString("color", this.Color, 16, "255 255 255");
+		this.Func = KvGetFunction(kv, "func");
+		return true;
 	}
 	
-	int Spawn(const float pos[3], float ang[3])
+	int Spawn(float pos[3], float ang[3])
 	{
 		int entity = CreateEntityByName("prop_dynamic_override");
 		if(entity != -1)
 		{
 			DispatchKeyValue(entity, "targetname", "rpg_fortress");
 			DispatchKeyValue(entity, "model", this.Model);
-			DispatchKeyValue(entity, "skin", this.Skin);
+			DispatchKeyValueInt(entity, "skin", this.Skin);
 			DispatchKeyValue(entity, "solid", "6");
+			DispatchKeyValueInt(entity, "renderamt", this.Render);
+			DispatchKeyValueFloat(entity, "modelscale", this.Scale);
+			DispatchKeyValue(entity, "rendercolor", this.Color);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);
 			DispatchSpawn(entity);
 
 			for(int i; i < 3; i++)
 			{
+				pos[i] += this.Offset[i];
+
 				if(i == 1)
 				{
 					if(this.Rotate == 1)
@@ -54,15 +71,42 @@ enum struct BlockEnum
 						ang[i] = -90.0;
 					}
 				}
-				else if(this.Rotate > 1)
+				/*else if(this.Rotate > 1)
 				{
 					ang[i] = (RoundToNearest(ang[i] / 90.0) * 90.0) + 180.0;
+				}*/
+				else
+				{
+					ang[i] = 0.0;
 				}
 			}
 			
 			TeleportEntity(entity, pos, ang, NULL_VECTOR, true);
+
+			if(this.Func != INVALID_FUNCTION)
+			{
+				b_is_a_brush[entity] = true;
+				b_BrushToOwner[entity] = EntIndexToEntRef(entity);
+			}
 		}
 		return entity;
+	}
+
+	bool CallFunc(int entity, BuildEnum build, int client = 0, int weapon = -1)
+	{
+		bool result;
+
+		if(this.Func != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, this.Func);
+			Call_PushCell(entity);
+			Call_PushArrayEx(build, sizeof(build), SM_PARAM_COPYBACK);
+			Call_PushCell(client);
+			Call_PushCell(weapon);
+			Call_Finish(result);
+		}
+
+		return result;
 	}
 }
 
@@ -70,6 +114,7 @@ enum struct BuildEnum
 {
 	int UserID;
 	char Item[48];
+	int Flags;
 
 	int Pos[3];
 	int Ang[3];
@@ -85,6 +130,8 @@ enum struct BuildEnum
 		ExplodeStringInt(this.Item, " ", this.Ang, 3);
 
 		kv.GetString("name", this.Item, 48);
+
+		this.Flags = kv.GetNum("flags");
 	}
 	void AddEntry(KeyValues kv)
 	{
@@ -96,6 +143,7 @@ enum struct BuildEnum
 		kv.SetString("ang", buffer);
 
 		kv.SetString("name", this.Item);
+		kv.SetNum("flags", this.Flags);
 
 		kv.GoBack();
 	}
@@ -134,6 +182,11 @@ enum
 	Build_All
 }
 
+#include "rpg_fortress/plots/crafting.sp"
+#include "rpg_fortress/plots/mining.sp"
+#include "rpg_fortress/plots/misc.sp"
+#include "rpg_fortress/plots/skinswap.sp"
+
 static KeyValues PlotKv;
 static ArrayList BlockList;
 static IntMap PlotOwner;
@@ -142,14 +195,20 @@ static char BlockZone[32];
 static int MaxBlocks;
 static int MaxRange;
 static float BlockSize;
+static float PlatformOffset[3];
+static char PlatformModel[PLATFORM_MAX_PATH];
+static float PlatformScale;
 
 static int InPlot[MAXENTITIES+1];
-static bool InMenu[MAXTF2PLAYERS];
+static int InMenu[MAXTF2PLAYERS];
 static char CurrentItem[MAXTF2PLAYERS][32];
 static int PartyMode[MAXTF2PLAYERS];
 
 void Plots_ConfigSetup()
 {
+	delete BuildList;
+	BuildList = new ArrayList(sizeof(BuildEnum));
+
 	char buffer[PLATFORM_MAX_PATH];
 	RPG_BuildPath(buffer, sizeof(buffer), "plots");
 	KeyValues kv = new KeyValues("Plots");
@@ -167,27 +226,77 @@ void Plots_ConfigSetup()
 	kv.GetString("zoneprefix", BlockZone, sizeof(BlockZone));
 	MaxRange = kv.GetNum("maxrange", 9);
 	BlockSize = kv.GetFloat("blocksize", 50.0);
+
+	kv.GetString("platform_model", PlatformModel, sizeof(PlatformModel));
+	if(PlatformModel[0])
+		PrecacheModel(PlatformModel);
 	
+	kv.GetVector("platform_offset", PlatformOffset);
+	PlatformScale = kv.GetFloat("platform_scale", 1.0);
+
+	delete kv;
+}
+
+void Plots_StoreCached()
+{
 	delete BlockList;
 	BlockList = new ArrayList(sizeof(BlockEnum));
 
 	BlockEnum block;
 
-	if(kv.JumpToKey("Blocks"))
+	char buffer[64];
+	int length = TextStore_GetItems();
+	for(int i; i < length; i++)
 	{
-		if(kv.GotoFirstSubKey())
+		KeyValues kv = TextStore_GetItemKv(i);
+		if(kv && kv.GetNum("plots"))
 		{
-			do
+			kv.GetString("plugin", buffer, sizeof(buffer));
+			if(StrEqual(buffer, "rpg_fortress"))
 			{
-				block.SetupEnum(kv);
-				BlockList.PushArray(block);
+				if(block.SetupEnum(kv))
+				{
+					block.Store = i;
+					BlockList.PushArray(block);
+				}
 			}
-			while(kv.GotoNextKey());
-			kv.GoBack();
 		}
 	}
+}
 
-	delete kv;
+void Plots_ZoneCached()
+{
+	if(!PlatformModel[0])
+		return;
+	
+	char buffer[64];
+	float pos[3], ang[3];
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "trigger_rpgzone")) != -1)
+	{
+		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+		if(Plots_IsPlotZone(buffer))
+		{
+			GetPlotData(entity, pos, ang);
+
+			int prop = CreateEntityByName("prop_dynamic_override");
+			if(prop != -1)
+			{
+				DispatchKeyValue(prop, "targetname", "rpg_fortress");
+				DispatchKeyValue(prop, "model", PlatformModel);
+				DispatchKeyValue(prop, "solid", "2");
+				DispatchKeyValueFloat(prop, "modelscale", PlatformScale);
+				DispatchSpawn(prop);
+				
+				for(int i; i < 3; i++)
+				{
+					pos[i] += PlatformOffset[i];
+				}
+
+				TeleportEntity(prop, pos, ang, NULL_VECTOR, true);
+			}
+		}
+	}
 }
 
 void Plots_EntityCreated(int entity)
@@ -213,7 +322,7 @@ void Plots_ClientEnter(int client, int ref, const char[] name)
 				PrintCenterText(client, "This plot is owned by %N", owner);
 			}
 		}
-		else
+		else if(Editor_MenuFunc(client) == INVALID_FUNCTION)
 		{
 			Plots_ShowMenu(client);
 		}
@@ -226,7 +335,7 @@ void Plots_ClientLeave(int client, int ref)
 	{
 		InPlot[client] = 0;
 		if(InMenu[client])
-			CancelClientMenu(client);
+			TextStore_SwapMenu(client);
 	}
 }
 
@@ -237,72 +346,107 @@ void Plots_DisableZone(int ref)
 		UnloadPlot(userid, ref);
 }
 
-bool Plots_CanShowMenu(int client)
+int Plots_ZoneOwner(int client)
 {
-	return (CanClaimHere(client) || CanBuildHere(client));
+	int owner;
+	if(InPlot[client])
+	{
+		if(PlotOwner.GetValue(InPlot[client], owner))
+			owner = GetClientOfUserId(owner);
+	}
+
+	return owner;
+}
+
+int Plots_ZoneName(int client, char[] name, int length)
+{
+	if(InPlot[client])
+	{
+		int entity = EntRefToEntIndex(InPlot[client]);
+		if(entity != -1)
+			return GetEntPropString(entity, Prop_Data, "m_iName", name, length);
+	}
+
+	return 0;
+}
+
+bool Plots_CanShowMenu(int client, int &owner = 0)
+{
+	if(InPlot[client])
+	{
+		if(!PlotOwner.GetValue(InPlot[client], owner) || !(owner = GetClientOfUserId(owner)))
+			return true;
+		
+		if(owner == client || (Party_IsClientMember(client, owner) && PartyMode[owner] == Build_All))
+			return true;
+	}
+	return false;
+	//return (CanClaimHere(client) || CanBuildHere(client));
 }
 
 bool Plots_ShowMenu(int client)
 {
 	int owner;
-	if(PlotOwner.GetValue(InPlot[client], owner) && (owner = GetClientOfUserId(owner)))
+	if(CanBuildHere(client, owner))
 	{
 		int length = BlockList.Length;
 		int[] blocks = new int[length];
-		int total = GetBlockSpace(owner, blocks, true);
+		int total = GetBlockSpace(GetClientUserId(owner), blocks, true);
 
-		Menu menu;
+		Menu menu = new Menu(Plots_MainMenu);
 
 		if(owner == client)
 		{
-			menu = new Menu(Plots_MainMenu);
 			menu.SetTitle("RPG Fortress\n \nPlot:\n%d / %d Space", total, MaxBlocks);
 
 			static const char Settings[][] = { "Party Setting: None", "Party Setting: Interact Only", "Party Setting: Allow Building" };
 			menu.AddItem(NULL_STRING, Settings[PartyMode[client]]);
 		}
-		else if(CanBuildHere(client))
+		else
 		{
-			menu = new Menu(Plots_MainMenu);
 			menu.SetTitle("RPG Fortress\n \n%N's Plot:\n%d / %d Space", owner, total, MaxBlocks);
 			
 			menu.AddItem(NULL_STRING, "Nothing");
 		}
-		else
-		{
-			return false;
-		}
 
-		char num[12];
 		int page;
 		for(int i; i < length; i++)
 		{
 			static BlockEnum block;
 			BlockList.GetArray(i, block);
 
-			int limit = TextStore_GetItemCount(owner, block.Item);
+			int limit;
+			TextStore_GetInv(owner, block.Store, limit);
+
 			if(limit > 0)
 			{
 				bool same = (page == 0 && StrEqual(block.Item, CurrentItem[client]));
 
-				Format(block.Item, sizeof(block.Item), "%s (%d / %d)", block.Item, blocks[i], limit);
+				Format(block.Model, sizeof(block.Model), "%s (%d / %d)", block.Item, blocks[i], limit);
 
 				if(same)
 				{
 					page = i + 1;
-					menu.AddItem(NULL_STRING, block.Item, ITEMDRAW_DISABLED);
+					menu.AddItem(NULL_STRING, block.Model, ITEMDRAW_DISABLED);
+
+					if(blocks[i] >= limit)	// Too many blocks
+						CurrentItem[client][0] = 0;
 				}
 				else
 				{
-					IntToString(i, num, sizeof(num));
-					menu.AddItem(num, block.Item);
+					menu.AddItem(block.Item, block.Model);
 				}
 			}
 		}
 
-		InMenu[client] = menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER);
+		if(total >= MaxBlocks)	// Too many total blocks
+			CurrentItem[client][0] = 0;
+
+		InMenu[client] = menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER) ? 2 : 0;
+		return view_as<bool>(InMenu[client]);
 	}
-	else
+
+	if(CanClaimHere(client))
 	{
 		Menu menu = new Menu(Plots_MainMenu);
 
@@ -327,10 +471,11 @@ bool Plots_ShowMenu(int client)
 		menu.AddItem(NULL_STRING, "You can use this land to show off and build special objects.", ITEMDRAW_DISABLED);
 		menu.AddItem(NULL_STRING, "You can choose how you want party members to interact with your land.", ITEMDRAW_DISABLED);
 		
-		menu.Display(client, MENU_TIME_FOREVER);
+		InMenu[client] = menu.Display(client, MENU_TIME_FOREVER) ? 1 : 0;
+		return view_as<bool>(InMenu[client]);
 	}
 
-	return true;
+	return false;
 }
 
 public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
@@ -343,16 +488,16 @@ public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			InMenu[client] = false;
+			InMenu[client] = 0;
 
 			if(choice == MenuCancel_Exit)
-				TextStore_Inspect(client);
+				TextStore_SwapMenu(client);
 		}
 		case MenuAction_Select:
 		{
-			if(InMenu[client])
+			if(InMenu[client] == 2)
 			{
-				InMenu[client] = false;
+				InMenu[client] = 0;
 				
 				int owner;
 				if(PlotOwner.GetValue(InPlot[client], owner))
@@ -381,14 +526,16 @@ public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
 					Plots_ShowMenu(client);
 				}
 			}
-			else if(choice)
+			else
 			{
-				TextStore_Inspect(client);
-			}
-			else if(InPlot[client])
-			{
-				PartyMode[client] = 0;
-				LoadPlot(client, InPlot[client]);
+				InMenu[client] = 0;
+
+				if(!choice)
+				{
+					PartyMode[client] = 0;
+					LoadPlot(client, InPlot[client]);
+					TextStore_OpenSpecificMenu(client, MENU_BUILDING);
+				}
 			}
 		}
 	}
@@ -397,7 +544,7 @@ public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
 
 bool Plots_PlayerRunCmd(int client, int &buttons)
 {
-	if(!InMenu[client] || !CurrentItem[client][0])
+	if(InMenu[client] != 2 || InPlot[client] == -1)
 		return false;
 	
 	float gameTime = GetGameTime();
@@ -420,134 +567,138 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 			{
 				RemoveEntity(entity);
 				BuildList.Erase(pos);
+				Plots_ShowMenu(client);
 			}
 		}
 	}
 	
-	static float altfireFor[MAXTF2PLAYERS];
-	if(fabs(altfireFor[client] - gameTime) < 0.5)
+	if(CurrentItem[client][0])
 	{
-		if(!(buttons & IN_ATTACK2))
-			altfireFor[client] = 0.0;
-	}
-	else if(buttons & IN_ATTACK2)
-	{
-		altfireFor[client] = gameTime;
-
-		int userid;
-		if(PlotOwner.GetValue(InPlot[client], userid))
+		static float altfireFor[MAXTF2PLAYERS];
+		if(fabs(altfireFor[client] - gameTime) < 0.5)
 		{
-			float pos[3], ang[3];
-			FireBlockTrace(client, pos, ang);
+			if(!(buttons & IN_ATTACK2))
+				altfireFor[client] = 0.0;
+		}
+		else if(buttons & IN_ATTACK2)
+		{
+			altfireFor[client] = gameTime;
 
-			float center[3], angles[3];
-			GetPlotData(InPlot[client], center, angles);
-
-			// center[2] here is the floor
-			float highBound = center[2] - 0.01 + (MaxRange * BlockSize);
-			float lowBound = center[2] + 0.01;
-			pos[2] = fClamp(pos[2], lowBound, highBound);
-
-			// Clamp other directions
-			float halfLimit = (1 + (MaxRange / 2)) * BlockSize;
-			for(int i; i < 2; i++)
+			int userid;
+			if(PlotOwner.GetValue(InPlot[client], userid))
 			{
-				highBound = center[i] - 0.01 + halfLimit;
-				lowBound = center[i] + 0.01 - halfLimit;
-				pos[i] = fClamp(pos[i], lowBound, highBound);
-			}
+				float pos[3], ang[3];
+				FireBlockTrace(client, pos, ang);
 
-			// Snap to offset
-			int offset[3];
-			for(int i; i < 3; i++)
-			{
-				if(i == 2)
+				float center[3], angles[3];
+				GetPlotData(InPlot[client], center, angles);
+
+				// center[2] here is the floor
+				float highBound = center[2] - 0.01 + (MaxRange * BlockSize);
+				float lowBound = center[2] + 0.01;
+				pos[2] = fClamp(pos[2], lowBound, highBound);
+
+				// Clamp other directions
+				float halfLimit = (1 + (MaxRange / 2)) * BlockSize;
+				for(int i; i < 2; i++)
 				{
-					// RoundToFloor here with model origin being at feet
-					offset[i] = RoundToFloor((pos[i] - center[i]) / BlockSize);
+					highBound = center[i] - 0.01 + halfLimit;
+					lowBound = center[i] + 0.01 - halfLimit;
+					pos[i] = fClamp(pos[i], lowBound, highBound);
 				}
-				else
-				{
-					offset[i] = RoundFloat((pos[i] - center[i]) / BlockSize);
-				}
-				
-				pos[i] = center[i] + (offset[i] * BlockSize);
-				ang[i] = fixAngle(ang[i] + angles[i]);
-			}
 
-			// Stuck check
-			bool failed;
-			//float mins[3], maxs[3];
-			for(int target = 1; target <= MaxClients; target++)
-			{
-				if(InPlot[client] == InPlot[target] && IsClientInGame(target) && IsPlayerAlive(target))
+				// Snap to offset
+				int offset[3];
+				for(int i; i < 3; i++)
 				{
-					GetEntPropVector(target, Prop_Send, "m_vecOrigin", center);
-
-					for(int i; i < 2; i++)
+					if(i == 2)
 					{
-						// 24.0 maxs, -24.0 mins
-						// 82.0 maxs, 0 mins
-						static float offsets[] = {0.0, 0.0, 41.0};
-						static float box[] = {24.0, 24.0, 41.0};
-
-						if(fabs(center[i] + offsets[i] - (pos[i] + (BlockSize / 2))) < box[i])
-						{
-							failed = true;
-							break;
-						}
-
-						if(fabs(center[i] + offsets[i] - (pos[i] - (BlockSize / 2))) < box[i])
-						{
-							failed = true;
-							break;
-						}
+						// RoundToFloor here with model origin being at feet
+						offset[i] = RoundToFloor((pos[i] - center[i]) / BlockSize);
 					}
-
-					if(failed)
-						break;
-				}
-			}
-
-			if(!failed)
-			{
-				// Space check (due to clamping)
-				static BuildEnum build;
-				int length = BuildList.Length;
-				for(int i; i < length; i++)
-				{
-					BuildList.GetArray(i, build);
-					if(build.UserID == userid &&
-						build.Pos[0] == offset[0] &&
-						build.Pos[1] == offset[1] &&
-						build.Pos[2] == offset[2])
+					else
 					{
+						offset[i] = RoundFloat((pos[i] - center[i]) / BlockSize);
+					}
+					
+					pos[i] = center[i] + (offset[i] * BlockSize);
+					ang[i] = fixAngle(ang[i] + angles[i]);
+				}
+
+				// Stuck check
+				bool failed;
+				//float mins[3], maxs[3];
+				for(int target = 1; target <= MaxClients; target++)
+				{
+					if(InPlot[client] == InPlot[target] && IsClientInGame(target) && IsPlayerAlive(target))
+					{
+						GetEntPropVector(target, Prop_Send, "m_vecOrigin", center);
+
 						failed = true;
-						break;
+						for(int i; i < 3; i++)
+						{
+							// 24.0 maxs, -24.0 mins
+							// 82.0 maxs, 0 mins
+							static const float offsets[] = {0.0, 0.0, 41.0};
+							static const float box[] = {24.0, 24.0, 41.0};
+
+							float blockPos = i == 2 ? BlockSize / 2.0 : 0.0;	// Both ents have feet origin
+
+							if(fabs((center[i] + offsets[i]) - (pos[i] + blockPos)) > ((BlockSize / 2.0) + box[i]))
+							{
+								failed = false;
+								break;
+							}
+						}
+
+						if(failed)
+							break;
 					}
 				}
 
 				if(!failed)
 				{
-					build.UserID = userid;
-					build.Pos = offset;
-					strcopy(build.Item, sizeof(build.Item), CurrentItem[client]);
-
-					for(int i; i < 3; i++)
+					// Space check (due to clamping)
+					static BuildEnum build;
+					int length = BuildList.Length;
+					for(int i; i < length; i++)
 					{
-						build.Ang[i] = RoundFloat(ang[i]);
+						BuildList.GetArray(i, build);
+						if(build.UserID == userid &&
+							build.Pos[0] == offset[0] &&
+							build.Pos[1] == offset[1] &&
+							build.Pos[2] == offset[2])
+						{
+							failed = true;
+							break;
+						}
 					}
 
-					static BlockEnum block;
-					int id = GetBlockByName(build.Item, block);
-					if(id != -1)
+					if(!failed)
 					{
-						int entity = block.Spawn(pos, ang);
-						if(entity != -1)
+						build.UserID = userid;
+						build.Pos = offset;
+						strcopy(build.Item, sizeof(build.Item), CurrentItem[client]);
+
+						for(int i; i < 3; i++)
 						{
-							InPlot[entity] = InPlot[client];
-							build.EntRef = EntIndexToEntRef(entity);
-							BuildList.PushArray(build);
+							build.Ang[i] = RoundFloat(ang[i]);
+						}
+
+						static BlockEnum block;
+						int id = GetBlockByName(build.Item, block);
+						if(id != -1)
+						{
+							int entity = block.Spawn(pos, ang);
+							if(entity != -1)
+							{
+								InPlot[entity] = InPlot[client];
+								build.EntRef = EntIndexToEntRef(entity);
+
+								block.CallFunc(entity, build);
+								BuildList.PushArray(build);
+								Plots_ShowMenu(client);
+							}
 						}
 					}
 				}
@@ -557,6 +708,33 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 
 	buttons &= ~(IN_ATTACK|IN_ATTACK2|IN_RELOAD|IN_ATTACK3);
 	return true;
+}
+
+bool Plots_Interact(int client, int entity, int weapon)
+{
+	if(InPlot[client] == InPlot[entity])
+	{
+		int pos = BuildList.FindValue(EntIndexToEntRef(entity), BuildEnum::EntRef);
+		if(pos != -1)
+		{
+			static BuildEnum build;
+			BuildList.GetArray(pos, build);
+
+			static BlockEnum block;
+			int id = GetBlockByName(build.Item, block);
+			if(id != -1)
+			{
+				bool result = block.CallFunc(entity, build, client, weapon);
+				if(result)
+				{
+					BuildList.SetArray(pos, build);
+					return result;
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 static int FireBlockTrace(int client, float pos[3] = {}, float ang[3] = {})
@@ -634,7 +812,10 @@ static void LoadPlot(int client, int zone)
 					blocks[id]++;
 					
 					if(!cached[id])
-						count[id] = TextStore_GetItemCount(client, build.Item);
+					{
+						TextStore_GetInv(client, block.Store, count[id]);
+						cached[id] = true;
+					}
 					
 					if(count[id] >= blocks[id])
 						BuildList.PushArray(build);
@@ -685,7 +866,13 @@ static void UnloadPlot(int userid, int zone)
 		if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && strlen(buffer) > 9)
 		{
 			PlotKv.Rewind();
-			PlotKv.DeleteKey(buffer);
+			if(PlotKv.JumpToKey(buffer))
+			{
+				if(!PlotKv.DeleteThis())
+					PrintToChatAll("PLOT SAVE ERROR");
+			}
+
+			PlotKv.Rewind();
 			PlotKv.JumpToKey(buffer, true);
 
 			int length = BuildList.Length;
@@ -702,6 +889,8 @@ static void UnloadPlot(int userid, int zone)
 						RemoveEntity(entity);
 
 					BuildList.Erase(i);
+					i--;
+					length--;
 				}
 			}
 
@@ -725,6 +914,8 @@ static void UnloadPlot(int userid, int zone)
 				RemoveEntity(entity);
 
 			BuildList.Erase(i);
+			i--;
+			length--;
 		}
 	}
 }
@@ -736,9 +927,10 @@ static void GetPlotData(int zone, float center[3], float angles[3])
 	GetEntPropVector(zone, Prop_Send, "m_vecMaxs", maxs);
 	GetEntPropVector(zone, Prop_Data, "m_vecOrigin", center);
 
+	center[2] += mins[2];
+
 	for(int i; i < 3; i++)
 	{
-		center[i] += mins[i];
 		angles[i] = 0.0;
 	}
 }
@@ -775,6 +967,8 @@ static void RenderPlot(int userid, int zone)
 					{
 						InPlot[entity] = zone;
 						build.EntRef = EntIndexToEntRef(entity);
+
+						block.CallFunc(entity, build);
 						BuildList.SetArray(i, build);
 					}
 				}
@@ -806,7 +1000,7 @@ static int GetBlockSpace(int userid, int[] blocks = {}, bool countBlocks = false
 	return amount;
 }
 
-static stock bool CanInteractHere(int client)
+bool Plots_CanInteractHere(int client)
 {
 	if(InPlot[client])
 	{
@@ -820,11 +1014,10 @@ static stock bool CanInteractHere(int client)
 	return false;
 }
 
-static bool CanBuildHere(int client)
+static bool CanBuildHere(int client, int &owner = 0)
 {
 	if(InPlot[client])
 	{
-		int owner;
 		if(PlotOwner.GetValue(InPlot[client], owner) && (owner = GetClientOfUserId(owner)))
 		{
 			if(owner == client || (Party_IsClientMember(client, owner) && PartyMode[owner] == Build_All))

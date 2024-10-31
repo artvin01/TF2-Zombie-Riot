@@ -92,7 +92,7 @@ methodmap WhiteflowerTank < CClotBody
 	
 	public WhiteflowerTank(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		WhiteflowerTank npc = view_as<WhiteflowerTank>(CClotBody(vecPos, vecAng, "models/combine_apc.mdl", "1.0", "300", ally, _, true, .CustomThreeDimensions = {100.0, 100.0, 100.0}));
+		WhiteflowerTank npc = view_as<WhiteflowerTank>(CClotBody(vecPos, vecAng, "models/combine_apc.mdl", "1.0", "300", ally, _, true, .CustomThreeDimensions = {60.0, 60.0, 80.0}));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
@@ -288,12 +288,22 @@ void WhiteflowerTank_RocketBarrageDo(WhiteflowerTank npc, float gameTime)
 			vecSelf[0] += GetRandomFloat(-10.0, 10.0);
 			vecSelf[1] += GetRandomFloat(-10.0, 10.0);
 			float RocketDamage = 250000.0;
-			int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 150.0);
+			float RocketSpeed = 150.0;
+			
+			if(npc.m_iOverlordComboAttack == 1)
+				RocketSpeed *= 2.0;
+			int RocketGet = npc.FireRocket(vecSelf, RocketDamage, RocketSpeed);
 			DataPack pack;
-			CreateDataTimer(1.0, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+			if(npc.m_iOverlordComboAttack != 1)
+				CreateDataTimer(1.0, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+			else
+				CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+
 			pack.WriteCell(EntIndexToEntRef(RocketGet));
 			pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
 			npc.m_flRocketBarrageBetweenShots = gameTime + 0.25;
+			if(npc.m_iOverlordComboAttack == 1)
+				npc.m_flRocketBarrageBetweenShots = gameTime + 0.125;
 		}
 		if(npc.m_flRocketBarrageDoTime < gameTime)
 		{
