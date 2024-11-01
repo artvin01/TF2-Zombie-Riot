@@ -1104,7 +1104,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 	{
 		case WEAPON_BIGFRYINGPAN:
 		{
-			Custom_Knockback(attacker, victim, 2000.0);
+			if(b_thisNpcIsABoss[victim])
+				Custom_Knockback(attacker, victim, 330.0);
+			else
+				Custom_Knockback(attacker, victim, 1000.0);
 		}
 	}
 #endif

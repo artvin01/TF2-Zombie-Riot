@@ -504,8 +504,11 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 
 				if(!b_IsAloneOnServer)
 				{
-					i_npcspawnprotection[entity] = 1;
-					CreateTimer(5.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					if(zr_spawnprotectiontime.FloatValue > 0.0)
+					{
+						i_npcspawnprotection[entity] = 1;
+						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					}
 				}
 			}
 		}
@@ -629,7 +632,7 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 		if(XP[entity] > 0)
 		{
 			TextStore_AddItemCount(client, ITEM_XP, XP[entity]);
-
+			
 			bool lowXPShare = Party_XPLowShare(client);
 			
 			if(lowXPShare && targetCount > 1)

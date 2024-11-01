@@ -1182,6 +1182,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			event.Fire();
 		}
 	}
+	f_InBattleDelay[victim] = GetGameTime() + 3.0;
 
 	//LogEntryInvicibleTest(victim, attacker, damage, 27);
 	bool SlayNpc = true;

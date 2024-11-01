@@ -5971,6 +5971,11 @@ public void NpcBaseThink(int iNPC)
 		HealEntityGlobal(iNPC, iNPC, float(i_HpRegenInBattle[iNPC]), 1.0, 0.0, HEAL_SELFHEAL | HEAL_PASSIVE_NO_NOTIF);
 		RPGNpc_UpdateHpHud(iNPC);
 	}
+	if(f_InBattleDelay[iNPC] < GetGameTime())
+	{
+		f_InBattleDelay[iNPC] = GetGameTime() + 0.25;
+		HealOutOfBattleNpc(iNPC);
+	}
 #endif
 
 	if(CvarDisableThink.BoolValue)
