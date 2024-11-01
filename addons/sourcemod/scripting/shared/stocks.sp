@@ -161,7 +161,7 @@ stock int ParticleEffectAt(float position[3], const char[] effectName, float dur
 	return particle;
 }
 
-stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iParent, const char[] szAttachment = "", float vOffsets[3] = {0.0,0.0,0.0})
+stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iParent, const char[] szAttachment = "", float vOffsets[3] = {0.0,0.0,0.0}, bool start = true)
 {
 	int particle = CreateEntityByName("info_particle_system");
 
@@ -180,11 +180,13 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		{
 			b_IsEntityAlwaysTranmitted[particle] = true;
 		}
-		DispatchSpawn(particle);
+
+		if (start)
+			DispatchSpawn(particle);
 
 		SetParent(iParent, particle, szAttachment, vOffsets);
 
-		if(effectName[0])
+		if(effectName[0] && start)
 		{
 			ActivateEntity(particle);
 			AcceptEntityInput(particle, "start");
@@ -5367,12 +5369,12 @@ stock float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
  * Spawns a 2-point particle (IE medigun beam, dispenser beam, etc) and connects it through 2 entities.
  * 
  * @param startEnt		The entity to start from.
- * @param startPoint	The point to attach the starting entity to.
+ * @param startPoint	The point to attach the starting entity to. Can be left blank to use WorldSpaceCenter.
  * @param startXOff		Starting point X-axis offset.
  * @param startYOff		Starting point Y-axis offset.
  * @param startZOff		Starting point Z-axis offset.
  * @param endEnt		The entity to end at.
- * @param endPoint		The point to attach the end entity to.
+ * @param endPoint		The point to attach the end entity to. Can be left blank to use WorldSpaceCenter.
  * @param endXOff		Ending point X-axis offset.
  * @param endYOff		Ending point Y-axis offset.
  * @param endZOff		Ending point Z-axis offset.
@@ -5382,14 +5384,28 @@ stock float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
  * @param duration		The duration of the effect. <= 0.0: infinite.
  */
 #if defined ZR
-stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], float startXOff, float startYOff, float startZOff, int endEnt, char endPoint[255], float endXOff, float endYOff, float endZOff, char effect[255], int &returnStart, int &returnEnd, float duration = 0.0)
+stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255] = "", float startXOff = 0.0, float startYOff = 0.0, float startZOff = 0.0, int endEnt = -1, char endPoint[255] = "", float endXOff = 0.0, float endYOff = 0.0, float endZOff = 0.0, char effect[255], int &returnStart, int &returnEnd, float duration = 0.0)
 {
-	float startPos[3], endPos[3];
-	WorldSpaceCenter(startEnt, startPos);
-	WorldSpaceCenter(endEnt, endPos);
+	float startPos[3], endPos[3], trash[3];
+	if (!StrEqual(startPoint, ""))
+		GetAttachment(startEnt, startPoint, startPos, trash);
+	else
+		WorldSpaceCenter(startEnt, startPos);
 
-	int particle = ParticleEffectAtOcean(startPos, effect, duration, _, false);
-	int particle2 = ParticleEffectAtOcean(endPos, effect, duration, _, false);
+	if (!StrEqual(endPoint, ""))
+		GetAttachment(endEnt, endPoint, endPos, trash);
+	else
+		WorldSpaceCenter(endEnt, endPos);
+
+	//int particle = ParticleEffectAtOcean(startPos, effect, duration, _, false);
+	//int particle2 = ParticleEffectAtOcean(endPos, effect, duration, _, false);
+	int particle = ParticleEffectAt_Parent(startPos, effect, startEnt, startPoint, _, false);
+	int particle2 = ParticleEffectAt_Parent(endPos, effect, endEnt, endPoint, _, false);
+	if (duration > 0.0)
+	{
+		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
+	}
 
 	float offsets[3];
 	offsets[0] = startXOff;
