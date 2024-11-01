@@ -275,6 +275,7 @@ void RPG_MapStart()
 	Weapon_lantean_Wand_ClearAll();
 	Weapon_lantean_Wand_Map_Precache();
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
+	MapStartPlotMisc();
 
 	/*
 	HealingPotion_Map_Start();
