@@ -1396,7 +1396,7 @@ void CreateCardEffect(int client)
 		int particle = ParticleEffectAt(flPos, CardParticle[client], 0.0);
 		GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 		SetParent(viewmodelModel, particle, "effect_hand_r");
-		i_CardParticle[client][0] = EntIndexToEntRef(particle);
+		i_CardParticle[client] = EntIndexToEntRef(particle);
 	}
 }
 

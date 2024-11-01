@@ -73,7 +73,7 @@ void CombineOverlord_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_ChargeSounds));   i++) { PrecacheSound(g_ChargeSounds[i]);   }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Overlord");
+	strcopy(data.Name, sizeof(data.Name), "Whiteflower Overlord");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_overlord");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_overlord");
 	data.IconCustom = true;

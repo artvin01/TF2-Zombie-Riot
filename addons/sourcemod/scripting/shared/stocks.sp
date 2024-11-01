@@ -2931,6 +2931,28 @@ int CountPlayersOnServer()
 	
 }
 
+void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
+{
+#if defined ZR
+	if(i_ChaosArrowAmount[attacker] > 0)
+	{
+		Elemental_AddChaosDamage(victim, attacker, RoundToCeil(float(i_ChaosArrowAmount[attacker]) * Scale));
+	}
+	if(i_VoidArrowAmount[attacker] > 0)
+	{
+		Elemental_AddVoidDamage(victim, attacker, RoundToCeil(float(i_VoidArrowAmount[attacker]) * Scale));
+	}
+#endif
+	if(i_NervousImpairmentArrowAmount[attacker] > 0)
+	{
+#if defined ZR
+		Elemental_AddNervousDamage(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
+#elseif defined RPG
+		SeaShared_DealCorrosion(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
+#endif
+	}
+}
+
 int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
 
 stock void Explode_Logic_Custom(float damage,
@@ -2964,6 +2986,9 @@ int inflictor = 0)
 
 		if(ExplosionDmgMultihitFalloff == EXPLOSION_AOE_DAMAGE_FALLOFF)
 			ExplosionDmgMultihitFalloff = Attributes_Get(weapon, 4013, EXPLOSION_AOE_DAMAGE_FALLOFF);
+
+		if(explosion_range_dmg_falloff == EXPLOSION_RANGE_FALLOFF)
+			explosion_range_dmg_falloff = Attributes_Get(weapon, Attrib_OverrideExplodeDmgRadiusFalloff, EXPLOSION_RANGE_FALLOFF);
 	}
 #endif
 
@@ -3239,9 +3264,8 @@ int inflictor = 0)
 
 				if(damage_1 != 0.0)
 					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
-#if defined ZR
+
 				Projectile_DealElementalDamage(ClosestTarget, EntityToForward, ExplosionRangeFalloff);
-#endif
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -3953,7 +3977,7 @@ float RPGStocks_CalculatePowerLevel(int client)
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 	float ResMulti;
-	ResMulti = form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
+	ResMulti = form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
 	
 	BigTotal *= (1.0 / ResMulti);
 
@@ -5329,7 +5353,7 @@ stock any GetItemInArray(any[] array, int pos)
 //MaxNumBuffValue(0.6, 1.0, 1.0) = 0.6
 //MaxNumBuffValue(0.6, 1.0, 1.25) = 0.55
 
-float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
+stock float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
 {
 	// Our base number is max, the number when valuenerf is 0
 	// Our high number is start, the number when valuenerf is 1

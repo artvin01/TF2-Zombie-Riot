@@ -153,7 +153,7 @@ public void CombineShotgun_ClotThink(int iNPC)
 								
 								// E2 L5 = 10.5, E2 L10 = 12
 								KillFeed_SetKillIcon(npc.index, "shotgun_soldier");
-								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 100000, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 100000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 							}
 
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");

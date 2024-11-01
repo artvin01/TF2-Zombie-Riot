@@ -250,7 +250,7 @@ void Music_EndLastmann()
 
 				SetMusicTimer(client, 0);
 				StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 				TF2_RemoveCondition(client, TFCond_DefenseBuffed);
 				TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 				TF2_RemoveCondition(client, TFCond_RuneHaste);
@@ -292,7 +292,7 @@ void Music_RoundEnd(int victim, bool music = true)
 			if(music)
 				SetMusicTimer(client, GetTime() + 45);
 			
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+			SDKCall_SetSpeed(client);
 			TF2_RemoveCondition(client, TFCond_DefenseBuffed);
 			TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 			TF2_RemoveCondition(client, TFCond_RuneHaste);

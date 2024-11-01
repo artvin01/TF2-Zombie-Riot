@@ -27,15 +27,15 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_MeleeAttackSounds[][] = {
 	"weapons/rpg/rocketfire1.wav",
 };
 
 static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
@@ -80,7 +80,7 @@ methodmap Whiteflower_Nano_Blaster < CClotBody
 		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayRangedAttackSecondarySound() {
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.4, 200);
 		
 
 	}
@@ -238,18 +238,6 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 
 		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 			
-		//Predict their pos.
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
-		{
-			float vPredictedPos[3]; 
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
-			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
-		}
-		else
-		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-		}
 		//Get position for just travel here.
 
 		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
@@ -269,6 +257,30 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 		{
 			npc.m_iState = 0; //stand and look if close enough.
 		}
+
+		if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
+		{
+			npc.m_bAllowBackWalking = true;
+			float vBackoffPos[3];
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
+			NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+		}
+		else
+		{
+			npc.m_bAllowBackWalking = false;
+			//Predict their pos.
+			if(flDistanceToTarget < npc.GetLeadRadius()) 
+			{
+				float vPredictedPos[3]; 
+				PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
+				
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else
+			{
+				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			}
+		}
 		
 		switch(npc.m_iState)
 		{
@@ -287,7 +299,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN_PISTOL");
-					npc.m_flSpeed = 350.0;
+					npc.m_flSpeed = 300.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
@@ -298,11 +310,11 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 				{
 					if(npc.m_iChanged_WalkCycle != 7) 	
 					{
-						npc.m_bisWalking = false;
+						npc.m_bisWalking = true;
 						npc.m_iChanged_WalkCycle = 7;
-						npc.SetActivity("ACT_IDLE_ANGRY_PISTOL");
-						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
+						npc.SetActivity("ACT_WALK_AIM_PISTOL");
+						npc.m_flSpeed = 125.0;
+						NPC_StartPathing(iNPC);
 					}
 					npc.FaceTowards(vecTarget, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 
@@ -333,11 +345,12 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 					
 					// E2 L0 = 6.0, E2 L5 = 7.0
 					KillFeed_SetKillIcon(npc.index, "pistol");
-					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					float damage = 210000.0;
+					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer02_blue");
 					npc.PlayKilledEnemySound(npc.m_iTarget);
 
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
-				//	npc.PlayGunShot();
+					npc.PlayRangedAttackSecondarySound();
 				}
 				else
 				{
@@ -350,7 +363,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 						npc.m_bisWalking = true;
 						npc.m_iChanged_WalkCycle = 4;
 						npc.SetActivity("ACT_RUN_PISTOL");
-						npc.m_flSpeed = 350.0;
+						npc.m_flSpeed = 300.0;
 						NPC_StartPathing(iNPC);
 					}
 				}
@@ -359,7 +372,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 	}
 	else
 	{
-		npc.m_flSpeed = 260.0;
+		npc.m_flSpeed = 300.0;
 		npc.m_iChanged_WalkCycle = 0;
 	}
 	npc.PlayIdleSound();

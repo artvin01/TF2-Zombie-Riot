@@ -2,14 +2,14 @@
 #pragma newdecls required
 
 static KeyValues ActorKv;
-static bool ForcedMenu[MAXTF2PLAYERS];
+//static bool ForcedMenu[MAXTF2PLAYERS];
 //static float DelayTalkFor[MAXTF2PLAYERS];
 static char CurrentChat[MAXTF2PLAYERS][128];
 static char CurrentNPC[MAXTF2PLAYERS][128];
 static int CurrentRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static bool b_NpcHasQuestForPlayer[MAXENTITIES][MAXTF2PLAYERS];
-static int b_ParticleToOwner[MAXENTITIES];
-static int b_OwnerToParticle[MAXENTITIES];
+//static int b_ParticleToOwner[MAXENTITIES];
+//static int b_OwnerToParticle[MAXENTITIES];
 
 void Actor_ConfigSetup()
 {
@@ -89,7 +89,7 @@ void Actor_EnterZone(int client, const char[] name)
 				{
 					ActorKv.SetNum("_entref", EntIndexToEntRef(entity));
 
-					pos[2] += 110.0;
+				/*	pos[2] += 110.0;
 
 					int particle = ParticleEffectAt(pos, "powerup_icon_regen", 0.0);
 					
@@ -108,7 +108,8 @@ void Actor_EnterZone(int client, const char[] name)
 					b_ParticleToOwner[particle] = EntIndexToEntRef(entity);
 					b_OwnerToParticle[entity] = EntIndexToEntRef(particle);
 					b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointerKv(client);
-					
+					//as of now, this code is useless as it doesnt check for quests, just if you can talk.
+				*/
 				}
 			}
 			else
@@ -120,6 +121,7 @@ void Actor_EnterZone(int client, const char[] name)
 	while(ActorKv.GotoNextKey());
 }
 
+/*
 static Action QuestIndicatorTransmit(int entity, int client)
 {
 //	return Plugin_Handled;
@@ -137,6 +139,7 @@ static Action QuestIndicatorTransmit(int entity, int client)
 	}
 	return Plugin_Continue;
 }
+*/
 
 void Actor_DisableZone(const char[] name)
 {
@@ -151,11 +154,13 @@ void Actor_DisableZone(const char[] name)
 			int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
 			if(entity != INVALID_ENT_REFERENCE)
 			{
+				/*
 				int particle = EntRefToEntIndex(b_OwnerToParticle[entity]);
 				if(IsValidEntity(particle))
 				{
 					RemoveEntity(particle);
 				}
+				*/
 				int brush = EntRefToEntIndex(b_OwnerToBrush[entity]);
 				if(IsValidEntity(brush))
 				{
@@ -173,6 +178,9 @@ void Actor_DisableZone(const char[] name)
 /* Must be first interactable */
 bool Actor_Interact(int client, int entity)
 {
+	if(Dungeon_IsDungeon(client))
+		return false;
+	
 	if(CurrentChat[client][0])
 		return true;
 	
@@ -189,7 +197,7 @@ bool Actor_Interact(int client, int entity)
 			}
 
 			ActorKv.GetSectionName(CurrentNPC[client], sizeof(CurrentNPC[]));
-			CurrentRef[client] = EntIndexToEntRef(client);
+			CurrentRef[client] = EntIndexToEntRef(entity);
 			StartChat(client);
 			return true;
 		}
@@ -375,7 +383,7 @@ void Actor_ReopenMenu(int client)
 	}
 }
 
-static void StartChat(int client, const char[] override = "")
+static bool StartChat(int client, const char[] override = "")
 {
 	if(override[0])
 	{
@@ -385,7 +393,7 @@ static void StartChat(int client, const char[] override = "")
 	{
 		// Should never call anyways
 		Actor_ReopenMenu(client);
-		return;
+		return true;
 	}
 
 	ActorKv.Rewind();
@@ -414,7 +422,7 @@ static void StartChat(int client, const char[] override = "")
 					if(CheckCondKv(client))
 					{
 						OpenChatLineKv(client, entity, false);
-						return;
+						return true;
 					}
 					
 					ActorKv.GetString("altchat", buffer, sizeof(buffer));
@@ -437,11 +445,13 @@ static void StartChat(int client, const char[] override = "")
 		}
 	}
 
-	if(ForcedMenu[client])
+	//if(ForcedMenu[client])
 	{
-		ForcedMenu[client] = false;
+		//ForcedMenu[client] = false;
 		SetEntityMoveType(client, MOVETYPE_WALK);
 	}
+
+	return false;
 }
 
 static bool ShouldShowPointerKv(int client)
@@ -551,7 +561,9 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 	if(!noActions && ActorKv.JumpToKey("actions"))
 	{
 		if(ActorKv.GetNum("deposit"))
-			TextStore_DepositBackpack(client, false, true);
+		{
+			TF2_RegeneratePlayer(client);
+		}
 		
 		if(ActorKv.JumpToKey("setquest"))
 		{
@@ -601,7 +613,10 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		}
 
 		if(ActorKv.GetNum("resetspawn"))
+		{
 			f3_PositionArrival[client][0] = 0.0;
+			Stats_SaveClientStats(client);
+		}
 
 		float pos[3];
 		ActorKv.GetVector("teleport", pos);
@@ -613,11 +628,15 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
 
 			if(ActorKv.GetNum("setspawn"))
+			{
 				f3_PositionArrival[client] = pos;
+				Stats_SaveClientStats(client);
+			}
 		}
 		else if(ActorKv.GetNum("setspawn"))
 		{
 			GetClientAbsOrigin(client, f3_PositionArrival[client]);
+			Stats_SaveClientStats(client);
 		}
 
 		if(ActorKv.GetNum("reskillpoints"))
@@ -681,11 +700,11 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		{
 		//	DelayTalkFor[client] = GetGameTime() + 1.5;
 			
-			ForcedMenu[client] = true;
+			/*ForcedMenu[client] = true;
 			SetEntityMoveType(client, MOVETYPE_NONE);
 			RPGCore_CancelMovementAbilities(client);
 			TeleportEntity(client, _, _, {0.0, 0.0, 0.0});
-			ActorKv.GetSectionName(CurrentChat[client], sizeof(CurrentChat[]));
+			ActorKv.GetSectionName(CurrentChat[client], sizeof(CurrentChat[]));*/
 			
 		}
 		else
@@ -693,15 +712,15 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		// DelayTalkFor[client] = 0.0;
 			menu.AddItem(NULL_STRING, "...");
 			
-			if(ForcedMenu[client])
+			/*if(ForcedMenu[client])
 			{
 				ForcedMenu[client] = false;
 				SetEntityMoveType(client, MOVETYPE_WALK);
 			}
-			
+			*/
 		}
 
-		ForcedMenu[client] = true;
+		//ForcedMenu[client] = true;
 		RPGCore_CancelMovementAbilities(client);
 		SetEntityMoveType(client, MOVETYPE_NONE);
 		TeleportEntity(client, _, _, {0.0, 0.0, 0.0});
@@ -738,12 +757,12 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 		{
 			if(choice == MenuCancel_Disconnected)
 			{
-				ForcedMenu[client] = false;
+				//ForcedMenu[client] = false;
 				CurrentNPC[client][0] = 0;
 				CurrentChat[client][0] = 0;
 			}
 
-			if(!CurrentNPC[client][0] || !ForcedMenu[client])
+			if(!CurrentNPC[client][0]/* || !ForcedMenu[client]*/)
 			{
 				CurrentNPC[client][0] = 0;
 
@@ -783,16 +802,16 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 						ActorKv.GetString("chat", buffer, sizeof(buffer));
 						if(buffer[0])
 						{
-							StartChat(client, buffer);
-							return 0;
+							if(StartChat(client, buffer))
+								return 0;
 						}
 					}
 				}
 			}
 
-			if(ForcedMenu[client])
+			//if(ForcedMenu[client])
 			{
-				ForcedMenu[client] = false;
+				//ForcedMenu[client] = false;
 				SetEntityMoveType(client, MOVETYPE_WALK);
 			}
 
@@ -1477,12 +1496,18 @@ void Actor_EditorMenu(int client)
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 1 Scale: %f", ActorKv.GetFloat("wear1_size", 1.0));
 			menu.AddItem("_wear1_size", buffer2);
 
+			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 1 Skin: %i", ActorKv.GetNum("wear1_skin", 0));
+			menu.AddItem("_wear1_skin", buffer2);
+
 			ActorKv.GetString("wear2", buffer1, sizeof(buffer1));
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2: \"%s\"%s", buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
 			menu.AddItem("_wear2", buffer2);
 
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2 Scale: %f", ActorKv.GetFloat("wear2_size", 1.0));
 			menu.AddItem("_wear2_size", buffer2);
+			
+			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2 Skin: %i", ActorKv.GetNum("wear2_skin", 0));
+			menu.AddItem("_wear2_skin", buffer2);
 
 			ActorKv.GetString("wear3", buffer1, sizeof(buffer1));
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3: \"%s\"%s", buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
@@ -1490,6 +1515,9 @@ void Actor_EditorMenu(int client)
 
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3 Scale: %f", ActorKv.GetFloat("wear3_size", 1.0));
 			menu.AddItem("_wear3_size", buffer2);
+			
+			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3 Skin: %i", ActorKv.GetNum("wear3_skin", 0));
+			menu.AddItem("_wear3_skin", buffer2);
 
 			FormatEx(buffer2, sizeof(buffer2), "Bodygroup: %d", ActorKv.GetNum("bodygroup"));
 			menu.AddItem("_bodygroup", buffer2);

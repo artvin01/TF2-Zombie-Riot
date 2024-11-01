@@ -27,15 +27,15 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_MeleeAttackSounds[][] = {
 	"weapons/rpg/rocketfire1.wav",
 };
 
 static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
@@ -302,7 +302,7 @@ public void Whiteflower_Rocketeer_ClotThink(int iNPC)
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
 
 					npc.PlayMeleeSound();
-					float DamageDeal = 500000.0;
+					float DamageDeal = 350000.0;
 					int RocketGet = npc.FireRocket(vecTarget, DamageDeal, 1100.0);
 					npc.m_iAttacksTillReload++;
 
