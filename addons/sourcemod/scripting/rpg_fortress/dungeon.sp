@@ -1679,7 +1679,21 @@ public Action Dungeon_Timer(Handle timer)
 					if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
 					{
 						int tier = dungeon.TierLevel(null);
-						if(tier < stage.MinRisk)
+						if(StageSlotsLeft(name, stage) < 0)
+						{
+							dungeon.StartTime = GetGameTime() + QUEUE_TIME;
+							DungeonList.SetArray(name, dungeon, sizeof(dungeon));
+							
+							for(int client = 1; client <= MaxClients; client++)
+							{
+								if(StrEqual(InDungeon[client], name))
+								{
+									SetHudTextParams(-1.0, 0.08, 0.3, 200, 69, 0, 200);
+									ShowSyncHudText(client, SyncHud, "Too many people.");
+								}
+							}
+						}
+						else if(tier < stage.MinRisk)
 						{
 							dungeon.StartTime = GetGameTime() + QUEUE_TIME;
 							DungeonList.SetArray(name, dungeon, sizeof(dungeon));
