@@ -10712,7 +10712,7 @@ void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 	}
 #endif
 #if defined RPG
-	if(checkextralogic != 2 && RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
+	if(checkextralogic == 0 && RPGCore_ClientTargetedByNpcReturn(client) > GetGameTime())
 	{
 		if(f_InBattleDelay[client] < GetGameTime())
 		{
@@ -10740,8 +10740,12 @@ void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 	int GroundEntity = EntRefToEntIndex(RefGround);
 	if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
 	{
-		//client is ontop of something, dont do more, they have some way to be put down.
-		return;
+#if defined RPG
+		if(!b_is_a_brush[GroundEntity])
+#endif
+		{
+			return;
+		}
 	}
 
 
