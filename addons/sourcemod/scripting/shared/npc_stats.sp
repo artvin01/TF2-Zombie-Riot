@@ -10692,7 +10692,7 @@ void MakeObjectIntangeable(int entity)
 
 
 static int BadSpotPoints[MAXTF2PLAYERS];
-void Spawns_CheckBadClient(int client)
+void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 {
 #if defined ZR
 	if(CvarInfiniteCash.BoolValue)
@@ -10712,10 +10712,13 @@ void Spawns_CheckBadClient(int client)
 	}
 #endif
 #if defined RPG
-	if(RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
+	if(checkextralogic != 2 && RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
 	{
-		BadSpotPoints[client] = 0;
-		return;
+		if(f_InBattleDelay[client] < GetGameTime())
+		{
+			BadSpotPoints[client] = 0;
+			return;
+		}
 	}
 #endif
 	if(!(GetEntityFlags(client) & (FL_ONGROUND|FL_INWATER)))

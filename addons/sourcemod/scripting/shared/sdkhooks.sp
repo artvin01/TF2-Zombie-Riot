@@ -468,7 +468,7 @@ public void OnPostThink(int client)
 		if(EntityWearable > 0)
 		{
 			//when they land, check if they are in a bad pos
-			Spawns_CheckBadClient(client);
+			Spawns_CheckBadClient(client, 2);
 			//no need to recheck when they land
 			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			b_PlayerWasAirbornKnockbackReduction[client] = false;
@@ -1684,8 +1684,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 	//needs to be above everything aside extra damage
 	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
+	{
 		RPG_FlatRes(victim, attacker, weapon, damage);
-
+	}
 	float value = Attributes_FindOnPlayerZR(victim, Attrib_FormRes, true, 0.0, true, true);
 	if(value)
 	{
@@ -2592,6 +2593,15 @@ void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 			}
 		}
 	}
+
+	
+#if defined RPG
+	float value = Attributes_FindOnPlayerZR(client, Attrib_FormRes, true, 0.0, true, true);
+	if(value)
+	{
+		damage *= value;
+	}
+#endif
 }
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
 #define SKIN_ZOMBIE			5
