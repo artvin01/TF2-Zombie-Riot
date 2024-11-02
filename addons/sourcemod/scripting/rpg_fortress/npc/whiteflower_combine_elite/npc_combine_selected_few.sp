@@ -572,6 +572,14 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			case 2:
 			{		
 				//Jump at enemy	
+				if(npc.m_iChanged_WalkCycle != 7) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 7;
+					npc.SetActivity("ACT_RUN");
+					npc.m_flSpeed = 350.0;
+					NPC_StartPathing(iNPC);
+				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{

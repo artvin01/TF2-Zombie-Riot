@@ -237,16 +237,12 @@ public void CombineElite_ClotThink(int iNPC)
 					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
 					if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
 					{
-						if(ally.m_bIsSquad)
+						WorldSpaceCenter(ally.index, vecTarget);
+						if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 						{
-							WorldSpaceCenter(ally.index, vecTarget);
-							if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
-							{
-								ally.m_flRangedArmor = 0.00001;
-								ally.m_flMeleeArmor = 0.00001;
-								ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
-								break;
-							}
+							f_PernellBuff[ally.index] = GetGameTime() + 10.0;
+							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
+							break;
 						}
 					}
 				}

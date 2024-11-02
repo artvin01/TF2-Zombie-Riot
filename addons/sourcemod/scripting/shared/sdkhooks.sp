@@ -1845,6 +1845,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		return Plugin_Handled;	
 	}
 	f_InBattleDelay[victim] = GetGameTime() + 3.0;
+	f_InBattleDelay[attacker] = GetGameTime() + 3.0;
 #endif
 
 	float GetCurrentDamage = damage;

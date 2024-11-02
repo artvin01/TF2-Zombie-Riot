@@ -10712,12 +10712,27 @@ void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 	}
 #endif
 #if defined RPG
-	if(checkextralogic == 0 && RPGCore_ClientTargetedByNpcReturn(client) > GetGameTime())
+	//Are we checking 
+	/*
+		0 = Passively wating every so often
+		2 = when landing after being airborn
+
+	*/
+//	if(checkextralogic == 0)
+	/*
+	TODO: If they are out of bounds in a non playable area, kill them.
+
+	*/
 	{
-		if(f_InBattleDelay[client] < GetGameTime())
+		//Did any NPC try to attack us, if not...
+		if(RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
 		{
-			BadSpotPoints[client] = 0;
-			return;
+			//are we somehow in a battle regardless? if no then...
+			if(f_InBattleDelay[client] < GetGameTime())
+			{
+				BadSpotPoints[client] = 0;
+				return;
+			}
 		}
 	}
 #endif

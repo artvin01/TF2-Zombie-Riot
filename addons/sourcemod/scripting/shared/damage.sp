@@ -95,6 +95,12 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 	}
 #endif
 
+	
+#if defined RPG
+		if(b_ThisWasAnNpc[attacker])
+			f_InBattleDelay[attacker] = GetGameTime() + 6.0;
+#endif
+
 	return false;
 }
 
