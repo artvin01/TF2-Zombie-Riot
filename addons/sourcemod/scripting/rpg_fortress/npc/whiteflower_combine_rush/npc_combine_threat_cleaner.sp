@@ -252,8 +252,7 @@ public void Combine_ThreatCleaner_ClotThink(int iNPC)
 							WorldSpaceCenter(ally.index, vecTarget);
 							if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 							{
-								ally.m_flRangedArmor = 0.00001;
-								ally.m_flMeleeArmor = 0.00001;
+								f_PernellBuff[ally.index] = GetGameTime() + 10.0;
 								ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
 								break;
 							}
