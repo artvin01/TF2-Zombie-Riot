@@ -1784,9 +1784,13 @@
 	{
 		"en"	"But nobody is here..."
 	}
-	"Whiteflower Mercenary Eradicator"
+	"Whiteflower Mercenary Iberian"
 	{
-		"en"	"Whiteflower Mercenary Eradicator"
+		"en"	"Whiteflower Mercenary Iberian"
+	}
+	"Whiteflower Mercenary Ruinan"
+	{
+		"en"	"Whiteflower Mercenary Ruinan"
 	}
 	"Guln"
 	{
@@ -1807,5 +1811,13 @@
 	"Australium Printer Desc"
 	{
 		"en"	"Convert that australium into shop money!\n{yellow}Australium Ingots are converted into 200 credits each"
+	}
+	"Elite Operator"
+	{
+		"en"	"Elite Operator"
+	}
+	"Elite Operator Desc"
+	{
+		"en"	"It's hard to find these things, use it well.\n{green}Recover a high-grade weapon with a store discount"
 	}
 }

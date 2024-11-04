@@ -203,7 +203,8 @@ enum
 	WEAPON_FULLMOON = 123,
 	WEAPON_SKADI = 124,
 	WEAPON_HUNTING_RIFLE = 125,
-	WEAPON_URANIUM_RIFLE = 126
+	WEAPON_URANIUM_RIFLE = 126,
+	WEAPON_LOGOS = 127
 }
 
 enum
@@ -558,6 +559,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_yakuza.sp"
 #include "zombie_riot/custom/weapon_skadi.sp"
 #include "zombie_riot/custom/weapon_hunting_rifle.sp"
+#include "zombie_riot/custom/wand/weapon_logos.sp"
 
 void ZR_PluginLoad()
 {
@@ -811,6 +813,7 @@ void ZR_MapStart()
 	Wrathful_Blade_Precache();
 	Yakuza_MapStart();
 	ResetMapStartSkadiWeapon();
+	Logos_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
