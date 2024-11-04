@@ -1491,5 +1491,5 @@ public void Tinker_XP_Momentum2(int client, int weapon)
 
 public void Tinker_Mining_Unnatural(int client, int weapon, int toolTier, int mineTier, int &damage)
 {
-	damage += 5 * (toolTier - mineTier);
+	damage += 1 * (toolTier - mineTier);
 }
