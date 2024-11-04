@@ -2030,6 +2030,8 @@ public float Ammo_HealingSpell(int client, int index, char name[48])
 		kv.GetString("sound", buffer, sizeof(buffer));
 		if(buffer[0])
 			ClientCommand(client, "playgamesound %s", buffer);
+		
+		TextStore_SetAllItemCooldown(client, 20.0);
 
 		if(consume_Arg > 1)
 		{

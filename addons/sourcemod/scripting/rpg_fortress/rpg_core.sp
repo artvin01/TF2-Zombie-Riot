@@ -77,7 +77,6 @@ bool b_DungeonContracts_SlowerAttackspeed[MAXTF2PLAYERS];
 bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 //bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES];
-float f_MomentumAntiOpSpam[MAXENTITIES];
 
 static char MapConfig[64];
 
@@ -439,7 +438,6 @@ void RPG_ClientDisconnect_Post()
 void RPG_EntityCreated(int entity, const char[] classname)
 {
 	Level[entity] = 0;
-	f_MomentumAntiOpSpam[entity] = 0.0;
 	b_NpcIsInADungeon[entity] = false;
 	i_NpcFightOwner[entity] = false;
 	f_SingerBuffedFor[entity] = 0.0;

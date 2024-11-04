@@ -555,6 +555,21 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 	return Item_On;
 }
 
+void TextStore_SetAllItemCooldown(int client, float cooldown)
+{
+	static SpellEnum spell;
+	int length = SpellList.Length;
+	for(int i; i < length; i++)
+	{
+		SpellList.GetArray(i, spell);
+		if(spell.Owner == client && !spell.Skill)
+		{
+			spell.Cooldown = cooldown;
+			SpellList.SetArray(i, spell);
+		}
+	}
+}
+
 void TextStore_EquipSlotCheck(int client, int slot)
 {
 	if(slot >= 0)
@@ -1751,6 +1766,7 @@ static void DropItem(int client, int index, float pos[3], int totalAmount)
 				DispatchKeyValue(entity, "physicsmode", "2");
 				DispatchKeyValue(entity, "massScale", "1.0");
 				DispatchKeyValue(entity, "spawnflags", "6");
+				DispatchKeyValue(entity, "health", "1999999999");
 				DispatchKeyValue(entity, "targetname", "rpg_item");
 
 				ang[1] = index == -1 ? -1.0 : kv.GetFloat("modelscale", -1.0);
