@@ -1745,11 +1745,6 @@ stock void GetAbsOrigin(int client, float v[3])
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
 }
 
-public void DeleteHandle(Handle handle)
-{
-	delete handle;
-}
-
 stock bool IsValidClient( int client)
 {	
 	if ( client <= 0 || client > MaxClients )
@@ -3226,11 +3221,11 @@ int inflictor = 0)
 				Call_StartFunction(null, FunctionToCallBeforeHit);
 				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
-				Call_PushFloat(damage_1);
+				Call_PushFloatRef(damage_1);
 				Call_PushCell(weapon);
 				Call_Finish(GetBeforeDamage);
 			}
-			if(damage > 0.0)
+			if(damage_1 > 0.0)
 			{
 				//npcs do not take damage from drown damage, so what we will do instead
 				//is to make it do slash damage, slash damage ignores most resistances like drown does.

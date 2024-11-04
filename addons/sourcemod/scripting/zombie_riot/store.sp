@@ -562,13 +562,28 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
 void Store_OnCached(int client)
 {
-	if(Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
+	if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
 	{
-		if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
+		int amount;
+		if(Items_HasNamedItem(client, "ZR Contest 2024 Top 10"))
+		{
+			amount = 100;
+		}
+		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 20"))
+		{
+			amount = 75;
+		}
+		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 30"))
+		{
+			amount = 50;
+		}
+
+		if(amount)
 		{
 			Store_SetNamedItem(client, "ZR Contest Nominator [???] Cash", 1);
-			CashRecievedNonWave[client] += 50;
-			CashSpent[client] -= 50;
+			Building_GiveRewardsUse(0, client, amount);
+			//CashRecievedNonWave[client] += amount;
+			//CashSpent[client] -= amount;
 		}
 	}
 
@@ -577,8 +592,9 @@ void Store_OnCached(int client)
 		if(!Store_HasNamedItem(client, "ZR Content Creator [???] Cash"))
 		{
 			Store_SetNamedItem(client, "ZR Content Creator [???] Cash", 1);
-			CashRecievedNonWave[client] += 50;
-			CashSpent[client] -= 50;
+			Building_GiveRewardsUse(0, client, 50);
+			//CashRecievedNonWave[client] += 50;
+			//CashSpent[client] -= 50;
 		}
 	}
 }
@@ -951,7 +967,6 @@ void Store_ConfigSetup()
 	KeyValues kv = new KeyValues("Weapons");
 	kv.SetEscapeSequences(true);
 	kv.ImportFromFile(buffer);
-	RequestFrame(DeleteHandle, kv);
 	
 	char blacklist[6][32];
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
@@ -970,6 +985,8 @@ void Store_ConfigSetup()
 	{
 		ConfigSetup(-1, kv, 0, false, false, whitelist, whitecount, blacklist, blackcount);
 	} while(kv.GotoNextKey());
+
+	delete kv;
 
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
 	StoreBalanceLog = new KeyValues("UsageLog");
@@ -2299,6 +2316,32 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	return false;
 }
 
+// If timed is less than 0, super sale
+void Store_DiscountNamedItem(const char[] name, int timed = 0)
+{
+	int length = StoreItems.Length;
+	for(int i; i < length; i++)
+	{
+		static Item item;
+		StoreItems.GetArray(i, item);
+		if(StrEqual(name, item.Name, false))
+		{
+			if(timed)
+			{
+				item.NPCSeller_WaveStart = timed;
+			}
+			else
+			{
+				item.NPCSeller_First = timed < 0;
+				item.NPCSeller = true;
+			}
+
+			StoreItems.SetArray(i, item);
+			break;
+		}
+	}
+}
+
 void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave = false)
 {
 	int amount;
@@ -3080,7 +3123,15 @@ static void MenuPage(int client, int section)
 			if(!item.Starter)
 				continue;
 		}
-		else if(item.Hidden || item.Level > ClientLevel)
+		else if(item.Level > ClientLevel)
+		{
+			continue;
+		}
+		else if(item.NPCSeller || item.NPCSeller_WaveStart != 0)
+		{
+			continue;
+		}
+		else if(item.Hidden)
 		{
 			continue;
 		}

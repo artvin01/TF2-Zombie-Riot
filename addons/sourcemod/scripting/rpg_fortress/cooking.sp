@@ -489,6 +489,7 @@ static void CookProduct(int client)
 	char buffer[32];
 	StringMap map = new StringMap();
 
+	map.SetValue("level", float(CurrentLevelBuff[client]));
 	map.SetValue("uses", float(meal.Uses));
 
 	if(healingBuff != 1.0)
@@ -511,7 +512,7 @@ static void CookProduct(int client)
 			{
 				kv.GetSectionName(buffer, sizeof(buffer));
 				Format(name, sizeof(name), "%s %s", buffer, name);
-				Format(short, sizeof(short), "%s. %s", buffer[0], short);
+				Format(short, sizeof(short), "%c. %s", buffer[0], short);
 				
 				int type = i == meal.Foods ? (Food_MAX-1) : kv.GetNum("foodtype");
 
@@ -808,41 +809,45 @@ public float Cooking_UseFunction(int client, int index, char name[48])
 		if(value != 1.0)
 			IncreaceEntityDamageDealtBy(client, value, duration);
 		
-		value = MergAdd(kv, map, "strength");
-		if(value)
-			ApplyTempStat(client, -2, value, duration);
-		
-		value = MergAdd(kv, map, "precision");
-		if(value)
-			ApplyTempStat(client, -3, value, duration);
-		
-		value = MergAdd(kv, map, "artifice");
-		if(value)
-			ApplyTempStat(client, -4, value, duration);
-		
-		value = MergAdd(kv, map, "endurnace");
-		if(value)
-			ApplyTempStat(client, -5, value, duration);
-		
-		value = MergAdd(kv, map, "structure");
-		if(value)
-			ApplyTempStat(client, -6, value, duration);
-		
-		value = MergAdd(kv, map, "intelligence");
-		if(value)
-			ApplyTempStat(client, -7, value, duration);
-		
-		value = MergAdd(kv, map, "capacity");
-		if(value)
-			ApplyTempStat(client, -8, value, duration);
-		
-		value = MergAdd(kv, map, "luck");
-		if(value)
-			ApplyTempStat(client, -9, value, duration);
-		
-		value = MergAdd(kv, map, "agility");
-		if(value)
-			ApplyTempStat(client, -10, value, duration);
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon != -1)
+		{
+			value = MergAdd(kv, map, "strength");
+			if(value)
+				ApplyTempStat(weapon, -2, value, duration);
+			
+			value = MergAdd(kv, map, "precision");
+			if(value)
+				ApplyTempStat(weapon, -3, value, duration);
+			
+			value = MergAdd(kv, map, "artifice");
+			if(value)
+				ApplyTempStat(weapon, -4, value, duration);
+			
+			value = MergAdd(kv, map, "endurnace");
+			if(value)
+				ApplyTempStat(weapon, -5, value, duration);
+			
+			value = MergAdd(kv, map, "structure");
+			if(value)
+				ApplyTempStat(weapon, -6, value, duration);
+			
+			value = MergAdd(kv, map, "intelligence");
+			if(value)
+				ApplyTempStat(weapon, -7, value, duration);
+			
+			value = MergAdd(kv, map, "capacity");
+			if(value)
+				ApplyTempStat(weapon, -8, value, duration);
+			
+			value = MergAdd(kv, map, "luck");
+			if(value)
+				ApplyTempStat(weapon, -9, value, duration);
+			
+			value = MergAdd(kv, map, "agility");
+			if(value)
+				ApplyTempStat(weapon, -10, value, duration);
+		}
 
 		kv.GetString("sound", buffer, sizeof(buffer));
 		if(buffer[0])
@@ -876,9 +881,13 @@ public float Cooking_UseFunction(int client, int index, char name[48])
 					Format(buffer, sizeof(buffer), "%s:%s:%s", buffer, buffers[i - 1], buffers[i]);
 				}
 			}
+
+			TextStore_SetItemData(index, buffer);
 		}
-		
-		return GetGameTime() + MergMult(kv, map, "cooldown") + duration;
+
+		duration += GetGameTime();
+		TextStore_SetAllItemCooldown(client, duration + 10.0);
+		return duration + MergMult(kv, map, "cooldown");
 	}
 	return FAR_FUTURE;
 }

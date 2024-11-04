@@ -522,7 +522,7 @@ public void FallenWarrior_NPCDeath(int entity)
 		pack.WriteFloat(VecSelfNpcabs[i]);
 	}
 	pack.WriteCell(GetRandomSeedEachWave);
-	pack.WriteCell(1);
+	pack.WriteCell(GetTeam(entity) == TFTeam_Red ? 5 : 1);	// Rogue Special Red Team
 	pack.WriteCell(GetTeam(npc.index));
 
 	Citizen_MiniBossDeath(entity);
@@ -579,16 +579,16 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 	int RandomSeed = pack.ReadCell();
-	bool StayOneMoreWave = pack.ReadCell();
+	int StayOneMoreWave = pack.ReadCell();
 	if(RandomSeed != GetRandomSeedEachWave)
 	{
-		pack.Position--;
-		pack.WriteCell(0, false);
-		pack.Position--;
-		pack.Position--;
-		pack.WriteCell(GetRandomSeedEachWave, false);
-		pack.Position++;
-		if(!StayOneMoreWave)
+		pack.Position--;				// Team -> StayOneMoreWave
+		pack.WriteCell(StayOneMoreWave - 1, false);	// StayOneMoreWave -> Team
+		pack.Position--;				// Team -> StayOneMoreWave
+		pack.Position--;				// StayOneMoreWave -> RandomSeed
+		pack.WriteCell(GetRandomSeedEachWave, false);	// RandomSeed -> StayOneMoreWave
+		pack.Position++;				// StayOneMoreWave -> Team
+		if(StayOneMoreWave < 1)
 		{
 			CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 			return Plugin_Stop;	

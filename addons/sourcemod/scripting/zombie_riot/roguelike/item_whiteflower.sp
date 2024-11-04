@@ -274,3 +274,23 @@ public void Rogue_Exchanger_Remove()
 {
 	CoinExchanger = false;
 }
+
+public void Rogue_RareWeapon_Collect()
+{
+	char name[64];
+
+	switch(GetURandomInt() % 5)
+	{
+		case 0, 1:
+			strcopy(name, sizeof(name), "Vows of the Sea");
+		
+		case 2:
+			strcopy(name, sizeof(name), "Dimension Ripper");
+		
+		case 3, 4:
+			strcopy(name, sizeof(name), "Whistle Stop");
+	}
+
+	Store_DiscountNamedItem(name, 30);
+	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
+}
