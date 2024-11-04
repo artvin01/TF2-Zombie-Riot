@@ -105,7 +105,7 @@ public void Combine_ThreatCleaner_ClotThink(int iNPC)
 
 						// E2 L5 = 105, E2 L10 = 120
 						KillFeed_SetKillIcon(npc.index, "club");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 400000.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 550000.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
 						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 					}
@@ -123,7 +123,7 @@ public void Combine_ThreatCleaner_ClotThink(int iNPC)
 
 				// E2 L5 = 280, E2 L10 = 320
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 500.0,_,vecTarget);
-				npc.FireRocket(vecTarget, 600000.0, 500.0, "models/effects/combineball.mdl");
+				npc.FireRocket(vecTarget, 900000.0, 500.0, "models/effects/combineball.mdl");
 			}
 		}
 
@@ -215,9 +215,9 @@ public void Combine_ThreatCleaner_ClotThink(int iNPC)
 							// E2 L5 = 5.25, E2 L10 = 6
 							KillFeed_SetKillIcon(npc.index, "smg");
 							if(distance > (300.0 * 300.0))	// extra damage when too far away.
-								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 375000.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
+								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 450000.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
 							else
-								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 325000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 375000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 
 							KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 

@@ -1845,7 +1845,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		return Plugin_Handled;	
 	}
 	f_InBattleDelay[victim] = GetGameTime() + 3.0;
-	f_InBattleDelay[attacker] = GetGameTime() + 3.0;
 #endif
 
 	float GetCurrentDamage = damage;
@@ -2955,14 +2954,14 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			if(ArmorCorrosion[client] > 0)
 				ArmorCorrosion[client] = ArmorCorrosion[client] * 9 / 10;
 			
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		}
 		else
 		{
 			if(ArmorCorrosion[client] > 0)
 				ArmorCorrosion[client] = ArmorCorrosion[client] * 2 / 3;
 			
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		}
 	}
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)

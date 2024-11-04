@@ -229,7 +229,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 						npc.m_flNextRangedAttack = gameTime + 0.2;
 						PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
 						npc.FaceTowards(vecTarget, 20000.0);
-						npc.FireParticleRocket(vecTarget, 950000.0 , 800.0 , 100.0 , "raygun_projectile_blue");
+						npc.FireParticleRocket(vecTarget, 1000000.0 , 800.0 , 100.0 , "raygun_projectile_blue");
 
 						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", .SetGestureSpeed = 1.5);
 						npc.PlayRangedAttackSecondarySound();

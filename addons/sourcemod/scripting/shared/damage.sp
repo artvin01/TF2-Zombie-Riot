@@ -371,9 +371,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			{
 
-#if defined ZR
 				DoClientHitmarker(attacker);
-#endif
 
 				if(IsValidEntity(weapon))
 				{

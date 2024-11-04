@@ -249,7 +249,7 @@ public void Whiteflower_ExpertFighter_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 750000.0;
+					float damage = 950000.0;
 
 					
 					if(target > 0) 

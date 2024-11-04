@@ -287,7 +287,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 
 	if(npc.m_flCloneRageInit)
 	{
-
+		ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 600000.0);
 		if(npc.m_flCloneRageInit < gameTime)
 		{
 			//Enrage and keep teleporting
@@ -322,7 +322,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 700000.0;
+					float damage = 850000.0;
 
 					
 					if(target > 0) 

@@ -253,7 +253,7 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 650000.0;
+					float damage = 950000.0;
 
 					
 					if(target > 0) 
@@ -286,7 +286,7 @@ public void Whiteflower_ExtremeKnight_ClotThink(int iNPC)
 				
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.FireParticleRocket(vecTarget, 650000.0 , 800.0 , 100.0 , "raygun_projectile_red");
+				npc.FireParticleRocket(vecTarget, 850000.0 , 800.0 , 100.0 , "raygun_projectile_red");
 
 			}
 			npc.m_flDoingAnimation = 0.0;
