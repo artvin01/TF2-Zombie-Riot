@@ -25,8 +25,8 @@ static float Anchor_CDMult = 0.66;				//Maximum cooldown reduction multiplier ba
 static float Anchor_MinHP = 0.25;				//Percentage of max HP at which animation speed reaches max.
 static int Anchor_MaxTargets = 4;				//Maximum targets hit at once by Anchor Breaker.
 
-//KEELHAUL: Faux-Beard throws his anchor forwards, dealing damage and knockback to whoever it hits. Once the anchor hits the floor, Faux-Beard waits X seconds before pulling it back with a chain, dealing rapid damage to anyone the anchor hits
-//on the way back, pulling them with it. He will always follow up with Anchor Breaker if at least one enemy who was pulled is within melee range after the attack ends.
+//KEELHAUL: Faux-Beard throws his anchor forwards, dealing splash damage and knockback at the point of impact. The anchor will bounce several times, dealing splash damage with
+//every bounce.
 static float Keelhaul_DMG_Out = 200.0;			//Damage dealt if the anchor hits someone while it is not being pulled back.
 static float Keelhaul_DMG_In = 20.0;			//Damage dealt if the anchor hits someone while being pulled back.
 static float Keelhaul_KB_Out = 600.0;			//Knockback inflicted to enemies who are hit by the anchor when it is thrown out.
@@ -40,6 +40,7 @@ static float Keelhaul_Cooldown = 5.0;			//Ability cooldown.
 static float Keelhaul_StartingCooldown = 2.0;	//Starting cooldown.
 static float Keelhaul_Range = 1200.0;			//Maximum range in which this ability can be used.
 static float Keelhaul_ThrowRange = 2400.0;		//Attempted throw distance (gravity will reduce this in-game).
+static float Keelhaul_ReturnTime = 1.0;			//Time it should take for the anchor to return when pulled back.
 
 //MORALE BOOST: Faux-Beard rallies his allies with a battle cry, permanently buffing all allies within a large radius and healing them for a percentage of their max HP.
 static float Morale_Radius = 600.0;				//Ability radius.
@@ -150,7 +151,6 @@ static bool Captain_StopMoving[MAXENTITIES] = { false, ... };
 static bool Captain_UsingPearls[MAXENTITIES] = { false, ... };
 static bool Captain_SetPearlsLoop[MAXENTITIES] = { false, ... };
 static bool b_AnchorSprinting[MAXENTITIES] = { false, ... };
-static bool Anchor_Yanked[MAXENTITIES] = { false, ... };
 
 static char s_CaptainSequence[MAXENTITIES][255];
 static bool b_CaptainForceSequence[MAXENTITIES] = { false, ... };
@@ -159,6 +159,7 @@ static int Anchor_Prop[MAXENTITIES] = { -1, ... };
 static int Captain_Chain_Start[MAXENTITIES] = { -1, ... };
 static int Captain_Chain_End[MAXENTITIES] = { -1, ... };
 static int Captain_Anchor[MAXENTITIES] = { -1, ... };
+static float Keelhaul_EndTime[MAXENTITIES] = { 0.0, ... };
 
 int laserModel;
 int lightningModel;
@@ -518,36 +519,6 @@ public void Captain_ClotThink(int iNPC)
 		EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], npc.index, _, _, _, _, 80);
 	}
 
-	if (f_YankAt[npc.index] > 0.0)
-	{
-		if (GetGameTime(npc.index) >= f_YankAt[npc.index])
-		{
-			int act = npc.LookupActivity("ACT_CAPTAIN_YANK_ANCHOR");
-			if (act > 0)
-				npc.StartActivity(act);
-
-			EmitSoundToAll(SOUND_CAPTAIN_HEAVY_WHOOSH, npc.index, _, 120);
-			f_YankAt[npc.index] = 0.0;
-			//TODO: Pull projectile
-		}
-		else
-		{
-			int anchor = EntRefToEntIndex(Captain_Anchor[npc.index]);
-			float startPos[3], endPos[3], ang[3];
-			npc.GetAttachment("handR", startPos, ang);
-			if (IsValidEntity(anchor))
-			{
-				int prop = EntRefToEntIndex(Anchor_Prop[anchor]);
-				if (IsValidEntity(prop))
-					GetAttachment(prop, "captain_anchor_chain", endPos, ang);
-			}
-
-			SpawnBeam_Vectors(startPos, endPos, 0.1, 0, 255, 120, 200, laserModel, 4.0, 4.0, _, 0.1);
-			SpawnBeam_Vectors(startPos, endPos, 0.1, 0, 255, 120, 200, lightningModel, 1.0, 1.0, _, 5.0);
-			SpawnBeam_Vectors(startPos, endPos, 0.1, 120, 255, 200, 120, glowModel, 4.0, 4.0, _, 0.1);
-		}
-	}
-
 	if (Captain_UsingPearls[npc.index])
 	{
 		if (GetGameTime(npc.index) > Captain_PearlsEndTime[npc.index])
@@ -619,6 +590,7 @@ public void Captain_ClotThink(int iNPC)
 			}
 		}
 
+		//Ability scrapped entirely due to a shit load of technical limitations.
 		if (npc.CanUseKeelhaul(flDistanceToTarget))
 		{
 			npc.FaceTowards(vecTarget, 15000.0);
@@ -834,41 +806,32 @@ public void Captain_AnimEvent(int entity, int event)
 					SetParent(anchor, prop);
 
 					DispatchKeyValueFloat(prop, "modelscale", 0.01);
-					RequestFrame(Captain_UnhideAnchor, EntIndexToEntRef(prop));
+					CreateTimer(0.1, Captain_UnhideAnchor, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 
 					Anchor_Prop[anchor] = EntIndexToEntRef(prop);
 				}
 
-				/*int prop = FauxBeardAnchorVisualiser(npc.index, pos, ang, GetTeam(npc.index)).index;
-				if (IsValidEntity(prop))
-				{
-					SetParent(anchor, prop);
-				}*/
-
 				g_DHookRocketExplode.HookEntity(Hook_Pre, anchor, Captain_AnchorCollide);
-
-				Captain_Anchor[npc.index] = EntIndexToEntRef(anchor);
-				Anchor_Yanked[entity] = false;
 			}
 		}
 		case 1011:	//Anchor toss animation is finished, switch to waiting phase.
 		{
-			s_CaptainSequence[npc.index] = "ACT_CAPTAIN_WAIT_FOR_ANCHOR";
-			b_CaptainForceSequence[npc.index] = true;
-		}
-		case 1012:
-		{
-			s_CaptainSequence[npc.index] = "ACT_CAPTAIN_WAIT_FOR_ANCHOR_YANKED";
+			s_CaptainSequence[npc.index] = "ACT_CAPTAIN_WALK";
+			Captain_Attacking[npc.index] = false;
+			f_NextKeelhaul[npc.index] = GetGameTime(npc.index) + Keelhaul_Cooldown;
+			Captain_StopMoving[npc.index] = false;
 			b_CaptainForceSequence[npc.index] = true;
 		}
 	}
 }
 
-public void Captain_UnhideAnchor(int ref)
+public Action Captain_UnhideAnchor(Handle timer, int ref)
 {
 	int ent = EntRefToEntIndex(ref);
 	if (IsValidEntity(ent))
 		DispatchKeyValueFloat(ent, "modelscale", StringToFloat(CAPTAIN_SCALE));
+
+	return Plugin_Continue;
 }
 
 public MRESReturn Captain_AnchorCollide(int entity)
@@ -883,37 +846,21 @@ public MRESReturn Captain_AnchorCollide(int entity)
 		EmitSoundToAll(SOUND_ANCHOR_BREAKER_IMPACT_2, particle, _, 120);
 	}
 
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if (!IsValidEntity(owner))
-		RemoveEntity(entity);
-	else if (!Anchor_Yanked[entity])
+	int prop = EntRefToEntIndex(Anchor_Prop[entity]);
+	/*if (IsValidEntity(prop))
 	{
-		bool isBlue = GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
-		//TODO: Damage
-		//Explode_Logic_Custom(MOLOTOV_DAMAGE, IsValidEntity(owner) ? owner : entity, entity, entity, position, MOLOTOV_RADIUS, MOLOTOV_FALLOFF_MULTIHIT, MOLOTOV_FALLOFF_RADIUS, isBlue, _, true, MOLOTOV_ENTITYMULT);
-		
-		f_YankAt[owner] = GetGameTime(owner) + Keelhaul_Pull_Delay;
+		SetVariantString("captain_anchor_in_ground");
+		AcceptEntityInput(prop, "SetAnimation");
+	}*/
 
-		SetEntityMoveType(entity, MOVETYPE_NONE);
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	bool isBlue = (IsValidEntity(owner) ? GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue) : true);
+	//TODO: Damage
+	//Explode_Logic_Custom(MOLOTOV_DAMAGE, IsValidEntity(owner) ? owner : entity, entity, entity, position, MOLOTOV_RADIUS, MOLOTOV_FALLOFF_MULTIHIT, MOLOTOV_FALLOFF_RADIUS, isBlue, _, true, MOLOTOV_ENTITYMULT);
 
-		int prop = EntRefToEntIndex(Anchor_Prop[entity]);
-		if (IsValidEntity(prop))
-		{
-			SetVariantString("captain_anchor_in_ground");
-			AcceptEntityInput(prop, "SetAnimation");
-
-			float startPos[3], endPos[3], junk[3];
-			GetAttachment(owner, "handR", startPos, junk);
-			GetAttachment(prop, "captain_anchor_chain", endPos, junk);
-			
-			int start = ParticleEffectAt_Parent(startPos, "superrare_burning2", owner, "handR");
-			int end = ParticleEffectAt_Parent(endPos, "superrare_burning2", prop, "captain_anchor_chain");
-
-			SpawnParticle_ControlPoints(startPos, endPos, PARTICLE_CAPTAIN_ANCHOR_CHAIN_SPAWN, 0.66);
-		}
-
-		Anchor_Yanked[entity] = true;
-	}
+	//TODO: Bounce logic
+	
+	RemoveEntity(entity);
 
 	return MRES_Supercede; //DONT.
 }
@@ -986,21 +933,6 @@ public Action Captain_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-public void Captain_TerminateKeelhaul(int entity)
-{
-	int target = EntIndexToEntRef(Captain_Anchor[entity]);
-	if (IsValidEntity(target))
-		RemoveEntity(target);
-
-	target = EntIndexToEntRef(Captain_Chain_Start[entity]);
-	if (IsValidEntity(target))
-		RemoveEntity(target);
-
-	target = EntIndexToEntRef(Captain_Chain_Start[entity]);
-	if (IsValidEntity(target))
-		RemoveEntity(target);
-}
-
 public void Captain_NPCDeath(int entity)
 {
 	Captain npc = view_as<Captain>(entity);
@@ -1009,8 +941,6 @@ public void Captain_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-
-	Captain_TerminateKeelhaul(entity);
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
