@@ -522,7 +522,7 @@ public void FallenWarrior_NPCDeath(int entity)
 		pack.WriteFloat(VecSelfNpcabs[i]);
 	}
 	pack.WriteCell(GetRandomSeedEachWave);
-	pack.WriteCell(GetTeam(entity) == TFTeam_Red ? 5 : 1);
+	pack.WriteCell(GetTeam(entity) == TFTeam_Red ? 5 : 1);	// Rogue Special Red Team
 	pack.WriteCell(GetTeam(npc.index));
 
 	Citizen_MiniBossDeath(entity);
