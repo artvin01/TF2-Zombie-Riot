@@ -4,7 +4,7 @@ static float f_TargetAirtimeTeleportDelay[MAXENTITIES];
 static bool b_TraceFire[MAXENTITIES];
 static int i_NpcToTarget[MAXENTITIES];
 static bool b_AirCutterNpcWasShotUp[MAXENTITIES];
-#define AIRCUTTER_AIRTIME 3.0	
+#define AIRCUTTER_AIRTIME 1.5	
 #define AIRCUTTER_JUDGEMENT_MAXRANGE 100.0	
 
 #define AIRCUTTER_KICKUP_1 "mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
@@ -104,24 +104,24 @@ public float Ability_AirCutter(int client, int level, int weapon)
 		}
 
 		f_TargetAirtime[client] = GetGameTime() + AIRCUTTER_AIRTIME;
-		f_TargetAirtimeDelayHit[client] = GetGameTime() + 0.5;
+		f_TargetAirtimeDelayHit[client] = GetGameTime() + 0.25;
 		f_TankGrabbedStandStill[target] = GetGameTime(target) + AIRCUTTER_AIRTIME;
 		f_TargetAirtime[target] = GetGameTime() + AIRCUTTER_AIRTIME; //Kick up for way less time.
 		b_DoNotUnStuck[client] = true;
 		if(target > MaxClients)
-			FreezeNpcInTime(target,AIRCUTTER_AIRTIME + 0.5);
+			FreezeNpcInTime(target,AIRCUTTER_AIRTIME + 0.25);
 
 		//Give abit extra time so they can run away
 		b_TraceFire[client] = false;
 		i_EntityToAlwaysMeleeHit[client] = target;
 		//teleporting and changing the player vision 24/7 fucks with this.
 
-		ApplyTempAttrib(weapon, 6, 0.25, AIRCUTTER_AIRTIME);
-		ApplyTempAttrib(weapon, 2, 0.5, AIRCUTTER_AIRTIME);
-		ApplyTempAttrib(weapon, 4005, 0.5, AIRCUTTER_AIRTIME);
-		ApplyTempAttrib(weapon, 4004, 0.15, AIRCUTTER_AIRTIME);
+		ApplyTempAttrib(weapon, 6, 0.75, AIRCUTTER_AIRTIME);
+		ApplyTempAttrib(weapon, 4004, 0.75, AIRCUTTER_AIRTIME);
+		ApplyTempAttrib(weapon, 2, 1.25, AIRCUTTER_AIRTIME);
+		ApplyTempAttrib(weapon, 4005, 1.1, AIRCUTTER_AIRTIME);
 		EmitSoundToAll(AIRCUTTER_KICKUP_1, client, _, 75, _, 0.60);
-		TF2_AddCondition(client, TFCond_DefenseBuffed, 3.0);
+		TF2_AddCondition(client, TFCond_DefenseBuffed, AIRCUTTER_AIRTIME);
 		f_TargetAirtimeTeleportDelay[client] = GetGameTime();
 
 		spawnRing_Vectors(OldPosSave[target], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);	

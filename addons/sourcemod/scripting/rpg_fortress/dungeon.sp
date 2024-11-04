@@ -609,7 +609,7 @@ static Handle DungeonTimer;
 static StringMap DungeonList;
 static char DungeonMenu[MAXTF2PLAYERS][64];
 static int AltMenu[MAXTF2PLAYERS];
-static char InDungeon[MAXENTITIES][64];
+char InDungeon[MAXENTITIES][64];
 static int LastResult[MAXENTITIES];
 
 void Dungeon_PluginStart()
