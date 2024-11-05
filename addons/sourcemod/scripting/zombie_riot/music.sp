@@ -183,7 +183,7 @@ void StopMapMusicAll()
 	char sSound[256];
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsValidClient(client) && (b_IgnoreMapMusic[client] || !Database_IsCached(client)))
+		if(IsValidClient(client) && (b_IgnoreMapMusic[client] || (!Database_IsLan() && !Database_IsCached(client))))
 		{
 			for (int i = 0; i < g_iNumSounds; i++)
 			{

@@ -2065,6 +2065,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_LeeSuperEffect[npc] > GameTime)
 		return true;
+	else if(f_LogosDebuff[npc] > GameTime)
+		return true;
 	else if(f_GodAlaxiosBuff[npc] > GameTime)
 		return true;
 	else if(f_Ocean_Buff_Stronk_Buff[npc] > GameTime)

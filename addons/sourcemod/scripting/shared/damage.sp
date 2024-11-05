@@ -657,6 +657,7 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float &
 	{
 		DamageRes *= 0.95;
 	}
+
 	//if inflictor is 9999999, then that means its called by seperate code, HUD elements.
 	if(RaidbossIgnoreBuildingsLogic(1) && (GetTeam(victim) == TFTeam_Red))
 	{
@@ -1099,6 +1100,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_SKADI:
 		{
 			WeaponSkadi_OnTakeDamageNpc(attacker,damage);
+		}
+		case WEAPON_WALTER:
+		{
+			Walter_NPCTakeDamage(victim, attacker, damage, weapon);
 		}
 	}
 #endif
@@ -1804,7 +1809,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 #endif
 }
 
-stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime, float damagePosition[3])
+stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime, float damagePosition[3] = NULL_VECTOR)
 {
 	float basedamage = damage;
 #if defined ZR
@@ -1916,6 +1921,14 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 		damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);
 	}
 #endif
+	if(f_LogosDebuff[victim] > GameTime)
+	{
+		if((damagetype & DMG_PLASMA) || (damagetype & DMG_SHOCK) || (i_HexCustomDamageTypes[victim] & ZR_DAMAGE_LASER_NO_BLAST))
+		{
+			damage += basedamage * (0.1 * DamageBuffExtraScaling);
+			damage += 1500.0;
+		}
+	}
 }
 #endif	// Non-RTS
 
@@ -2060,6 +2073,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_LeeMinorEffect[victim] > GameTime || f_LeeMajorEffect[victim] > GameTime || f_LeeSuperEffect[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s☯", Debuff_Adder_left);
+	}
+	if(f_LogosDebuff[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s#", Debuff_Adder_left);
 	}
 	if(NpcStats_IsEnemySilenced(victim))
 	{
