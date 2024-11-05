@@ -116,10 +116,10 @@ public float Ability_AirCutter(int client, int level, int weapon)
 		i_EntityToAlwaysMeleeHit[client] = target;
 		//teleporting and changing the player vision 24/7 fucks with this.
 
-		ApplyTempAttrib(weapon, 6, 0.5, AIRCUTTER_AIRTIME);
-		ApplyTempAttrib(weapon, 4004, 0.5, AIRCUTTER_AIRTIME);
-		ApplyTempAttrib(weapon, 2, 1.55, AIRCUTTER_AIRTIME);
-		ApplyTempAttrib(weapon, 4005, 1.55, AIRCUTTER_AIRTIME);
+		ApplyTempAttrib(weapon, 6, 0.25, AIRCUTTER_AIRTIME);
+		ApplyTempAttrib(weapon, 4004, 0.25, AIRCUTTER_AIRTIME);
+		ApplyTempAttrib(weapon, 2, 0.85, AIRCUTTER_AIRTIME);
+		ApplyTempAttrib(weapon, 4005, 0.85, AIRCUTTER_AIRTIME);
 		EmitSoundToAll(AIRCUTTER_KICKUP_1, client, _, 75, _, 0.60);
 		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", 0.0);
 		TF2_AddCondition(client, TFCond_DefenseBuffed, AIRCUTTER_AIRTIME);
@@ -159,7 +159,7 @@ public void Npc_AirCutter_Launch(int iNPC)
 	b_AirCutterNpcWasShotUp[iNPC] = false;
 	
 	float time_stay_In_sky;
-	time_stay_In_sky = 2.5;
+	time_stay_In_sky = AIRCUTTER_AIRTIME * 0.75;
 
 	if(GetGameTime() > f_TargetAirtime[iNPC])
 	{
