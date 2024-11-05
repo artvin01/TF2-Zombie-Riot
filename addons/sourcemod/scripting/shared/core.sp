@@ -556,6 +556,7 @@ float f_EnfeebleEffect[MAXENTITIES];
 float f_LeeMinorEffect[MAXENTITIES];
 float f_LeeMajorEffect[MAXENTITIES];
 float f_LeeSuperEffect[MAXENTITIES];
+float f_LogosDebuff[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int i_RaidGrantExtra[MAXENTITIES];
@@ -2960,6 +2961,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_LeeMinorEffect[entity] = 0.0;
 		f_LeeMajorEffect[entity] = 0.0;
 		f_LeeSuperEffect[entity] = 0.0;
+		f_LogosDebuff[entity] = 0.0;
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 #if defined ZR
 		f_HealDelayParticle[entity] = 0.0;

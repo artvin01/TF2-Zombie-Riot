@@ -573,7 +573,7 @@ void Store_OnCached(int client)
 		{
 			amount = 75;
 		}
-		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 30"))
+		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 30") || Items_HasNamedItem(client, "ZR Contest 2024 Art Contest"))
 		{
 			amount = 50;
 		}
@@ -3034,6 +3034,10 @@ static void MenuPage(int client, int section)
 			{
 				menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client]);
 			}
+			else if(Database_IsLan())
+			{
+				menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client]);
+			}
 			else if(Database_IsCached(client))
 			{
 				menu.SetTitle("%t\n \n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
@@ -3048,6 +3052,10 @@ static void MenuPage(int client, int section)
 			if(UsingChoosenTags[client])
 			{
 				menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			}
+			else if(Database_IsLan())
+			{
+				menu.SetTitle("%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], "Store Discount");
 			}
 			else if(Database_IsCached(client))
 			{
@@ -3382,7 +3390,7 @@ static void MenuPage(int client, int section)
 			menu.AddItem("-24", buffer);
 		}
 
-		if(Level[client] > STARTER_WEAPON_LEVEL)
+		if(Level[client] > STARTER_WEAPON_LEVEL || Database_IsLan())
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Cherrypick Weapon");
 			menu.AddItem("-30", buffer);
@@ -5831,6 +5839,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_SkadiWeapon(client, entity);
 		Enable_Hunting_Rifle(client, entity);
 		Weapon_Anti_Material_Rifle_Deploy(client, entity);
+		Walter_Enable(client, entity);
 	}
 
 	return entity;

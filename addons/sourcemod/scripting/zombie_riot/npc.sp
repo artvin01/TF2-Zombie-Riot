@@ -81,6 +81,7 @@ void NPC_ConfigSetup()
 	ObjectBarracks_MapStart();
 	ObjectVillage_MapStart();
 	ObjectTinkerBrew_MapStart();
+	ObjectRevenant_Setup();
 	// Buildings
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -996,6 +997,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_village.sp"
 #include "zombie_riot/object/obj_barracks.sp"
 #include "zombie_riot/object/obj_brewing_stand.sp"
+#include "zombie_riot/object/obj_revenant.sp"
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"

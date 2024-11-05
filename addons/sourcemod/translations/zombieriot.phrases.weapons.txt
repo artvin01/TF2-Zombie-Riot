@@ -2859,4 +2859,8 @@
 	{
 		"en"	"Whistle Stop"
 	}
+	"Ancestor Launcher"
+	{
+		"en"	"Ancestor Launcher"
+	}
 }

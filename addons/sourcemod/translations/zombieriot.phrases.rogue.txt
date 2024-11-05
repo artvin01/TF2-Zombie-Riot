@@ -1812,11 +1812,11 @@
 	{
 		"en"	"Convert that australium into shop money!\n{yellow}Australium Ingots are converted into 200 credits each"
 	}
-	"Elite Operator"
+	"Elite Voucher"
 	{
-		"en"	"Elite Operator"
+		"en"	"Elite Voucher"
 	}
-	"Elite Operator Desc"
+	"Elite Voucher Desc"
 	{
 		"en"	"It's hard to find these things, use it well.\n{green}Recover a high-grade weapon with a store discount"
 	}
