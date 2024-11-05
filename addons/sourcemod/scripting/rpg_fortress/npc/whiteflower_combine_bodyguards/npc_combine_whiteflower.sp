@@ -752,20 +752,23 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	float AllyPos[3];
-	float SelfPos[3];
-	float flDistanceToTarget;
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", SelfPos);
-	for(int client = 1; client <= MaxClients; client++)
+	if(b_thisNpcIsABoss[npc.index])
 	{
-		if(IsValidClient(client) && Dungeon_IsDungeon(client))
+		float AllyPos[3];
+		float SelfPos[3];
+		float flDistanceToTarget;
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", SelfPos);
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
-			flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
+			if(IsValidClient(client) && Dungeon_IsDungeon(client))
 			{
-				CPrintToChat(client, "{crimson}Whiteflower{default}: I'll be back... even if i have to it... alone...");	
-				CPrintToChat(client, "Whiteflower Escapes.");	
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
+				flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
+				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
+				{
+					CPrintToChat(client, "{crimson}Whiteflower{default}: I'll be back... even if i have to it... alone...");	
+					CPrintToChat(client, "Whiteflower Escapes.");	
+				}
 			}
 		}
 	}
