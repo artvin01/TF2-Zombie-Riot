@@ -1781,7 +1781,7 @@ float BuildingWeaponDamageModif(int Type)
 		case 1:
 		{
 			//1 means its a weapon
-			return 1.85;
+			return 0.925;
 		}
 		default:
 		{

@@ -104,7 +104,10 @@ public void Rogue_SoulArknights_Weapon(int entity, int client)
 		StrContains(buffer, "Passanger's Device", false) != -1 ||
 		StrContains(buffer, "The Standchen", false) != -1 ||
 		StrContains(buffer, "Merchant's Wrench", false) != -1 ||
-		StrContains(buffer, "Seaborn Claws", false) != -1)
+		StrContains(buffer, "Seaborn Claws", false) != -1 ||
+		StrContains(buffer, "Explosive Dawn", false) != -1 ||
+		StrContains(buffer, "Ancestor Launcher", false) != -1 ||
+		StrContains(buffer, "Whistle Stop", false) != -1)
 	{
 		AnnounceSoulBuff(client, entity, 1);
 		i_AmountDowned[client] = -19;
@@ -279,7 +282,7 @@ public void Rogue_RareWeapon_Collect()
 {
 	char name[64];
 
-	switch(GetURandomInt() % 5)
+	switch(GetURandomInt() % 8)
 	{
 		case 0, 1:
 			strcopy(name, sizeof(name), "Vows of the Sea");
@@ -289,6 +292,12 @@ public void Rogue_RareWeapon_Collect()
 		
 		case 3, 4:
 			strcopy(name, sizeof(name), "Whistle Stop");
+		
+		case 5, 6:
+			strcopy(name, sizeof(name), "Ancestor Launcher");
+		
+		case 7:
+			strcopy(name, sizeof(name), "Infinity Blade");
 	}
 
 	Store_DiscountNamedItem(name, 30);

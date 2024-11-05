@@ -44,7 +44,7 @@ public bool ObjectBarricade_CanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
-		count = ObjectBarricade_Buildings(client)/* + ActiveCurrentNpcsBarracks(client, true)*/;
+		count = ObjectBarricade_Buildings(client) + ObjectRevenant_Buildings(client)/* + ActiveCurrentNpcsBarracks(client, true)*/;
 		maxcount = Merchant_IsAMerchant(client) ? 0 : 4;
 		if(maxcount == 4 && i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 			maxcount = 1;

@@ -244,6 +244,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				FullMoon_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
 			}
+			case WEAPON_OLDINFINITYBLADE:
+			{
+				enemies_hit_aoe = 10;
+			}
 		}	
 	}
 #endif
@@ -673,7 +677,6 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 
 #if defined ZR
 			damage *= BuildingWeaponDamageModif(1);
-			damage *= 0.5;
 #endif
 		}
 
