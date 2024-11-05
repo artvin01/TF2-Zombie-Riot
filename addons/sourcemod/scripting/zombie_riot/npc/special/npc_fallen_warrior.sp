@@ -119,9 +119,9 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 {
 	return FallenWarrior(client, vecPos, vecAng, ally, data);
 }
-static int i_fallen_eyeparticle[MAXENTITIES];
-static int i_fallen_headparticle[MAXENTITIES];
-static int i_fallen_bodyparticle[MAXENTITIES];
+static int i_fallen_eyeparticle[MAXENTITIES] = {-1, ...};
+static int i_fallen_headparticle[MAXENTITIES] = {-1, ...};
+static int i_fallen_bodyparticle[MAXENTITIES] = {-1, ...};
 
 static char[] GetPanzerHealth()
 {
@@ -286,12 +286,15 @@ methodmap FallenWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 		SetEntityRenderColor(npc.m_iWearable6, 200, 150, 100, 255);
 
-		float flPos[3], flAng[3];
-				
-		npc.GetAttachment("head", flPos, flAng);
-		i_fallen_headparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "head", {0.0,-5.0,-10.0}));
-		i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,5.0,-15.0}));
-		i_fallen_bodyparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "env_snow_light_001", npc.index, "m_vecAbsOrigin", {50.0,-200.0,0.0}));
+		if(ally != TFTeam_Red)
+		{
+			float flPos[3], flAng[3];
+					
+			npc.GetAttachment("head", flPos, flAng);
+			i_fallen_headparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "head", {0.0,-5.0,-10.0}));
+			i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,5.0,-15.0}));
+			i_fallen_bodyparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "env_snow_light_001", npc.index, "m_vecAbsOrigin", {50.0,-200.0,0.0}));
+		}
 
 		float wave = float(ZR_GetWaveCount()+1);
 		wave *= 0.1;
@@ -335,16 +338,19 @@ public void FallenWarrior_ClotThink(int iNPC)
 		
 		//PluginBot_NormalJump(npc.index);
 	}
-	for(int client=1; client<=MaxClients; client++)
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
-		if(IsClientInGame(client))
+		for(int client=1; client<=MaxClients; client++)
 		{
-			if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+			if(IsClientInGame(client))
 			{
-				Music_Stop_All(client); //This is actually more expensive then i thought.
+				if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+				{
+					Music_Stop_All(client); //This is actually more expensive then i thought.
+				}
+				SetMusicTimer(client, GetTime() + 3);
+				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 2.5;
 			}
-			SetMusicTimer(client, GetTime() + 3);
-			fl_AlreadyStrippedMusic[client] = GetEngineTime() + 2.5;
 		}
 	}
 	float TrueArmor = 1.0;
@@ -365,6 +371,18 @@ public void FallenWarrior_ClotThink(int iNPC)
 		{
 			IgniteTargetEffect(npc.m_iWearable5);
 			npc.Anger = true;
+			
+			if(GetTeam(npc.index) == TFTeam_Red)
+			{
+				float flPos[3], flAng[3];
+						
+				npc.GetAttachment("head", flPos, flAng);
+				i_fallen_headparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "head", {0.0,-5.0,-10.0}));
+				i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,5.0,-15.0}));
+				i_fallen_bodyparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "env_snow_light_001", npc.index, "m_vecAbsOrigin", {50.0,-200.0,0.0}));
+
+				CPrintToChatAll("{crimson}Guln{default}: You must stop {white}Whiteflower{default}! Once and for all...");
+			}
 		}
 	}
 	else
@@ -446,23 +464,30 @@ public void FallenWarrior_NPCDeath(int entity)
 	
 	npc.PlayDeathSound();
 
-	switch(GetRandomInt(1, 4))
+	if(GetTeam(entity) == TFTeam_Red)
 	{
-		case 1:
+		CPrintToChatAll("{crimson}Guln{default}: And if it comes to this... the {crimson}Chaos{default}... you know what to do...");
+	}
+	else
+	{
+		switch(GetRandomInt(1, 4))
 		{
-			CPrintToChatAll("{crimson}Guln{default}: Thank... you...");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{crimson}Guln{default}: This feeling...");
-		}
-		case 3:
-		{
-			CPrintToChatAll("{crimson}Guln{default}: Bob... My friend...");
-		}
-		case 4:
-		{
-			CPrintToChatAll("{crimson}Guln{default}: Must... stop...");
+			case 1:
+			{
+				CPrintToChatAll("{crimson}Guln{default}: Thank... you...");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{crimson}Guln{default}: This feeling...");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{crimson}Guln{default}: Bob... My friend...");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{crimson}Guln{default}: Must... stop...");
+			}
 		}
 	}
 	
@@ -497,7 +522,7 @@ public void FallenWarrior_NPCDeath(int entity)
 		pack.WriteFloat(VecSelfNpcabs[i]);
 	}
 	pack.WriteCell(GetRandomSeedEachWave);
-	pack.WriteCell(1);
+	pack.WriteCell(GetTeam(entity) == TFTeam_Red ? 5 : 1);	// Rogue Special Red Team
 	pack.WriteCell(GetTeam(npc.index));
 
 	Citizen_MiniBossDeath(entity);
@@ -554,16 +579,16 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 	int RandomSeed = pack.ReadCell();
-	bool StayOneMoreWave = pack.ReadCell();
+	int StayOneMoreWave = pack.ReadCell();
 	if(RandomSeed != GetRandomSeedEachWave)
 	{
-		pack.Position--;
-		pack.WriteCell(0, false);
-		pack.Position--;
-		pack.Position--;
-		pack.WriteCell(GetRandomSeedEachWave, false);
-		pack.Position++;
-		if(!StayOneMoreWave)
+		pack.Position--;				// Team -> StayOneMoreWave
+		pack.WriteCell(StayOneMoreWave - 1, false);	// StayOneMoreWave -> Team
+		pack.Position--;				// Team -> StayOneMoreWave
+		pack.Position--;				// StayOneMoreWave -> RandomSeed
+		pack.WriteCell(GetRandomSeedEachWave, false);	// RandomSeed -> StayOneMoreWave
+		pack.Position++;				// StayOneMoreWave -> Team
+		if(StayOneMoreWave < 1)
 		{
 			CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 			return Plugin_Stop;	

@@ -562,13 +562,28 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
 void Store_OnCached(int client)
 {
-	if(Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
+	if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
 	{
-		if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
+		int amount;
+		if(Items_HasNamedItem(client, "ZR Contest 2024 Top 10"))
+		{
+			amount = 100;
+		}
+		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 20"))
+		{
+			amount = 75;
+		}
+		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 30") || Items_HasNamedItem(client, "ZR Contest 2024 Art Contest"))
+		{
+			amount = 50;
+		}
+
+		if(amount)
 		{
 			Store_SetNamedItem(client, "ZR Contest Nominator [???] Cash", 1);
-			CashRecievedNonWave[client] += 50;
-			CashSpent[client] -= 50;
+			Building_GiveRewardsUse(0, client, amount);
+			//CashRecievedNonWave[client] += amount;
+			//CashSpent[client] -= amount;
 		}
 	}
 
@@ -577,8 +592,9 @@ void Store_OnCached(int client)
 		if(!Store_HasNamedItem(client, "ZR Content Creator [???] Cash"))
 		{
 			Store_SetNamedItem(client, "ZR Content Creator [???] Cash", 1);
-			CashRecievedNonWave[client] += 50;
-			CashSpent[client] -= 50;
+			Building_GiveRewardsUse(0, client, 50);
+			//CashRecievedNonWave[client] += 50;
+			//CashSpent[client] -= 50;
 		}
 	}
 }
@@ -951,7 +967,6 @@ void Store_ConfigSetup()
 	KeyValues kv = new KeyValues("Weapons");
 	kv.SetEscapeSequences(true);
 	kv.ImportFromFile(buffer);
-	RequestFrame(DeleteHandle, kv);
 	
 	char blacklist[6][32];
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
@@ -970,6 +985,8 @@ void Store_ConfigSetup()
 	{
 		ConfigSetup(-1, kv, 0, false, false, whitelist, whitecount, blacklist, blackcount);
 	} while(kv.GotoNextKey());
+
+	delete kv;
 
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
 	StoreBalanceLog = new KeyValues("UsageLog");
@@ -2299,6 +2316,32 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	return false;
 }
 
+// If timed is less than 0, super sale
+void Store_DiscountNamedItem(const char[] name, int timed = 0)
+{
+	int length = StoreItems.Length;
+	for(int i; i < length; i++)
+	{
+		static Item item;
+		StoreItems.GetArray(i, item);
+		if(StrEqual(name, item.Name, false))
+		{
+			if(timed)
+			{
+				item.NPCSeller_WaveStart = timed;
+			}
+			else
+			{
+				item.NPCSeller_First = timed < 0;
+				item.NPCSeller = true;
+			}
+
+			StoreItems.SetArray(i, item);
+			break;
+		}
+	}
+}
+
 void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave = false)
 {
 	int amount;
@@ -2991,6 +3034,10 @@ static void MenuPage(int client, int section)
 			{
 				menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client]);
 			}
+			else if(Database_IsLan())
+			{
+				menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client]);
+			}
 			else if(Database_IsCached(client))
 			{
 				menu.SetTitle("%t\n \n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
@@ -3005,6 +3052,10 @@ static void MenuPage(int client, int section)
 			if(UsingChoosenTags[client])
 			{
 				menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			}
+			else if(Database_IsLan())
+			{
+				menu.SetTitle("%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], "Store Discount");
 			}
 			else if(Database_IsCached(client))
 			{
@@ -3080,7 +3131,15 @@ static void MenuPage(int client, int section)
 			if(!item.Starter)
 				continue;
 		}
-		else if(item.Hidden || item.Level > ClientLevel)
+		else if(item.Level > ClientLevel)
+		{
+			continue;
+		}
+		else if(item.NPCSeller || item.NPCSeller_WaveStart != 0)
+		{
+			continue;
+		}
+		else if(item.Hidden)
 		{
 			continue;
 		}
@@ -3331,7 +3390,7 @@ static void MenuPage(int client, int section)
 			menu.AddItem("-24", buffer);
 		}
 
-		if(Level[client] > STARTER_WEAPON_LEVEL)
+		if(Level[client] > STARTER_WEAPON_LEVEL || Database_IsLan())
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Cherrypick Weapon");
 			menu.AddItem("-30", buffer);
@@ -5287,9 +5346,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									if(info.SemiAuto)
 									{
 										i_SemiAutoWeapon[entity] = true;
-										int slot_weapon_ammo = TF2_GetClassnameSlot(info.Classname);
 										
-										i_SemiAutoWeapon_AmmoCount[client][slot_weapon_ammo] = 0; //Set the ammo to 0 so they cant abuse it.
+										i_SemiAutoWeapon_AmmoCount[entity] = 0; //Set the ammo to 0 so they cant abuse it.
 										
 										f_SemiAutoStats_FireRate[entity] = info.SemiAutoStats_FireRate;
 										i_SemiAutoStats_MaxAmmo[entity] = info.SemiAutoStats_MaxAmmo;
@@ -5781,6 +5839,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_SkadiWeapon(client, entity);
 		Enable_Hunting_Rifle(client, entity);
 		Weapon_Anti_Material_Rifle_Deploy(client, entity);
+		Walter_Enable(client, entity);
 	}
 
 	return entity;
@@ -5914,7 +5973,7 @@ bool Store_PrintLevelItems(int client, int level)
 	return found;
 }
 
-int Store_GetItemName(int index, int client = 0, char[] buffer, int leng)
+int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool translate = true)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -5925,7 +5984,14 @@ int Store_GetItemName(int index, int client = 0, char[] buffer, int leng)
 	
 	static ItemInfo info;
 	item.GetItemInfo(level, info);
-	return strcopy(buffer, leng, TranslateItemName(client, item.Name, info.Custom_Name));
+
+	if(translate)
+		return strcopy(buffer, leng, TranslateItemName(client, item.Name, info.Custom_Name));
+	
+	if(info.Custom_Name[0])
+		return strcopy(buffer, leng, info.Custom_Name);
+	
+	return strcopy(buffer, leng, item.Name);
 }
 
 char[] TranslateItemName(int client, const char name[64], const char Custom_Name[64]) //Just make it 0 as a default so if its not used, fuck it
@@ -6031,22 +6097,7 @@ static void ItemCost(int client, Item item, int &cost)
 		{
 			//during maps where he alaways sells, always sell!
 			//If the client bought this weapon before, do not offer the discount anymore.
-			if(Rogue_Mode())
-			{
-				if(item.NPCSeller_WaveStart > 0)
-				{
-					cost = RoundToCeil(float(cost) * 0.85);
-				}
-				else if(item.NPCSeller_First)
-				{
-					cost = RoundToCeil(float(cost) * 0.85);
-				}
-				else if(item.NPCSeller)
-				{
-					cost = RoundToCeil(float(cost) * 0.9);
-				}
-			}
-			else if(item.NPCSeller_WaveStart > 0)
+			if(item.NPCSeller_WaveStart > 0)
 			{
 				cost = RoundToCeil(float(cost) * 0.7);
 			}

@@ -877,6 +877,7 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
+	
 	if(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES)
 	{
 		result = PassfilterGlobal(ent1, ent2, true);
@@ -889,6 +890,7 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 			return Plugin_Handled;
 		}
 	}
+	
 	return Plugin_Continue;
 }
 
@@ -1043,6 +1045,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			
 			//dont colldide with wsame team if its
 			else if(GetTeam(entity2) == GetTeam(entity1) && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
@@ -1073,6 +1076,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 #endif	
 			}
+			
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{
@@ -1120,6 +1124,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			
 #if defined RPG
 			else if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime() || OnTakeDamageRpgPartyLogic(entity1, entity2, GetGameTime())))
 #else
@@ -1129,6 +1134,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				//if a player needs to get unstuck.
 				return false;
 			}
+			
 		}
 //allied NPC
 #if !defined RTS
@@ -1482,7 +1488,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 
 #if defined RPG
 	if(!Saves_HasCharacter(client))
+	{
+		ChangeClientTeam(client, TFTeam_Spectator);
 		return MRES_Supercede;
+	}
 	
 	if(!Dungeon_CanClientRespawn(client))
 		return MRES_Supercede;
@@ -1578,6 +1587,17 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		else if(f3_PositionArrival[client][0])
 		{
 			TeleportEntity(client, f3_PositionArrival[client], NULL_VECTOR, NULL_VECTOR);
+		}
+		else
+		{
+			Race race;
+			Races_GetClientInfo(client, race);
+			if(race.StartPos[0])
+			{
+				float ang[3];
+				ang[1] = race.StartAngle;
+				TeleportEntity(client, race.StartPos, ang, NULL_VECTOR);
+			}
 		}
 #endif
 	}

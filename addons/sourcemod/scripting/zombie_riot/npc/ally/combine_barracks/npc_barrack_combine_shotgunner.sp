@@ -46,7 +46,7 @@ void Barracks_Combine_Shotgun_Precache()
 	PrecacheSoundArray(g_IdleAlert);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Shotgunner");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Shotgunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_shotgunner");
 	data.IconCustom = false;
 	data.Flags = 0;

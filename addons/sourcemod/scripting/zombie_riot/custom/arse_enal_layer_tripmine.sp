@@ -83,8 +83,6 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				
 			Calculate_HP_Spikes *= Bonus_damage;
 
-			Calculate_HP_Spikes *= 0.5;
-
 		
 			int TripMine = CreateEntityByName("tf_projectile_pipe_remote");
 		  
@@ -676,7 +674,7 @@ void CleanAllApplied_Aresenal(int entity, bool force = false)
 	}
 }
 
-void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false)
+void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false, Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 {
 	int BomsToBoom = i_HowManyBombsOnThisEntity[npc][client];
 	int BomsToBoomCalc = BomsToBoom;
@@ -721,13 +719,13 @@ void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 
-		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
+		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false, .FunctionToCallBeforeHit = FunctionToCallBeforeHit);
 
 		FinishLagCompensation_Base_boss();
 	}
 	else
 	{
-		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
+		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false, .FunctionToCallBeforeHit = FunctionToCallBeforeHit);
 	}
 	
 	if(!b_NpcHasDied[npc]) //Incase it gets called later.

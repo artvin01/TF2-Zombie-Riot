@@ -66,7 +66,7 @@ public void AltCombineMage_OnMapStart_NPC()
 	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Mage");
+	strcopy(data.Name, sizeof(data.Name), "Whiteflower Mage");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_combine_soldier_mage");
 	data.Category = Type_Alt;
 	data.Func = ClotSummon;

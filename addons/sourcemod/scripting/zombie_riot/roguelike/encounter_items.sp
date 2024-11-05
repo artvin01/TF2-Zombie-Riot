@@ -543,13 +543,25 @@ public float Rogue_Encounter_BobFinal()
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BobFinal, "Bob Final Lore");
 	Vote vote;
 
+	bool altfinal = Rogue_HasNamedArtifact("Revenge Squad");
+	
 	strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Bob Final Desc 1");
+	vote.Locked = altfinal;
 	list.PushArray(vote);
 
 	strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 2");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	vote.Locked = altfinal;
 	list.PushArray(vote);
+
+	if(altfinal)
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 3");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Bob Final Desc 3");
+		vote.Locked = false;
+		list.PushArray(vote);
+	}
 
 	Rogue_StartGenericVote(20.0);
 
@@ -559,15 +571,24 @@ public void Rogue_Vote_BobFinal(const Vote vote, int index)
 {
 	GrantAllPlayersCredits_Rogue(1000);
 
-	if(index)
+	switch(index)
 	{
-		PrintToChatAll("%t", "Bob Final Lore 2");
-	}
-	else
-	{
-		PrintToChatAll("%t", "Bob Final Lore 1");
+		case 0:
+		{
+			PrintToChatAll("%t", "Bob Final Lore 1");
 
-		Rogue_GiveNamedArtifact("Bob's Final Draft");
+			Rogue_GiveNamedArtifact("Bob's Final Draft");
+		}
+		case 1:
+		{
+			PrintToChatAll("%t", "Bob Final Lore 2");
+		}
+		case 2:
+		{
+			PrintToChatAll("%t", "Bob Final Lore 3");
+
+			Rogue_GiveNamedArtifact("Bob's Orders");
+		}
 	}
 }
 

@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-void OnMapStartCombine_AR2()
+void OnMapStartCombine_Dreadlander()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Dreadlander");
@@ -11,14 +11,14 @@ void OnMapStartCombine_AR2()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return CombineAR2(client, vecPos, vecAng, ally);
+	return Combine_Dreadlander(client, vecPos, vecAng, ally);
 }
 
-methodmap CombineAR2 < CombineSoldier
+methodmap Combine_Dreadlander < CombineSoldier
 {
-	public CombineAR2(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Dreadlander(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		CombineAR2 npc = view_as<CombineAR2>(BaseSquad(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", ally, false));
+		Combine_Dreadlander npc = view_as<Combine_Dreadlander>(BaseSquad(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", ally, false));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "taunt_soldier");
@@ -37,11 +37,12 @@ methodmap CombineAR2 < CombineSoldier
 
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
 		
-		func_NPCDeath[npc.index] = CombineAR2_NPCDeath;
+		func_NPCDeath[npc.index] = Combine_Dreadlander_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = BaseSquad_TakeDamage;
-		func_NPCThink[npc.index] = CombineAR2_ClotThink;
+		func_NPCThink[npc.index] = Combine_Dreadlander_ClotThink;
 
 
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
@@ -51,9 +52,9 @@ methodmap CombineAR2 < CombineSoldier
 	}
 }
 
-public void CombineAR2_ClotThink(int iNPC)
+public void Combine_Dreadlander_ClotThink(int iNPC)
 {
-	CombineAR2 npc = view_as<CombineAR2>(iNPC);
+	Combine_Dreadlander npc = view_as<Combine_Dreadlander>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -138,7 +139,7 @@ public void CombineAR2_ClotThink(int iNPC)
 
 						// E2 L5 = 105, E2 L10 = 120
 						KillFeed_SetKillIcon(npc.index, "club");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 165000.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 350000.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
 						KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 					}
@@ -156,7 +157,7 @@ public void CombineAR2_ClotThink(int iNPC)
 				
 				// E2 L5 = 280, E2 L10 = 320
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 800.0,_,vecTarget);
-				npc.FireGrenade(vecTarget, 800.0, 400000.0, "models/weapons/w_grenade.mdl");
+				npc.FireGrenade(vecTarget, 800.0, 700000.0, "models/weapons/w_grenade.mdl");
 			}
 		}
 
@@ -233,7 +234,7 @@ public void CombineAR2_ClotThink(int iNPC)
 							
 							// E2 L5 = 5.25, E2 L10 = 6
 							KillFeed_SetKillIcon(npc.index, "smg");
-							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 280000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 							KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
@@ -292,10 +293,9 @@ public void CombineAR2_ClotThink(int iNPC)
 	}
 }
 
-void CombineAR2_NPCDeath(int entity)
+void Combine_Dreadlander_NPCDeath(int entity)
 {
-	CombineAR2 npc = view_as<CombineAR2>(entity);
-	
+	Combine_Dreadlander npc = view_as<Combine_Dreadlander>(entity);
 
 	if(!npc.m_bGib)
 		npc.PlayDeath();

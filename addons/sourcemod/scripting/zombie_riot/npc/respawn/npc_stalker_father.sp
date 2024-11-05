@@ -10,7 +10,7 @@ void StalkerFather_MapStart()
 	PrecacheModel("models/zombie/monk_combine.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Spawned Father Grigori");
+	strcopy(data.Name, sizeof(data.Name), "Corrupted Father Grigori");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_father");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;

@@ -99,7 +99,7 @@ public void CombineElite_ClotThink(int iNPC)
 
 						// E2 L5 = 105, E2 L10 = 120
 						KillFeed_SetKillIcon(npc.index, "club");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 225000.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 230000.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
 						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 					}
@@ -117,7 +117,7 @@ public void CombineElite_ClotThink(int iNPC)
 
 				// E2 L5 = 280, E2 L10 = 320
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 500.0,_,vecTarget);
-				npc.FireRocket(vecTarget, 200000.0, 500.0, "models/effects/combineball.mdl");
+				npc.FireRocket(vecTarget, 300000.0, 500.0, "models/effects/combineball.mdl");
 			}
 		}
 
@@ -237,16 +237,12 @@ public void CombineElite_ClotThink(int iNPC)
 					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
 					if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
 					{
-						if(ally.m_bIsSquad)
+						WorldSpaceCenter(ally.index, vecTarget);
+						if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 						{
-							WorldSpaceCenter(ally.index, vecTarget);
-							if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
-							{
-								ally.m_flRangedArmor = 0.00001;
-								ally.m_flMeleeArmor = 0.00001;
-								ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
-								break;
-							}
+							f_PernellBuff[ally.index] = GetGameTime() + 10.0;
+							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
+							break;
 						}
 					}
 				}

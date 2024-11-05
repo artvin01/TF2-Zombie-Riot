@@ -3,7 +3,6 @@
 
 #define HITSCAN_BOOM	  "ambient/explosions/explode_4.wav"
 
-#define MAXENTITIES 2048
 
 void BoomStick_MapPrecache()
 {

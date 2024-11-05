@@ -2,6 +2,9 @@
 #pragma newdecls required
 
 #define MARKET_TAX	10
+#define MARKET_CAP	10
+
+float MenuDelayDo[MAXTF2PLAYERS];
 
 static const char RarityName[][] = 
 {
@@ -213,6 +216,8 @@ enum struct SpellEnum
 	Function Func;
 	float Cooldown;
 	int Store;
+	bool Skill;
+	int Slot;
 }
 
 enum struct MarketEnum
@@ -239,6 +244,7 @@ static ArrayList SpellList;
 static StringMap StoreList;
 static char InStore[MAXTF2PLAYERS][32];
 static char InStoreTag[MAXTF2PLAYERS][16];
+static char InStoreExtra[MAXTF2PLAYERS][32];
 static int ItemIndex[MAXENTITIES];
 static int ItemCount[MAXENTITIES];
 static int ItemOwner[MAXENTITIES];
@@ -251,6 +257,7 @@ static int MarketItem[MAXTF2PLAYERS];
 static int MarketCount[MAXTF2PLAYERS];
 static int MarketSell[MAXTF2PLAYERS];
 static int SkillRand[MAXTF2PLAYERS];
+static bool SkillType[MAXTF2PLAYERS];
 
 static void SaveMarket(int client)
 {
@@ -281,6 +288,8 @@ static void HashCheck()
 				Store_Reset();
 				RPG_PluginEnd();
 				Tinker_ResetAll();
+				Plots_StoreCached();
+				Cooking_StoreCached();
 
 				for(int client = 1; client <= MaxClients; client++)
 				{
@@ -318,8 +327,7 @@ static Action TextStore_HelpCommand(int client, int args)
 
 static Action TextStore_QuestCommand(int client, int args)
 {
-	MenuType[client] = MENU_QUESTBOOK;
-	RefreshAt[client] = 1.0;
+	TextStore_OpenSpecificMenu(client, MENU_QUESTBOOK);
 	return Plugin_Handled;
 }
 
@@ -387,11 +395,29 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 	if(auto)
 		return Item_None;
 	
-	static char buffer[256];
+	static char buffer[512];
 
 	if(!equipped && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 	{
 		int level = item.GetNum("level");
+
+		if(index < 0)
+		{
+			TextStore_GetItemData(index, buffer, sizeof(buffer));
+			int pos = StrContains(buffer, "level");
+			if(pos != -1)
+			{
+				if(IsCharNumeric(buffer[pos + 5]))
+				{
+					level += StringToInt(buffer[pos + 5]);
+				}
+				else
+				{
+					level += StringToInt(buffer[pos + 6]);
+				}
+			}
+		}
+
 		if(level > Level[client])
 		{
 			SPrintToChat(client, "You must be Level %d to use this.", level);
@@ -506,9 +532,15 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 				return Item_On;
 		}
 
+		int slot = item.GetNum("slot", -1);
+		Store_EquipSlotCheck(client, slot);
+		TextStore_EquipSlotCheck(client, slot);
+
 		spell.Owner = client;
 		spell.Store = index;
 		spell.Active = false;
+		spell.Skill = view_as<bool>(item.GetNum("skill"));
+		spell.Slot = slot;
 		strcopy(spell.Name, 64, name);
 		
 		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
@@ -523,9 +555,46 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 	return Item_On;
 }
 
+void TextStore_SetAllItemCooldown(int client, float cooldown)
+{
+	static SpellEnum spell;
+	int length = SpellList.Length;
+	for(int i; i < length; i++)
+	{
+		SpellList.GetArray(i, spell);
+		if(spell.Owner == client && !spell.Skill)
+		{
+			spell.Cooldown = cooldown;
+			SpellList.SetArray(i, spell);
+		}
+	}
+}
+
+void TextStore_EquipSlotCheck(int client, int slot)
+{
+	if(slot >= 0)
+	{
+		static SpellEnum spell;
+		int length = SpellList.Length;
+		for(int i; i < length; i++)
+		{
+			SpellList.GetArray(i, spell);
+			if(spell.Owner == client && spell.Slot == slot)
+			{
+				if(TextStore_GetInv(client, spell.Store))
+				{
+					SPrintToChat(client, "%s was unequipped", spell.Name);
+					TextStore_SetInv(client, spell.Store, _, false);
+				}
+			}
+		}
+	}
+}
+
 void TextStore_ClientDisconnect(int client)
 {
 	MenuType[client] = 0;
+	MenuDelayDo[client] = 0.0;
 	
 	for(int i = SpellList.Length - 1; i >= 0; i--)
 	{
@@ -571,9 +640,19 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 		kv.GetString("plugin", buffer, sizeof(buffer));
 		if(StrEqual(buffer, "rpg_fortress"))
 		{
-			if(item < 0)
+			if(kv.GetNum("plots"))
 			{
-				Tinker_DescItem(item, desc);
+			}
+			else if(item < 0)
+			{
+				if(Cooking_IsCookItem(kv))
+				{
+					Cooking_DescItem(item, kv, desc);
+				}
+				else
+				{
+					Tinker_DescItem(item, desc);
+				}
 			}
 			else
 			{
@@ -676,6 +755,9 @@ bool TextStore_IsValidName(const char[] name)
 	
 	if(StrEqual(name, ITEM_XP, false))
 		return true;
+
+	if(StrEqual(name, ITEM_MASTERY, false))
+		return true;
 	
 	int length = TextStore_GetItems();
 	for(int i; i < length; i++)
@@ -696,6 +778,7 @@ int TextStore_GetItemCount(int client, const char[] name)
 	
 	if(StrEqual(name, ITEM_XP, false))
 		return XP[client];
+
 	
 	int amount = -1;
 	
@@ -718,22 +801,34 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 {
 	if(StrEqual(name, ITEM_CASH, false))
 	{
-		TextStore_Cash(client, amount);
+		int total = TextStore_Cash(client, amount);
 		if(amount > 0 && !silent)
-			SPrintToChat(client, "You gained %d credits", amount);
+			SPrintToChat(client, "You gained %d credits (%d)", amount, total);
 	}
 	else if(StrEqual(name, ITEM_XP, false))
 	{
+		int totalInt = Stats_Intelligence(client);
+		if(!quest && totalInt >= 10000)
+		{
+			amount = RoundToNearest(float(amount) * (1.05));
+		}
 		int xp = amount;
 
 		Stats_GiveXP(client, xp, quest);
 		if(xp > 0 && !silent)
 		{
 			if(quest)
-				SPrintToChat(client, "You gained %d XP", xp);
+				SPrintToChat(client, "You gained %d XP (%d)", xp, XP[client]);
 			else
 				RPGTextstore_XpToChat(client, xp);
 		}
+	}
+	else if(StrEqual(name, ITEM_MASTERY, false))
+	{
+		float MasteryCurrent = Stats_GetCurrentFormMastery(client);
+		MasteryCurrent += float(amount);
+		SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",float(amount));
+		Stats_SetCurrentFormMastery(client, MasteryCurrent);
 	}
 	else
 	{
@@ -752,11 +847,18 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 				}
 				else if(amount == 1)
 				{
-					SPrintToChat(client, "You gained %s", buffer);
+					if(length > 1)
+					{
+						SPrintToChat(client, "You gained %s (%d)", buffer, length + amount);
+					}
+					else
+					{
+						SPrintToChat(client, "You gained %s", buffer);
+					}
 				}
 				else if(amount > 1)
 				{
-					SPrintToChat(client, "You gained %s x%d", buffer, amount);
+					SPrintToChat(client, "You gained %s x%d (%d)", buffer, amount, length + amount);
 				}
 
 				Quests_MarkBookDirty(client);
@@ -788,34 +890,7 @@ void TextStore_ZoneEnter(int client, const char[] name)
 		else
 		{
 			store.PlayEnter(client);
-			strcopy(InStore[client], sizeof(InStore[]), name);
-			strcopy(InStoreTag[client], sizeof(InStoreTag[]), store.Tag);
-
-			if(StrEqual(store.Tag, "market", false) && GetClientAuthId(client, AuthId_Steam3, store.Enter, sizeof(store.Enter)))
-			{
-				MarketKv.Rewind();
-				if(MarketKv.JumpToKey("Payout") && MarketKv.JumpToKey(store.Enter))
-				{
-					if(MarketKv.GotoFirstSubKey())
-					{
-						do
-						{
-							int cash = MarketKv.GetNum("cash");
-							MarketKv.GetSectionName(store.Enter, sizeof(store.Enter));
-							SPrintToChat(client, "%d of your %s were sold for %d credits", MarketKv.GetNum("amount"), store.Enter, cash);
-							TextStore_Cash(client, cash);
-						}
-						while(MarketKv.GotoNextKey());
-
-						MarketKv.GoBack();
-					}
-
-					MarketKv.DeleteThis();
-					SaveMarket(client);
-				}
-			}
-			
-			FakeClientCommand(client, "sm_buy");
+			TextStore_ForceEnterStore(client, name, store.Tag);
 		}
 	}
 }
@@ -838,6 +913,40 @@ void TextStore_ZoneAllLeave(const char[] name)
 		store.Despawn();
 		StoreList.SetArray(name, store, sizeof(store));
 	}
+}
+
+void TextStore_ForceEnterStore(int client, const char[] zone, const char[] tag, const char[] extra = "")
+{
+	strcopy(InStore[client], sizeof(InStore[]), zone);
+	strcopy(InStoreTag[client], sizeof(InStoreTag[]), tag);
+	strcopy(InStoreExtra[client], sizeof(InStoreExtra[]), extra);
+	
+	char buffer[64];
+	if(StrEqual(tag, "market", false) && GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)))
+	{
+		MarketKv.Rewind();
+		if(MarketKv.JumpToKey("Payout") && MarketKv.JumpToKey(buffer))
+		{
+			if(MarketKv.GotoFirstSubKey())
+			{
+				do
+				{
+					int cash = MarketKv.GetNum("cash");
+					MarketKv.GetSectionName(buffer, sizeof(buffer));
+					SPrintToChat(client, "%d of your %s were sold for %d credits", MarketKv.GetNum("amount"), buffer, cash);
+					TextStore_Cash(client, cash);
+				}
+				while(MarketKv.GotoNextKey());
+
+				MarketKv.GoBack();
+			}
+
+			MarketKv.DeleteThis();
+			SaveMarket(client);
+		}
+	}
+	
+	FakeClientCommand(client, "sm_buy");
 }
 
 public Action TextStore_OnSellItem(int client, int item, int cash, int &count, int &sell)
@@ -902,6 +1011,9 @@ static void TextStore_ShowSellMenu(int client)
 			
 			if(market)
 			{
+				if(MarketCount[client] > MARKET_CAP)
+					MarketCount[client] = MARKET_CAP;
+				
 				amount = kv.GetNum("cost");
 				kv.GetString("storetags", buffer, sizeof(buffer));
 				if(buffer[0])
@@ -1046,18 +1158,27 @@ static int TextStore_SellMenuHandle(Menu menu, MenuAction action, int client, in
 										int oldPrice = MarketKv.GetNum("price");
 										if(oldPrice == MarketSell[client])
 										{
+											int current = MarketKv.GetNum("amount");
+
+											if((current + MarketCount[client]) > MARKET_CAP)
+											{
+												SPrintToChat(client, "%d items were returned to you as hit the quantity cap of %d.", (current + MarketCount[client]) - MARKET_CAP, MARKET_CAP);
+												MarketCount[client] = MARKET_CAP - current;
+											}
+
 											amount -= MarketCount[client];
-											MarketKv.SetNum("amount", MarketKv.GetNum("amount") + MarketCount[client]);
+											MarketKv.SetNum("amount", current + MarketCount[client]);
 										}
 										else
 										{
 											int refund = MarketKv.GetNum("amount");
 											amount -= MarketCount[client] - refund;
-											MarketKv.SetNum("amount", MarketCount[client]);
-											MarketKv.SetNum("price", MarketSell[client]);
 
 											if(refund)
 												SPrintToChat(client, "%d items were placed at %d credits and were returned to you.", refund, oldPrice);
+
+											MarketKv.SetNum("amount", MarketCount[client]);
+											MarketKv.SetNum("price", MarketSell[client]);
 										}
 
 										TextStore_SetInv(client, MarketItem[client], amount);
@@ -1127,7 +1248,17 @@ public void TextStore_OnCatalog(int client)
 					kv.GetSectionName(buffer, sizeof(buffer));
 					if(MarketKv.JumpToKey(buffer))
 					{
-						if(MarketKv.GotoFirstSubKey())
+						if(InStoreExtra[client][0])
+						{
+							if(MarketKv.JumpToKey(InStoreExtra[client]))
+							{
+								if(MarketKv.GetNum("amount"))
+									block = false;
+								
+								MarketKv.GoBack();
+							}
+						}
+						else if(MarketKv.GotoFirstSubKey())
 						{
 							do
 							{
@@ -1182,7 +1313,15 @@ public Action TextStore_OnPriceItem(int client, int item, int &price)
 	TextStore_GetItemName(item, buffer, sizeof(buffer));
 	if(MarketKv.JumpToKey(buffer))
 	{
-		if(MarketKv.GotoFirstSubKey())
+		if(InStoreExtra[client][0])
+		{
+			if(MarketKv.JumpToKey(InStoreExtra[client]))
+			{
+				if(MarketKv.GetNum("amount"))
+					price = MarketKv.GetNum("price");
+			}
+		}
+		else if(MarketKv.GotoFirstSubKey())
 		{
 			do
 			{
@@ -1225,7 +1364,14 @@ static void TextStore_ShowBuyMenu(int client)
 
 			if(market)
 			{
-				menu.SetTitle("Buying %s in market:\n ", buffer);
+				if(InStoreExtra[client][0])
+				{
+					menu.SetTitle("Buying %s in %N's Market:\n ", buffer, Plots_ZoneOwner(client));
+				}
+				else
+				{
+					menu.SetTitle("Buying %s in market:\n ", buffer);
+				}
 			}
 			else
 			{
@@ -1248,7 +1394,26 @@ static void TextStore_ShowBuyMenu(int client)
 					if(!GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
 						steamid[0] = 0;
 
-					if(MarketKv.GotoFirstSubKey())
+					if(InStoreExtra[client][0])
+					{
+						if(MarketKv.JumpToKey(InStoreExtra[client]))
+						{
+							if(StrEqual(steamid, InStoreExtra[client], false))
+							{
+								MarketSell[client] = 0;
+								amount = MarketKv.GetNum("amount");
+								kv.GetSectionName(buffer, sizeof(buffer));
+								menu.SetTitle("Unlisting %s from market:\n ", buffer);
+								unlist = true;
+							}
+							else
+							{
+								amount = MarketKv.GetNum("amount");
+								MarketSell[client] = MarketKv.GetNum("price");
+							}
+						}
+					}
+					else if(MarketKv.GotoFirstSubKey())
 					{
 						do
 						{
@@ -1377,11 +1542,35 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 									kv.GetSectionName(buffer, sizeof(buffer));
 									MarketKv.JumpToKey(buffer, true);
 
-									if(MarketKv.GotoFirstSubKey())
-									{
-										static MarketEnum market;
-										ArrayList list = new ArrayList(sizeof(MarketEnum));
+									static MarketEnum market;
+									ArrayList list = new ArrayList(sizeof(MarketEnum));
 
+									if(InStoreExtra[client][0])
+									{
+										if(MarketKv.JumpToKey(InStoreExtra[client]))
+										{
+											if(MarketKv.GetNum("price") == MarketSell[client])
+											{
+												int amount = MarketKv.GetNum("amount");
+												market.Amount = amount;
+												if(market.Amount > MarketCount[client])
+													market.Amount = MarketCount[client];
+												
+												MarketCount[client] -= market.Amount;
+												MarketKv.SetNum("amount", amount - market.Amount);
+
+												strcopy(market.SteamID, sizeof(market.SteamID), InStoreExtra[client]);
+												market.NowEmpty = market.Amount == amount;
+												list.PushArray(market);
+												
+												TextStore_GetInv(client, MarketItem[client], amount);
+												TextStore_SetInv(client, MarketItem[client], amount + market.Amount);
+												TextStore_Cash(client, -(market.Amount * market.Price));
+											}
+										}
+									}
+									else if(MarketKv.GotoFirstSubKey())
+									{
 										do
 										{
 											market.Price = MarketKv.GetNum("price");
@@ -1405,8 +1594,13 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 											}
 										}
 										while(MarketKv.GotoNextKey());
-										
-										int length = list.Length;
+									}
+
+									int length = list.Length;
+									if(length)
+									{
+										int tax = InStoreExtra[client][0] ? 0 : MARKET_TAX;
+
 										for(int i; i < length; i++)
 										{
 											list.GetArray(i, market);
@@ -1415,7 +1609,7 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 											MarketKv.JumpToKey("Payout", true);
 											MarketKv.JumpToKey(market.SteamID, true);
 											MarketKv.JumpToKey(buffer, true);
-											MarketKv.SetNum("cash", MarketKv.GetNum("cash") + ((market.Price - MARKET_TAX) * market.Amount));
+											MarketKv.SetNum("cash", MarketKv.GetNum("cash") + ((market.Price - tax) * market.Amount));
 											MarketKv.SetNum("amount", MarketKv.GetNum("amount") +  market.Amount);
 
 											if(market.NowEmpty)
@@ -1427,10 +1621,10 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 											}
 										}
 
-										delete list;
-
 										SaveMarket(client);
 									}
+
+									delete list;
 								}
 								else
 								{
@@ -1572,6 +1766,7 @@ static void DropItem(int client, int index, float pos[3], int totalAmount)
 				DispatchKeyValue(entity, "physicsmode", "2");
 				DispatchKeyValue(entity, "massScale", "1.0");
 				DispatchKeyValue(entity, "spawnflags", "6");
+				DispatchKeyValue(entity, "health", "1999999999");
 				DispatchKeyValue(entity, "targetname", "rpg_item");
 
 				ang[1] = index == -1 ? -1.0 : kv.GetFloat("modelscale", -1.0);
@@ -1930,10 +2125,22 @@ static Action TextStore_ItemTimer(Handle timer)
 	return Plugin_Continue;
 }
 
+void TextStore_DelayMenuHud(int client, float time = 1.0)
+{
+	RefreshAt[client] = GetGameTime() + time;
+}
+
 void TextStore_PlayerRunCmd(int client)
 {
 	if((InMenu[client] || GetClientMenu(client) == MenuSource_None))
 	{
+		if(MenuDelayDo[client] > GetGameTime())
+		{
+			// GetClientMenu can fail somehow
+			return;
+		}
+		MenuDelayDo[client] = GetGameTime() + 0.25;
+
 		if(!IsPlayerAlive(client))
 		{
 			if(!Saves_HasCharacter(client))
@@ -1989,6 +2196,18 @@ void TextStore_PlayerRunCmd(int client)
 
 static void ShowMenu(int client, int page = 0)
 {
+	//Set ammo to inf!
+	
+	SetAmmo(client, 1, 9999);
+	SetAmmo(client, 2, 9999);
+	SetAmmo(client, Ammo_Metal, 9999);
+	SetAmmo(client, Ammo_Jar, 1);
+	for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
+	{
+		SetAmmo(client, i, 9999);
+	}
+	
+
 	if(!SpellList || Dungeon_MenuOverride(client))
 	{
 		InMenu[client] = false;
@@ -2001,7 +2220,6 @@ static void ShowMenu(int client, int page = 0)
 		{
 			Menu menu = new Menu(TextStore_SpellMenu);
 
-			char TitleChar[64];
 			char LVLBuffer[64];
 			IntToString(Level[client],LVLBuffer, sizeof(LVLBuffer));
 			ThousandString(LVLBuffer, sizeof(LVLBuffer));
@@ -2009,10 +2227,9 @@ static void ShowMenu(int client, int page = 0)
 			char c_Powerlevel[255];
 			Format(c_Powerlevel, sizeof(c_Powerlevel), "%.0f", Powerlevel);
 			ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
-			Format(TitleChar, sizeof(TitleChar), "RPG Fortress%s\nPower: %s\nLVL: %s\n \nSkills:", CvarRPGInfiniteLevelAndAmmo.BoolValue ? " DEBUG" : "", c_Powerlevel,LVLBuffer);
-			menu.SetTitle("%s",TitleChar);
+			menu.SetTitle("RPG Fortress%s\nPower: %s\nLVL: %s\n \n%s (F):", CvarRPGInfiniteLevelAndAmmo.BoolValue ? " DEBUG" : "", c_Powerlevel,LVLBuffer, SkillType[client] ? "Skills" : "Items");
 
-			static const int MaxSkills = 6;
+			int maxSkills = SkillType[client] ? 6 : 4;
 
 			int amount;
 			float gameTime = GetGameTime();
@@ -2021,7 +2238,7 @@ static void ShowMenu(int client, int page = 0)
 			{
 				static SpellEnum spell;
 				SpellList.GetArray(i, spell);
-				if(spell.Active && spell.Owner == client)
+				if(spell.Active && spell.Owner == client && spell.Skill == SkillType[client])
 				{
 					static char index[12];
 					IntToString(spell.Store, index, sizeof(index));
@@ -2029,7 +2246,7 @@ static void ShowMenu(int client, int page = 0)
 					int cooldown = RoundToCeil(spell.Cooldown - gameTime);
 					if(!spell.Display[0] || cooldown > 999)
 					{
-						if(amount < MaxSkills)
+						if(amount < maxSkills)
 						{
 							amount++;
 							menu.AddItem(index, spell.Display, ITEMDRAW_DISABLED);
@@ -2040,7 +2257,7 @@ static void ShowMenu(int client, int page = 0)
 					if(cooldown > 0)
 						Format(spell.Display, sizeof(spell.Display), "%s [%ds]", spell.Display, cooldown);
 					
-					if(++amount > MaxSkills)
+					if(++amount > maxSkills)
 					{
 						menu.InsertItem((SkillRand[client] + i) % amount, index, spell.Display);
 					}
@@ -2051,14 +2268,19 @@ static void ShowMenu(int client, int page = 0)
 				}
 			}
 
-			for(; amount < MaxSkills; amount++)
+			for(; amount < maxSkills; amount++)
 			{
 				menu.AddItem("0", "");
 			}
 
-			for(; amount > MaxSkills; amount--)
+			for(; amount > maxSkills; amount--)
 			{
 				menu.RemoveItem(amount);
+			}
+
+			for(; amount < 6; amount++)
+			{
+				menu.AddItem("0", "", ITEMDRAW_SPACER);
 			}
 
 			//menu.AddItem("-3", "Main Menu", ITEMDRAW_SPACER);
@@ -2187,14 +2409,11 @@ static void ShowMenu(int client, int page = 0)
 		}
 		case MENU_BUILDING:
 		{
-			/*if(Plots_ShowMenu(client))
-			{
-				InMenu[client] = true;
-			}
-			else*/
+			InMenu[client] = false;
+
+			if(!Plots_ShowMenu(client))
 			{
 				MenuType[client] = MENU_SPELLS;
-				InMenu[client] = false;
 			}
 		}
 		default:
@@ -2242,7 +2461,7 @@ static int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 			InMenu[client] = false;
 
 			if(choice == MenuCancel_Exit)
-				TextStore_Inspect(client);
+				TextStore_SwapMenu(client);
 		}
 		case MenuAction_Select:
 		{
@@ -2309,7 +2528,7 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 			InMenu[client] = false;
 
 			if(choice == MenuCancel_Exit)
-				TextStore_Inspect(client);
+				TextStore_SwapMenu(client);
 		}
 		case MenuAction_Select:
 		{
@@ -2330,7 +2549,7 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 					}
 					case -2:
 					{
-						MenuType[client] = MENU_TRANSFORM;
+						TextStore_OpenSpecificMenu(client, MENU_TRANSFORM);
 						RefreshAt[client] = 1.0;
 						return 0;
 					}
@@ -2341,8 +2560,7 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 					}
 					case -4:
 					{
-						MenuType[client] = MENU_BACKPACK;
-						RefreshAt[client] = 1.0;
+						TextStore_OpenSpecificMenu(client, MENU_BACKPACK);
 						return 0;
 					}
 					default:
@@ -2370,6 +2588,18 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 									{
 										float calc = cooldownSet - GetGameTime();
 										calc *= 1.4;	
+										cooldownSet = calc + GetGameTime();
+									}
+									if(BobsPhoneReduceCooldown(client))
+									{
+										float calc = cooldownSet - GetGameTime();
+										calc *= 0.8;	
+										cooldownSet = calc + GetGameTime();
+									}
+									if(FlowerReduceCooldown(client))
+									{
+										float calc = cooldownSet - GetGameTime();
+										calc *= 0.95;	
 										cooldownSet = calc + GetGameTime();
 									}
 									
@@ -2402,7 +2632,7 @@ static int TextStore_TransformMenu(Menu menu, MenuAction action, int client, int
 			InMenu[client] = false;
 
 			if(choice == MenuCancel_Exit)
-				TextStore_Inspect(client);
+				TextStore_SwapMenu(client);
 		}
 		case MenuAction_Select:
 		{
@@ -2417,30 +2647,46 @@ static int TextStore_TransformMenu(Menu menu, MenuAction action, int client, int
 	return 0;
 }
 
+void TextStore_OpenSpecificMenu(int client, int type)
+{
+	MenuType[client] = type;
+	RefreshAt[client] = 1.0;
+}
+
 void TextStore_Inspect(int client)
+{
+	SkillType[client] = !SkillType[client];
+	TextStore_OpenSpecificMenu(client, MENU_SPELLS);
+}
+
+void TextStore_SwapMenu(int client)
 {
 	switch(MenuType[client])
 	{
 		case MENU_SPELLS:
 		{
-			FakeClientCommandEx(client, "sm_store");
-			RefreshAt[client] = 1.0;
+			if(Plots_CanShowMenu(client))
+			{
+				TextStore_OpenSpecificMenu(client, MENU_BUILDING);
+			}
+			else
+			{
+				FakeClientCommandEx(client, "sm_store");
+				RefreshAt[client] = 1.0;
+			}
 		}
 		case MENU_BACKPACK:
 		{
-			MenuType[client] = MENU_SPELLS;
-			RefreshAt[client] = 1.0;
+			TextStore_OpenSpecificMenu(client, MENU_SPELLS);
 		}
-		case MENU_QUESTBOOK:
+		case MENU_QUESTBOOK, MENU_BUILDING:
 		{
 			FakeClientCommandEx(client, "sm_store");
-			MenuType[client] = MENU_SPELLS;
-			RefreshAt[client] = 1.0;
+			TextStore_OpenSpecificMenu(client, MENU_SPELLS);
 		}
 		default://case MENU_QUESTBOOK, MENU_TRANSFORM, MENU_BUILDING:
 		{
-			MenuType[client] = MENU_SPELLS;
-			RefreshAt[client] = 1.0;
+			TextStore_OpenSpecificMenu(client, MENU_SPELLS);
 		}
 	}
 }
@@ -2466,7 +2712,7 @@ void ReApplyTransformation(int client)
 		Store_ApplyAttribs(client);
 	}
 	UpdateLevelAbovePlayerText(client);
-}
+}			
 void TransformButton(int client)
 {
 	if(f_TransformationDelay[client] > GetGameTime())
@@ -2478,15 +2724,40 @@ void TransformButton(int client)
 	{
 		if(i_TransformationSelected[client] > 0 && i_TransformationSelected[client] <= race.Forms.Length)
 		{
+			Form form;
+			race.Forms.GetArray(i_TransformationSelected[client] - 1, form);
+
 			if(i_TransformationSelected[client] == i_TransformationLevel[client])
 			{
-				De_TransformClient(client);
+				//Before we de-transform the client, maybe theres an extra effect?
+				bool Cancel = false;
+				if(form.Func_FormBeforeDeTransform != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, form.Func_FormBeforeDeTransform);
+					Call_PushCell(client);
+					Call_Finish(Cancel);
+				}
+				if(!Cancel)
+				{
+					De_TransformClient(client);
+				}
+				return;
+			}
+			
+			bool AllowTrans = true;
+			if(form.Func_Requirement != INVALID_FUNCTION)
+			{
+				AllowTrans = false;
+				Call_StartFunction(null, form.Func_Requirement);
+				Call_PushCell(client);
+				Call_Finish(AllowTrans);
+			}
+			
+			if(!AllowTrans)
+			{
 				return;
 			}
 			i_TransformationLevel[client] = i_TransformationSelected[client];
-			Form form;
-			race.Forms.GetArray(i_TransformationLevel[client] - 1, form);
-			
 			if(form.Func_FormActivate != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, form.Func_FormActivate);

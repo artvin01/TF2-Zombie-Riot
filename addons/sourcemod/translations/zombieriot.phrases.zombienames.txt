@@ -82,61 +82,93 @@
 		"pt"		"Policial Invasor"
 		"nl"		"Metro Aanvaller"
 	}
-	"Combine Rifler"
+	"Whiteflower Rifler"
 	{
-		"en" 		"Combine Rifler"
-		"ru" 		"Комбайн с винтовкой"
-		"pt"		"Fuzileiro da Combine"
-		"nl"		"Combine Scherpschutter"
+		"en" 		"Whiteflower Rifler"
 	}
-	"Combine Shotgunner"
+	"First Rifler"
 	{
-		"en" 		"Combine Shotgunner"
-		"ru" 		"Комбайн с дробовиком"
-		"pt"		"Artilheiro da Combine"
-		"nl"		"Combine Jachtgeweerder"
+		"en" 		"First Rifler"
 	}
-	"Combine Swordsman"
+	"Last Rifler"
 	{
-		"en" 		"Combine Swordsman"
-		"ru" 		"Комбайн-мечник"
-		"pt"		"Espadachim da Combine"
-		"nl"		"Combine Zwaardvechter"
+		"en" 		"Last Rifler"
 	}
-	"Combine Elite"
+	"Whiteflower Shotgunner"
 	{
-		"en" 		"Combine Elite"
-		"ru" 		"Элитный комбайн"
-		"pt"		"Elite da Combine"
-		"nl"		"Combine Elite"
+		"en" 		"Whiteflower Shotgunner"
 	}
-	"Combine Giant Swordsman"
+	"First Shotgunner"
 	{
-		"en" 		"Combine Giant Swordsman"
-		"ru" 		"Гигантский комбайн-мечник"
-		"pt"		"Espadachim Gigante da Combine"
-		"nl"		"Combine Gigantische Zwaardvechter"
+		"en" 		"First Shotgunner"
 	}
-	"Combine DDT"
+	"Last Shotgunner"
 	{
-		"en" 		"Combine DDT"
-		"ru" 		"Комбайн DDT"
-		"pt"		"Combine DDT"
-		"nl"		"Combine DDT"
+		"en" 		"Last Shotgunner"
 	}
-	"Combine Golden Collos"
+	"Whiteflower Swordsman"
 	{
-		"en" 		"Combine Golden Collos"
-		"ru" 		"Золотой комбайн-коллос"
-		"pt"		"Soldado do Coliseu Doudado da Combine"
-		"nl"		"Combine Gouden Colossus"
+		"en" 		"Whiteflower Swordsman"
 	}
-	"Combine Overlord"
+	"First Swordsman"
 	{
-		"en" 		"Combine Overlord"
-		"ru" 		"Комбайн-владыка"
-		"pt"		"SobreLorde Combine"
-		"nl"		"Combine Opperheer"
+		"en" 		"First Swordsman"
+	}
+	"Last Swordsman"
+	{
+		"en" 		"Last Swordsman"
+	}
+	"Whiteflower Elite"
+	{
+		"en" 		"Whiteflower Elite"
+	}
+	"First Elite"
+	{
+		"en" 		"First Elite"
+	}
+	"Last Elite"
+	{
+		"en" 		"Last Elite"
+	}
+	"Whiteflower Giant Swordsman"
+	{
+		"en" 		"Whiteflower Giant Swordsman"
+	}
+	"First Giant Swordsman"
+	{
+		"en" 		"First Giant Swordsman"
+	}
+	"Last Giant Swordsman"
+	{
+		"en" 		"Last Giant Swordsman"
+	}
+	"Whiteflower DDT"
+	{
+		"en" 		"Whiteflower DDT"
+	}
+	"First DDT"
+	{
+		"en" 		"First DDT"
+	}
+	"Last DDT"
+	{
+		"en" 		"Last DDT"
+	}
+	"Whiteflower Golden Collos"
+	{
+		"en" 		"Whiteflower Golden Collos"
+	}
+	"First Golden Collos"
+	{
+		"en" 		"First Golden Collos"
+	}
+	"Last Golden Collos"
+	{
+		"en" 		"Last Golden Collos"
+	}
+	"Whiteflower Overlord"
+	{
+		"en" 		"Whiteflower Overlord"
 	}
 	"Scout Assulter"
 	{
@@ -271,12 +303,9 @@
 		"pt"		"Pyro Main Gigante"
 		"nl"		"Gigantische Pyro Main"
 	}
-	"Combine Deutsch Ritter"
+	"Whiteflower Deutsch Ritter"
 	{
-		"en" 		"Combine Deutsch Ritter"
-		"ru" 		"Немецкий комбайн-рыцарь"
-		"pt"		"Deutsch Ritter da Combine"
-		"nl"		"Combine Duitse Ridder"
+		"en" 		"Whiteflower Deutsch Ritter"
 	}
 	"X10 Spy Main"
 	{
@@ -365,61 +394,37 @@
 		"pt"		"Xeno Policial Invasor"
 		"nl"		"Xeno Metro Aanvaller"
 	}
-	"Xeno Combine Rifler"
+	"Xeno Rifler"
 	{
-		"en" 		"Xeno Combine Rifler"
-		"ru" 		"Ксенокомбайн с винтовкой"
-		"pt"		"Xeno Fuzileiro da Combine"
-		"nl"		"Xeno Combine Scherpschutter"
+		"en" 		"Xeno Rifler"
 	}
-	"Xeno Combine Shotgunner"
+	"Xeno Shotgunner"
 	{
-		"en" 		"Xeno Combine Shotgunner"
-		"ru" 		"Ксенокомбайн с дробовиком"
-		"pt"		"Xeno Artilheiro da Combine"
-		"nl"		"Xeno Combine Jachtgeweerder"
+		"en" 		"Xeno Shotgunner"
 	}
-	"Xeno Combine Swordsman"
+	"Xeno Swordsman"
 	{
-		"en" 		"Xeno Combine Swordsman"
-		"ru" 		"Ксенокомбайн мечник"
-		"pt"		"Xeno Espadachim da Combine"
-		"nl"		"Xeno Combine Zwaardvechter"
+		"en" 		"Xeno Swordsman"
 	}
-	"Xeno Combine Elite"
+	"Xeno Elite"
 	{
-		"en" 		"Xeno Combine Elite"
-		"ru" 		"Элитный ксенокомбайн"
-		"pt"		"Xeno Combine Elite"
-		"nl"		"Xeno Combine Elite"
+		"en" 		"Xeno Elite"
 	}
-	"Xeno Combine Giant Swordsman"
+	"Xeno Giant Swordsman"
 	{
-		"en" 		"Xeno Combine Giant Swordsman"
-		"ru" 		"Гигантский ксенокомбайн мечник"
-		"pt"		"Xeno Combine Gigante Espadachim"
-		"nl"		"Xeno Combine Gigantische Zwaardvechter"
+		"en" 		"Xeno Giant Swordsman"
 	}
-	"Xeno Combine DDT"
+	"Xeno DDT"
 	{
-		"en" 		"Xeno Combine DDT"
-		"ru" 		"Ксенокомбайн DDT"
-		"pt"		"Xeno Combine DDT"
-		"nl"		"Xeno Combine DDT"
+		"en" 		"Xeno DDT"
 	}
-	"Xeno Combine Golden Collos"
+	"Xeno Golden Collos"
 	{
-		"en" 		"Xeno Combine Golden Collos"
-		"ru" 		"Золотой ксенокомбайн-коллос"
-		"pt"		"Xeno Combine Colossus Dourado"
-		"nl"		"Xeno Combine Gouden Colossus"
+		"en" 		"Xeno Golden Collos"
 	}
-	"Xeno Combine Overlord"
+	"Xeno Overlord"
 	{
-		"en" 		"Xeno Combine Overlord"
-		"ru" 		"Ксенокомбайн владыка"
-		"pt"		"Xeno Combine Senhor Supremo"
-		"nl"		"Xeno Combine Opperheer"
+		"en" 		"Xeno Overlord"
 	}
 	"Xeno Scout Assulter"
 	{
@@ -554,12 +559,9 @@
 		"pt"		"Xeno Pyro Main Gigante"
 		"nl"		"Xeno Gigantische Pyro Main"
 	}
-	"Xeno Combine Deutsch Ritter"
+	"Xeno Deutsch Ritter"
 	{
-		"en" 		"Xeno Combine Deutsch Ritter"
-		"ru" 		"Немецкий ксенокомбайн-рыцарь"
-		"pt"		"Xeno Deutsch Ritter da Combine"
-		"nl"		"Xeno Combine Duitse Ridder"
+		"en" 		"Xeno Deutsch Ritter"
 	}
 	"Xeno X10 Spy Main"
 	{
@@ -586,12 +588,9 @@
 		"pt"		"Bob o todo poderoso destruidor de multiversos"
 		"nl"		"Bob the Oppergod van Goden en vernietigaar van Multiversums"
 	}
-	"Revived Combine DDT"
+	"Revived DDT"
 	{
-		"en" 		"Revived Combine DDT"
-		"ru" 		"Оживлённый комбайн DDT"
-		"pt"		"Combine DDT Revivido"
-		"nl"		"Nieuw Leven Ingeblazen Combine DDT"
+		"en" 		"Revived DDT"
 	}
 	"Spookmaster Boner"
 	{
@@ -607,12 +606,9 @@
 		"pt"		"Senhor Grigori Curado"
 		"nl"		"Genezen Vader Grigori"
 	}
-	"Combine Mage"
+	"Whiteflower Mage"
 	{
-		"en" 		"Combine Mage"
-		"ru" 		"Комбайн-маг"
-		"pt"		"Mago da Combine"
-		"nl"		"Combine Magier"
+		"en" 		"Whiteflower Mage"
 	}
 	"Bloon"
 	{
@@ -715,65 +711,76 @@
 		"en" 		"Metro Cop"
 		"ru" 		"Метро коп"
 	}
-	"Barracks Combine Swordsman"
+	"Barracks Swordsman"
 	{
 		"en" 		"Combine Swordsman"
 		"ru" 		"Комбайн мечник"
+		"en" 		"Barracks Swordsman"
 	}
 	"Barracks Metro Raider"
 	{
 		"en" 		"Metro Raider"
 		"ru" 		"Метро Рейдер"
 	}
-	"Barracks Combine Shotgunner"
+	"Barracks Shotgunner"
 	{
 		"en" 		"Combine Shotgunner"
 		"ru" 		"Комбайн с дробовиком"
+		"en" 		"Barracks Shotgunner"
 	}
-	"Barracks Combine Soldier"
+	"Barracks Soldier"
 	{
 		"en" 		"Combine Soldier"
-		"ru" 		"Комбайн Солдат
+		"ru" 		"Комбайн Солдат"
+		"en" 		"Barracks Soldier"
 	}
-	"Barracks Combine DDT"
+	"Barracks DDT"
 	{
 		"en" 		"Combine DDT"
 		"ru" 		"Комбайн DDT"
+		"en" 		"Barracks DDT"
 	}
-	"Barracks Combine Elite"
+	"Barracks Elite"
 	{
 		"en" 		"Combine Elite"
 		"ru" 		"Элитный Комбайн"
+		"en" 		"Barracks Elite"
 	}
-	"Barracks Combine Deflector"
+	"Barracks Deflector"
 	{
 		"en" 		"Combine Deflector"
 		"ru" 		"Комбайн Отражатель"
+		"en" 		"Barracks Deflector"
 	}
-	"Barracks Combine Sniper"
+	"Barracks Sniper"
 	{
 		"en" 		"Combine Sniper"
 		"ru" 		"Комбайн Снайпер"
+		"en" 		"Barracks Sniper"
 	}
-	"Barracks Combine Super"
+	"Barracks Super"
 	{
 		"en" 		"Combine Warrior"
 		"ru" 		"Комбайн Воин"
+		"en" 		"Barracks Warrior"
 	}
-	"Barracks Combine Commander"
+	"Barracks Commander"
 	{
 		"en" 		"Combine Commander"
 		"ru" 		"Комбайн Командир"
+		"en" 		"Barracks Commander"
 	}
-	"Barracks Combine Giant ddt"
+	"Barracks Giant ddt"
 	{
 		"en" 		"Combine Giant DDT"
 		"ru" 		"Гигантский Комбайн DDT"
+		"en" 		"Barracks Giant DDT"
 	}
-	"Barracks Combine Collos"
+	"Barracks Collos"
 	{
 		"en"		"Combine Collos"
 		"ru" 		"Комбайн Коллос"
+		"en"		"Barracks Collos"
 	}
 	"Barracks Iberian Runner"
 	{
@@ -1446,15 +1453,13 @@
 		"pt"		"Espada Quase Radiante"
 		"ru"		"Сияющий меч Нерл"
 	}
-	"Spawned Combine"
+	"Whiteflower Subject"
 	{
-		"en"		"Spawned Combine"
-		"pt"		"Combine Gerado"
-		"ru"		"Созданный комбайн"
+		"en"		"Whiteflower Subject"
 	}
-	"Spawned Father Grigori"
+	"Corrupted Father Grigori"
 	{
-		"en"		"Spawned Father Grigori"
+		"en"		"Corrupted Father Grigori"
 		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
 	}
@@ -2122,9 +2127,9 @@
 	{
 		"en"	"Overlord The Last"
 	}
-	"Bladedance The Combine"
+	"Bladedance The Betrayed"
 	{
-		"en"	"Bladedance The Combine"
+		"en"	"Bladedance The Betrayed"
 	}
 	"Allied Leper Afterimage"
 	{

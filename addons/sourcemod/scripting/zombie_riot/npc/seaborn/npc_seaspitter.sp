@@ -97,7 +97,7 @@ methodmap SeaSpitter < CSeaBody
 		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_WALK");
-		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

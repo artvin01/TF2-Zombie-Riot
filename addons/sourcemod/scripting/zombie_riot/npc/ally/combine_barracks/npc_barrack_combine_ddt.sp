@@ -55,7 +55,7 @@ void Barracks_Combine_Ddt_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine DDT");
+	strcopy(data.Name, sizeof(data.Name), "Barracks DDT");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_ddt");
 	data.IconCustom = false;
 	data.Flags = 0;

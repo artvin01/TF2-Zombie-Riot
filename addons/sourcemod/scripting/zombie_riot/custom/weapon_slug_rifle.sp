@@ -34,7 +34,7 @@ public void Weapon_Anti_Material_Rifle_Deploy(int client, int weapon)
 }
 
 
-void WeaponUranium_OnTakeDamage(int attacker,int victim, float &damage, int weapon, float damagePosition[3])
+void WeaponUranium_OnTakeDamage(int attacker,int victim, float &damage, float damagePosition[3])
 {
 	if(Uranium_TimeTillBigHit[attacker][victim] < GetGameTime())
 	{

@@ -44,7 +44,7 @@ void Barracks_Combine_Ar2_Precache()
 	PrecacheSoundArray(g_IdleAlert);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Soldier");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Soldier");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_ar2");
 	data.IconCustom = false;
 	data.Flags = 0;

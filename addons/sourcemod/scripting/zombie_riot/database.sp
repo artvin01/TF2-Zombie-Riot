@@ -133,6 +133,11 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 	}
 }
 
+bool Database_IsLan()
+{
+	return !Global;
+}
+
 bool Database_IsCached(int client)
 {
 	return Cached[client];

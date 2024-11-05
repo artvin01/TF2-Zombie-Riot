@@ -86,6 +86,7 @@ static void EnableCharacter(int client, const char[] id)
 		if(kv.JumpToKey(id))
 		{
 			mp_disable_respawn_times.ReplicateToClient(client, "0");
+			ChangeClientTeam(client, TFTeam_Red);
 			strcopy(CharacterId[client], sizeof(CharacterId[]), id);
 			RaceIndex[client] = kv.GetNum("race");
 
@@ -131,6 +132,9 @@ static void EnableCharacter(int client, const char[] id)
 			}
 
 			Stats_EnableCharacter(client);
+			TextStore_DelayMenuHud(client);
+			Mana_Hud_Delay[client] = GetGameTime() + 2.0;
+			delay_hud[client] = GetGameTime() + 2.5;
 		}
 
 		int uniques, count;
@@ -224,7 +228,10 @@ static void SaveCharacter(int client, bool remove)
 	if(remove)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
 			ForcePlayerSuicide(client);
+			ChangeClientTeam(client, TFTeam_Spectator);
+		}
 	}
 }
 
@@ -598,13 +605,13 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 				Race race;
 				for(int i; Races_GetRaceByIndex(i, race); i++)
 				{
-					if(!race.Key[0] || TextStore_GetItemCount(client, race.Key) < 1)
+					if(!race.Key[0] || TextStore_GetItemCount(client, race.Key) > 0)
 					{
 						menu.AddItem(id, race.Name);
 					}
 					else
 					{
-						FormatEx(buffer1, sizeof(buffer1), "%s (Unlock \"%s\")", race.Name, race.Key);
+						FormatEx(buffer1, sizeof(buffer1), "%s (Locked)", race.Name);
 						menu.AddItem(id, buffer1, ITEMDRAW_DISABLED);
 					}
 				}
