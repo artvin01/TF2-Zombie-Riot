@@ -2208,6 +2208,23 @@ public void Dungeon_Spawn_AntiIberianTank(int entity)
 		fl_Extra_Damage[entity] *= 1.2;
 	}
 }
+public void Dungeon_Spawn_WhiteflowerPowered(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_whiteflower_boss"))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+		npc.m_iOverlordComboAttack = 1;
+		int health = ReturnEntityMaxHealth(entity);
+		health = RoundToNearest(float(health) * 2.0);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.1;
+		i_HpRegenInBattle[entity] *= 2;
+	}
+}
 
 public void Dungeon_Spawn_SecondGiant(ArrayList list)
 {
