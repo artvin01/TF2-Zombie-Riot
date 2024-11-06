@@ -562,7 +562,7 @@ void TextStore_SetAllItemCooldown(int client, float cooldown)
 	for(int i; i < length; i++)
 	{
 		SpellList.GetArray(i, spell);
-		if(spell.Owner == client && !spell.Skill)
+		if(spell.Owner == client && !spell.Skill && spell.Cooldown < cooldown)
 		{
 			spell.Cooldown = cooldown;
 			SpellList.SetArray(i, spell);
@@ -2257,7 +2257,7 @@ static void ShowMenu(int client, int page = 0)
 					if(cooldown > 0)
 						Format(spell.Display, sizeof(spell.Display), "%s [%ds]", spell.Display, cooldown);
 					
-					if(++amount > maxSkills)
+					if(++amount >= maxSkills)
 					{
 						menu.InsertItem((SkillRand[client] + i) % amount, index, spell.Display);
 					}
@@ -2581,7 +2581,8 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 									Call_PushStringEx(spell.Display, sizeof(spell.Display), SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
 									Call_Finish(cooldownSet);
 
-									SkillRand[client] = GetURandomInt();
+									if(spell.Skill)
+										SkillRand[client] = GetURandomInt();
 
 									//CC difficulty, increacing ability cooldowns by 40%.
 									if(b_DungeonContracts_LongerCooldown[client])
