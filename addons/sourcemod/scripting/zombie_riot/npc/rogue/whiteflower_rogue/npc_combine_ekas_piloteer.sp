@@ -27,13 +27,15 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
 	"weapons/demo_sword_swing3.wav",
 };
 
+static char g_RocketSound[][] = {
+	"weapons/rpg/rocketfire1.wav",
+};
 static char g_MeleeHitSounds[][] = {
 	
 	"weapons/blade_slice_2.wav",
@@ -41,11 +43,13 @@ static char g_MeleeHitSounds[][] = {
 	"weapons/blade_slice_4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
-	"weapons/physcannon/energy_bounce1.wav",
-	"weapons/physcannon/energy_bounce2.wav",
+	"weapons/physcannon/energy_sing_explosion2.wav",
+};
+static char g_RangedAttack[][] = {
+	"weapons/pistol/pistol_fire2.wav",
 };
 
-public void Whiteflower_ExtremeKnightGiant_OnMapStart_NPC()
+public void Whiteflower_Ekas_Piloteer_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -54,23 +58,26 @@ public void Whiteflower_ExtremeKnightGiant_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
+	for (int i = 0; i < (sizeof(g_RangedAttack));	i++) { PrecacheSound(g_RangedAttack[i]);	}
+	for (int i = 0; i < (sizeof(g_RocketSound));	i++) { PrecacheSound(g_RocketSound[i]);	}
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "W.F. Extreme Knight Giant");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_extreme_knight_giant");
-	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
-	data.IconCustom = false;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	strcopy(data.Name, sizeof(data.Name), "W.F. Ekas Piloteer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_ekas_piloteer");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_pistol");
+	data.IconCustom = true;
+	data.Flags = 0;
 	data.Category = Type_WhiteflowerSpecial;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+	PrecacheSound("weapons/sentry_rocket.wav");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Whiteflower_ExtremeKnightGiant(client, vecPos, vecAng, ally);
+	return Whiteflower_Ekas_Piloteer(client, vecPos, vecAng, ally);
 }
 
-methodmap Whiteflower_ExtremeKnightGiant < CClotBody
+methodmap Whiteflower_Ekas_Piloteer < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -88,36 +95,42 @@ methodmap Whiteflower_ExtremeKnightGiant < CClotBody
 		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayRangedAttackSecondarySound() {
-
-		int RandomInt = GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1);
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[RandomInt], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, 80);
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[RandomInt], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, 80);
-
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		
 
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
+	public void PlayGunShot() 
+	{
+		EmitSoundToAll(g_RangedAttack[GetRandomInt(0, sizeof(g_RangedAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	property float m_flTimeUntillKickDone
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flTimeUntillSummonRocket
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	public void PlayKilledEnemySound(int target) 
 	{
-		if(!IsValidEntity(target))
-			return;
-
 		int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 		
 		if(Health <= 0)
 		{
-
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
-					NpcSpeechBubble(this.index, "How frail.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "The clan of Whiteflower stands tall.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 				case 1:
-					NpcSpeechBubble(this.index, "They beat the elites? Hardly believeable.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "You are nothing before us.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 				case 2:
-					NpcSpeechBubble(this.index, "Such weaklings.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "Useless.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			}
 			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
@@ -127,24 +140,29 @@ methodmap Whiteflower_ExtremeKnightGiant < CClotBody
  	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
+	public void PlayRocketSound()
+ 	{
+		EmitSoundToAll(g_RocketSound[GetRandomInt(0, sizeof(g_RocketSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+	}
 	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
 	
-	public Whiteflower_ExtremeKnightGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_Ekas_Piloteer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "300", ally, false, true));
+		Whiteflower_Ekas_Piloteer npc = view_as<Whiteflower_Ekas_Piloteer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcWeight[npc.index] = 3;
+		i_NpcWeight[npc.index] = 1;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
 
-		npc.SetActivity("ACT_IDLE");
+		int iActivity = npc.LookupActivity("ACT_IDLE_PISTOL");
+		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_bisWalking = false;
 
@@ -160,22 +178,24 @@ methodmap Whiteflower_ExtremeKnightGiant < CClotBody
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
 
-		func_NPCDeath[npc.index] = Whiteflower_ExtremeKnightGiant_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Whiteflower_ExtremeKnightGiant_OnTakeDamage;
-		func_NPCThink[npc.index] = Whiteflower_ExtremeKnightGiant_ClotThink;
+		func_NPCDeath[npc.index] = Whiteflower_Ekas_Piloteer_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Whiteflower_Ekas_Piloteer_OnTakeDamage;
+		func_NPCThink[npc.index] = Whiteflower_Ekas_Piloteer_ClotThink;
 		
 	
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/w_pistol.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/inquisitor/inquisitor.mdl");
-		SetVariantString("1.15");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/heavy/sbox2014_war_helmet/sbox2014_war_helmet.mdl");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/demo/tw_kingcape/tw_kingcape.mdl");
-		SetVariantString("1.25");
+		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/robo_medic_physician_mask/robo_medic_physician_mask.mdl");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.m_iAttacksTillReload = 6;
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -187,9 +207,9 @@ methodmap Whiteflower_ExtremeKnightGiant < CClotBody
 
 //TODO 
 //Rewrite
-public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
+public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 {
-	Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(iNPC);
+	Whiteflower_Ekas_Piloteer npc = view_as<Whiteflower_Ekas_Piloteer>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -217,14 +237,12 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	npc.PlayKilledEnemySound(npc.m_iTarget);
-	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-	
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
+	//very strong kick
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
@@ -237,15 +255,13 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 				float WorldSpaceCenterVec[3]; 
 				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
 				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, .Npc_type = 1) )
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 350.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damage *= 1.3;
 
 					
 					if(target > 0) 
@@ -254,49 +270,48 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 						// Hit sound
 						npc.PlayMeleeHitSound();
 
+						npc.PlayKilledEnemySound(npc.m_iTarget);
 					}
 				}
 				delete swingTrace;
 			}
 		}
+		return;
 	}
-
-	if(npc.m_flNextRangedSpecialAttack)
+	if(npc.m_flTimeUntillKickDone)
 	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
+		if(npc.m_iChanged_WalkCycle != 5) 	
 		{
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			npc.FaceTowards(vecTarget, 20000.0);
+			npc.m_bisWalking = false;
+			npc.m_flSpeed = 0.0;
+			NPC_StopPathing(npc.index);
+			npc.m_iChanged_WalkCycle = 5;
+			npc.AddGesture("ACT_METROPOLICE_DEPLOY_MANHACK", .SetGestureSpeed = 2.0);
+			npc.m_flTimeUntillSummonRocket = gameTime + 0.5;
 		}
-		if(npc.m_flRangedSpecialDelay < gameTime)
+		if(npc.m_flTimeUntillSummonRocket && npc.m_flTimeUntillSummonRocket < gameTime)
 		{
+			npc.m_flTimeUntillSummonRocket = 0.0;
+			npc.m_iAttacksTillReload = 6;
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
-				float vecTarget[3];
-				npc.PlayRangedAttackSecondarySound();
-				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				
-				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
-				npc.FaceTowards(vecTarget, 20000.0);
-				int projectile = npc.FireParticleRocket(vecTarget, 280.0 , 800.0 , 100.0 , "raygun_projectile_red");
+				npc.PlayRocketSound();
+				float vecSelf[3];
+				WorldSpaceCenter(npc.index, vecSelf);
+				vecSelf[2] += 50.0;
+				vecSelf[0] += GetRandomFloat(-10.0, 10.0);
+				vecSelf[1] += GetRandomFloat(-10.0, 10.0);
+				float RocketDamage = 500.0;
+				int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 300.0);
 				DataPack pack;
 				CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(EntIndexToEntRef(projectile));
+				pack.WriteCell(EntIndexToEntRef(RocketGet));
 				pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
-
 			}
-			npc.m_flDoingAnimation = 0.0;
 		}
-		if(npc.m_flDoingAnimation < gameTime)
+		if(npc.m_flTimeUntillKickDone < gameTime)
 		{
-			npc.m_flDoingAnimation = gameTime + 0.2;
-			npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,2.0);
-			npc.m_flRangedSpecialDelay = gameTime + 0.20;
-		}
-		if(npc.m_flNextRangedSpecialAttack < gameTime)
-		{
-			npc.m_flDoingAnimation = gameTime + 0.25;
-			npc.m_flNextRangedSpecialAttack = 0.0;
+			npc.m_flTimeUntillKickDone = 0.0;
 		}
 		return;
 	}
@@ -329,13 +344,18 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && npc.m_flNextRangedAttack < gameTime)
+		else if(npc.m_iAttacksTillReload <= 0)
 		{
+			//they ran out of bullets, melee.
 			npc.m_iState = 2; //enemy is abit further away.
 		}
-		else if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
+		}
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0))
+		{
+			npc.m_iState = -1; //Engage in Close Range Destruction.
 		}
 		else 
 		{
@@ -358,46 +378,107 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 				{
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_RUN");
+					npc.SetActivity("ACT_RUN_PISTOL");
 					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
 			case 1:
 			{			
-				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);	
+				if(IsValidEnemy(npc.index, target))
 				{
-					npc.m_iTarget = Enemy_I_See;
+					if(npc.m_iChanged_WalkCycle != 7) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 7;
+						npc.SetActivity("ACT_IDLE_ANGRY_PISTOL");
+						npc.m_flSpeed = 0.0;
+						NPC_StopPathing(npc.index);
+					}
+					npc.FaceTowards(vecTarget, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 
-					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", _,_,_,0.8);
-
-					npc.PlayMeleeSound();
+					float eyePitch[3], vecDirShooting[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
 					
-					npc.m_flAttackHappens = gameTime + 0.5;
-					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
-					npc.m_bisWalking = true;
+					vecTarget[2] += 15.0;
+					MakeVectorFromPoints(vecSelf, vecTarget, vecDirShooting);
+					GetVectorAngles(vecDirShooting, vecDirShooting);
+					vecDirShooting[1] = eyePitch[1];
+
+					npc.m_flNextRangedAttack = gameTime + 0.1;
+					npc.m_iAttacksTillReload--;
+					
+					float x = GetRandomFloat( -0.03, 0.03 );
+					float y = GetRandomFloat( -0.03, 0.03 );
+					
+					float vecRight[3], vecUp[3];
+					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+					
+					float vecDir[3];
+					for(int i; i < 3; i++)
+					{
+						vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
+					}
+
+					NormalizeVector(vecDir, vecDir);
+					
+					// E2 L0 = 6.0, E2 L5 = 7.0
+					KillFeed_SetKillIcon(npc.index, "pistol");
+					float damage = 150.0;
+					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					npc.PlayKilledEnemySound(npc.m_iTarget);
+
+					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
+					npc.PlayGunShot();
+				}
+				else
+				{
+					//Walk to target
+					if(!npc.m_bPathing)
+						npc.StartPathing();
+						
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_RUN_PISTOL");
+						npc.m_flSpeed = 350.0;
+						NPC_StartPathing(iNPC);
+					}
 				}
 			}
 			case 2:
-			{
-				if(npc.m_iChanged_WalkCycle != 7) 	
+			{		
+				if(npc.m_iChanged_WalkCycle != 9) 	
 				{
-					npc.m_bisWalking = false;
-					npc.m_iChanged_WalkCycle = 7;
-					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 9;
+					npc.SetActivity("ACT_RUN_PISTOL");
+					npc.m_flSpeed = 480.0;
+					NPC_StartPathing(iNPC);
 				}
-				npc.m_flDoingAnimation = gameTime + 1.0;
-				//how long do they do their pulse attack barrage?
-				npc.m_flNextRangedSpecialAttack = gameTime + 2.0;
-				npc.m_flRangedSpecialDelay = gameTime + 1.0;
-				npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.4);
-				npc.m_flNextRangedAttack = gameTime + 10.35;
+				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+				{
+					int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);	
+					if(IsValidEnemy(npc.index, target))
+					{
+						npc.m_flTimeUntillKickDone = gameTime + 1.0;
+						npc.m_flAttackHappens = gameTime + 0.2;
+						
+						if(npc.m_iChanged_WalkCycle != 8) 	
+						{
+							npc.m_iChanged_WalkCycle = 8;
+							npc.m_flSpeed = 0.0;
+							NPC_StopPathing(npc.index);
+							npc.m_bPathing = false;
+							npc.m_bisWalking = false;
+							npc.AddActivityViaSequence("kickdoorbaton");
+							npc.SetCycle(0.30);
+							npc.SetPlaybackRate(2.0);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -410,13 +491,13 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 }
 
 
-public Action Whiteflower_ExtremeKnightGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Whiteflower_Ekas_Piloteer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(victim);
+	Whiteflower_Ekas_Piloteer npc = view_as<Whiteflower_Ekas_Piloteer>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -428,9 +509,9 @@ public Action Whiteflower_ExtremeKnightGiant_OnTakeDamage(int victim, int &attac
 	return Plugin_Changed;
 }
 
-public void Whiteflower_ExtremeKnightGiant_NPCDeath(int entity)
+public void Whiteflower_Ekas_Piloteer_NPCDeath(int entity)
 {
-	Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(entity);
+	Whiteflower_Ekas_Piloteer npc = view_as<Whiteflower_Ekas_Piloteer>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();

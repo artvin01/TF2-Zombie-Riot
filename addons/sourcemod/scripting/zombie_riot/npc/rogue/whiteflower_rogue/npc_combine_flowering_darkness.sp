@@ -65,6 +65,10 @@ public void Whiteflower_FloweringDarkness_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Flowering Darkness");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_flowering_darkness");
+	strcopy(data.Icon, sizeof(data.Icon), "flowering_darkness");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_WhiteflowerSpecial;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -114,25 +118,6 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		
 		if(Health <= 0)
 		{
-			if(target <= MaxClients)
-			{
-				static Race race;
-				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Iberian"))
-				{
-					switch(GetRandomInt(0,2))
-					{
-						case 0:
-							NpcSpeechBubble(this.index, "Iberians...", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
-						case 1:
-							NpcSpeechBubble(this.index, "Here comes payday.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-						case 2:
-							NpcSpeechBubble(this.index, "Foolish Avians.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-					}
-					return;
-				}
-			}
-
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
@@ -222,6 +207,8 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/mvm_loot/heavy/robo_ushanka.mdl");
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/sniper/thief_sniper_cape/thief_sniper_cape.mdl");
 		SetVariantString("1.2");
@@ -237,7 +224,6 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 			b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
-			b_thisNpcIsARaid[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
 			npc.m_flCloneSuicide = GetGameTime() + 1.0;
 			npc.m_flDoAnimClone = GetGameTime() + 0.1;
@@ -306,7 +292,14 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	if(!npc.m_flCloneSuicide)
-		Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "p_jumpuploop", 0.0, gameTime, _ , true);
+	{
+		
+		if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		}
+	}
 
 	
 	if(npc.m_flAttackHappens)
@@ -327,7 +320,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 1350000.0;
+					float damage = 800.0;
 					
 					if(target > 0) 
 					{
@@ -367,7 +360,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 				
 				//This is the primary projectile in the middle.
 				float SpeedProjectile = 1000.0;
-				float ProjectileDamage = 1150000.0;
+				float ProjectileDamage = 500.0;
 				int Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_red");
 
 				ProjectileDamage *= 0.95;
@@ -499,7 +492,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 380.0;
+					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
@@ -514,7 +507,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 380.0;
+					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
 				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -558,6 +551,11 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 				}
 			}
 		}
+	}
+	else
+	{
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleSound();
 }

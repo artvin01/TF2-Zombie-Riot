@@ -228,6 +228,7 @@ enum
 	Type_Void,
 	Type_Ruina,
 	Type_IberiaExpiAlliance,
+	Type_WhiteflowerSpecial,
 }
 
 //int Bob_To_Player[MAXENTITIES];

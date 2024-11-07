@@ -62,15 +62,25 @@ public void Whiteflower_Boss_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RocketSound));	i++) { PrecacheSound(g_RocketSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HealSound)); i++) { PrecacheSound(g_HealSound[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower");
+	strcopy(data.Name, sizeof(data.Name), "Whiteflower The Traitor");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_boss");
+	strcopy(data.Icon, sizeof(data.Icon), "whiteflower");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_WhiteflowerSpecial;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 	PrecacheSound("plats/tram_hit4.wav");
 	PrecacheModel("models/props_lakeside_event/bomb_temp.mdl");
-	PrecacheSoundCustom("rpg_fortress/enemy/whiteflower_dash.mp3");
+	PrecacheSound("ambient/machines/teleport3.wav");
 }
 
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("rpg_fortress/enemy/whiteflower_dash.mp3");
+	PrecacheSoundCustom("#rpg_fortress/music/combine_elite_iberia_grandpabard.mp3");
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return Whiteflower_Boss(client, vecPos, vecAng, ally, data);
@@ -182,6 +192,11 @@ methodmap Whiteflower_Boss < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
+	property float m_flCooldownSay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
 	public int FireGrenade(float vecTarget[3])
 	{
 		int entity = CreateEntityByName("tf_projectile_pipe_remote");
@@ -229,8 +244,8 @@ methodmap Whiteflower_Boss < CClotBody
 		Whiteflower_Boss npc = view_as<Whiteflower_Boss>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcWeight[npc.index] = 1;
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
+		i_NpcWeight[npc.index] = 5;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
@@ -252,11 +267,77 @@ methodmap Whiteflower_Boss < CClotBody
 
 		
 
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
+
+		EmitSoundToAll("ambient/machines/teleport3.wav", _, _, _, _, 1.0);	
+		EmitSoundToAll("ambient/machines/teleport3.wav", _, _, _, _, 1.0);	
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			{
+				SetGlobalTransTarget(client_check);
+				ShowGameText(client_check, "item_armor", 1, "%t", "Whiteflower The leader");
+			}
+		}
+		RaidModeTime = GetGameTime() + ((200.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#rpg_fortress/music/combine_elite_iberia_grandpabard.mp3");
+		music.Time = 187;
+		music.Volume = 1.0;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Iberia's Last Stand");
+		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+		Music_SetRaidMusic(music);
+
+		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		if(RaidModeScaling < 55)
+		{
+			RaidModeScaling *= 0.19; //abit low, inreacing
+		}
+		else
+		{
+			RaidModeScaling *= 0.38;
+		}
+		
+		float amount_of_people = float(CountPlayersOnRed());
+		if(amount_of_people > 12.0)
+		{
+			amount_of_people = 12.0;
+		}
+		amount_of_people *= 0.12;
+		
+		if(amount_of_people < 1.0)
+			amount_of_people = 1.0;
+
+		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+		
+		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+		{
+			RaidModeScaling *= 0.85;
+		}
+		else if(ZR_GetWaveCount()+1 > 55)
+		{
+			RaidModeScaling *= 0.7;
+		}
+
+		RaidModeScaling *= 1.85;
+
+		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = true;
+		Citizen_MiniBossSpawn();
+
 		func_NPCDeath[npc.index] = Whiteflower_Boss_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Whiteflower_Boss_OnTakeDamage;
 		func_NPCThink[npc.index] = Whiteflower_Boss_ClotThink;
 		func_NPCDeathForward[npc.index] = Whiteflower_Boss_NPCDeathAlly;
 		fl_TotalArmor[npc.index] = 0.35;
+		b_thisNpcIsARaid[npc.index] = true;
+		b_thisNpcIsABoss[npc.index] = true;
 		npc.m_flJumpCooldown = GetGameTime() + 10.0;
 		npc.m_flThrowSupportGrenadeHappeningCD = GetGameTime() + 15.0;
 		
@@ -318,8 +399,12 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "p_jumpuploop", 0.0, gameTime, _ , true);
 
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -339,7 +424,8 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 1550000.0;
+					float damage = 40.0;
+					damage *= RaidModeScaling;
 					
 					if(target > 0) 
 					{
@@ -378,7 +464,8 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 1650000.0;
+					float damage = 40.0;
+					damage *= RaidModeScaling;
 					
 					if(target > 0) 
 					{
@@ -497,11 +584,11 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 			//we melee them!
 			npc.m_iState = 3; //enemy is abit further away.
 		}
-		else if(b_thisNpcIsABoss[npc.index] && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0) && npc.m_flThrowSupportGrenadeHappeningCD < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0) && npc.m_flThrowSupportGrenadeHappeningCD < gameTime)
 		{
 			npc.m_iState = 2;
 		}
-		else if(b_thisNpcIsABoss[npc.index] && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.65) && npc.m_flKickUpCD < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.65) && npc.m_flKickUpCD < gameTime)
 		{
 			npc.m_iState = 4; //Engage in Close Range Destruction.
 		}
@@ -531,7 +618,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 380.0;
+					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
@@ -546,7 +633,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 380.0;
+					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
 				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -576,7 +663,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 380.0;
+					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
 				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -666,7 +753,8 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 							vecSelf2[2] += 50.0;
 							vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
 							vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
-							float RocketDamage = 2000000.0;
+							float RocketDamage = 150.0;
+							RocketDamage *= RaidModeScaling;
 							int RocketGet = npc.FireRocket(vecSelf2, RocketDamage, 200.0);
 							DataPack pack;
 							CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -703,6 +791,11 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 			}
 		}
 	}
+	else
+	{
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+	}
 	npc.PlayIdleSound();
 }
 
@@ -732,26 +825,11 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	if(b_thisNpcIsABoss[npc.index])
-	{
-		float AllyPos[3];
-		float SelfPos[3];
-		float flDistanceToTarget;
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", SelfPos);
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(IsValidClient(client) && Dungeon_IsDungeon(client))
-			{
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
-				flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
-				{
-					CPrintToChat(client, "{crimson}Whiteflower{default}: I'll be back... even if i have to it... alone...");	
-					CPrintToChat(client, "Whiteflower Escapes.");	
-				}
-			}
-		}
-	}
+	float AllyPos[3];
+	float SelfPos[3];
+	float flDistanceToTarget;
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", SelfPos);
+	CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell bob.\nWhiteflower Perishes.");	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -785,9 +863,11 @@ void WF_ThrowGrenadeHappening(Whiteflower_Boss npc)
 			}
 			//damage doesnt matter.
 			int Grenade = npc.FireGrenade(vecTarget);
-			float GrenadeRangeSupport = 600.0;
-			float GrenadeRangeDamage = 0.0;
-			float HealDo = 2500000.0;
+			float GrenadeRangeSupport = 300.0;
+			float GrenadeRangeDamage = 150.0;
+			GrenadeRangeDamage *= RaidModeScaling;
+			float HealDo = 10000.0;
+			HealDo *= RaidModeScaling;
 			WF_GrenadeSupportDo(npc.index, Grenade, GrenadeRangeDamage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
 			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
@@ -904,7 +984,7 @@ public Action Timer_WF_SupportGrenade(Handle timer, DataPack pack)
 	if(HealDo >= 1.0)
 	{
 		ExpidonsaGroupHeal(Projectile, RangeSupport, 99, HealDo, 1.0, false);
-		RPGDoHealEffect(Projectile, RangeSupport);
+		DesertYadeamDoHealEffect(Projectile, RangeSupport);
 	}
 	return Plugin_Continue;
 
@@ -925,97 +1005,38 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 		return;
 	}
 	*/
-	float AllyPos[3];
-	GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", AllyPos);
-	float SelfPos[3];
-	GetEntPropVector(self, Prop_Data, "m_vecAbsOrigin", SelfPos);
-	float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-	//This means its WELL out of their range.
-	
-	if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
-		return;
-	
-	if(!b_NpcIsInADungeon[ally])
-	{
-		//This enemy only appears in a dungeon anyways.
-		return;
-	}
+
 	int speech = GetRandomInt(1,4);
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
-	if(npc.m_iOverlordComboAttack == 1)
-	{
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(IsValidClient(client) && Dungeon_IsDungeon(client))
-			{
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
-				flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
-				{
-					switch(speech)
-					{
-						case 1:
-						{
-							CPrintToChat(client,"{crimson}Whiteflower{default}: I dont care, i will avange them.");	
-						}
-						case 2:
-						{
-							CPrintToChat(client,"{crimson}Whiteflower{default}: You will follow them.");	
-						}
-						case 3:
-						{
-							CPrintToChat(client,"{crimson}Whiteflower{default}: Whatever did they do huh.");	
-						}
-						case 4:
-						{
-							CPrintToChat(client,"{crimson}Whiteflower{default}: Im the bad guy? you are.");	
-						}
-					}
-				}
-			}
-		}
-		return;
-	}
-	fl_TotalArmor[self] = fl_TotalArmor[self] * 1.1;
+	float ReduceEnemyCountLogic = 1.0 / MultiGlobalEnemy;
+	fl_TotalArmor[self] *= (1.0 - (0.025 * ReduceEnemyCountLogic));
 	if(fl_TotalArmor[self] >= 1.0)
 	{
 		fl_TotalArmor[self] = 1.0;
 	}
-	fl_Extra_Damage[self] = fl_Extra_Damage[self] * 0.99;
-	if(fl_Extra_Damage[self] <= 0.9)
+	RaidModeScaling *= (1.0 - (0.005 * ReduceEnemyCountLogic));
+	if(npc.m_flCooldownSay > GetGameTime())
 	{
-		fl_Extra_Damage[self] = 0.9;
+		return;
 	}
-
-	for(int client = 1; client <= MaxClients; client++)
+	npc.m_flCooldownSay = GetGameTime() + 20.0;
+	switch(speech)
 	{
-		if(IsValidClient(client) && Dungeon_IsDungeon(client))
+		case 1:
 		{
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
-			flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
-			{
-				
-				switch(speech)
-				{
-					case 1:
-					{
-						CPrintToChat(client,"{crimson}Whiteflower{default}: How dare you kill my army... \n*He weakens.*");	
-					}
-					case 2:
-					{
-						CPrintToChat(client,"{crimson}Whiteflower{default}: You are NOTHING!\n*He weakens.*");	
-					}
-					case 3:
-					{
-						CPrintToChat(client,"{crimson}Whiteflower{default}: You and bob and all are in my way!\n*He weakens.*");	
-					}
-					case 4:
-					{
-						CPrintToChat(client,"{crimson}Whiteflower{default}: Im going to kill you.\n*He weakens.*");	
-					}
-				}
-			}
+			CPrintToChatAll("{crimson}Whiteflower{default}: How dare you kill my army... \n*He weakens.*");	
+		}
+		case 2:
+		{
+			CPrintToChatAll("{crimson}Whiteflower{default}: You are NOTHING!\n*He weakens.*");	
+		}
+		case 3:
+		{
+			CPrintToChatAll("{crimson}Whiteflower{default}: You and bob and all are in my way!\n*He weakens.*");	
+		}
+		case 4:
+		{
+			CPrintToChatAll("{crimson}Whiteflower{default}: Im going to kill you.\n*He weakens.*");	
 		}
 	}
 }
@@ -1034,7 +1055,9 @@ static void Whiteflower_KickTouched(int entity, int enemy)
 	
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);
-	SDKHooks_TakeDamage(enemy, entity, entity, 2500000.0, DMG_CLUB, -1, NULL_VECTOR, targPos);
+	float DamageDeal = 150.0;
+	DamageDeal *= RaidModeScaling;
+	SDKHooks_TakeDamage(enemy, entity, entity, DamageDeal, DMG_CLUB, -1, NULL_VECTOR, targPos);
 	ParticleEffectAt(targPos, "skull_island_embers", 2.0);
 	npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 	EmitSoundToAll("plats/tram_hit4.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);
@@ -1112,4 +1135,91 @@ void WhiteflowerKickLogic(int iNPC)
 		Whiteflower_KickTouched(iNPC,ConvertTouchedResolve(entity_traced));
 	}
 	ResetTouchedentityResolve();
+}
+
+
+
+public Action WhiteflowerTank_Rocket_Stand(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int RocketEnt = EntRefToEntIndex(pack.ReadCell());
+	int EnemyEnt = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(RocketEnt))
+		return Plugin_Stop;
+		
+	if(!IsValidEntity(EnemyEnt))
+	{
+		RemoveEntity(RocketEnt);
+		return Plugin_Stop;
+	}
+	EmitSoundToAll("weapons/sentry_spot_client.wav", RocketEnt, SNDCHAN_AUTO, 80, _, 0.7,_);	
+
+	float vecSelf[3];
+	WorldSpaceCenter(RocketEnt, vecSelf);
+	float vecEnemy[3];
+	WorldSpaceCenter(EnemyEnt, vecEnemy);
+	
+	TE_SetupBeamPoints(vecSelf, vecEnemy, Shared_BEAM_Laser, 0, 0, 0, 0.11, 3.0, 3.0, 0, 0.0, {0,0,255,255}, 3);
+	TE_SendToAll(0.0);
+	float vecAngles[3];
+	MakeVectorFromPoints(vecSelf, vecEnemy, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+	TeleportEntity(RocketEnt, NULL_VECTOR, vecAngles, {0.0,0.0,0.0});
+	//look at target constantly.
+	DataPack pack2;
+	CreateDataTimer(0.1, WhiteflowerTank_Rocket_Stand_Fire, pack2, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	pack2.WriteCell(EntIndexToEntRef(RocketEnt));
+	pack2.WriteCell(EntIndexToEntRef(EnemyEnt));
+	pack2.WriteFloat(GetGameTime() + 1.0); //time till rocketing to enemy
+	return Plugin_Stop;
+}
+
+
+public Action WhiteflowerTank_Rocket_Stand_Fire(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int RocketEnt = EntRefToEntIndex(pack.ReadCell());
+	int EnemyEnt = EntRefToEntIndex(pack.ReadCell());
+	float TimeTillRocketing = pack.ReadFloat();
+	if(!IsValidEntity(RocketEnt))
+		return Plugin_Stop;
+		
+	if(!IsValidEntity(EnemyEnt))
+	{
+		RemoveEntity(RocketEnt);
+		return Plugin_Stop;
+	}
+
+	//keep looking at them
+	float vecSelf[3];
+	WorldSpaceCenter(RocketEnt, vecSelf);
+	float vecEnemy[3];
+	WorldSpaceCenter(EnemyEnt, vecEnemy);
+	
+	float VecSpeedToDo[3];
+	float vecAngles[3];
+	MakeVectorFromPoints(vecSelf, vecEnemy, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+	if(TimeTillRocketing < GetGameTime())
+	{
+		float SpeedApply = 1000.0;
+		VecSpeedToDo[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*SpeedApply;
+		VecSpeedToDo[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*SpeedApply;
+		VecSpeedToDo[2] = Sine(DegToRad(vecAngles[0]))*-SpeedApply;
+		TE_SetupBeamPoints(vecSelf, vecEnemy, Shared_BEAM_Laser, 0, 0, 0, 0.11, 3.0, 3.0, 0, 0.0, {255,0,0,255}, 3);
+		TE_SendToAll(0.0);
+		EmitSoundToAll("weapons/sentry_rocket.wav", RocketEnt, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5,_);	
+	}
+	else
+	{
+		
+		TE_SetupBeamPoints(vecSelf, vecEnemy, Shared_BEAM_Laser, 0, 0, 0, 0.11, 3.0, 3.0, 0, 0.0, {0,0,255,255}, 3);
+		TE_SendToAll(0.0);
+	}
+	TeleportEntity(RocketEnt, NULL_VECTOR, vecAngles, VecSpeedToDo);
+	if(TimeTillRocketing < GetGameTime())
+	{
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
 }

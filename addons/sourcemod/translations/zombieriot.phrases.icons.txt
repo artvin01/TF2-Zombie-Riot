@@ -72,6 +72,10 @@
 		"fr" 		"Kahmlstein, le leader rebèle chaotique, va vous détruire."
 		"chi"		"混沌之首，卡姆斯坦因前来歼灭你。"
 	}
+	"Whiteflower The leader"
+	{
+		"en" 		"Whiteflower the traitor and betrayer arrived."
+	}
 	"The Purge Arrived"
 	{
 		"en" 		"The Purge has accumulated chaos."

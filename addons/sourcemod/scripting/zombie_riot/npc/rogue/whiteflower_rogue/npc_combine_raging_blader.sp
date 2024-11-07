@@ -57,6 +57,10 @@ public void Whiteflower_RagingBlader_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Raging Blader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_raging_blader");
+	strcopy(data.Icon, sizeof(data.Icon), "swordsman");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_WhiteflowerSpecial;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -105,25 +109,6 @@ methodmap Whiteflower_RagingBlader < CClotBody
 		
 		if(Health <= 0)
 		{
-			if(target <= MaxClients)
-			{
-				static Race race;
-				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Iberian"))
-				{
-					switch(GetRandomInt(0,2))
-					{
-						case 0:
-							NpcSpeechBubble(this.index, "Iberians are like ants.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
-						case 1:
-							NpcSpeechBubble(this.index, "Like sand in the desert, iberians in the water.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-						case 2:
-							NpcSpeechBubble(this.index, "Annoying birds.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-					}
-					return;
-				}
-			}
-
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
@@ -215,7 +200,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 	
 	npc.Update();	
 
-	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime) //Dont play dodge anim if we are in an animation.
+	if(npc.m_blPlayHurtAnimation) //Dont play dodge anim if we are in an animation.
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
 		npc.PlayHurtSound();
@@ -231,7 +216,13 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 
 	npc.PlayKilledEnemySound(npc.m_iTarget);
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(iNPC, 400.0, "ACT_RUN", "ACT_IDLE", 0.0, gameTime);
+
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+	
 	if(!b_NpcUnableToDie[npc.index])
 	{
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
@@ -262,7 +253,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 750000.0;
+					float damage = 300.0;
 
 					
 					if(target > 0) 
@@ -332,7 +323,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 360.0;
+					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
 				}
 			}
@@ -369,6 +360,11 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 			}
 		}
 	}
+	else
+	{
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+	}
 	npc.PlayIdleSound();
 }
 
@@ -397,7 +393,7 @@ public Action Whiteflower_RagingBlader_OnTakeDamage(int victim, int &attacker, i
 			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 			flMaxhealth *= 0.45;
 			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);
-			RPGDoHealEffect(npc.index, 250.0);
+			DesertYadeamDoHealEffect(npc.index, 250.0);
 			IgniteTargetEffect(npc.index);
 		}
 	}
