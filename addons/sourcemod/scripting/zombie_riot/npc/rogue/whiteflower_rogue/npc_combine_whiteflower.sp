@@ -1006,7 +1006,7 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	}
 	*/
 
-	int speech = GetRandomInt(1,4);
+	int speech = GetRandomInt(1,10);
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
 	float ReduceEnemyCountLogic = 1.0 / MultiGlobalEnemy;
 	fl_TotalArmor[self] *= (1.0 - (0.025 * ReduceEnemyCountLogic));
@@ -1024,21 +1024,46 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: How dare you kill my army... \n*He weakens.*");	
+			CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");	
 		}
 		case 2:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: You are NOTHING!\n*He weakens.*");	
+			CPrintToChatAll("{crimson}Whiteflower{default}: Why are you running?");	
 		}
 		case 3:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: You and bob and all are in my way!\n*He weakens.*");	
+			CPrintToChatAll("{crimson}Whiteflower{default}: First my arm so im alone? Pah!");	
 		}
 		case 4:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: Im going to kill you.\n*He weakens.*");	
+			CPrintToChatAll("{crimson}Whiteflower{default}: You are dirty.");	
+		}
+		case 5:
+		{
+			CPrintToChatAll("{crimson}Whiteflower{default}: From one maniac to another huh?");	
+		}
+		case 6:
+		{
+			CPrintToChatAll("{crimson}Whiteflower{default}: You are just like them, weak.");	
+		}
+		case 7:
+		{
+			CPrintToChatAll("{crimson}Whiteflower{default}: You are a fool.");	
+		}
+		case 8:
+		{
+			CPrintToChatAll("{crimson}Whiteflower{default}: Such ignorance.");	
+		}
+		case 9:
+		{
+			CPrintToChatAll("{crimson}Whiteflower{default}: They atleast believe in their leader, do you?");	
+		}
+		case 10:
+		{
+			CPrintToChatAll("{crimson}Whiteflower{default}: I actually care for them, do you care for your own army?");	
 		}
 	}
+	CPrintToChatAll("He weakens as you defeat his army.");	
 }
 
 

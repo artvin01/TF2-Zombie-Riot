@@ -228,7 +228,16 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 			npc.m_flCloneSuicide = GetGameTime() + 1.0;
 			npc.m_flDoAnimClone = GetGameTime() + 0.1;
 		}
-		
+		bool raidbattle = StrContains(data, "raidbattle") != -1;
+		if(raidbattle)
+		{
+			RaidModeScaling = 1.5;
+
+			RaidBossActive = EntIndexToEntRef(npc.index);
+
+			RaidAllowsBuildings = true;
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		return npc;
 	}
 	
@@ -593,6 +602,11 @@ public void Whiteflower_FloweringDarkness_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+
+	if(i_RaidGrantExtra[npc.index])
+	{
+		CPrintToChatAll("{crimson}Flowering Darkness escapes to his leader.\nFollow him.");	
+	}
 }
 
 
