@@ -1675,8 +1675,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	//this is only for zr! RPG handles it som
 	if(attacker > 0 && attacker <= MAXENTITIES)
 		damage *= fl_Extra_Damage[attacker];
-#endif
-#if defined RPG
+		
 	if(attacker <= MaxClients)
 	{
 		//in pvp, we half the damage. this is also BEFORE flat resistance.

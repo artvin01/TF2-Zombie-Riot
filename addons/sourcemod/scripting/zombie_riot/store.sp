@@ -3137,7 +3137,7 @@ static void MenuPage(int client, int section)
 		}
 		else if(item.NPCSeller || item.NPCSeller_WaveStart != 0)
 		{
-			continue;
+			//empty
 		}
 		else if(item.Hidden)
 		{
