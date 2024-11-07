@@ -110,7 +110,7 @@ public float Rogue_Encounter_Stultifera()
 
 public float Rogue_Encounter_MedivealAlly()
 {
-	Rogue_SetBattleIngots(3);
+	Rogue_SetBattleIngots(15);
 
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Mediveal Ally Title");
 	Vote vote;
