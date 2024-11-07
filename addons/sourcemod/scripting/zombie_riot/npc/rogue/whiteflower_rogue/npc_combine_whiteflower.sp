@@ -1029,22 +1029,16 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	{
 		return;
 	}
-	/*
-	if(i_NpcInternalId[ally] == NPCId)
-	{
-		return;
-	}
-	*/
 
 	int speech = GetRandomInt(1,10);
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
 	float ReduceEnemyCountLogic = 1.0 / MultiGlobalEnemy;
-	fl_TotalArmor[self] *= (1.0 + (0.025 * ReduceEnemyCountLogic));
+	fl_TotalArmor[self] *= (1.0 + (0.005 * ReduceEnemyCountLogic));
 	if(fl_TotalArmor[self] >= 1.0)
 	{
 		fl_TotalArmor[self] = 1.0;
 	}
-	RaidModeScaling *= (1.0- (0.0025 * ReduceEnemyCountLogic));
+	RaidModeScaling *= (1.0- (0.0015 * ReduceEnemyCountLogic));
 	if(npc.m_flCooldownSay > GetGameTime())
 	{
 		return;
