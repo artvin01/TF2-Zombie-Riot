@@ -340,6 +340,7 @@ methodmap Whiteflower_Boss < CClotBody
 		b_thisNpcIsABoss[npc.index] = true;
 		npc.m_flJumpCooldown = GetGameTime() + 10.0;
 		npc.m_flThrowSupportGrenadeHappeningCD = GetGameTime() + 15.0;
+		func_NPCFuncWin[npc.index] = view_as<Function>(VoidVhxisWin);
 		
 	
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -364,6 +365,18 @@ methodmap Whiteflower_Boss < CClotBody
 		return npc;
 	}
 	
+}
+
+public void VoidVhxisWin(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	func_NPCThink[entity] = INVALID_FUNCTION;
+	if(AlreadySaidWin)
+		return;
+
+	AlreadySaidWin = true;
+	//b_NpcHasDied[client]
+	CPrintToChatAll("{crimson}Whiteflower{default}: Now all thats left.\nIs bob.");	
 }
 //TODO 
 //Rewrite
@@ -401,6 +414,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 		NPC_StopPathing(npc.index);
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		i_RaidGrantExtra[npc.index] = 0;
+		CPrintToChatAll("{crimson}Whiteflower{default}: Out of time, youre entirely surrounded.\nYou now belong to me.\nSubmit.\nHelp me kill Bob, and we will rule it all.");	
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -836,7 +850,7 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	if(i_RaidGrantExtra[npc.index])
+	if(i_RaidGrantExtra[npc.index] == 1)
 		CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.\nHis army scatteres.");	
 		
 	if(IsValidEntity(npc.m_iWearable1))
