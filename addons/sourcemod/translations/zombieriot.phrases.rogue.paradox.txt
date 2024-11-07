@@ -410,7 +410,7 @@
 	}
 	"Frozen Whetstone Desc"
 	{
-		"en"	"The stone's surface is smooth as ice.\n{green}One player at a time will receive +100%% max health and +100%% damage bonus"
+		"en"	"The stone's surface is smooth as ice.\n{green}One player at a time will receive +200%% max health and +200%% damage bonus"
 	}
 	"Clairvoyant's Reveal"
 	{
@@ -418,7 +418,7 @@
 	}
 	"Clairvoyant's Reveal Desc"
 	{
-		"en"	"There is no direction you can head to avoid misfortune.\n{yellow}Ally max health is randomly changed"
+		"en"	"There is no direction you can head to avoid misfortune.\n{green}Allies gain +25% max health {yellow}but max health is randomly swapped"
 	}
 	"Finshell Shield"
 	{

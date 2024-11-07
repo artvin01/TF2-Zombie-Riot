@@ -44,7 +44,7 @@ public float Rogue_Encounter_BossBattle()
 
 public float Rogue_Encounter_CrimsonTroupe()
 {
-	Rogue_SetBattleIngots(5 + (Rogue_GetRound() / 2));
+	Rogue_SetBattleIngots(15);
 
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Crimson Troupe Title");
 	Vote vote;
@@ -66,7 +66,7 @@ public float Rogue_Encounter_CrimsonTroupe()
 
 public float Rogue_Encounter_XenoShaft()
 {
-	Rogue_SetBattleIngots(5);
+	Rogue_SetBattleIngots(15);
 
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Xeno Shaft Title");
 	Vote vote;
@@ -88,7 +88,7 @@ public float Rogue_Encounter_XenoShaft()
 
 public float Rogue_Encounter_Stultifera()
 {
-	Rogue_SetBattleIngots(7);
+	Rogue_SetBattleIngots(15);
 
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Stultifera Title");
 	Vote vote;
