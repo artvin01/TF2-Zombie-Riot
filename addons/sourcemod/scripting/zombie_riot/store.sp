@@ -1011,7 +1011,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		{
 			int filters = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 			
-			if(whitecount)
+			if(whitecount && (item.Hidden || zr_tagwhitehard.BoolValue))
 			{
 				item.Hidden = true;
 				
