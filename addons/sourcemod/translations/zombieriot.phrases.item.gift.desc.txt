@@ -91,6 +91,10 @@
 		"en" 		"Iberia Expidonsa Alliance"
 		"ru"		"Альянс Иберии и Экспидонсы"
 	}
+	"Whiteflower Specials"
+	{
+		"en" 		"Whiteflower Specials"
+	}
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"

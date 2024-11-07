@@ -32,7 +32,8 @@ static const char Categories[][] =
 	"Chaos Allience",
 	"Voided Subjects",
 	"Ruina",
-	"Iberia Expidonsa Alliance"
+	"Iberia Expidonsa Alliance",
+	"Whiteflower Specials"
 };
 
 enum struct GiftItem
