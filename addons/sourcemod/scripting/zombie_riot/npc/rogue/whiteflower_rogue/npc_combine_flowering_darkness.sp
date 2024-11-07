@@ -373,7 +373,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 				float ProjectileDamage = 400.0;
 				int Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_red");
 
-				ProjectileDamage *= 0.8;
+				ProjectileDamage *= 0.35;
 				SpeedProjectile *= 0.65;
 				float vecForward[3];
 
