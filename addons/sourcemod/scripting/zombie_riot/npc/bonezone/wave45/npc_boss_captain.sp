@@ -27,20 +27,20 @@ static int Anchor_MaxTargets = 4;				//Maximum targets hit at once by Anchor Bre
 
 //KEELHAUL: Faux-Beard throws his anchor forwards, dealing splash damage and knockback at the point of impact. The anchor will bounce several times, dealing splash damage with
 //every bounce.
-static float Keelhaul_DMG_Out = 200.0;			//Damage dealt if the anchor hits someone while it is not being pulled back.
-static float Keelhaul_DMG_In = 20.0;			//Damage dealt if the anchor hits someone while being pulled back.
-static float Keelhaul_KB_Out = 600.0;			//Knockback inflicted to enemies who are hit by the anchor when it is thrown out.
-static float Keelhaul_KB_In = 900.0;			//Strength with which enemies are pulled towards Faux-Beard when they are hit by the anchor while it is being reeled in.
-static float Keelhaul_PullIn_TickRate = 0.33;	//Interval in which the anchor hits enemies and drags them with it while it is being pulled in.
-static float Keelhaul_Velocity_Out = 2400.0;	//Velocity with which the anchor is thrown out.
-static float Keelhaul_Velocity_In = 900.0;		//Velocity with which the anchor is pulled in.
+static float Keelhaul_DMG = 250.0;				//Base damage.
+static float Keelhaul_KB = 600.0;				//Vertical knockback inflicted to enemies who are hit by the anchor.
+static float Keelhaul_Velocity = 2400.0;		//Velocity with which the anchor is thrown out.
 static float Keelhaul_Gravity = 3.5;			//Anchor gravity.
-static float Keelhaul_Pull_Delay = 1.0;			//Delay after the anchor hits the floor before Faux-Beard will pull it back in.
-static float Keelhaul_Cooldown = 5.0;			//Ability cooldown.
+static float Keelhaul_Cooldown = 16.0;			//Ability cooldown.
 static float Keelhaul_StartingCooldown = 2.0;	//Starting cooldown.
 static float Keelhaul_Range = 1200.0;			//Maximum range in which this ability can be used.
 static float Keelhaul_ThrowRange = 2400.0;		//Attempted throw distance (gravity will reduce this in-game).
-static float Keelhaul_ReturnTime = 1.0;			//Time it should take for the anchor to return when pulled back.
+static int Keelhaul_Bounces = 5;				//Number of times the anchor will bounce.
+static float Keelhaul_Radius = 120.0;			//Damage radius.
+static float Keelhaul_Falloff_MultiHit = 0.66;	//Amount to multiply damage per target hit.
+static float Keelhaul_Falloff_Radius = 0.5;		//Max falloff.
+static float Keelhaul_EntityMult = 6.0;			//Entity multiplier.
+static int Keelhaul_KBMode = 0;					//If set to 1: Knockback velocity completely overrides the victim's existing velocity. Otherwise, it is added onto their current velocity.
 
 //MORALE BOOST: Faux-Beard rallies his allies with a battle cry, permanently buffing all allies within a large radius and healing them for a percentage of their max HP.
 static float Morale_Radius = 600.0;				//Ability radius.
@@ -124,6 +124,7 @@ static char g_MoraleBoostDialogue[][] = {
 #define SOUND_ANCHOR_BREAKER_IMPACT_1	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 #define SOUND_ANCHOR_BREAKER_IMPACT_2	")weapons/demo_charge_hit_world3.wav"
 #define SOUND_CAPTAIN_RUSTLE			")player/cyoa_pda_draw.wav"
+#define SOUND_ANCHOR_BOUNCE				")weapons/bumper_car_hit_ball.wav"
 
 #define PARTICLE_MORALE_BOOST_RED		"spell_cast_wheel_red"
 #define PARTICLE_MORALE_BOOST_BLUE		"spell_cast_wheel_blue"
@@ -143,7 +144,6 @@ static float f_NextMorale[MAXENTITIES] = { 0.0, ... };
 static float f_NextPearls[MAXENTITIES] = { 0.0, ... };
 static float f_NextKeelhaul[MAXENTITIES] = { 0.0, ... };
 static float Captain_PearlsEndTime[MAXENTITIES] = { 0.0, ... };
-static float f_YankAt[MAXENTITIES] = { 0.0, ... };
 
 static bool Captain_Attacking[MAXENTITIES] = { false, ... };
 static bool Captain_RevertSequence[MAXENTITIES] = { false, ... };
@@ -156,14 +156,7 @@ static char s_CaptainSequence[MAXENTITIES][255];
 static bool b_CaptainForceSequence[MAXENTITIES] = { false, ... };
 
 static int Anchor_Prop[MAXENTITIES] = { -1, ... };
-static int Captain_Chain_Start[MAXENTITIES] = { -1, ... };
-static int Captain_Chain_End[MAXENTITIES] = { -1, ... };
-static int Captain_Anchor[MAXENTITIES] = { -1, ... };
-static float Keelhaul_EndTime[MAXENTITIES] = { 0.0, ... };
-
-int laserModel;
-int lightningModel;
-int glowModel;
+static int Anchor_Bounces[MAXENTITIES] = { -1, ... };
 
 public void Captain_OnMapStart_NPC()
 {
@@ -183,6 +176,7 @@ public void Captain_OnMapStart_NPC()
 	PrecacheSound(SOUND_ANCHOR_BREAKER_IMPACT_1);
 	PrecacheSound(SOUND_ANCHOR_BREAKER_IMPACT_2);
 	PrecacheSound(SOUND_CAPTAIN_RUSTLE);
+	PrecacheSound(SOUND_ANCHOR_BOUNCE);
 
 	PrecacheModel(MODEL_PEARLS);
 
@@ -195,10 +189,6 @@ public void Captain_OnMapStart_NPC()
 	data.Category = Type_Necropolain;
 	data.Func = Summon_Captain;
 	NPC_Add(data);
-
-	laserModel = PrecacheModel("materials/sprites/laserbeam.vmt");
-	lightningModel = PrecacheModel("materials/sprites/lgtning.vmt");
-	glowModel = PrecacheModel("materials/sprites/lgtning.vmt");
 }
 
 static any Summon_Captain(int client, float vecPos[3], float vecAng[3], int ally)
@@ -782,7 +772,7 @@ public void Captain_AnimEvent(int entity, int event)
 			npc.GetAttachment("handR", pos, ang);
 			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-			int anchor = npc.FireRocket(targPos, 0.0, Keelhaul_Velocity_Out, "models/weapons/w_models/w_drg_ball.mdl");
+			int anchor = npc.FireRocket(targPos, 0.0, Keelhaul_Velocity, "models/weapons/w_models/w_drg_ball.mdl");
 			DispatchKeyValueFloat(anchor, "modelscale", 0.01);
 			if (IsValidEntity(anchor))
 			{
@@ -812,6 +802,9 @@ public void Captain_AnimEvent(int entity, int event)
 				}
 
 				g_DHookRocketExplode.HookEntity(Hook_Pre, anchor, Captain_AnchorCollide);
+				RequestFrame(Captain_ScanForAnchorCollision, EntIndexToEntRef(anchor));
+				Anchor_Bounces[anchor] = Keelhaul_Bounces;
+				//Trail_Attach
 			}
 		}
 		case 1011:	//Anchor toss animation is finished, switch to waiting phase.
@@ -834,34 +827,170 @@ public Action Captain_UnhideAnchor(Handle timer, int ref)
 	return Plugin_Continue;
 }
 
-public MRESReturn Captain_AnchorCollide(int entity)
-{
-	float position[3];
-	
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-	int particle = ParticleEffectAt(position, PARTICLE_ANCHOR_BREAKER_IMPACT);
-	if (IsValidEntity(particle))
+int Anchor_FilterUser = -1;
+
+public void Anchor_PredictEndPoint(float pos[3], float ang[3], float DistanceTraveled, float EndPoint[3])
+{		
+	for (int vec = 0; vec < 3; vec++)
 	{
-		EmitSoundToAll(SOUND_ANCHOR_BREAKER_IMPACT_1, particle, _, 120);
-		EmitSoundToAll(SOUND_ANCHOR_BREAKER_IMPACT_2, particle, _, 120);
+		EndPoint[vec] = pos[vec] + (ang[vec] * DistanceTraveled);
+	}
+}
+
+public bool Anchor_Filter(any entity, any contentsMask)
+{
+	//int owner = GetEntPropEnt(Anchor_FilterUser, Prop_Send, "m_hOwnerEntity");
+
+	if (entity == Anchor_FilterUser)
+		return false;
+
+	if (IsValidAlly(Anchor_FilterUser, entity) || IsValidAllyPlayer(Anchor_FilterUser, entity))
+		return false;
+	
+	return true;
+}
+
+public void Captain_ScanForAnchorCollision(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (!IsValidEntity(entity))
+		return;
+
+	float pos[3], vel[3], RealVel[3], EndPoint[3], HitPoint[3], angles[3], DistanceTraveled;
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+	GetEntPropVector(entity, Prop_Data, "m_vecVelocity", RealVel);
+	GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+	for (int j = 0; j < 3; j++)
+	{
+		vel[j] = RealVel[j] / 63.0;
+	}			
+			
+	DistanceTraveled = GetVectorLength(vel); //The distance the anchor will travel this frame.
+
+	Anchor_PredictEndPoint(pos, vel, DistanceTraveled, EndPoint);
+
+	Anchor_FilterUser = entity;
+	Handle trace = TR_TraceRayFilterEx(pos, EndPoint, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Anchor_Filter);
+
+	if (TR_DidHit(trace))
+	{
+		int target = TR_GetEntityIndex(trace);
+		TR_GetEndPosition(HitPoint, trace);
+
+		if (GetVectorDistance(pos, HitPoint) <= DistanceTraveled)
+		{
+			bool HitPlayer = IsValidClient(target);
+
+			int particle = ParticleEffectAt(pos, PARTICLE_ANCHOR_BREAKER_IMPACT);
+			if (IsValidEntity(particle))
+			{
+				EmitSoundToAll(SOUND_ANCHOR_BREAKER_IMPACT_1, particle, _, 120);
+				EmitSoundToAll(SOUND_ANCHOR_BREAKER_IMPACT_2, particle, _, 120);
+				EmitSoundToAll(SOUND_ANCHOR_BOUNCE, particle, _, 120, _, _, GetRandomInt(80, 110));
+			}
+
+			int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+			bool isBlue = (IsValidEntity(owner) ? GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue) : true);
+
+			Explode_Logic_Custom(Keelhaul_DMG, IsValidEntity(owner) ? owner : entity, entity, entity, pos, Keelhaul_Radius, Keelhaul_Falloff_MultiHit, Keelhaul_Falloff_Radius, isBlue, _, _, Keelhaul_EntityMult, view_as<Function>(Keelhaul_OnHit_KB));
+		
+			if (Anchor_Bounces[entity] < 0)
+			{
+				RemoveEntity(entity);
+			}
+			else
+			{
+				Anchor_Bounces[entity]--;
+				
+				GetAngleToPoint(entity, HitPoint, angles, angles);
+				for (int i = 0; i < 3; i++)
+					angles[i] *= -1.0;
+
+				for (int check = 0; check < 3; check++)
+				{
+					if (HitPlayer) //Always bounce if it hits a player, don't even try to commence proper bounce logic because for some reason it doesn't work half the time if it bounces off players
+					{
+						RealVel[check] *= -1.0;
+					}
+					else
+					{
+						float tempVel[3];
+						tempVel[0] = 0.0;
+						tempVel[1] = 0.0;
+						tempVel[2] = 0.0;
+						tempVel[check] = vel[check];
+						//DistanceTraveled = GetVectorLength(tempVel);
+								
+						Anchor_PredictEndPoint(pos, tempVel, DistanceTraveled, EndPoint);
+								
+						trace = TR_TraceRayFilterEx(pos, EndPoint, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Anchor_Filter);
+
+						if (TR_DidHit(trace))
+						{
+							TR_GetEndPosition(HitPoint, trace);
+									
+							if (GetVectorDistance(pos, HitPoint) <= DistanceTraveled)
+							{
+								RealVel[check] *= -1.0;
+							}
+						}
+					}
+				}
+
+				TeleportEntity(entity, _, angles, RealVel);
+			}		
+		}
 	}
 
-	int prop = EntRefToEntIndex(Anchor_Prop[entity]);
-	/*if (IsValidEntity(prop))
-	{
-		SetVariantString("captain_anchor_in_ground");
-		AcceptEntityInput(prop, "SetAnimation");
-	}*/
+	delete trace;
 
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	bool isBlue = (IsValidEntity(owner) ? GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue) : true);
-	//TODO: Damage
-	//Explode_Logic_Custom(MOLOTOV_DAMAGE, IsValidEntity(owner) ? owner : entity, entity, entity, position, MOLOTOV_RADIUS, MOLOTOV_FALLOFF_MULTIHIT, MOLOTOV_FALLOFF_RADIUS, isBlue, _, true, MOLOTOV_ENTITYMULT);
+	RequestFrame(Captain_ScanForAnchorCollision, ref);
+}
 
-	//TODO: Bounce logic
+public void Keelhaul_OnHit_KB(int attacker, int victim, float damage)
+{
+	if (b_NoKnockbackFromSources[victim] || b_NpcIsInvulnerable[victim] || i_IsABuilding[victim])
+		return;
+
+	float vel[3];
 	
-	RemoveEntity(entity);
+	if (Keelhaul_KBMode == 1)
+	{
+		vel[2] = Keelhaul_KB;
+	}
+	else
+	{
+		GetEntPropVector(victim, Prop_Data, "m_vecVelocity", vel);
+		if (vel[2] < 0.0)
+			vel[2] = Keelhaul_KB;
+		else
+			vel[2] += Keelhaul_KB;
+	}
 
+	if (IsValidClient(victim))
+		TeleportEntity(victim, _, _, vel);
+	else
+		Anchor_NPCKB(victim, vel);
+}
+
+public void Anchor_NPCKB(int target, float targVel[3])
+{
+	//In tower defense, do not allow moving the target.
+	if(VIPBuilding_Active())
+		return;
+		
+	if(f_NoUnstuckVariousReasons[target] > GetGameTime() + 1.0)
+	{
+		//make the target not stuckable.
+		f_NoUnstuckVariousReasons[target] = GetGameTime() + 1.0;
+	}
+	SDKUnhook(target, SDKHook_Think, NpcJumpThink);
+	f3_KnockbackToTake[target] = targVel;
+	SDKHook(target, SDKHook_Think, NpcJumpThink);
+}
+
+public MRESReturn Captain_AnchorCollide(int entity)
+{
 	return MRES_Supercede; //DONT.
 }
 
@@ -893,7 +1022,13 @@ void Captain_ShootProjectile(Captain npc, float vicLoc[3], float startPos[3], fl
 		
 		SetEntityModel(entity, MODEL_PEARLS);
 		
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+		for(int i = 0; i < 3; i++)
+			vecAngles[i] = GetRandomFloat(0.0, 360.0);
+
+		TeleportEntity(entity, NULL_VECTOR, vecAngles, vecForward, true);
+		RequestFrame(SpinEffect, EntIndexToEntRef(entity));
+		SetEntProp(entity, Prop_Send, "m_nSkin",  (GetTeam(entity)-2));
+
 		SetEntityCollisionGroup(entity, 24);
 		Set_Projectile_Collision(entity);
 		See_Projectile_Team_Player(entity);
@@ -906,6 +1041,7 @@ void Captain_ShootProjectile(Captain npc, float vicLoc[3], float startPos[3], fl
 		DispatchKeyValueFloat(entity, "modelscale", 1.25);
 	}
 }
+
 
 public Action Captain_BombHit(int entity, int other)
 {
