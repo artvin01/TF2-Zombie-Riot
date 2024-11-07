@@ -73,6 +73,7 @@ void ConVar_PluginStart()
 	zr_voteconfig = CreateConVar("zr_voteconfig", "raidmode", "Vote config zr/ .cfg already included");
 	zr_tagblacklist = CreateConVar("zr_tagblacklist", "nominigames", "Tags to blacklist from weapons config");
 	zr_tagwhitelist = CreateConVar("zr_tagwhitelist", "", "Tags to whitelist from weapons config");
+	zr_tagwhitehard = CreateConVar("zr_tagwhitehard", "1", "If whitelist requires a tag instead of allowing");
 	zr_minibossconfig = CreateConVar("zr_minibossconfig", "miniboss", "Mini Boss config zr/ .cfg already included");
 	zr_ignoremapconfig = CreateConVar("zr_ignoremapconfig", "0", "If to ignore map-specific configs");
 	zr_smallmapbalancemulti = CreateConVar("zr_smallmapmulti", "1.0", "For small maps, so harder difficulities with alot of aoe can still be played.");
