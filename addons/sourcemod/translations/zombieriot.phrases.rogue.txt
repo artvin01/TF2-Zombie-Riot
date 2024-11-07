@@ -48,6 +48,10 @@
 		"en"	"The Void"
 		"pt"	"O Vazio"
 	}
+	"For the Fallen"
+	{
+		"en"	"For the Fallen"
+	}
 	"Vote for the starting item"
 	{
 		"en"	"Vote for the starting item:"
@@ -1085,6 +1089,14 @@
 	{
 		"en"	"City Hall ⚠"
 	}
+	"Prompting Engineer"
+	{
+		"en"	"Prompting Engineer ⚠"
+	}
+	"At Strength"
+	{
+		"en"	"At Strength ⚠"
+	}
 
 	// Curses
 	"Bewildered"
@@ -1807,5 +1819,85 @@
 	"Rotten Bone Desc"
 	{
 		"en"	"Corroding as we speak.\n{green}Each newly spawned enemy takes increasingly more damage and stacks"
+	}
+	"Eyes of the Sea"
+	{
+		"en"	"Eyes of the Sea"
+	}
+	"Eyes of the Sea Desc"
+	{
+		"en"	"You saw what they saw.\n{green}Enemies are silenced for 30 seconds on spawn"
+	}
+	"Copper Ore"
+	{
+		"en"	"Copper Ore"
+	}
+	"Copper Ore Desc"
+	{
+		"en"	"Copper.\n{green}Weapons fire +35%% bullets per shot {red}but stops working when Iron Ore is collected"
+	}
+	"Iron Ore"
+	{
+		"en"	"Iron Ore"
+	}
+	"Iron Ore Desc"
+	{
+		"en"	"Iron.\n{green}Weapon projectiles gain +35%% projectile speed and range {red}but stops working when Copper Ore is collected"
+	}
+	"Empty Plate"
+	{
+		"en"	"Empty Plate"
+	}
+	"Empty Plate Desc"
+	{
+		"en"	"Waiter! Waiter! More Endspeakers please!\n{green}Steal and consume dropped Remains as new Artifacts, max of 5"
+	}
+	"Founder Fondue"
+	{
+		"en"	"Founder Fondue"
+	}
+	"Founder Fondue Desc"
+	{
+		"en"	"{green}Players take 10 less elemental damage"
+	}
+	"Predator Pancakes"
+	{
+		"en"	"Predator Pancakes"
+	}
+	"Predator Pancakes Desc"
+	{
+		"en"	"{green}Players gain 10%% dodge chance"
+	}
+	"Brandguider Brunch"
+	{
+		"en"	"Brandguider Brunch"
+	}
+	"Brandguider Brunch Desc"
+	{
+		"en"	"{green}Players take 50%% less nethersea brand damage"
+	}
+	"Spewer Spewers"
+	{
+		"en"	"Spewer Spewers"
+	}
+	"Spewer Spewers Desc"
+	{
+		"en"	"{green}Weapon projectiles gain +50%% range"
+	}
+	"Swarmcaller Sandwich"
+	{
+		"en"	"Swarmcaller Sandwich"
+	}
+	"Swarmcaller Sandwich Desc"
+	{
+		"en"	"{green}Players are immune to slow effects"
+	}
+	"Reefbreaker Ravioli"
+	{
+		"en"	"Reefbreaker Ravioli"
+	}
+	"Reefbreaker Ravioli Desc"
+	{
+		"en"	"{green}Players gain +15%% damage"
 	}
 }
