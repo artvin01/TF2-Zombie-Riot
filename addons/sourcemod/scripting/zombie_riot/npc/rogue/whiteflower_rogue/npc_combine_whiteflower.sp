@@ -340,7 +340,7 @@ methodmap Whiteflower_Boss < CClotBody
 		b_thisNpcIsABoss[npc.index] = true;
 		npc.m_flJumpCooldown = GetGameTime() + 10.0;
 		npc.m_flThrowSupportGrenadeHappeningCD = GetGameTime() + 15.0;
-		func_NPCFuncWin[npc.index] = view_as<Function>(VoidVhxisWin);
+		func_NPCFuncWin[npc.index] = view_as<Function>(WhiteflowerWinLine);
 		
 	
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -367,7 +367,7 @@ methodmap Whiteflower_Boss < CClotBody
 	
 }
 
-public void VoidVhxisWin(int entity)
+public void WhiteflowerWinLine(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
@@ -376,7 +376,7 @@ public void VoidVhxisWin(int entity)
 
 	AlreadySaidWin = true;
 	//b_NpcHasDied[client]
-	CPrintToChatAll("{crimson}Whiteflower{default}: Now all thats left.\nIs bob.");	
+	CPrintToChatAll("{crimson}Whiteflower{default}: Now all thats left.\nIs Bob.");	
 }
 //TODO 
 //Rewrite
@@ -1003,6 +1003,13 @@ public Action Timer_WF_SupportGrenade(Handle timer, DataPack pack)
 
 		spawnRing_Vectors(pos, 2.0 /*startin range*/, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.5, 2.0, 2.0, 2, RangeSupport * 2.0);
 		Explode_Logic_Custom(DamageDeal , OwnerNpc , OwnerNpc , -1 , pos , RangeSupport);	//acts like a rocket
+		
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(pos[0]);
+		pack_boom.WriteFloat(pos[1]);
+		pack_boom.WriteFloat(pos[2]);
+		pack_boom.WriteCell(1);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
 	}
 	if(HealDo >= 1.0)
 	{
