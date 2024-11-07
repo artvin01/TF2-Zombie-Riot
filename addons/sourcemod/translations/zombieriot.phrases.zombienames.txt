@@ -3209,4 +3209,36 @@
 	{
 		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
 	}
+	"Death Marker Desc"
+	{
+		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+	}
+	"W.F. Flowering Darkness"
+	{
+		"en"	"W.F. Flowering Darkness"
+	}	
+	"W.F. Acclaimed Swordsman"
+	{
+		"en"	"W.F. Acclaimed Swordsman"
+	}	
+	"W.F. Ekas Piloteer"
+	{
+		"en"	"W.F. Ekas Piloteer"
+	}	
+	"W.F. Extreme Knight Giant"
+	{
+		"en"	"W.F. Extreme Knight Giant"
+	}	
+	"W.F. Raging Blader"
+	{
+		"en"	"W.F. Raging Blader"
+	}	
+	"Whiteflower The Traitor"
+	{
+		"en"	"Whiteflower The Traitor"
+	}	
+	"Ouroboros Ekas"
+	{
+		"en"	"Ouroboros Ekas"
+	}
 }
