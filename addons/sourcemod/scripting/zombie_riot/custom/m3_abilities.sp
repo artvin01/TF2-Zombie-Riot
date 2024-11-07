@@ -230,7 +230,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 			npc.m_bThisEntityIgnored = true;
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + 10.0;
+			f_Duration[entity] = GetGameTime() + Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0;
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
@@ -388,7 +388,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			Healing_Amount *= Attributes_GetOnPlayer(client, 8, true, true);
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + 10.0;
+			f_Duration[entity] = GetGameTime() + Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0;
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
@@ -1132,7 +1132,7 @@ public void PlaceableTempomaryRepairGrenade(int client)
 			npc.m_bThisEntityIgnored = true;
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + 10.0;
+			f_Duration[entity] = GetGameTime() + Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0;
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 

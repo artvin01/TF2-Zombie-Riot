@@ -12,6 +12,8 @@ enum struct SoulBuff
 
 static ArrayList AnnouncedBuff;
 static bool CoinExchanger;
+static int RottenBone;
+static int EmptyPlate;
 
 void Rogue_Whiteflower_Reset()
 {
@@ -26,6 +28,35 @@ void Rogue_Whiteflower_IngotGiven(int &ingots)
 		GlobalExtraCash += 200 * ingots;
 		ingots = 0;
 	}
+}
+
+bool Rogue_Whiteflower_RemainDrop(int type)
+{
+	if(!EmptyPlate)
+		return false;
+	
+	EmptyPlate--;
+	switch(type)
+	{
+		case Buff_Founder:
+			Rogue_GiveNamedArtifact("Founder Fondue");
+		
+		case Buff_Predator:
+			Rogue_GiveNamedArtifact("Predator Pancakes");
+		
+		case Buff_Brandguider:
+			Rogue_GiveNamedArtifact("Brandguider Brunch");
+		
+		case Buff_Spewer:
+			Rogue_GiveNamedArtifact("Spewer Spewers");
+		
+		case Buff_Swarmcaller:
+			Rogue_GiveNamedArtifact("Swarmcaller Sandwich");
+		
+		case Buff_Reefbreaker:
+			Rogue_GiveNamedArtifact("Reefbreaker Ravioli");
+	}
+	return true;
 }
 
 static void AnnounceSoulBuff(int client, int entity, int type)
@@ -302,4 +333,111 @@ public void Rogue_RareWeapon_Collect()
 
 	Store_DiscountNamedItem(name, 30);
 	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
+}
+
+public void Rogue_RottenBone_Collect()
+{
+	RottenBone = 1;
+}
+
+public void Rogue_RottenBone_Enemy(int entity)
+{
+	if(RottenBone)
+	{
+		fl_Extra_MeleeArmor[entity] *= 1.0 + (RottenBone * 0.00015);
+		fl_Extra_RangedArmor[entity] *= 1.0 + (RottenBone * 0.00015);
+
+		if(RottenBone < 3000)
+			RottenBone++;
+	}
+}
+
+public void Rogue_RottenBone_Remove()
+{
+	RottenBone = 0;
+}
+
+public void Rogue_Silence30_Enemy(int entity)
+{
+	NpcStats_SilenceEnemy(entity, 30.0);
+}
+
+public void Rogue_CopperOre_Weapon(int entity)
+{
+	if(!Rogue_HasNamedArtifact("Iron Ore") && Attributes_Has(entity, 45))
+		Attributes_SetMulti(entity, 45, 1.35);
+}
+
+public void Rogue_IronOre_Weapon(int entity)
+{
+	if(!Rogue_HasNamedArtifact("Copper Ore"))
+	{
+		if(Attributes_Has(entity, 101))
+			Attributes_SetMulti(entity, 101, 1.35);
+		
+		if(Attributes_Has(entity, 103))
+			Attributes_SetMulti(entity, 103, 1.35);
+	}
+}
+
+public void Rogue_EmptyPlate_Collect()
+{
+	EmptyPlate = 5;
+}
+
+public void Rogue_EmptyPlate_Remove()
+{
+	EmptyPlate = 0;
+}
+
+public void Rogue_FoodFounder_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+		map.GetValue("4023", value);
+		map.SetValue("4023", value + 10.0);
+	}
+}
+
+public void Rogue_FoodBrandguider_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value = 1.0;
+		map.GetValue("4022", value);
+		map.SetValue("4022", value * 0.5);
+	}
+}
+
+public void Rogue_FoodSpewer_Weapon(int entity)
+{
+	if(Attributes_Has(entity, 101))
+		Attributes_SetMulti(entity, 101, 1.5);
+}
+
+public void Rogue_FoodSwarmcaller_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		map.SetValue("4024", 1.0);
+	}
+}
+
+public void Rogue_Reefbreaker_Weapon(int entity)
+{
+	// +15% damage bonus
+	if(Attributes_Has(entity, 2))
+		Attributes_SetMulti(entity, 2, 1.15);
+	
+	if(Attributes_Has(entity, 410))
+		Attributes_SetMulti(entity, 410, 1.15);
+
+	char buffer[36];
+	GetEntityClassname(entity, buffer, sizeof(buffer));
+	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	{
+		if(Attributes_Has(entity, 1))
+			Attributes_SetMulti(entity, 1, 1.15);
+	}
 }
