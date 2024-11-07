@@ -265,7 +265,7 @@ float f_ProvokedAngerCD[MAXENTITIES];
 
 void Rogue_PluginStart()
 {
-	RegAdminCmd("zr_giveartifact", Rogue_DebugGive, ADMFLAG_ROOT);
+	RegAdminCmd("zr_give_artifact", Rogue_DebugGive, ADMFLAG_ROOT);
 	RegAdminCmd("zr_skipbattle", Rogue_DebugSkip, ADMFLAG_ROOT);
 	RegAdminCmd("zr_setstage", Rogue_DebugSet, ADMFLAG_ROOT);
 	
@@ -1116,16 +1116,29 @@ void Rogue_NextProgress()
 				CurrentStage = -1;
 				CurrentCount = -1;
 				ExtraStageCount = 0;
-				SteamWorks_UpdateGameTitle();
-				Rogue_BlueParadox_NewFloor(CurrentFloor);
-
+				
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
 				{
 					Floors.GetArray(CurrentFloor, floor);
 					if(floor.ArtifactKey[0] && !Rogue_HasNamedArtifact(floor.ArtifactKey))
-						victory = true;
+					{
+						if(CurrentFloor == (Floors.Length - 1))
+						{
+							victory = true;
+						}
+						else
+						{
+							// Check next floor
+							CurrentCount = maxRooms + 1;
+							Rogue_NextProgress();
+							return;
+						}
+					}
 				}
+
+				SteamWorks_UpdateGameTitle();
+				Rogue_BlueParadox_NewFloor(CurrentFloor);
 
 				if(victory)	// All the floors are done
 				{

@@ -825,11 +825,7 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	float AllyPos[3];
-	float SelfPos[3];
-	float flDistanceToTarget;
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", SelfPos);
-	CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell bob.\nWhiteflower Perishes.");	
+	CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.");	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -1009,12 +1005,12 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	int speech = GetRandomInt(1,10);
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
 	float ReduceEnemyCountLogic = 1.0 / MultiGlobalEnemy;
-	fl_TotalArmor[self] *= (1.0 - (0.025 * ReduceEnemyCountLogic));
+	fl_TotalArmor[self] *= (1.0 + (0.025 * ReduceEnemyCountLogic));
 	if(fl_TotalArmor[self] >= 1.0)
 	{
 		fl_TotalArmor[self] = 1.0;
 	}
-	RaidModeScaling *= (1.0 - (0.005 * ReduceEnemyCountLogic));
+	RaidModeScaling *= (1.0- (0.005 * ReduceEnemyCountLogic));
 	if(npc.m_flCooldownSay > GetGameTime())
 	{
 		return;

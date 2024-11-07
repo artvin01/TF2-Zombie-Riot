@@ -61,6 +61,9 @@ bool Rogue_Whiteflower_RemainDrop(int type)
 
 static void AnnounceSoulBuff(int client, int entity, int type)
 {
+	if(StoreWeapon[entity] == -1)
+		return;
+	
 	SoulBuff buff;
 
 	if(AnnouncedBuff)
@@ -90,6 +93,9 @@ static void AnnounceSoulBuff(int client, int entity, int type)
 
 public void Rogue_SoulFreaks_Weapon(int entity, int client)
 {
+	if(StoreWeapon[entity] == -1)
+		return;
+	
 	char buffer[64];
 	Store_GetItemName(StoreWeapon[entity], client, buffer, sizeof(buffer), false);
 	if(StrContains(buffer, "Blitz", false) != -1 ||
@@ -113,6 +119,9 @@ public void Rogue_SoulFreaks_Weapon(int entity, int client)
 
 public void Rogue_SoulArknights_Weapon(int entity, int client)
 {
+	if(StoreWeapon[entity] == -1)
+		return;
+	
 	char buffer[64];
 	Store_GetItemName(StoreWeapon[entity], client, buffer, sizeof(buffer), false);
 	if(i_WeaponArchetype[entity] == 22 ||
@@ -147,6 +156,9 @@ public void Rogue_SoulArknights_Weapon(int entity, int client)
 
 public void Rogue_SoulBTD_Weapon(int entity, int client)
 {
+	if(StoreWeapon[entity] == -1)
+		return;
+	
 	char buffer[64];
 	Store_GetItemName(StoreWeapon[entity], 0, buffer, sizeof(buffer), false);
 	if(StrContains(buffer, "Elite Sniper", false) != -1 ||
@@ -174,6 +186,9 @@ public void Rogue_SoulBTD_Weapon(int entity, int client)
 
 public void Rogue_SoulYakuza_Weapon(int entity, int client)
 {
+	if(StoreWeapon[entity] == -1)
+		return;
+	
 	char buffer[64];
 	Store_GetItemName(StoreWeapon[entity], 0, buffer, sizeof(buffer), false);
 	if(StrContains(buffer, "Normal Fists", false) != -1)
@@ -185,6 +200,9 @@ public void Rogue_SoulYakuza_Weapon(int entity, int client)
 
 public void Rogue_SoulDungeon_Weapon(int entity, int client)
 {
+	if(StoreWeapon[entity] == -1)
+		return;
+	
 	char buffer[64];
 	Store_GetItemName(StoreWeapon[entity], client, buffer, sizeof(buffer), false);
 	if(StrContains(buffer, "King's Broken Blade", false) != -1 ||
@@ -221,6 +239,9 @@ static Action Timer_DeathDoor(Handle timer, DataPack pack)
 
 public void Rogue_SoulTerraria_Weapon(int entity, int client)
 {
+	if(StoreWeapon[entity] == -1)
+		return;
+	
 	char buffer[64];
 	Store_GetItemName(StoreWeapon[entity], client, buffer, sizeof(buffer), false);
 	if(StrContains(buffer, "Fractured Ark", false) != -1 ||
@@ -359,7 +380,7 @@ public void Rogue_RottenBone_Remove()
 
 public void Rogue_Silence30_Enemy(int entity)
 {
-	NpcStats_SilenceEnemy(entity, 30.0);
+	NpcStats_SilenceEnemy(entity, 10.0);
 }
 
 public void Rogue_CopperOre_Weapon(int entity)

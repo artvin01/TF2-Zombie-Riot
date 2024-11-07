@@ -1770,7 +1770,7 @@
 	}
 	"Bob's Orders Desc"
 	{
-		"en"	"Eliminate Whiteflower.\n{blue}The ending is changed."
+		"en"	"Eliminate Whiteflower.\n{green}All Allies receive +15%% damage bonus and +20%% movement speed {blue}and the ending is changed."
 	}
 	"But Nobody Is Here"
 	{
@@ -1826,7 +1826,7 @@
 	}
 	"Eyes of the Sea Desc"
 	{
-		"en"	"You saw what they saw.\n{green}Enemies are silenced for 30 seconds on spawn"
+		"en"	"You saw what they saw.\n{green}Enemies are silenced for 10 seconds on spawn"
 	}
 	"Copper Ore"
 	{
@@ -1899,5 +1899,13 @@
 	"Reefbreaker Ravioli Desc"
 	{
 		"en"	"{green}Players gain +15%% damage"
+	}
+	"Whiteflower Final Speech 1"
+	{
+		"en"	"I got rid of Guln, tricked Bob to get rid of Bladedance...\nYou and Bob are the last ones."
+	}
+	"Whiteflower Final Speech 2"
+	{
+		"en"	"You think I fight alone?"
 	}
 }

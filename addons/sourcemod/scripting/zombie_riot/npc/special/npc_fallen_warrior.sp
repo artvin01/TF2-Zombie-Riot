@@ -466,7 +466,7 @@ public void FallenWarrior_NPCDeath(int entity)
 
 	if(GetTeam(entity) == TFTeam_Red)
 	{
-		CPrintToChatAll("{crimson}Guln{default}: And if it comes to this... the {crimson}Chaos{default}... you know what to do...");
+		CPrintToChatAll("{crimson}Guln{default}: And if it comes to this... this {crimson}Chaos{default}... you know what to do...");
 	}
 	else
 	{
@@ -775,20 +775,44 @@ static void ModifyEntityAncientBuff(int entity, int type, float buffammount, boo
 		else if(entity > MaxClients)
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(!b_EntityRecievedBuff[entity])
+			if(npc.OwnerUserId)
 			{
-				if(GrantBuff)
+				if(!b_EntityRecievedBuff[entity])
 				{
-					b_EntityRecievedBuff[entity] = true;
-					npc.BonusFireRate *= buffammount;
+					if(GrantBuff)
+					{
+						b_EntityRecievedBuff[entity] = true;
+						npc.BonusFireRate *= buffammount;
+					}
+				}
+				else
+				{
+					if(!GrantBuff)
+					{
+						b_EntityRecievedBuff[entity] = false;
+						npc.BonusFireRate /= buffammount;
+					}
 				}
 			}
 			else
 			{
-				if(!GrantBuff)
+				buffammount *= 0.75;
+				buffammount2 *= 1.75;
+				if(!b_EntityRecievedBuff[entity])
 				{
-					b_EntityRecievedBuff[entity] = false;
-					npc.BonusFireRate /= buffammount;
+					if(GrantBuff)
+					{
+						b_EntityRecievedBuff[entity] = true;
+						fl_Extra_Damage[entity] *= buffammount2;
+					}
+				}
+				else
+				{
+					if(!GrantBuff)
+					{
+						b_EntityRecievedBuff[entity] = false;
+						fl_Extra_Damage[entity] /= buffammount2;
+					}
 				}
 			}
 		}
@@ -841,9 +865,9 @@ void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
 		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != Team)
 		{
-			if(f_FallenWarriorDebuff[ally] > GetGameTime() && GetTeam(ally) != Team)
+			if(f_FallenWarriorDebuff[ally] > GetGameTime())
 			{
 				ModifyEntityAncientBuff(ally, 2, 1.5, true, 0.5);
 			}
