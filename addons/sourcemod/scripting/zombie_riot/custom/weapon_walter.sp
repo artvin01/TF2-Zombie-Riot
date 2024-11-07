@@ -30,7 +30,7 @@ static void ApplyBuilderAttributes(DataPack pack)
 		Attributes_SetMulti(weapon, 97, attack_speed);
 
 		float damage = Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
-		damage *= 15.0;
+		damage *= 3.0;
 
 		Attributes_Set(weapon, 2, damage);
 	}
