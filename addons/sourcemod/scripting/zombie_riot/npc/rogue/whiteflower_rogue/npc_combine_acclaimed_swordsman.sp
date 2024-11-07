@@ -484,18 +484,6 @@ public Action AcclaimedSwordsman_OnTakeDamage(int victim, int &attacker, int &in
 		
 	AcclaimedSwordsman npc = view_as<AcclaimedSwordsman>(victim);
 	
-	if(!NpcStats_IsEnemySilenced(victim))
-	{
-		if(!npc.bXenoInfectedSpecialHurt)
-		{
-			fl_TotalArmor[victim] = 0.0;
-			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 1.5;
-			npc.bXenoInfectedSpecialHurt = true;
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable2, 255, 50, 50, 255);
-		}
-	}
-	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;

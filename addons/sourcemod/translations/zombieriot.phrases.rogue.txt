@@ -1776,13 +1776,13 @@
 	{
 		"en"	"But nobody is here..."
 	}
-	"Whiteflower Mercenary Iberian"
+	"W.F. Mercenary Iberian"
 	{
-		"en"	"Whiteflower Mercenary Iberian"
+		"en"	"W.F. Mercenary Iberian"
 	}
-	"Whiteflower Mercenary Ruinan"
+	"W.F. Mercenary Ruinan"
 	{
-		"en"	"Whiteflower Mercenary Ruinan"
+		"en"	"W.F. Mercenary Ruinan"
 	}
 	"Guln"
 	{

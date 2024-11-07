@@ -215,8 +215,6 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 	
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
 		bool CloneDo = StrContains(data, "clone_ability") != -1;
 		if(CloneDo)
 		{
@@ -227,6 +225,10 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 			b_NoKillFeed[npc.index] = true;
 			npc.m_flCloneSuicide = GetGameTime() + 1.0;
 			npc.m_flDoAnimClone = GetGameTime() + 0.1;
+		}
+		else
+		{
+			NPC_StartPathing(npc.index);
 		}
 		bool raidbattle = StrContains(data, "raidbattle") != -1;
 		if(raidbattle)
@@ -302,7 +304,6 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	if(!npc.m_flCloneSuicide)
 	{
-		
 		if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index);

@@ -177,8 +177,7 @@ methodmap Whiteflower_ExtremeKnightGiant < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		NPC_StartPathing(npc.index);
 		
 		return npc;
 	}

@@ -359,9 +359,7 @@ methodmap Whiteflower_Boss < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
-	
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		NPC_StartPathing(npc.index);
 		
 		return npc;
 	}
@@ -390,6 +388,19 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
+	}
+
+	if(npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
+	{
+		if(IsValidEntity(RaidBossActive))
+		{
+			ForcePlayerLoss();
+			RaidBossActive = INVALID_ENT_REFERENCE;
+		}
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		NPC_StopPathing(npc.index);
+		npc.m_flNextThinkTime = FAR_FUTURE;
+		i_RaidGrantExtra[npc.index] = 0;
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -464,7 +475,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 40.0;
+					float damage = 45.0;
 					damage *= RaidModeScaling;
 					
 					if(target > 0) 
@@ -825,7 +836,9 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.");	
+	if(i_RaidGrantExtra[npc.index])
+		CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.\nHis army scatteres.");	
+		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -859,8 +872,8 @@ void WF_ThrowGrenadeHappening(Whiteflower_Boss npc)
 			}
 			//damage doesnt matter.
 			int Grenade = npc.FireGrenade(vecTarget);
-			float GrenadeRangeSupport = 300.0;
-			float GrenadeRangeDamage = 150.0;
+			float GrenadeRangeSupport = 250.0;
+			float GrenadeRangeDamage = 100.0;
 			GrenadeRangeDamage *= RaidModeScaling;
 			float HealDo = 10000.0;
 			HealDo *= RaidModeScaling;
@@ -1010,7 +1023,7 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	{
 		fl_TotalArmor[self] = 1.0;
 	}
-	RaidModeScaling *= (1.0- (0.005 * ReduceEnemyCountLogic));
+	RaidModeScaling *= (1.0- (0.0025 * ReduceEnemyCountLogic));
 	if(npc.m_flCooldownSay > GetGameTime())
 	{
 		return;
@@ -1076,7 +1089,7 @@ static void Whiteflower_KickTouched(int entity, int enemy)
 	
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);
-	float DamageDeal = 150.0;
+	float DamageDeal = 100.0;
 	DamageDeal *= RaidModeScaling;
 	SDKHooks_TakeDamage(enemy, entity, entity, DamageDeal, DMG_CLUB, -1, NULL_VECTOR, targPos);
 	ParticleEffectAt(targPos, "skull_island_embers", 2.0);

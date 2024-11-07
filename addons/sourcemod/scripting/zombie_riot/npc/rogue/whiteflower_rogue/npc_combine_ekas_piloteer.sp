@@ -197,8 +197,7 @@ methodmap Whiteflower_Ekas_Piloteer < CClotBody
 
 		npc.m_iAttacksTillReload = 6;
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		NPC_StartPathing(npc.index);
 		
 		return npc;
 	}

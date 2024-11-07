@@ -422,8 +422,11 @@ public void FallenWarrior_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
-	npc.PlayIntroSound();
-	npc.PlayIdleAlertSound();
+	if(npc.Anger || GetTeam(npc.index) != TFTeam_Red)
+	{
+		npc.PlayIntroSound();
+		npc.PlayIdleAlertSound();
+	}
 }
 
 public Action FallenWarrior_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

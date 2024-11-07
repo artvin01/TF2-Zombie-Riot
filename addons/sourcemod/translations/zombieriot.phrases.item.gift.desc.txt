@@ -169,42 +169,42 @@
 		"en" 		"Raiders are unable to melee you, thus will only shoot at close range.\nMelee resistances will not help against this zombie."
 		"ru"		"Рейдеры не могут ударить вас в рукопашную,И поэтому будут стрелять вас с билзкой дистанции.\nСопротивление ближнему урону не помогут от этого зомби."
 	}
-	"Whiteflower Rifler Desc"
+	"W.F. Rifler Desc"
 	{
 		"en" 		"Losing most of his cognitive function he is barely able to use his rifle.\nHe will still shoot you from time to time."
 		"ru"		"Потеряв большую часть его разума он еле как может использовать его винтовку.\nОн все ещё будет стрелять в вас время от времени."
 	}
-	"Whiteflower Shotgunner Desc"
+	"W.F. Shotgunner Desc"
 	{
 		"en" 		"Very fast and shooting zombies, any melee class will be eliminated quickly as their bullets dont get resisted by melee resistance."
 		"ru"		"Очень быстрый и стреляющий зомби, Любой ближний класс будет убит быстро так как их пули не поддаются сопративлению ближнего боя."
 	}
-	"Whiteflower Swordsman Desc"
+	"W.F. Swordsman Desc"
 	{
 		"en" 		"Combine imbued with Knightly powers, although still infected.\nThier pulse attack gives them bonus resistances (can be silenced) for a short time."
 		"ru"		"Комбайн пропитанный рыцарскими силами, хотя все ещё заражённый.\nИх атака Пульсом даёт им дополнительное сопротивление урону(может быть заткнуто) на небольшой промежуток времени."
 	}
-	"Whiteflower Elite Desc"
+	"W.F. Elite Desc"
 	{
 		"en" 		"Combine Elites were able to slightly resist the cognitive deterioation.\nThey shoot and also fire combine energy balls.\nOverall a better Combine Rifler."
 		"ru"		"Элитные комбайны были способны немного сопротивлятся потери разума.\mОни будут стрелять и запускать Энергетические шары в вас.\nВ целом улучшенный комбайн стерлок."
 	}
-	"Whiteflower Giant Swordsman Desc"
+	"W.F. Giant Swordsman Desc"
 	{
 		"en" 		"Giant Swordsman genetically enhanced to be more resistable.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Гигантский комбайн рыцарь генетически улучшен что бы быть более устойчивым.\nСопротивление урону от атаки пульсом все ещё применяется (Моежт быть заглушено)."
 	}
-	"Whiteflower DDT Desc"
+	"W.F. DDT Desc"
 	{
 		"en" 		"Robot Build by the combine against the infection, sadly they also got infected.\nThey are very fast and hit rapidly.\nThey are the melee versions of the Combine shotgunners."
 		"ru"		"Робот построенный комбайнами против инфекции,к сожелению они тоже были заражены.\nОни очень быстрые и бьют часто.\nОни являються версией комбайна с доробовиком но в ближнем бою."
 	}
-	"Whiteflower Golden Collos Desc"
+	"W.F. Golden Collos Desc"
 	{
 		"en" 		"Combines tried using ancient rome magic to summon strong allies, thus the golden collos was born.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Комбайны попытались использовать древнию римскую магию что бы призвать сильных союзников, так и появились Золотые Коллосы.\nСопротивление от атаки пульсом так же применяться(может быть заглушено)."
 	}
-	"Whiteflower Overlord Desc"
+	"W.F. Overlord Desc"
 	{
 		"en" 		"He leads Whiteflower's Army over the world.\nResistance on pulse attack and rage (can be silenced)."
 	}
@@ -303,7 +303,7 @@
 		"en" 		"Giant pyro's made by merasmus, the thought was flamethrower wielding zombie erasers.\nThis backfired. Literally."
 		"ru"		"Гигантский Пиро сделанный Маразмусом,это была мысль о зомби с огнеметами.\nЭто привело к обртаным результатам."
 	}
-	"Whiteflower Deutsch Ritter Desc"
+	"W.F. Deutsch Ritter Desc"
 	{
 		"en" 		"An extreamly powerfull and tanky Combine german soldier. Its better to just run at this point."
 		"ru"		"Очень сильный и устойчивый Немецский Комбайн.В таком случае лучше бежать."
@@ -547,7 +547,7 @@
 		"en"		"He was always on your side."
 		"ru"		"Он всегда был на вашей стороне."
 	}
-	"Whiteflower Mage Desc"
+	"W.F. Mage Desc"
 	{
 		"en" 		"Combines that have the ability to wield magic.\nThe infection seems to alter their mindset..."
 		"ru"		"Комбайны которые имеют способность к магии.\nИнфекция похоже искожает их разум..."

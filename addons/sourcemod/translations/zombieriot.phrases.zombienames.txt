@@ -82,9 +82,9 @@
 		"pt"		"Policial Invasor"
 		"nl"		"Metro Aanvaller"
 	}
-	"Whiteflower Rifler"
+	"W.F. Rifler"
 	{
-		"en" 		"Whiteflower Rifler"
+		"en" 		"W.F. Rifler"
 	}
 	"First Rifler"
 	{
@@ -94,9 +94,9 @@
 	{
 		"en" 		"Last Rifler"
 	}
-	"Whiteflower Shotgunner"
+	"W.F. Shotgunner"
 	{
-		"en" 		"Whiteflower Shotgunner"
+		"en" 		"W.F. Shotgunner"
 	}
 	"First Shotgunner"
 	{
@@ -106,9 +106,9 @@
 	{
 		"en" 		"Last Shotgunner"
 	}
-	"Whiteflower Swordsman"
+	"W.F. Swordsman"
 	{
-		"en" 		"Whiteflower Swordsman"
+		"en" 		"W.F. Swordsman"
 	}
 	"First Swordsman"
 	{
@@ -118,9 +118,9 @@
 	{
 		"en" 		"Last Swordsman"
 	}
-	"Whiteflower Elite"
+	"W.F. Elite"
 	{
-		"en" 		"Whiteflower Elite"
+		"en" 		"W.F. Elite"
 	}
 	"First Elite"
 	{
@@ -130,9 +130,9 @@
 	{
 		"en" 		"Last Elite"
 	}
-	"Whiteflower Giant Swordsman"
+	"W.F. Giant Swordsman"
 	{
-		"en" 		"Whiteflower Giant Swordsman"
+		"en" 		"W.F. Giant Swordsman"
 	}
 	"First Giant Swordsman"
 	{
@@ -142,9 +142,9 @@
 	{
 		"en" 		"Last Giant Swordsman"
 	}
-	"Whiteflower DDT"
+	"W.F. DDT"
 	{
-		"en" 		"Whiteflower DDT"
+		"en" 		"W.F. DDT"
 	}
 	"First DDT"
 	{
@@ -154,9 +154,9 @@
 	{
 		"en" 		"Last DDT"
 	}
-	"Whiteflower Golden Collos"
+	"W.F. Golden Collos"
 	{
-		"en" 		"Whiteflower Golden Collos"
+		"en" 		"W.F. Golden Collos"
 	}
 	"First Golden Collos"
 	{
@@ -166,9 +166,9 @@
 	{
 		"en" 		"Last Golden Collos"
 	}
-	"Whiteflower Overlord"
+	"W.F. Overlord"
 	{
-		"en" 		"Whiteflower Overlord"
+		"en" 		"W.F. Overlord"
 	}
 	"Scout Assulter"
 	{
@@ -303,9 +303,9 @@
 		"pt"		"Pyro Main Gigante"
 		"nl"		"Gigantische Pyro Main"
 	}
-	"Whiteflower Deutsch Ritter"
+	"W.F. Deutsch Ritter"
 	{
-		"en" 		"Whiteflower Deutsch Ritter"
+		"en" 		"W.F. Deutsch Ritter"
 	}
 	"X10 Spy Main"
 	{
@@ -606,9 +606,9 @@
 		"pt"		"Senhor Grigori Curado"
 		"nl"		"Genezen Vader Grigori"
 	}
-	"Whiteflower Mage"
+	"W.F. Mage"
 	{
-		"en" 		"Whiteflower Mage"
+		"en" 		"W.F. Mage"
 	}
 	"Bloon"
 	{
@@ -1418,9 +1418,9 @@
 		"pt"		"Espada Quase Radiante"
 		"ru"		"Лучезарный меч Нерл"
 	}
-	"Whiteflower Subject"
+	"W.F. Subject"
 	{
-		"en"		"Whiteflower Subject"
+		"en"		"W.F. Subject"
 	}
 	"Corrupted Father Grigori"
 	{
