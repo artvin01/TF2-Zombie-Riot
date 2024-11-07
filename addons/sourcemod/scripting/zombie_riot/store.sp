@@ -972,13 +972,13 @@ void Store_ConfigSetup()
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
 	int blackcount;
 	if(buffer[0])
-		blackcount = ExplodeString(buffer, ";", blacklist, sizeof(blacklist), sizeof(blacklist[]));
+		blackcount = ExplodeString(buffer, ",", blacklist, sizeof(blacklist), sizeof(blacklist[]));
 	
 	char whitelist[6][32];
 	zr_tagwhitelist.GetString(buffer, sizeof(buffer));
 	int whitecount;
 	if(buffer[0])
-		whitecount = ExplodeString(buffer, ";", whitelist, sizeof(whitelist), sizeof(whitelist[]));
+		whitecount = ExplodeString(buffer, ",", whitelist, sizeof(whitelist), sizeof(whitelist[]));
 	
 	kv.GotoFirstSubKey();
 	do
@@ -1011,7 +1011,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		{
 			int filters = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 			
-			if(whitecount)
+			if(whitecount && (item.Hidden || zr_tagwhitehard.BoolValue))
 			{
 				item.Hidden = true;
 				
