@@ -1558,25 +1558,6 @@
 		"en"	"As long as a new cycle has not been reached, there is still time to fix your mistakes.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 		"ru"	"Пока новый цикл не достигнут, ещё есть время исправить свои ошибки.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
 	}
-	"Bedrock"
-	{
-		"en"	"''Bedrock''"
-		"ru"	"«Бедрок»"
-	}
-	"Bedrock Desc"
-	{
-		"en"	"A weapon said to have been made specifically for an Abyssal Hunter.\n{green}All Allies gain +15%% damage bonus, +15%% max health, +1.5%% damage resistance {red}but -15% movement speed{yellow}."
-	}
-	"Wavebreaker"
-	{
-		"en"	"''Wavebreaker''"
-		"ru"	"«Волнорез»"
-	}
-	"Wavebreaker Desc"
-	{
-		"en"	"A weapon said to have been made specifically for an Abyssal Hunter.\n{green}Players and Rebels revive speed is doubled {red}but -25% max health{yellow}."
-		"ru"	"Оружие, которое, как говорят, было создано специально для охотника Бездны.\n{green}Скорость возрождения игроков и повстанцев удвоена{red}, но -25% макс. запаса здоровья{yellow}."
-	}
 	"Proof of Friendship"
 	{
 		"en"	"Proof of Friendship"
@@ -1818,5 +1799,13 @@
 	"Elite Voucher Desc"
 	{
 		"en"	"It's hard to find these things, use it well.\n{green}Recover a high-grade weapon with a store discount"
+	}
+	"Rotten Bone"
+	{
+		"en"	"Rotten Bone"
+	}
+	"Rotten Bone Desc"
+	{
+		"en"	"Corroding as we speak.\n{green}Each newly spawned enemy takes increasingly more damage and stacks"
 	}
 }

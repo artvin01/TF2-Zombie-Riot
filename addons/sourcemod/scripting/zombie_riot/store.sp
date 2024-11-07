@@ -573,7 +573,7 @@ void Store_OnCached(int client)
 		{
 			amount = 75;
 		}
-		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 30") || Items_HasNamedItem(client, "ZR Contest 2024 Art Contest"))
+		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 30") || Items_HasNamedItem(client, "ZR Contest 2024 Artist"))
 		{
 			amount = 50;
 		}

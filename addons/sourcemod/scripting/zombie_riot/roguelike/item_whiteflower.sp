@@ -303,3 +303,26 @@ public void Rogue_RareWeapon_Collect()
 	Store_DiscountNamedItem(name, 30);
 	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
 }
+
+static int RottenBone;
+public void Rogue_RottenBone_Collect()
+{
+	RottenBone = 1;
+}
+
+public void Rogue_RottenBone_Enemy(int entity)
+{
+	if(RottenBone)
+	{
+		fl_Extra_MeleeArmor[entity] *= 1.0 + (RottenBone * 0.00015);
+		fl_Extra_RangedArmor[entity] *= 1.0 + (RottenBone * 0.00015);
+
+		if(RottenBone < 3000)
+			RottenBone++;
+	}
+}
+
+public void Rogue_RottenBone_Remove()
+{
+	RottenBone = 0;
+}
