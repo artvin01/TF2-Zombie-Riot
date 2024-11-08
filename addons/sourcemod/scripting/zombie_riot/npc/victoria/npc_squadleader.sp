@@ -416,13 +416,13 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 20.0;
+						float damageDealt = 40.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damageDealt *= 3.0;
+							damageDealt *= 8.0;
 
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
-						IncreaceEntityDamageTakenBy(target, 0.05, 2.5, true);
+						IncreaceEntityDamageTakenBy(target, 0.1, 3.5, true);
 					}
 				}
 				delete swingTrace;

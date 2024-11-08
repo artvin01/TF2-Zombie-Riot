@@ -35,7 +35,7 @@ void VictorianIgniter_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian Igniter");
+	strcopy(data.Name, sizeof(data.Name), "Igniter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_igniter");
 	strcopy(data.Icon, sizeof(data.Icon), "rifler");
 	data.IconCustom = true;
@@ -85,7 +85,7 @@ methodmap VictoriaIgniter < CClotBody
 
 	public VictoriaIgniter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaIgniter npc = view_as<VictoriaIgniter>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "2500", ally));
+		VictoriaIgniter npc = view_as<VictoriaIgniter>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "3500", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -93,7 +93,7 @@ methodmap VictoriaIgniter < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(6);
+		SetVariantInt(5);
 		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		
 		

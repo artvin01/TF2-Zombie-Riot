@@ -21,9 +21,9 @@ void VictorianOfflineAvangard_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianOfflineAvangard(client, vecPos, vecAng, ally);
+	return VictorianOfflineAvangard(client, vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianOfflineAvangard < CClotBody
@@ -37,7 +37,7 @@ methodmap VictorianOfflineAvangard < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);
 	}
 	
-	public VictorianOfflineAvangard(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianOfflineAvangard(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "1.75", "100000", ally, _, true));
 		
@@ -70,6 +70,12 @@ methodmap VictorianOfflineAvangard < CClotBody
 		b_CannotBeStunned[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
 		b_CannotBeSlowed[npc.index] = true;
+		
+		if(!StrContains(data, "only"))
+		{
+			i_AttacksTillMegahit[npc.index]=600;
+			npc.m_bFUCKYOU = true;
+		}
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
@@ -93,14 +99,16 @@ methodmap VictorianOfflineAvangard < CClotBody
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
 		
-		float flPos[3];
-		float flAng[3];
-				
-		npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
+		if(!npc.m_bFUCKYOU)
+		{
+			float flPos[3];
+			float flAng[3];
+					
+			npc.GetAttachment("m_vecAbsOrigin", flPos, flAng);
 
-		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "teleporter_mvm_bot_persist", npc.index, "", {0.0,0.0,0.0});
-		CreateTimer(5.0, Timer_RemoveEntity, EntIndexToEntRef(npc.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
-
+			npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "teleporter_mvm_bot_persist", npc.index, "", {0.0,0.0,0.0});
+			CreateTimer(5.0, Timer_RemoveEntity, EntIndexToEntRef(npc.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
+		}
 		return npc;
 	}
 }
@@ -142,8 +150,11 @@ static void ClotThink(int iNPC)
 	{
 		if(i_AttacksTillMegahit[iNPC] <= 600)
 		{
-			EmitSoundToAll("mvm/mvm_tank_horn.wav", _, _, _, _, 1.0);
-			IncreaceEntityDamageTakenBy(npc.index, 0.000001, 1.0);
+			if(!npc.m_bFUCKYOU)
+			{
+				EmitSoundToAll("mvm/mvm_tank_horn.wav", _, _, _, _, 1.0);
+				IncreaceEntityDamageTakenBy(npc.index, 0.000001, 1.0);
+			}
 			i_AttacksTillMegahit[iNPC] = 601;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_blackbox/c_blackbox.mdl");
 			SetVariantString("1.5");

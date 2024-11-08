@@ -106,7 +106,7 @@ methodmap VictoriaMortar < CClotBody
 	
 	public VictoriaMortar(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMortar npc = view_as<VictoriaMortar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "9500", ally));
+		VictoriaMortar npc = view_as<VictoriaMortar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "2200", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -323,7 +323,7 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				float RocketDamage = 500.0;
+				float RocketDamage = 200.0;
 				float RocketSpeed = 650.0;
 				if(NpcStats_VictorianCallToArms(npc.index))
 				{

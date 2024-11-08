@@ -127,7 +127,7 @@ methodmap VictorianCaffeinator < CClotBody
 	}
 	public VictorianCaffeinator(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianCaffeinator npc = view_as<VictorianCaffeinator>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "5500", ally));
+		VictorianCaffeinator npc = view_as<VictorianCaffeinator>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "30000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -450,9 +450,9 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 							{
 								
 								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 120.0, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 550.0, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);
 								
 								
 								

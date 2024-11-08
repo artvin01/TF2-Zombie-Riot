@@ -99,7 +99,7 @@ methodmap VictorianMechafist < CClotBody
 	
 	public VictorianMechafist(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianMechafist npc = view_as<VictorianMechafist>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.15", "1250", ally,false));
+		VictorianMechafist npc = view_as<VictorianMechafist>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.15", "9000", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -267,7 +267,7 @@ void VictorianMechafistSelfDefense(VictorianMechafist npc, float gameTime, int t
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 40.0;
+					float damageDealt = 50.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 2.0;
 

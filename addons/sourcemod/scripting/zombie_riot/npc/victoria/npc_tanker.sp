@@ -89,7 +89,7 @@ methodmap VIctorianTanker < CClotBody
 	
 	public VIctorianTanker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VIctorianTanker npc = view_as<VIctorianTanker>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "9500", ally));
+		VIctorianTanker npc = view_as<VIctorianTanker>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "22000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -130,7 +130,7 @@ methodmap VIctorianTanker < CClotBody
 		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/pyro/bio_fireman.mdl");
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_hog_heels/sum23_hog_heels.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/Robo_Heavy_Chief/Robo_Heavy_Chief.mdl");
@@ -307,7 +307,7 @@ int VIctorianTankerSelfDefense(VIctorianTanker npc, float gameTime, int target, 
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 60.0;
+						float damageDealt = 130.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 

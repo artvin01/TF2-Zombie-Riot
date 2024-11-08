@@ -166,7 +166,7 @@ methodmap VictoriaRepair < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/heavy/hardhat_tower.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/hardhat_tower.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
@@ -186,7 +186,7 @@ methodmap VictoriaRepair < CClotBody
 		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 
-		npc.m_iWearable5 = npc.EquipItem("head", "mmodels/workshop/player/items/medic/sum20_flatliner/sum20_flatliner.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/sum20_flatliner/sum20_flatliner.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
@@ -200,6 +200,7 @@ methodmap VictoriaRepair < CClotBody
 		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
 		
+		TeleportDiversioToRandLocation(npc.index);
 		
 		return npc;
 	}
@@ -288,9 +289,9 @@ public void VictoriaRepair_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		if(flDistanceToTarget < 250000)
+		if(flDistanceToTarget < 300000)
 		{
-			if(flDistanceToTarget < 62500)
+			if(flDistanceToTarget < 100000)
 			{
 				NPC_StopPathing(npc.index);
 			}

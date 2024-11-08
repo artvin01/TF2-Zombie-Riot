@@ -123,7 +123,7 @@ methodmap VictorianHardener < CClotBody
 	}
 	public VictorianHardener(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianHardener npc = view_as<VictorianHardener>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5500", ally));
+		VictorianHardener npc = view_as<VictorianHardener>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -240,6 +240,8 @@ public void VictorianHardener_ClotThink(int iNPC)
 		return;
 	}
 	
+	GrantEntityArmor(iNPC, true, 0.2, 0.75, 0);
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
@@ -433,9 +435,9 @@ public void VictorianHardener_ClotThink(int iNPC)
 							{
 								
 								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 120.0, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 550.0, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								
 								
 								

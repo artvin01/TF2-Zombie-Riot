@@ -139,9 +139,9 @@ public void VictoriaBombcart_ClotThink(int iNPC)
 					{
 						KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 						if(!ShouldNpcDealBonusDamage(target))
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 						else
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 400.0, DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
 							
 						float startPosition[3];
 						GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", startPosition);
@@ -190,12 +190,12 @@ void VictoriaBombcart_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	
 	float startPosition[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
-		startPosition[2] += 45;
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
+	startPosition[2] += 45;
 	
 	if(NpcStats_VictorianCallToArms(npc.index))
 	{
-		Explode_Logic_Custom(75.0, -1, npc.index, -1, startPosition, 150.0, _, _, true, _, false, 1.0);
+		Explode_Logic_Custom(50.0, -1, npc.index, -1, startPosition, 150.0, _, _, true, _, false, 1.0);
 		ParticleEffectAt(startPosition, "rd_robot_explosion_smoke_linger", 2.0);
 		npc.PlayMeleeHitSound();
 	}	

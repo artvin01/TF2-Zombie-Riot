@@ -3842,4 +3842,8 @@
 		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 	}
+	"Victoria Raid Desc"
+	{
+		"en" "(11) You went to ruins of Victoria."
+	}
 }

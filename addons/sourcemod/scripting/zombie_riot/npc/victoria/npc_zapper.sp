@@ -127,7 +127,7 @@ methodmap Zapper < CClotBody
 	
 	public Zapper(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Zapper npc = view_as<Zapper>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.00", "7500", ally, false, true));
+		Zapper npc = view_as<Zapper>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.00", "1900", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -311,10 +311,10 @@ void ZapperSelfdefense(Zapper npc, float gameTime, int target, float distance)
 					}
 					if(!ShouldNpcDealBonusDamage(target))
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 40.0, DMG_CLUB, -1, _, vecHit);
 					}
 					else
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 160.0, DMG_CLUB, -1, _, vecHit);
 
 					npc.PlayMeleeHitSound();
 				} 

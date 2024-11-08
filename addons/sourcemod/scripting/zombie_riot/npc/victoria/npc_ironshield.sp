@@ -108,7 +108,7 @@ methodmap VictorianIronShield < CClotBody
 	
 	public VictorianIronShield(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianIronShield npc = view_as<VictorianIronShield>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.5", "7500", ally, false, true));
+		VictorianIronShield npc = view_as<VictorianIronShield>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.5", "65000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -280,7 +280,7 @@ void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTime, int
 					if(npc.m_iOverlordComboAttack <= 0)
 					{
 						float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-						makeexplosion(npc.index, npc.index, npc_vec, "", RoundToCeil(HitDamage * 4.0), 150,_,_,_, false, 10.0);
+						makeexplosion(npc.index, npc.index, npc_vec, "", RoundToCeil(HitDamage * 2.5), 150,_,_,_, false, 10.0);
 						npc.m_iOverlordComboAttack = 2;
 					}
 					else

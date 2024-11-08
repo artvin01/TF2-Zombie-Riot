@@ -104,7 +104,7 @@ methodmap VictoriaAntiarmorInfantry < CClotBody
 	
 	public VictoriaAntiarmorInfantry(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaAntiarmorInfantry npc = view_as<VictoriaAntiarmorInfantry>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.2", "10000", ally));
+		VictoriaAntiarmorInfantry npc = view_as<VictoriaAntiarmorInfantry>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.2", "9000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -281,7 +281,7 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 			{
 				RemoveEntity(npc.m_iWearable1);
 			}
-			float RocketDamage = 500.0;
+			float RocketDamage = 300.0;
 			if(NpcStats_VictorianCallToArms(npc.index))
 			{
 				RocketDamage *= 1.5;
@@ -326,9 +326,9 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 90.0;
+					float damageDealt = 60.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 6.0;
+						damageDealt *= 2.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

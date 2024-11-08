@@ -102,7 +102,7 @@ methodmap Teslar < CClotBody
 	
 	public Teslar(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Teslar npc = view_as<Teslar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
+		Teslar npc = view_as<Teslar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

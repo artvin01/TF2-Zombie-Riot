@@ -92,7 +92,7 @@ methodmap VictorianGrenadier < CClotBody
 	
 	public VictorianGrenadier(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianGrenadier npc = view_as<VictorianGrenadier>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally,false));
+		VictorianGrenadier npc = view_as<VictorianGrenadier>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -305,7 +305,7 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				float RocketDamage = 125.0;
+				float RocketDamage = 75.0;
 				float RocketSpeed = 900.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );

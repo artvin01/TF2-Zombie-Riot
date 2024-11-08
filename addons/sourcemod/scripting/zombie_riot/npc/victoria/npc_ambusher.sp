@@ -264,10 +264,10 @@ public void VIctorianAmbusher_ClotThink(int iNPC)
 					npc.m_flSpeed = 350.0;
 					npc.PlayReloadSound();
 
-                    DataPack ReloadAmmo;
-                    CreateDataTimer(2.5, Timer_Runaway, ReloadAmmo, TIMER_FLAG_NO_MAPCHANGE);
-                    ReloadAmmo.WriteCell(npc.index);
-                    ReloadAmmo.WriteCell(30);
+					DataPack ReloadAmmo;
+					CreateDataTimer(2.5, Timer_Runaway, ReloadAmmo, TIMER_FLAG_NO_MAPCHANGE);
+					ReloadAmmo.WriteCell(npc.index);
+					ReloadAmmo.WriteCell(30);
 				}
 				int Enemy_I_See;
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -292,10 +292,10 @@ public void VIctorianAmbusher_ClotThink(int iNPC)
 
 public Action Timer_Runaway(Handle timer, DataPack pack)
 {
-    pack.Reset();
-    VIctorianAmbusher npc = view_as<VIctorianAmbusher>(pack.ReadCell());
-    if(IsValidEntity(npc.index)) npc.m_iOverlordComboAttack = pack.ReadCell();
-    return Plugin_Stop;
+	pack.Reset();
+	VIctorianAmbusher npc = view_as<VIctorianAmbusher>(pack.ReadCell());
+	if(IsValidEntity(npc.index)) npc.m_iOverlordComboAttack = pack.ReadCell();
+	return Plugin_Stop;
 }
 
 public Action VIctorianAmbusher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

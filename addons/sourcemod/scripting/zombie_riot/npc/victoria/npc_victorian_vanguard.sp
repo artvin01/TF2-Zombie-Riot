@@ -96,7 +96,7 @@ methodmap VictorianVanguard < CClotBody
 	
 	public VictorianVanguard(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianVanguard npc = view_as<VictorianVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally,false));
+		VictorianVanguard npc = view_as<VictorianVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1000", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -254,7 +254,7 @@ void VictorianVanguardSelfDefense(VictorianVanguard npc, float gameTime, int tar
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 40.0;
+					float damageDealt = 30.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 2.0;
 

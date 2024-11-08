@@ -24,12 +24,17 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/csgo_awp_shoot.wav",
 };
 
+static const char g_ReloadSound[][] = {
+	"weapons/ar2/npc_ar2_reload.wav",
+};
+
 static const char g_TeleportSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
 	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
-//static int i_ally_index;
+static bool b_SUPERDUPERRAGE[MAXENTITIES];
+static bool b_GotBuilding[MAXENTITIES];
 
 void VictoriaBirdeye_OnMapStart_NPC()
 {
@@ -42,18 +47,18 @@ void VictoriaBirdeye_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Birdeye");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_birdeye");
-	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_headshot");
 	data.IconCustom = false;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaBirdeye(client, vecPos, vecAng, ally);
+	return VictoriaBirdeye(client, vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaBirdeye < CClotBody
@@ -88,16 +93,25 @@ methodmap VictoriaBirdeye < CClotBody
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	
+	public void PlayRAGEattackSound()
+	{
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.6);
+	}
+	
+	public void PlayReloadSound() 
+	{
+		EmitSoundToAll(g_ReloadSound[GetRandomInt(0, sizeof(g_ReloadSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
 
 	public void PlayTeleportSound()
 	{
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public VictoriaBirdeye(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaBirdeye(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaBirdeye npc = view_as<VictoriaBirdeye>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "4000", ally));
-		
+		VictoriaBirdeye npc = view_as<VictoriaBirdeye>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "150000", ally));
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -130,10 +144,20 @@ methodmap VictoriaBirdeye < CClotBody
 
 		f_HeadshotDamageMultiNpc[npc.index] = 1.25;
 		
+		if(!StrContains(data, "rage"))
+			npc.m_bFUCKYOU = true;
+		else
+			npc.m_bFUCKYOU = false;
+		if(!StrContains(data, "notele"))
+			b_SUPERDUPERRAGE[npc.index] = true;
+		else
+			b_SUPERDUPERRAGE[npc.index] = false;
+		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		
+		npc.m_iOverlordComboAttack = 31;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -164,11 +188,18 @@ methodmap VictoriaBirdeye < CClotBody
 				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, _, _, _, 1.0);	
 			}
 			LastSpawnDiversio = GetGameTime() + 20.0;
-			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
+			TeleportDiversioToRandLocation(npc.index, _,1750.0, 1250.0);
+			float Vec[3];
+			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", Vec);
+			ParticleEffectAt(Vec, "teleported_blue", 0.5);
 		}
 
-		RequestFrame(VictoriaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index)); 
-		
+		if(!StrContains(data, "only"))
+		{
+			//none
+		}
+		else
+			RequestFrame(VictoriaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
 		return npc;
 	}
 }
@@ -207,6 +238,15 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	
+	if(npc.m_bAllowBackWalking)
+	{
+		if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
+		{
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 150.0);
+		}
+	}
 
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -233,8 +273,11 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ExtraBehavior = VictoriaBirdeyeSelfDefense(npc,GetGameTime(npc.index)); 
-
+		int ExtraBehavior;
+		if(npc.m_bFUCKYOU)
+			ExtraBehavior = VictoriaBirdeyeAssaultMode(npc,GetGameTime(npc.index), npc.m_iTargetWalkTo, flDistanceToTarget); 
+		else
+			ExtraBehavior = VictoriaBirdeyeSniperMode(npc,GetGameTime(npc.index));
 		switch(ExtraBehavior)
 		{
 			case 0:
@@ -246,7 +289,7 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
 					npc.StartPathing();
 					npc.m_flSpeed = 200.0;
-				}	
+				}
 			}
 			case 1:
 			{
@@ -259,17 +302,80 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 					npc.m_flSpeed = 0.0;
 				}
 			}
+			case 2:
+			{
+				if(npc.m_iChanged_WalkCycle != 1)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_MP_RUN_PRIMARY");
+					npc.StartPathing();
+				}
+				npc.m_flSpeed = (npc.m_flCharge_delay < GetGameTime(npc.index)) ? 280.0 : 150.0;
+				npc.m_bAllowBackWalking = false;
+				//Get the normal prediction code.
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+				}
+			}
+			case 3:
+			{
+				if(npc.m_iChanged_WalkCycle != 1)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_MP_RUN_PRIMARY");
+					npc.StartPathing();
+				}
+				npc.m_flSpeed = (npc.m_flCharge_delay < GetGameTime(npc.index)) ? 280.0 : 150.0;
+				npc.m_bAllowBackWalking = true;
+				float vBackoffPos[3];
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
+				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+			}
+			case 4:
+			{
+				if(npc.m_iChanged_WalkCycle != 2)
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 2;
+					npc.StartPathing();
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.5;
+					npc.SetActivity("ACT_MP_RUN_PRIMARY");
+					npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY", true,_,_,0.37);
+					npc.m_flSpeed = 350.0;
+					npc.PlayReloadSound();
+					DataPack ReloadAmmo;
+					CreateDataTimer(2.5, Timer_Runaway, ReloadAmmo, TIMER_FLAG_NO_MAPCHANGE);
+					ReloadAmmo.WriteCell(npc.index);
+					ReloadAmmo.WriteCell(31);
+				}
+				npc.m_bAllowBackWalking = true;
+				float vBackoffPos[3];
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
+				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+			}
 		}
-
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		
+		if(!npc.m_bFUCKYOU)
 		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
-		}
-		else 
-		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			if(flDistanceToTarget < npc.GetLeadRadius()) 
+			{
+				float vPredictedPos[3];
+				PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			}
 		}
 	}
 	else
@@ -294,18 +400,87 @@ public Action VictoriaBirdeye_OnTakeDamage(int victim, int &attacker, int &infli
 	}
 
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
-	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
-	if (ratio<0.5)
+	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	float ratio = float(health) / float(maxhealth);
+	if(ratio<0.5 || (float(health)-damage)<(maxhealth*0.5))
 	{
-		if (!npc.Anger)
+		if(!npc.Anger)
 		{
-			npc.PlayTeleportSound();
-			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
+			damage=0.0;
+			IncreaceEntityDamageTakenBy(npc.index, 0.000001, 0.2);
+			if(b_SUPERDUPERRAGE[npc.index])
+			{
+				npc.PlayIdleAlertSound();
+				npc.m_flMeleeArmor -= 0.3;
+				npc.m_flRangedArmor -= 0.3;
+				npc.m_bFUCKYOU = true;
+			}
+			else
+				CreateTimer(0.1, Timer_BirdEyeTele, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 			npc.Anger = true;
 		}
 	}
-	
 	return Plugin_Changed;
+}
+
+static Action Timer_BirdEyeTele(Handle timer, int iNPC)
+{
+	VictoriaBirdeye npc = view_as<VictoriaBirdeye>(iNPC);
+	float Vec[3], VecOld[3];
+	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", VecOld);
+	bool FUCKU=false;
+	if(GetRandomInt(0, 10) > 8)
+		FUCKU=true;
+	else
+	{
+		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1750.0, 1250.0);
+		switch(Decicion)
+		{
+			case 2:
+			{
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, 1750.0, 625.0);
+				if(Decicion == 2)
+				{
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1750.0, 312.5);
+					if(Decicion == 2)
+					{
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1750.0, 0.0);
+						if(Decicion == 3) FUCKU=true;
+					}
+					else if(Decicion == 3) FUCKU=true;
+				}
+				else if(Decicion == 3) FUCKU=true;
+			}
+			case 3: FUCKU=true;
+		}
+	}
+	if(FUCKU)
+	{
+		npc.PlayIdleAlertSound();
+		npc.m_flMeleeArmor -= 0.3;
+		npc.m_flRangedArmor -= 0.3;
+		npc.m_bFUCKYOU = true;
+	}
+	else
+	{
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", Vec);
+		NPC_SetGoalVector(npc.index, Vec, true);
+		float SoClose = GetVectorDistance(Vec, VecOld);
+		if(SoClose < 500.0)
+		{
+			npc.PlayIdleAlertSound();
+			npc.m_flMeleeArmor -= 0.3;
+			npc.m_flRangedArmor -= 0.3;
+			npc.m_bFUCKYOU = true;
+			TeleportEntity(npc.index, VecOld);
+			return Plugin_Stop;
+		}
+		ParticleEffectAt(VecOld, "teleported_red", 0.5);
+		ParticleEffectAt(Vec, "teleported_blue", 0.5);
+		TeleportEntity(npc.index, Vec);
+		npc.PlayTeleportSound();
+	}
+	return Plugin_Stop;
 }
 
 public void VictoriaBirdeye_NPCDeath(int entity)
@@ -315,7 +490,6 @@ public void VictoriaBirdeye_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
 
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
@@ -332,7 +506,7 @@ public void VictoriaBirdeye_NPCDeath(int entity)
 
 }
 
-int VictoriaBirdeyeSelfDefense(VictoriaBirdeye npc, float gameTime)
+int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 {
 	if(!npc.m_flAttackHappens)
 	{
@@ -436,7 +610,10 @@ int VictoriaBirdeyeSelfDefense(VictoriaBirdeye npc, float gameTime)
 					damageDealt *= 99.0;
 				
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				IncreaceEntityDamageTakenBy(target, 0.5, 5.0, true);
+				if(IsValidClient(target))
+					IncreaceEntityDamageTakenBy(target, 0.5, 5.0, true);
+				else
+					NpcStats_SilenceEnemy(target, (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 30.0 : 60.0));
 			} 
 		}
 	}
@@ -455,6 +632,101 @@ int VictoriaBirdeyeSelfDefense(VictoriaBirdeye npc, float gameTime)
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 1;
+}
+
+int VictoriaBirdeyeAssaultMode(VictoriaBirdeye npc, float gameTime, int target, float distance)
+{
+	if(npc.m_iOverlordComboAttack < 1)
+		return 4;
+	if(gameTime > npc.m_flNextMeleeAttack)
+	{
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 18.0))
+		{
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTargetWalkTo);
+					
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				npc.PlayRAGEattackSound();
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+				npc.m_iTargetWalkTo = Enemy_I_See;
+				if(ShouldNpcDealBonusDamage(npc.m_iTargetWalkTo))
+					b_GotBuilding[npc.index]=true;
+				else
+					b_GotBuilding[npc.index]=false;
+				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+				npc.FaceTowards(vecTarget, 20000.0);
+				Handle swingTrace;
+				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+				{
+					target = TR_GetEntityIndex(swingTrace);	
+						
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					float origin[3], angles[3];
+					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+					ShootLaser(npc.m_iWearable1, "bullet_tracer01_red", origin, vecHit, false);
+					npc.m_flNextMeleeAttack = gameTime + 0.1;
+					npc.m_flCharge_delay = gameTime + 0.8;
+					if(IsValidEnemy(npc.index, target))
+					{
+						float damageDealt = 30.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt *= 3.0;
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
+					}
+					npc.m_iOverlordComboAttack--;
+				}
+				delete swingTrace;
+			}
+			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0) || b_GotBuilding[npc.index])
+			{
+				//target is too far, try to close in
+				return 2;
+			}
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 14.0))
+			{
+				if(Can_I_See_Enemy_Only(npc.index, target))
+				{
+					//target is too close, try to keep distance
+					return 3;
+				}
+			}
+			return 2;
+		}
+		else
+		{
+			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 14.5) || b_GotBuilding[npc.index])
+			{
+				//target is too far, try to close in
+				return 2;
+			}
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 13.0))
+			{
+				if(Can_I_See_Enemy_Only(npc.index, target))
+				{
+					//target is too close, try to keep distance
+					return 3;
+				}
+			}
+		}
+	}
+	else
+	{
+		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 14.5) || b_GotBuilding[npc.index])
+		{
+			//target is too far, try to close in
+			return 2;
+		}
+		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 13.0))
+		{
+			if(Can_I_See_Enemy_Only(npc.index, target))
+			{
+				//target is too close, try to keep distance
+				return 3;
+			}
+		}
+	}
+	return 0;
 }
 
 void VictoriaBirdeye_SpawnAllyDuo(int ref)

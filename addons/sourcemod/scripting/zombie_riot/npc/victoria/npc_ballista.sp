@@ -98,7 +98,7 @@ methodmap VictorianBallista < CClotBody
 
 	public VictorianBallista(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianBallista npc = view_as<VictorianBallista>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "7000", ally));
+		VictorianBallista npc = view_as<VictorianBallista>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -134,7 +134,7 @@ methodmap VictorianBallista < CClotBody
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_directhit/c_directhit.mdl");
 		SetVariantString("0.9");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
 		SetVariantString("2.0");
@@ -331,7 +331,7 @@ void VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime)
 
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1;
-						npc.FireParticleRocket(vecTarget, 15.0 , projectile_speed , 100.0 , "flaregun_energyfield_red");
+						npc.FireParticleRocket(vecTarget, 20.0 , projectile_speed , 150.0 , "flaregun_energyfield_red");
 						npc.PlayIdleAlertSound();
 					}
 					delete swingTrace;

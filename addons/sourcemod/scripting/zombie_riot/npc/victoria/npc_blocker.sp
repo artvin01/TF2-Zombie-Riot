@@ -179,7 +179,7 @@ methodmap Blocker < CClotBody
 	
 	public Blocker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Blocker npc = view_as<Blocker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "7500", ally, false, true));
+		Blocker npc = view_as<Blocker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "3000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -206,7 +206,7 @@ methodmap Blocker < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = 275.0;
+		npc.m_flSpeed = 270.0;
 		npc.m_iState = 0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_iOverlordComboAttack = 3;
@@ -361,7 +361,7 @@ void BlockerSelfdefense(Blocker npc, float gameTime, int target, float distance)
 					}
 					else
 						HitDamage *= 1.5;
-						SDKHooks_TakeDamage(target, npc.index, npc.index, HitDamage, DMG_CLUB, -1, _, vecHit);
+					SDKHooks_TakeDamage(target, npc.index, npc.index, HitDamage, DMG_CLUB, -1, _, vecHit);
 
 					npc.PlayMeleeHitSound();
 				} 

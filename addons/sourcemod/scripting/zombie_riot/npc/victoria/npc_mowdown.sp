@@ -79,32 +79,31 @@ methodmap VictoriaMowdown < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-
 	public void PlayMinigunSound(bool Shooting) 
-	{
-		if(Shooting)
-		{
-			if(this.i_GunMode != 0)
-			{
-				StopSound(this.index, SNDCHAN_STATIC, "weapons/minigun_spin.wav");
-				EmitSoundToAll("weapons/minigun_shoot.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
-			}
-			this.i_GunMode = 0;
-		}
-		else
-		{
-			if(this.i_GunMode != 1)
-			{
-				StopSound(this.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunfire.wav");
-				EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
-			}
-			this.i_GunMode = 1;
-		}
-	}
+    {
+        if(Shooting)
+        {
+            if(this.i_GunMode != 0)
+            {
+                StopSound(this.index, SNDCHAN_STATIC, "weapons/minigun_spin.wav");
+                EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
+            }
+            this.i_GunMode = 0;
+        }
+        else
+        {
+            if(this.i_GunMode != 1)
+            {
+                StopSound(this.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunfire.wav");
+                EmitSoundToAll("weapons/minigun_spin.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
+            }
+            this.i_GunMode = 1;
+        }
+    }
 
 	public VictoriaMowdown(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.4", "10000", ally));
+		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.4", "13000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -287,7 +286,7 @@ void VictoriaMowdownSelfDefense(VictoriaMowdown npc)
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 25.0;
+					float damageDealt = 20.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 

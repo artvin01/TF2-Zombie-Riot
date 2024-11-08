@@ -39,7 +39,7 @@ methodmap VictoriaTank < CClotBody
 	
 	public VictoriaTank(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaTank npc = view_as<VictoriaTank>(CClotBody(vecPos, vecAng, "models/player/items/taunts/tank/tank.mdl", "2.5", "20000", ally, _, true));
+		VictoriaTank npc = view_as<VictoriaTank>(CClotBody(vecPos, vecAng, "models/player/items/taunts/tank/tank.mdl", "2.5", "100000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");

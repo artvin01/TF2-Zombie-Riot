@@ -100,12 +100,12 @@ methodmap VictorianRaider < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 60, _, 0.5, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5, 80);
 	}
 
 	public VictorianRaider(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianRaider npc = view_as<VictorianRaider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "8000", ally));
+		VictorianRaider npc = view_as<VictorianRaider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "2250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -186,7 +186,7 @@ public void VictorianRaider_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-
+	
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);

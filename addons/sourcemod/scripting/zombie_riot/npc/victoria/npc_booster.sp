@@ -129,7 +129,7 @@ methodmap VictorianBooster < CClotBody
 	}
 	public VictorianBooster(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianBooster npc = view_as<VictorianBooster>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5500", ally));
+		VictorianBooster npc = view_as<VictorianBooster>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -432,9 +432,9 @@ public void VictorianBooster_ClotThink(int iNPC)
 							{
 								
 								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 120.0, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 550.0, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
 								
 								
 								

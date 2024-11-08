@@ -113,7 +113,7 @@ methodmap VictorianMechanist_as < CClotBody
 	
 	public VictorianMechanist_as(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianMechanist_as npc = view_as<VictorianMechanist_as>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.2", "12500", ally, false));
+		VictorianMechanist_as npc = view_as<VictorianMechanist_as>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.2", "35000", ally, false));
 		
 		i_NpcWeight[npc.index] = 3;
 

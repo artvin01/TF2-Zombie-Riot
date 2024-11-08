@@ -95,7 +95,7 @@ methodmap VictoriaTaser < CClotBody
 
 	public VictoriaTaser(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaTaser npc = view_as<VictoriaTaser>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "8000", ally));
+		VictoriaTaser npc = view_as<VictoriaTaser>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "25000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -332,7 +332,7 @@ void VictoriaTaserSelfDefense(VictoriaTaser npc, float gameTime)
 							ShootFaster *= 0.75;
 						}
 						npc.m_flNextMeleeAttack = gameTime + ShootFaster;
-						int projectile = npc.FireParticleRocket(vecTarget, 45.0 , projectile_speed , 150.0 , "raygun_projectile_blue_crit");
+						int projectile = npc.FireParticleRocket(vecTarget, 75.0 , projectile_speed , 100.0 , "raygun_projectile_blue_crit");
 						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 						npc.PlayIdleAlertSound();
 						SDKHook(projectile, SDKHook_StartTouch, VictoriaTaser_Rocket_Particle_StartTouch);

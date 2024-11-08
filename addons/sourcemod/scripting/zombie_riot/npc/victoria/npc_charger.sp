@@ -117,7 +117,7 @@ methodmap VictorianCharger < CClotBody
 	
 	public VictorianCharger(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianCharger npc = view_as<VictorianCharger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "17500", ally));
+		VictorianCharger npc = view_as<VictorianCharger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -305,7 +305,7 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 40.0;
+					float damageDealt = 10.0;
 					float TimeMultiplier = 1.0;
 					TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
 					TimeMultiplier *= 0.50;

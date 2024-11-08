@@ -140,7 +140,7 @@ methodmap Victorian_Radioguard < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_flameball/c_flameball.mdl");
-		SetVariantString("2.0");
+		SetVariantString("2.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/hardhat_tower.mdl");
@@ -151,21 +151,13 @@ methodmap Victorian_Radioguard < CClotBody
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum24_brutes_braces/sum24_brutes_braces.mdl");
 
-		float origin[3], angles[3];
-		view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-		i_radioguard_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(origin, "drg_cow_rockettrail_burst_charged_blue", npc.index, "muzzle", {0.0,0.0,0.0}));
-
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 0, 255);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 80, 50, 50, 255);
 		return npc;
 	}
 }
@@ -337,7 +329,7 @@ void Victorian_RadioguardSelfDefense(Victorian_Radioguard npc, float gameTime)
 
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 5.0;
-						int projectile = npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 350.0 , "drg_cow_rockettrail_normal_blue");
+						int projectile = npc.FireParticleRocket(vecTarget, Hitdamage , projectile_speed , 600.0 , "drg_cow_rockettrail_normal_blue");
 						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 						SDKHook(projectile, SDKHook_StartTouch, Victoria_RadioGuard_Particle_StartTouch);
 						npc.PlayIdleAlertSound();
@@ -399,28 +391,28 @@ public void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if (!IsInvuln(target))
 		{
-			if(NpcStats_VictorianCallToArms(entity))
+			if(NpcStats_VictorianCallToArms(owner))
 			{
 				bool Knocked = false;
 				if(IsValidClient(target))
 				{
 					Knocked = true;
-					Custom_Knockback(owner, target, 2000.0, true);
+					Custom_Knockback(entity, target, 2500.0, true);
 					TF2_AddCondition(target, TFCond_LostFooting, 2.5);
 					TF2_AddCondition(target, TFCond_AirCurrent, 2.5);
 				}
 				if(!Knocked)
-					Custom_Knockback(owner, target, 2000.0, true); 
+					Custom_Knockback(entity, target, 2500.0, true); 
 			}
 			if(target > MaxClients)
 			{
-				StartBleedingTimer_Against_Client(target, owner, 8.0, 5);
+				StartBleedingTimer_Against_Client(target, owner, 12.0, 5);
 			}
 			else
 			{
 				if (!IsInvuln(target))
 				{
-					StartBleedingTimer_Against_Client(target, owner, 8.0, 5);
+					StartBleedingTimer_Against_Client(target, owner, 12.0, 5);
 				}
 			}
 		}

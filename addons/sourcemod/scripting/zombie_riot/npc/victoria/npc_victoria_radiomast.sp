@@ -39,6 +39,7 @@ void VictoriaRadiomast_OnMapStart_NPC()
 	PrecacheModel(VictoriaRadiomast_MODEL_1);
 	PrecacheModel(VictoriaRadiomast_MODEL_2);
 	PrecacheModel(VictoriaRadiomast_MODEL_3);
+	NPC_Add(data);
 }
 
 
@@ -70,7 +71,6 @@ methodmap VictoriaRadiomast < CClotBody
 		
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		i_NpcWeight[npc.index] = 999;
-		b_NpcUnableToDie[npc.index] = true;
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", VictoriaRadiomast_MODEL_1,_,1);
@@ -94,18 +94,18 @@ methodmap VictoriaRadiomast < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bLostHalfHealth = false;
 		npc.Anger = false;
-
-		Is_a_Medic[npc.index] = true;
+		npc.m_flNextMeleeAttack = 0.0;
+		
 		f_ExtraOffsetNpcHudAbove[npc.index] = 200.0;
 		i_NpcIsABuilding[npc.index] = true;
 		fl_GetClosestTargetTimeTouch[npc.index] = FAR_FUTURE;
 		b_thisNpcIsABoss[npc.index] = true;
 		if(!IsValidEntity(RaidBossActive))
 		{
-			RaidModeScaling = 10.0;	//just a safety net
+			RaidModeTime = FAR_FUTURE;
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
+			RaidModeScaling = 19.721;
 		}
 
 
@@ -143,7 +143,7 @@ methodmap VictoriaRadiomast < CClotBody
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			{
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "voice_player", 1, "%t", "Victorian Lighthouse Teleported in!");
+				ShowGameText(client_check, "voice_player", 1, "%t", "Victorian Radiomast Teleported in!");
 			}
 		}
 		EmitSoundToAll("weapons/rescue_ranger_teleport_receive_01.wav", npc.index, SNDCHAN_STATIC, 120, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
@@ -197,54 +197,246 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 
 	gameTime = GetGameTime() + 0.5;
 
-	if(!NpcStats_IsEnemySilenced(npc.index))
+	int team = GetTeam(npc.index);
+	if(team == 2)
 	{
-		int team = GetTeam(npc.index);
-		if(team == 2)
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			for(int client = 1; client <= MaxClients; client++)
+			if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
 			{
-				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
+				f_VictorianCallToArms[client] = gameTime;
+			}
+		}
+	}
+	
+	if(npc.m_flNextMeleeAttack < gameTime && MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
+	{
+		int ISVOLI=2;
+		for(int i=1; i<=ISVOLI; i++)
+		{
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
 				{
-					f_VictorianCallToArms[client] = gameTime;
+					for(int ii=1; ii<=ISVOLI; ii++)
+					{
+						switch(GetRandomInt(1, 7))
+						{
+							case 1:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",20000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 2:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",22500,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 3:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",25000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}	
+							case 4:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",25000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 5:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",20000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 6:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",22500,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 7:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",22000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+						}
+					}
+				}
+				case 2:
+				{
+					for(int ii=1; ii<=ISVOLI; ii++)
+					{
+						switch(GetRandomInt(1, 8))
+						{
+							case 1:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",27500,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 2:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",25000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 3:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",27500,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}	
+							case 4:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",20000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 5:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",22500,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 6:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",25000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 7:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",27000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 8:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",25000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+						}
+					}
+				}
+				case 3:
+				{
+					for(int ii=1; ii<=ISVOLI; ii++)
+					{
+						switch(GetRandomInt(1, 9))
+						{
+							case 1:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_basebreaker",20000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 2:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_booster",20000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 3:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_scorcher",22500,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}	
+							case 4:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mowdown",30000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 5:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mechafist",25000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 6:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_assaulter",_,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 7:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_antiarmor_infantry",_,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 8:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mortar",_,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 9:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_breachcart",_,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+						}
+					}
+				}
+				case 4:
+				{
+					for(int ii=1; ii<=ISVOLI; ii++)
+					{
+						switch(GetRandomInt(1, 8))
+						{
+							case 1:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_caffeinator",_,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 2:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_welder",_,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 3:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mechanist",_,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}	
+							case 4:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_tanker",_,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 5:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_pulverizer",_,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 6:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_ambusher",_,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 7:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_taser",_,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+							case 8:
+							{
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_tank",_,1.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+							}
+						}
+					}
 				}
 			}
 		}
+		npc.m_flNextMeleeAttack = gameTime+7.5;
+	}
 
-		for(int i; i < i_MaxcountNpcTotal; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
-			{
-				f_VictorianCallToArms[entity] = gameTime;
-			}
+			f_VictorianCallToArms[entity] = gameTime;
 		}
 	}
 
 	if(!npc.Anger && npc.m_bLostHalfHealth)
 	{
-		int team = GetTeam(npc.index);
+		team = GetTeam(npc.index);
 
 		int health = ReturnEntityMaxHealth(npc.index) / 10;
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-		
-		int other = NPC_CreateByName("npc_shotgunner", -1, pos, ang, team, "EX");
-		if(other > MaxClients)
+		for(int i=1; i<=4; i++)
 		{
-			if(team != TFTeam_Red)
-				Zombies_Currently_Still_Ongoing++;
-			
-			SetEntProp(other, Prop_Data, "m_iHealth", health);
-			SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
-			NpcAddedToZombiesLeftCurrently(other, true);
-			fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
-			fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
-			fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-			fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-			b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-			b_StaticNPC[other] = b_StaticNPC[npc.index];
-		}
+			int other = NPC_CreateByName("npc_radioguard", -1, pos, ang, team, "EX");
+			if(other > MaxClients)
+			{
+				if(team != TFTeam_Red)
+					Zombies_Currently_Still_Ongoing++;
+				
+				SetEntProp(other, Prop_Data, "m_iHealth", health);
+				SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
+				NpcAddedToZombiesLeftCurrently(other, true);
+				fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
+				fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
+				fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
+				fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
+				b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
+				b_StaticNPC[other] = b_StaticNPC[npc.index];
+			}
+			int other1 = NPC_CreateByName("npc_radio_repair", -1, pos, ang, team, "EX");
+			if(other1 > MaxClients)
+			{
+				if(team != TFTeam_Red)
+					Zombies_Currently_Still_Ongoing++;
+				
+				SetEntProp(other1, Prop_Data, "m_iHealth", health);
+				SetEntProp(other1, Prop_Data, "m_iMaxHealth", health);
+				NpcAddedToZombiesLeftCurrently(other1, true);
+				fl_Extra_MeleeArmor[other1] = fl_Extra_MeleeArmor[npc.index];
+				fl_Extra_RangedArmor[other1] = fl_Extra_RangedArmor[npc.index];
+				fl_Extra_Speed[other1] = fl_Extra_Speed[npc.index];
+				fl_Extra_Damage[other1] = fl_Extra_Damage[npc.index];
+				b_thisNpcIsABoss[other1] = b_thisNpcIsABoss[npc.index];
+				b_StaticNPC[other1] = b_StaticNPC[npc.index];
+			}
+		 }
+		npc.Anger = true;
 	}
 
 }
@@ -283,3 +475,54 @@ public void VictoriaRadiomast_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 }
 
+void VictoriaRadiomastSpawnEnemy(int iNPC, char[] plugin_name, int health = 0, float damage, int count, bool is_a_boss = false)
+{
+	VictoriaRadiomast npc = view_as<VictoriaRadiomast>(iNPC);
+	if(GetTeam(npc.index) == TFTeam_Red)
+	{
+		count /= 2;
+		if(count < 1)
+		{
+			count = 1;
+		}
+		for(int Spawns; Spawns <= count; Spawns++)
+		{
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			
+			int summon = NPC_CreateByName(plugin_name, -1, pos, ang, GetTeam(npc.index));
+			if(summon > MaxClients)
+			{
+				fl_Extra_Damage[summon] = damage;
+				if(!health)
+				{
+					health = GetEntProp(summon, Prop_Data, "m_iMaxHealth");
+				}
+				SetEntProp(summon, Prop_Data, "m_iHealth", health / 5);
+				SetEntProp(summon, Prop_Data, "m_iMaxHealth", health / 5);
+			}
+		}
+		return;
+	}
+		
+	Enemy enemy;
+	enemy.Index = NPC_GetByPlugin(plugin_name);
+	if(health != 0)
+	{
+		enemy.Health = health;
+	}
+	enemy.Is_Boss = view_as<int>(is_a_boss);
+	enemy.Is_Immune_To_Nuke = true;
+	//do not bother outlining.
+	enemy.ExtraMeleeRes = 1.0;
+	enemy.ExtraRangedRes = 1.0;
+	enemy.ExtraSpeed = 1.0;
+	enemy.ExtraDamage = 1.0;
+	enemy.ExtraSize = 1.0;		
+	enemy.Team = GetTeam(npc.index);
+	for(int i; i<count; i++)
+	{
+		Waves_AddNextEnemy(enemy);
+	}
+	Zombies_Currently_Still_Ongoing += count;	// FIXME
+}

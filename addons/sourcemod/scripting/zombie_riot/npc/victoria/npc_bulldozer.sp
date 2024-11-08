@@ -124,7 +124,7 @@ methodmap Bulldozer < CClotBody
 	
 	public Bulldozer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Bulldozer npc = view_as<Bulldozer>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "25000", ally));
+		Bulldozer npc = view_as<Bulldozer>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "8000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -335,7 +335,7 @@ void BulldozerSelfDefense(Bulldozer npc, float gameTime, int target, float dista
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 75.0;
+					float damageDealt = 85.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 

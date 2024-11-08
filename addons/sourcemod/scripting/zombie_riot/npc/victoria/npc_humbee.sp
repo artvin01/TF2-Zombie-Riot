@@ -33,13 +33,13 @@ methodmap VictorianHumbee < CClotBody
 		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
- 	{
+	{
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6, _);
 	}
 	
 	public VictorianHumbee(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianHumbee npc = view_as<VictorianHumbee>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "20000", ally, _, true));
+		VictorianHumbee npc = view_as<VictorianHumbee>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "9000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_KART_IDLE");
@@ -148,7 +148,7 @@ static void ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
-		if(distance < npc.GetLeadRadius())
+		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 50.0)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
@@ -160,70 +160,26 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 		
-		if(npc.m_flAttackHappens)
+		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			if(npc.m_flAttackHappens < gameTime)
+
+			float damageDeal = 35.0;
+			float ProjectileSpeed = 600.0;
+
+			if(NpcStats_VictorianCallToArms(npc.index))
 			{
-				if(Rogue_Paradox_RedMoon())
-				{
-					target = Can_I_See_Enemy(npc.index, target);
-					if(IsValidEnemy(npc.index, target))
-					{
-						npc.m_iTarget = target;
-						npc.m_flGetClosestTargetTime = gameTime + 0.45;
-					}
-					else
-					{
-						npc.m_flAttackHappens = 0.0;
-					}
-				}
-
-				float damageDeal = 15.0;
-				float ProjectileSpeed = 600.0;
-
-				if(NpcStats_VictorianCallToArms(npc.index))
-				{
-					ProjectileSpeed *= 1.5;
-				}
-
-				npc.AddActivityViaSequence("taunt_vehicle_allclass_honk");
-				npc.PlayMeleeSound();
-
-				int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,7.5);
-				if(entity != -1)
-				{
-					//max duration of 4 seconds beacuse of simply how fast they fire
-					CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-				}
-
-				npc.m_iOverlordComboAttack--;
-
-				if(npc.m_iOverlordComboAttack < 1)
-				{
-					npc.m_flAttackHappens = 0.0;
-				}
-				else
-				{
-					npc.m_flAttackHappens = gameTime + 0.15;
-				}
+				ProjectileSpeed *= 1.5;
 			}
-		}
-		else if(npc.m_flNextMeleeAttack < gameTime)
-		{
-			npc.m_iOverlordComboAttack += 1;
-			npc.m_flNextMeleeAttack = gameTime + 0.45;
-			//npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
 
-			if(npc.m_iOverlordComboAttack > 1)
+			npc.PlayMeleeSound();
+
+			int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,7.5);
+			if(entity != -1)
 			{
-				target = Can_I_See_Enemy(npc.index, target);
-				if(IsValidEnemy(npc.index, target))
-				{
-					npc.m_iTarget = target;
-					npc.m_flGetClosestTargetTime = gameTime + 2.45;
-					npc.m_flAttackHappens = gameTime + 0.15;
-				}
+				//max duration of 4 seconds beacuse of simply how fast they fire
+				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			}
+			npc.m_flNextMeleeAttack = gameTime + 1.50;
 		}
 	}
 	else

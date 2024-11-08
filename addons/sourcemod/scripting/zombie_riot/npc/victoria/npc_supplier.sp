@@ -240,7 +240,7 @@ public void VictorianSupplier_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.00;
-		ExpidonsaGroupHeal(npc.index, 200.0, 5, 40.0, 1.0, false,SupplierGiveArmor);
+		ExpidonsaGroupHeal(npc.index, 100.0, 5, 40.0, 1.0, false,SupplierGiveArmor);
 	}
 	VictorianSupplierSelfDefense(npc, npc.m_iTarget, GetGameTime(npc.index)); 
 }
@@ -270,7 +270,7 @@ void VictorianSupplierSelfDefense(VictorianSupplier npc, int target, float gameT
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 5;
 				npc.SetActivity("ACT_MP_STAND_SECONDARY");
-				npc.m_flSpeed = 250.0;
+				npc.m_flSpeed = 0.0;
 				npc.StartPathing();
 			}	
 			if(gameTime > npc.m_flNextMeleeAttack)
@@ -296,7 +296,7 @@ void VictorianSupplierSelfDefense(VictorianSupplier npc, int target, float gameT
 						{
 							float damageDealt = 10.0;
 							if(ShouldNpcDealBonusDamage(target))
-								damageDealt *= 3.0;
+								damageDealt *= 2.0;
 
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);

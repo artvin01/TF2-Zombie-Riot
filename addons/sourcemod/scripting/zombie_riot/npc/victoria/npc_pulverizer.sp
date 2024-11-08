@@ -103,7 +103,7 @@ methodmap VictorianPulverizer < CClotBody
 	
 	public VictorianPulverizer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianPulverizer npc = view_as<VictorianPulverizer>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "3000", ally));
+		VictorianPulverizer npc = view_as<VictorianPulverizer>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "30000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -266,7 +266,7 @@ void VictorianPulverizerSelfDefense(VictorianPulverizer npc)
 		npc.PlayMinigunSound(true);
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 8.0, 1000.0, 150.0, "superrare_burning2", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 12.0, 1000.0, 150.0, "superrare_burning2", true);
 		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
 		CreateTimer(0.75, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
@@ -312,13 +312,13 @@ public void VictorianPulverizer_Rocket_Particle_StartTouch(int entity, int targe
 		}
 		if(target > MaxClients)
 		{
-			StartBleedingTimer_Against_Client(target, entity, 5.0, BurninHell);
+			StartBleedingTimer_Against_Client(target, entity, 10.0, BurninHell);
 		}
 		else
 		{
 			if (!IsInvuln(target))
 			{
-				StartBleedingTimer_Against_Client(target, entity, 5.0, BurninHell);
+				StartBleedingTimer_Against_Client(target, entity, 10.0, BurninHell);
 				TF2_IgnitePlayer(target, target, 2.0);
 			}
 		}

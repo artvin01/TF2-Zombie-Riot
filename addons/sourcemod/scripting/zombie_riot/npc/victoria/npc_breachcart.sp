@@ -39,7 +39,7 @@ methodmap VictoriaBreachcart < CClotBody
 	
 	public VictoriaBreachcart(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaBreachcart npc = view_as<VictoriaBreachcart>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "10000", ally, _, true));
+		VictoriaBreachcart npc = view_as<VictoriaBreachcart>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_RIDER_RUN");
@@ -66,7 +66,7 @@ methodmap VictoriaBreachcart < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
-		npc.m_flSpeed = 210.0;
+		npc.m_flSpeed = 190.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -175,7 +175,7 @@ static void ClotThink(int iNPC)
 
 			npc.PlayMeleeSound();
 
-			int health = ReturnEntityMaxHealth(npc.index) / 10;
+			int health = ReturnEntityMaxHealth(npc.index) / 15;
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);

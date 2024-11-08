@@ -89,7 +89,7 @@ methodmap VictorianShotgunner < CClotBody
 	
 	public VictorianShotgunner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianShotgunner npc = view_as<VictorianShotgunner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "2000", ally));
+		VictorianShotgunner npc = view_as<VictorianShotgunner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "1750", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -280,7 +280,7 @@ int VictorianShotgunnerSelfDefense(VictorianShotgunner npc, float gameTime, int 
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 60.0;
+						float damageDealt = 10.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 						if(NpcStats_VictorianCallToArms(npc.index))

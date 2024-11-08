@@ -103,7 +103,7 @@ methodmap VictoriaScorcher < CClotBody
 	
 	public VictoriaScorcher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaScorcher npc = view_as<VictoriaScorcher>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "3000", ally));
+		VictoriaScorcher npc = view_as<VictoriaScorcher>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "7000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

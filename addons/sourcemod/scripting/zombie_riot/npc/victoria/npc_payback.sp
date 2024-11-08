@@ -96,7 +96,7 @@ methodmap VictorianPayback < CClotBody
 	
 	public VictorianPayback(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.35", "15000", ally, false, true));
+		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.35", "2500", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -123,7 +123,7 @@ methodmap VictorianPayback < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 280.0;
+		npc.m_flSpeed = 240.0;
 		
 		
 		int skin = 1;
