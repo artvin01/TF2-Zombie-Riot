@@ -25,6 +25,7 @@ static Handle g_hSDKEndLagComp;
 
 static Handle SDKGetShootSound;
 static Handle SDKBecomeRagdollOnClient;
+static Handle SDKSetSpeed;
 
 void SDKCall_Setup()
 {
@@ -146,6 +147,12 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
+	
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFPlayer::TeamFortress_SetSpeed()");
+	SDKSetSpeed = EndPrepSDKCall();
+	if(!SDKSetSpeed)
+		LogError("[Gamedata] Could not find CTFPlayer::TeamFortress_SetSpeed()");
 	
 	delete gamedata;
 }
@@ -444,3 +451,15 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 	}
 }
 #endif
+
+void SDKCall_SetSpeed(int client)
+{
+	if(SDKSetSpeed)
+	{
+		SDKCall(SDKSetSpeed, client);
+	}
+	else
+	{
+		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.001);
+	}
+}

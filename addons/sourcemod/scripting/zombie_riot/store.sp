@@ -562,13 +562,28 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
 void Store_OnCached(int client)
 {
-	if(Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
+	if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
 	{
-		if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
+		int amount;
+		if(Items_HasNamedItem(client, "ZR Contest 2024 Top 10"))
+		{
+			amount = 100;
+		}
+		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 20"))
+		{
+			amount = 75;
+		}
+		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 30") || Items_HasNamedItem(client, "ZR Contest 2024 Artist"))
+		{
+			amount = 50;
+		}
+
+		if(amount)
 		{
 			Store_SetNamedItem(client, "ZR Contest Nominator [???] Cash", 1);
-			CashRecievedNonWave[client] += 50;
-			CashSpent[client] -= 50;
+			Building_GiveRewardsUse(0, client, amount);
+			//CashRecievedNonWave[client] += amount;
+			//CashSpent[client] -= amount;
 		}
 	}
 
@@ -577,8 +592,9 @@ void Store_OnCached(int client)
 		if(!Store_HasNamedItem(client, "ZR Content Creator [???] Cash"))
 		{
 			Store_SetNamedItem(client, "ZR Content Creator [???] Cash", 1);
-			CashRecievedNonWave[client] += 50;
-			CashSpent[client] -= 50;
+			Building_GiveRewardsUse(0, client, 50);
+			//CashRecievedNonWave[client] += 50;
+			//CashSpent[client] -= 50;
 		}
 	}
 }
@@ -951,25 +967,26 @@ void Store_ConfigSetup()
 	KeyValues kv = new KeyValues("Weapons");
 	kv.SetEscapeSequences(true);
 	kv.ImportFromFile(buffer);
-	RequestFrame(DeleteHandle, kv);
 	
 	char blacklist[6][32];
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
 	int blackcount;
 	if(buffer[0])
-		blackcount = ExplodeString(buffer, ";", blacklist, sizeof(blacklist), sizeof(blacklist[]));
+		blackcount = ExplodeString(buffer, ",", blacklist, sizeof(blacklist), sizeof(blacklist[]));
 	
 	char whitelist[6][32];
 	zr_tagwhitelist.GetString(buffer, sizeof(buffer));
 	int whitecount;
 	if(buffer[0])
-		whitecount = ExplodeString(buffer, ";", whitelist, sizeof(whitelist), sizeof(whitelist[]));
+		whitecount = ExplodeString(buffer, ",", whitelist, sizeof(whitelist), sizeof(whitelist[]));
 	
 	kv.GotoFirstSubKey();
 	do
 	{
 		ConfigSetup(-1, kv, 0, false, false, whitelist, whitecount, blacklist, blackcount);
 	} while(kv.GotoNextKey());
+
+	delete kv;
 
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
 	StoreBalanceLog = new KeyValues("UsageLog");
@@ -994,7 +1011,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		{
 			int filters = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 			
-			if(whitecount)
+			if(whitecount && (item.Hidden || zr_tagwhitehard.BoolValue))
 			{
 				item.Hidden = true;
 				
@@ -2299,6 +2316,32 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	return false;
 }
 
+// If timed is less than 0, super sale
+void Store_DiscountNamedItem(const char[] name, int timed = 0)
+{
+	int length = StoreItems.Length;
+	for(int i; i < length; i++)
+	{
+		static Item item;
+		StoreItems.GetArray(i, item);
+		if(StrEqual(name, item.Name, false))
+		{
+			if(timed)
+			{
+				item.NPCSeller_WaveStart = timed;
+			}
+			else
+			{
+				item.NPCSeller_First = timed < 0;
+				item.NPCSeller = true;
+			}
+
+			StoreItems.SetArray(i, item);
+			break;
+		}
+	}
+}
+
 void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave = false)
 {
 	int amount;
@@ -2991,6 +3034,10 @@ static void MenuPage(int client, int section)
 			{
 				menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client]);
 			}
+			else if(Database_IsLan())
+			{
+				menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client]);
+			}
 			else if(Database_IsCached(client))
 			{
 				menu.SetTitle("%t\n \n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
@@ -3005,6 +3052,10 @@ static void MenuPage(int client, int section)
 			if(UsingChoosenTags[client])
 			{
 				menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			}
+			else if(Database_IsLan())
+			{
+				menu.SetTitle("%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], "Store Discount");
 			}
 			else if(Database_IsCached(client))
 			{
@@ -3080,7 +3131,15 @@ static void MenuPage(int client, int section)
 			if(!item.Starter)
 				continue;
 		}
-		else if(item.Hidden || item.Level > ClientLevel)
+		else if(item.Level > ClientLevel)
+		{
+			continue;
+		}
+		else if(item.NPCSeller || item.NPCSeller_WaveStart != 0)
+		{
+			//empty
+		}
+		else if(item.Hidden)
 		{
 			continue;
 		}
@@ -3331,7 +3390,7 @@ static void MenuPage(int client, int section)
 			menu.AddItem("-24", buffer);
 		}
 
-		if(Level[client] > STARTER_WEAPON_LEVEL)
+		if(Level[client] > STARTER_WEAPON_LEVEL || Database_IsLan())
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Cherrypick Weapon");
 			menu.AddItem("-30", buffer);
@@ -5780,6 +5839,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_SkadiWeapon(client, entity);
 		Enable_Hunting_Rifle(client, entity);
 		Weapon_Anti_Material_Rifle_Deploy(client, entity);
+		Walter_Enable(client, entity);
 	}
 
 	return entity;

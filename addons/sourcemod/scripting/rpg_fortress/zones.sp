@@ -86,10 +86,35 @@ void Zones_Rebuild()
 			NPC_Despawn(entity);
 	}
 	
+	char buffer[PLATFORM_MAX_PATH];
+	for(int i=MAXENTITIES; i>MaxClients; i--)
+	{
+		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
+		{
+			if(!StrContains(buffer, "prop_dynamic") || !StrContains(buffer, "point_worldtext") || !StrContains(buffer, "info_particle_system"))
+			{
+				GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(!StrEqual(buffer, "rpg_fortress"))
+					continue;
+			}
+			else if(!StrContains(buffer, "prop_physics"))
+			{
+				GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(StrContains(buffer, "rpg_item"))
+					continue;
+			}
+			else
+			{
+				continue;
+			}
+
+			RemoveEntity(i);
+		}
+	}
+	
 	ZonesKv.Rewind();
 	if(ZonesKv.GotoFirstSubKey())
 	{
-		char buffer[PLATFORM_MAX_PATH];
 		float pos[3], mins[3], maxs[3];
 		
 		do
@@ -181,6 +206,8 @@ void Zones_Rebuild()
 		}
 		while(ZonesKv.GotoNextKey());
 	}
+
+	Plots_ZoneCached();
 }
 
 static void OnEnter(int entity, const char[] name, int zone)

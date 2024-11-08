@@ -1745,11 +1745,6 @@ stock void GetAbsOrigin(int client, float v[3])
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
 }
 
-public void DeleteHandle(Handle handle)
-{
-	delete handle;
-}
-
 stock bool IsValidClient( int client)
 {	
 	if ( client <= 0 || client > MaxClients )
@@ -2986,6 +2981,9 @@ int inflictor = 0)
 
 		if(ExplosionDmgMultihitFalloff == EXPLOSION_AOE_DAMAGE_FALLOFF)
 			ExplosionDmgMultihitFalloff = Attributes_Get(weapon, 4013, EXPLOSION_AOE_DAMAGE_FALLOFF);
+
+		if(explosion_range_dmg_falloff == EXPLOSION_RANGE_FALLOFF)
+			explosion_range_dmg_falloff = Attributes_Get(weapon, Attrib_OverrideExplodeDmgRadiusFalloff, EXPLOSION_RANGE_FALLOFF);
 	}
 #endif
 
@@ -3223,11 +3221,11 @@ int inflictor = 0)
 				Call_StartFunction(null, FunctionToCallBeforeHit);
 				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
-				Call_PushFloat(damage_1);
+				Call_PushFloatRef(damage_1);
 				Call_PushCell(weapon);
 				Call_Finish(GetBeforeDamage);
 			}
-			if(damage > 0.0)
+			if(damage_1 > 0.0)
 			{
 				//npcs do not take damage from drown damage, so what we will do instead
 				//is to make it do slash damage, slash damage ignores most resistances like drown does.
@@ -3974,7 +3972,7 @@ float RPGStocks_CalculatePowerLevel(int client)
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 	float ResMulti;
-	ResMulti = form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
+	ResMulti = form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
 	
 	BigTotal *= (1.0 / ResMulti);
 

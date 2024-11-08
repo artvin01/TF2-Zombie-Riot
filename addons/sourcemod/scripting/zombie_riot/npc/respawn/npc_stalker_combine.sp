@@ -77,7 +77,7 @@ methodmap StalkerShared < CClotBody
 void StalkerCombine_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower Subject");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Subject");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_combine");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;

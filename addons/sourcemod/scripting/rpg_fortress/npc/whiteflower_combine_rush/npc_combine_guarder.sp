@@ -169,10 +169,11 @@ public void Combine_Guarder_ClotThink(int iNPC)
 		spawnRing_Vectors(NpcLoc, 300.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 200, 50, 50, 200, 1, 0.3, 5.0, 8.0, 3);	
 		if(npc.m_flTimeTillSelfExplode < gameTime)
 		{
+			npc.m_flTimeTillSelfExplode = 0.0;
 			SpawnSmallExplosionNotRandom(NpcLoc);
 			npc.PlayExplodeSound();
 			//kabomm
-			float damageDealt = 1000000.0;
+			float damageDealt = 2500000.0;
 			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, _, 300.0, 1.0, _, true, 20);
 			npc.m_flTimeTillAllowAction = gameTime + 1.0;
 			if(npc.m_iChanged_WalkCycle != 9)
@@ -281,6 +282,7 @@ public void Combine_Guarder_ClotThink(int iNPC)
 					//close enough.
 					//TODO
 					npc.m_flTimeTillSelfExplode = gameTime + 1.0;
+					npc.m_flTimeTillSelfExplodeCD = gameTime + 13.0;
 					if(npc.m_iChanged_WalkCycle != 8)
 					{
 						npc.m_bisWalking = false;
@@ -313,7 +315,7 @@ public void Combine_Guarder_ClotThink(int iNPC)
 
 						// E2 L15 = 157.5, E2 L20 = 175
 						KillFeed_SetKillIcon(npc.index, "sword");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 250000.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 650000.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlaySwordHit();
 					}
 				}
@@ -345,7 +347,7 @@ public void Combine_Guarder_ClotThink(int iNPC)
 
 						// E2 L15 = 225, E2 L20 = 250
 						KillFeed_SetKillIcon(npc.index, "taunt_pyro");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 500000.0, DMG_BULLET, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 800000.0, DMG_BULLET, -1, _, vecTarget);
 					}
 				}
 

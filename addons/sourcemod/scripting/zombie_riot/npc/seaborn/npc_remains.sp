@@ -111,6 +111,9 @@ public void Remains_ClotThink(int iNPC)
 
 void Remains_SpawnDrop(float pos[3], int type)
 {
+	if(Rogue_Whiteflower_RemainDrop(type))
+		return;
+	
 	char data[4];
 	IntToString(type, data, sizeof(data));
 	NPC_CreateById(RemainsID, -1, pos, {0.0, 0.0, 0.0}, TFTeam_Red, data);

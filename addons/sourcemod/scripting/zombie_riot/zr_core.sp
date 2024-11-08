@@ -203,7 +203,10 @@ enum
 	WEAPON_FULLMOON = 123,
 	WEAPON_SKADI = 124,
 	WEAPON_HUNTING_RIFLE = 125,
-	WEAPON_URANIUM_RIFLE = 126
+	WEAPON_URANIUM_RIFLE = 126,
+	WEAPON_LOGOS = 127,
+	WEAPON_WALTER = 128,
+	WEAPON_OLDINFINITYBLADE = 129
 }
 
 enum
@@ -225,6 +228,7 @@ enum
 	Type_Void,
 	Type_Ruina,
 	Type_IberiaExpiAlliance,
+	Type_WhiteflowerSpecial,
 	Type_Victoria,
 }
 
@@ -236,12 +240,12 @@ int CurrentPlayers;
 ConVar zr_voteconfig;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
+ConVar zr_tagwhitehard;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
 ConVar CvarNoSpecialZombieSpawn;
-ConVar zr_spawnprotectiontime;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_allowfreeplay;
@@ -560,6 +564,8 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_yakuza.sp"
 #include "zombie_riot/custom/weapon_skadi.sp"
 #include "zombie_riot/custom/weapon_hunting_rifle.sp"
+#include "zombie_riot/custom/wand/weapon_logos.sp"
+#include "zombie_riot/custom/weapon_walter.sp"
 
 void ZR_PluginLoad()
 {
@@ -813,6 +819,7 @@ void ZR_MapStart()
 	Wrathful_Blade_Precache();
 	Yakuza_MapStart();
 	ResetMapStartSkadiWeapon();
+	Logos_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1710,7 +1717,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							dieingstate[client] = 0;
 							Store_ApplyAttribs(client);
-							TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+							SDKCall_SetSpeed(client);
 							int entity, i;
 							while(TF2U_GetWearable(client, entity, i))
 							{
@@ -2115,7 +2122,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 			if(IsPlayerAlive(client))
 			{
 				SetEntityMoveType(client, MOVETYPE_WALK);
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -2163,7 +2170,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 					
 
 					Store_ApplyAttribs(client);
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+					SDKCall_SetSpeed(client);
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{

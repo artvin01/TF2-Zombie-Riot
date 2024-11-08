@@ -67,7 +67,7 @@ void CombineCollos_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower Golden Collos");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Golden Collos");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_collos_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_gold");
 	data.IconCustom = true;

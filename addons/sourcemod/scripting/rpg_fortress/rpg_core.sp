@@ -3,12 +3,14 @@
 
 #define ITEM_CASH	"Credits"
 #define ITEM_XP		"XP"
+#define ITEM_MASTERY	"Form Mastery"
 #define MIN_FADE_DISTANCE 3000.0
 #define MAX_FADE_DISTANCE 3700.0
 
 enum
 {
 	WEAPON_BIGFRYINGPAN = 1,
+	WEAPON_LANTEAN = 2,
 }
 
 int BaseStrength;
@@ -24,8 +26,6 @@ int BaseUpgradeCost;
 int BaseUpgradeScale;
 int BaseUpdateStats = 1;
 int BaseMaxLevel;
-int BaseMaxExperience;
-int BaseMaxExperiencePerLevel;
 ConVar mp_disable_respawn_times;
 ConVar CvarSkyName;
 
@@ -77,7 +77,6 @@ bool b_DungeonContracts_SlowerAttackspeed[MAXTF2PLAYERS];
 bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 //bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES];
-float f_MomentumAntiOpSpam[MAXENTITIES];
 
 static char MapConfig[64];
 
@@ -88,6 +87,7 @@ Cookie HudSettingsExtra_Cookies;
 
 #include "rpg_fortress/races.sp"
 #include "rpg_fortress/actor.sp"
+#include "rpg_fortress/cooking.sp"
 #include "rpg_fortress/crafting.sp"
 #include "rpg_fortress/dungeon.sp"
 #include "rpg_fortress/editor.sp"
@@ -109,6 +109,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/worldtext.sp"
 #include "rpg_fortress/zones.sp"
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
+#include "rpg_fortress/custom/wand/weapon_lantean_wand.sp"
 #include "rpg_fortress/custom/weapon_samurai_sword.sp"
 #include "rpg_fortress/custom/weapon_brick.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
@@ -123,6 +124,10 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/emblem_doublejump.sp"
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
 #include "rpg_fortress/custom/skill_big_bang.sp"
+#include "rpg_fortress/custom/octane_kick_melee.sp"
+#include "rpg_fortress/custom/ranged_back_rocket.sp"
+#include "rpg_fortress/custom/mage_skill_oblitiration_shot.sp"
+
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -263,8 +268,13 @@ void RPG_MapStart()
 	BigBang_Map_Precache();
 	Abiltity_Coin_Flip_Map_Change();
 	Abiltity_TrueStrength_Shield_Shield_MapStart();
-
+	OctaneKick_Map_Precache();
+	BackRockets_MapStart();
+	Mage_Oblitiration_Shot_Map_Precache();
+	Weapon_lantean_Wand_ClearAll();
+	Weapon_lantean_Wand_Map_Precache();
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
+	MapStartPlotMisc();
 
 	/*
 	HealingPotion_Map_Start();
@@ -318,6 +328,7 @@ void RPG_ConfigSetup()
 {
 	Zones_ConfigSetup();
 	Actor_ConfigSetup();
+	Cooking_ConfigSetup();
 	Crafting_ConfigSetup();
 	Dungeon_ConfigSetup();
 	Fishing_ConfigSetup();
@@ -426,7 +437,7 @@ void RPG_ClientDisconnect_Post()
 
 void RPG_EntityCreated(int entity, const char[] classname)
 {
-	f_MomentumAntiOpSpam[entity] = 0.0;
+	Level[entity] = 0;
 	b_NpcIsInADungeon[entity] = false;
 	i_NpcFightOwner[entity] = false;
 	f_SingerBuffedFor[entity] = 0.0;
@@ -724,15 +735,26 @@ void RPGCore_ResourceReduction(int client, int amount, bool isformdrain = false)
 
 	float multi = 1.0;
 	if(!isformdrain)
-		multi = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
+		multi = form.GetFloatStat(client, Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
 	
 	Current_Mana[client] -= RoundToNearest(float(amount) * (1.0 / multi));
 	if(Current_Mana[client] <= 0)
 	{
 		Current_Mana[client] = 0;
+		bool CancelDeform = false;
+		if(form.Func_FormEnergyRunOutLogic != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, form.Func_FormEnergyRunOutLogic);
+			Call_PushCell(client);
+			Call_Finish(CancelDeform);
+		}
+		if(CancelDeform)
+			return;
 		//De-Transform logic.
 		De_TransformClient(client);
-		TF2_StunPlayer(client, 5.0, 0.25, TF_STUNFLAGS_LOSERSTATE|TF_STUNFLAG_SLOWDOWN);
+		TF2_StunPlayer(client, 3.0, 0.75, TF_STUNFLAGS_LOSERSTATE|TF_STUNFLAG_SLOWDOWN);
+		f_TransformationDelay[client] = GetGameTime() + 6.0;
+		//less punishment.
 		int i, entity;
 		while(TF2_GetItem(client, entity, i))
 		{
@@ -846,7 +868,7 @@ bool RPGCore_ClientAllowedToTargetNpc(int victim, int attacker)
 		}
 	}
 	//if someone attacked them while in a party, then allow.
-	if(!EnemyWasAttackedBefore && i_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] > 0)
+	if(!EnemyWasAttackedBefore && i_npcspawnprotection[victim] != -1 && i_NpcIsUnderSpawnProtectionInfluence[victim] > 0)
 	{
 		if(!RPGSpawns_GivePrioLevel(Level[victim], Level[attacker]))
 		{
@@ -962,7 +984,12 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 		}
 		MasteryAdd += GetRandomFloat(0.11, 0.13);
 		int totalInt = Stats_Intelligence(client);
-		if(totalInt >= 1000)
+		if(totalInt >= 6000)
+		{
+			MasteryAdd *= 1.6875;
+			SPrintToChat(client, "Your Extreme intellect boosts you, your current form obtained %0.2f (1.6875x) Mastery points.",MasteryAdd);
+		}
+		else if(totalInt >= 1000)
 		{
 			MasteryAdd *= 1.25;
 			SPrintToChat(client, "Your intellect boosts you, your current form obtained %0.2f (1.25x) Mastery points.",MasteryAdd);

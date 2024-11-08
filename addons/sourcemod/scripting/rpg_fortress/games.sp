@@ -134,7 +134,7 @@ void Games_ClientEnter(int client, const char[] name)
 
 static void StartGame(int client, const char[] game)
 {
-	if(GetEntityMoveType(client) == MOVETYPE_NOCLIP)
+	if(Editor_MenuFunc(client) != INVALID_FUNCTION)
 		return;
 	
 	int index = StringToInt(game);

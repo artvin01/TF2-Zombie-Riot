@@ -6,7 +6,7 @@
 #pragma newdecls required
 
 //#define DEBUG
-#define PLUGIN_VERSION	"1.5"
+#define PLUGIN_VERSION	"1.6.1"
 
 enum struct LastItem
 {
@@ -19,8 +19,6 @@ enum struct LastItem
 Database DataBase;
 bool IgnoreLoad;
 bool InQuery;
-int QueryCount;
-bool DeleteConvert;
 int CurrentUniverse[MAXPLAYERS];
 ArrayList LastItems[MAXPLAYERS];
 GlobalForward UniverseForward;
@@ -84,6 +82,14 @@ public void OnPluginStart()
 	... "universe INTEGER NOT NULL);");
 	
 	tr.AddQuery("CREATE TABLE IF NOT EXISTS unique_items ("
+	... "steamid INTEGER NOT NULL, "
+	... "item TEXT NOT NULL, "
+	... "name TEXT NOT NULL, "
+	... "equip INTEGER NOT NULL, "
+	... "data TEXT NOT NULL, "
+	... "universe INTEGER NOT NULL);");
+	
+	tr.AddQuery("CREATE TABLE IF NOT EXISTS unique_backup ("
 	... "steamid INTEGER NOT NULL, "
 	... "item TEXT NOT NULL, "
 	... "name TEXT NOT NULL, "
@@ -260,6 +266,54 @@ public void Database_ClientSetup3(Database db, any userid, int numQueries, DBRes
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
+		bool found;
+		
+		while(results[0].MoreRows)
+		{
+			if(results[0].FetchRow())
+			{
+				static char item[48], name[48], data[256];
+				results[0].FetchString(1, item, sizeof(item));
+				results[0].FetchString(2, name, sizeof(name));
+				results[0].FetchString(4, data, sizeof(data));
+				
+				GiveNamedUnique(client, item, name, view_as<bool>(results[0].FetchInt(3)), data);
+				found = true;
+			}
+		}
+		
+		if(found)
+		{
+			TextStore_SetClientLoad(client, true);
+		}
+		else
+		{
+			int id = GetSteamAccountID(client);
+			if(id)
+			{
+				Transaction tr = new Transaction();
+				
+				char buffer[256];
+				FormatEx(buffer, sizeof(buffer), "SELECT * FROM unique_backup WHERE steamid = %d AND universe = %d;", id, CurrentUniverse[client]);
+				tr.AddQuery(buffer);
+				
+				AddToQueryQueue(tr, Database_ClientSetup4, Database_Fail, GetClientUserId(client));
+			}
+		}
+	}
+}
+
+public void Database_ClientSetup4(Database db, any userid, int numQueries, DBResultSet[] results, any[] queryData)
+{
+	InQuery = false;
+	
+	#if defined DEBUG
+	PrintToServer("Database_ClientSetup4");
+	#endif
+	
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
 		while(results[0].MoreRows)
 		{
 			if(results[0].FetchRow())
@@ -379,8 +433,7 @@ public Action TextStore_OnClientSave(int client, char file[PLATFORM_MAX_PATH])
 						
 						TextStore_GetItemData(i, buffer, sizeof(buffer));
 						
-						DataBase.Format(buffer, sizeof(buffer), "INSERT INTO unique_items (steamid, item, name, equip, data, universe) VALUES ('%d', '%s', '%s', '%d', '%s', '%d')", id, item, name, equipped, buffer, CurrentUniverse[client]);
-						LogMessage(buffer);
+						DataBase.Format(buffer, sizeof(buffer), "INSERT INTO unique_backup (steamid, item, name, equip, data, universe) VALUES ('%d', '%s', '%s', '%d', '%s', '%d')", id, item, name, equipped, buffer, CurrentUniverse[client]);
 						tr.AddQuery(buffer);
 					}
 					else
@@ -390,7 +443,12 @@ public Action TextStore_OnClientSave(int client, char file[PLATFORM_MAX_PATH])
 				}
 			}
 			
-			AddToQueryQueue(tr, Database_Success, Database_Fail);
+			DataPack pack = new DataPack();
+			Format(buffer, sizeof(buffer), "INSERT INTO unique_items SELECT * FROM unique_backup WHERE steamid = %d AND universe = %d;", id, CurrentUniverse[client]);
+			pack.WriteString(buffer);
+			pack.WriteCell(id);
+			pack.WriteCell(CurrentUniverse[client]);
+			AddToQueryQueue(tr, Database_ClientSave1, Database_FailHandle, pack);
 		}
 		
 //		if(!CvarBackup.BoolValue)
@@ -399,221 +457,49 @@ public Action TextStore_OnClientSave(int client, char file[PLATFORM_MAX_PATH])
 	return Plugin_Continue;
 }
 
-/*
-public Action Command_Convert(int args)
-{
-	if(args == 1)
-	{
-		char filepath[PLATFORM_MAX_PATH];
-		GetCmdArg(1, filepath, sizeof(filepath));
-		
-		DeleteConvert = StringToInt(filepath) == 1;
-		
-		BuildPath(Path_SM, filepath, sizeof(filepath), "data/textstore/user");
-		DirectoryListing dir = OpenDirectory(filepath);
-		if(dir)
-		{
-			CreateTimer(1.0, Timer_Convert, dir, TIMER_REPEAT);
-		}
-		else
-		{
-			PrintToServer("Could not open '%s'", filepath);
-		}
-	}
-	else
-	{
-		PrintToServer("[SM] Usage: sm_textstore_convert <0/1 if to delete files on success>");
-	}
-	return Plugin_Handled;
-}
-
-public Action Command_Import(int args)
-{
-	if(args == 1)
-	{
-		char filename[512];
-		GetCmdArg(1, filename, sizeof(filename));
-		
-		int steamid;
-		if(GetSteam32FromSteam64(filename, steamid))
-		{
-			BuildPath(Path_SM, filename, sizeof(filename), "data/textstore/user/%s.txt", filename);
-			File file = OpenFile(filename, "r");
-			if(file)
-			{
-				PrintToServer("Imported %d items", PortFileToSQL(file, steamid));
-				delete file;
-			}
-			else
-			{
-				PrintToServer("Could not open '%s'", filename);
-			}
-		}
-		else
-		{
-			PrintToServer("Invalid Steam64 ID");
-		}
-	}
-	else
-	{
-		PrintToServer("[SM] Usage: sm_textstore_import <Steam64 ID>");
-	}
-	return Plugin_Handled;
-}
-
-public Action Command_Check(int args)
-{
-	if(args == 1)
-	{
-		char buffer[256];
-		GetCmdArg(1, buffer, sizeof(buffer));
-		int id = StringToInt(buffer);
-		
-		Transaction tr = new Transaction();
-		
-		FormatEx(buffer, sizeof(buffer), "SELECT * FROM misc_data WHERE steamid = %d;", id);
-		tr.AddQuery(buffer);
-		
-		AddToQueryQueue(tr, Database_Check1, Database_FailPrint, id);
-	}
-	else
-	{
-		PrintToServer("[SM] Usage: sm_textstore_check <Steam32 ID>");
-	}
-	return Plugin_Handled;
-}
-
-public void Database_Check1(Database db, any id, int numQueries, DBResultSet[] results, any[] queryData)
+public void Database_ClientSave1(Database db, any pack, int numQueries, DBResultSet[] results, any[] queryData)
 {
 	InQuery = false;
 	
-	if(results[0].FetchRow())
-	{
-		PrintToServer("Cash: %d", results[0].FetchInt(1));
-		
-		Transaction tr = new Transaction();
-		
-		char buffer[256];
-		Format(buffer, sizeof(buffer), "SELECT * FROM common_items WHERE steamid = %d;", id);
-		tr.AddQuery(buffer);
-		
-		AddToQueryQueue(tr, Database_Check2, Database_FailPrint, id);
-	}
-	else
-	{
-		PrintToServer("No entry for %d", id);
-	}
-}
-
-public void Database_Check2(Database db, any id, int numQueries, DBResultSet[] results, any[] queryData)
-{
-	InQuery = false;
+	#if defined DEBUG
+	PrintToServer("Database_ClientSave1");
+	#endif
 	
-	char buffer[256];
-	while(results[0].MoreRows)
-	{
-		if(results[0].FetchRow())
-		{
-			results[0].FetchString(1, buffer, sizeof(buffer));
-			PrintToServer("%s: %d%s", buffer, results[0].FetchInt(2), results[0].FetchInt(3) ? " (Equipped)" : "");
-		}
-	}
+	static char buffer[1024];
+	
+	ResetPack(pack);
+	ReadPackString(pack, buffer, sizeof(buffer));
+	int id = ReadPackCell(pack);
+	int universe = ReadPackCell(pack);
+	CloseHandle(pack);
 	
 	Transaction tr = new Transaction();
-			
-	FormatEx(buffer, sizeof(buffer), "SELECT * FROM unique_items WHERE steamid = %d;", id);
 	tr.AddQuery(buffer);
 	
-	AddToQueryQueue(tr, Database_Check3, Database_FailPrint, id);
+	DataPack pack2 = new DataPack();
+	Format(buffer, sizeof(buffer), "DELETE FROM unique_backup WHERE steamid = %d AND universe = %d;", id, universe);
+	pack2.WriteString(buffer);
+	AddToQueryQueue(tr, Database_ClientSave2, Database_FailHandle, pack2);
 }
 
-public void Database_Check3(Database db, any id, int numQueries, DBResultSet[] results, any[] queryData)
+public void Database_ClientSave2(Database db, any pack, int numQueries, DBResultSet[] results, any[] queryData)
 {
 	InQuery = false;
 	
-	char item[48], name[48], data[256];
-	while(results[0].MoreRows)
-	{
-		if(results[0].FetchRow())
-		{
-			results[0].FetchString(1, item, sizeof(item));
-			results[0].FetchString(2, name, sizeof(name));
-			results[0].FetchString(4, data, sizeof(data));
-			
-			PrintToServer("%s: '%s' '%s'%s", item, name, data, results[0].FetchInt(3) ? " (Equipped)" : "");
-		}
-	}
+	#if defined DEBUG
+	PrintToServer("Database_ClientSave2");
+	#endif
+	
+	static char buffer[1024];
+	
+	ResetPack(pack);
+	ReadPackString(pack, buffer, sizeof(buffer));
+	CloseHandle(pack);
+	
+	Transaction tr = new Transaction();
+	tr.AddQuery(buffer);
+	AddToQueryQueue(tr, Database_Success, Database_Fail);
 }
-
-public Action Command_Modify(int args)
-{
-	if(args > 2 && args < 7)
-	{
-		char buffer[512];
-		GetCmdArg(1, buffer, sizeof(buffer));
-		int id = StringToInt(buffer);
-		
-		char item[64];
-		GetCmdArg(2, item, sizeof(item));
-		
-		GetCmdArg(3, buffer, sizeof(buffer));
-		int amount = StringToInt(buffer);
-		
-		DataBase.Format(buffer, sizeof(buffer), "INSERT INTO common_items (steamid, item, count, equip) VALUES ('%d', '%s', '1', '0')", id, item);
-		
-		int equip;
-		if(args > 3)
-		{
-			GetCmdArg(4, buffer, sizeof(buffer));
-			equip = StringToInt(buffer);
-		}
-		
-		Transaction tr = new Transaction();
-		
-		if(args > 4)
-		{
-			GetCmdArg(5, buffer, sizeof(buffer));
-			
-			char name[64];
-			GetCmdArg(6, name, sizeof(name));
-			
-			if(amount > 0)
-			{
-				DataBase.Format(buffer, sizeof(buffer), "INSERT INTO unique_items (steamid, item, name, equip, data) VALUES ('%d', '%s', '%s', '%s', '%s')", id, item, name, equip, buffer);
-			}
-			else if(args > 5)
-			{
-				DataBase.Format(buffer, sizeof(buffer), "DELETE FROM unique_items WHERE steamid = %d AND item = '%s' AND name = '%s';", id, item, name);
-			}
-			else
-			{
-				DataBase.Format(buffer, sizeof(buffer), "DELETE FROM unique_items WHERE steamid = %d AND item = '%s' AND data = '%s';", id, item, buffer);
-			}
-			
-			tr.AddQuery(buffer);
-		}
-		else
-		{
-			DataBase.Format(buffer, sizeof(buffer), "DELETE FROM common_items WHERE steamid = %d AND item = '%s';", id, item);
-			tr.AddQuery(buffer);
-			
-			if(amount > 0)
-			{
-				DataBase.Format(buffer, sizeof(buffer), "INSERT INTO common_items (steamid, item, count, equip) VALUES ('%d', '%s', '%d', '%d')", id, item, amount, equip);
-				tr.AddQuery(buffer);
-			}
-		}
-		
-		AddToQueryQueue(tr, Database_Success, Database_FailPrint, id);
-		PrintToServer(buffer);
-	}
-	else
-	{
-		PrintToServer("[SM] Usage: sm_textstore_modify <Steam32 ID> <Item Name> <Amount> [Equipped] [Data] [Name]");
-	}
-	return Plugin_Handled;
-}
-*/
 
 public void Database_Success(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
 {
@@ -635,64 +521,23 @@ public void Database_Fail(Database db, any data, int numQueries, const char[] er
 	LogError(error);
 }
 
+public void Database_FailHandle(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
+{
+	InQuery = false;
+	
+	#if defined DEBUG
+	PrintToServer("Database_FailHandle");
+	#endif
+	
+	CloseHandle(data);
+	
+	LogError(error);
+}
+
 public void Database_FailPrint(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
 {
 	InQuery = false;
 	PrintToServer(error);
-}
-
-public Action Timer_Convert(Handle timer, DirectoryListing dir)
-{
-	if(QueryCount > 10)
-		return Plugin_Continue;
-	
-	FileType type;
-	char filename[512];
-	if(!dir.GetNext(filename, sizeof(filename), type))
-	{
-		delete dir;
-		PrintToServer("> Finished querying TXT to SQL <");
-		return Plugin_Stop;
-	}
-	
-	char filepath[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, filepath, sizeof(filepath), "data/textstore/user");
-	
-	if(type == FileType_File)
-	{
-		if(ReplaceString(filename, sizeof(filename), ".txt", ""))
-		{
-			int steamid;
-			if(GetSteam32FromSteam64(filename, steamid))
-			{
-				Format(filename, sizeof(filename), "%s/%s.txt", filepath, filename);
-				File file = OpenFile(filename, "r");
-				if(file)
-				{
-					PrintToServer("Processing '%s'", filename);
-					
-					PortFileToSQL(file, steamid);
-					delete file;
-					
-					if(DeleteConvert)
-						DeleteFile(filename);
-				}
-				else
-				{
-					PrintToServer("> Could not open '%s' <", filename);
-				}
-			}
-			else
-			{
-				PrintToServer("> Failed to get steamid of '%s' <", filename);
-			}
-		}
-		else
-		{
-			PrintToServer("> Invalid file '%s' <", filename);
-		}
-	}
-	return Plugin_Continue;
 }
 
 void GiveNamedItem(int client, const char[] item, int amount, bool equipped)
@@ -744,92 +589,44 @@ void GiveNamedUnique(int client, const char[] item, const char[] name, bool equi
 	}
 }
 
-int PortFileToSQL(File file, int steamid)
-{
-	Transaction common, unique;
-	
-	int found;
-	char buffer[512];
-	char buffers[4][256];
-	while(!file.EndOfFile() && file.ReadLine(buffer, sizeof(buffer)))
-	{
-		ReplaceString(buffer, sizeof(buffer), "\n", "");
-		int count = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-		if(count < 2)
-			continue;
-		
-		found++;
-		if(StrEqual(buffers[0], "cash"))
-		{
-			Transaction tr = new Transaction();
-			
-			Format(buffer, sizeof(buffer), "DELETE FROM misc_data WHERE steamid = %d;", steamid);
-			tr.AddQuery(buffer);
-			
-			Format(buffer, sizeof(buffer), "INSERT INTO misc_data (steamid, cash) VALUES ('%d', '%d')", steamid, StringToInt(buffers[1]));
-			tr.AddQuery(buffer);
-			
-			AddToQueryQueue(tr, Database_Success, Database_FailPrint, steamid);
-		}
-		else if(count > 3)
-		{
-			if(!unique)
-			{
-				unique = new Transaction();
-				
-				Format(buffer, sizeof(buffer), "DELETE FROM unique_items WHERE steamid = %d;", steamid);
-				unique.AddQuery(buffer);
-			}
-			
-			DataBase.Format(buffer, sizeof(buffer), "INSERT INTO unique_items (steamid, item, name, equip, data) VALUES ('%d', '%s', '%s', '%s', '%s')", steamid, buffers[0], buffers[1], buffers[2], buffers[3]);
-			unique.AddQuery(buffer);
-		}
-		else
-		{
-			if(!common)
-			{
-				common = new Transaction();
-				
-				Format(buffer, sizeof(buffer), "DELETE FROM common_items WHERE steamid = %d;", steamid);
-				common.AddQuery(buffer);
-			}
-			
-			DataBase.Format(buffer, sizeof(buffer), "INSERT INTO common_items (steamid, item, count, equip) VALUES ('%d', '%s', '%s', '%s')", steamid, buffers[0], buffers[1], buffers[2]);
-			common.AddQuery(buffer);
-		}
-	}
-					
-	if(common)
-		AddToQueryQueue(common, Database_Success, Database_FailPrint, steamid);
-					
-	if(unique)
-		AddToQueryQueue(unique, Database_Success, Database_FailPrint, steamid);
-	
-	return found;
-}
-
 /*
 	https://github.com/alliedmodders/sourcemod/issues/1505
 */
 
+enum struct QueueInfo
+{
+	Transaction Tr;
+	SQLTxnSuccess OnSuccess;
+	SQLTxnFailure OnError;
+	any Data;
+	DBPriority Priority;
+}
+
+ArrayList QueueList;
+Handle QueueTimer;
+
 void AddToQueryQueue(Transaction tr, SQLTxnSuccess onSuccess = INVALID_FUNCTION, SQLTxnFailure onError = INVALID_FUNCTION, any data = 0, DBPriority priority = DBPrio_Normal)
 {
-	QueryCount++;
-	
 	#if defined DEBUG
 	PrintToServer("Timer_QueryQueue -> New Added");
 	#endif
 	
-	DataPack pack;
-	CreateDataTimer(0.3, Timer_QueryQueue, pack, TIMER_REPEAT);
-	pack.WriteCell(tr);
-	pack.WriteFunction(onSuccess);
-	pack.WriteFunction(onError);
-	pack.WriteCell(data);
-	pack.WriteCell(priority);
+	if(!QueueList)
+		QueueList = new ArrayList(sizeof(QueueInfo));
+	
+	if(!QueueTimer)
+		QueueTimer = CreateTimer(0.2, Timer_QueryQueue, _, TIMER_REPEAT);
+	
+	static QueueInfo info;
+	info.Tr = tr;
+	info.OnSuccess = onSuccess;
+	info.OnError = onError;
+	info.Data = data;
+	info.Priority = priority;
+	QueueList.PushArray(info);
 }
 
-public Action Timer_QueryQueue(Handle timer, DataPack pack)
+public Action Timer_QueryQueue(Handle timer)
 {
 	#if defined DEBUG
 	PrintToServer("Timer_QueryQueue -> Pending");
@@ -838,21 +635,24 @@ public Action Timer_QueryQueue(Handle timer, DataPack pack)
 	if(InQuery)
 		return Plugin_Continue;
 	
-	QueryCount--;
+	if(!QueueList.Length)
+	{
+		QueueTimer = null;
+		return Plugin_Stop;
+	}
+	
+	static QueueInfo info;
+	QueueList.GetArray(0, info);
+	QueueList.Erase(0);
 	
 	InQuery = true;
-	pack.Reset();
-	Transaction tr = pack.ReadCell();
-	SQLTxnSuccess onSuccess = view_as<any>(pack.ReadFunction());
-	SQLTxnFailure onError = view_as<any>(pack.ReadFunction());
-	any data = pack.ReadCell();
 	
 	#if defined DEBUG
-	PrintToServer("Timer_QueryQueue -> Started New | %x %d %d", tr, view_as<int>(onSuccess), view_as<int>(onError));
+	PrintToServer("Timer_QueryQueue -> Started New | %x %d %d", info.Tr, view_as<int>(info.OnSuccess), view_as<int>(info.OnError));
 	#endif
 	
-	DataBase.Execute(tr, onSuccess, onError, data, pack.ReadCell());
-	return Plugin_Stop;
+	DataBase.Execute(info.Tr, info.OnSuccess, info.OnError, info.Data, info.Priority);
+	return Plugin_Continue;
 }
 
 /*

@@ -79,7 +79,7 @@ public void CombineSoldierShotgun_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower Shotgunner");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Shotgunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_shotgun");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_shotgun");
 	data.IconCustom = true;

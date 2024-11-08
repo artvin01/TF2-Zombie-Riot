@@ -1321,8 +1321,20 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 				value = GetRandomFloat(forge.Low, forge.High);
 			}
 		}
+		
+		int compress = RoundFloat(value * 100.0);
 
-		weapon.Value[weapon.ForgeCount++] = value;
+		if(fails < 29)
+		{
+			if((compress == 0 && forge.Type == 2) ||
+				(compress == 100 && forge.Type != 2))
+			{
+				fails++;
+				continue;
+			}
+		}
+		
+		weapon.Value[weapon.ForgeCount++] = compress / 100.0;
 
 		if(weapon.ForgeCount > 1 && GetURandomInt() % 2)
 			break;
@@ -1453,12 +1465,13 @@ public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
 
 public void Tinker_XP_Stonebound(int client, int weapon)
 {
-	if(f_MomentumAntiOpSpam[weapon] > GetGameTime())
+	static float f_MomentumAntiOpSpam[MAXENTITIES];
+	if(fabs(f_MomentumAntiOpSpam[weapon] - GetGameTime()) < 1.5)
 	{
 		//dont do anything.
 		return;
 	}
-//	f_MomentumAntiOpSpam[weapon] = GetGameTime() + 0.5;
+	f_MomentumAntiOpSpam[weapon] = GetGameTime();
 	ApplyTempAttrib(weapon, 6, 0.985, 45.0);
 	ApplyTempAttrib(weapon, 2, 0.985, 45.0);
 
@@ -1478,5 +1491,5 @@ public void Tinker_XP_Momentum2(int client, int weapon)
 
 public void Tinker_Mining_Unnatural(int client, int weapon, int toolTier, int mineTier, int &damage)
 {
-	damage += 5 * (toolTier - mineTier);
+	damage += 1 * (toolTier - mineTier);
 }
