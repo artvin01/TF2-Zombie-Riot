@@ -152,6 +152,9 @@ methodmap VictoriaBirdeye < CClotBody
 			b_SUPERDUPERRAGE[npc.index] = true;
 		else
 			b_SUPERDUPERRAGE[npc.index] = false;
+			
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		//IDLE
 		npc.m_iState = 0;

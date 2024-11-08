@@ -41,7 +41,7 @@ void VictoriaHarbringer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Harbringer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_harbringer");
-	strcopy(data.Icon, sizeof(data.Icon), "rifler");
+	strcopy(data.Icon, sizeof(data.Icon), "knight");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
@@ -127,6 +127,8 @@ methodmap VictoriaHarbringer < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);

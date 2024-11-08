@@ -42,8 +42,8 @@ void VictorianPayback_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Payback");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_payback");
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 		//leaderboard_class_(insert the name)
-	data.IconCustom = false;								//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_payback"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;								//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;

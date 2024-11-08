@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[] = "misc/rd_robot_explosion01.wav";
+static int NPCId;
 
 void VictorianFactory_MapStart()
 {
@@ -20,7 +21,12 @@ void VictorianFactory_MapStart()
 	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int VictorianFactory_ID()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -65,6 +71,8 @@ methodmap VictorianFactory < CClotBody
 		b_CannotBeStunned[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
 		b_CannotBeSlowed[npc.index] = true;
+		npc.m_bDissapearOnDeath = true;
+		i_NpcIsABuilding[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		f_ExtraOffsetNpcHudAbove[npc.index] = 1.0;
@@ -212,6 +220,12 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
+		
+	if(!IsValidAlly(npc.index, GetClosestAlly(npc.index)))
+	{
+		SmiteNpcToDeath(npc.index);
+		return;
+	}
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	

@@ -56,11 +56,10 @@ void VictorianMechanist_as_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mechanist");
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
-	strcopy(data.Icon, sizeof(data.Icon), "engineer"); 		//leaderboard_class_(insert the name)
-	data.IconCustom = false;													//download needed?
-	data.Flags = 0;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_mechanist");
+	data.IconCustom = true;
+	data.Flags = 0;
 	NPCId = NPC_Add(data);
-
 }
 
 int VictorianMechanist_ID()
@@ -68,9 +67,9 @@ int VictorianMechanist_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianMechanist_as(client, vecPos, vecAng, ally);
+	return VictorianMechanist_as(client, vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianMechanist_as < CClotBody
@@ -111,7 +110,7 @@ methodmap VictorianMechanist_as < CClotBody
 	}
 	
 	
-	public VictorianMechanist_as(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianMechanist_as(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianMechanist_as npc = view_as<VictorianMechanist_as>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.2", "35000", ally, false));
 		
@@ -151,10 +150,20 @@ methodmap VictorianMechanist_as < CClotBody
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 200.0;
-		b_WantTobuild[npc.index] = true;
 		b_AlreadyReparing[npc.index] = false;
 		f_RandomTolerance[npc.index] = GetRandomFloat(0.25, 0.75);
 		Is_a_Medic[npc.index] = true;
+		npc.m_bFUCKYOU = false;
+		if(!StrContains(data, "only"))
+		{
+			npc.m_bFUCKYOU = true;
+			b_WantTobuild[npc.index] = false;
+		}
+		else
+		{
+			npc.m_bFUCKYOU = false;
+			b_WantTobuild[npc.index] = true;
+		}
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
@@ -381,7 +390,10 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else if(!IsValidEntity(buildingentity)) //I am sad!
 	{
-		Behavior = 3;
+		if(npc.m_bFUCKYOU)
+			Behavior = 4;
+		else
+			Behavior = 3;
 	}
 	
 	switch(Behavior)
@@ -543,6 +555,7 @@ static void Internal_ClotThink(int iNPC)
 				else
 				{	
 					b_WantTobuild[npc.index] = false;
+					npc.m_bFUCKYOU = true;
 				}
 			}
 			else
@@ -775,8 +788,43 @@ static void Internal_ClotThink(int iNPC)
 				}
 			}
 		}
+		case 4:
+		{
+			bool IsValidRobot=false;
+			Mechanist_AS_SelfDefense(npc,GetGameTime(npc.index));
+			float npcpos[3], entitypos[3], distance;
+			GetAbsOrigin(npc.m_iWearable3, npcpos);
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianAvangard_ID()
+				&& !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
+				{
+					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
+					distance = GetVectorDistance(npcpos, entitypos);
+					if(distance<5000.0)
+					{
+						if(i_AttacksTillMegahit[entity] < 255)
+						{
+							i_BuildingRef[iNPC] = EntIndexToEntRef(entity);
+							IsValidRobot=true;
+							break;
+						}
+						else
+						{
+							i_BuildingRef[iNPC] = EntIndexToEntRef(entity);
+							break;
+						}
+					}
+				}
+			}
+			if(IsValidRobot)
+			{
+				b_WantTobuild[npc.index] = true;
+				npc.m_bFUCKYOU = false;
+			}
+		}
 	}
-	Mechanist_AS_SelfDefense(npc,GetGameTime(npc.index));
 	npc.PlayIdleAlertSound();
 }
 

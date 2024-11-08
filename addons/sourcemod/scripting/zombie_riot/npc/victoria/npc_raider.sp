@@ -53,7 +53,7 @@ void VictorianRaider_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Raider");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_raider");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
@@ -141,7 +141,7 @@ methodmap VictorianRaider < CClotBody
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl");
 		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_bet_rocketlauncher/c_bet_rocketlauncher.mdl");
 		SetVariantString("1.2");

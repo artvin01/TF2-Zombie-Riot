@@ -32,8 +32,8 @@ void VictoriaScorcher_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Scorcher");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_scorcher");
-	strcopy(data.Icon, sizeof(data.Icon), "pyro_freeze_1");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "pyro");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
@@ -259,7 +259,7 @@ void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
 	bool SpinSound = true;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
 	{
 		npc.PlayMinigunSound(true);
 		SpinSound = false;
@@ -312,7 +312,7 @@ public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 			if (!IsInvuln(target))
 			{
 				int Burntime = 1;
-				if(NpcStats_VictorianCallToArms(entity))
+				if(NpcStats_VictorianCallToArms(owner))
 				{
 					Burntime *= 2;
 				}

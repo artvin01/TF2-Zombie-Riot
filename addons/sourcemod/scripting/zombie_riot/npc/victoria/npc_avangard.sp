@@ -3,6 +3,7 @@
 
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
 static const char g_MeleeAttackSounds[] = "mvm/giant_soldier/giant_soldier_rocket_shoot.wav";
+static int NPCId;
 
 void VictorianOfflineAvangard_MapStart()
 {
@@ -13,12 +14,17 @@ void VictorianOfflineAvangard_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Avangard");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_avangard");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_avangard");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int VictorianAvangard_ID()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -70,6 +76,7 @@ methodmap VictorianOfflineAvangard < CClotBody
 		b_CannotBeStunned[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
 		b_CannotBeSlowed[npc.index] = true;
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		
 		if(!StrContains(data, "only"))
 		{

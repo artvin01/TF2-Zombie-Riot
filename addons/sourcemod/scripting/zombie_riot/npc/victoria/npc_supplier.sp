@@ -46,7 +46,7 @@ void VictorianSupplier_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supplier");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_supplier");
-	strcopy(data.Icon, sizeof(data.Icon), "sniper_camper_1");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_suppliers");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
@@ -107,7 +107,7 @@ methodmap VictorianSupplier < CClotBody
 	
 	public VictorianSupplier(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianSupplier npc = view_as<VictorianSupplier>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "7000", ally));
+		VictorianSupplier npc = view_as<VictorianSupplier>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "750", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -153,7 +153,7 @@ methodmap VictorianSupplier < CClotBody
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec22_underminers_style1/dec22_underminers_style1.mdl");
 
-		npc.m_iWearable8 = npc.EquipItem("head", "models/weapons/c_models/c_buffbanner/c_buffbanner.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_buffbanner/c_buffbanner.mdl");
 	
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -167,7 +167,7 @@ methodmap VictorianSupplier < CClotBody
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 80, 150, 255, 255);
 		SetVariantString("1.5");
-		AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		return npc;
 	}
 }
@@ -294,10 +294,9 @@ void VictorianSupplierSelfDefense(VictorianSupplier npc, int target, float gameT
 
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 10.0;
+							float damageDealt = 5.5;
 							if(ShouldNpcDealBonusDamage(target))
-								damageDealt *= 2.0;
-
+								damageDealt *= 3.0;
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						}

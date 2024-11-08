@@ -101,8 +101,8 @@ void Blocker_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Blocker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_blocker");
-	strcopy(data.Icon, sizeof(data.Icon), "obuch");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_blocker");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
@@ -179,7 +179,7 @@ methodmap Blocker < CClotBody
 	
 	public Blocker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Blocker npc = view_as<Blocker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "3000", ally, false, true));
+		Blocker npc = view_as<Blocker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "2100", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		

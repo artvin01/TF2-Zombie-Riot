@@ -35,9 +35,9 @@ void VictorianIgniter_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Igniter");
+	strcopy(data.Name, sizeof(data.Name), "Victorian Igniter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_igniter");
-	strcopy(data.Icon, sizeof(data.Icon), "rifler");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_igniter");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;

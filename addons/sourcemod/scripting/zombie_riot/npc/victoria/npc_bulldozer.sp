@@ -61,8 +61,8 @@ void Bulldozer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bulldozer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bulldozer");
-	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_bulldozer");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Expidonsa;
 	data.Func = ClotSummon;

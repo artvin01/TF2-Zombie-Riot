@@ -37,7 +37,7 @@ void VictoriaAssulter_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Assulter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_assaulter");
-	strcopy(data.Icon, sizeof(data.Icon), "rifler");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_assaulter");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;

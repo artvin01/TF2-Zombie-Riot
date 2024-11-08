@@ -43,10 +43,10 @@ void VIctorianAmbusher_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_charge_sound)); i++) { PrecacheSound(g_charge_sound[i]); }
 	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Ambusher");
+	strcopy(data.Name, sizeof(data.Name), "Brassbunker Ambusher");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ambusher");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_ambusher");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;

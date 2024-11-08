@@ -12,8 +12,8 @@ void VictoriaTank_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Tank");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_tank");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_tank");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;

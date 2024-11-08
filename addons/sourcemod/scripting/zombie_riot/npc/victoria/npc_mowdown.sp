@@ -33,8 +33,8 @@ void VictoriaMowdown_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mowdown");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mowdown");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_mowdown");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;

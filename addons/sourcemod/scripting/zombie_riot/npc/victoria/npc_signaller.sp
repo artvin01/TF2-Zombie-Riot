@@ -27,8 +27,8 @@ void VictorianSignaller_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Signaller");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_signaller");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_backup");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_signaller");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;

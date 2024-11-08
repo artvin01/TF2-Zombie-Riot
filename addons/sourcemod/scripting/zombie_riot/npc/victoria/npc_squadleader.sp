@@ -60,7 +60,7 @@ void VictorianSquadleader_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian ScoutSquad Leader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squadleader");
-	strcopy(data.Icon, sizeof(data.Icon), "seargent_ideal");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_squadleaders");
 	data.IconCustom = true;
 
 	data.Flags = 0;
@@ -176,7 +176,7 @@ methodmap VictorianSquadleader < CClotBody
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_russian_riot/c_russian_riot.mdl");
 		SetVariantString("2.5");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/sum19_unforgiven_glory/sum19_unforgiven_glory.mdl");
 

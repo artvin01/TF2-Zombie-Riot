@@ -30,7 +30,7 @@ void VictoriaRadiomast_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Radiomast");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_radiomast");
-	strcopy(data.Icon, sizeof(data.Icon), "lighthouse");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_radiomast");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
@@ -105,9 +105,8 @@ methodmap VictoriaRadiomast < CClotBody
 			RaidModeTime = FAR_FUTURE;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = true;
-			RaidModeScaling = 19.721;
+			RaidModeScaling = 0.0;
 		}
-
 
 		func_NPCDeath[npc.index] = view_as<Function>(VictoriaRadiomast_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaRadiomast_OnTakeDamage);
@@ -196,7 +195,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 	npc.m_flNextRangedSpecialAttack = 0.0;
 
 	gameTime = GetGameTime() + 0.5;
-
+	float InfiniteWave=7.5;
 	int team = GetTeam(npc.index);
 	if(team == 2)
 	{
@@ -208,6 +207,9 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 			}
 		}
 	}
+	
+	if(IsValidEntity(RaidBossActive) && RaidBossActive == EntIndexToEntRef(npc.index))
+		RaidModeScaling = (InfiniteWave-(npc.m_flNextMeleeAttack - gameTime))/InfiniteWave;
 	
 	if(npc.m_flNextMeleeAttack < gameTime && MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
 	{
@@ -224,31 +226,31 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 						{
 							case 1:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",20000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 2:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",22500,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 3:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",25000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}	
 							case 4:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",25000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 5:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",20000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 6:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",22500,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 7:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",22000,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 						}
 					}
@@ -261,35 +263,35 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 						{
 							case 1:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",27500,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 2:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",25000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 3:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",27500,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}	
 							case 4:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",20000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 5:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",22500,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 6:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",25000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 7:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",27000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 8:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",25000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 						}
 					}
@@ -302,23 +304,23 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 						{
 							case 1:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_basebreaker",20000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_basebreaker",_,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 2:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_booster",20000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_booster",_,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 3:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_scorcher",22500,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_scorcher",_,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}	
 							case 4:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mowdown",30000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mowdown",_,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 5:
 							{
-								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mechafist",25000,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
+								VictoriaRadiomastSpawnEnemy(npc.index,"npc_mechafist",_,1.2, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
 							case 6:
 							{
@@ -382,7 +384,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 				}
 			}
 		}
-		npc.m_flNextMeleeAttack = gameTime+7.5;
+		npc.m_flNextMeleeAttack = gameTime+InfiniteWave;
 	}
 
 	for(int i; i < i_MaxcountNpcTotal; i++)

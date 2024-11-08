@@ -32,7 +32,7 @@ void VictorianPulverizer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Pulverizer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_pulverizer");
-	strcopy(data.Icon, sizeof(data.Icon), "pyro_freeze_1");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_pulverizer");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
@@ -261,7 +261,7 @@ void VictorianPulverizerSelfDefense(VictorianPulverizer npc)
 	bool SpinSound = true;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5))
+	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 	{
 		npc.PlayMinigunSound(true);
 		SpinSound = false;
@@ -269,8 +269,8 @@ void VictorianPulverizerSelfDefense(VictorianPulverizer npc)
 		int projectile = npc.FireParticleRocket(vecTarget, 12.0, 1000.0, 150.0, "superrare_burning2", true);
 		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
-		CreateTimer(0.75, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(0.75, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		
 		SDKHook(projectile, SDKHook_StartTouch, VictorianPulverizer_Rocket_Particle_StartTouch);		
 	}

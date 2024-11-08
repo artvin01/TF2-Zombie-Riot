@@ -102,7 +102,7 @@ methodmap VictoriaBatter < CClotBody
 	
 	public VictoriaBatter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaBatter npc = view_as<VictoriaBatter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "600", ally));
+		VictoriaBatter npc = view_as<VictoriaBatter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "300", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -132,7 +132,7 @@ methodmap VictoriaBatter < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_switchblade/c_switchblade.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_bat.mdl");
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 

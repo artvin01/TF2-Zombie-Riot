@@ -12,8 +12,8 @@ void VictoriaBreachcart_MapStart()
 	PrecacheModel("models/bots/tw2/boss_bot/static_boss_tank.mdl");
 	strcopy(data.Name, sizeof(data.Name), "Breachcart");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_breachcart");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_breachcart");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
@@ -173,13 +173,12 @@ static void ClotThink(int iNPC)
 			}
 			npc.m_flNextRangedAttack = gameTime + Cooldown;
 
-			npc.PlayMeleeSound();
-
 			int health = ReturnEntityMaxHealth(npc.index) / 15;
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
+			bool Deploy=false;
 			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
 			{
 				int entity = NPC_CreateByName("npc_bombcart", -1, pos, ang, GetTeam(npc.index), "EX");
@@ -196,12 +195,15 @@ static void ClotThink(int iNPC)
 					fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 0.85;
 					fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 2.0;
 					view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+					Deploy=true;
 				}
 			}
 			else
 			{
 				npc.m_flNextRangedAttack = 0.0;
 			}
+			
+			if(Deploy)npc.PlayMeleeSound();
 		}
 	}
 	else

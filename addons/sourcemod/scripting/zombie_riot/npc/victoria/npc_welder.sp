@@ -45,8 +45,8 @@ void VictorianWelder_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Welder");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_welder");
-	strcopy(data.Icon, sizeof(data.Icon), "engineer"); 		//leaderboard_class_(insert the name)
-	data.IconCustom = false;								//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_welder"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;								//download needed?
 	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;

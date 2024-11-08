@@ -157,6 +157,8 @@ methodmap VictoriaBigpipe < CClotBody
 		fl_npc_basespeed = 180.0;
 		npc.m_iOverlordComboAttack = 6;
 		
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);

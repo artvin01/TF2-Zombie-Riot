@@ -52,8 +52,8 @@ void Victorian_Radioguard_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Radio Guard");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_radioguard");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_radioguard");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;

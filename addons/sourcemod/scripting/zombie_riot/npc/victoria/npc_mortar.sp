@@ -45,10 +45,10 @@ void VictoriaMortar_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Mortar");
+	strcopy(data.Name, sizeof(data.Name), "Victorian Mortar");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mortar");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_mortar");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;

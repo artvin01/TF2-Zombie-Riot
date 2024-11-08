@@ -46,8 +46,8 @@ void VictorianBallista_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ballista");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ballista");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_ballistas");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;

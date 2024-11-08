@@ -41,8 +41,8 @@ void VictorianIronShield_OnMapStart_NPC()
 	PrecacheModel("models/bots/heavy_boss/bot_heavy_boss.mdl");
 	strcopy(data.Name, sizeof(data.Name), "IronShield");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ironshield");
-	strcopy(data.Icon, sizeof(data.Icon), "obuch");
-	data.IconCustom = false;	
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_ironshield");
+	data.IconCustom = true;	
 	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;

@@ -12,8 +12,8 @@ void VictorianHumbee_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Humbee");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_humbee");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_major_crits");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_humbee");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
@@ -148,7 +148,7 @@ static void ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
-		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 50.0)
+		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
