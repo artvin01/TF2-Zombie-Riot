@@ -27,6 +27,7 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
+
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
@@ -261,9 +262,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
-					if(!b_NpcUnableToDie[npc.index])
-						damage *= 1.3;
+					float damage = 750000.0;
 
 					
 					if(target > 0) 
@@ -345,7 +344,6 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
-
 					int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 					float Percentage = float(Health) / float(ReturnEntityMaxHealth(npc.index));
 					if(Percentage <= 0.35)

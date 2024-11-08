@@ -90,6 +90,7 @@ methodmap BobTheTargetDummy < CClotBody
 
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
+		b_NoKnockbackFromSources[npc.index] = true;
 		
 		return npc;
 	}

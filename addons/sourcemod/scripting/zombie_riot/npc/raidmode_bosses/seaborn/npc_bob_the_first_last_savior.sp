@@ -1487,7 +1487,7 @@ void GiveOneRevive(bool ignorelimit = false)
 			if(IsPlayerAlive(client))
 			{
 				SetEntityMoveType(client, MOVETYPE_WALK);
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -1530,7 +1530,7 @@ void GiveOneRevive(bool ignorelimit = false)
 					}
 
 					Store_ApplyAttribs(client);
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+					SDKCall_SetSpeed(client);
 
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))

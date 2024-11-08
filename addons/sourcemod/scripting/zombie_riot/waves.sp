@@ -502,7 +502,6 @@ void Waves_SetupVote(KeyValues map)
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		kv = new KeyValues("Setup");
 		kv.ImportFromFile(buffer);
-		RequestFrame(DeleteHandle, kv);
 	}
 	
 	StartCash = kv.GetNum("cash");
@@ -511,6 +510,10 @@ void Waves_SetupVote(KeyValues map)
 	if(map && kv.GetNum("roguemode"))
 	{
 		Rogue_SetupVote(kv);
+
+		if(kv != map)
+			delete kv;
+		
 		return;
 	}
 
@@ -583,6 +586,9 @@ void Waves_SetupVote(KeyValues map)
 		}
 	}
 
+	if(kv != map)
+		delete kv;
+
 	CanReVote = Voting.Length > 1;
 
 	CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -623,7 +629,6 @@ void Waves_SetupMiniBosses(KeyValues map)
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		kv = new KeyValues("MiniBoss");
 		kv.ImportFromFile(buffer);
-		RequestFrame(DeleteHandle, kv);
 	}
 	
 	if(kv.GotoFirstSubKey())
@@ -669,6 +674,9 @@ void Waves_SetupMiniBosses(KeyValues map)
 			MiniBosses.PushArray(boss);
 		} while(kv.GotoNextKey());
 	}
+
+	if(kv != map)
+		delete kv;
 }
 
 bool Waves_GetMiniBoss(MiniBoss boss)

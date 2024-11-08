@@ -3940,7 +3940,7 @@
 	}
 	"Telekinesis Desc"
 	{
-		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw it.
+		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw it."
 	}
 	"Telekinesis PaP 1"
 	{
@@ -4013,5 +4013,13 @@
 	"Hunting Rifle Pap 2 desc"
 	{
 		"en"	"Clip size, damage and ability duration increased."
+	}
+	"Whistle Stop Desc"
+	{
+		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals True Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
+	}
+	"Ancestor Launcher Desc"
+	{
+		"en"	"Attacks deal extra damage and mark the main target.\nHas a chance to explode and stun when hitting marked targets.\nAbility grants sentry buildings and a limited-ammo rocket launcher."
 	}
 }

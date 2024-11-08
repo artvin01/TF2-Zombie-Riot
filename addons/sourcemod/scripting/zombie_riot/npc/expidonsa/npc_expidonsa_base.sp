@@ -4,6 +4,9 @@
 
 #define MAX_EXPI_ENERGY_EFFECTS 71
 
+
+
+#if defined ZR
 int i_ExpidonsaEnergyEffect[MAXENTITIES][MAX_EXPI_ENERGY_EFFECTS];
 int i_ExpidonsaShieldCapacity[MAXENTITIES];
 int i_ExpidonsaShieldCapacity_Mini[MAXENTITIES];
@@ -32,7 +35,6 @@ void Expidonsa_SetToZero(int iNpc)
 	VausMagicaRemoveShield(iNpc);
 	EnemyShieldCantBreak[iNpc] = false;
 }
-
 bool ExpidonsaDepletedShieldShow(int victim)
 {
 	//false means delete shield.
@@ -188,6 +190,7 @@ void VausMagicaRemoveShield(int entity, bool force = false)
 		i_Expidonsa_ShieldEffect[entity] = INVALID_ENT_REFERENCE;
 	}
 }
+#endif
 
 
 float f_Expidonsa_HealingAmmount[MAXENTITIES];
@@ -303,12 +306,12 @@ stock bool Expidonsa_DontHealSameIndex(int entity, int victim, float &healingamm
 
 	return false;
 }
-
+#if defined ZR
 float ExpidonsanShieldBroke(int entity)
 {
 	return(f_Expidonsa_ShieldBroke[entity]);
 }
-
+#endif
 stock bool Expidonsa_DontHealBosses(int entity, int victim, float &healingammount)
 {
 	if(b_thisNpcIsABoss[victim] ||

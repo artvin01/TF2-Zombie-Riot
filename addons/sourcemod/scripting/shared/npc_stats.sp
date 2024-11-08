@@ -2873,7 +2873,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		return -1;
 	}
-	public void FireGrenade(float vecTarget[3], float grenadespeed = 800.0, float damage, char[] model)
+	public int FireGrenade(float vecTarget[3], float grenadespeed = 800.0, float damage, char[] model)
 	{
 		int entity = CreateEntityByName("tf_projectile_pipe");
 		if(IsValidEntity(entity))
@@ -2914,7 +2914,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			SetEntProp(entity, Prop_Send, "m_bTouched", true);
 			SetEntityCollisionGroup(entity, 1);
+			return entity;
 		}
+		return -1;
 	}
 	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE, int entitytofirefrom = -1) //No defaults, otherwise i cant even judge.
 	{
@@ -5981,6 +5983,11 @@ public void NpcBaseThink(int iNPC)
 		HealEntityGlobal(iNPC, iNPC, float(i_HpRegenInBattle[iNPC]), 1.0, 0.0, HEAL_SELFHEAL | HEAL_PASSIVE_NO_NOTIF);
 		RPGNpc_UpdateHpHud(iNPC);
 	}
+	if(f_InBattleDelay[iNPC] < GetGameTime())
+	{
+		f_InBattleDelay[iNPC] = GetGameTime() + 0.25;
+		HealOutOfBattleNpc(iNPC);
+	}
 #endif
 
 	if(CvarDisableThink.BoolValue)
@@ -7738,7 +7745,7 @@ stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, floa
 	lead[0] = leadTime * SubjectAbsVelocity[0];
 	lead[1] = leadTime * SubjectAbsVelocity[1];
 	lead[2] = 0.0;	
-
+	/*
 	if(GetVectorDotProduct(to, lead) < 0.0)
 	{
 		// the subject is moving towards us - only pay attention 
@@ -7756,6 +7763,7 @@ stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, floa
 		lead[0] = enemyGroundSpeed * perp[0];
 		lead[1] = enemyGroundSpeed * perp[1];
 	}
+	*/
 
 	// compute our desired destination
 	AddVectors(subjectPos, lead, pathTarget);
@@ -8554,6 +8562,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LeeMinorEffect[entity] = 0.0;
 	f_LeeMajorEffect[entity] = 0.0;
 	f_LeeSuperEffect[entity] = 0.0;
+	f_LogosDebuff[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
 	fl_TotalArmor[entity] = 1.0;
@@ -9245,6 +9254,7 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_LeeMinorEffect[enemy] = 0.0;
 	f_LeeMajorEffect[enemy] = 0.0;
 	f_LeeSuperEffect[enemy] = 0.0;
+	f_LogosDebuff[enemy] = 0.0;
 	f_SpecterDyingDebuff[enemy] = 0.0;
 	f_PassangerDebuff[enemy] = 0.0;
 }
@@ -9700,6 +9710,18 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 
 static int b_TouchedEntity[MAXENTITIES];
 
+void ResetTouchedentityResolve()
+{
+	Zero(b_TouchedEntity);
+}
+bool TouchedNpcResolve(int entity)
+{
+	return view_as<bool>(b_TouchedEntity[entity]);
+}
+int ConvertTouchedResolve(int index)
+{
+	return b_TouchedEntity[index];
+}
 //TODO: teleport entities instead, but this is easier to i sleep :)
 stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockback = true)
 {
@@ -9781,7 +9803,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 		if(!b_TouchedEntity[entity_traced])
 			break;
 
-		if(i_IsABuilding[entity_traced])
+		if(i_IsABuilding[b_TouchedEntity[entity_traced]])
 			continue;
 
 		if(b_TouchedEntity[entity_traced] <= MaxClients)
@@ -10665,9 +10687,11 @@ void ExtinguishTarget(int target)
 void IsEntityInvincible_Shield(int entity)
 {
 	bool NpcInvulShieldDisplay;
+#if defined ZR
+//This is not neccecary in RPG.
 	if(i_npcspawnprotection[entity] == 1)
 		NpcInvulShieldDisplay = true;
-
+#endif
 	if(b_NpcIsInvulnerable[entity])
 		NpcInvulShieldDisplay = true;
 	
@@ -10749,7 +10773,7 @@ void MakeObjectIntangeable(int entity)
 
 
 static int BadSpotPoints[MAXTF2PLAYERS];
-void Spawns_CheckBadClient(int client)
+void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 {
 #if defined ZR
 	if(CvarInfiniteCash.BoolValue)
@@ -10769,10 +10793,28 @@ void Spawns_CheckBadClient(int client)
 	}
 #endif
 #if defined RPG
-	if(RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
+	//Are we checking 
+	/*
+		0 = Passively wating every so often
+		2 = when landing after being airborn
+
+	*/
+//	if(checkextralogic == 0)
+	/*
+	TODO: If they are out of bounds in a non playable area, kill them.
+
+	*/
 	{
-		BadSpotPoints[client] = 0;
-		return;
+		//Did any NPC try to attack us, if not...
+		if(RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
+		{
+			//are we somehow in a battle regardless? if no then...
+			if(f_InBattleDelay[client] < GetGameTime())
+			{
+				BadSpotPoints[client] = 0;
+				return;
+			}
+		}
 	}
 #endif
 	if(!(GetEntityFlags(client) & (FL_ONGROUND|FL_INWATER)))
@@ -10794,8 +10836,12 @@ void Spawns_CheckBadClient(int client)
 	int GroundEntity = EntRefToEntIndex(RefGround);
 	if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
 	{
-		//client is ontop of something, dont do more, they have some way to be put down.
-		return;
+#if defined RPG
+		if(!b_is_a_brush[GroundEntity])
+#endif
+		{
+			return;
+		}
 	}
 
 

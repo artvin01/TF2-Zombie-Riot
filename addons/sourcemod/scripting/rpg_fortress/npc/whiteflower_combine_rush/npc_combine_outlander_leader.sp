@@ -27,6 +27,7 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
+
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
@@ -286,7 +287,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 
 	if(npc.m_flCloneRageInit)
 	{
-
+		ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 600000.0);
 		if(npc.m_flCloneRageInit < gameTime)
 		{
 			//Enrage and keep teleporting
@@ -321,7 +322,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 550000.0;
+					float damage = 850000.0;
 
 					
 					if(target > 0) 
@@ -656,8 +657,8 @@ void WF_Outlander_LeaderInitiateLaserAttack_DamagePart(DataPack pack)
 	delete trace;
 			
 		
-	float CloseDamage = 600000.0;
-	float FarDamage = 650000.0;
+	float CloseDamage = 800000.0;
+	float FarDamage = 850000.0;
 	float MaxDistance = 1000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)

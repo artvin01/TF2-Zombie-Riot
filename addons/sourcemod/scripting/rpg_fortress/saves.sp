@@ -611,7 +611,7 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 					}
 					else
 					{
-						FormatEx(buffer1, sizeof(buffer1), "%s (Unlock \"%s\")", race.Name, race.Key);
+						FormatEx(buffer1, sizeof(buffer1), "%s (Locked)", race.Name);
 						menu.AddItem(id, buffer1, ITEMDRAW_DISABLED);
 					}
 				}

@@ -136,7 +136,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 
 						// E2 L5 = 105, E2 L10 = 120
 						KillFeed_SetKillIcon(npc.index, "club");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 225000.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 800000.0, DMG_CLUB, -1, _, vecTarget);
 						npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 						npc.PlayFistHit();
 						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
@@ -179,11 +179,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 						WorldSpaceCenter(ally.index, vecTarget);
 						if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 						{
-							if(ally.m_bIsSquad)
-							{
-								ally.m_flRangedArmor = 0.00001;
-								ally.m_flMeleeArmor = 0.00001;
-							}
+							f_PernellBuff[ally.index] = GetGameTime() + 10.0;
 							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
 							f_BuffBannerNpcBuff[ally.index] = GetGameTime() + 7.0;
 							float flMaxhealth = float(ReturnEntityMaxHealth(ally.index));
@@ -233,7 +229,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 						npc.m_flNextRangedAttack = gameTime + 0.2;
 						PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
 						npc.FaceTowards(vecTarget, 20000.0);
-						npc.FireParticleRocket(vecTarget, 500000.0 , 800.0 , 100.0 , "raygun_projectile_blue");
+						npc.FireParticleRocket(vecTarget, 1000000.0 , 800.0 , 100.0 , "raygun_projectile_blue");
 
 						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", .SetGestureSpeed = 1.5);
 						npc.PlayRangedAttackSecondarySound();

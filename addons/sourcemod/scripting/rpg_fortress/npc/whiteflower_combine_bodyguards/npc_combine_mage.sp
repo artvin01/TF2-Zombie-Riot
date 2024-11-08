@@ -27,6 +27,7 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
+
 static char g_MeleeAttackSounds[][] = {
 	"weapons/capper_shoot.wav",
 };
@@ -237,7 +238,7 @@ public void Whiteflower_Mage_Blaster_ClotThink(int iNPC)
 			{
 				npc.PlayMeleeSound();
 				
-				npc.FireParticleRocket(vecTarget, 500000.0 , 800.0 , 100.0 , "raygun_projectile_blue");
+				npc.FireParticleRocket(vecTarget, 850000.0 , 800.0 , 100.0 , "raygun_projectile_blue");
 			}
 		}
 	}

@@ -31,10 +31,25 @@ void CoinEntityCreated(int entity)
 
 public void Ability_Coin_Flip(int client, int weapon, bool crit, int slot)
 {
+	if (Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+		return;	
+	}
+	
 	if(TextStore_GetItemCount(client, ITEM_CHIP) > 0)
 	{
 		TextStore_AddItemCount(client, ITEM_CHIP, -1);
 		CreateTimer(0.0, flip_extra, client, TIMER_FLAG_NO_MAPCHANGE);
+		Ability_Apply_Cooldown(client, slot, 5.0);
 	}
 	else
 	{
@@ -173,8 +188,10 @@ public Action flip_extra(Handle timer, int client)
 			damage_multiplier[entity] = 40.0;
 			
 			damage_multiplier[entity] *= Attributes_Get(weapon, 2, 1.0);
+			
+			damage_multiplier[entity] /= Attributes_Get(weapon, 6, 1.0);
 				
-			damage_multiplier[entity] *= 2.0;
+			damage_multiplier[entity] *= 0.75;
 			
 			newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
 			newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");

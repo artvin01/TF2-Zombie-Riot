@@ -168,7 +168,7 @@ static void ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0 * Level[npc.index], DMG_CLUB, _, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0 * Level[npc.index], DMG_CLUB, _, _, vecHit);
 						SeaShared_DealCorrosion(target, npc.index, Level[npc.index] / 20);
 					}
 				}

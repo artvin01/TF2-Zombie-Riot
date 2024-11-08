@@ -65,9 +65,9 @@ public void SlaveMaster_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return SlaveMaster(client, vecPos, vecAng, ally);
+	return SlaveMaster(client, vecPos, vecAng, ally, data);
 }
 
 methodmap SlaveMaster < CClotBody
@@ -113,7 +113,7 @@ methodmap SlaveMaster < CClotBody
 	}
 	
 	
-	public SlaveMaster(int client, float vecPos[3], float vecAng[3], int ally)
+	public SlaveMaster(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SlaveMaster npc = view_as<SlaveMaster>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.05", "300", ally, false,_,_,_,_));
 
@@ -133,6 +133,11 @@ methodmap SlaveMaster < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_iOverlordComboAttack = 0;
 
+		bool HardBattle = StrContains(data, "hardmode") != -1;
+		if(HardBattle)
+		{
+			npc.m_iOverlordComboAttack = 1;
+		}
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	

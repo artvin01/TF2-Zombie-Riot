@@ -169,6 +169,10 @@ public void Combine_Aggrat_ClotThink(int iNPC)
 
 						npc.m_flNextRangedAttack = gameTime + 0.2;
 						npc.m_iAttacksTillReload--;
+						if(npc.m_iOverlordComboAttack == 1)
+						{
+							npc.m_flNextRangedAttack = gameTime + 0.1;
+						}
 						
 						float x = GetRandomFloat( -0.03, 0.03 );
 						float y = GetRandomFloat( -0.03, 0.03 );
@@ -186,7 +190,7 @@ public void Combine_Aggrat_ClotThink(int iNPC)
 						
 						// E2 L0 = 6.0, E2 L5 = 7.0
 						KillFeed_SetKillIcon(npc.index, "pistol");
-						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 95000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 250000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
 						npc.PlayPistolFire();
@@ -229,7 +233,7 @@ public void Combine_Aggrat_ClotThink(int iNPC)
 
 							// E2 L0 = 90, E2 L5 = 105
 							KillFeed_SetKillIcon(npc.index, "wrench");
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 200000.0, DMG_CLUB, -1, _, vecTarget);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 320000.0, DMG_CLUB, -1, _, vecTarget);
 							
 							npc.PlayStunStickHit();
 						}

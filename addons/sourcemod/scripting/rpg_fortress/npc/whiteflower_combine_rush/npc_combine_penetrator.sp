@@ -96,7 +96,7 @@ public void CombinePenetrator_ClotThink(int iNPC)
 
 						// E2 L5 = 105, E2 L10 = 120
 						KillFeed_SetKillIcon(npc.index, "club");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 3.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 450000.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
 					}
 				}
@@ -153,7 +153,7 @@ public void CombinePenetrator_ClotThink(int iNPC)
 								
 								// E2 L5 = 10.5, E2 L10 = 12
 								KillFeed_SetKillIcon(npc.index, "shotgun_soldier");
-								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 100000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 300000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 							}
 
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");

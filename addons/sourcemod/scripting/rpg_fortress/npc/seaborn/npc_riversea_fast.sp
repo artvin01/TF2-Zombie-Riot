@@ -165,7 +165,7 @@ static void ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0 * Level[npc.index], DMG_CLUB, _, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 40.0 * Level[npc.index], DMG_CLUB, _, _, vecHit);
 					}
 				}
 				delete swingTrace;

@@ -68,7 +68,7 @@ void CombineSwordsman_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower Swordsman");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Swordsman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;

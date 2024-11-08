@@ -161,7 +161,7 @@ static void ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 15000.0);
 					
 					npc.PlayMeleeHitSound();
-					int entity = npc.FireArrow(vecTarget, 15.0 * Level[npc.index], 800.0, "models/weapons/w_bugbait.mdl");
+					int entity = npc.FireArrow(vecTarget, 60.0 * Level[npc.index], 800.0, "models/weapons/w_bugbait.mdl");
 					
 					if(entity != -1)
 					{

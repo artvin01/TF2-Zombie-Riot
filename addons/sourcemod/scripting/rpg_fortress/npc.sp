@@ -95,6 +95,7 @@ void NPC_ConfigSetup()
 	Whiteflower_ExpertFighter_OnMapStart_NPC();
 	Whiteflower_FloweringDarkness_OnMapStart_NPC();
 	Whiteflower_RagingBlader_OnMapStart_NPC();
+	Whiteflower_Boss_OnMapStart_NPC();
 
 	RiverSeaMelee_Setup();
 	RiverSeaRanged_Setup();
@@ -200,14 +201,14 @@ void NPCDeath(int entity)
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		if(IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		int DeathNoticer = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if(IsValidEntity(DeathNoticer) && !b_NpcHasDied[DeathNoticer])
 		{
-			Function func = func_NPCDeathForward[baseboss_index];
+			Function func = func_NPCDeathForward[DeathNoticer];
 			if(func && func != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, func);
-				Call_PushCell(baseboss_index);
+				Call_PushCell(DeathNoticer);
 				Call_PushCell(entity);
 				Call_Finish();
 			}
@@ -408,8 +409,6 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 				}
 				//Slowly heal when we are standing still.
 
-				Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-
 				npc.m_bisWalking = false;
 				if(npc.m_iChanged_WalkCycle != -2) 	//Stand still.
 				{
@@ -499,6 +498,29 @@ void RPGNpc_UpdateHpHud(int entity)
 	}
 }
 
+void HealOutOfBattleNpc(int entity)
+{
+	int MaxHealth = ReturnEntityMaxHealth(entity);
+	int Health = GetEntProp(entity, Prop_Data, "m_iHealth");
+
+	int HealthToHealPerIncrement = MaxHealth / 100;
+
+	if(HealthToHealPerIncrement < 1) //should never be 0
+	{
+		HealthToHealPerIncrement = 1;
+	}
+
+	SetEntProp(entity, Prop_Data, "m_iHealth", Health + HealthToHealPerIncrement);
+	
+
+	if((Health + HealthToHealPerIncrement) >= MaxHealth)
+	{
+		SetEntProp(entity, Prop_Data, "m_iHealth", MaxHealth);
+	}
+	//Slowly heal when we are standing still.
+	RPGNpc_UpdateHpHud(entity);
+	
+}
 stock bool ShouldNpcJumpAtThisClient(int iNpc, int client)
 {
 	bool AllowJump = true;
@@ -531,6 +553,9 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 }
 
 #include "rpg_fortress/npc/npc_actor.sp"
+
+#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
+
 #include "rpg_fortress/npc/normal/npc_chicken_2.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"
@@ -615,6 +640,7 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_raging_blader.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_master_mage.sp"
 #include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_flowering_darkness.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_whiteflower.sp"
 
 #include "rpg_fortress/npc/seaborn/npc_sea_shared.sp"
 #include "rpg_fortress/npc/seaborn/npc_riversea_melee.sp"

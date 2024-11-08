@@ -468,7 +468,7 @@ public void OnPostThink(int client)
 		if(EntityWearable > 0)
 		{
 			//when they land, check if they are in a bad pos
-			Spawns_CheckBadClient(client);
+			Spawns_CheckBadClient(client, 2);
 			//no need to recheck when they land
 			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			b_PlayerWasAirbornKnockbackReduction[client] = false;
@@ -1243,7 +1243,19 @@ public void OnPostThink(int client)
 			ThousandString(c_CurrentMana[offset], sizeof(c_CurrentMana) - offset);
 
 			if(form.Name[0])
-				Format(buffer, sizeof(buffer), "%s: %s\n%s", form.Name, c_CurrentMana, buffer);
+			{
+				char NameOverride[256];
+				NameOverride = form.Name;
+				if(form.Func_FormNameOverride != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, form.Func_FormNameOverride);
+					Call_PushCell(client);
+					Call_PushStringEx(NameOverride, sizeof(NameOverride), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+					Call_Finish();
+				}
+				Format(buffer, sizeof(buffer), "%s: %s\n%s", NameOverride, c_CurrentMana, buffer);
+
+			}
 			else
 				Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
 #endif
@@ -1658,10 +1670,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 #endif
+#if defined RPG
 	//dmg bonus before everything!
+	//this is only for zr! RPG handles it som
 	if(attacker > 0 && attacker <= MAXENTITIES)
 		damage *= fl_Extra_Damage[attacker];
-#if defined RPG
+		
 	if(attacker <= MaxClients)
 	{
 		//in pvp, we half the damage. this is also BEFORE flat resistance.
@@ -1669,8 +1683,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 	//needs to be above everything aside extra damage
 	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
+	{
 		RPG_FlatRes(victim, attacker, weapon, damage);
-
+	}
 	float value = Attributes_FindOnPlayerZR(victim, Attrib_FormRes, true, 0.0, true, true);
 	if(value)
 	{
@@ -1805,7 +1820,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 	
 #if defined RPG
-	if((damagetype & DMG_DROWN|DMG_DROWNRECOVER) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+	if((damagetype & DMG_DROWN) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
 		if(damage < 1000.0)
 		{
@@ -1859,6 +1874,37 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
 			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
+		}
+	}
+#endif
+#if defined RPG
+	if(i_TransformationLevel[victim] > 0)
+	{
+		Race race;
+		if(Races_GetRaceByIndex(RaceIndex[victim], race) && race.Forms)
+		{
+			Form form;
+			race.Forms.GetArray(i_TransformationLevel[victim] - 1, form);
+			
+			if(form.Func_FormTakeDamage != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, form.Func_FormTakeDamage);
+				Call_PushCell(victim);
+				Call_PushCellRef(attacker);
+				Call_PushCellRef(inflictor);
+				Call_PushFloatRef(damage);
+				Call_PushCellRef(damagetype);
+				Call_PushCellRef(weapon);
+				Call_PushArrayEx(damageForce, sizeof(damageForce), SM_PARAM_COPYBACK);
+				Call_PushArrayEx(damagePosition, sizeof(damagePosition), SM_PARAM_COPYBACK);
+				Call_PushCell(damagecustom);
+				Call_Finish();
+
+				if(damage <= 0.0)
+				{
+					return Plugin_Handled;
+				}
+			}
 		}
 	}
 #endif
@@ -2546,6 +2592,15 @@ void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 			}
 		}
 	}
+
+	
+#if defined RPG
+	float value = Attributes_FindOnPlayerZR(client, Attrib_FormRes, true, 0.0, true, true);
+	if(value)
+	{
+		damage *= value;
+	}
+#endif
 }
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
 #define SKIN_ZOMBIE			5
@@ -2568,7 +2623,6 @@ void UpdatePlayerFakeModel(int client)
 #endif
 	}
 }
-
 
 stock void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
@@ -2597,6 +2651,29 @@ public Action RevertDamageTakenAgain(Handle final, any pack)
 			f_MultiDamageTaken[entity] /= damagemulti;
 		else
 			f_MultiDamageTaken_Flat[entity] -= damagemulti;
+	}
+	return Plugin_Continue;
+}
+
+stock void IncreaceEntityDamageDealtBy(int entity, float amount, float duration)
+{
+	f_MultiDamageDealt[entity] *= amount;
+	
+	Handle pack;
+	CreateDataTimer(duration, RevertDamageDealtAgain, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntIndexToEntRef(entity));
+	WritePackFloat(pack, amount);
+}
+
+public Action RevertDamageDealtAgain(Handle final, any pack)
+{
+	ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	float damagemulti = ReadPackFloat(pack);
+	
+	if (IsValidEntity(entity))
+	{
+		f_MultiDamageDealt[entity] /= damagemulti;
 	}
 	return Plugin_Continue;
 }
@@ -2876,14 +2953,14 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			if(ArmorCorrosion[client] > 0)
 				ArmorCorrosion[client] = ArmorCorrosion[client] * 9 / 10;
 			
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		}
 		else
 		{
 			if(ArmorCorrosion[client] > 0)
 				ArmorCorrosion[client] = ArmorCorrosion[client] * 2 / 3;
 			
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		}
 	}
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
@@ -2912,7 +2989,7 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			float Drain = 0.0;
 			Form form;
 			Races_GetClientInfo(client, _, form);
-			Drain = form.GetFloatStat(Form::DrainRate, Stats_GetFormMastery(client, form.Name));
+			Drain = form.GetFloatStat(-1, Form::DrainRate, Stats_GetFormMastery(client, form.Name));
 			Drain *= 0.015; //drains are too high!
 
 			int StatsForDrainMulti;
@@ -2928,6 +3005,14 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 
 			//We take the base drain rate and multiply it by all the base stats.
 			Drain *= float(StatsForDrainMulti);
+
+			if(form.Func_ExtraDrainLogic != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, form.Func_ExtraDrainLogic);
+				Call_PushCell(client);
+				Call_PushFloatRef(Drain);
+				Call_Finish();
+			}
 
 			
 			//if it isnt 0, do nothing
