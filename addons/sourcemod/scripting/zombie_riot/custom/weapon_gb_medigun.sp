@@ -20,7 +20,6 @@ public void Weapon_GB_Ball(int client, int weapon, bool crit)
 		float damage = 75.0;
 
 		damage *= Attributes_FindOnWeapon(client, weapon, 8, true, 1.0);
-		damage *= Attributes_GetOnPlayer(client, 8, true, true);
 
 		float speed = 2000.0;
 

@@ -10694,7 +10694,7 @@ void MakeObjectIntangeable(int entity)
 
 
 static int BadSpotPoints[MAXTF2PLAYERS];
-void Spawns_CheckBadClient(int client, int checkextralogic = 0)
+stock void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 {
 #if defined ZR
 	if(CvarInfiniteCash.BoolValue)

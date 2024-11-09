@@ -144,7 +144,7 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 				return;
 		}
 
-		if(TeutonType[entity] != TEUTON_NONE && !dieingstate[entity])
+		if(TeutonType[entity] == TEUTON_NONE && !dieingstate[entity])
 		{
 			BladeDancer = entity;
 			CPrintToChatAll("{red}%N {crimson}recieved +200%% max health and +200%% damage bonus.", BladeDancer);
