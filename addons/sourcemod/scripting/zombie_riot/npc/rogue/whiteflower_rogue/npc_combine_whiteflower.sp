@@ -701,7 +701,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flKickUpHappening = gameTime + 0.1;
+					npc.m_flKickUpHappening = gameTime + 0.15;
 					npc.m_flDoingAnimation = gameTime + 0.35;
 					npc.m_flKickUpCD = gameTime + 4.0;
 					if(npc.m_iChanged_WalkCycle != 8) 	
