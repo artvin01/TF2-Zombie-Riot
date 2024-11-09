@@ -239,6 +239,7 @@ static ArrayList Floors;
 static int GameState;
 static Handle ProgressTimer;
 
+static int RogueTheme;
 static int CurrentFloor;
 static int CurrentCount;
 static int CurrentStage;
@@ -340,6 +341,11 @@ bool Rogue_Mode()	// If Rogue-Like is enabled
 bool Rogue_NoDiscount()
 {
 	return InRogueMode && !b_ResearchSquad;
+}
+
+int Rogue_Theme()
+{
+	return InRogueMode ? RogueTheme : -1;
 }
 
 void Rogue_MapStart()

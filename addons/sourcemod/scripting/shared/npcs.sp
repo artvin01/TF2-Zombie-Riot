@@ -435,7 +435,7 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
-	if(RogueTheme == BlueParadox && !force)
+	if(Rogue_Theme() == 1 && !force)
 	{
 		if(f_DomeInsideTest[entity] > GetGameTime())
 		{
