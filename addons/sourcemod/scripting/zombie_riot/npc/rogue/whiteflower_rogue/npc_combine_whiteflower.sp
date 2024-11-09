@@ -907,7 +907,7 @@ void WF_GrenadeSupportDo(int entity, int grenade, float damage, float RangeSuppo
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(EntIndexToEntRef(grenade));
 	pack.WriteFloat(damage);
-	pack.WriteFloat(RangeSupport);
+	pack.WriteFloat(RangeSupport * 0.9);
 	pack.WriteFloat(HealDo);
 
 	
@@ -1119,6 +1119,10 @@ static void Whiteflower_KickTouched(int entity, int enemy)
 		Custom_Knockback(entity, enemy, 1500.0, true, true);
 		TF2_AddCondition(enemy, TFCond_LostFooting, 0.5);
 		TF2_AddCondition(enemy, TFCond_AirCurrent, 0.5);
+	}
+	else
+	{
+		Custom_Knockback(entity, enemy, 800.0, true, true);
 	}
 }
 

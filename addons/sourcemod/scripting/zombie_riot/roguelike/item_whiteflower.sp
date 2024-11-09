@@ -221,6 +221,7 @@ public void Rogue_SoulDungeon_Weapon(int entity, int client)
 
 static Action Timer_DeathDoor(Handle timer, DataPack pack)
 {
+	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity != -1)
 	{
