@@ -2252,6 +2252,16 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		return Plugin_Changed;
 	}
 	*/
+	if(StrContains(sample, "weapons/quake_explosion_remastered.wav", true) != -1)
+	{
+		volume *= 0.8;
+		level = 80;
+
+		//Very loud. 
+		//need to reduce.
+		return Plugin_Changed;
+	}
+
 	if(StrContains(sample, "vo/", true) != -1)
 	{
 		if(entity > 0 && entity <= MaxClients)

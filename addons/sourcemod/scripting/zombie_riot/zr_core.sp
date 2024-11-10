@@ -1428,7 +1428,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				if(dieingstate[client] != -5)
 				{
 					GiveCompleteInvul(client, 2.0);
-					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 90, _, 1.0);
+					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 70, _, 0.7);
 					MakePlayerGiveResponseVoice(client, 3); //Revived response!
 				}
 				SetEntityMoveType(client, MOVETYPE_WALK);

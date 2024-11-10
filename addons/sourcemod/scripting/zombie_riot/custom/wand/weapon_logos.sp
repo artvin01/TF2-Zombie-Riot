@@ -94,7 +94,7 @@ void Weapon_Logos_ProjectileTouch(int entity, int target)
 		if(particle > MaxClients)
 			RemoveEntity(particle);
 		
-		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
@@ -103,7 +103,7 @@ void Weapon_Logos_ProjectileTouch(int entity, int target)
 		if(particle > MaxClients)
 			RemoveEntity(particle);
 		
-		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 		RemoveEntity(entity);
 	}
 }
@@ -120,8 +120,7 @@ static Action Weapon_Logos_Timer(Handle timer, DataPack pack)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
-				spawnRing(client, 800.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", 100, 155, 100, 255, 1, 0.6, 6.0, 6.1, 1);
-				spawnRing(client, 800.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 100, 155, 100, 255, 1, 0.6, 6.0, 6.1, 1);
+				spawnRing(client, 800.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 100, 155, 100, 125, 1, 0.25, 6.0, 6.1, 1);
 				
 				float damage = 65.0;
 				damage *= Attributes_Get(weapon, 410, 1.0);

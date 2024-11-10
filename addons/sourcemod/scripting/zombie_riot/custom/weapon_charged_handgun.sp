@@ -441,7 +441,7 @@ public Action Event_Charged_Hand_OnHatTouch(int entity, int other)
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
@@ -451,7 +451,7 @@ public Action Event_Charged_Hand_OnHatTouch(int entity, int other)
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
@@ -565,7 +565,7 @@ public Action Event_Wand_IEM_OnHatTouch(int entity, int other)
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
@@ -1042,7 +1042,7 @@ public Action Event_Wand_Cutter_IEM_OnHatTouch(int entity, int other)
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
