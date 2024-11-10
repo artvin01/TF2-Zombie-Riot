@@ -2061,10 +2061,11 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 			{
 				if(victim <= MaxClients)
 				{
-					hullMin[0] = 0.0;
-					hullMin[1] = 0.0;
-					hullMin[2] = 400.0;
-					TeleportEntity(victim, _, _, hullMin, true);
+					float newVel[3];
+					newVel[0] = GetEntPropFloat(victim, Prop_Send, "m_vecVelocity[0]");
+					newVel[1] = GetEntPropFloat(victim, Prop_Send, "m_vecVelocity[1]");
+					newVel[2] = 400.0;
+					TeleportEntity(victim, _, _, newVel, true);
 				}
 				else if(!b_NpcHasDied[victim])
 				{

@@ -296,6 +296,8 @@ static void ShowMenu(int client, bool first)
 		{
 			Format(buffer, sizeof(buffer), "%d:%02d", timeleft / 60, timeleft % 60);
 			menu.AddItem(num, buffer, ITEMDRAW_DISABLED);
+
+			menu.AddItem(num, buffer, ITEMDRAW_SPACER);
 		}
 		else
 		{
@@ -306,8 +308,12 @@ static void ShowMenu(int client, bool first)
 			else
 			{
 				menu.AddItem(num, "Extract");
-			//	menu.AddItem("-99", "(600 Intelligence For Upgrade)", ITEMDRAW_DISABLED);
 			}
+			
+			int count;
+			TextStore_GetInv(client, garden.Store[client], count);
+			Format(buffer, sizeof(buffer), "And Replant (%d)", count);
+			menu.AddItem(num, buffer);
 		}
 		
 		menu.AddItem(num, "Cancel");
@@ -373,32 +379,38 @@ public int Garden_PlantHandle(Menu menu, MenuAction action, int client, int choi
 			KeyValues kv = TextStore_GetItemKv(index);
 			if(kv)
 			{
-				kv.GetString("seed_result", buffer, sizeof(buffer));
-				if(buffer[0])
-				{
-					int amount;
-					TextStore_GetInv(client, index, amount);
-					if(amount > 0)
-					{
-						static GardenEnum garden;
-						GardenList.GetArray(InMenu[client], garden);
-						garden.Store[client] = index;
-						garden.StartAt[client] = GetGameTime();
-						garden.ReadyIn[client] = kv.GetFloat("seed_time", -0.1) + garden.StartAt[client];
-						GardenList.SetArray(InMenu[client], garden);
-						
-						TextStore_SetInv(client, index, amount - 1);
-						UpdateTrace[client] = 0.0;
-
-						ClientCommand(client, "playgamesound ui/item_soda_can_drop.wav");
-					}
-				}
+				PlantGarden(index, kv);
 			}
 			
 			ShowMenu(client, false);
 		}
 	}
 	return 0;
+}
+
+static void PlantGarden(int index, KeyValues kv)
+{
+	static char buffer[48];
+	kv.GetString("seed_result", buffer, sizeof(buffer));
+	if(buffer[0])
+	{
+		int amount;
+		TextStore_GetInv(client, index, amount);
+		if(amount > 0)
+		{
+			static GardenEnum garden;
+			GardenList.GetArray(InMenu[client], garden);
+			garden.Store[client] = index;
+			garden.StartAt[client] = GetGameTime();
+			garden.ReadyIn[client] = kv.GetFloat("seed_time", -0.1) + garden.StartAt[client];
+			GardenList.SetArray(InMenu[client], garden);
+			
+			TextStore_SetInv(client, index, amount - 1);
+			UpdateTrace[client] = 0.0;
+
+			ClientCommand(client, "playgamesound ui/item_soda_can_drop.wav");
+		}
+	}
 }
 
 public int Garden_GrowthHandle(Menu menu, MenuAction action, int client, int choice)
@@ -418,7 +430,7 @@ public int Garden_GrowthHandle(Menu menu, MenuAction action, int client, int cho
 			static GardenEnum garden;
 			GardenList.GetArray(InMenu[client], garden);
 			
-			if(!choice)
+			if(choice < 1)
 			{
 				KeyValues kv = TextStore_GetItemKv(garden.Store[client]);
 				if(kv)
@@ -454,6 +466,12 @@ public int Garden_GrowthHandle(Menu menu, MenuAction action, int client, int cho
 								TextStore_AddItemCount(client, buffer, 1);
 							}
 						}
+					}
+
+					if(choice == 1)
+					{
+						PlantGarden(index, kv);
+						return;
 					}
 				}
 			}

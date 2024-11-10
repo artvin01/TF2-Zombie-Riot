@@ -1395,11 +1395,11 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 				RemoveEntity(npc.m_iWearable8);
 			}
 			npc.i_GunMode = 1;
-			npc.m_flNemalSlicerCD = gameTime + 20.5;
+			npc.m_flNemalSlicerCD = gameTime + 22.0;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
-			npc.m_flAttackHappens = GetGameTime(npc.index) + 1.0;
-			npc.m_flNemalSlicerHappening = gameTime + 4.0;
+			npc.m_flAttackHappens = GetGameTime(npc.index) + 1.5;
+			npc.m_flNemalSlicerHappening = gameTime + 4.5;
 			EmitSoundToAll("ambient/energy/whiteflash.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 100);
 			EmitSoundToAll("ambient/energy/whiteflash.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 100);
 			float flPos[3];
