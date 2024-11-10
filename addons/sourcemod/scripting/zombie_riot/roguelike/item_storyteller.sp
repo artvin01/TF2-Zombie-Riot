@@ -3,6 +3,7 @@
 
 static int BrokenBlade;
 static int BladeDancer;
+static float BladeDancerTime;
 static float LastFlowerHealth;
 static ArrayStack LastShadowHealth;
 static bool Friendship;
@@ -140,7 +141,7 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 	{
 		if(BladeDancer && BladeDancer != entity)
 		{
-			if(IsClientInGame(BladeDancer) && IsPlayerAlive(BladeDancer) && TeutonType[BladeDancer] == TEUTON_NONE && !dieingstate[BladeDancer])
+			if(fabs(GetGameTime() - BladeDancerTime) < 180 && IsClientInGame(BladeDancer) && IsPlayerAlive(BladeDancer) && TeutonType[BladeDancer] == TEUTON_NONE && !dieingstate[BladeDancer])
 				return;
 		}
 
@@ -149,6 +150,7 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 			if(BladeDancer != entity)
 			{
 				BladeDancer = entity;
+				BladeDancerTime = GetGameTime();
 				CPrintToChatAll("{red}%N {crimson}recieved +200%% max health and +200%% damage bonus.", BladeDancer);
 			}
 
