@@ -88,7 +88,7 @@ public void Rogue_Spearhead_Weapon(int entity)
 	Attributes_SetMulti(entity, 410, 1.15);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		Attributes_SetMulti(entity, 1, 1.15);
 	}

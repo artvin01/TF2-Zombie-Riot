@@ -325,7 +325,7 @@ public void Rogue_Item_HandWrittenLetter_Weapon(int entity)
 		Attributes_SetMulti(entity, 410, 1.03);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		if(Attributes_Has(entity, 1))
 			Attributes_SetMulti(entity, 1, 1.03);
@@ -392,7 +392,7 @@ public void Rogue_Item_ScrappedWallet_Weapon(int entity)
 		Attributes_SetMulti(entity, 410, 1.01);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		if(Attributes_Has(entity, 1))
 			Attributes_SetMulti(entity, 1, 1.01);
@@ -508,7 +508,7 @@ public void Rogue_Item_GenericDamage5_Weapon(int entity)
 
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		if(Attributes_Has(entity, 1))
 			Attributes_SetMulti(entity, 1, 1.05);
@@ -557,7 +557,7 @@ public void Rogue_Item_GenericDamage10_Weapon(int entity)
 
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		if(Attributes_Has(entity, 1))
 			Attributes_SetMulti(entity, 1, 1.1);

@@ -457,7 +457,7 @@ public void Rogue_Reefbreaker_Weapon(int entity)
 
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		if(Attributes_Has(entity, 1))
 			Attributes_SetMulti(entity, 1, 1.15);
