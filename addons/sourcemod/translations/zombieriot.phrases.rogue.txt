@@ -1528,7 +1528,7 @@
 	}
 	"Whiteflower Desc"
 	{
-		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}Allies gain +25% max health {yellow}but max health is randomly swapped"
+		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}Allies gain +25%% max health {yellow}but max health is randomly swapped"
 	}
 	"Shadow"
 	{

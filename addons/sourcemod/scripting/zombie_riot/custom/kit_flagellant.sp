@@ -440,7 +440,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		if(health < maxhealth)
 		{
 			float multi = Attributes_Get(weapon, 2, 1.0);
-			multi *= Attributes_GetOnPlayer(client, 8, true, true);
+			multi *= Attributes_GetOnWeapon(client, weapon, 8, true);
 			
 			float base = 40.0 + (HealLevel[client] * 7.5);
 			float cost = 1.0 - (HealLevel[client] * 0.1);
@@ -561,7 +561,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		float multi = Attributes_Get(weapon, 2, 1.0);
-		multi *= Attributes_GetOnPlayer(client, 8, true, true);
+		multi *= Attributes_GetOnWeapon(client, weapon, 8, true);
 
 		int flags = i_ExplosiveProjectileHexArray[client];
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE|EP_GIBS_REGARDLESS;
@@ -780,7 +780,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		float multi = Attributes_Get(weapon, 2, 1.0);
-		multi *= Attributes_GetOnPlayer(client, 8, true, true);
+		multi *= Attributes_GetOnWeapon(client, weapon, 8, true);
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
 		
