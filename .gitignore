@@ -11,3 +11,4 @@ mynpcs/
 [Tt]humbs.db
 !npc_framework.inc
 !textstore.inc
+!adt_trie_sort.inc

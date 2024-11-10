@@ -22,15 +22,18 @@
 	{
 		"en"	"A Deeper Discovery"
 		"pt"	"A Descoberta Profunda"
+		"ru"	"Более глубокая находка"
 	}
 	"All Parties Involved"
 	{
 		"en"	"All Parties Involved"
+		"ru"	"Все группы вовлечены"
 		"pt"	"Todas as partes envolvidas"
 	}
 	"Nightmares Evolve"
 	{
 		"en"	"Nightmares Evolve"
+		"ru"	"Кошмар Эволиционирует"
 		"pt"	"Pesadelos Evolvem"
 	}
 	"Lost Ingots"
@@ -41,12 +44,18 @@
 	"Time Stands Still"
 	{
 		"en"	"Time Stands Still"
+		"ru"	"Время Стоит На Месте"
 		"pt"	"O Tempo Está Parado"
 	}
 	"The Void"
 	{
 		"en"	"The Void"
+		"ru"	"Бездна"
 		"pt"	"O Vazio"
+	}
+	"For the Fallen"
+	{
+		"en"	"For the Fallen"
 	}
 	"Vote for the starting item"
 	{
@@ -117,6 +126,7 @@
 	"Optional Battle Title"
 	{
 		"en"	"Something seems off about this, should we fight or leave right here?"
+		"ru"	"Что-то здесь не так, стоит ли нам драться или уйти прямо здесь?"
 		"pt"	"Algo parece errado sobre isso, devemos lutar ou sair daqui?"
 	}
 	"We can handle this"
@@ -403,8 +413,8 @@
 	}
 	"Coffin of Evil Desc 2"
 	{
-		"en"	"{green}Gain 4 Australium Ingots"
-		"ru"	"{green}Получить 4 слитков австралия"
+		"en"	"{green}Gain 8 Australium Ingots"
+		"ru"	"{green}Получить 8 слитков австралия"
 	}
 	"Coffin of Evil Lore 2"
 	{
@@ -423,8 +433,8 @@
 	}
 	"Eye for an Eye Desc 1"
 	{
-		"en"	"{green}Gain 20 Australium Ingots"
-		"ru"	"{green}Получить 20 слитков австралия"
+		"en"	"{green}Gain 30 Australium Ingots"
+		"ru"	"{green}Получить 30 слитков австралия"
 	}
 	"Eye for an Eye Lore 1"
 	{
@@ -438,8 +448,8 @@
 	}
 	"Eye for an Eye Desc 2"
 	{
-		"en"	"{green}Gain 1500 cash {red}but lose 20 ammo supplies"
-		"ru"	"{green}Получить 1 500 кредитов{red}, но потерять 20 боеприпасов"
+		"en"	"{green}Gain 3000 cash {red}but lose 20 ammo supplies"
+		"ru"	"{green}Получить 3 000 кредитов{red}, но потерять 20 боеприпасов"
 	}
 	"Eye for an Eye Lore 2"
 	{
@@ -464,30 +474,37 @@
 	"Xeno Shaft Title"
 	{
 		"en"	"You can hear a figure walking about in the mines, perhaps guarding something of value?"
+		"ru"	"Вы можете слышать как фигура ходит в шахтах,возможно охраняет что-нибудь ценое?"
 	}
 	"Investigate the mines"
 	{
 		"en"	"Investigate the mines"
+		"ru"	"Исследовать шахты"
 	}
 	"Stultifera Title"
 	{
 		"en"	"A sticky creep is covering the walls of the mine, smells like the ocean, should we check it out?"
+		"ru"	"Стены шахты покрыты липким налетом, пахнет, как океан, стоит ли нам это проверить?"
 	}
 	"Broken Crown Lore"
 	{
 		"en"	"You find a golden sword stuck into the ground along with a broken crown hanging around it.\nYou feel you've seen these before, an aura of rage surrounds it."
+		"ru"	"Вы находите золотой меч застрявший в земле вместе с сломанной короной весящий на нём.\nУ вас возникает чувство Дежавю,Аура ярости окружает её."
 	}
 	"Broken Crown Option 1"
 	{
 		"en"	"Take the broken crown"
+		"ru"	"Забрать корону"
 	}
 	"Broken Crown Desc 1"
 	{
 		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+		"ru"	"{yellow}Получить неизвестный артифакт и {blue}Поменять концовку"
 	}
 	"Broken Crown Lore 1"
 	{
 		"en"	"The broken crown stabs you as you try to pick it up, it's sharp broken edges glare. The evil aura grows as you feel yourself finding a new path to follow."
+		"ru"	"Сломанная корона Пронзает вас как только вы пытаетесь её поднять,Её острые края блики. Зловещая аура растёт и вы понимаете по какому пути стоит идти."
 	}
 	"Broken Crown Option 2"
 	{
@@ -495,7 +512,7 @@
 	}
 	"Broken Crown Desc 2"
 	{
-		"en"	"{green}Gain 2 Australium Ingots"
+		"en"	"{green}Gain 8 Australium Ingots"
 	}
 	"Broken Crown Lore 2"
 	{
@@ -544,6 +561,18 @@
 	"Bob Final Lore 2"
 	{
 		"en"	"It could just be out of power or prehaps just turned it off earlier. Moving on."
+	}
+	"Bob Final Option 3"
+	{
+		"en"	"I do remember"
+	}
+	"Bob Final Desc 3"
+	{
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+	}
+	"Bob Final Lore 3"
+	{
+		"en"	"Those that we lost. Bladedance... Guln... Finish the job."
 	}
 	"Mediveal Ally Title"
 	{
@@ -1037,6 +1066,50 @@
 	{
 		"en"	"Broken Bridge"
 	}
+	"Home Sick"
+	{
+		"en"	"Home Sick"
+	}
+	"Home Sick!"
+	{
+		"en"	"Home Sick ⚠"
+	}
+	"A Lost War"
+	{
+		"en"	"A Lost War"
+	}
+	"A Lost War!"
+	{
+		"en"	"A Lost War ⚠"
+	}
+	"Falling Hazard"
+	{
+		"en"	"Falling Hazard"
+	}
+	"Falling Hazard!"
+	{
+		"en"	"Falling Hazard ⚠"
+	}
+	"Whiteflower Mercenaries"
+	{
+		"en"	"Whiteflower Mercenaries ☠"
+	}
+	"City Hall"
+	{
+		"en"	"City Hall"
+	}
+	"City Hall!"
+	{
+		"en"	"City Hall ⚠"
+	}
+	"Prompting Engineer"
+	{
+		"en"	"Prompting Engineer ⚠"
+	}
+	"At Strength"
+	{
+		"en"	"At Strength ⚠"
+	}
 
 	// Curses
 	"Bewildered"
@@ -1057,7 +1130,7 @@
 	}
 	"Sensitive Desc"
 	{
-		"en"	"{red}Players take +25%% more damage {green}but heal +100%% more{yellow}."
+		"en"	"{red}Players take +25%% more damage {green}but heal +100%% more."
 	}
 	"Sensitive Lore"
 	{
@@ -1069,7 +1142,7 @@
 	}
 	"Obsessed Desc"
 	{
-		"en"	"{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next{yellow}."
+		"en"	"{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next."
 	}
 	"Obsessed Lore"
 	{
@@ -1439,7 +1512,7 @@
 	}
 	"Blademace Desc"
 	{
-		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}All Allies gain +15%% damage bonus, +15%% max health, +1.5%% damage resistance {red}but -15%% movement speed{yellow}."
+		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}All Allies gain +20%% damage bonus, +20%% max health, +2%% damage resistance {red}but -10%% movement speed{yellow}."
 	}
 	"Brokenblade"
 	{
@@ -1448,8 +1521,8 @@
 	}
 	"Brokenblade Desc"
 	{
-		"en"	"A broken sword. It's usable... probably...\n{green}Players and Rebels revive speed is doubled {red}but -25%% max health{yellow}."
-		"ru"	"Сломанный меч. Его можно использовать... возможно...\n{green}Скорость возрождения игроков и повстанцев удвоена{red}, но -25%% макс. запаса здоровья{yellow}."
+		"en"	"A broken sword. It's usable... probably...\n{green}Players and Rebels revive speed is doubled {red}but -20%% max health{yellow}."
+		"ru"	"Сломанный меч. Его можно использовать... возможно...\n{green}Скорость возрождения игроков и повстанцев удвоена{red}, но -20%% макс. запаса здоровья{yellow}."
 	}
 	"Bladedance"
 	{
@@ -1458,8 +1531,8 @@
 	}
 	"Bladedance Desc"
 	{
-		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}One player at a time will receive +100%% max health and +100%% damage bonus."
-		"ru"	"Артефакт, оставленный членом «Багровой труппы».\n{green}Один игрок за раз получает +100%% макс. запаса здоровья и +100%% бонуса к урону."
+		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}One player at a time will receive +200%% max health and +200%% damage bonus."
+		"ru"	"Артефакт, оставленный членом «Багровой труппы».\n{green}Один игрок за раз получает +200%% макс. запаса здоровья и +200%% бонуса к урону."
 	}
 	"Whiteflower"
 	{
@@ -1468,8 +1541,7 @@
 	}
 	"Whiteflower Desc"
 	{
-		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{yellow}Allies will swap max health with another ally."
-		"ru"	"Артефакт, оставленный членом «Багровой труппы».\n{yellow}Союзники обмениваются макс. запасом здоровья с другим союзником."
+		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}Allies gain +25%% max health {yellow}but max health is randomly swapped"
 	}
 	"Shadow"
 	{
@@ -1488,8 +1560,8 @@
 	}
 	"Right Eye of the Natator Desc"
 	{
-		"en"	"One half of the Gaulish empress's crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +15%% ranged damage {red}but -5%% melee damage{yellow}."
-		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +15%% больше урона в дальнем бою{red}, но -5%% урона в ближнем бою{yellow}."
+		"en"	"One half of the Gaulish empress's crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20%% ranged damage {red}but -5%% melee damage{yellow}."
+		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20%% больше урона в дальнем бою{red}, но -5%% урона в ближнем бою{yellow}."
 	}
 	"Left Eye of the Natator"
 	{
@@ -1498,8 +1570,8 @@
 	}
 	"Left Eye of the Natator Desc"
 	{
-		"en"	"One half of the Gaulish empress's crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +15%% melee damage {red}but -5%% ranged damage{yellow}."
-		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +15%% больше урона в ближнем бою{red}, но -5%% урона в дальнем бою{yellow}."
+		"en"	"One half of the Gaulish empress's crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20%% melee damage {red}but -5%% ranged damage{yellow}."
+		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20%% больше урона в ближнем бою{red}, но -5%% урона в дальнем бою{yellow}."
 	}
 	"End of Times"
 	{
@@ -1510,25 +1582,6 @@
 	{
 		"en"	"As long as a new cycle has not been reached, there is still time to fix your mistakes.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 		"ru"	"Пока новый цикл не достигнут, ещё есть время исправить свои ошибки.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
-	}
-	"Bedrock"
-	{
-		"en"	"''Bedrock''"
-		"ru"	"«Бедрок»"
-	}
-	"Bedrock Desc"
-	{
-		"en"	"A weapon said to have been made specifically for an Abyssal Hunter.\n{green}All Allies gain +15%% damage bonus, +15%% max health, +1.5%% damage resistance {red}but -15% movement speed{yellow}."
-	}
-	"Wavebreaker"
-	{
-		"en"	"''Wavebreaker''"
-		"ru"	"«Волнорез»"
-	}
-	"Wavebreaker Desc"
-	{
-		"en"	"A weapon said to have been made specifically for an Abyssal Hunter.\n{green}Players and Rebels revive speed is doubled {red}but -25% max health{yellow}."
-		"ru"	"Оружие, которое, как говорят, было создано специально для охотника Бездны.\n{green}Скорость возрождения игроков и повстанцев удвоена{red}, но -25% макс. запаса здоровья{yellow}."
 	}
 	"Proof of Friendship"
 	{
@@ -1651,5 +1704,221 @@
 	"Hand of the Elite Desc"
 	{
 		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75%% damage bonus while over half health"
+	}
+	"Soul of Boss vs Boss"
+	{
+		"en"	"Soul of Boss vs Boss"
+	}
+	"Soul of Boss vs Boss Desc"
+	{
+		"en"	"Every creation starts from somewhere.\n{green}Specific themed weapons gain +100%% jump height"
+	}
+	"Soul of Arknights"
+	{
+		"en"	"Soul of Arknights"
+	}
+	"Soul of Arknights Desc"
+	{
+		"en"	"Is this your final choice?\n{green}Specific themed weapons remove the down limit"
+	}
+	"Soul of Bloons Tower Defense"
+	{
+		"en"	"Soul of Bloons Tower Defense"
+	}
+	"Soul of Bloons Tower Defense Desc"
+	{
+		"en"	"Better build that temple.\n{green}Specific themed weapons grant +20%% damage to each other, stacking"
+	}
+	"Soul of Yakuza"
+	{
+		"en"	"Soul of Yakuza"
+	}
+	"Soul of Yakuza Desc"
+	{
+		"en"	"10 years.\n{green}Specific themed weapons allow their special stance to always gain HEAT"
+	}
+	"Soul of Darkest Dungeon"
+	{
+		"en"	"Soul of Darkest Dungeon"
+	}
+	"Soul of Darkest Dungeon Desc"
+	{
+		"en"	"Face the light or be consumed.\n{green}Specific themed weapons have a chance to prevent dying and instead remain at one health"
+	}
+	"Soul of Terraria"
+	{
+		"en"	"Soul of Terraria"
+	}
+	"Soul of Terraria Desc"
+	{
+		"en"	"And there will be mods.\n{green}Specific themed weapons grant 1000 HP every so often"
+	}
+	"Xeno Anti-Vial"
+	{
+		"en"	"Xeno Anti-Vial"
+	}
+	"Xeno Anti-Vial Desc"
+	{
+		"en"	"Suppresses the effects of Xeno, for a moment.\n{green}Xeno enemies take +75%% damage"
+	}
+	"Seaborn Anti-Vial"
+	{
+		"en"	"Seaborn Anti-Vial"
+	}
+	"Seaborn Anti-Vial Desc"
+	{
+		"en"	"A lantern that even Seaborn fear.\n{green}Seaborn enemies take +75%% damage"
+	}
+	"Revenge Squad"
+	{
+		"en"	"Revenge Squad"
+	}
+	"Revenge Squad Desc"
+	{
+		"en"	"{blue}You remember what happened, to all of them."
+	}
+	"Bob's Orders"
+	{
+		"en"	"Bob's Orders"
+	}
+	"Bob's Orders Desc"
+	{
+		"en"	"Eliminate Whiteflower.\n{green}All Allies receive +15%% damage bonus and +20%% movement speed {blue}and the ending is changed."
+	}
+	"But Nobody Is Here"
+	{
+		"en"	"But nobody is here..."
+	}
+	"W.F. Mercenary Iberian"
+	{
+		"en"	"W.F. Mercenary Iberian"
+	}
+	"W.F. Mercenary Ruinan"
+	{
+		"en"	"W.F. Mercenary Ruinan"
+	}
+	"Guln"
+	{
+		"en"	"Guln"
+	}
+	"Cursed Relic"
+	{
+		"en"	"Cursed Relic"
+	}
+	"Cursed Relic Desc"
+	{
+		"en"	"From the back of the bin in the shop.\n{green}Players gain +8%% firing speed {red}most of the time"
+	}
+	"Australium Printer"
+	{
+		"en"	"Australium Printer"
+	}
+	"Australium Printer Desc"
+	{
+		"en"	"Convert that australium into shop money!\n{yellow}Australium Ingots are converted into 200 credits each"
+	}
+	"Elite Voucher"
+	{
+		"en"	"Elite Voucher"
+	}
+	"Elite Voucher Desc"
+	{
+		"en"	"It's hard to find these things, use it well.\n{green}Recover a high-grade weapon with a store discount"
+	}
+	"Rotten Bone"
+	{
+		"en"	"Rotten Bone"
+	}
+	"Rotten Bone Desc"
+	{
+		"en"	"Corroding as we speak.\n{green}Each newly spawned enemy takes increasingly more damage and stacks"
+	}
+	"Eyes of the Sea"
+	{
+		"en"	"Eyes of the Sea"
+	}
+	"Eyes of the Sea Desc"
+	{
+		"en"	"You saw what they saw.\n{green}Enemies are silenced for 10 seconds on spawn"
+	}
+	"Copper Ore"
+	{
+		"en"	"Copper Ore"
+	}
+	"Copper Ore Desc"
+	{
+		"en"	"Copper.\n{green}Weapons fire +35%% bullets per shot {red}but stops working when Iron Ore is collected"
+	}
+	"Iron Ore"
+	{
+		"en"	"Iron Ore"
+	}
+	"Iron Ore Desc"
+	{
+		"en"	"Iron.\n{green}Weapon projectiles gain +35%% projectile speed and range {red}but stops working when Copper Ore is collected"
+	}
+	"Empty Plate"
+	{
+		"en"	"Empty Plate"
+	}
+	"Empty Plate Desc"
+	{
+		"en"	"Waiter! Waiter! More Endspeakers please!\n{green}Steal and consume dropped Remains as new Artifacts, max of 5"
+	}
+	"Founder Fondue"
+	{
+		"en"	"Founder Fondue"
+	}
+	"Founder Fondue Desc"
+	{
+		"en"	"{green}Players take 10 less elemental damage"
+	}
+	"Predator Pancakes"
+	{
+		"en"	"Predator Pancakes"
+	}
+	"Predator Pancakes Desc"
+	{
+		"en"	"{green}Players gain 10%% dodge chance"
+	}
+	"Brandguider Brunch"
+	{
+		"en"	"Brandguider Brunch"
+	}
+	"Brandguider Brunch Desc"
+	{
+		"en"	"{green}Players take 50%% less nethersea brand damage"
+	}
+	"Spewer Spewers"
+	{
+		"en"	"Spewer Spewers"
+	}
+	"Spewer Spewers Desc"
+	{
+		"en"	"{green}Weapon projectiles gain +50%% range"
+	}
+	"Swarmcaller Sandwich"
+	{
+		"en"	"Swarmcaller Sandwich"
+	}
+	"Swarmcaller Sandwich Desc"
+	{
+		"en"	"{green}Players are immune to slow effects"
+	}
+	"Reefbreaker Ravioli"
+	{
+		"en"	"Reefbreaker Ravioli"
+	}
+	"Reefbreaker Ravioli Desc"
+	{
+		"en"	"{green}Players gain +15%% damage"
+	}
+	"Whiteflower Final Speech 1"
+	{
+		"en"	"I got rid of Guln, tricked Bob to get rid of Bladedance...\nYou and Bob are the last ones."
+	}
+	"Whiteflower Final Speech 2"
+	{
+		"en"	"You think I fight alone?"
 	}
 }

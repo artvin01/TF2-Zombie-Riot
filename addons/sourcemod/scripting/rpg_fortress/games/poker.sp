@@ -41,7 +41,7 @@ void Games_Poker(int client)
 
 	if(found)
 	{
-		menu.SetTitle("Draw Poker\n \nRules:\nMin Bet: %d Credits\nRaise Limit: %s\nJokers: 0\n ", MinBet, MinBet ? "x8" : "x0");
+		menu.SetTitle("Draw Poker\n \nRules:\nMin Bet: %d Chips\nRaise Limit: %s\nJokers: 0\n ", MinBet, MinBet ? "x8" : "x0");
 
 		menu.AddItem(NULL_STRING, "How to Play");
 		menu.AddItem(NULL_STRING, "View Table");
@@ -52,17 +52,17 @@ void Games_Poker(int client)
 
 		menu.AddItem(NULL_STRING, "How to Play\n \nRules:");
 
-		int cash = TextStore_Cash(client);
+		int cash = TextStore_GetItemCount(client, ITEM_CHIP);
 
-		menu.AddItem(NULL_STRING, "0 Credit Bet");
-		menu.AddItem(NULL_STRING, "10 Credit Bet", cash < 500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "25 Credit Bet", cash < 1250 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "50 Credit Bet", cash < 2500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "100 Credit Bet", cash < 5000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "250 Credit Bet", cash < 12500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "500 Credit Bet", cash < 25000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "1000 Credit Bet", cash < 50000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "2500 Credit Bet", cash < 125000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "0 Chip Bet");
+		menu.AddItem(NULL_STRING, "1 Chip Bet", cash < 10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "5 Chip Bet", cash < 50 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "10 Chip Bet", cash < 100 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "25 Chip Bet", cash < 250 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "50 Chip Bet", cash < 500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "100 Chip Bet", cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "250 Chip Bet", cash < 2500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "500 Chip Bet", cash < 5000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		menu.Pagination = 0;
 		menu.ExitButton = true;
@@ -103,28 +103,28 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 					switch(choice)
 					{
 						case 1:
-							MinBet = 10;
+							MinBet = 1;
 						
 						case 2:
-							MinBet = 25;
+							MinBet = 5;
 						
 						case 3:
-							MinBet = 50;
+							MinBet = 10;
 						
 						case 4:
-							MinBet = 100;
+							MinBet = 25;
 						
 						case 5:
-							MinBet = 250;
+							MinBet = 50;
 						
 						case 6:
-							MinBet = 500;
+							MinBet = 100;
 						
 						case 7:
-							MinBet = 1000;
+							MinBet = 250;
 						
 						case 8:
-							MinBet = 2500;
+							MinBet = 500;
 						
 						default:
 							MinBet = 0;
@@ -322,7 +322,7 @@ static void PokerMenu(int client)
 			else
 			{
 				FormatEx(buffer, sizeof(buffer), "Join Game (%d Bet)\n ", MinBet);
-				menu.AddItem(buffer, buffer, TextStore_Cash(client) < (MinBet * 8) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				menu.AddItem(buffer, buffer, TextStore_GetItemCount(client, ITEM_CHIP) < (MinBet * 8) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 
 			int count;
@@ -381,27 +381,27 @@ static void PokerMenu(int client)
 				bool allIn;
 				if(!MinBet)
 				{
-					menu.AddItem(buffer, "Free Game ($0)", ITEMDRAW_DISABLED);
+					menu.AddItem(buffer, "Free Game (¢0)", ITEMDRAW_DISABLED);
 				}
 				else if(Playing[client] < CurrentBet)
 				{
-					FormatEx(buffer, sizeof(buffer), "Match Bet and Keep Playing? ($%d -> $%d)\n ", Playing[client], CurrentBet);
+					FormatEx(buffer, sizeof(buffer), "Match Bet and Keep Playing? (¢%d -> ¢%d)\n ", Playing[client], CurrentBet);
 					menu.AddItem(buffer, buffer);
 				}
 				else if(CurrentBet >= (MinBet * 8))
 				{
-					FormatEx(buffer, sizeof(buffer), "All In ($%d)\n ", CurrentBet);
+					FormatEx(buffer, sizeof(buffer), "All In (¢%d)\n ", CurrentBet);
 					menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 					allIn = true;
 				}
 				else if(CurrentBet >= (MinBet * 4))
 				{
-					FormatEx(buffer, sizeof(buffer), "All In ($%d -> $%d)\n ", CurrentBet, CurrentBet * 2);
+					FormatEx(buffer, sizeof(buffer), "All In (¢%d -> ¢%d)\n ", CurrentBet, CurrentBet * 2);
 					menu.AddItem(buffer, buffer);
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "Double Bet ($%d -> $%d)\n ", CurrentBet, CurrentBet * 2);
+					FormatEx(buffer, sizeof(buffer), "Double Bet (¢%d -> ¢%d)\n ", CurrentBet, CurrentBet * 2);
 					menu.AddItem(buffer, buffer);
 				}
 
@@ -454,7 +454,7 @@ static void PokerMenu(int client)
 
 			if(GameWinner == client)
 			{
-				FormatEx(buffer, sizeof(buffer), "You won %d credits", PrizePool);
+				FormatEx(buffer, sizeof(buffer), "You won %d chips", PrizePool);
 			}
 			else
 			{
@@ -509,7 +509,7 @@ public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
 						Playing[client] = 0;
 						TriggerTimer(PokerTimer);
 					}
-					else if(TextStore_Cash(client) >= (MinBet * 8))
+					else if(TextStore_GetItemCount(client, ITEM_CHIP) >= (MinBet * 8))
 					{
 						Playing[client] = MinBet;
 						TriggerTimer(PokerTimer);
@@ -535,18 +535,18 @@ public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
 							if(Playing[client] < CurrentBet)
 							{
 								int cost = CurrentBet - Playing[client];
-								if(TextStore_Cash(client) >= cost)
+								if(TextStore_GetItemCount(client, ITEM_CHIP) >= cost)
 								{
 									PrizePool += cost;
-									TextStore_Cash(client, -cost);
+									TextStore_AddItemCount(client, ITEM_CHIP, -cost);
 									Playing[client] = CurrentBet;
 									ClientCommand(client, "playgamesound %s", SOUND_MATCH);
 								}
 							}
-							else if(TextStore_Cash(client) >= CurrentBet)
+							else if(TextStore_GetItemCount(client, ITEM_CHIP) >= CurrentBet)
 							{
 								PrizePool += CurrentBet;
-								TextStore_Cash(client, -CurrentBet);
+								TextStore_AddItemCount(client, ITEM_CHIP, -CurrentBet);
 
 								CurrentBet *= 2;
 								Playing[client] = CurrentBet;
@@ -620,7 +620,7 @@ static void StartGame()
 	{
 		if(Playing[client])
 		{
-			if(TextStore_Cash(client) < MinBet)
+			if(TextStore_GetItemCount(client, ITEM_CHIP) < MinBet)
 			{
 				Playing[client] = 0;
 			}
@@ -628,7 +628,7 @@ static void StartGame()
 			{
 				ClientCommand(client, "playgamesound %s", SOUND_START);
 				
-				TextStore_Cash(client, -MinBet);
+				TextStore_AddItemCount(client, ITEM_CHIP, -MinBet);
 				PrizePool += MinBet;
 
 				// Normally, we would give out one at a time to each player
@@ -750,7 +750,7 @@ static void ResultPeriod()
 		GameWinner = winners[index];
 		ClientCommand(winners[index], "playgamesound %s", SOUND_WIN);
 		if(PrizePool)
-			TextStore_AddItemCount(winners[index], ITEM_CASH, PrizePool);
+			TextStore_AddItemCount(winners[index], ITEM_CHIP, PrizePool);
 
 		for(int client = 1; client <= MaxClients; client++)
 		{

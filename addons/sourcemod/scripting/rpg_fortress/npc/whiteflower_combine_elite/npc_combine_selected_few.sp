@@ -27,9 +27,6 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
@@ -37,7 +34,10 @@ static char g_MeleeAttackSounds[][] = {
 };
 
 static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
@@ -288,8 +288,10 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				RemoveEntity(npc.m_iWearable4);
 			}
 			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-			flMaxhealth *= 0.15;
-			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 35.9, 0.0, HEAL_SELFHEAL);
+			if(npc.m_iOverlordComboAttack != 1)
+				flMaxhealth *= 0.15;
+
+			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.0, 0.0, HEAL_SELFHEAL);
 			RPGDoHealEffect(npc.index, 150.0);
 			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 			SetVariantString("0.8");
@@ -307,7 +309,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 		return;
 	}
 
-	if(npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
+	if(!b_NpcIsInADungeon[npc.index] && npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
 	{
 		//Reset anger.
 		npc.Anger = false;
@@ -356,6 +358,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 		if(npc.m_flSpawnTempClone < gameTime)
 		{
 			npc.m_flSpawnTempClone = gameTime + 1.5;
+			if(npc.m_iOverlordComboAttack == 1)
+				npc.m_flSpawnTempClone = gameTime + 0.75;
+
 			npc.PlayRocketSound();
 			
 			int entity_death = CreateEntityByName("prop_dynamic_override");
@@ -389,9 +394,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
 				SetEntityCollisionGroup(entity_death, 2);
 
-				CreateTimer(2.0, Timer_RemoveEntity_SelectedFew, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(2.7, Timer_RemoveEntity_SelectedFew, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(2.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(2.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
 				SetVariantString("forcescanner");
 				AcceptEntityInput(entity_death, "SetAnimation");
 			}
@@ -416,6 +421,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				npc.m_flJumpHappening = 0.0;
 				//da jump!
 				npc.m_flDoingAnimation = gameTime + 0.45;
+				if(npc.m_iOverlordComboAttack == 1)
+					npc.m_flDoingAnimation = gameTime + 0.215;
+
 				float WorldSpaceCenterVec[3]; 
 				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
 				PluginBot_Jump(npc.index, WorldSpaceCenterVec);
@@ -451,13 +459,9 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
+					float damage = 450000.0;
+						
 					
-					if(npc.Anger)
-					{
-						damage = 40000.0;
-					}
-					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
 						if(npc.Anger)
@@ -466,8 +470,6 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						// Hit sound
 						npc.PlayMeleeHitSound();
-						if(target <= MaxClients)
-							Client_Shake(target, 0, 25.0, 25.0, 0.5, false);
 
 						npc.PlayKilledEnemySound(npc.m_iTarget);
 					}
@@ -532,10 +534,10 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				if(!npc.m_bPathing)
 					npc.StartPathing();
 					
-				if(npc.m_iChanged_WalkCycle != 4) 	
+				if(npc.m_iChanged_WalkCycle != 3) 	
 				{
 					npc.m_bisWalking = true;
-					npc.m_iChanged_WalkCycle = 4;
+					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
@@ -546,6 +548,14 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
 				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
+				if(npc.m_iChanged_WalkCycle != 3) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 3;
+					npc.SetActivity("ACT_RUN");
+					npc.m_flSpeed = 350.0;
+					NPC_StartPathing(iNPC);
+				}
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
@@ -562,6 +572,14 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			case 2:
 			{		
 				//Jump at enemy	
+				if(npc.m_iChanged_WalkCycle != 7) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 7;
+					npc.SetActivity("ACT_RUN");
+					npc.m_flSpeed = 350.0;
+					NPC_StartPathing(iNPC);
+				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
@@ -580,14 +598,16 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 						vecSelf2[2] += 50.0;
 						vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
 						vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
-						float RocketDamage = 700000.0;
+						float RocketDamage = 500000.0;
 						int RocketGet = npc.FireRocket(vecSelf2, RocketDamage, 200.0);
 						DataPack pack;
 						CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
 						pack.WriteCell(EntIndexToEntRef(RocketGet));
 						pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
 					}
+					/*
 					if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
+					*/
 					{
 						//enemy is indeed to far away, jump at them
 						npc.m_flJumpHappening = gameTime + 0.5;
@@ -657,8 +677,7 @@ public Action Timer_RemoveEntity_SelectedFew(Handle timer, any entid)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", abspos);
 			abspos[2] += 45.0;
 			float Range = 100.0;
-			float Time = 0.25;
-			float DamageDeal = 300000.0;
+			float DamageDeal = 350000.0;
 			Explode_Logic_Custom(DamageDeal, Owner, Owner, -1, abspos, Range);
 			EmitSoundToAll("ambient/explosions/explode_4.wav", -1, _, 80, _, _, _, _,abspos);
 			SpawnSmallExplosionNotRandom(abspos);

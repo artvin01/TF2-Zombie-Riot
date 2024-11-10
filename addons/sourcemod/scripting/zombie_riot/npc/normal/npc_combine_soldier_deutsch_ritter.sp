@@ -67,7 +67,7 @@ void CombineDeutsch_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Deutsch Ritter");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Deutsch Ritter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_deutsch_ritter");
 	strcopy(data.Icon, sizeof(data.Icon), "teutons");
 	data.IconCustom = true;

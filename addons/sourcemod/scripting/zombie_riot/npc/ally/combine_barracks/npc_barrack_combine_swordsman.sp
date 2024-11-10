@@ -55,7 +55,7 @@ void Barracks_Combine_Sword_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Swordsman");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Swordsman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_swordsman");
 	data.IconCustom = false;
 	data.Flags = 0;

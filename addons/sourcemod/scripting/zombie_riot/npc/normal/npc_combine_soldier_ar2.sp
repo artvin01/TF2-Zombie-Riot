@@ -78,7 +78,7 @@ public void CombineSoldierAr2_OnMapStart_NPC()
 	PrecacheModel("models/combine_soldier.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Rifler");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Rifler");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_ar2");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_rifle");
 	data.IconCustom = true;

@@ -21,6 +21,7 @@ enum struct Enemy
 	float ExtraSpeed;
 	float ExtraDamage;
 	char Spawn[64];
+	char CustomName[64];
 }
 
 enum struct MiniBoss
@@ -501,7 +502,6 @@ void Waves_SetupVote(KeyValues map)
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		kv = new KeyValues("Setup");
 		kv.ImportFromFile(buffer);
-		RequestFrame(DeleteHandle, kv);
 	}
 	
 	StartCash = kv.GetNum("cash");
@@ -510,6 +510,10 @@ void Waves_SetupVote(KeyValues map)
 	if(map && kv.GetNum("roguemode"))
 	{
 		Rogue_SetupVote(kv);
+
+		if(kv != map)
+			delete kv;
+		
 		return;
 	}
 
@@ -582,6 +586,9 @@ void Waves_SetupVote(KeyValues map)
 		}
 	}
 
+	if(kv != map)
+		delete kv;
+
 	CanReVote = Voting.Length > 1;
 
 	CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -622,7 +629,6 @@ void Waves_SetupMiniBosses(KeyValues map)
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		kv = new KeyValues("MiniBoss");
 		kv.ImportFromFile(buffer);
-		RequestFrame(DeleteHandle, kv);
 	}
 	
 	if(kv.GotoFirstSubKey())
@@ -668,6 +674,9 @@ void Waves_SetupMiniBosses(KeyValues map)
 			MiniBosses.PushArray(boss);
 		} while(kv.GotoNextKey());
 	}
+
+	if(kv != map)
+		delete kv;
 }
 
 bool Waves_GetMiniBoss(MiniBoss boss)
@@ -842,6 +851,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
+						kv.GetString("custom_name", enemy.CustomName, sizeof(enemy.CustomName));
 
 						if(!enemy.Credits)
 							nonBosses++;
@@ -2349,6 +2359,10 @@ void DoGlobalMultiScaling()
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 	MultiGlobalEnemyBoss = playercount * 0.3;
 
+	
+	//certain maps need this.
+	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
+
 	float cap = zr_enemymulticap.FloatValue;
 
 	if(multi > cap)
@@ -2548,7 +2562,7 @@ static void UpdateMvMStatsFrame()
 
 		if(Enemies)
 		{
-			Enemy enemy;
+			static Enemy enemy;
 			int length = Enemies.Length;
 			for(int a; a < length; a++)
 			{

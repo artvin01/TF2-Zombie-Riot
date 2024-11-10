@@ -136,7 +136,7 @@ public Action Hose_RemoveUber(Handle remove, int id)
 public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float speed, float baseHeal, float loss, float minHeal, int NumParticles, float spread, char ParticleName[255], bool giveUber)
 {
 	float healmult = 1.0;
-	healmult = Attributes_GetOnPlayer(client, 8, true, true);
+	healmult = Attributes_GetOnWeapon(client, weapon, 8, true);
 
 	if (Hose_ShotgunCharge[client])
 	{
@@ -403,7 +403,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 				HealAmmount *= 3.0;
 			}
 
-			HealAmmount *= Attributes_GetOnPlayer(client, 8, true, true);
+			HealAmmount *= Attributes_GetOnWeapon(client, weapon, 8, true);
 
 			float GameTime = GetGameTime();
 			if(f_TimeUntillNormalHeal[target] > GameTime)
@@ -540,7 +540,7 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 
 	float HealAmmount = 30.0;
 
-	HealAmmount *= Attributes_GetOnPlayer(client, 8, true, true);
+	HealAmmount *= Attributes_GetOnPlayer(client, 8, true);
 
 	int prop = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(prop))

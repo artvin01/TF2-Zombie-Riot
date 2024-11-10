@@ -79,7 +79,7 @@ public void XenoCombineGaint_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Giant Swordsman");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Giant Swordsman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_giant_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;

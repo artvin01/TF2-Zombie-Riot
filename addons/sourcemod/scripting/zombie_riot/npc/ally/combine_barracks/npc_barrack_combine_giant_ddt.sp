@@ -55,7 +55,7 @@ void Barracks_Combine_Giant_DDT_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Giant ddt");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Giant ddt");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_giant_ddt");
 	data.IconCustom = false;
 	data.Flags = 0;

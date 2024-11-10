@@ -1,0 +1,33 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/zombie_riot/buildings/texture_1"
+	
+	"$frame" "0"
+
+	"$alpha" "255.0"
+	"$defaultalpha" "255.0"
+	
+
+	"$halflambert" "1"
+
+	"Proxies"
+	{
+		"Alpha"
+		{
+			// sets $alpha
+		}
+		// alpha acts as our skin index, so set the appropriate frame
+		"Equals"
+		{
+			"srcVar1"	"$alpha"
+			"resultVar"	"$frame"
+		}
+	
+		// change alpha back, don't want to change the rendering
+		"Equals"
+		{
+			"srcVar1"	"$defaultalpha"
+			"resultVar"	"$alpha"
+		}		
+	}	
+}

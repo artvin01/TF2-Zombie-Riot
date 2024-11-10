@@ -418,7 +418,7 @@ bool Quests_TurnIn(int client, const char[] name)
 			KeyValues kv = Saves_Kv("quests");
 			kv.JumpToKey(name, true);
 
-			if(kv.GetNum(id) != Status_Completed)
+			if(kv.GetNum(id) != Status_Completed || QuestKv.GetNum("repeattime") > 0)
 			{
 				static const char sounds[][] =
 				{
@@ -516,7 +516,7 @@ bool Quests_BookMenu(int client)
 
 	int pages;
 	
-	static char steamid[64], buffer[256];
+	static char steamid[64], buffer[448];
 	if(Saves_ClientCharId(client, steamid, sizeof(steamid)))
 	{
 		QuestKv.Rewind();
@@ -530,7 +530,7 @@ bool Quests_BookMenu(int client)
 			{
 				if(kv.GetNum(steamid) == Status_InProgress)
 				{
-					if(BookPage[client] != ((pages++) / 2))
+					if(BookPage[client] != (pages++))
 						continue;
 
 					CanTurnInQuest(client, steamid, buffer, sizeof(buffer));
@@ -559,7 +559,7 @@ bool Quests_BookMenu(int client)
 			menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_SPACER);
 		}
 		
-		if(((pages - 1) / 2) > BookPage[client])
+		if((pages - 1) > BookPage[client])
 		{
 			menu.AddItem(NULL_STRING, "Next");
 		}
@@ -595,7 +595,7 @@ public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choic
 			TextStore_UnmarkInMenu(client);
 
 			if(choice == MenuCancel_Exit)
-				TextStore_Inspect(client);
+				TextStore_SwapMenu(client);
 		}
 		case MenuAction_Select:
 		{
@@ -751,11 +751,12 @@ void Quests_EditorMenu(int client)
 				QuestKv.GetSectionName(buffer1, sizeof(buffer1));
 				if(first)
 				{
-					menu.InsertItem(1, buffer1, buffer1);
+					menu.AddItem(buffer1, buffer1);
+					first = false;
 				}
 				else
 				{
-					menu.AddItem(buffer1, buffer1);
+					menu.InsertItem(1, buffer1, buffer1);
 				}
 			}
 			while(QuestKv.GotoNextKey());

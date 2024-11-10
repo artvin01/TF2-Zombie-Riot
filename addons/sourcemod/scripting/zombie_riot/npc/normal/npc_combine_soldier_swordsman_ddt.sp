@@ -67,7 +67,7 @@ void CombineDDT_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine DDT");
+	strcopy(data.Name, sizeof(data.Name), "W.F. DDT");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_swordsman_ddt");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;

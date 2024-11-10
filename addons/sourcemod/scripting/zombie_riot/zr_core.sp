@@ -202,7 +202,11 @@ enum
 	WEAPON_EXPLORER = 122,
 	WEAPON_FULLMOON = 123,
 	WEAPON_SKADI = 124,
-	WEAPON_HUNTING_RIFLE = 125
+	WEAPON_HUNTING_RIFLE = 125,
+	WEAPON_URANIUM_RIFLE = 126,
+	WEAPON_LOGOS = 127,
+	WEAPON_WALTER = 128,
+	WEAPON_OLDINFINITYBLADE = 129
 }
 
 enum
@@ -224,6 +228,7 @@ enum
 	Type_Void,
 	Type_Ruina,
 	Type_IberiaExpiAlliance,
+	Type_WhiteflowerSpecial,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -234,16 +239,17 @@ int CurrentPlayers;
 ConVar zr_voteconfig;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
+ConVar zr_tagwhitehard;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
 ConVar CvarNoSpecialZombieSpawn;
-ConVar zr_spawnprotectiontime;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
+ConVar zr_raidmultihp;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -558,6 +564,8 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_yakuza.sp"
 #include "zombie_riot/custom/weapon_skadi.sp"
 #include "zombie_riot/custom/weapon_hunting_rifle.sp"
+#include "zombie_riot/custom/wand/weapon_logos.sp"
+#include "zombie_riot/custom/weapon_walter.sp"
 
 void ZR_PluginLoad()
 {
@@ -738,6 +746,7 @@ void ZR_MapStart()
 //	Weapon_Pipe_Shoot_Map_Precache();
 	Survival_Knife_Map_Precache();
 	Aresenal_Weapons_Map_Precache();
+	Uranium_MapStart();
 	Wand_Elemental_Map_Precache();
 	Wand_Elemental_2_Map_Precache();
 	Map_Precache_Zombie_Drops();
@@ -810,6 +819,7 @@ void ZR_MapStart()
 	Wrathful_Blade_Precache();
 	Yakuza_MapStart();
 	ResetMapStartSkadiWeapon();
+	Logos_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -900,7 +910,6 @@ void ZR_ClientDisconnect(int client)
 	DataBase_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
-	ViewChange_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
@@ -1419,7 +1428,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				if(dieingstate[client] != -5)
 				{
 					GiveCompleteInvul(client, 2.0);
-					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 90, _, 1.0);
+					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 70, _, 0.7);
 					MakePlayerGiveResponseVoice(client, 3); //Revived response!
 				}
 				SetEntityMoveType(client, MOVETYPE_WALK);
@@ -1708,7 +1717,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							dieingstate[client] = 0;
 							Store_ApplyAttribs(client);
-							TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+							SDKCall_SetSpeed(client);
 							int entity, i;
 							while(TF2U_GetWearable(client, entity, i))
 							{
@@ -2113,7 +2122,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 			if(IsPlayerAlive(client))
 			{
 				SetEntityMoveType(client, MOVETYPE_WALK);
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -2129,7 +2138,8 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 			SetEntityRenderMode(client, RENDER_NORMAL);
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
-			i_AmountDowned[client] = 0;
+			if(i_AmountDowned[client] > 0)
+				i_AmountDowned[client] = 0;
 			if(CurrentModifOn() == 3)
 				i_AmountDowned[client] = 1;
 
@@ -2160,7 +2170,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 					
 
 					Store_ApplyAttribs(client);
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+					SDKCall_SetSpeed(client);
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{

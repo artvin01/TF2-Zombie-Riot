@@ -53,7 +53,7 @@ void Barracks_Combine_Commander_Precache()
 	PrecacheSoundArray(g_WarCry);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Commander");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Commander");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_commander");
 	data.IconCustom = false;
 	

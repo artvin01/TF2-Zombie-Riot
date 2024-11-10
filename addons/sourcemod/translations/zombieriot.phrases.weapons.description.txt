@@ -67,7 +67,7 @@
 	{
 		"en"		"Archetype: Brawler"
 		"fr"		"Archetype: Bagarreur"
-		"ru"		"Архетип: Боец"
+		"ru"		"Архетип: Потасовщик"
 		"chi"		"类型：战士"
 	}
 	"Ambusher"
@@ -81,7 +81,7 @@
 	{
 		"en"		"Archetype: Combatant"
 		"fr"		"Archetype: Combatant"
-		"ru"		"Архетип: Комбатант"
+		"ru"		"Архетип: Боец"
 		"chi"		"类型：斗士"
 	}
 	"Aberration"
@@ -123,53 +123,59 @@
 	{
 		"en"		"Archetype: Chain Caster"
 		"fr"		"Archetype: Sortilèges Successifs"
-		"ru"		"Архетип: Мастер цепей"
+		"ru"		"Архетип: Маг цепей"
 		"chi"		"类型：连环法师"
 	}
 	"Multi Caster"
 	{
 		"en"		"Archetype: Multi Caster"
 		"fr"		"Archetype: Multi-sortilèges"
-		"ru"		"Архетип: Мультизаклинатель"
+		"ru"		"Архетип: Мульти маг"
 		"chi"		"类型：多重法师"
 	}
 	"Base Caster"
 	{
 		"en"		"Archetype: Base Caster"
 		"fr"		"Archetype: Sortilèges Amateurs"
-		"ru"		"Архетип: Базовый заклинатель"
+		"ru"		"Архетип: Базовый маг"
 	}
 	"Mythic Caster"
 	{
 		"en"		"Archetype: Mythic Caster"
 		"fr"		"Archetype: Sortilèges Mythiques"
 		"chi"		"类型：至尊法师"
+		"ru"		"Архетип: Мифический маг"
 	}
 	"Psychic Warlord"
 	{
 		"en"		"Archetype: Psychic Warlord"
+		"ru"		"Архетип: психический полководец"
 	}
 	"Abyssal Hunter"
 	{
 		"en"		"Archetype: Abyssal Hunter"
 		"fr"		"Archetype: Chasseur des Abîmes"
+		"ru"		"Архетип: Охотник Бездны"
 		"chi"		"类型：深海猎人"
 	}
 	"Kazimierz"
 	{
 		"en"		"Archetype: Kazimierz"
+		"ru"		"Архетип: Казимерз"
 		"fr"		"Archetype: Kazimierz"
 		"chi"		"类型：卡齐米日"
 	}
 	"Bloodletter"
 	{
 		"en"		"Archetype: Bloodletter"
+		"ru"		"Арехтип: Кровопускатель"
 		"fr"		"Archetype: Hémorragie"
 		"chi"		"类型：放血者"
 	}
 	"Bloody Butcher"
 	{
 		"en"		"Archetype: Bloody Butcher"
+		"ru"		"Архетип: Кровавый Мясник"
 		"fr"		"Archetype: Boucher Dégorgeur"
 		"chi"		"类型：血腥屠夫"
 	}
@@ -228,16 +234,13 @@
 	}
 	"Sniper Rifle Pap 3"
 	{
-		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged."
-		"fr"		"5 balles utilisées par tir.\nDes lunettes pourrait améliorer les dégats pour des charges pleines"
-		"ru"		"Дорогое суперулучшение, 5 пуль одновременно для нанес. огромн. урона.\nНекоторые очки могут ещё больше увелич. урон при полном заряде."
-		"chi"       "昂贵的超级升级，5发子弹一次造成极端伤害。\n有些护目镜在充满电时可能会进一步增加伤害。"
+		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged.\nDeals extreme damage to any enemy not hit by your rifle within 20 seconds!"
 	}
 	"Sniper Rifle Pap 4"
 	{
 		"en"		"Heavily increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
-		"ru"		"Сильное Увеличенный урон и скорость атаки."
+		"ru"		"Сильно Увеличенный урон и скорость атаки."
 		"chi"       "大幅增加伤害和攻击速度"
 	}
 	"Sniper Rifle Pap 5"
@@ -288,7 +291,7 @@
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed."
 		"fr"		"Dégats et cadence de tir améliorés, barrage amélioré"
-		"ru"		"Увеличенный урон и скорость атаки, усиление способности М2."
+		"ru"		"Увеличенный урон и скорость атаки, усилена способность М2."
 		"chi"       "增加伤害和攻击速度，加强右键技能。"
 	}
 	"Huntsman Pap 2"
@@ -545,10 +548,7 @@
 	
 	"Terroriser Bomb Implanter Sniperrifle Desc"
 	{
-		"en"	"Implant a bomb onto the target you hit, press R to detonate them.\nImplant multiple for more dmg. More charge = more bombs, headshot = more bombs"
-		"fr"	"Plante une bombe dans vos cibles, appuyez sur R pour les détoner.\nPlantez plus de bombes pour plus de dégats. Les tirs en pleine tête et une charge plus grande augmuntent le nombre de bombes."
-		"ru"	"Устанавливает бомбу на цель, в которую вы попали, нажмите R, чтобы взорвать её.\nУстановите несколько бомб для большего урона. Больше зарядов = больше бомб, выстрел в голову = больше бомб."
-		"chi"   "射击将会发出黏弹，按R引爆它们。\n部下多颗黏弹可造成更多伤害.更多的冲锋=更多的炸弹，爆头=更多的炸弹"
+		"en"	"Implant a bomb onto the target you hit, press R to detonate them.\nImplant multiple for more dmg. More charge = more bombs, headshot = more bombs\nBombs dont suffer from downed dmg reduction."
 	}
 	"Terroriser Bomb Implanter Sniperrifle Desc PaP 1"
 	{
@@ -3752,12 +3752,12 @@
 		"en"	"Ranged Basic combine unit. It reloads when his clip is empty"
 		"fr"	"Combine qui fait le combat à distance. Recharge quand son chargeur est vide."
 	}
-	"Barracks Combine Shotgunner Desc"
+	"Barracks Shotgunner Desc"
 	{
 		"en"	"Ranged unit but it tends to get close to the target"
 		"fr"	"Unité à portée qui s'approche des cibles."
 	}
-	"Barracks Combine Swordsman Desc"
+	"Barracks Swordsman Desc"
 	{
 		"en"	"Melee unit which will regularly gain an armor while attacking"
 		"fr"	"Unité corps-à-corps qui reçoit de l'armure pour ses attaques."
@@ -3767,47 +3767,47 @@
 		"en"	"Upgraded unit of Metro Cop. Has better clip and damage"
 		"fr"	"Un Métro-police avec dégats et chargeur amélioré."
 	}
-	"Barracks Combine Soldier Desc"
+	"Barracks Soldier Desc"
 	{
 		"en"	"Upgraded unit of Metro Raider. Has better clip, damage, and armor"
 		"fr"	"Un Métro-Raider avec dégats, chargeur et armure amélioré."
 	}
-	"Barracks Combine DDT Desc"
+	"Barracks DDT Desc"
 	{
 		"en"	"Fast and hard hitting robotic Combine Unit"
 		"fr"	"Combine robotique qui va vite et frappe fort."
 	}
-	"Barracks Combine Elite Desc"
+	"Barracks Elite Desc"
 	{
 		"en"	"Ranged Combine unit which will often fire explosive combine energy ball"
 		"fr"	"Combine qui tire des balles énergétiques explosives"
 	}
-	"Barracks Combine Deflector Desc"
+	"Barracks Deflector Desc"
 	{
 		"en"	"Armored Combine knight who will regularly parry melee attacks"
 		"fr"	"Chevalier Combine qui bloque les attaques corps-à-corps"
 	}
-	"Barracks Combine Sniper Desc"
+	"Barracks Sniper Desc"
 	{
 		"en"	"Super Ranged unit with high damage but slow attack speed"
 		"fr"	"Hauts dégats, cadence d'attaque lente"
 	}
-	"Barracks Combine Collos Desc"
+	"Barracks Collos Desc"
 	{
 		"en"	"Giant Combine swordsman which has better armor and damage"
 		"fr"	"Épéiste Combine avec bons armure et dégats"
 	}
-	"Barracks Combine Giant ddt Desc"
+	"Barracks Giant ddt Desc"
 	{
 		"en"	"Giant robotic unit with fast speed, damage, and armor"
 		"fr"	"Combine robotique géant. Beacoup d'armure, va vite et frappe fort."
 	}
-	"Barracks Combine Super Desc"
+	"Barracks Super Desc"
 	{
 		"en"	"A melee unit which will gain resistance and chance to evade when below half health."
 		"fr"	"Quand sous moitié santé, reçoit de la résistance et une chance d'éviter les attaques."
 	}
-	"Barracks Combine Commander Desc"
+	"Barracks Commander Desc"
 	{
 		"en"	"A ranged super unit which will buff allies around it regularly."
 		"fr"	"Améliore les alliés qui l'entoure"
@@ -3946,7 +3946,7 @@
 	}
 	"Telekinesis Desc"
 	{
-		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw it.
+		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw it."
 	}
 	"Telekinesis PaP 1"
 	{
@@ -4019,5 +4019,13 @@
 	"Hunting Rifle Pap 2 desc"
 	{
 		"en"	"Clip size, damage and ability duration increased."
+	}
+	"Whistle Stop Desc"
+	{
+		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals True Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
+	}
+	"Ancestor Launcher Desc"
+	{
+		"en"	"Attacks deal extra damage and mark the main target.\nHas a chance to explode and stun when hitting marked targets.\nAbility grants sentry buildings and a limited-ammo rocket launcher."
 	}
 }

@@ -72,7 +72,7 @@ void CombineElite_OnMapStart_NPC()
 	PrecacheModel("models/combine_super_soldier.mdl");
 	PrecacheModel("models/effects/combineball.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Elite");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Elite");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_elite");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_elite");
 	data.IconCustom = true;
