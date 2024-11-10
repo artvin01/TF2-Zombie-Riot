@@ -22,15 +22,18 @@
 	{
 		"en"	"A Deeper Discovery"
 		"pt"	"A Descoberta Profunda"
+		"ru"	"Более глубокая находка"
 	}
 	"All Parties Involved"
 	{
 		"en"	"All Parties Involved"
+		"ru"	"Все группы вовлечены"
 		"pt"	"Todas as partes envolvidas"
 	}
 	"Nightmares Evolve"
 	{
 		"en"	"Nightmares Evolve"
+		"ru"	"Кошмар Эволиционирует"
 		"pt"	"Pesadelos Evolvem"
 	}
 	"Lost Ingots"
@@ -41,11 +44,13 @@
 	"Time Stands Still"
 	{
 		"en"	"Time Stands Still"
+		"ru"	"Время Стоит На Месте"
 		"pt"	"O Tempo Está Parado"
 	}
 	"The Void"
 	{
 		"en"	"The Void"
+		"ru"	"Бездна"
 		"pt"	"O Vazio"
 	}
 	"For the Fallen"
@@ -121,6 +126,7 @@
 	"Optional Battle Title"
 	{
 		"en"	"Something seems off about this, should we fight or leave right here?"
+		"ru"	"Что-то здесь не так, стоит ли нам драться или уйти прямо здесь?"
 		"pt"	"Algo parece errado sobre isso, devemos lutar ou sair daqui?"
 	}
 	"We can handle this"
@@ -468,30 +474,37 @@
 	"Xeno Shaft Title"
 	{
 		"en"	"You can hear a figure walking about in the mines, perhaps guarding something of value?"
+		"ru"	"Вы можете слышать как фигура ходит в шахтах,возможно охраняет что-нибудь ценое?"
 	}
 	"Investigate the mines"
 	{
 		"en"	"Investigate the mines"
+		"ru"	"Исследовать шахты"
 	}
 	"Stultifera Title"
 	{
 		"en"	"A sticky creep is covering the walls of the mine, smells like the ocean, should we check it out?"
+		"ru"	"Стены шахты покрыты липким налетом, пахнет, как океан, стоит ли нам это проверить?"
 	}
 	"Broken Crown Lore"
 	{
 		"en"	"You find a golden sword stuck into the ground along with a broken crown hanging around it.\nYou feel you've seen these before, an aura of rage surrounds it."
+		"ru"	"Вы находите золотой меч застрявший в земле вместе с сломанной короной весящий на нём.\nУ вас возникает чувство Дежавю,Аура ярости окружает её."
 	}
 	"Broken Crown Option 1"
 	{
 		"en"	"Take the broken crown"
+		"ru"	"Забрать корону"
 	}
 	"Broken Crown Desc 1"
 	{
 		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+		"ru"	"{yellow}Получить неизвестный артифакт и {blue}Поменять концовку"
 	}
 	"Broken Crown Lore 1"
 	{
 		"en"	"The broken crown stabs you as you try to pick it up, it's sharp broken edges glare. The evil aura grows as you feel yourself finding a new path to follow."
+		"ru"	"Сломанная корона Пронзает вас как только вы пытаетесь её поднять,Её острые края блики. Зловещая аура растёт и вы понимаете по какому пути стоит идти."
 	}
 	"Broken Crown Option 2"
 	{

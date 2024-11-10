@@ -4,7 +4,7 @@
 	{
 		"en" 		"The True Fusion Warrior has arrived."
 		"fr" 		"Le Guerrier Tru Fusion est ici."
-		"ru" 		"Истинный воин фьюжна прибыл."
+		"ru" 		"Истинный Термоядерный воин прибыл."
 		"pt"		"O Verdadeiro Guerreiro da Fusão chegou."
 		"nl"		"De Ware Fuziekrijger is gearriveerd"
 		"chi"       "真正的融合战士已经到来。"
@@ -12,6 +12,7 @@
 	"Silvester And Waldch Arrived."
 	{
 		"en" 		"Silvester And Waldch Arrived."
+		"ru" 		"Сильвестр И Валдч прибыли."
 		"fr" 		"Silvester et Waldch sont ici."
 		"chi"		"西尔韦斯特和瓦德奇到来。"
 	}
@@ -26,6 +27,7 @@
 	"Mrx Arrived."
 	{
 		"en" 		"Mrx... Is here."
+		"ru" 		"Мистер X... Появлися."
 		"fr" 		"M.x... est ici."
 		"chi"		"Mr.X来了。。。"
 	}
@@ -33,42 +35,48 @@
 	{
 		"en" 		"The Atlantean and great leader Alaxios arrived."
 		"fr" 		"L'Atlantean et grand chef Alaxios est ici."
-		"ru" 		"Прибыл Атлант и великий лидер Аркантос."
+		"ru" 		"Прибыл Атлант и великий лидер Алаксиос."
 		"pt"		"The Atlantean and great leader Alaxios chegou."
 		"chi" 		"亚特兰蒂斯之王 ,阿尔坎托斯到达。"
 	}
 	"Run while you can."
 	{
 		"en" 		"Run while you can."
+		"ru" 		"Беги пока можешь."
 		"fr" 		"Courez, pendant que vous le pouvez."
 		"chi"		"快跑。"
 	}
 	"Sensal Arrived"
 	{
 		"en" 		"The Expidonsan Sensal reaps."
+		"ru" 		"Жнец Экспидонсы-Сенсал Пожинает."
 		"fr" 		"Le Expidonsan Sensal fauche."
 		"pt"		"O Expidonsan Sensal colhe."
 	}
 	"Nemal Arrived"
 	{
 		"en" 		"The Iberia/Expidonsan Nemal is here."
+		"ru" 		"Иберец/Экспидонец Немал прибыла."
 		"fr" 		"Le Iberiain/Expidonsian Nemal est ici."
 	}
 	"Vhxis arrived"
 	{
 		"en" 		"Vhxis the void keeper halts you."
+		"ru" 		"Всикс Хранитель Бездны Останавливает вас."
 		"fr" 		"Le gardien du Void Vhxis vous arrête."
 		"chi"		"虚空守卫者Vxhis阻挡了你的路。"
 	}
 	"The Messanger Arrived"
 	{
 		"en" 		"The Messenger has accumulated chaos."
+		"ru" 		"Предвестник накапливает хаос."
 		"fr" 		"Le Messager a collectioné le chaos."
 		"chi"		"代言者已积攒混沌。"
 	}
 	"Chaos Kahmlstein Arrived"
 	{
 		"en" 		"Kahmlstein, the rebellious chaos inflicted leader will annihilate you."
+		"ru" 		"Кахмлстейн,мятежный лидер, Подвергнутый хаосу, уничтожит вас.
 		"fr" 		"Kahmlstein, le leader rebèle chaotique, va vous détruire."
 		"chi"		"混沌之首，卡姆斯坦因前来歼灭你。"
 	}
@@ -79,6 +87,7 @@
 	"The Purge Arrived"
 	{
 		"en" 		"The Purge has accumulated chaos."
+		"ru" 		"Зачищик Накапливает хаос."
 		"fr" 		"Le Purge a collectioné le chaos."
 		"chi"		"扫荡者出现了。"
 	}
@@ -224,6 +233,7 @@
 	"Beheaded Kami 1"
 	{
 		"en" 		"Maybe its best to leave it alone..."
+		"ru" 		"Наверное всё же лучше не трогать их..."
 		"fr" 		"Il serait une bonne idée de le laisser seul..."
 		"pt"		"Talvez seja melhor deixar isso em paz..."
 		"chi" 		"我们最好不要管这个东西..."
@@ -231,6 +241,7 @@
 	"Beheaded Kami 2"
 	{
 		"en" 		"Dont take this lightly."
+		"ru" 		"Не расслабляйтесь."
 		"fr" 		"Ne baissez pas les bras."
 		"pt"		"Não leve isso de ânimo leve."
 		"chi" 		"不要掉以轻心。"
@@ -238,6 +249,7 @@
 	"Beheaded Kami 3"
 	{
 		"en" 		"Screaming..."
+		"ru" 		"Крики..."
 		"fr" 		"Des hurlements..."
 		"pt"		"Gritaria..."
 		"chi" 		"尖叫声..."
@@ -269,6 +281,7 @@
 	"Donnerkrieg And Schwertkrieg Spawn"
 	{
 		"en"	"Stella And Karlas Have Returned"
+		"ru" 	"Стелаа и Карлас Вернулись"
 		"fr"	"Stella et Karlas sont de retour."
 		"pt"	"Stella e Karlas retornaram."
 		"chi"	"Stella和Karlas回来了。"
@@ -276,6 +289,7 @@
 	"Diversionistico Spawn"
 	{
 		"en"	"Diversionistico Spawn"
+		"ru" 	"Diversionistico Появились"
 		"fr"	"Diversionistico Apparaît"
 		"pt"	"Diversionistico Apareceu."
 		"chi"	"Diversionistico Spawn."
@@ -283,125 +297,146 @@
 	"Voided Diversionistico Spawn"
 	{
 		"en"	"Voided Diversionistico Spawn"
+		"ru" 	"Voided Diversionistico Появились"
 		"fr"	"Diversionistico du Void Apparaît"
 		"chi"	"Voided DIversionistico Spawn."
 	}
 	"A Void Gate Apeared..."
 	{
 		"en"	"A Void Gate Apeared..."
+		"ru" 	"Появились Врата Бездны..."
 		"fr"	"Une Porte vers le Void se manifeste..."
 		"chi"	"一扇深渊之门打开了。。。"
 	}
 	"Iberian Lighthouse Teleported in!"
 	{
 		"en"	"Iberian Lighthouse Teleported in!"
+		"ru" 	"Маяк Иберии Телепортировался!"
 		"fr"	"Une phare Iberiain s'est téléporté ici!"
 	}
 	"Snipers Appear"
 	{
 		"en"	"Snipers Appear."
+		"ru" 	"Пришли Снайперы."
 		"fr"	"Des Snipers Apparaîssent."
 		"chi"	"狙击手出现。"
 	}
 	"The Doctor Speech 1"
 	{
 		"en" 		"Take him out before its too late!"
+		"ru" 		"Убейте его пока не стало слишком поздно!"
 		"fr" 		"Éliminez-le avant qu'il soit trop tard!"
 		"chi"		"在为时已晚之前击败他！"
 	}
 	"The Doctor Speech 2"
 	{
 		"en" 		"His therapy session will be the least of your worries."
+		"ru" 		"Его сессия терапии будет последним из ваших проблем."
 		"fr" 		"Sa session de thérapie devrait vous inquièter le moins."
 		"chi"		"他的疗法将是您最不该担心的事情。"
 	}
 	"The Doctor Speech 3"
 	{
 		"en" 		"His motivating speech enables enemies."
+		"ru" 		"Его мотивирующая речь Заводит врагов."
 		"fr" 		"Ses paroles motivantes encourage les ennemis."
 		"chi"		"他的发言鼓励着尸群。"
 	}
 	"Spirit Spawns 1"
 	{
 		"en" 		"A spitit appeared... release it before its too late!"
+		"ru" 		"Появлися Дух... Освободите его пока не поздно!"
 		"fr" 		"Un esprit apparaît... libérez-le avant qu'il soit trop tard!"
 		"chi"		"一个冤魂出现了。赶紧驱掉它！"
 	}
 	"Spirit Spawns 2"
 	{
 		"en" 		"Dont let it touch you!"
+		"ru" 		"Не дай ему прикоснутся к тебе!"
 		"fr" 		"Évitez de le toucher!"
 		"chi"		"千万别让它碰到你！"
 	}
 	"Spirit Spawns 3"
 	{
 		"en" 		"Dont be alone!"
+		"ru" 		"Не будь один!"
 		"fr" 		"Soyez pas seul!"
 		"chi"		"不要擅自行动！"
 	}
 	"Fallen Warrior 1"
 	{
 		"en" 		"Once a brave and honorable warrior, but now accumulated by Chaos..."
+		"ru" 		"Однажды Смелый и почётный воин,Но сейчас накоплен хаосом..."
 		"fr" 		"Un guerrier honorable dans le passé, maintenant enrobé de Chaos..."
 		"chi"		"被混沌吞噬的英雄。"
 	}
 	"Fallen Warrior 2"
 	{
 		"en" 		"Spread the Chaos, corrupt them all."
+		"ru" 		"Распостроняй хаос, Поработи их всех."
 		"fr" 		"Plus grand, le Chaos, la corruption."
 		"chi"		"散播混沌，吞噬一切。"
 	}
 	"Fallen Warrior 3"
 	{
 		"en" 		"His sword is dull and armor is rusted, but his hollow body slowly head towards you."
+		"ru" 		"Его меч тупой  и броня ржавая,Но его Тело медленно направляется в вашу сторону."
 		"fr" 		"Son armure est rouillé et sa lame terne, mais son corps vide se tourne vers vous."
 		"chi"		"他的盔甲早已被铁锈覆盖，长剑也被磨损为铁块。但他的躯壳依旧在向你的方向移动。"
 	}
 	"Machina Waldch 1"
 	{
 		"en" 		"A machine trying to immitate Waldch."
+		"ru" 		"Машина пытающаяся подражать Валдчу."
 		"fr" 		"Une imitation méchanique de Waldch."
 		"chi"		"一台假冒Waldch的机器。"
 	}
 	"Machina Waldch 2"
 	{
 		"en" 		"Its on no ones side."
+		"ru" 		"Оно ни на чьей стороне."
 		"fr" 		"Personne n'est de son côté."
 		"chi"		"它不站在任何一方。"
 	}
 	"Machina Waldch 3"
 	{
 		"en" 		"Long enough, and it might go away on its own."
+		"ru" 		"Достаточно долго,и оно может само уйти."
 		"fr" 		"Il disparaîtrait peut-être tout seul."
 		"chi"		"不理它的话，它应该会自己离开。"
 	}
 	"Venium Spawn"
 	{
 		"en"		"A Ruanian Anchor builder has arrived."
+		"ru" 		"Строитель Якоря Руины прибыл."
 		"fr"		"Un constructeur d'Ancre Ruanian est ici."
 		"chi"		"敌军正在修建废墟锚。"
 	}
 	"Twirl Spawn"
 	{
-		"en"		"Her majesty, the ruler of magic has descended..."	//idk, temP?
+		"en"		"Her majesty, the ruler of magic has descended..."
+		"ru" 		"Её высочество,Правительница Магии Спустилась..."	
 		"fr"		"Sa majesté, l'Ultime Sorceresse est ici..."
 		"chi"		"女王陛下，至高法师，法术之主，降临了。"
 	}
 	"Omega 1"
 	{
 		"en"		"Armaments locked and loaded."
+		"ru" 		"Вооружение заряжено и готово."
 		"chi"		"目标已锁定，武器已上膛。"
 		"fr"		"Armements préts et chargés."
 	}
 	"Omega 2"
 	{
 		"en"		"A sui generis soldier enters the scene."
+		"ru" 		"Солдат sui generis выходит на поле битвы."
 		"chi"		"一个异常显眼的士兵进入了场地。"
 		"fr"		"Un soldat sui generis entre la scène."
 	}
 	"Omega 3"
 	{
 		"en"		"Omega makes an appearance."
+		"ru" 		"Омега появляется."
 		"chi"		"欧米茄现身了。"
 		"fr"		"Omega apparaît."
 	}
