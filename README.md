@@ -62,6 +62,9 @@ Main Server:
 -Max players allowed to play at once, it should be set lower on linux due to performance drops on it
 -You may set it to any value, but i recomment 14-20
 
+"zr_raidmultihp" = "1.0" (def. "1.0)
+-Multiplies raid scaling type of HP (good for big maps.)
+
  
  
  

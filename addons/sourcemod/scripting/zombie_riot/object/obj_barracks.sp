@@ -681,7 +681,7 @@ static int SummonerAlternative[][] =
 	{ 0, 			175, 	350, 	20, 	12,		 11,	1,	 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	{ 0 , 			225, 	75, 	15, 	13,		 16,	1,	 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
-	{ 0, 			2000, 	2000, 	90, 	30,		 16,	2,	 ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 			1250, 	1250, 	45, 	30,		 16,	2,	 ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 			750, 	750, 	0,		25,		 11,	1,	 ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 

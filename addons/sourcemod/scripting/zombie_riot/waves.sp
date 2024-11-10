@@ -2359,6 +2359,10 @@ void DoGlobalMultiScaling()
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 	MultiGlobalEnemyBoss = playercount * 0.3;
 
+	
+	//certain maps need this.
+	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
+
 	float cap = zr_enemymulticap.FloatValue;
 
 	if(multi > cap)
