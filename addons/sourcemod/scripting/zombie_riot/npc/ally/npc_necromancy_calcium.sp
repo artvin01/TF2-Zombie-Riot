@@ -193,7 +193,7 @@ methodmap NecroCalcium < CClotBody
 		npc.m_bThisEntityIgnored = true;
 	//	npc.m_flNextThinkTime = GetGameTime(npc.index) + GetRandomFloat(0.2, 0.5);
 		npc.m_iState = 0;
-		npc.m_flSpeed = 400.0;
+		npc.m_flSpeed = 600.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;

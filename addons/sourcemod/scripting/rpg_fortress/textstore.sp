@@ -523,24 +523,35 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 	
 	if(!StrContains(buffer, "healing", false) || !StrContains(buffer, "spell", false))
 	{
+		bool found;
 		static SpellEnum spell;
 		int length = SpellList.Length;
 		for(int i; i < length; i++)
 		{
 			SpellList.GetArray(i, spell);
 			if(spell.Owner == client && spell.Store == index)
-				return Item_On;
+			{
+				if(TextStore_GetInv(client, spell.Store))
+					return Item_On;
+
+				found = true;
+				break;
+			}
 		}
 
-		int slot = item.GetNum("slot", -1);
-		Store_EquipSlotCheck(client, slot);
-		TextStore_EquipSlotCheck(client, slot);
+		if(!found)
+			spell.Slot = item.GetNum("slot", -1);
+		
+		Store_EquipSlotCheck(client, spell.Slot);
+		TextStore_EquipSlotCheck(client, spell.Slot);
 
+		if(found)
+			return Item_On;
+		
 		spell.Owner = client;
 		spell.Store = index;
 		spell.Active = false;
 		spell.Skill = view_as<bool>(item.GetNum("skill"));
-		spell.Slot = slot;
 		strcopy(spell.Name, 64, name);
 		
 		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
@@ -2732,11 +2743,15 @@ void TransformButton(int client)
 			{
 				//Before we de-transform the client, maybe theres an extra effect?
 				bool Cancel = false;
-				if(form.Func_FormBeforeDeTransform != INVALID_FUNCTION)
+				if((GetClientButtons(client) & IN_DUCK))
 				{
-					Call_StartFunction(null, form.Func_FormBeforeDeTransform);
-					Call_PushCell(client);
-					Call_Finish(Cancel);
+					if(form.Func_FormBeforeDeTransform != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, form.Func_FormBeforeDeTransform);
+						Call_PushCell(client);
+						Call_Finish(Cancel);
+						Cancel = true;
+					}
 				}
 				if(!Cancel)
 				{

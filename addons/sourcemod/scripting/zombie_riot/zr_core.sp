@@ -249,6 +249,7 @@ ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
+ConVar zr_raidmultihp;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
