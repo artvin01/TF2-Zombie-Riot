@@ -2,19 +2,18 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[] = "npc/scanner/scanner_explode_crash2.wav";
-static const char g_AttackReadySounds[] = "weapons/sentry_spot_client.wav";
-static const char g_AttackRocketSounds[] = "weapons/sentry_shoot3.wav";
+static const char g_HealSound[] = "physics/metal/metal_box_strain1.wav";
 static bool MK2[MAXENTITIES];
 static bool Limit[MAXENTITIES];
 
 void VictorianDroneAnvil_MapStart()
 {
 	PrecacheModel("models/props_teaser/saucer.mdl");
+	PrecacheModel("models/props_urban/urban_crate002.mdl");
 	PrecacheSound(g_DeathSounds);
-	PrecacheSound(g_AttackReadySounds);
-	PrecacheSound(g_AttackRocketSounds);
+	PrecacheSound(g_HealSound);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "victoria_anvil");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Anvil");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_anvil");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_anvil");
 	data.IconCustom = true;
@@ -35,18 +34,14 @@ methodmap VictorianDroneAnvil < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayAttackSound() 
+	public void PlayHealSound() 
 	{
-		EmitSoundToAll(g_AttackRocketSounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void PlayReloadSound() 
-	{
-		EmitSoundToAll(g_AttackReadySounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HealSound[GetRandomInt(0, sizeof(g_HealSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.1, 110);
 	}
 	
 	public VictorianDroneAnvil(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "8000", ally, _, true));
+		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_urban/urban_crate002.mdl", "0.5", "3000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
@@ -56,6 +51,9 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 		
+		MK2[npc.index]=false;
+		Limit[npc.index]=false;
+		
 		bool FactorySpawn;
 		static char countext[20][1024];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
@@ -63,10 +61,9 @@ methodmap VictorianDroneAnvil < CClotBody
 		{
 			if(i>=count)break;
 			if(!StrContains(countext[i], "factory"))FactorySpawn=true;
-			if(!StrContains(countext[i], "mk2"))MK2[npc.index]=true;
-			else MK2[npc.index]=false;
-			if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
-			else Limit[npc.index]=false;
+			else if(!StrContains(countext[i], "mk2"))MK2[npc.index]=true;
+			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
+			else if(!StrContains(countext[i], "factory"))FactorySpawn=true;
 		}
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
@@ -91,15 +88,16 @@ methodmap VictorianDroneAnvil < CClotBody
 		b_IgnoreAllCollisionNPC[npc.index]=true;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = true;
+		npc.Anger = false;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		float Vec[3], Ang[3]={0.0,0.0,0.0};
 		GetAbsOrigin(npc.index, Vec);
 		npc.m_iWearable1 = npc.EquipItemSeperate("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl",_,1,1.0,_,true);
-		Vec[0] -= 36.5;
-		Vec[1] -= 36.5;
-		Vec[2] -= 5.5;
+		Vec[0] += 15.5;
+		Vec[1] += 0.5;
+		Vec[2] -= 61.5;
 		TeleportEntity(npc.m_iWearable1, Vec, Ang, NULL_VECTOR);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
@@ -126,7 +124,7 @@ methodmap VictorianDroneAnvil < CClotBody
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
 				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
+				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 				{
 					GetAbsOrigin(entity, Vec);
 					break;
@@ -187,13 +185,13 @@ static void ClotThink(int iNPC)
 	
 	int target = npc.m_iTargetAlly;
 
-	float VecEnemy[3]; WorldSpaceCenter(target, VecEnemy);
+	float VecAlly[3]; WorldSpaceCenter(target, VecAlly);
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	float DistanceToTarget = GetVectorDistance(VecEnemy, VecSelfNpc, true);
-	
-	if(npc.m_flGetClosestTargetTime < gameTime)
-		target = VictoriaAnvilGetTarget(npc.index, gameTime, (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0));
-	
+	float DistanceToTarget = GetVectorDistance(VecAlly, VecSelfNpc, true);
+	if(npc.m_iTargetAlly && !IsValidAlly(npc.index, npc.m_iTargetAlly))
+		npc.m_iTargetAlly = 0;
+	if(!npc.m_iTargetAlly || npc.m_flGetClosestTargetTime < gameTime)
+		target = VictoriaAnvilGetTarget(npc.index, gameTime);
 	
 	int AI = VictoriaAnvilDefenseMode(npc.index, gameTime, target, DistanceToTarget);
 	switch(AI)
@@ -201,20 +199,38 @@ static void ClotThink(int iNPC)
 		case 0://attack
 		{
 			npc.m_bisWalking = false;
+			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12);
+			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 2); 
+			SetEntityCollisionGroup(npc.index, 6);
 			npc.m_flCharge_delay = gameTime + 0.8;
+			
+			if(!npc.Anger && Limit[npc.index])
+			{
+				npc.m_flAttackHappens = gameTime + (MK2[npc.index] ? 30.0 : 20.0);
+				npc.Anger = true;
+			}
 		}
 		case 1://cooldown
 		{
 			/*none*/
 		}
-		case 3://notfound
+		case 2://notfound
 		{
+			MakeObjectIntangeable(npc.index);
+			b_IgnoreAllCollisionNPC[npc.index]=true;
 			if(gameTime > npc.m_flCharge_delay)
 			{
 				npc.m_bisWalking = true;
 				float Pathing[3], Npvel[3], NPCAng[3];
-				MakeObjectIntangeable(npc.index);
-				SubtractVectors(SET_XZY_POS[npc.index], VecSelfNpc, Pathing);
+				float Ang[3], OpenSky[3], distance;
+				Ang[0]=-90.0;
+				LookPoint(target, Ang, VecAlly, OpenSky);
+				distance = GetVectorDistance(VecAlly, OpenSky);
+				if(distance>300.0) VecAlly[2]+=300.0;
+				else if(distance>200.0) VecAlly[2]+=200.0;
+				else if(distance>100.0) VecAlly[2]+=100.0;
+				else if(distance>50.0) VecAlly[2]+=20.0;
+				SubtractVectors(VecAlly, VecSelfNpc, Pathing);
 				GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_angRotation", NPCAng);
 				npc.GetVelocity(Npvel);
 				float NPCSpeed = npc.m_flSpeed;
@@ -230,20 +246,16 @@ static void ClotThink(int iNPC)
 	}
 }
 
-int VictoriaAnvilGetTarget(int iNPC, float gameTime, float distance)
+int VictoriaAnvilGetTarget(int iNPC, float gameTime)
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
-	if(npc.m_iTargetAlly && !IsValidAlly(npc.index, npc.m_iTargetAlly))
-		npc.m_iTargetAlly = 0;
-	
-	if(!npc.m_iTargetAlly || npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(!IsValidAlly(npc.index,npc.m_iTargetAlly))
 	{
 		npc.m_iTargetAlly = GetClosestAlly(npc.index);
-		if(npc.m_iTargetAlly < 1)
+		if(!IsValidAlly(npc.index,npc.m_iTargetAlly))
 		{
-			npc.m_iTargetAlly = GetClosestTarget(npc.index);
-		}
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+			npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		}	
 	}
 	npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	return npc.m_iTargetAlly;
@@ -252,53 +264,34 @@ int VictoriaAnvilGetTarget(int iNPC, float gameTime, float distance)
 int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float distance)
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
-	if(npc.m_iOverlordComboAttack < 1 || gameTime < npc.m_flCharge_delay)
-		return 2;
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 50.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * (MK2[npc.index] ? 30.0 : 20.0)))
 		{
-			npc.PlayAttackSound();
+			npc.PlayHealSound();
 			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
-			Handle swingTrace;
-			if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+			//CreateTimer(0.1, Timer_MachineShop, npc.index, TIMER_FLAG_NO_MAPCHANGE);
+			//VictorianFactory npc = view_as<VictorianFactory>(iNPC);
+			float entitypos[3], dist;
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				target = TR_GetEntityIndex(swingTrace);	
-					
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				float origin[3], angles[3];
-				view_as<CClotBody>(npc.index).GetAttachment("partyhat", origin, angles);
-				ShootLaser(npc.index, "bullet_tracer01_red", origin, vecHit, false);
-				npc.m_flNextMeleeAttack = gameTime + 0.3;
-				if(IsValidEnemy(npc.index, target))
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) == GetTeam(npc.index))
 				{
-					float damageDealt = 25.0;
-					if(MK2[npc.index])
+					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
+					dist = GetVectorDistance(vecTarget, entitypos);
+					if(dist<(MK2[npc.index] ? 400.0 : 200.0))
 					{
-						damageDealt +=50.0;
-						if(ShouldNpcDealBonusDamage(target))
-							damageDealt *= 4.0;
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
-						if(!ShouldNpcDealBonusDamage(target))
-							Explode_Logic_Custom(damageDealt/5.0, npc.index, npc.index, -1, vecHit, 125.0,_,_,_,3, _, 1.0);
-					}
-					else
-					{
-						if(ShouldNpcDealBonusDamage(target))
-							damageDealt *= 4.0;
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
-						if(!ShouldNpcDealBonusDamage(target))
-							Explode_Logic_Custom(damageDealt/10.0, npc.index, npc.index, -1, vecHit, 85.0,_,_,_,3, _, 1.0);
+						IncreaceEntityDamageTakenBy(entity, 0.8, 0.3);
+						HealEntityGlobal(npc.index, entity, 75.0, 1.0);
 					}
 				}
-				npc.m_iOverlordComboAttack--;
 			}
-			delete swingTrace;
+			npc.m_flNextMeleeAttack = gameTime + 0.3;
 			return 0;
 		}
-		return 3;
+		return 2;
 	}
 	return 1;
 }
@@ -307,14 +300,12 @@ static void ClotDeath(int entity)
 {
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(entity);
 
-	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-
 	npc.PlayDeathSound();
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2)
+		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
@@ -327,29 +318,4 @@ static void ClotDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
-}
-
-public bool LookPoint(int client, float flAng[3], float flPos[3], float pos[3])
-{
-	Handle trace = TR_TraceRayFilterEx(flPos, flAng, MASK_SHOT, RayType_Infinite, TraceEntityFilterIgnorePlayersAndSelf, client);
-	
-	if(TR_DidHit(trace))
-	{
-		TR_GetEndPosition(pos, trace);
-		CloseHandle(trace);
-		return true;
-	}
-	CloseHandle(trace);
-	return false;
-}
-
-static bool TraceEntityFilterIgnorePlayersAndSelf(int entity, int contentsMask, any data)
-{
-	if(entity == data)
-		return false;
-
-	if(1 <= entity <= MaxClients)
-		return false;
-
-	return true;
 }

@@ -7,17 +7,21 @@ static const char g_AttackRocketSounds[] = "weapons/sentry_shoot3.wav";
 static float SET_XZY_POS[MAXENTITIES][3];
 static bool MK2[MAXENTITIES];
 static bool Limit[MAXENTITIES];
+static bool ISVOLI[MAXENTITIES];
+static int OverrideTarget[MAXENTITIES];
+static float IDiying[MAXENTITIES];
 
 void VictorianDroneFragments_MapStart()
 {
 	PrecacheModel("models/props_teaser/saucer.mdl");
+	PrecacheModel("models/props_urban/urban_crate002.mdl");
 	PrecacheModel("models/buildables/gibs/sentry1_gib1.mdl");
 	PrecacheModel("models/buildables/gibs/sentry2_gib3.mdl");
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_AttackReadySounds);
 	PrecacheSound(g_AttackRocketSounds);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "victoria_fragments");
+	strcopy(data.Name, sizeof(data.Name), "Victori Fragments");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_fragments");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_fragments");
 	data.IconCustom = true;
@@ -49,7 +53,7 @@ methodmap VictorianDroneFragments < CClotBody
 	
 	public VictorianDroneFragments(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianDroneFragments npc = view_as<VictorianDroneFragments>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "8000", ally, _, true));
+		VictorianDroneFragments npc = view_as<VictorianDroneFragments>(CClotBody(vecPos, vecAng, "models/props_urban/urban_crate002.mdl", "0.5", "3000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
@@ -59,17 +63,23 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 		
+		MK2[npc.index]=false;
+		Limit[npc.index]=false;
+		ISVOLI[npc.index]=false;
+		OverrideTarget[npc.index] = -1;
+		
 		bool FactorySpawn;
 		static char countext[20][1024];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
-			if(!StrContains(countext[i], "factory"))FactorySpawn=true;
-			if(!StrContains(countext[i], "mk2"))MK2[npc.index]=true;
-			else MK2[npc.index]=false;
-			if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
-			else Limit[npc.index]=false;
+			else if(!StrContains(countext[i], "factory"))FactorySpawn=true;
+			else if(!StrContains(countext[i], "mk2"))MK2[npc.index]=true;
+			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
+			else if(!StrContains(countext[i], "isvoli"))ISVOLI[npc.index]=true;
+			int targetdata = StringToInt(countext[i]);
+			if(IsValidEntity(targetdata)) OverrideTarget[npc.index] = targetdata;
 		}
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
@@ -83,6 +93,7 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 3;
 		npc.m_flAttackHappens = GetGameTime(npc.index)+500.0;
+		IDiying[npc.index] = 0.0;
 
 		npc.m_flMeleeArmor = 1.00;
 		npc.m_flRangedArmor = 1.00;
@@ -229,7 +240,9 @@ static void ClotThink(int iNPC)
 	if(!npc.Anger)
 	{
 		npc.SetVelocity({0.0,0.0,0.0});
-		int LZ = GetClosestTarget(npc.index);
+		int LZ = -1;
+		if(IsValidEntity(OverrideTarget[npc.index]))LZ = OverrideTarget[npc.index];
+		else LZ = GetClosestTarget(npc.index);
 		if(IsValidEnemy(npc.index,LZ))
 		{
 			WorldSpaceCenter(LZ, SET_XZY_POS[npc.index]);
@@ -244,6 +257,26 @@ static void ClotThink(int iNPC)
 	else if(!npc.m_bFUCKYOU)
 	{
 		npc.m_bisWalking = false;
+		if(ISVOLI[npc.index])
+		{
+			float Ang[3];
+			npc.GetAttachment("m_vecAbsOrigin", VecSelfNpc, Ang);
+			npc.m_iWearable5 = ParticleEffectAt_Parent(VecSelfNpc, "utaunt_poweraura_teamcolor", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
+			npc.GetAttachment("", VecSelfNpc, Ang);
+			ISVOLI[npc.index]=false;
+		}
+		if(IsValidEntity(npc.m_iWearable5) && gameTime > IDiying[npc.index])
+		{
+			int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.01);
+			int health = GetEntProp(npc.index, Prop_Data, "m_iHealth")-maxhealth;
+			if(health<=0)
+			{
+				SmiteNpcToDeath(npc.index);
+				return;
+			}
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+			IDiying[npc.index] = gameTime + 1.0;
+		}
 		
 		int AI = VictoriaFragmentsAssaultMode(npc.index, gameTime, target, DistanceToTarget);
 		switch(AI)
@@ -415,8 +448,6 @@ int VictoriaFragmentsAssaultMode(int iNPC, float gameTime, int target, float dis
 static void ClotDeath(int entity)
 {
 	VictorianDroneFragments npc = view_as<VictorianDroneFragments>(entity);
-
-	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
 	npc.PlayDeathSound();
 

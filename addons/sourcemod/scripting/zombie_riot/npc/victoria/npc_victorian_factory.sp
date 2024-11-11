@@ -9,6 +9,7 @@ void VictorianFactory_MapStart()
 	PrecacheSound("misc/rd_points_return01.wav");
 	PrecacheSound("misc/doomsday_lift_start.wav");
 	PrecacheSound("misc/hologram_start.wav");
+	PrecacheSound("items/bomb_warning.wav");
 	PrecacheSound(g_DeathSounds);
 	PrecacheModel("models/props_c17/substation_transformer01a.mdl");
 	PrecacheModel("models/props_c17/lockers001a.mdl");
@@ -43,7 +44,7 @@ methodmap VictorianFactory < CClotBody
 	
 	public VictorianFactory (int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", "100000", ally, _, true));
+		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", "12500", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -63,6 +64,7 @@ methodmap VictorianFactory < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
+		npc.m_bFUCKYOU = false;
 		i_AttacksTillMegahit[npc.index] = 0;
 
 		npc.m_flMeleeArmor = 0.0;
@@ -178,7 +180,7 @@ methodmap VictorianFactory < CClotBody
 		}
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 80, 50, 50, 10);
+		SetEntityRenderColor(npc.index, 80, 50, 50, 60);
 
 		npc.m_iWearable3 = npc.EquipItemSeperate("partyhat", "models/props_c17/substation_transformer01a.mdl",_,1,1.001,5100.0,true);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
@@ -241,7 +243,7 @@ static void ClotThink(int iNPC)
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
 				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) == TFTeam_Red)
+				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) != GetTeam(npc.index))
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
 					distance = GetVectorDistance(Vec, entitypos);
@@ -255,7 +257,7 @@ static void ClotThink(int iNPC)
 			}
 			for(int target=1; target<=MaxClients; target++)
 			{
-				if(IsValidClient(target) && IsPlayerAlive(target) && TeutonType[target] == TEUTON_NONE)
+				if(IsValidClient(target) && IsPlayerAlive(target) && TeutonType[target] == TEUTON_NONE && GetTeam(target) != GetTeam(npc.index))
 				{
 					GetEntPropVector(target, Prop_Send, "m_vecOrigin", entitypos);
 					distance = GetVectorDistance(Vec, entitypos);
@@ -319,6 +321,65 @@ static void ClotThink(int iNPC)
 			EmitSoundToAll("misc/hologram_start.wav", _, _, _, _, 1.0);
 			EmitSoundToAll("misc/hologram_start.wav", _, _, _, _, 1.0);
 			i_AttacksTillMegahit[npc.index] = 607;
+			return;
+		}
+		if(i_AttacksTillMegahit[npc.index] <= 607 || !npc.m_bFUCKYOU)
+		{
+			bool GetClosed=false;
+			float Vec[3], entitypos[3], distance;
+			GetAbsOrigin(npc.m_iWearable3, Vec);
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) != GetTeam(npc.index))
+				{
+					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
+					distance = GetVectorDistance(Vec, entitypos);
+					if(distance<400.0) GetClosed=true;
+				}
+			}
+			for(int target=1; target<=MaxClients; target++)
+			{
+				if(IsValidClient(target) && IsPlayerAlive(target) && TeutonType[target] == TEUTON_NONE && GetTeam(target) != GetTeam(npc.index))
+				{
+					GetEntPropVector(target, Prop_Send, "m_vecOrigin", entitypos);
+					distance = GetVectorDistance(Vec, entitypos);
+					if(distance<=400.0) GetClosed=true;
+				}
+			}
+			
+			if(GetClosed || npc.m_iState>=1)
+			{
+				if(IsValidEntity(npc.m_iWearable4))
+				{
+					if(gameTime > npc.m_flNextMeleeAttack)
+					{
+						GetAbsOrigin(npc.m_iWearable3, Vec);
+						int spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "factory;mk2;isvoli");
+						if(spawn_index > MaxClients)
+						{
+							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.25);
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
+							SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+							SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+							IncreaceEntityDamageTakenBy(spawn_index, 0.000001, 1.0);
+						}
+						npc.m_flNextMeleeAttack = gameTime + 1.0;
+						npc.m_iState += 1;
+					}
+					if(npc.m_iState >= 3)
+						npc.m_bFUCKYOU=true;
+				}
+				else
+				{
+					float Ang[3];
+					npc.GetAttachment("m_vecAbsOrigin", Vec, Ang);
+					Vec[2]+=140.0;
+					npc.m_iWearable4 = ParticleEffectAt_Parent(Vec, "cart_flashinglight_red", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
+					npc.GetAttachment("", Vec, Ang);
+					EmitSoundToAll("items/bomb_warning.wav", npc.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				}
+			}
 		}
 	}
 	else
