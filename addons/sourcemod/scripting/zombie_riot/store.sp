@@ -1393,6 +1393,8 @@ void Store_RogueEndFightReset()
 
 void Store_Reset()
 {
+	Store_RandomizeNPCStore(1);
+	
 	for(int c; c<MAXTF2PLAYERS; c++)
 	{
 		CashSpent[c] = 0;
