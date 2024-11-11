@@ -310,7 +310,7 @@ static Action VictoriaProtector_OnTakeDamage(int victim, int &attacker, int &inf
 		{
 			damage=0.0;
 			IncreaceEntityDamageTakenBy(npc.index, 0.5, 5.0);
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(maxhealth*0.5));
+			//SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(maxhealth*0.5));
 			if(npc.m_iChanged_WalkCycle != 0)
 			{
 				npc.m_bisWalking = false;
