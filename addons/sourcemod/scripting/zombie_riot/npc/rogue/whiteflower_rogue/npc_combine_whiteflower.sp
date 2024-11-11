@@ -450,7 +450,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 40.0;
-					damage *= 0.5;
+					damage *= 0.75;
 					damage *= RaidModeScaling;
 					
 					if(target > 0) 
@@ -491,7 +491,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 45.0;
-					damage *= 0.5;
+					damage *= 0.75;
 					damage *= RaidModeScaling;
 					
 					if(target > 0) 
@@ -781,7 +781,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 							vecSelf2[0] += GetRandomFloat(-10.0, 10.0);
 							vecSelf2[1] += GetRandomFloat(-10.0, 10.0);
 							float damage = 80.0;
-							damage *= 0.5;
+							damage *= 0.75;
 							damage *= RaidModeScaling;
 							int RocketGet = npc.FireRocket(vecSelf2, damage, 200.0);
 							DataPack pack;
@@ -891,9 +891,9 @@ void WF_ThrowGrenadeHappening(Whiteflower_Boss npc)
 			int Grenade = npc.FireGrenade(vecTarget);
 			float GrenadeRangeSupport = 250.0;
 			float damage = 60.0;
-			damage *= 0.5;
+			damage *= 0.75;
 			damage *= RaidModeScaling;
-			float HealDo = 10000.0;
+			float HealDo = 20000.0;
 			HealDo *= RaidModeScaling;
 			WF_GrenadeSupportDo(npc.index, Grenade, damage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
@@ -907,7 +907,7 @@ void WF_ThrowGrenadeHappening(Whiteflower_Boss npc)
 void WF_GrenadeSupportDo(int entity, int grenade, float damage, float RangeSupport, float HealDo)
 {
 	DataPack pack;
-	CreateDataTimer(3.0, Timer_WF_SupportGrenade, pack, TIMER_REPEAT);
+	CreateDataTimer(1.5, Timer_WF_SupportGrenade, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(EntIndexToEntRef(grenade));
 	pack.WriteFloat(damage);
@@ -1109,7 +1109,7 @@ static void Whiteflower_KickTouched(int entity, int enemy)
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);
 	float damage = 60.0;
-	damage *= 0.5;
+	damage *= 0.75;
 	damage *= RaidModeScaling;
 	SDKHooks_TakeDamage(enemy, entity, entity, damage, DMG_CLUB, -1, NULL_VECTOR, targPos);
 	ParticleEffectAt(targPos, "skull_island_embers", 2.0);
