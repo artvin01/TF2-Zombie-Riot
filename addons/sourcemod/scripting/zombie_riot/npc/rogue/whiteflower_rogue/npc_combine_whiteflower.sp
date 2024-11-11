@@ -328,7 +328,7 @@ methodmap Whiteflower_Boss < CClotBody
 		RaidModeScaling *= 1.85;
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = true;
+		RaidAllowsBuildings = false;
 		Citizen_MiniBossSpawn();
 
 		func_NPCDeath[npc.index] = Whiteflower_Boss_NPCDeath;
