@@ -44,7 +44,7 @@ public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
 			{
-				npc.BonusFireRate *= Multi;
+				npc.BonusFireRate /= Multi;
 			}
 		}
 	}

@@ -2077,6 +2077,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_BuffBannerNpcBuff[npc] > GameTime)
 		return true;
+	else if(f_BobDuckBuff[npc] > GameTime)
+		return true;
 	else if(f_AncientBannerNpcBuff[npc] > GameTime)
 		return true;
 	#if defined RUINA_BASE

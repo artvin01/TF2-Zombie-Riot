@@ -34,7 +34,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 	{
 		float value;
 
-		// +2% max health
+		// +20% max health
 		map.GetValue("26", value);
 
 		value += ClassHealth(WeaponClass[entity]);
@@ -48,7 +48,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 		map.GetValue("107", value);
 		map.SetValue("107", value * 0.9);
 
-		// +2% building damage
+		// +20% building damage
 		value = 1.0;
 		map.GetValue("287", value);
 		map.SetValue("287", value * 1.2);

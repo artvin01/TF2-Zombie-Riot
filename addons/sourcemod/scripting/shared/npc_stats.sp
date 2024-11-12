@@ -5508,13 +5508,13 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	return ClosestTarget;
 }
 
-stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
+stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false, int ignore = 0)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
 	for( int i = 1; i <= MaxClients; i++ ) 
 	{
-		if (IsValidClient(i))
+		if (i != ignore && IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
 			if (GetTeam(i)== GetTeam(entity) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true) && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.

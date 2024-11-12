@@ -311,7 +311,7 @@ public void Rogue_CursedRelic_Weapon(int entity, int client)
 	}
 	else
 	{
-		Attributes_SetMulti(entity, 6, 3.0);
+		Attributes_SetMulti(entity, 6, 1.1);
 	}
 }
 

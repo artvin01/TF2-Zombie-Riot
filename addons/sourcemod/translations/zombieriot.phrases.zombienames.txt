@@ -3312,4 +3312,8 @@
 	{
 		"en"	"Ouroboros Ekas"
 	}
+	"Bob's Duck ''Dubby''"
+	{
+		"en"	"Bob's Duck ''Dubby''"
+	}
 }
