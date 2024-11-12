@@ -97,7 +97,7 @@ public void Seaborn_Activation_Enable_form_2(int client)
 	ParticleEffectAt(pos, "halloween_boss_summon", 8.0);
 	
 	//float precent = GetClientHealth(client) / float(ReturnEntityMaxHealth(client));
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.6667);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.1);
 	//SetEntityHealth(client, RoundFloat(ReturnEntityMaxHealth(client) * precent));
 }
 
