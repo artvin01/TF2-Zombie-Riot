@@ -23,8 +23,8 @@ static float GrigoriCoinPurseCalc()
 {
 	int Ingots = Rogue_GetIngots();
 	
-	return(Pow(0.9965, (float(Ingots))));
-	//at 100 ingots, we double our attackspeed minimum
+	return 100.0 / (100.0 + float(Ingots));
+	//at 100 ingots, we double our attackspeed
 }
 
 public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
