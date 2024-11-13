@@ -752,6 +752,8 @@ static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
 					SkillCount[client].GetValue(Selected[client], amount);
 					SkillCount[client].SetValue(Selected[client], amount + 1);
 					PointsSpent[client] += skill.Cost;
+
+					delete SkillCountSnap[client];
 				}
 
 				TreeMenu(client);
