@@ -24,7 +24,7 @@ enum struct Skill
 	int Parent[32];
 	int Dir;
 	
-	bool SetupKV(KeyValues kv)
+	void SetupKV(KeyValues kv)
 	{
 		kv.GetString("name", this.Name, 32);
 		if(!TranslationPhraseExists(this.Name))
@@ -218,7 +218,7 @@ void SkillTree_GiveItem(int client, int weapon)
 			snap.GetKey(i, name, size);
 			
 			map.GetValue(name, value);
-			Attributes_SetMulti(entity, StringToInt(name), value);
+			Attributes_SetMulti(weapon, StringToInt(name), value);
 		}
 
 		delete snap;
