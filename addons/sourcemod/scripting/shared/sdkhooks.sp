@@ -2041,7 +2041,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					dieingstate[victim] = 500;
 				}
-				dieingstate[victim] -= RoundToNearest(Attributes_FindOnPlayerZR(attacker, Attrib_ReviveTimeCut, true, 0.0, true, true));
+				dieingstate[victim] -= RoundToNearest(Attributes_FindOnPlayerZR(victim, Attrib_ReviveTimeCut, false, 0.0));
 				ForcePlayerCrouch(victim, true);
 				//cooldown for left for dead.
 				SpecterResetHudTime(victim);
