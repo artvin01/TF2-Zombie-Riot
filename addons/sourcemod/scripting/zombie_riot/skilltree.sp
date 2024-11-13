@@ -150,13 +150,13 @@ void SkillTree_AddNext(int client, const char[] id, int amount)
 	if(!SkillCount[client])
 		SkillCount[client] = new StringMap();
 	
+	PrintToChatAll("Load %s:%d", id, amount);
 	SkillCount[client].SetValue(id, amount);
 	PointsSpent[client] = -1;
 
 	delete SkillCountSnap[client];
 }
 
-// i starts at 0
 bool SkillTree_GetNext(int client, int &i, char id[32], int &amount)
 {
 	if(SkillCount[client])
@@ -167,13 +167,9 @@ bool SkillTree_GetNext(int client, int &i, char id[32], int &amount)
 		int length = SkillCountSnap[client].Length;
 		if(i < length)
 		{
-			int size = SkillCountSnap[client].KeyBufferSize(i);
-			char[] name = new char[size];
-			SkillCountSnap[client].GetKey(i, name, size);
-			SkillCount[client].GetValue(name, size);
-
-			strcopy(id, sizeof(id), name);
-			amount = size;
+			PrintToChatAll("Save %s:%d", id, amount);
+			SkillCountSnap[client].GetKey(i, id, sizeof(id));
+			SkillCount[client].GetValue(id, amount);
 			return true;
 		}
 	}
@@ -298,15 +294,13 @@ bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 	if(!InMenu[client])
 		return false;
 	
-	PrintCenterText(client, "%f %f %f", vel[0], vel[1], vel[2]);
-
-	static bool holding[MAXTF2PLAYERS][4];
+	static bool holding[MAXTF2PLAYERS][DIR_MAX+1];
 	if(holding[client][UP])
 	{
-		if(vel[0] < 0.5)
+		if(vel[0] < 250.0)
 			holding[client][UP] = false;
 	}
-	else if(vel[0] > 0.5)
+	else if(vel[0] > 250.0)
 	{
 		holding[client][UP] = true;
 		FakeClientCommand(client, "menuselect 2");
@@ -314,10 +308,10 @@ bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 	
 	if(holding[client][DOWN])
 	{
-		if(vel[0] > -0.5)
+		if(vel[0] > -250.0)
 			holding[client][DOWN] = false;
 	}
-	else if(vel[0] < -0.5)
+	else if(vel[0] < -250.0)
 	{
 		holding[client][DOWN] = true;
 		FakeClientCommand(client, "menuselect 4");
@@ -325,10 +319,10 @@ bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 
 	if(holding[client][RIGHT])
 	{
-		if(vel[1] < 0.5)
+		if(vel[1] < 250.0)
 			holding[client][RIGHT] = false;
 	}
-	else if(vel[1] > 0.5)
+	else if(vel[1] > 250.0)
 	{
 		holding[client][RIGHT] = true;
 		FakeClientCommand(client, "menuselect 5");
@@ -336,13 +330,24 @@ bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 	
 	if(holding[client][LEFT])
 	{
-		if(vel[1] > -0.5)
+		if(vel[1] > -250.0)
 			holding[client][LEFT] = false;
 	}
-	else if(vel[1] < -0.5)
+	else if(vel[1] < -250.0)
 	{
 		holding[client][LEFT] = true;
 		FakeClientCommand(client, "menuselect 3");
+	}
+	
+	if(holding[client][DIR_MAX])
+	{
+		if(!(buttons & IN_JUMP))
+			holding[client][DIR_MAX] = false;
+	}
+	else if(buttons & IN_JUMP)
+	{
+		holding[client][DIR_MAX] = true;
+		FakeClientCommand(client, "menuselect 1");
 	}
 
 	buttons = 0;
