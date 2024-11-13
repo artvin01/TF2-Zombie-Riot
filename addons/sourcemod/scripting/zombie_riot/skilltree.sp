@@ -160,7 +160,6 @@ void SkillTree_AddNext(int client, const char[] id, int amount)
 	if(!SkillCount[client])
 		SkillCount[client] = new StringMap();
 	
-	PrintToChatAll("Load %s:%d", id, amount);
 	SkillCount[client].SetValue(id, amount);
 	PointsSpent[client] = -1;
 
@@ -179,7 +178,6 @@ bool SkillTree_GetNext(int client, int &i, char id[32], int &amount)
 		{
 			SkillCountSnap[client].GetKey(i, id, sizeof(id));
 			SkillCount[client].GetValue(id, amount);
-			PrintToChatAll("Save %s:%d", id, amount);
 			return true;
 		}
 	}
