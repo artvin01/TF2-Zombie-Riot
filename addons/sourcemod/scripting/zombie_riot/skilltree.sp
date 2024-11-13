@@ -482,21 +482,33 @@ static void TreeMenu(int client)
 			leftSize--;
 	}
 
-	leftSize -= strlen(skill.Name);
+	leftSize += strlen(skill.Name);
 
-	char leftBuffer[20];	// Space cap
-	if(leftSize > (sizeof(leftBuffer) - 2))
-		leftSize = sizeof(leftBuffer) - 2;
+	char leftBuffer[3][20];	// Space cap
+	if(leftSize > (sizeof(leftBuffer[]) - 2))
+		leftSize = sizeof(leftBuffer[]) - 2;
 	
 	for(int i; i < leftSize; i++)
 	{
-		leftBuffer[i] = ' ';
+		leftBuffer[i][0] = ' ';
+	}
+
+	length = leftSize - (strlen(buffers[UP]) / 2);
+	for(int i; i < length; i++)
+	{
+		leftBuffer[i][1] = ' ';
+	}
+
+	length = leftSize - (strlen(buffers[DOWN]) / 2);
+	for(int i; i < length; i++)
+	{
+		leftBuffer[i][2] = ' ';
 	}
 
 	// Right Side
 	if(buffers[RIGHT][0])
 	{
-		Format(buffer, sizeof(buffer), "%s %s %s [%s] %s", buffer,
+		Format(buffer, sizeof(buffer), "%s %s [%s] %s %s", buffer,
 								ArrowH[skill.Dir == LEFT ? 0 : 1],
 								access[RIGHT] ? "D" : "  ",
 								ArrowH[skill.Dir == LEFT ? 0 : 1],
@@ -506,12 +518,12 @@ static void TreeMenu(int client)
 	// Top Side
 	if(buffers[UP][0])
 	{
-		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s", leftBuffer, buffers[UP],
-											leftBuffer, skill.Dir == DOWN ? "v" : "^",
-											leftBuffer, skill.Dir == DOWN ? "v" : "^",
-											leftBuffer, access[UP] ? "W" : "  ",
-											leftBuffer, skill.Dir == DOWN ? "v" : "^",
-											leftBuffer, skill.Dir == DOWN ? "v" : "^",
+		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s", leftBuffer[1], buffers[UP],
+											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
+											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
+											leftBuffer[0], access[UP] ? "W" : "  ",
+											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
+											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
 											buffer);
 	}
 	else
@@ -523,12 +535,12 @@ static void TreeMenu(int client)
 	if(buffers[DOWN][0])
 	{
 		Format(buffer, sizeof(buffer), "%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s%s", buffer,
-											leftBuffer, skill.Dir == UP ? "^" : "v",
-											leftBuffer, skill.Dir == UP ? "^" : "v",
-											leftBuffer, access[DOWN] ? "S" : "  ",
-											leftBuffer, skill.Dir == UP ? "^" : "v",
-											leftBuffer, skill.Dir == UP ? "^" : "v",
-											leftBuffer, buffers[DOWN]);
+											leftBuffer[0], skill.Dir == UP ? "^" : "v",
+											leftBuffer[0], skill.Dir == UP ? "^" : "v",
+											leftBuffer[0], access[DOWN] ? "S" : "  ",
+											leftBuffer[0], skill.Dir == UP ? "^" : "v",
+											leftBuffer[0], skill.Dir == UP ? "^" : "v",
+											leftBuffer[2], buffers[DOWN]);
 	}
 	else
 	{
