@@ -616,7 +616,8 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
 		float powerup_pos[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
+		WorldSpaceCenter(entity, powerup_pos);
+		bool DoJump = false;
 		if(f_RingDelayGift[entity] < GetGameTime())
 		{
 			float DelayTime = 2.0;
@@ -644,63 +645,81 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	
 			TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, color, 0, 0);
 			TE_SendToAll();
-
-			float TargetDistance = 0.0; 
-			int ClosestTarget = 0; 
+			DoJump = true;
+		}
+		float TargetDistance = 0.0; 
+		int ClosestTarget = 0; 
+		for( int i = 1; i <= MaxClients; i++ ) 
+		{
+			if (IsValidClient(i))
+			{
+				if (GetTeam(i)== TFTeam_Red && IsEntityAlive(i))
+				{
+					float TargetLocation[3]; 
+					WorldSpaceCenter(i, TargetLocation);
+					
+					
+					float distance = GetVectorDistance( powerup_pos, TargetLocation, true ); 
+					if( TargetDistance ) 
+					{
+						if( distance < TargetDistance ) 
+						{
+							ClosestTarget = i; 
+							TargetDistance = distance;		  
+						}
+					} 
+					else 
+					{
+						ClosestTarget = i; 
+						TargetDistance = distance;
+					}		
+				}
+			}
+		}
+		if(ClosestTarget > 0 && TargetDistance <= (50.0 * 50.0))
+		{
+			//picked up!
+			char NameOfTheHero[64];
+			Format(NameOfTheHero, sizeof(NameOfTheHero), "%N", ClosestTarget);
 			for( int i = 1; i <= MaxClients; i++ ) 
 			{
 				if (IsValidClient(i))
 				{
-					if (GetTeam(i)== TFTeam_Red && IsEntityAlive(i))
+					if (GetTeam(i)== TFTeam_Red)
 					{
-						float TargetLocation[3]; 
-						GetClientAbsOrigin( i, TargetLocation ); 
-						
-						
-						float distance = GetVectorDistance( powerup_pos, TargetLocation, true ); 
-						if( TargetDistance ) 
+						SetGlobalTransTarget(i);
+						int MultiExtra = 1;
+						switch(Rarity)
 						{
-							if( distance < TargetDistance ) 
-							{
-								ClosestTarget = i; 
-								TargetDistance = distance;		  
-							}
-						} 
-						else 
-						{
-							ClosestTarget = i; 
-							TargetDistance = distance;
-						}					
-					}
-				}
-			}
-			if(TargetDistance <= (40.0 * 40.0))
-			{
-				//picked up!
-				
-				for( int i = 1; i <= MaxClients; i++ ) 
-				{
-					if (IsValidClient(i))
-					{
-						if (GetTeam(i)== TFTeam_Red && IsEntityAlive(i))
-						{
-							SetGlobalTransTarget(i);
-						//	CPrintToChat(i,"Pickup Gift", )
+							case Rarity_Common:
+								MultiExtra = 1;
+							case Rarity_Uncommon:
+								MultiExtra = 2;
+							case Rarity_Rare:
+								MultiExtra = 5;
+							case Rarity_Legend:
+								MultiExtra = 10;
+							case Rarity_Mythic:
+								MultiExtra = 20;
 						}
+						int XpToGive = ((MAX_XP_FOR_LEVEL / 20) * (MultiExtra));
+						CPrintToChat(i,"%t", "Pickup Gift", NameOfTheHero, XpToGive);
+						XP[i] += XpToGive;
+						GiveXP(i, 0);
 					}
 				}
-				if (IsValidEntity(glow))
-				{
-					RemoveEntity(glow);
-				}
-				RemoveEntity(entity);
-				return Plugin_Stop;		
 			}
-			if(ClosestTarget > 0 && TargetDistance <= (500.0 * 500.0))
+			if (IsValidEntity(glow))
 			{
-				GiftJumpAwayYou(entity, ClosestTarget); //Terror.
+				RemoveEntity(glow);
 			}
-		}		
+			RemoveEntity(entity);
+			return Plugin_Stop;		
+		}
+		if(ClosestTarget > 0 && TargetDistance <= (500.0 * 500.0) && DoJump)
+		{
+			GiftJumpAwayYou(entity, ClosestTarget); //Terror.
+		}	
 	}
 	else
 	{
@@ -744,7 +763,7 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		AcceptEntityInput(glow, "SetGlowColor");
 			
 		
-		f_RingDelayGift[m_iGift] = GetGameTime() + 2.0;
+	//	f_RingDelayGift[m_iGift] = GetGameTime() + 2.0;
 
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Detect_Player_Near_Gift, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -759,7 +778,7 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		pack_2.WriteCell(EntIndexToEntRef(glow));	
 		
 	//	SDKHook(entity, SDKHook_SetTransmit, GiftTransmit);
-		SDKHook(m_iGift, SDKHook_SetTransmit, GiftTransmit);
+	//	SDKHook(m_iGift, SDKHook_SetTransmit, GiftTransmit);
 	}
 }
 

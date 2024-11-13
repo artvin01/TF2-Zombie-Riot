@@ -509,9 +509,6 @@ methodmap Twirl < CClotBody
 
 		if(this.m_iTarget > MaxClients)
 			return 1;						//its an npc? fuck em
-
-		if(i_BarbariansMind[this.m_iTarget])
-			return 0;						//we can 100% say the target is a melee player.	
 		
 		int weapon = GetEntPropEnt(this.m_iTarget, Prop_Send, "m_hActiveWeapon");
 

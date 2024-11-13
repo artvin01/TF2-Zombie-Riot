@@ -207,6 +207,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		int tutorial;
 
 		Transaction tr;
+		int CONVERT_ME_PLEASE;
 		if(results[1].FetchRow())
 		{
 			XP[client] = results[1].FetchInt(1);

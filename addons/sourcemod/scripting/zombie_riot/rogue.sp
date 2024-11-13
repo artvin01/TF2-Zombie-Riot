@@ -521,14 +521,17 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 			Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
 			menu.AddItem(NULL_STRING, vote.Name);
 
-			bool cached = Database_IsCached(client);
-
 			int length = Voting.Length;
 			for(int i; i < length; i++)
 			{
 				Voting.GetArray(i, vote);
 				Format(vote.Config, sizeof(vote.Config), "%t (Lv %d)", vote.Name, vote.Level);
-				menu.AddItem(vote.Name, vote.Config, (i && cached && Level[client] < vote.Level) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				int MenuDo = ITEMDRAW_DISABLED;
+				if(!vote.Level)
+					MenuDo = ITEMDRAW_DEFAULT;
+				if(Level[client] >= 1)
+					MenuDo = ITEMDRAW_DEFAULT;
+				menu.AddItem(vote.Name, vote.Config, MenuDo);
 			}
 			
 			menu.ExitButton = false;

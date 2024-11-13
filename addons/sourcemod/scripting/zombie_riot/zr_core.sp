@@ -10,6 +10,7 @@
 
 //#define ZR_ApplyKillEffects NPC_DeadEffects
 #define ZR_GetWaveCount Rogue_GetRoundScale
+#define MAX_XP_FOR_LEVEL 50000
 
 #define MVM_CLASS_FLAG_NONE				0
 #define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
@@ -2246,7 +2247,6 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 	Music_EndLastmann();
 	CheckAlivePlayers();
 }
-#define MAX_XP_FOR_LEVEL 100000
 
 int XpToLevel(int client)
 {
