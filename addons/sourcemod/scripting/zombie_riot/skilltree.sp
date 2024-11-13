@@ -165,8 +165,8 @@ bool SkillTree_GetNext(int client, int &i, char id[32], int &amount)
 			SkillCountSnap[client].GetKey(i, name, size);
 			SkillCount[client].GetValue(name, size);
 
-			strcopy(id, sizeof(id), skill.Id);
-			amount = skill.Owned[client];
+			strcopy(id, sizeof(id), name);
+			amount = size;
 			i++;
 			return true;
 		}
@@ -464,7 +464,7 @@ static void TreeMenu(int client)
 	}
 
 	// Count spaces from the left side
-	int length = strlen(buffer);
+	length = strlen(buffer);
 	int leftSize = length * 2;
 	for(int i; i < length; i++)
 	{
@@ -476,7 +476,7 @@ static void TreeMenu(int client)
 
 	char leftBuffer[20];	// Space cap
 	if(leftSize > (sizeof(leftBuffer) - 2))
-		leftSize = sizeof(LeftBuffer) - 2;
+		leftSize = sizeof(leftBuffer) - 2;
 	
 	for(int i; i < leftSize; i++)
 	{
@@ -486,7 +486,7 @@ static void TreeMenu(int client)
 	// Right Side
 	if(buffers[RIGHT][0])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[RIGHT], ArrowV[skill.Dir == RIGHT ? 0 : 1], access[RIGHT] ? "D" : "  ", ArrowV[skill.Dir == RIGHT ? 0 : 1]);
+		FormatEx(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[RIGHT], ArrowH[skill.Dir == RIGHT ? 0 : 1], access[RIGHT] ? "D" : "  ", ArrowH[skill.Dir == RIGHT ? 0 : 1]);
 	}
 
 	// Top Side
@@ -577,7 +577,7 @@ static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			InMenu[client] = false;
 
-			static SkillEnum skill;
+			static Skill skill;
 			if(SkillList.GetArray(Selected[client], skill, sizeof(skill)))
 			{
 				if(choice)
