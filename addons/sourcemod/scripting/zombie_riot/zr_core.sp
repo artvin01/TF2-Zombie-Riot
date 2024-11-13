@@ -2325,13 +2325,6 @@ void GiveXP(int client, int xp)
 	}
 }
 
-int ZRCore_SkillPointsCurrent(int client)
-{
-	//3 each level
-	int DO_CODE_FOR_SKILLPOINTS;
-	return 10;
-}
-
 void PlayerApplyDefaults(int client)
 {
 	if(IsPlayerAlive(client) && GetClientTeam(client)==3)

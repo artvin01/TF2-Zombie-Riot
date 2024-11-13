@@ -2304,6 +2304,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 	//tutorial stuff.
 	Tutorial_MakeClientNotMove(client);
+
+	if(SkillTree_PlayerRunCmd(client, buttons, vel))
+		return Plugin_Changed;
 #endif
 
 #if defined RPG
