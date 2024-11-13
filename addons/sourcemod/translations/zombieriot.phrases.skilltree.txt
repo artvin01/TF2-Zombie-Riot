@@ -7,7 +7,20 @@
 	}
 	"Skill Points"
 	{
-		"en"	"Skill Points"
+		"#format"	"{1:d}"
+		"en"	"Skill Points: {1}"
+	}
+	"Browse Skill Tree"
+	{
+		"en"	"Browse Skill Tree"
+	}
+	"Reset Skill Tree"
+	{
+		"en"	"Reset Skill Tree"
+	}
+	"Reset Skill Tree Confirm"
+	{
+		"en"	"Are you sure you wish to reset your skill tree?\nThis can not be undone."
 	}
 	"Unlock Skill"
 	{

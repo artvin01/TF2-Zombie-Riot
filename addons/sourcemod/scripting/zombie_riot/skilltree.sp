@@ -174,7 +174,6 @@ bool SkillTree_GetNext(int client, int &i, char id[32], int &amount)
 
 			strcopy(id, sizeof(id), name);
 			amount = size;
-			i++;
 			return true;
 		}
 	}
@@ -284,6 +283,11 @@ void SkillTree_CalcSkillPoints(int client)
 	}
 }
 
+int SkillTree_UnspentPoints(int client)
+{
+	return (Level[client] * POINTS_PER_LEVEL) - PointsSpent[client];
+}
+
 void SkillTree_OpenMenu(int client)
 {
 	MainMenu(client);
@@ -299,7 +303,7 @@ static void MainMenu(int client)
 	if(PointsSpent[client] == -1)
 		SkillTree_CalcSkillPoints(client);
 	
-	int points = (Level[client] * POINTS_PER_LEVEL) - PointsSpent[client];
+	int points = SkillTree_UnspentPoints(client);
 	
 	Menu menu = new Menu(MainMenuH);
 
@@ -307,8 +311,12 @@ static void MainMenu(int client)
 	
 	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Skill Points", points);
 
-	menu.AddItem(NULL_STRING, "Browse Skill Tree");
-	menu.AddItem(NULL_STRING, "Reset Skill Tree");
+	char buffer[64];
+	FormatEx(buffer, sizeof(buffer), "%t", "Browse Skill Tree");
+	menu.AddItem(NULL_STRING, buffer);
+	
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset Skill Tree");
+	menu.AddItem(NULL_STRING, buffer);
 
 	menu.Display(client, MENU_TIME_FOREVER);
 }
@@ -337,11 +345,51 @@ static int MainMenuH(Menu menu, MenuAction action, int client, int choice)
 							CPrintToChat(client, "%t", "Now Playing Song", CustomMusic.Artist, CustomMusic.Name);
 					}
 				}
+				case 1:
+				{
+					Menu menu2 = new Menu(ResetSkillH);
+
+					SetGlobalTransTarget(client);
+					
+					menu2.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Reset Skill Tree Confirm");
+
+					char buffer[64];
+					FormatEx(buffer, sizeof(buffer), "%t", "Yes");
+					menu2.AddItem(NULL_STRING, buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "No");
+					menu2.AddItem(NULL_STRING, buffer);
+
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
 			}
 		}
 	}
 
 	return 0;
+}
+
+static int ResetSkillH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_Exit)
+				MainMenu(client);
+		}
+		case MenuAction_Select:
+		{
+			if(!choice)
+				SkillTree_ClearClient(client);
+			
+			MainMenu(client);
+		}
+	}
 }
 
 // For Music
@@ -613,6 +661,7 @@ static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
 					int amount;
 					SkillCount[client].GetValue(Selected[client], amount);
 					SkillCount[client].SetValue(Selected[client], amount + 1);
+					PointsSpent[client] += skill.Cost;
 				}
 
 				TreeMenu(client);

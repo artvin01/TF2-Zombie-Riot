@@ -2319,7 +2319,9 @@ void GiveXP(int client, int xp)
 			
 			Store_PrintLevelItems(client, Level[client]);
 		}
-		CPrintToChat(client, "%t", "Current Skill Points", ZRCore_SkillPointsCurrent(client));
+
+		if(Level[client] >= STARTER_WEAPON_LEVEL)
+			CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
 	}
 }
 
