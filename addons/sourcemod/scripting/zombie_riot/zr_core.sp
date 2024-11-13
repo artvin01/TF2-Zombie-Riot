@@ -5,7 +5,7 @@
 
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
-#define STARTER_WEAPON_LEVEL	1
+#define STARTER_WEAPON_LEVEL	3
 #define MAX_TARGETS_HIT 10
 
 //#define ZR_ApplyKillEffects NPC_DeadEffects

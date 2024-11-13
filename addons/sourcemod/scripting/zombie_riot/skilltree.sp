@@ -51,7 +51,11 @@ enum struct Skill
 }
 
 static StringMap SkillList;
+static StringMapSnapshot SkillListSnap;
 static StringMap SkillCount[MAXTF2PLAYERS];
+static StringMapSnapshot SkillCountSnap[MAXTF2PLAYERS];
+static char Selected[MAXTF2PLAYERS][32];
+static int PointsSpent[MAXTF2PLAYERS]
 
 void SkillTree_PluginStart()
 {
@@ -60,6 +64,7 @@ void SkillTree_PluginStart()
 
 void SkillTree_ConfigSetup()
 {
+	delete SkillListSnap;
 	delete SkillList;
 	SkillList = new StringMap();
 	
@@ -69,6 +74,8 @@ void SkillTree_ConfigSetup()
 	kv.ImportFromFile(buffer);
 
 	CfgSetup(NULL_STRING, kv, UP);
+
+	SkillListSnap = SkillList.Snapshot();
 
 	delete kv;
 }
@@ -109,7 +116,10 @@ static void CfgSetup(const char[] intParent, KeyValues kv, int intDir)
 
 void SkillTree_ClearClient(int client)
 {
+	delete SkillCountSnap[client];
 	delete SkillCount[client];
+	PointsSpent[client] = 0;
+	Selected[client][0] = 0;
 }
 
 void SkillTree_AddNext(int client, const char[] id, int amount)
@@ -118,47 +128,50 @@ void SkillTree_AddNext(int client, const char[] id, int amount)
 		SkillCount[client] = new StringMap();
 	
 	SkillCount[client].SetValue(id, amount);
+	PointsSpent[client] = -1;
+
+	delete SkillCountSnap[client];
 }
 
-StringMap SkillTree_GetMap(int client)
+// i starts at 0
+bool SkillTree_GetNext(int client, int &i, char id[32], int &amount)
 {
-	/*
-	if(SkillList)
+	if(SkillCount[client])
 	{
-		StringMapSnapshot snap = SkillCount[client].Snapshot();
+		if(!SkillCountSnap[client])
+			SkillCountSnap[client] = SkillCount[client].Snapshot();
 		
-		int length = snap.Length;
-		for(int i; i < length; i++)
+		int length = SkillCountSnap[client].Length;
+		if(i < length)
 		{
-			int size = snap.KeyBufferSize(i);
+			int size = SkillCountSnap[client].KeyBufferSize(i);
 			char[] name = new char[size];
-			snap.GetKey(i, name, size);
+			SkillCountSnap[client].GetKey(i, name, size);
 			SkillCount[client].GetValue(name, size);
 
 			strcopy(id, sizeof(id), skill.Id);
 			amount = skill.Owned[client];
-			delete snap;
+			i++;
 			return true;
 		}
-
-		delete snap;
 	}
-	*/
-	return SkillCount[client];
+
+	return false;
 }
 
 void SkillTree_ApplyAttribs(int client, StringMap map)
 {
 	if(SkillList && SkillCount[client])
 	{
-		StringMapSnapshot snap = SkillCount[client].Snapshot();
+		if(!SkillCountSnap[client])
+			SkillCountSnap[client] = SkillCount[client].Snapshot();
 		
-		int length = snap.Length;
+		int length = SkillCountSnap[client].Length;
 		for(int i; i < length; i++)
 		{
-			int size = snap.KeyBufferSize(i);
+			int size = SkillCountSnap[client].KeyBufferSize(i);
 			char[] name = new char[size];
-			snap.GetKey(i, name, size);
+			SkillCountSnap[client].GetKey(i, name, size);
 			SkillCount[client].GetValue(name, size);
 
 			static Skill skill;
@@ -172,8 +185,6 @@ void SkillTree_ApplyAttribs(int client, StringMap map)
 				Call_Finish();
 			}
 		}
-
-		delete snap;
 	}
 }
 
@@ -182,14 +193,16 @@ void SkillTree_GiveItem(int client, int weapon)
 	if(SkillList && SkillCount[client])
 	{
 		StringMap map;
-		StringMapSnapshot snap = SkillCount[client].Snapshot();
+
+		if(!SkillCountSnap[client])
+			SkillCountSnap[client] = SkillCount[client].Snapshot();
 		
-		int length = snap.Length;
+		int length = SkillCountSnap[client].Length;
 		for(int i; i < length; i++)
 		{
-			int size = snap.KeyBufferSize(i);
+			int size = SkillCountSnap[client].KeyBufferSize(i);
 			char[] name = new char[size];
-			snap.GetKey(i, name, size);
+			SkillCountSnap[client].GetKey(i, name, size);
 			SkillCount[client].GetValue(name, size);
 
 			static Skill skill;
@@ -205,9 +218,7 @@ void SkillTree_GiveItem(int client, int weapon)
 			}
 		}
 
-		delete snap;
-
-		snap = map.Snapshot();
+		StringMapSnapshot snap = map.Snapshot();
 		
 		float value;
 		length = snap.Length;
@@ -218,10 +229,99 @@ void SkillTree_GiveItem(int client, int weapon)
 			snap.GetKey(i, name, size);
 			
 			map.GetValue(name, value);
-			Attributes_SetMulti(weapon, StringToInt(name), value);
+			Attributes_SetMulti(weapon, StringToInt(name), 1.0 + value);
 		}
 
 		delete snap;
 		delete map;
 	}
 }
+
+void SkillTree_CalcSkillPoints(int client)
+{
+	PointsSpent[client] = 0;
+	
+	if(SkillCount[client])
+	{
+		if(!SkillCountSnap[client])
+			SkillCountSnap[client] = SkillCount[client].Snapshot();
+		
+		int length = SkillCountSnap[client].Length;
+		for(int i; i < length; i++)
+		{
+			int size = SkillCountSnap[client].KeyBufferSize(i);
+			char[] name = new char[size];
+			SkillCountSnap[client].GetKey(i, name, size);
+			SkillCount[client].GetValue(name, size);
+
+			static Skill skill;
+			SkillList.GetArray(name, skill, sizeof(skill));
+			PointsSpent[client] += skill.Cost * size;
+		}
+	}
+}
+
+void SkillTree_OpenMenu(int client)
+{
+	TreeMenu(client);
+}
+
+Action SkillTree_PlayerRunCmd(int client, float vel[3])
+{
+	return Plugin_Continue;
+}
+
+static void TreeMenu(int client)
+{
+	if(PointsSpent[client] == -1)
+		SkillTree_CalcSkillPoints(client);
+	
+	int points = (Level[client] * 3) - PointsSpent[client];
+	
+	Menu menu = new Menu(TreeMenuH);
+
+	SetGlobalTransTarget(client);
+	
+	static char buffer[512];
+	Format(buffer, sizeof(buffer), "%t\n \n%t\n ", "TF2: Zombie Riot", "Skill Points", points);
+
+	static Skill skill;
+
+	if(!Selected[client][0])
+	{
+		// Find the top node
+		// TODO: Set a global variable of the default id
+		int length = SkillListSnap.Length;
+		for(int i; i < length; i++)
+		{
+			int size = SkillListSnap.KeyBufferSize(i);
+			char[] name = new char[size];
+			SkillListSnap.GetKey(i, name, size);
+			SkillList.GetArray(name, skill, sizeof(skill));
+			if(!skill.Parent[0])
+			{
+				strcopy(Selected[client], sizeof(Selected[]), name);
+				break;
+			}
+		}
+	}
+
+	if(!SkillList.GetArray(name, skill, sizeof(skill)))
+	{
+		Selected[client][0] = 0;
+		delete menu;
+		return;
+	}
+
+	int length = SkillListSnap.Length;
+	for(int i; i < length; i++)
+	{
+		int size = SkillListSnap.KeyBufferSize(i);
+		char[] name = new char[size];
+		SkillListSnap.GetKey(i, name, size);
+		SkillList.GetArray(name, skill, sizeof(skill));
+		
+		if()
+	}
+}
+
