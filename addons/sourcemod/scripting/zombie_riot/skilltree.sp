@@ -460,7 +460,7 @@ static void TreeMenu(int client)
 	}
 	else
 	{
-		strcopy(buffer, sizeof(buffer), "                      ");
+		strcopy(buffer, sizeof(buffer), "						");
 	}
 
 	// Center
@@ -490,19 +490,19 @@ static void TreeMenu(int client)
 	
 	for(int i; i < leftSize; i++)
 	{
-		leftBuffer[i][0] = ' ';
+		leftBuffer[i][0] = '	';
 	}
 
 	length = leftSize - (strlen(buffers[UP]) / 2);
 	for(int i; i < length; i++)
 	{
-		leftBuffer[i][1] = ' ';
+		leftBuffer[i][1] = '	';
 	}
 
 	length = leftSize - (strlen(buffers[DOWN]) / 2);
 	for(int i; i < length; i++)
 	{
-		leftBuffer[i][2] = ' ';
+		leftBuffer[i][2] = '	';
 	}
 
 	// Right Side
