@@ -404,7 +404,7 @@ methodmap Sensal < CClotBody
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
-		SetVariantColor(view_as<int>({35, 35, 255, 200}));
+		SetVariantColor(view_as<int>({100, 35, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		return npc;
