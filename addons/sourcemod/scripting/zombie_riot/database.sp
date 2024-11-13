@@ -530,7 +530,7 @@ public void Database_LocalClientSetup(Database db, int userid, int numQueries, D
 				Ammo_Count_Used[client] = results[0].FetchInt(4);
 
 				Transaction tr = new Transaction();
-					
+				
 				char buffer[512];
 				FormatEx(buffer, sizeof(buffer), "SELECT * FROM " ... DATATABLE_GAMEDATA ... " WHERE steamid = %d;", id);
 				tr.AddQuery(buffer);
