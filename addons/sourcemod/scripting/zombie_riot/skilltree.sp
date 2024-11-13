@@ -500,9 +500,11 @@ static void TreeMenu(int client)
 	if(buffers[UP][0])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s%s\n%s%s\n%s%s\n%s[%s]\n%s%s\n%s%s\n%s", leftBuffer, buffers[UP],
-											leftBuffer, skill.Dir == UP ? "v" : "^", skill.Dir == UP ? "v" : "^",
+											leftBuffer, skill.Dir == UP ? "v" : "^",
+											leftBuffer, skill.Dir == UP ? "v" : "^",
 											leftBuffer, access[UP] ? "W" : "  ",
-											leftBuffer, skill.Dir == UP ? "v" : "^", skill.Dir == UP ? "v" : "^",
+											leftBuffer, skill.Dir == UP ? "v" : "^",
+											leftBuffer, skill.Dir == UP ? "v" : "^",
 											buffer);
 	}
 	else
@@ -515,9 +517,11 @@ static void TreeMenu(int client)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s\n%s%s\n%s%s\n%s%s\n%s[%s]\n%s%s\n%s%s", buffer,
 											leftBuffer, buffers[DOWN],
-											leftBuffer, skill.Dir == DOWN ? "^" : "v", skill.Dir == DOWN ? "^" : "v",
+											leftBuffer, skill.Dir == DOWN ? "^" : "v",
+											leftBuffer, skill.Dir == DOWN ? "^" : "v",
 											leftBuffer, access[DOWN] ? "S" : "  ",
-											leftBuffer, skill.Dir == DOWN ? "^" : "v", skill.Dir == DOWN ? "^" : "v");
+											leftBuffer, skill.Dir == DOWN ? "^" : "v",
+											leftBuffer, skill.Dir == DOWN ? "^" : "v");
 	}
 	else
 	{
