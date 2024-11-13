@@ -101,6 +101,12 @@ static bool CfgSetup(const char[] intParent, KeyValues kv, int intDir)
 	kv.GetSectionName(parent, sizeof(parent));
 	if(StrEqual(parent, "music"))
 		return false;
+	
+	if(SkillList.ContainsKey(parent))
+	{
+		LogError("Duplicate entry \"%s\" skill", parent);
+		return false;
+	}
 
 	Skill skill;
 	strcopy(skill.Parent, sizeof(skill.Parent), intParent);
