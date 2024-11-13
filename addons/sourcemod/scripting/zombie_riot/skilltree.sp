@@ -493,13 +493,13 @@ static void TreeMenu(int client)
 	// Right Side
 	if(buffers[RIGHT][0])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[RIGHT], ArrowH[skill.Dir == RIGHT ? 0 : 1], access[RIGHT] ? "D" : "  ", ArrowH[skill.Dir == RIGHT ? 0 : 1]);
+		Format(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[RIGHT], ArrowH[skill.Dir == RIGHT ? 0 : 1], access[RIGHT] ? "D" : "  ", ArrowH[skill.Dir == RIGHT ? 0 : 1]);
 	}
 
 	// Top Side
 	if(buffers[UP][0])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s%s\n%s", leftBuffer, buffers[UP],
+		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s%s\n%s", leftBuffer, buffers[UP],
 											leftBuffer, skill.Dir == UP ? "v" : "^",
 											leftBuffer, skill.Dir == UP ? "v" : "^",
 											leftBuffer, access[UP] ? "W" : "  ",
@@ -515,7 +515,7 @@ static void TreeMenu(int client)
 	// Bottom Side
 	if(buffers[DOWN][0])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s\n%s %s\n%s %\n%s[%s]s\n%s %s\n%s %s\n%s%s", buffer,
+		Format(buffer, sizeof(buffer), "%s\n%s %s\n%s %\n%s[%s]s\n%s %s\n%s %s\n%s%s", buffer,
 											leftBuffer, skill.Dir == DOWN ? "^" : "v",
 											leftBuffer, skill.Dir == DOWN ? "^" : "v",
 											leftBuffer, access[DOWN] ? "S" : "  ",
