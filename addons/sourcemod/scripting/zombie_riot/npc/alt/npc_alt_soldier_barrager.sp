@@ -70,9 +70,9 @@ void Soldier_Barrager_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Soldier_Barrager(client, vecPos, vecAng, ally);
+	return Soldier_Barrager(vecPos, vecAng, team);
 }
 
 static int i_ammo_count[MAXENTITIES];
@@ -144,7 +144,7 @@ methodmap Soldier_Barrager < CClotBody
 
 	}
 	
-	public Soldier_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
+	public Soldier_Barrager(float vecPos[3], float vecAng[3], int ally)
 	{
 		Soldier_Barrager npc = view_as<Soldier_Barrager>(CClotBody(vecPos, vecAng, "models/player/Soldier.mdl", "1.0", "2000", ally));
 		

@@ -56,9 +56,9 @@ public void EnslavedMiner_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return EnslavedMiner(client, vecPos, vecAng, ally);
+	return EnslavedMiner(vecPos, vecAng, team);
 }
 
 methodmap EnslavedMiner < CClotBody
@@ -98,7 +98,7 @@ methodmap EnslavedMiner < CClotBody
 	}
 	
 	
-	public EnslavedMiner(int client, float vecPos[3], float vecAng[3], int ally)
+	public EnslavedMiner(float vecPos[3], float vecAng[3], int ally)
 	{
 		EnslavedMiner npc = view_as<EnslavedMiner>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "300", ally, false,_,_,_,_));
 

@@ -67,9 +67,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Draedon(client, vecPos, vecAng, ally);
+	return Draedon(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -151,7 +151,7 @@ methodmap Draedon < CClotBody
 		}
 	}
 	
-	public Draedon(int client, float vecPos[3], float vecAng[3], int ally)
+	public Draedon(float vecPos[3], float vecAng[3], int ally)
 	{
 		Draedon npc = view_as<Draedon>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		

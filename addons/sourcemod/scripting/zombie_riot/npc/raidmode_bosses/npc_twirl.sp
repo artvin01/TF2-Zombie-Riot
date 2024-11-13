@@ -175,9 +175,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Twirl(client, vecPos, vecAng, ally, data);
+	return Twirl(vecPos, vecAng, team, data);
 }
 static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
 static const char NameColour[] = "{purple}";
@@ -583,7 +583,7 @@ methodmap Twirl < CClotBody
 	}
 	
 	
-	public Twirl(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Twirl(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Twirl npc = view_as<Twirl>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		

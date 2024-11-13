@@ -61,9 +61,9 @@ public void Whiteflower_RagingBlader_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_RagingBlader(client, vecPos, vecAng, ally);
+	return Whiteflower_RagingBlader(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_RagingBlader < CClotBody
@@ -147,7 +147,7 @@ methodmap Whiteflower_RagingBlader < CClotBody
 	}
 	
 	
-	public Whiteflower_RagingBlader(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_RagingBlader(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_RagingBlader npc = view_as<Whiteflower_RagingBlader>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 

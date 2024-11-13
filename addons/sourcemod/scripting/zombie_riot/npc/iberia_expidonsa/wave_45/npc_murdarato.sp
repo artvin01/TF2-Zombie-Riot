@@ -56,9 +56,9 @@ void IberiaMurdarato_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaMurdarato(client, vecPos, vecAng, ally);
+	return IberiaMurdarato(vecPos, vecAng, team);
 }
 methodmap IberiaMurdarato < CClotBody
 {
@@ -104,7 +104,7 @@ methodmap IberiaMurdarato < CClotBody
 	}
 	
 	
-	public IberiaMurdarato(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaMurdarato(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaMurdarato npc = view_as<IberiaMurdarato>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "7500", ally));
 		

@@ -59,9 +59,9 @@ public void Whiteflower_AcclaimedSwordsman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_AcclaimedSwordsman(client, vecPos, vecAng, ally);
+	return Whiteflower_AcclaimedSwordsman(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_AcclaimedSwordsman < CClotBody
@@ -139,7 +139,7 @@ methodmap Whiteflower_AcclaimedSwordsman < CClotBody
 	}
 	
 	
-	public Whiteflower_AcclaimedSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_AcclaimedSwordsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_AcclaimedSwordsman npc = view_as<Whiteflower_AcclaimedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 

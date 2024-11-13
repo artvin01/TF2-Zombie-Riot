@@ -49,9 +49,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]); }
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Sewmo(client, vecPos, vecAng, ally);
+	return Sewmo(vecPos, vecAng, team);
 }
 methodmap Sewmo < CClotBody
 {
@@ -89,7 +89,7 @@ methodmap Sewmo < CClotBody
 	}
 	
 	
-	public Sewmo(int client, float vecPos[3], float vecAng[3], int ally)
+	public Sewmo(float vecPos[3], float vecAng[3], int ally)
 	{
 		Sewmo npc = view_as<Sewmo>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sewmo.mdl", "1.0", "400", ally));
 		

@@ -48,9 +48,9 @@ void SaintCarmen_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SaintCarmen(client, vecPos, vecAng, ally);
+	return SaintCarmen(vecPos, vecAng, team);
 }
 
 methodmap SaintCarmen < CClotBody
@@ -80,7 +80,7 @@ methodmap SaintCarmen < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public SaintCarmen(int client, float vecPos[3], float vecAng[3], int ally)
+	public SaintCarmen(float vecPos[3], float vecAng[3], int ally)
 	{
 		SaintCarmen npc = view_as<SaintCarmen>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, false));
 		// 50000 x 1.0

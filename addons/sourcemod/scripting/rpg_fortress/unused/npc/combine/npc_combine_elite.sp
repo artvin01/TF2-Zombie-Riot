@@ -3,7 +3,7 @@
 
 methodmap CombineElite < CombineSoldier
 {
-	public CombineElite(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineElite(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineElite npc = view_as<CombineElite>(BaseSquad(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", ally, false));
 		

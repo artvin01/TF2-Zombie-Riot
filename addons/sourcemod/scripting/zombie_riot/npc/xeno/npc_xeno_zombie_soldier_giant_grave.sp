@@ -77,9 +77,9 @@ public void XenoSoldierGiant_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoSoldierGiant(client, vecPos, vecAng, ally);
+	return XenoSoldierGiant(vecPos, vecAng, team);
 }
 methodmap XenoSoldierGiant < CClotBody
 {
@@ -147,7 +147,7 @@ methodmap XenoSoldierGiant < CClotBody
 	}
 	
 	
-	public XenoSoldierGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSoldierGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSoldierGiant npc = view_as<XenoSoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "200000", ally, false, true));
 		

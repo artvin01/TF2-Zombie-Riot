@@ -308,7 +308,7 @@ methodmap Doktor_Medick < CClotBody
 		
 	}
 	
-	public Doktor_Medick(int client, float vecPos[3], float vecAng[3], int ally)
+	public Doktor_Medick(float vecPos[3], float vecAng[3], int ally)
 	{
 		Doktor_Medick npc = view_as<Doktor_Medick>(CClotBody(vecPos, vecAng, "models/zombie_riot/doktormedick_ascended.mdl", "1.0", "550000", ally));
 		

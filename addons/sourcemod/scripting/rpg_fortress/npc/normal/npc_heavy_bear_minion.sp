@@ -59,9 +59,9 @@ public void HeavyBearMinion_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeavyBearMinion(client, vecPos, vecAng, ally);
+	return HeavyBearMinion(vecPos, vecAng, team);
 }
 
 methodmap HeavyBearMinion < CClotBody
@@ -101,7 +101,7 @@ methodmap HeavyBearMinion < CClotBody
 	}
 	
 	
-	public HeavyBearMinion(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeavyBearMinion(float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyBearMinion npc = view_as<HeavyBearMinion>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "0.75", "300", ally, false,_,_,_,_));
 		

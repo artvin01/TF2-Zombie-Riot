@@ -82,9 +82,9 @@ void CombineElite_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineElite(client, vecPos, vecAng, ally);
+	return CombineElite(vecPos, vecAng, team);
 }
 methodmap CombineElite < CClotBody
 {
@@ -159,7 +159,7 @@ methodmap CombineElite < CClotBody
 	}
 	
 	
-	public CombineElite(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineElite(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineElite npc = view_as<CombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1500", ally));
 		

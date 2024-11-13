@@ -154,9 +154,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheModel(RUINA_TOWER_CORE_MODEL);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Magia_Anchor(client, vecPos, vecAng, ally, data);
+	return Magia_Anchor(vecPos, vecAng, team, data);
 }
 methodmap Magia_Anchor < CClotBody
 {
@@ -215,7 +215,7 @@ methodmap Magia_Anchor < CClotBody
 		
 	}
 	
-	public Magia_Anchor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Magia_Anchor(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,350.0}));
 		

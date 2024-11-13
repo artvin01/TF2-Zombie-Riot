@@ -61,9 +61,9 @@ public void Whiteflower_ExtremeKnight_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_ExtremeKnight(client, vecPos, vecAng, ally);
+	return Whiteflower_ExtremeKnight(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_ExtremeKnight < CClotBody
@@ -147,7 +147,7 @@ methodmap Whiteflower_ExtremeKnight < CClotBody
 	}
 	
 	
-	public Whiteflower_ExtremeKnight(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_ExtremeKnight(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_ExtremeKnight npc = view_as<Whiteflower_ExtremeKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 

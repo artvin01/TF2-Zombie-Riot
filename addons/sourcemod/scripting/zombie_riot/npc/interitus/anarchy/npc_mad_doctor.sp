@@ -57,9 +57,9 @@ void AnarchyMadDoctor_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnarchyMadDoctor(client, vecPos, vecAng, ally);
+	return AnarchyMadDoctor(vecPos, vecAng, team);
 }
 
 methodmap AnarchyMadDoctor < CClotBody
@@ -101,7 +101,7 @@ methodmap AnarchyMadDoctor < CClotBody
 	}
 	
 	
-	public AnarchyMadDoctor(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyMadDoctor(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnarchyMadDoctor npc = view_as<AnarchyMadDoctor>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "12000", ally));
 		

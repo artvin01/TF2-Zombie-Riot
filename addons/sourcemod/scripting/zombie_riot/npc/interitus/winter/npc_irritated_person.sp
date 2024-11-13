@@ -65,9 +65,9 @@ void WinterIrritatedPerson_OnMapStart_NPC()
 	Rogue_Paradox_AddWinterNPC(id);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WinterIrritatedPerson(client, vecPos, vecAng, ally);
+	return WinterIrritatedPerson(vecPos, vecAng, team);
 }
 
 methodmap WinterIrritatedPerson < CClotBody
@@ -113,7 +113,7 @@ methodmap WinterIrritatedPerson < CClotBody
 	}
 	
 	
-	public WinterIrritatedPerson(int client, float vecPos[3], float vecAng[3], int ally)
+	public WinterIrritatedPerson(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterIrritatedPerson npc = view_as<WinterIrritatedPerson>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "60000", ally));
 		

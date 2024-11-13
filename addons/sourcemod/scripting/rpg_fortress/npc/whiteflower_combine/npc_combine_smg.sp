@@ -9,14 +9,14 @@ void OnMapStartCombineSMG()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineSMG(client, vecPos, vecAng, ally);
+	return CombineSMG(vecPos, vecAng, team);
 }
 
 methodmap CombineSMG < CombinePolice
 {
-	public CombineSMG(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineSMG(float vecPos[3], float vecAng[3], int ally)
 	{
  		CombineSMG npc = view_as<CombineSMG>(BaseSquad(vecPos, vecAng, "models/police.mdl", "1.15", ally, false));
 		

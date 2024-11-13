@@ -58,9 +58,9 @@ void Alt_Medic_Constructor_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Alt_Medic_Constructor(client, vecPos, vecAng, ally);
+	return Alt_Medic_Constructor(vecPos, vecAng, team);
 }
 
 methodmap Alt_Medic_Constructor < CClotBody
@@ -110,7 +110,7 @@ methodmap Alt_Medic_Constructor < CClotBody
 		
 		
 	}
-	public Alt_Medic_Constructor(int client, float vecPos[3], float vecAng[3], int ally)
+	public Alt_Medic_Constructor(float vecPos[3], float vecAng[3], int ally)
 	{
 		Alt_Medic_Constructor npc = view_as<Alt_Medic_Constructor>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "3500", ally));
 		

@@ -54,9 +54,9 @@ void IberiaVivintu_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaVivintu(client, vecPos, vecAng, ally);
+	return IberiaVivintu(vecPos, vecAng, team);
 }
 methodmap IberiaVivintu < CClotBody
 {
@@ -97,7 +97,7 @@ methodmap IberiaVivintu < CClotBody
 	}
 	
 	
-	public IberiaVivintu(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaVivintu(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaVivintu npc = view_as<IberiaVivintu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2000", ally));
 		

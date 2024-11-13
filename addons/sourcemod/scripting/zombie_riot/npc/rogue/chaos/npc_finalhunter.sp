@@ -48,9 +48,9 @@ int FinalHunter_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FinalHunter(client, vecPos, vecAng, ally);
+	return FinalHunter(vecPos, vecAng, team);
 }
 
 methodmap FinalHunter < CClotBody
@@ -76,7 +76,7 @@ methodmap FinalHunter < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 
-	public FinalHunter(int client, float vecPos[3], float vecAng[3], int ally)
+	public FinalHunter(float vecPos[3], float vecAng[3], int ally)
 	{
 		FinalHunter npc = view_as<FinalHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.175", "50000", ally));
 		

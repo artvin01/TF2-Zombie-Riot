@@ -217,7 +217,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 
 static any ClotSummon(int client, const float vecPos[3], const float vecAng[3], int team, const char[] data)
 {
-	return Raidboss_Donnerkrieg(client, vecPos, vecAng, team, data);
+	return Raidboss_Donnerkrieg(vecPos, vecAng, team, data);
 }
 methodmap Raidboss_Donnerkrieg < CClotBody
 {

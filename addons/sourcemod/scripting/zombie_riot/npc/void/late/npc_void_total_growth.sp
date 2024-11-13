@@ -57,9 +57,9 @@ void VoidTotalGrowth_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidTotalGrowth(client, vecPos, vecAng, ally);
+	return VoidTotalGrowth(vecPos, vecAng, team);
 }
 methodmap VoidTotalGrowth < CClotBody
 {
@@ -100,7 +100,7 @@ methodmap VoidTotalGrowth < CClotBody
 	}
 	
 	
-	public VoidTotalGrowth(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidTotalGrowth(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidTotalGrowth npc = view_as<VoidTotalGrowth>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.25", "65000", ally, false, true));
 		

@@ -89,9 +89,9 @@ public void XenoCombineGaint_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombineGaint(client, vecPos, vecAng, ally);
+	return XenoCombineGaint(vecPos, vecAng, team);
 }
 methodmap XenoCombineGaint < CClotBody
 {
@@ -169,7 +169,7 @@ methodmap XenoCombineGaint < CClotBody
 	}
 	
 	
-	public XenoCombineGaint(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineGaint(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineGaint npc = view_as<XenoCombineGaint>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
 		SetVariantInt(1);

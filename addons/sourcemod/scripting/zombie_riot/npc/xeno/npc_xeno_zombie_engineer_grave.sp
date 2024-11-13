@@ -70,9 +70,9 @@ public void XenoEngineer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoEngineer(client, vecPos, vecAng, ally);
+	return XenoEngineer(vecPos, vecAng, team);
 }
 methodmap XenoEngineer < CClotBody
 {
@@ -135,7 +135,7 @@ methodmap XenoEngineer < CClotBody
 	}
 	
 	
-	public XenoEngineer(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoEngineer(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoEngineer npc = view_as<XenoEngineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "3000", ally));
 		

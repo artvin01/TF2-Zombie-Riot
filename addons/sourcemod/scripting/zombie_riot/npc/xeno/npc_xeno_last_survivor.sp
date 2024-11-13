@@ -132,9 +132,9 @@ public void XenoFatherGrigori_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoFatherGrigori(client, vecPos, vecAng, ally);
+	return XenoFatherGrigori(vecPos, vecAng, team);
 }
 methodmap XenoFatherGrigori < CClotBody
 {
@@ -228,7 +228,7 @@ methodmap XenoFatherGrigori < CClotBody
 		
 	}
 	
-	public XenoFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoFatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally));
 		

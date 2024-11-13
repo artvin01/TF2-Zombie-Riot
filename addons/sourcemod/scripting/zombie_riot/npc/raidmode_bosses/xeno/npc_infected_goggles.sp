@@ -109,9 +109,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_HappySounds);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RaidbossBlueGoggles(client, vecPos, vecAng, ally, data);
+	return RaidbossBlueGoggles(vecPos, vecAng, team, data);
 }
 methodmap RaidbossBlueGoggles < CClotBody
 {
@@ -202,7 +202,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		public set(float value) 	{	this.m_flJumpCooldown = value;	}
 	}
 
-	public RaidbossBlueGoggles(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RaidbossBlueGoggles(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		

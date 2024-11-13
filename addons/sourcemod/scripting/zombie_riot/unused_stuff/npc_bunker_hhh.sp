@@ -161,7 +161,7 @@ methodmap BunkerHeadlessHorse < CClotBody
 		#endif
 	}
 	
-	public BunkerHeadlessHorse(int client, float vecPos[3], float vecAng[3], int ally)
+	public BunkerHeadlessHorse(float vecPos[3], float vecAng[3], int ally)
 	{
 		BunkerHeadlessHorse npc = view_as<BunkerHeadlessHorse>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.0", "3000", ally, false));
 		

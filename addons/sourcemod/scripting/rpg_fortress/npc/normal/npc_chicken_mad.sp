@@ -63,9 +63,9 @@ public void MadChicken_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MadChicken(client, vecPos, vecAng, ally);
+	return MadChicken(vecPos, vecAng, team);
 }
 
 methodmap MadChicken < CClotBody
@@ -105,7 +105,7 @@ methodmap MadChicken < CClotBody
 	}
 	
 	
-	public MadChicken(int client, float vecPos[3], float vecAng[3], int ally)
+	public MadChicken(float vecPos[3], float vecAng[3], int ally)
 	{
 		MadChicken npc = view_as<MadChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.75", "300", ally, false));
 		

@@ -57,9 +57,9 @@ public void Whiteflower_Rocketeer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_Rocketeer(client, vecPos, vecAng, ally);
+	return Whiteflower_Rocketeer(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_Rocketeer < CClotBody
@@ -140,7 +140,7 @@ methodmap Whiteflower_Rocketeer < CClotBody
 	}
 	
 	
-	public Whiteflower_Rocketeer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_Rocketeer(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_Rocketeer npc = view_as<Whiteflower_Rocketeer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 

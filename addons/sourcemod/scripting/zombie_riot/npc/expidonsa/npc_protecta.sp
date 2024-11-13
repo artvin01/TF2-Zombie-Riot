@@ -54,9 +54,9 @@ void Protecta_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Protecta(client, vecPos, vecAng, ally);
+	return Protecta(vecPos, vecAng, team);
 }
 
 methodmap Protecta < CClotBody
@@ -98,7 +98,7 @@ methodmap Protecta < CClotBody
 	}
 	
 	
-	public Protecta(int client, float vecPos[3], float vecAng[3], int ally)
+	public Protecta(float vecPos[3], float vecAng[3], int ally)
 	{
 		Protecta npc = view_as<Protecta>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "2500", ally));
 		

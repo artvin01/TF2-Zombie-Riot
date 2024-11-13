@@ -100,9 +100,9 @@ void MedivalMilitia_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalMilitia(client, vecPos, vecAng, ally);
+	return MedivalMilitia(vecPos, vecAng, team);
 }
 methodmap MedivalMilitia < CClotBody
 {
@@ -164,7 +164,7 @@ methodmap MedivalMilitia < CClotBody
 		
 	}
 	
-	public MedivalMilitia(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalMilitia(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalMilitia npc = view_as<MedivalMilitia>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
 		SetVariantInt(1);

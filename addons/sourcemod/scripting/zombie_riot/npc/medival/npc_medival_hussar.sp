@@ -109,9 +109,9 @@ void MedivalHussar_OnMapStart_NPC()
 	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalHussar(client, vecPos, vecAng, ally);
+	return MedivalHussar(vecPos, vecAng, team);
 }
 static int i_ClosestAlly[MAXENTITIES];
 static float i_ClosestAllyCD[MAXENTITIES];
@@ -179,7 +179,7 @@ methodmap MedivalHussar < CClotBody
 		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.8, 100);
 	}
 	
-	public MedivalHussar(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalHussar(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalHussar npc = view_as<MedivalHussar>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
 		SetVariantInt(1);

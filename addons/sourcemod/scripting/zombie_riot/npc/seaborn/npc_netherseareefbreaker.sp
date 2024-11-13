@@ -51,9 +51,9 @@ void SeaReefbreaker_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaReefbreaker(client, vecPos, vecAng, ally, data);
+	return SeaReefbreaker(vecPos, vecAng, team, data);
 }
 
 methodmap SeaReefbreaker < CSeaBody
@@ -83,7 +83,7 @@ methodmap SeaReefbreaker < CSeaBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public SeaReefbreaker(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SeaReefbreaker(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];

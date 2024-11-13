@@ -46,9 +46,9 @@ void WinterSnoweyGunner_OnMapStart_NPC()
 	Rogue_Paradox_AddWinterNPC(id);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WinterSnoweyGunner(client, vecPos, vecAng, ally);
+	return WinterSnoweyGunner(vecPos, vecAng, team);
 }
 
 
@@ -87,7 +87,7 @@ methodmap WinterSnoweyGunner < CClotBody
 	}
 	
 	
-	public WinterSnoweyGunner(int client, float vecPos[3], float vecAng[3], int ally)
+	public WinterSnoweyGunner(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterSnoweyGunner npc = view_as<WinterSnoweyGunner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "2000", ally));
 		

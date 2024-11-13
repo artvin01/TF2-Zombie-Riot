@@ -21,9 +21,9 @@ void SeabornDemo_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornDemo(client, vecPos, vecAng, ally);
+	return SeabornDemo(vecPos, vecAng, team);
 }
 
 methodmap SeabornDemo < CClotBody
@@ -37,7 +37,7 @@ methodmap SeabornDemo < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(2.0, 3.0);
 	}
 	
-	public SeabornDemo(int client, float vecPos[3], float vecAng[3], int ally)
+	public SeabornDemo(float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornDemo npc = view_as<SeabornDemo>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "750", ally));
 		

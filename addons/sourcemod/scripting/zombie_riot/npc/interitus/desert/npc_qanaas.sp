@@ -43,9 +43,9 @@ void DesertQanaas_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DesertQanaas(client, vecPos, vecAng, ally);
+	return DesertQanaas(vecPos, vecAng, team);
 }
 
 methodmap DesertQanaas < CClotBody
@@ -81,7 +81,7 @@ methodmap DesertQanaas < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public DesertQanaas(int client, float vecPos[3], float vecAng[3], int ally)
+	public DesertQanaas(float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertQanaas npc = view_as<DesertQanaas>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "550", ally));
 		

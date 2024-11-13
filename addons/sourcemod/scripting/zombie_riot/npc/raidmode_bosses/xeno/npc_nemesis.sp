@@ -138,9 +138,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombie_riot/320_now_1.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RaidbossNemesis(client, vecPos, vecAng, ally, data);
+	return RaidbossNemesis(vecPos, vecAng, team, data);
 }
 methodmap RaidbossNemesis < CClotBody
 {
@@ -205,7 +205,7 @@ methodmap RaidbossNemesis < CClotBody
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RaidbossNemesis(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, NEMESIS_MODEL, "2.25", "20000000", ally, false, true, true,true)); //giant!
 		

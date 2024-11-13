@@ -143,7 +143,7 @@ int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
 int g_Ruina_BEAM_lightning;
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return -1;
 }

@@ -22,7 +22,7 @@ public void FarmCow_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return FarmCow(client, vecPos, vecAng, TFTeam_Red);
 }
@@ -39,7 +39,7 @@ methodmap FarmCow < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
-	public FarmCow(int client, float vecPos[3], float vecAng[3], int ally)
+	public FarmCow(float vecPos[3], float vecAng[3], int ally)
 	{
 		//Hardcode them being allies, it would make no sense if they were enemies.
 		FarmCow npc = view_as<FarmCow>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", ally, false,_,_,_));

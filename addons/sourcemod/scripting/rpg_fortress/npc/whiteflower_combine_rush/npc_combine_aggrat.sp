@@ -9,13 +9,13 @@ void OnMapStartCombine_Aggrat()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Combine_Aggrat(client, vecPos, vecAng, ally);
+	return Combine_Aggrat(vecPos, vecAng, team);
 }
 methodmap Combine_Aggrat < CombinePolice
 {
-	public Combine_Aggrat(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Aggrat(float vecPos[3], float vecAng[3], int ally)
 	{
 		Combine_Aggrat npc = view_as<Combine_Aggrat>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		

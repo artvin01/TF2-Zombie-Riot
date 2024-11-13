@@ -164,9 +164,9 @@ static void ClotPrecache()
 	PrecacheModel("models/zombie_riot/btd/bloonarius.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Bloonarius(client, vecPos, vecAng, ally, data);
+	return Bloonarius(vecPos, vecAng, team, data);
 }
 methodmap Bloonarius < CClotBody
 {
@@ -216,7 +216,7 @@ methodmap Bloonarius < CClotBody
 		if(GetEntProp(this.index, Prop_Data, "m_iHealth") < (GetEntProp(this.index, Prop_Data, "m_iMaxHealth") / 2))
 			SetEntProp(this.index, Prop_Send, "m_nSkin", 1);
 	}
-	public Bloonarius(int clien, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Bloonarius(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(IsValidEntity(RaidBossActive))	// Bloon raids fail if another can't spawn
 		{

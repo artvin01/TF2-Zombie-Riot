@@ -20,9 +20,9 @@ void OnMapStartCombine_Guarder()
 	PrecacheSoundArray(g_ChargeExplodeIn);
 	PrecacheSoundArray(g_DoExplodeSound);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Combine_Guarder(client, vecPos, vecAng, ally);
+	return Combine_Guarder(vecPos, vecAng, team);
 }
 
 methodmap Combine_Guarder < CombineWarrior
@@ -94,7 +94,7 @@ methodmap Combine_Guarder < CombineWarrior
 			}
 		}
 	}
-	public Combine_Guarder(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Guarder(float vecPos[3], float vecAng[3], int ally)
 	{
 		Combine_Guarder npc = view_as<Combine_Guarder>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		

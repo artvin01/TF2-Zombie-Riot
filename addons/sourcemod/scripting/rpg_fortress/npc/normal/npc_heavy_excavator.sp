@@ -56,9 +56,9 @@ public void HeavyExcavator_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeavyExcavator(client, vecPos, vecAng, ally);
+	return HeavyExcavator(vecPos, vecAng, team);
 }
 
 methodmap HeavyExcavator < CClotBody
@@ -98,7 +98,7 @@ methodmap HeavyExcavator < CClotBody
 	}
 	
 	
-	public HeavyExcavator(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeavyExcavator(float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyExcavator npc = view_as<HeavyExcavator>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", ally, false,_,_,_,_));
 

@@ -44,9 +44,9 @@ void AnarchyEnforcer_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnarchyEnforcer(client, vecPos, vecAng, ally);
+	return AnarchyEnforcer(vecPos, vecAng, team);
 }
 
 methodmap AnarchyEnforcer < CClotBody
@@ -82,7 +82,7 @@ methodmap AnarchyEnforcer < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public AnarchyEnforcer(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyEnforcer(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnarchyEnforcer npc = view_as<AnarchyEnforcer>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "4000", ally));
 		

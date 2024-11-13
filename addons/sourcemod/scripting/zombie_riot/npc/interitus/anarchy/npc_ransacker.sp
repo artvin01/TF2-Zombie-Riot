@@ -57,9 +57,9 @@ void AnarchyRansacker_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnarchyRansacker(client, vecPos, vecAng, ally);
+	return AnarchyRansacker(vecPos, vecAng, team);
 }
 
 methodmap AnarchyRansacker < CClotBody
@@ -104,7 +104,7 @@ methodmap AnarchyRansacker < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public AnarchyRansacker(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyRansacker(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnarchyRansacker npc = view_as<AnarchyRansacker>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "5000", ally));
 		

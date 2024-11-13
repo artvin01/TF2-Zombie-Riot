@@ -57,9 +57,9 @@ public void XenoMedicHealer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoMedicHealer(client, vecPos, vecAng, ally);
+	return XenoMedicHealer(vecPos, vecAng, team);
 }
 methodmap XenoMedicHealer < CClotBody
 {
@@ -109,7 +109,7 @@ methodmap XenoMedicHealer < CClotBody
 		
 	}
 	
-	public XenoMedicHealer(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoMedicHealer(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoMedicHealer npc = view_as<XenoMedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4500", ally));
 		

@@ -56,9 +56,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/demo.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Lazurus(client, vecPos, vecAng, ally);
+	return Lazurus(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -125,7 +125,7 @@ methodmap Lazurus < CClotBody
 			}
 		}
 	}
-	public Lazurus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lazurus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Lazurus npc = view_as<Lazurus>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 		

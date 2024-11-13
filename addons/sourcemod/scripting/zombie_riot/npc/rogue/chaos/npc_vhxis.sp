@@ -99,9 +99,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/forest_rogue/vhxis_battle.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Vhxis(client, vecPos, vecAng, ally, data);
+	return Vhxis(vecPos, vecAng, team, data);
 }
 
 methodmap Vhxis < CClotBody
@@ -233,7 +233,7 @@ methodmap Vhxis < CClotBody
 	
 	
 	
-	public Vhxis(int client, float vecPos[3], float vecAng[3], int ally,  const char[] data)
+	public Vhxis(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Vhxis npc = view_as<Vhxis>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "2.0", "30000", ally, false, true));
 		
