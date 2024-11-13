@@ -428,6 +428,9 @@ static int MainMenuH(Menu menu, MenuAction action, int client, int choice)
 
 					if(InMenu[client] && CustomMusic.Path[0])
 					{
+						//Kill current music.
+						Music_Stop_All(client);
+						SetMusicTimer(client, GetTime() + 1);
 						EmitCustomToClient(client, CustomMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, CustomMusic.Volume);
 						
 						if(CustomMusic.Name[0] || CustomMusic.Artist[0])

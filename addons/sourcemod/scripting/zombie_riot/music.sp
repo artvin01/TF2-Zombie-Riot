@@ -482,6 +482,11 @@ void Music_PostThink(int client)
 	if(f_ClientMusicVolume[client] < 0.05)
 		return;
 
+	//if in menu, dont play new music.
+	//but dont kill old music either.
+	if(SkillTree_InMenu(client))
+		return;
+
 	if(Music_Timer[client] < GetTime() && Music_Timer_2[client] < GetTime())
 	{
 		bool RoundHasCustomMusic = false;

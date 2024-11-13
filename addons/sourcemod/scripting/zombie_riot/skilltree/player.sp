@@ -112,7 +112,6 @@ public void SkillPlayer_ReviveTimeReduceHigh(int client, StringMap map, int amou
 public void SkillPlayer_ExtendExtraCash(int client, StringMap map, int amount)
 {
 	// 100 every skill up
-	int ADD_ME_PLEASE2;
 	PlayerAdd(map, "4034", float(amount) * 100.0);
 }
 public void SkillPlayer_ExtendExtraCashHigh(int client, StringMap map, int amount)

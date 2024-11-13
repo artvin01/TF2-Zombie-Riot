@@ -326,4 +326,12 @@
 	{
 		"en"	"Increace your max cap of building extra cash from 5000 by 500"
 	}
+	"Ingot Up 1"
+	{
+		"en"	"Ingot Up"
+	}
+	"Ingot Up 1 Desc"
+	{
+		"en"	"Gain 1 extra australium ingot in the roguelike, only he highest skill of a player on the server counts."
+	}
 }
