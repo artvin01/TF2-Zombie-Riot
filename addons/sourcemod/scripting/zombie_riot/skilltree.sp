@@ -499,7 +499,7 @@ static void TreeMenu(int client)
 	// Top Side
 	if(buffers[UP][0])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s%s\n%s%s\n%s%s\n%s[%s]\n%s%s\n%s%s\n%s", leftBuffer, buffers[UP],
+		FormatEx(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s%s\n%s", leftBuffer, buffers[UP],
 											leftBuffer, skill.Dir == UP ? "v" : "^",
 											leftBuffer, skill.Dir == UP ? "v" : "^",
 											leftBuffer, access[UP] ? "W" : "  ",
@@ -507,21 +507,21 @@ static void TreeMenu(int client)
 											leftBuffer, skill.Dir == UP ? "v" : "^",
 											buffer);
 	}
-	else
-	{
-		Format(buffer, sizeof(buffer), " \n \n \n \n \n \n%s", buffer);
-	}
+	//else
+	//{
+	//	Format(buffer, sizeof(buffer), " \n \n \n \n \n \n%s", buffer);
+	//}
 
 	// Bottom Side
 	if(buffers[DOWN][0])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s\n%s%s\n%s%s\n%s%s\n%s[%s]\n%s%s\n%s%s", buffer,
-											leftBuffer, buffers[DOWN],
+		FormatEx(buffer, sizeof(buffer), "%s\n%s %s\n%s %\n%s[%s]s\n%s %s\n%s %s\n%s%s", buffer,
 											leftBuffer, skill.Dir == DOWN ? "^" : "v",
 											leftBuffer, skill.Dir == DOWN ? "^" : "v",
 											leftBuffer, access[DOWN] ? "S" : "  ",
 											leftBuffer, skill.Dir == DOWN ? "^" : "v",
-											leftBuffer, skill.Dir == DOWN ? "^" : "v");
+											leftBuffer, skill.Dir == DOWN ? "^" : "v".
+											leftBuffer, buffers[DOWN]);
 	}
 	else
 	{
@@ -531,7 +531,7 @@ static void TreeMenu(int client)
 	Format(buffers[0], sizeof(buffers[]), "%s Desc", skill.Name);
 	
 	Menu menu = new Menu(TreeMenuH);
-	menu.SetTitle("%t\n \n%s\n \n%t", "TF2: Zombie Riot", buffer, buffers[0]);
+	menu.SetTitle("%s\n \n%t", buffer, buffers[0]);
 
 	bool upgrade;
 	
@@ -578,7 +578,7 @@ static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			InMenu[client] = false;
 			
-			if(InMenu[client] && CustomMusic.Path[0])
+			if(CustomMusic.Path[0])
 				StopCustomSound(client, SNDCHAN_STATIC, CustomMusic.Path);
 
 			if(choice == MenuCancel_Exit)
