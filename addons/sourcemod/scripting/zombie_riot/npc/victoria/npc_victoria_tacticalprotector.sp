@@ -26,7 +26,7 @@ static bool MK2[MAXENTITIES];
 static bool Limit[MAXENTITIES];
 static bool Fragments[MAXENTITIES];
 
-void Victorian_VictoriaProtector_OnMapStart_NPC()
+void Victorian_TacticalProtector_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -73,7 +73,7 @@ methodmap VictoriaProtector < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayDronPingSound() 
 	{
@@ -90,9 +90,9 @@ methodmap VictoriaProtector < CClotBody
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_METAL;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
+		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 		func_NPCDeath[npc.index] = view_as<Function>(VictoriaProtector_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaProtector_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VictoriaProtector_ClotThink);
@@ -240,8 +240,8 @@ static void VictoriaProtector_ClotThink(int iNPC)
 			}
 			else
 			{
-				VecEnemy[2]+=140.0;
-				npc.m_iWearable4 = ParticleEffectAt_Parent(Vec, "cart_flashinglight_red", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
+				VecSelfNpc[2]+=100.0;
+				npc.m_iWearable4 = ParticleEffectAt_Parent(VecSelfNpc, "cart_flashinglight_red", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
 				npc.PlayDronPingSound();
 				npc.m_flNextMeleeAttack = gameTime + 5.0;
 			}
@@ -258,7 +258,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 			{
 				npc.m_bisWalking = true;
 				npc.m_iChanged_WalkCycle = 1;
-				npc.m_flSpeed = 280.0;
+				npc.m_flSpeed = 180.0;
 				npc.SetActivity("ACT_MP_RUN_MELEE");
 				npc.StartPathing();
 			}
@@ -269,7 +269,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 			{
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 0;
-				npc.m_flSpeed = 0.0;
+				npc.m_flSpeed = 100.0;
 				npc.SetActivity("ACT_MP_STAND_MELEE");
 				npc.StopPathing();
 			}
@@ -311,10 +311,10 @@ static Action VictoriaProtector_OnTakeDamage(int victim, int &attacker, int &inf
 			damage=0.0;
 			IncreaceEntityDamageTakenBy(npc.index, 0.5, 5.0);
 			//SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(maxhealth*0.5));
-			if(npc.m_iChanged_WalkCycle != 0)
+			if(npc.m_iChanged_WalkCycle != 2)
 			{
 				npc.m_bisWalking = false;
-				npc.m_iChanged_WalkCycle = 0;
+				npc.m_iChanged_WalkCycle = 2;
 				npc.m_flSpeed = 0.0;
 				npc.SetActivity("ACT_MP_STUN_MIDDLE");
 				npc.StopPathing();
@@ -380,13 +380,12 @@ int VictoriaProtectorAssaultMode(int iNPC, float gameTime, int target, float dis
 	{
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			//Play attack ani
 			if(!npc.m_flAttackHappenswillhappen)
 			{
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",1.1);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.PlayMeleeSound();
 				npc.m_flAttackHappens = gameTime+0.4;
-				npc.m_flAttackHappens_bullshit = gameTime+0.3;
+				npc.m_flAttackHappens_bullshit = gameTime+0.54;
 				npc.m_flAttackHappenswillhappen = true;
 			}
 				
@@ -395,7 +394,7 @@ int VictoriaProtectorAssaultMode(int iNPC, float gameTime, int target, float dis
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(target, VecEnemy);
 				npc.FaceTowards(VecEnemy, 20000.0);
-				if(npc.DoSwingTrace(swingTrace, target))
+				if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1))
 				{
 					int Hittarget = TR_GetEntityIndex(swingTrace);	
 					

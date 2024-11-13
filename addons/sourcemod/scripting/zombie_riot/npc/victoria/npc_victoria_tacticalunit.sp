@@ -34,7 +34,7 @@ static bool MK2[MAXENTITIES];
 static bool Limit[MAXENTITIES];
 static bool Anvil[MAXENTITIES];
 
-void Victorian_VictoriaTacticalunit_OnMapStart_NPC()
+void Victorian_Tacticalunit_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -115,9 +115,9 @@ methodmap VictoriaTacticalunit < CClotBody
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		npc.m_iBleedType = BLEEDTYPE_METAL;
-		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
-		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
+		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		func_NPCDeath[npc.index] = view_as<Function>(VictoriaTacticalunit_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaTacticalunit_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VictoriaTacticalunit_ClotThink);
@@ -159,6 +159,11 @@ methodmap VictoriaTacticalunit < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/scout/fall17_forest_footwear/fall17_forest_footwear.mdl");
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		float Ang[3]={0.0,0.0,0.0};
+		Ang[0] = 0.0;
+		Ang[1] = 90.0;
+		Ang[2] = 0.0;
+		TeleportEntity(npc.m_iWearable1, NULL_VECTOR, Ang, NULL_VECTOR);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
@@ -302,8 +307,9 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 		{
 			npc.SetWeaponModel("models/weapons/c_models/c_machete/c_machete.mdl", 1.0);
 			float Ang[3]={0.0,0.0,0.0};
-			Ang[0] = 90.0;
-			Ang[1] = 0.0;
+			Ang[0] = 0.0;
+			Ang[1] = 90.0;
+			Ang[2] = 0.0;
 			TeleportEntity(npc.m_iWearable1, NULL_VECTOR, Ang, NULL_VECTOR);
 			if(IsValidEntity(npc.m_iWearable7))
 				RemoveEntity(npc.m_iWearable7);
@@ -326,14 +332,14 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 			}
 			case 2://attack
 			{
-				if(npc.m_iChanged_WalkCycle != 0)
+				/*if(npc.m_iChanged_WalkCycle != 0)
 				{
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 0;
 					npc.m_flSpeed = 0.0;
 					npc.SetActivity("ACT_MP_STAND_MELEE");
 					npc.StopPathing();
-				}
+				}*/
 			}
 		}
 	}
@@ -425,11 +431,11 @@ int VictoriaTacticalunitAssaultMode(int iNPC, float gameTime, int target, float 
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.PlayMeleeSound();
 				npc.m_flAttackHappens = gameTime+0.4;
-				npc.m_flAttackHappens_bullshit = gameTime+0.3;
+				npc.m_flAttackHappens_bullshit = gameTime+0.54;
 				npc.m_flAttackHappenswillhappen = true;
 			}
 				
-			if (npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
+			if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
 			{
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(target, VecEnemy);
@@ -437,19 +443,22 @@ int VictoriaTacticalunitAssaultMode(int iNPC, float gameTime, int target, float 
 				if(npc.DoSwingTrace(swingTrace, target))
 				{
 					int Hittarget = TR_GetEntityIndex(swingTrace);	
-					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					
-					if(Hittarget > 0) 
+					if(IsValidEnemy(npc.index, Hittarget))
 					{
 						if(ShouldNpcDealBonusDamage(Hittarget))
 							SDKHooks_TakeDamage(Hittarget, npc.index, npc.index, 325.0, DMG_CLUB, -1, _, vecHit);
 						else
 							SDKHooks_TakeDamage(Hittarget, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
-						// Hit sound
 						npc.PlayMeleeHitSound();
-					} 
+					}
+					else
+					{
+						WorldSpaceCenter(npc.index, vecHit);
+						Explode_Logic_Custom(0.0, npc.index, npc.index, -1, vecHit, 125.0, _, _, true, 1, false, _, PlayerHit);
+					}
 				}
 				delete swingTrace;
 				npc.m_flNextMeleeAttack = gameTime + 0.8;
@@ -465,4 +474,12 @@ int VictoriaTacticalunitAssaultMode(int iNPC, float gameTime, int target, float 
 		return 1;
 	}
 	return 0;
+}
+
+static void PlayerHit(int entity, int victim, float damage, int weapon)
+{
+	VictoriaTacticalunit npc = view_as<VictoriaTacticalunit>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	SDKHooks_TakeDamage(victim, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
+	npc.PlayMeleeHitSound();
 }

@@ -27,7 +27,7 @@ void VictoriaMowdown_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	PrecacheModel("models/player/heavy.mdl");
+	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
 	PrecacheSound("weapons/minigun_spin.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_gunfire.wav");
 	NPCData data;
@@ -110,8 +110,6 @@ methodmap VictoriaMowdown < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_DEPLOYED_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
 		
 		func_NPCDeath[npc.index] = VictoriaMowdown_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = VictoriaMowdown_OnTakeDamage;

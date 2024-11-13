@@ -349,36 +349,39 @@ static void ClotThink(int iNPC)
 			}
 			
 			if(GetClosed || npc.m_iState>=1)
+				i_AttacksTillMegahit[npc.index] = 608;
+			return;
+		}
+		if(i_AttacksTillMegahit[npc.index] >= 608 && i_AttacksTillMegahit[npc.index] < 611)
+		{
+			float Vec[3];
+			GetAbsOrigin(npc.m_iWearable3, Vec);
+			if(IsValidEntity(npc.m_iWearable4))
 			{
-				if(IsValidEntity(npc.m_iWearable4))
+				if(gameTime > npc.m_flNextMeleeAttack)
 				{
-					if(gameTime > npc.m_flNextMeleeAttack)
+					GetAbsOrigin(npc.m_iWearable3, Vec);
+					int spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "factory;mk2;isvoli");
+					if(spawn_index > MaxClients)
 					{
-						GetAbsOrigin(npc.m_iWearable3, Vec);
-						int spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "factory;mk2;isvoli");
-						if(spawn_index > MaxClients)
-						{
-							int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.25);
-							NpcAddedToZombiesLeftCurrently(spawn_index, true);
-							SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-							IncreaceEntityDamageTakenBy(spawn_index, 0.000001, 1.0);
-						}
-						npc.m_flNextMeleeAttack = gameTime + 1.0;
-						npc.m_iState += 1;
+						int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.25);
+						NpcAddedToZombiesLeftCurrently(spawn_index, true);
+						SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+						IncreaceEntityDamageTakenBy(spawn_index, 0.000001, 1.0);
 					}
-					if(npc.m_iState >= 3)
-						npc.m_bFUCKYOU=true;
+					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					i_AttacksTillMegahit[npc.index] += 1;
 				}
-				else
-				{
-					float Ang[3];
-					npc.GetAttachment("m_vecAbsOrigin", Vec, Ang);
-					Vec[2]+=140.0;
-					npc.m_iWearable4 = ParticleEffectAt_Parent(Vec, "cart_flashinglight_red", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
-					npc.GetAttachment("", Vec, Ang);
-					EmitSoundToAll("items/bomb_warning.wav", npc.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-				}
+			}
+			else
+			{
+				float Ang[3];
+				npc.GetAttachment("m_vecAbsOrigin", Vec, Ang);
+				Vec[2]+=140.0;
+				npc.m_iWearable4 = ParticleEffectAt_Parent(Vec, "cart_flashinglight_red", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
+				npc.GetAttachment("", Vec, Ang);
+				EmitSoundToAll("items/bomb_warning.wav", npc.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			}
 		}
 	}

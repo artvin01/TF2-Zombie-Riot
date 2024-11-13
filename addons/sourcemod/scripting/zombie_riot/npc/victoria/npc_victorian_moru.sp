@@ -9,7 +9,7 @@ static bool Limit[MAXENTITIES];
 void VictorianDroneAnvil_MapStart()
 {
 	PrecacheModel("models/props_teaser/saucer.mdl");
-	PrecacheModel("models/props_urban/urban_crate002.mdl");
+	PrecacheModel("models/combine_apc_dynamic.mdl");
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_HealSound);
 	NPCData data;
@@ -41,7 +41,7 @@ methodmap VictorianDroneAnvil < CClotBody
 	
 	public VictorianDroneAnvil(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_urban/urban_crate002.mdl", "0.5", "3000", ally, _, true));
+		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
@@ -94,7 +94,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		float Vec[3], Ang[3]={0.0,0.0,0.0};
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable1 = npc.EquipItemSeperate("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl",_,1,1.0,_,true);
+		npc.m_iWearable1 = npc.EquipItemSeperate("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl",_,1,1.001,_,true);
 		Vec[0] += 15.5;
 		Vec[1] += 0.5;
 		Vec[2] -= 61.5;
@@ -103,7 +103,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 		
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/props_teaser/saucer.mdl",_,1,1.0,_,true);
+		npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/props_teaser/saucer.mdl",_,1,1.001,_,true);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
 		
@@ -169,8 +169,13 @@ static void ClotThink(int iNPC)
 	{
 		npc.SetVelocity({0.0,0.0,0.0});
 		npc.m_flSpeed=0.0;
+		if(b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=false;
 	}
-	else npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
+	else
+	{
+		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
+		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
+	}
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
