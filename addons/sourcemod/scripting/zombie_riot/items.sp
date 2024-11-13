@@ -76,24 +76,33 @@ void Items_SetupConfig()
 
 	KeyValues kv = new KeyValues("GiftItems");
 	kv.ImportFromFile(buffer);
+	kv.GotoFirstSubKey();
 	
 	GiftItem item;
-	for(int i; ; i++)	// Done this method due to saving by ID instead
+	do	// TODO: Replace ArrayList with IntMap
 	{
-		IntToString(i, item.Name, sizeof(item.Name));
-		if(kv.JumpToKey(item.Name))
-		{
-			kv.GetString("name", item.Name, sizeof(item.Name));
-			item.Rarity = kv.GetNum("rarity", Rarity_None);
-			GiftItems.PushArray(item);
+		kv.GetSectionName(item.Name, sizeof(item.Name));
+		int index = StringToInt(item.Name);
 
-			kv.GoBack();
+		item.Name[0] = 0;
+		item.Rarity = Rarity_None;
+		while(GiftItems.Length < index)
+		{
+			GiftItems.PushArray(item);
+		}
+
+		kv.GetString("name", item.Name, sizeof(item.Name));
+		item.Rarity = kv.GetNum("rarity", Rarity_None);
+		if(GiftItems.Length < index)
+		{
+			GiftItems.PushArray(item);
 		}
 		else
 		{
-			break;
+			GiftItems.SetArray(index, item);
 		}
 	}
+	while(kv.GotoNextKey());
 
 	delete kv;
 }
@@ -202,7 +211,7 @@ public Action Items_GiveAllCmd(int client, int args)
 			{
 				int count;
 				int length2 = GiftItems.Length;
-				for(int  id; id < length2; id++)
+				for(int id; id < length2; id++)
 				{
 					static GiftItem item;
 					GiftItems.GetArray(id, item);
