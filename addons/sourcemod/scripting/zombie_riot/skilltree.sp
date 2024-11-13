@@ -167,9 +167,9 @@ bool SkillTree_GetNext(int client, int &i, char id[32], int &amount)
 		int length = SkillCountSnap[client].Length;
 		if(i < length)
 		{
-			PrintToChatAll("Save %s:%d", id, amount);
 			SkillCountSnap[client].GetKey(i, id, sizeof(id));
 			SkillCount[client].GetValue(id, amount);
+			PrintToChatAll("Save %s:%d", id, amount);
 			return true;
 		}
 	}
