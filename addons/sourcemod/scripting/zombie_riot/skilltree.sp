@@ -453,7 +453,10 @@ static void TreeMenu(int client)
 	// Left Side
 	if(buffers[LEFT][0])
 	{
-		Format(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[LEFT], ArrowH[skill.Dir == LEFT ? 1 : 0], access[LEFT] ? "A" : "  ", ArrowH[skill.Dir == LEFT ? 1 : 0]);
+		Format(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[LEFT],
+								ArrowH[skill.Dir == LEFT ? 1 : 0],
+								access[LEFT] ? "A" : "  ",
+								ArrowH[skill.Dir == LEFT ? 1 : 0]);
 	}
 	else
 	{
@@ -493,13 +496,17 @@ static void TreeMenu(int client)
 	// Right Side
 	if(buffers[RIGHT][0])
 	{
-		Format(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[RIGHT], ArrowH[skill.Dir == RIGHT ? 0 : 1], access[RIGHT] ? "D" : "  ", ArrowH[skill.Dir == RIGHT ? 0 : 1]);
+		Format(buffer, sizeof(buffer), "%s %s %s [%s] %s", buffer,
+								ArrowH[skill.Dir == RIGHT ? 0 : 1],
+								access[RIGHT] ? "D" : "  ",
+								ArrowH[skill.Dir == RIGHT ? 0 : 1],
+								buffers[RIGHT]);
 	}
 
 	// Top Side
 	if(buffers[UP][0])
 	{
-		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s%s\n%s", leftBuffer, buffers[UP],
+		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s", leftBuffer, buffers[UP],
 											leftBuffer, skill.Dir == UP ? "v" : "^",
 											leftBuffer, skill.Dir == UP ? "v" : "^",
 											leftBuffer, access[UP] ? "W" : "  ",
@@ -507,15 +514,15 @@ static void TreeMenu(int client)
 											leftBuffer, skill.Dir == UP ? "v" : "^",
 											buffer);
 	}
-	//else
-	//{
-	//	Format(buffer, sizeof(buffer), " \n \n \n \n \n \n%s", buffer);
-	//}
+	else
+	{
+		Format(buffer, sizeof(buffer), " \n \n \n \n \n \n%s", buffer);
+	}
 
 	// Bottom Side
 	if(buffers[DOWN][0])
 	{
-		Format(buffer, sizeof(buffer), "%s\n%s %s\n%s %\n%s[%s]s\n%s %s\n%s %s\n%s%s", buffer,
+		Format(buffer, sizeof(buffer), "%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s%s", buffer,
 											leftBuffer, skill.Dir == DOWN ? "^" : "v",
 											leftBuffer, skill.Dir == DOWN ? "^" : "v",
 											leftBuffer, access[DOWN] ? "S" : "  ",
