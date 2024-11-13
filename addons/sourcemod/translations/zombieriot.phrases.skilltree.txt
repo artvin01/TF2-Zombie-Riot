@@ -250,7 +250,7 @@
 	{
 		"en" 		"Building Repair Speed Up"
 	}
-	"Building Repair Up Desc"
+	"Building Repair Up 1 Desc"
 	{
 		"en" 		"Your Repairspeed gains a multiplicative +0.1%% speed"
 	}
