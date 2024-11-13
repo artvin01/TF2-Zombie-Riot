@@ -145,5 +145,6 @@ StringMap SkillTree_GetMap(int client)
 	*/
 	return SkillCount[client];
 }
-
+/*
 void Store_Get
+*/
