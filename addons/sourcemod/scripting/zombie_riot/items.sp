@@ -571,21 +571,15 @@ void Gift_DropChance(int entity)
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 20.0;
-				for (int client = 1; client <= MaxClients; client++)
+				int rarity = RollRandom(); //Random for each clie
+				if(!IsPointHazard(VecOrigin)) //Is it valid?
 				{
-					if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
-					{
-						int rarity = RollRandom(); //Random for each clie
-						if(!IsPointHazard(VecOrigin)) //Is it valid?
-						{
-							b_ForceSpawnNextTime = false;
-							Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, rarity);
-						}
-						else //Not a valid position, we must force it! next time we try!
-						{
-							b_ForceSpawnNextTime = true;
-						}
-					}
+					b_ForceSpawnNextTime = false;
+					Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, rarity);
+				}
+				else //Not a valid position, we must force it! next time we try!
+				{
+					b_ForceSpawnNextTime = true;
 				}
 			}	
 			else
@@ -613,106 +607,92 @@ static int RollRandom()
 	return Rarity_Common;
 }
 
-
 public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int glow = EntRefToEntIndex(pack.ReadCell());
-	int client = GetClientOfUserId(pack.ReadCell());
+	int Rarity = pack.ReadCell();
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
-		if(IsValidClient(client))
+		float powerup_pos[3];
+		float client_pos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
+		if(f_RingDelayGift[entity] < GetGameTime())
 		{
-			float powerup_pos[3];
-			float client_pos[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
-			if(f_RingDelayGift[entity] < GetGameTime())
+			float DelayTime = 2.0;
+			switch(Rarity)
 			{
-				f_RingDelayGift[entity] = GetGameTime() + 2.0;
-				EmitSoundToClient(client, SOUND_BEEP, entity, _, 90, _, 1.0);
-				int color[4];
-				
-				color[0] = RenderColors_RPG[i_RarityType[entity]][0];
-				color[1] = RenderColors_RPG[i_RarityType[entity]][1];
-				color[2] = RenderColors_RPG[i_RarityType[entity]][2];
-				color[3] = RenderColors_RPG[i_RarityType[entity]][3];
-		
-				TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, color, 0, 0);
-	   			TE_SendToClient(client);
+				case Rarity_Common:
+					DelayTime = 2.0;
+				case Rarity_Uncommon:
+					DelayTime = 1.5;
+				case Rarity_Rare:
+					DelayTime = 1.0;
+				case Rarity_Legend:
+					DelayTime = 0.65;
+				case Rarity_Mythic:
+					DelayTime = 0.35;
+			}
+			f_RingDelayGift[entity] = GetGameTime() + DelayTime;
+			EmitSoundToAll(SOUND_BEEP, entity, _, 90, _, 1.0);
+			int color[4];
+			
+			color[0] = RenderColors_RPG[i_RarityType[entity]][0];
+			color[1] = RenderColors_RPG[i_RarityType[entity]][1];
+			color[2] = RenderColors_RPG[i_RarityType[entity]][2];
+			color[3] = RenderColors_RPG[i_RarityType[entity]][3];
+	
+			TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, color, 0, 0);
+			TE_SendToAll();
 
-				GiftJumpTowardsYou(entity, client); //Terror.
-   			}
-			if (IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
+			float TargetDistance = 0.0; 
+			int ClosestTarget = 0; 
+			for( int i = 1; i <= MaxClients; i++ ) 
 			{
-				GetClientAbsOrigin(client, client_pos);
-				if(GetVectorDistance(powerup_pos, client_pos, true) < 4096.0)
+				if (IsValidClient(i))
 				{
-					if(IsValidEntity(glow))
-						RemoveEntity(glow);
-					
-					RemoveEntity(entity);
-					
-					static GiftItem item;
-					int rand = GetURandomInt();
-					int length = GiftItems.Length;
-					int[] items = new int[length];
-					for(int r = i_RarityType[entity]; r >= 0; r--)
+					CClotBody npc = view_as<CClotBody>(i);
+					if (GetTeam(i)== TFTeam_Red && IsEntityAlive(i))
 					{
-						int maxitems;
-						for(int i; i < length; i++)
+						float EntityLocation[3], TargetLocation[3]; 
+						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+						GetClientAbsOrigin( i, TargetLocation ); 
+						
+						
+						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						if( TargetDistance ) 
 						{
-							GiftItems.GetArray(i, item);
-							if(item.Rarity == r)
+							if( distance < TargetDistance ) 
 							{
-								items[maxitems++] = i;
+								ClosestTarget = i; 
+								TargetDistance = distance;		  
 							}
-						}
-
-						int start = (rand % maxitems);
-						int i = start;
-						do
+						} 
+						else 
 						{
-							i++;
-							if(i >= maxitems)
-							{
-								i = -1;
-								continue;
-							}
-
-							if(Items_GiveIdItem(client, items[i]))	// Gives item, returns true if newly obtained, false if they already have
-							{
-								static const char Colors[][] = { "default", "green", "blue", "yellow", "darkred" };
-								
-								GiftItems.GetArray(items[i], item);
-								CPrintToChat(client, "{default}You have found {%s}%s{default}!", Colors[r], item.Name);
-								r = -1;
-								length = 0;
-								break;
-							}
-						}
-						while(i != start);
+							ClosestTarget = i; 
+							TargetDistance = distance;
+						}					
 					}
-					
-					if(length)
-					{
-						PrintToChat(client, "You already have everything in this rarity, but where given %d Scrap as a compensation.", i_RarityType[entity] + 1);
-						Scrap[client] += i_RarityType[entity] + 1;
-					}
-
-					return Plugin_Stop;
 				}
 			}
-		}
-		else
-		{
-			if (IsValidEntity(glow))
+			if(TargetDistance <= (40.0 * 40.0))
 			{
-				RemoveEntity(glow);
+				//picked up!
+				
+				if (IsValidEntity(glow))
+				{
+					RemoveEntity(glow);
+				}
+				RemoveEntity(entity);
+				return Plugin_Stop;		
 			}
-			RemoveEntity(entity);
-			return Plugin_Stop;			
-		}
+			if(ClosestTarget > 0 && TargetDistance <= (500.0 * 500.0))
+			{
+				GiftJumpAwayYou(entity, ClosestTarget); //Terror.
+			}
+		}		
 	}
 	else
 	{
@@ -721,7 +701,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime, int client, int rarity)
+stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime, int rarity)
 {
 	int m_iGift = CreateEntityByName("prop_physics_override")
 	if(m_iGift != -1)
@@ -754,9 +734,6 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		
 		SetVariantColor(view_as<int>(color));
 		AcceptEntityInput(glow, "SetGlowColor");
-		
-		SetEntPropEnt(glow, Prop_Send, "m_hOwnerEntity", client);
-		SetEntPropEnt(m_iGift, Prop_Send, "m_hOwnerEntity", client);
 			
 		
 		f_RingDelayGift[m_iGift] = GetGameTime() + 2.0;
@@ -765,7 +742,7 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		CreateDataTimer(0.1, Timer_Detect_Player_Near_Gift, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		pack.WriteCell(EntIndexToEntRef(m_iGift));
 		pack.WriteCell(EntIndexToEntRef(glow));	
-		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(rarity);	
 		
 		
 		DataPack pack_2;
@@ -804,7 +781,7 @@ public Action GiftTransmit(int entity, int target)
 }
 
 //This is probably the silliest thing ever.
-public void GiftJumpTowardsYou(int Gift, int client)
+public void GiftJumpAwayYou(int Gift, int client)
 {
 	float Jump_1_frame[3];
 	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", Jump_1_frame);
@@ -850,14 +827,17 @@ public void GiftJumpTowardsYou(int Gift, int client)
 	vecJumpVel[2] = speed;
 		
 	// Don't jump too far/fast.
-	float flJumpSpeed = GetVectorLength(vecJumpVel);
-	float flMaxSpeed = 350.0;
+	float flJumpSpeed = 400.0;
+	float flMaxSpeed = 400.0;
 	if ( flJumpSpeed > flMaxSpeed )
 	{
 		vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
 		vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
 		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
 	}
+	//jump away!
+	vecJumpVel [0] *= -1.0;
+	vecJumpVel [1] *= -1.0;
 	TeleportEntity(Gift, NULL_VECTOR, NULL_VECTOR, vecJumpVel);
 }
 

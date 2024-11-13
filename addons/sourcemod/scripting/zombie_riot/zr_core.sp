@@ -5,7 +5,7 @@
 
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
-#define STARTER_WEAPON_LEVEL	5
+#define STARTER_WEAPON_LEVEL	1
 #define MAX_TARGETS_HIT 10
 
 //#define ZR_ApplyKillEffects NPC_DeadEffects
@@ -2246,11 +2246,11 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 	Music_EndLastmann();
 	CheckAlivePlayers();
 }
-#define MAX_XP_FOR_LEVEL 1000
+#define MAX_XP_FOR_LEVEL 100000
 
 int XpToLevel(int client)
 {
-	int XpForLevel = 100;
+	int XpForLevel = MAX_XP_FOR_LEVEL / 2;
 
 	XpForLevel = float(XpForLevel) * (float(Level[client]) * 0.1);
 
@@ -2307,7 +2307,7 @@ void GiveXP(int client, int xp)
 		//	SetEntityHealth(client, maxhealth);
 		
 		SetGlobalTransTarget(client);
-		PrintToChat(client, "%t", "Level Up", nextLevel);
+		PrintToChat(client, "%t", "Level Up", Level[client]);
 		
 		int SkillPointsGive = 0;
 		
@@ -2323,11 +2323,9 @@ void GiveXP(int client, int xp)
 				CPrintToChat(client, "%t", "All Weapons Unlocked");
 			}
 			
-			if(Store_PrintLevelItems(client, Level[client]))
+			Store_PrintLevelItems(client, Level[client]);
 		}
 		CPrintToChat(client, "%t", "Current Skill Points", ZRCore_SkillPointsCurrent(client));
-
-		
 	}
 }
 
