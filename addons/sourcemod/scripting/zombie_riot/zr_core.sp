@@ -10,7 +10,7 @@
 
 //#define ZR_ApplyKillEffects NPC_DeadEffects
 #define ZR_GetWaveCount Rogue_GetRoundScale
-#define MAX_XP_FOR_LEVEL 50000
+#define MAX_XP_FOR_LEVEL 25000
 
 #define MVM_CLASS_FLAG_NONE				0
 #define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
@@ -2299,9 +2299,10 @@ void GiveXP(int client, int xp)
 
 	if(XP[client] >= XpToLevel(client))
 	{
-		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
-		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-		
+		//	will get annoying really fast.
+		//	static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
+		//	ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
+			
 		//int maxhealth = SDKCall_GetMaxHealth(client);
 		//if(GetClientHealth(client) < maxhealth)
 		//	SetEntityHealth(client, maxhealth);

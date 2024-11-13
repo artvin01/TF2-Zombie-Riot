@@ -20,11 +20,40 @@ public void SkillPlayer_HealthUp(int client, StringMap map, int amount)
 	// +1 every X
 	PlayerAdd(map, "26", amount);
 }
+public void SkillPlayer_HealthUpInfinite(int client, StringMap map, int amount)
+{
+	// +0.1 every X
+	PlayerAdd(map, "26", amount * 0.1);
+}
 
 public void SkillPlayer_ResistUp(int client, StringMap map, int amount)
 {
-	// +0.01% every X
-	PlayerMulti(map, "412", amount * -0.0001);
+	// +0.05% every X
+	PlayerMulti(map, "412", amount * -0.0005);
+}
+
+public void SkillPlayer_FusionResUp(int client, StringMap map, int amount)
+{
+	// +0.5% every X
+	PlayerMulti(map, "412", amount * -0.005);
+}
+public void SkillPlayer_SensalResUp(int client, StringMap map, int amount)
+{
+	// +1.0% every X
+	PlayerMulti(map, "412", amount * -0.01);
+}
+public void SkillPlayer_AlaxiosResUp(int client, StringMap map, int amount)
+{
+	// +1.0% every X
+	PlayerMulti(map, "412", amount * -0.01);
+	PlayerAdd(map, "26", amount * 15);
+}
+public void SkillPlayer_BobHandUp(int client, StringMap map, int amount)
+{
+	// +1.0% every X
+	PlayerAdd(map, "26", amount * 25);
+	PlayerAdd(map, "4030", amount * 0.0005);
+	PlayerMulti(map, "286", amount * 0.01);
 }
 
 public void SkillPlayer_LuckUp(int client, StringMap map, int amount)
@@ -44,9 +73,44 @@ public void SkillPlayer_CashUp(int client, StringMap map, int amount)
 	int PLEASE_ADD_THIS_ATTRIB_FOR_EXTRA_CASH;
 	PlayerAdd(map, "4031", amount * 2);
 }
+public void SkillPlayer_CashUpInfinite(int client, StringMap map, int amount)
+{
+	// +0.2 every X
+	int PLEASE_ADD_THIS_ATTRIB_FOR_EXTRA_CASH;
+	PlayerAdd(map, "4031", amount * 0.2);
+}
 
 public void SkillPlayer_CashUpHigh(int client, StringMap map, int amount)
 {
 	// +20 every X
 	PlayerAdd(map, "4031", amount * 20);
+}
+public void SkillPlayer_CashUpHighBarney(int client, StringMap map, int amount)
+{
+	// +30 every X
+	PlayerAdd(map, "4031", amount * 30);
+}
+
+public void SkillPlayer_ExtraCoinLow(int client, StringMap map, int amount)
+{
+	// +1 every X
+	int MAKE_ME_WORK_PLEASE;
+	PlayerAdd(map, "4032", amount);
+}
+public void SkillPlayer_ExtraBuildingHP(int client, StringMap map, int amount)
+{
+	// 0.1 every skill up
+	PlayerMulti(map, "286", amount * 0.001);
+}
+
+public void SkillPlayer_RegenUpCalmaticus(int client, StringMap map, int amount)
+{
+	// 0.25 hp regen every skill up
+	PlayerMulti(map, "57", amount * 0.25);
+}
+
+public void SkillPlayer_ExtraDamageBuilding(int client, StringMap map, int amount)
+{
+	// 0.1 every skill up
+	PlayerMulti(map, "287", amount * 0.001);
 }

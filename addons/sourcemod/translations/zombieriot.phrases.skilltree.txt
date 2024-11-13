@@ -15,7 +15,7 @@
 	}
 	"Weapon Damage All 1 Desc"
 	{
-		"en" 		"Gain a multiplicative +0.1% damage buff to all weapons."
+		"en" 		"Gain a multiplicative +0.05% damage buff to all weapons."
 	}
 	"Weapon Damage All 1 High"
 	{
@@ -23,23 +23,23 @@
 	}
 	"Weapon Damage All 1 High Desc"
 	{
-		"en" 		"Gain a multiplicative +0.5% damage buff to all weapons."
+		"en" 		"Gain a multiplicative +0.2% damage buff to all weapons."
 	}
-	"Attackspeed All 1"
+	"Attackspeed & Reload All 1"
 	{
 		"en" 		"Attack & Reloadspeed"
 	}
-	"Attackspeed All 1 Desc"
+	"Attackspeed & Reload All 1 Desc"
 	{
-		"en" 		"Gain a multiplicative +0.1% attackspeed & reload buff to all weapons."
+		"en" 		"Gain a multiplicative +0.05% attackspeed & reload buff to all weapons."
 	}
-	"Attackspeed All 1 High"
+	"Attackspeed & Reload All 1 High"
 	{
 		"en" 		"Attack & Reloadspeed"
 	}
-	"Attackspeed All 1 High Desc"
+	"Attackspeed & Reload All 1 High Desc"
 	{
-		"en" 		"Gain a multiplicative +0.5% attackspeed & reload buff to all weapons."
+		"en" 		"Gain a multiplicative +0.2% attackspeed & reload buff to all weapons."
 	}
 	"Health Up 1"
 	{
@@ -57,13 +57,21 @@
 	{
 		"en" 		"Gain a +5 HP"
 	}
+	"Health Up 1 Infinite"
+	{
+		"en" 		"Health Up"
+	}
+	"Health Up 1 Infinite Desc"
+	{
+		"en" 		"Gain a +0.1 HP, this can be used infinitly, and thus is not efficient use in skillpoints."
+	}
 	"Resist 1"
 	{
 		"en" 		"Total Resistance"
 	}
 	"Resist 1 Desc"
 	{
-		"en" 		"Gain a multiplicative +0.01% Resistance to all sources"
+		"en" 		"Gain a multiplicative +0.05% Resistance to all sources"
 	}
 	"Cash Up 1"
 	{
@@ -73,6 +81,14 @@
 	{
 		"en" 		"Gain +2 Extra Cash"
 	}
+	"Cash Up 1 Infinite"
+	{
+		"en" 		"Extra Cash Infinite"
+	}
+	"Cash Up 1 Infinite Desc"
+	{
+		"en" 		"Gain +0.2 Extra Cash, this can be used infinitly, and thus is not efficient use in skillpoints."
+	}
 	"Cash Up 1 High"
 	{
 		"en" 		"Extra Cash"
@@ -80,5 +96,149 @@
 	"Cash Up 1 High Desc"
 	{
 		"en" 		"Gain +20 Extra Cash"
+	}
+	"Reload All 1"
+	{
+		"en" 		"Reloadspeed"
+	}
+	"Reload All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.025% reload buff to all weapons."
+	}
+	"Attackspeed All 1"
+	{
+		"en" 		"Attack Speed"
+	}
+	"Attackspeed All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.02% Attackspeed buff to all weapons."
+	}
+	"FusionBuffDo"
+	{
+		"en" 		"Fusion Warrior Buff"
+	}
+	"FusionBuffDo Desc"
+	{
+		"en" 		"Gain a multiplicative +0.25% Extra Damage and multiplicative +0.5% Resistance."
+	}
+	"Kahmlstein Buff"
+	{
+		"en" 		"Kahmlstein Buff"
+	}
+	"Kahmlstein Buff Desc"
+	{
+		"en" 		"Gain a multiplicative +1%% Extra Damage."
+	}
+	"Cash Up Barney 1"
+	{
+		"en" 		"Sellable Chainsaw"
+	}
+	"Cash Up Barney 1 Desc"
+	{
+		"en" 		"Gain a +30 extra cash."
+	}
+	"Sensal Buff Do"
+	{
+		"en" 		"Expidonsan Battery Buff"
+	}
+	"Sensal Buff Do Desc"
+	{
+		"en" 		"Gain a multiplicative +0.35% Extra Damage and multiplicative +1.0% Resistance."
+	}
+	"Alaxios Godly Powerup"
+	{
+		"en" 		"Alaxios' Full Buff"
+	}
+	"Alaxios Godly Powerup Desc"
+	{
+		"en" 		"Gain a multiplicative +1.0% Resistance and 15 HP."
+	}
+	"Bob's Healing Hand"
+	{
+		"en" 		"Bob's Healing Hand Buff"
+	}
+	"Bob's Healing Hand Desc"
+	{
+		"en" 		"Gain a 25 HP.\nAn additional +0.05% luck and 1% building HP"
+	}
+	"Blitzkrieg Buff"
+	{
+		"en" 		"Blitzkrieg Buff"
+	}
+	"Blitzkrieg Buff Desc"
+	{
+		"en" 		"Gain a multiplicative +0.5% Attackspeed and reload speed bonus."
+	}
+	"Waldch's Blue Goggles"
+	{
+		"en" 		"Waldch's Blue Goggles"
+	}
+	"Waldch's Blue Goggles Desc"
+	{
+		"en" 		"Gain a multiplicative +1.5% Reload speed bonus."
+	}
+	"Iberia's Last Hope Up"
+	{
+		"en" 		"Iberia's Last Hope Sparkle"
+	}
+	"Iberia's Last Hope Up Desc"
+	{
+		"en" 		"Gain a multiplicative +1.0% Attackspeed speed bonus."
+	}
+	"Calmaticus Heart Up"
+	{
+		"en" 		"Calmaticus Heart Up"
+	}
+	"Calmaticus Heart Up Desc"
+	{
+		"en" 		"Gain an extra 0.25 Hp regen a second."
+	}
+	"Xeno Vial Up"
+	{
+		"en" 		"Xeno Vial Up"
+	}
+	"Xeno Vial Up Desc"
+	{
+		"en" 		"Gain an extra 0.25 Hp regen a second."
+	}
+	"Building Hp Up 1"
+	{
+		"en" 		"Building Hp Up"
+	}
+	"Building Hp Up 1 Desc"
+	{
+		"en" 		"Your buildings gain a multiplicative +0.1% HP"
+	}
+	"Building Repair Up 1"
+	{
+		"en" 		"Building Repair Speed Up"
+	}
+	"Building Repair Up Desc"
+	{
+		"en" 		"Your Repairspeed gains a multiplicative +0.1% speed"
+	}
+	"Building Extra Damage Up 1"
+	{
+		"en" 		"Building Hp Up"
+	}
+	"Building Extra Damage Up 1 Desc"
+	{
+		"en" 		"Your buildings gain a multiplicative +0.1% Damage"
+	}
+	"Twirl Hairpin 1"
+	{
+		"en" 		"Twirls Magical Hairpin"
+	}
+	"Twirl Hairpin 1 Desc"
+	{
+		"en" 		"Gain 0.5% Extra mana Regen"
+	}
+	"Iberia Training"
+	{
+		"en" 		"Nemals Special Help"
+	}
+	"Iberia Training Desc"
+	{
+		"en" 		"Gain a multiplicative +1% Attackspeed and reload speed bonus."
 	}
 }
