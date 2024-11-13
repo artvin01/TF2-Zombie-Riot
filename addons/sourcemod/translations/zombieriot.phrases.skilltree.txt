@@ -1,18 +1,84 @@
 
 "Phrases"
 {
-	"Capacity"
+	"Luck Up 1"
 	{
-		"#format"	"{1:d}"
-		"en" 		"Capacity: [{1}]"
+		"en" 		"Luck Up"
 	}
-	"Zombie In Battle Logic Setting"
+	"Luck Up 1 Desc"
 	{
-		"#format"	"{1:.1f}"
-		"en"		"In Battle Time: [{1}]"
+		"en" 		"Gain an additional +0.005% chance to crit an enemy for 3x damage on any damage instance."
 	}
-	"Show Ragdoll Hint Message"
+	"Weapon Damage All 1"
 	{
-		"en"		"Please set, set ''g_ragdoll_fadespeed'' to NOT 0, in the console! any value higher then 0 works (1 is good enough, 600 is default)! If you dont do this, you WILL crash!"
+		"en" 		"Weapon Damage"
+	}
+	"Weapon Damage All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.1% damage buff to all weapons."
+	}
+	"Weapon Damage All 1 High"
+	{
+		"en" 		"Weapon Damage High"
+	}
+	"Weapon Damage All 1 High Desc"
+	{
+		"en" 		"Gain a multiplicative +0.5% damage buff to all weapons."
+	}
+	"Attackspeed All 1"
+	{
+		"en" 		"Attack & Reloadspeed"
+	}
+	"Attackspeed All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.1% attackspeed & reload buff to all weapons."
+	}
+	"Attackspeed All 1 High"
+	{
+		"en" 		"Attack & Reloadspeed"
+	}
+	"Attackspeed All 1 High Desc"
+	{
+		"en" 		"Gain a multiplicative +0.5% attackspeed & reload buff to all weapons."
+	}
+	"Health Up 1"
+	{
+		"en" 		"Health Up"
+	}
+	"Health Up 1 Desc"
+	{
+		"en" 		"Gain a +1 HP"
+	}
+	"Health Up 1 High"
+	{
+		"en" 		"Health Up"
+	}
+	"Health Up 1 High Desc"
+	{
+		"en" 		"Gain a +5 HP"
+	}
+	"Resist 1"
+	{
+		"en" 		"Total Resistance"
+	}
+	"Resist 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.01% Resistance to all sources"
+	}
+	"Cash Up 1"
+	{
+		"en" 		"Extra Cash"
+	}
+	"Cash Up 1 Desc"
+	{
+		"en" 		"Gain +2 Extra Cash"
+	}
+	"Cash Up 1 High"
+	{
+		"en" 		"Extra Cash"
+	}
+	"Cash Up 1 High Desc"
+	{
+		"en" 		"Gain +20 Extra Cash"
 	}
 }
