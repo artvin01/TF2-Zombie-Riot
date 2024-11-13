@@ -54,6 +54,7 @@ public void SkillPlayer_BobHandUp(int client, StringMap map, int amount)
 	PlayerAdd(map, "26", amount * 25);
 	PlayerAdd(map, "4030", amount * 0.0005);
 	PlayerMulti(map, "286", amount * 0.01);
+	PlayerAdd(map, "4033", amount * 5);
 }
 
 public void SkillPlayer_LuckUp(int client, StringMap map, int amount)
@@ -113,4 +114,27 @@ public void SkillPlayer_ExtraDamageBuilding(int client, StringMap map, int amoun
 {
 	// 0.1 every skill up
 	PlayerMulti(map, "287", amount * 0.001);
+}
+
+public void SkillPlayer_RecieveExtraHealing(int client, StringMap map, int amount)
+{
+	// 0.1 every skill up
+	PlayerMulti(map, "526", amount * 0.001);
+}
+
+public void SkillPlayer_RecieveExtraHealingHigh(int client, StringMap map, int amount)
+{
+	// 0.5 every skill up
+	PlayerMulti(map, "526", amount * 0.005);
+}
+
+public void SkillPlayer_ReviveTimeReduce(int client, StringMap map, int amount)
+{
+	// 1 every skill up
+	PlayerAdd(map, "4033", amount);
+}
+public void SkillPlayer_ReviveTimeReduceHigh(int client, StringMap map, int amount)
+{
+	// 5 every skill up
+	PlayerAdd(map, "4033", amount * 5);
 }

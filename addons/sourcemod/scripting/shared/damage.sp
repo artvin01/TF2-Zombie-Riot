@@ -1595,7 +1595,7 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 	float CritChance = Attributes_FindOnPlayerZR(client, Attrib_CritChance, true, 0.0, true, true);	// MELEE damage resistance
 	if(CritChance && GetRandomFloat(0.0, 1.0) < (CritChance))
 	{
-		damage *= 3.0;
+		damage *= 2.0;
 		DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 	}
 

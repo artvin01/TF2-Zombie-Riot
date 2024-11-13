@@ -7,7 +7,7 @@
 	}
 	"Luck Up 1 Desc"
 	{
-		"en" 		"Gain an additional +0.005% chance to crit an enemy for 3x damage on any damage instance."
+		"en" 		"Gain an additional +0.005% chance to crit an enemy for 2x damage on any damage instance."
 	}
 	"Weapon Damage All 1"
 	{
@@ -159,7 +159,7 @@
 	}
 	"Bob's Healing Hand Desc"
 	{
-		"en" 		"Gain a 25 HP.\nAn additional +0.05% luck and 1% building HP"
+		"en" 		"Gain a 25 HP.\nAn additional +0.05% luck and 1% building HP and reduces revive time by 5 out of 250"
 	}
 	"Blitzkrieg Buff"
 	{
@@ -240,5 +240,37 @@
 	"Iberia Training Desc"
 	{
 		"en" 		"Gain a multiplicative +1% Attackspeed and reload speed bonus."
+	}
+	"Extra Healing Up"
+	{
+		"en" 		"Extra Healing Up"
+	}
+	"Extra Healing Up Desc"
+	{
+		"en" 		"Gain a multiplicative +0.1% Extra Healing from all sources."
+	}
+	"Extra Healing Up High"
+	{
+		"en" 		"Extra Healing Up High"
+	}
+	"Extra Healing Up High Desc"
+	{
+		"en" 		"Gain a multiplicative +0.5% Extra Healing from all sources."
+	}
+	"ReviveTime Reduce"
+	{
+		"en" 		"Revive Time Down"
+	}
+	"ReviveTime Reduce Desc"
+	{
+		"en" 		"Reduce your revive time by 1 out of 250"
+	}
+	"ReviveTime Reduce High"
+	{
+		"en" 		"Revive Time Down High"
+	}
+	"ReviveTime Reduce High Desc"
+	{
+		"en" 		"Reduce your revive time by 5 out of 250"
 	}
 }
