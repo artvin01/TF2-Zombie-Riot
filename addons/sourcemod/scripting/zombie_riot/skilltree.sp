@@ -671,3 +671,6 @@ static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
 
 	return 0;
 }
+
+#include "zombie_riot/skilltree/player.sp"
+#include "zombie_riot/skilltree/weapon.sp"
