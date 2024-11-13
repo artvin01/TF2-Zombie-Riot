@@ -46,7 +46,7 @@ public void SkillPlayer_AlaxiosResUp(int client, StringMap map, int amount)
 {
 	// +1.0% every X
 	PlayerMulti(map, "412", float(amount) * -0.01);
-	PlayerAdd(map, "26", amount * 15);
+	PlayerAdd(map, "26", float(amount) * 15.0);
 }
 public void SkillPlayer_BobHandUp(int client, StringMap map, int amount)
 {
