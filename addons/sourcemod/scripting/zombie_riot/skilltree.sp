@@ -137,6 +137,7 @@ StringMap SkillTree_GetMap(int client)
 
 			strcopy(id, sizeof(id), skill.Id);
 			amount = skill.Owned[client];
+			delete snap;
 			return true;
 		}
 
@@ -148,5 +149,79 @@ StringMap SkillTree_GetMap(int client)
 
 void SkillTree_ApplyAttribs(int client, StringMap map)
 {
-	
+	if(SkillList && SkillCount[client])
+	{
+		StringMapSnapshot snap = SkillCount[client].Snapshot();
+		
+		int length = snap.Length;
+		for(int i; i < length; i++)
+		{
+			int size = snap.KeyBufferSize(i);
+			char[] name = new char[size];
+			snap.GetKey(i, name, size);
+			SkillCount[client].GetValue(name, size);
+
+			static Skill skill;
+			SkillList.GetArray(name, skill);
+			if(skill.Player != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, skill.Player);
+				Call_PushCell(client);
+				Call_PushCell(map);
+				Call_PushCell(size);
+				Call_Finish();
+			}
+		}
+
+		delete snap;
+	}
+}
+
+void SkillTree_GiveItem(int client, int weapon)
+{
+	if(SkillList && SkillCount[client])
+	{
+		StringMap map;
+		StringMapSnapshot snap = SkillCount[client].Snapshot();
+		
+		int length = snap.Length;
+		for(int i; i < length; i++)
+		{
+			int size = snap.KeyBufferSize(i);
+			char[] name = new char[size];
+			snap.GetKey(i, name, size);
+			SkillCount[client].GetValue(name, size);
+
+			static Skill skill;
+			SkillList.GetArray(name, skill);
+			if(skill.Weapon != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, skill.Weapon);
+				Call_PushCell(weapon);
+				Call_PushCell(map);
+				Call_PushCell(size);
+				Call_PushCell(client);
+				Call_Finish();
+			}
+		}
+
+		delete snap;
+
+		snap = map.Snapshot();
+		
+		float value;
+		length = snap.Length;
+		for(int i; i < length; i++)
+		{
+			int size = snap.KeyBufferSize(i);
+			char[] name = new char[size];
+			snap.GetKey(i, name, size);
+			
+			map.GetValue(name, value);
+			Attributes_SetMulti(entity, StringToInt(name), value);
+		}
+
+		delete snap;
+		delete map;
+	}
 }

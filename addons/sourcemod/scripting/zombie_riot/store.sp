@@ -4791,6 +4791,7 @@ void Store_ApplyAttribs(int client)
 	i_SoftShoes[client] = 0;
 	i_BadHealthRegen[client] = 0;
 
+	SkillTree_ApplyAttribs(client, map);
 	Rogue_ApplyAttribs(client, map);
 	Waves_ApplyAttribs(client, map);
 	FullMoonDoubleHp(client, map);
@@ -5747,6 +5748,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			b_WeaponSpecificClassBuff[entity][i] = false;
 		}
 
+		SkillTree_GiveItem(client, entity);
 		Rogue_GiveItem(client, entity);
 		Waves_GiveItem(entity);
 
