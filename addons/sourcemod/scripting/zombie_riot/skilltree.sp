@@ -21,7 +21,7 @@ enum struct Skill
 	int MinNeed;
 	int Cost;
 
-	int Parent[32];
+	char Parent[32];
 	int Dir;
 	
 	void SetupKV(KeyValues kv)
@@ -83,7 +83,7 @@ static void CfgSetup(const char[] intParent, KeyValues kv, int intDir)
 	skill.Dir = intDir;
 	skill.SetupKV(kv);
 
-	SkillList.SetArray(parent, skill);
+	SkillList.SetArray(parent, skill, sizeof(skill));
 	
 	if(kv.GotoFirstSubKey())
 	{
@@ -162,7 +162,7 @@ void SkillTree_ApplyAttribs(int client, StringMap map)
 			SkillCount[client].GetValue(name, size);
 
 			static Skill skill;
-			SkillList.GetArray(name, skill);
+			SkillList.GetArray(name, skill, sizeof(skill));
 			if(skill.Player != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, skill.Player);
@@ -193,7 +193,7 @@ void SkillTree_GiveItem(int client, int weapon)
 			SkillCount[client].GetValue(name, size);
 
 			static Skill skill;
-			SkillList.GetArray(name, skill);
+			SkillList.GetArray(name, skill, sizeof(skill));
 			if(skill.Weapon != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, skill.Weapon);
