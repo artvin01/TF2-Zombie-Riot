@@ -12,8 +12,6 @@ enum
 	Attrib_FormRes = 4028,
 	Attrib_OverrideExplodeDmgRadiusFalloff = 4029,
 	Attrib_CritChance = 4030,
-	Attrib_ExtraCash = 4031,
-	Attrib_ExtraRogueCoins = 4032,
 	Attrib_ReviveTimeCut = 4033,
 	Attrib_ExtendExtraCashGain = 4034
 }

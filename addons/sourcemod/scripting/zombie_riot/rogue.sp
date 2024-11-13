@@ -1004,14 +1004,9 @@ void Rogue_NextProgress()
 			{
 				if(IsClientInGame(client) && GetClientTeam(client) == 2)
 				{
-					//int cash = StartCash - (Resupplies_Supplied[client] * 10);
-					//if(CashSpent[client] < cash)
-					//	CashSpent[client] = cash;
-					//
-					//CashSpent[client] -= StartCash;
-
-					if(Level[client] > highestLevel)
-						highestLevel = Level[client];
+					int amount = SkillTree_GetByName(client, "Ingot Up 1");
+					if(amount > highestLevel)
+						highestLevel = amount;
 				}
 			}
 
@@ -1021,15 +1016,7 @@ void Rogue_NextProgress()
 			CurrentCount = -1;
 			delete CurrentExclude;
 
-			int startingIngots = (highestLevel + 80) / 10;
-			if(startingIngots < 8)
-			{
-				startingIngots = 8;
-			}
-			else if(startingIngots > 16)
-			{
-				startingIngots = 16;
-			}
+			int startingIngots = highestLevel + 8;
 
 			Rogue_AddIngots(startingIngots, true);
 

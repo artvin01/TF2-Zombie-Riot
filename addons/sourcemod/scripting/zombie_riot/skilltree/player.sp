@@ -68,38 +68,6 @@ public void SkillPlayer_HealthUpHigh(int client, StringMap map, int amount)
 	PlayerAdd(map, "26", float(amount) * 5.0);
 }
 
-public void SkillPlayer_CashUp(int client, StringMap map, int amount)
-{
-	// +2 every X
-	int PLEASE_ADD_THIS_ATTRIB_FOR_EXTRA_CASH;
-	PlayerAdd(map, "4031", float(amount) * 2.0);
-}
-public void SkillPlayer_CashUpInfinite(int client, StringMap map, int amount)
-{
-	// +0.2 every X
-	int PLEASE_ADD_THIS_ATTRIB_FOR_EXTRA_CASH;
-	PlayerAdd(map, "4031", float(amount) * 0.2);
-}
-
-public void SkillPlayer_CashUpHigh(int client, StringMap map, int amount)
-{
-	// +20 every X
-	int PLEASE_ADD_THIS_ATTRIB_FOR_EXTRA_CASH;
-	PlayerAdd(map, "4031", float(amount) * 20.0);
-}
-public void SkillPlayer_CashUpHighBarney(int client, StringMap map, int amount)
-{
-	// +30 every X
-	int PLEASE_ADD_THIS_ATTRIB_FOR_EXTRA_CASH;
-	PlayerAdd(map, "4031", float(amount) * 30.0);
-}
-
-public void SkillPlayer_ExtraCoinLow(int client, StringMap map, int amount)
-{
-	// +1 every X
-	int MAKE_ME_WORK_PLEASE;
-	PlayerAdd(map, "4032", float(amount));
-}
 public void SkillPlayer_ExtraBuildingHP(int client, StringMap map, int amount)
 {
 	// 0.1 every skill up

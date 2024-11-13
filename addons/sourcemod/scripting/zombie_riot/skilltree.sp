@@ -116,8 +116,11 @@ static bool CfgSetup(const char[] intParent, KeyValues kv, int intDir)
 		{
 			if(!CfgSetup(parent, kv, dir))
 				continue;
-
+			
 			dir++;
+			if(dir >= DIR_MAX)
+				dir = 0;
+			
 			if(ReverseDir(intDir) == dir)	// Backwards
 				dir++;
 			
@@ -253,6 +256,29 @@ void SkillTree_GiveItem(int client, int weapon)
 		delete snap;
 		delete map;
 	}
+}
+
+int SkillTree_GetByName(int client, const char[] name)
+{
+	int amount;
+
+	int length = SkillCountSnap[client].Length;
+	for(int i; i < length; i++)
+	{
+		int size = SkillCountSnap[client].KeyBufferSize(i);
+		char[] name = new char[size];
+		SkillCountSnap[client].GetKey(i, name, size);
+
+		static Skill skill;
+		SkillList.GetArray(name, skill, sizeof(skill));
+		if(StrEqual(skill.Name, name))
+		{
+			SkillCount[client].GetValue(name, size);
+			amount += size;
+		}
+	}
+
+	return amount;
 }
 
 void SkillTree_CalcSkillPoints(int client)
