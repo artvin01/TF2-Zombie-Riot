@@ -2309,32 +2309,34 @@ void GiveXP(int client, int xp)
 		SetGlobalTransTarget(client);
 		PrintToChat(client, "%t", "Level Up", nextLevel);
 		
-		bool found;
+		int SkillPointsGive = 0;
 		
 		while(XP[client] >= XpToLevel(client))
 		{
-
 			XP[client] -= XpToLevel(client);
 			
 			Level[client]++;
+			SkillPointsGive += 3;
 
 			if(Level[client] == STARTER_WEAPON_LEVEL)
 			{
 				CPrintToChat(client, "%t", "All Weapons Unlocked");
-				found = true;
 			}
 			
 			if(Store_PrintLevelItems(client, Level[client]))
-				found = true;
 		}
+		CPrintToChat(client, "%t", "Current Skill Points", ZRCore_SkillPointsCurrent(client));
+
 		
-		if(!found)
-		{
-			PrintToChat(client, "%t", "None");
-		}
 	}
 }
 
+int ZRCore_SkillPointsCurrent(int client)
+{
+	//3 each level
+	int DO_CODE_FOR_SKILLPOINTS;
+	return 10;
+}
 
 void PlayerApplyDefaults(int client)
 {

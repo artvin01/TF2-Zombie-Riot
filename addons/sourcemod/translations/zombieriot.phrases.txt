@@ -92,6 +92,11 @@
 		"nl"		"Krediet: {1} (+{2})"
 		"chi"		"现金: {1} (+{2})"
 	}
+	"Current Skill Points"
+	{
+		"#format"	"{1:d}"
+		"en"		"Current Skillpoints: {1}"
+	}
 	"Credits_Menu_New"
 	{
 		"#format"	"{1:d}"
