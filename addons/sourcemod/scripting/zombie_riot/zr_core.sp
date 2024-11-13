@@ -426,6 +426,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/music.sp"
 #include "zombie_riot/natives.sp"
 #include "zombie_riot/queue.sp"
+#include "zombie_riot/skilltree.sp"
 #include "zombie_riot/spawns.sp"
 #include "zombie_riot/store.sp"
 #include "zombie_riot/teuton_sound_override.sp"
@@ -2245,16 +2246,21 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 	Music_EndLastmann();
 	CheckAlivePlayers();
 }
+#define MAX_XP_FOR_LEVEL 1000
 
-int XpToLevel(int xp)
+int XpToLevel(int client)
 {
-	return RoundToFloor(Pow(xp / 200.0, 0.5));
+	int XpForLevel = 100;
+
+	XpForLevel = float(XpForLevel) * (float(Level[client]) * 0.1);
+
+	if(XpForLevel > MAX_XP_FOR_LEVEL)
+	{
+		XpForLevel = MAX_XP_FOR_LEVEL;
+	}
+	return XpForLevel;
 }
 
-int LevelToXp(int lv)
-{
-	return lv * lv * 200;
-}
 
 float XpFloatGive[MAXTF2PLAYERS];
 
@@ -2291,8 +2297,7 @@ void GiveXP(int client, int xp)
 
 	XP[client] += XpGive;
 
-	int nextLevel = XpToLevel(XP[client]);
-	if(nextLevel > Level[client])
+	if(XP[client] >= XpToLevel(client))
 	{
 		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
 		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
@@ -2305,10 +2310,12 @@ void GiveXP(int client, int xp)
 		PrintToChat(client, "%t", "Level Up", nextLevel);
 		
 		bool found;
-		int slots;
 		
-		while(Level[client] < nextLevel)
+		while(XP[client] >= XpToLevel(client))
 		{
+
+			XP[client] -= XpToLevel(client);
+			
 			Level[client]++;
 
 			if(Level[client] == STARTER_WEAPON_LEVEL)
@@ -2319,22 +2326,9 @@ void GiveXP(int client, int xp)
 			
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
-			
-			if(Level[client] > STARTER_WEAPON_LEVEL && !(Level[client] % 2))
-				slots++;
-			
-			if(Level[client] < 81 && !(Level[client] % 10))
-			{
-				CPrintToChat(client, "%t", "Additional Starting Ingot", (Level[client] + 70) / 10, (Level[client] + 80) / 10);
-				found = true;
-			}
 		}
 		
-		if(slots)
-		{
-			PrintToChat(client, "%t", "Loadout Slots", slots);
-		}
-		else if(!found)
+		if(!found)
 		{
 			PrintToChat(client, "%t", "None");
 		}

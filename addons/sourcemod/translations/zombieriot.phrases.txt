@@ -2168,15 +2168,6 @@
 		"nl"		"Wees zeker dat je naam onder de 32 karakters is en geen speciale tekens bevat"
 		"chi"       "请确保您的名字不超过32个字符，并且不包含特殊字符"
 	}
-	"Loadout Slots"
-	{
-		"#format"	"{1:d}"
-		"en"		"{1} Loadout Slot(s)"
-		"fr"		"{1} Espace(s) de Chargement"
-		"ru"		"Ячеек снаряжения: {1}"
-		"pt"		"Vagas para Loadout: {1}"
-		"nl"		"{1} Loadout Slot(en)"
-	}
 	"All Weapons Unlocked"
 	{
 		"en"		"{pink}All weapons and upgrades are unlocked to buy!"

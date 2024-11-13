@@ -15,7 +15,8 @@ enum struct Skill
 {
 	char Name[32];
 	char Key[32];
-	Function Func;
+	Function FuncPlayer;
+	Function FuncWeapon;
 	int MaxCap;
 	int MinNeed;
 	int Cost;
@@ -41,7 +42,8 @@ enum struct Skill
 		}
 
 		kv.GetString("key", this.Key, 32);
-		this.Func = KvGetFunction(kv, "func");
+		this.FuncPlayer = KvGetFunction(kv, "func_player");
+		this.FuncWeapon = KvGetFunction(kv, "func_weapon");
 		this.Cost = kv.GetNum("cost", 1);
 		this.MaxCap = kv.GetNum("max", 1);
 		this.MinNeed = kv.GetNum("min", -1);
@@ -143,3 +145,5 @@ StringMap SkillTree_GetMap(int client)
 	*/
 	return SkillCount[client];
 }
+
+void Store_Get

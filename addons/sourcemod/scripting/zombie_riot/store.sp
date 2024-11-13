@@ -4365,7 +4365,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
-
+//anymore then 10 slots iss overkill.
+#define MAX_LOADOUT_SLOTS 10
 static void LoadoutPage(int client, bool last = false)
 {
 	SetGlobalTransTarget(client);
@@ -4390,8 +4391,8 @@ static void LoadoutPage(int client, bool last = false)
 		FormatEx(buffer, sizeof(buffer), "%t", "None");
 		menu.AddItem("", buffer, ITEMDRAW_DISABLED);
 	}
-	
-	int slots = (Level[client] + 1 - STARTER_WEAPON_LEVEL) / 2;
+
+	int slots = MAX_LOADOUT_SLOTS;
 	if(slots > length)
 	{
 		menu.SetTitle("%t\n%t\n \n%t", "TF2: Zombie Riot", "Loadouts", "Save New");
@@ -4402,7 +4403,7 @@ static void LoadoutPage(int client, bool last = false)
 	}
 	
 	menu.ExitBackButton = true;
-	if(menu.DisplayAt(client, last ? (length / 7 * 7) : 0, MENU_TIME_FOREVER) && (Level[client] / 2) > length)
+	if(menu.DisplayAt(client, last ? (length / 7 * 7) : 0, MENU_TIME_FOREVER) && (MAX_LOADOUT_SLOTS) > length)
 		InLoadoutMenu[client] = true;
 }
 
