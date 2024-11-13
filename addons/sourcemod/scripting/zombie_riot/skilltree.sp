@@ -6,9 +6,9 @@
 enum
 {
 	RIGHT = 0,
-	DOWN = 1,
-	LEFT = 2,
-	UP = 3,
+	DOWN,
+	LEFT,
+	UP,
 
 	DIR_MAX
 }
@@ -68,6 +68,7 @@ static StringMap SkillCount[MAXTF2PLAYERS];
 static StringMapSnapshot SkillCountSnap[MAXTF2PLAYERS];
 static char Selected[MAXTF2PLAYERS][32];
 static bool InMenu[MAXTF2PLAYERS];
+static bool CanAccess[MAXTF2PLAYERS][DIR_MAX+1];
 static int PointsSpent[MAXTF2PLAYERS];
 
 void SkillTree_PluginStart()
@@ -159,7 +160,6 @@ void SkillTree_AddNext(int client, const char[] id, int amount)
 	if(!SkillCount[client])
 		SkillCount[client] = new StringMap();
 	
-	PrintToChatAll("Load %s:%d", id, amount);
 	SkillCount[client].SetValue(id, amount);
 	PointsSpent[client] = -1;
 
@@ -178,7 +178,6 @@ bool SkillTree_GetNext(int client, int &i, char id[32], int &amount)
 		{
 			SkillCountSnap[client].GetKey(i, id, sizeof(id));
 			SkillCount[client].GetValue(id, amount);
-			PrintToChatAll("Save %s:%d", id, amount);
 			return true;
 		}
 	}
@@ -219,7 +218,7 @@ void SkillTree_GiveItem(int client, int weapon)
 {
 	if(CvarSkillPoints.BoolValue && SkillList && SkillCount[client])
 	{
-		StringMap map;
+		StringMap map = new StringMap();
 
 		if(!SkillCountSnap[client])
 			SkillCountSnap[client] = SkillCount[client].Snapshot();
@@ -341,7 +340,8 @@ bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 	else if(vel[0] > 250.0)
 	{
 		holding[client][UP] = true;
-		FakeClientCommand(client, "menuselect 2");
+		if(CanAccess[client][UP])
+			FakeClientCommand(client, "menuselect 2");
 	}
 	
 	if(holding[client][DOWN])
@@ -352,7 +352,8 @@ bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 	else if(vel[0] < -250.0)
 	{
 		holding[client][DOWN] = true;
-		FakeClientCommand(client, "menuselect 4");
+		if(CanAccess[client][DOWN])
+			FakeClientCommand(client, "menuselect 4");
 	}
 
 	if(holding[client][RIGHT])
@@ -363,7 +364,8 @@ bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 	else if(vel[1] > 250.0)
 	{
 		holding[client][RIGHT] = true;
-		FakeClientCommand(client, "menuselect 5");
+		if(CanAccess[client][RIGHT])
+			FakeClientCommand(client, "menuselect 5");
 	}
 	
 	if(holding[client][LEFT])
@@ -374,7 +376,8 @@ bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 	else if(vel[1] < -250.0)
 	{
 		holding[client][LEFT] = true;
-		FakeClientCommand(client, "menuselect 3");
+		if(CanAccess[client][LEFT])
+			FakeClientCommand(client, "menuselect 3");
 	}
 	
 	if(holding[client][DIR_MAX])
@@ -385,7 +388,8 @@ bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 	else if(buttons & IN_JUMP)
 	{
 		holding[client][DIR_MAX] = true;
-		FakeClientCommand(client, "menuselect 1");
+		if(CanAccess[client][DIR_MAX])
+			FakeClientCommand(client, "menuselect 1");
 	}
 
 	buttons = 0;
@@ -540,7 +544,7 @@ static void TreeMenu(int client)
 	int charge;
 	SkillCount[client].GetValue(Selected[client], charge);
 
-	bool access[4];
+	Zero(CanAccess);
 	char names[4][32], buffers[4][48];
 	int length = SkillListSnap.Length;
 	for(int i; i < length; i++)
@@ -577,7 +581,7 @@ static void TreeMenu(int client)
 			{
 				size = 0;
 				SkillCount[client].GetValue(name, size);
-				access[dir] = true;
+				CanAccess[dir] = true;
 				
 				if(skill2.MaxCap > 1)
 				{
@@ -599,7 +603,7 @@ static void TreeMenu(int client)
 	{
 		Format(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[LEFT],
 								ArrowH[skill.Dir == RIGHT ? 1 : 0],
-								access[LEFT] ? "A" : "  ",
+								CanAccess[LEFT] ? "A" : "  ",
 								ArrowH[skill.Dir == RIGHT ? 1 : 0]);
 	}
 	else
@@ -646,7 +650,7 @@ static void TreeMenu(int client)
 	{
 		Format(buffer, sizeof(buffer), "%s %s [%s] %s %s", buffer,
 								ArrowH[skill.Dir == LEFT ? 0 : 1],
-								access[RIGHT] ? "D" : "  ",
+								CanAccess[RIGHT] ? "D" : "  ",
 								ArrowH[skill.Dir == LEFT ? 0 : 1],
 								buffers[RIGHT]);
 	}
@@ -657,7 +661,7 @@ static void TreeMenu(int client)
 		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s", leftBuffer[1], buffers[UP],
 											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
 											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
-											leftBuffer[0], access[UP] ? "W" : "  ",
+											leftBuffer[0], CanAccess[UP] ? "W" : "  ",
 											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
 											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
 											buffer);
@@ -673,7 +677,7 @@ static void TreeMenu(int client)
 		Format(buffer, sizeof(buffer), "%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s%s", buffer,
 											leftBuffer[0], skill.Dir == UP ? "^" : "v",
 											leftBuffer[0], skill.Dir == UP ? "^" : "v",
-											leftBuffer[0], access[DOWN] ? "S" : "  ",
+											leftBuffer[0], CanAccess[DOWN] ? "S" : "  ",
 											leftBuffer[0], skill.Dir == UP ? "^" : "v",
 											leftBuffer[0], skill.Dir == UP ? "^" : "v",
 											leftBuffer[2], buffers[DOWN]);
@@ -716,11 +720,13 @@ static void TreeMenu(int client)
 		Format(buffer, sizeof(buffer), "%t", "Unlocked");
 	}
 
+	CanAccess[DIR_MAX] = upgrade;
+
 	menu.AddItem(NULL_STRING, buffer, upgrade ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem(names[UP], "W", access[UP] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-	menu.AddItem(names[LEFT], "A", access[LEFT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-	menu.AddItem(names[DOWN], "S", access[DOWN] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-	menu.AddItem(names[RIGHT], "D", access[RIGHT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+	menu.AddItem(names[UP], "W", CanAccess[UP] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+	menu.AddItem(names[LEFT], "A", CanAccess[LEFT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+	menu.AddItem(names[DOWN], "S", CanAccess[DOWN] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+	menu.AddItem(names[RIGHT], "D", CanAccess[RIGHT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
 
 	InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
 }
