@@ -126,7 +126,7 @@ static bool CfgSetup(const char[] intParent, KeyValues kv, int intDir)
 
 			if(dir == intDir)
 			{
-				LogError("\"%s\" skill has too many subtrees", skill.Name);
+				LogError("\"%s\" skill has too many subtrees", parent);
 				break;
 			}
 		}
