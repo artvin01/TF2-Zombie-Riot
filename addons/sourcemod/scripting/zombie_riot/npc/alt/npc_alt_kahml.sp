@@ -145,9 +145,9 @@ public void Kahmlstein_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Kahmlstein(client, vecPos, vecAng, ally);
+	return Kahmlstein(vecPos, vecAng, team);
 }
 
 methodmap Kahmlstein < CClotBody
@@ -231,7 +231,7 @@ methodmap Kahmlstein < CClotBody
 
 	}
 	
-	public Kahmlstein(int client, float vecPos[3], float vecAng[3], int ally)
+	public Kahmlstein(float vecPos[3], float vecAng[3], int ally)
 	{
 		Kahmlstein npc = view_as<Kahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "15000", ally, false, true));
 		

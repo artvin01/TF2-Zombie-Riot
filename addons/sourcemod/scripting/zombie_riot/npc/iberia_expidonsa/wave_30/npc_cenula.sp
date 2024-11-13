@@ -60,9 +60,9 @@ void IberiaCenula_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaCenula(client, vecPos, vecAng, ally);
+	return IberiaCenula(vecPos, vecAng, team);
 }
 methodmap IberiaCenula < CClotBody
 {
@@ -107,7 +107,7 @@ methodmap IberiaCenula < CClotBody
 	}
 	
 	
-	public IberiaCenula(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaCenula(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaCenula npc = view_as<IberiaCenula>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2000", ally));
 		

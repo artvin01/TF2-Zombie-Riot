@@ -82,9 +82,9 @@ void MedivalHandCannoneer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalHandCannoneer(client, vecPos, vecAng, ally);
+	return MedivalHandCannoneer(vecPos, vecAng, team);
 }
 methodmap MedivalHandCannoneer < CClotBody
 {
@@ -146,7 +146,7 @@ methodmap MedivalHandCannoneer < CClotBody
 		
 	}
 	
-	public MedivalHandCannoneer(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalHandCannoneer(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		SetVariantInt(1);

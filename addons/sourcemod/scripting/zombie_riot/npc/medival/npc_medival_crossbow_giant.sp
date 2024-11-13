@@ -74,9 +74,9 @@ void MedivalCrossbowGiant_OnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalCrossbowGiant(client, vecPos, vecAng, ally);
+	return MedivalCrossbowGiant(vecPos, vecAng, team);
 }
 methodmap MedivalCrossbowGiant < CClotBody
 {
@@ -138,7 +138,7 @@ methodmap MedivalCrossbowGiant < CClotBody
 		
 	}
 	
-	public MedivalCrossbowGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalCrossbowGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalCrossbowGiant npc = view_as<MedivalCrossbowGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", ally, false, true));
 		SetVariantInt(1);

@@ -293,7 +293,7 @@ methodmap TheGambler < CClotBody
 		
 	}
 	
-	public TheGambler(int client, float vecPos[3], float vecAng[3], int ally)
+	public TheGambler(float vecPos[3], float vecAng[3], int ally)
 	{
 		TheGambler npc = view_as<TheGambler>(CClotBody(vecPos, vecAng, GAMBLERMODEL, "1.0", "180000", ally));
 		

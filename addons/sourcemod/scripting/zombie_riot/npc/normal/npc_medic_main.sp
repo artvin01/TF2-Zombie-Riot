@@ -54,9 +54,9 @@ void MedicMain_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedicMain(client, vecPos, vecAng, ally);
+	return MedicMain(vecPos, vecAng, team);
 }
 
 methodmap MedicMain < CClotBody
@@ -110,7 +110,7 @@ methodmap MedicMain < CClotBody
 	
 	
 	
-	public MedicMain(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedicMain(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedicMain npc = view_as<MedicMain>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		

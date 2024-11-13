@@ -52,9 +52,9 @@ void VoudExpidonsanCleaner_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoudExpidonsanCleaner(client, vecPos, vecAng, ally);
+	return VoudExpidonsanCleaner(vecPos, vecAng, team);
 }
 methodmap VoudExpidonsanCleaner < CClotBody
 {
@@ -94,7 +94,7 @@ methodmap VoudExpidonsanCleaner < CClotBody
 	}
 	
 	
-	public VoudExpidonsanCleaner(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoudExpidonsanCleaner(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoudExpidonsanCleaner npc = view_as<VoudExpidonsanCleaner>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "6000", ally));
 		

@@ -48,9 +48,9 @@ void Benera_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Benera(client, vecPos, vecAng, ally);
+	return Benera(vecPos, vecAng, team);
 }
 
 methodmap Benera < CClotBody
@@ -87,7 +87,7 @@ methodmap Benera < CClotBody
 	}
 	
 	
-	public Benera(int client, float vecPos[3], float vecAng[3], int ally)
+	public Benera(float vecPos[3], float vecAng[3], int ally)
 	{
 		Benera npc = view_as<Benera>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "350", ally));
 

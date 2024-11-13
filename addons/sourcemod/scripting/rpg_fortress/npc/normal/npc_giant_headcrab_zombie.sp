@@ -69,9 +69,9 @@ public void GiantHeadcrabZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return GiantHeadcrabZombie(client, vecPos, vecAng, ally);
+	return GiantHeadcrabZombie(vecPos, vecAng, team);
 }
 
 methodmap GiantHeadcrabZombie < CClotBody
@@ -111,7 +111,7 @@ methodmap GiantHeadcrabZombie < CClotBody
 	}
 	
 	
-	public GiantHeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public GiantHeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		GiantHeadcrabZombie npc = view_as<GiantHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.85", "300", ally, false, true));
 		

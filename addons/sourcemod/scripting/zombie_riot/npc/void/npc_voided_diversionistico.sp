@@ -60,9 +60,9 @@ void VoidedDiversionistico_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return VoidedDiversionistico(client, vecPos, vecAng, ally, data);
+	return VoidedDiversionistico(vecPos, vecAng, team, data);
 }
 methodmap VoidedDiversionistico < CClotBody
 {
@@ -114,7 +114,7 @@ methodmap VoidedDiversionistico < CClotBody
 		
 	}
 
-	public VoidedDiversionistico(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VoidedDiversionistico(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VoidedDiversionistico npc = view_as<VoidedDiversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, false, true));
 		

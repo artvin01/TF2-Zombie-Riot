@@ -63,9 +63,9 @@ public void Whiteflower_PrototypeDDT_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_PrototypeDDT(client, vecPos, vecAng, ally);
+	return Whiteflower_PrototypeDDT(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_PrototypeDDT < CClotBody
@@ -150,7 +150,7 @@ methodmap Whiteflower_PrototypeDDT < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public Whiteflower_PrototypeDDT(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_PrototypeDDT(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_PrototypeDDT npc = view_as<Whiteflower_PrototypeDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "300", ally, false, true));
 

@@ -79,9 +79,9 @@ public void The_Shit_Slapper_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return The_Shit_Slapper(client, vecPos, vecAng, ally);
+	return The_Shit_Slapper(vecPos, vecAng, team);
 }
 static int i_slap[MAXENTITIES];
 
@@ -136,7 +136,7 @@ methodmap The_Shit_Slapper < CClotBody
 	
 	
 	
-	public The_Shit_Slapper(int client, float vecPos[3], float vecAng[3], int ally)
+	public The_Shit_Slapper(float vecPos[3], float vecAng[3], int ally)
 	{
 		The_Shit_Slapper npc = view_as<The_Shit_Slapper>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "4.5", "500", ally, false));
 

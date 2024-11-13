@@ -72,11 +72,6 @@ stock float fClamp(float fValue, float fMin, float fMax)
 	return fValue;
 }
 
-stock Function ValToFunc(any val)
-{
-	return val;
-}
-
 stock int GetSpellbook(int client)
 {
 	int i, entity;

@@ -152,9 +152,9 @@ static void ClotPrecache()
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Nemal(client, vecPos, vecAng, ally, data);
+	return Nemal(vecPos, vecAng, team, data);
 }
 
 methodmap Nemal < CClotBody
@@ -354,7 +354,7 @@ methodmap Nemal < CClotBody
 	}
 	
 	
-	public Nemal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Nemal(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Nemal npc = view_as<Nemal>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;

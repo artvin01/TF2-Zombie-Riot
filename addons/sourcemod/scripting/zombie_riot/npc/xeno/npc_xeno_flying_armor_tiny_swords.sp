@@ -93,9 +93,9 @@ public void XenoFlyingArmorTiny_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoFlyingArmorTiny(client, vecPos, vecAng, ally);
+	return XenoFlyingArmorTiny(vecPos, vecAng, team);
 }
 
 methodmap XenoFlyingArmorTiny < CClotBody
@@ -172,7 +172,7 @@ methodmap XenoFlyingArmorTiny < CClotBody
 	}
 	
 	
-	public XenoFlyingArmorTiny(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoFlyingArmorTiny(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoFlyingArmorTiny npc = view_as<XenoFlyingArmorTiny>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.9", "180", ally));
 		SetVariantInt(1);

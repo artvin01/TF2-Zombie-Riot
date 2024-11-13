@@ -64,9 +64,9 @@ void Soldier_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Soldier(client, vecPos, vecAng, ally);
+	return Soldier(vecPos, vecAng, team);
 }
 methodmap Soldier < CClotBody
 {
@@ -127,7 +127,7 @@ methodmap Soldier < CClotBody
 		
 	}
 	
-	public Soldier(int client, float vecPos[3], float vecAng[3], int ally)
+	public Soldier(float vecPos[3], float vecAng[3], int ally)
 	{
 		Soldier npc = view_as<Soldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2000", ally));
 		

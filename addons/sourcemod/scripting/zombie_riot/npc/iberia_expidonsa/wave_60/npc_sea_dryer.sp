@@ -49,9 +49,9 @@ void IberiaSeaDryer_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaSeaDryer(client, vecPos, vecAng, ally);
+	return IberiaSeaDryer(vecPos, vecAng, team);
 }
 methodmap IberiaSeaDryer < CClotBody
 {
@@ -141,7 +141,7 @@ methodmap IberiaSeaDryer < CClotBody
 		return -1;
 	}
 
-	public IberiaSeaDryer(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaSeaDryer(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaSeaDryer npc = view_as<IberiaSeaDryer>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "12000", ally));
 		

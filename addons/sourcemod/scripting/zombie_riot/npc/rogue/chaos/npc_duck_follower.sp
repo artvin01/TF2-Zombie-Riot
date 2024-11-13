@@ -64,8 +64,8 @@ methodmap DuckFollower < CClotBody
 		func_NPCThink[npc.index] = ClotThink;
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		npc.m_bDissapearOnDeath = true;
-        npc.m_bisWalking = false;
-        npc.SetPlaybackRate(1.0);
+		npc.m_bisWalking = false;
+		npc.SetPlaybackRate(1.0);
 		
 		npc.m_flSpeed = 400.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -110,7 +110,7 @@ static void ClotThink(int iNPC)
 		{
 			// Close enough
 			npc.StopPathing();
-            f_BobDuckBuff[ally] = GetGameTime() + 3.0;
+			f_BobDuckBuff[ally] = GetGameTime() + 3.0;
 		}
 		else
 		{

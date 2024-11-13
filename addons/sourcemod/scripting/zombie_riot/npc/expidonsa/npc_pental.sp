@@ -54,9 +54,9 @@ void Pental_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Pental(client, vecPos, vecAng, ally);
+	return Pental(vecPos, vecAng, team);
 }
 
 methodmap Pental < CClotBody
@@ -98,7 +98,7 @@ methodmap Pental < CClotBody
 	}
 	
 	
-	public Pental(int client, float vecPos[3], float vecAng[3], int ally)
+	public Pental(float vecPos[3], float vecAng[3], int ally)
 	{
 		Pental npc = view_as<Pental>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "500", ally));
 		

@@ -66,9 +66,9 @@ void Spy_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Spy(client, vecPos, vecAng, ally);
+	return Spy(vecPos, vecAng, team);
 }
 methodmap Spy < CClotBody
 {
@@ -131,7 +131,7 @@ methodmap Spy < CClotBody
 	}
 	
 	
-	public Spy(int client, float vecPos[3], float vecAng[3], int ally)
+	public Spy(float vecPos[3], float vecAng[3], int ally)
 	{
 		Spy npc = view_as<Spy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "4000", ally));
 		

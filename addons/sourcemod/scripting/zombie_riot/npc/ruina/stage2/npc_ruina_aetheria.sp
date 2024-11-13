@@ -74,9 +74,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/sniper.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Aetheria(client, vecPos, vecAng, ally);
+	return Aetheria(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -172,7 +172,7 @@ methodmap Aetheria < CClotBody
 	}
 	
 	
-	public Aetheria(int client, float vecPos[3], float vecAng[3], int ally)
+	public Aetheria(float vecPos[3], float vecAng[3], int ally)
 	{
 		Aetheria npc = view_as<Aetheria>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1250", ally));
 

@@ -9,9 +9,9 @@ void OnMapStartCombineSwordsmen()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineSwordsman(client, vecPos, vecAng, ally);
+	return CombineSwordsman(vecPos, vecAng, team);
 }
 
 methodmap CombineSwordsman < CombineWarrior
@@ -21,7 +21,7 @@ methodmap CombineSwordsman < CombineWarrior
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	public CombineSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineSwordsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineSwordsman npc = view_as<CombineSwordsman>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		

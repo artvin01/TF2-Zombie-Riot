@@ -171,7 +171,7 @@ methodmap XenoCombineOverlord < CClotBody
 		
 	}
 	
-	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineOverlord(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_3.mdl", "1.0", "35000", ally));
 		

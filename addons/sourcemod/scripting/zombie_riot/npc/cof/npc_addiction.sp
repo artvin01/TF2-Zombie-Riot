@@ -62,9 +62,9 @@ static void ClotPrecache()
 	PrecacheModel("models/zombie_riot/aom/david_monster.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Addicition(client, vecPos, vecAng, ally, data);
+	return Addicition(vecPos, vecAng, team, data);
 }
 
 methodmap Addicition < CClotBody
@@ -104,7 +104,7 @@ methodmap Addicition < CClotBody
 		EmitCustomToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, 3.0);
 	}
 	
-	public Addicition(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Addicition(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/aom/david_monster.mdl", "1.15", data[0] == 'f' ? "250000" : "10000", ally, false, false, true));
 

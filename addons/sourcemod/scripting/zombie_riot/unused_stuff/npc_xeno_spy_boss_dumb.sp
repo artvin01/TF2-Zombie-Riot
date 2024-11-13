@@ -186,7 +186,7 @@ methodmap XenoSpyMainBoss < CClotBody
 		
 	}
 	
-	public XenoSpyMainBoss(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSpyMainBoss(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSpyMainBoss npc = view_as<XenoSpyMainBoss>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "500000", ally));
 		

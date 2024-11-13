@@ -72,9 +72,9 @@ public void Whiteflower_Ekas_Piloteer_OnMapStart_NPC()
 	PrecacheSound("weapons/sentry_rocket.wav");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_Ekas_Piloteer(client, vecPos, vecAng, ally);
+	return Whiteflower_Ekas_Piloteer(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_Ekas_Piloteer < CClotBody
@@ -150,7 +150,7 @@ methodmap Whiteflower_Ekas_Piloteer < CClotBody
 	}
 	
 	
-	public Whiteflower_Ekas_Piloteer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_Ekas_Piloteer(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_Ekas_Piloteer npc = view_as<Whiteflower_Ekas_Piloteer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 

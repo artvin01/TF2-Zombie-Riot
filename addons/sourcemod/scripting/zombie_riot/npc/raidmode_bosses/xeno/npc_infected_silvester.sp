@@ -156,9 +156,9 @@ void Silvester_TBB_Precahce()
 	PrecacheSoundCustom("#zombiesurvival/silvester_raid/silvester.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RaidbossSilvester(client, vecPos, vecAng, ally, data);
+	return RaidbossSilvester(vecPos, vecAng, team, data);
 }
 #define EMPOWER_SOUND "items/powerup_pickup_king.wav"
 #define EMPOWER_MATERIAL "materials/sprites/laserbeam.vmt"
@@ -275,7 +275,7 @@ methodmap RaidbossSilvester < CClotBody
 		
 		
 	}
-	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RaidbossSilvester(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossSilvester npc = view_as<RaidbossSilvester>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		

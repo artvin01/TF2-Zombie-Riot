@@ -83,9 +83,9 @@ void CombineOverlord_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineOverlord(client, vecPos, vecAng, ally);
+	return CombineOverlord(vecPos, vecAng, team);
 }
 methodmap CombineOverlord < CClotBody
 {
@@ -169,7 +169,7 @@ methodmap CombineOverlord < CClotBody
 		
 	}
 	
-	public CombineOverlord(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineOverlord(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineOverlord npc = view_as<CombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
 		SetVariantInt(3);

@@ -98,9 +98,9 @@ public void OriginalInfected_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return OriginalInfected(client, vecPos, vecAng, ally, data);
+	return OriginalInfected(vecPos, vecAng, team, data);
 }
 
 methodmap OriginalInfected < CClotBody
@@ -158,7 +158,7 @@ methodmap OriginalInfected < CClotBody
 	{
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public OriginalInfected(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public OriginalInfected(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		OriginalInfected npc = view_as<OriginalInfected>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "300", ally, false, true));
 		

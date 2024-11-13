@@ -10,7 +10,10 @@ enum
 	Attrib_SetArchetype = 4026,
 	Attrib_SetSecondaryDelayInf = 4027,
 	Attrib_FormRes = 4028,
-	Attrib_OverrideExplodeDmgRadiusFalloff = 4029
+	Attrib_OverrideExplodeDmgRadiusFalloff = 4029,
+	Attrib_CritChance = 4030,
+	Attrib_ReviveTimeCut = 4033,
+	Attrib_ExtendExtraCashGain = 4034
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

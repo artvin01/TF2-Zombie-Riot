@@ -80,11 +80,11 @@ public void HeadcrabZombieElectro_OnMapStart_NPC()
 	NPC_Add(data2);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return HeadcrabZombieElectro(client, vecPos, vecAng, ally, 1);
 }
-static any ClotSummon2(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon2(float vecPos[3], float vecAng[3], int ally)
 {
 	return HeadcrabZombieElectro(client, vecPos, vecAng, ally, 2);
 }

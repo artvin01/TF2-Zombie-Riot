@@ -88,9 +88,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_LastStand));   i++) { PrecacheSoundCustom(g_LastStand[i]);   }
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return GodAlaxios(client, vecPos, vecAng, ally, data);
+	return GodAlaxios(vecPos, vecAng, team, data);
 }
 static float f_AlaxiosCantDieLimit[MAXENTITIES];
 
@@ -181,7 +181,7 @@ methodmap GodAlaxios < CClotBody
 		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public GodAlaxios(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public GodAlaxios(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		GodAlaxios npc = view_as<GodAlaxios>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		

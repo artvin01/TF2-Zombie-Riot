@@ -52,9 +52,9 @@ void VoidEnFramedVoider_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidEnFramedVoider(client, vecPos, vecAng, ally);
+	return VoidEnFramedVoider(vecPos, vecAng, team);
 }
 methodmap VoidEnFramedVoider < CClotBody
 {
@@ -95,7 +95,7 @@ methodmap VoidEnFramedVoider < CClotBody
 	}
 	
 	
-	public VoidEnFramedVoider(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidEnFramedVoider(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidEnFramedVoider npc = view_as<VoidEnFramedVoider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1500", ally));
 		

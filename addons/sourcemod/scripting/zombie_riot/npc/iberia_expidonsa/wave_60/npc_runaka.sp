@@ -53,9 +53,9 @@ void IberiaRunaka_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaRunaka(client, vecPos, vecAng, ally);
+	return IberiaRunaka(vecPos, vecAng, team);
 }
 
 methodmap IberiaRunaka < CClotBody
@@ -100,7 +100,7 @@ methodmap IberiaRunaka < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public IberiaRunaka(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaRunaka(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaRunaka npc = view_as<IberiaRunaka>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "100000", ally, false, true));
 		

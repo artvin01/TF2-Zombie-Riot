@@ -115,9 +115,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/internius/messenger.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return TheMessenger(client, vecPos, vecAng, ally, data);
+	return TheMessenger(vecPos, vecAng, team, data);
 }
 methodmap TheMessenger < CClotBody
 {
@@ -222,7 +222,7 @@ methodmap TheMessenger < CClotBody
 		
 	}
 	
-	public TheMessenger(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public TheMessenger(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		TheMessenger npc = view_as<TheMessenger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		

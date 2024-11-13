@@ -60,9 +60,9 @@ void BigWins_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return BigWins(client, vecPos, vecAng, ally);
+	return BigWins(vecPos, vecAng, team);
 }
 
 methodmap BigWins < CClotBody

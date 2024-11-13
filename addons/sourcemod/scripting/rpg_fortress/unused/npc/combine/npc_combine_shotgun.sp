@@ -3,7 +3,7 @@
 
 methodmap CombineShotgun < CombineSoldier
 {
-	public CombineShotgun(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineShotgun(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineShotgun npc = view_as<CombineShotgun>(BaseSquad(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", ally, false));
 		

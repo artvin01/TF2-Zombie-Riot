@@ -105,9 +105,9 @@ void MedivalSamurai_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalSamurai(client, vecPos, vecAng, ally);
+	return MedivalSamurai(vecPos, vecAng, team);
 }
 float f_RangedPainTolerance[MAXENTITIES];
 
@@ -163,7 +163,7 @@ methodmap MedivalSamurai < CClotBody
 	
 	
 	
-	public MedivalSamurai(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalSamurai(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSamurai npc = view_as<MedivalSamurai>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally));
 		SetVariantInt(1);

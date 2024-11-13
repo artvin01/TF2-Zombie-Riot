@@ -75,9 +75,9 @@ int DiversionisticoID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Diversionistico(client, vecPos, vecAng, ally, data);
+	return Diversionistico(vecPos, vecAng, team, data);
 }
 
 void DiversionSpawnNpcReset(int index)
@@ -136,7 +136,7 @@ methodmap Diversionistico < CClotBody
 		
 	}
 
-	public Diversionistico(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Diversionistico(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Diversionistico npc = view_as<Diversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, false, true));
 		

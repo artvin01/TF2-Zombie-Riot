@@ -197,7 +197,7 @@ methodmap PabloGonzalos < CClotBody
 		#endif
 	}
 	
-	public PabloGonzalos(int client, float vecPos[3], float vecAng[3], int ally)
+	public PabloGonzalos(float vecPos[3], float vecAng[3], int ally)
 	{
 		PabloGonzalos npc = view_as<PabloGonzalos>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "300000", ally, false));
 		

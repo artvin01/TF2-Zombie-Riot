@@ -53,9 +53,9 @@ public void WFOuroborosEkas_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WFOuroborosEkas(client, vecPos, vecAng, ally);
+	return WFOuroborosEkas(vecPos, vecAng, team);
 }
 
 methodmap WFOuroborosEkas < CClotBody
@@ -102,7 +102,7 @@ methodmap WFOuroborosEkas < CClotBody
 
 	
 	
-	public WFOuroborosEkas(int client, float vecPos[3], float vecAng[3], int ally)
+	public WFOuroborosEkas(float vecPos[3], float vecAng[3], int ally)
 	{
 		WFOuroborosEkas npc = view_as<WFOuroborosEkas>(CClotBody(vecPos, vecAng, "models/dog.mdl", "1.3", "900000", ally, false, true));
 		

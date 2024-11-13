@@ -35,9 +35,9 @@ void WanderingSpirit_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WanderingSpirit(client, vecPos, vecAng, ally);
+	return WanderingSpirit(vecPos, vecAng, team);
 }
 
 methodmap WanderingSpirit < CClotBody
@@ -51,7 +51,7 @@ methodmap WanderingSpirit < CClotBody
 		EmitSoundToAll(g_SpookSound[GetRandomInt(0, sizeof(g_SpookSound) - 1)], entity, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public WanderingSpirit(int client, float vecPos[3], float vecAng[3], int ally)
+	public WanderingSpirit(float vecPos[3], float vecAng[3], int ally)
 	{
 		WanderingSpirit npc = view_as<WanderingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", GetSpiritHealth(), ally));
 		

@@ -62,9 +62,9 @@ void AltMedicBerseker_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AltMedicBerseker(client, vecPos, vecAng, ally);
+	return AltMedicBerseker(vecPos, vecAng, team);
 }
 
 methodmap AltMedicBerseker < CClotBody
@@ -128,7 +128,7 @@ methodmap AltMedicBerseker < CClotBody
 	}
 	
 	
-	public AltMedicBerseker(int client, float vecPos[3], float vecAng[3], int ally)
+	public AltMedicBerseker(float vecPos[3], float vecAng[3], int ally)
 	{
 		AltMedicBerseker npc = view_as<AltMedicBerseker>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.00", "25000", ally));
 		

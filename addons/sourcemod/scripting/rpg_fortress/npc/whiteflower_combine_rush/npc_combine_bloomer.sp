@@ -9,14 +9,14 @@ void OnMapStartCombine_Bloomer()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Combine_Bloomer(client, vecPos, vecAng, ally);
+	return Combine_Bloomer(vecPos, vecAng, team);
 }
 
 methodmap Combine_Bloomer < CombinePolice
 {
-	public Combine_Bloomer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Bloomer(float vecPos[3], float vecAng[3], int ally)
 	{
  		Combine_Bloomer npc = view_as<Combine_Bloomer>(BaseSquad(vecPos, vecAng, "models/police.mdl", "1.15", ally, false));
 		

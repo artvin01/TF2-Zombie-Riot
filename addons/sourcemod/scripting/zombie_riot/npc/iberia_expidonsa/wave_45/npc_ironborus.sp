@@ -61,9 +61,9 @@ void IberianIronborus_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberianIronBorus(client, vecPos, vecAng, ally);
+	return IberianIronBorus(vecPos, vecAng, team);
 }
 
 methodmap IberianIronBorus < CClotBody
@@ -110,7 +110,7 @@ methodmap IberianIronBorus < CClotBody
 	}
 	
 	
-	public IberianIronBorus(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberianIronBorus(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberianIronBorus npc = view_as<IberianIronBorus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "8000", ally, false, true));
 		

@@ -67,9 +67,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return PetrisBaron(client, vecPos, vecAng, ally);
+	return PetrisBaron(vecPos, vecAng, team);
 }
 methodmap PetrisBaron < CClotBody
 {
@@ -109,7 +109,7 @@ methodmap PetrisBaron < CClotBody
 	}
 	
 	
-	public PetrisBaron(int client, float vecPos[3], float vecAng[3], int ally)
+	public PetrisBaron(float vecPos[3], float vecAng[3], int ally)
 	{
 		PetrisBaron npc = view_as<PetrisBaron>(CClotBody(vecPos, vecAng, "models/dog.mdl", "1.0", "1000", ally));
 		

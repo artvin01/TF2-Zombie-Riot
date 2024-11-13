@@ -37,9 +37,9 @@ void TheHunter_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return TheHunter(client, vecPos, vecAng, ally);
+	return TheHunter(vecPos, vecAng, team);
 }
 
 methodmap TheHunter < CClotBody
@@ -61,7 +61,7 @@ methodmap TheHunter < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public TheHunter(int client, float vecPos[3], float vecAng[3], int ally)
+	public TheHunter(float vecPos[3], float vecAng[3], int ally)
 	{
 		TheHunter npc = view_as<TheHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "50000", ally));
 		

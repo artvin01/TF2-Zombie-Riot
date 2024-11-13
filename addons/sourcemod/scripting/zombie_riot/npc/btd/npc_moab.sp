@@ -81,9 +81,9 @@ static void ClotPrecache()
 	PrecacheModel("models/zombie_riot/btd/boab.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Moab(client, vecPos, vecAng, ally, data);
+	return Moab(vecPos, vecAng, team, data);
 }
 methodmap Moab < CClotBody
 {
@@ -116,7 +116,7 @@ methodmap Moab < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public Moab(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Moab(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		

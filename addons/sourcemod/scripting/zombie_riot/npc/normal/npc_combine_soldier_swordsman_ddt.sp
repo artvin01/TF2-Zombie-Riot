@@ -78,9 +78,9 @@ void CombineDDT_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineDDT(client, vecPos, vecAng, ally);
+	return CombineDDT(vecPos, vecAng, team);
 }
 methodmap CombineDDT < CClotBody
 {
@@ -155,7 +155,7 @@ methodmap CombineDDT < CClotBody
 	}
 	
 	
-	public CombineDDT(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineDDT(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineDDT npc = view_as<CombineDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
 		SetVariantInt(1);
