@@ -454,9 +454,9 @@ static void TreeMenu(int client)
 	if(buffers[LEFT][0])
 	{
 		Format(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[LEFT],
-								ArrowH[skill.Dir == LEFT ? 1 : 0],
+								ArrowH[skill.Dir == RIGHT ? 1 : 0],
 								access[LEFT] ? "A" : "  ",
-								ArrowH[skill.Dir == LEFT ? 1 : 0]);
+								ArrowH[skill.Dir == RIGHT ? 1 : 0]);
 	}
 	else
 	{
@@ -497,9 +497,9 @@ static void TreeMenu(int client)
 	if(buffers[RIGHT][0])
 	{
 		Format(buffer, sizeof(buffer), "%s %s %s [%s] %s", buffer,
-								ArrowH[skill.Dir == RIGHT ? 0 : 1],
+								ArrowH[skill.Dir == LEFT ? 0 : 1],
 								access[RIGHT] ? "D" : "  ",
-								ArrowH[skill.Dir == RIGHT ? 0 : 1],
+								ArrowH[skill.Dir == LEFT ? 0 : 1],
 								buffers[RIGHT]);
 	}
 
@@ -507,11 +507,11 @@ static void TreeMenu(int client)
 	if(buffers[UP][0])
 	{
 		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s", leftBuffer, buffers[UP],
-											leftBuffer, skill.Dir == UP ? "v" : "^",
-											leftBuffer, skill.Dir == UP ? "v" : "^",
+											leftBuffer, skill.Dir == DOWN ? "v" : "^",
+											leftBuffer, skill.Dir == DOWN ? "v" : "^",
 											leftBuffer, access[UP] ? "W" : "  ",
-											leftBuffer, skill.Dir == UP ? "v" : "^",
-											leftBuffer, skill.Dir == UP ? "v" : "^",
+											leftBuffer, skill.Dir == DOWN ? "v" : "^",
+											leftBuffer, skill.Dir == DOWN ? "v" : "^",
 											buffer);
 	}
 	else
@@ -523,11 +523,11 @@ static void TreeMenu(int client)
 	if(buffers[DOWN][0])
 	{
 		Format(buffer, sizeof(buffer), "%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s%s", buffer,
-											leftBuffer, skill.Dir == DOWN ? "^" : "v",
-											leftBuffer, skill.Dir == DOWN ? "^" : "v",
+											leftBuffer, skill.Dir == UP ? "^" : "v",
+											leftBuffer, skill.Dir == UP ? "^" : "v",
 											leftBuffer, access[DOWN] ? "S" : "  ",
-											leftBuffer, skill.Dir == DOWN ? "^" : "v",
-											leftBuffer, skill.Dir == DOWN ? "^" : "v",
+											leftBuffer, skill.Dir == UP ? "^" : "v",
+											leftBuffer, skill.Dir == UP ? "^" : "v",
 											leftBuffer, buffers[DOWN]);
 	}
 	else
