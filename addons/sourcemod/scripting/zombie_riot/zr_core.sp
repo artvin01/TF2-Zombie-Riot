@@ -638,6 +638,11 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+
+	PrecacheSound("ui/hitsound_electro1.wav");
+	PrecacheSound("ui/hitsound_electro2.wav");
+	PrecacheSound("ui/hitsound_electro3.wav");
+	PrecacheSound("ui/hitsound_space.wav");
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();

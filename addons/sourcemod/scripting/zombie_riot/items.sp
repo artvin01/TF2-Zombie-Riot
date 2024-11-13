@@ -709,14 +709,14 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							case Rarity_Legend:
 								MultiExtra = 10;
 							case Rarity_Mythic:
-								MultiExtra = 20;
+								MultiExtra = 40;
 						}
 						//xp to give?
 						int TempCalc = Level[i];
 						if(TempCalc >= 100)
 							TempCalc = 100;
 
-						TempCalc = LevelToXp(TempCalc);
+						TempCalc = LevelToXp(TempCalc) - LevelToXp(TempCalc - 1);
 						TempCalc /= 40;
 
 						int XpToGive = TempCalc * MultiExtra;

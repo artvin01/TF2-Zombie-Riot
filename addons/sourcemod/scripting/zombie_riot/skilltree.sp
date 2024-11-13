@@ -136,7 +136,9 @@ static bool CfgSetup(const char[] intParent, KeyValues kv, int intDir)
 
 			if(dir == intDir)
 			{
-				LogError("\"%s\" skill has too many subtrees", parent);
+				if(kv.GotoNextKey())
+					LogError("\"%s\" skill has too many subtrees", parent);
+
 				break;
 			}
 		}
@@ -544,7 +546,11 @@ static void TreeMenu(int client)
 	int charge;
 	SkillCount[client].GetValue(Selected[client], charge);
 
-	Zero(CanAccess);
+	for(int i; i < sizeof(CanAccess[]); i++)
+	{
+		CanAccess[client][i] = false;
+	}
+
 	char names[4][32], buffers[4][48];
 	int length = SkillListSnap.Length;
 	for(int i; i < length; i++)
@@ -581,7 +587,7 @@ static void TreeMenu(int client)
 			{
 				size = 0;
 				SkillCount[client].GetValue(name, size);
-				CanAccess[dir] = true;
+				CanAccess[client][dir] = true;
 				
 				if(skill2.MaxCap > 1)
 				{
@@ -603,7 +609,7 @@ static void TreeMenu(int client)
 	{
 		Format(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[LEFT],
 								ArrowH[skill.Dir == RIGHT ? 1 : 0],
-								CanAccess[LEFT] ? "A" : "  ",
+								CanAccess[client][LEFT] ? "A" : "  ",
 								ArrowH[skill.Dir == RIGHT ? 1 : 0]);
 	}
 	else
@@ -624,25 +630,28 @@ static void TreeMenu(int client)
 	// Count spaces from the left side
 	int leftSize = strlen(buffer) - 3;
 
-	char leftBuffer[3][20];	// Space cap
+	char leftBuffer[12][20];	// Space cap
 	if(leftSize > (sizeof(leftBuffer[]) - 2))
 		leftSize = sizeof(leftBuffer[]) - 2;
 	
 	for(int i; i < leftSize; i++)
 	{
-		leftBuffer[0][i] = '	';
+		for(int a = 1; a < 11; a++)
+		{
+			leftBuffer[a][i] = GetURandomInt() % 99 ? '	' : '*';
+		}
 	}
 
 	length = leftSize - (strlen(buffers[UP]) / 3);
 	for(int i; i < length; i++)
 	{
-		leftBuffer[1][i] = '	';
+		leftBuffer[0][i] = GetURandomInt() % 99 ? '	' : '*';
 	}
 
 	length = leftSize - (strlen(buffers[DOWN]) / 3);
 	for(int i; i < length; i++)
 	{
-		leftBuffer[2][i] = '	';
+		leftBuffer[11][i] = GetURandomInt() % 99 ? '	' : '*';
 	}
 
 	// Right Side
@@ -650,7 +659,7 @@ static void TreeMenu(int client)
 	{
 		Format(buffer, sizeof(buffer), "%s %s [%s] %s %s", buffer,
 								ArrowH[skill.Dir == LEFT ? 0 : 1],
-								CanAccess[RIGHT] ? "D" : "  ",
+								CanAccess[client][RIGHT] ? "D" : "  ",
 								ArrowH[skill.Dir == LEFT ? 0 : 1],
 								buffers[RIGHT]);
 	}
@@ -658,33 +667,45 @@ static void TreeMenu(int client)
 	// Top Side
 	if(buffers[UP][0])
 	{
-		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s", leftBuffer[1], buffers[UP],
-											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
-											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
-											leftBuffer[0], CanAccess[UP] ? "W" : "  ",
-											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
-											leftBuffer[0], skill.Dir == DOWN ? "v" : "^",
+		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s", leftBuffer[0], buffers[UP],
+											leftBuffer[1], skill.Dir == DOWN ? "v" : "^",
+											leftBuffer[2], skill.Dir == DOWN ? "v" : "^",
+											leftBuffer[3], CanAccess[client][UP] ? "W" : "  ",
+											leftBuffer[4], skill.Dir == DOWN ? "v" : "^",
+											leftBuffer[5], skill.Dir == DOWN ? "v" : "^",
 											buffer);
 	}
 	else
 	{
-		Format(buffer, sizeof(buffer), " \n \n \n \n \n \n%s", buffer);
+		Format(buffer, sizeof(buffer), "%s\n%s\n%s\n%s\n%s\n%s\n%s", leftBuffer[0],
+											leftBuffer[1],
+											leftBuffer[2],
+											leftBuffer[3],
+											leftBuffer[4],
+											leftBuffer[5],
+											buffer);
 	}
 
 	// Bottom Side
 	if(buffers[DOWN][0])
 	{
 		Format(buffer, sizeof(buffer), "%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s%s", buffer,
-											leftBuffer[0], skill.Dir == UP ? "^" : "v",
-											leftBuffer[0], skill.Dir == UP ? "^" : "v",
-											leftBuffer[0], CanAccess[DOWN] ? "S" : "  ",
-											leftBuffer[0], skill.Dir == UP ? "^" : "v",
-											leftBuffer[0], skill.Dir == UP ? "^" : "v",
-											leftBuffer[2], buffers[DOWN]);
+											leftBuffer[6], skill.Dir == UP ? "^" : "v",
+											leftBuffer[7], skill.Dir == UP ? "^" : "v",
+											leftBuffer[8], CanAccess[client][DOWN] ? "S" : "  ",
+											leftBuffer[9], skill.Dir == UP ? "^" : "v",
+											leftBuffer[10], skill.Dir == UP ? "^" : "v",
+											leftBuffer[11], buffers[DOWN]);
 	}
 	else
 	{
-		Format(buffer, sizeof(buffer), "%s\n \n \n \n \n \n ", buffer);
+		Format(buffer, sizeof(buffer), "%s\n%s\n%s\n%s\n%s\n%s\n%s", buffer,
+											leftBuffer[6],
+											leftBuffer[7],
+											leftBuffer[8],
+											leftBuffer[9],
+											leftBuffer[10],
+											leftBuffer[11]);
 	}
 
 	Format(buffers[0], sizeof(buffers[]), "%s Desc", skill.Name);
@@ -720,14 +741,15 @@ static void TreeMenu(int client)
 		Format(buffer, sizeof(buffer), "%t", "Unlocked");
 	}
 
-	CanAccess[DIR_MAX] = upgrade;
+	CanAccess[client][DIR_MAX] = upgrade;
 
 	menu.AddItem(NULL_STRING, buffer, upgrade ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem(names[UP], "W", CanAccess[UP] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-	menu.AddItem(names[LEFT], "A", CanAccess[LEFT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-	menu.AddItem(names[DOWN], "S", CanAccess[DOWN] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-	menu.AddItem(names[RIGHT], "D", CanAccess[RIGHT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+	menu.AddItem(names[UP], "W", CanAccess[client][UP] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+	menu.AddItem(names[LEFT], "A", CanAccess[client][LEFT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+	menu.AddItem(names[DOWN], "S", CanAccess[client][DOWN] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+	menu.AddItem(names[RIGHT], "D", CanAccess[client][RIGHT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
 
+	menu.OptionFlags |= MENUFLAG_NO_SOUND;
 	InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
 }
 
@@ -758,11 +780,15 @@ static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
 			{
 				if(choice)
 				{
+					char buffer[64];
+					FormatEx(buffer, sizeof(buffer), "ui/hitsound_electro%d.wav", 1 + (GetURandomInt() % 3));
+					EmitSoundToClient(client, buffer, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.6, GetRandomInt(80,85));
+					
 					menu.GetItem(choice, Selected[client], sizeof(Selected[]));
 				}
 				else
 				{
-					ClientCommand(client, "playgamesound ui/mm_xp_chime.wav");
+					EmitSoundToClient(client, "ui/hitsound_space.wav", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.6, GetRandomInt(50,55));
 
 					int amount;
 					SkillCount[client].GetValue(Selected[client], amount);
