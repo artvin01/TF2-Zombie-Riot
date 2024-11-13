@@ -293,9 +293,61 @@ void SkillTree_OpenMenu(int client)
 	MainMenu(client);
 }
 
-Action SkillTree_PlayerRunCmd(int client, float vel[3])
+bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 {
-	return Plugin_Continue;
+	if(!InMenu[client])
+		return false;
+	
+	PrintCenterText(client, "%f %f %f", vel[0], vel[1], vel[2]);
+
+	static bool holding[MAXTF2PLAYERS][4];
+	if(holding[client][UP])
+	{
+		if(vel[0] < 0.5)
+			holding[client][UP] = false;
+	}
+	else if(vel[0] > 0.5)
+	{
+		holding[client][UP] = true;
+		FakeClientCommand(client, "menuselect 2");
+	}
+	
+	if(holding[client][DOWN])
+	{
+		if(vel[0] > -0.5)
+			holding[client][DOWN] = false;
+	}
+	else if(vel[0] < -0.5)
+	{
+		holding[client][DOWN] = true;
+		FakeClientCommand(client, "menuselect 4");
+	}
+
+	if(holding[client][RIGHT])
+	{
+		if(vel[1] < 0.5)
+			holding[client][RIGHT] = false;
+	}
+	else if(vel[1] > 0.5)
+	{
+		holding[client][RIGHT] = true;
+		FakeClientCommand(client, "menuselect 5");
+	}
+	
+	if(holding[client][LEFT])
+	{
+		if(vel[1] > -0.5)
+			holding[client][LEFT] = false;
+	}
+	else if(vel[1] < -0.5)
+	{
+		holding[client][LEFT] = true;
+		FakeClientCommand(client, "menuselect 3");
+	}
+
+	buttons = 0;
+	Zero(vel);
+	return true;
 }
 
 static void MainMenu(int client)
@@ -476,6 +528,7 @@ static void TreeMenu(int client)
 			}
 			else
 			{
+				size = 0;
 				SkillCount[client].GetValue(name, size);
 				access[dir] = true;
 				
