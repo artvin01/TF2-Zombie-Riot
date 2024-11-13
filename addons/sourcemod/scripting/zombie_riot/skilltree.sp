@@ -284,7 +284,7 @@ void SkillTree_CalcSkillPoints(int client)
 
 void SkillTree_OpenMenu(int client)
 {
-	TreeMenu(client);
+	MainMenu(client);
 }
 
 Action SkillTree_PlayerRunCmd(int client, float vel[3])

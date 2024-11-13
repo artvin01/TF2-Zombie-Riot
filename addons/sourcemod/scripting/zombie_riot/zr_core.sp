@@ -5,7 +5,7 @@
 
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
-#define STARTER_WEAPON_LEVEL	3
+#define STARTER_WEAPON_LEVEL	5
 #define MAX_TARGETS_HIT 10
 
 //#define ZR_ApplyKillEffects NPC_DeadEffects
@@ -614,6 +614,7 @@ void ZR_PluginStart()
 	Medigun_PluginStart();
 	OnPluginStartMangler();
 	OnPluginStart_Glitched_Weapon();
+	SkillTree_PluginStart();
 	Tutorial_PluginStart();
 	Waves_PluginStart();
 	Rogue_PluginStart();
@@ -2295,13 +2296,15 @@ void GiveXP(int client, int xp)
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
 	{
-		//	will get annoying really fast.
-		//	static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
-		//	ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-			
-		//int maxhealth = SDKCall_GetMaxHealth(client);
-		//if(GetClientHealth(client) < maxhealth)
-		//	SetEntityHealth(client, maxhealth);
+		if(Level[client] < STARTER_WEAPON_LEVEL)
+		{
+			static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
+			ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
+
+			int maxhealth = SDKCall_GetMaxHealth(client) + 50;
+			if(GetClientHealth(client) < maxhealth)
+				SetEntityHealth(client, maxhealth);
+		}
 		
 		SetGlobalTransTarget(client);
 		PrintToChat(client, "%t", "Level Up", Level[client]);

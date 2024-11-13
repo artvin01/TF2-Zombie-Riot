@@ -3387,6 +3387,9 @@ static void MenuPage(int client, int section)
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Loadouts");
 			menu.AddItem("-22", buffer);
+
+			FormatEx(buffer, sizeof(buffer), "%t", "Skill Tree");
+			menu.AddItem("-25", buffer);
 		}
 
 		if(Rogue_Mode())
@@ -3541,6 +3544,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				CurrentMenuItem[client] = StringToInt(buffer);
 				switch(CurrentMenuItem[client])
 				{
+					case -25:
+					{
+						SkillTree_OpenMenu(client);
+					}
 					case -23:
 					{
 						ReShowSettingsHud(client);

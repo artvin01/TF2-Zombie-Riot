@@ -93,7 +93,7 @@ void Items_SetupConfig()
 
 		kv.GetString("name", item.Name, sizeof(item.Name));
 		item.Rarity = kv.GetNum("rarity", Rarity_None);
-		if(GiftItems.Length < index)
+		if(GiftItems.Length == index)
 		{
 			GiftItems.PushArray(item);
 		}

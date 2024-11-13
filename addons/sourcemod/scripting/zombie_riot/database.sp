@@ -11,6 +11,7 @@
 #define DATATABLE_MISC		"zr_misc"
 #define DATATABLE_SETTINGS	"zr_settings"
 #define DATATABLE_GIFTITEM	"zr_giftitems"
+#define DATATABLE_SKILLTREE	"zr_skilltree"
 
 static Database Local;
 static Database Global;
@@ -125,6 +126,11 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 		... "level INTEGER NOT NULL, "
 		... "flags INTEGER NOT NULL);");
 		
+		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_SKILLTREE ... " ("
+		... "steamid INTEGER NOT NULL, "
+		... "name TEXT NOT NULL, "
+		... "flags INTEGER NOT NULL);");
+		
 		db.Execute(tr, Database_GlobalSetup, Database_FailHandle, db);
 	}
 	else
@@ -178,6 +184,9 @@ static void GlobalClientAuthorized(int id, int userid)
 		tr.AddQuery(buffer);
 
 		FormatEx(buffer, sizeof(buffer), "SELECT * FROM " ... DATATABLE_GIFTITEM ... " WHERE steamid = %d;", id);
+		tr.AddQuery(buffer);
+
+		FormatEx(buffer, sizeof(buffer), "SELECT * FROM " ... DATATABLE_SKILLTREE ... " WHERE steamid = %d;", id);
 		tr.AddQuery(buffer);
 		
 		Global.Execute(tr, Database_GlobalClientSetup, Database_Fail, userid);
@@ -276,6 +285,16 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			}
 		}
 
+		SkillTree_ClearClient(client);
+		while(results[4].MoreRows)
+		{
+			if(results[4].FetchRow())
+			{
+				results[4].FetchString(1, buffer, sizeof(buffer));
+				SkillTree_AddNext(client, buffer, results[4].FetchInt(2));
+			}
+		}
+
 		Cached[client] = true;
 		Store_OnCached(client);
 		Native_OnClientLoaded(client);
@@ -359,9 +378,20 @@ void DataBase_ClientDisconnect(int client)
 				tr.AddQuery(buffer);
 			}
 
+			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_SKILLTREE ... " WHERE steamid = %d;", id);
+			tr.AddQuery(buffer);
+			
+			char name[32];
+			for(int i; SkillTree_GetNext(client, i, name, flags); i++)
+			{
+				Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_SKILLTREE ... " (steamid, name, flags) VALUES ('%d', '%s', '%d')", id, name, flags);
+				tr.AddQuery(buffer);
+			}
+
 			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
 
 			Items_ClearArray(client);
+			SkillTree_ClearClient(client);
 		}
 	}
 
