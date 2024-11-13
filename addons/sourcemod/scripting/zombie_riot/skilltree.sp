@@ -15,9 +15,11 @@ enum
 
 static int ReverseDir(int dir)
 {
-	dir += 2;
-	if(dir >= DIR_MAX)
-		dir -= DIR_MAX;
+	int newDir = dir + 2;
+	if(newDir >= DIR_MAX)
+		newDir -= DIR_MAX;
+	
+	return newDir;
 }
 
 enum struct Skill
