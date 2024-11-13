@@ -67,9 +67,9 @@ void VoidInfestor_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidInfestor(client, vecPos, vecAng, ally);
+	return VoidInfestor(vecPos, vecAng, team);
 }
 methodmap VoidInfestor < CClotBody
 {
@@ -110,7 +110,7 @@ methodmap VoidInfestor < CClotBody
 	}
 	
 	
-	public VoidInfestor(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidInfestor(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidInfestor npc = view_as<VoidInfestor>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "700", ally));
 		

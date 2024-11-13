@@ -46,9 +46,9 @@ void VulpoOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Vulpo(client, vecPos, vecAng, ally);
+	return Vulpo(vecPos, vecAng, team);
 }
 
 methodmap Vulpo < CClotBody
@@ -74,7 +74,7 @@ methodmap Vulpo < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Vulpo(int client, float vecPos[3], float vecAng[3], int ally)
+	public Vulpo(float vecPos[3], float vecAng[3], int ally)
 	{
 		Vulpo npc = view_as<Vulpo>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "30000", ally));
 		

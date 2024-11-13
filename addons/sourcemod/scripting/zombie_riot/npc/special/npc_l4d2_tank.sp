@@ -63,9 +63,9 @@ public void L4D2_Tank_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return L4D2_Tank(client, vecPos, vecAng, ally, data);
+	return L4D2_Tank(vecPos, vecAng, team, data);
 }
 
 static int i_TankAntiStuck[MAXENTITIES];
@@ -154,7 +154,7 @@ methodmap L4D2_Tank < CClotBody
 		
 	}
 	
-	public L4D2_Tank(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public L4D2_Tank(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", GetTankHealth(), ally, false, true));
 		

@@ -62,9 +62,9 @@ void TrashMan_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return TrashMan(client, vecPos, vecAng, ally);
+	return TrashMan(vecPos, vecAng, team);
 }
 
 methodmap TrashMan < CClotBody

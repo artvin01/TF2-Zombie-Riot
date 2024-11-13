@@ -49,9 +49,9 @@ void CasinoRat_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CasinoRat(client, vecPos, vecAng, ally);
+	return CasinoRat(vecPos, vecAng, team);
 }
 
 methodmap CasinoRat < CClotBody

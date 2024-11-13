@@ -78,9 +78,9 @@ static void ClotPrecache()
 	PrecacheModel("models/zombie_riot/btd/zomg.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Zomg(client, vecPos, vecAng, ally, data);
+	return Zomg(vecPos, vecAng, team, data);
 }
 methodmap Zomg < CClotBody
 {
@@ -113,7 +113,7 @@ methodmap Zomg < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public Zomg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Zomg(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		

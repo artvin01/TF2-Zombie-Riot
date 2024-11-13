@@ -94,9 +94,9 @@ public void XenoCombineOverlord_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombineOverlord(client, vecPos, vecAng, ally);
+	return XenoCombineOverlord(vecPos, vecAng, team);
 }
 methodmap XenoCombineOverlord < CClotBody
 {
@@ -181,7 +181,7 @@ methodmap XenoCombineOverlord < CClotBody
 		
 	}
 	
-	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineOverlord(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
 		SetVariantInt(3);

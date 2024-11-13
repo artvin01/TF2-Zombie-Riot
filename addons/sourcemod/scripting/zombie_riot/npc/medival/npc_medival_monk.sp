@@ -107,9 +107,9 @@ void MedivalMonk_OnMapStart_NPC()
 	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalMonk(client, vecPos, vecAng, ally);
+	return MedivalMonk(vecPos, vecAng, team);
 }
 
 static int i_ClosestAlly[MAXENTITIES];
@@ -172,7 +172,7 @@ methodmap MedivalMonk < CClotBody
 		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 90, _, 0.8, 100);
 	}
 	
-	public MedivalMonk(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalMonk(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalMonk npc = view_as<MedivalMonk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
 		SetVariantInt(1);

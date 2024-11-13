@@ -75,9 +75,9 @@ void ChaosInjuredCultist_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ChaosInjuredCultist(client, vecPos, vecAng, ally);
+	return ChaosInjuredCultist(vecPos, vecAng, team);
 }
 methodmap ChaosInjuredCultist < CClotBody
 {
@@ -176,7 +176,7 @@ methodmap ChaosInjuredCultist < CClotBody
 		EmitSoundToAll(g_DeathSoundsAbility[GetRandomInt(0, sizeof(g_DeathSoundsAbility) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	
-	public ChaosInjuredCultist(int client, float vecPos[3], float vecAng[3], int ally)
+	public ChaosInjuredCultist(float vecPos[3], float vecAng[3], int ally)
 	{
 		ChaosInjuredCultist npc = view_as<ChaosInjuredCultist>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "1500", ally, false, true));
 		

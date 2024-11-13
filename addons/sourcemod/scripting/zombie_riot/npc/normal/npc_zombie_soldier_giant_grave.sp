@@ -74,9 +74,9 @@ void SoldierGiant_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SoldierGiant(client, vecPos, vecAng, ally);
+	return SoldierGiant(vecPos, vecAng, team);
 }
 methodmap SoldierGiant < CClotBody
 {
@@ -145,7 +145,7 @@ methodmap SoldierGiant < CClotBody
 	}
 	
 	
-	public SoldierGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public SoldierGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "200000", ally, false, true));
 		

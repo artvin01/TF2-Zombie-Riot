@@ -69,9 +69,9 @@ public void WaterZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WaterZombie(client, vecPos, vecAng, ally);
+	return WaterZombie(vecPos, vecAng, team);
 }
 
 methodmap WaterZombie < CClotBody
@@ -111,7 +111,7 @@ methodmap WaterZombie < CClotBody
 	}
 	
 	
-	public WaterZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public WaterZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		WaterZombie npc = view_as<WaterZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false,_,_,_,_));
 		

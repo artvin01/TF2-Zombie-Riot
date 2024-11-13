@@ -78,9 +78,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Magnium(client, vecPos, vecAng, ally);
+	return Magnium(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -173,7 +173,7 @@ methodmap Magnium < CClotBody
 		}
 	}
 
-	public Magnium(int client, float vecPos[3], float vecAng[3], int ally)
+	public Magnium(float vecPos[3], float vecAng[3], int ally)
 	{
 		Magnium npc = view_as<Magnium>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		

@@ -129,7 +129,7 @@ methodmap BunkerSkeletonSmall < CClotBody
 		#endif
 	}
 	
-	public BunkerSkeletonSmall(int client, float vecPos[3], float vecAng[3], int ally)
+	public BunkerSkeletonSmall(float vecPos[3], float vecAng[3], int ally)
 	{
 		BunkerSkeletonSmall npc = view_as<BunkerSkeletonSmall>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "0.65", "3000", ally, false));
 		

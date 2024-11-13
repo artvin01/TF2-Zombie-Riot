@@ -17,7 +17,7 @@ methodmap CombineTurtle < CClotBody
 	{
 		EmitSoundToAll("weapons/capper_shoot.wav", this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
 	}
-	public CombineTurtle(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineTurtle(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineTurtle npc = view_as<CombineTurtle>(CClotBody(vecPos, vecAng, "models/turtle_attack/hatturtle.mdl", "1.0", "1000", ally, false));
 		

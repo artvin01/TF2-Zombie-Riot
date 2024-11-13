@@ -77,9 +77,9 @@ void CombineDeutsch_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineDeutsch(client, vecPos, vecAng, ally);
+	return CombineDeutsch(vecPos, vecAng, team);
 }
 
 methodmap CombineDeutsch < CClotBody
@@ -160,7 +160,7 @@ methodmap CombineDeutsch < CClotBody
 	}
 	
 	
-	public CombineDeutsch(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineDeutsch(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineDeutsch npc = view_as<CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
 		

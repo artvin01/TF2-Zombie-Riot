@@ -180,7 +180,7 @@ methodmap Eternal_Kaptain_Heavy < CClotBody
 		
 	}
 	
-	public Eternal_Kaptain_Heavy(int client, float vecPos[3], float vecAng[3], int ally)
+	public Eternal_Kaptain_Heavy(float vecPos[3], float vecAng[3], int ally)
 	{
 		Eternal_Kaptain_Heavy npc = view_as<Eternal_Kaptain_Heavy>(CClotBody(vecPos, vecAng, "models/zombie_riot/bvb_kaptainheavy.mdl", "1.0", "550000", ally));
 		

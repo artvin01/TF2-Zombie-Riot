@@ -54,9 +54,9 @@ void SeaReaper_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaReaper(client, vecPos, vecAng, ally, data);
+	return SeaReaper(vecPos, vecAng, team, data);
 }
 
 methodmap SeaReaper < CSeaBody
@@ -98,7 +98,7 @@ methodmap SeaReaper < CSeaBody
 		EmitSoundToAll(g_leap_scream[GetRandomInt(0, sizeof(g_leap_scream) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);	
 	}
 	
-	public SeaReaper(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SeaReaper(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeaReaper npc = view_as<SeaReaper>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.75", data[0] ? "3750" : "3000", ally, false, true));
 		// 20000 x 0.15

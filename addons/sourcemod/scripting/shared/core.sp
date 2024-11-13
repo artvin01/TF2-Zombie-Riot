@@ -192,9 +192,6 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
 
-
-native any FuncToVal(Function bruh);
-
 enum
 {
 	Ammo_Metal = 3,		// 3	Metal
@@ -1461,16 +1458,8 @@ public Plugin myinfo =
 	version		=	"manual"
 };
 
-static any Native_FuncToVal(Handle plugin, int numParams)
-{
-	return GetNativeCell(1);
-}
-
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	MarkNativeAsOptional("FuncToVal");
-	CreateNative("FuncToVal", Native_FuncToVal);
-	
 #if defined ZR || defined RPG
 	Thirdperson_PluginLoad();
 #endif

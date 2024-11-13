@@ -22,7 +22,7 @@ void DevSpawner_MapStart()
 
 methodmap DevSpawner < CClotBody
 {
-	public DevSpawner(int client, float vecPos[3], float vecAng[3], int ally)
+	public DevSpawner(float vecPos[3], float vecAng[3], int ally)
 	{
 		DevSpawner npc = view_as<DevSpawner>(CClotBody(vecPos, vecAng, "models/class_menu/random_class_icon.mdl", "1.0", "100", ally, true));
 

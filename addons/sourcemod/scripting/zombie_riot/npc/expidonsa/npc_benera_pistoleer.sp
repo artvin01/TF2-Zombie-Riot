@@ -48,9 +48,9 @@ void Pistoleer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Pistoleer(client, vecPos, vecAng, ally);
+	return Pistoleer(vecPos, vecAng, team);
 }
 methodmap Pistoleer < CClotBody
 {
@@ -86,7 +86,7 @@ methodmap Pistoleer < CClotBody
 	}
 	
 	
-	public Pistoleer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Pistoleer(float vecPos[3], float vecAng[3], int ally)
 	{
 		Pistoleer npc = view_as<Pistoleer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "600", ally));
 		

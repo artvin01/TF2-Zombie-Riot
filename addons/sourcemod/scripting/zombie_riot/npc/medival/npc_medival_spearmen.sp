@@ -104,9 +104,9 @@ void MedivalSpearMan_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalSpearMan(client, vecPos, vecAng, ally);
+	return MedivalSpearMan(vecPos, vecAng, team);
 }
 
 methodmap MedivalSpearMan < CClotBody
@@ -169,7 +169,7 @@ methodmap MedivalSpearMan < CClotBody
 		
 	}
 	
-	public MedivalSpearMan(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalSpearMan(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSpearMan npc = view_as<MedivalSpearMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
 		SetVariantInt(1);

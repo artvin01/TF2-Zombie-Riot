@@ -75,7 +75,7 @@ methodmap ArkSlugAcid < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	
-	public ArkSlugAcid(int client, float vecPos[3], float vecAng[3], int ally)
+	public ArkSlugAcid(float vecPos[3], float vecAng[3], int ally)
 	{
 		ArkSlugAcid npc = view_as<ArkSlugAcid>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", "2080", ally, false));
 		// Acid Originium Slug (HP)

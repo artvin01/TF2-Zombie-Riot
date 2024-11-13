@@ -76,9 +76,9 @@ public void XenoFortifiedFastZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoFortifiedFastZombie(client, vecPos, vecAng, ally);
+	return XenoFortifiedFastZombie(vecPos, vecAng, team);
 }
 
 methodmap XenoFortifiedFastZombie < CClotBody
@@ -181,7 +181,7 @@ methodmap XenoFortifiedFastZombie < CClotBody
 	
 	
 	
-	public XenoFortifiedFastZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoFortifiedFastZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoFortifiedFastZombie npc = view_as<XenoFortifiedFastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "400", ally));
 		

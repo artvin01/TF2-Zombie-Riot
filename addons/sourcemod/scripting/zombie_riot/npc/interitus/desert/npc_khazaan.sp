@@ -58,9 +58,9 @@ void DesertKhazaan_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DesertKhazaan(client, vecPos, vecAng, ally);
+	return DesertKhazaan(vecPos, vecAng, team);
 }
 
 methodmap DesertKhazaan < CClotBody
@@ -102,7 +102,7 @@ methodmap DesertKhazaan < CClotBody
 	}
 	
 	
-	public DesertKhazaan(int client, float vecPos[3], float vecAng[3], int ally)
+	public DesertKhazaan(float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertKhazaan npc = view_as<DesertKhazaan>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "900", ally));
 		

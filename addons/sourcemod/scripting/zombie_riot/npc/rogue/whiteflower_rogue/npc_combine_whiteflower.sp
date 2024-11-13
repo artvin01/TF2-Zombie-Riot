@@ -81,9 +81,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("rpg_fortress/enemy/whiteflower_dash.mp3");
 	PrecacheSoundCustom("#rpg_fortress/music/combine_elite_iberia_grandpabard.mp3");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Whiteflower_Boss(client, vecPos, vecAng, ally, data);
+	return Whiteflower_Boss(vecPos, vecAng, team, data);
 }
 
 methodmap Whiteflower_Boss < CClotBody
@@ -239,7 +239,7 @@ methodmap Whiteflower_Boss < CClotBody
 		}
 		return -1;
 	}
-	public Whiteflower_Boss(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Whiteflower_Boss(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Whiteflower_Boss npc = view_as<Whiteflower_Boss>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 

@@ -41,9 +41,9 @@ void SeaCrawler_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaCrawler(client, vecPos, vecAng, ally, data);
+	return SeaCrawler(vecPos, vecAng, team, data);
 }
 
 methodmap SeaCrawler < CSeaBody
@@ -69,7 +69,7 @@ methodmap SeaCrawler < CSeaBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaCrawler(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SeaCrawler(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeaCrawler npc = view_as<SeaCrawler>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", data[0] ? "5250" : "3750", ally, false, true));
 		// 25000 x 0.15

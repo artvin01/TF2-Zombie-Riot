@@ -138,9 +138,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RaidbossBobTheFirst(vecPos, vecAng, ally, data);
+	return RaidbossBobTheFirst(vecPos, vecAng, team, data);
 }
 
 methodmap RaidbossBobTheFirst < CClotBody

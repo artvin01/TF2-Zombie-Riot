@@ -58,9 +58,9 @@ static void ClotPrecache()
 
 	
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Lazius(client, vecPos, vecAng, ally);
+	return Lazius(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -129,7 +129,7 @@ methodmap Lazius < CClotBody
 	}
 	
 	
-	public Lazius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lazius(float vecPos[3], float vecAng[3], int ally)
 	{
 		Lazius npc = view_as<Lazius>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 		

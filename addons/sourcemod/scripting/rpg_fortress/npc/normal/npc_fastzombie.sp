@@ -72,9 +72,9 @@ public void FastZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FastZombie(client, vecPos, vecAng, ally);
+	return FastZombie(vecPos, vecAng, team);
 }
 
 methodmap FastZombie < CClotBody
@@ -137,7 +137,7 @@ methodmap FastZombie < CClotBody
 		
 	}
 
-	public FastZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public FastZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		FastZombie npc = view_as<FastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "300", ally, false,_,_,_,_));
 		

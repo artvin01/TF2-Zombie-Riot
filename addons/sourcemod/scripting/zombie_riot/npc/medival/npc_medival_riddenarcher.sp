@@ -82,9 +82,9 @@ void MedivalRiddenArcher_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalRiddenArcher(client, vecPos, vecAng, ally);
+	return MedivalRiddenArcher(vecPos, vecAng, team);
 }
 methodmap MedivalRiddenArcher < CClotBody
 {
@@ -146,7 +146,7 @@ methodmap MedivalRiddenArcher < CClotBody
 		
 	}
 	
-	public MedivalRiddenArcher(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalRiddenArcher(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalRiddenArcher npc = view_as<MedivalRiddenArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "6500", ally));
 		SetVariantInt(1);

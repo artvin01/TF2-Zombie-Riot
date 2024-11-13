@@ -32,9 +32,9 @@ public void StartChicken_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return StartChicken(client, vecPos, vecAng, ally);
+	return StartChicken(vecPos, vecAng, team);
 }
 
 methodmap StartChicken < CClotBody
@@ -56,7 +56,7 @@ methodmap StartChicken < CClotBody
 	}
 	
 	
-	public StartChicken(int client, float vecPos[3], float vecAng[3], int ally)
+	public StartChicken(float vecPos[3], float vecAng[3], int ally)
 	{
 		StartChicken npc = view_as<StartChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false,_,_,_,{16.0,16.0,36.0}));
 		

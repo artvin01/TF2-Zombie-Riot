@@ -41,9 +41,9 @@ void WinterFreezingCleaner_OnMapStart_NPC()
 	Rogue_Paradox_AddWinterNPC(id);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WinterFreezingCleaner(client, vecPos, vecAng, ally);
+	return WinterFreezingCleaner(vecPos, vecAng, team);
 }
 
 methodmap WinterFreezingCleaner < CClotBody
@@ -101,7 +101,7 @@ methodmap WinterFreezingCleaner < CClotBody
 		}
 	}
 	
-	public WinterFreezingCleaner(int client, float vecPos[3], float vecAng[3], int ally)
+	public WinterFreezingCleaner(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterFreezingCleaner npc = view_as<WinterFreezingCleaner>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "3000", ally));
 		

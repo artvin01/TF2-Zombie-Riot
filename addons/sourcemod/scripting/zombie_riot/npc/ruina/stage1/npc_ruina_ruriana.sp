@@ -68,9 +68,9 @@ static void ClotPrecache()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Ruriana(client, vecPos, vecAng, ally);
+	return Ruriana(vecPos, vecAng, team);
 }
 
 methodmap Ruriana < CClotBody
@@ -124,7 +124,7 @@ methodmap Ruriana < CClotBody
 	
 	
 	
-	public Ruriana(int client, float vecPos[3], float vecAng[3], int ally)
+	public Ruriana(float vecPos[3], float vecAng[3], int ally)
 	{
 		Ruriana npc = view_as<Ruriana>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		

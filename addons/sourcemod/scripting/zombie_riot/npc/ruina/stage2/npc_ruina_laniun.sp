@@ -76,9 +76,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Laniun(client, vecPos, vecAng, ally);
+	return Laniun(vecPos, vecAng, team);
 }
 
 methodmap Laniun < CClotBody
@@ -170,7 +170,7 @@ methodmap Laniun < CClotBody
 	}
 	
 	
-	public Laniun(int client, float vecPos[3], float vecAng[3], int ally)
+	public Laniun(float vecPos[3], float vecAng[3], int ally)
 	{
 		Laniun npc = view_as<Laniun>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		

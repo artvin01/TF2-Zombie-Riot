@@ -93,9 +93,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangeAttackSound);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Levita(client, vecPos, vecAng, ally, data);
+	return Levita(vecPos, vecAng, team, data);
 }
 
 methodmap Levita < CClotBody
@@ -149,7 +149,7 @@ methodmap Levita < CClotBody
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 	}
-	public Levita(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Levita(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Levita npc = view_as<Levita>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1000", ally, false));
 
