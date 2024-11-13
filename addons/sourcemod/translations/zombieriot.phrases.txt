@@ -1909,6 +1909,11 @@
 		"nl"		"Kon niet worden gekocht {1}."
 		"chi"       "无法购买 {1}."
 	}
+	"Pickup Gift"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"The player {crimson}{1} picked up a gift box! Everyone gains {green} {2} XP!"
+	}
 	"Press TAB To open the store"
 	{
 		"en"		"Press TAB To open the store"

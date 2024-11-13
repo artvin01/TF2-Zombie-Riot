@@ -616,7 +616,6 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
 		float powerup_pos[3];
-		float client_pos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
 		if(f_RingDelayGift[entity] < GetGameTime())
 		{
@@ -654,12 +653,11 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 				{
 					if (GetTeam(i)== TFTeam_Red && IsEntityAlive(i))
 					{
-						float EntityLocation[3], TargetLocation[3]; 
-						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+						float TargetLocation[3]; 
 						GetClientAbsOrigin( i, TargetLocation ); 
 						
 						
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						float distance = GetVectorDistance( powerup_pos, TargetLocation, true ); 
 						if( TargetDistance ) 
 						{
 							if( distance < TargetDistance ) 
@@ -680,6 +678,17 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 			{
 				//picked up!
 				
+				for( int i = 1; i <= MaxClients; i++ ) 
+				{
+					if (IsValidClient(i))
+					{
+						if (GetTeam(i)== TFTeam_Red && IsEntityAlive(i))
+						{
+							SetGlobalTransTarget(i);
+						//	CPrintToChat(i,"Pickup Gift", )
+						}
+					}
+				}
 				if (IsValidEntity(glow))
 				{
 					RemoveEntity(glow);
