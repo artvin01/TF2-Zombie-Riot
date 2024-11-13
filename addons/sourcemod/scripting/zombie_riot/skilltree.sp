@@ -460,7 +460,7 @@ static void TreeMenu(int client)
 	}
 	else
 	{
-		strcopy(buffer, sizeof(buffer), "						");
+		strcopy(buffer, sizeof(buffer), "															");
 	}
 
 	// Center
@@ -474,15 +474,7 @@ static void TreeMenu(int client)
 	}
 
 	// Count spaces from the left side
-	length = strlen(buffer);
-	int leftSize = length * 2;
-	for(int i; i < length; i++)
-	{
-		if(buffer[i] == ' ')
-			leftSize--;
-	}
-
-	leftSize += strlen(skill.Name);
+	int leftSize = strlen(buffer) - 3;
 
 	char leftBuffer[3][20];	// Space cap
 	if(leftSize > (sizeof(leftBuffer[]) - 2))
