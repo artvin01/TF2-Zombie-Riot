@@ -422,11 +422,7 @@ static void TreeMenu(int client)
 		if(dir != -1)
 		{
 			strcopy(names[dir], sizeof(names[]), name);
-			if(!parent && skill2.Key[0] && !Items_HasNamedItem(client, skill2.Key))
-			{
-				Format(buffers[dir], sizeof(buffers[]), "{???}");
-			}
-			else if(!parent && skill2.MinNeed > charge)
+			if(!parent && skill2.MinNeed > charge)
 			{
 				Format(buffers[dir], sizeof(buffers[]), "%c%c {%d}", skill2.Name[0], skill2.Name[1], skill2.MinNeed);
 			}
@@ -460,17 +456,17 @@ static void TreeMenu(int client)
 	}
 	else
 	{
-		strcopy(buffer, sizeof(buffer), "															");
+		strcopy(buffer, sizeof(buffer), "										");
 	}
 
 	// Center
 	if(skill.MaxCap > 1)
 	{
-		Format(buffer, sizeof(buffer), "%s %t [%d/%d]", buffer, skill.Name, charge, skill.MaxCap);
+		Format(buffer, sizeof(buffer), "%s (%t [%d/%d])", buffer, skill.Name, charge, skill.MaxCap);
 	}
 	else
 	{
-		Format(buffer, sizeof(buffer), "%s %t [%s]", buffer, skill.Name, charge ? "X" : "  ");
+		Format(buffer, sizeof(buffer), "%s (%t [%s])", buffer, skill.Name, charge ? "X" : "  ");
 	}
 
 	// Count spaces from the left side
@@ -485,13 +481,13 @@ static void TreeMenu(int client)
 		leftBuffer[0][i] = '	';
 	}
 
-	length = leftSize - (strlen(buffers[UP]) / 2);
+	length = leftSize - (strlen(buffers[UP]) / 3);
 	for(int i; i < length; i++)
 	{
 		leftBuffer[1][i] = '	';
 	}
 
-	length = leftSize - (strlen(buffers[DOWN]) / 2);
+	length = leftSize - (strlen(buffers[DOWN]) / 3);
 	for(int i; i < length; i++)
 	{
 		leftBuffer[2][i] = '	';
@@ -546,7 +542,11 @@ static void TreeMenu(int client)
 
 	bool upgrade;
 	
-	if(!charge)
+	if(skill.Key[0] && !Items_HasNamedItem(client, skill.Key))
+	{
+		Format(buffer, sizeof(buffer), "Requires \"%s\"", skill.Key);
+	}
+	else if(!charge)
 	{
 		Format(buffer, sizeof(buffer), "%t (%d / %d)", "Unlock Skill", points, skill.Cost);
 		upgrade = points >= skill.Cost;
