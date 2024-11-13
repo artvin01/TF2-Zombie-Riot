@@ -490,19 +490,19 @@ static void TreeMenu(int client)
 	
 	for(int i; i < leftSize; i++)
 	{
-		leftBuffer[i][0] = '	';
+		leftBuffer[0][i] = '	';
 	}
 
 	length = leftSize - (strlen(buffers[UP]) / 2);
 	for(int i; i < length; i++)
 	{
-		leftBuffer[i][1] = '	';
+		leftBuffer[1][i] = '	';
 	}
 
 	length = leftSize - (strlen(buffers[DOWN]) / 2);
 	for(int i; i < length; i++)
 	{
-		leftBuffer[i][2] = '	';
+		leftBuffer[2][i] = '	';
 	}
 
 	// Right Side
