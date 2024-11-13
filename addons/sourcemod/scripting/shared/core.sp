@@ -542,6 +542,7 @@ float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
 float f_BannerAproxDur[MAXENTITIES];
 float f_BuffBannerNpcBuff[MAXENTITIES];
+float f_BobDuckBuff[MAXENTITIES];
 float f_AncientBannerNpcBuff[MAXENTITIES];
 float f_FallenWarriorDebuff[MAXENTITIES];
 float f_BattilonsNpcBuff[MAXENTITIES];
@@ -686,7 +687,6 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
-int RogueTheme;
 float f_TimeSinceLastGiveWeapon[MAXENTITIES]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
 int Resupplies_Supplied[MAXTF2PLAYERS];
@@ -3054,6 +3054,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_BannerDurationActive[entity] = 0.0;
 		f_BannerAproxDur[entity] = 0.0;
 		f_BuffBannerNpcBuff[entity] = 0.0;
+		f_BobDuckBuff[entity] = 0.0;
 		f_BattilonsNpcBuff[entity] = 0.0;
 		f_AncientBannerNpcBuff[entity] = 0.0;
 		f_DuelStatus[entity] = 0.0;

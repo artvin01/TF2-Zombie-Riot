@@ -49,7 +49,7 @@ public void MercHuman_Activation_DEEnable_form_4(int client)
 
 public void MercHuman_TakeDamage4th(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(Expidonsa_InRageMode[victim])
+	if(Expidonsa_InRageMode[victim] && f_HumanRevivalLogic[victim] < GetGameTime())
 	{
 		int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 		//damage is more then their health, they will die.

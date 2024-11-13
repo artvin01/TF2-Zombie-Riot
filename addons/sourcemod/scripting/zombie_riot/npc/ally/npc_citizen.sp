@@ -1660,7 +1660,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 			wave += 15;
 	}
 	
-	npc.m_fGunRangeBonus = 1.0;
+	//npc.m_fGunRangeBonus = 1.0;
 	npc.m_iAttacksTillReload = npc.m_iGunClip;
 	npc.m_bFirstBlood = false;
 	npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;

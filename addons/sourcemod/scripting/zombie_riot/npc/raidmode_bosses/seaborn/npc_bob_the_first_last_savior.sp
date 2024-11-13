@@ -199,7 +199,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 	}
 	public void PlayRandomEnemyPullSound()
 	{
-		EmitSoundToAll(PullRandomEnemyAttack[GetRandomInt(0, sizeof(PullRandomEnemyAttack) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(PullRandomEnemyAttack[GetRandomInt(0, sizeof(PullRandomEnemyAttack) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME - 0.1);
 	}
 	public void PlayRocketHoming()
 	{
@@ -1804,7 +1804,7 @@ public Action Smite_Timer_Bob(Handle Smite_Logic, DataPack pack)
 		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
 		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);	
 		
-		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 120);
+		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 80);
 		
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
@@ -2061,10 +2061,11 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 			{
 				if(victim <= MaxClients)
 				{
-					hullMin[0] = 0.0;
-					hullMin[1] = 0.0;
-					hullMin[2] = 400.0;
-					TeleportEntity(victim, _, _, hullMin, true);
+					float newVel[3];
+					newVel[0] = GetEntPropFloat(victim, Prop_Send, "m_vecVelocity[0]");
+					newVel[1] = GetEntPropFloat(victim, Prop_Send, "m_vecVelocity[1]");
+					newVel[2] = 400.0;
+					TeleportEntity(victim, _, _, newVel, true);
 				}
 				else if(!b_NpcHasDied[victim])
 				{

@@ -250,6 +250,7 @@ ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
+ConVar zr_raidmultihp;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -1428,7 +1429,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				if(dieingstate[client] != -5)
 				{
 					GiveCompleteInvul(client, 2.0);
-					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 90, _, 1.0);
+					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 70, _, 0.7);
 					MakePlayerGiveResponseVoice(client, 3); //Revived response!
 				}
 				SetEntityMoveType(client, MOVETYPE_WALK);

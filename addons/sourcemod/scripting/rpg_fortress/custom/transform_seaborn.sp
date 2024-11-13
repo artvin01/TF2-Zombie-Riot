@@ -96,9 +96,9 @@ public void Seaborn_Activation_Enable_form_2(int client)
 
 	ParticleEffectAt(pos, "halloween_boss_summon", 8.0);
 	
-	float precent = GetClientHealth(client) / float(ReturnEntityMaxHealth(client));
-	TF2_AddCondition(client, TFCond_HalloweenGiant);
-	SetEntityHealth(client, RoundFloat(ReturnEntityMaxHealth(client) * precent));
+	//float precent = GetClientHealth(client) / float(ReturnEntityMaxHealth(client));
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.1);
+	//SetEntityHealth(client, RoundFloat(ReturnEntityMaxHealth(client) * precent));
 }
 
 public void Seaborn_Activation_Disable_form_2(int client)
@@ -116,9 +116,9 @@ public void Seaborn_Activation_Disable_form_2(int client)
 		SetParent(client, entity);
 	}
 
-	float precent = GetClientHealth(client) / float(ReturnEntityMaxHealth(client));
-	TF2_RemoveCondition(client, TFCond_HalloweenGiant);
-	SetEntityHealth(client, RoundFloat(ReturnEntityMaxHealth(client) * precent));
+	//float precent = GetClientHealth(client) / float(ReturnEntityMaxHealth(client));
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
+	//SetEntityHealth(client, RoundFloat(ReturnEntityMaxHealth(client) * precent));
 }
 
 public bool Seaborn_Activation_Require_form_3(int client)

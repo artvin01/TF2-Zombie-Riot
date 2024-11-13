@@ -575,9 +575,12 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 	{
 		if(Leper_SolemnyChargeCD[client] < GetGameTime())
 		{
-			Leper_SolemnyCharge[client] --;
-			if(Leper_SolemnyCharge[client] <= 0)
-				Leper_SolemnyCharge[client] = 0;
+			if(!Waves_InSetup())
+			{
+				Leper_SolemnyCharge[client] --;
+				if(Leper_SolemnyCharge[client] <= 0)
+					Leper_SolemnyCharge[client] = 0;
+			}
 
 			Leper_SolemnyChargeCD[client] = GetGameTime() + 3.5;
 		}

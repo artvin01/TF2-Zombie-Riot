@@ -163,6 +163,8 @@ public void Weapon_Walter_M2(int client, int weapon, bool &result, int slot)
 			
 			SetEntData(entity, iAmmoTable, 6);
 			SetEntProp(entity, Prop_Send, "m_iClip1", 6);
+			ClipSaveSingle(client, entity);
+			ClipSaveSingle(client, entity);
 
 			ClientCommand(client, "playgamesound mvm/mvm_tele_activate.wav");
 

@@ -709,7 +709,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 46:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Silvester And Goggles Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Silvester And Waldch Killing awards 5k credits!");
 			RaidFight = 3;
 		}
 		case 47:

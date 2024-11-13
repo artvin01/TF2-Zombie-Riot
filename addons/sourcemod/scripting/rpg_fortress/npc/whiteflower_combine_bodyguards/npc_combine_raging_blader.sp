@@ -232,7 +232,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 	npc.PlayKilledEnemySound(npc.m_iTarget);
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 400.0, "ACT_RUN", "ACT_IDLE", 0.0, gameTime);
-	if(!b_NpcUnableToDie[npc.index])
+	if(!b_NpcUnableToDie[npc.index] && !b_NpcIsInADungeon[npc.index])
 	{
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{

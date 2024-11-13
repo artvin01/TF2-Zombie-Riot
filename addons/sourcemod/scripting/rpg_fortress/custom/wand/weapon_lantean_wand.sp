@@ -116,6 +116,8 @@ public void Weapon_Lantean_Mouse1(int client, int weapon, bool crit, int slot)
 
 		time *= Attributes_Get(weapon, 102, 1.0);
 
+		time *= 3.0;
+
 		switch(pap)
 		{
 			case 0:

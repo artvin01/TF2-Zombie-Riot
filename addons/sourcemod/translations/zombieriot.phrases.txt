@@ -1336,7 +1336,7 @@
 	{
 		"en" 		"Special Zombies Help?"
 		"fr" 		"Aide Zombies Spéciaux?"
-		"ru" 		"Особые зомби?"
+		"ru" 		"Помощь с Особыми зомби?"
 		"de"		"Speziale Zombies Hilfe?"
 		"pt"		"Ajuda com zumbis especiais?"
 		"nl"		"Hulp met speciale zombies?"
@@ -1346,7 +1346,7 @@
 	{
 		"en" 		"Revival Help?"
 		"fr" 		"Aide Résurrection?"
-		"ru" 		"Оживл. игрока?"
+		"ru" 		"Оживление игрока?"
 		"de"		"Wiederbelebungshilfe?"
 		"pt"		"Ajuda com Ressureções?"
 		"nl"		"Hulp met het tot leven brengen?"
@@ -1691,7 +1691,7 @@
 	{
 		"en" 		"Connect 4"
 		"fr" 		"Puissance 4"
-		"ru" 		"Собери 4"
+		"ru" 		"Соедени 4"
 		"de"		"Verbinden 4"
 		"pt"		"Conecte-4"
 		"nl"		"Connect Vier"
@@ -1750,7 +1750,7 @@
 	{
 		"en" 		"Raidboss"
 		"fr" 		"Boss de Raid"
-		"ru" 		"Босс"
+		"ru" 		"Рейд Босс"
 		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
 		"nl"		"Invalsbaas"
 		"chi"		"世界级Boss"
@@ -1758,6 +1758,7 @@
 	"Superboss"
 	{
 		"en" 		"Superboss"
+		"ru" 		"Супер босс"
 		"fr" 		"Super Boss"
 		"chi"		"Super-Boss"
 	}
@@ -1775,7 +1776,7 @@
 	{
 		"en" 		"TIME LEFT"
 		"fr" 		"TEMPS RESTANT"
-		"ru" 		"ОСТАЛОСЬ"
+		"ru" 		"ОСТАЛОСЬ ВРЕМЕНИ"
 		"de"		"ZEIT VERBLEIBT"
 		"pt"		"TEMPO RESTANTE"
 		"nl"		"OVERIGE TIJD"
@@ -1804,6 +1805,7 @@
 	"TF2: Zombie Riot"
 	{
 		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
+		"ru" 		"TF2: Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
 		"fr" 		"TF2: Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 	}
@@ -1890,6 +1892,7 @@
 	{
 
 	//	"en"		"Your last equipped level perks were restored"
+	//	"ru"		"Ваш последний экипированный Навык уровня был восстоновлен"
 	//	"de"		"Ihre letzten level perks wurden wiederhergestellt."
 	//	"pt"		"Sua ultima habilidade de nível foi restaurada"
 	//	"nl"		"Uw laatste gebruike level perks werden herstelt
@@ -1945,7 +1948,7 @@
 	{
 		"en"		"Difficulty set to"
 		"fr"		"La difficulté est maintenant"
-		"ru"		"Установлена сложность"
+		"ru"		"Сложность установлена на"
 		"de"		"Schwierigkeitgrad eingestellt auf"
 		"pt"		"Dificuldade definida para"
 		"nl"		"Moeilijkheidsgraad werd gesteld op"
@@ -1998,7 +2001,7 @@
 		"#format"	"{1:d}"
 		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
 		"fr"		"L'ennemi à recherché le niveau {1} pour leur technologie!!!!"
-		"ru"		"Враг исследовал своё снаряжение до уров. {1}!!!"
+		"ru"		"Враг исследовал своё снаряжение до {1}!!! уровня"
 		"pt"		"O adversario pesquisou seu equipamento para duelar {1}!!!"
 		"nl"		"De vijand heeft hun uitrusting naar level {1} gebracht!!!"
 		"chi"       "僵尸的装备已升级!!!{1}"
@@ -2126,7 +2129,7 @@
 	{
 		"en"		"Buy Only Free Items"
 		"fr"		"Recevoir Seulement Gratuit"
-		"ru"		"Купить бесплатные"
+		"ru"		"Купить только бесплатные"
 		"pt"		"Comprar apenas os itens grátis"
 		"nl"		"Koop alleen graties artikelen"
 		"chi"       "只购买免费商品"
@@ -2170,7 +2173,7 @@
 		"#format"	"{1:d}"
 		"en"		"{1} Loadout Slot(s)"
 		"fr"		"{1} Espace(s) de Chargement"
-		"ru"		"Ячеек: {1}"
+		"ru"		"Ячеек снаряжения: {1}"
 		"pt"		"Vagas para Loadout: {1}"
 		"nl"		"{1} Loadout Slot(en)"
 	}
@@ -2216,7 +2219,7 @@
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
 		"fr"		"Vous ne pouvez plus équipper plus d'armes, des armes pourraient être pas équippés."
-		"ru"		"Вы достигли максимального количества оружия, некоторые из них могли быть не выданы."
+		"ru"		"Вы достигли максимального количества оружия, некоторые из них могли быть не экипированны."
 		"pt"		"Você alcançou o numero maximo de armas que você pode segurar, algumas podem não ter sido equipadas."
 		"nl"		"Je hebt het maximaal toegelaten wapens dat je mag dragen berijkt. Sommige werden niet gedragen."
 		"chi"       "你的武器数量达到了最大值，有些可能还没有装备。"
@@ -2523,9 +2526,9 @@
 	}
 	"Xeno_Wave_2"
 	{
-		"en"		"Silvester and Goggles didnt attack you for no reason."
+		"en"		"Silvester and Waldch didnt attack you for no reason."
 		"fr"		"Silvester et Goggles n'ont pas attaqué pour aucune raison."
-		"ru"		"Сильвестр и Гогглз не нападали на вас без причины."
+		"ru"		"Сильвестр и Валдч не нападали на вас без причины."
 		"chi"		"西尔维斯特和瓦德奇不是无缘无故攻击你的。"
 	}
 	"Xeno_Wave_3"
@@ -2554,7 +2557,7 @@
 		"#format"	"{1:d},{2:d}"
 		"en"		"You have summoned {1}/{2} Skull Servant(s)."
 		"fr"		"Vous avez convoqué {1}/{2} Crâne(s) Esclaves."
-		"ru"		"Вы вызвали {1}/{2} слуг черепа."
+		"ru"		"Вы вызвали {1}/{2} слугу череп."
 		"chi"		"你已经召唤了{1}/{2}骷髅仆人."
 	}
 	"Npc Stuck Spot Warning"
@@ -3101,13 +3104,15 @@
 	}
 	"Barracks Villager Desc"
 	{
-		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."	
+		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."
+		"ru" 		"Вспомогательная рука которая чинит,собирает ресурсы,И строит 1 башню для вас."	
 		"fr"		"Un assistant qui répare vos constructions, collectionne des ressources, et construit une tour pour vous."
 		"chi"       "一个修理、收集资源，为你建造一座塔的帮手。"
 	}
 	"Barracks Teutonic Knight Desc"
 	{
 		"en"		"The strongest of the strongest. Ultimate melee unit."	
+		"ru" 		"Сильнейший из сильнейших.Ультимативный блжиний юнит."
 		"fr"		"Le meilleur des meilleurs. L'unité corps à corps ultime."	
 		"chi"       "强者中的强者。终极近战单位。"
 	}
@@ -3118,6 +3123,7 @@
 	"Barracks Troop Classes"
 	{
 		"en"		"Research Troop Classes to train units (excludes villager)"
+		"ru" 		"Исследовать классы войск что бы тренеровать их (кроме жителя)"
 		"fr"		"Recherchez des Unités pour débuter leur formation. ( Le villageois est exclus. )"
 		"chi"       "训练士兵的专项技能（村民不包括在内）"
 	}
@@ -3127,29 +3133,34 @@
 	}
 	"Spike Masspickup Confirm"
 	{
-		"en"		"Look up and Press M2 again to confirm picking up all your spikes!"		
+		"en"		"Look up and Press M2 again to confirm picking up all your spikes!"
+		"ru" 		"Посмотрите вверх и снова нажмите M2 что бы подтвердить что вы взяли все шипы!"	
 		"fr"		"Visez vers le haut et appuyez sur M2 encore pour ramasser vos piques!"
 	}
 	"Spike Masspickup Done"
 	{
-		"en"		"Picked up all your spikes!"		
+		"en"		"Picked up all your spikes!"
+		"ru" 		"Вы подняли все ваши шипы!"		
 		"fr"		"Vous avez ramassé vos piques!"
 	}
 	"Spike Masspickup None"
 	{
-		"en"		"There are no spikes left to pick up."		
+		"en"		"There are no spikes left to pick up."	
+		"ru" 		"Больше нет шипов которые можно подобрать."	
 		"fr"		"Pas de piques à ramasser."
 		"chi"       "没有钉子可捡了。"
 	}
 	"Pre Round Pap Limit"
 	{
-		"en"		"The PAP is still booting up, wait untill the round starts."		
+		"en"		"The PAP is still booting up, wait untill the round starts."
+		"ru" 		"Машина улучшения все ещё загружается,Подождите пока начнётся раунд."		
 		"fr"		"La machine Pack-a-Punch se démarre, attendez pour le début du jeu."
 		"chi"       "PAP仍在启动，请等待回合开始。"
 	}
 	"Zombie Volume Setting Show"
 	{
 		"en"		"Zombie Volume Setting"
+		"ru" 		"Настройка Громкости Зомби"
 		"fr"		"Paramètres Volume des Zombies"
 		"chi"       "僵尸声音设置"
 	}
@@ -3162,6 +3173,7 @@
 	"Zombie In Battle Show"
 	{
 		"en"		"Zombie In Battle Time"
+		"ru" 		"Зомби во время битвы"
 		"fr"		"Temps en Combat pour Zombies"
 	}
 	"Zombie In Battle Logic Setting"
@@ -3750,6 +3762,7 @@
 	"Barbarians Mind Warning"
 	{
 		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
+		"ru" 	"Вы Слишком Глупы что бы наносить урон чем либо кроме Ближнего боя!!"
 		"fr"	"Vous êtes trop enragés pour utiliser des armes autre que corps à corps!!"
 		"chi"	"你装备了野蛮人思维，无法造成近战外任何伤害！"
 	}
@@ -3762,6 +3775,7 @@
 	"Modifier set to"
 	{
 		"en"	"Modifier set to"
+		"ru" 	"Модификатор установлен на"
 		"fr"	"Le modifieur est maintenant"
 		"chi"	"难度已设为："
 	}
@@ -3834,6 +3848,7 @@
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
+		"ru" "Иберия & Немал"
 		"fr" "Iberia & Nemal"
 		"chi"	"伊比利亚 & 尼莫尔"
 	}
@@ -3841,6 +3856,10 @@
 	{
 		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
+	}
+	"Revenant's Shadow"
+	{
+		"en" "Revenant's Shadow"
 	}
 	"Victoria Raid Desc"
 	{

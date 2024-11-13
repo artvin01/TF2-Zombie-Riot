@@ -629,8 +629,8 @@ void Passanger_CauseCoolSoundEffect(float StartLightningPos[3])
 	Angles [1] = GetRandomFloat(-180.0, 180.0);
 	TeleportEntity(particle_extra, NULL_VECTOR, Angles, NULL_VECTOR);				
 
-	EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_HIT, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, StartLightningPos);
-	EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_HIT, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, StartLightningPos);	
+	EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_HIT, 0, SNDCHAN_AUTO, 80, SND_NOFLAGS, 0.9, SNDPITCH_NORMAL, -1, StartLightningPos);
+	EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_HIT, 0, SNDCHAN_AUTO, 80, SND_NOFLAGS, 0.9, SNDPITCH_NORMAL, -1, StartLightningPos);	
 }
 
 void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])

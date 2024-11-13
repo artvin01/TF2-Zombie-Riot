@@ -225,6 +225,7 @@ enum
 
 static bool InRogueMode;
 
+static Handle VoteTimer;
 static ArrayList Voting;
 static float VoteEndTime;
 static int VotedFor[MAXTF2PLAYERS];
@@ -239,6 +240,7 @@ static ArrayList Floors;
 static int GameState;
 static Handle ProgressTimer;
 
+static int RogueTheme;
 static int CurrentFloor;
 static int CurrentCount;
 static int CurrentStage;
@@ -342,6 +344,11 @@ bool Rogue_NoDiscount()
 	return InRogueMode && !b_ResearchSquad;
 }
 
+int Rogue_Theme()
+{
+	return InRogueMode ? RogueTheme : -1;
+}
+
 void Rogue_MapStart()
 {
 	RogueTheme = 0;
@@ -377,7 +384,8 @@ void Rogue_SetupVote(KeyValues kv)
 	}
 	while(kv.GotoNextKey(false));
 
-	CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	if(!VoteTimer)
+		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
 	kv.Rewind();
 	kv.JumpToKey("Rogue");
@@ -573,7 +581,10 @@ public int Rogue_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 public Action Rogue_VoteDisplayTimer(Handle timer)
 {
 	if(!Voting)
+	{
+		VoteTimer = null;
 		return Plugin_Stop;
+	}
 	
 	DisplayHintVote();
 	return Plugin_Continue;
@@ -1386,7 +1397,8 @@ ArrayList Rogue_CreateGenericVote(Function func, const char[] title)
 void Rogue_StartGenericVote(float time = 20.0)
 {
 	Zero(VotedFor);
-	CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	if(!VoteTimer)
+		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
 	VoteEndTime = GetGameTime() + time;
 	CreateTimer(time, Rogue_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);

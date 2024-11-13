@@ -5520,13 +5520,13 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	return ClosestTarget;
 }
 
-stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
+stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false, int ignore = 0)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
 	for( int i = 1; i <= MaxClients; i++ ) 
 	{
-		if (IsValidClient(i))
+		if (i != ignore && IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
 			if (GetTeam(i)== GetTeam(entity) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true) && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.
@@ -9786,6 +9786,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 	}
 	*/
 
+	ResetTouchedentityResolve();
 	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
 
 	float vAngles[3], vDirection[3];								
@@ -9830,7 +9831,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 		}
 	}
 
-	Zero(b_TouchedEntity);
+	ResetTouchedentityResolve();
 }
 
 stock void ResolvePlayerCollisions_Npc_Internal(const float pos[3], const float mins[3], const float maxs[3],int entity=-1)
@@ -10773,7 +10774,7 @@ void MakeObjectIntangeable(int entity)
 
 
 static int BadSpotPoints[MAXTF2PLAYERS];
-void Spawns_CheckBadClient(int client, int checkextralogic = 0)
+stock void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 {
 #if defined ZR
 	if(CvarInfiniteCash.BoolValue)

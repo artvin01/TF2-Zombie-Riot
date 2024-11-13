@@ -435,7 +435,7 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
-	if(RogueTheme == BlueParadox && !force)
+	if(Rogue_Theme() == 1 && !force)
 	{
 		if(f_DomeInsideTest[entity] > GetGameTime())
 		{
@@ -2082,6 +2082,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 	else if(f_BattilonsNpcBuff[npc] > GameTime)
 		return true;
 	else if(f_BuffBannerNpcBuff[npc] > GameTime)
+		return true;
+	else if(f_BobDuckBuff[npc] > GameTime)
 		return true;
 	else if(f_AncientBannerNpcBuff[npc] > GameTime)
 		return true;

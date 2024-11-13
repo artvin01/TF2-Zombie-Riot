@@ -2218,11 +2218,11 @@ public void Dungeon_Spawn_WhiteflowerPowered(int entity)
 		CClotBody npc = view_as<CClotBody>(entity);
 		npc.m_iOverlordComboAttack = 1;
 		int health = ReturnEntityMaxHealth(entity);
-		health = RoundToNearest(float(health) * 2.0);
+		health = RoundToNearest(float(health) * 1.5);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);
 		fl_Extra_Damage[entity] *= 1.1;
-		i_HpRegenInBattle[entity] *= 2;
+		i_HpRegenInBattle[entity] = RoundToNearest(float(i_HpRegenInBattle[entity]) * 1.5);
 	}
 }
 

@@ -1362,7 +1362,7 @@ public Action Gambler_Orb_IEM_OnHatTouch(int entity, int client)
 		int particle = EntRefToEntIndex(Orb_Projectile_To_Particle[npc.index]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);

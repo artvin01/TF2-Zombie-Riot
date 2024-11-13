@@ -573,10 +573,13 @@ void Store_OnCached(int client)
 		{
 			amount = 75;
 		}
-		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 30") || Items_HasNamedItem(client, "ZR Contest 2024 Artist"))
+		else if(Items_HasNamedItem(client, "ZR Contest 2024 Top 30"))
 		{
 			amount = 50;
 		}
+		
+		if(Items_HasNamedItem(client, "ZR Contest 2024 Artist"))
+			amount += 50;
 
 		if(amount)
 		{
@@ -1390,6 +1393,8 @@ void Store_RogueEndFightReset()
 
 void Store_Reset()
 {
+	Store_RandomizeNPCStore(1);
+	
 	for(int c; c<MAXTF2PLAYERS; c++)
 	{
 		CashSpent[c] = 0;

@@ -588,6 +588,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 	
 	if(f_BuffBannerNpcBuff[attacker] > GameTime)
 		damage += basedamage * (0.25 * DamageBuffExtraScaling);
+
+	if(f_BobDuckBuff[attacker] > GameTime)
+		damage += basedamage * (0.25 * DamageBuffExtraScaling);
 	
 	//dont do reduce per player, its only 1 o 1 !!!
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)	//this doesnt get applied in groups.
@@ -1698,6 +1701,9 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	if(f_BattilonsNpcBuff[victim] > GameTime)
 		DamageRes *= RES_BATTILONS;
 
+	if(f_BobDuckBuff[victim] > GameTime)
+		DamageRes *= 0.9;
+
 	if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.
 		DamageRes *= 0.93;
 
@@ -2181,6 +2187,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_BuffBannerNpcBuff[victim] > GameTime) //hussar!
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "↖%s", Debuff_Adder_right);
+	}
+	if(f_BobDuckBuff[victim] > GameTime) 
+	{
+		Format(Debuff_Adder_right, SizeOfChar, "BOB%s", Debuff_Adder_right);
 	}
 	if(f_AncientBannerNpcBuff[victim] > GameTime) //hussar!
 	{
