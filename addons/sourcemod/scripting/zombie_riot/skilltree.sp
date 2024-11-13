@@ -55,7 +55,7 @@ static StringMapSnapshot SkillListSnap;
 static StringMap SkillCount[MAXTF2PLAYERS];
 static StringMapSnapshot SkillCountSnap[MAXTF2PLAYERS];
 static char Selected[MAXTF2PLAYERS][32];
-static int PointsSpent[MAXTF2PLAYERS]
+static int PointsSpent[MAXTF2PLAYERS];
 
 void SkillTree_PluginStart()
 {

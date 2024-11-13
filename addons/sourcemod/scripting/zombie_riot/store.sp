@@ -3024,6 +3024,10 @@ static void MenuPage(int client, int section)
 	}
 	else
 	{
+		int xpLevel = LevelToXp(Level[client]);
+		int xpNext = LevelToXp(Level[client]+1);
+		
+		int nextAt = xpNext-xpLevel;
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
@@ -3041,7 +3045,7 @@ static void MenuPage(int client, int section)
 			}
 			else if(Database_IsCached(client))
 			{
-				menu.SetTitle("%t\n \n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client], XpToLevel(client), "Credits", CurrentCash-CashSpent[client]);
+				menu.SetTitle("%t\n \n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
 			}
 			else
 			{
@@ -3060,7 +3064,7 @@ static void MenuPage(int client, int section)
 			}
 			else if(Database_IsCached(client))
 			{
-				menu.SetTitle("%t\n \n%t\n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client], XpToLevel(client), "Credits", CurrentCash-CashSpent[client], "Store Discount");
+				menu.SetTitle("%t\n \n%t\n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
 			}
 			else
 			{
@@ -3775,7 +3779,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					}
 					case -44:
 					{
-						XP[client] = XpToLevel(client);
+						XP[client] = LevelToXp(5);
 						GiveXP(client, 0);
 					}
 					case -24:

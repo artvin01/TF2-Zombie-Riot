@@ -702,7 +702,15 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							case Rarity_Mythic:
 								MultiExtra = 20;
 						}
-						int XpToGive = ((MAX_XP_FOR_LEVEL / 20) * (MultiExtra));
+						//xp to give?
+						int TempCalc = Level[client];
+						if(TempCalc >= 100)
+							TempCalc = 100;
+
+						TempCalc = LevelToXp(TempCalc);
+						TempCalc /= 40;
+
+						int XpToGive = TempCalc * MultiExtra;
 						CPrintToChat(i,"%t", "Pickup Gift", NameOfTheHero, XpToGive);
 						XP[i] += XpToGive;
 						GiveXP(i, 0);

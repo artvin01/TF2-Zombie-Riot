@@ -2248,19 +2248,14 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 	CheckAlivePlayers();
 }
 
-int XpToLevel(int client)
+int XpToLevel(int xp)
 {
-	int XpForLevel = MAX_XP_FOR_LEVEL / 2;
-
-	XpForLevel = RoundToNearest(float(XpForLevel) * (float(Level[client]) * 0.1));
-
-	if(XpForLevel > MAX_XP_FOR_LEVEL)
-	{
-		XpForLevel = MAX_XP_FOR_LEVEL;
-	}
-	return XpForLevel;
+	return RoundToFloor(Pow(xp / 200.0, 0.5));
 }
-
+int LevelToXp(int lv)
+{
+	return lv * lv * 200;
+}
 
 float XpFloatGive[MAXTF2PLAYERS];
 
@@ -2297,7 +2292,8 @@ void GiveXP(int client, int xp)
 
 	XP[client] += XpGive;
 
-	if(XP[client] >= XpToLevel(client))
+	int nextLevel = XpToLevel(XP[client]);
+	if(nextLevel > Level[client])
 	{
 		//	will get annoying really fast.
 		//	static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
@@ -2310,14 +2306,9 @@ void GiveXP(int client, int xp)
 		SetGlobalTransTarget(client);
 		PrintToChat(client, "%t", "Level Up", Level[client]);
 		
-		int SkillPointsGive = 0;
-		
-		while(XP[client] >= XpToLevel(client))
+		while(Level[client] < nextLevel)
 		{
-			XP[client] -= XpToLevel(client);
-			
 			Level[client]++;
-			SkillPointsGive += 3;
 
 			if(Level[client] == STARTER_WEAPON_LEVEL)
 			{
