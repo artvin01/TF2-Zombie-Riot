@@ -2252,7 +2252,7 @@ int XpToLevel(int client)
 {
 	int XpForLevel = MAX_XP_FOR_LEVEL / 2;
 
-	XpForLevel = float(XpForLevel) * (float(Level[client]) * 0.1);
+	XpForLevel = RoundToNearest(float(XpForLevel) * (float(Level[client]) * 0.1));
 
 	if(XpForLevel > MAX_XP_FOR_LEVEL)
 	{

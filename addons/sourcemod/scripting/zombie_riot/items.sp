@@ -652,7 +652,6 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 			{
 				if (IsValidClient(i))
 				{
-					CClotBody npc = view_as<CClotBody>(i);
 					if (GetTeam(i)== TFTeam_Red && IsEntityAlive(i))
 					{
 						float EntityLocation[3], TargetLocation[3]; 
