@@ -133,7 +133,6 @@ public void SkillPlayer_RecieveExtraHealingHigh(int client, StringMap map, int a
 public void SkillPlayer_ReviveTimeReduce(int client, StringMap map, int amount)
 {
 	// 1 every skill up
-	int ADD_ME_PLEASE1;
 	PlayerAdd(map, "4033", float(amount));
 }
 public void SkillPlayer_ReviveTimeReduceHigh(int client, StringMap map, int amount)
