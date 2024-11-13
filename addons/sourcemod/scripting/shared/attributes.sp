@@ -14,7 +14,8 @@ enum
 	Attrib_CritChance = 4030,
 	Attrib_ExtraCash = 4031,
 	Attrib_ExtraRogueCoins = 4032,
-	Attrib_ReviveTimeCut = 4033
+	Attrib_ReviveTimeCut = 4033,
+	Attrib_ExtendExtraCashGain = 4034
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

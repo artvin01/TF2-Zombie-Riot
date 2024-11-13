@@ -131,10 +131,23 @@ public void SkillPlayer_RecieveExtraHealingHigh(int client, StringMap map, int a
 public void SkillPlayer_ReviveTimeReduce(int client, StringMap map, int amount)
 {
 	// 1 every skill up
+	int ADD_ME_PLEASE1;
 	PlayerAdd(map, "4033", amount);
 }
 public void SkillPlayer_ReviveTimeReduceHigh(int client, StringMap map, int amount)
 {
 	// 5 every skill up
 	PlayerAdd(map, "4033", amount * 5);
+}
+
+public void SkillPlayer_ExtendExtraCash(int client, StringMap map, int amount)
+{
+	// 100 every skill up
+	int ADD_ME_PLEASE2;
+	PlayerAdd(map, "4034", amount * 100);
+}
+public void SkillPlayer_ExtendExtraCashHigh(int client, StringMap map, int amount)
+{
+	// 500 every skill up
+	PlayerAdd(map, "4034", amount * 500);
 }

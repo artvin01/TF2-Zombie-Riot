@@ -273,4 +273,20 @@
 	{
 		"en" 		"Reduce your revive time by 5 out of 250"
 	}
+	"Extra Cash Building Up"
+	{
+		"en"	"Extra Cash Building Up"
+	}
+	"Extra Cash Building Up Desc"
+	{
+		"en"	"Increace your max cap of building extra cash from 5000 by 100"
+	}
+	"Extra Cash Building Up High"
+	{
+		"en"	"Extra Cash Building UpHigh"
+	}
+	"Extra Cash Building Up High Desc"
+	{
+		"en"	"Increace your max cap of building extra cash from 5000 by 500"
+	}
 }
