@@ -88,7 +88,7 @@ void ConVar_PluginStart()
 	CvarRerouteToIp = CreateConVar("zr_rerouteip", "", "If the server is full, reroute", FCVAR_DONTRECORD);
 	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
 	CvarRerouteToIpAfk = CreateConVar("zr_rerouteipafk", "", "If the server is full, reroute", FCVAR_DONTRECORD);
-	CvarSkillPoints = CreateConVar("zr_skillpoints", "0", "If skill points are enabled", FCVAR_DONTRECORD);
+	CvarSkillPoints = CreateConVar("zr_skillpoints", "1", "If skill points are enabled", FCVAR_DONTRECORD);
 #else
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
