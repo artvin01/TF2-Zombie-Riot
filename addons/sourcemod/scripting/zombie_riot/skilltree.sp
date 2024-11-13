@@ -479,6 +479,7 @@ static int ResetSkillH(Menu menu, MenuAction action, int client, int choice)
 			MainMenu(client);
 		}
 	}
+	return 0;
 }
 
 // For Music
