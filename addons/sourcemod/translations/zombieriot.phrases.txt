@@ -95,7 +95,7 @@
 	"Current Skill Points"
 	{
 		"#format"	"{1:d}"
-		"en"		"Current Skillpoints: {1}"
+		"en"		"{green}Current Skillpoints: {1}"
 	}
 	"Credits_Menu_New"
 	{
@@ -1912,7 +1912,7 @@
 	"Pickup Gift"
 	{
 		"#format"	"{1:s},{2:d}"
-		"en"		"The player {crimson}{1} picked up a gift box! Everyone gains {green} {2} XP!"
+		"en"		"{green}''{1}'' picked up a gift box! Everyone gains {2} XP!"
 	}
 	"Press TAB To open the store"
 	{

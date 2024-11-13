@@ -785,55 +785,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	return damage;
 }
 
-bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype)
-{
-	if(attacker <= MaxClients)
-	{
-		if(i_BarbariansMind[attacker] == 1)	// Deal extra damage with melee, but none with everything else
-		{
-			int slot = -1;
-			if(IsValidEntity(weapon))
-			{
-				char classname[64];
-				GetEntityClassname(weapon, classname, sizeof(classname));
-				slot = TF2_GetClassnameSlot(classname);
-
-				if(i_OverrideWeaponSlot[weapon] != -1)
-				{
-					slot = i_OverrideWeaponSlot[weapon];
-				}
-			}	
-			bool DoNotPass = false;
-			if(IsValidEntity(weapon) && i_IsWandWeapon[weapon])
-				DoNotPass = true;
-
-			if((!DoNotPass) && (slot == 2 || (damagetype & (DMG_CLUB|DMG_SLASH)))) // if you want anything to be melee based, just give them this.
-			{
-				damage *= 1.1;
-			}
-			else
-			{
-				if(BarbariansMindNotif[attacker] < GetGameTime())
-				{
-					SetGlobalTransTarget(attacker);
-					PrintToChat(attacker,"%t", "Barbarians Mind Warning");
-					BarbariansMindNotif[attacker] = GetGameTime() + 15.0;
-				}
-				return true;
-			}
-		}
-	}
-	return false;
-}
 #endif	// ZR
 
 static stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
 {
 #if defined ZR
-	if(BarbariansMindLogic(attacker, weapon, damage, damagetype))
-	{
-		return true;
-	}
 	if(damagecustom>=TF_CUSTOM_SPELL_TELEPORT && damagecustom<=TF_CUSTOM_SPELL_BATS)
 		return true;
 
