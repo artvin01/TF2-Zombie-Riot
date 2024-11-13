@@ -780,7 +780,7 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		AcceptEntityInput(glow, "SetGlowColor");
 			
 		
-	//	f_RingDelayGift[m_iGift] = GetGameTime() + 2.0;
+		f_RingDelayGift[m_iGift] = 0.0;
 
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Detect_Player_Near_Gift, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
