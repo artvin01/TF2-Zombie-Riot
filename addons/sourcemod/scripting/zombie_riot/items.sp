@@ -712,7 +712,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								MultiExtra = 20;
 						}
 						//xp to give?
-						int TempCalc = Level[client];
+						int TempCalc = Level[i];
 						if(TempCalc >= 100)
 							TempCalc = 100;
 

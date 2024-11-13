@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define POINTS_PER_LEVEL	3
+#define POINTS_PER_LEVEL	2
 
 enum
 {
@@ -529,9 +529,9 @@ static void TreeMenu(int client)
 		Format(buffer, sizeof(buffer), "%t (%d / %d)", "Unlock Skill", points, skill.Cost);
 		upgrade = points >= skill.Cost;
 	}
-	else if(skill.MaxCharges > 1)
+	else if(skill.MaxCap > 1)
 	{
-		if(charge >= skill.MaxCharges)
+		if(charge >= skill.MaxCap)
 		{
 			Format(buffer, sizeof(buffer), "%t", "Fully Upgraded");
 		}
