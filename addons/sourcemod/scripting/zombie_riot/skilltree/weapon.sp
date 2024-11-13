@@ -102,6 +102,7 @@ public void SkillWeapon_SensalUp_All(int entity, StringMap map, int amount, int 
 }
 public void SkillWeapon_RepairSpeed(int entity, StringMap map, int amount, int client)
 {
-	// +0.1% every X
-	WeaponMulti(map, "95", amount * 0.001);
+	// +1.0% every X
+	//its very supportive to it needs to be higher!
+	WeaponMulti(map, "95", amount * 0.01);
 }

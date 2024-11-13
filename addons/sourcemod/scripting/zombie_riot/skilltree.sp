@@ -520,7 +520,7 @@ static void TreeMenu(int client)
 											leftBuffer, skill.Dir == DOWN ? "^" : "v",
 											leftBuffer, access[DOWN] ? "S" : "  ",
 											leftBuffer, skill.Dir == DOWN ? "^" : "v",
-											leftBuffer, skill.Dir == DOWN ? "^" : "v".
+											leftBuffer, skill.Dir == DOWN ? "^" : "v",
 											leftBuffer, buffers[DOWN]);
 	}
 	else
