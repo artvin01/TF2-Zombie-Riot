@@ -14,7 +14,7 @@ static float IDiying[MAXENTITIES];
 void VictorianDroneFragments_MapStart()
 {
 	PrecacheModel("models/props_teaser/saucer.mdl");
-	PrecacheModel("models/props_urban/urban_crate002.mdl");
+	PrecacheModel("models/combine_apc_dynamic.mdl");
 	PrecacheModel("models/buildables/gibs/sentry1_gib1.mdl");
 	PrecacheModel("models/buildables/gibs/sentry2_gib3.mdl");
 	PrecacheSound(g_DeathSounds);
@@ -53,7 +53,7 @@ methodmap VictorianDroneFragments < CClotBody
 	
 	public VictorianDroneFragments(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianDroneFragments npc = view_as<VictorianDroneFragments>(CClotBody(vecPos, vecAng, "models/props_urban/urban_crate002.mdl", "0.5", "3000", ally, _, true));
+		VictorianDroneFragments npc = view_as<VictorianDroneFragments>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
@@ -113,7 +113,7 @@ methodmap VictorianDroneFragments < CClotBody
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		float Vec[3], Ang[3]={0.0,0.0,0.0};
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable1 = npc.EquipItemSeperate("head", "models/buildables/gibs/sentry1_gib1.mdl",_,1,1.0,_,true);
+		npc.m_iWearable1 = npc.EquipItemSeperate("head", "models/buildables/gibs/sentry1_gib1.mdl",_,1,1.001,_,true);
 		Ang[0] = -90.0;
 		Ang[1] = 270.0;
 		Vec[1] -= 36.5;
@@ -122,7 +122,7 @@ methodmap VictorianDroneFragments < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/buildables/gibs/sentry2_gib3.mdl",_,1,1.0,_,true);
+		npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/buildables/gibs/sentry2_gib3.mdl",_,1,1.001,_,true);
 		Ang[0] = 30.0;
 		Ang[1] = 0.0;
 		Ang[2] = -90.0;
@@ -132,7 +132,7 @@ methodmap VictorianDroneFragments < CClotBody
 		TeleportEntity(npc.m_iWearable2, Vec, Ang, NULL_VECTOR);
 		
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable3 = npc.EquipItemSeperate("head", "models/buildables/gibs/sentry2_gib3.mdl",_,1,1.0,_,true);
+		npc.m_iWearable3 = npc.EquipItemSeperate("head", "models/buildables/gibs/sentry2_gib3.mdl",_,1,1.001,_,true);
 		Ang[0] = 30.0;
 		Ang[1] = 0.0;
 		Ang[2] = -90.0;
@@ -142,7 +142,7 @@ methodmap VictorianDroneFragments < CClotBody
 		TeleportEntity(npc.m_iWearable3, Vec, Ang, NULL_VECTOR);
 		
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable4 = npc.EquipItemSeperate("head", "models/props_teaser/saucer.mdl",_,1,1.0,_,true);
+		npc.m_iWearable4 = npc.EquipItemSeperate("head", "models/props_teaser/saucer.mdl",_,1,1.001,_,true);
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 80, 50, 50, 255);
 		
@@ -214,8 +214,13 @@ static void ClotThink(int iNPC)
 	{
 		npc.SetVelocity({0.0,0.0,0.0});
 		npc.m_flSpeed=0.0;
+		if(b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=false;
 	}
-	else npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
+	else
+	{
+		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
+		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
+	}
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
