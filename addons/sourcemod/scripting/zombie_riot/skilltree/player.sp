@@ -84,11 +84,13 @@ public void SkillPlayer_CashUpInfinite(int client, StringMap map, int amount)
 public void SkillPlayer_CashUpHigh(int client, StringMap map, int amount)
 {
 	// +20 every X
+	int PLEASE_ADD_THIS_ATTRIB_FOR_EXTRA_CASH;
 	PlayerAdd(map, "4031", amount * 20);
 }
 public void SkillPlayer_CashUpHighBarney(int client, StringMap map, int amount)
 {
 	// +30 every X
+	int PLEASE_ADD_THIS_ATTRIB_FOR_EXTRA_CASH;
 	PlayerAdd(map, "4031", amount * 30);
 }
 

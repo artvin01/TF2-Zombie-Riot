@@ -1,6 +1,30 @@
 
 "Phrases"
 {
+	"Skill Tree"
+	{
+		"en"	"Skill Tree"
+	}
+	"Skill Points"
+	{
+		"en"	"Skill Points"
+	}
+	"Unlock Skill"
+	{
+		"en"	"Unlock Skill"
+	}
+	"Fully Upgraded"
+	{
+		"en"	"Fully Upgraded"
+	}
+	"Upgrade Skill"
+	{
+		"en"	"Upgrade Skill"
+	}
+	"Unlocked"
+	{
+		"en"	"Unlocked"
+	}
 	"Luck Up 1"
 	{
 		"en" 		"Luck Up"
