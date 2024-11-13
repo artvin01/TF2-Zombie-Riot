@@ -283,9 +283,10 @@ methodmap Sensal < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.i_GunMode = 0;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
+		npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
+		npc.m_iOverlordComboAttack = 0;
 		BlockLoseSay = false;
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
@@ -302,11 +303,6 @@ methodmap Sensal < CClotBody
 
 		bool final = StrContains(data, "final_item") != -1;
 		
-		if(final)
-		{
-			i_RaidGrantExtra[npc.index] = 1;
-			b_NpcUnableToDie[npc.index] = true;
-		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -375,8 +371,8 @@ methodmap Sensal < CClotBody
 
 	//	Weapon
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		CPrintToChatAll("{lightblue}The Messenger{default}: Hello World!");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/scout/pn2_longfall.mdl");
@@ -400,7 +396,6 @@ methodmap Sensal < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-		SensalEffects(npc.index, view_as<int>(npc.Anger));
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -420,36 +415,16 @@ static void Internal_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	if(i_RaidGrantExtra[npc.index] == 50)
+	
+	if(m_flDoingAnimation < 0.0)
 	{
-		npc.m_flSpeed = 660.0;
-		BlockLoseSay = true;
-		if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+		if(IsValidEntity(npc.m_iWearable2))
 		{
-			npc.m_iTarget = GetClosestAlly(npc.index);
-			npc.m_flGetClosestTargetTime = GetRandomRetargetTime();
+			RemoveEntity(npc.m_iWearable2);
 		}
-		if(IsValidAlly(npc.index, npc.m_iTarget))
-		{
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			if(flDistanceToTarget < npc.GetLeadRadius()) 
-			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-			}
-			else 
-			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-				npc.StartPathing();
-			}
-		}
-		else
-		{
-			npc.m_flGetClosestTargetTime = 0.0;
-		}
-		return;
+		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 	}
 
 	if(LastMann)
@@ -511,12 +486,6 @@ static void Internal_ClotThink(int iNPC)
 		}
 		BlockLoseSay = true;
 	}
-
-	if(SensalTransformation(npc))
-		return;
-
-	if(SensalMassLaserAttack(npc))
-		return;
 
 	if (npc.IsOnGround())
 	{
@@ -659,15 +628,6 @@ static void Internal_NPCDeath(int entity)
 			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 		}					
 	}
-	if(i_RaidGrantExtra[npc.index] == 50)
-	{
-		if(XenoExtraLogic())
-			CPrintToChatAll("{blue}Sensal{default}: This area is restricted for all of you.");
-		else
-			CPrintToChatAll("{blue}Sensal{default}: You all are coming with me.");
-
-		return;
-	}
 	if(BlockLoseSay)
 		return;
 
@@ -702,7 +662,6 @@ void SensalAnimationChange(Sensal npc)
 	if(npc.m_iChanged_WalkCycle == 0)
 	{
 		npc.m_iChanged_WalkCycle = -1;
-		SensalEffects(npc.index, view_as<int>(npc.Anger));
 	}
 	switch(npc.i_GunMode)
 	{
@@ -805,7 +764,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flReloadIn = gameTime + 3.0;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
-			SensalGiveShield(npc.index, CountPlayersOnRed(1) * 3); //Give self a shield
 
 			SensalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
@@ -835,19 +793,12 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 		{
 			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 			npc.PlaySytheInitSound();
-			SensalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
-			npc.m_flNextRangedSpecialAttackHappens = gameTime + 7.5;
-			SensalGiveShield(npc.index, CountPlayersOnRed(1));
-
-			if(ZR_GetWaveCount()+1 >= 15)
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
-				
-			if(ZR_GetWaveCount()+1 >= 30)
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 5.5;
+			npc.m_flNextRangedSpecialAttackHappens = gameTime + 25.0;
+			npc.m_iOverlordComboAttack =  RoundToNearest(float(CountPlayersOnRed(2)) * 2.5); 
 		}
 	}
-	else if(ZR_GetWaveCount()+1 >= 30 && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+	else if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 	{
 		int Enemy_I_See;
 									
@@ -855,36 +806,26 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 						
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			SensalThrowScythes(npc);
-			if(IsValidEntity(npc.m_iWearable7))
+			if(IsValidEntity(npc.m_iWearable2))
 			{
-				RemoveEntity(npc.m_iWearable7);
+				RemoveEntity(npc.m_iWearable2);
 			}
+			npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
 			npc.m_flRangedSpecialDelay = gameTime + 15.5;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
-			npc.m_flDoingAnimation = gameTime + 99.0;
+			npc.m_flDoingAnimation = gameTime + 1.0;
 			npc.m_bisWalking = false;
-			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
+			npc.AddActivityViaSequence("layer_taunt04");
 			npc.m_flAttackHappens = 0.0;
 			npc.m_flAttackHappens_2 = gameTime + 1.4;
-			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 2);
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
-			if(ZR_GetWaveCount()+1 >= 60)
-			{
-				npc.m_flAttackHappens_2 = gameTime + 1.275;
-				npc.SetPlaybackRate(1.25);
-			}
 			float flPos[3];
 			float flAng[3];
 			npc.m_iChanged_WalkCycle = 0;
 			npc.GetAttachment("effect_hand_r", flPos, flAng);
-			if(!npc.Anger)
-				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-			else
-				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "flaregun_trail_red", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-
+			npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 		}
 	}	
 	else if(npc.m_flAttackHappens)
@@ -994,57 +935,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 }
 
 
-void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r")
-{
-	if(attachment[0])
-	{
-		CClotBody npc = view_as<CClotBody>(iNpc);
-		if(IsValidEntity(npc.m_iWearable7))
-		{
-			if(colour)
-			{
-				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 1);
-			}
-			else
-			{
-				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 0);
-			}
-		}
-		else
-		{
-			npc.m_iWearable7 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
-			SetVariantString("1.35");
-			AcceptEntityInput(npc.m_iWearable7, "SetModelScale");	
-			SetVariantInt(1);
-			AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
-			if(colour)
-			{
-				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 1);
-			}
-			else
-			{
-				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 0);
-			}
-		}
-	}
-	else
-	{
-		int ModelApply = ApplyCustomModelToWandProjectile(iNpc, WEAPON_CUSTOM_WEAPONRY_1, 1.65, "scythe_spin");
-
-		if(colour)
-		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
-		}
-		else
-		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
-		}
-		SetVariantInt(2);
-		AcceptEntityInput(ModelApply, "SetBodyGroup");
-	}
-}
-
-
 public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	Sensal npc = view_as<Sensal>(victim);if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
@@ -1126,7 +1016,6 @@ bool SensalTransformation(Sensal npc)
 			SetEntityRenderColor(npc.m_iWearable3, 255, 35, 35, 255);
 		//	i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SUPERSILVESTER;
 			i_NpcWeight[npc.index] = 4;
-			SensalEffects(npc.index, view_as<int>(npc.Anger));
 			npc.m_flRangedArmor = 0.7;
 			npc.m_flMeleeArmor = 0.875;		
 
