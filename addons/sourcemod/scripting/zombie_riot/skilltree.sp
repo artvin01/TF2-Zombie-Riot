@@ -424,11 +424,11 @@ static void TreeMenu(int client)
 			strcopy(names[dir], sizeof(names[]), name);
 			if(!parent && skill2.Key[0] && !Items_HasNamedItem(client, skill2.Key))
 			{
-				Format(buffers[dir], sizeof(buffers[]), "{%s}", skill2.Key);
+				Format(buffers[dir], sizeof(buffers[]), "{???}");
 			}
 			else if(!parent && skill2.MinNeed > charge)
 			{
-				Format(buffers[dir], sizeof(buffers[]), "%t {%d}", skill2.Name, skill2.MinNeed);
+				Format(buffers[dir], sizeof(buffers[]), "%c%c {%d}", skill2.Name[0], skill2.Name[1], skill2.MinNeed);
 			}
 			else
 			{
@@ -437,11 +437,11 @@ static void TreeMenu(int client)
 				
 				if(skill2.MaxCap > 1)
 				{
-					Format(buffers[dir], sizeof(buffers[]), "%t [%d/%d]", skill2.Name, size, skill2.MaxCap);
+					Format(buffers[dir], sizeof(buffers[]), "%c%c [%d/%d]", skill2.Name[0], skill2.Name[1], size, skill2.MaxCap);
 				}
 				else
 				{
-					Format(buffers[dir], sizeof(buffers[]), "%t [%s]", skill2.Name, size ? "X" : "  ");
+					Format(buffers[dir], sizeof(buffers[]), "%c%c [%s]", skill2.Name[0], skill2.Name[1], size ? "X" : "  ");
 				}
 			}
 		}
@@ -460,7 +460,7 @@ static void TreeMenu(int client)
 	}
 	else
 	{
-		strcopy(buffer, sizeof(buffer), "                                ");
+		strcopy(buffer, sizeof(buffer), "                      ");
 	}
 
 	// Center
