@@ -93,10 +93,12 @@ void SkillTree_ConfigSetup()
 	delete kv;
 }
 
-static void CfgSetup(const char[] intParent, KeyValues kv, int intDir)
+static bool CfgSetup(const char[] intParent, KeyValues kv, int intDir)
 {
 	char parent[32];
 	kv.GetSectionName(parent, sizeof(parent));
+	if(StrEqual(parent, "music"))
+		return false;
 
 	Skill skill;
 	strcopy(skill.Parent, sizeof(skill.Parent), intParent);
@@ -110,7 +112,8 @@ static void CfgSetup(const char[] intParent, KeyValues kv, int intDir)
 		int dir = intDir;
 		do
 		{
-			CfgSetup(parent, kv, dir);
+			if(!CfgSetup(parent, kv, dir))
+				continue;
 
 			dir++;
 			if(ReverseDir(intDir) == dir)	// Backwards
@@ -128,6 +131,8 @@ static void CfgSetup(const char[] intParent, KeyValues kv, int intDir)
 		while(kv.GotoNextKey());
 		kv.GoBack();
 	}
+
+	return true;
 }
 
 void SkillTree_ClearClient(int client)
