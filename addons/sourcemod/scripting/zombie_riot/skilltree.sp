@@ -266,14 +266,14 @@ int SkillTree_GetByName(int client, const char[] name)
 	for(int i; i < length; i++)
 	{
 		int size = SkillCountSnap[client].KeyBufferSize(i);
-		char[] name = new char[size];
-		SkillCountSnap[client].GetKey(i, name, size);
+		char[] id = new char[size];
+		SkillCountSnap[client].GetKey(i, id, size);
 
 		static Skill skill;
-		SkillList.GetArray(name, skill, sizeof(skill));
+		SkillList.GetArray(id, skill, sizeof(skill));
 		if(StrEqual(skill.Name, name))
 		{
-			SkillCount[client].GetValue(name, size);
+			SkillCount[client].GetValue(id, size);
 			amount += size;
 		}
 	}
