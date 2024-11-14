@@ -189,7 +189,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
 		//some raids dont scale with DMG, fix it here
 
-		enemy.Credits = 5000.0;
+		enemy.Credits += 5000.0;
+		
+		//money fix
+		enemy.Does_Not_Scale = 1;
 		count = 1;
 		RaidFight = 0;
 	}
