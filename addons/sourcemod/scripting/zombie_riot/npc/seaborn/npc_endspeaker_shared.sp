@@ -97,22 +97,22 @@ void EndSpeaker_MapStart()
 	EndspeakerHighId = NPC_Add(data);
 }
 
-static any ClotSummon1(float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon1(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return EndSpeaker1(vecPos, vecAng, team, data);
 }
 
-static any ClotSummon2(float vecPos[3], float vecAng[3], int team)
+static any ClotSummon2(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return EndSpeaker2(team);
 }
 
-static any ClotSummon3(float vecPos[3], float vecAng[3], int team)
+static any ClotSummon3(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return EndSpeaker3(team);
 }
 
-static any ClotSummon4(float vecPos[3], float vecAng[3], int team)
+static any ClotSummon4(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return EndSpeaker4(team);
 }
