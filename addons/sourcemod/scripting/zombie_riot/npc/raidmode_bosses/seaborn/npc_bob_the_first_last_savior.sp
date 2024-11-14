@@ -1570,36 +1570,36 @@ void GiveOneRevive(bool ignorelimit = false)
 
 static void SetupMidWave(int entity)
 {
-	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", 20);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", 20);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", 40);
-	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", 15);
-	AddBobEnemy(entity, "npc_combine_soldier_collos_swordsman", "First Golden Collos", 2, 1);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(15.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(15.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(30.0 * MultiGlobalEnemy), 1500);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(10.0 * MultiGlobalEnemy), 5000);
+	AddBobEnemy(entity, "npc_combine_soldier_collos_swordsman", "First Golden Collos", RoundToCeil(2.0 * MultiGlobalEnemy), RoundToCeil(20000.0 * MultiGlobalHighHealthBoss),1 );
 
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", 30);
-	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", 20);
-	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", 20);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(30.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(15.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(15.0 * MultiGlobalEnemy), 5000);
 
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", 40);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", 20);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(30.0 * MultiGlobalEnemy), 1500);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(7.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(15.0 * MultiGlobalEnemy), 5000);
 
-	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", 50);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", 50);
-	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgun", 50);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(40.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(40.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgun", RoundToCeil(40.0 * MultiGlobalEnemy), 1000);
 
-	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgun", 10);
-	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", 10);
-	AddBobEnemy(entity, "npc_combine_police_smg", _, 10);
-	AddBobEnemy(entity, "npc_combine_police_pistol", _, 10);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(7.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(7.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", RoundToCeil(7.0 * MultiGlobalEnemy), 1100);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(7.0 * MultiGlobalEnemy), 1500);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(7.0 * MultiGlobalEnemy), 5000);
+	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgun", RoundToCeil(7.0 * MultiGlobalEnemy), 1000);
+	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", RoundToCeil(7.0 * MultiGlobalEnemy), 1100);
+	AddBobEnemy(entity, "npc_combine_police_smg", _, RoundToCeil(7.0 * MultiGlobalEnemy), 700);
+	AddBobEnemy(entity, "npc_combine_police_pistol", _, RoundToCeil(7.0 * MultiGlobalEnemy), 550);
 }
 
-static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = "", int count, int boss = 0)
+static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = "", int count, int health = 0, int boss = 0)
 {
 	Enemy enemy;
 
@@ -1611,12 +1611,23 @@ static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = ""
 	enemy.ExtraSpeed = 1.5;
 	enemy.ExtraDamage = 4.0;
 	enemy.ExtraSize = 1.0;
+	if(health != 0)
+	{
+		enemy.Health = health;
+	}
 	enemy.Team = GetTeam(bobindx);
 	strcopy(enemy.CustomName, sizeof(enemy.CustomName), name);
-
-	for(int i; i < count; i++)
+	if(!Waves_InFreeplay())
 	{
-		Waves_AddNextEnemy(enemy);
+		for(int i; i<count; i++)
+		{
+			Waves_AddNextEnemy(enemy);
+		}
+	}
+	else
+	{
+		int postWaves = CurrentRound - Waves_GetMaxRound();
+		Freeplay_AddEnemy(postWaves, enemy, count);
 	}
 }
 

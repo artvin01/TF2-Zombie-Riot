@@ -134,7 +134,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.65);
 			}
 			case 10:	
 			{
@@ -151,7 +151,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
 				enemy.Health = RoundToFloor(15000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
 			}
 			case 13:
 			{
@@ -163,7 +163,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_whiteflower_boss");
 				enemy.Health = RoundToFloor(9000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 			}
 			case 15:
 			{
@@ -182,6 +181,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60";
 			}
+			case 18:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_ruina_twirl");
+				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
@@ -190,7 +194,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		}
 		//raids otherwise have too much damage.
 		enemy.ExtraDamage *= 0.55;
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.5);
 		//some raids dont scale with DMG, fix it here
 
 		enemy.Credits += 5000.0;
@@ -349,7 +353,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 
 	int rand = 6;
 	if((++RerollTry) < 4)
-		rand = GetURandomInt() % 61;
+		rand = GetURandomInt() % 62;
 	
 	char message[128];
 	switch(rand)
@@ -788,6 +792,11 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			strcopy(message, sizeof(message), "{red}The next enemy group will be Nemal & Silvester! Killing awards 5k credits!");
 			RaidFight = 17;
+		}
+		case 61:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Twirl! Killing awards 5k credits!");
+			RaidFight = 18;
 		}
 		default:
 		{

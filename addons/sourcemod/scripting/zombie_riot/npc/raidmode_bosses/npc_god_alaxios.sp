@@ -1167,10 +1167,19 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	enemy.ExtraDamage = 1.0;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
-	for(int i; i<count; i++)
+	if(!Waves_InFreeplay())
 	{
-		Waves_AddNextEnemy(enemy);
+		for(int i; i<count; i++)
+		{
+			Waves_AddNextEnemy(enemy);
+		}
 	}
+	else
+	{
+		int postWaves = CurrentRound - Waves_GetMaxRound();
+		Freeplay_AddEnemy(postWaves, enemy, count);
+	}
+
 	Zombies_Currently_Still_Ongoing += count;	// FIXME
 }
 
