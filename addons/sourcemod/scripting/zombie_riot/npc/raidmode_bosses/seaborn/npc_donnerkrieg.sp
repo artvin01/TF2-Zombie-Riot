@@ -596,6 +596,8 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
+			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
 		}
 	}
 }

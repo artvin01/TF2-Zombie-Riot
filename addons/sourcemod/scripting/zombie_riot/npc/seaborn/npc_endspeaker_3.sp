@@ -159,7 +159,7 @@ public void EndSpeaker3_ClotThink(int iNPC)
 
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			if(distance < 10000.0 && !b_IsCamoNPC[target])
+			if(distance < 10000.0 && !b_IsCamoNPC[npc.m_iTarget])
 			{
 				int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEnemy(npc.index, target, true))

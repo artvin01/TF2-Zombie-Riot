@@ -95,7 +95,7 @@ public void EndSpeaker4_ClotThink(int iNPC)
 
 				bool failed = true;
 
-				if(distance < 22500.0 && !b_IsCamoNPC[target])
+				if(distance < 22500.0 && !b_IsCamoNPC[npc.m_iTarget])
 				{
 					Handle swingTrace;
 					if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))

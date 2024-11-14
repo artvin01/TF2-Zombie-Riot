@@ -161,11 +161,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 			case 14:
 			{
-				enemy.Index = NPC_GetByPlugin("npc_overlord_rogue");
-				enemy.Health = RoundToFloor(30000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = (f_FreeplayDamageExtra);
-				enemy.Data = "music_do";
-				enemy.ExtraSpeed = 4.1;
+				enemy.Index = NPC_GetByPlugin("npc_whiteflower_boss");
+				enemy.Health = RoundToFloor(9000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 			}
 			case 15:
 			{
@@ -177,6 +175,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vhxis");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 17:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_nemal");
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "wave_60";
 			}
 			default:
 			{
@@ -345,7 +349,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 
 	int rand = 6;
 	if((++RerollTry) < 4)
-		rand = GetURandomInt() % 60;
+		rand = GetURandomInt() % 61;
 	
 	char message[128];
 	switch(rand)
@@ -767,7 +771,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 57:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Overlord The Last! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Whiteflower! Killing awards 5k credits!");
 			RaidFight = 14;
 		}
 		case 58:
@@ -779,6 +783,11 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			strcopy(message, sizeof(message), "{red}The next enemy group will be Vhxis! Killing awards 5k credits!");
 			RaidFight = 16;
+		}
+		case 60:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Nemal & Silvester! Killing awards 5k credits!");
+			RaidFight = 17;
 		}
 		default:
 		{
