@@ -30,7 +30,7 @@ static void ApplyBuilderAttributes(DataPack pack)
 		Attributes_SetMulti(weapon, 97, attack_speed);
 
 		float damage = Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
-		damage *= 3.0;
+		damage *= 0.8;
 
 		Attributes_Set(weapon, 2, damage);
 	}
@@ -59,21 +59,7 @@ void Walter_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		
 		if(i_HowManyBombsOnThisEntity[victim][attacker] < 1)
 		{
-			/*
-			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-			{
-				int npc = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-				if (IsValidEntity(npc) && !b_NpcHasDied[npc] && GetTeam(npc) != TFTeam_Red)
-				{
-					if(i_HowManyBombsOnThisEntity[npc][attacker] > 0)
-					{
-						i_HowManyBombsHud[npc] = 0;
-						i_HowManyBombsOnThisEntity[npc][attacker] = 0;
-						f_BombEntityWeaponDamageApplied[npc][attacker] = 0.0;
-					}
-				}
-			}
-			*/
+
 			f_BombEntityWeaponDamageApplied[victim][attacker] += damage * 1.75;
 			i_HowManyBombsOnThisEntity[victim][attacker] += 1;
 			i_HowManyBombsHud[victim] += 1;
@@ -98,7 +84,7 @@ void Walter_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 
 static float WalterExplodeBefore(int attacker, int victim, float &damage, int weapon)
 {
-	FreezeNpcInTime(victim, 1.0);
+	FreezeNpcInTime(victim, 0.35);
 	return 0.0;
 }
 
