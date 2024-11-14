@@ -565,11 +565,6 @@ void Store_OnCached(int client)
 	if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
 	{
 		int amount;
-		
-		amount += SkillTree_GetByName(client, "Cash Up 1") * 2;
-		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") * 1 / 5;
-		amount += SkillTree_GetByName(client, "Cash Up 1 High") * 20;
-		amount += SkillTree_GetByName(client, "Cash Up Barney 1") * 30;
 
 		if(Items_HasNamedItem(client, "ZR Contest 2024 Top 10"))
 		{
@@ -586,6 +581,11 @@ void Store_OnCached(int client)
 		
 		if(Items_HasNamedItem(client, "ZR Contest 2024 Artist"))
 			amount += 50;
+		
+		amount += SkillTree_GetByName(client, "Cash Up 1") * 2;
+		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") * 1 / 5;
+		amount += SkillTree_GetByName(client, "Cash Up 1 High") * 20;
+		amount += SkillTree_GetByName(client, "Cash Up Barney 1") * 30;
 
 		if(amount)
 		{
