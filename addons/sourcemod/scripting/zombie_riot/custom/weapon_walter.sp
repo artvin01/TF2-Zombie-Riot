@@ -208,7 +208,7 @@ static Action Timer_Walter_Summon(Handle timer, int userid)
 				SetEntProp(obj.index, Prop_Data, "m_iRepairMax", 0);
 				SetEntProp(obj.index, Prop_Data, "m_iRepair", 0);
 				GiveBuildingMetalCostOnBuy(entity, 0);
-				Building_PlayerWieldsBuilding(client, entity);
+				//Building_PlayerWieldsBuilding(client, entity);
 				Barracks_UpdateEntityUpgrades(entity, client, true);
 			}
 		}
