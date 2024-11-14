@@ -60,7 +60,7 @@ void RiverSeaTank_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return RiverSeaTank(vecPos, vecAng, team);
+	return RiverSeaTank(client, vecPos, vecAng, team);
 }
 
 methodmap RiverSeaTank < CClotBody

@@ -56,7 +56,7 @@ void HeavyGambler_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeavyGambler(vecPos, vecAng, team);
+	return HeavyGambler(client, vecPos, vecAng, team);
 }
 
 methodmap HeavyGambler < CClotBody

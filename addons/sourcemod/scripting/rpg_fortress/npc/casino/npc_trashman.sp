@@ -64,7 +64,7 @@ void TrashMan_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return TrashMan(vecPos, vecAng, team);
+	return TrashMan(client, vecPos, vecAng, team);
 }
 
 methodmap TrashMan < CClotBody

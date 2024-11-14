@@ -62,7 +62,7 @@ void BigWins_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return BigWins(vecPos, vecAng, team);
+	return BigWins(client, vecPos, vecAng, team);
 }
 
 methodmap BigWins < CClotBody

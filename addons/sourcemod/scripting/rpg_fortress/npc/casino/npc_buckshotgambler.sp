@@ -54,7 +54,7 @@ void BuckshotGambler_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return BuckshotGambler(vecPos, vecAng, team);
+	return BuckshotGambler(client, vecPos, vecAng, team);
 }
 
 methodmap BuckshotGambler < CClotBody

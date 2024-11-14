@@ -55,7 +55,7 @@ void RiverSeaMelee_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return RiverSeaMelee(vecPos, vecAng, team);
+	return RiverSeaMelee(client, vecPos, vecAng, team);
 }
 
 methodmap RiverSeaMelee < CClotBody

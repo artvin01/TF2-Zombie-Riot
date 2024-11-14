@@ -51,7 +51,7 @@ void RiverSeaFast_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return RiverSeaFast(vecPos, vecAng, team);
+	return RiverSeaFast(client, vecPos, vecAng, team);
 }
 
 methodmap RiverSeaFast < CClotBody

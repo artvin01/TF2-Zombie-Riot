@@ -54,7 +54,7 @@ void RiverSeaRanged_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return RiverSeaRanged(vecPos, vecAng, team);
+	return RiverSeaRanged(client, vecPos, vecAng, team);
 }
 
 methodmap RiverSeaRanged < CClotBody

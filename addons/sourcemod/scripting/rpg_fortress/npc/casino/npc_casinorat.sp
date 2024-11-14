@@ -51,7 +51,7 @@ void CasinoRat_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CasinoRat(vecPos, vecAng, team);
+	return CasinoRat(client, vecPos, vecAng, team);
 }
 
 methodmap CasinoRat < CClotBody

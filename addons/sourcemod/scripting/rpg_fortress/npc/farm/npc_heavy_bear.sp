@@ -24,7 +24,7 @@ public void FarmBear_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FarmBear(client, vecPos, vecAng, TFTeam_Red);
+	return FarmBear(vecPos, vecAng, TFTeam_Red);
 }
 methodmap FarmBear < CClotBody
 {

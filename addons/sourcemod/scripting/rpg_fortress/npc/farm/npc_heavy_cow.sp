@@ -24,7 +24,7 @@ public void FarmCow_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FarmCow(client, vecPos, vecAng, TFTeam_Red);
+	return FarmCow(vecPos, vecAng, TFTeam_Red);
 }
 
 methodmap FarmCow < CClotBody
