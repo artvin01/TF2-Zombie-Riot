@@ -35,6 +35,9 @@ methodmap ObjectRevenant < ObjectGeneric
 		
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCThink[npc.index] = ClotThink;
+		npc.m_flNextMeleeAttack = 0.0;
+		SDKUnhook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPost);
+		SDKHook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPostSentry);
 
 		return npc;
 	}
@@ -93,10 +96,10 @@ static void ClotThink(ObjectRevenant npc)
 	float distance = 800.0 * Attributes_GetOnPlayer(Owner, 344, true, true);
 
 	int target = GetClosestTarget(npc.index, _, distance, .CanSee = true, .UseVectorDistance = true);
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	if(IsValidEnemy(npc.index, target))
 	{
 		Handle swingTrace;
-
+		Sentrygun_FaceEnemy(npc.index, target);
 		if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 		{
 			target = TR_GetEntityIndex(swingTrace);
