@@ -556,6 +556,7 @@ public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
 			
 			GetClientEyePosition(client, pos);
 			TextStore_DropNamedItem(client, pool.Name, pos, 1);
+			Tinker_GainXP(client, weapon);
 		}
 	}
 	return Plugin_Handled;

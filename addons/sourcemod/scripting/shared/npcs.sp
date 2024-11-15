@@ -435,7 +435,7 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
-	if(RogueTheme == BlueParadox && !force)
+	if(Rogue_Theme() == 1 && !force)
 	{
 		if(f_DomeInsideTest[entity] > GetGameTime())
 		{
@@ -1182,7 +1182,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			event.Fire();
 		}
 	}
-	f_InBattleDelay[victim] = GetGameTime() + 3.0;
+	f_InBattleDelay[victim] = GetGameTime() + 6.0;
 
 	//LogEntryInvicibleTest(victim, attacker, damage, 27);
 	bool SlayNpc = true;
@@ -2065,6 +2065,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_LeeSuperEffect[npc] > GameTime)
 		return true;
+	else if(f_LogosDebuff[npc] > GameTime)
+		return true;
 	else if(f_GodAlaxiosBuff[npc] > GameTime)
 		return true;
 	else if(f_Ocean_Buff_Stronk_Buff[npc] > GameTime)
@@ -2074,6 +2076,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 	else if(f_BattilonsNpcBuff[npc] > GameTime)
 		return true;
 	else if(f_BuffBannerNpcBuff[npc] > GameTime)
+		return true;
+	else if(f_BobDuckBuff[npc] > GameTime)
 		return true;
 	else if(f_AncientBannerNpcBuff[npc] > GameTime)
 		return true;

@@ -81,9 +81,9 @@ public void Whiteflower_OutlanderLeader_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_OutlanderLeader(client, vecPos, vecAng, ally);
+	return Whiteflower_OutlanderLeader(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_OutlanderLeader < CClotBody
@@ -205,7 +205,7 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
-	public Whiteflower_OutlanderLeader(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_OutlanderLeader(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_OutlanderLeader npc = view_as<Whiteflower_OutlanderLeader>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -287,7 +287,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 
 	if(npc.m_flCloneRageInit)
 	{
-
+		ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 600000.0);
 		if(npc.m_flCloneRageInit < gameTime)
 		{
 			//Enrage and keep teleporting
@@ -322,7 +322,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 700000.0;
+					float damage = 850000.0;
 
 					
 					if(target > 0) 

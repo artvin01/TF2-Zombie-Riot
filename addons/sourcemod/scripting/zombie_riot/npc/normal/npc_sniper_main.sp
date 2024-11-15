@@ -63,9 +63,9 @@ void SniperMain_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SniperMain(client, vecPos, vecAng, ally);
+	return SniperMain(vecPos, vecAng, team);
 }
 methodmap SniperMain < CClotBody
 {
@@ -129,7 +129,7 @@ methodmap SniperMain < CClotBody
 	
 	
 	
-	public SniperMain(int client, float vecPos[3], float vecAng[3], int ally)
+	public SniperMain(float vecPos[3], float vecAng[3], int ally)
 	{
 		SniperMain npc = view_as<SniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "20000", ally));
 		

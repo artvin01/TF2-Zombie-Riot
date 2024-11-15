@@ -57,9 +57,9 @@ void AnarchyRunover_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnarchyRunover(client, vecPos, vecAng, ally);
+	return AnarchyRunover(vecPos, vecAng, team);
 }
 
 methodmap AnarchyRunover < CClotBody
@@ -101,7 +101,7 @@ methodmap AnarchyRunover < CClotBody
 	}
 	
 	
-	public AnarchyRunover(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyRunover(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnarchyRunover npc = view_as<AnarchyRunover>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "17500", ally));
 		

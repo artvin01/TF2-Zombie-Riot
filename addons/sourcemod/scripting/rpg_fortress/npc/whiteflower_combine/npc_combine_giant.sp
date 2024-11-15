@@ -16,9 +16,9 @@ void OnMapStartCombineGiantSwordsman()
 	NPC_Add(data);
 	PrecacheSoundArray(g_SuckEnemiesIn);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineGiant(client, vecPos, vecAng, ally);
+	return CombineGiant(vecPos, vecAng, team);
 }
 methodmap CombineGiant < CombineWarrior
 {
@@ -65,7 +65,7 @@ methodmap CombineGiant < CombineWarrior
 			}
 		}
 	}
-	public CombineGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineGiant npc = view_as<CombineGiant>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", ally, false, true));
 		

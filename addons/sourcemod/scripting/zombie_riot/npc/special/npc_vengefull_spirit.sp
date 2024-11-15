@@ -28,9 +28,9 @@ void VengefullSpirit_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VengefullSpirit(client, vecPos, vecAng, ally);
+	return VengefullSpirit(vecPos, vecAng, team);
 }
 
 methodmap VengefullSpirit < CClotBody
@@ -44,7 +44,7 @@ methodmap VengefullSpirit < CClotBody
 		EmitSoundToAll(g_SpookSound[GetRandomInt(0, sizeof(g_SpookSound) - 1)], entity, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6);
 	}
 	
-	public VengefullSpirit(int client, float vecPos[3], float vecAng[3], int ally)
+	public VengefullSpirit(float vecPos[3], float vecAng[3], int ally)
 	{
 		VengefullSpirit npc = view_as<VengefullSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", "550", ally));
 		

@@ -3,7 +3,7 @@
 
 methodmap CombinePistol < CombinePolice
 {
-	public CombinePistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombinePistol(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombinePistol npc = view_as<CombinePistol>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		

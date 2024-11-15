@@ -81,6 +81,7 @@ void NPC_ConfigSetup()
 	ObjectBarracks_MapStart();
 	ObjectVillage_MapStart();
 	ObjectTinkerBrew_MapStart();
+	ObjectRevenant_Setup();
 	// Buildings
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -172,6 +173,7 @@ void NPC_ConfigSetup()
 	XenoFortifiedEarlyZombie_OnMapStart_NPC();
 	XenoPatientFew_OnMapStart_NPC();
 	XenoOuroborosEkas_OnMapStart_NPC();
+
 	
 	NaziPanzer_OnMapStart_NPC();
 	WanderingSpirit_OnMapStart_NPC();
@@ -686,6 +688,16 @@ void NPC_ConfigSetup()
 	// Rogue Mode Low Prio
 	OverlordRogue_OnMapStart_NPC();
 	RaidbossBladedance_MapStart();
+	//whiteflower special:
+	Whiteflower_Boss_OnMapStart_NPC();
+	WFOuroborosEkas_OnMapStart_NPC();
+	Whiteflower_Ekas_Piloteer_OnMapStart_NPC();
+	AcclaimedSwordsman_OnMapStart_NPC();
+	Whiteflower_ExtremeKnightGiant_OnMapStart_NPC();
+	Whiteflower_RagingBlader_OnMapStart_NPC();
+	Whiteflower_FloweringDarkness_OnMapStart_NPC();
+
+	//Normal rogue again:
 	RogueCondition_Setup();
 	GogglesFollower_Setup();
 	TheHunter_Setup();
@@ -697,6 +709,7 @@ void NPC_ConfigSetup()
 	ChaosInsane_OnMapStart_NPC();
 	ChaosSickKnight_OnMapStart_NPC();
 	ChaosInjuredCultist_OnMapStart_NPC();
+	DuckFollower_Setup();
 
 	// Survival
 	Nightmare_OnMapStart_NPC();
@@ -996,6 +1009,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_village.sp"
 #include "zombie_riot/object/obj_barracks.sp"
 #include "zombie_riot/object/obj_brewing_stand.sp"
+#include "zombie_riot/object/obj_revenant.sp"
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
@@ -1452,6 +1466,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_whiteflower.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_acclaimed_swordsman.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_ekas_piloteer.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_ekas_robo.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_extreme_knight_giant.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_flowering_darkness.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_raging_blader.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_the_messenger.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_chaos_kahmlstein.sp"
@@ -1551,6 +1572,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_sick_knight.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_injured_cultist.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_duck_follower.sp"
 
 #include "zombie_riot/npc/survival/npc_nightmare.sp"
 #include "zombie_riot/npc/survival/npc_petrisisbaron.sp"

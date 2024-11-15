@@ -347,7 +347,7 @@ public Action TimerExpidonsan_Transform(Handle timer, DataPack pack)
 			if((float(Health) / float(MaxHealth)) <= 0.25)
 			{
 
-				Format(LeperHud, sizeof(LeperHud), "OVERSTRESS USE! PRESS E!");
+				Format(LeperHud, sizeof(LeperHud), "OVERSTRESS USE! PRESS E + CROUCH!");
 			}
 			else
 				Format(LeperHud, sizeof(LeperHud), "Overstress Ready.");

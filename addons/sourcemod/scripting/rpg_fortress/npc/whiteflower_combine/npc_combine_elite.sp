@@ -9,14 +9,14 @@ void OnMapStartCombineElite()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineElite(client, vecPos, vecAng, ally);
+	return CombineElite(vecPos, vecAng, team);
 }
 
 methodmap CombineElite < CombineSoldier
 {
-	public CombineElite(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineElite(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineElite npc = view_as<CombineElite>(BaseSquad(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", ally, false));
 		
@@ -237,16 +237,12 @@ public void CombineElite_ClotThink(int iNPC)
 					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
 					if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
 					{
-						if(ally.m_bIsSquad)
+						WorldSpaceCenter(ally.index, vecTarget);
+						if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 						{
-							WorldSpaceCenter(ally.index, vecTarget);
-							if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
-							{
-								ally.m_flRangedArmor = 0.00001;
-								ally.m_flMeleeArmor = 0.00001;
-								ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
-								break;
-							}
+							f_PernellBuff[ally.index] = GetGameTime() + 10.0;
+							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
+							break;
 						}
 					}
 				}

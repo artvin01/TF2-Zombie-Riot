@@ -76,9 +76,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Heliaris(client, vecPos, vecAng, ally);
+	return Heliaris(vecPos, vecAng, team);
 }
 
 
@@ -170,7 +170,7 @@ methodmap Heliaris < CClotBody
 		}
 	}
 
-	public Heliaris(int client, float vecPos[3], float vecAng[3], int ally)
+	public Heliaris(float vecPos[3], float vecAng[3], int ally)
 	{
 		Heliaris npc = view_as<Heliaris>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		

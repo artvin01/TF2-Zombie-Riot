@@ -523,24 +523,35 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 	
 	if(!StrContains(buffer, "healing", false) || !StrContains(buffer, "spell", false))
 	{
+		bool found;
 		static SpellEnum spell;
 		int length = SpellList.Length;
 		for(int i; i < length; i++)
 		{
 			SpellList.GetArray(i, spell);
 			if(spell.Owner == client && spell.Store == index)
-				return Item_On;
+			{
+				if(TextStore_GetInv(client, spell.Store))
+					return Item_On;
+
+				found = true;
+				break;
+			}
 		}
 
-		int slot = item.GetNum("slot", -1);
-		Store_EquipSlotCheck(client, slot);
-		TextStore_EquipSlotCheck(client, slot);
+		if(!found)
+			spell.Slot = item.GetNum("slot", -1);
+		
+		Store_EquipSlotCheck(client, spell.Slot);
+		TextStore_EquipSlotCheck(client, spell.Slot);
 
+		if(found)
+			return Item_On;
+		
 		spell.Owner = client;
 		spell.Store = index;
 		spell.Active = false;
 		spell.Skill = view_as<bool>(item.GetNum("skill"));
-		spell.Slot = slot;
 		strcopy(spell.Name, 64, name);
 		
 		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
@@ -553,6 +564,21 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 		return Item_None;
 	}
 	return Item_On;
+}
+
+void TextStore_SetAllItemCooldown(int client, float cooldown)
+{
+	static SpellEnum spell;
+	int length = SpellList.Length;
+	for(int i; i < length; i++)
+	{
+		SpellList.GetArray(i, spell);
+		if(spell.Owner == client && !spell.Skill && spell.Cooldown < cooldown)
+		{
+			spell.Cooldown = cooldown;
+			SpellList.SetArray(i, spell);
+		}
+	}
 }
 
 void TextStore_EquipSlotCheck(int client, int slot)
@@ -1751,6 +1777,7 @@ static void DropItem(int client, int index, float pos[3], int totalAmount)
 				DispatchKeyValue(entity, "physicsmode", "2");
 				DispatchKeyValue(entity, "massScale", "1.0");
 				DispatchKeyValue(entity, "spawnflags", "6");
+				DispatchKeyValue(entity, "health", "1999999999");
 				DispatchKeyValue(entity, "targetname", "rpg_item");
 
 				ang[1] = index == -1 ? -1.0 : kv.GetFloat("modelscale", -1.0);
@@ -2241,7 +2268,7 @@ static void ShowMenu(int client, int page = 0)
 					if(cooldown > 0)
 						Format(spell.Display, sizeof(spell.Display), "%s [%ds]", spell.Display, cooldown);
 					
-					if(++amount > maxSkills)
+					if(amount >= maxSkills)
 					{
 						menu.InsertItem((SkillRand[client] + i) % amount, index, spell.Display);
 					}
@@ -2249,6 +2276,8 @@ static void ShowMenu(int client, int page = 0)
 					{
 						menu.AddItem(index, spell.Display);
 					}
+
+					amount++;
 				}
 			}
 
@@ -2565,7 +2594,8 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 									Call_PushStringEx(spell.Display, sizeof(spell.Display), SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
 									Call_Finish(cooldownSet);
 
-									SkillRand[client] = GetURandomInt();
+									if(spell.Skill)
+										SkillRand[client] = GetURandomInt();
 
 									//CC difficulty, increacing ability cooldowns by 40%.
 									if(b_DungeonContracts_LongerCooldown[client])
@@ -2715,11 +2745,15 @@ void TransformButton(int client)
 			{
 				//Before we de-transform the client, maybe theres an extra effect?
 				bool Cancel = false;
-				if(form.Func_FormBeforeDeTransform != INVALID_FUNCTION)
+				if((GetClientButtons(client) & IN_DUCK))
 				{
-					Call_StartFunction(null, form.Func_FormBeforeDeTransform);
-					Call_PushCell(client);
-					Call_Finish(Cancel);
+					if(form.Func_FormBeforeDeTransform != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, form.Func_FormBeforeDeTransform);
+						Call_PushCell(client);
+						Call_Finish(Cancel);
+						Cancel = true;
+					}
 				}
 				if(!Cancel)
 				{

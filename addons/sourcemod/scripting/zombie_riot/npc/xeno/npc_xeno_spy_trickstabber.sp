@@ -90,9 +90,9 @@ public void XenoSpyTrickstabber_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoSpyTrickstabber(client, vecPos, vecAng, ally);
+	return XenoSpyTrickstabber(vecPos, vecAng, team);
 }
 methodmap XenoSpyTrickstabber < CClotBody
 {
@@ -166,7 +166,7 @@ methodmap XenoSpyTrickstabber < CClotBody
 		
 	}
 	
-	public XenoSpyTrickstabber(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSpyTrickstabber(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSpyTrickstabber npc = view_as<XenoSpyTrickstabber>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "7000", ally));
 		

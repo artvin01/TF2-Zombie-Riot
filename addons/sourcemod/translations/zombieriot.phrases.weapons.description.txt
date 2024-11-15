@@ -67,7 +67,7 @@
 	{
 		"en"		"Archetype: Brawler"
 		"fr"		"Archetype: Bagarreur"
-		"ru"		"Архетип: Боец"
+		"ru"		"Архетип: Потасовщик"
 		"chi"		"类型：战士"
 	}
 	"Ambusher"
@@ -81,7 +81,7 @@
 	{
 		"en"		"Archetype: Combatant"
 		"fr"		"Archetype: Combatant"
-		"ru"		"Архетип: Комбатант"
+		"ru"		"Архетип: Боец"
 		"chi"		"类型：斗士"
 	}
 	"Aberration"
@@ -123,53 +123,59 @@
 	{
 		"en"		"Archetype: Chain Caster"
 		"fr"		"Archetype: Sortilèges Successifs"
-		"ru"		"Архетип: Мастер цепей"
+		"ru"		"Архетип: Маг цепей"
 		"chi"		"类型：连环法师"
 	}
 	"Multi Caster"
 	{
 		"en"		"Archetype: Multi Caster"
 		"fr"		"Archetype: Multi-sortilèges"
-		"ru"		"Архетип: Мультизаклинатель"
+		"ru"		"Архетип: Мульти маг"
 		"chi"		"类型：多重法师"
 	}
 	"Base Caster"
 	{
 		"en"		"Archetype: Base Caster"
 		"fr"		"Archetype: Sortilèges Amateurs"
-		"ru"		"Архетип: Базовый заклинатель"
+		"ru"		"Архетип: Базовый маг"
 	}
 	"Mythic Caster"
 	{
 		"en"		"Archetype: Mythic Caster"
 		"fr"		"Archetype: Sortilèges Mythiques"
 		"chi"		"类型：至尊法师"
+		"ru"		"Архетип: Мифический маг"
 	}
 	"Psychic Warlord"
 	{
 		"en"		"Archetype: Psychic Warlord"
+		"ru"		"Архетип: психический полководец"
 	}
 	"Abyssal Hunter"
 	{
 		"en"		"Archetype: Abyssal Hunter"
 		"fr"		"Archetype: Chasseur des Abîmes"
+		"ru"		"Архетип: Охотник Бездны"
 		"chi"		"类型：深海猎人"
 	}
 	"Kazimierz"
 	{
 		"en"		"Archetype: Kazimierz"
+		"ru"		"Архетип: Казимерз"
 		"fr"		"Archetype: Kazimierz"
 		"chi"		"类型：卡齐米日"
 	}
 	"Bloodletter"
 	{
 		"en"		"Archetype: Bloodletter"
+		"ru"		"Арехтип: Кровопускатель"
 		"fr"		"Archetype: Hémorragie"
 		"chi"		"类型：放血者"
 	}
 	"Bloody Butcher"
 	{
 		"en"		"Archetype: Bloody Butcher"
+		"ru"		"Архетип: Кровавый Мясник"
 		"fr"		"Archetype: Boucher Dégorgeur"
 		"chi"		"类型：血腥屠夫"
 	}
@@ -234,7 +240,7 @@
 	{
 		"en"		"Heavily increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
-		"ru"		"Сильное Увеличенный урон и скорость атаки."
+		"ru"		"Сильно Увеличенный урон и скорость атаки."
 		"chi"       "大幅增加伤害和攻击速度"
 	}
 	"Sniper Rifle Pap 5"
@@ -285,7 +291,7 @@
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed."
 		"fr"		"Dégats et cadence de tir améliorés, barrage amélioré"
-		"ru"		"Увеличенный урон и скорость атаки, усиление способности М2."
+		"ru"		"Увеличенный урон и скорость атаки, усилена способность М2."
 		"chi"       "增加伤害和攻击速度，加强右键技能。"
 	}
 	"Huntsman Pap 2"
@@ -1554,10 +1560,7 @@
 	
 	"Copium Desc"
 	{
-		"en"	"25%% melee resistance with melee equipped"
-		"fr"	"+25%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"25%% сопр. ближнему бою при использ. оружия ближнего боя."
-		"chi"   "使用近战武器时+25%%的近战抵抗"
+		"en"	"28.75%% melee resistance, 5%% ranged resistance, and 10%% extra damage with melee equipped"
 	}
 	
 	"Cocain Desc"
@@ -3940,7 +3943,7 @@
 	}
 	"Telekinesis Desc"
 	{
-		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw it.
+		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw it."
 	}
 	"Telekinesis PaP 1"
 	{
@@ -4013,5 +4016,13 @@
 	"Hunting Rifle Pap 2 desc"
 	{
 		"en"	"Clip size, damage and ability duration increased."
+	}
+	"Whistle Stop Desc"
+	{
+		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals True Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
+	}
+	"Ancestor Launcher Desc"
+	{
+		"en"	"Attacks deal extra damage and mark the main target.\nHas a chance to explode and stun when hitting marked targets.\nAbility grants sentry buildings and a limited-ammo rocket launcher."
 	}
 }

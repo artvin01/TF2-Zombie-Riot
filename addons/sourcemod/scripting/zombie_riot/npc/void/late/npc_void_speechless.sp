@@ -59,9 +59,9 @@ void VoidSpeechless_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidSpeechless(client, vecPos, vecAng, ally);
+	return VoidSpeechless(vecPos, vecAng, team);
 }
 
 methodmap VoidSpeechless < CClotBody
@@ -107,7 +107,7 @@ methodmap VoidSpeechless < CClotBody
 	}
 	
 	
-	public VoidSpeechless(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidSpeechless(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidSpeechless npc = view_as<VoidSpeechless>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "12500", ally));
 		

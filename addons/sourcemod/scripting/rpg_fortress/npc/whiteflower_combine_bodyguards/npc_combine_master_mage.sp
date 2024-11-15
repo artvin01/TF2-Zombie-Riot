@@ -20,9 +20,9 @@ void OnMapStartCombine_Whiteflower_Master_Mage()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondaryReload));	i++) { PrecacheSound(g_RangedAttackSoundsSecondaryReload[i]);	}
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Combine_Whiteflower_Master_Mage(client, vecPos, vecAng, ally);
+	return Combine_Whiteflower_Master_Mage(vecPos, vecAng, team);
 }
 
 methodmap Combine_Whiteflower_Master_Mage < CombineSoldier
@@ -40,7 +40,7 @@ methodmap Combine_Whiteflower_Master_Mage < CombineSoldier
 		
 
 	}
-	public Combine_Whiteflower_Master_Mage(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Whiteflower_Master_Mage(float vecPos[3], float vecAng[3], int ally)
 	{
 		Combine_Whiteflower_Master_Mage npc = view_as<Combine_Whiteflower_Master_Mage>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		
@@ -179,11 +179,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 						WorldSpaceCenter(ally.index, vecTarget);
 						if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 						{
-							if(ally.m_bIsSquad)
-							{
-								ally.m_flRangedArmor = 0.00001;
-								ally.m_flMeleeArmor = 0.00001;
-							}
+							f_PernellBuff[ally.index] = GetGameTime() + 10.0;
 							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
 							f_BuffBannerNpcBuff[ally.index] = GetGameTime() + 7.0;
 							float flMaxhealth = float(ReturnEntityMaxHealth(ally.index));
@@ -233,7 +229,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 						npc.m_flNextRangedAttack = gameTime + 0.2;
 						PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
 						npc.FaceTowards(vecTarget, 20000.0);
-						npc.FireParticleRocket(vecTarget, 950000.0 , 800.0 , 100.0 , "raygun_projectile_blue");
+						npc.FireParticleRocket(vecTarget, 1000000.0 , 800.0 , 100.0 , "raygun_projectile_blue");
 
 						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", .SetGestureSpeed = 1.5);
 						npc.PlayRangedAttackSecondarySound();

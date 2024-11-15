@@ -20,9 +20,9 @@ void OnMapStartCombine_Guarder()
 	PrecacheSoundArray(g_ChargeExplodeIn);
 	PrecacheSoundArray(g_DoExplodeSound);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Combine_Guarder(client, vecPos, vecAng, ally);
+	return Combine_Guarder(vecPos, vecAng, team);
 }
 
 methodmap Combine_Guarder < CombineWarrior
@@ -94,7 +94,7 @@ methodmap Combine_Guarder < CombineWarrior
 			}
 		}
 	}
-	public Combine_Guarder(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Guarder(float vecPos[3], float vecAng[3], int ally)
 	{
 		Combine_Guarder npc = view_as<Combine_Guarder>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		
@@ -173,7 +173,7 @@ public void Combine_Guarder_ClotThink(int iNPC)
 			SpawnSmallExplosionNotRandom(NpcLoc);
 			npc.PlayExplodeSound();
 			//kabomm
-			float damageDealt = 1500000.0;
+			float damageDealt = 2500000.0;
 			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, _, 300.0, 1.0, _, true, 20);
 			npc.m_flTimeTillAllowAction = gameTime + 1.0;
 			if(npc.m_iChanged_WalkCycle != 9)
@@ -315,7 +315,7 @@ public void Combine_Guarder_ClotThink(int iNPC)
 
 						// E2 L15 = 157.5, E2 L20 = 175
 						KillFeed_SetKillIcon(npc.index, "sword");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 250000.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 650000.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlaySwordHit();
 					}
 				}
@@ -347,7 +347,7 @@ public void Combine_Guarder_ClotThink(int iNPC)
 
 						// E2 L15 = 225, E2 L20 = 250
 						KillFeed_SetKillIcon(npc.index, "taunt_pyro");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 500000.0, DMG_BULLET, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 800000.0, DMG_BULLET, -1, _, vecTarget);
 					}
 				}
 

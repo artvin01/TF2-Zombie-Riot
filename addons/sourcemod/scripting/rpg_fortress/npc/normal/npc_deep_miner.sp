@@ -56,9 +56,9 @@ public void DeepMiner_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DeepMiner(client, vecPos, vecAng, ally);
+	return DeepMiner(vecPos, vecAng, team);
 }
 
 methodmap DeepMiner < CClotBody
@@ -98,7 +98,7 @@ methodmap DeepMiner < CClotBody
 	}
 	
 	
-	public DeepMiner(int client, float vecPos[3], float vecAng[3], int ally)
+	public DeepMiner(float vecPos[3], float vecAng[3], int ally)
 	{
 		DeepMiner npc = view_as<DeepMiner>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "300", ally, false,_,_,_,_));
 

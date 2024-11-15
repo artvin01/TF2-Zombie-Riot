@@ -56,9 +56,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/pyro.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Euranionis(client, vecPos, vecAng, ally);
+	return Euranionis(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -136,7 +136,7 @@ methodmap Euranionis < CClotBody
 		}
 	}
 	
-	public Euranionis(int client, float vecPos[3], float vecAng[3], int ally)
+	public Euranionis(float vecPos[3], float vecAng[3], int ally)
 	{
 		Euranionis npc = view_as<Euranionis>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1250", ally));
 		

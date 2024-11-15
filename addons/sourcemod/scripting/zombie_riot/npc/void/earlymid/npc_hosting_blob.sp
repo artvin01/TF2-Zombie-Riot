@@ -53,9 +53,9 @@ void VoidHostingBlob_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidHostingBlob(client, vecPos, vecAng, ally);
+	return VoidHostingBlob(vecPos, vecAng, team);
 }
 methodmap VoidHostingBlob < CClotBody
 {
@@ -96,7 +96,7 @@ methodmap VoidHostingBlob < CClotBody
 	}
 	
 	
-	public VoidHostingBlob(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidHostingBlob(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidHostingBlob npc = view_as<VoidHostingBlob>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "2200", ally));
 		

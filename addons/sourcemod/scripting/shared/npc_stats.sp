@@ -5508,13 +5508,13 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	return ClosestTarget;
 }
 
-stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
+stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false, int ignore = 0)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
 	for( int i = 1; i <= MaxClients; i++ ) 
 	{
-		if (IsValidClient(i))
+		if (i != ignore && IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
 			if (GetTeam(i)== GetTeam(entity) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true) && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.
@@ -8502,6 +8502,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LeeMinorEffect[entity] = 0.0;
 	f_LeeMajorEffect[entity] = 0.0;
 	f_LeeSuperEffect[entity] = 0.0;
+	f_LogosDebuff[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
 	fl_TotalArmor[entity] = 1.0;
@@ -9178,6 +9179,7 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_LeeMinorEffect[enemy] = 0.0;
 	f_LeeMajorEffect[enemy] = 0.0;
 	f_LeeSuperEffect[enemy] = 0.0;
+	f_LogosDebuff[enemy] = 0.0;
 	f_SpecterDyingDebuff[enemy] = 0.0;
 	f_PassangerDebuff[enemy] = 0.0;
 }
@@ -9705,6 +9707,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 	}
 	*/
 
+	ResetTouchedentityResolve();
 	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
 
 	float vAngles[3], vDirection[3];								
@@ -9749,7 +9752,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 		}
 	}
 
-	Zero(b_TouchedEntity);
+	ResetTouchedentityResolve();
 }
 
 stock void ResolvePlayerCollisions_Npc_Internal(const float pos[3], const float mins[3], const float maxs[3],int entity=-1)
@@ -10692,7 +10695,7 @@ void MakeObjectIntangeable(int entity)
 
 
 static int BadSpotPoints[MAXTF2PLAYERS];
-void Spawns_CheckBadClient(int client, int checkextralogic = 0)
+stock void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 {
 #if defined ZR
 	if(CvarInfiniteCash.BoolValue)
@@ -10712,12 +10715,27 @@ void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 	}
 #endif
 #if defined RPG
-	if(checkextralogic == 0 && RPGCore_ClientTargetedByNpcReturn(client) > GetGameTime())
+	//Are we checking 
+	/*
+		0 = Passively wating every so often
+		2 = when landing after being airborn
+
+	*/
+//	if(checkextralogic == 0)
+	/*
+	TODO: If they are out of bounds in a non playable area, kill them.
+
+	*/
 	{
-		if(f_InBattleDelay[client] < GetGameTime())
+		//Did any NPC try to attack us, if not...
+		if(RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
 		{
-			BadSpotPoints[client] = 0;
-			return;
+			//are we somehow in a battle regardless? if no then...
+			if(f_InBattleDelay[client] < GetGameTime())
+			{
+				BadSpotPoints[client] = 0;
+				return;
+			}
 		}
 	}
 #endif

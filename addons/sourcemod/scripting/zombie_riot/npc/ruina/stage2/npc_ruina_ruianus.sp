@@ -70,9 +70,9 @@ static void ClotPrecache()
 	Zero(i_damage_taken);
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Ruianus(client, vecPos, vecAng, ally);
+	return Ruianus(vecPos, vecAng, team);
 }
 methodmap Ruianus < CClotBody
 {
@@ -152,7 +152,7 @@ methodmap Ruianus < CClotBody
 	}
 	
 	
-	public Ruianus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Ruianus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Ruianus npc = view_as<Ruianus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		

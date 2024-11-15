@@ -91,9 +91,9 @@ static void ClotPrecache()
 	PrecacheModel("models/zombie_riot/btd/ddt.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return DDT(client, vecPos, vecAng, ally, data);
+	return DDT(vecPos, vecAng, team, data);
 }
 
 methodmap DDT < CClotBody
@@ -132,7 +132,7 @@ methodmap DDT < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public DDT(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public DDT(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		

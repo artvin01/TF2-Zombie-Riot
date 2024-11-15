@@ -15,7 +15,7 @@ public bool Plots_Mining_DirtyCopper(int entity, BuildEnum build, int client, in
 	if(client)
 		return EquipPickaxe(client, weapon);
 	
-	strcopy(c_NpcName[entity], sizeof(c_NpcName[]), "Dirty Copper");
+	strcopy(c_NpcName[entity], sizeof(c_NpcName[]), "Dirty Copper Ore");
 	return false;
 }
 
@@ -33,7 +33,7 @@ public bool Plots_Mining_DirtyIron(int entity, BuildEnum build, int client, int 
 	if(client)
 		return EquipPickaxe(client, weapon);
 	
-	strcopy(c_NpcName[entity], sizeof(c_NpcName[]), "Dirty Iron");
+	strcopy(c_NpcName[entity], sizeof(c_NpcName[]), "Dirty Iron Ore");
 	return false;
 }
 

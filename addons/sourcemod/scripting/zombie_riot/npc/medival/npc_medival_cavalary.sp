@@ -91,9 +91,9 @@ public void MedivalCavalary_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalCavalary(client, vecPos, vecAng, ally);
+	return MedivalCavalary(vecPos, vecAng, team);
 }
 methodmap MedivalCavalary < CClotBody
 {
@@ -155,7 +155,7 @@ methodmap MedivalCavalary < CClotBody
 		
 	}
 	
-	public MedivalCavalary(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalCavalary(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalCavalary npc = view_as<MedivalCavalary>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		SetVariantInt(1);

@@ -55,9 +55,9 @@ void VoidEncasulator_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidEncasulator(client, vecPos, vecAng, ally);
+	return VoidEncasulator(vecPos, vecAng, team);
 }
 methodmap VoidEncasulator < CClotBody
 {
@@ -101,7 +101,7 @@ methodmap VoidEncasulator < CClotBody
 	}
 	
 	
-	public VoidEncasulator(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidEncasulator(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidEncasulator npc = view_as<VoidEncasulator>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.1", "100000", ally));
 		

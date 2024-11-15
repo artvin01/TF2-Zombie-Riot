@@ -53,9 +53,9 @@ void RiverSeaMelee_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return RiverSeaMelee(client, vecPos, vecAng, ally);
+	return RiverSeaMelee(client, vecPos, vecAng, team);
 }
 
 methodmap RiverSeaMelee < CClotBody
@@ -168,7 +168,7 @@ static void ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0 * Level[npc.index], DMG_CLUB, _, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0 * Level[npc.index], DMG_CLUB, _, _, vecHit);
 						SeaShared_DealCorrosion(target, npc.index, Level[npc.index] / 20);
 					}
 				}

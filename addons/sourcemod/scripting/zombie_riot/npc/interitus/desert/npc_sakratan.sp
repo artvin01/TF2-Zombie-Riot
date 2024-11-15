@@ -58,9 +58,9 @@ void DesertSakratan_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DesertSakratan(client, vecPos, vecAng, ally);
+	return DesertSakratan(vecPos, vecAng, team);
 }
 methodmap DesertSakratan < CClotBody
 {
@@ -101,7 +101,7 @@ methodmap DesertSakratan < CClotBody
 	}
 	
 	
-	public DesertSakratan(int client, float vecPos[3], float vecAng[3], int ally)
+	public DesertSakratan(float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertSakratan npc = view_as<DesertSakratan>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "550", ally));
 		

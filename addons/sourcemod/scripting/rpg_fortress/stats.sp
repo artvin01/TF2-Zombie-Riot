@@ -627,7 +627,7 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multirace 
 	float dummyNumber;
 	if(RPG_BobsPureRage(client, -1, dummyNumber))
 	{
-		returnnumber = RoundToNearest(float(returnnumber) * 1.35);
+		returnnumber = RoundToNearest(float(returnnumber) * 1.15);
 	}
 
 	return returnnumber;

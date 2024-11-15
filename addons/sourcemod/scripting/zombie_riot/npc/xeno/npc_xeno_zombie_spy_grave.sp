@@ -67,9 +67,9 @@ public void XenoSpy_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoSpy(client, vecPos, vecAng, ally);
+	return XenoSpy(vecPos, vecAng, team);
 }
 methodmap XenoSpy < CClotBody
 {
@@ -131,7 +131,7 @@ methodmap XenoSpy < CClotBody
 	}
 	
 	
-	public XenoSpy(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSpy(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSpy npc = view_as<XenoSpy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "5000", ally));
 		

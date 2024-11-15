@@ -11,9 +11,16 @@ public float Rogue_Encounter_Shop()
 
 	Artifact artifact;
 
-	if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+	if(GetURandomInt() % 5)
 	{
-		FirstSuperSale = true;
+		if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+		{
+			FirstSuperSale = true;
+			ShopListing.PushArray(artifact);
+		}
+	}
+	else if(Rogue_GetRandomArtfiact(artifact, true, 30) != -1)
+	{
 		ShopListing.PushArray(artifact);
 	}
 
@@ -179,8 +186,6 @@ public float Rogue_Encounter_SwordInStone()	// Note: Occurs in Floor 4
 }
 public void Rogue_Vote_SwordInStone(const Vote vote, int index)
 {
-	GrantAllPlayersCredits_Rogue(650);
-
 	switch(index)
 	{
 		case 0:
@@ -220,8 +225,6 @@ public float Rogue_Encounter_Theatrical()
 }
 public void Rogue_Vote_Theatrical(const Vote votee, int index)
 {
-	GrantAllPlayersCredits_Rogue(650);
-
 	switch(index)
 	{
 		case 0:
@@ -363,7 +366,6 @@ public float Rogue_Encounter_ForcefieldChest()
 }
 public void Rogue_Vote_ForcefieldChest(const Vote vote, int index)
 {
-	GrantAllPlayersCredits_Rogue(450);
 	if(index)
 	{
 		Rogue_GiveNamedArtifact(vote.Name);
@@ -395,13 +397,11 @@ public float Rogue_Encounter_CoffinOfEvil()
 }
 public void Rogue_Vote_CoffinOfEvil(const Vote vote, int index)
 {
-	GrantAllPlayersCredits_Rogue(450);
-
 	if(index)
 	{
 		PrintToChatAll("%t", "Coffin of Evil Lore 2");
 
-		Rogue_AddIngots(4);
+		Rogue_AddIngots(8);
 	}
 	else
 	{
@@ -442,13 +442,11 @@ public void Rogue_Vote_EyeForAnEye(const Vote vote, int index)
 	if(!Rogue_HasFriendship())
 		choice++;
 	
-	GrantAllPlayersCredits_Rogue(350);
-
 	switch(choice)
 	{
 		case 0:
 		{
-			Rogue_AddIngots(20);
+			Rogue_AddIngots(30);
 			
 			PrintToChatAll("%t", "Eye for an Eye Lore 1");
 		}
@@ -456,8 +454,8 @@ public void Rogue_Vote_EyeForAnEye(const Vote vote, int index)
 		{
 			Ammo_Count_Ready -= 20;
 			
-			CurrentCash += 1500;
-			GlobalExtraCash += 1500;
+			CurrentCash += 3000;
+			GlobalExtraCash += 3000;
 			
 			PrintToChatAll("%t", "Eye for an Eye Lore 2");
 		}
@@ -489,13 +487,11 @@ public float Rogue_Encounter_BrokenCrown()
 }
 public void Rogue_Vote_BrokenCrown(const Vote vote, int index)
 {
-	GrantAllPlayersCredits_Rogue(450);
-
 	if(index)
 	{
 		PrintToChatAll("%t", "Broken Crown Lore 2");
 
-		Rogue_AddIngots(2);
+		Rogue_AddIngots(8);
 	}
 	else
 	{
@@ -524,8 +520,6 @@ public float Rogue_Encounter_BobResearch()
 }
 public void Rogue_Vote_BobResearch(const Vote vote, int index)
 {
-	GrantAllPlayersCredits_Rogue(450);
-
 	if(index)
 	{
 		PrintToChatAll("%t", "Bob Research Lore 2");
@@ -614,8 +608,6 @@ public float Rogue_Encounter_BrokenBridge()
 }
 public void Rogue_Vote_BrokenBridge(const Vote vote, int index)
 {
-	GrantAllPlayersCredits_Rogue(650);
-
 	if(Rogue_GetIngots() < 3 || index)
 	{
 		PrintToChatAll("%t", "Broken Bridge Lore 2");
@@ -627,7 +619,7 @@ public void Rogue_Vote_BrokenBridge(const Vote vote, int index)
 		Rogue_AddIngots(-3);
 		
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1 || Rogue_GetRandomArtfiact(artifact, true, 18) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }

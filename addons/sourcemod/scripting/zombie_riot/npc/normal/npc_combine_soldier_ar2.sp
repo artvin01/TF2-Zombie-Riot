@@ -78,7 +78,7 @@ public void CombineSoldierAr2_OnMapStart_NPC()
 	PrecacheModel("models/combine_soldier.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower Rifler");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Rifler");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_ar2");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_rifle");
 	data.IconCustom = true;
@@ -88,9 +88,9 @@ public void CombineSoldierAr2_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineSoldierAr2(client, vecPos, vecAng, ally);
+	return CombineSoldierAr2(vecPos, vecAng, team);
 }
 methodmap CombineSoldierAr2 < CClotBody
 {
@@ -164,7 +164,7 @@ methodmap CombineSoldierAr2 < CClotBody
 	}
 	
 	
-	public CombineSoldierAr2(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineSoldierAr2(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineSoldierAr2 npc = view_as<CombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1250", ally));
 		

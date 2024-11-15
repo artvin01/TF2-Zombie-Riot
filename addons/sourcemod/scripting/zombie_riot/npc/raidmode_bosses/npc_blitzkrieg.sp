@@ -246,9 +246,9 @@ static void ClotPrecache()
 	PrecacheSound("misc/halloween/gotohell.wav");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Blitzkrieg(client, vecPos, vecAng, ally, data);
+	return Blitzkrieg(vecPos, vecAng, team, data);
 }
 
 static bool b_timer_lose[MAXENTITIES];
@@ -349,7 +349,7 @@ methodmap Blitzkrieg < CClotBody
 		PrintToServer("CClot::PlayPullSound()");
 		#endif
 	}
-	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Blitzkrieg(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", ally, false, true, true, true)); //giant!
 		

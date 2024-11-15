@@ -58,9 +58,9 @@ void RiverSeaTank_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return RiverSeaTank(client, vecPos, vecAng, ally);
+	return RiverSeaTank(client, vecPos, vecAng, team);
 }
 
 methodmap RiverSeaTank < CClotBody
@@ -250,7 +250,7 @@ static void ClotThink(int iNPC)
 				
 				Custom_Knockback(npc.index, client_victim, 3000.0, true, true);
 				npc.m_flNextRangedAttackHappening = 0.0;	
-				SDKHooks_TakeDamage(client_victim, npc.index, npc.index, Level[npc.index] * 30.0, DMG_CLUB, -1);
+				SDKHooks_TakeDamage(client_victim, npc.index, npc.index, Level[npc.index] * 70.0, DMG_CLUB, -1);
 				i_TankAntiStuck[client_victim] = EntIndexToEntRef(npc.index);
 				CreateTimer(0.1, CheckStuckNemesis, EntIndexToEntRef(client_victim), TIMER_FLAG_NO_MAPCHANGE);
 				npc.PlayRangedSound();

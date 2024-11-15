@@ -118,7 +118,6 @@ void FileNetwork_ConfigSetup(KeyValues map)
 
 			enabled = new KeyValues("Packages");
 			enabled.ImportFromFile(buffer);
-			RequestFrame(DeleteHandle, enabled);
 		}
 		else
 		{

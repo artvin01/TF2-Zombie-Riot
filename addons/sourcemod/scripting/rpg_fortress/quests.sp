@@ -418,7 +418,7 @@ bool Quests_TurnIn(int client, const char[] name)
 			KeyValues kv = Saves_Kv("quests");
 			kv.JumpToKey(name, true);
 
-			if(kv.GetNum(id) != Status_Completed)
+			if(kv.GetNum(id) != Status_Completed || QuestKv.GetNum("repeattime") > 0)
 			{
 				static const char sounds[][] =
 				{

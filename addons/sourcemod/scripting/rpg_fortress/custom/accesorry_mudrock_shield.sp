@@ -172,7 +172,7 @@ bool RPG_BobsPureRage(int victim, int attacker, float &damage)
 		int Health = GetEntProp(attacker, Prop_Send, "m_iHealth");
 
 		float Ratio = float(Health) / float(MaxHealth);
-		if(Ratio <= 0.65)
+		if(Ratio <= 0.75)
 		{
 			damage *= 1.25;
 			ReturnVal = true;
@@ -184,7 +184,7 @@ bool RPG_BobsPureRage(int victim, int attacker, float &damage)
 		int Health = GetEntProp(victim, Prop_Send, "m_iHealth");
 
 		float Ratio = float(Health) / float(MaxHealth);
-		if(Ratio <= 0.65)
+		if(Ratio <= 0.75)
 		{
 			damage *= 0.85;
 			ReturnVal = true;

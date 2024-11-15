@@ -53,9 +53,9 @@ void VoidMinigateKeeper_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidMinigateKeeper(client, vecPos, vecAng, ally);
+	return VoidMinigateKeeper(vecPos, vecAng, team);
 }
 methodmap VoidMinigateKeeper < CClotBody
 {
@@ -96,7 +96,7 @@ methodmap VoidMinigateKeeper < CClotBody
 	}
 	
 	
-	public VoidMinigateKeeper(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidMinigateKeeper(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidMinigateKeeper npc = view_as<VoidMinigateKeeper>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "2500", ally));
 		

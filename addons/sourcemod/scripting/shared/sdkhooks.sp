@@ -1246,7 +1246,7 @@ public void OnPostThink(int client)
 			{
 				char NameOverride[256];
 				NameOverride = form.Name;
-				if(form.Func_FormNameOverride != INVALID_FUNCTION)
+				if(form.Func_FormNameOverride != INVALID_FUNCTION && view_as<int>(form.Func_FormNameOverride) != 0) //somehow errors with 0, i dont know, whatever.
 				{
 					Call_StartFunction(null, form.Func_FormNameOverride);
 					Call_PushCell(client);
@@ -1675,8 +1675,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	//this is only for zr! RPG handles it som
 	if(attacker > 0 && attacker <= MAXENTITIES)
 		damage *= fl_Extra_Damage[attacker];
-#endif
-#if defined RPG
+		
 	if(attacker <= MaxClients)
 	{
 		//in pvp, we half the damage. this is also BEFORE flat resistance.
@@ -2042,6 +2041,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					dieingstate[victim] = 500;
 				}
+				dieingstate[victim] -= RoundToNearest(Attributes_FindOnPlayerZR(victim, Attrib_ReviveTimeCut, false, 0.0));
 				ForcePlayerCrouch(victim, true);
 				//cooldown for left for dead.
 				SpecterResetHudTime(victim);
@@ -2253,6 +2253,16 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		return Plugin_Changed;
 	}
 	*/
+	if(StrContains(sample, "weapons/quake_explosion_remastered.wav", true) != -1)
+	{
+		volume *= 0.8;
+		level = 80;
+
+		//Very loud. 
+		//need to reduce.
+		return Plugin_Changed;
+	}
+
 	if(StrContains(sample, "vo/", true) != -1)
 	{
 		if(entity > 0 && entity <= MaxClients)
@@ -2954,14 +2964,14 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			if(ArmorCorrosion[client] > 0)
 				ArmorCorrosion[client] = ArmorCorrosion[client] * 9 / 10;
 			
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		}
 		else
 		{
 			if(ArmorCorrosion[client] > 0)
 				ArmorCorrosion[client] = ArmorCorrosion[client] * 2 / 3;
 			
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		}
 	}
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)

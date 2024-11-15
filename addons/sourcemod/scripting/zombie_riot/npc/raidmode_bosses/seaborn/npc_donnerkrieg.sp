@@ -229,9 +229,9 @@ static void ClotPrecache()
 	PrecacheSound("ambient/energy/whiteflash.wav", true);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Raidboss_Donnerkrieg(client, vecPos, vecAng, ally, data);
+	return Raidboss_Donnerkrieg(vecPos, vecAng, team, data);
 }
 
 methodmap Raidboss_Donnerkrieg < CClotBody
@@ -287,7 +287,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 	}
-	public Raidboss_Donnerkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Raidboss_Donnerkrieg(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 
@@ -596,6 +596,8 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
+			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
 		}
 	}
 }

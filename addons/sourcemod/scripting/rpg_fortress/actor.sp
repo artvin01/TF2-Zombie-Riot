@@ -2097,7 +2097,7 @@ static void AdjustOptionsSectionCond(int client, const char[] key)
 	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);	// Reply
 	ActorKv.JumpToKey(CurrentKeyEditing[client], true);		// cond
 
-	AdjustCondShared(client, CurrentKeyEditing[client], CurrentSubKeyEditing[client], key);
+	AdjustCondShared(client, CurrentKeyEditing[client], CurrentSubKeyEditing[client], CurrentTrueBottomEditing[client], key);
 }
 
 static void AdjustOptionsSectionCondSection(int client, const char[] key)
@@ -2129,7 +2129,8 @@ static void AdjustOptionsSectionCondSectionKey(int client, const char[] key)
 	ActorKv.JumpToKey(CurrentSectionEditing[client], true);		// options
 	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);	// Reply
 	ActorKv.JumpToKey(CurrentKeyEditing[client], true);		// cond
-	ActorKv.JumpToKey(CurrentSubKeyEditing[client], true);
+	if(!StrEqual(CurrentSubKeyEditing[client], "_"))
+		ActorKv.JumpToKey(CurrentSubKeyEditing[client], true);
 
 	if(key[0])
 	{
@@ -2347,23 +2348,31 @@ static void CondMenu(int client, EditMenu menu, const char[] subsection, const c
 	menu.ExitBackButton = true;
 }
 
-static void AdjustCondShared(int client, char section[64], char subsection[64], const char[] key)
+static void AdjustCondShared(int client, char section[64], char subsection[64], char key[64], const char[] input)
 {
-	if(StrEqual(key, "delete"))
+	if(StrEqual(input, "delete"))
 	{
 		ActorKv.DeleteThis();
 		section[0] = 0;
 	}
-	else if(StrContains(key, ";") != -1)
+	else if(StrContains(input, ";") != -1)
 	{
 		char buffers[2][64];
-		ExplodeString(key, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		ExplodeString(input, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 		ActorKv.JumpToKey(buffers[0]);
 		ActorKv.DeleteKey(buffers[1]);
 	}
+	else if(StrEqual(input, "level"))
+	{
+		// Anything that isn't in it's own tree
+		strcopy(subsection, sizeof(subsection), "_");
+		strcopy(key, sizeof(key), input);
+		Actor_EditorMenu(client);
+		return;
+	}
 	else
 	{
-		strcopy(subsection, sizeof(subsection), key);
+		strcopy(subsection, sizeof(subsection), input);
 		Actor_EditorMenu(client);
 		return;
 	}
@@ -2387,7 +2396,7 @@ static void AdjustCond(int client, const char[] key)
 	ActorKv.JumpToKey(CurrentChatEditing[client], true);
 	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
 
-	AdjustCondShared(client, CurrentSectionEditing[client], CurrentSubSectionEditing[client], key);
+	AdjustCondShared(client, CurrentSectionEditing[client], CurrentSubSectionEditing[client], CurrentKeyEditing[client], key);
 }
 
 static void AdjustCondSection(int client, const char[] key)
@@ -2417,7 +2426,8 @@ static void AdjustCondSectionKey(int client, const char[] key)
 	ActorKv.JumpToKey("Chats", true);
 	ActorKv.JumpToKey(CurrentChatEditing[client], true);
 	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
-	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);
+	if(!StrEqual(CurrentSubSectionEditing[client], "_"))
+		ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);
 
 	if(key[0])
 	{

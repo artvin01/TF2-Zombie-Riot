@@ -101,7 +101,7 @@ methodmap ArkSinger < CClotBody
 		EmitSound(clients, numClients, g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public ArkSinger(int client, float vecPos[3], float vecAng[3], int ally)
+	public ArkSinger(float vecPos[3], float vecAng[3], int ally)
 	{
 		ArkSinger npc = view_as<ArkSinger>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12000", ally, false,_,_,_,_));
 		

@@ -68,9 +68,9 @@ public void Whiteflower_selected_few_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_selected_few(client, vecPos, vecAng, ally);
+	return Whiteflower_selected_few(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_selected_few < CClotBody
@@ -176,7 +176,7 @@ methodmap Whiteflower_selected_few < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
-	public Whiteflower_selected_few(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_selected_few(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -572,6 +572,14 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			case 2:
 			{		
 				//Jump at enemy	
+				if(npc.m_iChanged_WalkCycle != 7) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 7;
+					npc.SetActivity("ACT_RUN");
+					npc.m_flSpeed = 350.0;
+					NPC_StartPathing(iNPC);
+				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{

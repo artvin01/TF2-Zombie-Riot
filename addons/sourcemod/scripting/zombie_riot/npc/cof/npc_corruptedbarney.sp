@@ -82,9 +82,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/cof/barney.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return CorruptedBarney(client, vecPos, vecAng, ally, data);
+	return CorruptedBarney(vecPos, vecAng, team, data);
 }
 methodmap CorruptedBarney < CClotBody
 {
@@ -138,7 +138,7 @@ methodmap CorruptedBarney < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}	
 	
-	public CorruptedBarney(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public CorruptedBarney(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		CorruptedBarney npc = view_as<CorruptedBarney>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/barney.mdl", "1.75", "400", ally, false, true, true,true)); //giant!
 		

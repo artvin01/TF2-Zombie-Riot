@@ -3,6 +3,7 @@
 
 static int BrokenBlade;
 static int BladeDancer;
+static float BladeDancerTime;
 static float LastFlowerHealth;
 static ArrayStack LastShadowHealth;
 static bool Friendship;
@@ -33,29 +34,29 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 	{
 		float value;
 
-		// +15% max health
+		// +20% max health
 		map.GetValue("26", value);
 
 		value += ClassHealth(WeaponClass[entity]);
-		value *= 1.15;
+		value *= 1.2;
 		value -= ClassHealth(WeaponClass[entity]);
 
 		map.SetValue("26", value);
 
-		// -15% movement speed
+		// -10% movement speed
 		value = 1.0;
 		map.GetValue("107", value);
-		map.SetValue("107", value * 0.85);
+		map.SetValue("107", value * 0.9);
 
-		// +15% building damage
+		// +20% building damage
 		value = 1.0;
 		map.GetValue("287", value);
-		map.SetValue("287", value * 1.15);
+		map.SetValue("287", value * 1.2);
 
-		// -1.5% damage vuln
+		// -2% damage vuln
 		value = 1.0;
 		map.GetValue("412", value);
-		map.SetValue("412", value * 0.985);
+		map.SetValue("412", value * 0.98);
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
@@ -63,11 +64,11 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
-			// +15% damage bonus
-			npc.m_fGunRangeBonus *= 1.15;
+			// +20% damage bonus
+			npc.m_fGunRangeBonus *= 1.2;
 
-			// +15% max health
-			int health = ReturnEntityMaxHealth(npc.index) * 23 / 20;
+			// +20% max health
+			int health = ReturnEntityMaxHealth(npc.index) * 6 / 5;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
@@ -76,11 +77,11 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
 			{
-				// +15% damage bonus
-				npc.BonusDamageBonus *= 1.15;
+				// +20% damage bonus
+				npc.BonusDamageBonus *= 1.2;
 
-				// +15% max health
-				int health = ReturnEntityMaxHealth(npc.index) * 23 / 20;
+				// +20% max health
+				int health = ReturnEntityMaxHealth(npc.index) * 6 / 5;
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}
@@ -90,13 +91,13 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 
 public void Rogue_Blademace_Weapon(int entity)
 {
-	Attributes_SetMulti(entity, 2, 1.15);
-	Attributes_SetMulti(entity, 410, 1.15);
+	Attributes_SetMulti(entity, 2, 1.2);
+	Attributes_SetMulti(entity, 410, 1.2);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
-		Attributes_SetMulti(entity, 1, 1.15);
+		Attributes_SetMulti(entity, 1, 1.2);
 	}
 }
 
@@ -111,11 +112,11 @@ public void Rogue_Brokenblade_Ally(int entity, StringMap map)
 	{
 		float value;
 
-		// -25% max health
+		// -20% max health
 		map.GetValue("26", value);
 
 		value += ClassHealth(WeaponClass[entity]);
-		value *= 0.75;
+		value *= 0.8;
 		value -= ClassHealth(WeaponClass[entity]);
 
 		map.SetValue("26", value);
@@ -126,8 +127,8 @@ public void Rogue_Brokenblade_Ally(int entity, StringMap map)
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
-			// -25% max health
-			int health = ReturnEntityMaxHealth(npc.index) * 3 / 4;
+			// -20% max health
+			int health = ReturnEntityMaxHealth(npc.index) * 4 / 5;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
@@ -140,18 +141,22 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 	{
 		if(BladeDancer && BladeDancer != entity)
 		{
-			if(IsClientInGame(BladeDancer) && IsPlayerAlive(BladeDancer) && TeutonType[BladeDancer] == TEUTON_NONE && !dieingstate[BladeDancer])
+			if(fabs(GetGameTime() - BladeDancerTime) < 180 && IsClientInGame(BladeDancer) && IsPlayerAlive(BladeDancer) && TeutonType[BladeDancer] == TEUTON_NONE && !dieingstate[BladeDancer])
 				return;
 		}
 
-		if(TeutonType[entity] != TEUTON_NONE && !dieingstate[entity])
+		if(TeutonType[entity] == TEUTON_NONE && !dieingstate[entity])
 		{
-			BladeDancer = entity;
-			CPrintToChatAll("{crimson}The Current bladedance Wielder is %N.", BladeDancer);
+			if(BladeDancer != entity)
+			{
+				BladeDancer = entity;
+				BladeDancerTime = GetGameTime();
+				CPrintToChatAll("{red}%N {crimson}recieved +100%% max health and +100%% damage bonus.", BladeDancer);
+			}
 
 			float value;
 
-			// +100% max health
+			// +200% max health
 			map.GetValue("26", value);
 
 			value += ClassHealth(WeaponClass[entity]);
@@ -160,7 +165,7 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 
 			map.SetValue("26", value);
 
-			// +100% building damage
+			// +200% building damage
 			value = 1.0;
 			map.GetValue("287", value);
 			map.SetValue("287", value * 2.0);
@@ -170,13 +175,13 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 
 public void Rogue_Bladedance_Weapon(int entity)
 {
-	if(BladeDancer == entity)
+	if(BladeDancer == GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity"))
 	{
 		Attributes_SetMulti(entity, 2, 2.0);
 		Attributes_SetMulti(entity, 410, 2.0);
 		char buffer[36];
 		GetEntityClassname(entity, buffer, sizeof(buffer));
-		if(!StrEqual(buffer, "tf_weapon_medigun"))
+		if(StrEqual(buffer, "tf_weapon_medigun"))
 		{
 			Attributes_SetMulti(entity, 1, 2.0);
 		}
@@ -193,7 +198,7 @@ public void Rogue_Whiteflower_Ally(int entity, StringMap map)
 
 		map.SetValue("26", RemoveExtraHealth(WeaponClass[entity], LastFlowerHealth));
 
-		LastFlowerHealth = last;
+		LastFlowerHealth = last * 1.25;
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
@@ -207,7 +212,7 @@ public void Rogue_Whiteflower_Ally(int entity, StringMap map)
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 
-			LastFlowerHealth = float(last);
+			LastFlowerHealth = float(last) * 1.25;
 		}
 		else
 		{
@@ -220,7 +225,7 @@ public void Rogue_Whiteflower_Ally(int entity, StringMap map)
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 
-				LastFlowerHealth = float(last);
+				LastFlowerHealth = float(last) * 1.25;
 			}
 		}
 	}
@@ -265,12 +270,12 @@ public void Rogue_Shadow_Ally(int entity, StringMap map)
 public void Rogue_RightNatator_Enemy(int entity)
 {
 	fl_Extra_MeleeArmor[entity] *= 0.95;
-	fl_Extra_RangedArmor[entity] *= 1.15;
+	fl_Extra_RangedArmor[entity] *= 1.2;
 }
 
 public void Rogue_LeftNatator_Enemy(int entity)
 {
-	fl_Extra_MeleeArmor[entity] *= 1.15;
+	fl_Extra_MeleeArmor[entity] *= 1.2;
 	fl_Extra_RangedArmor[entity] *= 0.95;
 }
 
@@ -376,7 +381,7 @@ public void Rogue_BobFinal_Weapon(int entity)
 
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		Attributes_SetMulti(entity, 1, 1.15);
 	}

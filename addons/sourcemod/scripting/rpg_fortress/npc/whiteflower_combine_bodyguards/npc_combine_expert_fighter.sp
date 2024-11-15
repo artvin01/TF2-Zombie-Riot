@@ -60,9 +60,9 @@ public void Whiteflower_ExpertFighter_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_ExpertFighter(client, vecPos, vecAng, ally);
+	return Whiteflower_ExpertFighter(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_ExpertFighter < CClotBody
@@ -146,7 +146,7 @@ methodmap Whiteflower_ExpertFighter < CClotBody
 	}
 	
 	
-	public Whiteflower_ExpertFighter(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_ExpertFighter(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_ExpertFighter npc = view_as<Whiteflower_ExpertFighter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -249,7 +249,7 @@ public void Whiteflower_ExpertFighter_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 750000.0;
+					float damage = 950000.0;
 
 					
 					if(target > 0) 

@@ -84,7 +84,7 @@ methodmap ArkSlug < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public ArkSlug(int client, float vecPos[3], float vecAng[3], int ally)
+	public ArkSlug(float vecPos[3], float vecAng[3], int ally)
 	{
 		ArkSlug npc = view_as<ArkSlug>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", "1050", ally, false));
 		// Originium Slug α (HP)

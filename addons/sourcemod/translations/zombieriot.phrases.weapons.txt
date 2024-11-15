@@ -2855,4 +2855,12 @@
 		"en"	"''Normal Fists''"
 		"ru"	"''Нормальные кулаки''"
 	}
+	"Whistle Stop"
+	{
+		"en"	"Whistle Stop"
+	}
+	"Ancestor Launcher"
+	{
+		"en"	"Ancestor Launcher"
+	}
 }

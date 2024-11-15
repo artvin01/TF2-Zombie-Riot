@@ -61,9 +61,9 @@ public void Whiteflower_RagingBlader_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_RagingBlader(client, vecPos, vecAng, ally);
+	return Whiteflower_RagingBlader(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_RagingBlader < CClotBody
@@ -147,7 +147,7 @@ methodmap Whiteflower_RagingBlader < CClotBody
 	}
 	
 	
-	public Whiteflower_RagingBlader(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_RagingBlader(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_RagingBlader npc = view_as<Whiteflower_RagingBlader>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -232,7 +232,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 	npc.PlayKilledEnemySound(npc.m_iTarget);
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 400.0, "ACT_RUN", "ACT_IDLE", 0.0, gameTime);
-	if(!b_NpcUnableToDie[npc.index])
+	if(!b_NpcUnableToDie[npc.index] && !b_NpcIsInADungeon[npc.index])
 	{
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
@@ -262,7 +262,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 400000.0;
+					float damage = 750000.0;
 
 					
 					if(target > 0) 

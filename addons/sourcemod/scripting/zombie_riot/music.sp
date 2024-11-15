@@ -183,7 +183,7 @@ void StopMapMusicAll()
 	char sSound[256];
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsValidClient(client) && (b_IgnoreMapMusic[client] || !Database_IsCached(client)))
+		if(IsValidClient(client) && (b_IgnoreMapMusic[client] || (!Database_IsLan() && !Database_IsCached(client))))
 		{
 			for (int i = 0; i < g_iNumSounds; i++)
 			{
@@ -480,6 +480,11 @@ void Music_PostThink(int client)
 		return;
 	
 	if(f_ClientMusicVolume[client] < 0.05)
+		return;
+
+	//if in menu, dont play new music.
+	//but dont kill old music either.
+	if(SkillTree_InMenu(client))
 		return;
 
 	if(Music_Timer[client] < GetTime() && Music_Timer_2[client] < GetTime())

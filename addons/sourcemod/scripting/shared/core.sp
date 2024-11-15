@@ -105,6 +105,7 @@ ConVar CvarRerouteToIp;
 ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
+ConVar CvarSkillPoints;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
@@ -191,9 +192,6 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define BANNER_DURATION_FIX_FLOAT 1.0
 
 #define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
-
-
-native any FuncToVal(Function bruh);
 
 enum
 {
@@ -539,6 +537,7 @@ float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
 float f_BannerAproxDur[MAXENTITIES];
 float f_BuffBannerNpcBuff[MAXENTITIES];
+float f_BobDuckBuff[MAXENTITIES];
 float f_AncientBannerNpcBuff[MAXENTITIES];
 float f_FallenWarriorDebuff[MAXENTITIES];
 float f_BattilonsNpcBuff[MAXENTITIES];
@@ -556,6 +555,7 @@ float f_EnfeebleEffect[MAXENTITIES];
 float f_LeeMinorEffect[MAXENTITIES];
 float f_LeeMajorEffect[MAXENTITIES];
 float f_LeeSuperEffect[MAXENTITIES];
+float f_LogosDebuff[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int i_RaidGrantExtra[MAXENTITIES];
@@ -682,7 +682,6 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
-int RogueTheme;
 float f_TimeSinceLastGiveWeapon[MAXENTITIES]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
 int Resupplies_Supplied[MAXTF2PLAYERS];
@@ -694,7 +693,6 @@ float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
 float Mana_Regen_Block_Timer[MAXTF2PLAYERS];
 float Mana_Loss_Delay[MAXTF2PLAYERS];
 float RollAngle_Regen_Delay[MAXTF2PLAYERS];
-int i_BarbariansMind[MAXPLAYERS + 1]={0, ...}; 				//830
 bool b_FaceStabber[MAXENTITIES];
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
@@ -1460,16 +1458,8 @@ public Plugin myinfo =
 	version		=	"manual"
 };
 
-static any Native_FuncToVal(Handle plugin, int numParams)
-{
-	return GetNativeCell(1);
-}
-
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	MarkNativeAsOptional("FuncToVal");
-	CreateNative("FuncToVal", Native_FuncToVal);
-	
 #if defined ZR || defined RPG
 	Thirdperson_PluginLoad();
 #endif
@@ -2314,6 +2304,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 	//tutorial stuff.
 	Tutorial_MakeClientNotMove(client);
+
+	if(SkillTree_PlayerRunCmd(client, buttons, vel))
+		return Plugin_Changed;
 #endif
 
 #if defined RPG
@@ -2960,6 +2953,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_LeeMinorEffect[entity] = 0.0;
 		f_LeeMajorEffect[entity] = 0.0;
 		f_LeeSuperEffect[entity] = 0.0;
+		f_LogosDebuff[entity] = 0.0;
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 #if defined ZR
 		f_HealDelayParticle[entity] = 0.0;
@@ -3043,6 +3037,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_BannerDurationActive[entity] = 0.0;
 		f_BannerAproxDur[entity] = 0.0;
 		f_BuffBannerNpcBuff[entity] = 0.0;
+		f_BobDuckBuff[entity] = 0.0;
 		f_BattilonsNpcBuff[entity] = 0.0;
 		f_AncientBannerNpcBuff[entity] = 0.0;
 		f_DuelStatus[entity] = 0.0;

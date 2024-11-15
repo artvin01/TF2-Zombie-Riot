@@ -52,9 +52,9 @@ void BuckshotGambler_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return BuckshotGambler(client, vecPos, vecAng, ally);
+	return BuckshotGambler(client, vecPos, vecAng, team);
 }
 
 methodmap BuckshotGambler < CClotBody

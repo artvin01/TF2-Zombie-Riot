@@ -609,7 +609,7 @@ static Handle DungeonTimer;
 static StringMap DungeonList;
 static char DungeonMenu[MAXTF2PLAYERS][64];
 static int AltMenu[MAXTF2PLAYERS];
-static char InDungeon[MAXENTITIES][64];
+char InDungeon[MAXENTITIES][64];
 static int LastResult[MAXENTITIES];
 
 void Dungeon_PluginStart()
@@ -2208,6 +2208,23 @@ public void Dungeon_Spawn_AntiIberianTank(int entity)
 		fl_Extra_Damage[entity] *= 1.2;
 	}
 }
+public void Dungeon_Spawn_WhiteflowerPowered(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_whiteflower_boss"))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+		npc.m_iOverlordComboAttack = 1;
+		int health = ReturnEntityMaxHealth(entity);
+		health = RoundToNearest(float(health) * 1.5);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.1;
+		i_HpRegenInBattle[entity] = RoundToNearest(float(i_HpRegenInBattle[entity]) * 1.5);
+	}
+}
 
 public void Dungeon_Spawn_SecondGiant(ArrayList list)
 {
@@ -2264,7 +2281,7 @@ public void Dungeon_Expidonsa_ScaleLevel_10000(int entity)
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 	SetEntProp(entity, Prop_Data, "m_iHealth", health);
 	fl_Extra_Damage[entity] *= 2.0;
-	i_HpRegenInBattle[entity] *= 4;
+	i_HpRegenInBattle[entity] *= 8;
 	fl_Extra_Speed[entity] *= 1.1;
 
 	// Strip "!"
@@ -2285,7 +2302,7 @@ public void Dungeon_Expidonsa_ScaleLevel_15000(int entity)
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 	SetEntProp(entity, Prop_Data, "m_iHealth", health);
 	fl_Extra_Damage[entity] *= 4.0;
-	i_HpRegenInBattle[entity] *= 10;
+	i_HpRegenInBattle[entity] *= 30;
 	fl_Extra_Speed[entity] *= 1.125;
 	
 	// Strip "!"
@@ -2306,7 +2323,7 @@ public void Dungeon_Expidonsa_ScaleLevel_20000(int entity)
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 	SetEntProp(entity, Prop_Data, "m_iHealth", health);
 	fl_Extra_Damage[entity] *= 6.0;
-	i_HpRegenInBattle[entity] *= 20;
+	i_HpRegenInBattle[entity] *= 50;
 	fl_Extra_Speed[entity] *= 1.175;	
 	// Strip "!"
 	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
@@ -2325,7 +2342,7 @@ public void Dungeon_Expidonsa_ScaleLevel_25000(int entity)
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 	SetEntProp(entity, Prop_Data, "m_iHealth", health);
 	fl_Extra_Damage[entity] *= 8.0;
-	i_HpRegenInBattle[entity] *= 28;
+	i_HpRegenInBattle[entity] *= 80;
 	fl_Extra_Speed[entity] *= 1.2;	
 	// Strip "!"
 	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
@@ -2345,7 +2362,7 @@ public void Dungeon_Expidonsa_ScaleLevel_30000(int entity)
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 	SetEntProp(entity, Prop_Data, "m_iHealth", health);
 	fl_Extra_Damage[entity] *= 10.0;
-	i_HpRegenInBattle[entity] *= 38;
+	i_HpRegenInBattle[entity] *= 120;
 	fl_Extra_Speed[entity] *= 1.22;	
 	// Strip "!"
 	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
@@ -2364,7 +2381,7 @@ public void Dungeon_Expidonsa_ScaleLevel_35000(int entity)
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 	SetEntProp(entity, Prop_Data, "m_iHealth", health);
 	fl_Extra_Damage[entity] *= 12.0;
-	i_HpRegenInBattle[entity] *= 50;
+	i_HpRegenInBattle[entity] *= 250;
 	fl_Extra_Speed[entity] *= 1.25;	
 	// Strip "!"
 	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;
@@ -2383,7 +2400,7 @@ public void Dungeon_Expidonsa_ScaleLevel_40000(int entity)
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 	SetEntProp(entity, Prop_Data, "m_iHealth", health);
 	fl_Extra_Damage[entity] *= 14.0;
-	i_HpRegenInBattle[entity] *= 70;
+	i_HpRegenInBattle[entity] *= 350;
 	fl_Extra_Speed[entity] *= 1.3;	
 	// Strip "!"
 	bool found = ReplaceStringEx(c_NpcName[entity], sizeof(c_NpcName[]), "!", "") != -1;

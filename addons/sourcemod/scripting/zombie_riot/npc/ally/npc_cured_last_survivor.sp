@@ -179,9 +179,9 @@ int CuredFatherGrigori_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CuredFatherGrigori(client, vecPos, vecAng, ally);
+	return CuredFatherGrigori(vecPos, vecAng, team);
 }
 
 static bool BoughtGregHelp;
@@ -321,7 +321,7 @@ methodmap CuredFatherGrigori < CClotBody
 		
 	}
 	
-	public CuredFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
+	public CuredFatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
 		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally, true, false));
 		

@@ -86,9 +86,9 @@ public void CombinePoliceSmg_OnMapStart_NPC()
 	
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombinePoliceSmg(client, vecPos, vecAng, ally);
+	return CombinePoliceSmg(vecPos, vecAng, team);
 }
 methodmap CombinePoliceSmg < CClotBody
 {
@@ -162,7 +162,7 @@ methodmap CombinePoliceSmg < CClotBody
 	}
 	
 	
-	public CombinePoliceSmg(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombinePoliceSmg(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombinePoliceSmg npc = view_as<CombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700", ally));
 		

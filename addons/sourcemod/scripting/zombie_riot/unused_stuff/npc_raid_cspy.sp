@@ -252,7 +252,7 @@ methodmap CorruptedSpyRaid < CClotBody
 		this.m_flPlayMusicSound = GetEngineTime() + 210.0;
 	}
 
-	public CorruptedSpyRaid(int client, float vecPos[3], float vecAng[3], int ally)
+	public CorruptedSpyRaid(float vecPos[3], float vecAng[3], int ally)
 	{
 		CorruptedSpyRaid npc = view_as<CorruptedSpyRaid>(CClotBody(vecPos, vecAng, "models/freak_fortress_2/corruptedspy/corruptedspy_animated_funny_1.mdl", "1.35", "500000", ally, false, true, true, true));
 		

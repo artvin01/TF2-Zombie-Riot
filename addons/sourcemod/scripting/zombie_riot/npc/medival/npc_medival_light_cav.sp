@@ -100,9 +100,9 @@ void MedivalLightCav_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalLightCav(client, vecPos, vecAng, ally);
+	return MedivalLightCav(vecPos, vecAng, team);
 }
 
 methodmap MedivalLightCav < CClotBody
@@ -165,7 +165,7 @@ methodmap MedivalLightCav < CClotBody
 		
 	}
 	
-	public MedivalLightCav(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalLightCav(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalLightCav npc = view_as<MedivalLightCav>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		SetVariantInt(1);
