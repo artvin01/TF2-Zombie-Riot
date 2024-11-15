@@ -64,7 +64,6 @@ methodmap VictorianFactory < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_bFUCKYOU = false;
 		i_AttacksTillMegahit[npc.index] = 0;
 
 		npc.m_flMeleeArmor = 0.0;
@@ -323,7 +322,7 @@ static void ClotThink(int iNPC)
 			i_AttacksTillMegahit[npc.index] = 607;
 			return;
 		}
-		if(i_AttacksTillMegahit[npc.index] <= 607 || !npc.m_bFUCKYOU)
+		if(i_AttacksTillMegahit[npc.index] <= 607)
 		{
 			bool GetClosed=false;
 			float Vec[3], entitypos[3], distance;
@@ -348,7 +347,7 @@ static void ClotThink(int iNPC)
 				}
 			}
 			
-			if(GetClosed || npc.m_iState>=1)
+			if(GetClosed)
 				i_AttacksTillMegahit[npc.index] = 608;
 			return;
 		}

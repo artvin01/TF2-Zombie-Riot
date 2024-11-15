@@ -214,12 +214,24 @@ static void ClotThink(int iNPC)
 	{
 		npc.SetVelocity({0.0,0.0,0.0});
 		npc.m_flSpeed=0.0;
-		if(b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=false;
 	}
 	else
 	{
 		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
 		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
+	}
+	int attacker = ProjectileDetection(npc.index, _, true);
+	if(IsValidClient(attacker))
+	{
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float damage = 45.0;
+		damage *= Attributes_GetOnPlayer(attacker, 1, true, true);
+		damage *= Attributes_GetOnPlayer(attacker, 2, true, true);
+		damage *= Attributes_GetOnPlayer(attacker, 1000, true, true);
+		damage *= Attributes_GetOnPlayer(attacker, 410, true, true)+1.0;
+		
+		Explode_Logic_Custom(damage, attacker, attacker, -1, VecSelfNpc, 65.0,_,_,false);
+		FreezeNpcInTime(npc.index, 0.1, true);
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -497,4 +509,56 @@ static bool TraceEntityFilterIgnorePlayersAndSelf(int entity, int contentsMask, 
 		return false;
 
 	return true;
+}
+
+stock int ProjectileDetection(int entity, float Targetdist=146.0, bool Remove = false)
+{
+	static char classname[64];
+	float position[3], position2[3], distance[3], dist;
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	int team = GetTeam(entity);
+	bool success;
+	int projectile = -1;
+	int Owner = -1;
+	while((projectile = FindEntityByClassname(projectile, "tf_projectile_*")) != INVALID_ENT_REFERENCE)
+	{
+		GetEntityClassname(projectile, classname, sizeof(classname));
+		if(StrEqual(classname, "tf_projectile_sentryrocket", false) && HasEntProp(projectile, Prop_Send, "m_hBuilder"))
+			Owner = GetEntPropEnt(projectile, Prop_Send, "m_hBuilder");
+		else
+		{
+			if(HasEntProp(projectile, Prop_Send, "m_hOriginalLauncher"))
+				Owner=GetEntPropEnt(projectile, Prop_Send, "m_hOriginalLauncher");
+			else if(HasEntProp(projectile, Prop_Send, "m_hOwnerprojectile"))
+				Owner=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerprojectile");
+			else if(HasEntProp(projectile, Prop_Data, "m_hOwnerEntity"))
+				Owner=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerEntity");
+			else if(HasEntProp(projectile, Prop_Data, "m_hOwnerEntity"))
+				Owner=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerEntity");
+		}
+		int OwnerTeam=view_as<int>(TFTeam_Unassigned);
+		if(IsValidClient(Owner))
+			 OwnerTeam = GetTeam(Owner);
+		if(team!=OwnerTeam)
+		{
+			GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", position2);
+			MakeVectorFromPoints(position, position2, distance);
+			dist = GetVectorLength(distance);
+			if(dist<Targetdist)
+			{
+				if(Remove)
+				{
+					if(projectile <= 0 || !IsValidEntity(projectile))
+						return -1;
+					AcceptEntityInput(projectile, "Kill");
+				}
+				success=true;
+				continue;
+			}
+			else continue;
+		}
+	}
+	if(success)
+		return Owner;
+	return -1;
 }

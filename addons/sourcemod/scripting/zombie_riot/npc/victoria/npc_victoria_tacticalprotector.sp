@@ -36,9 +36,9 @@ void Victorian_TacticalProtector_OnMapStart_NPC()
 	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
 	PrecacheModel(LASERBEAM);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Protector");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Tactical Protector");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_protector");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_protectors"); 
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_tacticalprotectors"); 
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
@@ -115,6 +115,7 @@ methodmap VictoriaProtector < CClotBody
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_bFUCKYOU = false;
 		npc.Anger = false;
@@ -214,6 +215,15 @@ static void VictoriaProtector_ClotThink(int iNPC)
 			{
 				if(gameTime > npc.m_flNextMeleeAttack)
 				{
+					if(npc.m_iChanged_WalkCycle != 4)
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.m_flSpeed = 0.0;
+						npc.SetActivity("ACT_MP_STAND_MELEE");
+						npc.AddGesture("ACT_MP_STUN_END");
+						npc.StopPathing();
+					}
 					char Adddeta[512];
 					if(FactorySpawn[npc.index])
 						FormatEx(Adddeta, sizeof(Adddeta), "factory");
@@ -221,7 +231,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 						FormatEx(Adddeta, sizeof(Adddeta), "%s;mk2", Adddeta);
 					if(Limit[npc.index])
 						FormatEx(Adddeta, sizeof(Adddeta), "%s;limit", Adddeta);
-					
+					VecSelfNpc[2]+=45.0;
 					int spawn_index;
 					if(Fragments[npc.index])
 						spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
@@ -236,11 +246,20 @@ static void VictoriaProtector_ClotThink(int iNPC)
 						IncreaceEntityDamageTakenBy(spawn_index, 0.05, 1.0);
 					}
 					npc.m_bFUCKYOU=true;
+					npc.m_flNextThinkTime = gameTime + 1.0;
+				}
+				else if(gameTime > npc.m_flNextRangedAttack)
+				{
+					npc.m_bisWalking = false;
+					npc.StopPathing();
+					npc.SetActivity("ACT_MP_STAND_MELEE");
+					npc.AddGesture("ACT_MP_STUN_MIDDLE");
+					npc.m_flNextRangedAttack = gameTime + 0.9;
 				}
 			}
 			else
 			{
-				VecSelfNpc[2]+=100.0;
+				VecSelfNpc[2]+=85.0;
 				npc.m_iWearable4 = ParticleEffectAt_Parent(VecSelfNpc, "cart_flashinglight_red", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0});
 				npc.PlayDronPingSound();
 				npc.m_flNextMeleeAttack = gameTime + 5.0;
@@ -310,15 +329,13 @@ static Action VictoriaProtector_OnTakeDamage(int victim, int &attacker, int &inf
 		{
 			damage=0.0;
 			IncreaceEntityDamageTakenBy(npc.index, 0.5, 5.0);
-			//SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(maxhealth*0.5));
-			if(npc.m_iChanged_WalkCycle != 2)
-			{
-				npc.m_bisWalking = false;
-				npc.m_iChanged_WalkCycle = 2;
-				npc.m_flSpeed = 0.0;
-				npc.SetActivity("ACT_MP_STUN_MIDDLE");
-				npc.StopPathing();
-			}
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 2;
+			npc.m_flSpeed = 0.0;
+			npc.SetActivity("ACT_MP_STAND_MELEE");
+			npc.AddGesture("ACT_MP_STUN_BEGIN");
+			npc.StopPathing();
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.65;
 			npc.Anger = true;
 			npc.m_fbRangedSpecialOn = true;
 		}

@@ -274,7 +274,7 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 			if(Limit[npc.index])
 				FormatEx(Adddeta, sizeof(Adddeta), "%s;limit", Adddeta);
 			FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, target);
-			
+			VecSelfNpc[2]+=45.0;
 			int spawn_index;
 			if(Anvil[npc.index])
 				spawn_index = NPC_CreateByName("npc_victoria_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);

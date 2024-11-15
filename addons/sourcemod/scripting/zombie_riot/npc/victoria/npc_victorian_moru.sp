@@ -9,7 +9,6 @@ static bool Limit[MAXENTITIES];
 void VictorianDroneAnvil_MapStart()
 {
 	PrecacheModel("models/props_teaser/saucer.mdl");
-	PrecacheModel("models/combine_apc_dynamic.mdl");
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_HealSound);
 	NPCData data;
@@ -169,12 +168,24 @@ static void ClotThink(int iNPC)
 	{
 		npc.SetVelocity({0.0,0.0,0.0});
 		npc.m_flSpeed=0.0;
-		if(b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=false;
 	}
 	else
 	{
 		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
 		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
+	}
+	int attacker = ProjectileDetection(npc.index, _, true);
+	if(IsValidClient(attacker))
+	{
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float damage = 45.0;
+		damage *= Attributes_GetOnPlayer(attacker, 1, true, true);
+		damage *= Attributes_GetOnPlayer(attacker, 2, true, true);
+		damage *= Attributes_GetOnPlayer(attacker, 1000, true, true);
+		damage *= Attributes_GetOnPlayer(attacker, 410, true, true)+1.0;
+		
+		Explode_Logic_Custom(damage, attacker, attacker, -1, VecSelfNpc, 65.0,_,_,false);
+		FreezeNpcInTime(npc.index, 0.1, true);
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -271,7 +282,7 @@ int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float distanc
 	VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(iNPC);
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * (MK2[npc.index] ? 30.0 : 20.0)))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * (MK2[npc.index] ? 20.0 : 10.0)))
 		{
 			npc.PlayHealSound();
 			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
