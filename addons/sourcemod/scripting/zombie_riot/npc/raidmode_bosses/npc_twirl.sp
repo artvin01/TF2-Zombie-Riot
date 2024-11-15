@@ -524,6 +524,7 @@ methodmap Twirl < CClotBody
 
 		if(i_IsWrench[weapon])
 			return 1;						//engie player shall be burned.
+											//in essence, I don't want "engineer" players to act as distractions, when what I want is the melee players who actually HAVE to get close to deal damage to be the ones who are "honoured"
 
 		char classname[32];
 		GetEntityClassname(weapon, classname, 32);
@@ -554,6 +555,11 @@ methodmap Twirl < CClotBody
 		{
 			if(StoreWeapon[entity] > 0)
 			{
+				if(i_IsWandWeapon[entity] || i_IsWrench[entity])
+				{
+					type = 1;
+					break;
+				}
 				char buffer[255];
 				GetEntityClassname(entity, buffer, sizeof(buffer));
 				int slot = TF2_GetClassnameSlot(buffer);
