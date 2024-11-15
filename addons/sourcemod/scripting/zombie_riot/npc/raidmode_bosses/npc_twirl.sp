@@ -125,7 +125,7 @@ static char gGlow1;	//blue
 #define TWIRL_COSMIC_GAZE_END_SOUND1 	"weapons/physcannon/physcannon_drop.wav"
 #define TWIRL_COSMIC_GAZE_END_SOUND2 	"ambient/energy/whiteflash.wav"
 
-#define TWIRL_MAGIA_OVERFLOW_DURATION 7.0
+#define TWIRL_MAGIA_OVERFLOW_DURATION 8.0
 
 void Twirl_OnMapStart_NPC()
 {
