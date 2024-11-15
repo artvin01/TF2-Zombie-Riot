@@ -125,6 +125,8 @@ static char gGlow1;	//blue
 #define TWIRL_COSMIC_GAZE_END_SOUND1 	"weapons/physcannon/physcannon_drop.wav"
 #define TWIRL_COSMIC_GAZE_END_SOUND2 	"ambient/energy/whiteflash.wav"
 
+#define TWIRL_MAGIA_OVERFLOW_DURATION 7.0
+
 void Twirl_OnMapStart_NPC()
 {
 	NPCData data;
@@ -531,7 +533,7 @@ methodmap Twirl < CClotBody
 		//weapons like angelica are technically a "primary" but they are melee, doing this will make sure that such melee weapons that use special slots don't get shot dead on the spot. 
 		if(i_OverrideWeaponSlot[weapon] != -1)
 		{
-			WeaponSlot = i_OverrideWeaponSlot[weapon];
+			weapon_slot = i_OverrideWeaponSlot[weapon];
 		}
 
 		//if they are NOT holding a melee, instantly go ranged.
@@ -895,6 +897,9 @@ methodmap Twirl < CClotBody
 		npc.m_flMeleeArmor = 1.5;
 
 		npc.m_bInKame = false;
+
+		if(StrContains(data, "blockinv") != -1)
+			fl_final_invocation_timer[npc.index] = FAR_FUTURE;
 		
 		return npc;
 	}
@@ -1117,7 +1122,7 @@ static void ClotThink(int iNPC)
 		if(npc.m_bInKame)
 		{
 			npc.m_iTarget = i_Get_Laser_Target(npc);
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 0.2;
 		}
 		else
 		{
@@ -1134,11 +1139,11 @@ static void ClotThink(int iNPC)
 
 			float Turn_Speed = (npc.Anger ? 23.0 : 17.0);
 			//if there are more then 4 players near twirl, her laser starts to turn faster.
-			int Nearby = Nearby_Players(npc, 300.0);
+			int Nearby = Nearby_Players(npc, (npc.Anger ? 350.0 : 275.0));
 			if(Nearby > 4)
 			{
 				//if there are like 8 players next to her, she will turn fast.
-				Turn_Speed *= (Nearby/2.0)*1.5;
+				Turn_Speed *= (Nearby/3.0);
 			}
 			npc.FaceTowards(vecTarget, Turn_Speed);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -1277,54 +1282,59 @@ static float Target_Angle_Value(Twirl npc, int Target)
 	GetVectorAnglesTwoPoints(npc_pos, Vic_Pos, angle);
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyeAngles);
 
-	// need the yaw offset from the player's POV, and set it up to be between (-180.0..180.0]
+	// need the yaw offset from the player's POV, and set it up to be between (-180.0..180.0)
 	float yawOffset = fixAngle(angle[1]) - fixAngle(eyeAngles[1]);
 	if (yawOffset <= -180.0)
 		yawOffset += 360.0;
 	else if (yawOffset > 180.0)
 		yawOffset -= 360.0;
 
-	if(fabs(MinYaw) < 180.0)
-		return fabs(MinYaw);
-	if(fabs(yawOffset) < 180.0)
-		return fabs(yawOffset);
-	
-	return 420.0;
+	//if its more then 180, its on the other side of the npc / behind
+	return fabs(yawOffset);
 }
+//don't just search for the nearest target when using the laser.
+//Instead search for the target NEAREST to our BEAM's length.
 static int i_Get_Laser_Target(Twirl npc)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy_2[MAXTF2PLAYERS];
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
-	//only bother getting targets infront of twirl that are players.
+	//only bother getting targets infront of twirl that are players. + wall check obv
 	int Tmp_Target = -1;
 	float Angle_Val = 420.0;
 	for(int i; i < sizeof(enemy_2); i++)
 	{
 		if(enemy_2[i])
 		{
-			float Target_Angles = Target_Angle_Value(npc);
+			float Target_Angles = Target_Angle_Value(npc, enemy_2[i]);
 			if(Target_Angles < 45.0 && Target_Angles < Angle_Val)
 			{
 				Angle_Val = Target_Angles;
 				Tmp_Target = enemy_2[i];
 				
-				CPrintToChatAll("Player %N within 45 degress", Tmp_Target);
+				//CPrintToChatAll("Player %N within 45 degress: %f", Tmp_Target, Target_Angles);
 			}
 		}
 	}
 	//if we don't find any targets within 90 degrees infront, give up and use normal targeting!
 	//and by 90 degress I mean -45 -> 45. \/
+	
 	if(!IsValidEnemy(npc.index, Tmp_Target))
 	{
+		//CPrintToChatAll("Backup Target used");
 		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
 		if(npc.m_iTarget < 1)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}
+		return npc.m_iTarget;
 	}
 	else
+	{
+		//CPrintToChatAll("Chose Target: %N with angle var: %f", Tmp_Target, Angle_Val);
 		return Tmp_Target;
+	}
+		
 }
 static void Final_Invocation(Twirl npc)
 {
@@ -2317,7 +2327,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	WorldSpaceCenter(Target, vecTarget);
 	//(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
 	float Laser_Dmg = 2.5;
-	float Speed = (npc.Anger ? 1400.0 : 1250.0);
+	float Speed = (npc.Anger ? 1300.0 : 1100.0);
 	float Direct_Dmg = 3.5;
 	Fractal_Attack(npc.index, vecTarget, Modify_Damage(-1, Laser_Dmg), Speed, 15.0, Modify_Damage(-1, Direct_Dmg), 0.0, 5.0);
 }
@@ -2857,14 +2867,23 @@ static bool Magia_Overflow(Twirl npc)
 	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
-	EmitCustomToAll(TWIRL_RETREAT_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
+	//EmitCustomToAll(TWIRL_RETREAT_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
 
-	float Duration = 7.0;
+	float Duration = TWIRL_MAGIA_OVERFLOW_DURATION;
 	npc.m_bisWalking = false;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration + 0.7;
 	npc.m_flDoingAnimation = GameTime + Duration + 0.75;
 	fl_retreat_laser_throttle[npc.index] = GameTime + 0.7;
 	fl_magia_overflow_recharge[npc.index] = GameTime + Duration + 0.7 + (npc.Anger ? 30.0 : 45.0);
+
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	int color[4]; 
+	Ruina_Color(color);
+	float Thickness = 6.0;
+	VecSelfNpc[2]-=2.5;
+	//create a ring around twirl showing the radius for her special "if you're near me, my laser turns faster"
+	TE_SetupBeamRingPoint(VecSelfNpc, (npc.Anger ? 350.0 : 275.0)*2.0, (npc.Anger ? 350.0 : 275.0)*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Duration+0.7, Thickness, 0.75, color, 1, 0);
+	TE_SendToAll();
 
 	b_animation_set[npc.index] = false;
 
@@ -2889,6 +2908,9 @@ static Action Magia_Overflow_Tick(int iNPC)
 	if(fl_ruina_battery_timeout[npc.index] < GameTime)
 	{
 		SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
 
 		npc.m_bisWalking = true;
 		f_NpcTurnPenalty[npc.index] = 1.0;
@@ -2966,9 +2988,14 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
 	if(update)
 	{
-		Laser.Damage = Modify_Damage(-1, 2.0);
+		float Duration = fl_ruina_battery_timeout[npc.index] - GameTime;
+		float Ratio = (1.0 - (Duration / TWIRL_MAGIA_OVERFLOW_DURATION));
+		if(Ratio<0.1)
+			Ratio=0.1;
+		float Dps = Modify_Damage(-1, 4.0)*Ratio;
+		Laser.Damage = Dps;
 		Laser.Radius = Radius;
-		Laser.Bonus_Damage = Modify_Damage(-1, 2.0)*6.0;
+		Laser.Bonus_Damage = Dps*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage(On_LaserHit);
 	}
@@ -3267,6 +3294,8 @@ static void Kill_Abilities(Twirl npc)
 	StopSound(npc.index, SNDCHAN_STATIC, "player/taunt_surgeons_squeezebox_music.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
 
 	npc.m_bInKame = false;
 }
