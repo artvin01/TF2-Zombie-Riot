@@ -520,17 +520,35 @@ methodmap Twirl < CClotBody
 		
 		if(i_IsWandWeapon[weapon])
 			return 1;						//the weapon they are holding a wand, so its a ranged player	
+			//fun fact: due to the lance being classed as a magic weapon, the lance player gets blasted by twirl.
+			//However, due to how STRONG the lance is single target, thats fine.
+
+		if(i_IsWrench[weapon])
+			return 1;						//engie player shall be burned.
 
 		char classname[32];
 		GetEntityClassname(weapon, classname, 32);
 
 		int weapon_slot = TF2_GetClassnameSlot(classname);
 
-		if(weapon_slot != 2)
-			return 1;		
+		//weapons like angelica are technically a "primary" but they are melee, doing this will make sure that such melee weapons that use special slots don't get shot dead on the spot. 
+		if(i_OverrideWeaponSlot[weapon] != -1)
+		{
+			WeaponSlot = i_OverrideWeaponSlot[weapon];
+		}
+
+		//if they are NOT holding a melee, instantly go ranged.
+		if(weapon_slot != TFWeaponSlot_Melee)
+			return 1;
 
 		//now the "Easy" checks are done and now the not so easy checks are left.
-
+		//assume they are a melee player until proven otherwise.
+		//this gets triggered if:
+		/*
+			The player is NOT holding a: ranged weapon, a magic weapon, a wrench.
+			This code checks if they are HOLDING a weapon in some other slot of theirs
+			So that they cannot abuse this and avoid getting shot at while they are actually a ranged player.
+		*/
 		int type = 0;	//this way a ranged player can't switch to their melee to avoid attacks.
 		int i, entity;
 		while(TF2_GetItem(this.m_iTarget, entity, i))
@@ -541,7 +559,14 @@ methodmap Twirl < CClotBody
 				GetEntityClassname(entity, buffer, sizeof(buffer));
 				int slot = TF2_GetClassnameSlot(buffer);
 
-				if(slot != 2)
+				//same case as above, although, why would someone use both angelica and a normal melee at the same time? 
+				//note: this still loops through the current held weapon.
+				if(i_OverrideWeaponSlot[entity] != -1)
+				{
+					slot = i_OverrideWeaponSlot[entity];
+				}
+
+				if(slot != TFWeaponSlot_Melee)
 				{
 					type = 1;
 					break;
@@ -1094,25 +1119,31 @@ static void ClotThink(int iNPC)
 	{
 		if(npc.m_bInKame)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
-			if(npc.m_iTarget < 1)
-			{
-				npc.m_iTarget = GetClosestTarget(npc.index);
-			}
+			npc.m_iTarget = i_Get_Laser_Target(npc);
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		}
 		else
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index);
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		}
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		
 	}
 	if(npc.m_bInKame)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			npc.FaceTowards(vecTarget, (npc.Anger ? 25.5 : 18.0));
-			//
+
+			float Turn_Speed = (npc.Anger ? 23.0 : 17.0);
+			//if there are more then 4 players near twirl, her laser starts to turn faster.
+			int Nearby = Nearby_Players(npc, 300.0);
+			if(Nearby > 4)
+			{
+				//if there are like 8 players next to her, she will turn fast.
+				Turn_Speed *= (Nearby/2.0)*1.5;
+			}
+			npc.FaceTowards(vecTarget, Turn_Speed);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 
 			int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -1235,6 +1266,68 @@ static void ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+}
+static float Target_Angle_Value(Twirl npc, int Target)
+{
+	// need position of either the inflictor or the attacker
+	float Vic_Pos[3];
+	WorldSpaceCenter(Target, Vic_Pos);
+	float npc_pos[3];
+	float angle[3];
+	float eyeAngles[3];
+	WorldSpaceCenter(npc.index, npc_pos);
+	
+	GetVectorAnglesTwoPoints(npc_pos, Vic_Pos, angle);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyeAngles);
+
+	// need the yaw offset from the player's POV, and set it up to be between (-180.0..180.0]
+	float yawOffset = fixAngle(angle[1]) - fixAngle(eyeAngles[1]);
+	if (yawOffset <= -180.0)
+		yawOffset += 360.0;
+	else if (yawOffset > 180.0)
+		yawOffset -= 360.0;
+
+	if(fabs(MinYaw) < 180.0)
+		return fabs(MinYaw);
+	if(fabs(yawOffset) < 180.0)
+		return fabs(yawOffset);
+	
+	return 420.0;
+}
+static int i_Get_Laser_Target(Twirl npc)
+{
+	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+	int enemy_2[MAXTF2PLAYERS];
+	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
+	//only bother getting targets infront of twirl that are players.
+	int Tmp_Target = -1;
+	float Angle_Val = 420.0;
+	for(int i; i < sizeof(enemy_2); i++)
+	{
+		if(enemy_2[i])
+		{
+			float Target_Angles = Target_Angle_Value(npc);
+			if(Target_Angles < 45.0 && Target_Angles < Angle_Val)
+			{
+				Angle_Val = Target_Angles;
+				Tmp_Target = enemy_2[i];
+				
+				CPrintToChatAll("Player %N within 45 degress", Tmp_Target);
+			}
+		}
+	}
+	//if we don't find any targets within 90 degrees infront, give up and use normal targeting!
+	//and by 90 degress I mean -45 -> 45. \/
+	if(!IsValidEnemy(npc.index, Tmp_Target))
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
+		if(npc.m_iTarget < 1)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
+	}
+	else
+		return Tmp_Target;
 }
 static void Final_Invocation(Twirl npc)
 {
@@ -2360,6 +2453,14 @@ static Action Laser_Projectile_Timer(Handle timer, DataPack data)
 	return Plugin_Continue;
 }
 static int i_targets_inrange;
+
+static int Nearby_Players(Twirl npc, float Radius)
+{
+	i_targets_inrange = 0;
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
+	return i_targets_inrange;
+}
 static bool Retreat(Twirl npc, bool custom = false)
 {
 	float GameTime = GetGameTime(npc.index);
@@ -2372,10 +2473,9 @@ static bool Retreat(Twirl npc, bool custom = false)
 		npc.m_flNextTeleport = GameTime + 1.0;
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	i_targets_inrange = 0;
-	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
+	
 
-	if(i_targets_inrange < 4 && !custom)	//not worth "retreating"
+	if(Nearby_Players(npc, Radius) < 4 && !custom)	//not worth "retreating"
 		return false;
 
 	//OH SHIT OH FUCK, WERE BEING OVERRUN, TIME TO GET THE FUCK OUTTA HERE
@@ -2750,7 +2850,7 @@ static bool Magia_Overflow(Twirl npc)
 	if(!Retreat(npc, true))
 		return false;
 
-	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure he WILL get the shield.
+	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure she WILL get the shield.
 	Ruina_Npc_Give_Shield(npc.index, 0.45);				//give the shield to itself.
 	
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
@@ -2762,7 +2862,7 @@ static bool Magia_Overflow(Twirl npc)
 
 	EmitCustomToAll(TWIRL_RETREAT_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
 
-	float Duration = 9.0;
+	float Duration = 7.0;
 	npc.m_bisWalking = false;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration + 0.7;
 	npc.m_flDoingAnimation = GameTime + Duration + 0.75;
@@ -2778,9 +2878,6 @@ static bool Magia_Overflow(Twirl npc)
 	fl_magia_angle[npc.index] = GetRandomFloat(0.0, 360.0);
 
 	npc.m_bInKame = true;
-
-	npc.m_flRangedArmor = 0.9;
-	npc.m_flMeleeArmor = 1.0;
 
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
@@ -2802,8 +2899,6 @@ static Action Magia_Overflow_Tick(int iNPC)
 		npc.StartPathing();
 
 		npc.m_bInKame = false;
-		npc.m_flRangedArmor = 1.0;
-		npc.m_flMeleeArmor = 1.5;
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
@@ -3168,6 +3263,9 @@ static void Kill_Abilities(Twirl npc)
 
 		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
+
+	npc.m_flRangedArmor = 1.0;
+	npc.m_flMeleeArmor = 1.5;
 
 	StopSound(npc.index, SNDCHAN_STATIC, "player/taunt_surgeons_squeezebox_music.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
