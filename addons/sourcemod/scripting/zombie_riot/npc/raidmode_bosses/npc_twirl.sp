@@ -2998,7 +2998,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 		float Ratio = (1.0 - (Duration / TWIRL_MAGIA_OVERFLOW_DURATION));
 		if(Ratio<0.1)
 			Ratio=0.1;
-		float Dps = Modify_Damage(-1, 4.0)*Ratio;
+		float Dps = Modify_Damage(-1, 5.25)*Ratio;
 		Laser.Damage = Dps;
 		Laser.Radius = Radius;
 		Laser.Bonus_Damage = Dps*6.0;
