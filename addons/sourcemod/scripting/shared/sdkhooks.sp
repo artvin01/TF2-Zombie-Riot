@@ -1246,7 +1246,7 @@ public void OnPostThink(int client)
 			{
 				char NameOverride[256];
 				NameOverride = form.Name;
-				if(form.Func_FormNameOverride != INVALID_FUNCTION)
+				if(form.Func_FormNameOverride != INVALID_FUNCTION && view_as<int>(form.Func_FormNameOverride) != 0) //somehow errors with 0, i dont know, whatever.
 				{
 					Call_StartFunction(null, form.Func_FormNameOverride);
 					Call_PushCell(client);

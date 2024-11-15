@@ -683,6 +683,13 @@ static void Spawn_Anchor_NPC(int iNPC, char[] plugin_name, int health = 0, int c
 	{
 		int postWaves = CurrentRound - Waves_GetMaxRound();
 		Freeplay_AddEnemy(postWaves, enemy, count);
+		if(count > 0)
+		{
+			for(int a; a < count; a++)
+			{
+				Waves_AddNextEnemy(enemy);
+			}
+		}
 	}
 	Zombies_Currently_Still_Ongoing += count;	// FIXME
 }

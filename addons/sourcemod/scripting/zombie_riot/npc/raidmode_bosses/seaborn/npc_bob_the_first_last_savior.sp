@@ -1628,7 +1628,15 @@ static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = ""
 	{
 		int postWaves = CurrentRound - Waves_GetMaxRound();
 		Freeplay_AddEnemy(postWaves, enemy, count);
+		if(count > 0)
+		{
+			for(int a; a < count; a++)
+			{
+				Waves_AddNextEnemy(enemy);
+			}
+		}
 	}
+	Zombies_Currently_Still_Ongoing += count;
 }
 
 Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
