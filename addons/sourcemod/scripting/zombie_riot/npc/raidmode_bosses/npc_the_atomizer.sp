@@ -2,16 +2,12 @@
 #pragma newdecls required
 
 
-#define SENSAL_BASE_RANGED_SCYTHE_DAMGAE 13.0
-#define SENSAL_LASER_THICKNESS 25
+#define Atomizer_BASE_RANGED_SCYTHE_DAMGAE 13.0
+#define Atomizer_LASER_THICKNESS 25
 
 static bool BlockLoseSay;
 
-
-static int i_SaidLineAlready[MAXENTITIES];
-static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 
@@ -96,20 +92,13 @@ static const char g_LaserGlobalAttackSound[][] = {
 	"weapons/bumper_car_speed_boost_start.wav",
 };
 
-static int Silvester_TE_Used;
 
-
-static bool b_RageAnimated[MAXENTITIES];
-static bool b_RageProjectile[MAXENTITIES];
-
-void Sensal_OnMapStart_NPC()
+void Atomizer_OnMapStart_NPC()
 {
-	if(!IsFileInDownloads(WEAPON_CUSTOM_WEAPONRY_1))
-		return;
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sensal");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sensal");
+	strcopy(data.Name, sizeof(data.Name), "Atomizer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Atomizer");
 	strcopy(data.Icon, sizeof(data.Icon), "sensal_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
@@ -135,37 +124,37 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
-	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
+	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_Atomizer_2.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Sensal(client, vecPos, vecAng, ally, data);
+	return Atomizer(client, vecPos, vecAng, ally, data);
 }
 
-methodmap Sensal < CClotBody
+methodmap Atomizer < CClotBody
 {
 	property int i_GunMode
 	{
 		public get()							{ return i_TimesSummoned[this.index]; }
 		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
 	}
-	property float f_SensalMeleeCooldown
+	property float f_AtomizerMeleeCooldown
 	{
 		public get()							{ return fl_NextChargeSpecialAttack[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextChargeSpecialAttack[this.index] = TempValueForProperty; }
 	}
-	property float f_SensalRocketJumpCD
+	property float f_AtomizerRocketJumpCD
 	{
 		public get()							{ return fl_NextRangedBarrage_Singular[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextRangedBarrage_Singular[this.index] = TempValueForProperty; }
 	}
-	property float f_SensalRocketJumpCD_Wearoff
+	property float f_AtomizerRocketJumpCD_Wearoff
 	{
 		public get()							{ return fl_AttackHappensMaximum[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
 	}
-	property bool b_SensalRocketJump
+	property bool b_AtomizerRocketJump
 	{
 		public get()							{ return b_NextRangedBarrage_OnGoing[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
@@ -251,9 +240,9 @@ methodmap Sensal < CClotBody
 	}
 	
 	
-	public Sensal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Sensal npc = view_as<Sensal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		Atomizer npc = view_as<Atomizer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -276,7 +265,6 @@ methodmap Sensal < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
-		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSensal_OnTakeDamagePost);
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -318,7 +306,6 @@ methodmap Sensal < CClotBody
 		RaidAllowsBuildings = false;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
-		b_RageAnimated[npc.index] = false;
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -349,7 +336,7 @@ methodmap Sensal < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.65;
 		}
-		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Atomizer_Win);
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
 		music.Time = 218;
@@ -408,7 +395,7 @@ methodmap Sensal < CClotBody
 
 static void Internal_ClotThink(int iNPC)
 {
-	Sensal npc = view_as<Sensal>(iNPC);
+	Atomizer npc = view_as<Atomizer>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -436,15 +423,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: You are the last one.");
+					CPrintToChatAll("{blue}Atomizer{default}: You are the last one.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
+					CPrintToChatAll("{blue}Atomizer{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
+					CPrintToChatAll("{blue}Atomizer{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
 				}
 			}
 		}
@@ -456,7 +443,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{blue}Sensal{default}: Refusing to collaborate or even reason with {gold}Expidonsa{default} will result in termination.");
+		CPrintToChatAll("{blue}Atomizer{default}: Refusing to collaborate or even reason with {gold}Expidonsa{default} will result in termination.");
 		return;
 	}
 	if(RaidModeTime < GetGameTime())
@@ -470,7 +457,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("{blue}Sensal{default}: You are under arrest. The Expidonsan elite forces will take you now.");
+		CPrintToChatAll("{blue}Atomizer{default}: You are under arrest. The Expidonsan elite forces will take you now.");
 		for(int i; i<32; i++)
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -489,9 +476,9 @@ static void Internal_ClotThink(int iNPC)
 
 	if (npc.IsOnGround())
 	{
-		if(GetGameTime(npc.index) > npc.f_SensalRocketJumpCD_Wearoff)
+		if(GetGameTime(npc.index) > npc.f_AtomizerRocketJumpCD_Wearoff)
 		{
-			npc.b_SensalRocketJump = false;
+			npc.b_AtomizerRocketJump = false;
 		}
 	}
 	
@@ -527,7 +514,7 @@ static void Internal_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = SensalSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		SetGoalVectorIndex = AtomizerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 
 		switch(SetGoalVectorIndex)
 		{
@@ -563,14 +550,14 @@ static void Internal_ClotThink(int iNPC)
 
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
-		SensalAnimationChange(npc);
+		AtomizerAnimationChange(npc);
 	}
 	npc.PlayIdleAlertSound();
 }
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Sensal npc = view_as<Sensal>(victim);
+	Atomizer npc = view_as<Atomizer>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -584,14 +571,14 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	
 	return Plugin_Changed;
 }
-public void Raidmode_Expidonsa_Sensal_Win(int entity)
+public void Raidmode_Expidonsa_Atomizer_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }
 
 static void Internal_NPCDeath(int entity)
 {
-	Sensal npc = view_as<Sensal>(entity);
+	Atomizer npc = view_as<Atomizer>(entity);
 	/*
 		Explode on death code here please
 
@@ -621,13 +608,6 @@ static void Internal_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-	{
-		if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-		{
-			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-		}					
-	}
 	if(BlockLoseSay)
 		return;
 
@@ -635,19 +615,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your actions against a fellow {gold}Expidonsan{default} will not be forgiven, I will be back with reinforcements.");
+			CPrintToChatAll("{blue}Atomizer{default}: Your actions against a fellow {gold}Expidonsan{default} will not be forgiven, I will be back with reinforcements.");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your time will come when you pay for going against the law of {gold}Expidonsa{default}.");
+			CPrintToChatAll("{blue}Atomizer{default}: Your time will come when you pay for going against the law of {gold}Expidonsa{default}.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: {gold}Expidonsa{default} is far out of your level of understanding.");
+			CPrintToChatAll("{blue}Atomizer{default}: {gold}Expidonsa{default} is far out of your level of understanding.");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: You do not know what you are getting yourself into.");
+			CPrintToChatAll("{blue}Atomizer{default}: You do not know what you are getting yourself into.");
 		}
 	}
 
@@ -656,7 +636,7 @@ static void Internal_NPCDeath(int entity)
 
 
 */
-void SensalAnimationChange(Sensal npc)
+void AtomizerAnimationChange(Atomizer npc)
 {
 	
 	if(npc.m_iChanged_WalkCycle == 0)
@@ -671,7 +651,7 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
-				// ResetSensalWeapon(npc, 1);
+				// ResetAtomizerWeapon(npc, 1);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
@@ -682,7 +662,7 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-				//	ResetSensalWeapon(npc, 1);
+				//	ResetAtomizerWeapon(npc, 1);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_PRIMARY");
@@ -696,7 +676,7 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-				//	ResetSensalWeapon(npc, 0);
+				//	ResetAtomizerWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -707,7 +687,7 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-				//	ResetSensalWeapon(npc, 0);
+				//	ResetAtomizerWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
@@ -719,69 +699,9 @@ void SensalAnimationChange(Sensal npc)
 
 }
 
-int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
+int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance)
 {
 	npc.i_GunMode = 0;
-	if(ZR_GetWaveCount()+1 >= 45 && npc.m_flAngerDelay < GetGameTime(npc.index))
-	{
-		int Enemy_I_See;
-									
-		Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
-		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
-		{
-			//i can see my enemy, but we want to make sure if there is even space free above us.
-			static float flMyPos[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
-			static float hullcheckmaxs[3];
-			static float hullcheckmins[3];
-
-			//Defaults:
-			//hullcheckmaxs = view_as<float>( { 24.0, 24.0, 72.0 } );
-			//hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
-
-			hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
-			hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
-			
-			if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
-			{
-				npc.m_flDead_Ringer_Invis_bool = true;
-			}
-			else
-			{
-				npc.m_flDead_Ringer_Invis_bool = false;
-			}
-
-			if(IsValidEntity(npc.m_iWearable7))
-			{
-				RemoveEntity(npc.m_iWearable7);
-			}
-			npc.m_bisWalking = false;
-			npc.AddActivityViaSequence("taunt05");
-			npc.m_flAttackHappens = 0.0;
-			EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
-			npc.SetCycle(0.01);
-			npc.m_flReloadIn = gameTime + 3.0;
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-
-			SensalThrowScythes(npc);
-			npc.m_flDoingAnimation = gameTime + 0.45;
-			npc.m_flAngerDelay = gameTime + 60.0;
-
-			if(ZR_GetWaveCount()+1 >= 60)
-			{
-				npc.m_flReloadIn = gameTime + 1.5;
-				npc.SetPlaybackRate(2.0);
-				npc.m_flAngerDelay = gameTime + 30.0;
-			}
-
-		}
-		else
-		{
-			npc.m_flAngerDelay = gameTime + 1.0;
-		}
-	}
 
 	if(npc.m_flNextRangedSpecialAttackHappens < GetGameTime(npc.index))
 	{
@@ -791,7 +711,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 						
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
+			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 			npc.PlaySytheInitSound();
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + 25.0;
@@ -819,6 +739,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.AddActivityViaSequence("layer_taunt04");
 			npc.m_flAttackHappens = 0.0;
 			npc.m_flAttackHappens_2 = gameTime + 1.4;
+			npc.Anger = true;
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
 			float flPos[3];
@@ -832,71 +753,134 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 	{
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, target))
+			if(npc.m_iOverlordComboAttack > 0)
 			{
-				int HowManyEnemeisAoeMelee = 64;
-				Handle swingTrace;
-				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-				npc.FaceTowards(VecEnemy, 15000.0);
-				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
-				delete swingTrace;
-				bool PlaySound = false;
-				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+				if(gameTime > npc.m_flNextMeleeAttack)
 				{
-					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+					if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 					{
-						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						npc.m_flAttackHappens = 0.0;
+						float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
+						npc.FaceTowards(VecAim, 20000.0);
+						int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+						if(IsValidEnemy(npc.index, Enemy_I_See))
 						{
-							PlaySound = true;
-							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
-							float vecHit[3];
-							
-							WorldSpaceCenter(targetTrace, vecHit);
-
-							float damage = 24.0;
-							damage *= 1.15;
-
-							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
-								
-							
-							// Hit particle
-							
-						
-							
-							bool Knocked = false;
-										
-							if(IsValidClient(targetTrace))
+							npc.m_iTarget = Enemy_I_See;
+							npc.PlayMeleeSound();
+							float RocketDamage = 15.0;
+							float RocketSpeed = 1100.0;
+							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+							if(npc.m_iChanged_WalkCycle == 1)
 							{
-								if (IsInvuln(targetTrace))
-								{
-									Knocked = true;
-									Custom_Knockback(npc.index, targetTrace, 900.0, true);
-									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
-								}
-								else
-								{
-									if(!NpcStats_IsEnemySilenced(npc.index))
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
-								}
+								float SpeedReturn[3];
+								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY",_,_,_,1.25);
+
+								int RocketGet = npc.FireRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed);
+								SetEntityGravity(RocketGet, 1.0); 	
+								ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.5, 1.0);
+								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+
+								//This will return vecTarget as the speed we need.
 							}
-										
-							if(!Knocked)
-								Custom_Knockback(npc.index, targetTrace, 450.0, true); 
-						} 
+							else
+							{
+								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY",_,_,_,1.25);
+								RocketSpeed *= 0.75;
+								npc.FireRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed);
+							}
+							npc.m_iOverlordComboAttack --;
+						}
 					}
 				}
-				if(PlaySound)
+				//No can shooty.
+				//Enemy is close enough.
+				if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.0))
 				{
-					npc.PlayMeleeHitSound();
+					if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+					{
+						float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
+						npc.FaceTowards(VecAim, 20000.0);
+						//stand
+						return 1;
+					}
+					//cant see enemy somewhy.
+					return 0;
+				}
+				else //enemy is too far away.
+				{
+					return 0;
+				}
+			}
+			else if(npc.m_iOverlordComboAttack < 0)
+			{
+				npc.m_flAttackHappens = 0.0;
+			
+				if(IsValidEnemy(npc.index, target))
+				{
+					int HowManyEnemeisAoeMelee = 64;
+					Handle swingTrace;
+					float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+					npc.FaceTowards(VecEnemy, 15000.0);
+					npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+					delete swingTrace;
+					bool PlaySound = false;
+					for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+					{
+						if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+						{
+							if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+							{
+								PlaySound = true;
+								int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+								float vecHit[3];
+								
+								WorldSpaceCenter(targetTrace, vecHit);
+
+								float damage = 20.0;
+								damage *= 1.15;
+
+								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
+									
+								
+								// Hit particle
+								
+							
+								
+								bool Knocked = false;
+											
+								if(IsValidClient(targetTrace))
+								{
+									if (IsInvuln(targetTrace))
+									{
+										Knocked = true;
+										Custom_Knockback(npc.index, targetTrace, 900.0, true);
+										if(!NpcStats_IsEnemySilenced(npc.index))
+										{
+											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+										}
+									}
+									else
+									{
+										if(!NpcStats_IsEnemySilenced(npc.index))
+										{
+											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+										}
+									}
+								}
+											
+								if(!Knocked)
+									Custom_Knockback(npc.index, targetTrace, 450.0, true); 
+							} 
+						}
+					}
+					if(PlaySound)
+					{
+						npc.PlayMeleeHitSound();
+					}
 				}
 			}
 		}
@@ -920,7 +904,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 							
 					npc.m_flAttackHappens = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 1.2;
+					npc.m_flNextMeleeAttack = gameTime + 0.5;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 				}
 			}
@@ -932,107 +916,4 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 		}	
 	}
 	return 0;
-}
-
-
-public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
-{
-	Sensal npc = view_as<Sensal>(victim);if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
-	{
-		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 3.0;
-		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
-		npc.PlayAngerSound();
-		npc.Anger = true; //	>:(
-		b_RageAnimated[npc.index] = false;
-		RaidModeTime += 60.0;
-		npc.m_bisWalking = false;
-		if(IsValidEntity(npc.m_iWearable7))
-		{
-			RemoveEntity(npc.m_iWearable7);
-		}
-		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		pos[2] += 5.0;
-		ParticleEffectAt(pos, "utaunt_electricity_cloud1_WY", 3.0);
-	}
-}
-
-bool SensalTransformation(Sensal npc)
-{
-	if(npc.Anger)
-	{
-		if(!b_RageAnimated[npc.index])
-		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-			npc.m_bisWalking = false;
-			npc.AddActivityViaSequence("taunt_the_profane_puppeteer");
-			npc.m_flAttackHappens = 0.0;
-			npc.SetCycle(0.01);
-			b_RageAnimated[npc.index] = true;
-			b_CannotBeHeadshot[npc.index] = true;
-			b_CannotBeBackstabbed[npc.index] = true;
-			b_CannotBeStunned[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
-			b_CannotBeSlowed[npc.index] = true;
-			npc.m_flAttackHappens_2 = 0.0;	
-			if(IsValidEntity(npc.m_iWearable1))
-				RemoveEntity(npc.m_iWearable1);
-		
-			SetVariantInt(3);
-			AcceptEntityInput(npc.index, "SetBodyGroup");
-
-			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-			{
-				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-				{
-					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-				}				
-			}
-		}
-	}
-
-	if(npc.m_flNextChargeSpecialAttack)
-	{
-		if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
-		{
-			SetVariantInt(2);
-			AcceptEntityInput(npc.index, "SetBodyGroup");
-			b_CannotBeHeadshot[npc.index] = false;
-			b_CannotBeBackstabbed[npc.index] = false;
-			b_CannotBeStunned[npc.index] = false;
-			b_CannotBeKnockedUp[npc.index] = false;
-			b_CannotBeSlowed[npc.index] = false;
-			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-			NPC_StartPathing(npc.index);
-			npc.m_bPathing = true;
-			npc.m_flSpeed = 330.0;
-			npc.m_flNextChargeSpecialAttack = 0.0;
-			npc.m_bisWalking = true;
-			RaidModeScaling *= 1.15;
-			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-			if(iActivity > 0) npc.StartActivity(iActivity);
-			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable3, 255, 35, 35, 255);
-		//	i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SUPERSILVESTER;
-			i_NpcWeight[npc.index] = 4;
-			npc.m_flRangedArmor = 0.7;
-			npc.m_flMeleeArmor = 0.875;		
-
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
-
-				
-			SetVariantColor(view_as<int>({255, 35, 35, 200}));
-			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-			npc.PlayAngerSoundPassed();
-
-
-			npc.m_flNextRangedSpecialAttack = 0.0;			
-			npc.m_flNextRangedAttack = 0.0;		
-			npc.m_flRangedSpecialDelay = 0.0;	
-			//Reset all cooldowns.
-		}
-		return true;
-	}
-	return false;
 }

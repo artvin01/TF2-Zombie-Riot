@@ -616,6 +616,9 @@ void NPC_ConfigSetup()
 	VictoriaRepair_OnMapStart_NPC();
 	Victorian_Radioguard_OnMapStart_NPC();
 
+//raid
+	Atomizer_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -1731,3 +1734,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_victoria_radiomast.sp"
 #include "zombie_riot/npc/victoria/npc_radioguard.sp"
 #include "zombie_riot/npc/victoria/npc_radio_repair.sp"
+
+//raidbosses
+#include "zombie_riot/npc/raidmode_bosses/npc_the_atomizer.sp"
