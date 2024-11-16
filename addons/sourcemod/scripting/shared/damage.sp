@@ -1266,12 +1266,11 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 		if(fl_TotalArmor[victim] > 1.0)
 			damage *= fl_TotalArmor[victim];
 	}
-#if defined ZR
 	if(!trueArmorOnly)
 	{
+		//this only affects NPCS!!!
 		damage *= fl_Extra_Damage[attacker];
 	}
-#endif
 }
 
 #if defined ZR
