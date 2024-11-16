@@ -82,6 +82,7 @@ static bool b_InKame[MAXENTITIES];
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/raid_theme_2.mp3"
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
+static float fl_player_weapon_score[MAXTF2PLAYERS];
 
 static int i_melee_combo[MAXENTITIES];
 static int i_current_wave[MAXENTITIES];
@@ -511,7 +512,13 @@ methodmap Twirl < CClotBody
 
 		if(this.m_iTarget > MaxClients)
 			return 1;						//its an npc? fuck em
+
+		if(fl_player_weapon_score[this.m_iTarget]>=0.0)
+			return 0;	//their social credit score is positive or 0.0, they are a good citizen of the state, treat them well by not shoting them on sight.
+		else
+			return 1;	//their soclai credit score is not positive, ON SIGHT, KILL ON SIGHT.
 		
+		/*
 		int weapon = GetEntPropEnt(this.m_iTarget, Prop_Send, "m_hActiveWeapon");
 
 		if(!IsValidEntity(weapon))
@@ -544,11 +551,13 @@ methodmap Twirl < CClotBody
 		//now the "Easy" checks are done and now the not so easy checks are left.
 		//assume they are a melee player until proven otherwise.
 		//this gets triggered if:
-		/*
-			The player is NOT holding a: ranged weapon, a magic weapon, a wrench.
-			This code checks if they are HOLDING a weapon in some other slot of theirs
-			So that they cannot abuse this and avoid getting shot at while they are actually a ranged player.
-		*/
+		
+			//The player is NOT holding a: ranged weapon, a magic weapon, a wrench.
+			//This code checks if they are HOLDING a weapon in some other slot of theirs
+			//So that they cannot abuse this and avoid getting shot at while they are actually a ranged player.
+
+		
+
 		int type = 0;	//this way a ranged player can't switch to their melee to avoid attacks.
 		int i, entity;
 		while(TF2_GetItem(this.m_iTarget, entity, i))
@@ -577,13 +586,12 @@ methodmap Twirl < CClotBody
 					break;
 				}
 			}
-		}
-
+		}*/
 		//edge case: player is a mage, has 2 weapons that take the melee slot, the player could take out a melee weapon to trick this system into thinking they are a melee when in reality they are a mage.
 		//hypothesis: 
 		//even if it isn't him who discovers it, I'll have to add a thing that checks multiple weapon slots too...
 
-		return type;
+		//return type;
 	}
 
 	public char[] GetName()
@@ -906,10 +914,13 @@ methodmap Twirl < CClotBody
 
 		if(StrContains(data, "blockinv") != -1)
 			fl_final_invocation_timer[npc.index] = FAR_FUTURE;
+
+		Zero(fl_player_weapon_score);
 		
 		return npc;
 	}
 }
+
 
 static void Twirl_WinLine(int entity)
 {
@@ -1012,7 +1023,7 @@ static void ClotThink(int iNPC)
 			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
 			case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
 			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
-			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}. You alone, its such a view");
 		}
 	}
 
@@ -1025,7 +1036,7 @@ static void ClotThink(int iNPC)
 		b_wonviatimer[npc.index] = true;
 		if(wave <=60)
 		{
-			switch(GetRandomInt(0, 10))
+			switch(GetRandomInt(0, 9))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
 				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
@@ -1037,7 +1048,6 @@ static void ClotThink(int iNPC)
 				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
 				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
 				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
-				case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else	//freeplay
@@ -1059,7 +1069,7 @@ static void ClotThink(int iNPC)
 
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
-		switch(GetRandomInt(0, 7))
+		switch(GetRandomInt(0, 6))
 		{
 			case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
 			case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
@@ -1068,7 +1078,6 @@ static void ClotThink(int iNPC)
 			case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
 			case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
 			case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
-			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 		}
 		fl_magia_overflow_recharge[npc.index] -= 15.0;
 		npc.m_flNextTeleport -= 10.0;
@@ -1455,7 +1464,7 @@ static void lunar_Radiance(Twirl npc)
 		case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
 		case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
 		case 11: Twirl_Lines(npc, "Dance little merc, dance...");
-		case 13: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+		case 13: Twirl_Lines(npc, "{crimson}Ehe{snow}.");
 		case 15: Twirl_Lines(npc, "Annihilation in {crimson}F# {snow}Minor");
 		case 17: Twirl_Lines(npc, "Oh, {crimson}poor{snow} you...");
 	}
@@ -2613,21 +2622,20 @@ static bool Retreat(Twirl npc, bool custom = false)
 
 	switch(GetRandomInt(0, 13))
 	{
-		case 0: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
+		case 0: Twirl_Lines(npc, "{crimson}Twirly Wirly{snow}~");
 		case 1: Twirl_Lines(npc, "You really think you can {purple}catch {snow}me?");
 		case 2: Twirl_Lines(npc, "Ahaaa, {crimson}bad");
 		case 3: Twirl_Lines(npc, "So close, yet far");
-		case 4: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
-		case 5: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
-		case 6: Twirl_Lines(npc, "Don't surround me like that.");
-		case 7: Twirl_Lines(npc, "When will you learn this,{crimson} DON'T COME NEAR ME");
-		case 8: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
-		case 9: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
-		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-		case 11: Twirl_Lines(npc, "{crimson}Kururing{snow}~");
-		case 12: Twirl_Lines(npc, "{crimson}Kuru Kuru{snow}~");
-		case 13: Twirl_Lines(npc, "{crimson}Twirly Wirly{snow}~");
-		case 14: Twirl_Lines(npc, "Aaa, hai hai~");
+		case 4: Twirl_Lines(npc, "{crimson}Kururing{snow}~");
+		case 5: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
+		case 6: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
+		case 7: Twirl_Lines(npc, "Don't surround me like that.");
+		case 8: Twirl_Lines(npc, "When will you learn this,{crimson} DON'T COME NEAR ME");
+		case 9: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
+		case 10: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
+		case 11: Twirl_Lines(npc, "{crimson}Kuru Kuru{snow}~");
+		case 12: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
+		case 13: Twirl_Lines(npc, "Aaa, hai hai~");
 	}
 	return true;
 }
@@ -3116,12 +3124,22 @@ static void Twirl_Magia_Rings(Twirl npc, float Origin[3], float Angles[3], int l
 	}
 	
 }
+
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Twirl npc = view_as<Twirl>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	if(IsValidClient(attacker))
+	{
+		//doing it via "damage" instead of instances of damage so a player with a cheap high firerate weapon cant trick twirl into thinking they are a melee when they switch to a hyper bursty slow attacking weapon.
+		if(damagetype & DMG_SLASH || damagetype & DMG_CLUB)
+			fl_player_weapon_score[attacker]+=damage;
+		else
+			fl_player_weapon_score[attacker]-=damage;
+	}
 
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int MaxHealth = ReturnEntityMaxHealth(npc.index);
@@ -3214,7 +3232,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flNextTeleport -= 0.2;
+		npc.m_flNextTeleport -= 0.25;
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
@@ -3341,8 +3359,7 @@ static void NPC_Death(int entity)
 				case 1: Twirl_Lines(npc, "You're strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
 				case 2: Twirl_Lines(npc, "Ahaha, toodles");
 				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-				case 5: Twirl_Lines(npc, "");
+				case 4: Twirl_Lines(npc, "How interesting..");
 			}
 		}
 		else if(wave <=30)
@@ -3353,7 +3370,7 @@ static void NPC_Death(int entity)
 				case 1: Twirl_Lines(npc, "Oh my, I may have underestimated you, this is great news");
 				case 2: Twirl_Lines(npc, "I'll have to give {aqua}Stella{snow} a little treat, this has been great fun");
 				case 3: Twirl_Lines(npc, "Most excellent, you bested me, hope to see you again!");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				case 4: Twirl_Lines(npc, "The simulations seem to be off..");
 			}
 		}
 		else if(wave <=45)
@@ -3361,10 +3378,10 @@ static void NPC_Death(int entity)
 			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Even with my {purple}''Heavy Equipment''{snow} you bested me, good work");
-				case 1: Twirl_Lines(npc, "You're quite strong, and so am I, can't wait for our next match");
+				case 1: Twirl_Lines(npc, "You're quite strong, can't wait for our next match");
 				case 2: Twirl_Lines(npc, "I hope you all had as much fun as I did");
 				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do believe our next and final battle will be the {crimson}most fun{snow}!");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				case 4: Twirl_Lines(npc, "Whoever made those simulations is gonna get fired..");
 			}
 		}
 		else
