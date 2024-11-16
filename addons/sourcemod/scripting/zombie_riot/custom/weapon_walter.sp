@@ -30,7 +30,7 @@ static void ApplyBuilderAttributes(DataPack pack)
 		Attributes_SetMulti(weapon, 97, attack_speed);
 
 		float damage = Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
-		damage *= 0.8;
+		damage *= 0.75;
 
 		Attributes_Set(weapon, 2, damage);
 	}
@@ -74,20 +74,22 @@ void Walter_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		if(explosiveDawn || (GetURandomInt() % 20) > 16)
 		{
 			EmitSoundToAll(TRIP_ARMED, victim, _, 85);
-			Cause_Terroriser_Explosion(attacker, victim, false, WalterExplodeBefore);
+			Cause_Terroriser_Explosion(attacker, victim, false/*, WalterExplodeBefore*/);
 		}
 	}
 
 	if(explosiveDawn)
-		damage *= 2.2;	// Skill bonus
+		damage *= 2.0;	// Skill bonus
 }
+
+/*
 
 static float WalterExplodeBefore(int attacker, int victim, float &damage, int weapon)
 {
 	FreezeNpcInTime(victim, 0.35);
 	return 0.0;
 }
-
+*/
 static Action Weapon_Walter_Timer(Handle timer, DataPack pack)
 {
 	pack.Reset();
