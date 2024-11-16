@@ -1037,7 +1037,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 }
 
 
-void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r")
+void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r", int colourdiff = 0)
 {
 	if(attachment[0])
 	{
@@ -1074,13 +1074,20 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	{
 		int ModelApply = ApplyCustomModelToWandProjectile(iNpc, WEAPON_CUSTOM_WEAPONRY_1, 1.65, "scythe_spin");
 
-		if(colour)
+		if(colourdiff)
 		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
+			SetEntityRenderColor(ModelApply, 255, 255, 255, 2);
 		}
 		else
 		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+			if(colour)
+			{
+				SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
+			}
+			else
+			{
+				SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+			}
 		}
 		SetVariantInt(2);
 		AcceptEntityInput(ModelApply, "SetBodyGroup");
@@ -1325,7 +1332,6 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		}
 
 		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
-		SensalEffects(Projectile,view_as<int>(npc.Anger),"");
 		b_RageProjectile[Projectile] = npc.Anger;
 		//dont exist !
 		SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
@@ -1333,13 +1339,31 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 		static float ang_Look[3];
 		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
-		Initiate_HomingProjectile(Projectile,
-		 npc.index,
-		 	70.0,			// float lockonAngleMax,
-		   	9.0,				//float homingaSec,
-			true,				// bool LockOnlyOnce,
-			true,				// bool changeAngles,
-			  ang_Look);// float AnglesInitiate[3]);
+		bool DoHoming = true;
+		if(count == 2)
+		{
+			int EnemySearch = GetClosestTarget(Projectile, true, _, true, _, _, _, true, .UseVectorDistance = true);
+			if(IsValidEntity(EnemySearch))
+			{
+				SensalEffects(Projectile,view_as<int>(npc.Anger),"", 1);
+				DoHoming = false;
+				DataPack pack1;
+				CreateDataTimer(0.1, WhiteflowerTank_Rocket_Stand, pack1, TIMER_FLAG_NO_MAPCHANGE);
+				pack1.WriteCell(EntIndexToEntRef(Projectile));
+				pack1.WriteCell(EntIndexToEntRef(EnemySearch));
+			}
+		}
+		if(DoHoming)
+		{
+			SensalEffects(Projectile,view_as<int>(npc.Anger),"");
+			Initiate_HomingProjectile(Projectile,
+			npc.index,
+				70.0,			// float lockonAngleMax,
+				9.0,				//float homingaSec,
+				true,				// bool LockOnlyOnce,
+				true,				// bool changeAngles,
+				ang_Look);// float AnglesInitiate[3]);
+		}
 
 		if(volume == 0.25)
 		{

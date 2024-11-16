@@ -1002,7 +1002,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 					float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 					npc.FaceTowards(vecTarget, 20000.0);
 					int projectile;
-					float Proj_Damage = 18.0 * RaidModeScaling;
+					float Proj_Damage = 22.0 * RaidModeScaling;
 					if(ZR_GetWaveCount()+1 <= 15)
 						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", false);
 					else
@@ -1282,7 +1282,7 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 			GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_vecAbsOrigin", vecHitPart);
 
 			int projectile;
-			float Proj_Damage = 18.0 * RaidModeScaling;
+			float Proj_Damage = 22.0 * RaidModeScaling;
 			if(ZR_GetWaveCount()+1 <= 15)
 				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", false,_,true, vecHitPart);
 			else
