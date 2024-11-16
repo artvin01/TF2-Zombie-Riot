@@ -1023,7 +1023,7 @@ static void ClotThink(int iNPC)
 			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
 			case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
 			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
-			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}. You alone, its such a view");
 		}
 	}
 
@@ -1036,7 +1036,7 @@ static void ClotThink(int iNPC)
 		b_wonviatimer[npc.index] = true;
 		if(wave <=60)
 		{
-			switch(GetRandomInt(0, 10))
+			switch(GetRandomInt(0, 9))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
 				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
@@ -1048,7 +1048,6 @@ static void ClotThink(int iNPC)
 				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
 				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
 				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
-				case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else	//freeplay
@@ -1070,7 +1069,7 @@ static void ClotThink(int iNPC)
 
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
-		switch(GetRandomInt(0, 7))
+		switch(GetRandomInt(0, 6))
 		{
 			case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
 			case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
@@ -1079,7 +1078,6 @@ static void ClotThink(int iNPC)
 			case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
 			case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
 			case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
-			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 		}
 		fl_magia_overflow_recharge[npc.index] -= 15.0;
 		npc.m_flNextTeleport -= 10.0;
@@ -1466,7 +1464,7 @@ static void lunar_Radiance(Twirl npc)
 		case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
 		case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
 		case 11: Twirl_Lines(npc, "Dance little merc, dance...");
-		case 13: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+		case 13: Twirl_Lines(npc, "{crimson}Ehe{snow}.");
 		case 15: Twirl_Lines(npc, "Annihilation in {crimson}F# {snow}Minor");
 		case 17: Twirl_Lines(npc, "Oh, {crimson}poor{snow} you...");
 	}
@@ -2624,21 +2622,20 @@ static bool Retreat(Twirl npc, bool custom = false)
 
 	switch(GetRandomInt(0, 13))
 	{
-		case 0: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
+		case 0: Twirl_Lines(npc, "{crimson}Twirly Wirly{snow}~");
 		case 1: Twirl_Lines(npc, "You really think you can {purple}catch {snow}me?");
 		case 2: Twirl_Lines(npc, "Ahaaa, {crimson}bad");
 		case 3: Twirl_Lines(npc, "So close, yet far");
-		case 4: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
-		case 5: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
-		case 6: Twirl_Lines(npc, "Don't surround me like that.");
-		case 7: Twirl_Lines(npc, "When will you learn this,{crimson} DON'T COME NEAR ME");
-		case 8: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
-		case 9: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
-		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-		case 11: Twirl_Lines(npc, "{crimson}Kururing{snow}~");
-		case 12: Twirl_Lines(npc, "{crimson}Kuru Kuru{snow}~");
-		case 13: Twirl_Lines(npc, "{crimson}Twirly Wirly{snow}~");
-		case 14: Twirl_Lines(npc, "Aaa, hai hai~");
+		case 4: Twirl_Lines(npc, "{crimson}Kururing{snow}~");
+		case 5: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
+		case 6: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
+		case 7: Twirl_Lines(npc, "Don't surround me like that.");
+		case 8: Twirl_Lines(npc, "When will you learn this,{crimson} DON'T COME NEAR ME");
+		case 9: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
+		case 10: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
+		case 11: Twirl_Lines(npc, "{crimson}Kuru Kuru{snow}~");
+		case 12: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
+		case 13: Twirl_Lines(npc, "Aaa, hai hai~");
 	}
 	return true;
 }
@@ -3362,8 +3359,7 @@ static void NPC_Death(int entity)
 				case 1: Twirl_Lines(npc, "You're strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
 				case 2: Twirl_Lines(npc, "Ahaha, toodles");
 				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-				case 5: Twirl_Lines(npc, "");
+				case 4: Twirl_Lines(npc, "How interesting..");
 			}
 		}
 		else if(wave <=30)
@@ -3374,7 +3370,7 @@ static void NPC_Death(int entity)
 				case 1: Twirl_Lines(npc, "Oh my, I may have underestimated you, this is great news");
 				case 2: Twirl_Lines(npc, "I'll have to give {aqua}Stella{snow} a little treat, this has been great fun");
 				case 3: Twirl_Lines(npc, "Most excellent, you bested me, hope to see you again!");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				case 4: Twirl_Lines(npc, "The simulations seem to be off..");
 			}
 		}
 		else if(wave <=45)
@@ -3382,10 +3378,10 @@ static void NPC_Death(int entity)
 			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Even with my {purple}''Heavy Equipment''{snow} you bested me, good work");
-				case 1: Twirl_Lines(npc, "You're quite strong, and so am I, can't wait for our next match");
+				case 1: Twirl_Lines(npc, "You're quite strong, can't wait for our next match");
 				case 2: Twirl_Lines(npc, "I hope you all had as much fun as I did");
 				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do believe our next and final battle will be the {crimson}most fun{snow}!");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				case 4: Twirl_Lines(npc, "Whoever made those simulations is gonna get fired..");
 			}
 		}
 		else
