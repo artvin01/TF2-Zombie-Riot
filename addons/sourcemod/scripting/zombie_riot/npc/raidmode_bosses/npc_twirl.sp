@@ -82,6 +82,7 @@ static bool b_InKame[MAXENTITIES];
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/raid_theme_2.mp3"
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
+static float fl_player_weapon_score[MAXTF2PLAYERS];
 
 static int i_melee_combo[MAXENTITIES];
 static int i_current_wave[MAXENTITIES];
@@ -511,7 +512,13 @@ methodmap Twirl < CClotBody
 
 		if(this.m_iTarget > MaxClients)
 			return 1;						//its an npc? fuck em
+
+		if(fl_player_weapon_score[this.m_iTarget]>=0.0)
+			return 0;	//their social credit score is positive or 0.0, they are a good citizen of the state, treat them well by not shoting them on sight.
+		else
+			return 1;	//their soclai credit score is not positive, ON SIGHT, KILL ON SIGHT.
 		
+		/*
 		int weapon = GetEntPropEnt(this.m_iTarget, Prop_Send, "m_hActiveWeapon");
 
 		if(!IsValidEntity(weapon))
@@ -544,11 +551,13 @@ methodmap Twirl < CClotBody
 		//now the "Easy" checks are done and now the not so easy checks are left.
 		//assume they are a melee player until proven otherwise.
 		//this gets triggered if:
-		/*
-			The player is NOT holding a: ranged weapon, a magic weapon, a wrench.
-			This code checks if they are HOLDING a weapon in some other slot of theirs
-			So that they cannot abuse this and avoid getting shot at while they are actually a ranged player.
-		*/
+		
+			//The player is NOT holding a: ranged weapon, a magic weapon, a wrench.
+			//This code checks if they are HOLDING a weapon in some other slot of theirs
+			//So that they cannot abuse this and avoid getting shot at while they are actually a ranged player.
+
+		
+
 		int type = 0;	//this way a ranged player can't switch to their melee to avoid attacks.
 		int i, entity;
 		while(TF2_GetItem(this.m_iTarget, entity, i))
@@ -577,13 +586,12 @@ methodmap Twirl < CClotBody
 					break;
 				}
 			}
-		}
-
+		}*/
 		//edge case: player is a mage, has 2 weapons that take the melee slot, the player could take out a melee weapon to trick this system into thinking they are a melee when in reality they are a mage.
 		//hypothesis: 
 		//even if it isn't him who discovers it, I'll have to add a thing that checks multiple weapon slots too...
 
-		return type;
+		//return type;
 	}
 
 	public char[] GetName()
@@ -906,10 +914,13 @@ methodmap Twirl < CClotBody
 
 		if(StrContains(data, "blockinv") != -1)
 			fl_final_invocation_timer[npc.index] = FAR_FUTURE;
+
+		Zero(fl_player_weapon_score);
 		
 		return npc;
 	}
 }
+
 
 static void Twirl_WinLine(int entity)
 {
@@ -3116,12 +3127,22 @@ static void Twirl_Magia_Rings(Twirl npc, float Origin[3], float Angles[3], int l
 	}
 	
 }
+
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Twirl npc = view_as<Twirl>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	if(IsValidClient(attacker))
+	{
+		//doing it via "damage" instead of instances of damage so a player with a cheap high firerate weapon cant trick twirl into thinking they are a melee when they switch to a hyper bursty slow attacking weapon.
+		if(damagetype & DMG_SLASH || damagetype & DMG_CLUB)
+			fl_player_weapon_score[attacker]+=damage;
+		else
+			fl_player_weapon_score[attacker]-=damage;
+	}
 
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int MaxHealth = ReturnEntityMaxHealth(npc.index);
@@ -3214,7 +3235,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flNextTeleport -= 0.2;
+		npc.m_flNextTeleport -= 0.25;
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
