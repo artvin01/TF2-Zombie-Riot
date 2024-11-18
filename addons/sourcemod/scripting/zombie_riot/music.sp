@@ -139,6 +139,7 @@ void PrecacheMusicZr()
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
 	AltExtraLogic = FindInfoTarget("zr_alternative_extras");
+	ForceNiko = FindInfoTarget("zr_niko");
 
 	if(XenoMapExtra)
 	{

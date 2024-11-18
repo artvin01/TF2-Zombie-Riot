@@ -1409,13 +1409,7 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/tp'' To toggle thirdperson.\n''/make_niko'' To toggle niko (This is more of a silly thing the anything)."
-		"fr" 		"''/tp'' pour utiliser la vue à la troisième personne."
-		"ru" 		"''/tp'' для переключения режима от 3-го лица.\n''/make_niko'' для переключения Нико (это скорее глупая вещь, чем что-либо ещё)."
-		"de"		"''/tp'' Umschaltung für Dritte Person."
-		"pt"		"''/tp'' Para ativar modo de 3ª pessoa"
-		"nl"		"''/tp'' Schakelt derde persoon in.\n''/make_niko'' Transformeerd je naar niko (Dit is meer voor genot dan iets anders)."
-		"chi"       "''/tp'' 来切换第三人称 \n''/make_niko'' 来切换成niko模型(重生后生效)"
+		"en" 		"''/tp'' To toggle thirdperson.\n''/me'' To write something above yourself."
 	}
 	"Difficulty Help Explained"
 	{
@@ -1807,6 +1801,10 @@
 		"nl"		"Grigori werd genezen!\nJe kunt met hem praten tijdens de opstellingstijd om een 20%% korting te krijgen op verschillende items!"
 		"chi"       "格里神父已被救出！\n你可以在休息回合中与他交易，与他交易的商品都会折扣20%%"
 	}
+	"The World Machine Spawn"
+	{
+		"en"		"Niko! What are you doing here?"
+	}
 	"TF2: Zombie Riot"
 	{
 		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
@@ -1823,6 +1821,10 @@
 		"pt"		"Loja do Senhor Grigori"
 		"nl"		"Vader Grigori's Winkel"
 		"chi"       "神父商店"
+	}
+	"The World Machine's Items"
+	{
+		"en" 		"The World Machine's Items"
 	}
 	"Credits After Selling"
 	{

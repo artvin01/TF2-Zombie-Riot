@@ -1549,18 +1549,28 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			bool refreshNPCStore;
 			if(round.SpawnGrigori)
 			{
+				Spawn_Cured_Grigori();
+				refreshNPCStore = true;
+				if(i_SpecialGrigoriReplace == 2)
 				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
 				{
 					if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
 					{
-						ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
-						SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
-						SetGlobalTransTarget(client_Grigori);
-						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");		
+						if(i_SpecialGrigoriReplace == 0)
+						{
+							ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
+							SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
+							SetGlobalTransTarget(client_Grigori);
+							ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");	
+						}	
+						else if(i_SpecialGrigoriReplace == 2)
+						{
+							SetHudTextParams(-1.0, -1.0, 3.01, 125, 125, 125, 255);
+							SetGlobalTransTarget(client_Grigori);
+							ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "The World Machine Spawn");	
+						}
 					}
 				}
-				Spawn_Cured_Grigori();
-				refreshNPCStore = true;
 			}
 			
 			// Above is the round that just ended

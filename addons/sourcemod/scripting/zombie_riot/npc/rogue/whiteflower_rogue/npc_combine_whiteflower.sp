@@ -198,6 +198,11 @@ methodmap Whiteflower_Boss < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
+	property float m_flGetClosestTargetAllyTime
+	{
+		public get()							{ return fl_GetClosestTargetNoResetTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_GetClosestTargetNoResetTime[this.index] = TempValueForProperty; }
+	}
 	public int FireGrenade(float vecTarget[3])
 	{
 		int entity = CreateEntityByName("tf_projectile_pipe_remote");
@@ -265,6 +270,7 @@ methodmap Whiteflower_Boss < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
+		npc.m_flGetClosestTargetAllyTime = 0.0;
 
 		
 
@@ -430,6 +436,30 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		if(npc.m_flThrowSupportGrenadeHappeningCD < gameTime)
+		{
+			npc.m_iTargetWalkTo = GetClosestAlly(npc.index);
+			npc.m_flGetClosestTargetAllyTime = GetGameTime(npc.index) + 1.0;
+			//he will try to go to one of his allies.
+		}
+	}
+	if(npc.m_flThrowSupportGrenadeHappeningCD < gameTime)
+	{
+		if(!IsValidAlly(npc.index, npc.m_iTargetWalkTo))
+		{
+			//Try again
+			npc.m_iTargetWalkTo = GetClosestAlly(npc.index);
+			npc.m_flGetClosestTargetAllyTime = GetGameTime(npc.index) + 1.0;
+		}
+		if(!IsValidAlly(npc.index, npc.m_iTargetWalkTo))
+		{
+			//if fail...
+			npc.m_iTargetWalkTo = npc.m_iTarget;
+		}
+	}
+	else
+	{
+		npc.m_iTargetWalkTo = npc.m_iTarget;
 	}
 	
 	if(npc.m_flAttackHappens)
@@ -521,21 +551,28 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 	
 	if(npc.m_flJumpHappening)
 	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
+		int WhichEnemyToJump = 0;
+		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+			WhichEnemyToJump = npc.m_iTarget;
+
+		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTargetWalkTo))
+			WhichEnemyToJump = npc.m_iTargetWalkTo;
+
+		if(IsValidEntity(WhichEnemyToJump))
 		{
 			float WorldSpaceCenterVec[3]; 
-			WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+			WorldSpaceCenter(WhichEnemyToJump, WorldSpaceCenterVec);
 			npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 		}
 		//We want to jump at the enemy the moment we are allowed to!
 		if(npc.m_flJumpHappening < gameTime)
 		{
 			npc.m_flJumpHappening = 0.0;
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			if(IsValidEntity(WhichEnemyToJump))
 			{
 				float WorldSpaceCenterVec[3]; 
 				float WorldSpaceCenterVecSelf[3]; 
-				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+				WorldSpaceCenter(WhichEnemyToJump, WorldSpaceCenterVec);
 				WorldSpaceCenter(npc.index, WorldSpaceCenterVecSelf);
 
 				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenterVecSelf, WorldSpaceCenterVec);
@@ -544,9 +581,11 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 				{
 					SpeedToPredict *= 0.15;
 				}
-				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, SpeedToPredict, _,WorldSpaceCenterVec);
+
+				PredictSubjectPositionForProjectiles(npc, WhichEnemyToJump, SpeedToPredict, _,WorldSpaceCenterVec);
 				//da jump!
 				npc.m_flDoingAnimation = gameTime + 0.45;
+				WorldSpaceCenterVec[2] += 15.0;
 				PluginBot_Jump(npc.index, WorldSpaceCenterVec);
 				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 				npc.m_flWasAirbornInJump = gameTime + 0.5;
@@ -580,41 +619,50 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 	}
 	WF_ThrowGrenadeHappening(npc);
 
+//always check!
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3];
-		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float flDistanceToTargetWalk;
+		float flDistanceToTarget;
 		float vecSelf[3];
+		float vecTarget[3];
+		float vecTargetWalk[3];
 		WorldSpaceCenter(npc.index, vecSelf);
+		if(IsValidEntity(npc.m_iTargetWalkTo))
+		{
+			WorldSpaceCenter(npc.m_iTargetWalkTo, vecTargetWalk);
+			flDistanceToTargetWalk = GetVectorDistance(vecTargetWalk, vecSelf, true);
+				
+			//Predict their pos.
+			if(flDistanceToTargetWalk < npc.GetLeadRadius()) 
+			{
+				float vPredictedPos[3]; 
+				PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_,vPredictedPos);
+				
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else
+			{
+				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			}
+		}
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 
-		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
-			
-		//Predict their pos.
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
-		{
-			float vPredictedPos[3]; 
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
-			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
-		}
-		else
-		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-		}
 
 		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
 		{
 			npc.m_iState = -1;
+		}
+		else if(npc.m_flThrowSupportGrenadeHappeningCD < gameTime && flDistanceToTargetWalk <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
+		{
+			npc.m_iState = 2;
 		}
 		else if (npc.m_flJumpCooldown < gameTime)
 		{
 			//We jump, no matter if far or close, see state to see more logic.
 			//we melee them!
 			npc.m_iState = 3; //enemy is abit further away.
-		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0) && npc.m_flThrowSupportGrenadeHappeningCD < gameTime)
-		{
-			npc.m_iState = 2;
 		}
 		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.65) && npc.m_flKickUpCD < gameTime)
 		{
@@ -730,10 +778,8 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 				if(!npc.m_bPathing)
 					npc.StartPathing();
 					
-				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				//make sure to be close!
+				if(flDistanceToTargetWalk <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
 				{
 					if(npc.m_iChanged_WalkCycle != 5) 	
 					{
@@ -754,11 +800,16 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 			case 3:
 			{		
 				//Jump at enemy	
-				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					npc.m_iTarget = Enemy_I_See;
+				int WhichEnemyToJump = 0;
+				if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+					WhichEnemyToJump = npc.m_iTarget;
 
+				if(Can_I_See_Enemy_Only(npc.index, npc.m_iTargetWalkTo))
+					WhichEnemyToJump = npc.m_iTargetWalkTo;
+
+				if(WhichEnemyToJump)
+				{
+					npc.FaceTowards(vecTargetWalk, 15000.0);
 					npc.m_flAttackHappens = gameTime + 0.5;
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_flNextMeleeAttack = 0.0;
@@ -785,10 +836,14 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 							damage *= 0.50;
 							damage *= RaidModeScaling;
 							int RocketGet = npc.FireRocket(vecSelf2, damage, 200.0);
-							DataPack pack;
-							CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-							pack.WriteCell(EntIndexToEntRef(RocketGet));
-							pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
+							int EnemySearch = GetClosestTarget(RocketGet, true, _, true, _, _, _, true, .UseVectorDistance = true);
+							if(IsValidEnemy(npc.index, EnemySearch))
+							{
+								DataPack pack;
+								CreateDataTimer(loopDo, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(EntIndexToEntRef(RocketGet));
+								pack.WriteCell(EntIndexToEntRef(EnemySearch));
+							}
 						}
 					}
 					/*
@@ -815,6 +870,17 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 							npc.m_flSpeed = 0.0;
 							NPC_StopPathing(npc.index);
 						}
+					}
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_RUN");
+						npc.m_flSpeed = 350.0;
+						NPC_StartPathing(iNPC);
 					}
 				}
 			}
@@ -894,7 +960,7 @@ void WF_ThrowGrenadeHappening(Whiteflower_Boss npc)
 			float damage = 60.0;
 			damage *= 0.50;
 			damage *= RaidModeScaling;
-			float HealDo = 20000.0;
+			float HealDo = 5000.0;
 			HealDo *= RaidModeScaling;
 			WF_GrenadeSupportDo(npc.index, Grenade, damage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
@@ -1018,7 +1084,7 @@ public Action Timer_WF_SupportGrenade(Handle timer, DataPack pack)
 	}
 	if(HealDo >= 1.0)
 	{
-		ExpidonsaGroupHeal(Projectile, RangeSupport, 99, HealDo, 1.0, false);
+		ExpidonsaGroupHeal(Projectile, RangeSupport, 99, HealDo, 1.15, false);
 		DesertYadeamDoHealEffect(Projectile, RangeSupport);
 	}
 	return Plugin_Continue;

@@ -273,6 +273,7 @@ public const int RenderColors_RPG[][] =
 	{0, 0, 0, 255}			//none, black.
 };
 
+bool ForceNiko;
 Handle g_hImpulse;
 
 Handle g_hSetLocalOrigin;
@@ -682,6 +683,7 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
+int i_SpecialGrigoriReplace;
 float f_TimeSinceLastGiveWeapon[MAXENTITIES]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
 int Resupplies_Supplied[MAXTF2PLAYERS];
@@ -1364,6 +1366,7 @@ float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Speed[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Damage[MAXENTITIES] = {1.0, ...};
 float fl_GibVulnerablity[MAXENTITIES] = {1.0, ...};
+float f_RoleplayTalkLimit[MAXENTITIES] = {0.0, ...};
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1516,6 +1519,7 @@ public void OnPluginStart()
 	
 	RegAdminCmd("sm_test_hud_notif", Command_Hudnotif, ADMFLAG_GENERIC, "Hud Notif");
 	RegConsoleCmd("sm_getpos", GetPos);
+	RegConsoleCmd("sm_me", DoRoleplayTalk);
 //	HookEvent("npc_hurt", OnNpcHurt);
 	
 	sv_cheats = FindConVar("sv_cheats");
@@ -2053,6 +2057,55 @@ public Action GetPos(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action DoRoleplayTalk(int client, int args)
+{
+	if(f_RoleplayTalkLimit[client] > GetGameTime())
+	{
+		ReplyToCommand(client, "Sorry! Youre on a cooldown, wait %.1f seconds.", f_RoleplayTalkLimit[client] - GetGameTime());
+		return Plugin_Handled;
+	}
+	if(GetTeam(client) != TFTeam_Red || !IsPlayerAlive(client))
+	{
+		ReplyToCommand(client, "You cant use this command right now.");
+		return Plugin_Handled;
+	}
+	f_RoleplayTalkLimit[client] = GetGameTime() + 10.0;
+	
+	char Text[64];
+	GetCmdArg(1, Text, sizeof(Text));
+	if(!Text[0])
+	{
+		ReplyToCommand(client, "[SM] sm_me [Text (64 chars at max)] [Red 0-255] [Green0-255] [Blue0-255] [Alpha0-255]");
+		return Plugin_Handled;
+	}
+	char Text2[32];
+	char Text3[66];
+	strcopy(Text2, sizeof(Text2), Text);
+	Format(Text3, sizeof(Text3), "%s\n%s",Text2,Text[32]);
+	
+	int ColourGive[4];
+	ColourGive = {255,255,255,255};
+	if(args >= 2)
+		ColourGive[0] = GetCmdArgInt(2);
+	if(args >= 3)
+		ColourGive[1] = GetCmdArgInt(3);
+	if(args >= 4)
+		ColourGive[2] = GetCmdArgInt(4);
+	if(args >= 5)
+		ColourGive[3] = GetCmdArgInt(5);
+
+	float Offset[3];
+	Offset[2] = 90.0;
+	if(i_PlayerModelOverrideIndexWearable[client] == NIKO_2)
+		Offset[2] = 75.0;
+
+	if(TeutonType[client] != TEUTON_NONE)
+		Offset[2] = 50.0;
+
+	NpcSpeechBubble(client, Text3, 6, ColourGive, Offset, "");
+
+	return Plugin_Handled;
+}
 
 public Action Command_ToggleReload(int client, int args)
 {
@@ -2137,7 +2190,7 @@ public void OnClientPutInServer(int client)
 #endif
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
-	
+	f_RoleplayTalkLimit[client] = 0.0;
 #if !defined NOG
 	DHook_HookClient(client);
 #endif
@@ -2186,6 +2239,8 @@ public void OnClientPutInServer(int client)
 
 #if defined ZR
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
+	if(ForceNiko)
+		OverridePlayerModel(client, NIKO_2, true);
 #endif
 }
 

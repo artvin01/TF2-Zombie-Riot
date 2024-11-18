@@ -10382,8 +10382,16 @@ stock void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, in
 	Format(ch_SpeechBubbleEndingScroll[entity], 10, endingtextscroll);
 	i_SpeechBubbleTotalText_ScrollingPart[entity] = 0;
 	i_SpeechEndingScroll_ScrollingPart[entity] = 0;
-	SDKUnhook(entity, SDKHook_Think, NpcSpeechBubbleTalk);
-	SDKHook(entity, SDKHook_Think, NpcSpeechBubbleTalk);
+	if(entity > MaxClients)
+	{
+		SDKUnhook(entity, SDKHook_Think, NpcSpeechBubbleTalk);
+		SDKHook(entity, SDKHook_Think, NpcSpeechBubbleTalk);
+	}
+	else
+	{
+		SDKUnhook(entity, SDKHook_PreThink, NpcSpeechBubbleTalk);
+		SDKHook(entity, SDKHook_PreThink, NpcSpeechBubbleTalk);
+	}
 }
 
 void NpcSpeechBubbleTalk(int iNPC)
@@ -10392,13 +10400,19 @@ void NpcSpeechBubbleTalk(int iNPC)
 	Text_Entity = EntRefToEntIndex(i_SpeechBubbleEntity[iNPC]);
 	if(!IsValidEntity(Text_Entity))
 	{
-		SDKUnhook(iNPC, SDKHook_Think, NpcSpeechBubbleTalk);
+		if(iNPC > MaxClients)
+			SDKUnhook(iNPC, SDKHook_Think, NpcSpeechBubbleTalk);
+		else
+			SDKUnhook(iNPC, SDKHook_PreThink, NpcSpeechBubbleTalk);
 		return;
 	}
 	if(f_SpeechTickDelay[iNPC] > GetGameTime())
 		return;
 	
-	f_SpeechTickDelay[iNPC] = GetGameTime() + 0.05;
+	if(iNPC > MaxClients)
+		f_SpeechTickDelay[iNPC] = GetGameTime() + 0.05;
+	else
+		f_SpeechTickDelay[iNPC] = GetGameTime() + 0.035;
 	int TotalLength = strlen(ch_SpeechBubbleTotalText[iNPC]);
 
 	if(i_SpeechBubbleTotalText_ScrollingPart[iNPC] >= TotalLength)
@@ -10423,7 +10437,10 @@ void NpcSpeechBubbleTalk(int iNPC)
 
 			if(f_SpeechDeleteAfter[iNPC] < GetGameTime())
 			{
-				SDKUnhook(iNPC, SDKHook_Think, NpcSpeechBubbleTalk);
+				if(iNPC > MaxClients)
+					SDKUnhook(iNPC, SDKHook_Think, NpcSpeechBubbleTalk);
+				else
+					SDKUnhook(iNPC, SDKHook_PreThink, NpcSpeechBubbleTalk);
 				RemoveEntity(Text_Entity);
 			}
 			return;
