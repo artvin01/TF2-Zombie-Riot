@@ -731,7 +731,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 				RemoveEntity(npc.m_iWearable2);
 			}
 			npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
-			npc.m_flRangedSpecialDelay = gameTime + 15.5;
+			npc.m_flRangedSpecialDelay = gameTime + 20.0;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flDoingAnimation = gameTime + 1.0;
@@ -757,7 +757,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 			{
 				if(gameTime > npc.m_flNextMeleeAttack)
 				{
-					if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+					if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
 					{
 						npc.m_flAttackHappens = 0.0;
 						float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
@@ -846,7 +846,8 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 								
 								// Hit particle
 								
-							
+								npc.PlayMeleeSound();
+								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 								
 								bool Knocked = false;
 											
@@ -899,13 +900,19 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					target = Enemy_I_See;
-
-					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-							
-					npc.m_flAttackHappens = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 0.5;
-					npc.m_flDoingAnimation = gameTime + 0.25;
+					
+					if(npc.m_iOverlordComboAttack > 0)
+					{
+						npc.m_flAttackHappens = gameTime + 0.125;
+						npc.m_flNextMeleeAttack = gameTime + 0.25;
+						npc.m_flDoingAnimation = gameTime + 0.25;
+					}
+					else if(npc.m_iOverlordComboAttack > 0)
+					{
+						npc.m_flAttackHappens = gameTime + 0.25;
+						npc.m_flNextMeleeAttack = gameTime + 0.5;
+						npc.m_flDoingAnimation = gameTime + 0.25;
+					}
 				}
 			}
 		}
