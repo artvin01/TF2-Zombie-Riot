@@ -161,7 +161,7 @@ methodmap OverlordRogue < CClotBody
 		
 	}
 	
-	public OverlordRogue(int client, float vecPos[3], float vecAng[3], int ally)
+	public OverlordRogue(float vecPos[3], float vecAng[3], int ally)
 	{
 		OverlordRogue npc = view_as<OverlordRogue>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_3.mdl", "1.0", "1000000", ally));
 		

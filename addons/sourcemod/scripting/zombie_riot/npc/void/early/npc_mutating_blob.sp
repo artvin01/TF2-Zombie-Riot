@@ -67,9 +67,9 @@ void VoidMutatingBlob_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidMutatingBlob(client, vecPos, vecAng, ally);
+	return VoidMutatingBlob(vecPos, vecAng, team);
 }
 methodmap VoidMutatingBlob < CClotBody
 {
@@ -110,7 +110,7 @@ methodmap VoidMutatingBlob < CClotBody
 	}
 	
 	
-	public VoidMutatingBlob(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidMutatingBlob(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidMutatingBlob npc = view_as<VoidMutatingBlob>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "700", ally));
 		

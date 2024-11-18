@@ -86,7 +86,7 @@ public void NecroCalcium_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return NecroCalcium(client, vecPos, vecAng);
 }

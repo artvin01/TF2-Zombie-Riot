@@ -117,9 +117,9 @@ public void Ikunagae_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Ikunagae(client, vecPos, vecAng, ally);
+	return Ikunagae(vecPos, vecAng, team);
 }
 methodmap Ikunagae < CClotBody
 {
@@ -174,7 +174,7 @@ methodmap Ikunagae < CClotBody
 
 	}
 	//static bool b_scaramouche_used[MAXENTITIES] = { false, ... };
-	public Ikunagae(int client, float vecPos[3], float vecAng[3], int ally)
+	public Ikunagae(float vecPos[3], float vecAng[3], int ally)
 	{
 		Ikunagae npc = view_as<Ikunagae>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		

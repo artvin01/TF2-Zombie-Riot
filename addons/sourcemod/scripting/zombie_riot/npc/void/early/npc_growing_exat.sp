@@ -67,9 +67,9 @@ void GrowingExat_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return GrowingExat(client, vecPos, vecAng, ally);
+	return GrowingExat(vecPos, vecAng, team);
 }
 methodmap GrowingExat < CClotBody
 {
@@ -110,7 +110,7 @@ methodmap GrowingExat < CClotBody
 	}
 	
 	
-	public GrowingExat(int client, float vecPos[3], float vecAng[3], int ally)
+	public GrowingExat(float vecPos[3], float vecAng[3], int ally)
 	{
 		GrowingExat npc = view_as<GrowingExat>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.25", "2000", ally, false, true));
 		

@@ -72,9 +72,9 @@ public void ExplosiveHeadcrabZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ExplosiveHeadcrabZombie(client, vecPos, vecAng, ally);
+	return ExplosiveHeadcrabZombie(vecPos, vecAng, team);
 }
 
 methodmap ExplosiveHeadcrabZombie < CClotBody
@@ -114,7 +114,7 @@ methodmap ExplosiveHeadcrabZombie < CClotBody
 	}
 	
 	
-	public ExplosiveHeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public ExplosiveHeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		ExplosiveHeadcrabZombie npc = view_as<ExplosiveHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false,_,_,_,_));
 		

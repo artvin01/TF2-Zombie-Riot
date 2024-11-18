@@ -58,9 +58,9 @@ void SeabornVanguard_Precache()
 	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornVanguard(client, vecPos, vecAng, ally);
+	return SeabornVanguard(vecPos, vecAng, team);
 }
 
 methodmap SeabornVanguard < CClotBody
@@ -90,7 +90,7 @@ methodmap SeabornVanguard < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornVanguard(int client, float vecPos[3], float vecAng[3], int ally)
+	public SeabornVanguard(float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornVanguard npc = view_as<SeabornVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000", ally, false));
 

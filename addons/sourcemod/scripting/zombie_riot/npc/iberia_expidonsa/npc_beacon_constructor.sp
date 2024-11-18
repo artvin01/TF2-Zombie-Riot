@@ -62,9 +62,9 @@ void IberiaBeaconConstructor_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return IberiaBeaconConstructor(client, vecPos, vecAng, ally, data);
+	return IberiaBeaconConstructor(vecPos, vecAng, team, data);
 }
 methodmap IberiaBeaconConstructor < CClotBody
 {
@@ -114,7 +114,7 @@ methodmap IberiaBeaconConstructor < CClotBody
 	}
 	
 	
-	public IberiaBeaconConstructor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public IberiaBeaconConstructor(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		IberiaBeaconConstructor npc = view_as<IberiaBeaconConstructor>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "600", ally));
 		

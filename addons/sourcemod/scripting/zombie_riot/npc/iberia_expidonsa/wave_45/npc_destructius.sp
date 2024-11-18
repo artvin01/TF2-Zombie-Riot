@@ -58,9 +58,9 @@ void IberianDestructius_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberianDestructius(client, vecPos, vecAng, ally);
+	return IberianDestructius(vecPos, vecAng, team);
 }
 
 methodmap IberianDestructius < CClotBody
@@ -107,7 +107,7 @@ methodmap IberianDestructius < CClotBody
 	}
 	
 	
-	public IberianDestructius(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberianDestructius(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberianDestructius npc = view_as<IberianDestructius>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "6000", ally, false, true));
 		

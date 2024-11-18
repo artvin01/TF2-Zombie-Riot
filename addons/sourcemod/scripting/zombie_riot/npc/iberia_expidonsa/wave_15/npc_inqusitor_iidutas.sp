@@ -55,9 +55,9 @@ void Iberia_inqusitor_iidutas_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberiainqusitor_iidutas(client, vecPos, vecAng, ally);
+	return Iberiainqusitor_iidutas(vecPos, vecAng, team);
 }
 methodmap Iberiainqusitor_iidutas < CClotBody
 {
@@ -102,7 +102,7 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 	}
 	
 	
-	public Iberiainqusitor_iidutas(int client, float vecPos[3], float vecAng[3], int ally)
+	public Iberiainqusitor_iidutas(float vecPos[3], float vecAng[3], int ally)
 	{
 		Iberiainqusitor_iidutas npc = view_as<Iberiainqusitor_iidutas>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
 		

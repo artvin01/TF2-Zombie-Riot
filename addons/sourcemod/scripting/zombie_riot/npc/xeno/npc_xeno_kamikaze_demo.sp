@@ -42,9 +42,9 @@ public void XenoKamikaze_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoKamikaze(client, vecPos, vecAng, ally);
+	return XenoKamikaze(vecPos, vecAng, team);
 }
 methodmap XenoKamikaze < CClotBody
 {
@@ -76,7 +76,7 @@ methodmap XenoKamikaze < CClotBody
 		
 	}
 
-	public XenoKamikaze(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoKamikaze(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoKamikaze npc = view_as<XenoKamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl" , "1.0", "700", ally));
 		

@@ -2268,7 +2268,7 @@ static void ShowMenu(int client, int page = 0)
 					if(cooldown > 0)
 						Format(spell.Display, sizeof(spell.Display), "%s [%ds]", spell.Display, cooldown);
 					
-					if(++amount >= maxSkills)
+					if(amount >= maxSkills)
 					{
 						menu.InsertItem((SkillRand[client] + i) % amount, index, spell.Display);
 					}
@@ -2276,6 +2276,8 @@ static void ShowMenu(int client, int page = 0)
 					{
 						menu.AddItem(index, spell.Display);
 					}
+
+					amount++;
 				}
 			}
 

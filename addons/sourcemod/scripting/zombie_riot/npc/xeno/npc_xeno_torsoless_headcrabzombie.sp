@@ -80,9 +80,9 @@ public void XenoTorsolessHeadcrabZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoTorsolessHeadcrabZombie(client, vecPos, vecAng, ally);
+	return XenoTorsolessHeadcrabZombie(vecPos, vecAng, team);
 }
 methodmap XenoTorsolessHeadcrabZombie < CClotBody
 {
@@ -134,7 +134,7 @@ methodmap XenoTorsolessHeadcrabZombie < CClotBody
 	
 	
 	
-	public XenoTorsolessHeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoTorsolessHeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoTorsolessHeadcrabZombie npc = view_as<XenoTorsolessHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "1.15", "300", ally));
 		

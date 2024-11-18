@@ -63,9 +63,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Sphynx(client, vecPos, vecAng, ally);
+	return Sphynx(vecPos, vecAng, team);
 }
 methodmap Sphynx < CClotBody
 {
@@ -105,7 +105,7 @@ methodmap Sphynx < CClotBody
 	}
 	
 	
-	public Sphynx(int client, float vecPos[3], float vecAng[3], int ally)
+	public Sphynx(float vecPos[3], float vecAng[3], int ally)
 	{
 		Sphynx npc = view_as<Sphynx>(CClotBody(vecPos, vecAng, "models/antlion_guard.mdl", "1.0", "1000", ally));
 		

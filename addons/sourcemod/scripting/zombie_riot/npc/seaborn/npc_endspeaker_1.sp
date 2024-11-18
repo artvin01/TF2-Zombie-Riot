@@ -3,7 +3,7 @@
 
 methodmap EndSpeaker1 < EndSpeakerSmall
 {
-	public EndSpeaker1(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public EndSpeaker1(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		EndSpeaker1 npc = view_as<EndSpeaker1>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.0", "1200", ally, false, _, true));
 		// 10000 x 0.4 x 0.3

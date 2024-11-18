@@ -86,7 +86,7 @@ static void ClotPrecache()
 	PrecacheModel("models/player/engineer.mdl");
 	PrecacheSound(VENIUM_SPAWN_SOUND);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	bool random = StrContains(data, "rng") != -1;
 
@@ -102,7 +102,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 		}
 	}
 	fl_last_summon = 0.1;
-	return Valiant(client, vecPos, vecAng, ally, data);
+	return Valiant(vecPos, vecAng, team, data);
 }
 
 methodmap Valiant < CClotBody
@@ -174,7 +174,7 @@ methodmap Valiant < CClotBody
 	}
 	
 	
-	public Valiant(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Valiant(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Valiant npc = view_as<Valiant>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		

@@ -88,9 +88,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_LastStand));   i++) { PrecacheSoundCustom(g_LastStand[i]);   }
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return GodAlaxios(client, vecPos, vecAng, ally, data);
+	return GodAlaxios(vecPos, vecAng, team, data);
 }
 static float f_AlaxiosCantDieLimit[MAXENTITIES];
 
@@ -181,7 +181,7 @@ methodmap GodAlaxios < CClotBody
 		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public GodAlaxios(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public GodAlaxios(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		GodAlaxios npc = view_as<GodAlaxios>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		
@@ -1167,11 +1167,27 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	enemy.ExtraDamage = 1.0;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
-	for(int i; i<count; i++)
+	if(!Waves_InFreeplay())
 	{
-		Waves_AddNextEnemy(enemy);
+		for(int i; i<count; i++)
+		{
+			Waves_AddNextEnemy(enemy);
+		}
 	}
-	Zombies_Currently_Still_Ongoing += count;	// FIXME
+	else
+	{
+		int postWaves = CurrentRound - Waves_GetMaxRound();
+		Freeplay_AddEnemy(postWaves, enemy, count);
+		if(count > 0)
+		{
+			for(int a; a < count; a++)
+			{
+				Waves_AddNextEnemy(enemy);
+			}
+		}
+	}
+
+	Zombies_Currently_Still_Ongoing += count;
 }
 
 void GodAlaxiosSelfDefense(GodAlaxios npc, float gameTime)

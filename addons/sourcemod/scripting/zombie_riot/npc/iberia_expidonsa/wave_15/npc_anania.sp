@@ -74,9 +74,9 @@ void Iberia_Anania_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberia_Anania(client, vecPos, vecAng, ally);
+	return Iberia_Anania(vecPos, vecAng, team);
 }
 
 methodmap Iberia_Anania < CClotBody
@@ -125,7 +125,7 @@ methodmap Iberia_Anania < CClotBody
 	}
 	
 	
-	public Iberia_Anania(int client, float vecPos[3], float vecAng[3], int ally)
+	public Iberia_Anania(float vecPos[3], float vecAng[3], int ally)
 	{
 		Iberia_Anania npc = view_as<Iberia_Anania>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "3500", ally, false, true));
 		

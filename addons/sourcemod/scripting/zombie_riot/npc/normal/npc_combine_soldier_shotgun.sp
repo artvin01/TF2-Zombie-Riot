@@ -89,9 +89,9 @@ public void CombineSoldierShotgun_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineSoldierShotgun(client, vecPos, vecAng, ally);
+	return CombineSoldierShotgun(vecPos, vecAng, team);
 }
 
 methodmap CombineSoldierShotgun < CClotBody
@@ -168,7 +168,7 @@ methodmap CombineSoldierShotgun < CClotBody
 	}
 	
 	
-	public CombineSoldierShotgun(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineSoldierShotgun(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "650", ally));
 		

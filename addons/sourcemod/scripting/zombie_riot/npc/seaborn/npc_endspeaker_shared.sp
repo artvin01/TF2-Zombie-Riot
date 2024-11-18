@@ -97,24 +97,24 @@ void EndSpeaker_MapStart()
 	EndspeakerHighId = NPC_Add(data);
 }
 
-static any ClotSummon1(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon1(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return EndSpeaker1(client, vecPos, vecAng, ally, data);
+	return EndSpeaker1(vecPos, vecAng, team, data);
 }
 
-static any ClotSummon2(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon2(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return EndSpeaker2(ally);
+	return EndSpeaker2(team);
 }
 
-static any ClotSummon3(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon3(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return EndSpeaker3(ally);
+	return EndSpeaker3(team);
 }
 
-static any ClotSummon4(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon4(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return EndSpeaker4(ally);
+	return EndSpeaker4(team);
 }
 
 #define BUFF_FOUNDER		(1 << 0)
@@ -140,7 +140,7 @@ methodmap EndSpeaker < CClotBody
 	{
 		EmitSoundToAll(DigUp[GetRandomInt(0, sizeof(DigUp) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public EndSpeaker(int client, float vecPos[3], float vecAng[3], int ally)
+	public EndSpeaker(float vecPos[3], float vecAng[3], int ally)
 	{
 		FreeplayStage++;
 		switch(FreeplayStage)
@@ -160,7 +160,7 @@ methodmap EndSpeaker < CClotBody
 		}
 		
 		FreeplayStage = 1;
-		return view_as<EndSpeaker>(EndSpeaker1(client, vecPos, vecAng, ally, "Elite"));
+		return view_as<EndSpeaker>(EndSpeaker1(vecPos, vecAng, ally, "Elite"));
 	}
 	public void GetSpawn(float pos[3], float ang[3])
 	{

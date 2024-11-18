@@ -68,9 +68,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel("models/player/engineer.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Malius(client, vecPos, vecAng, ally);
+	return Malius(vecPos, vecAng, team);
 }
 
 methodmap Malius < CClotBody
@@ -135,7 +135,7 @@ methodmap Malius < CClotBody
 	}
 	
 	
-	public Malius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Malius(float vecPos[3], float vecAng[3], int ally)
 	{
 		Malius npc = view_as<Malius>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		

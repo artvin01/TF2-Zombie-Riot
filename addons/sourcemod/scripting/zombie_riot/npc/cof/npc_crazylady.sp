@@ -52,9 +52,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]); }
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Crazylady(client, vecPos, vecAng, ally, data);
+	return Crazylady(vecPos, vecAng, team, data);
 }
 methodmap Crazylady < CClotBody
 {
@@ -96,7 +96,7 @@ methodmap Crazylady < CClotBody
 	}
 	
 	
-	public Crazylady(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Crazylady(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Crazylady npc = view_as<Crazylady>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/runningcrazy.mdl", "1.0", "300", ally));
 		

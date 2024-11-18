@@ -50,9 +50,9 @@ void VoidingBedrock_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return VoidingBedrock(client, vecPos, vecAng, ally, data);
+	return VoidingBedrock(vecPos, vecAng, team, data);
 }
 methodmap VoidingBedrock < CClotBody
 {
@@ -93,7 +93,7 @@ methodmap VoidingBedrock < CClotBody
 	}
 	
 	
-	public VoidingBedrock(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VoidingBedrock(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VoidingBedrock npc = view_as<VoidingBedrock>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "6500", ally));
 		

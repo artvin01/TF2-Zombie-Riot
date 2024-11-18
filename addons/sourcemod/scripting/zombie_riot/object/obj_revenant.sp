@@ -35,6 +35,9 @@ methodmap ObjectRevenant < ObjectGeneric
 		
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCThink[npc.index] = ClotThink;
+		npc.m_flNextMeleeAttack = 0.0;
+		SDKUnhook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPost);
+		SDKHook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPostSentry);
 
 		return npc;
 	}
@@ -93,10 +96,10 @@ static void ClotThink(ObjectRevenant npc)
 	float distance = 800.0 * Attributes_GetOnPlayer(Owner, 344, true, true);
 
 	int target = GetClosestTarget(npc.index, _, distance, .CanSee = true, .UseVectorDistance = true);
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	if(IsValidEnemy(npc.index, target))
 	{
 		Handle swingTrace;
-
+		Sentrygun_FaceEnemy(npc.index, target);
 		if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 		{
 			target = TR_GetEntityIndex(swingTrace);
@@ -112,25 +115,11 @@ static void ClotThink(ObjectRevenant npc)
 				
 				npc.PlayShootSound();
 
-				float damageDealt = 250.0;
+				float damageDealt = 190.0;
 				damageDealt *= Attributes_GetOnPlayer(Owner, 287, true, true);
 				if(ShouldNpcDealBonusDamage(target))
 				{
 					damageDealt *= 3.0;
-				}
-				else if(!b_NpcHasDied[target])
-				{
-					float duration = GetGameTime() + 1.0;
-					if(duration > f_MaimDebuff[target])
-						f_MaimDebuff[target] = duration;
-					
-					if(i_HowManyBombsOnThisEntity[target][Owner] < 1)
-					{
-						f_BombEntityWeaponDamageApplied[target][Owner] += damageDealt * 8.4;
-						i_HowManyBombsOnThisEntity[target][Owner] += 1;
-						i_HowManyBombsHud[target] += 1;
-						Apply_Particle_Teroriser_Indicator(target);
-					}
 				}
 
 				SDKHooks_TakeDamage(target, npc.index, Owner, damageDealt, DMG_SHOCK, -1, _, vecHit);

@@ -96,9 +96,9 @@ void MedivalSwordsmanGiant_OnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalSwordsmanGiant(client, vecPos, vecAng, ally);
+	return MedivalSwordsmanGiant(vecPos, vecAng, team);
 }
 methodmap MedivalSwordsmanGiant < CClotBody
 {
@@ -160,7 +160,7 @@ methodmap MedivalSwordsmanGiant < CClotBody
 		
 	}
 	
-	public MedivalSwordsmanGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalSwordsmanGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSwordsmanGiant npc = view_as<MedivalSwordsmanGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "25000", ally, false, true));
 		SetVariantInt(1);

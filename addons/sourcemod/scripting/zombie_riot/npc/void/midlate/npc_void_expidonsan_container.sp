@@ -58,9 +58,9 @@ void VoidExpidonsanContainer_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidExpidonsanContainer(client, vecPos, vecAng, ally);
+	return VoidExpidonsanContainer(vecPos, vecAng, team);
 }
 methodmap VoidExpidonsanContainer < CClotBody
 {
@@ -101,7 +101,7 @@ methodmap VoidExpidonsanContainer < CClotBody
 	}
 	
 	
-	public VoidExpidonsanContainer(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidExpidonsanContainer(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidExpidonsanContainer npc = view_as<VoidExpidonsanContainer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "0.8", "3500", ally));
 		

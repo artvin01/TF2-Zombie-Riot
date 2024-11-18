@@ -86,9 +86,9 @@ public void XenoCombineSoldierAr2_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombineSoldierAr2(client, vecPos, vecAng, ally);
+	return XenoCombineSoldierAr2(vecPos, vecAng, team);
 }
 methodmap XenoCombineSoldierAr2 < CClotBody
 {
@@ -162,7 +162,7 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 	}
 	
 	
-	public XenoCombineSoldierAr2(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineSoldierAr2(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineSoldierAr2 npc = view_as<XenoCombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1500", ally));
 		

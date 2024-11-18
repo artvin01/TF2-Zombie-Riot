@@ -89,9 +89,9 @@ public void XenoCombineDeutsch_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombineDeutsch(client, vecPos, vecAng, ally);
+	return XenoCombineDeutsch(vecPos, vecAng, team);
 }
 methodmap XenoCombineDeutsch < CClotBody
 {
@@ -170,7 +170,7 @@ methodmap XenoCombineDeutsch < CClotBody
 	}
 	
 	
-	public XenoCombineDeutsch(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineDeutsch(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "110000", ally));
 		SetVariantInt(1);

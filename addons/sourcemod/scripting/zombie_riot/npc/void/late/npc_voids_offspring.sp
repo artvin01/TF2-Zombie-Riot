@@ -58,9 +58,9 @@ void VoidsOffspring_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidsOffspring(client, vecPos, vecAng, ally);
+	return VoidsOffspring(vecPos, vecAng, team);
 }
 methodmap VoidsOffspring < CClotBody
 {
@@ -101,7 +101,7 @@ methodmap VoidsOffspring < CClotBody
 	}
 	
 	
-	public VoidsOffspring(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidsOffspring(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidsOffspring npc = view_as<VoidsOffspring>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "10000", ally));
 		

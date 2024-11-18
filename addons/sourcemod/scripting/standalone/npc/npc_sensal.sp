@@ -132,7 +132,7 @@ void Sensal_OnMapStart_NPC()
 
 static any ClotSummon(int client, const float vecPos[3], const float vecAng[3], int team, const char[] data)
 {
-	return Sensal(client, vecPos, vecAng, team, data);
+	return Sensal(vecPos, vecAng, team, data);
 }
 
 methodmap Sensal < CClotBody

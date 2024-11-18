@@ -55,9 +55,9 @@ public void Whiteflower_Mage_Blaster_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_Mage_Blaster(client, vecPos, vecAng, ally);
+	return Whiteflower_Mage_Blaster(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_Mage_Blaster < CClotBody
@@ -138,7 +138,7 @@ methodmap Whiteflower_Mage_Blaster < CClotBody
 	}
 	
 	
-	public Whiteflower_Mage_Blaster(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_Mage_Blaster(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_Mage_Blaster npc = view_as<Whiteflower_Mage_Blaster>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 

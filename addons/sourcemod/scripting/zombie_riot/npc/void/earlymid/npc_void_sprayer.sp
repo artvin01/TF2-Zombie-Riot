@@ -51,9 +51,9 @@ void VoudSprayer_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoudSprayer(client, vecPos, vecAng, ally);
+	return VoudSprayer(vecPos, vecAng, team);
 }
 methodmap VoudSprayer < CClotBody
 {
@@ -94,7 +94,7 @@ methodmap VoudSprayer < CClotBody
 	}
 	
 	
-	public VoudSprayer(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoudSprayer(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoudSprayer npc = view_as<VoudSprayer>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1500", ally));
 		

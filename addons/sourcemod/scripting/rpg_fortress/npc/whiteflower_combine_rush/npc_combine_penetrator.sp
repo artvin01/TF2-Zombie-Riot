@@ -9,13 +9,13 @@ void OnMapStartCombinePenetrator()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombinePenetrator(client, vecPos, vecAng, ally);
+	return CombinePenetrator(vecPos, vecAng, team);
 }
 methodmap CombinePenetrator < CombineSoldier
 {
-	public CombinePenetrator(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombinePenetrator(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombinePenetrator npc = view_as<CombinePenetrator>(BaseSquad(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", ally, false));
 		

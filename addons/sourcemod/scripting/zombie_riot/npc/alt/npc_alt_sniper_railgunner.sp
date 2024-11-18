@@ -64,9 +64,9 @@ void Sniper_railgunner_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Sniper_railgunner(client, vecPos, vecAng, ally);
+	return Sniper_railgunner(vecPos, vecAng, team);
 }
 
 static int i_overcharge[MAXENTITIES];
@@ -133,7 +133,7 @@ methodmap Sniper_railgunner < CClotBody
 	
 	
 	
-	public Sniper_railgunner(int client, float vecPos[3], float vecAng[3], int ally)
+	public Sniper_railgunner(float vecPos[3], float vecAng[3], int ally)
 	{
 		Sniper_railgunner npc = view_as<Sniper_railgunner>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12500", ally));
 		

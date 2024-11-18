@@ -284,7 +284,12 @@ bool Waves_CallVote(int client, int force = 0)
 				else
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
-					menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					int MenuDo = ITEMDRAW_DISABLED;
+					if(!vote.Level)
+						MenuDo = ITEMDRAW_DEFAULT;
+					if(Level[client] >= 1)
+						MenuDo = ITEMDRAW_DEFAULT;
+					menu.AddItem(vote.Config, vote.Name, MenuDo);
 				}
 			}
 		}
@@ -308,7 +313,12 @@ bool Waves_CallVote(int client, int force = 0)
 				level = WaveLevel + RoundFloat(level * multi);
 
 				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, level);
-				menu.AddItem(vote.Config, vote.Name, (Level[client] < level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				int MenuDo = ITEMDRAW_DISABLED;
+				if(!vote.Level)
+					MenuDo = ITEMDRAW_DEFAULT;
+				if(Level[client] >= 1)
+					MenuDo = ITEMDRAW_DEFAULT;
+				menu.AddItem(vote.Config, vote.Name, MenuDo);
 			}
 		}
 		

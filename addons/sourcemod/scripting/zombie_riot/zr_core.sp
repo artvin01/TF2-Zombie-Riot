@@ -427,6 +427,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/music.sp"
 #include "zombie_riot/natives.sp"
 #include "zombie_riot/queue.sp"
+#include "zombie_riot/skilltree.sp"
 #include "zombie_riot/spawns.sp"
 #include "zombie_riot/store.sp"
 #include "zombie_riot/teuton_sound_override.sp"
@@ -613,6 +614,7 @@ void ZR_PluginStart()
 	Medigun_PluginStart();
 	OnPluginStartMangler();
 	OnPluginStart_Glitched_Weapon();
+	SkillTree_PluginStart();
 	Tutorial_PluginStart();
 	Waves_PluginStart();
 	Rogue_PluginStart();
@@ -637,6 +639,11 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+
+	PrecacheSound("ui/hitsound_electro1.wav");
+	PrecacheSound("ui/hitsound_electro2.wav");
+	PrecacheSound("ui/hitsound_electro3.wav");
+	PrecacheSound("ui/hitsound_space.wav");
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
@@ -2251,7 +2258,6 @@ int XpToLevel(int xp)
 {
 	return RoundToFloor(Pow(xp / 200.0, 0.5));
 }
-
 int LevelToXp(int lv)
 {
 	return lv * lv * 200;
@@ -2295,18 +2301,18 @@ void GiveXP(int client, int xp)
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
 	{
-		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
-		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-		
-		//int maxhealth = SDKCall_GetMaxHealth(client);
-		//if(GetClientHealth(client) < maxhealth)
-		//	SetEntityHealth(client, maxhealth);
+		if(Level[client] < STARTER_WEAPON_LEVEL)
+		{
+			static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
+			ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
+
+			int maxhealth = SDKCall_GetMaxHealth(client) + 50;
+			if(GetClientHealth(client) < maxhealth)
+				SetEntityHealth(client, maxhealth);
+		}
 		
 		SetGlobalTransTarget(client);
-		PrintToChat(client, "%t", "Level Up", nextLevel);
-		
-		bool found;
-		int slots;
+		PrintToChat(client, "%t", "Level Up", Level[client]);
 		
 		while(Level[client] < nextLevel)
 		{
@@ -2315,33 +2321,15 @@ void GiveXP(int client, int xp)
 			if(Level[client] == STARTER_WEAPON_LEVEL)
 			{
 				CPrintToChat(client, "%t", "All Weapons Unlocked");
-				found = true;
 			}
 			
-			if(Store_PrintLevelItems(client, Level[client]))
-				found = true;
-			
-			if(Level[client] > STARTER_WEAPON_LEVEL && !(Level[client] % 2))
-				slots++;
-			
-			if(Level[client] < 81 && !(Level[client] % 10))
-			{
-				CPrintToChat(client, "%t", "Additional Starting Ingot", (Level[client] + 70) / 10, (Level[client] + 80) / 10);
-				found = true;
-			}
+			Store_PrintLevelItems(client, Level[client]);
 		}
-		
-		if(slots)
-		{
-			PrintToChat(client, "%t", "Loadout Slots", slots);
-		}
-		else if(!found)
-		{
-			PrintToChat(client, "%t", "None");
-		}
+
+		if(Level[client] >= STARTER_WEAPON_LEVEL)
+			CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
 	}
 }
-
 
 void PlayerApplyDefaults(int client)
 {

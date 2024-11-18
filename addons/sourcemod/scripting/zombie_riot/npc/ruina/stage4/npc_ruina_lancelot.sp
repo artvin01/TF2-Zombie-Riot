@@ -96,9 +96,9 @@ static void ClotPrecache()
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM2);
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM3);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Lancelot(client, vecPos, vecAng, ally);
+	return Lancelot(vecPos, vecAng, team);
 }
 static float fl_npc_basespeed;
 methodmap Lancelot < CClotBody
@@ -190,7 +190,7 @@ methodmap Lancelot < CClotBody
 		}
 	}
 
-	public Lancelot(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lancelot(float vecPos[3], float vecAng[3], int ally)
 	{
 		Lancelot npc = view_as<Lancelot>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		

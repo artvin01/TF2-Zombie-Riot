@@ -62,9 +62,9 @@ void KazimierzKnight_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return KazimierzKnight(client, vecPos, vecAng, ally);
+	return KazimierzKnight(vecPos, vecAng, team);
 }
 
 methodmap KazimierzKnight < CClotBody
@@ -116,7 +116,7 @@ methodmap KazimierzKnight < CClotBody
 	}
 	
 	
-	public KazimierzKnight(int client, float vecPos[3], float vecAng[3], int ally)
+	public KazimierzKnight(float vecPos[3], float vecAng[3], int ally)
 	{
 		KazimierzKnight npc = view_as<KazimierzKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "8000", ally));
 		

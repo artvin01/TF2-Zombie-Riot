@@ -565,6 +565,7 @@ void Store_OnCached(int client)
 	if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
 	{
 		int amount;
+
 		if(Items_HasNamedItem(client, "ZR Contest 2024 Top 10"))
 		{
 			amount = 100;
@@ -580,6 +581,11 @@ void Store_OnCached(int client)
 		
 		if(Items_HasNamedItem(client, "ZR Contest 2024 Artist"))
 			amount += 50;
+		
+		amount += SkillTree_GetByName(client, "Cash Up 1") * 2;
+		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") * 1 / 5;
+		amount += SkillTree_GetByName(client, "Cash Up 1 High") * 20;
+		amount += SkillTree_GetByName(client, "Cash Up Barney 1") * 30;
 
 		if(amount)
 		{
@@ -3387,6 +3393,9 @@ static void MenuPage(int client, int section)
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Loadouts");
 			menu.AddItem("-22", buffer);
+
+			FormatEx(buffer, sizeof(buffer), "%t", "Skill Tree");
+			menu.AddItem("-25", buffer);
 		}
 
 		if(Rogue_Mode())
@@ -3541,6 +3550,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				CurrentMenuItem[client] = StringToInt(buffer);
 				switch(CurrentMenuItem[client])
 				{
+					case -25:
+					{
+						SkillTree_OpenMenu(client);
+					}
 					case -23:
 					{
 						ReShowSettingsHud(client);
@@ -3981,7 +3994,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecOrigin);
 							VecOrigin[2] += 45.0;
 
-							Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, info.UnboxRarity -1); //since they are one lower
+							Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, info.UnboxRarity -1); //since they are one lower
 							
 							if(!CvarInfiniteCash.BoolValue)
 							{
@@ -4365,7 +4378,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
-
+//anymore then 10 slots iss overkill.
+#define MAX_LOADOUT_SLOTS 10
 static void LoadoutPage(int client, bool last = false)
 {
 	SetGlobalTransTarget(client);
@@ -4390,8 +4404,8 @@ static void LoadoutPage(int client, bool last = false)
 		FormatEx(buffer, sizeof(buffer), "%t", "None");
 		menu.AddItem("", buffer, ITEMDRAW_DISABLED);
 	}
-	
-	int slots = (Level[client] + 1 - STARTER_WEAPON_LEVEL) / 2;
+
+	int slots = MAX_LOADOUT_SLOTS;
 	if(slots > length)
 	{
 		menu.SetTitle("%t\n%t\n \n%t", "TF2: Zombie Riot", "Loadouts", "Save New");
@@ -4402,7 +4416,7 @@ static void LoadoutPage(int client, bool last = false)
 	}
 	
 	menu.ExitBackButton = true;
-	if(menu.DisplayAt(client, last ? (length / 7 * 7) : 0, MENU_TIME_FOREVER) && (Level[client] / 2) > length)
+	if(menu.DisplayAt(client, last ? (length / 7 * 7) : 0, MENU_TIME_FOREVER) && (MAX_LOADOUT_SLOTS) > length)
 		InLoadoutMenu[client] = true;
 }
 
@@ -4786,10 +4800,10 @@ void Store_ApplyAttribs(int client)
 	Armor_Level[client] = 0;
 	Jesus_Blessing[client] = 0;
 	i_HeadshotAffinity[client] = 0;
-	i_BarbariansMind[client] = 0;
 	i_SoftShoes[client] = 0;
 	i_BadHealthRegen[client] = 0;
 
+	SkillTree_ApplyAttribs(client, map);
 	Rogue_ApplyAttribs(client, map);
 	Waves_ApplyAttribs(client, map);
 	FullMoonDoubleHp(client, map);
@@ -4846,11 +4860,6 @@ void Store_ApplyAttribs(int client)
 				case 785:
 				{
 					i_HeadshotAffinity[client] = RoundToNearest(value);
-					continue;
-				}
-				case 830:
-				{
-					i_BarbariansMind[client] = RoundToNearest(value);
 					continue;
 				}
 				case 527:
@@ -5746,6 +5755,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			b_WeaponSpecificClassBuff[entity][i] = false;
 		}
 
+		SkillTree_GiveItem(client, entity);
 		Rogue_GiveItem(client, entity);
 		Waves_GiveItem(entity);
 

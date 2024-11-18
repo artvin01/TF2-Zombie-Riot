@@ -55,9 +55,9 @@ void VoidRejuvinator_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidRejuvinator(client, vecPos, vecAng, ally);
+	return VoidRejuvinator(vecPos, vecAng, team);
 }
 
 methodmap VoidRejuvinator < CClotBody
@@ -107,7 +107,7 @@ methodmap VoidRejuvinator < CClotBody
 		
 		
 	}
-	public VoidRejuvinator(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidRejuvinator(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidRejuvinator npc = view_as<VoidRejuvinator>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "50000", ally));
 		

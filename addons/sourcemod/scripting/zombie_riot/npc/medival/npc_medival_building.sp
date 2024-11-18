@@ -113,9 +113,9 @@ void MedivalBuilding_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return MedivalBuilding(client, vecPos, vecAng, ally, data);
+	return MedivalBuilding(vecPos, vecAng, team, data);
 }
 
 methodmap MedivalBuilding < CClotBody
@@ -175,7 +175,7 @@ methodmap MedivalBuilding < CClotBody
 		
 	}
 	
-	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public MedivalBuilding(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
 		

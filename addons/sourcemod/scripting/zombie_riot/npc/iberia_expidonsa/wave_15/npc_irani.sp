@@ -54,9 +54,9 @@ void Iberia_Irani_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaIrani(client, vecPos, vecAng, ally);
+	return IberiaIrani(vecPos, vecAng, team);
 }
 methodmap IberiaIrani < CClotBody
 {
@@ -97,7 +97,7 @@ methodmap IberiaIrani < CClotBody
 	}
 	
 	
-	public IberiaIrani(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaIrani(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaIrani npc = view_as<IberiaIrani>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "600", ally));
 		

@@ -68,9 +68,9 @@ void WinterAirbornExplorer_OnMapStart_NPC()
 	Rogue_Paradox_AddWinterNPC(id);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WinterAirbornExplorer(client, vecPos, vecAng, ally);
+	return WinterAirbornExplorer(vecPos, vecAng, team);
 }
 
 methodmap WinterAirbornExplorer < CClotBody
@@ -123,7 +123,7 @@ methodmap WinterAirbornExplorer < CClotBody
 	}
 	
 	
-	public WinterAirbornExplorer(int client, float vecPos[3], float vecAng[3], int ally)
+	public WinterAirbornExplorer(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterAirbornExplorer npc = view_as<WinterAirbornExplorer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2500", ally));
 		

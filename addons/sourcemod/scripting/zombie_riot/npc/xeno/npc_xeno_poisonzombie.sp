@@ -58,9 +58,9 @@ public void XenoPoisonZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoPoisonZombie(client, vecPos, vecAng, ally);
+	return XenoPoisonZombie(vecPos, vecAng, team);
 }
 methodmap XenoPoisonZombie < CClotBody
 {
@@ -124,7 +124,7 @@ methodmap XenoPoisonZombie < CClotBody
 	
 	
 	
-	public XenoPoisonZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoPoisonZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoPoisonZombie npc = view_as<XenoPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "1000", ally));
 		

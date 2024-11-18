@@ -49,6 +49,7 @@ static const char g_HealSound[][] = {
 	"items/medshot4.wav",
 };
 
+int WhiteflowerID;
 static bool b_TouchedEnemyTarget[MAXENTITIES];
 public void Whiteflower_Boss_OnMapStart_NPC()
 {
@@ -70,7 +71,7 @@ public void Whiteflower_Boss_OnMapStart_NPC()
 	data.Category = Type_WhiteflowerSpecial;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	WhiteflowerID = NPC_Add(data);
 	PrecacheSound("plats/tram_hit4.wav");
 	PrecacheModel("models/props_lakeside_event/bomb_temp.mdl");
 	PrecacheSound("ambient/machines/teleport3.wav");
@@ -81,9 +82,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("rpg_fortress/enemy/whiteflower_dash.mp3");
 	PrecacheSoundCustom("#rpg_fortress/music/combine_elite_iberia_grandpabard.mp3");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Whiteflower_Boss(client, vecPos, vecAng, ally, data);
+	return Whiteflower_Boss(vecPos, vecAng, team, data);
 }
 
 methodmap Whiteflower_Boss < CClotBody
@@ -239,7 +240,7 @@ methodmap Whiteflower_Boss < CClotBody
 		}
 		return -1;
 	}
-	public Whiteflower_Boss(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Whiteflower_Boss(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Whiteflower_Boss npc = view_as<Whiteflower_Boss>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -1212,7 +1213,17 @@ public Action WhiteflowerTank_Rocket_Stand(Handle timer, DataPack pack)
 		RemoveEntity(RocketEnt);
 		return Plugin_Stop;
 	}
-	EmitSoundToAll("weapons/sentry_spot_client.wav", RocketEnt, SNDCHAN_AUTO, 80, _, 0.7,_);	
+	bool PlaySound = true;
+	int Owner = GetEntPropEnt(RocketEnt, Prop_Send, "m_hOwnerEntity");
+	if(IsValidEntity(Owner))
+	{
+		if(i_NpcInternalId[Owner] != WhiteflowerID && b_thisNpcIsARaid[Owner])
+		{
+			PlaySound = false;
+		}
+	}
+	if(PlaySound)
+		EmitSoundToAll("weapons/sentry_spot_client.wav", RocketEnt, SNDCHAN_AUTO, 80, _, 0.7,_);	
 
 	float vecSelf[3];
 	WorldSpaceCenter(RocketEnt, vecSelf);
@@ -1268,7 +1279,20 @@ public Action WhiteflowerTank_Rocket_Stand_Fire(Handle timer, DataPack pack)
 		VecSpeedToDo[2] = Sine(DegToRad(vecAngles[0]))*-SpeedApply;
 		TE_SetupBeamPoints(vecSelf, vecEnemy, Shared_BEAM_Laser, 0, 0, 0, 0.11, 3.0, 3.0, 0, 0.0, {255,0,0,255}, 3);
 		TE_SendToAll(0.0);
-		EmitSoundToAll("weapons/sentry_rocket.wav", RocketEnt, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5,_);	
+		
+		bool PlaySound = true;
+		int Owner = GetEntPropEnt(RocketEnt, Prop_Send, "m_hOwnerEntity");
+		if(IsValidEntity(Owner))
+		{
+			if(i_NpcInternalId[Owner] != WhiteflowerID && b_thisNpcIsARaid[Owner])
+			{
+				PlaySound = false;
+			}
+		}
+		if(PlaySound)
+			EmitSoundToAll("weapons/sentry_rocket.wav", RocketEnt, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5,_);	
+		else
+			EmitSoundToAll("weapons/airstrike_fire_01.wav", RocketEnt, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.9,GetRandomInt(70,80));	
 	}
 	else
 	{

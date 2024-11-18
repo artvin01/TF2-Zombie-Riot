@@ -285,7 +285,7 @@ methodmap BootyExecutioner < CClotBody
 		#endif
 	}
 	
-	public BootyExecutioner(int client, float vecPos[3], float vecAng[3], int ally)
+	public BootyExecutioner(float vecPos[3], float vecAng[3], int ally)
 	{
 		BootyExecutioner npc = view_as<BootyExecutioner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.25", "15000", ally, false, true));
 		

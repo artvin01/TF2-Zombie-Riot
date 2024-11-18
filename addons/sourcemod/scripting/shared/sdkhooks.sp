@@ -1246,7 +1246,7 @@ public void OnPostThink(int client)
 			{
 				char NameOverride[256];
 				NameOverride = form.Name;
-				if(form.Func_FormNameOverride != INVALID_FUNCTION)
+				if(form.Func_FormNameOverride != INVALID_FUNCTION && view_as<int>(form.Func_FormNameOverride) != 0) //somehow errors with 0, i dont know, whatever.
 				{
 					Call_StartFunction(null, form.Func_FormNameOverride);
 					Call_PushCell(client);
@@ -1670,11 +1670,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 #endif
-#if defined RPG
 	//dmg bonus before everything!
-	//this is only for zr! RPG handles it som
+	//This is for players in specific, both handle it here!
 	if(attacker > 0 && attacker <= MAXENTITIES)
 		damage *= fl_Extra_Damage[attacker];
+#if defined RPG
 		
 	if(attacker <= MaxClients)
 	{
@@ -2041,6 +2041,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					dieingstate[victim] = 500;
 				}
+				dieingstate[victim] -= RoundToNearest(Attributes_FindOnPlayerZR(victim, Attrib_ReviveTimeCut, false, 0.0));
 				ForcePlayerCrouch(victim, true);
 				//cooldown for left for dead.
 				SpecterResetHudTime(victim);
