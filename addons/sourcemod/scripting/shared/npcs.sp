@@ -822,11 +822,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					{
 						BombsToInject *= 2;
 					}
-					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
-					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
-					i_HowManyBombsHud[victim] += BombsToInject;
-					Apply_Particle_Teroriser_Indicator(victim);
-					damage = 0.0;
+					if(i_HowManyBombsOnThisEntity[victim][attacker] + BombsToInject < 200)
+					{
+						f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
+						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+						i_HowManyBombsHud[victim] += BombsToInject;
+						Apply_Particle_Teroriser_Indicator(victim);
+						damage = 0.0;
+					}
 				}
 #endif	// ZR
 				played_headshotsound_already[attacker] = GetGameTime();
@@ -882,11 +885,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					if(BombsToInject < 1)
 						BombsToInject = 1;
 						
-					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
-					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
-					i_HowManyBombsHud[victim] += BombsToInject;
-					Apply_Particle_Teroriser_Indicator(victim);
-					damage = 0.0;
+					if(i_HowManyBombsOnThisEntity[victim][attacker] + BombsToInject < 200)
+					{
+						f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
+						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+						i_HowManyBombsHud[victim] += BombsToInject;
+						Apply_Particle_Teroriser_Indicator(victim);
+						damage = 0.0;
+					}
 				}
 #endif
 

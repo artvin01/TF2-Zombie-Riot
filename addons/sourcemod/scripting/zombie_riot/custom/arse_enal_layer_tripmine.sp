@@ -681,7 +681,7 @@ void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false, 
 	
 	float damage = f_BombEntityWeaponDamageApplied[npc][client];
 	f_BombEntityWeaponDamageApplied[npc][client] = 0.0;
-	//there are too many bombs, nerf damage.
+	//there are too many bombs, dont accept anymore from this player.
 	if(BomsToBoomCalc > 200)
 	{
 		damage -= (damage * (1.0 / 300.0));

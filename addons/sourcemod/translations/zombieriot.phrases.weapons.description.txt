@@ -197,10 +197,7 @@
 
 	"Syringe Gun Desc"
 	{
-		"en"		"Low Damage but very high bleed duration"
-		"fr"		"Peu de dégats, mais fais saigner pour longtemps"
-		"ru"		"Низкий урон, но очень высокая длительность кровотечения."
-		"chi"       	"低伤害，但流血持续时间非常高"
+		"en"		"Low Damage but very high bleed duration\nDeals 15%% less damage against raids."
 	}
 	"Syringe Gun Pap 1 Desc"
 	{
@@ -548,7 +545,7 @@
 	
 	"Terroriser Bomb Implanter Sniperrifle Desc"
 	{
-		"en"	"Implant a bomb onto the target you hit, press R to detonate them.\nImplant multiple for more dmg. More charge = more bombs, headshot = more bombs\nBombs dont suffer from downed dmg reduction."
+		"en"	"Implant a bomb onto the target you hit, press R to detonate them. More charge = more bombs, headshot = more bombs\nBombs dont suffer from downed dmg reduction.\nBomblimit = 200-ish"
 	}
 	"Terroriser Bomb Implanter Sniperrifle Desc PaP 1"
 	{

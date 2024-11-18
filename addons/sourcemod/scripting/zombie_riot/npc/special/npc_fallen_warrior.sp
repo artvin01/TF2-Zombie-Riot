@@ -568,10 +568,6 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	float VecSelfNpcabs[3];
-	if(Waves_InSetup())
-	{
-		return Plugin_Stop;
-	}
 	for(int i; i < 3; i++)
 	{
 		VecSelfNpcabs[i] = pack.ReadFloat();
@@ -598,6 +594,11 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 		}
 	}
 	int Team = pack.ReadCell();
+	if(Team != TFTeam_Red && Waves_InSetup())
+	{
+		CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+		return Plugin_Stop;
+	}
 
 	FallenWarrior_ApplyDebuffInLocation(VecSelfNpcabs, Team);
 	float Range = GULN_DEBUFF_RANGE;
