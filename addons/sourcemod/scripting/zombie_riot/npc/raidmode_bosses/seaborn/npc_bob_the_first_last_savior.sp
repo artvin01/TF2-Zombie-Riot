@@ -1636,21 +1636,21 @@ static void SetupMidWave(int entity)
 {
 	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(20.0 * MultiGlobalEnemy), 1500);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(15.0 * MultiGlobalEnemy), 1500);
 	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(7.0 * MultiGlobalEnemy), 5000);
 	AddBobEnemy(entity, "npc_combine_soldier_collos_swordsman", "First Golden Collos", RoundToCeil(2.0 * MultiGlobalEnemy), RoundToCeil(20000.0 * MultiGlobalHighHealthBoss),1 );
 
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(20.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(100 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(10.0 * MultiGlobalEnemy), 5000);
 
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(20.0 * MultiGlobalEnemy), 1500);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(15.0 * MultiGlobalEnemy), 1500);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(7.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(10.0 * MultiGlobalEnemy), 5000);
 
-	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(20.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(20.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgun", RoundToCeil(20.0 * MultiGlobalEnemy), 1000);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgun", RoundToCeil(10.0 * MultiGlobalEnemy), 1000);
 
 	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
