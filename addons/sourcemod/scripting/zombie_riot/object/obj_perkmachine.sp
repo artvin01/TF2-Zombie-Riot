@@ -203,7 +203,7 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	if((GetEntityFlags(client) & FL_DUCKING))
 	{
 		SetGlobalTransTarget(client);
-		PrintToChat(client, "{green} %t", PerkNames_Recieved[what_perk]);
+		CPrintToChat(client, "{green} %t", PerkNames_Recieved[what_perk]);
 		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
 		ClotInteract(client, -1, npc);
 		return;
