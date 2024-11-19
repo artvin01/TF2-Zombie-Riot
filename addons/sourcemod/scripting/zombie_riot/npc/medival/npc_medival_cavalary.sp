@@ -216,8 +216,7 @@ methodmap MedivalCavalary < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalCavalary_ClotThink(int iNPC)
 {
 	MedivalCavalary npc = view_as<MedivalCavalary>(iNPC);

@@ -193,8 +193,7 @@ methodmap Lazurus < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lazurus npc = view_as<Lazurus>(iNPC);

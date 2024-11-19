@@ -226,8 +226,7 @@ methodmap Adiantum < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Adiantum npc = view_as<Adiantum>(iNPC);

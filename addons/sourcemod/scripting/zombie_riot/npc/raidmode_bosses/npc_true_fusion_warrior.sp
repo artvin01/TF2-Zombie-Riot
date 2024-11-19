@@ -433,8 +433,7 @@ methodmap TrueFusionWarrior < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void TrueFusionWarrior_ClotThink(int iNPC)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(iNPC);

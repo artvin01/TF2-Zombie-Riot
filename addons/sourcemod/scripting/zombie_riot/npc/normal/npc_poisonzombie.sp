@@ -163,8 +163,7 @@ methodmap PoisonZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void PoisonZombie_ClotThink(int iNPC)
 {
 	PoisonZombie npc = view_as<PoisonZombie>(iNPC);

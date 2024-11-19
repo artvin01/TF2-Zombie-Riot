@@ -342,8 +342,7 @@ static bool Lancelot_Leader(Lancelot npc)
 	return false;
 
 }
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lancelot npc = view_as<Lancelot>(iNPC);

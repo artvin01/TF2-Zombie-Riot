@@ -385,8 +385,7 @@ public void WhiteflowerWinLine(int entity)
 	//b_NpcHasDied[client]
 	CPrintToChatAll("{crimson}Whiteflower{default}: Now all thats left.\nIs Bob.");	
 }
-//TODO 
-//Rewrite
+
 public void Whiteflower_Boss_ClotThink(int iNPC)
 {
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(iNPC);

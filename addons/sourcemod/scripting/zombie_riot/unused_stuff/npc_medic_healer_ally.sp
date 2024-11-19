@@ -351,8 +351,7 @@ methodmap Clot < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void ClotThink(int iNPC)
 {
 	Clot npc = view_as<Clot>(iNPC);

@@ -157,8 +157,7 @@ methodmap HeavyBear < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void HeavyBear_ClotThink(int iNPC)
 {
 	HeavyBear npc = view_as<HeavyBear>(iNPC);

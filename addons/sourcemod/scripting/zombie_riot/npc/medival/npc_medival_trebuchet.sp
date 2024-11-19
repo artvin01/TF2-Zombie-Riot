@@ -64,8 +64,7 @@ methodmap MedivalTrebuchet < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalTrebuchet_ClotThink(int iNPC)
 {
 	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);

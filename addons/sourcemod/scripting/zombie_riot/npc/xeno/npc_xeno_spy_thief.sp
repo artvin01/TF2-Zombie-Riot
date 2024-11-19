@@ -208,8 +208,7 @@ methodmap XenoSpyThief < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSpyThief_ClotThink(int iNPC)
 {
 	XenoSpyThief npc = view_as<XenoSpyThief>(iNPC);

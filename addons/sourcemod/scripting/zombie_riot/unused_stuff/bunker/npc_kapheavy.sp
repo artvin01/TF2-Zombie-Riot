@@ -236,8 +236,7 @@ methodmap Eternal_Kaptain_Heavy < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Eternal_Kaptain_Heavy_ClotThink(int iNPC)
 {
 	Eternal_Kaptain_Heavy npc = view_as<Eternal_Kaptain_Heavy>(iNPC);

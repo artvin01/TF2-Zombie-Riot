@@ -226,8 +226,7 @@ methodmap Dronis < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Dronis npc = view_as<Dronis>(iNPC);

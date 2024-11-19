@@ -194,8 +194,7 @@ methodmap ZombineSurvival < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ZombineSurvival_ClotThink(int iNPC)
 {
 	ZombineSurvival npc = view_as<ZombineSurvival>(iNPC);

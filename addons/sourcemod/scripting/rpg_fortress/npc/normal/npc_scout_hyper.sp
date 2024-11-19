@@ -167,8 +167,7 @@ methodmap ScoutHyper < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ScoutHyper_ClotThink(int iNPC)
 {
 	ScoutHyper npc = view_as<ScoutHyper>(iNPC);

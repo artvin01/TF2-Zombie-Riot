@@ -156,8 +156,7 @@ methodmap EnslavedMiner < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void EnslavedMiner_ClotThink(int iNPC)
 {
 	EnslavedMiner npc = view_as<EnslavedMiner>(iNPC);

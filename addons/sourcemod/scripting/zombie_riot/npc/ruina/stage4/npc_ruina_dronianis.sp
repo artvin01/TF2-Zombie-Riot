@@ -224,8 +224,7 @@ methodmap Dronianis < CClotBody
 		return npc;
 	}
 }
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Dronianis npc = view_as<Dronianis>(iNPC);

@@ -170,8 +170,7 @@ methodmap MadRoost < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MadRoost_ClotThink(int iNPC)
 {
 	MadRoost npc = view_as<MadRoost>(iNPC);

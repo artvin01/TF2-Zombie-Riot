@@ -194,8 +194,7 @@ methodmap AltMedicBerseker < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	AltMedicBerseker npc = view_as<AltMedicBerseker>(iNPC);

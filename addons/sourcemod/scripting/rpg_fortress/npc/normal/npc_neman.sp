@@ -171,8 +171,7 @@ methodmap NemanBoss < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void NemanBoss_ClotThink(int iNPC)
 {
 	NemanBoss npc = view_as<NemanBoss>(iNPC);

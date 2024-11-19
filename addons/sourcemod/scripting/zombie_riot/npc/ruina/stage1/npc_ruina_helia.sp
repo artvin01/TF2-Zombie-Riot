@@ -226,8 +226,7 @@ methodmap Helia < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Helia npc = view_as<Helia>(iNPC);

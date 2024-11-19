@@ -202,8 +202,7 @@ methodmap Combine_Police_Pistol < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Combine_Police_Pistol_ClotThink(int iNPC)
 {
 	Combine_Police_Pistol npc = view_as<Combine_Police_Pistol>(iNPC);

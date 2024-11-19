@@ -272,8 +272,7 @@ methodmap Vader < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Vader_ClotThink(int iNPC)
 {
 	Vader npc = view_as<Vader>(iNPC);

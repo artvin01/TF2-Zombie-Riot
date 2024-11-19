@@ -224,8 +224,7 @@ methodmap VoidRejuvinator < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void VoidRejuvinator_ClotThink(int iNPC)
 {
 	VoidRejuvinator npc = view_as<VoidRejuvinator>(iNPC);

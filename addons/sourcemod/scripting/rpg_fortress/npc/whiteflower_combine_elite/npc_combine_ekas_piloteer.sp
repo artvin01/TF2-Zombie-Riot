@@ -219,8 +219,7 @@ methodmap Whiteflower_Ekas_Piloteer < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 {
 	Whiteflower_Ekas_Piloteer npc = view_as<Whiteflower_Ekas_Piloteer>(iNPC);

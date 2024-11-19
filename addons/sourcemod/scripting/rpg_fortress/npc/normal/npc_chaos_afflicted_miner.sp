@@ -200,8 +200,7 @@ methodmap ChaosAfflictedMiner < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ChaosAfflictedMiner_ClotThink(int iNPC)
 {
 	ChaosAfflictedMiner npc = view_as<ChaosAfflictedMiner>(iNPC);

@@ -176,8 +176,7 @@ methodmap Mecha_Scout < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Mecha_Scout npc = view_as<Mecha_Scout>(iNPC);

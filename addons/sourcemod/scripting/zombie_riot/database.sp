@@ -370,7 +370,7 @@ void DataBase_ClientDisconnect(int client)
 				f_ZombieVolumeSetting[client],
 				b_TauntSpeedIncreace[client],
 				f_Data_InBattleHudDisableDelay[client],
-				b_IgnoreMapMusic[client] + (b_DisableDynamicMusic[client] ? 2 : 0),
+				view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0),
 				id);
 			}
 			else
@@ -408,7 +408,7 @@ void DataBase_ClientDisconnect(int client)
 				f_ZombieVolumeSetting[client],
 				b_TauntSpeedIncreace[client],
 				f_Data_InBattleHudDisableDelay[client],
-				b_IgnoreMapMusic[client] + (b_DisableDynamicMusic[client] ? 2 : 0),
+				view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0),
 				id);				
 			}
 

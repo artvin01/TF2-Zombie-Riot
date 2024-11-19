@@ -161,8 +161,7 @@ methodmap AutomaticCaveDefense < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void AutomaticCaveDefense_ClotThink(int iNPC)
 {
 	AutomaticCaveDefense npc = view_as<AutomaticCaveDefense>(iNPC);

@@ -140,8 +140,7 @@ methodmap WFOuroborosEkas < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void WFOuroborosEkas_ClotThink(int iNPC)
 {
 	WFOuroborosEkas npc = view_as<WFOuroborosEkas>(iNPC);

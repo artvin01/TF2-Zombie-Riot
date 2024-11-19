@@ -156,8 +156,7 @@ methodmap HeavyExcavator < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void HeavyExcavator_ClotThink(int iNPC)
 {
 	HeavyExcavator npc = view_as<HeavyExcavator>(iNPC);

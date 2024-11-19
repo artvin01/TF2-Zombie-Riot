@@ -282,8 +282,7 @@ methodmap PabloGonzalos < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void PabloGonzalos_ClotThink(int iNPC)
 {
 	PabloGonzalos npc = view_as<PabloGonzalos>(iNPC);

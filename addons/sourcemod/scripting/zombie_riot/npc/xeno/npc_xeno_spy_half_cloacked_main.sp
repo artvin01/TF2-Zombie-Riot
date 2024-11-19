@@ -241,8 +241,7 @@ methodmap XenoSpyCloaked < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSpyCloaked_ClotThink(int iNPC)
 {
 	XenoSpyCloaked npc = view_as<XenoSpyCloaked>(iNPC);

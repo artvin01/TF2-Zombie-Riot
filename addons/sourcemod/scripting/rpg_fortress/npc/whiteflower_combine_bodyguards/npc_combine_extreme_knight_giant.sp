@@ -199,8 +199,7 @@ methodmap Whiteflower_ExtremeKnightGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 {
 	Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(iNPC);

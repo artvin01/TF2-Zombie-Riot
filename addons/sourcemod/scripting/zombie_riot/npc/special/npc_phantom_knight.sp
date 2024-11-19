@@ -250,8 +250,7 @@ methodmap PhantomKnight < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void PhantomKnight_ClotThink(int iNPC)
 {
 	PhantomKnight npc = view_as<PhantomKnight>(iNPC);

@@ -176,8 +176,7 @@ methodmap SlaveMaster < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SlaveMaster_ClotThink(int iNPC)
 {
 	SlaveMaster npc = view_as<SlaveMaster>(iNPC);

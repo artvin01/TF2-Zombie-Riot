@@ -201,8 +201,7 @@ methodmap Whiteflower_PrototypeDDT < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 {
 	Whiteflower_PrototypeDDT npc = view_as<Whiteflower_PrototypeDDT>(iNPC);

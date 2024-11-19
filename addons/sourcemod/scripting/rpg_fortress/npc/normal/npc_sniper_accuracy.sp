@@ -154,8 +154,7 @@ methodmap SniperAccuracy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SniperAccuracy_ClotThink(int iNPC)
 {
 	SniperAccuracy npc = view_as<SniperAccuracy>(iNPC);

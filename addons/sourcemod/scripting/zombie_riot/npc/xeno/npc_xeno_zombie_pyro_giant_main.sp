@@ -203,8 +203,7 @@ methodmap XenoPyroGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoPyroGiant_ClotThink(int iNPC)
 {
 	XenoPyroGiant npc = view_as<XenoPyroGiant>(iNPC);

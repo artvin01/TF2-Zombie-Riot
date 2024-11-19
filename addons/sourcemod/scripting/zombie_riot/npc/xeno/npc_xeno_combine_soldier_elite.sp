@@ -233,8 +233,7 @@ methodmap XenoCombineElite < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineElite_ClotThink(int iNPC)
 {
 	XenoCombineElite npc = view_as<XenoCombineElite>(iNPC);

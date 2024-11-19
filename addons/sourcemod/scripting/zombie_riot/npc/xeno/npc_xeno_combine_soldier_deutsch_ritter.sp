@@ -235,8 +235,7 @@ methodmap XenoCombineDeutsch < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineDeutsch_ClotThink(int iNPC)
 {
 	XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(iNPC);

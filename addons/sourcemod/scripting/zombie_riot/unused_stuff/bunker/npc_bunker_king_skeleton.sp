@@ -179,8 +179,7 @@ methodmap BunkerSkeletonKing < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void BunkerSkeletonKing_ClotThink(int iNPC)
 {
 	BunkerSkeletonKing npc = view_as<BunkerSkeletonKing>(iNPC);

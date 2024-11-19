@@ -208,8 +208,7 @@ methodmap Ruina_Drone < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(iNPC);

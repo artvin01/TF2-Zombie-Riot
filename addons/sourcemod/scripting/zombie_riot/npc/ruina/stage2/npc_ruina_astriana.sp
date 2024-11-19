@@ -260,8 +260,7 @@ methodmap Astriana < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Astriana npc = view_as<Astriana>(iNPC);

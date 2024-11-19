@@ -184,8 +184,7 @@ methodmap XenoSoldier < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSoldier_ClotThink(int iNPC)
 {
 	XenoSoldier npc = view_as<XenoSoldier>(iNPC);

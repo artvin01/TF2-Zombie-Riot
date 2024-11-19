@@ -213,8 +213,7 @@ methodmap FlyingArmorTiny < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void FlyingArmorTiny_ClotThink(int iNPC)
 {
 	FlyingArmorTiny npc = view_as<FlyingArmorTiny>(iNPC);

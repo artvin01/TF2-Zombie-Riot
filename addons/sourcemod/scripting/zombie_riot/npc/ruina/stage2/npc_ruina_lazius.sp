@@ -201,8 +201,7 @@ methodmap Lazius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lazius npc = view_as<Lazius>(iNPC);

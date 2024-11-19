@@ -205,8 +205,7 @@ methodmap SawRunner < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SawRunner_ClotThink(int iNPC)
 {
 	SawRunner npc = view_as<SawRunner>(iNPC);

@@ -161,8 +161,7 @@ methodmap Bad < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Bad_ClotThink(int iNPC)
 {
 	Bad npc = view_as<Bad>(iNPC);

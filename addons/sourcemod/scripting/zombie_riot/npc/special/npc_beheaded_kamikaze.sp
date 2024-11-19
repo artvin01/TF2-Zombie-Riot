@@ -192,8 +192,7 @@ methodmap BeheadedKamiKaze < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void BeheadedKamiKaze_ClotThink(int iNPC)
 {
 	BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(iNPC);

@@ -224,8 +224,7 @@ methodmap Malius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Malius npc = view_as<Malius>(iNPC);

@@ -213,8 +213,7 @@ methodmap CombineSoldierShotgun < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineSoldierShotgun_ClotThink(int iNPC)
 {
 	CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(iNPC);

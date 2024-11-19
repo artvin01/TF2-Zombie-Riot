@@ -621,8 +621,7 @@ void Storm_Weaver_Restore_Collisions(int iNPC)
 	SetEntProp(npc.index, Prop_Data, "m_nSolidType", 2); 
 	SetEntityCollisionGroup(npc.index, 6);
 }
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Storm_Weaver npc = view_as<Storm_Weaver>(iNPC);

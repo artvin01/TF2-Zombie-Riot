@@ -213,8 +213,7 @@ methodmap Aether < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Aether npc = view_as<Aether>(iNPC);

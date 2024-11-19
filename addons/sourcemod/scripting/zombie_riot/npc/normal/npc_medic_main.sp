@@ -164,8 +164,7 @@ methodmap MedicMain < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedicMain_ClotThink(int iNPC)
 {
 	MedicMain npc = view_as<MedicMain>(iNPC);

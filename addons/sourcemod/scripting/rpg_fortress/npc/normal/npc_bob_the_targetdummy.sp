@@ -97,8 +97,7 @@ methodmap BobTheTargetDummy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void BobTheTargetDummy_ClotThink(int iNPC)
 {
 	BobTheTargetDummy npc = view_as<BobTheTargetDummy>(iNPC);

@@ -218,8 +218,7 @@ methodmap MedivalPaladin < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalPaladin_ClotThink(int iNPC)
 {
 	MedivalPaladin npc = view_as<MedivalPaladin>(iNPC);

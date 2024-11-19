@@ -168,8 +168,7 @@ methodmap Mecha_HeavyGiant < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Mecha_HeavyGiant npc = view_as<Mecha_HeavyGiant>(iNPC);

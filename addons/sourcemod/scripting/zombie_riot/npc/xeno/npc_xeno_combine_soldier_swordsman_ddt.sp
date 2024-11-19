@@ -212,8 +212,7 @@ methodmap XenoCombineDDT < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineDDT_ClotThink(int iNPC)
 {
 	XenoCombineDDT npc = view_as<XenoCombineDDT>(iNPC);

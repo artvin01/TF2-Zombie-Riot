@@ -639,8 +639,7 @@ static void Calculate_Combined_Health(Raidboss_Donnerkrieg npc)
 	}
 }*/
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);

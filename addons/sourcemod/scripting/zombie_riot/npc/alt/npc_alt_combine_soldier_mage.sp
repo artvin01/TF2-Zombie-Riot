@@ -194,8 +194,7 @@ methodmap AltCombineMage < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	AltCombineMage npc = view_as<AltCombineMage>(iNPC);

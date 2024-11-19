@@ -199,8 +199,7 @@ methodmap XenoEngineer < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoEngineer_ClotThink(int iNPC)
 {
 	XenoEngineer npc = view_as<XenoEngineer>(iNPC);

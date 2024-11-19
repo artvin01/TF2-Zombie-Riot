@@ -844,8 +844,7 @@ public void NikoCryThingLoose(int entity)
 	func_NPCFuncWin[entity] = INVALID_FUNCTION;
 	npc.m_flVerySadCry = 1.0;
 }
-//TODO 
-//Rewrite
+
 public void CuredFatherGrigori_ClotThink(int iNPC)
 {
 	CuredFatherGrigori npc = view_as<CuredFatherGrigori>(iNPC);

@@ -344,8 +344,7 @@ methodmap Kahmlstein < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Kahmlstein npc = view_as<Kahmlstein>(iNPC);

@@ -226,8 +226,7 @@ methodmap NecroCalcium < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void NecroCalcium_ClotThink(int iNPC)
 {
 	NecroCalcium npc = view_as<NecroCalcium>(iNPC);

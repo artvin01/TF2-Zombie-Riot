@@ -233,8 +233,7 @@ methodmap L4D2_Tank < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void L4D2_Tank_ClotThink(int iNPC)
 {
 	L4D2_Tank npc = view_as<L4D2_Tank>(iNPC);

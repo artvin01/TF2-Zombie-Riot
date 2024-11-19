@@ -175,8 +175,7 @@ methodmap Laz < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Laz npc = view_as<Laz>(iNPC);

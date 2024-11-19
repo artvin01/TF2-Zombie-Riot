@@ -187,8 +187,7 @@ methodmap Whiteflower_Mage_Blaster < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_Mage_Blaster_ClotThink(int iNPC)
 {
 	Whiteflower_Mage_Blaster npc = view_as<Whiteflower_Mage_Blaster>(iNPC);

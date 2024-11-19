@@ -172,8 +172,7 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 {
 	XenoFortifiedEarlyZombie npc = view_as<XenoFortifiedEarlyZombie>(iNPC);

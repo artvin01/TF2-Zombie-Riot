@@ -122,8 +122,7 @@ methodmap Kamikaze < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Kamikaze_ClotThink(int iNPC)
 {
 	Kamikaze npc = view_as<Kamikaze>(iNPC);

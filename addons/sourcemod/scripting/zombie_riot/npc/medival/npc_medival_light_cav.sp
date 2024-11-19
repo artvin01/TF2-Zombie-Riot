@@ -219,8 +219,7 @@ methodmap MedivalLightCav < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalLightCav_ClotThink(int iNPC)
 {
 	MedivalLightCav npc = view_as<MedivalLightCav>(iNPC);

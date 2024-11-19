@@ -192,8 +192,7 @@ methodmap Sniper_railgunner < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Sniper_railgunner npc = view_as<Sniper_railgunner>(iNPC);

@@ -215,8 +215,7 @@ methodmap XenoMedicHealer < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void XenoMedicHealer_ClotThink(int iNPC)
 {
 	XenoMedicHealer npc = view_as<XenoMedicHealer>(iNPC);

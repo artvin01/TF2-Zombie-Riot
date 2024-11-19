@@ -103,8 +103,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 }
 
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(iNPC);

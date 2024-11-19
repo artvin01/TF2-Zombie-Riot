@@ -334,8 +334,7 @@ methodmap CorruptedSpyRaid < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void CorruptedSpyRaid_ClotThink(int iNPC)
 {
 	CorruptedSpyRaid npc = view_as<CorruptedSpyRaid>(iNPC);

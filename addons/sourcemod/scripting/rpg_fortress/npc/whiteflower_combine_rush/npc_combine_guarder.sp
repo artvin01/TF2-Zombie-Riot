@@ -279,8 +279,6 @@ public void Combine_Guarder_ClotThink(int iNPC)
 				if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 				{
 					npc.PlayChargeExplode();
-					//close enough.
-					//TODO
 					npc.m_flTimeTillSelfExplode = gameTime + 1.0;
 					npc.m_flTimeTillSelfExplodeCD = gameTime + 13.0;
 					if(npc.m_iChanged_WalkCycle != 8)

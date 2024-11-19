@@ -231,8 +231,7 @@ methodmap OriginalInfected < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void OriginalInfected_ClotThink(int iNPC)
 {
 	OriginalInfected npc = view_as<OriginalInfected>(iNPC);

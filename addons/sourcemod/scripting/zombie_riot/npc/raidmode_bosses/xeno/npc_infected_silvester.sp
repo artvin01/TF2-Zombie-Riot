@@ -483,8 +483,7 @@ methodmap RaidbossSilvester < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(iNPC);

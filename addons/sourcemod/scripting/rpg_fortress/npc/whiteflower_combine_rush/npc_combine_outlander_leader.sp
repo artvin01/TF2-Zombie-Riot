@@ -254,8 +254,7 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 	}
 	
 }
-//TODO 
-//Rewrite
+
 public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 {
 	Whiteflower_OutlanderLeader npc = view_as<Whiteflower_OutlanderLeader>(iNPC);

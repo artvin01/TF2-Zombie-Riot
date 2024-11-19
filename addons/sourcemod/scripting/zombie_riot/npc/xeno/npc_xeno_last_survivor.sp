@@ -331,8 +331,7 @@ methodmap XenoFatherGrigori < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void XenoFatherGrigori_ClotThink(int iNPC)
 {
 	XenoFatherGrigori npc = view_as<XenoFatherGrigori>(iNPC);

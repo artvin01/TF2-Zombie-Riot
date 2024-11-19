@@ -191,8 +191,7 @@ methodmap KazimierzKnight < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void KazimierzKnight_ClotThink(int iNPC)
 {
 	KazimierzKnight npc = view_as<KazimierzKnight>(iNPC);

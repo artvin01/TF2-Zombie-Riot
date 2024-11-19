@@ -352,8 +352,7 @@ methodmap NaziPanzer < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void NaziPanzer_ClotThink(int iNPC)
 {
 	NaziPanzer npc = view_as<NaziPanzer>(iNPC);

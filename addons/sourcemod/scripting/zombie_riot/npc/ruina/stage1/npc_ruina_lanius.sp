@@ -251,8 +251,7 @@ methodmap Lanius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lanius npc = view_as<Lanius>(iNPC);
