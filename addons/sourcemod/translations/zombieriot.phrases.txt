@@ -3864,4 +3864,8 @@
 	{
 		"en" "Revenant's Shadow"
 	}
+	"Disable Ambient Music"
+	{
+		"en"	"Disable Ambient Music"
+	}
 }
