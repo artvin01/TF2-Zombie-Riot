@@ -43,7 +43,7 @@ static const char g_MeleeHitSounds[] = "weapons/bat_hit.wav";
 static const char g_SuperJumpSound[][] = {
 	"misc/halloween/spell_mirv_explode_primary.wav",
 };
-static const char g_AngerSounds[] = "vo/scout_revenge06";
+static const char g_AngerSounds[] = "vo/scout_revenge06.mp3";
 static char g_SyctheInitiateSound[][] = {
 	"vo/scout_stunballpickup01.mp3",
 	"vo/scout_stunballpickup02.mp3",
@@ -55,7 +55,7 @@ static char g_SyctheInitiateSound[][] = {
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static float FTL[MAXENTITIES];
 static float Delay_Attribute[MAXENTITIES];
-static int DrinkRND_Type[MAXENTITIES];
+static bool DrinkPOWERUP[MAXENTITIES];
 static float NiceMiss[MAXENTITIES];
 static bool OnMiss[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
@@ -129,8 +129,8 @@ methodmap Atomizer < CClotBody
 	}
 	public void PlayAngerSound() {
 	
-		EmitSoundToAll(g_AngerSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_AngerSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayIdleAlertSound() 
 	{
@@ -157,12 +157,10 @@ methodmap Atomizer < CClotBody
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
+		int sound = GetRandomInt(0, sizeof(g_MissAbilitySound) - 1);
+		EmitSoundToAll(g_MissAbilitySound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MissAbilitySound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayDeathSound() 
@@ -185,8 +183,8 @@ methodmap Atomizer < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		//EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -220,7 +218,7 @@ methodmap Atomizer < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		Delay_Attribute[npc.index] = 0.0;
-		DrinkRND_Type[npc.index] = 0;
+		DrinkPOWERUP[npc.index] = false;
 		NiceMiss[npc.index] = 0.0;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
@@ -358,10 +356,10 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(NiceMiss[npc.index] < gameTime)
 	{
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
 		if(IsValidEntity(npc.m_iWearable7))
-		{
 			RemoveEntity(npc.m_iWearable7);
-		}
 	}
 	if(LastMann)
 	{
@@ -446,8 +444,8 @@ static void Internal_ClotThink(int iNPC)
 
 	if(!IsValidEntity(RaidBossActive))
 		RaidBossActive = EntIndexToEntRef(npc.index);
-		
-	if(OnMiss[npc.index])
+
+	/*if(OnMiss[npc.index])
 	{
 		if(IsValidEntity(npc.m_iWearable8))
 				RemoveEntity(npc.m_iWearable8);
@@ -457,11 +455,11 @@ static void Internal_ClotThink(int iNPC)
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 			flPos[2] += 5.0;
 			npc.m_iWearable8 = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow", 80.0);
-			SetParent(npc.index, npc.m_iWearable7, "head");
+			SetParent(npc.index, npc.m_iWearable8, "head");
 		}
 	}
 	else if(IsValidEntity(npc.m_iWearable8))
-		RemoveEntity(npc.m_iWearable8);
+		RemoveEntity(npc.m_iWearable8);*/
 
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
@@ -483,11 +481,9 @@ static void Internal_ClotThink(int iNPC)
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				npc.SetCycle(0.01);
-				float flPos[3];
-				float flAng[3];
 				npc.m_iChanged_WalkCycle = 0;
-				npc.GetAttachment("effect_hand_r", flPos, flAng);
-				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+				/*npc.GetAttachment("effect_hand_r", flPos, flAng);
+				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});*/
 				Delay_Attribute[npc.index] = gameTime + 1.0;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
@@ -496,22 +492,20 @@ static void Internal_ClotThink(int iNPC)
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					npc.PlayAngerSound();
-					DrinkRND_Type[npc.index]=GetRandomInt(1, 2);
+					DrinkPOWERUP[npc.index]=true;
 					if(IsValidEntity(npc.m_iWearable2))
-					{
 						RemoveEntity(npc.m_iWearable2);
-					}
 					npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
 					SetVariantString("1.2");
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-					I_cant_do_this_all_day[npc.index]=2;
+					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_bFUCKYOU=false;
 				}
 			}
-			case 2:
-			{
-				I_cant_do_this_all_day[npc.index]=0;
-				npc.m_bFUCKYOU=false;
-			}
+		}
+		if(npc.m_flDoingAnimation < gameTime)
+		{
+			AtomizerAnimationChange(npc);
 		}
 		return;
 	}
@@ -583,11 +577,13 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		{
 			chargerPos[2] += 82.0;
 		}
-		int particle_power = ParticleEffectAt(chargerPos, "miss_text", 1.5);
-		SetParent(victim, particle_power);
+		/*int particle_power = ParticleEffectAt(chargerPos, "miss_text", 1.5);
+		SetParent(victim, particle_power);*/
+		TE_ParticleInt(g_particleMissText, chargerPos);
+		TE_SendToClient(attacker);
 		OnMiss[npc.index]=true;
-		ExtinguishTarget(npc.m_iWearable1);
-		IgniteTargetEffect(npc.m_iWearable1);
+		ExtinguishTarget(npc.m_iWearable2);
+		IgniteTargetEffect(npc.m_iWearable2);
 		npc.PlayMissSound();
 		return Plugin_Handled;
 	}
@@ -605,6 +601,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		if(!npc.m_fbRangedSpecialOn)
 		{
+			I_cant_do_this_all_day[npc.index]=0;
 			npc.m_bFUCKYOU=true;
 			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
@@ -754,7 +751,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 			npc.PlaySytheInitSound();
 			npc.m_flDoingAnimation = gameTime + 0.45;
-			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkRND_Type[npc.index]==2 ? 15.0 : 22.5);
+			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkPOWERUP[npc.index] ? 15.0 : 22.5);
 			npc.m_iOverlordComboAttack =  RoundToNearest(float(CountPlayersOnRed(2)) * 2.5); 
 		}
 	}
@@ -785,11 +782,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 
 					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 					npc.SetCycle(0.01);
-					float flPos[3];
-					float flAng[3];
 					npc.m_iChanged_WalkCycle = 0;
-					npc.GetAttachment("effect_hand_r", flPos, flAng);
-					npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 					Delay_Attribute[npc.index] = gameTime + 1.0;
 					I_cant_do_this_all_day[npc.index]=1;
 				}
@@ -810,8 +803,27 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 				}
 				case 2:
 				{
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					if(IsValidEntity(npc.m_iWearable7))
+						RemoveEntity(npc.m_iWearable7);
+					if(!IsValidEntity(npc.m_iWearable1))
+					{
+						float flPos[3];
+						float flAng[3];
+						npc.GetAttachment("effect_hand_r", flPos, flAng);
+						npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+					}
+					if(!IsValidEntity(npc.m_iWearable7))
+					{
+						static float flPos[3]; 
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+						flPos[2] += 5.0;
+						npc.m_iWearable7 = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow");
+						SetParent(npc.index, npc.m_iWearable7);
+					}
 					I_cant_do_this_all_day[npc.index]=0;
-					npc.m_flRangedSpecialDelay = gameTime + (DrinkRND_Type[npc.index]==2 ? 20.0 : 30.0);
+					npc.m_flRangedSpecialDelay = gameTime + (DrinkPOWERUP[npc.index] ? 20.0 : 30.0);
 				}
 			}
 		}
@@ -839,20 +851,20 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							{
 								RocketDamage*=1.5;
 								OnMiss[npc.index]=false;
-								ExtinguishTarget(npc.m_iWearable1);
+								ExtinguishTarget(npc.m_iWearable2);
 							}
-							if(DrinkRND_Type[npc.index]==1)
+							if(DrinkPOWERUP[npc.index])
 								RocketDamage*=1.25;
-							float RocketSpeed = 1100.0;
+							float RocketSpeed = 1650.0;
 							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
-							if(npc.m_iChanged_WalkCycle == 1)
+							if(!IsSpaceOccupiedWorldOnly(VecStart, view_as<float>( { -35.0, -35.0, 17.0 } ), view_as<float>( { 35.0, 35.0, 500.0 } ), npc.index))
 							{
 								float SpeedReturn[3];
 
 								int RocketGet = npc.FireRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, "models/weapons/w_models/w_baseball.mdl");
 								SetEntityGravity(RocketGet, 1.0); 	
-								ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 2.5, 1.0);
+								ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.0, 1.0);
 								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 
@@ -917,9 +929,9 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 								{
 									damage*=1.5;
 									OnMiss[npc.index]=false;
-									ExtinguishTarget(npc.m_iWearable1);
+									ExtinguishTarget(npc.m_iWearable2);
 								}
-								if(DrinkRND_Type[npc.index]==1)
+								if(DrinkPOWERUP[npc.index])
 									damage*=1.25;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
@@ -933,10 +945,10 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 											
 								if(IsValidClient(targetTrace))
 								{
-									if (IsInvuln(targetTrace))
+									if(IsInvuln(targetTrace))
 									{
 										Knocked = true;
-										Custom_Knockback(npc.index, targetTrace, 900.0, true);
+										Custom_Knockback(npc.index, targetTrace, 300.0, true);
 										if(!NpcStats_IsEnemySilenced(npc.index))
 										{
 											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
@@ -954,7 +966,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 								}
 											
 								if(!Knocked)
-									Custom_Knockback(npc.index, targetTrace, 450.0, true); 
+									Custom_Knockback(npc.index, targetTrace, 150.0, true); 
 							} 
 						}
 					}
