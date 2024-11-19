@@ -428,7 +428,7 @@ methodmap ChaosKahmlstein < CClotBody
 				RaidModeScaling *= 0.38;
 			}
 			
-			float amount_of_people = float(CountPlayersOnRed());
+			float amount_of_people = ZRStocks_PlayerScalingDynamic();
 			if(amount_of_people > 12.0)
 			{
 				amount_of_people = 12.0;

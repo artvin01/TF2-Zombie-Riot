@@ -318,11 +318,9 @@ methodmap Sensal < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = 12.0;//float(CountPlayersOnRed());
-		//if(amount_of_people > 12.0)
-		//{
-		//	amount_of_people = 12.0;
-		//}
+		float amount_of_people = 12.0;
+
+
 		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)

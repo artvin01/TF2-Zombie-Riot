@@ -562,7 +562,7 @@ methodmap Nemal < CClotBody
 			RaidModeScaling *= 0.7;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 
 		npc.m_iPlayerScaledStart = CountPlayersOnRed();
 		

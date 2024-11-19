@@ -2360,13 +2360,9 @@ float Zombie_DelayExtraSpeed()
 
 void DoGlobalMultiScaling()
 {
-	float playercount = float(CountPlayersOnRed());
+	float playercount = ZRStocks_PlayerScalingDynamic();
 			
-	if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
-	{
-		playercount = 0.70;
-	}
-	else if(playercount < 1.0)
+	if(playercount < 1.0)
 	{
 		playercount = 0.70;
 	}

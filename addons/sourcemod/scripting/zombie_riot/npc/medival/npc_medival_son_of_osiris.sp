@@ -171,6 +171,14 @@ methodmap MedivalSonOfOsiris < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeScaling = 3.0;
+			RaidAllowsBuildings = true;
+		}
+
 		func_NPCDeath[npc.index] = MedivalSonOfOsiris_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MedivalSonOfOsiris_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalSonOfOsiris_ClotThink;
