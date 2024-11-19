@@ -607,6 +607,11 @@ void Music_PostThink(int client)
 			}
 			return;
 		}
+
+		// Player disabled ZR Music
+		if(b_DisableDynamicMusic[client] && !LastMann)
+			return;
+
 		if(XenoExtraLogic() && !LastMann)
 		{
 			//This is special code for a map.
@@ -658,6 +663,7 @@ void Music_PostThink(int client)
 				}
 			}
 		}
+		/*
 		if(RaidbossIgnoreBuildingsLogic())
 		{
 			//if they arent on red, do this.
@@ -672,7 +678,7 @@ void Music_PostThink(int client)
 				RaidAllowsBuildings = true;
 			}
 		}
-
+		*/
 		if(!ZombieMusicPlayed)//once set in a wave, it should stay untill the next mass revive.
 		{
 			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)

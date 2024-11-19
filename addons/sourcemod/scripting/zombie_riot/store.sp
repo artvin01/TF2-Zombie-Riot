@@ -1847,6 +1847,17 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-80", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Disable Ambient Music");
+	if(b_DisableDynamicMusic[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-81", buffer);
+
 	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed Increace");
 	if(b_TauntSpeedIncreace[client])
 	{
@@ -2237,6 +2248,11 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					{
 						b_IgnoreMapMusic[client] = true;
 					}
+					ReShowSettingsHud(client);
+				}
+				case -81:
+				{
+					b_DisableDynamicMusic[client] = !b_DisableDynamicMusic[client];
 					ReShowSettingsHud(client);
 				}
 				case -64: //Lower Volume

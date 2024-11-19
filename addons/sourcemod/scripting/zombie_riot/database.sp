@@ -264,7 +264,10 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
 			b_TauntSpeedIncreace[client] = view_as<bool>(results[2].FetchFloat(15));
 			f_Data_InBattleHudDisableDelay[client] = results[2].FetchFloat(16);
-			b_IgnoreMapMusic[client] = view_as<bool>(results[2].FetchInt(17));
+
+			int music = results[2].FetchInt(17);
+			b_IgnoreMapMusic[client] = view_as<bool>(music & (1 << 0));
+			b_DisableDynamicMusic[client] = view_as<bool>(music & (1 << 1));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -367,7 +370,7 @@ void DataBase_ClientDisconnect(int client)
 				f_ZombieVolumeSetting[client],
 				b_TauntSpeedIncreace[client],
 				f_Data_InBattleHudDisableDelay[client],
-				b_IgnoreMapMusic[client],
+				b_IgnoreMapMusic[client] + (b_DisableDynamicMusic[client] ? 2 : 0),
 				id);
 			}
 			else
@@ -405,7 +408,7 @@ void DataBase_ClientDisconnect(int client)
 				f_ZombieVolumeSetting[client],
 				b_TauntSpeedIncreace[client],
 				f_Data_InBattleHudDisableDelay[client],
-				b_IgnoreMapMusic[client],
+				b_IgnoreMapMusic[client] + (b_DisableDynamicMusic[client] ? 2 : 0),
 				id);				
 			}
 
