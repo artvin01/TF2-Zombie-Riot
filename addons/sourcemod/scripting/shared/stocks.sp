@@ -2914,7 +2914,7 @@ float ZRStocks_PlayerScalingDynamic()
 	{
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{
-			if(Level[client] <= 30)
+			if(Database_IsCached(client) && Level[client] <= 30)
 			{
 				float CurrentLevel = float(Level[client]);
 				CurrentLevel += 30.0;
