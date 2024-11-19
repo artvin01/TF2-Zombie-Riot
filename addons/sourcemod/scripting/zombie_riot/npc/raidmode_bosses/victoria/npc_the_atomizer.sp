@@ -1,22 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
 #define Atomizer_BASE_RANGED_SCYTHE_DAMGAE 13.0
 #define Atomizer_LASER_THICKNESS 25
-
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static float Delay_Attribute[MAXENTITIES];
-static float DrinkRND_Time[MAXENTITIES];
-static float NiceMiss[MAXENTITIES];
-static bool OnMiss[MAXENTITIES];
-static int I_cant_do_this_all_day[MAXENTITIES];
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
 	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
-
 static const char g_HurtSounds[][] = {
 	"vo/scout_painsharp01.mp3",
 	"vo/scout_painsharp02.mp3",
@@ -27,58 +18,32 @@ static const char g_HurtSounds[][] = {
 	"vo/scout_painsharp07.mp3",
 	"vo/scout_painsharp08.mp3",
 };
-
 static const char g_MissAbilitySound[][] = {
-	"vo/soldier_negativevocalization01.mp3",
-	"vo/soldier_negativevocalization02.mp3",
-	"vo/soldier_negativevocalization03.mp3",
-	"vo/soldier_negativevocalization04.mp3",
-	"vo/soldier_negativevocalization05.mp3",
-	"vo/soldier_negativevocalization06.mp3",
+	"vo/scout_invinciblechgunderfire01.mp3",
+	"vo/scout_invinciblechgunderfire02.mp3",
+	"vo/scout_invinciblechgunderfire03.mp3",
+	"vo/scout_invinciblechgunderfire04.mp3"
 };
-
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/soldier_taunts19.mp3",
-	"vo/taunts/soldier_taunts20.mp3",
-	"vo/taunts/soldier_taunts21.mp3",
-	"vo/taunts/soldier_taunts18.mp3",
+	"vo/taunts/scout_taunts03.mp3",
+	"vo/taunts/scout_taunts04.mp3",
+	"vo/taunts/scout_taunts06.mp3",
+	"vo/taunts/scout_taunts15.mp3",
 };
-
 static const char g_RangedAttackSounds[][] = {
-	"weapons/airstrike_fire_01.wav",
-	"weapons/airstrike_fire_02.wav",
-	"weapons/airstrike_fire_03.wav",
+	"weapons/bat_baseball_hit1.wav",
+	"weapons/bat_baseball_hit2.wav"
 };
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/cbar_miss1.wav",
+	"weapons/bat_draw.wav",
+	"weapons/bat_draw_swoosh1.wav",
+	"weapons/bat_draw_swoosh2.wav"
 };
-static const char g_MeleeHitSounds[][] = {
-	"weapons/neon_sign_hit_01.wav",
-	"weapons/neon_sign_hit_02.wav",
-	"weapons/neon_sign_hit_03.wav",
-	"weapons/neon_sign_hit_04.wav"
-};
-
-static const char g_HurtArmorSounds[][] = {
-	")physics/metal/metal_box_impact_bullet1.wav",
-	")physics/metal/metal_box_impact_bullet2.wav",
-	")physics/metal/metal_box_impact_bullet3.wav",
-};
+static const char g_MeleeHitSounds[] = "weapons/bat_hit.wav";
 static const char g_SuperJumpSound[][] = {
 	"misc/halloween/spell_mirv_explode_primary.wav",
 };
-
-static char g_AngerSounds[][] = {
-	"vo/taunts/soldier_taunts03.mp3",
-};
-
-static char g_SyctheHitSound[][] = {
-	"ambient/machines/slicer1.wav",
-	"ambient/machines/slicer2.wav",
-	"ambient/machines/slicer3.wav",
-	"ambient/machines/slicer4.wav",
-};
-
+static const char g_AngerSounds[] = "vo/scout_revenge06";
 static char g_SyctheInitiateSound[][] = {
 	"vo/scout_stunballpickup01.mp3",
 	"vo/scout_stunballpickup02.mp3",
@@ -87,15 +52,13 @@ static char g_SyctheInitiateSound[][] = {
 	"vo/scout_stunballpickup05.mp3",
 };
 
-
-static char g_AngerSoundsPassed[][] = {
-	"vo/taunts/soldier_taunts15.mp3",
-};
-
-static const char g_LaserGlobalAttackSound[][] = {
-	"weapons/bumper_car_speed_boost_start.wav",
-};
-
+static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+static float FTL[MAXENTITIES];
+static float Delay_Attribute[MAXENTITIES];
+static int DrinkRND_Type[MAXENTITIES];
+static float NiceMiss[MAXENTITIES];
+static bool OnMiss[MAXENTITIES];
+static int I_cant_do_this_all_day[MAXENTITIES];
 
 void Atomizer_OnMapStart_NPC()
 {
@@ -118,15 +81,12 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
+	PrecacheSound(g_MeleeHitSounds);
+	PrecacheSound(g_AngerSounds);
 	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
-	for (int i = 0; i < (sizeof(g_AngerSoundsPassed));   i++) { PrecacheSound(g_AngerSoundsPassed[i]);   }
-	for (int i = 0; i < (sizeof(g_SyctheHitSound));   i++) { PrecacheSound(g_SyctheHitSound[i]);   }
 	for (int i = 0; i < (sizeof(g_SyctheInitiateSound));   i++) { PrecacheSound(g_SyctheInitiateSound[i]);   }
-	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
-	PrecacheModel("models/player/soldier.mdl");
+	PrecacheModel("models/player/scout.mdl");
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_Atomizer_2.mp3");
 }
 
@@ -162,14 +122,6 @@ methodmap Atomizer < CClotBody
 		public get()							{ return b_NextRangedBarrage_OnGoing[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
 	}
-	public void PlayAngerSoundPassed() 
-	{
-		int sound = GetRandomInt(0, sizeof(g_AngerSoundsPassed) - 1);
-		EmitSoundToAll(g_AngerSoundsPassed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_AngerSoundsPassed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-
-		EmitSoundToAll("mvm/mvm_tele_deliver.wav", this.index, SNDCHAN_STATIC, 80, _, 0.8);
-	}
 	public void PlaySytheInitSound() {
 	
 		int sound = GetRandomInt(0, sizeof(g_SyctheInitiateSound) - 1);
@@ -177,9 +129,8 @@ methodmap Atomizer < CClotBody
 	}
 	public void PlayAngerSound() {
 	
-		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayIdleAlertSound() 
 	{
@@ -204,6 +155,8 @@ methodmap Atomizer < CClotBody
 	
 	public void PlayMissSound() 
 	{
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -235,12 +188,6 @@ methodmap Atomizer < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayHurtArmorSound() 
-	{
-		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-
-	}
-	
 	
 	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -273,7 +220,7 @@ methodmap Atomizer < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		Delay_Attribute[npc.index] = 0.0;
-		DrinkRND_Time[npc.index] = 0.0;
+		DrinkRND_Type[npc.index] = 0;
 		NiceMiss[npc.index] = 0.0;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
@@ -282,6 +229,8 @@ methodmap Atomizer < CClotBody
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
 		npc.m_iOverlordComboAttack = 0;
 		OnMiss[npc.index] = false;
+		npc.m_fbRangedSpecialOn = false;
+		npc.m_bFUCKYOU = false;
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -300,8 +249,8 @@ methodmap Atomizer < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Sensal Arrived");
 			}
 		}
-
-		RaidModeTime = GetGameTime(npc.index) + 200.0;
+		FTL[npc.index] = 200.0;
+		RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
@@ -333,7 +282,8 @@ methodmap Atomizer < CClotBody
 		}
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
-			RaidModeTime = GetGameTime(npc.index) + 220.0;
+			FTL[npc.index] = 220.0;
+			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
 			RaidModeScaling *= 0.65;
 		}
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Atomizer_Win);
@@ -398,14 +348,15 @@ methodmap Atomizer < CClotBody
 static void Internal_ClotThink(int iNPC)
 {
 	Atomizer npc = view_as<Atomizer>(iNPC);
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
 	}
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-	if(NiceMiss[npc.index] < GetGameTime(npc.index))
+	if(NiceMiss[npc.index] < gameTime)
 	{
 		if(IsValidEntity(npc.m_iWearable7))
 		{
@@ -434,6 +385,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 		}
 	}
+	npc.m_flSpeed = 300.0+(((FTL[npc.index]-(RaidModeTime - GetGameTime()))/FTL[npc.index])*150.0);
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		npc.m_bisWalking = false;
@@ -474,7 +426,7 @@ static void Internal_ClotThink(int iNPC)
 
 	if (npc.IsOnGround())
 	{
-		if(GetGameTime(npc.index) > npc.f_AtomizerRocketJumpCD_Wearoff)
+		if(gameTime > npc.f_AtomizerRocketJumpCD_Wearoff)
 		{
 			npc.b_AtomizerRocketJump = false;
 		}
@@ -487,23 +439,81 @@ static void Internal_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 
-
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
+	if(npc.m_flNextThinkTime > gameTime)
 		return;
-	}
 
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	if(!IsValidEntity(RaidBossActive))
-	{
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		
+	if(OnMiss[npc.index])
+	{
+		if(IsValidEntity(npc.m_iWearable8))
+				RemoveEntity(npc.m_iWearable8);
+		if(!IsValidEntity(npc.m_iWearable8))
+		{
+			static float flPos[3]; 
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			flPos[2] += 5.0;
+			npc.m_iWearable8 = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow", 80.0);
+			SetParent(npc.index, npc.m_iWearable7, "head");
+		}
 	}
+	else if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+	}
+	
+	if(npc.m_bFUCKYOU)
+	{
+		switch(I_cant_do_this_all_day[npc.index])
+		{
+			case 0:
+			{
+				if(IsValidEntity(npc.m_iWearable2))
+					RemoveEntity(npc.m_iWearable2);
+				npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
+				npc.m_flDoingAnimation = gameTime + 1.0;
+				npc.AddActivityViaSequence("layer_taunt04");
+				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
+				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
+				npc.SetCycle(0.01);
+				float flPos[3];
+				float flAng[3];
+				npc.m_iChanged_WalkCycle = 0;
+				npc.GetAttachment("effect_hand_r", flPos, flAng);
+				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+				Delay_Attribute[npc.index] = gameTime + 1.0;
+				I_cant_do_this_all_day[npc.index]=1;
+			}
+			case 1:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.PlayAngerSound();
+					DrinkRND_Type[npc.index]=GetRandomInt(1, 2);
+					if(IsValidEntity(npc.m_iWearable2))
+					{
+						RemoveEntity(npc.m_iWearable2);
+					}
+					npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
+					SetVariantString("1.2");
+					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+					I_cant_do_this_all_day[npc.index]=2;
+				}
+			}
+			case 2:
+			{
+				I_cant_do_this_all_day[npc.index]=0;
+				npc.m_bFUCKYOU=false;
+			}
+		}
+		return;
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -512,7 +522,7 @@ static void Internal_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = AtomizerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		SetGoalVectorIndex = AtomizerSelfDefense(npc,gameTime, npc.m_iTarget, flDistanceToTarget); 
 
 		switch(SetGoalVectorIndex)
 		{
@@ -546,7 +556,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
-	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
+	if(npc.m_flDoingAnimation < gameTime)
 	{
 		AtomizerAnimationChange(npc);
 	}
@@ -559,8 +569,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-
-	if(NiceMiss[npc.index] > GetGameTime(npc.index) && GetRandomInt(1,100)<=40)
+	float gameTime = GetGameTime(npc.index);
+	if(NiceMiss[npc.index] > gameTime && GetRandomInt(1,100)<=40)
 	{
 		damage = 0.0;
 		float chargerPos[3];
@@ -578,13 +588,29 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		OnMiss[npc.index]=true;
 		ExtinguishTarget(npc.m_iWearable1);
 		IgniteTargetEffect(npc.m_iWearable1);
+		npc.PlayMissSound();
 		return Plugin_Handled;
 	}
 
-	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	if(npc.m_flHeadshotCooldown < gameTime)
 	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+	}
+	
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
+	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	float ratio = float(health) / float(maxhealth);
+	if(ratio<0.33 || (float(health)-damage)<(maxhealth*0.3))
+	{
+		if(!npc.m_fbRangedSpecialOn)
+		{
+			npc.m_bFUCKYOU=true;
+			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
+			npc.m_fbRangedSpecialOn = true;
+			FTL[npc.index] += 5.0;
+			RaidModeTime += 5.0;
+		}
 	}
 	
 	return Plugin_Changed;
@@ -607,7 +633,6 @@ static void Internal_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
-		
 	
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
@@ -650,10 +675,7 @@ static void Internal_NPCDeath(int entity)
 	}
 
 }
-/*
 
-
-*/
 void AtomizerAnimationChange(Atomizer npc)
 {
 	
@@ -721,7 +743,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 {
 	npc.i_GunMode = 0;
 
-	if(npc.m_flNextRangedSpecialAttackHappens < GetGameTime(npc.index))
+	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 	{
 		int Enemy_I_See;
 									
@@ -732,7 +754,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 			npc.PlaySytheInitSound();
 			npc.m_flDoingAnimation = gameTime + 0.45;
-			npc.m_flNextRangedSpecialAttackHappens = gameTime + 22.5;
+			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkRND_Type[npc.index]==2 ? 15.0 : 22.5);
 			npc.m_iOverlordComboAttack =  RoundToNearest(float(CountPlayersOnRed(2)) * 2.5); 
 		}
 	}
@@ -749,9 +771,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 				case 0:
 				{
 					if(IsValidEntity(npc.m_iWearable2))
-					{
 						RemoveEntity(npc.m_iWearable2);
-					}
 					npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
 					
 					NPC_StopPathing(npc.index);
@@ -762,6 +782,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					npc.m_flAttackHappens = 0.0;
 					npc.m_flAttackHappens_2 = gameTime + 1.4;
 					npc.Anger = true;
+
 					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 					npc.SetCycle(0.01);
 					float flPos[3];
@@ -776,16 +797,6 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 				{
 					if(Delay_Attribute[npc.index] < gameTime)
 					{
-						/*int GetRND=GetRandomInt(1, 9);
-						switch(I_cant_do_this_all_day[npc.index])
-						{
-							case 1: DrinkRND_Time[npc.index] = gameTime+10.0;
-							default: DrinkRND_Time[npc.index] = gameTime+10.0;
-						}
-						DataPack pack;
-						CreateDataTimer(0.1, Atomizer_DrinkRND, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-						pack.WriteCell(npc.index);
-						pack.WriteCell(GetRND);*/
 						if(IsValidEntity(npc.m_iWearable2))
 						{
 							RemoveEntity(npc.m_iWearable2);
@@ -793,25 +804,14 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 						npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
 						SetVariantString("1.2");
 						AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-						
-						if(!IsValidEntity(npc.m_iWearable7))
-						{
-							static float flPos[3]; 
-							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-							flPos[2] += 5.0;
-							int particle = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow");
-							SetParent(npc.index, particle);
-							npc.m_iWearable7 = particle;
-						}
-
-						NiceMiss[npc.index]=gameTime+10.0;
+						NiceMiss[npc.index] = gameTime + 10.0;
 						I_cant_do_this_all_day[npc.index]=2;
 					}
 				}
 				case 2:
 				{
 					I_cant_do_this_all_day[npc.index]=0;
-					npc.m_flRangedSpecialDelay = gameTime + 30.0;
+					npc.m_flRangedSpecialDelay = gameTime + (DrinkRND_Type[npc.index]==2 ? 20.0 : 30.0);
 				}
 			}
 		}
@@ -833,7 +833,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 						if(IsValidEnemy(npc.index, Enemy_I_See))
 						{
 							npc.m_iTarget = Enemy_I_See;
-							npc.PlayMeleeSound();
+							npc.PlayRangedSound();
 							float RocketDamage = 15.0;
 							if(OnMiss[npc.index])
 							{
@@ -841,6 +841,8 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 								OnMiss[npc.index]=false;
 								ExtinguishTarget(npc.m_iWearable1);
 							}
+							if(DrinkRND_Type[npc.index]==1)
+								RocketDamage*=1.25;
 							float RocketSpeed = 1100.0;
 							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
@@ -884,7 +886,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					return 0;
 				}
 			}
-			else if(npc.m_iOverlordComboAttack < 0)
+			else
 			{
 				npc.m_flAttackHappens = 0.0;
 			
@@ -917,6 +919,8 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 									OnMiss[npc.index]=false;
 									ExtinguishTarget(npc.m_iWearable1);
 								}
+								if(DrinkRND_Type[npc.index]==1)
+									damage*=1.25;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									
@@ -963,7 +967,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 		}
 	}
 	//Melee attack, last prio
-	else if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+	else if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(IsValidEnemy(npc.index, target)) 
 		{
@@ -1012,115 +1016,3 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 	}
 	return 0;
 }
-
-/*static Action Atomizer_DrinkRND(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int client = GetClientOfUserId(pack.ReadCell());
-	int GetRND = pack.ReadCell();
-	if(IsValidClient(client))
-	{
-		switch(GetRND)
-		{
-			case 1:
-			{
-				if(f_PDelay[client] < GetGameTime())
-				{
-					GiveArmorViaPercentage(client, 0.075, 1.0);
-					f_PDelay[client]=GetGameTime() + 0.2;
-				}
-			}
-			case 2:
-			{
-				if(f_PDelay[client] < GetGameTime())
-				{
-					if(dieingstate[client] > 0)
-					{
-						if(i_CurrentEquippedPerk[client] == 1)
-						{
-							SetEntityHealth(client,  GetClientHealth(client) + 12);
-							dieingstate[client] -= 20;
-						}
-						else
-						{
-							SetEntityHealth(client,  GetClientHealth(client) + 6);
-							dieingstate[client] -= 10;
-						}
-						if(dieingstate[client] < 1)
-						{
-							dieingstate[client] = 1;
-						}
-					}
-					else
-					{
-						HealEntityGlobal(client, client, 25.0, 1.0, _, HEAL_SELFHEAL);
-					}
-					f_PDelay[client]=GetGameTime() + 0.2;
-				}
-			}
-			case 3:
-			{
-				int health = GetClientHealth(client), selfDMG = 5;
-				int safety = health-selfDMG;
-				if(health>1)
-				{
-					if(safety>1)
-						SDKHooks_TakeDamage(client, 0, 0, float(selfDMG), DMG_GENERIC|DMG_PREVENT_PHYSICS_FORCE);
-					else
-						SetEntityHealth(client, 1);
-				}
-			}
-			case 4:
-			{
-				TF2_RemoveCondition(client, TFCond_ObscuredSmoke);
-				TF2_AddCondition(client, TFCond_ObscuredSmoke, 1.0);
-				TF2_RemoveCondition(client, TFCond_SpeedBuffAlly);
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
-				if(f_PDuration[client] < GetGameTime())
-				{
-					TF2_RemoveCondition(client, TFCond_MarkedForDeath);
-					TF2_AddCondition(client, TFCond_MarkedForDeath, 10.0);
-					TF2_StunPlayer(client, 10.0, 0.9, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN, client);
-				}
-			}
-			case 5:
-			{
-				SetEntityHealth(client, 1);
-				return Plugin_Stop;
-			}
-			case 6:
-			{
-				TF2_RemoveCondition(client, TFCond_Buffed);
-				TF2_AddCondition(client, TFCond_Buffed, 30.0);
-				TF2_RemoveCondition(client, TFCond_KingAura);
-				TF2_AddCondition(client, TFCond_KingAura, 30.0);
-				return Plugin_Stop;
-			}
-			case 7:
-			{
-				if(!TF2_IsPlayerInCondition(client, TFCond_OnFire))
-				{
-					TF2_IgnitePlayer(client, client, 10.0);
-					TF2_AddCondition(client, TFCond_HealingDebuff, 10.0);
-				}
-				SDKHooks_TakeDamage(client, 0, 0, 4.0, DMG_GENERIC|DMG_PREVENT_PHYSICS_FORCE);
-			}
-			case 8:
-			{
-				TF2_StunPlayer(client, 30.0, 0.5, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN, client);
-				return Plugin_Stop;
-			}
-			case 9:
-			{
-				TF2_RemoveCondition(client, TFCond_UberchargedCanteen);
-				TF2_AddCondition(client, TFCond_UberchargedCanteen, 5.0);
-				return Plugin_Stop;
-			}
-		}
-		if(DrinkRND_Time[npc.index] < GetGameTime())
-			return Plugin_Stop;	
-		return Plugin_Continue;
-	}
-	else
-		return Plugin_Stop;
-}*/
