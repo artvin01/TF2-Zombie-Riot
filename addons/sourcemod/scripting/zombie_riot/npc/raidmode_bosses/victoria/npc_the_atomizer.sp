@@ -252,7 +252,7 @@ methodmap Atomizer < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(2);
+		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -850,7 +850,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 
 								int RocketGet = npc.FireRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, "models/weapons/w_models/w_baseball.mdl");
 								SetEntityGravity(RocketGet, 1.0); 	
-								ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.5, 1.0);
+								ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 2.5, 1.0);
 								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 
@@ -985,7 +985,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					npc.m_flDoingAnimation = gameTime + 0.125;
 				}
 			}
-			else if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && npc.m_iOverlordComboAttack < 0)
+			else if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
 									
