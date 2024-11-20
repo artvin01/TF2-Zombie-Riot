@@ -476,7 +476,7 @@ static void Internal_ClotThink(int iNPC)
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				npc.SetCycle(0.01);
 				npc.m_iChanged_WalkCycle = 0;
-				npc.SetPlaybackRate(1.5);
+				npc.SetPlaybackRate(0.5);
 				npc.m_flDoingAnimation = gameTime + 1.5;	
 				/*npc.GetAttachment("effect_hand_r", flPos, flAng);
 				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});*/
@@ -513,8 +513,7 @@ static void Internal_ClotThink(int iNPC)
 		float ProjLocBase[3];
 		npc.AddActivityViaSequence("taunt05");
 		npc.SetCycle(0.01);
-		npc.m_iChanged_WalkCycle = 0;
-		npc.SetPlaybackRate(0.75);
+		npc.SetPlaybackRate(1.55);
 		if(I_cant_do_this_all_day[npc.index] < 25)
 		{
 		
