@@ -474,10 +474,10 @@ static void Internal_ClotThink(int iNPC)
 				npc.AddActivityViaSequence("layer_taunt_cheers_scout");
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
-				npc.SetCycle(0.01);
+				npc.SetCycle(0.30);
 				npc.m_iChanged_WalkCycle = 0;
-				npc.SetPlaybackRate(1.5);
-				npc.m_flDoingAnimation = gameTime + 0.5;	
+				npc.SetPlaybackRate(1.25);
+				npc.m_flDoingAnimation = gameTime + 1.5;	
 				/*npc.GetAttachment("effect_hand_r", flPos, flAng);
 				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});*/
 				Delay_Attribute[npc.index] = gameTime + 1.0;
@@ -513,6 +513,12 @@ static void Internal_ClotThink(int iNPC)
 		float ProjLocBase[3];
 		if(I_cant_do_this_all_day[npc.index] < 50)
 		{
+
+			npc.AddActivityViaSequence("taunt05");
+			npc.SetCycle(0.01);
+			npc.m_iChanged_WalkCycle = 0;
+			npc.SetPlaybackRate(0.75);
+		
 			float ProjLoc[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 			ProjLocBase = ProjLoc;
@@ -550,8 +556,8 @@ static void Internal_ClotThink(int iNPC)
 						if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 						{
 							int red = 125;
-							int green = 0;
-							int blue = 125;
+							int green = 175;
+							int blue = 255;
 							if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 							{
 								RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
@@ -581,10 +587,10 @@ static void Internal_ClotThink(int iNPC)
 				}
 			}
 			IncreaceEntityDamageTakenBy(npc.index, 0.7, 0.1);
-			spawnRing_Vectors(ProjLocBase, 500.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 0.3, 5.0, 8.0, 3);	
-			spawnRing_Vectors(ProjLocBase, 500.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(ProjLocBase, 500.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(ProjLocBase, 500.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 			npc.m_flDoingAnimation = gameTime + 1.1;
-			Delay_Attribute[npc.index] = gameTime + 1.0;
+			Delay_Attribute[npc.index] = gameTime + 0.5;
 			npc.StopPathing();
 			I_cant_do_this_all_day[npc.index]++;
 		}
@@ -962,7 +968,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							{
 								float SpeedReturn[3];
 
-								int RocketGet = npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "flaregun_trail_crit_blue", false);
+								int RocketGet = npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
 								SetEntityGravity(RocketGet, 1.0); 	
 								ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.0, 1.0);
 								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
@@ -973,7 +979,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							else
 							{
 								RocketSpeed *= 0.75;
-								npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "flaregun_trail_crit_blue", false);
+								npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "critical_rocket_blue", false);
 							}
 							npc.m_iOverlordComboAttack --;
 						}
