@@ -1,9 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define Atomizer_BASE_RANGED_SCYTHE_DAMGAE 13.0
-#define Atomizer_LASER_THICKNESS 25
-
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
 	"weapons/rescue_ranger_teleport_receive_02.wav"
@@ -91,6 +88,7 @@ static bool DrinkPOWERUP[MAXENTITIES];
 static float NiceMiss[MAXENTITIES];
 static bool OnMiss[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
+static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 void Atomizer_OnMapStart_NPC()
 {
@@ -230,6 +228,7 @@ methodmap Atomizer < CClotBody
 		npc.i_GunMode = 0;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
+		npc.m_flNextRangedAttack = GetGameTime() + 40.0;
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
 		npc.m_iOverlordComboAttack = 0;
 		OnMiss[npc.index] = false;
@@ -507,6 +506,104 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	
+	if(npc.m_flNextRangedAttack < gameTime)
+	{
+		float ProjLocBase[3];
+		if(I_cant_do_this_all_day[npc.index] < 50)
+		{
+			float ProjLoc[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+			ProjLocBase = ProjLoc;
+			ProjLocBase[2] += 5.0;
+			ProjLoc[2] += 70.0;
+
+			ProjLoc[0] += GetRandomFloat(-40.0, 40.0);
+			ProjLoc[1] += GetRandomFloat(-40.0, 40.0);
+			ProjLoc[2] += GetRandomFloat(-15.0, 15.0);
+			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		
+			float pos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float cpos[3];
+			float velocity[3];
+			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
+			{
+				if(IsValidEnemy(npc.index, EnemyLoop, true, true))
+				{
+					if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
+					{ 	
+						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
+						
+						MakeVectorFromPoints(pos, cpos, velocity);
+						NormalizeVector(velocity, velocity);
+						ScaleVector(velocity, -300.0);
+						if(b_ThisWasAnNpc[EnemyLoop])
+						{
+							CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
+							npc1.SetVelocity(velocity);
+						}
+						else
+						{	
+							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
+						}
+						if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+						{
+							int red = 125;
+							int green = 0;
+							int blue = 125;
+							if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+							{
+								RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+							}
+							int laser;
+							
+							laser = ConnectWithBeam(npc.index, EnemyLoop, red, green, blue, 3.0, 3.0, 2.35, LASERBEAM);
+				
+							i_LaserEntityIndex[EnemyLoop] = EntIndexToEntRef(laser);
+							//Im seeing a new target, relocate laser particle.
+						}
+					}
+					else
+					{
+						if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+						{
+							RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+						}
+					}
+				}
+				else
+				{
+					if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+					{
+						RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+					}						
+				}
+			}
+			IncreaceEntityDamageTakenBy(npc.index, 0.7, 0.1);
+			spawnRing_Vectors(ProjLocBase, 500.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(ProjLocBase, 500.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 0.3, 5.0, 8.0, 3);	
+			npc.m_flDoingAnimation = gameTime + 1.0;
+			Delay_Attribute[npc.index] = gameTime + 1.0;
+			I_cant_do_this_all_day[npc.index]++;
+		}
+		else if(Delay_Attribute[npc.index] < gameTime)
+		{
+			npc.PlayAngerSound();
+			float damageDealt = 5.0 * RaidModeScaling;
+			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 500.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
+			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
+			{
+				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+			}
+			I_cant_do_this_all_day[npc.index]=0;
+			npc.m_flNextRangedAttack = gameTime + (DrinkPOWERUP[npc.index] ? 22.5 : 40.0);
+		}
+		if(npc.m_flDoingAnimation < gameTime)
+			AtomizerAnimationChange(npc);
+		return;
+	}
+	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -604,6 +701,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			npc.m_fbRangedSpecialOn = true;
 			FTL[npc.index] += 5.0;
 			RaidModeTime += 5.0;
+			npc.m_flNextRangedAttack += 5.0;
 		}
 	}
 	
@@ -749,6 +847,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 			npc.NiceCatchKnucklehead();
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkPOWERUP[npc.index] ? 15.0 : 22.5);
+			npc.m_flNextRangedAttack += 1.0;
 			npc.m_iOverlordComboAttack =  RoundToNearest(float(CountPlayersOnRed(2)) * 2.5); 
 		}
 	}
@@ -822,6 +921,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 						SetParent(npc.index, npc.m_iWearable7);
 					}
 					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_flNextRangedAttack += 3.0;
 					npc.m_flRangedSpecialDelay = gameTime + (DrinkPOWERUP[npc.index] ? 20.0 : 30.0);
 				}
 			}
@@ -1026,4 +1126,11 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 		}	
 	}
 	return 0;
+}
+
+static void SuperAttack(int entity, int victim, float damage, int weapon)
+{
+	Atomizer npc = view_as<Atomizer>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	Custom_Knockback(npc.index, victim, DrinkPOWERUP[npc.index] ? 2200.0 : 1980.0, true, true, true);
 }
