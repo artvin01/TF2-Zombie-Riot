@@ -964,16 +964,16 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 							float vecDest[3];
 							vecDest = vecTarget;
-							vecDest[0] += GetRandomFloat(-100.0, 100.0);
-							vecDest[1] += GetRandomFloat(-100.0, 100.0);
-							vecDest[2] += GetRandomFloat(-100.0, 100.0);
+							vecDest[0] += GetRandomFloat(-150.0, 150.0);
+							vecDest[1] += GetRandomFloat(-150.0, 150.0);
+							vecDest[2] += GetRandomFloat(-150.0, 150.0);
 							if(!IsSpaceOccupiedWorldOnly(VecStart, view_as<float>( { -35.0, -35.0, 17.0 } ), view_as<float>( { 35.0, 35.0, 500.0 } ), npc.index))
 							{
 								float SpeedReturn[3];
 
 								int RocketGet = npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
 								SetEntityGravity(RocketGet, 1.0); 	
-								ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.0, 1.0);
+								ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
 								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 
@@ -984,6 +984,8 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 								RocketSpeed *= 0.75;
 								npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "critical_rocket_blue", false);
 							}
+							SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+							SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
 							npc.m_iOverlordComboAttack --;
 						}
 					}
@@ -1143,4 +1145,53 @@ static void SuperAttack(int entity, int victim, float damage, int weapon)
 	Atomizer npc = view_as<Atomizer>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	Custom_Knockback(npc.index, victim, DrinkPOWERUP[npc.index] ? 2200.0 : 1980.0, true, true, true);
+}
+
+
+public void Atomizer_Rocket_Particle_StartTouch(int entity, int target)
+{
+	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
+		
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+		if(inflictor == -1)
+			inflictor = owner;
+			
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		float DamageDeal = fl_rocket_particle_dmg[entity];
+		if(ShouldNpcDealBonusDamage(target))
+			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
+
+
+		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
+		if (!IsInvuln(target))
+		{
+			TF2_StunPlayer(target, 0.25, 0.33, TF_STUNFLAG_SLOWDOWN);
+		}
+
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+	}
+	else
+	{
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		//we uhh, missed?
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+	}
+	RemoveEntity(entity);
 }
