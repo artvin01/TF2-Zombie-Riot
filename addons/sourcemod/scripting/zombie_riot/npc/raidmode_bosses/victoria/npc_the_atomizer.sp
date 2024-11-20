@@ -542,7 +542,7 @@ static void Internal_ClotThink(int iNPC)
 						
 						MakeVectorFromPoints(pos, cpos, velocity);
 						NormalizeVector(velocity, velocity);
-						ScaleVector(velocity, -350.0);
+						ScaleVector(velocity, -450.0);
 						if(b_ThisWasAnNpc[EnemyLoop])
 						{
 							CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
