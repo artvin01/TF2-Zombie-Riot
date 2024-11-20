@@ -477,7 +477,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.AddActivityViaSequence("layer_taunt_cheers_scout");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
-				npc.SetPlaybackRate(1.5);
+				npc.SetPlaybackRate(2.0);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				npc.m_iChanged_WalkCycle = 0;
@@ -517,7 +517,7 @@ static void Internal_ClotThink(int iNPC)
 		float ProjLocBase[3];
 		npc.AddActivityViaSequence("taunt05");
 		npc.SetCycle(0.01);
-		npc.SetPlaybackRate(1.55);
+		npc.SetPlaybackRate(1.4);
 		if(I_cant_do_this_all_day[npc.index] < 25)
 		{
 		
@@ -971,8 +971,8 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 							float vecDest[3];
 							vecDest = vecTarget;
-							vecDest[0] += GetRandomFloat(-50.0, 50.0);
-							vecDest[1] += GetRandomFloat(-50.0, 50.0);
+							vecDest[0] += GetRandomFloat(-30.0, 30.0);
+							vecDest[1] += GetRandomFloat(-30.0, 30.0);
 							if(!IsSpaceOccupiedWorldOnly(VecStart, view_as<float>( { -35.0, -35.0, 17.0 } ), view_as<float>( { 35.0, 35.0, 500.0 } ), npc.index))
 							{
 								float SpeedReturn[3];
