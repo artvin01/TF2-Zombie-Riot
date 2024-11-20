@@ -964,9 +964,8 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 							float vecDest[3];
 							vecDest = vecTarget;
-							vecDest[0] += GetRandomFloat(-150.0, 150.0);
-							vecDest[1] += GetRandomFloat(-150.0, 150.0);
-							vecDest[2] += GetRandomFloat(-150.0, 150.0);
+							vecDest[0] += GetRandomFloat(-50.0, 50.0);
+							vecDest[1] += GetRandomFloat(-50.0, 50.0);
 							if(!IsSpaceOccupiedWorldOnly(VecStart, view_as<float>( { -35.0, -35.0, 17.0 } ), view_as<float>( { 35.0, 35.0, 500.0 } ), npc.index))
 							{
 								float SpeedReturn[3];
