@@ -309,6 +309,7 @@ methodmap Atomizer < CClotBody
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		CPrintToChatAll("{lightblue}The Messenger{default}: Hello World!");
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/scout/pn2_longfall.mdl");
 		SetVariantString("1.0");
@@ -476,12 +477,15 @@ static void Internal_ClotThink(int iNPC)
 				if(IsValidEntity(npc.m_iWearable2))
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
+				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				npc.m_flDoingAnimation = gameTime + 1.0;
-				npc.AddActivityViaSequence("layer_taunt04");
+				npc.AddActivityViaSequence("layer_taunt_cheers_scout");
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				npc.SetCycle(0.01);
 				npc.m_iChanged_WalkCycle = 0;
+				npc.SetPlaybackRate(1.5);
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.5;	
 				/*npc.GetAttachment("effect_hand_r", flPos, flAng);
 				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});*/
 				Delay_Attribute[npc.index] = gameTime + 1.0;
@@ -498,6 +502,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
 					SetVariantString("1.2");
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_bFUCKYOU=false;
 				}
@@ -770,6 +775,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					if(IsValidEntity(npc.m_iWearable2))
 						RemoveEntity(npc.m_iWearable2);
 					npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
+					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 					
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -797,6 +803,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 						npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
 						SetVariantString("1.2");
 						AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+						SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 						NiceMiss[npc.index] = gameTime + 10.0;
 						I_cant_do_this_all_day[npc.index]=2;
 					}
@@ -862,7 +869,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							{
 								float SpeedReturn[3];
 
-								int RocketGet = npc.FireRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, "models/weapons/w_models/w_baseball.mdl");
+								int RocketGet = npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "flaregun_trail_crit_blue", false);
 								SetEntityGravity(RocketGet, 1.0); 	
 								ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.0, 1.0);
 								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
@@ -873,7 +880,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							else
 							{
 								RocketSpeed *= 0.75;
-								npc.FireRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, "models/weapons/w_models/w_baseball.mdl");
+								npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "flaregun_trail_crit_blue", false);
 							}
 							npc.m_iOverlordComboAttack --;
 						}
