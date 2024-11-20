@@ -6,7 +6,7 @@
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
-	"weapons/rescue_ranger_teleport_receive_02.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav"
 };
 static const char g_HurtSounds[][] = {
 	"vo/scout_painsharp01.mp3",
@@ -16,19 +16,55 @@ static const char g_HurtSounds[][] = {
 	"vo/scout_painsharp05.mp3",
 	"vo/scout_painsharp06.mp3",
 	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3",
+	"vo/scout_painsharp08.mp3"
 };
 static const char g_MissAbilitySound[][] = {
 	"vo/scout_invinciblechgunderfire01.mp3",
 	"vo/scout_invinciblechgunderfire02.mp3",
 	"vo/scout_invinciblechgunderfire03.mp3",
-	"vo/scout_invinciblechgunderfire04.mp3"
+	"vo/scout_invinciblechgunderfire04.mp3",
+	"vo/scout_beingshotinvincible01.mp3",
+	"vo/scout_beingshotinvincible02.mp3",
+	"vo/scout_beingshotinvincible03.mp3",
+	"vo/scout_beingshotinvincible04.mp3",
+	"vo/scout_beingshotinvincible05.mp3",
+	"vo/scout_beingshotinvincible06.mp3",
+	"vo/scout_beingshotinvincible07.mp3",
+	"vo/scout_beingshotinvincible08.mp3",
+	"vo/scout_beingshotinvincible09.mp3",
+	"vo/scout_beingshotinvincible10.mp3",
+	"vo/scout_beingshotinvincible11.mp3",
+	"vo/scout_beingshotinvincible12.mp3",
+	"vo/scout_beingshotinvincible13.mp3",
+	"vo/scout_beingshotinvincible14.mp3",
+	"vo/scout_beingshotinvincible15.mp3",
+	"vo/scout_beingshotinvincible16.mp3",
+	"vo/scout_beingshotinvincible17.mp3",
+	"vo/scout_beingshotinvincible18.mp3",
+	"vo/scout_beingshotinvincible19.mp3",
+	"vo/scout_beingshotinvincible20.mp3",
+	"vo/scout_beingshotinvincible21.mp3",
+	"vo/scout_beingshotinvincible22.mp3",
+	"vo/scout_beingshotinvincible23.mp3",
+	"vo/scout_beingshotinvincible24.mp3",
+	"vo/scout_beingshotinvincible25.mp3",
+	"vo/scout_beingshotinvincible26.mp3",
+	"vo/scout_beingshotinvincible27.mp3",
+	"vo/scout_beingshotinvincible28.mp3",
+	"vo/scout_beingshotinvincible29.mp3",
+	"vo/scout_beingshotinvincible30.mp3",
+	"vo/scout_beingshotinvincible31.mp3",
+	"vo/scout_beingshotinvincible32.mp3",
+	"vo/scout_beingshotinvincible33.mp3",
+	"vo/scout_beingshotinvincible34.mp3",
+	"vo/scout_beingshotinvincible35.mp3",
+	"vo/scout_beingshotinvincible36.mp3"
 };
 static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/scout_taunts03.mp3",
 	"vo/taunts/scout_taunts04.mp3",
 	"vo/taunts/scout_taunts06.mp3",
-	"vo/taunts/scout_taunts15.mp3",
+	"vo/taunts/scout_taunts15.mp3"
 };
 static const char g_RangedAttackSounds[][] = {
 	"weapons/bat_baseball_hit1.wav",
@@ -40,19 +76,15 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/bat_draw_swoosh2.wav"
 };
 static const char g_MeleeHitSounds[] = "weapons/bat_hit.wav";
-static const char g_SuperJumpSound[][] = {
-	"misc/halloween/spell_mirv_explode_primary.wav",
-};
 static const char g_AngerSounds[] = "vo/scout_revenge06.mp3";
-static char g_SyctheInitiateSound[][] = {
+static const char StunballPickupeSound[][] = {
 	"vo/scout_stunballpickup01.mp3",
 	"vo/scout_stunballpickup02.mp3",
 	"vo/scout_stunballpickup03.mp3",
 	"vo/scout_stunballpickup04.mp3",
-	"vo/scout_stunballpickup05.mp3",
+	"vo/scout_stunballpickup05.mp3"
 };
 
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static float FTL[MAXENTITIES];
 static float Delay_Attribute[MAXENTITIES];
 static bool DrinkPOWERUP[MAXENTITIES];
@@ -63,7 +95,7 @@ static int I_cant_do_this_all_day[MAXENTITIES];
 void Atomizer_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Atomizer");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Atomizer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_atomizer");
 	strcopy(data.Icon, sizeof(data.Icon), "sensal_raid");
 	data.IconCustom = true;
@@ -83,8 +115,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
-	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
-	for (int i = 0; i < (sizeof(g_SyctheInitiateSound));   i++) { PrecacheSound(g_SyctheInitiateSound[i]);   }
+	for (int i = 0; i < (sizeof(StunballPickupeSound));   i++) { PrecacheSound(StunballPickupeSound[i]);   }
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
 	PrecacheModel("models/player/scout.mdl");
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_Atomizer_2.mp3");
@@ -102,30 +133,10 @@ methodmap Atomizer < CClotBody
 		public get()							{ return i_TimesSummoned[this.index]; }
 		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
 	}
-	property float f_AtomizerMeleeCooldown
-	{
-		public get()							{ return fl_NextChargeSpecialAttack[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextChargeSpecialAttack[this.index] = TempValueForProperty; }
-	}
-	property float f_AtomizerRocketJumpCD
-	{
-		public get()							{ return fl_NextRangedBarrage_Singular[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedBarrage_Singular[this.index] = TempValueForProperty; }
-	}
-	property float f_AtomizerRocketJumpCD_Wearoff
-	{
-		public get()							{ return fl_AttackHappensMaximum[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
-	}
-	property bool b_AtomizerRocketJump
-	{
-		public get()							{ return b_NextRangedBarrage_OnGoing[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
-	}
-	public void PlaySytheInitSound() {
+	public void NiceCatchKnucklehead() {
 	
-		int sound = GetRandomInt(0, sizeof(g_SyctheInitiateSound) - 1);
-		EmitSoundToAll(g_SyctheInitiateSound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		int sound = GetRandomInt(0, sizeof(StunballPickupeSound) - 1);
+		EmitSoundToAll(StunballPickupeSound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayAngerSound() {
 	
@@ -171,11 +182,6 @@ methodmap Atomizer < CClotBody
 	public void PlayRangedSound()
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void PlaySuperJumpSound()
-	{
-		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
 	{
@@ -234,10 +240,6 @@ methodmap Atomizer < CClotBody
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		b_thisNpcIsARaid[npc.index] = true;
 		b_angered_twice[npc.index] = false;
-		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
-		{
-			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
-		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -422,14 +424,6 @@ static void Internal_ClotThink(int iNPC)
 		}
 		BlockLoseSay = true;
 	}
-
-	if (npc.IsOnGround())
-	{
-		if(gameTime > npc.f_AtomizerRocketJumpCD_Wearoff)
-		{
-			npc.b_AtomizerRocketJump = false;
-		}
-	}
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -509,9 +503,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 		}
 		if(npc.m_flDoingAnimation < gameTime)
-		{
 			AtomizerAnimationChange(npc);
-		}
 		return;
 	}
 	
@@ -754,7 +746,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 		{
 			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
-			npc.PlaySytheInitSound();
+			npc.NiceCatchKnucklehead();
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkPOWERUP[npc.index] ? 15.0 : 22.5);
 			npc.m_iOverlordComboAttack =  RoundToNearest(float(CountPlayersOnRed(2)) * 2.5); 
