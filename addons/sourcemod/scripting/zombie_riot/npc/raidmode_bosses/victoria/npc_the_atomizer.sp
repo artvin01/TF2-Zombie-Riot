@@ -471,7 +471,7 @@ static void Internal_ClotThink(int iNPC)
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-				npc.AddActivityViaSequence("taunt_cheers_scout");
+				npc.AddActivityViaSequence("layer_taunt_cheers_scout");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
@@ -877,7 +877,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					npc.m_bPathing = false;
 					npc.m_flDoingAnimation = gameTime + 1.0;
 					npc.m_bisWalking = false;
-					npc.AddActivityViaSequence("taunt04");
+					npc.AddActivityViaSequence("layer_taunt04");
 					npc.m_flAttackHappens = 0.0;
 					npc.m_flAttackHappens_2 = gameTime + 1.4;
 					npc.Anger = true;
