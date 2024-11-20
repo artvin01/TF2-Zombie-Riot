@@ -471,16 +471,16 @@ static void Internal_ClotThink(int iNPC)
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-				npc.AddActivityViaSequence("layer_taunt_cheers_scout");
+				npc.AddActivityViaSequence("taunt_cheers_scout");
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
-				npc.SetCycle(0.30);
+				npc.SetCycle(0.01);
 				npc.m_iChanged_WalkCycle = 0;
-				npc.SetPlaybackRate(1.25);
+				npc.SetPlaybackRate(1.5);
 				npc.m_flDoingAnimation = gameTime + 1.5;	
 				/*npc.GetAttachment("effect_hand_r", flPos, flAng);
 				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});*/
-				Delay_Attribute[npc.index] = gameTime + 1.0;
+				Delay_Attribute[npc.index] = gameTime + 1.5;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
 			case 1:
@@ -511,13 +511,12 @@ static void Internal_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < gameTime)
 	{
 		float ProjLocBase[3];
-		if(I_cant_do_this_all_day[npc.index] < 50)
+		npc.AddActivityViaSequence("taunt05");
+		npc.SetCycle(0.01);
+		npc.m_iChanged_WalkCycle = 0;
+		npc.SetPlaybackRate(0.75);
+		if(I_cant_do_this_all_day[npc.index] < 25)
 		{
-
-			npc.AddActivityViaSequence("taunt05");
-			npc.SetCycle(0.01);
-			npc.m_iChanged_WalkCycle = 0;
-			npc.SetPlaybackRate(0.75);
 		
 			float ProjLoc[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
@@ -543,7 +542,7 @@ static void Internal_ClotThink(int iNPC)
 						
 						MakeVectorFromPoints(pos, cpos, velocity);
 						NormalizeVector(velocity, velocity);
-						ScaleVector(velocity, -300.0);
+						ScaleVector(velocity, -350.0);
 						if(b_ThisWasAnNpc[EnemyLoop])
 						{
 							CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
