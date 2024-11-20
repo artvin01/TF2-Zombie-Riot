@@ -474,7 +474,6 @@ static void Internal_ClotThink(int iNPC)
 				npc.AddActivityViaSequence("taunt_cheers_scout");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
-				npc.SetPlaybackRate(1.5);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				npc.m_iChanged_WalkCycle = 0;
@@ -878,7 +877,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					npc.m_bPathing = false;
 					npc.m_flDoingAnimation = gameTime + 1.0;
 					npc.m_bisWalking = false;
-					npc.AddActivityViaSequence("layer_taunt04");
+					npc.AddActivityViaSequence("taunt04");
 					npc.m_flAttackHappens = 0.0;
 					npc.m_flAttackHappens_2 = gameTime + 1.4;
 					npc.Anger = true;
