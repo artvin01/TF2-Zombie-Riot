@@ -9,13 +9,13 @@ void OnMapStartCombinePistol()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombinePistol(client, vecPos, vecAng, ally);
+	return CombinePistol(vecPos, vecAng, team);
 }
 methodmap CombinePistol < CombinePolice
 {
-	public CombinePistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombinePistol(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombinePistol npc = view_as<CombinePistol>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		

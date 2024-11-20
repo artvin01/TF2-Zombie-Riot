@@ -57,9 +57,9 @@ void VoidHeavyPerisher_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidHeavyPerisher(client, vecPos, vecAng, ally);
+	return VoidHeavyPerisher(vecPos, vecAng, team);
 }
 methodmap VoidHeavyPerisher < CClotBody
 {
@@ -100,7 +100,7 @@ methodmap VoidHeavyPerisher < CClotBody
 	}
 	
 	
-	public VoidHeavyPerisher(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidHeavyPerisher(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidHeavyPerisher npc = view_as<VoidHeavyPerisher>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.25", "15000", ally, false, true));
 		

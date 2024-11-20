@@ -56,9 +56,9 @@ public void HeavyExcavator_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeavyExcavator(client, vecPos, vecAng, ally);
+	return HeavyExcavator(vecPos, vecAng, team);
 }
 
 methodmap HeavyExcavator < CClotBody
@@ -98,7 +98,7 @@ methodmap HeavyExcavator < CClotBody
 	}
 	
 	
-	public HeavyExcavator(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeavyExcavator(float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyExcavator npc = view_as<HeavyExcavator>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", ally, false,_,_,_,_));
 
@@ -156,8 +156,7 @@ methodmap HeavyExcavator < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void HeavyExcavator_ClotThink(int iNPC)
 {
 	HeavyExcavator npc = view_as<HeavyExcavator>(iNPC);
@@ -212,9 +211,10 @@ public void HeavyExcavator_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 330.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");

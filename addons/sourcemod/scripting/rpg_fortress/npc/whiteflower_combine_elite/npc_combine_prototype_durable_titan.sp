@@ -27,9 +27,6 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
@@ -37,7 +34,10 @@ static char g_MeleeAttackSounds[][] = {
 };
 
 static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
@@ -63,9 +63,9 @@ public void Whiteflower_PrototypeDDT_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_PrototypeDDT(client, vecPos, vecAng, ally);
+	return Whiteflower_PrototypeDDT(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_PrototypeDDT < CClotBody
@@ -150,7 +150,7 @@ methodmap Whiteflower_PrototypeDDT < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public Whiteflower_PrototypeDDT(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_PrototypeDDT(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_PrototypeDDT npc = view_as<Whiteflower_PrototypeDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "300", ally, false, true));
 
@@ -201,8 +201,7 @@ methodmap Whiteflower_PrototypeDDT < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 {
 	Whiteflower_PrototypeDDT npc = view_as<Whiteflower_PrototypeDDT>(iNPC);
@@ -299,15 +298,15 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 				float WorldSpaceCenterVec[3]; 
 				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
 				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget) )
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, .Npc_type = 1) )
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
+					float damage = 440000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
@@ -468,7 +467,8 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 					
 					// E2 L0 = 6.0, E2 L5 = 7.0
 					KillFeed_SetKillIcon(npc.index, "pistol");
-					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, 185000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					float damage = 280000.0;
+					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					npc.PlayKilledEnemySound(npc.m_iTarget);
 
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");

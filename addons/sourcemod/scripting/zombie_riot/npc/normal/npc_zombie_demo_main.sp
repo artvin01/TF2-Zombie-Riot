@@ -46,9 +46,9 @@ void DemoMain_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DemoMain(client, vecPos, vecAng, ally);
+	return DemoMain(vecPos, vecAng, team);
 }
 methodmap DemoMain < CClotBody
 {
@@ -84,7 +84,7 @@ methodmap DemoMain < CClotBody
 		
 		
 	}
-	public DemoMain(int client, float vecPos[3], float vecAng[3], int ally)
+	public DemoMain(float vecPos[3], float vecAng[3], int ally)
 	{
 		DemoMain npc = view_as<DemoMain>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "12500", ally));
 		
@@ -142,8 +142,7 @@ methodmap DemoMain < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void DemoMain_ClotThink(int iNPC)
 {
 	DemoMain npc = view_as<DemoMain>(iNPC);

@@ -55,9 +55,9 @@ void AnarchyHitman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnarchyHitman(client, vecPos, vecAng, ally);
+	return AnarchyHitman(vecPos, vecAng, team);
 }
 
 methodmap AnarchyHitman < CClotBody
@@ -99,7 +99,7 @@ methodmap AnarchyHitman < CClotBody
 	}
 	
 	
-	public AnarchyHitman(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyHitman(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnarchyHitman npc = view_as<AnarchyHitman>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "3000", ally));
 		

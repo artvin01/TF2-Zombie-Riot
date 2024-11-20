@@ -92,9 +92,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/wave_music/bat_talulha.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return OverlordRogue(client, vecPos, vecAng, ally, data);
+	return OverlordRogue(vecPos, vecAng, team, data);
 }
 
 methodmap OverlordRogue < CClotBody
@@ -180,7 +180,7 @@ methodmap OverlordRogue < CClotBody
 		
 	}
 	
-	public OverlordRogue(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public OverlordRogue(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		OverlordRogue npc = view_as<OverlordRogue>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "100000", ally));
 		
@@ -260,8 +260,7 @@ methodmap OverlordRogue < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void OverlordRogue_ClotThink(int iNPC)
 {
 	OverlordRogue npc = view_as<OverlordRogue>(iNPC);

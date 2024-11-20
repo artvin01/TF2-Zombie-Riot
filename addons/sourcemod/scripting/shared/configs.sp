@@ -73,6 +73,7 @@ void Configs_ConfigsExecuted()
 #if defined ZR
 	Building_ConfigSetup();
 	Items_SetupConfig();
+	SkillTree_ConfigSetup();
 	Store_ConfigSetup();
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);

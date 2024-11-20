@@ -48,9 +48,9 @@ void EnegaKapus_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return EnegaKapus(client, vecPos, vecAng, ally);
+	return EnegaKapus(vecPos, vecAng, team);
 }
 methodmap EnegaKapus < CClotBody
 {
@@ -86,7 +86,7 @@ methodmap EnegaKapus < CClotBody
 	}
 	
 	
-	public EnegaKapus(int client, float vecPos[3], float vecAng[3], int ally)
+	public EnegaKapus(float vecPos[3], float vecAng[3], int ally)
 	{
 		EnegaKapus npc = view_as<EnegaKapus>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1500", ally));
 		

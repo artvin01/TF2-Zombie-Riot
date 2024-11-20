@@ -229,7 +229,7 @@ methodmap Pablo_Gonzales < CClotBody
 		#endif
 	}
 	
-	public Pablo_Gonzales(int client, float vecPos[3], float vecAng[3], int ally)
+	public Pablo_Gonzales(float vecPos[3], float vecAng[3], int ally)
 	{
 		Pablo_Gonzales npc = view_as<Pablo_Gonzales>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "225000", ally));
 		
@@ -319,8 +319,7 @@ methodmap Pablo_Gonzales < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Pablo_Gonzales_ClotThink(int iNPC)
 {
 	Pablo_Gonzales npc = view_as<Pablo_Gonzales>(iNPC);

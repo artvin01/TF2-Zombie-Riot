@@ -70,9 +70,9 @@ void IberiaSpeedusInstantus_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SpeedusInstantus(client, vecPos, vecAng, ally);
+	return SpeedusInstantus(vecPos, vecAng, team);
 }
 methodmap SpeedusInstantus < CClotBody
 {
@@ -142,7 +142,7 @@ methodmap SpeedusInstantus < CClotBody
 	}
 	
 	
-	public SpeedusInstantus(int client, float vecPos[3], float vecAng[3], int ally)
+	public SpeedusInstantus(float vecPos[3], float vecAng[3], int ally)
 	{
 		SpeedusInstantus npc = view_as<SpeedusInstantus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1500", ally));
 		
@@ -198,8 +198,7 @@ methodmap SpeedusInstantus < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SpeedusInstantus_ClotThink(int iNPC)
 {
 	SpeedusInstantus npc = view_as<SpeedusInstantus>(iNPC);

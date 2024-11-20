@@ -183,7 +183,7 @@ methodmap BunkerSkeleton < CClotBody
 		#endif
 	}
 	
-	public BunkerSkeleton(int client, float vecPos[3], float vecAng[3], int ally)
+	public BunkerSkeleton(float vecPos[3], float vecAng[3], int ally)
 	{
 		BunkerSkeleton npc = view_as<BunkerSkeleton>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "1.0", "3000", ally, false));
 		
@@ -222,8 +222,7 @@ methodmap BunkerSkeleton < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void BunkerSkeleton_ClotThink(int iNPC)
 {
 	BunkerSkeleton npc = view_as<BunkerSkeleton>(iNPC);

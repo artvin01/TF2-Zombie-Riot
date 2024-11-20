@@ -98,9 +98,9 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return NPC_ALT_MEDIC_SUPPERIOR_MAGE(client, vecPos, vecAng, ally);
+	return NPC_ALT_MEDIC_SUPPERIOR_MAGE(vecPos, vecAng, team);
 }
 methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 {
@@ -167,7 +167,7 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 	}
 	
 	
-	public NPC_ALT_MEDIC_SUPPERIOR_MAGE(int client, float vecPos[3], float vecAng[3], int ally)
+	public NPC_ALT_MEDIC_SUPPERIOR_MAGE(float vecPos[3], float vecAng[3], int ally)
 	{
 		NPC_ALT_MEDIC_SUPPERIOR_MAGE npc = view_as<NPC_ALT_MEDIC_SUPPERIOR_MAGE>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.25", "25000", ally));
 		
@@ -249,8 +249,7 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE npc = view_as<NPC_ALT_MEDIC_SUPPERIOR_MAGE>(iNPC);

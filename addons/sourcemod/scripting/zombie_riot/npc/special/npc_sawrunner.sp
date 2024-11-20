@@ -51,9 +51,9 @@ void SawRunner_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SawRunner(client, vecPos, vecAng, ally);
+	return SawRunner(vecPos, vecAng, team);
 }
 static int i_PlayIdleAlertSound[MAXENTITIES];
 static int i_PlayMusicSound[MAXENTITIES];
@@ -63,7 +63,7 @@ static char[] GetSawRunnerHealth()
 {
 	int health = 65;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	
@@ -153,7 +153,7 @@ methodmap SawRunner < CClotBody
 	}
 	
 	
-	public SawRunner(int client, float vecPos[3], float vecAng[3], int ally)
+	public SawRunner(float vecPos[3], float vecAng[3], int ally)
 	{
 		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", GetSawRunnerHealth(), ally, false, false, true));
 		
@@ -205,8 +205,7 @@ methodmap SawRunner < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SawRunner_ClotThink(int iNPC)
 {
 	SawRunner npc = view_as<SawRunner>(iNPC);

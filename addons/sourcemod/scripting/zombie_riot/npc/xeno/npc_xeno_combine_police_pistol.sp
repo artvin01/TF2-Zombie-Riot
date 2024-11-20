@@ -86,9 +86,9 @@ public void XenoCombine_Police_Pistol_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombinePolicePistol(client, vecPos, vecAng, ally);
+	return XenoCombinePolicePistol(vecPos, vecAng, team);
 }
 methodmap XenoCombinePolicePistol < CClotBody
 {
@@ -163,7 +163,7 @@ methodmap XenoCombinePolicePistol < CClotBody
 	
 	
 	
-	public XenoCombinePolicePistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombinePolicePistol(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombinePolicePistol npc = view_as<XenoCombinePolicePistol>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700", ally));
 		
@@ -228,8 +228,7 @@ methodmap XenoCombinePolicePistol < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombinePolicePistol_ClotThink(int iNPC)
 {
 	XenoCombinePolicePistol npc = view_as<XenoCombinePolicePistol>(iNPC);

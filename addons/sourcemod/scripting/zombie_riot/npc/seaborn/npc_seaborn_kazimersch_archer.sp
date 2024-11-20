@@ -46,9 +46,9 @@ void KazimierzKnightArcher_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return KazimierzKnightArcher(client, vecPos, vecAng, ally, data);
+	return KazimierzKnightArcher(vecPos, vecAng, team, data);
 }
 
 methodmap KazimierzKnightArcher < CClotBody
@@ -84,7 +84,7 @@ methodmap KazimierzKnightArcher < CClotBody
 	}
 	
 	
-	public KazimierzKnightArcher(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public KazimierzKnightArcher(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "4000", ally));
 		
@@ -172,8 +172,7 @@ methodmap KazimierzKnightArcher < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void KazimierzKnightArcher_ClotThink(int iNPC)
 {
 	KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(iNPC);

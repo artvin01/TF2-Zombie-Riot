@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-void OnMapStartCombinePistol()
+void OnMapStartCombine_Aggrat()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Aggrat");
@@ -9,15 +9,15 @@ void OnMapStartCombinePistol()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombinePistol(client, vecPos, vecAng, ally);
+	return Combine_Aggrat(vecPos, vecAng, team);
 }
-methodmap CombinePistol < CombinePolice
+methodmap Combine_Aggrat < CombinePolice
 {
-	public CombinePistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Aggrat(float vecPos[3], float vecAng[3], int ally)
 	{
-		CombinePistol npc = view_as<CombinePistol>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
+		Combine_Aggrat npc = view_as<Combine_Aggrat>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -36,9 +36,9 @@ methodmap CombinePistol < CombinePolice
 		npc.m_iAttacksTillReload = 18;
 		npc.m_bisWalking = true;
 		
-		func_NPCDeath[npc.index] = CombinePistol_NPCDeath;
+		func_NPCDeath[npc.index] = Combine_Aggrat_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = BaseSquad_TakeDamage;
-		func_NPCThink[npc.index] = CombinePistol_ClotThink;
+		func_NPCThink[npc.index] = Combine_Aggrat_ClotThink;
 
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl");
 		SetVariantString("1.15");
@@ -48,14 +48,20 @@ methodmap CombinePistol < CombinePolice
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 150, 50, 50, 255);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 150, 50, 50, 255);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 150, 50, 50, 255);
+		
 		AcceptEntityInput(npc.m_iWearable2, "Disable");
 		return npc;
 	}
 }
-
-public void CombinePistol_ClotThink(int iNPC)
+public void Combine_Aggrat_ClotThink(int iNPC)
 {
-	CombinePistol npc = view_as<CombinePistol>(iNPC);
+	Combine_Aggrat npc = view_as<Combine_Aggrat>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -163,6 +169,10 @@ public void CombinePistol_ClotThink(int iNPC)
 
 						npc.m_flNextRangedAttack = gameTime + 0.2;
 						npc.m_iAttacksTillReload--;
+						if(npc.m_iOverlordComboAttack == 1)
+						{
+							npc.m_flNextRangedAttack = gameTime + 0.1;
+						}
 						
 						float x = GetRandomFloat( -0.03, 0.03 );
 						float y = GetRandomFloat( -0.03, 0.03 );
@@ -180,7 +190,7 @@ public void CombinePistol_ClotThink(int iNPC)
 						
 						// E2 L0 = 6.0, E2 L5 = 7.0
 						KillFeed_SetKillIcon(npc.index, "pistol");
-						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 95000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 250000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
 						npc.PlayPistolFire();
@@ -223,7 +233,7 @@ public void CombinePistol_ClotThink(int iNPC)
 
 							// E2 L0 = 90, E2 L5 = 105
 							KillFeed_SetKillIcon(npc.index, "wrench");
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 200000.0, DMG_CLUB, -1, _, vecTarget);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 320000.0, DMG_CLUB, -1, _, vecTarget);
 							
 							npc.PlayStunStickHit();
 						}
@@ -258,10 +268,9 @@ public void CombinePistol_ClotThink(int iNPC)
 	bool anger = BaseSquad_BaseAnim(npc, 80.0, npc.m_bRanged ? "ACT_IDLE_PISTOL" : "ACT_IDLE", npc.m_bRanged ? "ACT_WALK_PISTOL" : "ACT_WALK_ANGRY", 300.0, npc.m_bRanged ? "ACT_IDLE_ANGRY_PISTOL" : "ACT_IDLE_ANGRY_MELEE", npc.m_bRanged ? "ACT_RUN_PISTOL" : "ACT_RUN");
 	npc.PlayIdle(anger);
 }
-
-void CombinePistol_NPCDeath(int entity)
+void Combine_Aggrat_NPCDeath(int entity)
 {
-	CombinePistol npc = view_as<CombinePistol>(entity);
+	Combine_Aggrat npc = view_as<Combine_Aggrat>(entity);
 	
 	if(!npc.m_bGib)
 		npc.PlayDeath();

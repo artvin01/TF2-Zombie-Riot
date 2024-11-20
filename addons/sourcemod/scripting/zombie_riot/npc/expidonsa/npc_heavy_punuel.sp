@@ -63,9 +63,9 @@ void HeavyPunuel_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeavyPunuel(client, vecPos, vecAng, ally);
+	return HeavyPunuel(vecPos, vecAng, team);
 }
 
 methodmap HeavyPunuel < CClotBody
@@ -112,7 +112,7 @@ methodmap HeavyPunuel < CClotBody
 	}
 	
 	
-	public HeavyPunuel(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeavyPunuel(float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "1000", ally, false, true));
 		

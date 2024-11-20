@@ -33,7 +33,6 @@ bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
-int Shared_BEAM_Glow;
 
 #endif
 int i_KillsMade[MAXTF2PLAYERS];
@@ -45,6 +44,7 @@ int TeamFreeForAll = 50;
 #endif
 
 int i_TeamGlow[MAXENTITIES]={-1, ...};
+int Shared_BEAM_Glow;
 int Shared_BEAM_Laser;
 char c_NpcName[MAXENTITIES][255];
 int i_SpeechBubbleEntity[MAXENTITIES];
@@ -233,10 +233,7 @@ void OnMapStart_NPC_Base()
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	Shared_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-#if defined ZR
 	Shared_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
-#endif
-
 	PrecacheModel(ARROW_TRAIL);
 	PrecacheDecal(ARROW_TRAIL, true);
 	PrecacheModel(ARROW_TRAIL_RED);
@@ -2864,7 +2861,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		return -1;
 	}
-	public void FireGrenade(float vecTarget[3], float grenadespeed = 800.0, float damage, char[] model)
+	public int FireGrenade(float vecTarget[3], float grenadespeed = 800.0, float damage, char[] model)
 	{
 		int entity = CreateEntityByName("tf_projectile_pipe");
 		if(IsValidEntity(entity))
@@ -2905,7 +2902,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			SetEntProp(entity, Prop_Send, "m_bTouched", true);
 			SetEntityCollisionGroup(entity, 1);
+			return entity;
 		}
+		return -1;
 	}
 	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE, int entitytofirefrom = -1) //No defaults, otherwise i cant even judge.
 	{
@@ -5509,13 +5508,13 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	return ClosestTarget;
 }
 
-stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
+stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false, int ignore = 0)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
 	for( int i = 1; i <= MaxClients; i++ ) 
 	{
-		if (IsValidClient(i))
+		if (i != ignore && IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
 			if (GetTeam(i)== GetTeam(entity) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true) && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.
@@ -5972,6 +5971,11 @@ public void NpcBaseThink(int iNPC)
 		HealEntityGlobal(iNPC, iNPC, float(i_HpRegenInBattle[iNPC]), 1.0, 0.0, HEAL_SELFHEAL | HEAL_PASSIVE_NO_NOTIF);
 		RPGNpc_UpdateHpHud(iNPC);
 	}
+	if(f_InBattleDelay[iNPC] < GetGameTime())
+	{
+		f_InBattleDelay[iNPC] = GetGameTime() + 0.25;
+		HealOutOfBattleNpc(iNPC);
+	}
 #endif
 
 	if(CvarDisableThink.BoolValue)
@@ -6220,7 +6224,7 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 }
 public void NpcStuckInSomething(CClotBody npc, int iNPC)
 {
-	if (!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC][1] < GetGameTime())
+	if (!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
 	{
 		if(i_FailedTriesUnstuck[iNPC][1] == 0)
 		{
@@ -7729,7 +7733,7 @@ stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, floa
 	lead[0] = leadTime * SubjectAbsVelocity[0];
 	lead[1] = leadTime * SubjectAbsVelocity[1];
 	lead[2] = 0.0;	
-
+	/*
 	if(GetVectorDotProduct(to, lead) < 0.0)
 	{
 		// the subject is moving towards us - only pay attention 
@@ -7747,6 +7751,7 @@ stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, floa
 		lead[0] = enemyGroundSpeed * perp[0];
 		lead[1] = enemyGroundSpeed * perp[1];
 	}
+	*/
 
 	// compute our desired destination
 	AddVectors(subjectPos, lead, pathTarget);
@@ -8497,6 +8502,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LeeMinorEffect[entity] = 0.0;
 	f_LeeMajorEffect[entity] = 0.0;
 	f_LeeSuperEffect[entity] = 0.0;
+	f_LogosDebuff[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
 	fl_TotalArmor[entity] = 1.0;
@@ -8558,9 +8564,7 @@ public void ArrowStartTouch(int arrow, int entity)
 			inflictor = owner;
 
 		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
-#if defined ZR
 		Projectile_DealElementalDamage(entity, arrow);
-#endif
 
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))
@@ -9175,6 +9179,7 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_LeeMinorEffect[enemy] = 0.0;
 	f_LeeMajorEffect[enemy] = 0.0;
 	f_LeeSuperEffect[enemy] = 0.0;
+	f_LogosDebuff[enemy] = 0.0;
 	f_SpecterDyingDebuff[enemy] = 0.0;
 	f_PassangerDebuff[enemy] = 0.0;
 }
@@ -9626,6 +9631,18 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 
 static int b_TouchedEntity[MAXENTITIES];
 
+void ResetTouchedentityResolve()
+{
+	Zero(b_TouchedEntity);
+}
+bool TouchedNpcResolve(int entity)
+{
+	return view_as<bool>(b_TouchedEntity[entity]);
+}
+int ConvertTouchedResolve(int index)
+{
+	return b_TouchedEntity[index];
+}
 //TODO: teleport entities instead, but this is easier to i sleep :)
 stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockback = true)
 {
@@ -9690,6 +9707,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 	}
 	*/
 
+	ResetTouchedentityResolve();
 	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
 
 	float vAngles[3], vDirection[3];								
@@ -9707,7 +9725,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 		if(!b_TouchedEntity[entity_traced])
 			break;
 
-		if(i_IsABuilding[entity_traced])
+		if(i_IsABuilding[b_TouchedEntity[entity_traced]])
 			continue;
 
 		if(b_TouchedEntity[entity_traced] <= MaxClients)
@@ -9734,7 +9752,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 		}
 	}
 
-	Zero(b_TouchedEntity);
+	ResetTouchedentityResolve();
 }
 
 stock void ResolvePlayerCollisions_Npc_Internal(const float pos[3], const float mins[3], const float maxs[3],int entity=-1)
@@ -10364,8 +10382,16 @@ stock void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, in
 	Format(ch_SpeechBubbleEndingScroll[entity], 10, endingtextscroll);
 	i_SpeechBubbleTotalText_ScrollingPart[entity] = 0;
 	i_SpeechEndingScroll_ScrollingPart[entity] = 0;
-	SDKUnhook(entity, SDKHook_Think, NpcSpeechBubbleTalk);
-	SDKHook(entity, SDKHook_Think, NpcSpeechBubbleTalk);
+	if(entity > MaxClients)
+	{
+		SDKUnhook(entity, SDKHook_Think, NpcSpeechBubbleTalk);
+		SDKHook(entity, SDKHook_Think, NpcSpeechBubbleTalk);
+	}
+	else
+	{
+		SDKUnhook(entity, SDKHook_PreThink, NpcSpeechBubbleTalk);
+		SDKHook(entity, SDKHook_PreThink, NpcSpeechBubbleTalk);
+	}
 }
 
 void NpcSpeechBubbleTalk(int iNPC)
@@ -10374,13 +10400,19 @@ void NpcSpeechBubbleTalk(int iNPC)
 	Text_Entity = EntRefToEntIndex(i_SpeechBubbleEntity[iNPC]);
 	if(!IsValidEntity(Text_Entity))
 	{
-		SDKUnhook(iNPC, SDKHook_Think, NpcSpeechBubbleTalk);
+		if(iNPC > MaxClients)
+			SDKUnhook(iNPC, SDKHook_Think, NpcSpeechBubbleTalk);
+		else
+			SDKUnhook(iNPC, SDKHook_PreThink, NpcSpeechBubbleTalk);
 		return;
 	}
 	if(f_SpeechTickDelay[iNPC] > GetGameTime())
 		return;
 	
-	f_SpeechTickDelay[iNPC] = GetGameTime() + 0.05;
+	if(iNPC > MaxClients)
+		f_SpeechTickDelay[iNPC] = GetGameTime() + 0.05;
+	else
+		f_SpeechTickDelay[iNPC] = GetGameTime() + 0.035;
 	int TotalLength = strlen(ch_SpeechBubbleTotalText[iNPC]);
 
 	if(i_SpeechBubbleTotalText_ScrollingPart[iNPC] >= TotalLength)
@@ -10405,7 +10437,10 @@ void NpcSpeechBubbleTalk(int iNPC)
 
 			if(f_SpeechDeleteAfter[iNPC] < GetGameTime())
 			{
-				SDKUnhook(iNPC, SDKHook_Think, NpcSpeechBubbleTalk);
+				if(iNPC > MaxClients)
+					SDKUnhook(iNPC, SDKHook_Think, NpcSpeechBubbleTalk);
+				else
+					SDKUnhook(iNPC, SDKHook_PreThink, NpcSpeechBubbleTalk);
 				RemoveEntity(Text_Entity);
 			}
 			return;
@@ -10591,9 +10626,11 @@ void ExtinguishTarget(int target)
 void IsEntityInvincible_Shield(int entity)
 {
 	bool NpcInvulShieldDisplay;
+#if defined ZR
+//This is not neccecary in RPG.
 	if(i_npcspawnprotection[entity] == 1)
 		NpcInvulShieldDisplay = true;
-
+#endif
 	if(b_NpcIsInvulnerable[entity])
 		NpcInvulShieldDisplay = true;
 	
@@ -10675,7 +10712,7 @@ void MakeObjectIntangeable(int entity)
 
 
 static int BadSpotPoints[MAXTF2PLAYERS];
-void Spawns_CheckBadClient(int client)
+stock void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 {
 #if defined ZR
 	if(CvarInfiniteCash.BoolValue)
@@ -10695,10 +10732,28 @@ void Spawns_CheckBadClient(int client)
 	}
 #endif
 #if defined RPG
-	if(RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
+	//Are we checking 
+	/*
+		0 = Passively wating every so often
+		2 = when landing after being airborn
+
+	*/
+//	if(checkextralogic == 0)
+	/*
+	TODO: If they are out of bounds in a non playable area, kill them.
+
+	*/
 	{
-		BadSpotPoints[client] = 0;
-		return;
+		//Did any NPC try to attack us, if not...
+		if(RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
+		{
+			//are we somehow in a battle regardless? if no then...
+			if(f_InBattleDelay[client] < GetGameTime())
+			{
+				BadSpotPoints[client] = 0;
+				return;
+			}
+		}
 	}
 #endif
 	if(!(GetEntityFlags(client) & (FL_ONGROUND|FL_INWATER)))
@@ -10720,8 +10775,12 @@ void Spawns_CheckBadClient(int client)
 	int GroundEntity = EntRefToEntIndex(RefGround);
 	if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
 	{
-		//client is ontop of something, dont do more, they have some way to be put down.
-		return;
+#if defined RPG
+		if(!b_is_a_brush[GroundEntity])
+#endif
+		{
+			return;
+		}
 	}
 
 
@@ -10851,4 +10910,21 @@ int ReturnEntityMaxHealth(int entity)
 		return SDKCall_GetMaxHealth(entity);
 	}
 	return GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+}
+
+
+float[] GetBehindTarget(int target, float Distance, float origin[3])
+{
+	float VecForward[3];
+	float vecRight[3];
+	float vecUp[3];
+	
+	GetVectors(target, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
+	
+	float vecSwingEnd[3];
+	vecSwingEnd[0] = origin[0] - VecForward[0] * (Distance);
+	vecSwingEnd[1] = origin[1] - VecForward[1] * (Distance);
+	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+
+	return vecSwingEnd;
 }

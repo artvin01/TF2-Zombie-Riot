@@ -45,7 +45,7 @@ void Barracks_Combine_Sniper_Precache()
 	
 	PrecacheModel("models/player/hwm/sniper.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Sniper");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Sniper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_sniper");
 	data.IconCustom = false;
 	data.Flags = 0;

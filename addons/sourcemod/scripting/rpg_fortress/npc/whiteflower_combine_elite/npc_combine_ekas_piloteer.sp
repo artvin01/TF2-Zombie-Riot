@@ -27,9 +27,6 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
 	"weapons/demo_sword_swing2.wav",
@@ -40,7 +37,10 @@ static char g_RocketSound[][] = {
 	"weapons/rpg/rocketfire1.wav",
 };
 static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
@@ -67,9 +67,9 @@ public void Whiteflower_Ekas_Piloteer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_Ekas_Piloteer(client, vecPos, vecAng, ally);
+	return Whiteflower_Ekas_Piloteer(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_Ekas_Piloteer < CClotBody
@@ -164,7 +164,7 @@ methodmap Whiteflower_Ekas_Piloteer < CClotBody
 	}
 	
 	
-	public Whiteflower_Ekas_Piloteer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_Ekas_Piloteer(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_Ekas_Piloteer npc = view_as<Whiteflower_Ekas_Piloteer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -219,8 +219,7 @@ methodmap Whiteflower_Ekas_Piloteer < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 {
 	Whiteflower_Ekas_Piloteer npc = view_as<Whiteflower_Ekas_Piloteer>(iNPC);
@@ -273,18 +272,14 @@ public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 300.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damage *= 1.3;
+					float damage = 375000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						// Hit sound
 						npc.PlayMeleeHitSound();
-						if(target <= MaxClients)
-							Client_Shake(target, 0, 25.0, 25.0, 0.5, false);
 
 						npc.PlayKilledEnemySound(npc.m_iTarget);
 					}
@@ -317,7 +312,7 @@ public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 				vecSelf[2] += 50.0;
 				vecSelf[0] += GetRandomFloat(-10.0, 10.0);
 				vecSelf[1] += GetRandomFloat(-10.0, 10.0);
-				float RocketDamage = 700000.0;
+				float RocketDamage = 350000.0;
 				int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 300.0);
 				DataPack pack;
 				CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -441,7 +436,8 @@ public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 					
 					// E2 L0 = 6.0, E2 L5 = 7.0
 					KillFeed_SetKillIcon(npc.index, "pistol");
-					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					float damage = 175000.0;
+					FireBullet(npc.index, npc.m_iWearable1, vecSelf, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					npc.PlayKilledEnemySound(npc.m_iTarget);
 
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");

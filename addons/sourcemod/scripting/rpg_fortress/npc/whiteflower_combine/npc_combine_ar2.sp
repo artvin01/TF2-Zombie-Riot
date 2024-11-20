@@ -9,14 +9,14 @@ void OnMapStartCombine_AR2()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineAR2(client, vecPos, vecAng, ally);
+	return CombineAR2(vecPos, vecAng, team);
 }
 
 methodmap CombineAR2 < CombineSoldier
 {
-	public CombineAR2(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineAR2(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineAR2 npc = view_as<CombineAR2>(BaseSquad(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", ally, false));
 		
@@ -138,7 +138,7 @@ public void CombineAR2_ClotThink(int iNPC)
 
 						// E2 L5 = 105, E2 L10 = 120
 						KillFeed_SetKillIcon(npc.index, "club");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 165000.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 240000.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
 						KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 					}
@@ -156,7 +156,7 @@ public void CombineAR2_ClotThink(int iNPC)
 				
 				// E2 L5 = 280, E2 L10 = 320
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 800.0,_,vecTarget);
-				npc.FireGrenade(vecTarget, 800.0, 400000.0, "models/weapons/w_grenade.mdl");
+				npc.FireGrenade(vecTarget, 800.0, 250000.0, "models/weapons/w_grenade.mdl");
 			}
 		}
 
@@ -233,7 +233,7 @@ public void CombineAR2_ClotThink(int iNPC)
 							
 							// E2 L5 = 5.25, E2 L10 = 6
 							KillFeed_SetKillIcon(npc.index, "smg");
-							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 140000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 							KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");

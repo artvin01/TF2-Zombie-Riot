@@ -91,9 +91,9 @@ public void MedivalCavalary_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalCavalary(client, vecPos, vecAng, ally);
+	return MedivalCavalary(vecPos, vecAng, team);
 }
 methodmap MedivalCavalary < CClotBody
 {
@@ -155,7 +155,7 @@ methodmap MedivalCavalary < CClotBody
 		
 	}
 	
-	public MedivalCavalary(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalCavalary(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalCavalary npc = view_as<MedivalCavalary>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		SetVariantInt(1);
@@ -216,8 +216,7 @@ methodmap MedivalCavalary < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalCavalary_ClotThink(int iNPC)
 {
 	MedivalCavalary npc = view_as<MedivalCavalary>(iNPC);
@@ -281,9 +280,10 @@ public void MedivalCavalary_ClotThink(int iNPC)
 					{
 						damage *= 5.0;
 					}
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
 				}

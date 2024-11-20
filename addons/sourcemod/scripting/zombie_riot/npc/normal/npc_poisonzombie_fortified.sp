@@ -60,9 +60,9 @@ public void FortifiedPoisonZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FortifiedPoisonZombie(client, vecPos, vecAng, ally);
+	return FortifiedPoisonZombie(vecPos, vecAng, team);
 }
 
 methodmap FortifiedPoisonZombie < CClotBody
@@ -126,7 +126,7 @@ methodmap FortifiedPoisonZombie < CClotBody
 	
 	
 	
-	public FortifiedPoisonZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public FortifiedPoisonZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		FortifiedPoisonZombie npc = view_as<FortifiedPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "1250", ally));
 		
@@ -162,8 +162,7 @@ methodmap FortifiedPoisonZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void FortifiedPoisonZombie_ClotThink(int iNPC)
 {
 	FortifiedPoisonZombie npc = view_as<FortifiedPoisonZombie>(iNPC);

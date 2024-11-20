@@ -56,9 +56,9 @@ public void Miner_Enemy_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Miner_Enemy(client, vecPos, vecAng, ally);
+	return Miner_Enemy(vecPos, vecAng, team);
 }
 
 methodmap Miner_Enemy < CClotBody
@@ -98,7 +98,7 @@ methodmap Miner_Enemy < CClotBody
 	}
 	
 	
-	public Miner_Enemy(int client, float vecPos[3], float vecAng[3], int ally)
+	public Miner_Enemy(float vecPos[3], float vecAng[3], int ally)
 	{
 		Miner_Enemy npc = view_as<Miner_Enemy>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "300", ally, false,_,_,_,_));
 
@@ -152,8 +152,7 @@ methodmap Miner_Enemy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Miner_Enemy_ClotThink(int iNPC)
 {
 	Miner_Enemy npc = view_as<Miner_Enemy>(iNPC);
@@ -208,9 +207,10 @@ public void Miner_Enemy_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 200.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");

@@ -65,9 +65,9 @@ void GiantTankus_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return GiantTankus(client, vecPos, vecAng, ally);
+	return GiantTankus(vecPos, vecAng, team);
 }
 methodmap GiantTankus < CClotBody
 {
@@ -129,7 +129,7 @@ methodmap GiantTankus < CClotBody
 	}
 	
 	
-	public GiantTankus(int client, float vecPos[3], float vecAng[3], int ally)
+	public GiantTankus(float vecPos[3], float vecAng[3], int ally)
 	{
 		GiantTankus npc = view_as<GiantTankus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "85000", ally, false, true));
 		
@@ -184,8 +184,7 @@ methodmap GiantTankus < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void GiantTankus_ClotThink(int iNPC)
 {
 	GiantTankus npc = view_as<GiantTankus>(iNPC);

@@ -23,8 +23,8 @@ static float GrigoriCoinPurseCalc()
 {
 	int Ingots = Rogue_GetIngots();
 	
-	return(Pow(0.9965, (float(Ingots))));
-	//at 100 ingots, we double our attackspeed minimum
+	return 100.0 / (100.0 + float(Ingots));
+	//at 100 ingots, we double our attackspeed
 }
 
 public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
@@ -44,7 +44,7 @@ public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
 			{
-				npc.BonusFireRate *= Multi;
+				npc.BonusFireRate /= Multi;
 			}
 		}
 	}
@@ -325,7 +325,7 @@ public void Rogue_Item_HandWrittenLetter_Weapon(int entity)
 		Attributes_SetMulti(entity, 410, 1.03);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		if(Attributes_Has(entity, 1))
 			Attributes_SetMulti(entity, 1, 1.03);
@@ -392,7 +392,7 @@ public void Rogue_Item_ScrappedWallet_Weapon(int entity)
 		Attributes_SetMulti(entity, 410, 1.01);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		if(Attributes_Has(entity, 1))
 			Attributes_SetMulti(entity, 1, 1.01);
@@ -508,7 +508,7 @@ public void Rogue_Item_GenericDamage5_Weapon(int entity)
 
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		if(Attributes_Has(entity, 1))
 			Attributes_SetMulti(entity, 1, 1.05);
@@ -557,7 +557,7 @@ public void Rogue_Item_GenericDamage10_Weapon(int entity)
 
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		if(Attributes_Has(entity, 1))
 			Attributes_SetMulti(entity, 1, 1.1);

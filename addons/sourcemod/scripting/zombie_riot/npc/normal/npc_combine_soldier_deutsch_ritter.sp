@@ -67,7 +67,7 @@ void CombineDeutsch_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Deutsch Ritter");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Deutsch Ritter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_deutsch_ritter");
 	strcopy(data.Icon, sizeof(data.Icon), "teutons");
 	data.IconCustom = true;
@@ -77,9 +77,9 @@ void CombineDeutsch_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineDeutsch(client, vecPos, vecAng, ally);
+	return CombineDeutsch(vecPos, vecAng, team);
 }
 
 methodmap CombineDeutsch < CClotBody
@@ -160,7 +160,7 @@ methodmap CombineDeutsch < CClotBody
 	}
 	
 	
-	public CombineDeutsch(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineDeutsch(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineDeutsch npc = view_as<CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
 		
@@ -215,8 +215,7 @@ methodmap CombineDeutsch < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineDeutsch_ClotThink(int iNPC)
 {
 	CombineDeutsch npc = view_as<CombineDeutsch>(iNPC);

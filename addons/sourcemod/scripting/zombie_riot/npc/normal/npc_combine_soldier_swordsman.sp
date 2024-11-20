@@ -68,7 +68,7 @@ void CombineSwordsman_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Swordsman");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Swordsman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;
@@ -78,9 +78,9 @@ void CombineSwordsman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineSwordsman(client, vecPos, vecAng, ally);
+	return CombineSwordsman(vecPos, vecAng, team);
 }
 
 methodmap CombineSwordsman < CClotBody
@@ -160,7 +160,7 @@ methodmap CombineSwordsman < CClotBody
 	}
 	
 	
-	public CombineSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineSwordsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineSwordsman npc = view_as<CombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		SetVariantInt(1);
@@ -216,8 +216,7 @@ methodmap CombineSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineSwordsman_ClotThink(int iNPC)
 {
 	CombineSwordsman npc = view_as<CombineSwordsman>(iNPC);

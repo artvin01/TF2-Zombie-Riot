@@ -70,9 +70,9 @@ void AnfuhrerEisenhard_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnfuhrerEisenhard(client, vecPos, vecAng, ally);
+	return AnfuhrerEisenhard(vecPos, vecAng, team);
 }
 methodmap AnfuhrerEisenhard < CClotBody
 {
@@ -127,7 +127,7 @@ methodmap AnfuhrerEisenhard < CClotBody
 	}
 	
 	
-	public AnfuhrerEisenhard(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnfuhrerEisenhard(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnfuhrerEisenhard npc = view_as<AnfuhrerEisenhard>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "500000", ally));
 		

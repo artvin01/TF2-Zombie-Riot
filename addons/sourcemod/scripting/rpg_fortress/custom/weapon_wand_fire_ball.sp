@@ -11,6 +11,7 @@ static int i_weaponused[MAXTF2PLAYERS];
 
 public void Wand_Fire_Spell_ClearAll()
 {
+	
 	Zero(i_FireBallsToThrow);
 	Zero(ability_cooldown);
 }
@@ -117,12 +118,21 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, int level, float d
 	fVel[1] = fBuf[1]*speed;
 	fVel[2] = fBuf[2]*speed;
 
+	i_FireBallsToThrow[client] = 1;
 	int entity = CreateEntityByName("tf_projectile_spellfireball");
 	if(IsValidEntity(entity))
 	{
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity, GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		if(MagicFocusReady(client))
+		{
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", 3);
+			f_OriginalDamage[client] *= 1.3;
+			MagicFocusUse(client);
+			i_FireBallsToThrow[client] = 2;
+		}
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
@@ -131,7 +141,6 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, int level, float d
 	}
 	EmitSoundToAll(WAND_FIREBALL_SOUND, client, SNDCHAN_AUTO, 80, _, 0.7);
 
-	i_FireBallsToThrow[client] = 1;
 	CreateTimer(0.2, FireMultipleFireBalls, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 

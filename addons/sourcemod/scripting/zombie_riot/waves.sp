@@ -21,6 +21,7 @@ enum struct Enemy
 	float ExtraSpeed;
 	float ExtraDamage;
 	char Spawn[64];
+	char CustomName[64];
 }
 
 enum struct MiniBoss
@@ -283,7 +284,12 @@ bool Waves_CallVote(int client, int force = 0)
 				else
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
-					menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					int MenuDo = ITEMDRAW_DISABLED;
+					if(!vote.Level)
+						MenuDo = ITEMDRAW_DEFAULT;
+					if(Level[client] >= 1)
+						MenuDo = ITEMDRAW_DEFAULT;
+					menu.AddItem(vote.Config, vote.Name, MenuDo);
 				}
 			}
 		}
@@ -307,7 +313,12 @@ bool Waves_CallVote(int client, int force = 0)
 				level = WaveLevel + RoundFloat(level * multi);
 
 				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, level);
-				menu.AddItem(vote.Config, vote.Name, (Level[client] < level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				int MenuDo = ITEMDRAW_DISABLED;
+				if(!vote.Level)
+					MenuDo = ITEMDRAW_DEFAULT;
+				if(Level[client] >= 1)
+					MenuDo = ITEMDRAW_DEFAULT;
+				menu.AddItem(vote.Config, vote.Name, MenuDo);
 			}
 		}
 		
@@ -501,7 +512,6 @@ void Waves_SetupVote(KeyValues map)
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		kv = new KeyValues("Setup");
 		kv.ImportFromFile(buffer);
-		RequestFrame(DeleteHandle, kv);
 	}
 	
 	StartCash = kv.GetNum("cash");
@@ -510,6 +520,10 @@ void Waves_SetupVote(KeyValues map)
 	if(map && kv.GetNum("roguemode"))
 	{
 		Rogue_SetupVote(kv);
+
+		if(kv != map)
+			delete kv;
+		
 		return;
 	}
 
@@ -582,6 +596,9 @@ void Waves_SetupVote(KeyValues map)
 		}
 	}
 
+	if(kv != map)
+		delete kv;
+
 	CanReVote = Voting.Length > 1;
 
 	CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -622,7 +639,6 @@ void Waves_SetupMiniBosses(KeyValues map)
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		kv = new KeyValues("MiniBoss");
 		kv.ImportFromFile(buffer);
-		RequestFrame(DeleteHandle, kv);
 	}
 	
 	if(kv.GotoFirstSubKey())
@@ -668,6 +684,9 @@ void Waves_SetupMiniBosses(KeyValues map)
 			MiniBosses.PushArray(boss);
 		} while(kv.GotoNextKey());
 	}
+
+	if(kv != map)
+		delete kv;
 }
 
 bool Waves_GetMiniBoss(MiniBoss boss)
@@ -842,6 +861,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
+						kv.GetString("custom_name", enemy.CustomName, sizeof(enemy.CustomName));
 
 						if(!enemy.Credits)
 							nonBosses++;
@@ -1529,18 +1549,28 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			bool refreshNPCStore;
 			if(round.SpawnGrigori)
 			{
+				Spawn_Cured_Grigori();
+				refreshNPCStore = true;
+				if(i_SpecialGrigoriReplace == 2)
 				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
 				{
 					if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
 					{
-						ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
-						SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
-						SetGlobalTransTarget(client_Grigori);
-						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");		
+						if(i_SpecialGrigoriReplace == 0)
+						{
+							ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
+							SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
+							SetGlobalTransTarget(client_Grigori);
+							ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");	
+						}	
+						else if(i_SpecialGrigoriReplace == 2)
+						{
+							SetHudTextParams(-1.0, -1.0, 3.01, 125, 125, 125, 255);
+							SetGlobalTransTarget(client_Grigori);
+							ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "The World Machine Spawn");	
+						}
 					}
 				}
-				Spawn_Cured_Grigori();
-				refreshNPCStore = true;
 			}
 			
 			// Above is the round that just ended
@@ -2330,13 +2360,9 @@ float Zombie_DelayExtraSpeed()
 
 void DoGlobalMultiScaling()
 {
-	float playercount = float(CountPlayersOnRed());
+	float playercount = ZRStocks_PlayerScalingDynamic();
 			
-	if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
-	{
-		playercount = 0.70;
-	}
-	else if(playercount < 1.0)
+	if(playercount < 1.0)
 	{
 		playercount = 0.70;
 	}
@@ -2348,6 +2374,10 @@ void DoGlobalMultiScaling()
 	MultiGlobalHealthBoss = playercount * 0.2;
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 	MultiGlobalEnemyBoss = playercount * 0.3;
+
+	
+	//certain maps need this.
+	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 
 	float cap = zr_enemymulticap.FloatValue;
 
@@ -2548,7 +2578,7 @@ static void UpdateMvMStatsFrame()
 
 		if(Enemies)
 		{
-			Enemy enemy;
+			static Enemy enemy;
 			int length = Enemies.Length;
 			for(int a; a < length; a++)
 			{

@@ -42,9 +42,9 @@ void Iberia_AntiSeaRobot_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Iberia_AntiSeaRobot(client, vecPos, vecAng, ally, data);
+	return Iberia_AntiSeaRobot(vecPos, vecAng, team, data);
 }
 
 methodmap Iberia_AntiSeaRobot < CClotBody
@@ -85,7 +85,7 @@ methodmap Iberia_AntiSeaRobot < CClotBody
 	}
 	
 	
-	public Iberia_AntiSeaRobot(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Iberia_AntiSeaRobot(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Iberia_AntiSeaRobot npc = view_as<Iberia_AntiSeaRobot>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.35", "3500", ally, false, true));
 		

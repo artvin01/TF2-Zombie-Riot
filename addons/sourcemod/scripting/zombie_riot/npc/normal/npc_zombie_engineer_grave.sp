@@ -69,9 +69,9 @@ void Engineer_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Engineer(client, vecPos, vecAng, ally);
+	return Engineer(vecPos, vecAng, team);
 }
 methodmap Engineer < CClotBody
 {
@@ -133,7 +133,7 @@ methodmap Engineer < CClotBody
 	}
 	
 	
-	public Engineer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Engineer(float vecPos[3], float vecAng[3], int ally)
 	{
 		Engineer npc = view_as<Engineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2500", ally));
 		
@@ -186,8 +186,7 @@ methodmap Engineer < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Engineer_ClotThink(int iNPC)
 {
 	Engineer npc = view_as<Engineer>(iNPC);

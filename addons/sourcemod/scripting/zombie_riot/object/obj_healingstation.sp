@@ -65,7 +65,7 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	float HealAmmount = 30.0;
 	if(IsValidClient(owner))
 	{
-		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, true);
+		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true);
 	}
 	Building_GiveRewardsUse(client, owner, 15, true, 0.4, true);
 

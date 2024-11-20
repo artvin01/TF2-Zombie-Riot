@@ -58,9 +58,9 @@ static void ClotPrecache()
 
 	
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Lazines(client, vecPos, vecAng, ally);
+	return Lazines(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -127,7 +127,7 @@ methodmap Lazines < CClotBody
 			}
 		}
 	}
-	public Lazines(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lazines(float vecPos[3], float vecAng[3], int ally)
 	{
 		Lazines npc = view_as<Lazines>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 		
@@ -201,8 +201,7 @@ methodmap Lazines < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lazines npc = view_as<Lazines>(iNPC);

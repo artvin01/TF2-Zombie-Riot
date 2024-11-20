@@ -67,9 +67,9 @@ void SelfamIre_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SelfamIre(client, vecPos, vecAng, ally);
+	return SelfamIre(vecPos, vecAng, team);
 }
 
 methodmap SelfamIre < CClotBody
@@ -115,7 +115,7 @@ methodmap SelfamIre < CClotBody
 	}
 	
 	
-	public SelfamIre(int client, float vecPos[3], float vecAng[3], int ally)
+	public SelfamIre(float vecPos[3], float vecAng[3], int ally)
 	{
 		SelfamIre npc = view_as<SelfamIre>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "550", ally));
 		

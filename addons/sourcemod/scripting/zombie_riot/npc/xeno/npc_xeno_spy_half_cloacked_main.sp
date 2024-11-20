@@ -87,9 +87,9 @@ public void XenoSpyCloaked_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoSpyCloaked(client, vecPos, vecAng, ally);
+	return XenoSpyCloaked(vecPos, vecAng, team);
 }
 methodmap XenoSpyCloaked < CClotBody
 {
@@ -163,7 +163,7 @@ methodmap XenoSpyCloaked < CClotBody
 	}
 	
 	
-	public XenoSpyCloaked(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSpyCloaked(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSpyCloaked npc = view_as<XenoSpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "20000", ally));
 		
@@ -241,8 +241,7 @@ methodmap XenoSpyCloaked < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSpyCloaked_ClotThink(int iNPC)
 {
 	XenoSpyCloaked npc = view_as<XenoSpyCloaked>(iNPC);

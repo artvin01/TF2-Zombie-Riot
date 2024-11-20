@@ -60,9 +60,9 @@ void Iberia_Ginus_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaGinus(client, vecPos, vecAng, ally);
+	return IberiaGinus(vecPos, vecAng, team);
 }
 methodmap IberiaGinus < CClotBody
 {
@@ -107,7 +107,7 @@ methodmap IberiaGinus < CClotBody
 	}
 	
 	
-	public IberiaGinus(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaGinus(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaGinus npc = view_as<IberiaGinus>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
 		

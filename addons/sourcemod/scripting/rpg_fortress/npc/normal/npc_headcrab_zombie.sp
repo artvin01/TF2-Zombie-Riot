@@ -69,9 +69,9 @@ public void HeadcrabZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeadcrabZombie(client, vecPos, vecAng, ally);
+	return HeadcrabZombie(vecPos, vecAng, team);
 }
 
 methodmap HeadcrabZombie < CClotBody
@@ -111,7 +111,7 @@ methodmap HeadcrabZombie < CClotBody
 	}
 	
 	
-	public HeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		HeadcrabZombie npc = view_as<HeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
@@ -147,8 +147,7 @@ methodmap HeadcrabZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void HeadcrabZombie_ClotThink(int iNPC)
 {
 	HeadcrabZombie npc = view_as<HeadcrabZombie>(iNPC);
@@ -201,11 +200,12 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 8500.0;
+					float damage = 7500.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");

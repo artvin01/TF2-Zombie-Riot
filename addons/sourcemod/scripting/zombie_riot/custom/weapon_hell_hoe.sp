@@ -843,6 +843,12 @@ stock void HellHoeLaunch(int client, int weapon, float dmg, float speed, float t
 	float fRight[3], fFowardd[3];
 	GetAngleVectors(fAng, fFowardd, fRight, NULL_VECTOR);
 	
+	if(projectile_number > 2)
+	{
+		dmg *= float(projectile_number) / 2.0;
+		healthGain *= float(projectile_number) / 2.0;
+		projectile_number = 2;
+	}
 	
 	if (isStrikeHorizontal[client] || g_isPlayerInDeathMarch_HellHoe[client] || i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_3) {
 		fPos[0] += spaceBetweenProj * fRight[0];

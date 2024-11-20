@@ -158,7 +158,7 @@ methodmap CombineOverlord < CClotBody
 		
 	}
 	
-	public CombineOverlord(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineOverlord(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineOverlord npc = view_as<CombineOverlord>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_3.mdl", "1.0", "35000", ally));
 		
@@ -209,8 +209,7 @@ methodmap CombineOverlord < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineOverlord_ClotThink(int iNPC)
 {
 	CombineOverlord npc = view_as<CombineOverlord>(iNPC);

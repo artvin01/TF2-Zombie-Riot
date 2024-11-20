@@ -291,7 +291,7 @@ static void TBB_Ability_Boomstick(int client)
 		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BEAM_BuildingHit[building][repeats] = false;
-			BEAM_Targets_Hit[client][repeats] = 0.0;
+			BEAM_Targets_Hit[repeats] = 0.0;
 		}
 	}
 			

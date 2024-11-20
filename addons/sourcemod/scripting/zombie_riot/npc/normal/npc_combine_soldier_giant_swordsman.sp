@@ -69,7 +69,7 @@ void CombineGaint_OnMapStart_NPC()
 
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Giant Swordsman");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Giant Swordsman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_giant_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;
@@ -80,9 +80,9 @@ void CombineGaint_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineGaint(client, vecPos, vecAng, ally);
+	return CombineGaint(vecPos, vecAng, team);
 }
 methodmap CombineGaint < CClotBody
 {
@@ -160,7 +160,7 @@ methodmap CombineGaint < CClotBody
 	}
 	
 	
-	public CombineGaint(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineGaint(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineGaint npc = view_as<CombineGaint>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
 		
@@ -210,8 +210,7 @@ methodmap CombineGaint < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void CombineGaint_ClotThink(int iNPC)
 {
 	CombineGaint npc = view_as<CombineGaint>(iNPC);

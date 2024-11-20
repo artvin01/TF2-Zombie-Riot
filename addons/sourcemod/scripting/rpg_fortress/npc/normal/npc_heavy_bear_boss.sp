@@ -60,9 +60,9 @@ public void HeavyBearBoss_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeavyBearBoss(client, vecPos, vecAng, ally);
+	return HeavyBearBoss(vecPos, vecAng, team);
 }
 
 methodmap HeavyBearBoss < CClotBody
@@ -102,7 +102,7 @@ methodmap HeavyBearBoss < CClotBody
 	}
 	
 	
-	public HeavyBearBoss(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeavyBearBoss(float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyBearBoss npc = view_as<HeavyBearBoss>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "1000", ally, false, true));
 
@@ -164,8 +164,7 @@ methodmap HeavyBearBoss < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void HeavyBearBoss_ClotThink(int iNPC)
 {
 	HeavyBearBoss npc = view_as<HeavyBearBoss>(iNPC);
@@ -220,9 +219,10 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 200.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						if(npc.m_iAttacksTillMegahit > 3)
 						{
 							npc.m_iAttacksTillMegahit = 0;

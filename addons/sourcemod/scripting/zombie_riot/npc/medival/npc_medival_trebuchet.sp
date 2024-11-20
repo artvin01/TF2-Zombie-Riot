@@ -20,9 +20,9 @@ void MedivalTrebuchet_OnMapStart()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalTrebuchet(client, vecPos, vecAng, ally);
+	return MedivalTrebuchet(vecPos, vecAng, team);
 }
 methodmap MedivalTrebuchet < CClotBody
 {
@@ -31,7 +31,7 @@ methodmap MedivalTrebuchet < CClotBody
 		EmitSoundToAll("weapons/mortar/mortar_fire1.wav", this.index, _, 130, _, 1.0, 100);
 	}
 	
-	public MedivalTrebuchet(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalTrebuchet(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalTrebuchet npc = view_as<MedivalTrebuchet>(CClotBody(vecPos, vecAng, NPCModel, "1.35", "5000", ally));
 		i_NpcWeight[npc.index] = 5;
@@ -64,8 +64,7 @@ methodmap MedivalTrebuchet < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalTrebuchet_ClotThink(int iNPC)
 {
 	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);

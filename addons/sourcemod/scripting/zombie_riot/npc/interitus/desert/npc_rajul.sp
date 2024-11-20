@@ -62,9 +62,9 @@ void DesertRajul_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DesertRajul(client, vecPos, vecAng, ally);
+	return DesertRajul(vecPos, vecAng, team);
 }
 
 methodmap DesertRajul < CClotBody
@@ -106,7 +106,7 @@ methodmap DesertRajul < CClotBody
 	}
 	
 	
-	public DesertRajul(int client, float vecPos[3], float vecAng[3], int ally)
+	public DesertRajul(float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertRajul npc = view_as<DesertRajul>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "3000", ally, false, true));
 		

@@ -42,9 +42,9 @@ void Kamikaze_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Kamikaze(client, vecPos, vecAng, ally);
+	return Kamikaze(vecPos, vecAng, team);
 }
 methodmap Kamikaze < CClotBody
 {
@@ -74,7 +74,7 @@ methodmap Kamikaze < CClotBody
 		
 		
 	}
-	public Kamikaze(int client, float vecPos[3], float vecAng[3], int ally)
+	public Kamikaze(float vecPos[3], float vecAng[3], int ally)
 	{
 		Kamikaze npc = view_as<Kamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
 		
@@ -122,8 +122,7 @@ methodmap Kamikaze < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Kamikaze_ClotThink(int iNPC)
 {
 	Kamikaze npc = view_as<Kamikaze>(iNPC);

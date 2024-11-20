@@ -293,7 +293,7 @@ methodmap TheGambler < CClotBody
 		
 	}
 	
-	public TheGambler(int client, float vecPos[3], float vecAng[3], int ally)
+	public TheGambler(float vecPos[3], float vecAng[3], int ally)
 	{
 		TheGambler npc = view_as<TheGambler>(CClotBody(vecPos, vecAng, GAMBLERMODEL, "1.0", "180000", ally));
 		
@@ -1362,7 +1362,7 @@ public Action Gambler_Orb_IEM_OnHatTouch(int entity, int client)
 		int particle = EntRefToEntIndex(Orb_Projectile_To_Particle[npc.index]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);

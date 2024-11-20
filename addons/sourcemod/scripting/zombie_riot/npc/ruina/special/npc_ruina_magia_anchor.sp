@@ -90,7 +90,7 @@ static char[] GetBuildingHealth()
 {
 	int health = 110;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	
@@ -154,9 +154,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheModel(RUINA_TOWER_CORE_MODEL);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Magia_Anchor(client, vecPos, vecAng, ally, data);
+	return Magia_Anchor(vecPos, vecAng, team, data);
 }
 methodmap Magia_Anchor < CClotBody
 {
@@ -215,7 +215,7 @@ methodmap Magia_Anchor < CClotBody
 		
 	}
 	
-	public Magia_Anchor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Magia_Anchor(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,350.0}));
 		
@@ -672,9 +672,24 @@ static void Spawn_Anchor_NPC(int iNPC, char[] plugin_name, int health = 0, int c
 	}
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(iNPC);
-	for(int i; i<count; i++)
+	if(!Waves_InFreeplay())
 	{
-		Waves_AddNextEnemy(enemy);
+		for(int i; i<count; i++)
+		{
+			Waves_AddNextEnemy(enemy);
+		}
+	}
+	else
+	{
+		int postWaves = CurrentRound - Waves_GetMaxRound();
+		Freeplay_AddEnemy(postWaves, enemy, count);
+		if(count > 0)
+		{
+			for(int a; a < count; a++)
+			{
+				Waves_AddNextEnemy(enemy);
+			}
+		}
 	}
 	Zombies_Currently_Still_Ongoing += count;	// FIXME
 }

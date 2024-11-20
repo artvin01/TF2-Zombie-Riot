@@ -203,7 +203,10 @@ enum
 	WEAPON_FULLMOON = 123,
 	WEAPON_SKADI = 124,
 	WEAPON_HUNTING_RIFLE = 125,
-	WEAPON_URANIUM_RIFLE = 126
+	WEAPON_URANIUM_RIFLE = 126,
+	WEAPON_LOGOS = 127,
+	WEAPON_WALTER = 128,
+	WEAPON_OLDINFINITYBLADE = 129
 }
 
 enum
@@ -225,6 +228,7 @@ enum
 	Type_Void,
 	Type_Ruina,
 	Type_IberiaExpiAlliance,
+	Type_WhiteflowerSpecial,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -235,16 +239,17 @@ int CurrentPlayers;
 ConVar zr_voteconfig;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
+ConVar zr_tagwhitehard;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
 ConVar CvarNoSpecialZombieSpawn;
-ConVar zr_spawnprotectiontime;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
+ConVar zr_raidmultihp;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -421,6 +426,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/music.sp"
 #include "zombie_riot/natives.sp"
 #include "zombie_riot/queue.sp"
+#include "zombie_riot/skilltree.sp"
 #include "zombie_riot/spawns.sp"
 #include "zombie_riot/store.sp"
 #include "zombie_riot/teuton_sound_override.sp"
@@ -559,6 +565,8 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_yakuza.sp"
 #include "zombie_riot/custom/weapon_skadi.sp"
 #include "zombie_riot/custom/weapon_hunting_rifle.sp"
+#include "zombie_riot/custom/wand/weapon_logos.sp"
+#include "zombie_riot/custom/weapon_walter.sp"
 
 void ZR_PluginLoad()
 {
@@ -605,6 +613,7 @@ void ZR_PluginStart()
 	Medigun_PluginStart();
 	OnPluginStartMangler();
 	OnPluginStart_Glitched_Weapon();
+	SkillTree_PluginStart();
 	Tutorial_PluginStart();
 	Waves_PluginStart();
 	Rogue_PluginStart();
@@ -629,6 +638,11 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+
+	PrecacheSound("ui/hitsound_electro1.wav");
+	PrecacheSound("ui/hitsound_electro2.wav");
+	PrecacheSound("ui/hitsound_electro3.wav");
+	PrecacheSound("ui/hitsound_space.wav");
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
@@ -812,6 +826,7 @@ void ZR_MapStart()
 	Wrathful_Blade_Precache();
 	Yakuza_MapStart();
 	ResetMapStartSkadiWeapon();
+	Logos_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -902,7 +917,6 @@ void ZR_ClientDisconnect(int client)
 	DataBase_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
-	ViewChange_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
@@ -1421,7 +1435,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				if(dieingstate[client] != -5)
 				{
 					GiveCompleteInvul(client, 2.0);
-					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 90, _, 1.0);
+					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 70, _, 0.7);
 					MakePlayerGiveResponseVoice(client, 3); //Revived response!
 				}
 				SetEntityMoveType(client, MOVETYPE_WALK);
@@ -1710,7 +1724,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							dieingstate[client] = 0;
 							Store_ApplyAttribs(client);
-							TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+							SDKCall_SetSpeed(client);
 							int entity, i;
 							while(TF2U_GetWearable(client, entity, i))
 							{
@@ -2115,7 +2129,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 			if(IsPlayerAlive(client))
 			{
 				SetEntityMoveType(client, MOVETYPE_WALK);
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -2131,7 +2145,8 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 			SetEntityRenderMode(client, RENDER_NORMAL);
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
-			i_AmountDowned[client] = 0;
+			if(i_AmountDowned[client] > 0)
+				i_AmountDowned[client] = 0;
 			if(CurrentModifOn() == 3)
 				i_AmountDowned[client] = 1;
 
@@ -2162,7 +2177,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 					
 
 					Store_ApplyAttribs(client);
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+					SDKCall_SetSpeed(client);
 					int entity, i;
 					while(TF2U_GetWearable(client, entity, i))
 					{
@@ -2242,7 +2257,6 @@ int XpToLevel(int xp)
 {
 	return RoundToFloor(Pow(xp / 200.0, 0.5));
 }
-
 int LevelToXp(int lv)
 {
 	return lv * lv * 200;
@@ -2286,18 +2300,18 @@ void GiveXP(int client, int xp)
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
 	{
-		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
-		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-		
-		//int maxhealth = SDKCall_GetMaxHealth(client);
-		//if(GetClientHealth(client) < maxhealth)
-		//	SetEntityHealth(client, maxhealth);
+		if(Level[client] < STARTER_WEAPON_LEVEL)
+		{
+			static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
+			ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
+
+			int maxhealth = SDKCall_GetMaxHealth(client) + 50;
+			if(GetClientHealth(client) < maxhealth)
+				SetEntityHealth(client, maxhealth);
+		}
 		
 		SetGlobalTransTarget(client);
-		PrintToChat(client, "%t", "Level Up", nextLevel);
-		
-		bool found;
-		int slots;
+		PrintToChat(client, "%t", "Level Up", Level[client]);
 		
 		while(Level[client] < nextLevel)
 		{
@@ -2306,33 +2320,15 @@ void GiveXP(int client, int xp)
 			if(Level[client] == STARTER_WEAPON_LEVEL)
 			{
 				CPrintToChat(client, "%t", "All Weapons Unlocked");
-				found = true;
 			}
 			
-			if(Store_PrintLevelItems(client, Level[client]))
-				found = true;
-			
-			if(Level[client] > STARTER_WEAPON_LEVEL && !(Level[client] % 2))
-				slots++;
-			
-			if(Level[client] < 81 && !(Level[client] % 10))
-			{
-				CPrintToChat(client, "%t", "Additional Starting Ingot", (Level[client] + 70) / 10, (Level[client] + 80) / 10);
-				found = true;
-			}
+			Store_PrintLevelItems(client, Level[client]);
 		}
-		
-		if(slots)
-		{
-			PrintToChat(client, "%t", "Loadout Slots", slots);
-		}
-		else if(!found)
-		{
-			PrintToChat(client, "%t", "None");
-		}
+
+		if(Level[client] >= STARTER_WEAPON_LEVEL)
+			CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
 	}
 }
-
 
 void PlayerApplyDefaults(int client)
 {

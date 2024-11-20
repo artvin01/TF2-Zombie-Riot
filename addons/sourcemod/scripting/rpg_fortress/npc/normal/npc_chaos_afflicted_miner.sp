@@ -62,9 +62,9 @@ public void ChaosAfflictedMiner_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ChaosAfflictedMiner(client, vecPos, vecAng, ally);
+	return ChaosAfflictedMiner(vecPos, vecAng, team);
 }
 
 methodmap ChaosAfflictedMiner < CClotBody
@@ -109,7 +109,7 @@ methodmap ChaosAfflictedMiner < CClotBody
 	}
 	
 	
-	public ChaosAfflictedMiner(int client, float vecPos[3], float vecAng[3], int ally)
+	public ChaosAfflictedMiner(float vecPos[3], float vecAng[3], int ally)
 	{
 		ChaosAfflictedMiner npc = view_as<ChaosAfflictedMiner>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally, false));
 
@@ -200,8 +200,7 @@ methodmap ChaosAfflictedMiner < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ChaosAfflictedMiner_ClotThink(int iNPC)
 {
 	ChaosAfflictedMiner npc = view_as<ChaosAfflictedMiner>(iNPC);
@@ -275,9 +274,10 @@ public void ChaosAfflictedMiner_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 5000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");

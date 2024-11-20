@@ -58,9 +58,9 @@ public void SniperAccuracy_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SniperAccuracy(client, vecPos, vecAng, ally);
+	return SniperAccuracy(vecPos, vecAng, team);
 }
 
 methodmap SniperAccuracy < CClotBody
@@ -106,7 +106,7 @@ methodmap SniperAccuracy < CClotBody
 	
 	
 	
-	public SniperAccuracy(int client, float vecPos[3], float vecAng[3], int ally)
+	public SniperAccuracy(float vecPos[3], float vecAng[3], int ally)
 	{
 		SniperAccuracy npc = view_as<SniperAccuracy>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "300", ally, false,_,_,_,_));
 		
@@ -154,8 +154,7 @@ methodmap SniperAccuracy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SniperAccuracy_ClotThink(int iNPC)
 {
 	SniperAccuracy npc = view_as<SniperAccuracy>(iNPC);
@@ -210,9 +209,10 @@ public void SniperAccuracy_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 150000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						StartBleedingTimer_Against_Client(target, npc.index, 100000.0, 5);
 					}

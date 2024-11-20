@@ -66,9 +66,9 @@ public void NemanBoss_OnMapStart_NPC()
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return NemanBoss(client, vecPos, vecAng, ally);
+	return NemanBoss(vecPos, vecAng, team);
 }
 
 methodmap NemanBoss < CClotBody
@@ -117,7 +117,7 @@ methodmap NemanBoss < CClotBody
 	}
 	
 	
-	public NemanBoss(int client, float vecPos[3], float vecAng[3], int ally)
+	public NemanBoss(float vecPos[3], float vecAng[3], int ally)
 	{
 		NemanBoss npc = view_as<NemanBoss>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "300", ally, false,_,_,_,_));
 
@@ -171,8 +171,7 @@ methodmap NemanBoss < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void NemanBoss_ClotThink(int iNPC)
 {
 	NemanBoss npc = view_as<NemanBoss>(iNPC);
@@ -242,9 +241,10 @@ public void NemanBoss_ClotThink(int iNPC)
 					if(b_thisNpcIsABoss[npc.index])
 						damage = 4500.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");

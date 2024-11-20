@@ -42,7 +42,7 @@ void RaidbossBladedance_MapStart()
 	for (int i = 0; i < (sizeof(g_RangedSpecialAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedSpecialAttackSoundsSecondary[i]);	}
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bladedance The Combine");
+	strcopy(data.Name, sizeof(data.Name), "Bladedance The Betrayed");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bladedance");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -52,9 +52,9 @@ void RaidbossBladedance_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RaidbossBladedance(client, vecPos, vecAng, ally, data);
+	return RaidbossBladedance(vecPos, vecAng, team, data);
 }
 
 methodmap RaidbossBladedance < CClotBody
@@ -116,7 +116,7 @@ methodmap RaidbossBladedance < CClotBody
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public RaidbossBladedance(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RaidbossBladedance(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossBladedance npc = view_as<RaidbossBladedance>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1500000", ally, false));
 		

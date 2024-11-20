@@ -151,9 +151,9 @@ static void ClotPrecache()
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return ChaosKahmlstein(client, vecPos, vecAng, ally, data);
+	return ChaosKahmlstein(vecPos, vecAng, team, data);
 }
 methodmap ChaosKahmlstein < CClotBody
 {
@@ -273,7 +273,7 @@ methodmap ChaosKahmlstein < CClotBody
 		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, 120, _, 3.0);	
 	}
 	
-	public ChaosKahmlstein(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public ChaosKahmlstein(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		ChaosKahmlstein npc = view_as<ChaosKahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,_)); //giant!
 		
@@ -428,7 +428,7 @@ methodmap ChaosKahmlstein < CClotBody
 				RaidModeScaling *= 0.38;
 			}
 			
-			float amount_of_people = float(CountPlayersOnRed());
+			float amount_of_people = ZRStocks_PlayerScalingDynamic();
 			if(amount_of_people > 12.0)
 			{
 				amount_of_people = 12.0;

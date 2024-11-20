@@ -61,9 +61,9 @@ void IberiaCombastia_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaCombastia(client, vecPos, vecAng, ally);
+	return IberiaCombastia(vecPos, vecAng, team);
 }
 
 methodmap IberiaCombastia < CClotBody
@@ -107,7 +107,7 @@ methodmap IberiaCombastia < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public IberiaCombastia(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaCombastia(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaCombastia npc = view_as<IberiaCombastia>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "9000", ally, false, true));
 		

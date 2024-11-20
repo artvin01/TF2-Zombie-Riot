@@ -475,7 +475,7 @@ methodmap TrueZerofuse < CClotBody
 		#endif
 	}
 	
-	public TrueZerofuse(int client, float vecPos[3], float vecAng[3], int ally)
+	public TrueZerofuse(float vecPos[3], float vecAng[3], int ally)
 	{
 		TrueZerofuse npc = view_as<TrueZerofuse>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "2250000", ally));
 		
@@ -592,8 +592,7 @@ methodmap TrueZerofuse < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void TrueZerofuse_ClotThink(int iNPC)
 {
 	TrueZerofuse npc = view_as<TrueZerofuse>(iNPC);

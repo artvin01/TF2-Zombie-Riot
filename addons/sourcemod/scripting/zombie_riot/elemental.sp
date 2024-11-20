@@ -234,25 +234,11 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 }
 
-void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
-{
-	if(i_ChaosArrowAmount[attacker] > 0)
-	{
-		Elemental_AddChaosDamage(victim, attacker, RoundToCeil(float(i_ChaosArrowAmount[attacker]) * Scale));
-	}
-	if(i_VoidArrowAmount[attacker] > 0)
-	{
-		Elemental_AddVoidDamage(victim, attacker, RoundToCeil(float(i_VoidArrowAmount[attacker]) * Scale));
-	}
-	if(i_NervousImpairmentArrowAmount[attacker] > 0)
-	{
-#if defined ZR
-		Elemental_AddNervousDamage(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
-#endif
-	}	
-}
 void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(b_NpcIsInvulnerable[victim])
+		return;
+
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(victim <= MaxClients)
 	{
@@ -347,6 +333,8 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 
 void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, bool VoidWeaponDo = false)
 {
+	if(b_NpcIsInvulnerable[victim])
+		return;
 	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
 		return;
 	//cant void other voids!
@@ -459,6 +447,8 @@ static void SakratanGroupDebuffInternal(int victim)
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 {
+	if(b_NpcIsInvulnerable[victim])
+		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(victim <= MaxClients)
 	{
@@ -491,6 +481,8 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 
 void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int weapon = -1)
 {
+	if(b_NpcIsInvulnerable[victim])
+		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(victim <= MaxClients)
 	{

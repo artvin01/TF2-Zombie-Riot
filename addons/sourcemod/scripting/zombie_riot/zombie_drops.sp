@@ -298,7 +298,6 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 					ParticleEffectAt(powerup_pos, "hightower_explosion", 1.0);
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(NUKE_SOUND, _, SNDCHAN_STATIC, 100, _);
-					EmitSoundToAll(NUKE_SOUND, _, SNDCHAN_STATIC, 100, _);
 					while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
 					{
 						if(IsValidEntity(base_boss) && base_boss > 0)
@@ -388,7 +387,6 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
-					EmitSoundToAll(AMMO_SOUND, _, SNDCHAN_STATIC, 100, _);
 					EmitSoundToAll(AMMO_SOUND, _, SNDCHAN_STATIC, 100, _);
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{
@@ -564,8 +562,7 @@ public Action Timer_Detect_Player_Near_Health(Handle timer, any entid)
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
-					EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _);
-				//	EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _);
+					EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _,0.65);
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))
@@ -657,7 +654,6 @@ public Action Timer_Detect_Player_Near_Money(Handle timer, any entid)
 				{
 					GlobalExtraCash += 500;
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
-					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);
 					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{
@@ -792,7 +788,6 @@ public Action Timer_Detect_Player_Near_Grigori(Handle timer, any entid)
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
-					EmitSoundToAll(GRIGORI_POWERUP_SOUND, _, SNDCHAN_STATIC, 100, _);
 					EmitSoundToAll(GRIGORI_POWERUP_SOUND, _, SNDCHAN_STATIC, 100, _);
 					Store_RandomizeNPCStore(0, 1);
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)

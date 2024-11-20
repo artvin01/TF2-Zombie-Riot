@@ -100,9 +100,9 @@ void MedivalKnight_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalKnight(client, vecPos, vecAng, ally);
+	return MedivalKnight(vecPos, vecAng, team);
 }
 methodmap MedivalKnight < CClotBody
 {
@@ -164,7 +164,7 @@ methodmap MedivalKnight < CClotBody
 		
 	}
 	
-	public MedivalKnight(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalKnight(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalKnight npc = view_as<MedivalKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "5000", ally));
 		SetVariantInt(1);
@@ -225,8 +225,7 @@ methodmap MedivalKnight < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalKnight_ClotThink(int iNPC)
 {
 	MedivalKnight npc = view_as<MedivalKnight>(iNPC);
@@ -290,9 +289,10 @@ public void MedivalKnight_ClotThink(int iNPC)
 					{
 						damage *= 3.0;
 					}
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
 				}

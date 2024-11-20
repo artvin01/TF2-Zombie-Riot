@@ -176,7 +176,6 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
 	MVMHud_Disable();
 	GameRules_SetProp("m_iRoundState", RoundState_TeamWin);
-	Store_RandomizeNPCStore(1);
 	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
 	GlobalExtraCash = 0;
@@ -635,7 +634,7 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 					{
 						dieingstate[client] = 0;
 						Store_ApplyAttribs(client);
-						TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+						SDKCall_SetSpeed(client);
 						int entity_wearable, i;
 						while(TF2U_GetWearable(client, entity_wearable, i))
 						{

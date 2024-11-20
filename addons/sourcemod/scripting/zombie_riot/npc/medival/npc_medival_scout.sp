@@ -100,9 +100,9 @@ void MedivalScout_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalScout(client, vecPos, vecAng, ally);
+	return MedivalScout(vecPos, vecAng, team);
 }
 methodmap MedivalScout < CClotBody
 {
@@ -164,7 +164,7 @@ methodmap MedivalScout < CClotBody
 		
 	}
 	
-	public MedivalScout(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalScout(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalScout npc = view_as<MedivalScout>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "500", ally));
 		SetVariantInt(1);
@@ -214,8 +214,7 @@ methodmap MedivalScout < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalScout_ClotThink(int iNPC)
 {
 	MedivalScout npc = view_as<MedivalScout>(iNPC);
@@ -270,9 +269,10 @@ public void MedivalScout_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 25.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
 				}

@@ -3,7 +3,7 @@
 
 methodmap CombineSMG < CombinePolice
 {
-	public CombineSMG(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineSMG(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineSMG npc = view_as<CombineSMG>(BaseSquad(vecPos, vecAng, "models/police.mdl", "1.15", ally, false));
 		

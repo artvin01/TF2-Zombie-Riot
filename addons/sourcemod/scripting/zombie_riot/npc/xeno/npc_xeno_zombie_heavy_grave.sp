@@ -69,9 +69,9 @@ public void XenoHeavy_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoHeavy(client, vecPos, vecAng, ally);
+	return XenoHeavy(vecPos, vecAng, team);
 }
 methodmap XenoHeavy < CClotBody
 {
@@ -135,7 +135,7 @@ methodmap XenoHeavy < CClotBody
 	
 	
 	
-	public XenoHeavy(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoHeavy(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoHeavy npc = view_as<XenoHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "6500", ally));
 		
@@ -180,8 +180,7 @@ methodmap XenoHeavy < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void XenoHeavy_ClotThink(int iNPC)
 {
 	XenoHeavy npc = view_as<XenoHeavy>(iNPC);

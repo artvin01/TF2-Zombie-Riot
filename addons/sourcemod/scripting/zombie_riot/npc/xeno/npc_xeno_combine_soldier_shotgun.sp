@@ -80,7 +80,7 @@ public void XenoCombineSoldierShotgun_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Shotgunner");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Shotgunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_shotgun");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_shotgun");
 	data.IconCustom = true;
@@ -90,9 +90,9 @@ public void XenoCombineSoldierShotgun_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombineSoldierShotgun(client, vecPos, vecAng, ally);
+	return XenoCombineSoldierShotgun(vecPos, vecAng, team);
 }
 
 methodmap XenoCombineSoldierShotgun < CClotBody
@@ -168,7 +168,7 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 	}
 	
 	
-	public XenoCombineSoldierShotgun(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineSoldierShotgun(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineSoldierShotgun npc = view_as<XenoCombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "800", ally));
 		
@@ -219,8 +219,7 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 {
 	XenoCombineSoldierShotgun npc = view_as<XenoCombineSoldierShotgun>(iNPC);

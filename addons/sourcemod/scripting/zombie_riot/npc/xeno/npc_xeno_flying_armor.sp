@@ -91,9 +91,9 @@ public void XenoFlyingArmor_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoFlyingArmor(client, vecPos, vecAng, ally);
+	return XenoFlyingArmor(vecPos, vecAng, team);
 }
 methodmap XenoFlyingArmor < CClotBody
 {
@@ -168,7 +168,7 @@ methodmap XenoFlyingArmor < CClotBody
 	}
 	
 	
-	public XenoFlyingArmor(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoFlyingArmor(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoFlyingArmor npc = view_as<XenoFlyingArmor>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
 		SetVariantInt(1);
@@ -225,8 +225,7 @@ methodmap XenoFlyingArmor < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoFlyingArmor_ClotThink(int iNPC)
 {
 	XenoFlyingArmor npc = view_as<XenoFlyingArmor>(iNPC);

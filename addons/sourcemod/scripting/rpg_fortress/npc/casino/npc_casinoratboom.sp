@@ -41,9 +41,9 @@ void CasinoRatBoom_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CasinoRatBoom(client, vecPos, vecAng, ally);
+	return CasinoRatBoom(client, vecPos, vecAng, team);
 }
 
 methodmap CasinoRatBoom < CClotBody
@@ -153,7 +153,7 @@ static void ClotThink(int iNPC)
 						{
 							KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 
-							makeexplosion(npc.index, _, vecHit, _, CasinoShared_GetDamage(npc, 0.7), 100, _, _, true);
+							makeexplosion(npc.index, _, vecHit, _, RoundFloat(CasinoShared_GetDamage(npc, 0.7)), 100, _, _, true);
 						}
 					}
 				}
@@ -219,6 +219,6 @@ static void ClotDeath(int entity)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos); 
 		pos[2] += 30;
 
-		makeexplosion(npc.index, _, pos, _, CasinoShared_GetDamage(npc, 0.3), 100, _, _, true);
+		makeexplosion(npc.index, _, pos, _, RoundFloat(CasinoShared_GetDamage(npc, 0.3)), 100, _, _, true);
 	}
 }

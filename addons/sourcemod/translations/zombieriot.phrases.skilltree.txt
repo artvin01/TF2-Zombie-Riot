@@ -1,0 +1,337 @@
+
+"Phrases"
+{
+	"Skill Tree"
+	{
+		"en"	"Skill Tree"
+	}
+	"Skill Points"
+	{
+		"#format"	"{1:d}"
+		"en"	"Skill Points: {1}"
+	}
+	"Browse Skill Tree"
+	{
+		"en"	"Browse Skill Tree"
+	}
+	"Reset Skill Tree"
+	{
+		"en"	"Reset Skill Tree"
+	}
+	"Reset Skill Tree Confirm"
+	{
+		"en"	"Are you sure you wish to reset your skill tree?\nThis can not be undone."
+	}
+	"Unlock Skill"
+	{
+		"en"	"Unlock Skill"
+	}
+	"Fully Upgraded"
+	{
+		"en"	"Fully Upgraded"
+	}
+	"Upgrade Skill"
+	{
+		"en"	"Upgrade Skill"
+	}
+	"Unlocked"
+	{
+		"en"	"Unlocked"
+	}
+	"Luck Up 1"
+	{
+		"en" 		"Luck Up"
+	}
+	"Luck Up 1 Desc"
+	{
+		"en" 		"Gain an additional +0.005%% chance to crit an enemy for 2x damage on any damage instance."
+	}
+	"Weapon Damage All 1"
+	{
+		"en" 		"Weapon Damage"
+	}
+	"Weapon Damage All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.05%% damage buff to all weapons."
+	}
+	"Weapon Damage All 1 High"
+	{
+		"en" 		"Weapon Damage High"
+	}
+	"Weapon Damage All 1 High Desc"
+	{
+		"en" 		"Gain a multiplicative +0.2%% damage buff to all weapons."
+	}
+	"Attackspeed & Reload All 1"
+	{
+		"en" 		"Attack & Reloadspeed"
+	}
+	"Attackspeed & Reload All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.05%% attackspeed & reload buff to all weapons."
+	}
+	"Attackspeed & Reload All 1 High"
+	{
+		"en" 		"Attack & Reloadspeed"
+	}
+	"Attackspeed & Reload All 1 High Desc"
+	{
+		"en" 		"Gain a multiplicative +0.2%% attackspeed & reload buff to all weapons."
+	}
+	"Health Up 1"
+	{
+		"en" 		"Health Up"
+	}
+	"Health Up 1 Desc"
+	{
+		"en" 		"Gain a +1 HP"
+	}
+	"Health Up 1 High"
+	{
+		"en" 		"Health Up"
+	}
+	"Health Up 1 High Desc"
+	{
+		"en" 		"Gain a +5 HP"
+	}
+	"Health Up 1 Infinite"
+	{
+		"en" 		"Health Up"
+	}
+	"Health Up 1 Infinite Desc"
+	{
+		"en" 		"Gain a +0.1 HP, this can be used infinitly, and thus is not efficient use in skillpoints."
+	}
+	"Resist 1"
+	{
+		"en" 		"Total Resistance"
+	}
+	"Resist 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.05%% Resistance to all sources"
+	}
+	"Cash Up 1"
+	{
+		"en" 		"Extra Cash"
+	}
+	"Cash Up 1 Desc"
+	{
+		"en" 		"Gain +2 Extra Cash"
+	}
+	"Cash Up 1 Infinite"
+	{
+		"en" 		"Extra Cash Infinite"
+	}
+	"Cash Up 1 Infinite Desc"
+	{
+		"en" 		"Gain +0.2 Extra Cash, this can be used infinitly, and thus is not efficient use in skillpoints."
+	}
+	"Cash Up 1 High"
+	{
+		"en" 		"Extra Cash"
+	}
+	"Cash Up 1 High Desc"
+	{
+		"en" 		"Gain +20 Extra Cash"
+	}
+	"Reload All 1"
+	{
+		"en" 		"Reloadspeed"
+	}
+	"Reload All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.025%% reload buff to all weapons."
+	}
+	"Attackspeed All 1"
+	{
+		"en" 		"Attack Speed"
+	}
+	"Attackspeed All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.02%% Attackspeed buff to all weapons."
+	}
+	"FusionBuffDo"
+	{
+		"en" 		"Fusion Warrior Buff"
+	}
+	"FusionBuffDo Desc"
+	{
+		"en" 		"Gain a multiplicative +0.25%% Extra Damage and multiplicative +0.5%% Resistance."
+	}
+	"Kahmlstein Buff"
+	{
+		"en" 		"Kahmlstein Buff"
+	}
+	"Kahmlstein Buff Desc"
+	{
+		"en" 		"Gain a multiplicative +1%%% Extra Damage."
+	}
+	"Cash Up Barney 1"
+	{
+		"en" 		"Sellable Chainsaw"
+	}
+	"Cash Up Barney 1 Desc"
+	{
+		"en" 		"Gain a +30 extra cash."
+	}
+	"Sensal Buff Do"
+	{
+		"en" 		"Expidonsan Battery Buff"
+	}
+	"Sensal Buff Do Desc"
+	{
+		"en" 		"Gain a multiplicative +0.35%% Extra Damage and multiplicative +1.0%% Resistance."
+	}
+	"Alaxios Godly Powerup"
+	{
+		"en" 		"Alaxios' Full Buff"
+	}
+	"Alaxios Godly Powerup Desc"
+	{
+		"en" 		"Gain a multiplicative +1.0%% Resistance and 15 HP."
+	}
+	"Bob's Healing Hand"
+	{
+		"en" 		"Bob's Healing Hand Buff"
+	}
+	"Bob's Healing Hand Desc"
+	{
+		"en" 		"Gain a 25 HP.\nAn additional +0.05%% luck and 1%% building HP and reduces revive time by 5 out of 250"
+	}
+	"Blitzkrieg Buff"
+	{
+		"en" 		"Blitzkrieg Buff"
+	}
+	"Blitzkrieg Buff Desc"
+	{
+		"en" 		"Gain a multiplicative +0.5%% Attackspeed and reload speed bonus."
+	}
+	"Waldch's Blue Goggles"
+	{
+		"en" 		"Waldch's Blue Goggles"
+	}
+	"Waldch's Blue Goggles Desc"
+	{
+		"en" 		"Gain a multiplicative +1.5%% Reload speed bonus."
+	}
+	"Iberia's Last Hope Up"
+	{
+		"en" 		"Iberia's Last Hope Sparkle"
+	}
+	"Iberia's Last Hope Up Desc"
+	{
+		"en" 		"Gain a multiplicative +1.0%% Attackspeed speed bonus."
+	}
+	"Calmaticus Heart Up"
+	{
+		"en" 		"Calmaticus Heart Up"
+	}
+	"Calmaticus Heart Up Desc"
+	{
+		"en" 		"Gain an extra 0.25 Hp regen a second."
+	}
+	"Xeno Vial Up"
+	{
+		"en" 		"Xeno Vial Up"
+	}
+	"Xeno Vial Up Desc"
+	{
+		"en" 		"Gain an extra 0.25 Hp regen a second."
+	}
+	"Building Hp Up 1"
+	{
+		"en" 		"Building Hp Up"
+	}
+	"Building Hp Up 1 Desc"
+	{
+		"en" 		"Your buildings gain a multiplicative +0.1%% HP"
+	}
+	"Building Repair Up 1"
+	{
+		"en" 		"Building Repair Speed Up"
+	}
+	"Building Repair Up 1 Desc"
+	{
+		"en" 		"Your Repairspeed gains a multiplicative +0.1%% speed"
+	}
+	"Building Extra Damage Up 1"
+	{
+		"en" 		"Building Hp Up"
+	}
+	"Building Extra Damage Up 1 Desc"
+	{
+		"en" 		"Your buildings gain a multiplicative +0.1%% Damage"
+	}
+	"Twirl Hairpin 1"
+	{
+		"en" 		"Twirls Magical Hairpin"
+	}
+	"Twirl Hairpin 1 Desc"
+	{
+		"en" 		"Gain 0.5%% Extra mana Regen"
+	}
+	"Iberia Training"
+	{
+		"en" 		"Nemals Special Help"
+	}
+	"Iberia Training Desc"
+	{
+		"en" 		"Gain a multiplicative +1%% Attackspeed and reload speed bonus."
+	}
+	"Extra Healing Up"
+	{
+		"en" 		"Extra Healing Up"
+	}
+	"Extra Healing Up Desc"
+	{
+		"en" 		"Gain a multiplicative +0.1%% Extra Healing from all sources."
+	}
+	"Extra Healing Up High"
+	{
+		"en" 		"Extra Healing Up High"
+	}
+	"Extra Healing Up High Desc"
+	{
+		"en" 		"Gain a multiplicative +0.5%% Extra Healing from all sources."
+	}
+	"ReviveTime Reduce"
+	{
+		"en" 		"Revive Time Down"
+	}
+	"ReviveTime Reduce Desc"
+	{
+		"en" 		"Reduce your revive time by 1 out of 250"
+	}
+	"ReviveTime Reduce High"
+	{
+		"en" 		"Revive Time Down High"
+	}
+	"ReviveTime Reduce High Desc"
+	{
+		"en" 		"Reduce your revive time by 5 out of 250"
+	}
+	"Extra Cash Building Up"
+	{
+		"en"	"Extra Cash Building Up"
+	}
+	"Extra Cash Building Up Desc"
+	{
+		"en"	"Increace your max cap of building extra cash from 5000 by 100"
+	}
+	"Extra Cash Building Up High"
+	{
+		"en"	"Extra Cash Building UpHigh"
+	}
+	"Extra Cash Building Up High Desc"
+	{
+		"en"	"Increace your max cap of building extra cash from 5000 by 500"
+	}
+	"Ingot Up 1"
+	{
+		"en"	"Ingot Up"
+	}
+	"Ingot Up 1 Desc"
+	{
+		"en"	"Gain 1 extra australium ingot in the roguelike, only he highest skill of a player on the server counts."
+	}
+}

@@ -30,8 +30,8 @@ void Npc_Sp_Precache()
 	f_DelayGiveOutlineNpc = 0.0;
 	f_DelayNextWaveStartAdvancing = 0.0;
 	f_DelayNextWaveStartAdvancingDeathNpc = 0.0;
-	g_particleMissText = PrecacheParticleSystem("miss_text");
 #endif
+	g_particleMissText = PrecacheParticleSystem("miss_text");
 	g_particleCritText = PrecacheParticleSystem("crit_text");
 	g_particleMiniCritText = PrecacheParticleSystem("minicrit_text");
 }
@@ -74,9 +74,15 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
 		limit = RoundToNearest(float(limit) * MaxEnemyMulti());
 
-		float f_limit = Pow(1.115, float(CountPlayersOnRed()));
+		float f_limit = Pow(1.115, ZRStocks_PlayerScalingDynamic());
 
 		f_limit *= float(limit);
+
+		//Minimum limit
+		if(f_limit <= 8.0)
+		{
+			f_limit = 8.0;
+		}
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -249,7 +255,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	}
 	else
 	{
-		Enemy enemy;
+		static Enemy enemy;
 		if(Waves_GetNextEnemy(enemy))
 		{
 			int SpawnSettingsSee = 0;
@@ -285,6 +291,11 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					{
 						SetEntProp(entity_Spawner, Prop_Data, "m_iMaxHealth", enemy.Health);
 						SetEntProp(entity_Spawner, Prop_Data, "m_iHealth", enemy.Health);
+					}
+
+					if(enemy.CustomName[0])
+					{
+						strcopy(c_NpcName[entity_Spawner], sizeof(c_NpcName[]), enemy.CustomName);
 					}
 					
 					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);
@@ -426,11 +437,11 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	}
 	return Plugin_Stop;
 }
-void RemoveSpawnProtectionLogic(int entity, bool force)
+
+stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
-	if(RogueTheme == BlueParadox && !force)
-#endif	// ZR
+	if(Rogue_Theme() == 1 && !force)
 	{
 		if(f_DomeInsideTest[entity] > GetGameTime())
 		{
@@ -438,6 +449,7 @@ void RemoveSpawnProtectionLogic(int entity, bool force)
 			return;
 		}
 	}
+#endif	// ZR
 	
 	CClotBody npc = view_as<CClotBody>(entity);
 		
@@ -816,11 +828,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					{
 						BombsToInject *= 2;
 					}
-					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
-					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
-					i_HowManyBombsHud[victim] += BombsToInject;
-					Apply_Particle_Teroriser_Indicator(victim);
-					damage = 0.0;
+					if(i_HowManyBombsOnThisEntity[victim][attacker] + BombsToInject < 200)
+					{
+						f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
+						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+						i_HowManyBombsHud[victim] += BombsToInject;
+						Apply_Particle_Teroriser_Indicator(victim);
+						damage = 0.0;
+					}
 				}
 #endif	// ZR
 				played_headshotsound_already[attacker] = GetGameTime();
@@ -876,11 +891,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					if(BombsToInject < 1)
 						BombsToInject = 1;
 						
-					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
-					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
-					i_HowManyBombsHud[victim] += BombsToInject;
-					Apply_Particle_Teroriser_Indicator(victim);
-					damage = 0.0;
+					if(i_HowManyBombsOnThisEntity[victim][attacker] + BombsToInject < 200)
+					{
+						f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
+						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+						i_HowManyBombsHud[victim] += BombsToInject;
+						Apply_Particle_Teroriser_Indicator(victim);
+						damage = 0.0;
+					}
 				}
 #endif
 
@@ -923,9 +941,15 @@ public void Func_Breakable_Post(int victim, int attacker, int inflictor, float d
 	Event event = CreateEvent("npc_hurt");
 	if (event) 
 	{
+		int display = RoundToFloor(damage);
+		while(display > 32000)
+		{
+			display /= 10;
+		}
+
 		event.SetInt("entindex", victim);
 		event.SetInt("health", Health > 0 ? Health : 0);
-		event.SetInt("damageamount", RoundToFloor(damage));
+		event.SetInt("damageamount", display);
 		event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
 
 		if (attacker > 0 && attacker <= MaxClients)
@@ -1145,9 +1169,15 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		Event event = CreateEvent("npc_hurt");
 		if(event) 
 		{
+			int display = RoundToFloor(Damageaftercalc);
+			while(display > 32000)
+			{
+				display /= 10;
+			}
+
 			event.SetInt("entindex", victim);
 			event.SetInt("health", health);
-			event.SetInt("damageamount", RoundToFloor(Damageaftercalc));
+			event.SetInt("damageamount", display);
 			event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
 
 			if(attacker > 0 && attacker <= MaxClients)
@@ -1164,6 +1194,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			event.Fire();
 		}
 	}
+	f_InBattleDelay[victim] = GetGameTime() + 6.0;
 
 	//LogEntryInvicibleTest(victim, attacker, damage, 27);
 	bool SlayNpc = true;
@@ -1413,8 +1444,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 	char Debuff_Adder[64];
 	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right);
 	
+#if defined ZR
 	float GameTime = GetGameTime();
-
+#endif
 	
 	CClotBody npc = view_as<CClotBody>(victim);
 	
@@ -1439,6 +1471,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 #endif
 		float percentageGlobal = 1.0;
 		int testvalue1 = 1;
+		float testvaluealot[3];
+		testvaluealot[2] = 6969420.0;
 
 		if(!b_NpcIsInvulnerable[victim])
 		{
@@ -1446,7 +1480,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			if(GetTeam(attacker) != GetTeam(victim))
 			{
 				Damage_AnyAttacker(victim, attacker, attacker, percentageGlobal, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
-				OnTakeDamageDamageBuffs(victim, attacker, attacker, percentageGlobal, testvalue1, testvalue1, GetGameTime());	
+				OnTakeDamageDamageBuffs(victim, attacker, attacker, percentageGlobal, testvalue1, testvalue1, GetGameTime(), testvaluealot);	
 			}
 			
 #if defined ZR
@@ -1858,7 +1892,7 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 		return true;
 #endif
 
-#if defined MAX_EXPI_ENERGY_EFFECTS
+#if defined ZR
 	if(VausMagicaShieldLogicEnabled(victim))
 		return true;
 #endif
@@ -2043,6 +2077,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_LeeSuperEffect[npc] > GameTime)
 		return true;
+	else if(f_LogosDebuff[npc] > GameTime)
+		return true;
 	else if(f_GodAlaxiosBuff[npc] > GameTime)
 		return true;
 	else if(f_Ocean_Buff_Stronk_Buff[npc] > GameTime)
@@ -2052,6 +2088,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 	else if(f_BattilonsNpcBuff[npc] > GameTime)
 		return true;
 	else if(f_BuffBannerNpcBuff[npc] > GameTime)
+		return true;
+	else if(f_BobDuckBuff[npc] > GameTime)
 		return true;
 	else if(f_AncientBannerNpcBuff[npc] > GameTime)
 		return true;

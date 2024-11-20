@@ -193,8 +193,7 @@ methodmap BasicBones < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void BasicBones_ClotThink(int iNPC)
 {
 	BasicBones npc = view_as<BasicBones>(iNPC);

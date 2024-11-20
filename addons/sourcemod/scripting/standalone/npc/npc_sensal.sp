@@ -132,7 +132,7 @@ void Sensal_OnMapStart_NPC()
 
 static any ClotSummon(int client, const float vecPos[3], const float vecAng[3], int team, const char[] data)
 {
-	return Sensal(client, vecPos, vecAng, team, data);
+	return Sensal(vecPos, vecAng, team, data);
 }
 
 methodmap Sensal < CClotBody
@@ -318,11 +318,9 @@ methodmap Sensal < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = 12.0;//float(CountPlayersOnRed());
-		//if(amount_of_people > 12.0)
-		//{
-		//	amount_of_people = 12.0;
-		//}
+		float amount_of_people = 12.0;
+
+
 		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)

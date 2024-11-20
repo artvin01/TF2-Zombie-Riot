@@ -61,9 +61,9 @@ void SoldinePrototype_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SoldinePrototype(client, vecPos, vecAng, ally);
+	return SoldinePrototype(vecPos, vecAng, team);
 }
 
 methodmap SoldinePrototype < CClotBody
@@ -110,7 +110,7 @@ methodmap SoldinePrototype < CClotBody
 	}
 	
 	
-	public SoldinePrototype(int client, float vecPos[3], float vecAng[3], int ally)
+	public SoldinePrototype(float vecPos[3], float vecAng[3], int ally)
 	{
 		SoldinePrototype npc = view_as<SoldinePrototype>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "7500", ally, false, true));
 		

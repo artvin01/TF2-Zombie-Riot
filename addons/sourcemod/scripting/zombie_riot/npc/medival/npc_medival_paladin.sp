@@ -92,9 +92,9 @@ void MedivalPaladin_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalPaladin(client, vecPos, vecAng, ally);
+	return MedivalPaladin(vecPos, vecAng, team);
 }
 methodmap MedivalPaladin < CClotBody
 {
@@ -156,7 +156,7 @@ methodmap MedivalPaladin < CClotBody
 		
 	}
 	
-	public MedivalPaladin(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalPaladin(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalPaladin npc = view_as<MedivalPaladin>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "30000", ally));
 		SetVariantInt(1);
@@ -218,8 +218,7 @@ methodmap MedivalPaladin < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalPaladin_ClotThink(int iNPC)
 {
 	MedivalPaladin npc = view_as<MedivalPaladin>(iNPC);
@@ -283,9 +282,10 @@ public void MedivalPaladin_ClotThink(int iNPC)
 					{
 						damage *= 5.0;
 					}
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
 				}

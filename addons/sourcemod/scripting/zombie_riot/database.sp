@@ -11,6 +11,7 @@
 #define DATATABLE_MISC		"zr_misc"
 #define DATATABLE_SETTINGS	"zr_settings"
 #define DATATABLE_GIFTITEM	"zr_giftitems"
+#define DATATABLE_SKILLTREE	"zr_skilltree"
 
 static Database Local;
 static Database Global;
@@ -125,12 +126,22 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 		... "level INTEGER NOT NULL, "
 		... "flags INTEGER NOT NULL);");
 		
+		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_SKILLTREE ... " ("
+		... "steamid INTEGER NOT NULL, "
+		... "name TEXT NOT NULL, "
+		... "flags INTEGER NOT NULL);");
+		
 		db.Execute(tr, Database_GlobalSetup, Database_FailHandle, db);
 	}
 	else
 	{
 		LogError("[Database_GlobalConnected] %s", error);
 	}
+}
+
+bool Database_IsLan()
+{
+	return !Global;
 }
 
 bool Database_IsCached(int client)
@@ -173,6 +184,9 @@ static void GlobalClientAuthorized(int id, int userid)
 		tr.AddQuery(buffer);
 
 		FormatEx(buffer, sizeof(buffer), "SELECT * FROM " ... DATATABLE_GIFTITEM ... " WHERE steamid = %d;", id);
+		tr.AddQuery(buffer);
+
+		FormatEx(buffer, sizeof(buffer), "SELECT * FROM " ... DATATABLE_SKILLTREE ... " WHERE steamid = %d;", id);
 		tr.AddQuery(buffer);
 		
 		Global.Execute(tr, Database_GlobalClientSetup, Database_Fail, userid);
@@ -250,7 +264,10 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
 			b_TauntSpeedIncreace[client] = view_as<bool>(results[2].FetchFloat(15));
 			f_Data_InBattleHudDisableDelay[client] = results[2].FetchFloat(16);
-			b_IgnoreMapMusic[client] = view_as<bool>(results[2].FetchInt(17));
+
+			int music = results[2].FetchInt(17);
+			b_IgnoreMapMusic[client] = view_as<bool>(music & (1 << 0));
+			b_DisableDynamicMusic[client] = view_as<bool>(music & (1 << 1));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -270,12 +287,25 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			}
 		}
 
+		SkillTree_ClearClient(client);
+		while(results[4].MoreRows)
+		{
+			if(results[4].FetchRow())
+			{
+				results[4].FetchString(1, buffer, sizeof(buffer));
+				SkillTree_AddNext(client, buffer, results[4].FetchInt(2));
+			}
+		}
+
 		Cached[client] = true;
 		Store_OnCached(client);
 		Native_OnClientLoaded(client);
 
 		if(tr)
 			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
+			
+		if(ForceNiko)
+			OverridePlayerModel(client, NIKO_2, true);
 	}
 }
 
@@ -303,43 +333,84 @@ void DataBase_ClientDisconnect(int client)
 
 			tr.AddQuery(buffer);
 
-			FormatEx(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_SETTINGS ... " SET "
-			... "niko = %d, "
-			... "armorx = %.3f, "
-			... "armory = %.3f, "
-			... "hurtx = %.3f, "
-			... "hurty = %.3f, "
-			... "weaponx = %.3f, "
-			... "weapony = %.3f, "
-			... "notifx = %.3f, "
-			... "notify = %.3f, "
-			... "screenshake = %d, "
-			... "lowhealthshake = %d, "
-			... "hitmarker = %d, "
-			... "tp = %d, "
-			... "zomvol = %.3f, "
-			... "tauntspeed = %d, "
-			... "battletimehud = %.3f, "
-			... "mapmusic = %d "
-			... "WHERE steamid = %d;",
-			i_PlayerModelOverrideIndexWearable[client] + 1,
-			f_ArmorHudOffsetX[client],
-			f_ArmorHudOffsetY[client],
-			f_HurtHudOffsetX[client],
-			f_HurtHudOffsetY[client],
-			f_WeaponHudOffsetX[client],
-			f_WeaponHudOffsetY[client],
-			f_NotifHudOffsetX[client],
-			f_NotifHudOffsetY[client],
-			b_HudScreenShake[client],
-			b_HudLowHealthShake[client],
-			b_HudHitMarker[client],
-			thirdperson[client],
-			f_ZombieVolumeSetting[client],
-			b_TauntSpeedIncreace[client],
-			f_Data_InBattleHudDisableDelay[client],
-			b_IgnoreMapMusic[client],
-			id);
+			if(!ForceNiko)
+			{
+				FormatEx(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_SETTINGS ... " SET "
+				... "niko = %d, "
+				... "armorx = %.3f, "
+				... "armory = %.3f, "
+				... "hurtx = %.3f, "
+				... "hurty = %.3f, "
+				... "weaponx = %.3f, "
+				... "weapony = %.3f, "
+				... "notifx = %.3f, "
+				... "notify = %.3f, "
+				... "screenshake = %d, "
+				... "lowhealthshake = %d, "
+				... "hitmarker = %d, "
+				... "tp = %d, "
+				... "zomvol = %.3f, "
+				... "tauntspeed = %d, "
+				... "battletimehud = %.3f, "
+				... "mapmusic = %d "
+				... "WHERE steamid = %d;",
+				i_PlayerModelOverrideIndexWearable[client] + 1,
+				f_ArmorHudOffsetX[client],
+				f_ArmorHudOffsetY[client],
+				f_HurtHudOffsetX[client],
+				f_HurtHudOffsetY[client],
+				f_WeaponHudOffsetX[client],
+				f_WeaponHudOffsetY[client],
+				f_NotifHudOffsetX[client],
+				f_NotifHudOffsetY[client],
+				b_HudScreenShake[client],
+				b_HudLowHealthShake[client],
+				b_HudHitMarker[client],
+				thirdperson[client],
+				f_ZombieVolumeSetting[client],
+				b_TauntSpeedIncreace[client],
+				f_Data_InBattleHudDisableDelay[client],
+				view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0),
+				id);
+			}
+			else
+			{
+				FormatEx(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_SETTINGS ... " SET "
+				... "armorx = %.3f, "
+				... "armory = %.3f, "
+				... "hurtx = %.3f, "
+				... "hurty = %.3f, "
+				... "weaponx = %.3f, "
+				... "weapony = %.3f, "
+				... "notifx = %.3f, "
+				... "notify = %.3f, "
+				... "screenshake = %d, "
+				... "lowhealthshake = %d, "
+				... "hitmarker = %d, "
+				... "tp = %d, "
+				... "zomvol = %.3f, "
+				... "tauntspeed = %d, "
+				... "battletimehud = %.3f, "
+				... "mapmusic = %d "
+				... "WHERE steamid = %d;",
+				f_ArmorHudOffsetX[client],
+				f_ArmorHudOffsetY[client],
+				f_HurtHudOffsetX[client],
+				f_HurtHudOffsetY[client],
+				f_WeaponHudOffsetX[client],
+				f_WeaponHudOffsetY[client],
+				f_NotifHudOffsetX[client],
+				f_NotifHudOffsetY[client],
+				b_HudScreenShake[client],
+				b_HudLowHealthShake[client],
+				b_HudHitMarker[client],
+				thirdperson[client],
+				f_ZombieVolumeSetting[client],
+				b_TauntSpeedIncreace[client],
+				f_Data_InBattleHudDisableDelay[client],
+				view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0),
+				id);				
+			}
 
 			tr.AddQuery(buffer);
 
@@ -353,9 +424,20 @@ void DataBase_ClientDisconnect(int client)
 				tr.AddQuery(buffer);
 			}
 
+			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_SKILLTREE ... " WHERE steamid = %d;", id);
+			tr.AddQuery(buffer);
+			
+			char name[32];
+			for(int i; SkillTree_GetNext(client, i, name, flags); i++)
+			{
+				Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_SKILLTREE ... " (steamid, name, flags) VALUES ('%d', '%s', '%d')", id, name, flags);
+				tr.AddQuery(buffer);
+			}
+
 			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
 
 			Items_ClearArray(client);
+			SkillTree_ClearClient(client);
 		}
 	}
 
@@ -525,7 +607,7 @@ public void Database_LocalClientSetup(Database db, int userid, int numQueries, D
 				Ammo_Count_Used[client] = results[0].FetchInt(4);
 
 				Transaction tr = new Transaction();
-					
+				
 				char buffer[512];
 				FormatEx(buffer, sizeof(buffer), "SELECT * FROM " ... DATATABLE_GAMEDATA ... " WHERE steamid = %d;", id);
 				tr.AddQuery(buffer);

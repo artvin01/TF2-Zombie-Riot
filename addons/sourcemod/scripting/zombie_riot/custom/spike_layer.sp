@@ -135,8 +135,6 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, !Merchant_IsAMerchant(client));			//Sentry damage bonus
 
 		Bonus_damage *= BuildingWeaponDamageModif(1);
-
-		Bonus_damage *= 0.5;
 		
 		if (Bonus_damage <= 1.0)
 			Bonus_damage = 1.0;
@@ -234,8 +232,6 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 		Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, !Merchant_IsAMerchant(client));			//Sentry damage bonus
 
 		Bonus_damage *= BuildingWeaponDamageModif(1);
-
-		Bonus_damage *= 0.5;
 		
 		if (Bonus_damage <= 1.0)
 			Bonus_damage = 1.0;

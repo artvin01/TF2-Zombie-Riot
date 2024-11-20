@@ -118,7 +118,7 @@ methodmap GodKingRaidriar < CClotBody
 		
 	}
 	
-	public GodKingRaidriar(int client, float vecPos[3], float vecAng[3], int ally)
+	public GodKingRaidriar(float vecPos[3], float vecAng[3], int ally)
 	{
 		GodKingRaidriar npc = view_as<GodKingRaidriar>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "5000", ally, false, true, true, true));
 		

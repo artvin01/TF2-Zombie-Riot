@@ -33,7 +33,10 @@ static const char g_IdleSound[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -78,9 +81,9 @@ public void DrowedZombieHuman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DrowedZombieHuman(client, vecPos, vecAng, ally);
+	return DrowedZombieHuman(vecPos, vecAng, team);
 }
 
 methodmap DrowedZombieHuman < CClotBody
@@ -131,7 +134,7 @@ methodmap DrowedZombieHuman < CClotBody
 	{
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public DrowedZombieHuman(int client, float vecPos[3], float vecAng[3], int ally)
+	public DrowedZombieHuman(float vecPos[3], float vecAng[3], int ally)
 	{
 		DrowedZombieHuman npc = view_as<DrowedZombieHuman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 		
@@ -182,8 +185,7 @@ methodmap DrowedZombieHuman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void DrowedZombieHuman_ClotThink(int iNPC)
 {
 	DrowedZombieHuman npc = view_as<DrowedZombieHuman>(iNPC);
@@ -258,13 +260,14 @@ public void DrowedZombieHuman_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 70000.0;
+					float damage = 60000.0;
 					if(npc.m_flDoingSpecial)
-						damage = 75000.0;
+						damage = 65000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						KillFeed_SetKillIcon(npc.index, "sword");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 

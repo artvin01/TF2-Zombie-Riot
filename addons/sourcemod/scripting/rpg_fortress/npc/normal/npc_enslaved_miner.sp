@@ -56,9 +56,9 @@ public void EnslavedMiner_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return EnslavedMiner(client, vecPos, vecAng, ally);
+	return EnslavedMiner(vecPos, vecAng, team);
 }
 
 methodmap EnslavedMiner < CClotBody
@@ -98,7 +98,7 @@ methodmap EnslavedMiner < CClotBody
 	}
 	
 	
-	public EnslavedMiner(int client, float vecPos[3], float vecAng[3], int ally)
+	public EnslavedMiner(float vecPos[3], float vecAng[3], int ally)
 	{
 		EnslavedMiner npc = view_as<EnslavedMiner>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "300", ally, false,_,_,_,_));
 
@@ -156,8 +156,7 @@ methodmap EnslavedMiner < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void EnslavedMiner_ClotThink(int iNPC)
 {
 	EnslavedMiner npc = view_as<EnslavedMiner>(iNPC);
@@ -212,9 +211,10 @@ public void EnslavedMiner_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 3500.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");

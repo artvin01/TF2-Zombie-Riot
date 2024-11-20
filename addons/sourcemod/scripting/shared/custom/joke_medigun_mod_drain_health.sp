@@ -87,7 +87,9 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 						return MRES_Supercede;		
 
 					}
+#if defined ZR
 					return MRES_Ignored;
+#endif
 					//This is just normal code, let it be itself.
 				}
 				else if(b_ThisWasAnNpc[target] && !b_NpcHasDied[target] && GetTeam(target) == TFTeam_Red)
@@ -176,8 +178,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 
-					flDrainRate *= Attributes_Get(medigun, 8, 1.0);
-					flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
+					flDrainRate *= Attributes_GetOnWeapon(owner, medigun, 8, true);
 					if(TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
 						target_sucked_long[healTarget] += 0.21;
@@ -261,8 +262,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					bool Is_Allied_Npc = false;
 					MedigunChargeUber(owner, medigun, 1.0);
 					
-					float Healing_Value = Attributes_Get(medigun, 8, 1.0);
-					Healing_Value *= Attributes_GetOnPlayer(owner, 8, true, true);
+					float Healing_Value = Attributes_GetOnWeapon(owner, medigun, 8, true);
 					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
@@ -452,9 +452,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 				int new_ammo = GetAmmo(owner, 22);
 				
-				flDrainRate *= Attributes_Get(medigun, 8, 1.0);
 				flDrainRate *= Attributes_Get(medigun, 1, 1.0);
-				flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
+				flDrainRate *= Attributes_GetOnWeapon(owner, medigun, 8, true);
 				//there are some updgras that require medigun damage only!
 				
 				target_sucked_long[healTarget] += 0.07;

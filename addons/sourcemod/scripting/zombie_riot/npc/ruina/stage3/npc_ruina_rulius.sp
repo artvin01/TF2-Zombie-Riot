@@ -70,9 +70,9 @@ static void ClotPrecache()
 	Zero(i_damage_taken);
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Rulius(client, vecPos, vecAng, ally);
+	return Rulius(vecPos, vecAng, team);
 }
 methodmap Rulius < CClotBody
 {
@@ -133,7 +133,7 @@ methodmap Rulius < CClotBody
 	
 	
 	
-	public Rulius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Rulius(float vecPos[3], float vecAng[3], int ally)
 	{
 		Rulius npc = view_as<Rulius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
@@ -232,8 +232,7 @@ methodmap Rulius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Rulius npc = view_as<Rulius>(iNPC);

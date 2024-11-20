@@ -85,9 +85,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/void_wave/unspeakable_raid.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return VoidUnspeakable(client, vecPos, vecAng, ally, data);
+	return VoidUnspeakable(vecPos, vecAng, team, data);
 }
 methodmap VoidUnspeakable < CClotBody
 {
@@ -187,7 +187,7 @@ methodmap VoidUnspeakable < CClotBody
 	}
 	
 	
-	public VoidUnspeakable(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VoidUnspeakable(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		int WaveSetting = 1;
 		char SizeChar[5];
@@ -309,7 +309,7 @@ methodmap VoidUnspeakable < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;

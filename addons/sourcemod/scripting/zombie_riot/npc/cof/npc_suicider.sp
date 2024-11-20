@@ -51,9 +51,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_IntroSound));		i++) { PrecacheSoundCustom(g_IntroSound[i]);		}
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Suicider(client, vecPos, vecAng, ally, data);
+	return Suicider(vecPos, vecAng, team, data);
 }
 
 methodmap Suicider < CClotBody
@@ -106,7 +106,7 @@ methodmap Suicider < CClotBody
 		public set(bool value) 	{ b_IsNightmare[this.index] = value; }
 	}
 	
-	public Suicider(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Suicider(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Suicider npc = view_as<Suicider>(CClotBody(vecPos, vecAng, COF_SUICIDER_MODEL_PATH, "1.0", "400", ally, false));
 		
