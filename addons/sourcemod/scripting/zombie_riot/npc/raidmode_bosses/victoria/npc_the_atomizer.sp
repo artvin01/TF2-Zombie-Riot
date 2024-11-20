@@ -585,8 +585,8 @@ static void Internal_ClotThink(int iNPC)
 				}
 			}
 			IncreaceEntityDamageTakenBy(npc.index, 0.7, 0.1);
-			spawnRing_Vectors(ProjLocBase, 500.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
-			spawnRing_Vectors(ProjLocBase, 500.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 			npc.m_flDoingAnimation = gameTime + 1.1;
 			Delay_Attribute[npc.index] = gameTime + 0.5;
 			npc.StopPathing();
@@ -596,7 +596,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.PlayAngerSound();
 			float damageDealt = 5.0 * RaidModeScaling;
-			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 500.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
+			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 250.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
 			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 			{
 				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
@@ -1100,9 +1100,9 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					npc.PlayMeleeSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
 							
-					npc.m_flAttackHappens = gameTime + 0.125;
-					npc.m_flNextMeleeAttack = gameTime + 0.15;
-					npc.m_flDoingAnimation = gameTime + 0.125;
+					npc.m_flAttackHappens = gameTime + 0.0625;
+					npc.m_flNextMeleeAttack = gameTime + 0.0625;
+					npc.m_flDoingAnimation = gameTime + 0.065;
 				}
 			}
 			else if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
