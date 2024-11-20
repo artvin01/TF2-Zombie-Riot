@@ -471,14 +471,13 @@ static void Internal_ClotThink(int iNPC)
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-				npc.m_flDoingAnimation = gameTime + 1.0;
 				npc.AddActivityViaSequence("layer_taunt_cheers_scout");
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				npc.SetCycle(0.01);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.SetPlaybackRate(1.5);
-				npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.5;	
+				npc.m_flDoingAnimation = gameTime + 0.5;	
 				/*npc.GetAttachment("effect_hand_r", flPos, flAng);
 				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});*/
 				Delay_Attribute[npc.index] = gameTime + 1.0;
@@ -497,6 +496,9 @@ static void Internal_ClotThink(int iNPC)
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_flNextRangedAttack += 2.0;
+					npc.m_flRangedSpecialDelay += 2.0;
+					npc.m_flNextRangedSpecialAttackHappens += 2.0;
 					npc.m_bFUCKYOU=false;
 				}
 			}
@@ -520,7 +522,6 @@ static void Internal_ClotThink(int iNPC)
 			ProjLoc[0] += GetRandomFloat(-40.0, 40.0);
 			ProjLoc[1] += GetRandomFloat(-40.0, 40.0);
 			ProjLoc[2] += GetRandomFloat(-15.0, 15.0);
-			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		
 			float pos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -582,8 +583,9 @@ static void Internal_ClotThink(int iNPC)
 			IncreaceEntityDamageTakenBy(npc.index, 0.7, 0.1);
 			spawnRing_Vectors(ProjLocBase, 500.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 0.3, 5.0, 8.0, 3);	
 			spawnRing_Vectors(ProjLocBase, 500.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 0.3, 5.0, 8.0, 3);	
-			npc.m_flDoingAnimation = gameTime + 1.0;
+			npc.m_flDoingAnimation = gameTime + 1.1;
 			Delay_Attribute[npc.index] = gameTime + 1.0;
+			npc.StopPathing();
 			I_cant_do_this_all_day[npc.index]++;
 		}
 		else if(Delay_Attribute[npc.index] < gameTime)
@@ -597,10 +599,9 @@ static void Internal_ClotThink(int iNPC)
 					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 			}
 			I_cant_do_this_all_day[npc.index]=0;
+			npc.StartPathing();
 			npc.m_flNextRangedAttack = gameTime + (DrinkPOWERUP[npc.index] ? 22.5 : 40.0);
 		}
-		if(npc.m_flDoingAnimation < gameTime)
-			AtomizerAnimationChange(npc);
 		return;
 	}
 	
