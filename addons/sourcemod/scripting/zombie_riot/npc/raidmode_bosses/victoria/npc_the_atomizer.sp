@@ -471,6 +471,9 @@ static void Internal_ClotThink(int iNPC)
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_cheers_scout");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
