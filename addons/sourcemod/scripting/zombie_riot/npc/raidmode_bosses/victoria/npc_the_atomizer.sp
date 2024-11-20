@@ -976,6 +976,8 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 								ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
 								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+								SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+								SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
 
 								//This will return vecTarget as the speed we need.
 							}
@@ -984,8 +986,6 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 								RocketSpeed *= 0.75;
 								npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "critical_rocket_blue", false);
 							}
-							SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-							SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
 							npc.m_iOverlordComboAttack --;
 						}
 					}
