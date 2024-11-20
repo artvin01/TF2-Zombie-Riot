@@ -962,11 +962,16 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							float RocketSpeed = 1650.0;
 							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+							float vecDest[3];
+							vecDest = vecTarget;
+							vecDest[0] += GetRandomFloat(-100.0, 100.0);
+							vecDest[1] += GetRandomFloat(-100.0, 100.0);
+							vecDest[2] += GetRandomFloat(-100.0, 100.0);
 							if(!IsSpaceOccupiedWorldOnly(VecStart, view_as<float>( { -35.0, -35.0, 17.0 } ), view_as<float>( { 35.0, 35.0, 500.0 } ), npc.index))
 							{
 								float SpeedReturn[3];
 
-								int RocketGet = npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
+								int RocketGet = npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
 								SetEntityGravity(RocketGet, 1.0); 	
 								ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.0, 1.0);
 								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
