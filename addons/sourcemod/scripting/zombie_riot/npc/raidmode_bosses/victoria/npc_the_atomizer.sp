@@ -89,6 +89,7 @@ static float NiceMiss[MAXENTITIES];
 static bool OnMiss[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
+static bool YaWeFxxked[MAXENTITIES];
 
 void Atomizer_OnMapStart_NPC()
 {
@@ -223,6 +224,7 @@ methodmap Atomizer < CClotBody
 		npc.m_flSpeed = 300.0;
 		Delay_Attribute[npc.index] = 0.0;
 		DrinkPOWERUP[npc.index] = false;
+		YaWeFxxked[npc.index] = false;
 		NiceMiss[npc.index] = 0.0;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
@@ -285,7 +287,6 @@ methodmap Atomizer < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
 			RaidModeScaling *= 0.65;
 		}
-		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Atomizer_Win);
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
 		music.Time = 218;
@@ -386,42 +387,108 @@ static void Internal_ClotThink(int iNPC)
 		}
 	}
 	npc.m_flSpeed = 300.0+(((FTL[npc.index]-(RaidModeTime - GetGameTime()))/FTL[npc.index])*150.0);
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index])
 	{
-		npc.m_bisWalking = false;
-		npc.AddActivityViaSequence("selectionMenu_Idle");
-		npc.SetCycle(0.01);
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		
-		CPrintToChatAll("{blue}Atomizer{default}: Refusing to collaborate or even reason with {gold}Expidonsa{default} will result in termination.");
-		return;
-	}
-	if(RaidModeTime < GetGameTime())
-	{
-		DeleteAndRemoveAllNpcs = 10.0;
-		mp_bonusroundtime.IntValue = (12 * 2);
-		ZR_NpcTauntWinClear();
-		ForcePlayerLoss();
-		npc.m_bisWalking = false;
-		npc.AddActivityViaSequence("selectionMenu_Idle");
-		npc.SetCycle(0.01);
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("{blue}Atomizer{default}: You are under arrest. The Expidonsan elite forces will take you now.");
+		npc.m_flMeleeArmor = 0.33;
+		npc.m_flRangedArmor = 0.33;
+		int MaxHealth = RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")*1.25);
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth);
+		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
+		switch(GetRandomInt(1, 3))
+		{
+			case 1:
+			{
+				CPrintToChatAll("{blue}%s{default}: It is already {crimson}too late,{default} Army has arrived!", c_NpcName[npc.index]);
+			}
+			case 2:
+			{
+				CPrintToChatAll("{blue}%s{default}: The troops have arrived and will begin destroying the intruders!", c_NpcName[npc.index]);
+			}
+			case 3:
+			{
+				CPrintToChatAll("{blue}%s{default}: Backup team has arrived. Catch those Damn bastards!", c_NpcName[npc.index]);
+			}
+		}
 		for(int i; i<32; i++)
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = NPC_CreateByName("npc_mortar", -1, pos, ang, GetTeam(npc.index));
-			if(spawn_index > MaxClients)
+			for(int ii=1; ii<=15; ii++)
 			{
-				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
+				switch(GetRandomInt(1, 7))
+				{
+					case 1:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 2:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 3:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}	
+					case 4:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 5:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 6:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 7:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+				}
+			}
+			for(int ii=1; ii<=15; ii++)
+			{
+				switch(GetRandomInt(1, 8))
+				{
+					case 1:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 2:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 3:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}	
+					case 4:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 5:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 6:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 7:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+					case 8:
+					{
+						VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+					}
+				}
 			}
 		}
 		BlockLoseSay = true;
+		YaWeFxxked[npc.index] = true;
 	}
 	
 	if(npc.m_blPlayHurtAnimation)
@@ -478,16 +545,28 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(2.0);
-				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
-				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 1.5;	
 				/*npc.GetAttachment("effect_hand_r", flPos, flAng);
 				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});*/
-				Delay_Attribute[npc.index] = gameTime + 1.5;
+				Delay_Attribute[npc.index] = gameTime + 1.4;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
 			case 1:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
+					EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					npc.m_bisWalking = false;
+					npc.m_flDoingAnimation = gameTime + 1.5;	
+					Delay_Attribute[npc.index] = gameTime + 0.6;
+					I_cant_do_this_all_day[npc.index]=2;
+				}
+			}
+			case 2:
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
@@ -515,10 +594,18 @@ static void Internal_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < gameTime)
 	{
 		float ProjLocBase[3];
-		npc.AddActivityViaSequence("taunt05");
-		npc.SetCycle(0.01);
-		npc.SetPlaybackRate(1.4);
-		if(I_cant_do_this_all_day[npc.index] < 25)
+		if(I_cant_do_this_all_day[npc.index] <= 0)
+		{
+			npc.AddActivityViaSequence("taunt05");
+			npc.SetCycle(0.01);
+			npc.SetPlaybackRate(1.4);
+			Delay_Attribute[npc.index] = gameTime + 0.5;
+			npc.StopPathing();
+			npc.m_bPathing = false;
+			npc.m_bisWalking = false;
+			I_cant_do_this_all_day[npc.index]++;
+		}
+		else if(I_cant_do_this_all_day[npc.index] < 23)
 		{
 		
 			float ProjLoc[3];
@@ -718,10 +805,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	
 	return Plugin_Changed;
-}
-public void Raidmode_Expidonsa_Atomizer_Win(int entity)
-{
-	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }
 
 static void Internal_NPCDeath(int entity)
@@ -1181,7 +1264,7 @@ public void Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if (!IsInvuln(target))
 		{
-			TF2_StunPlayer(target, 0.25, 0.33, TF_STUNFLAG_SLOWDOWN);
+			TF2_StunPlayer(target, 1.0, 0.33, TF_STUNFLAG_SLOWDOWN);
 		}
 
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
