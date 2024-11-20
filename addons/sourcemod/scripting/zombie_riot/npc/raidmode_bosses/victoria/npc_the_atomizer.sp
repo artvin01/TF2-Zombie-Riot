@@ -594,6 +594,8 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_flDoingAnimation = gameTime + 1.1;
 			Delay_Attribute[npc.index] = gameTime + 0.5;
 			npc.StopPathing();
+			npc.m_bPathing = false;
+			npc.m_bisWalking = false;
 			I_cant_do_this_all_day[npc.index]++;
 		}
 		else if(Delay_Attribute[npc.index] < gameTime)
