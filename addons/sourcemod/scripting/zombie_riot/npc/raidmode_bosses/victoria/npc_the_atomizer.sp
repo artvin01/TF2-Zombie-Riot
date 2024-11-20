@@ -472,11 +472,12 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				npc.AddActivityViaSequence("taunt_cheers_scout");
-				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
-				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
+				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
-				npc.m_iChanged_WalkCycle = 0;
 				npc.SetPlaybackRate(0.5);
+				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
+				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
+				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 1.5;	
 				/*npc.GetAttachment("effect_hand_r", flPos, flAng);
 				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});*/
@@ -940,7 +941,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 			{
 				if(gameTime > npc.m_flNextMeleeAttack)
 				{
-					if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
+					if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0))
 					{
 						npc.m_flAttackHappens = 0.0;
 						float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
@@ -1055,16 +1056,16 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 										Custom_Knockback(npc.index, targetTrace, 300.0, true);
 										if(!NpcStats_IsEnemySilenced(npc.index))
 										{
-											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
+											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
 										}
 									}
 									else
 									{
 										if(!NpcStats_IsEnemySilenced(npc.index))
 										{
-											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
+											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
 										}
 									}
 								}
