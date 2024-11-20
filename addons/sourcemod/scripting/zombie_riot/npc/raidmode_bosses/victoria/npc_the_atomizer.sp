@@ -477,6 +477,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.AddActivityViaSequence("layer_taunt_cheers_scout");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.5)
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 				npc.m_iChanged_WalkCycle = 0;
