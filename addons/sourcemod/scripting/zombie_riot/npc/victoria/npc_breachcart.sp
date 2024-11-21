@@ -4,10 +4,25 @@
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
 static const char g_MeleeAttackSounds[] = "mvm/sentrybuster/mvm_sentrybuster_intro.wav";
 
+static const char g_HurtSounds[][] = {
+	"npc/metropolice/pain1.wav",
+	"npc/metropolice/pain2.wav",
+	"npc/metropolice/pain3.wav",
+	"npc/metropolice/pain4.wav",
+};
+
+static const char g_MeleeHitSounds[][] = {
+	"mvm/melee_impacts/bottle_hit_robo01.wav",
+	"mvm/melee_impacts/bottle_hit_robo02.wav",
+	"mvm/melee_impacts/bottle_hit_robo03.wav",
+};
+
 void VictoriaBreachcart_MapStart()
 {
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_MeleeAttackSounds);
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_HurtSounds));	i++) { PrecacheSound(g_HurtSounds[i]);	}
 	NPCData data;
 	PrecacheModel("models/bots/tw2/boss_bot/static_boss_tank.mdl");
 	strcopy(data.Name, sizeof(data.Name), "Breachcart");
@@ -36,7 +51,34 @@ methodmap VictoriaBreachcart < CClotBody
  	{
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6, 125);
 	}
+	public void PlayIdleAlertSound() {
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+		
+		
+	}
+
+	public void PlayMeleeHitSound()
+	{
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+	}
+
 	
+	public void PlayHurtSound() {
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+			
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
+		
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		
+		
+		
+	}
+
 	public VictoriaBreachcart(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaBreachcart npc = view_as<VictoriaBreachcart>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, _, true));
@@ -161,6 +203,8 @@ static void ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
+		npc.PlayIdleAlertSound();
+
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
