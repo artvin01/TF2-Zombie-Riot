@@ -97,6 +97,7 @@ public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
 #if defined ZR
 ConVar zr_downloadconfig;
+ConVar CvarSkillPoints;
 #endif
 
 ConVar CvarDisableThink;
@@ -105,7 +106,6 @@ ConVar CvarRerouteToIp;
 ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
-ConVar CvarSkillPoints;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
@@ -2100,8 +2100,10 @@ public Action DoRoleplayTalk(int client, int args)
 	if(i_PlayerModelOverrideIndexWearable[client] == NIKO_2)
 		Offset[2] = 75.0;
 
+#if defined ZR
 	if(TeutonType[client] != TEUTON_NONE)
 		Offset[2] = 50.0;
+#endif
 
 	NpcSpeechBubble(client, Text3, 6, ColourGive, Offset, "");
 

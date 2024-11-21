@@ -256,7 +256,7 @@
 	}
 	"Building Extra Damage Up 1"
 	{
-		"en" 		"Building Hp Up"
+		"en" 		"Building Damage Up"
 	}
 	"Building Extra Damage Up 1 Desc"
 	{
