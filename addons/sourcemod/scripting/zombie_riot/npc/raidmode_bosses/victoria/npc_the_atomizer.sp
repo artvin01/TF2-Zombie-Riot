@@ -641,7 +641,12 @@ static void Internal_ClotThink(int iNPC)
 			npc.SetCycle(0.01);
 			npc.SetPlaybackRate(1.4);
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			ParticleEffectAt(pos, "utaunt_aestheticlogo_teamcolor_blue", 3.0);
+			int POWERHomeRUN = ParticleEffectAt(pos, "utaunt_aestheticlogo_teamcolor_blue", 3.0);
+			if(IsValidEntity(POWERHomeRUN))
+			{
+				SetVariantString("!activator");
+				AcceptEntityInput(POWERHomeRUN, "SetParent", npc.index);
+			}
 			Delay_Attribute[npc.index] = gameTime + 0.5;
 			npc.StopPathing();
 			npc.m_bPathing = false;
@@ -1006,7 +1011,11 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 			{
 				case 0:
 				{
-					
+					if(IsValidEntity(npc.m_iWearable2))
+						RemoveEntity(npc.m_iWearable2);
+					npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
+					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+				
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					npc.m_flDoingAnimation = gameTime + 1.0;
@@ -1015,6 +1024,8 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					npc.m_flAttackHappens = 0.0;
 					npc.m_flAttackHappens_2 = gameTime + 1.4;
 					npc.Anger = true;
+					if(IsValidEntity(npc.m_iWearable2))
+						RemoveEntity(npc.m_iWearable2);
 
 					EmitSoundToAll("mvm/mvm_used_powerup.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.5);
 					npc.SetCycle(0.01);
@@ -1026,6 +1037,15 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 				{
 					if(Delay_Attribute[npc.index] < gameTime)
 					{
+						if(IsValidEntity(npc.m_iWearable2))
+						{
+							RemoveEntity(npc.m_iWearable2);
+						}
+						npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
+						SetVariantString("1.2");
+						AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+						SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+						NiceMiss[npc.index] = gameTime + 10.0;
 						I_cant_do_this_all_day[npc.index]=2;
 					}
 				}
