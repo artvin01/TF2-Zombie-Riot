@@ -676,7 +676,7 @@ static void Internal_ClotThink(int iNPC)
 					float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget );
 					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc);
-					if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < 1000.0)
+					if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < 750.0)
 					{
 						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
 						
@@ -1295,7 +1295,7 @@ static void SuperAttack(int entity, int victim, float damage, int weapon)
 }
 
 
-public void Atomizer_Rocket_Particle_StartTouch(int entity, int target)
+public Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
@@ -1322,7 +1322,7 @@ public void Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if (!IsInvuln(target))
 		{
-			TF2_StunPlayer(target, 0.5, 0.4, TF_STUNFLAG_SLOWDOWN);
+			TF2_StunPlayer(target, 1.0, 0.4, TF_STUNFLAG_SLOWDOWN);
 		}
 
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
@@ -1333,14 +1333,35 @@ public void Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		//we uhh, missed?
-		if(IsValidEntity(particle))
+		if(IsValidEntity(entity))
 		{
-			RemoveEntity(particle);
+			int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
+			if(GETBOUNS < 5)
+			{
+				SDKHook(entity, SDKHook_Touch, Atomizer_Rocket_Particle_Bounce);
+				return Plugin_Handled;
+			}
 		}
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		if(IsValidEntity(particle))
+			RemoveEntity(particle);
 	}
 	RemoveEntity(entity);
+	return Plugin_Handled;
+}
+
+public Action Atomizer_Rocket_Particle_Bounce(int entity, int owner)
+{
+	float fVelocity[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecVelocity", fVelocity);
+	fVelocity[2] = 650.0;
+	TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVelocity);
+	int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
+	if(GETBOUNS > 5)
+		SDKUnhook(entity, SDKHook_Touch, Atomizer_Rocket_Particle_Bounce);
+	else
+		SetEntProp(entity, Prop_Data, "m_iHammerID", GETBOUNS+1);
+	return Plugin_Handled;
 }
 
 static void Atomizer_Weapon_Lines(Atomizer npc, int client)
