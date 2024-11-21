@@ -84,7 +84,7 @@ static const char g_HomerunSounds[][]= {
 	"vo/scout_stunballhit05.mp3",
 	"vo/scout_stunballhit06.mp3",
 	"vo/scout_stunballhit07.mp3",
-	"vo/scout_stunballhit08.mp3",
+	"vo/scout_stunballhit08.mp3"
 };
 static const char StunballPickupeSound[][] = {
 	"vo/scout_stunballpickup01.mp3",
@@ -103,13 +103,15 @@ static int I_cant_do_this_all_day[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
+static bool b_said_player_weaponline[MAXTF2PLAYERS];
+static float fl_said_player_weaponline_time[MAXTF2PLAYERS];
 
 void Atomizer_OnMapStart_NPC()
 {
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Atomizer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_atomizer");
-	strcopy(data.Icon, sizeof(data.Icon), "sensal_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_atomizer_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -166,8 +168,8 @@ methodmap Atomizer < CClotBody
 	}
 	public void PlayHomerunSound() {
 	
-		EmitSoundToAll(g_HomerunSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_HomerunSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HomerunSounds[GetRandomInt(0, sizeof(g_HomerunSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HomerunSounds[GetRandomInt(0, sizeof(g_HomerunSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayIdleAlertSound() 
 	{
@@ -264,6 +266,8 @@ methodmap Atomizer < CClotBody
 		OnMiss[npc.index] = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bFUCKYOU = false;
+		Zero(b_said_player_weaponline);
+		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -450,81 +454,75 @@ static void Internal_ClotThink(int iNPC)
 				CPrintToChatAll("{blue}%s{default}: After this, Im heading to Rusted Bolt Pub. {crimson}I need beer.{default}", c_NpcName[npc.index]);
 			}
 		}
-		for(int i; i<32; i++)
+		for(int ii=1; ii<=15; ii++)
 		{
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			
-			for(int ii=1; ii<=15; ii++)
+			switch(GetRandomInt(1, 7))
 			{
-				switch(GetRandomInt(1, 7))
+				case 1:
 				{
-					case 1:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 2:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 3:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}	
-					case 4:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 5:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 6:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 7:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 2:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 3:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}	
+				case 4:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 5:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 6:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 7:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 			}
-			for(int ii=1; ii<=15; ii++)
+		}
+		for(int ii=1; ii<=15; ii++)
+		{
+			switch(GetRandomInt(1, 8))
 			{
-				switch(GetRandomInt(1, 8))
+				case 1:
 				{
-					case 1:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 2:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 3:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}	
-					case 4:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 5:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 6:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 7:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
-					case 8:
-					{
-						VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-					}
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 2:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 3:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}	
+				case 4:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 5:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 6:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 7:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
+				}
+				case 8:
+				{
+					VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 			}
 		}
@@ -653,7 +651,6 @@ static void Internal_ClotThink(int iNPC)
 		}
 		else if(I_cant_do_this_all_day[npc.index] < 23)
 		{
-		
 			float ProjLoc[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 			ProjLocBase = ProjLoc;
@@ -668,13 +665,15 @@ static void Internal_ClotThink(int iNPC)
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float cpos[3];
 			float velocity[3];
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 			{
 				if(IsValidEnemy(npc.index, EnemyLoop, true, true))
 				{
+					float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget );
+					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc);
 					if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < 1000.0)
-					{ 	
+					{
 						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
 						
 						MakeVectorFromPoints(pos, cpos, velocity);
@@ -833,7 +832,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
+	Atomizer_Weapon_Lines(npc, attacker);
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	float ratio = float(health) / float(maxhealth);
@@ -903,7 +902,7 @@ static void Internal_NPCDeath(int entity)
 		}
 		case 1:
 		{
-			CPrintToChatAll("{blue}Atomizer{default}: I will never let you trample over the glory of Victoria Again!");
+			CPrintToChatAll("{blue}Atomizer{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
 		}
 		case 2:
 		{
@@ -1250,7 +1249,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					npc.PlayMeleeSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
 					
-					float time = 0.125
+					float time = 0.125;
 					if(NpcStats_VictorianCallToArms(npc.index))
 					{
 						time *= 0.5;
@@ -1342,4 +1341,48 @@ public void Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 		}
 	}
 	RemoveEntity(entity);
+}
+
+static void Atomizer_Weapon_Lines(Atomizer npc, int client)
+{
+	if(client > MaxClients)
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	if(!IsValidEntity(weapon))	//invalid weapon, go back and get a valid one you <...>
+		return;
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	Text_Lines = "";
+
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_SEABORNMELEE: switch(GetRandomInt(0,3)){
+			case 0: Format(Text_Lines, sizeof(Text_Lines), "Damn it! {darkblue}Seaborn{default} is here Again!");
+			case 1: Format(Text_Lines, sizeof(Text_Lines), "ha. {darkblue}Seaborn{default}!?");
+			case 2: Format(Text_Lines, sizeof(Text_Lines), "I found an {darkblue}Infected{default} person, I need a Backup!");
+			case 3: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N?{default} I knew it, you {darkblue}Seaborn{default} Bastard!", client);}
+		default:
+		{
+			valid = false;
+		}
+	}
+
+	if(valid)
+	{
+		CPrintToChatAll("{blue}%s{default}: %s", c_NpcName[npc.index], Text_Lines);
+		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
+		b_said_player_weaponline[client] = true;
+	}
 }

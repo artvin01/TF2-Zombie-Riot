@@ -3,12 +3,18 @@
 
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
 static const char g_MeleeAttackSounds[] = "player/taunt_tank_shoot.wav";
+static const char g_MeleeHitSounds[][] = {
+	"mvm/melee_impacts/bottle_hit_robo01.wav",
+	"mvm/melee_impacts/bottle_hit_robo02.wav",
+	"mvm/melee_impacts/bottle_hit_robo03.wav"
+};
 
 void VictoriaTank_MapStart()
 {
 	PrecacheModel("models/player/items/taunts/tank/tank.mdl");
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_MeleeAttackSounds);
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Tank");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_tank");
@@ -35,6 +41,10 @@ methodmap VictoriaTank < CClotBody
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+	}
+	public void PlayMeleeHitSound()
+	{
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
 	public VictoriaTank(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -146,10 +156,9 @@ static void ClotThink(int iNPC)
 		npc.StopPathing();
 	}
 
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	if(IsValidEnemy(npc.index, target))
 	{
-		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
@@ -157,11 +166,11 @@ static void ClotThink(int iNPC)
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) {
 			
-			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		} else {
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, target);
 		}
 
 		//Target close enough to hit
@@ -184,29 +193,28 @@ static void ClotThink(int iNPC)
 				{
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
-					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
+					if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1))
+					{
+						target = TR_GetEntityIndex(swingTrace);	
+						
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						
+						if(target > 0) 
 						{
+							if(!ShouldNpcDealBonusDamage(target))
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
+							else
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_CLUB, -1, _, vecHit);
 							
-							int target = TR_GetEntityIndex(swingTrace);	
+							// Hit particle
 							
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
 							
-							if(target > 0) 
-							{
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_CLUB, -1, _, vecHit);
-								
-								// Hit particle
-								
-								
-								// Hit sound
-								ParticleEffectAt(vecHit, "drg_cow_explosion_sparkles_blue", 1.5);
-								npc.PlayMeleeHitSound();
-							} 
-						}
+							// Hit sound
+							ParticleEffectAt(vecHit, "drg_cow_explosion_sparkles_blue", 1.5);
+							npc.PlayMeleeHitSound();
+						} 
+					}
 					delete swingTrace;
 					npc.m_flAttackHappenswillhappen = false;
 				}
@@ -217,10 +225,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 		if (npc.m_flReloadDelay < GetGameTime(npc.index))
-		{
 			npc.StartPathing();
-			
-		}
 	}
 	else
 	{

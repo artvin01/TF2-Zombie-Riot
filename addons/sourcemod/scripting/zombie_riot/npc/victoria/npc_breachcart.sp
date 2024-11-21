@@ -17,6 +17,32 @@ static const char g_MeleeHitSounds[][] = {
 	"mvm/melee_impacts/bottle_hit_robo03.wav",
 };
 
+static const char g_IdleAlertedSounds[][] = {
+	"npc/metropolice/vo/affirmative.wav",
+	"npc/metropolice/vo/affirmative2.wav",
+	"npc/metropolice/vo/canalblock.wav",
+	"npc/metropolice/vo/chuckle.wav",
+	"npc/metropolice/vo/citizen.wav",
+	"npc/metropolice/vo/code7.wav",
+	"npc/metropolice/vo/code100.wav",
+	"npc/metropolice/vo/copy.wav",
+	"npc/metropolice/vo/breakhiscover.wav",
+	"npc/metropolice/vo/help.wav",
+	"npc/metropolice/vo/hesgone148.wav",
+	"npc/metropolice/vo/hesrunning.wav",
+	"npc/metropolice/vo/infection.wav",
+	"npc/metropolice/vo/king.wav",
+	"npc/metropolice/vo/needanyhelpwiththisone.wav",
+	"npc/metropolice/vo/pickupthecan1.wav",
+
+	"npc/metropolice/vo/pickupthecan3.wav",
+	"npc/metropolice/vo/sociocide.wav",
+	"npc/metropolice/vo/watchit.wav",
+	"npc/metropolice/vo/xray.wav",
+	"npc/metropolice/vo/youknockeditover.wav",
+	"npc/metropolice/takedown.wav",
+};
+
 void VictoriaBreachcart_MapStart()
 {
 	PrecacheSound(g_DeathSounds);
@@ -57,8 +83,6 @@ methodmap VictoriaBreachcart < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
 
 	public void PlayMeleeHitSound()
@@ -316,28 +340,28 @@ static void ClotThink(int iNPC)
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
+						{
+							
+							target = TR_GetEntityIndex(swingTrace);	
+							
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+							
+							if(target > 0) 
 							{
+								if(!ShouldNpcDealBonusDamage(target))
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, vecHit);
+								else
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
 								
-								int target = TR_GetEntityIndex(swingTrace);	
+								// Hit particle
 								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
 								
-								if(target > 0) 
-								{
-									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
-									
-									// Hit particle
-									
-									
-									// Hit sound
-									ParticleEffectAt(vecHit, "drg_cow_explosion_sparkles_blue", 1.5);
-									npc.PlayMeleeHitSound();
-								} 
-							}
+								// Hit sound
+								ParticleEffectAt(vecHit, "drg_cow_explosion_sparkles_blue", 1.5);
+								npc.PlayMeleeHitSound();
+							} 
+						}
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
 					}
