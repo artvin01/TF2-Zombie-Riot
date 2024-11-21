@@ -67,7 +67,7 @@ static const char g_RangedAttackSoundsSecondary[][] = {
 
 #if !defined ZR
 
-#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY		0.7		//for npc's that walk backwards, how much slower should be walk
+#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY		0.7		//for npc's that walk backwards, how much slower should be walk
 #define RUINA_FACETOWARDS_BASE_TURNSPEED			475.0	//for npc's that constantly face towards a target, how fast can they turn
 #define RUINA_LASER_LOOP_SOUND						"zombiesurvival/seaborn/loop_laser.mp3"
 
@@ -484,7 +484,7 @@ public void NPC_ClotThink(int iNPC)
 
 	if(npc.m_bAllowBackWalking && backing_up)
 	{
-		npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+		npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 		npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*2.0);
 	}
 	else

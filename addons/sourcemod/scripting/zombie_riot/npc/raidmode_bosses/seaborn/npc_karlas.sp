@@ -468,7 +468,7 @@ methodmap Karlas < CClotBody
 		}
 
 		func_NPCFuncWin[npc.index] = Win_Line;
-		npc.m_iNClockonState = 0;
+		npc.m_iNClockonState = 2;
 		
 		
 		return npc;
@@ -530,6 +530,18 @@ static void Internal_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	//Set raid to this one incase the previous one has died or somehow vanished
+	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+	{
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+		{
+			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+			{
+				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+			}	
+		}
+	}
+
 	//we are about to teleport, BUT stella wants us to retreat, so abort the teleport and run to stella.
 	bool abort_teleport = false;
 	if(npc.m_bRetreat)
@@ -563,17 +575,6 @@ static void Internal_ClotThink(int iNPC)
 	if(!IsValidEntity(RaidBossActive))
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
-	}
-	//Set raid to this one incase the previous one has died or somehow vanished
-	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
-	{
-		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
-		{
-			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
-			{
-				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
-			}	
-		}
 	}
 
 	//we are in the process of transforming, do stuff. also using a sepereate game time so special effects don't affect the transforming stuff.
@@ -672,8 +673,6 @@ static void Internal_ClotThink(int iNPC)
 
 	Blade_Logic(npc, PrimaryThreatIndex, flDistanceToTarget);
 
-	
-
 	npc.PlayIdleAlertSound();
 }
 static void Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceToTarget)
@@ -760,7 +759,7 @@ static void GetTarget(Karlas npc)
 		if(!IsValidAlly(npc.index, npc.Ally))
 		{
 			npc.m_flNC_LockedOn = 0.0;
-			npc.m_iNClockonState = 0;
+			npc.m_iNClockonState = 2;
 			return;
 		}
 			
@@ -777,7 +776,9 @@ static void GetTarget(Karlas npc)
 			float Duration = fl_AbilityOrAttack[stella.index][3] - GetGameTime(stella.index);
 			float Ratio = (1.0 - (Duration / STELLA_NC_DURATION))+0.2;
 
-			float Turn_Speed = ((stella.Anger ? 300.0 : 250.0)*Ratio);
+			float Turn_Speed = ((stella.Anger ? STELLA_NC_TURNRATE_ANGER : STELLA_NC_TURNRATE)*Ratio);
+
+			Turn_Speed *=0.8;
 
 			if(NpcStats_IsEnemySilenced(stella.index))
 				Turn_Speed *=0.95;
@@ -1027,7 +1028,7 @@ static void Schwert_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float
 		npc.FaceTowards(vecTarget, 20000.0);
 
 		if(Schwert_Status(npc, GameTime)!=1)
-			npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 	}
 	else
 	{
@@ -1622,7 +1623,7 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 	
 	float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex_Schwert, WorldSpaceVec2);
 	
-	if(flDistanceToTarget_Schwert < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25)
+	if(flDistanceToTarget_Schwert < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25 && npc.m_iNClockonState != 2)
 	{
 		Schwert_Movement(npc, flDistanceToTarget_Schwert, PrimaryThreatIndex_Schwert);
 		Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex_Schwert, GameTime, flDistanceToTarget_Schwert, WorldSpaceVec2);
@@ -1639,7 +1640,7 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 			npc.m_flSpeed =  fl_npc_basespeed*2.0;
 		return;
 	}	
-	if(flDistanceToAlly < (1500.0*1500.0))	//stay within a 1500 radius of donner
+	if(flDistanceToAlly < (1500.0*1500.0) && (npc.m_iNClockonState!=2 || Can_I_See_Enemy_Only(npc.index, npc.Ally)))	//stay within a 1500 radius of donner, and preferably within line of sight
 	{
 		int target_new = GetClosestTarget(donner.index);
 		if(IsValidEnemy(npc.index, target_new))
@@ -1675,11 +1676,24 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 	else 
 	{
 		NPC_SetGoalEntity(npc.index, donner.index);
-		if(Schwert_Status(npc, GameTime)!=1)
+		if(Schwert_Status(npc, GameTime)!=1 && (npc.m_iNClockonState !=2 || !Can_I_See_Enemy_Only(npc.index, npc.Ally)))
 			npc.m_flSpeed =  fl_npc_basespeed*2.0;
 
 		npc.m_flGetClosestTargetTime = 0.0;
 	}
+	if(npc.m_iNClockonState == 2)
+	{
+		int enemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex_Schwert);
+
+		if(IsValidEnemy(npc.index, enemy))
+		{
+			WorldSpaceCenter(enemy, WorldSpaceVec2);
+			npc.m_bAllowBackWalking = true;
+			npc.FaceTowards(WorldSpaceVec2, RUINA_FACETOWARDS_BASE_TURNSPEED*1.5);
+		}
+		
+	}
+		
 }
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

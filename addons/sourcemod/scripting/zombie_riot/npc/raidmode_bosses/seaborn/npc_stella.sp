@@ -24,6 +24,7 @@ no?: abort.
 yes:
 Keep on checking which of the 2 npc's can see more targets from their positions, if karlas can see more, move NC onto karlas and have him reflect it, if stella can see more, buisness as usual
 
+fix stella keeping her NC res. oops
 
 Phase 2: Danger - 6:24
 
@@ -108,8 +109,6 @@ static char gExplosive1;
 
 //Heavens Fall
 
-static float fl_heavens_fall_use_timer[MAXENTITIES];
-
 //Logic for duo raidboss
 
 
@@ -118,6 +117,8 @@ static bool b_InKame[MAXENTITIES];
 static bool b_tripple_raid[MAXENTITIES];
 
 #define STELLA_NC_DURATION 30.0	//15.0
+#define STELLA_NC_TURNRATE 250.0
+#define STELLA_NC_TURNRATE_ANGER 300.0
 #define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/donner_schwert_5.mp3"
 
 bool b_donner_said_win_line;
@@ -202,10 +203,6 @@ methodmap Stella < CClotBody
 
 		EmitCustomToAll(g_nightmare_cannon_core_sound[GetRandomInt(0, sizeof(g_nightmare_cannon_core_sound) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayNightmareSound()");
-		#endif
 	}
 
 	public void PlayIdleAlertSound() {
@@ -267,10 +264,20 @@ methodmap Stella < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
+	property float m_flNCspecialTargetTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
 	property int m_iNC_Dialogue
 	{
 		public get()							{ return i_ruina_state[this.index]; }
 		public set(int TempValueForProperty) 	{ i_ruina_state[this.index] = TempValueForProperty; }
+	}
+	property bool m_bMovingTowardsKarlas
+	{
+		public get()							{ return this.m_flHalf_Life_Regen; }
+		public set(bool TempValueForProperty) 	{ this.m_flHalf_Life_Regen = TempValueForProperty; }
 	}
 	property float m_flNC_LockedOn
 	{
@@ -637,9 +644,10 @@ methodmap Stella < CClotBody
 				
 		npc.m_flNC_Recharge = GameTime + 10.0;
 		npc.m_iNC_Dialogue = 0;
+		npc.m_bMovingTowardsKarlas = false;
+		npc.m_flNCspecialTargetTimer = 0.0;
+		npc.m_flNC_Grace = 0.0;
 
-
-		fl_heavens_fall_use_timer[npc.index] = GameTime + 30.0;
 		
 		if(!b_test_mode[npc.index])
 			EmitSoundToAll("mvm/mvm_tele_deliver.wav");
@@ -814,7 +822,12 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	if(npc.m_bInKame)
+	{
 		Handle_NC_TurnSpeed(npc);
+		npc.m_flSpeed = 0.0;
+		return;
+	}
+		
 
 	if(npc.m_flDoingAnimation > GameTime)
 	{
@@ -854,12 +867,10 @@ static void Internal_ClotThink(int iNPC)
 
 	Body_Pitch(npc, VecSelfNpc, vecTarget);
 
-	npc.StartPathing();
-
 	bool backing_up = KeepDistance(npc, flDistanceToTarget, PrimaryThreatIndex,((npc.m_iNC_Dialogue != 0) ? GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 50.0 : GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5));
 	
-	if((npc.m_iNC_Dialogue != 0))
-		npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*2.0);
+	//if((npc.m_iNC_Dialogue != 0) && !BlockTurn(npc))
+	//	npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*2.0);
 
 	if(flDistanceToTarget < ( (npc.m_iNC_Dialogue != 0) ? GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 55.0 : GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 	{
@@ -872,7 +883,7 @@ static void Internal_ClotThink(int iNPC)
 
 	if(npc.m_bAllowBackWalking && backing_up)
 	{
-		npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+		npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 		if(!BlockTurn(npc))
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*2.0);
 	}
@@ -937,6 +948,58 @@ static bool KeepDistance(Stella npc, float flDistanceToTarget, int PrimaryThreat
 
 	return backing_up;
 }
+static bool b_MoveTowardsKarlas(Stella npc)
+{
+	//karlas is invalid, don't bother!
+	if(!IsValidAlly(npc.index, npc.Ally))
+		return false;
+
+	int Near_Stella = Nearby_Players(npc, 9999.0);
+
+	Stella npc2 = view_as<Stella>(npc.Ally);
+	int Near_Karlas = Nearby_Players(npc2, 9999.0);
+
+	//stella has no targets in sight.
+	if(Near_Stella <= 0)
+	{
+		
+		//karlas has ATLEAST 1 target in sight.
+		if(Near_Karlas>0)
+			return true;
+		
+		//neither have any valid targets in sight, stella shall target on her own.
+		return false;
+	}
+	//stella has ATLEAST 1 target in sight.
+	else	
+	{
+		//Karlas has more then stella has in line of sight.
+		//targets in line of sight of stella are more valuable then the ones near karlas. 
+		if(RoundToFloor(Near_Karlas*0.75) > Near_Stella)
+		{
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			if(Check_Line_Of_Sight(VecSelfNpc, npc.index, npc.Ally) == -1)
+				return false;
+
+			//he has more then 2 in line of sight, its worth using him as a reflector!
+			if(Near_Karlas>2)
+			{
+				//Karlas has more then 2 targets + has more then stella even after the devaluing
+				return true;
+			}
+			else
+			{
+				//Karlas does have more targets then stella, but its less then 2, so its not worth it.
+				return false;
+			}
+		}
+		else
+		{
+			//stella has more targets then karlas, stella targets on her own!
+			return false;
+		}
+	}
+}
 static void Handle_NC_TurnSpeed(Stella npc)
 {
 	float GameTime = GetGameTime(npc.index);
@@ -947,15 +1010,23 @@ static void Handle_NC_TurnSpeed(Stella npc)
 		return;
 	}
 	int Face_Target = npc.m_iTarget;
-	if(b_MoveTowardsKarlas(npc))
-		Face_Target = npc.Ally;
 
+	if(npc.m_flNCspecialTargetTimer < GameTime)
+	{
+		npc.m_flNCspecialTargetTimer = GameTime + 0.5;
+		npc.m_bMovingTowardsKarlas = b_MoveTowardsKarlas(npc);
+		//CPrintToChatAll("we are now folloing karlas : %b",npc.m_bMovingTowardsKarlas );
+	}
+
+	if(npc.m_bMovingTowardsKarlas)
+		Face_Target = npc.Ally;
+		
 	float vecTarget[3]; WorldSpaceCenter(Face_Target, vecTarget);
 
 	float Duration = npc.m_flNC_Duration - GameTime;
 	float Ratio = (1.0 - (Duration / STELLA_NC_DURATION))+0.2;
 
-	float Turn_Speed = ((npc.Anger ? 300.0 : 250.0)*Ratio);
+	float Turn_Speed = ((npc.Anger ? STELLA_NC_TURNRATE_ANGER : STELLA_NC_TURNRATE)*Ratio);
 
 	if(NpcStats_IsEnemySilenced(npc.index))
 		Turn_Speed *=0.95;
@@ -963,21 +1034,7 @@ static void Handle_NC_TurnSpeed(Stella npc)
 	npc.FaceTowards(vecTarget, Turn_Speed);
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-
-	int iPitch = npc.LookupPoseParameter("body_pitch");
-	if(iPitch < 0)
-		return;		
-
-	//Body pitch
-	float v[3], ang[3];
-	SubtractVectors(VecSelfNpc, vecTarget, v); 
-	NormalizeVector(v, v);
-	GetVectorAngles(v, ang); 
-							
-	float flPitch = npc.GetPoseParameter(iPitch);
-							
-	npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
-
+	Body_Pitch(npc, VecSelfNpc, vecTarget);
 }
 
 public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
@@ -1025,15 +1082,32 @@ static void CountTargets(int entity, int victim, float damage, int weapon)
 {
 	i_targets_inrange++;
 }
-static bool b_Valid_NC_Initialistaion(Stella npc)
+static bool b_Valid_NC_Initialistaion(Stella npc, int type = 0)
 {
 	int players = CountPlayersOnRed(1);
-	if(players <= 2)
+	if(players <= 2 && type == 0)
 		return true;
 	//we only want to use NC if we have atleast 2 people in sight (asuming more then 2 people actually exist)
-	int Nearby = Nearby_Players(npc, (npc.Anger ? 3000.0 : 1250.0));
+	int Nearby = Nearby_Players(npc, (npc.Anger ? 5000.0 : 2000.0));
 
-	if(Nearby > 2)
+	//tpye == 1 is the trigger for the cannon
+	if(type==1)
+	{
+		//more then 2 players near/in line of sight, fire!
+		if(Nearby >= 2)
+			return true;
+		else if(players <=2)	//low player counts.
+		{
+			//we have ATLEAST 1 target
+			if(Nearby>=1)
+				return true;
+			else
+				return false;	//not worth attacking said position, retry!
+		}
+		else
+			return false; //not worth attacking said position, retry!
+	}
+	if(Nearby >= 2)
 		return true;
 	else
 		return false;
@@ -1076,12 +1150,12 @@ static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 			case 9: Stella_Lines(npc, "heh {crimson}This is{snow} gonna be funny.");
 			case 10:Stella_Lines(npc, "this has become quite troublesome.");
 		}
-		CPrintToChatAll("Chose %i", chose);
+		//CPrintToChatAll("Chose %i", chose);
 		npc.m_iNC_Dialogue = chose;
 
 		npc.m_flNC_Grace = GameTime + GetRandomFloat(6.0, 12.0);
 	}
-	else if(npc.m_flNC_Grace < GameTime && b_Valid_NC_Initialistaion(npc))
+	else if(npc.m_flNC_Grace < GameTime && b_Valid_NC_Initialistaion(npc, 1))
 	{
 		npc.m_flNC_Duration = GameTime + STELLA_NC_DURATION + 0.75;
 		int Enemy_I_See;
@@ -1093,7 +1167,8 @@ static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		//Target close enough to hit
 		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 		{
-			npc.FaceTowards(vecTarget, 20000.0);
+			npc.FaceTowards(vecTarget, 200000.0);
+			npc.FaceTowards(vecTarget, 200000.0);
 		}
 
 		npc.m_flRangedArmor = 0.3;
@@ -1182,6 +1257,8 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		npc.m_flNC_Recharge = GameTime + (npc.Anger ? 45.0 : 60.0);
 		npc.m_bKarlasRetreat = false;
 
+		npc.m_iKarlasNCState = 0;
+
 		if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][1])))	//temp particles
 			RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][1]));
 		if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][2])))	//temp particles
@@ -1230,9 +1307,14 @@ public Action Stella_Nightmare_Tick(int iNPC)
 
 	float Dist = GetVectorDistance(Start_Loc, endPoint);
 
-	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 5, Dist, false, radius, 1.0);			//5
-	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, 2.0);		//15
-	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, -2.0);		//18
+	//if we can't see nearby players, don't bother rendering these effects!
+	if(Nearby_Players(npc, 9999.0)>0)
+	{
+		Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 5, Dist, false, radius, 1.0);			//5
+		Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, 2.0);		//15
+		Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, -2.0);		//18
+	}
+	
 
 	if(fl_initial_windup[npc.index] > GameTime)
 	{
@@ -1240,13 +1322,13 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		return Plugin_Continue;
 	}
 	//MINUS FIFTY
-
+	npc.m_iKarlasNCState = 0;
 	bool block_main_explosion = false;
-	if(IsValidAlly(npc.index, npc.Ally))
+	if(IsValidAlly(npc.index, npc.Ally) && npc.m_bMovingTowardsKarlas)
 	{
 		Laser.Radius = radius*0.75;
+		npc.m_iKarlasNCState = 2;
 		Laser.Any_entities = true;	//ANY valid entity found is added to the trace.
-		npc.m_iKarlasNCState = 0;
 		Laser.Detect_Entities(FindKarlas);	
 
 		if(npc.m_iKarlasNCState == 1)
@@ -1270,10 +1352,11 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			update, 
 			Silence);
 			//for karlas's laser, nerf its damage.
-			if(update)
+			//oh also, karlas's turn rate for the laser is also nerfed by 20%
+			if(update)	//like the main laser, the damage is dealt 10 times a second
 			{
-				Karl_Laser.Damage = Modify_Damage(-1, 15.0);
-				Karl_Laser.Bonus_Damage = Modify_Damage(-1, 15.0)*6.0;
+				Karl_Laser.Damage = Modify_Damage(-1, 10.0);
+				Karl_Laser.Bonus_Damage = Modify_Damage(-1, 10.0)*6.0;
 				Karl_Laser.damagetype = DMG_PLASMA;
 				Karl_Laser.Deal_Damage();
 			}
@@ -1298,14 +1381,6 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	NC_CoreBeamEffects(npc, Start_Loc, endPoint, Dist, radius, angles, update, Silence);
 	
 	return Plugin_Continue;
-}
-static bool b_MoveTowardsKarlas(Stella npc)
-{
-	//karlas is invalid, don't bother!
-	if(!IsValidAlly(npc.index, npc.Ally))
-		return false;
-
-	return true;
 }
 static void FindKarlas(int client, int entity, int damagetype, float damage)
 {
@@ -1449,6 +1524,7 @@ static void Heavens_Fall(Stella npc, float GameTime, int Infection=0 , bool cree
 
 	float Timer = 80.0 *(Base_Dist/DONNERKRIEG_HEAVENS_FALL_MAX_DIST);	//the timer is dynamic to the "power" of this attack, the power is determined by the avalable avg distance which is gotten by clearance check
 
+	/*
 	if(!npc.Anger)
 		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer;
 	else
@@ -1456,7 +1532,7 @@ static void Heavens_Fall(Stella npc, float GameTime, int Infection=0 , bool cree
 
 	if(b_tripple_raid[npc.index])
 		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer*1.5;
-
+	*/
 
 	int Base_Amt = RoundToFloor((Base_Dist/Distance_Ratios)/DONNERKRIEG_HEAVENS_FALL_MAX_AMT);
 
@@ -2042,13 +2118,12 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 {
 	float GameTime = GetGameTime(npc.index);
 
-	if(npc.m_flNC_Grace > GameTime)
+	if(npc.m_iNC_Dialogue != 0)
 	{
 		float Grace_Time = npc.m_flNC_Grace - GameTime;
-		if(Grace_Time < 1.5)
+		if(Grace_Time < 3.0)
 		{
 			npc.m_flNorm_Attack_In = 0.0;
-			npc.m_flNorm_Attack_Duration = GameTime + 1.0;
 			return;
 		}
 	}
@@ -2127,12 +2202,12 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	int target = i_Get_Laser_Target(npc, Range);
 	if(IsValidEnemy(npc.index, target))
 	{
-		float Bonus_Speed_Range = 300.0*300.0;
+		float Bonus_Speed_Range = 250.0*250.0;
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float Self_Vec[3]; WorldSpaceCenter(npc.index, Self_Vec);
 		float Dist = GetVectorDistance(vecTarget, Self_Vec, true);
 
-		float Turn_Rate = (npc.Anger ? 0.24 : 0.12);
+		float Turn_Rate = (npc.Anger ? 0.36 : 0.18);
 		float Turn_Speed = (RUINA_FACETOWARDS_BASE_TURNSPEED*Turn_Rate);
 		
 		if(Dist <= 0.0)
@@ -2140,7 +2215,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 		if(Dist < Bonus_Speed_Range)
 		{
-			Turn_Speed*= ((1.0-(Dist/Bonus_Speed_Range))*4.5);
+			Turn_Speed*= ((1.0-(Dist/Bonus_Speed_Range))*3.5);
 		}
 
 		if(Silence)
@@ -2485,7 +2560,7 @@ public void Donner_Neural_Tweak_shake(int entity, int victim, float damage, int 
 	}
 }
 
-/*
+
 static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 {
 	Ruina_Laser_Logic Laser;
@@ -2505,13 +2580,13 @@ static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 
 	float Trace_Loc[3];
 	Trace_Loc = Laser.End_Point;	//get the end location of the trace.
-	//see if the vectors match up, if they do we can safely say the enemy gamer is in sight of the crystal.
+	//see if the vectors match up, if they do we can safely say the target is in line of sight of the origin npc/loc
 	if(Similar_Vec(Trace_Loc, Enemy_Loc))
 		return enemy;
 	else
 		return -1;
 }
-*/
+
 
 
 
