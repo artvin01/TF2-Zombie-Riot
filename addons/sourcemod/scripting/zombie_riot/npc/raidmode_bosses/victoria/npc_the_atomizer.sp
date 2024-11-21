@@ -894,7 +894,7 @@ static void Internal_NPCDeath(int entity)
 	if(BlockLoseSay)
 		return;
 
-	switch(GetRandomInt(0,3))
+	switch(GetRandomInt(0,2))
 	{
 		case 0:
 		{
@@ -904,13 +904,9 @@ static void Internal_NPCDeath(int entity)
 		{
 			CPrintToChatAll("{blue}Atomizer{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
 		}
-		case 2:
-		{
-			CPrintToChatAll("{blue}Atomizer{default}: {gold}Expidonsa{default} is far out of your level of understanding.");
-		}
 		case 3:
 		{
-			CPrintToChatAll("{blue}Atomizer{default}: You do not know what you are getting yourself into.");
+			CPrintToChatAll("{blue}Atomizer{default}: You intruders will soon face the real deal");
 		}
 	}
 
