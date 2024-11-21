@@ -118,7 +118,7 @@ methodmap VictorianSignaller < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl");
 		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/heavy/hardhat_tower.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/soldier/hardhat_tower.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec23_trench_warefarer/dec23_trench_warefarer.mdl");
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2021_goalkeeper_style2/hwn2021_goalkeeper_style2_soldier.mdl");
 		
