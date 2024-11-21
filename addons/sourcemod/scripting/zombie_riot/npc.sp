@@ -646,8 +646,8 @@ void NPC_ConfigSetup()
 	RaidbossMrX_OnMapStart();
 	GodAlaxios_OnMapStart();
 	Sensal_OnMapStart_NPC();
-	Raidboss_Schwertkrieg_OnMapStart_NPC();
-	Raidboss_Donnerkrieg_OnMapStart_NPC();
+	Karlas_OnMapStart_NPC();
+	Stella_OnMapStart_NPC();
 	RaidbossBobTheFirst_OnMapStart();
 	TheMessenger_OnMapStart_NPC();
 	ChaosKahmlstein_OnMapStart_NPC();
@@ -1205,7 +1205,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver_mid.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_twirl.sp"
-#include "zombie_riot/npc/raidmode_bosses/npc_levita.sp"
+//#include "zombie_riot/npc/raidmode_bosses/npc_levita.sp"
 
 #endif
 
@@ -1430,8 +1430,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_isharmla.sp"
 #include "zombie_riot/npc/seaborn/npc_isharmla_trans.sp"
 
-#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_donnerkrieg.sp"
-#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_schwertkrieg.sp"
+#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_stella.sp"
+#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_karlas.sp"
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_bob_the_first_last_savior.sp"
 
 #include "zombie_riot/npc/expidonsa/npc_benera.sp"

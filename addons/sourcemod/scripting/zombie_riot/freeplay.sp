@@ -117,7 +117,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 			case 6:	//don't know how to edit the freeplay spawn thing without being 100% sure I didn't brick anything soo commented out for now.
 			{
-				enemy.Index = NPC_GetByPlugin("npc_sea_donnerkrieg");
+				enemy.Index = NPC_GetByPlugin("npc_stella");
 				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 7:	

@@ -648,4 +648,4 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/seaborn/npc_riversea_fast.sp"
 #include "rpg_fortress/npc/seaborn/npc_riversea_tank.sp"
 
-#include "rpg_fortress/npc/superbosses/npc_levita.sp"
+//#include "rpg_fortress/npc/superbosses/npc_levita.sp"

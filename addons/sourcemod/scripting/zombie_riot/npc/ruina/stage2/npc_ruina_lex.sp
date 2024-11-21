@@ -474,8 +474,6 @@ static void Do_OnSpawn(int ref)
 		npc.m_flRange = (300.0*300.0);
 		npc.Spawn_Ally();
 	}
-	
-	
 }
 
 

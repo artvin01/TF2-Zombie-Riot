@@ -136,6 +136,7 @@ enum
 }
 
 //static char gLaser1;
+int g_Ruina_Laser_BEAM;
 int g_Ruina_BEAM_Diamond;
 int g_Ruina_BEAM_Laser;
 int g_Ruina_HALO_Laser;
@@ -236,7 +237,7 @@ void Ruina_Ai_Core_Mapstart()
 
 	i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
 	
-	//gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	g_Ruina_Laser_BEAM = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
 	g_Ruina_BEAM_Diamond = PrecacheModel("materials/sprites/physring1.vmt", true);
 	g_Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
@@ -2534,7 +2535,8 @@ enum struct Ruina_Laser_Logic
 				if(ShouldNpcDealBonusDamage(victim))
 					Dmg = this.Bonus_Damage;
 				
-				SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
+				if(Dmg!=0.0)
+					SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
 
 				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
 				{	

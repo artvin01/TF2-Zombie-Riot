@@ -262,7 +262,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 				char npc_classname[60];
 				NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 
-				if(entity != INVALID_ENT_REFERENCE && (StrEqual(npc_classname, "npc_sea_donnerkrieg") || StrEqual(npc_classname, "npc_sea_schwertkrieg")) && IsEntityAlive(entity))
+				if(entity != INVALID_ENT_REFERENCE && (StrEqual(npc_classname, "npc_stella") || StrEqual(npc_classname, "npc_karlas")) && IsEntityAlive(entity))
 				{
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 					SmiteNpcToDeath(entity);
