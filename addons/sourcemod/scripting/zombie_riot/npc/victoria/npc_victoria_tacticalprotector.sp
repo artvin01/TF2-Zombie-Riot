@@ -421,9 +421,9 @@ int VictoriaProtectorAssaultMode(int iNPC, float gameTime, int target, float dis
 					if(Hittarget > 0) 
 					{
 						if(ShouldNpcDealBonusDamage(Hittarget))
-							SDKHooks_TakeDamage(Hittarget, npc.index, npc.index, 650.0, DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(Hittarget, npc.index, npc.index, 255.0, DMG_CLUB, -1, _, vecHit);
 						else
-							SDKHooks_TakeDamage(Hittarget, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(Hittarget, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
 						// Hit sound
 						npc.PlayMeleeHitSound();
 					} 

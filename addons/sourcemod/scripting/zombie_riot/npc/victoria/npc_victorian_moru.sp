@@ -60,7 +60,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		{
 			if(i>=count)break;
 			if(!StrContains(countext[i], "factory"))FactorySpawn=true;
-			else if(!StrContains(countext[i], "mk2"))MK2[npc.index]=true;
+			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victori Anvil MK2");}
 			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
 			else if(!StrContains(countext[i], "factory"))FactorySpawn=true;
 		}
@@ -287,7 +287,7 @@ int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float distanc
 			npc.PlayHealSound();
 			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
-			spawnRing_Vectors(vecTarget, 250.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(vecTarget, (MK2[npc.index] ? 400.0 : 200.0)  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 			//CreateTimer(0.1, Timer_MachineShop, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 			//VictorianFactory npc = view_as<VictorianFactory>(iNPC);
 			float entitypos[3], dist;

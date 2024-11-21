@@ -15,7 +15,7 @@ void VictorianFactory_MapStart()
 	PrecacheModel("models/props_c17/lockers001a.mdl");
 	PrecacheModel("models/props_skybox/train_building004_skybox.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Factory");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Factory");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_factory");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_factory");
 	data.IconCustom = true;
