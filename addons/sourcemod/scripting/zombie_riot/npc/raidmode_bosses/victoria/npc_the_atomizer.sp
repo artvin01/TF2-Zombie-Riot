@@ -640,9 +640,9 @@ static void Internal_ClotThink(int iNPC)
 			npc.AddActivityViaSequence("taunt05");
 			npc.SetCycle(0.01);
 			npc.SetPlaybackRate(1.4);
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			pos[2] += 5.0;
-			ParticleEffectAt(pos, "utaunt_aestheticlogo_teamcolor_blue", 3.0);
+			//float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			//pos[2] += 5.0;
+			//ParticleEffectAt(pos, "utaunt_aestheticlogo_teamcolor_blue", 3.0);
 			Delay_Attribute[npc.index] = gameTime + 0.5;
 			npc.StopPathing();
 			npc.m_bPathing = false;
