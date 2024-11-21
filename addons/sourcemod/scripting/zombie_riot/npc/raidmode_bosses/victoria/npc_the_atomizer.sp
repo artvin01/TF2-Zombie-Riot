@@ -104,7 +104,7 @@ static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXTF2PLAYERS];
+static float fl_said_player_weaponline_time[MAXENTITIES];
 
 void Atomizer_OnMapStart_NPC()
 {
@@ -428,7 +428,7 @@ static void Internal_ClotThink(int iNPC)
 		}
 	}
 	npc.m_flSpeed = 300.0+(((FTL[npc.index]-(RaidModeTime - GetGameTime()))/FTL[npc.index])*150.0);
-	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index])
+	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
 		npc.m_flMeleeArmor = 0.33;
 		npc.m_flRangedArmor = 0.33;
@@ -640,9 +640,8 @@ static void Internal_ClotThink(int iNPC)
 			npc.AddActivityViaSequence("taunt05");
 			npc.SetCycle(0.01);
 			npc.SetPlaybackRate(1.4);
-			//float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			//pos[2] += 5.0;
-			//ParticleEffectAt(pos, "utaunt_aestheticlogo_teamcolor_blue", 3.0);
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			ParticleEffectAt(pos, "utaunt_aestheticlogo_teamcolor_blue", 3.0);
 			Delay_Attribute[npc.index] = gameTime + 0.5;
 			npc.StopPathing();
 			npc.m_bPathing = false;
@@ -904,9 +903,9 @@ static void Internal_NPCDeath(int entity)
 		{
 			CPrintToChatAll("{blue}Atomizer{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
 		}
-		case 3:
+		case 2:
 		{
-			CPrintToChatAll("{blue}Atomizer{default}: You intruders will soon face the real deal");
+			CPrintToChatAll("{blue}Atomizer{default}: You intruders will soon face the {crimson}Real Deal.{default}");
 		}
 	}
 

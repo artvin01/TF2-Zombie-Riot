@@ -16,7 +16,7 @@ void VictoriaTank_MapStart()
 	PrecacheSound(g_MeleeAttackSounds);
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Tank");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Tank");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian_tank");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_tank");
 	data.IconCustom = true;
