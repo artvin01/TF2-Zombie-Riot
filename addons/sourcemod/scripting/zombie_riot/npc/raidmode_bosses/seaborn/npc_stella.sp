@@ -117,7 +117,7 @@ static int i_ally_index[MAXENTITIES];
 static bool b_InKame[MAXENTITIES];
 static bool b_tripple_raid[MAXENTITIES];
 
-#define STELLA_NC_DURATION 15.0
+#define STELLA_NC_DURATION 30.0	//15.0
 #define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/donner_schwert_5.mp3"
 
 bool b_donner_said_win_line;
@@ -269,24 +269,72 @@ methodmap Stella < CClotBody
 	}
 	property int m_iNC_Dialogue
 	{
-		public get()							{ return this.m_iState; }
-		public set(int TempValueForProperty) 	{ this.m_iState = TempValueForProperty; }
+		public get()							{ return i_ruina_state[this.index]; }
+		public set(int TempValueForProperty) 	{ i_ruina_state[this.index] = TempValueForProperty; }
 	}
-	public void SetKarlas_NC_Lockon(float Time)
+	property float m_flNC_LockedOn
 	{
-		if(IsValidAlly(this.index, this.Ally))
+		public get()		 
+		{ 
+			if(IsValidAlly(this.index, this.Ally))
+			{
+				Karlas npc = view_as<Karlas>(this.Ally);
+				return fl_AbilityOrAttack[npc.index][9];
+			}
+			return 0.0;
+		}
+		public set(float value) 
 		{
-			Karlas npc = view_as<Karlas>(this.Ally);
-			fl_AbilityOrAttack[npc.index][9] = Time;
+			if(IsValidAlly(this.index, this.Ally))
+			{
+				Karlas npc = view_as<Karlas>(this.Ally);
+				fl_AbilityOrAttack[npc.index][9] = value;
+			}
 		}
 	}
-
-	public void SetKarlasRetreat(bool state)
+	property bool m_bKarlasRetreat
 	{
-		if(IsValidAlly(this.index, this.Ally))
+		public get()		 
+		{ 
+			if(IsValidAlly(this.index, this.Ally))
+			{
+				Karlas npc = view_as<Karlas>(this.Ally);
+				return npc.m_fbGunout;
+			}
+			return false;
+		}
+		public set(bool value) 
 		{
-			Karlas npc = view_as<Karlas>(this.Ally);
-			npc.m_fbGunout = state;
+			if(IsValidAlly(this.index, this.Ally))
+			{
+				Karlas npc = view_as<Karlas>(this.Ally);
+				npc.m_fbGunout = value;
+			}
+		}
+	}
+	/*
+		0 - No cannon.
+		1 - Cannon is directly on karlas.
+		2 - 
+	*/
+	property int m_iKarlasNCState
+	{
+		public get()		 
+		{ 
+			if(IsValidAlly(this.index, this.Ally))
+			{
+				Karlas npc = view_as<Karlas>(this.Ally);
+				return i_MedkitAnnoyance[npc.index];
+			}
+			return 0;
+		}
+		public set(int iInt) 
+		{
+			if(IsValidAlly(this.index, this.Ally))
+			{
+				Karlas npc = view_as<Karlas>(this.Ally);
+				i_MedkitAnnoyance[npc.index] = iInt;
+			}
 		}
 	}
 	property int Ally
@@ -730,7 +778,6 @@ static void Internal_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-	
 	npc.Update();
 			
 	if(npc.m_blPlayHurtAnimation)
@@ -809,9 +856,12 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.StartPathing();
 
-	bool backing_up = KeepDistance(npc, flDistanceToTarget, PrimaryThreatIndex,((npc.m_iNC_Dialogue > 0) ? GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0 : GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5));
+	bool backing_up = KeepDistance(npc, flDistanceToTarget, PrimaryThreatIndex,((npc.m_iNC_Dialogue != 0) ? GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 50.0 : GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5));
+	
+	if((npc.m_iNC_Dialogue != 0))
+		npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*2.0);
 
-	if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0)
+	if(flDistanceToTarget < ( (npc.m_iNC_Dialogue != 0) ? GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 55.0 : GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 	{
 		npc.m_bAllowBackWalking = true;
 		if(!BlockTurn(npc))
@@ -896,7 +946,11 @@ static void Handle_NC_TurnSpeed(Stella npc)
 		npc.m_flGetClosestTargetTime = 0.0;
 		return;
 	}
-	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+	int Face_Target = npc.m_iTarget;
+	if(b_MoveTowardsKarlas(npc))
+		Face_Target = npc.Ally;
+
+	float vecTarget[3]; WorldSpaceCenter(Face_Target, vecTarget);
 
 	float Duration = npc.m_flNC_Duration - GameTime;
 	float Ratio = (1.0 - (Duration / STELLA_NC_DURATION))+0.2;
@@ -973,7 +1027,7 @@ static void CountTargets(int entity, int victim, float damage, int weapon)
 }
 static bool b_Valid_NC_Initialistaion(Stella npc)
 {
-	int players = CountPlayersOnRed();
+	int players = CountPlayersOnRed(1);
 	if(players <= 2)
 		return true;
 	//we only want to use NC if we have atleast 2 people in sight (asuming more then 2 people actually exist)
@@ -1007,7 +1061,7 @@ static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		
 		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 
-		npc.SetKarlasRetreat(true);
+		npc.m_bKarlasRetreat = true;
 		int chose = GetRandomInt(1, 10);
 		switch(chose)
 		{
@@ -1025,7 +1079,7 @@ static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		CPrintToChatAll("Chose %i", chose);
 		npc.m_iNC_Dialogue = chose;
 
-		npc.m_flNC_Grace = GameTime + GetRandomFloat(4.0, 6.0);
+		npc.m_flNC_Grace = GameTime + GetRandomFloat(6.0, 12.0);
 	}
 	else if(npc.m_flNC_Grace < GameTime && b_Valid_NC_Initialistaion(npc))
 	{
@@ -1068,7 +1122,7 @@ static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 			case 9: Stella_Lines(npc, "{crimson}HERE COMES THE FUNNY{snow}.");
 			case 10:Stella_Lines(npc, "So I'll just {crimson}remove{snow} the troublesome component!");
 
-			default: CPrintToChatAll("%s: It seems my master forgot to set a proper dialogue line for this specific number, how peculiar. Anyway, here's the ID: [%i]", npc.GetName(), npc.m_iNC_Dialogue);
+			default: CPrintToChatAll("%s It seems my master forgot to set a proper dialogue line for this specific number, how peculiar. Anyway, here's the ID: [%i]", npc.GetName(), npc.m_iNC_Dialogue);
 		}
 
 		npc.AddActivityViaSequence("taunt_mourning_mercs_medic");
@@ -1126,7 +1180,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	{
 		npc.m_bInKame=false;
 		npc.m_flNC_Recharge = GameTime + (npc.Anger ? 45.0 : 60.0);
-		npc.SetKarlasRetreat(false);
+		npc.m_bKarlasRetreat = false;
 
 		if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][1])))	//temp particles
 			RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][1]));
@@ -1138,7 +1192,6 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		npc.m_iNC_Dialogue = 0;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-		npc.m_bisWalking = true;
 		npc.m_iChanged_WalkCycle = 1;
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -1186,19 +1239,94 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 7, Dist, false, radius/2.0, -1.0);		//12
 		return Plugin_Continue;
 	}
-	
-	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 7, Dist, true, radius/2.0, -1.0);		//12
+	//MINUS FIFTY
+
+	bool block_main_explosion = false;
+	if(IsValidAlly(npc.index, npc.Ally))
+	{
+		Laser.Radius = radius*0.75;
+		Laser.Any_entities = true;	//ANY valid entity found is added to the trace.
+		npc.m_iKarlasNCState = 0;
+		Laser.Detect_Entities(FindKarlas);	
+
+		if(npc.m_iKarlasNCState == 1)
+		{
+			block_main_explosion = true;
+			WorldSpaceCenter(npc.Ally, endPoint);
+			Dist = GetVectorDistance(Start_Loc, endPoint);
+			
+			Karlas karl = view_as<Karlas>(npc.Ally);
+			npc.m_flNC_LockedOn = GetGameTime(karl.index) + 1.0;
+
+			Ruina_Laser_Logic Karl_Laser;
+			Karl_Laser.client = npc.Ally;
+			Karl_Laser.DoForwardTrace_Basic(-1.0);
+			NC_CoreBeamEffects(npc, 
+			Karl_Laser.Start_Point, 
+			Karl_Laser.End_Point, 
+			GetVectorDistance(Karl_Laser.Start_Point, Karl_Laser.End_Point), 
+			radius, 
+			Karl_Laser.Angles, 
+			update, 
+			Silence);
+			//for karlas's laser, nerf its damage.
+			if(update)
+			{
+				Karl_Laser.Damage = Modify_Damage(-1, 15.0);
+				Karl_Laser.Bonus_Damage = Modify_Damage(-1, 15.0)*6.0;
+				Karl_Laser.damagetype = DMG_PLASMA;
+				Karl_Laser.Deal_Damage();
+			}
+		}
+		
+	}
 
 	npc.PlayNightmareSound();
 
 	if(update)	//damage is dealt 10 times a second
 	{
-		Laser.Radius = radius*0.75;
 		Laser.Damage = Modify_Damage(-1, 35.0);
 		Laser.Bonus_Damage = Modify_Damage(-1, 35.0)*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
+
+		if(block_main_explosion)
+			update = false;
 	}
+
+	
+	NC_CoreBeamEffects(npc, Start_Loc, endPoint, Dist, radius, angles, update, Silence);
+	
+	return Plugin_Continue;
+}
+static bool b_MoveTowardsKarlas(Stella npc)
+{
+	//karlas is invalid, don't bother!
+	if(!IsValidAlly(npc.index, npc.Ally))
+		return false;
+
+	return true;
+}
+static void FindKarlas(int client, int entity, int damagetype, float damage)
+{
+	Stella npc = view_as<Stella>(client);
+	if(entity == npc.Ally)
+	{
+		npc.m_iKarlasNCState = 1;
+
+		Karlas karl = view_as<Karlas>(npc.Ally);
+		if(npc.m_flNC_LockedOn > GetGameTime(karl.index))
+			return;
+		NPC_StopPathing(karl.index);
+		karl.m_bPathing = false;
+		karl.m_flGetClosestTargetTime = 0.0;
+		karl.m_flSpeed = 0.0;
+	}
+}
+static void NC_CoreBeamEffects(Stella npc, float Start_Loc[3], float endPoint[3],  float Dist, float radius, float angles[3], bool update, bool Silence)
+{
+	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 7, Dist, true, radius/2.0, -1.0);		//12
+
 	float diameter = radius *0.75;
 
 	int r=100, g=100, b=100, a=60;
@@ -1235,7 +1363,6 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		pack.WriteCell(1);
 		RequestFrame(MakeExplosionFrameLater, pack);
 	}
-	return Plugin_Continue;
 }
 static void Stella_Create_Spinning_Beams(Stella npc, float Origin[3], float Angles[3], int loop_for, float Main_Beam_Dist, bool Type=true, float distance_stuff, float ang_multi)
 {
@@ -1886,20 +2013,17 @@ static bool Is_Target_Infront(Stella npc, float Radius)
 {
 	b_hit_something=false;
 	
-	Ruina_Laser_Logic Laser;	//it doesn't deal damage, only detects enemies.
+	Ruina_Laser_Logic Laser;
 	Laser.client = npc.index;
 	float Range = (npc.Anger ? 3000.0 : 1000.0);
 	Laser.DoForwardTrace_Basic(Range);
-	Laser.Damage = 0.0;
 	Laser.Radius = Radius;
-	Laser.Bonus_Damage = 0.0;
-	Laser.Deal_Damage(On_LaserHit);
+	Laser.Detect_Entities(On_LaserHit);	//by default it only filters out enemies
 
 	return b_hit_something;
 }
 static void On_LaserHit(int client, int target, int damagetype, float damage)
 {
-	
 	b_hit_something = true;
 }
 static bool BlockTurn(Stella npc)
@@ -2008,7 +2132,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		float Self_Vec[3]; WorldSpaceCenter(npc.index, Self_Vec);
 		float Dist = GetVectorDistance(vecTarget, Self_Vec, true);
 
-		float Turn_Rate = (npc.Anger ? 0.4 : 0.25);
+		float Turn_Rate = (npc.Anger ? 0.24 : 0.12);
 		float Turn_Speed = (RUINA_FACETOWARDS_BASE_TURNSPEED*Turn_Rate);
 		
 		if(Dist <= 0.0)
@@ -2016,7 +2140,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 		if(Dist < Bonus_Speed_Range)
 		{
-			Turn_Speed*= ((1.0-(Dist/Bonus_Speed_Range))*4.2);
+			Turn_Speed*= ((1.0-(Dist/Bonus_Speed_Range))*4.5);
 		}
 
 		if(Silence)

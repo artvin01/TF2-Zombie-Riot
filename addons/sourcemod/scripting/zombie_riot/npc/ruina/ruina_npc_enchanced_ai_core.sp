@@ -18,6 +18,8 @@ static bool b_npc_sniper_anchor_point[MAXENTITIES];
 static float fl_npc_sniper_anchor_find_timer[MAXENTITIES];
 static int i_last_sniper_anchor_id_Ref[MAXENTITIES];
 
+int i_ruina_state[MAXENTITIES];	//apparently the "m_iState" is used for animations, so I can't use it for special npc logic. :(
+
 static bool b_ruina_npc[MAXENTITIES];
 
 static int g_rocket_particle;
@@ -173,6 +175,7 @@ void Ruina_Ai_Core_Mapstart()
 	NPC_Add(data2);
 
 	Zero(b_ruina_npc);
+	Zero(i_ruina_state);
 
 	Zero(b_ruina_nerf_healing);
 	Zero(fl_master_change_timer);
@@ -249,6 +252,7 @@ void Ruina_Ai_Core_Mapstart()
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
+	i_ruina_state[client] = 0;
 	Ruina_Remove_Shield(client);
 	b_ruina_npc[client] = true;
 	b_ruina_nerf_healing[client] = false;
@@ -2500,13 +2504,54 @@ enum struct Ruina_Laser_Logic
 		}
 		delete trace;
 	}
+	bool Any_entities;
+	//in this case, no default func since this things entire point is to find entities
+	void Detect_Entities(Function Attack_Function)
+	{
+		Zero(Ruina_Laser_BEAM_HitDetected);
+
+		i_targets_hit = 0;
+
+		float hullMin[3], hullMax[3];
+		hullMin[0] = -this.Radius;
+		hullMin[1] = hullMin[0];
+		hullMin[2] = hullMin[0];
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
+
+		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+
+				
+		for (int loop = 0; loop < i_targets_hit; loop++)
+		{
+			int victim = Ruina_Laser_BEAM_HitDetected[loop];
+			if (victim && (this.Any_entities || IsValidEnemy(this.client, victim)))
+			{
+				this.trace_hit_enemy=true;
+
+				float playerPos[3];
+				WorldSpaceCenter(victim, playerPos);
+
+				Call_StartFunction(null, Attack_Function);
+				Call_PushCell(this.client);
+				Call_PushCell(victim);
+				Call_PushCell(this.damagetype);
+				Call_PushFloat(this.Damage);
+				Call_Finish();
+
+				//static void On_LaserHit(int client, int target, int damagetype, float damage)
+			}
+		}
+	}
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)
 	{
 
 		Zero(Ruina_Laser_BEAM_HitDetected);
 
-		i_targets_hit = 0;	//todo: test this! | so far works!
+		i_targets_hit = 0;
 
 		float hullMin[3], hullMax[3];
 		hullMin[0] = -this.Radius;

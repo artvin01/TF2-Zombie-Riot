@@ -447,7 +447,7 @@ methodmap Lex < CClotBody
 
 		fl_multi_attack_delay[npc.index] = 0.0;
 
-		npc.m_iState = 0;
+		i_ruina_state[npc.index] = 0;
 
 		Ruina_Clean_Particles(npc.index);
 
@@ -541,7 +541,7 @@ static void ClotThink(int iNPC)
 
 		if(fl_ruina_battery_timer[npc.index] > GameTime)
 		{
-			npc.m_iState = 0;
+			i_ruina_state[npc.index] = 0;
 			npc.m_fbGunout = false;
 			Delete_Beacons(npc.index);
 			npc.m_flNextMeleeAttack = GameTime + 9.0;
@@ -635,10 +635,10 @@ static void ClotThink(int iNPC)
 
 		if(fl_ruina_battery_timer[npc.index] > GameTime)
 		{
-			if(npc.m_iState > 0)
+			if(i_ruina_state[npc.index] > 0)
 			{
 				int Previous_Proj = EntRefToEntIndex(i_laser_beacons[iNPC][0]);
-				for(int i=1 ; i < npc.m_iState && i < RUINA_LEX_LASER_BEACON_AMT; i++)
+				for(int i=1 ; i < i_ruina_state[npc.index] && i < RUINA_LEX_LASER_BEACON_AMT; i++)
 				{
 					int Proj = EntRefToEntIndex(i_laser_beacons[iNPC][i]);
 
@@ -688,7 +688,7 @@ static void ClotThink(int iNPC)
 				{
 					if(fl_ruina_battery_timer[npc.index] > GameTime + 1.0)
 					{
-						if(npc.m_iState < RUINA_LEX_LASER_BEACON_AMT && fl_multi_attack_delay[npc.index] < GameTime)
+						if(i_ruina_state[npc.index] < RUINA_LEX_LASER_BEACON_AMT && fl_multi_attack_delay[npc.index] < GameTime)
 						{
 							if(!npc.m_fbGunout)
 							{
@@ -757,25 +757,25 @@ static void ClotThink(int iNPC)
 
 							int Proj = Fire_Beacon(npc, vecTarget, flPos, projectile_speed);
 
-							i_laser_beacons[npc.index][npc.m_iState] = EntIndexToEntRef(Proj);
+							i_laser_beacons[npc.index][i_ruina_state[npc.index]] = EntIndexToEntRef(Proj);
 
 							CreateTimer(0.1, Lex_Slow_Projectiles, EntIndexToEntRef(Proj), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
-							if(npc.m_iState > 0)
+							if(i_ruina_state[npc.index] > 0)
 							{
-								int Last_Proj = EntRefToEntIndex(i_laser_beacons[npc.index][npc.m_iState-1]);
+								int Last_Proj = EntRefToEntIndex(i_laser_beacons[npc.index][i_ruina_state[npc.index]-1]);
 								int color[3] = {255, 255, 255};
 								int Laser = ConnectWithBeam(Proj, Last_Proj, color[0], color[1], color[2], 4.0, 4.0, 0.1, BEAM_COMBINE_BLACK);
 
 								CreateTimer((fl_ruina_battery_timer[npc.index] - GameTime)-0.1, Timer_RemoveEntity, EntIndexToEntRef(Laser), TIMER_FLAG_NO_MAPCHANGE);
 							}
 
-							npc.m_iState++;
+							i_ruina_state[npc.index]++;
 						}
 					}
 					else
 					{
-						npc.m_iState = 0;
+						i_ruina_state[npc.index] = 0;
 						npc.m_fbGunout = false;
 						Delete_Beacons(npc.index);
 						npc.m_flNextMeleeAttack = GameTime + 9.0;
@@ -783,7 +783,7 @@ static void ClotThink(int iNPC)
 				}
 				else
 				{
-					npc.m_iState = 0;
+					i_ruina_state[npc.index] = 0;
 					fl_ruina_battery_timer[npc.index] = GameTime + 12.0;
 				}
 

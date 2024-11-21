@@ -403,7 +403,7 @@ methodmap Twirl < CClotBody
 			{
 				if(!this.m_fbGunout)
 				{
-					this.m_iState = 0;
+					i_ruina_state[this.index] = 0;
 
 					/*if(this.m_flReloadIn > GetGameTime(this.index) + 0.5)
 					{
@@ -1530,7 +1530,7 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 	npc.m_flRangedArmor = 1.0;
 	npc.m_flMeleeArmor = 1.5;
 
-	npc.m_iState = 0;
+	i_ruina_state[npc.index] = 0;
 	npc.m_flNextMeleeAttack = GameTime + 0.5;
 	npc.m_flReloadIn = GameTime + 0.5;
 	npc.m_fbGunout = true;
@@ -1726,7 +1726,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		if(flDistanceToTarget > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))	
 		{
 			if(npc.m_flReloadIn < GameTime)	//might as well check if we are done reloading so our "clip" is refreshed
-				npc.m_iState = 0;
+				i_ruina_state[npc.index] = 0;
 
 			return;
 		}
@@ -1752,14 +1752,14 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		float	Multi_Delay = fl_self_defense_multiattack_speed(npc),
 				Reload_Delay = (npc.Anger ? 2.0 : 4.0);
 		
-		if(npc.m_iState >= i_ranged_ammo[npc.index])	//"ammo"
+		if(i_ruina_state[npc.index] >= i_ranged_ammo[npc.index])	//"ammo"
 		{
-			npc.m_iState = 0;
+			i_ruina_state[npc.index] = 0;
 			npc.m_flReloadIn = GameTime + Reload_Delay;	//"reload" time
 		}
 		else
 		{
-			npc.m_iState++;
+			i_ruina_state[npc.index]++;
 		}
 				
 		fl_multi_attack_delay[npc.index] = GameTime + Multi_Delay;
@@ -1783,7 +1783,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		float Dmg = 21.0;
 		float Radius = (npc.Anger ? 150.0 : 100.0);
 		char Particle[50];
-		if(npc.m_iState % 2)
+		if(i_ruina_state[npc.index] % 2)
 			Particle = "raygun_projectile_blue";
 		else
 			Particle = "raygun_projectile_red";
@@ -1916,7 +1916,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 
 	EmitSoundToAll("ui/rd_2base_alarm.wav");
 
-	npc.m_iState = 0;
+	i_ruina_state[npc.index] = 0;
 	npc.m_flNextMeleeAttack = GameTime + 0.5;
 	npc.m_flReloadIn = GameTime + 0.5;
 	npc.m_fbGunout = true;
@@ -2010,7 +2010,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 		tick = true;
 	}
 
-	npc.m_iState = 0;
+	i_ruina_state[npc.index] = 0;
 	npc.m_flNextMeleeAttack = GameTime + 0.5;
 	npc.m_flReloadIn = GameTime + 0.5;
 	npc.m_fbGunout = true;
