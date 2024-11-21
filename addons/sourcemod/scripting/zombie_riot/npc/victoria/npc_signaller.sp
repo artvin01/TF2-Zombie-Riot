@@ -2,22 +2,34 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/sniper_paincrticialdeath01.mp3",
-	"vo/sniper_paincrticialdeath02.mp3",
-	"vo/sniper_paincrticialdeath03.mp3",
+	"vo/soldier_paincrticialdeath01.mp3",
+	"vo/soldier_paincrticialdeath02.mp3",
+	"vo/soldier_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/sniper_painsharp01.mp3",
-	"vo/sniper_painsharp02.mp3",
-	"vo/sniper_painsharp03.mp3",
-	"vo/sniper_painsharp04.mp3",
+	"vo/soldier_painsharp01.mp3",
+	"vo/soldier_painsharp02.mp3",
+	"vo/soldier_painsharp03.mp3",
+	"vo/soldier_painsharp04.mp3",
+	"vo/soldier_painsharp05.mp3",
+	"vo/soldier_painsharp06.mp3",
+	"vo/soldier_painsharp07.mp3",
+	"vo/soldier_painsharp08.mp3"
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/sniper_mvm_mannhattan_gate_atk01.mp3",
-	"vo/sniper_mvm_mannhattan_gate_atk02.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_02.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_01.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_04.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_05.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_07.mp3",
+};
+
+static const char g_hornsound[][] = {
+	"weapons/battalions_backup_blue.wav",
+	"weapons/buff_banner_horn_blue.wav",
 };
 
 static int i_signaller_particle[MAXENTITIES];
@@ -58,19 +70,23 @@ methodmap VictorianSignaller < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
+	public void PlayHornSound() 
+	{
+		EmitSoundToAll(g_hornsound[GetRandomInt(0, sizeof(g_hornsound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL , _, 0.5, GetRandomInt(80,110));
+	}
 	
 	public VictorianSignaller(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianSignaller npc = view_as<VictorianSignaller>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "6000", ally));
+		VictorianSignaller npc = view_as<VictorianSignaller>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
-		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SetVariantInt(3);
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
@@ -92,25 +108,31 @@ methodmap VictorianSignaller < CClotBody
 		i_signaller_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 
-
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_spikewrench/c_spikewrench.mdl");
-		SetVariantString("0.9");
+	
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_bugle/c_battalion_bugle.mdl");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_buffpack/c_buffpack.mdl.mdl");
 		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl");
 		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/invasion_final_frontiersman/invasion_final_frontiersman.mdl");
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/sniper/spr17_down_under_duster/spr17_down_under_duster.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/heavy/hardhat_tower.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec23_trench_warefarer/dec23_trench_warefarer.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2021_goalkeeper_style2/hwn2021_goalkeeper_style2_soldier.mdl");
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 0, 255);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 
 		npc.StartPathing();
 		return npc;
@@ -156,6 +178,13 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 		if(!NpcStats_IsEnemySilenced(npc.index))
 			f_EmpowerStateOther[npc.m_iTargetAlly] = GetGameTime() + 1.5;
+	}
+
+	if(gameTime > npc.m_flNextMeleeAttack)
+	{
+		npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
+		npc.m_flNextMeleeAttack = gameTime + 7.50;
+		npc.PlayHornSound();
 	}
 
 	gameTime = GetGameTime() + 0.5;

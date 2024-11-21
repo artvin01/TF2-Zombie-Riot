@@ -179,7 +179,7 @@ methodmap Blocker < CClotBody
 	
 	public Blocker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Blocker npc = view_as<Blocker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "2100", ally, false, true));
+		Blocker npc = view_as<Blocker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "3450", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		
