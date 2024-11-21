@@ -1007,10 +1007,6 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 			{
 				case 0:
 				{
-					if(IsValidEntity(npc.m_iWearable2))
-						RemoveEntity(npc.m_iWearable2);
-					npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
-					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 					
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -1031,22 +1027,11 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 				{
 					if(Delay_Attribute[npc.index] < gameTime)
 					{
-						if(IsValidEntity(npc.m_iWearable2))
-						{
-							RemoveEntity(npc.m_iWearable2);
-						}
-						npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
-						SetVariantString("1.2");
-						AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-						SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-						NiceMiss[npc.index] = gameTime + 10.0;
 						I_cant_do_this_all_day[npc.index]=2;
 					}
 				}
 				case 2:
 				{
-					if(IsValidEntity(npc.m_iWearable1))
-						RemoveEntity(npc.m_iWearable1);
 					if(IsValidEntity(npc.m_iWearable7))
 						RemoveEntity(npc.m_iWearable7);
 					if(!IsValidEntity(npc.m_iWearable1))
@@ -1054,7 +1039,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 						float flPos[3];
 						float flAng[3];
 						npc.GetAttachment("effect_hand_r", flPos, flAng);
-						npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+						npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 					}
 					if(!IsValidEntity(npc.m_iWearable7))
 					{
