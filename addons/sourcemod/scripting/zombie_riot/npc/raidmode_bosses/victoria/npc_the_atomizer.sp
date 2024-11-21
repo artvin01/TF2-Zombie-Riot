@@ -76,6 +76,7 @@ static const char g_MeleeAttackSounds[][] = {
 static const char g_MeleeHitSounds[] = "weapons/bat_hit.wav";
 static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
 static const char g_AngerReaction[] = "vo/scout_revenge06.mp3";
+static const char g_HomerunHitSounds[] = "mvm/melee_impacts/bat_baseball_hit_robo01.wav";
 static const char g_HomerunSounds[][]= {
 	"vo/scout_stunballhit01.mp3",
 	"vo/scout_stunballhit02.mp3",
@@ -85,6 +86,10 @@ static const char g_HomerunSounds[][]= {
 	"vo/scout_stunballhit06.mp3",
 	"vo/scout_stunballhit07.mp3",
 	"vo/scout_stunballhit08.mp3"
+};
+static const char g_HomerunfailSounds[][]= {
+	"vo/taunts/scout/scout_taunt_rps_lose_01.mp3",
+	"vo/taunts/scout/scout_taunt_rps_lose_03.mp3"
 };
 static const char StunballPickupeSound[][] = {
 	"vo/scout_stunballpickup01.mp3",
@@ -105,6 +110,7 @@ static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
+static bool SUPERHIT[MAXENTITIES];
 
 void Atomizer_OnMapStart_NPC()
 {
@@ -130,9 +136,11 @@ static void ClotPrecache()
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
 	PrecacheSound(g_AngerReaction);
+	PrecacheSound(g_HomerunHitSounds);
 	for (int i = 0; i < (sizeof(g_HomerunSounds));   i++) { PrecacheSound(g_HomerunSounds[i]);   }
 	for (int i = 0; i < (sizeof(StunballPickupeSound));   i++) { PrecacheSound(StunballPickupeSound[i]);   }
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
+	for (int i = 0; i < (sizeof(g_HomerunfailSounds));   i++) { PrecacheSound(g_HomerunfailSounds[i]);   }
 	PrecacheModel("models/player/scout.mdl");
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
 }
@@ -166,10 +174,20 @@ methodmap Atomizer < CClotBody
 		EmitSoundToAll(g_AngerReaction, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_AngerReaction, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayHomerunHitSound() {
+	
+		EmitSoundToAll(g_HomerunHitSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HomerunHitSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+	}
 	public void PlayHomerunSound() {
 	
 		EmitSoundToAll(g_HomerunSounds[GetRandomInt(0, sizeof(g_HomerunSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_HomerunSounds[GetRandomInt(0, sizeof(g_HomerunSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayHomerunMissSound() {
+	
+		EmitSoundToAll(g_HomerunfailSounds[GetRandomInt(0, sizeof(g_HomerunfailSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HomerunfailSounds[GetRandomInt(0, sizeof(g_HomerunfailSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayIdleAlertSound() 
 	{
@@ -255,6 +273,7 @@ methodmap Atomizer < CClotBody
 		DrinkPOWERUP[npc.index] = false;
 		YaWeFxxked[npc.index] = false;
 		ParticleSpawned[npc.index] = false;
+		SUPERHIT[npc.index] = false;
 		NiceMiss[npc.index] = 0.0;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
@@ -339,10 +358,11 @@ methodmap Atomizer < CClotBody
 	//	AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 	//	Weapon
+		SetGlobalTransTarget(client);
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		CPrintToChatAll("{lightblue}The Atomizer{default}: Intruders in sight, I won't let the get out alive!");
+		CPrintToChatAll("{blue}%s{default}: Intruders in sight, I won't let the get out alive!", c_NpcName[npc.index]);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/scout/pn2_longfall.mdl");
 		SetVariantString("1.0");
@@ -454,7 +474,7 @@ static void Internal_ClotThink(int iNPC)
 				CPrintToChatAll("{blue}%s{default}: After this, Im heading to Rusted Bolt Pub. {crimson}I need beer.{default}", c_NpcName[npc.index]);
 			}
 		}
-		for(int ii=1; ii<=15; ii++)
+		for(int i=1; i<=15; i++)
 		{
 			switch(GetRandomInt(1, 7))
 			{
@@ -488,7 +508,7 @@ static void Internal_ClotThink(int iNPC)
 				}
 			}
 		}
-		for(int ii=1; ii<=15; ii++)
+		for(int i=1; i<=15; i++)
 		{
 			switch(GetRandomInt(1, 8))
 			{
@@ -738,7 +758,6 @@ static void Internal_ClotThink(int iNPC)
 		}
 		else if(Delay_Attribute[npc.index] < gameTime)
 		{
-			npc.PlayHomerunSound();
 			float damageDealt = 50.0 * RaidModeScaling;
 			Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 250.0 , 1.0, _, true, 20,_,_,_,SuperAttack);
 			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
@@ -746,6 +765,14 @@ static void Internal_ClotThink(int iNPC)
 				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 			}
+			if(SUPERHIT[npc.index])
+			{
+				npc.PlayHomerunSound();
+				npc.PlayHomerunHitSound();
+				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+				SUPERHIT[npc.index]=false;
+			}
+			else npc.PlayHomerunMissSound();
 			I_cant_do_this_all_day[npc.index]=0;
 			npc.StartPathing();
 			npc.m_flNextRangedAttack = gameTime + (DrinkPOWERUP[npc.index] ? 22.5 : 40.0);
@@ -805,6 +832,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	Atomizer npc = view_as<Atomizer>(victim);
 		
 	if(attacker <= 0)
+		return Plugin_Continue;
+	if(!IsValidEntity(attacker))
 		return Plugin_Continue;
 	float gameTime = GetGameTime(npc.index);
 	if(NiceMiss[npc.index] > gameTime && GetRandomInt(1,100)<=40)
@@ -893,6 +922,12 @@ static void Internal_NPCDeath(int entity)
 	{
 		RemoveEntity(particle);
 		i_atomizer_eye_particle[npc.index]=INVALID_ENT_REFERENCE;
+	}
+	
+	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
+	{
+		if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 	}
 
 	if(BlockLoseSay)
@@ -1109,26 +1144,59 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							vecDest = vecTarget;
 							vecDest[0] += GetRandomFloat(-30.0, 30.0);
 							vecDest[1] += GetRandomFloat(-30.0, 30.0);
-							if(!IsSpaceOccupiedWorldOnly(VecStart, view_as<float>( { -35.0, -35.0, 17.0 } ), view_as<float>( { 35.0, 35.0, 500.0 } ), npc.index))
+							float SpeedReturn[3];
+							for(int i=1; i<=(npc.m_iOverlordComboAttack > 3 ? 3 : 1); i++)
+							{
+								if(npc.m_iOverlordComboAttack > 0)
+								{
+									int RocketGet = npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
+									SetEntityGravity(RocketGet, 1.0); 	
+									ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
+									SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+									TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+									SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+									SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
+									npc.m_iOverlordComboAttack-=1;
+								}
+								else break;
+							}
+							
+							/*if(!IsSpaceOccupiedWorldOnly(VecStart, view_as<float>( { -35.0, -35.0, 17.0 } ), view_as<float>( { 35.0, 35.0, 500.0 } ), npc.index))
 							{
 								float SpeedReturn[3];
-
-								int RocketGet = npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
-								SetEntityGravity(RocketGet, 1.0); 	
-								ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
-								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
-								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-								SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-								SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
-
-								//This will return vecTarget as the speed we need.
+								for(int i=1; i<=3; i++)
+								{
+									if(npc.m_iOverlordComboAttack > 0)
+									{
+										int RocketGet = npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
+										SetEntityGravity(RocketGet, 1.0); 	
+										ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
+										SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+										TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+										SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+										SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
+										npc.m_iOverlordComboAttack --;
+									}
+									else break;
+								}
 							}
 							else
 							{
 								RocketSpeed *= 0.75;
-								npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "critical_rocket_blue", false);
-							}
-							npc.m_iOverlordComboAttack --;
+								for(int i=1; i<=3; i++)
+								{
+									if(npc.m_iOverlordComboAttack > 0)
+									{
+										int RocketGet = npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "critical_rocket_blue", false);
+										SetEntityGravity(RocketGet, 1.0);
+										SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+										SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+										SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
+										npc.m_iOverlordComboAttack --;
+									}
+									else break;
+								}
+							}*/
 						}
 					}
 				}
@@ -1290,12 +1358,15 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 static void SuperAttack(int entity, int victim, float damage, int weapon)
 {
 	Atomizer npc = view_as<Atomizer>(entity);
-	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-	Custom_Knockback(npc.index, victim, DrinkPOWERUP[npc.index] ? 2200.0 : 1980.0, true, true, true);
+	if(IsValidEntity(victim))
+	{
+		float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+		Custom_Knockback(npc.index, victim, DrinkPOWERUP[npc.index] ? 2200.0 : 1980.0, true, true, true);
+		SUPERHIT[npc.index]=true;
+	}
 }
 
-
-public Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
+static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
@@ -1318,7 +1389,6 @@ public Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 		if(ShouldNpcDealBonusDamage(target))
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
-
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if (!IsInvuln(target))
 		{
@@ -1336,7 +1406,7 @@ public Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 		if(IsValidEntity(entity))
 		{
 			int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
-			if(GETBOUNS < 5)
+			if(GETBOUNS < 20)
 			{
 				SDKHook(entity, SDKHook_Touch, Atomizer_Rocket_Particle_Bounce);
 				return Plugin_Handled;
@@ -1350,18 +1420,111 @@ public Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 	return Plugin_Handled;
 }
 
-public Action Atomizer_Rocket_Particle_Bounce(int entity, int owner)
+static Action Atomizer_Rocket_Particle_Bounce(int entity, int owner)
 {
-	float fVelocity[3];
+	/*float fVelocity[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecVelocity", fVelocity);
 	fVelocity[2] = 650.0;
-	TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVelocity);
+	TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVelocity);*/
+	
+	static float vOrigin[3], vAngles[3], vVelocity[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vOrigin);
+	GetEntPropVector(entity, Prop_Data, "m_angRotation", vAngles);
+	GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vVelocity);
+	
+	float TempANG[3], tOrigin[3];
+	TempANG[0]=90.0;
+	EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
+	float distance = GetVectorDistance(vOrigin, tOrigin);
+	if(distance<65.0)
+		vVelocity[2] = 600.0;
+	else
+	{
+		TempANG[0]=-90.0;
+		EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
+		distance = GetVectorDistance(vOrigin, tOrigin);
+		if(distance<65.0)
+			vVelocity[2] = -600.0;
+	}
+	GetVectorAngles(vVelocity, TempANG);
+	TeleportEntity(entity, NULL_VECTOR, TempANG, vVelocity);
+
+	Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, NOTME, entity);
+	if(!TR_DidHit(trace))
+	{
+		trace.Close();
+		/*int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
+		if(GETBOUNS > 30)
+		{
+			int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+			if(IsValidEntity(particle))
+				RemoveEntity(particle);
+			RemoveEntity(entity);
+			SDKUnhook(entity, SDKHook_Touch, Atomizer_Rocket_Particle_Bounce);
+			SDKUnhook(entity, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
+		}
+		else
+			SetEntProp(entity, Prop_Data, "m_iHammerID", GETBOUNS+1);*/
+		return Plugin_Continue;
+	}
+
+	static float vNormal[3];
+	TR_GetPlaneNormal(trace, vNormal);
+	trace.Close();
+
+	float dotProduct = GetVectorDotProduct(vNormal, vVelocity);
+	ScaleVector(vNormal, dotProduct);
+	ScaleVector(vNormal, 2.0);
+
+	static float vBounceVec[3];
+	SubtractVectors(vVelocity, vNormal, vBounceVec);
+	GetVectorAngles(vBounceVec, vAngles);
+	
+	TeleportEntity(entity, NULL_VECTOR, vAngles, vBounceVec);
+	
 	int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
-	if(GETBOUNS > 5)
+	if(GETBOUNS > 20)
+	{
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		if(IsValidEntity(particle))
+			RemoveEntity(particle);
+		RemoveEntity(entity);
 		SDKUnhook(entity, SDKHook_Touch, Atomizer_Rocket_Particle_Bounce);
+		SDKUnhook(entity, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
+	}
 	else
 		SetEntProp(entity, Prop_Data, "m_iHammerID", GETBOUNS+1);
 	return Plugin_Handled;
+}
+
+static bool NOTME(int entity, int contentsMask, any data)
+{
+	return entity != data;
+}
+
+static bool ONLYBSP(int entity, int contentsMask, any data)
+{
+	if(entity == data)
+		return false;
+
+	if(1 <= entity <= MaxClients)
+		return false;
+
+	return true;
+}
+
+public bool EntityLookPoint(int entity, float flAng[3], float flPos[3], float pos[3])
+{
+	Handle trace = TR_TraceRayFilterEx(flPos, flAng, MASK_SHOT, RayType_Infinite, ONLYBSP, entity);
+	
+	if(TR_DidHit(trace))
+	{
+		TR_GetEndPosition(pos, trace);
+		CloseHandle(trace);
+		return true;
+	}
+	CloseHandle(trace);
+	return false;
 }
 
 static void Atomizer_Weapon_Lines(Atomizer npc, int client)
