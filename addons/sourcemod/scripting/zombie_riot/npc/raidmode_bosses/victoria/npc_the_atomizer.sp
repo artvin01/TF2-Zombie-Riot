@@ -1372,7 +1372,7 @@ static void Atomizer_Weapon_Lines(Atomizer npc, int client)
 			case 0: Format(Text_Lines, sizeof(Text_Lines), "Damn it! {darkblue}Seaborn{default} is here Again!");
 			case 1: Format(Text_Lines, sizeof(Text_Lines), "ha. {darkblue}Seaborn{default}!?");
 			case 2: Format(Text_Lines, sizeof(Text_Lines), "I found an {darkblue}Infected{default} person, I need a Backup!");
-			case 3: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N?{default} I knew it, you {darkblue}Seaborn{default} Bastard!", client);}
+			case 3: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{default}? I knew it, you {darkblue}Seaborn{default} Bastard!", client);}
 		default:
 		{
 			valid = false;
