@@ -8,14 +8,24 @@ Stella:
 Move the NC lines into the new format.
 
 Silence:
-Very slightly reduces range of normal attack, its turn speed. its "Alpha" (brigtness) is lowered to show its weakened state.
-Very slightly reduces the turn speed of Nightmare cannon, and its radius. its "Alpha" (brigtness) is lowered to show its weakened state.
+Very slightly reduces range of normal attack, its turn speed. its "Alpha" (brightness) is lowered to show its weakened state.
+Very slightly reduces the turn speed of Nightmare cannon, and its radius. its "Alpha" (brightness) is lowered to show its weakened state.
 
 NC Core:
 Make it so, Stella can shoot her NC into karlas and he reflects it.
 
 
 Give stella a cool phase 2 animation, use crystals? in a spining circle that shoot lasers in all the cardinal directions. (Phase 2)
+
+
+For the NC relfection logic:
+First, is karlas in line of sight of stella?
+no?: abort.
+yes:
+Keep on checking which of the 2 npc's can see more targets from their positions, if karlas can see more, move NC onto karlas and have him reflect it, if stella can see more, buisness as usual
+
+
+Phase 2: Danger - 6:24
 
 
 
@@ -262,6 +272,14 @@ methodmap Stella < CClotBody
 		public get()							{ return this.m_iState; }
 		public set(int TempValueForProperty) 	{ this.m_iState = TempValueForProperty; }
 	}
+	public void SetKarlas_NC_Lockon(float Time)
+	{
+		if(IsValidAlly(this.index, this.Ally))
+		{
+			Karlas npc = view_as<Karlas>(this.Ally);
+			fl_AbilityOrAttack[npc.index][9] = Time;
+		}
+	}
 
 	public void SetKarlasRetreat(bool state)
 	{
@@ -312,7 +330,7 @@ methodmap Stella < CClotBody
 		if(spawn_index > MaxClients)
 		{
 			this.Ally = spawn_index;
-			Set_Karlas_Ally(spawn_index, this.index);
+			Set_Karlas_Ally(spawn_index, this.index, i_current_wave[this.index]);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -761,7 +779,7 @@ static void Internal_ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 
-	int Current_Wave = i_current_wave[npc.index];
+	int wave = i_current_wave[npc.index];
 	
 	npc.AdjustWalkCycle();
 
@@ -990,12 +1008,21 @@ static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 
 		npc.SetKarlasRetreat(true);
-		int chose = GetRandomInt(1, 2);
-		switch(GetRandomInt(1, 2))
+		int chose = GetRandomInt(1, 10);
+		switch(chose)
 		{
-			case 1: Stella_Lines(npc, "Aya 1");
-			case 2: Stella_Lines(npc, "Oya 2");
+			case 1: Stella_Lines(npc, "{snow}Thats it {crimson}i'm going to kill you{snow}.");	
+			case 2: Stella_Lines(npc, "{crimson}hm, {snow}Wonder how this will end...");
+			case 3: Stella_Lines(npc, "{crimson}PREPARE {snow}Thyself, {aqua}Judgement {crimson}Is near{snow}.");
+			case 4: Stella_Lines(npc, "Oh not again now train's gone and {crimson}Left{snow}.");
+			case 5: Stella_Lines(npc, "Oh not again now cannon's gone and {crimson}recharged{snow}.");
+			case 6: Stella_Lines(npc, "Aiming this thing is actually quite {crimson}complex {snow}ya know.");
+			case 7: Stella_Lines(npc, "Ya know, im getting quite bored of {crimson}this{snow} charade");
+			case 8: Stella_Lines(npc, "Oh how {crimson}Tiny{snow} you all look from up here.");
+			case 9: Stella_Lines(npc, "heh {crimson}This is{snow} gonna be funny.");
+			case 10:Stella_Lines(npc, "this has become quite troublesome.");
 		}
+		CPrintToChatAll("Chose %i", chose);
 		npc.m_iNC_Dialogue = chose;
 
 		npc.m_flNC_Grace = GameTime + GetRandomFloat(4.0, 6.0);
@@ -1030,8 +1057,18 @@ static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 
 		switch(npc.m_iNC_Dialogue)
 		{
-			case 1: Stella_Lines(npc, "I CHOSE 1");
-			case 2: Stella_Lines(npc, "I CHOSE 2");
+			case 1: Stella_Lines(npc, "And I'll Do IT WITH THIS CANNON.");
+			case 2: Stella_Lines(npc, "This is gonna end {crimson}Poorly for you all{snow}.");
+			case 3: Stella_Lines(npc, "{crimson}JUDGEMENT BE UPON THEE{snow}!");
+			case 4: Stella_Lines(npc, "And the city's to far to walk to the end while I...");
+			case 5: Stella_Lines(npc, "And the Cannons's Capacitor's to small..");
+			case 6: Stella_Lines(npc, "However its still{crimson} worth the effort{snow}.");
+			case 7: Stella_Lines(npc, "So to amuse myself,{crimson} I'll KILL you all{snow}.");
+			case 8: Stella_Lines(npc, "But your tiny stature won't save you from my Nightmare Cannon");
+			case 9: Stella_Lines(npc, "{crimson}HERE COMES THE FUNNY{snow}.");
+			case 10:Stella_Lines(npc, "So I'll just {crimson}remove{snow} the troublesome component!");
+
+			default: CPrintToChatAll("%s: It seems my master forgot to set a proper dialogue line for this specific number, how peculiar. Anyway, here's the ID: [%i]", npc.GetName(), npc.m_iNC_Dialogue);
 		}
 
 		npc.AddActivityViaSequence("taunt_mourning_mercs_medic");
@@ -1480,12 +1517,10 @@ static void Heavens_Fall(Stella npc, float GameTime, int Infection=0 , bool cree
 				WritePackFloat(data, EndLoc3[2]);
 				WritePackCell(data, Range); // Range
 				WritePackCell(data, EntIndexToEntRef(npc.index));
-				WritePackCell(data, Infection);
 				WritePackCell(data, color[0]);
 				WritePackCell(data, color[1]);
 				WritePackCell(data, color[2]);
 				WritePackCell(data, color[3]);
-				WritePackCell(data, creep);
 				
 
 				TE_used += 1;
@@ -1525,6 +1560,8 @@ static bool Heavens_Fall_Clearance_Check(Stella npc, float &Return_Dist, float M
 	float Distances[361];
 	
 	int Total_Hit = 0;
+
+	float FIXME;
 	
 	for(int alpha = 1 ; alpha<=360 ; alpha++)	//check in a 360 degree angle around the npc, heavy on preformance, but its a raid so I guess its fine..?
 	{
@@ -1590,6 +1627,7 @@ static bool Heavens_Fall_Clearance_Check(Stella npc, float &Return_Dist, float M
 static void Do_Trace_Heavens_Fall(float startPoint[3], float Angles[3], float Loc[3], float Dist)
 {
 
+	float FIXME;
 	//Handle trace = TR_TraceRayFilterEx(startPoint, Angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
 	//if (TR_DidHit(trace))
 	{
@@ -1621,13 +1659,11 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 	startPosition[2] = ReadPackFloat(data);
 	float Ionrange = ReadPackCell(data);
 	int client = EntRefToEntIndex(ReadPackCell(data));
-	int Infection = ReadPackCell(data);
 	int Color[4];
 	Color[0] = ReadPackCell(data);
 	Color[1] = ReadPackCell(data);
 	Color[2] = ReadPackCell(data);
 	Color[3] = ReadPackCell(data);
-	bool creep  = ReadPackCell(data);
 
 	EmitSoundToAll(g_heavens_fall_strike_sound[GetRandomInt(0, sizeof(g_heavens_fall_strike_sound) - 1)], 0, _, _, _, _, _, -1, startPosition);
 	//EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
@@ -1640,7 +1676,7 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 				
 	Stella npc = view_as<Stella>(client);
 
-	Doonerkrieg_Do_AOE_Damage(npc, startPosition, 100.0, Ionrange, Infection);
+	Doonerkrieg_Do_AOE_Damage(npc, startPosition, 100.0, Ionrange);
 
 	/*TE_used += 1;
 	if(TE_used > 31)
@@ -2234,9 +2270,11 @@ static void Donnerkrieg_Wings_Create(Stella npc)	//I wish these wings were real,
 }
 
 static float ion_damage[MAXENTITIES];
-static void Doonerkrieg_Do_AOE_Damage(Stella npc, float loc[3], float damage, float Range, int infection = 0, bool shake=true)
+static void Doonerkrieg_Do_AOE_Damage(Stella npc, float loc[3], float damage, float Range, bool shake=true)
 {
 	ion_damage[npc.index] = 1.0;
+	int infection = 0;	//temp
+	float FIXME;
 	switch(infection)
 	{
 		case 0:
@@ -2351,142 +2389,6 @@ static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 }
 */
 
-static void Donnerkrieg_Say_Lines(Stella npc, int line_type)
-{
-	char name_color[] = "aqua";
-	char text_color[] = "snow";
-	char danger_color[] = "crimson";
-
-	char text_lines[255];
-
-	char extra_lines[255]; extra_lines = "";
-	
-
-			extra_lines = "...";
-			switch(GetRandomInt(1,9))
-			{
-				case 1:
-				{
-					//CPrintToChatAll("{%s}Stella{%s}: {%s}Thats it {%s}i'm going to kill you", name_color, text_color, name_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}Thats it {%s}i'm going to kill you{%s}.", name_color, text_color, name_color, danger_color, text_color);	
-				}
-				case 2:
-				{
-					//CPrintToChatAll("{%s}Stella{%s}: {%s}hm, {%s}Wonder how this will end...", name_color, text_color, danger_color, text_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}hm, {%s}Wonder how this will end...", name_color, text_color, danger_color, text_color);	
-				}
-				case 3:
-				{
-					//CPrintToChatAll("{%s}Stella{%s}: {%s}PREPARE {%s}Thyself, {%s}Judgement {%s}Is near", name_color, text_color, danger_color, name_color, text_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}PREPARE {%s}Thyself, {%s}Judgement {%s}Is near{%s}.", name_color, text_color, danger_color, name_color, text_color, danger_color, text_color);		
-				}
-				case 4:
-				{
-					switch(GetRandomInt(0,10))
-					{
-						case 5:
-						{
-							//CPrintToChatAll("{%s}Stella{%s}: Oh not again now train's gone and {%s}Left{%s}.", name_color, text_color, danger_color, text_color);	
-							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh not again now train's gone and {%s}Left{%s}.", name_color, text_color, danger_color, text_color);	
-						}				
-						default:
-						{
-							//CPrintToChatAll("{%s}Stella{%s}: Oh not again now cannon's gone and {%s}recharged{%s}.", name_color, text_color, danger_color, text_color);	
-							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh not again now cannon's gone and {%s}recharged{%s}.", name_color, text_color, danger_color, text_color);	
-						}
-					}
-				}
-				case 5: 
-				{
-					//CPrintToChatAll("{%s}Stella{%s}: Aiming this thing is actually quite {%s}complex {%s}ya know.", name_color, text_color, danger_color, text_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Aiming this thing is actually quite {%s}complex {%s}ya know.", name_color, text_color, danger_color, text_color);
-					//b_fuck_you_line_used[npc.index] = true;
-				}
-				case 6:
-				{
-					//CPrintToChatAll("{%s}Stella{%s}: Ya know, im getting quite bored of {%s}this", name_color, text_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Ya know, im getting quite bored of {%s}this{%s}.", name_color, text_color, danger_color, text_color);	
-				}
-				case 7:
-				{
-					//CPrintToChatAll("{%s}Stella{%s}: Ya know, im getting quite bored of {%s}this", name_color, text_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh how {%s}Tiny{%s} you all look from up here.", name_color, text_color, danger_color, text_color);	
-				}
-				case 8:
-				{
-					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: heh {%s}This is{%s} gonna be funny.", name_color, text_color, danger_color, text_color);	
-				}
-				case 9:
-				{
-					switch(GetRandomInt(0,10))
-					{
-						case 5:
-						{
-							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}Oya{%s}?", name_color, text_color, danger_color, text_color);	
-						}				
-						default:
-						{
-							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Aya, how troublesome {%s}this is{%s}.", name_color, text_color, danger_color, text_color);	
-						}
-					}
-				}
-			}
-
-			//if(!b_fuck_you_line_used[npc.index] && !b_train_line_used[npc.index])
-			{	
-				switch(GetRandomInt(1,6))
-				{
-					case 1:
-					{
-						//CPrintToChatAll("{%s}Stella{%s}: {%s}NIGHTMARE, CANNON!", name_color, text_color, danger_color);
-						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}NIGHTMARE, CANNON{%s}!", name_color, text_color, danger_color, text_color);
-					}
-					case 2:
-					{
-						//CPrintToChatAll("{%s}Stella{%s}: {%s}JUDGEMENT BE UPON THEE!", name_color, text_color, danger_color);
-						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}JUDGEMENT BE UPON THEE{%s}!", name_color, text_color, danger_color, text_color);
-					}
-					case 3:
-					{
-						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}COSMIC ANNIHILATION{%s}!", name_color, text_color, danger_color, text_color);
-					}
-					case 4:
-					{
-						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}DIVINE RETRIBUTION{%s}!", name_color, text_color, danger_color, text_color);
-					}
-					case 5:
-					{
-						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}CALL OF THE BEYOND{%s}!", name_color, text_color, danger_color, text_color);
-					}
-					case 6:
-					{
-						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}PUNISHMENT OF HER {%s}GRACE{%s}!", name_color, text_color, danger_color, name_color, text_color);
-					}
-				}
-			}
-			//else
-			{
-				/*if(b_train_line_used[npc.index])
-				{
-					//CPrintToChatAll("{%s}Stella{%s}: {%s}And the city's to far to walk to the end while I...", name_color, text_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}And the city's to far to walk to the end while I...", name_color, text_color, danger_color);	
-					b_train_line_used[npc.index] = false;
-					extra_lines = "...";
-				}
-				else if(b_fuck_you_line_used[npc.index])
-				{
-					b_fuck_you_line_used[npc.index] = false;
-					//CPrintToChatAll("{%s}Stella{%s}: However its still{%s} worth the effort", name_color, text_color, danger_color);	
-
-					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: However its still{%s} worth the effort{%s}.", name_color, text_color, danger_color, text_color);	
-					extra_lines = "";
-				}*/
-				
-			}
-
-	CPrintToChatAll(text_lines);
-	NpcSpeechBubble(npc.index, "", 15, {255,0,0,255}, {0.0,0.0,125.0}, extra_lines);
-}
 
 
 public void Doonerkrieg_Delay_TE_Ring(DataPack pack)

@@ -1,27 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-/*
-	Schwert Abilities:
-
-	Slow melee, when melee swing is on cooldown, retreat.
-
-	Wave 15: Teleport strike, gives 5 sec sword battery.
-
-	Wave 30: Spiral Swords - Lifeloss. Group Tele.
-
-	Wave 45: Boomerang Throw.
-
-
-	Notes: 
-
-	Swords:
-
-	Group Tele: I have no clue if its reliable
-
-
-*/
-
 static const char g_DeathSounds[][] = {
 	"ambient/levels/streetwar/strider_distant1.wav",
 	"ambient/levels/streetwar/strider_distant2.wav",
@@ -97,7 +76,7 @@ static bool b_teleport_strike_active[MAXENTITIES];
 
 
 
-#define SCHWERT_TELEPORT_STRIKE_INTIALIZE		"misc/halloween/gotohell.wav"
+#define SCHWERT_TELEPORT_STRIKE_INITIALIZE		"misc/halloween/gotohell.wav"
 #define SCHWERT_TELEPORT_STRIKE_LOOPS 			"weapons/vaccinator_charge_tier_03.wav"
 #define SCHWERT_TELEPORT_STRIKE_EXPLOSION		"misc/halloween/spell_mirv_explode_primary.wav"
 
@@ -106,13 +85,15 @@ static bool b_teleport_strike_active[MAXENTITIES];
 
 #define SCHWERT_BALL_MODEL "models/weapons/w_models/w_drg_ball.mdl"
 
+#define SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS 750.0
+
 static float fl_schwert_speed;
 
 //Logic for duo raidboss
 
+static int i_current_wave[MAXENTITIES];
 static int i_ally_index[MAXENTITIES];
 
-static float fl_focus_timer[MAXENTITIES];
 static bool b_swords_created[MAXENTITIES];
 
 
@@ -121,8 +102,6 @@ static bool Schwertkrieg_BEAM_HitDetected[MAXENTITIES];
 static float fl_spinning_angle[MAXENTITIES];
 static float fl_schwert_armour[MAXENTITIES][2];
 static float fl_schwert_sword_battery[MAXENTITIES];
-
-static float fl_groupteleport_timer[MAXENTITIES];
 
 
 #define SCHWERKRIEG_SWORDS_AMT 7	
@@ -137,7 +116,6 @@ static int i_ProjectileIndex;
 
 void Karlas_OnMapStart_NPC()
 {
-	Zero(fl_focus_timer);
 	Zero(fl_teleport_strike_recharge);
 	Zero(b_teleport_strike_active);
 	Zero(b_swords_created);
@@ -149,7 +127,6 @@ void Karlas_OnMapStart_NPC()
 	Zero2(fl_schwert_armour);
 	Zero(fl_schwert_sword_battery);
 	Zero(b_swords_flying);
-	Zero(fl_groupteleport_timer);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Karlas");
@@ -180,11 +157,9 @@ static void ClotPrecache()
 	
 	PrecacheModel(SCHWERTKRIEG_LIGHT_MODEL, true);
 	PrecacheModel(SCHWERTKRIEG_BLADE_MODEL, true);
-
-	PrecacheSound(SCHWERT_TELEPORT_STRIKE_INTIALIZE, true);
+	PrecacheSound(SCHWERT_TELEPORT_STRIKE_INITIALIZE, true);
 	PrecacheSound(SCHWERT_TELEPORT_STRIKE_LOOPS, true);
 	PrecacheSound(SCHWERT_TELEPORT_STRIKE_EXPLOSION, true);
-
 	PrecacheSound(TELEPORT_STRIKE_TELEPORT, true);
 	PrecacheSound(TELEPORT_STRIKE_HIT, true);
 	PrecacheSound(TELEPORT_STRIKE_MISS, true);
@@ -344,6 +319,11 @@ methodmap Karlas < CClotBody
 			}
 		}
 	}
+	property float m_flNC_LockedOn
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
 	
 	public Karlas(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -361,13 +341,9 @@ methodmap Karlas < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		fl_focus_timer[npc.index]=0.0;
-
 		b_angered_twice[npc.index]=false;
 		fl_teleport_strike_recharge[npc.index] = GetGameTime()+25.0;
 		b_teleport_strike_active[npc.index]=false;
-
-		fl_groupteleport_timer[npc.index]= GetGameTime() + 30.0;
 
 		fl_dance_of_light_sound_spam_timer[npc.index] = 0.0;
 
@@ -501,8 +477,12 @@ static void Win_Line(int entity)
 
 
 }
-void Set_Karlas_Ally(int karlas, int stella)
+void Set_Karlas_Ally(int karlas, int stella, int wave = -2)
 {	
+	if(wave == -2)
+		wave = ZR_GetWaveCount()+1;
+
+	i_current_wave[karlas] = wave;
 	i_ally_index[karlas] = EntIndexToEntRef(stella);
 }
 
@@ -544,20 +524,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	/*if(fl_divine_intervention_active > GetGameTime() && !b_teleport_strike_active[npc.index])
-	{
-		int Ally = npc.Ally;
-		if(IsValidAlly(npc.index, Ally))
-		{
-			NPC_SetGoalEntity(npc.index, Ally);
-			return;
-		}
-		else
-		{
-			CPrintToChatAll("Something CATASTROPHIC HAPPENED, OH GOD");
-		}	
-	}*/
-
+	//we are about to teleport, BUT stella wants us to retreat, so abort the teleport and run to stella.
 	if(npc.m_bRetreat && Schwert_Status(npc, GameTime)==1 && b_teleport_strike_active[npc.index])
 	{
 		npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1];
@@ -670,7 +637,7 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	
-	int wave = ZR_GetWaveCount()+1;
+	int wave = i_current_wave[npc.index];
 	
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 	float npc_Vec[3]; WorldSpaceCenter(npc.index, npc_Vec);
@@ -793,74 +760,27 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		if(fl_groupteleport_timer[npc.index] < GameTime && wave>=30 && !b_teleport_strike_active[npc.index])
-		{
-			Ally = npc.Ally;
-			if(IsValidAlly(npc.index, Ally))
-			{
-				float vecAlly[3]; WorldSpaceCenter(Ally, vecAlly);
+		
+		if(Schwert_Status(npc, GameTime)!=1)
+			npc.m_flSpeed =  fl_schwert_speed;
+			
+		Schwert_Movement(npc, flDistanceToTarget, PrimaryThreatIndex);
 
-				float flDistanceToAlly = GetVectorDistance(vecAlly, npc_Vec, true);
-				Schwert_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget, true);	//warp
-
-				if(flDistanceToAlly < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0)
-				{
-					Stella donner = view_as<Stella>(Ally);
-					int target_new = GetClosestTarget(donner.index);
-					bool tele=false;
-
-					if(IsValidEnemy(npc.index, target_new))
-					{
-						int enemy = Can_I_See_Enemy(donner.index, target_new);
-						if(IsValidEnemy(npc.index, enemy))
-						{
-							tele = Schwert_Do_Group_Tele(npc.index, target_new);
-							if(tele)
-								Schwert_Do_Group_Tele(donner.index, target_new);
-						}
-					}
-					else 
-					{
-						int enemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-						if(IsValidEnemy(npc.index, enemy))
-						{
-							tele = Schwert_Do_Group_Tele(npc.index, PrimaryThreatIndex);
-							if(tele)
-								Schwert_Do_Group_Tele(donner.index, PrimaryThreatIndex);
-						}
-					}
-					if(tele)
-					{
-						npc.PlayTeleportSound();
-					}
-					if(tele)
-					{
-						fl_groupteleport_timer[npc.index] = GameTime + 75.0;
-					}
-					else
-					{
-						fl_groupteleport_timer[npc.index] = GameTime + 10.0;
-					}
-						
-				}
-			}
-			else
-			{
-				fl_groupteleport_timer[npc.index] = FAR_FUTURE;
-			}
-		}
-		else
-		{
-			if(Schwert_Status(npc, GameTime)!=1)
-				npc.m_flSpeed =  fl_schwert_speed;
-				
-			Schwert_Movement(npc, flDistanceToTarget, PrimaryThreatIndex);
-
-			Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex, GameTime, flDistanceToTarget, vecTarget);
-
-			//Schwert_Teleport_Core(npc, PrimaryThreatIndex);
-		}
+		Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex, GameTime, flDistanceToTarget, vecTarget);
 	}
+
+	Blade_Logic(npc, Blade_Behavior);
+
+	
+
+	npc.PlayIdleAlertSound();
+}
+static void Blade_Logic(Karlas npc, int Blade_Behavior)
+{
+	float GameTime = GetGameTime(npc.index);
+	float npc_Vec[3]; WorldSpaceCenter(npc.index, npc_Vec);
+	
+	int Ally = npc.Ally;
 
 	if(b_angered_twice[npc.index])
 	{
@@ -876,7 +796,6 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1] - 0.25;
 					npc.m_flRangedArmor = fl_schwert_armour[npc.index][0] - 0.25;
 				}
-				Ally = npc.Ally;
 				if(IsValidAlly(npc.index, Ally))
 				{
 					float vecAlly[3];
@@ -912,8 +831,6 @@ static void Internal_ClotThink(int iNPC)
 			}
 		}
 	}
-
-	npc.PlayIdleAlertSound();
 }
 static int Schwert_Status(Karlas npc, float GameTime)
 {
@@ -1093,14 +1010,14 @@ static void Schwertkrieg_Teleport_Strike(Karlas npc, float flDistanceToTarget, f
 
 			float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc);
 
-			EmitSoundToAll(SCHWERT_TELEPORT_STRIKE_INTIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
-			EmitSoundToAll(SCHWERT_TELEPORT_STRIKE_INTIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
+			EmitSoundToAll(SCHWERT_TELEPORT_STRIKE_INITIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
+			EmitSoundToAll(SCHWERT_TELEPORT_STRIKE_INITIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 
 			npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1]-1.0;
 			npc.m_flRangedArmor = fl_schwert_armour[npc.index][0]-0.5;
 
 			npc_Loc[2]+=10.0;
-			int wave = ZR_GetWaveCount()+1;
+			int wave = i_current_wave[npc.index];
 			int r, g, b, a;
 			a = 175;
 
@@ -1148,8 +1065,6 @@ static void Schwertkrieg_Teleport_Strike(Karlas npc, float flDistanceToTarget, f
 		b_teleport_strike_active[npc.index]=false;
 		fl_teleport_strike_recharge[npc.index]=GameTime+5.0;
 
-		if(fl_groupteleport_timer[npc.index]>GameTime)
-			fl_groupteleport_timer[npc.index] += 25.0;
 
 		int enemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 		if(IsValidEnemy(npc.index, enemy) || touching_creep)	//now do another check to see if we can still even see a target, if not, abort the whole process. ignore if the target is in creep
@@ -1208,39 +1123,6 @@ static void Schwertkrieg_Teleport_Strike(Karlas npc, float flDistanceToTarget, f
 		}
 	}
 }
-static bool Schwert_Do_Group_Tele(int iNPC, int PrimaryThreatIndex)
-{
-	float VecForward[3];
-	float vecRight[3];
-	float vecUp[3];
-	float vecPos[3];
-			
-	GetVectors(PrimaryThreatIndex, VecForward, vecRight, vecUp);
-	GetAbsOrigin(PrimaryThreatIndex, vecPos);
-	vecPos[2] += 5.0;
-			
-	float vecSwingEnd[3];
-	vecSwingEnd[0] = vecPos[0] - VecForward[0] * (100);
-	vecSwingEnd[1] = vecPos[1] - VecForward[1] * (100);
-	vecSwingEnd[2] = vecPos[2];/*+ VecForward[2] * (100);*/
-	if(Schwert_Teleport(iNPC, vecSwingEnd, 0.0))
-	{
-		return true;
-	}
-	else
-	{
-		vecSwingEnd[0] = vecPos[0] - VecForward[0] * (-100);
-		vecSwingEnd[1] = vecPos[1] - VecForward[1] * (-100);
-		vecSwingEnd[2] = vecPos[2];/*+ VecForward[2] * (100);*/
-		if(Schwert_Teleport(iNPC, vecSwingEnd, 0.0))
-		{
-			return true;
-		}
-	}
-	return false;
-}
-#define SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS 750.0
-
 static void Schwertkrieg_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecorigin[3])
 {
 	float originalPostionTrace[3];
@@ -1289,7 +1171,7 @@ static void Schwertkrieg_Teleport_Boom(Karlas npc, float Location[3])
 	if(npc.Anger)
 		radius *= 1.25;	
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = i_current_wave[npc.index];
 	int color[4];
 	color[3] = 175;
 
@@ -1363,7 +1245,12 @@ static Action Schwert_Ring_Loops(Handle Loop, DataPack pack)
 	EmitAmbientSound(SCHWERT_TELEPORT_STRIKE_LOOPS, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 	EmitAmbientSound(SCHWERT_TELEPORT_STRIKE_LOOPS, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 
-	int wave = ZR_GetWaveCount()+1;
+	Karlas npc = view_as<Karlas>(entity);
+	float radius = SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS;
+	if(npc.Anger)
+		radius *= 1.25;	
+
+	int wave = i_current_wave[npc.index];
 	int color[4];
 	color[3] = 175;
 
@@ -1392,10 +1279,7 @@ static Action Schwert_Ring_Loops(Handle Loop, DataPack pack)
 		color[2] = 50;
 	}
 
-	Karlas npc = view_as<Karlas>(entity);
-	float radius = SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS;
-	if(npc.Anger)
-		radius *= 1.25;	
+	
 	
 	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, 0.0, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, 1.0, 15.0, 0.1, color, 1, 0);
 	TE_SendToAll();
@@ -1430,7 +1314,7 @@ static Action Schwert_Boom(Handle Smite_Logic, DataPack pack)
 	
 	float damage = 200.0*RaidModeScaling;	//very deadly!
 	float radius = SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS;
-	int wave = ZR_GetWaveCount()+1;
+	int wave = i_current_wave[npc.index];
 	int color[4];
 	color[3] = 175;
 	int loop_for = 15;		//15
@@ -1651,7 +1535,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		return Plugin_Changed;
 	}
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = i_current_wave[npc.index];
 
 	
 	if(!b_angered_twice[npc.index] && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index])
@@ -2027,10 +1911,10 @@ static void Internal_NPCDeath(int entity)
 
 	RaidModeTime +=50.0;
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = i_current_wave[npc.index];
 	if(wave!=60)
 	{
-		//if()
+		if(npc.Ally)
 		{
 			switch(GetRandomInt(1,3))	//warp
 			{
