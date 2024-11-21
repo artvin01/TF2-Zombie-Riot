@@ -216,8 +216,7 @@ methodmap CombineElite < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineElite_ClotThink(int iNPC)
 {
 	CombineElite npc = view_as<CombineElite>(iNPC);

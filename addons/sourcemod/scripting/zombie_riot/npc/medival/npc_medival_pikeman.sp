@@ -229,8 +229,7 @@ methodmap MedivalPikeman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalPikeman_ClotThink(int iNPC)
 {
 	MedivalPikeman npc = view_as<MedivalPikeman>(iNPC);

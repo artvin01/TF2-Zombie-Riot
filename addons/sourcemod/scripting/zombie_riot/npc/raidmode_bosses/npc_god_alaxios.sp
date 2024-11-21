@@ -321,8 +321,7 @@ methodmap GodAlaxios < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void GodAlaxios_ClotThink(int iNPC)
 {
 	GodAlaxios npc = view_as<GodAlaxios>(iNPC);

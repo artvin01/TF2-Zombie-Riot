@@ -432,8 +432,7 @@ public void Schwertkrieg_Set_Ally_Index(int ref)
 {	
 	i_ally_index = EntIndexToEntRef(ref);
 }
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(iNPC);

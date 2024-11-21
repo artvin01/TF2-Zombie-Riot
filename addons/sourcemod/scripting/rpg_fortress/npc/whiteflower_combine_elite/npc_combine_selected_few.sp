@@ -242,8 +242,7 @@ void RPGDoHealEffect(int entity, float range)
 	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 125, 0, 200, 1, 0.3, 5.0, 8.0, 3, range * 2.0);	
 	npc1.PlayHealSound();
 }
-//TODO 
-//Rewrite
+
 public void Whiteflower_selected_few_ClotThink(int iNPC)
 {
 	Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(iNPC);

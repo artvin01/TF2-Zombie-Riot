@@ -478,8 +478,7 @@ static void Do_OnSpawn(int ref)
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lex npc = view_as<Lex>(iNPC);

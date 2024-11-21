@@ -224,8 +224,7 @@ methodmap MedivalSpearMan < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalSpearMan_ClotThink(int iNPC)
 {
 	MedivalSpearMan npc = view_as<MedivalSpearMan>(iNPC);

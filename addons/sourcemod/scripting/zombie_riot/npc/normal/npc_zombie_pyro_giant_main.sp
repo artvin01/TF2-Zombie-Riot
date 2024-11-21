@@ -190,8 +190,7 @@ methodmap PyroGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void PyroGiant_ClotThink(int iNPC)
 {
 	PyroGiant npc = view_as<PyroGiant>(iNPC);

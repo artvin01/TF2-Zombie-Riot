@@ -117,8 +117,7 @@ public void RamTouchDamageTouch(int entity, int other)
 		SDKHooks_TakeDamage(other, entity, entity, 10.0, DMG_CRUSH, -1, _);
 	}
 }
-//TODO 
-//Rewrite
+
 public void MedivalRam_ClotThink(int iNPC)
 {
 	MedivalRam npc = view_as<MedivalRam>(iNPC);

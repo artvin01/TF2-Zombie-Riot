@@ -254,8 +254,7 @@ methodmap XenoCombineOverlord < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineOverlord_ClotThink(int iNPC)
 {
 	XenoCombineOverlord npc = view_as<XenoCombineOverlord>(iNPC);

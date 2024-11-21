@@ -178,8 +178,7 @@ methodmap Mecha_Engineer < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Mecha_Engineer npc = view_as<Mecha_Engineer>(iNPC);

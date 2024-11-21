@@ -142,8 +142,7 @@ methodmap DemoMain < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void DemoMain_ClotThink(int iNPC)
 {
 	DemoMain npc = view_as<DemoMain>(iNPC);

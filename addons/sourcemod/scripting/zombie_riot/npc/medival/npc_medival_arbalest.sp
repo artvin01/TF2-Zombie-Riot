@@ -215,8 +215,7 @@ methodmap MedivalArbalest < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalArbalest_ClotThink(int iNPC)
 {
 	MedivalArbalest npc = view_as<MedivalArbalest>(iNPC);

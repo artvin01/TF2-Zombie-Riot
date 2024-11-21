@@ -158,8 +158,7 @@ methodmap KazimierzLongArcher < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void KazimierzLongArcher_ClotThink(int iNPC)
 {
 	KazimierzLongArcher npc = view_as<KazimierzLongArcher>(iNPC);

@@ -229,8 +229,7 @@ methodmap Draconia < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Draconia npc = view_as<Draconia>(iNPC);

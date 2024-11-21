@@ -251,8 +251,7 @@ methodmap Loonaris < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Loonaris npc = view_as<Loonaris>(iNPC);

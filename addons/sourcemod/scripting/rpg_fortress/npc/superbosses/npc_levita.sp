@@ -210,8 +210,7 @@ methodmap Levita < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void NPC_ClotThink(int iNPC)
 {
 	Levita npc = view_as<Levita>(iNPC);

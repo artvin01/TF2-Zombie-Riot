@@ -193,8 +193,7 @@ methodmap Whiteflower_Rocketeer < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_Rocketeer_ClotThink(int iNPC)
 {
 	Whiteflower_Rocketeer npc = view_as<Whiteflower_Rocketeer>(iNPC);

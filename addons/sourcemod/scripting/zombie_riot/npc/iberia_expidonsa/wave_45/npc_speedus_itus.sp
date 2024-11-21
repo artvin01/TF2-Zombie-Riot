@@ -198,8 +198,7 @@ methodmap SpeedusItus < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SpeedusItus_ClotThink(int iNPC)
 {
 	SpeedusItus npc = view_as<SpeedusItus>(iNPC);

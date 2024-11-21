@@ -316,8 +316,7 @@ methodmap FatherGrigori < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void FatherGrigori_ClotThink(int iNPC)
 {
 	FatherGrigori npc = view_as<FatherGrigori>(iNPC);

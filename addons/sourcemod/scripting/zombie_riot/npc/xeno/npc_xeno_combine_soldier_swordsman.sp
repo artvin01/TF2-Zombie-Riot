@@ -230,8 +230,7 @@ methodmap XenoCombineSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineSwordsman_ClotThink(int iNPC)
 {
 	XenoCombineSwordsman npc = view_as<XenoCombineSwordsman>(iNPC);

@@ -232,8 +232,7 @@ methodmap Magia < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Magia npc = view_as<Magia>(iNPC);

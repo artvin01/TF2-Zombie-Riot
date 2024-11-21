@@ -150,8 +150,7 @@ methodmap ExtremeHeatDigger < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ExtremeHeatDigger_ClotThink(int iNPC)
 {
 	ExtremeHeatDigger npc = view_as<ExtremeHeatDigger>(iNPC);

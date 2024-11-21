@@ -235,8 +235,7 @@ methodmap Rulianius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Rulianius npc = view_as<Rulianius>(iNPC);

@@ -208,8 +208,7 @@ methodmap Europis < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Europis npc = view_as<Europis>(iNPC);

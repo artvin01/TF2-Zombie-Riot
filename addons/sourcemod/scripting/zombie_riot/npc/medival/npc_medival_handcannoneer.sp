@@ -203,8 +203,7 @@ methodmap MedivalHandCannoneer < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalHandCannoneer_ClotThink(int iNPC)
 {
 	MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(iNPC);

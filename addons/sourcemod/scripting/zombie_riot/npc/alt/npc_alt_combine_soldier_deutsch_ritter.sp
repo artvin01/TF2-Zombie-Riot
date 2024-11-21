@@ -238,8 +238,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Alt_CombineDeutsch npc = view_as<Alt_CombineDeutsch>(iNPC);

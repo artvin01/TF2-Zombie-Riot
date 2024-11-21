@@ -181,8 +181,7 @@ methodmap Spy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Spy_ClotThink(int iNPC)
 {
 	Spy npc = view_as<Spy>(iNPC);

@@ -91,8 +91,7 @@ methodmap FarmBear < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void FarmBear_ClotThink(int iNPC)
 {
 	FarmBear npc = view_as<FarmBear>(iNPC);

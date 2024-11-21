@@ -193,8 +193,7 @@ methodmap Whiteflower_Nano_Blaster < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 {
 	Whiteflower_Nano_Blaster npc = view_as<Whiteflower_Nano_Blaster>(iNPC);

@@ -207,8 +207,7 @@ methodmap CombineDDT < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineDDT_ClotThink(int iNPC)
 {
 	CombineDDT npc = view_as<CombineDDT>(iNPC);

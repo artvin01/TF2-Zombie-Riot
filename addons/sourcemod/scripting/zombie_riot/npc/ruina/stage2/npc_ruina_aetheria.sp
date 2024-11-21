@@ -248,8 +248,7 @@ methodmap Aetheria < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Aetheria npc = view_as<Aetheria>(iNPC);

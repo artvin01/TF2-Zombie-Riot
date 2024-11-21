@@ -195,8 +195,7 @@ methodmap Whiteflower_ExpertFighter < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_ExpertFighter_ClotThink(int iNPC)
 {
 	Whiteflower_ExpertFighter npc = view_as<Whiteflower_ExpertFighter>(iNPC);

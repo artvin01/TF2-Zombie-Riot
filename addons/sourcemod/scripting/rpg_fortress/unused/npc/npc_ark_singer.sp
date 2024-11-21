@@ -155,8 +155,7 @@ methodmap ArkSinger < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ArkSinger_ClotThink(int iNPC)
 {
 	ArkSinger npc = view_as<ArkSinger>(iNPC);

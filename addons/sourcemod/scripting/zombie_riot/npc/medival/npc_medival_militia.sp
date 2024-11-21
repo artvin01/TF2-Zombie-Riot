@@ -224,8 +224,7 @@ methodmap MedivalMilitia < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalMilitia_ClotThink(int iNPC)
 {
 	MedivalMilitia npc = view_as<MedivalMilitia>(iNPC);

@@ -178,8 +178,7 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 {
 	ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(iNPC);

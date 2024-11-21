@@ -215,8 +215,7 @@ methodmap CombineDeutsch < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineDeutsch_ClotThink(int iNPC)
 {
 	CombineDeutsch npc = view_as<CombineDeutsch>(iNPC);

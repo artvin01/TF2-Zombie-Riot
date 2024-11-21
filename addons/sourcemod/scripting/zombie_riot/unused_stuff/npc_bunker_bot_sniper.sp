@@ -158,8 +158,7 @@ methodmap BunkerBotSniper < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void BunkerBotSniper_ClotThink(int iNPC)
 {
 	BunkerBotSniper npc = view_as<BunkerBotSniper>(iNPC);

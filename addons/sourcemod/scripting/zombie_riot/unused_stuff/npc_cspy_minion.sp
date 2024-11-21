@@ -159,8 +159,7 @@ methodmap CorruptedSpyMinion < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void CorruptedSpyMinion_ClotThink(int iNPC)
 {
 	CorruptedSpyMinion npc = view_as<CorruptedSpyMinion>(iNPC);

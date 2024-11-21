@@ -115,8 +115,7 @@ methodmap StartChicken < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void StartChicken_ClotThink(int iNPC)
 {
 	StartChicken npc = view_as<StartChicken>(iNPC);

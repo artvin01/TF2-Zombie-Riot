@@ -186,8 +186,7 @@ methodmap Engineer < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Engineer_ClotThink(int iNPC)
 {
 	Engineer npc = view_as<Engineer>(iNPC);

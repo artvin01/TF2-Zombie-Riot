@@ -271,8 +271,7 @@ methodmap Iana < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Iana npc = view_as<Iana>(iNPC);

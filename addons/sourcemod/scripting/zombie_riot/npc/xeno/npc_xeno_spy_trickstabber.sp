@@ -239,8 +239,7 @@ methodmap XenoSpyTrickstabber < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSpyTrickstabber_ClotThink(int iNPC)
 {
 	XenoSpyTrickstabber npc = view_as<XenoSpyTrickstabber>(iNPC);

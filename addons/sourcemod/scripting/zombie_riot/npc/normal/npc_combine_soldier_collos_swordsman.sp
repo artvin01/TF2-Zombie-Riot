@@ -216,8 +216,7 @@ methodmap CombineCollos < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineCollos_ClotThink(int iNPC)
 {
 	CombineCollos npc = view_as<CombineCollos>(iNPC);

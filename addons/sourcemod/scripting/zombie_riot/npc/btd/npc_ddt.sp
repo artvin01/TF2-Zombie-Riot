@@ -184,8 +184,7 @@ methodmap DDT < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void DDT_ClotThink(int iNPC)
 {
 	DDT npc = view_as<DDT>(iNPC);

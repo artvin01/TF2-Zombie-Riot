@@ -221,8 +221,7 @@ methodmap SpyTrickstabber < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SpyTrickstabber_ClotThink(int iNPC)
 {
 	SpyTrickstabber npc = view_as<SpyTrickstabber>(iNPC);

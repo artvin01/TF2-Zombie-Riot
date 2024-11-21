@@ -221,8 +221,7 @@ methodmap Soldier_Barrager < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Soldier_Barrager npc = view_as<Soldier_Barrager>(iNPC);

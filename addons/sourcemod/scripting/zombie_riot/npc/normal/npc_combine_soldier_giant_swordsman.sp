@@ -210,8 +210,7 @@ methodmap CombineGaint < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void CombineGaint_ClotThink(int iNPC)
 {
 	CombineGaint npc = view_as<CombineGaint>(iNPC);

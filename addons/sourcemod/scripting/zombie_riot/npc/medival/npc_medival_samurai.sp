@@ -223,8 +223,7 @@ methodmap MedivalSamurai < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalSamurai_ClotThink(int iNPC)
 {
 	MedivalSamurai npc = view_as<MedivalSamurai>(iNPC);

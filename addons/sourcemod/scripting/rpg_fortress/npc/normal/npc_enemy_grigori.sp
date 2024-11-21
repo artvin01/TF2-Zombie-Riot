@@ -274,8 +274,7 @@ methodmap EnemyFatherGrigori < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void EnemyFatherGrigori_ClotThink(int iNPC)
 {
 	EnemyFatherGrigori npc = view_as<EnemyFatherGrigori>(iNPC);

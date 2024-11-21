@@ -241,8 +241,7 @@ methodmap MedivalHussar < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalHussar_ClotThink(int iNPC)
 {
 	MedivalHussar npc = view_as<MedivalHussar>(iNPC);

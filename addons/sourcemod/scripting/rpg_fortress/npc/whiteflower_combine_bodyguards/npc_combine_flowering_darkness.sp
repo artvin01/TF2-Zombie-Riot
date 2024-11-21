@@ -248,8 +248,7 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 {
 	Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(iNPC);

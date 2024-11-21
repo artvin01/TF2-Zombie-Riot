@@ -204,8 +204,7 @@ methodmap Helena < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Helena_ClotThink(int iNPC)
 {
 	Helena npc = view_as<Helena>(iNPC);

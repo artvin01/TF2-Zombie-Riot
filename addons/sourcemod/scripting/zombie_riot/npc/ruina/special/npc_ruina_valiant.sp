@@ -302,8 +302,7 @@ methodmap Valiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Valiant npc = view_as<Valiant>(iNPC);

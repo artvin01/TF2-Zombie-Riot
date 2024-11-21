@@ -223,8 +223,7 @@ methodmap XenoFastZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoFastZombie_ClotThink(int iNPC)
 {
 	XenoFastZombie npc = view_as<XenoFastZombie>(iNPC);

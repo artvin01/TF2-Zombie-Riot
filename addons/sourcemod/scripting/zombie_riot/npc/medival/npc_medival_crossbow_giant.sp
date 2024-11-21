@@ -204,8 +204,7 @@ methodmap MedivalCrossbowGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalCrossbowGiant_ClotThink(int iNPC)
 {
 	MedivalCrossbowGiant npc = view_as<MedivalCrossbowGiant>(iNPC);

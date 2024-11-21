@@ -297,8 +297,7 @@ methodmap Ikunagae < CClotBody
 
 static float Normal_Attack_Angles[MAXENTITIES];	//placing this here to use the clot think.
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Ikunagae npc = view_as<Ikunagae>(iNPC);

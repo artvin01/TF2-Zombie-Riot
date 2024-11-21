@@ -281,8 +281,7 @@ methodmap SpyMainBoss < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SpyMainBoss_ClotThink(int iNPC)
 {
 	SpyMainBoss npc = view_as<SpyMainBoss>(iNPC);

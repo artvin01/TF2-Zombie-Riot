@@ -191,8 +191,7 @@ methodmap SeaInfectedZombieHuman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 {
 	SeaInfectedZombieHuman npc = view_as<SeaInfectedZombieHuman>(iNPC);

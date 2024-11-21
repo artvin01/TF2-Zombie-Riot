@@ -234,8 +234,7 @@ methodmap Daedalus < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Daedalus npc = view_as<Daedalus>(iNPC);

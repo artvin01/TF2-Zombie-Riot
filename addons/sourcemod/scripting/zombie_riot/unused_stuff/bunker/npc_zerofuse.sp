@@ -592,8 +592,7 @@ methodmap TrueZerofuse < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void TrueZerofuse_ClotThink(int iNPC)
 {
 	TrueZerofuse npc = view_as<TrueZerofuse>(iNPC);

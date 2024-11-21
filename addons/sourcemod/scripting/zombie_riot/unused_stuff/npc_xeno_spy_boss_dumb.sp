@@ -290,8 +290,7 @@ methodmap XenoSpyMainBoss < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSpyMainBoss_ClotThink(int iNPC)
 {
 	XenoSpyMainBoss npc = view_as<XenoSpyMainBoss>(iNPC);

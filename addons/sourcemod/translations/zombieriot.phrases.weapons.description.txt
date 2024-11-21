@@ -3432,8 +3432,6 @@
 	"Outlaw Railcannon Desc Pap 3"
 	{
 		"en"	"We found this left behind on an old rusty mad max car.\nSeems to have had significant use."
-		// todo
-		"fr"	""
 		"chi"	"我们在某个奇怪的拦车找到了这玩意。\n貌似很重要。"
 	}
 	"Outlaw Railcannon Desc Pap 4"

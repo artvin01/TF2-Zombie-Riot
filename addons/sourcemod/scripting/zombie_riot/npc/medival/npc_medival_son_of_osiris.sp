@@ -216,8 +216,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalSonOfOsiris_ClotThink(int iNPC)
 {
 	MedivalSonOfOsiris npc = view_as<MedivalSonOfOsiris>(iNPC);

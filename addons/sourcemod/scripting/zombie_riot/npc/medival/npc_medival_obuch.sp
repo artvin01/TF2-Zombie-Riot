@@ -228,8 +228,7 @@ methodmap MedivalObuch < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalObuch_ClotThink(int iNPC)
 {
 	MedivalObuch npc = view_as<MedivalObuch>(iNPC);

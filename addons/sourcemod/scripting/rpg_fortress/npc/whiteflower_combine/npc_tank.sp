@@ -128,8 +128,7 @@ methodmap WhiteflowerTank < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void WhiteflowerTank_ClotThink(int iNPC)
 {
 	WhiteflowerTank npc = view_as<WhiteflowerTank>(iNPC);

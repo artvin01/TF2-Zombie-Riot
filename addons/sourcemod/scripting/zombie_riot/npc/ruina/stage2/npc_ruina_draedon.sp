@@ -232,8 +232,7 @@ methodmap Draedon < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Draedon npc = view_as<Draedon>(iNPC);

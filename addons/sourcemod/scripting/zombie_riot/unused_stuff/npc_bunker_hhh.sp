@@ -193,8 +193,7 @@ methodmap BunkerHeadlessHorse < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void BunkerHeadlessHorse_ClotThink(int iNPC)
 {
 	BunkerHeadlessHorse npc = view_as<BunkerHeadlessHorse>(iNPC);

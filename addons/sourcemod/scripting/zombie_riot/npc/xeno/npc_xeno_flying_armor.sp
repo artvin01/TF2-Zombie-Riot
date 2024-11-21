@@ -225,8 +225,7 @@ methodmap XenoFlyingArmor < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoFlyingArmor_ClotThink(int iNPC)
 {
 	XenoFlyingArmor npc = view_as<XenoFlyingArmor>(iNPC);

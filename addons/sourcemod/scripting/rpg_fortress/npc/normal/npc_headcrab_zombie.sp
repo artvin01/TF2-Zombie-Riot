@@ -147,8 +147,7 @@ methodmap HeadcrabZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void HeadcrabZombie_ClotThink(int iNPC)
 {
 	HeadcrabZombie npc = view_as<HeadcrabZombie>(iNPC);

@@ -211,8 +211,7 @@ methodmap OverlordRogue < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void OverlordRogue_ClotThink(int iNPC)
 {
 	OverlordRogue npc = view_as<OverlordRogue>(iNPC);
