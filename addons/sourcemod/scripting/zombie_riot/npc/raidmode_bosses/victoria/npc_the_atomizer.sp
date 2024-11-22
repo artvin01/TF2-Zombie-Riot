@@ -1150,6 +1150,11 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 								if(npc.m_iOverlordComboAttack > 0)
 								{
 									int RocketGet = npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
+									if(RocketGet != -1)
+									{
+										//max duration of 2 seconds
+										CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
+									}
 									SetEntityGravity(RocketGet, 1.0); 	
 									ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
 									SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);

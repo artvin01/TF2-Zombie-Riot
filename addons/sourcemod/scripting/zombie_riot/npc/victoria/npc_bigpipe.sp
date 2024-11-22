@@ -410,6 +410,7 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
 					int RocketGet = npc.FireRocket(vecDest, RocketDamage, RocketSpeed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl", 1.2);
+					SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
