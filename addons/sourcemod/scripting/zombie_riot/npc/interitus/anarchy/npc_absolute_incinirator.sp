@@ -126,9 +126,7 @@ methodmap AnarchyAbsoluteIncinirator < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(AnarchyAbsoluteIncinirator_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		npc.m_flMeleeArmor = 1.3;

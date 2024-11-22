@@ -121,7 +121,6 @@ methodmap KazimierzLongArcher < CClotBody
 		func_NPCThink[npc.index] = KazimierzLongArcher_ClotThink;
 		func_NPCAnimEvent[npc.index] = HandleAnimEventKazimierzLongArcher;
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;

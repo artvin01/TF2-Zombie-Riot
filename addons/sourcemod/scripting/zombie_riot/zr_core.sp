@@ -329,6 +329,7 @@ int CashSpentGivePostSetup[MAXTF2PLAYERS];
 bool CashSpentGivePostSetupWarning[MAXTF2PLAYERS];
 int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
+bool StarterCashMode[MAXTF2PLAYERS] = {true, ...};
 int Scrap[MAXTF2PLAYERS];
 int PlayStreak[MAXTF2PLAYERS];
 int Ammo_Count_Ready;

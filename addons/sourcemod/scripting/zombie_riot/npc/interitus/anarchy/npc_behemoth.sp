@@ -121,9 +121,7 @@ methodmap AnarchyBehemoth < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AnarchyBehemoth_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(AnarchyBehemoth_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
 		f_HeadshotDamageMultiNpc[npc.index] = 0.0;

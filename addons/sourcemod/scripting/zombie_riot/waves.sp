@@ -1660,7 +1660,32 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//Loop through all the still alive enemies that are indexed!
 			
+			
 			//always increace chance of miniboss.
+			if(!rogue && CurrentRound >= 12)
+			{
+				int count;
+				int i = MaxClients + 1;
+				while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+				{
+					if(!b_NpcHasDied[i])
+					{
+						if(Citizen_IsIt(i))
+							count++;
+					}
+				}
+				// theres only a max of 2
+				if(count == 1)
+				{
+					if(GetRandomFloat(0.0, 1.0) < 0.05)
+					{
+						//10 percent chance to spawn one every wave, upto 4 at max!
+						Citizen_SpawnAtPoint();
+					}
+					//This means barney is enabled, we allow to spawn more citizens.
+				}
+			}
+			
 			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");

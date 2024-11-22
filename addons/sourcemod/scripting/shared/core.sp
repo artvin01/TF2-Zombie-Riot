@@ -1267,6 +1267,7 @@ int i_StepNoiseType[MAXENTITIES];
 int i_NpcStepVariation[MAXENTITIES];
 int i_BleedType[MAXENTITIES];
 int i_State[MAXENTITIES];
+int i_AnimationState[MAXENTITIES];
 bool b_movedelay[MAXENTITIES];
 float fl_NextRangedAttack[MAXENTITIES];
 float fl_NextRangedAttackHappening[MAXENTITIES];
@@ -4200,11 +4201,8 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
 			GiveArmorViaPercentage(target, 0.1, 1.0, false);
 			IncreaceEntityDamageTakenBy(target, 0.85, 5.0);
-			CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
-			SetDefaultHudPosition(target, 0, 0, 255, 1.5);
-			SetGlobalTransTarget(target);
-			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
 		}
+		CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
@@ -4213,9 +4211,21 @@ public Action ReviveDisplayMessageDelay(Handle timer, int ref)
 	int target = EntRefToEntIndex(ref);
 	if(IsValidClient(target))
 	{
-		SetDefaultHudPosition(target, 0, 0, 255, 1.5);
-		SetGlobalTransTarget(target);
-		ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
+		int downsleft;
+		downsleft = 2;
+		downsleft -= i_AmountDowned[target];
+		if(downsleft <= 0)
+		{
+			SetDefaultHudPosition(target, 255, 0, 0, 2.5);
+			SetGlobalTransTarget(target);
+			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Last Down Warning");	
+		}
+		else if(b_KahmlLastWish[target])
+		{
+			SetDefaultHudPosition(target, 0, 0, 255, 1.5);
+			SetGlobalTransTarget(target);
+			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
+		}
 	}
 	return Plugin_Continue;
 }

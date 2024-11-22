@@ -200,7 +200,6 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
-		npc.m_iState = 0;
 		npc.m_flSpeed = 330.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;

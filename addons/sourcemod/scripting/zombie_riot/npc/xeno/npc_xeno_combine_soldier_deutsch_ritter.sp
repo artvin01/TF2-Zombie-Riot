@@ -199,7 +199,6 @@ methodmap XenoCombineDeutsch < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 270.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;

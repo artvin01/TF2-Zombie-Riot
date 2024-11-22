@@ -153,9 +153,7 @@ methodmap Iberiainqusitor_irene < CClotBody
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 345.0;
 		npc.m_iAttacksTillReload = 0;

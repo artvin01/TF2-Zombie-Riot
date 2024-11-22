@@ -190,7 +190,6 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		npc.m_iAttacksTillReload = 5;
 		npc.m_bmovedelay = false;
 		
-		npc.m_iState = 0;
 		npc.m_flSpeed = 190.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;

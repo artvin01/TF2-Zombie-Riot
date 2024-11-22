@@ -133,9 +133,7 @@ methodmap SoldinePrototype < CClotBody
 		func_NPCDeath[npc.index] = SoldinePrototype_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = SoldinePrototype_OnTakeDamage;
 		func_NPCThink[npc.index] = SoldinePrototype_ClotThink;
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		

@@ -402,7 +402,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				SetAmmo(client, i, CurrentAmmo[client][i]);
 			}
 			
-			PrintHintText(client, "%T", "Open Store", client);
+			//PrintHintText(client, "%T", "Open Store", client);
 		}
 #endif
 

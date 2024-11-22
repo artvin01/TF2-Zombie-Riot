@@ -24,6 +24,10 @@
 		"nl"		"Druk %%+showscores%% om de winkel te openen"
 		"chi"		"按下 %%+showscores%% 来打开商店"
 	}
+	"Press To Open Store"
+	{
+		"en"		"%%+showscores%% OPEN STORE MENU"
+	}
 	"Last Alive"
 	{
 		"en"		"You are the Last Human Alive.\nSurvive the current wave to revive all your allies."
@@ -295,6 +299,10 @@
 		"pt"		"Itens Comprados"
 		"nl"		"Gekochte Artikelen"
 		"chi"       "已购买物品"
+	}
+	"Confirm Loadout"
+	{
+		"en"		"Confirm Loadout"
 	}
 	"N/A"
 	{
@@ -1507,8 +1515,8 @@
 	}
 	"Ammobox Tooltip"
 	{
-		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon.\nWill try to fill empty weapons first in your inventory."
-		"fr" 		"Appuyez RELOAD sur la boîte à munitions pour recevoir des munitions pour l'arme que vous tenez.\nLes armes vides auront priorité pour remplissage."
+		"#format"	"{1:d}"
+		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
 	}
 	"Warn Client Ammo None"
 	{
@@ -2456,6 +2464,10 @@
 	"Kahmlstein Courage"
 	{
 		"en"		"You feel Kahmlsteins Courage..."
+	}
+	"Last Down Warning"
+	{
+		"en"		"This is your last down."
 	}
 	"Opened store via command"
 	{

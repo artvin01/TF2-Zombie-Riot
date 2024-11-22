@@ -183,9 +183,7 @@ methodmap CombineDeutsch < CClotBody
 		func_NPCDeath[npc.index] = CombineDeutsch_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = CombineDeutsch_OnTakeDamage;
 		func_NPCThink[npc.index] = CombineDeutsch_ClotThink;
-		
-		
-		npc.m_iState = 0;
+
 		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;

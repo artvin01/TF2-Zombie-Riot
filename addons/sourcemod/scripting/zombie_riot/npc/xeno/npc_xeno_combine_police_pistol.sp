@@ -195,7 +195,6 @@ methodmap XenoCombinePolicePistol < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 100);
 		
-		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;
 		
 		

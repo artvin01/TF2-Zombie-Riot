@@ -305,13 +305,13 @@ static void ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								damage *= 50.0;
 							
-							if(target <= MaxClients && TF2_IsPlayerInCondition(target, TFCond_MarkedForDeath))
+							if(NpcStats_IberiaIsEnemyMarked(target))
 								damage *= 100.0;
 
 							npc.PlayMeleeHitSound();
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-							if(target <= MaxClients && !dieingstate[target] && IsPlayerAlive(target))
-								TF2_AddCondition(target, TFCond_MarkedForDeath, 30.0);
+							if(target > MaxClients || (!dieingstate[target] && IsPlayerAlive(target)))
+								NpcStats_IberiaMarkEnemy(target, 30.0);
 							
 							Custom_Knockback(npc.index, target, 1000.0, true); 
 						}

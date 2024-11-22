@@ -184,7 +184,6 @@ methodmap XenoCombineDDT < CClotBody
 		
 		
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 340.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;

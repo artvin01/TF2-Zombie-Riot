@@ -195,9 +195,7 @@ methodmap SpyCloaked < CClotBody
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		
-		npc.m_iState = 0;
+
 		npc.m_flSpeed = 230.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;

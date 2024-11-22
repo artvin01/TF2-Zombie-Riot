@@ -158,9 +158,7 @@ methodmap Diversionistico < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Diversionistico_OnTakeDamage;
 		func_NPCThink[npc.index] = Diversionistico_ClotThink;
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		b_TryToAvoidTraverse[npc.index] = true;

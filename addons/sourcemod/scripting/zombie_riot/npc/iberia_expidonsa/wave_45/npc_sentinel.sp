@@ -146,9 +146,7 @@ methodmap IberianSentinal < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberianSentinel_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(IberianSentinel_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		

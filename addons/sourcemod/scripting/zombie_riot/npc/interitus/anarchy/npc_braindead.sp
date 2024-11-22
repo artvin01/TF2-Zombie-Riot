@@ -122,9 +122,7 @@ methodmap AnarchyBraindead < CClotBody
 		npc.m_iOverlordComboAttack = 10;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
 		

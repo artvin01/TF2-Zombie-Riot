@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+static float i_WasInMarkedForDeathSilent[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
@@ -9,6 +10,7 @@ static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
 static float f_EntityOutOfNav[MAXTF2PLAYERS];
 static float f_LatestDamageRes[MAXTF2PLAYERS];
 static float f_TimeSinceLastRegenStop[MAXTF2PLAYERS];
+static bool b_GaveMarkForDeath[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
@@ -34,12 +36,14 @@ void SDKHooks_ClearAll()
 	Zero(f_EntityOutOfNav);
 	
 	Zero(i_WasInUber);
+	Zero(i_WasInMarkedForDeathSilent);
 	Zero(i_WasInMarkedForDeath);
 	Zero(i_WasInDefenseBuff);
 	Zero(i_WasInJarate);
 	Zero(i_WasInResPowerup);
 	Zero(Client_Had_ArmorDebuff);
 	Zero(f_TimeSinceLastRegenStop);
+	Zero(b_GaveMarkForDeath);
 }
 
 void SDKHook_PluginStart()
@@ -887,6 +891,17 @@ public void OnPostThink(int client)
 				IsReady = false;
 				had_An_ability = true;
 			}
+			
+			if(Store_ActiveCanMulti(client))
+			{
+				if(had_An_ability)
+				{
+					Format(buffer, sizeof(buffer), "| %s", buffer);
+				}	
+				Format(buffer, sizeof(buffer), "[F] %s", buffer);
+				IsReady = false;
+				had_An_ability = true;
+			}
 #endif
 			
 			if(had_An_ability)
@@ -899,6 +914,7 @@ public void OnPostThink(int client)
 			float value = 1.0;
 
 #if defined ZR
+			
 			percentage_Global *= ArmorPlayerReduction(client);
 			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
 			int testvalue1 = 0;
@@ -1467,10 +1483,14 @@ public void OnPostThink(int client)
 				Format(buffer, sizeof(buffer), "%s%.1f", buffer, slowdown_amount);
 			}
 		}
+		else if(i_CurrentEquippedPerk[client] >= 1)
+		{
+			Format(buffer, sizeof(buffer), "%s%c%c", buffer, PerkNames[i_CurrentEquippedPerk[client]][0], PerkNames[i_CurrentEquippedPerk[client]][1]);
+		}
 		SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 		ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 			
-			
+				
 		char HudBuffer[256];
 		
 		if(!TeutonType[client])
@@ -1489,40 +1509,44 @@ public void OnPostThink(int client)
 			}
 			*/
 			downsleft -= i_AmountDowned[client];
-			if(downsleft < 0)
-			{
-				downsleft = 0;
-			}
-			/*
-			if(b_LeftForDead[client])
-			{
-				if(downsleft > 1)
-				{
-					downsleft = 1;
-				}
-			}
-			*/
 
-			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
+			if (GetTeam(client) == TFTeam_Red && dieingstate[client] == 0)
+			{
+				if(downsleft <= 0 && !SpecterCheckIfAutoRevive(client))
+				{
+					if(!b_GaveMarkForDeath[client])
+					{
+						TF2_AddCondition(client, TFCond_MarkedForDeath, 9999999.9);
+						b_GaveMarkForDeath[client] = true;
+					}
+				}
+				else
+				{
+					if(b_GaveMarkForDeath[client])
+					{
+						TF2_RemoveCondition(client, TFCond_MarkedForDeath);
+						b_GaveMarkForDeath[client] = false;
+					}
+				}
+
+			}
+			
+			if(!HudBuffer[0] && CashSpent[client] < 1)
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
+			}
+
+			/*
+			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t", HudBuffer,
 			"Credits_Menu_New", GlobalExtraCash + CashRecievedNonWave[client],	
-			"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 			PerkNames[i_CurrentEquippedPerk[client]]
 			);
 
-			if(b_LeftForDead[client])
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
-					"Downs left", downsleft ? 1 : 0);
-			}
-			else
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
-					"Downs left", downsleft);	
-			}
 			if(Store_ActiveCanMulti(client))
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n\n%t", HudBuffer, "Press Button To Switch");
 			}
+			*/
 		}
 		else if (TeutonType[client] == TEUTON_DEAD)
 		{
@@ -1623,7 +1647,11 @@ void RegainTf2Buffs(int victim)
 	}
 	if(i_WasInMarkedForDeath[victim])
 	{
-		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, i_WasInMarkedForDeath[victim]);
+		TF2_AddCondition(victim, TFCond_MarkedForDeath, i_WasInMarkedForDeath[victim]);
+	}
+	if(i_WasInMarkedForDeathSilent[victim])
+	{
+		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, i_WasInMarkedForDeathSilent[victim]);
 	}
 	if(i_WasInJarate[victim])
 	{
@@ -1638,7 +1666,7 @@ void RegainTf2Buffs(int victim)
 		TF2_AddCondition(victim, TFCond_RuneResist, i_WasInResPowerup[victim]);
 	}
 	i_WasInUber[victim] = 0.0;
-	i_WasInMarkedForDeath[victim] = 0.0;
+	i_WasInMarkedForDeathSilent[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 	i_WasInJarate[victim] = 0.0;
 	i_WasInResPowerup[victim] = 0.0;
@@ -1667,6 +1695,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	ClientPassAliveCheck[victim] = false;
 #if defined ZR
 	i_WasInUber[victim] = 0.0;
+	i_WasInMarkedForDeathSilent[victim] = 0.0;
 	i_WasInMarkedForDeath[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 #endif
@@ -2127,9 +2156,14 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 #if defined ZR || defined RPG
 void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 {
+	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeath))
+	{
+		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeath);
+		TF2_RemoveCondition(victim, TFCond_MarkedForDeath);
+	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
-		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
+		i_WasInMarkedForDeathSilent[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
 		damage *= 1.15;
 	}

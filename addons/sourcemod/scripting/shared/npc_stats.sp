@@ -1256,6 +1256,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return i_State[this.index]; }
 		public set(int TempValueForProperty) 	{ i_State[this.index] = TempValueForProperty; }
 	}
+	property int m_iAnimationState
+	{
+		public get()							{ return i_AnimationState[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AnimationState[this.index] = TempValueForProperty; }
+	}
 	property bool m_bmovedelay
 	{
 		public get()							{ return b_movedelay[this.index]; }
@@ -8390,6 +8395,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_NpcTurnPenalty[entity] = 1.0;
 	i_BleedType[entity] = 0;
 	i_State[entity] = 0;
+	i_AnimationState[entity] = 0;
 	b_movedelay[entity] = false;
 	fl_NextRangedAttack[entity] = 0.0;
 	fl_NextRangedAttackHappening[entity] = 0.0;

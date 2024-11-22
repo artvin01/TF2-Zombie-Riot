@@ -196,9 +196,7 @@ methodmap ChaosSickKnight < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ChaosSickKnight_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.m_flHeavyResPhaseCooldown = GetGameTime() + 10.0;
 		npc.m_flViolentCaughingCooldown = GetGameTime() + 30.0;
 		npc.StartPathing();
