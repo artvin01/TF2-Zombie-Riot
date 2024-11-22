@@ -2,23 +2,26 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/mvm/norm/heavy_mvm_paincrticialdeath01.mp3",
-	"vo/mvm/norm/heavy_mvm_paincrticialdeath02.mp3",
-	"vo/mvm/norm/heavy_mvm_paincrticialdeath03.mp3",
+	"vo/mvm/mght/heavy_mvm_m_negativevocalization01.mp3",
+	"vo/mvm/mght/heavy_mvm_m_negativevocalization02.mp3",
+	"vo/mvm/mght/heavy_mvm_m_negativevocalization03.mp3",
+	"vo/mvm/mght/heavy_mvm_m_negativevocalization04.mp3",
+	"vo/mvm/mght/heavy_mvm_m_negativevocalization05.mp3",
+	"vo/mvm/mght/heavy_mvm_m_negativevocalization06.mp3",/
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/mvm/norm/heavy_mvm_painsharp01.mp3",
-	"vo/mvm/norm/heavy_mvm_painsharp02.mp3",
-	"vo/mvm/norm/heavy_mvm_painsharp03.mp3",
-	"vo/mvm/norm/heavy_mvm_painsharp04.mp3",
-	"vo/mvm/norm/heavy_mvm_painsharp05.mp3",
+	"vo/mvm/mght/heavy_mvm_m_laughshort01.mp3",
+	"vo/mvm/mght/heavy_mvm_m_laughshort02.mp3",
+	"vo/mvm/mght/heavy_mvm_m_laughshort03.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/mvm/norm/taunts/heavy_mvm_taunts16.mp3",
-	"vo/mvm/norm/taunts/heavy_mvm_taunts18.mp3",
-	"vo/mvm/norm/taunts/heavy_mvm_taunts19.mp3",
+	"vo/mvm/mght/heavy_mvm_m_specials01.mp3",
+	"vo/mvm/mght/heavy_mvm_m_specials02.mp3",
+	"vo/mvm/mght/heavy_mvm_m_specials03.mp3",
+	"vo/mvm/mght/heavy_mvm_m_specials04.mp3",
+	"vo/mvm/mght/heavy_mvm_m_specials05.mp3",
 };
 
 
@@ -28,7 +31,7 @@ void VictoriaMowdown_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
-	PrecacheSound("weapons/minigun_spin.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_gunspin.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_gunfire.wav");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mowdown");
@@ -85,7 +88,7 @@ methodmap VictoriaMowdown < CClotBody
         {
             if(this.i_GunMode != 0)
             {
-                StopSound(this.index, SNDCHAN_STATIC, "weapons/minigun_spin.wav");
+                StopSound(this.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunspin.wav");
                 EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
             }
             this.i_GunMode = 0;
@@ -95,7 +98,7 @@ methodmap VictoriaMowdown < CClotBody
             if(this.i_GunMode != 1)
             {
                 StopSound(this.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunfire.wav");
-                EmitSoundToAll("weapons/minigun_spin.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
+                EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunspin.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
             }
             this.i_GunMode = 1;
         }
@@ -240,9 +243,9 @@ public void VictoriaMowdown_NPCDeath(int entity)
 	}
 	npc.PlayMinigunSound(false);
 
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/minigun_spin.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunspin.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunfire.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/minigun_spin.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunspin.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunfire.wav");
 	
 	if(IsValidEntity(npc.m_iWearable4))
@@ -284,7 +287,7 @@ void VictoriaMowdownSelfDefense(VictoriaMowdown npc)
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 20.0;
+					float damageDealt = 22.5;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 

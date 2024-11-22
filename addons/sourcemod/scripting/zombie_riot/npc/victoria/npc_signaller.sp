@@ -2,9 +2,12 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/soldier_paincrticialdeath01.mp3",
-	"vo/soldier_paincrticialdeath02.mp3",
-	"vo/soldier_paincrticialdeath03.mp3"
+	")vo/soldier_negativevocalization01.mp3",
+	")vo/soldier_negativevocalization02.mp3",
+	")vo/soldier_negativevocalization03.mp3",
+	")vo/soldier_negativevocalization04.mp3",
+	")vo/soldier_negativevocalization05.mp3",
+	")vo/soldier_negativevocalization06.mp3",
 };
 
 static const char g_HurtSounds[][] = {

@@ -2,9 +2,10 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+	")vo/medic_negativevocalization01.mp3",
+	")vo/medic_negativevocalization02.mp3",
+	")vo/medic_negativevocalization03.mp3",
+	")vo/medic_negativevocalization04.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -19,14 +20,15 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	")vo/medic_battlecry01.mp3",
-	")vo/medic_battlecry02.mp3",
-	")vo/medic_battlecry03.mp3",
-	")vo/medic_battlecry04.mp3",
+	")vo/medic_mvm_heal_shield01.mp3",
+	")vo/medic_mvm_heal_shield02.mp3",
+	")vo/medic_mvm_heal_shield03.mp3",
+	")vo/medic_mvm_heal_shield04.mp3",
+	")vo/medic_mvm_heal_shield05.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"mvm/giant_demoman/giant_demoman_grenade_shoot.wav",
+	"weapon/doom_rocket_launcher.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {

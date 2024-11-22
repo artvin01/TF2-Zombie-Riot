@@ -37,7 +37,6 @@ static const char g_ReloadSound[][] = {
 
 static const char g_MeleeAttackSounds[][] = {
 	"mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav",
-	"mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav",
 };
 
 

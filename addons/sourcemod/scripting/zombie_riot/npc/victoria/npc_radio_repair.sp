@@ -16,11 +16,18 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	")vo/medic_mvm_heal_shield01.mp3",
-	")vo/medic_mvm_heal_shield02.mp3",
-	")vo/medic_mvm_heal_shield03.mp3",
-	")vo/medic_mvm_heal_shield04.mp3",
-	")vo/medic_mvm_heal_shield05.mp3",
+	")vo/medic_specialcompleted01.mp3",
+	")vo/medic_specialcompleted02.mp3",
+	")vo/medic_specialcompleted03.mp3",
+	")vo/medic_specialcompleted04.mp3",
+	")vo/medic_specialcompleted05.mp3",
+	")vo/medic_specialcompleted06.mp3",
+	")vo/medic_specialcompleted07.mp3",
+	")vo/medic_specialcompleted08.mp3",
+	")vo/medic_specialcompleted09.mp3",
+	")vo/medic_specialcompleted10.mp3",
+	")vo/medic_specialcompleted11.mp3",
+	")vo/medic_specialcompleted12.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {

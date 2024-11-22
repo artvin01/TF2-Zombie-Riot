@@ -2,33 +2,22 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath01.mp3",
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath02.mp3",
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath03.mp3",
+	"vo/heavy_negativevocalization01.mp3",
+	"vo/heavy_negativevocalization02.mp3",
+	"vo/heavy_negativevocalization03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/mvm/norm/soldier_mvm_painsevere01.mp3",
-	"vo/mvm/norm/soldier_mvm_painsevere02.mp3",
-	"vo/mvm/norm/soldier_mvm_painsevere03.mp3",
-	"vo/mvm/norm/soldier_mvm_painsevere04.mp3",
-	"vo/mvm/norm/soldier_mvm_painsevere05.mp3",
-	"vo/mvm/norm/soldier_mvm_painsevere06.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp01.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp02.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp03.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp04.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp05.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp06.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp07.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp08.mp3",
+	"vo/heavy_helpmedefend01.mp3",
+	"vo/heavy_helpmedefend02.mp3",
+	"vo/heavy_helpmedefend03.mp3",
 };
 
+
 static const char g_IdleAlertedSounds[][] = {
-	"vo/mvm/norm/taunts/soldier_mvm_taunts18.mp3",
-	"vo/mvm/norm/taunts/soldier_mvm_taunts19.mp3",
-	"vo/mvm/norm/taunts/soldier_mvm_taunts20.mp3",
-	"vo/mvm/norm/taunts/soldier_mvm_taunts21.mp3",
+	"vo/taunts/heavy_taunts16.mp3",
+	"vo/taunts/heavy_taunts18.mp3",
+	"vo/taunts/heavy_taunts19.mp3",
 };
 
 static const char g_ReloadSound[][] = {

@@ -2,9 +2,18 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/engineer_paincrticialdeath01.mp3",
-	"vo/engineer_paincrticialdeath02.mp3",
-	"vo/engineer_paincrticialdeath03.mp3",
+	")vo/engineer_negativevocalization01.mp3",
+	")vo/engineer_negativevocalization02.mp3",
+	")vo/engineer_negativevocalization03.mp3",
+	")vo/engineer_negativevocalization04.mp3",
+	")vo/engineer_negativevocalization05.mp3",
+	")vo/engineer_negativevocalization06.mp3",
+	")vo/engineer_negativevocalization07.mp3",
+	")vo/engineer_negativevocalization08.mp3",
+	")vo/engineer_negativevocalization09.mp3",
+	")vo/engineer_negativevocalization10.mp3",
+	")vo/engineer_negativevocalization11.mp3",
+	")vo/engineer_negativevocalization12.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -20,10 +29,9 @@ static const char g_HurtSounds[][] = {
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/engineer_battlecry01.mp3",
-	"vo/engineer_battlecry03.mp3",
-	"vo/engineer_battlecry04.mp3",
-	"vo/engineer_battlecry05.mp3",
+	"vo/engineer_mvm_mannhattan_gate_atk01.mp3",
+	"vo/engineer_mvm_mannhattan_gate_atk02.mp3",
+	"vo/engineer_mvm_mannhattan_gate_atk03.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -34,6 +42,11 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/bat_baseball_hit_flesh.wav",
 };
 
+static const char g_SapperHitSounds[][] = {
+	"weapons/rescue_ranger_charge_01.wav",
+	"weapons/rescue_ranger_charge_02.wav",
+};
+
 void VictorianWelder_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -41,6 +54,7 @@ void VictorianWelder_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_SapperHitSounds)); i++) { PrecacheSound(g_SapperHitSounds[i]); }
 	PrecacheModel("models/player/engineer.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Welder");
@@ -94,6 +108,11 @@ methodmap VictorianWelder < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
+	}
+	public void PlaySapperHitSound() 
+	{
+		EmitSoundToAll(g_SapperHitSounds[GetRandomInt(0, sizeof(g_SapperHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		
 	}
 	
 	
@@ -291,7 +310,10 @@ void VictorianWelderSelfDefense(VictorianWelder npc, float gameTime, int target,
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
-					npc.PlayMeleeHitSound();		
+					if(ShouldNpcDealBonusDamage(target))
+						npc.PlaySapperHitSound();
+					else
+						npc.PlayMeleeHitSound();		
 				} 
 			}
 			delete swingTrace;

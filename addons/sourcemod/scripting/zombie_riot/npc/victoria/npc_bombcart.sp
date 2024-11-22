@@ -169,7 +169,7 @@ public void VictoriaBombcart_ClotThink(int iNPC)
 			{
 				npc.m_iTarget = target;
 				
-				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flAttackHappens = gameTime + 0.1;
 				npc.m_flNextMeleeAttack = gameTime + 0.95;
 			}
 		}

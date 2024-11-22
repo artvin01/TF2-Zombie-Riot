@@ -3,9 +3,7 @@
 
 
 static const char g_DeathSounds[][] = {
-	"vo/pyro_paincrticialdeath01.mp3",
-	"vo/pyro_paincrticialdeath02.mp3",
-	"vo/pyro_paincrticialdeath03.mp3",
+	")vo/pyro_negativevocalization01.mp3",
 };
 
 static const char g_HurtSounds[][] = {

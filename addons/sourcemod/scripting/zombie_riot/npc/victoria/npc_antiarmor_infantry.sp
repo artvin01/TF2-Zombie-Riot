@@ -33,7 +33,7 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 static const char g_RangedAttackSounds[][] = {
-	"weapons/rocket_shoot.wav",
+	"weapons/quake_rpg_fire_remastered.wav",
 };
 
 void VictoriaAntiarmorInfantry_OnMapStart_NPC()

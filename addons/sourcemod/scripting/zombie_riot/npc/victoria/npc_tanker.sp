@@ -2,17 +2,15 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/heavy_paincrticialdeath01.mp3",
-	"vo/heavy_paincrticialdeath02.mp3",
-	"vo/heavy_paincrticialdeath03.mp3",
+	"vo/heavy_negativevocalization01.mp3",
+	"vo/heavy_negativevocalization02.mp3",
+	"vo/heavy_negativevocalization03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/heavy_painsharp01.mp3",
-	"vo/heavy_painsharp02.mp3",
-	"vo/heavy_painsharp03.mp3",
-	"vo/heavy_painsharp04.mp3",
-	"vo/heavy_painsharp05.mp3",
+	"vo/heavy_helpmedefend01.mp3",
+	"vo/heavy_helpmedefend02.mp3",
+	"vo/heavy_helpmedefend03.mp3",
 };
 
 
@@ -139,6 +137,7 @@ methodmap VIctorianTanker < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		
 		npc.m_iWearable6 = npc.EquipItemSeperate("m_vecAbsOrigin", "models/buildables/sentry_shield.mdl",_,1,1.3);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 
 		return npc;
 	}

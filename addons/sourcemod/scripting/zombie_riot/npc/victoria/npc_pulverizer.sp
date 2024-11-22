@@ -3,9 +3,7 @@
 
 
 static const char g_DeathSounds[][] = {
-	"vo/pyro_paincrticialdeath01.mp3",
-	"vo/pyro_paincrticialdeath02.mp3",
-	"vo/pyro_paincrticialdeath03.mp3",
+	")vo/pyro_negativevocalization01.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -27,7 +25,7 @@ void VictorianPulverizer_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	PrecacheSound("weapons/flame_thrower_loop.wav");
+	PrecacheSound("weapons/flame_thrower_dg_loop.wav");
 	PrecacheSound("weapons/flame_thrower_pilot.wav");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Pulverizer");
@@ -86,7 +84,7 @@ methodmap VictorianPulverizer < CClotBody
 			if(this.i_GunMode != 0)
 			{
 				StopSound(this.index, SNDCHAN_STATIC, "weapons/flame_thrower_pilot.wav");
-				EmitSoundToAll("weapons/flame_thrower_loop.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70, 80);
+				EmitSoundToAll("weapons/flame_thrower_dg_loop.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70, 80);
 			}
 			this.i_GunMode = 0;
 		}
@@ -94,7 +92,7 @@ methodmap VictorianPulverizer < CClotBody
 		{
 			if(this.i_GunMode != 1)
 			{
-				StopSound(this.index, SNDCHAN_STATIC, "weapons/flame_thrower_loop.wav");
+				StopSound(this.index, SNDCHAN_STATIC, "weapons/flame_thrower_dg_loop.wav");
 				EmitSoundToAll("weapons/flame_thrower_pilot.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70,  80);
 			}
 			this.i_GunMode = 1;
@@ -233,9 +231,9 @@ public void VictorianPulverizer_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_loop.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_dg_loop.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_pilot.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_loop.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_dg_loop.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_pilot.wav");
 	
 	if(IsValidEntity(npc.m_iWearable5))

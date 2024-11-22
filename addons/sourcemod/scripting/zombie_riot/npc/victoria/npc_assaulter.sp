@@ -2,9 +2,15 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/sniper_paincrticialdeath01.mp3",
-	"vo/sniper_paincrticialdeath02.mp3",
-	"vo/sniper_paincrticialdeath03.mp3",
+	"vo/sniper_negativevocalization01.mp3",
+	"vo/sniper_negativevocalization02.mp3",
+	"vo/sniper_negativevocalization03.mp3",
+	"vo/sniper_negativevocalization04.mp3",
+	"vo/sniper_negativevocalization05.mp3",
+	"vo/sniper_negativevocalization06.mp3",
+	"vo/sniper_negativevocalization07.mp3",
+	"vo/sniper_negativevocalization08.mp3",
+	"vo/sniper_negativevocalization09.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -16,14 +22,56 @@ static const char g_HurtSounds[][] = {
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/sniper_battlecry01.mp3",
-	"vo/sniper_battlecry02.mp3",
-	"vo/sniper_battlecry03.mp3",
-	"vo/sniper_battlecry04.mp3",
+	"vo/sniper_specialcompleted01.mp3",
+	"vo/sniper_specialcompleted02.mp3",
+	"vo/sniper_specialcompleted03.mp3",
+	"vo/sniper_specialcompleted04.mp3",
+	"vo/sniper_specialcompleted05.mp3",
+	"vo/sniper_specialcompleted06.mp3",
+	"vo/sniper_specialcompleted07.mp3",
+	"vo/sniper_specialcompleted08.mp3",
+	"vo/sniper_specialcompleted09.mp3",
+	"vo/sniper_specialcompleted10.mp3",
+	"vo/sniper_specialcompleted11.mp3",
+	"vo/sniper_specialcompleted12.mp3",
+	"vo/sniper_specialcompleted13.mp3",
+	"vo/sniper_specialcompleted14.mp3",
+	"vo/sniper_specialcompleted15.mp3",
+	"vo/sniper_specialcompleted16.mp3",
+	"vo/sniper_specialcompleted17.mp3",
+	"vo/sniper_specialcompleted18.mp3",
+	"vo/sniper_specialcompleted19.mp3",
+	"vo/sniper_specialcompleted20.mp3",
+	"vo/sniper_specialcompleted21.mp3",
+	"vo/sniper_specialcompleted22.mp3",
+	"vo/sniper_specialcompleted23.mp3",
+	"vo/sniper_specialcompleted24.mp3",
+	"vo/sniper_specialcompleted25.mp3",
+	"vo/sniper_specialcompleted26.mp3",
+	"vo/sniper_specialcompleted27.mp3",
+	"vo/sniper_specialcompleted28.mp3",
+	"vo/sniper_specialcompleted29.mp3",
+	"vo/sniper_specialcompleted30.mp3",
+	"vo/sniper_specialcompleted31.mp3",
+	"vo/sniper_specialcompleted32.mp3",
+	"vo/sniper_specialcompleted33.mp3",
+	"vo/sniper_specialcompleted34.mp3",
+	"vo/sniper_specialcompleted35.mp3",
+	"vo/sniper_specialcompleted36.mp3",
+	"vo/sniper_specialcompleted37.mp3",
+	"vo/sniper_specialcompleted38.mp3",
+	"vo/sniper_specialcompleted39.mp3",
+	"vo/sniper_specialcompleted40.mp3",
+	"vo/sniper_specialcompleted41.mp3",
+	"vo/sniper_specialcompleted42.mp3",
+	"vo/sniper_specialcompleted43.mp3",
+	"vo/sniper_specialcompleted44.mp3",
+	"vo/sniper_specialcompleted45.mp3",
+	"vo/sniper_specialcompleted46.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/smg_shoot.wav",
+	"weapons/frontier_justice_shoot.wav",
 };
 
 
