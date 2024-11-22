@@ -131,7 +131,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_HomerunSounds));   i++) { PrecacheSound(g_HomerunSounds[i]);   }
 	for (int i = 0; i < (sizeof(StunballPickupeSound));   i++) { PrecacheSound(StunballPickupeSound[i]);   }
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
-	PrecacheModel("models/player/scout.mdl");
+	PrecacheModel("models/player/heavy.mdl");
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
 }
 
@@ -221,7 +221,7 @@ methodmap Huscarls < CClotBody
 	
 	public Huscarls(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Huscarls npc = view_as<Huscarls>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		Huscarls npc = view_as<Huscarls>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -542,21 +542,6 @@ static void Internal_ClotThink(int iNPC)
 	if(!IsValidEntity(RaidBossActive))
 		RaidBossActive = EntIndexToEntRef(npc.index);
 
-	/*if(OnMiss[npc.index])
-	{
-		if(IsValidEntity(npc.m_iWearable8))
-				RemoveEntity(npc.m_iWearable8);
-		if(!IsValidEntity(npc.m_iWearable8))
-		{
-			static float flPos[3]; 
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-			flPos[2] += 5.0;
-			npc.m_iWearable8 = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow", 80.0);
-			SetParent(npc.index, npc.m_iWearable8, "head");
-		}
-	}
-	else if(IsValidEntity(npc.m_iWearable8))
-		RemoveEntity(npc.m_iWearable8);*/
 
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
@@ -975,7 +960,6 @@ void HuscarlsAnimationChange(Huscarls npc)
 			}
 		}
 	}
-
 }
 
 int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance)
