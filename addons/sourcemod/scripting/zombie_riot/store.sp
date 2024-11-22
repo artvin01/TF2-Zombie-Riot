@@ -2769,9 +2769,6 @@ static void MenuPage(int client, int section)
 			cash += give_Extra_JustIncase;
 		}
 	}
-
-	if(CurrentCash > (StartCash + 4000))
-		StarterCashMode[client] = false;
 	
 	if(StarterCashMode[client])
 	{
