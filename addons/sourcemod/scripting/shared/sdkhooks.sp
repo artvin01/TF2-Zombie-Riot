@@ -898,7 +898,7 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
-				Format(buffer, sizeof(buffer), "[F] %s", buffer);
+				Format(buffer, sizeof(buffer), "[H] %s", buffer);
 				IsReady = false;
 				had_An_ability = true;
 			}
