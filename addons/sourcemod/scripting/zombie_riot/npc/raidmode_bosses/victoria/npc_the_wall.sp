@@ -260,7 +260,6 @@ methodmap Huscarls < CClotBody
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
 		npc.m_flNextRangedAttack = GetGameTime() + 30.0;
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
-		npc.m_iOverlordComboAttack = 0;
 		OnMiss[npc.index] = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bFUCKYOU = false;
@@ -991,12 +990,15 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 						
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
+			npc.AddActivityViaSequence("layer_taunt_rps_rock_win");
+			npc.SetCycle(0.5);
+			npc.SetPlaybackRate(2.0);
 			npc.NiceCatchKnucklehead();
-			npc.m_flDoingAnimation = gameTime + 0.45;
-			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkPOWERUP[npc.index] ? 15.0 : 22.5);
+			npc.m_iWearable8 = npc.SpawnShield(6.0, "models/props_mvm/mvm_player_shield2.mdl",80.0, false);
+			SetEntProp(npc.m_iWearable8, Prop_Send, "m_nSkin", 1);
+			npc.m_flDoingAnimation = gameTime + 1.00;
+			npc.m_flNextRangedSpecialAttackHappens = gameTime + 25.0;
 			npc.m_flNextRangedAttack += 1.0;
-			npc.m_iOverlordComboAttack =  RoundToNearest(float(CountPlayersOnRed(2)) * 2.5); 
 		}
 	}
 	else if(npc.m_flRangedSpecialDelay < gameTime)
@@ -1054,154 +1056,79 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
-			if(npc.m_iOverlordComboAttack > 0)
+			npc.m_flAttackHappens = 0.0;
+		
+			if(IsValidEnemy(npc.index, target))
 			{
-				if(gameTime > npc.m_flNextMeleeAttack)
+				int HowManyEnemeisAoeMelee = 64;
+				Handle swingTrace;
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+				delete swingTrace;
+				bool PlaySound = false;
+				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 				{
-					if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0))
+					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 					{
-						npc.m_flAttackHappens = 0.0;
-						float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
-						npc.FaceTowards(VecAim, 20000.0);
-						int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-						if(IsValidEnemy(npc.index, Enemy_I_See))
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
 						{
-							npc.m_iTarget = Enemy_I_See;
-							npc.PlayRangedSound();
-							float RocketDamage = 20.0;
+							PlaySound = true;
+							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							
+							WorldSpaceCenter(targetTrace, vecHit);
+
+							float damage = 20.0;
+							damage *= 1.15;
 							if(OnMiss[npc.index])
 							{
-								RocketDamage*=1.5;
+								damage*=1.5;
 								OnMiss[npc.index]=false;
 								ExtinguishTarget(npc.m_iWearable2);
 							}
 							if(DrinkPOWERUP[npc.index])
-								RocketDamage*=1.25;
-							float RocketSpeed = 1650.0;
-							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
-							float vecDest[3];
-							vecDest = vecTarget;
-							vecDest[0] += GetRandomFloat(-30.0, 30.0);
-							vecDest[1] += GetRandomFloat(-30.0, 30.0);
-							if(!IsSpaceOccupiedWorldOnly(VecStart, view_as<float>( { -35.0, -35.0, 17.0 } ), view_as<float>( { 35.0, 35.0, 500.0 } ), npc.index))
-							{
-								float SpeedReturn[3];
+								damage*=1.25;
 
-								int RocketGet = npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling, RocketSpeed, 400.0, "critical_rocket_blue", false);
-								SetEntityGravity(RocketGet, 1.0); 	
-								ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
-								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
-								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-								SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-								SDKHook(RocketGet, SDKHook_StartTouch, Huscarls_Rocket_Particle_StartTouch);
-
-								//This will return vecTarget as the speed we need.
-							}
-							else
-							{
-								RocketSpeed *= 0.75;
-								npc.FireParticleRocket(vecTarget, RocketDamage * RaidModeScaling, RocketSpeed, 100.0, "critical_rocket_blue", false);
-							}
-							npc.m_iOverlordComboAttack --;
-						}
-					}
-				}
-				//No can shooty.
-				//Enemy is close enough.
-				if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.0))
-				{
-					if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
-					{
-						float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
-						npc.FaceTowards(VecAim, 20000.0);
-						//stand
-						return 1;
-					}
-					//cant see enemy somewhy.
-					return 0;
-				}
-				else //enemy is too far away.
-				{
-					return 0;
-				}
-			}
-			else
-			{
-				npc.m_flAttackHappens = 0.0;
-			
-				if(IsValidEnemy(npc.index, target))
-				{
-					int HowManyEnemeisAoeMelee = 64;
-					Handle swingTrace;
-					float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-					npc.FaceTowards(VecEnemy, 15000.0);
-					npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
-					delete swingTrace;
-					bool PlaySound = false;
-					for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
-					{
-						if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
-						{
-							if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
-							{
-								PlaySound = true;
-								int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
-								float vecHit[3];
-								
-								WorldSpaceCenter(targetTrace, vecHit);
-
-								float damage = 20.0;
-								damage *= 1.15;
-								if(OnMiss[npc.index])
-								{
-									damage*=1.5;
-									OnMiss[npc.index]=false;
-									ExtinguishTarget(npc.m_iWearable2);
-								}
-								if(DrinkPOWERUP[npc.index])
-									damage*=1.25;
-
-								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
-									
-								
-								// Hit particle
+							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 								
 							
-								
-								bool Knocked = false;
-											
-								if(IsValidClient(targetTrace))
+							// Hit particle
+							
+						
+							
+							bool Knocked = false;
+										
+							if(IsValidClient(targetTrace))
+							{
+								if(IsInvuln(targetTrace))
 								{
-									if(IsInvuln(targetTrace))
+									Knocked = true;
+									Custom_Knockback(npc.index, targetTrace, 300.0, true);
+									if(!NpcStats_IsEnemySilenced(npc.index))
 									{
-										Knocked = true;
-										Custom_Knockback(npc.index, targetTrace, 300.0, true);
-										if(!NpcStats_IsEnemySilenced(npc.index))
-										{
-											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
-											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
-										}
-									}
-									else
-									{
-										if(!NpcStats_IsEnemySilenced(npc.index))
-										{
-											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
-											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
-										}
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
 									}
 								}
-											
-								if(!Knocked)
-									Custom_Knockback(npc.index, targetTrace, 150.0, true); 
-							} 
-						}
+								else
+								{
+									if(!NpcStats_IsEnemySilenced(npc.index))
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
+									}
+								}
+							}
+										
+							if(!Knocked)
+								Custom_Knockback(npc.index, targetTrace, 150.0, true); 
+						} 
 					}
-					if(PlaySound)
-					{
-						npc.PlayMeleeHitSound();
-					}
+				}
+				if(PlaySound)
+				{
+					npc.PlayMeleeHitSound();
 				}
 			}
 		}
@@ -1211,30 +1138,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 	{
 		if(IsValidEnemy(npc.index, target)) 
 		{
-			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0) && npc.m_iOverlordComboAttack > 0)
-			{
-				int Enemy_I_See;
-									
-				Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					target = Enemy_I_See;
-
-					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
-					
-					float time = 0.125
-					if(NpcStats_VictorianCallToArms(npc.index))
-					{
-						time *= 0.5;
-					}
-					npc.m_flAttackHappens = gameTime + time;
-					npc.m_flNextMeleeAttack = gameTime + time;
-					npc.m_flDoingAnimation = gameTime + time;
-				}
-			}
-			else if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
 									
@@ -1267,53 +1171,4 @@ static void SuperKnockback(int entity, int victim, float damage, int weapon)
 	Huscarls npc = view_as<Huscarls>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	Custom_Knockback(npc.index, victim, 1500.0, true);
-}
-
-
-public void Huscarls_Rocket_Particle_StartTouch(int entity, int target)
-{
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
-	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsValidEntity(owner))
-		{
-			owner = 0;
-		}
-		
-		int inflictor = h_ArrowInflictorRef[entity];
-		if(inflictor != -1)
-			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
-
-		if(inflictor == -1)
-			inflictor = owner;
-			
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		float DamageDeal = fl_rocket_particle_dmg[entity];
-		if(ShouldNpcDealBonusDamage(target))
-			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
-
-
-		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
-		if (!IsInvuln(target))
-		{
-			TF2_StunPlayer(target, 0.5, 0.4, TF_STUNFLAG_SLOWDOWN);
-		}
-
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-	}
-	else
-	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		//we uhh, missed?
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-	}
-	RemoveEntity(entity);
 }
