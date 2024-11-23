@@ -609,7 +609,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
 		}
-        if(percentageArmorLeft > 0.0)
+		if(percentageArmorLeft > 0.0)
 		{
 			if(!IsValidEntity(npc.m_iWearable1))
 				npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest.mdl");
@@ -812,9 +812,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				{
 					if(Delay_Attribute[npc.index] < gameTime)
 					{
-						float ProjLoc[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-						ProjLocBase = ProjLoc;
+						float ProjLocBase[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLocBase);
 						ProjLocBase[2] += 5.0;
 						npc.PlayHomerunSound();
 						float damageDealt = 150.0 * RaidModeScaling;
@@ -895,9 +894,9 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		{
 			npc.m_flAttackHappens = 0.0;
 		
-			if(IsValidEnemy(npc.index, target))
+			if(IsValidEnemy(npc.index, target) && SUPERHIT)
 			{
-				if(SUPERHIT)
+				switch(I_cant_do_this_all_day[npc.index])
 				{
 					case 0:
 					{
@@ -915,11 +914,15 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					{
 						if(Delay_Attribute[npc.index] < gameTime)
 						{
+							HealthAfter = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+							int maxhealth = ReturnEntityMaxHealth(npc.index);
+							float ratiobefore = float(HealthBefore) / float(maxhealth);
+							float ratioafter = float(HealthAfter) / float(maxhealth);
 							float ProjLoc[3];
 							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 							ProjLocBase = ProjLoc;
 							ProjLocBase[2] += 5.0;
-							TotalRatio = ratiobefore - ratioafter;
+							TotalRatio = ratiobefore - ratioafter;// <- ??????
 							npc.m_bPathing = false;
 							npc.m_flDoingAnimation = gameTime + 0.5;
 							npc.m_bisWalking = false;
@@ -927,7 +930,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 							npc.m_iChanged_WalkCycle = 0;
 
 							float damageDealt = 150.0 * RaidModeScaling;
-							damageDealt = damageDealt * (1.0 + TotalRatio)
+							damageDealt = damageDealt * (1.0 + TotalRatio);
 							Explode_Logic_Custom(damageDealt, 0, npc.index, -1, ProjLocBase, 500.0 , 1.0, _, true, 20);
 							
 							EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
