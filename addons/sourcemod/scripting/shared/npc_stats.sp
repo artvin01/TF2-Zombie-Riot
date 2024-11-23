@@ -2176,7 +2176,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
 		this.ResetSequenceInfo();
-		this.m_iState = iSequence;
+		this.m_iAnimationState = iSequence;
 	//	int layer = this.FindGestureLayerBySequence(iSequence);
 	//	if(layer != -1)
 	//	{
@@ -2251,9 +2251,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(Is_sequence)
 		{
 			int sequence = this.LookupSequence(animation);
-			if(sequence > 0 && sequence != this.m_iState)
+			if(sequence > 0 && sequence != this.m_iAnimationState)
 			{
-				this.m_iState = sequence;
+				this.m_iAnimationState = sequence;
 				this.m_iActivity = 0;
 				
 				this.SetSequence(sequence);
@@ -2265,9 +2265,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		else
 		{
 			int activity = this.LookupActivity(animation);
-			if(activity > 0 && activity != this.m_iState)
+			if(activity > 0 && activity != this.m_iAnimationState)
 			{
-				this.m_iState = activity;
+				this.m_iAnimationState = activity;
 				this.StartActivity(activity);
 			}
 		}
