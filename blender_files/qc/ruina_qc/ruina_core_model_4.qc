@@ -68,7 +68,7 @@ $cdmaterials "models\workshop\weapons\c_models\c_invasion_bat\"
 //c_invasion_bat_laser_blue			//cyan glass
 
 $cdmaterials "models\player\items\sniper\"
-//sniper_owl_white	//its almost perfect, but has a few issues. but it will work as a replacement for glow inner
+//sniper_owl_white	//it can work as a replacement for glow inner, asuming its tiny objects.
 
 
 
