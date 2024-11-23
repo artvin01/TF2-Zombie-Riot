@@ -63,6 +63,7 @@ $cdmaterials "models\props_halloween\"
 //unlit_black		//is black
 
 $cdmaterials "models\workshop\weapons\c_models\c_invasion_bat\"
+//these ones work best on small objects
 //c_invasion_bat_laser_white.vmt	//glass like texture
 //c_invasion_bat_laser				//red glass.
 //c_invasion_bat_laser_blue			//cyan glass
