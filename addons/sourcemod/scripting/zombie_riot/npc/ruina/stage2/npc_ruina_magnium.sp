@@ -430,14 +430,14 @@ static void ClotThink(int iNPC)
 				{
 					if(fl_multi_attack_delay[npc.index] < GameTime)
 					{
-						if(i_ruina_state[npc.index] >= 1)
+						if(npc.m_iState >= 1)
 						{
-							i_ruina_state[npc.index] = 0;
+							npc.m_iState = 0;
 							npc.m_flNextMeleeAttack = GameTime + 4.0;
 						}
 						else
 						{
-							i_ruina_state[npc.index]++;
+							npc.m_iState++;
 						}
 						
 						fl_multi_attack_delay[npc.index] = GameTime + 0.3;

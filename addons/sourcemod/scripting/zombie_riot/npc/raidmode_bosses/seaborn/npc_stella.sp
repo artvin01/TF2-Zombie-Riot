@@ -271,8 +271,8 @@ methodmap Stella < CClotBody
 	}
 	property int m_iNC_Dialogue
 	{
-		public get()							{ return i_ruina_state[this.index]; }
-		public set(int TempValueForProperty) 	{ i_ruina_state[this.index] = TempValueForProperty; }
+		public get()							{ return this.m_iState; }
+		public set(int TempValueForProperty) 	{ this.m_iState = TempValueForProperty; }
 	}
 	property bool m_bMovingTowardsKarlas
 	{
@@ -368,6 +368,30 @@ methodmap Stella < CClotBody
 			}
 		}
 	}
+	property int m_iParticles1
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_particle_effects[this.index][0]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_particle_effects[this.index][0] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_particle_effects[this.index][0] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	public void Spawn_Karlas()
 	{
 		if(!IsValidEntity(this.index))
@@ -453,7 +477,35 @@ methodmap Stella < CClotBody
 			}
 		}
 	}
+	public void Set_Crest_Charging_Phase(bool activate)
+	{
+		if(IsValidEntity(this.m_iWearable9))
+			RemoveEntity(this.m_iWearable9);
+		else if(!activate)
+			return;
+		//deactivate the crest
+		if(!activate)
+		{
+			this.Set_Hand_Particle("raygun_projectile_blue_crit");
+			return;
+		}
 
+		this.Set_Hand_Particle("raygun_projectile_red_crit");	//temp, get the other one from fish
+
+		this.m_iWearable9 = this.EquipItem("head", RUINA_CUSTOM_MODELS_4);
+		SetVariantInt(RUINA_STELLA_CREST_CHARGING);
+		AcceptEntityInput(this.m_iWearable9, "SetBodyGroup");
+	}
+	public void Set_Hand_Particle(char[] Particle)
+	{
+		if(IsValidEntity(this.m_iParticles1))
+			RemoveEntity(this.m_iParticles1);
+
+		float flPos[3], flAng[3];
+
+		this.GetAttachment("effect_hand_r", flPos, flAng);
+		this.m_iParticles1 = ParticleEffectAt_Parent(flPos, Particle, this.index, "effect_hand_r", {0.0,0.0,0.0});
+	}
 	public Stella(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Stella npc = view_as<Stella>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
@@ -487,7 +539,6 @@ methodmap Stella < CClotBody
 			wave = 60 + ZR_GetWaveCount();
 		}
 		i_current_wave[npc.index] = wave;
-
 		
 		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -513,8 +564,7 @@ methodmap Stella < CClotBody
 
 		b_angered_twice[npc.index]=false;
 	
-		
-		
+
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -530,16 +580,11 @@ methodmap Stella < CClotBody
 		{
 			amount_of_people = 12.0;
 		}
-		
+	
 		amount_of_people *= 0.12;
-		
-		
-		
+
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
-
-		//EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		//EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 			
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -552,15 +597,6 @@ methodmap Stella < CClotBody
 		}
 		
 		Citizen_MiniBossSpawn();
-		
-		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
-		npc.m_bTeamGlowDefault = false;
-			
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-
-		SetVariantColor(view_as<int>({255, 255, 255, 200}));
-		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
@@ -631,13 +667,19 @@ methodmap Stella < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/Hw2013_Moon_Boots/Hw2013_Moon_Boots.mdl", _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl", _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/sum20_flatliner/sum20_flatliner.mdl", _, skin);
+		npc.m_iWearable8 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_4);
 
-		float flPos[3]; // original
-		float flAng[3]; // original
-					
-		npc.GetAttachment("effect_hand_r", flPos, flAng);
-		i_particle_effects[npc.index][0] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0}));
-		npc.GetAttachment("", flPos, flAng);
+		SetVariantInt(RUINA_STELLA_CREST);
+		AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");
+
+		npc.Set_Hand_Particle("raygun_projectile_blue_crit");
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		SetVariantColor(view_as<int>({255, 255, 255, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		npc.StartPathing();
 		float GameTime = GetGameTime(npc.index);
@@ -647,6 +689,8 @@ methodmap Stella < CClotBody
 		npc.m_bMovingTowardsKarlas = false;
 		npc.m_flNCspecialTargetTimer = 0.0;
 		npc.m_flNC_Grace = 0.0;
+
+		npc.m_flNextRangedAttack = GetGameTime() + 1.0;
 
 		
 		if(!b_test_mode[npc.index])
@@ -671,6 +715,8 @@ methodmap Stella < CClotBody
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_RANGED_NPC, true, 999, 999);	
 
 		npc.m_flDoingAnimation = 0.0;
+
+		npc.m_flMeleeArmor = 1.25;
 
 		if(b_test_mode[npc.index])
 			RaidModeTime = FAR_FUTURE;
@@ -1263,6 +1309,9 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][1]));
 		if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][2])))	//temp particles
 			RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][2]));
+
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.25;
 		
 		npc.m_bisWalking = true;
 		npc.m_flSpeed = fl_npc_basespeed;
@@ -2071,6 +2120,10 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))	
 		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))	
+		RemoveEntity(npc.m_iWearable8);
+	if(IsValidEntity(npc.m_iWearable9))	
+		RemoveEntity(npc.m_iWearable9);
 
 		//when 7 wearables isn't enough, get 3 more...
 
@@ -2124,11 +2177,11 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 		if(Grace_Time < 3.0)
 		{
 			npc.m_flNorm_Attack_In = 0.0;
+			npc.Set_Crest_Charging_Phase(false);
 			return;
 		}
 	}
 	
-
 	float Range = (npc.Anger ? 3000.0 : 1000.0);
 
 	float Attack_Speed = 3.0;	//how often she attacks.
@@ -2144,7 +2197,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 		return;
 	}
 
-	//target within range, and out laser is recharged.
+	//target within range, and our laser is recharged.
 	if(npc.m_flNextRangedAttack < GameTime)
 	{
 		if(!Is_Target_Infront(npc, 50.0))
@@ -2152,10 +2205,12 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 
 		npc.m_flNorm_Attack_In = GameTime + Attack_Delay;
 		npc.m_flNextRangedAttack = GameTime + Attack_Speed;
-		int color[4]; Ruina_Color(color);
+		/*int color[4]; Ruina_Color(color);
 		float self_Vec[3]; WorldSpaceCenter(npc.index, self_Vec);
 		TE_SetupBeamRingPoint(self_Vec, 300.0, 0.0, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Attack_Delay, 15.0, 0.1, color, 1, 0);
-		TE_SendToAll();
+		TE_SendToAll();*/
+
+		npc.Set_Crest_Charging_Phase(true);
 
 		npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 		npc.PlayMeleeSound();
@@ -2170,6 +2225,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 }
 static void Fire_Laser(Stella npc)
 {
+	
 	SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
 	SDKHook(npc.index, SDKHook_Think, Normal_Laser_Think);
 }
@@ -2190,6 +2246,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 	if(npc.m_flNorm_Attack_Duration < GameTime)
 	{
+		npc.Set_Crest_Charging_Phase(false);
 		SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
 		return Plugin_Stop;
 	}

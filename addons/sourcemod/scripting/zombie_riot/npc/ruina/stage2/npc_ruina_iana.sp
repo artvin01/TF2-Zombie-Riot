@@ -263,7 +263,7 @@ methodmap Iana < CClotBody
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 6);
 
-		i_ruina_state[npc.index] = 0;
+		npc.m_iState = 0;
 		
 		return npc;
 	}
@@ -355,10 +355,10 @@ static void ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 			{
 				int amt_ion = (npc.Anger ? 30 : 15);
-				if(i_ruina_state[npc.index] < amt_ion)
+				if(npc.m_iState < amt_ion)
 				{
 					npc.m_flNextRangedBarrage_Singular = GameTime + (npc.Anger ? 0.4 : 0.7);
-					i_ruina_state[npc.index]++;
+					npc.m_iState++;
 					float Time = (npc.Anger ? 0.6 : 1.0);
 					float Predicted_Pos[3],
 					SubjectAbsVelocity[3];
@@ -401,7 +401,7 @@ static void ClotThink(int iNPC)
 				}
 				else
 				{
-					i_ruina_state[npc.index] = 0;
+					npc.m_iState = 0;
 					npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 20.0 : 30.0);
 				}	
 			}

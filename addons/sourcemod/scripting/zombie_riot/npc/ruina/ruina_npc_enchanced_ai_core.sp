@@ -18,8 +18,6 @@ static bool b_npc_sniper_anchor_point[MAXENTITIES];
 static float fl_npc_sniper_anchor_find_timer[MAXENTITIES];
 static int i_last_sniper_anchor_id_Ref[MAXENTITIES];
 
-int i_ruina_state[MAXENTITIES];	//apparently the "m_iState" is used for animations, so I can't use it for special npc logic. :(
-
 static bool b_ruina_npc[MAXENTITIES];
 
 static int g_rocket_particle;
@@ -175,7 +173,6 @@ void Ruina_Ai_Core_Mapstart()
 	NPC_Add(data2);
 
 	Zero(b_ruina_npc);
-	Zero(i_ruina_state);
 
 	Zero(b_ruina_nerf_healing);
 	Zero(fl_master_change_timer);
@@ -252,7 +249,6 @@ void Ruina_Ai_Core_Mapstart()
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
-	i_ruina_state[client] = 0;
 	Ruina_Remove_Shield(client);
 	b_ruina_npc[client] = true;
 	b_ruina_nerf_healing[client] = false;
