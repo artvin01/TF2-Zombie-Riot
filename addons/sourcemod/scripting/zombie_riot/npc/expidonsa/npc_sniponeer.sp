@@ -109,9 +109,7 @@ methodmap Sniponeer < CClotBody
 		func_NPCDeath[npc.index] = Sniponeer_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Sniponeer_OnTakeDamage;
 		func_NPCThink[npc.index] = Sniponeer_ClotThink;
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		

@@ -125,9 +125,7 @@ methodmap VoidKunul < CClotBody
 		f_HeadshotDamageMultiNpc[npc.index] = 0.0;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 310.0;
 		

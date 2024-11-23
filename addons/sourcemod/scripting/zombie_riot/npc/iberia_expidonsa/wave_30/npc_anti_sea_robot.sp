@@ -112,9 +112,7 @@ methodmap Iberia_AntiSeaRobot < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberia_AntiSeaRobot_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Iberia_AntiSeaRobot_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 230.0;
 		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(5.0, 15.0);

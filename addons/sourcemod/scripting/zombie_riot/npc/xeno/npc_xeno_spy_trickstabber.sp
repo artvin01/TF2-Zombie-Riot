@@ -190,9 +190,7 @@ methodmap XenoSpyTrickstabber < CClotBody
 		func_NPCOnTakeDamage[npc.index] = XenoSpyTrickstabber_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoSpyTrickstabber_ClotThink;
 	
-		
-		
-		npc.m_iState = 0;
+
 		npc.m_flSpeed = 290.0;
 		npc.m_flAttackHappenswillhappen = false;
 		

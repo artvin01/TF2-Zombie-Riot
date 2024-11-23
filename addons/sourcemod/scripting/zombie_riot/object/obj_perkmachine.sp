@@ -92,9 +92,6 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Quick Revive");
 	menu2.AddItem("-3", buffer);
-					
-	FormatEx(buffer, sizeof(buffer), "%t", "No");
-	menu2.AddItem("-2", buffer);
 						
 	menu2.Display(client, MENU_TIME_FOREVER);
 	

@@ -112,9 +112,7 @@ methodmap EnegaKapus < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		fl_RangedArmor[npc.index] = 0.5;

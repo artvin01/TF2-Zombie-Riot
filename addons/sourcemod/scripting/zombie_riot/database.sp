@@ -648,6 +648,8 @@ public void Database_LocalGamedata(Database db, int userid, int numQueries, DBRe
 				CurrentAmmo[client][results[1].FetchInt(1)] = results[1].FetchInt(2);
 		}
 		
+		StarterCashMode[client] = false;
+		
 		if(IsClientInGame(client))
 		{
 			SetGlobalTransTarget(client);

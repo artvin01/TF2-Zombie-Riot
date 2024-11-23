@@ -126,9 +126,7 @@ methodmap IberiaMorato < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(IberiaMorato_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 210.0;
 		

@@ -186,7 +186,6 @@ methodmap SawRunner < CClotBody
 		
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		
-		npc.m_iState = 0;
 		npc.m_flSpeed = 200.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;

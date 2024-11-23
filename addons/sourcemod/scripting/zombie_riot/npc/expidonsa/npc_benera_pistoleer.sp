@@ -111,9 +111,7 @@ methodmap Pistoleer < CClotBody
 		func_NPCDeath[npc.index] = Pistoleer_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Pistoleer_OnTakeDamage;
 		func_NPCThink[npc.index] = Pistoleer_ClotThink;
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		

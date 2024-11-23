@@ -118,9 +118,7 @@ methodmap DesertQanaas < CClotBody
 			fl_Extra_Speed[npc.index] *= 1.2;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		if(ally != TFTeam_Red)
 		{
 			if(LastSpawnDiversio < GetGameTime())

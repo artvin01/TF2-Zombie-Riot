@@ -132,9 +132,7 @@ methodmap VoidBroodingPetra < CClotBody
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 150.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 10.0;
