@@ -98,6 +98,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/physcannon/superphys_launch4.wav",
 };
 static int i_particle_effects[MAXENTITIES][3];
+static int i_wingslot[MAXENTITIES];
 
 
 #define DONNERKRIEG_TE_DURATION 0.1
@@ -115,6 +116,7 @@ static char gExplosive1;
 static int i_ally_index[MAXENTITIES];
 static bool b_InKame[MAXENTITIES];
 static bool b_tripple_raid[MAXENTITIES];
+//static int i_statusas[MAXENTITIES];	//agh. m_iState is unreliable
 
 #define STELLA_NC_DURATION 30.0	//15.0
 #define STELLA_NC_TURNRATE 250.0
@@ -389,6 +391,30 @@ methodmap Stella < CClotBody
 			else
 			{
 				i_particle_effects[this.index][0] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iWingSlot
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_wingslot[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_wingslot[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_wingslot[this.index] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -668,9 +694,13 @@ methodmap Stella < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl", _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/sum20_flatliner/sum20_flatliner.mdl", _, skin);
 		npc.m_iWearable8 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_4);
+		//9 is used by a special item.
+		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1);
 
 		SetVariantInt(RUINA_STELLA_CREST);
 		AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");
+		SetVariantInt(WINGS_STELLA);
+		AcceptEntityInput(npc.m_iWingSlot, "SetBodyGroup");
 
 		npc.Set_Hand_Particle("raygun_projectile_blue_crit");
 
@@ -689,10 +719,11 @@ methodmap Stella < CClotBody
 		npc.m_bMovingTowardsKarlas = false;
 		npc.m_flNCspecialTargetTimer = 0.0;
 		npc.m_flNC_Grace = 0.0;
+		npc.m_bInKame = false;
 
 		npc.m_flNextRangedAttack = GetGameTime() + 1.0;
+		npc.m_flNorm_Attack_In = 0.0;
 
-		
 		if(!b_test_mode[npc.index])
 			EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
@@ -700,8 +731,6 @@ methodmap Stella < CClotBody
 			CPrintToChatAll("{aqua}Stella{snow}: We have arrived to render judgement");
 		else
 			CPrintToChatAll("{aqua}Stella{snow}: This ends now!");
-		
-		Donnerkrieg_Wings_Create(npc);
 
 		npc.Anger = false;
 		
@@ -871,12 +900,14 @@ static void Internal_ClotThink(int iNPC)
 	{
 		Handle_NC_TurnSpeed(npc);
 		npc.m_flSpeed = 0.0;
+		//CPrintToChatAll("return 2");
 		return;
 	}
 		
 
 	if(npc.m_flDoingAnimation > GameTime)
 	{
+		//CPrintToChatAll("return 1");
 		npc.m_flSpeed = 0.0;
 		return;
 	}
@@ -2092,14 +2123,8 @@ static void Internal_NPCDeath(int entity)
 
 	RaidModeTime +=50.0;
 
-
-	Donnerkrieg_Delete_Wings(npc);
-
-
 	if(EntRefToEntIndex(RaidBossActive)==npc.index)
-	{
 		RaidBossActive = INVALID_ENT_REFERENCE;
-	}
 	
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
@@ -2125,6 +2150,9 @@ static void Internal_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable9))	
 		RemoveEntity(npc.m_iWearable9);
 
+	if(IsValidEntity(npc.m_iWingSlot))	
+		RemoveEntity(npc.m_iWingSlot);
+
 		//when 7 wearables isn't enough, get 3 more...
 
 	if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][0])))	//temp particles
@@ -2144,7 +2172,7 @@ static bool Is_Target_Infront(Stella npc, float Radius)
 	
 	Ruina_Laser_Logic Laser;
 	Laser.client = npc.index;
-	float Range = (npc.Anger ? 3000.0 : 1000.0);
+	float Range = fl_Normal_Laser_Range(npc);
 	Laser.DoForwardTrace_Basic(Range);
 	Laser.Radius = Radius;
 	Laser.Detect_Entities(On_LaserHit);	//by default it only filters out enemies
@@ -2167,6 +2195,10 @@ static bool BlockTurn(Stella npc)
 	return false;
 	
 }
+static float fl_Normal_Laser_Range(Stella npc)
+{
+	return (npc.Anger ? 3000.0 : 1000.0);
+}
 static void Self_Defense(Stella npc, float flDistanceToTarget)
 {
 	float GameTime = GetGameTime(npc.index);
@@ -2182,9 +2214,9 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 		}
 	}
 	
-	float Range = (npc.Anger ? 3000.0 : 1000.0);
+	float Range = fl_Normal_Laser_Range(npc);
 
-	float Attack_Speed = 3.0;	//how often she attacks.
+	float Attack_Speed = 3.3;	//how often she attacks.
 	float Attack_Delay = 1.0;	//how long until she actually attacks
 	float Attack_Time = 0.7;	//how long the normal attack laser lasts
 
@@ -2212,7 +2244,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 
 		npc.Set_Crest_Charging_Phase(true);
 
-		npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+		npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", _ , 2.0, _, 0.28);
 		npc.PlayMeleeSound();
 	}
 
@@ -2225,7 +2257,6 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 }
 static void Fire_Laser(Stella npc)
 {
-	
 	SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
 	SDKHook(npc.index, SDKHook_Think, Normal_Laser_Think);
 }
@@ -2255,16 +2286,17 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 	bool Silence = NpcStats_IsEnemySilenced(npc.index);
 
-	float Range = (npc.Anger ? 3000.0 : 1000.0);
+	float Range = fl_Normal_Laser_Range(npc);
 	int target = i_Get_Laser_Target(npc, Range);
 	if(IsValidEnemy(npc.index, target))
 	{
-		float Bonus_Speed_Range = 250.0*250.0;
+		//times these value has been altered: 23.
+		float Bonus_Speed_Range = 270.0*270.0;
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float Self_Vec[3]; WorldSpaceCenter(npc.index, Self_Vec);
 		float Dist = GetVectorDistance(vecTarget, Self_Vec, true);
 
-		float Turn_Rate = (npc.Anger ? 0.36 : 0.18);
+		float Turn_Rate = (npc.Anger ? 0.4 : 0.2);
 		float Turn_Speed = (RUINA_FACETOWARDS_BASE_TURNSPEED*Turn_Rate);
 		
 		if(Dist <= 0.0)
@@ -2272,7 +2304,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 		if(Dist < Bonus_Speed_Range)
 		{
-			Turn_Speed*= ((1.0-(Dist/Bonus_Speed_Range))*3.5);
+			Turn_Speed*= ((1.0-(Dist/Bonus_Speed_Range))*2.25);
 		}
 
 		if(Silence)
@@ -2281,18 +2313,18 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		Turn_Rate /= TickrateModify;
 		npc.FaceTowards(vecTarget, Turn_Speed);
 	}
-		
 
 	float radius = 10.0;
 
 	Ruina_Laser_Logic Laser;
 	if(Silence)
 		Range *=0.95;
+	//unlike most ruina lasers, this one deals damage every tick.
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Basic(Range);
-	Laser.Damage = Modify_Damage(-1, 15.0)/TickrateModify;
+	Laser.Damage = Modify_Damage(-1, 8.0)/TickrateModify;
 	Laser.Radius = radius;
-	Laser.Bonus_Damage = (Modify_Damage(-1, 15.0)*6.0)/TickrateModify;
+	Laser.Bonus_Damage = (Modify_Damage(-1, 8.0)*6.0)/TickrateModify;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage();
 
@@ -2341,190 +2373,6 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
 }
-#define DONNERKRIEG_PARTICLE_EFFECT_AMT 30
-static int i_donner_particle_index[MAXENTITIES][DONNERKRIEG_PARTICLE_EFFECT_AMT];
-
-static void Donnerkrieg_Delete_Wings(Stella npc)
-{
-
-	for(int i=0 ; i < DONNERKRIEG_PARTICLE_EFFECT_AMT ; i++)
-	{
-		int particle = EntRefToEntIndex(i_donner_particle_index[npc.index][i]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		i_donner_particle_index[npc.index][i]=INVALID_ENT_REFERENCE;
-	}
-}
-
-static void Donnerkrieg_Wings_Create(Stella npc)	//I wish these wings were real, but allas, Donnerkrieg can't into space
-{
-
-	if(AtEdictLimit(EDICT_RAID))
-		return;
-
-	Donnerkrieg_Delete_Wings(npc);
-
-	int red = 185;
-	int green = 205;
-	int blue = 237;
-	float flPos[3];
-	float flAng[3];
-
-
-	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	GetAttachment(npc.index, "back_lower", flPos, flAng);
-	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
-	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
-	SetParent(npc.index, ParticleOffsetMain, "back_lower",_);
-
-
-	//Left
-
-	float core_loc[3] = {0.0, 15.0, -20.0};
-
-
-	//upper left
-
-	int particle_upper_left_core = InfoTargetParentAt(core_loc, "", 0.0);
-
-
-	
-	float start_1 = 2.0;
-	float end_1 = 0.5;
-	float amp =0.1;
-
-	/*
-		X = +Left, -Right
-		Y = -Up, +Down
-		Z = +Backwards, -Forward
-	*/
-
-	int particle_upper_left_wing_1 = InfoTargetParentAt({7.5, 0.0, -9.5}, "", 0.0);	//middle mid
-	int particle_upper_left_wing_2 = InfoTargetParentAt({20.5, 10.0, -15.0}, "", 0.0);		//middle lower
-	int particle_upper_left_wing_3 = InfoTargetParentAt({5.0, -25.0, 0.0}, "", 0.0);		//middle up	
-
-	int particle_upper_left_wing_4 = InfoTargetParentAt({50.0, -15.0, 5.0}, "", 0.0);	//side up
-	int particle_upper_left_wing_5 = InfoTargetParentAt({60.0, -10.0, 10.0}, "", 0.0);	//side mid
-	int particle_upper_left_wing_6 = InfoTargetParentAt({55.0, 0.0, 2.5}, "", 0.0);	//side low
-
-
-	SetParent(particle_upper_left_core, particle_upper_left_wing_1, "",_, true);
-	SetParent(particle_upper_left_core, particle_upper_left_wing_2, "",_, true);
-	SetParent(particle_upper_left_core, particle_upper_left_wing_3, "",_, true);
-
-	SetParent(particle_upper_left_core, particle_upper_left_wing_4, "",_, true);
-	SetParent(particle_upper_left_core, particle_upper_left_wing_5, "",_, true);
-	SetParent(particle_upper_left_core, particle_upper_left_wing_6, "",_, true);
-
-
-
-	Custom_SDKCall_SetLocalOrigin(particle_upper_left_core, flPos);
-	SetEntPropVector(particle_upper_left_core, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_upper_left_core, "",_);
-
-	//start_1 = 2.0;
-	//end_1 = 0.5;
-	//amp =0.1;
-
-	int laser_upper_left_wing_1 = ConnectWithBeamClient(particle_upper_left_wing_1, particle_upper_left_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
-	int laser_upper_left_wing_2 = ConnectWithBeamClient(particle_upper_left_wing_1, particle_upper_left_wing_3, red, green, blue, start_1, start_1, amp, LASERBEAM);
-	
-	int laser_upper_left_wing_3 = ConnectWithBeamClient(particle_upper_left_wing_5, particle_upper_left_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
-	int laser_upper_left_wing_4 = ConnectWithBeamClient(particle_upper_left_wing_5, particle_upper_left_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
-
-	int laser_upper_left_wing_5 = ConnectWithBeamClient(particle_upper_left_wing_3, particle_upper_left_wing_4, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_upper_left_wing_6 = ConnectWithBeamClient(particle_upper_left_wing_2, particle_upper_left_wing_6, red, green, blue, start_1, end_1, amp, LASERBEAM);
-
-	int laser_upper_left_wing_7 = ConnectWithBeamClient(particle_upper_left_wing_4, particle_upper_left_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
-
-
-	
-	i_donner_particle_index[npc.index][0] = EntIndexToEntRef(ParticleOffsetMain);
-	i_donner_particle_index[npc.index][1] = EntIndexToEntRef(particle_upper_left_core);
-	i_donner_particle_index[npc.index][2] = EntIndexToEntRef(laser_upper_left_wing_1);
-	i_donner_particle_index[npc.index][3] = EntIndexToEntRef(laser_upper_left_wing_2);
-	i_donner_particle_index[npc.index][4] = EntIndexToEntRef(laser_upper_left_wing_3);
-	i_donner_particle_index[npc.index][5] = EntIndexToEntRef(laser_upper_left_wing_4);
-	i_donner_particle_index[npc.index][6] = EntIndexToEntRef(laser_upper_left_wing_5);
-	i_donner_particle_index[npc.index][7] = EntIndexToEntRef(laser_upper_left_wing_6);
-	i_donner_particle_index[npc.index][8] = EntIndexToEntRef(laser_upper_left_wing_7);
-
-	i_donner_particle_index[npc.index][9] = EntIndexToEntRef(particle_upper_left_wing_1);
-	i_donner_particle_index[npc.index][10] = EntIndexToEntRef(particle_upper_left_wing_2);
-	i_donner_particle_index[npc.index][11] = EntIndexToEntRef(particle_upper_left_wing_3);
-	i_donner_particle_index[npc.index][12] = EntIndexToEntRef(particle_upper_left_wing_4);
-	i_donner_particle_index[npc.index][13] = EntIndexToEntRef(particle_upper_left_wing_5);
-	i_donner_particle_index[npc.index][14] = EntIndexToEntRef(particle_upper_left_wing_6);
-
-
-	//upper right
-
-	int particle_upper_right_core = InfoTargetParentAt(core_loc, "", 0.0);
-
-
-	/*
-		X = +Left, -Right
-		Y = -Up, +Down
-		Z = +Backwards, -Forward
-	*/
-
-	int particle_upper_right_wing_1 = InfoTargetParentAt({-7.5, 0.0, -9.5}, "", 0.0);	//middle mid
-	int particle_upper_right_wing_2 = InfoTargetParentAt({-20.5, 10.0, -15.0}, "", 0.0);		//middle lower
-	int particle_upper_right_wing_3 = InfoTargetParentAt({-5.0, -25.0, 0.0}, "", 0.0);		//middle up	
-
-	int particle_upper_right_wing_4 = InfoTargetParentAt({-50.0, -15.0, 5.0}, "", 0.0);	//side up
-	int particle_upper_right_wing_5 = InfoTargetParentAt({-60.0, -10.0, 10.0}, "", 0.0);	//side mid
-	int particle_upper_right_wing_6 = InfoTargetParentAt({-55.0, 0.0, 2.5}, "", 0.0);	//side low
-
-
-	SetParent(particle_upper_right_core, particle_upper_right_wing_1, "",_, true);
-	SetParent(particle_upper_right_core, particle_upper_right_wing_2, "",_, true);
-	SetParent(particle_upper_right_core, particle_upper_right_wing_3, "",_, true);
-
-	SetParent(particle_upper_right_core, particle_upper_right_wing_4, "",_, true);
-	SetParent(particle_upper_right_core, particle_upper_right_wing_5, "",_, true);
-	SetParent(particle_upper_right_core, particle_upper_right_wing_6, "",_, true);
-
-
-
-	Custom_SDKCall_SetLocalOrigin(particle_upper_right_core, flPos);
-	SetEntPropVector(particle_upper_right_core, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_upper_right_core, "",_);
-
-	//start_1 = 2.0;
-	//end_1 = 0.5;
-	//amp =0.1;
-
-	int laser_upper_right_wing_1 = ConnectWithBeamClient(particle_upper_right_wing_1, particle_upper_right_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
-	int laser_upper_right_wing_2 = ConnectWithBeamClient(particle_upper_right_wing_1, particle_upper_right_wing_3, red, green, blue, start_1, start_1, amp, LASERBEAM);
-	
-	int laser_upper_right_wing_3 = ConnectWithBeamClient(particle_upper_right_wing_5, particle_upper_right_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
-	int laser_upper_right_wing_4 = ConnectWithBeamClient(particle_upper_right_wing_5, particle_upper_right_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
-
-	int laser_upper_right_wing_5 = ConnectWithBeamClient(particle_upper_right_wing_3, particle_upper_right_wing_4, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_upper_right_wing_6 = ConnectWithBeamClient(particle_upper_right_wing_2, particle_upper_right_wing_6, red, green, blue, start_1, end_1, amp, LASERBEAM);
-
-	int laser_upper_right_wing_7 = ConnectWithBeamClient(particle_upper_right_wing_4, particle_upper_right_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
-
-	i_donner_particle_index[npc.index][15] = EntIndexToEntRef(particle_upper_right_core);
-	i_donner_particle_index[npc.index][16] = EntIndexToEntRef(laser_upper_right_wing_1);
-	i_donner_particle_index[npc.index][17] = EntIndexToEntRef(laser_upper_right_wing_2);
-	i_donner_particle_index[npc.index][18] = EntIndexToEntRef(laser_upper_right_wing_3);
-	i_donner_particle_index[npc.index][19] = EntIndexToEntRef(laser_upper_right_wing_4);
-	i_donner_particle_index[npc.index][20] = EntIndexToEntRef(laser_upper_right_wing_5);
-	i_donner_particle_index[npc.index][21] = EntIndexToEntRef(laser_upper_right_wing_6);
-	i_donner_particle_index[npc.index][22] = EntIndexToEntRef(laser_upper_right_wing_7);
-
-	i_donner_particle_index[npc.index][23] = EntIndexToEntRef(particle_upper_right_wing_1);
-	i_donner_particle_index[npc.index][24] = EntIndexToEntRef(particle_upper_right_wing_2);
-	i_donner_particle_index[npc.index][25] = EntIndexToEntRef(particle_upper_right_wing_3);
-	i_donner_particle_index[npc.index][26] = EntIndexToEntRef(particle_upper_right_wing_4);
-	i_donner_particle_index[npc.index][27] = EntIndexToEntRef(particle_upper_right_wing_5);
-	i_donner_particle_index[npc.index][28] = EntIndexToEntRef(particle_upper_right_wing_6);
-}
-
 static float ion_damage[MAXENTITIES];
 static void Doonerkrieg_Do_AOE_Damage(Stella npc, float loc[3], float damage, float Range, bool shake=true)
 {

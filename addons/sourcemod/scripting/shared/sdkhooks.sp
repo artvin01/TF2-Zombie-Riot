@@ -2788,7 +2788,7 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 				{
 					SetEntProp(entity, Prop_Send, "m_nBody", WINGS_FUSION);
 				}
-				case WINGS_TWIRL, WINGS_RULIANA, WINGS_LANCELOT:
+				case WINGS_TWIRL, WINGS_RULIANA, WINGS_LANCELOT, WINGS_STELLA:
 				{
 					SetEntProp(entity, Prop_Send, "m_nBody", SettingDo);
 				}
@@ -2809,7 +2809,7 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 			{
 				SetEntProp(entity, Prop_Send, "m_nBody", WINGS_FUSION);
 			}
-			case WINGS_TWIRL, WINGS_RULIANA, WINGS_LANCELOT:
+			case WINGS_TWIRL, WINGS_RULIANA, WINGS_LANCELOT, WINGS_STELLA:
 			{
 				SetEntProp(entity, Prop_Send, "m_nBody", SettingDo);
 			}

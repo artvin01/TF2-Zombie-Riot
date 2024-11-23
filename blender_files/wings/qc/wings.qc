@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/custom_wings_1.mdl"
+$modelname "zombie_riot/weapons/custom_wings_1_1.mdl"
 
 $bodygroup "fusion_wings"			//1
 {
@@ -27,6 +27,11 @@ $bodygroup "helia_wings"			//16
 {
 	blank
 	studio "helia_wings.smd"
+}
+$bodygroup "stella_wings"			//32
+{
+	blank
+	studio "stella_wings.smd"
 }
 
 

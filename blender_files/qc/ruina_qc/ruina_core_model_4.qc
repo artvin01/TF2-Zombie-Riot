@@ -32,7 +32,7 @@ $illumposition 0.096 -0.043 13.267
 
 $mostlyopaque
 
-//$cdmaterials "models\custom_weaponry\"	//ima try and make models without using custom materials, so I don't have to worry about certain materials being removed from downloads causing new players not being able to see the model's properly
+$cdmaterials "models\custom_weaponry\"
 $cdmaterials "models\weapons\w_wrench\"				
 //it has gold!		w_wrench01_gold
 

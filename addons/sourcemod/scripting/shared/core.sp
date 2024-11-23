@@ -980,14 +980,15 @@ enum
 */
 //#define ZR_TEST_MODEL	"models/zombie_riot/weapons/test_models9.mdl"
 
-#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1.mdl"
+#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_1.mdl"
 enum
 {
 	WINGS_FUSION 	= 1,
 	WINGS_LANCELOT	= 2,
 	WINGS_RULIANA	= 4,
 	WINGS_TWIRL		= 8,
-	WINGS_HELIA		= 16
+	WINGS_HELIA		= 16,
+	WINGS_STELLA	= 32
 }
 
 #define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_1.mdl"

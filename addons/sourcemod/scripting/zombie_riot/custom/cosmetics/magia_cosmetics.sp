@@ -29,6 +29,7 @@ int MagiaWingsType(int client)
 	{
 		case WEAPON_IMPACT_LANCE: type = WINGS_LANCELOT;	//time to cosplay as a lancelot.
 		case WEAPON_GRAVATON_WAND: type = WINGS_RULIANA;
+		case WEAPON_ION_BEAM_PULSE: type = WINGS_STELLA;
 	}
 	return type;
 
