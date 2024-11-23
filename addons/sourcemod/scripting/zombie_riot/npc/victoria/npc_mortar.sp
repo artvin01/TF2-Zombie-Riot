@@ -28,7 +28,7 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapon/doom_rocket_launcher.wav",
+	"weapons/doom_rocket_launcher.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {

@@ -136,7 +136,7 @@ methodmap VIctorianTanker < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		
-		npc.m_iWearable6 = npc.EquipItemSeperate("m_vecAbsOrigin", "models/buildables/sentry_shield.mdl",_,1,1.3);
+		npc.m_iWearable6 = npc.EquipItemSeperate("m_vecAbsOrigin", "models/buildables/sentry_shield.mdl",_,1,1.1);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 
 		return npc;

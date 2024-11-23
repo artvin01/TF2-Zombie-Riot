@@ -2,13 +2,21 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
-static const char g_MeleeAttackSounds[] = "mvm/giant_soldier/giant_soldier_rocket_shoot.wav";
+static const char g_MeleeAttackSounds[] = "weapons/sentry_rocket.wav";
+
+static const char g_HurtSounds[][] = {
+	"weapons/sentry_damage1.wav",
+	"weapons/sentry_damage2.wav",
+	"weapons/sentry_damage3.wav",
+	"weapons/sentry_damage4.wav",
+};
 static int NPCId;
 
 void VictorianOfflineAvangard_MapStart()
 {
 	PrecacheSound("mvm/mvm_tank_horn.wav");
 	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_MeleeAttackSounds);
 	NPCData data;
@@ -41,6 +49,16 @@ methodmap VictorianOfflineAvangard < CClotBody
 	public void PlayMeleeSound()
  	{
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);
+	}
+	public void PlayHurtSound() 
+	{
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+			
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
+		
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,110));
+		
 	}
 	
 	public VictorianOfflineAvangard(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -152,6 +170,11 @@ static void ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.m_blPlayHurtAnimation = false;
+		npc.PlayHurtSound();
+	}
 	
 	if(i_AttacksTillMegahit[iNPC] >= 255)
 	{

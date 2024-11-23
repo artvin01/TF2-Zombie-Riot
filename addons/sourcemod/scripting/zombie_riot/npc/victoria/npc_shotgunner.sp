@@ -274,8 +274,8 @@ int VictorianShotgunnerSelfDefense(VictorianShotgunner npc, float gameTime, int 
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
-					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
+					view_as<CClotBody>(npc.index).GetAttachment("effect_hand_r", origin, angles);
+					ShootLaser(npc.index, "bullet_tracer02_blue", origin, vecHit, false );
 					npc.m_flNextMeleeAttack = gameTime + 0.5;
 
 					if(IsValidEnemy(npc.index, target))

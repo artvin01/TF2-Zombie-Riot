@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
-static const char g_MeleeAttackSounds[] = "weapon/rocket_blackbox_shoot.wav";
+static const char g_MeleeAttackSounds[] = "weapons/rocket_blackbox_shoot.wav";
 
 void VictorianHumbee_MapStart()
 {
