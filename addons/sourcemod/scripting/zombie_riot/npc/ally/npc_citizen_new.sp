@@ -3919,10 +3919,20 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			case Cit_Melee:
 			{
-				npc.SetActivity("ACT_IDLE", 0.0);
+				if(!npc.m_bHero && !npc.m_bFemale)
+				{
+					npc.SetActivity("ACT_IDLE_ANGRY_MELEE", 0.0);
+					
+					if(npc.m_iWearable1 > 0)
+						AcceptEntityInput(npc.m_iWearable1, "Enable");
+				}
+				else
+				{
+					npc.SetActivity("ACT_IDLE", 0.0);
 
-				if(npc.m_iWearable1 > 0)
-					AcceptEntityInput(npc.m_iWearable1, "Enable");
+					if(npc.m_iWearable1 > 0)
+						AcceptEntityInput(npc.m_iWearable1, "Enable");
+				}
 			}
 			case Cit_SMG:
 			{
