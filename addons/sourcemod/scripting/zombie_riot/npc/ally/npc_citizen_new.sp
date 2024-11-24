@@ -3953,7 +3953,7 @@ public void Citizen_ClotThink(int iNPC)
 			}
 			default:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_ANGRY" : "ACT_IDLE", 0.0);
+				npc.SetActivity((!npc.m_bHero && combat) ? "ACT_IDLE_ANGRY" : "ACT_IDLE", 0.0);
 				
 				if(npc.m_iWearable1 > 0)
 					AcceptEntityInput(npc.m_iWearable1, "Disable");
