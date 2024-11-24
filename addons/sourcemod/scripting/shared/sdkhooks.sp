@@ -1535,18 +1535,21 @@ public void OnPostThink(int client)
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
 			}
-
-			/*
-			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t", HudBuffer,
-			"Credits_Menu_New", GlobalExtraCash + CashRecievedNonWave[client],	
-			PerkNames[i_CurrentEquippedPerk[client]]
-			);
-
-			if(Store_ActiveCanMulti(client))
+			if(b_EnableCountedDowns[client])
 			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n\n%t", HudBuffer, "Press Button To Switch");
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+				"Downs left", downsleft
+				);
 			}
-			*/
+			if(b_EnableRightSideAmmoboxCount[client])
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+				"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
+				);
+			}
+
+			
+			
 		}
 		else if (TeutonType[client] == TEUTON_DEAD)
 		{
