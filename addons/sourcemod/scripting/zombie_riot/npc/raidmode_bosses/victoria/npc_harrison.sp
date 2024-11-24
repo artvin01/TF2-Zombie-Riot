@@ -112,12 +112,12 @@ static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 static bool SUPERHIT[MAXENTITIES];
 
-void Atomizer_OnMapStart_NPC()
+void Harrison_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Atomizer");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_atomizer");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_atomizer_raid");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Harrison");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Harrison");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_Harrison_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -147,12 +147,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Atomizer(client, vecPos, vecAng, ally, data);
+	return Harrison(client, vecPos, vecAng, ally, data);
 }
 
-static int i_atomizer_eye_particle[MAXENTITIES];
+static int i_Harrison_eye_particle[MAXENTITIES];
 
-methodmap Atomizer < CClotBody
+methodmap Harrison < CClotBody
 {
 	property int i_GunMode
 	{
@@ -163,6 +163,11 @@ methodmap Atomizer < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float f_HarrisonRailgunDelay
+	{
+		public get()							{ return fl_NextRangedBarrage_Singular[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextRangedBarrage_Singular[this.index] = TempValueForProperty; }
 	}
 	public void NiceCatchKnucklehead() {
 	
@@ -244,9 +249,9 @@ methodmap Atomizer < CClotBody
 		//EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Harrison(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Atomizer npc = view_as<Atomizer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		Harrison npc = view_as<Harrison>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -281,6 +286,7 @@ methodmap Atomizer < CClotBody
 		SUPERHIT[npc.index] = false;
 		NiceMiss[npc.index] = 0.0;
         npc.m_flHarrisonRocketShotHappening = 0.0;
+		f_HarrisonRailgunDelay = 0.0;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
@@ -405,7 +411,7 @@ methodmap Atomizer < CClotBody
 
 static void Internal_ClotThink(int iNPC)
 {
-	Atomizer npc = view_as<Atomizer>(iNPC);
+	Harrison npc = view_as<Harrison>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 	{
@@ -419,7 +425,7 @@ static void Internal_ClotThink(int iNPC)
 		float flPos[3], flAng[3];
 				
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		i_atomizer_eye_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
+		i_Harrison_eye_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
 	}	
@@ -440,15 +446,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Atomizer{default}: Ready to die?");
+					CPrintToChatAll("{blue}Harrison{default}: Ready to die?");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Atomizer{default}: You can't run forever.");
+					CPrintToChatAll("{blue}Harrison{default}: You can't run forever.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Atomizer{default}: All of your comrades are fallen.");
+					CPrintToChatAll("{blue}Harrison{default}: All of your comrades are fallen.");
 				}
 			}
 		}
@@ -599,7 +605,7 @@ static void Internal_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = AtomizerSelfDefense(npc,gameTime, npc.m_iTarget, flDistanceToTarget); 
+		SetGoalVectorIndex = HarrisonSelfDefense(npc,gameTime, npc.m_iTarget, flDistanceToTarget); 
 
 		switch(SetGoalVectorIndex)
 		{
@@ -635,14 +641,14 @@ static void Internal_ClotThink(int iNPC)
 
 	if(npc.m_flDoingAnimation < gameTime)
 	{
-		AtomizerAnimationChange(npc);
+		HarrisonAnimationChange(npc);
 	}
 	npc.PlayIdleAlertSound();
 }
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Atomizer npc = view_as<Atomizer>(victim);
+	Harrison npc = view_as<Harrison>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -700,7 +706,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 static void Internal_NPCDeath(int entity)
 {
-	Atomizer npc = view_as<Atomizer>(entity);
+	Harrison npc = view_as<Harrison>(entity);
 	/*
 		Explode on death code here please
 
@@ -729,11 +735,11 @@ static void Internal_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-	int particle = EntRefToEntIndex(i_atomizer_eye_particle[npc.index]);
+	int particle = EntRefToEntIndex(i_Harrison_eye_particle[npc.index]);
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);
-		i_atomizer_eye_particle[npc.index]=INVALID_ENT_REFERENCE;
+		i_Harrison_eye_particle[npc.index]=INVALID_ENT_REFERENCE;
 	}
 	
 	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
@@ -749,21 +755,21 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{blue}Atomizer{default}: Ugh, I need backup");
+			CPrintToChatAll("{blue}Harrison{default}: Ugh, I need backup");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{blue}Atomizer{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
+			CPrintToChatAll("{blue}Harrison{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{blue}Atomizer{default}: You intruders will soon face the {crimson}Real Deal.{default}");
+			CPrintToChatAll("{blue}Harrison{default}: You intruders will soon face the {crimson}Real Deal.{default}");
 		}
 	}
 
 }
 
-void AtomizerAnimationChange(Atomizer npc)
+void HarrisonAnimationChange(Harrison npc)
 {
 	
 	if(npc.m_iChanged_WalkCycle == 0)
@@ -778,7 +784,7 @@ void AtomizerAnimationChange(Atomizer npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
-				// ResetAtomizerWeapon(npc, 1);
+				// ResetHarrisonWeapon(npc, 1);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
@@ -789,7 +795,7 @@ void AtomizerAnimationChange(Atomizer npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-				//	ResetAtomizerWeapon(npc, 1);
+				//	ResetHarrisonWeapon(npc, 1);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_PRIMARY");
@@ -803,7 +809,7 @@ void AtomizerAnimationChange(Atomizer npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-				//	ResetAtomizerWeapon(npc, 0);
+				//	ResetHarrisonWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -814,7 +820,7 @@ void AtomizerAnimationChange(Atomizer npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-				//	ResetAtomizerWeapon(npc, 0);
+				//	ResetHarrisonWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
@@ -826,7 +832,7 @@ void AtomizerAnimationChange(Atomizer npc)
 
 }
 
-int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance)
+int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance)
 {
 	npc.i_GunMode = 0;
 
@@ -910,43 +916,32 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 		GetClosestEnemyToAttack = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);
 		float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
-		{	
-			if(gameTime > npc.m_flNextMeleeAttack)
-			{
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
-				{	
-
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
-					npc.PlayMeleeSound();
-					//after we fire, we will have a short delay beteween the actual laser, and when it happens
-					//This will predict as its relatively easy to dodge
-					float projectile_speed = 1200.0;
-					//lets pretend we have a projectile.
-					PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-					{
-						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
-					}
-
-					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-					HarrisonInitiateLaserAttack(npc.index, vecTarget, WorldSpaceVec);
-					npc.FaceTowards(vecTarget, 20000.0);
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.5;
-				}
-			}
-		}
-		else
+		int repeat = 5;
+		if(IsValidEntity(npc.m_iWearable8))
 		{
-			if(npc.m_iChanged_WalkCycle != 4)
+			RemoveEntity(npc.m_iWearable8);
+		}
+		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+		for(int i; i<repeat; i++)
+		{
+			if(npc.f_HarrisonRailgunDelay < gameTime)
 			{
-				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_MP_RUN_PRIMARY");
-				npc.m_flSpeed = 330.0;
-				npc.StartPathing();
+				npc.AddGesture("ACT_MP_THROW", false);
+				npc.PlayMeleeSound();
+				//after we fire, we will have a short delay beteween the actual laser, and when it happens
+				//This will predict as its relatively easy to dodge
+				float projectile_speed = 1200.0;
+				//lets pretend we have a projectile.
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
+				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
+				{
+					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
+				}
+
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				HarrisonInitiateLaserAttack(npc.index, vecTarget, WorldSpaceVec);
+				npc.FaceTowards(vecTarget, 20000.0);
+				npc.f_HarrisonRailgunDelay = gameTime + 0.5;
 			}
 		}
 	}
@@ -1000,7 +995,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 									SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 									TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 									SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-									SDKHook(RocketGet, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
+									SDKHook(RocketGet, SDKHook_StartTouch, Harrison_Rocket_Particle_StartTouch);
 									npc.m_iOverlordComboAttack-=1;
 								}
 								else break;
@@ -1163,63 +1158,13 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 	return 0;
 }
 
-static void SuperAttack(int entity, int victim, float damage, int weapon)
-{
-	Atomizer npc = view_as<Atomizer>(entity);
-	if(IsValidEntity(victim))
-	{
-		float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-		Custom_Knockback(npc.index, victim, DrinkPOWERUP[npc.index] ? 2200.0 : 1980.0, true, true, true);
-		SUPERHIT[npc.index]=true;
-	}
-}
-
-static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
-{
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
-	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsValidEntity(owner))
-		{
-			owner = 0;
-		}
-		
-		int inflictor = h_ArrowInflictorRef[entity];
-		if(inflictor != -1)
-			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
-
-		if(inflictor == -1)
-			inflictor = owner;
-			
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		float DamageDeal = fl_rocket_particle_dmg[entity];
-		if(ShouldNpcDealBonusDamage(target))
-			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
-
-		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
-		if (!IsInvuln(target))
-		{
-			TF2_StunPlayer(target, 1.0, 0.4, TF_STUNFLAG_SLOWDOWN);
-		}
-
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-	}
-	RemoveEntity(entity);
-	return Plugin_Handled;
-}
-
-bool NemalSnipingShots(Nemal npc)
+bool HarrisonSnipingShots(Harrison npc)
 {
 	if(npc.m_flHarrisonRocketShotHappening)
 	{
 		
 		//at max 15 targets, anything above that is unneccecary.
-		//we dont support more then 1 nemal at a time.
+		//we dont support more then 1 Harrison at a time.
 		//This is due to just the array being way too big.
 		static float SnipeTargets[MAXENTITIES][3];  
 		if(npc.m_flAttackHappens)
@@ -1237,7 +1182,7 @@ bool NemalSnipingShots(Nemal npc)
 				GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable8);
 				for(int i; i < sizeof(enemy_2); i++)
 				{
-					if(enemy_2[i] && NemalAntiLaserDo[enemy_2[i]] < GetGameTime())
+					if(enemy_2[i] && HarrisonAntiLaserDo[enemy_2[i]] < GetGameTime())
 					{
 						int ememyTarget = enemy_2[i];
 						WorldSpaceCenter(ememyTarget, PosEnemy);
@@ -1248,10 +1193,10 @@ bool NemalSnipingShots(Nemal npc)
 				}
 			}
 			bool DoLaserShow = false;
-			if(npc.m_flNemalSniperShotsLaserThrottle < GetGameTime())
+			if(npc.m_flHarrisonSniperShotsLaserThrottle < GetGameTime())
 			{
 				DoLaserShow = true;
-				npc.m_flNemalSniperShotsLaserThrottle = GetGameTime() + 0.1;
+				npc.m_flHarrisonSniperShotsLaserThrottle = GetGameTime() + 0.1;
 			}
 			for(int Loop = 1; Loop < MAXENTITIES; Loop ++)
 			{
@@ -1315,7 +1260,7 @@ bool NemalSnipingShots(Nemal npc)
 				}
 				if(PlaySound)
 				{
-					npc.PlayShootSoundNemalSnipe();
+					npc.PlayShootSoundHarrisonSnipe();
 				}
 				npc.m_flAttackHappens = GetGameTime(npc.index) + 1.0;
 				Zero2(SnipeTargets);//rest all!
