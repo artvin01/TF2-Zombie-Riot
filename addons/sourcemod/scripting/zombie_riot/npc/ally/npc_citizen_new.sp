@@ -3919,21 +3919,10 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			case Cit_Melee:
 			{
-				// TODO: Barney has an issue with ACT_IDLE_SUITCASE, same with Rebels?
-				if(combat/* || !npc.m_bBarney*/)
-				{
-					npc.SetActivity(combat ? "ACT_IDLE_ANGRY_MELEE" : "ACT_IDLE_SUITCASE", 0.0);
-					
-					if(npc.m_iWearable1 > 0)
-						AcceptEntityInput(npc.m_iWearable1, "Enable");
-				}
-				else
-				{
-					npc.SetActivity("ACT_IDLE", 0.0);
+				npc.SetActivity("ACT_IDLE", 0.0);
 
-					if(npc.m_iWearable1 > 0)
-						AcceptEntityInput(npc.m_iWearable1, "Enable");
-				}
+				if(npc.m_iWearable1 > 0)
+					AcceptEntityInput(npc.m_iWearable1, "Enable");
 			}
 			case Cit_SMG:
 			{
