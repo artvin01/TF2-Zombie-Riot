@@ -2300,7 +2300,7 @@ public void Citizen_ClotThink(int iNPC)
 	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.04 * 0.01, 0.5, 0.0, HEAL_SELFHEAL);
 
 	bool noSafety = (npc.m_bCamo || VIPBuilding_Active());
-	bool autoSeek = (noSafety || npc.m_bRebelAgressive || RaidbossIgnoreBuildingsLogic(1));
+	bool autoSeek = (noSafety || npc.m_bRebelAgressive/* || RaidbossIgnoreBuildingsLogic(1)*/);
 
 	// See if our target is still valid
 	int target = npc.m_iTarget;
@@ -3804,7 +3804,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				case Cit_Melee:
 				{
-					npc.SetActivity("ACT_WALK_SUITCASE", 90.0);
+					npc.SetActivity("ACT_WALK", 90.0);
 					
 					if(npc.m_iWearable1 > 0)
 						AcceptEntityInput(npc.m_iWearable1, "Enable");
@@ -4257,7 +4257,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			
 			if(npc.m_iGunType == Cit_Melee)
 			{
-				damage *= 0.8;
+				damage *= 0.7;
 
 				if(damagetype & (DMG_CLUB|DMG_SLASH))
 				{
