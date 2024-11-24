@@ -3888,4 +3888,120 @@
 	{
 		"en"	"Enable Ammobox Count Perma"
 	}
+	"DPS Class"
+	{
+		"en"	"DPS Class\nFocus on damage and get Speed Cola perk"
+	}
+	"Tank Class"
+	{
+		"en"	"Tank Class\nFocus on tanking and get Juggernog perk"
+	}
+	"Healer Class"
+	{
+		"en"	"Healer Class\nAble to heal, less DPS, and get Quick Revive perk"
+	}
+	"Builder Class"
+	{
+		"en"	"Builder Class\nAble to build, repair, and get Double Tap perk"
+	}
+	"Don't Follow Me"
+	{
+		"en"	"Don't Follow Me"
+	}
+	"Switch Class"
+	{
+		"en"	"Switch Class"
+	}
+	"Switch Weapons"
+	{
+		"en"	"Switch Weapons"
+	}
+	"Weapon Preference"
+	{
+		"en"	"Your Preference"
+	}
+	"Preference Alyx"
+	{
+		"en"	"I'll just stick with my gun thanks.\nAnd don't worry, I'll patch you up whenever I can."
+	}
+	"Preference Barney"
+	{
+		"en"	"Well I like anything I can get my hands on.\nDon't need to tell me what to get, I'll use it."
+	}
+	"Preference Normal"
+	{
+		"en"	"Just standard weapons, nothing special."
+	}
+	"Preference Speed"
+	{
+		"en"	"I like wepaons with a little more fire rate."
+	}
+	"Preference Heavy"
+	{
+		"en"	"I like wepaons with a little more damage per shot."
+	}
+	"Preference No Clip"
+	{
+		"en"	"I like ranged weapons without needing to reload."
+	}
+	"Preference Super Speed"
+	{
+		"en"	"I really like weapons with alot of attack speed."
+	}
+	"Preference Super Heavy"
+	{
+		"en"	"I really like weapons that can nuke at once."
+	}
+	"Build Healing Station At Me"
+	{
+		"en"	"Build Healing Station At Me"
+	}
+	"Build Barricade At Me"
+	{
+		"en"	"Build Barricade At Me"
+	}
+	"Build Sentry At Me"
+	{
+		"en"	"Build Sentry At Me"
+	}
+	"Build Ammo Box At Me"
+	{
+		"en"	"Build Ammo Box At Me"
+	}
+	"Build Armor Table At Me"
+	{
+		"en"	"Build Armor Table At Me"
+	}
+	"Build Perk Machine At Me"
+	{
+		"en"	"Build Perk Machine At Me"
+	}
+	"Build Pack-a-Punch At Me"
+	{
+		"en"	"Build Pack-a-Punch At Me"
+	}
+	"Pistol"
+	{
+		"en"	"Pistol"
+	}
+	"SMG"
+	{
+		"en"	"SMG"
+	}
+	"AR2"
+	{
+		"en"	"AR2"
+	}
+	"Shotgun"
+	{
+		"en"	"Shotgun"
+	}
+	"RPG"
+	{
+		"en"	"RPG"
+	}
+	"Crowbar"
+	{
+		"en"	"Crowbar"
+	}
 }

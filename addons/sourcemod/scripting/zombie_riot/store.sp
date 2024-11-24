@@ -547,7 +547,7 @@ static const char AmmoNames[][] =
 static ArrayList StoreItems;
 static int NPCOnly[MAXTF2PLAYERS];
 static int NPCCash[MAXTF2PLAYERS];
-static int NPCTarget[MAXTF2PLAYERS];
+//static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
 static KeyValues StoreBalanceLog;
 static ArrayList StoreTags;
@@ -644,7 +644,7 @@ void Store_WeaponSwitch(int client, int weapon)
 		}
 	}
 }
-
+/*
 bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 {
 	if(StoreItems)
@@ -691,7 +691,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		}
 	}
 	return false;
-}
+}*/
 
 stock bool Store_ActiveCanMulti(int client)
 {
@@ -1403,6 +1403,7 @@ void Store_Reset()
 	
 	for(int c; c<MAXTF2PLAYERS; c++)
 	{
+		StarterCashMode[c] = true;
 		CashSpent[c] = 0;
 		CashSpentTotal[c] = 0;
 	}
@@ -2751,7 +2752,7 @@ void Store_OpenNPCStore(int client)
 		MenuPage(client, -1);
 	}
 }
-
+/*
 void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 {
 	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
@@ -2762,7 +2763,7 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 		LastMenuPage[client] = 0;
 		MenuPage(client, -1);
 	}
-}
+}*/
 
 static void MenuPage(int client, int section)
 {
@@ -4044,7 +4045,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						DoTutorialStep(client, false);	
 					}
 			
-					if(NPCOnly[client] == 2 || NPCOnly[client] == 3)	// Buy Rebel Weapon
+					/*if(NPCOnly[client] == 2 || NPCOnly[client] == 3)	// Buy Rebel Weapon
 					{
 						item.GetItemInfo(0, info);
 						
@@ -4098,7 +4099,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							}
 						}
 					}
-					else
+					else*/
 					{
 						int level = item.Owned[client]-1;
 						if(item.ParentKit || level < 0)

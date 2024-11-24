@@ -3871,7 +3871,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return true;
 
 				//interacting with citizens shouldnt invalidate clicking, it makes battle hard.
-				if(!PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
+				if(Is_Reload_Button && !PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
 					return false;
 
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))

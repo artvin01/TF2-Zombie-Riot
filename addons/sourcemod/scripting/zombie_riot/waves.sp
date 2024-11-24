@@ -1489,6 +1489,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			
+			Citizen_WaveStart();
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
@@ -3163,6 +3164,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		
 		RaidMusicSpecial1.Clear();
 		
+		Citizen_WaveStart();
 		ExcuteRelay("zr_wavedone");
 		CurrentRound++;
 		CurrentWave = -1;

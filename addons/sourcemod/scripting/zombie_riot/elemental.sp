@@ -49,6 +49,17 @@ stock bool Elemental_HasDamage(int entity)
 	return false;
 }
 
+stock bool Elemental_GoingCritical(int entity)
+{
+	for(int i; i < Element_MAX; i++)
+	{
+		if((ElementDamage[entity][i] * 5 / 4) > TriggerDamage(entity, i))
+			return true;
+	}
+	
+	return false;
+}
+
 stock void Elemental_RemoveDamage(int entity, int amount)
 {
 	for(int i; i < Element_MAX; i++)

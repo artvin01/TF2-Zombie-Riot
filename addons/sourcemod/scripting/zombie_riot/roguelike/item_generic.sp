@@ -302,7 +302,7 @@ public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +3% damage bonus
-			npc.m_fGunRangeBonus *= 1.03;
+			npc.m_fGunBonusDamage *= 1.03;
 		}
 		else
 		{
@@ -417,7 +417,7 @@ public void Rogue_Item_ScrappedWallet_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +1% damage bonus
-			npc.m_fGunRangeBonus *= 1.01;
+			npc.m_fGunBonusDamage *= 1.01;
 		}
 		else
 		{
@@ -532,7 +532,7 @@ public void Rogue_Item_GenericDamage5_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +5% damage bonus
-			npc.m_fGunRangeBonus *= 1.05;
+			npc.m_fGunBonusDamage *= 1.05;
 		}
 		else
 		{
@@ -581,7 +581,7 @@ public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +10% damage bonus
-			npc.m_fGunRangeBonus *= 1.1;
+			npc.m_fGunBonusDamage *= 1.1;
 		}
 		else
 		{
