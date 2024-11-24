@@ -3847,7 +3847,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				// Check if the enemy is too close to me
 				WorldSpaceCenter(target, vecTarget);
-				if(GetVectorDistance(vecMe, vecTarget, true) > 100000.0)
+				if(GetVectorDistance(vecMe, vecTarget, true) > 80000.0)
 				{
 					// Check if the enemy is too close to our ally
 					WorldSpaceCenter(ally, vecMe);
@@ -3861,7 +3861,7 @@ public void Citizen_ClotThink(int iNPC)
 
 			if(!found)
 			{
-				BackoffFromOwnPositionAndAwayFromEnemy(npc, target, _, vecTarget);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, target, 300.0, vecTarget);
 				NPC_SetGoalVector(npc.index, vecTarget);
 			}
 			
