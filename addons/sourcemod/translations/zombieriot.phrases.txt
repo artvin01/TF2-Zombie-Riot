@@ -3880,4 +3880,12 @@
 	{
 		"en"	"Disable Ambient Music"
 	}
+	"Enable Visible Downs"
+	{
+		"en"	"Enable Visible Downs"
+	}
+	"Enable Ammobox Count Perma"
+	{
+		"en"	"Enable Ammobox Count Perma"
+	}
 }

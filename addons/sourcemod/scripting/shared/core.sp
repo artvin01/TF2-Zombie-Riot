@@ -372,6 +372,8 @@ TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool b_IgnoreMapMusic[MAXTF2PLAYERS];
 bool b_DisableDynamicMusic[MAXTF2PLAYERS];
+bool b_EnableRightSideAmmoboxCount[MAXTF2PLAYERS];
+bool b_EnableCountedDowns[MAXTF2PLAYERS];
 int i_CustomModelOverrideIndex[MAXTF2PLAYERS];
 int FogEntity = INVALID_ENT_REFERENCE;
 int PlayerPoints[MAXTF2PLAYERS];
