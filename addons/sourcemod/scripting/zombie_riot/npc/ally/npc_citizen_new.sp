@@ -3861,8 +3861,8 @@ public void Citizen_ClotThink(int iNPC)
 
 			if(!found)
 			{
-				BackoffFromOwnPositionAndAwayFromEnemy(npc, target, 300.0, vecTarget);
-				NPC_SetGoalVector(npc.index, vecTarget);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, target, _, vecTarget);
+				NPC_SetGoalVector(npc.index, vecTarget, true);
 			}
 			
 			npc.StartPathing();
