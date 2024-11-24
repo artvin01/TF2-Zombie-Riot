@@ -1953,6 +1953,8 @@ void Citizen_SetRandomRole(int entity)
 	else if(shortCount < longCount)
 	{
 		type = (npc.m_iSeed % 8) > 2 ? Cit_SMG : Cit_Shotgun;
+		if((npc.m_iSeed % 8) == 0)
+			type = Cit_Melee;
 	}
 	else
 	{
