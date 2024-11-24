@@ -2936,6 +2936,15 @@ public void Citizen_ClotThink(int iNPC)
 							{
 								if(Building_AttemptPlace(entity, npc.index))
 								{
+									if(id == 9)
+									{
+										for(int client = 1; client <= MaxClients; client++)
+										{
+											if(IsClientInGame(client))
+												ApplyBuildingCollectCooldown(entity, client, 30.0);
+										}
+									}
+
 									if(npc.m_iCanBuild)
 									{
 										npc.m_iCanBuild = 0;
