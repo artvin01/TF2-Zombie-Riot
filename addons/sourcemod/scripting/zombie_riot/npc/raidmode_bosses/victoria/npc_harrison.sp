@@ -938,8 +938,13 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
 				}
 
-				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-				HarrisonInitiateLaserAttack(npc.index, vecTarget, WorldSpaceVec);
+				float pos_npc[3];
+				float angles[3];
+				WorldSpaceCenter(npc.index, pos_npc);
+				npc.GetAttachment("effect_hand_r", pos_npc, angles);
+
+				WorldSpaceCenter(npc.index, pos_npc);
+				HarrisonInitiateLaserAttack(npc.index, vecTarget, pos_npc);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.f_HarrisonRailgunDelay = gameTime + 0.5;
 			}
@@ -1323,12 +1328,12 @@ void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float Vector
 	}
 	delete trace;
 
-	int red = 200;
-	int green = 200;
+	int red = 100;
+	int green = 150;
 	int blue = 255;
 	int colorLayer4[4];
 	float diameter = float(10 * 4);
-	SetColorRGBA(colorLayer4, red, green, blue, 100);
+	SetColorRGBA(colorLayer4, red, green, blue, 200);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
 	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
@@ -1375,8 +1380,8 @@ void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	VectorStart[2] = pack.ReadFloat();
 
 	int red = 100;
-	int green = 25;
-	int blue = 255;
+	int green = 255;
+	int blue = 100;
 	int colorLayer4[4];
 	float diameter = float(10 * 4);
 	SetColorRGBA(colorLayer4, red, green, blue, 100);
@@ -1403,9 +1408,9 @@ void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 75.0;
-	float FarDamage = 50.0;
-	float MaxDistance = 125.0;
+	float CloseDamage = 300.0;
+	float FarDamage = 150.0;
+	float MaxDistance = 1500.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
@@ -1417,11 +1422,7 @@ void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 			if (damage < 0)
 				damage *= -1.0;
 
-			
-			if(ShouldNpcDealBonusDamage(victim))
-				damage *= 3.0;
-
-			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(victim, entity, entity, damage * RaidModeScaling, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 				
 		}
 	}
