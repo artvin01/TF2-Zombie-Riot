@@ -1599,6 +1599,8 @@ static void CitizenMenu(int client, int page = 0)
 	if(npc.index == -1)
 		return;
 	
+	SetGlobalTransTarget(client);
+
 	char buffer[64];
 
 	Menu menu = new Menu(CitizenMenuH);
@@ -2792,7 +2794,7 @@ public void Citizen_ClotThink(int iNPC)
 		WorldSpaceCenter(ally, vecTarget);
 
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
-		if(distance < 20000.0)
+		if(distance < 10000.0)
 		{
 			npc.FaceTowards(vecTarget, 10000.0);
 
