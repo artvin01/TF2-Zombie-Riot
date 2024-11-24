@@ -311,7 +311,7 @@ methodmap Ruliana < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		fl_npc_basespeed = 290.0;
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -438,15 +438,11 @@ static void ClotThink(int iNPC)
 		{
 			Ruina_Master_Rally(npc.index, true);
 
-			if(npc.m_flDoingAnimation < GameTime && !LastMann)	//so allies can actually keep up
+			if(npc.m_flDoingAnimation < GameTime)
 			{
 				npc.m_flDoingAnimation = GameTime + 1.0;
-				if(Ratio < 0.1)
-					Master_Apply_Speed_Buff(npc.index, 25000.0, 0.75, 3.0);
-				else
-					Master_Apply_Speed_Buff(npc.index, 25000.0, 0.75, 1.75);
 
-				Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.9);	//10% dmg resist
+				Master_Apply_Defense_Buff(npc.index, 150.0, 5.0, 0.9);	//10% dmg resist
 			}
 		}
 		else
@@ -997,7 +993,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			b_angered_once[npc.index] = true;
 			npc.PlayAngerSound();
 
-			fl_npc_basespeed = 330.0;
+			fl_npc_basespeed = 270.0;
 			
 			if(npc.m_bThisNpcIsABoss)
 			{

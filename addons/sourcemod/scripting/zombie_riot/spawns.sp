@@ -114,7 +114,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
 		{
 			SpawnerList.Erase(i);
-			i--;
+			i--; //we try again.
 			length--;
 			continue;
 		}
@@ -123,6 +123,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
 				continue;
 			
+			/*
 			if(spawn.MaxWavesAllowed != 999)
 			{
 				//999 means its a perma spawn or a boss spawn, whatever it may be.
@@ -130,17 +131,13 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				int WavesLeft = ZR_GetWaveCount() - spawn.WaveCreatedIn;
 				if(WavesLeft >= WavesAllow)
 				{
-					//Delete the spawner, we dont allow spawners that exeed their max duration.
-					/*
-					//This somehow causes SPAWN FAILED ()
 					SpawnerList.Erase(i);
-					i--;
+					i--; //we try again.
 					length--;
-					*/
-					//EDIT:looks like deleting it is bad.
 					continue;
 				}
 			}
+			*/
 			nonBossSpawners++;
 		}
 		
@@ -162,7 +159,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
 			{
 				SpawnerList.Erase(i);
-				i--;
+				i--; //we try again.
 				length--;
 				continue;
 			}
@@ -172,10 +169,23 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
 					continue;
 
+				if(spawn.MaxWavesAllowed != 999)
+				{
+					//999 means its a perma spawn or a boss spawn, whatever it may be.
+					int WavesAllow = spawn.MaxWavesAllowed;
+					int WavesLeft = ZR_GetWaveCount() - spawn.WaveCreatedIn;
+					if(WavesLeft >= WavesAllow)
+					{
+						SpawnerList.Erase(i);
+						i--; //we try again.
+						length--;
+						continue;
+					}
+				}
 				nonBossSpawners++;
 			}
 			
-			if(bestIndex == -1 || (spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
+			if(/*bestIndex == -1 || */(spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
 			{
 				bestIndex = i;
 				bestPoints = spawn.Points;
