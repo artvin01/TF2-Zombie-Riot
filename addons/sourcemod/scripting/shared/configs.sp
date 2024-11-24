@@ -538,7 +538,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 #endif	// Non-RTS
 
 #if defined ZR
-bool Config_CreateNPCStats(const char[] classname, const int[] attrib, const float[] value, int attribs, WeaponData data)
+stock bool Config_CreateNPCStats(const char[] classname, const int[] attrib, const float[] value, int attribs, WeaponData data)
 {
 	int i;
 	int val = WeaponList.Length;
