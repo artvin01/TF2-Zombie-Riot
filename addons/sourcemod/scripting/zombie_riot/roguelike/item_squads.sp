@@ -54,7 +54,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +15% damage bonus
-			npc.m_fGunRangeBonus *= 1.15;
+			npc.m_fGunBonusDamage *= 1.15;
 
 			// +50 max health
 			int health = ReturnEntityMaxHealth(npc.index) + 50;
