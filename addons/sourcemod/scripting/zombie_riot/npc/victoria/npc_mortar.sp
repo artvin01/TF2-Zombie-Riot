@@ -316,7 +316,7 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 100.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 125.0))
 		{
 			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
 			npc.FaceTowards(VecAim, 20000.0);

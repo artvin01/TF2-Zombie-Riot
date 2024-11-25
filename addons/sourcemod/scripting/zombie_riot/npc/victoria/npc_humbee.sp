@@ -144,42 +144,45 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
-		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
-		
-		if(distance < npc.GetLeadRadius())
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
-		}
-		else 
-		{
-			NPC_SetGoalEntity(npc.index, target);
-		}
-
-		npc.StartPathing();
-		
-		if(npc.m_flNextMeleeAttack < gameTime)
-		{
-
-			float damageDeal = 35.0;
-			float ProjectileSpeed = 600.0;
-
-			if(NpcStats_VictorianCallToArms(npc.index))
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
+			
+			if(distance < npc.GetLeadRadius())
 			{
-				ProjectileSpeed *= 1.5;
+				float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				NPC_SetGoalEntity(npc.index, target);
 			}
 
-			npc.PlayMeleeSound();
-
-			int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,7.5);
-			if(entity != -1)
+			npc.StartPathing();
+			
+			if(npc.m_flNextMeleeAttack < gameTime)
 			{
-				//max duration of 4 seconds beacuse of simply how fast they fire
-				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+
+				float damageDeal = 35.0;
+				float ProjectileSpeed = 600.0;
+
+				if(NpcStats_VictorianCallToArms(npc.index))
+				{
+					ProjectileSpeed *= 1.5;
+				}
+
+				npc.PlayMeleeSound();
+
+				int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,7.5);
+				if(entity != -1)
+				{
+					//max duration of 4 seconds beacuse of simply how fast they fire
+					CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+				}
+				npc.m_flNextMeleeAttack = gameTime + 1.50;
 			}
-			npc.m_flNextMeleeAttack = gameTime + 1.50;
 		}
 	}
 	else
