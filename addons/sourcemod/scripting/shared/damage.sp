@@ -2073,6 +2073,14 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%sM", Debuff_Adder_left);
 	}
+	if(Victoria_Support_RechargeTime(victim))
+    {
+        FormatEx(Debuff_Adder_left, SizeOfChar, "%s[◈ %i％]", Debuff_Adder_left, Victoria_Support_RechargeTime(victim));
+    }
+    else if(IsValidClient(victim) && Vs_LockOn[victim])
+    {
+        FormatEx(Debuff_Adder_left, SizeOfChar, "%s!Lock on!", Debuff_Adder_left);
+    }
 
 
 	//BUFFS GO HERE.
