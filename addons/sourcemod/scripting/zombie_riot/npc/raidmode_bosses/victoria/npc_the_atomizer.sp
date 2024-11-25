@@ -98,6 +98,16 @@ static const char StunballPickupeSound[][] = {
 	"vo/scout_stunballpickup04.mp3",
 	"vo/scout_stunballpickup05.mp3"
 };
+static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
+static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
+
+static float Vs_DelayTime[MAXENTITIES];
+static float Vs_RechargeTime[MAXENTITIES];
+static float Vs_RechargeTimeMax[MAXENTITIES];
+static int Vs_Target[MAXENTITIES];
+static int Vs_ParticleSpawned[MAXENTITIES];
+static float Vs_Temp_Pos[MAXENTITIES][3];
+bool Vs_LockOn[MAXTF2PLAYERS];
 
 static float FTL[MAXENTITIES];
 static float Delay_Attribute[MAXENTITIES];
@@ -111,6 +121,11 @@ static bool ParticleSpawned[MAXENTITIES];
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 static bool SUPERHIT[MAXENTITIES];
+
+static int gLaser1;
+static int gRedPoint;
+static int g_BeamIndex_heal;
+static int g_HALO_Laser;
 
 void Atomizer_OnMapStart_NPC()
 {
@@ -137,12 +152,18 @@ static void ClotPrecache()
 	PrecacheSound(g_AngerSounds);
 	PrecacheSound(g_AngerReaction);
 	PrecacheSound(g_HomerunHitSounds);
+	PrecacheSound(g_BoomSounds);
+	PrecacheSound(g_IncomingBoomSounds);
+	gRedPoint = PrecacheModel("sprites/redglow1.vmt");
+	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
+	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 	for (int i = 0; i < (sizeof(g_HomerunSounds));   i++) { PrecacheSound(g_HomerunSounds[i]);   }
 	for (int i = 0; i < (sizeof(StunballPickupeSound));   i++) { PrecacheSound(StunballPickupeSound[i]);   }
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
 	for (int i = 0; i < (sizeof(g_HomerunfailSounds));   i++) { PrecacheSound(g_HomerunfailSounds[i]);   }
 	PrecacheModel("models/player/scout.mdl");
-	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -198,7 +219,14 @@ methodmap Atomizer < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
-	
+	public void PlayBoomSound()
+	{
+		EmitSoundToAll(g_BoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayIncomingBoomSound()
+	{
+		EmitSoundToAll(g_IncomingBoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -287,6 +315,8 @@ methodmap Atomizer < CClotBody
 		npc.m_bFUCKYOU = false;
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
+		Vs_RechargeTimeMax[npc.index] = 20.0;
+		Victoria_Support_RechargeTimeMax(npc.index, 20.0);
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -298,7 +328,7 @@ methodmap Atomizer < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Sensal Arrived");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Atomizer Arrived");
 			}
 		}
 		FTL[npc.index] = 200.0;
@@ -339,12 +369,12 @@ methodmap Atomizer < CClotBody
 			RaidModeScaling *= 0.65;
 		}
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
-		music.Time = 218;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
+		music.Time = 128;
 		music.Volume = 2.0;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Goukisan - Betrayal of Fear (TeslaX VIP remix)");
-		strcopy(music.Artist, sizeof(music.Artist), "Talurre/TeslaX11");
+		strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
+		strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
 		Music_SetRaidMusic(music);
 		npc.m_iChanged_WalkCycle = -1;
 
@@ -362,7 +392,7 @@ methodmap Atomizer < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		CPrintToChatAll("{blue}%s{default}: Intruders in sight, I won't let the get out alive!", c_NpcName[npc.index]);
+		CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let the get out alive!");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/scout/pn2_longfall.mdl");
 		SetVariantString("1.0");
@@ -401,10 +431,10 @@ static void Internal_ClotThink(int iNPC)
 {
 	Atomizer npc = view_as<Atomizer>(iNPC);
 	float gameTime = GetGameTime(npc.index);
+	bool GETVictoria_Support = Victoria_Support(npc);
+	
 	if(npc.m_flNextDelayTime > gameTime)
-	{
 		return;
-	}
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
@@ -459,19 +489,19 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 1:
 			{
-				CPrintToChatAll("{blue}%s{default}: Victoria will be in peace. Once and for all.", c_NpcName[npc.index]);
+				CPrintToChatAll("{blue}Atomizer{default}: Victoria will be in peace. Once and for all.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{blue}%s{default}: The troops have arrived and will begin destroying the intruders!", c_NpcName[npc.index]);
+				CPrintToChatAll("{blue}Atomizer{default}: The troops have arrived and will begin destroying the intruders!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{blue}%s{default}: Backup team has arrived. Catch those damn bastards!", c_NpcName[npc.index]);
+				CPrintToChatAll("{blue}Atomizer{default}: Backup team has arrived. Catch those damn bastards!");
 			}
 			case 4:
 			{
-				CPrintToChatAll("{blue}%s{default}: After this, Im heading to Rusted Bolt Pub. {crimson}I need beer.{default}", c_NpcName[npc.index]);
+				CPrintToChatAll("{blue}Atomizer{default}: After this, Im heading to Rusted Bolt Pub. {crimson}I need beer.{default}");
 			}
 		}
 		for(int i=1; i<=15; i++)
@@ -565,22 +595,6 @@ static void Internal_ClotThink(int iNPC)
 	if(!IsValidEntity(RaidBossActive))
 		RaidBossActive = EntIndexToEntRef(npc.index);
 
-	/*if(OnMiss[npc.index])
-	{
-		if(IsValidEntity(npc.m_iWearable8))
-				RemoveEntity(npc.m_iWearable8);
-		if(!IsValidEntity(npc.m_iWearable8))
-		{
-			static float flPos[3]; 
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-			flPos[2] += 5.0;
-			npc.m_iWearable8 = ParticleEffectAt(flPos, "utaunt_tarotcard_blue_glow", 80.0);
-			SetParent(npc.index, npc.m_iWearable8, "head");
-		}
-	}
-	else if(IsValidEntity(npc.m_iWearable8))
-		RemoveEntity(npc.m_iWearable8);*/
-
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -652,6 +666,12 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	
+	if(GETVictoria_Support && npc.m_flDoingAnimation < gameTime)
+	{
+	
+	
+	}
+	
 	if(npc.m_flNextRangedAttack < gameTime)
 	{
 		float ProjLocBase[3];
@@ -679,14 +699,6 @@ static void Internal_ClotThink(int iNPC)
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 			ProjLocBase = ProjLoc;
 			ProjLocBase[2] += 5.0;
-			ProjLoc[2] += 70.0;
-
-			ProjLoc[0] += GetRandomFloat(-40.0, 40.0);
-			ProjLoc[1] += GetRandomFloat(-40.0, 40.0);
-			ProjLoc[2] += GetRandomFloat(-15.0, 15.0);
-		
-			float pos[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float cpos[3];
 			float velocity[3];
 			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
@@ -700,7 +712,7 @@ static void Internal_ClotThink(int iNPC)
 					{
 						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
 						
-						MakeVectorFromPoints(pos, cpos, velocity);
+						MakeVectorFromPoints(ProjLoc, cpos, velocity);
 						NormalizeVector(velocity, velocity);
 						ScaleVector(velocity, -450.0);
 						if(b_ThisWasAnNpc[EnemyLoop])
@@ -899,6 +911,8 @@ static void Internal_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
+	Vs_RechargeTime[npc.index]=0.0;
+	Vs_RechargeTimeMax[npc.index]=0.0;
 	
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
@@ -929,35 +943,29 @@ static void Internal_NPCDeath(int entity)
 		if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 	}
+	
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client) && !IsFakeClient(client))
+			Vs_LockOn[client]=false;
+	}
 
 	if(BlockLoseSay)
 		return;
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:
-		{
-			CPrintToChatAll("{blue}Atomizer{default}: Ugh, I need backup");
-		}
-		case 1:
-		{
-			CPrintToChatAll("{blue}Atomizer{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{blue}Atomizer{default}: You intruders will soon face the {crimson}Real Deal.{default}");
-		}
+		case 0:CPrintToChatAll("{blue}Atomizer{default}: Ugh, I need backup");
+		case 1:CPrintToChatAll("{blue}Atomizer{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
+		case 2:CPrintToChatAll("{blue}Atomizer{default}: You intruders will soon face the {crimson}Real Deal.{default}");
 	}
 
 }
 
 void AtomizerAnimationChange(Atomizer npc)
 {
-	
 	if(npc.m_iChanged_WalkCycle == 0)
-	{
 		npc.m_iChanged_WalkCycle = -1;
-	}
 	switch(npc.i_GunMode)
 	{
 		case 1: //primary
@@ -1142,8 +1150,6 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 							float vecDest[3];
 							vecDest = vecTarget;
-							vecDest[0] += GetRandomFloat(-30.0, 30.0);
-							vecDest[1] += GetRandomFloat(-30.0, 30.0);
 							float SpeedReturn[3];
 							for(int i=1; i<=(npc.m_iOverlordComboAttack > 3 ? 3 : 1); i++)
 							{
@@ -1153,9 +1159,11 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 									if(RocketGet != -1)
 									{
 										//max duration of 2 seconds
-										CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
+										CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
 									}
-									SetEntityGravity(RocketGet, 1.0); 	
+									SetEntityGravity(RocketGet, 1.0);
+									vecDest[0] += GetRandomFloat(-30.0, 30.0);
+									vecDest[1] += GetRandomFloat(-30.0, 30.0);
 									ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
 									SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 									TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
@@ -1373,14 +1381,11 @@ static void SuperAttack(int entity, int victim, float damage, int weapon)
 
 static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 {
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		owner = 0;
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsValidEntity(owner))
-		{
-			owner = 0;
-		}
-		
 		int inflictor = h_ArrowInflictorRef[entity];
 		if(inflictor != -1)
 			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
@@ -1395,7 +1400,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
-		if (!IsInvuln(target))
+		if(!IsInvuln(target))
 		{
 			TF2_StunPlayer(target, 1.0, 0.4, TF_STUNFLAG_SLOWDOWN);
 		}
@@ -1413,7 +1418,39 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 			int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
 			if(GETBOUNS < 20)
 			{
-				SDKHook(entity, SDKHook_Touch, Atomizer_Rocket_Particle_Bounce);
+				//SDKHook(entity, SDKHook_Touch, Atomizer_Rocket_Particle_Bounce);
+				static float vOrigin[3], vVelocity[3];
+				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vOrigin);
+				GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vVelocity);
+				
+				float TempANG[3], tOrigin[3];
+				TempANG[0]=90.0;
+				EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
+				float distance = GetVectorDistance(vOrigin, tOrigin);
+				if(distance<65.0)
+					vVelocity[2] = 600.0;
+				else
+				{
+					TempANG[0]=-90.0;
+					EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
+					distance = GetVectorDistance(vOrigin, tOrigin);
+					if(distance<65.0)
+						vVelocity[2] = -600.0;
+				}
+				int E_Target = GetClosestTarget(entity);
+				TeleportEntity(entity, NULL_VECTOR, TempANG, vVelocity);
+				float VecStart[3]; WorldSpaceCenter(entity, VecStart);
+				if(IsValidEnemy(owner, E_Target))
+				{
+					float vecDest[3]; WorldSpaceCenter(E_Target, vecDest);
+					float SpeedReturn[3];
+					PredictSubjectPositionForProjectiles(view_as<Atomizer>(entity), E_Target, 400.0,_,vecDest);
+					vecDest[0] += GetRandomFloat(-30.0, 30.0);
+					vecDest[1] += GetRandomFloat(-30.0, 30.0);
+					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.25, 1.0);
+					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+					SetEntProp(entity, Prop_Data, "m_iHammerID", GETBOUNS+1);
+				}
 				return Plugin_Handled;
 			}
 		}
@@ -1436,7 +1473,6 @@ static Action Atomizer_Rocket_Particle_Bounce(int entity, int owner)
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vOrigin);
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", vAngles);
 	GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vVelocity);
-	
 	float TempANG[3], tOrigin[3];
 	TempANG[0]=90.0;
 	EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
@@ -1570,8 +1606,152 @@ static void Atomizer_Weapon_Lines(Atomizer npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{blue}%s{default}: %s", c_NpcName[npc.index], Text_Lines);
+		CPrintToChatAll("{blue}Atomizer{default}: %s", Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
+}
+
+static bool Victoria_Support(Atomizer npc)
+{
+	float GameTime = GetGameTime();
+	if(Vs_DelayTime[npc.index] > GameTime)
+		return false;
+	Vs_DelayTime[npc.index] = GameTime + 0.1;
+	
+	Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, true);
+	if(!IsValidEnemy(npc.index, Vs_Target[npc.index]))
+		return false;
+	Vs_RechargeTime[npc.index] += 0.1;
+	if(Vs_RechargeTime[npc.index]>Vs_RechargeTimeMax[npc.index])
+		Vs_RechargeTime[npc.index]=0.0;
+	
+	float vecTarget[3];
+	GetEntPropVector(Vs_Target[npc.index], Prop_Data, "m_vecAbsOrigin", vecTarget);
+	vecTarget[2] += 5.0;
+	
+	if(Vs_RechargeTime[npc.index] < Vs_RechargeTimeMax[npc.index])
+	{
+		float position[3];
+		position[0] = vecTarget[0];
+		position[1] = vecTarget[1];
+		position[2] = vecTarget[2] + 3000.0;
+		if(Vs_RechargeTime[npc.index] < (Vs_RechargeTimeMax[npc.index] - 3.0))
+		{
+			Vs_Temp_Pos[npc.index][0] = position[0];
+			Vs_Temp_Pos[npc.index][1] = position[1];
+			Vs_Temp_Pos[npc.index][2] = position[2] - 3000.0;
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsValidClient(client) && !IsFakeClient(client))
+					Vs_LockOn[client]=false;
+			}
+			Vs_LockOn[Vs_Target[npc.index]]=true;
+		}
+		else
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsValidClient(client) && !IsFakeClient(client))
+					Vs_LockOn[client]=false;
+			}
+		}
+		TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index], 1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0), (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
+		TE_SendToAll();
+		float position2[3];
+		position2[0] = Vs_Temp_Pos[npc.index][0];
+		position2[1] = Vs_Temp_Pos[npc.index][1];
+		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
+		TE_SetupBeamRingPoint(position2, 1000.0, 1000.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+		TE_SendToAll();
+		TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index], 1000.0, 1000.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+		TE_SendToAll();
+		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, gLaser1, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
+		TE_SendToAll();
+		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], gRedPoint, 0.1, 1.0, 255);
+		TE_SendToAll();
+		if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0))
+		{
+			if(IsValidEntity(Vs_ParticleSpawned[npc.index]))
+				RemoveEntity(Vs_ParticleSpawned[npc.index]);
+			position[0] = 525.0;
+			position[1] = 1600.0;
+			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
+			if(HasEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID"))
+				SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
+			npc.PlayIncomingBoomSound();
+		}
+	}
+	else
+{
+		float position[3];
+		position[0] = Vs_Temp_Pos[npc.index][0];
+		position[1] = Vs_Temp_Pos[npc.index][1];
+		position[2] = Vs_Temp_Pos[npc.index][2] - 700.0;
+		TeleportEntity(Vs_ParticleSpawned[npc.index], position, NULL_VECTOR, NULL_VECTOR);
+		position[2] += 700.0;
+		
+		b_ThisNpcIsSawrunner[npc.index] = true;
+		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+		Explode_Logic_Custom(4500.0, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
+		b_ThisNpcIsSawrunner[npc.index] = false;
+		ParticleEffectAt(position, "hightower_explosion", 1.0);
+		i_ExplosiveProjectileHexArray[npc.index] = 0; 
+		npc.PlayBoomSound();
+		Vs_RechargeTime[npc.index]=0.0;
+		Vs_RechargeTime[npc.index]=0.0;
+		return true;
+	}
+	return false;
+}
+
+void Victoria_Support_RechargeTimeMax(int entity, float MAXTime=20.0)
+{
+	Vs_RechargeTimeMax[entity]=MAXTime;
+}
+
+int Victoria_Support_RechargeTime(int entity)
+{
+	if(Vs_RechargeTime[entity] <= 0.0 || Vs_RechargeTimeMax[entity]<=0.0)
+		return 0;
+	return RoundToFloor((Vs_RechargeTime[entity]/Vs_RechargeTimeMax[entity])*100.0);
+}
+
+stock int Victoria_GetTargetDistance(int entity, bool inversion)
+{
+	float TargetDistance = 0.0, EntityLocation[3];
+	int ClosestTarget = 0;
+	WorldSpaceCenter(entity, EntityLocation);
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsValidClient(i) && IsPlayerAlive(i) && TeutonType[i] == TEUTON_NONE)
+		{
+			float TargetLocation[3];
+			WorldSpaceCenter(i, TargetLocation);
+			float distance = GetVectorDistance(EntityLocation, TargetLocation);
+			if(GetTeam(entity) != GetTeam(i) && i != entity && IsValidEnemy(entity, i))
+			{
+				if(TargetDistance)
+				{
+					if(!inversion && distance < TargetDistance)
+					{
+						ClosestTarget = i;
+						TargetDistance = distance;			
+					}
+					else if(inversion && distance > TargetDistance)
+					{
+						ClosestTarget = i;
+						TargetDistance = distance;			
+					}
+				}
+				else
+				{
+					ClosestTarget = i;
+					TargetDistance = distance;
+				}
+			}
+		}
+	}
+	return ClosestTarget;
 }

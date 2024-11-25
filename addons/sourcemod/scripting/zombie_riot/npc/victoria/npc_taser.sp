@@ -22,7 +22,7 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/spy_helpmedefend01.mp3",
 	"vo/spy_helpmedefend02.mp3",
 	"vo/spy_helpmedefend03.mp3",
-}
+};
 
 static const char g_ReloadSound[][] = {
 	"weapons/ar2/npc_ar2_reload.wav",

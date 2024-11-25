@@ -26,8 +26,8 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/soldier_taunts19.mp3",
 	"vo/taunts/soldier_taunts20.mp3",
 	"vo/taunts/soldier_taunts21.mp3",
-	"vo/taunts/soldier_taunts18.mp3"
-	"vo/compmode/cm_soldier_pregamefirst_03.mp3",
+	"vo/taunts/soldier_taunts18.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_03.mp3"
 };
 
 static const char g_MeleeAttackSounds[][] = {

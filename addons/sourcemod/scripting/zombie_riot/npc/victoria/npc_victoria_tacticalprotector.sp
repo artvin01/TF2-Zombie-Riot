@@ -328,7 +328,7 @@ static Action VictoriaProtector_OnTakeDamage(int victim, int &attacker, int &inf
 		if(!npc.Anger)
 		{
 			damage=0.0;
-			IncreaceEntityDamageTakenBy(npc.index, 0.5, 5.0);
+			IncreaceEntityDamageTakenBy(npc.index, 0.15, 5.0);
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 2;
 			npc.m_flSpeed = 0.0;

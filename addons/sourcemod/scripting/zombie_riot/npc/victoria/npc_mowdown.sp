@@ -7,7 +7,7 @@ static const char g_DeathSounds[][] = {
 	"vo/mvm/mght/heavy_mvm_m_negativevocalization03.mp3",
 	"vo/mvm/mght/heavy_mvm_m_negativevocalization04.mp3",
 	"vo/mvm/mght/heavy_mvm_m_negativevocalization05.mp3",
-	"vo/mvm/mght/heavy_mvm_m_negativevocalization06.mp3",/
+	"vo/mvm/mght/heavy_mvm_m_negativevocalization06.mp3",
 };
 
 static const char g_HurtSounds[][] = {
