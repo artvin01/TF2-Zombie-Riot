@@ -372,6 +372,8 @@ TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool b_IgnoreMapMusic[MAXTF2PLAYERS];
 bool b_DisableDynamicMusic[MAXTF2PLAYERS];
+bool b_EnableRightSideAmmoboxCount[MAXTF2PLAYERS];
+bool b_EnableCountedDowns[MAXTF2PLAYERS];
 int i_CustomModelOverrideIndex[MAXTF2PLAYERS];
 int FogEntity = INVALID_ENT_REFERENCE;
 int PlayerPoints[MAXTF2PLAYERS];
@@ -3874,7 +3876,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return true;
 
 				//interacting with citizens shouldnt invalidate clicking, it makes battle hard.
-				if(!PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
+				if(Is_Reload_Button && !PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
 					return false;
 
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))

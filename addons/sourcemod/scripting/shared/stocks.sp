@@ -2906,7 +2906,7 @@ int CountPlayersOnRed(int alive = 0, bool saved = false)
 #if defined ZR
 
 //alot is  borrowed from CountPlayersOnRed
-float ZRStocks_PlayerScalingDynamic()
+float ZRStocks_PlayerScalingDynamic(float rebels = 0.5)
 {
 	//dont be 0
 	float ScaleReturn = 0.01;
@@ -2927,6 +2927,10 @@ float ZRStocks_PlayerScalingDynamic()
 			}
 		}
 	}
+
+	if(rebels)
+		ScaleReturn += Citizen_Count() * rebels;
+	
 	return ScaleReturn;
 }
 

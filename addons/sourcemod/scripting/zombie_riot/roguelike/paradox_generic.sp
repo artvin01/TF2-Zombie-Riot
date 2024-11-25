@@ -834,7 +834,7 @@ public void Rogue_BobDuck_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +25% damage bonus
-			npc.m_fGunRangeBonus *= 1.25;
+			npc.m_fGunBonusDamage *= 1.25;
 
 			// +15% fire rate
 			npc.m_fGunBonusFireRate *= 0.85;

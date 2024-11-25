@@ -341,7 +341,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	return entity == INVALID_ENT_REFERENCE ? Plugin_Stop : Plugin_Continue;
 }
 
-void Building_ClearRefBuffs(int ref)
+stock void Building_ClearRefBuffs(int ref)
 {
 	for(int i = -1; (i = Village_Effects.FindValue(ref, VillageBuff::EntityRef)) != -1; )
 	{

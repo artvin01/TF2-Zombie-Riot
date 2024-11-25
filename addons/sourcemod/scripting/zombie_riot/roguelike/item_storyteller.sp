@@ -65,7 +65,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +20% damage bonus
-			npc.m_fGunRangeBonus *= 1.2;
+			npc.m_fGunBonusDamage *= 1.2;
 
 			// +20% max health
 			int health = ReturnEntityMaxHealth(npc.index) * 6 / 5;
@@ -360,7 +360,7 @@ public void Rogue_BobFinal_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +15% damage bonus
-			npc.m_fGunRangeBonus *= 1.15;
+			npc.m_fGunBonusDamage *= 1.15;
 		}
 		else
 		{
