@@ -144,12 +144,11 @@ static void ClotThink(int iNPC)
 
 	if(target > 0)
 	{
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
-		{
-			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
-			
+		{	
 			if(distance < npc.GetLeadRadius())
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);

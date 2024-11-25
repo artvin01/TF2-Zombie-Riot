@@ -62,6 +62,7 @@ methodmap VictorianFactory < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = GetGameTime() + 180.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
 		i_AttacksTillMegahit[npc.index] = 0;
@@ -222,7 +223,7 @@ static void ClotThink(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 		
-	if(!IsValidAlly(npc.index, GetClosestAlly(npc.index)))
+	if(npc.m_flNextRangedAttack < gameTime && !IsValidAlly(npc.index, GetClosestAlly(npc.index)))
 	{
 		SmiteNpcToDeath(npc.index);
 		return;
