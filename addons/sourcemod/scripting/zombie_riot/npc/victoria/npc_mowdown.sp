@@ -121,7 +121,7 @@ methodmap VictoriaMowdown < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
-		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
+		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 
 		
 		//IDLE
