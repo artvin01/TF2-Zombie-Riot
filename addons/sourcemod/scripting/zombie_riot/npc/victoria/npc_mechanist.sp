@@ -674,6 +674,10 @@ static void Internal_ClotThink(int iNPC)
 				if(spawn_index > MaxClients)
 				{
 					int health = ReturnEntityMaxHealth(npc.index) * 5;
+					fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+					fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+					fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
+					fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
 					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);
 					if(GetTeam(iNPC) != TFTeam_Red)
 						NpcAddedToZombiesLeftCurrently(spawn_index, true);

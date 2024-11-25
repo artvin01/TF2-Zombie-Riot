@@ -97,7 +97,7 @@ methodmap VictorianBallista < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.6, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.4, 80);
 	}
 
 	public VictorianBallista(int client, float vecPos[3], float vecAng[3], int ally)

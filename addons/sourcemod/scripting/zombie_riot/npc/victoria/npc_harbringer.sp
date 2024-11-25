@@ -296,7 +296,7 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 			{
 				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 				{	
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY",_,_,_,2.00);
+					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY",_,_,_,2.00);
 					npc.PlayMeleeSound();
 					npc.FaceTowards(vecTarget, 20000.0);
 					Handle swingTrace;
