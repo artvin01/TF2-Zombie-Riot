@@ -1953,6 +1953,8 @@ void Citizen_SetRandomRole(int entity)
 	else if(shortCount < longCount)
 	{
 		type = (npc.m_iSeed % 8) > 2 ? Cit_SMG : Cit_Shotgun;
+		if((npc.m_iSeed % 8) == 0)
+			type = Cit_Melee;
 	}
 	else
 	{
@@ -2300,7 +2302,7 @@ public void Citizen_ClotThink(int iNPC)
 	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.04 * 0.01, 0.5, 0.0, HEAL_SELFHEAL);
 
 	bool noSafety = (npc.m_bCamo || VIPBuilding_Active());
-	bool autoSeek = (noSafety || npc.m_bRebelAgressive || RaidbossIgnoreBuildingsLogic(1));
+	bool autoSeek = (noSafety || npc.m_bRebelAgressive/* || RaidbossIgnoreBuildingsLogic(1)*/);
 
 	// See if our target is still valid
 	int target = npc.m_iTarget;
@@ -2934,6 +2936,15 @@ public void Citizen_ClotThink(int iNPC)
 							{
 								if(Building_AttemptPlace(entity, npc.index))
 								{
+									if(id == 9)
+									{
+										for(int client = 1; client <= MaxClients; client++)
+										{
+											if(IsClientInGame(client))
+												ApplyBuildingCollectCooldown(entity, client, 30.0);
+										}
+									}
+
 									if(npc.m_iCanBuild)
 									{
 										npc.m_iCanBuild = 0;
@@ -3804,7 +3815,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				case Cit_Melee:
 				{
-					npc.SetActivity("ACT_WALK_SUITCASE", 90.0);
+					npc.SetActivity("ACT_WALK", 90.0);
 					
 					if(npc.m_iWearable1 > 0)
 						AcceptEntityInput(npc.m_iWearable1, "Enable");
@@ -3862,7 +3873,7 @@ public void Citizen_ClotThink(int iNPC)
 			if(!found)
 			{
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, target, _, vecTarget);
-				NPC_SetGoalVector(npc.index, vecTarget);
+				NPC_SetGoalVector(npc.index, vecTarget, true);
 			}
 			
 			npc.StartPathing();
@@ -3919,10 +3930,9 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			case Cit_Melee:
 			{
-				// TODO: Barney has an issue with ACT_IDLE_SUITCASE, same with Rebels?
-				if(combat/* || !npc.m_bBarney*/)
+				if(!npc.m_bHero && !npc.m_bFemale)
 				{
-					npc.SetActivity(combat ? "ACT_IDLE_ANGRY_MELEE" : "ACT_IDLE_SUITCASE", 0.0);
+					npc.SetActivity("ACT_IDLE_ANGRY_MELEE", 0.0);
 					
 					if(npc.m_iWearable1 > 0)
 						AcceptEntityInput(npc.m_iWearable1, "Enable");
@@ -3953,7 +3963,7 @@ public void Citizen_ClotThink(int iNPC)
 			}
 			default:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_ANGRY" : "ACT_IDLE", 0.0);
+				npc.SetActivity((!npc.m_bHero && combat) ? "ACT_IDLE_ANGRY" : "ACT_IDLE", 0.0);
 				
 				if(npc.m_iWearable1 > 0)
 					AcceptEntityInput(npc.m_iWearable1, "Disable");
@@ -4258,7 +4268,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			
 			if(npc.m_iGunType == Cit_Melee)
 			{
-				damage *= 0.8;
+				damage *= 0.7;
 
 				if(damagetype & (DMG_CLUB|DMG_SLASH))
 				{

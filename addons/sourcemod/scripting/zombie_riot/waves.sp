@@ -2296,7 +2296,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(InSetup || Classic_Mode())
+	if(!Waves_Started() || InSetup || Classic_Mode())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)
