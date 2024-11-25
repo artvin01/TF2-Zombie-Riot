@@ -1249,7 +1249,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 								
 								WorldSpaceCenter(targetTrace, vecHit);
 
-								float damage = 20.0;
+								float damage = 35.0;
 								damage *= 1.15;
 								if(OnMiss[npc.index])
 								{
