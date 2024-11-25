@@ -1429,6 +1429,8 @@ public void Neuvellete_Menu(int client, int weapon)
 		
 	Menu menu2 = new Menu(Neuvellete_Menu_Selection);
 	int flags = i_Neuvellete_HEX_Array[client];
+
+	SetGlobalTransTarget(client);
 	
 	if(i_Neuvellete_Skill_Points[client]>0)
 	{

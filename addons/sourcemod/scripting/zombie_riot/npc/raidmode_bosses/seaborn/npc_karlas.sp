@@ -83,8 +83,6 @@ static bool b_teleport_strike_active[MAXENTITIES];
 #define SCHWERTKRIEG_LIGHT_MODEL "models/effects/vol_light256x512.mdl"
 #define SCHWERTKRIEG_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
 
-#define SCHWERT_BALL_MODEL "models/weapons/w_models/w_drg_ball.mdl"
-
 #define SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS 750.0
 
 static float fl_npc_basespeed;
@@ -109,9 +107,6 @@ static float fl_schwert_sword_battery[MAXENTITIES];
 static int i_dance_of_light_sword_id[MAXENTITIES][SCHWERKRIEG_SWORDS_AMT];
 static float fl_dance_of_light_sword_throttle[MAXENTITIES][SCHWERKRIEG_SWORDS_AMT];
 static float fl_dance_of_light_sound_spam_timer[MAXENTITIES];
-static bool b_swords_flying[MAXENTITIES];
-static int Projectile_Index[MAXENTITIES];
-static int i_ProjectileIndex;
 
 
 void Karlas_OnMapStart_NPC()
@@ -126,7 +121,6 @@ void Karlas_OnMapStart_NPC()
 	Zero(fl_spinning_angle);
 	Zero2(fl_schwert_armour);
 	Zero(fl_schwert_sword_battery);
-	Zero(b_swords_flying);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Karlas");
@@ -164,8 +158,6 @@ static void ClotPrecache()
 	PrecacheSound(TELEPORT_STRIKE_HIT, true);
 	PrecacheSound(TELEPORT_STRIKE_MISS, true);
 
-	i_ProjectileIndex = PrecacheModel(SCHWERT_BALL_MODEL);
-
 	
 	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
 	PrecacheSound("mvm/mvm_tele_activate.wav", true);
@@ -176,7 +168,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return Karlas(vecPos, vecAng, team);
 }
 
-static int i_schwert_hand_particle[MAXENTITIES];
+static int i_particle_effects[MAXENTITIES];
 
 methodmap Karlas < CClotBody
 {
@@ -329,7 +321,55 @@ methodmap Karlas < CClotBody
 		public get()							{ return i_MedkitAnnoyance[this.index]; }
 		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
+	property int m_iParticles1
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_particle_effects[this.index][0]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_particle_effects[this.index][0] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_particle_effects[this.index][0] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	public void LanceState(bool activate)
+	{
+		if(IsValidEntity(this.m_iWearable8))
+			RemoveEntity(this.m_iWearable8);
+
+		if(!activate)
+			return;
+
+		this.m_iWearable8 = this.EquipItem("effect_hand_r", RUINA_CUSTOM_MODELS_2);
+		SetVariantInt(RUINA_IMPACT_LANCE_4);
+		AcceptEntityInput(this.m_iWearable8, "SetBodyGroup");
+	}
 	
+
+	public void Set_Particle(char[] Particle, char[] Attachment)
+	{
+		if(IsValidEntity(this.m_iParticles1))
+			RemoveEntity(this.m_iParticles1);
+
+		float flPos[3], flAng[3];
+
+		this.GetAttachment(Attachment, flPos, flAng);
+		this.m_iParticles1 = ParticleEffectAt_Parent(flPos, Particle, this.index, Attachment, {0.0,0.0,0.0});
+	}
+
 	public Karlas(float vecPos[3], float vecAng[3], int ally)
 	{
 		Karlas npc = view_as<Karlas>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
@@ -358,7 +398,8 @@ methodmap Karlas < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
-		RaidModeTime = GetGameTime(npc.index) + 250.0;
+		if(RaidModeTime < GetGameTime() + 250.0)
+			RaidModeTime = GetGameTime() + 250.0;
 
 		npc.m_flNextChargeSpecialAttack = 0.0;	//used for transformation Logic
 		b_swords_created[npc.index]=false;
@@ -376,9 +417,6 @@ methodmap Karlas < CClotBody
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
-			
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		SetVariantColor(view_as<int>({3, 244, 252, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
@@ -396,76 +434,36 @@ methodmap Karlas < CClotBody
 			quadwrangler		"models/player/items/medic/qc_glove.mdl"
 
 		*/
-
-		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_medic.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/jogon/jogon_medic.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/Hw2013_Moon_Boots/Hw2013_Moon_Boots.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-
-		npc.m_iWearable7 = npc.EquipItem("head", "models/player/items/medic/qc_glove.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl", _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_medic.mdl", _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl", _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/jogon/jogon_medic.mdl", _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/Hw2013_Moon_Boots/Hw2013_Moon_Boots.mdl", _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl");
+		npc.m_iWearable7 = npc.EquipItem("head", "models/player/items/medic/qc_glove.mdl");
+		npc.m_iWearable8 = npc.EquipItem("weapon_bone", RUINA_CUSTOM_MODELS_2);
+		SetVariantInt(RUINA_IMPACT_LANCE_4);
+		AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		
 		npc.StartPathing();
 
-		float flPos[3], flAng[3];
-				
-		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		i_schwert_hand_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
-		npc.GetAttachment("", flPos, flAng);
+		npc.Set_Particle("raygun_projectile_blue_crit", "eyeglow_L");
+
 
 		fl_schwert_armour[npc.index][0] = 1.0;	//ranged
 		fl_schwert_armour[npc.index][1] = 1.5;	//melee
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 
-		b_swords_flying[npc.index]=false;
 		npc.Anger = false;
 
-
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-
 		Schwertkrieg_Create_Wings(npc);
-		Schwert_Impact_Lance_Create(npc.index);
-
 		Delete_Swords(npc.index);
-
-		for(int i=0 ; i < SCHWERKRIEG_SWORDS_AMT ; i++)
-		{
-			i_dance_of_light_sword_id[npc.index][i] = INVALID_ENT_REFERENCE;
-		}
 
 		func_NPCFuncWin[npc.index] = Win_Line;
 		npc.m_iNClockonState = 2;
@@ -502,11 +500,12 @@ static void Internal_ClotThink(int iNPC)
 
 	float GameTime = GetGameTime(npc.index);
 
-	if(RaidModeTime < GetGameTime())
+	//Todo: fix raidmodetime
+	/*if(RaidModeTime < GetGameTime())
 	{
 		func_NPCThink[npc.index]=INVALID_FUNCTION;
 		return;
-	}
+	}*/
 
 	if(npc.m_flNextDelayTime > GameTime)
 	{
@@ -549,7 +548,6 @@ static void Internal_ClotThink(int iNPC)
 	//Stella has her NC locked onto us, abort teleport.
 	if(npc.m_flNC_LockedOn > GameTime)
 		abort_teleport = true;
-
 	
 	if(abort_teleport && Schwert_Status(npc, GameTime)==1 && b_teleport_strike_active[npc.index])
 	{
@@ -557,11 +555,10 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flRangedArmor = fl_schwert_armour[npc.index][0];
 		npc.m_flSpeed =fl_npc_basespeed;
 		npc.m_bisWalking = true;
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
-		Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
-		Schwert_Impact_Lance_Create(npc.index);
+		npc.LanceState(true);
 
 		b_teleport_strike_active[npc.index]=false;
 		fl_teleport_strike_recharge[npc.index]=GameTime+5.0; 
@@ -598,7 +595,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.PlayAngerSoundPassed();
 		npc.SetPlaybackRate(1.0);
 
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_bisWalking = true;
@@ -671,7 +668,7 @@ static void Internal_ClotThink(int iNPC)
 		Schwert_Aggresive_Behavior(npc, PrimaryThreatIndex, GameTime, flDistanceToTarget, vecTarget);
 	}
 
-	Blade_Logic(npc, PrimaryThreatIndex, flDistanceToTarget);
+	Blade_Logic(npc);
 
 	npc.PlayIdleAlertSound();
 }
@@ -884,7 +881,7 @@ static int i_Get_Laser_Target(Karlas npc, float Range = -1.0)
 	}
 		
 }
-static void Blade_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceToTarget)
+static void Blade_Logic(Karlas npc)
 {
 	int Blade_Behavior = -1;
 
@@ -915,28 +912,10 @@ static void Blade_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceToTa
 		{
 			Blade_Behavior=1;
 		}
-		if(b_swords_flying[npc.index] && npc.m_flNextRangedBarrage_Spam < GameTime)
-		{
-			npc.m_flNextRangedBarrage_Spam = GameTime + 35.0;
-		}
-
-		if(npc.m_flNextRangedBarrage_Spam < GameTime && flDistanceToTarget < (900.0*900.0) && !b_swords_flying[npc.index] && (wave >=45 || (npc.Anger && wave >=30 ) ))
-		{
-			npc.m_flNextRangedBarrage_Spam = GameTime + 35.0;
-
-			Schwert_Launch_Boomerang_Core(npc, PrimaryThreatIndex);
-
-			b_swords_flying[npc.index]=true;
-		}
 
 		if(fl_schwert_sword_battery[npc.index]<GameTime && !npc.m_bRetreat)
 		{
 			Blade_Behavior=4;
-		}
-
-		if(b_swords_flying[npc.index])
-		{
-			Blade_Behavior=3;
 		}
 	}
 	float npc_Vec[3]; WorldSpaceCenter(npc.index, npc_Vec);
@@ -1149,7 +1128,9 @@ static void Schwertkrieg_Teleport_Strike(Karlas npc, float flDistanceToTarget, f
 {
 	if(npc.m_bRetreat)
 		return;
-		
+	
+	float FIXME;
+	
 	bool can_see=false;
 	bool touching_creep = SeaFounder_TouchingNethersea(PrimaryThreatIndex);
 	if(flDistanceToTarget < (2500.0*2500.0) || touching_creep)
@@ -1171,7 +1152,7 @@ static void Schwertkrieg_Teleport_Strike(Karlas npc, float flDistanceToTarget, f
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
-			Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
+			npc.LanceState(false);
 
 			float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc);
 
@@ -1219,13 +1200,12 @@ static void Schwertkrieg_Teleport_Strike(Karlas npc, float flDistanceToTarget, f
 		npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1];
 		npc.m_flRangedArmor = fl_schwert_armour[npc.index][0];
 		npc.m_flSpeed =fl_npc_basespeed;
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_bisWalking = true;
 
-		Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
-		Schwert_Impact_Lance_Create(npc.index);
+		npc.LanceState(true);
 
 		b_teleport_strike_active[npc.index]=false;
 		fl_teleport_strike_recharge[npc.index]=GameTime+5.0;
@@ -2114,13 +2094,6 @@ static void Internal_NPCDeath(int entity)
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 
 	ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);
-
-	if(IsValidEntity(Projectile_Index[npc.index]))
-	{
-		SDKUnhook(npc.index, SDKHook_Think, Schwert_Spiral_Core_Projectile_Homing_Hook);
-		RemoveEntity(Projectile_Index[npc.index]);
-	}
-	
 		
 	Delete_Swords(npc.index);
 	
@@ -2132,7 +2105,6 @@ static void Internal_NPCDeath(int entity)
 	npc.m_bThisNpcIsABoss = false;
 
 	Schwertkrieg_Delete_Wings(npc);
-	Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -2148,12 +2120,16 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
+	if(IsValidEntity(npc.m_iParticles1))
+		RemoveEntity(npc.m_iParticles1);
 
-	int particle = EntRefToEntIndex(i_schwert_hand_particle[npc.index]);
+	int particle = EntRefToEntIndex(i_particle_effects[npc.index]);
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);
-		i_schwert_hand_particle[npc.index]=INVALID_ENT_REFERENCE;
+		i_particle_effects[npc.index]=INVALID_ENT_REFERENCE;
 	}
 		
 }
@@ -2365,430 +2341,6 @@ static void Schwertkrieg_Create_Wings(Karlas npc)
 	i_schwert_particle_index[npc.index][27] = EntIndexToEntRef(laser_right_wing_5);
 	i_schwert_particle_index[npc.index][28] = EntIndexToEntRef(laser_right_wing_6);
 
-}
-
-#define SCHWERTKRIEG_LANCE_EFFECTS 25
-
-static int i_Schwert_Impact_Lance_CosmeticEffect[MAXENTITIES][SCHWERTKRIEG_LANCE_EFFECTS];
-
-static void Schwert_Impact_Lance_CosmeticRemoveEffects(int iNpc)
-{
-	for(int loop = 0; loop<SCHWERTKRIEG_LANCE_EFFECTS; loop++)
-	{
-		int entity = EntRefToEntIndex(i_Schwert_Impact_Lance_CosmeticEffect[iNpc][loop]);
-		if(IsValidEntity(entity))
-		{
-			RemoveEntity(entity);
-		}
-		i_Schwert_Impact_Lance_CosmeticEffect[iNpc][loop] = INVALID_ENT_REFERENCE;
-	}
-}
-
-static void Schwert_Impact_Lance_Create(int client, char[] attachment = "effect_hand_r")
-{
-
-	if(AtEdictLimit(EDICT_RAID))
-		return;
-
-	Schwert_Impact_Lance_CosmeticRemoveEffects(client);
-
-	int red = 185;
-	int green = 205;
-	int blue = 237;
-	float flPos[3];
-	float flAng[3];
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	/*
-		{x, y, z};
-
-		x = Right = -x, Left = x
-		y = Forward = y, backwrads = -y
-		z is inverted values
-		 
-	*/
-
-	int particle_2 = InfoTargetParentAt({0.0, 10.0, 7.5}, "", 0.0); //First offset we go by
-	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -7.5}, "", 0.0);
-
-	int particle_3 = InfoTargetParentAt({5.0,10.0,0.0}, "", 0.0);
-	int particle_3_1 = InfoTargetParentAt({-5.0,10.0,0.0}, "", 0.0);
-
-	int particle_4 = InfoTargetParentAt({0.0,70.0,2.5}, "", 0.0);
-	int particle_4_1 = InfoTargetParentAt({0.0,70.0, -2.5}, "", 0.0);
-
-	int particle_5 = InfoTargetParentAt({0.0,-10.0, 5.0}, "", 0.0);
-	int particle_5_1 = InfoTargetParentAt({0.0,-10.0, -5.0}, "", 0.0);
-
-	int particle_6 = InfoTargetParentAt({12.0,-5.0, 0.0}, "", 0.0);
-	int particle_6_1 = InfoTargetParentAt({-12.0,-5.0, 0.0}, "", 0.0);
-
-	int particle_7 = InfoTargetParentAt({0.0,-10.0, 0.0}, "", 0.0);
-
-
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_2_1, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_3_1, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_4_1, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-	SetParent(particle_1, particle_5_1, "",_, true);
-	SetParent(particle_1, particle_6, "",_, true);
-	SetParent(particle_1, particle_6_1, "",_, true);
-	SetParent(particle_1, particle_7, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(client, particle_1, attachment,_);
-
-
-	float amp = 0.1;
-
-	float blade_start = 2.0;
-	float blade_end = 0.5;
-	//handguard
-	float handguard_size = 1.0;
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
-	int Laser_6 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
-
-	int Laser_4 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM);			//blade
-	int Laser_5 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, blade_start, blade_end, amp, LASERBEAM);		//blade
-
-	int Laser_7 = ConnectWithBeamClient(particle_2, particle_5, red, green, blue, blade_start, blade_end, amp, LASERBEAM );			//inner blade
-	int Laser_8 = ConnectWithBeamClient(particle_2_1, particle_5_1, red, green, blue, blade_start, blade_end, amp, LASERBEAM );	//	inner blade
-
-	int Laser_9 = ConnectWithBeamClient(particle_6, particle_3, red, green, blue, blade_end, handguard_size, amp, LASERBEAM );			//wing start
-	int Laser_10 = ConnectWithBeamClient(particle_6_1, particle_3_1, red, green, blue, blade_end, handguard_size, amp, LASERBEAM );		//wing start
-	int Laser_11 = ConnectWithBeamClient(particle_6, particle_7, red, green, blue, blade_end, blade_start, amp, LASERBEAM );			//wing end
-	int Laser_12 = ConnectWithBeamClient(particle_6_1, particle_7, red, green, blue, blade_end, blade_start, amp, LASERBEAM );			//wing end
-	
-
-	i_Schwert_Impact_Lance_CosmeticEffect[client][0] = EntIndexToEntRef(particle_1);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][1] = EntIndexToEntRef(particle_2);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_5);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_6);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(particle_4_1);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_5);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(particle_5_1);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(Laser_9);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(Laser_10);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(Laser_11);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(Laser_12);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][21] = EntIndexToEntRef(particle_7);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][22] = EntIndexToEntRef(particle_6);
-	i_Schwert_Impact_Lance_CosmeticEffect[client][23] = EntIndexToEntRef(particle_6_1);
-
-}
-static int RMR_CurrentHomingTarget[MAXENTITIES];
-static bool RWI_WasLockedOnce[MAXENTITIES];
-static float RWI_RocketSpeed[MAXENTITIES];
-
-static float RWI_RocketRotation[MAXENTITIES][3];
-
-static float fl_boomerang_duration[MAXENTITIES];
-
-
-static float fl_homing_throttle[MAXENTITIES];
-static float fl_retract_timer[MAXENTITIES];
-/*
- *	I just stole this off "homing_projectile_logic.sp" and heavily modified it 
- **/
-static void Schwert_Launch_Boomerang_Core(Karlas npc, int initialTarget)	//warp
-{
-	float Npc_Vec[3], Target_Vec[3], Initial_Vec[3];
-	GetAbsOrigin(initialTarget, Initial_Vec);
-	float rocket_speed = 750.0;
-	int projectile = Schwert_Create_Invis_Proj(npc, rocket_speed, Initial_Vec);
-	
-	if(!IsValidEntity(projectile))
-		return;
-
-	if(npc.Anger)
-		fl_boomerang_duration[projectile] = GetGameTime() + 17.0;
-	else
-		fl_boomerang_duration[projectile] = GetGameTime() + 12.5;
-
-	GetAbsOrigin(npc.index, Npc_Vec);
-	GetAbsOrigin(initialTarget, Target_Vec);
-
-	fl_homing_throttle[projectile]=0.0;
-	float Ang[3];
-	MakeVectorFromPoints(Npc_Vec, Target_Vec, Ang);
-	GetVectorAngles(Ang, Ang);	
-
-	float Deviation = 65.0;
-
-	fl_retract_timer[projectile] = GetGameTime()+2.5;
-
-	switch(GetRandomInt(1,2))
-	{
-		case 1:
-		{
-			Ang[1]-=Deviation;
-		}
-		case 2:
-		{
-			Ang[1]+=Deviation;
-		}
-	}
-	
-	Projectile_Index[npc.index] = projectile;
-	RWI_WasLockedOnce[projectile] = false;
-	if(initialTarget != -1)
-		RWI_WasLockedOnce[projectile] = true;
-		
-	RMR_CurrentHomingTarget[projectile] = initialTarget;
-
-	RWI_RocketRotation[projectile][0] = Ang[0];
-	RWI_RocketRotation[projectile][1] = Ang[1];
-	RWI_RocketRotation[projectile][2] = Ang[2];
-
-	
-	
-	RWI_RocketSpeed[projectile] = rocket_speed;
-
-	SDKUnhook(npc.index, SDKHook_Think, Schwert_Spiral_Core_Projectile_Homing_Hook);
-
-	SDKHook(npc.index, SDKHook_Think, Schwert_Spiral_Core_Projectile_Homing_Hook);
-
-}
-
-static int Schwert_Create_Invis_Proj(Karlas npc, float rocket_speed, float vecTarget[3])
-{
-	float vecForward[3], vecSwingStart[3], vecAngles[3];
-	npc.GetVectors(vecForward, vecSwingStart, vecAngles);
-										
-	GetAbsOrigin(npc.index, vecSwingStart);
-	vecSwingStart[2] += 54.0;
-										
-	MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
-	GetVectorAngles(vecAngles, vecAngles);
-										
-										
-	
-	vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
-	vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
-	vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
-										
-	int entity = CreateEntityByName("zr_projectile_base");
-	if(IsValidEntity(entity))
-	{
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-		SetTeam(entity, GetTeam(npc.index));
-		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
-										
-		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
-
-		DispatchKeyValue(entity, "solid", "0"); 
-
-		DispatchSpawn(entity);
-		
-		for(int i; i<4; i++)
-		{
-			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", i_ProjectileIndex, _, i);
-		}
-		SetEntityModel(entity, SCHWERT_BALL_MODEL);
-
-		//Make it entirely invis. Shouldnt even render these 8 polygons.
-		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
-
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
-		SetEntityRenderColor(entity, 255, 255, 255, 0);
-
-
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
-		MakeObjectIntangeable(entity);
-
-		SetEntityMoveType(entity, MOVETYPE_NOCLIP);
-
-		return entity;
-	}
-	b_swords_flying[npc.index]=false;
-	return -1;
-}
-static Action Schwert_Spiral_Core_Projectile_Homing_Hook(int iNPC)
-{
-	Karlas npc = view_as<Karlas>(iNPC);
-
-	int entity = Projectile_Index[npc.index];
-
-	//CPrintToChatAll("beep");
-	if(!IsValidEntity(entity)) //no need for converting.
-	{
-		b_swords_flying[npc.index]=false;
-		RemoveEntity(entity);
-		SDKUnhook(npc.index, SDKHook_Think, Schwert_Spiral_Core_Projectile_Homing_Hook);
-		//CPrintToChatAll("beep term1");
-		return Plugin_Stop;
-	}
-	//CPrintToChatAll("beep1");
-
-	
-
-	float GameTime = GetGameTime();
-
-	if(fl_boomerang_duration[entity] < GameTime)
-	{
-		RMR_CurrentHomingTarget[entity] = -1;
-	}
-
-	//sword stuff:
-
-	float Npc_Vec[3]; GetAbsOrigin(npc.index, Npc_Vec);
-	float Proj_Vec[3]; GetAbsOrigin(entity, Proj_Vec);
-
-
-	if(npc.Anger)
-		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 6.75, true, 30.0*RaidModeScaling, true);
-	else
-		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 4.5, true, 20.0*RaidModeScaling, true);
-
-	float dist = GetVectorDistance(Npc_Vec, Proj_Vec);
-
-	if(dist < 100.0 && RMR_CurrentHomingTarget[entity]==-1)
-	{
-		b_swords_flying[npc.index]=false;
-		RemoveEntity(entity);
-		//CPrintToChatAll("beep term2");
-		SDKUnhook(npc.index, SDKHook_Think, Schwert_Spiral_Core_Projectile_Homing_Hook);
-		return Plugin_Stop;
-	}
-
-
-	//homing stuff:
-
-	if(fl_homing_throttle[entity]> GameTime)
-	{
-		return Plugin_Continue;
-	}
-
-	fl_homing_throttle[entity]= GameTime+0.1;
-
-	if(fl_retract_timer[entity]<GameTime)
-	{
-		RMR_CurrentHomingTarget[entity] = -1;
-	}
-
-	//The enemy is valid
-	if(IsValidEnemy(entity, RMR_CurrentHomingTarget[entity]))
-	{
-		
-		if(HomingProjectile_IsVisible(entity, RMR_CurrentHomingTarget[entity]))
-		{
-			if(Can_I_See_Withing_Angles(entity, RMR_CurrentHomingTarget[entity]))
-			{
-				fl_retract_timer[entity] = GameTime+3.5;
-			}
-			Schwert_TurnToTarget_Proj(entity, RMR_CurrentHomingTarget[entity]);
-			return Plugin_Continue;
-		}
-		return Plugin_Continue;
-	}
-	RMR_CurrentHomingTarget[entity] = -1;
-
-	//We already lost our homing Target, return to schwert!
-
-	Schwert_TurnToTarget_Proj(entity, npc.index);
-
-	return Plugin_Continue;
-}	
-
-static void Schwert_TurnToTarget_Proj(int projectile, int Target)
-{
-	static float rocketAngle[3];
-
-	rocketAngle[0] = RWI_RocketRotation[projectile][0];
-	rocketAngle[1] = RWI_RocketRotation[projectile][1];
-	rocketAngle[2] = RWI_RocketRotation[projectile][2];
-
-	static float tmpAngles[3];
-	static float rocketOrigin[3];
-	GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", rocketOrigin);
-
-	float pos1[3];
-	WorldSpaceCenter(Target, pos1);
-	GetRayAngles(rocketOrigin, pos1, tmpAngles);
-	
-	// Thanks to mikusch for pointing out this function to use instead
-	// we had a simular function but i forgot that it existed before
-	// https://github.com/Mikusch/ChaosModTF2/pull/4/files
-
-	float Dist = GetVectorDistance(rocketOrigin, pos1);
-
-	float Homing_Speed = 15.0;
-
-	if(Can_I_See_Withing_Angles(projectile, Target))
-	{
-		Homing_Speed = 30.0 * (Dist/1500.0);
-	}
-
-	rocketAngle[0] = ApproachAngle(tmpAngles[0], rocketAngle[0], Homing_Speed);
-	rocketAngle[1] = ApproachAngle(tmpAngles[1], rocketAngle[1], Homing_Speed);
-	
-	float vecVelocity[3];
-	GetAngleVectors(rocketAngle, vecVelocity, NULL_VECTOR, NULL_VECTOR);
-	
-	vecVelocity[0] *= RWI_RocketSpeed[projectile];
-	vecVelocity[1] *= RWI_RocketSpeed[projectile];
-	vecVelocity[2] *= RWI_RocketSpeed[projectile];
-
-	RWI_RocketRotation[projectile][0] = rocketAngle[0];
-	RWI_RocketRotation[projectile][1] = rocketAngle[1];
-	RWI_RocketRotation[projectile][2] = rocketAngle[2];
-
-	TeleportEntity(projectile, NULL_VECTOR, rocketAngle, vecVelocity);
-}
-
-static bool Can_I_See_Withing_Angles(int projectile, int Target)
-{
-	static float ang3[3];
-	
-	float ang_Look[3];
-
-	ang_Look[0] = RWI_RocketRotation[projectile][0];
-	ang_Look[1] = RWI_RocketRotation[projectile][1];
-	ang_Look[2] = RWI_RocketRotation[projectile][2];
-
-	float pos1[3];
-	float pos2[3];
-	GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", pos2);
-	WorldSpaceCenter(Target, pos1);
-	GetVectorAnglesTwoPoints(pos2, pos1, ang3);
-
-	// fix all angles
-	ang3[0] = fixAngle(ang3[0]);
-	ang3[1] = fixAngle(ang3[1]);
-
-	float Can_See_Angles = 100.0;
-
-	// verify angle validity
-	if(!(fabs(ang_Look[0] - ang3[0]) <= Can_See_Angles ||
-	(fabs(ang_Look[0] - ang3[0]) >= (360.0-Can_See_Angles))))
-	{
-		return false;
-	}
-
-	if(!(fabs(ang_Look[1] - ang3[1]) <= Can_See_Angles ||
-	(fabs(ang_Look[1] - ang3[1]) >= (360.0-Can_See_Angles))))
-	{
-		return false;
-	}
-		
-	return true;
 }
 
 static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})

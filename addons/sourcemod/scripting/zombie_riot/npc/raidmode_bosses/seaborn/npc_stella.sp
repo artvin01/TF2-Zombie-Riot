@@ -91,33 +91,34 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry03.mp3",
 	"vo/medic_battlecry04.mp3",
 };
-static const char g_MeleeAttackSounds[][] = {
+//todo: sounds.
+static const char g_LaserAttackSounds[][] = {
 	"weapons/physcannon/superphys_launch1.wav",
 	"weapons/physcannon/superphys_launch2.wav",
 	"weapons/physcannon/superphys_launch3.wav",
 	"weapons/physcannon/superphys_launch4.wav",
 };
+//todo: sounds.
+static const char g_LaserChargesounds [][] = {
+	"weapons/physcannon/superphys_launch1.wav",
+	"weapons/physcannon/superphys_launch2.wav",
+	"weapons/physcannon/superphys_launch3.wav",
+	"weapons/physcannon/superphys_launch4.wav",
+};
+
 static int i_particle_effects[MAXENTITIES][3];
 static int i_wingslot[MAXENTITIES];
 
 
-#define DONNERKRIEG_TE_DURATION 0.1
-
-//Heavens Light
-
+#define STELLA_TE_DURATION 0.07
 
 static char gExplosive1;
-
-//Heavens Fall
-
-//Logic for duo raidboss
-
 
 static int i_ally_index[MAXENTITIES];
 static bool b_InKame[MAXENTITIES];
 static bool b_tripple_raid[MAXENTITIES];
-//static int i_statusas[MAXENTITIES];	//agh. m_iState is unreliable
 
+//todo: for release reduce back to 15.0
 #define STELLA_NC_DURATION 30.0	//15.0
 #define STELLA_NC_TURNRATE 250.0
 #define STELLA_NC_TURNRATE_ANGER 300.0
@@ -157,22 +158,17 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_LaserAttackSounds);
 	PrecacheSoundArray(g_heavens_fall_strike_sound);
+	PrecacheSoundArray(g_LaserChargesounds);
 	
-	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
-
-
+	PrecacheSound("mvm/mvm_cpoint_klaxon.wav", true);
 	
-	PrecacheSound("player/flow.wav");
-	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
-	
-	PrecacheSound("mvm/mvm_tank_end.wav");
-	PrecacheSound("mvm/mvm_tank_ping.wav");
-	PrecacheSound("mvm/mvm_tele_deliver.wav");
-	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
+	PrecacheSound("mvm/mvm_tank_ping.wav", true);
+	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
+	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav", true);
 
-	PrecacheSound("misc/halloween/gotohell.wav");
+	PrecacheSound("misc/halloween/gotohell.wav", true);
 
 	PrecacheSound("vo/medic_sf13_influx_big02.mp3", true);
 	
@@ -181,7 +177,6 @@ static void ClotPrecache()
 	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
 	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
 	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
-	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 
 	PrecacheSound("ambient/energy/whiteflash.wav", true);
@@ -236,10 +231,11 @@ methodmap Stella < CClotBody
 		
 	}
 	
-	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
-		
-		
+	public void PlayLaserAttackSound() {
+		EmitSoundToAll(g_LaserAttackSounds[GetRandomInt(0, sizeof(g_LaserAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayLaserChargeSound() {
+		EmitSoundToAll(g_LaserChargesounds[GetRandomInt(0, sizeof(g_LaserChargesounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 	}
 	property float m_flNorm_Attack_Duration
 	{
@@ -394,6 +390,54 @@ methodmap Stella < CClotBody
 			}
 		}
 	}
+	property int m_iParticles2
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_particle_effects[this.index][1]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_particle_effects[this.index][1] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_particle_effects[this.index][1] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iParticles3
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_particle_effects[this.index][2]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_particle_effects[this.index][2] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_particle_effects[this.index][2] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property int m_iWingSlot
 	{
 		public get()		 
@@ -512,25 +556,35 @@ methodmap Stella < CClotBody
 		//deactivate the crest
 		if(!activate)
 		{
-			this.Set_Hand_Particle("raygun_projectile_blue_crit");
+			this.Set_Particle("raygun_projectile_blue_crit", "effect_hand_r");
 			return;
 		}
 
-		this.Set_Hand_Particle("raygun_projectile_red_crit");	//temp, get the other one from fish
+		this.Set_Particle("raygun_projectile_red_crit", "effect_hand_r");	//temp, get the other one from fish
 
 		this.m_iWearable9 = this.EquipItem("head", RUINA_CUSTOM_MODELS_4);
 		SetVariantInt(RUINA_STELLA_CREST_CHARGING);
 		AcceptEntityInput(this.m_iWearable9, "SetBodyGroup");
 	}
-	public void Set_Hand_Particle(char[] Particle)
+	public void Set_Particle(char[] Particle, char[] Attachment, int index = 0)
 	{
 		if(IsValidEntity(this.m_iParticles1))
 			RemoveEntity(this.m_iParticles1);
 
 		float flPos[3], flAng[3];
 
-		this.GetAttachment("effect_hand_r", flPos, flAng);
-		this.m_iParticles1 = ParticleEffectAt_Parent(flPos, Particle, this.index, "effect_hand_r", {0.0,0.0,0.0});
+		this.GetAttachment(Attachment, flPos, flAng);
+
+		int particle = ParticleEffectAt_Parent(flPos, Particle, this.index, Attachment, {0.0,0.0,0.0});
+
+		switch(index)
+		{
+			case 0: this.m_iParticles1 = particle;
+			case 1: this.m_iParticles2 = particle;
+			case 2: this.m_iParticles3 = particle;
+			default: CPrintToChatAll("INVALID PARTICLE INDEX FOR STELLA: %i", index);
+		}
+		
 	}
 	public Stella(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -592,25 +646,20 @@ methodmap Stella < CClotBody
 	
 
 		if(RaidModeScaling < 55)
-		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
-		}
+			RaidModeScaling *= 0.19;
 		else
-		{
 			RaidModeScaling *= 0.38;
-		}
-		
+
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
-		
 		if(amount_of_people > 12.0)
-		{
 			amount_of_people = 12.0;
-		}
-	
+
 		amount_of_people *= 0.12;
 
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+
+		RaidModeScaling *= amount_of_people;
 			
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -623,8 +672,6 @@ methodmap Stella < CClotBody
 		}
 		
 		Citizen_MiniBossSpawn();
-		
-		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		b_tripple_raid[npc.index] = (StrContains(data, "triple_enemies") != -1);
 
@@ -702,7 +749,7 @@ methodmap Stella < CClotBody
 		SetVariantInt(WINGS_STELLA);
 		AcceptEntityInput(npc.m_iWingSlot, "SetBodyGroup");
 
-		npc.Set_Hand_Particle("raygun_projectile_blue_crit");
+		npc.Set_Particle("raygun_projectile_blue_crit", "effect_hand_r");
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -1250,14 +1297,9 @@ static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 
 		npc.m_flRangedArmor = 0.3;
 		npc.m_flMeleeArmor = 0.3;
-			
-		float flPos[3]; // original
-		float flAng[3]; // original
-			
-		npc.GetAttachment("", flPos, flAng);
-		i_particle_effects[npc.index][1] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "", {0.0,0.0,0.0}));
-		npc.GetAttachment("", flPos, flAng);
-		i_particle_effects[npc.index][2] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "", {0.0,0.0,0.0}));
+
+		npc.Set_Particle("utaunt_portalswirl_purple_parent", "", 1);
+		npc.Set_Particle("utaunt_runeprison_yellow_parent", "", 2);
 
 		CreateTimer(0.75, Donner_Nightmare_Offset, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -1304,7 +1346,7 @@ static Action Donner_Nightmare_Offset(Handle timer, int ref)
 	npc.SetCycle(0.23);
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 1.0);
-	EmitSoundToAll("mvm/mvm_tank_ping.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+	EmitSoundToAll("mvm/mvm_tank_ping.wav", 0, SNDCHAN_AUTO, SNDLEVEL_RAIDSIREN, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 	
 	npc.m_flNC_Duration = GetGameTime(npc.index) + STELLA_NC_DURATION;
 	EmitSoundToAll("vo/medic_sf13_influx_big02.mp3", _, _, _, _, _, RUINA_NPC_PITCH);	//she laughing
@@ -1336,10 +1378,10 @@ public Action Stella_Nightmare_Tick(int iNPC)
 
 		npc.m_iKarlasNCState = 0;
 
-		if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][1])))	//temp particles
-			RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][1]));
-		if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][2])))	//temp particles
-			RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][2]));
+		if(IsValidEntity(npc.m_iParticles2))	
+			RemoveEntity(npc.m_iParticles2);
+		if(IsValidEntity(npc.m_iParticles3))	
+			RemoveEntity(npc.m_iParticles3);
 
 		npc.m_flRangedArmor = 1.0;
 		npc.m_flMeleeArmor = 1.25;
@@ -1496,17 +1538,17 @@ static void NC_CoreBeamEffects(Stella npc, float Start_Loc[3], float endPoint[3]
 	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, colorLayer4[3]* 6 + 765 / 8);
 	int colorLayer1[4];
 	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, colorLayer4[3]* 5 + 765 / 8);
-	TE_SetupBeamPoints(Start_Loc, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+	TE_SetupBeamPoints(Start_Loc, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, STELLA_TE_DURATION, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
 	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(Start_Loc, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer2, 3);
+	TE_SetupBeamPoints(Start_Loc, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, STELLA_TE_DURATION, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer2, 3);
 	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(Start_Loc, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter * 0.8), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer3, 3);
+	TE_SetupBeamPoints(Start_Loc, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, STELLA_TE_DURATION, ClampBeamWidth(diameter * 0.8), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer3, 3);
 	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(Start_Loc, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter), ClampBeamWidth(diameter), 0, 1.0, colorLayer4, 3);
+	TE_SetupBeamPoints(Start_Loc, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, STELLA_TE_DURATION, ClampBeamWidth(diameter), ClampBeamWidth(diameter), 0, 1.0, colorLayer4, 3);
 	TE_SendToAll(0.0);
 	int glowColor[4];
 	SetColorRGBA(glowColor, r, g, b, a);
-	TE_SetupBeamPoints(Start_Loc, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter*1.5), ClampBeamWidth(diameter*0.75), 0, 2.5, glowColor, 0);
+	TE_SetupBeamPoints(Start_Loc, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, STELLA_TE_DURATION, ClampBeamWidth(diameter*1.5), ClampBeamWidth(diameter*0.75), 0, 2.5, glowColor, 0);
 	TE_SendToAll(0.0);
 
 	if(update)	//use a particle instead of this for fancyness of fancy
@@ -1555,7 +1597,7 @@ static void Stella_Create_Spinning_Beams(Stella npc, float Origin[3], float Angl
 			int colorLayer1[4];
 			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, a);
 										
-			TE_SetupBeamPoints(endLoc, End_Loc, g_Ruina_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.25, colorLayer1, 3);
+			TE_SetupBeamPoints(endLoc, End_Loc, g_Ruina_BEAM_Laser, 0, 0, 0, STELLA_TE_DURATION, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.25, colorLayer1, 3);
 										
 			TE_SendToAll();
 		}
@@ -1564,11 +1606,11 @@ static void Stella_Create_Spinning_Beams(Stella npc, float Origin[3], float Angl
 	
 	int color[4]; color[0] = 1; color[1] = 255; color[2] = 255; color[3] = 255;
 	
-	TE_SetupBeamPoints(buffer_vec[1], buffer_vec[loop_for], g_Ruina_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, 5.0, 5.0, 0, 0.01, color, 3);	
+	TE_SetupBeamPoints(buffer_vec[1], buffer_vec[loop_for], g_Ruina_BEAM_Laser, 0, 0, 0, STELLA_TE_DURATION, 5.0, 5.0, 0, 0.01, color, 3);	
 	TE_SendToAll(0.0);
 	for(int i=1 ; i<loop_for ; i++)
 	{
-		TE_SetupBeamPoints(buffer_vec[i], buffer_vec[i+1], g_Ruina_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, 5.0, 5.0, 0, 0.01, color, 3);	
+		TE_SetupBeamPoints(buffer_vec[i], buffer_vec[i+1], g_Ruina_BEAM_Laser, 0, 0, 0, STELLA_TE_DURATION, 5.0, 5.0, 0, 0.01, color, 3);	
 		TE_SendToAll(0.0);
 	}
 	
@@ -2125,11 +2167,6 @@ static void Internal_NPCDeath(int entity)
 
 	if(EntRefToEntIndex(RaidBossActive)==npc.index)
 		RaidBossActive = INVALID_ENT_REFERENCE;
-	
-	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -2153,16 +2190,11 @@ static void Internal_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWingSlot))	
 		RemoveEntity(npc.m_iWingSlot);
 
-		//when 7 wearables isn't enough, get 3 more...
-
-	if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][0])))	//temp particles
-		RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][0]));
-	if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][1])))	//temp particles
-		RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][1]));
-	if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][2])))	//temp particles
-		RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][2]));
-
-
+	for(int i=0 ; i < 3 ; i++)
+	{
+		if(IsValidEntity(EntRefToEntIndex(i_particle_effects[npc.index][i])))
+			RemoveEntity(EntRefToEntIndex(i_particle_effects[npc.index][i]));
+	}
 	
 }
 static bool b_hit_something;
@@ -2245,7 +2277,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 		npc.Set_Crest_Charging_Phase(true);
 
 		npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", _ , 2.0, _, 0.28);
-		npc.PlayMeleeSound();
+		npc.PlayLaserChargeSound();
 	}
 
 	if(npc.m_flNorm_Attack_In != 0.0 && npc.m_flNorm_Attack_In < GameTime)
@@ -2253,6 +2285,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 		npc.m_flNorm_Attack_In = 0.0;
 		npc.m_flNorm_Attack_Duration = GameTime + Attack_Time;
 		Fire_Laser(npc);
+		npc.PlayLaserAttackSound();
 	}
 }
 static void Fire_Laser(Stella npc)
