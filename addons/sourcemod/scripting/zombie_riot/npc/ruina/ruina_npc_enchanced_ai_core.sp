@@ -2443,6 +2443,8 @@ enum struct Ruina_Laser_Logic
 	bool trace_hit;
 	bool trace_hit_enemy;
 
+	float Custom_Hull[3];
+
 	/*
 		Todo: 
 			If needed, add a trace version that only triggers a void instead of also dealing damage.
@@ -2509,12 +2511,7 @@ enum struct Ruina_Laser_Logic
 		i_targets_hit = 0;
 
 		float hullMin[3], hullMax[3];
-		hullMin[0] = -this.Radius;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
+		this.SetHull(hullMin, hullMax);
 
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
@@ -2530,11 +2527,17 @@ enum struct Ruina_Laser_Logic
 				float playerPos[3];
 				WorldSpaceCenter(victim, playerPos);
 
+				//still send the dmg over.
+				float Dmg = this.Damage;
+
+				if(ShouldNpcDealBonusDamage(victim))
+					Dmg = this.Bonus_Damage;
+
 				Call_StartFunction(null, Attack_Function);
 				Call_PushCell(this.client);
 				Call_PushCell(victim);
 				Call_PushCell(this.damagetype);
-				Call_PushFloat(this.Damage);
+				Call_PushFloat(Dmg);
 				Call_Finish();
 
 				//static void On_LaserHit(int client, int target, int damagetype, float damage)
@@ -2550,12 +2553,7 @@ enum struct Ruina_Laser_Logic
 		i_targets_hit = 0;
 
 		float hullMin[3], hullMax[3];
-		hullMin[0] = -this.Radius;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
+		this.SetHull(hullMin, hullMax);
 
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
@@ -2585,13 +2583,32 @@ enum struct Ruina_Laser_Logic
 					Call_PushCell(this.client);
 					Call_PushCell(victim);
 					Call_PushCell(this.damagetype);
-					Call_PushFloat(this.Damage);
+					Call_PushFloat(Dmg);
 					Call_Finish();
 
 					//static void On_LaserHit(int client, int target, int damagetype, float damage)
 				}
 			}
 		}
+	}
+	void SetHull(float hullMin[3], float hullMax[3])
+	{
+		if(this.Custom_Hull[0] != 0.0 || this.Custom_Hull[1] != 0.0 || this.Custom_Hull[2] != 0.0)
+		{
+			hullMin[0] = -this.Custom_Hull[0];
+			hullMin[1] = -this.Custom_Hull[1];
+			hullMin[2] = -this.Custom_Hull[2];
+			return;
+		}
+		else
+		{
+			hullMin[0] = -this.Radius;
+			hullMin[1] = hullMin[0];
+			hullMin[2] = hullMin[0];
+		}
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
 	}
 }
 

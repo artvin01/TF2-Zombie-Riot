@@ -103,6 +103,7 @@ static float fl_schwert_sword_battery[MAXENTITIES];
 
 
 #define SCHWERKRIEG_SWORDS_AMT 7	
+#define KARLAS_SLICER_HIT	"npc/scanner/scanner_electric1.wav"
 
 static int i_dance_of_light_sword_id[MAXENTITIES][SCHWERKRIEG_SWORDS_AMT];
 static float fl_dance_of_light_sword_throttle[MAXENTITIES][SCHWERKRIEG_SWORDS_AMT];
@@ -157,6 +158,8 @@ static void ClotPrecache()
 	PrecacheSound(TELEPORT_STRIKE_TELEPORT, true);
 	PrecacheSound(TELEPORT_STRIKE_HIT, true);
 	PrecacheSound(TELEPORT_STRIKE_MISS, true);
+
+	PrecacheSound(KARLAS_SLICER_HIT, true);
 
 	
 	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
@@ -644,6 +647,15 @@ static void Internal_ClotThink(int iNPC)
 
 	Healing_Logic(npc, PrimaryThreatIndex, flDistanceToTarget);
 
+	if(npc.m_flNextRangedAttack < GameTime && Can_I_See_Enemy(npc.index, PrimaryThreatIndex) == PrimaryThreatIndex)
+	{
+		Fire_Hiigara_Projectile(npc, PrimaryThreatIndex);
+
+		npc.m_flNextRangedAttack = GameTime + 1.0;
+
+		return;
+	}
+
 	if(npc.m_bRetreat)
 	{
 		int Ally = npc.Ally;
@@ -698,7 +710,7 @@ static void Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 		WorldSpaceCenter(npc.index, vecMe);
 
 		float flDistanceToAlly = GetVectorDistance(vecAlly, vecMe, true);
-		Karlas_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget, true);	//warp
+		Karlas_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget, true);	
 		
 		if(flDistanceToAlly < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 		{
@@ -983,6 +995,204 @@ static int Schwert_Status(Karlas npc, float GameTime)
 	return -1;
 
 }
+enum struct KarlasProj
+{
+	int particles[3];
+}
+static KarlasProj struct_Projectile[MAXENTITIES];
+//warp
+static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
+{
+	float SelfVec[3];
+	Ruina_Projectiles Projectile;
+	WorldSpaceCenter(npc.index, SelfVec);
+	Projectile.iNPC = npc.index;
+	Projectile.Start_Loc = SelfVec;
+	float Ang[3];
+	float VecTarget[3];
+	WorldSpaceCenter(PrimaryThreatIndex, VecTarget);
+	MakeVectorFromPoints(SelfVec, VecTarget, Ang);
+	GetVectorAngles(Ang, Ang);
+
+	float Speed = (npc.Anger ? 750.0 : 500.0);
+	float Time = 10.0;
+
+	Projectile.Angles = Ang;
+	Projectile.speed = Speed;
+	Projectile.radius = 0.0;
+	Projectile.damage = 100.0;
+	Projectile.bonus_dmg = 100.0;
+	Projectile.Time = Time;
+	Projectile.visible = false;
+	int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);	
+
+	if(!IsValidEntity(Proj))
+		return;
+
+	Projectile.Size = 1.0;
+	int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS_4);
+	if(!IsValidEntity(ModelApply))
+		return;
+	
+	SetEntProp(Proj, Prop_Send, "m_usSolidFlags", 12); 
+	
+	//float angles[3];
+	//GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
+	//angles[1]+=90.0;
+	//TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
+	SetVariantInt(RUINA_KARLAS_PROJECTILE);
+	AcceptEntityInput(ModelApply, "SetBodyGroup");
+
+	float 	Homing_Power = (npc.Anger ? 8.0 : 5.0),
+			Homing_Lockon = (npc.Anger ? 90.0 : 60.0);
+
+	Initiate_HomingProjectile(Proj,
+	npc.index,
+	Homing_Lockon,			// float lockonAngleMax,
+	Homing_Power,			// float homingaSec,
+	!npc.Anger,				// bool LockOnlyOnce,
+	true,					// bool changeAngles,
+	Ang,
+	PrimaryThreatIndex
+	);
+
+	float flPos[3];
+	float flAng[3];
+
+	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	GetEntPropVector(Proj, Prop_Data, "m_angRotation", flAng);
+	GetEntPropVector(Proj, Prop_Data, "m_vecAbsOrigin", flPos);
+
+	int right = ParticleEffectAt({0.0, -52.5, 0.0}, "raygun_projectile_blue", Time);
+	int left = ParticleEffectAt({0.0, 52.5, 0.0}, "raygun_projectile_red", Time);
+
+	SetParent(ParticleOffsetMain, right, "",_, true);
+	SetParent(ParticleOffsetMain, left, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
+	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
+	SetParent(Proj, ParticleOffsetMain, "",_);
+
+	struct_Projectile[Proj].particles[0] = EntIndexToEntRef(ParticleOffsetMain);
+	struct_Projectile[Proj].particles[1] = EntIndexToEntRef(left);
+	struct_Projectile[Proj].particles[2] = EntIndexToEntRef(right);
+
+	CreateTimer(Time, Timer_RemoveEntity, EntIndexToEntRef(ParticleOffsetMain), TIMER_FLAG_NO_MAPCHANGE);
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(Proj));
+	RequestFrame(Projectile_Detect_Loop, pack);
+	
+}
+static void Projectile_Detect_Loop(DataPack pack)
+{
+	pack.Reset();
+	int projectile = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(projectile))
+	{
+		if(projectile == -1)
+			return ;
+
+		for(int i =0 ; i < 3 ; i++)
+		{
+			int particle = EntRefToEntIndex(struct_Projectile[projectile].particles[i]);
+			if(IsValidEntity(particle))
+				RemoveEntity(particle);
+			
+			struct_Projectile[projectile].particles[i] = INVALID_ENT_REFERENCE;
+		}
+		return ;
+	}
+	int owner = GetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))	//owner is invalid, evacuate.
+	{
+		for(int i =0 ; i < 3 ; i++)
+		{
+			int particle = EntRefToEntIndex(struct_Projectile[projectile].particles[i]);
+			if(IsValidEntity(particle))
+				RemoveEntity(particle);
+			
+			struct_Projectile[projectile].particles[i] = INVALID_ENT_REFERENCE;
+		}
+		Ruina_Remove_Projectile(projectile);
+		return ;
+	}
+	float Vec_Points[2][3];
+	for(int i =1 ; i < 3 ; i++)
+	{
+		int particle = EntRefToEntIndex(struct_Projectile[projectile].particles[i]);
+		if(!IsValidEntity(particle))
+			return ;
+
+		float flPos[3];
+		GetEntPropVector(particle, Prop_Data, "m_vecAbsOrigin", flPos);
+		Vec_Points[i-1] = flPos;
+	}
+	//float radius = 7.0;
+	//TE_SetupBeamPoints(Vec_Points[0], Vec_Points[1], g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, radius*2.0, radius*2.0, 0, 5.0, {255,255,255,255}, 3);
+	//TE_SendToAll();
+
+	Ruina_Laser_Logic Laser;
+	Laser.client = owner;
+	Laser.Damage = Modify_Damage(-1, 25.0);
+	Laser.Bonus_Damage = Modify_Damage(-1, 25.0) * 6.0;
+	Laser.damagetype = DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE;
+	//Laser.Radius = radius;
+	Laser.End_Point = Vec_Points[1];
+	Laser.Start_Point = Vec_Points[0];
+	Laser.Custom_Hull = {7.0, 7.0, 2.0};	//we want the player to have the ability to jump over the slicer if they time it right
+	Laser.Detect_Entities(On_LaserHit);
+
+	delete pack;
+	DataPack pack2 = new DataPack();
+	pack2.WriteCell(EntIndexToEntRef(projectile));
+	float Throttle = 0.04;	//0.025
+	int frames_offset = RoundToCeil(66.0*Throttle);	//no need to call this every frame if avoidable
+	if(frames_offset < 0)
+		frames_offset = 1;
+	RequestFrames(Projectile_Detect_Loop, frames_offset, pack2);
+
+	
+}
+static void On_LaserHit(int client, int target, int damagetype, float damage)
+{
+	if(fl_trace_target_timeout[client][target] > GetGameTime())
+		return;
+	fl_trace_target_timeout[client][target] = GetGameTime() + 0.25;	//if they walk backwards, its likely to hit them 2 times, but who on earth would willingly walk backwards/alongside the trajectory of the projectile
+
+	int pitch = GetRandomInt(125,135);
+	EmitSoundToAll(KARLAS_SLICER_HIT, target, SNDCHAN_AUTO, 75,_,0.8,pitch);
+	SDKHooks_TakeDamage(target, client, client, damage, damagetype, -1); 
+}
+static void Func_On_Proj_Touch(int entity, int other)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))	//owner is invalid, evacuate.
+	{
+		Ruina_Remove_Projectile(entity);
+		return;
+	}
+	//we only care if we hit a wall or smth.
+	if(other != 0)
+		return;
+	
+	for(int i =0 ; i < 3 ; i++)
+	{
+		int particle = EntRefToEntIndex(struct_Projectile[entity].particles[i]);
+		if(IsValidEntity(particle))
+			RemoveEntity(particle);
+		
+		struct_Projectile[entity].particles[i] = INVALID_ENT_REFERENCE;
+	}
+	
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+
+	Ruina_Remove_Projectile(entity);
+
+}
 static void Schwert_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float GameTime, float flDistanceToTarget, float vecTarget[3])
 {
 
@@ -1031,6 +1241,7 @@ static void Schwert_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float
 		float Swing_Delay = 0.2;
 		if(npc.m_flNextMeleeAttack < GameTime)
 		{
+
 			//Play attack ani
 			if (!npc.m_flAttackHappenswillhappen)
 			{
@@ -2074,7 +2285,7 @@ static void Internal_NPCDeath(int entity)
 	{
 		if(npc.Ally)
 		{
-			switch(GetRandomInt(1,3))	//warp
+			switch(GetRandomInt(1,3))
 			{
 				case 1:
 				{
@@ -2190,7 +2401,7 @@ static void Schwertkrieg_Delete_Wings(Karlas npc)
 		i_schwert_particle_index[npc.index][i]=INVALID_ENT_REFERENCE;
 	}
 }
-
+//warp
 static void Schwertkrieg_Create_Wings(Karlas npc)
 {
 	if(AtEdictLimit(EDICT_RAID))

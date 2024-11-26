@@ -3,13 +3,6 @@
 
 $modelname "zombie_riot/weapons/ruina_models_4_1.mdl"	//current one on the server: null
 
-
-
-//$bodygroup "ruina_bow_3"	
-//{
-//	blank
-//	studio "v3/ruina_bow_3.smd"
-//}
 $bodygroup "stella_crest_1"	
 {
 	blank
@@ -19,6 +12,11 @@ $bodygroup "stella_crest_charging"	//this goes ontop of the pre existing crest.
 {
 	blank
 	studio "v4/stella_crest_charging.smd"
+}
+$bodygroup "karlas_projectile"	
+{
+	blank
+	studio "v4/karlas_projectile.smd"
 }
 
 

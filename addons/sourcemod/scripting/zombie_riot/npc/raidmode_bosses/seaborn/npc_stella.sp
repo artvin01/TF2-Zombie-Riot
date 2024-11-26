@@ -24,9 +24,7 @@ no?: abort.
 yes:
 Keep on checking which of the 2 npc's can see more targets from their positions, if karlas can see more, move NC onto karlas and have him reflect it, if stella can see more, buisness as usual
 
-fix stella keeping her NC res. oops
 
-Phase 2: Danger - 6:24
 
 
 
@@ -40,6 +38,11 @@ If Karlas is close to stella, and there are multiple people near stella, Karlas 
 Give Karlas a Phase 2 animation, doing idk what yet.
 
 When Stella dies, Karlas gains his current blades. abit modified tho. mainly visual / trace (Phase 3)
+
+Fire_Hiigara_Projectile - needs a better name?
+Find some animation for it, while, *kinda* similar to what nemal does? preferably not.
+them being slow (current speed) + like 1s inbetween each slicer per person so they can dodge.
+
 
 
 Misc:
