@@ -195,11 +195,18 @@ methodmap VictorianCaffeinator < CClotBody
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 0, 0, 0, 255);
+
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/tw_medibot_chariot/tw_medibot_chariot.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 0, 0, 0, 255);
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
 		
 		
@@ -527,6 +534,8 @@ public void VictorianCaffeinator_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	npc.StopHealing();
 }
 
