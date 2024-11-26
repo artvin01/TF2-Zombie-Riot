@@ -167,36 +167,43 @@ methodmap VictorianHardener < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/dec17_coldfront_carapace/dec17_coldfront_carapace.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/surgical_stare/surgical_stare.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 150, 150, 200, 255);
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_medigun/c_medigun.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable2	= npc.EquipItem("head", "models/workshop/player/items/engineer/spr18_cold_case/spr18_cold_case.mdl");
+		npc.m_iWearable2	= npc.EquipItem("head", "models/workshop/player/items/spy/dec22_frostbite_bonnet/dec22_frostbite_bonnet.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 255, 215, 0, 255);
 
-		npc.m_iWearable6	= npc.EquipItem("head", "models/workshop/player/items/engineer/sum19_brain_interface/sum19_brain_interface.mdl");
-		SetVariantString("1.1");
+		npc.m_iWearable6	= npc.EquipItem("head", "models/workshop/player/items/medic/sum24_hazardous_vest/sum24_hazardous_vest.mdl");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable6, 255, 215, 0, 255);
+		SetEntityRenderColor(npc.m_iWearable6, 150, 150, 150, 255);
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/spr18_cold_case/spr18_cold_case.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 255, 215, 0, 255);
+		SetEntityRenderColor(npc.m_iWearable5, 125, 125, 125, 255);
+
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/dec22_wooly_pulli_style3/dec22_wooly_pulli_style3.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable7, 125, 125, 125, 255);
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 8);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
 		
 		
@@ -519,5 +526,7 @@ public void VictorianHardener_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	npc.StopHealing();
 }
