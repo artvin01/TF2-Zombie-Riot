@@ -193,7 +193,7 @@ methodmap CorruptedBarney < CClotBody
 
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = true;
+		RaidAllowsBuildings = false;
 		b_NameNoTranslation[npc.index] = true;
 		
 		MusicEnum music;
