@@ -211,8 +211,7 @@ methodmap Ruriana < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Ruriana npc = view_as<Ruriana>(iNPC);

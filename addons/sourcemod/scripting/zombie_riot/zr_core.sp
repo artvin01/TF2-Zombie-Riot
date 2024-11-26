@@ -330,6 +330,7 @@ int CashSpentGivePostSetup[MAXTF2PLAYERS];
 bool CashSpentGivePostSetupWarning[MAXTF2PLAYERS];
 int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
+bool StarterCashMode[MAXTF2PLAYERS] = {true, ...};
 int Scrap[MAXTF2PLAYERS];
 int PlayStreak[MAXTF2PLAYERS];
 int Ammo_Count_Ready;
@@ -369,10 +370,6 @@ int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
-
-int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
-int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
-
 
 float MultiGlobalEnemy = 0.25;
 float MultiGlobalEnemyBoss = 0.25;
@@ -714,7 +711,6 @@ void ZR_MapStart()
 	Zero(f_DisableDyingTimer);
 	Zero(f_DyingTextTimer);
 	Zero(healing_cooldown);
-	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_WasRecentlyRevivedViaNonWaveClassChange);
 	Zero(f_TimeAfterSpawn);

@@ -149,8 +149,7 @@ methodmap WaterZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void WaterZombie_ClotThink(int iNPC)
 {
 	WaterZombie npc = view_as<WaterZombie>(iNPC);

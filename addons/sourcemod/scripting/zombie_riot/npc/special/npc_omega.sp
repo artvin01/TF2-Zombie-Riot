@@ -68,7 +68,7 @@ static char[] GetPanzerHealth()
 {
 	int health = 110;
 	
-	health *= CountPlayersOnRed(); //yeah its high. will need to scale with waves exponentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yeah its high. will need to scale with waves exponentially.
 	
 	float temp_float_hp = float(health);
 	

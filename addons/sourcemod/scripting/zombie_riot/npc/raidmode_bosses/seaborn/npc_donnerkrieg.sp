@@ -358,7 +358,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
 		if(amount_of_people > 12.0)
 		{
@@ -639,8 +639,7 @@ static void Calculate_Combined_Health(Raidboss_Donnerkrieg npc)
 	}
 }*/
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);

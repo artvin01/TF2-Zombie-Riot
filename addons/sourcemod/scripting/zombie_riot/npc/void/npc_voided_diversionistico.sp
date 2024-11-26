@@ -136,9 +136,7 @@ methodmap VoidedDiversionistico < CClotBody
 		func_NPCOnTakeDamage[npc.index] = VoidedDiversionistico_OnTakeDamage;
 		func_NPCThink[npc.index] = VoidedDiversionistico_ClotThink;
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
 		b_TryToAvoidTraverse[npc.index] = true;

@@ -272,7 +272,6 @@ methodmap XenoFatherGrigori < CClotBody
 			
 		//IDLE
 		npc.m_bThisNpcIsABoss = true;
-		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;
 		npc.m_flDoingAnimation = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -331,8 +330,7 @@ methodmap XenoFatherGrigori < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void XenoFatherGrigori_ClotThink(int iNPC)
 {
 	XenoFatherGrigori npc = view_as<XenoFatherGrigori>(iNPC);

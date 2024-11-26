@@ -179,8 +179,7 @@ methodmap Scout < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Scout_ClotThink(int iNPC)
 {
 	Scout npc = view_as<Scout>(iNPC);

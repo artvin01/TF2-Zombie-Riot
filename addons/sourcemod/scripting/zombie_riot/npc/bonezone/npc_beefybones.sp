@@ -196,8 +196,7 @@ methodmap BeefyBones < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void BeefyBones_ClotThink(int iNPC)
 {
 	BeefyBones npc = view_as<BeefyBones>(iNPC);

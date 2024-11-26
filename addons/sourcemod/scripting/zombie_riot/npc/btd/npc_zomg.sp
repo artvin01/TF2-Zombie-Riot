@@ -159,8 +159,7 @@ methodmap Zomg < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Zomg_ClotThink(int iNPC)
 {
 	Zomg npc = view_as<Zomg>(iNPC);

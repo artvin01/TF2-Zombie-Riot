@@ -159,7 +159,6 @@ methodmap XenoEngineer < CClotBody
 		func_NPCThink[npc.index] = XenoEngineer_ClotThink;	
 		
 		//IDLE
-		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -199,8 +198,7 @@ methodmap XenoEngineer < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoEngineer_ClotThink(int iNPC)
 {
 	XenoEngineer npc = view_as<XenoEngineer>(iNPC);

@@ -190,8 +190,7 @@ methodmap CaveGuardsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	CaveGuardsman npc = view_as<CaveGuardsman>(iNPC);

@@ -254,8 +254,7 @@ methodmap Magnium < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Magnium npc = view_as<Magnium>(iNPC);

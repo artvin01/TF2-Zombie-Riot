@@ -135,9 +135,7 @@ methodmap VoidSpeechless < CClotBody
 		VoidSpeechlessEffects(npc.index);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 350.0;
 		

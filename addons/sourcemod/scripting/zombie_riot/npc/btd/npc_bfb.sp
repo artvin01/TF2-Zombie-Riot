@@ -163,8 +163,7 @@ methodmap BFB < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Bfb_ClotThink(int iNPC)
 {
 	BFB npc = view_as<BFB>(iNPC);

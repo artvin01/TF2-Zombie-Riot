@@ -166,9 +166,7 @@ methodmap CorruptedBarney < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(CorruptedBarney_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 360.0;
 		npc.m_bDissapearOnDeath = true;
@@ -195,7 +193,7 @@ methodmap CorruptedBarney < CClotBody
 
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = true;
+		RaidAllowsBuildings = false;
 		b_NameNoTranslation[npc.index] = true;
 		
 		MusicEnum music;

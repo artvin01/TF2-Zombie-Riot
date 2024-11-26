@@ -177,9 +177,7 @@ methodmap CaptinoAgentus < CClotBody
 		func_NPCOnTakeDamage[npc.index] = CaptinoAgentus_OnTakeDamage;
 		func_NPCThink[npc.index] = CaptinoAgentus_ClotThink;
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 340.0;
 		b_TryToAvoidTraverse[npc.index] = true;

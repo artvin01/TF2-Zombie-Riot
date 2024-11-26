@@ -201,9 +201,7 @@ methodmap XenoSpyCloaked < CClotBody
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		
-		npc.m_iState = 0;
+
 		npc.m_flSpeed = 290.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -241,8 +239,7 @@ methodmap XenoSpyCloaked < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSpyCloaked_ClotThink(int iNPC)
 {
 	XenoSpyCloaked npc = view_as<XenoSpyCloaked>(iNPC);

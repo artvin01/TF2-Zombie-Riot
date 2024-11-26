@@ -250,8 +250,7 @@ methodmap PhantomKnight < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void PhantomKnight_ClotThink(int iNPC)
 {
 	PhantomKnight npc = view_as<PhantomKnight>(iNPC);
@@ -820,7 +819,7 @@ static char[] GetLucianHealth()
 {
 	int health = 135;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

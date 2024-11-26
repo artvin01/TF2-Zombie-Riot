@@ -223,8 +223,7 @@ methodmap CombineOverlord < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineOverlord_ClotThink(int iNPC)
 {
 	CombineOverlord npc = view_as<CombineOverlord>(iNPC);

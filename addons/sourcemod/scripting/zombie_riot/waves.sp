@@ -1489,6 +1489,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			
+			Citizen_WaveStart();
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
@@ -1549,18 +1550,28 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			bool refreshNPCStore;
 			if(round.SpawnGrigori)
 			{
+				Spawn_Cured_Grigori();
+				refreshNPCStore = true;
+				if(i_SpecialGrigoriReplace == 2)
 				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
 				{
 					if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
 					{
-						ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
-						SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
-						SetGlobalTransTarget(client_Grigori);
-						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");		
+						if(i_SpecialGrigoriReplace == 0)
+						{
+							ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
+							SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
+							SetGlobalTransTarget(client_Grigori);
+							ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");	
+						}	
+						else if(i_SpecialGrigoriReplace == 2)
+						{
+							SetHudTextParams(-1.0, -1.0, 3.01, 125, 125, 125, 255);
+							SetGlobalTransTarget(client_Grigori);
+							ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "The World Machine Spawn");	
+						}
 					}
 				}
-				Spawn_Cured_Grigori();
-				refreshNPCStore = true;
 			}
 			
 			// Above is the round that just ended
@@ -1650,7 +1661,32 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//Loop through all the still alive enemies that are indexed!
 			
+			
 			//always increace chance of miniboss.
+			if(!rogue && CurrentRound >= 12)
+			{
+				int count;
+				int i = MaxClients + 1;
+				while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+				{
+					if(!b_NpcHasDied[i])
+					{
+						if(Citizen_IsIt(i))
+							count++;
+					}
+				}
+				// theres only a max of 2
+				if(count == 1)
+				{
+					if(GetRandomFloat(0.0, 1.0) < 0.05)
+					{
+						//10 percent chance to spawn one every wave, upto 4 at max!
+						Citizen_SpawnAtPoint();
+					}
+					//This means barney is enabled, we allow to spawn more citizens.
+				}
+			}
+			
 			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
@@ -2260,7 +2296,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(InSetup || Classic_Mode())
+	if(!Waves_Started() || InSetup || Classic_Mode())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)
@@ -2350,13 +2386,9 @@ float Zombie_DelayExtraSpeed()
 
 void DoGlobalMultiScaling()
 {
-	float playercount = float(CountPlayersOnRed());
+	float playercount = ZRStocks_PlayerScalingDynamic();
 			
-	if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
-	{
-		playercount = 0.70;
-	}
-	else if(playercount < 1.0)
+	if(playercount < 1.0)
 	{
 		playercount = 0.70;
 	}
@@ -3132,6 +3164,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		
 		RaidMusicSpecial1.Clear();
 		
+		Citizen_WaveStart();
 		ExcuteRelay("zr_wavedone");
 		CurrentRound++;
 		CurrentWave = -1;

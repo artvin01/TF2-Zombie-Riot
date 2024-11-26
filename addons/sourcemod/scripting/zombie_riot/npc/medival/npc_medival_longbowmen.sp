@@ -213,8 +213,7 @@ methodmap MedivalLongbowmen < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalLongbowmen_ClotThink(int iNPC)
 {
 	MedivalLongbowmen npc = view_as<MedivalLongbowmen>(iNPC);

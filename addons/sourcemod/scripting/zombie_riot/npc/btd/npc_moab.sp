@@ -164,8 +164,7 @@ methodmap Moab < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Moab_ClotThink(int iNPC)
 {
 	Moab npc = view_as<Moab>(iNPC);

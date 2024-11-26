@@ -163,8 +163,7 @@ methodmap MadChicken < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MadChicken_ClotThink(int iNPC)
 {
 	MadChicken npc = view_as<MadChicken>(iNPC);

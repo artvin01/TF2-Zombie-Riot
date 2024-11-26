@@ -190,7 +190,6 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		npc.m_iAttacksTillReload = 5;
 		npc.m_bmovedelay = false;
 		
-		npc.m_iState = 0;
 		npc.m_flSpeed = 190.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -218,8 +217,7 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 {
 	XenoCombineSoldierAr2 npc = view_as<XenoCombineSoldierAr2>(iNPC);

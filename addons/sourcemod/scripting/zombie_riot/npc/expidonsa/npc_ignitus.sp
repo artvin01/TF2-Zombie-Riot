@@ -190,8 +190,7 @@ methodmap Ignitus < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Ignitus_ClotThink(int iNPC)
 {
 	Ignitus npc = view_as<Ignitus>(iNPC);

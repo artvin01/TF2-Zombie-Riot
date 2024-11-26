@@ -184,8 +184,7 @@ methodmap GiantTankus < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void GiantTankus_ClotThink(int iNPC)
 {
 	GiantTankus npc = view_as<GiantTankus>(iNPC);

@@ -207,7 +207,6 @@ methodmap XenoCombineOverlord < CClotBody
 		
 		
 		npc.m_bThisNpcIsABoss = true;
-		npc.m_iState = 0;
 		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -254,8 +253,7 @@ methodmap XenoCombineOverlord < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineOverlord_ClotThink(int iNPC)
 {
 	XenoCombineOverlord npc = view_as<XenoCombineOverlord>(iNPC);

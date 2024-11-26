@@ -231,8 +231,7 @@ methodmap MedivalSwordsmanGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalSwordsmanGiant_ClotThink(int iNPC)
 {
 	MedivalSwordsmanGiant npc = view_as<MedivalSwordsmanGiant>(iNPC);

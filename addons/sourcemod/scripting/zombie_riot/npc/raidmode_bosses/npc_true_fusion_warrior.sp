@@ -326,7 +326,7 @@ methodmap TrueFusionWarrior < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
 		if(amount_of_people > 12.0)
 		{
@@ -433,8 +433,7 @@ methodmap TrueFusionWarrior < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void TrueFusionWarrior_ClotThink(int iNPC)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(iNPC);

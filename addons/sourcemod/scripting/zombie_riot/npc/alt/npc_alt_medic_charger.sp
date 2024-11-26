@@ -182,8 +182,7 @@ methodmap AltMedicCharger < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	AltMedicCharger npc = view_as<AltMedicCharger>(iNPC);

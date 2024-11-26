@@ -224,8 +224,7 @@ methodmap MedivalConstruct < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalConstruct_ClotThink(int iNPC)
 {
 	MedivalConstruct npc = view_as<MedivalConstruct>(iNPC);

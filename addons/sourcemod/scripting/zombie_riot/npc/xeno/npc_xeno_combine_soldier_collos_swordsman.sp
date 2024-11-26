@@ -193,7 +193,6 @@ methodmap XenoCombineCollos < CClotBody
 		func_NPCOnTakeDamage[npc.index] = XenoCombineCollos_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoCombineCollos_ClotThink;
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -225,8 +224,7 @@ methodmap XenoCombineCollos < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineCollos_ClotThink(int iNPC)
 {
 	XenoCombineCollos npc = view_as<XenoCombineCollos>(iNPC);

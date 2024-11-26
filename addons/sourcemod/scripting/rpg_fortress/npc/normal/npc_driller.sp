@@ -158,8 +158,7 @@ methodmap Driller < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Driller_ClotThink(int iNPC)
 {
 	Driller npc = view_as<Driller>(iNPC);

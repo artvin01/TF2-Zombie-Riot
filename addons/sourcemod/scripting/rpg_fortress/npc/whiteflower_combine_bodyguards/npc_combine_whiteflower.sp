@@ -306,8 +306,7 @@ methodmap Whiteflower_Boss < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_Boss_ClotThink(int iNPC)
 {
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(iNPC);

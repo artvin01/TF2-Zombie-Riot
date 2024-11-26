@@ -197,8 +197,7 @@ methodmap Whiteflower_RagingBlader < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 {
 	Whiteflower_RagingBlader npc = view_as<Whiteflower_RagingBlader>(iNPC);

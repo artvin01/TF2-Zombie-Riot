@@ -224,8 +224,7 @@ methodmap MedivalHalb < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalHalb_ClotThink(int iNPC)
 {
 	MedivalHalb npc = view_as<MedivalHalb>(iNPC);

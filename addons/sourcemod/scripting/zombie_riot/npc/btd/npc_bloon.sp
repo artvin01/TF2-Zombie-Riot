@@ -514,8 +514,7 @@ methodmap Bloon < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Bloon_ClotThink(int iNPC)
 {
 	Bloon npc = view_as<Bloon>(iNPC);

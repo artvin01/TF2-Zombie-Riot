@@ -198,7 +198,6 @@ methodmap XenoCombineGaint < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -222,8 +221,7 @@ methodmap XenoCombineGaint < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineGaint_ClotThink(int iNPC)
 {
 	XenoCombineGaint npc = view_as<XenoCombineGaint>(iNPC);

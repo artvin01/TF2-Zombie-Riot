@@ -264,7 +264,12 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
 			b_TauntSpeedIncreace[client] = view_as<bool>(results[2].FetchFloat(15));
 			f_Data_InBattleHudDisableDelay[client] = results[2].FetchFloat(16);
-			b_IgnoreMapMusic[client] = view_as<bool>(results[2].FetchInt(17));
+
+			int music = results[2].FetchInt(17);
+			b_IgnoreMapMusic[client] = view_as<bool>(music & (1 << 0));
+			b_DisableDynamicMusic[client] = view_as<bool>(music & (1 << 1));
+			b_EnableRightSideAmmoboxCount[client] = view_as<bool>(music & (1 << 2));
+			b_EnableCountedDowns[client] = view_as<bool>(music & (1 << 3));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -300,6 +305,9 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 
 		if(tr)
 			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
+			
+		if(ForceNiko)
+			OverridePlayerModel(client, NIKO_2, true);
 	}
 }
 
@@ -327,43 +335,84 @@ void DataBase_ClientDisconnect(int client)
 
 			tr.AddQuery(buffer);
 
-			FormatEx(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_SETTINGS ... " SET "
-			... "niko = %d, "
-			... "armorx = %.3f, "
-			... "armory = %.3f, "
-			... "hurtx = %.3f, "
-			... "hurty = %.3f, "
-			... "weaponx = %.3f, "
-			... "weapony = %.3f, "
-			... "notifx = %.3f, "
-			... "notify = %.3f, "
-			... "screenshake = %d, "
-			... "lowhealthshake = %d, "
-			... "hitmarker = %d, "
-			... "tp = %d, "
-			... "zomvol = %.3f, "
-			... "tauntspeed = %d, "
-			... "battletimehud = %.3f, "
-			... "mapmusic = %d "
-			... "WHERE steamid = %d;",
-			i_PlayerModelOverrideIndexWearable[client] + 1,
-			f_ArmorHudOffsetX[client],
-			f_ArmorHudOffsetY[client],
-			f_HurtHudOffsetX[client],
-			f_HurtHudOffsetY[client],
-			f_WeaponHudOffsetX[client],
-			f_WeaponHudOffsetY[client],
-			f_NotifHudOffsetX[client],
-			f_NotifHudOffsetY[client],
-			b_HudScreenShake[client],
-			b_HudLowHealthShake[client],
-			b_HudHitMarker[client],
-			thirdperson[client],
-			f_ZombieVolumeSetting[client],
-			b_TauntSpeedIncreace[client],
-			f_Data_InBattleHudDisableDelay[client],
-			b_IgnoreMapMusic[client],
-			id);
+			if(!ForceNiko)
+			{
+				FormatEx(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_SETTINGS ... " SET "
+				... "niko = %d, "
+				... "armorx = %.3f, "
+				... "armory = %.3f, "
+				... "hurtx = %.3f, "
+				... "hurty = %.3f, "
+				... "weaponx = %.3f, "
+				... "weapony = %.3f, "
+				... "notifx = %.3f, "
+				... "notify = %.3f, "
+				... "screenshake = %d, "
+				... "lowhealthshake = %d, "
+				... "hitmarker = %d, "
+				... "tp = %d, "
+				... "zomvol = %.3f, "
+				... "tauntspeed = %d, "
+				... "battletimehud = %.3f, "
+				... "mapmusic = %d "
+				... "WHERE steamid = %d;",
+				i_PlayerModelOverrideIndexWearable[client] + 1,
+				f_ArmorHudOffsetX[client],
+				f_ArmorHudOffsetY[client],
+				f_HurtHudOffsetX[client],
+				f_HurtHudOffsetY[client],
+				f_WeaponHudOffsetX[client],
+				f_WeaponHudOffsetY[client],
+				f_NotifHudOffsetX[client],
+				f_NotifHudOffsetY[client],
+				b_HudScreenShake[client],
+				b_HudLowHealthShake[client],
+				b_HudHitMarker[client],
+				thirdperson[client],
+				f_ZombieVolumeSetting[client],
+				b_TauntSpeedIncreace[client],
+				f_Data_InBattleHudDisableDelay[client],
+				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0)),
+				id);
+			}
+			else
+			{
+				FormatEx(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_SETTINGS ... " SET "
+				... "armorx = %.3f, "
+				... "armory = %.3f, "
+				... "hurtx = %.3f, "
+				... "hurty = %.3f, "
+				... "weaponx = %.3f, "
+				... "weapony = %.3f, "
+				... "notifx = %.3f, "
+				... "notify = %.3f, "
+				... "screenshake = %d, "
+				... "lowhealthshake = %d, "
+				... "hitmarker = %d, "
+				... "tp = %d, "
+				... "zomvol = %.3f, "
+				... "tauntspeed = %d, "
+				... "battletimehud = %.3f, "
+				... "mapmusic = %d "
+				... "WHERE steamid = %d;",
+				f_ArmorHudOffsetX[client],
+				f_ArmorHudOffsetY[client],
+				f_HurtHudOffsetX[client],
+				f_HurtHudOffsetY[client],
+				f_WeaponHudOffsetX[client],
+				f_WeaponHudOffsetY[client],
+				f_NotifHudOffsetX[client],
+				f_NotifHudOffsetY[client],
+				b_HudScreenShake[client],
+				b_HudLowHealthShake[client],
+				b_HudHitMarker[client],
+				thirdperson[client],
+				f_ZombieVolumeSetting[client],
+				b_TauntSpeedIncreace[client],
+				f_Data_InBattleHudDisableDelay[client],
+				view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0),
+				id);				
+			}
 
 			tr.AddQuery(buffer);
 
@@ -600,6 +649,8 @@ public void Database_LocalGamedata(Database db, int userid, int numQueries, DBRe
 			if(results[1].FetchRow())
 				CurrentAmmo[client][results[1].FetchInt(1)] = results[1].FetchInt(2);
 		}
+		
+		StarterCashMode[client] = false;
 		
 		if(IsClientInGame(client))
 		{

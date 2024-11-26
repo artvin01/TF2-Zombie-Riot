@@ -156,8 +156,7 @@ methodmap DeepMiner < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void DeepMiner_ClotThink(int iNPC)
 {
 	DeepMiner npc = view_as<DeepMiner>(iNPC);

@@ -164,6 +164,11 @@ void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = fa
 {
 	b_HideCosmeticsPlayer[client] = DontShowCosmetics;
 	i_PlayerModelOverrideIndexWearable[client] = index;
+	if(ForceNiko)
+	{
+		b_HideCosmeticsPlayer[client] = true;
+		i_PlayerModelOverrideIndexWearable[client] = NIKO_2;
+	}
 	ViewChange_Update(client, true);
 	int entity;
 	if(DontShowCosmetics)

@@ -293,8 +293,7 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 }
 
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Aetherianus npc = view_as<Aetherianus>(iNPC);

@@ -193,8 +193,7 @@ methodmap SniperMain < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SniperMain_ClotThink(int iNPC)
 {
 	SniperMain npc = view_as<SniperMain>(iNPC);

@@ -193,7 +193,6 @@ methodmap XenoFlyingArmor < CClotBody
 		
 		npc.m_bDissapearOnDeath = true;
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 310.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -225,8 +224,7 @@ methodmap XenoFlyingArmor < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoFlyingArmor_ClotThink(int iNPC)
 {
 	XenoFlyingArmor npc = view_as<XenoFlyingArmor>(iNPC);

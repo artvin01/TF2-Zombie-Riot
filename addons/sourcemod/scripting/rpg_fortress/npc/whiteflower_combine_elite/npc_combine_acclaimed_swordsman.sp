@@ -191,8 +191,7 @@ methodmap Whiteflower_AcclaimedSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_AcclaimedSwordsman_ClotThink(int iNPC)
 {
 	Whiteflower_AcclaimedSwordsman npc = view_as<Whiteflower_AcclaimedSwordsman>(iNPC);

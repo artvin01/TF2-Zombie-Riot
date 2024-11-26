@@ -213,8 +213,7 @@ methodmap MechaSoldier_Barrager < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	MechaSoldier_Barrager npc = view_as<MechaSoldier_Barrager>(iNPC);

@@ -217,8 +217,7 @@ methodmap Maliana < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Maliana npc = view_as<Maliana>(iNPC);

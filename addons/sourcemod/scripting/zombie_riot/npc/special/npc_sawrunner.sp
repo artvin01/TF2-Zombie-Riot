@@ -63,7 +63,7 @@ static char[] GetSawRunnerHealth()
 {
 	int health = 65;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	
@@ -186,7 +186,6 @@ methodmap SawRunner < CClotBody
 		
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		
-		npc.m_iState = 0;
 		npc.m_flSpeed = 200.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -205,8 +204,7 @@ methodmap SawRunner < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SawRunner_ClotThink(int iNPC)
 {
 	SawRunner npc = view_as<SawRunner>(iNPC);

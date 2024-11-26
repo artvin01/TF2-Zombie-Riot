@@ -143,8 +143,7 @@ methodmap XenoOuroborosEkas < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoOuroborosEkas_ClotThink(int iNPC)
 {
 	XenoOuroborosEkas npc = view_as<XenoOuroborosEkas>(iNPC);

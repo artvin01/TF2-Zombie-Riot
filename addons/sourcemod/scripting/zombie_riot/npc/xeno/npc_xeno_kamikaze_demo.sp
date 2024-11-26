@@ -135,8 +135,7 @@ methodmap XenoKamikaze < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoKamikaze_ClotThink(int iNPC)
 {
 	XenoKamikaze npc = view_as<XenoKamikaze>(iNPC);

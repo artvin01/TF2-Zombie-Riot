@@ -200,7 +200,6 @@ methodmap XenoCombineSwordsman < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 180);
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 200.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -230,8 +229,7 @@ methodmap XenoCombineSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineSwordsman_ClotThink(int iNPC)
 {
 	XenoCombineSwordsman npc = view_as<XenoCombineSwordsman>(iNPC);

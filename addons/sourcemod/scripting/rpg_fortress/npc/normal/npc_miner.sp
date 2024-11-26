@@ -152,8 +152,7 @@ methodmap Miner_Enemy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Miner_Enemy_ClotThink(int iNPC)
 {
 	Miner_Enemy npc = view_as<Miner_Enemy>(iNPC);

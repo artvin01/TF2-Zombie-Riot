@@ -127,7 +127,7 @@ static char[] GetPanzerHealth()
 {
 	int health = 100;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	
@@ -246,9 +246,7 @@ methodmap FallenWarrior < CClotBody
 		npc.m_flMeleeArmor = 1.35; 		
 		npc.m_flRangedArmor = 0.8;
 
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = GetGameTime();
@@ -568,10 +566,6 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	float VecSelfNpcabs[3];
-	if(Waves_InSetup())
-	{
-		return Plugin_Stop;
-	}
 	for(int i; i < 3; i++)
 	{
 		VecSelfNpcabs[i] = pack.ReadFloat();
@@ -598,6 +592,11 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 		}
 	}
 	int Team = pack.ReadCell();
+	if(Team != TFTeam_Red && Waves_InSetup())
+	{
+		CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+		return Plugin_Stop;
+	}
 
 	FallenWarrior_ApplyDebuffInLocation(VecSelfNpcabs, Team);
 	float Range = GULN_DEBUFF_RANGE;

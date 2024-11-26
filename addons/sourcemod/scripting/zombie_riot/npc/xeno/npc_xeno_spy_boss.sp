@@ -242,7 +242,6 @@ methodmap XenoSpyMainBoss < CClotBody
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		npc.Anger = false;
-		npc.m_iState = 0;
 		npc.m_flSpeed = 330.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -295,8 +294,7 @@ methodmap XenoSpyMainBoss < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSpyMainBoss_ClotThink(int iNPC)
 {
 	XenoSpyMainBoss npc = view_as<XenoSpyMainBoss>(iNPC);

@@ -241,8 +241,7 @@ methodmap Heliaris < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Heliaris npc = view_as<Heliaris>(iNPC);

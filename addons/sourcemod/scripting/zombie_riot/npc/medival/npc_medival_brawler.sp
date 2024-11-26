@@ -204,8 +204,7 @@ methodmap MedivalBrawler < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalBrawler_ClotThink(int iNPC)
 {
 	MedivalBrawler npc = view_as<MedivalBrawler>(iNPC);

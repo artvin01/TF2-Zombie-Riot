@@ -213,8 +213,7 @@ methodmap CombinePoliceSmg < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombinePoliceSmg_ClotThink(int iNPC)
 {
 	CombinePoliceSmg npc = view_as<CombinePoliceSmg>(iNPC);

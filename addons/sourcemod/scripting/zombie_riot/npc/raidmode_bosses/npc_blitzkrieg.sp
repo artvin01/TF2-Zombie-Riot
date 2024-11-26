@@ -416,7 +416,7 @@ methodmap Blitzkrieg < CClotBody
 			RaidModeScaling *= 0.33;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
 		if(amount_of_people > 12.0)
 		{
@@ -747,8 +747,7 @@ methodmap Blitzkrieg < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(iNPC);

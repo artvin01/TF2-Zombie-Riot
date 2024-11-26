@@ -260,6 +260,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 					HealEntityGlobal(client, client, value, 1.0, 0.0, HEAL_SELFHEAL);
 				}
 				
+		
 				value = Attributes_Get(weapon, 149, 0.0);	// bleeding duration
 				if(value)
 					StartBleedingTimer(victim, client, Attributes_Get(weapon, 2, 1.0) * 4.0, RoundFloat(value * 2.0), weapon, damagetype);

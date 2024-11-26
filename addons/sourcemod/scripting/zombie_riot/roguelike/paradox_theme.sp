@@ -188,7 +188,7 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
-				case WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SEABORNMELEE:
+				case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SEABORNMELEE, WEAPON_SKADI:
 				{
 					seaborn = true;
 					break;

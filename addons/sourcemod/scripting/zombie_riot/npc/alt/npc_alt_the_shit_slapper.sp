@@ -167,8 +167,7 @@ methodmap The_Shit_Slapper < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	The_Shit_Slapper npc = view_as<The_Shit_Slapper>(iNPC);

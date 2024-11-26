@@ -195,8 +195,7 @@ methodmap CuredPurnell < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void CuredPurnell_ClotThink(int iNPC)
 {
 	CuredPurnell npc = view_as<CuredPurnell>(iNPC);

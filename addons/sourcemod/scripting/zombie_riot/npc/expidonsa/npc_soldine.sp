@@ -185,9 +185,7 @@ methodmap Soldine < CClotBody
 		func_NPCDeath[npc.index] = Soldine_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Soldine_OnTakeDamage;
 		func_NPCThink[npc.index] = Soldine_ClotThink;
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
 		npc.i_GunMode = 1;

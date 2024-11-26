@@ -209,8 +209,7 @@ methodmap MedivalSkirmisher < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalSkirmisher_ClotThink(int iNPC)
 {
 	MedivalSkirmisher npc = view_as<MedivalSkirmisher>(iNPC);

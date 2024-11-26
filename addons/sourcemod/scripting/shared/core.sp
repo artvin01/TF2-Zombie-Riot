@@ -97,6 +97,7 @@ public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
 #if defined ZR
 ConVar zr_downloadconfig;
+ConVar CvarSkillPoints;
 #endif
 
 ConVar CvarDisableThink;
@@ -105,7 +106,6 @@ ConVar CvarRerouteToIp;
 ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
-ConVar CvarSkillPoints;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
@@ -273,6 +273,7 @@ public const int RenderColors_RPG[][] =
 	{0, 0, 0, 255}			//none, black.
 };
 
+bool ForceNiko;
 Handle g_hImpulse;
 
 Handle g_hSetLocalOrigin;
@@ -370,6 +371,9 @@ TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 #if defined ZR
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool b_IgnoreMapMusic[MAXTF2PLAYERS];
+bool b_DisableDynamicMusic[MAXTF2PLAYERS];
+bool b_EnableRightSideAmmoboxCount[MAXTF2PLAYERS];
+bool b_EnableCountedDowns[MAXTF2PLAYERS];
 int i_CustomModelOverrideIndex[MAXTF2PLAYERS];
 int FogEntity = INVALID_ENT_REFERENCE;
 int PlayerPoints[MAXTF2PLAYERS];
@@ -685,6 +689,7 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
+int i_SpecialGrigoriReplace;
 float f_TimeSinceLastGiveWeapon[MAXENTITIES]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
 int Resupplies_Supplied[MAXTF2PLAYERS];
@@ -1267,6 +1272,7 @@ int i_StepNoiseType[MAXENTITIES];
 int i_NpcStepVariation[MAXENTITIES];
 int i_BleedType[MAXENTITIES];
 int i_State[MAXENTITIES];
+int i_AnimationState[MAXENTITIES];
 bool b_movedelay[MAXENTITIES];
 float fl_NextRangedAttack[MAXENTITIES];
 float fl_NextRangedAttackHappening[MAXENTITIES];
@@ -1367,6 +1373,7 @@ float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Speed[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Damage[MAXENTITIES] = {1.0, ...};
 float fl_GibVulnerablity[MAXENTITIES] = {1.0, ...};
+float f_RoleplayTalkLimit[MAXENTITIES] = {0.0, ...};
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1519,6 +1526,7 @@ public void OnPluginStart()
 	
 	RegAdminCmd("sm_test_hud_notif", Command_Hudnotif, ADMFLAG_GENERIC, "Hud Notif");
 	RegConsoleCmd("sm_getpos", GetPos);
+	RegConsoleCmd("sm_me", DoRoleplayTalk);
 //	HookEvent("npc_hurt", OnNpcHurt);
 	
 	sv_cheats = FindConVar("sv_cheats");
@@ -2056,6 +2064,57 @@ public Action GetPos(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action DoRoleplayTalk(int client, int args)
+{
+	if(f_RoleplayTalkLimit[client] > GetGameTime())
+	{
+		ReplyToCommand(client, "Sorry! Youre on a cooldown, wait %.1f seconds.", f_RoleplayTalkLimit[client] - GetGameTime());
+		return Plugin_Handled;
+	}
+	if(GetTeam(client) != TFTeam_Red || !IsPlayerAlive(client))
+	{
+		ReplyToCommand(client, "You cant use this command right now.");
+		return Plugin_Handled;
+	}
+	f_RoleplayTalkLimit[client] = GetGameTime() + 10.0;
+	
+	char Text[64];
+	GetCmdArg(1, Text, sizeof(Text));
+	if(!Text[0])
+	{
+		ReplyToCommand(client, "[SM] sm_me [Text (64 chars at max)] [Red 0-255] [Green0-255] [Blue0-255] [Alpha0-255]");
+		return Plugin_Handled;
+	}
+	char Text2[32];
+	char Text3[66];
+	strcopy(Text2, sizeof(Text2), Text);
+	Format(Text3, sizeof(Text3), "%s\n%s",Text2,Text[32]);
+	
+	int ColourGive[4];
+	ColourGive = {255,255,255,255};
+	if(args >= 2)
+		ColourGive[0] = GetCmdArgInt(2);
+	if(args >= 3)
+		ColourGive[1] = GetCmdArgInt(3);
+	if(args >= 4)
+		ColourGive[2] = GetCmdArgInt(4);
+	if(args >= 5)
+		ColourGive[3] = GetCmdArgInt(5);
+
+	float Offset[3];
+	Offset[2] = 90.0;
+	if(i_PlayerModelOverrideIndexWearable[client] == NIKO_2)
+		Offset[2] = 75.0;
+
+#if defined ZR
+	if(TeutonType[client] != TEUTON_NONE)
+		Offset[2] = 50.0;
+#endif
+
+	NpcSpeechBubble(client, Text3, 6, ColourGive, Offset, "");
+
+	return Plugin_Handled;
+}
 
 public Action Command_ToggleReload(int client, int args)
 {
@@ -2140,7 +2199,7 @@ public void OnClientPutInServer(int client)
 #endif
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
-	
+	f_RoleplayTalkLimit[client] = 0.0;
 #if !defined NOG
 	DHook_HookClient(client);
 #endif
@@ -2192,6 +2251,8 @@ public void OnClientPutInServer(int client)
 
 #if defined ZR
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
+	if(ForceNiko)
+		OverridePlayerModel(client, NIKO_2, true);
 #endif
 }
 
@@ -3819,7 +3880,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return true;
 
 				//interacting with citizens shouldnt invalidate clicking, it makes battle hard.
-				if(!PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
+				if(Is_Reload_Button && !PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
 					return false;
 
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
@@ -4151,11 +4212,8 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
 			GiveArmorViaPercentage(target, 0.1, 1.0, false);
 			IncreaceEntityDamageTakenBy(target, 0.85, 5.0);
-			CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
-			SetDefaultHudPosition(target, 0, 0, 255, 1.5);
-			SetGlobalTransTarget(target);
-			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
 		}
+		CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
@@ -4164,9 +4222,21 @@ public Action ReviveDisplayMessageDelay(Handle timer, int ref)
 	int target = EntRefToEntIndex(ref);
 	if(IsValidClient(target))
 	{
-		SetDefaultHudPosition(target, 0, 0, 255, 1.5);
-		SetGlobalTransTarget(target);
-		ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
+		int downsleft;
+		downsleft = 2;
+		downsleft -= i_AmountDowned[target];
+		if(downsleft <= 0)
+		{
+			SetDefaultHudPosition(target, 255, 0, 0, 2.5);
+			SetGlobalTransTarget(target);
+			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Last Down Warning");	
+		}
+		else if(b_KahmlLastWish[target])
+		{
+			SetDefaultHudPosition(target, 0, 0, 255, 1.5);
+			SetGlobalTransTarget(target);
+			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
+		}
 	}
 	return Plugin_Continue;
 }

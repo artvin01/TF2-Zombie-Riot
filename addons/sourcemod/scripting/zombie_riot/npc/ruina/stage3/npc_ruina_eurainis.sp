@@ -207,8 +207,7 @@ methodmap Eurainis < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Eurainis npc = view_as<Eurainis>(iNPC);

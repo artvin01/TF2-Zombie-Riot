@@ -233,8 +233,7 @@ methodmap MedivalAchilles < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalAchilles_ClotThink(int iNPC)
 {
 	MedivalAchilles npc = view_as<MedivalAchilles>(iNPC);

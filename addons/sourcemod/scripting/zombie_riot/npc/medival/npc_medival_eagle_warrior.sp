@@ -229,8 +229,7 @@ methodmap MedivalEagleWarrior < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalEagleWarrior_ClotThink(int iNPC)
 {
 	MedivalEagleWarrior npc = view_as<MedivalEagleWarrior>(iNPC);

@@ -159,7 +159,6 @@ methodmap XenoHeavyGiant < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 200.0;
-		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -184,8 +183,7 @@ methodmap XenoHeavyGiant < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void XenoHeavyGiant_ClotThink(int iNPC)
 {
 	XenoHeavyGiant npc = view_as<XenoHeavyGiant>(iNPC);

@@ -159,8 +159,7 @@ methodmap CaveEnslaver < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CaveEnslaver_ClotThink(int iNPC)
 {
 	CaveEnslaver npc = view_as<CaveEnslaver>(iNPC);

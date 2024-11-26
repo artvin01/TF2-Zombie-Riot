@@ -306,9 +306,7 @@ methodmap ChaosKahmlstein < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ChaosKahmlstein_ClotThink);
 
 
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		npc.i_GunMode = 0;
@@ -428,7 +426,7 @@ methodmap ChaosKahmlstein < CClotBody
 				RaidModeScaling *= 0.38;
 			}
 			
-			float amount_of_people = float(CountPlayersOnRed());
+			float amount_of_people = ZRStocks_PlayerScalingDynamic();
 			if(amount_of_people > 12.0)
 			{
 				amount_of_people = 12.0;

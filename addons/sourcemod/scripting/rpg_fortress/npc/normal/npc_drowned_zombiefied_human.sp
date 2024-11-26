@@ -185,8 +185,7 @@ methodmap DrowedZombieHuman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void DrowedZombieHuman_ClotThink(int iNPC)
 {
 	DrowedZombieHuman npc = view_as<DrowedZombieHuman>(iNPC);

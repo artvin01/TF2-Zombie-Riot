@@ -198,7 +198,6 @@ methodmap XenoCombineElite < CClotBody
 
 		npc.m_fbGunout = false;
 		
-		npc.m_iState = 0;
 		npc.m_flSpeed = 260.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -233,8 +232,7 @@ methodmap XenoCombineElite < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineElite_ClotThink(int iNPC)
 {
 	XenoCombineElite npc = view_as<XenoCombineElite>(iNPC);

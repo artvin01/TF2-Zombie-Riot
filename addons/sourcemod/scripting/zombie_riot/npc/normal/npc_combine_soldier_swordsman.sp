@@ -216,8 +216,7 @@ methodmap CombineSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineSwordsman_ClotThink(int iNPC)
 {
 	CombineSwordsman npc = view_as<CombineSwordsman>(iNPC);

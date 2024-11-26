@@ -146,9 +146,7 @@ methodmap Iberia_Anania < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberia_Anania_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Iberia_Anania_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
 		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(5.0, 15.0);

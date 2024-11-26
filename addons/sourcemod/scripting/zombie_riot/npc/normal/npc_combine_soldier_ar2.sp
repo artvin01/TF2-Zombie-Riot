@@ -215,8 +215,7 @@ methodmap CombineSoldierAr2 < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineSoldierAr2_ClotThink(int iNPC)
 {
 	CombineSoldierAr2 npc = view_as<CombineSoldierAr2>(iNPC);

@@ -215,8 +215,7 @@ methodmap MedivalRiddenArcher < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalRiddenArcher_ClotThink(int iNPC)
 {
 	MedivalRiddenArcher npc = view_as<MedivalRiddenArcher>(iNPC);

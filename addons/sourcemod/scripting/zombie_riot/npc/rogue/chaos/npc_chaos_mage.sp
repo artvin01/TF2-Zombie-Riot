@@ -122,9 +122,7 @@ methodmap ChaosMage < CClotBody
 		b_NpcUnableToDie[npc.index] = true;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 270.0;
 		fl_TotalArmor[npc.index] = 0.25;

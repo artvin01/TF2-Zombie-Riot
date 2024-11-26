@@ -221,8 +221,7 @@ methodmap FortifiedFastZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void FortifiedFastZombie_ClotThink(int iNPC)
 {
 	FortifiedFastZombie npc = view_as<FortifiedFastZombie>(iNPC);

@@ -233,8 +233,7 @@ methodmap L4D2_Tank < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void L4D2_Tank_ClotThink(int iNPC)
 {
 	L4D2_Tank npc = view_as<L4D2_Tank>(iNPC);
@@ -782,7 +781,7 @@ static char[] GetTankHealth()
 {
 	int health = 85;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

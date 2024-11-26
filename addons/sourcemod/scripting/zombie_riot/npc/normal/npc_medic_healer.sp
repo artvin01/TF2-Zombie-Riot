@@ -204,8 +204,7 @@ methodmap MedicHealer < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedicHealer_ClotThink(int iNPC)
 {
 	MedicHealer npc = view_as<MedicHealer>(iNPC);

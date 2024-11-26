@@ -186,8 +186,7 @@ methodmap Mecha_PyroGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(iNPC);

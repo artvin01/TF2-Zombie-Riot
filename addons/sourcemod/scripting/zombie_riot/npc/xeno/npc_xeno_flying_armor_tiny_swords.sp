@@ -195,7 +195,6 @@ methodmap XenoFlyingArmorTiny < CClotBody
 		func_NPCThink[npc.index] = XenoFlyingArmorTiny_ClotThink;
 		
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 310.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -226,8 +225,7 @@ methodmap XenoFlyingArmorTiny < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoFlyingArmorTiny_ClotThink(int iNPC)
 {
 	XenoFlyingArmorTiny npc = view_as<XenoFlyingArmorTiny>(iNPC);

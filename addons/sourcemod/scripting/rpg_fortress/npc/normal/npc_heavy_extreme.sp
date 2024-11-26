@@ -151,8 +151,7 @@ methodmap HeavyExtreme < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void HeavyExtreme_ClotThink(int iNPC)
 {
 	HeavyExtreme npc = view_as<HeavyExtreme>(iNPC);

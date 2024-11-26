@@ -234,8 +234,7 @@ methodmap NecroCombine < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void NecroCombine_ClotThink(int iNPC)
 {
 	NecroCombine npc = view_as<NecroCombine>(iNPC);

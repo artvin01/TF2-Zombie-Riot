@@ -178,8 +178,7 @@ methodmap Soldier < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Soldier_ClotThink(int iNPC)
 {
 	Soldier npc = view_as<Soldier>(iNPC);
