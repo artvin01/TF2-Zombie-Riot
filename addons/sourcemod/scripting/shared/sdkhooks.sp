@@ -2542,10 +2542,10 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 //	if(!b_GaveMarkForDeath[client])
 //		return;
 
-	if (GetTeam(client) != TFTeam_Red)
+	if (!force_Clear && GetTeam(client) != TFTeam_Red)
 		return;
 
-	if (dieingstate[client] != 0)
+	if (!force_Clear && dieingstate[client] != 0)
 		return;
 
 	int downsleft;
