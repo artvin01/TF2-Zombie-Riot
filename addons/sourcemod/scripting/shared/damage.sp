@@ -1919,6 +1919,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "⌁");
 	}
+	if (f_ElementalAmplification[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s⋔", Debuff_Adder_left);	
+	}
 	if (f_FallenWarriorDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⋡", Debuff_Adder_left);	

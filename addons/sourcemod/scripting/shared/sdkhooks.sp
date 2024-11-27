@@ -1497,7 +1497,6 @@ public void OnPostThink(int client)
 		{
 			int downsleft;
 			downsleft = 2;
-
 			/*
 			if(b_LeftForDead[client])
 			{
@@ -1509,28 +1508,9 @@ public void OnPostThink(int client)
 			}
 			*/
 			downsleft -= i_AmountDowned[client];
+			SDKHooks_UpdateMarkForDeath(client);
 
-			if (GetTeam(client) == TFTeam_Red && dieingstate[client] == 0)
-			{
-				if(downsleft <= 0 && !SpecterCheckIfAutoRevive(client))
-				{
-					if(!b_GaveMarkForDeath[client])
-					{
-						TF2_AddCondition(client, TFCond_MarkedForDeath, 9999999.9);
-						b_GaveMarkForDeath[client] = true;
-					}
-				}
-				else
-				{
-					if(b_GaveMarkForDeath[client])
-					{
-						TF2_RemoveCondition(client, TFCond_MarkedForDeath);
-						b_GaveMarkForDeath[client] = false;
-					}
-				}
 
-			}
-			
 			if(!HudBuffer[0] && CashSpent[client] < 1)
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
@@ -2075,6 +2055,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				}
 				dieingstate[victim] -= RoundToNearest(Attributes_FindOnPlayerZR(victim, Attrib_ReviveTimeCut, false, 0.0));
 				ForcePlayerCrouch(victim, true);
+				SDKHooks_UpdateMarkForDeath(victim, true);
 				//cooldown for left for dead.
 				SpecterResetHudTime(victim);
 				ApplyLastmanOrDyingOverlay(victim);
@@ -2553,6 +2534,85 @@ void CauseFadeInAndFadeOut(int client = 0, float duration_in, float duration_hol
 	DispatchSpawn(FadeEntity);
 	AcceptEntityInput(FadeEntity, "Fade");
 	CreateTimer((duration_in + duration_hold), Timer_CauseFadeInAndFadeOut, duration_out);
+}
+
+static int Building_particle_Owner[MAXENTITIES];
+void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
+{
+//	if(!b_GaveMarkForDeath[client])
+//		return;
+
+	if (!force_Clear && GetTeam(client) != TFTeam_Red)
+		return;
+
+	if (!force_Clear && dieingstate[client] != 0)
+		return;
+
+	int downsleft;
+	downsleft = 2;
+	downsleft -= i_AmountDowned[client];
+	if(!force_Clear && downsleft <= 0 && !SpecterCheckIfAutoRevive(client))
+	{
+		if(!b_GaveMarkForDeath[client])
+		{
+			TF2_AddCondition(client, TFCond_MarkedForDeath, 9999999.9);
+			b_GaveMarkForDeath[client] = true;
+			
+			int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
+			//this means i dont exist, spawn a new one!!
+			if(entity < MaxClients)
+			{
+				float flPos[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+				flPos[2] += 95.0;
+				i_DyingParticleIndication[client][2] = EntIndexToEntRef(SDKHooks_SpawnParticleDeath(flPos, "mark_for_death", client)); //ze healing station
+			}
+		}
+	}
+	else
+	{
+		if(force_Clear || b_GaveMarkForDeath[client])
+		{
+			TF2_RemoveCondition(client, TFCond_MarkedForDeath);
+			b_GaveMarkForDeath[client] = false;
+			//delete me!
+			int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
+			if(entity > MaxClients)
+				RemoveEntity(entity);
+		}
+	}
+}
+stock int SDKHooks_SpawnParticleDeath(float position[3], char[] effectName, int iParent, const char[] szAttachment = "", float vOffsets[3] = {0.0,0.0,0.0})
+{
+	int particle = CreateEntityByName("info_particle_system");
+
+	if (particle != -1)
+	{
+		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
+		DispatchKeyValue(particle, "targetname", "tf2particle");
+		DispatchKeyValue(particle, "effect_name", effectName);
+		DispatchSpawn(particle);
+
+		SetParent(iParent, particle);
+
+		ActivateEntity(particle);
+
+		AcceptEntityInput(particle, "start");
+
+		Building_particle_Owner[particle] = iParent;
+
+		SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
+		SDKHook(particle, SDKHook_SetTransmit, SDKHooks_TransmitDoDeathMark);
+	}
+
+	return particle;
+}
+public Action SDKHooks_TransmitDoDeathMark(int entity, int client)
+{
+	if(client == Building_particle_Owner[entity])
+		return Plugin_Handled;
+
+	return Plugin_Continue;
 }
 public Action Timer_CauseFadeInAndFadeOut(Handle timer, float duration_out)
 {

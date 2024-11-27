@@ -3187,7 +3187,20 @@ static void MenuPage(int client, int section)
 			if(StarterCashMode[client])
 			{
 				FormatEx(buffer, sizeof(buffer), "%t\n ", "Confirm Loadout");
-				menu.AddItem("-26", buffer, (CashSpentTotal[client] < 1 || !Waves_Started()) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				int ConfirmAllow = ITEMDRAW_DISABLED;
+				if(CvarInfiniteCash.BoolValue)
+				{
+					ConfirmAllow = ITEMDRAW_DEFAULT;
+				}
+				if(CashSpentTotal[client] > 1 && Waves_Started())
+				{
+					ConfirmAllow = ITEMDRAW_DEFAULT;
+				}
+				if(Waves_Started())
+				{
+					ConfirmAllow = ITEMDRAW_DEFAULT;
+				}
+				menu.AddItem("-26", buffer, ConfirmAllow);
 			}
 			else
 			{

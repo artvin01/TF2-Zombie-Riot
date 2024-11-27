@@ -507,6 +507,7 @@ float f_DomeInsideTest[MAXENTITIES];
 float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
+float f_ElementalAmplification[MAXENTITIES];
 float f_WeaponSpecificClassBuff[MAXENTITIES][1];
 bool b_WeaponSpecificClassBuff[MAXENTITIES][3];
 float f_HighTeslarDebuff[MAXENTITIES];
@@ -2850,23 +2851,36 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			if(Panic_Attack[weapon] != 0.0 && !i_IsWrench[weapon])
 			{
 				float flHealth = float(GetEntProp(client, Prop_Send, "m_iHealth"));
-				float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(client);
 				
+#if defined ZR
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FULLMOON)
+				{
+					//itll think youre much lower HP then usual. NEEDED! otherwise this weapon SUCKS!!!!!!!
+					flHealth *= 0.65; 
+				}
+#endif
+				float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(client);
+
 				if(flpercenthpfrommax >= 1.0)
 					flpercenthpfrommax = 1.0; //maths to not allow negative suuuper slow attack speed
 					
 				float Attack_speed = flpercenthpfrommax / 0.65;
 				
-				if(Panic_Attack[weapon] <= 0.6)
-				{
-					Attack_speed *= 0.7;
-				}
 				if(Attack_speed <= Panic_Attack[weapon])
 				{
 					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY INCREACED ATTACK SPEED.
 				}
 				
 				
+#if defined ZR
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FULLMOON)
+				{
+					if (Attack_speed >= 1.0)
+					{
+						Attack_speed = 1.0; //hardcoding this lol
+					} 
+				}
+#endif
 				if (Attack_speed >= 1.15)
 				{
 					Attack_speed = 1.15; //hardcoding this lol
@@ -4079,6 +4093,7 @@ stock void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons
 void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int medigun = 0)
 {
 	bool WasClientReviving = true;
+	bool WasRevivingEntity = false;
 	if(client > MaxClients)
 	{
 		WasClientReviving = false;
@@ -4091,26 +4106,46 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		}
 		f_ClientReviveDelayMax[client] = GetGameTime() + 0.09;
 	}
-
+	if(Citizen_ThatIsDowned(target))
+	{
+		WasRevivingEntity = true;
+	}
 	float GameTime = GetGameTime();
 	
-	SetEntityMoveType(target, MOVETYPE_NONE);
+	if(!WasRevivingEntity)
+		SetEntityMoveType(target, MOVETYPE_NONE);
+
 	if(WasClientReviving)
 	{
 		was_reviving[client] = true;
 		f_DelayLookingAtHud[client] = GameTime + 0.5;
 	}
-	f_DelayLookingAtHud[target] = GameTime + 0.5;
-	f_ClientBeingReviveDelay[target] = GameTime + 0.15;
+	if(!WasRevivingEntity)
+	{
+		f_DelayLookingAtHud[target] = GameTime + 0.5;
+		f_ClientBeingReviveDelay[target] = GameTime + 0.15;
+	}
 
 	if(WasClientReviving)
-		PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
+	{
+		
+		if(WasRevivingEntity)
+		{
+			Citizen npc = view_as<Citizen>(target);
+			PrintCenterText(client, "%t", "Reviving", npc.m_iReviveTicks);
+		}
+		else
+			PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
+	}
 
-	PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
+	if(!WasRevivingEntity)
+		PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
+		
 	if(WasClientReviving)
 		was_reviving_this[client] = target;
 
-	f_DisableDyingTimer[target] = GameTime + 0.15;
+	if(!WasRevivingEntity)
+		f_DisableDyingTimer[target] = GameTime + 0.15;
 
 	int speed = 3;
 	if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
@@ -4128,6 +4163,11 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	}
 
 	Rogue_ReviveSpeed(speed);
+	if(WasRevivingEntity)
+	{
+		Citizen_ReviveTicks(target, speed, client);
+		return;
+	}
 	dieingstate[target] -= speed;
 	
 	if(dieingstate[target] <= 0)

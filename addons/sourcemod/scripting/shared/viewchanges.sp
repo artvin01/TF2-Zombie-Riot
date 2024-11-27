@@ -315,6 +315,7 @@ void ViewChange_Update(int client, bool full = true)
 		GetEntityClassname(weapon, classname, sizeof(classname));
 	
 	ViewChange_Switch(client, weapon, classname);
+	SDKHooks_UpdateMarkForDeath(client);
 }
 
 void ViewChange_Switch(int client, int active, const char[] classname)

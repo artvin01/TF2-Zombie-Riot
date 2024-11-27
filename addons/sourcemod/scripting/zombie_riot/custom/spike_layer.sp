@@ -97,7 +97,7 @@ void Reset_stats_SpikeLayer_Singular(int client) //This is on disconnect/connect
 
 public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, bool &result)
 {
-	Spikes_AliveCap[client] = 30;
+	Spikes_AliveCap[client] = 15;
 	if(Spikes_AliveGlobal >= MAXSPIKESALLOWED)
 	{
 		SetDefaultHudPosition(client);
@@ -107,7 +107,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 	}
 	if(weapon >= MaxClients)
 	{
-		if(30 <= Spikes_Alive[client])
+		if(15 <= Spikes_Alive[client])
 		{
 			//ONLY give back ammo IF the Spike has full health.
 			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
@@ -125,6 +125,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		}
 		
 		float Calculate_HP_Spikes = 45.0; 
+		Calculate_HP_Spikes *= 2.0;
 		
 		float Bonus_damage;
 			
@@ -194,7 +195,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 
 public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classname, bool &result)
 {
-	Spikes_AliveCap[client] = 40;
+	Spikes_AliveCap[client] = 20;
 	if(Spikes_AliveGlobal >= MAXSPIKESALLOWED)
 	{
 		SetDefaultHudPosition(client);
@@ -204,7 +205,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 	}
 	if(weapon >= MaxClients)
 	{
-		if(40 <= Spikes_Alive[client])
+		if(20 <= Spikes_Alive[client])
 		{
 			//ONLY give back ammo IF the Spike has full health.
 			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
@@ -222,6 +223,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 		}
 		
 		float Calculate_HP_Spikes = 55.0; 
+		Calculate_HP_Spikes *= 2.0;
 		
 		float Bonus_damage;
 			

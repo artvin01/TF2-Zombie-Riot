@@ -1140,10 +1140,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #if !defined RTS
 		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
+			
 			//dont be solid to buildings
 			if(i_IsABuilding[entity2] && GetTeam(entity2) == TFTeam_Red)
 				return false;
-			
+
 			///????? i dont know
 			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == TFTeam_Red)
 			{	
@@ -1155,6 +1156,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			
 		}
 #endif
 	}
@@ -1338,7 +1340,9 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
+				//if its a downed citizen, dont!!!
+				if(!Citizen_ThatIsDowned(baseboss_index_allied))
+					b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
 			}
 		}
 	}

@@ -539,7 +539,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 			
 		value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
 					
-		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
+		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //overall
 	}
 #endif
 
@@ -625,6 +625,10 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				else
 				{
 					BurnDamage[entity] = value;
+				}
+				if(f_ElementalAmplification[entity] > GetGameTime())
+				{
+					value *= 1.2;
 				}
 				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 				SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_SLASH, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
@@ -2024,6 +2028,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 	if(f_VoidAfflictionStrength[npc] > GameTime)
 		return true;
 	else if(f_LowTeslarDebuff[npc] > GameTime)
+		return true;
+	else if(f_ElementalAmplification[npc] > GameTime)
 		return true;
 	else if(f_FallenWarriorDebuff[npc] > GameTime)
 		return true;

@@ -28,7 +28,7 @@ static int Beam_Glow;
 #define SOUND_HELL_HOE 	"weapons/breadmonster/gloves/bm_gloves_attack_04.wav"
 #define SOUND_SOUL_HIT "player/souls_receive2.wav"
 #define NIGHTMARE_RADIUS 300.0
-#define ANGEL_BLESSING_HIT_COUNT 100
+#define ANGEL_BLESSING_HIT_COUNT 30
 
 
 void Hell_Hoe_MapStart()
@@ -846,7 +846,8 @@ stock void HellHoeLaunch(int client, int weapon, float dmg, float speed, float t
 	if(projectile_number > 2)
 	{
 		dmg *= float(projectile_number) / 2.0;
-		healthGain *= float(projectile_number) / 2.0;
+		if(healthGain > 0.0)
+			healthGain *= float(projectile_number) / 2.0;
 		projectile_number = 2;
 	}
 	
@@ -894,13 +895,15 @@ public Action Event_Hell_Hoe_OnHatTouch(int entity, int other)
 
 		Damage_Projectile[entity] *= 0.5;
 		
-		if (Healing_Projectile[entity] > 0.0) {
+		if (Healing_Projectile[entity] > 0.0) 
+		{
 			int client = Projectile_To_Client[entity];
 			int flMaxHealth = SDKCall_GetMaxHealth(client);
 			
-			HealEntityGlobal(client, client, flMaxHealth * Healing_Projectile[entity], 1.0,_, HEAL_ABSOLUTE|HEAL_SELFHEAL);
+			HealEntityGlobal(client, client, float(flMaxHealth) * Healing_Projectile[entity], 1.0,_, HEAL_SELFHEAL);
 		}
-		else if (Healing_Projectile[entity] == -2.0) {
+		else if (Healing_Projectile[entity] == -2.0) 
+		{
 			int client = Projectile_To_Client[entity];
 			if (iCurrentAngelHit[client] < ANGEL_BLESSING_HIT_COUNT) {
 				iCurrentAngelHit[client] += 1;

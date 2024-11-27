@@ -165,6 +165,10 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
 	if(victim <= MaxClients && victim > 0)
 	{
 		Armor_DebuffType[victim] = 1;
@@ -251,6 +255,10 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 		return;
 
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 2;
@@ -350,8 +358,11 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 		return;
 	//cant void other voids!
 
-
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 3;
@@ -461,6 +472,10 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
 	if(victim <= MaxClients)
 	{
 		// Cyro is treated as Chaos vs Players
@@ -495,6 +510,10 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
 	if(victim <= MaxClients)
 	{
 		// No effect currently for Necrosis vs Players

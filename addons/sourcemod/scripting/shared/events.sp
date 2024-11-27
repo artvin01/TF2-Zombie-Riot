@@ -536,7 +536,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	Skulls_PlayerKilled(client);
 	// Save current uber.
 	ClientSaveUber(client);
-
+	SDKHooks_UpdateMarkForDeath(client, true);
 #endif
 
 #if defined RPG
