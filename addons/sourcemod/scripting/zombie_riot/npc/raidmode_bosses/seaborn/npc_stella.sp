@@ -52,6 +52,10 @@ And making stella special weapon models for her hand crest.
 For Karlas make somekind of slicer model that would be used for ranged attacks, I.E barrage of light?
 
 
+taunt_doctors_defibrillators 
+could work for stella?
+
+
 
 */
 

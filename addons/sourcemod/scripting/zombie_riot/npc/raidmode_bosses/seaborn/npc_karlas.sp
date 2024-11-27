@@ -314,6 +314,21 @@ methodmap Karlas < CClotBody
 			}
 		}
 	}
+	property float m_flSlicerBarrageCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flSlicerBarrageActive
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flSlicerBarrageNextWave
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
 	property float m_flNC_LockedOn
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
@@ -347,6 +362,11 @@ methodmap Karlas < CClotBody
 				i_particle_effects[this.index][0] = EntIndexToEntRef(iInt);
 			}
 		}
+	}
+	property int m_iSlicersFired
+	{
+		public get()							{ return this.m_iState; }
+		public set(int TempValueForProperty) 	{ this.m_iState = TempValueForProperty; }
 	}
 	public void LanceState(bool activate)
 	{
@@ -463,13 +483,17 @@ methodmap Karlas < CClotBody
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 
+		npc.m_flSlicerBarrageCD = GetGameTime() + GetRandomFloat(5.0, 10.0);
+		npc.m_flSlicerBarrageActive = 0.0;
+		npc.m_flSlicerBarrageNextWave = 0.0;
+		npc.m_iSlicersFired = 0;
 		npc.Anger = false;
 
 		Schwertkrieg_Create_Wings(npc);
 		Delete_Swords(npc.index);
 
 		func_NPCFuncWin[npc.index] = Win_Line;
-		npc.m_iNClockonState = 2;
+		npc.m_iNClockonState = 0;
 		
 		
 		return npc;
@@ -569,8 +593,12 @@ static void Internal_ClotThink(int iNPC)
 
 	GetTarget(npc);	
 
+	Fire_Wave_Barrage(npc);
+
 	if(npc.m_flNC_LockedOn > GameTime)
 		return;
+
+	
 
 	if(!IsValidEntity(RaidBossActive))
 	{
@@ -646,15 +674,6 @@ static void Internal_ClotThink(int iNPC)
 	Body_Pitch(npc, npc_Vec, vecTarget);
 
 	Healing_Logic(npc, PrimaryThreatIndex, flDistanceToTarget);
-
-	if(npc.m_flNextRangedAttack < GameTime && Can_I_See_Enemy(npc.index, PrimaryThreatIndex) == PrimaryThreatIndex)
-	{
-		Fire_Hiigara_Projectile(npc, PrimaryThreatIndex);
-
-		npc.m_flNextRangedAttack = GameTime + 1.0;
-
-		return;
-	}
 
 	if(npc.m_bRetreat)
 	{
@@ -768,7 +787,7 @@ static void GetTarget(Karlas npc)
 		if(!IsValidAlly(npc.index, npc.Ally))
 		{
 			npc.m_flNC_LockedOn = 0.0;
-			npc.m_iNClockonState = 2;
+			npc.m_iNClockonState = 0;
 			return;
 		}
 			
@@ -1334,6 +1353,88 @@ static float Modify_Damage(int Target, float damage)
 
 	return damage;
 }
+static void Fire_Wave_Barrage(Karlas npc)
+{
+	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_flSlicerBarrageActive < GameTime)
+	{
+		if(Schwert_Status(npc, GameTime) != -1)
+			return;
+
+		if(npc.m_flSlicerBarrageCD > GameTime)
+			return;
+	}
+	if(npc.m_flSlicerBarrageActive > GameTime && npc.m_iNClockonState == 2)
+	{
+		npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1];
+		npc.m_flRangedArmor = fl_schwert_armour[npc.index][0];
+		npc.m_flSpeed =fl_npc_basespeed;
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_bisWalking = true;
+
+		npc.LanceState(true);
+		return;
+	}
+
+	if(npc.m_flSlicerBarrageNextWave > GameTime)
+		return;
+	
+	//taunt_the_fist_bump_fistbump
+
+	if(npc.m_iSlicersFired >= 2)
+	{
+		npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1];
+		npc.m_flRangedArmor = fl_schwert_armour[npc.index][0];
+		npc.m_flSpeed =fl_npc_basespeed;
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_flSlicerBarrageCD = GameTime + 15.0;
+
+		
+
+		npc.m_bisWalking = true;
+
+		npc.LanceState(true);
+		return;
+	}
+	if(npc.m_flSlicerBarrageCD != FAR_FUTURE)
+	{
+		npc.SetPlaybackRate(0.85);	
+		npc.SetCycle(0.1);
+
+		npc.m_bisWalking = false;
+		//look into using "setcycle" when we fire the projectile as we "crack" the hands, allowing us to "crack" an infinite amount of hands if we wanted to to fire a proj
+		npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
+
+		npc.m_flSlicerBarrageCD = FAR_FUTURE;
+
+		npc.m_flSlicerBarrageNextWave = GameTime + 0.8;
+		npc.m_flDoingAnimation = GameTime + 5.0;
+		npc.m_flSlicerBarrageActive = GameTime + 3.0;
+
+		npc.LanceState(false);
+
+		npc.m_flSpeed = 0.0;
+
+		npc.m_iSlicersFired = 0;
+
+		return;
+	}
+
+
+	npc.m_flSlicerBarrageNextWave = GameTime + 0.9;
+
+	npc.m_iSlicersFired++;
+
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	Fire_Hiigara_Projectile(npc, npc.m_iTarget);
+	
+}
+
 
 static void Schwertkrieg_Teleport_Strike(Karlas npc, float flDistanceToTarget, float GameTime, int PrimaryThreatIndex)
 {
