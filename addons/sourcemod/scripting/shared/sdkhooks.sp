@@ -2547,6 +2547,9 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 
 	if (!force_Clear && dieingstate[client] != 0)
 		return;
+		
+	if (!force_Clear && TeutonType[client] != TEUTON_NONE)
+		return;
 
 	int downsleft;
 	downsleft = 2;
