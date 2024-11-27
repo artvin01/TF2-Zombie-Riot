@@ -1726,7 +1726,7 @@
 	
 	"Magical Haste Desc"
 	{
-		"en"	"25%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana, 10%% more mage damage."
+		"en"	"25%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana, 7%% more mage damage."
 		"fr"	"+25%% cadence des attaques magiques, +50%% Mana maximum et regénération Mana"
 		"ru"	"На 25%% быстрее скорость огненной магии и на 50%% восстановления маны и максимальной маны"
 		"chi"   "提升25%%法杖攻速，50%%的法力回复和最大法力值"
@@ -1742,10 +1742,7 @@
 	
 	"Hastening Potion Desc"
 	{
-		"en"	"15%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana, 50+ HP and 5%% melee resistance, 10%% more mage damage."
-		"fr"	"+15%% cadence des attaques magiques, +50%% Mana maximum et regénération Mana, +50 santé\n+5% résistance contre les dégats corps-à-corps"
-		"ru"	"На 15%% быстрее скорость огненной магии и на 50%% восстановления маны и максимальной маны, 50+ ед. здоровья и 5%% сопр. ближнему бою"
-		"chi"   "提升15%%法杖攻速和50%%的法力回复、最大法力值，提高50生命值和获得5%%近战抗性"
+		"en"	"15%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana, 50+ HP and 5%% melee resistance, 7%% more mage damage."
 	}
 	
 	"The Bombinomicon Desc"
@@ -1758,10 +1755,7 @@
 	
 	"Betweenlands Potion Desc"
 	{
-		"en"	"20%% Faster Mage Fire Speed and 100%% Mana Regen and Max Mana, 100+ HP and 5%% melee resistance, 10%% more mage damage."
-		"fr"	"+20%% cadence des attaques magiques, +100%% Mana maximum et regénération Mana, +100 santé\n+5% résistance contre les dégats corps-à-corps"
-		"ru"	"На 20%% быстрее скорость огненной магии и на 100%% восстановления маны и максимальной маны, 100+ ед. здоровья и 5%% сопр. ближнему бою"
-		"chi"   "提升20%%法杖攻速和100%%的法力回复、最大法力值，提高100生命值和获得5%%近战抗性"
+		"en"	"20%% Faster Mage Fire Speed and 100%% Mana Regen and Max Mana, 100+ HP and 5%% melee resistance, 7%% more mage damage."
 	}
 	
 	"Master Sorcerer Desc"
