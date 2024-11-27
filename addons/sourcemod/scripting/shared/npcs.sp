@@ -539,7 +539,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 			
 		value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
 					
-		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
+		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //overall
 	}
 #endif
 

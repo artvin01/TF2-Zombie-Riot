@@ -394,7 +394,8 @@ int Building_Mounted[MAXENTITIES];
 
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
-int i_DyingParticleIndication[MAXPLAYERS + 1][2];
+int i_DyingParticleIndication[MAXPLAYERS + 1][3];
+//1 is text, 2 is glow, 3 is death marker
 float f_DyingTextTimer[MAXPLAYERS + 1];
 bool b_DyingTextOff[MAXPLAYERS + 1];
 
@@ -1547,7 +1548,13 @@ public Action Timer_Dieing(Handle timer, int client)
 	{
 		RemoveEntity(particle);
 	}
+	particle = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+	}
 	dieingstate[client] = 0;
+	SDKHooks_UpdateMarkForDeath(client, true);
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
 	
