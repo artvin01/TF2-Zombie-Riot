@@ -507,6 +507,7 @@ float f_DomeInsideTest[MAXENTITIES];
 float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
+float f_ElementalAmplification[MAXENTITIES];
 float f_WeaponSpecificClassBuff[MAXENTITIES][1];
 bool b_WeaponSpecificClassBuff[MAXENTITIES][3];
 float f_HighTeslarDebuff[MAXENTITIES];

@@ -1252,9 +1252,13 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
-	
+	float DamageDeal = pack.ReadFloat();
+	if(f_ElementalAmplification[entity] > GetGameTime())
+	{
+		DamageDeal *= 1.15;
+	}
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, customtype);
+	SDKHooks_TakeDamage(entity, client, client, DamageDeal, damagetype, weapon, _, pos, false, customtype);
 
 	entity = pack.ReadCell();
 	if(entity < 1)

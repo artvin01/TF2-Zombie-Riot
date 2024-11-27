@@ -1368,10 +1368,7 @@
 	
 	"Elemental Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons a Earth Shattering Aimed Quake."
-		"fr"	"Chaque attaque utilise du Mana. M2 cause un tremblement de terre dirigé."
-		"ru"	"Потребляет ману с каждым выстрелом. М2 - вызывает сокрушительное направленное землетрясение."
-		"chi"   "每次射击消耗法力值。M2召唤一场震天动地的地震。"
+		"en"	"Consumes mana with each shot. M2 Summons a Earth Shattering Aimed Quake.\nApplies Elemental debuff\nBoosts bleed damage by 15%%, burn by 20%%, elemental damage applied by 30%%\nEarthquake deals 2x damage to enemies with this debuff."
 	}
 	
 	"Throwable Armor Grenade Desc"
