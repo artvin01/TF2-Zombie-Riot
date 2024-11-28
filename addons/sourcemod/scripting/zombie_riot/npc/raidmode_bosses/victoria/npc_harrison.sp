@@ -1106,7 +1106,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 							
 							WorldSpaceCenter(targetTrace, vecHit);
 
-							float damage = 20.0;
+							float damage = 50.0;
 							damage *= 1.15;
 
 							if(!NpcStats_IsEnemySilenced(npc.index))
@@ -1174,31 +1174,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 
 		if(IsValidEnemy(npc.index, target)) 
 		{
-			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0) && npc.m_iOverlordComboAttack > 0)
-			{
-
-				int Enemy_I_See;
-									
-				Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					target = Enemy_I_See;
-
-					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-					
-					float time = 0.125;
-					if(NpcStats_VictorianCallToArms(npc.index))
-					{
-						time *= 0.5;
-					}
-					npc.m_flAttackHappens = gameTime + time;
-					npc.m_flNextMeleeAttack = gameTime + time;
-					npc.m_flDoingAnimation = gameTime + time;
-				}
-			}
-			else if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
 									
@@ -1212,7 +1188,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 							
 					npc.m_flAttackHappens = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 0.5;
+					npc.m_flNextMeleeAttack = gameTime + 1.0;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 				}
 			}
