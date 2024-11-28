@@ -436,12 +436,6 @@ public void OnPostThink(int client)
 			CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
 		}
 	}
-	//make them slide off stuff.
-	if(ReplicateClient_Svairaccelerate[client] != 2.0)
-	{
-		ReplicateClient_Svairaccelerate[client] = 2.0;
-		CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set down
-	}
 	if(ReplicateClient_BackwardsWalk[client] != f_Client_BackwardsWalkPenalty[client])
 	{
 		char IntToStringDo[4];
