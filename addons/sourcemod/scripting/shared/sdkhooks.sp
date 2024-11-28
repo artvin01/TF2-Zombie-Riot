@@ -2549,15 +2549,22 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 {
 //	if(!b_GaveMarkForDeath[client])
 //		return;
-
-	if (!force_Clear && GetTeam(client) != TFTeam_Red)
-		return;
-
-	if (!force_Clear && dieingstate[client] != 0)
-		return;
+	if(!IsValidClient(client))
+	{
 		
-	if (!force_Clear && TeutonType[client] != TEUTON_NONE)
+		int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
+		if(entity > MaxClients)
+			RemoveEntity(entity);
 		return;
+	}
+	if (GetTeam(client) != TFTeam_Red)
+		force_Clear = true;
+
+	if (dieingstate[client] != 0)
+		force_Clear = true;
+		
+	if (TeutonType[client] != TEUTON_NONE)
+		force_Clear = true;
 
 	int downsleft;
 	downsleft = 2;

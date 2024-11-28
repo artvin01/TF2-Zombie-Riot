@@ -742,7 +742,7 @@ methodmap CuredFatherGrigori < CClotBody
 		else
 			FormatEx(ModelDo, sizeof(ModelDo), "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl");
 			
-		if(i_SpecialGrigoriReplace == 10)
+		if(i_SpecialGrigoriReplace == 0)
 			FormatEx(SizeDo, sizeof(SizeDo), "1.15");
 		else
 			FormatEx(SizeDo, sizeof(SizeDo), "1.0");
