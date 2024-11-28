@@ -29,6 +29,7 @@ static float Guillotine_DownMult = 0.5;			//Amount to multiply downed players' H
 
 //LORD OF THE WRETCHED: Lordread thrusts his axe into the air, summoning 8 red lightning bolts on random nav areas within a small radius around him. These lightning bolts
 //deal AoE damage and summon random non-buffed medieval skeletons. This ability cannot be used if at least 4 enemies who were summoned by him are still alive.
+//Lordread's most powerful ability, he only pulls it out when heavily wounded.
 static float Lord_Radius = 800.0;				//Radius in which lightning is called down.
 static float Lord_Interval_Extra = 0.2;			//Interval in which extra (non-summoner) bolts are called down.
 static float Lord_Interval_Summon = 0.75;		//Interval in which bolts which summon allies are called down.
@@ -39,7 +40,12 @@ static float Lord_BlastEntityMult = 4.0;		//Amount to multiply lightning damage 
 static float Lord_BlastFalloff_Range = 0.66;	//Maximum range-based falloff.
 static float Lord_BlastFalloff_MultiHit = 0.8;	//Amount to multiply lightning damage per target hit.
 static float Lord_Cooldown = 30.0;				//Ability cooldown.
-static float Lord_StartingCooldown = 20.0;		//Starting cooldown.
+static float Lord_StartingCooldown = 2.0;//20.0;		//Starting cooldown.
+static float Lord_Duration = 9.0;				//Duration for which to summon allies.
+static float Lord_MaxSummons = 6.0;				//Maximum summon value Lordread can have at once. Lightning bolts are still called above this, but they will not summon allies.
+static float Lord_SummonsScaling = 2.0;			//Amount to increase sumon cap per valid mercenary.
+static float Lord_CapSummons = 5.0;				//If Lordread has a summon value of at least this value, he cannot use this ability again.
+static float Lord_Threshold = 0.4;				//Percentage of max health Lordread must reach before he begins to use this ability.
 
 //CRIMSON TEMPEST: Lordread holds his axe out and enchants it with red lightning, then begins to spin wildly, rapidly damaging anyone who gets too close. Enemies within
 //a small radius (2x the damage radius) are pulled in (weak pull). Lordread is slowed massively during this attack. Buildings take triple damage from this.
@@ -54,7 +60,13 @@ static float Tempest_StartingCD = 16.0;		//Starting cooldown.
 
 static bool Lordread_Attacking[2049] = { false, ... };
 static float Lordread_NextLightning[2049] = { 0.0, ... };
+static float Lordread_NextSummon[2049] = { 0.0, ... };
+static float Lordread_NextExtraLightning[2049] = { 0.0, ... };
 static float Lordread_NextTempest[2049] = { 0.0, ... };
+static char s_LordreadSequence[MAXENTITIES][255];
+static bool b_LordreadForceSequence[MAXENTITIES] = { false, ... };
+static float Lordread_LightningEndTime[2049] = { 0.0, ... };
+static bool Lordread_StopMoving[2049] = { false, ... };
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -104,9 +116,17 @@ static const char g_KillSounds[][] = {
 	"ambient_mp3/halloween/male_scream_23.mp3",
 };
 
-#define SOUND_LORDREAD_HEAVY_WHOOSH		")misc/halloween/strongman_fast_whoosh_01.wav"
-#define SOUND_LORDREAD_RUSTLE			")player/cyoa_pda_draw.wav"
-#define SOUND_LORDREAD_GUILLOTINE_HIT	")weapons/halloween_boss/knight_axe_hit.wav"
+#define SOUND_LORDREAD_HEAVY_WHOOSH			")misc/halloween/strongman_fast_whoosh_01.wav"
+#define SOUND_LORDREAD_RUSTLE				")player/cyoa_pda_draw.wav"
+#define SOUND_LORDREAD_GUILLOTINE_HIT		")weapons/halloween_boss/knight_axe_hit.wav"
+#define SOUND_LORDREAD_LIGHTNING_STRIKE		")misc/halloween/spell_mirv_explode_secondary.wav"
+#define SOUND_LORDREAD_LIGHTNING_STRIKE_2	")player/taunt_tank_shoot.wav"
+#define SOUND_LORDREAD_CALL_LIGHTNING		")misc/halloween/spell_teleport.wav"
+#define SOUND_LORDREAD_SUMMON_LOOP			")ambient/halloween/underground_wind_lp_03.wav"
+//#define SOUND_LORDREAD_SUMMON_INTRO			""
+
+#define PARTICLE_LORDREAD_LIGHTNING_STRIKE_SUMMON	"skull_island_explosion"
+#define PARTICLE_LORDREAD_LIGHTNING_STRIKE			"drg_cow_explosioncore_charged"
 
 public void Lordread_OnMapStart_NPC()
 {
@@ -123,6 +143,11 @@ public void Lordread_OnMapStart_NPC()
 	PrecacheSound(SOUND_LORDREAD_HEAVY_WHOOSH);
 	PrecacheSound(SOUND_LORDREAD_RUSTLE);
 	PrecacheSound(SOUND_LORDREAD_GUILLOTINE_HIT);
+	PrecacheSound(SOUND_LORDREAD_LIGHTNING_STRIKE);
+	PrecacheSound(SOUND_LORDREAD_LIGHTNING_STRIKE_2);
+	PrecacheSound(SOUND_LORDREAD_CALL_LIGHTNING);
+	PrecacheSound(SOUND_LORDREAD_SUMMON_LOOP);
+	//PrecacheSound(SOUND_LORDREAD_SUMMON_INTRO);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Lordread, Royal Executioner of Necropolis");
@@ -133,6 +158,11 @@ public void Lordread_OnMapStart_NPC()
 	data.Category = Type_Necropolain;
 	data.Func = Summon_Lordread;
 	NPC_Add(data);
+}
+
+public void Lordread_StopLoop(Lordread npc)
+{
+	StopSound(npc.index, SNDCHAN_AUTO, SOUND_LORDREAD_SUMMON_LOOP);
 }
 
 static any Summon_Lordread(int client, float vecPos[3], float vecAng[3], int ally)
@@ -225,7 +255,15 @@ methodmap Lordread < CClotBody
 
 	public bool CanUseLightning()
 	{
-		if (GetGameTime(this.index) < Lordread_NextLightning[this.index] || Lordread_Attacking[this.index])
+		if (GetGameTime(this.index) < Lordread_NextLightning[this.index] || Lordread_Attacking[this.index] || this.m_flBoneZoneNumSummons >= Lord_CapSummons)
+			return false;
+
+		float hp = float(GetEntProp(this.index, Prop_Data, "m_iHealth"));
+		float maxHP = float(GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
+
+		float ratio = hp / maxHP;
+
+		if (ratio > Lord_Threshold)
 			return false;
 
 		return true;
@@ -265,6 +303,46 @@ methodmap Lordread < CClotBody
 
 		EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], this.index, _, _, _, _, 80);
 		EmitSoundToAll(SOUND_CAPTAIN_RUSTLE, this.index, _, 120);
+	}
+
+	public float CalculateMaxSummons()
+	{
+		if (GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+			return Lord_MaxSummons;
+
+		float maxSummons = Lord_MaxSummons;
+
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			if (!IsClientInGame(i))
+				continue;
+
+			if (TeutonType[i] == TEUTON_NONE)
+				maxSummons += Lord_SummonsScaling;
+		}
+
+		return maxSummons;
+	}
+
+	public void Lightning()
+	{
+		int iActivity = this.LookupActivity("ACT_EXECUTIONER_LORD_INTRO");
+		if (iActivity > 0)
+		{	
+			this.StartActivity(iActivity);
+			Lordread_Attacking[this.index] = true;
+			Lordread_NextSummon[this.index] = 0.0;
+			Lordread_NextExtraLightning[this.index] = 0.0;
+			Lordread_LightningEndTime[this.index] = 0.0;
+			Lordread_StopMoving[this.index] = true;
+			EmitSoundToAll(SOUND_LORDREAD_SUMMON_LOOP, this.index, _, _, _, _, 80);
+			
+			int choice = GetRandomInt(0, sizeof(g_HHHLaughs) - 1);
+			EmitSoundToAll(g_HHHLaughs[choice], this.index, _, 120, _, _, 80);
+			EmitSoundToAll(g_HHHLaughs[choice], this.index, _, 120, _, 0.75, 60);
+			EmitSoundToAll(g_HHHLaughs[choice], this.index, _, 120, _, 0.5, 40);
+			//EmitSoundToAll(SOUND_LORDREAD_SUMMON_INTRO);
+		}
 	}
 
 	public Lordread(int client, float vecPos[3], float vecAng[3], int ally)
@@ -319,7 +397,7 @@ public void Lordread_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + (Lordread_Attacking[npc.index] ? 0.0 : DEFAULT_UPDATE_DELAY_FLOAT);
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -333,14 +411,60 @@ public void Lordread_ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	if (b_LordreadForceSequence[npc.index])
+	{
+		int activity = npc.LookupActivity(s_LordreadSequence[npc.index]);
+		if (activity > 0)
+			npc.StartActivity(activity);
+
+		b_LordreadForceSequence[npc.index] = false;
+	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + (Lordread_Attacking[npc.index] ? 0.0 : 0.1);
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		npc.StartPathing();
+	}
+
+	if (Lordread_Attacking[npc.index])
+	{
+		if (Lordread_LightningEndTime[npc.index] > 0.0)
+		{
+			if (Lordread_LightningEndTime[npc.index] < GetGameTime(npc.index))
+			{
+				Lordread_LightningEndTime[npc.index] = 0.0;
+				Lordread_Attacking[npc.index] = false;
+				Lordread_StopMoving[npc.index] = false;
+				b_LordreadForceSequence[npc.index] = true;
+				s_LordreadSequence[npc.index] = "ACT_EXECUTIONER_RUN";
+				Lordread_NextLightning[npc.index] = GetGameTime(npc.index) + Lord_Cooldown;
+				Lordread_StopLoop(npc);
+				npc.StartPathing();
+			}
+			else
+			{
+				float startPos[3];
+				npc.WorldSpaceCenter(startPos);
+				if (GetGameTime(npc.index) >= Lordread_NextExtraLightning[npc.index])
+				{
+					Lordread_SummonLightning(npc, startPos, false);
+					Lordread_NextExtraLightning[npc.index] = GetGameTime(npc.index) + Lord_Interval_Extra;
+				}
+				if (GetGameTime(npc.index) >= Lordread_NextSummon[npc.index])
+				{
+					Lordread_SummonLightning(npc, startPos, true);
+					Lordread_NextSummon[npc.index] = GetGameTime(npc.index) + Lord_Interval_Summon;
+				}
+			}
+		}
+	}
+	else if (npc.CanUseLightning())
+	{
+		npc.Lightning();
 	}
 	
 	int closest = npc.m_iTarget;
@@ -378,7 +502,128 @@ public void Lordread_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
+	if (Lordread_StopMoving[npc.index])
+	{
+		npc.StopPathing();
+	}
+
 	npc.PlayIdleSound();
+}
+
+public void Lordread_SummonLightning(Lordread npc, float startPos[3], bool summon)
+{
+	float pos[3];
+	CNavArea navi = GetRandomNearbyArea(startPos, Lord_Radius);
+	navi.GetCenter(pos);
+
+	if (summon)
+	{
+		spawnRing_Vectors(pos, Lord_BlastRadius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 160, 0, 255, 255, 1, Lord_Delay, 16.0, 12.0, 1);
+		spawnRing_Vectors(pos, Lord_BlastRadius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 200, 120, 255, 255, 1, Lord_Delay, 8.0, 1.0, 1, 0.1);
+	}
+	else
+	{
+		spawnRing_Vectors(pos, Lord_BlastRadius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 255, 0, 0, 255, 1, Lord_Delay, 16.0, 12.0, 1);
+		spawnRing_Vectors(pos, Lord_BlastRadius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 255, 120, 120, 255, 1, Lord_Delay, 8.0, 1.0, 1, 0.1);
+	}
+
+	DataPack pack = new DataPack();
+	CreateDataTimer(Lord_Delay, Lordread_LightningStrike, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntIndexToEntRef(npc.index));
+	WritePackFloat(pack, pos[0]);
+	WritePackFloat(pack, pos[1]);
+	WritePackFloat(pack, pos[2]);
+	WritePackCell(pack, summon);
+
+	//EmitSoundToAll(SOUND_LORDREAD_CALL_LIGHTNING, _, _, _, _, _, GetRandomInt(80, 120), _, pos);
+}
+
+public Action Lordread_LightningStrike(Handle timely, DataPack pack)
+{
+	ResetPack(pack);
+
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	float pos[3], startPos[3];
+	for (int i = 0; i < 3; i++)
+		pos[i] = ReadPackFloat(pack);
+	bool summon = ReadPackCell(pack);
+
+	if (!IsValidEntity(ent))
+		return Plugin_Continue;
+
+	startPos = pos;
+	startPos[2] += 9999.0;
+
+	if (summon)
+	{
+		SpawnBeam_Vectors(startPos, pos, 0.33, 120, 20, 255, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
+		SpawnBeam_Vectors(startPos, pos, 0.33, 200, 20, 255, 255, PrecacheModel("materials/sprites/glow02.vmt"), 12.0, 12.0, _, 0.0);
+		SpawnBeam_Vectors(startPos, pos, 0.33, 120, 20, 255, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 20.0);
+	}
+	else
+	{
+		SpawnBeam_Vectors(startPos, pos, 0.33, 255, 20, 0, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
+		SpawnBeam_Vectors(startPos, pos, 0.33, 255, 20, 0, 255, PrecacheModel("materials/sprites/glow02.vmt"), 12.0, 12.0, _, 0.0);
+		SpawnBeam_Vectors(startPos, pos, 0.33, 255, 20, 0, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 20.0);
+	}
+
+	int particle = ParticleEffectAt(pos, (summon ? PARTICLE_LORDREAD_LIGHTNING_STRIKE_SUMMON : PARTICLE_LORDREAD_LIGHTNING_STRIKE), 2.0);
+	if (IsValidEntity(particle))
+	{
+		EmitSoundToAll(SOUND_LORDREAD_LIGHTNING_STRIKE, particle, _, 120, _, _, GetRandomInt(80, 120));
+		EmitSoundToAll(SOUND_LORDREAD_LIGHTNING_STRIKE_2, particle, _, 120, _, _, GetRandomInt(80, 120));
+	}
+
+	Lordread npc = view_as<Lordread>(ent);
+	bool isBlue = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);	
+	Explode_Logic_Custom(Lord_BlastDMG, npc.index, npc.index, npc.index, pos, Lord_BlastRadius, Lord_BlastFalloff_MultiHit, Lord_BlastFalloff_Range, isBlue, _, false, Lord_BlastEntityMult);
+
+	if (npc.m_flBoneZoneNumSummons < npc.CalculateMaxSummons() && summon/* && (MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)*/)
+	{
+		float randAng[3];
+		randAng[1] = GetRandomFloat(0.0, 360.0);
+
+		int entity;
+		switch(GetRandomInt(1, 6))
+		{
+			case 1:
+			{
+				entity = PeasantBones(npc.index, pos, randAng, GetTeam(npc.index), false);
+			}
+			case 2:
+			{
+				entity = ArchmageBones(npc.index, pos, randAng, GetTeam(npc.index), false);
+			}
+			case 3:
+			{
+				entity = AlchemistBones(npc.index, pos, randAng, GetTeam(npc.index));
+			}
+			case 4:
+			{
+				entity = JesterBones(npc.index, pos, randAng, GetTeam(npc.index), false);
+			}
+			case 5:
+			{
+				entity = SaintBones(npc.index, pos, randAng, GetTeam(npc.index), false);
+			}
+			case 6:
+			{
+				entity = SquireBones(npc.index, pos, randAng, GetTeam(npc.index), false);
+			}
+		}
+
+		if (IsValidEntity(entity))
+		{
+			CClotBody summoned = view_as<CClotBody>(entity);
+			summoned.m_iBoneZoneSummoner = npc.index;
+			summoned.m_flBoneZoneSummonValue = 1.0;
+			npc.m_flBoneZoneNumSummons += 1.0;
+			NpcAddedToZombiesLeftCurrently(entity, true);
+			EmitSoundToAll(g_WitchLaughs[GetRandomInt(0, sizeof(g_WitchLaughs) - 1)], entity, _, _, _, _, GetRandomInt(90, 110));
+		}
+	}
+
+	return Plugin_Continue;
 }
 
 public void Lordread_AnimEvent(int entity, int event)
@@ -451,6 +696,18 @@ public void Lordread_AnimEvent(int entity, int event)
 
 			Lordread_Attacking[npc.index] = false;
 		}
+		case 1017:	//Lord of the Wretched intro "whoosh" sound.
+		{
+			EmitSoundToAll(SOUND_CAPTAIN_HEAVY_WHOOSH, npc.index, _, 120);
+		}
+		case 1018:
+		{
+			b_LordreadForceSequence[npc.index] = true;
+			s_LordreadSequence[npc.index] = "ACT_EXECUTIONER_LORD_ACTIVE";
+			Lordread_NextExtraLightning[npc.index] = GetGameTime(npc.index) + Lord_Interval_Extra;
+			Lordread_NextSummon[npc.index] = GetGameTime(npc.index) + Lord_Interval_Summon;
+			Lordread_LightningEndTime[npc.index] = GetGameTime(npc.index) + Lord_Duration;
+		}
 	}
 }
 
@@ -488,6 +745,8 @@ public void Lordread_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
+	Lordread_StopLoop(npc);
+
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 }

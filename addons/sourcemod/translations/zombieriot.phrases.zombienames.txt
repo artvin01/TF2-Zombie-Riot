@@ -3047,11 +3047,15 @@
 	}
 	"Godfather Grimme"
 	{
-		"en"	"Godfather Grimme"
+		"en"	"Godfather Grimme, Kingpin of Calcium"
 	}
 	"Captain Faux-Beard, Terror of the Dead Sea"
 	{
 		"en"	"Captain Faux-Beard, Terror of the Dead Sea"
+	}
+	"Lordread, Royal Executioner of Necropolis"
+	{
+		"en"	"Lordread, Royal Executioner of Necropolis"
 	}
 	"Supreme Spookmaster Bones"
 	{

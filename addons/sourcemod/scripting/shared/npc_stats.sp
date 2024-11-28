@@ -4631,6 +4631,48 @@ stock CNavArea PickRandomArea()
 	return TheNavAreas.Get(GetURandomInt() % iAreaCount);
 }
 
+stock ArrayList GetAllNearbyAreas(float pos[3], float radius)
+{
+	ArrayList valid = CreateArray(255);
+
+	int iAreaCount = TheNavAreas.Length;
+	for (int i = 0; i < iAreaCount; i++)
+	{
+		CNavArea navi = TheNavAreas.Get(i);
+
+		if(navi == NULL_AREA) 
+			break; //No nav?
+
+		int NavAttribs = navi.GetAttributes();
+		if(NavAttribs & NAV_MESH_AVOID)
+		{
+			continue;
+		}
+
+		float navPos[3];
+		navi.GetCenter(navPos);
+
+		if (GetVectorDistance(pos, navPos) <= radius)
+			PushArrayCell(valid, navi);
+	}
+
+	return valid;
+}
+
+stock CNavArea GetRandomNearbyArea(float pos[3], float radius)
+{
+	ArrayList areas = GetAllNearbyAreas(pos, radius);
+	CNavArea navi;
+
+	if (GetArraySize(areas) > 0)
+	{
+		navi = GetArrayCell(areas, GetRandomInt(0, GetArraySize(areas) - 1));
+	}
+
+	delete areas;
+	return navi;
+}
+
 int HitEntitiesTeleportTrace[MAXENTITIES];
 public bool TeleportDetectEnemy(int entity, int contentsMask, any iExclude)
 {
