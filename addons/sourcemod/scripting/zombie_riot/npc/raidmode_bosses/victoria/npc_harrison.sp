@@ -106,6 +106,7 @@ static float NiceMiss[MAXENTITIES];
 static bool OnMiss[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
+static int Vs_Target[MAXENTITIES];
 static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
@@ -291,7 +292,8 @@ methodmap Harrison < CClotBody
 		SUPERHIT[npc.index] = false;
 		NiceMiss[npc.index] = 0.0;
         npc.m_flHarrisonRocketShotHappening = 0.0;
-		f_HarrisonRailgunDelay = 0.0;
+		f_HarrisonRailgunDelay = 35.0;
+		f_HarrisonSnipeShotDelay = 25.0;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
@@ -381,29 +383,38 @@ methodmap Harrison < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		CPrintToChatAll("{blue}%s{default}: Intruders in sight, I won't let the get out alive!", c_NpcName[npc.index]);
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/scout/pn2_longfall.mdl");
-		SetVariantString("1.0");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/all_class/pet_robro.mdl");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/fall17_jungle_jersey/fall17_jungle_jersey.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/invasion_starduster/invasion_starduster.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/scout/sum19_bottle_cap/sum19_bottle_cap.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/pyro_hazmat_4/pyro_hazmat_4_sniper.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
+		SetEntityRenderColor(npc.m_iWearable5, 50, 50, 50, 255);
 
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector/hwn2019_fuel_injector.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/sniper/xms2013_sniper_jacket/xms2013_sniper_jacket.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable6, 50, 50, 50, 255);
+
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum24_daring_dell_style3/sum24_daring_dell_style3.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 255);
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -789,7 +800,7 @@ void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
-				// ResetHarrisonWeapon(npc, 1);
+					ResetHarrisonWeapon(npc, 1);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
@@ -800,7 +811,7 @@ void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-				//	ResetHarrisonWeapon(npc, 1);
+					ResetHarrisonWeapon(npc, 1);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_PRIMARY");
@@ -814,7 +825,7 @@ void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-				//	ResetHarrisonWeapon(npc, 0);
+					ResetHarrisonWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -825,7 +836,7 @@ void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-				//	ResetHarrisonWeapon(npc, 0);
+					ResetHarrisonWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
@@ -839,10 +850,12 @@ void HarrisonAnimationChange(Harrison npc)
 
 int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance)
 {
-	npc.i_GunMode = 0;
+	
 
 	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 	{
+		npc.i_GunMode = 0;
+
 		if(IsValidEnemy(npc.index, target))
 		{
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
@@ -880,8 +893,115 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 		}
 		return;
 	}
+	else if(npc.f_HarrisonSnipeShotDelay < gameTime)
+	{
+		npc.i_GunMode = 1;
+
+		if(NpcStats_VictorianCallToArms(npc.index))
+		{
+			npc.m_flAttackHappens = gameTime + 0.65;
+		}
+		else if(!NpcStats_VictorianCallToArms(npc.index))
+		{
+			npc.m_flAttackHappens = gameTime + 1.25;
+		}
+		npc.m_flDoingAnimation = gameTime + 0.95;
+
+		Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, true, true);
+		if(!IsValidEnemy(npc.index, Vs_Target[npc.index]))
+			return false;
+		
+		float VecEnemy[3]; WorldSpaceCenter(Vs_Target, VecEnemy);
+
+		static float ThrowPos[MAXENTITIES][3];  
+		float origin[3], angles[3];
+		GetAbsOrigin(npc.m_iWearable2, origin);
+		//view_as<CClotBody>(npc.m_iWearable2).GetAttachment("muzzle", origin, angles);
+		if(npc.m_flDoingAnimation > gameTime)
+		{
+			if(Can_I_See_Enemy_Only(npc.index, Vs_Target))
+			{
+				WorldSpaceCenter(Vs_Target, ThrowPos[npc.index]);
+				float pos_npc[3];
+				WorldSpaceCenter(npc.index, pos_npc);
+				float AngleAim[3];
+				GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+				Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+				if(TR_DidHit(hTrace))
+				{
+					TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+				}
+			}
+		}
+		else
+		{	
+			if(npc.m_flAttackHappens)
+			{
+				float pos_npc[3];
+				WorldSpaceCenter(npc.index, pos_npc);
+				float AngleAim[3];
+				GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+				Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+				if(TR_DidHit(hTrace))
+				{
+					TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+				}
+				delete hTrace;
+			}
+		}
+		if(npc.m_flAttackHappens)
+		{
+			TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {0,125,255,255}, 3);
+			TE_SendToAll(0.0);
+		}
+				
+		npc.FaceTowards(ThrowPos[npc.index], 15000.0);
+		if(npc.m_flAttackHappens)
+		{
+			if(npc.m_flAttackHappens < gameTime)
+			{
+				npc.m_flAttackHappens = 0.0;
+				ShootLaser(npc.m_iWearable2, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
+				float pos_npc[3];
+				WorldSpaceCenter(npc.index, pos_npc);
+				float AngleAim[3];
+				GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+				Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+				int Traced_Target = TR_GetEntityIndex(hTrace);
+				if(Traced_Target > 0)
+				{
+					WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
+				}
+				else if(TR_DidHit(hTrace))
+				{
+					TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+				}
+				delete hTrace;	
+
+				int target = Can_I_See_Enemy(npc.index, Vs_Target,_ ,ThrowPos[npc.index]);
+				npc.PlayMeleeSound();
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+				if(IsValidEnemy(npc.index, target))
+				{
+					float damageDealt = 250.0;
+					if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 99.0;
+					
+					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
+					if(IsValidClient(target))
+						IncreaceEntityDamageTakenBy(target, 1.0, 10.0, true);
+					else
+						NpcStats_SilenceEnemy(target, (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 30.0 : 60.0));
+				}
+				npc.f_HarrisonSnipeShotDelay = gameTime + 20.0;
+			}
+		}
+		
+	}
 	else if(npc.m_flRangedSpecialDelay < gameTime)
 	{
+		npc.i_GunMode = 0;
+
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 				
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
@@ -916,6 +1036,8 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 	}
 	if(npc.m_flNextRangedAttack < gameTime)
 	{
+		npc.i_GunMode = 0;
+
 		int GetClosestEnemyToAttack;
 		//Get the closest visible target via distance checks, not via pathing check.
 		GetClosestEnemyToAttack = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);
@@ -957,6 +1079,8 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 	}
 	else if(npc.m_flAttackHappens)
 	{
+		npc.i_GunMode = 0;
+
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
@@ -1046,10 +1170,13 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 	//Melee attack, last prio
 	else if(gameTime > npc.m_flNextMeleeAttack)
 	{
+		npc.i_GunMode = 0;
+
 		if(IsValidEnemy(npc.index, target)) 
 		{
 			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0) && npc.m_iOverlordComboAttack > 0)
 			{
+
 				int Enemy_I_See;
 									
 				Enemy_I_See = Can_I_See_Enemy(npc.index, target);
@@ -1059,7 +1186,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 					target = Enemy_I_See;
 
 					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 					
 					float time = 0.125;
 					if(NpcStats_VictorianCallToArms(npc.index))
@@ -1378,4 +1505,28 @@ public bool Harrison_BEAM_TraceUsers(int entity, int contentsMask, int client)
 public bool Harrison_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
+}
+
+void ResetHarrisonWeapon(Soldine npc, int weapon_Type)
+{
+	if(IsValidEntity(npc.m_iWearable1))
+	{
+		RemoveEntity(npc.m_iWearable1);
+	}
+	switch(weapon_Type)
+	{
+		case 1:
+		{
+			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
+			SetVariantString("1.0");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		}
+		case 0:
+		{
+			float flPos[3];
+			float flAng[3];
+			npc.GetAttachment("effect_hand_r", flPos, flAng);
+			npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+		}
+	}
 }
