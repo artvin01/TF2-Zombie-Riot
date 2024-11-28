@@ -4880,6 +4880,11 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
+			//citizen that are downed must be ignored.
+			if(b_ThisWasAnNpc[enemy] && Citizen_ThatIsDowned(enemy))
+			{
+				return false;
+			}
 			
 			if(b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 			{
@@ -5053,11 +5058,11 @@ stock int GetClosestTarget(int entity,
 	
 	//This code: if the npc is not on player team, make them attack players.
 	//This doesnt work if they ignore players or tower defense mode is enabled.
-	#if defined ZR
+#if defined ZR
 	if(SearcherNpcTeam != TFTeam_Red && !IgnorePlayers && !IsTowerdefense)
-	#else
+#else
 	if(!IgnorePlayers)
-	#endif
+#endif
 	{
 		for( int i = 1; i <= MaxClients; i++ ) 
 		{
@@ -5171,7 +5176,10 @@ stock int GetClosestTarget(int entity,
 							return entity_close; //we found a vip building, go after it.
 						}
 					}
-					
+					//if its a downed citizen, dont target.
+					if(Citizen_ThatIsDowned(entity_close))
+							continue;
+
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
