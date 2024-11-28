@@ -953,6 +953,14 @@ methodmap Citizen < CClotBody
 		if(glow > 0)
 			AcceptEntityInput(glow, "Disable");
 		
+		if(barney)
+		{
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Barney");
+		}
+		else if(alyx)
+		{
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Alyx");
+		}
 		npc.m_iSeed = seed;
 		
 		npc.m_nDowned = 1;
@@ -1611,10 +1619,10 @@ static void CitizenMenu(int client, int page = 0)
 		case 1:
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "DPS Class");
-			menu.AddItem("4", buffer, (npc.m_iGunType != Cit_None && npc.m_iGunType != Cit_Melee) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("4", buffer, (npc.m_iClassRole == Cit_Fighter && npc.m_iGunType != Cit_None && npc.m_iGunType != Cit_Melee) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 			FormatEx(buffer, sizeof(buffer), "%t", "Tank Class");
-			menu.AddItem("5", buffer, npc.m_iGunType == Cit_Melee ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("5", buffer, (npc.m_iClassRole == Cit_Fighter && npc.m_iGunType == Cit_Melee) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 			FormatEx(buffer, sizeof(buffer), "%t", "Healer Class");
 			menu.AddItem("6", buffer, npc.m_iClassRole == Cit_Medic ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -2179,7 +2187,12 @@ int Citizen_Count()
 	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
 		if(i_NpcInternalId[i] == NPCId && GetTeam(i) == TFTeam_Red)
-			count++;
+		{
+			Citizen npc = view_as<Citizen>(i);
+			//BARNEY NO SCALE BAD !!!!!!!!!!!!!!!!!!!!!! (and alyx ig)
+			if(!npc.m_bHero)
+				count++;
+		}
 	}
 
 	return count;
@@ -2279,11 +2292,15 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		npc.m_iTargetAlly = 0;
 		npc.m_iSeakingObject = 0;
+		npc.m_flNextThinkTime = gameTime + 0.15;
 		
 		if(npc.m_nDowned != 2)
 		{
 			npc.ThinkCombat(":(");
 			npc.ThinkFriendly(":(");
+
+			if(npc.m_iReviveTicks > 50)
+				npc.m_iReviveTicks--;
 
 			if(npc.m_flidle_talk == 0.0)
 			{
@@ -2299,7 +2316,7 @@ public void Citizen_ClotThink(int iNPC)
 	}
 
 	// This heal happens every second on players, for npcs this think happens way more often, subtract.
-	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.04 * 0.01, 0.5, 0.0, HEAL_SELFHEAL);
+	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.04 * 0.01, (npc.m_iClassRole == Cit_Medic ? 1.0 : 0.5), 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 
 	bool noSafety = (npc.m_bCamo || VIPBuilding_Active());
 	bool autoSeek = (noSafety || npc.m_bRebelAgressive/* || RaidbossIgnoreBuildingsLogic(1)*/);
@@ -2907,11 +2924,41 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							HealingCooldown[npc.index] = gameTime + 10.0;
 
-							float healing = npc.m_iGunValue * 0.03;
+							float healing = npc.m_iGunValue * 0.015;
 							if(team != TFTeam_Red)
 								healing *= 100;
 							
+							if(f_TimeUntillNormalHeal[ally] - 2.0 > GetGameTime())
+							{
+								healing *= 0.33;
+							}
+							int BeamIndex = ConnectWithBeam(npc.index, ally, 50, 125, 50, 1.5, 1.5, 1.35, "sprites/laserbeam.vmt");
+							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 							HealEntityGlobal(npc.index, ally, healing, _, 3.0);
+
+							
+							float duration;
+							duration = Increaced_Overall_damage_Low[npc.index] - GetGameTime();
+							if(duration < 5.2)
+							{
+								Increaced_Overall_damage_Low[npc.index] = GetGameTime() + 5.0;
+							}
+							duration = Resistance_Overall_Low[npc.index] - GetGameTime();
+							if(duration < 5.2)
+							{
+								Resistance_Overall_Low[npc.index] = GetGameTime() + 5.0;
+							}
+							duration = Increaced_Overall_damage_Low[ally] - GetGameTime();
+							if(duration < 5.2)
+							{
+								Increaced_Overall_damage_Low[ally] = GetGameTime() + 5.0;
+							}
+							duration = Resistance_Overall_Low[ally] - GetGameTime();
+							if(duration < 5.2)
+							{
+								Resistance_Overall_Low[ally] = GetGameTime() + 5.0;
+							}
+							
 							if(ally <= MaxClients)
 								ClientCommand(ally, "playgamesound items/smallmedkit1.wav");
 						}
@@ -3809,7 +3856,7 @@ public void Citizen_ClotThink(int iNPC)
 		case 4:	// Walk up to our ally
 		{
 			npc.m_bAllowBackWalking = false;
-			npc.m_flidle_talk = FAR_FUTURE;
+			npc.m_flidle_talk = 0.0;
 
 			switch(npc.m_iGunType)
 			{
@@ -3849,7 +3896,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		case 2, 3:	// Walk away against our target
 		{
-			npc.m_flidle_talk = FAR_FUTURE;
+			npc.m_flidle_talk = 0.0;
 			npc.m_bAllowBackWalking = walkStatus == 2; // Walk backwards against our target
 
 			bool found;
@@ -3880,7 +3927,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		case 1:	// Walk up to our target
 		{
-			npc.m_flidle_talk = FAR_FUTURE;
+			npc.m_flidle_talk = 0.0;
 			npc.m_bAllowBackWalking = false;
 			
 			WorldSpaceCenter(target, vecTarget);
@@ -3902,44 +3949,77 @@ public void Citizen_ClotThink(int iNPC)
 		}
 	}
 
+	bool isReviving;
+
 	// Revive check
 	if(walkStatus < 1 && ally > 0 && team == TFTeam_Red)
 	{
 		bool medic = npc.m_iClassRole == Cit_Medic && npc.m_iHasPerk == npc.m_iGunType;
-
+		
 		if(ally <= MaxClients)
 		{
 			if(dieingstate[ally] > 0)
+			{
 				ReviveClientFromOrToEntity(ally, npc.index, _, medic ? 0 : 1);
+				isReviving = true;
+			}
 		}
 		else if(Citizen_ThatIsDowned(ally))
 		{
 			int speed = medic ? 6 : 3;
 			Rogue_ReviveSpeed(speed);
 			Citizen_ReviveTicks(ally, speed, 0);
+			isReviving = true;
 		}
 	}
 
 	// We standing, doing nothing
-	if(!walkStatus)
+	if(!walkStatus || isReviving)
 	{
 		if(npc.m_flidle_talk == 0.0)
 			npc.m_flidle_talk = gameTime + 5.0 + (GetURandomFloat() * 5.0) + (float(npc.m_iSeed) / 214748364.7);
 		
+			/*
+		if(isReviving)
+		{
+			if(npc.m_iGunType != Cit_Melee)
+			{
+				int iPitch = npc.LookupPoseParameter("aim_pitch");
+				if(iPitch > 0)
+				{
+					npc.SetPoseParameter(iPitch, 50.0);
+				}
+			}
+		}
+		else
+		{
+			int iPitch = npc.LookupPoseParameter("aim_pitch");
+			if(iPitch > 0)
+			{
+				npc.SetPoseParameter(iPitch, 0.0);
+			}
+		}
+		*/
 		switch(npc.m_iGunType)
 		{
 			case Cit_Melee:
 			{
 				if(!npc.m_bHero && !npc.m_bFemale)
 				{
-					npc.SetActivity("ACT_IDLE_ANGRY_MELEE", 0.0);
+					if(!isReviving)
+						npc.SetActivity("ACT_IDLE_ANGRY_MELEE", 0.0);
+					else
+						npc.SetActivity("ACT_COVER_LOW", 0.0);
 					
 					if(npc.m_iWearable1 > 0)
 						AcceptEntityInput(npc.m_iWearable1, "Enable");
 				}
 				else
 				{
-					npc.SetActivity("ACT_IDLE", 0.0);
+					if(!isReviving)
+						npc.SetActivity("ACT_IDLE", 0.0);
+					else
+						npc.SetActivity("ACT_COVER_LOW", 0.0);
 
 					if(npc.m_iWearable1 > 0)
 						AcceptEntityInput(npc.m_iWearable1, "Enable");
@@ -3947,23 +4027,38 @@ public void Citizen_ClotThink(int iNPC)
 			}
 			case Cit_SMG:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_SMG1" : injured ? "ACT_IDLE_SMG1_STIMULATED" : "ACT_IDLE_SMG1_RELAXED", 0.0);
+				if(!isReviving)
+					npc.SetActivity(combat ? "ACT_IDLE_SMG1" : injured ? "ACT_IDLE_SMG1_STIMULATED" : "ACT_IDLE_SMG1_RELAXED", 0.0);
+				else
+					npc.SetActivity("ACT_RANGE_AIM_SMG1_LOW", 0.0);
 			}
 			case Cit_AR:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_AR2" : injured ? "ACT_IDLE_AR2_STIMULATED" : "ACT_IDLE_AR2_RELAXED", 0.0);
+				if(!isReviving)
+					npc.SetActivity(combat ? "ACT_IDLE_AR2" : injured ? "ACT_IDLE_AR2_STIMULATED" : "ACT_IDLE_AR2_RELAXED", 0.0);
+				else
+					npc.SetActivity("ACT_RANGE_AIM_SMG1_LOW", 0.0);
 			}
 			case Cit_Shotgun:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_SHOTGUN_AGITATED" : injured ? "ACT_IDLE_SHOTGUN_STIMULATED" : "ACT_IDLE_SHOTGUN_RELAXED", 0.0);
+				if(!isReviving)
+					npc.SetActivity(combat ? "ACT_IDLE_SHOTGUN_AGITATED" : injured ? "ACT_IDLE_SHOTGUN_STIMULATED" : "ACT_IDLE_SHOTGUN_RELAXED", 0.0);
+				else
+					npc.SetActivity("ACT_RANGE_AIM_SMG1_LOW", 0.0);
 			}
 			case Cit_RPG:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_RPG" : "ACT_IDLE_RPG_RELAXED", 0.0);
+				if(!isReviving)
+					npc.SetActivity(combat ? "ACT_IDLE_RPG" : "ACT_IDLE_RPG_RELAXED", 0.0);
+				else
+					npc.SetActivity("ACT_RANGE_AIM_SMG1_LOW", 0.0);
 			}
 			default:
 			{
-				npc.SetActivity((!npc.m_bHero && combat) ? "ACT_IDLE_ANGRY" : "ACT_IDLE", 0.0);
+				if(!isReviving)
+					npc.SetActivity((!npc.m_bHero && combat) ? "ACT_IDLE_ANGRY" : "ACT_IDLE", 0.0);
+				else
+					npc.SetActivity("ACT_COVER_LOW", 0.0);
 				
 				if(npc.m_iWearable1 > 0)
 					AcceptEntityInput(npc.m_iWearable1, "Disable");
@@ -3992,7 +4087,7 @@ public void Citizen_ClotThink(int iNPC)
 				int i = -1;
 				while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 				{
-					if(i_NpcInternalId[i] == NPCId && i != npc.index && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE)
+					if(i_NpcInternalId[i] == NPCId && i != npc.index && view_as<Citizen>(i).m_flidle_talk != 0.0)
 					{
 						WorldSpaceCenter(i, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
@@ -4066,7 +4161,7 @@ void Citizen_MiniBossSpawn()
 	int i = -1;
 	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE)
+		if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != 0.0)
 		{
 			view_as<Citizen>(i).PlaySound(Cit_MiniBoss);
 			view_as<Citizen>(i).m_flidle_talk += 15.0;
@@ -4087,7 +4182,7 @@ void Citizen_MiniBossDeath(int entity)
 	int i = -1;
 	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE)
+		if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != 0.0)
 		{
 			WorldSpaceCenter(i, vecTarget);
 			float dist = GetVectorDistance(vecTarget, vecMe, true);
@@ -4116,7 +4211,7 @@ void Citizen_LiveCitizenReaction(int entity)
 	int i = -1;
 	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if(i_NpcInternalId[i] == NPCId && i != entity && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE)
+		if(i_NpcInternalId[i] == NPCId && i != entity && view_as<Citizen>(i).m_flidle_talk != 0.0)
 		{
 			WorldSpaceCenter(i, vecTarget);
 			float dist = GetVectorDistance(vecTarget, vecMe, true);
@@ -4183,9 +4278,9 @@ void Citizen_PlayerDeath(int client)
 		int i = -1;
 		while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 		{
-			if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && GetTeam(i) == TFTeam_Red)
+			if(i_NpcInternalId[i] == NPCId && view_as<Citizen>(i).m_flidle_talk != 0.0 && GetTeam(i) == TFTeam_Red)
 			{
-				view_as<Citizen>(i).m_flidle_talk = FAR_FUTURE;
+				view_as<Citizen>(i).m_flidle_talk = 0.0;
 				
 				WorldSpaceCenter(i, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);

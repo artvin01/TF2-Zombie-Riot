@@ -2551,10 +2551,10 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 //		return;
 	if(!IsValidClient(client))
 	{
-		
 		int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
 		if(entity > MaxClients)
 			RemoveEntity(entity);
+			
 		return;
 	}
 	if (GetTeam(client) != TFTeam_Red)
