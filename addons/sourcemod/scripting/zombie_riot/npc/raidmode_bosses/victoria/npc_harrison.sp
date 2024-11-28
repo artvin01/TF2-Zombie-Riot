@@ -257,7 +257,7 @@ methodmap Harrison < CClotBody
 	
 	public Harrison(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Harrison npc = view_as<Harrison>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		Harrison npc = view_as<Harrison>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "400000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -851,7 +851,6 @@ void HarrisonAnimationChange(Harrison npc)
 int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance)
 {
 	
-
 	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 	{
 		npc.i_GunMode = 0;
@@ -863,20 +862,40 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 		}
 		if(npc.m_flRangedSpecialDelay < gameTime)
 		{
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			if(npc.m_flAttackHappens - 0.35 > GetGameTime(npc.index))
 			{
-				npc.PlayRocketSound();
-				float vecSelf[3];
-				WorldSpaceCenter(npc.index, vecSelf);
-				vecSelf[2] += 50.0;
-				vecSelf[0] += GetRandomFloat(-10.0, 10.0);
-				vecSelf[1] += GetRandomFloat(-10.0, 10.0);
-				float RocketDamage = 200.0;
-				int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0);
-				DataPack pack;
-				CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(EntIndexToEntRef(RocketGet));
-				pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
+				UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+				int enemy_2[MAXENTITIES];
+				float pos_npc[3];
+				float angles_useless[3];
+				float PosEnemy[3];
+				GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable8);
+				for(int i; i < sizeof(enemy_2); i++)
+				{
+					if(enemy_2[i] < GetGameTime())
+					{
+						int ememyTarget = enemy_2[i];
+						WorldSpaceCenter(ememyTarget, PosEnemy);
+						float flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
+						float SpeedToPredict = flDistanceToTarget * 2.1;
+						float vecTarget[3];PredictSubjectPositionForProjectiles(npc, ememyTarget, SpeedToPredict, _,vecTarget);
+						if(IsValidEnemy(npc.index, npc.vecTarget))
+						{
+							npc.PlayRocketSound();
+							float vecSelf[3];
+							WorldSpaceCenter(npc.index, vecSelf);
+							vecSelf[2] += 50.0;
+							vecSelf[0] += GetRandomFloat(-15.0, 15.0);
+							vecSelf[1] += GetRandomFloat(-15.0, 15.0);
+							float RocketDamage = 200.0;
+							int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0, "models/buildables/sentry3_rockets.mdl");
+							DataPack pack;
+							CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+							pack.WriteCell(EntIndexToEntRef(RocketGet));
+							pack.WriteCell(EntIndexToEntRef(npc.vecTarget));
+						}
+					}
+				}
 			}
 			npc.m_flDoingAnimation = 0.0;
 		}
@@ -1200,146 +1219,6 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 		}	
 	}
 	return 0;
-}
-
-bool HarrisonSnipingShots(Harrison npc)
-{
-	if(npc.m_flHarrisonRocketShotHappening)
-	{
-		
-		//at max 15 targets, anything above that is unneccecary.
-		//we dont support more then 1 Harrison at a time.
-		//This is due to just the array being way too big.
-		static float SnipeTargets[MAXENTITIES][3];  
-		if(npc.m_flAttackHappens)
-		{
-			//Enemies currently in vision
-			float pos_npc[3];
-			float angles_useless[3];
-			float PosEnemy[3];
-			WorldSpaceCenter(npc.index, pos_npc);
-			npc.GetAttachment("effect_hand_r", pos_npc, angles_useless);
-			if(npc.m_flAttackHappens - 0.35 > GetGameTime(npc.index))
-			{
-				UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-				int enemy_2[MAXENTITIES];
-				GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable8);
-				for(int i; i < sizeof(enemy_2); i++)
-				{
-					if(enemy_2[i] && HarrisonAntiLaserDo[enemy_2[i]] < GetGameTime())
-					{
-						int ememyTarget = enemy_2[i];
-						WorldSpaceCenter(ememyTarget, PosEnemy);
-						float flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
-						float SpeedToPredict = flDistanceToTarget * 2.1;
-						PredictSubjectPositionForProjectiles(npc, ememyTarget, SpeedToPredict, _,SnipeTargets[ememyTarget]);
-					}
-				}
-			}
-			bool DoLaserShow = false;
-			if(npc.m_flHarrisonSniperShotsLaserThrottle < GetGameTime())
-			{
-				DoLaserShow = true;
-				npc.m_flHarrisonSniperShotsLaserThrottle = GetGameTime() + 0.1;
-			}
-			for(int Loop = 1; Loop < MAXENTITIES; Loop ++)
-			{
-				if(SnipeTargets[Loop][1] != 0.0)
-				{
-					float AngleAim[3];
-					GetVectorAnglesTwoPoints(pos_npc, SnipeTargets[Loop], AngleAim);
-					Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-					if(TR_DidHit(hTrace))
-					{
-						TR_GetEndPosition(SnipeTargets[Loop], hTrace);
-					}
-					delete hTrace;
-					if(DoLaserShow)
-					{
-						TE_SetupBeamPoints(pos_npc, SnipeTargets[Loop], Shared_BEAM_Laser, 0, 0, 0, 0.1, 5.0, 5.0, 0, 0.0, {125,125,255,255}, 3);
-						TE_SendToAll(0.0);
-					}
-				}
-			}
-			if(npc.m_flAttackHappens < GetGameTime(npc.index))
-			{	
-				bool PlaySound;
-				for(int Loop = 1; Loop < MAXENTITIES; Loop ++)
-				{
-					if(SnipeTargets[Loop][1] != 0.0)
-					{
-						TE_SetupBeamPoints(pos_npc, SnipeTargets[Loop], Shared_BEAM_Laser, 0, 0, 0, 0.25, 5.0, 5.0, 5, 0.0, {255,255,255,255}, 3);
-						TE_SendToAll(0.0);
-						float AngleAim[3];
-						GetVectorAnglesTwoPoints(pos_npc, SnipeTargets[Loop], AngleAim);
-						Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-						int Traced_Target = TR_GetEntityIndex(hTrace);
-						if(Traced_Target > 0)
-						{
-							WorldSpaceCenter(Traced_Target, SnipeTargets[Loop]);
-						}
-						else if(TR_DidHit(hTrace))
-						{
-							TR_GetEndPosition(SnipeTargets[Loop], hTrace);
-						}
-						delete hTrace;
-						int target = Can_I_See_Enemy(npc.index, Loop,_ ,SnipeTargets[Loop]);
-						if(IsValidEnemy(npc.index, target))
-						{
-							float damageDealt = 40.0 * RaidModeScaling;
-							if(Loop > MaxClients)
-								damageDealt *= 0.5;
-
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, SnipeTargets[Loop]);
-						} 
-						PlaySound = true;
-						DataPack pack_boom = new DataPack();
-						pack_boom.WriteFloat(SnipeTargets[Loop][0]);
-						pack_boom.WriteFloat(SnipeTargets[Loop][1]);
-						pack_boom.WriteFloat(SnipeTargets[Loop][2]);
-						pack_boom.WriteCell(0);
-						RequestFrame(MakeExplosionFrameLater, pack_boom);
-						EmitAmbientSound("ambient/explosions/explode_3.wav", SnipeTargets[Loop], _, 90, _,0.7, GetRandomInt(75, 110));
-					}
-				}
-				if(PlaySound)
-				{
-					npc.PlayShootSoundHarrisonSnipe();
-				}
-				npc.m_flAttackHappens = GetGameTime(npc.index) + 1.0;
-				Zero2(SnipeTargets);//rest all!
-			}
-		}
-		if(npc.m_flHarrisonRocketShotHappening < GetGameTime(npc.index))
-		{
-			if(npc.m_iChanged_WalkCycle != 100)
-			{
-				//we change animations
-				npc.m_flHarrisonRocketShotHappening = GetGameTime(npc.index) + 3.1;
-				if(i_RaidGrantExtra[npc.index] >= 4)
-					npc.m_flHarrisonRocketShotHappening = GetGameTime(npc.index) + 4.1;
-
-				npc.m_flAttackHappens = GetGameTime(npc.index) + 1.0;
-				npc.m_iChanged_WalkCycle = 100;
-				npc.AddActivityViaSequence("taunt_headbutt_start");
-				npc.SetCycle(0.5);
-				npc.SetPlaybackRate(0.05);	
-				Zero2(SnipeTargets);//rest all!
-				return true;
-			}
-			npc.i_GunMode = 0;
-			npc.m_flAttackHappens = 0.0;
-			npc.m_flHarrisonRocketShotHappening = 0.0;	
-			npc.m_iChanged_WalkCycle = 0;
-			npc.m_flDoingAnimation = 0.0;
-			if(IsValidEntity(npc.m_iWearable8))
-			{
-				RemoveEntity(npc.m_iWearable8);
-			}
-		}
-		return true;
-	}
-	return false;
 }
 
 
