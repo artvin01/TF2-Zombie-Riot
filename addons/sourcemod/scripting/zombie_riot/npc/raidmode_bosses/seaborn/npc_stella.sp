@@ -29,27 +29,30 @@ Keep on checking which of the 2 npc's can see more targets from their positions,
 
 
 Karlas:
+Silence:
+Reduces the proj speed of the slicers by 5%
+Reduces the firerate speed of the slicers by 5%
+
+
 While cannon is being shot at him, his move speed is reduced by 90% and his turn speed is reduced by 50%. in addition uses the same targeting logic stella will have.
 
 Look into replacing his Lance with the model version.
 
 If Karlas is close to stella, and there are multiple people near stella, Karlas allows stella to "retreat" teleport like Twirl.
 
-Give Karlas a Phase 2 animation, doing idk what yet.
-
 When Stella dies, Karlas gains his current blades. abit modified tho. mainly visual / trace (Phase 3)
 
-Fire_Hiigara_Projectile - needs a better name?
-Find some animation for it, while, *kinda* similar to what nemal does? preferably not.
-them being slow (current speed) + like 1s inbetween each slicer per person so they can dodge.
+Barrage: Karlas fires off 3 or less, depending on how many people there are within his line of sight forwards, slicers.
+Fires several of them, cannot move, gets resistances during it.
 
 
 
 Misc:
-Look into making actual model wings.
-And making stella special weapon models for her hand crest.
+Karlas Final Touches: 
+Adjust visuals on blades.
+Sounds for the barrage.
+Give him actual wings.
 
-For Karlas make somekind of slicer model that would be used for ranged attacks, I.E barrage of light?
 
 
 taunt_doctors_defibrillators 
@@ -603,7 +606,7 @@ methodmap Stella < CClotBody
 		
 		c_NpcName[npc.index] = "Stella";
 
-		//data: test , force15, force30, force45, force60, hell, solo, triple_enemies, nomusic, anger
+		//data: test , force15, force30, force45, force60, hell, solo, triple_enemies, nomusic, anger, twirl
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
@@ -620,7 +623,7 @@ methodmap Stella < CClotBody
 		else if(StrContains(data, "hell") != -1)
 			wave = -1;
 
-		//todo: this :3
+		//idk
 		if(wave == -1)
 		{
 			wave = 60 + ZR_GetWaveCount();
