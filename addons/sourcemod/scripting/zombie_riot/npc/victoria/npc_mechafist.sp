@@ -2,9 +2,18 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/engineer_paincrticialdeath01.mp3",
-	"vo/engineer_paincrticialdeath02.mp3",
-	"vo/engineer_paincrticialdeath03.mp3",
+	")vo/engineer_negativevocalization01.mp3",
+	")vo/engineer_negativevocalization02.mp3",
+	")vo/engineer_negativevocalization03.mp3",
+	")vo/engineer_negativevocalization04.mp3",
+	")vo/engineer_negativevocalization05.mp3",
+	")vo/engineer_negativevocalization06.mp3",
+	")vo/engineer_negativevocalization07.mp3",
+	")vo/engineer_negativevocalization08.mp3",
+	")vo/engineer_negativevocalization09.mp3",
+	")vo/engineer_negativevocalization10.mp3",
+	")vo/engineer_negativevocalization11.mp3",
+	")vo/engineer_negativevocalization12.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -17,13 +26,11 @@ static const char g_HurtSounds[][] = {
 	"vo/engineer_painsharp07.mp3",
 	"vo/engineer_painsharp08.mp3",
 };
-
-
 static const char g_IdleAlertedSounds[][] = {
-	"vo/engineer_battlecry01.mp3",
-	"vo/engineer_battlecry03.mp3",
-	"vo/engineer_battlecry04.mp3",
-	"vo/engineer_battlecry05.mp3",
+	"vo/engineer_standonthepoint01.mp3",
+	"vo/engineer_standonthepoint02.mp3",
+	"vo/engineer_standonthepoint03.mp3",
+	"vo/engineer_standonthepoint04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {

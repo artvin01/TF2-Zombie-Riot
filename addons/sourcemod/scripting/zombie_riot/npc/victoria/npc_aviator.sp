@@ -2,23 +2,34 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/spy_paincrticialdeath01.mp3",
-	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3",
+	")vo/engineer_negativevocalization01.mp3",
+	")vo/engineer_negativevocalization02.mp3",
+	")vo/engineer_negativevocalization03.mp3",
+	")vo/engineer_negativevocalization04.mp3",
+	")vo/engineer_negativevocalization05.mp3",
+	")vo/engineer_negativevocalization06.mp3",
+	")vo/engineer_negativevocalization07.mp3",
+	")vo/engineer_negativevocalization08.mp3",
+	")vo/engineer_negativevocalization09.mp3",
+	")vo/engineer_negativevocalization10.mp3",
+	")vo/engineer_negativevocalization11.mp3",
+	")vo/engineer_negativevocalization12.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/spy_painsharp01.mp3",
-	"vo/spy_painsharp02.mp3",
-	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3",
+	"vo/engineer_painsharp01.mp3",
+	"vo/engineer_painsharp02.mp3",
+	"vo/engineer_painsharp03.mp3",
+	"vo/engineer_painsharp04.mp3",
+	"vo/engineer_painsharp05.mp3",
+	"vo/engineer_painsharp06.mp3",
+	"vo/engineer_painsharp07.mp3",
+	"vo/engineer_painsharp08.mp3",
 };
-
 static const char g_IdleAlertedSounds[][] = {
-	"vo/spy_battlecry01.mp3",
-	"vo/spy_battlecry02.mp3",
-	"vo/spy_battlecry03.mp3",
-	"vo/spy_battlecry04.mp3",
+	"vo/engineer_mvm_mannhattan_gate_atk01.mp3",
+	"vo/engineer_mvm_mannhattan_gate_atk02.mp3",
+	"vo/engineer_mvm_mannhattan_gate_atk03.mp3",
 };
 
 static const char g_RangedAttackSounds[][] = {
@@ -36,7 +47,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_06.wav",
 	"weapons/cleaver_hit_07.wav",
 };
-void Iberia_Cambino_OnMapStart_NPC()
+void Aviator_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -126,7 +137,7 @@ methodmap Aviator < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Aviator_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Aviator_ClotThink);
 		
-		
+		npc.m_flAngerDelay = GetGameTime() + 35.0;
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
@@ -200,6 +211,33 @@ public void Aviator_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+
+	if(npc.m_flAngerDelay < GetGameTime(npc.index))
+	{
+		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")* 3);
+		float MaxHealth = float(ReturnEntityMaxHealth(npc.index)* 3);	
+
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
+		int entity = NPC_CreateByName("npc_ironshield", -1, pos, ang, GetTeam(entity));
+		if(entity > MaxClients)
+		{
+			if(GetTeam(npc.index) != TFTeam_Red)
+				Zombies_Currently_Still_Ongoing++;
+			
+			SetEntProp(entity, Prop_Data, "m_iHealth", Health);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", MaxHealth);
+			
+			fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index] * 0.75;
+			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index] * 0.65;
+			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 0.75;
+			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 3.0;
+			b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
+			b_StaticNPC[other] = b_StaticNPC[npc.index];
+			view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+		}
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -379,25 +417,8 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 							
 				
 					npc.PlayMeleeHitSound();
-					npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_l"), PATTACH_POINT_FOLLOW, true);
+					npc.DispatchParticleEffect(npc.index, "flaregun_energyfield_blue", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_l"), PATTACH_POINT_FOLLOW, true);
 		
-					bool Knocked = false;
-								
-					if(IsValidClient(target_hit))
-					{
-						if (IsInvuln(target_hit))
-						{
-							Knocked = true;
-							Custom_Knockback(npc.index, target_hit, 2000.0, true);
-							TF2_AddCondition(target_hit, TFCond_LostFooting, 2.5);
-							TF2_AddCondition(target_hit, TFCond_AirCurrent, 2.5);
-						}
-						else
-						{
-							TF2_AddCondition(target_hit, TFCond_LostFooting, 2.5);
-							TF2_AddCondition(target_hit, TFCond_AirCurrent, 2.5);
-						}
-					}
 					if(target_hit <= MaxClients)
 						TF2_StunPlayer(target, 0.6, 0.9, TF_STUNFLAG_SLOWDOWN);
 				} 
@@ -428,7 +449,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 	}
 	npc.i_GunMode = 1;
 	//isnt melee anymore
-	if((distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)) && gameTime > npc.m_flNextRangedAttack)
+	if((distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5)) && gameTime > npc.m_flNextRangedAttack)
 	{	
 		if(Can_I_See_Enemy_Only(npc.index, target))
 		{

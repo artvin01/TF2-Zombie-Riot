@@ -354,11 +354,37 @@ public Action VictorianIronShield_OnTakeDamage(int victim, int &attacker, int &i
 public void VictorianIronShield_NPCDeath(int entity)
 {
 	VictorianIronShield npc = view_as<VictorianIronShield>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
 	
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+
+	npc.PlayDeathSound();
+
+	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	int team = GetTeam(npc.index);
+
+	float Health = float(ReturnEntityMaxHealth(npc.index) / 6);
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index) / 3);	
+
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+	
+	int other = NPC_CreateByName("npc_aviator", -1, pos, ang, team);
+	if(other > MaxClients)
+	{
+		if(team != TFTeam_Red)
+			Zombies_Currently_Still_Ongoing++;
+		
+		SetEntProp(other, Prop_Data, "m_iHealth", health);
+		SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
+		
+		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 1.33;
+		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 1.54;
+		fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 1.33;
+		fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] / 3.0;
+		b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
+		b_StaticNPC[other] = b_StaticNPC[npc.index];
+	}
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
