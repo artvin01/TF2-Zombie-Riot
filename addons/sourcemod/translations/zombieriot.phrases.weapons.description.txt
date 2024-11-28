@@ -3258,9 +3258,7 @@
 	}
 	"Broken Rapier Desc"
 	{
-		"en"	"A rapier that has been degraded to a state of hopelessness.\nUnpredictable footing: You permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot (affected by Daiquiri and Affinity).\nDestreza: Every 2nd hit speeds you up."
-		"fr"	"Cet arme peut frapper en pleine tête (affecté par Daiquiri et Affinité.)\nVoutre vitesse augmunte tous les deux coups.\nVous souffrez 20%% plus de dégats.\nUne rapière dégradé à un état de désespoir."
-		"chi"	"一把被时间摧毁的西洋剑。\n平衡失调：+20%%受到的伤害。\n精准攻击：此武器可以击中头部造成暴击。Destreza：每两次攻击会给你加速。"
+		"en"	"A rapier that has been degraded to a state of hopelessness.\nYou permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot.\nHitting speed you up\nYou have no backwards walking penalty."
 	}
 	"Bent Rapier Desc"
 	{

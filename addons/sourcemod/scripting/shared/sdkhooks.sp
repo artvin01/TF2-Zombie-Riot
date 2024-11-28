@@ -343,6 +343,7 @@ public void OnPreThinkPost(int client)
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
 	}
 	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
+	Cvar_clamp_back_speed.FloatValue = f_Client_BackwardsWalkPenalty[client];
 }
 #endif	// ZR & RPG
 
@@ -434,6 +435,19 @@ public void OnPostThink(int client)
 			ReplicateClient_Svairaccelerate[client] = 10.0;
 			CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
 		}
+	}
+	//make them slide off stuff.
+	if(ReplicateClient_Svairaccelerate[client] != 2.0)
+	{
+		ReplicateClient_Svairaccelerate[client] = 2.0;
+		CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set down
+	}
+	if(ReplicateClient_BackwardsWalk[client] != f_Client_BackwardsWalkPenalty[client])
+	{
+		char IntToStringDo[4];
+		FloatToString(f_Client_BackwardsWalkPenalty[client], IntToStringDo, sizeof(IntToStringDo));
+		Cvar_clamp_back_speed.ReplicateToClient(client, IntToStringDo); //set down
+		ReplicateClient_BackwardsWalk[client] = f_Client_BackwardsWalkPenalty[client];
 	}
 		
 	//Reduce knockback when airborn, this is to fix issues regarding flying way too high up, making it really easy to tank groups!

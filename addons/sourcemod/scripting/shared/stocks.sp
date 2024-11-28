@@ -251,6 +251,7 @@ void ResetReplications()
 	for(int client=1; client<=MaxClients; client++)
 	{
 		ReplicateClient_Svairaccelerate[client] = -1.0;
+		ReplicateClient_BackwardsWalk[client] = -1.0;
 		ReplicateClient_Tfsolidobjects[client] = -1;
 		ReplicateClient_RollAngle[client] = -1;
 	}

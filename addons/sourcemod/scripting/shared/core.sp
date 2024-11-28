@@ -292,6 +292,7 @@ ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar CvarAirAcclerate; //sv_airaccelerate
+ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 #endif
 ConVar sv_cheats;
 ConVar nav_edit;
@@ -411,6 +412,8 @@ Handle SyncHud_ArmorCounter;
 
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
+float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.7, ...};
+float f_Client_BackwardsWalkPenalty[MAXTF2PLAYERS]={0.7, ...};
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
@@ -585,6 +588,7 @@ int i_PullTowardsTarget[MAXENTITIES];
 float f_PullStrength[MAXENTITIES];
 
 float ReplicateClient_Svairaccelerate[MAXTF2PLAYERS];
+float ReplicateClient_BackwardsWalk[MAXTF2PLAYERS];
 int ReplicateClient_Tfsolidobjects[MAXTF2PLAYERS];
 int ReplicateClient_RollAngle[MAXTF2PLAYERS];
 
@@ -1543,6 +1547,10 @@ public void OnPluginStart()
 	if(CvarAirAcclerate)
 		CvarAirAcclerate.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
+	Cvar_clamp_back_speed = FindConVar("tf_clamp_back_speed");
+	if(Cvar_clamp_back_speed)
+		Cvar_clamp_back_speed.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
 	CvarTfMMMode = FindConVar("tf_mm_servermode");
 	if(CvarTfMMMode)
 		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
@@ -2287,8 +2295,11 @@ public void OnClientDisconnect(int client)
 	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	ReplicateClient_Svairaccelerate[client] = -1.0;
+	ReplicateClient_BackwardsWalk[client] = -1.0;
 	ReplicateClient_Tfsolidobjects[client] = -1;
 	ReplicateClient_RollAngle[client] = -1;
+	b_NetworkedCrouch[client] = false;
+	//Reset!
 
 #if defined ZR
 	f_InBattleHudDisableDelay[client] = 0.0;
