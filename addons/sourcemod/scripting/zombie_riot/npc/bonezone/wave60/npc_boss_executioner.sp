@@ -22,9 +22,10 @@ static float Guillotine_Cooldown = 4.0;			//Melee attack interval.
 static float Guillotine_DMG = 9999999.0;		//Damage versus players.
 static float Guillotine_DMG_Entities = 10000.0;	//Damage versus entities.
 static float Guillotine_Range = 90.0;			//Range in which the attack will be used.
-static float Guillotine_SpeedMult = 0.5;		//Maximum additional animation speed boost, based on health lost.
-static float Guillotine_CDMult = 0.5;			//Maximum additional cooldown multiplier, based on health lost.
-static float Guillotine_MinHP = 0.1;			//Health percentage at which Guillotine becomes its fastest.
+static float Guillotine_SpeedMult = 0.33;		//Maximum additional animation speed boost, based on health lost.
+static float Guillotine_CDMult = 0.2;			//Maximum additional cooldown multiplier, based on health lost.
+static float Guillotine_MinHP = 0.33;			//Health percentage at which Guillotine becomes its fastest.
+static float Guillotine_DownMult = 0.5;			//Amount to multiply downed players' HP when they are downed by this attack.
 
 //LORD OF THE WRETCHED: Lordread thrusts his axe into the air, summoning 8 red lightning bolts on random nav areas within a small radius around him. These lightning bolts
 //deal AoE damage and summon random non-buffed medieval skeletons. This ability cannot be used if at least 4 enemies who were summoned by him are still alive.
@@ -37,6 +38,8 @@ static float Lord_BlastRadius = 120.0;			//Lightning bolt radius.
 static float Lord_BlastEntityMult = 4.0;		//Amount to multiply lightning damage against buildings.
 static float Lord_BlastFalloff_Range = 0.66;	//Maximum range-based falloff.
 static float Lord_BlastFalloff_MultiHit = 0.8;	//Amount to multiply lightning damage per target hit.
+static float Lord_Cooldown = 30.0;				//Ability cooldown.
+static float Lord_StartingCooldown = 20.0;		//Starting cooldown.
 
 //CRIMSON TEMPEST: Lordread holds his axe out and enchants it with red lightning, then begins to spin wildly, rapidly damaging anyone who gets too close. Enemies within
 //a small radius (2x the damage radius) are pulled in (weak pull). Lordread is slowed massively during this attack. Buildings take triple damage from this.
@@ -47,6 +50,11 @@ static float Tempest_Radius = 200.0;		//Damage radius.
 static float Tempest_SuckRadius = 400.0;	//Radius in which enemies are pulled in.
 static float Tempest_Duration = 12.0;		//Spin duration.
 static float Tempest_Cooldown = 24.0;		//Cooldown.
+static float Tempest_StartingCD = 16.0;		//Starting cooldown.
+
+static bool Lordread_Attacking[2049] = { false, ... };
+static float Lordread_NextLightning[2049] = { 0.0, ... };
+static float Lordread_NextTempest[2049] = { 0.0, ... };
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -90,6 +98,16 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
+static const char g_KillSounds[][] = {
+	"ambient_mp3/halloween/male_scream_19.mp3",
+	"ambient_mp3/halloween/male_scream_21.mp3",
+	"ambient_mp3/halloween/male_scream_23.mp3",
+};
+
+#define SOUND_LORDREAD_HEAVY_WHOOSH		")misc/halloween/strongman_fast_whoosh_01.wav"
+#define SOUND_LORDREAD_RUSTLE			")player/cyoa_pda_draw.wav"
+#define SOUND_LORDREAD_GUILLOTINE_HIT	")weapons/halloween_boss/knight_axe_hit.wav"
+
 public void Lordread_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -100,6 +118,11 @@ public void Lordread_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_KillSounds));   i++) { PrecacheSound(g_KillSounds[i]);   }
+
+	PrecacheSound(SOUND_LORDREAD_HEAVY_WHOOSH);
+	PrecacheSound(SOUND_LORDREAD_RUSTLE);
+	PrecacheSound(SOUND_LORDREAD_GUILLOTINE_HIT);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Lordread, Royal Executioner of Necropolis");
@@ -189,6 +212,61 @@ methodmap Lordread < CClotBody
 		#endif
 	}
 
+	public bool CanUseGuillotine(float dist)
+	{
+		if (dist > Guillotine_Range)
+			return false;
+
+		if (GetGameTime(this.index) < this.m_flNextMeleeAttack || Lordread_Attacking[this.index])
+			return false;
+
+		return true;
+	}
+
+	public bool CanUseLightning()
+	{
+		if (GetGameTime(this.index) < Lordread_NextLightning[this.index] || Lordread_Attacking[this.index])
+			return false;
+
+		return true;
+	}
+
+	public bool CanUseTempest()
+	{
+		if (GetGameTime(this.index) < Lordread_NextTempest[this.index] || Lordread_Attacking[this.index])
+			return false;
+
+		return true;
+	}
+	
+	public void Guillotine(int target, float targPos[3])
+	{
+		this.FaceTowards(targPos, 15000.0);
+
+		float hp = float(GetEntProp(this.index, Prop_Data, "m_iHealth"));
+		float maxHP = float(GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
+
+		float ratio = hp / maxHP;
+
+		float rate = 1.0;
+		if (ratio < 1.0)
+		{
+			if (ratio < Guillotine_MinHP)
+				rate += Guillotine_SpeedMult;
+			else
+			{
+				float diff = (1.0 - ratio) / (1.0 - Guillotine_MinHP);
+				rate += Guillotine_SpeedMult * diff;
+			}
+		}
+
+		this.AddGesture("ACT_EXECUTIONER_GUILLOTINE", _, _, _, rate);
+		Lordread_Attacking[this.index] = true;
+
+		EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], this.index, _, _, _, _, 80);
+		EmitSoundToAll(SOUND_CAPTAIN_RUSTLE, this.index, _, 120);
+	}
+
 	public Lordread(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
 		Lordread npc = view_as<Lordread>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, LORDREAD_SCALE, LORDREAD_HP, ally));
@@ -203,6 +281,9 @@ methodmap Lordread < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Lordread_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Lordread_ClotThink);
 		func_NPCAnimEvent[npc.index] = Lordread_AnimEvent;
+		Lordread_NextLightning[npc.index] = GetGameTime(npc.index) + Lord_StartingCooldown;
+		Lordread_NextTempest[npc.index] = GetGameTime(npc.index) + Tempest_StartingCD;
+		Lordread_Attacking[npc.index] = false;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -270,9 +351,9 @@ public void Lordread_ClotThink(int iNPC)
 		WorldSpaceCenter(closest, vecTarget);
 		WorldSpaceCenter(npc.index, vecother);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother);
 				
-		if(flDistanceToTarget < npc.GetLeadRadius())
+		if(flDistanceToTarget * flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
@@ -281,6 +362,12 @@ public void Lordread_ClotThink(int iNPC)
 		else
 		{
 			NPC_SetGoalEntity(npc.index, closest);
+		}
+
+		if (npc.CanUseGuillotine(flDistanceToTarget))
+		{
+			npc.FaceTowards(vecTarget, 15000.0);
+			npc.Guillotine(closest, vecTarget);
 		}
 	}
 	else
@@ -303,7 +390,81 @@ public void Lordread_AnimEvent(int entity, int event)
 
 	switch(event)
 	{
+		case 1013:	//Axe has been swung, play whoosh sound.
+		{
+			EmitSoundToAll(SOUND_CAPTAIN_HEAVY_WHOOSH, npc.index, _, 120);
+			EmitSoundToAll(g_HHHYells[GetRandomInt(0, sizeof(g_HHHYells) - 1)], npc.index, _, _, _, _, GetRandomInt(70, 90));
+		}
+		case 1014:	//Axe has reached the peak of its arc, deal damage.
+		{
+			int closest = npc.m_iTarget;
+			if (!IsValidEntity(closest))
+				return;
 
+			Handle swingTrace;
+			if(npc.DoSwingTrace(swingTrace, closest))
+			{
+				int target = TR_GetEntityIndex(swingTrace);	
+				float vecHit[3];
+				TR_GetEndPosition(vecHit, swingTrace);
+				if(target > 0) 
+				{
+					if(target <= MaxClients)
+					{
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Guillotine_DMG, DMG_CLUB, -1, _, vecHit);
+						RequestFrame(Guillotine_HalveHP, GetClientUserId(target));
+					}
+					else
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Guillotine_DMG_Entities, DMG_CLUB, -1, _, vecHit);					
+
+					EmitSoundToAll(SOUND_LORDREAD_GUILLOTINE_HIT, target, _, 120, _, _, 80);
+				}
+			}
+			delete swingTrace;
+		}
+		case 1015:	//Axe has reached the end of its swing arc, play sound effect while re-holstering it.
+		{
+			EmitSoundToAll(SOUND_CAPTAIN_RUSTLE, npc.index, _, 120);
+		}
+		case 1016:	//Guillotine gesture ends, apply cooldown and end attack state.
+		{
+			float cd = Guillotine_Cooldown;
+
+			float hp = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+			float maxHP = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+
+			float ratio = hp / maxHP;
+
+			float mult = 1.0;
+			if (ratio < 1.0)
+			{
+				if (ratio < Guillotine_MinHP)
+					mult = Guillotine_CDMult;
+				else
+				{
+					float diff = (1.0 - ratio) / (1.0 - Guillotine_MinHP);
+					mult -= Guillotine_CDMult * diff;
+				}
+			}
+
+			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (cd * mult);
+
+			Lordread_Attacking[npc.index] = false;
+		}
+	}
+}
+
+public void Guillotine_HalveHP(int id)
+{
+	int client = GetClientOfUserId(id);
+	if (!IsValidClient(client))
+		return;
+	
+	if (TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0)
+	{
+		float health = float(GetEntProp(client, Prop_Data, "m_iHealth"));
+		health *= Guillotine_DownMult;
+		SetEntProp(client, Prop_Data, "m_iHealth", RoundFloat(health));
 	}
 }
 
