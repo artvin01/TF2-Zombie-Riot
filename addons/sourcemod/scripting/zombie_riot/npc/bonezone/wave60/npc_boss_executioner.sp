@@ -202,6 +202,7 @@ methodmap Lordread < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Lordread_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Lordread_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Lordread_ClotThink);
+		func_NPCAnimEvent[npc.index] = Lordread_AnimEvent;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -293,6 +294,18 @@ public void Lordread_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
+public void Lordread_AnimEvent(int entity, int event)
+{
+	if (!IsValidEntity(entity))
+		return;
+
+	Lordread npc = view_as<Lordread>(entity);
+
+	switch(event)
+	{
+
+	}
+}
 
 public Action Lordread_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
