@@ -49,7 +49,7 @@ methodmap VictoriaTank < CClotBody
 	
 	public VictoriaTank(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaTank npc = view_as<VictoriaTank>(CClotBody(vecPos, vecAng, "models/player/items/taunts/tank/tank.mdl", "2.5", "120000", ally, _, true));
+		VictoriaTank npc = view_as<VictoriaTank>(CClotBody(vecPos, vecAng, "models/player/items/taunts/tank/tank.mdl", "2.5", "150000", ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
@@ -247,25 +247,47 @@ static void ClotDeath(int entity)
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	int team = GetTeam(npc.index);
 
-	int health = ReturnEntityMaxHealth(npc.index) / 5;
+	int health = ReturnEntityMaxHealth(npc.index) / 7.5;
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
-	int other = NPC_CreateByName("npc_welder", -1, pos, ang, team, "EX");
-	if(other > MaxClients)
+	for(int i; i < 3; i++)
 	{
-		if(team != TFTeam_Red)
-			Zombies_Currently_Still_Ongoing++;
-		
-		SetEntProp(other, Prop_Data, "m_iHealth", health);
-		SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
-		
-		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
-		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
-		fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-		fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-		b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-		b_StaticNPC[other] = b_StaticNPC[npc.index];
+		int other = NPC_CreateByName("npc_welder", -1, pos, ang, team);
+		if(other > MaxClients)
+		{
+			if(team != TFTeam_Red)
+				Zombies_Currently_Still_Ongoing++;
+			
+			SetEntProp(other, Prop_Data, "m_iHealth", health);
+			SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
+			
+			fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 1.43;
+			fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
+			b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
+			b_StaticNPC[other] = b_StaticNPC[npc.index];
+		}
+	}
+	for(int i; i < 2; i++)
+	{
+		int other = NPC_CreateByName("npc_pulverizer", -1, pos, ang, team);
+		if(other > MaxClients)
+		{
+			if(team != TFTeam_Red)
+				Zombies_Currently_Still_Ongoing++;
+			
+			SetEntProp(other, Prop_Data, "m_iHealth", health);
+			SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
+			
+			fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 1.43;
+			fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
+			b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
+			b_StaticNPC[other] = b_StaticNPC[npc.index];
+		}
 	}
 }
 

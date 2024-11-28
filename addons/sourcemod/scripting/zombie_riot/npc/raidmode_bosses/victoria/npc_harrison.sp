@@ -169,6 +169,11 @@ methodmap Harrison < CClotBody
 		public get()							{ return fl_NextRangedBarrage_Singular[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextRangedBarrage_Singular[this.index] = TempValueForProperty; }
 	}
+	property float f_HarrisonSnipeShotDelay
+	{
+		public get()							{ return fl_NextChargeSpecialAttack[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextChargeSpecialAttack[this.index] = TempValueForProperty; }
+	}
 	public void NiceCatchKnucklehead() {
 	
 		int sound = GetRandomInt(0, sizeof(StunballPickupeSound) - 1);
