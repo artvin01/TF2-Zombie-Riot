@@ -726,6 +726,7 @@ void NPC_ConfigSetup()
 	FlintlockBones_OnMapStart_NPC();
 	Godfather_OnMapStart_NPC();
 	Captain_OnMapStart_NPC();
+	Lordread_OnMapStart_NPC();
 	#endif
 }
 
@@ -1604,6 +1605,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/wave60/npc_squire.sp"
 #include "zombie_riot/npc/bonezone/wave60/npc_jester.sp"
 #include "zombie_riot/npc/bonezone/wave60/npc_peasant.sp"
+#include "zombie_riot/npc/bonezone/wave60/npc_boss_executioner.sp"
 //////
 #include "zombie_riot/npc/bonezone/npc_ssb.sp"
 #include "zombie_riot/npc/special/npc_reaper.sp"
