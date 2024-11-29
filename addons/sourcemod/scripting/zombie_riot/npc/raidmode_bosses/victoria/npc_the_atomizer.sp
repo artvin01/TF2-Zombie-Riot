@@ -382,17 +382,10 @@ methodmap Atomizer < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		npc.m_fbGunout = false;
 
-	//	Weapon
-	//	npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
-	//	SetVariantString("1.0");
-	//	AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-	//	Weapon
 		SetGlobalTransTarget(client);
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let the get out alive!");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/scout/pn2_longfall.mdl");
 		SetVariantString("1.0");
@@ -422,6 +415,8 @@ methodmap Atomizer < CClotBody
 		npc.m_bTeamGlowDefault = false;
 		SetVariantColor(view_as<int>({100, 150, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		
+		CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let the get out alive!");
 		
 		return npc;
 	}
@@ -487,22 +482,10 @@ static void Internal_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:
-			{
-				CPrintToChatAll("{blue}Atomizer{default}: Victoria will be in peace. Once and for all.");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{blue}Atomizer{default}: The troops have arrived and will begin destroying the intruders!");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{blue}Atomizer{default}: Backup team has arrived. Catch those damn bastards!");
-			}
-			case 4:
-			{
-				CPrintToChatAll("{blue}Atomizer{default}: After this, Im heading to Rusted Bolt Pub. {crimson}I need beer.{default}");
-			}
+			case 1:CPrintToChatAll("{blue}Atomizer{default}: Victoria will be in peace. Once and for all.");
+			case 2:CPrintToChatAll("{blue}Atomizer{default}: The troops have arrived and will begin destroying the intruders!");
+			case 3:CPrintToChatAll("{blue}Atomizer{default}: Backup team has arrived. Catch those damn bastards!");
+			case 4:CPrintToChatAll("{blue}Atomizer{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
 		}
 		for(int i=1; i<=15; i++)
 		{
@@ -1069,7 +1052,6 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					npc.Anger = true;
 					if(IsValidEntity(npc.m_iWearable2))
 						RemoveEntity(npc.m_iWearable2);
-
 					EmitSoundToAll("mvm/mvm_used_powerup.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.5);
 					npc.SetCycle(0.01);
 					npc.m_iChanged_WalkCycle = 0;
@@ -1081,9 +1063,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					if(Delay_Attribute[npc.index] < gameTime)
 					{
 						if(IsValidEntity(npc.m_iWearable2))
-						{
 							RemoveEntity(npc.m_iWearable2);
-						}
 						npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
 						SetVariantString("1.2");
 						AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
@@ -1305,9 +1285,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 						}
 					}
 					if(PlaySound)
-					{
 						npc.PlayMeleeHitSound();
-					}
 				}
 			}
 		}
@@ -1401,7 +1379,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if(!IsInvuln(target))
-			TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN, owner);
+			TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
@@ -1615,11 +1593,13 @@ static bool Victoria_Support(Atomizer npc)
 		return false;
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
 	
-	Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, true);
+	Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, true, false);
 	if(!IsValidEnemy(npc.index, Vs_Target[npc.index]))
 		return false;
+	if(Vs_RechargeTime[npc.index] >= 1.0 && Vs_RechargeTime[npc.index] <= 3.0 && IsValidEntity(Vs_ParticleSpawned[npc.index]))
+		RemoveEntity(Vs_ParticleSpawned[npc.index]);
 	Vs_RechargeTime[npc.index] += 0.1;
-	if(Vs_RechargeTime[npc.index]>Vs_RechargeTimeMax[npc.index])
+	if(Vs_RechargeTime[npc.index]>(Vs_RechargeTimeMax[npc.index]+1.0))
 		Vs_RechargeTime[npc.index]=0.0;
 	
 	float vecTarget[3];
@@ -1666,10 +1646,8 @@ static bool Victoria_Support(Atomizer npc)
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], gRedPoint, 0.1, 1.0, 255);
 		TE_SendToAll();
-		if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0))
+		if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0) && !IsValidEntity(Vs_ParticleSpawned[npc.index]))
 		{
-			if(IsValidEntity(Vs_ParticleSpawned[npc.index]))
-				RemoveEntity(Vs_ParticleSpawned[npc.index]);
 			position[0] = 525.0;
 			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
@@ -1679,8 +1657,8 @@ static bool Victoria_Support(Atomizer npc)
 			npc.PlayIncomingBoomSound();
 		}
 	}
-	else
-{
+	else if(IsValidEntity(Vs_ParticleSpawned[npc.index]))
+	{
 		float position[3];
 		position[0] = Vs_Temp_Pos[npc.index][0];
 		position[1] = Vs_Temp_Pos[npc.index][1];
