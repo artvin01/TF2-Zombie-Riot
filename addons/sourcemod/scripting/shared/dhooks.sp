@@ -1344,8 +1344,10 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
+#if defined ZR
 				//if its a downed citizen, dont!!!
 				if(!Citizen_ThatIsDowned(baseboss_index_allied))
+#endif
 					b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
 			}
 		}

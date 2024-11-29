@@ -232,7 +232,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 						TF2_StunPlayer(target, 0.5, 0.9, TF_STUNFLAG_SLOWDOWN);
 						UTIL_ScreenFade(target, 66, 1, FFADE_OUT, 0, 0, 0, 255);
 						npc.m_iState -= 1;
-						maxhealth /= 6;
+						maxhealth /= 5;
 						if(npc.m_iState <= 0)
 						{
 							npc.m_iState = 0;

@@ -4880,11 +4880,13 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
+#if defined ZR
 			//citizen that are downed must be ignored.
 			if(b_ThisWasAnNpc[enemy] && Citizen_ThatIsDowned(enemy))
 			{
 				return false;
 			}
+#endif
 			
 			if(b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 			{

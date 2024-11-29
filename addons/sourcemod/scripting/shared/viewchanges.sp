@@ -319,7 +319,9 @@ void ViewChange_Update(int client, bool full = true)
 	}
 	
 	ViewChange_Switch(client, weapon, classname);
+#if defined ZR
 	SDKHooks_UpdateMarkForDeath(client);
+#endif
 }
 
 void ViewChange_Switch(int client, int active, const char[] classname)
