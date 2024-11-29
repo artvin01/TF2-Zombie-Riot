@@ -147,23 +147,23 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
-		{	
-			if(distance < npc.GetLeadRadius())
-			{
-				float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
-			}
-			else 
-			{
-				NPC_SetGoalEntity(npc.index, target);
-			}
+		
+		if(distance < npc.GetLeadRadius())
+		{
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else 
+		{
+			NPC_SetGoalEntity(npc.index, target);
+		}
 
-			npc.StartPathing();
-			
-			if(npc.m_flNextMeleeAttack < gameTime)
-			{
-
+		npc.StartPathing();
+		
+		if(npc.m_flNextMeleeAttack < gameTime)
+		{
+			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
+			{	
 				float damageDeal = 35.0;
 				float ProjectileSpeed = 600.0;
 
@@ -180,8 +180,9 @@ static void ClotThink(int iNPC)
 					//max duration of 4 seconds beacuse of simply how fast they fire
 					CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 				}
-				npc.m_flNextMeleeAttack = gameTime + 1.50;
+				npc.m_flNextMeleeAttack = gameTime + 1.50;	
 			}
+			
 		}
 	}
 	else
