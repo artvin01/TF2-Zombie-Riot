@@ -221,7 +221,7 @@ public void Aviator_ClotThink(int iNPC)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-		int entity = NPC_CreateByName("npc_ironshield", -1, pos, ang, GetTeam(entity));
+		int entity = NPC_CreateByName("npc_ironshield", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			if(GetTeam(npc.index) != TFTeam_Red)
@@ -234,8 +234,8 @@ public void Aviator_ClotThink(int iNPC)
 			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index] * 0.65;
 			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 0.75;
 			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 3.0;
-			b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-			b_StaticNPC[other] = b_StaticNPC[npc.index];
+			b_thisNpcIsABoss[entity] = b_thisNpcIsABoss[npc.index];
+			b_StaticNPC[entity] = b_StaticNPC[npc.index];
 			view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
 		}
 		SmiteNpcToDeath(npc.index);
@@ -454,6 +454,10 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 	{	
 		if(Can_I_See_Enemy_Only(npc.index, target))
 		{
+			int Enemy_I_See;
+									
+			Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
