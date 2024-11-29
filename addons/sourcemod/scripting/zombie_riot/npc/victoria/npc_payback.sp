@@ -160,11 +160,11 @@ methodmap VictorianPayback < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 3);
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");
-		SetVariantString("1.5");
+		SetVariantString("2.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_commando_elite/fall17_commando_elite.mdl");
-		SetVariantString("1.5");
+		SetVariantString("2.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
 		
@@ -215,7 +215,9 @@ static void Internal_ClotThink(int iNPC)
 			}
 			npc.m_fbRangedSpecialOn = true;
 
-			IgniteTargetEffect(npc.m_iWearable1);
+			DesertYadeamDoHealEffect(npc.index, 250.0);
+			IgniteTargetEffect(npc.index);
+			
 			if(IsValidEntity(npc.m_iWearable4))
 			{
 				RemoveEntity(npc.m_iWearable4);
