@@ -635,7 +635,7 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float &
 	float DamageRes = 1.0;
 	if(f_PotionShrinkEffect[attacker] > GameTime)
 	{
-		DamageRes *= 0.5;
+		DamageRes *= 0.75;
 	}
 
 	if(f_EnfeebleEffect[attacker] > GameTime)
@@ -1823,6 +1823,10 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	else if(f_SpadeLudoDebuff[victim] > GameTime)
 	{
 		damage += basedamage * (GetRandomFloat(0.10,0.15) * DamageBuffExtraScaling);
+	}
+	if(f_PotionShrinkEffect[victim] > GameTime)
+	{
+		damage += basedamage * (0.35 * DamageBuffExtraScaling);
 	}
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
