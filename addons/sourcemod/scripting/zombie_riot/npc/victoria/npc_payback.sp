@@ -206,7 +206,7 @@ static void Internal_ClotThink(int iNPC)
 		if(npc.m_PaybackAnimation < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn)
 		{
 			npc.m_PaybackAnimation = 0.0;
-			npc.m_LimitedLifetime = GetGameTime(npc.index) + 3.0;
+			npc.m_LimitedLifetime = GetGameTime(npc.index) + 5.0;
 
 			if(npc.m_iChanged_WalkCycle != 6)
 			{
@@ -224,6 +224,10 @@ static void Internal_ClotThink(int iNPC)
 			float flPos[3];
 			float flAng[3];
 			npc.GetAttachment("special_weapon_effect", flPos, flAng);
+			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
+			flMaxhealth *= 0.20;
+			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);
+			GrantEntityArmor(npc.index, false, 1.5, 0.01, 0, fixedArmorgain);
 			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "special_weapon_effect", {0.0,0.0,0.0});
 			b_NpcIsInvulnerable[npc.index] = false;
 			b_NpcUnableToDie[npc.index]=false;
