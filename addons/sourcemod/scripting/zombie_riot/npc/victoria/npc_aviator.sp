@@ -221,7 +221,7 @@ public void Aviator_ClotThink(int iNPC)
 
 	if(npc.m_flAngerDelay < GetGameTime(npc.index))
 	{
-		int Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));	
+		int Health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))* 3.0);	
 
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -232,8 +232,8 @@ public void Aviator_ClotThink(int iNPC)
 			if(GetTeam(npc.index) != TFTeam_Red)
 				Zombies_Currently_Still_Ongoing++;
 			
-			SetEntProp(entity, Prop_Data, "m_iHealth", Health* 3);
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", Health* 3);
+			SetEntProp(entity, Prop_Data, "m_iHealth", Health);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", Health);
 			
 			fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index] * 0.75;
 			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index] * 0.65;

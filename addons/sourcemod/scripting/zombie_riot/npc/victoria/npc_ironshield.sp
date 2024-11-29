@@ -363,8 +363,7 @@ public void VictorianIronShield_NPCDeath(int entity)
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	int team = GetTeam(npc.index);
 
-	int MaxHealth = float(ReturnEntityMaxHealth(npc.index));
-	MaxHealth = MaxHealth/3;	
+	int MaxHealth = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))/3.0);
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
