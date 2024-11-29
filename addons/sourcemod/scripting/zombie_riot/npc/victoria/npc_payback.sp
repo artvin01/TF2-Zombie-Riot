@@ -216,7 +216,7 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 
-	if(npc.m_LimitedLifetime < GetGameTime(npc.index))
+	if(npc.m_LimitedLifetime < GetGameTime(npc.index) && npc.Anger)
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		SDKHooks_TakeDamage(npc.index, 0, 0, 1000000.0, DMG_BULLET);

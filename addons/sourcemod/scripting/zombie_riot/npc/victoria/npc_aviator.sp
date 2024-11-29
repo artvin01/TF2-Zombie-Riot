@@ -221,8 +221,8 @@ public void Aviator_ClotThink(int iNPC)
 
 	if(npc.m_flAngerDelay < GetGameTime(npc.index))
 	{
-		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")* 3);
-		float MaxHealth = float(ReturnEntityMaxHealth(npc.index)* 3);	
+		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+		float MaxHealth = float(ReturnEntityMaxHealth(npc.index));	
 
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -233,8 +233,8 @@ public void Aviator_ClotThink(int iNPC)
 			if(GetTeam(npc.index) != TFTeam_Red)
 				Zombies_Currently_Still_Ongoing++;
 			
-			SetEntProp(entity, Prop_Data, "m_iHealth", Health);
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", MaxHealth);
+			SetEntProp(entity, Prop_Data, "m_iHealth", Health* 3.0);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", MaxHealth* 3.0);
 			
 			fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index] * 0.75;
 			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index] * 0.65;
@@ -371,7 +371,7 @@ void AviatorAnimationChange(Aviator npc)
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
 					ResetAviatorWeapon(npc, 0);
-					SetVariantInt(0);
+					SetVariantInt(3);
 					AcceptEntityInput(npc.index, "SetBodyGroup");
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
@@ -384,7 +384,7 @@ void AviatorAnimationChange(Aviator npc)
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
 					ResetAviatorWeapon(npc, 0);
-					SetVariantInt(0);
+					SetVariantInt(3);
 					AcceptEntityInput(npc.index, "SetBodyGroup");
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
@@ -402,7 +402,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 	if(npc.m_flAttackHappens)
 	{
 		npc.i_GunMode = 0;
-		if(gameTime > npc.m_flAttackHappens)
+		if(gameTime > npc.m_flAttackHappens && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
 			Handle swingTrace;
@@ -418,14 +418,12 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 				{
 					float damageDealt = 100.0; //Extreme melee damage
 					if(ShouldNpcDealBonusDamage(target_hit))
-						damageDealt *= 20.0; //basically oneshots buildings or atleast deals heavy damage
+						damageDealt *= 10.0; //basically oneshots buildings or atleast deals heavy damage
 						
 					SDKHooks_TakeDamage(target_hit, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);									
 							
 				
 					npc.PlayMeleeHitSound();
-					npc.DispatchParticleEffect(npc.index, "flaregun_energyfield_blue", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_l"), PATTACH_POINT_FOLLOW, true);
-		
 					if(target_hit <= MaxClients)
 						TF2_StunPlayer(target, 0.6, 0.9, TF_STUNFLAG_SLOWDOWN);
 				} 
@@ -448,6 +446,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 			npc.m_flAttackHappens = gameTime + 0.25;
 			npc.m_flDoingAnimation = gameTime + 0.25;
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+			npc.m_flNextMeleeAttack = gameTime + 5.00;
 			npc.PlayMeleeSound();
 			//We are close enough to melee attack, lets melee.
 		}
@@ -481,7 +480,6 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable3).GetAttachment("muzzle", origin, angles);
 					ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecHit, false );
-					npc.m_flNextMeleeAttack = gameTime + 0.75;
 
 					if(IsValidEnemy(npc.index, target))
 					{
@@ -495,6 +493,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 				}
 				delete swingTrace;
 			}
+			npc.m_flNextRangedAttack = gameTime + 1.5;
 		}
 	}
 	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))

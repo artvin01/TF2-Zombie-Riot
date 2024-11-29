@@ -164,13 +164,14 @@ methodmap VictorianIronShield < CClotBody
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/spr17_blast_defense/spr17_blast_defense.mdl.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/spr17_blast_defense/spr17_blast_defense.mdl");
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 80, 50, 50, 255);
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_armor/tw_heavybot_armor.mdl");
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 100, 100, 100, 255);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
 		
 		return npc;
 	}
@@ -362,7 +363,8 @@ public void VictorianIronShield_NPCDeath(int entity)
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	int team = GetTeam(npc.index);
 
-	float MaxHealth = float(ReturnEntityMaxHealth(npc.index) / 3);	
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
+	MaxHealth *= 0.33;	
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -376,10 +378,10 @@ public void VictorianIronShield_NPCDeath(int entity)
 		SetEntProp(other, Prop_Data, "m_iHealth", MaxHealth);
 		SetEntProp(other, Prop_Data, "m_iMaxHealth", MaxHealth);
 		
-		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 1.33;
-		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 1.54;
-		fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 1.33;
-		fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] / 3.0;
+		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
+		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
+		fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
+		fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 		b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 		b_StaticNPC[other] = b_StaticNPC[npc.index];
 	}
