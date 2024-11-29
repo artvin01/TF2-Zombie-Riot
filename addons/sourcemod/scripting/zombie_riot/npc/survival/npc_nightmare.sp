@@ -59,9 +59,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Nightmare(client, vecPos, vecAng, ally);
+	return Nightmare(vecPos, vecAng, team);
 }
 methodmap Nightmare < CClotBody
 {
@@ -101,7 +101,7 @@ methodmap Nightmare < CClotBody
 	}
 	
 	
-	public Nightmare(int client, float vecPos[3], float vecAng[3], int ally)
+	public Nightmare(float vecPos[3], float vecAng[3], int ally)
 	{
 		Nightmare npc = view_as<Nightmare>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "1.0", "400", ally));
 		
@@ -124,9 +124,7 @@ methodmap Nightmare < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Nightmare_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 350.0;
 

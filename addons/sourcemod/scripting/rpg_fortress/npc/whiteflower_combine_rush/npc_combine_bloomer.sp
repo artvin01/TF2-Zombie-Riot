@@ -9,14 +9,14 @@ void OnMapStartCombine_Bloomer()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Combine_Bloomer(client, vecPos, vecAng, ally);
+	return Combine_Bloomer(vecPos, vecAng, team);
 }
 
 methodmap Combine_Bloomer < CombinePolice
 {
-	public Combine_Bloomer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Bloomer(float vecPos[3], float vecAng[3], int ally)
 	{
  		Combine_Bloomer npc = view_as<Combine_Bloomer>(BaseSquad(vecPos, vecAng, "models/police.mdl", "1.15", ally, false));
 		
@@ -136,7 +136,7 @@ public void Combine_Bloomer_ClotThink(int iNPC)
 						NormalizeVector(vecDir, vecDir);
 						
 						// E2 L0 = 3.75, E2 L5 = 4.375
-						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 180000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 300000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 						
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SMG1");
 						npc.PlaySMGFire();

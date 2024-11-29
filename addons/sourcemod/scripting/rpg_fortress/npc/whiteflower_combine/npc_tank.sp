@@ -43,9 +43,9 @@ public void WhiteflowerTank_OnMapStart_NPC()
 	PrecacheSound("weapons/sentry_rocket.wav");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WhiteflowerTank(client, vecPos, vecAng, ally);
+	return WhiteflowerTank(vecPos, vecAng, team);
 }
 
 methodmap WhiteflowerTank < CClotBody
@@ -90,7 +90,7 @@ methodmap WhiteflowerTank < CClotBody
 	}
 	
 	
-	public WhiteflowerTank(int client, float vecPos[3], float vecAng[3], int ally)
+	public WhiteflowerTank(float vecPos[3], float vecAng[3], int ally)
 	{
 		WhiteflowerTank npc = view_as<WhiteflowerTank>(CClotBody(vecPos, vecAng, "models/combine_apc.mdl", "1.0", "300", ally, _, true, .CustomThreeDimensions = {60.0, 60.0, 80.0}));
 
@@ -128,8 +128,7 @@ methodmap WhiteflowerTank < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void WhiteflowerTank_ClotThink(int iNPC)
 {
 	WhiteflowerTank npc = view_as<WhiteflowerTank>(iNPC);

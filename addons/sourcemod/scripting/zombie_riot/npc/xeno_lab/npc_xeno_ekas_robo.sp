@@ -53,9 +53,9 @@ public void XenoOuroborosEkas_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoOuroborosEkas(client, vecPos, vecAng, ally);
+	return XenoOuroborosEkas(vecPos, vecAng, team);
 }
 
 methodmap XenoOuroborosEkas < CClotBody
@@ -102,7 +102,7 @@ methodmap XenoOuroborosEkas < CClotBody
 
 	
 	
-	public XenoOuroborosEkas(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoOuroborosEkas(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoOuroborosEkas npc = view_as<XenoOuroborosEkas>(CClotBody(vecPos, vecAng, "models/dog.mdl", "1.3", "900000", ally, false, true));
 		
@@ -143,8 +143,7 @@ methodmap XenoOuroborosEkas < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoOuroborosEkas_ClotThink(int iNPC)
 {
 	XenoOuroborosEkas npc = view_as<XenoOuroborosEkas>(iNPC);

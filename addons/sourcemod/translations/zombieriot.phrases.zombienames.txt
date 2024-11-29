@@ -82,9 +82,9 @@
 		"pt"		"Policial Invasor"
 		"nl"		"Metro Aanvaller"
 	}
-	"Whiteflower Rifler"
+	"W.F. Rifler"
 	{
-		"en" 		"Whiteflower Rifler"
+		"en" 		"W.F. Rifler"
 	}
 	"First Rifler"
 	{
@@ -94,9 +94,9 @@
 	{
 		"en" 		"Last Rifler"
 	}
-	"Whiteflower Shotgunner"
+	"W.F. Shotgunner"
 	{
-		"en" 		"Whiteflower Shotgunner"
+		"en" 		"W.F. Shotgunner"
 	}
 	"First Shotgunner"
 	{
@@ -106,9 +106,9 @@
 	{
 		"en" 		"Last Shotgunner"
 	}
-	"Whiteflower Swordsman"
+	"W.F. Swordsman"
 	{
-		"en" 		"Whiteflower Swordsman"
+		"en" 		"W.F. Swordsman"
 	}
 	"First Swordsman"
 	{
@@ -118,9 +118,9 @@
 	{
 		"en" 		"Last Swordsman"
 	}
-	"Whiteflower Elite"
+	"W.F. Elite"
 	{
-		"en" 		"Whiteflower Elite"
+		"en" 		"W.F. Elite"
 	}
 	"First Elite"
 	{
@@ -130,9 +130,9 @@
 	{
 		"en" 		"Last Elite"
 	}
-	"Whiteflower Giant Swordsman"
+	"W.F. Giant Swordsman"
 	{
-		"en" 		"Whiteflower Giant Swordsman"
+		"en" 		"W.F. Giant Swordsman"
 	}
 	"First Giant Swordsman"
 	{
@@ -142,9 +142,9 @@
 	{
 		"en" 		"Last Giant Swordsman"
 	}
-	"Whiteflower DDT"
+	"W.F. DDT"
 	{
-		"en" 		"Whiteflower DDT"
+		"en" 		"W.F. DDT"
 	}
 	"First DDT"
 	{
@@ -154,9 +154,9 @@
 	{
 		"en" 		"Last DDT"
 	}
-	"Whiteflower Golden Collos"
+	"W.F. Golden Collos"
 	{
-		"en" 		"Whiteflower Golden Collos"
+		"en" 		"W.F. Golden Collos"
 	}
 	"First Golden Collos"
 	{
@@ -166,9 +166,9 @@
 	{
 		"en" 		"Last Golden Collos"
 	}
-	"Whiteflower Overlord"
+	"W.F. Overlord"
 	{
-		"en" 		"Whiteflower Overlord"
+		"en" 		"W.F. Overlord"
 	}
 	"Scout Assulter"
 	{
@@ -303,9 +303,9 @@
 		"pt"		"Pyro Main Gigante"
 		"nl"		"Gigantische Pyro Main"
 	}
-	"Whiteflower Deutsch Ritter"
+	"W.F. Deutsch Ritter"
 	{
-		"en" 		"Whiteflower Deutsch Ritter"
+		"en" 		"W.F. Deutsch Ritter"
 	}
 	"X10 Spy Main"
 	{
@@ -606,9 +606,9 @@
 		"pt"		"Senhor Grigori Curado"
 		"nl"		"Genezen Vader Grigori"
 	}
-	"Whiteflower Mage"
+	"W.F. Mage"
 	{
-		"en" 		"Whiteflower Mage"
+		"en" 		"W.F. Mage"
 	}
 	"Bloon"
 	{
@@ -681,7 +681,7 @@
 	"True Fusion Warrior"
 	{
 		"en" 		"True Fusion Warrior"
-		"ru" 		"Истинный воин фьюжна"
+		"ru" 		"Истинный Термоядерный Воин"
 		"pt"		"Verdadeiro Guerreiro de Fusão"
 		"nl"		"Ware Fuzie Krijger"
 	}
@@ -709,62 +709,88 @@
 	"Barracks Metro Cop"
 	{
 		"en" 		"Metro Cop"
+		"ru" 		"Метро коп"
 	}
 	"Barracks Swordsman"
 	{
+		"en" 		"Combine Swordsman"
+		"ru" 		"Комбайн мечник"
 		"en" 		"Barracks Swordsman"
 	}
 	"Barracks Metro Raider"
 	{
 		"en" 		"Metro Raider"
+		"ru" 		"Метро Рейдер"
 	}
 	"Barracks Shotgunner"
 	{
+		"en" 		"Combine Shotgunner"
+		"ru" 		"Комбайн с дробовиком"
 		"en" 		"Barracks Shotgunner"
 	}
 	"Barracks Soldier"
 	{
+		"en" 		"Combine Soldier"
+		"ru" 		"Комбайн Солдат"
 		"en" 		"Barracks Soldier"
 	}
 	"Barracks DDT"
 	{
+		"en" 		"Combine DDT"
+		"ru" 		"Комбайн DDT"
 		"en" 		"Barracks DDT"
 	}
 	"Barracks Elite"
 	{
+		"en" 		"Combine Elite"
+		"ru" 		"Элитный Комбайн"
 		"en" 		"Barracks Elite"
 	}
 	"Barracks Deflector"
 	{
+		"en" 		"Combine Deflector"
+		"ru" 		"Комбайн Отражатель"
 		"en" 		"Barracks Deflector"
 	}
 	"Barracks Sniper"
 	{
+		"en" 		"Combine Sniper"
+		"ru" 		"Комбайн Снайпер"
 		"en" 		"Barracks Sniper"
 	}
 	"Barracks Super"
 	{
+		"en" 		"Combine Warrior"
+		"ru" 		"Комбайн Воин"
 		"en" 		"Barracks Warrior"
 	}
 	"Barracks Commander"
 	{
+		"en" 		"Combine Commander"
+		"ru" 		"Комбайн Командир"
 		"en" 		"Barracks Commander"
 	}
 	"Barracks Giant ddt"
 	{
+		"en" 		"Combine Giant DDT"
+		"ru" 		"Гигантский Комбайн DDT"
 		"en" 		"Barracks Giant DDT"
 	}
 	"Barracks Collos"
 	{
+		"en"		"Combine Collos"
+		"ru" 		"Комбайн Коллос"
 		"en"		"Barracks Collos"
 	}
 	"Barracks Iberian Runner"
 	{
 		"en"		"Iberian Runner"
+		"ru" 		"Бегун Иберии"
 	}
 	"Barracks Iberian Gunner"
 	{
 		"en"		"Iberian Gunner"
+		"ru" 		"Стрелок Иберии"
 	}
 	"Barracks Iberian Tanker"
 	{
@@ -773,34 +799,42 @@
 	"Barracks Iberian Rocketeer"
 	{
 		"en"		"Iberian Rocketeer"
+		"ru" 		"Ракетомётчик Иберии"
 	}	
 	"Barracks Iberian Healer"
 	{
 		"en"		"Iberian Healer"
+		"ru" 		"Медик Иберии"
 	}
 	"Barracks Iberian Healtanker"
 	{
 		"en"		"Iberian Healtanker"
+		"ru" 		"Лечащий танк иберии"
 	}	
 	"Barracks Iberia Boomstick"
 	{
 		"en"		"Iberian Boomsticker"
+		"ru" 		"Бумстикер Иберии"
 	}
 	"Barracks Iberian Guards"
 	{
 		"en"		"Iberian Guards"
+		"ru" 		"Стражи Иберии"
 	}
 	"Barracks Iberian Elite Gunner"
 	{
 		"en"		"Iberian Elite Gunner"
+		"ru" 		"Элитный Стрелок Иберии"
 	}	
 	"Barracks Iberia Headhunter"
 	{
 		"en"		"Iberian Headhunter"
+		"ru" 		"Охотник за головами Иберии"
 	}	
 	"Barracks Iberian Lighthouse Guardian"
 	{
 		"en"		"Guardian of the Lighthouse"
+		"ru" 		"Хранитель Маяка"
 	}	
 	"Barracks Militia"
 	{
@@ -921,6 +955,14 @@
 		"pt"		"Rebelde"
 		"nl"		"Rebel"
 	}
+	"Barney"
+	{
+		"en" 		"Barney"
+	}
+	"Alyx"
+	{
+		"en" 		"Alyx"
+	}
 	"Eagle Scout"
 	{
 		"en" 		"Eagle Scout"
@@ -991,13 +1033,14 @@
 	"Kahmlstein"
 	{
 		"en"		"Kahmlstein"
-		"ru"		"Кахмльштайн"
+		"ru"		"Кахмлстайн"
 		"pt"		"Kahmlstein" 
 		"nl"		"Kahmlstein"
 	}
 	"Chaos Kahmlstein"
 	{
 		"en"		"Chaos Kahmlstein"
+		"ru" 		"Хаос Кахмлстайн"
 	}
 	"L4D2 Tank"
 	{
@@ -1179,14 +1222,14 @@
 		"en"	"Booty Executioner"
 		"pt"	"Executor de Bundas"
 		"de"	"Booty Executioner"
-		"ru"	"Ягодичный Палач"
+		"ru"	"Жопный Палач"
 	}
 	"Sandvich Slayer"
 	{
 		"en"	"Sandvich Slayer"
 		"pt"	"Caçador de Sanduíches"
 		"de"	"Sandvich Slayer"
-		"ru"	"Палач Бутербродов"
+		"ru"	"Убийца Бутербродов"
 	}
 	"Payday Cloaker"
 	{
@@ -1199,13 +1242,13 @@
 	{
 		"en"		"Bunker Kahmlstein"
 		"pt"		"Bunker Kahmlstein"
-		"ru"		"Бункерный Кахмльштайн"
+		"ru"		"Бункерный Кахмлстайн"
 	}
 	"Zerofuse"
 	{
 		"en"		"Zerofuse"
 		"pt"		"Zerofuse"
-		"ru"		"Зерофуз"
+		"ru"		"Zerofuse"
 	}
 	"Bunker Bot Soldier"
 	{
@@ -1416,11 +1459,11 @@
 	{
 		"en"		"Nearl Radiant Sword"
 		"pt"		"Espada Quase Radiante"
-		"ru"		"Лучезарный меч Нерл"
+		"ru"		"Сияющий меч Нерл"
 	}
-	"Whiteflower Subject"
+	"W.F. Subject"
 	{
-		"en"		"Whiteflower Subject"
+		"en"		"W.F. Subject"
 	}
 	"Corrupted Father Grigori"
 	{
@@ -1431,6 +1474,7 @@
 	"Machina Waldch"
 	{
 		"en"		"Machina Waldch"
+		"ru" 		"Махина Валдч"
 	}
 	"Silvester"
 	{
@@ -1441,13 +1485,14 @@
 	"Waldch"
 	{
 		"en"		"Waldch"
+		"ru"		"Валдч"
 		"pt"		"Waldch"
 	}
 	"Angeled Silvester"
 	{
 		"en"		"Angeled Silvester"
 		"pt"		"Silvester Angelical"
-		"ru"		"Угловатый Сильвестр"
+		"ru"		"Ангел Сильвестр"
 	}
 	"Nemesis"
 	{
@@ -1458,6 +1503,7 @@
 	"Enraged Nemesis"
 	{
 		"en"		"Enraged Nemesis"
+		"ru" 		"Разъяренный Немезид"
 		"pt"		"Nemesis Enfurecido"
 	}
 	"Shell Sea Runner"
@@ -1719,13 +1765,13 @@
 	"Thorns"
 	{
 		"en"		"Thorns"
-		"ru"		"Шипы"
+		"ru"		"Торнс"
 		"chi"		"棘刺"
 	}
 	"God Alaxios"
 	{
 		"en"		"God Alaxios"
-		"ru"		"Бог Аркантос"
+		"ru"		"Бог Алаксиос"
 	}
 	"Seaborn Scout"
 	{
@@ -1859,16 +1905,19 @@
 	"Pathshaper"
 	{
 		"en"		"Pathshaper"
+		"ru" 		"Создатель пути"
 		"chi"		"塑路者"
 	}
 	"Pathshaper"
 	{
 		"en"		"Pathshaper"
+		"ru" 		"Создатель Пути"
 		"chi"		"塑路者"
 	}
 	"Pathshaper Fractal"
 	{
 		"en"		"Pathshaper Fractal"
+		"ru" 		"Фрактал Создателя Пути"
 		"chi"		"塑路者分形"
 	}
 	"Barracks Teutonic Knight"
@@ -1899,35 +1948,43 @@
 	"Scientific Witchery"
 	{
 		"en"	"Scientific Witchery"
+		"ru" 	"Научное Колдовство"
 	}
 	"Ishar'mla, Heart of Corruption"
 	{
 		"en"		"Ishar'mla, Heart of Corruption"
+		"ru" 		"Ишармла, Сердце инфекции"
 		"chi"		"伊莎玛拉，腐化之心"
 	}
 	"Seaborn Guard"
 	{
 		"en"		"Seaborn Guard"
+		"ru" 		"Морерождённый страж"
 	}
 	"Seaborn Defender"
 	{
 		"en"		"Seaborn Defender"
+		"ru" 		"Морерождённый Защитник"
 	}
 	"Seaborn Vanguard"
 	{
 		"en"		"Seaborn Vanguard"
+		"ru" 		"Морерождённый Авангард"
 	}
 	"Seaborn Caster"
 	{
 		"en"		"Seaborn Caster"
+		"ru" 		"Морерождённый Маг"
 	}
 	"Seaborn Specialist"
 	{
 		"en"		"Seaborn Specialist"
+		"ru" 		"Морерождённый Специалист"
 	}
 	"Seaborn Supporter"
 	{
 		"en"		"Seaborn Supporter"
+		"ru" 		"Морерождённый Поддерживающий"
 	}
 	"Theocracy"
 	{
@@ -2024,6 +2081,7 @@
 	"Sensal"
 	{
 		"en"	"Sensal"
+		"ru" 	"Сенсал"
 	}
 	"Dual Rea"
 	{
@@ -2088,10 +2146,12 @@
 	"Stella"
 	{
 		"en"	"Stella"
+		"ru" 	"Стелла"
 	}
 	"Karlas"
 	{
 		"en"	"Karlas"
+		"ru" 	"Карлас"
 	}
 	"Heliara"
 	{
@@ -2192,6 +2252,7 @@
 	"Beheaded Kamikaze"
 	{
 		"en"	"Beheaded Kamikaze"
+		"ru" 	"Безголовый Камикадзе"
 	}
 	"?????????????"
 	{
@@ -2200,14 +2261,17 @@
 	"??????? First"
 	{
 		"en"	"??????? First"
+		"ru" 	"?????? Первый"
 	}
 	"??? the First"
 	{
 		"en"	"??? the First"
+		"ru" 	"??? Первый"
 	}
 	"Bob the First"
 	{
 		"en"	"Bob the First"
+		"ru" 	"Боб Первый"
 	}
 	"Ahim"
 	{
@@ -2364,10 +2428,12 @@
 	"The Messenger"
 	{
 		"en"	"The Messenger"
+		"ru" 	"Предвестник"
 	}
 	"The Purge"
 	{
 		"en"	"The Purge"
+		"ru" 	"Зачищик"
 	}
 	"Rouge Expidonsan Doctor"
 	{
@@ -2380,6 +2446,7 @@
 	"Bob the Second"
 	{
 		"en"	"Bob the Second"
+		"ru" 	"Боб Второй"
 	}
 	"Wildingen Hitman"
 	{
@@ -2388,6 +2455,7 @@
 	"Mr.X"
 	{
 		"en"	"Mr.X"
+		"ru" 	"Мистер X"
 	}
 	"Xeno Acclaimed Swordsman"
 	{
@@ -2416,6 +2484,7 @@
 	"Fallen Warrior"
 	{
 		"en"	"Guln the Fallen One"
+		"ru" 	"Павший Гулн"
 	}
 	"Lex"
 	{
@@ -2572,10 +2641,12 @@
 	"Twirl"
 	{
 		"en"	"Twirl"
+		"ru" 	"Твёрл"
 	}
 	"Twirl Desc"
 	{
 		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
+		"ru" 	"Лидер Руины\nОна не сражается с вами с полную силу...\nОна только использует силу магического гребеня\nЕсли вы увидете эффекты на её руках,Это озночает что одно из её Комбо готово"
 	}
 	"Ealing"
 	{
@@ -2812,10 +2883,12 @@
 	"Unspeakable"
 	{
 		"en"	"Unspeakable"
+		"ru" 	"Невырзимый"
 	}
 	"Unspeakable Desc"
 	{
 		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
+		"ru" 	"Сердце Бездны...\nПервая способность:Засасывает всех союзников и если слишком близко,Наносит очень много урона.\nМожет ударить несколько раз подряд если долго никого не бил.\nВо время его существования,Распостронение бездны Очень усилено.\nКоллоны бездны появляются под врагами.\nЕсли Уровень здоровья пал до низкого начнёт распостронять бездну там где ходит.\n(заглушение)ослабляет Усиление от бездны"
 	}
 	"Voided Diversionistico"
 	{
@@ -2852,10 +2925,12 @@
 	"Vhxis"
 	{
 		"en"	"Vhxis"
+		"ru" 	"Всикс"
 	}
 	"Vhxis Desc"
 	{
 		"en"	"The void keeper, killing him is not a good idea...\n(Silence makes voidbuff weaker)"
+		"ru" 	"Хранитель Бездны,Не стоит его убивать...\n(Заглушение Ослабивает Усиление от бездны)"
 	}
 	"Chaos Mage"
 	{
@@ -3088,18 +3163,22 @@
 	"Zombine"
 	{
 		"en" 		"Zombine"
+		"ru" 		"Зомбайн"
 	}
 	"Omega"
 	{
 		"en"		"Omega"
+		"ru" 		"Омега"
 	}
 	"Nemal"
 	{
 		"en"		"Nemal"
+		"ru" 		"Немал"
 	}
 	"Nemal Desc"
 	{
 		"en"		"Each 4th hit gives you a teslar debuff.\nLays mines:\nRed: damages, marks you, if marked, more damage.\nGreen: Cures of teslar debuff, launches up, cant be sniped for 4 seconds and no fall damage\nEach 10 seconds she marks you if hit with melee.\nLaser attack predicts, anti predict it.\nWave ability predicts if youre marked.\nSimular abilities on Silvester.\nHer melee makes you glide (Silencable)"
+		"ru" 		"Каждая 4-ая атака накладывает Теслар Дебафф.\nУстанавливает мины:\nКрасные:Наносят урон,Помечают вас,Если вы помечены,получаете больше урона.\nЗелёные:Лечит вас от Дебаффа Теслар,Запускает вверх,Не может быть Застрелен в течении 4 секунд и не получает урон от падения\nКаждые 10 секунд помечает вас если ударила вас.\nАттаки Лазерами предугадывают вас,противодействуйте наведению.\nПохожие способности у Сильвестера.\nЕё Ближний бой заставляет скользить вас(Можно Заглушить)"
 	}
 	"Sentinel"
 	{
@@ -3364,5 +3443,41 @@
 	"Death Marker Desc"
 	{
 		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+	}
+	"Death Marker Desc"
+	{
+		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+	}
+	"W.F. Flowering Darkness"
+	{
+		"en"	"W.F. Flowering Darkness"
+	}	
+	"W.F. Acclaimed Swordsman"
+	{
+		"en"	"W.F. Acclaimed Swordsman"
+	}	
+	"W.F. Ekas Piloteer"
+	{
+		"en"	"W.F. Ekas Piloteer"
+	}	
+	"W.F. Extreme Knight Giant"
+	{
+		"en"	"W.F. Extreme Knight Giant"
+	}	
+	"W.F. Raging Blader"
+	{
+		"en"	"W.F. Raging Blader"
+	}	
+	"Whiteflower The Traitor"
+	{
+		"en"	"Whiteflower The Traitor"
+	}	
+	"Ouroboros Ekas"
+	{
+		"en"	"Ouroboros Ekas"
+	}
+	"Bob's Duck ''Dubby''"
+	{
+		"en"	"Bob's Duck ''Dubby''"
 	}
 }

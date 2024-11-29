@@ -1,11 +1,21 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+float RegenPlayerCooldown[MAXTF2PLAYERS];
+
+void MapStartPlotMisc()
+{
+	Zero(RegenPlayerCooldown);
+}
 public bool Plots_Resupply(int entity, BuildEnum build, int client)
 {
 	if(!client)
 		return false;
 	
+	if(RegenPlayerCooldown[client] > GetGameTime())
+		return false;
+
+	RegenPlayerCooldown[client] = GetGameTime() + 2.0;
 	TF2_RegeneratePlayer(client);
 	return true;
 }

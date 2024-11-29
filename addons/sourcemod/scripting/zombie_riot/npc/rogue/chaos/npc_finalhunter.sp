@@ -48,9 +48,9 @@ int FinalHunter_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FinalHunter(client, vecPos, vecAng, ally);
+	return FinalHunter(vecPos, vecAng, team);
 }
 
 methodmap FinalHunter < CClotBody
@@ -76,7 +76,7 @@ methodmap FinalHunter < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 
-	public FinalHunter(int client, float vecPos[3], float vecAng[3], int ally)
+	public FinalHunter(float vecPos[3], float vecAng[3], int ally)
 	{
 		FinalHunter npc = view_as<FinalHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.175", "50000", ally));
 		
@@ -305,13 +305,13 @@ static void ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								damage *= 50.0;
 							
-							if(target <= MaxClients && TF2_IsPlayerInCondition(target, TFCond_MarkedForDeath))
+							if(NpcStats_IberiaIsEnemyMarked(target))
 								damage *= 100.0;
 
 							npc.PlayMeleeHitSound();
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-							if(target <= MaxClients && !dieingstate[target] && IsPlayerAlive(target))
-								TF2_AddCondition(target, TFCond_MarkedForDeath, 30.0);
+							if(target > MaxClients || (!dieingstate[target] && IsPlayerAlive(target)))
+								NpcStats_IberiaMarkEnemy(target, 30.0);
 							
 							Custom_Knockback(npc.index, target, 1000.0, true); 
 						}

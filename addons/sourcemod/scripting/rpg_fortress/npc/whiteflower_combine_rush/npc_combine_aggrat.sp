@@ -9,13 +9,13 @@ void OnMapStartCombine_Aggrat()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Combine_Aggrat(client, vecPos, vecAng, ally);
+	return Combine_Aggrat(vecPos, vecAng, team);
 }
 methodmap Combine_Aggrat < CombinePolice
 {
-	public Combine_Aggrat(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Aggrat(float vecPos[3], float vecAng[3], int ally)
 	{
 		Combine_Aggrat npc = view_as<Combine_Aggrat>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		
@@ -190,7 +190,7 @@ public void Combine_Aggrat_ClotThink(int iNPC)
 						
 						// E2 L0 = 6.0, E2 L5 = 7.0
 						KillFeed_SetKillIcon(npc.index, "pistol");
-						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 123000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 250000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
 						npc.PlayPistolFire();
@@ -233,7 +233,7 @@ public void Combine_Aggrat_ClotThink(int iNPC)
 
 							// E2 L0 = 90, E2 L5 = 105
 							KillFeed_SetKillIcon(npc.index, "wrench");
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 260000.0, DMG_CLUB, -1, _, vecTarget);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 320000.0, DMG_CLUB, -1, _, vecTarget);
 							
 							npc.PlayStunStickHit();
 						}

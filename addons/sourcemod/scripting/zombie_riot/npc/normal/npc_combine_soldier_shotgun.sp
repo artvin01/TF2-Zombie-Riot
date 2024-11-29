@@ -79,7 +79,7 @@ public void CombineSoldierShotgun_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower Shotgunner");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Shotgunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_shotgun");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_shotgun");
 	data.IconCustom = true;
@@ -89,9 +89,9 @@ public void CombineSoldierShotgun_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineSoldierShotgun(client, vecPos, vecAng, ally);
+	return CombineSoldierShotgun(vecPos, vecAng, team);
 }
 
 methodmap CombineSoldierShotgun < CClotBody
@@ -168,7 +168,7 @@ methodmap CombineSoldierShotgun < CClotBody
 	}
 	
 	
-	public CombineSoldierShotgun(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineSoldierShotgun(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "650", ally));
 		
@@ -213,8 +213,7 @@ methodmap CombineSoldierShotgun < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineSoldierShotgun_ClotThink(int iNPC)
 {
 	CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(iNPC);

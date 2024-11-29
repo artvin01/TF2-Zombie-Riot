@@ -163,6 +163,8 @@ void OctaneKick_Logic(int iNPC)
 	hullcheckmins[1] *= 2.5;
 	hullcheckmins[2] *= 2.5;
 	
+	ResetTouchedentityResolve();
+	
 	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
 
 	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)

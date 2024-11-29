@@ -67,7 +67,7 @@ void CombineDDT_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower DDT");
+	strcopy(data.Name, sizeof(data.Name), "W.F. DDT");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_swordsman_ddt");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;
@@ -78,9 +78,9 @@ void CombineDDT_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineDDT(client, vecPos, vecAng, ally);
+	return CombineDDT(vecPos, vecAng, team);
 }
 methodmap CombineDDT < CClotBody
 {
@@ -155,7 +155,7 @@ methodmap CombineDDT < CClotBody
 	}
 	
 	
-	public CombineDDT(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineDDT(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineDDT npc = view_as<CombineDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
 		SetVariantInt(1);
@@ -207,8 +207,7 @@ methodmap CombineDDT < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineDDT_ClotThink(int iNPC)
 {
 	CombineDDT npc = view_as<CombineDDT>(iNPC);

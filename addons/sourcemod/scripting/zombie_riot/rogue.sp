@@ -225,6 +225,7 @@ enum
 
 static bool InRogueMode;
 
+static Handle VoteTimer;
 static ArrayList Voting;
 static float VoteEndTime;
 static int VotedFor[MAXTF2PLAYERS];
@@ -239,6 +240,7 @@ static ArrayList Floors;
 static int GameState;
 static Handle ProgressTimer;
 
+static int RogueTheme;
 static int CurrentFloor;
 static int CurrentCount;
 static int CurrentStage;
@@ -265,7 +267,7 @@ float f_ProvokedAngerCD[MAXENTITIES];
 
 void Rogue_PluginStart()
 {
-	RegAdminCmd("zr_giveartifact", Rogue_DebugGive, ADMFLAG_ROOT);
+	RegAdminCmd("zr_give_artifact", Rogue_DebugGive, ADMFLAG_ROOT);
 	RegAdminCmd("zr_skipbattle", Rogue_DebugSkip, ADMFLAG_ROOT);
 	RegAdminCmd("zr_setstage", Rogue_DebugSet, ADMFLAG_ROOT);
 	
@@ -342,6 +344,11 @@ bool Rogue_NoDiscount()
 	return InRogueMode && !b_ResearchSquad;
 }
 
+int Rogue_Theme()
+{
+	return InRogueMode ? RogueTheme : -1;
+}
+
 void Rogue_MapStart()
 {
 	RogueTheme = 0;
@@ -377,7 +384,8 @@ void Rogue_SetupVote(KeyValues kv)
 	}
 	while(kv.GotoNextKey(false));
 
-	CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	if(!VoteTimer)
+		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
 	kv.Rewind();
 	kv.JumpToKey("Rogue");
@@ -513,14 +521,17 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 			Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
 			menu.AddItem(NULL_STRING, vote.Name);
 
-			bool cached = Database_IsCached(client);
-
 			int length = Voting.Length;
 			for(int i; i < length; i++)
 			{
 				Voting.GetArray(i, vote);
 				Format(vote.Config, sizeof(vote.Config), "%t (Lv %d)", vote.Name, vote.Level);
-				menu.AddItem(vote.Name, vote.Config, (i && cached && Level[client] < vote.Level) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				int MenuDo = ITEMDRAW_DISABLED;
+				if(!vote.Level)
+					MenuDo = ITEMDRAW_DEFAULT;
+				if(Level[client] >= 1)
+					MenuDo = ITEMDRAW_DEFAULT;
+				menu.AddItem(vote.Name, vote.Config, MenuDo);
 			}
 			
 			menu.ExitButton = false;
@@ -573,7 +584,10 @@ public int Rogue_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 public Action Rogue_VoteDisplayTimer(Handle timer)
 {
 	if(!Voting)
+	{
+		VoteTimer = null;
 		return Plugin_Stop;
+	}
 	
 	DisplayHintVote();
 	return Plugin_Continue;
@@ -990,14 +1004,9 @@ void Rogue_NextProgress()
 			{
 				if(IsClientInGame(client) && GetClientTeam(client) == 2)
 				{
-					//int cash = StartCash - (Resupplies_Supplied[client] * 10);
-					//if(CashSpent[client] < cash)
-					//	CashSpent[client] = cash;
-					//
-					//CashSpent[client] -= StartCash;
-
-					if(Level[client] > highestLevel)
-						highestLevel = Level[client];
+					int amount = SkillTree_GetByName(client, "Ingot Up 1");
+					if(amount > highestLevel)
+						highestLevel = amount;
 				}
 			}
 
@@ -1007,15 +1016,7 @@ void Rogue_NextProgress()
 			CurrentCount = -1;
 			delete CurrentExclude;
 
-			int startingIngots = (highestLevel + 80) / 10;
-			if(startingIngots < 8)
-			{
-				startingIngots = 8;
-			}
-			else if(startingIngots > 16)
-			{
-				startingIngots = 16;
-			}
+			int startingIngots = highestLevel + 8;
 
 			Rogue_AddIngots(startingIngots, true);
 
@@ -1116,16 +1117,29 @@ void Rogue_NextProgress()
 				CurrentStage = -1;
 				CurrentCount = -1;
 				ExtraStageCount = 0;
-				SteamWorks_UpdateGameTitle();
-				Rogue_BlueParadox_NewFloor(CurrentFloor);
-
+				
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
 				{
 					Floors.GetArray(CurrentFloor, floor);
 					if(floor.ArtifactKey[0] && !Rogue_HasNamedArtifact(floor.ArtifactKey))
-						victory = true;
+					{
+						if(CurrentFloor == (Floors.Length - 1))
+						{
+							victory = true;
+						}
+						else
+						{
+							// Check next floor
+							CurrentCount = maxRooms + 1;
+							Rogue_NextProgress();
+							return;
+						}
+					}
 				}
+
+				SteamWorks_UpdateGameTitle();
+				Rogue_BlueParadox_NewFloor(CurrentFloor);
 
 				if(victory)	// All the floors are done
 				{
@@ -1373,7 +1387,8 @@ ArrayList Rogue_CreateGenericVote(Function func, const char[] title)
 void Rogue_StartGenericVote(float time = 20.0)
 {
 	Zero(VotedFor);
-	CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	if(!VoteTimer)
+		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
 	VoteEndTime = GetGameTime() + time;
 	CreateTimer(time, Rogue_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);

@@ -54,9 +54,9 @@ void Defanda_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Defanda(client, vecPos, vecAng, ally);
+	return Defanda(vecPos, vecAng, team);
 }
 
 methodmap Defanda < CClotBody
@@ -98,7 +98,7 @@ methodmap Defanda < CClotBody
 	}
 	
 	
-	public Defanda(int client, float vecPos[3], float vecAng[3], int ally)
+	public Defanda(float vecPos[3], float vecAng[3], int ally)
 	{
 		Defanda npc = view_as<Defanda>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -123,9 +123,7 @@ methodmap Defanda < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 180.0;
 		

@@ -138,9 +138,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Sensal(client, vecPos, vecAng, ally, data);
+	return Sensal(vecPos, vecAng, team, data);
 }
 
 methodmap Sensal < CClotBody
@@ -251,7 +251,7 @@ methodmap Sensal < CClotBody
 	}
 	
 	
-	public Sensal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Sensal(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Sensal npc = view_as<Sensal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
@@ -277,9 +277,7 @@ methodmap Sensal < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSensal_OnTakeDamagePost);
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.i_GunMode = 0;
@@ -343,7 +341,7 @@ methodmap Sensal < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
@@ -1037,7 +1035,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 }
 
 
-void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r")
+void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r", int colourdiff = 0)
 {
 	if(attachment[0])
 	{
@@ -1074,13 +1072,20 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	{
 		int ModelApply = ApplyCustomModelToWandProjectile(iNpc, WEAPON_CUSTOM_WEAPONRY_1, 1.65, "scythe_spin");
 
-		if(colour)
+		if(colourdiff)
 		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
+			SetEntityRenderColor(ModelApply, 255, 255, 255, 2);
 		}
 		else
 		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+			if(colour)
+			{
+				SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
+			}
+			else
+			{
+				SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+			}
 		}
 		SetVariantInt(2);
 		AcceptEntityInput(ModelApply, "SetBodyGroup");
@@ -1325,7 +1330,6 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		}
 
 		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
-		SensalEffects(Projectile,view_as<int>(npc.Anger),"");
 		b_RageProjectile[Projectile] = npc.Anger;
 		//dont exist !
 		SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
@@ -1333,13 +1337,31 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 		static float ang_Look[3];
 		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
-		Initiate_HomingProjectile(Projectile,
-		 npc.index,
-		 	70.0,			// float lockonAngleMax,
-		   	9.0,				//float homingaSec,
-			true,				// bool LockOnlyOnce,
-			true,				// bool changeAngles,
-			  ang_Look);// float AnglesInitiate[3]);
+		bool DoHoming = true;
+		if(count == 2)
+		{
+			int EnemySearch = GetClosestTarget(Projectile, true, _, true, _, _, _, true, .UseVectorDistance = true);
+			if(IsValidEntity(EnemySearch))
+			{
+				SensalEffects(Projectile,view_as<int>(npc.Anger),"", 1);
+				DoHoming = false;
+				DataPack pack1;
+				CreateDataTimer(0.1, WhiteflowerTank_Rocket_Stand, pack1, TIMER_FLAG_NO_MAPCHANGE);
+				pack1.WriteCell(EntIndexToEntRef(Projectile));
+				pack1.WriteCell(EntIndexToEntRef(EnemySearch));
+			}
+		}
+		if(DoHoming)
+		{
+			SensalEffects(Projectile,view_as<int>(npc.Anger),"");
+			Initiate_HomingProjectile(Projectile,
+			npc.index,
+				70.0,			// float lockonAngleMax,
+				9.0,				//float homingaSec,
+				true,				// bool LockOnlyOnce,
+				true,				// bool changeAngles,
+				ang_Look);// float AnglesInitiate[3]);
+		}
 
 		if(volume == 0.25)
 		{

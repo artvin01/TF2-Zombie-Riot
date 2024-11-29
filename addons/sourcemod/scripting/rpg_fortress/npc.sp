@@ -409,8 +409,6 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 				}
 				//Slowly heal when we are standing still.
 
-				Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-
 				npc.m_bisWalking = false;
 				if(npc.m_iChanged_WalkCycle != -2) 	//Stand still.
 				{
@@ -500,6 +498,29 @@ void RPGNpc_UpdateHpHud(int entity)
 	}
 }
 
+void HealOutOfBattleNpc(int entity)
+{
+	int MaxHealth = ReturnEntityMaxHealth(entity);
+	int Health = GetEntProp(entity, Prop_Data, "m_iHealth");
+
+	int HealthToHealPerIncrement = MaxHealth / 100;
+
+	if(HealthToHealPerIncrement < 1) //should never be 0
+	{
+		HealthToHealPerIncrement = 1;
+	}
+
+	SetEntProp(entity, Prop_Data, "m_iHealth", Health + HealthToHealPerIncrement);
+	
+
+	if((Health + HealthToHealPerIncrement) >= MaxHealth)
+	{
+		SetEntProp(entity, Prop_Data, "m_iHealth", MaxHealth);
+	}
+	//Slowly heal when we are standing still.
+	RPGNpc_UpdateHpHud(entity);
+	
+}
 stock bool ShouldNpcJumpAtThisClient(int iNpc, int client)
 {
 	bool AllowJump = true;

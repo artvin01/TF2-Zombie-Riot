@@ -56,9 +56,9 @@ public void Driller_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Driller(client, vecPos, vecAng, ally);
+	return Driller(vecPos, vecAng, team);
 }
 
 methodmap Driller < CClotBody
@@ -98,7 +98,7 @@ methodmap Driller < CClotBody
 	}
 	
 	
-	public Driller(int client, float vecPos[3], float vecAng[3], int ally)
+	public Driller(float vecPos[3], float vecAng[3], int ally)
 	{
 		Driller npc = view_as<Driller>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "300", ally, false,_,_,_,_));
 
@@ -158,8 +158,7 @@ methodmap Driller < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Driller_ClotThink(int iNPC)
 {
 	Driller npc = view_as<Driller>(iNPC);

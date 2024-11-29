@@ -39,9 +39,9 @@ void SeaSwarmcaller_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaSwarmcaller(client, vecPos, vecAng, ally, data);
+	return SeaSwarmcaller(vecPos, vecAng, team, data);
 }
 
 methodmap SeaSwarmcaller < CSeaBody
@@ -63,7 +63,7 @@ methodmap SeaSwarmcaller < CSeaBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public SeaSwarmcaller(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SeaSwarmcaller(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];

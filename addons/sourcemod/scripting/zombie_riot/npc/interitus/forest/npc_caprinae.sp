@@ -47,9 +47,9 @@ void CaprinaeOnMapStart()
 	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Caprinae(client, vecPos, vecAng, ally, data);
+	return Caprinae(vecPos, vecAng, team, data);
 }
 
 methodmap Caprinae < CClotBody
@@ -75,7 +75,7 @@ methodmap Caprinae < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Caprinae(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Caprinae(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "99000", ally, _, true));
 		

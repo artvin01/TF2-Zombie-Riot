@@ -82,6 +82,7 @@ static bool b_InKame[MAXENTITIES];
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/raid_theme_2.mp3"
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
+static float fl_player_weapon_score[MAXTF2PLAYERS];
 
 static int i_melee_combo[MAXENTITIES];
 static int i_current_wave[MAXENTITIES];
@@ -124,6 +125,8 @@ static char gGlow1;	//blue
 #define TWIRL_RETREAT_LASER_SOUND 		"zombiesurvival/seaborn/loop_laser.mp3"
 #define TWIRL_COSMIC_GAZE_END_SOUND1 	"weapons/physcannon/physcannon_drop.wav"
 #define TWIRL_COSMIC_GAZE_END_SOUND2 	"ambient/energy/whiteflash.wav"
+
+#define TWIRL_MAGIA_OVERFLOW_DURATION 8.0
 
 void Twirl_OnMapStart_NPC()
 {
@@ -175,9 +178,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Twirl(client, vecPos, vecAng, ally, data);
+	return Twirl(vecPos, vecAng, team, data);
 }
 static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
 static const char NameColour[] = "{purple}";
@@ -510,9 +513,12 @@ methodmap Twirl < CClotBody
 		if(this.m_iTarget > MaxClients)
 			return 1;						//its an npc? fuck em
 
-		if(i_BarbariansMind[this.m_iTarget])
-			return 0;						//we can 100% say the target is a melee player.	
+		if(fl_player_weapon_score[this.m_iTarget]>=0.0)
+			return 0;	//their social credit score is positive or 0.0, they are a good citizen of the state, treat them well by not shoting them on sight.
+		else
+			return 1;	//their soclai credit score is not positive, ON SIGHT, KILL ON SIGHT.
 		
+		/*
 		int weapon = GetEntPropEnt(this.m_iTarget, Prop_Send, "m_hActiveWeapon");
 
 		if(!IsValidEntity(weapon))
@@ -520,16 +526,37 @@ methodmap Twirl < CClotBody
 		
 		if(i_IsWandWeapon[weapon])
 			return 1;						//the weapon they are holding a wand, so its a ranged player	
+			//fun fact: due to the lance being classed as a magic weapon, the lance player gets blasted by twirl.
+			//However, due to how STRONG the lance is single target, thats fine.
+
+		if(i_IsWrench[weapon])
+			return 1;						//engie player shall be burned.
+											//in essence, I don't want "engineer" players to act as distractions, when what I want is the melee players who actually HAVE to get close to deal damage to be the ones who are "honoured"
 
 		char classname[32];
 		GetEntityClassname(weapon, classname, 32);
 
 		int weapon_slot = TF2_GetClassnameSlot(classname);
 
-		if(weapon_slot != 2)
-			return 1;		
+		//weapons like angelica are technically a "primary" but they are melee, doing this will make sure that such melee weapons that use special slots don't get shot dead on the spot. 
+		if(i_OverrideWeaponSlot[weapon] != -1)
+		{
+			weapon_slot = i_OverrideWeaponSlot[weapon];
+		}
+
+		//if they are NOT holding a melee, instantly go ranged.
+		if(weapon_slot != TFWeaponSlot_Melee)
+			return 1;
 
 		//now the "Easy" checks are done and now the not so easy checks are left.
+		//assume they are a melee player until proven otherwise.
+		//this gets triggered if:
+		
+			//The player is NOT holding a: ranged weapon, a magic weapon, a wrench.
+			//This code checks if they are HOLDING a weapon in some other slot of theirs
+			//So that they cannot abuse this and avoid getting shot at while they are actually a ranged player.
+
+		
 
 		int type = 0;	//this way a ranged player can't switch to their melee to avoid attacks.
 		int i, entity;
@@ -537,23 +564,34 @@ methodmap Twirl < CClotBody
 		{
 			if(StoreWeapon[entity] > 0)
 			{
+				if(i_IsWandWeapon[entity] || i_IsWrench[entity])
+				{
+					type = 1;
+					break;
+				}
 				char buffer[255];
 				GetEntityClassname(entity, buffer, sizeof(buffer));
 				int slot = TF2_GetClassnameSlot(buffer);
 
-				if(slot != 2)
+				//same case as above, although, why would someone use both angelica and a normal melee at the same time? 
+				//note: this still loops through the current held weapon.
+				if(i_OverrideWeaponSlot[entity] != -1)
+				{
+					slot = i_OverrideWeaponSlot[entity];
+				}
+
+				if(slot != TFWeaponSlot_Melee)
 				{
 					type = 1;
 					break;
 				}
 			}
-		}
-
+		}*/
 		//edge case: player is a mage, has 2 weapons that take the melee slot, the player could take out a melee weapon to trick this system into thinking they are a melee when in reality they are a mage.
 		//hypothesis: 
 		//even if it isn't him who discovers it, I'll have to add a thing that checks multiple weapon slots too...
 
-		return type;
+		//return type;
 	}
 
 	public char[] GetName()
@@ -586,7 +624,7 @@ methodmap Twirl < CClotBody
 	}
 	
 	
-	public Twirl(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Twirl(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Twirl npc = view_as<Twirl>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -704,7 +742,7 @@ methodmap Twirl < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
 		if(amount_of_people > 12.0)
 		{
@@ -873,10 +911,16 @@ methodmap Twirl < CClotBody
 		npc.m_flMeleeArmor = 1.5;
 
 		npc.m_bInKame = false;
+
+		if(StrContains(data, "blockinv") != -1)
+			fl_final_invocation_timer[npc.index] = FAR_FUTURE;
+
+		Zero(fl_player_weapon_score);
 		
 		return npc;
 	}
 }
+
 
 static void Twirl_WinLine(int entity)
 {
@@ -979,7 +1023,7 @@ static void ClotThink(int iNPC)
 			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
 			case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
 			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
-			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}. You alone, its such a view");
 		}
 	}
 
@@ -992,7 +1036,7 @@ static void ClotThink(int iNPC)
 		b_wonviatimer[npc.index] = true;
 		if(wave <=60)
 		{
-			switch(GetRandomInt(0, 10))
+			switch(GetRandomInt(0, 9))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
 				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
@@ -1004,7 +1048,6 @@ static void ClotThink(int iNPC)
 				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
 				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
 				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
-				case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
 		else	//freeplay
@@ -1026,7 +1069,7 @@ static void ClotThink(int iNPC)
 
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
-		switch(GetRandomInt(0, 7))
+		switch(GetRandomInt(0, 6))
 		{
 			case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
 			case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
@@ -1035,7 +1078,6 @@ static void ClotThink(int iNPC)
 			case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
 			case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
 			case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
-			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 		}
 		fl_magia_overflow_recharge[npc.index] -= 15.0;
 		npc.m_flNextTeleport -= 10.0;
@@ -1094,25 +1136,31 @@ static void ClotThink(int iNPC)
 	{
 		if(npc.m_bInKame)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
-			if(npc.m_iTarget < 1)
-			{
-				npc.m_iTarget = GetClosestTarget(npc.index);
-			}
+			npc.m_iTarget = i_Get_Laser_Target(npc);
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 0.2;
 		}
 		else
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index);
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		}
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		
 	}
 	if(npc.m_bInKame)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			npc.FaceTowards(vecTarget, (npc.Anger ? 25.5 : 18.0));
-			//
+
+			float Turn_Speed = (npc.Anger ? 23.0 : 17.0);
+			//if there are more then 4 players near twirl, her laser starts to turn faster.
+			int Nearby = Nearby_Players(npc, (npc.Anger ? 350.0 : 275.0));
+			if(Nearby > 4)
+			{
+				//if there are like 8 players next to her, she will turn fast.
+				Turn_Speed *= (Nearby/3.0);
+			}
+			npc.FaceTowards(vecTarget, Turn_Speed);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 
 			int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -1236,6 +1284,73 @@ static void ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
+static float Target_Angle_Value(Twirl npc, int Target)
+{
+	// need position of either the inflictor or the attacker
+	float Vic_Pos[3];
+	WorldSpaceCenter(Target, Vic_Pos);
+	float npc_pos[3];
+	float angle[3];
+	float eyeAngles[3];
+	WorldSpaceCenter(npc.index, npc_pos);
+	
+	GetVectorAnglesTwoPoints(npc_pos, Vic_Pos, angle);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyeAngles);
+
+	// need the yaw offset from the player's POV, and set it up to be between (-180.0..180.0)
+	float yawOffset = fixAngle(angle[1]) - fixAngle(eyeAngles[1]);
+	if (yawOffset <= -180.0)
+		yawOffset += 360.0;
+	else if (yawOffset > 180.0)
+		yawOffset -= 360.0;
+
+	//if its more then 180, its on the other side of the npc / behind
+	return fabs(yawOffset);
+}
+//don't just search for the nearest target when using the laser.
+//Instead search for the target NEAREST to our BEAM's length.
+static int i_Get_Laser_Target(Twirl npc)
+{
+	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+	int enemy_2[MAXTF2PLAYERS];
+	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
+	//only bother getting targets infront of twirl that are players. + wall check obv
+	int Tmp_Target = -1;
+	float Angle_Val = 420.0;
+	for(int i; i < sizeof(enemy_2); i++)
+	{
+		if(enemy_2[i])
+		{
+			float Target_Angles = Target_Angle_Value(npc, enemy_2[i]);
+			if(Target_Angles < 45.0 && Target_Angles < Angle_Val)
+			{
+				Angle_Val = Target_Angles;
+				Tmp_Target = enemy_2[i];
+				
+				//CPrintToChatAll("Player %N within 45 degress: %f", Tmp_Target, Target_Angles);
+			}
+		}
+	}
+	//if we don't find any targets within 90 degrees infront, give up and use normal targeting!
+	//and by 90 degress I mean -45 -> 45. \/
+	
+	if(!IsValidEnemy(npc.index, Tmp_Target))
+	{
+		//CPrintToChatAll("Backup Target used");
+		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
+		if(npc.m_iTarget < 1)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
+		return npc.m_iTarget;
+	}
+	else
+	{
+		//CPrintToChatAll("Chose Target: %N with angle var: %f", Tmp_Target, Angle_Val);
+		return Tmp_Target;
+	}
+		
+}
 static void Final_Invocation(Twirl npc)
 {
 	Ruina_Set_Overlord(npc.index, true);
@@ -1349,7 +1464,7 @@ static void lunar_Radiance(Twirl npc)
 		case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
 		case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
 		case 11: Twirl_Lines(npc, "Dance little merc, dance...");
-		case 13: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+		case 13: Twirl_Lines(npc, "{crimson}Ehe{snow}.");
 		case 15: Twirl_Lines(npc, "Annihilation in {crimson}F# {snow}Minor");
 		case 17: Twirl_Lines(npc, "Oh, {crimson}poor{snow} you...");
 	}
@@ -2227,7 +2342,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	WorldSpaceCenter(Target, vecTarget);
 	//(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
 	float Laser_Dmg = 2.5;
-	float Speed = (npc.Anger ? 1400.0 : 1250.0);
+	float Speed = (npc.Anger ? 1300.0 : 1100.0);
 	float Direct_Dmg = 3.5;
 	Fractal_Attack(npc.index, vecTarget, Modify_Damage(-1, Laser_Dmg), Speed, 15.0, Modify_Damage(-1, Direct_Dmg), 0.0, 5.0);
 }
@@ -2360,6 +2475,14 @@ static Action Laser_Projectile_Timer(Handle timer, DataPack data)
 	return Plugin_Continue;
 }
 static int i_targets_inrange;
+
+static int Nearby_Players(Twirl npc, float Radius)
+{
+	i_targets_inrange = 0;
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
+	return i_targets_inrange;
+}
 static bool Retreat(Twirl npc, bool custom = false)
 {
 	float GameTime = GetGameTime(npc.index);
@@ -2372,10 +2495,9 @@ static bool Retreat(Twirl npc, bool custom = false)
 		npc.m_flNextTeleport = GameTime + 1.0;
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	i_targets_inrange = 0;
-	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
+	
 
-	if(i_targets_inrange < 4 && !custom)	//not worth "retreating"
+	if(Nearby_Players(npc, Radius) < 4 && !custom)	//not worth "retreating"
 		return false;
 
 	//OH SHIT OH FUCK, WERE BEING OVERRUN, TIME TO GET THE FUCK OUTTA HERE
@@ -2500,21 +2622,20 @@ static bool Retreat(Twirl npc, bool custom = false)
 
 	switch(GetRandomInt(0, 13))
 	{
-		case 0: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
+		case 0: Twirl_Lines(npc, "{crimson}Twirly Wirly{snow}~");
 		case 1: Twirl_Lines(npc, "You really think you can {purple}catch {snow}me?");
 		case 2: Twirl_Lines(npc, "Ahaaa, {crimson}bad");
 		case 3: Twirl_Lines(npc, "So close, yet far");
-		case 4: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
-		case 5: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
-		case 6: Twirl_Lines(npc, "Don't surround me like that.");
-		case 7: Twirl_Lines(npc, "When will you learn this,{crimson} DON'T COME NEAR ME");
-		case 8: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
-		case 9: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
-		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-		case 11: Twirl_Lines(npc, "{crimson}Kururing{snow}~");
-		case 12: Twirl_Lines(npc, "{crimson}Kuru Kuru{snow}~");
-		case 13: Twirl_Lines(npc, "{crimson}Twirly Wirly{snow}~");
-		case 14: Twirl_Lines(npc, "Aaa, hai hai~");
+		case 4: Twirl_Lines(npc, "{crimson}Kururing{snow}~");
+		case 5: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
+		case 6: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
+		case 7: Twirl_Lines(npc, "Don't surround me like that.");
+		case 8: Twirl_Lines(npc, "When will you learn this,{crimson} DON'T COME NEAR ME");
+		case 9: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
+		case 10: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
+		case 11: Twirl_Lines(npc, "{crimson}Kuru Kuru{snow}~");
+		case 12: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
+		case 13: Twirl_Lines(npc, "Aaa, hai hai~");
 	}
 	return true;
 }
@@ -2750,7 +2871,7 @@ static bool Magia_Overflow(Twirl npc)
 	if(!Retreat(npc, true))
 		return false;
 
-	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure he WILL get the shield.
+	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure she WILL get the shield.
 	Ruina_Npc_Give_Shield(npc.index, 0.45);				//give the shield to itself.
 	
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
@@ -2760,14 +2881,23 @@ static bool Magia_Overflow(Twirl npc)
 	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
-	EmitCustomToAll(TWIRL_RETREAT_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
+	//EmitCustomToAll(TWIRL_RETREAT_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
 
-	float Duration = 9.0;
+	float Duration = TWIRL_MAGIA_OVERFLOW_DURATION;
 	npc.m_bisWalking = false;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration + 0.7;
 	npc.m_flDoingAnimation = GameTime + Duration + 0.75;
 	fl_retreat_laser_throttle[npc.index] = GameTime + 0.7;
 	fl_magia_overflow_recharge[npc.index] = GameTime + Duration + 0.7 + (npc.Anger ? 30.0 : 45.0);
+
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	int color[4]; 
+	Ruina_Color(color);
+	float Thickness = 6.0;
+	VecSelfNpc[2]-=2.5;
+	//create a ring around twirl showing the radius for her special "if you're near me, my laser turns faster"
+	TE_SetupBeamRingPoint(VecSelfNpc, (npc.Anger ? 350.0 : 275.0)*2.0, (npc.Anger ? 350.0 : 275.0)*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Duration+0.7, Thickness, 0.75, color, 1, 0);
+	TE_SendToAll();
 
 	b_animation_set[npc.index] = false;
 
@@ -2778,9 +2908,6 @@ static bool Magia_Overflow(Twirl npc)
 	fl_magia_angle[npc.index] = GetRandomFloat(0.0, 360.0);
 
 	npc.m_bInKame = true;
-
-	npc.m_flRangedArmor = 0.9;
-	npc.m_flMeleeArmor = 1.0;
 
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
@@ -2796,14 +2923,15 @@ static Action Magia_Overflow_Tick(int iNPC)
 	{
 		SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
+
 		npc.m_bisWalking = true;
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
 
 		npc.m_bInKame = false;
-		npc.m_flRangedArmor = 1.0;
-		npc.m_flMeleeArmor = 1.5;
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
@@ -2874,9 +3002,14 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
 	if(update)
 	{
-		Laser.Damage = Modify_Damage(-1, 2.0);
+		float Duration = fl_ruina_battery_timeout[npc.index] - GameTime;
+		float Ratio = (1.0 - (Duration / TWIRL_MAGIA_OVERFLOW_DURATION));
+		if(Ratio<0.1)
+			Ratio=0.1;
+		float Dps = Modify_Damage(-1, 5.25)*Ratio;
+		Laser.Damage = Dps;
 		Laser.Radius = Radius;
-		Laser.Bonus_Damage = Modify_Damage(-1, 2.0)*6.0;
+		Laser.Bonus_Damage = Dps*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage(On_LaserHit);
 	}
@@ -2991,12 +3124,22 @@ static void Twirl_Magia_Rings(Twirl npc, float Origin[3], float Angles[3], int l
 	}
 	
 }
+
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Twirl npc = view_as<Twirl>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	if(IsValidClient(attacker))
+	{
+		//doing it via "damage" instead of instances of damage so a player with a cheap high firerate weapon cant trick twirl into thinking they are a melee when they switch to a hyper bursty slow attacking weapon.
+		if(damagetype & DMG_SLASH || damagetype & DMG_CLUB)
+			fl_player_weapon_score[attacker]+=damage;
+		else
+			fl_player_weapon_score[attacker]-=damage;
+	}
 
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int MaxHealth = ReturnEntityMaxHealth(npc.index);
@@ -3089,7 +3232,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flNextTeleport -= 0.2;
+		npc.m_flNextTeleport -= 0.25;
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
@@ -3169,9 +3312,14 @@ static void Kill_Abilities(Twirl npc)
 		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
 
+	npc.m_flRangedArmor = 1.0;
+	npc.m_flMeleeArmor = 1.5;
+
 	StopSound(npc.index, SNDCHAN_STATIC, "player/taunt_surgeons_squeezebox_music.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
 
 	npc.m_bInKame = false;
 }
@@ -3211,8 +3359,7 @@ static void NPC_Death(int entity)
 				case 1: Twirl_Lines(npc, "You're strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
 				case 2: Twirl_Lines(npc, "Ahaha, toodles");
 				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-				case 5: Twirl_Lines(npc, "");
+				case 4: Twirl_Lines(npc, "How interesting..");
 			}
 		}
 		else if(wave <=30)
@@ -3223,7 +3370,7 @@ static void NPC_Death(int entity)
 				case 1: Twirl_Lines(npc, "Oh my, I may have underestimated you, this is great news");
 				case 2: Twirl_Lines(npc, "I'll have to give {aqua}Stella{snow} a little treat, this has been great fun");
 				case 3: Twirl_Lines(npc, "Most excellent, you bested me, hope to see you again!");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				case 4: Twirl_Lines(npc, "The simulations seem to be off..");
 			}
 		}
 		else if(wave <=45)
@@ -3231,10 +3378,10 @@ static void NPC_Death(int entity)
 			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Even with my {purple}''Heavy Equipment''{snow} you bested me, good work");
-				case 1: Twirl_Lines(npc, "You're quite strong, and so am I, can't wait for our next match");
+				case 1: Twirl_Lines(npc, "You're quite strong, can't wait for our next match");
 				case 2: Twirl_Lines(npc, "I hope you all had as much fun as I did");
 				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do believe our next and final battle will be the {crimson}most fun{snow}!");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				case 4: Twirl_Lines(npc, "Whoever made those simulations is gonna get fired..");
 			}
 		}
 		else

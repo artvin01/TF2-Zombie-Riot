@@ -59,9 +59,9 @@ void VoidSpreader_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidSpreader(client, vecPos, vecAng, ally);
+	return VoidSpreader(vecPos, vecAng, team);
 }
 methodmap VoidSpreader < CClotBody
 {
@@ -98,7 +98,7 @@ methodmap VoidSpreader < CClotBody
 	}
 	
 	
-	public VoidSpreader(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidSpreader(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidSpreader npc = view_as<VoidSpreader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1000", ally));
 		
@@ -121,9 +121,7 @@ methodmap VoidSpreader < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidSpreader_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		

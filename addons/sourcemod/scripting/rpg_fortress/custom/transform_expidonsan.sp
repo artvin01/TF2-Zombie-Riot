@@ -34,10 +34,10 @@ public void Halo_Activation_Enable_form_4(int client)
 {
 	Halo_Activation_Enable_Global(client, 4);
 }
-
 public void Halo_Activation_Disable_form_4(int client)
 {
 	Expidonsa_InRageMode[client] = false;
+	Expidonsa_MegaForm[client] = false;
 }
 
 public void Expidonsan_4thFormNameSpecial(int client, char name[256])
@@ -46,10 +46,16 @@ public void Expidonsan_4thFormNameSpecial(int client, char name[256])
 	{
 		strcopy(name, sizeof(name), "Unleashed Expidonsan Power");
 	}
+	else if(Expidonsa_MegaForm[client])
+		strcopy(name, sizeof(name), "Released Expidonsan Secret");
 }
 
 public bool Expidonsan_4thFormTransSpecial(int client)
 {
+	if(!Expidonsa_MegaForm[client])
+	{
+		return false;
+	}
 	if(Ability4thFormCooldown[client] < GetGameTime())
 	{
 		int MaxHealth = ReturnEntityMaxHealth(client);
@@ -98,6 +104,8 @@ public void Expidonsan_4thFormStatMulti(int client, int WhatStat, float StatNum,
 	{
 		return;
 	}
+	if(!Expidonsa_MegaForm[client])
+		return;
 	switch(WhatStat)
 	{
 		default:
@@ -116,6 +124,8 @@ public void Expidonsan_4thFormDrainSpecial(int client, float &DrainCurrent)
 	{
 		return;
 	}
+	if(!Expidonsa_MegaForm[client])
+		return;
 	DrainCurrent *= 1.2;
 
 	float TimeLeft = GetGameTime() - Ability4thFormCooldown[client];
@@ -322,7 +332,7 @@ public Action TimerExpidonsan_Transform(Handle timer, DataPack pack)
 		Timer_Expidonsan_Transform[client] = null;
 		return Plugin_Stop;
 	}	
-	if(i_TransformationLevel[client] == 4)
+	if(i_TransformationLevel[client] == 4 && Expidonsa_MegaForm[client])
 	{
 		char LeperHud[256];
 		if(Expidonsa_InRageMode[client])
@@ -337,7 +347,7 @@ public Action TimerExpidonsan_Transform(Handle timer, DataPack pack)
 			if((float(Health) / float(MaxHealth)) <= 0.25)
 			{
 
-				Format(LeperHud, sizeof(LeperHud), "OVERSTRESS USE! PRESS E!");
+				Format(LeperHud, sizeof(LeperHud), "OVERSTRESS USE! PRESS E + CROUCH!");
 			}
 			else
 				Format(LeperHud, sizeof(LeperHud), "Overstress Ready.");

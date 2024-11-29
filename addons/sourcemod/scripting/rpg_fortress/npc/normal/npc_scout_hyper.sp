@@ -57,9 +57,9 @@ public void ScoutHyper_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ScoutHyper(client, vecPos, vecAng, ally);
+	return ScoutHyper(vecPos, vecAng, team);
 }
 
 methodmap ScoutHyper < CClotBody
@@ -112,7 +112,7 @@ methodmap ScoutHyper < CClotBody
 	
 	
 	
-	public ScoutHyper(int client, float vecPos[3], float vecAng[3], int ally)
+	public ScoutHyper(float vecPos[3], float vecAng[3], int ally)
 	{
 		ScoutHyper npc = view_as<ScoutHyper>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.9", "300", ally, false,_,_,_,_));
 		
@@ -167,8 +167,7 @@ methodmap ScoutHyper < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ScoutHyper_ClotThink(int iNPC)
 {
 	ScoutHyper npc = view_as<ScoutHyper>(iNPC);

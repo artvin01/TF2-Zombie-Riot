@@ -81,9 +81,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/engineer.mdl");
 	
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Astriana(client, vecPos, vecAng, ally);
+	return Astriana(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -182,7 +182,7 @@ methodmap Astriana < CClotBody
 	}
 	
 	
-	public Astriana(int client, float vecPos[3], float vecAng[3], int ally)
+	public Astriana(float vecPos[3], float vecAng[3], int ally)
 	{
 		Astriana npc = view_as<Astriana>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
 		
@@ -260,8 +260,7 @@ methodmap Astriana < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Astriana npc = view_as<Astriana>(iNPC);

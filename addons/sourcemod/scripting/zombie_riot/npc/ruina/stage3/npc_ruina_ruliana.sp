@@ -101,9 +101,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Ruliana(client, vecPos, vecAng, ally, data);
+	return Ruliana(vecPos, vecAng, team, data);
 }
 
 static float fl_npc_basespeed;
@@ -255,7 +255,7 @@ methodmap Ruliana < CClotBody
 		}
 	}
 	
-	public Ruliana(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Ruliana(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Ruliana npc = view_as<Ruliana>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -365,8 +365,7 @@ methodmap Ruliana < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Ruliana npc = view_as<Ruliana>(iNPC);

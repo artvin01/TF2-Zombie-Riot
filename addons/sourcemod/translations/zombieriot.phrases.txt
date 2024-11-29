@@ -24,6 +24,10 @@
 		"nl"		"Druk %%+showscores%% om de winkel te openen"
 		"chi"		"按下 %%+showscores%% 来打开商店"
 	}
+	"Press To Open Store"
+	{
+		"en"		"%%+showscores%% OPEN STORE MENU"
+	}
 	"Last Alive"
 	{
 		"en"		"You are the Last Human Alive.\nSurvive the current wave to revive all your allies."
@@ -91,6 +95,11 @@
 		"pt"		"Créditos: {1} (+{2})"
 		"nl"		"Krediet: {1} (+{2})"
 		"chi"		"现金: {1} (+{2})"
+	}
+	"Current Skill Points"
+	{
+		"#format"	"{1:d}"
+		"en"		"{green}Current Skillpoints: {1}"
 	}
 	"Credits_Menu_New"
 	{
@@ -290,6 +299,10 @@
 		"pt"		"Itens Comprados"
 		"nl"		"Gekochte Artikelen"
 		"chi"       "已购买物品"
+	}
+	"Confirm Loadout"
+	{
+		"en"		"Confirm Loadout"
 	}
 	"N/A"
 	{
@@ -1336,7 +1349,7 @@
 	{
 		"en" 		"Special Zombies Help?"
 		"fr" 		"Aide Zombies Spéciaux?"
-		"ru" 		"Особые зомби?"
+		"ru" 		"Помощь с Особыми зомби?"
 		"de"		"Speziale Zombies Hilfe?"
 		"pt"		"Ajuda com zumbis especiais?"
 		"nl"		"Hulp met speciale zombies?"
@@ -1346,7 +1359,7 @@
 	{
 		"en" 		"Revival Help?"
 		"fr" 		"Aide Résurrection?"
-		"ru" 		"Оживл. игрока?"
+		"ru" 		"Оживление игрока?"
 		"de"		"Wiederbelebungshilfe?"
 		"pt"		"Ajuda com Ressureções?"
 		"nl"		"Hulp met het tot leven brengen?"
@@ -1404,13 +1417,7 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/tp'' To toggle thirdperson.\n''/make_niko'' To toggle niko (This is more of a silly thing the anything)."
-		"fr" 		"''/tp'' pour utiliser la vue à la troisième personne."
-		"ru" 		"''/tp'' для переключения режима от 3-го лица.\n''/make_niko'' для переключения Нико (это скорее глупая вещь, чем что-либо ещё)."
-		"de"		"''/tp'' Umschaltung für Dritte Person."
-		"pt"		"''/tp'' Para ativar modo de 3ª pessoa"
-		"nl"		"''/tp'' Schakelt derde persoon in.\n''/make_niko'' Transformeerd je naar niko (Dit is meer voor genot dan iets anders)."
-		"chi"       "''/tp'' 来切换第三人称 \n''/make_niko'' 来切换成niko模型(重生后生效)"
+		"en" 		"''/tp'' To toggle thirdperson.\n''/me'' To write something above yourself."
 	}
 	"Difficulty Help Explained"
 	{
@@ -1508,8 +1515,8 @@
 	}
 	"Ammobox Tooltip"
 	{
-		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon.\nWill try to fill empty weapons first in your inventory."
-		"fr" 		"Appuyez RELOAD sur la boîte à munitions pour recevoir des munitions pour l'arme que vous tenez.\nLes armes vides auront priorité pour remplissage."
+		"#format"	"{1:d}"
+		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
 	}
 	"Warn Client Ammo None"
 	{
@@ -1691,7 +1698,7 @@
 	{
 		"en" 		"Connect 4"
 		"fr" 		"Puissance 4"
-		"ru" 		"Собери 4"
+		"ru" 		"Соедени 4"
 		"de"		"Verbinden 4"
 		"pt"		"Conecte-4"
 		"nl"		"Connect Vier"
@@ -1750,7 +1757,7 @@
 	{
 		"en" 		"Raidboss"
 		"fr" 		"Boss de Raid"
-		"ru" 		"Босс"
+		"ru" 		"Рейд Босс"
 		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
 		"nl"		"Invalsbaas"
 		"chi"		"世界级Boss"
@@ -1758,6 +1765,7 @@
 	"Superboss"
 	{
 		"en" 		"Superboss"
+		"ru" 		"Супер босс"
 		"fr" 		"Super Boss"
 		"chi"		"Super-Boss"
 	}
@@ -1775,7 +1783,7 @@
 	{
 		"en" 		"TIME LEFT"
 		"fr" 		"TEMPS RESTANT"
-		"ru" 		"ОСТАЛОСЬ"
+		"ru" 		"ОСТАЛОСЬ ВРЕМЕНИ"
 		"de"		"ZEIT VERBLEIBT"
 		"pt"		"TEMPO RESTANTE"
 		"nl"		"OVERIGE TIJD"
@@ -1801,9 +1809,14 @@
 		"nl"		"Grigori werd genezen!\nJe kunt met hem praten tijdens de opstellingstijd om een 20%% korting te krijgen op verschillende items!"
 		"chi"       "格里神父已被救出！\n你可以在休息回合中与他交易，与他交易的商品都会折扣20%%"
 	}
+	"The World Machine Spawn"
+	{
+		"en"		"Niko! What are you doing here?"
+	}
 	"TF2: Zombie Riot"
 	{
 		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
+		"ru" 		"TF2: Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
 		"fr" 		"TF2: Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 	}
@@ -1816,6 +1829,10 @@
 		"pt"		"Loja do Senhor Grigori"
 		"nl"		"Vader Grigori's Winkel"
 		"chi"       "神父商店"
+	}
+	"The World Machine's Items"
+	{
+		"en" 		"The World Machine's Items"
 	}
 	"Credits After Selling"
 	{
@@ -1890,6 +1907,7 @@
 	{
 
 	//	"en"		"Your last equipped level perks were restored"
+	//	"ru"		"Ваш последний экипированный Навык уровня был восстоновлен"
 	//	"de"		"Ihre letzten level perks wurden wiederhergestellt."
 	//	"pt"		"Sua ultima habilidade de nível foi restaurada"
 	//	"nl"		"Uw laatste gebruike level perks werden herstelt
@@ -1900,6 +1918,11 @@
 		"ru"		"Не удалось купить {1}."
 		"nl"		"Kon niet worden gekocht {1}."
 		"chi"       "无法购买 {1}."
+	}
+	"Pickup Gift"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"{green}''{1}'' picked up a gift box! Everyone gains {2} XP!"
 	}
 	"Press TAB To open the store"
 	{
@@ -1945,7 +1968,7 @@
 	{
 		"en"		"Difficulty set to"
 		"fr"		"La difficulté est maintenant"
-		"ru"		"Установлена сложность"
+		"ru"		"Сложность установлена на"
 		"de"		"Schwierigkeitgrad eingestellt auf"
 		"pt"		"Dificuldade definida para"
 		"nl"		"Moeilijkheidsgraad werd gesteld op"
@@ -1998,7 +2021,7 @@
 		"#format"	"{1:d}"
 		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
 		"fr"		"L'ennemi à recherché le niveau {1} pour leur technologie!!!!"
-		"ru"		"Враг исследовал своё снаряжение до уров. {1}!!!"
+		"ru"		"Враг исследовал своё снаряжение до {1}!!! уровня"
 		"pt"		"O adversario pesquisou seu equipamento para duelar {1}!!!"
 		"nl"		"De vijand heeft hun uitrusting naar level {1} gebracht!!!"
 		"chi"       "僵尸的装备已升级!!!{1}"
@@ -2126,7 +2149,7 @@
 	{
 		"en"		"Buy Only Free Items"
 		"fr"		"Recevoir Seulement Gratuit"
-		"ru"		"Купить бесплатные"
+		"ru"		"Купить только бесплатные"
 		"pt"		"Comprar apenas os itens grátis"
 		"nl"		"Koop alleen graties artikelen"
 		"chi"       "只购买免费商品"
@@ -2164,15 +2187,6 @@
 		"pt"		"Assegure-se de não passar de 32 caracteres e não inserir caracteres especiais no nome"
 		"nl"		"Wees zeker dat je naam onder de 32 karakters is en geen speciale tekens bevat"
 		"chi"       "请确保您的名字不超过32个字符，并且不包含特殊字符"
-	}
-	"Loadout Slots"
-	{
-		"#format"	"{1:d}"
-		"en"		"{1} Loadout Slot(s)"
-		"fr"		"{1} Espace(s) de Chargement"
-		"ru"		"Ячеек: {1}"
-		"pt"		"Vagas para Loadout: {1}"
-		"nl"		"{1} Loadout Slot(en)"
 	}
 	"All Weapons Unlocked"
 	{
@@ -2216,7 +2230,7 @@
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
 		"fr"		"Vous ne pouvez plus équipper plus d'armes, des armes pourraient être pas équippés."
-		"ru"		"Вы достигли максимального количества оружия, некоторые из них могли быть не выданы."
+		"ru"		"Вы достигли максимального количества оружия, некоторые из них могли быть не экипированны."
 		"pt"		"Você alcançou o numero maximo de armas que você pode segurar, algumas podem não ter sido equipadas."
 		"nl"		"Je hebt het maximaal toegelaten wapens dat je mag dragen berijkt. Sommige werden niet gedragen."
 		"chi"       "你的武器数量达到了最大值，有些可能还没有装备。"
@@ -2451,6 +2465,10 @@
 	{
 		"en"		"You feel Kahmlsteins Courage..."
 	}
+	"Last Down Warning"
+	{
+		"en"		"This is your last down."
+	}
 	"Opened store via command"
 	{
 		"en"		"In the future, use the TAB/Scoreboard button, it will open the shop without any commands!"
@@ -2523,9 +2541,9 @@
 	}
 	"Xeno_Wave_2"
 	{
-		"en"		"Silvester and Goggles didnt attack you for no reason."
+		"en"		"Silvester and Waldch didnt attack you for no reason."
 		"fr"		"Silvester et Goggles n'ont pas attaqué pour aucune raison."
-		"ru"		"Сильвестр и Гогглз не нападали на вас без причины."
+		"ru"		"Сильвестр и Валдч не нападали на вас без причины."
 		"chi"		"西尔维斯特和瓦德奇不是无缘无故攻击你的。"
 	}
 	"Xeno_Wave_3"
@@ -2554,7 +2572,7 @@
 		"#format"	"{1:d},{2:d}"
 		"en"		"You have summoned {1}/{2} Skull Servant(s)."
 		"fr"		"Vous avez convoqué {1}/{2} Crâne(s) Esclaves."
-		"ru"		"Вы вызвали {1}/{2} слуг черепа."
+		"ru"		"Вы вызвали {1}/{2} слугу череп."
 		"chi"		"你已经召唤了{1}/{2}骷髅仆人."
 	}
 	"Npc Stuck Spot Warning"
@@ -3101,13 +3119,15 @@
 	}
 	"Barracks Villager Desc"
 	{
-		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."	
+		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."
+		"ru" 		"Вспомогательная рука которая чинит,собирает ресурсы,И строит 1 башню для вас."	
 		"fr"		"Un assistant qui répare vos constructions, collectionne des ressources, et construit une tour pour vous."
 		"chi"       "一个修理、收集资源，为你建造一座塔的帮手。"
 	}
 	"Barracks Teutonic Knight Desc"
 	{
 		"en"		"The strongest of the strongest. Ultimate melee unit."	
+		"ru" 		"Сильнейший из сильнейших.Ультимативный блжиний юнит."
 		"fr"		"Le meilleur des meilleurs. L'unité corps à corps ultime."	
 		"chi"       "强者中的强者。终极近战单位。"
 	}
@@ -3118,6 +3138,7 @@
 	"Barracks Troop Classes"
 	{
 		"en"		"Research Troop Classes to train units (excludes villager)"
+		"ru" 		"Исследовать классы войск что бы тренеровать их (кроме жителя)"
 		"fr"		"Recherchez des Unités pour débuter leur formation. ( Le villageois est exclus. )"
 		"chi"       "训练士兵的专项技能（村民不包括在内）"
 	}
@@ -3127,29 +3148,34 @@
 	}
 	"Spike Masspickup Confirm"
 	{
-		"en"		"Look up and Press M2 again to confirm picking up all your spikes!"		
+		"en"		"Look up and Press M2 again to confirm picking up all your spikes!"
+		"ru" 		"Посмотрите вверх и снова нажмите M2 что бы подтвердить что вы взяли все шипы!"	
 		"fr"		"Visez vers le haut et appuyez sur M2 encore pour ramasser vos piques!"
 	}
 	"Spike Masspickup Done"
 	{
-		"en"		"Picked up all your spikes!"		
+		"en"		"Picked up all your spikes!"
+		"ru" 		"Вы подняли все ваши шипы!"		
 		"fr"		"Vous avez ramassé vos piques!"
 	}
 	"Spike Masspickup None"
 	{
-		"en"		"There are no spikes left to pick up."		
+		"en"		"There are no spikes left to pick up."	
+		"ru" 		"Больше нет шипов которые можно подобрать."	
 		"fr"		"Pas de piques à ramasser."
 		"chi"       "没有钉子可捡了。"
 	}
 	"Pre Round Pap Limit"
 	{
-		"en"		"The PAP is still booting up, wait untill the round starts."		
+		"en"		"The PAP is still booting up, wait untill the round starts."
+		"ru" 		"Машина улучшения все ещё загружается,Подождите пока начнётся раунд."		
 		"fr"		"La machine Pack-a-Punch se démarre, attendez pour le début du jeu."
 		"chi"       "PAP仍在启动，请等待回合开始。"
 	}
 	"Zombie Volume Setting Show"
 	{
 		"en"		"Zombie Volume Setting"
+		"ru" 		"Настройка Громкости Зомби"
 		"fr"		"Paramètres Volume des Zombies"
 		"chi"       "僵尸声音设置"
 	}
@@ -3162,6 +3188,7 @@
 	"Zombie In Battle Show"
 	{
 		"en"		"Zombie In Battle Time"
+		"ru" 		"Зомби во время битвы"
 		"fr"		"Temps en Combat pour Zombies"
 	}
 	"Zombie In Battle Logic Setting"
@@ -3758,6 +3785,7 @@
 	"Barbarians Mind Warning"
 	{
 		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
+		"ru" 	"Вы Слишком Глупы что бы наносить урон чем либо кроме Ближнего боя!!"
 		"fr"	"Vous êtes trop enragés pour utiliser des armes autre que corps à corps!!"
 		"chi"	"你装备了野蛮人思维，无法造成近战外任何伤害！"
 	}
@@ -3770,6 +3798,7 @@
 	"Modifier set to"
 	{
 		"en"	"Modifier set to"
+		"ru" 	"Модификатор установлен на"
 		"fr"	"Le modifieur est maintenant"
 		"chi"	"难度已设为："
 	}
@@ -3842,6 +3871,7 @@
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
+		"ru" "Иберия & Немал"
 		"fr" "Iberia & Nemal"
 		"chi"	"伊比利亚 & 尼莫尔"
 	}
@@ -3849,5 +3879,137 @@
 	{
 		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
+	}
+	"Revenant's Shadow"
+	{
+		"en" "Revenant's Shadow"
+	}
+	"Disable Ambient Music"
+	{
+		"en"	"Disable Ambient Music"
+	}
+	"Enable Visible Downs"
+	{
+		"en"	"Enable Visible Downs"
+	}
+	"Enable Ammobox Count Perma"
+	{
+		"en"	"Enable Ammobox Count Perma"
+	}
+	"DPS Class"
+	{
+		"en"	"DPS Class\nFocus on damage and get Speed Cola perk"
+	}
+	"Tank Class"
+	{
+		"en"	"Tank Class\nFocus on tanking and get Juggernog perk"
+	}
+	"Healer Class"
+	{
+		"en"	"Healer Class\nAble to heal, less DPS, and get Quick Revive perk"
+	}
+	"Builder Class"
+	{
+		"en"	"Builder Class\nAble to build, repair, and get Double Tap perk"
+	}
+	"Don't Follow Me"
+	{
+		"en"	"Don't Follow Me"
+	}
+	"Switch Class"
+	{
+		"en"	"Switch Class"
+	}
+	"Switch Weapons"
+	{
+		"en"	"Switch Weapons"
+	}
+	"Weapon Preference"
+	{
+		"en"	"Your Preference"
+	}
+	"Preference Alyx"
+	{
+		"en"	"I'll just stick with my gun thanks.\nAnd don't worry, I'll patch you up whenever I can."
+	}
+	"Preference Barney"
+	{
+		"en"	"Well I like anything I can get my hands on.\nDon't need to tell me what to get, I'll use it."
+	}
+	"Preference Normal"
+	{
+		"en"	"Just standard weapons, nothing special."
+	}
+	"Preference Speed"
+	{
+		"en"	"I like wepaons with a little more fire rate."
+	}
+	"Preference Heavy"
+	{
+		"en"	"I like wepaons with a little more damage per shot."
+	}
+	"Preference No Clip"
+	{
+		"en"	"I like ranged weapons without needing to reload."
+	}
+	"Preference Super Speed"
+	{
+		"en"	"I really like weapons with alot of attack speed."
+	}
+	"Preference Super Heavy"
+	{
+		"en"	"I really like weapons that can nuke at once."
+	}
+	"Build Healing Station At Me"
+	{
+		"en"	"Build Healing Station At Me"
+	}
+	"Build Barricade At Me"
+	{
+		"en"	"Build Barricade At Me"
+	}
+	"Build Sentry At Me"
+	{
+		"en"	"Build Sentry At Me"
+	}
+	"Build Ammo Box At Me"
+	{
+		"en"	"Build Ammo Box At Me"
+	}
+	"Build Armor Table At Me"
+	{
+		"en"	"Build Armor Table At Me"
+	}
+	"Build Perk Machine At Me"
+	{
+		"en"	"Build Perk Machine At Me"
+	}
+	"Build Pack-a-Punch At Me"
+	{
+		"en"	"Build Pack-a-Punch At Me"
+	}
+	"Pistol"
+	{
+		"en"	"Pistol"
+	}
+	"SMG"
+	{
+		"en"	"SMG"
+	}
+	"AR2"
+	{
+		"en"	"AR2"
+	}
+	"Shotgun"
+	{
+		"en"	"Shotgun"
+	}
+	"RPG"
+	{
+		"en"	"RPG"
+	}
+	"Crowbar"
+	{
+		"en"	"Crowbar"
 	}
 }

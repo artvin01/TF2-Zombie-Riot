@@ -104,9 +104,9 @@ void MedivalTwoHandedSwordsman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalTwoHandedSwordsman(client, vecPos, vecAng, ally);
+	return MedivalTwoHandedSwordsman(vecPos, vecAng, team);
 }
 methodmap MedivalTwoHandedSwordsman < CClotBody
 {
@@ -168,7 +168,7 @@ methodmap MedivalTwoHandedSwordsman < CClotBody
 		
 	}
 	
-	public MedivalTwoHandedSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalTwoHandedSwordsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalTwoHandedSwordsman npc = view_as<MedivalTwoHandedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "8000", ally));
 		SetVariantInt(1);
@@ -234,8 +234,7 @@ methodmap MedivalTwoHandedSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalTwoHandedSwordsman_ClotThink(int iNPC)
 {
 	MedivalTwoHandedSwordsman npc = view_as<MedivalTwoHandedSwordsman>(iNPC);

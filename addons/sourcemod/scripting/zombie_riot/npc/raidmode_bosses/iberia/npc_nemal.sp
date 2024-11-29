@@ -152,9 +152,9 @@ static void ClotPrecache()
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Nemal(client, vecPos, vecAng, ally, data);
+	return Nemal(vecPos, vecAng, team, data);
 }
 
 methodmap Nemal < CClotBody
@@ -354,7 +354,7 @@ methodmap Nemal < CClotBody
 	}
 	
 	
-	public Nemal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Nemal(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Nemal npc = view_as<Nemal>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
@@ -562,7 +562,7 @@ methodmap Nemal < CClotBody
 			RaidModeScaling *= 0.7;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 
 		npc.m_iPlayerScaledStart = CountPlayersOnRed();
 		
@@ -1395,11 +1395,11 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 				RemoveEntity(npc.m_iWearable8);
 			}
 			npc.i_GunMode = 1;
-			npc.m_flNemalSlicerCD = gameTime + 20.5;
+			npc.m_flNemalSlicerCD = gameTime + 22.0;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
-			npc.m_flAttackHappens = GetGameTime(npc.index) + 1.0;
-			npc.m_flNemalSlicerHappening = gameTime + 4.0;
+			npc.m_flAttackHappens = GetGameTime(npc.index) + 1.5;
+			npc.m_flNemalSlicerHappening = gameTime + 4.5;
 			EmitSoundToAll("ambient/energy/whiteflash.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 100);
 			EmitSoundToAll("ambient/energy/whiteflash.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 100);
 			float flPos[3];

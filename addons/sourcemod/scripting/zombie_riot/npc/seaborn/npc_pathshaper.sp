@@ -46,9 +46,9 @@ void Pathshaper_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Pathshaper(client, vecPos, vecAng, ally);
+	return Pathshaper(vecPos, vecAng, team);
 }
 
 methodmap Pathshaper < CClotBody
@@ -78,7 +78,7 @@ methodmap Pathshaper < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Pathshaper(int client, float vecPos[3], float vecAng[3], int ally)
+	public Pathshaper(float vecPos[3], float vecAng[3], int ally)
 	{
 		Pathshaper npc = view_as<Pathshaper>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "35000", ally, false, true));
 		// 35000 x 1.0

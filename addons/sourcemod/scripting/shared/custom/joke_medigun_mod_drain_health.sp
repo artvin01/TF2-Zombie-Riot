@@ -178,8 +178,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 
-					flDrainRate *= Attributes_Get(medigun, 8, 1.0);
-					flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
+					flDrainRate *= Attributes_GetOnWeapon(owner, medigun, 8, true);
 					if(TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
 						target_sucked_long[healTarget] += 0.21;
@@ -263,8 +262,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					bool Is_Allied_Npc = false;
 					MedigunChargeUber(owner, medigun, 1.0);
 					
-					float Healing_Value = Attributes_Get(medigun, 8, 1.0);
-					Healing_Value *= Attributes_GetOnPlayer(owner, 8, true, true);
+					float Healing_Value = Attributes_GetOnWeapon(owner, medigun, 8, true);
 					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
@@ -291,10 +289,19 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 					}
 #if defined ZR
-					if(healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
+					if(Citizen_ThatIsDowned(healTarget) || healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
 					{
-						if(!b_LeftForDead[healTarget])
+						if(healTarget <= MaxClients)
+						{
+							if(!b_LeftForDead[healTarget])
+							{
+								ReviveClientFromOrToEntity(healTarget, owner,_, 1);
+							}
+						}
+						else
+						{
 							ReviveClientFromOrToEntity(healTarget, owner,_, 1);
+						}
 					}
 					else
 #endif
@@ -454,9 +461,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 				int new_ammo = GetAmmo(owner, 22);
 				
-				flDrainRate *= Attributes_Get(medigun, 8, 1.0);
 				flDrainRate *= Attributes_Get(medigun, 1, 1.0);
-				flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
+				flDrainRate *= Attributes_GetOnWeapon(owner, medigun, 8, true);
 				//there are some updgras that require medigun damage only!
 				
 				target_sucked_long[healTarget] += 0.07;

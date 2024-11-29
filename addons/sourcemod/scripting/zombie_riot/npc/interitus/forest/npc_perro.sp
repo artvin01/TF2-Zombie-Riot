@@ -54,9 +54,9 @@ void PerroOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Perro(client, vecPos, vecAng, ally);
+	return Perro(vecPos, vecAng, team);
 }
 
 methodmap Perro < CClotBody
@@ -86,7 +86,7 @@ methodmap Perro < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Perro(int client, float vecPos[3], float vecAng[3], int ally)
+	public Perro(float vecPos[3], float vecAng[3], int ally)
 	{
 		Perro npc = view_as<Perro>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "30000", ally));
 		

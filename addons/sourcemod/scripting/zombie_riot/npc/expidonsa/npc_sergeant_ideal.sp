@@ -77,9 +77,9 @@ void SergeantIdeal_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SergeantIdeal(client, vecPos, vecAng, ally, data);
+	return SergeantIdeal(vecPos, vecAng, team, data);
 }
 methodmap SergeantIdeal < CClotBody
 {
@@ -156,7 +156,7 @@ methodmap SergeantIdeal < CClotBody
 			EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME * 0.4);
 	}
 
-	public SergeantIdeal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SergeantIdeal(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SergeantIdeal npc = view_as<SergeantIdeal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "25000", ally));
 		
@@ -183,9 +183,7 @@ methodmap SergeantIdeal < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 230.0;
 		

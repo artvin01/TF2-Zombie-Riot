@@ -843,7 +843,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		BlockStale[attacker] = 0;
 		
 	LastVictim[attacker] = EntIndexToEntRef(victim);
-	int HeatGive = 5;
+	int HeatGive = 4;
 
 	switch(WeaponStyle[attacker])
 	{
@@ -857,7 +857,10 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 			HeatGive = 2;
 
 		case Style_Dragon:
-			HeatGive = 0;
+		{
+			if(!SuperDragon[attacker])
+				HeatGive = 0;
+		}
 	}
 	if(b_thisNpcIsARaid[victim])
 	{

@@ -62,9 +62,9 @@ void IberianSentinel_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberianSentinal(client, vecPos, vecAng, ally);
+	return IberianSentinal(vecPos, vecAng, team);
 }
 
 methodmap IberianSentinal < CClotBody
@@ -119,7 +119,7 @@ methodmap IberianSentinal < CClotBody
 	}
 	
 	
-	public IberianSentinal(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberianSentinal(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberianSentinal npc = view_as<IberianSentinal>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.15", "15000", ally, false, true));
 		
@@ -146,9 +146,7 @@ methodmap IberianSentinal < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberianSentinel_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(IberianSentinel_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		

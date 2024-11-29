@@ -100,6 +100,8 @@ public void Weapon_Wand_OblitirationShot(int client, int weapon, int level, floa
 	float eyeAng[3];
 	float vecEndGoal[3];
 			   
+	StartLagCompensation_Base_Boss(client);
+
 	Zero(BeamTargets_HitWhoFirst);
 	Zero(BeamTargets_HitConfirmed);
 	//The first trace gets all enemies hit (HITSCAN, NOT COLLISION HIT!!!)
@@ -208,6 +210,7 @@ public void Weapon_Wand_OblitirationShot(int client, int weapon, int level, floa
 	Explode_Logic_Custom(damage * 0.75, client, client, -1, vecEndGoal, 150.0, 1.45, _, false);
 
 	MagicFocusUse(client);
+	FinishLagCompensation_Base_boss();
 
 	
 	delete trace;

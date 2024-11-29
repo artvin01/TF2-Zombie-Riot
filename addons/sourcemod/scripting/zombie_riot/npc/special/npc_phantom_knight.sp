@@ -85,9 +85,9 @@ void PhantomKnight_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return PhantomKnight(client, vecPos, vecAng, ally);
+	return PhantomKnight(vecPos, vecAng, team);
 }
 static bool b_IsPhantomFake[MAXENTITIES];
 static float f_AttackHappensAoe[MAXENTITIES];
@@ -156,7 +156,7 @@ methodmap PhantomKnight < CClotBody
 	}
 	
 	
-	public PhantomKnight(int client, float vecPos[3], float vecAng[3], int ally)
+	public PhantomKnight(float vecPos[3], float vecAng[3], int ally)
 	{
 		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetLucianHealth(), ally));
 		SetVariantInt(3);
@@ -250,8 +250,7 @@ methodmap PhantomKnight < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void PhantomKnight_ClotThink(int iNPC)
 {
 	PhantomKnight npc = view_as<PhantomKnight>(iNPC);
@@ -820,7 +819,7 @@ static char[] GetLucianHealth()
 {
 	int health = 135;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

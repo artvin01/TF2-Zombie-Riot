@@ -66,7 +66,7 @@ public void AltCombineMage_OnMapStart_NPC()
 	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower Mage");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Mage");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_combine_soldier_mage");
 	data.Category = Type_Alt;
 	data.Func = ClotSummon;
@@ -76,9 +76,9 @@ public void AltCombineMage_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AltCombineMage(client, vecPos, vecAng, ally);
+	return AltCombineMage(vecPos, vecAng, team);
 }
 
 methodmap AltCombineMage < CClotBody
@@ -154,7 +154,7 @@ methodmap AltCombineMage < CClotBody
 		
 	}
 	
-	public AltCombineMage(int client, float vecPos[3], float vecAng[3], int ally)
+	public AltCombineMage(float vecPos[3], float vecAng[3], int ally)
 	{
 		AltCombineMage npc = view_as<AltCombineMage>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "200", ally));
 		SetVariantInt(1);
@@ -194,8 +194,7 @@ methodmap AltCombineMage < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	AltCombineMage npc = view_as<AltCombineMage>(iNPC);

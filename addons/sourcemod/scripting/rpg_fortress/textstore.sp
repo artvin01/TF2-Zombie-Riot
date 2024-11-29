@@ -228,6 +228,13 @@ enum struct MarketEnum
 	bool NowEmpty;
 }
 
+enum struct SpellShort
+{
+	int Index;
+	char Display[64];
+	int Flags;
+}
+
 enum
 {
 	MENU_SPELLS = 0,
@@ -523,24 +530,35 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 	
 	if(!StrContains(buffer, "healing", false) || !StrContains(buffer, "spell", false))
 	{
+		bool found;
 		static SpellEnum spell;
 		int length = SpellList.Length;
 		for(int i; i < length; i++)
 		{
 			SpellList.GetArray(i, spell);
 			if(spell.Owner == client && spell.Store == index)
-				return Item_On;
+			{
+				if(TextStore_GetInv(client, spell.Store))
+					return Item_On;
+
+				found = true;
+				break;
+			}
 		}
 
-		int slot = item.GetNum("slot", -1);
-		Store_EquipSlotCheck(client, slot);
-		TextStore_EquipSlotCheck(client, slot);
+		if(!found)
+			spell.Slot = item.GetNum("slot", -1);
+		
+		Store_EquipSlotCheck(client, spell.Slot);
+		TextStore_EquipSlotCheck(client, spell.Slot);
 
+		if(found)
+			return Item_On;
+		
 		spell.Owner = client;
 		spell.Store = index;
 		spell.Active = false;
 		spell.Skill = view_as<bool>(item.GetNum("skill"));
-		spell.Slot = slot;
 		strcopy(spell.Name, 64, name);
 		
 		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
@@ -553,6 +571,21 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 		return Item_None;
 	}
 	return Item_On;
+}
+
+void TextStore_SetAllItemCooldown(int client, float cooldown)
+{
+	static SpellEnum spell;
+	int length = SpellList.Length;
+	for(int i; i < length; i++)
+	{
+		SpellList.GetArray(i, spell);
+		if(spell.Owner == client && !spell.Skill && spell.Cooldown < cooldown)
+		{
+			spell.Cooldown = cooldown;
+			SpellList.SetArray(i, spell);
+		}
+	}
 }
 
 void TextStore_EquipSlotCheck(int client, int slot)
@@ -1751,6 +1784,7 @@ static void DropItem(int client, int index, float pos[3], int totalAmount)
 				DispatchKeyValue(entity, "physicsmode", "2");
 				DispatchKeyValue(entity, "massScale", "1.0");
 				DispatchKeyValue(entity, "spawnflags", "6");
+				DispatchKeyValue(entity, "health", "1999999999");
 				DispatchKeyValue(entity, "targetname", "rpg_item");
 
 				ang[1] = index == -1 ? -1.0 : kv.GetFloat("modelscale", -1.0);
@@ -2213,9 +2247,11 @@ static void ShowMenu(int client, int page = 0)
 			ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
 			menu.SetTitle("RPG Fortress%s\nPower: %s\nLVL: %s\n \n%s (F):", CvarRPGInfiniteLevelAndAmmo.BoolValue ? " DEBUG" : "", c_Powerlevel,LVLBuffer, SkillType[client] ? "Skills" : "Items");
 
+			static SpellShort option;
+
+			ArrayList options = new ArrayList(sizeof(SpellShort));
 			int maxSkills = SkillType[client] ? 6 : 4;
 
-			int amount;
 			float gameTime = GetGameTime();
 			int length = SpellList.Length;
 			for(int i; i < length; i++)
@@ -2224,45 +2260,67 @@ static void ShowMenu(int client, int page = 0)
 				SpellList.GetArray(i, spell);
 				if(spell.Active && spell.Owner == client && spell.Skill == SkillType[client])
 				{
-					static char index[12];
-					IntToString(spell.Store, index, sizeof(index));
-
 					int cooldown = RoundToCeil(spell.Cooldown - gameTime);
 					if(!spell.Display[0] || cooldown > 999)
 					{
-						if(amount < maxSkills)
-						{
-							amount++;
-							menu.AddItem(index, spell.Display, ITEMDRAW_DISABLED);
-						}
+						strcopy(option.Display, sizeof(option.Display), spell.Display);
+						option.Index = spell.Store;
+						option.Flags = ITEMDRAW_DISABLED;
+						options.PushArray(option);
 						continue;
 					}
 
 					if(cooldown > 0)
-						Format(spell.Display, sizeof(spell.Display), "%s [%ds]", spell.Display, cooldown);
-					
-					if(++amount > maxSkills)
 					{
-						menu.InsertItem((SkillRand[client] + i) % amount, index, spell.Display);
+						Format(option.Display, sizeof(option.Display), "%s [%ds]", spell.Display, cooldown);
 					}
 					else
 					{
-						menu.AddItem(index, spell.Display);
+						strcopy(option.Display, sizeof(option.Display), spell.Display);
 					}
+
+					option.Index = spell.Store;
+					option.Flags = ITEMDRAW_DEFAULT;
+					options.PushArray(option);
 				}
 			}
 
-			for(; amount < maxSkills; amount++)
+			length = options.Length;
+			bool random = length > maxSkills;
+
+			for(int i; i < length; i++)
 			{
-				menu.AddItem("0", "");
+				if(random)
+				{
+					int index = SkillRand[client] % length;
+					options.GetArray(index, option);
+					options.Erase(index);
+					length--;
+					i--;
+				}
+				else
+				{
+					options.GetArray(i, option);
+				}
+
+				static char index[12];
+				IntToString(option.Index, index, sizeof(index));
+
+				menu.AddItem(index, option.Display, option.Flags);
 			}
 
-			for(; amount > maxSkills; amount--)
+			delete options;
+
+			if(!random)
 			{
-				menu.RemoveItem(amount);
+				for(; length < maxSkills; length++)
+				{
+					menu.AddItem("0", "");
+				}
 			}
 
-			for(; amount < 6; amount++)
+			length = menu.ItemCount;
+			for(; length < maxSkills; length++)
 			{
 				menu.AddItem("0", "", ITEMDRAW_SPACER);
 			}
@@ -2565,7 +2623,8 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 									Call_PushStringEx(spell.Display, sizeof(spell.Display), SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
 									Call_Finish(cooldownSet);
 
-									SkillRand[client] = GetURandomInt();
+									if(spell.Skill)
+										SkillRand[client] = GetURandomInt();
 
 									//CC difficulty, increacing ability cooldowns by 40%.
 									if(b_DungeonContracts_LongerCooldown[client])
@@ -2715,11 +2774,15 @@ void TransformButton(int client)
 			{
 				//Before we de-transform the client, maybe theres an extra effect?
 				bool Cancel = false;
-				if(form.Func_FormBeforeDeTransform != INVALID_FUNCTION)
+				if((GetClientButtons(client) & IN_DUCK))
 				{
-					Call_StartFunction(null, form.Func_FormBeforeDeTransform);
-					Call_PushCell(client);
-					Call_Finish(Cancel);
+					if(form.Func_FormBeforeDeTransform != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, form.Func_FormBeforeDeTransform);
+						Call_PushCell(client);
+						Call_Finish(Cancel);
+						Cancel = true;
+					}
 				}
 				if(!Cancel)
 				{

@@ -203,7 +203,10 @@ enum
 	WEAPON_FULLMOON = 123,
 	WEAPON_SKADI = 124,
 	WEAPON_HUNTING_RIFLE = 125,
-	WEAPON_URANIUM_RIFLE = 126
+	WEAPON_URANIUM_RIFLE = 126,
+	WEAPON_LOGOS = 127,
+	WEAPON_WALTER = 128,
+	WEAPON_OLDINFINITYBLADE = 129
 }
 
 enum
@@ -225,6 +228,7 @@ enum
 	Type_Void,
 	Type_Ruina,
 	Type_IberiaExpiAlliance,
+	Type_WhiteflowerSpecial,
 	Type_Necropolain,
 }
 
@@ -236,16 +240,17 @@ int CurrentPlayers;
 ConVar zr_voteconfig;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
+ConVar zr_tagwhitehard;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
 ConVar CvarNoSpecialZombieSpawn;
-ConVar zr_spawnprotectiontime;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
+ConVar zr_raidmultihp;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -325,6 +330,7 @@ int CashSpentGivePostSetup[MAXTF2PLAYERS];
 bool CashSpentGivePostSetupWarning[MAXTF2PLAYERS];
 int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
+bool StarterCashMode[MAXTF2PLAYERS] = {true, ...};
 int Scrap[MAXTF2PLAYERS];
 int PlayStreak[MAXTF2PLAYERS];
 int Ammo_Count_Ready;
@@ -365,10 +371,6 @@ int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 
-int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
-int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
-
-
 float MultiGlobalEnemy = 0.25;
 float MultiGlobalEnemyBoss = 0.25;
 //This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increaced
@@ -393,7 +395,8 @@ int Building_Mounted[MAXENTITIES];
 
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
-int i_DyingParticleIndication[MAXPLAYERS + 1][2];
+int i_DyingParticleIndication[MAXPLAYERS + 1][3];
+//1 is text, 2 is glow, 3 is death marker
 float f_DyingTextTimer[MAXPLAYERS + 1];
 bool b_DyingTextOff[MAXPLAYERS + 1];
 
@@ -422,6 +425,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/music.sp"
 #include "zombie_riot/natives.sp"
 #include "zombie_riot/queue.sp"
+#include "zombie_riot/skilltree.sp"
 #include "zombie_riot/spawns.sp"
 #include "zombie_riot/store.sp"
 #include "zombie_riot/teuton_sound_override.sp"
@@ -560,6 +564,8 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_yakuza.sp"
 #include "zombie_riot/custom/weapon_skadi.sp"
 #include "zombie_riot/custom/weapon_hunting_rifle.sp"
+#include "zombie_riot/custom/wand/weapon_logos.sp"
+#include "zombie_riot/custom/weapon_walter.sp"
 
 void ZR_PluginLoad()
 {
@@ -606,6 +612,7 @@ void ZR_PluginStart()
 	Medigun_PluginStart();
 	OnPluginStartMangler();
 	OnPluginStart_Glitched_Weapon();
+	SkillTree_PluginStart();
 	Tutorial_PluginStart();
 	Waves_PluginStart();
 	Rogue_PluginStart();
@@ -630,6 +637,11 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+
+	PrecacheSound("ui/hitsound_electro1.wav");
+	PrecacheSound("ui/hitsound_electro2.wav");
+	PrecacheSound("ui/hitsound_electro3.wav");
+	PrecacheSound("ui/hitsound_space.wav");
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
@@ -700,7 +712,6 @@ void ZR_MapStart()
 	Zero(f_DisableDyingTimer);
 	Zero(f_DyingTextTimer);
 	Zero(healing_cooldown);
-	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_WasRecentlyRevivedViaNonWaveClassChange);
 	Zero(f_TimeAfterSpawn);
@@ -813,6 +824,7 @@ void ZR_MapStart()
 	Wrathful_Blade_Precache();
 	Yakuza_MapStart();
 	ResetMapStartSkadiWeapon();
+	Logos_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1421,7 +1433,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				if(dieingstate[client] != -5)
 				{
 					GiveCompleteInvul(client, 2.0);
-					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 90, _, 1.0);
+					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 70, _, 0.7);
 					MakePlayerGiveResponseVoice(client, 3); //Revived response!
 				}
 				SetEntityMoveType(client, MOVETYPE_WALK);
@@ -1537,7 +1549,13 @@ public Action Timer_Dieing(Handle timer, int client)
 	{
 		RemoveEntity(particle);
 	}
+	particle = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+	}
 	dieingstate[client] = 0;
+	SDKHooks_UpdateMarkForDeath(client, true);
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
 	
@@ -2243,7 +2261,6 @@ int XpToLevel(int xp)
 {
 	return RoundToFloor(Pow(xp / 200.0, 0.5));
 }
-
 int LevelToXp(int lv)
 {
 	return lv * lv * 200;
@@ -2287,18 +2304,18 @@ void GiveXP(int client, int xp)
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
 	{
-		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
-		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-		
-		//int maxhealth = SDKCall_GetMaxHealth(client);
-		//if(GetClientHealth(client) < maxhealth)
-		//	SetEntityHealth(client, maxhealth);
+		if(Level[client] < STARTER_WEAPON_LEVEL)
+		{
+			static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
+			ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
+
+			int maxhealth = SDKCall_GetMaxHealth(client) + 50;
+			if(GetClientHealth(client) < maxhealth)
+				SetEntityHealth(client, maxhealth);
+		}
 		
 		SetGlobalTransTarget(client);
-		PrintToChat(client, "%t", "Level Up", nextLevel);
-		
-		bool found;
-		int slots;
+		PrintToChat(client, "%t", "Level Up", Level[client]);
 		
 		while(Level[client] < nextLevel)
 		{
@@ -2307,33 +2324,15 @@ void GiveXP(int client, int xp)
 			if(Level[client] == STARTER_WEAPON_LEVEL)
 			{
 				CPrintToChat(client, "%t", "All Weapons Unlocked");
-				found = true;
 			}
 			
-			if(Store_PrintLevelItems(client, Level[client]))
-				found = true;
-			
-			if(Level[client] > STARTER_WEAPON_LEVEL && !(Level[client] % 2))
-				slots++;
-			
-			if(Level[client] < 81 && !(Level[client] % 10))
-			{
-				CPrintToChat(client, "%t", "Additional Starting Ingot", (Level[client] + 70) / 10, (Level[client] + 80) / 10);
-				found = true;
-			}
+			Store_PrintLevelItems(client, Level[client]);
 		}
-		
-		if(slots)
-		{
-			PrintToChat(client, "%t", "Loadout Slots", slots);
-		}
-		else if(!found)
-		{
-			PrintToChat(client, "%t", "None");
-		}
+
+		if(Level[client] >= STARTER_WEAPON_LEVEL)
+			CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
 	}
 }
-
 
 void PlayerApplyDefaults(int client)
 {

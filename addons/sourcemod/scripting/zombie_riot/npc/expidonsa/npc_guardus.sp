@@ -55,9 +55,9 @@ void Guardus_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Guardus(client, vecPos, vecAng, ally);
+	return Guardus(vecPos, vecAng, team);
 }
 
 methodmap Guardus < CClotBody
@@ -99,7 +99,7 @@ methodmap Guardus < CClotBody
 	}
 	
 	
-	public Guardus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Guardus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Guardus npc = view_as<Guardus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "20000", ally, false, true));
 		//lower health due to masssive hp gain on attack
@@ -122,9 +122,7 @@ methodmap Guardus < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Guardus_OnTakeDamage;
 		func_NPCThink[npc.index] = Guardus_ClotThink;
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		

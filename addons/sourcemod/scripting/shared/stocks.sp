@@ -72,11 +72,6 @@ stock float fClamp(float fValue, float fMin, float fMax)
 	return fValue;
 }
 
-stock Function ValToFunc(any val)
-{
-	return val;
-}
-
 stock int GetSpellbook(int client)
 {
 	int i, entity;
@@ -258,6 +253,7 @@ void ResetReplications()
 	for(int client=1; client<=MaxClients; client++)
 	{
 		ReplicateClient_Svairaccelerate[client] = -1.0;
+		ReplicateClient_BackwardsWalk[client] = -1.0;
 		ReplicateClient_Tfsolidobjects[client] = -1;
 		ReplicateClient_RollAngle[client] = -1;
 	}
@@ -1259,9 +1255,13 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
-	
+	float DamageDeal = pack.ReadFloat();
+	if(f_ElementalAmplification[entity] > GetGameTime())
+	{
+		DamageDeal *= 1.15;
+	}
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, customtype);
+	SDKHooks_TakeDamage(entity, client, client, DamageDeal, damagetype, weapon, _, pos, false, customtype);
 
 	entity = pack.ReadCell();
 	if(entity < 1)
@@ -1745,11 +1745,6 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 stock void GetAbsOrigin(int client, float v[3])
 {
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
-}
-
-public void DeleteHandle(Handle handle)
-{
-	delete handle;
 }
 
 stock bool IsValidClient( int client)
@@ -2915,6 +2910,38 @@ int CountPlayersOnRed(int alive = 0, bool saved = false)
 	return amount;
 	
 }
+#if defined ZR
+
+//alot is  borrowed from CountPlayersOnRed
+float ZRStocks_PlayerScalingDynamic(float rebels = 0.5)
+{
+	//dont be 0
+	float ScaleReturn = 0.01;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		{
+			if(Database_IsCached(client) && Level[client] <= 30)
+			{
+				float CurrentLevel = float(Level[client]);
+				CurrentLevel += 30.0;
+				//so lvl 0 is atleast resulting in 0.5 Scaling
+				ScaleReturn += (CurrentLevel / 60.0);
+			}
+			else
+			{
+				ScaleReturn += 1.0;
+			}
+		}
+	}
+
+	if(rebels)
+		ScaleReturn += Citizen_Count() * rebels;
+	
+	return ScaleReturn;
+}
+
+#endif
 
 
 int CountPlayersOnServer()
@@ -3228,11 +3255,11 @@ int inflictor = 0)
 				Call_StartFunction(null, FunctionToCallBeforeHit);
 				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
-				Call_PushFloat(damage_1);
+				Call_PushFloatRef(damage_1);
 				Call_PushCell(weapon);
 				Call_Finish(GetBeforeDamage);
 			}
-			if(damage > 0.0)
+			if(damage_1 > 0.0)
 			{
 				//npcs do not take damage from drown damage, so what we will do instead
 				//is to make it do slash damage, slash damage ignores most resistances like drown does.

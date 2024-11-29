@@ -43,9 +43,9 @@ void MinigunAssisa_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MinigunAssisa(client, vecPos, vecAng, ally);
+	return MinigunAssisa(vecPos, vecAng, team);
 }
 
 methodmap MinigunAssisa < CClotBody
@@ -103,7 +103,7 @@ methodmap MinigunAssisa < CClotBody
 		}
 	}
 
-	public MinigunAssisa(int client, float vecPos[3], float vecAng[3], int ally)
+	public MinigunAssisa(float vecPos[3], float vecAng[3], int ally)
 	{
 		MinigunAssisa npc = view_as<MinigunAssisa>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "10000", ally));
 		
@@ -125,9 +125,7 @@ methodmap MinigunAssisa < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 150.0;
 		

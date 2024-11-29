@@ -57,9 +57,9 @@ public void Whiteflower_Nano_Blaster_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_Nano_Blaster(client, vecPos, vecAng, ally);
+	return Whiteflower_Nano_Blaster(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_Nano_Blaster < CClotBody
@@ -140,7 +140,7 @@ methodmap Whiteflower_Nano_Blaster < CClotBody
 	}
 	
 	
-	public Whiteflower_Nano_Blaster(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_Nano_Blaster(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_Nano_Blaster npc = view_as<Whiteflower_Nano_Blaster>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -193,8 +193,7 @@ methodmap Whiteflower_Nano_Blaster < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 {
 	Whiteflower_Nano_Blaster npc = view_as<Whiteflower_Nano_Blaster>(iNPC);

@@ -61,9 +61,9 @@ public void Whiteflower_ExtremeKnightGiant_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_ExtremeKnightGiant(client, vecPos, vecAng, ally);
+	return Whiteflower_ExtremeKnightGiant(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_ExtremeKnightGiant < CClotBody
@@ -147,7 +147,7 @@ methodmap Whiteflower_ExtremeKnightGiant < CClotBody
 	}
 	
 	
-	public Whiteflower_ExtremeKnightGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_ExtremeKnightGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "300", ally, false, true));
 
@@ -199,8 +199,7 @@ methodmap Whiteflower_ExtremeKnightGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 {
 	Whiteflower_ExtremeKnightGiant npc = view_as<Whiteflower_ExtremeKnightGiant>(iNPC);
@@ -253,7 +252,7 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 750000.0;
+					float damage = 950000.0;
 
 					
 					if(target > 0) 
@@ -286,7 +285,7 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 				
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0, _,vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
-				int projectile = npc.FireParticleRocket(vecTarget, 750000.0 , 800.0 , 100.0 , "raygun_projectile_red");
+				int projectile = npc.FireParticleRocket(vecTarget, 950000.0 , 800.0 , 100.0 , "raygun_projectile_red");
 				DataPack pack;
 				CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
 				pack.WriteCell(EntIndexToEntRef(projectile));

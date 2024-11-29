@@ -56,9 +56,9 @@ void AnarchyBehemoth_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnarchyBehemoth(client, vecPos, vecAng, ally);
+	return AnarchyBehemoth(vecPos, vecAng, team);
 }
 
 methodmap AnarchyBehemoth < CClotBody
@@ -100,7 +100,7 @@ methodmap AnarchyBehemoth < CClotBody
 	}
 	
 	
-	public AnarchyBehemoth(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyBehemoth(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnarchyBehemoth npc = view_as<AnarchyBehemoth>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "60000", ally, false, true));
 		
@@ -121,9 +121,7 @@ methodmap AnarchyBehemoth < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AnarchyBehemoth_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(AnarchyBehemoth_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
 		f_HeadshotDamageMultiNpc[npc.index] = 0.0;

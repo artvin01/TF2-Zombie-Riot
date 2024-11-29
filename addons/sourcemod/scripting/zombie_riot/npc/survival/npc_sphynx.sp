@@ -63,9 +63,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Sphynx(client, vecPos, vecAng, ally);
+	return Sphynx(vecPos, vecAng, team);
 }
 methodmap Sphynx < CClotBody
 {
@@ -105,7 +105,7 @@ methodmap Sphynx < CClotBody
 	}
 	
 	
-	public Sphynx(int client, float vecPos[3], float vecAng[3], int ally)
+	public Sphynx(float vecPos[3], float vecAng[3], int ally)
 	{
 		Sphynx npc = view_as<Sphynx>(CClotBody(vecPos, vecAng, "models/antlion_guard.mdl", "1.0", "1000", ally));
 		
@@ -128,9 +128,7 @@ methodmap Sphynx < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Sphynx_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 275.0;
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	

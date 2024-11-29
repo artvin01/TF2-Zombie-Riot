@@ -64,9 +64,9 @@ public void XenoPyroGiant_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoPyroGiant(client, vecPos, vecAng, ally);
+	return XenoPyroGiant(vecPos, vecAng, team);
 }
 methodmap XenoPyroGiant < CClotBody
 {
@@ -128,7 +128,7 @@ methodmap XenoPyroGiant < CClotBody
 	}
 	
 	
-	public XenoPyroGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoPyroGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoPyroGiant npc = view_as<XenoPyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "85000", ally, false, true));
 		
@@ -154,7 +154,6 @@ methodmap XenoPyroGiant < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 270.0;
-		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -203,8 +202,7 @@ methodmap XenoPyroGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoPyroGiant_ClotThink(int iNPC)
 {
 	XenoPyroGiant npc = view_as<XenoPyroGiant>(iNPC);

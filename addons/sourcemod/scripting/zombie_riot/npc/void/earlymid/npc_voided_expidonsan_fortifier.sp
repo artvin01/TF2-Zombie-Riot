@@ -50,9 +50,9 @@ void VoidExpidonsanFortifier_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return VoidExpidonsanFortifier(client, vecPos, vecAng, ally, data);
+	return VoidExpidonsanFortifier(vecPos, vecAng, team, data);
 }
 methodmap VoidExpidonsanFortifier < CClotBody
 {
@@ -93,7 +93,7 @@ methodmap VoidExpidonsanFortifier < CClotBody
 	}
 	
 	
-	public VoidExpidonsanFortifier(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VoidExpidonsanFortifier(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VoidExpidonsanFortifier npc = view_as<VoidExpidonsanFortifier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "3000", ally));
 		
@@ -126,9 +126,7 @@ methodmap VoidExpidonsanFortifier < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidExpidonsanFortifier_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing(); 	
 		npc.m_flSpeed = 220.0;
 		

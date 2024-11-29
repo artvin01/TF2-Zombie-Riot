@@ -55,9 +55,9 @@ void IberiaKumbai_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaKumbai(client, vecPos, vecAng, ally);
+	return IberiaKumbai(vecPos, vecAng, team);
 }
 methodmap IberiaKumbai < CClotBody
 {
@@ -102,7 +102,7 @@ methodmap IberiaKumbai < CClotBody
 	}
 	
 	
-	public IberiaKumbai(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaKumbai(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaKumbai npc = view_as<IberiaKumbai>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "2500", ally));
 		
@@ -123,9 +123,7 @@ methodmap IberiaKumbai < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(IberiaKumbai_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
 		npc.m_iAttacksTillReload = 0;

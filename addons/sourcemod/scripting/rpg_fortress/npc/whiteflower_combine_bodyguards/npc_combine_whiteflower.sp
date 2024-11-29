@@ -71,9 +71,9 @@ public void Whiteflower_Boss_OnMapStart_NPC()
 	PrecacheSoundCustom("rpg_fortress/enemy/whiteflower_dash.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Whiteflower_Boss(client, vecPos, vecAng, ally, data);
+	return Whiteflower_Boss(vecPos, vecAng, team, data);
 }
 
 methodmap Whiteflower_Boss < CClotBody
@@ -243,7 +243,7 @@ methodmap Whiteflower_Boss < CClotBody
 		}
 		return -1;
 	}
-	public Whiteflower_Boss(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Whiteflower_Boss(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Whiteflower_Boss npc = view_as<Whiteflower_Boss>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -306,8 +306,7 @@ methodmap Whiteflower_Boss < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_Boss_ClotThink(int iNPC)
 {
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(iNPC);
@@ -359,7 +358,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 1000000.0;
+					float damage = 1550000.0;
 					
 					if(target > 0) 
 					{
@@ -398,7 +397,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 1200000.0;
+					float damage = 1650000.0;
 					
 					if(target > 0) 
 					{
@@ -752,7 +751,26 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-
+	if(b_thisNpcIsABoss[npc.index])
+	{
+		float AllyPos[3];
+		float SelfPos[3];
+		float flDistanceToTarget;
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", SelfPos);
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsValidClient(client) && Dungeon_IsDungeon(client))
+			{
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
+				flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
+				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
+				{
+					CPrintToChat(client, "{crimson}Whiteflower{default}: I'll be back... even if i have to it... alone...");	
+					CPrintToChat(client, "Whiteflower Escapes.");	
+				}
+			}
+		}
+	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -788,7 +806,7 @@ void WF_ThrowGrenadeHappening(Whiteflower_Boss npc)
 			int Grenade = npc.FireGrenade(vecTarget);
 			float GrenadeRangeSupport = 600.0;
 			float GrenadeRangeDamage = 0.0;
-			float HealDo = 1000000.0;
+			float HealDo = 2500000.0;
 			WF_GrenadeSupportDo(npc.index, Grenade, GrenadeRangeDamage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
 			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
@@ -807,6 +825,60 @@ void WF_GrenadeSupportDo(int entity, int grenade, float damage, float RangeSuppo
 	pack.WriteFloat(damage);
 	pack.WriteFloat(RangeSupport);
 	pack.WriteFloat(HealDo);
+
+	
+	DataPack pack2;
+	CreateDataTimer(0.25, Timer_WF_SupportGrenadeIndication, pack2, TIMER_REPEAT);
+	pack2.WriteCell(EntIndexToEntRef(entity));
+	pack2.WriteCell(EntIndexToEntRef(grenade));
+	pack2.WriteFloat(damage);
+	pack2.WriteFloat(RangeSupport);
+}
+
+public Action Timer_WF_SupportGrenadeIndication(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int OwnerNpc = EntRefToEntIndex(pack.ReadCell());
+	int Projectile = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(OwnerNpc))
+	{
+		if(IsValidEntity(Projectile))
+		{
+			//Cancel.
+			RemoveEntity(Projectile);
+		}
+		return Plugin_Stop;
+	}
+	else
+	{
+		if(!IsEntityAlive(OwnerNpc))
+		{
+			if(IsValidEntity(Projectile))
+			{
+				//Cancel.
+				RemoveEntity(Projectile);
+			}
+			return Plugin_Stop;
+		}
+	}
+	float DamageDeal = pack.ReadFloat();
+	float RangeSupport = pack.ReadFloat();
+	float RangeSupport2 = RangeSupport * 0.25; 
+	
+
+	float pos[3]; GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", pos);
+	pos[2] += 5.0;
+	if(DamageDeal >= 1.0)
+	{
+		spawnRing_Vectors(pos, RangeSupport * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.3, 2.0, 2.0, 2);
+		spawnRing_Vectors(pos, RangeSupport2 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.3, 2.0, 2.0, 2);
+	}
+	else
+	{
+		spawnRing_Vectors(pos, RangeSupport * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, 0.3, 2.0, 2.0, 2);
+		spawnRing_Vectors(pos, RangeSupport2 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, 0.3, 2.0, 2.0, 2);
+	}
+	return Plugin_Continue;
 }
 
 public Action Timer_WF_SupportGrenade(Handle timer, DataPack pack)
@@ -872,11 +944,6 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 		return;
 	}
 	*/
-	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
-	if(npc.m_iOverlordComboAttack == 1)
-	{
-		return;
-	}
 	float AllyPos[3];
 	GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", AllyPos);
 	float SelfPos[3];
@@ -892,6 +959,42 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 		//This enemy only appears in a dungeon anyways.
 		return;
 	}
+	int speech = GetRandomInt(1,4);
+	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
+	if(npc.m_iOverlordComboAttack == 1)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsValidClient(client) && Dungeon_IsDungeon(client))
+			{
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
+				flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
+				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
+				{
+					switch(speech)
+					{
+						case 1:
+						{
+							CPrintToChat(client,"{crimson}Whiteflower{default}: I dont care, i will avange them.");	
+						}
+						case 2:
+						{
+							CPrintToChat(client,"{crimson}Whiteflower{default}: You will follow them.");	
+						}
+						case 3:
+						{
+							CPrintToChat(client,"{crimson}Whiteflower{default}: Whatever did they do huh.");	
+						}
+						case 4:
+						{
+							CPrintToChat(client,"{crimson}Whiteflower{default}: Im the bad guy? you are.");	
+						}
+					}
+				}
+			}
+		}
+		return;
+	}
 	fl_TotalArmor[self] = fl_TotalArmor[self] * 1.1;
 	if(fl_TotalArmor[self] >= 1.0)
 	{
@@ -901,6 +1004,38 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	if(fl_Extra_Damage[self] <= 0.9)
 	{
 		fl_Extra_Damage[self] = 0.9;
+	}
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsValidClient(client) && Dungeon_IsDungeon(client))
+		{
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
+			flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
+			{
+				
+				switch(speech)
+				{
+					case 1:
+					{
+						CPrintToChat(client,"{crimson}Whiteflower{default}: How dare you kill my army... \n*He weakens.*");	
+					}
+					case 2:
+					{
+						CPrintToChat(client,"{crimson}Whiteflower{default}: You are NOTHING!\n*He weakens.*");	
+					}
+					case 3:
+					{
+						CPrintToChat(client,"{crimson}Whiteflower{default}: You and bob and all are in my way!\n*He weakens.*");	
+					}
+					case 4:
+					{
+						CPrintToChat(client,"{crimson}Whiteflower{default}: Im going to kill you.\n*He weakens.*");	
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -918,7 +1053,7 @@ static void Whiteflower_KickTouched(int entity, int enemy)
 	
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);
-	SDKHooks_TakeDamage(enemy, entity, entity, 1500000.0, DMG_CLUB, -1, NULL_VECTOR, targPos);
+	SDKHooks_TakeDamage(enemy, entity, entity, 2500000.0, DMG_CLUB, -1, NULL_VECTOR, targPos);
 	ParticleEffectAt(targPos, "skull_island_embers", 2.0);
 	npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 	EmitSoundToAll("plats/tram_hit4.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);

@@ -74,9 +74,9 @@ public void XenoSoldierMinion_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoSoldierMinion(client, vecPos, vecAng, ally);
+	return XenoSoldierMinion(vecPos, vecAng, team);
 }
 methodmap XenoSoldierMinion < CClotBody
 {
@@ -139,7 +139,7 @@ methodmap XenoSoldierMinion < CClotBody
 	}
 	
 	
-	public XenoSoldierMinion(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSoldierMinion(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSoldierMinion npc = view_as<XenoSoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "10", ally));
 		
@@ -166,7 +166,6 @@ methodmap XenoSoldierMinion < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 350.0;
-		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -192,8 +191,7 @@ methodmap XenoSoldierMinion < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSoldierMinion_ClotThink(int iNPC)
 {
 	XenoSoldierMinion npc = view_as<XenoSoldierMinion>(iNPC);

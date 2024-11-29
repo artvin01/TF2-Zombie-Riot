@@ -69,9 +69,9 @@ public void Whiteflower_FloweringDarkness_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Whiteflower_FloweringDarkness(client, vecPos, vecAng, ally, data);
+	return Whiteflower_FloweringDarkness(vecPos, vecAng, team, data);
 }
 
 methodmap Whiteflower_FloweringDarkness < CClotBody
@@ -181,7 +181,7 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
-	public Whiteflower_FloweringDarkness(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Whiteflower_FloweringDarkness(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -248,8 +248,7 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 {
 	Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(iNPC);
@@ -327,7 +326,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 900000.0;
+					float damage = 1350000.0;
 					
 					if(target > 0) 
 					{
@@ -367,7 +366,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 				
 				//This is the primary projectile in the middle.
 				float SpeedProjectile = 1000.0;
-				float ProjectileDamage = 850000.0;
+				float ProjectileDamage = 1150000.0;
 				int Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_red");
 
 				ProjectileDamage *= 0.95;

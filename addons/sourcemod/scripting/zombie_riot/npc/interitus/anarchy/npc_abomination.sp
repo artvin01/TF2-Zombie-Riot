@@ -44,9 +44,9 @@ void AnarchyAbomination_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnarchyAbomination(client, vecPos, vecAng, ally);
+	return AnarchyAbomination(vecPos, vecAng, team);
 }
 
 methodmap AnarchyAbomination < CClotBody
@@ -109,7 +109,7 @@ methodmap AnarchyAbomination < CClotBody
 		}
 	}
 	
-	public AnarchyAbomination(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyAbomination(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnarchyAbomination npc = view_as<AnarchyAbomination>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "500000", ally, false, true));
 		
@@ -135,9 +135,7 @@ methodmap AnarchyAbomination < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(AnarchyAbomination_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 290.0;
 		

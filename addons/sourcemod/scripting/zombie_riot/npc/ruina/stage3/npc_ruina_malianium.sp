@@ -68,9 +68,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel("models/player/engineer.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Malianium(client, vecPos, vecAng, ally);
+	return Malianium(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -136,7 +136,7 @@ methodmap Malianium < CClotBody
 
 	}
 
-	public Malianium(int client, float vecPos[3], float vecAng[3], int ally)
+	public Malianium(float vecPos[3], float vecAng[3], int ally)
 	{
 		Malianium npc = view_as<Malianium>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -217,8 +217,7 @@ methodmap Malianium < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Malianium npc = view_as<Malianium>(iNPC);

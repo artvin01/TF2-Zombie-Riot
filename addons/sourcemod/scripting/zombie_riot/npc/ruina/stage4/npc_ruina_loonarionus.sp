@@ -76,9 +76,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Loonarionus(client, vecPos, vecAng, ally);
+	return Loonarionus(vecPos, vecAng, team);
 }
 
 methodmap Loonarionus < CClotBody
@@ -169,7 +169,7 @@ methodmap Loonarionus < CClotBody
 		}
 	}
 
-	public Loonarionus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Loonarionus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Loonarionus npc = view_as<Loonarionus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -300,8 +300,7 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Loonarionus npc = view_as<Loonarionus>(iNPC);

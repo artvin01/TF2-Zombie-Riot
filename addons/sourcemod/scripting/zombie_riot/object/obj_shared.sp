@@ -740,7 +740,7 @@ int Object_NamedBuildings(int owner = 0, const char[] name)
 	int count;
 	
 	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "obj_")) != -1)
+	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
 		if(owner == 0 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
@@ -842,7 +842,10 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 
 float Object_GetMaxHealthMulti(int client)
 {
-	return Attributes_GetOnPlayer(client, 286);
+	if(client <= MaxClients)
+		return Attributes_GetOnPlayer(client, 286);
+	
+	return 2.5 + (view_as<Citizen>(client).m_iGunValue * 0.000135);
 }
 
 Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -1013,8 +1016,10 @@ void BuildingDisplayRepairLeft(int entity)
 		int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 		if(IsValidClient(Owner))
 			Format(HealthText, sizeof(HealthText), "%N", Owner);
+		else if(Owner != -1 && Citizen_IsIt(Owner))
+			strcopy(HealthText, sizeof(HealthText), "Rebel");
 		else
-			Format(HealthText, sizeof(HealthText), "%s", " ");
+			strcopy(HealthText, sizeof(HealthText), " ");
 		float Offset[3];
 		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2];
 		Offset[2] += 6.0;

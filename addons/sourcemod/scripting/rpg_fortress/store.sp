@@ -301,19 +301,30 @@ int Store_GetStoreOfEntity(int entity)
 
 bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name)
 {
+	bool found;
 	static ItemInfo info;
 	int length = EquippedItems.Length;
 	for(int i; i < length; i++)
 	{
 		EquippedItems.GetArray(i, info);
 		if(info.Owner == client && info.Store == index)
-			return true;
+		{
+			if(TextStore_GetInv(client, info.Store))
+				return true;
+			
+			found = true;
+			break;
+		}
 	}
 
-	info.SetupKV(kv, name);
+	if(!found)
+		info.SetupKV(kv, name);
 
 	Store_EquipSlotCheck(client, info.Slot);
 	TextStore_EquipSlotCheck(client, info.Slot);
+	
+	if(found)
+		return true;
 	
 	info.Owner = client;
 	info.Store = index;
@@ -2030,6 +2041,8 @@ public float Ammo_HealingSpell(int client, int index, char name[48])
 		kv.GetString("sound", buffer, sizeof(buffer));
 		if(buffer[0])
 			ClientCommand(client, "playgamesound %s", buffer);
+		
+		TextStore_SetAllItemCooldown(client, 20.0);
 
 		if(consume_Arg > 1)
 		{

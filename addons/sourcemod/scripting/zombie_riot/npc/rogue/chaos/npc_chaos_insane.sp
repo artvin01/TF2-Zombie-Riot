@@ -38,9 +38,9 @@ void ChaosInsane_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ChaosInsane(client, vecPos, vecAng, ally);
+	return ChaosInsane(vecPos, vecAng, team);
 }
 methodmap ChaosInsane < CClotBody
 {
@@ -71,7 +71,7 @@ methodmap ChaosInsane < CClotBody
 	}
 	
 	
-	public ChaosInsane(int client, float vecPos[3], float vecAng[3], int ally)
+	public ChaosInsane(float vecPos[3], float vecAng[3], int ally)
 	{
 		ChaosInsane npc = view_as<ChaosInsane>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		
@@ -95,9 +95,7 @@ methodmap ChaosInsane < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ChaosInsane_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 175.0;
 		fl_TotalArmor[npc.index] = 0.25;

@@ -43,9 +43,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#music/bluemelee.mp3");
 	PrecacheSoundCustom("#music/bluerange.wav");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return StalkerGoggles(client, vecPos, vecAng, ally);
+	return StalkerGoggles(vecPos, vecAng, team);
 }
 
 
@@ -65,7 +65,7 @@ methodmap StalkerGoggles < StalkerShared
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public StalkerGoggles(int client, float vecPos[3], float vecAng[3], int ally)
+	public StalkerGoggles(float vecPos[3], float vecAng[3], int ally)
 	{
 		ally = TFTeam_Stalkers;
 		//Team 5 could just be stalkers

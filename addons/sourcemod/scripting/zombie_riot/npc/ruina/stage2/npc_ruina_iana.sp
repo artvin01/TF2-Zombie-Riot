@@ -85,9 +85,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_AngerSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iana(client, vecPos, vecAng, ally);
+	return Iana(vecPos, vecAng, team);
 }
 
 methodmap Iana < CClotBody
@@ -186,7 +186,7 @@ methodmap Iana < CClotBody
 		}
 	}
 	
-	public Iana(int client, float vecPos[3], float vecAng[3], int ally)
+	public Iana(float vecPos[3], float vecAng[3], int ally)
 	{
 		Iana npc = view_as<Iana>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -271,8 +271,7 @@ methodmap Iana < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Iana npc = view_as<Iana>(iNPC);

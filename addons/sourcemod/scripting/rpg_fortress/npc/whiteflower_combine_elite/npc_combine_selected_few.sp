@@ -68,9 +68,9 @@ public void Whiteflower_selected_few_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_selected_few(client, vecPos, vecAng, ally);
+	return Whiteflower_selected_few(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_selected_few < CClotBody
@@ -176,7 +176,7 @@ methodmap Whiteflower_selected_few < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
-	public Whiteflower_selected_few(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_selected_few(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -242,8 +242,7 @@ void RPGDoHealEffect(int entity, float range)
 	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 125, 0, 200, 1, 0.3, 5.0, 8.0, 3, range * 2.0);	
 	npc1.PlayHealSound();
 }
-//TODO 
-//Rewrite
+
 public void Whiteflower_selected_few_ClotThink(int iNPC)
 {
 	Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(iNPC);
@@ -290,6 +289,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 			if(npc.m_iOverlordComboAttack != 1)
 				flMaxhealth *= 0.15;
+
 			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.0, 0.0, HEAL_SELFHEAL);
 			RPGDoHealEffect(npc.index, 150.0);
 			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -308,7 +308,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 		return;
 	}
 
-	if(npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
+	if(!b_NpcIsInADungeon[npc.index] && npc.Anger && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
 	{
 		//Reset anger.
 		npc.Anger = false;
@@ -533,10 +533,10 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				if(!npc.m_bPathing)
 					npc.StartPathing();
 					
-				if(npc.m_iChanged_WalkCycle != 4) 	
+				if(npc.m_iChanged_WalkCycle != 3) 	
 				{
 					npc.m_bisWalking = true;
-					npc.m_iChanged_WalkCycle = 4;
+					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 350.0;
 					NPC_StartPathing(iNPC);
@@ -547,6 +547,14 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
 				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
+				if(npc.m_iChanged_WalkCycle != 3) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 3;
+					npc.SetActivity("ACT_RUN");
+					npc.m_flSpeed = 350.0;
+					NPC_StartPathing(iNPC);
+				}
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
@@ -563,6 +571,14 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			case 2:
 			{		
 				//Jump at enemy	
+				if(npc.m_iChanged_WalkCycle != 7) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 7;
+					npc.SetActivity("ACT_RUN");
+					npc.m_flSpeed = 350.0;
+					NPC_StartPathing(iNPC);
+				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{

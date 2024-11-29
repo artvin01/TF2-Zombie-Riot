@@ -72,9 +72,9 @@ public void CaveGuardsman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CaveGuardsman(client, vecPos, vecAng, ally);
+	return CaveGuardsman(vecPos, vecAng, team);
 }
 
 methodmap CaveGuardsman < CClotBody
@@ -134,7 +134,7 @@ methodmap CaveGuardsman < CClotBody
 	}
 	
 	
-	public CaveGuardsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public CaveGuardsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		CaveGuardsman npc = view_as<CaveGuardsman>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "300", ally, false,_,_,_,_));
 
@@ -190,8 +190,7 @@ methodmap CaveGuardsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	CaveGuardsman npc = view_as<CaveGuardsman>(iNPC);

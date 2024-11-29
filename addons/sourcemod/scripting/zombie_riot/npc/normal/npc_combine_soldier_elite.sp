@@ -72,7 +72,7 @@ void CombineElite_OnMapStart_NPC()
 	PrecacheModel("models/combine_super_soldier.mdl");
 	PrecacheModel("models/effects/combineball.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Whiteflower Elite");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Elite");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_elite");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_elite");
 	data.IconCustom = true;
@@ -82,9 +82,9 @@ void CombineElite_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineElite(client, vecPos, vecAng, ally);
+	return CombineElite(vecPos, vecAng, team);
 }
 methodmap CombineElite < CClotBody
 {
@@ -159,7 +159,7 @@ methodmap CombineElite < CClotBody
 	}
 	
 	
-	public CombineElite(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineElite(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineElite npc = view_as<CombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1500", ally));
 		
@@ -216,8 +216,7 @@ methodmap CombineElite < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineElite_ClotThink(int iNPC)
 {
 	CombineElite npc = view_as<CombineElite>(iNPC);

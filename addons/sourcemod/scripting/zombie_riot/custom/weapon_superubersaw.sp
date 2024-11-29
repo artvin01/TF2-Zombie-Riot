@@ -168,7 +168,7 @@ public void Enable_SuperubersawAlter(int client, int weapon) // Enable managemen
 		h_TimerSuperubersawAlterManagement[client] = CreateDataTimer(0.1, Timer_Management_SuperubersawAlter, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		float Healing_Value = Attributes_GetOnPlayer(client, 8, true, true);
+		float Healing_Value = Attributes_GetOnWeapon(client, weapon, 8, true);
 
 		i_Superubersaw_HealAquiredMaxCalc[client] = RoundToCeil(SUPERUBERSAW_MAXHEALTILLFULL * Healing_Value);
 	}

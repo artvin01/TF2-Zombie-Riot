@@ -1465,12 +1465,13 @@ public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
 
 public void Tinker_XP_Stonebound(int client, int weapon)
 {
-	if(f_MomentumAntiOpSpam[weapon] > GetGameTime())
+	static float f_MomentumAntiOpSpam[MAXENTITIES];
+	if(fabs(f_MomentumAntiOpSpam[weapon] - GetGameTime()) < 1.5)
 	{
 		//dont do anything.
 		return;
 	}
-//	f_MomentumAntiOpSpam[weapon] = GetGameTime() + 0.5;
+	f_MomentumAntiOpSpam[weapon] = GetGameTime();
 	ApplyTempAttrib(weapon, 6, 0.985, 45.0);
 	ApplyTempAttrib(weapon, 2, 0.985, 45.0);
 
@@ -1490,5 +1491,5 @@ public void Tinker_XP_Momentum2(int client, int weapon)
 
 public void Tinker_Mining_Unnatural(int client, int weapon, int toolTier, int mineTier, int &damage)
 {
-	damage += 5 * (toolTier - mineTier);
+	damage += 1 * (toolTier - mineTier);
 }

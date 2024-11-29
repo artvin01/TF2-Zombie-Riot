@@ -30,6 +30,8 @@ public float Rogue_Encounter_ParadoxShop()
 
 	int ingots = Rogue_GetIngots();
 
+	bool rare = !(GetURandomInt() % 4);
+
 	if(ingots > 7)
 	{
 		if(Rogue_GetRandomArtfiact(artifact, true, 8) != -1)
@@ -41,7 +43,7 @@ public float Rogue_Encounter_ParadoxShop()
 		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 		
-		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(!rare && Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
@@ -54,6 +56,12 @@ public float Rogue_Encounter_ParadoxShop()
 	if(ingots > 23)
 	{
 		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1)
+			ShopListing.PushArray(artifact);
+	}
+
+	if(rare)
+	{
+		if(Rogue_GetRandomArtfiact(artifact, true, 30) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
@@ -698,18 +706,16 @@ public void Rogue_ShopSale_Remove()
 
 public void Rogue_BlueGoggles_Collect()
 {
-	int client = -1;
 	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
 	{
 		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
 		{
-			client = client_summon;
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_goggles_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
 			break;
 		}
 	}
-	float flPos[3];
-	GetClientAbsOrigin(client, flPos);
-	NPC_CreateByName("npc_goggles_follower", client, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
 }
 
 public void Rogue_BlueGoggles_Remove()
@@ -731,18 +737,16 @@ static Handle KahmlsteinTimer;
 
 public void Rogue_Kahmlstein_Collect()
 {
-	int client = -1;
 	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
 	{
 		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
 		{
-			client = client_summon;
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_kahmlstein_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
 			break;
 		}
 	}
-	float flPos[3];
-	GetClientAbsOrigin(client, flPos);
-	NPC_CreateByName("npc_kahmlstein_follower", client, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
 
 	delete KahmlsteinTimer;
 	KahmlsteinTimer = CreateTimer(1.5, Timer_KahmlsteinTimer, _, TIMER_REPEAT);
@@ -782,4 +786,119 @@ static Action Timer_KahmlsteinTimer(Handle timer)
 	}
 
 	return Plugin_Continue;
+}
+
+public void Rogue_BobDuck_Collect()
+{
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_duck_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}
+
+public void Rogue_BobDuck_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// +25% max health
+		map.GetValue("26", value);
+
+		value += ClassHealth(WeaponClass[entity]);
+		value *= 1.25;
+		value -= ClassHealth(WeaponClass[entity]);
+
+		map.SetValue("26", value);
+
+		// +25% building damage
+		value = 1.0;
+		map.GetValue("287", value);
+		map.SetValue("287", value * 1.25);
+
+		// -10% damage vuln
+		value = 1.0;
+		map.GetValue("412", value);
+		map.SetValue("412", value * 0.9);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(Citizen_IsIt(entity))	// Rebel
+		{
+			Citizen npc = view_as<Citizen>(entity);
+
+			// +25% damage bonus
+			npc.m_fGunBonusDamage *= 1.25;
+
+			// +15% fire rate
+			npc.m_fGunBonusFireRate *= 0.85;
+
+			// +15% reload speed
+			npc.m_fGunReload *= 0.85;
+
+			// +25% max health
+			int health = ReturnEntityMaxHealth(npc.index) * 5 / 4;
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
+		}
+		else
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId)	// Barracks Unit
+			{
+				// +25% damage bonus
+				npc.BonusDamageBonus *= 1.25;
+
+				// +15% fire rate
+				npc.BonusFireRate /= 0.85;
+
+				// +25% max health
+				int health = ReturnEntityMaxHealth(npc.index) * 5 / 4;
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
+			}
+		}
+	}
+}
+
+public void Rogue_BobDuck_Weapon(int entity)
+{
+	Attributes_SetMulti(entity, 2, 1.25);
+
+	if(Attributes_Has(entity, 6))
+		Attributes_SetMulti(entity, 6, 0.85);
+	
+	if(Attributes_Has(entity, 97))
+		Attributes_SetMulti(entity, 97, 0.85);
+	
+	if(Attributes_Has(entity, 733))
+		Attributes_SetMulti(entity, 733, 0.85);
+	
+	Attributes_SetMulti(entity, 410, 1.25);
+
+	char buffer[36];
+	GetEntityClassname(entity, buffer, sizeof(buffer));
+	if(StrEqual(buffer, "tf_weapon_medigun"))
+	{
+		Attributes_SetMulti(entity, 1, 1.25);
+	}
+}
+
+public void Rogue_BobDuck_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == DuckFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
 }

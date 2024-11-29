@@ -86,9 +86,9 @@ void SpyTrickstabber_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SpyTrickstabber(client, vecPos, vecAng, ally);
+	return SpyTrickstabber(vecPos, vecAng, team);
 }
 methodmap SpyTrickstabber < CClotBody
 {
@@ -161,7 +161,7 @@ methodmap SpyTrickstabber < CClotBody
 		
 	}
 	
-	public SpyTrickstabber(int client, float vecPos[3], float vecAng[3], int ally)
+	public SpyTrickstabber(float vecPos[3], float vecAng[3], int ally)
 	{
 		SpyTrickstabber npc = view_as<SpyTrickstabber>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "6000", ally));
 		
@@ -221,8 +221,7 @@ methodmap SpyTrickstabber < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SpyTrickstabber_ClotThink(int iNPC)
 {
 	SpyTrickstabber npc = view_as<SpyTrickstabber>(iNPC);
