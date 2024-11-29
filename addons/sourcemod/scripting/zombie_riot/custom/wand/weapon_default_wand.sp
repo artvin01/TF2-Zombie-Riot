@@ -127,7 +127,7 @@ public void Want_DefaultWandTouch(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
-		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
@@ -136,7 +136,7 @@ public void Want_DefaultWandTouch(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
-		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 		RemoveEntity(entity);
 	}
 }

@@ -89,9 +89,9 @@ public void XenoAcclaimedSwordsman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoAcclaimedSwordsman(client, vecPos, vecAng, ally);
+	return XenoAcclaimedSwordsman(vecPos, vecAng, team);
 }
 
 methodmap XenoAcclaimedSwordsman < CClotBody
@@ -171,7 +171,7 @@ methodmap XenoAcclaimedSwordsman < CClotBody
 	}
 	
 	
-	public XenoAcclaimedSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoAcclaimedSwordsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoAcclaimedSwordsman npc = view_as<XenoAcclaimedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "200000", ally));
 		SetVariantInt(1);
@@ -238,8 +238,7 @@ methodmap XenoAcclaimedSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoAcclaimedSwordsman_ClotThink(int iNPC)
 {
 	XenoAcclaimedSwordsman npc = view_as<XenoAcclaimedSwordsman>(iNPC);
@@ -377,7 +376,7 @@ public void XenoAcclaimedSwordsman_ClotThink(int iNPC)
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 1.3;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
@@ -454,11 +453,9 @@ public void XenoAcclaimedSwordsman_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;

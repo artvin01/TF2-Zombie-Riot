@@ -72,11 +72,6 @@ stock float fClamp(float fValue, float fMin, float fMax)
 	return fValue;
 }
 
-stock Function ValToFunc(any val)
-{
-	return val;
-}
-
 stock int GetSpellbook(int client)
 {
 	int i, entity;
@@ -256,6 +251,7 @@ void ResetReplications()
 	for(int client=1; client<=MaxClients; client++)
 	{
 		ReplicateClient_Svairaccelerate[client] = -1.0;
+		ReplicateClient_BackwardsWalk[client] = -1.0;
 		ReplicateClient_Tfsolidobjects[client] = -1;
 		ReplicateClient_RollAngle[client] = -1;
 	}
@@ -1257,9 +1253,13 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
-	
+	float DamageDeal = pack.ReadFloat();
+	if(f_ElementalAmplification[entity] > GetGameTime())
+	{
+		DamageDeal *= 1.15;
+	}
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, customtype);
+	SDKHooks_TakeDamage(entity, client, client, DamageDeal, damagetype, weapon, _, pos, false, customtype);
 
 	entity = pack.ReadCell();
 	if(entity < 1)
@@ -1743,11 +1743,6 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 stock void GetAbsOrigin(int client, float v[3])
 {
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
-}
-
-public void DeleteHandle(Handle handle)
-{
-	delete handle;
 }
 
 stock bool IsValidClient( int client)
@@ -2913,6 +2908,38 @@ int CountPlayersOnRed(int alive = 0, bool saved = false)
 	return amount;
 	
 }
+#if defined ZR
+
+//alot is  borrowed from CountPlayersOnRed
+float ZRStocks_PlayerScalingDynamic(float rebels = 0.5)
+{
+	//dont be 0
+	float ScaleReturn = 0.01;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		{
+			if(Database_IsCached(client) && Level[client] <= 30)
+			{
+				float CurrentLevel = float(Level[client]);
+				CurrentLevel += 30.0;
+				//so lvl 0 is atleast resulting in 0.5 Scaling
+				ScaleReturn += (CurrentLevel / 60.0);
+			}
+			else
+			{
+				ScaleReturn += 1.0;
+			}
+		}
+	}
+
+	if(rebels)
+		ScaleReturn += Citizen_Count() * rebels;
+	
+	return ScaleReturn;
+}
+
+#endif
 
 
 int CountPlayersOnServer()
@@ -2929,6 +2956,28 @@ int CountPlayersOnServer()
 	
 	return amount;
 	
+}
+
+void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
+{
+#if defined ZR
+	if(i_ChaosArrowAmount[attacker] > 0)
+	{
+		Elemental_AddChaosDamage(victim, attacker, RoundToCeil(float(i_ChaosArrowAmount[attacker]) * Scale));
+	}
+	if(i_VoidArrowAmount[attacker] > 0)
+	{
+		Elemental_AddVoidDamage(victim, attacker, RoundToCeil(float(i_VoidArrowAmount[attacker]) * Scale));
+	}
+#endif
+	if(i_NervousImpairmentArrowAmount[attacker] > 0)
+	{
+#if defined ZR
+		Elemental_AddNervousDamage(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
+#elseif defined RPG
+		SeaShared_DealCorrosion(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
+#endif
+	}
 }
 
 int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
@@ -2964,6 +3013,9 @@ int inflictor = 0)
 
 		if(ExplosionDmgMultihitFalloff == EXPLOSION_AOE_DAMAGE_FALLOFF)
 			ExplosionDmgMultihitFalloff = Attributes_Get(weapon, 4013, EXPLOSION_AOE_DAMAGE_FALLOFF);
+
+		if(explosion_range_dmg_falloff == EXPLOSION_RANGE_FALLOFF)
+			explosion_range_dmg_falloff = Attributes_Get(weapon, Attrib_OverrideExplodeDmgRadiusFalloff, EXPLOSION_RANGE_FALLOFF);
 	}
 #endif
 
@@ -3035,10 +3087,14 @@ int inflictor = 0)
 	{
 		custom_flags |= ZR_DAMAGE_ICE;
 	}
-	
-	if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+	if((i_ExplosiveProjectileHexArray[entity] & EP_IS_ICE_DAMAGE))
 	{
-		damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
+		custom_flags |= ZR_DAMAGE_ICE;
+	}
+	
+	if((i_ExplosiveProjectileHexArray[entity] & ZR_DAMAGE_IGNORE_DEATH_PENALTY))
+	{
+		custom_flags |= ZR_DAMAGE_IGNORE_DEATH_PENALTY;
 	}
 	int entityToEvaluateFrom = 0;
 	int EntityToForward = 0;
@@ -3197,11 +3253,11 @@ int inflictor = 0)
 				Call_StartFunction(null, FunctionToCallBeforeHit);
 				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
-				Call_PushFloat(damage_1);
+				Call_PushFloatRef(damage_1);
 				Call_PushCell(weapon);
 				Call_Finish(GetBeforeDamage);
 			}
-			if(damage > 0.0)
+			if(damage_1 > 0.0)
 			{
 				//npcs do not take damage from drown damage, so what we will do instead
 				//is to make it do slash damage, slash damage ignores most resistances like drown does.
@@ -3235,9 +3291,8 @@ int inflictor = 0)
 
 				if(damage_1 != 0.0)
 					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
-#if defined ZR
+
 				Projectile_DealElementalDamage(ClosestTarget, EntityToForward, ExplosionRangeFalloff);
-#endif
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -3949,7 +4004,7 @@ float RPGStocks_CalculatePowerLevel(int client)
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 	float ResMulti;
-	ResMulti = form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
+	ResMulti = form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
 	
 	BigTotal *= (1.0 / ResMulti);
 
@@ -5325,7 +5380,7 @@ stock any GetItemInArray(any[] array, int pos)
 //MaxNumBuffValue(0.6, 1.0, 1.0) = 0.6
 //MaxNumBuffValue(0.6, 1.0, 1.25) = 0.55
 
-float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
+stock float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
 {
 	// Our base number is max, the number when valuenerf is 0
 	// Our high number is start, the number when valuenerf is 1

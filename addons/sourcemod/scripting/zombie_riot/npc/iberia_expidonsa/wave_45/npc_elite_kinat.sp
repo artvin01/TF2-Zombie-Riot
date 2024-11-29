@@ -58,9 +58,9 @@ void IberiaEliteKinat_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaEliteKinat(client, vecPos, vecAng, ally);
+	return IberiaEliteKinat(vecPos, vecAng, team);
 }
 methodmap IberiaEliteKinat < CClotBody
 {
@@ -105,7 +105,7 @@ methodmap IberiaEliteKinat < CClotBody
 	}
 	
 	
-	public IberiaEliteKinat(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaEliteKinat(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaEliteKinat npc = view_as<IberiaEliteKinat>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "6500", ally));
 		
@@ -126,9 +126,7 @@ methodmap IberiaEliteKinat < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(IberiaEliteKinat_ClotThink);
 		npc.m_iAttacksTillReload = 2;
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 310.0;
 		

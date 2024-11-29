@@ -47,9 +47,9 @@ void FirstToTalk_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FirstToTalk(client, vecPos, vecAng, ally);
+	return FirstToTalk(vecPos, vecAng, team);
 }
 
 methodmap FirstToTalk < CClotBody
@@ -75,7 +75,7 @@ methodmap FirstToTalk < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public FirstToTalk(int client, float vecPos[3], float vecAng[3], int ally)
+	public FirstToTalk(float vecPos[3], float vecAng[3], int ally)
 	{
 		FirstToTalk npc = view_as<FirstToTalk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
 		// 21000 x 0.15

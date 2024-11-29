@@ -200,9 +200,9 @@ static void ClotPrecache()
 	PrecacheSound("mvm/mvm_tele_activate.wav", true);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);
+	return Raidboss_Schwertkrieg(vecPos, vecAng, team);
 }
 
 static int i_schwert_hand_particle[MAXENTITIES];
@@ -299,7 +299,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 	
 	
 	
-	public Raidboss_Schwertkrieg(int client, float vecPos[3], float vecAng[3], int ally)
+	public Raidboss_Schwertkrieg(float vecPos[3], float vecAng[3], int ally)
 	{
 		Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 
@@ -457,8 +457,7 @@ public void Schwertkrieg_Set_Ally_Index(int ref)
 {	
 	i_ally_index = EntIndexToEntRef(ref);
 }
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(iNPC);

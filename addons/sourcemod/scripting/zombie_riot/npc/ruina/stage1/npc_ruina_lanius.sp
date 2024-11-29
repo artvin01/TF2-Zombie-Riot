@@ -76,9 +76,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Lanius(client, vecPos, vecAng, ally);
+	return Lanius(vecPos, vecAng, team);
 }
 
 methodmap Lanius < CClotBody
@@ -170,7 +170,7 @@ methodmap Lanius < CClotBody
 	}
 	
 	
-	public Lanius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lanius(float vecPos[3], float vecAng[3], int ally)
 	{
 		Lanius npc = view_as<Lanius>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -251,8 +251,7 @@ methodmap Lanius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lanius npc = view_as<Lanius>(iNPC);
@@ -303,7 +302,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Speed_Buff(npc.index, 125.0, 1.0, 1.12);
+		Master_Apply_Speed_Buff(npc.index, 125.0, 1.0, 1.05);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
@@ -311,8 +310,8 @@ static void ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		if(Lanius_Teleport_Logic(npc.index, PrimaryThreatIndex, 150.0*150.0, 750.0*750.0, 45.0))
-			npc.PlayTeleportSound();
+		//if(Lanius_Teleport_Logic(npc.index, PrimaryThreatIndex, 150.0*150.0, 750.0*750.0, 45.0))
+		//	npc.PlayTeleportSound();
 
 		Ruina_Self_Defense Melee;
 

@@ -96,9 +96,9 @@ void MedivalEagleGiant_OnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalEagleGiant(client, vecPos, vecAng, ally);
+	return MedivalEagleGiant(vecPos, vecAng, team);
 }
 methodmap MedivalEagleGiant < CClotBody
 {
@@ -160,7 +160,7 @@ methodmap MedivalEagleGiant < CClotBody
 		
 	}
 	
-	public MedivalEagleGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalEagleGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalEagleGiant npc = view_as<MedivalEagleGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "12000", ally, false, true));
 		SetVariantInt(1);
@@ -233,8 +233,7 @@ methodmap MedivalEagleGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalEagleGiant_ClotThink(int iNPC)
 {
 	MedivalEagleGiant npc = view_as<MedivalEagleGiant>(iNPC);

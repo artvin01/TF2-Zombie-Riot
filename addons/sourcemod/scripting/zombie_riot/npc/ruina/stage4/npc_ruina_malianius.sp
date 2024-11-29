@@ -68,9 +68,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel("models/player/engineer.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Malianius(client, vecPos, vecAng, ally);
+	return Malianius(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -136,7 +136,7 @@ methodmap Malianius < CClotBody
 
 	}
 
-	public Malianius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Malianius(float vecPos[3], float vecAng[3], int ally)
 	{
 		Malianius npc = view_as<Malianius>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -217,8 +217,7 @@ methodmap Malianius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Malianius npc = view_as<Malianius>(iNPC);
@@ -412,7 +411,7 @@ static void Fire_Random_Ion(Malianius npc)
 
 			float Time = 4.0;
 
-			ScaleVector(SubjectAbsVelocity, Time);
+			ScaleVector(SubjectAbsVelocity, 1.0);
 			AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
 
 			//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);

@@ -73,9 +73,9 @@ static void ClotPrecache()
 	
 	PrecacheSound("misc/halloween/gotohell.wav");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Adiantum(client, vecPos, vecAng, ally);
+	return Adiantum(vecPos, vecAng, team);
 }
 
 
@@ -135,7 +135,7 @@ methodmap Adiantum < CClotBody
 		
 		
 	}
-	public Adiantum(int client, float vecPos[3], float vecAng[3], int ally)
+	public Adiantum(float vecPos[3], float vecAng[3], int ally)
 	{
 		Adiantum npc = view_as<Adiantum>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "13500", ally));
 		
@@ -226,8 +226,7 @@ methodmap Adiantum < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Adiantum npc = view_as<Adiantum>(iNPC);

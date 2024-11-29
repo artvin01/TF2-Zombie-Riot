@@ -74,9 +74,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/sniper.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Aetherianus(client, vecPos, vecAng, ally);
+	return Aetherianus(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -163,7 +163,7 @@ methodmap Aetherianus < CClotBody
 		}
 	}
 	
-	public Aetherianus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Aetherianus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Aetherianus npc = view_as<Aetherianus>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1250", ally));
 
@@ -293,8 +293,7 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 }
 
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Aetherianus npc = view_as<Aetherianus>(iNPC);
@@ -569,16 +568,8 @@ static void Aetherianus_SelfDefense(Aetherianus npc, float gameTime, int Anchor_
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
 				npc.PlayRangedSound();
-				//after we fire, we will have a short delay beteween the actual laser, and when it happens
-				//This will predict as its relatively easy to dodge
 				float projectile_speed = 2000.0;
-				//lets pretend we have a projectile.
-				if(flDistanceToTarget < 750.0*750.0)
-					PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-				{
-					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
-				}
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 				float DamageDone = 80.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
@@ -617,16 +608,8 @@ static void Aetherianus_SelfDefense(Aetherianus npc, float gameTime, int Anchor_
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
 						npc.PlayRangedSound();
-						//after we fire, we will have a short delay beteween the actual laser, and when it happens
-						//This will predict as its relatively easy to dodge
 						float projectile_speed = 2000.0;
-						//lets pretend we have a projectile.
-						if(flDistanceToTarget < 750.0*750.0)
-							PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-						if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-						{
-							WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
-						}
+						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 						float DamageDone = 80.0;
 						npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -654,7 +637,7 @@ static void Fire_Hyper_Arrow(Aetherianus npc, float Npc_Vec[3], int target, floa
 	Ruina_Projectiles Projectile;
 	float Projectile_Time = 2.5;
 
-	float projectile_speed = 1750.0;	
+	float projectile_speed = 900.0;	
 	float target_vec[3];
 	PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,target_vec);
 
@@ -666,8 +649,8 @@ static void Fire_Hyper_Arrow(Aetherianus npc, float Npc_Vec[3], int target, floa
 	Projectile.Angles = Ang;
 	Projectile.speed = projectile_speed;
 	Projectile.radius = 0.0;
-	Projectile.damage = 750.0;
-	Projectile.bonus_dmg = 900.0;
+	Projectile.damage = 200.0;
+	Projectile.bonus_dmg = 300.0;
 	Projectile.Time = Projectile_Time;
 	Projectile.visible = false;
 	int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);

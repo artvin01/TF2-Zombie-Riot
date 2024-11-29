@@ -58,9 +58,9 @@ void VoidSacraficer_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidSacraficer(client, vecPos, vecAng, ally);
+	return VoidSacraficer(vecPos, vecAng, team);
 }
 methodmap VoidSacraficer < CClotBody
 {
@@ -101,7 +101,7 @@ methodmap VoidSacraficer < CClotBody
 	}
 	
 	
-	public VoidSacraficer(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidSacraficer(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidSacraficer npc = view_as<VoidSacraficer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "4000", ally));
 		
@@ -122,9 +122,7 @@ methodmap VoidSacraficer < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidSacraficer_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
 		

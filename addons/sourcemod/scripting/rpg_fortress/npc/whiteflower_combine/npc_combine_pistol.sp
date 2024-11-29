@@ -9,13 +9,13 @@ void OnMapStartCombinePistol()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombinePistol(client, vecPos, vecAng, ally);
+	return CombinePistol(vecPos, vecAng, team);
 }
 methodmap CombinePistol < CombinePolice
 {
-	public CombinePistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombinePistol(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombinePistol npc = view_as<CombinePistol>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		
@@ -34,6 +34,7 @@ methodmap CombinePistol < CombinePolice
 
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 18;
+		npc.m_bisWalking = true;
 		
 		func_NPCDeath[npc.index] = CombinePistol_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = BaseSquad_TakeDamage;
@@ -94,7 +95,6 @@ public void CombinePistol_ClotThink(int iNPC)
 		bool shouldGun = !npc.m_iTargetWalk;
 		if(!shouldGun && !b_NpcIsInADungeon[npc.index])
 		{
-			bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 			int count = i_MaxcountNpcTotal;
 
 			for(int i; i < count; i++)
@@ -159,34 +159,31 @@ public void CombinePistol_ClotThink(int iNPC)
 						MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
 						GetVectorAngles(vecDirShooting, vecDirShooting);
 
-						if(BaseSquad_InFireRange(vecDirShooting[1], eyePitch[1]))
+						vecDirShooting[1] = eyePitch[1];
+
+						npc.m_flNextRangedAttack = gameTime + 0.35;
+						npc.m_iAttacksTillReload--;
+						
+						float x = GetRandomFloat( -0.03, 0.03 );
+						float y = GetRandomFloat( -0.03, 0.03 );
+						
+						float vecRight[3], vecUp[3];
+						GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+						
+						float vecDir[3];
+						for(int i; i < 3; i++)
 						{
-							vecDirShooting[1] = eyePitch[1];
-
-							npc.m_flNextRangedAttack = gameTime + 0.35;
-							npc.m_iAttacksTillReload--;
-							
-							float x = GetRandomFloat( -0.03, 0.03 );
-							float y = GetRandomFloat( -0.03, 0.03 );
-							
-							float vecRight[3], vecUp[3];
-							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-							
-							float vecDir[3];
-							for(int i; i < 3; i++)
-							{
-								vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
-							}
-
-							NormalizeVector(vecDir, vecDir);
-							
-							// E2 L0 = 6.0, E2 L5 = 7.0
-							KillFeed_SetKillIcon(npc.index, "pistol");
-							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 95000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-
-							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
-							npc.PlayPistolFire();
+							vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
 						}
+
+						NormalizeVector(vecDir, vecDir);
+						
+						// E2 L0 = 6.0, E2 L5 = 7.0
+						KillFeed_SetKillIcon(npc.index, "pistol");
+						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 95000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+
+						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
+						npc.PlayPistolFire();
 					}
 				}
 			}

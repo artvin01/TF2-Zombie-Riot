@@ -79,9 +79,9 @@ void CaptinoAgentus_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return CaptinoAgentus(client, vecPos, vecAng, ally, data);
+	return CaptinoAgentus(vecPos, vecAng, team, data);
 }
 methodmap CaptinoAgentus < CClotBody
 {
@@ -155,7 +155,7 @@ methodmap CaptinoAgentus < CClotBody
 		EmitSoundToAll(g_ZapAttackSounds[GetRandomInt(0, sizeof(g_ZapAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_PullAttackSounds[GetRandomInt(0, sizeof(g_PullAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public CaptinoAgentus(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public CaptinoAgentus(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		CaptinoAgentus npc = view_as<CaptinoAgentus>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally));
 		
@@ -177,9 +177,7 @@ methodmap CaptinoAgentus < CClotBody
 		func_NPCOnTakeDamage[npc.index] = CaptinoAgentus_OnTakeDamage;
 		func_NPCThink[npc.index] = CaptinoAgentus_ClotThink;
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 340.0;
 		b_TryToAvoidTraverse[npc.index] = true;

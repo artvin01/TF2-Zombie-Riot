@@ -56,19 +56,27 @@ public void ObjBaseThinkPostSentry(int building)
 void ObjectSentrygun_ClotThink(ObjectSentrygun npc)
 {
 	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	if(!IsValidClient(Owner))
+	if(!IsValidEntity(Owner))
 	{
 		return;
 	}
 
 	float gameTime = GetGameTime(npc.index);
-	float ReduceTime = Attributes_GetOnPlayer(Owner, 343, true, true);
+	float ReduceTime = Owner > MaxClients ? (view_as<Citizen>(Owner).m_fGunFirerate * 4.0) : Attributes_GetOnPlayer(Owner, 343, true, true);
 	npc.m_flNextDelayTime = gameTime + (0.1 * ReduceTime);
 //	CBaseCombatCharacter(npc.index).SetNextThink(GetGameTime() + (0.1 * ReduceTime)); //this needs to be set, otherwise it doesnt think fast enough to shoot
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		float DistanceLimit = 1000.0;
-		DistanceLimit *= Attributes_GetOnPlayer(Owner, 344, true, true);
+		if(Owner > MaxClients)
+		{
+			DistanceLimit *= view_as<Citizen>(Owner).m_fGunRangeBonus;
+		}
+		else
+		{
+			DistanceLimit *= Attributes_GetOnPlayer(Owner, 344, true, true);
+		}
+		
 		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
 		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
@@ -109,7 +117,15 @@ void ObjectSentrygun_ClotThink(ObjectSentrygun npc)
 		if(IsValidEnemy(npc.index, target))
 		{
 			float damageDealt = 10.0;
-			damageDealt *= Attributes_GetOnPlayer(Owner, 287, true, true);
+			if(Owner <= MaxClients)
+			{
+				damageDealt *= Attributes_GetOnPlayer(Owner, 287, true, true);
+			}
+			else
+			{
+				damageDealt = view_as<Citizen>(Owner).GetDamage();
+			}
+
 			if(ShouldNpcDealBonusDamage(target))
 				damageDealt *= 3.0;
 				

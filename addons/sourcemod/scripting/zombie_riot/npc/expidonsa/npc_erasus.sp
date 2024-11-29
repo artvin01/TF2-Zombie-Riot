@@ -56,9 +56,9 @@ void Erasus_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Erasus(client, vecPos, vecAng, ally);
+	return Erasus(vecPos, vecAng, team);
 }
 
 methodmap Erasus < CClotBody
@@ -100,7 +100,7 @@ methodmap Erasus < CClotBody
 	}
 	
 	
-	public Erasus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Erasus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Erasus npc = view_as<Erasus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "10000", ally));
 		
@@ -125,9 +125,7 @@ methodmap Erasus < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		

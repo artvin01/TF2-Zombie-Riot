@@ -129,9 +129,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/soldier.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Silvester(client, vecPos, vecAng, ally, data);
+	return Silvester(vecPos, vecAng, team, data);
 }
 
 methodmap Silvester < CClotBody
@@ -300,7 +300,7 @@ methodmap Silvester < CClotBody
 
 	
 	
-	public Silvester(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Silvester(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Silvester npc = view_as<Silvester>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;

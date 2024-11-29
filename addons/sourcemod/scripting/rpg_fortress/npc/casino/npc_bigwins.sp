@@ -3,53 +3,49 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/spy_paincrticialdeath01.mp3",
-	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3"
+	"vo/demoman_paincrticialdeath01.mp3",
+	"vo/demoman_paincrticialdeath02.mp3",
+	"vo/demoman_paincrticialdeath03.mp3",
+	"vo/demoman_paincrticialdeath04.mp3",
+	"vo/demoman_paincrticialdeath05.mp3"
 };
 
 static const char g_HurtSound[][] =
 {
-	"vo/spy_painsharp01.mp3",
-	"vo/spy_painsharp02.mp3",
-	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3"
+	"vo/demoman_painsharp01.mp3",
+	"vo/demoman_painsharp02.mp3",
+	"vo/demoman_painsharp03.mp3",
+	"vo/demoman_painsharp04.mp3",
+	"vo/demoman_painsharp05.mp3",
+	"vo/demoman_painsharp06.mp3",
+	"vo/demoman_painsharp07.mp3"
 };
 
 static const char g_IdleSound[][] =
 {
-	"vo/spy_stabtaunt01.mp3",
-	"vo/spy_stabtaunt02.mp3",
-	"vo/spy_stabtaunt03.mp3",
-	"vo/spy_stabtaunt04.mp3",
-	"vo/spy_stabtaunt05.mp3",
-	"vo/spy_stabtaunt06.mp3",
-	"vo/spy_stabtaunt07.mp3",
-	"vo/spy_stabtaunt08.mp3",
-	"vo/spy_stabtaunt09.mp3",
-	"vo/spy_stabtaunt10.mp3",
-	"vo/spy_stabtaunt11.mp3",
-	"vo/spy_stabtaunt12.mp3",
-	"vo/spy_stabtaunt13.mp3",
-	"vo/spy_stabtaunt14.mp3",
-	"vo/spy_stabtaunt15.mp3",
-	"vo/spy_stabtaunt16.mp3"
+	"vo/demoman_mvm_resurrect05.mp3",
+	"vo/compmode/cm_demo_pregamefirst_rare_01.mp3",
+	"vo/compmode/cm_demo_pregamefirst_comp_03.mp3",
+	"vo/demoman_gibberish12.mp3",
+	"vo/compmode/cm_demo_rankup_highest_01.mp3",
+	"vo/compmode/cm_demo_pregamefirst_04.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
 {
-	"weapons/blade_hit1.wav",
-	"weapons/blade_hit2.wav",
-	"weapons/blade_hit3.wav",
-	"weapons/blade_hit4.wav"
+	"weapons/pan/melee_frying_pan_01.wav",
+	"weapons/pan/melee_frying_pan_02.wav",
+	"weapons/pan/melee_frying_pan_03.wav",
+	"weapons/pan/melee_frying_pan_04.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/knife_swing.wav"
+	"weapons/bat_draw_swoosh1.wav",
+	"weapons/bat_draw_swoosh2.wav"
 };
 
-void RookieGambler_Setup()
+void BigWins_Setup()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSound);
@@ -58,51 +54,52 @@ void RookieGambler_Setup()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Rookie Gambler");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_rookiegambler");
+	strcopy(data.Name, sizeof(data.Name), "Big Wins");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bigwins");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return RookieGambler(client, vecPos, vecAng, ally);
+	return BigWins(client, vecPos, vecAng, team);
 }
 
-methodmap RookieGambler < CClotBody
+methodmap BigWins < CClotBody
 {
 	public void PlayIdleSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IdleSound[GetURandomInt() % sizeof(g_IdleSound)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleSound[GetURandomInt() % sizeof(g_IdleSound)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSound[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSound[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_DeathSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_DeathSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound()
  	{
-		EmitSoundToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public RookieGambler(int client, float vecPos[3], float vecAng[3], int team)
+	public BigWins(int client, float vecPos[3], float vecAng[3], int team)
 	{
-		RookieGambler npc = view_as<RookieGambler>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "300", team));
+		BigWins npc = view_as<BigWins>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.3", "300", team, false, true));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		npc.SetActivity("ACT_MP_STAND_MELEE");
-		KillFeed_SetKillIcon(npc.index, "eternal_reward");
+		npc.SetActivity("ACT_MP_STAND_MELEE_ALLCLASS");
+		KillFeed_SetKillIcon(npc.index, "frying_pan");
+		i_NpcWeight[npc.index] = 3;
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -111,7 +108,7 @@ methodmap RookieGambler < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		f3_SpawnPosition[npc.index] = vecPos;	
+		f3_SpawnPosition[npc.index] = vecPos;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -131,7 +128,7 @@ methodmap RookieGambler < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	RookieGambler npc = view_as<RookieGambler>(iNPC);
+	BigWins npc = view_as<BigWins>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -155,7 +152,7 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 250.0, gameTime);
+	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_STAND_MELEE_ALLCLASS", 290.0, gameTime);
 
 	int target = npc.m_iTarget;
 	
@@ -172,7 +169,7 @@ static void ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, target))
+				if(npc.DoSwingTrace(swingTrace, target, .Npc_type = 1))
 				{
 					target = TR_GetEntityIndex(swingTrace);	
 					
@@ -182,9 +179,13 @@ static void ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 1.0), DMG_CLUB);
-						CasinoShared_RobMoney(npc, target, 5);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 3.0), DMG_CLUB, _, _, vecHit);
+						CasinoShared_RobMoney(npc, target, 50);
 						CasinoShared_StealNearbyItems(npc, vecHit);
+						Custom_Knockback(npc.index, target, 2000.0);
+
+						if(target <= MaxClients)
+							Client_Shake(target, 0, 35.0, 20.0, 0.8);
 					}
 				}
 				delete swingTrace;
@@ -212,21 +213,22 @@ static void ClotThink(int iNPC)
 		}
 
 		npc.StartPathing();
-		npc.SetActivity("ACT_MP_RUN_MELEE");
+		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		npc.m_bisWalking = true;
 
-		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
 
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", _, _, _, 0.5);
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = 0.45;
+				npc.m_flAttackHappens = gameTime + 0.75;
 				npc.m_flDoingAnimation = gameTime + 1.0;
-				npc.m_flNextMeleeAttack = gameTime + 1.05;
+				npc.m_flNextMeleeAttack = gameTime + 2.05;
 			}
 		}
 	}
@@ -236,7 +238,7 @@ static void ClotThink(int iNPC)
 
 static void ClotDeath(int entity)
 {
-	RookieGambler npc = view_as<RookieGambler>(entity);
+	BigWins npc = view_as<BigWins>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 

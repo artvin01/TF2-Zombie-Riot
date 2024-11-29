@@ -81,9 +81,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/engineer.mdl");
 	
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Astriana(client, vecPos, vecAng, ally);
+	return Astriana(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -182,7 +182,7 @@ methodmap Astriana < CClotBody
 	}
 	
 	
-	public Astriana(int client, float vecPos[3], float vecAng[3], int ally)
+	public Astriana(float vecPos[3], float vecAng[3], int ally)
 	{
 		Astriana npc = view_as<Astriana>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
 		
@@ -260,8 +260,7 @@ methodmap Astriana < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Astriana npc = view_as<Astriana>(iNPC);
@@ -320,12 +319,14 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		npc.m_flNextTeleport = GameTime + 20.0;
+		npc.m_flNextTeleport = GameTime + 50.0;
 
-		int color[4];
-		Ruina_Color(color);
+		//int color[4];
+		//Ruina_Color(color);
 
-		Astria_Teleport_Allies(npc.index, 350.0, color);
+		//Astria_Teleport_Allies(npc.index, 350.0, color);
+
+		Master_Apply_Defense_Buff(npc.index, 300.0, 20.0, 0.9);	//10% resistances
 
 		Ruina_Master_Release_Slaves(npc.index);
 	}
@@ -352,8 +353,6 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		return Plugin_Continue;
 
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-	Ruina_Add_Battery(npc.index, damage*0.75);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

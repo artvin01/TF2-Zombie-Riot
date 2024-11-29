@@ -282,6 +282,22 @@ void BaseSquad_MapStart()
 
 	OnMapStartCombinePistol();
 	OnMapStartCombineSMG();
+	OnMapStartCombineSwordsmen();
+	WhiteflowerTank_OnMapStart_NPC();
+	OnMapStartCombine_AR2();
+	OnMapStartCombineShotgun();
+	OnMapStartCombineElite();
+	OnMapStartCombineGiantSwordsman();
+
+	OnMapStartCombinePenetrator();
+	OnMapStartCombine_Aggrat();
+	OnMapStartCombine_Bloomer();
+	OnMapStartCombine_Dreadlander();
+	OnMapStartCombine_Guarder();
+	OnMapStartCombine_ThreatCleaner();
+	
+	Whiteflower_OutlanderLeader_OnMapStart_NPC();
+	OnMapStartCombine_Whiteflower_Master_Mage();
 }
 
 methodmap BaseSquad < CClotBody
@@ -367,7 +383,7 @@ methodmap BaseSquad < CClotBody
 	public BaseSquad(float vecPos[3], float vecAng[3],
 						const char[] model,
 						const char[] modelscale = "1.0",
-						bool Ally = false,
+						any Ally = false,
 						bool Ally_Invince = false,
 						bool isGiant = false,
 						bool IgnoreBuildings = false,
@@ -398,15 +414,6 @@ methodmap BaseSquad < CClotBody
 		//NPC_SetGoalEntity(npc.index, vecPos);
 		//npc.StartPathing();
 		return npc;
-	}
-	public void UpdateHealthBar()
-	{
-		if(IsValidEntity(this.m_iTextEntity3))
-		{
-			char string[32];
-			Format(string, sizeof(string), "%d / %d", GetEntProp(this.index, Prop_Data, "m_iHealth"), GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
-			DispatchKeyValue(this.m_iTextEntity3, "message", string);
-		}
 	}
 	property bool m_bIsSquad
 	{
@@ -656,12 +663,11 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 						BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
 						if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
 						{
-							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidEnemy(npc.index, ally.m_iTargetAttack)/* && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack)*/)
+							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidEnemy(npc.index, ally.m_iTargetAttack) && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack))
 							{
 								WorldSpaceCenter(ally.index, vecTarget);
-								if(GetVectorDistance(vecMe, vecTarget, true) < (200.0 * 200.0))	// 250 HU
+								if(GetVectorDistance(vecMe, vecTarget, true) < (300.0 * 300.0))
 								{
-									PrintToChatAll("Diustance %0.f",GetVectorDistance(vecMe, vecTarget, true));
 									npc.m_iTargetAttack = ally.m_iTargetAttack;
 									npc.m_iTargetWalk = ally.m_iTargetAttack;
 									break;
@@ -672,12 +678,12 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 				}
 			}
 		}
-
+/*
 		// We can't run after them, stand still and do shooty logic
 		if(npc.m_iTargetWalk)
 		{
 			float length;
-			if(!(GetEntityFlags(npc.index) & (FL_SWIM|FL_INWATER))/* && PF_IsPathToEntityPossible(npc.index, npc.m_iTargetWalk, length)*/)
+			if(!(GetEntityFlags(npc.index) & (FL_SWIM|FL_INWATER)) && PF_IsPathToEntityPossible(npc.index, npc.m_iTargetWalk, length))
 			{
 				// Players can be above a nav mesh and a "path" is possible
 				// Check if the target is above a place
@@ -693,6 +699,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 				npc.m_iTargetWalk = 0;
 			}
 		}
+*/
 	}
 }
 
@@ -717,7 +724,6 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 
 				if(GetVectorDistance(vecTarget, vecMe, true) < npc.GetLeadRadius())
 				{
-					float vPredictedPos[3]; 
 					PredictSubjectPosition(npc, npc.m_iTargetWalk, _, _, vecTarget);
 					NPC_SetGoalVector(npc.index, vecTarget);
 				}
@@ -761,7 +767,7 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 					health = maxhealth;
 				
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-				npc.UpdateHealthBar();
+				RPGNpc_UpdateHpHud(npc.index);
 			}
 
 			if(npc.m_flMeleeArmor > 0.5)
@@ -834,24 +840,24 @@ public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, fl
 
 	if(damagetype & DMG_CLUB)
 	{
-		if(npc.m_flMeleeArmor < 1.5)
+		if(npc.m_flMeleeArmor < 1.1)
 		{
 			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
-			npc.m_flMeleeArmor += 0.25001;
-			if(npc.m_flMeleeArmor > 1.5)
-				npc.m_flMeleeArmor = 1.5;
+			npc.m_flMeleeArmor += 0.15001;
+			if(npc.m_flMeleeArmor > 1.1)
+				npc.m_flMeleeArmor = 1.1;
 		}
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
-		if(npc.m_flRangedArmor < 1.5)
+		if(npc.m_flRangedArmor < 1.1)
 		{
 			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 			npc.m_flRangedArmor += 0.10001;
-			if(npc.m_flRangedArmor > 1.5)
-				npc.m_flRangedArmor = 1.5;
+			if(npc.m_flRangedArmor > 1.1)
+				npc.m_flRangedArmor = 1.1;
 		}
 	}
 

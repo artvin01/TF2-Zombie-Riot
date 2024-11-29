@@ -58,9 +58,9 @@ static void ClotPrecache()
 
 	
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Lazines(client, vecPos, vecAng, ally);
+	return Lazines(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -127,7 +127,7 @@ methodmap Lazines < CClotBody
 			}
 		}
 	}
-	public Lazines(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lazines(float vecPos[3], float vecAng[3], int ally)
 	{
 		Lazines npc = view_as<Lazines>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 		
@@ -201,8 +201,7 @@ methodmap Lazines < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lazines npc = view_as<Lazines>(iNPC);
@@ -327,23 +326,15 @@ static void ClotThink(int iNPC)
 				int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
 				
 				if(!IsValidEntity(Laser_End))
-				{
-					bool buffed = false;
-					if(fl_ruina_battery[npc.index]>600.0)
-					{
-						fl_ruina_battery[npc.index] = 0.0;
-
-						buffed = true;
-					}
-						
+				{		
 						
 					Ruina_Projectiles Projectile;
 
 					float Laser_Time = 5.0;
 					float Reload_Time = 13.0;
-					float Projectile_Time = buffed ? Reload_Time : Laser_Time;
+					float Projectile_Time = Laser_Time;
 
-					float projectile_speed = buffed ? 320.0 : 500.0;	//in this case, slower is better
+					float projectile_speed = 450.0;	//in this case, slower is better
 					float target_vec[3];
 					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
@@ -355,8 +346,8 @@ static void ClotThink(int iNPC)
 					Projectile.Angles = Ang;
 					Projectile.speed = projectile_speed;
 					Projectile.radius = 0.0;
-					Projectile.damage = 125.0;
-					Projectile.bonus_dmg = 250.0;
+					Projectile.damage = 80.0;
+					Projectile.bonus_dmg = 150.0;
 					Projectile.Time = Projectile_Time;
 					Projectile.visible = false;
 					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
@@ -371,8 +362,8 @@ static void ClotThink(int iNPC)
 						i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
 						//CPrintToChatAll("Laser end created and is valid");
 
-						float Homing_Power = 8.5;
-						float Homing_Lockon = 90.0;
+						float Homing_Power = 6.5;
+						float Homing_Lockon = 80.0;
 
 						float 	f_start = 1.5,
 								f_end = 0.75,
@@ -381,20 +372,6 @@ static void ClotThink(int iNPC)
 						int r = 200,
 							g = 200,
 							b = 200;
-
-						if(buffed)
-						{
-
-							Homing_Power = 12.0;
-							Homing_Lockon = 120.0;
-
-							r = 255,
-							g = 50,
-							b = 50;
-
-							amp = 0.5;
-							
-						}
 
 						Initiate_HomingProjectile(Proj,
 						npc.index,

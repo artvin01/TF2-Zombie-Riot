@@ -96,9 +96,9 @@ static void ClotPrecache()
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM2);
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM3);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Lancelot(client, vecPos, vecAng, ally);
+	return Lancelot(vecPos, vecAng, team);
 }
 static float fl_npc_basespeed;
 methodmap Lancelot < CClotBody
@@ -190,7 +190,7 @@ methodmap Lancelot < CClotBody
 		}
 	}
 
-	public Lancelot(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lancelot(float vecPos[3], float vecAng[3], int ally)
 	{
 		Lancelot npc = view_as<Lancelot>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -342,8 +342,7 @@ static bool Lancelot_Leader(Lancelot npc)
 	return false;
 
 }
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lancelot npc = view_as<Lancelot>(iNPC);
@@ -665,7 +664,7 @@ static float Modify_Damage(Lancelot npc, int Target, float damage)
 		damage *=0.5;
 
 	if(npc.Anger)
-		damage *=1.5;
+		damage *=1.3;
 
 	if(Target > MaxClients)
 		return damage;
@@ -681,7 +680,7 @@ static float Modify_Damage(Lancelot npc, int Target, float damage)
 	int weapon_slot = TF2_GetClassnameSlot(classname);
 
 	if(weapon_slot != 2 || i_IsWandWeapon[weapon])
-		damage *= 2.0;
+		damage *= 1.7;
 
 	return damage;
 }

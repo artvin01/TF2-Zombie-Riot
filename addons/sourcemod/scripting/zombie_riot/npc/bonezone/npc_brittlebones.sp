@@ -278,8 +278,7 @@ stock void Brittle_AttachParticle(int entity, char type[255], float duration = 0
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void BrittleBones_ClotThink(int iNPC)
 {
 	BrittleBones npc = view_as<BrittleBones>(iNPC);

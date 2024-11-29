@@ -59,9 +59,9 @@ public void CaveEnslaver_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CaveEnslaver(client, vecPos, vecAng, ally);
+	return CaveEnslaver(vecPos, vecAng, team);
 }
 
 methodmap CaveEnslaver < CClotBody
@@ -101,7 +101,7 @@ methodmap CaveEnslaver < CClotBody
 	}
 	
 	
-	public CaveEnslaver(int client, float vecPos[3], float vecAng[3], int ally)
+	public CaveEnslaver(float vecPos[3], float vecAng[3], int ally)
 	{
 		CaveEnslaver npc = view_as<CaveEnslaver>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "300", ally, false,_,_,_,_));
 
@@ -159,8 +159,7 @@ methodmap CaveEnslaver < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CaveEnslaver_ClotThink(int iNPC)
 {
 	CaveEnslaver npc = view_as<CaveEnslaver>(iNPC);
@@ -261,11 +260,9 @@ public void CaveEnslaver_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;

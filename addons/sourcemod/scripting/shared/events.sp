@@ -51,6 +51,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	CurrentGibCount = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
+		i_AmountDowned[client] = 0;
 		for(int i; i<Ammo_MAX; i++)
 		{
 			CurrentAmmo[client][i] = CurrentAmmo[0][i];
@@ -176,7 +177,6 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
 	MVMHud_Disable();
 	GameRules_SetProp("m_iRoundState", RoundState_TeamWin);
-	Store_RandomizeNPCStore(1);
 	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
 	GlobalExtraCash = 0;
@@ -402,7 +402,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				SetAmmo(client, i, CurrentAmmo[client][i]);
 			}
 			
-			PrintHintText(client, "%T", "Open Store", client);
+			//PrintHintText(client, "%T", "Open Store", client);
 		}
 #endif
 
@@ -536,7 +536,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	Skulls_PlayerKilled(client);
 	// Save current uber.
 	ClientSaveUber(client);
-
+	SDKHooks_UpdateMarkForDeath(client, true);
 #endif
 
 #if defined RPG
@@ -635,7 +635,7 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 					{
 						dieingstate[client] = 0;
 						Store_ApplyAttribs(client);
-						TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+						SDKCall_SetSpeed(client);
 						int entity_wearable, i;
 						while(TF2U_GetWearable(client, entity_wearable, i))
 						{

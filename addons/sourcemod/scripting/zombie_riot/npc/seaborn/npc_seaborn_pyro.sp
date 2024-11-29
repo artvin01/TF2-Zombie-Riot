@@ -49,9 +49,9 @@ void SeabornPyro_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornPyro(client, vecPos, vecAng, ally);
+	return SeabornPyro(vecPos, vecAng, team);
 }
 
 methodmap SeabornPyro < CClotBody
@@ -81,7 +81,7 @@ methodmap SeabornPyro < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornPyro(int client, float vecPos[3], float vecAng[3], int ally)
+	public SeabornPyro(float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "2225", ally));
 		

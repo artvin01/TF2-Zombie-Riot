@@ -33,9 +33,9 @@ static void ClotPrecache()
 
 	PrecacheModel(RUINA_STORM_WEAVER_MODEL);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Storm_Weaver_Mid(client, vecPos, vecAng, ally , StringToFloat(data));
+	return Storm_Weaver_Mid(client, vecPos, vecAng, team, StringToFloat(data));
 }
 
 methodmap Storm_Weaver_Mid < CClotBody
@@ -103,8 +103,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 }
 
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(iNPC);

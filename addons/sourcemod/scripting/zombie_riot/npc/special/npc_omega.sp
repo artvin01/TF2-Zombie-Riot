@@ -60,15 +60,15 @@ static void ClotPrecache()	//lol this shit is messy as fuck but ignore it, aight
 	PrecacheSound("weapons/357/357_fire2.wav");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Omega(client, vecPos, vecAng, ally);
+	return Omega(vecPos, vecAng, team);
 }
 static char[] GetPanzerHealth()
 {
 	int health = 110;
 	
-	health *= CountPlayersOnRed(); //yeah its high. will need to scale with waves exponentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yeah its high. will need to scale with waves exponentially.
 	
 	float temp_float_hp = float(health);
 	
@@ -161,7 +161,7 @@ methodmap Omega < CClotBody
 			this.m_iWearable1 = this.EquipItem("head", model);
 	}
 
-	public Omega(int client, float vecPos[3], float vecAng[3], int ally)
+	public Omega(float vecPos[3], float vecAng[3], int ally)
 	{
 		Omega npc = view_as<Omega>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetPanzerHealth(), ally, .IgnoreBuildings = true));
 		

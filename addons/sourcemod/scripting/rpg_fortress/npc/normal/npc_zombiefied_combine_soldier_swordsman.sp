@@ -27,7 +27,10 @@ static const char g_IdleAlertedSounds[][] = {
 	"npc/combine_soldier/vo/boomer.wav",
 };
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -71,9 +74,9 @@ public void ZombiefiedCombineSwordsman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ZombiefiedCombineSwordsman(client, vecPos, vecAng, ally);
+	return ZombiefiedCombineSwordsman(vecPos, vecAng, team);
 }
 
 methodmap ZombiefiedCombineSwordsman < CClotBody
@@ -124,7 +127,7 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 	{
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public ZombiefiedCombineSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public ZombiefiedCombineSwordsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false, true));
 		
@@ -175,8 +178,7 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 {
 	ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(iNPC);
@@ -243,9 +245,10 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 26000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						KillFeed_SetKillIcon(npc.index, "sword");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
@@ -395,11 +398,9 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
@@ -417,11 +418,9 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 			}
 			case 2:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
@@ -445,11 +444,9 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 			}
 			case 3:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;

@@ -36,12 +36,12 @@ void Games_Texas(int client)
 		}
 	}
 
-	int cash = TextStore_Cash(client);
+	int cash = TextStore_GetItemCount(client, ITEM_CHIP);
 	Menu menu = new Menu(TexasJoinMenu);
 
 	if(found)
 	{
-		menu.SetTitle("Texas Hold 'Em\n \nRules:\nBlind: %d, %d Credits\nRaise Limit: x16\n ", BlindBet / 2, BlindBet);
+		menu.SetTitle("Texas Hold 'Em\n \nRules:\nBlind: %d, %d Chips\nRaise Limit: x16\n ", BlindBet / 2, BlindBet);
 
 		menu.AddItem(NULL_STRING, "How to Play");
 		menu.AddItem(NULL_STRING, "View Table");
@@ -52,15 +52,15 @@ void Games_Texas(int client)
 
 		menu.AddItem(NULL_STRING, "How to Play\n \nRules:");
 
-		menu.AddItem(NULL_STRING, "5, 10 Credit Blind", cash < 500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "10, 20 Credit Blind", cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "25, 50 Credit Blind", cash < 2500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "50, 100 Credit Blind", cash < 5000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "100, 200 Credit Blind", cash < 10000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "250, 500 Credit Blind", cash < 25000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "500, 1000 Credit Blind", cash < 50000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "1000, 2000 Credit Blind", cash < 100000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "2500, 5000 Credit Blind", cash < 250000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "1, 2 Chip Blind", cash < 40 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "2, 4 Chip Blind", cash < 80 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "5, 10 Chip Blind", cash < 200 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "10, 20 Chip Blind", cash < 400 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "25, 50 Chip Blind", cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "50, 100 Chip Blind", cash < 2000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "100, 200 Chip Blind", cash < 4000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "250, 500 Chip Blind", cash < 10000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "500, 1000 Chip Blind", cash < 20000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		menu.Pagination = 0;
 		menu.ExitButton = true;
@@ -101,31 +101,31 @@ public int TexasJoinMenu(Menu menu, MenuAction action, int client, int choice)
 					switch(choice)
 					{
 						case 1:
-							BlindBet = 20;
+							BlindBet = 4;
 						
 						case 2:
-							BlindBet = 50;
+							BlindBet = 10;
 						
 						case 3:
-							BlindBet = 100;
+							BlindBet = 20;
 						
 						case 4:
-							BlindBet = 200;
+							BlindBet = 50;
 						
 						case 5:
-							BlindBet = 500;
+							BlindBet = 100;
 						
 						case 6:
-							BlindBet = 1000;
+							BlindBet = 200;
 						
 						case 7:
-							BlindBet = 2000;
+							BlindBet = 500;
 						
 						case 8:
-							BlindBet = 5000;
+							BlindBet = 1000;
 						
 						default:
-							BlindBet = 10;
+							BlindBet = 2;
 					}
 				}
 
@@ -301,7 +301,7 @@ static void TexasMenu(int client)
 			else
 			{
 				FormatEx(buffer, sizeof(buffer), "Join Game (%d Blind)\n ", BlindBet);
-				menu.AddItem(buffer, buffer, TextStore_Cash(client) < (BlindBet * 16) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				menu.AddItem(buffer, buffer, TextStore_GetItemCount(client, ITEM_CHIP) < (BlindBet * 16) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 
 			int count;
@@ -344,23 +344,23 @@ static void TexasMenu(int client)
 				bool allIn;
 				if(PlayerBet[client] < CurrentBet)
 				{
-					FormatEx(buffer, sizeof(buffer), "Match Bet and Keep Playing? ($%d -> $%d)\n ", Playing[client], CurrentBet);
+					FormatEx(buffer, sizeof(buffer), "Match Bet and Keep Playing? (¢%d -> ¢%d)\n ", Playing[client], CurrentBet);
 					menu.AddItem(buffer, buffer);
 				}
 				else if(CurrentBet >= (BlindBet * 16))
 				{
-					FormatEx(buffer, sizeof(buffer), "All In ($%d)\n ", CurrentBet);
+					FormatEx(buffer, sizeof(buffer), "All In (¢%d)\n ", CurrentBet);
 					menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 					allIn = true;
 				}
 				else if(CurrentBet >= (BlindBet * 8))
 				{
-					FormatEx(buffer, sizeof(buffer), "All In ($%d -> $%d)\n ", CurrentBet, CurrentBet * 2);
+					FormatEx(buffer, sizeof(buffer), "All In (¢%d -> ¢%d)\n ", CurrentBet, CurrentBet * 2);
 					menu.AddItem(buffer, buffer);
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "Double Bet ($%d -> $%d)\n ", CurrentBet, CurrentBet * 2);
+					FormatEx(buffer, sizeof(buffer), "Double Bet (¢%d -> ¢%d)\n ", CurrentBet, CurrentBet * 2);
 					menu.AddItem(buffer, buffer);
 				}
 
@@ -420,7 +420,7 @@ static void TexasMenu(int client)
 
 			if(GameWinner == client)
 			{
-				FormatEx(buffer, sizeof(buffer), "You won %d credits", PrizePool);
+				FormatEx(buffer, sizeof(buffer), "You won %d chips", PrizePool);
 			}
 			else
 			{
@@ -472,7 +472,7 @@ public int TexasTableMenu(Menu menu, MenuAction action, int client, int choice)
 						Playing[client] = false;
 						TriggerTimer(TexasTimer);
 					}
-					else if(TextStore_Cash(client) >= (BlindBet * 16))
+					else if(TextStore_GetItemCount(client, ITEM_CHIP) >= (BlindBet * 16))
 					{
 						Playing[client] = true;
 						TriggerTimer(TexasTimer);
@@ -487,18 +487,18 @@ public int TexasTableMenu(Menu menu, MenuAction action, int client, int choice)
 							if(PlayerBet[client] < CurrentBet)
 							{
 								int cost = CurrentBet - PlayerBet[client];
-								if(TextStore_Cash(client) >= cost)
+								if(TextStore_GetItemCount(client, ITEM_CHIP) >= cost)
 								{
 									PrizePool += cost;
-									TextStore_Cash(client, -cost);
+									TextStore_AddItemCount(client, ITEM_CHIP, -cost);
 									PlayerBet[client] = CurrentBet;
 									ClientCommand(client, "playgamesound %s", SOUND_MATCH);
 								}
 							}
-							else if(TextStore_Cash(client) >= CurrentBet)
+							else if(TextStore_GetItemCount(client, ITEM_CHIP) >= CurrentBet)
 							{
 								PrizePool += CurrentBet;
-								TextStore_Cash(client, -CurrentBet);
+								TextStore_AddItemCount(client, ITEM_CHIP, -CurrentBet);
 
 								CurrentBet *= 2;
 								PlayerBet[client] = CurrentBet;
@@ -574,7 +574,7 @@ static void StartGame()
 	{
 		if(Playing[client])
 		{
-			if(TextStore_Cash(client) < BlindBet)
+			if(TextStore_GetItemCount(client, ITEM_CHIP) < BlindBet)
 			{
 				Playing[client] = false;
 			}
@@ -753,7 +753,7 @@ static void ResultPeriod()
 		
 		GameWinner = winners[index];
 		ClientCommand(winners[index], "playgamesound %s", SOUND_WIN);
-		TextStore_AddItemCount(winners[index], ITEM_CASH, PrizePool);
+		TextStore_AddItemCount(winners[index], ITEM_CHIP, PrizePool);
 
 		for(int client = 1; client <= MaxClients; client++)
 		{

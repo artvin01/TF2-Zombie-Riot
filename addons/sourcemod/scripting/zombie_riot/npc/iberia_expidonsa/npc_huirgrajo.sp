@@ -41,9 +41,9 @@ void Huirgrajo_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Huirgrajo(client, vecPos, vecAng, ally);
+	return Huirgrajo(client, vecPos, vecAng, team);
 }
 
 methodmap Huirgrajo < CClotBody

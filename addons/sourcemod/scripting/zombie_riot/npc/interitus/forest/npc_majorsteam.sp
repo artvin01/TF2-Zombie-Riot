@@ -23,9 +23,9 @@ void MajorSteam_MapStart()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MajorSteam(client, vecPos, vecAng, ally);
+	return MajorSteam(vecPos, vecAng, team);
 }
 
 methodmap MajorSteam < CClotBody
@@ -43,7 +43,7 @@ methodmap MajorSteam < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);
 	}
 	
-	public MajorSteam(int client, float vecPos[3], float vecAng[3], int ally)
+	public MajorSteam(float vecPos[3], float vecAng[3], int ally)
 	{
 		MajorSteam npc = view_as<MajorSteam>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "2.0", "300000", ally, _, true));
 		

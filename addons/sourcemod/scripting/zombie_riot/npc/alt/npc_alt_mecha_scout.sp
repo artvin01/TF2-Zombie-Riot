@@ -68,9 +68,9 @@ void Mecha_Scout_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Mecha_Scout(client, vecPos, vecAng, ally);
+	return Mecha_Scout(vecPos, vecAng, team);
 }
 
 methodmap Mecha_Scout < CClotBody
@@ -134,7 +134,7 @@ methodmap Mecha_Scout < CClotBody
 	}
 	
 	
-	public Mecha_Scout(int client, float vecPos[3], float vecAng[3], int ally)
+	public Mecha_Scout(float vecPos[3], float vecAng[3], int ally)
 	{
 		Mecha_Scout npc = view_as<Mecha_Scout>(CClotBody(vecPos, vecAng, "models/bots/scout/bot_scout.mdl", "1.0", "1250", ally));
 		
@@ -176,8 +176,7 @@ methodmap Mecha_Scout < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Mecha_Scout npc = view_as<Mecha_Scout>(iNPC);

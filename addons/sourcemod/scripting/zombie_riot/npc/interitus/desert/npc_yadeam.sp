@@ -48,9 +48,9 @@ void DesertYadeam_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DesertYadeam(client, vecPos, vecAng, ally);
+	return DesertYadeam(vecPos, vecAng, team);
 }
 
 methodmap DesertYadeam < CClotBody
@@ -92,7 +92,7 @@ methodmap DesertYadeam < CClotBody
 	}
 	
 	
-	public DesertYadeam(int client, float vecPos[3], float vecAng[3], int ally)
+	public DesertYadeam(float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertYadeam npc = view_as<DesertYadeam>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2000", ally));
 		
@@ -118,9 +118,7 @@ methodmap DesertYadeam < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
 		Is_a_Medic[npc.index] = true;

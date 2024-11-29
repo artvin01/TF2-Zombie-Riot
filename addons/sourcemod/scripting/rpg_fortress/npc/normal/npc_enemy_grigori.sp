@@ -140,9 +140,9 @@ public void EnemyFatherGrigori_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return EnemyFatherGrigori(client, vecPos, vecAng, ally);
+	return EnemyFatherGrigori(vecPos, vecAng, team, data);
 }
 methodmap EnemyFatherGrigori < CClotBody
 {
@@ -224,7 +224,7 @@ methodmap EnemyFatherGrigori < CClotBody
 	{
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public EnemyFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
+	public EnemyFatherGrigori(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		EnemyFatherGrigori npc = view_as<EnemyFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
@@ -258,6 +258,8 @@ methodmap EnemyFatherGrigori < CClotBody
 		func_NPCThink[npc.index] = EnemyFatherGrigori_ClotThink;
 		npc.m_flRangedArmor = 0.75;
 
+		
+
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, EnemyFatherGrigori_OnTakeDamagePost);
 
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_annabelle.mdl");
@@ -272,8 +274,7 @@ methodmap EnemyFatherGrigori < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void EnemyFatherGrigori_ClotThink(int iNPC)
 {
 	EnemyFatherGrigori npc = view_as<EnemyFatherGrigori>(iNPC);
@@ -561,11 +562,9 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
@@ -576,19 +575,20 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 							npc.m_iChanged_WalkCycle = 8;
 							npc.SetActivity("ACT_MELEE_ATTACK");
 						}
+						npc.SetPlaybackRate(3.0);
+						npc.m_flAttackHappens = gameTime + 0.15;
+
+						npc.m_flDoingAnimation = gameTime + 0.5;
+						npc.m_flNextMeleeAttack = gameTime + 0.5;
+					}
+					else
+					{
 						npc.SetPlaybackRate(2.0);
+						npc.AddGesture("ACT_MELEE_ATTACK");
 						npc.m_flAttackHappens = gameTime + 0.3;
 
 						npc.m_flDoingAnimation = gameTime + 0.75;
 						npc.m_flNextMeleeAttack = gameTime + 0.75;
-					}
-					else
-					{
-						npc.AddGesture("ACT_MELEE_ATTACK");
-						npc.m_flAttackHappens = gameTime + 0.6;
-
-						npc.m_flDoingAnimation = gameTime + 1.5;
-						npc.m_flNextMeleeAttack = gameTime + 1.5;
 					}
 					npc.PlayMeleeSound();
 					
@@ -607,7 +607,7 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 								
 					Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 					//Can i see This enemy, is something in the way of us?
-					//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+					//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 					if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 					{
 						npc.m_iTarget = Enemy_I_See;
@@ -670,7 +670,7 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 								
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;

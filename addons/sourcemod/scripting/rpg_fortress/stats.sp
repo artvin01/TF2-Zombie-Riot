@@ -17,13 +17,16 @@ static int StatIntelligence[MAXTF2PLAYERS];
 static int StatCapacity[MAXTF2PLAYERS];
 static int ReskillPoints[MAXTF2PLAYERS];
 
+#define INTELLIGENCE_1ST_STAT_MULTI 3000
+#define INTELLIGENCE_2ST_STAT_MULTI 8000
+
 void Stats_PluginStart()
 {
 	RegConsoleCmd("rpg_stats", Stats_ShowStats, "Shows your RPG stats");
 	RegConsoleCmd("rpg_stat", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_stats", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_stat", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
-	RegConsoleCmd("sm_give_mastery", Command_Give_Mastery, "Force gives mastery to current form", FCVAR_HIDDEN);
+	RegAdminCmd("sm_give_mastery", Command_Give_Mastery, ADMFLAG_RCON, "Force gives mastery to current form");
 }
 
 void Stats_EnableCharacter(int client)
@@ -47,6 +50,18 @@ void Stats_EnableCharacter(int client)
 	ReskillPoints[client] = kv.GetNum("reskills");
 
 	delete Mastery[client];
+
+	Race race;
+	Races_GetClientInfo(client, race);
+	if(race.StartLevel > 0)
+	{
+		int stats = Stats_GetStatCount(client) + ReskillPoints[client];
+		int minStats = race.StartLevel * BaseUpdateStats;
+		if(stats < minStats)
+		{
+			ReskillPoints[client] = minStats - stats;
+		}
+	}
 
 	if(kv.JumpToKey("mastery") && kv.GotoFirstSubKey(false))
 	{
@@ -72,56 +87,50 @@ void Stats_EnableCharacter(int client)
 	
 	Stats_UpdateLevel(client);
 }
-
+/*
 int RPGStats_MaxXPAllowed(int client)
 {
 	return (BaseMaxExperience + (BaseMaxExperiencePerLevel * Level[client]));
 }
-
+*/
 void Stats_GiveXP(int client, int xp, int quest = 0)
 {
 	int XPToGive;
-	if(xp > 0 && !quest)
+	if(xp > 0)
 	{
-		int maxXP = RPGStats_MaxXPAllowed(client);
-
+		int CurrentXp = XP[client];
 		XPToGive = RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
-		if(quest == 1)
+		if(quest == 2)
 		{
-			maxXP *= 3.0;
+			//We were in a CC
+			if(CurrentXp >= XPToGive)
+			{
+				SPrintToChat(client, "You are unable to gain XP from Chaos Surgance's untill you spend your XP.");
+				return;
+			}
 		}
-		else if(quest == 2)
+		int CalculatedXP;
+		CalculatedXP = XP[client] + XPToGive;
+		if(CalculatedXP < XPToGive || CalculatedXP >= 2000000000)
 		{
-			maxXP *= 0.25;
+			XP[client] = 2000000000;
+			SPrintToChat(client, "You hit the MAX XP cap, spend your XP.");
+			//we did an overflow. set to 2billion.
 		}
-		
-		if(XP[client] < maxXP)
-			XP[client] += XPToGive;
 		else
 		{
-			if(quest == 1)
-			{
-				SPrintToChat(client, "You have hit the XP cap of %i at your level. Quests will no longer grant you XP, use your XP.", maxXP);
-			}
-			else if(quest == 2)
-			{
-				SPrintToChat(client, "You have hit the XP cap of %i at your level, you wont get anymore XP untill you spend it. Chaos Surgances have a lower cap by 0.25x.", maxXP);
-			}
-			else
-			{
-				SPrintToChat(client, "You have hit the XP cap of %i at your level, you wont get anymore XP untill you spend it. Quests have a higher cap by 3x.", maxXP);
-			}
-			XPToGive = 0;
+			XP[client] += XPToGive;
 		}
 	}
 	else
 	{
+		//if its negative, just give minus.
 		XP[client] += xp;
 	}
 
 	if(XP[client] > SaveIn[client])
 	{
-		SaveClientStats(client);
+		Stats_SaveClientStats(client);
 		SaveIn[client] = BaseUpgradeCost + (Level[client] * BaseUpgradeScale);
 	}
 	else
@@ -132,10 +141,13 @@ void Stats_GiveXP(int client, int xp, int quest = 0)
 
 float AgilityMulti(int amount)
 {
+	if(amount < -16)
+		amount = -16;
+	
 	return 3.73333*Pow(amount + 16.0, -0.475);
 }
 
-static void SaveClientStats(int client)
+void Stats_SaveClientStats(int client)
 {
 	KeyValues kv = Saves_Kv("stats");
 
@@ -241,6 +253,7 @@ void Stats_ClearCustomStats(int entity)
 	Agility[entity] = 0;
 	Luck[entity] = 0;
 //	Level[entity] = 0;
+	ArmorCorrosion[entity] = 0;
 }
 
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
@@ -328,13 +341,14 @@ void Stats_SetCustomStats(int entity, int attrib, float value)
 	}
 }
 
-float Stats_GetCurrentFormMastery(int client)
+float Stats_GetCurrentFormMastery(int client, float &maxvalue = 0.0)
 {
 	float mastery;
 	
 	Form form;
 	if(Races_GetClientInfo(client, _, form))
 	{
+		maxvalue = form.Mastery;
 		if(Mastery[client])
 			Mastery[client].GetValue(form.Name, mastery);
 	}
@@ -389,7 +403,7 @@ void Stats_SetCurrentFormMastery(int client, float mastery)
 			mastery = form.Mastery;
 		}
 		Mastery[client].SetValue(form.Name, mastery);
-		SaveClientStats(client);
+		Stats_SaveClientStats(client);
 	}
 }
 /*
@@ -399,7 +413,7 @@ void Stats_SetFormMastery(int client, const char[] name, float mastery)
 		Mastery[client] = new StringMap();
 	
 	Mastery[client].SetValue(name, mastery);
-	SaveClientStats(client);
+	Stats_SaveClientStats(client);
 }
 */
 bool Stats_GetHasKill(int client, const char[] name)
@@ -425,13 +439,7 @@ void Stats_ApplyAttribsPre(int client)
 
 void Stats_ReskillEverything(int client)
 {
-	int stats = StatStrength[client]
-		+ StatPrecision[client]
-		+ StatArtifice[client]
-		+ StatEndurance[client]
-		+ StatStructure[client]
-		+ StatIntelligence[client]
-		+ StatCapacity[client];
+	int stats = Stats_GetStatCount(client);
 	
 	StatStrength[client] = 0;
 	StatPrecision[client] = 0;
@@ -442,7 +450,7 @@ void Stats_ReskillEverything(int client)
 	StatCapacity[client] = 0;
 	ReskillPoints[client] += stats;
 
-	SaveClientStats(client);
+	Stats_SaveClientStats(client);
 	FakeClientCommandEx(client, "rpg_stats");
 }
 
@@ -453,6 +461,19 @@ void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
 	//Give complete immunity to all normal knockback.
 	//in RPG we will give knockback another way.
 
+	Stats_ApplyMovementSpeedUpdate(client, class);
+	
+	Attributes_SetMulti(client, 442, SpeedExtra);
+
+	static Race race;
+	static Form form;
+	Races_GetClientInfo(client, race, form);
+	
+	Attributes_SetMulti(client, Attrib_FormRes, form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+}
+
+void Stats_ApplyMovementSpeedUpdate(int client, TFClassType class)
+{
 	float speed = 300.0 + float(Stats_Agility(client) * 2);
 	
 	//CC DIFFICULTY, 15% SLOWER!
@@ -472,16 +493,7 @@ void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
 			speed *= 0.85; 
 		}
 	}
-	
-	Attributes_SetMulti(client, 107, RemoveExtraSpeed(class, speed));
-	Attributes_SetMulti(client, 442, SpeedExtra);
-
-	static Race race;
-	static Form form;
-	Races_GetClientInfo(client, race, form);
-	
-	Attributes_SetMulti(client, 205, form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
-	Attributes_SetMulti(client, 206, form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+	Attributes_Set(client, 107, RemoveExtraSpeed(class, speed));
 }
 
 int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)
@@ -508,8 +520,15 @@ int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multirace =
 	base = BaseStrength + StatStrength[client];
 	bonus = Strength[client];
 	multirace = race.StrengthMulti;
-	multiform = form.GetFloatStat(Form::StrengthMulti, Stats_GetFormMastery(client, form.Name));
-
+	multiform = form.GetFloatStat(client, Form::StrengthMulti, Stats_GetFormMastery(client, form.Name));
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multiform *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multiform *= 1.05;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -533,8 +552,15 @@ int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multirace 
 	base = BasePrecision + StatPrecision[client];
 	bonus = Precision[client];
 	multirace = race.PrecisionMulti;
-	multiform = form.GetFloatStat(Form::PrecisionMulti, Stats_GetFormMastery(client, form.Name));
-
+	multiform = form.GetFloatStat(client,Form::PrecisionMulti, Stats_GetFormMastery(client, form.Name));
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multiform *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multiform *= 1.05;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -554,8 +580,15 @@ int Stats_Artifice(int client, int &base = 0, int &bonus = 0, float &multirace =
 	base = BaseArtifice + StatArtifice[client];
 	bonus = Artifice[client];
 	multirace = race.ArtificeMulti;
-	multiform = form.GetFloatStat(Form::ArtificeMulti, Stats_GetFormMastery(client, form.Name));
-
+	multiform = form.GetFloatStat(client,Form::ArtificeMulti, Stats_GetFormMastery(client, form.Name));
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multiform *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multiform *= 1.05;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -573,10 +606,17 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multirace 
 	Races_GetClientInfo(client, race, form);
 
 	base = BaseEndurance + StatEndurance[client];
-	bonus = Endurance[client];
+	bonus = Endurance[client] - ArmorCorrosion[client];
 	multirace = race.EnduranceMulti;
-	multiform = form.GetFloatStat(Form::EnduranceMulti, Stats_GetFormMastery(client, form.Name));
-
+	multiform = form.GetFloatStat(client,Form::EnduranceMulti, Stats_GetFormMastery(client, form.Name));
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multiform *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multiform *= 1.05;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -587,7 +627,7 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multirace 
 	float dummyNumber;
 	if(RPG_BobsPureRage(client, -1, dummyNumber))
 	{
-		returnnumber = RoundToNearest(float(returnnumber) * 1.35);
+		returnnumber = RoundToNearest(float(returnnumber) * 1.15);
 	}
 
 	return returnnumber;
@@ -602,8 +642,16 @@ int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multirace 
 	base = BaseStructure + StatStructure[client];
 	bonus = Structure[client];
 	multirace = race.StructureMulti;
-	multiform = form.GetFloatStat(Form::StructureMulti, Stats_GetFormMastery(client, form.Name));
-
+	//donnt form multi
+	multiform = form.GetFloatStat(-1,Form::StructureMulti, Stats_GetFormMastery(client, form.Name));
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multiform *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multiform *= 1.05;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -623,7 +671,7 @@ int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, float &multira
 	base = BaseIntelligence + StatIntelligence[client];
 	bonus = Intelligence[client];
 	multirace = race.IntelligenceMulti;
-	multiform = form.GetFloatStat(Form::IntelligenceMulti, Stats_GetFormMastery(client, form.Name));
+	multiform = form.GetFloatStat(client,Form::IntelligenceMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -643,6 +691,14 @@ int Stats_Capacity(int client, int &base = 0, int &bonus = 0, float &multi = 0.0
 	base = BaseCapacity + StatCapacity[client];
 	bonus = Capacity[client];
 	multi = race.CapacityMulti;
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		multi *= 1.1;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		multi *= 1.05;
+	}
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -661,9 +717,16 @@ int Stats_Agility(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 	Races_GetClientInfo(client, race, form);
 
 	base = BaseAgility;
-	bonus = Agility[client] + form.GetIntStat(Form::AgilityAdd, Stats_GetFormMastery(client, form.Name));
+	bonus = Agility[client] + form.GetIntStat(client,Form::AgilityAdd, Stats_GetFormMastery(client, form.Name));
 	multi = race.AgilityMulti;
-
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		bonus += 2;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		bonus += 1;
+	}
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -682,8 +745,16 @@ int Stats_Luck(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 	Races_GetClientInfo(client, race, form);
 
 	base = BaseLuck;
-	bonus = Luck[client] + form.GetIntStat(Form::LuckAdd, Stats_GetFormMastery(client, form.Name));
+	bonus = Luck[client] + form.GetIntStat(client, Form::LuckAdd, Stats_GetFormMastery(client, form.Name));
 	multi = race.LuckMulti;
+	if(Stats_Intelligence(client) >= INTELLIGENCE_2ST_STAT_MULTI)
+	{
+		bonus += 2;
+	}
+	else if(Stats_Intelligence(client) >= INTELLIGENCE_1ST_STAT_MULTI)
+	{
+		bonus += 1;
+	}
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -793,7 +864,7 @@ public Action Stats_ShowStats(int client, int args)
 			static Race race;	
 			static Form form;
 			Races_GetClientInfo(client, race, form);
-			multiform = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
+			multiform = form.GetFloatStat(client,Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
 			FormatEx(buffer, sizeof(buffer), "Capacity: [%d x%.2f] + %d = [%d]", amount, multirace * multiform, bonus, total);
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
@@ -843,7 +914,7 @@ public Action Stats_ShowStats(int client, int args)
 			static Race race;	
 			static Form form;
 			Races_GetClientInfo(client, race, form);
-			multiform = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
+			multiform = form.GetFloatStat(client,Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
 			FormatEx(buffer, sizeof(buffer), "CAP: [R:x%.2f F:x%.2f] (%.0f Energy)", multirace, multiform, RPGStats_RetrieveMaxEnergy(total));
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
@@ -956,7 +1027,7 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 
 			ClientCommand(client, "playgamesound ui/mm_medal_click.wav");
 			UpdateLevelAbovePlayerText(client);
-			SaveClientStats(client);
+			Stats_SaveClientStats(client);
 			Stats_ShowStats(client, 0);
 		}
 	}
@@ -996,13 +1067,13 @@ float RPGStats_FlatDamageResistance(int client)
 	if(client <= MaxClients)
 		total = Stats_Endurance(client);
 	else
-		total = Endurance[client];
-	return (float(total) * 1.85);
+		total = Endurance[client] - ArmorCorrosion[client];
+	return (float(total) * 2.4);
 }
 
-void Stats_UpdateLevel(int client)
+int Stats_GetStatCount(int client)
 {
-	int stats = StatStrength[client]
+	return StatStrength[client]
 		+ StatPrecision[client]
 		+ StatArtifice[client]
 		+ StatEndurance[client]
@@ -1010,10 +1081,12 @@ void Stats_UpdateLevel(int client)
 		+ StatIntelligence[client]
 		+ StatCapacity[client]
 		+ ReskillPoints[client];
-
-	Level[client] = stats / 5;
 }
 
+void Stats_UpdateLevel(int client)
+{
+	Level[client] = Stats_GetStatCount(client) / BaseUpdateStats;
+}
 
 void RPGStats_GiveTempomaryStatsToItem(int weaponindx, int statindx, int StatAmount, float duration)
 {
@@ -1093,12 +1166,12 @@ public Action Command_Give_Mastery(int client, int args)
 	{
 		if(money > 0.0)
 		{
-			PrintToChat(targets[target], "You got %0.2f  Mastery from the admin %N!", money, client);
+			PrintToChat(targets[target], "You got %0.2f  Mastery from the admin %N!", money, targets[target]);
 			float MasteryAdd = money;
-			float MasteryCurrent = Stats_GetCurrentFormMastery(client);
+			float MasteryCurrent = Stats_GetCurrentFormMastery(targets[target]);
 			MasteryCurrent += MasteryAdd;
-			SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",MasteryAdd);
-			Stats_SetCurrentFormMastery(client, MasteryCurrent);
+			SPrintToChat(targets[target], "Your current form obtained %0.2f Mastery points.",MasteryAdd);
+			Stats_SetCurrentFormMastery(targets[target], MasteryCurrent);
 		}
 	}
 	

@@ -5,12 +5,14 @@
 
 static float f_HealAmount[MAXTF2PLAYERS];
 static char gLaser1;
+static bool b_WasMagicFocus[MAXTF2PLAYERS];
 
 
 void Wand_HolyLight_Map_Precache()
 {
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	PrecacheSound(WAND_INIT_SOUND);
+	PrecacheSound("npc/strider/charging.wav");
 }
 
 public float AbilityHolyLight(int client, int index, char name[48])
@@ -74,6 +76,7 @@ public float AbilityHolyLight(int client, int index, char name[48])
 	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd_dmg);
 
 	damageDelt *= 0.5;
+	b_WasMagicFocus[client] = false;
 
 	Weapon_HolyLightInit(client, weapon,/* 1,*/ damageDelt);
 	float time = 30.0;
@@ -90,7 +93,7 @@ public float AbilityHolyLight(int client, int index, char name[48])
 	return (GetGameTime() + time);
 }
 
-void Weapon_HolyLightInit(int client, int weapon/*, int level*/, float damage)
+stock void Weapon_HolyLightInit(int client, int weapon/*, int level*/, float damage)
 {
 	static float startPos[3];
 	GetClientEyePosition(client, startPos);
@@ -104,8 +107,21 @@ void Weapon_HolyLightInit(int client, int weapon/*, int level*/, float damage)
 	float DurationUntill = 1.6;
 	
 	endPos[2] += 2.0;
-	spawnRing_Vectors(endPos, /*RANGE*/ RadiusHeal * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, /*DURATION*/ DurationUntill, 12.0, 0.1, 1);
-	spawnRing_Vectors(endPos, /*RANGE*/ RadiusHeal * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, /*DURATION*/ DurationUntill, 12.0, 0.1, 1, 1.0);
+	if(MagicFocusReady(client))
+	{
+		MagicFocusUse(client);
+		b_WasMagicFocus[client] = true;
+	}
+	if(!b_WasMagicFocus[client])
+	{
+		spawnRing_Vectors(endPos, /*RANGE*/ RadiusHeal * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, /*DURATION*/ DurationUntill, 12.0, 0.1, 1);
+		spawnRing_Vectors(endPos, /*RANGE*/ RadiusHeal * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, /*DURATION*/ DurationUntill, 12.0, 0.1, 1, 1.0);
+	}
+	else
+	{
+		spawnRing_Vectors(endPos, /*RANGE*/ RadiusHeal * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 50, 200, 1, /*DURATION*/ DurationUntill, 12.0, 0.1, 1);
+		spawnRing_Vectors(endPos, /*RANGE*/ RadiusHeal * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 50, 200, 1, /*DURATION*/ DurationUntill, 12.0, 0.1, 1, 1.0);	
+	}
 	Handle pack;
 	CreateDataTimer(DurationUntill, Timer_AoeHealHolyLight, pack, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack, EntIndexToEntRef(client));
@@ -132,9 +148,19 @@ static Action Timer_AoeHealHolyLight(Handle dashHud, DataPack pack)
 	float VecAbove[3];
 	VecAbove = VectorPos;
 	VecAbove[2] += 1000.0;
-	TE_SetupBeamPoints(VecAbove, VectorPos, gLaser1, 0, 0, 0, 0.25, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {50, 255, 50, 255}, 3);
-	TE_SendToAll();
-	spawnRing_Vectors(VectorPos, /*RANGE*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, /*DURATION*/ 0.25, 12.0, 0.1, 1, RangeHeal * 2.0);
+	if(b_WasMagicFocus[client])
+	{
+		TE_SetupBeamPoints(VecAbove, VectorPos, gLaser1, 0, 0, 0, 0.25, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {255, 255, 50, 255}, 3);
+		TE_SendToAll();
+		spawnRing_Vectors(VectorPos, /*RANGE*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 50, 200, 1, /*DURATION*/ 0.25, 12.0, 0.1, 1, RangeHeal * 2.0);
+	}
+	else
+	{
+		TE_SetupBeamPoints(VecAbove, VectorPos, gLaser1, 0, 0, 0, 0.25, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {50, 255, 50, 255}, 3);
+		TE_SendToAll();
+		spawnRing_Vectors(VectorPos, /*RANGE*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 200, 1, /*DURATION*/ 0.25, 12.0, 0.1, 1, RangeHeal * 2.0);
+	}
+
 	HolyLightHealLogic(client, RangeHeal, VectorPos);
 	return Plugin_Handled;
 }
@@ -167,5 +193,10 @@ void HolyLightAoeHealInternal(int entity, int victim, float damage, int weapon)
 	if (GetTeam(victim) == GetTeam(entity) && !RPGCore_PlayerCanPVP(entity, victim))
 	{
 		HealEntityGlobal(entity, victim, f_HealAmount[entity] * 0.25, 1.0, 2.0, HEAL_NO_RULES);
+		if(b_WasMagicFocus[entity])
+		{
+			HealEntityGlobal(entity, victim, f_HealAmount[entity] * 0.1, 1.0, 5.0, HEAL_NO_RULES);
+			f_EmpowerStateOther[victim] = GetGameTime() + 10.0;
+		}
 	}
 }

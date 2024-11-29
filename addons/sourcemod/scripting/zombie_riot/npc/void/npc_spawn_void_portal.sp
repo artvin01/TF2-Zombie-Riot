@@ -40,13 +40,13 @@ void VoidPortal_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidPortal(client, vecPos, vecAng, ally);
+	return VoidPortal(vecPos, vecAng, team);
 }
 methodmap VoidPortal < CClotBody
 {
-	public VoidPortal(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidPortal(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidPortal npc = view_as<VoidPortal>(CClotBody(vecPos, vecAng, "models/empty.mdl", "0.8", "700", ally));
 		

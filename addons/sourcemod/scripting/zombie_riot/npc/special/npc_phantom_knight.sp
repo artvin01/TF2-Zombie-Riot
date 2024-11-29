@@ -85,9 +85,9 @@ void PhantomKnight_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return PhantomKnight(client, vecPos, vecAng, ally);
+	return PhantomKnight(vecPos, vecAng, team);
 }
 static bool b_IsPhantomFake[MAXENTITIES];
 static float f_AttackHappensAoe[MAXENTITIES];
@@ -156,7 +156,7 @@ methodmap PhantomKnight < CClotBody
 	}
 	
 	
-	public PhantomKnight(int client, float vecPos[3], float vecAng[3], int ally)
+	public PhantomKnight(float vecPos[3], float vecAng[3], int ally)
 	{
 		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetLucianHealth(), ally));
 		SetVariantInt(3);
@@ -250,8 +250,7 @@ methodmap PhantomKnight < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void PhantomKnight_ClotThink(int iNPC)
 {
 	PhantomKnight npc = view_as<PhantomKnight>(iNPC);
@@ -331,9 +330,10 @@ public void PhantomKnight_ClotThink(int iNPC)
 						damage = 33.0;
 					}
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 						if(!ShouldNpcDealBonusDamage(target))
 						{
@@ -451,12 +451,10 @@ public void PhantomKnight_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
@@ -489,9 +487,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 			}	
 			case 2:
 			{
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				
 				//Can i see This enemy, is something in the way of us?
 				//Dont want to do the aoe burst if i cant even see the enemy!
@@ -823,7 +819,7 @@ static char[] GetLucianHealth()
 {
 	int health = 135;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

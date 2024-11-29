@@ -93,9 +93,9 @@ public void XenoFlyingArmorTiny_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoFlyingArmorTiny(client, vecPos, vecAng, ally);
+	return XenoFlyingArmorTiny(vecPos, vecAng, team);
 }
 
 methodmap XenoFlyingArmorTiny < CClotBody
@@ -172,7 +172,7 @@ methodmap XenoFlyingArmorTiny < CClotBody
 	}
 	
 	
-	public XenoFlyingArmorTiny(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoFlyingArmorTiny(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoFlyingArmorTiny npc = view_as<XenoFlyingArmorTiny>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.9", "180", ally));
 		SetVariantInt(1);
@@ -195,7 +195,6 @@ methodmap XenoFlyingArmorTiny < CClotBody
 		func_NPCThink[npc.index] = XenoFlyingArmorTiny_ClotThink;
 		
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 310.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -226,8 +225,7 @@ methodmap XenoFlyingArmorTiny < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoFlyingArmorTiny_ClotThink(int iNPC)
 {
 	XenoFlyingArmorTiny npc = view_as<XenoFlyingArmorTiny>(iNPC);

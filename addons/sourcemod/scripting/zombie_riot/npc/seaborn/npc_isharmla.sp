@@ -27,9 +27,9 @@ void Isharmla_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Isharmla(client, vecPos, vecAng, ally);
+	return Isharmla(vecPos, vecAng, team);
 }
 
 methodmap Isharmla < CClotBody
@@ -43,7 +43,7 @@ methodmap Isharmla < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public Isharmla(int client, float vecPos[3], float vecAng[3], int ally)
+	public Isharmla(float vecPos[3], float vecAng[3], int ally)
 	{
 		Isharmla npc = view_as<Isharmla>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally, false));
 		// 90000 x 1.0

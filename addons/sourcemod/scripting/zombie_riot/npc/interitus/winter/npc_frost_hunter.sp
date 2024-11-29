@@ -62,9 +62,9 @@ void WinterFrostHunter_OnMapStart_NPC()
 	Rogue_Paradox_AddWinterNPC(id);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WinterFrostHunter(client, vecPos, vecAng, ally);
+	return WinterFrostHunter(vecPos, vecAng, team);
 }
 
 methodmap WinterFrostHunter < CClotBody
@@ -109,7 +109,7 @@ methodmap WinterFrostHunter < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public WinterFrostHunter(int client, float vecPos[3], float vecAng[3], int ally)
+	public WinterFrostHunter(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterFrostHunter npc = view_as<WinterFrostHunter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1000", ally));
 		
@@ -138,9 +138,7 @@ methodmap WinterFrostHunter < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(WinterFrostHunter_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(WinterFrostHunter_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 400.0;
 		

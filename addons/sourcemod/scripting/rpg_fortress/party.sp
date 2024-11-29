@@ -181,7 +181,7 @@ static void ShowMenu(int client)
 	static char index[16], buffer[96];
 	if(PartyLeader[client])
 	{
-		menu.AddItem("-2", "Party Settings\n(Mute a person to ingore their invites.)\n ");
+		menu.AddItem("-2", "Party Settings\n ");
 
 		for(int target = 1; target <= MaxClients; target++)
 		{
@@ -221,7 +221,7 @@ static void ShowMenu(int client)
 		}
 
 		int count = menu.ItemCount - 1;
-		menu.SetTitle("RPG Fortress\n \nParty (%d / %d)\n(Mute a person to ingore their invites.)", count, MAX_PARTY_SIZE);
+		menu.SetTitle("RPG Fortress\n \nParty (%d / %d)", count, MAX_PARTY_SIZE);
 
 		if(count < MAX_PARTY_SIZE && PartyLeader[client] == client)
 		{

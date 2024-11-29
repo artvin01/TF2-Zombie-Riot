@@ -1025,7 +1025,20 @@ public void Newtonian_ProjectileTouch(int entity, float selfPos[3], int owner, i
 {
 	if (target >= 0)
 	{
-		Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, selfPos, Newtonian_M1_Radius[Magnesis_ProjectileTier[entity]], Newtonian_M1_Falloff_MultiHit[Magnesis_ProjectileTier[entity]], Newtonian_M1_Falloff_Distance[Magnesis_ProjectileTier[entity]], false, Newtonian_M1_MaxTargets[Magnesis_ProjectileTier[entity]], _, _, _, view_as<Function>(Newtonian_M1Hit));
+		Explode_Logic_Custom(f_WandDamage[entity],
+		 owner,
+		  owner,
+		   weapon,
+		    selfPos,
+			 Newtonian_M1_Radius[Magnesis_ProjectileTier[entity]],
+		 Newtonian_M1_Falloff_MultiHit[Magnesis_ProjectileTier[entity]],
+		  Newtonian_M1_Falloff_Distance[Magnesis_ProjectileTier[entity]],
+		   false,
+		   Newtonian_M1_MaxTargets[Magnesis_ProjectileTier[entity]],
+		    _,
+			 _,
+			  _,
+			   view_as<Function>(Newtonian_M1Hit));
 
 		ParticleEffectAt(selfPos, PARTICLE_NEWTONIAN_M1_COLLIDE);
 		EmitSoundToAll(SND_NEWTONIAN_M1_COLLIDE, entity, SNDCHAN_STATIC, _, _, 0.8);

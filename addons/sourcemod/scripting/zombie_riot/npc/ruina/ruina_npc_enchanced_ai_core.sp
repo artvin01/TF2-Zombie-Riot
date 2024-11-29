@@ -18,6 +18,8 @@ static bool b_npc_sniper_anchor_point[MAXENTITIES];
 static float fl_npc_sniper_anchor_find_timer[MAXENTITIES];
 static int i_last_sniper_anchor_id_Ref[MAXENTITIES];
 
+static bool b_ruina_npc[MAXENTITIES];
+
 static int g_rocket_particle;
 //static char gGlow1;	//blue
 
@@ -141,7 +143,7 @@ int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
 int g_Ruina_BEAM_lightning;
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return -1;
 }
@@ -168,6 +170,8 @@ void Ruina_Ai_Core_Mapstart()
 	data2.IconCustom = false;											//download needed?
 	data2.Flags = 0;													//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data2);
+
+	Zero(b_ruina_npc);
 
 	Zero(b_ruina_nerf_healing);
 	Zero(fl_master_change_timer);
@@ -245,6 +249,7 @@ void Ruina_Ai_Core_Mapstart()
 void Ruina_Set_Heirarchy(int client, int type)
 {
 	Ruina_Remove_Shield(client);
+	b_ruina_npc[client] = true;
 	b_ruina_nerf_healing[client] = false;
 	fl_ruina_shield_break_timeout[client] = 0.0;
 	i_npc_type[client] = type;
@@ -446,7 +451,7 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 
 public void Ruina_NPCDeath_Override(int entity)
 {
-	
+	b_ruina_npc[entity] = false;
 	b_is_a_master[entity] = false;
 	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[entity]);
 	//check if the master is still valid, but block the master itself
@@ -1372,9 +1377,6 @@ stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_a
 			}
 		}
 
-		if(i_BarbariansMind[Target])
-			flat_amt = RoundToFloor(flat_amt*0.9);
-
 		Current_Mana[Target] += RoundToCeil(max_mana[Target]*Multi+flat_amt);
 
 		if(OverMana_Ratio>2.0)
@@ -1445,10 +1447,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Mana_Regen_Delay[Target] = GameTime + Timeout;
 	Mana_Regen_Block_Timer[Target] = GameTime + Timeout;
 
-	if(i_BarbariansMind[Target])
-		TF2_StunPlayer(Target, Slow_Time, 0.4, TF_STUNFLAG_SLOWDOWN);	//40% slower
-	else
-		TF2_StunPlayer(Target, Slow_Time, 0.6, TF_STUNFLAG_SLOWDOWN);	//60% slower
+	TF2_StunPlayer(Target, Slow_Time, 0.5, TF_STUNFLAG_SLOWDOWN);	//50% slower
 
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
@@ -1729,10 +1728,37 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 {
 	CClotBody npc = view_as<CClotBody>(healed_target);
 
-	if((fl_npc_healing_duration[npc.index] < GetGameTime(npc.index) && (b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target] || b_ruina_nerf_healing[healed_target]))	//only nerf healing on these npc's if they are not looking for a healer npc
-	|| b_ruina_npc_healer[healed_target]	//always nerf healing on healer npc's
-	)
+	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+	float Max_Health = float(ReturnEntityMaxHealth(npc.index));
+	float Ratio = Health / Max_Health;
+
+	if(Ratio > 1.0)
+	{//the target npc has overheal, nerf the healing ratio
+		healingammount*=0.2;
+	}
+	
+	if(fl_npc_healing_duration[npc.index] < GetGameTime(npc.index))
+	{//the npc is not retreating to a healer npc. simply put, if the npc is running towards a healer npc, they won't get their healing nerfed from this specific value.
+		
+		if(b_ruina_nerf_healing[healed_target])
+		{//the npc is a special case that needs to get less healing otherwise unfun balance happens
+			healingammount *=0.7;
+		}
+		else if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])
+		{//this npc is a raid/boss healing target
+			healingammount *=0.5;
+		}
+	}
+	if(b_ruina_npc_healer[healed_target])
+	{//this npc MUST have less healing.
 		healingammount *=0.5;
+	}
+
+	if(!b_ruina_npc[healed_target])
+	{//ruina is now xenophobic of other races. and people. mostly to nerf minibosses from being healed
+		healingammount *=0.1;
+	}
+	
 
 	return false;
 }
@@ -2029,10 +2055,6 @@ void Ruina_Special_Logic(int iNPC, int Target)
 		return;
 	}
 }
-
-/*
-	Should work with non ruina npc's - NOT TESTED YET!
-*/
 static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, float amt, bool Override=false)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
@@ -2097,6 +2119,9 @@ void Ruina_Battery_Buff(int entity, int victim, float damage, int weapon)
 
 	if(GetTeam(entity) != GetTeam(victim))
 		return;
+
+	if(Block_Buffs(victim))
+		return;
 	
 	//don't buff the batteries of other battery buffers otherwise a snowball effect might ocur
 	if(b_is_battery_buffed[victim])	
@@ -2110,6 +2135,9 @@ void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
 		return;	//don't buff itself!
 
 	if(GetTeam(entity) != GetTeam(victim))
+		return;
+
+	if(Block_Buffs(victim))
 		return;
 
 	//same type of npc, or a global type
@@ -2127,11 +2155,21 @@ void Ruina_Teleport_Buff(int entity, int victim, float damage, int weapon)
 	if(GetTeam(entity) != GetTeam(victim))
 		return;
 
+	if(Block_Buffs(victim))
+		return;
+
 	//same type of npc, or a global type
 	//if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
 		b_ruina_allow_teleport[victim]=true;
 	}
+}
+static bool Block_Buffs(int entity)
+{
+	if(!b_ruina_npc[entity])
+		return true;
+
+	return false;
 }
 /*
 	f_Ruina_Speed_Buff[entity] = 0.0;

@@ -64,9 +64,9 @@ void RookieGambler_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return RookieGambler(client, vecPos, vecAng, ally);
+	return RookieGambler(client, vecPos, vecAng, team);
 }
 
 methodmap RookieGambler < CClotBody
@@ -103,6 +103,7 @@ methodmap RookieGambler < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.SetActivity("ACT_MP_STAND_MELEE");
 		KillFeed_SetKillIcon(npc.index, "eternal_reward");
+		i_NpcWeight[npc.index] = 1;
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -111,7 +112,7 @@ methodmap RookieGambler < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		f3_SpawnPosition[npc.index] = vecPos;	
+		f3_SpawnPosition[npc.index] = vecPos;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -124,9 +125,9 @@ methodmap RookieGambler < CClotBody
 		{
 			"models/workshop/player/items/all_class/hwn2022_beaten_bruised/hwn2022_beaten_bruised_spy.mdl",
 			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style2_spy.mdl",
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style3_spy.mdl",
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style4_spy.mdl",
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style5_spy.mdl"
+			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style3/hwn2022_beaten_bruised_style3_spy.mdl",
+			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style4/hwn2022_beaten_bruised_style4_spy.mdl",
+			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style5/hwn2022_beaten_bruised_style5_spy.mdl"
 		};
 	
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_eternal_reward/c_eternal_reward.mdl", _, skin);
@@ -191,7 +192,7 @@ static void ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 1.0), DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 1.0), DMG_CLUB, _, _, vecHit);
 						CasinoShared_RobMoney(npc, target, 5);
 						CasinoShared_StealNearbyItems(npc, vecHit);
 					}
@@ -222,6 +223,7 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 		npc.SetActivity("ACT_MP_RUN_MELEE");
+		npc.m_bisWalking = true;
 
 		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
@@ -233,7 +235,7 @@ static void ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = 0.45;
+				npc.m_flAttackHappens = gameTime + 0.45;
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				npc.m_flNextMeleeAttack = gameTime + 1.05;
 			}

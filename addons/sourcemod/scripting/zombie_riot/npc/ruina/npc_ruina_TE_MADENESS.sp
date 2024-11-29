@@ -96,7 +96,7 @@ methodmap Adiantum < CClotBody
 		
 		
 	}
-	public Adiantum(int client, float vecPos[3], float vecAng[3], int ally)
+	public Adiantum(float vecPos[3], float vecAng[3], int ally)
 	{
 		Adiantum npc = view_as<Adiantum>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		
@@ -183,8 +183,7 @@ methodmap Adiantum < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Adiantum_ClotThink(int iNPC)
 {
 	Adiantum npc = view_as<Adiantum>(iNPC);

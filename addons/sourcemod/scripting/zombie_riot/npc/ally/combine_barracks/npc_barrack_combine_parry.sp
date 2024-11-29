@@ -56,7 +56,7 @@ void Barracks_Combine_Parry_Precache()
 	
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Deflector");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Deflector");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_parry");
 	data.IconCustom = false;
 	data.Flags = 0;

@@ -262,7 +262,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),10000.0, 0), DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),11000.0, 0), DMG_CLUB, -1, _, vecHit);
 									npc.PlayMeleeHitSound();
 								//	ExpidonsaGroupHeal(npc.index, 150.0, 2, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),750.0, 0), 1.0, true);
 								//	DesertYadeamDoHealEffect(npc.index, 150.0);
@@ -280,7 +280,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 				{
 					npc.m_flNextRangedSpecialAttack = GameTime + 5.0;
-					ExpidonsaGroupHeal(npc.index, 100.0, 5, 7500.0, 0.0, false,Expidonsa_DontHealSameIndex);
+					ExpidonsaGroupHeal(npc.index, 100.0, 5, 8000.0, 0.0, false,Expidonsa_DontHealSameIndex);
 					DesertYadeamDoHealEffect(npc.index, 100.0);
 					GuardianAOEBuff(npc,GetGameTime(npc.index));
 
@@ -324,7 +324,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								
 								npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
 								
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3300.0, 1), DMG_BULLET, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3450.0, 1), DMG_BULLET, -1, _, vecHit);
 							} 		
 							delete swingTrace;			
 						}

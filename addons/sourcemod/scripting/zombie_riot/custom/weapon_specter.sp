@@ -150,16 +150,15 @@ public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 		ClientCommand(client, "playgamesound %s", SPECTER_BONEFRACTURE);
 
 		TF2_AddCondition(client, TFCond_MegaHeal, SPECTER_BONE_FRACTURE_DURATION);
-		TF2_AddCondition(client, TFCond_NoHealingDamageBuff, SPECTER_BONE_FRACTURE_DURATION);
 		MakePlayerGiveResponseVoice(client, 1); //haha!
 
 		if(RaidbossIgnoreBuildingsLogic(1))
 		{
 			ApplyTempAttrib(weapon, 412, 0.35, SPECTER_BONE_FRACTURE_DURATION);
+			CreateTimer(0.5, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		}
 		else
 		{
-			TF2_AddCondition(client, TFCond_UberchargedHidden, SPECTER_BONE_FRACTURE_DURATION);
 			CreateTimer(0.1, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		}
 
@@ -188,13 +187,9 @@ public Action Specter_DrainTimer(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden))
+		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_MegaHeal))
 		{
-			int health = GetClientHealth(client) * 9 / 10;
-			if(health < 1)
-				health = 1;
-			
-			SetEntityHealth(client, health);
+			TF2_AddCondition(client, TFCond_PreventDeath, 0.2);
 			return Plugin_Continue;
 		}
 	}
@@ -207,17 +202,14 @@ public Action Specter_BoneTimer(Handle timer, int userid)
 	if(client)
 	{
 		TF2_RemoveCondition(client, TFCond_MegaHeal);
-		TF2_RemoveCondition(client, TFCond_UberchargedHidden);
-		TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 		f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
-		if(!dieingstate[client])
-		{
-			if(!RaidbossIgnoreBuildingsLogic(1))
-				SetEntityHealth(client, 1);
-		}
-			
+		//if(!dieingstate[client])
+		//{
+		//	if(!RaidbossIgnoreBuildingsLogic(1))
+		//		SetEntityHealth(client, 1);
+		//}
 		
-		TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
+		TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
 		StopSound(client, SNDCHAN_STATIC, "player/pl_impact_stun.wav");
 	}
 	return Plugin_Stop;
@@ -333,7 +325,8 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 
 					i_ExplosiveProjectileHexArray[weapon] = 0;
 					i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
-					Explode_Logic_Custom(f_SpecterDeadDamage[client] * 3.5, client, weapon, weapon, flPos, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
+					i_ExplosiveProjectileHexArray[weapon] |= ZR_DAMAGE_IGNORE_DEATH_PENALTY;
+					Explode_Logic_Custom(f_SpecterDeadDamage[client], client, weapon, weapon, flPos, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
 					//Bleed sucks but thats on purpose
 
 					float vecTarget[3];

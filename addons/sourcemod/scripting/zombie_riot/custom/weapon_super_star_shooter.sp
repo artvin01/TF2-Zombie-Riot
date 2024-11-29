@@ -203,7 +203,7 @@ public void SuperStarShooterOnHit(int entity, int target)
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 
-		EmitSoundToAll(SOUND_ZAP_STAR, target, SNDCHAN_STATIC, 70, _, 0.6);
+		EmitSoundToAll(SOUND_ZAP_STAR, target, SNDCHAN_STATIC, 70, _, 0.7);
 		
 		f_WandDamage[entity] *= LASER_AOE_DAMAGE_FALLOFF;
 	}
@@ -213,7 +213,7 @@ public void SuperStarShooterOnHit(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
-		EmitSoundToAll(SOUND_ZAP_STAR, entity, SNDCHAN_STATIC, 70, _, 0.6);
+		EmitSoundToAll(SOUND_ZAP_STAR, entity, SNDCHAN_STATIC, 70, _, 0.7);
 		RemoveEntity(entity);
 	}
 }

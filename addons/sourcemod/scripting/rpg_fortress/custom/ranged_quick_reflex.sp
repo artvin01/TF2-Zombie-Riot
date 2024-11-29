@@ -77,7 +77,7 @@ public Action Timer_UpdateMovementSpeed(Handle timer, int ref)
 	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		SDKCall_SetSpeed(client);
 	}
 	return Plugin_Handled;
 }

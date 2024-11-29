@@ -77,7 +77,7 @@ methodmap StalkerShared < CClotBody
 void StalkerCombine_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Spawned Combine");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Subject");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_combine");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -124,9 +124,9 @@ static void ClotPrecache()
 	}
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return StalkerCombine(client, vecPos, vecAng, ally);
+	return StalkerCombine(vecPos, vecAng, team);
 }
 methodmap StalkerCombine < StalkerShared
 {
@@ -223,7 +223,7 @@ methodmap StalkerCombine < StalkerShared
 		i_PlayMusicSound = GetTime() + 76;
 	}
 	
-	public StalkerCombine(int client, float vecPos[3], float vecAng[3], int ally)
+	public StalkerCombine(float vecPos[3], float vecAng[3], int ally)
 	{
 		StalkerCombine npc = view_as<StalkerCombine>(CClotBody(vecPos, vecAng, "models/zombie/zombie_soldier.mdl", "1.2", "6666", ally));
 		

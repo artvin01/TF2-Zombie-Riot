@@ -85,9 +85,9 @@ void SpyCloaked_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SpyCloaked(client, vecPos, vecAng, ally);
+	return SpyCloaked(vecPos, vecAng, team);
 }
 methodmap SpyCloaked < CClotBody
 {
@@ -161,7 +161,7 @@ methodmap SpyCloaked < CClotBody
 	}
 	
 	
-	public SpyCloaked(int client, float vecPos[3], float vecAng[3], int ally)
+	public SpyCloaked(float vecPos[3], float vecAng[3], int ally)
 	{
 		SpyCloaked npc = view_as<SpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "18000", ally));
 		
@@ -195,9 +195,7 @@ methodmap SpyCloaked < CClotBody
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		
-		npc.m_iState = 0;
+
 		npc.m_flSpeed = 230.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -235,8 +233,7 @@ methodmap SpyCloaked < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SpyCloaked_ClotThink(int iNPC)
 {
 	SpyCloaked npc = view_as<SpyCloaked>(iNPC);

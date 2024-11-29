@@ -67,9 +67,9 @@ void VoidMutatingBlob_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidMutatingBlob(client, vecPos, vecAng, ally);
+	return VoidMutatingBlob(vecPos, vecAng, team);
 }
 methodmap VoidMutatingBlob < CClotBody
 {
@@ -110,7 +110,7 @@ methodmap VoidMutatingBlob < CClotBody
 	}
 	
 	
-	public VoidMutatingBlob(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidMutatingBlob(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidMutatingBlob npc = view_as<VoidMutatingBlob>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "700", ally));
 		
@@ -133,9 +133,7 @@ methodmap VoidMutatingBlob < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidMutatingBlob_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		
@@ -246,7 +244,7 @@ public void VoidMutatingBlob_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	if(Rogue_Mode())
+	if(!Rogue_Mode())
 	{
 		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 		//a spawnpoint that only lasts for 1 spawn

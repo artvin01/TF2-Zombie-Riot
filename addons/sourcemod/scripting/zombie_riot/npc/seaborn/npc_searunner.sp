@@ -48,9 +48,9 @@ void SeaRunner_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaRunner(client, vecPos, vecAng, ally, data);
+	return SeaRunner(vecPos, vecAng, team, data);
 }
 
 methodmap SeaRunner < CSeaBody
@@ -80,7 +80,7 @@ methodmap SeaRunner < CSeaBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public SeaRunner(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SeaRunner(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeaRunner npc = view_as<SeaRunner>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.35", data[0] ? "450" : "350", ally, false));
 		// 3000 x 0.15

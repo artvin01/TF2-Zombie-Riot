@@ -52,9 +52,9 @@ void SeabornScout_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornScout(client, vecPos, vecAng, ally);
+	return SeabornScout(vecPos, vecAng, team);
 }
 
 methodmap SeabornScout < CClotBody
@@ -84,7 +84,7 @@ methodmap SeabornScout < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornScout(int client, float vecPos[3], float vecAng[3], int ally)
+	public SeabornScout(float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornScout npc = view_as<SeabornScout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1500", ally));
 		

@@ -42,7 +42,7 @@ static char g_MeleeAttackSounds[][] = {
 	")weapons/boxing_gloves_swing4.wav",
 };
 
-static int i_OwnerToGoTo[MAXENTITIES];
+int i_OwnerToGoTo[MAXENTITIES];
 
 public void HeavyBearBoss_OnMapStart_NPC()
 {
@@ -60,9 +60,9 @@ public void HeavyBearBoss_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeavyBearBoss(client, vecPos, vecAng, ally);
+	return HeavyBearBoss(vecPos, vecAng, team);
 }
 
 methodmap HeavyBearBoss < CClotBody
@@ -102,7 +102,7 @@ methodmap HeavyBearBoss < CClotBody
 	}
 	
 	
-	public HeavyBearBoss(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeavyBearBoss(float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyBearBoss npc = view_as<HeavyBearBoss>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "1000", ally, false, true));
 
@@ -164,8 +164,7 @@ methodmap HeavyBearBoss < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void HeavyBearBoss_ClotThink(int iNPC)
 {
 	HeavyBearBoss npc = view_as<HeavyBearBoss>(iNPC);
@@ -220,9 +219,10 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 200.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						if(npc.m_iAttacksTillMegahit > 3)
 						{
 							npc.m_iAttacksTillMegahit = 0;
@@ -312,11 +312,9 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iAttacksTillMegahit += 1;

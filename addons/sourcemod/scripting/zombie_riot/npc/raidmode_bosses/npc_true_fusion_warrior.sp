@@ -136,9 +136,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/fusion_raid/fusion_bgm.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return TrueFusionWarrior(client, vecPos, vecAng, ally, data);
+	return TrueFusionWarrior(vecPos, vecAng, team, data);
 }
 void TrueFusionWarrior_TBB_Precahce()
 {
@@ -268,7 +268,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		
 	}
-	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public TrueFusionWarrior(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -326,7 +326,7 @@ methodmap TrueFusionWarrior < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
 		if(amount_of_people > 12.0)
 		{
@@ -433,8 +433,7 @@ methodmap TrueFusionWarrior < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void TrueFusionWarrior_ClotThink(int iNPC)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(iNPC);

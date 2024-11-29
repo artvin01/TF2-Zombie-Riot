@@ -16,6 +16,11 @@ void GetRocketAngles(int entity, float angles[3])
 }
 #endif
 
+stock bool HomingProjectile_IsActive(int projectile)
+{
+	return RMR_CurrentHomingTarget[projectile] != -1;
+}
+
 //Credits: Me (artvin) for rewriting it abit so its easier to read
 // Sarysa (sarysa pub 1 plugin)
 void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, float homingaSec, bool LockOnlyOnce, bool changeAngles, float AnglesInitiate[3], int initialTarget = -1)

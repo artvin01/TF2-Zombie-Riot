@@ -120,9 +120,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/xeno_raid/mr_x_solo.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RaidbossMrX(client, vecPos, vecAng, ally, data);
+	return RaidbossMrX(vecPos, vecAng, team, data);
 }
 methodmap RaidbossMrX < CClotBody
 {
@@ -231,7 +231,7 @@ methodmap RaidbossMrX < CClotBody
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public RaidbossMrX(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RaidbossMrX(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossMrX npc = view_as<RaidbossMrX>(CClotBody(vecPos, vecAng, MRX_MODEL, "1.75", "20000000", ally, false, true, true,true)); //giant!
 		

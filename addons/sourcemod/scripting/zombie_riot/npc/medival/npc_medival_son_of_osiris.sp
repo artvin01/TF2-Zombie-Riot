@@ -97,9 +97,9 @@ void MedivalSonOfOsiris_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalSonOfOsiris(client, vecPos, vecAng, ally);
+	return MedivalSonOfOsiris(vecPos, vecAng, team);
 }
 static bool b_EntityHitByLightning[MAXENTITIES];
 
@@ -151,7 +151,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 
 	}
 	
-	public MedivalSonOfOsiris(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalSonOfOsiris(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSonOfOsiris npc = view_as<MedivalSonOfOsiris>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "750000", ally));
 		SetVariantInt(1);
@@ -171,6 +171,14 @@ methodmap MedivalSonOfOsiris < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeScaling = 3.0;
+			RaidAllowsBuildings = true;
+		}
+
 		func_NPCDeath[npc.index] = MedivalSonOfOsiris_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MedivalSonOfOsiris_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalSonOfOsiris_ClotThink;
@@ -208,8 +216,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalSonOfOsiris_ClotThink(int iNPC)
 {
 	MedivalSonOfOsiris npc = view_as<MedivalSonOfOsiris>(iNPC);
@@ -258,9 +265,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 			npc.m_flAttackHappens = 0.0;
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{		
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
 				npc.PlayMeleeSound();
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
@@ -333,11 +338,9 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					if(npc.m_iChanged_WalkCycle != 5) 	

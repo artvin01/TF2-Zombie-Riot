@@ -54,9 +54,9 @@ void IberiaDeathMarker_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaDeathMarker(client, vecPos, vecAng, ally);
+	return IberiaDeathMarker(vecPos, vecAng, team);
 }
 methodmap IberiaDeathMarker < CClotBody
 {
@@ -97,7 +97,7 @@ methodmap IberiaDeathMarker < CClotBody
 	}
 	
 	
-	public IberiaDeathMarker(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaDeathMarker(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaDeathMarker npc = view_as<IberiaDeathMarker>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "10000", ally));
 		
@@ -119,9 +119,7 @@ methodmap IberiaDeathMarker < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(IberiaDeathMarker_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 310.0;
 		

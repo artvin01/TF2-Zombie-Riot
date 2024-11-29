@@ -67,9 +67,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Draconia(client, vecPos, vecAng, ally);
+	return Draconia(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -151,7 +151,7 @@ methodmap Draconia < CClotBody
 		}
 	}
 	
-	public Draconia(int client, float vecPos[3], float vecAng[3], int ally)
+	public Draconia(float vecPos[3], float vecAng[3], int ally)
 	{
 		Draconia npc = view_as<Draconia>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -229,8 +229,7 @@ methodmap Draconia < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Draconia npc = view_as<Draconia>(iNPC);

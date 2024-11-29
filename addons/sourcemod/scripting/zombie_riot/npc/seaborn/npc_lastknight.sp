@@ -50,9 +50,9 @@ void LastKnight_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return LastKnight(client, vecPos, vecAng, ally, data);
+	return LastKnight(vecPos, vecAng, team, data);
 }
 
 methodmap LastKnight < CClotBody
@@ -82,7 +82,7 @@ methodmap LastKnight < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public LastKnight(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public LastKnight(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(data[0] == 'N')
 		{
