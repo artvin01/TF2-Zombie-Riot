@@ -224,7 +224,7 @@ static void Internal_ClotThink(int iNPC)
 			float flPos[3];
 			float flAng[3];
 			npc.GetAttachment("special_weapon_effect", flPos, flAng);
-			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
+			int flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 			flMaxhealth *= 0.20;
 			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);
 			GrantEntityArmor(npc.index, false, 1.5, 0.01, 0);
