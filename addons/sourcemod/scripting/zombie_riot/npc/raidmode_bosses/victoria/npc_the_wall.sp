@@ -692,9 +692,20 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		{
 			case 0:
 			{
-				DynamicCharger[npc.index] = 0.0;
-				npc.m_flHuscarlsAdaptiveArmorDuration = gameTime + 3.0;
-				I_cant_do_this_all_day[npc.index] = 1;
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("layer_taunt_unleashed_rage_heavy");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.5);
+				npc.SetPlaybackRate(1.0);
+				npc.m_iChanged_WalkCycle = 0;
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					DynamicCharger[npc.index] = 0.0;
+					npc.m_flHuscarlsAdaptiveArmorDuration = gameTime + 3.0;
+					I_cant_do_this_all_day[npc.index] = 1;
+				}
 			}
 			case 1:
 			{
@@ -730,9 +741,22 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		{
 			case 0:
 			{
-				ExtraMovement[npc.index] = 300.0;
-				npc.m_flHuscarlsRushDuration = gameTime + 5.0;
-				I_cant_do_this_all_day[npc.index] = 1;
+				
+				Delay_Attribute[npc.index] = gameTime + 0.5;
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.5);
+				npc.SetPlaybackRate(1.0);
+				npc.m_iChanged_WalkCycle = 0;
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					ExtraMovement[npc.index] = 300.0;
+					npc.m_flHuscarlsRushDuration = gameTime + 5.0;
+					I_cant_do_this_all_day[npc.index] = 1;
+				}
 			}
 			case 1:
 			{
@@ -774,6 +798,16 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				
 					if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
 					{
+						NPC_StopPathing(npc.index);
+						npc.m_bPathing = false;
+						npc.m_bisWalking = false;
+						npc.AddActivityViaSequence("layer_taunt_bare_knuckle_beatdown_outro");
+						npc.m_flAttackHappens = 0.0;
+						npc.SetCycle(0.1);
+						npc.SetPlaybackRate(1.0);
+						npc.m_flDoingAnimation = gameTime + 0.5;
+						npc.m_iChanged_WalkCycle = 0;
+						
 						float flPos[3];
 						float flAng[3];
 						int Particle_1;
@@ -797,7 +831,6 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 						PluginBot_Jump(npc.index, flMyPos);
 						Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, ToTheMoon);
 						SetEntityCollisionGroup(npc.index, 1);
-						Delay_Attribute[npc.index] = gameTime + 2.0;
 						I_cant_do_this_all_day[npc.index] = 2;
 					}
 					else
@@ -821,11 +854,22 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				else
 				{
 					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, Got_it_fucking_shit);
+					npc.AddActivityViaSequence("layer_PASSTIME_throw_end");
+					npc.m_flAttackHappens = 0.0;
+					npc.SetCycle(0.4);
+					npc.SetPlaybackRate(0.0);
+					npc.m_flDoingAnimation = gameTime + 4.9;
 					return 3;
 				}
 			}
 			case 2:
 			{
+				npc.AddActivityViaSequence("layer_taunt_bare_knuckle_beatdown_outro");	
+				npc.SetCycle(0.85);
+				npc.SetPlaybackRate(1.0);
+				npc.m_flDoingAnimation = gameTime + 0.25;
+				Delay_Attribute[npc.index] = gameTime + 2.25;
+				npc.m_iChanged_WalkCycle = 0;
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 400.0, _, _, true, _, false, _, Ground_pound);
@@ -868,7 +912,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 	}
 	if(SpecialAttack)
 	{
-		npc.m_flDoingAnimation = gameTime + 0.25;
+		npc.m_flDoingAnimation = gameTime + 0.5;
 		return 2;
 	}
 	else if(npc.m_flAttackHappens)
