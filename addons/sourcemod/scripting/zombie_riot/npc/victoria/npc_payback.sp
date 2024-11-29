@@ -394,7 +394,7 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 
 	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								
@@ -411,7 +411,7 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 							
 					npc.m_flAttackHappens = gameTime + 0.15;
 					npc.m_flDoingAnimation = gameTime + 0.15;
-					npc.m_flNextMeleeAttack = gameTime + 0.6;
+					npc.m_flNextMeleeAttack = gameTime + 0.5;
 				}
 			}
 			if(!npc.Anger)
@@ -423,7 +423,7 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 					
 							
-					npc.m_flAttackHappens = gameTime + 0.25;
+					npc.m_flAttackHappens = gameTime + 0.15;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 					npc.m_flNextMeleeAttack = gameTime + 1.2;
 				}
