@@ -195,7 +195,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 2;
-			npc.SetActivity("ACT_MUDROCK_RAGE",_,_,_,2.0);
+			npc.SetActivity("ACT_MUDROCK_RAGE");
 			NPC_StopPathing(npc.index);
 			npc.m_flSpeed = 0.0;
 		}
@@ -275,7 +275,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
 	{
-		npc.m_PaybackAnimation = GetGameTime(npc.index) + 1.5;
+		npc.m_PaybackAnimation = GetGameTime(npc.index) + 5.0;
 		npc.Anger = true;
 	}
 	
