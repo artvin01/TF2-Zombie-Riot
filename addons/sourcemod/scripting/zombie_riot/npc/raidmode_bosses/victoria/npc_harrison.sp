@@ -878,8 +878,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 						WorldSpaceCenter(ememyTarget, PosEnemy);
 						float flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
 						float SpeedToPredict = flDistanceToTarget * 2.1;
-						float vecTarget[3];PredictSubjectPositionForProjectiles(npc, ememyTarget, SpeedToPredict, _,vecTarget);
-						if(IsValidEnemy(npc.index, npc.vecTarget))
+						if(IsValidEnemy(npc.index, enemy_2))
 						{
 							npc.PlayRocketSound();
 							float vecSelf[3];
@@ -892,7 +891,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 							DataPack pack;
 							CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
 							pack.WriteCell(EntIndexToEntRef(RocketGet));
-							pack.WriteCell(EntIndexToEntRef(npc.vecTarget));
+							pack.WriteCell(EntIndexToEntRef(enemy_2));
 						}
 					}
 				}
@@ -910,7 +909,6 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			npc.m_flDoingAnimation = gameTime + 0.25;
 			npc.m_flNextRangedSpecialAttack = 0.0;
 		}
-		return;
 	}
 	else if(npc.f_HarrisonSnipeShotDelay < gameTime)
 	{
@@ -928,12 +926,10 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 
 		Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, true, true);
 		if(!IsValidEnemy(npc.index, Vs_Target[npc.index]))
-			return false;
-		
-		float VecEnemy[3]; WorldSpaceCenter(Vs_Target, VecEnemy);
+			return;
 
 		static float ThrowPos[MAXENTITIES][3];  
-		float origin[3], angles[3];
+		float origin[3];
 		GetAbsOrigin(npc.m_iWearable2, origin);
 		//view_as<CClotBody>(npc.m_iWearable2).GetAttachment("muzzle", origin, angles);
 		if(npc.m_flDoingAnimation > gameTime)
@@ -1362,7 +1358,7 @@ public bool Harrison_TraceWallsOnly(int entity, int contentsMask)
 	return !entity;
 }
 
-void ResetHarrisonWeapon(Soldine npc, int weapon_Type)
+void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 {
 	if(IsValidEntity(npc.m_iWearable1))
 	{
