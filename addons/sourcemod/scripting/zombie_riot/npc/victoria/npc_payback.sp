@@ -1,34 +1,34 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+
 static const char g_DeathSounds[][] = {
-	"vo/npc/male01/no01.wav",
-	"vo/npc/male01/no02.wav",
+	"npc/combine_soldier/die1.wav",
+	"npc/combine_soldier/die2.wav",
+	"npc/combine_soldier/die3.wav",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/npc/male01/pain01.wav",
-	"vo/npc/male01/pain02.wav",
-	"vo/npc/male01/pain03.wav",
-	"vo/npc/male01/pain05.wav",
-	"vo/npc/male01/pain06.wav",
-	"vo/npc/male01/pain07.wav",
-	"vo/npc/male01/pain08.wav",
-	"vo/npc/male01/pain09.wav",
+	"npc/combine_soldier/pain1.wav",
+	"npc/combine_soldier/pain2.wav",
+	"npc/combine_soldier/pain3.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/npc/male01/ohno.wav",
-	"vo/npc/male01/overthere01.wav",
-	"vo/npc/male01/overthere02.wav",
+	"npc/combine_soldier/vo/alert1.wav",
+	"npc/combine_soldier/vo/bouncerbouncer.wav",
+	"npc/combine_soldier/vo/boomer.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/bat_baseball_hit_flesh.wav",
+	"weapons/halloween_boss/knight_axe_hit.wav",
 };
 
 void VictorianPayback_OnMapStart_NPC()
@@ -62,7 +62,7 @@ methodmap VictorianPayback < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -74,22 +74,22 @@ methodmap VictorianPayback < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 
 	}
 	property float m_LimitedLifetime
@@ -106,7 +106,7 @@ methodmap VictorianPayback < CClotBody
 	
 	public VictorianPayback(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.7", "10000", ally, false, true));
+		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.5", "10000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -135,6 +135,7 @@ methodmap VictorianPayback < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
+		npc.m_fbRangedSpecialOn = false;
 		b_NpcUnableToDie[npc.index] = true;
 		
 		
@@ -159,11 +160,11 @@ methodmap VictorianPayback < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 3);
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");
-		SetVariantString("1.25");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_commando_elite/fall17_commando_elite.mdl");
-		SetVariantString("1.0");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
 		
@@ -199,10 +200,21 @@ static void Internal_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_flSpeed = 0.0;
 		}
-		if(npc.m_PaybackAnimation < GetGameTime(npc.index))
+		if(npc.m_PaybackAnimation < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn)
 		{
 			npc.m_PaybackAnimation = 0.0;
 			npc.m_LimitedLifetime = GetGameTime(npc.index) + 3.0;
+
+			if(npc.m_iChanged_WalkCycle != 1)
+			{
+				npc.m_bisWalking = true;
+				npc.m_iChanged_WalkCycle = 1;
+				npc.SetActivity("ACT_CUSTOM_RUN_SAMURAI");
+				npc.StartPathing();
+				npc.m_flSpeed = 350.0;
+			}
+			npc.m_fbRangedSpecialOn = true;
+
 			IgniteTargetEffect(npc.m_iWearable1);
 			if(IsValidEntity(npc.m_iWearable4))
 			{
@@ -210,8 +222,9 @@ static void Internal_ClotThink(int iNPC)
 			}
 			float flPos[3];
 			float flAng[3];
-			npc.GetAttachment("eyes_r", flPos, flAng);
-			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyes_r", {0.0,0.0,0.0});
+			npc.GetAttachment("special_weapon_effect", flPos, flAng);
+			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "special_weapon_effect", {0.0,0.0,0.0});
+			b_NpcIsInvulnerable[npc.index] = false;
 		}
 		return;
 	}
@@ -277,6 +290,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		npc.m_PaybackAnimation = GetGameTime(npc.index) + 5.0;
 		npc.Anger = true;
+		b_NpcIsInvulnerable[npc.index] = true;
 	}
 	
 	return Plugin_Changed;
@@ -353,7 +367,7 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_CUSTOM_RUN_SAMURAI");
-			NPC_StopPathing(npc.index);
+			npc.StartPathing();
 			npc.m_flSpeed = 350.0;
 		}
 	}
