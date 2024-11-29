@@ -159,7 +159,8 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #define FAR_FUTURE	100000000.0
 #define MAXENTITIES	2048
-#define MAXTF2PLAYERS	36
+#define MAXTF2PLAYERS	101
+//double for 100 player support????
 
 #define    HIDEHUD_WEAPONSELECTION        ( 1<<0 )    // Hide ammo count & weapon selection
 #define    HIDEHUD_FLASHLIGHT            ( 1<<1 )
@@ -292,6 +293,7 @@ ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar CvarAirAcclerate; //sv_airaccelerate
+ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 #endif
 ConVar sv_cheats;
 ConVar nav_edit;
@@ -411,6 +413,8 @@ Handle SyncHud_ArmorCounter;
 
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
+float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.7, ...};
+float f_Client_BackwardsWalkPenalty[MAXTF2PLAYERS]={0.7, ...};
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
@@ -585,6 +589,7 @@ int i_PullTowardsTarget[MAXENTITIES];
 float f_PullStrength[MAXENTITIES];
 
 float ReplicateClient_Svairaccelerate[MAXTF2PLAYERS];
+float ReplicateClient_BackwardsWalk[MAXTF2PLAYERS];
 int ReplicateClient_Tfsolidobjects[MAXTF2PLAYERS];
 int ReplicateClient_RollAngle[MAXTF2PLAYERS];
 
@@ -929,7 +934,6 @@ Handle g_hGetSolidMask;
 //Handle g_hGetCurrencyValue;
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 
-Handle gH_BotAddCommand = INVALID_HANDLE;
 
 int CurrentGibCount = 0;
 float f_GibHealingAmount[MAXENTITIES];
@@ -1547,6 +1551,10 @@ public void OnPluginStart()
 	CvarAirAcclerate = FindConVar("sv_airaccelerate");
 	if(CvarAirAcclerate)
 		CvarAirAcclerate.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
+	Cvar_clamp_back_speed = FindConVar("tf_clamp_back_speed");
+	if(Cvar_clamp_back_speed)
+		Cvar_clamp_back_speed.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	CvarTfMMMode = FindConVar("tf_mm_servermode");
 	if(CvarTfMMMode)
@@ -2189,12 +2197,23 @@ public void OnClientPutInServer(int client)
 			b_IsPlayerABot[client] = true;
 			return;
 		}
-		if(!SpawningBot)
+		/*	
+			We will abuse mvm bot spawn logic!
+			Only allow 2 bots!
+		*/	
+		int botcount;
+		for(int clientloop = 1; clientloop <= MaxClients; clientloop++)
 		{
-			KickClient(client);
-			return;
+			if(IsClientInGame(clientloop) && IsFakeClient(clientloop) && !IsClientSourceTV(clientloop))
+			{
+				botcount += 1;
+				if(botcount > 2)
+				{
+					KickClient(client);
+					return;
+				}
+			}
 		}
-		SpawningBot = false;
 		ChangeClientTeam(client, TFTeam_Blue);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
@@ -2293,8 +2312,11 @@ public void OnClientDisconnect(int client)
 	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	ReplicateClient_Svairaccelerate[client] = -1.0;
+	ReplicateClient_BackwardsWalk[client] = -1.0;
 	ReplicateClient_Tfsolidobjects[client] = -1;
 	ReplicateClient_RollAngle[client] = -1;
+	b_NetworkedCrouch[client] = false;
+	//Reset!
 
 #if defined ZR
 	f_InBattleHudDisableDelay[client] = 0.0;

@@ -28,7 +28,7 @@ static int Beam_Glow;
 #define SOUND_HELL_HOE 	"weapons/breadmonster/gloves/bm_gloves_attack_04.wav"
 #define SOUND_SOUL_HIT "player/souls_receive2.wav"
 #define NIGHTMARE_RADIUS 300.0
-#define ANGEL_BLESSING_HIT_COUNT 30
+#define ANGEL_BLESSING_HIT_COUNT 40
 
 
 void Hell_Hoe_MapStart()
@@ -843,29 +843,36 @@ stock void HellHoeLaunch(int client, int weapon, float dmg, float speed, float t
 	float fRight[3], fFowardd[3];
 	GetAngleVectors(fAng, fFowardd, fRight, NULL_VECTOR);
 	
-	if(projectile_number > 2)
+	if(projectile_number > 3)
 	{
-		dmg *= float(projectile_number) / 2.0;
+		dmg *= float(projectile_number) / 3.0;
+		spaceBetweenProj /= float(projectile_number) / 3.0;
 		if(healthGain > 0.0)
-			healthGain *= float(projectile_number) / 2.0;
-		projectile_number = 2;
+			healthGain *= float(projectile_number) / 3.0;
+		projectile_number = 3;
 	}
 	
-	if (isStrikeHorizontal[client] || g_isPlayerInDeathMarch_HellHoe[client] || i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_3) {
-		fPos[0] += spaceBetweenProj * fRight[0];
-		fPos[1] += spaceBetweenProj * fRight[1];
-		fPos[2] -= spaceBetweenProj/2.0 + 1.0;
+	if (isStrikeHorizontal[client] || g_isPlayerInDeathMarch_HellHoe[client] || i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_3) 
+	{
+		fPos[0] += spaceBetweenProj * fRight[0] - 10.0;
+		fPos[1] += spaceBetweenProj * fRight[1] - 0.0;
+		fPos[2] -= spaceBetweenProj / 2.0 + 1.0;
 	}
-	else {
-		fPos[2] += spaceBetweenProj + 10.0;
+	else
+	{
+		fPos[2] += spaceBetweenProj + 5.0;
 	}
 	
-	for (int c = 0; c < projectile_number; c++) {
-		if (isStrikeHorizontal[client] || g_isPlayerInDeathMarch_HellHoe[client] || i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_3)  {
+	for (int c = 0; c < projectile_number; c++) 
+	{
+
+		if (isStrikeHorizontal[client] || g_isPlayerInDeathMarch_HellHoe[client] || i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_3)  
+		{
 			fPos[0] -= ((spaceBetweenProj*2.0)/projectile_number) * fRight[0];
 			fPos[1] -= ((spaceBetweenProj*2.0)/projectile_number) * fRight[1];
 		}
-		else {
+		else 
+		{
 			fPos[2] -= (spaceBetweenProj*2.0)/projectile_number;
 		}
 		

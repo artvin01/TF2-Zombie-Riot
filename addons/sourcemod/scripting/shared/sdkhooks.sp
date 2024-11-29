@@ -343,6 +343,7 @@ public void OnPreThinkPost(int client)
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
 	}
 	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
+	Cvar_clamp_back_speed.FloatValue = f_Client_BackwardsWalkPenalty[client];
 }
 #endif	// ZR & RPG
 
@@ -434,6 +435,13 @@ public void OnPostThink(int client)
 			ReplicateClient_Svairaccelerate[client] = 10.0;
 			CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
 		}
+	}
+	if(ReplicateClient_BackwardsWalk[client] != f_Client_BackwardsWalkPenalty[client])
+	{
+		char IntToStringDo[4];
+		FloatToString(f_Client_BackwardsWalkPenalty[client], IntToStringDo, sizeof(IntToStringDo));
+		Cvar_clamp_back_speed.ReplicateToClient(client, IntToStringDo); //set down
+		ReplicateClient_BackwardsWalk[client] = f_Client_BackwardsWalkPenalty[client];
 	}
 		
 	//Reduce knockback when airborn, this is to fix issues regarding flying way too high up, making it really easy to tank groups!
@@ -2541,12 +2549,22 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 {
 //	if(!b_GaveMarkForDeath[client])
 //		return;
-
-	if (!force_Clear && GetTeam(client) != TFTeam_Red)
+	if(!IsValidClient(client))
+	{
+		int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
+		if(entity > MaxClients)
+			RemoveEntity(entity);
+			
 		return;
+	}
+	if (GetTeam(client) != TFTeam_Red)
+		force_Clear = true;
 
-	if (!force_Clear && dieingstate[client] != 0)
-		return;
+	if (dieingstate[client] != 0)
+		force_Clear = true;
+		
+	if (TeutonType[client] != TEUTON_NONE)
+		force_Clear = true;
 
 	int downsleft;
 	downsleft = 2;

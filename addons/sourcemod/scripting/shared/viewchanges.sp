@@ -303,6 +303,7 @@ void ViewChange_Update(int client, bool full = true)
 	if(full)
 		ViewChange_DeleteHands(client);
 	
+
 	if(b_AntiSameFrameUpdate[client][0])
 		return;
 		
@@ -312,10 +313,15 @@ void ViewChange_Update(int client, bool full = true)
 	char classname[36];
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1)
+	{
+		f_Client_BackwardsWalkPenalty[client] = f_Weapon_BackwardsWalkPenalty[weapon];
 		GetEntityClassname(weapon, classname, sizeof(classname));
+	}
 	
 	ViewChange_Switch(client, weapon, classname);
+#if defined ZR
 	SDKHooks_UpdateMarkForDeath(client);
+#endif
 }
 
 void ViewChange_Switch(int client, int active, const char[] classname)

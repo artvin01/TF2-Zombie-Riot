@@ -1382,6 +1382,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
 						SpawnTimer(30.0);
 					}
+					Citizen_SetupStart();
 				}
 				Music_EndLastmann();
 				ReviveAll(true);
@@ -1444,6 +1445,19 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				if(!ScaleWithHpMore)
 				{
 					multiBoss = MultiGlobalHealthBoss;
+				}
+
+				if(!ScaleWithHpMore && wave.Count > 0)
+				{
+					// Increase boss health
+					multiBoss *= MultiGlobalEnemyBoss;
+
+					// Decrease for every boss spawned
+					float decrease = float(count) / float(wave.Count);
+					if(decrease > 1.0)
+					{
+						multiBoss /= decrease;
+					}
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
@@ -1675,21 +1689,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 							count++;
 					}
 				}
-				// theres only a max of 2
-				if(count == 1)
-				{
-					if(GetRandomFloat(0.0, 1.0) < 0.05)
-					{
-						//10 percent chance to spawn one every wave, upto 4 at max!
-						Citizen_SpawnAtPoint();
-					}
-					//This means barney is enabled, we allow to spawn more citizens.
-				}
 			}
 			
 			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
+				Citizen_SpawnAtPoint();
+				CPrintToChatAll("{gray}Barney: {default}Hey! We came late to assist! Got a friend too!");
 			}
 			else if(CurrentRound == 11 && !round.NoMiniboss)
 			{
@@ -2388,20 +2394,19 @@ void DoGlobalMultiScaling()
 {
 	float playercount = ZRStocks_PlayerScalingDynamic();
 			
-	if(playercount < 1.0)
-	{
-		playercount = 0.70;
-	}
-			
 	float multi = Pow(1.08, playercount);
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
 	
+	//normal bosses health
 	MultiGlobalHealthBoss = playercount * 0.2;
-	MultiGlobalHighHealthBoss = playercount * 0.34;
-	MultiGlobalEnemyBoss = playercount * 0.3;
 
-	
+	//raids or super bosses health
+	MultiGlobalHighHealthBoss = playercount * 0.34;
+
+	//Enemy bosses amount
+	MultiGlobalEnemyBoss = playercount * 0.3; 
+
 	//certain maps need this.
 	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 

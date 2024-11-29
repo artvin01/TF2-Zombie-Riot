@@ -75,7 +75,7 @@ methodmap VengefullSpirit < CClotBody
 		npc.m_iState = 4;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 325.0;
+		npc.m_flSpeed = 340.0;
 		npc.m_bCamo = true;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -197,9 +197,9 @@ void VengefullSpiritSelfDefense(VengefullSpirit npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 45.0;
+					float damageDealt = 65.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 3.0;
+						damageDealt *= 5.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 
