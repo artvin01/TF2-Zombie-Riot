@@ -39,24 +39,27 @@ static float Lord_BlastRadius = 120.0;			//Lightning bolt radius.
 static float Lord_BlastEntityMult = 4.0;		//Amount to multiply lightning damage against buildings.
 static float Lord_BlastFalloff_Range = 0.66;	//Maximum range-based falloff.
 static float Lord_BlastFalloff_MultiHit = 0.8;	//Amount to multiply lightning damage per target hit.
-static float Lord_Cooldown = 30.0;				//Ability cooldown.
-static float Lord_StartingCooldown = 2.0;//20.0;		//Starting cooldown.
+static float Lord_Cooldown = 50.0;				//Ability cooldown.
+static float Lord_StartingCooldown = 0.0;		//Starting cooldown.
 static float Lord_Duration = 9.0;				//Duration for which to summon allies.
 static float Lord_MaxSummons = 6.0;				//Maximum summon value Lordread can have at once. Lightning bolts are still called above this, but they will not summon allies.
 static float Lord_SummonsScaling = 2.0;			//Amount to increase sumon cap per valid mercenary.
 static float Lord_CapSummons = 5.0;				//If Lordread has a summon value of at least this value, he cannot use this ability again.
-static float Lord_Threshold = 0.4;				//Percentage of max health Lordread must reach before he begins to use this ability.
+static float Lord_Threshold = 0.4;				//Percentage of max health Lordread must reach before he may use this ability.
 
 //CRIMSON TEMPEST: Lordread holds his axe out and enchants it with red lightning, then begins to spin wildly, rapidly damaging anyone who gets too close. Enemies within
 //a small radius (2x the damage radius) are pulled in (weak pull). Lordread is slowed massively during this attack. Buildings take triple damage from this.
-static float Tempest_DMG = 100.0;			//Damage dealt per interval.
-static float Tempest_EntityMult = 8.0;		//Amount to multiply damage dealt to entities.
-static float Tempest_Interval = 0.33;		//Interval in which Crimson Tempest deals damage.
-static float Tempest_Radius = 200.0;		//Damage radius.
-static float Tempest_SuckRadius = 400.0;	//Radius in which enemies are pulled in.
-static float Tempest_Duration = 12.0;		//Spin duration.
-static float Tempest_Cooldown = 24.0;		//Cooldown.
-static float Tempest_StartingCD = 16.0;		//Starting cooldown.
+static float Tempest_DMG = 66.0;						//Damage dealt per interval.
+static float Tempest_EntityMult = 8.0;					//Amount to multiply damage dealt to entities.
+static float Tempest_Interval = 0.2;					//Interval in which Crimson Tempest deals damage.
+static float Tempest_Radius = 120.0;					//Damage radius.
+static float Tempest_SuckRadius = 300.0;				//Radius in which enemies are pulled in.
+static float Tempest_Duration = 12.0;					//Spin duration.
+static float Tempest_Cooldown = 24.0;					//Cooldown.
+static float Tempest_StartingCD = 2.0;//16.0;			//Starting cooldown.
+static float Tempest_Speed = 200.0;						//Movement speed while spinning.
+static float Tempest_MinPullStrengthMultiplier = 0.33;	//The minimum percentage of the pull strength to use based on distance, should be above 0.0 or else the knockback will outweigh the pull.
+static float Tempest_PullStrength = 66.0;				//Pull strength applied to victims per frame. Note that this is at point-blank, and becomes weaker the further away the target is.
 
 static bool Lordread_Attacking[2049] = { false, ... };
 static float Lordread_NextLightning[2049] = { 0.0, ... };
@@ -67,6 +70,10 @@ static char s_LordreadSequence[MAXENTITIES][255];
 static bool b_LordreadForceSequence[MAXENTITIES] = { false, ... };
 static float Lordread_LightningEndTime[2049] = { 0.0, ... };
 static bool Lordread_StopMoving[2049] = { false, ... };
+static float Lordread_SpeenEndTime[2049] = { 0.0, ... };
+static float Lordread_NextSpeen[2049] = { 0.0, ... };
+
+ArrayList Lordread_TempestParticles[2049] = { null, ... };
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -123,10 +130,12 @@ static const char g_KillSounds[][] = {
 #define SOUND_LORDREAD_LIGHTNING_STRIKE_2	")player/taunt_tank_shoot.wav"
 #define SOUND_LORDREAD_CALL_LIGHTNING		")misc/halloween/spell_teleport.wav"
 #define SOUND_LORDREAD_SUMMON_LOOP			")ambient/halloween/underground_wind_lp_03.wav"
+#define SOUND_LORDREAD_TEMPEST_HIT			")weapons/halloween_boss/knight_axe_hit.wav"
 //#define SOUND_LORDREAD_SUMMON_INTRO			""
 
 #define PARTICLE_LORDREAD_LIGHTNING_STRIKE_SUMMON	"skull_island_explosion"
 #define PARTICLE_LORDREAD_LIGHTNING_STRIKE			"drg_cow_explosioncore_charged"
+#define PARTICLE_TEMPEST_TRAIL						"nailtrails_medic_red_crit"
 
 public void Lordread_OnMapStart_NPC()
 {
@@ -147,6 +156,7 @@ public void Lordread_OnMapStart_NPC()
 	PrecacheSound(SOUND_LORDREAD_LIGHTNING_STRIKE_2);
 	PrecacheSound(SOUND_LORDREAD_CALL_LIGHTNING);
 	PrecacheSound(SOUND_LORDREAD_SUMMON_LOOP);
+	PrecacheSound(SOUND_LORDREAD_TEMPEST_HIT);
 	//PrecacheSound(SOUND_LORDREAD_SUMMON_INTRO);
 
 	NPCData data;
@@ -345,6 +355,42 @@ methodmap Lordread < CClotBody
 		}
 	}
 
+	public void Tempest()
+	{
+		int iActivity = this.LookupActivity("ACT_EXECUTIONER_TEMPEST_INTRO");
+		if (iActivity > 0)
+		{	
+			this.StartActivity(iActivity);
+			Lordread_Attacking[this.index] = true;
+			Lordread_StopMoving[this.index] = true;
+			Lordread_SpeenEndTime[this.index] = 0.0;
+			Lordread_NextSpeen[this.index] = 0.0;
+			
+			for (int i = 1; i < 16; i++)
+			{
+				char attachment[255];
+				Format(attachment, sizeof(attachment), "executioner_axe_%i", i);
+
+				float partPos[3], trash[3];
+				GetAttachment(this.index, attachment, partPos, trash);
+
+				int particle = ParticleEffectAt_Parent(partPos, PARTICLE_TEMPEST_TRAIL, this.index, attachment);
+				if (IsValidEntity(particle))
+				{
+					if (Lordread_TempestParticles[this.index] == null)
+						Lordread_TempestParticles[this.index] = CreateArray(255);
+
+					PushArrayCell(Lordread_TempestParticles[this.index], EntIndexToEntRef(particle));
+				}
+			}
+			
+			int choice = GetRandomInt(0, sizeof(g_HHHGrunts) - 1);
+			EmitSoundToAll(g_HHHGrunts[choice], this.index, _, 120, _, _, 80);
+			EmitSoundToAll(g_HHHGrunts[choice], this.index, _, 120, _, 0.75, 60);
+			EmitSoundToAll(g_HHHGrunts[choice], this.index, _, 120, _, 0.5, 40);
+		}
+	}
+
 	public Lordread(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
 		Lordread npc = view_as<Lordread>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, LORDREAD_SCALE, LORDREAD_HP, ally));
@@ -382,6 +428,21 @@ methodmap Lordread < CClotBody
 		
 		return npc;
 	}
+}
+
+public void Lordread_ClearParticles(int ent)
+{
+	if (Lordread_TempestParticles[ent] != null)
+	{
+		for (int i = 0; i < GetArraySize(Lordread_TempestParticles[ent]); i++)
+		{
+			int part = EntRefToEntIndex(GetArrayCell(Lordread_TempestParticles[ent], i));
+			if (IsValidEntity(part))
+				RemoveEntity(part);
+		}
+	}
+
+	delete Lordread_TempestParticles[ent];
 }
 
 //TODO 
@@ -461,10 +522,45 @@ public void Lordread_ClotThink(int iNPC)
 				}
 			}
 		}
+		else if (Lordread_SpeenEndTime[npc.index] > 0.0)
+		{
+			if (Lordread_SpeenEndTime[npc.index] < GetGameTime(npc.index))
+			{
+				Lordread_SpeenEndTime[npc.index] = 0.0;
+				Lordread_Attacking[npc.index] = false;
+				b_LordreadForceSequence[npc.index] = true;
+				s_LordreadSequence[npc.index] = "ACT_EXECUTIONER_RUN";
+				Lordread_NextTempest[npc.index] = GetGameTime(npc.index) + Tempest_Cooldown;
+				Lordread_StopLoop(npc);
+				npc.m_flSpeed = LORDREAD_SPEED;
+				Lordread_ClearParticles(npc.index);
+			}
+			else
+			{
+				float pos[3];
+				GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+
+				bool isBlue = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);	
+				Explode_Logic_Custom(0.0, npc.index, npc.index, -1, pos, Tempest_SuckRadius, 0.0, 0.0, isBlue, 9999, _, 0.0, Lordread_Pull);
+				spawnRing_Vectors(pos, Tempest_SuckRadius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 255, 0, 0, 255, 1, 0.1, 8.0, 12.0, 1);
+
+				if (GetGameTime(npc.index) >= Lordread_NextSpeen[npc.index])
+				{
+					Explode_Logic_Custom(Tempest_DMG, npc.index, npc.index, -1, pos, Tempest_Radius, 0.0, 0.0, isBlue, 9999, _, Tempest_EntityMult, Lordread_PlayHitSound);
+					Lordread_NextSpeen[npc.index] = GetGameTime(npc.index) + Tempest_Interval;
+
+					spawnRing_Vectors(pos, Tempest_SuckRadius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 255, 120, 120, 255, 1, 0.33, 4.0, 1.0, 1, 0.1);
+				}
+			}
+		}
 	}
 	else if (npc.CanUseLightning())
 	{
 		npc.Lightning();
+	}
+	else if (npc.CanUseTempest())
+	{
+		npc.Tempest();
 	}
 	
 	int closest = npc.m_iTarget;
@@ -508,6 +604,62 @@ public void Lordread_ClotThink(int iNPC)
 	}
 
 	npc.PlayIdleSound();
+}
+
+public void Lordread_PlayHitSound(int attacker, int victim, float damage)
+{
+	EmitSoundToAll(SOUND_LORDREAD_TEMPEST_HIT, victim, _, _, _, _, GetRandomInt(80, 120));
+}
+
+public void Lordread_Pull(int attacker, int victim, float damage)
+{
+	if (b_NoKnockbackFromSources[victim] || b_NpcIsInvulnerable[victim] || i_IsABuilding[victim])
+		return;
+
+	float userPos[3], vicPos[3];
+	WorldSpaceCenter(attacker, userPos);
+	WorldSpaceCenter(victim, vicPos);
+
+	float multiplier = 1.0 - (GetVectorDistance(userPos, vicPos) / Tempest_SuckRadius);
+	if (multiplier < Tempest_MinPullStrengthMultiplier)
+		multiplier = Tempest_MinPullStrengthMultiplier;
+
+	float pullStrength = Tempest_PullStrength * multiplier;
+
+	static float angles[3];
+	GetVectorAnglesTwoPoints(userPos, vicPos, angles);
+
+	if (GetEntityFlags(victim) & FL_ONGROUND)
+		angles[0] = 0.0;
+
+	float velocity[3], currentVelocity[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecVelocity", currentVelocity);
+	GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(velocity, -pullStrength);
+																
+	if (GetEntityFlags(victim) & FL_ONGROUND)
+		velocity[2] = fmax(25.0, velocity[2]);
+
+	for (int i = 0; i < 3; i++)
+		velocity[i] += currentVelocity[i];
+												
+	if (IsValidClient(victim))
+		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, velocity);  
+	else
+	{
+		//In tower defense, do not allow moving the target.
+		if(VIPBuilding_Active())
+			return;
+			
+		if(f_NoUnstuckVariousReasons[victim] > GetGameTime() + 1.0)
+		{
+			//make the target not stuckable.
+			f_NoUnstuckVariousReasons[victim] = GetGameTime() + 1.0;
+		}
+		SDKUnhook(victim, SDKHook_Think, NpcJumpThink);
+		f3_KnockbackToTake[victim] = velocity;
+		SDKHook(victim, SDKHook_Think, NpcJumpThink);
+	}
 }
 
 public void Lordread_SummonLightning(Lordread npc, float startPos[3], bool summon)
@@ -588,27 +740,27 @@ public Action Lordread_LightningStrike(Handle timely, DataPack pack)
 		{
 			case 1:
 			{
-				entity = PeasantBones(npc.index, pos, randAng, GetTeam(npc.index), false);
+				entity = PeasantBones(npc.index, pos, randAng, GetTeam(npc.index), false).index;
 			}
 			case 2:
 			{
-				entity = ArchmageBones(npc.index, pos, randAng, GetTeam(npc.index), false);
+				entity = ArchmageBones(npc.index, pos, randAng, GetTeam(npc.index), false).index;
 			}
 			case 3:
 			{
-				entity = AlchemistBones(npc.index, pos, randAng, GetTeam(npc.index));
+				entity = AlchemistBones(npc.index, pos, randAng, GetTeam(npc.index)).index;
 			}
 			case 4:
 			{
-				entity = JesterBones(npc.index, pos, randAng, GetTeam(npc.index), false);
+				entity = JesterBones(npc.index, pos, randAng, GetTeam(npc.index), false).index;
 			}
 			case 5:
 			{
-				entity = SaintBones(npc.index, pos, randAng, GetTeam(npc.index), false);
+				entity = SaintBones(npc.index, pos, randAng, GetTeam(npc.index), false).index;
 			}
 			case 6:
 			{
-				entity = SquireBones(npc.index, pos, randAng, GetTeam(npc.index), false);
+				entity = SquireBones(npc.index, pos, randAng, GetTeam(npc.index), false).index;
 			}
 		}
 
@@ -707,6 +859,27 @@ public void Lordread_AnimEvent(int entity, int event)
 			Lordread_NextExtraLightning[npc.index] = GetGameTime(npc.index) + Lord_Interval_Extra;
 			Lordread_NextSummon[npc.index] = GetGameTime(npc.index) + Lord_Interval_Summon;
 			Lordread_LightningEndTime[npc.index] = GetGameTime(npc.index) + Lord_Duration;
+		}
+		case 1019:	//Crimson Tempest's intro "whoosh" sound.
+		{
+			EmitSoundToAll(SOUND_CAPTAIN_HEAVY_WHOOSH, npc.index, _, 120);
+			int choice = GetRandomInt(0, sizeof(g_HHHYells) - 1);
+			EmitSoundToAll(g_HHHYells[choice], npc.index, _, 120, _, _, 80);
+			EmitSoundToAll(g_HHHYells[choice], npc.index, _, 120, _, 0.75, 60);
+			EmitSoundToAll(g_HHHYells[choice], npc.index, _, 120, _, 0.5, 40);
+		}
+		case 1020:	//Crimson Tempest begins spinning.
+		{
+			b_LordreadForceSequence[npc.index] = true;
+			s_LordreadSequence[npc.index] = "ACT_EXECUTIONER_TEMPEST_ACTIVE";
+			Lordread_SpeenEndTime[npc.index] = GetGameTime(npc.index) + Tempest_Duration;
+			Lordread_StopMoving[npc.index] = false;
+			npc.m_flSpeed = Tempest_Speed;
+			EmitSoundToAll(SOUND_LORDREAD_SUMMON_LOOP, npc.index, _, _, _, _, 80);
+		}
+		case 1021:	//Spinning.
+		{
+			EmitSoundToAll(SOUND_CAPTAIN_HEAVY_WHOOSH, npc.index, _, 120, _, _, GetRandomInt(90, 110));
 		}
 	}
 }
