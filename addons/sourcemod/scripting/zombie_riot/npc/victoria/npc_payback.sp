@@ -193,48 +193,40 @@ static void Internal_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_PaybackAnimation)
+	if(npc.m_PaybackAnimation && b_NpcUnableToDie[npc.index])
 	{
-		if(!npc.Anger)
+		if(npc.m_iChanged_WalkCycle != 5)
 		{
-			if(npc.m_iChanged_WalkCycle != 2)
-			{
-				npc.m_bisWalking = false;
-				npc.m_iChanged_WalkCycle = 2;
-				npc.SetActivity("ACT_MUDROCK_RAGE");
-				NPC_StopPathing(npc.index);
-				npc.m_flSpeed = 0.0;
-			}
-			npc.Anger = true;
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 5;
+			npc.SetActivity("ACT_MUDROCK_RAGE");
+			NPC_StopPathing(npc.index);
+			npc.m_flSpeed = 0.0;
 		}
-		
 		if(npc.m_PaybackAnimation < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn)
 		{
 			npc.m_PaybackAnimation = 0.0;
 			npc.m_LimitedLifetime = GetGameTime(npc.index) + 3.0;
 
-			if(npc.m_iChanged_WalkCycle != 1)
+			if(npc.m_iChanged_WalkCycle != 6)
 			{
 				npc.m_bisWalking = true;
-				npc.m_iChanged_WalkCycle = 1;
+				npc.m_iChanged_WalkCycle = 6;
 				npc.SetActivity("ACT_CUSTOM_RUN_SAMURAI");
 				npc.StartPathing();
 				npc.m_flSpeed = 350.0;
 			}
 			npc.m_fbRangedSpecialOn = true;
 
-			DesertYadeamDoHealEffect(npc.index, 250.0);
-			IgniteTargetEffect(npc.index);
-
+			IgniteTargetEffect(npc.m_iWearable1);
 			if(IsValidEntity(npc.m_iWearable4))
-			{
 				RemoveEntity(npc.m_iWearable4);
-			}
 			float flPos[3];
 			float flAng[3];
 			npc.GetAttachment("special_weapon_effect", flPos, flAng);
 			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "special_weapon_effect", {0.0,0.0,0.0});
 			b_NpcIsInvulnerable[npc.index] = false;
+			b_NpcUnableToDie[npc.index]=false;
 		}
 		return;
 	}
@@ -299,6 +291,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
 	{
 		npc.m_PaybackAnimation = GetGameTime(npc.index) + 5.0;
+		npc.Anger = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 	}
 	
