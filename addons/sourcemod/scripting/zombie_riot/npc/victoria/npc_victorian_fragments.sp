@@ -21,7 +21,7 @@ void VictorianDroneFragments_MapStart()
 	PrecacheSound(g_AttackReadySounds);
 	PrecacheSound(g_AttackRocketSounds);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victori Fragments");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Fragments");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victoria_fragments");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_fragments");
 	data.IconCustom = true;
@@ -75,7 +75,7 @@ methodmap VictorianDroneFragments < CClotBody
 		{
 			if(i>=count)break;
 			else if(!StrContains(countext[i], "factory"))FactorySpawn=true;
-			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victori Fragments MK2");}
+			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Fragments MK2");}
 			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
 			else if(!StrContains(countext[i], "isvoli"))ISVOLI[npc.index]=true;
 			int targetdata = StringToInt(countext[i]);

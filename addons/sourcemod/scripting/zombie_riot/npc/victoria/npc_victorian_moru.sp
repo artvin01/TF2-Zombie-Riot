@@ -60,7 +60,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		{
 			if(i>=count)break;
 			if(!StrContains(countext[i], "factory"))FactorySpawn=true;
-			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victori Anvil MK2");}
+			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Anvil MK2");}
 			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
 			else if(!StrContains(countext[i], "factory"))FactorySpawn=true;
 		}
