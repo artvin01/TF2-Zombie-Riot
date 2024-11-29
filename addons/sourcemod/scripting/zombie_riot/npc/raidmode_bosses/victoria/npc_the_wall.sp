@@ -810,77 +810,80 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		npc.m_flDoingAnimation = gameTime + 0.25;
 		return 2;
 	}
-	else if(npc.m_flAttackHappens < gameTime && distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+	else if(npc.m_flAttackHappens)
 	{
-		npc.m_flAttackHappens = 0.0;
-		if(IsValidEnemy(npc.index, target))
+		if(npc.m_flAttackHappens < gameTime)
 		{
-			int HowManyEnemeisAoeMelee = 64;
-			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-			npc.FaceTowards(VecEnemy, 15000.0);
-			npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
-			delete swingTrace;
-			bool PlaySound = false, PlayPOWERSound = false;
-			for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+			npc.m_flAttackHappens = 0.0;
+			if(IsValidEnemy(npc.index, target))
 			{
-				if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+				int HowManyEnemeisAoeMelee = 64;
+				Handle swingTrace;
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+				delete swingTrace;
+				bool PlaySound = false, PlayPOWERSound = false;
+				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 				{
-					if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 					{
-						PlaySound = true;
-						int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
-						float vecHit[3];
-						
-						WorldSpaceCenter(targetTrace, vecHit);
-						float damagebasic = 35.0;
-						damagebasic *= 1.15;
-						float damage = damagebasic;
-						if(DynamicCharger[npc.index]>0.0 && npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
 						{
-							damage+=DynamicCharger[npc.index];
-							if(damagebasic*15.0>damage)damage=damagebasic*15.0;
-							DynamicCharger[npc.index]=0.0;
-							ExtinguishTarget(npc.m_iWearable2);
-							CreateEarthquake(VecEnemy, 0.5, 350.0, 16.0, 255.0);
-							PlayPOWERSound = true;
-						}
+							PlaySound = true;
+							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							
+							WorldSpaceCenter(targetTrace, vecHit);
+							float damagebasic = 50.0;
+							damagebasic *= 1.15;
+							float damage = damagebasic;
+							if(DynamicCharger[npc.index]>0.0 && npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
+							{
+								damage+=DynamicCharger[npc.index];
+								if(damagebasic*15.0>damage)damage=damagebasic*15.0;
+								DynamicCharger[npc.index]=0.0;
+								ExtinguishTarget(npc.m_iWearable2);
+								CreateEarthquake(VecEnemy, 0.5, 350.0, 16.0, 255.0);
+								PlayPOWERSound = true;
+							}
 
-						SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-						bool Knocked = false;
-									
-						if(IsValidClient(targetTrace))
-						{
-							if(IsInvuln(targetTrace))
+							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+							bool Knocked = false;
+										
+							if(IsValidClient(targetTrace))
 							{
-								Knocked = true;
-								Custom_Knockback(npc.index, targetTrace, 300.0, true);
-								if(!NpcStats_IsEnemySilenced(npc.index))
+								if(IsInvuln(targetTrace))
 								{
-									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
-									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
+									Knocked = true;
+									Custom_Knockback(npc.index, targetTrace, 300.0, true);
+									if(!NpcStats_IsEnemySilenced(npc.index))
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
+									}
+								}
+								else
+								{
+									if(!NpcStats_IsEnemySilenced(npc.index))
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
+									}
 								}
 							}
-							else
-							{
-								if(!NpcStats_IsEnemySilenced(npc.index))
-								{
-									TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
-									TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
-								}
-							}
-						}
-						if(!Knocked)
-							Custom_Knockback(npc.index, targetTrace, 150.0, true); 
-					} 
+							if(!Knocked)
+								Custom_Knockback(npc.index, targetTrace, 150.0, true); 
+						} 
+					}
 				}
-			}
-			if(PlaySound)
-				npc.PlayMeleeHitSound();
-			if(PlayPOWERSound)
-			{
-				ParticleEffectAt(VecEnemy, "rd_robot_explosion", 1.0);
-				npc.PlayMeleeHitSound();
+				if(PlaySound)
+					npc.PlayMeleeHitSound();
+				if(PlayPOWERSound)
+				{
+					ParticleEffectAt(VecEnemy, "rd_robot_explosion", 1.0);
+					npc.PlayMeleeHitSound();
+				}
 			}
 		}
 	}
@@ -902,7 +905,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 							
 					npc.m_flAttackHappens = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 0.5;
+					npc.m_flNextMeleeAttack = gameTime + 1.5;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 				}
 			}
