@@ -29,7 +29,7 @@ static bool ParticleSpawned[MAXENTITIES];
 static bool SUPERHIT[MAXENTITIES];
 
 static float DMGTypeArmorDuration[MAXENTITIES];
-static int GetArmor[MAXENTITIES];
+static float GetArmor[MAXENTITIES];
 static float BlastDMG[MAXENTITIES];
 static float MagicDMG[MAXENTITIES];
 static float BulletDMG[MAXENTITIES];
@@ -158,7 +158,7 @@ methodmap Huscarls < CClotBody
 		SUPERHIT[npc.index] = false;
 		I_cant_do_this_all_day[npc.index] = 0;
 		DMGTypeArmorDuration[npc.index] = 0.0;
-		GetArmor[npc.index] = 0;
+		GetArmor[npc.index] = 0.0;
 		BlastDMG[npc.index] = 0.0;
 		MagicDMG[npc.index] = 0.0;
 		BulletDMG[npc.index] = 0.0;
@@ -499,10 +499,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		}
 	}
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
-	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	if(health>maxhealth)health=maxhealth;
-	int ratio = RoundToCeil((float(maxhealth)*0.25)/float(health));
-	if(ratio>GetArmor[npc.index])
+	if(GetArmor[npc.index]>=float(maxhealth)*0.25)
 	{
 		BlastArmor[npc.index] = false;
 		MagicArmor[npc.index] = false;
@@ -515,7 +512,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		}
 		GrantEntityArmor(npc.index, false, 0.075, 0.5, 0);
 		DMGTypeArmorDuration[npc.index] = gameTime + 30.0;
-		GetArmor[npc.index]++;
+		GetArmor[npc.index] = 0.0;
 		BlastDMG[npc.index] = 0.0;
 		MagicDMG[npc.index] = 0.0;
 		BulletDMG[npc.index] = 0.0;
@@ -561,6 +558,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			}
 			BulletDMG[npc.index] += damage;
 		}
+		GetArmor[npc.index] += damage;
 	}
 	
 	if(npc.m_flHuscarlsAdaptiveArmorDuration > gameTime)
@@ -568,6 +566,11 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		DynamicCharger[npc.index] += damage;
 		if(!IsFakeClient(attacker) && IsValidClient(attacker))
 			EmitSoundToClient(attacker, g_EnergyshieldSounds[GetRandomInt(0, sizeof(g_EnergyshieldSounds) - 1)], _, _, _, _, 0.7, _, _, _, _, false);
+		if(IsValidEntity(npc.m_iWearable2))
+		{
+			ExtinguishTarget(npc.m_iWearable2);
+			IgniteTargetEffect(npc.m_iWearable2);
+		}
 	}
 	
 	return Plugin_Changed;
@@ -695,14 +698,12 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			}
 			case 1:
 			{
-				if(npc.m_flHuscarlsAdaptiveArmorDuration < gameTime && DynamicCharger[npc.index] > 0.0)
+				if(npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 				{
 					int maxhealth = ReturnEntityMaxHealth(npc.index);
 					float MAXCharger = (DynamicCharger[npc.index]/(float(maxhealth)*0.05))*0.05;
 					if(MAXCharger > 0.05)MAXCharger = 0.05;
 					GrantEntityArmor(npc.index, false, MAXCharger, 0.5, 0);
-					ExtinguishTarget(npc.m_iWearable2);
-					IgniteTargetEffect(npc.m_iWearable2);
 					I_cant_do_this_all_day[npc.index] = 2;
 				}
 				else
@@ -755,23 +756,67 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					}
 					Delay_Attribute[npc.index] = gameTime + 1.0;
 					I_cant_do_this_all_day[npc.index] = 3;
+					CreateEarthquake(vOrigin, 0.5, 350.0, 16.0, 255.0);
 				}
 				else if(npc.m_flHuscarlsRushDuration < gameTime)
 				{
-					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, ToTheMoon);
-					npc.SetVelocity({0.0,0.0,1500.0});
-					for(int client_check=1; client_check<=MaxClients; client_check++)
+					static float flMyPos[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
+					static float hullcheckmaxs[3];
+					static float hullcheckmins[3];
+
+					//Defaults:
+					//hullcheckmaxs = view_as<float>( { 24.0, 24.0, 72.0 } );
+					//hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
+
+					hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
+					hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
+				
+					if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
 					{
-						if(IsValidClient(client_check) && Frozen_Player[client_check])
-						{
-							TF2_AddCondition(client_check, TFCond_LostFooting, 1.0);
-							TF2_AddCondition(client_check, TFCond_AirCurrent, 1.0);
-							SetEntityCollisionGroup(client_check, 5);
-							Frozen_Player[client_check]=false;
-						}
+						float flPos[3];
+						float flAng[3];
+						int Particle_1;
+						int Particle_2;
+						npc.GetAttachment("foot_L", flPos, flAng);
+						Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_L", {0.0,0.0,0.0});
+						
+
+						npc.GetAttachment("foot_R", flPos, flAng);
+						Particle_2 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_R", {0.0,0.0,0.0});
+					
+						CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_2), TIMER_FLAG_NO_MAPCHANGE);
+						
+						static float flMyPos_2[3];
+						flMyPos[2] += 800.0;
+						WorldSpaceCenter(target, flMyPos_2);
+
+						flMyPos[0] = flMyPos_2[0];
+						flMyPos[1] = flMyPos_2[1];
+						PluginBot_Jump(npc.index, flMyPos);
+						Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, ToTheMoon);
+						SetEntityCollisionGroup(npc.index, 1);
+						Delay_Attribute[npc.index] = gameTime + 2.0;
+						I_cant_do_this_all_day[npc.index] = 2;
 					}
-					Delay_Attribute[npc.index] = gameTime + 2.0;
-					I_cant_do_this_all_day[npc.index] = 2;
+					else
+					{
+						Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, Compressor);
+						for(int client_check=1; client_check<=MaxClients; client_check++)
+						{
+							if(IsValidClient(client_check) && Frozen_Player[client_check])
+							{
+								TF2_AddCondition(client_check, TFCond_LostFooting, 1.0);
+								TF2_AddCondition(client_check, TFCond_AirCurrent, 1.0);
+								SetEntityCollisionGroup(client_check, 5);
+								Frozen_Player[client_check]=false;
+							}
+						}
+						Delay_Attribute[npc.index] = gameTime + 1.0;
+						I_cant_do_this_all_day[npc.index] = 3;
+						CreateEarthquake(vOrigin, 0.5, 350.0, 16.0, 255.0);
+					}
 				}
 				else
 				{
@@ -783,16 +828,32 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
-					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, Ground_pound);
+					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 400.0, _, _, true, _, false, _, Ground_pound);
 					npc.SetVelocity({0.0,0.0,-1500.0});
 					Delay_Attribute[npc.index] = gameTime + 1.0;
 					I_cant_do_this_all_day[npc.index] = 3;
+					static float vOrigin[3], vAngles[3], tOrigin[3];
+					WorldSpaceCenter(npc.index, vOrigin);
+					vAngles[0]=90.0;
+					EntityLookPoint(npc.index, vAngles, vOrigin, tOrigin);
+					CreateEarthquake(tOrigin, 0.5, 350.0, 16.0, 255.0);
 				}
 			}
 			case 3:
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 					I_cant_do_this_all_day[npc.index] = 4;
+				SetEntityCollisionGroup(npc.index, 5);
+				for(int client_check=1; client_check<=MaxClients; client_check++)
+				{
+					if(IsValidClient(client_check) && Frozen_Player[client_check])
+					{
+						TF2_AddCondition(client_check, TFCond_LostFooting, 1.0);
+						TF2_AddCondition(client_check, TFCond_AirCurrent, 1.0);
+						SetEntityCollisionGroup(client_check, 5);
+						Frozen_Player[client_check]=false;
+					}
+				}
 			}
 			case 4:
 			{
@@ -841,7 +902,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 							if(DynamicCharger[npc.index]>0.0 && npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 							{
 								damage+=DynamicCharger[npc.index];
-								if(damagebasic*15.0>damage)damage=damagebasic*15.0;
+								if(damage>damagebasic*5.0)damage=damagebasic*5.0;
 								DynamicCharger[npc.index]=0.0;
 								ExtinguishTarget(npc.m_iWearable2);
 								CreateEarthquake(VecEnemy, 0.5, 350.0, 16.0, 255.0);
@@ -985,6 +1046,7 @@ static void Compressor(int entity, int victim, float damage, int weapon)
 					TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
 				}
 				else FreezeNpcInTime(victim, 1.0, true);
+				Custom_Knockback(npc.index, victim, 1500.0, true);
 			}
 		}
 	}
@@ -1005,8 +1067,8 @@ static void ToTheMoon(int entity, int victim, float damage, int weapon)
 				fVelocity[2] = 1000.0;
 				if(IsValidClient(victim))
 				{
-					TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
-					TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
+					TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 2.0, 0);
+					TF2_AddCondition(victim, TFCond_CompetitiveLoser, 2.0, 0);
 					TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, fVelocity);
 				}
 				else
@@ -1036,7 +1098,7 @@ static void Ground_pound(int entity, int victim, float damage, int weapon)
 				damage += ReturnEntityMaxHealth(victim)*0.05;
 				SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 				float fVelocity[3];
-				fVelocity[2] = -1500.0;
+				fVelocity[2] = -2000.0;
 				if(IsValidClient(victim))
 				{
 					TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
