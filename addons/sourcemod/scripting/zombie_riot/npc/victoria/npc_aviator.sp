@@ -73,6 +73,12 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 }
 methodmap Aviator < CClotBody
 {
+	property int i_GunMode
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+	
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
