@@ -476,7 +476,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		if(Ally != TFTeam_Red)
 		{
-			AddNpcToAliveList(npc, npc.m_bStaticNPC ? 1 : 0);
+			AddNpcToAliveList(npc, b_StaticNPC[npc] ? 1 : 0);
 		}
 #else
 		AddNpcToAliveList(npc, 0);
