@@ -195,14 +195,19 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(npc.m_PaybackAnimation)
 	{
-		if(npc.m_iChanged_WalkCycle != 2)
+		if(!npc.Anger)
 		{
-			npc.m_bisWalking = false;
-			npc.m_iChanged_WalkCycle = 2;
-			npc.SetActivity("ACT_MUDROCK_RAGE");
-			NPC_StopPathing(npc.index);
-			npc.m_flSpeed = 0.0;
+			if(npc.m_iChanged_WalkCycle != 2)
+			{
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 2;
+				npc.SetActivity("ACT_MUDROCK_RAGE");
+				NPC_StopPathing(npc.index);
+				npc.m_flSpeed = 0.0;
+			}
+			npc.Anger = true;
 		}
+		
 		if(npc.m_PaybackAnimation < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn)
 		{
 			npc.m_PaybackAnimation = 0.0;
@@ -294,7 +299,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
 	{
 		npc.m_PaybackAnimation = GetGameTime(npc.index) + 5.0;
-		npc.Anger = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 	}
 	
