@@ -98,7 +98,8 @@ void ConVar_PluginStart()
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Debug", FCVAR_DONTRECORD);
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
-	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "1.0", "How long zombie spawn protection lasts for.");
+	//default should be 0.1
+	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.1", "How long zombie spawn protection lasts for.");
 	
 	//CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);

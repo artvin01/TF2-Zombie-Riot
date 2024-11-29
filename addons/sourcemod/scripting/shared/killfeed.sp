@@ -35,6 +35,7 @@ void AdjustBotCount()
 {
 	return;
 	/*
+	SpawningBot = true;
 	int botcount = 0;
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -50,10 +51,11 @@ void AdjustBotCount()
 	}
 	for(int loop = 1; loop <= 20; loop++)
 	{
-		if(botcount < 2)
+		if(botcount <= 1)
 		{
-			int botadded = SpawnBotCustom("bot1", true);
-			SetTeam(botadded, TFTeam_Blue);
+			SpawnBotCustom("bot1", true);
+		//	int botadded = SpawnBotCustom("bot1", true);
+		//	SetTeam(botadded, TFTeam_Blue);
 			botcount++;	
 		}
 		else
@@ -61,6 +63,7 @@ void AdjustBotCount()
 			break;
 		}
 	}
+	SpawningBot = false;
 	*/
 }
 

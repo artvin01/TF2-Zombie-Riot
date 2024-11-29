@@ -159,7 +159,8 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #define FAR_FUTURE	100000000.0
 #define MAXENTITIES	2048
-#define MAXTF2PLAYERS	36
+#define MAXTF2PLAYERS	101
+//double for 100 player support????
 
 #define    HIDEHUD_WEAPONSELECTION        ( 1<<0 )    // Hide ammo count & weapon selection
 #define    HIDEHUD_FLASHLIGHT            ( 1<<1 )
@@ -933,7 +934,6 @@ Handle g_hGetSolidMask;
 //Handle g_hGetCurrencyValue;
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 
-Handle gH_BotAddCommand = INVALID_HANDLE;
 
 int CurrentGibCount = 0;
 float f_GibHealingAmount[MAXENTITIES];
@@ -2191,12 +2191,23 @@ public void OnClientPutInServer(int client)
 			b_IsPlayerABot[client] = true;
 			return;
 		}
-		if(!SpawningBot)
+		/*	
+			We will abuse mvm bot spawn logic!
+			Only allow 2 bots!
+		*/	
+		int botcount;
+		for(int clientloop = 1; clientloop <= MaxClients; clientloop++)
 		{
-			KickClient(client);
-			return;
+			if(IsClientInGame(clientloop) && IsFakeClient(clientloop) && !IsClientSourceTV(clientloop))
+			{
+				botcount += 1;
+				if(botcount > 2)
+				{
+					KickClient(client);
+					return;
+				}
+			}
 		}
-		SpawningBot = false;
 		ChangeClientTeam(client, TFTeam_Blue);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
