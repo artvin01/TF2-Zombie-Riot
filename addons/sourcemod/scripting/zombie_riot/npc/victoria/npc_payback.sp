@@ -163,10 +163,11 @@ methodmap VictorianPayback < CClotBody
 		SetVariantString("2.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
-		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_commando_elite/fall17_commando_elite.mdl");
-		SetVariantString("2.0");
+		npc.m_iWearable7 = npc.EquipItem("partyhat", "models/player/items/mvm_loot/heavy/robo_ushanka.mdl");
+		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
+		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable7, 125, 125, 255, 255);
 
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 255, 255, 255);
