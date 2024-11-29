@@ -86,6 +86,7 @@ static const char g_MeleeMissSounds[][] = {
 static float f_PlayerScalingBuilding;
 static int i_currentwave[MAXENTITIES];
 static bool AllyIsBoundToVillage[MAXENTITIES];
+static int NPCId;
 
 void ResetBoundVillageAlly(int entity)
 {
@@ -110,7 +111,12 @@ void MedivalBuilding_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Medieval;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int MedivalBuilding_Id()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -454,7 +460,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-			if (IsValidEntity(entity) && i_NpcInternalId[entity] == MedivalVillager_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
+			if (IsValidEntity(entity) && (i_NpcInternalId[entity] == MedivalVillager_ID() || (Citizen_IsIt(entity) && view_as<Citizen>(entity).m_iClassRole == 1)) && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
 				villagerexists = true;
 			}
