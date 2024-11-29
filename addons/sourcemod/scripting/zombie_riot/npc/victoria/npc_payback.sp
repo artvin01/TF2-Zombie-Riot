@@ -167,10 +167,11 @@ methodmap VictorianPayback < CClotBody
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable7, 125, 125, 255, 255);
+		SetEntityRenderColor(npc.m_iWearable7, 200, 200, 255, 255);
 
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 255, 255, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
 		
 
 		return npc;
