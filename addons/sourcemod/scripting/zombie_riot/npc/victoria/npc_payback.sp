@@ -167,6 +167,9 @@ methodmap VictorianPayback < CClotBody
 		SetVariantString("2.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
+
+		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 125, 255, 255, 255);
 		
 
 		return npc;
@@ -217,7 +220,7 @@ static void Internal_ClotThink(int iNPC)
 
 			DesertYadeamDoHealEffect(npc.index, 250.0);
 			IgniteTargetEffect(npc.index);
-			
+
 			if(IsValidEntity(npc.m_iWearable4))
 			{
 				RemoveEntity(npc.m_iWearable4);
