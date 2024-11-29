@@ -238,6 +238,7 @@ public void Aviator_ClotThink(int iNPC)
 			b_StaticNPC[other] = b_StaticNPC[npc.index];
 			view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
 		}
+		SmiteNpcToDeath(npc.index);
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))

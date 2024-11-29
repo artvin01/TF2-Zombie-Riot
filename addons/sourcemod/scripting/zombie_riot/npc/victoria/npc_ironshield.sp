@@ -362,7 +362,6 @@ public void VictorianIronShield_NPCDeath(int entity)
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	int team = GetTeam(npc.index);
 
-	float Health = float(ReturnEntityMaxHealth(npc.index) / 6);
 	float MaxHealth = float(ReturnEntityMaxHealth(npc.index) / 3);	
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -374,8 +373,8 @@ public void VictorianIronShield_NPCDeath(int entity)
 		if(team != TFTeam_Red)
 			Zombies_Currently_Still_Ongoing++;
 		
-		SetEntProp(other, Prop_Data, "m_iHealth", health);
-		SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(other, Prop_Data, "m_iHealth", MaxHealth);
+		SetEntProp(other, Prop_Data, "m_iMaxHealth", MaxHealth);
 		
 		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 1.33;
 		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 1.54;
