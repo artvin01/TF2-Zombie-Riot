@@ -1382,6 +1382,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
 						SpawnTimer(30.0);
 					}
+					Citizen_SetupStart();
 				}
 				Music_EndLastmann();
 				ReviveAll(true);

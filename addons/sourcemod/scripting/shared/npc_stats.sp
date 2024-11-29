@@ -476,7 +476,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		if(Ally != TFTeam_Red)
 		{
-			AddNpcToAliveList(npc, 0);
+			AddNpcToAliveList(npc, npc.m_bStaticNPC ? 1 : 0);
 		}
 #else
 		AddNpcToAliveList(npc, 0);
@@ -1566,7 +1566,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 			if(f_PotionShrinkEffect[this.index] > Gametime)
 			{
-				speed_for_return *= 0.9;
+				speed_for_return *= 0.5;
 			}
 			
 			if(f_HighIceDebuff[this.index] > Gametime)
