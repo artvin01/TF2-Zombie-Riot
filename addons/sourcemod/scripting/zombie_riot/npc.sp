@@ -1740,5 +1740,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_radio_repair.sp"
 
 //raidbosses
-#include "zombie_riot/npc/raidmode_bosses/npc_the_atomizer.sp"
+#include "zombie_riot/npc/raidmode_bosses/victoria/npc_the_atomizer.sp"
 //#include "zombie_riot/npc/raidmode_bosses/npc_the_wall.sp"
