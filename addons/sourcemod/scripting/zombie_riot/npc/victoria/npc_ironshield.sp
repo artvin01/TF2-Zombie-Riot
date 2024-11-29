@@ -364,7 +364,7 @@ public void VictorianIronShield_NPCDeath(int entity)
 	int team = GetTeam(npc.index);
 
 	int MaxHealth = float(ReturnEntityMaxHealth(npc.index));
-	MaxHealth *= 0.33;	
+	MaxHealth = MaxHealth/3;	
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
