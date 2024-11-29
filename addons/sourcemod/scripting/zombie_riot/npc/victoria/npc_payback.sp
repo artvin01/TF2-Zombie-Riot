@@ -227,7 +227,7 @@ static void Internal_ClotThink(int iNPC)
 			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 			flMaxhealth *= 0.20;
 			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);
-			GrantEntityArmor(npc.index, false, 1.5, 0.01, 0, fixedArmorgain);
+			GrantEntityArmor(npc.index, false, 1.5, 0.01, 0);
 			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "special_weapon_effect", {0.0,0.0,0.0});
 			b_NpcIsInvulnerable[npc.index] = false;
 			b_NpcUnableToDie[npc.index]=false;
