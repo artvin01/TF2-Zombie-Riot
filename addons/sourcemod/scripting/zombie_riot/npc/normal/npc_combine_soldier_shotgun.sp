@@ -79,7 +79,7 @@ public void CombineSoldierShotgun_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Shotgunner");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Shotgunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_shotgun");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_shotgun");
 	data.IconCustom = true;
@@ -89,9 +89,9 @@ public void CombineSoldierShotgun_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineSoldierShotgun(client, vecPos, vecAng, ally);
+	return CombineSoldierShotgun(vecPos, vecAng, team);
 }
 
 methodmap CombineSoldierShotgun < CClotBody
@@ -141,32 +141,24 @@ methodmap CombineSoldierShotgun < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -176,7 +168,7 @@ methodmap CombineSoldierShotgun < CClotBody
 	}
 	
 	
-	public CombineSoldierShotgun(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineSoldierShotgun(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "650", ally));
 		
@@ -221,8 +213,7 @@ methodmap CombineSoldierShotgun < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineSoldierShotgun_ClotThink(int iNPC)
 {
 	CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(iNPC);

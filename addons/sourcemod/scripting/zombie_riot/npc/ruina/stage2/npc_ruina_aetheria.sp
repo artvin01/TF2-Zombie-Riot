@@ -74,9 +74,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/sniper.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Aetheria(client, vecPos, vecAng, ally);
+	return Aetheria(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -134,9 +134,7 @@ methodmap Aetheria < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
@@ -174,7 +172,7 @@ methodmap Aetheria < CClotBody
 	}
 	
 	
-	public Aetheria(int client, float vecPos[3], float vecAng[3], int ally)
+	public Aetheria(float vecPos[3], float vecAng[3], int ally)
 	{
 		Aetheria npc = view_as<Aetheria>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1250", ally));
 
@@ -195,6 +193,9 @@ methodmap Aetheria < CClotBody
 			//Triggerman's tacticals	"models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl"
 		
 		*/
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -247,8 +248,7 @@ methodmap Aetheria < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Aetheria npc = view_as<Aetheria>(iNPC);
@@ -433,12 +433,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 			//This will predict as its relatively easy to dodge
 			float projectile_speed = 2000.0;
 			//lets pretend we have a projectile.
-			if(flDistanceToTarget < 750.0*750.0)
-				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-			{
-				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
-			}
+			WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 			float DamageDone = 50.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
@@ -468,12 +463,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 					//This will predict as its relatively easy to dodge
 					float projectile_speed = 2000.0;
 					//lets pretend we have a projectile.
-					if(flDistanceToTarget < 750.0*750.0)
-						PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-					{
-						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
-					}
+					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 					float DamageDone = 50.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);

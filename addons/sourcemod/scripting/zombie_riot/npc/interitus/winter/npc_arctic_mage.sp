@@ -58,9 +58,9 @@ void WinterArcticMage_OnMapStart_NPC()
 	Rogue_Paradox_AddWinterNPC(id);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WinterArcticMage(client, vecPos, vecAng, ally);
+	return WinterArcticMage(vecPos, vecAng, team);
 }
 
 methodmap WinterArcticMage < CClotBody
@@ -102,7 +102,7 @@ methodmap WinterArcticMage < CClotBody
 	}
 	
 	
-	public WinterArcticMage(int client, float vecPos[3], float vecAng[3], int ally)
+	public WinterArcticMage(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterArcticMage npc = view_as<WinterArcticMage>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "15000", ally, false, true));
 		
@@ -125,9 +125,7 @@ methodmap WinterArcticMage < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(WinterArcticMage_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(WinterArcticMage_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
 		

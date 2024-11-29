@@ -87,9 +87,9 @@ public void XenoSpyCloaked_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoSpyCloaked(client, vecPos, vecAng, ally);
+	return XenoSpyCloaked(vecPos, vecAng, team);
 }
 methodmap XenoSpyCloaked < CClotBody
 {
@@ -142,16 +142,12 @@ methodmap XenoSpyCloaked < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
@@ -167,7 +163,7 @@ methodmap XenoSpyCloaked < CClotBody
 	}
 	
 	
-	public XenoSpyCloaked(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSpyCloaked(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSpyCloaked npc = view_as<XenoSpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "20000", ally));
 		
@@ -205,9 +201,7 @@ methodmap XenoSpyCloaked < CClotBody
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		
-		npc.m_iState = 0;
+
 		npc.m_flSpeed = 290.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -245,8 +239,7 @@ methodmap XenoSpyCloaked < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSpyCloaked_ClotThink(int iNPC)
 {
 	XenoSpyCloaked npc = view_as<XenoSpyCloaked>(iNPC);

@@ -82,9 +82,9 @@ static void ClotPrecache()
 	
 	PrecacheModel("models/player/engineer.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Astria(client, vecPos, vecAng, ally);
+	return Astria(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -143,16 +143,12 @@ methodmap Astria < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -167,7 +163,7 @@ methodmap Astria < CClotBody
 	}
 	
 	
-	public Astria(int client, float vecPos[3], float vecAng[3], int ally)
+	public Astria(float vecPos[3], float vecAng[3], int ally)
 	{
 		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
 		
@@ -177,6 +173,9 @@ methodmap Astria < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
 		/*
@@ -250,8 +249,7 @@ methodmap Astria < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Astria npc = view_as<Astria>(iNPC);
@@ -310,9 +308,12 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		npc.m_flNextTeleport = GameTime + 30.0;
+		npc.m_flNextTeleport = GameTime + 60.0;
 
-		Astria_Teleport_Allies(npc.index, 350.0, {20, 150, 255, 150});
+		//Astria_Teleport_Allies(npc.index, 350.0, {20, 150, 255, 150});
+
+		Master_Apply_Defense_Buff(npc.index, 300.0, 15.0, 0.10);	//10% resistances
+		//a long lasting defense buff.
 
 		Ruina_Master_Release_Slaves(npc.index);
 	}
@@ -339,8 +340,6 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		return Plugin_Continue;
 
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-	Ruina_Add_Battery(npc.index, damage*0.75);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

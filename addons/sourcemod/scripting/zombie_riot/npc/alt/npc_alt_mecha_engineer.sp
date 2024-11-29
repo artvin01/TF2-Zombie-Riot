@@ -66,9 +66,9 @@ void Mecha_Engineer_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Mecha_Engineer(client, vecPos, vecAng, ally);
+	return Mecha_Engineer(vecPos, vecAng, team);
 }
 
 methodmap Mecha_Engineer < CClotBody
@@ -116,16 +116,12 @@ methodmap Mecha_Engineer < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -135,7 +131,7 @@ methodmap Mecha_Engineer < CClotBody
 	}
 	
 	
-	public Mecha_Engineer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Mecha_Engineer(float vecPos[3], float vecAng[3], int ally)
 	{
 		Mecha_Engineer npc = view_as<Mecha_Engineer>(CClotBody(vecPos, vecAng, "models/bots/engineer/bot_engineer.mdl", "1.0", "2500", ally));
 		
@@ -182,8 +178,7 @@ methodmap Mecha_Engineer < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Mecha_Engineer npc = view_as<Mecha_Engineer>(iNPC);

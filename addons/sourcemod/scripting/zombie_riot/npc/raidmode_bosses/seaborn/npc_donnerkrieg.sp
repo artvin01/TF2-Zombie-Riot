@@ -141,7 +141,7 @@ static bool b_Crystal_Thrown;
 static int i_crystal_index;
 bool donner_sea_created;
 
-static bool b_angered_twice[MAXENTITIES];
+
 
 static bool b_tripple_raid[MAXENTITIES];
 //static float fl_divine_intervention_retry;
@@ -229,9 +229,9 @@ static void ClotPrecache()
 	PrecacheSound("ambient/energy/whiteflash.wav", true);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Raidboss_Donnerkrieg(client, vecPos, vecAng, ally, data);
+	return Raidboss_Donnerkrieg(vecPos, vecAng, team, data);
 }
 
 methodmap Raidboss_Donnerkrieg < CClotBody
@@ -287,7 +287,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 	}
-	public Raidboss_Donnerkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Raidboss_Donnerkrieg(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 
@@ -340,7 +340,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 
 		donner_sea_created=false;
 		
-		RaidModeTime = GetGameTime(npc.index) + 250.0;
+		RaidModeTime = GetGameTime() + 250.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 
@@ -358,7 +358,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
 		if(amount_of_people > 12.0)
 		{
@@ -496,7 +496,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		Heavens_Light_Active[npc.index]=false;
 		fl_heavens_light_use_timer[npc.index] = GameTime + 60.0;
 		b_force_heavens_light[npc.index] = false;
-		//Invoke_Heavens_Light(npc, GameTime);
+		//Invoke_Heavens_Light(npc);
 
 		fl_heavens_fall_use_timer[npc.index] = GameTime + 30.0;
 
@@ -596,6 +596,8 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
+			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
 		}
 	}
 }
@@ -637,8 +639,7 @@ static void Calculate_Combined_Health(Raidboss_Donnerkrieg npc)
 	}
 }*/
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);
@@ -829,13 +830,14 @@ static void Internal_ClotThink(int iNPC)
 				fl_heavens_light_use_timer[npc.index] = GameTime + 75.0;
 				if(b_tripple_raid[npc.index])
 					fl_heavens_light_use_timer[npc.index] = GameTime + 120.0;
+
 				Heavens_Light_Active[npc.index]=true;
 
-				Invoke_Heavens_Light(npc, GameTime);
+				Invoke_Heavens_Light(npc);
 			}
 			if(npc.m_flAttackHappens > GameTime)
 			{
-				if(fl_normal_attack_duration[npc.index] < GetGameTime())
+				if(fl_normal_attack_duration[npc.index] < GetGameTime(npc.index))
 					npc.FaceTowards(vecTarget, 5000.0);
 			}
 
@@ -905,7 +907,7 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 
 	npc.m_flSpeed = 300.0;
 
-	if(npc.m_bAllowBackWalking && fl_normal_attack_duration[npc.index] < GetGameTime())
+	if(npc.m_bAllowBackWalking && fl_normal_attack_duration[npc.index] < GetGameTime(npc.index))
 		npc.FaceTowards(vecTarget, 20000.0);
 
 	if(fl_backwards_failsafe[npc.index] < GameTime)
@@ -935,7 +937,7 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 
 				npc.StartPathing();
 				npc.m_bPathing = true;
-				if(fl_normal_attack_duration[npc.index] < GetGameTime())
+				if(fl_normal_attack_duration[npc.index] < GetGameTime(npc.index))
 					npc.FaceTowards(vecTarget, 20000.0);
 			}
 			else
@@ -944,7 +946,7 @@ static void Donner_Movement(int client, int PrimaryThreatIndex, float GameTime)
 				npc.m_bPathing = false;
 				npc.m_bAllowBackWalking=false;
 
-				if(fl_normal_attack_duration[npc.index] < GetGameTime())
+				if(fl_normal_attack_duration[npc.index] < GetGameTime(npc.index))
 					npc.FaceTowards(vecTarget, 500.0);
 			}
 		}
@@ -1104,29 +1106,32 @@ static bool b_touchdown;
 
 
 
-static void Invoke_Heavens_Light(Raidboss_Donnerkrieg npc, float GameTime)
+static void Invoke_Heavens_Light(Raidboss_Donnerkrieg npc)
 {
 	float Heavens_Duration;
 	fl_heavens_damage = 15.0 * RaidModeScaling;
 	fl_heavens_charge_time = 10.0;
-	Heavens_Duration = 30.0;
-	fl_heavens_radius = 150.0;	//This is per individual beam
-	fl_heavens_speed = 2.5;
+	Heavens_Duration = 25.0;
+	fl_heavens_radius = 125.0;	//This is per individual beam
+	fl_heavens_speed = 2.0;
 
 	b_touchdown = false;
 
-	fl_heavens_light_duration = GameTime + Heavens_Duration+fl_heavens_charge_time;
+	fl_heavens_light_duration = GetGameTime() + Heavens_Duration+fl_heavens_charge_time;
 	
 	Zero(i_heavens_target_id);
 	Zero(fl_heavens_rng_loc_timer);
 	fl_Heavens_Angle = 0.0;
 	
-	fl_heavens_charge_gametime = fl_heavens_charge_time + GameTime;
+	fl_heavens_charge_gametime = fl_heavens_charge_time + GetGameTime();	//if this STILL somehow insta charges, HOW?????????
+
+	//CPrintToChatAll("Timer start: %f", (fl_heavens_charge_gametime-GameTime));
 
 	EmitSoundToAll(DONNERKRIEG_HEAVENS_LIGHT_START_SOUND);
 
 	Heavens_Light_Active[npc.index] = true;
 	
+	SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
 	SDKHook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
 }
 
@@ -1135,7 +1140,7 @@ public Action Heavens_TBB_Tick(int client)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
 
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 
 	if(fl_heavens_light_duration<GameTime)
 	{
@@ -1149,17 +1154,19 @@ public Action Heavens_TBB_Tick(int client)
 	}
 
 	//TE_used=0;
+
+	//CPrintToChatAll("Timer charging: %f", (fl_heavens_charge_gametime-GameTime));
 	
-	if(fl_heavens_charge_gametime>GameTime)
+	if(fl_heavens_charge_gametime>GetGameTime())
 	{
-		float Ratio =(fl_heavens_charge_gametime - GameTime) / fl_heavens_charge_time;	//L + Ratio	//anyway, we get the ratio of how long until game time is caughtup with charge time, once fully caught up ,the ratio is well 0, once its started, the ratio is 1.0
+		float Ratio =(fl_heavens_charge_gametime - GetGameTime()) / fl_heavens_charge_time;	//L + Ratio	//anyway, we get the ratio of how long until game time is caughtup with charge time, once fully caught up ,the ratio is well 0, once its started, the ratio is 1.0
 		Heavens_Light_Charging(npc.index, Ratio);
 	}
 	else
 	{
 		for(int player=0 ; player <=MAXTF2PLAYERS ; player++)
 		{
-			if(fl_was_targeted[player]< GameTime)	//make it so heavens light doesn't just target 1 singular player making 1 beam of fucking death and destruction thats really bright
+			if(fl_was_targeted[player]< GetGameTime())	//make it so heavens light doesn't just target 1 singular player making 1 beam of fucking death and destruction thats really bright
 			{
 				b_targeted_by_heavens[player]=false;
 			}
@@ -1570,7 +1577,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 
 			float Turn_Speed = (250.0*Ratio);
 
-			if(fl_normal_attack_duration[npc.index] < GetGameTime())
+			if(fl_normal_attack_duration[npc.index] < GetGameTime(npc.index))
 				npc.FaceTowards(vecTarget, Turn_Speed);
 		}
 		NPC_StopPathing(npc.index);
@@ -2564,7 +2571,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 		
 		float vecNPC[3];
 		GetEntPropVector(crystal, Prop_Data, "m_vecAbsOrigin", vecNPC);
-		if(fl_normal_attack_duration[npc.index] < GetGameTime())
+		if(fl_normal_attack_duration[npc.index] < GetGameTime(npc.index))
 			npc.FaceTowards(vecNPC, 750.0);
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -2655,6 +2662,12 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	if(fl_spinning_angle[npc.index]>=360.0)
 		fl_spinning_angle[npc.index] = 0.0;
 
+	if(NpcStats_IsEnemySilenced(npc.index))
+	{
+		speed *=0.9;
+		crystal_turn_speed *=0.9;
+	}
+
 	float Start_Loc[3];
 
 	Get_Fake_Forward_Vec(30.0, angles, Start_Loc, Pos);
@@ -2699,7 +2712,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 
 			float diameter = radius *0.75;
 
-			if(fl_end_vec[0] != 0.0 || fl_end_vec[1] != 0.0 || fl_end_vec[2] != 0.0)
+			if((fl_end_vec[0] != 0.0 || fl_end_vec[1] != 0.0 || fl_end_vec[2] != 0.0) && i_crystal_index != -1)
 			{
 				endPoint=fl_end_vec;
 				Dist = GetVectorDistance(Start_Loc, endPoint);
@@ -3074,7 +3087,8 @@ static float fl_crystal_direct_dmg[MAXENTITIES];
 //Crystaline Reflection:
 public void Donnerkrieg_Invoke_Crstaline_Reflection(int client, float Target[3], bool hover, float speed)	//schwert can throw this. :) but I didn't do that.
 {
-	fl_force_kill_crystal_timer = GetGameTime() +3.75;
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
+	fl_force_kill_crystal_timer = GetGameTime(npc.index) +3.75;
 	for(int i=0 ; i <=MAXTF2PLAYERS ; i++)
 	{
 		if(IsValidClient(i))
@@ -3529,21 +3543,28 @@ public void Donner_Neural_Tweak_shake(int entity, int victim, float damage, int 
 
 static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 {
-	Handle trace; 
-	
-	float pos_enemy[3];
-	WorldSpaceCenter(enemy, pos_enemy);
+	Ruina_Laser_Logic Laser;
+	Laser.client = attacker;
+	Laser.Start_Point = pos_npc;
 
-	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, attacker);
-	int Traced_Target;
-		
-//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-//	TE_SetupBeamPoints(pos_npc, pos_enemy, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-//	TE_SendToAll();
-		
-	Traced_Target = TR_GetEntityIndex(trace);
-	delete trace;
-	return Traced_Target;
+	float Enemy_Loc[3], vecAngles[3];
+	//get the enemy gamer's location.
+	GetAbsOrigin(enemy, Enemy_Loc);
+	//get the angles from the current location of the crystal to the enemy gamer
+	MakeVectorFromPoints(pos_npc, Enemy_Loc, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+	//get the estimated distance to the enemy gamer,
+	float Dist = GetVectorDistance(Enemy_Loc, pos_npc);
+	//do a trace from the current location of the crystal to the enemy gamer.
+	Laser.DoForwardTrace_Custom(vecAngles, pos_npc, Dist);	//alongside that, use the estimated distance so that our end location from the trace is where the player is.
+
+	float Trace_Loc[3];
+	Trace_Loc = Laser.End_Point;	//get the end location of the trace.
+	//see if the vectors match up, if they do we can safely say the enemy gamer is in sight of the crystal.
+	if(Similar_Vec(Trace_Loc, Enemy_Loc))
+		return enemy;
+	else
+		return -1;
 }
 
 

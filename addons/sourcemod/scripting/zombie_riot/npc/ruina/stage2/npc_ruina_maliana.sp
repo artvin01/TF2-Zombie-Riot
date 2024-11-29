@@ -68,9 +68,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel("models/player/engineer.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Maliana(client, vecPos, vecAng, ally);
+	return Maliana(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -128,19 +128,15 @@ methodmap Maliana < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
-	public Maliana(int client, float vecPos[3], float vecAng[3], int ally)
+	public Maliana(float vecPos[3], float vecAng[3], int ally)
 	{
 		Maliana npc = view_as<Maliana>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -152,6 +148,9 @@ methodmap Maliana < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 0;
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		/*
 			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
@@ -218,8 +217,7 @@ methodmap Maliana < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Maliana npc = view_as<Maliana>(iNPC);
@@ -255,8 +253,8 @@ static void ClotThink(int iNPC)
 
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	
-	
-	if(fl_ruina_battery[npc.index]>500.0)
+	float radius = 250.0;
+	if(fl_ruina_battery[npc.index]>500.0 && fl_ruina_battery_timer[npc.index] < GameTime)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
@@ -269,7 +267,7 @@ static void ClotThink(int iNPC)
 		i_NpcWeight[npc.index] = 999;
 		npc.m_flSpeed = 0.0;
 
-		TE_SetupBeamRingPoint(Npc_Vec, 250*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
+		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
 		TE_SendToAll();
 
 		npc.m_flRangedArmor = 0.5;
@@ -282,7 +280,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Battery_Buff(npc.index, 250.0, 30.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
+		Master_Apply_Battery_Buff(npc.index, radius, 30.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
 
 		if(fl_ruina_battery_timer[npc.index] < GameTime + 3.0 && !npc.Anger && fl_ruina_battery_timer[npc.index] > GameTime + 2.0)
 		{

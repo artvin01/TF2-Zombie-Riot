@@ -51,9 +51,9 @@ stock int KahmlsteinFollower_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return KahmlsteinFollower(client, vecPos, vecAng, ally, data);
+	return KahmlsteinFollower(vecPos, vecAng, team, data);
 }
 
 static Action KahmlsteinFollower_SpeechTimer(Handle timer, DataPack pack)
@@ -195,7 +195,7 @@ methodmap KahmlsteinFollower < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
-	public KahmlsteinFollower(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+	public KahmlsteinFollower(float vecPos[3], float vecAng[3],int ally, const char[] data)
 	{
 		KahmlsteinFollower npc = view_as<KahmlsteinFollower>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "50000", TFTeam_Red, true, true));
 		

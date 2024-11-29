@@ -53,9 +53,9 @@ void VoidMinigateKeeper_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidMinigateKeeper(client, vecPos, vecAng, ally);
+	return VoidMinigateKeeper(vecPos, vecAng, team);
 }
 methodmap VoidMinigateKeeper < CClotBody
 {
@@ -96,7 +96,7 @@ methodmap VoidMinigateKeeper < CClotBody
 	}
 	
 	
-	public VoidMinigateKeeper(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidMinigateKeeper(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidMinigateKeeper npc = view_as<VoidMinigateKeeper>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "2500", ally));
 		
@@ -119,9 +119,7 @@ methodmap VoidMinigateKeeper < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidMinigateKeeper_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		
@@ -232,7 +230,7 @@ public void VoidMinigateKeeper_NPCDeath(int entity)
 	
 	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 	//a spawnpoint that only lasts for 1 spawn
-	Void_PlaceZRSpawnpoint(VecSelfNpcabs, 0, 2, "utaunt_hands_purple_parent", 5, false);
+	Void_PlaceZRSpawnpoint(VecSelfNpcabs, 0, 2, "utaunt_hands_purple_parent", 5, false, 1);
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);

@@ -4,31 +4,37 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"{red}Gained {1} Chaos Instability!"
+		"ru"		"{red}Получено {1} Хаосовой нестабильности!"
 	}
 	"Lost Chaos"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Lost {1} Chaos Instability!"
+		"ru"		"{green}Потеряно {1} Хаосовой нестабильности!"
 	}
 	"Heavy Rain"
 	{
 		"en"	"Heavy Rain"
+		"ru"	"Тяжелый дождь"
 	}
 	"Heavy Rain Desc"
 	{
 		"en"	"{yellow}All units move 20%% slower, Seaborn units instead move 10%% faster"
+		"ru"	"{yellow}Все юниты двигають медленее на 20%%,Морерождённые двигаются на 10%% быстрее"
 	}
 	"Heavy Rain Lore"
 	{
 		"en"	"It begins to rain heavily, you can feel it's weight."
+		"ru"	"Начался ливень,Ты можешь почуствовать его тяжесть"
 	}
 	"Extreme Heat"
 	{
 		"en"	"Extreme Heat"
+		"ru"	"Экстремальная жара"
 	}
 	"Extreme Heat Desc"
 	{
-		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x2 slower and Al-Hallem units move 20%% faster"
+		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x1.25 slower and Al-Hallem units move 20%% faster"
 	}
 	"Extreme Heat Lore"
 	{
@@ -412,7 +418,7 @@
 	}
 	"Clairvoyant's Reveal Desc"
 	{
-		"en"	"There is no direction you can head to avoid misfortune.\n{yellow}Ally max health is randomly changed"
+		"en"	"There is no direction you can head to avoid misfortune.\n{green}Allies gain +25% max health {yellow}but max health is randomly swapped"
 	}
 	"Finshell Shield"
 	{
@@ -428,7 +434,7 @@
 	}
 	"Empty Fowlbeast Desc"
 	{
-		"en"	"{green}Limited lifetime allies gain +30%% max health and +30%% damage, the owner gains +60%% damage for 10 seconds when summoned."
+		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30%% max health and +30%% damage, the owner gains +60%% damage for 10 seconds when summoned."
 	}
 	"Acahuallan Bowl"
 	{
@@ -494,6 +500,15 @@
 	{
 		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shop encounters no longer appear"
 	}
+	"Bob's Duck"
+	{
+		"en"	"Bob's Duck"
+	}
+	"Bob's Duck Desc"
+	{
+		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25%% damage bonus, +25%% max health, +15%% firing speed, +15%% reload speed, +10%% damage resistance, Whoever the duck follows gains insane buffs."
+	}
+
 	"Missing Mountains"
 	{
 		"en"	"Missing Mountains"

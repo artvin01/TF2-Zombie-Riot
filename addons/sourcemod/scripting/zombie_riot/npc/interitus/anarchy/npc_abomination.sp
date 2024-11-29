@@ -44,9 +44,9 @@ void AnarchyAbomination_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnarchyAbomination(client, vecPos, vecAng, ally);
+	return AnarchyAbomination(vecPos, vecAng, team);
 }
 
 methodmap AnarchyAbomination < CClotBody
@@ -109,7 +109,7 @@ methodmap AnarchyAbomination < CClotBody
 		}
 	}
 	
-	public AnarchyAbomination(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyAbomination(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnarchyAbomination npc = view_as<AnarchyAbomination>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "500000", ally, false, true));
 		
@@ -135,9 +135,7 @@ methodmap AnarchyAbomination < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(AnarchyAbomination_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 290.0;
 		
@@ -217,16 +215,6 @@ public void AnarchyAbomination_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
-		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
-		}
-		else 
-		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-		}
 		if(npc.m_flCharge_delay < GetGameTime(npc.index))
 		{
 			if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
@@ -248,7 +236,38 @@ public void AnarchyAbomination_ClotThink(int iNPC)
 				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_2), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
-		AnarchyAbominationSelfDefense(npc); 
+		bool SpinSound = true;
+		int SetGoalVectorIndex = 0;
+		SetGoalVectorIndex = AnarchyAbominationSelfDefense(npc,SpinSound); 
+		
+		if(SpinSound)
+			npc.PlayMinigunSound(false);
+		
+		switch(SetGoalVectorIndex)
+		{
+			case 0:
+			{
+				npc.m_bAllowBackWalking = false;
+				//Get the normal prediction code.
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				}
+			}
+			case 1:
+			{
+				npc.m_bAllowBackWalking = true;
+				float vBackoffPos[3];
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
+				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+			}
+		}
 	}
 	else
 	{
@@ -277,6 +296,7 @@ public Action AnarchyAbomination_OnTakeDamage(int victim, int &attacker, int &in
 		//teutons dont change this.
 
 		npc.m_flSpeed = 290.0;
+		npc.Anger = false;
 		if(damagetype & DMG_CLUB)
 		{
 			if(!NpcStats_IsEnemySilenced(npc.index))
@@ -285,7 +305,7 @@ public Action AnarchyAbomination_OnTakeDamage(int victim, int &attacker, int &in
 				if(npc.m_flMeleeArmor < 0.05)
 				{
 					npc.m_flMeleeArmor = 0.05;
-					npc.m_flSpeed = 350.0;
+					npc.Anger = true;
 				}
 			}
 			
@@ -293,7 +313,7 @@ public Action AnarchyAbomination_OnTakeDamage(int victim, int &attacker, int &in
 			if(npc.m_flRangedArmor > 1.5)
 			{
 				npc.m_flRangedArmor = 1.5;
-				npc.m_flSpeed = 350.0;
+				npc.Anger = true;
 			}
 		}
 		else if(!(damagetype & DMG_SLASH))
@@ -301,14 +321,14 @@ public Action AnarchyAbomination_OnTakeDamage(int victim, int &attacker, int &in
 			npc.m_flRangedArmor -= 0.05;
 			if(npc.m_flRangedArmor < 0.05)
 			{
-				npc.m_flSpeed = 350.0;
+				npc.Anger = true;
 				npc.m_flRangedArmor = 0.05;
 			}
 			
 			npc.m_flMeleeArmor += 0.05;
 			if(npc.m_flMeleeArmor > 1.5)
 			{
-				npc.m_flSpeed = 350.0;
+				npc.Anger = true;
 				npc.m_flMeleeArmor = 1.5;
 			}
 		}
@@ -343,31 +363,86 @@ public void AnarchyAbomination_NPCDeath(int entity)
 
 }
 
-void AnarchyAbominationSelfDefense(AnarchyAbomination npc)
+int AnarchyAbominationSelfDefense(AnarchyAbomination npc, bool &SpinSound)
 {
 	int target;
 	target = npc.m_iTarget;
 	//some Ranged units will behave differently.
 	//not this one.
 	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-	bool SpinSound = true;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+	float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 	{
-		npc.PlayMinigunSound(true);
-		SpinSound = false;
-		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 15.0, 1000.0, 150.0, "superrare_burning1", true);
-		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
-		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
-		
-		SDKHook(projectile, SDKHook_StartTouch, AnarchyAbomination_Rocket_Particle_StartTouch);		
+		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				
+		if(IsValidEnemy(npc.index, Enemy_I_See))
+		{
+			npc.PlayMinigunSound(true);
+			SpinSound = false;
+			npc.FaceTowards(vecTarget, 20000.0);
+			float ProjectileSpeed = 1000.0;
+
+			int projectile;
+			
+			if(npc.Anger)
+			{
+				PredictSubjectPositionForProjectiles(npc, target, ProjectileSpeed, _,vecTarget);
+				projectile = npc.FireParticleRocket(vecTarget, 15.0, ProjectileSpeed, 150.0, "superrare_burning2", true);
+				static float ang_Look[3];
+				GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
+				Initiate_HomingProjectile(projectile,
+				npc.index,
+					90.0,			// float lockonAngleMax,
+					90.0,				//float homingaSec,
+					true,				// bool LockOnlyOnce,
+					true,				// bool changeAngles,
+					ang_Look,			
+					target); //home onto this enemy
+			}
+			else
+			{
+				projectile = npc.FireParticleRocket(vecTarget, 15.0, ProjectileSpeed, 150.0, "superrare_burning1", true);
+			}
+			SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+			int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+			
+			SDKHook(projectile, SDKHook_StartTouch, AnarchyAbomination_Rocket_Particle_StartTouch);			
+		}
+		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
+		{
+			//target is too far, try to close in
+			return 0;
+		}
+		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+		{
+			if(Can_I_See_Enemy_Only(npc.index, target))
+			{
+				//target is too close, try to keep distance
+				return 1;
+			}
+		}
+		return 0;
 	}
-	if(SpinSound)
-		npc.PlayMinigunSound(false);
+	else
+	{
+		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
+		{
+			//target is too far, try to close in
+			return 0;
+		}
+		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+		{
+			if(Can_I_See_Enemy_Only(npc.index, target))
+			{
+				//target is too close, try to keep distance
+				return 1;
+			}
+		}
+	}
+	return 0;
 }
 
 
@@ -396,7 +471,7 @@ public void AnarchyAbomination_Rocket_Particle_StartTouch(int entity, int target
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
 		if(ShouldNpcDealBonusDamage(target))
-			DamageDeal *= 5.0;
+			DamageDeal *= 7.5;
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 

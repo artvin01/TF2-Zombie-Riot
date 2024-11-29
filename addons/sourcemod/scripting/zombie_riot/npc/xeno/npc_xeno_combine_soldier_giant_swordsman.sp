@@ -79,7 +79,7 @@ public void XenoCombineGaint_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Giant Swordsman");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Giant Swordsman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_giant_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;
@@ -89,9 +89,9 @@ public void XenoCombineGaint_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombineGaint(client, vecPos, vecAng, ally);
+	return XenoCombineGaint(vecPos, vecAng, team);
 }
 methodmap XenoCombineGaint < CClotBody
 {
@@ -143,23 +143,17 @@ methodmap XenoCombineGaint < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
@@ -175,7 +169,7 @@ methodmap XenoCombineGaint < CClotBody
 	}
 	
 	
-	public XenoCombineGaint(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineGaint(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineGaint npc = view_as<XenoCombineGaint>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
 		SetVariantInt(1);
@@ -204,7 +198,6 @@ methodmap XenoCombineGaint < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -228,8 +221,7 @@ methodmap XenoCombineGaint < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineGaint_ClotThink(int iNPC)
 {
 	XenoCombineGaint npc = view_as<XenoCombineGaint>(iNPC);

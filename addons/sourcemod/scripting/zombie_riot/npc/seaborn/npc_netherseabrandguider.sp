@@ -51,9 +51,9 @@ void SeaBrandguider_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaBrandguider(client, vecPos, vecAng, ally, data);
+	return SeaBrandguider(vecPos, vecAng, team, data);
 }
 
 methodmap SeaBrandguider < CSeaBody
@@ -83,7 +83,7 @@ methodmap SeaBrandguider < CSeaBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaBrandguider(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SeaBrandguider(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];

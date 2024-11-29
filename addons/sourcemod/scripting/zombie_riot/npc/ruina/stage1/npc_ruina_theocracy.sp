@@ -95,9 +95,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel(LASERBEAM);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Theocracy(client, vecPos, vecAng, ally);
+	return Theocracy(vecPos, vecAng, team);
 }
 
 methodmap Theocracy < CClotBody
@@ -150,11 +150,9 @@ methodmap Theocracy < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
-	public Theocracy(int client, float vecPos[3], float vecAng[3], int ally)
+	public Theocracy(float vecPos[3], float vecAng[3], int ally)
 	{
 		Theocracy npc = view_as<Theocracy>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "15000", ally));
 		
@@ -249,8 +247,7 @@ methodmap Theocracy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Theocracy npc = view_as<Theocracy>(iNPC);
@@ -322,8 +319,8 @@ static void ClotThink(int iNPC)
 		if(npc.m_flDoingAnimation<=GetGameTime())
 			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 		
-		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);	//10% resistances
-		Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.20);	//25% speed bonus, going bellow 1.0 will make npc's slower
+		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.8);	//20% resistances
+		Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
 		Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.1);	//10% dmg bonus
 		Master_Apply_Shield_Buff(npc.index, 250.0, 0.5);	//50% block shield
 		

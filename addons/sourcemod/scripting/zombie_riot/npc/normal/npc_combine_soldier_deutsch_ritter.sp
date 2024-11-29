@@ -67,7 +67,7 @@ void CombineDeutsch_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Deutsch Ritter");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Deutsch Ritter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_deutsch_ritter");
 	strcopy(data.Icon, sizeof(data.Icon), "teutons");
 	data.IconCustom = true;
@@ -77,9 +77,9 @@ void CombineDeutsch_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineDeutsch(client, vecPos, vecAng, ally);
+	return CombineDeutsch(vecPos, vecAng, team);
 }
 
 methodmap CombineDeutsch < CClotBody
@@ -128,39 +128,29 @@ methodmap CombineDeutsch < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -170,7 +160,7 @@ methodmap CombineDeutsch < CClotBody
 	}
 	
 	
-	public CombineDeutsch(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineDeutsch(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineDeutsch npc = view_as<CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
 		
@@ -193,9 +183,7 @@ methodmap CombineDeutsch < CClotBody
 		func_NPCDeath[npc.index] = CombineDeutsch_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = CombineDeutsch_OnTakeDamage;
 		func_NPCThink[npc.index] = CombineDeutsch_ClotThink;
-		
-		
-		npc.m_iState = 0;
+
 		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -225,8 +213,7 @@ methodmap CombineDeutsch < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineDeutsch_ClotThink(int iNPC)
 {
 	CombineDeutsch npc = view_as<CombineDeutsch>(iNPC);

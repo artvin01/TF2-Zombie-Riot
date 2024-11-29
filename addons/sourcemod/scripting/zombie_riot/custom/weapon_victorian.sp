@@ -547,7 +547,7 @@ void CreateVictoriaEffect(int client)
 	int particle = ParticleEffectAt(flPos, "eye_powerup_red_lvl_2", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle, "eyeglow_l");
-	i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
+	i_VictoriaParticle[client] = EntIndexToEntRef(particle);
 }
 void DestroyVictoriaEffect(int client)
 {

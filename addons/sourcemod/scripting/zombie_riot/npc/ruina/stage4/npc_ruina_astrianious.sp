@@ -81,9 +81,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/engineer.mdl");
 	
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Astrianious(client, vecPos, vecAng, ally);
+	return Astrianious(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -142,16 +142,12 @@ methodmap Astrianious < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -185,7 +181,7 @@ methodmap Astrianious < CClotBody
 		}
 	}
 	
-	public Astrianious(int client, float vecPos[3], float vecAng[3], int ally)
+	public Astrianious(float vecPos[3], float vecAng[3], int ally)
 	{
 		Astrianious npc = view_as<Astrianious>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
 		
@@ -235,6 +231,9 @@ methodmap Astrianious < CClotBody
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
@@ -262,8 +261,7 @@ methodmap Astrianious < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Astrianious npc = view_as<Astrianious>(iNPC);
@@ -321,7 +319,7 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		npc.m_flNextTeleport = GameTime + 20.0;
+		npc.m_flNextTeleport = GameTime + 70.0;
 
 		int color[4];
 		Ruina_Color(color);

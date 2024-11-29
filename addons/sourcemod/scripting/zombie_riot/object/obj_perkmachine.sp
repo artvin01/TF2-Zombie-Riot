@@ -92,9 +92,6 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Quick Revive");
 	menu2.AddItem("-3", buffer);
-					
-	FormatEx(buffer, sizeof(buffer), "%t", "No");
-	menu2.AddItem("-2", buffer);
 						
 	menu2.Display(client, MENU_TIME_FOREVER);
 	
@@ -200,6 +197,14 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	if(owner == -1)
 		return;
 		
+	if((GetEntityFlags(client) & FL_DUCKING))
+	{
+		SetGlobalTransTarget(client);
+		CPrintToChat(client, "{green} %t", PerkNames_Recieved[what_perk]);
+		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
+		ClotInteract(client, -1, npc);
+		return;
+	}
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 	ApplyBuildingCollectCooldown(entity, client, 40.0);
 	

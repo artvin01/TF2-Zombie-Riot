@@ -37,9 +37,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("cof/simon/shoot.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Simon(client, vecPos, vecAng, ally, data);
+	return Simon(vecPos, vecAng, team, data);
 }
 methodmap Simon < CClotBody
 {
@@ -76,7 +76,7 @@ methodmap Simon < CClotBody
 		EmitCustomToAll("cof/simon/shoot.mp3", this.index);
 	}
 	
-	public Simon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Simon(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool newSimon = data[0] == 's';
 		

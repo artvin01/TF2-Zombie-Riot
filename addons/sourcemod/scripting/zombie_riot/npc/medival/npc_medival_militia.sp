@@ -100,9 +100,9 @@ void MedivalMilitia_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalMilitia(client, vecPos, vecAng, ally);
+	return MedivalMilitia(vecPos, vecAng, team);
 }
 methodmap MedivalMilitia < CClotBody
 {
@@ -149,17 +149,13 @@ methodmap MedivalMilitia < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -168,7 +164,7 @@ methodmap MedivalMilitia < CClotBody
 		
 	}
 	
-	public MedivalMilitia(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalMilitia(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalMilitia npc = view_as<MedivalMilitia>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
 		SetVariantInt(1);
@@ -228,8 +224,7 @@ methodmap MedivalMilitia < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalMilitia_ClotThink(int iNPC)
 {
 	MedivalMilitia npc = view_as<MedivalMilitia>(iNPC);

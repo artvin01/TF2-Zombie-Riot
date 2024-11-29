@@ -6,6 +6,8 @@ static Handle h_TimerFusionWeaponManagement[MAXPLAYERS+1] = {null, ...};
 #define NEARL_ACTIVE_SOUND "mvm/mvm_tele_activate.wav"
 #define NEARL_EXTRA_DAMAGE_SOUND "misc/ks_tier_04_kill_01.wav"
 #define NEARL_STUN_RANGE 200.0
+#define MAX_VOID_SHIELD_ALLOW 5
+bool b_WeaponAttackSpeedModified[MAXENTITIES];
 
 #define SICCERINO_FAST_ATTACK_SOUND "items/powerup_pickup_agility.wav"
 #define SICCERINO_PREPARE_SICCORS_SOUND "mvm/mvm_tele_activate.wav"
@@ -31,6 +33,12 @@ static int i_SpeedFistsOfSpeedHit[MAXTF2PLAYERS];
 static int i_PreviousBladePap[MAXTF2PLAYERS];
 
 static float f_SiccerinoExtraDamage[MAXTF2PLAYERS][MAXENTITIES];
+static float f_VoidHudDelay[MAXPLAYERS+1]={0.0, ...};
+static int i_VoidCurrentShields[MAXTF2PLAYERS];
+static float f_VoidShieldTillCharge[MAXTF2PLAYERS];
+static bool b_HasVoidBladeInHand[MAXTF2PLAYERS];
+static int i_VoidCurrentPap[MAXTF2PLAYERS];
+static float f_VoidDoubleTapAbility[MAXTF2PLAYERS];
 
 public void Fusion_Melee_OnMapStart()
 {
@@ -48,6 +56,12 @@ public void Fusion_Melee_OnMapStart()
 	Zero(f_NearlDurationCheckApply);
 	Zero(f_NearlThinkDelay);
 	Zero(f_SpeedFistsOfSpeed);
+	Zero(f_VoidHudDelay);
+	Zero(i_VoidCurrentShields);
+	Zero(f_VoidShieldTillCharge);
+	Zero(b_HasVoidBladeInHand);
+	Zero(i_VoidCurrentPap);
+	Zero(f_VoidDoubleTapAbility);
 }
 
 void EntitySpawnToDefaultSiccerino(int entity)
@@ -594,19 +608,23 @@ bool FusionWeaponCheckEffects_IfNotAvaiable(int iNpc, int weapon)
 	{
 		case WEAPON_FUSION:
 		{
-			thingsToLoop = 7;
+			thingsToLoop = 0;
+		//	thingsToLoop = 7;
 		}
 		case WEAPON_FUSION_PAP1:
 		{
-			thingsToLoop = 14;
+			thingsToLoop = 0;
+		//	thingsToLoop = 14;
 		}
 		case WEAPON_FUSION_PAP2:
 		{
-			thingsToLoop = 24;
+			thingsToLoop = 9;
+		//	thingsToLoop = 24;
 		}
 		case WEAPON_NEARL:
 		{
-			thingsToLoop = 24;
+			thingsToLoop = 9;
+		//	thingsToLoop = 24;
 		}
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
 		{
@@ -657,21 +675,23 @@ void FusionWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
+		/*
 		case WEAPON_FUSION:
 		{
-			FusionWeaponEffectPap0(owner, client, Wearable, attachment);
+	//		FusionWeaponEffectPap0(owner, client, Wearable, attachment);
 		}
 		case WEAPON_FUSION_PAP1:
 		{
-			FusionWeaponEffectPap1(owner, client, Wearable, attachment);
+	//		FusionWeaponEffectPap1(owner, client, Wearable, attachment);
 		}
+		*/
 		case WEAPON_FUSION_PAP2:
 		{
-			FusionWeaponEffectPap2(owner, client, Wearable, attachment);
+			FusionWeaponEffectPap2(owner, client, Wearable);
 		}
 		case WEAPON_NEARL:
 		{
-			FusionWeaponEffectPap3(owner, client, Wearable, attachment);
+			FusionWeaponEffectPap3(owner, client, Wearable);
 		}
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
 		{
@@ -684,53 +704,14 @@ void FusionWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 	}
 }
 
-void FusionWeaponEffectPap0(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
+void FusionWeaponEffectPap2(int owner, int client, int Wearable)
 {
 	int red = 255;
 	int green = 255;
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
-
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0},"", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0},"", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0},"", 0.0); //First offset we go by
-
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(Wearable, particle_1, attachment,_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, owner);
-	
-
-	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
-	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2);
-	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
-	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
-	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(Laser_1);
-	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_2);
-	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_3);
-}
-
-
-void FusionWeaponEffectPap1(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
-{
-	int red = 255;
-	int green = 255;
-	int blue = 0;
-	float flPos[3];
-	float flAng[3];
+	/*
 	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	
 	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
@@ -784,71 +765,7 @@ void FusionWeaponEffectPap1(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_1_1);
 	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_1);
 	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_1);
-}
-
-
-
-void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
-{
-	int red = 255;
-	int green = 255;
-	int blue = 0;
-	float flPos[3];
-	float flAng[3];
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0},"", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({-5.0,10.0,0.0},"", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({-2.0,50.0,0.0},"", 0.0); //First offset we go by
-
-	
-	int particle_2_1 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
-	int particle_3_1 = InfoTargetParentAt({15.0,0.0,0.0},"", 0.0); //First offset we go by
-	int particle_4_1 = InfoTargetParentAt({5.0,10.0,0.0},"", 0.0); //First offset we go by
-	int particle_5_1 = InfoTargetParentAt({2.0,50.0,0.0},"", 0.0); //First offset we go by
-
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-	
-	SetParent(particle_1, particle_2_1, "",_, true);
-	SetParent(particle_1, particle_3_1, "",_, true);
-	SetParent(particle_1, particle_4_1, "",_, true);
-	SetParent(particle_1, particle_5_1, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(Wearable, particle_1, attachment,_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, owner);
-
-	int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, owner);
-	
-
-	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
-	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2);
-	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
-	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
-	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(Laser_1);
-	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_2);
-	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_3);
-	
-	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(particle_2_1);
-	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(particle_3_1);
-	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(particle_4_1);
-	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(particle_5_1);
-	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_1_1);
-	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_1);
-	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_1);
-
+	*/
 	
 	int particle_1_l = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	int particle_2_l = InfoTargetParentAt({-5.0,-5.0,25.0},"", 0.0); 
@@ -878,7 +795,17 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	Custom_SDKCall_SetLocalOrigin(particle_1_l, flPos);
 	SetEntPropVector(particle_1_l, Prop_Data, "m_angRotation", flAng); 
 	SetParent(Wearable, particle_1_l, "effect_hand_l",_);
-
+	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1_l);
+	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2_l);
+	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3_l);
+	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4_l);
+	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5_l);
+	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(Laser_1_l);
+	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_2_l);
+	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_3_l);
+	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(Laser_4_l);
+	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(Laser_5_l);
+	/*
 	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(particle_1_l);
 	i_FusionEnergyEffect[client][16] = EntIndexToEntRef(particle_2_l);
 	i_FusionEnergyEffect[client][17] = EntIndexToEntRef(particle_3_l);
@@ -889,16 +816,18 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][22] = EntIndexToEntRef(Laser_3_l);
 	i_FusionEnergyEffect[client][23] = EntIndexToEntRef(Laser_4_l);
 	i_FusionEnergyEffect[client][24] = EntIndexToEntRef(Laser_5_l);
+	*/
 
 }
 
-void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
+void FusionWeaponEffectPap3(int owner, int client, int Wearable)
 {
 	int red = 255;
 	int green = 255;
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
+	/*
 	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	
 	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
@@ -953,7 +882,7 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_1);
 	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_1);
 
-	
+	*/
 	int particle_1_l = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	int particle_2_l = InfoTargetParentAt({-5.0,-5.0,25.0},"", 0.0); 
 	int particle_3_l = InfoTargetParentAt({-5.0,-5.0,-25.0},"", 0.0);
@@ -983,6 +912,17 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	SetEntPropVector(particle_1_l, Prop_Data, "m_angRotation", flAng); 
 	SetParent(Wearable, particle_1_l, "effect_hand_l",_);
 
+	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1_l);
+	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2_l);
+	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3_l);
+	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4_l);
+	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5_l);
+	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(Laser_1_l);
+	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_2_l);
+	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_3_l);
+	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(Laser_4_l);
+	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(Laser_5_l);
+	/*
 	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(particle_1_l);
 	i_FusionEnergyEffect[client][16] = EntIndexToEntRef(particle_2_l);
 	i_FusionEnergyEffect[client][17] = EntIndexToEntRef(particle_3_l);
@@ -993,6 +933,7 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][22] = EntIndexToEntRef(Laser_3_l);
 	i_FusionEnergyEffect[client][23] = EntIndexToEntRef(Laser_4_l);
 	i_FusionEnergyEffect[client][24] = EntIndexToEntRef(Laser_5_l);
+	*/
 
 }
 
@@ -1112,6 +1053,7 @@ static void FusionWeaponEffectPap_Siccerino_Waldch(int owner, int client, int We
 
 public void Enable_FusionWeapon(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
+	Enable_VoidBlade(client, weapon);
 	if (h_TimerFusionWeaponManagement[client] != null)
 	{
 		//This timer already exists.
@@ -1197,7 +1139,6 @@ public Action Timer_Management_FusionWeapon(Handle timer, DataPack pack)
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
 		ApplyExtraFusionWeaponEffects(client,_ ,weapon_holding);
-		SensalTimerHudShow(client, weapon);
 	}
 	else
 	{
@@ -1528,4 +1469,254 @@ static bool Siccerino_TraceUsers(int entity, int contentsMask, int client)
 		}
 	}
 	return false;
+}
+
+
+public void Enable_VoidBlade(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+{
+	if (h_TimerFusionWeaponManagement[client] != null)
+	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_EXPLORER)
+		{
+			b_HasVoidBladeInHand[client] = true;
+			delete h_TimerFusionWeaponManagement[client];
+			h_TimerFusionWeaponManagement[client] = null;
+			DataPack pack;
+			h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_VoidWeapon, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+			i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_EXPLORER)
+	{
+		b_HasVoidBladeInHand[client] = true;
+		DataPack pack;
+		h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_VoidWeapon, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		return;
+	}
+}
+
+int ClientPossesesVoidBlade(int client)
+{
+	int returnVal;
+	if(b_HasVoidBladeInHand[client])
+	{
+		returnVal = 1;
+		if(i_VoidCurrentPap[client] >= 2)
+			returnVal = 2;
+	}
+	return returnVal;
+}
+public Action Timer_Management_VoidWeapon(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		h_TimerFusionWeaponManagement[client] = null;
+		b_HasVoidBladeInHand[client] = false;
+		if(IsValidClient(client))
+			TF2_RemoveCondition(client, TFCond_RuneResist);
+		return Plugin_Stop;
+	}	
+
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	{
+		VoidTimerHudShow(client);
+		b_HasVoidBladeInHand[client] = true;
+	}
+	else
+	{
+		TF2_RemoveCondition(client, TFCond_RuneResist);
+		b_HasVoidBladeInHand[client] = false;
+	}
+		
+	return Plugin_Continue;
+}
+
+void VoidTimerHudShow(int client)
+{
+	if(f_VoidHudDelay[client] < GetGameTime())
+	{
+		f_VoidHudDelay[client] = GetGameTime() + 0.5;
+		
+		if(i_VoidCurrentPap[client] < 1)
+			return;
+			
+		if(i_VoidCurrentShields[client] >= 1)
+		{
+			TF2_AddCondition(client, TFCond_RuneResist);
+		}
+		char SensalHud[255];
+		FormatEx(SensalHud, sizeof(SensalHud), "Shield Charge [%.0f％]", f_VoidShieldTillCharge[client] * 100.0);		
+		FormatEx(SensalHud, sizeof(SensalHud), "%s\nShields [%i / %i]",SensalHud, i_VoidCurrentShields[client], MAX_VOID_SHIELD_ALLOW);		
+		PrintHintText(client, "%s", SensalHud);
+		StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+	}
+}
+
+void WeaponVoidBlade_OnTakeDamagePost(int attacker, int victim, float damage)
+{
+	Elemental_AddVoidDamage(victim, attacker, RoundToCeil(damage),_,_, true);
+}
+void WeaponVoidBlade_OnTakeDamage(int attacker, int victim, int zr_damage_custom)
+{
+	if(zr_damage_custom & ZR_DAMAGE_REFLECT_LOGIC)
+		return;
+
+	if(i_VoidCurrentPap[attacker] < 1)
+		return;
+	//at max shields, dont charge more.
+	if(i_VoidCurrentShields[attacker] >= MAX_VOID_SHIELD_ALLOW)
+		return;
+
+	float ChargeDo = 0.15;
+
+	if(b_thisNpcIsARaid[victim])
+	{
+		ChargeDo *= 1.3;
+	}
+	else if(b_thisNpcIsABoss[victim])
+	{
+		ChargeDo *= 1.2;
+	}
+
+	f_VoidShieldTillCharge[attacker] += ChargeDo;
+
+	if(f_VoidShieldTillCharge[attacker] >= 1.0)
+	{
+		f_VoidShieldTillCharge[attacker] -= 1.0;
+		i_VoidCurrentShields[attacker]++;
+		//atleast has 1 shield
+		TF2_AddCondition(attacker, TFCond_RuneResist, 999999.9);
+		if(i_VoidCurrentShields[attacker] >= MAX_VOID_SHIELD_ALLOW)
+			i_VoidCurrentShields[attacker] = MAX_VOID_SHIELD_ALLOW;
+	}
+
+	f_VoidHudDelay[attacker] = 0.0;
+	VoidTimerHudShow(attacker);
+}
+
+public float Player_OnTakeDamage_VoidBlade_Hud(int victim)
+{
+	float damage = 1.0;
+	if(i_VoidCurrentShields[victim] >= 1)
+	{
+		if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
+			damage *= 0.6;
+		else
+			damage *= 0.25;
+	}
+	return damage;
+}
+public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+{
+	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+	{
+		if(i_VoidCurrentShields[victim] >= 1)
+		{
+			if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
+				damage *= 0.6;
+			else
+				damage *= 0.25;
+		}
+
+		return damage;
+	}
+	if(i_VoidCurrentShields[victim] >= 1)
+	{
+		if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
+			damage *= 0.6;
+		else
+			damage *= 0.25;
+			
+		i_VoidCurrentShields[victim]--;
+		if(i_VoidCurrentShields[victim] <= 0)
+		{
+			i_WasInResPowerup[victim] = 0.0;
+			TF2_RemoveCondition(victim, TFCond_RuneResist);
+		}
+		if(f_AniSoundSpam[victim] < GetGameTime())
+		{
+			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
+			switch(GetRandomInt(1,4))
+			{
+				case 1:
+				{
+					EmitSoundToAll("player/resistance_heavy1.wav", victim,_,70);
+					EmitSoundToAll("player/resistance_heavy1.wav", victim,_,70);
+				}
+				case 2:
+				{
+					EmitSoundToAll("player/resistance_heavy2.wav", victim,_,70);
+					EmitSoundToAll("player/resistance_heavy2.wav", victim,_,70);
+				}
+				case 3:
+				{
+					EmitSoundToAll("player/resistance_heavy3.wav", victim,_,70);
+					EmitSoundToAll("player/resistance_heavy3.wav", victim,_,70);
+				}
+				case 4:
+				{
+					EmitSoundToAll("player/resistance_heavy4.wav", victim,_,70);
+					EmitSoundToAll("player/resistance_heavy4.wav", victim,_,70);
+				}
+			}
+			
+			float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+			
+			TE_Particle("spell_batball_impact_red", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		}
+	}
+	return damage;
+}
+
+
+public void Void_MeleeDoubleTapAbility(int client, int weapon, bool crit, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
+		f_VoidDoubleTapAbility[client] = GetGameTime() + 10.0; //Just a test.
+		f_EmpowerStateSelf[client] = GetGameTime() + 10.0;
+		EmitSoundToAll(NEARL_ACTIVE_SOUND, client, SNDCHAN_STATIC, 85, _, 0.5, 70);
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+
+public void WeaponVoidDoubleStrike(int client, int weapon, bool crit, int slot)
+{
+	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	if(!b_WeaponAttackSpeedModified[weapon] && f_VoidDoubleTapAbility[client] >= GetGameTime()) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
+	{
+		b_WeaponAttackSpeedModified[weapon] = true;
+		attackspeed = (attackspeed * 0.15);
+		Attributes_Set(weapon, 6, attackspeed);
+	}
+	else if(b_WeaponAttackSpeedModified[weapon])
+	{
+		b_WeaponAttackSpeedModified[weapon] = false;
+		attackspeed = (attackspeed / 0.15);
+		Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
+	}
 }

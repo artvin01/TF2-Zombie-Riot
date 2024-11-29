@@ -63,9 +63,9 @@ void SniperMain_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SniperMain(client, vecPos, vecAng, ally);
+	return SniperMain(vecPos, vecAng, team);
 }
 methodmap SniperMain < CClotBody
 {
@@ -102,31 +102,23 @@ methodmap SniperMain < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 		
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -137,7 +129,7 @@ methodmap SniperMain < CClotBody
 	
 	
 	
-	public SniperMain(int client, float vecPos[3], float vecAng[3], int ally)
+	public SniperMain(float vecPos[3], float vecAng[3], int ally)
 	{
 		SniperMain npc = view_as<SniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "20000", ally));
 		
@@ -201,8 +193,7 @@ methodmap SniperMain < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SniperMain_ClotThink(int iNPC)
 {
 	SniperMain npc = view_as<SniperMain>(iNPC);

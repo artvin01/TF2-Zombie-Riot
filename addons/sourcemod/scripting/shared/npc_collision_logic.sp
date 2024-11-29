@@ -10,6 +10,11 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	if(b_NpcIsTeamkiller[bot_entidx] && bot_entidx == otherindex)
 		return false;
 
+	//When in tank grab, dont collide with anythin!
+	if(f_TankGrabbedStandStill[bot_entidx] > GetGameTime())
+	{
+		return false;
+	}
 	//bots will always collide with brushes, and not ignored.
 	if(b_is_a_brush[otherindex])
 	{

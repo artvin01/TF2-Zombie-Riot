@@ -66,9 +66,9 @@ void Heavy_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Heavy(client, vecPos, vecAng, ally);
+	return Heavy(vecPos, vecAng, team);
 }
 
 methodmap Heavy < CClotBody
@@ -116,16 +116,12 @@ methodmap Heavy < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -137,7 +133,7 @@ methodmap Heavy < CClotBody
 	
 	
 	
-	public Heavy(int client, float vecPos[3], float vecAng[3], int ally)
+	public Heavy(float vecPos[3], float vecAng[3], int ally)
 	{
 		Heavy npc = view_as<Heavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "5000", ally));
 		
@@ -183,8 +179,7 @@ methodmap Heavy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Heavy_ClotThink(int iNPC)
 {
 	Heavy npc = view_as<Heavy>(iNPC);

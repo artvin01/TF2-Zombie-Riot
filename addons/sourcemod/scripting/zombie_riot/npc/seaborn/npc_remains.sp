@@ -44,17 +44,17 @@ void Remain_MapStart()
 	RemainsID = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Remains(client, vecPos, vecAng, ally, data);
+	return Remains(vecPos, vecAng, team, data);
 }
 
 methodmap Remains < CClotBody
 {
-	public Remains(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Remains(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(!data[0])
-			return view_as<Remains>(EndSpeaker(client, vecPos, vecAng, ally));
+			return view_as<Remains>(EndSpeaker(vecPos, vecAng, ally));
 		
 		int type = StringToInt(data);
 		if(type < 0 || type >= sizeof(RemainModels))
@@ -111,6 +111,9 @@ public void Remains_ClotThink(int iNPC)
 
 void Remains_SpawnDrop(float pos[3], int type)
 {
+	if(Rogue_Whiteflower_RemainDrop(type))
+		return;
+	
 	char data[4];
 	IntToString(type, data, sizeof(data));
 	NPC_CreateById(RemainsID, -1, pos, {0.0, 0.0, 0.0}, TFTeam_Red, data);

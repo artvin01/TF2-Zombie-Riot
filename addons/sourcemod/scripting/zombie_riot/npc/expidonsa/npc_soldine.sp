@@ -79,9 +79,9 @@ void Soldine_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Soldine(client, vecPos, vecAng, ally);
+	return Soldine(vecPos, vecAng, team);
 }
 
 methodmap Soldine < CClotBody
@@ -162,7 +162,7 @@ methodmap Soldine < CClotBody
 	}
 	
 	
-	public Soldine(int client, float vecPos[3], float vecAng[3], int ally)
+	public Soldine(float vecPos[3], float vecAng[3], int ally)
 	{
 		Soldine npc = view_as<Soldine>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "40000", ally));
 		
@@ -185,9 +185,7 @@ methodmap Soldine < CClotBody
 		func_NPCDeath[npc.index] = Soldine_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Soldine_OnTakeDamage;
 		func_NPCThink[npc.index] = Soldine_ClotThink;
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
 		npc.i_GunMode = 1;

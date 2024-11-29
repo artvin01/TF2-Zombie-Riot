@@ -6,6 +6,11 @@ static char g_DeathSounds[][] = {
 	"mvm/mvm_bomb_explode.wav",
 };
 
+static const char g_DeathSounds1[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
+};
+
 static char g_HurtSounds[][] = {
 	"vo/medic_item_secop_domination01.mp3",
 	"vo/medic_item_secop_idle03.mp3",
@@ -200,6 +205,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   				}
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_DeathSounds1));   i++) { PrecacheSound(g_DeathSounds1[i]);   }
 	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
 	g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_1);
@@ -240,9 +246,9 @@ static void ClotPrecache()
 	PrecacheSound("misc/halloween/gotohell.wav");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Blitzkrieg(client, vecPos, vecAng, ally, data);
+	return Blitzkrieg(vecPos, vecAng, team, data);
 }
 
 static bool b_timer_lose[MAXENTITIES];
@@ -292,7 +298,13 @@ methodmap Blitzkrieg < CClotBody
 		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}
-	
+	public void PlayDeathSoundfake() {
+		
+		int sound = GetRandomInt(0, sizeof(g_DeathSounds1) - 1);
+		
+		EmitSoundToAll(g_DeathSounds1[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		
+	}
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.5);
 		
@@ -309,9 +321,7 @@ methodmap Blitzkrieg < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayTeleportSound() {
@@ -339,7 +349,7 @@ methodmap Blitzkrieg < CClotBody
 		PrintToServer("CClot::PlayPullSound()");
 		#endif
 	}
-	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Blitzkrieg(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", ally, false, true, true, true)); //giant!
 		
@@ -406,7 +416,7 @@ methodmap Blitzkrieg < CClotBody
 			RaidModeScaling *= 0.33;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
 		if(amount_of_people > 12.0)
 		{
@@ -643,7 +653,7 @@ methodmap Blitzkrieg < CClotBody
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Your quite the tenacious one aren't you", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: You're quite the tenacious one aren't you", c_NpcName[npc.index]);
 					}
 				}
 			}
@@ -661,7 +671,7 @@ methodmap Blitzkrieg < CClotBody
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: My limiter's been turned off{crimson}good luck{default}.", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: My limiter's been turned off{crimson} good luck{default}.", c_NpcName[npc.index]);
 					}
 				}
 			}
@@ -688,6 +698,7 @@ methodmap Blitzkrieg < CClotBody
 		}
 		else
 		{
+			npc.m_bDissapearOnDeath = true;
 			g_b_item_allowed=false;
 		}
 		
@@ -736,8 +747,7 @@ methodmap Blitzkrieg < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(iNPC);
@@ -1514,7 +1524,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: There plenty more to come {yellow}%N{default}!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: There's plenty more to come {yellow}%N{default}!", c_NpcName[npc.index], closest);
 				}
 			}
 		}
@@ -1791,7 +1801,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		if(i_currentwave[npc.index]==45 && !b_pureblitz)
 		{
-			CPrintToChatAll("{crimson}%s{default}: The minnion's have joined the battle.", c_NpcName[npc.index]);
+			CPrintToChatAll("{crimson}%s{default}: The minions have joined the battle.", c_NpcName[npc.index]);
 		}
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int heck;
@@ -1844,8 +1854,16 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 static void NPC_Death(int entity)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(entity);
-	npc.PlayDeathSound();
+	if(g_b_item_allowed)
+		npc.PlayDeathSound();
+	else
+	{
+		npc.PlayDeathSoundfake();
 	
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);	
+	}
+
 //	Music_RoundEnd(entity);
 
 
@@ -1923,7 +1941,7 @@ static void NPC_Death(int entity)
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: hehe, {yellow}%N{default} I pitty you, {crimson}because next time{default} I'll be stronger.", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: hehe, {yellow}%N{default} I pity you, {crimson}because next time{default} I'll be stronger.", c_NpcName[npc.index], closest);
 				}
 			}
 		}

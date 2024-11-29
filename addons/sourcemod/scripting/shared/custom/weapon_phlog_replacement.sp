@@ -34,6 +34,7 @@ void Reset_stats_PHLOG_Global()
 	Zero(f_PHLOGhuddelay); //Only needs to get reset on map change, not disconnect.
 	Zero(f_PHLOGabilitydelay); //Only needs to get reset on map change, not disconnect.
 	Zero(i_PHLOGHitsDone); //This only ever gets reset on map change or player reset
+	Zero(f_FlameerDelay);
 }
 
 void Reset_stats_PHLOG_Singular(int client) //This is on disconnect/connect

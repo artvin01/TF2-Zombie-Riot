@@ -16,7 +16,6 @@ static float Hose_HealLoss[MAXENTITIES] = { 0.0, ... };
 static float Hose_HealMin[MAXENTITIES] = { 0.0, ... };
 static int Hose_Owner[MAXENTITIES] = { -1, ... };
 static bool Hose_GiveUber[MAXENTITIES] = { false, ... };
-static bool Hose_ProjectileCharged[MAXENTITIES] = { false, ... };
 static float Hose_Uber[MAXPLAYERS + 1] = { 0.0, ... };
 static float Hose_NextHealSound[MAXPLAYERS + 1] = { 0.0, ... };
 static bool Hose_Charged[MAXPLAYERS + 1] = { false, ... };
@@ -137,7 +136,7 @@ public Action Hose_RemoveUber(Handle remove, int id)
 public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float speed, float baseHeal, float loss, float minHeal, int NumParticles, float spread, char ParticleName[255], bool giveUber)
 {
 	float healmult = 1.0;
-	healmult = Attributes_GetOnPlayer(client, 8, true, true);
+	healmult = Attributes_GetOnWeapon(client, weapon, 8, true);
 
 	if (Hose_ShotgunCharge[client])
 	{
@@ -179,7 +178,6 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 		Hose_HealMin[projectile] = minHeal;
 		Hose_Owner[projectile] = GetClientUserId(client);
 		Hose_GiveUber[projectile] = giveUber && !Hose_Charged[client];
-		Hose_ProjectileCharged[projectile] = Hose_Charged[client];
 
 		//Remove unused hook.
 		//SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
@@ -405,7 +403,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 				HealAmmount *= 3.0;
 			}
 
-			HealAmmount *= Attributes_GetOnPlayer(client, 8, true, true);
+			HealAmmount *= Attributes_GetOnWeapon(client, weapon, 8, true);
 
 			float GameTime = GetGameTime();
 			if(f_TimeUntillNormalHeal[target] > GameTime)
@@ -542,7 +540,7 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 
 	float HealAmmount = 30.0;
 
-	HealAmmount *= Attributes_GetOnPlayer(client, 8, true, true);
+	HealAmmount *= Attributes_GetOnPlayer(client, 8, true);
 
 	int prop = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(prop))
@@ -590,6 +588,10 @@ public void TouchHealthKit(int entity, int other)
 		if(f_TimeUntillNormalHeal[other] > GameTime)
 		{
 			HealingAmount /= 2.0;
+		}
+		if(!IsValidEntity(Owner))
+		{
+			Owner = other; //if there is no invalid owner, just make the one that picks it up the owner
 		}
 		int healing_done = HealEntityGlobal(Owner, other, HealingAmount, 1.0, _, _);
 		if(healing_done <= 0)

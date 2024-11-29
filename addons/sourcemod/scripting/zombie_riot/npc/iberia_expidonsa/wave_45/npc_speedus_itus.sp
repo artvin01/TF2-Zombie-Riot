@@ -70,9 +70,9 @@ void IberiaSpeedusItus_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SpeedusItus(client, vecPos, vecAng, ally);
+	return SpeedusItus(vecPos, vecAng, team);
 }
 methodmap SpeedusItus < CClotBody
 {
@@ -125,16 +125,12 @@ methodmap SpeedusItus < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -146,7 +142,7 @@ methodmap SpeedusItus < CClotBody
 	}
 	
 	
-	public SpeedusItus(int client, float vecPos[3], float vecAng[3], int ally)
+	public SpeedusItus(float vecPos[3], float vecAng[3], int ally)
 	{
 		SpeedusItus npc = view_as<SpeedusItus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "4000", ally));
 		
@@ -202,8 +198,7 @@ methodmap SpeedusItus < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SpeedusItus_ClotThink(int iNPC)
 {
 	SpeedusItus npc = view_as<SpeedusItus>(iNPC);

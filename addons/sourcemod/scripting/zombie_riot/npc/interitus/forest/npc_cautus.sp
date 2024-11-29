@@ -51,9 +51,9 @@ void CautusOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Cautus(client, vecPos, vecAng, ally);
+	return Cautus(vecPos, vecAng, team);
 }
 
 methodmap Cautus < CClotBody
@@ -87,7 +87,7 @@ methodmap Cautus < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Cautus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Cautus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Cautus npc = view_as<Cautus>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "20000", ally));
 		

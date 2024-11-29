@@ -72,11 +72,6 @@ stock float fClamp(float fValue, float fMin, float fMax)
 	return fValue;
 }
 
-stock Function ValToFunc(any val)
-{
-	return val;
-}
-
 stock int GetSpellbook(int client)
 {
 	int i, entity;
@@ -256,6 +251,7 @@ void ResetReplications()
 	for(int client=1; client<=MaxClients; client++)
 	{
 		ReplicateClient_Svairaccelerate[client] = -1.0;
+		ReplicateClient_BackwardsWalk[client] = -1.0;
 		ReplicateClient_Tfsolidobjects[client] = -1;
 		ReplicateClient_RollAngle[client] = -1;
 	}
@@ -1257,9 +1253,13 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
-	
+	float DamageDeal = pack.ReadFloat();
+	if(f_ElementalAmplification[entity] > GetGameTime())
+	{
+		DamageDeal *= 1.15;
+	}
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, customtype);
+	SDKHooks_TakeDamage(entity, client, client, DamageDeal, damagetype, weapon, _, pos, false, customtype);
 
 	entity = pack.ReadCell();
 	if(entity < 1)
@@ -1286,10 +1286,11 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 */
 //this will return the amount of healing it actually did.
 
-void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
+stock void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 {
-//	HealEntityGlobal(attacker, victim, -(truedamagedeal - 1.0), 99.0, 0.0, HEAL_ABSOLUTE | HEAL_SELFHEAL);
+#if defined ZR
 	b_ThisNpcIsSawrunner[attacker] = true;
+#endif
 	if(victim <= MaxClients)
 	{
 		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_DROWN, -1);
@@ -1298,35 +1299,9 @@ void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 	{
 		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_SLASH, -1);
 	}
+#if defined ZR
 	b_ThisNpcIsSawrunner[attacker] = false;
-	/*
-	float AnyValueTest1 = 1.0;
-	int AnyValueTest2 = 1;
-	if(victim <= MaxClients)
-	{
-		Player_OnTakeDamageAlive_DeathCheck(victim, 
-		attacker, 
-		AnyValueTest2, 
-		AnyValueTest1, 
-		AnyValueTest2, 
-		AnyValueTest2, 
-		{0.0,0.0,0.0}, 
-		{0.0,0.0,0.0}, 
-		0);
-	}
-	else
-	{
-		NPC_OnTakeDamage_Post(victim, 
-		attacker, 
-		AnyValueTest2, 
-		AnyValueTest1, 
-		AnyValueTest2, 
-		AnyValueTest2, 
-		{0.0,0.0,0.0}, 
-		{0.0,0.0,0.0}, 
-		0);
-	}
-	*/
+#endif
 }
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
 {
@@ -1395,7 +1370,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 #if defined ZR
 		if(healer != reciever && healer <= MaxClients)
+		{
 			Healing_done_in_total[healer] += HealingDoneInt;
+			AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+		}
 #endif
 //only apply heal event if its not a passive self heal
 		if(!(flag_extrarules & (HEAL_PASSIVE_NO_NOTIF)))
@@ -1409,6 +1387,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		if(healer > 0)
+			pack.WriteCell(EntIndexToEntRef(healer));
+		else
+			pack.WriteCell(0);
 		pack.WriteCell(EntIndexToEntRef(reciever));
 		pack.WriteFloat(HealTotal / HealTotalTimer);
 		pack.WriteCell(Maxhealth);
@@ -1423,16 +1405,17 @@ void DisplayHealParticleAbove(int entity)
 	{
 		f_HealDelayParticle[entity] = GetGameTime() + 0.5;
 		float ProjLoc[3];
+		float ProjLoc2[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		ProjLoc[2] += 70.0;
-		ProjLoc[2] += f_ExtraOffsetNpcHudAbove[entity];
-		ProjLoc[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-		ProjLoc[2] += 10.0;
+		ProjLoc2[2] += 70.0;
+		ProjLoc2[2] += f_ExtraOffsetNpcHudAbove[entity];
+		ProjLoc2[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		ProjLoc2[2] += 10.0;
+		ProjLoc[2] += ProjLoc2[2];
 		if(GetTeam(entity) != TFTeam_Red)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		else
 			TE_Particle("healthgained_red", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-
 	}
 }
 
@@ -1441,6 +1424,7 @@ float f_IncrementalSmallHeal[MAXENTITIES];
 public Action Timer_Healing(Handle timer, DataPack pack)
 {
 	pack.Reset();
+	int healer = EntRefToEntIndex(pack.ReadCell());
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity <= MaxClients)
 	{
@@ -1464,7 +1448,16 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	float HealthMaxPercentage = pack.ReadCell();
 	int HealthHealed = HealEntityViaFloat(entity, HealthToGive, HealthMaxPercentage);
 	if(HealthHealed > 0)
+	{
 		ApplyHealEvent(entity, HealthHealed);	// Show healing number
+		if(healer > 0 && healer != entity && healer <= MaxClients)
+		{
+			Healing_done_in_total[healer] += HealthHealed;
+#if defined ZR
+			AddHealthToUbersaw(healer, HealthHealed, 0.0);
+#endif
+		}
+	}
 
 	int current = pack.ReadCell();
 	if(current <= 1)
@@ -1750,11 +1743,6 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 stock void GetAbsOrigin(int client, float v[3])
 {
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
-}
-
-public void DeleteHandle(Handle handle)
-{
-	delete handle;
 }
 
 stock bool IsValidClient( int client)
@@ -2631,9 +2619,9 @@ public bool AntiTraceEntityFilterPlayer(int entity, any contentsMask) //Borrowed
 public void SpawnSmallExplosion(float DetLoc[3])
 {
 	float pos[3];
-	pos[0] += DetLoc[0] + GetRandomFloat(-80.0, 80.0);
-	pos[1] += DetLoc[1] + GetRandomFloat(-80.0, 80.0);
-	pos[2] += DetLoc[2] + GetRandomFloat(0.0, 80.0);
+	pos[0] += DetLoc[0] + GetRandomFloat(-25.0, 25.0);
+	pos[1] += DetLoc[1] + GetRandomFloat(-25.0, 25.0);
+	pos[2] += DetLoc[2] + GetRandomFloat(0.0, 25.0);
 	
 	TE_Particle(EXPLOSION_PARTICLE_SMALL_1, pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }
@@ -2920,6 +2908,38 @@ int CountPlayersOnRed(int alive = 0, bool saved = false)
 	return amount;
 	
 }
+#if defined ZR
+
+//alot is  borrowed from CountPlayersOnRed
+float ZRStocks_PlayerScalingDynamic(float rebels = 0.5)
+{
+	//dont be 0
+	float ScaleReturn = 0.01;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		{
+			if(Database_IsCached(client) && Level[client] <= 30)
+			{
+				float CurrentLevel = float(Level[client]);
+				CurrentLevel += 30.0;
+				//so lvl 0 is atleast resulting in 0.5 Scaling
+				ScaleReturn += (CurrentLevel / 60.0);
+			}
+			else
+			{
+				ScaleReturn += 1.0;
+			}
+		}
+	}
+
+	if(rebels)
+		ScaleReturn += Citizen_Count() * rebels;
+	
+	return ScaleReturn;
+}
+
+#endif
 
 
 int CountPlayersOnServer()
@@ -2936,6 +2956,28 @@ int CountPlayersOnServer()
 	
 	return amount;
 	
+}
+
+void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
+{
+#if defined ZR
+	if(i_ChaosArrowAmount[attacker] > 0)
+	{
+		Elemental_AddChaosDamage(victim, attacker, RoundToCeil(float(i_ChaosArrowAmount[attacker]) * Scale));
+	}
+	if(i_VoidArrowAmount[attacker] > 0)
+	{
+		Elemental_AddVoidDamage(victim, attacker, RoundToCeil(float(i_VoidArrowAmount[attacker]) * Scale));
+	}
+#endif
+	if(i_NervousImpairmentArrowAmount[attacker] > 0)
+	{
+#if defined ZR
+		Elemental_AddNervousDamage(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
+#elseif defined RPG
+		SeaShared_DealCorrosion(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
+#endif
+	}
 }
 
 int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
@@ -2971,6 +3013,9 @@ int inflictor = 0)
 
 		if(ExplosionDmgMultihitFalloff == EXPLOSION_AOE_DAMAGE_FALLOFF)
 			ExplosionDmgMultihitFalloff = Attributes_Get(weapon, 4013, EXPLOSION_AOE_DAMAGE_FALLOFF);
+
+		if(explosion_range_dmg_falloff == EXPLOSION_RANGE_FALLOFF)
+			explosion_range_dmg_falloff = Attributes_Get(weapon, Attrib_OverrideExplodeDmgRadiusFalloff, EXPLOSION_RANGE_FALLOFF);
 	}
 #endif
 
@@ -3042,10 +3087,14 @@ int inflictor = 0)
 	{
 		custom_flags |= ZR_DAMAGE_ICE;
 	}
-	
-	if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+	if((i_ExplosiveProjectileHexArray[entity] & EP_IS_ICE_DAMAGE))
 	{
-		damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
+		custom_flags |= ZR_DAMAGE_ICE;
+	}
+	
+	if((i_ExplosiveProjectileHexArray[entity] & ZR_DAMAGE_IGNORE_DEATH_PENALTY))
+	{
+		custom_flags |= ZR_DAMAGE_IGNORE_DEATH_PENALTY;
 	}
 	int entityToEvaluateFrom = 0;
 	int EntityToForward = 0;
@@ -3204,11 +3253,11 @@ int inflictor = 0)
 				Call_StartFunction(null, FunctionToCallBeforeHit);
 				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
-				Call_PushFloat(damage_1);
+				Call_PushFloatRef(damage_1);
 				Call_PushCell(weapon);
 				Call_Finish(GetBeforeDamage);
 			}
-			if(damage > 0.0)
+			if(damage_1 > 0.0)
 			{
 				//npcs do not take damage from drown damage, so what we will do instead
 				//is to make it do slash damage, slash damage ignores most resistances like drown does.
@@ -3231,15 +3280,19 @@ int inflictor = 0)
 				//we apply 50% more range, reason being is that this goes for collision boxes, so it can be abit off
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
-				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+				float ExplosionRangeFalloff = Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+				damage_1 *= ExplosionRangeFalloff; //this is 1000, we use squared for optimisations sake
 
 				damage_1 *= damage_reduction;
 				
 				float v[3];
 				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
 				//dont do damage ticks if its actually 0 dmg.
+
 				if(damage_1 != 0.0)
 					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
+
+				Projectile_DealElementalDamage(ClosestTarget, EntityToForward, ExplosionRangeFalloff);
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -3951,7 +4004,7 @@ float RPGStocks_CalculatePowerLevel(int client)
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 	float ResMulti;
-	ResMulti = form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
+	ResMulti = form.GetFloatStat(client, Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
 	
 	BigTotal *= (1.0 / ResMulti);
 
@@ -4106,7 +4159,6 @@ public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
 			bool didHit = TR_DidHit(trace);
 			delete trace;
-			
 			if (didHit)
 			{
 				HazardResult = true;
@@ -5328,7 +5380,7 @@ stock any GetItemInArray(any[] array, int pos)
 //MaxNumBuffValue(0.6, 1.0, 1.0) = 0.6
 //MaxNumBuffValue(0.6, 1.0, 1.25) = 0.55
 
-float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
+stock float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
 {
 	// Our base number is max, the number when valuenerf is 0
 	// Our high number is start, the number when valuenerf is 1
@@ -5337,3 +5389,56 @@ float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
 	//     1.0 + ((-0.4) * valuenerf)
 	return max + ((start - max) * valuenerf);
 }
+
+/**
+ * Spawns a 2-point particle (IE medigun beam, dispenser beam, etc) and connects it through 2 entities.
+ * 
+ * @param startEnt		The entity to start from.
+ * @param startPoint	The point to attach the starting entity to.
+ * @param startXOff		Starting point X-axis offset.
+ * @param startYOff		Starting point Y-axis offset.
+ * @param startZOff		Starting point Z-axis offset.
+ * @param endEnt		The entity to end at.
+ * @param endPoint		The point to attach the end entity to.
+ * @param endXOff		Ending point X-axis offset.
+ * @param endYOff		Ending point Y-axis offset.
+ * @param endZOff		Ending point Z-axis offset.
+ * @param effect		The particle to connect.
+ * @param returnStart	Return parameter for the particle created at the start of the effect.
+ * @param returnEnd		Return parameter for the particle created at the end of the effect.
+ * @param duration		The duration of the effect. <= 0.0: infinite.
+ */
+#if defined ZR
+stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], float startXOff, float startYOff, float startZOff, int endEnt, char endPoint[255], float endXOff, float endYOff, float endZOff, char effect[255], int &returnStart, int &returnEnd, float duration = 0.0)
+{
+	float startPos[3], endPos[3];
+	WorldSpaceCenter(startEnt, startPos);
+	WorldSpaceCenter(endEnt, endPos);
+
+	int particle = ParticleEffectAtOcean(startPos, effect, duration, _, false);
+	int particle2 = ParticleEffectAtOcean(endPos, effect, duration, _, false);
+
+	float offsets[3];
+	offsets[0] = startXOff;
+	offsets[1] = startYOff;
+	offsets[2] = startZOff;
+	SetParent(startEnt, particle, startPoint, offsets, true);
+
+	offsets[0] = endXOff;
+	offsets[1] = endYOff;
+	offsets[2] = endZOff;
+	SetParent(endEnt, particle2, endPoint, offsets, true);
+
+	char szCtrlParti[128];
+	Format(szCtrlParti, sizeof(szCtrlParti), "tf2ctrlpart%i", EntIndexToEntRef(particle2));
+	DispatchKeyValue(particle, "targetname", szCtrlParti);
+
+	DispatchKeyValue(particle2, "cpoint1", szCtrlParti);
+
+	ActivateEntity(particle2);
+	AcceptEntityInput(particle2, "start");
+
+	returnStart = particle;
+	returnEnd = particle2;
+}
+#endif

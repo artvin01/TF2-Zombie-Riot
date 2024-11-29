@@ -60,9 +60,9 @@ public void PoisonZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return PoisonZombie(client, vecPos, vecAng, ally);
+	return PoisonZombie(vecPos, vecAng, team);
 }
 
 methodmap PoisonZombie < CClotBody
@@ -109,16 +109,12 @@ methodmap PoisonZombie < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -130,7 +126,7 @@ methodmap PoisonZombie < CClotBody
 	
 	
 	
-	public PoisonZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public PoisonZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		PoisonZombie npc = view_as<PoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "700", ally));
 		
@@ -167,8 +163,7 @@ methodmap PoisonZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void PoisonZombie_ClotThink(int iNPC)
 {
 	PoisonZombie npc = view_as<PoisonZombie>(iNPC);

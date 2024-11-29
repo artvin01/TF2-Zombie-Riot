@@ -57,9 +57,9 @@ public void ScoutHyper_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ScoutHyper(client, vecPos, vecAng, ally);
+	return ScoutHyper(vecPos, vecAng, team);
 }
 
 methodmap ScoutHyper < CClotBody
@@ -96,16 +96,12 @@ methodmap ScoutHyper < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 120);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 120);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -116,7 +112,7 @@ methodmap ScoutHyper < CClotBody
 	
 	
 	
-	public ScoutHyper(int client, float vecPos[3], float vecAng[3], int ally)
+	public ScoutHyper(float vecPos[3], float vecAng[3], int ally)
 	{
 		ScoutHyper npc = view_as<ScoutHyper>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.9", "300", ally, false,_,_,_,_));
 		
@@ -171,8 +167,7 @@ methodmap ScoutHyper < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ScoutHyper_ClotThink(int iNPC)
 {
 	ScoutHyper npc = view_as<ScoutHyper>(iNPC);
@@ -227,9 +222,10 @@ public void ScoutHyper_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 130000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 					}
 				}
@@ -295,11 +291,9 @@ public void ScoutHyper_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;

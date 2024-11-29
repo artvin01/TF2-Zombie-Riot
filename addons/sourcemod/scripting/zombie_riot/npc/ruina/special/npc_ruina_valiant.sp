@@ -51,6 +51,7 @@ static char g_TeleportSounds[][] = {
 
 static int i_anchor_id[MAXENTITIES];
 static int i_failsafe[MAXENTITIES];
+static float fl_spawn_timeout[MAXENTITIES];
 
 #define RUINA_ANCHOR_FAILSAFE_AMMOUNT 33
 
@@ -85,7 +86,7 @@ static void ClotPrecache()
 	PrecacheModel("models/player/engineer.mdl");
 	PrecacheSound(VENIUM_SPAWN_SOUND);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	bool random = StrContains(data, "rng") != -1;
 
@@ -101,7 +102,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 		}
 	}
 	fl_last_summon = 0.1;
-	return Valiant(client, vecPos, vecAng, ally, data);
+	return Valiant(vecPos, vecAng, team, data);
 }
 
 methodmap Valiant < CClotBody
@@ -173,7 +174,7 @@ methodmap Valiant < CClotBody
 	}
 	
 	
-	public Valiant(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Valiant(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Valiant npc = view_as<Valiant>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -196,8 +197,14 @@ methodmap Valiant < CClotBody
 		
 		/*
 			
-		
 		*/
+
+		float timeout_duration = 7.0;
+
+		fl_spawn_timeout[npc.index] = GetGameTime() + timeout_duration;
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -281,6 +288,13 @@ methodmap Valiant < CClotBody
 			}
 			TeleportDiversioToRandLocation(npc.index);
 		}
+
+		float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec); float sky_loc[3]; sky_loc = npc_vec; sky_loc[2]+=999.0;
+		float diameter = 25.0;
+		int color[4]; Ruina_Color(color);
+		TE_SetupBeamPoints(npc_vec, sky_loc, g_Ruina_BEAM_lightning, 0, 0, 0, timeout_duration, diameter, diameter*0.25, 0, 0.25, color, 24);
+		TE_SendToAll();
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		return npc;
 	}
@@ -288,8 +302,7 @@ methodmap Valiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Valiant npc = view_as<Valiant>(iNPC);
@@ -491,6 +504,13 @@ static void NPC_Death(int entity)
 
 static void Venium_Build_Anchor(Valiant npc)
 {
+	if(fl_spawn_timeout[npc.index] > GetGameTime())
+	{
+		//CPrintToChatAll("timeout");
+		return;
+	}
+		
+
 	float AproxRandomSpaceToWalkTo[3];
 
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
@@ -501,7 +521,7 @@ static void Venium_Build_Anchor(Valiant npc)
 	AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 800.0),(AproxRandomSpaceToWalkTo[1] + 800.0));
 
 	Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-		
+	
 	TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
 	delete ToGroundTrace;
 
@@ -514,17 +534,17 @@ static void Venium_Build_Anchor(Valiant npc)
 	{
 		return;
 	}
-			
+		
 
 	area.GetCenter(AproxRandomSpaceToWalkTo);
 
 	AproxRandomSpaceToWalkTo[2] += 18.0;
-		
+	
 	static float hullcheckmaxs_Player_Again[3];
 	static float hullcheckmins_Player_Again[3];
 
-	hullcheckmaxs_Player_Again = view_as<float>( { 45.0, 45.0, 82.0 } ); //Fat. very fett indeed
-	hullcheckmins_Player_Again = view_as<float>( { -45.0, -45.0, 0.0 } );	
+	hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
+	hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
 
 	if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 	{
@@ -534,33 +554,32 @@ static void Venium_Build_Anchor(Valiant npc)
 	if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
 		return;
 
-		
-	AproxRandomSpaceToWalkTo[2] += 18.0;
-	if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-		return;
-
-		
-	AproxRandomSpaceToWalkTo[2] -= 18.0;
-	AproxRandomSpaceToWalkTo[2] -= 18.0;
-	AproxRandomSpaceToWalkTo[2] -= 18.0;
-
-	if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-		return;
-
-		
-	AproxRandomSpaceToWalkTo[2] += 18.0;
-	AproxRandomSpaceToWalkTo[2] += 18.0;
 	
-	float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, npc_vec, true);
-		
-	if(flDistanceToBuild < (2000.0 * 2000.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
+	AproxRandomSpaceToWalkTo[2] += 18.0;
+	if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+		return;
+
+	
+	AproxRandomSpaceToWalkTo[2] -= 18.0;
+	AproxRandomSpaceToWalkTo[2] -= 18.0;
+	AproxRandomSpaceToWalkTo[2] -= 18.0;
+
+	if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+		return;
+
+	
+	AproxRandomSpaceToWalkTo[2] += 18.0;
+	AproxRandomSpaceToWalkTo[2] += 18.0;
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+
+	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceVec, true);
+	
+	if(flDistanceToBuild < (500.0 * 500.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
 	{
 		i_failsafe[npc.index]++;
 		return; //The building is too close, we want to retry! it is unfair otherwise.
 	}
 	//Retry.
-
 
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(spawn_index > MaxClients)

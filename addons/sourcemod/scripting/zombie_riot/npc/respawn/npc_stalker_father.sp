@@ -10,7 +10,7 @@ void StalkerFather_MapStart()
 	PrecacheModel("models/zombie/monk_combine.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Spawned Father Grigori");
+	strcopy(data.Name, sizeof(data.Name), "Corrupted Father Grigori");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_father");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -20,9 +20,9 @@ void StalkerFather_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return StalkerFather(client, vecPos, vecAng, ally);
+	return StalkerFather(vecPos, vecAng, team);
 }
 
 methodmap StalkerFather < StalkerShared
@@ -37,7 +37,7 @@ methodmap StalkerFather < StalkerShared
 		i_PlayMusicSound = GetTime() + 39;
 	}
 	
-	public StalkerFather(int client, float vecPos[3], float vecAng[3], int ally)
+	public StalkerFather(float vecPos[3], float vecAng[3], int ally)
 	{
 		StalkerFather npc = view_as<StalkerFather>(CClotBody(vecPos, vecAng, "models/zombie/monk_combine.mdl", "1.15", "66666", ally));
 		

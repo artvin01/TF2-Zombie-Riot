@@ -39,9 +39,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]); }
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Psycho(client, vecPos, vecAng, ally);
+	return Psycho(vecPos, vecAng, team);
 }
 methodmap Psycho < CClotBody
 {
@@ -67,7 +67,7 @@ methodmap Psycho < CClotBody
 	}
 	
 	
-	public Psycho(int client, float vecPos[3], float vecAng[3], int ally)
+	public Psycho(float vecPos[3], float vecAng[3], int ally)
 	{
 		Psycho npc = view_as<Psycho>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/psycho.mdl", "1.0", "400", ally));
 		
@@ -88,9 +88,7 @@ methodmap Psycho < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Psycho_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 360.0;
 

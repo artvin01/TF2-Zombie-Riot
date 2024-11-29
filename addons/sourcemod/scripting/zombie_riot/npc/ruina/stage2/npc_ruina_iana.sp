@@ -85,9 +85,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_AngerSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iana(client, vecPos, vecAng, ally);
+	return Iana(vecPos, vecAng, team);
 }
 
 methodmap Iana < CClotBody
@@ -152,16 +152,12 @@ methodmap Iana < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -190,7 +186,7 @@ methodmap Iana < CClotBody
 		}
 	}
 	
-	public Iana(int client, float vecPos[3], float vecAng[3], int ally)
+	public Iana(float vecPos[3], float vecAng[3], int ally)
 	{
 		Iana npc = view_as<Iana>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -202,6 +198,9 @@ methodmap Iana < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 1;
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
 		/*
@@ -272,8 +271,7 @@ methodmap Iana < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Iana npc = view_as<Iana>(iNPC);
@@ -335,7 +333,7 @@ static void ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);	//10% resistances
+		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.85);	//15% resistances
 		Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);	//5% dmg bonus
 		Master_Apply_Shield_Buff(npc.index, 250.0, 0.7);	//30% block shield
 

@@ -196,6 +196,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				enemies_hit_aoe = SpecterHowManyEnemiesHit(client, weapon);
 			}	
+			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
+			{
+				enemies_hit_aoe = SuperubersawHowManyEnemiesHit(client);
+			}	
 			case WEAPON_SAGA: //yes, if we miss, then we do other stuff.
 			{
 				SagaAttackBeforeSwing(client);
@@ -231,6 +235,18 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			case WEAPON_ULPIANUS:
 			{
 				enemies_hit_aoe = Ulpianus_EnemyHitCount();
+			}
+			case WEAPON_YAKUZA:
+			{
+				Yakuza_EnemiesHit(client, weapon, enemies_hit_aoe);
+			}
+			case WEAPON_FULLMOON:
+			{
+				FullMoon_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
+			}
+			case WEAPON_OLDINFINITYBLADE:
+			{
+				enemies_hit_aoe = 10;
 			}
 		}	
 	}
@@ -311,8 +327,9 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
 	
-	if(enemies_hit_aoe < 2)
+	if(enemies_hit_aoe <= 1)
 	{
+		//not a cleave.
 		if(!Hit_ally)
 		{
 			// See if we hit anything.
@@ -375,8 +392,9 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	}
 	else
 	{
+		//This is a cleave
 		b_iHitNothing = true;
-		Handle TempTrace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEndHull, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace_Multi, client);	// 1073741824 is CONTENTS_LADDER?
+		Handle TempTrace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEndHull, vecSwingMins, vecSwingMaxs, ( 1073741824 ), BulletAndMeleeTrace_Multi, client);	// 1073741824 is CONTENTS_LADDER?
 		delete TempTrace;
 		if(b_iHitNothing) //aaa panic
 		{
@@ -399,6 +417,16 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 	if(target == -1)
 		return ZEROSOUND;
 
+#if defined ZR
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_FULLMOON:
+		{
+			if(FullMoonAbilityOn(client))
+				return ZEROSOUND;
+		}
+	}
+#endif
 	if(target > 0 && (!b_NpcHasDied[target] || target <= MaxClients))
 	{
 		switch(weapon_index)
@@ -427,6 +455,11 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 			{
 				PlayCustomSoundAngelica(client);
 				return ZEROSOUND;
+			}
+			case WEAPON_SUPERUBERSAW:
+			{
+				if(PlayCustomSoundSuperubersaw(client))
+					return ZEROSOUND;
 			}
 		}
 #endif
@@ -644,7 +677,6 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 
 #if defined ZR
 			damage *= BuildingWeaponDamageModif(1);
-			damage *= 0.5;
 #endif
 		}
 
@@ -668,7 +700,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			if (i_EntitiesHitAoeSwing[counter] != -1)
 			{
-				if(IsValidEntity(i_EntitiesHitAoeSwing[counter]))
+				//make sure they are in our line of sight aswell, so it aint going through walls with AOE's
+				if(IsValidEntity(i_EntitiesHitAoeSwing[counter]) && Can_I_See_Enemy_Only(client, i_EntitiesHitAoeSwing[counter]))
 				{
 					if(!PlayOnceOnly)
 					{
@@ -704,6 +737,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							Blitzkrieg_Kit_OnHitEffect(client);
 						}
+						case WEAPON_FULLMOON:
+						{
+							FullMoon_Meleetrace_Hit_Before(client, damage, i_EntitiesHitAoeSwing[counter]);
+						}
 						default:
 						{
 							
@@ -720,9 +757,17 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							damage *= 0.5;
 						}
+						case WEAPON_SPECTER:
+						{
+							damage *= 0.8; //each target hit reduces damage done.
+						}	
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
 							Angelic_Shotgun_Meleetrace_Hit_After(client, damage);
+						}
+						case WEAPON_FULLMOON:
+						{
+							FullMoon_Meleetrace_Hit_After(damage);
 						}
 						default:
 						{
@@ -737,15 +782,38 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			i_EntitiesHitAoeSwing[i] = -1;
 		}
-
-		if(target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
+#if defined ZR
+		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-		//	PrintToChatAll("%i",MELEE_HIT);
+			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
+			{
+				if(PlayOnceOnly) //It hit atleast 1 target!
+					SuperUbersaw_Post(client);
+			}
+			case WEAPON_YAKUZA: //yes, if we miss, then we do other stuff.
+			{
+				YakuzaWeaponSwingDid(client);
+			}
+		}
+#endif
+
+		if(i_EntitiesHitAtOnceMax <= 1 && target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
+		{
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
 		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
 			
 			float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
 			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, vecHit);	
+			//this only happens if it only tried to hit 1 target anyways.
+#if defined ZR
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_FULLMOON:
+				{
+					FullMoon_Meleetrace_Hit_Before(client, damage, target);
+				}
+			}
+#endif
 		}
 		else if(target > -1 && i_CustomWeaponEquipLogic[weapon] == WEAPON_BOOM_HAMMER)
 		{

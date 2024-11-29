@@ -32,6 +32,8 @@ static ArrayList MerchantAttribs[MAXTF2PLAYERS];
 
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 static int MerchantStyle[MAXTF2PLAYERS] = {-1, ...};
+static int MerchantStyleSelect[MAXTF2PLAYERS] = {-1, ...};
+static float HintChatAntiSpam[MAXTF2PLAYERS];
 static Handle EffectTimer[MAXTF2PLAYERS];
 
 void Merchant_RoundStart()
@@ -41,7 +43,9 @@ void Merchant_RoundStart()
 	for(int i; i < sizeof(MerchantStyle); i++)
 	{
 		MerchantStyle[i] = -1;
+		MerchantStyleSelect[i] = -1;
 	}
+	Zero(HintChatAntiSpam);
 }
 
 int Merchant_Additional_SupportBuildings(int client)
@@ -81,7 +85,7 @@ void Merchant_Enable(int client, int weapon)
 
 static Action TimerEffect(Handle timer, int client)
 {
-	if(IsClientInGame(client) && MerchantLevel[client] > -1)
+	if(IsClientInGame(client))
 	{
 		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_HealthBeforeSuit[client] == 0)
 		{
@@ -90,7 +94,7 @@ static Action TimerEffect(Handle timer, int client)
 				int weapon = EntRefToEntIndex(MerchantWeaponRef[client]);
 				if(weapon != -1)
 				{
-					if(MerchantStyle[client] == Merchant_Swire || GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
+					if(MerchantStyle[client] >= 0)
 					{
 						b_IsCannibal[client] = true;
 
@@ -108,21 +112,33 @@ static Action TimerEffect(Handle timer, int client)
 							SetAmmo(client, Ammo_Metal, ammo - cost);
 							CurrentAmmo[client][Ammo_Metal] = ammo - cost;
 						}
-
-						return Plugin_Continue;
 					}
+					return Plugin_Continue;
 				}
-
-				MerchantEnd(client);
 			}
 
-			if(MerchantWeaponRef[client] == -1)
+			int weapon = EntRefToEntIndex(MerchantWeaponRef[client]);
+			if(weapon == -1)
 			{
-				int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+				weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 				if(weapon != -1)
 				{
 					if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MERCHANT)
+					{
+						MerchantWeaponRef[client] = EntIndexToEntRef(weapon);
+						if(MerchantAttribs[client] && MerchantStyle[client] >= 0)
+						{
+							any array[2];
+							int length = MerchantAttribs[client].Length;
+							for(int i; i < length; i++)
+							{
+								MerchantAttribs[client].GetArray(i, array);
+								Attributes_SetMulti(weapon, view_as<int>(array[0]),view_as<float>(array[1]));
+							}
+						}
 						return Plugin_Continue;
+						//we detected a new weapon...
+					}
 				}
 			}
 		}
@@ -133,7 +149,7 @@ static Action TimerEffect(Handle timer, int client)
 		}
 	}
 
-	MerchantLevel[client] = -1;
+//	MerchantLevel[client] = -1;
 	MerchantWeaponRef[client] = -1;
 		
 	if(ParticleRef[client] != -1)
@@ -154,7 +170,7 @@ static Action TimerEffect(Handle timer, int client)
 
 public void Weapon_MerchantSecondary_M2(int client, int weapon, bool crit, int slot)
 {
-	if(MerchantStyle[client] < 0)
+	if(MerchantStyleSelect[client] < 0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -177,7 +193,7 @@ public void Weapon_MerchantSecondary_M2(int client, int weapon, bool crit, int s
 
 public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int slot)
 {
-	if(MerchantWeaponRef[client] != -1)
+	if(MerchantWeaponRef[client] != -1 && MerchantStyle[client] >= 0)
 		MerchantEnd(client);
 
 	Menu menu = new Menu(MerchantMenuH);
@@ -235,7 +251,40 @@ static int MerchantMenuH(Menu menu, MenuAction action, int client, int choice)
 			char buffer[4];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 
-			MerchantStyle[client] = StringToInt(buffer);
+			MerchantStyleSelect[client] = StringToInt(buffer);
+			switch(MerchantStyleSelect[client])
+			{
+				case 0:
+				{
+					//fish market
+					if(MerchantLevel[client] > 2)
+					{
+						CPrintToChat(client, "{green}Fish market!{default}: Silence enemies on hit!\nCrouch on M2 to instead gain heal on hit, will heal lowest HP ally near you, or you if youre the lowest HP!");
+					}
+					else
+					{
+						CPrintToChat(client, "{green}Fish market!{default}: Silence enemies on hit!");
+					}
+				}
+				case 1:
+				{
+					if(MerchantLevel[client] > 1)
+						CPrintToChat(client, "{green}Martial Artist!{default}: If low on health, gain speed, HP, but deactivates buff.\nIf you dont attack for 4 seconds, your next attack stuns\nGain a random effect when activating:\nHeavy melee resistance\nExtra Attackspeed\nEach attack debuffs enemy.");
+					else
+						CPrintToChat(client, "{green}Martial Artist!{default}: If low on health, gain speed, HP, but deactivates buff.\nIf you dont attack for 4 seconds, your next attack stuns");
+				}
+				case 2:
+				{
+					if(MerchantLevel[client] > 2)
+						CPrintToChat(client, "{green}The Investigator!{default}: Gain overall resistances and immunity to slows!\nImplant bombs onto hit enemies\nIf hurt by enemy, debuff them and gain attackspeed.\nKnockback all light enemies slightly.\nIf slowed or stunned, stun them instead!");	
+					else
+						CPrintToChat(client, "{green}The Investigator!{default}: Gain melee resistances!\nImplant bombs onto hit enemies\nIf hurt by enemy, debuff them and gain attackspeed.\nKnockback all light enemies slightly.");	
+				}
+				case 3:
+				{
+					CPrintToChat(client, "{green}Wine market!{default}: Revive if you would have died at a cost of metal.\nGain weapons on activation in your primary slot!\nLoyalty and Generosity: Healing crossbow\nLavish and Prodigal: Strong heavy shotgun.");
+				}
+			}
 		}
 	}
 	return 0;
@@ -337,10 +386,13 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		}
 		case Merchant_Lee:
 		{
-			f_BombEntityWeaponDamageApplied[victim][attacker] = damage * (MerchantLevel[attacker] > 4 ? 0.133333 : 0.1);
-			i_HowManyBombsOnThisEntity[victim][attacker]++;
-			i_HowManyBombsHud[victim]++;
-			Apply_Particle_Teroriser_Indicator(victim);
+			if(!b_NpcIsInvulnerable[victim])
+			{
+				f_BombEntityWeaponDamageApplied[victim][attacker] += damage * (MerchantLevel[attacker] > 4 ? 0.133333 : 0.1);
+				i_HowManyBombsOnThisEntity[victim][attacker]++;
+				i_HowManyBombsHud[victim]++;
+				Apply_Particle_Teroriser_Indicator(victim);
+			}
 
 			bool blocking = EntRefToEntIndex(MerchantEffect[attacker]) == victim;
 			bool elite = MerchantLevel[attacker] > 2;
@@ -455,7 +507,7 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 			{
 				if(i != attacker && TeutonType[i] == TEUTON_NONE && !dieingstate[i] && IsClientInGame(i) && IsPlayerAlive(i))
 				{
-					GetClientAbsOrigin(attacker, pos2);
+					GetClientAbsOrigin(i, pos2);
 					if(GetVectorDistance(pos1, pos2, true) < 100000.0)	// 300 HU
 					{
 						int hp = GetClientHealth(i);
@@ -489,8 +541,44 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 			if(target)
 			{
 				healing *= MerchantLevel[attacker] * 25.0;
+				healing *= 0.25;
+				if(healing >= 50.0)
+					healing = 50.0;
 
 				HealEntityGlobal(attacker, target, healing, 1.0, 1.0);
+
+				if(HintChatAntiSpam[attacker] < GetGameTime())
+				{
+					HintChatAntiSpam[attacker] = GetGameTime() + 0.5;
+					if(target <= MaxClients)
+					{
+						SetGlobalTransTarget(attacker);
+						PrintHintText(attacker, "%t", "You healed for", target, RoundToNearest(healing));
+						StopSound(attacker, SNDCHAN_STATIC, "UI/hint.wav");
+					}
+					else
+					{
+						SetGlobalTransTarget(attacker);
+						PrintHintText(attacker, "%t", "You healed for NpcName", c_NpcName[target], RoundToNearest(healing));
+						StopSound(attacker, SNDCHAN_STATIC, "UI/hint.wav");
+					}
+				}
+
+				if(attacker != target)
+				{
+					float VicLoc[3];
+					WorldSpaceCenter(attacker, VicLoc);
+					float VicLoc2[3];
+					WorldSpaceCenter(target, VicLoc2);
+					int color[4];
+					color[0] = 0;
+					color[1] = 255;
+					color[2] = 0;
+					color[3] = 255;
+					float amp = 0.3;
+					TE_SetupBeamPoints(VicLoc, VicLoc2, IreneReturnLaserSprite(), 0, 0, 0, 0.15, 1.0, 1.2, 1, amp, color, 0);
+					TE_SendToAll();
+				}
 			}
 		}
 	}
@@ -511,7 +599,7 @@ void Merchant_SelfTakeDamage(int victim, int attacker, float &damage)
 				float healing = MerchantLevel[victim] > 1 ? (0.5 + (MerchantLevel[victim] * 0.05)) : 0.45;
 				HealEntityGlobal(victim, victim, maxhealth * healing, 1.0, 5.0, HEAL_SELFHEAL);
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 5.0, victim);
-				MerchantEnd(victim);
+				MerchantEnd(victim, 35.0);
 			}
 		}
 		case Merchant_Lee:
@@ -556,11 +644,12 @@ bool Merchant_OnLethalDamage(int attacker, int client)
 
 static void MerchantStart(int client, int slot)
 {
-	if(MerchantWeaponRef[client] != -1)
+	if(MerchantWeaponRef[client] != -1 && MerchantStyle[client] >= 0)
 	{
 		MerchantEnd(client);
 		return;
 	}
+	MerchantStyle[client] = MerchantStyleSelect[client];
 
 	float fcost;
 	switch(MerchantStyle[client])
@@ -572,10 +661,7 @@ static void MerchantStart(int client, int slot)
 			if(MerchantLevel[client] > 2)
 			{
 				int buttons = GetClientButtons(client);
-				if(buttons & IN_JUMP)
-				{
-				}
-				else if((buttons & IN_DUCK) || (GetURandomInt() % 2))
+				if((buttons & IN_DUCK))
 				{
 					MerchantEffect[client] = 1;
 				}
@@ -625,6 +711,22 @@ static void MerchantStart(int client, int slot)
 		{
 			MerchantEffect[client] = MerchantLevel[client] > 1 ? (GetURandomInt() % 3) : -1;
 
+			switch(MerchantEffect[client])
+			{
+				case Nothing_Debuff:
+				{
+					CPrintToChat(client, "{green}Martial Artist, You recieved Debuff on hit!{default}");
+				}
+				case Nothing_Damage:
+				{
+					CPrintToChat(client, "{green}Martial Artist, You recieved Attackspeed!{default}");
+				}
+				case Nothing_Res:
+				{
+					CPrintToChat(client, "{green}Martial Artist, You recieved Heavy Melee Resistance!{default}");
+				}
+			}
+					
 			if((MerchantLeftAt[client] + 10.0) > GetGameTime())
 			{
 				// Redeploy has a discount
@@ -681,6 +783,7 @@ static void MerchantStart(int client, int slot)
 		}
 	}
 
+	MerchantStyle[client] = MerchantStyleSelect[client];
 	int ammo = GetAmmo(client, Ammo_Metal);
 	int cost = RoundFloat(MERCHANT_METAL_DRAIN * fcost);
 	if(ammo < (cost * 2))
@@ -690,6 +793,7 @@ static void MerchantStart(int client, int slot)
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "No Ammo Supplies");
 		Ability_Apply_Cooldown(client, slot, 0.3);
+		MerchantStyle[client] = -1;
 		return;
 	}
 
@@ -797,7 +901,7 @@ static void MerchantStart(int client, int slot)
 						}
 						case Nothing_Res:
 						{
-							MerchantAddAttrib(client, 206, (MerchantLevel[client] == 6 ? 0.5 : (MerchantLevel[client] == 3 ? 0.6 : 0.55)));
+							MerchantAddAttrib(client, 206, (MerchantLevel[client] == 6 ? 0.75 : (MerchantLevel[client] == 3 ? 0.8 : 0.7)));
 							strcopy(particle, sizeof(particle), "utaunt_arcane_purple_sparkle_ring");
 						}
 					}
@@ -837,7 +941,6 @@ static void MerchantStart(int client, int slot)
 				SetAmmo(client, Ammo_Merchant, 1);
 
 				Store_GiveSpecificItem(client, "Loyalty and Generosity");
-				Store_GiveSpecificItem(client, "Courtesy Gift");
 				Store_GiveSpecificItem(client, "Lavish and Prodigal");
 			}
 		}
@@ -878,9 +981,12 @@ static void MerchantAddAttrib(int client, int attrib, float value)
 	}
 }
 
-static void MerchantEnd(int client)
+static void MerchantEnd(int client, float customCD = -1.0)
 {
 	if(MerchantWeaponRef[client] == -1)
+		return;
+		
+	if(MerchantStyle[client] <= -1)
 		return;
 
 	if(ParticleRef[client] != -1)
@@ -927,12 +1033,15 @@ static void MerchantEnd(int client)
 				//cooldown = 5.0;
 			}
 		}
+		if(customCD != -1.0)
+		{
+			cooldown = customCD;
+		}
 
 		Ability_Apply_Cooldown(client, MerchantAbilitySlot[client], cooldown, weapon);
 	}
 	
 	Store_RemoveSpecificItem(client, "Loyalty and Generosity");
-	Store_RemoveSpecificItem(client, "Courtesy Gift");
 	Store_RemoveSpecificItem(client, "Lavish and Prodigal");
 
 	for( int entity = 1; entity <= MAXENTITIES; entity++ ) 
@@ -958,6 +1067,7 @@ static void MerchantEnd(int client)
 	b_IsCannibal[client] = false;
 	MerchantWeaponRef[client] = -1;
 	MerchantLeftAt[client] = GetGameTime();
+	MerchantStyle[client] = -1;
 	delete MerchantAttribs[client];
 	SetAmmo(client, Ammo_Merchant, 0);
 }

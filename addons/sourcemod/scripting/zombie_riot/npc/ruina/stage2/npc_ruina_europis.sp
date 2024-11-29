@@ -56,9 +56,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/pyro.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Europis(client, vecPos, vecAng, ally);
+	return Europis(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -108,16 +108,12 @@ methodmap Europis < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void AdjustWalkCycle()
@@ -140,7 +136,7 @@ methodmap Europis < CClotBody
 		}
 	}
 
-	public Europis(int client, float vecPos[3], float vecAng[3], int ally)
+	public Europis(float vecPos[3], float vecAng[3], int ally)
 	{
 		Europis npc = view_as<Europis>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1250", ally));
 		
@@ -212,8 +208,7 @@ methodmap Europis < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Europis npc = view_as<Europis>(iNPC);
@@ -269,7 +264,7 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
 		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
-		if(Zombies_Currently_Still_Ongoing < RoundToFloor(NPC_HARD_LIMIT*0.5))
+		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
 			Europis_Spawn_Minnions(npc);
 		}

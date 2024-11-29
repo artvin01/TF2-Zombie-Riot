@@ -54,9 +54,9 @@ void Iberia_Irani_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaIrani(client, vecPos, vecAng, ally);
+	return IberiaIrani(vecPos, vecAng, team);
 }
 methodmap IberiaIrani < CClotBody
 {
@@ -97,7 +97,7 @@ methodmap IberiaIrani < CClotBody
 	}
 	
 	
-	public IberiaIrani(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaIrani(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaIrani npc = view_as<IberiaIrani>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "600", ally));
 		
@@ -119,9 +119,7 @@ methodmap IberiaIrani < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(IberiaIrani_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 270.0;
 		

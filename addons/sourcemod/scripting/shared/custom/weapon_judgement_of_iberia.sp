@@ -23,7 +23,6 @@
 Handle h_TimerIreneManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Irenehuddelay[MAXTF2PLAYERS];
 static int i_IreneHitsDone[MAXTF2PLAYERS];
-bool b_WeaponAttackSpeedModified[MAXENTITIES];
 int i_NextAttackDoubleHit[MAXENTITIES];
 static bool b_WeaponAttackSpeedModifiedSeaborn[MAXENTITIES];
 static int i_IreneTargetsAirborn[MAXTF2PLAYERS][IRENE_MAX_HITUP];
@@ -54,6 +53,10 @@ void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
 	}
 }
 
+void SetAirtimeNpc(int entity, float Duration)
+{
+	f_TargetAirtime[entity] = GetGameTime() + Duration;
+}
 bool Npc_Is_Targeted_In_Air(int entity) //Anything that needs to be precaced like sounds or something.
 {
 	if(f_TargetAirtime[entity] > GetGameTime())
@@ -143,7 +146,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 				{
 					switch(i_CustomWeaponEquipLogic[Active_weapon])
 					{
-						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS:
+						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SKADI:
 						{
 							ThereWasSeaborn = true;
 							break;

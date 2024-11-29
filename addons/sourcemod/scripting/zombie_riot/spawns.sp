@@ -15,6 +15,8 @@ enum struct SpawnerData
 	float Points;
 	bool Enabled;
 	int MaxSpawnsAllowed;
+	int WaveCreatedIn;
+	int MaxWavesAllowed;
 	int CurrentSpawnsPerformed;
 	int SpawnSetting;
 }
@@ -112,16 +114,32 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
 		{
 			SpawnerList.Erase(i);
-			i--;
+			i--; //we try again.
 			length--;
 			continue;
 		}
-
 		if(!spawn.BaseBoss)
 		{
 			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
 				continue;
-
+			
+			/*
+			if(spawn.MaxWavesAllowed != 999)
+			{
+				//999 means its a perma spawn or a boss spawn, whatever it may be.
+				int WavesAllow = spawn.MaxWavesAllowed;
+				int WavesLeft = ZR_GetWaveCount() - spawn.WaveCreatedIn;
+				if(WavesLeft >= WavesAllow)
+				{
+					SpawnerList.Erase(i);
+					i--; //we try again.
+					length--;
+					
+					//EDIT:looks like deleting it is bad.
+					continue;
+				}
+			}
+			*/
 			nonBossSpawners++;
 		}
 		
@@ -143,7 +161,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
 			{
 				SpawnerList.Erase(i);
-				i--;
+				i--; //we try again.
 				length--;
 				continue;
 			}
@@ -153,10 +171,23 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
 					continue;
 
+				if(spawn.MaxWavesAllowed != 999)
+				{
+					//999 means its a perma spawn or a boss spawn, whatever it may be.
+					int WavesAllow = spawn.MaxWavesAllowed;
+					int WavesLeft = ZR_GetWaveCount() - spawn.WaveCreatedIn;
+					if(WavesLeft >= WavesAllow)
+					{
+						SpawnerList.Erase(i);
+						i--; //we try again.
+						length--;
+						continue;
+					}
+				}
 				nonBossSpawners++;
 			}
 			
-			if(bestIndex == -1 || (spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
+			if(/*bestIndex == -1 || */(spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
 			{
 				bestIndex = i;
 				bestPoints = spawn.Points;
@@ -224,7 +255,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	return true;
 }
 
-void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false, int MaxSpawnsAllowed = 2000000000, int i_SpawnSetting = 0)
+void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false, int MaxSpawnsAllowed = 2000000000, int i_SpawnSetting = 0, int WavesAllowed = 999)
 {
 	if(!SpawnerList)
 		SpawnerList = new ArrayList(sizeof(SpawnerData));
@@ -237,6 +268,8 @@ void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false
 		spawn.BaseBoss = base_boss;
 		spawn.AllySpawner = allyspawner;
 		spawn.MaxSpawnsAllowed = MaxSpawnsAllowed;
+		spawn.WaveCreatedIn = ZR_GetWaveCount();
+		spawn.MaxWavesAllowed = WavesAllowed;
 		spawn.CurrentSpawnsPerformed = 0;
 		spawn.SpawnSetting = i_SpawnSetting;
 

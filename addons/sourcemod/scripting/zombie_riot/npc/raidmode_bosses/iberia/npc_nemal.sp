@@ -6,13 +6,15 @@
 #define Nemal_LASER_THICKNESS 25
 
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
+static bool TripleLol;
+static float NemalAntiLaserDo[MAXENTITIES];
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -146,12 +148,13 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MineLayed));   i++) { PrecacheSound(g_MineLayed[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid.mp3");
+	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Nemal(client, vecPos, vecAng, ally, data);
+	return Nemal(vecPos, vecAng, team, data);
 }
 
 methodmap Nemal < CClotBody
@@ -180,6 +183,11 @@ methodmap Nemal < CClotBody
 	{
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
+	}
+	property int m_iPlayerScaledStart
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
 	property float m_flTimeUntillMark
 	{
@@ -346,7 +354,7 @@ methodmap Nemal < CClotBody
 	}
 	
 	
-	public Nemal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Nemal(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Nemal npc = view_as<Nemal>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
@@ -373,6 +381,7 @@ methodmap Nemal < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		//IDLE
+		Zero(NemalAntiLaserDo);
 		npc.m_flTimeUntillMark = GetGameTime(npc.index) + 15.0;
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -391,6 +400,8 @@ methodmap Nemal < CClotBody
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_bThisNpcIsABoss = true;
+		
 		b_angered_twice[npc.index] = false;
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{
@@ -544,8 +555,17 @@ methodmap Nemal < CClotBody
 		{
 			RaidModeScaling *= 0.38;
 		}
+
+		if(ZR_GetWaveCount()+1 > 55)
+		{
+			RaidModeTime = GetGameTime(npc.index) + 220.0;
+			RaidModeScaling *= 0.7;
+		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
+
+		npc.m_iPlayerScaledStart = CountPlayersOnRed();
+		
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
@@ -556,18 +576,46 @@ methodmap Nemal < CClotBody
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+		TripleLol = false;
+		if(!StrContains(data, "triple_enemies"))
+		{
+			TripleLol = true;
+			i_RaidGrantExtra[npc.index] = 4;
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Sorry {blue}Sensal's{default} he's comming a bit late.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Hey {blue}Sensal's{default}, im here.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Isnt this overkill?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Sorry but thats all.");
+				}
+			}
+		}
+		if(!TripleLol)
+		{
+			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Nemal_Win);
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid.mp3");
+			music.Time = 158;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Morning Moon");
+			strcopy(music.Artist, sizeof(music.Artist), "Hopeku");
+			Music_SetRaidMusic(music);
+		}
 
-
-		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Nemal_Win);
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid.mp3");
-		music.Time = 158;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Morning Moon");
-		strcopy(music.Artist, sizeof(music.Artist), "Hopeku");
-		Music_SetRaidMusic(music);
 		npc.m_iChanged_WalkCycle = -1;
 
 		int skin = 1;
@@ -1087,6 +1135,7 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 				npc.DoSwingTrace(swingTrace, target,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
+				bool WasPlayerOnly = false;
 				bool DontGiveStack = false;
 				bool ResetStack = false;
 				if(npc.m_iNemalComboAttack >= 3)
@@ -1143,6 +1192,8 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 
 							TE_SetupBeamPoints(origin, vecHit, Shared_BEAM_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, colorLayer4, 1);
 							TE_SendToAll(0.0);
+							if(targetTrace <= MaxClients)
+								WasPlayerOnly = true;
 							
 										
 							if(IsValidClient(targetTrace))
@@ -1165,10 +1216,17 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					//Do Hit Effect
 					float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 					flMaxhealth *= 0.0025;
+					if(!WasPlayerOnly)
+					{
+						flMaxhealth *= 0.5;
+					}
 					if(i_RaidGrantExtra[npc.index] >= 4)
 					{
 						flMaxhealth *= 0.75;
 					}
+					int CurrentPlayersAlive = CountPlayersOnRed(1);
+					float HpScalingDecreace = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
+					flMaxhealth *= HpScalingDecreace;
 					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{
@@ -1267,7 +1325,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 			npc.m_flNemalPlaceAirMines = gameTime + 2.0;
 			npc.m_flNemalPlaceAirMinesCD = gameTime + 30.0;
 			if(i_RaidGrantExtra[npc.index] >= 4)
-				npc.m_flNemalPlaceAirMinesCD = gameTime + 20.0;
+				npc.m_flNemalPlaceAirMinesCD = gameTime + 25.0;
 
 			npc.m_flAttackHappens = 0.0;
 			NPC_StopPathing(npc.index);
@@ -1337,11 +1395,11 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 				RemoveEntity(npc.m_iWearable8);
 			}
 			npc.i_GunMode = 1;
-			npc.m_flNemalSlicerCD = gameTime + 20.5;
+			npc.m_flNemalSlicerCD = gameTime + 22.0;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
-			npc.m_flAttackHappens = GetGameTime(npc.index) + 1.0;
-			npc.m_flNemalSlicerHappening = gameTime + 4.0;
+			npc.m_flAttackHappens = GetGameTime(npc.index) + 1.5;
+			npc.m_flNemalSlicerHappening = gameTime + 4.5;
 			EmitSoundToAll("ambient/energy/whiteflash.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 100);
 			EmitSoundToAll("ambient/energy/whiteflash.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 100);
 			float flPos[3];
@@ -1846,7 +1904,7 @@ bool NemalSnipingShots(Nemal npc)
 				GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable8);
 				for(int i; i < sizeof(enemy_2); i++)
 				{
-					if(enemy_2[i])
+					if(enemy_2[i] && NemalAntiLaserDo[enemy_2[i]] < GetGameTime())
 					{
 						int ememyTarget = enemy_2[i];
 						WorldSpaceCenter(ememyTarget, PosEnemy);
@@ -1876,7 +1934,7 @@ bool NemalSnipingShots(Nemal npc)
 					delete hTrace;
 					if(DoLaserShow)
 					{
-						TE_SetupBeamPoints(pos_npc, SnipeTargets[Loop], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {0,0,255,255}, 3);
+						TE_SetupBeamPoints(pos_npc, SnipeTargets[Loop], Shared_BEAM_Laser, 0, 0, 0, 0.1, 5.0, 5.0, 0, 0.0, {125,125,255,255}, 3);
 						TE_SendToAll(0.0);
 					}
 				}
@@ -1907,6 +1965,8 @@ bool NemalSnipingShots(Nemal npc)
 						if(IsValidEnemy(npc.index, target))
 						{
 							float damageDealt = 40.0 * RaidModeScaling;
+							if(Loop > MaxClients)
+								damageDealt *= 0.5;
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, SnipeTargets[Loop]);
 						} 
@@ -2064,6 +2124,17 @@ bool NemalSummonSilvester(Nemal npc)
 			{
 				CPrintToChatAll("{lightblue}Nemal{default}: New phone who this? Oh, you finally came!");
 			}
+		}
+		if(i_RaidGrantExtra[npc.index] >= 3 && !TripleLol)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
+			music.Time = 227;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "06 Flirt With Bomb");
+			strcopy(music.Artist, sizeof(music.Artist), "???");
+			Music_SetRaidMusic(music);
 		}
 		npc.m_iChanged_WalkCycle = 0;
 		return true;
@@ -2409,6 +2480,10 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 
 	MakeVectorFromPoints(vecSelf, VecTarget, TempAng);
 	GetVectorAngles(TempAng, AngleFromSelf);
+	//It should delete itself if the middle part touches a wall.
+	int MasterEntityIndex = Wand_Projectile_Spawn(iNpc, speed, 0.0, 0.0, -1, -1, "", AngleFromSelf,_,vecSelf);
+	SetEntProp(MasterEntityIndex, Prop_Send, "m_usSolidFlags", 12); 
+	WandProjectile_ApplyFunctionToEntity(MasterEntityIndex, NemalSlicerTouchOverall);
 	
 	//AngleFromSelf is the angle of where it should fire from towards to the target.
 
@@ -2455,7 +2530,9 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		switch(SitatuionCalcDo)
 		{
 			case 3:
+			{
 				tmp[0] = 0.0;
+			}
 			case 2:
 				tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
 			case 1:
@@ -2530,6 +2607,8 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		
 		DataPack pack2;
 		CreateDataTimer(0.1, Timer_NemalProjectileHitDetect, pack2, TIMER_REPEAT);
+		pack2.WriteCell(EntIndexToEntRef(MasterEntityIndex));
+		pack2.WriteCell(EntIndexToEntRef(laser));
 		pack2.WriteCell(EntIndexToEntRef(projectile));
 		pack2.WriteFloat(OverridePosOfSpawned[0]);
 		pack2.WriteFloat(OverridePosOfSpawned[1]);
@@ -2539,6 +2618,16 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 	}
 }
 
+public void NemalSlicerTouchOverall(int entity, int target)
+{
+	if(target == 0)
+	{
+		if(IsValidEntity(entity))
+		{
+			RemoveEntity(entity);
+		}
+	}
+}
 int NemalSutationSliceHelp(int CurrentJoint, int MaxJoints)
 {
 	if(CurrentJoint == (MaxJoints / 2))
@@ -2562,7 +2651,17 @@ bool DoDamageActiveHereNemal[MAXENTITIES];
 public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 {
 	pack.Reset();
+	int MasterProjEntity = EntRefToEntIndex(pack.ReadCell());
+	int LaserEntity = EntRefToEntIndex(pack.ReadCell());
 	int Projectile = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(MasterProjEntity))
+	{
+		if(IsValidEntity(LaserEntity))
+			RemoveEntity(LaserEntity);
+
+		if(IsValidEntity(Projectile))
+			RemoveEntity(Projectile);
+	}
 	float OldPositionGet[3];
 	OldPositionGet[0] = pack.ReadFloat();
 	OldPositionGet[1] = pack.ReadFloat();
@@ -2602,7 +2701,14 @@ public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 					int pitch = GetRandomInt(125,135);
 					EmitSoundToAll(NEMAL_AIRSLICE_HIT, Loop, SNDCHAN_AUTO, 75,_,0.8,pitch);
 					Custom_Knockback(OwnerEntity, Loop, 450.0, true);
-					SDKHooks_TakeDamage(Loop, OwnerEntity, OwnerEntity, f_WandDamage[Projectile], DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+					if(Loop <= MaxClients)
+					{
+						SDKHooks_TakeDamage(Loop, OwnerEntity, OwnerEntity, f_WandDamage[Projectile], DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+					}
+					else
+					{
+						SDKHooks_TakeDamage(Loop, OwnerEntity, OwnerEntity, f_WandDamage[Projectile] * 0.5, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+					}
 				
 					if(f_LowTeslarDebuff[Loop] - 5.0 < GetGameTime())
 						f_LowTeslarDebuff[Loop] = GetGameTime() + 5.0;
@@ -2620,7 +2726,7 @@ static bool BEAM_TraceUsers(int enemy, int contentsMask, int projectile)
 	if (IsValidEntity(enemy))
 	{
 		int OwnerEntity = EntRefToEntIndex(i_WandOwner[projectile]);
-		if(IsValidEnemy(enemy, OwnerEntity, true, true)) //Must detect camo.
+		if(IsValidEnemy(enemy, OwnerEntity, true, false)) //Must detect camo.
 		{
 			int MasterIndex = EntityBelongsToMasterIndex[projectile];
 			if(!TargetsHitNemal[MasterIndex][enemy])
@@ -2678,6 +2784,14 @@ void NemalPlaceAirMines(int iNpc, float damage, float TimeUntillArm, float MaxDu
 			continue;
 
 		
+		if(b_ThisWasAnNpc[LoopTarget])
+		{
+			if(!Can_I_See_Enemy_Only(iNpc, LoopTarget))
+			{
+				continue;
+			}
+		}
+
 		WorldSpaceCenter(LoopTarget, PosEnemy);
 		float flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
 		float SpeedToPredict = flDistanceToTarget * 3.0;
@@ -2688,10 +2802,13 @@ void NemalPlaceAirMines(int iNpc, float damage, float TimeUntillArm, float MaxDu
 		TR_GetEndPosition(LocationOfMine, ToGroundTrace);
 		delete ToGroundTrace;
 		LocationOfMine[2] += 5.0;
+		float SaveOldLoc[3];
+		SaveOldLoc = LocationOfMine;
 
 		DataPack pack2;
 		CreateDataTimer(0.25, Timer_NemalMineLogic, pack2, TIMER_REPEAT);
 		pack2.WriteCell(EntIndexToEntRef(iNpc));
+		pack2.WriteCell(0); //0 means EVIL
 		pack2.WriteFloat(LocationOfMine[0]);
 		pack2.WriteFloat(LocationOfMine[1]);
 		pack2.WriteFloat(LocationOfMine[2]);
@@ -2699,6 +2816,33 @@ void NemalPlaceAirMines(int iNpc, float damage, float TimeUntillArm, float MaxDu
 		pack2.WriteFloat(Size);
 		pack2.WriteFloat(TimeUntillArm + GetGameTime());
 		pack2.WriteFloat(MaxDuration + GetGameTime());
+
+		
+		flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
+		SpeedToPredict = flDistanceToTarget * 1.0;
+		PredictSubjectPositionForProjectiles(npc, LoopTarget, SpeedToPredict, _,LocationOfMine);
+		LocationOfMine[2] += 1.0;
+		
+		ToGroundTrace = TR_TraceRayFilterEx(LocationOfMine, view_as<float>( { 90.0, 0.0, 0.0 } ), MASK_SOLID, RayType_Infinite, TraceRayHitWorldOnly, iNpc);
+		TR_GetEndPosition(LocationOfMine, ToGroundTrace);
+		delete ToGroundTrace;
+		LocationOfMine[2] += 5.0;
+		flDistanceToTarget = GetVectorDistance(SaveOldLoc, LocationOfMine, true);
+		//the mines are too close together, dont spawn friendly.
+		if(flDistanceToTarget < (50.0 * 50.0))
+			continue;
+		
+		DataPack pack3;
+		CreateDataTimer(0.25, Timer_NemalMineLogic, pack3, TIMER_REPEAT);
+		pack3.WriteCell(EntIndexToEntRef(iNpc));
+		pack3.WriteCell(1); //1 means GOOD.
+		pack3.WriteFloat(LocationOfMine[0]);
+		pack3.WriteFloat(LocationOfMine[1]);
+		pack3.WriteFloat(LocationOfMine[2]);
+		pack3.WriteFloat(damage);
+		pack3.WriteFloat(Size);
+		pack3.WriteFloat(TimeUntillArm + GetGameTime());
+		pack3.WriteFloat((MaxDuration * 1.5) + GetGameTime());
 	}
 }
 
@@ -2709,6 +2853,7 @@ public Action Timer_NemalMineLogic(Handle timer, DataPack pack)
 	int MasterNpc = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidEntity(MasterNpc))
 		return Plugin_Stop; 
+	bool Friendly = view_as<bool>(pack.ReadCell());
 	//the master npc isnt existant anymore, delete all mines instantly.
 		
 	float MinePositionGet[3];
@@ -2720,18 +2865,39 @@ public Action Timer_NemalMineLogic(Handle timer, DataPack pack)
 	float TimeUntillArm = pack.ReadFloat();
 	if(TimeUntillArm > GetGameTime())
 	{
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, 0.3, 2.0, 2.0, 2);
+		if(Friendly)
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 125, 50, 200, 1, 0.3, 2.0, 2.0, 2);
+		else
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, 0.3, 2.0, 2.0, 2);
 		//Do not do damage calculations yet.
 		return Plugin_Continue; 
 	}
 	DetonateCurrentMine = false;
-	spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.3, 5.0, 8.0, 2);
-	Explode_Logic_Custom(Damage_Do, 0, MasterNpc, -1, MinePositionGet, Size, 1.0, _, true, 20,_,_,_,NemalMineExploder);
+	
+	if(Friendly)
+		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 100, 255, 100, 200, 1, 0.3, 5.0, 8.0, 2);
+	else
+		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 100, 100, 200, 1, 0.3, 5.0, 8.0, 2);
+		
+	if(Friendly)
+		Explode_Logic_Custom(0.0, 0, MasterNpc, -1, MinePositionGet, Size, 1.0, _, true, 20,_,_,_,NemalMineExploderFriendly);
+	else
+		Explode_Logic_Custom(Damage_Do, 0, MasterNpc, -1, MinePositionGet, Size, 1.0, _, true, 20,_,_,_,NemalMineExploder);
+
 	if(DetonateCurrentMine)
 	{
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 12.0, 10.0, 2);
+		if(Friendly)
+		{
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 100, 200, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 100, 200, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 100, 200, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+		}
+		else
+		{
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 100, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 100, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 100, 100, 200, 1, 0.5, 12.0, 10.0, 2);
+		}
 		//It hit something, boom.
 		EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", 0, _, 80, _, 0.85,_,_,MinePositionGet);
 		return Plugin_Stop; 
@@ -2747,6 +2913,37 @@ public Action Timer_NemalMineLogic(Handle timer, DataPack pack)
 	return Plugin_Continue; 
 }
 
+float NemalMineExploderFriendly(int entity, int victim, float damage, int weapon)
+{
+	//Knock target up
+	if(victim <= MaxClients)
+	{
+		f_HighTeslarDebuff[victim] = 0.0;
+		f_LowTeslarDebuff[victim] = 0.0;
+		NemalAntiLaserDo[victim] = GetGameTime() + 4.0;
+		DetonateCurrentMine = true;
+		float vDirection[3];
+		vDirection[2] += 1000.0;
+		float newVel[3];
+		f_ImmuneToFalldamage[victim] = GetGameTime() + 5.0;
+				
+		newVel[0] = GetEntPropFloat(victim, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(victim, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(victim, Prop_Send, "m_vecVelocity[2]");
+						
+		for (int i = 0; i < 3; i++)
+		{
+			vDirection[i] += newVel[i];
+		}
+		vDirection[2] = 1000.0;
+		
+		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, vDirection);
+	}
+	
+	return damage;
+}
+
+
 float NemalMineExploder(int entity, int victim, float damage, int weapon)
 {
 	DetonateCurrentMine = true;
@@ -2761,6 +2958,12 @@ float NemalMineExploder(int entity, int victim, float damage, int weapon)
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,1000.0});
 
 	NpcStats_IberiaMarkEnemy(victim, 15.0);
+	
+	//if it was a barracks units, half damage
+	if(victim > MaxClients)
+	{
+		return- (damage * 0.5);
+	}
 	return damage;
 }
 
@@ -2808,6 +3011,8 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
+			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
 		}
 	}
 }

@@ -79,9 +79,9 @@ void FlyingArmorTiny_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FlyingArmorTiny(client, vecPos, vecAng, ally);
+	return FlyingArmorTiny(vecPos, vecAng, team);
 }
 
 methodmap FlyingArmorTiny < CClotBody
@@ -125,39 +125,29 @@ methodmap FlyingArmorTiny < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -167,7 +157,7 @@ methodmap FlyingArmorTiny < CClotBody
 	}
 	
 	
-	public FlyingArmorTiny(int client, float vecPos[3], float vecAng[3], int ally)
+	public FlyingArmorTiny(float vecPos[3], float vecAng[3], int ally)
 	{
 		FlyingArmorTiny npc = view_as<FlyingArmorTiny>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.9", "180", ally));
 		SetVariantInt(1);
@@ -223,8 +213,7 @@ methodmap FlyingArmorTiny < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void FlyingArmorTiny_ClotThink(int iNPC)
 {
 	FlyingArmorTiny npc = view_as<FlyingArmorTiny>(iNPC);

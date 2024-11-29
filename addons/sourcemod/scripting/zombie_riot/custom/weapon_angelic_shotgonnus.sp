@@ -15,6 +15,7 @@ static bool i_AbilityActiveAngelic[MAXPLAYERS+1] = {false, ...};
 static float f_DoubleHitGameTime[MAXENTITIES];
 static float f_DoubleHitGameTimeTimeSince[MAXENTITIES];
 static int f_DoubleHitStack[MAXENTITIES];
+static bool b_PossesItemTraining[MAXPLAYERS+1] = {false, ...};
 
 #define ANGELIC_HIT_1	"npc/scanner/scanner_electric1.wav"
 
@@ -44,7 +45,7 @@ void AngelicShotgun_Enable(int client, int weapon)
 			delete h_TimerAngelicShotgun[client];
 			h_TimerAngelicShotgun[client] = null;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
-			
+			b_PossesItemTraining[client] = Items_HasNamedItem(client, "Iberian and Expidonsan Training");
 			DataPack pack;
 			h_TimerAngelicShotgun[client] = CreateDataTimer(0.1, Timer_Management_Angelic_Shotgun, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -57,6 +58,7 @@ void AngelicShotgun_Enable(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
+		b_PossesItemTraining[client] = Items_HasNamedItem(client, "Iberian and Expidonsan Training");
 		DataPack pack;
 		h_TimerAngelicShotgun[client] = CreateDataTimer(0.1, Timer_Management_Angelic_Shotgun, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -369,6 +371,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
+				if(b_PossesItemTraining[client])
+					HealingPerHit *= 1.1;
 
 				HealEntityGlobal(client, client, HealingPerHit, 1.35,_,HEAL_SELFHEAL);
 
@@ -387,6 +391,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
+				if(b_PossesItemTraining[client])
+					HealingPerHit *= 1.1;
 				HealEntityGlobal(client, client, HealingPerHit, 1.25,_,HEAL_SELFHEAL);
 			}
 		}
@@ -403,6 +409,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
+				if(b_PossesItemTraining[client])
+					HealingPerHit *= 1.1;
 				HealEntityGlobal(client, client, HealingPerHit, 1.25,_,HEAL_SELFHEAL);
 			}
 		}
@@ -420,6 +428,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
+				if(b_PossesItemTraining[client])
+					HealingPerHit *= 1.1;
 
 				HealEntityGlobal(client, client, HealingPerHit, 1.15,_,HEAL_SELFHEAL);
 			}
@@ -707,6 +717,13 @@ void RestoreOrDestroyAngelicShotgun(int client, bool Activate)
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(!IsValidEntity(viewmodelModel))
 		return;
+
+	float Amp = 1.0;
+	
+	if(b_PossesItemTraining[client])
+	{
+		Amp = 2.5;
+	}
 	
 	AngelicShotgunRemoveEffects(client);
 
@@ -726,6 +743,7 @@ void RestoreOrDestroyAngelicShotgun(int client, bool Activate)
 			int red = 200;
 			int green = 200;
 			int blue = 255;
+
 			int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 
 			int particle_2 = InfoTargetParentAt({0.0,9.0,-9.0},"", 0.0); //First offset we go by
@@ -742,10 +760,10 @@ void RestoreOrDestroyAngelicShotgun(int client, bool Activate)
 			SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
 			SetParent(viewmodelModel, particle_1, "effect_hand_r",_);
 
-			int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-			int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-			int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
-			int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+			int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, Amp, LASERBEAM, client);
+			int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, Amp, LASERBEAM, client);
+			int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, Amp, LASERBEAM, client);
+			int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 2.0, 1.0, Amp, LASERBEAM, client);
 			
 
 			i_AngelicShotgunHalo[client][1] = EntIndexToEntRef(particle_1);
@@ -778,10 +796,10 @@ void RestoreOrDestroyAngelicShotgun(int client, bool Activate)
 			SetEntPropVector(particle_1_2, Prop_Data, "m_angRotation", flAng); 
 			SetParent(viewmodelModel, particle_1_2, "head",_);
 
-			int Laser_1_2 = ConnectWithBeamClient(particle_2_2, particle_3_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-			int Laser_2_2 = ConnectWithBeamClient(particle_3_2, particle_4_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-			int Laser_3_2 = ConnectWithBeamClient(particle_4_2, particle_5_2, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
-			int Laser_4_2 = ConnectWithBeamClient(particle_5_2, particle_2_2, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+			int Laser_1_2 = ConnectWithBeamClient(particle_2_2, particle_3_2, red, green, blue, 2.0, 2.0, Amp, LASERBEAM, client);
+			int Laser_2_2 = ConnectWithBeamClient(particle_3_2, particle_4_2, red, green, blue, 2.0, 2.0, Amp, LASERBEAM, client);
+			int Laser_3_2 = ConnectWithBeamClient(particle_4_2, particle_5_2, red, green, blue, 2.0, 1.0, Amp, LASERBEAM, client);
+			int Laser_4_2 = ConnectWithBeamClient(particle_5_2, particle_2_2, red, green, blue, 2.0, 1.0, Amp, LASERBEAM, client);
 
 			i_AngelicShotgunHalo[client][10] = EntIndexToEntRef(particle_1_2);
 			i_AngelicShotgunHalo[client][11] = EntIndexToEntRef(particle_2_2);
@@ -823,10 +841,10 @@ void RestoreOrDestroyAngelicShotgun(int client, bool Activate)
 			SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
 			SetParent(viewmodelModel, particle_1, "effect_hand_r",_);
 
-			int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-			int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-			int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
-			int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+			int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, Amp, LASERBEAM, client);
+			int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, Amp, LASERBEAM, client);
+			int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, Amp, LASERBEAM, client);
+			int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 2.0, 1.0, Amp, LASERBEAM, client);
 			
 
 			i_AngelicShotgunHalo[client][1] = EntIndexToEntRef(particle_1);

@@ -56,9 +56,9 @@ void VoidBroodingPetra_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return VoidBroodingPetra(client, vecPos, vecAng, ally, data);
+	return VoidBroodingPetra(vecPos, vecAng, team, data);
 }
 methodmap VoidBroodingPetra < CClotBody
 {
@@ -102,7 +102,7 @@ methodmap VoidBroodingPetra < CClotBody
 	}
 	
 	
-	public VoidBroodingPetra(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VoidBroodingPetra(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VoidBroodingPetra npc = view_as<VoidBroodingPetra>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "450000", ally, false, true));
 		
@@ -132,9 +132,7 @@ methodmap VoidBroodingPetra < CClotBody
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 150.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 10.0;

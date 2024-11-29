@@ -50,9 +50,9 @@ void SeaSpitter_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaSpitter(client, vecPos, vecAng, ally, data);
+	return SeaSpitter(vecPos, vecAng, team, data);
 }
 
 methodmap SeaSpitter < CSeaBody
@@ -82,7 +82,7 @@ methodmap SeaSpitter < CSeaBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public SeaSpitter(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SeaSpitter(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeaSpitter npc = view_as<SeaSpitter>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", data[0] ? "750" : "660", ally, false));
 		// 4400 x 0.15
@@ -97,7 +97,7 @@ methodmap SeaSpitter < CSeaBody
 		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_WALK");
-		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

@@ -2,10 +2,9 @@
 #pragma newdecls required
 
 
-static char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+static const char g_DeathSounds[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
 static char g_HurtSounds[][] = {
@@ -87,7 +86,7 @@ static bool b_InKame[MAXENTITIES];
 static float fl_NextPull[MAXENTITIES];
 static int i_AmountProjectiles[MAXENTITIES];
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 
@@ -137,9 +136,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/fusion_raid/fusion_bgm.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return TrueFusionWarrior(client, vecPos, vecAng, ally, data);
+	return TrueFusionWarrior(vecPos, vecAng, team, data);
 }
 void TrueFusionWarrior_TBB_Precahce()
 {
@@ -217,11 +216,6 @@ methodmap TrueFusionWarrior < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
 		
 		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_DeathSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayMeleeSound() {
@@ -244,9 +238,7 @@ methodmap TrueFusionWarrior < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayPullSound() {
@@ -276,7 +268,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		
 	}
-	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public TrueFusionWarrior(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -334,7 +326,7 @@ methodmap TrueFusionWarrior < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
 		if(amount_of_people > 12.0)
 		{
@@ -401,6 +393,7 @@ methodmap TrueFusionWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -431,13 +424,16 @@ methodmap TrueFusionWarrior < CClotBody
 		npc.m_bInKame = false;
 		
 		Citizen_MiniBossSpawn();
-		FusionApplyEffects(npc.index, 0);
+		npc.m_iWearable7 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+		SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 2);
+		SetVariantInt(2048);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+	//	FusionApplyEffects(npc.index, 0);
 		return npc;
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void TrueFusionWarrior_ClotThink(int iNPC)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(iNPC);
@@ -975,7 +971,10 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		SetEntPropVector(npc.index, Prop_Send, "m_vecMins", minbounds);
 		SetEntPropVector(npc.index, Prop_Send, "m_vecMaxs", maxbounds);
 		*/
-		FusionApplyEffects(npc.index, 1);
+		if(IsValidEntity(npc.m_iWearable7))
+			SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 3);
+
+		//FusionApplyEffects(npc.index, 1);
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -1022,20 +1021,15 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 			{
 				RemoveEntity(npc.m_iWearable1);
 			}
+			if(IsValidEntity(npc.m_iWearable7))
+			{
+				RemoveEntity(npc.m_iWearable7);
+			}
 
 
 			SetVariantColor(view_as<int>({150, 150, 0, 150}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 			ExpidonsaRemoveEffects(npc.index);
-
-/*
-			float flPos[3]; // original
-			float flAng[3]; // original
-
-			npc.GetAttachment("head", flPos, flAng);
-		
-			npc.m_iWearable6 = InfoTargetParentAt_Parent(flPos, "utaunt_astralbodies_greenorange_parent", npc.index, "head", {0.0,0.0,0.0});
-*/
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
 		}
@@ -1054,10 +1048,10 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 public void TrueFusionWarrior_NPCDeath(int entity)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(entity);
-	if(!npc.m_bDissapearOnDeath)
-	{
-		npc.PlayDeathSound();
-	}
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+	npc.PlayDeathSound();
 	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
@@ -1750,155 +1744,6 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 			}
 		}
 	}
-}
-
-
-void FusionApplyEffects(int entity, int form)
-{
-	switch(form)
-	{
-		case 0:
-		{
-			ExpidonsaRemoveEffects(entity);
-			FusionApplyEffectsForm1(entity);
-		}
-		case 1:
-		{
-			ExpidonsaRemoveEffects(entity);
-			FusionApplyEffectsForm2(entity);
-		}
-	}
-}
-
-void FusionApplyEffectsForm1(int entity)
-{
-	if(AtEdictLimit(EDICT_RAID))
-		return;
-	
-	int red = 255;
-	int green = 255;
-	int blue = 255;
-	float flPos[3];
-	float flAng[3];
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	
-	int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
-
-	
-	int particle_2_1 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-	int particle_3_1 = InfoTargetParentAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_1 = InfoTargetParentAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
-	int particle_5_1 = InfoTargetParentAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
-
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-	
-	SetParent(particle_1, particle_2_1, "",_, true);
-	SetParent(particle_1, particle_3_1, "",_, true);
-	SetParent(particle_1, particle_4_1, "",_, true);
-	SetParent(particle_1, particle_5_1, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(entity, particle_1, "effect_hand_R",_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 3.0, 1.0, 1.0, LASERBEAM);
-
-	int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 3.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[entity][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[entity][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[entity][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[entity][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[entity][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[entity][5] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_3);
-	
-	i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(particle_2_1);
-	i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_3_1);
-	i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_4_1);
-	i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_5_1);
-	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
-	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
-	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
-}
-
-
-void FusionApplyEffectsForm2(int entity)
-{
-	if(AtEdictLimit(EDICT_RAID))
-		return;
-	
-	int red = 255;
-	int green = 255;
-	int blue = 0;
-	float flPos[3];
-	float flAng[3];
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	
-	int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
-
-	
-	int particle_2_1 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-	int particle_3_1 = InfoTargetParentAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_1 = InfoTargetParentAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
-	int particle_5_1 = InfoTargetParentAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
-
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-	
-	SetParent(particle_1, particle_2_1, "",_, true);
-	SetParent(particle_1, particle_3_1, "",_, true);
-	SetParent(particle_1, particle_4_1, "",_, true);
-	SetParent(particle_1, particle_5_1, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(entity, particle_1, "effect_hand_R",_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 3.0, 1.0, 1.0, LASERBEAM);
-
-	int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 3.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[entity][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[entity][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[entity][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[entity][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[entity][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[entity][5] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_3);
-	
-	i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(particle_2_1);
-	i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_3_1);
-	i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_4_1);
-	i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_5_1);
-	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
-	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
-	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
 }
 
 public void Raidmode_Fusion_Warrior_Win(int entity)

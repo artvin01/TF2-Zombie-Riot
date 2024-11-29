@@ -16,16 +16,16 @@ void Games_Blackjack(int client, bool results = false)
 		
 		menu.AddItem(NULL_STRING, "How to Play\n \nRules:");
 		
-		int cash = TextStore_Cash(client);
+		int cash = TextStore_GetItemCount(client, ITEM_CHIP);
 
-		menu.AddItem(NULL_STRING, "10 Credit Bet", cash < 40 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "25 Credit Bet", cash < 100 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "50 Credit Bet", cash < 200 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "100 Credit Bet", cash < 500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "250 Credit Bet", cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "500 Credit Bet", cash < 2000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "1000 Credit Bet", cash < 4000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "2500 Credit Bet", cash < 10000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "1 Chip Bet", cash < 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "5 Chip Bet", cash < 5 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "10 Chip Bet", cash < 10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "25 Chip Bet", cash < 25 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "50 Chip Bet", cash < 50 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "100 Chip Bet", cash < 100 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "250 Chip Bet", cash < 250 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "500 Chip Bet", cash < 500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		menu.Pagination = 0;
 		menu.ExitButton = true;
@@ -96,14 +96,14 @@ void Games_Blackjack(int client, bool results = false)
 		menu.AddItem(NULL_STRING, "Stand");
 		menu.AddItem(NULL_STRING, "Hit");
 
-		Format(buffer, sizeof(buffer), "Double Down (-$%d)", CurrentBet[client]);
-		menu.AddItem(NULL_STRING, buffer, TextStore_Cash(client) < CurrentBet[client] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		Format(buffer, sizeof(buffer), "Double Down (-¢%d)", CurrentBet[client]);
+		menu.AddItem(NULL_STRING, buffer, (!firstTurn || TextStore_GetItemCount(client, ITEM_CHIP) < CurrentBet[client]) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
-		Format(buffer, sizeof(buffer), "Split (-$%d)", CurrentBet[client]);
-		menu.AddItem(NULL_STRING, buffer, (!firstTurn || TextStore_Cash(client) < CurrentBet[client]) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		Format(buffer, sizeof(buffer), "Split (-¢%d)", CurrentBet[client]);
+		menu.AddItem(NULL_STRING, buffer, (!firstTurn || TextStore_GetItemCount(client, ITEM_CHIP) < CurrentBet[client]) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
-		Format(buffer, sizeof(buffer), "Surrender (+$%d)", CurrentBet[client] / 2);
-		menu.AddItem(NULL_STRING, buffer);
+		Format(buffer, sizeof(buffer), "Surrender (+¢%d)", CurrentBet[client] / 2);
+		menu.AddItem(NULL_STRING, buffer, CurrentBet[client] < 2 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		menu.ExitButton = false;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -222,28 +222,28 @@ public int BlackjackJoinMenu(Menu menu, MenuAction action, int client, int choic
 				switch(choice)
 				{
 					case 1:
-						CurrentBet[client] = 10;
+						CurrentBet[client] = 1;
 					
 					case 2:
-						CurrentBet[client] = 25;
+						CurrentBet[client] = 5;
 					
 					case 3:
-						CurrentBet[client] = 50;
+						CurrentBet[client] = 10;
 					
 					case 4:
-						CurrentBet[client] = 100;
+						CurrentBet[client] = 25;
 					
 					case 5:
-						CurrentBet[client] = 250;
+						CurrentBet[client] = 50;
 					
 					case 6:
-						CurrentBet[client] = 500;
+						CurrentBet[client] = 100;
 					
 					case 7:
-						CurrentBet[client] = 1000;
+						CurrentBet[client] = 250;
 					
 					case 8:
-						CurrentBet[client] = 2500;
+						CurrentBet[client] = 500;
 					
 					default:
 						CurrentBet[client] = 0;
@@ -262,7 +262,7 @@ public int BlackjackJoinMenu(Menu menu, MenuAction action, int client, int choic
 				}
 
 				ClientCommand(client, "playgamesound %s", SOUND_START);
-				TextStore_Cash(client, -CurrentBet[client]);
+				TextStore_AddItemCount(client, ITEM_CHIP, -CurrentBet[client]);
 
 				Games_Blackjack(client);
 			}
@@ -327,22 +327,22 @@ public int BlackjackTableMenu(Menu menu, MenuAction action, int client, int choi
 				}
 				case 2:	// Double Down
 				{
-					if(TextStore_Cash(client) >= CurrentBet[client])
+					if(TextStore_GetItemCount(client, ITEM_CHIP) >= CurrentBet[client])
 					{
 						hit = true;
 						stand = true;
 
-						TextStore_Cash(client, -CurrentBet[client]);
+						TextStore_AddItemCount(client, ITEM_CHIP, -CurrentBet[client]);
 						CurrentBet[client] *= 2;
 					}
 				}
 				case 3:	// Split
 				{
-					if(TextStore_Cash(client) >= CurrentBet[client])
+					if(TextStore_GetItemCount(client, ITEM_CHIP) >= CurrentBet[client])
 					{
 						ClientCommand(client, "playgamesound %s", SOUND_BET);
 
-						TextStore_Cash(client, -CurrentBet[client]);
+						TextStore_AddItemCount(client, ITEM_CHIP, -CurrentBet[client]);
 						CurrentBet[client] *= 2;
 
 						Hands[client][1][0] = Hands[client][0][1];
@@ -353,7 +353,7 @@ public int BlackjackTableMenu(Menu menu, MenuAction action, int client, int choi
 				case 4:	// Surrender
 				{
 					results = true;
-					TextStore_AddItemCount(client, ITEM_CASH, CurrentBet[client] / 2);
+					TextStore_AddItemCount(client, ITEM_CHIP, CurrentBet[client] / 2);
 				}
 			}
 
@@ -531,7 +531,7 @@ public int BlackjackTableMenu(Menu menu, MenuAction action, int client, int choi
 				if(wins)
 				{
 					win = wins > hands;
-					TextStore_AddItemCount(client, ITEM_CASH, CurrentBet[client] * wins / hands);
+					TextStore_AddItemCount(client, ITEM_CHIP, CurrentBet[client] * wins / hands);
 				}
 			}
 

@@ -53,9 +53,9 @@ void SeabornEngineer_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornEngineer(client, vecPos, vecAng, ally);
+	return SeabornEngineer(vecPos, vecAng, team);
 }
 
 methodmap SeabornEngineer < CClotBody
@@ -85,7 +85,7 @@ methodmap SeabornEngineer < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornEngineer(int client, float vecPos[3], float vecAng[3], int ally)
+	public SeabornEngineer(float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornEngineer npc = view_as<SeabornEngineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "10000", ally));
 		
@@ -145,7 +145,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 	{
 		if(IsValidEntity(npc.m_iTargetAlly) && i_IsABuilding[npc.m_iTargetAlly])
 		{
-			if(!npc.m_iTarget && b_bBuildingIsPlaced[npc.m_iTargetAlly])
+			if(!npc.m_iTarget)
 			{
 				KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
 
@@ -162,7 +162,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				}
 				else
 				{
-					SetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair", repair - 30);
+					SetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair", repair - 3);
 				}
 
 				npc.m_flNextThinkTime = gameTime + 0.4;
@@ -174,9 +174,8 @@ public void SeabornEngineer_ClotThink(int iNPC)
 			}
 		}
 		
-		if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])
-			GiveNpcOutLineLastOrBoss(npc.index, false);
 		
+		b_thisNpcHasAnOutline[npc.index] = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flNextRangedAttack = FAR_FUTURE;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -196,8 +195,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				{
 					b_ThisEntityIgnored[entity] = true;
 
-					if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])
-						GiveNpcOutLineLastOrBoss(npc.index, true);
+					b_thisNpcHasAnOutline[npc.index] = true;
 					
 					npc.m_iTarget = 0;
 					npc.m_iTargetAlly = entity;

@@ -31,6 +31,12 @@ methodmap PlayerAnimatorNPC < CClotBody
 				npc.m_flNextRangedAttackHappening = GetGameTime() + 1.5;
 				npc.m_flRangedSpecialDelay = GetGameTime() + 2.0;
 			}
+			case 2:
+			{
+				npc = view_as<PlayerAnimatorNPC>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "100", TFTeam_Red, true));
+				npc.m_flNextRangedAttackHappening = GetGameTime() + 0.75;
+				npc.m_flRangedSpecialDelay = GetGameTime() + 1.0;
+			}
 		}
 		i_AttacksTillReload[npc.index] = Type;
 		
@@ -94,6 +100,7 @@ methodmap PlayerAnimatorNPC < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
+		npc.m_bisWalking = false;
 
 		b_NpcIsInvulnerable[npc.index] = true;
 		b_IgnorePlayerCollisionNPC[npc.index] = true;
@@ -169,6 +176,41 @@ public void PlayerAnimatorNPC_ClotThink(int iNPC)
 						npc.AddActivityViaSequence("taunt_table_flip_outro");
 						//npc.AddGesture("ACT_MP_RUN_MELEE");
 						npc.SetPlaybackRate(0.2);	
+						npc.SetCycle(0.15);
+						npc.m_iChanged_WalkCycle = 2;
+					}
+					npc.m_flNextRangedAttackHappening = 0.0;
+					//Big TE OR PARTICLE that explodes
+					//Make it purple too
+					BingBangExplosion(npc.index, npc.m_flNextMeleeAttack, 350.0, 150.0, 1.0);
+				}
+			}
+		}
+		case 2:
+		{
+			if(npc.m_flNextRangedAttackHappening)
+			{
+				//dont suck them in if its the final bit
+				if(npc.m_flNextRangedAttackHappening - 0.1 > GetGameTime(npc.index))
+				{
+					if(npc.m_iChanged_WalkCycle != 1)
+					{
+						npc.AddActivityViaSequence("taunt_soviet_showoff");
+						//npc.AddGesture("ACT_MP_RUN_MELEE");
+						npc.SetPlaybackRate(0.4);	
+						npc.SetCycle(0.79);
+						npc.m_iChanged_WalkCycle = 1;
+					}
+
+					Bing_BangVisualiser(npc.index, 150.0, 70.0, 350.0);
+				}
+				if(npc.m_flNextRangedAttackHappening < GetGameTime(npc.index))
+				{
+					if(npc.m_iChanged_WalkCycle != 2)
+					{
+						npc.AddActivityViaSequence("taunt_table_flip_outro");
+						//npc.AddGesture("ACT_MP_RUN_MELEE");
+						npc.SetPlaybackRate(0.4);	
 						npc.SetCycle(0.15);
 						npc.m_iChanged_WalkCycle = 2;
 					}

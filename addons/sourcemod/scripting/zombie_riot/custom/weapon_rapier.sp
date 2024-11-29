@@ -102,6 +102,7 @@ public float Player_OnTakeDamage_Rapier(int victim, int attacker, float &damage)
 {
 	int pap = i_Current_Pap_Rapier[victim];
 
+	damage *= 1.15;
 	if(f_DuelStatus[attacker] > 0.0 && DuelState_timer[victim] != INVALID_HANDLE)
 	{
 		Client_Shake(victim, 0, 10.0, 5.0, 0.5);
@@ -128,19 +129,20 @@ public float Player_OnTakeDamage_Rapier(int victim, int attacker, float &damage)
 float Player_OnTakeDamage_Rapier_Hud(int victim)
 {
 	int pap = i_Current_Pap_Rapier[victim];
+	float damagereturn = 1.15;
 	switch(pap)
 	{
 		case 4:
 		{
-			return 0.8148; // 10% more damage taken
+			return (damagereturn * 0.8148); // 10% more damage taken
 		}
 		case 5:
 		{
-			return 0.7407; // 0% more damage taken
+			return (damagereturn * 0.7407); // 0% more damage taken
 		}
 		default:
 		{
-			return 0.8888; // 20% more damage taken
+			return (damagereturn * 0.8888); // 20% more damage taken
 		}
 	}
 }
@@ -348,15 +350,15 @@ public void Rapier_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		int Health = GetEntProp(client, Prop_Send, "m_iHealth");
 		float MaxHealth = float(SDKCall_GetMaxHealth(client));
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		SDKCall_SetSpeed(client);
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			i_Current_Pap_Rapier[client] = Rapier_Get_Pap(weapon);
-			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 0.65); //reason for not using on_playertakedamage and returining 15% more dmg that way is because this is flashier
+		//	TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 0.65); //reason for not using on_playertakedamage and returining 15% more dmg that way is because this is flashier
 		}
 		else
 		{
-			TF2_RemoveCondition(client, TFCond_MarkedForDeathSilent);
+		//	TF2_RemoveCondition(client, TFCond_MarkedForDeathSilent);
 		}
 		if(IsValidClient(client) && IsClientInGame(client) && DuelState_timer[client] != INVALID_HANDLE && Health < (MaxHealth/4))
 		{

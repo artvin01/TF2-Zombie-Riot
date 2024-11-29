@@ -7,7 +7,13 @@ enum
 	Attrib_ElementalDef = 4023,
 	Attrib_SlowImmune = 4024,
 	Attrib_ObjTerrianAbsorb = 4025,
-	Attrib_SetArchetype = 4026
+	Attrib_SetArchetype = 4026,
+	Attrib_SetSecondaryDelayInf = 4027,
+	Attrib_FormRes = 4028,
+	Attrib_OverrideExplodeDmgRadiusFalloff = 4029,
+	Attrib_CritChance = 4030,
+	Attrib_ReviveTimeCut = 4033,
+	Attrib_ExtendExtraCashGain = 4034
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -24,6 +30,7 @@ StringMap WeaponAttributes[MAXENTITIES + 1];
 // 4019: Mana Max Add
 // 4020: Mana Regen 
 // 4021: Override Weapon Skin To This
+// 4027: Set secondary weapon delay to FAR_FUTURE
 bool Attribute_ServerSide(int attribute)
 {
 	if(attribute > 3999)
@@ -253,6 +260,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 					HealEntityGlobal(client, client, value, 1.0, 0.0, HEAL_SELFHEAL);
 				}
 				
+		
 				value = Attributes_Get(weapon, 149, 0.0);	// bleeding duration
 				if(value)
 					StartBleedingTimer(victim, client, Attributes_Get(weapon, 2, 1.0) * 4.0, RoundFloat(value * 2.0), weapon, damagetype);

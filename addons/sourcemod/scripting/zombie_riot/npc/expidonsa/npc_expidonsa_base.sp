@@ -4,6 +4,9 @@
 
 #define MAX_EXPI_ENERGY_EFFECTS 71
 
+
+
+#if defined ZR
 int i_ExpidonsaEnergyEffect[MAXENTITIES][MAX_EXPI_ENERGY_EFFECTS];
 int i_ExpidonsaShieldCapacity[MAXENTITIES];
 int i_ExpidonsaShieldCapacity_Mini[MAXENTITIES];
@@ -32,7 +35,6 @@ void Expidonsa_SetToZero(int iNpc)
 	VausMagicaRemoveShield(iNpc);
 	EnemyShieldCantBreak[iNpc] = false;
 }
-
 bool ExpidonsaDepletedShieldShow(int victim)
 {
 	//false means delete shield.
@@ -188,6 +190,7 @@ void VausMagicaRemoveShield(int entity, bool force = false)
 		i_Expidonsa_ShieldEffect[entity] = INVALID_ENT_REFERENCE;
 	}
 }
+#endif
 
 
 float f_Expidonsa_HealingAmmount[MAXENTITIES];
@@ -253,7 +256,8 @@ static void Expidonsa_AllyHeal(int HealerNpc, int victim, float damage, int weap
 		return;
 
 	//team red, npc or 
-	if(GetTeam(HealerNpc) == TFTeam_Red && (!b_NpcHasDied[victim] || victim <= MaxClients))
+	if((!DontAllowAllyHeal[HealerNpc] && GetTeam(HealerNpc) == TFTeam_Red && (!b_NpcHasDied[victim] || victim <= MaxClients)) ||
+	 (DontAllowAllyHeal[HealerNpc] && GetTeam(victim) == TFTeam_Red && (!b_NpcHasDied[victim] || victim <= MaxClients)))
 	{
 		Expidonsa_AllyHealInternal(HealerNpc, victim, f_Expidonsa_HealingAmmount[HealerNpc] * 0.05);
 	}
@@ -275,6 +279,7 @@ static void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 		Call_StartFunction(null, func);
 		Call_PushCell(HealerNpc);
 		Call_PushCell(victim);
+		Call_PushFloatRef(heal);
 		Call_Finish(CancelHeal);
 	}
 	if(CancelHeal)
@@ -294,20 +299,20 @@ static void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 		Call_Finish();
 	}
 }
-stock bool Expidonsa_DontHealSameIndex(int entity, int victim)
+stock bool Expidonsa_DontHealSameIndex(int entity, int victim, float &healingammount)
 {
 	if(i_NpcInternalId[entity] == i_NpcInternalId[victim])
 		return true;
 
 	return false;
 }
-
+#if defined ZR
 float ExpidonsanShieldBroke(int entity)
 {
 	return(f_Expidonsa_ShieldBroke[entity]);
 }
-
-stock bool Expidonsa_DontHealBosses(int entity, int victim)
+#endif
+stock bool Expidonsa_DontHealBosses(int entity, int victim, float &healingammount)
 {
 	if(b_thisNpcIsABoss[victim] ||
 		b_thisNpcIsARaid[victim] ||

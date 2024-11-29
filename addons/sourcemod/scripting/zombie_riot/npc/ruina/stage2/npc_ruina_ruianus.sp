@@ -70,9 +70,9 @@ static void ClotPrecache()
 	Zero(i_damage_taken);
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Ruianus(client, vecPos, vecAng, ally);
+	return Ruianus(vecPos, vecAng, team);
 }
 methodmap Ruianus < CClotBody
 {
@@ -152,7 +152,7 @@ methodmap Ruianus < CClotBody
 	}
 	
 	
-	public Ruianus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Ruianus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Ruianus npc = view_as<Ruianus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
@@ -223,14 +223,15 @@ methodmap Ruianus < CClotBody
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 10, 4);		//priority 4, just lower then the actual bosses
 
+		b_ruina_nerf_healing[npc.index] = true;
+
 		return npc;
 	}
 	
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Ruianus npc = view_as<Ruianus>(iNPC);
@@ -345,7 +346,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		int Max_Health = ReturnEntityMaxHealth(npc.index);
 		fl_ruina_battery_timer[npc.index]=GameTime+5.0;
-		int healing = RoundToFloor(i_damage_taken[npc.index]*0.5);
+		int healing = RoundToFloor(i_damage_taken[npc.index]*0.35);
 
 		if(healing > RoundToFloor(Max_Health*0.2))
 			healing = RoundToFloor(Max_Health*0.2);

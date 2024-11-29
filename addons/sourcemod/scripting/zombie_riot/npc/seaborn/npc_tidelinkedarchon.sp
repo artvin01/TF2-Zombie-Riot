@@ -44,9 +44,9 @@ void TidelinkedArchon_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return TidelinkedArchon(client, vecPos, vecAng, ally);
+	return TidelinkedArchon(vecPos, vecAng, team);
 }
 
 methodmap TidelinkedArchon < CClotBody
@@ -76,7 +76,7 @@ methodmap TidelinkedArchon < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
-	public TidelinkedArchon(int client, float vecPos[3], float vecAng[3], int ally)
+	public TidelinkedArchon(float vecPos[3], float vecAng[3], int ally)
 	{
 		TidelinkedArchon npc = view_as<TidelinkedArchon>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.3", "20000", ally, false, true));
 		// 20000 x 1.0

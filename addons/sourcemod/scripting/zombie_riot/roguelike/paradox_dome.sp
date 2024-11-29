@@ -58,6 +58,10 @@ void Rogue_Dome_WaveStart(const float pos[3])
 	g_flDomePreviousGameTime = g_flDomeStart;
 	
 	g_iDomeEntRef = EntIndexToEntRef(iDome);
+
+	if(g_hDomeTimerBleed != null)
+		delete g_hDomeTimerBleed;
+		
 	g_hDomeTimerBleed = CreateTimer(0.5, Dome_TimerBleed, _, TIMER_REPEAT);
 
 	RequestFrame(Dome_Frame_Shrink);
@@ -166,12 +170,6 @@ static void Dome_Frame_Shrink()
 
 static Action Dome_TimerBleed(Handle hTimer)
 {
-	if (g_hDomeTimerBleed != hTimer)
-	{
-		g_hDomeTimerBleed = null;
-		return Plugin_Stop;
-	}
-
 	for (int iClient = 1; iClient <= MaxClients; iClient++)
 	{
 		if (IsClientInGame(iClient) && IsPlayerAlive(iClient))

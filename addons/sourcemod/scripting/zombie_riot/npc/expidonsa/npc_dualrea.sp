@@ -56,9 +56,9 @@ void DualRea_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DualRea(client, vecPos, vecAng, ally);
+	return DualRea(vecPos, vecAng, team);
 }
 
 methodmap DualRea < CClotBody
@@ -100,7 +100,7 @@ methodmap DualRea < CClotBody
 	}
 	
 	
-	public DualRea(int client, float vecPos[3], float vecAng[3], int ally)
+	public DualRea(float vecPos[3], float vecAng[3], int ally)
 	{
 		DualRea npc = view_as<DualRea>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
 		
@@ -125,9 +125,7 @@ methodmap DualRea < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		

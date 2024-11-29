@@ -88,12 +88,12 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_LastStand));   i++) { PrecacheSoundCustom(g_LastStand[i]);   }
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return GodAlaxios(client, vecPos, vecAng, ally, data);
+	return GodAlaxios(vecPos, vecAng, team, data);
 }
 static float f_AlaxiosCantDieLimit[MAXENTITIES];
-static bool b_angered_twice[MAXENTITIES];
+
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
@@ -181,7 +181,7 @@ methodmap GodAlaxios < CClotBody
 		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public GodAlaxios(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public GodAlaxios(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		GodAlaxios npc = view_as<GodAlaxios>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		
@@ -190,6 +190,7 @@ methodmap GodAlaxios < CClotBody
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
+		npc.m_bDissapearOnDeath = true;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -269,7 +270,7 @@ methodmap GodAlaxios < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
 		if(amount_of_people > 12.0)
 		{
@@ -320,8 +321,7 @@ methodmap GodAlaxios < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void GodAlaxios_ClotThink(int iNPC)
 {
 	GodAlaxios npc = view_as<GodAlaxios>(iNPC);
@@ -341,11 +341,11 @@ public void GodAlaxios_ClotThink(int iNPC)
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: Your weaponry frails in comaprison to Atlantis!!");
+					CPrintToChatAll("{lightblue}God Alaxios{default}: Your weaponry frails in comparison to Atlantis!!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: Concider surrendering?!");
+					CPrintToChatAll("{lightblue}God Alaxios{default}: Consider surrendering?!");
 				}
 			}
 		}
@@ -366,7 +366,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 			}
 		}
 		ForcePlayerLoss();
-		CPrintToChatAll("{lightblue}God Alaxios{default}: No.. No No!! They are comming, prepare to fight together NOW!!!");
+		CPrintToChatAll("{lightblue}God Alaxios{default}: No.. No No!! They are coming, prepare to fight together NOW!!!");
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		for(int i; i<32; i++)
 		{
@@ -787,7 +787,7 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	{
 		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 			b_angered_twice[npc.index] = true;
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 			b_NpcIsInvulnerable[npc.index] = true;
@@ -798,11 +798,11 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
-			GiveProgressDelay(32.0);
+			GiveProgressDelay(55.0);
 			damage = 0.0;
-			RaidModeTime += 60.0;
+			RaidModeTime += 120.0;
 			f_TalkDelayCheck = GetGameTime() + 4.0;
-			CPrintToChatAll("{lightblue}God Alaxios{default}: That's it, I will make you listen.");
+			CPrintToChatAll("{lightblue}God Alaxios{crimson}: EEEEEEEEEEEEEEENOOOOOOOOUGH!!!");
 			return Plugin_Handled;
 		}
 	}
@@ -1057,10 +1057,13 @@ public void GodAlaxios_NPCDeath(int entity)
 	GodAlaxios npc = view_as<GodAlaxios>(entity);
 	if(!BlockLoseSay)
 	{
-		if(!npc.m_bDissapearOnDeath)
-		{
-			npc.PlayDeathSound();
-		}
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		
+		TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		npc.PlayDeathSound();
 		
 		switch(GetRandomInt(0,3))
 		{
@@ -1081,6 +1084,16 @@ public void GodAlaxios_NPCDeath(int entity)
 				CPrintToChatAll("{lightblue}God Alaxios{default}: We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
 			}
 		}
+	}
+	else
+	{
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		
+		TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", npc.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME * 2.0);
 	}
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;
@@ -1109,7 +1122,7 @@ public void GodAlaxios_NPCDeath(int entity)
 	Citizen_MiniBossDeath(entity);
 }
 
-void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool outline = false)
+void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false)
 {
 	if(GetTeam(alaxios) == TFTeam_Red)
 	{
@@ -1144,7 +1157,7 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	{
 		enemy.Health = health;
 	}
-	enemy.Is_Outlined = outline;
+	enemy.Is_Boss = view_as<int>(is_a_boss);
 	enemy.Is_Immune_To_Nuke = true;
 	//do not bother outlining.
 	enemy.ExtraMeleeRes = 1.0;
@@ -1153,11 +1166,27 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	enemy.ExtraDamage = 1.0;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
-	for(int i; i<count; i++)
+	if(!Waves_InFreeplay())
 	{
-		Waves_AddNextEnemy(enemy);
+		for(int i; i<count; i++)
+		{
+			Waves_AddNextEnemy(enemy);
+		}
 	}
-	Zombies_Currently_Still_Ongoing += count;	// FIXME
+	else
+	{
+		int postWaves = CurrentRound - Waves_GetMaxRound();
+		Freeplay_AddEnemy(postWaves, enemy, count);
+		if(count > 0)
+		{
+			for(int a; a < count; a++)
+			{
+				Waves_AddNextEnemy(enemy);
+			}
+		}
+	}
+
+	Zombies_Currently_Still_Ongoing += count;
 }
 
 void GodAlaxiosSelfDefense(GodAlaxios npc, float gameTime)
@@ -1830,36 +1859,66 @@ void AlaxiosSayWordsAngry()
 
 bool AlaxiosForceTalk()
 {
-	if(i_TalkDelayCheck == 5)
+	if(i_TalkDelayCheck == 11)
 	{
 		return true;
 	}
 	if(f_TalkDelayCheck < GetGameTime())
 	{
-		f_TalkDelayCheck = GetGameTime() + 7.0;
+		f_TalkDelayCheck = GetGameTime() + 5.0;
 		RaidModeTime += 10.0; //cant afford to delete it, since duo.
 		switch(i_TalkDelayCheck)
 		{
 			case 0:
 			{
 				ReviveAll(true);
-				CPrintToChatAll("{lightblue}God Alaxios{default}: Since you refuse to listen, I will have to restrain you.");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: I will NOT tolerate this dispute any longer!");
 				i_TalkDelayCheck += 1;
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: I am not your enemy and I can revive all my allies, so do not worry.");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: You have to understand, WE have a {blue}common enemy{default}, and that is {blue}Seaborn{default}.");
 				i_TalkDelayCheck += 1;
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: The true enemy is the {blue}sea{default}, if we don't beat them, then were done for. They can infect any one of us.");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: More wars with each other means more opportunity for them to rise.");
 				i_TalkDelayCheck += 1;
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: I will hand you a bit of help as youre proven to be a strong foe.");
-				i_TalkDelayCheck = 5;
+				CPrintToChatAll("{lightblue}God Alaxios{default}: And whilst I am immortal and my army unkillable, we are not incorruptible.");
+				i_TalkDelayCheck += 1;
+			}
+			case 4:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: However, I saw your prowess and your abilities.");
+				i_TalkDelayCheck += 1;
+			}
+			case 5:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what i can see atleast...");
+				i_TalkDelayCheck += 1;
+			}
+			case 6:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: As such, we need your aid. YOU are our greatest opportunity to cleanse this world of watery horrors.");
+				i_TalkDelayCheck += 1;
+			}
+			case 7:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: Of course, we will support you as much as we can. As one, we will thrive once again.");
+				i_TalkDelayCheck += 1;
+			}
+			case 8:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: When you invade them, we will make sure that their main forces are distracted by us.");
+				i_TalkDelayCheck += 1;
+			}
+			case 9:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: ALL HEIL THE MERCENARIES!! {crimson} FOR ATLANTISSSSS!!!!!!!!!!!!!!.");
+				i_TalkDelayCheck = 11;
 				for (int client = 0; client < MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)

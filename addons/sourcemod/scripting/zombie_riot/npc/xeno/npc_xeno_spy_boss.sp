@@ -102,9 +102,9 @@ public void XenoSpyMainBoss_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoSpyMainBoss(client, vecPos, vecAng, ally);
+	return XenoSpyMainBoss(vecPos, vecAng, team);
 }
 //should be alone only here!
 static int Allies_Alive;
@@ -170,16 +170,12 @@ methodmap XenoSpyMainBoss < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
@@ -202,7 +198,7 @@ methodmap XenoSpyMainBoss < CClotBody
 		
 	}
 	
-	public XenoSpyMainBoss(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSpyMainBoss(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSpyMainBoss npc = view_as<XenoSpyMainBoss>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "500000", ally));
 		
@@ -246,7 +242,6 @@ methodmap XenoSpyMainBoss < CClotBody
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		npc.Anger = false;
-		npc.m_iState = 0;
 		npc.m_flSpeed = 330.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -299,8 +294,7 @@ methodmap XenoSpyMainBoss < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSpyMainBoss_ClotThink(int iNPC)
 {
 	XenoSpyMainBoss npc = view_as<XenoSpyMainBoss>(iNPC);

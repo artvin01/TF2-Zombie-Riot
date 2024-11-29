@@ -86,9 +86,9 @@ void SpyTrickstabber_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SpyTrickstabber(client, vecPos, vecAng, ally);
+	return SpyTrickstabber(vecPos, vecAng, team);
 }
 methodmap SpyTrickstabber < CClotBody
 {
@@ -135,32 +135,24 @@ methodmap SpyTrickstabber < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -169,7 +161,7 @@ methodmap SpyTrickstabber < CClotBody
 		
 	}
 	
-	public SpyTrickstabber(int client, float vecPos[3], float vecAng[3], int ally)
+	public SpyTrickstabber(float vecPos[3], float vecAng[3], int ally)
 	{
 		SpyTrickstabber npc = view_as<SpyTrickstabber>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "6000", ally));
 		
@@ -229,8 +221,7 @@ methodmap SpyTrickstabber < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SpyTrickstabber_ClotThink(int iNPC)
 {
 	SpyTrickstabber npc = view_as<SpyTrickstabber>(iNPC);

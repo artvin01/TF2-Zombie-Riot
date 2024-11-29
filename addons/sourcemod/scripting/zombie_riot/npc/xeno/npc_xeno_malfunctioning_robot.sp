@@ -61,9 +61,9 @@ public void XenoMalfuncRobot_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return XenoMalfuncRobot(client, vecPos, vecAng, ally, data);
+	return XenoMalfuncRobot(vecPos, vecAng, team, data);
 }
 
 static float fl_Overheat_CD[MAXENTITIES];
@@ -138,7 +138,7 @@ methodmap XenoMalfuncRobot < CClotBody
 		b_NpcIsInvulnerable[this.index] = uber;
 	}
 	
-	public XenoMalfuncRobot(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public XenoMalfuncRobot(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		XenoMalfuncRobot npc = view_as<XenoMalfuncRobot>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.15", "30000", ally, false));
 		

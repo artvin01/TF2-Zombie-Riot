@@ -138,6 +138,24 @@ bool BuildingIsSupport(int entity)
 
 	return false;
 }
+int Building_HasThisBuilding(int entity)
+{
+	return i_IDependOnThisBuilding[entity];
+}
+
+int Building_OnThisBuilding(int entity)
+{
+	for(int i = 0; i < MAXENTITIES; i++)
+	{
+		if(!IsValidEntity(i))
+			continue;
+			
+		if(EntRefToEntIndex(i_IDependOnThisBuilding[i]) == entity)
+			return i;
+	}
+
+	return -1;
+}
 void ResetPlayer_BuildingBeingCarried(int client)
 {
 	Player_BuildingBeingCarried[client] = 0;
@@ -189,6 +207,9 @@ void Building_ResetRewardValuesWave()
 
 void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = true, float AmmoSupply = 0.0, bool SupplyLimit = true)
 {
+	if(owner > MaxClients)
+		owner = client;
+	
 	//when using your own buildings, you get half as much.
 	if(client == owner)
 	{
@@ -200,7 +221,9 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 	if(CashLimit)
 	{
 		//affected by limit.
-		if(i_GiveCashBuilding[owner] < MAX_CASH_VIA_BUILDINGS)
+		int MaxCashBuildings = MAX_CASH_VIA_BUILDINGS;
+		MaxCashBuildings += RoundToNearest(Attributes_FindOnPlayerZR(owner, Attrib_ExtendExtraCashGain, false, 0.0));
+		if(i_GiveCashBuilding[owner] < MaxCashBuildings)
 		{
 			i_GiveCashBuilding[owner] += Cash;
 			GiveCredits(owner, Cash, true);
@@ -300,7 +323,7 @@ static bool HasWrench(int client)
 	return true;
 }
 
-static int GetCost(int id, float multi)
+static int GetCost(int client, int id, float multi)
 {
 	int buildCost = BuildingCost[id];
 	if(id <= 1 || id == 12)
@@ -311,10 +334,26 @@ static int GetCost(int id, float multi)
 			cost_extra = 0;
 		}
 		buildCost = buildCost + cost_extra;
+		if(!Waves_Started())
+		{
+			buildCost /= 3;
+		}
 	}
 
-	if(Rogue_Mode())
+
+	if(Rogue_Mode() && (GameRules_GetRoundState() != RoundState_BetweenRounds))
 		buildCost /= 3;
+	else if(GameRules_GetRoundState() == RoundState_BetweenRounds)
+	{
+		int metal = GetAmmo(client, Ammo_Metal);
+		if((metal - buildCost) < 200)
+		{
+			//anti abuse.
+			buildCost += 200;
+		}
+	}
+
+		
 	
 	return buildCost;
 }
@@ -358,7 +397,7 @@ static void BuildingMenu(int client)
 	int items;
 	for(int i; i < sizeof(BuildingPlugin); i++)
 	{
-		int cost = GetCost(i, multi);
+		int cost = GetCost(client, i, multi);
 		int count;
 		int maxcount = 99;
 		bool allowed;
@@ -511,7 +550,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 							}
 
 							int metal = GetAmmo(client, Ammo_Metal);
-							int cost = GetCost(id, Object_GetMaxHealthMulti(client));
+							int cost = GetCost(client, id, Object_GetMaxHealthMulti(client));
 
 							if(metal >= cost && (BuildingFunc[id] == INVALID_FUNCTION || Object_CanBuild(BuildingFunc[id], client)))
 							{
@@ -521,29 +560,9 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 								vecAng[0] = 0.0;
 								vecAng[2] = 0.0;
 
-								int entity = NPC_CreateById(BuildingId[id], client, vecPos, vecAng, GetTeam(client));
+								int entity = Building_BuildById(id, client, vecPos, vecAng);
 								if(entity != -1)
 								{
-									ObjectGeneric obj = view_as<ObjectGeneric>(entity);
-									BuildingFuncSave[entity] = BuildingFunc[id];
-									obj.BaseHealth = BuildingHealth[id];
-									int health = GetEntProp(obj.index, Prop_Data, "m_iHealth");
-									int maxhealth = GetEntProp(obj.index, Prop_Data, "m_iMaxHealth");
-									int expected = RoundFloat(obj.BaseHealth * Object_GetMaxHealthMulti(client));
-									if(maxhealth && expected && maxhealth != expected)
-									{
-										float change = float(expected) / float(maxhealth);
-
-										maxhealth = expected;
-										health = RoundFloat(float(health) * change);
-										int maxrepair = RoundFloat(float(GetEntProp(obj.index, Prop_Data, "m_iRepairMax")) * change);
-										int repair = RoundFloat(float(GetEntProp(obj.index, Prop_Data, "m_iRepair")) * change);
-										
-										SetEntProp(obj.index, Prop_Data, "m_iMaxHealth", maxhealth);
-										SetEntProp(obj.index, Prop_Data, "m_iHealth", health);
-										SetEntProp(obj.index, Prop_Data, "m_iRepairMax", maxrepair);
-										SetEntProp(obj.index, Prop_Data, "m_iRepair", repair);
-									}
 									GiveBuildingMetalCostOnBuy(entity, cost);
 
 									Building_PlayerWieldsBuilding(client, entity);
@@ -569,6 +588,38 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 	}
 
 	return 0;
+}
+
+int Building_BuildById(int id, int client, float vecPos[3], float vecAng[3])
+{
+	int entity = NPC_CreateById(BuildingId[id], client, vecPos, vecAng, GetTeam(client));
+	if(entity != -1)
+	{
+		ObjectGeneric obj = view_as<ObjectGeneric>(entity);
+		BuildingFuncSave[entity] = BuildingFunc[id];
+		obj.BaseHealth = BuildingHealth[id];
+		int health = GetEntProp(obj.index, Prop_Data, "m_iHealth");
+		int maxhealth = GetEntProp(obj.index, Prop_Data, "m_iMaxHealth");
+		int expected = RoundFloat(obj.BaseHealth * Object_GetMaxHealthMulti(client));
+		if(maxhealth && expected && maxhealth != expected)
+		{
+			float change = float(expected) / float(maxhealth);
+
+			maxhealth = expected;
+			health = RoundFloat(float(health) * change);
+			int maxrepair = RoundFloat(float(GetEntProp(obj.index, Prop_Data, "m_iRepairMax")) * change);
+			int repair = RoundFloat(float(GetEntProp(obj.index, Prop_Data, "m_iRepair")) * change);
+			
+			SetEntProp(obj.index, Prop_Data, "m_iMaxHealth", maxhealth);
+			SetEntProp(obj.index, Prop_Data, "m_iHealth", health);
+			SetEntProp(obj.index, Prop_Data, "m_iRepairMax", maxrepair);
+			SetEntProp(obj.index, Prop_Data, "m_iRepair", repair);
+		}
+
+		GiveBuildingMetalCostOnBuy(entity, 0);
+	}
+
+	return entity;
 }
 
 static bool CanCreateBuilding(int client)
@@ -708,69 +759,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	if(IsValidEntity(Player_BuildingBeingCarried[client]))
 	{
 		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
-		
-		float VecPos[3];
-		GetEntPropVector(buildingindx, Prop_Data, "m_vecAbsOrigin", VecPos);
-		float VecMin[3];
-		float VecMax[3];
-		VecMin = f3_CustomMinMaxBoundingBox[buildingindx];
-		VecMin[0] *= -1.0;
-		VecMin[1] *= -1.0;
-		VecMin[2] = 0.0;
-		VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
-
-		b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
-		bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
-		if(!Success)
-		{
-			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
-			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			return;
-		}
-		
-		//do we want to build on anothrer building?
-		int buildingHit;
-		float endPos[3];
-		if(IsValidGroundBuilding(VecPos , 70.0, endPos, buildingHit, buildingindx)) //130.0
-		{
-			float endPos2[3];
-			GetEntPropVector(buildingHit, Prop_Data, "m_vecAbsOrigin", endPos2);
-			//We use custom offets for buildings, so we do our own magic here
-			float Delta = f3_CustomMinMaxBoundingBox[buildingHit][2];
-			//Be sure to now set all the things we need.
-			//Set the dependency
-			endPos2[0] = VecPos[0];
-			endPos2[1] = VecPos[1];
-			endPos2[2] += Delta;
-			i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
-			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
-			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
-			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
-			Player_BuildingBeingCarried[client] = 0;
-			Building_BuildingBeingCarried[buildingindx] = 0;
-			b_ThisEntityIgnored[buildingindx] = false;
-			b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
-			EmitSoundToClient(client, SOUND_TOSS_TF);
-			return;
-		}
-		Success = Building_IsValidGroundFloor(client, buildingindx, VecPos);
-		if(!Success)
-		{
-			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
-			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
-			return;
-		}
-		if(Success)
-		{
-			SDKCall_SetLocalOrigin(buildingindx, VecPos);	
-			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
-			Player_BuildingBeingCarried[client] = 0;
-			Building_BuildingBeingCarried[buildingindx] = 0;
-			b_ThisEntityIgnored[buildingindx] = false;
-			b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
-			EmitSoundToClient(client, SOUND_TOSS_TF);
-		}
+		Building_AttemptPlace(buildingindx, client);
 		return;
 	}
 	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
@@ -783,10 +772,87 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	if (!i_IsABuilding[entity])
 		return;
 
-	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
+	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") <= MaxClients)
 		return;
 
 	Building_PlayerWieldsBuilding(client, entity);
+}
+
+bool Building_AttemptPlace(int buildingindx, int client)
+{
+	float VecPos[3];
+	GetEntPropVector(buildingindx, Prop_Data, "m_vecAbsOrigin", VecPos);
+	float VecMin[3];
+	float VecMax[3];
+	VecMin = f3_CustomMinMaxBoundingBox[buildingindx];
+	VecMin[0] *= -1.0;
+	VecMin[1] *= -1.0;
+	VecMin[2] = 0.0;
+	VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
+
+	b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
+	bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
+	if(!Success)
+	{
+		b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+		if(client <= MaxClients)
+		{
+			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+		}
+		return false;
+	}
+	
+	//do we want to build on anothrer building?
+	int buildingHit;
+	float endPos[3];
+	if(IsValidGroundBuilding(VecPos , 70.0, endPos, buildingHit, buildingindx)) //130.0
+	{
+		float endPos2[3];
+		GetEntPropVector(buildingHit, Prop_Data, "m_vecAbsOrigin", endPos2);
+		//We use custom offets for buildings, so we do our own magic here
+		float Delta = f3_CustomMinMaxBoundingBox[buildingHit][2];
+		//Be sure to now set all the things we need.
+		//Set the dependency
+		endPos2[0] = VecPos[0];
+		endPos2[1] = VecPos[1];
+		endPos2[2] += Delta;
+		i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
+		if(client <= MaxClients)
+			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
+		
+		SDKCall_SetLocalOrigin(buildingindx, endPos2);	
+		SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
+		if(client <= MaxClients)
+			Player_BuildingBeingCarried[client] = 0;
+		
+		Building_BuildingBeingCarried[buildingindx] = 0;
+		b_ThisEntityIgnored[buildingindx] = false;
+		b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
+
+		if(client <= MaxClients)
+			EmitSoundToClient(client, SOUND_TOSS_TF);
+		
+		return true;
+	}
+	Success = Building_IsValidGroundFloor(client, buildingindx, VecPos);
+	if(!Success)
+	{
+		b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+		return false;
+	}
+	SDKCall_SetLocalOrigin(buildingindx, VecPos);	
+	SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
+	Building_BuildingBeingCarried[buildingindx] = 0;
+	b_ThisEntityIgnored[buildingindx] = false;
+	b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
+
+	if(client <= MaxClients)
+	{
+		Player_BuildingBeingCarried[client] = 0;
+		EmitSoundToClient(client, SOUND_TOSS_TF);
+	}
+	return true;
 }
 
 //Make the player carry a building
@@ -1038,11 +1104,16 @@ bool Building_IsValidGroundFloor(int client, int buildingindx, float VecBottom[3
 	float Distance = GetVectorDistance(VecCheckBottom, VecBottom);
 	if(Distance > 60.0)
 	{
-		CanBuild_VisualiseAndWarn(client, buildingindx, true,VecBottom);
+		if(client <= MaxClients)
+			CanBuild_VisualiseAndWarn(client, buildingindx, true,VecBottom);
+		
 		return false;
 	}
 	VecBottom = VecCheckBottom;
-	CanBuild_VisualiseAndWarn(client, buildingindx, false, VecBottom);
+
+	if(client <= MaxClients)
+		CanBuild_VisualiseAndWarn(client, buildingindx, false, VecBottom);
+	
 	return true;
 }
 
@@ -1187,7 +1258,7 @@ void IsBuildingNotFloating(int building)
 			endPos2 = vecHit;
 			if(IsPointHazard(endPos2))
 			{
-				SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+				DestroyBuildingDo(building);
 				return;
 			}
 			TeleportEntity(building, endPos2, NULL_VECTOR, NULL_VECTOR);
@@ -1195,7 +1266,7 @@ void IsBuildingNotFloating(int building)
 		}
 		else
 		{
-			SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+			DestroyBuildingDo(building);
 			return;
 		}
 	}
@@ -1204,7 +1275,7 @@ void IsBuildingNotFloating(int building)
 	//Check if half of the top half of the building is inside a wall, if it is, detroy, if it is not, then we leave it be.
 	if(IsSpaceOccupiedWorldOnly(endPos2, m_vecMins, m_vecMaxs, building))
 	{
-		SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+		DestroyBuildingDo(building);
 	}
 }
 
@@ -1222,7 +1293,6 @@ void Building_RotateAllDepencencies(int entityLost = 0)
 		}
 	}
 }
-
 
 //Make sure all buildings are placed correctly
 void BuildingAdjustMe(int building, int DestroyedBuilding)
@@ -1765,7 +1835,7 @@ float BuildingWeaponDamageModif(int Type)
 		case 1:
 		{
 			//1 means its a weapon
-			return 1.85;
+			return 0.925;
 		}
 		default:
 		{
@@ -1798,32 +1868,55 @@ int i2_MountedInfoAndBuilding[2][MAXPLAYERS + 1];
 
 public void MountBuildingToBack(int client, int weapon, bool crit)
 {
+	MountBuildingToBackInternal(client, false);
+}
+
+//true if mounted
+bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
+{
 	if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]) || IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 	{
-		UnequipDispenser(client);
-		return;
+		if(!AllowAnyBuilding)
+			UnequipDispenser(client);
+
+		return false;
 	}
 	if(IsPlayerCarringObject(client))
 	{
 		Pickup_Building_M2(client, -1, false);
-		return;
+		return false;
 	}
 	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
 	if(entity < MaxClients)
 	{
-		return;
+		return false;
 	}
 	if (!IsValidEntity(entity))
 	{
-		return;
+		return false;
 	}
 	if(!i_IsABuilding[entity])
 	{
-		return;
+		return false;
 	}
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
 	{
-		return;
+		if(!AllowAnyBuilding)
+			return false;
+		else
+		{
+			static char plugin[64];
+			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+			if(StrContains(plugin, "obj_decorative", false) != -1)
+			{
+
+			}
+			else
+			{
+				return false;
+			}
+			//This means that we'll allow pciking up allied buildings, howedver we only allow decorative ones.
+		}
 	}
 
 	Building_RotateAllDepencencies(entity);
@@ -1881,6 +1974,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 	
 	i2_MountedInfoAndBuilding[1][client] = EntIndexToEntRef(entity);
 	//all checks succeeded, now mount the building onto their back!
+	return true;
 }
 
 //its delayed to fix various issues regarding rendering
@@ -1909,10 +2003,20 @@ void ParentDelayFrameForReasons(DataPack pack)
 
 	float flPos[3];
 	float flAng[3];
-	GetAttachment(Wearable, "flag", flPos, flAng);
+	char WhichAttachmentDo[32];
+	if(!Yakuza_IsBeastMode(client))
+	{
+		WhichAttachmentDo = "flag";
+	}
+	else
+	{
+		WhichAttachmentDo = "bread_hand_r";
+	}
+	
+	GetAttachment(Wearable, WhichAttachmentDo, flPos, flAng);
 
 	int InfoTarget = InfoTargetParentAt(flPos,"", 0.0);
-	SetParent(Wearable, InfoTarget, "flag",_);
+	SetParent(Wearable, InfoTarget, WhichAttachmentDo,_);
 	SDKCall_SetLocalOrigin(entity, flPos);	
 	SetEntPropVector(entity, Prop_Data, "m_angRotation", flAng);
 	SetParent(InfoTarget, entity, _, _, _);

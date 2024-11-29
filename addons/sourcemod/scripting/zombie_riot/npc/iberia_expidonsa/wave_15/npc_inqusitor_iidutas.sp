@@ -55,9 +55,9 @@ void Iberia_inqusitor_iidutas_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberiainqusitor_iidutas(client, vecPos, vecAng, ally);
+	return Iberiainqusitor_iidutas(vecPos, vecAng, team);
 }
 methodmap Iberiainqusitor_iidutas < CClotBody
 {
@@ -92,7 +92,7 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
 	public void PlayMeleeHitSound() 
@@ -102,7 +102,7 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 	}
 	
 	
-	public Iberiainqusitor_iidutas(int client, float vecPos[3], float vecAng[3], int ally)
+	public Iberiainqusitor_iidutas(float vecPos[3], float vecAng[3], int ally)
 	{
 		Iberiainqusitor_iidutas npc = view_as<Iberiainqusitor_iidutas>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
 		
@@ -123,9 +123,7 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Iberiainqusitor_iidutas_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 320.0;
 		npc.m_iAttacksTillReload = 0;

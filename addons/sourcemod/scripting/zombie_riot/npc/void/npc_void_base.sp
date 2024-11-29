@@ -5,6 +5,7 @@ static Handle DamageTimer;
 static float NervousTouching[MAXENTITIES + 1];
 static CNavArea NervousLastTouch[MAXENTITIES + 1];
 static int SpreadTicks;
+static float RenderToAll;
 
 bool VoidArea_TouchingNethersea(int entity)
 {
@@ -13,11 +14,17 @@ bool VoidArea_TouchingNethersea(int entity)
 
 void VoidArea_ClearnNethersea()
 {
+	RenderToAll = 0.0;
 	delete NavList;
 }
 
-void VoidArea_SpawnNethersea(const float pos[3])
+void VoidArea_SpawnNethersea(const float pos[3], bool WasWeapon = false)
 {
+	if(!WasWeapon)
+	{
+		//Make sure to render for a LONG time
+		RenderToAll = GetGameTime() + 600.0;
+	}
 	if(!NavList)
 		NavList = new ArrayList();
 	
@@ -96,6 +103,8 @@ public Action VoidArea_RenderTimer(Handle timer, DataPack pack)
 			}
 		}
 
+		//If Only allow 25 navs to spread at once
+		int AllowMaxSpread = 0;
 		int length = NavList.Length;
 		for(int a; a < length; a++)	// Spread creap to all tiles it touches
 		{
@@ -108,9 +117,16 @@ public Action VoidArea_RenderTimer(Handle timer, DataPack pack)
 					int count = nav1.GetAdjacentCount(b);
 					for(int c; c < count; c++)
 					{
+						if(AllowMaxSpread >= 25)
+						{
+							break;
+						}
 						CNavArea nav2 = nav1.GetAdjacentArea(b, c);
 						if(nav2 != NULL_AREA && !nav2.HasAttributes(NAV_MESH_NO_HOSTAGES) && NavList.FindValue(nav2) == -1)
+						{
+							AllowMaxSpread++;
 							NavList.Push(nav2);
+						}
 					}
 				}
 			}
@@ -286,7 +302,23 @@ public void VoidArea_RenderFrame(DataPack pack)
 	delete pack;
 
 	TE_SetupBeamPoints(pos1, pos2, Silvester_BEAM_Laser_1, Silvester_BEAM_Laser_1, 0, 0, 4.0, 5.0/*Width*/, 5.0/*end Width*/, 0, 0.0, {200, 0, 25, 125}, 0);
-	TE_SendToAll();
+	if(RenderToAll < GetGameTime())
+	{	
+		int total = 0;
+		int[] clients = new int[MaxClients];
+		//it will render only to players with the blade
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && ClientPossesesVoidBlade(client))
+			{
+				clients[total++] = client;
+			}
+		}
+		if(total > 0)
+			TE_Send(clients, total, 0.0);
+	}
+	else
+		TE_SendToAll();
 }
 
 public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
@@ -334,6 +366,10 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 			CNavArea nav = TheNavMesh.GetNavArea(pos, 70.0);
 			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
 			{
+				if(ClientPossesesVoidBlade(client))
+				{
+					VoidWave_ApplyBuff(client, 1.0);
+				}
 				NervousTouching[client] = NervousTouching[0];
 			}
 		}
@@ -343,7 +379,7 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 
 
 //This places a spawnpoint somewhere on the map.
-void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, int SpawnsMax, char[] ParticleToSpawn, int ParticleOffset = 0, bool SpreadVoid = false)
+void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, int SpawnsMax, char[] ParticleToSpawn, int ParticleOffset = 0, bool SpreadVoid = false, int MaxWaves = 2)
 {
 	// info_player_teamspawn
 	int ref = CreateEntityByName("info_player_teamspawn");
@@ -353,7 +389,7 @@ void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, in
 		DispatchKeyValueVector(ref, "origin", SpawnPos);
 		DispatchSpawn(ref);
 	}
-	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax, 1);
+	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax, 1, MaxWaves);
 
 	if(WaveDuration >= 1 || ParticleToSpawn[0])
 	{

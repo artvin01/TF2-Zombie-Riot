@@ -68,9 +68,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel("models/player/engineer.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Malius(client, vecPos, vecAng, ally);
+	return Malius(vecPos, vecAng, team);
 }
 
 methodmap Malius < CClotBody
@@ -126,20 +126,16 @@ methodmap Malius < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	
-	public Malius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Malius(float vecPos[3], float vecAng[3], int ally)
 	{
 		Malius npc = view_as<Malius>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -149,6 +145,9 @@ methodmap Malius < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PDA");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
 		/*
@@ -225,8 +224,7 @@ methodmap Malius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Malius npc = view_as<Malius>(iNPC);

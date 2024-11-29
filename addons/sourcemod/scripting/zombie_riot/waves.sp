@@ -21,6 +21,7 @@ enum struct Enemy
 	float ExtraSpeed;
 	float ExtraDamage;
 	char Spawn[64];
+	char CustomName[64];
 }
 
 enum struct MiniBoss
@@ -123,6 +124,7 @@ static bool ProgressTimerType;
 
 static bool UpdateFramed;
 static int WaveGiftItem;
+static char LastWaveWas[64];
 
 public Action Waves_ProgressTimer(Handle timer)
 {
@@ -274,8 +276,21 @@ bool Waves_CallVote(int client, int force = 0)
 				Voting.GetArray(i, vote);
 				vote.Name[0] = CharToUpper(vote.Name[0]);
 				
-				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
-				menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				if(vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
+				{
+					Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
+					menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
+				}
+				else
+				{
+					Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
+					int MenuDo = ITEMDRAW_DISABLED;
+					if(!vote.Level)
+						MenuDo = ITEMDRAW_DEFAULT;
+					if(Level[client] >= 1)
+						MenuDo = ITEMDRAW_DEFAULT;
+					menu.AddItem(vote.Config, vote.Name, MenuDo);
+				}
 			}
 		}
 		else
@@ -283,13 +298,13 @@ bool Waves_CallVote(int client, int force = 0)
 			Format(vote.Name, sizeof(vote.Name), "Standard (Lv %d)", WaveLevel);
 			menu.AddItem(NULL_STRING, vote.Name);
 
-			float multi = float(vote.Level) / 1000.0;
-
 			int length = VotingMods.Length;
 			for(int i = 1; i < length; i++)
 			{
 				VotingMods.GetArray(i, vote);
 				vote.Name[0] = CharToUpper(vote.Name[0]);
+				
+				float multi = float(vote.Level) / 1000.0;
 				
 				int level = WaveLevel;
 				if(level < 10)
@@ -298,7 +313,12 @@ bool Waves_CallVote(int client, int force = 0)
 				level = WaveLevel + RoundFloat(level * multi);
 
 				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, level);
-				menu.AddItem(vote.Config, vote.Name, (Level[client] < level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				int MenuDo = ITEMDRAW_DISABLED;
+				if(!vote.Level)
+					MenuDo = ITEMDRAW_DEFAULT;
+				if(Level[client] >= 1)
+					MenuDo = ITEMDRAW_DEFAULT;
+				menu.AddItem(vote.Config, vote.Name, MenuDo);
 			}
 		}
 		
@@ -492,7 +512,6 @@ void Waves_SetupVote(KeyValues map)
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		kv = new KeyValues("Setup");
 		kv.ImportFromFile(buffer);
-		RequestFrame(DeleteHandle, kv);
 	}
 	
 	StartCash = kv.GetNum("cash");
@@ -501,6 +520,10 @@ void Waves_SetupVote(KeyValues map)
 	if(map && kv.GetNum("roguemode"))
 	{
 		Rogue_SetupVote(kv);
+
+		if(kv != map)
+			delete kv;
+		
 		return;
 	}
 
@@ -573,6 +596,9 @@ void Waves_SetupVote(KeyValues map)
 		}
 	}
 
+	if(kv != map)
+		delete kv;
+
 	CanReVote = Voting.Length > 1;
 
 	CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -613,7 +639,6 @@ void Waves_SetupMiniBosses(KeyValues map)
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		kv = new KeyValues("MiniBoss");
 		kv.ImportFromFile(buffer);
-		RequestFrame(DeleteHandle, kv);
 	}
 	
 	if(kv.GotoFirstSubKey())
@@ -659,6 +684,9 @@ void Waves_SetupMiniBosses(KeyValues map)
 			MiniBosses.PushArray(boss);
 		} while(kv.GotoNextKey());
 	}
+
+	if(kv != map)
+		delete kv;
 }
 
 bool Waves_GetMiniBoss(MiniBoss boss)
@@ -670,6 +698,7 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 	if(!length)
 		return false;
 
+	/*
 	int level;
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -679,13 +708,13 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 				level = Level[client];
 		}
 	}
-
 	level = level / 10 - 10;
 	if(level < 0)
 		return false;
 
 	if(length > level)
 		length = level;
+	*/
 
 	MiniBosses.GetArray(GetURandomInt() % length, boss);
 	return true;
@@ -832,6 +861,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
+						kv.GetString("custom_name", enemy.CustomName, sizeof(enemy.CustomName));
 
 						if(!enemy.Credits)
 							nonBosses++;
@@ -1171,6 +1201,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				
 				if(normal)
 				{
+					strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
 					PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 
 					char buffer[PLATFORM_MAX_PATH];
@@ -1183,14 +1214,16 @@ public Action Waves_EndVote(Handle timer, float time)
 						kv.ExportToFile(buffer);
 						delete kv;
 					}
+					
+					vote.Name[0] = CharToUpper(vote.Name[0]);
 
 					Queue_DifficultyVoteEnded();
-					Native_OnDifficultySet(highest);
+					if(!VotingMods)
+						Native_OnDifficultySet(highest, vote.Name, vote.Level);
 					
 					if(highest > 3)
 						highest = 3;
 					
-					vote.Name[0] = CharToUpper(vote.Name[0]);
 					Waves_SetDifficultyName(vote.Name);
 					WaveLevel = vote.Level;
 					
@@ -1234,6 +1267,8 @@ public Action Waves_EndVote(Handle timer, float time)
 							level = 10;
 						
 						WaveLevel += RoundFloat(level * multi);
+
+						Native_OnDifficultySet(-1, WhatDifficultySetting_Internal, WaveLevel);
 						
 						FormatEx(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s [%s]", WhatDifficultySetting_Internal, vote.Name);
 						Waves_SetDifficultyName(WhatDifficultySetting);
@@ -1252,6 +1287,10 @@ public Action Waves_EndVote(Handle timer, float time)
 							Call_StartFunction(null, func);
 							Call_Finish();
 						}
+					}
+					else
+					{
+						Native_OnDifficultySet(-1, WhatDifficultySetting_Internal, WaveLevel);
 					}
 
 					Waves_SetReadyStatus(1);
@@ -1343,6 +1382,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
 						SpawnTimer(30.0);
 					}
+					Citizen_SetupStart();
 				}
 				Music_EndLastmann();
 				ReviveAll(true);
@@ -1406,6 +1446,19 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					multiBoss = MultiGlobalHealthBoss;
 				}
+
+				if(!ScaleWithHpMore && wave.Count > 0)
+				{
+					// Increase boss health
+					multiBoss *= MultiGlobalEnemyBoss;
+
+					// Decrease for every boss spawned
+					float decrease = float(count) / float(wave.Count);
+					if(decrease > 1.0)
+					{
+						multiBoss /= decrease;
+					}
+				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
 				wave.EnemyData.Health = Tempomary_Health;
@@ -1450,6 +1503,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			
+			Citizen_WaveStart();
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
@@ -1490,10 +1544,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						ShowHudText(client, -1, "%t", round.Message);
 					}
 				}
+				CPrintToChatAll("{crimson}%t", round.Message);
 			}
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsClientInGame(client))
+				if(IsClientInGame(client) && !b_IsPlayerABot[client])
 				{
 					if(music_stop)
 					{
@@ -1509,18 +1564,28 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			bool refreshNPCStore;
 			if(round.SpawnGrigori)
 			{
+				Spawn_Cured_Grigori();
+				refreshNPCStore = true;
+				if(i_SpecialGrigoriReplace == 2)
 				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
 				{
 					if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
 					{
-						ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
-						SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
-						SetGlobalTransTarget(client_Grigori);
-						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");		
+						if(i_SpecialGrigoriReplace == 0)
+						{
+							ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
+							SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
+							SetGlobalTransTarget(client_Grigori);
+							ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");	
+						}	
+						else if(i_SpecialGrigoriReplace == 2)
+						{
+							SetHudTextParams(-1.0, -1.0, 3.01, 125, 125, 125, 255);
+							SetGlobalTransTarget(client_Grigori);
+							ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "The World Machine Spawn");	
+						}
 					}
 				}
-				Spawn_Cured_Grigori();
-				refreshNPCStore = true;
 			}
 			
 			// Above is the round that just ended
@@ -1610,10 +1675,27 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//Loop through all the still alive enemies that are indexed!
 			
+			
 			//always increace chance of miniboss.
+			if(!rogue && CurrentRound >= 12)
+			{
+				int count;
+				int i = MaxClients + 1;
+				while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+				{
+					if(!b_NpcHasDied[i])
+					{
+						if(Citizen_IsIt(i))
+							count++;
+					}
+				}
+			}
+			
 			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
+				Citizen_SpawnAtPoint();
+				CPrintToChatAll("{gray}Barney: {default}Hey! We came late to assist! Got a friend too!");
 			}
 			else if(CurrentRound == 11 && !round.NoMiniboss)
 			{
@@ -2220,7 +2302,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(InSetup || Classic_Mode())
+	if(!Waves_Started() || InSetup || Classic_Mode())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)
@@ -2310,24 +2392,23 @@ float Zombie_DelayExtraSpeed()
 
 void DoGlobalMultiScaling()
 {
-	float playercount = float(CountPlayersOnRed());
-			
-	if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
-	{
-		playercount = 0.70;
-	}
-	else if(playercount < 1.0)
-	{
-		playercount = 0.70;
-	}
+	float playercount = ZRStocks_PlayerScalingDynamic();
 			
 	float multi = Pow(1.08, playercount);
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
 	
+	//normal bosses health
 	MultiGlobalHealthBoss = playercount * 0.2;
+
+	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
-	MultiGlobalEnemyBoss = playercount * 0.3;
+
+	//Enemy bosses amount
+	MultiGlobalEnemyBoss = playercount * 0.3; 
+
+	//certain maps need this.
+	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 
 	float cap = zr_enemymulticap.FloatValue;
 
@@ -2528,7 +2609,7 @@ static void UpdateMvMStatsFrame()
 
 		if(Enemies)
 		{
-			Enemy enemy;
+			static Enemy enemy;
 			int length = Enemies.Length;
 			for(int a; a < length; a++)
 			{
@@ -3088,9 +3169,14 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		
 		RaidMusicSpecial1.Clear();
 		
+		Citizen_WaveStart();
 		ExcuteRelay("zr_wavedone");
 		CurrentRound++;
 		CurrentWave = -1;
+		
+		int TestVal = 0;
+		Spawns_GetNextPos({0.0,0.0,0.0}, {0.0,0.0,0.0}, "",_,TestVal);
+		//This ensures no invalid spawn happens.
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))

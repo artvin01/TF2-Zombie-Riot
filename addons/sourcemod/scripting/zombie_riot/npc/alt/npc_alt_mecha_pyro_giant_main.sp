@@ -63,9 +63,9 @@ void Mecha_PyroGiant_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Mecha_PyroGiant(client, vecPos, vecAng, ally);
+	return Mecha_PyroGiant(vecPos, vecAng, team);
 }
 
 methodmap Mecha_PyroGiant < CClotBody
@@ -128,7 +128,7 @@ methodmap Mecha_PyroGiant < CClotBody
 	}
 	
 	
-	public Mecha_PyroGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public Mecha_PyroGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(CClotBody(vecPos, vecAng, "models/bots/pyro/bot_pyro.mdl", "1.35", "75000", ally, false, true));
 		
@@ -186,8 +186,7 @@ methodmap Mecha_PyroGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(iNPC);

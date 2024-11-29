@@ -67,9 +67,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Draeonis(client, vecPos, vecAng, ally);
+	return Draeonis(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -128,9 +128,7 @@ methodmap Draeonis < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void AdjustWalkCycle()
@@ -153,7 +151,7 @@ methodmap Draeonis < CClotBody
 		}
 	}
 	
-	public Draeonis(int client, float vecPos[3], float vecAng[3], int ally)
+	public Draeonis(float vecPos[3], float vecAng[3], int ally)
 	{
 		Draeonis npc = view_as<Draeonis>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -207,6 +205,9 @@ methodmap Draeonis < CClotBody
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
@@ -230,8 +231,7 @@ methodmap Draeonis < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Draeonis npc = view_as<Draeonis>(iNPC);

@@ -91,9 +91,9 @@ public void MedivalCavalary_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalCavalary(client, vecPos, vecAng, ally);
+	return MedivalCavalary(vecPos, vecAng, team);
 }
 methodmap MedivalCavalary < CClotBody
 {
@@ -140,17 +140,13 @@ methodmap MedivalCavalary < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -159,7 +155,7 @@ methodmap MedivalCavalary < CClotBody
 		
 	}
 	
-	public MedivalCavalary(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalCavalary(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalCavalary npc = view_as<MedivalCavalary>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		SetVariantInt(1);
@@ -220,8 +216,7 @@ methodmap MedivalCavalary < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalCavalary_ClotThink(int iNPC)
 {
 	MedivalCavalary npc = view_as<MedivalCavalary>(iNPC);
@@ -285,9 +280,10 @@ public void MedivalCavalary_ClotThink(int iNPC)
 					{
 						damage *= 5.0;
 					}
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
 				}
@@ -349,11 +345,9 @@ public void MedivalCavalary_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;

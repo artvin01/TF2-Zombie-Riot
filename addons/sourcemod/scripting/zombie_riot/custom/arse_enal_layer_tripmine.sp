@@ -83,8 +83,6 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				
 			Calculate_HP_Spikes *= Bonus_damage;
 
-			Calculate_HP_Spikes *= 0.5;
-
 		
 			int TripMine = CreateEntityByName("tf_projectile_pipe_remote");
 		  
@@ -635,34 +633,8 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 				if(i_HowManyBombsOnThisEntity[npc][client] > 0)
 				{
 					EmitSoundToAll(TRIP_ARMED, npc, _, 85);
-					float damage = 50.0;
-					damage *= Attributes_Get(weapon, 2, 1.0);
 
-					int BomsToBoom = i_HowManyBombsOnThisEntity[npc][client];
-					int BomsToBoomCalc = BomsToBoom;
-					
-					if(BomsToBoomCalc > 250)
-					{
-						int BomsToBoomCalcPost = 250;
-						BomsToBoomCalc -= 250;
-						BomsToBoomCalc /= 4;
-						BomsToBoomCalc += BomsToBoomCalcPost;
-					}
-					else if(BomsToBoomCalc > 150)
-					{
-						int BomsToBoomCalcPost = 150;
-						BomsToBoomCalc -= 150;
-						BomsToBoomCalc /= 2;
-						BomsToBoomCalc += BomsToBoomCalcPost;
-					}
-					damage *= BomsToBoomCalc;
-
-					float EntLoc2[3];
-					
-					WorldSpaceCenter(npc, EntLoc2);
-					i_HowManyBombsHud[npc] -= BomsToBoom;
-					i_HowManyBombsOnThisEntity[npc][client] = 0;
-					Cause_Terroriser_Explosion(client, npc, damage, EntLoc2, true);
+					Cause_Terroriser_Explosion(client, npc, true);
 				}
 			}
 		}
@@ -702,9 +674,26 @@ void CleanAllApplied_Aresenal(int entity, bool force = false)
 	}
 }
 
-void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2[3], bool allowLagcomp = false)
+void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false, Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 {
+	int BomsToBoom = i_HowManyBombsOnThisEntity[npc][client];
+	int BomsToBoomCalc = BomsToBoom;
+	
+	float damage = f_BombEntityWeaponDamageApplied[npc][client];
+	f_BombEntityWeaponDamageApplied[npc][client] = 0.0;
+	//there are too many bombs, dont accept anymore from this player.
+	if(BomsToBoomCalc > 200)
+	{
+		damage -= (damage * (1.0 / 300.0));
+		//There are too many bombs stacked, we have to nerd the damage.
+	}
+
+	float EntLoc2[3];
+	
+	WorldSpaceCenter(npc, EntLoc2);
 	SpawnSmallExplosion(EntLoc2);
+	i_HowManyBombsHud[npc] -= BomsToBoom;
+	i_HowManyBombsOnThisEntity[npc][client] = 0;
 
 	switch(GetRandomInt(1, 3))
 	{
@@ -724,23 +713,24 @@ void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2
 	CleanAllApplied_Aresenal(npc);
 	float radius = 100.0;
 	spawnRing_Vectors(EntLoc2, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 6.0, 2.1, 1, radius);	
+	i_ExplosiveProjectileHexArray[client] |= ZR_DAMAGE_IGNORE_DEATH_PENALTY;
 	if(allowLagcomp)
 	{
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 
-		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
+		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false, .FunctionToCallBeforeHit = FunctionToCallBeforeHit);
 
 		FinishLagCompensation_Base_boss();
 	}
 	else
 	{
-		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
+		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false, .FunctionToCallBeforeHit = FunctionToCallBeforeHit);
 	}
 	
 	if(!b_NpcHasDied[npc]) //Incase it gets called later.
 	{
 		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage delt by by secondary internal combustion too.
-		SDKHooks_TakeDamage(npc, client, client, damage * 0.5, DMG_BLAST); //extra damage to the target that was hit cus yeah.
+		SDKHooks_TakeDamage(npc, client, client, damage * 0.5, DMG_BLAST | ZR_DAMAGE_IGNORE_DEATH_PENALTY); //extra damage to the target that was hit cus yeah.
 	}
 }

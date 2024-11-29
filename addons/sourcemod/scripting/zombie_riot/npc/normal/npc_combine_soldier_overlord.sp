@@ -73,7 +73,7 @@ void CombineOverlord_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_ChargeSounds));   i++) { PrecacheSound(g_ChargeSounds[i]);   }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Overlord");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Overlord");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_overlord");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_overlord");
 	data.IconCustom = true;
@@ -83,9 +83,9 @@ void CombineOverlord_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineOverlord(client, vecPos, vecAng, ally);
+	return CombineOverlord(vecPos, vecAng, team);
 }
 methodmap CombineOverlord < CClotBody
 {
@@ -132,47 +132,35 @@ methodmap CombineOverlord < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlaySpecialChargeSound() {
 		EmitSoundToAll(g_ChargeSounds[GetRandomInt(0, sizeof(g_ChargeSounds) - 1)], this.index, _, 110, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -181,7 +169,7 @@ methodmap CombineOverlord < CClotBody
 		
 	}
 	
-	public CombineOverlord(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineOverlord(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineOverlord npc = view_as<CombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
 		SetVariantInt(3);
@@ -235,8 +223,7 @@ methodmap CombineOverlord < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineOverlord_ClotThink(int iNPC)
 {
 	CombineOverlord npc = view_as<CombineOverlord>(iNPC);

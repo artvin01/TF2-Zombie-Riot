@@ -86,9 +86,9 @@ public void CombinePoliceSmg_OnMapStart_NPC()
 	
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombinePoliceSmg(client, vecPos, vecAng, ally);
+	return CombinePoliceSmg(vecPos, vecAng, team);
 }
 methodmap CombinePoliceSmg < CClotBody
 {
@@ -135,32 +135,24 @@ methodmap CombinePoliceSmg < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -170,7 +162,7 @@ methodmap CombinePoliceSmg < CClotBody
 	}
 	
 	
-	public CombinePoliceSmg(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombinePoliceSmg(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombinePoliceSmg npc = view_as<CombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700", ally));
 		
@@ -221,8 +213,7 @@ methodmap CombinePoliceSmg < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombinePoliceSmg_ClotThink(int iNPC)
 {
 	CombinePoliceSmg npc = view_as<CombinePoliceSmg>(iNPC);

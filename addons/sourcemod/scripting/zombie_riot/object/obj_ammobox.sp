@@ -74,7 +74,7 @@ static bool ClotCanUse(ObjectAmmobox npc, int client)
 static void ClotShowInteractHud(ObjectAmmobox npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Ammobox Tooltip");
+	PrintCenterText(client, "%t", "Ammobox Tooltip", Ammo_Count_Ready - Ammo_Count_Used[client]);
 }
 
 static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
@@ -91,9 +91,15 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 	//	npc.SetActivity("Open", true);
 	//	npc.SetPlaybackRate(0.5);
 	//	npc.m_flAttackHappens = GetGameTime(npc.index) + 1.4;
-		if(AmmoboxUsed(client, npc.index))
+		int UsedBoxLogic = AmmoboxUsed(client, npc.index);
+		if(UsedBoxLogic >= 1)
 		{
 			int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+			if(UsedBoxLogic >= 2)
+			{
+				Building_GiveRewardsUse(client, owner, 10, true, 0.35, true);
+				Barracks_TryRegenIfBuilding(client);
+			}
 			Building_GiveRewardsUse(client, owner, 10, true, 0.35, true);
 			Barracks_TryRegenIfBuilding(client);
 		}
@@ -108,7 +114,7 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 }
 
 
-bool AmmoboxUsed(int client, int entity)
+int AmmoboxUsed(int client, int entity)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 
@@ -149,10 +155,12 @@ bool AmmoboxUsed(int client, int entity)
 			}
 			if(b_AggreviatedSilence[client])
 				mana_regen_temp *= 0.30;
+
+		//	mana_regen_temp *= 0.5;
 			
 			if(Current_Mana[client] < RoundToCeil(max_mana_temp))
 			{
-				Ammo_Count_Used[client] += 1;
+				Ammo_Count_Used[client] += 2;
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				if(Current_Mana[client] < RoundToCeil(max_mana_temp))
@@ -165,7 +173,7 @@ bool AmmoboxUsed(int client, int entity)
 
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 				Mana_Hud_Delay[client] = 0.0;
-				return true;
+				return 2;
 			}
 			else
 			{

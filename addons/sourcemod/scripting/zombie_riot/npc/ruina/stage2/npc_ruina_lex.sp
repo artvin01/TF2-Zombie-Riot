@@ -29,9 +29,9 @@ static const char g_IdleSounds[][] = {
 static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry01.mp3",
 	"vo/medic_battlecry02.mp3",
-	"medic_autocappedcontrolpoint01.mp3",
-	"medic_autocappedcontrolpoint02.mp3",
-	"medic_autocappedcontrolpoint03.mp3"
+	"vo/medic_autocappedcontrolpoint01.mp3",
+	"vo/medic_autocappedcontrolpoint02.mp3",
+	"vo/medic_autocappedcontrolpoint03.mp3"
 };
 
 static const char g_LaserWebInvokeSounds[][] = {
@@ -94,9 +94,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Lex(client, vecPos, vecAng, ally, data);
+	return Lex(vecPos, vecAng, team, data);
 }
 
 static float fl_npc_basespeed;
@@ -309,6 +309,8 @@ methodmap Lex < CClotBody
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			Iana ally = view_as<Iana>(spawn_index);
 			ally.m_bThisNpcIsABoss = this.m_bThisNpcIsABoss;
+			if(this.m_bThisNpcIsABoss)
+				GiveNpcOutLineLastOrBoss(ally.index, true);
 		}
 	}
 	public void AdjustWalkCycle()
@@ -366,7 +368,7 @@ methodmap Lex < CClotBody
 		return this.m_iTarget;
 	}
 	
-	public Lex(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Lex(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Lex npc = view_as<Lex>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -476,8 +478,7 @@ static void Do_OnSpawn(int ref)
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lex npc = view_as<Lex>(iNPC);

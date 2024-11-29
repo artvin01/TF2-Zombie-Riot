@@ -78,9 +78,9 @@ static void ClotPrecache()
 	PrecacheModel("models/zombie_riot/btd/bad.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Bad(client, vecPos, vecAng, ally, data);
+	return Bad(vecPos, vecAng, team, data);
 }
 
 methodmap Bad < CClotBody
@@ -114,7 +114,7 @@ methodmap Bad < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public Bad(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Bad(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		
@@ -161,8 +161,7 @@ methodmap Bad < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Bad_ClotThink(int iNPC)
 {
 	Bad npc = view_as<Bad>(iNPC);

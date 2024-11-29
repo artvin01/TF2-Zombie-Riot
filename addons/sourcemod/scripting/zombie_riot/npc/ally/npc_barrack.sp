@@ -277,9 +277,43 @@ methodmap BarrackBody < CClotBody
 	{
 		public get()
 		{
+			if(view_as<int>(this) <= -1)
+			{
+				return -1;
+			}
 			return BarrackOwner[view_as<int>(this)];
 		}
 	}
+	public bool DoSwingTrace(Handle &trace,
+	int target,
+	 float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 },
+	  float vecSwingMins[3] = { -64.0, -64.0, -128.0 },
+	   float vecSwingStartOffset = 55.0,
+	    int Npc_type = 0,
+		 int Ignore_Buildings = 0,
+		  int countAoe = 0)
+	{
+		//only later if it has no default.
+		if(GetTeam(this.index) == TFTeam_Red && vecSwingMaxs[2] == 128.0)
+		{
+			static char plugin[64];
+			NPC_GetPluginById(i_NpcInternalId[this.index], plugin, sizeof(plugin));
+			if(StrContains(plugin, "npc_barrack", false) != -1)
+			{
+				vecSwingMaxs = { 180.0, 180.0, 180.0 };
+				vecSwingMins = { -180.0, -180.0, -180.0 };
+			}
+		}
+		return view_as<CClotBody>(this.index).DoSwingTrace(trace,
+		target,
+		vecSwingMaxs,
+		vecSwingMins,
+		vecSwingStartOffset,
+		Npc_type,
+		Ignore_Buildings,
+		countAoe);
+	}
+		
 	
 	public BarrackBody(int client, float vecPos[3], float vecAng[3],
 	 const char[] health, const char[] modelpath = COMBINE_CUSTOM_MODEL,
@@ -480,7 +514,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 	bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer || command == Command_RTSMove);
 
 	// Only retarget when can we had an existing target before
-	if(!newTarget && !retreating && i_Target[npc.index] != -1)
+	if(!newTarget && !retreating && npc.m_iTarget != -1)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTarget);
 
 	// Only retarget when can we had an existing target before
@@ -512,10 +546,12 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);	
 		}
+		/*
 		else
 		{
 			npc.m_iTarget = -1;
 		}
+		*/
 		
 		if(npc.m_iTargetAlly > 0 && !passive)
 		{
@@ -766,6 +802,7 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	if(i_NpcIsABuilding[victim])
 		return Plugin_Continue;
 		
+	
 	if(!b_thisNpcIsARaid[attacker])
 	{
 		damage *= 0.65;
@@ -789,6 +826,7 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	int client = GetClientOfUserId(npc.OwnerUserId);
 	if(client > 0)
 	{
+
 		damage = Barracks_UnitOnTakeDamage(npc.index, client, damage);
 	}
 	damage -= Rogue_Barracks_FlatArmor();
@@ -1063,7 +1101,7 @@ float Barracks_UnitExtraRangeCalc(int entity, int client, float range, bool buil
 	return range;
 }
 
-float Barracks_UnitOnTakeDamage(int entity, int client, float damage)
+float Barracks_UnitOnTakeDamage(int entity, int client, float damage, bool GiveFlatRes = true)
 {
 	if(client < 1) //Incase the client somehow isnt real, then we revert to just taking it from the entity directly.
 	{
@@ -1086,7 +1124,8 @@ float Barracks_UnitOnTakeDamage(int entity, int client, float damage)
 	if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFORGED_STEEL_ARMOR))
 	{
 		DamageResisted *= 0.97;
-		damage -= 1;
+		if(GiveFlatRes)
+			damage -= 1;
 	}
 
 	damage *= DamageResisted;

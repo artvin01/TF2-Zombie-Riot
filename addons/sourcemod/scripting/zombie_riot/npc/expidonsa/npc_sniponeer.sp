@@ -48,9 +48,9 @@ void Sniponeer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Sniponeer(client, vecPos, vecAng, ally);
+	return Sniponeer(vecPos, vecAng, team);
 }
 
 methodmap Sniponeer < CClotBody
@@ -87,7 +87,7 @@ methodmap Sniponeer < CClotBody
 	}
 	
 	
-	public Sniponeer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Sniponeer(float vecPos[3], float vecAng[3], int ally)
 	{
 		Sniponeer npc = view_as<Sniponeer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1000", ally));
 		
@@ -109,9 +109,7 @@ methodmap Sniponeer < CClotBody
 		func_NPCDeath[npc.index] = Sniponeer_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Sniponeer_OnTakeDamage;
 		func_NPCThink[npc.index] = Sniponeer_ClotThink;
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		

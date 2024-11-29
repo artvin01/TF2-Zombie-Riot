@@ -30,7 +30,6 @@ void OnEntityCreatedMeleeWarcry(int entity)
 		delete h_WarcryTimerBuff[entity];
 }
 
-#define TRUE_STRENGTH_SOUND "items/powerup_pickup_strength.wav"
 
 public float AbilityMeleeWarcry(int client, int index, char name[48])
 {
@@ -75,7 +74,7 @@ public float AbilityMeleeWarcry(int client, int index, char name[48])
 	return (GetGameTime() + 50.0);
 }
 
-void Player_Ability_Warcry_OnTakeDamage(int attacker, int victim, float &damage)
+void Player_Ability_Warcry_OnTakeDamage(int victim, float &damage)
 {
 	//Not in ability. Cancel.
 	if (WarCry_Duration[victim] < GetGameTime())

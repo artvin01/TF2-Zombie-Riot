@@ -3,7 +3,7 @@
 
 methodmap CombineOverlord < CombineSoldier
 {
-	public CombineOverlord(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineOverlord(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineOverlord npc = view_as<CombineOverlord>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		

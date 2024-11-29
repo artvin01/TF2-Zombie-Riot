@@ -81,9 +81,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/engineer.mdl");
 	
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Astrianis(client, vecPos, vecAng, ally);
+	return Astrianis(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -142,16 +142,12 @@ methodmap Astrianis < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -185,7 +181,7 @@ methodmap Astrianis < CClotBody
 		}
 	}
 	
-	public Astrianis(int client, float vecPos[3], float vecAng[3], int ally)
+	public Astrianis(float vecPos[3], float vecAng[3], int ally)
 	{
 		Astrianis npc = view_as<Astrianis>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
 		
@@ -197,6 +193,9 @@ methodmap Astrianis < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 1;
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
 		/*
@@ -259,8 +258,7 @@ methodmap Astrianis < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Astrianis npc = view_as<Astrianis>(iNPC);
@@ -318,7 +316,7 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		npc.m_flNextTeleport = GameTime + 20.0;
+		npc.m_flNextTeleport = GameTime + 75.0;
 
 		int color[4];
 		Ruina_Color(color);

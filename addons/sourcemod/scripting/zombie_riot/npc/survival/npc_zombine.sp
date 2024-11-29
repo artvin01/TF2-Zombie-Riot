@@ -88,9 +88,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSoundCustom(g_MeleeAttackSounds[i]);	}
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ZombineSurvival(client, vecPos, vecAng, ally);
+	return ZombineSurvival(vecPos, vecAng, team);
 }
 
 methodmap ZombineSurvival < CClotBody
@@ -157,7 +157,7 @@ methodmap ZombineSurvival < CClotBody
 	}
 	
 	
-	public ZombineSurvival(int client, float vecPos[3], float vecAng[3], int ally)
+	public ZombineSurvival(float vecPos[3], float vecAng[3], int ally)
 	{
 		ZombineSurvival npc = view_as<ZombineSurvival>(CClotBody(vecPos, vecAng, "models/zombie/zombie_soldier.mdl", "1.15", "20000", ally, false));
 		
@@ -194,8 +194,7 @@ methodmap ZombineSurvival < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void ZombineSurvival_ClotThink(int iNPC)
 {
 	ZombineSurvival npc = view_as<ZombineSurvival>(iNPC);

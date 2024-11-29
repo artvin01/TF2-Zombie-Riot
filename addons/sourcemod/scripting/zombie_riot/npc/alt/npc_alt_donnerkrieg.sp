@@ -117,9 +117,9 @@ void Donnerkrieg_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Donnerkrieg(client, vecPos, vecAng, ally, data);
+	return Donnerkrieg(vecPos, vecAng, team, data);
 }
 
 methodmap Donnerkrieg < CClotBody
@@ -166,16 +166,12 @@ methodmap Donnerkrieg < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -186,14 +182,12 @@ methodmap Donnerkrieg < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	
 	
-	public Donnerkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Donnerkrieg(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 		
@@ -217,6 +211,9 @@ methodmap Donnerkrieg < CClotBody
 		
 		if(final)
 		{
+			if(g_b_item_allowed)
+				b_NpcUnableToDie[npc.index] = true;
+
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		else
@@ -300,8 +297,7 @@ methodmap Donnerkrieg < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);

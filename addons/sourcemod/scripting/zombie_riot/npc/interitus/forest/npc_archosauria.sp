@@ -28,9 +28,9 @@ void ArchosauriaOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Archosauria(client, vecPos, vecAng, ally);
+	return Archosauria(vecPos, vecAng, team);
 }
 
 methodmap Archosauria < CClotBody
@@ -48,7 +48,7 @@ methodmap Archosauria < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public Archosauria(int client, float vecPos[3], float vecAng[3], int ally)
+	public Archosauria(float vecPos[3], float vecAng[3], int ally)
 	{
 		Archosauria npc = view_as<Archosauria>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "20000", ally));
 		
@@ -85,9 +85,7 @@ methodmap Archosauria < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		
 		
 		int skin = 1;
@@ -270,7 +268,7 @@ int ArchosauriaSelfDefense(Archosauria npc, float gameTime)
 			return 0;
 		}
 	}
-	if(RogueTheme == BlueParadox && i_npcspawnprotection[npc.index] == 1)
+	if(Rogue_Mode() && i_npcspawnprotection[npc.index] == 1)
 		return 0;
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 	npc.FaceTowards(VecEnemy, 15000.0);

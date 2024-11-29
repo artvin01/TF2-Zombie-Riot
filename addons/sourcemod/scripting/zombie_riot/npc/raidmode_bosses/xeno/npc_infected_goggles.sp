@@ -1,11 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static char g_DeathSounds[][] =
-{
-	"vo/sniper_paincrticialdeath01.mp3",
-	"vo/sniper_paincrticialdeath02.mp3",
-	"vo/sniper_paincrticialdeath03.mp3"
+static const char g_DeathSounds[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
 static char g_HurtSounds[][] =
@@ -75,7 +73,7 @@ static char g_HappySounds[][] =
 	"vo/compmode/cm_sniper_matchwon_14.mp3"
 };
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static int i_RaidDuoAllyIndex = INVALID_ENT_REFERENCE;
 static float f_HurtRecentlyAndRedirected[MAXENTITIES]={-1.0, ...};
@@ -111,9 +109,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_HappySounds);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RaidbossBlueGoggles(client, vecPos, vecAng, ally, data);
+	return RaidbossBlueGoggles(vecPos, vecAng, team, data);
 }
 methodmap RaidbossBlueGoggles < CClotBody
 {
@@ -204,7 +202,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		public set(float value) 	{	this.m_flJumpCooldown = value;	}
 	}
 
-	public RaidbossBlueGoggles(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RaidbossBlueGoggles(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -247,6 +245,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		npc.m_bDissapearOnDeath = true;
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr18_antarctic_eyewear/spr18_antarctic_eyewear_scout.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
@@ -1128,10 +1127,10 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 public void RaidbossBlueGoggles_NPCDeath(int entity)
 {
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(entity);
-	if(!npc.m_bDissapearOnDeath)
-	{
-		npc.PlayDeathSound();
-	}
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+	npc.PlayDeathSound();
 	
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.

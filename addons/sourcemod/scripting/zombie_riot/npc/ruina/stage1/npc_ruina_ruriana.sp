@@ -68,9 +68,9 @@ static void ClotPrecache()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Ruriana(client, vecPos, vecAng, ally);
+	return Ruriana(vecPos, vecAng, team);
 }
 
 methodmap Ruriana < CClotBody
@@ -124,7 +124,7 @@ methodmap Ruriana < CClotBody
 	
 	
 	
-	public Ruriana(int client, float vecPos[3], float vecAng[3], int ally)
+	public Ruriana(float vecPos[3], float vecAng[3], int ally)
 	{
 		Ruriana npc = view_as<Ruriana>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
@@ -203,14 +203,15 @@ methodmap Ruriana < CClotBody
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 10, 4);		//priority 4, just lower then the actual bosses
 
+		b_ruina_nerf_healing[npc.index] = true;
+
 		return npc;
 	}
 	
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Ruriana npc = view_as<Ruriana>(iNPC);

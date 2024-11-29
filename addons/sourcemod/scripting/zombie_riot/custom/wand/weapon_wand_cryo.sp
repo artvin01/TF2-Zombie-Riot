@@ -9,7 +9,7 @@ static int Cryo_M1_Particles_Pap2 = 3; //Number of particles fired by each M1 at
 static float Cryo_M1_Damage_Pap2 = 40.0; //M1 base damage per particle (Pack-a-Punch Tier 2)
 static float Cryo_M1_Spread = 6.0;	//Random spread for particles
 static float Cryo_M1_Time = 175.0;	//Time of M1 particles
-static float Cryo_M1_Velocity = 750.0;	//Velocity of M1 particles
+static float Cryo_M1_Velocity = 1250.0;	//Velocity of M1 particles
 static float Cryo_M1_ReductionScale = 0.66; //Amount to multiply M1 damage each time it hits a zombie
 
 static float Cryo_M2_Damage = 450.0; //M2 base damage

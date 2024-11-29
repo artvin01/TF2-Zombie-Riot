@@ -123,8 +123,10 @@ public void Weapon_IEM_Launcher_PAP(int client, int weapon, const char[] classna
 		AcceptEntityInput(iRot, "Open");
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
-		float damage = 50.0;
+		float damage = 30.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+		damage *= (1.0 / Attributes_Get(weapon, 97, 1.0));
 		
 		float fAng[3];
 		GetClientEyeAngles(client, fAng);
@@ -171,8 +173,11 @@ public void Weapon_IEM_Launcher_PAP_Star(int client, int weapon, const char[] cl
 		AcceptEntityInput(iRot, "Open");
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
-		float damage = 50.0;
+		float damage = 30.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+		damage *= (1.0 / Attributes_Get(weapon, 97, 1.0));
+		
 		
 		float fAng[3];
 		GetClientEyeAngles(client, fAng);
@@ -205,8 +210,11 @@ public void Weapon_IEM_Cutter(int client, int weapon, const char[] classname, bo
 		
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
-		float damage = 50.0;
+		float damage = 30.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+		damage *= (1.0 / Attributes_Get(weapon, 97, 1.0));
+		
 		
 		Laser_Cutter_Static[client] = false;
 		Wand_Launch_Cutter_IEM(client, speed, 15.0, damage, false);
@@ -252,8 +260,11 @@ public void Weapon_IEM_Cutter_PAP(int client, int weapon, const char[] classname
 		
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
-		float damage = 50.0;
+		float damage = 30.0;
 		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+		damage *= (1.0 / Attributes_Get(weapon, 97, 1.0));
+		
 		
 		Wand_Launch_Cutter_IEM(client, speed, 15.0, damage, true);
 	}
@@ -330,11 +341,14 @@ public void Weapon_Charged_Handgun(int client, int weapon, const char[] classnam
 		AcceptEntityInput(iRot, "Open");
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
-		float damage = 50.0;
+		float damage = 30.0;
 		if (HasEntProp(weapon, Prop_Send, "m_flChargeBeginTime"))
-			damage = 120.0;
+			damage = 70.0;
 		
 		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+		damage *= (1.0 / Attributes_Get(weapon, 97, 1.0));
+		
 		
 		Wand_Launch(client, iRot, speed, 2.0, damage);
 	}
@@ -427,7 +441,7 @@ public Action Event_Charged_Hand_OnHatTouch(int entity, int other)
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
@@ -437,7 +451,7 @@ public Action Event_Charged_Hand_OnHatTouch(int entity, int other)
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
@@ -551,7 +565,7 @@ public Action Event_Wand_IEM_OnHatTouch(int entity, int other)
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
@@ -1028,7 +1042,7 @@ public Action Event_Wand_Cutter_IEM_OnHatTouch(int entity, int other)
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);

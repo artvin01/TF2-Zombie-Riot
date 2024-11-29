@@ -117,9 +117,9 @@ public void Ikunagae_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Ikunagae(client, vecPos, vecAng, ally);
+	return Ikunagae(vecPos, vecAng, team);
 }
 methodmap Ikunagae < CClotBody
 {
@@ -141,9 +141,7 @@ methodmap Ikunagae < CClotBody
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayDeathSound() {
 		
@@ -173,12 +171,10 @@ methodmap Ikunagae < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	//static bool b_scaramouche_used[MAXENTITIES] = { false, ... };
-	public Ikunagae(int client, float vecPos[3], float vecAng[3], int ally)
+	public Ikunagae(float vecPos[3], float vecAng[3], int ally)
 	{
 		Ikunagae npc = view_as<Ikunagae>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		
@@ -301,8 +297,7 @@ methodmap Ikunagae < CClotBody
 
 static float Normal_Attack_Angles[MAXENTITIES];	//placing this here to use the clot think.
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Ikunagae npc = view_as<Ikunagae>(iNPC);

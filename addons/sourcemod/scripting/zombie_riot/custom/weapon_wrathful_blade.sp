@@ -7,7 +7,7 @@
 //Self-damage and cooldown become higher the longer it is active. When the ability ends, heal X HP for every zombie you killed while it is active,
 //at a rate of Y HP per second, up to a maximum of Z.
 static float Fury_ATKSpeed[3] = { 1.33, 1.415, 1.5 };			//Amount to multiply the user's melee attack rate while Infernal Fury is active.
-static float Fury_ResMult[3] = { 0.5, 0.33, 0.25 };				//Amount to multiply damage taken from enemies while Infernal Fury is active. This should be fairly strong, because otherwise you can't really use the ability to be aggressive because the self-damage plus the damage you're taking from the enemies will get you killed in seconds.
+static float Fury_ResMult[3] = { 0.5, 0.4, 0.33 };				//Amount to multiply damage taken from enemies while Infernal Fury is active. This should be fairly strong, because otherwise you can't really use the ability to be aggressive because the self-damage plus the damage you're taking from the enemies will get you killed in seconds.
 static float Fury_DMGMult[3] = { 1.25, 1.33, 1.5 };				//Amount to multiply damage dealt by the user's melee attacks while Infernal Fury is active.
 static float Fury_BurnDMG[3] = { 2.0, 3.0, 4.0 };				//Base damage dealt by Infernal Fury's AOE per 0.1s. This is affected by attributes.
 static float Fury_BurnFalloff[3] = { 0.66, 0.7, 0.75 };			//Amount to multiply Infernal Fury's AOE damage for every enemy it hits.
@@ -565,6 +565,11 @@ public Action Fury_Logic(Handle timelytimer, int id)
 
 		Explode_Logic_Custom(DMG, client, client, weapon, pos, Fury_BurnRadius[tier], Fury_BurnFalloff[tier], _, _, Fury_BurnMaxTargets[tier], true, 1.0, _, view_as<Function>(Fury_AOEHit));
 
+		for (int i = 0; i <= MaxClients; i++)
+		{
+			Fury_WasHitByAOE[i][client] = false;
+		}
+
 		GetClientAbsOrigin(client, pos);
 		TE_SetupBeamRingPoint(pos, Fury_BurnRadius[tier] * 2.0, Fury_BurnRadius[tier] * 2.0 + 0.5, Beam_Laser, Beam_Glow, 0, 10, 0.11, 25.0, 2.0, {255, 120, 0, 250}, 10, 0);
 		TE_SendToAll(0.0);
@@ -637,21 +642,6 @@ public Action Wrath_Activate(Handle timer, int id)
 public void Fury_AOEHit(int attacker, int victim, float damage, int weapon)
 {
 	Fury_WasHitByAOE[victim][attacker] = true;
-	DataPack pack = new DataPack();
-	RequestFrame(Fury_ClearAOEHit, pack);
-	WritePackCell(pack, EntIndexToEntRef(victim));
-	WritePackCell(pack, GetClientUserId(attacker));
-}
-
-public void Fury_ClearAOEHit(DataPack pack)
-{
-	ResetPack(pack);
-	int ent = EntRefToEntIndex(ReadPackCell(pack));
-	int attacker = GetClientOfUserId(ReadPackCell(pack));
-	delete pack;
-
-	if (IsValidEntity(ent) && IsValidClient(attacker))
-		Fury_WasHitByAOE[ent][attacker] = false;
 }
 
 public Action Fury_HealingTimer(Handle timelytimer, int id)

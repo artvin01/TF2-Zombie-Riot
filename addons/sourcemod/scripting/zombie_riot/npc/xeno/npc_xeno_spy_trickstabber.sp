@@ -90,9 +90,9 @@ public void XenoSpyTrickstabber_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoSpyTrickstabber(client, vecPos, vecAng, ally);
+	return XenoSpyTrickstabber(vecPos, vecAng, team);
 }
 methodmap XenoSpyTrickstabber < CClotBody
 {
@@ -146,16 +146,12 @@ methodmap XenoSpyTrickstabber < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
@@ -170,7 +166,7 @@ methodmap XenoSpyTrickstabber < CClotBody
 		
 	}
 	
-	public XenoSpyTrickstabber(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSpyTrickstabber(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSpyTrickstabber npc = view_as<XenoSpyTrickstabber>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "7000", ally));
 		
@@ -194,9 +190,7 @@ methodmap XenoSpyTrickstabber < CClotBody
 		func_NPCOnTakeDamage[npc.index] = XenoSpyTrickstabber_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoSpyTrickstabber_ClotThink;
 	
-		
-		
-		npc.m_iState = 0;
+
 		npc.m_flSpeed = 290.0;
 		npc.m_flAttackHappenswillhappen = false;
 		
@@ -243,8 +237,7 @@ methodmap XenoSpyTrickstabber < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSpyTrickstabber_ClotThink(int iNPC)
 {
 	XenoSpyTrickstabber npc = view_as<XenoSpyTrickstabber>(iNPC);

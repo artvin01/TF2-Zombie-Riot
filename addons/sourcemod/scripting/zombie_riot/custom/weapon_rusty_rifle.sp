@@ -150,6 +150,7 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	hullMax[0] = -hullMin[0];
 	hullMax[1] = -hullMin[1];
 	hullMax[2] = -hullMin[2];
+	Zero(BigShot_Hit);
 
 	GetAngleVectors(ang, direction, NULL_VECTOR, NULL_VECTOR);
 	ScaleVector(direction, 9999.0);
