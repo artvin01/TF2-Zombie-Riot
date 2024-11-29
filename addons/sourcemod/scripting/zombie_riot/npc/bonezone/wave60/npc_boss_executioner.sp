@@ -8,13 +8,15 @@
 static float LORDREAD_SPEED = 260.0;
 
 //NIGHTMARISH BRUTALITY: Lordread kills his foes so brutally that all enemies within a short radius of the initial victim who have line-of-sight are briefly stunned.
-static float Brutality_Radius = 300.0;	//Effect radius.
-static float Brutality_Stun = 3.0;		//Stun duration.
+//SCRAPPED: This would be INSANELY annoying to fight against.
+//static float Brutality_Radius = 300.0;	//Effect radius.
+//static float Brutality_Stun = 3.0;		//Stun duration.
 
 //PUBLIC EXECUTION: Whenever Lordread kills/downs an enemy, all allies (not counting Lordread) with direct line-of-sight to that enemy are immediately buffed and healed
 //to full (max 50k healing).
-static float Execution_Heal = 1.0;			//Percentage of max HP to heal allies for when they witness the execution.
-static float Execution_MaxHeal = 50000.0;	//Maximum healing given to individual allies by this ability.
+//SCRAPPED: Completely unnecessary, and also annoying to fight against. Faux-Beard has a more balanced version of this ability with his Morale Boost.
+//static float Execution_Heal = 1.0;			//Percentage of max HP to heal allies for when they witness the execution.
+//static float Execution_MaxHeal = 50000.0;	//Maximum healing given to individual allies by this ability.
 
 //GUILLOTINE: Lordread's basic melee attack. Lordread slams his axe down in front of him, instantly downing anyone who is hit or dealing MASSIVE damage to buildings/barracks
 //units. Enemies who are downed by this attack have their down HP halved. This attack's speed and cooldown become faster as Lordread loses health, up to double at 10% HP.
@@ -402,7 +404,7 @@ methodmap Lordread < CClotBody
 		npc.m_bisWalking = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Lordread_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Lordread_OnTakeDamage);
+		//func_NPCOnTakeDamage[npc.index] = view_as<Function>(Lordread_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Lordread_ClotThink);
 		func_NPCAnimEvent[npc.index] = Lordread_AnimEvent;
 		Lordread_NextLightning[npc.index] = GetGameTime(npc.index) + Lord_StartingCooldown;
@@ -896,17 +898,6 @@ public void Guillotine_HalveHP(int id)
 		health *= Guillotine_DownMult;
 		SetEntProp(client, Prop_Data, "m_iHealth", RoundFloat(health));
 	}
-}
-
-public Action Lordread_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	if(attacker <= 0)
-		return Plugin_Continue;
-
-	Lordread npc = view_as<Lordread>(victim);
-	//TODO: Fill this out if needed, scrap if not
-
-	return Plugin_Changed;
 }
 
 public void Lordread_NPCDeath(int entity)

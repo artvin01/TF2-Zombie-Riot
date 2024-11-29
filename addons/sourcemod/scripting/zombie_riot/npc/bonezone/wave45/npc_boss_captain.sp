@@ -385,7 +385,7 @@ methodmap Captain < CClotBody
 		npc.m_bisWalking = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Captain_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Captain_OnTakeDamage);
+		//func_NPCOnTakeDamage[npc.index] = view_as<Function>(Captain_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Captain_ClotThink);
 		func_NPCAnimEvent[npc.index] = Captain_AnimEvent;
 
@@ -1056,17 +1056,6 @@ public Action Captain_BombHit(int entity, int other)
 
 	RemoveEntity(entity);
 	return Plugin_Handled; //DONT.
-}
-
-public Action Captain_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	if(attacker <= 0)
-		return Plugin_Continue;
-
-	Captain npc = view_as<Captain>(victim);
-	//TODO: Fill this out if needed, scrap if not
-
-	return Plugin_Changed;
 }
 
 public void Captain_NPCDeath(int entity)
