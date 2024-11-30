@@ -746,7 +746,9 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			npc.m_flTimeUntillSummonRocket = gameTime + 1.0;
 		}
 		*/
-		if(npc.m_flTimeUntillSummonRocket && npc.m_flTimeUntillSummonRocket < gameTime)
+		npc.m_flTimeUntillSummonRocket = gameTime + 1.5;
+		
+		if(npc.m_flTimeUntillSummonRocket < gameTime)
 		{
 			npc.m_flTimeUntillSummonRocket = 0.0;
 
