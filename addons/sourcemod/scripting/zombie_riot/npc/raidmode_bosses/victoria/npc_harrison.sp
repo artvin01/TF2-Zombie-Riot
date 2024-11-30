@@ -413,7 +413,7 @@ static void Internal_ClotThink(int iNPC)
 {
 	Harrison npc = view_as<Harrison>(iNPC);
 	float gameTime = GetGameTime(npc.index);
-	bool GETVictoria_Support = Victoria_Support(npc);
+	//bool GETVictoria_Support = Victoria_Support(npc);
 	
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -618,6 +618,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		return Plugin_Continue;
 	if(!IsValidEntity(attacker))
 		return Plugin_Continue;
+	float gameTime = GetGameTime(npc.index);
 
 	if(npc.m_flHeadshotCooldown < gameTime)
 	{
@@ -752,25 +753,22 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable3);
 			for(int i; i < sizeof(enemy_2); i++)
 			{
-				if(enemy_2[i])
+				if(IsValidEntity(enemy_2[i]) && IsValidEnemy(npc.index, enemy_2[i]))
 				{
-					float PosEnemy[3];
-					int ememyTarget = enemy_2[i];
-					WorldSpaceCenter(ememyTarget, PosEnemy);
-					if(IsValidEnemy(npc.index, target))
+					//npc.PlayRocketSound();
+					float vecSelf[3];
+					WorldSpaceCenter(npc.index, vecSelf);
+					vecSelf[2] += 80.0;
+					vecSelf[0] += GetRandomFloat(-15.0, 15.0);
+					vecSelf[1] += GetRandomFloat(-15.0, 15.0);
+					float RocketDamage = 200.0;
+					int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+					if(IsValidEntity(RocketGet))
 					{
-						npc.PlayRocketSound();
-						float vecSelf[3];
-						WorldSpaceCenter(npc.index, vecSelf);
-						vecSelf[2] += 80.0;
-						vecSelf[0] += GetRandomFloat(-15.0, 15.0);
-						vecSelf[1] += GetRandomFloat(-15.0, 15.0);
-						float RocketDamage = 200.0;
-						int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
 						DataPack pack;
 						CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
 						pack.WriteCell(EntIndexToEntRef(RocketGet));
-						pack.WriteCell(EntIndexToEntRef(PosEnemy));
+						pack.WriteCell(EntIndexToEntRef(enemy_2[i]));
 					}
 				}
 			}
