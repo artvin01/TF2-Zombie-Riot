@@ -78,12 +78,10 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry03.mp3",
 	"vo/medic_battlecry04.mp3",
 };
-//todo: sounds.
 static const char g_LaserAttackSounds[][] = {
 	"weapons/physcannon/energy_sing_flyby1.wav",
 	"weapons/physcannon/energy_sing_flyby2.wav",
 };
-//todo: sounds.
 static const char g_LaserChargesounds [][] = {
 	"npc/sniper/reload1.wav"
 };
