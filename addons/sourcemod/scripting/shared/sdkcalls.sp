@@ -339,9 +339,6 @@ void UpdateBlockedNavmesh()
 
 stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 {
-#if !defined NOG
-	SpawningBot = true;
-#endif
 	PrintToChatAll("trest");
 	ServerCommand("sv_cheats 1; bot ; sv_cheats 0");
 //	int bot = CreateFakeClient(Name);

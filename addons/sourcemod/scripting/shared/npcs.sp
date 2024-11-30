@@ -300,11 +300,19 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					
 					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);
 					
-					if(!npcstats.m_bStaticNPC && enemy.Is_Static && enemy.Team != TFTeam_Red)
-					{
-						npcstats.m_bStaticNPC = enemy.Is_Static;
+					npcstats.m_bStaticNPC = enemy.Is_Static;
+					if(enemy.Is_Static && enemy.Team != TFTeam_Red)
 						AddNpcToAliveList(entity_Spawner, 1);
+					/*
+					if(!npcstats.m_bStaticNPC)
+					{
+						if(enemy.Is_Static && enemy.Team != TFTeam_Red)
+						{
+							npcstats.m_bStaticNPC = enemy.Is_Static;
+							AddNpcToAliveList(entity_Spawner, 1);
+						}
 					}
+					*/
 					//if its an ally and NOT static, itll teleport to a player!
 					if(enemy.Team == TFTeam_Red && !enemy.Is_Static)
 					{
