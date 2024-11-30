@@ -160,7 +160,7 @@ methodmap VictorianPayback < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 3);
 
 		npc.m_iWearable6 = npc.EquipItem("partyhat", "models/player/items/mvm_loot/heavy/robo_ushanka.mdl");
-		SetVariantString("1.0");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		SetEntityRenderColor(npc.m_iWearable6, 175, 175, 200, 255);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
