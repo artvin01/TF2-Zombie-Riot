@@ -152,26 +152,18 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_OnLunarGraceHitSounds);
 
 	PrecacheSound(BLITZLIGHT_ATTACK, true);
-	
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav", true);
-	
 	PrecacheSound("mvm/mvm_tank_ping.wav", true);
 	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav", true);
-
 	PrecacheSound("misc/halloween/gotohell.wav", true);
-
 	PrecacheSound("vo/medic_sf13_influx_big02.mp3", true);
-	
-
 	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
 	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
 	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
 	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
-
 	PrecacheSound("misc/halloween/spell_mirv_explode_primary.wav", true);
-
 	PrecacheSound("ambient/energy/whiteflash.wav", true);
 }
 
