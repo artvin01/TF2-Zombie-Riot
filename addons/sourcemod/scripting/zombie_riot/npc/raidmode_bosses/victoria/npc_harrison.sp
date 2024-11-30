@@ -627,6 +627,24 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
+	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	float ratio = float(health) / float(maxhealth);
+	if(ratio<0.33 || (float(health)-damage)<(maxhealth*0.3))
+	{
+		if(!npc.m_fbRangedSpecialOn)
+		{
+			I_cant_do_this_all_day[npc.index]=0;
+			f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
+			npc.m_fbRangedSpecialOn = true;
+			FTL[npc.index] += 25.0;
+			RaidModeTime += 25.0;
+			npc.m_flNextRangedAttack += 5.0;
+			npc.PlayAngerReaction();
+		}
+	}
+
 	return Plugin_Changed;
 }
 
@@ -778,33 +796,41 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			}
 			*/
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[MAXENTITIES];
+			int enemy[7];
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 
 			for(int i; i < sizeof(enemy); i++)
 			{
-				if(enemy[i])
+				int number = 1;
+				if(NpcStats_VictorianCallToArms(npc.index))
 				{
-					float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
-					ParticleEffectAt(vecTarget, "water_bulletsplash01", 3.0);
-
-					npc.PlayHomerunSound();
-					float vecSelf[3];
-					WorldSpaceCenter(npc.index, vecSelf);
-					vecSelf[2] += 80.0;
-					vecSelf[0] += GetRandomFloat(-15.0, 15.0);
-					vecSelf[1] += GetRandomFloat(-15.0, 15.0);
-					float RocketDamage = 200.0;
-					int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
-					npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
-					if(IsValidEntity(RocketGet))
+					number = 2;
+				}
+				for(int k; k < sizeof(number); k++)
+				{
+					if(enemy[i])
 					{
-						DataPack pack;
-						CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-						pack.WriteCell(EntIndexToEntRef(RocketGet));
-						pack.WriteCell(EntIndexToEntRef(enemy[i]));
+						float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
+						ParticleEffectAt(vecTarget, "water_bulletsplash01", 3.0);
+
+						npc.PlayHomerunSound();
+						float vecSelf[3];
+						WorldSpaceCenter(npc.index, vecSelf);
+						vecSelf[2] += 80.0;
+						vecSelf[0] += GetRandomFloat(-20.0, 20.0);
+						vecSelf[1] += GetRandomFloat(-20.0, 20.0);
+						float RocketDamage = 200.0;
+						int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+						npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
+						if(IsValidEntity(RocketGet))
+						{
+							DataPack pack;
+							CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+							pack.WriteCell(EntIndexToEntRef(RocketGet));
+							pack.WriteCell(EntIndexToEntRef(enemy[i]));
+						}
+						npc.FaceTowards(vecTarget, 99999.0);
 					}
-					npc.FaceTowards(vecTarget, 99999.0);
 				}
 			}
 			npc.m_flTimeUntillSummonRocket = gameTime + 20.0;
