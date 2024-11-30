@@ -3899,7 +3899,7 @@
 	}
 		"Telekinesis Desc"
 	{
-		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nRapidly fires projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw the zombie."
+		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles, which home in on the target you were aiming at.\nM2: Grab and hold a zombie, rapidly draining your mana.\nPress M2 again to throw the zombie."
 		"chi"	"''一管试验性药剂，可增强服用者的精神力。''\n M1高速发射低射程的攻击。\n[M2]抓住一名敌人，持续消耗大量MP。被抓住的敌人会被眩晕。\n再次M2可将敌人抛出。"
 	}
 	"Telekinesis PaP 1"
@@ -3924,7 +3924,7 @@
 	}
 	"Telekinesis Desc"
 	{
-		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw it."
+		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles, which home in on the target you were aiming at.\nM2: Grab and hold a zombie, rapidly draining your mana.\nM2 again to throw it."
 	}
 	"Telekinesis PaP 1"
 	{
@@ -4005,5 +4005,17 @@
 	"Ancestor Launcher Desc"
 	{
 		"en"	"Attacks deal extra damage and mark the main target.\nHas a chance to explode and stun when hitting marked targets.\nAbility grants sentry buildings and a limited-ammo rocket launcher."
+	}
+	"Wand of Rot Desc"
+	{
+		"en"	"Fires a slow homing projectile with medium damage. \nDeals an adinational hit of damage to enemies under an elemental debuff. \nAbility increases damage, firarate, projectile speed and passive bonus, also fires 2 projectiles.\nDeal Osmosis Damage, see Extra Desc."
+	}
+	"Wand of Rot Desc 2"
+	{
+		"en"	"When triggered: Osmosis elemental debuff gives allies 2 second cooldown reduction on their abilities once each trigger on their active weapon."
+	}
+	"Wand of Decay Desc"
+	{
+		"en"	"Increased damage and fire rate"
 	}
 }

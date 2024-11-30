@@ -8497,6 +8497,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_WasPathingToHere[entity][2] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_ElementalAmplification[entity] = 0.0;
+	
 	f_LudoDebuff[entity] = 0.0;
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
@@ -8559,6 +8560,11 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_CheckIfStuckPlayerDelay[entity] = 0.0;
 	f_QuickReviveHealing[entity] = 0.0;
 #if defined ZR
+	OsmosisElementalEffectEnable(entity, -1.0);
+	for(int i; i < Element_MAX; i++)
+	{
+		f_ArmorCurrosionImmunity[entity][i] = 0.0;
+	}
 	ResetBoundVillageAlly(entity);
 	ResetFreeze(entity);
 #endif

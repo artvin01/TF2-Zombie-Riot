@@ -87,7 +87,7 @@ void Weapon_Logos_ProjectileTouch(int entity, int target)
 		
 		Elemental_AddNecrosisDamage(target, owner, RoundFloat(f_WandDamage[entity]), weapon);
 
-		if(secondary && f_ArmorCurrosionImmunity[target] > GetGameTime())
+		if(secondary && Nymph_AllowBonusDamage(target))
 			StartBleedingTimer(target, owner, f_WandDamage[entity] * 0.15, 4, weapon, DMG_SLASH, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);

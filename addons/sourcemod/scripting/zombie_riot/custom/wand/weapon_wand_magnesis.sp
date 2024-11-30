@@ -121,6 +121,7 @@ public void Magnesis_ResetAll()
 #define SND_NEWTONIAN_M2			")weapons/bumper_car_spawn.wav"
 #define SND_NEWTONIAN_M2_2			")weapons/cow_mangler_explode.wav"
 #define SND_NEWTONIAN_M2_KNOCKBACK	")weapons/bumper_car_hit_ball.wav"
+#define SND_MAGNESIS_HOMING_BEGIN	")weapons/man_melter_fire_crit.wav"
 
 #define PARTICLE_MAGNESIS_M1     			"raygun_projectile_blue"
 #define PARTICLE_MAGNESIS_M1_FINALPAP		"raygun_projectile_blue_crit"
@@ -146,6 +147,7 @@ void Magnesis_Precache()
 	PrecacheSound(SND_MAGNESIS_GRAB_LOOP);
 	PrecacheSound(SND_MAGNESIS_THROW);
 	PrecacheSound(SND_MAGNESIS_DROP);
+	PrecacheSound(SND_MAGNESIS_HOMING_BEGIN);
 	PrecacheSound(SND_NEWTONIAN_M1);
 	PrecacheSound(SND_NEWTONIAN_M1_COLLIDE);
 	PrecacheSound(SND_NEWTONIAN_M2);
@@ -1115,9 +1117,50 @@ void Utility_FireProjectile(int client, int weapon, int tier, bool isNewtonian)
 	{
 		Magnesis_ProjectileIsNewtonian[projectile] = isNewtonian;
 		Magnesis_ProjectileTier[projectile] = tier;
+
+		if (!isNewtonian)
+		{
+			Handle swingTrace;
+			float vecSwingForward[3];
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+						
+			int target = TR_GetEntityIndex(swingTrace);	
+			delete swingTrace;
+
+			if(IsValidEnemy(client, target))
+			{
+				DataPack pack = new DataPack();
+				CreateDataTimer(0.133, Magnesis_DelayHoming, pack, TIMER_FLAG_NO_MAPCHANGE);
+				pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
+				pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
+			}
+		}
 	}
 
 	Magnesis_Tier[client] = tier;
+}
+
+public Action Magnesis_DelayHoming(Handle timely, DataPack pack)
+{
+	ResetPack(pack);
+	int projectile = EntRefToEntIndex(ReadPackCell(pack));
+	int target = EntRefToEntIndex(ReadPackCell(pack));
+	if (!IsValidEntity(projectile) || !IsValidEntity(target))
+		return Plugin_Continue;
+
+	if(Can_I_See_Enemy_Only(target, projectile)) //Insta home!
+	{
+		HomingProjectile_TurnToTarget(target, projectile);
+	}
+
+	DataPack pack2;
+	CreateDataTimer(0.1, PerfectHomingShot, pack2, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	pack2.WriteCell(EntIndexToEntRef(projectile)); //projectile
+	pack2.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
+
+	EmitSoundToAll(SND_MAGNESIS_HOMING_BEGIN, projectile, _, _, _, 0.5, GetRandomInt(60, 80));
+
+	return Plugin_Continue;
 }
 
 void Utility_NotEnoughMana(int client, int cost)
