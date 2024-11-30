@@ -128,14 +128,17 @@ static int TriggerDamage(int entity, int type)
 bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 {
 	float gameTime = GetGameTime();
-	/*
-	if(f_ArmorCurrosionImmunity[entity] > gameTime)
+	
+	// An elemental effect is in cooldown
+	for(int i; i < Element_MAX; i++)
 	{
-		// An elemental effect is in cooldown
-		Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %ds>", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity] - gameTime));
-		return true;
+		if(LastElement[entity] == i && f_ArmorCurrosionImmunity[entity][i] > GetGameTime())
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %ds>", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity][i] - gameTime));
+			return true;
+		}
 	}
-	*/
+	
 
 	// Don't display anything after 5 seconds of nothing
 	if((LastTime[entity] + 5.0) < gameTime && GetTeam(entity) != TFTeam_Red)
