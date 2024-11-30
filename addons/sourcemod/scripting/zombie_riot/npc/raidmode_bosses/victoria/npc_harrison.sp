@@ -806,7 +806,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 				{
 					number = 2;
 				}
-				for(int k; k < sizeof(number); k++)
+				for(int k; k < number; k++)
 				{
 					if(enemy[i])
 					{
@@ -818,7 +818,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 						vecSelf[2] += 80.0;
 						vecSelf[0] += GetRandomFloat(-20.0, 20.0);
 						vecSelf[1] += GetRandomFloat(-20.0, 20.0);
-						float RocketDamage = 200.0;
+						float RocketDamage = 350.0;
 						int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
 						npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
 						if(IsValidEntity(RocketGet))
