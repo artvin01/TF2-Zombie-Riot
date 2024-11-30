@@ -289,6 +289,7 @@ methodmap Harrison < CClotBody
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
 		npc.m_flNextRangedAttack = GetGameTime() + 30.0;
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
+		npc.m_flTimeUntillSummonRocket = GetGameTime() + 10.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_fbRangedSpecialOn = false;
 		Zero(b_said_player_weaponline);
@@ -346,7 +347,7 @@ methodmap Harrison < CClotBody
 			RaidModeScaling *= 0.65;
 		}
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_Harrison.mp3");
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
 		music.Time = 128;
 		music.Volume = 2.0;
 		music.Custom = true;
@@ -746,12 +747,9 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			npc.m_flTimeUntillSummonRocket = gameTime + 1.0;
 		}
 		*/
-		npc.m_flTimeUntillSummonRocket = gameTime + 1.5;
 		
 		if(npc.m_flTimeUntillSummonRocket < gameTime)
 		{
-			npc.m_flTimeUntillSummonRocket = 0.0;
-
 			/*
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy_2[MAXENTITIES];
@@ -779,14 +777,15 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 				}
 			}
 			*/
+			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy[MAXENTITIES];
-			GetHighDefTargets(npc.index, enemy, sizeof(enemy));
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 
 			for(int i; i < sizeof(enemy); i++)
 			{
 				if(enemy[i])
 				{
-					WorldSpaceCenter(enemy[i], vecTarget);
+					float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
 					ParticleEffectAt(vecTarget, "water_bulletsplash01", 3.0);
 
 					npc.PlayHomerunSound();
@@ -808,6 +807,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 					npc.FaceTowards(vecTarget, 99999.0);
 				}
 			}
+			npc.m_flTimeUntillSummonRocket = gameTime + 20.0;
 		}
 		npc.m_flNextRangedSpecialAttackHappens = gameTime + 15.0;
 		return 1;
