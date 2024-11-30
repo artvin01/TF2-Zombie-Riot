@@ -247,7 +247,7 @@ static void ClotDeath(int entity)
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	int team = GetTeam(npc.index);
 
-	int health = ReturnEntityMaxHealth(npc.index) / 7.5;
+	int health = RoundToCeil(ReturnEntityMaxHealth(npc.index) / 7.5);
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
