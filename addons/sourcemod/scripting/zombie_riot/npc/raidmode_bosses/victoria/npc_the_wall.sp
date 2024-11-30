@@ -706,7 +706,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 3.4;
-				Delay_Attribute[npc.index] = gameTime + 0.5;
+				Delay_Attribute[npc.index] = gameTime + 1.0;
 				I_cant_do_this_all_day[npc.index] = 1;
 			}
 			case 1:
@@ -818,9 +818,9 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("layer_taunt_bare_knuckle_beatdown_outro");
 						npc.m_flAttackHappens = 0.0;
-						npc.SetCycle(0.1);
+						npc.SetCycle(0.01);
 						npc.SetPlaybackRate(1.0);
-						npc.m_flDoingAnimation = gameTime + 0.5;
+						npc.m_flDoingAnimation = gameTime + 1.0;
 						npc.m_iChanged_WalkCycle = 0;
 						
 						float flPos[3];
