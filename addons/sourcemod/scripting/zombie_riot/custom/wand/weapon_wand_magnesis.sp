@@ -1130,7 +1130,7 @@ void Utility_FireProjectile(int client, int weapon, int tier, bool isNewtonian)
 			if(IsValidEnemy(client, target))
 			{
 				DataPack pack = new DataPack();
-				CreateDataTimer(0.33, Magnesis_DelayHoming, pack, TIMER_FLAG_NO_MAPCHANGE);
+				CreateDataTimer(0.133, Magnesis_DelayHoming, pack, TIMER_FLAG_NO_MAPCHANGE);
 				pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
 				pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
 			}
