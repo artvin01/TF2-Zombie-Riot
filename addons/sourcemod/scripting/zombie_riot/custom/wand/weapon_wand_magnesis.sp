@@ -1115,6 +1115,29 @@ void Utility_FireProjectile(int client, int weapon, int tier, bool isNewtonian)
 	{
 		Magnesis_ProjectileIsNewtonian[projectile] = isNewtonian;
 		Magnesis_ProjectileTier[projectile] = tier;
+
+		if (!isNewtonian)
+		{
+			Handle swingTrace;
+			float vecSwingForward[3];
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+						
+			int target = TR_GetEntityIndex(swingTrace);	
+			delete swingTrace;
+
+			if(IsValidEnemy(client, target))
+			{
+				if(Can_I_See_Enemy_Only(target, projectile)) //Insta home!
+				{
+					HomingProjectile_TurnToTarget(target, projectile);
+				}
+
+				DataPack pack;
+				CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+				pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
+				pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
+			}
+		}
 	}
 
 	Magnesis_Tier[client] = tier;
