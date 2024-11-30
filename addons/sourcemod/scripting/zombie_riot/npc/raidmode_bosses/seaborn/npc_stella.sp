@@ -12,18 +12,28 @@ Very slightly reduces range of normal attack, its turn speed. its "Alpha" (brigh
 Very slightly reduces the turn speed of Nightmare cannon, and its radius. its "Alpha" (brightness) is lowered to show its weakened state.
 
 NC Core:
-Make it so, Stella can shoot her NC into karlas and he reflects it.
-
+Make it so, Stella can shoot her NC into karlas and he reflects it. (Done)
 
 Give stella a cool phase 2 animation, use crystals? in a spining circle that shoot lasers in all the cardinal directions. (Phase 2)
 
-
-For the NC relfection logic:
+For the NC relfection logic: (Done)
 First, is karlas in line of sight of stella?
 no?: abort.
 yes:
 Keep on checking which of the 2 npc's can see more targets from their positions, if karlas can see more, move NC onto karlas and have him reflect it, if stella can see more, buisness as usual
 
+If Karlas is close to stella, and there are multiple people near stella, Karlas allows stella to "retreat" teleport like Twirl. (?)
+
+Lunar Flare:
+Stella goes into an animation
+(What if she also went into the sky? like silvester)
+Seconds later a circle appears infront of stella.
+Within this circle death happens (projectile like effects?)
+This circle then starts to move towards a random target. that stella can see, while active stella always looks at this circle.
+All thats left is the sounds / effects where the circle is.
+
+BIG ISSUE: for some god knows why reason, stella's NC cannot turn, on the update frame it *attempts* to turn, but then it rubber bands back to the same direction it was facing.
+I am at a loss as to WHY THE FUCK its doing that???????????????????????
 
 
 
@@ -34,24 +44,23 @@ Reduces the proj speed of the slicers by 5%
 Reduces the firerate speed of the slicers by 5%
 
 
-While cannon is being shot at him, his move speed is reduced by 90% and his turn speed is reduced by 50%. in addition uses the same targeting logic stella will have.
+While cannon is being shot at him, his move speed is reduced by 90% and his turn speed is reduced by 50%. in addition uses the same targeting logic stella will have. (Done)
 
-Look into replacing his Lance with the model version.
+Look into replacing his Lance with the model version. (Done)
 
-If Karlas is close to stella, and there are multiple people near stella, Karlas allows stella to "retreat" teleport like Twirl.
-
-When Stella dies, Karlas gains his current blades. abit modified tho. mainly visual / trace (Phase 3)
+When Stella dies, Karlas gains his current blades. abit modified tho. mainly visual / trace (A few tweaks needed)
 
 Barrage: Karlas fires off 3 or less, depending on how many people there are within his line of sight forwards, slicers.
-Fires several of them, cannot move, gets resistances during it.
+Fires several of them, cannot move, gets resistances during it. (Done)
 
 
 
 Misc:
 Karlas Final Touches: 
 Adjust visuals on blades.
-Sounds for the barrage.
-Give him actual wings.
+Sounds for the barrage. (Done)
+Give him actual wings. (Done!)
+A passive sound for when the blades are spining around him?
 
 
 
@@ -119,19 +128,16 @@ static const char g_LaserChargesounds [][] = {
 static int i_particle_effects[MAXENTITIES][3];
 static int i_wingslot[MAXENTITIES];
 
-
 #define STELLA_TE_DURATION 0.07
 
 static char gExplosive1;
-
 static int i_ally_index[MAXENTITIES];
 static bool b_InKame[MAXENTITIES];
 static bool b_tripple_raid[MAXENTITIES];
 
-//todo: for release reduce back to 15.0
-#define STELLA_NC_DURATION 30.0	//15.0
-#define STELLA_NC_TURNRATE 250.0
-#define STELLA_NC_TURNRATE_ANGER 300.0
+#define STELLA_NC_DURATION 23.0
+#define STELLA_NC_TURNRATE 250.0	//max turnrate.
+#define STELLA_NC_TURNRATE_ANGER 330.0
 #define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/donner_schwert_5.mp3"
 
 bool b_donner_said_win_line;
@@ -142,6 +148,8 @@ static int i_current_wave[MAXENTITIES];
 
 static const char NameColour[] = "{aqua}";
 static const char TextColour[] = "{snow}";
+
+static char gGlow1;	//blue
 
 void Stella_OnMapStart_NPC()
 {
@@ -164,6 +172,8 @@ void Stella_OnMapStart_NPC()
 static void ClotPrecache()
 {
 	Zero(fl_nightmare_cannon_core_sound_timer);
+
+	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -271,6 +281,16 @@ methodmap Stella < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flLunar_Grace_CD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property float m_flLunar_Grace_Duration
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	property float m_flNCspecialTargetTimer
 	{
@@ -472,6 +492,22 @@ methodmap Stella < CClotBody
 			}
 		}
 	}
+	public void SetCrestState(bool activate)
+	{
+		if(IsValidEntity(this.m_iWearable8))
+			RemoveEntity(this.m_iWearable8);
+		else if(!activate)
+			return;
+		//deactivate the crest
+		if(!activate)
+		{
+			return;
+		}
+
+		this.m_iWearable8 = this.EquipItem("head", RUINA_CUSTOM_MODELS_4);
+		SetVariantInt(RUINA_STELLA_CREST);
+		AcceptEntityInput(this.m_iWearable8, "SetBodyGroup");
+	}
 	public void Spawn_Karlas()
 	{
 		if(!IsValidEntity(this.index))
@@ -570,7 +606,7 @@ methodmap Stella < CClotBody
 			return;
 		}
 
-		this.Set_Particle("raygun_projectile_red_crit", "effect_hand_r");	//temp, get the other one from fish
+		this.Set_Particle("raygun_projectile_red_crit", "effect_hand_r");	//temp,
 
 		this.m_iWearable9 = this.EquipItem("head", RUINA_CUSTOM_MODELS_4);
 		SetVariantInt(RUINA_STELLA_CREST_CHARGING);
@@ -592,7 +628,13 @@ methodmap Stella < CClotBody
 			case 0: this.m_iParticles1 = particle;
 			case 1: this.m_iParticles2 = particle;
 			case 2: this.m_iParticles3 = particle;
-			default: CPrintToChatAll("INVALID PARTICLE INDEX FOR STELLA: %i", index);
+			default: 
+			{
+				//failsafe.
+				CPrintToChatAll("INVALID PARTICLE INDEX FOR STELLA: %i", index);
+				if(IsValidEntity(index))
+					RemoveEntity(index);
+			}
 		}
 		
 	}
@@ -771,12 +813,14 @@ methodmap Stella < CClotBody
 		npc.StartPathing();
 		float GameTime = GetGameTime(npc.index);
 				
-		npc.m_flNC_Recharge = GameTime + 10.0;
+		npc.m_flNC_Recharge = GameTime + GetRandomFloat(10.0, 30.0);
 		npc.m_iNC_Dialogue = 0;
 		npc.m_bMovingTowardsKarlas = false;
 		npc.m_flNCspecialTargetTimer = 0.0;
 		npc.m_flNC_Grace = 0.0;
 		npc.m_bInKame = false;
+
+		npc.m_flLunar_Grace_CD = GetGameTime() + GetRandomFloat(45.0, 75.0);
 
 		npc.m_flNextRangedAttack = GetGameTime() + 1.0;
 		npc.m_flNorm_Attack_In = 0.0;
@@ -784,10 +828,7 @@ methodmap Stella < CClotBody
 		if(!b_test_mode[npc.index])
 			EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
-		if(wave <=45)
-			CPrintToChatAll("{aqua}Stella{snow}: We have arrived to render judgement");
-		else
-			CPrintToChatAll("{aqua}Stella{snow}: This ends now!");
+		Stella_Lines(npc, "Aya?");
 
 		npc.Anger = false;
 		
@@ -939,7 +980,7 @@ static void Internal_ClotThink(int iNPC)
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
 
-	if(npc.m_flGetClosestTargetTime < GameTime)
+	if(npc.m_flGetClosestTargetTime < GameTime && npc.m_flLunar_Grace_Duration < GameTime)
 	{
 		if(npc.m_bInKame)
 		{
@@ -952,13 +993,17 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		}
 	}
-
+	int wave = i_current_wave[npc.index];
 	if(npc.m_bInKame)
 	{
 		Handle_NC_TurnSpeed(npc);
 		npc.m_flSpeed = 0.0;
 		//CPrintToChatAll("return 2");
 		return;
+	}
+	else if(npc.m_flLunar_Grace_Duration > GameTime)
+	{
+		Lunar_Body_Pitch(npc);
 	}
 		
 
@@ -969,18 +1014,17 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 
+	if(wave > 30)	//beyond wave 30.
+		if(Lunar_Grace(npc))
+			return;
+
 	int PrimaryThreatIndex = npc.m_iTarget;
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
-
-	int wave = i_current_wave[npc.index];
 	
 	npc.AdjustWalkCycle();
-
-
 	npc.StartPathing();
 	npc.m_bPathing = true;
-
 	npc.PlayIdleAlertSound();
 		
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -993,11 +1037,8 @@ static void Internal_ClotThink(int iNPC)
 	}
 	
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-	
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-
-	Stella_Nightmare_Logic(npc, PrimaryThreatIndex, vecTarget);
 
 	Body_Pitch(npc, VecSelfNpc, vecTarget);
 
@@ -1025,6 +1066,204 @@ static void Internal_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed = fl_npc_basespeed;
 	}
+
+	if(Stella_Nightmare_Logic(npc, PrimaryThreatIndex, vecTarget))
+		return;
+}
+enum struct Lunar_Grace_Data
+{
+	float Throttle;
+	float Loc[3];
+	bool AnimSet;
+}
+static float fl_lunar_radius = 150.0;
+static Lunar_Grace_Data struct_Lunar_Grace_Data[MAXENTITIES];
+static void Lunar_Body_Pitch(Stella npc)
+{
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float vecTarget[3]; vecTarget = struct_Lunar_Grace_Data[npc.index].Loc;
+	Body_Pitch(npc, VecSelfNpc, vecTarget);
+}
+static bool Lunar_Grace(Stella npc)
+{
+	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_flLunar_Grace_CD > GameTime)
+		return false;
+	
+	npc.m_iTarget = -1;
+	float Duration = 12.5;
+
+	npc.SetCrestState(false);
+	npc.Set_Crest_Charging_Phase(false);
+
+	npc.m_bAllowBackWalking = true;
+
+	npc.m_flLunar_Grace_CD = GameTime + (npc.Anger ? 45.0 : 75.0) + Duration;
+
+	npc.m_flDoingAnimation = GameTime + Duration + 0.5;
+
+	npc.m_flLunar_Grace_Duration = GameTime + Duration;
+	
+	SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
+
+	SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
+	SDKHook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
+
+	npc.AddActivityViaSequence("secondrate_sorcery_medic");
+	npc.SetPlaybackRate(1.0);	
+	npc.SetCycle(0.0);
+
+	//66.6 is ideal 
+	//154
+	//0.432 cycle
+
+	npc.m_bisWalking = false;
+
+	npc.m_flSpeed = 0.0;
+
+	float Windup = 1.0;
+
+	struct_Lunar_Grace_Data[npc.index].Throttle = GameTime + Windup;
+	struct_Lunar_Grace_Data[npc.index].AnimSet = false;
+
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float Angles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+	//we don't actually want pitch cause it might screw up some stuff.
+	Laser.DoForwardTrace_Custom(Angles, VecSelfNpc, 200.0);
+	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Laser.End_Point);
+	struct_Lunar_Grace_Data[npc.index].Loc = Laser.End_Point;
+	int color[4]; Ruina_Color(color);
+	TE_SetupBeamRingPoint(Laser.End_Point, fl_lunar_radius*2.0, fl_lunar_radius*2.0 + 0.5, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Windup, 15.0, 0.1, color, 1, 0);
+	TE_SendToAll();
+
+	return true;
+	
+}
+static Action Lunar_Grace_Tick(int iNPC)
+{
+	Stella npc = view_as<Stella>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_flLunar_Grace_Duration < GameTime)
+	{
+		npc.m_flSpeed = fl_npc_basespeed;
+		npc.m_bisWalking = true;
+
+		npc.SetCrestState(true);
+
+		npc.m_bAllowBackWalking = false;
+
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
+		return Plugin_Stop;
+	}
+
+	bool Update = false;
+	if(struct_Lunar_Grace_Data[npc.index].Throttle < GameTime)
+	{
+		if(!struct_Lunar_Grace_Data[npc.index].AnimSet)
+		{
+			struct_Lunar_Grace_Data[npc.index].AnimSet = true;
+			npc.SetCycle(0.432);
+			npc.SetPlaybackRate(0.0);
+		}
+		
+		struct_Lunar_Grace_Data[npc.index].Throttle = GameTime + 0.1;
+		Update = true;
+	}
+
+	int color[4]; Ruina_Color(color);
+
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+
+	TE_SetupBeamRingPoint(struct_Lunar_Grace_Data[npc.index].Loc, fl_lunar_radius*2.0, fl_lunar_radius*2.0+0.5, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, STELLA_TE_DURATION, 7.0, 0.1, color, 1, 0);
+	TE_SendToAll();
+
+	float flPos[3];
+	npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
+	float Angles_special[3];
+	MakeVectorFromPoints(VecSelfNpc, struct_Lunar_Grace_Data[npc.index].Loc, Angles_special);
+	GetVectorAngles(Angles_special, Angles_special);
+	float Dist = GetVectorDistance(struct_Lunar_Grace_Data[npc.index].Loc, VecSelfNpc) - fl_lunar_radius;
+	float BeamEndLoc[3];
+	Get_Fake_Forward_Vec(Dist, Angles_special, BeamEndLoc, VecSelfNpc);
+	BeamEndLoc[2]-=2.5;
+	//PrintCenterTextAll("vec : %.1f %.1f %.1f", BeamEndLoc[0], BeamEndLoc[1], BeamEndLoc[2]);
+	TE_SetupBeamPoints(flPos, BeamEndLoc, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 0, STELLA_TE_DURATION, 10.0, 10.0, 0, 5.0, color, 3);
+	TE_SendToAll();
+
+	npc.GetAttachment("effect_hand_l", flPos, NULL_VECTOR);
+	flPos[2]+=4.0;
+	TE_SetupGlowSprite(flPos, gGlow1, STELLA_TE_DURATION, 0.65, 255);
+	TE_SendToAll();
+
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+		//the one who is getting targeted will see the ring a bit differently.
+		TE_SetupBeamRingPoint(struct_Lunar_Grace_Data[npc.index].Loc, fl_lunar_radius*2.0, fl_lunar_radius*2.0 + 0.5, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, STELLA_TE_DURATION, 6.0, 0.1, {255,255,255,255}, 1, 0);
+		TE_SendToClient(npc.m_iTarget);
+	}
+	
+
+	if(!Update)
+		return Plugin_Continue;
+
+	if(npc.m_flGetClosestTargetTime < GameTime)
+	{
+		npc.m_flGetClosestTargetTime = GameTime + 1.0;
+		//Ignore buildings, detect camo, override the area, must be able to see the target.
+		npc.m_iTarget = GetClosestTarget(npc.index, true, _, true, _,_,struct_Lunar_Grace_Data[npc.index].Loc, true);
+	}
+	int Target = npc.m_iTarget;
+
+	if(!IsValidEnemy(npc.index, Target))
+	{
+		npc.m_flGetClosestTargetTime = 0.0;
+		return Plugin_Continue;
+	}
+
+	float vecTarget[3]; WorldSpaceCenter(Target, vecTarget);
+
+	npc.FaceTowards(struct_Lunar_Grace_Data[npc.index].Loc, 500.0);
+
+	float flDistanceToTarget = GetVectorDistance(vecTarget, struct_Lunar_Grace_Data[npc.index].Loc, true);
+	
+	float Speed = 12.0;
+	float Speed_Radius = 62500.0;
+	if(flDistanceToTarget > Speed_Radius)	//if beyond 250 HU's FROM THE RING to the player, start increasing speed bit by bit
+		Speed *= 1.0 + (flDistanceToTarget-Speed_Radius)/Speed_Radius;
+	float Velocity[3]; Velocity[0] = Speed;
+
+	float Ang[3];
+	MakeVectorFromPoints(struct_Lunar_Grace_Data[npc.index].Loc, vecTarget, Ang);
+	GetVectorAngles(Ang, Ang);
+	Offset_Vector(Velocity, Ang, struct_Lunar_Grace_Data[npc.index].Loc);
+
+	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, struct_Lunar_Grace_Data[npc.index].Loc);
+
+	Explode_Logic_Custom(Modify_Damage(-1, 20.0), npc.index, npc.index, -1, struct_Lunar_Grace_Data[npc.index].Loc, fl_lunar_radius , _ , _ , true, _, _, 10.0);
+
+	return Plugin_Continue;
+}
+static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
+{
+	float tmp[3];
+	float actualBeamOffset[3];
+
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	Result_Vec[0] += actualBeamOffset[0];
+	Result_Vec[1] += actualBeamOffset[1];
+	Result_Vec[2] += actualBeamOffset[2];
 }
 static void Body_Pitch(Stella npc, float VecSelfNpc[3], float vecTarget[3])
 {
@@ -1088,10 +1327,18 @@ static bool b_MoveTowardsKarlas(Stella npc)
 	if(!IsValidAlly(npc.index, npc.Ally))
 		return false;
 
-	int Near_Stella = Nearby_Players(npc, 9999.0);
+	//if its less then wave 30, no reflect.
+	if(i_current_wave[npc.index] < 30)
+		return false;
 
-	Stella npc2 = view_as<Stella>(npc.Ally);
-	int Near_Karlas = Nearby_Players(npc2, 9999.0);
+	int Near_Stella = Nearby_Players(npc, 99999.0);
+
+	Karlas npc2 = view_as<Karlas>(npc.Ally);
+	Stella npc3 = view_as<Stella>(npc.Ally);
+
+	float Karlas_Wanna_Loc[3];
+	CanIseeNCEndLoc(npc2,Karlas_Wanna_Loc);
+	int Near_Karlas = Nearby_Players(npc3, 99999.0, Karlas_Wanna_Loc);
 
 	//stella has no targets in sight.
 	if(Near_Stella <= 0)
@@ -1165,50 +1412,20 @@ static void Handle_NC_TurnSpeed(Stella npc)
 	if(NpcStats_IsEnemySilenced(npc.index))
 		Turn_Speed *=0.95;
 
-	npc.FaceTowards(vecTarget, Turn_Speed);
-
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	if(!Check_Line_Of_Sight_Vector(VecSelfNpc, vecTarget, npc.index))
+		return;
+	
+	npc.FaceTowards(vecTarget, Turn_Speed);
 	Body_Pitch(npc, VecSelfNpc, vecTarget);
 }
-
-public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
-{
-	/*if(RaidModeTime < GetGameTime())
-	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		b_donner_said_win_line = true;
-		if(donner_alive)
-		{
-			char name_color[] = "aqua";
-			char text_color[] = "snow";
-
-			char text_lines[255];
-			int ally = EntRefToEntIndex(i_ally_index);
-			if(IsValidEntity(ally))	//if karlas is alive
-			{
-				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You think thats how you fight us two?", name_color, text_color);
-			}
-			else
-			{
-				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh my, how annoying this has become...", name_color, text_color);
-			}
-			CPrintToChatAll(text_lines);
-		}
-		else
-		{
-			CPrintToChatAll("{crimson}Karlas{snow}: Ayaya?");
-		}
-		
-	}*/
-}
-
 static int i_targets_inrange;
 
-static int Nearby_Players(Stella npc, float Radius)
+static int Nearby_Players(Stella npc, float Radius, float VecSelfNpc[3] = {0.0,0.0,0.0})
 {
 	i_targets_inrange = 0;
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	if(VecSelfNpc[2]==0.0)
+		WorldSpaceCenter(npc.index, VecSelfNpc);
 	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
 	return i_targets_inrange;
 }
@@ -1247,22 +1464,22 @@ static bool b_Valid_NC_Initialistaion(Stella npc, int type = 0)
 		return false;
 	
 }
-static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vecTarget[3])
+static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vecTarget[3])
 {
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNC_Recharge > GameTime)
-		return;
+		return false;
 
 	if(npc.m_bInKame)
 	{
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
-		return;
+		return false;
 	}
 
 	if(!b_Valid_NC_Initialistaion(npc) && npc.m_iNC_Dialogue != 0)
-		return;
+		return false;
 
 	if(npc.m_iNC_Dialogue == 0)
 	{
@@ -1298,19 +1515,20 @@ static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		npc.m_flDoingAnimation = GameTime + STELLA_NC_DURATION + 1.5;
 			
 		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-		//Target close enough to hit
 		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 		{
 			npc.FaceTowards(vecTarget, 200000.0);
 			npc.FaceTowards(vecTarget, 200000.0);
 		}
-
+		npc.SetCrestState(false);
 		npc.m_flRangedArmor = 0.3;
 		npc.m_flMeleeArmor = 0.3;
 
 		npc.Set_Particle("utaunt_portalswirl_purple_parent", "", 1);
 		npc.Set_Particle("utaunt_runeprison_yellow_parent", "", 2);
 
+		SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
+		SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
 		CreateTimer(0.75, Donner_Nightmare_Offset, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 
 		switch(npc.m_iNC_Dialogue)
@@ -1330,15 +1548,15 @@ static void Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		}
 
 		npc.AddActivityViaSequence("taunt_mourning_mercs_medic");
-
 		npc.SetPlaybackRate(2.0);	
 		npc.SetCycle(0.0);
-
 		npc.m_bisWalking = false;
 		npc.m_flSpeed = 0.0;
-
 		npc.NC_StartupSound();
+
+		return true;
 	}
+	return false;
 }
 static float fl_initial_windup[MAXENTITIES];
 static float fl_spinning_angle[MAXENTITIES];
@@ -1373,6 +1591,8 @@ static void Main_Nightmare_Cannon(Stella npc)
 	fl_spinning_angle[npc.index]=0.0;
 	SDKUnhook(npc.index, SDKHook_Think, Stella_Nightmare_Tick);
 	SDKHook(npc.index, SDKHook_Think, Stella_Nightmare_Tick);
+
+	npc.m_iKarlasNCState = 0;
 }
 public Action Stella_Nightmare_Tick(int iNPC)
 {
@@ -1387,6 +1607,8 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		npc.m_bKarlasRetreat = false;
 
 		npc.m_iKarlasNCState = 0;
+
+		npc.SetCrestState(true);
 
 		if(IsValidEntity(npc.m_iParticles2))	
 			RemoveEntity(npc.m_iParticles2);
@@ -1404,11 +1626,11 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		npc.m_iChanged_WalkCycle = 1;
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
+		npc.m_iKarlasNCState = 0;
+
 		SDKUnhook(npc.index, SDKHook_Think, Stella_Nightmare_Tick);
 		return Plugin_Stop;
 	}
-
-	int wave = i_current_wave[npc.index];
 	bool update = false;
 
 	if(fl_NC_thorttle[npc.index]<GameTime)
@@ -1439,13 +1661,9 @@ public Action Stella_Nightmare_Tick(int iNPC)
 
 	float Dist = GetVectorDistance(Start_Loc, endPoint);
 
-	//if we can't see nearby players, don't bother rendering these effects!
-	if(Nearby_Players(npc, 9999.0)>0)
-	{
-		Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 5, Dist, false, radius, 1.0);			//5
-		Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, 2.0);		//15
-		Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, -2.0);		//18
-	}
+	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 5, Dist, false, radius, 1.0);			//5
+	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, 2.0);		//15
+	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, -2.0);		//18
 	
 
 	if(fl_initial_windup[npc.index] > GameTime)
@@ -1462,8 +1680,9 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		npc.m_iKarlasNCState = 2;
 		Laser.Any_entities = true;	//ANY valid entity found is added to the trace.
 		Laser.Detect_Entities(FindKarlas);	
-
-		if(npc.m_iKarlasNCState == 1)
+		
+		Stella npc2 = view_as<Stella>(npc.Ally);
+		if(npc.m_iKarlasNCState == 1 && Nearby_Players(npc2, 99999.0)>0)
 		{
 			block_main_explosion = true;
 			WorldSpaceCenter(npc.Ally, endPoint);
@@ -1625,462 +1844,6 @@ static void Stella_Create_Spinning_Beams(Stella npc, float Origin[3], float Angl
 	}
 	
 }
-#define DONNERKRIEG_HEAVENS_FALL_MAX_DIST 500.0
-
-#define DONNERKRIEG_HEAVENS_FALL_MAX_AMT 1	//this should always be the highest value of the 3 ones bellow
-
-#define DONNERKRIEG_HEAVENS_FALL_AMT_1 1	//ratios
-#define DONNERKRIEG_HEAVENS_FALL_AMT_2 1
-#define DONNERKRIEG_HEAVENS_FALL_AMT_3 1
-
-#define DONNERKRIEG_HEAVENS_FALL_MAX_STAGE 5.0	//same thing for this
-
-#define DONNERKRIEG_HEAVENS_STAGE_1 5.0	//ratios
-#define DONNERKRIEG_HEAVENS_STAGE_2 1.0
-#define DONNERKRIEG_HEAVENS_STAGE_3 5.0
-
-
-static float DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[2] = {2.5, 5.0};	//Minimum, Maximum Time
-
-static int TE_used;
-
-static void Heavens_Fall(Stella npc, float GameTime, int Infection=0 , bool creep=false)
-{
-
-	float Base_Dist=0.0;
-	float Distance_Ratios = DONNERKRIEG_HEAVENS_FALL_MAX_DIST/DONNERKRIEG_HEAVENS_FALL_MAX_STAGE;
-	if(!Heavens_Fall_Clearance_Check(npc, Base_Dist, DONNERKRIEG_HEAVENS_FALL_MAX_DIST))
-	{
-		return;
-	}
-
-	float Timer = 80.0 *(Base_Dist/DONNERKRIEG_HEAVENS_FALL_MAX_DIST);	//the timer is dynamic to the "power" of this attack, the power is determined by the avalable avg distance which is gotten by clearance check
-
-	/*
-	if(!npc.Anger)
-		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer;
-	else
-		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer*0.5;
-
-	if(b_tripple_raid[npc.index])
-		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer*1.5;
-	*/
-
-	int Base_Amt = RoundToFloor((Base_Dist/Distance_Ratios)/DONNERKRIEG_HEAVENS_FALL_MAX_AMT);
-
-	Base_Dist /= DONNERKRIEG_HEAVENS_FALL_MAX_STAGE;	//a lot of ratio stuff, this here makes it actually all dynamic, if you wish to modify it, go to the place where these are defined
-
-	
-	int color[4];
-	color[3] = 175;
-
-	switch(Infection)
-	{
-		case 0:
-		{
-			if(creep)
-			{
-				color[0] = 54;
-				color[1] = 169;
-				color[2] = 186;
-			}	
-			else
-			{
-				color[0] = 240;
-				color[1] = 240;
-				color[2] = 240;
-			}
-		}
-		case 1:
-		{
-			if(creep)
-			{
-				color[0] = 54;
-				color[1] = 85;
-				color[2] = 186;
-			}
-			else
-			{
-				color[0] = 147;
-				color[1] = 199;
-				color[2] = 199;
-			}
-		}
-		case 2:
-		{
-			if(creep)
-			{
-				color[0] = 39;
-				color[1] = 15;
-				color[2] = 148;
-			}
-			else
-			{
-				color[0] = 147;
-				color[1] = 156;
-				color[2] = 199;
-			}
-		}
-		case 3:
-		{
-			if(creep)
-			{
-				color[0] = 0;
-				color[1] = 0;
-				color[2] = 255;
-			}
-			else
-			{
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 255;
-			}
-		}
-	}
-	
-	
-
-	int Amt1, Amt2, Amt3;
-	float Dist1, Dist2, Dist3;
-
-	Dist1 = Base_Dist*DONNERKRIEG_HEAVENS_STAGE_1;
-	Dist2 = Base_Dist*DONNERKRIEG_HEAVENS_STAGE_2;
-	Dist3 = Base_Dist*DONNERKRIEG_HEAVENS_STAGE_3;
-
-	Amt1= Base_Amt*DONNERKRIEG_HEAVENS_FALL_AMT_1;
-	Amt2= Base_Amt*DONNERKRIEG_HEAVENS_FALL_AMT_2;
-	Amt3= Base_Amt*DONNERKRIEG_HEAVENS_FALL_AMT_3;
-
-	TE_used=0;	//set the TE used amt to 0 when we start heavens fall!
-
-
-
-	float Loc[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
-
-	EmitSoundToAll("misc/halloween/gotohell.wav");	//GO TO HELL, AND TELL THE DEVIL, IM COMIN FOR HIM NEXT
-	EmitSoundToAll("misc/halloween/gotohell.wav");	//GO TO HELL, AND TELL THE DEVIL, IM COMIN FOR HIM NEXT
-
-
-	int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
-
-	float Range = 150.0;
-
-	float UserLoc[3];
-	GetAbsOrigin(npc.index, UserLoc);
-	UserLoc[2]+=75.0;
-
-	for(int Ion=0 ; Ion < Amt1 ; Ion++)
-	{
-
-		float tempAngles[3], EndLoc[3];
-		tempAngles[0] = 0.0;
-		tempAngles[1] = (360.0/Amt1)*Ion;
-		tempAngles[2] = 0.0;
-
-		Do_Trace_Heavens_Fall(Loc, tempAngles, EndLoc, Dist1);
-
-		float dist_check1 = GetVectorDistance(Loc, EndLoc);
-
-		if(dist_check1<Dist1*0.75)	//if the distance is less than we expect or want, abort, same for all the other stages!
-			continue;
-
-		for(int Ion2=0 ; Ion2 < Amt2 ; Ion2++)
-		{
-			float tempAngles2[3], EndLoc2[3];
-			tempAngles2[0] = 0.0;
-			tempAngles2[1] = (360.0/Amt2)*Ion2;
-			tempAngles2[2] = 0.0;
-
-			Do_Trace_Heavens_Fall(EndLoc, tempAngles2, EndLoc2, Dist2);
-
-			float dist_check2 = GetVectorDistance(EndLoc, EndLoc2);
-
-			if(dist_check2<Dist2*0.75)
-				continue;
-			
-			for(int Ion3=0 ; Ion3 < Amt3 ; Ion3++)
-			{
-				float tempAngles3[3], EndLoc3[3];
-				tempAngles3[0] = 0.0;
-				tempAngles3[1] = (360.0/Amt3)*Ion3;
-				tempAngles3[2] = 0.0;
-
-				Do_Trace_Heavens_Fall(EndLoc2, tempAngles3, EndLoc3, Dist3);
-
-				float dist_check3 = GetVectorDistance(EndLoc2, EndLoc3);
-
-				if(dist_check3<Dist3*0.75)
-					continue;
-
-				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);	//Make it so the ions appear properly on the ground so its nice
-
-				float Time = GetRandomFloat(DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[0], DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[1]);	//make it a bit random so it doesn't all explode at the same time
-
-				
-				TE_used += 1;
-				if(TE_used > 31)
-				{
-					int DelayFrames = (TE_used / 32);
-					DelayFrames *= 2;
-					DataPack pack_TE = new DataPack();
-					pack_TE.WriteCell(EndLoc3[0]);
-					pack_TE.WriteCell(EndLoc3[1]);
-					pack_TE.WriteCell(EndLoc3[2]);
-					pack_TE.WriteCell(UserLoc[0]);
-					pack_TE.WriteCell(UserLoc[1]);
-					pack_TE.WriteCell(UserLoc[2]);
-					pack_TE.WriteCell(color[0]);
-					pack_TE.WriteCell(color[1]);
-					pack_TE.WriteCell(color[2]);
-					pack_TE.WriteCell(color[3]);
-					pack_TE.WriteCell(SPRITE_INT_2);
-
-					RequestFrames(Doonerkrieg_Delay_TE_Beam2, DelayFrames, pack_TE);
-					//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
-				}
-				else
-				{	
-					TE_SetupBeamPoints(UserLoc, EndLoc3, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
-					TE_SendToAll();
-				}
-				
-				Handle data;
-				CreateDataTimer(Time, Smite_Timer_Donner, data, TIMER_FLAG_NO_MAPCHANGE);	//a basic ion timer
-				WritePackFloat(data, EndLoc3[0]);
-				WritePackFloat(data, EndLoc3[1]);
-				WritePackFloat(data, EndLoc3[2]);
-				WritePackCell(data, Range); // Range
-				WritePackCell(data, EntIndexToEntRef(npc.index));
-				WritePackCell(data, color[0]);
-				WritePackCell(data, color[1]);
-				WritePackCell(data, color[2]);
-				WritePackCell(data, color[3]);
-				
-
-				TE_used += 1;
-				if(TE_used > 31)
-				{
-					int DelayFrames = (TE_used / 32);
-					DelayFrames *= 2;
-					DataPack pack_TE = new DataPack();
-					pack_TE.WriteCell(EndLoc3[0]);
-					pack_TE.WriteCell(EndLoc3[1]);
-					pack_TE.WriteCell(EndLoc3[2]);
-					pack_TE.WriteCell(color[0]);
-					pack_TE.WriteCell(color[1]);
-					pack_TE.WriteCell(color[2]);
-					pack_TE.WriteCell(color[3]);
-					pack_TE.WriteCell(Range);
-					pack_TE.WriteCell(Time);
-					RequestFrames(Doonerkrieg_Delay_TE_Ring, DelayFrames, pack_TE);
-					//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
-				}
-				else
-				{
-					spawnRing_Vectors(EndLoc3, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, Time, 6.0, 0.1, 1, 1.0);
-				}
-			}
-		}
-	}
-	TE_used=0;	//now that the initial heavens fall has been completed, reset this to 0 for the ions TE.
-}
-
-static bool Heavens_Fall_Clearance_Check(Stella npc, float &Return_Dist, float Max_Distance)
-{
-	float UserLoc[3], Angles[3];
-	GetAbsOrigin(npc.index, UserLoc);
-	Max_Distance+=Max_Distance*0.1;
-	float distance = Max_Distance;
-	float Distances[361];
-	
-	int Total_Hit = 0;
-
-	float FIXME;
-	
-	for(int alpha = 1 ; alpha<=360 ; alpha++)	//check in a 360 degree angle around the npc, heavy on preformance, but its a raid so I guess its fine..?
-	{
-		float tempAngles[3], endLoc[3], Direction[3];
-		tempAngles[0] = 0.0;
-		tempAngles[1] = float(alpha);
-		tempAngles[2] = 0.0;
-					
-		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(Direction, distance);
-		AddVectors(UserLoc, Direction, endLoc);
-		
-		MakeVectorFromPoints(UserLoc, endLoc, Angles);
-		GetVectorAngles(Angles, Angles);
-		
-		float endPoint[3];
-	
-		//Handle trace = TR_TraceRayFilterEx(UserLoc, Angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
-		//if(TR_DidHit(trace))
-		{
-			//TR_GetEndPosition(endPoint, trace);
-			
-			float flDistanceToTarget = GetVectorDistance(endPoint, UserLoc);
-
-			Distances[alpha] = flDistanceToTarget;
-			
-			if(flDistanceToTarget>250.0)	//minimum distance we wish to check, if the traces end is beyond, we count this angle as a valid area.
-			{
-				Total_Hit++;
-				if(flDistanceToTarget>=Max_Distance)
-					Distances[alpha]=Max_Distance;
-			}
-			/*else
-			{
-				int colour[4];
-				colour[0]=150;
-				colour[1]=0;
-				colour[2]=255;
-				colour[3]=125;
-				TE_SetupBeamPoints(endPoint, UserLoc, gLaser1, 0, 0, 0, 0.1, 15.0, 15.0, 0, 0.1, colour, 1);
-				TE_SendToAll();
-			}*/
-		}
-		//delete trace;
-	}
-	float Avg=0.0;
-	for(int alpha = 1 ; alpha<=360 ; alpha++)
-	{
-		Avg+=Distances[alpha];
-	}
-	Avg /=360.0;
-	Return_Dist = Avg;
-	if(Total_Hit/360>=0.5)	//has to hit atleast 50% before actually proceeding and saying that we have enough clearance
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-static void Do_Trace_Heavens_Fall(float startPoint[3], float Angles[3], float Loc[3], float Dist)
-{
-
-	float FIXME;
-	//Handle trace = TR_TraceRayFilterEx(startPoint, Angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
-	//if (TR_DidHit(trace))
-	{
-		//TR_GetEndPosition(Loc, trace);
-		//delete trace;
-
-		float distance = GetVectorDistance(startPoint, Loc);
-
-		if(distance>Dist)
-		{
-			Get_Fake_Forward_Vec(Dist, Angles, Loc, startPoint);
-		}
-		
-	}
-	//else
-	{
-		//delete trace;
-	}
-}
-
-public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
-{
-	ResetPack(data);
-		
-	float startPosition[3];
-	float position[3];
-	startPosition[0] = ReadPackFloat(data);
-	startPosition[1] = ReadPackFloat(data);
-	startPosition[2] = ReadPackFloat(data);
-	float Ionrange = ReadPackCell(data);
-	int client = EntRefToEntIndex(ReadPackCell(data));
-	int Color[4];
-	Color[0] = ReadPackCell(data);
-	Color[1] = ReadPackCell(data);
-	Color[2] = ReadPackCell(data);
-	Color[3] = ReadPackCell(data);
-
-	EmitSoundToAll(g_heavens_fall_strike_sound[GetRandomInt(0, sizeof(g_heavens_fall_strike_sound) - 1)], 0, _, _, _, _, _, -1, startPosition);
-	//EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
-	
-	
-	if (!IsValidEntity(client))
-	{
-		return Plugin_Stop;
-	}
-				
-	Stella npc = view_as<Stella>(client);
-
-	Doonerkrieg_Do_AOE_Damage(npc, startPosition, 100.0, Ionrange);
-
-	/*TE_used += 1;
-	if(TE_used > 31)
-	{
-		int DelayFrames = (TE_used / 32);
-		DelayFrames *= 2;
-		DataPack pack_TE = new DataPack();
-		pack_TE.WriteCell(startPosition[0]);
-		pack_TE.WriteCell(startPosition[1]);
-		pack_TE.WriteCell(startPosition[2]);
-		RequestFrames(Doonerkrieg_Delay_TE_Explosion, DelayFrames, pack_TE);
-		//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
-	}
-	else
-	{
-		TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
-		TE_SendToAll();
-	}*/
-
-	
-			
-	position[0] = startPosition[0];
-	position[1] = startPosition[1];
-	position[2] += startPosition[2] + 999.0;
-	startPosition[2] += -200;
-
-	float time[4], start[4], end[4];
-	time[0]=2.2; start[0] = 30.0; end[0] = 30.0;
-	time[1]=2.1; start[1] = 50.0; end[1] = 50.0;
-	time[2]=2.0; start[2] = 70.0; end[2] = 70.0;
-	time[3]=1.9; start[3] = 90.0; end[3] = 90.0;
-
-
-	for(int i=0 ; i < 4 ; i ++)
-	{
-		TE_used += 1;
-		if(TE_used > 31)
-		{
-			int DelayFrames = (TE_used / 32);
-			DelayFrames *= 2;
-			DataPack pack_TE = new DataPack();
-			pack_TE.WriteCell(startPosition[0]);
-			pack_TE.WriteCell(startPosition[1]);
-			pack_TE.WriteCell(startPosition[2]);
-			pack_TE.WriteCell(position[0]);
-			pack_TE.WriteCell(position[1]);
-			pack_TE.WriteCell(position[2]);
-			pack_TE.WriteCell(Color[0]);
-			pack_TE.WriteCell(Color[1]);
-			pack_TE.WriteCell(Color[2]);
-			pack_TE.WriteCell(Color[3]);
-			pack_TE.WriteCell(time[i]);
-			pack_TE.WriteCell(start[i]);
-			pack_TE.WriteCell(end[i]);
-			RequestFrames(Doonerkrieg_Delay_TE_Beam, DelayFrames, pack_TE);
-			//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
-		}
-		else
-		{
-			TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Laser, 0, 0, 0, time[i], start[i], end[i], 0, 1.0, Color, 3);
-			TE_SendToAll();
-		}
-	}
-	
-	return Plugin_Continue;
-}
-
-
-
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Stella npc = view_as<Stella>(victim);
@@ -2113,6 +1876,9 @@ static void Internal_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 
+	SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, Stella_Nightmare_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
 
 	int wave = i_current_wave[npc.index];
 
@@ -2125,7 +1891,7 @@ static void Internal_NPCDeath(int entity)
 		{
 			if(IsValidEntity(ally) && npc.Ally)
 			{
-				switch(GetRandomInt(1,2))	//warp
+				switch(GetRandomInt(1,2))
 				{
 					case 1:
 					{
@@ -2154,7 +1920,7 @@ static void Internal_NPCDeath(int entity)
 		}
 		else
 		{
-			switch(GetRandomInt(1,3))	//warp
+			switch(GetRandomInt(1,3))
 			{
 				case 1:
 				{
@@ -2371,8 +2137,6 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage();
 
-	int wave = i_current_wave[npc.index];
-
 	float startPoint[3], endPoint[3];
 	float flPos[3], flAng[3];
 	npc.GetAttachment("effect_hand_r", flPos, flAng);
@@ -2416,99 +2180,6 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
 }
-static float ion_damage[MAXENTITIES];
-static void Doonerkrieg_Do_AOE_Damage(Stella npc, float loc[3], float damage, float Range, bool shake=true)
-{
-	ion_damage[npc.index] = 1.0;
-	int infection = 0;	//temp
-	float FIXME;
-	switch(infection)
-	{
-		case 0:
-		{
-			if(shake)
-				Explode_Logic_Custom(damage, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 2.5, Donner_Normal_Tweak);
-			else
-				Explode_Logic_Custom(damage, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 2.5);
-		}
-		case 1:
-		{
-			
-			int neural_damage = RoundToFloor(damage*0.1);
-			if(neural_damage < 4)
-				neural_damage = 4;
-
-			ion_damage[npc.index] = float(neural_damage);
-
-			if(shake)
-				Explode_Logic_Custom(damage*0.5, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 2.5, Donner_Neural_Tweak_shake);
-			else
-				Explode_Logic_Custom(damage*0.5, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 2.5, Donner_Neural_Tweak);
-		}
-		case 2:
-		{
-			int neural_damage = RoundToFloor(damage*0.1);
-			if(neural_damage < 8)
-				neural_damage = 8;
-
-			ion_damage[npc.index] = float(neural_damage);
-
-			if(shake)
-				Explode_Logic_Custom(5.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
-			else
-				Explode_Logic_Custom(5.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
-		}
-		case 3:
-		{
-
-			if(shake)
-				Explode_Logic_Custom(damage * 0.5, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, ManaSicknessTweak_Shake);
-			else
-				Explode_Logic_Custom(damage * 0.5, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, ManaSicknessTweak);
-		}
-	}
-}
-static void ManaSicknessTweak(int entity, int victim, float damage, int weapon)
-{
-	if(IsValidClient(victim))
-	Ruina_Add_Mana_Sickness(entity, victim, 0.0, RoundToCeil(damage*0.05), true);
-}
-static void ManaSicknessTweak_Shake(int entity, int victim, float damage, int weapon)
-{
-	if(IsValidClient(victim))
-	{
-		Client_Shake(victim);
-		Ruina_Add_Mana_Sickness(entity, victim, 0.0, RoundToCeil(damage*0.05), true);
-	}	
-	
-}
-public void Donner_Normal_Tweak(int entity, int victim, float damage, int weapon)
-{	
-	if(IsValidClient(victim))
-	{
-		Client_Shake(victim);
-	}
-}
-public void Donner_Neural_Tweak(int entity, int victim, float damage, int weapon)
-{
-	if(IsValidEntity(victim))
-	{
-		int neural_damage = RoundToFloor(ion_damage[entity]);
-		Elemental_AddNervousDamage(victim, entity, neural_damage, false, true);
-	}
-}
-public void Donner_Neural_Tweak_shake(int entity, int victim, float damage, int weapon)
-{
-	if(IsValidEntity(victim))
-	{
-		int neural_damage = RoundToFloor(ion_damage[entity]);
-		Elemental_AddNervousDamage(victim, entity, neural_damage, false, true);
-		if(IsValidClient(victim))
-			Client_Shake(victim);
-	}
-}
-
-
 static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 {
 	Ruina_Laser_Logic Laser;
@@ -2533,6 +2204,30 @@ static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 		return enemy;
 	else
 		return -1;
+
+}
+static bool Check_Line_Of_Sight_Vector(float pos_npc[3], float Enemy_Loc[3], int attacker)
+{
+	Ruina_Laser_Logic Laser;
+	Laser.client = attacker;
+	Laser.Start_Point = pos_npc;
+
+	float vecAngles[3];
+	//get the enemy gamer's location.
+	//get the angles from the current location of the crystal to the enemy gamer
+	MakeVectorFromPoints(pos_npc, Enemy_Loc, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+	//get the estimated distance to the enemy gamer,
+	float Dist = GetVectorDistance(Enemy_Loc, pos_npc);
+	//do a trace from the current location of the crystal to the enemy gamer.
+	Laser.DoForwardTrace_Custom(vecAngles, pos_npc, Dist);	//alongside that, use the estimated distance so that our end location from the trace is where the player is.
+
+	float Trace_Loc[3];
+	Trace_Loc = Laser.End_Point;	//get the end location of the trace.
+	//see if the vectors match up, if they do we can safely say the target is in line of sight of the origin npc/loc
+
+	return Similar_Vec(Trace_Loc, Enemy_Loc);
+
 }
 
 

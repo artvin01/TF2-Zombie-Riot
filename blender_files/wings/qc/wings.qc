@@ -33,6 +33,11 @@ $bodygroup "stella_wings"			//32
 	blank
 	studio "stella_wings.smd"
 }
+$bodygroup "wings_karlas"			//64
+{
+	blank
+	studio "wings_karlas.smd"
+}
 
 
 

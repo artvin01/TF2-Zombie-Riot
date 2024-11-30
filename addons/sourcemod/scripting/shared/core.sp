@@ -995,7 +995,8 @@ enum
 	WINGS_RULIANA	= 4,
 	WINGS_TWIRL		= 8,
 	WINGS_HELIA		= 16,
-	WINGS_STELLA	= 32
+	WINGS_STELLA	= 32,
+	WINGS_KARLAS	= 64
 }
 
 #define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_1.mdl"

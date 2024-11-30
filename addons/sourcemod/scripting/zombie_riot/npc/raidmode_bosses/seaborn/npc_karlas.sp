@@ -103,6 +103,7 @@ static float fl_karlas_sword_battery[MAXENTITIES];
 
 #define KARLAS_SWORDS_AMT 7	
 #define KARLAS_SLICER_HIT	"npc/scanner/scanner_electric1.wav"
+#define KARLAS_SLICER_FIRE "ambient/rottenburg/portcullis_down.wav"
 
 static int i_dance_of_light_sword_id[MAXENTITIES][KARLAS_SWORDS_AMT];
 static float fl_dance_of_light_sword_throttle[MAXENTITIES][KARLAS_SWORDS_AMT];
@@ -159,6 +160,7 @@ static void ClotPrecache()
 	PrecacheSound(TELEPORT_STRIKE_MISS, true);
 
 	PrecacheSound(KARLAS_SLICER_HIT, true);
+	PrecacheSound(KARLAS_SLICER_FIRE, true);
 
 	
 	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
@@ -505,6 +507,10 @@ methodmap Karlas < CClotBody
 		AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");	
+
+		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1);
+		SetVariantInt(WINGS_KARLAS);
+		AcceptEntityInput(npc.m_iWingSlot, "SetBodyGroup");
 		
 		npc.StartPathing();
 
@@ -525,7 +531,6 @@ methodmap Karlas < CClotBody
 		npc.m_iSlicersFired = 0;
 		npc.Anger = false;
 
-		Karlas_Create_Wings(npc);
 		Delete_Swords(npc.index);
 
 		func_NPCFuncWin[npc.index] = Win_Line;
@@ -556,10 +561,6 @@ void Set_Karlas_Ally(int karlas, int stella, int wave = -2)
 static void Internal_ClotThink(int iNPC)
 {
 	Karlas npc = view_as<Karlas>(iNPC);
-	
-	//if(!b_raidboss_donnerkrieg_alive)	//While This I do need
-	//	Raid_Donnerkrieg_Karlas_Raidmode_Logic(false);	//donner first, karlas second
-
 
 	float GameTime = GetGameTime(npc.index);
 
@@ -571,12 +572,9 @@ static void Internal_ClotThink(int iNPC)
 	}*/
 
 	if(npc.m_flNextDelayTime > GameTime)
-	{
 		return;
-	}
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-	
 	npc.Update();
 			
 	if(npc.m_blPlayHurtAnimation)
@@ -612,7 +610,7 @@ static void Internal_ClotThink(int iNPC)
 	if(npc.m_flNC_LockedOn > GameTime)
 		abort_teleport = true;
 	//slicer is about to be ready, don't teleport.
-	if(npc.m_flSlicerBarrageCD < GameTime + 2.0)
+	if(npc.m_flSlicerBarrageCD < GameTime + 2.0 && i_current_wave[npc.index] >=30)
 		abort_teleport = true;
 	
 	if(abort_teleport && Karlas_Status(npc, GameTime)==1 && b_teleport_strike_active[npc.index])
@@ -629,15 +627,12 @@ static void Internal_ClotThink(int iNPC)
 		b_teleport_strike_active[npc.index]=false;
 		fl_teleport_strike_recharge[npc.index]=GameTime+5.0; 
 	}
-
 	GetTarget(npc);	
-	
-	Fire_Wave_Barrage(npc);
+	if(i_current_wave[npc.index] >= 30)
+		Fire_Wave_Barrage(npc);
 
 	if(npc.m_flNC_LockedOn > GameTime)
 		return;
-
-	
 
 	if(!IsValidEntity(RaidBossActive))
 	{
@@ -684,10 +679,7 @@ static void Internal_ClotThink(int iNPC)
 		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
 		
 	}
-		
-	
 	int PrimaryThreatIndex = npc.m_iTarget;
-
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		if(npc.m_flNextMeleeAttack < GameTime)
@@ -704,16 +696,12 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	
-	int wave = i_current_wave[npc.index];
-	
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 	float npc_Vec[3]; WorldSpaceCenter(npc.index, npc_Vec);
-
 	float flDistanceToTarget = GetVectorDistance(vecTarget, npc_Vec, true);
 	npc.AdjustWalkCycle();
 
 	Body_Pitch(npc, npc_Vec, vecTarget);
-
 	Healing_Logic(npc, PrimaryThreatIndex, flDistanceToTarget);
 
 	if(npc.m_bRetreat)
@@ -969,8 +957,6 @@ static void Blade_Logic(Karlas npc)
 {
 	int Blade_Behavior = -1;
 
-	int wave = i_current_wave[npc.index];
-
 	float GameTime = GetGameTime(npc.index);
 
 	if(b_swords_created[npc.index])
@@ -1023,9 +1009,13 @@ static KarlasProj struct_Projectile[MAXENTITIES];
 //warp
 static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
 {
+	int pitch = GetRandomInt(90,110);
+	EmitSoundToAll(KARLAS_SLICER_FIRE, npc.index, _, 120,_,_,pitch);
+
 	float SelfVec[3];
 	Ruina_Projectiles Projectile;
 	npc.GetAttachment("effect_hand_r", SelfVec, NULL_VECTOR);
+	TE_Particle("spell_batball_impact_red", SelfVec, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	Projectile.iNPC = npc.index;
 	Projectile.Start_Loc = SelfVec;
 	float Ang[3];
@@ -1383,13 +1373,14 @@ static void Fire_Wave_Barrage(Karlas npc)
 		if(b_NpcIsInvulnerable[npc.index])
 			return;
 
-		if(npc.m_iNClockonState == 2 || npc.m_flNC_LockedOn > GameTime)
+		if(npc.m_iNClockonState != 0 || npc.m_flNC_LockedOn > GameTime)
 			return;
+			
 		
 		if(Nearby_Players(npc, 9999.0) <=0)
 			return;
 	}
-	if(npc.m_flSlicerBarrageActive > GameTime && (npc.m_iNClockonState == 2 || npc.m_flNC_LockedOn > GameTime))
+	if(npc.m_flSlicerBarrageActive > GameTime && (npc.m_iNClockonState != 2 || npc.m_flNC_LockedOn > GameTime))
 	{
 		npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
 		npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
@@ -1461,12 +1452,17 @@ static void Fire_Wave_Barrage(Karlas npc)
 	npc.m_flSlicerBarrageNextWave = GameTime + Fire_Rate;
 	npc.m_flDoingAnimation = GameTime + Fire_Rate+0.5;
 	npc.m_flSlicerBarrageActive = GameTime + Fire_Rate+0.5;
-
 	npc.SetCycle(0.05);
 	//offset the firing of the barrage so it matches up nicely with the animation!
 	CreateTimer(0.1, TimerFireSlicers, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 
 	npc.m_iSlicersFired++;
+
+	if(!IsValidEnemy(npc.index, npc.m_iTarget))
+		return;
+
+	float TargetVec[3]; WorldSpaceCenter(npc.m_iTarget, TargetVec);
+	npc.FaceTowards(TargetVec, 5000.0);
 }
 #define KARLAS_MAX_BARRAGE 3
 static int i_targets[KARLAS_MAX_BARRAGE];
@@ -1747,15 +1743,11 @@ static void Karlas_Teleport_Boom(Karlas npc, float Location[3])
 	float radius = KARLAS_TELEPORT_STRIKE_RADIUS;
 	if(npc.Anger)
 		radius *= 1.25;	
-
-	int wave = i_current_wave[npc.index];
 	int color[4];
 	Ruina_Color(color);
 	color[3] = 175;
 
 	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Boom_Time, 15.0, 1.0, color, 1, 0);
-
-	
 
 	Handle pack;
 	CreateDataTimer(Boom_Time, Karlas_Boom, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -1801,8 +1793,6 @@ static Action Karlas_Ring_Loops(Handle Loop, DataPack pack)
 	float radius = KARLAS_TELEPORT_STRIKE_RADIUS;
 	if(npc.Anger)
 		radius *= 1.25;	
-
-	int wave = i_current_wave[npc.index];
 	int color[4];
 	Ruina_Color(color);
 	color[3] = 175;
@@ -1840,7 +1830,6 @@ static Action Karlas_Boom(Handle Smite_Logic, DataPack pack)
 	
 	float damage = 200.0*RaidModeScaling;	//very deadly!
 	float radius = KARLAS_TELEPORT_STRIKE_RADIUS;
-	int wave = i_current_wave[npc.index];
 	int color[4];
 	Ruina_Color(color);
 	color[3] = 175;
@@ -1976,7 +1965,7 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 	
 	float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex_Karlas, WorldSpaceVec2);
 	
-	if(flDistanceToTarget_Karlas < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25 && npc.m_iNClockonState != 2)
+	if(flDistanceToTarget_Karlas < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25 && npc.m_flNC_LockedOn < GameTime)
 	{
 		Karlas_Movement(npc, flDistanceToTarget_Karlas, PrimaryThreatIndex_Karlas);
 		Karlas_Aggresive_Behavior(npc, PrimaryThreatIndex_Karlas, GameTime, flDistanceToTarget_Karlas, WorldSpaceVec2);
@@ -1993,7 +1982,43 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 			npc.m_flSpeed =  fl_npc_basespeed*2.0;
 		return;
 	}	
-	if(flDistanceToAlly < (1500.0*1500.0) && (npc.m_iNClockonState!=2 || Can_I_See_Enemy_Only(npc.index, npc.Ally)))	//stay within a 1500 radius of donner, and preferably within line of sight
+	float Return_Loc[3];
+	bool Can_I_SeeNC = CanIseeNCEndLoc(npc, Return_Loc);
+	//stella wants to reflect
+	//we can see the end vec of NC
+	if(npc.m_iNClockonState == 2 && (Can_I_SeeNC || Can_I_See_Enemy_Only(npc.index, npc.Ally)) && donner.m_bInKame)
+	{
+		int target_new = GetClosestTarget(donner.index);
+		if(!IsValidEnemy(npc.index, target_new))
+			target_new = PrimaryThreatIndex_Karlas;
+
+		int see_target = Can_I_See_Enemy(npc.index, target_new);
+
+		if(IsValidEnemy(npc.index, see_target))
+		{
+			WorldSpaceCenter(see_target, WorldSpaceVec2);
+			npc.m_bAllowBackWalking = true;
+			npc.FaceTowards(WorldSpaceVec2, RUINA_FACETOWARDS_BASE_TURNSPEED*1.5);
+
+			if(npc.m_flNC_LockedOn < GameTime)
+			{
+				npc.m_flSpeed = fl_npc_basespeed;
+				NPC_SetGoalVector(npc.index, Return_Loc, true);
+			}
+		}
+		else
+		{
+			Karlas_Movement(npc, flDistanceToTarget_Karlas, PrimaryThreatIndex_Karlas);
+			Karlas_Aggresive_Behavior(npc, PrimaryThreatIndex_Karlas, GameTime, flDistanceToTarget_Karlas, WorldSpaceVec2);
+			if(Karlas_Status(npc, GameTime)!=1)
+				npc.m_flSpeed =  fl_npc_basespeed;
+		}
+
+		return;
+	}
+
+	float Distance_To_Ally_Keep = (1500.0*1500.0);
+	if(flDistanceToAlly < Distance_To_Ally_Keep)	//stay within a 1500 radius of stella
 	{
 		int target_new = GetClosestTarget(donner.index);
 		if(IsValidEnemy(npc.index, target_new))
@@ -2029,25 +2054,61 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 	else 
 	{
 		NPC_SetGoalEntity(npc.index, donner.index);
-		if(Karlas_Status(npc, GameTime)!=1 && (npc.m_iNClockonState !=2 || !Can_I_See_Enemy_Only(npc.index, npc.Ally)))
+		if(Karlas_Status(npc, GameTime)!=1)
 			npc.m_flSpeed =  fl_npc_basespeed*2.0;
-
+			
 		npc.m_flGetClosestTargetTime = 0.0;
 	}
-	if(npc.m_iNClockonState == 2)
-	{
-		int enemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex_Karlas);
-
-		if(IsValidEnemy(npc.index, enemy))
-		{
-			WorldSpaceCenter(enemy, WorldSpaceVec2);
-			npc.m_bAllowBackWalking = true;
-			npc.FaceTowards(WorldSpaceVec2, RUINA_FACETOWARDS_BASE_TURNSPEED*1.5);
-		}
-		
-	}
-		
 }
+bool CanIseeNCEndLoc(Karlas npc, float Return_Loc[3])
+{
+	if(!IsValidAlly(npc.index, npc.Ally))
+		return false;
+
+	if(npc.m_flNC_LockedOn > GetGameTime(npc.index))
+		return true;
+	
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.Ally;
+	Laser.DoForwardTrace_Basic(-1.0);
+
+	int canIsee = Check_Line_Of_Sight(Laser.End_Point, npc.Ally, npc.index);
+
+	Return_Loc = Laser.End_Point;
+
+	if(canIsee == npc.index)
+		return true;
+
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
+		canIsee = Check_Line_Of_Sight(Laser.End_Point, npc.Ally, npc.m_iTarget);
+	return (canIsee == npc.m_iTarget);
+}
+static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
+{
+	Ruina_Laser_Logic Laser;
+	Laser.client = attacker;
+	Laser.Start_Point = pos_npc;
+
+	float Enemy_Loc[3], vecAngles[3];
+	//get the enemy gamer's location.
+	GetAbsOrigin(enemy, Enemy_Loc);
+	//get the angles from the current location of the crystal to the enemy gamer
+	MakeVectorFromPoints(pos_npc, Enemy_Loc, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+	//get the estimated distance to the enemy gamer,
+	float Dist = GetVectorDistance(Enemy_Loc, pos_npc);
+	//do a trace from the current location of the crystal to the enemy gamer.
+	Laser.DoForwardTrace_Custom(vecAngles, pos_npc, Dist);	//alongside that, use the estimated distance so that our end location from the trace is where the player is.
+
+	float Trace_Loc[3];
+	Trace_Loc = Laser.End_Point;	//get the end location of the trace.
+	//see if the vectors match up, if they do we can safely say the target is in line of sight of the origin npc/loc
+	if(Similar_Vec(Trace_Loc, Enemy_Loc))
+		return enemy;
+	else
+		return -1;
+}
+
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -2480,8 +2541,6 @@ static void Internal_NPCDeath(int entity)
 			
 	npc.m_bThisNpcIsABoss = false;
 	b_thisNpcIsARaid[npc.index] = false;
-
-	Karlas_Delete_Wings(npc);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -2547,175 +2606,6 @@ static void Karlas_Teleport_Effect(char type[255], float duration = 0.0, float s
 		pack.WriteCell(duration);
 	}
 }
-#define KARLAS_PARTICLE_EFFECT_AMT 30
-static int i_karlas_particle_index[MAXENTITIES][KARLAS_PARTICLE_EFFECT_AMT];
-
-static void Karlas_Delete_Wings(Karlas npc)
-{
-
-	for(int i=0 ; i < KARLAS_PARTICLE_EFFECT_AMT ; i++)
-	{
-		int particle = EntRefToEntIndex(i_karlas_particle_index[npc.index][i]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		i_karlas_particle_index[npc.index][i]=INVALID_ENT_REFERENCE;
-	}
-}
-//warp
-static void Karlas_Create_Wings(Karlas npc)
-{
-	if(AtEdictLimit(EDICT_RAID))
-		return;
-
-	Karlas_Delete_Wings(npc);
-
-	int red = 185;
-	int green = 205;
-	int blue = 237;
-	float flPos[3];
-	float flAng[3];
-
-
-	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	GetAttachment(npc.index, "back_lower", flPos, flAng);
-	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
-	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
-	SetParent(npc.index, ParticleOffsetMain, "back_lower",_);
-
-
-	//Left
-
-	float core_loc[3] = {0.0, 20.0, -25.0};
-
-	int particle_left_core = InfoTargetParentAt(core_loc, "", 0.0);
-
-
-	/*
-		X = +Left, -Right
-		Y = -Up, +Down
-		Z = +Backwards, -Forward
-	*/
-	int particle_left_wing_1 = InfoTargetParentAt({15.5, 15.0, -15.0}, "", 0.0);	//middle upper
-	int particle_left_wing_2 = InfoTargetParentAt({2.5, 20.0, -15.0}, "", 0.0);		//middle mid
-	int particle_left_wing_6 = InfoTargetParentAt({18.5, 27.5, 5.0}, "", 0.0);		//middle lower
-	
-	int particle_left_wing_3 = InfoTargetParentAt({45.0, 35.0, -7.5}, "", 0.0);	//side upper		//raygun_projectile_blue_crit
-	int particle_left_wing_4 = InfoTargetParentAt({40.0, 45.0, -7.5}, "", 0.0);	//side lower
-
-	int particle_left_wing_5 = InfoTargetParentAt({25.5, 60.0, 15.0}, "", 0.0);	//lower left
-
-	SetParent(particle_left_core, particle_left_wing_1, "",_, true);
-	SetParent(particle_left_core, particle_left_wing_2, "",_, true);
-	SetParent(particle_left_core, particle_left_wing_3, "",_, true);
-	SetParent(particle_left_core, particle_left_wing_4, "",_, true);
-	SetParent(particle_left_core, particle_left_wing_5, "",_, true);
-	SetParent(particle_left_core, particle_left_wing_6, "",_, true);
-	//SetParent(particle_left_core, particle_2_Wingset_1, "",_, true);
-
-
-
-	Custom_SDKCall_SetLocalOrigin(particle_left_core, flPos);
-	SetEntPropVector(particle_left_core, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_left_core, "",_);
-
-	float start_1 = 2.0;
-	float end_1 = 0.5;
-	float amp =0.1;
-
-	int laser_left_wing_1 = ConnectWithBeamClient(particle_left_wing_1, particle_left_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
-
-	int laser_left_wing_2 = ConnectWithBeamClient(particle_left_wing_1, particle_left_wing_3, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_left_wing_3 = ConnectWithBeamClient(particle_left_wing_3, particle_left_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
-
-	int laser_left_wing_4 = ConnectWithBeamClient(particle_left_wing_4, particle_left_wing_5, red, green, blue, end_1, end_1, amp, LASERBEAM);
-	int laser_left_wing_5 = ConnectWithBeamClient(particle_left_wing_5, particle_left_wing_6, red, green, blue, end_1, start_1, amp, LASERBEAM);
-	int laser_left_wing_6 = ConnectWithBeamClient(particle_left_wing_6, particle_left_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
-
-
-	i_karlas_particle_index[npc.index][0] = EntIndexToEntRef(ParticleOffsetMain);
-	i_karlas_particle_index[npc.index][1] = EntIndexToEntRef(particle_left_core);
-	i_karlas_particle_index[npc.index][2] = EntIndexToEntRef(particle_left_wing_1);
-	i_karlas_particle_index[npc.index][3] = EntIndexToEntRef(particle_left_wing_2);
-	i_karlas_particle_index[npc.index][4] = EntIndexToEntRef(particle_left_wing_3);
-	i_karlas_particle_index[npc.index][5] = EntIndexToEntRef(particle_left_wing_4);
-	i_karlas_particle_index[npc.index][6] = EntIndexToEntRef(particle_left_wing_5);
-	i_karlas_particle_index[npc.index][7] = EntIndexToEntRef(particle_left_wing_6);
-
-	i_karlas_particle_index[npc.index][8] = EntIndexToEntRef(laser_left_wing_1);
-	i_karlas_particle_index[npc.index][9] = EntIndexToEntRef(laser_left_wing_2);
-	i_karlas_particle_index[npc.index][10] = EntIndexToEntRef(laser_left_wing_2);
-	i_karlas_particle_index[npc.index][11] = EntIndexToEntRef(laser_left_wing_3);
-	i_karlas_particle_index[npc.index][12] = EntIndexToEntRef(laser_left_wing_4);
-	i_karlas_particle_index[npc.index][13] = EntIndexToEntRef(laser_left_wing_5);
-	i_karlas_particle_index[npc.index][14] = EntIndexToEntRef(laser_left_wing_6);
-
-	//right
-
-	
-	int particle_right_core = InfoTargetParentAt(core_loc, "", 0.0);
-
-
-	/*
-		X = +Left, -Right
-		Y = -Up, +Down
-		Z = +Backwards, -Forward
-	*/
-
-	
-
-	int particle_right_wing_1 = InfoTargetParentAt({-15.5, 15.0, -15.0}, "", 0.0);	//middle upper
-	int particle_right_wing_2 = InfoTargetParentAt({-2.5, 20.0, -15.0}, "", 0.0);		//middle mid
-	int particle_right_wing_6 = InfoTargetParentAt({-18.5, 27.5, 5.0}, "", 0.0);		//middle lower
-	
-	int particle_right_wing_3 = InfoTargetParentAt({-45.0, 35.0, -7.5}, "", 0.0);	//side upper		//raygun_projectile_blue_crit
-	int particle_right_wing_4 = InfoTargetParentAt({-40.0, 45.0, -7.5}, "", 0.0);	//side lower
-
-	int particle_right_wing_5 = InfoTargetParentAt({-25.5, 60.0, 15.0}, "", 0.0);	//lower right
-
-	SetParent(particle_right_core, particle_right_wing_1, "",_, true);
-	SetParent(particle_right_core, particle_right_wing_2, "",_, true);
-	SetParent(particle_right_core, particle_right_wing_3, "",_, true);
-	SetParent(particle_right_core, particle_right_wing_4, "",_, true);
-	SetParent(particle_right_core, particle_right_wing_5, "",_, true);
-	SetParent(particle_right_core, particle_right_wing_6, "",_, true);
-	//SetParent(particle_right_core, particle_2_Wingset_1, "",_, true);
-
-
-
-	Custom_SDKCall_SetLocalOrigin(particle_right_core, flPos);
-	SetEntPropVector(particle_right_core, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_right_core, "",_);
-
-	int laser_right_wing_1 = ConnectWithBeamClient(particle_right_wing_1, particle_right_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
-
-	int laser_right_wing_2 = ConnectWithBeamClient(particle_right_wing_1, particle_right_wing_3, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_right_wing_3 = ConnectWithBeamClient(particle_right_wing_3, particle_right_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
-
-	int laser_right_wing_4 = ConnectWithBeamClient(particle_right_wing_4, particle_right_wing_5, red, green, blue, end_1, end_1, amp, LASERBEAM);
-	int laser_right_wing_5 = ConnectWithBeamClient(particle_right_wing_5, particle_right_wing_6, red, green, blue, end_1, start_1, amp, LASERBEAM);
-	int laser_right_wing_6 = ConnectWithBeamClient(particle_right_wing_6, particle_right_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
-
-
-	i_karlas_particle_index[npc.index][15] = EntIndexToEntRef(particle_right_core);
-	i_karlas_particle_index[npc.index][16] = EntIndexToEntRef(particle_right_wing_1);
-	i_karlas_particle_index[npc.index][17] = EntIndexToEntRef(particle_right_wing_2);
-	i_karlas_particle_index[npc.index][18] = EntIndexToEntRef(particle_right_wing_3);
-	i_karlas_particle_index[npc.index][19] = EntIndexToEntRef(particle_right_wing_4);
-	i_karlas_particle_index[npc.index][20] = EntIndexToEntRef(particle_right_wing_5);
-	i_karlas_particle_index[npc.index][21] = EntIndexToEntRef(particle_right_wing_6);
-
-	i_karlas_particle_index[npc.index][22] = EntIndexToEntRef(laser_right_wing_1);
-	i_karlas_particle_index[npc.index][23] = EntIndexToEntRef(laser_right_wing_2);
-	i_karlas_particle_index[npc.index][24] = EntIndexToEntRef(laser_right_wing_2);
-	i_karlas_particle_index[npc.index][25] = EntIndexToEntRef(laser_right_wing_3);
-	i_karlas_particle_index[npc.index][26] = EntIndexToEntRef(laser_right_wing_4);
-	i_karlas_particle_index[npc.index][27] = EntIndexToEntRef(laser_right_wing_5);
-	i_karlas_particle_index[npc.index][28] = EntIndexToEntRef(laser_right_wing_6);
-
-}
-
 static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
 {
 	int color[4];
