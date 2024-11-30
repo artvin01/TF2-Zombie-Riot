@@ -132,7 +132,7 @@ methodmap KazimierzBeserker < CClotBody
 	
 	public KazimierzBeserker(float vecPos[3], float vecAng[3], int ally)
 	{
-		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", ally,_, true));
+		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "32500", ally,_, true));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
