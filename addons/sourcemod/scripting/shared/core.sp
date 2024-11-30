@@ -62,9 +62,6 @@
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
 
-#if !defined NOG
-bool SpawningBot = false;
-#endif
 
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
@@ -515,6 +512,7 @@ float f_ElementalAmplification[MAXENTITIES];
 float f_WeaponSpecificClassBuff[MAXENTITIES][1];
 bool b_WeaponSpecificClassBuff[MAXENTITIES][3];
 float f_HighTeslarDebuff[MAXENTITIES];
+float f_VoidAfflictionStandOn[MAXENTITIES];
 float f_VoidAfflictionStrength[MAXENTITIES];
 float f_VoidAfflictionStrength2[MAXENTITIES];
 float f_Silenced[MAXENTITIES];

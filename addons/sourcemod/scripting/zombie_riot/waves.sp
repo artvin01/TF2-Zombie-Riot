@@ -1507,6 +1507,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
+			//This ensures no invalid spawn happens.
+			Spawners_Timer();
 			if(CurrentRound != length)
 			{
 				char ExecuteRelayThings[255];
@@ -3173,10 +3175,9 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		ExcuteRelay("zr_wavedone");
 		CurrentRound++;
 		CurrentWave = -1;
-		
-		int TestVal = 0;
-		Spawns_GetNextPos({0.0,0.0,0.0}, {0.0,0.0,0.0}, "",_,TestVal);
 		//This ensures no invalid spawn happens.
+		Spawners_Timer();
+
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))

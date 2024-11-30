@@ -1280,11 +1280,16 @@ public Action WhiteflowerTank_Rocket_Stand(Handle timer, DataPack pack)
 	}
 	bool PlaySound = true;
 	int Owner = GetEntPropEnt(RocketEnt, Prop_Send, "m_hOwnerEntity");
+	int SpecialLogic = 0;
 	if(IsValidEntity(Owner))
 	{
 		if(i_NpcInternalId[Owner] != WhiteflowerID && b_thisNpcIsARaid[Owner])
 		{
 			PlaySound = false;
+		}
+		if(i_NpcInternalId[Owner] == SensalNPCID())
+		{
+			SpecialLogic = 1;
 		}
 	}
 	if(PlaySound)
@@ -1300,6 +1305,12 @@ public Action WhiteflowerTank_Rocket_Stand(Handle timer, DataPack pack)
 	float vecAngles[3];
 	MakeVectorFromPoints(vecSelf, vecEnemy, vecAngles);
 	GetVectorAngles(vecAngles, vecAngles);
+	if(SpecialLogic == 1)
+	{
+		vecAngles[0] += 90.0;
+		vecAngles[1] += 90.0;
+		vecAngles[2] += 180.0;
+	}
 	TeleportEntity(RocketEnt, NULL_VECTOR, vecAngles, {0.0,0.0,0.0});
 	//look at target constantly.
 	DataPack pack2;
@@ -1331,7 +1342,15 @@ public Action WhiteflowerTank_Rocket_Stand_Fire(Handle timer, DataPack pack)
 	WorldSpaceCenter(RocketEnt, vecSelf);
 	float vecEnemy[3];
 	WorldSpaceCenter(EnemyEnt, vecEnemy);
-	
+	int SpecialLogic = 0;
+	int Owner = GetEntPropEnt(RocketEnt, Prop_Send, "m_hOwnerEntity");
+	if(IsValidEntity(Owner))
+	{
+		if(i_NpcInternalId[Owner] == SensalNPCID())
+		{
+			SpecialLogic = 1;
+		}
+	}
 	float VecSpeedToDo[3];
 	float vecAngles[3];
 	MakeVectorFromPoints(vecSelf, vecEnemy, vecAngles);
@@ -1346,7 +1365,6 @@ public Action WhiteflowerTank_Rocket_Stand_Fire(Handle timer, DataPack pack)
 		TE_SendToAll(0.0);
 		
 		bool PlaySound = true;
-		int Owner = GetEntPropEnt(RocketEnt, Prop_Send, "m_hOwnerEntity");
 		if(IsValidEntity(Owner))
 		{
 			if(i_NpcInternalId[Owner] != WhiteflowerID && b_thisNpcIsARaid[Owner])
@@ -1364,6 +1382,12 @@ public Action WhiteflowerTank_Rocket_Stand_Fire(Handle timer, DataPack pack)
 		
 		TE_SetupBeamPoints(vecSelf, vecEnemy, Shared_BEAM_Laser, 0, 0, 0, 0.11, 3.0, 3.0, 0, 0.0, {0,0,255,255}, 3);
 		TE_SendToAll(0.0);
+	}
+	if(SpecialLogic == 1)
+	{
+		vecAngles[0] += 90.0;
+		vecAngles[1] += 90.0;
+		vecAngles[2] += 180.0;
 	}
 	TeleportEntity(RocketEnt, NULL_VECTOR, vecAngles, VecSpeedToDo);
 	if(TimeTillRocketing < GetGameTime())

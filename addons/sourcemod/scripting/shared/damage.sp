@@ -2070,6 +2070,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "v%s", Debuff_Adder_right);
 	}
+	else if (f_VoidAfflictionStandOn[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "⌄%s", Debuff_Adder_left);
+	}
 	if(Increaced_Overall_damage_Low[victim] > GameTime)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "⌃%s", Debuff_Adder_right);
