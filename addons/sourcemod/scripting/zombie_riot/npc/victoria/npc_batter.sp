@@ -136,9 +136,13 @@ methodmap VictoriaBatter < CClotBody
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/dex_glasses_scout.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/riflemans_rallycap/riflemans_rallycap_scout.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/jul13_the_cunningmann/jul13_the_cunningmann.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/scout/fall2013_neo_tokyo_runner/fall2013_neo_tokyo_runner.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/scout/fwk_scout_provision.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/hiphunter_boots/hiphunter_boots_scout.mdl");
+
+
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 100, 255);
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);

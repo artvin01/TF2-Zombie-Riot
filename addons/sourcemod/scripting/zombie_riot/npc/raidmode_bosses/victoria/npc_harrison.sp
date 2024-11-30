@@ -140,7 +140,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(StunballPickupeSound));   i++) { PrecacheSound(StunballPickupeSound[i]);   }
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
 	for (int i = 0; i < (sizeof(g_HomerunfailSounds));   i++) { PrecacheSound(g_HomerunfailSounds[i]);   }
-	PrecacheModel("models/player/scout.mdl");
+	PrecacheModel("models/player/sniper.mdl");
 	PrecacheSoundCustom("#zombiesurvival/victoria/raid_Harrison.mp3");
 }
 
@@ -252,7 +252,7 @@ methodmap Harrison < CClotBody
 	
 	public Harrison(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Harrison npc = view_as<Harrison>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		Harrison npc = view_as<Harrison>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
