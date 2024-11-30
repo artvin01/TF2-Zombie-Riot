@@ -249,6 +249,11 @@ methodmap Harrison < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
+	property float m_flTimeUntillNextSummonRocket
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public Harrison(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -290,6 +295,7 @@ methodmap Harrison < CClotBody
 		npc.m_flNextRangedAttack = GetGameTime() + 30.0;
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
 		npc.m_flTimeUntillSummonRocket = GetGameTime() + 10.0;
+		npc.m_flTimeUntillNextSummonRocket = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_fbRangedSpecialOn = false;
 		Zero(b_said_player_weaponline);
@@ -804,7 +810,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			{
 				for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
 				{
-					if(enemy[i])
+					if(enemy[i] && npc.m_flTimeUntillNextSummonRocket < gameTime)
 					{
 						float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
 						ParticleEffectAt(vecTarget, "water_bulletsplash01", 3.0);
@@ -826,6 +832,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 							pack.WriteCell(EntIndexToEntRef(enemy[i]));
 						}
 						npc.FaceTowards(vecTarget, 99999.0);
+						npc.m_flTimeUntillNextSummonRocket += 0.1;
 					}
 				}
 			}
