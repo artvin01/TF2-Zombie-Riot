@@ -36,7 +36,7 @@ static const char g_ReloadSound[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav",
+	"weapons/doom_rocket_launcher.wav",
 };
 
 
@@ -99,7 +99,7 @@ methodmap VictorianRaider < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.2, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.2);
 	}
 
 	public VictorianRaider(int client, float vecPos[3], float vecAng[3], int ally)
