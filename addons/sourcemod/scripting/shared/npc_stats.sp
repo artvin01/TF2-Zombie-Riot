@@ -5964,7 +5964,14 @@ public void NpcBaseThink(int iNPC)
 	
 		if(b_thisNpcIsARaid[iNPC])
 		{
-			HealingAmount *= 0.01;
+			HealingAmount *= 0.025;
+			//this means it uses scaling somehow.
+			if(i_MedkitAnnoyance[iNPC] != 0)
+			{
+				int CurrentPlayersAlive = CountPlayersOnRed(1);
+				float HpScalingDecreace = float(CurrentPlayersAlive) / float(i_MedkitAnnoyance[iNPC]);
+				HealingAmount *= HpScalingDecreace;
+			}
 		}
 		else if(b_thisNpcIsABoss[iNPC])
 		{
@@ -8497,6 +8504,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_VoidAfflictionStrength[entity] = 0.0;
 	f_VoidAfflictionStrength2[entity] = 0.0;
+	f_VoidAfflictionStandOn[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
 	f_SpecterDyingDebuff[entity] = 0.0;
 	f_VeryLowIceDebuff[entity] = 0.0;
@@ -8546,6 +8554,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 //	b_EntityInCrouchSpot[entity] = false;
 //	b_NpcResizedForCrouch[entity] = false;
 	i_Changed_WalkCycle[entity] = -1;
+	i_MedkitAnnoyance[entity] = 0;
 	f_TextEntityDelay[entity] = 0.0;
 	f_CheckIfStuckPlayerDelay[entity] = 0.0;
 	f_QuickReviveHealing[entity] = 0.0;
