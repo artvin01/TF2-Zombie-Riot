@@ -31,10 +31,11 @@ static float Magnesis_Grab_DragRate_WeightPenalty[3] = { 7.5, 3.0, 1.25 };		//Am
 static float Magnesis_Grab_Range[3] = { 150.0, 200.0, 250.0 };					//Maximum distance from which enemies can be grabbed.
 static float Magnesis_Grab_Distance[3] = { 80.0, 80.0, 80.0 };					//Distance from the user to hold zombies at.
 static float Magnesis_Grab_MaxVel[3] = { 1000.0, 1400.0, 2000.0 };				//Maximum throw velocity.
+static float Magnesis_Grab_MaxVel_Raids[3] = { 500.0, 600.0, 700.0 };				//Maximum throw velocity.
 static float Magnesis_Grab_ThrowCost[3] = { 50.0, 100.0, 150.0 };				//Cost to throw the enemy instead of simply dropping them.
 static float Magnesis_Grab_ThrowThreshold_Normal[3] = { 0.25, 0.2, 0.125 };		//Percentage of max health taken as damage while grabbed in order for the throw to reach max velocity, for normal enemies.
 static float Magnesis_Grab_ThrowThreshold_Special[3] = { 0.25, 0.2, 0.15 };		//Throw threshold for bosses/mini-bosses.
-static float Magnesis_Grab_ThrowThreshold_Raid[3] = { 0.125, 0.033, 0.0165 };	//Throw threshold for raids.
+static float Magnesis_Grab_ThrowThreshold_Raid[3] = { 0.125, 0.066, 0.0425 };	//Throw threshold for raids.
 static float Magnesis_Grab_Throw_WeightPenalty[3] = { 0.25, 0.15, 0.05 };		//Percentage to reduce throw strength per point of NPC weight above 1.
 static float Magnesis_Grab_ThrowDMG[3] = { 1250.0, 2000.0, 2500.0 };			//Damage dealt to grabbed enemies when they are thrown.
 static float Magnesis_Grab_ThrowDMG_Scale[3] = { 2500.0, 6000.0, 7500.0 };		//Maximum amount of damage to add to the throw damage. This scales in the same way as throw velocity.
@@ -398,7 +399,7 @@ void Magnesis_AttemptThrow(int client, int weapon, int tier)
 
 		float mult = Magnesis_GetThrowVelMultiplier(client);
 
-		float throwVel = Magnesis_Grab_MaxVel[Magnesis_Tier[client]] * mult;
+		float throwVel = (b_thisNpcIsARaid[target] ? Magnesis_Grab_MaxVel_Raids[Magnesis_Tier[client]] :  Magnesis_Grab_MaxVel[Magnesis_Tier[client]]) * mult;
 		for (int i = 0; i < 3; i++)
 			vel[i] = buffer[i] * throwVel;
 		
