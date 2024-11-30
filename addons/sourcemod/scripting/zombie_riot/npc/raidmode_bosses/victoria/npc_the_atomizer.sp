@@ -846,8 +846,11 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		}
 		/*int particle_power = ParticleEffectAt(chargerPos, "miss_text", 1.5);
 		SetParent(victim, particle_power);*/
-		TE_ParticleInt(g_particleMissText, chargerPos);
-		TE_SendToClient(attacker);
+		if(IsValidClient(attacker))
+		{
+			TE_ParticleInt(g_particleMissText, chargerPos);
+			TE_SendToClient(attacker);
+		}
 		OnMiss[npc.index]=true;
 		ExtinguishTarget(npc.m_iWearable2);
 		IgniteTargetEffect(npc.m_iWearable2);
@@ -1076,7 +1079,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 				{
 					if(IsValidEntity(npc.m_iWearable7))
 						RemoveEntity(npc.m_iWearable7);
-					if(!IsValidEntity(npc.m_iWearable7))
+					if(!IsValidEntity(npc.m_iWearable1))
 					{
 						float flPos[3];
 						float flAng[3];
