@@ -90,12 +90,12 @@ static float fl_npc_basespeed;
 
 static int i_current_wave[MAXENTITIES];
 static int i_ally_index[MAXENTITIES];
+static bool b_bobwave[MAXENTITIES];
 
 static bool b_swords_created[MAXENTITIES];
 
 
 static float fl_retreat_timer[MAXENTITIES];
-static bool Karlas_BEAM_HitDetected[MAXENTITIES];
 static float fl_spinning_angle[MAXENTITIES];
 static float fl_karlas_armour[MAXENTITIES][2];
 static float fl_karlas_sword_battery[MAXENTITIES];
@@ -119,7 +119,6 @@ void Karlas_OnMapStart_NPC()
 	Zero(fl_retreat_timer);
 	Zero(fl_dance_of_light_sound_spam_timer);
 	Zero2(fl_dance_of_light_sword_throttle);
-	Zero(Karlas_BEAM_HitDetected);
 	Zero(fl_spinning_angle);
 	Zero2(fl_karlas_armour);
 	Zero(fl_karlas_sword_battery);
@@ -245,16 +244,6 @@ methodmap Karlas < CClotBody
 	public void PlayBuffSound()
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void Emit_Sword_Impact_Sound(float Loc[3])
-	{
-		if(fl_dance_of_light_sound_spam_timer[this.index] > GetGameTime())
-			return;
-
-		fl_dance_of_light_sound_spam_timer[this.index] = GetGameTime() + 0.1;
-
-		int sound = GetRandomInt(0, sizeof(g_Sword_Impact_Sound) - 1);
-		EmitSoundToAll(g_Sword_Impact_Sound[sound], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, _, Loc);
 	}
 
 	public void PlayAngerSound() {
@@ -423,7 +412,7 @@ methodmap Karlas < CClotBody
 		Karlas npc = view_as<Karlas>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 
 		i_NpcWeight[npc.index] = 3;
-
+		b_bobwave[npc.index] = false;
 		
 		if(StrContains(data, "force15") != -1)
 			i_current_wave[npc.index] = 15;
@@ -433,6 +422,9 @@ methodmap Karlas < CClotBody
 			i_current_wave[npc.index] = 45;
 		else if(StrContains(data, "force60") != -1)
 			i_current_wave[npc.index] = 60;
+		
+		if(StrContains(data, "bob") != -1)
+			b_bobwave[npc.index] = true;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.m_iChanged_WalkCycle = 1;
@@ -448,7 +440,7 @@ methodmap Karlas < CClotBody
 		fl_teleport_strike_recharge[npc.index] = GetGameTime()+25.0;
 		b_teleport_strike_active[npc.index]=false;
 
-		fl_dance_of_light_sound_spam_timer[npc.index] = 0.0;
+		Zero(fl_dance_of_light_sound_spam_timer);
 
 		npc.m_fbGunout = false;
 
@@ -502,7 +494,7 @@ methodmap Karlas < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/Hw2013_Moon_Boots/Hw2013_Moon_Boots.mdl", _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl");
 		npc.m_iWearable7 = npc.EquipItem("head", "models/player/items/medic/qc_glove.mdl");
-		npc.m_iWearable8 = npc.EquipItem("weapon_bone", RUINA_CUSTOM_MODELS_2);
+		npc.m_iWearable8 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_2);
 		SetVariantInt(RUINA_IMPACT_LANCE_4);
 		AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");
 		SetVariantInt(1);
@@ -511,11 +503,8 @@ methodmap Karlas < CClotBody
 		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1);
 		SetVariantInt(WINGS_KARLAS);
 		AcceptEntityInput(npc.m_iWingSlot, "SetBodyGroup");
-		
 		npc.StartPathing();
-
 		npc.Set_Particle("raygun_projectile_blue_crit", "eyeglow_L");
-
 
 		fl_karlas_armour[npc.index][0] = 1.0;	//ranged
 		fl_karlas_armour[npc.index][1] = 1.5;	//melee
@@ -536,26 +525,35 @@ methodmap Karlas < CClotBody
 		func_NPCFuncWin[npc.index] = Win_Line;
 		npc.m_iNClockonState = 0;
 		
-		
 		return npc;
 	}
 }
+static void Emit_Sword_Impact_Sound(int target)
+{
+	if(fl_dance_of_light_sound_spam_timer[target] > GetGameTime())
+		return;
+
+	fl_dance_of_light_sound_spam_timer[target] = GetGameTime() + 0.1;
+
+	int sound = GetRandomInt(0, sizeof(g_Sword_Impact_Sound) - 1);
+	EmitSoundToAll(g_Sword_Impact_Sound[sound], target, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+}
 static void Win_Line(int entity)
 {
-	//if(b_raidboss_donnerkrieg_alive)
-	//	return;
-	
+	Karlas npc = view_as<Karlas>(entity);
+	if(npc.Ally)
+		return;
+		
 	CPrintToChatAll("{crimson}Karlas{snow}: Oyaya?");
-
-
 }
-void Set_Karlas_Ally(int karlas, int stella, int wave = -2)
+void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob)
 {	
 	if(wave == -2)
 		wave = ZR_GetWaveCount()+1;
 
 	i_current_wave[karlas] = wave;
 	i_ally_index[karlas] = EntIndexToEntRef(stella);
+	b_bobwave[karlas] = bob;
 }
 
 static void Internal_ClotThink(int iNPC)
@@ -564,12 +562,15 @@ static void Internal_ClotThink(int iNPC)
 
 	float GameTime = GetGameTime(npc.index);
 
-	//Todo: fix raidmodetime
-	/*if(RaidModeTime < GetGameTime())
+	if(RaidModeTime < GetGameTime() && !npc.Ally)
 	{
+		CPrintToChatAll("{crimson}Karlas{snow}: Aya?");
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index]=INVALID_FUNCTION;
+		
 		return;
-	}*/
+	}
 
 	if(npc.m_flNextDelayTime > GameTime)
 		return;
@@ -632,7 +633,23 @@ static void Internal_ClotThink(int iNPC)
 		Fire_Wave_Barrage(npc);
 
 	if(npc.m_flNC_LockedOn > GameTime)
+	{
+		if(Karlas_Status(npc, GameTime)!=1)
+		{
+			if(npc.m_bRetreat)
+			{
+				npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1] - 0.25;
+				npc.m_flRangedArmor = fl_karlas_armour[npc.index][0] - 0.25;
+			}	
+			else
+			{
+				npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
+				npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
+			}
+		}
 		return;
+	}
+		
 
 	if(!IsValidEntity(RaidBossActive))
 	{
@@ -733,7 +750,14 @@ static void Internal_ClotThink(int iNPC)
 	{
 		
 		if(Karlas_Status(npc, GameTime)!=1)
+		{
 			npc.m_flSpeed =  fl_npc_basespeed;
+			npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
+			npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
+		}
+			
+
+		
 			
 		Karlas_Movement(npc, flDistanceToTarget, PrimaryThreatIndex);
 
@@ -981,7 +1005,7 @@ static void Blade_Logic(Karlas npc)
 		{
 			case 2:	//Aggresive - spin around him while extended
 			{
-				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 10.0, true, 10.0*RaidModeScaling);
+				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 10.0, 10.0*RaidModeScaling);
 			}
 			case 4:	//becomes pseudo wings. neutral state for when the things are "recharging"
 			{
@@ -1380,7 +1404,7 @@ static void Fire_Wave_Barrage(Karlas npc)
 		if(Nearby_Players(npc, 9999.0) <=0)
 			return;
 	}
-	if(npc.m_flSlicerBarrageActive > GameTime && (npc.m_iNClockonState != 2 || npc.m_flNC_LockedOn > GameTime))
+	if(npc.m_flSlicerBarrageActive > GameTime && (npc.m_iNClockonState != 0 || npc.m_flNC_LockedOn > GameTime))
 	{
 		npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
 		npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
@@ -1401,8 +1425,8 @@ static void Fire_Wave_Barrage(Karlas npc)
 	
 	//taunt_the_fist_bump_fistbump
 
-	int Amt = (npc.Anger ? 5 : 7); //yes its longer when hes "angry" but him standing still like that while alone is a death sentence.
-	float Fire_Rate = 1.0;	//how long between slicer bursts
+	int Amt = (npc.Anger ? 9 : 7); 
+	float Fire_Rate = (npc.Anger ? 0.5 : 1.0);	//how long between slicer bursts
 
 	if(npc.m_iSlicersFired > Amt+1)
 	{
@@ -1412,7 +1436,7 @@ static void Fire_Wave_Barrage(Karlas npc)
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
-		npc.m_flSlicerBarrageCD = GameTime + (npc.Anger ? 60.0 : 45.0);	//yes its longer when hes "angry" but him standing still like that while alone is a death sentence.
+		npc.m_flSlicerBarrageCD = GameTime + (npc.Anger ? 40.0 : 45.0);	
 		npc.m_iSlicersFired = 0;
 		npc.m_bisWalking = true;
 
@@ -1440,8 +1464,8 @@ static void Fire_Wave_Barrage(Karlas npc)
 
 		npc.m_iSlicersFired = 1;
 
-		npc.m_flMeleeArmor = 0.7;
-		npc.m_flRangedArmor = 0.5;
+		npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1] - 0.8;
+		npc.m_flRangedArmor = fl_karlas_armour[npc.index][0] - 0.5;
 
 		return;
 	}
@@ -1591,7 +1615,6 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 		b_teleport_strike_active[npc.index]=false;
 		fl_teleport_strike_recharge[npc.index]=GameTime+5.0;
 
-
 		int enemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 		if(IsValidEnemy(npc.index, enemy))	//now do another check to see if we can still even see a target, if not, abort the whole process.
 		{
@@ -1599,10 +1622,8 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 			float Angles[3];
 			float Test_Origin[3];
 			
-			GetClientEyePosition(PrimaryThreatIndex, Original_Origin);
-			GetClientEyeAngles(PrimaryThreatIndex, Angles);
-
-			Angles[0] =0.0;	//we don't want pitch screwing stuff off on offseting vectors
+			WorldSpaceCenter(PrimaryThreatIndex, Original_Origin);
+			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_angRotation", Angles);
 
 			//100 infront of the target
 			Test_Origin = Original_Origin;
@@ -2200,7 +2221,7 @@ static void Karlas_Lifeloss_Logic(Karlas npc)
 		Loc[2] += 150.0*Ratio;
 		float Loc2[3]; GetAbsOrigin(npc.index, Loc2); Loc2[2]+=25.0;
 		float speed = 30.0 - 25.0*Ratio;
-		Karlas_Manipulate_Sword_Location(npc, Loc, Loc2, GetGameTime(), speed, true, 15.0*RaidModeScaling);
+		Karlas_Manipulate_Sword_Location(npc, Loc, Loc2, GetGameTime(), speed, 15.0*RaidModeScaling);
 	}
 }
 static void Karlas_SwordWings_Logic(Karlas npc, float npc_Vec[3])
@@ -2258,7 +2279,7 @@ static void Karlas_SwordWings_Logic(Karlas npc, float npc_Vec[3])
 		}
 	}
 }
-static void Karlas_Manipulate_Sword_Location(Karlas npc, float Loc[3], float Look_Vec[3], float GameTime, float spin_speed, bool damage=true, float dmg, bool boomerang = false)
+static void Karlas_Manipulate_Sword_Location(Karlas npc, float Loc[3], float Look_Vec[3], float GameTime, float spin_speed, float dmg)
 {
 	fl_spinning_angle[npc.index] +=spin_speed;
 
@@ -2312,10 +2333,10 @@ static void Karlas_Manipulate_Sword_Location(Karlas npc, float Loc[3], float Loo
 			GetVectorAngles(Ang, Ang);
 			Get_Fake_Forward_Vec(Distance, Ang, Loc2, Sword_Loc);
 
-			if(fl_dance_of_light_sword_throttle[npc.index][i] < GameTime && damage)
+			if(fl_dance_of_light_sword_throttle[npc.index][i] < GameTime)
 			{
 				fl_dance_of_light_sword_throttle[npc.index][i] = GameTime+0.1;
-				Karlas_Laser_Trace(npc, Sword_Loc, Loc2, 10.0, dmg, boomerang);
+				Karlas_Laser_Trace(npc, Sword_Loc, Loc2, 10.0, dmg);
 			}
 
 			/*
@@ -2332,94 +2353,47 @@ static void Karlas_Manipulate_Sword_Location(Karlas npc, float Loc[3], float Loo
 }
 static void Karlas_Move_Entity(int entity, float loc[3], float Ang[3])
 {
-	if(IsValidEntity(entity))	
-	{
-		float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
-		
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", Entity_Loc);
-		
-		MakeVectorFromPoints(Entity_Loc, loc, vecView);
-		GetVectorAngles(vecView, vecView);
-		
-		float dist = GetVectorDistance(Entity_Loc, loc);
+	if(!IsValidEntity(entity))	
+		return;
 
-		GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
+	float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
 	
-		Entity_Loc[0]+=vecFwd[0] * dist;
-		Entity_Loc[1]+=vecFwd[1] * dist;
-		Entity_Loc[2]+=vecFwd[2] * dist;
-		
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecFwd);
-		
-		SubtractVectors(Entity_Loc, vecFwd, vecVel);
-		ScaleVector(vecVel, 10.0);
-
-		TeleportEntity(entity, NULL_VECTOR, Ang, vecVel);
-
-		
-	}
-	//TeleportEntity(entity, loc, NULL_VECTOR, NULL_VECTOR);
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", Entity_Loc);
 	
+	MakeVectorFromPoints(Entity_Loc, loc, vecView);
+	GetVectorAngles(vecView, vecView);
+	
+	float dist = GetVectorDistance(Entity_Loc, loc);
+
+	GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
+
+	Entity_Loc[0]+=vecFwd[0] * dist;
+	Entity_Loc[1]+=vecFwd[1] * dist;
+	Entity_Loc[2]+=vecFwd[2] * dist;
+	
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecFwd);
+	
+	SubtractVectors(Entity_Loc, vecFwd, vecVel);
+	ScaleVector(vecVel, 10.0);
+
+	TeleportEntity(entity, NULL_VECTOR, Ang, vecVel);
 }
-static void Karlas_Laser_Trace(Karlas npc, float Start_Point[3], float End_Point[3], float Radius, float dps, bool boomerange)
+static void Karlas_Laser_Trace(Karlas npc, float Start_Point[3], float End_Point[3], float Radius, float dps)
 {
-	Zero(Karlas_BEAM_HitDetected);
-
-	float hullMin[3], hullMax[3];
-	hullMin[0] = -Radius;
-	hullMin[1] = hullMin[0];
-	hullMin[2] = hullMin[0];
-	hullMax[0] = -hullMin[0];
-	hullMax[1] = -hullMin[1];
-	hullMax[2] = -hullMin[2];
-	Handle trace = TR_TraceHullFilterEx(Start_Point, End_Point, hullMin, hullMax, 1073741824, Karlas_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
-	delete trace;
-			
-	for (int victim = 0; victim < MAXENTITIES; victim++)
-	{
-		if (Karlas_BEAM_HitDetected[victim] && IsValidEnemy(npc.index, victim))
-		{
-			float playerPos[3];
-			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-
-			float Dmg = dps;
-
-			if(boomerange && IsValidClient(victim))
-			{
-				int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
-				if(IsValidEntity(weapon))
-				{
-					float Bonus_damage = 1.0;
-					char classname[32];
-					GetEntityClassname(weapon, classname, 32);
-				
-					int weapon_slot = TF2_GetClassnameSlot(classname);
-				
-					if(weapon_slot == 2 && !i_IsWandWeapon[weapon])
-					{
-						Bonus_damage = 0.5;
-					}
-					Dmg *= Bonus_damage;
-				}
-			}
-
-			SDKHooks_TakeDamage(victim, npc.index, npc.index, Dmg, DMG_PLASMA, -1, NULL_VECTOR, Start_Point);
-				
-			if(victim <= MaxClients)
-				Client_Shake(victim, 0, 8.0, 8.0, 0.1);
-
-			npc.Emit_Sword_Impact_Sound(playerPos);
-
-		}
-	}
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	Laser.Damage = dps;
+	Laser.Bonus_Damage = dps*6.0;
+	Laser.Radius = Radius;
+	Laser.Start_Point = Start_Point;
+	Laser.End_Point = End_Point;
+	Laser.Deal_Damage(OnBladeHit);
 }
-public bool Karlas_BEAM_TraceUsers(int entity, int contentsMask, int client)
+static void OnBladeHit(int client, int target, int damagetype, float damage)
 {
-	if (IsEntityAlive(entity))
-	{
-		Karlas_BEAM_HitDetected[entity] = true;
-	}
-	return false;
+	Emit_Sword_Impact_Sound(target);
+	if(target <= MaxClients)
+		Client_Shake(target, 0, 8.0, 8.0, 0.1);
 }
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])	//Why On GODS EARTH DID I MAKE THE INPUT/OUTPUT IN THE WRONG ORDER, LIKE WHY/???????
 {
@@ -2437,13 +2411,9 @@ static int Create_Blade(float Loc[3], float size, Karlas npc)
 		return -1;
 	
 	DispatchKeyValue(prop, "model", RUINA_POINT_MODEL);
-	
-	DispatchKeyValue(prop, "modelscale", "0.01");
-	
+	DispatchKeyValue(prop, "modelscale", "0.01");	
 	DispatchKeyValue(prop, "solid", "0"); 
-	
 	DispatchSpawn(prop);
-	
 	ActivateEntity(prop);
 
 	int ModelApply = ApplyCustomModelToWandProjectile(prop, RUINA_CUSTOM_MODELS_2, size, "");
@@ -2456,21 +2426,19 @@ static int Create_Blade(float Loc[3], float size, Karlas npc)
 		TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
 		SetVariantInt(RUINA_ZANGETSU);
 		AcceptEntityInput(ModelApply, "SetBodyGroup");
+		
+		/*
+		//idk why but the glow doesn't work.
+		CClotBody sword = view_as<CClotBody>(ModelApply);
+		sword.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		sword.m_bTeamGlowDefault = false;
+		SetVariantColor(view_as<int>({3, 244, 252, 200}));
+		AcceptEntityInput(sword.m_iTeamGlow, "SetGlowColor");
+		*/
 	}
-	
 	MakeObjectIntangeable(prop);
 	TeleportEntity(prop, Loc, NULL_VECTOR, NULL_VECTOR);
-	
-	CClotBody sword = view_as<CClotBody>(prop);
-
-	sword.m_iTeamGlow = TF2_CreateGlow(npc.index);
-	sword.m_bTeamGlowDefault = false;
-
-	SetVariantColor(view_as<int>({3, 244, 252, 200}));
-	AcceptEntityInput(sword.m_iTeamGlow, "SetGlowColor");
-	
 	return prop;
-
 }
 
 static void Delete_Swords(int client)
@@ -2507,29 +2475,23 @@ static void Internal_NPCDeath(int entity)
 	}
 
 	RaidModeTime +=50.0;
-
-	int wave = i_current_wave[npc.index];
-	if(wave!=60)
+	if(npc.Ally)
 	{
-		if(npc.Ally)
+		Stella stella = view_as<Stella>(ally);
+		if(!stella.m_bSaidWinLine)
 		{
-			switch(GetRandomInt(1,3))
+			if(!b_bobwave[npc.index])
 			{
-				case 1:
+				switch(GetRandomInt(1,3))
 				{
-					CPrintToChatAll("{aqua}Stella{snow}: Hmph, Guess I'll handle this alone");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{aqua}Stella{snow}: Ohohoh, this ain't over yet,{crimson} not even close to over{snow}...");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{aqua}Stella{snow}: {crimson}KARLAS{snow} NOO,{crimson} ALL OF YOU WILL PAY WITH YOUR LIVES");
+					case 1: Stella_Lines(stella,"Hmph, Guess I'll handle this alone");
+					case 2: Stella_Lines(stella,"This ain't over yet..");
+					case 3: Stella_Lines(stella,"How dare you hurt {crimson}Karlas{snow}!");
 				}
 			}
 		}
 	}
+	
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 
 	ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);

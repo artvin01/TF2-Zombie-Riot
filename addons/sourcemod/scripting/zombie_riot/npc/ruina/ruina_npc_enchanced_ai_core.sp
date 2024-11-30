@@ -1632,6 +1632,9 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
 
+	if(AtEdictLimit(EDICT_NPC))
+		return Plugin_Stop;
+		
 	int laser;
 	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 7.0, 7.0, 1.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
