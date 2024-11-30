@@ -852,6 +852,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 				}
 			}
 		}
+		npc.m_flNextRangedSpecialAttackHappens = gameTime + 35.0;
 	}
 	/*
 	else if(npc.f_HarrisonSnipeShotDelay < gameTime)
