@@ -160,7 +160,7 @@ methodmap Harrison < CClotBody
 		public get()							{ return i_TimesSummoned[this.index]; }
 		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
 	}
-    property float m_flHarrisonRocketShotHappening
+	property float m_flHarrisonRocketShotHappening
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
@@ -291,9 +291,9 @@ methodmap Harrison < CClotBody
 		ParticleSpawned[npc.index] = false;
 		SUPERHIT[npc.index] = false;
 		NiceMiss[npc.index] = 0.0;
-        npc.m_flHarrisonRocketShotHappening = 0.0;
-		f_HarrisonRailgunDelay = 35.0;
-		f_HarrisonSnipeShotDelay = 25.0;
+		npc.m_flHarrisonRocketShotHappening = 0.0;
+		npc.f_HarrisonRailgunDelay = 35.0;
+		npc.f_HarrisonSnipeShotDelay = 25.0;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
@@ -866,8 +866,8 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			{
 				UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 				int enemy_2[MAXENTITIES];
-				float pos_npc[3];
-				float angles_useless[3];
+				//float pos_npc[3];
+				//float angles_useless[3];
 				float PosEnemy[3];
 				GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable8);
 				for(int i; i < sizeof(enemy_2); i++)
@@ -876,11 +876,11 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 					{
 						int ememyTarget = enemy_2[i];
 						WorldSpaceCenter(ememyTarget, PosEnemy);
-						float flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
-						float SpeedToPredict = flDistanceToTarget * 2.1;
-						if(IsValidEnemy(npc.index, enemy_2))
+						//float flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
+						//float SpeedToPredict = flDistanceToTarget * 2.1;
+						if(IsValidEnemy(npc.index, ememyTarget))
 						{
-							npc.PlayRocketSound();
+							//npc.PlayRocketSound();
 							float vecSelf[3];
 							WorldSpaceCenter(npc.index, vecSelf);
 							vecSelf[2] += 50.0;
@@ -891,7 +891,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 							DataPack pack;
 							CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
 							pack.WriteCell(EntIndexToEntRef(RocketGet));
-							pack.WriteCell(EntIndexToEntRef(enemy_2));
+							pack.WriteCell(EntIndexToEntRef(ememyTarget));
 						}
 					}
 				}
@@ -925,93 +925,92 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 		npc.m_flDoingAnimation = gameTime + 0.95;
 
 		Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, true, true);
-		if(!IsValidEnemy(npc.index, Vs_Target[npc.index]))
-			return;
-
-		static float ThrowPos[MAXENTITIES][3];  
-		float origin[3];
-		GetAbsOrigin(npc.m_iWearable2, origin);
-		//view_as<CClotBody>(npc.m_iWearable2).GetAttachment("muzzle", origin, angles);
-		if(npc.m_flDoingAnimation > gameTime)
+		if(IsValidEnemy(npc.index, Vs_Target[npc.index]))
 		{
-			if(Can_I_See_Enemy_Only(npc.index, Vs_Target))
+			static float ThrowPos[MAXENTITIES][3];  
+			float origin[3];
+			GetAbsOrigin(npc.m_iWearable2, origin);
+			//view_as<CClotBody>(npc.m_iWearable2).GetAttachment("muzzle", origin, angles);
+			if(npc.m_flDoingAnimation > gameTime)
 			{
-				WorldSpaceCenter(Vs_Target, ThrowPos[npc.index]);
-				float pos_npc[3];
-				WorldSpaceCenter(npc.index, pos_npc);
-				float AngleAim[3];
-				GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
-				Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-				if(TR_DidHit(hTrace))
+				if(Can_I_See_Enemy_Only(npc.index, Vs_Target[npc.index]))
 				{
-					TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+					WorldSpaceCenter(Vs_Target[npc.index], ThrowPos[npc.index]);
+					float pos_npc[3];
+					WorldSpaceCenter(npc.index, pos_npc);
+					float AngleAim[3];
+					GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+					Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+					if(TR_DidHit(hTrace))
+					{
+						TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+					}
 				}
 			}
-		}
-		else
-		{	
+			else
+			{	
+				if(npc.m_flAttackHappens)
+				{
+					float pos_npc[3];
+					WorldSpaceCenter(npc.index, pos_npc);
+					float AngleAim[3];
+					GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+					Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+					if(TR_DidHit(hTrace))
+					{
+						TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+					}
+					delete hTrace;
+				}
+			}
 			if(npc.m_flAttackHappens)
 			{
-				float pos_npc[3];
-				WorldSpaceCenter(npc.index, pos_npc);
-				float AngleAim[3];
-				GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
-				Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-				if(TR_DidHit(hTrace))
-				{
-					TR_GetEndPosition(ThrowPos[npc.index], hTrace);
-				}
-				delete hTrace;
+				TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {0,125,255,255}, 3);
+				TE_SendToAll(0.0);
 			}
-		}
-		if(npc.m_flAttackHappens)
-		{
-			TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {0,125,255,255}, 3);
-			TE_SendToAll(0.0);
-		}
-				
-		npc.FaceTowards(ThrowPos[npc.index], 15000.0);
-		if(npc.m_flAttackHappens)
-		{
-			if(npc.m_flAttackHappens < gameTime)
-			{
-				npc.m_flAttackHappens = 0.0;
-				ShootLaser(npc.m_iWearable2, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
-				float pos_npc[3];
-				WorldSpaceCenter(npc.index, pos_npc);
-				float AngleAim[3];
-				GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
-				Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-				int Traced_Target = TR_GetEntityIndex(hTrace);
-				if(Traced_Target > 0)
-				{
-					WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
-				}
-				else if(TR_DidHit(hTrace))
-				{
-					TR_GetEndPosition(ThrowPos[npc.index], hTrace);
-				}
-				delete hTrace;	
-
-				int target = Can_I_See_Enemy(npc.index, Vs_Target,_ ,ThrowPos[npc.index]);
-				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-				if(IsValidEnemy(npc.index, target))
-				{
-					float damageDealt = 250.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 99.0;
 					
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-					if(IsValidClient(target))
-						IncreaceEntityDamageTakenBy(target, 1.0, 10.0, true);
-					else
-						NpcStats_SilenceEnemy(target, (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 30.0 : 60.0));
+			npc.FaceTowards(ThrowPos[npc.index], 15000.0);
+			if(npc.m_flAttackHappens)
+			{
+				if(npc.m_flAttackHappens < gameTime)
+				{
+					npc.m_flAttackHappens = 0.0;
+					ShootLaser(npc.m_iWearable2, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
+					float pos_npc[3];
+					WorldSpaceCenter(npc.index, pos_npc);
+					float AngleAim[3];
+					GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+					Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+					int Traced_Target = TR_GetEntityIndex(hTrace);
+					if(Traced_Target > 0)
+					{
+						WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
+					}
+					else if(TR_DidHit(hTrace))
+					{
+						TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+					}
+					delete hTrace;	
+
+					target = Can_I_See_Enemy(npc.index, Vs_Target[npc.index],_ ,ThrowPos[npc.index]);
+					npc.PlayMeleeSound();
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+					if(IsValidEnemy(npc.index, target))
+					{
+						float damageDealt = 250.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt *= 99.0;
+						
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
+						if(IsValidClient(target))
+							IncreaceEntityDamageTakenBy(target, 1.0, 10.0, true);
+						else
+							NpcStats_SilenceEnemy(target, (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 30.0 : 60.0));
+					}
+					npc.f_HarrisonSnipeShotDelay = gameTime + 20.0;
 				}
-				npc.f_HarrisonSnipeShotDelay = gameTime + 20.0;
 			}
 		}
-		
 	}
 	else if(npc.m_flRangedSpecialDelay < gameTime)
 	{
@@ -1060,9 +1059,10 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 
 		int repeat = 5;
 		if(IsValidEntity(npc.m_iWearable8))
-		{
 			RemoveEntity(npc.m_iWearable8);
-		}
+		float flPos[3];
+		float flAng[3];
+		npc.GetAttachment("effect_hand_r", flPos, flAng);
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 		for(int i; i<repeat; i++)
 		{

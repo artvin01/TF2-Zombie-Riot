@@ -6,9 +6,14 @@ static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_02.wav"
 };
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/bat_draw.wav",
-	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav"
+	"weapons/boxing_gloves_swing1.wav",
+	"weapons/boxing_gloves_swing2.wav",
+	"weapons/boxing_gloves_swing4.wav",
+	"weapons/fist_swing_crit.wav"
+};
+static const char g_MeleeHitSounds[][] = {
+	"weapons/fist_hit_world1.wav",
+	"weapons/fist_hit_world2.wav"
 };
 static const char g_EnergyshieldSounds[][] = {
 	"weapons/fx/rics/ric1.wav",
@@ -17,7 +22,7 @@ static const char g_EnergyshieldSounds[][] = {
 	"weapons/fx/rics/ric4.wav",
 	"weapons/fx/rics/ric5.wav"
 };
-static const char g_MeleeHitSounds[] = "weapons/bat_hit.wav";
+
 
 static float FTL[MAXENTITIES];
 static float Delay_Attribute[MAXENTITIES];
@@ -59,8 +64,8 @@ static void ClotPrecache()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_EnergyshieldSounds)); i++) { PrecacheSound(g_EnergyshieldSounds[i]); }
-	PrecacheSound(g_MeleeHitSounds);
 	PrecacheModel("models/player/heavy.mdl");
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
 }
@@ -82,7 +87,7 @@ methodmap Huscarls < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		//EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
@@ -700,14 +705,20 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				npc.SetCycle(0.5);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
+				npc.m_flDoingAnimation = gameTime + 3.4;
+				Delay_Attribute[npc.index] = gameTime + 0.5;
+				I_cant_do_this_all_day[npc.index] = 1;
+			}
+			case 1:
+			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					DynamicCharger[npc.index] = 0.0;
 					npc.m_flHuscarlsAdaptiveArmorDuration = gameTime + 3.0;
-					I_cant_do_this_all_day[npc.index] = 1;
+					I_cant_do_this_all_day[npc.index] = 2;
 				}
 			}
-			case 1:
+			case 2:
 			{
 				if(npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 				{
@@ -715,7 +726,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					float MAXCharger = (DynamicCharger[npc.index]/(float(maxhealth)*0.05))*0.05;
 					if(MAXCharger > 0.05)MAXCharger = 0.05;
 					GrantEntityArmor(npc.index, false, MAXCharger, 0.5, 0);
-					I_cant_do_this_all_day[npc.index] = 2;
+					I_cant_do_this_all_day[npc.index] = 3;
 				}
 				else
 				{
@@ -725,7 +736,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					I_cant_do_this_all_day[npc.index] = 0;
 				}
 			}
-			case 2:
+			case 3:
 			{
 				npc.m_flHuscarlsRushCoolDown = gameTime + 3.0;
 				npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + 30.0;
@@ -741,7 +752,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		{
 			case 0:
 			{
-				
+				npc.m_flDoingAnimation = gameTime + 0.5;
 				Delay_Attribute[npc.index] = gameTime + 0.5;
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
@@ -751,14 +762,18 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				npc.SetCycle(0.5);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
+				I_cant_do_this_all_day[npc.index] = 1;
+			}
+			case 1:
+			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					ExtraMovement[npc.index] = 300.0;
 					npc.m_flHuscarlsRushDuration = gameTime + 5.0;
-					I_cant_do_this_all_day[npc.index] = 1;
+					I_cant_do_this_all_day[npc.index] = 2;
 				}
 			}
-			case 1:
+			case 2:
 			{
 				static float vOrigin[3], vAngles[3], tOrigin[3];
 				WorldSpaceCenter(npc.index, vOrigin);
@@ -779,7 +794,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 						}
 					}
 					Delay_Attribute[npc.index] = gameTime + 1.0;
-					I_cant_do_this_all_day[npc.index] = 3;
+					I_cant_do_this_all_day[npc.index] = 5;
 					CreateEarthquake(vOrigin, 0.5, 350.0, 16.0, 255.0);
 				}
 				else if(npc.m_flHuscarlsRushDuration < gameTime)
@@ -814,11 +829,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 						int Particle_2;
 						npc.GetAttachment("foot_L", flPos, flAng);
 						Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_L", {0.0,0.0,0.0});
-						
-
 						npc.GetAttachment("foot_R", flPos, flAng);
 						Particle_2 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_R", {0.0,0.0,0.0});
-					
 						CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
 						CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_2), TIMER_FLAG_NO_MAPCHANGE);
 						
@@ -831,7 +843,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 						PluginBot_Jump(npc.index, flMyPos);
 						Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, ToTheMoon);
 						SetEntityCollisionGroup(npc.index, 1);
-						I_cant_do_this_all_day[npc.index] = 2;
+						I_cant_do_this_all_day[npc.index] = 3;
 					}
 					else
 					{
@@ -847,35 +859,46 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 							}
 						}
 						Delay_Attribute[npc.index] = gameTime + 1.0;
-						I_cant_do_this_all_day[npc.index] = 3;
+						I_cant_do_this_all_day[npc.index] = 5;
 						CreateEarthquake(vOrigin, 0.5, 350.0, 16.0, 255.0);
 					}
 				}
 				else
 				{
 					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, Got_it_fucking_shit);
-					npc.AddActivityViaSequence("layer_PASSTIME_throw_end");
+					//npc.AddActivityViaSequence("layer_PASSTIME_throw_end");
+					//npc.AddActivityViaSequence("PASSTIME_throw_end");
+					npc.SetActivity("PASSTIME_throw_end", true);
 					npc.m_flAttackHappens = 0.0;
 					npc.SetCycle(0.4);
 					npc.SetPlaybackRate(0.0);
+					npc.AddGesture("ACT_MP_RUN_MELEE");
+					//npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flDoingAnimation = gameTime + 4.9;
 					return 3;
 				}
 			}
-			case 2:
+			case 3:
 			{
-				npc.AddActivityViaSequence("layer_taunt_bare_knuckle_beatdown_outro");	
-				npc.SetCycle(0.85);
-				npc.SetPlaybackRate(1.0);
-				npc.m_flDoingAnimation = gameTime + 0.25;
-				Delay_Attribute[npc.index] = gameTime + 2.25;
-				npc.m_iChanged_WalkCycle = 0;
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.AddActivityViaSequence("layer_taunt_bare_knuckle_beatdown_outro");	
+					npc.SetCycle(0.85);
+					npc.SetPlaybackRate(1.0);
+					npc.m_flDoingAnimation = gameTime + 0.25;
+					Delay_Attribute[npc.index] = gameTime + 0.75;
+					npc.m_iChanged_WalkCycle = 0;
+					I_cant_do_this_all_day[npc.index] = 4;
+				}
+			}
+			case 4:
+			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 400.0, _, _, true, _, false, _, Ground_pound);
 					npc.SetVelocity({0.0,0.0,-1500.0});
 					Delay_Attribute[npc.index] = gameTime + 1.0;
-					I_cant_do_this_all_day[npc.index] = 3;
+					I_cant_do_this_all_day[npc.index] = 5;
 					static float vOrigin[3], vAngles[3], tOrigin[3];
 					WorldSpaceCenter(npc.index, vOrigin);
 					vAngles[0]=90.0;
@@ -883,11 +906,10 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					CreateEarthquake(tOrigin, 0.5, 350.0, 16.0, 255.0);
 				}
 			}
-			case 3:
+			case 5:
 			{
-				if(Delay_Attribute[npc.index] < gameTime)
-					I_cant_do_this_all_day[npc.index] = 4;
 				SetEntityCollisionGroup(npc.index, 5);
+				npc.SetPlaybackRate(1.0);
 				for(int client_check=1; client_check<=MaxClients; client_check++)
 				{
 					if(IsValidClient(client_check) && Frozen_Player[client_check])
@@ -898,8 +920,10 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 						Frozen_Player[client_check]=false;
 					}
 				}
+				if(Delay_Attribute[npc.index] < gameTime)
+					I_cant_do_this_all_day[npc.index] = 6;
 			}
-			case 4:
+			case 6:
 			{
 				npc.m_flHuscarlsRushCoolDown = gameTime + 20.0;
 				npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + 6.0;
@@ -1022,13 +1046,6 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		}	
 	}
 	return 0;
-}
-
-static void SuperKnockback(int entity, int victim, float damage, int weapon)
-{
-	Huscarls npc = view_as<Huscarls>(entity);
-	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-	Custom_Knockback(npc.index, victim, 1500.0, true);
 }
 
 static void Got_it_fucking_shit(int entity, int victim, float damage, int weapon)
