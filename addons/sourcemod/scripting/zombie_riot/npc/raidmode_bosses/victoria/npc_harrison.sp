@@ -254,6 +254,11 @@ methodmap Harrison < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
+	property float m_flTimeUntillNextRailgunShots
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public Harrison(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -290,10 +295,7 @@ methodmap Harrison < CClotBody
 		ParticleSpawned[npc.index] = false;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
-		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
-		npc.m_flNextRangedAttack = GetGameTime() + 30.0;
-		npc.m_flAngerDelay = GetGameTime() + 15.0;
+		npc.m_flTimeUntillNextRailgunShots = GetGameTime() + 22.5;
 		npc.m_flTimeUntillSummonRocket = GetGameTime() + 10.0;
 		npc.m_flTimeUntillNextSummonRocket = 0.0;
 		npc.m_iOverlordComboAttack = 0;
@@ -810,7 +812,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			{
 				for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
 				{
-					if(enemy[i] && npc.m_flTimeUntillNextSummonRocket < gameTime)
+					if(enemy[i])
 					{
 						float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
 						ParticleEffectAt(vecTarget, "water_bulletsplash01", 3.0);
@@ -823,7 +825,6 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 						vecSelf[1] += GetRandomFloat(-20.0, 20.0);
 						float RocketDamage = 200.0;
 						int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
-						npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
 						if(IsValidEntity(RocketGet))
 						{
 							DataPack pack;
@@ -841,6 +842,34 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 		}
 		npc.m_flNextRangedSpecialAttackHappens = gameTime + 15.0;
 		return 1;
+	}
+	else if(npc.m_flTimeUntillNextRailgunShots < gameTime)
+	{
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float projectile_speed = 800.0;
+
+		PredictSubjectPositionForProjectiles(npc, target, projectile_speed, 40.0, vecTarget);
+		if(!Can_I_See_Enemy_Only(npc.index, target)) //cant see enemy in the predicted position, we will instead just attack normally
+		{
+			WorldSpaceCenter(target, vecTarget );
+		}
+
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		if(npc.m_iOverlordComboAttack < 6)
+		{
+			npc.m_iOverlordComboAttack += 1;
+			HarrisonInitiateLaserAttack(npc.index, vecTarget, WorldSpaceVec);
+			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
+			npc.FaceTowards(vecTarget, 20000.0);
+			npc.m_flTimeUntillNextRailgunShots = gameTime + 0.5;
+		}
+		else
+		{
+			npc.m_flTimeUntillNextRailgunShots = gameTime + 25.0;
+			npc.m_iOverlordComboAttack = 0;
+			
+		}
+		
 	}
 	else if(npc.m_flAttackHappens)
 	{
@@ -940,4 +969,146 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 		}	
 	}
 	return 0;
+}
+
+
+int HarrisonHitDetected[MAXENTITIES];
+
+void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
+{
+	float vecForward[3], vecRight[3], Angles[3];
+
+	MakeVectorFromPoints(VectorStart, VectorTarget, vecForward);
+	GetVectorAngles(vecForward, Angles);
+	GetAngleVectors(vecForward, vecForward, vecRight, VectorTarget);
+
+	Handle trace = TR_TraceRayFilterEx(VectorStart, Angles, 11, RayType_Infinite, Harrison_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		TR_GetEndPosition(VectorTarget, trace);
+		
+		float lineReduce = 10.0 * 2.0 / 3.0;
+		float curDist = GetVectorDistance(VectorStart, VectorTarget, false);
+		if (curDist > lineReduce)
+		{
+			ConformLineDistance(VectorTarget, VectorStart, VectorTarget, curDist - lineReduce);
+		}
+	}
+	delete trace;
+
+	int red = 200;
+	int green = 200;
+	int blue = 255;
+	int colorLayer4[4];
+	float diameter = float(10 * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, 100);
+	//we set colours of the differnet laser effects to give it more of an effect
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.4, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.2, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	int glowColor[4];
+	SetColorRGBA(glowColor, red, green, blue, 100);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Glow, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
+	TE_SendToAll(0.0);
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(VectorTarget[0]);
+	pack.WriteFloat(VectorTarget[1]);
+	pack.WriteFloat(VectorTarget[2]);
+	pack.WriteFloat(VectorStart[0]);
+	pack.WriteFloat(VectorStart[1]);
+	pack.WriteFloat(VectorStart[2]);
+	RequestFrames(HarrisonInitiateLaserAttack_DamagePart, 50, pack);
+}
+
+void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
+{
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		HarrisonHitDetected[i] = false;
+	}
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(entity))
+		entity = 0;
+
+	float VectorTarget[3];
+	float VectorStart[3];
+	VectorTarget[0] = pack.ReadFloat();
+	VectorTarget[1] = pack.ReadFloat();
+	VectorTarget[2] = pack.ReadFloat();
+	VectorStart[0] = pack.ReadFloat();
+	VectorStart[1] = pack.ReadFloat();
+	VectorStart[2] = pack.ReadFloat();
+
+	int red = 155;
+	int green = 155;
+	int blue = 255;
+	int colorLayer4[4];
+	float diameter = float(13 * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, 200);
+	//we set colours of the differnet laser effects to give it more of an effect
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+
+	float hullMin[3];
+	float hullMax[3];
+	hullMin[0] = -float(10);
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	Handle trace;
+	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+			
+	float CloseDamage = 150.0;
+	float FarDamage = 75.0;
+	float MaxDistance = 750.0;
+	float playerPos[3];
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (HarrisonHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		{
+			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+			float distance = GetVectorDistance(VectorStart, playerPos, false);
+			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
+			if (damage < 0)
+				damage *= -1.0;
+
+
+			SDKHooks_TakeDamage(victim, entity, entity, damage * RaidModeScaling, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
+				
+		}
+	}
+	delete pack;
+}
+
+
+public bool Harrison_BEAM_TraceUsers(int entity, int contentsMask, int client)
+{
+	if (IsEntityAlive(entity))
+	{
+		HarrisonHitDetected[entity] = true;
+	}
+	return false;
+}
+
+public bool Harrison_TraceWallsOnly(int entity, int contentsMask)
+{
+	return !entity;
 }
