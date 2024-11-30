@@ -1018,14 +1018,12 @@ static void Internal_ClotThink(int iNPC)
 			return;
 
 	int PrimaryThreatIndex = npc.m_iTarget;
-
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
-	
 	npc.AdjustWalkCycle();
 	npc.StartPathing();
 	npc.m_bPathing = true;
 	npc.PlayIdleAlertSound();
-		
+	
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		NPC_StopPathing(npc.index);
@@ -2039,6 +2037,7 @@ static void Internal_NPCDeath(int entity)
 		{
 			if(npc.Ally)
 			{
+				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 				switch(GetRandomInt(1,3))
 				{
 					case 1: Stella_Lines(npc, "Hmph, I'll let {crimson}Karlas{snow} handle this");

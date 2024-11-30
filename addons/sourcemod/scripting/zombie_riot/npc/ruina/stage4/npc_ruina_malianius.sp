@@ -271,10 +271,10 @@ static void ClotThink(int iNPC)
 		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
 		TE_SendToAll();
 
-		Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.9);	//10% resistances
+		Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.70);	//30% resistances
 
-		npc.m_flRangedArmor = 0.1;
-		npc.m_flMeleeArmor 	= 0.1;
+		npc.m_flRangedArmor = 0.25;
+		npc.m_flMeleeArmor 	= 0.25;
 
 		Fire_Random_Ion(npc);
 

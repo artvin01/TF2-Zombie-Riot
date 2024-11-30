@@ -413,7 +413,7 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = (npc.Anger ? 200.0 : 150.0);			//heavy, but slow
+		Melee.damage = (npc.Anger ? 300.0 : 200.0);			//heavy, but slow
 		Melee.bonus_dmg = (npc.Anger ? 500.0 : 250.0);
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
 		Melee.swing_speed = (npc.Anger ? 3.0 : 4.0);
@@ -446,11 +446,11 @@ static void ClotThink(int iNPC)
 
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
-	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 25);
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 250);
 }
 static void On_LaserHit(int client, int Target, int damagetype, float damage)
 {
-	Ruina_Add_Mana_Sickness(client, Target, 0.1, 50);
+	Ruina_Add_Mana_Sickness(client, Target, 0.25, 50);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {

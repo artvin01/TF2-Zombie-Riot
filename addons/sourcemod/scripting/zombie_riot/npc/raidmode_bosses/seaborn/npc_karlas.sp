@@ -109,6 +109,7 @@ static int i_dance_of_light_sword_id[MAXENTITIES][KARLAS_SWORDS_AMT];
 static float fl_dance_of_light_sword_throttle[MAXENTITIES][KARLAS_SWORDS_AMT];
 static float fl_dance_of_light_sound_spam_timer[MAXENTITIES];
 static int i_wingslot[MAXENTITIES];
+static bool b_lostOVERDRIVE[MAXENTITIES];
 
 
 void Karlas_OnMapStart_NPC()
@@ -206,9 +207,8 @@ methodmap Karlas < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-		
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayMeleeSound() {
@@ -236,10 +236,6 @@ methodmap Karlas < CClotBody
 		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);	//don't mind me, just reusing this...
 		pack.WriteString(g_TeleportSounds[sound]);
 		pack.WriteCell(EntIndexToEntRef(this.index));
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
 	}
 	public void PlayBuffSound()
 	{
@@ -425,6 +421,8 @@ methodmap Karlas < CClotBody
 		
 		if(StrContains(data, "bob") != -1)
 			b_bobwave[npc.index] = true;
+
+		b_lostOVERDRIVE[npc.index] = false;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.m_iChanged_WalkCycle = 1;
@@ -524,6 +522,30 @@ methodmap Karlas < CClotBody
 
 		func_NPCFuncWin[npc.index] = Win_Line;
 		npc.m_iNClockonState = 0;
+
+		if(StrContains(data, "overdrive") != -1)
+		{
+			CPrintToChatAll("{crimson}Karlas{snow}: >:)");
+			b_lostOVERDRIVE[npc.index] = true;
+
+			NpcSpeechBubble(npc.index, ">:)", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+
+			fl_karlas_sword_battery[npc.index] = FAR_FUTURE;
+
+			fl_karlas_armour[npc.index][0] = 0.0;
+			fl_karlas_armour[npc.index][1] = 0.0;
+
+			npc.m_flSlicerBarrageCD = FAR_FUTURE;
+
+			RaidModeTime = FAR_FUTURE;
+
+			b_NameNoTranslation[npc.index] = true;
+			c_NpcName[npc.index] = ">:)";
+
+			fl_npc_basespeed = fl_npc_basespeed*3.0;
+			npc.Anger = true;
+		}
+			
 		
 		return npc;
 	}
@@ -562,12 +584,31 @@ static void Internal_ClotThink(int iNPC)
 
 	float GameTime = GetGameTime(npc.index);
 
-	if(RaidModeTime < GetGameTime() && !npc.Ally)
+	if(RaidModeTime < GetGameTime() && !npc.Ally && !b_lostOVERDRIVE[npc.index])
 	{
-		CPrintToChatAll("{crimson}Karlas{snow}: Aya?");
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		func_NPCThink[npc.index]=INVALID_FUNCTION;
+		CPrintToChatAll("{crimson}Karlas{snow}: >:)");
+		b_lostOVERDRIVE[npc.index] = true;
+
+		NpcSpeechBubble(npc.index, ">:)", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", 696969420);
+		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 696969420);
+
+		b_NameNoTranslation[npc.index] = true;
+		RaidModeTime = FAR_FUTURE;
+		c_NpcName[npc.index] = ">:)";
+
+		fl_karlas_sword_battery[npc.index] = FAR_FUTURE;
+
+		fl_karlas_armour[npc.index][0] = 0.0169;
+		fl_karlas_armour[npc.index][1] = 0.0169;
+
+		npc.m_flSlicerBarrageCD = FAR_FUTURE;
+
+		GiveOneRevive(true);
+
+		fl_npc_basespeed = fl_npc_basespeed*3.0;
+		npc.Anger = true;
 		
 		return;
 	}
@@ -590,6 +631,12 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	if(b_lostOVERDRIVE[npc.index])
+	{
+		npc.m_flRangedArmor = 0.01699;
+		npc.m_flMeleeArmor = 0.01699;
+	}
 
 	//Set raid to this one incase the previous one has died or somehow vanished
 	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
@@ -649,13 +696,10 @@ static void Internal_ClotThink(int iNPC)
 		}
 		return;
 	}
-		
-
 	if(!IsValidEntity(RaidBossActive))
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
-
 	//we are in the process of transforming, do stuff. also using a sepereate game time so special effects don't affect the transforming stuff.
 	if(Karlas_Status(npc, GetGameTime())==0)	
 	{
@@ -748,23 +792,23 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		
 		if(Karlas_Status(npc, GameTime)!=1)
 		{
 			npc.m_flSpeed =  fl_npc_basespeed;
 			npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
 			npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
-		}
-			
-
-		
-			
+		}	
 		Karlas_Movement(npc, flDistanceToTarget, PrimaryThreatIndex);
-
 		Karlas_Aggresive_Behavior(npc, PrimaryThreatIndex, GameTime, flDistanceToTarget, vecTarget);
 	}
 
 	Blade_Logic(npc);
+
+	if(b_lostOVERDRIVE[npc.index])
+	{
+		npc.m_flRangedArmor = 0.01699;
+		npc.m_flMeleeArmor = 0.01699;
+	}
 
 	npc.PlayIdleAlertSound();
 }
@@ -798,6 +842,7 @@ static void Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 		
 		if(flDistanceToAlly < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 		{
+			NpcSpeechBubble(npc.index, "..!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			CPrintToChatAll("{crimson}Karlas{snow}: ..!");
 			HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 			HealEntityGlobal(npc.index, npc.index, -float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
@@ -1005,7 +1050,7 @@ static void Blade_Logic(Karlas npc)
 		{
 			case 2:	//Aggresive - spin around him while extended
 			{
-				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 10.0, 10.0*RaidModeScaling);
+				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 10.0*RaidModeScaling);
 			}
 			case 4:	//becomes pseudo wings. neutral state for when the things are "recharging"
 			{
@@ -1048,7 +1093,7 @@ static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
 	MakeVectorFromPoints(SelfVec, VecTarget, Ang);
 	GetVectorAngles(Ang, Ang);
 
-	float Speed = (npc.Anger ? 750.0 : 500.0);
+	float Speed = (npc.Anger ? 600.0 : 500.0);
 	float Time = 10.0;
 
 	if(NpcStats_IsEnemySilenced(npc.index))
@@ -1244,7 +1289,7 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 	}
 		
 
-	if(fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime))
+	if(!b_lostOVERDRIVE[npc.index] && (fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime)))
 	{
 		npc.m_bAllowBackWalking=true;
 		float vBackoffPos[3];
@@ -1274,8 +1319,8 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 		if(Karlas_Status(npc, GameTime)==1)
 			return;
 
-		float Swing_Speed = 1.0;
-		float Swing_Delay = 0.2;
+		float Swing_Speed = (b_lostOVERDRIVE[npc.index] ? 0.2 : 1.0);
+		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.2);
 		if(npc.m_flNextMeleeAttack < GameTime)
 		{
 
@@ -1333,9 +1378,13 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 								meleedmg *= Bonus_damage;
 							}
 							//clause ae karlas knockback
-							Custom_Knockback(npc.index, target, 900.0, true);
-							TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-							TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+							if(!b_lostOVERDRIVE[npc.index])
+							{
+								Custom_Knockback(npc.index, target, 900.0, true);
+								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+							}
+							
 						}
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
@@ -2281,6 +2330,8 @@ static void Karlas_SwordWings_Logic(Karlas npc, float npc_Vec[3])
 }
 static void Karlas_Manipulate_Sword_Location(Karlas npc, float Loc[3], float Look_Vec[3], float GameTime, float spin_speed, float dmg)
 {
+	if(b_lostOVERDRIVE[npc.index])
+		spin_speed = 20.0;
 	fl_spinning_angle[npc.index] +=spin_speed;
 
 	if(fl_spinning_angle[npc.index]>=360.0)

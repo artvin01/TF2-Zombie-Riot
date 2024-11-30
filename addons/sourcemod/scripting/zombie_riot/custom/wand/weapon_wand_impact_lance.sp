@@ -202,9 +202,9 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 					EmitSoundToAll(IMPACT_WAND_PARTICLE_LANCE_BOOM3, client, SNDCHAN_STATIC, 90, _, 1.0);
 			}
 
-			//i_ExplosiveProjectileHexArray[client] = EP_DEALS_CLUB_DAMAGE;
+			i_ExplosiveProjectileHexArray[client] = EP_DEALS_CLUB_DAMAGE;
 		
-			float damage = 250.0;
+			float damage = 200.0;
 			
 			damage *= Attributes_Get(weapon, 410, 1.0);
 
