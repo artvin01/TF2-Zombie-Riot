@@ -719,27 +719,31 @@ void NPC_ConfigSetup()
 	BeefyBones_OnMapStart_NPC();
 	BrittleBones_OnMapStart_NPC();
 	BigBones_OnMapStart_NPC();
-	SupremeSpookmasterBones_OnMapStart_NPC();
+
+	CriminalBones_OnMapStart_NPC();
+	SluggerBones_OnMapStart_NPC();
+	RattlerBones_OnMapStart_NPC();
+	MolotovBones_OnMapStart_NPC();
+	Godfather_OnMapStart_NPC();
+
+	DeckhandBones_OnMapStart_NPC();
+	PirateBones_OnMapStart_NPC();
+	FlintlockBones_OnMapStart_NPC();
+	BuccaneerBones_OnMapStart_NPC();
+	AleraiserBones_OnMapStart_NPC();
+	Captain_OnMapStart_NPC();
+
+	PeasantBones_OnMapStart_NPC();
+	SquireBones_OnMapStart_NPC();
+	ArchmageBones_OnMapStart_NPC();
+	JesterBones_OnMapStart_NPC();
 	NecromancerBones_OnMapStart_NPC();
 	SaintBones_OnMapStart_NPC();
-	BuccaneerBones_OnMapStart_NPC();
-	ArchmageBones_OnMapStart_NPC();
-	PirateBones_OnMapStart_NPC();
-	DeckhandBones_OnMapStart_NPC();
-	GrimReaper_OnMapStart_NPC();
-	AleraiserBones_OnMapStart_NPC();
 	AlchemistBones_OnMapStart_NPC();
-	SquireBones_OnMapStart_NPC();
-	JesterBones_OnMapStart_NPC();
-	MolotovBones_OnMapStart_NPC();
-	PeasantBones_OnMapStart_NPC();
-	RattlerBones_OnMapStart_NPC();
-	SluggerBones_OnMapStart_NPC();
-	CriminalBones_OnMapStart_NPC();
-	FlintlockBones_OnMapStart_NPC();
-	Godfather_OnMapStart_NPC();
-	Captain_OnMapStart_NPC();
 	Lordread_OnMapStart_NPC();
+
+	GrimReaper_OnMapStart_NPC();
+	SupremeSpookmasterBones_OnMapStart_NPC();
 	#endif
 }
 
