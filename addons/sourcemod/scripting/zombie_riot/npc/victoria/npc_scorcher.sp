@@ -135,15 +135,17 @@ methodmap VictoriaScorcher < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_drg_phlogistinator/c_drg_phlogistinator.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_torchers_trench_coat/dec23_torchers_trench_coat.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_pyro.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_degreaser/c_degreaser.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec22_firebrand/dec22_firebrand.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/fall17_firemanns_essentials/fall17_firemanns_essentials.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/hwn2023_dead_heat/hwn2023_dead_heat.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr18_tundra_top/spr18_tundra_top_pyro.mdl");
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
