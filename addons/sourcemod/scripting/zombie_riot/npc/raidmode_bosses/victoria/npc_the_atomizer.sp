@@ -1076,7 +1076,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 				{
 					if(IsValidEntity(npc.m_iWearable7))
 						RemoveEntity(npc.m_iWearable7);
-					if(!IsValidEntity(npc.m_iWearable1))
+					if(!IsValidEntity(npc.m_iWearable7))
 					{
 						float flPos[3];
 						float flAng[3];

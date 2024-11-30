@@ -775,6 +775,18 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			}
 			case 2:
 			{
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("layer_taunt_bare_knuckle_beatdown_outro");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.0);
+				npc.m_flDoingAnimation = gameTime + 1.0;
+				npc.m_iChanged_WalkCycle = 0;
+
+				if(IsValidEntity(npc.m_iWearable7))
+						RemoveEntity(npc.m_iWearable7);
 				static float vOrigin[3], vAngles[3], tOrigin[3];
 				WorldSpaceCenter(npc.index, vOrigin);
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
@@ -799,6 +811,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				}
 				else if(npc.m_flHuscarlsRushDuration < gameTime)
 				{
+					if(IsValidEntity(npc.m_iWearable7))
+						RemoveEntity(npc.m_iWearable7);
 					static float flMyPos[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
 					static float hullcheckmaxs[3];
@@ -868,6 +882,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, Got_it_fucking_shit);
 					//npc.AddActivityViaSequence("layer_PASSTIME_throw_end");
 					//npc.AddActivityViaSequence("PASSTIME_throw_end");
+					/*
 					npc.SetActivity("PASSTIME_throw_end", true);
 					npc.m_flAttackHappens = 0.0;
 					npc.SetCycle(0.4);
@@ -875,6 +890,16 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					npc.AddGesture("ACT_MP_RUN_MELEE");
 					//npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flDoingAnimation = gameTime + 4.9;
+					*/
+					if(IsValidEntity(npc.m_iWearable7))
+						RemoveEntity(npc.m_iWearable7);
+					if(!IsValidEntity(npc.m_iWearable7))
+					{
+						float flPos[3];
+						float flAng[3];
+						npc.GetAttachment("effect_hand_r", flPos, flAng);
+						npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "scout_dodge_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+					}
 					return 3;
 				}
 			}
