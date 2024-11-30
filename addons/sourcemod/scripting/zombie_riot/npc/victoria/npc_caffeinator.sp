@@ -198,9 +198,9 @@ methodmap VictorianCaffeinator < CClotBody
 
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/tw_medibot_chariot/tw_medibot_chariot.mdl");
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 0, 0, 0, 255);
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable7, 0, 0, 0, 255);
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
