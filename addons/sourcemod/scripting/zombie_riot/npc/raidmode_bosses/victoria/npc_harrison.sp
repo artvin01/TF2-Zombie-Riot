@@ -778,7 +778,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			}
 			*/
 			int enemy[MAXENTITIES];
-			GetHighDefTargets(npc, enemy, sizeof(enemy));
+			GetHighDefTargets(npc.index, enemy, sizeof(enemy));
 
 			for(int i; i < sizeof(enemy); i++)
 			{
