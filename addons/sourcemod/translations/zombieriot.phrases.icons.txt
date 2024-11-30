@@ -63,6 +63,10 @@
 	{
 		"en" 		"Leatherboots Scoutsquad's elite, the Atomizer has arrived."
 	}
+	"Harrison Arrived"
+	{
+		"en" 		"Leatherboots Scoutsquad's elite, Harrison has arrived."
+	}
 	"Vhxis arrived"
 	{
 		"en" 		"Vhxis the void keeper halts you."
