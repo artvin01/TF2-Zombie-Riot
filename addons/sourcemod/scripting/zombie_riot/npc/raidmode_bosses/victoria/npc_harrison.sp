@@ -754,7 +754,10 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			{
 				if(enemy_2[i])
 				{
-					if(IsValidEnemy(npc.index, enemy_2))
+					float PosEnemy[3];
+					int ememyTarget = enemy_2[i];
+					WorldSpaceCenter(ememyTarget, PosEnemy);
+					if(IsValidEnemy(npc.index, target))
 					{
 						npc.PlayRocketSound();
 						float vecSelf[3];
@@ -763,11 +766,11 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 						vecSelf[0] += GetRandomFloat(-15.0, 15.0);
 						vecSelf[1] += GetRandomFloat(-15.0, 15.0);
 						float RocketDamage = 200.0;
-						int RocketGet npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+						int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
 						DataPack pack;
 						CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
 						pack.WriteCell(EntIndexToEntRef(RocketGet));
-						pack.WriteCell(EntIndexToEntRef(enemy_2));
+						pack.WriteCell(EntIndexToEntRef(PosEnemy));
 					}
 				}
 			}
