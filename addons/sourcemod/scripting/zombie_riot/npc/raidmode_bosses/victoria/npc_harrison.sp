@@ -754,10 +754,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			{
 				if(enemy_2[i])
 				{
-					float PosEnemy[3];
-					int ememyTarget = enemy_2[i];
-					WorldSpaceCenter(ememyTarget, PosEnemy);
-					if(IsValidEnemy(npc.index, target))
+					if(IsValidEnemy(npc.index, enemy_2))
 					{
 						npc.PlayRocketSound();
 						float vecSelf[3];
@@ -770,7 +767,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 						DataPack pack;
 						CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
 						pack.WriteCell(EntIndexToEntRef(RocketGet));
-						pack.WriteCell(EntIndexToEntRef(PosEnemy));
+						pack.WriteCell(EntIndexToEntRef(enemy_2));
 					}
 				}
 			}
