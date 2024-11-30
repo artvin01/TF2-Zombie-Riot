@@ -750,6 +750,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 		{
 			npc.m_flTimeUntillSummonRocket = 0.0;
 
+			/*
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy_2[MAXENTITIES];
 			GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable3);
@@ -775,8 +776,38 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 					}
 				}
 			}
+			*/
+			int enemy[MAXENTITIES];
+			GetHighDefTargets(npc, enemy, sizeof(enemy));
+
+			for(int i; i < sizeof(enemy); i++)
+			{
+				if(enemy[i])
+				{
+					WorldSpaceCenter(enemy[i], vecTarget);
+					ParticleEffectAt(vecTarget, "water_bulletsplash01", 3.0);
+
+					npc.PlayHomerunSound();
+					float vecSelf[3];
+					WorldSpaceCenter(npc.index, vecSelf);
+					vecSelf[2] += 80.0;
+					vecSelf[0] += GetRandomFloat(-15.0, 15.0);
+					vecSelf[1] += GetRandomFloat(-15.0, 15.0);
+					float RocketDamage = 200.0;
+					int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+					npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
+					if(IsValidEntity(RocketGet))
+					{
+						DataPack pack;
+						CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+						pack.WriteCell(EntIndexToEntRef(RocketGet));
+						pack.WriteCell(EntIndexToEntRef(enemy[i]));
+					}
+					npc.FaceTowards(vecTarget, 99999.0);
+				}
+			}
 		}
-		npc.m_flNextRangedSpecialAttackHappens = gameTime + 35.0;
+		npc.m_flNextRangedSpecialAttackHappens = gameTime + 15.0;
 		return 1;
 	}
 	else if(npc.m_flAttackHappens)
