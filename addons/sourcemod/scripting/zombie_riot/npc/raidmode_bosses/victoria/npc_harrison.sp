@@ -141,7 +141,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
 	for (int i = 0; i < (sizeof(g_HomerunfailSounds));   i++) { PrecacheSound(g_HomerunfailSounds[i]);   }
 	PrecacheModel("models/player/sniper.mdl");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_Harrison.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -797,28 +797,25 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			*/
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy[7];
+			bool playsounds=false;
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 
 			for(int i; i < sizeof(enemy); i++)
 			{
-				int number = 1;
-				if(NpcStats_VictorianCallToArms(npc.index))
-				{
-					number = 2;
-				}
-				for(int k; k < number; k++)
+				for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
 				{
 					if(enemy[i])
 					{
 						float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
 						ParticleEffectAt(vecTarget, "water_bulletsplash01", 3.0);
-
+						playsounds=true;
+						
 						float vecSelf[3];
 						WorldSpaceCenter(npc.index, vecSelf);
 						vecSelf[2] += 80.0;
 						vecSelf[0] += GetRandomFloat(-20.0, 20.0);
 						vecSelf[1] += GetRandomFloat(-20.0, 20.0);
-						float RocketDamage = 350.0;
+						float RocketDamage = 200.0;
 						int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
 						npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
 						if(IsValidEntity(RocketGet))
@@ -832,6 +829,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 					}
 				}
 			}
+			if(playsounds)npc.PlayHomerunSound();
 			npc.m_flTimeUntillSummonRocket = gameTime + 20.0;
 		}
 		npc.m_flNextRangedSpecialAttackHappens = gameTime + 15.0;
