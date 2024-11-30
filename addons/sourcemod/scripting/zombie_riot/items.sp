@@ -713,8 +713,8 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 						}
 						//xp to give?
 						int TempCalc = Level[i];
-						if(TempCalc >= 100)
-							TempCalc = 100;
+						if(TempCalc >= 101) //fix shitty rounding to 995 xp to 1000 xp
+							TempCalc = 101;
 
 						TempCalc = LevelToXp(TempCalc) - LevelToXp(TempCalc - 1);
 						TempCalc /= 40;

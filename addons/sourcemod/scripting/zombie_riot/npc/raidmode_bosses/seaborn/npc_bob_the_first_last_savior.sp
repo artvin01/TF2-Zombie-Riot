@@ -1650,14 +1650,14 @@ static void SetupMidWave(int entity)
 
 	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgun", RoundToCeil(10.0 * MultiGlobalEnemy), 1000);
+	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgunner", RoundToCeil(10.0 * MultiGlobalEnemy), 1000);
 
 	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", RoundToCeil(5.0 * MultiGlobalEnemy), 1100);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(5.0 * MultiGlobalEnemy), 1500);
 	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(5.0 * MultiGlobalEnemy), 5000);
-	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgun", RoundToCeil(5.0 * MultiGlobalEnemy), 1000);
+	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgunner", RoundToCeil(5.0 * MultiGlobalEnemy), 1000);
 	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", RoundToCeil(5.0 * MultiGlobalEnemy), 1100);
 	AddBobEnemy(entity, "npc_combine_police_smg", _, RoundToCeil(5.0 * MultiGlobalEnemy), 700);
 	AddBobEnemy(entity, "npc_combine_police_pistol", _, RoundToCeil(5.0 * MultiGlobalEnemy), 550);
