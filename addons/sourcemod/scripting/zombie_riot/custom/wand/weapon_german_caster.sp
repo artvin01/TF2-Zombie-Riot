@@ -297,7 +297,7 @@ void Weapon_German_WandTouch(int entity, int target)
 
 		if(GermanAltModule[owner] > 1)
 		{
-			if(f_ArmorCurrosionImmunity[target] > GetGameTime())
+			if(Nymph_AllowBonusDamage(target))
 				StartBleedingTimer(target, owner, DamageWand * 0.075, 4, weapon, DMG_SLASH, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 		}
 

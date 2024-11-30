@@ -716,7 +716,7 @@ void ZR_MapStart()
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_WasRecentlyRevivedViaNonWaveClassChange);
 	Zero(f_TimeAfterSpawn);
-	Zero(f_ArmorCurrosionImmunity);
+	Zero2(f_ArmorCurrosionImmunity);
 	Reset_stats_Irene_Global();
 	Reset_stats_PHLOG_Global();
 	Irene_Map_Precache();

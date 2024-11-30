@@ -144,24 +144,25 @@ void Weapon_Nymph_ProjectileTouch(int entity, int target)
 
 		// f_LogosDebuff[target] = GetGameTime() + 5.0;
 
+	 	Elemental_AddOsmosisDamage(target, owner, RoundToCeil(f_WandDamage[entity]* 0.75));
+
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	 // base projectile damage
-		if (f_ArmorCurrosionImmunity[target] > GetGameTime())
+		if (Nymph_AllowBonusDamage(target))
 		{
 			if (IsAbilityActive[owner] == 1)
 			{
-				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	 // 100% bonus damage under necrosis burst
+				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.65, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	 // 100% bonus damage under necrosis burst
 				ClientCommand(owner, "playgamesound weapons/phlog_end.wav");
 				// PrintToChatAll("Buffed damage");
 			}
 			else
 			{
-				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.5, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	   // 50% bonus damage under necrosis burst
+				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.35, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	   // 50% bonus damage under necrosis burst
 				ClientCommand(owner, "playgamesound weapons/phlog_end.wav");
 				// PrintToChatAll("Normal damage");
 			}
 		}
 
-		// Elemental_AddNecrosisDamage(target, owner, RoundFloat(f_WandDamage[entity]), weapon); //adds elemental damage, not for this weapon, you better get a friend >:3
 
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if (particle > MaxClients)
@@ -179,4 +180,20 @@ void Weapon_Nymph_ProjectileTouch(int entity, int target)
 		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 		RemoveEntity(entity);
 	}
+}
+
+
+bool Nymph_AllowBonusDamage(int victim)
+{
+	for(int i; i < Element_Osmosis; i++)
+	{
+		if(f_ArmorCurrosionImmunity[victim][i] > GetGameTime())
+		{
+			return true;
+		}
+	}
+	if(Osmosis_CurrentlyInDebuff(victim))
+		return true;
+
+	return false;
 }

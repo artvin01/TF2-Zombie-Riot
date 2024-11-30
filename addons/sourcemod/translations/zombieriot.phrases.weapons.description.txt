@@ -4008,7 +4008,11 @@
 	}
 	"Wand of Rot Desc"
 	{
-		"en"	"Fires a slow homing projectile with medium damage. \nDeals an adinational hit of damage to enemies under an elemental debuff. \nAbility increases damage, firarate, projectile speed and passive bonus, also fires 2 projectiles."
+		"en"	"Fires a slow homing projectile with medium damage. \nDeals an adinational hit of damage to enemies under an elemental debuff. \nAbility increases damage, firarate, projectile speed and passive bonus, also fires 2 projectiles.\nDeal Osmosis Damage, see Extra Desc."
+	}
+	"Wand of Rot Desc 2"
+	{
+		"en"	"When triggered: Osmosis elemental debuff gives allies 2 second cooldown reduction on their abilities once each trigger on their active weapon."
 	}
 	"Wand of Decay Desc"
 	{
