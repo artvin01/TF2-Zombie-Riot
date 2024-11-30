@@ -600,7 +600,7 @@ void NPC_ConfigSetup()
 	VictoriaMortar_OnMapStart_NPC();
 	VictoriaBreachcart_MapStart();
 	VictoriaBombcart_Precache();
-	VictoriaBigPipe_OnMapStart_NPC();
+	VictoriaBigpipe_OnMapStart_NPC();
 	VictoriaHarbringer_OnMapStart_NPC();
 	VictoriaBirdeye_OnMapStart_NPC();
 
