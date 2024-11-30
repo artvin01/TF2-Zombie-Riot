@@ -244,6 +244,11 @@ methodmap Harrison < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		//EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	property float m_flTimeUntillSummonRocket
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public Harrison(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -281,7 +286,7 @@ methodmap Harrison < CClotBody
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
-		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
+		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
 		npc.m_flNextRangedAttack = GetGameTime() + 30.0;
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
 		npc.m_iOverlordComboAttack = 0;
@@ -425,13 +430,6 @@ static void Internal_ClotThink(int iNPC)
 		ParticleSpawned[npc.index] = true;
 	}	
 
-	if(NiceMiss[npc.index] < gameTime)
-	{
-		if(IsValidEntity(npc.m_iWearable1))
-			RemoveEntity(npc.m_iWearable1);
-		if(IsValidEntity(npc.m_iWearable7))
-			RemoveEntity(npc.m_iWearable7);
-	}
 	if(LastMann)
 	{
 		if(!npc.m_fbGunout)
@@ -732,8 +730,54 @@ void HarrisonAnimationChange(Harrison npc)
 
 int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance)
 {
-	npc.i_GunMode = 0;
+	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+	{
+		npc.i_GunMode = 0;
 
+		if(npc.m_iChanged_WalkCycle != 5) 	
+		{
+			npc.m_bisWalking = false;
+			npc.m_flSpeed = 0.0;
+			NPC_StopPathing(npc.index);
+			npc.m_iChanged_WalkCycle = 5;
+			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
+			npc.m_flTimeUntillSummonRocket = gameTime + 0.5;
+		}
+		if(npc.m_flTimeUntillSummonRocket && npc.m_flTimeUntillSummonRocket < gameTime)
+		{
+			npc.m_flTimeUntillSummonRocket = 0.0;
+
+			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+			int enemy_2[MAXENTITIES];
+			GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable3);
+			for(int i; i < sizeof(enemy_2); i++)
+			{
+				if(enemy_2[i])
+				{
+					float PosEnemy[3];
+					int ememyTarget = enemy_2[i];
+					WorldSpaceCenter(ememyTarget, PosEnemy);
+					if(IsValidEnemy(npc.index, target))
+					{
+						npc.PlayRocketSound();
+						float vecSelf[3];
+						WorldSpaceCenter(npc.index, vecSelf);
+						vecSelf[2] += 80.0;
+						vecSelf[0] += GetRandomFloat(-15.0, 15.0);
+						vecSelf[1] += GetRandomFloat(-15.0, 15.0);
+						float RocketDamage = 200.0;
+						int RocketGet npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+						DataPack pack;
+						CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+						pack.WriteCell(EntIndexToEntRef(RocketGet));
+						pack.WriteCell(EntIndexToEntRef(PosEnemy));
+					}
+				}
+			}
+		}
+		npc.m_flNextRangedSpecialAttackHappens = gameTime + 35.0;
+		return 1;
+	}
 	else if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
@@ -761,7 +805,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 							
 							WorldSpaceCenter(targetTrace, vecHit);
 
-							float damage = 35.0;
+							float damage = 70.0;
 							damage *= 1.15;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
