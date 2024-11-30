@@ -107,7 +107,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 
 - [Flaming Sarge's TF2Attribute fork](https://github.com/FlaminSarge/tf2attributes)
 - [TF2Items](https://builds.limetech.io/?project=tf2items)
-- [SteamWorks](https://github.com/KyleSanderson/SteamWorks)
+- [SteamWorks](https://users.alliedmods.net/~kyles/builds/SteamWorks/)
 - [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
 - [CBaseNpc](https://github.com/TF2-DMB/CBaseNPC)
