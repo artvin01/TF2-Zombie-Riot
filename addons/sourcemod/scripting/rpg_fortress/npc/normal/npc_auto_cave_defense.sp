@@ -61,9 +61,9 @@ public void AutomaticCaveDefense_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AutomaticCaveDefense(client, vecPos, vecAng, ally);
+	return AutomaticCaveDefense(vecPos, vecAng, team);
 }
 
 methodmap AutomaticCaveDefense < CClotBody
@@ -103,7 +103,7 @@ methodmap AutomaticCaveDefense < CClotBody
 	}
 	
 	
-	public AutomaticCaveDefense(int client, float vecPos[3], float vecAng[3], int ally)
+	public AutomaticCaveDefense(float vecPos[3], float vecAng[3], int ally)
 	{
 		AutomaticCaveDefense npc = view_as<AutomaticCaveDefense>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "300", ally, false,_,_,_,_));
 
@@ -161,8 +161,7 @@ methodmap AutomaticCaveDefense < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void AutomaticCaveDefense_ClotThink(int iNPC)
 {
 	AutomaticCaveDefense npc = view_as<AutomaticCaveDefense>(iNPC);

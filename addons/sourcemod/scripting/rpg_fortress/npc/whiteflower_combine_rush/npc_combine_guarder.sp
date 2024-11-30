@@ -20,9 +20,9 @@ void OnMapStartCombine_Guarder()
 	PrecacheSoundArray(g_ChargeExplodeIn);
 	PrecacheSoundArray(g_DoExplodeSound);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Combine_Guarder(client, vecPos, vecAng, ally);
+	return Combine_Guarder(vecPos, vecAng, team);
 }
 
 methodmap Combine_Guarder < CombineWarrior
@@ -94,7 +94,7 @@ methodmap Combine_Guarder < CombineWarrior
 			}
 		}
 	}
-	public Combine_Guarder(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Guarder(float vecPos[3], float vecAng[3], int ally)
 	{
 		Combine_Guarder npc = view_as<Combine_Guarder>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		
@@ -279,8 +279,6 @@ public void Combine_Guarder_ClotThink(int iNPC)
 				if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 				{
 					npc.PlayChargeExplode();
-					//close enough.
-					//TODO
 					npc.m_flTimeTillSelfExplode = gameTime + 1.0;
 					npc.m_flTimeTillSelfExplodeCD = gameTime + 13.0;
 					if(npc.m_iChanged_WalkCycle != 8)

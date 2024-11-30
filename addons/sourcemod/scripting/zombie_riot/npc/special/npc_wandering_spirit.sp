@@ -35,9 +35,9 @@ void WanderingSpirit_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WanderingSpirit(client, vecPos, vecAng, ally);
+	return WanderingSpirit(vecPos, vecAng, team);
 }
 
 methodmap WanderingSpirit < CClotBody
@@ -51,7 +51,7 @@ methodmap WanderingSpirit < CClotBody
 		EmitSoundToAll(g_SpookSound[GetRandomInt(0, sizeof(g_SpookSound) - 1)], entity, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public WanderingSpirit(int client, float vecPos[3], float vecAng[3], int ally)
+	public WanderingSpirit(float vecPos[3], float vecAng[3], int ally)
 	{
 		WanderingSpirit npc = view_as<WanderingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", GetSpiritHealth(), ally));
 		
@@ -232,7 +232,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 						TF2_StunPlayer(target, 0.5, 0.9, TF_STUNFLAG_SLOWDOWN);
 						UTIL_ScreenFade(target, 66, 1, FFADE_OUT, 0, 0, 0, 255);
 						npc.m_iState -= 1;
-						maxhealth /= 6;
+						maxhealth /= 5;
 						if(npc.m_iState <= 0)
 						{
 							npc.m_iState = 0;
@@ -320,7 +320,7 @@ static char[] GetSpiritHealth()
 {
 	int health = 40;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

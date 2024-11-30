@@ -54,9 +54,9 @@ void AnarchyBraindead_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnarchyBraindead(client, vecPos, vecAng, ally);
+	return AnarchyBraindead(vecPos, vecAng, team);
 }
 
 methodmap AnarchyBraindead < CClotBody
@@ -96,7 +96,7 @@ methodmap AnarchyBraindead < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public AnarchyBraindead(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyBraindead(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnarchyBraindead npc = view_as<AnarchyBraindead>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "7000", ally));
 		
@@ -122,9 +122,7 @@ methodmap AnarchyBraindead < CClotBody
 		npc.m_iOverlordComboAttack = 10;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
 		

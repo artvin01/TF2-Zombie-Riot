@@ -228,6 +228,13 @@ enum struct MarketEnum
 	bool NowEmpty;
 }
 
+enum struct SpellShort
+{
+	int Index;
+	char Display[64];
+	int Flags;
+}
+
 enum
 {
 	MENU_SPELLS = 0,
@@ -2240,9 +2247,11 @@ static void ShowMenu(int client, int page = 0)
 			ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
 			menu.SetTitle("RPG Fortress%s\nPower: %s\nLVL: %s\n \n%s (F):", CvarRPGInfiniteLevelAndAmmo.BoolValue ? " DEBUG" : "", c_Powerlevel,LVLBuffer, SkillType[client] ? "Skills" : "Items");
 
+			static SpellShort option;
+
+			ArrayList options = new ArrayList(sizeof(SpellShort));
 			int maxSkills = SkillType[client] ? 6 : 4;
 
-			int amount;
 			float gameTime = GetGameTime();
 			int length = SpellList.Length;
 			for(int i; i < length; i++)
@@ -2251,45 +2260,67 @@ static void ShowMenu(int client, int page = 0)
 				SpellList.GetArray(i, spell);
 				if(spell.Active && spell.Owner == client && spell.Skill == SkillType[client])
 				{
-					static char index[12];
-					IntToString(spell.Store, index, sizeof(index));
-
 					int cooldown = RoundToCeil(spell.Cooldown - gameTime);
 					if(!spell.Display[0] || cooldown > 999)
 					{
-						if(amount < maxSkills)
-						{
-							amount++;
-							menu.AddItem(index, spell.Display, ITEMDRAW_DISABLED);
-						}
+						strcopy(option.Display, sizeof(option.Display), spell.Display);
+						option.Index = spell.Store;
+						option.Flags = ITEMDRAW_DISABLED;
+						options.PushArray(option);
 						continue;
 					}
 
 					if(cooldown > 0)
-						Format(spell.Display, sizeof(spell.Display), "%s [%ds]", spell.Display, cooldown);
-					
-					if(++amount >= maxSkills)
 					{
-						menu.InsertItem((SkillRand[client] + i) % amount, index, spell.Display);
+						Format(option.Display, sizeof(option.Display), "%s [%ds]", spell.Display, cooldown);
 					}
 					else
 					{
-						menu.AddItem(index, spell.Display);
+						strcopy(option.Display, sizeof(option.Display), spell.Display);
 					}
+
+					option.Index = spell.Store;
+					option.Flags = ITEMDRAW_DEFAULT;
+					options.PushArray(option);
 				}
 			}
 
-			for(; amount < maxSkills; amount++)
+			length = options.Length;
+			bool random = length > maxSkills;
+
+			for(int i; i < length; i++)
 			{
-				menu.AddItem("0", "");
+				if(random)
+				{
+					int index = SkillRand[client] % length;
+					options.GetArray(index, option);
+					options.Erase(index);
+					length--;
+					i--;
+				}
+				else
+				{
+					options.GetArray(i, option);
+				}
+
+				static char index[12];
+				IntToString(option.Index, index, sizeof(index));
+
+				menu.AddItem(index, option.Display, option.Flags);
 			}
 
-			for(; amount > maxSkills; amount--)
+			delete options;
+
+			if(!random)
 			{
-				menu.RemoveItem(amount);
+				for(; length < maxSkills; length++)
+				{
+					menu.AddItem("0", "");
+				}
 			}
 
-			for(; amount < 6; amount++)
+			length = menu.ItemCount;
+			for(; length < maxSkills; length++)
 			{
 				menu.AddItem("0", "", ITEMDRAW_SPACER);
 			}

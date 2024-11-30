@@ -34,7 +34,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 	{
 		float value;
 
-		// +2% max health
+		// +20% max health
 		map.GetValue("26", value);
 
 		value += ClassHealth(WeaponClass[entity]);
@@ -48,7 +48,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 		map.GetValue("107", value);
 		map.SetValue("107", value * 0.9);
 
-		// +2% building damage
+		// +20% building damage
 		value = 1.0;
 		map.GetValue("287", value);
 		map.SetValue("287", value * 1.2);
@@ -65,7 +65,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +20% damage bonus
-			npc.m_fGunRangeBonus *= 1.2;
+			npc.m_fGunBonusDamage *= 1.2;
 
 			// +20% max health
 			int health = ReturnEntityMaxHealth(npc.index) * 6 / 5;
@@ -95,7 +95,7 @@ public void Rogue_Blademace_Weapon(int entity)
 	Attributes_SetMulti(entity, 410, 1.2);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		Attributes_SetMulti(entity, 1, 1.2);
 	}
@@ -151,7 +151,7 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 			{
 				BladeDancer = entity;
 				BladeDancerTime = GetGameTime();
-				CPrintToChatAll("{red}%N {crimson}recieved +200%% max health and +200%% damage bonus.", BladeDancer);
+				CPrintToChatAll("{red}%N {crimson}recieved +100%% max health and +100%% damage bonus.", BladeDancer);
 			}
 
 			float value;
@@ -160,7 +160,7 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 			map.GetValue("26", value);
 
 			value += ClassHealth(WeaponClass[entity]);
-			value *= 3.0;
+			value *= 2.0;
 			value -= ClassHealth(WeaponClass[entity]);
 
 			map.SetValue("26", value);
@@ -168,7 +168,7 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 			// +200% building damage
 			value = 1.0;
 			map.GetValue("287", value);
-			map.SetValue("287", value * 3.0);
+			map.SetValue("287", value * 2.0);
 		}
 	}
 }
@@ -177,13 +177,13 @@ public void Rogue_Bladedance_Weapon(int entity)
 {
 	if(BladeDancer == GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity"))
 	{
-		Attributes_SetMulti(entity, 2, 3.0);
-		Attributes_SetMulti(entity, 410, 3.0);
+		Attributes_SetMulti(entity, 2, 2.0);
+		Attributes_SetMulti(entity, 410, 2.0);
 		char buffer[36];
 		GetEntityClassname(entity, buffer, sizeof(buffer));
-		if(!StrEqual(buffer, "tf_weapon_medigun"))
+		if(StrEqual(buffer, "tf_weapon_medigun"))
 		{
-			Attributes_SetMulti(entity, 1, 3.0);
+			Attributes_SetMulti(entity, 1, 2.0);
 		}
 	}
 }
@@ -360,7 +360,7 @@ public void Rogue_BobFinal_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +15% damage bonus
-			npc.m_fGunRangeBonus *= 1.15;
+			npc.m_fGunBonusDamage *= 1.15;
 		}
 		else
 		{
@@ -381,7 +381,7 @@ public void Rogue_BobFinal_Weapon(int entity)
 
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		Attributes_SetMulti(entity, 1, 1.15);
 	}

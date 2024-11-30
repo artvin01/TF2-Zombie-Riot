@@ -71,9 +71,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/spy.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Dronianis(client, vecPos, vecAng, ally);
+	return Dronianis(vecPos, vecAng, team);
 }
 
 methodmap Dronianis < CClotBody
@@ -157,7 +157,7 @@ methodmap Dronianis < CClotBody
 	}
 	
 	
-	public Dronianis(int client, float vecPos[3], float vecAng[3], int ally)
+	public Dronianis(float vecPos[3], float vecAng[3], int ally)
 	{
 		Dronianis npc = view_as<Dronianis>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
@@ -224,8 +224,7 @@ methodmap Dronianis < CClotBody
 		return npc;
 	}
 }
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Dronianis npc = view_as<Dronianis>(iNPC);

@@ -53,9 +53,9 @@ void IsharmlaTrans_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IsharmlaTrans(client, vecPos, vecAng, ally);
+	return IsharmlaTrans(vecPos, vecAng, team);
 }
 
 methodmap IsharmlaTrans < CClotBody
@@ -85,7 +85,7 @@ methodmap IsharmlaTrans < CClotBody
 		EmitSoundToAll("ui/halloween_boss_summoned_fx.wav");
 	}
 	
-	public IsharmlaTrans(int client, float vecPos[3], float vecAng[3], int ally)
+	public IsharmlaTrans(float vecPos[3], float vecAng[3], int ally)
 	{
 		IsharmlaTrans npc = view_as<IsharmlaTrans>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.35", "45000", ally, false, true));
 		

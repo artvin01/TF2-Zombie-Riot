@@ -80,9 +80,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/scout.mdl");
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Daedalus(client, vecPos, vecAng, ally);
+	return Daedalus(vecPos, vecAng, team);
 }
 
 methodmap Daedalus < CClotBody
@@ -154,7 +154,7 @@ methodmap Daedalus < CClotBody
 	}
 	
 	
-	public Daedalus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Daedalus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Daedalus npc = view_as<Daedalus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -234,8 +234,7 @@ methodmap Daedalus < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Daedalus npc = view_as<Daedalus>(iNPC);

@@ -24,9 +24,9 @@ void BobTheTargetDummy_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return BobTheTargetDummy(client, vecPos, vecAng, ally);
+	return BobTheTargetDummy(vecPos, vecAng, team);
 }
 
 methodmap BobTheTargetDummy < CClotBody
@@ -41,7 +41,7 @@ methodmap BobTheTargetDummy < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
-	public BobTheTargetDummy(int client, float vecPos[3], float vecAng[3], int ally)
+	public BobTheTargetDummy(float vecPos[3], float vecAng[3], int ally)
 	{
 		BobTheTargetDummy npc = view_as<BobTheTargetDummy>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 		
@@ -97,8 +97,7 @@ methodmap BobTheTargetDummy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void BobTheTargetDummy_ClotThink(int iNPC)
 {
 	BobTheTargetDummy npc = view_as<BobTheTargetDummy>(iNPC);

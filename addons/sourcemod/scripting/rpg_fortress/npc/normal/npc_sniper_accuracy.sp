@@ -58,9 +58,9 @@ public void SniperAccuracy_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SniperAccuracy(client, vecPos, vecAng, ally);
+	return SniperAccuracy(vecPos, vecAng, team);
 }
 
 methodmap SniperAccuracy < CClotBody
@@ -106,7 +106,7 @@ methodmap SniperAccuracy < CClotBody
 	
 	
 	
-	public SniperAccuracy(int client, float vecPos[3], float vecAng[3], int ally)
+	public SniperAccuracy(float vecPos[3], float vecAng[3], int ally)
 	{
 		SniperAccuracy npc = view_as<SniperAccuracy>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "300", ally, false,_,_,_,_));
 		
@@ -154,8 +154,7 @@ methodmap SniperAccuracy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SniperAccuracy_ClotThink(int iNPC)
 {
 	SniperAccuracy npc = view_as<SniperAccuracy>(iNPC);

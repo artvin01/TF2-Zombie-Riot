@@ -59,9 +59,9 @@ void WinterZiberianMiner_OnMapStart_NPC()
 	Rogue_Paradox_AddWinterNPC(id);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WinterZiberianMiner(client, vecPos, vecAng, ally);
+	return WinterZiberianMiner(vecPos, vecAng, team);
 }
 
 methodmap WinterZiberianMiner < CClotBody
@@ -103,7 +103,7 @@ methodmap WinterZiberianMiner < CClotBody
 	}
 	
 	
-	public WinterZiberianMiner(int client, float vecPos[3], float vecAng[3], int ally)
+	public WinterZiberianMiner(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterZiberianMiner npc = view_as<WinterZiberianMiner>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2000", ally));
 		
@@ -124,9 +124,7 @@ methodmap WinterZiberianMiner < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(WinterZiberianMiner_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		

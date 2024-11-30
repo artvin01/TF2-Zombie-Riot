@@ -62,9 +62,9 @@ void VoidHardCrust_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return VoidHardCrust(client, vecPos, vecAng, ally, data);
+	return VoidHardCrust(vecPos, vecAng, team, data);
 }
 methodmap VoidHardCrust < CClotBody
 {
@@ -105,7 +105,7 @@ methodmap VoidHardCrust < CClotBody
 	}
 	
 	
-	public VoidHardCrust(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VoidHardCrust(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VoidHardCrust npc = view_as<VoidHardCrust>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "1500", ally));
 		
@@ -136,9 +136,7 @@ methodmap VoidHardCrust < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidHardCrust_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing(); 	
 		npc.m_flSpeed = 200.0;
 		

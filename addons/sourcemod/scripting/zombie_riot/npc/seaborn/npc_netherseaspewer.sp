@@ -44,9 +44,9 @@ void SeaSpewer_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaSpewer(client, vecPos, vecAng, ally, data);
+	return SeaSpewer(vecPos, vecAng, team, data);
 }
 
 methodmap SeaSpewer < CSeaBody
@@ -72,7 +72,7 @@ methodmap SeaSpewer < CSeaBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaSpewer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SeaSpewer(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];

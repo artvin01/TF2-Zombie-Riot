@@ -59,9 +59,9 @@ void MedicHealer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedicHealer(client, vecPos, vecAng, ally);
+	return MedicHealer(vecPos, vecAng, team);
 }
 
 methodmap MedicHealer < CClotBody
@@ -111,7 +111,7 @@ methodmap MedicHealer < CClotBody
 		
 		
 	}
-	public MedicHealer(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedicHealer(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedicHealer npc = view_as<MedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
 		
@@ -204,8 +204,7 @@ methodmap MedicHealer < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedicHealer_ClotThink(int iNPC)
 {
 	MedicHealer npc = view_as<MedicHealer>(iNPC);

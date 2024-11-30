@@ -89,9 +89,9 @@ public void XenoAcclaimedSwordsman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoAcclaimedSwordsman(client, vecPos, vecAng, ally);
+	return XenoAcclaimedSwordsman(vecPos, vecAng, team);
 }
 
 methodmap XenoAcclaimedSwordsman < CClotBody
@@ -171,7 +171,7 @@ methodmap XenoAcclaimedSwordsman < CClotBody
 	}
 	
 	
-	public XenoAcclaimedSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoAcclaimedSwordsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoAcclaimedSwordsman npc = view_as<XenoAcclaimedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "200000", ally));
 		SetVariantInt(1);
@@ -238,8 +238,7 @@ methodmap XenoAcclaimedSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoAcclaimedSwordsman_ClotThink(int iNPC)
 {
 	XenoAcclaimedSwordsman npc = view_as<XenoAcclaimedSwordsman>(iNPC);

@@ -9,14 +9,14 @@ void OnMapStartCombine_ThreatCleaner()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Combine_ThreatCleaner(client, vecPos, vecAng, ally);
+	return Combine_ThreatCleaner(vecPos, vecAng, team);
 }
 
 methodmap Combine_ThreatCleaner < CombineSoldier
 {
-	public Combine_ThreatCleaner(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_ThreatCleaner(float vecPos[3], float vecAng[3], int ally)
 	{
 		Combine_ThreatCleaner npc = view_as<Combine_ThreatCleaner>(BaseSquad(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", ally, false));
 		

@@ -75,9 +75,9 @@ int MedivalVillager_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalVillager(client, vecPos, vecAng, ally);
+	return MedivalVillager(vecPos, vecAng, team);
 }
 #define MAXTRIESVILLAGER 25
 
@@ -148,7 +148,7 @@ methodmap MedivalVillager < CClotBody
 		
 	}
 	
-	public MedivalVillager(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalVillager(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetVillagerHealth(), ally));
 		
@@ -878,7 +878,7 @@ static char[] GetVillagerHealth()
 {
 	int health = 60;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

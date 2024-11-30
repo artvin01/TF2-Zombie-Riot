@@ -87,14 +87,14 @@ static char g_MeleeMissSounds[][] = {
 	Type_Expidonsa,
 	Type_Interitus
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return TestNpcSpawn(client, vecPos, vecAng, ally);
+	return TestNpcSpawn(vecPos, vecAng, team);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return TestNpcSpawn(client, vecPos, vecAng, ally, data);
+	return TestNpcSpawn(vecPos, vecAng, team, data);
 }
 		If barracks
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
@@ -134,9 +134,9 @@ public void HeadcrabZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeadcrabZombie(client, vecPos, vecAng, ally);
+	return HeadcrabZombie(vecPos, vecAng, team);
 }
 
 methodmap HeadcrabZombie < CClotBody
@@ -197,7 +197,7 @@ methodmap HeadcrabZombie < CClotBody
 	
 	
 	
-	public HeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		HeadcrabZombie npc = view_as<HeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false));
 		
@@ -235,8 +235,7 @@ methodmap HeadcrabZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void HeadcrabZombie_ClotThink(int iNPC)
 {
 	HeadcrabZombie npc = view_as<HeadcrabZombie>(iNPC);

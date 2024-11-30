@@ -66,9 +66,9 @@ void HeavyGiant_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeavyGiant(client, vecPos, vecAng, ally);
+	return HeavyGiant(vecPos, vecAng, team);
 }
 
 methodmap HeavyGiant < CClotBody
@@ -131,7 +131,7 @@ methodmap HeavyGiant < CClotBody
 	}
 	
 	
-	public HeavyGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeavyGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyGiant npc = view_as<HeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "15000", ally, false, true));
 		
@@ -172,8 +172,7 @@ methodmap HeavyGiant < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void HeavyGiant_ClotThink(int iNPC)
 {
 	HeavyGiant npc = view_as<HeavyGiant>(iNPC);

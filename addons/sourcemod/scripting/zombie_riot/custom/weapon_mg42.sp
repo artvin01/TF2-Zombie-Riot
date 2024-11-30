@@ -25,13 +25,13 @@ public void Weapon_MG42_DoubleStrike(int client, int weapon, int StandingStill)
 	float Accuracy = Attributes_FindOnWeapon(client, weapon, 106, true, 1.0);
 	if(b_WeaponAccuracyModified[weapon] && StandingStill == 0)
 	{
-		Accuracy = (Accuracy / 0.35);
+		Accuracy = (Accuracy / 0.2);
 		Attributes_Set(weapon, 106, Accuracy);
 		b_WeaponAccuracyModified[weapon] = false;
 	}
 	else if(!b_WeaponAccuracyModified[weapon] && StandingStill > 0)
 	{
-		Accuracy = (Accuracy * 0.35);
+		Accuracy = (Accuracy * 0.2);
 		Attributes_Set(weapon, 106, Accuracy);
 		b_WeaponAccuracyModified[weapon] = true;
 	}

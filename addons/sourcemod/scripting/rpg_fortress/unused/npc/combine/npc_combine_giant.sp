@@ -3,7 +3,7 @@
 
 methodmap CombineGiant < CombineWarrior
 {
-	public CombineGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineGiant npc = view_as<CombineGiant>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", ally, false, true));
 		

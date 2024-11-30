@@ -197,10 +197,7 @@
 
 	"Syringe Gun Desc"
 	{
-		"en"		"Low Damage but very high bleed duration"
-		"fr"		"Peu de dégats, mais fais saigner pour longtemps"
-		"ru"		"Низкий урон, но очень высокая длительность кровотечения."
-		"chi"       	"低伤害，但流血持续时间非常高"
+		"en"		"Low Damage but very high bleed duration\nDeals 15%% less damage against raids."
 	}
 	"Syringe Gun Pap 1 Desc"
 	{
@@ -548,7 +545,7 @@
 	
 	"Terroriser Bomb Implanter Sniperrifle Desc"
 	{
-		"en"	"Implant a bomb onto the target you hit, press R to detonate them.\nImplant multiple for more dmg. More charge = more bombs, headshot = more bombs\nBombs dont suffer from downed dmg reduction."
+		"en"	"Implant a bomb onto the target you hit, press R to detonate them. More charge = more bombs, headshot = more bombs\nBombs dont suffer from downed dmg reduction.\nBomblimit = 200-ish"
 	}
 	"Terroriser Bomb Implanter Sniperrifle Desc PaP 1"
 	{
@@ -1236,10 +1233,7 @@
 	
 	"Fire Wand Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Shoots a more powerful Fireball."
-		"fr"	"Chaque attaque utilise du Mana. M2 lance une boule de feu."
-		"ru"	"Расходует ману при каждом выстреле. М2 - стреляет более мощным огненным шаром."
-		"chi"   "每次射击消耗法力值。M2发射更强大的火球。"
+		"en"	"Consumes mana with each shot. M2 Shoots a more powerful Fireball.\nAfterburn damage is doubled."
 	}
 	"Fire Wand Pap 1"
 	{
@@ -1374,10 +1368,7 @@
 	
 	"Elemental Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons a Earth Shattering Aimed Quake."
-		"fr"	"Chaque attaque utilise du Mana. M2 cause un tremblement de terre dirigé."
-		"ru"	"Потребляет ману с каждым выстрелом. М2 - вызывает сокрушительное направленное землетрясение."
-		"chi"   "每次射击消耗法力值。M2召唤一场震天动地的地震。"
+		"en"	"Consumes mana with each shot. M2 Summons a Earth Shattering Aimed Quake.\nApplies Elemental debuff\nBoosts bleed damage by 15%%, burn by 20%%, elemental damage applied by 30%%\nEarthquake deals 2x damage to enemies with this debuff."
 	}
 	
 	"Throwable Armor Grenade Desc"
@@ -1560,10 +1551,7 @@
 	
 	"Copium Desc"
 	{
-		"en"	"25%% melee resistance with melee equipped"
-		"fr"	"+25%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"25%% сопр. ближнему бою при использ. оружия ближнего боя."
-		"chi"   "使用近战武器时+25%%的近战抵抗"
+		"en"	"28.75%% melee resistance, 5%% ranged resistance, and 10%% extra damage with melee equipped"
 	}
 	
 	"Cocain Desc"
@@ -1735,7 +1723,7 @@
 	
 	"Magical Haste Desc"
 	{
-		"en"	"25%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana"
+		"en"	"25%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana, 7%% more mage damage."
 		"fr"	"+25%% cadence des attaques magiques, +50%% Mana maximum et regénération Mana"
 		"ru"	"На 25%% быстрее скорость огненной магии и на 50%% восстановления маны и максимальной маны"
 		"chi"   "提升25%%法杖攻速，50%%的法力回复和最大法力值"
@@ -1751,10 +1739,7 @@
 	
 	"Hastening Potion Desc"
 	{
-		"en"	"15%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana, 50+ HP and 5%% melee resistance"
-		"fr"	"+15%% cadence des attaques magiques, +50%% Mana maximum et regénération Mana, +50 santé\n+5% résistance contre les dégats corps-à-corps"
-		"ru"	"На 15%% быстрее скорость огненной магии и на 50%% восстановления маны и максимальной маны, 50+ ед. здоровья и 5%% сопр. ближнему бою"
-		"chi"   "提升15%%法杖攻速和50%%的法力回复、最大法力值，提高50生命值和获得5%%近战抗性"
+		"en"	"15%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana, 50+ HP and 5%% melee resistance, 7%% more mage damage."
 	}
 	
 	"The Bombinomicon Desc"
@@ -1767,10 +1752,7 @@
 	
 	"Betweenlands Potion Desc"
 	{
-		"en"	"20%% Faster Mage Fire Speed and 100%% Mana Regen and Max Mana, 100+ HP and 5%% melee resistance"
-		"fr"	"+20%% cadence des attaques magiques, +100%% Mana maximum et regénération Mana, +100 santé\n+5% résistance contre les dégats corps-à-corps"
-		"ru"	"На 20%% быстрее скорость огненной магии и на 100%% восстановления маны и максимальной маны, 100+ ед. здоровья и 5%% сопр. ближнему бою"
-		"chi"   "提升20%%法杖攻速和100%%的法力回复、最大法力值，提高100生命值和获得5%%近战抗性"
+		"en"	"20%% Faster Mage Fire Speed and 100%% Mana Regen and Max Mana, 100+ HP and 5%% melee resistance, 7%% more mage damage."
 	}
 	
 	"Master Sorcerer Desc"
@@ -3276,9 +3258,7 @@
 	}
 	"Broken Rapier Desc"
 	{
-		"en"	"A rapier that has been degraded to a state of hopelessness.\nUnpredictable footing: You permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot (affected by Daiquiri and Affinity).\nDestreza: Every 2nd hit speeds you up."
-		"fr"	"Cet arme peut frapper en pleine tête (affecté par Daiquiri et Affinité.)\nVoutre vitesse augmunte tous les deux coups.\nVous souffrez 20%% plus de dégats.\nUne rapière dégradé à un état de désespoir."
-		"chi"	"一把被时间摧毁的西洋剑。\n平衡失调：+20%%受到的伤害。\n精准攻击：此武器可以击中头部造成暴击。Destreza：每两次攻击会给你加速。"
+		"en"	"A rapier that has been degraded to a state of hopelessness.\nYou permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot.\nHitting speed you up\nYou have no backwards walking penalty."
 	}
 	"Bent Rapier Desc"
 	{
@@ -3438,8 +3418,6 @@
 	"Outlaw Railcannon Desc Pap 3"
 	{
 		"en"	"We found this left behind on an old rusty mad max car.\nSeems to have had significant use."
-		// todo
-		"fr"	""
 		"chi"	"我们在某个奇怪的拦车找到了这玩意。\n貌似很重要。"
 	}
 	"Outlaw Railcannon Desc Pap 4"

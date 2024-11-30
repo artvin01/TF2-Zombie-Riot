@@ -221,7 +221,7 @@ void FullMoon_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 	{	
 		return;
 	}
-	float TotalHealDoPerHit = 20.0;
+	float TotalHealDoPerHit = 15.0;
 	switch(i_Current_Pap[client])
 	{
 		case 3:

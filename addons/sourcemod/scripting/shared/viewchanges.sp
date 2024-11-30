@@ -164,6 +164,11 @@ void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = fa
 {
 	b_HideCosmeticsPlayer[client] = DontShowCosmetics;
 	i_PlayerModelOverrideIndexWearable[client] = index;
+	if(ForceNiko)
+	{
+		b_HideCosmeticsPlayer[client] = true;
+		i_PlayerModelOverrideIndexWearable[client] = NIKO_2;
+	}
 	ViewChange_Update(client, true);
 	int entity;
 	if(DontShowCosmetics)
@@ -298,6 +303,7 @@ void ViewChange_Update(int client, bool full = true)
 	if(full)
 		ViewChange_DeleteHands(client);
 	
+
 	if(b_AntiSameFrameUpdate[client][0])
 		return;
 		
@@ -307,9 +313,15 @@ void ViewChange_Update(int client, bool full = true)
 	char classname[36];
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1)
+	{
+		f_Client_BackwardsWalkPenalty[client] = f_Weapon_BackwardsWalkPenalty[weapon];
 		GetEntityClassname(weapon, classname, sizeof(classname));
+	}
 	
 	ViewChange_Switch(client, weapon, classname);
+#if defined ZR
+	SDKHooks_UpdateMarkForDeath(client);
+#endif
 }
 
 void ViewChange_Switch(int client, int active, const char[] classname)

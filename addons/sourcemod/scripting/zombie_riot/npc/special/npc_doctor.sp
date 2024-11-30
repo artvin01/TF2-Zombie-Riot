@@ -43,16 +43,15 @@ void SpecialDoctor_OnMapStart()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SpecialDoctor(client, vecPos, vecAng, ally, data);
+	return SpecialDoctor(vecPos, vecAng, team, data);
 }
 
 static char[] GetPanzerHealth()
 {
 	int health = 110;
-	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	
@@ -120,7 +119,7 @@ methodmap SpecialDoctor < CClotBody
 		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0);
 	}
 
-	public SpecialDoctor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SpecialDoctor(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", GetPanzerHealth(), ally));
 		i_NpcWeight[npc.index] = 3;

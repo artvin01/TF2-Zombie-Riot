@@ -54,7 +54,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +15% damage bonus
-			npc.m_fGunRangeBonus *= 1.15;
+			npc.m_fGunBonusDamage *= 1.15;
 
 			// +50 max health
 			int health = ReturnEntityMaxHealth(npc.index) + 50;
@@ -88,7 +88,7 @@ public void Rogue_Spearhead_Weapon(int entity)
 	Attributes_SetMulti(entity, 410, 1.15);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(StrEqual(buffer, "tf_weapon_medigun"))
 	{
 		Attributes_SetMulti(entity, 1, 1.15);
 	}

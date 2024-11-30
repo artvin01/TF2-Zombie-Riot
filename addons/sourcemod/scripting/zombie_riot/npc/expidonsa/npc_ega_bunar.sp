@@ -63,9 +63,9 @@ void EgaBunar_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return EgaBunar(client, vecPos, vecAng, ally);
+	return EgaBunar(vecPos, vecAng, team);
 }
 
 methodmap EgaBunar < CClotBody
@@ -116,7 +116,7 @@ methodmap EgaBunar < CClotBody
 	}
 	
 	
-	public EgaBunar(int client, float vecPos[3], float vecAng[3], int ally)
+	public EgaBunar(float vecPos[3], float vecAng[3], int ally)
 	{
 		EgaBunar npc = view_as<EgaBunar>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1500", ally));
 		
@@ -144,9 +144,7 @@ methodmap EgaBunar < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		

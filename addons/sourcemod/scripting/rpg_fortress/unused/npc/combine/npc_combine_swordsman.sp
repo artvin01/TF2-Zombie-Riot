@@ -3,7 +3,7 @@
 
 methodmap CombineSwordsman < CombineWarrior
 {
-	public CombineSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineSwordsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineSwordsman npc = view_as<CombineSwordsman>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		

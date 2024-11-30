@@ -82,9 +82,9 @@ void MedivalEliteSkirmisher_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalEliteSkirmisher(client, vecPos, vecAng, ally);
+	return MedivalEliteSkirmisher(vecPos, vecAng, team);
 }
 methodmap MedivalEliteSkirmisher < CClotBody
 {
@@ -146,7 +146,7 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		
 	}
 	
-	public MedivalEliteSkirmisher(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalEliteSkirmisher(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
 		SetVariantInt(1);
@@ -205,8 +205,7 @@ methodmap MedivalEliteSkirmisher < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 {
 	MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(iNPC);

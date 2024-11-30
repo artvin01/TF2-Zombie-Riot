@@ -47,9 +47,9 @@ void Iberia_Lighthouse_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaLighthouse(client, vecPos, vecAng, ally);
+	return IberiaLighthouse(vecPos, vecAng, team);
 }
 methodmap IberiaLighthouse < CClotBody
 {
@@ -103,7 +103,7 @@ methodmap IberiaLighthouse < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
-	public IberiaLighthouse(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaLighthouse(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
 		
@@ -348,7 +348,7 @@ static char[] GetBuildingHealth()
 {
 	int health = 120;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

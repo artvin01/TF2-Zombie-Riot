@@ -64,9 +64,9 @@ public void XenoSniperMain_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoSniperMain(client, vecPos, vecAng, ally);
+	return XenoSniperMain(vecPos, vecAng, team);
 }
 methodmap XenoSniperMain < CClotBody
 {
@@ -129,7 +129,7 @@ methodmap XenoSniperMain < CClotBody
 	
 	
 	
-	public XenoSniperMain(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSniperMain(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSniperMain npc = view_as<XenoSniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "22500", ally));
 		
@@ -207,8 +207,7 @@ methodmap XenoSniperMain < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSniperMain_ClotThink(int iNPC)
 {
 	XenoSniperMain npc = view_as<XenoSniperMain>(iNPC);

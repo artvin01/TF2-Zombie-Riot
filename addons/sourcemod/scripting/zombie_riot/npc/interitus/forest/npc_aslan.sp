@@ -56,9 +56,9 @@ void AslanOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Aslan(client, vecPos, vecAng, ally);
+	return Aslan(vecPos, vecAng, team);
 }
 
 methodmap Aslan < CClotBody
@@ -88,7 +88,7 @@ methodmap Aslan < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Aslan(int client, float vecPos[3], float vecAng[3], int ally)
+	public Aslan(float vecPos[3], float vecAng[3], int ally)
 	{
 		Aslan npc = view_as<Aslan>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "25000", ally));
 		

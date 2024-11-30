@@ -86,6 +86,7 @@ static const char g_MeleeMissSounds[][] = {
 static float f_PlayerScalingBuilding;
 static int i_currentwave[MAXENTITIES];
 static bool AllyIsBoundToVillage[MAXENTITIES];
+static int NPCId;
 
 void ResetBoundVillageAlly(int entity)
 {
@@ -110,12 +111,17 @@ void MedivalBuilding_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Medieval;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+int MedivalBuilding_Id()
 {
-	return MedivalBuilding(client, vecPos, vecAng, ally, data);
+	return NPCId;
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+{
+	return MedivalBuilding(vecPos, vecAng, team, data);
 }
 
 methodmap MedivalBuilding < CClotBody
@@ -175,7 +181,7 @@ methodmap MedivalBuilding < CClotBody
 		
 	}
 	
-	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public MedivalBuilding(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
 		
@@ -220,7 +226,7 @@ methodmap MedivalBuilding < CClotBody
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
-		f_PlayerScalingBuilding = float(CountPlayersOnRed());
+		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
 
 		i_currentwave[npc.index] = (ZR_GetWaveCount()+1);
 
@@ -454,7 +460,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-			if (IsValidEntity(entity) && i_NpcInternalId[entity] == MedivalVillager_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
+			if (IsValidEntity(entity) && (i_NpcInternalId[entity] == MedivalVillager_ID() || (Citizen_IsIt(entity) && view_as<Citizen>(entity).m_iClassRole == 1)) && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
 				villagerexists = true;
 			}
@@ -514,7 +520,7 @@ static char[] GetBuildingHealth()
 {
 	int health = 110;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

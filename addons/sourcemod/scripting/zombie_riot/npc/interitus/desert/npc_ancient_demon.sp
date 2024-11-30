@@ -66,9 +66,9 @@ void DesertAncientDemon_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DesertAncientDemon(client, vecPos, vecAng, ally);
+	return DesertAncientDemon(vecPos, vecAng, team);
 }
 methodmap DesertAncientDemon < CClotBody
 {
@@ -116,7 +116,7 @@ methodmap DesertAncientDemon < CClotBody
 	{
 		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
 	}
-	public DesertAncientDemon(int client, float vecPos[3], float vecAng[3], int ally)
+	public DesertAncientDemon(float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertAncientDemon npc = view_as<DesertAncientDemon>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
 		
@@ -139,9 +139,7 @@ methodmap DesertAncientDemon < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertAncientDemon_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(DesertAncientDemon_ClotThink);
 		func_NPCDeathForward[npc.index] = view_as<Function>(DesertAncientDemon_NPCDeathAlly);
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
 

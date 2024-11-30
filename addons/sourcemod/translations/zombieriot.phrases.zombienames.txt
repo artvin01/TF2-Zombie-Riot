@@ -955,6 +955,14 @@
 		"pt"		"Rebelde"
 		"nl"		"Rebel"
 	}
+	"Barney"
+	{
+		"en" 		"Barney"
+	}
+	"Alyx"
+	{
+		"en" 		"Alyx"
+	}
 	"Eagle Scout"
 	{
 		"en" 		"Eagle Scout"
@@ -3311,5 +3319,9 @@
 	"Ouroboros Ekas"
 	{
 		"en"	"Ouroboros Ekas"
+	}
+	"Bob's Duck ''Dubby''"
+	{
+		"en"	"Bob's Duck ''Dubby''"
 	}
 }

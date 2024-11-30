@@ -65,9 +65,9 @@ public void SlaveMaster_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SlaveMaster(client, vecPos, vecAng, ally, data);
+	return SlaveMaster(vecPos, vecAng, team, data);
 }
 
 methodmap SlaveMaster < CClotBody
@@ -113,7 +113,7 @@ methodmap SlaveMaster < CClotBody
 	}
 	
 	
-	public SlaveMaster(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SlaveMaster(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SlaveMaster npc = view_as<SlaveMaster>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.05", "300", ally, false,_,_,_,_));
 
@@ -176,8 +176,7 @@ methodmap SlaveMaster < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SlaveMaster_ClotThink(int iNPC)
 {
 	SlaveMaster npc = view_as<SlaveMaster>(iNPC);

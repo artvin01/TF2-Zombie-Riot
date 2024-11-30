@@ -67,9 +67,9 @@ void Scout_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Scout(client, vecPos, vecAng, ally);
+	return Scout(vecPos, vecAng, team);
 }
 methodmap Scout < CClotBody
 {
@@ -132,7 +132,7 @@ methodmap Scout < CClotBody
 	}
 	
 	
-	public Scout(int client, float vecPos[3], float vecAng[3], int ally)
+	public Scout(float vecPos[3], float vecAng[3], int ally)
 	{
 		Scout npc = view_as<Scout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -179,8 +179,7 @@ methodmap Scout < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Scout_ClotThink(int iNPC)
 {
 	Scout npc = view_as<Scout>(iNPC);

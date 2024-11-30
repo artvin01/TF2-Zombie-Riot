@@ -10,7 +10,10 @@ enum
 	Attrib_SetArchetype = 4026,
 	Attrib_SetSecondaryDelayInf = 4027,
 	Attrib_FormRes = 4028,
-	Attrib_OverrideExplodeDmgRadiusFalloff = 4029
+	Attrib_OverrideExplodeDmgRadiusFalloff = 4029,
+	Attrib_CritChance = 4030,
+	Attrib_ReviveTimeCut = 4033,
+	Attrib_ExtendExtraCashGain = 4034
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -257,6 +260,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 					HealEntityGlobal(client, client, value, 1.0, 0.0, HEAL_SELFHEAL);
 				}
 				
+		
 				value = Attributes_Get(weapon, 149, 0.0);	// bleeding duration
 				if(value)
 					StartBleedingTimer(victim, client, Attributes_Get(weapon, 2, 1.0) * 4.0, RoundFloat(value * 2.0), weapon, damagetype);

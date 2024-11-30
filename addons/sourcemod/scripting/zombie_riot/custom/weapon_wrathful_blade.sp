@@ -6,39 +6,39 @@
 //INFERNAL FURY: While holding M2, drain your health to burn everything around you and increase your melee stats.
 //Self-damage and cooldown become higher the longer it is active. When the ability ends, heal X HP for every zombie you killed while it is active,
 //at a rate of Y HP per second, up to a maximum of Z.
-static float Fury_ATKSpeed[3] = { 1.33, 1.415, 1.5 };			//Amount to multiply the user's melee attack rate while Infernal Fury is active.
-static float Fury_ResMult[3] = { 0.5, 0.4, 0.33 };				//Amount to multiply damage taken from enemies while Infernal Fury is active. This should be fairly strong, because otherwise you can't really use the ability to be aggressive because the self-damage plus the damage you're taking from the enemies will get you killed in seconds.
-static float Fury_DMGMult[3] = { 1.25, 1.33, 1.5 };				//Amount to multiply damage dealt by the user's melee attacks while Infernal Fury is active.
-static float Fury_BurnDMG[3] = { 2.0, 3.0, 4.0 };				//Base damage dealt by Infernal Fury's AOE per 0.1s. This is affected by attributes.
+static float Fury_ATKSpeed[3] = { 1.33, 1.415, 1.66 };			//Amount to multiply the user's melee attack rate while Infernal Fury is active.
+static float Fury_ResMult[3] = { 0.5, 0.4, 0.25 };				//Amount to multiply damage taken from enemies while Infernal Fury is active. This should be fairly strong, because otherwise you can't really use the ability to be aggressive because the self-damage plus the damage you're taking from the enemies will get you killed in seconds.
+static float Fury_DMGMult[3] = { 1.25, 1.33, 1.75 };			//Amount to multiply damage dealt by the user's melee attacks while Infernal Fury is active.
+static float Fury_BurnDMG[3] = { 2.0, 3.0, 5.0 };				//Base damage dealt by Infernal Fury's AOE per 0.1s. This is affected by attributes.
 static float Fury_BurnFalloff[3] = { 0.66, 0.7, 0.75 };			//Amount to multiply Infernal Fury's AOE damage for every enemy it hits.
 static float Fury_BurnRadius[3] = { 120.0, 160.0, 200.0 };		//Infernal Fury AOE radius.
-static int Fury_BurnMaxTargets[3] = { 3, 4, 5 };				//Infernal Fury max targets hit per AOE.	
+static int Fury_BurnMaxTargets[3] = { 3, 4, 6 };				//Infernal Fury max targets hit per AOE.	
 static float Fury_HPDrain_Base[3] = { 0.2, 0.5, 1.0 };			//Base damage taken by the user per 0.1s while Infernal Fury is active.
-static float Fury_HPDrain_Rise[3] = { 0.2, 0.75, 3.0 };			//Amount to increase Infernal Fury's self-damage per second while it is active.
-static float Fury_HPDrain_Max[3] = { 10.0, 30.0, 60.0 };		//Maximum self-damage taken per 0.1s while Infernal Fury is active.
-static float Fury_HPDrain_UberMult[3] = { 0.66, 0.66, 0.66 };	//Amount to multiply self-damage taken if übercharged.
-static float Fury_HealPerKill[3] = { 20.0, 25.0, 30.0 };		//Healing stored per zombie killed while Infernal Fury is active.
+static float Fury_HPDrain_Rise[3] = { 0.2, 0.75, 1.0 };			//Amount to increase Infernal Fury's self-damage per second while it is active.
+static float Fury_HPDrain_Max[3] = { 10.0, 30.0, 40.0 };		//Maximum self-damage taken per 0.1s while Infernal Fury is active.
+static float Fury_HPDrain_UberMult[3] = { 0.66, 0.66, 0.75 };	//Amount to multiply self-damage taken if übercharged.
+static float Fury_HealPerKill[3] = { 20.0, 25.0, 60.0 };		//Healing stored per zombie killed while Infernal Fury is active.
 static float Fury_MaxHeals[3] = { 1000.0, 2000.0, 3000.0 };		//Maximum healing stored per Infernal Fury usage.
 static float Fury_HealRate[3] = { 2.0, 3.0, 4.0 };				//Stored healing given per 0.1s while Infernal Fury is not active.
 static float Fury_HealRate_Penalty[3] = { 0.5, 0.5, 0.5 };		//Amount to multiply Fury_HealRate if the user has taken damage within the past 3 seconds.
 static float Fury_MinCD[3] = { 10.0, 10.0, 10.0 };				//Minimum Infernal Fury cooldown.
 static float Fury_MinCDTime[3] = { 2.0, 2.0, 2.0 };				//Maximum duration Infernal Fury can be used and still have the minimum cooldown applied.
-static float Fury_CDRaise[3] = { 0.4, 0.4, 0.4 };				//Amount to increase Infernal Fury's cooldown per 0.1s of usage past the minimum CD window.
+static float Fury_CDRaise[3] = { 0.4, 0.4, 0.33 };				//Amount to increase Infernal Fury's cooldown per 0.1s of usage past the minimum CD window.
 static float Fury_MaxCD[3] = { 120.0, 120.0, 120.0 };			//Maximum cooldown applied to Infernal Fury.
 static float Fury_CDR[3] = { 0.5, 0.5, 0.5 };					//Amount to reduce Infernal Fury's remaining cooldown upon killing a zombie while Infernal Fury is not active.
-static float Fury_MedicHealMultiplier[3] = { 0.5, 0.5, 0.5 };	//Amount to multiply healing received from outside sources during Infernal Fury.
+static float Fury_MedicHealMultiplier[3] = { 0.33, 0.33, 0.165 };	//Amount to multiply healing received from outside sources during Infernal Fury.
 
 //WRATH STRIKE: If enabled: Infernal Fury now charges up a powerful melee hit, which is given when Infernal Fury ends.
 //The longer Infernal Fury is active, the stronger this attack becomes.
 static bool Wrath_Enabled[3] = { false, false, true };			//Is Wrath Strike enabled on this PaP tier?
 static float Wrath_MinStrength[3] = { 2.0, 2.0, 2.0 };			//The minimum possible melee damage multiplier of the Wrath Strike hit.
-static float Wrath_Rise[3] = { 0.1, 0.1, 0.1 };					//Amount to increase Wrath Strike's damage multiplier per 0.1s of Infernal Fury's use-time, after the MinStrengthTime has passed.
-static float Wrath_MaxStrength[3] = { 8.0, 8.0, 8.0 };			//Maximum melee damage multiplier.
-static float Wrath_Width[3] = { 60.0, 60.0, 60.0 };				//Wrath Strike hitbox width.
-static float Wrath_Length[3] = { 120.0, 120.0, 120.0 };			//Wrath Strike hitbox length.
+static float Wrath_Rise[3] = { 0.2, 0.2, 0.2 };					//Amount to increase Wrath Strike's damage multiplier per 0.1s of Infernal Fury's use-time, after the MinStrengthTime has passed.
+static float Wrath_MaxStrength[3] = { 8.0, 8.0, 12.0 };			//Maximum melee damage multiplier.
+static float Wrath_Width[3] = { 60.0, 60.0, 80.0 };				//Wrath Strike hitbox width.
+static float Wrath_Length[3] = { 120.0, 120.0, 160.0 };			//Wrath Strike hitbox length.
 static float Wrath_MultiHitFalloff[3] = { 0.75, 0.75, 0.75 };	//Amount to multiply damage dealt by Wrath Strike per enemy hit.
 static float Wrath_Delay[3] = { 0.66, 0.66, 0.66 };				//Delay after ending Infernal Fury before Wrath Strike can be used, to prevent accidental usage.
-static int Wrath_MaxTargets[3] = { 4, 4, 4 };					//Max targets hit at once by Wrath Strike.
+static int Wrath_MaxTargets[3] = { 4, 4, 8 };					//Max targets hit at once by Wrath Strike.
 
 //GENERAL: Miscellaneous extra stats.
 static float Fury_BurningTargetsMultiplier[3] = { 1.35, 1.35, 1.35 };	//Amount to multiply melee damage dealt to burning targets (Wrath Strike does NOT benefit from this).
@@ -55,6 +55,7 @@ static float Fury_StartTime[MAXPLAYERS + 1] = { 0.0, ... };
 static float Fury_DamagedAt[MAXPLAYERS + 1] = { 0.0, ... };
 static float Fury_NextRing[MAXPLAYERS + 1] = { 0.0, ... };
 static int Fury_Tier[MAXPLAYERS + 1] = { 0, ... };
+static int Fury_Weapon[MAXPLAYERS + 1] = { -1, ... };
 static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};
 
 static int Beam_Laser;
@@ -489,6 +490,7 @@ public void Fury_AttemptUse(int client, int weapon, bool crit, int tier)
 		Wrath_HUD(client, weapon, true);
 		Fury_Tier[client] = tier;
 		Fury_StartTime[client] = GetGameTime();
+		Fury_Weapon[client] = EntIndexToEntRef(weapon);
 		Fury_CurrentHealthDrain[client] = Fury_HPDrain_Base[tier];
 		Wrath_Active[client] = false;
 		Wrath_Multiplier[client] = 1.0;
@@ -698,7 +700,7 @@ public void Fury_ApplyCooldown(int client)
 			cd = Fury_MaxCD[Fury_Tier[client]];
 	}
 
-	Ability_Apply_Cooldown(client, 2, cd);
+	Ability_Apply_Cooldown(client, 2, cd, EntRefToEntIndex(Fury_Weapon[client]));
 }
 
 public void Fury_Shout(int client)

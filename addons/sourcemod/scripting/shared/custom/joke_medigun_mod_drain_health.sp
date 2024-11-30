@@ -289,10 +289,19 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 					}
 #if defined ZR
-					if(healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
+					if(Citizen_ThatIsDowned(healTarget) || healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
 					{
-						if(!b_LeftForDead[healTarget])
+						if(healTarget <= MaxClients)
+						{
+							if(!b_LeftForDead[healTarget])
+							{
+								ReviveClientFromOrToEntity(healTarget, owner,_, 1);
+							}
+						}
+						else
+						{
 							ReviveClientFromOrToEntity(healTarget, owner,_, 1);
+						}
 					}
 					else
 #endif

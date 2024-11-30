@@ -579,6 +579,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 	
 	if(f_BuffBannerNpcBuff[attacker] > GameTime)
 		damage += basedamage * (0.25 * DamageBuffExtraScaling);
+
+	if(f_BobDuckBuff[attacker] > GameTime)
+		damage += basedamage * (0.25 * DamageBuffExtraScaling);
 	
 	//dont do reduce per player, its only 1 o 1 !!!
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)	//this doesnt get applied in groups.
@@ -782,55 +785,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	return damage;
 }
 
-bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype)
-{
-	if(attacker <= MaxClients)
-	{
-		if(i_BarbariansMind[attacker] == 1)	// Deal extra damage with melee, but none with everything else
-		{
-			int slot = -1;
-			if(IsValidEntity(weapon))
-			{
-				char classname[64];
-				GetEntityClassname(weapon, classname, sizeof(classname));
-				slot = TF2_GetClassnameSlot(classname);
-
-				if(i_OverrideWeaponSlot[weapon] != -1)
-				{
-					slot = i_OverrideWeaponSlot[weapon];
-				}
-			}	
-			bool DoNotPass = false;
-			if(IsValidEntity(weapon) && i_IsWandWeapon[weapon])
-				DoNotPass = true;
-
-			if((!DoNotPass) && (slot == 2 || (damagetype & (DMG_CLUB|DMG_SLASH)))) // if you want anything to be melee based, just give them this.
-			{
-				damage *= 1.1;
-			}
-			else
-			{
-				if(BarbariansMindNotif[attacker] < GetGameTime())
-				{
-					SetGlobalTransTarget(attacker);
-					PrintToChat(attacker,"%t", "Barbarians Mind Warning");
-					BarbariansMindNotif[attacker] = GetGameTime() + 15.0;
-				}
-				return true;
-			}
-		}
-	}
-	return false;
-}
 #endif	// ZR
 
 static stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
 {
 #if defined ZR
-	if(BarbariansMindLogic(attacker, weapon, damage, damagetype))
-	{
-		return true;
-	}
 	if(damagecustom>=TF_CUSTOM_SPELL_TELEPORT && damagecustom<=TF_CUSTOM_SPELL_BATS)
 		return true;
 
@@ -1307,12 +1266,11 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 		if(fl_TotalArmor[victim] > 1.0)
 			damage *= fl_TotalArmor[victim];
 	}
-#if defined ZR
 	if(!trueArmorOnly)
 	{
+		//this only affects NPCS!!!
 		damage *= fl_Extra_Damage[attacker];
 	}
-#endif
 }
 
 #if defined ZR
@@ -1632,6 +1590,14 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 		damage *= 3.0;
 		DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 	}
+#else
+	float CritChance = Attributes_FindOnPlayerZR(attacker, Attrib_CritChance, false, 0.0);
+	if(CritChance && GetRandomFloat(0.0, 1.0) < (CritChance))
+	{
+		damage *= 2.0;
+		DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
+	}
+
 #endif
 
 //when downed, reduce dmg
@@ -1688,6 +1654,9 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	}
 	if(f_BattilonsNpcBuff[victim] > GameTime)
 		DamageRes *= RES_BATTILONS;
+
+	if(f_BobDuckBuff[victim] > GameTime)
+		DamageRes *= 0.9;
 
 	if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.
 		DamageRes *= 0.93;
@@ -1950,6 +1919,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "⌁");
 	}
+	if (f_ElementalAmplification[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s⋔", Debuff_Adder_left);	
+	}
 	if (f_FallenWarriorDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⋡", Debuff_Adder_left);	
@@ -2163,6 +2136,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_BuffBannerNpcBuff[victim] > GameTime) //hussar!
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "↖%s", Debuff_Adder_right);
+	}
+	if(f_BobDuckBuff[victim] > GameTime) 
+	{
+		Format(Debuff_Adder_right, SizeOfChar, "BOB%s", Debuff_Adder_right);
 	}
 	if(f_AncientBannerNpcBuff[victim] > GameTime) //hussar!
 	{

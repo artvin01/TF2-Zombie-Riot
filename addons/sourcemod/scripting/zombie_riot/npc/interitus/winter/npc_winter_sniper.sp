@@ -50,9 +50,9 @@ void WinterSniper_OnMapStart_NPC()
 	Rogue_Paradox_AddWinterNPC(id);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WinterSniper(client, vecPos, vecAng, ally);
+	return WinterSniper(vecPos, vecAng, team);
 }
 
 methodmap WinterSniper < CClotBody
@@ -88,7 +88,7 @@ methodmap WinterSniper < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public WinterSniper(int client, float vecPos[3], float vecAng[3], int ally)
+	public WinterSniper(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterSniper npc = view_as<WinterSniper>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
 		
@@ -122,9 +122,7 @@ methodmap WinterSniper < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		
 		
 		int skin = 1;
