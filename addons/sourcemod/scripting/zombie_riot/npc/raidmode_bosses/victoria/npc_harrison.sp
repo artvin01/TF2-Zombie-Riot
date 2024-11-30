@@ -813,7 +813,6 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 						float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
 						ParticleEffectAt(vecTarget, "water_bulletsplash01", 3.0);
 
-						npc.PlayHomerunSound();
 						float vecSelf[3];
 						WorldSpaceCenter(npc.index, vecSelf);
 						vecSelf[2] += 80.0;
