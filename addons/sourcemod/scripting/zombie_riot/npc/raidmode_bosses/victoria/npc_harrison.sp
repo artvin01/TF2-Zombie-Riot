@@ -102,7 +102,6 @@ static const char StunballPickupeSound[][] = {
 static float FTL[MAXENTITIES];
 static float Delay_Attribute[MAXENTITIES];
 static bool DrinkPOWERUP[MAXENTITIES];
-static float NiceMiss[MAXENTITIES];
 static bool OnMiss[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
@@ -174,6 +173,11 @@ methodmap Harrison < CClotBody
 	{
 		public get()							{ return fl_NextChargeSpecialAttack[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextChargeSpecialAttack[this.index] = TempValueForProperty; }
+	}
+	property float m_flTimeUntillSummonRocket
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	public void NiceCatchKnucklehead() {
 	
@@ -290,7 +294,6 @@ methodmap Harrison < CClotBody
 		YaWeFxxked[npc.index] = false;
 		ParticleSpawned[npc.index] = false;
 		SUPERHIT[npc.index] = false;
-		NiceMiss[npc.index] = 0.0;
 		npc.m_flHarrisonRocketShotHappening = 0.0;
 		npc.f_HarrisonRailgunDelay = 35.0;
 		npc.f_HarrisonSnipeShotDelay = 25.0;
@@ -378,7 +381,7 @@ methodmap Harrison < CClotBody
 
 	//	Weapon
 		SetGlobalTransTarget(client);
-		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bonk_bat/c_bonk_bat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		CPrintToChatAll("{blue}%s{default}: Intruders in sight, I won't let the get out alive!", c_NpcName[npc.index]);
@@ -445,14 +448,6 @@ static void Internal_ClotThink(int iNPC)
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
 	}	
-
-	if(NiceMiss[npc.index] < gameTime)
-	{
-		if(IsValidEntity(npc.m_iWearable1))
-			RemoveEntity(npc.m_iWearable1);
-		if(IsValidEntity(npc.m_iWearable7))
-			RemoveEntity(npc.m_iWearable7);
-	}
 	if(LastMann)
 	{
 		if(!npc.m_fbGunout)
@@ -671,50 +666,11 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	if(!IsValidEntity(attacker))
 		return Plugin_Continue;
 	float gameTime = GetGameTime(npc.index);
-	if(NiceMiss[npc.index] > gameTime && GetRandomInt(1,100)<=40)
-	{
-		damage = 0.0;
-		float chargerPos[3];
-		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-		if(b_BoundingBoxVariant[victim] == 1)
-		{
-			chargerPos[2] += 120.0;
-		}
-		else
-		{
-			chargerPos[2] += 82.0;
-		}
-		/*int particle_power = ParticleEffectAt(chargerPos, "miss_text", 1.5);
-		SetParent(victim, particle_power);*/
-		TE_ParticleInt(g_particleMissText, chargerPos);
-		TE_SendToClient(attacker);
-		OnMiss[npc.index]=true;
-		ExtinguishTarget(npc.m_iWearable2);
-		IgniteTargetEffect(npc.m_iWearable2);
-		npc.PlayMissSound();
-		return Plugin_Handled;
-	}
 
 	if(npc.m_flHeadshotCooldown < gameTime)
 	{
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
-	}
-	int maxhealth = ReturnEntityMaxHealth(npc.index);
-	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	float ratio = float(health) / float(maxhealth);
-	if(ratio<0.33 || (float(health)-damage)<(maxhealth*0.3))
-	{
-		if(!npc.m_fbRangedSpecialOn)
-		{
-			I_cant_do_this_all_day[npc.index]=0;
-			npc.m_bFUCKYOU=true;
-			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
-			npc.m_fbRangedSpecialOn = true;
-			FTL[npc.index] += 5.0;
-			RaidModeTime += 5.0;
-			npc.m_flNextRangedAttack += 5.0;
-		}
 	}
 	
 	return Plugin_Changed;
@@ -855,61 +811,49 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 	{
 		npc.i_GunMode = 0;
 
-		if(IsValidEnemy(npc.index, target))
+		if(npc.m_iChanged_WalkCycle != 5) 	
 		{
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			npc.FaceTowards(vecTarget, 20000.0);
+			npc.m_bisWalking = false;
+			npc.m_flSpeed = 0.0;
+			NPC_StopPathing(npc.index);
+			npc.m_iChanged_WalkCycle = 5;
+			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
+			npc.m_flTimeUntillSummonRocket = gameTime + 0.5;
 		}
-		if(npc.m_flRangedSpecialDelay < gameTime)
+		if(npc.m_flTimeUntillSummonRocket && npc.m_flTimeUntillSummonRocket < gameTime)
 		{
-			if(npc.m_flAttackHappens - 0.35 > GetGameTime(npc.index))
+			npc.m_flTimeUntillSummonRocket = 0.0;
+
+			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+			int enemy_2[MAXENTITIES];
+			GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable3);
+			for(int i; i < sizeof(enemy_2); i++)
 			{
-				UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-				int enemy_2[MAXENTITIES];
-				//float pos_npc[3];
-				//float angles_useless[3];
-				float PosEnemy[3];
-				GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable8);
-				for(int i; i < sizeof(enemy_2); i++)
+				if(enemy_2[i])
 				{
-					if(enemy_2[i] < GetGameTime())
+					float PosEnemy[3];
+					int ememyTarget = enemy_2[i];
+					WorldSpaceCenter(ememyTarget, PosEnemy);
+					if(IsValidEnemy(npc.index, target))
 					{
-						int ememyTarget = enemy_2[i];
-						WorldSpaceCenter(ememyTarget, PosEnemy);
-						//float flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
-						//float SpeedToPredict = flDistanceToTarget * 2.1;
-						if(IsValidEnemy(npc.index, ememyTarget))
-						{
-							//npc.PlayRocketSound();
-							float vecSelf[3];
-							WorldSpaceCenter(npc.index, vecSelf);
-							vecSelf[2] += 50.0;
-							vecSelf[0] += GetRandomFloat(-15.0, 15.0);
-							vecSelf[1] += GetRandomFloat(-15.0, 15.0);
-							float RocketDamage = 200.0;
-							int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0, "models/buildables/sentry3_rockets.mdl");
-							DataPack pack;
-							CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-							pack.WriteCell(EntIndexToEntRef(RocketGet));
-							pack.WriteCell(EntIndexToEntRef(ememyTarget));
-						}
+						npc.PlayRocketSound();
+						float vecSelf[3];
+						WorldSpaceCenter(npc.index, vecSelf);
+						vecSelf[2] += 80.0;
+						vecSelf[0] += GetRandomFloat(-15.0, 15.0);
+						vecSelf[1] += GetRandomFloat(-15.0, 15.0);
+						float RocketDamage = 200.0;
+						int RocketGet npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+						DataPack pack;
+						CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+						pack.WriteCell(EntIndexToEntRef(RocketGet));
+						pack.WriteCell(EntIndexToEntRef(PosEnemy));
 					}
 				}
 			}
-			npc.m_flDoingAnimation = 0.0;
-		}
-		if(npc.m_flDoingAnimation < gameTime)
-		{
-			npc.m_flDoingAnimation = gameTime + 0.2;
-			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE",_,_,_,2.0);
-			npc.m_flRangedSpecialDelay = gameTime + 0.20;
-		}
-		if(npc.m_flNextRangedSpecialAttack < gameTime)
-		{
-			npc.m_flDoingAnimation = gameTime + 0.25;
-			npc.m_flNextRangedSpecialAttack = 0.0;
 		}
 	}
+	/*
 	else if(npc.f_HarrisonSnipeShotDelay < gameTime)
 	{
 		npc.i_GunMode = 1;
@@ -1092,6 +1036,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			}
 		}
 	}
+	*/
 	else if(npc.m_flAttackHappens)
 	{
 		npc.i_GunMode = 0;
@@ -1217,7 +1162,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 	return 0;
 }
 
-
+/*
 int HarrisonHitDetected[MAXENTITIES];
 
 void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
@@ -1357,6 +1302,7 @@ public bool Harrison_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
+*/
 
 void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 {
@@ -1372,12 +1318,11 @@ void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		}
-		case 0:
+		case 0: //melee
 		{
-			float flPos[3];
-			float flAng[3];
-			npc.GetAttachment("effect_hand_r", flPos, flAng);
-			npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
+			SetVariantString("1.0");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		}
 	}
 }
