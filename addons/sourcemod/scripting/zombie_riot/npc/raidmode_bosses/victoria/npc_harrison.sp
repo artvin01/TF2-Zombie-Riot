@@ -735,6 +735,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 	{
 		npc.i_GunMode = 0;
 
+		/*
 		if(npc.m_iChanged_WalkCycle != 5) 	
 		{
 			npc.m_bisWalking = false;
@@ -742,8 +743,9 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			NPC_StopPathing(npc.index);
 			npc.m_iChanged_WalkCycle = 5;
 			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
-			npc.m_flTimeUntillSummonRocket = gameTime + 0.5;
+			npc.m_flTimeUntillSummonRocket = gameTime + 1.0;
 		}
+		*/
 		if(npc.m_flTimeUntillSummonRocket && npc.m_flTimeUntillSummonRocket < gameTime)
 		{
 			npc.m_flTimeUntillSummonRocket = 0.0;
@@ -763,6 +765,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 					vecSelf[1] += GetRandomFloat(-15.0, 15.0);
 					float RocketDamage = 200.0;
 					int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+					npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
 					if(IsValidEntity(RocketGet))
 					{
 						DataPack pack;
