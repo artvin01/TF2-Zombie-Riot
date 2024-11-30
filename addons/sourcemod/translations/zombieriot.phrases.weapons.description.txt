@@ -4006,11 +4006,11 @@
 	{
 		"en"	"Attacks deal extra damage and mark the main target.\nHas a chance to explode and stun when hitting marked targets.\nAbility grants sentry buildings and a limited-ammo rocket launcher."
 	}
-	"Wand of Rot Desc"
+	"Wand of Osmosis Desc"
 	{
 		"en"	"Fires a slow homing projectile with medium damage. \nDeals an adinational hit of damage to enemies under an elemental debuff. \nAbility increases damage, firarate, projectile speed and passive bonus, also fires 2 projectiles."
 	}
-	"Wand of Decay Desc"
+	"Wand of Wand of Siphoning Desc"
 	{
 		"en"	"Increased damage and fire rate"
 	}
