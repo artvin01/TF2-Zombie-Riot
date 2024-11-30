@@ -56,7 +56,7 @@ void Aviator_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Aviator");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Aviator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aviator");
 	strcopy(data.Icon, sizeof(data.Icon), "spy");
 	data.IconCustom = false;
@@ -424,7 +424,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 				
 					npc.PlayMeleeHitSound();
 					if(target_hit <= MaxClients)
-						TF2_StunPlayer(target, 1.5, 0.9, TF_STUNFLAG_SLOWDOWN);
+						TF2_StunPlayer(target, 0.6, 0.9, TF_STUNFLAG_SLOWDOWN);
 				} 
 			}
 			delete swingTrace;
@@ -445,7 +445,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 			npc.m_flAttackHappens = gameTime + 0.25;
 			npc.m_flDoingAnimation = gameTime + 0.25;
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-			npc.m_flNextMeleeAttack = gameTime + 2.00;
+			npc.m_flNextMeleeAttack = gameTime + 5.00;
 			npc.PlayMeleeSound();
 			//We are close enough to melee attack, lets melee.
 		}
@@ -477,7 +477,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
-					view_as<CClotBody>(npc.m_iWearable3).GetAttachment("effect_hand_r", origin, angles);
+					view_as<CClotBody>(npc.m_iWearable3).GetAttachment("muzzle", origin, angles);
 					ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecHit, false );
 
 					if(IsValidEnemy(npc.index, target))
@@ -492,15 +492,15 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 				}
 				delete swingTrace;
 			}
-			npc.m_flNextRangedAttack = gameTime + 1.0;
+			npc.m_flNextRangedAttack = gameTime + 1.5;
 		}
 	}
-	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))
 	{
 		//target is too far, try to close in
 		return 0;
 	}
-	else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
+	else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 	{
 		if(Can_I_See_Enemy_Only(npc.index, target))
 		{

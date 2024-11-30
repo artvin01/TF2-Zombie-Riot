@@ -43,7 +43,7 @@ void VictoriaTaser_OnMapStart_NPC()
 	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
 	PrecacheModel("models/player/Soldier.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Taser");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Taser");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_taser");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_taser");
 	data.IconCustom = true;
