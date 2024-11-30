@@ -104,9 +104,9 @@ void MedivalManAtArms_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalManAtArms(client, vecPos, vecAng, ally);
+	return MedivalManAtArms(vecPos, vecAng, team);
 }
 methodmap MedivalManAtArms < CClotBody
 {
@@ -168,7 +168,7 @@ methodmap MedivalManAtArms < CClotBody
 		
 	}
 	
-	public MedivalManAtArms(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalManAtArms(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalManAtArms npc = view_as<MedivalManAtArms>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
 		SetVariantInt(1);
@@ -230,8 +230,7 @@ methodmap MedivalManAtArms < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalManAtArms_ClotThink(int iNPC)
 {
 	MedivalManAtArms npc = view_as<MedivalManAtArms>(iNPC);

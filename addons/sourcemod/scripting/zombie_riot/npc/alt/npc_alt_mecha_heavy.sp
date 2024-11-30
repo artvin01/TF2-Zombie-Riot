@@ -68,9 +68,9 @@ void Mecha_Heavy_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Mecha_Heavy(client, vecPos, vecAng, ally);
+	return Mecha_Heavy(vecPos, vecAng, team);
 }
 
 methodmap Mecha_Heavy < CClotBody
@@ -135,7 +135,7 @@ methodmap Mecha_Heavy < CClotBody
 	
 	
 	
-	public Mecha_Heavy(int client, float vecPos[3], float vecAng[3], int ally)
+	public Mecha_Heavy(float vecPos[3], float vecAng[3], int ally)
 	{
 		Mecha_Heavy npc = view_as<Mecha_Heavy>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.0", "5000", ally));
 		
@@ -176,8 +176,7 @@ methodmap Mecha_Heavy < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Mecha_Heavy npc = view_as<Mecha_Heavy>(iNPC);

@@ -81,9 +81,9 @@ public void SeaInfectedZombieHuman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeaInfectedZombieHuman(client, vecPos, vecAng, ally);
+	return SeaInfectedZombieHuman(vecPos, vecAng, team);
 }
 
 methodmap SeaInfectedZombieHuman < CClotBody
@@ -134,7 +134,7 @@ methodmap SeaInfectedZombieHuman < CClotBody
 	{
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public SeaInfectedZombieHuman(int client, float vecPos[3], float vecAng[3], int ally)
+	public SeaInfectedZombieHuman(float vecPos[3], float vecAng[3], int ally)
 	{
 		SeaInfectedZombieHuman npc = view_as<SeaInfectedZombieHuman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "300", ally, false, true));
 		
@@ -191,8 +191,7 @@ methodmap SeaInfectedZombieHuman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 {
 	SeaInfectedZombieHuman npc = view_as<SeaInfectedZombieHuman>(iNPC);

@@ -64,9 +64,9 @@ public void CuredPurnell_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CuredPurnell(client, vecPos, vecAng, ally);
+	return CuredPurnell(vecPos, vecAng, team);
 }
 
 //static bool BoughtGregHelp;
@@ -140,7 +140,7 @@ methodmap CuredPurnell < CClotBody
 		
 	}
 	
-	public CuredPurnell(int client, float vecPos[3], float vecAng[3], int ally)
+	public CuredPurnell(float vecPos[3], float vecAng[3], int ally)
 	{
 		CuredPurnell npc = view_as<CuredPurnell>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", "10000", ally, true, false));
 		
@@ -195,8 +195,7 @@ methodmap CuredPurnell < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void CuredPurnell_ClotThink(int iNPC)
 {
 	CuredPurnell npc = view_as<CuredPurnell>(iNPC);

@@ -11,9 +11,16 @@ public float Rogue_Encounter_Shop()
 
 	Artifact artifact;
 
-	if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+	if(GetURandomInt() % 5)
 	{
-		FirstSuperSale = true;
+		if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+		{
+			FirstSuperSale = true;
+			ShopListing.PushArray(artifact);
+		}
+	}
+	else if(Rogue_GetRandomArtfiact(artifact, true, 30) != -1)
+	{
 		ShopListing.PushArray(artifact);
 	}
 
@@ -556,7 +563,7 @@ public float Rogue_Encounter_BobFinal()
 }
 public void Rogue_Vote_BobFinal(const Vote vote, int index)
 {
-	GrantAllPlayersCredits_Rogue(3000);
+	GrantAllPlayersCredits_Rogue(1000);
 
 	switch(index)
 	{

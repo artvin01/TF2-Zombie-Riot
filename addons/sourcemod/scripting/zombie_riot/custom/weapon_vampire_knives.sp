@@ -436,6 +436,10 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	{
 		DMG_Final *= 0.65;
 	}
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		DMG_Final *= 1.15;
+	}
 	SDKHooks_TakeDamage(victim, attacker, attacker, DMG_Final, DMG_CLUB, _, _, vicloc, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 	
 	if (dist <= Radius && dieingstate[attacker] == 0)

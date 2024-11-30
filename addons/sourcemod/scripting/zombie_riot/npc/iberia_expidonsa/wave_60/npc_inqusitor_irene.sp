@@ -63,9 +63,9 @@ void Iberia_inqusitor_irene_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberiainqusitor_irene(client, vecPos, vecAng, ally);
+	return Iberiainqusitor_irene(vecPos, vecAng, team);
 }
 methodmap Iberiainqusitor_irene < CClotBody
 {
@@ -129,7 +129,7 @@ methodmap Iberiainqusitor_irene < CClotBody
 	}
 	
 	
-	public Iberiainqusitor_irene(int client, float vecPos[3], float vecAng[3], int ally)
+	public Iberiainqusitor_irene(float vecPos[3], float vecAng[3], int ally)
 	{
 		Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000000", ally));
 		
@@ -153,9 +153,7 @@ methodmap Iberiainqusitor_irene < CClotBody
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 345.0;
 		npc.m_iAttacksTillReload = 0;

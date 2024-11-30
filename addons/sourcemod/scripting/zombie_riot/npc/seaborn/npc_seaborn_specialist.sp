@@ -61,9 +61,9 @@ void SeabornSpecialist_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SeabornSpecialist(client, vecPos, vecAng, ally);
+	return SeabornSpecialist(vecPos, vecAng, team);
 }
 
 methodmap SeabornSpecialist < CClotBody
@@ -97,7 +97,7 @@ methodmap SeabornSpecialist < CClotBody
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornSpecialist(int client, float vecPos[3], float vecAng[3], int ally)
+	public SeabornSpecialist(float vecPos[3], float vecAng[3], int ally)
 	{
 		bool teleported;
 

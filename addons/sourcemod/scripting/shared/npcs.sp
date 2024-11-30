@@ -74,9 +74,15 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
 		limit = RoundToNearest(float(limit) * MaxEnemyMulti());
 
-		float f_limit = Pow(1.115, float(CountPlayersOnRed()));
+		float f_limit = Pow(1.115, ZRStocks_PlayerScalingDynamic());
 
 		f_limit *= float(limit);
+
+		//Minimum limit
+		if(f_limit <= 8.0)
+		{
+			f_limit = 8.0;
+		}
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -296,9 +302,17 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					
 					npcstats.m_bStaticNPC = enemy.Is_Static;
 					if(enemy.Is_Static && enemy.Team != TFTeam_Red)
-					{
 						AddNpcToAliveList(entity_Spawner, 1);
+					/*
+					if(!npcstats.m_bStaticNPC)
+					{
+						if(enemy.Is_Static && enemy.Team != TFTeam_Red)
+						{
+							npcstats.m_bStaticNPC = enemy.Is_Static;
+							AddNpcToAliveList(entity_Spawner, 1);
+						}
 					}
+					*/
 					//if its an ally and NOT static, itll teleport to a player!
 					if(enemy.Team == TFTeam_Red && !enemy.Is_Static)
 					{
@@ -533,7 +547,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 			
 		value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
 					
-		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
+		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //overall
 	}
 #endif
 
@@ -619,6 +633,10 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				else
 				{
 					BurnDamage[entity] = value;
+				}
+				if(f_ElementalAmplification[entity] > GetGameTime())
+				{
+					value *= 1.2;
 				}
 				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 				SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_SLASH, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
@@ -822,11 +840,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					{
 						BombsToInject *= 2;
 					}
-					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
-					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
-					i_HowManyBombsHud[victim] += BombsToInject;
-					Apply_Particle_Teroriser_Indicator(victim);
-					damage = 0.0;
+					if(i_HowManyBombsOnThisEntity[victim][attacker] + BombsToInject < 200)
+					{
+						f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
+						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+						i_HowManyBombsHud[victim] += BombsToInject;
+						Apply_Particle_Teroriser_Indicator(victim);
+						damage = 0.0;
+					}
 				}
 #endif	// ZR
 				played_headshotsound_already[attacker] = GetGameTime();
@@ -882,11 +903,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					if(BombsToInject < 1)
 						BombsToInject = 1;
 						
-					f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
-					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
-					i_HowManyBombsHud[victim] += BombsToInject;
-					Apply_Particle_Teroriser_Indicator(victim);
-					damage = 0.0;
+					if(i_HowManyBombsOnThisEntity[victim][attacker] + BombsToInject < 200)
+					{
+						f_BombEntityWeaponDamageApplied[victim][attacker] += damage_save * float(BombsToInject);
+						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+						i_HowManyBombsHud[victim] += BombsToInject;
+						Apply_Particle_Teroriser_Indicator(victim);
+						damage = 0.0;
+					}
 				}
 #endif
 
@@ -2013,6 +2037,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_LowTeslarDebuff[npc] > GameTime)
 		return true;
+	else if(f_ElementalAmplification[npc] > GameTime)
+		return true;
 	else if(f_FallenWarriorDebuff[npc] > GameTime)
 		return true;
 	else if(f_LudoDebuff[npc] > GameTime)
@@ -2076,6 +2102,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 	else if(f_BattilonsNpcBuff[npc] > GameTime)
 		return true;
 	else if(f_BuffBannerNpcBuff[npc] > GameTime)
+		return true;
+	else if(f_BobDuckBuff[npc] > GameTime)
 		return true;
 	else if(f_AncientBannerNpcBuff[npc] > GameTime)
 		return true;

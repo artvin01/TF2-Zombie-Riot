@@ -67,9 +67,9 @@ void VoidEaling_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidEaling(client, vecPos, vecAng, ally);
+	return VoidEaling(vecPos, vecAng, team);
 }
 methodmap VoidEaling < CClotBody
 {
@@ -110,7 +110,7 @@ methodmap VoidEaling < CClotBody
 	}
 	
 	
-	public VoidEaling(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidEaling(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidEaling npc = view_as<VoidEaling>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.8", "550", ally));
 		
@@ -131,9 +131,7 @@ methodmap VoidEaling < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidEaling_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 270.0;
 		

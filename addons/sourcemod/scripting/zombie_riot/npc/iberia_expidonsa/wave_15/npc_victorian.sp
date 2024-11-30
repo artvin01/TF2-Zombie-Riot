@@ -56,9 +56,9 @@ void Iberia_Victorian_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaVictorian(client, vecPos, vecAng, ally);
+	return IberiaVictorian(vecPos, vecAng, team);
 }
 methodmap IberiaVictorian < CClotBody
 {
@@ -104,7 +104,7 @@ methodmap IberiaVictorian < CClotBody
 	}
 	
 	
-	public IberiaVictorian(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaVictorian(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaVictorian npc = view_as<IberiaVictorian>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
 		
@@ -126,9 +126,7 @@ methodmap IberiaVictorian < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(IberiaVictorian_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		

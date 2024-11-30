@@ -82,9 +82,9 @@ void MedivalArbalest_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalArbalest(client, vecPos, vecAng, ally);
+	return MedivalArbalest(vecPos, vecAng, team);
 }
 
 methodmap MedivalArbalest < CClotBody
@@ -147,7 +147,7 @@ methodmap MedivalArbalest < CClotBody
 		
 	}
 	
-	public MedivalArbalest(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalArbalest(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalArbalest npc = view_as<MedivalArbalest>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "5000", ally));
 		SetVariantInt(1);
@@ -215,8 +215,7 @@ methodmap MedivalArbalest < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalArbalest_ClotThink(int iNPC)
 {
 	MedivalArbalest npc = view_as<MedivalArbalest>(iNPC);

@@ -763,7 +763,7 @@ public void DeleteBuildingLookedAt(int client)
 			{
 				if(!StrContains(buffer, "obj_"))
 				{
-					if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
+					if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") > MaxClients)
 					{
 						i_BuildingSelectedToBeDeleted[client] = EntIndexToEntRef(entity);
 						DataPack pack;
@@ -822,10 +822,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 	{
 		case MenuAction_End:
 		{
-			if(IsValidClient(client))
-			{
-				ResetStoreMenuLogic(client);	
-			}
+			delete menu;
 		}
 		case MenuAction_Cancel:
 		{
@@ -1251,11 +1248,7 @@ public int UnClaimBuildingMenu(Menu menu, MenuAction action, int client, int cho
 	{
 		case MenuAction_End:
 		{
-			if(IsValidClient(client))
-			{
-				ResetStoreMenuLogic(client);
-				i_BuildingSelectedToBeUnClaimed[client] = -1;		
-			}
+			delete menu;
 		}
 		case MenuAction_Cancel:
 		{
@@ -1308,11 +1301,7 @@ public int DeleteBuildingMenu(Menu menu, MenuAction action, int client, int choi
 	{
 		case MenuAction_End:
 		{
-			if(IsValidClient(client))
-			{
-				ResetStoreMenuLogic(client);
-				i_BuildingSelectedToBeDeleted[client] = -1;		
-			}
+			delete menu;
 		}
 		case MenuAction_Cancel:
 		{

@@ -57,9 +57,9 @@ public void XenoMedicMain_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoMedicMain(client, vecPos, vecAng, ally);
+	return XenoMedicMain(vecPos, vecAng, team);
 }
 methodmap XenoMedicMain < CClotBody
 {
@@ -112,7 +112,7 @@ methodmap XenoMedicMain < CClotBody
 	
 	
 	
-	public XenoMedicMain(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoMedicMain(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoMedicMain npc = view_as<XenoMedicMain>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
@@ -177,8 +177,7 @@ methodmap XenoMedicMain < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoMedicMain_ClotThink(int iNPC)
 {
 	XenoMedicMain npc = view_as<XenoMedicMain>(iNPC);

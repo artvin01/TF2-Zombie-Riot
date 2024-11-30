@@ -53,9 +53,9 @@ void IberiaRanka_S_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaRanka_S(client, vecPos, vecAng, ally);
+	return IberiaRanka_S(vecPos, vecAng, team);
 }
 
 methodmap IberiaRanka_S < CClotBody
@@ -100,7 +100,7 @@ methodmap IberiaRanka_S < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
-	public IberiaRanka_S(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaRanka_S(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaRanka_S npc = view_as<IberiaRanka_S>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "15000", ally, false, true));
 		
@@ -124,9 +124,7 @@ methodmap IberiaRanka_S < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(IberiaRanka_S_ClotThink);
 		Ranka_S_ArmorStick_Effect(npc.index);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		

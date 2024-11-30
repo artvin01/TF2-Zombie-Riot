@@ -52,9 +52,9 @@ void VoidBloodPollutor_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidBloodPollutor(client, vecPos, vecAng, ally);
+	return VoidBloodPollutor(vecPos, vecAng, team);
 }
 methodmap VoidBloodPollutor < CClotBody
 {
@@ -95,7 +95,7 @@ methodmap VoidBloodPollutor < CClotBody
 	}
 	
 	
-	public VoidBloodPollutor(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidBloodPollutor(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidBloodPollutor npc = view_as<VoidBloodPollutor>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "0.8", "1350", ally));
 		
@@ -116,9 +116,7 @@ methodmap VoidBloodPollutor < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidBloodPollutor_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
 		

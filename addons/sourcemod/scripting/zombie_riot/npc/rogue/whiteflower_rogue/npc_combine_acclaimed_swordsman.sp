@@ -88,9 +88,9 @@ public void AcclaimedSwordsman_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AcclaimedSwordsman(client, vecPos, vecAng, ally);
+	return AcclaimedSwordsman(vecPos, vecAng, team);
 }
 
 methodmap AcclaimedSwordsman < CClotBody
@@ -170,7 +170,7 @@ methodmap AcclaimedSwordsman < CClotBody
 	}
 	
 	
-	public AcclaimedSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public AcclaimedSwordsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		AcclaimedSwordsman npc = view_as<AcclaimedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "200000", ally));
 		SetVariantInt(1);
@@ -228,8 +228,7 @@ methodmap AcclaimedSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void AcclaimedSwordsman_ClotThink(int iNPC)
 {
 	AcclaimedSwordsman npc = view_as<AcclaimedSwordsman>(iNPC);

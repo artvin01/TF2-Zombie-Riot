@@ -709,6 +709,7 @@ void NPC_ConfigSetup()
 	ChaosInsane_OnMapStart_NPC();
 	ChaosSickKnight_OnMapStart_NPC();
 	ChaosInjuredCultist_OnMapStart_NPC();
+	DuckFollower_Setup();
 
 	// Survival
 	Nightmare_OnMapStart_NPC();
@@ -1123,7 +1124,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_necromancy_combine.sp"
 #include "zombie_riot/npc/ally/npc_necromancy_calcium.sp"
 #include "zombie_riot/npc/ally/npc_cured_last_survivor.sp"
-#include "zombie_riot/npc/ally/npc_citizen.sp"
+#include "zombie_riot/npc/ally/npc_citizen_new.sp"
 #include "zombie_riot/npc/ally/npc_allied_sensal_afterimage.sp"
 #include "zombie_riot/npc/ally/npc_allied_leper_visualiser.sp"
 #include "zombie_riot/npc/ally/npc_allied_kahml_afterimage.sp"
@@ -1571,6 +1572,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_sick_knight.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_injured_cultist.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_duck_follower.sp"
 
 #include "zombie_riot/npc/survival/npc_nightmare.sp"
 #include "zombie_riot/npc/survival/npc_petrisisbaron.sp"

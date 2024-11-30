@@ -68,9 +68,9 @@ public void Whiteflower_selected_few_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_selected_few(client, vecPos, vecAng, ally);
+	return Whiteflower_selected_few(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_selected_few < CClotBody
@@ -176,7 +176,7 @@ methodmap Whiteflower_selected_few < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
-	public Whiteflower_selected_few(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_selected_few(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -242,8 +242,7 @@ void RPGDoHealEffect(int entity, float range)
 	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 125, 0, 200, 1, 0.3, 5.0, 8.0, 3, range * 2.0);	
 	npc1.PlayHealSound();
 }
-//TODO 
-//Rewrite
+
 public void Whiteflower_selected_few_ClotThink(int iNPC)
 {
 	Whiteflower_selected_few npc = view_as<Whiteflower_selected_few>(iNPC);

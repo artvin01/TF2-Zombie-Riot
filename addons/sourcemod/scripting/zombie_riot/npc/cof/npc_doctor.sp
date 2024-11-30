@@ -45,9 +45,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("cof/purnell/meleehit.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Doctor(client, vecPos, vecAng, ally, data);
+	return Doctor(vecPos, vecAng, team, data);
 }
 methodmap Doctor < CClotBody
 {
@@ -94,7 +94,7 @@ methodmap Doctor < CClotBody
 		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_VOICE);
 	}
 	
-	public Doctor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Doctor(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Doctor npc = view_as<Doctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", data[0] == 'f' ? "200000" : "30000", ally, false, false, true));
 

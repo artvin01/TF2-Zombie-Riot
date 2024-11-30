@@ -104,9 +104,9 @@ void MedivalEagleWarrior_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalEagleWarrior(client, vecPos, vecAng, ally);
+	return MedivalEagleWarrior(vecPos, vecAng, team);
 }
 methodmap MedivalEagleWarrior < CClotBody
 {
@@ -168,7 +168,7 @@ methodmap MedivalEagleWarrior < CClotBody
 		
 	}
 	
-	public MedivalEagleWarrior(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalEagleWarrior(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalEagleWarrior npc = view_as<MedivalEagleWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1200", ally));
 		SetVariantInt(1);
@@ -229,8 +229,7 @@ methodmap MedivalEagleWarrior < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalEagleWarrior_ClotThink(int iNPC)
 {
 	MedivalEagleWarrior npc = view_as<MedivalEagleWarrior>(iNPC);

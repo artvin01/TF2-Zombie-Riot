@@ -56,9 +56,9 @@ void AnarchyAbsoluteIncinirator_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AnarchyAbsoluteIncinirator(client, vecPos, vecAng, ally);
+	return AnarchyAbsoluteIncinirator(vecPos, vecAng, team);
 }
 
 methodmap AnarchyAbsoluteIncinirator < CClotBody
@@ -100,7 +100,7 @@ methodmap AnarchyAbsoluteIncinirator < CClotBody
 	}
 	
 	
-	public AnarchyAbsoluteIncinirator(int client, float vecPos[3], float vecAng[3], int ally)
+	public AnarchyAbsoluteIncinirator(float vecPos[3], float vecAng[3], int ally)
 	{
 		AnarchyAbsoluteIncinirator npc = view_as<AnarchyAbsoluteIncinirator>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "7000", ally));
 		
@@ -126,9 +126,7 @@ methodmap AnarchyAbsoluteIncinirator < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(AnarchyAbsoluteIncinirator_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		npc.m_flMeleeArmor = 1.3;

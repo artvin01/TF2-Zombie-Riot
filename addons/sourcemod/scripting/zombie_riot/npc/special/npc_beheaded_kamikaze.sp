@@ -39,9 +39,9 @@ void BeheadedKamiKaze_OnMapStart_NPC()
 	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return BeheadedKamiKaze(client, vecPos, vecAng, ally);
+	return BeheadedKamiKaze(vecPos, vecAng, team);
 }
 
 static char[] GetBeheadedKamiKazeHealth()
@@ -98,7 +98,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		
 	}
 	
-	public BeheadedKamiKaze(int client, float vecPos[3], float vecAng[3], int ally)
+	public BeheadedKamiKaze(float vecPos[3], float vecAng[3], int ally)
 	{
 		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", GetBeheadedKamiKazeHealth(), ally));
 		
@@ -128,7 +128,6 @@ methodmap BeheadedKamiKaze < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 
-		npc.m_iState = 0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -192,8 +191,7 @@ methodmap BeheadedKamiKaze < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void BeheadedKamiKaze_ClotThink(int iNPC)
 {
 	BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(iNPC);

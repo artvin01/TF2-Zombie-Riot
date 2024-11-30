@@ -72,11 +72,6 @@ stock float fClamp(float fValue, float fMin, float fMax)
 	return fValue;
 }
 
-stock Function ValToFunc(any val)
-{
-	return val;
-}
-
 stock int GetSpellbook(int client)
 {
 	int i, entity;
@@ -256,6 +251,7 @@ void ResetReplications()
 	for(int client=1; client<=MaxClients; client++)
 	{
 		ReplicateClient_Svairaccelerate[client] = -1.0;
+		ReplicateClient_BackwardsWalk[client] = -1.0;
 		ReplicateClient_Tfsolidobjects[client] = -1;
 		ReplicateClient_RollAngle[client] = -1;
 	}
@@ -1257,9 +1253,13 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
-	
+	float DamageDeal = pack.ReadFloat();
+	if(f_ElementalAmplification[entity] > GetGameTime())
+	{
+		DamageDeal *= 1.15;
+	}
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, customtype);
+	SDKHooks_TakeDamage(entity, client, client, DamageDeal, damagetype, weapon, _, pos, false, customtype);
 
 	entity = pack.ReadCell();
 	if(entity < 1)
@@ -2908,6 +2908,38 @@ int CountPlayersOnRed(int alive = 0, bool saved = false)
 	return amount;
 	
 }
+#if defined ZR
+
+//alot is  borrowed from CountPlayersOnRed
+float ZRStocks_PlayerScalingDynamic(float rebels = 0.5)
+{
+	//dont be 0
+	float ScaleReturn = 0.01;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		{
+			if(Database_IsCached(client) && Level[client] <= 30)
+			{
+				float CurrentLevel = float(Level[client]);
+				CurrentLevel += 30.0;
+				//so lvl 0 is atleast resulting in 0.5 Scaling
+				ScaleReturn += (CurrentLevel / 60.0);
+			}
+			else
+			{
+				ScaleReturn += 1.0;
+			}
+		}
+	}
+
+	if(rebels)
+		ScaleReturn += Citizen_Count() * rebels;
+	
+	return ScaleReturn;
+}
+
+#endif
 
 
 int CountPlayersOnServer()

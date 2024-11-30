@@ -97,9 +97,9 @@ void MedivalSonOfOsiris_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalSonOfOsiris(client, vecPos, vecAng, ally);
+	return MedivalSonOfOsiris(vecPos, vecAng, team);
 }
 static bool b_EntityHitByLightning[MAXENTITIES];
 
@@ -151,7 +151,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 
 	}
 	
-	public MedivalSonOfOsiris(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalSonOfOsiris(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSonOfOsiris npc = view_as<MedivalSonOfOsiris>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "750000", ally));
 		SetVariantInt(1);
@@ -171,6 +171,14 @@ methodmap MedivalSonOfOsiris < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeScaling = 3.0;
+			RaidAllowsBuildings = true;
+		}
+
 		func_NPCDeath[npc.index] = MedivalSonOfOsiris_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MedivalSonOfOsiris_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalSonOfOsiris_ClotThink;
@@ -208,8 +216,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalSonOfOsiris_ClotThink(int iNPC)
 {
 	MedivalSonOfOsiris npc = view_as<MedivalSonOfOsiris>(iNPC);

@@ -81,9 +81,9 @@ public void Whiteflower_OutlanderLeader_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_OutlanderLeader(client, vecPos, vecAng, ally);
+	return Whiteflower_OutlanderLeader(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_OutlanderLeader < CClotBody
@@ -205,7 +205,7 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
-	public Whiteflower_OutlanderLeader(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_OutlanderLeader(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_OutlanderLeader npc = view_as<Whiteflower_OutlanderLeader>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -254,8 +254,7 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 	}
 	
 }
-//TODO 
-//Rewrite
+
 public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 {
 	Whiteflower_OutlanderLeader npc = view_as<Whiteflower_OutlanderLeader>(iNPC);

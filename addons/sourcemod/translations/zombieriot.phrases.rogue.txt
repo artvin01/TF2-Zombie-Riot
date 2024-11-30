@@ -1531,8 +1531,7 @@
 	}
 	"Bladedance Desc"
 	{
-		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}One player at a time will receive +200%% max health and +200%% damage bonus."
-		"ru"	"Артефакт, оставленный членом «Багровой труппы».\n{green}Один игрок за раз получает +200%% макс. запаса здоровья и +200%% бонуса к урону."
+		"en"	"An artifact left behind by a casino onwer.\n{green}One player at a time will receive +100%% max health and +100%% damage bonus."
 	}
 	"Whiteflower"
 	{

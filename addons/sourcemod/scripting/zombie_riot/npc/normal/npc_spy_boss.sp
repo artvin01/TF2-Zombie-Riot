@@ -103,9 +103,9 @@ void SpyMainBoss_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SpyMainBoss(client, vecPos, vecAng, ally);
+	return SpyMainBoss(vecPos, vecAng, team);
 }
 methodmap SpyMainBoss < CClotBody
 {
@@ -196,7 +196,7 @@ methodmap SpyMainBoss < CClotBody
 		
 	}
 
-	public SpyMainBoss(int client, float vecPos[3], float vecAng[3], int ally)
+	public SpyMainBoss(float vecPos[3], float vecAng[3], int ally)
 	{
 		SpyMainBoss npc = view_as<SpyMainBoss>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "500000", ally));
 		
@@ -281,8 +281,7 @@ methodmap SpyMainBoss < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SpyMainBoss_ClotThink(int iNPC)
 {
 	SpyMainBoss npc = view_as<SpyMainBoss>(iNPC);

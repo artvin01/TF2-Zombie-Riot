@@ -30,7 +30,7 @@ static void ApplyBuilderAttributes(DataPack pack)
 		Attributes_SetMulti(weapon, 97, attack_speed);
 
 		float damage = Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
-		damage *= 3.0;
+		damage *= 0.75;
 
 		Attributes_Set(weapon, 2, damage);
 	}
@@ -59,21 +59,7 @@ void Walter_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		
 		if(i_HowManyBombsOnThisEntity[victim][attacker] < 1)
 		{
-			/*
-			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-			{
-				int npc = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-				if (IsValidEntity(npc) && !b_NpcHasDied[npc] && GetTeam(npc) != TFTeam_Red)
-				{
-					if(i_HowManyBombsOnThisEntity[npc][attacker] > 0)
-					{
-						i_HowManyBombsHud[npc] = 0;
-						i_HowManyBombsOnThisEntity[npc][attacker] = 0;
-						f_BombEntityWeaponDamageApplied[npc][attacker] = 0.0;
-					}
-				}
-			}
-			*/
+
 			f_BombEntityWeaponDamageApplied[victim][attacker] += damage * 1.75;
 			i_HowManyBombsOnThisEntity[victim][attacker] += 1;
 			i_HowManyBombsHud[victim] += 1;
@@ -88,20 +74,22 @@ void Walter_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		if(explosiveDawn || (GetURandomInt() % 20) > 16)
 		{
 			EmitSoundToAll(TRIP_ARMED, victim, _, 85);
-			Cause_Terroriser_Explosion(attacker, victim, false, WalterExplodeBefore);
+			Cause_Terroriser_Explosion(attacker, victim, false/*, WalterExplodeBefore*/);
 		}
 	}
 
 	if(explosiveDawn)
-		damage *= 2.2;	// Skill bonus
+		damage *= 2.0;	// Skill bonus
 }
+
+/*
 
 static float WalterExplodeBefore(int attacker, int victim, float &damage, int weapon)
 {
-	FreezeNpcInTime(victim, 1.0);
+	FreezeNpcInTime(victim, 0.35);
 	return 0.0;
 }
-
+*/
 static Action Weapon_Walter_Timer(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -208,7 +196,7 @@ static Action Timer_Walter_Summon(Handle timer, int userid)
 				SetEntProp(obj.index, Prop_Data, "m_iRepairMax", 0);
 				SetEntProp(obj.index, Prop_Data, "m_iRepair", 0);
 				GiveBuildingMetalCostOnBuy(entity, 0);
-				Building_PlayerWieldsBuilding(client, entity);
+				//Building_PlayerWieldsBuilding(client, entity);
 				Barracks_UpdateEntityUpgrades(entity, client, true);
 			}
 		}

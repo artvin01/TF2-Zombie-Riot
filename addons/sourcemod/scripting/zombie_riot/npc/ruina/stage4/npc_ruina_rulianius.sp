@@ -70,9 +70,9 @@ static void ClotPrecache()
 	Zero(i_damage_taken);
 	PrecacheModel("models/player/soldier.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Rulianius(client, vecPos, vecAng, ally);
+	return Rulianius(vecPos, vecAng, team);
 }
 static float fl_npc_basespeed;
 methodmap Rulianius < CClotBody
@@ -134,7 +134,7 @@ methodmap Rulianius < CClotBody
 	
 	
 	
-	public Rulianius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Rulianius(float vecPos[3], float vecAng[3], int ally)
 	{
 		Rulianius npc = view_as<Rulianius>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "25000", ally));
 		
@@ -235,8 +235,7 @@ methodmap Rulianius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Rulianius npc = view_as<Rulianius>(iNPC);

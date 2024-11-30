@@ -70,9 +70,9 @@ void ChaosSickKnight_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ChaosSickKnight(client, vecPos, vecAng, ally);
+	return ChaosSickKnight(vecPos, vecAng, team);
 }
 methodmap ChaosSickKnight < CClotBody
 {
@@ -166,7 +166,7 @@ methodmap ChaosSickKnight < CClotBody
 		EmitSoundToAll(g_CoughRandom[GetRandomInt(0, sizeof(g_CoughRandom) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	
-	public ChaosSickKnight(int client, float vecPos[3], float vecAng[3], int ally)
+	public ChaosSickKnight(float vecPos[3], float vecAng[3], int ally)
 	{
 		ChaosSickKnight npc = view_as<ChaosSickKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "1500", ally, false, true));
 		
@@ -196,9 +196,7 @@ methodmap ChaosSickKnight < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ChaosSickKnight_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.m_flHeavyResPhaseCooldown = GetGameTime() + 10.0;
 		npc.m_flViolentCaughingCooldown = GetGameTime() + 30.0;
 		npc.StartPathing();

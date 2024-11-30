@@ -137,7 +137,7 @@ void ChaosKahmlstein_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return ChaosKahmlstein(client, vecPos, vecAng, team, data);
+	return ChaosKahmlstein(vecPos, vecAng, team, data);
 }
 
 methodmap ChaosKahmlstein < CClotBody
@@ -247,7 +247,7 @@ methodmap ChaosKahmlstein < CClotBody
 		EmitSoundToAll("misc/halloween/spell_blast_jump.wav", this.index, SNDCHAN_STATIC, 120, _, 3.0);	
 	}
 	
-	public ChaosKahmlstein(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public ChaosKahmlstein(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		ChaosKahmlstein npc = view_as<ChaosKahmlstein>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,_)); //giant!
 		i_NpcWeight[npc.index] = 4;
@@ -276,9 +276,7 @@ methodmap ChaosKahmlstein < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ChaosKahmlstein_ClotThink);
 
 
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		npc.i_GunMode = 0;

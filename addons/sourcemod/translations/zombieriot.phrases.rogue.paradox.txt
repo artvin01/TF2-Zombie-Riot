@@ -410,7 +410,7 @@
 	}
 	"Frozen Whetstone Desc"
 	{
-		"en"	"The stone's surface is smooth as ice.\n{green}One player at a time will receive +200%% max health and +200%% damage bonus"
+		"en"	"The stone's surface is smooth as ice.\n{green}One player at a time will receive +100%% max health and +100%% damage bonus"
 	}
 	"Clairvoyant's Reveal"
 	{
@@ -500,6 +500,15 @@
 	{
 		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shop encounters no longer appear"
 	}
+	"Bob's Duck"
+	{
+		"en"	"Bob's Duck"
+	}
+	"Bob's Duck Desc"
+	{
+		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25%% damage bonus, +25%% max health, +15%% firing speed, +15%% reload speed, +10%% damage resistance, Whoever the duck follows gains insane buffs."
+	}
+
 	"Missing Mountains"
 	{
 		"en"	"Missing Mountains"

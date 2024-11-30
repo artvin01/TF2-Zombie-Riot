@@ -9,14 +9,14 @@ void OnMapStartCombine_Dreadlander()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Combine_Dreadlander(client, vecPos, vecAng, ally);
+	return Combine_Dreadlander(vecPos, vecAng, team);
 }
 
 methodmap Combine_Dreadlander < CombineSoldier
 {
-	public Combine_Dreadlander(int client, float vecPos[3], float vecAng[3], int ally)
+	public Combine_Dreadlander(float vecPos[3], float vecAng[3], int ally)
 	{
 		Combine_Dreadlander npc = view_as<Combine_Dreadlander>(BaseSquad(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", ally, false));
 		

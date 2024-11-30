@@ -38,9 +38,9 @@ void Iberia_Beacon_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return IberiaBeacon(client, vecPos, vecAng, ally);
+	return IberiaBeacon(vecPos, vecAng, team);
 }
 methodmap IberiaBeacon < CClotBody
 {
@@ -69,7 +69,7 @@ methodmap IberiaBeacon < CClotBody
 		EmitSoundToAll(g_GiveArmor[GetRandomInt(0, sizeof(g_GiveArmor) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public IberiaBeacon(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaBeacon(float vecPos[3], float vecAng[3], int ally)
 	{
 		IberiaBeacon npc = view_as<IberiaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.15", GetBuildingHealth(), ally));
 		
@@ -201,7 +201,7 @@ static char[] GetBuildingHealth()
 	int health = 25;
 	
 //	Dont scale with players, dumb idea.
-//	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+//	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

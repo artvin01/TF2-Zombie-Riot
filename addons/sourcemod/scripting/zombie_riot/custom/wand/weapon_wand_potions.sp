@@ -506,7 +506,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 	{
 		if(!b_NpcIsInvulnerable[enemy])
 		{
-			f_BombEntityWeaponDamageApplied[enemy][owner] += damage / 6.0;
+			f_BombEntityWeaponDamageApplied[enemy][owner] += damage / 12.0;
 			i_HowManyBombsOnThisEntity[enemy][owner] += 1;
 			i_HowManyBombsHud[enemy] += 1;
 			Apply_Particle_Teroriser_Indicator(enemy);
@@ -569,6 +569,7 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 	
 	TonicBuff_CD[client] = GetGameTime() + 10.0;
 	SDKhooks_SetManaRegenDelayTime(client, 10.0);
+	TonicBuff_CD[client] = Mana_Regen_Delay[client];
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 	
@@ -590,7 +591,7 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 		if(client != target && IsClientInGame(target) && IsPlayerAlive(target))
 		{
 			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < 40000) // 200 HU
+			if(GetVectorDistance(pos1, pos2, true) < 40000 && TonicBuff[target] < GetGameTime()) // 200 HU
 			{
 				i_ExtraPlayerPoints[client] += 10;
 
@@ -805,10 +806,10 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 	{
 		if(!ShrinkOnlyOneTarget && f_RaidShrinkImmunity[enemy] < GetGameTime())
 		{
-			float time = 4.0;
+			float time = 3.0;
 			if(b_thisNpcIsARaid[enemy])
 			{
-				time = 3.0;
+				time = 1.5;
 			}
 			f_RaidShrinkImmunity[enemy] = GetGameTime() + (time * 3.0);
 			ShrinkOnlyOneTarget = true;
@@ -839,6 +840,7 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 		}
 		
 		f_PotionShrinkEffect[enemy] = FAR_FUTURE;
+		Stock_TakeDamage(enemy, owner, owner, GetEntProp(enemy, Prop_Data, "m_iHealth") / 2.0, DMG_SLASH, weapon);
 	}
 }
 public Action Weapon_Wand_PotionEndShrink(Handle timer, DataPack pack)

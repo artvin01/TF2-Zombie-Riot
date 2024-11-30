@@ -115,9 +115,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/internius/messenger.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return TheMessenger(client, vecPos, vecAng, ally, data);
+	return TheMessenger(vecPos, vecAng, team, data);
 }
 methodmap TheMessenger < CClotBody
 {
@@ -222,7 +222,7 @@ methodmap TheMessenger < CClotBody
 		
 	}
 	
-	public TheMessenger(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public TheMessenger(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		TheMessenger npc = view_as<TheMessenger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		
@@ -254,9 +254,7 @@ methodmap TheMessenger < CClotBody
 
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, TheMessenger_OnTakeDamagePost);
 
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.i_GunMode = 0;
@@ -307,7 +305,7 @@ methodmap TheMessenger < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
@@ -1002,7 +1000,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 					float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 					npc.FaceTowards(vecTarget, 20000.0);
 					int projectile;
-					float Proj_Damage = 18.0 * RaidModeScaling;
+					float Proj_Damage = 22.0 * RaidModeScaling;
 					if(ZR_GetWaveCount()+1 <= 15)
 						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", false);
 					else
@@ -1282,7 +1280,7 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 			GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_vecAbsOrigin", vecHitPart);
 
 			int projectile;
-			float Proj_Damage = 18.0 * RaidModeScaling;
+			float Proj_Damage = 22.0 * RaidModeScaling;
 			if(ZR_GetWaveCount()+1 <= 15)
 				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", false,_,true, vecHitPart);
 			else
