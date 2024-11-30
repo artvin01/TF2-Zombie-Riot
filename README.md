@@ -105,7 +105,7 @@ For both linux and Windows, not all linux gamedata might be here.
 
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
-- [Flaming Sarge's TF2Attribute fork]([https://github.com/nosoop/tf2attributes](https://github.com/FlaminSarge/tf2attributes/releases/tag/v1.7.3.3))
+- [Flaming Sarge's TF2Attribute fork](https://github.com/FlaminSarge/tf2attributes/releases/tag/v1.7.3.3)
 - [TF2Items](https://builds.limetech.io/?project=tf2items)
 - [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
