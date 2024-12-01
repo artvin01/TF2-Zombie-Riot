@@ -58,6 +58,7 @@ public void Weapon_Nymph_M1(int client, int weapon, bool &result, int slot)
 		int	  projectile;
 		if (IsAbilityActive[client] == 1)
 		{
+			damage *= 0.65;
 			for (int HowOften = 0; HowOften <= 1; HowOften++)
 			{
 				GetClientEyeAngles(client, Angles);
