@@ -878,7 +878,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			npc.m_flNextRangedAttack = gameTime + 0.1;
 			npc.PlayRangedSound();
 					
-			float flPos[3]; GetEntPropVector(npc.index, Prop_Data, "head", flPos);
+			float flPos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 			float flPosEdit[3]; 
 			flPosEdit = flPos;
 			flPosEdit[0] += 10.0;
