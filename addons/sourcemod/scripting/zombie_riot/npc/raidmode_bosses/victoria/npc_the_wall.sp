@@ -72,7 +72,7 @@ void Huscarls_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Huscarls");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_wall");
-	strcopy(data.Icon, sizeof(data.Icon), "sensal_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "huscarls_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -553,12 +553,12 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					npc.AddActivityViaSequence("=taunt_soviet_showoff");
+					npc.AddActivityViaSequence("taunt_soviet_showoff");
 					npc.m_flAttackHappens = 0.0;
-					npc.SetCycle(0.8);
+					npc.SetCycle(0.6);
 					npc.SetPlaybackRate(1.2);
 					npc.m_flDoingAnimation = gameTime + 1.0;
-					Delay_Attribute[npc.index] = gameTime + 1.5;
+					Delay_Attribute[npc.index] = gameTime + 1.8;
 					I_cant_do_this_all_day[npc.index] = 1;
 				}
 				case 1:
