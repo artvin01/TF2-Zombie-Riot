@@ -380,6 +380,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 
 #if defined ZR
 					OnTakeDamage_HandOfElderMages(attacker, weapon);
+					OsmosisElementalEffect_Detection(attacker, victim);
 #endif
 
 #if !defined RTS
@@ -1937,6 +1938,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "⌁");
 	}
+	if (f_ElementalAmplification[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s⋔", Debuff_Adder_left);	
+	}
 	if (f_FallenWarriorDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⋡", Debuff_Adder_left);	
@@ -2009,6 +2014,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 #endif
 
+	if(Osmosis_CurrentlyInDebuff(victim))
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s⟁", Debuff_Adder_left);		
+	}
 	if(IgniteFor[victim] > 0) //burn
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s~", Debuff_Adder_left);			
@@ -2091,6 +2100,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	else if(f_VoidAfflictionStrength[victim] > GameTime)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "v%s", Debuff_Adder_right);
+	}
+	else if (f_VoidAfflictionStandOn[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "⌄%s", Debuff_Adder_left);
 	}
 	if(Increaced_Overall_damage_Low[victim] > GameTime)
 	{

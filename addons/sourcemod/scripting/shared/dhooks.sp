@@ -37,6 +37,7 @@ static bool Dont_Move_Allied_Npc;											//dont move buildings
 
 static bool b_LagCompNPC;
 
+//static DynamicHook HookCreateFakeClientStuff;
 static DynamicHook HookItemIterateAttribute;
 static ArrayList RawEntityHooks;
 static int m_bOnlyIterateItemViewAttributes;
@@ -140,7 +141,10 @@ void DHook_Setup()
 	{
 		SetFailState("Failed to create hook CBaseEntity::UpdateTransmitState() offset from ZR gamedata!");
 	}
+
+//	HookCreateFakeClientStuff			= DHookCreateEx(gamedata, "CVEngineServer::CreateFakeClientEx",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, Create_FakeClientExPre);
 	
+
 	ForceRespawn = DynamicHook.FromConf(gamedata, "CBasePlayer::ForceRespawn");
 	if(!ForceRespawn)
 		LogError("[Gamedata] Could not find CBasePlayer::ForceRespawn");
@@ -1140,10 +1144,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #if !defined RTS
 		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
+			
 			//dont be solid to buildings
 			if(i_IsABuilding[entity2] && GetTeam(entity2) == TFTeam_Red)
 				return false;
-			
+
 			///????? i dont know
 			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == TFTeam_Red)
 			{	
@@ -1155,6 +1160,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			
 		}
 #endif
 	}
@@ -1338,7 +1344,11 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
+#if defined ZR
+				//if its a downed citizen, dont!!!
+				if(!Citizen_ThatIsDowned(baseboss_index_allied))
+#endif
+					b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
 			}
 		}
 	}
@@ -1394,6 +1404,21 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	return MRES_Supercede;
 }
 
+/*
+void Dhook_BotFastNow(int bot)
+{
+	if(HookCreateFakeClientStuff)
+	{
+		int RawHookGive = DHookRaw(HookCreateFakeClientStuff, true, view_as<Address>(baseNPC.GetBody()));
+	}
+}
+public MRESReturn Create_FakeClientExPre(Address pThis, Handle hReturn, Handle hParams)			  
+{ 
+	//this sets the fakebot to true.
+	DHookSetParam(hParams, 2, true);
+	return MRES_Supercede; 
+}
+*/
 void DHook_HookClient(int client)
 {
 

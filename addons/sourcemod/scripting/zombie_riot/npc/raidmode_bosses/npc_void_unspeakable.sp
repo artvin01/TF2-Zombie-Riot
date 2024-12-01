@@ -144,6 +144,11 @@ methodmap VoidUnspeakable < CClotBody
 		public get()							{ return fl_NextRangedAttack[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextRangedAttack[this.index] = TempValueForProperty; }
 	}
+	property int m_iPlayerScaledStart
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
 	property float m_flVoidMatterAbosorbInternalCD
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
@@ -184,6 +189,11 @@ methodmap VoidUnspeakable < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+	property float m_flMaxDeath
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
 	}
 	
 	
@@ -308,6 +318,7 @@ methodmap VoidUnspeakable < CClotBody
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
+		npc.m_iPlayerScaledStart = CountPlayersOnRed();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
@@ -561,12 +572,55 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 		AlreadySaidLastmann = true;
 		CPrintToChatAll("{purple}It grins. Wide.");
 	}
-	if(RaidModeTime < GetGameTime())
+	if(!npc.m_flMaxDeath && RaidModeTime < GetGameTime())
 	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		npc.m_flMaxDeath = 1.0;
+	//	ForcePlayerLoss();
+	//	RaidBossActive = INVALID_ENT_REFERENCE;
+	//	func_NPCThink[npc.index] = INVALID_FUNCTION;
 		CPrintToChatAll("{purple}It laughs at your incompetence.");
+		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 1.85);
+		RaidModeScaling *= 5.0;
+		fl_Extra_Speed[npc.index] *= 2.0;
+		fl_Extra_MeleeArmor[npc.index] *= 0.1;
+		fl_Extra_RangedArmor[npc.index] *= 0.1;
+		
+		if(FogEntity != INVALID_ENT_REFERENCE)
+		{
+			int entity = EntRefToEntIndex(FogEntity);
+			if(entity > MaxClients)
+				RemoveEntity(entity);
+			
+			FogEntity = INVALID_ENT_REFERENCE;
+		}
+		
+		int entity = CreateEntityByName("env_fog_controller");
+		if(entity != -1)
+		{
+			DispatchKeyValue(entity, "fogblend", "2");
+			DispatchKeyValue(entity, "fogcolor", "50 0 50 150");
+			DispatchKeyValue(entity, "fogcolor2", "50 0 50 150");
+			DispatchKeyValueFloat(entity, "fogstart", 200.0);
+			DispatchKeyValueFloat(entity, "fogend", 500.0);
+			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.99);
+
+			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
+			DispatchKeyValue(entity, "fogenable", "1");
+			DispatchKeyValue(entity, "spawnflags", "1");
+			DispatchSpawn(entity);
+			AcceptEntityInput(entity, "TurnOn");
+
+			FogEntity = EntIndexToEntRef(entity);
+
+			for(int client1 = 1; client1 <= MaxClients; client1++)
+			{
+				if(IsClientInGame(client1))
+				{
+					SetVariantString("rpg_fortress_envfog");
+					AcceptEntityInput(client1, "SetFogController");
+				}
+			}
+		}
 		return;
 	}
 
@@ -591,7 +645,7 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 
-	if(ZR_GetWaveCount()+1 > 25 && VoidUnspeakable_MatterAbsorber(npc, GetGameTime(npc.index)))
+	if(VoidUnspeakable_MatterAbsorber(npc, GetGameTime(npc.index)))
 	{
 		return;
 	}
@@ -652,7 +706,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)  //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) 
 	{
 		npc.Anger = true;
 		SensalGiveShield(npc.index, CountPlayersOnRed(1) * 12);
@@ -671,6 +725,10 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 			npc.g_TimesSummoned++;
 			f_BattilonsNpcBuff[npc.index] = GetGameTime() + 5.0;
 			npc.m_flResistanceBuffs = GetGameTime() + 2.0;
+			float ProjectileLoc[3];	
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+			ProjectileLoc[2] += 5.0;
+			VoidArea_SpawnNethersea(ProjectileLoc);
 			switch(GetRandomInt(1,2))
 			{
 				case 1:
@@ -704,9 +762,12 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 
 float VoidUnspeakable_Absorber(int entity, int victim, float damage, int weapon)
 {
-	float damageDealt = 5.0 * RaidModeScaling;
+	if(f_LowTeslarDebuff[victim] - 5.0 < GetGameTime())
+		f_LowTeslarDebuff[victim] = GetGameTime() + 5.0;
+
+	float damageDealt = 10.0 * RaidModeScaling;
 	Elemental_AddVoidDamage(victim, entity, RoundToNearest(damageDealt), true, true);	
-	return damage;
+	return 0.0;
 }
 bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 {
@@ -738,20 +799,29 @@ bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 				{
 					npc.PlayTeleportSound();
 					ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
-					
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 					float VecEnemy[3]; WorldSpaceCenter(EnemyLoop, VecEnemy);
 					npc.FaceTowards(VecEnemy, 15000.0);
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0; //so they cant instastab you!
 					npc.FaceTowards(vecTarget, 15000.0);
 					npc.m_flJumpCooldown = GetGameTime(npc.index) + 20.0;
-					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+1.5;
+					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+1.75;
+					npc.m_flAttackHappens = 0.0;
 					static float flPos[3]; 
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 					flPos[2] += 5.0;
 					int particle = ParticleEffectAt(flPos, "utaunt_headless_glow", 1.5);
 					SetParent(npc.index, particle);
+					
+					if(IsValidClient(EnemyLoop))
+					{
+						float HudY = -1.0;
+						float HudX = -1.0;
+						SetHudTextParams(HudX, HudY, 2.0, 200, 0, 200, 255);
+						SetGlobalTransTarget(EnemyLoop);
+						ShowSyncHudText(EnemyLoop,  SyncHud_Notifaction, "%t", "Unspeakable Teleport Taunt");
+					}
 					int red = 125;
 					int green = 0;
 					int blue = 125;
@@ -794,7 +864,19 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		}
 		npc.m_flVoidMatterAbosorbInternalCD = gameTime + 0.1;
 		float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-		flMaxhealth *= 0.0001;
+		flMaxhealth *= 0.001;
+		
+		int CurrentPlayersAlive = CountPlayersOnRed(1);
+		float HpScalingDecreace = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
+		flMaxhealth *= HpScalingDecreace;
+		if(ZR_GetWaveCount()+1 >= 60)
+			flMaxhealth *= 1.25;
+
+		float ProjectileLoc[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		ProjectileLoc[2] += 5.0;
+		VoidArea_SpawnNethersea(ProjectileLoc);
+
 		HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.0, 0.0, HEAL_SELFHEAL);
 		float ProjLoc[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
@@ -802,7 +884,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		ProjLocBase = ProjLoc;
 		ProjLocBase[2] += 5.0;
 		ProjLoc[2] += 70.0;
-
+		
 		ProjLoc[0] += GetRandomFloat(-40.0, 40.0);
 		ProjLoc[1] += GetRandomFloat(-40.0, 40.0);
 		ProjLoc[2] += GetRandomFloat(-15.0, 15.0);
@@ -812,6 +894,10 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float cpos[3];
 		float velocity[3];
+		float ScaleVectorDoMulti = -300.0;
+		if(ZR_GetWaveCount()+1 >= 30)
+			ScaleVectorDoMulti = -400.0;
+
 		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 		{
 			if(IsValidEnemy(npc.index, EnemyLoop, true, true))
@@ -822,7 +908,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 					
 					MakeVectorFromPoints(pos, cpos, velocity);
 					NormalizeVector(velocity, velocity);
-					ScaleVector(velocity, -300.0);
+					ScaleVector(velocity, ScaleVectorDoMulti);
 					if(b_ThisWasAnNpc[EnemyLoop])
 					{
 						CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
@@ -877,6 +963,8 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		npc.m_flVoidMatterAbosorbInternalCDBoom = gameTime + 0.25;
 		if(npc.m_flVoidMatterAbosorb < gameTime)
 		{
+			npc.m_flRangedArmor = 1.0;
+			npc.m_flMeleeArmor = 1.25;	
 			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 			{
 				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
@@ -922,6 +1010,12 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 				AcceptEntityInput(npc.m_iWearable4, "Disable");
 			}
 		}
+		float ProjectileLoc[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		ProjectileLoc[2] += 5.0;
+		VoidArea_SpawnNethersea(ProjectileLoc);
+		npc.m_flRangedArmor = 0.75;
+		npc.m_flMeleeArmor = 1.5;	
 
 		npc.m_flVoidMatterAbosorb = gameTime + 4.5;
 		npc.m_flDoingAnimation = gameTime + 5.0;
@@ -1057,8 +1151,8 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 					flPos[2] += 5.0;
 					int particle = ParticleEffectAt(flPos, "utaunt_headless_glow", 1.0);
 					SetParent(npc.index, particle);
+					npc.m_flVoidRapidMelee = GetGameTime(npc.index) + 7.5;
 				}
-				npc.m_flVoidRapidMelee = GetGameTime(npc.index) + 3.5;
 
 				if(npc.m_flAttackHappens_bullshit > gameTime)
 				{
@@ -1087,10 +1181,18 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 				
 		if(IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			npc.AddGesture("ACT_MP_THROW");
-
+			
 			npc.m_flVoidPillarAttack = gameTime + 4.5;
 			npc.m_flDoingAnimation = gameTime + 0.35;
+			if(npc.m_flMaxDeath)
+			{
+				npc.AddGesture("ACT_MP_THROW", .SetGestureSpeed = 3.0);
+				npc.m_flVoidPillarAttack = gameTime + 0.4;
+			}
+			else
+			{
+				npc.AddGesture("ACT_MP_THROW");
+			}
 
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy[MAXENTITIES];
@@ -1144,7 +1246,7 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 					1.0,									//Extra delay between each
 					ang_Look 								/*2 dimensional plane*/,
 					ProjectileLoc,
-					0.25,									//volume
+					0.35,									//volume
 					QuakeSize);									//PillarStartingSize
 				}
 			}

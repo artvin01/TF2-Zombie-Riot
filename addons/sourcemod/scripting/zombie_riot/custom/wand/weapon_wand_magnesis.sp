@@ -31,13 +31,14 @@ static float Magnesis_Grab_DragRate_WeightPenalty[3] = { 7.5, 3.0, 1.25 };		//Am
 static float Magnesis_Grab_Range[3] = { 150.0, 200.0, 250.0 };					//Maximum distance from which enemies can be grabbed.
 static float Magnesis_Grab_Distance[3] = { 80.0, 80.0, 80.0 };					//Distance from the user to hold zombies at.
 static float Magnesis_Grab_MaxVel[3] = { 1000.0, 1400.0, 2000.0 };				//Maximum throw velocity.
+static float Magnesis_Grab_MaxVel_Raids[3] = { 500.0, 600.0, 700.0 };				//Maximum throw velocity.
 static float Magnesis_Grab_ThrowCost[3] = { 50.0, 100.0, 150.0 };				//Cost to throw the enemy instead of simply dropping them.
 static float Magnesis_Grab_ThrowThreshold_Normal[3] = { 0.25, 0.2, 0.125 };		//Percentage of max health taken as damage while grabbed in order for the throw to reach max velocity, for normal enemies.
 static float Magnesis_Grab_ThrowThreshold_Special[3] = { 0.25, 0.2, 0.15 };		//Throw threshold for bosses/mini-bosses.
-static float Magnesis_Grab_ThrowThreshold_Raid[3] = { 0.125, 0.1, 0.075 };		//Throw threshold for raids.
+static float Magnesis_Grab_ThrowThreshold_Raid[3] = { 0.125, 0.066, 0.0425 };	//Throw threshold for raids.
 static float Magnesis_Grab_Throw_WeightPenalty[3] = { 0.25, 0.15, 0.05 };		//Percentage to reduce throw strength per point of NPC weight above 1.
 static float Magnesis_Grab_ThrowDMG[3] = { 1250.0, 2000.0, 2500.0 };			//Damage dealt to grabbed enemies when they are thrown.
-static float Magnesis_Grab_ThrowDMG_Scale[3] = { 2500.0, 4000.0, 5000.0 };		//Maximum amount of damage to add to the throw damage. This scales in the same way as throw velocity.
+static float Magnesis_Grab_ThrowDMG_Scale[3] = { 2500.0, 6000.0, 7500.0 };		//Maximum amount of damage to add to the throw damage. This scales in the same way as throw velocity.
 static bool Magnesis_Grab_Specials[3] = { false, true, true };					//Can the Magnesis Staff grab bosses/mini-bosses on this tier?
 static bool Magnesis_Grab_Raids[3] = { false, true, true };						//Can the Magnesis Staff grab raids on this tier?
 static float Magnesis_StunTime_Normal[3] = { 4.0, 4.0, 4.0 };					//Duration to stun enemies when they are grabbed by the Magnesis Staff (0.0 = stun until dropped, below 0.0 = no stun at all).
@@ -56,11 +57,11 @@ static float Newtonian_M1_Velocity[3] = { 1400.0, 1800.0, 2200.0 };				//M1 proj
 static float Newtonian_M1_Lifespan[3] = { 1.0, 0.5, 0.65 };						//M1 projectile lifespan.
 static float Newtonian_M1_Falloff_MultiHit[3] = { 0.66, 0.75, 0.85 };			//Amount to multiply damage dealt by M1 per target hit.
 static float Newtonian_M1_Falloff_Distance[3] = { 0.66, 0.75, 0.85 };			//Maximum M1 damage falloff, based on distance.
-static float Newtonian_M1_ComboMult[3] = { 4.0, 4.0, 4.0 };						//Amount to multiply damage dealt by the M1 to enemies who have been knocked airborne by the M2.
+static float Newtonian_M1_ComboMult[3] = { 4.0, 6.0, 8.0 };						//Amount to multiply damage dealt by the M1 to enemies who have been knocked airborne by the M2.
 static float Newtonian_M1_ComboCDR[3] = { 5.0, 5.0, 5.0 };						//Amount to reduce remaining M2 cooldown when airshotting an enemy launched by M2.
 static float Newtonian_M1_ComboCDR_Raids[3] = { 10.0, 10.0, 10.0 };				//Amount to reduce remaining M2 cooldown when airshotting a raid launched by M2 (does not stack with the other cdr). 
 static int Newtonian_M1_MaxTargets[3] = { 4, 5, 6 };							//Max targets hit by the M1 projectile's explosion.
-static float Newtonian_M2_Cost[3] = { 200.0, 300.0, 400.0 };					//M2 cost.
+static float Newtonian_M2_Cost[3] = { 200.0, 150.0, 200.0 };					//M2 cost.
 static float Newtonian_M2_Cooldown[3] = { 40.0, 25.0, 25.0 };					//M2 cooldown.
 static float Newtonian_M2_DMG[3] = { 1600.0, 2400.0, 3500.0 };					//M2 damage.
 static float Newtonian_M2_Radius[3] = { 160.0, 180.0, 200.0 };					//M2 radius.
@@ -120,6 +121,7 @@ public void Magnesis_ResetAll()
 #define SND_NEWTONIAN_M2			")weapons/bumper_car_spawn.wav"
 #define SND_NEWTONIAN_M2_2			")weapons/cow_mangler_explode.wav"
 #define SND_NEWTONIAN_M2_KNOCKBACK	")weapons/bumper_car_hit_ball.wav"
+#define SND_MAGNESIS_HOMING_BEGIN	")weapons/man_melter_fire_crit.wav"
 
 #define PARTICLE_MAGNESIS_M1     			"raygun_projectile_blue"
 #define PARTICLE_MAGNESIS_M1_FINALPAP		"raygun_projectile_blue_crit"
@@ -145,6 +147,7 @@ void Magnesis_Precache()
 	PrecacheSound(SND_MAGNESIS_GRAB_LOOP);
 	PrecacheSound(SND_MAGNESIS_THROW);
 	PrecacheSound(SND_MAGNESIS_DROP);
+	PrecacheSound(SND_MAGNESIS_HOMING_BEGIN);
 	PrecacheSound(SND_NEWTONIAN_M1);
 	PrecacheSound(SND_NEWTONIAN_M1_COLLIDE);
 	PrecacheSound(SND_NEWTONIAN_M2);
@@ -398,7 +401,7 @@ void Magnesis_AttemptThrow(int client, int weapon, int tier)
 
 		float mult = Magnesis_GetThrowVelMultiplier(client);
 
-		float throwVel = Magnesis_Grab_MaxVel[Magnesis_Tier[client]] * mult;
+		float throwVel = (b_thisNpcIsARaid[target] ? Magnesis_Grab_MaxVel_Raids[Magnesis_Tier[client]] :  Magnesis_Grab_MaxVel[Magnesis_Tier[client]]) * mult;
 		for (int i = 0; i < 3; i++)
 			vel[i] = buffer[i] * throwVel;
 		
@@ -1114,9 +1117,50 @@ void Utility_FireProjectile(int client, int weapon, int tier, bool isNewtonian)
 	{
 		Magnesis_ProjectileIsNewtonian[projectile] = isNewtonian;
 		Magnesis_ProjectileTier[projectile] = tier;
+
+		if (!isNewtonian)
+		{
+			Handle swingTrace;
+			float vecSwingForward[3];
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+						
+			int target = TR_GetEntityIndex(swingTrace);	
+			delete swingTrace;
+
+			if(IsValidEnemy(client, target))
+			{
+				DataPack pack = new DataPack();
+				CreateDataTimer(0.133, Magnesis_DelayHoming, pack, TIMER_FLAG_NO_MAPCHANGE);
+				pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
+				pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
+			}
+		}
 	}
 
 	Magnesis_Tier[client] = tier;
+}
+
+public Action Magnesis_DelayHoming(Handle timely, DataPack pack)
+{
+	ResetPack(pack);
+	int projectile = EntRefToEntIndex(ReadPackCell(pack));
+	int target = EntRefToEntIndex(ReadPackCell(pack));
+	if (!IsValidEntity(projectile) || !IsValidEntity(target))
+		return Plugin_Continue;
+
+	if(Can_I_See_Enemy_Only(target, projectile)) //Insta home!
+	{
+		HomingProjectile_TurnToTarget(target, projectile);
+	}
+
+	DataPack pack2;
+	CreateDataTimer(0.1, PerfectHomingShot, pack2, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	pack2.WriteCell(EntIndexToEntRef(projectile)); //projectile
+	pack2.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
+
+	EmitSoundToAll(SND_MAGNESIS_HOMING_BEGIN, projectile, _, _, _, 0.5, GetRandomInt(60, 80));
+
+	return Plugin_Continue;
 }
 
 void Utility_NotEnoughMana(int client, int cost)

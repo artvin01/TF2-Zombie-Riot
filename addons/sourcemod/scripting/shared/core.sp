@@ -62,9 +62,6 @@
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
 
-#if !defined NOG
-bool SpawningBot = false;
-#endif
 
 //#pragma dynamic	131072
 //Allah This plugin has so much we need to do this.
@@ -159,7 +156,8 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #define FAR_FUTURE	100000000.0
 #define MAXENTITIES	2048
-#define MAXTF2PLAYERS	36
+#define MAXTF2PLAYERS	101
+//double for 100 player support????
 
 #define	HIDEHUD_WEAPONSELECTION		( 1<<0 )	// Hide ammo count & weapon selection
 #define	HIDEHUD_FLASHLIGHT			( 1<<1 )
@@ -292,6 +290,7 @@ ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar CvarAirAcclerate; //sv_airaccelerate
+ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 #endif
 ConVar sv_cheats;
 ConVar nav_edit;
@@ -411,6 +410,8 @@ Handle SyncHud_ArmorCounter;
 
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
+float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.7, ...};
+float f_Client_BackwardsWalkPenalty[MAXTF2PLAYERS]={0.7, ...};
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
@@ -507,9 +508,11 @@ float f_DomeInsideTest[MAXENTITIES];
 float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
+float f_ElementalAmplification[MAXENTITIES];
 float f_WeaponSpecificClassBuff[MAXENTITIES][1];
 bool b_WeaponSpecificClassBuff[MAXENTITIES][3];
 float f_HighTeslarDebuff[MAXENTITIES];
+float f_VoidAfflictionStandOn[MAXENTITIES];
 float f_VoidAfflictionStrength[MAXENTITIES];
 float f_VoidAfflictionStrength2[MAXENTITIES];
 float f_Silenced[MAXENTITIES];
@@ -587,6 +590,7 @@ int i_PullTowardsTarget[MAXENTITIES];
 float f_PullStrength[MAXENTITIES];
 
 float ReplicateClient_Svairaccelerate[MAXTF2PLAYERS];
+float ReplicateClient_BackwardsWalk[MAXTF2PLAYERS];
 int ReplicateClient_Tfsolidobjects[MAXTF2PLAYERS];
 int ReplicateClient_RollAngle[MAXTF2PLAYERS];
 
@@ -728,7 +732,7 @@ bool b_BobsTrueFear[MAXTF2PLAYERS];
 bool b_TwirlHairpins[MAXTF2PLAYERS];
 bool b_KahmlLastWish[MAXTF2PLAYERS];
 bool b_VoidPortalOpened[MAXTF2PLAYERS];
-float f_ArmorCurrosionImmunity[MAXENTITIES];
+float f_ArmorCurrosionImmunity[MAXENTITIES][Element_MAX];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
@@ -931,7 +935,6 @@ Handle g_hGetSolidMask;
 //Handle g_hGetCurrencyValue;
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 
-Handle gH_BotAddCommand = INVALID_HANDLE;
 
 int CurrentGibCount = 0;
 float f_GibHealingAmount[MAXENTITIES];
@@ -985,17 +988,19 @@ enum
 */
 //#define ZR_TEST_MODEL	"models/zombie_riot/weapons/test_models9.mdl"
 
-#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1.mdl"
+#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_1.mdl"
 enum
 {
 	WINGS_FUSION 	= 1,
 	WINGS_LANCELOT	= 2,
 	WINGS_RULIANA	= 4,
 	WINGS_TWIRL		= 8,
-	WINGS_HELIA		= 16
+	WINGS_HELIA		= 16,
+	WINGS_STELLA	= 32,
+	WINGS_KARLAS	= 64
 }
 
-#define RUINA_CUSTOM_MODELS_1			"models/zombie_riot/weapons/ruina_models_1_1.mdl"
+#define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_1.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out
 {		
 	RUINA_ICBM 				= 1,		//1
@@ -1013,7 +1018,7 @@ enum	//it appears if I try to make it go above 14 it starts glitching out
 	RUINA_W30_HAND_CREST	= 4096,		//13
 	RUINA_IANA_BLADE		= 8192,		//14
 }
-#define RUINA_CUSTOM_MODELS_2			"models/zombie_riot/weapons/ruina_models_2_2.mdl"
+#define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_2.mdl"
 enum
 {
 	RUINA_QUINCY_BOW_2		= 1,			//1
@@ -1057,9 +1062,13 @@ enum
 	RUINA_TWIRL_CREST_4		= 8192,			//14
 	RUINA_QUINCY_BOW_3		= 16384			//15
 }
-
-
-
+#define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_1.mdl"
+enum
+{
+	RUINA_STELLA_CREST			= 1,			//1
+	RUINA_STELLA_CREST_CHARGING	= 2,			//2
+	RUINA_KARLAS_PROJECTILE		= 4				//4 ITS A SPACE SHIP, BUT ACTUALLY NOT!
+}
 
 
 #if defined ZR
@@ -1545,6 +1554,10 @@ public void OnPluginStart()
 	if(CvarAirAcclerate)
 		CvarAirAcclerate.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
+	Cvar_clamp_back_speed = FindConVar("tf_clamp_back_speed");
+	if(Cvar_clamp_back_speed)
+		Cvar_clamp_back_speed.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
 	CvarTfMMMode = FindConVar("tf_mm_servermode");
 	if(CvarTfMMMode)
 		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
@@ -1795,6 +1808,7 @@ public void OnMapStart()
 	PrecacheModel(RUINA_CUSTOM_MODELS_1);
 	PrecacheModel(RUINA_CUSTOM_MODELS_2);
 	PrecacheModel(RUINA_CUSTOM_MODELS_3);
+	PrecacheModel(RUINA_CUSTOM_MODELS_4);
 	
 #if defined ZR
 	PrecacheSound("npc/scanner/cbot_discharge1.wav");
@@ -2185,12 +2199,23 @@ public void OnClientPutInServer(int client)
 			b_IsPlayerABot[client] = true;
 			return;
 		}
-		if(!SpawningBot)
+		/*	
+			We will abuse mvm bot spawn logic!
+			Only allow 2 bots!
+		*/	
+		int botcount;
+		for(int clientloop = 1; clientloop <= MaxClients; clientloop++)
 		{
-			KickClient(client);
-			return;
+			if(IsClientInGame(clientloop) && IsFakeClient(clientloop) && !IsClientSourceTV(clientloop))
+			{
+				botcount += 1;
+				if(botcount > 2)
+				{
+					KickClient(client);
+					return;
+				}
+			}
 		}
-		SpawningBot = false;
 		ChangeClientTeam(client, TFTeam_Blue);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
@@ -2292,8 +2317,11 @@ public void OnClientDisconnect(int client)
 	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	ReplicateClient_Svairaccelerate[client] = -1.0;
+	ReplicateClient_BackwardsWalk[client] = -1.0;
 	ReplicateClient_Tfsolidobjects[client] = -1;
 	ReplicateClient_RollAngle[client] = -1;
+	b_NetworkedCrouch[client] = false;
+	//Reset!
 
 #if defined ZR
 	f_InBattleHudDisableDelay[client] = 0.0;
@@ -2850,23 +2878,36 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			if(Panic_Attack[weapon] != 0.0 && !i_IsWrench[weapon])
 			{
 				float flHealth = float(GetEntProp(client, Prop_Send, "m_iHealth"));
-				float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(client);
 				
+#if defined ZR
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FULLMOON)
+				{
+					//itll think youre much lower HP then usual. NEEDED! otherwise this weapon SUCKS!!!!!!!
+					flHealth *= 0.65; 
+				}
+#endif
+				float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(client);
+
 				if(flpercenthpfrommax >= 1.0)
 					flpercenthpfrommax = 1.0; //maths to not allow negative suuuper slow attack speed
 					
 				float Attack_speed = flpercenthpfrommax / 0.65;
 				
-				if(Panic_Attack[weapon] <= 0.6)
-				{
-					Attack_speed *= 0.7;
-				}
 				if(Attack_speed <= Panic_Attack[weapon])
 				{
 					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY INCREACED ATTACK SPEED.
 				}
 				
 				
+#if defined ZR
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FULLMOON)
+				{
+					if (Attack_speed >= 1.0)
+					{
+						Attack_speed = 1.0; //hardcoding this lol
+					} 
+				}
+#endif
 				if (Attack_speed >= 1.15)
 				{
 					Attack_speed = 1.15; //hardcoding this lol
@@ -4082,6 +4123,7 @@ stock void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons
 void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int medigun = 0)
 {
 	bool WasClientReviving = true;
+	bool WasRevivingEntity = false;
 	if(client > MaxClients)
 	{
 		WasClientReviving = false;
@@ -4094,26 +4136,46 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		}
 		f_ClientReviveDelayMax[client] = GetGameTime() + 0.09;
 	}
-
+	if(Citizen_ThatIsDowned(target))
+	{
+		WasRevivingEntity = true;
+	}
 	float GameTime = GetGameTime();
 	
-	SetEntityMoveType(target, MOVETYPE_NONE);
+	if(!WasRevivingEntity)
+		SetEntityMoveType(target, MOVETYPE_NONE);
+
 	if(WasClientReviving)
 	{
 		was_reviving[client] = true;
 		f_DelayLookingAtHud[client] = GameTime + 0.5;
 	}
-	f_DelayLookingAtHud[target] = GameTime + 0.5;
-	f_ClientBeingReviveDelay[target] = GameTime + 0.15;
+	if(!WasRevivingEntity)
+	{
+		f_DelayLookingAtHud[target] = GameTime + 0.5;
+		f_ClientBeingReviveDelay[target] = GameTime + 0.15;
+	}
 
 	if(WasClientReviving)
-		PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
+	{
+		
+		if(WasRevivingEntity)
+		{
+			Citizen npc = view_as<Citizen>(target);
+			PrintCenterText(client, "%t", "Reviving", npc.m_iReviveTicks);
+		}
+		else
+			PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
+	}
 
-	PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
+	if(!WasRevivingEntity)
+		PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
+		
 	if(WasClientReviving)
 		was_reviving_this[client] = target;
 
-	f_DisableDyingTimer[target] = GameTime + 0.15;
+	if(!WasRevivingEntity)
+		f_DisableDyingTimer[target] = GameTime + 0.15;
 
 	int speed = 3;
 	if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
@@ -4131,6 +4193,11 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	}
 
 	Rogue_ReviveSpeed(speed);
+	if(WasRevivingEntity)
+	{
+		Citizen_ReviveTicks(target, speed, client);
+		return;
+	}
 	dieingstate[target] -= speed;
 	
 	if(dieingstate[target] <= 0)

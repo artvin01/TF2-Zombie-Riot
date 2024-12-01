@@ -75,6 +75,7 @@ enum struct ItemInfo
 	int AmmoBuyMenuOnly;
 	
 	int Reload_ModeForce;
+	float Backwards_Walk_Penalty;
 
 	float DamageFallOffForWeapon; //Can this accept reversed?
 
@@ -179,7 +180,10 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sdamage_falloff", prefix);
 		this.DamageFallOffForWeapon		= kv.GetFloat(buffer, 0.9);
-		
+
+		Format(buffer, sizeof(buffer), "%sbackwards_walk_penalty", prefix);
+		this.Backwards_Walk_Penalty		= kv.GetFloat(buffer, 0.7);
+
 		Format(buffer, sizeof(buffer), "%sbackstab_cd", prefix);
 		this.BackstabCD				= kv.GetFloat(buffer, 1.5);
 		
@@ -3187,7 +3191,20 @@ static void MenuPage(int client, int section)
 			if(StarterCashMode[client])
 			{
 				FormatEx(buffer, sizeof(buffer), "%t\n ", "Confirm Loadout");
-				menu.AddItem("-26", buffer, (CashSpentTotal[client] < 1 || !Waves_Started()) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				int ConfirmAllow = ITEMDRAW_DISABLED;
+				if(CvarInfiniteCash.BoolValue)
+				{
+					ConfirmAllow = ITEMDRAW_DEFAULT;
+				}
+				if(CashSpentTotal[client] > 1 && Waves_Started())
+				{
+					ConfirmAllow = ITEMDRAW_DEFAULT;
+				}
+				if(Waves_Started())
+				{
+					ConfirmAllow = ITEMDRAW_DEFAULT;
+				}
+				menu.AddItem("-26", buffer, ConfirmAllow);
 			}
 			else
 			{
@@ -5590,6 +5607,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_WeaponDamageFalloff[entity] 			= info.DamageFallOffForWeapon;
 					}
+					f_Weapon_BackwardsWalkPenalty[entity] 		= info.Backwards_Walk_Penalty;
 					f_BackstabCooldown[entity] 					= info.BackstabCD;
 					f_BackstabDmgMulti[entity] 					= info.BackstabDMGMulti;
 					f_BackstabHealOverThisDuration[entity] 				= info.BackstabHealOverThisTime;

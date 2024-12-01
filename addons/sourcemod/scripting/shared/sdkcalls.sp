@@ -153,7 +153,10 @@ void SDKCall_Setup()
 	SDKSetSpeed = EndPrepSDKCall();
 	if(!SDKSetSpeed)
 		LogError("[Gamedata] Could not find CTFPlayer::TeamFortress_SetSpeed()");
+
 	
+	//copied from 
+	//https://github.com/bhopppp/Shavit-Surf-Timer/blob/289b9df123e61f2a0982ded688d2c611023b25f5/addons/sourcemod/scripting/shavit-replay-playback.sp#L204
 	delete gamedata;
 }
 
@@ -336,23 +339,23 @@ void UpdateBlockedNavmesh()
 
 stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 {
-#if !defined NOG
-	SpawningBot = true;
-#endif
-	
+	PrintToChatAll("trest");
+	ServerCommand("sv_cheats 1; bot ; sv_cheats 0");
+//	int bot = CreateFakeClient(Name);
+	/*
 	int bot = SDKCall(
 	gH_BotAddCommand,
 	Name, // name
 	false // bReportFakeClient
 	);
-
+	*/
 //	if (IsValidClient(bot))
 //	{
 //		PrintToChatAll("party!");
 //		SetFakeClientConVar(bot, "name", Name);
 //	}
 
-	return bot;
+	return -1;
 }
 
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.

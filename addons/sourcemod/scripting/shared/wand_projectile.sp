@@ -354,6 +354,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_Logos_ProjectileTouch(entity, target);
 		}
+		case WEAPON_NYMPH:
+		{
+			Weapon_Nymph_ProjectileTouch(entity, target);
+		}
 	}
 #endif
 }

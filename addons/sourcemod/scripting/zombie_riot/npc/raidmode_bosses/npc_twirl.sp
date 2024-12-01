@@ -122,7 +122,7 @@ static const char Cosmic_Launch_Sounds[][] ={
 static char gGlow1;	//blue
 #define TWIRL_THUMP_SOUND				"ambient/machines/thumper_hit.wav"
 #define TWIRL_COSMIC_GAZE_LOOP_SOUND1 	"weapons/physcannon/energy_sing_loop4.wav"
-#define TWIRL_RETREAT_LASER_SOUND 		"zombiesurvival/seaborn/loop_laser.mp3"
+#define TWIRL_LASER_SOUND 		"zombiesurvival/seaborn/loop_laser.mp3"
 #define TWIRL_COSMIC_GAZE_END_SOUND1 	"weapons/physcannon/physcannon_drop.wav"
 #define TWIRL_COSMIC_GAZE_END_SOUND2 	"ambient/energy/whiteflash.wav"
 
@@ -139,6 +139,7 @@ void Twirl_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "twirl"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = true;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 	NPC_Add(data);
 }
 static void ClotPrecache()
@@ -173,7 +174,6 @@ static void ClotPrecache()
 	PrecacheSound("ui/rd_2base_alarm.wav");
 	PrecacheSound("npc/attack_helicopter/aheli_charge_up.wav");
 
-	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 
 	PrecacheModel("models/player/medic.mdl");
@@ -276,7 +276,7 @@ methodmap Twirl < CClotBody
 		#endif
 	}
 
-	public void PlayLaserComboSound() {
+	public void PlayMagiaOverflowSound() {
 		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime())
 			return;
 		EmitCustomToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
@@ -1152,13 +1152,13 @@ static void ClotThink(int iNPC)
 		{
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
-			float Turn_Speed = (npc.Anger ? 23.0 : 17.0);
-			//if there are more then 4 players near twirl, her laser starts to turn faster.
-			int Nearby = Nearby_Players(npc, (npc.Anger ? 350.0 : 275.0));
-			if(Nearby > 4)
+			float Turn_Speed = (npc.Anger ? 30.0 : 19.0);
+			//if there are more then 3 players near twirl, her laser starts to turn faster.
+			int Nearby = Nearby_Players(npc, (npc.Anger ? 300.0 : 250.0));
+			if(Nearby > 3)
 			{
-				//if there are like 8 players next to her, she will turn fast.
-				Turn_Speed *= (Nearby/3.0);
+
+				Turn_Speed *= (Nearby/2.0)*1.2;
 			}
 			npc.FaceTowards(vecTarget, Turn_Speed);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -1267,7 +1267,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking && backing_up)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*2.0);
 		}
 		else
@@ -1735,7 +1735,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		if(npc.m_flReloadIn > GameTime)
 		{
 			KeepDistance(npc, flDistanceToTarget, PrimaryThreatIndex, GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5);
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*2.0);
 			return;
 		}
@@ -1854,7 +1854,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+				npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 			}
 		}
 
@@ -2652,7 +2652,7 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
-	EmitCustomToAll(TWIRL_RETREAT_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
+	EmitCustomToAll(TWIRL_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
 
 	float Duration = 2.0;
 	npc.m_bisWalking = false;
@@ -2881,7 +2881,7 @@ static bool Magia_Overflow(Twirl npc)
 	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
-	//EmitCustomToAll(TWIRL_RETREAT_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
+	//EmitCustomToAll(TWIRL_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
 
 	float Duration = TWIRL_MAGIA_OVERFLOW_DURATION;
 	npc.m_bisWalking = false;
@@ -2923,8 +2923,8 @@ static Action Magia_Overflow_Tick(int iNPC)
 	{
 		SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 
-		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
-		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
 
 		npc.m_bisWalking = true;
 		f_NpcTurnPenalty[npc.index] = 1.0;
@@ -2960,7 +2960,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 	if(!b_animation_set[npc.index])
 		return Plugin_Continue;
 
-	npc.PlayLaserComboSound();
+	npc.PlayMagiaOverflowSound();
 	
 	float Radius = 30.0;
 	float diameter = Radius*2.0;
@@ -3318,8 +3318,8 @@ static void Kill_Abilities(Twirl npc)
 	StopSound(npc.index, SNDCHAN_STATIC, "player/taunt_surgeons_squeezebox_music.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
-	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
-	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_RETREAT_LASER_SOUND);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
 
 	npc.m_bInKame = false;
 }

@@ -39,6 +39,10 @@ void Spawns_MapEnd()
 
 bool Spawns_CanSpawnNext(bool rogue)
 {
+	if(!SpawnerList)
+	{
+		return false;
+	}
 	float gameTime = GetGameTime();
 
 	if(rogue)
@@ -54,6 +58,7 @@ bool Spawns_CanSpawnNext(bool rogue)
 
 	//bool error = true;
 	int length = SpawnerList.Length;
+	
 	for(int i; i < length; i++)
 	{
 		SpawnerList.GetArray(i, spawn);
@@ -101,6 +106,14 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	{
 		SpawnerList.GetArray(i, spawn);
 		
+		if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
+		{
+			SpawnerList.Erase(i);
+			i--; //we try again.
+			length--;
+			continue;
+		}
+
 		if(name[0])
 		{
 			if(!StrEqual(name, spawn.Name))	// Invalid name, ignore
@@ -111,19 +124,12 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			continue;
 		}
 		
-		if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
-		{
-			SpawnerList.Erase(i);
-			i--; //we try again.
-			length--;
-			continue;
-		}
 		if(!spawn.BaseBoss)
 		{
 			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
 				continue;
 			
-			/*
+			
 			if(spawn.MaxWavesAllowed != 999)
 			{
 				//999 means its a perma spawn or a boss spawn, whatever it may be.
@@ -134,12 +140,11 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 					SpawnerList.Erase(i);
 					i--; //we try again.
 					length--;
-					
 					//EDIT:looks like deleting it is bad.
 					continue;
 				}
 			}
-			*/
+			
 			nonBossSpawners++;
 		}
 		
@@ -155,9 +160,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		for(int i; i < length; i++)
 		{
 			SpawnerList.GetArray(i, spawn);
-			if(StrContains(spawn.Name, name) == -1)	// Invalid name, ignore
-				continue;
-			
+
 			if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
 			{
 				SpawnerList.Erase(i);
@@ -166,6 +169,9 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				continue;
 			}
 
+			if(StrContains(spawn.Name, name) == -1)	// Invalid name, ignore
+				continue;
+			
 			if(!spawn.BaseBoss)
 			{
 				if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
@@ -306,6 +312,25 @@ void Spawners_Timer()
 			length--;
 			continue;
 		}
+		if(!spawn.BaseBoss)
+		{
+			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
+				continue;
+
+			if(spawn.MaxWavesAllowed != 999)
+			{
+				//999 means its a perma spawn or a boss spawn, whatever it may be.
+				int WavesAllow = spawn.MaxWavesAllowed;
+				int WavesLeft = ZR_GetWaveCount() - spawn.WaveCreatedIn;
+				if(WavesLeft >= WavesAllow)
+				{
+					SpawnerList.Erase(index);
+					index--; //we try again.
+					length--;
+					continue;
+				}
+			}
+		}
 		spawn.Points = 0.0;
 		SpawnerList.SetArray(index, spawn);	
 	}
@@ -439,6 +464,15 @@ int GetRandomActiveSpawner(const char[] name = "")
 	{
 		SpawnerList.GetArray(i, spawn);
 		
+		//always check if its existant first!!
+		if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
+		{
+			SpawnerList.Erase(i);
+			i--;
+			length--;
+			continue;
+		}
+
 		if(name[0])
 		{
 			if(!StrEqual(name, spawn.Name))	// Invalid name, ignore
@@ -449,13 +483,6 @@ int GetRandomActiveSpawner(const char[] name = "")
 			continue;
 		}
 		
-		if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
-		{
-			SpawnerList.Erase(i);
-			i--;
-			length--;
-			continue;
-		}
 
 		if(!spawn.BaseBoss && GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore
 			continue;

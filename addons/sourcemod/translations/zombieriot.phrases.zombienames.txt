@@ -955,6 +955,14 @@
 		"pt"		"Rebelde"
 		"nl"		"Rebel"
 	}
+	"Barney"
+	{
+		"en" 		"Barney"
+	}
+	"Alyx"
+	{
+		"en" 		"Alyx"
+	}
 	"Eagle Scout"
 	{
 		"en" 		"Eagle Scout"

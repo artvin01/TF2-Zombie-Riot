@@ -206,7 +206,8 @@ enum
 	WEAPON_URANIUM_RIFLE = 126,
 	WEAPON_LOGOS = 127,
 	WEAPON_WALTER = 128,
-	WEAPON_OLDINFINITYBLADE = 129
+	WEAPON_OLDINFINITYBLADE = 129,
+	WEAPON_NYMPH = 130
 }
 
 enum
@@ -395,7 +396,8 @@ int Building_Mounted[MAXENTITIES];
 
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
-int i_DyingParticleIndication[MAXPLAYERS + 1][2];
+int i_DyingParticleIndication[MAXPLAYERS + 1][3];
+//1 is text, 2 is glow, 3 is death marker
 float f_DyingTextTimer[MAXPLAYERS + 1];
 bool b_DyingTextOff[MAXPLAYERS + 1];
 
@@ -565,6 +567,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_hunting_rifle.sp"
 #include "zombie_riot/custom/wand/weapon_logos.sp"
 #include "zombie_riot/custom/weapon_walter.sp"
+#include "zombie_riot/custom/wand/weapon_wand_nymph.sp"
 
 void ZR_PluginLoad()
 {
@@ -714,7 +717,7 @@ void ZR_MapStart()
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_WasRecentlyRevivedViaNonWaveClassChange);
 	Zero(f_TimeAfterSpawn);
-	Zero(f_ArmorCurrosionImmunity);
+	Zero2(f_ArmorCurrosionImmunity);
 	Reset_stats_Irene_Global();
 	Reset_stats_PHLOG_Global();
 	Irene_Map_Precache();
@@ -1548,7 +1551,13 @@ public Action Timer_Dieing(Handle timer, int client)
 	{
 		RemoveEntity(particle);
 	}
+	particle = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+	}
 	dieingstate[client] = 0;
+	SDKHooks_UpdateMarkForDeath(client, true);
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
 	

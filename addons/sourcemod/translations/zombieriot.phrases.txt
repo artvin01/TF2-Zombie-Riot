@@ -940,6 +940,10 @@
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
 		"chi"       "技能冷却还有 {1} 的时间!"
 	}
+	"Unspeakable Teleport Taunt"
+	{
+		"en"		"Behind you."
+	}
 	"Rusty Ability Blocked"
 	{
 		"en"		"You can't do that right now!"

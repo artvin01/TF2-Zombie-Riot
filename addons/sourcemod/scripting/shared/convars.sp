@@ -33,9 +33,6 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_weapon_minicrits_distance_falloff", "1.0");
 	ConVar_Add("tf_weapon_criticals", "0.0");
 	ConVar_Add("tf_weapon_criticals_melee", "0.0");
-	ConVar_Add("tf_sentrygun_ammocheat", "1.0");				//infinite ammo for sentry guns
-	ConVar_Add("tf_sentrygun_mini_damage", "10.0");
-	ConVar_Add("tf_sentrygun_notarget", "0.0"); 			// have our own find logic..?
 	ConVar_Add("tf_boost_drain_time", "99999.0"); 			// have our own find logic..?
 	ConVar_Add("tf_avoidteammates_pushaway", "0"); 
 	
@@ -59,9 +56,9 @@ void ConVar_PluginStart()
 	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
 #if defined ZR
 	ConVar_Add("mp_tournament", "1");
-	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
+//	ConVar_Add("tf_clamp_back_speed", "0.7"); NOW USED FOR STORE!!!
 	ConVar_Add("mp_disable_respawn_times", "1.0");
-	ConVar_Add("tf_mvm_defenders_team_size", "32");
+	ConVar_Add("tf_mvm_defenders_team_size", "99");
 	//going above this is dumb
 	ConVar_Add("tf_mvm_max_connected_players", "99");
 	ConVar_Add("tf_obj_upgrade_per_hit", "0");
@@ -98,7 +95,8 @@ void ConVar_PluginStart()
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Debug", FCVAR_DONTRECORD);
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
-	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "1.0", "How long zombie spawn protection lasts for.");
+	//default should be 0.1
+	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.1", "How long zombie spawn protection lasts for.");
 	
 	//CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);

@@ -84,7 +84,7 @@ bool b_ruina_nerf_healing[MAXENTITIES];
 
 
 #define RUINA_POINT_MODEL	"models/props_c17/canister01a.mdl"
-#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY		0.7		//for npc's that walk backwards, how much slower (or faster :3) should be walk
+#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY		0.7		//for npc's that walk backwards, how much slower (or faster :3) should be walk
 #define RUINA_FACETOWARDS_BASE_TURNSPEED			475.0	//for npc's that constantly face towards a target, how fast can they turn
 
 static bool b_master_is_rallying[MAXENTITIES];
@@ -136,6 +136,7 @@ enum
 }
 
 //static char gLaser1;
+int g_Ruina_Laser_BEAM;
 int g_Ruina_BEAM_Diamond;
 int g_Ruina_BEAM_Laser;
 int g_Ruina_HALO_Laser;
@@ -236,7 +237,7 @@ void Ruina_Ai_Core_Mapstart()
 
 	i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
 	
-	//gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	g_Ruina_Laser_BEAM = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
 	g_Ruina_BEAM_Diamond = PrecacheModel("materials/sprites/physring1.vmt", true);
 	g_Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
@@ -1631,6 +1632,9 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
 
+	if(AtEdictLimit(EDICT_NPC))
+		return Plugin_Stop;
+		
 	int laser;
 	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 7.0, 7.0, 1.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
@@ -2442,6 +2446,8 @@ enum struct Ruina_Laser_Logic
 	bool trace_hit;
 	bool trace_hit_enemy;
 
+	float Custom_Hull[3];
+
 	/*
 		Todo: 
 			If needed, add a trace version that only triggers a void instead of also dealing damage.
@@ -2499,21 +2505,58 @@ enum struct Ruina_Laser_Logic
 		}
 		delete trace;
 	}
+	bool Any_entities;
+	//in this case, no default func since this things entire point is to find entities
+	void Detect_Entities(Function Attack_Function)
+	{
+		Zero(Ruina_Laser_BEAM_HitDetected);
+
+		i_targets_hit = 0;
+
+		float hullMin[3], hullMax[3];
+		this.SetHull(hullMin, hullMax);
+
+		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+
+				
+		for (int loop = 0; loop < i_targets_hit; loop++)
+		{
+			int victim = Ruina_Laser_BEAM_HitDetected[loop];
+			if (victim && (this.Any_entities || IsValidEnemy(this.client, victim)))
+			{
+				this.trace_hit_enemy=true;
+
+				float playerPos[3];
+				WorldSpaceCenter(victim, playerPos);
+
+				//still send the dmg over.
+				float Dmg = this.Damage;
+
+				if(ShouldNpcDealBonusDamage(victim))
+					Dmg = this.Bonus_Damage;
+
+				Call_StartFunction(null, Attack_Function);
+				Call_PushCell(this.client);
+				Call_PushCell(victim);
+				Call_PushCell(this.damagetype);
+				Call_PushFloat(Dmg);
+				Call_Finish();
+
+				//static void On_LaserHit(int client, int target, int damagetype, float damage)
+			}
+		}
+	}
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)
 	{
 
 		Zero(Ruina_Laser_BEAM_HitDetected);
 
-		i_targets_hit = 0;	//todo: test this! | so far works!
+		i_targets_hit = 0;
 
 		float hullMin[3], hullMax[3];
-		hullMin[0] = -this.Radius;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
+		this.SetHull(hullMin, hullMax);
 
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
@@ -2534,7 +2577,8 @@ enum struct Ruina_Laser_Logic
 				if(ShouldNpcDealBonusDamage(victim))
 					Dmg = this.Bonus_Damage;
 				
-				SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
+				if(Dmg!=0.0)
+					SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
 
 				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
 				{	
@@ -2542,13 +2586,32 @@ enum struct Ruina_Laser_Logic
 					Call_PushCell(this.client);
 					Call_PushCell(victim);
 					Call_PushCell(this.damagetype);
-					Call_PushFloat(this.Damage);
+					Call_PushFloat(Dmg);
 					Call_Finish();
 
 					//static void On_LaserHit(int client, int target, int damagetype, float damage)
 				}
 			}
 		}
+	}
+	void SetHull(float hullMin[3], float hullMax[3])
+	{
+		if(this.Custom_Hull[0] != 0.0 || this.Custom_Hull[1] != 0.0 || this.Custom_Hull[2] != 0.0)
+		{
+			hullMin[0] = -this.Custom_Hull[0];
+			hullMin[1] = -this.Custom_Hull[1];
+			hullMin[2] = -this.Custom_Hull[2];
+			return;
+		}
+		else
+		{
+			hullMin[0] = -this.Radius;
+			hullMin[1] = hullMin[0];
+			hullMin[2] = hullMin[0];
+		}
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
 	}
 }
 
