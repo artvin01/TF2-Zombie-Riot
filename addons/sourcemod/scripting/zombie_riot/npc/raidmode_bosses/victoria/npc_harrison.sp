@@ -295,7 +295,7 @@ methodmap Harrison < CClotBody
 		ParticleSpawned[npc.index] = false;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
-		npc.m_flTimeUntillRailgunShots = GetGameTime() + 22.5;
+		npc.m_flTimeUntillNextRailgunShots = GetGameTime() + 22.5;
 		npc.m_flTimeUntillSummonRocket = 0.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
 		npc.m_flTimeUntillDroneSniperShot = 0.0;
