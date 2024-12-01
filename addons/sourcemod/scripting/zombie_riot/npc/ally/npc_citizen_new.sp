@@ -1231,10 +1231,10 @@ methodmap Citizen < CClotBody
 		if(Is_sequence)
 		{
 			int sequence = this.LookupSequence(animation);
-			if(sequence > 0 && sequence != this.npc.m_iAnimationState)
+			if(sequence > 0 && sequence != this.m_iAnimationState)
 			{
 				this.m_flSpeed = speed;
-				this.npc.m_iAnimationState = sequence;
+				this.m_iAnimationState = sequence;
 				this.m_bisWalking = false;
 				this.m_iActivity = 0;
 				
@@ -1247,10 +1247,10 @@ methodmap Citizen < CClotBody
 		else
 		{
 			int activity = this.LookupActivity(animation);
-			if(activity > 0 && activity != this.npc.m_iAnimationState)
+			if(activity > 0 && activity != this.m_iAnimationState)
 			{
 				this.m_flSpeed = speed;
-				this.npc.m_iAnimationState = activity;
+				this.m_iAnimationState = activity;
 				this.m_bisWalking = false;
 				this.StartActivity(activity);
 
