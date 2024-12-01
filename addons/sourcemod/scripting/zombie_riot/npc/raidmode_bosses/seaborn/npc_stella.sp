@@ -51,6 +51,15 @@ Karlas Final Touches:
 Sounds for the barrage. (Done)
 Give him actual wings. (Done!)
 
+
+Wave 60 Notes:
+
+Give Stella a really flashy ability.
+Spiral laser crystals?
+
+
+Give Karlas smth?
+
 */
 
 static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
