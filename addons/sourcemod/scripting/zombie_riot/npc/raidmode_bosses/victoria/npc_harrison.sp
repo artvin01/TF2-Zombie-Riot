@@ -6,97 +6,84 @@ static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_02.wav"
 };
 static const char g_HurtSounds[][] = {
-	"vo/scout_painsharp01.mp3",
-	"vo/scout_painsharp02.mp3",
-	"vo/scout_painsharp03.mp3",
-	"vo/scout_painsharp04.mp3",
-	"vo/scout_painsharp05.mp3",
-	"vo/scout_painsharp06.mp3",
-	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3"
-};
-static const char g_MissAbilitySound[][] = {
-	"vo/scout_invinciblechgunderfire01.mp3",
-	"vo/scout_invinciblechgunderfire02.mp3",
-	"vo/scout_invinciblechgunderfire03.mp3",
-	"vo/scout_invinciblechgunderfire04.mp3",
-	"vo/scout_beingshotinvincible01.mp3",
-	"vo/scout_beingshotinvincible02.mp3",
-	"vo/scout_beingshotinvincible03.mp3",
-	"vo/scout_beingshotinvincible04.mp3",
-	"vo/scout_beingshotinvincible05.mp3",
-	"vo/scout_beingshotinvincible06.mp3",
-	"vo/scout_beingshotinvincible07.mp3",
-	"vo/scout_beingshotinvincible08.mp3",
-	"vo/scout_beingshotinvincible09.mp3",
-	"vo/scout_beingshotinvincible10.mp3",
-	"vo/scout_beingshotinvincible11.mp3",
-	"vo/scout_beingshotinvincible12.mp3",
-	"vo/scout_beingshotinvincible13.mp3",
-	"vo/scout_beingshotinvincible14.mp3",
-	"vo/scout_beingshotinvincible15.mp3",
-	"vo/scout_beingshotinvincible16.mp3",
-	"vo/scout_beingshotinvincible17.mp3",
-	"vo/scout_beingshotinvincible18.mp3",
-	"vo/scout_beingshotinvincible19.mp3",
-	"vo/scout_beingshotinvincible20.mp3",
-	"vo/scout_beingshotinvincible21.mp3",
-	"vo/scout_beingshotinvincible22.mp3",
-	"vo/scout_beingshotinvincible23.mp3",
-	"vo/scout_beingshotinvincible24.mp3",
-	"vo/scout_beingshotinvincible25.mp3",
-	"vo/scout_beingshotinvincible26.mp3",
-	"vo/scout_beingshotinvincible27.mp3",
-	"vo/scout_beingshotinvincible28.mp3",
-	"vo/scout_beingshotinvincible29.mp3",
-	"vo/scout_beingshotinvincible30.mp3",
-	"vo/scout_beingshotinvincible31.mp3",
-	"vo/scout_beingshotinvincible32.mp3",
-	"vo/scout_beingshotinvincible33.mp3",
-	"vo/scout_beingshotinvincible34.mp3",
-	"vo/scout_beingshotinvincible35.mp3",
-	"vo/scout_beingshotinvincible36.mp3"
+	"vo/sniper_painsharp01.mp3",
+	"vo/sniper_painsharp02.mp3",
+	"vo/sniper_painsharp03.mp3",
+	"vo/sniper_painsharp04.mp3",
 };
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/scout_taunts03.mp3",
-	"vo/taunts/scout_taunts04.mp3",
-	"vo/taunts/scout_taunts06.mp3",
-	"vo/taunts/scout_taunts15.mp3",
-	"vo/compmode/cm_scout_pregamefirst_01.mp3"
+	"vo/sniper_specialcompleted01.mp3",
+	"vo/sniper_specialcompleted02.mp3",
+	"vo/sniper_specialcompleted03.mp3",
+	"vo/sniper_specialcompleted04.mp3",
+	"vo/sniper_specialcompleted05.mp3",
+	"vo/sniper_specialcompleted06.mp3",
+	"vo/sniper_specialcompleted07.mp3",
+	"vo/sniper_specialcompleted08.mp3",
+	"vo/sniper_specialcompleted09.mp3",
+	"vo/sniper_specialcompleted10.mp3",
+	"vo/sniper_specialcompleted11.mp3",
+	"vo/sniper_specialcompleted12.mp3",
+	"vo/sniper_specialcompleted13.mp3",
+	"vo/sniper_specialcompleted14.mp3",
+	"vo/sniper_specialcompleted15.mp3",
+	"vo/sniper_specialcompleted17.mp3",
+	"vo/sniper_specialcompleted18.mp3",
+	"vo/sniper_specialcompleted19.mp3",
+	"vo/sniper_specialcompleted21.mp3",
+	"vo/sniper_specialcompleted22.mp3",
+	"vo/sniper_specialcompleted23.mp3",
+	"vo/sniper_specialcompleted24.mp3",
+	"vo/sniper_specialcompleted25.mp3",
+	"vo/sniper_specialcompleted26.mp3",
+	"vo/sniper_specialcompleted27.mp3",
+	"vo/sniper_specialcompleted28.mp3",
+	"vo/sniper_specialcompleted29.mp3",
+	"vo/sniper_specialcompleted30.mp3",
+	"vo/sniper_specialcompleted31.mp3",
+	"vo/sniper_specialcompleted32.mp3",
+	"vo/sniper_specialcompleted33.mp3",
+	"vo/sniper_specialcompleted34.mp3",
+	"vo/sniper_specialcompleted35.mp3",
+	"vo/sniper_specialcompleted36.mp3",
+	"vo/sniper_specialcompleted37.mp3",
+	"vo/sniper_specialcompleted38.mp3",
+	"vo/sniper_specialcompleted39.mp3",
+	"vo/sniper_specialcompleted40.mp3",
+	"vo/sniper_specialcompleted41.mp3",
+	"vo/sniper_specialcompleted42.mp3",
+	"vo/sniper_specialcompleted43.mp3",
+	"vo/sniper_specialcompleted44.mp3",
+	"vo/sniper_specialcompleted45.mp3",
+	"vo/sniper_specialcompleted46.mp3",
 };
 static const char g_RangedAttackSounds[][] = {
-	"weapons/3rd_degree_hit_01.wav",
-	"weapons/3rd_degree_hit_02.wav"
+	"weapons/capper_shoot.wav",
 };
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/bat_draw.wav",
-	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav"
+	"weapons/machete_swing.wav",
 };
-static const char g_MeleeHitSounds[] = "weapons/bat_hit.wav";
+static const char g_MG42AttackSounds[][] = {
+	"weapons/csgo_awp_shoot.wav",
+};
+static const char g_MeleeHitSounds[] = "weapons/cbar_hitbod1.wav";
 static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
 static const char g_AngerReaction[] = "vo/scout_revenge06.mp3";
 static const char g_HomerunHitSounds[] = "mvm/melee_impacts/bat_baseball_hit_robo01.wav";
 static const char g_HomerunSounds[][]= {
-	"vo/scout_stunballhit01.mp3",
-	"vo/scout_stunballhit02.mp3",
-	"vo/scout_stunballhit03.mp3",
-	"vo/scout_stunballhit04.mp3",
-	"vo/scout_stunballhit05.mp3",
-	"vo/scout_stunballhit06.mp3",
-	"vo/scout_stunballhit07.mp3",
-	"vo/scout_stunballhit08.mp3"
+	"vo/sniper_jaratetoss02/mp3",
+	"vo/sniper_jaratetoss03/mp3",
 };
-static const char g_HomerunfailSounds[][]= {
-	"vo/taunts/scout/scout_taunt_rps_lose_01.mp3",
-	"vo/taunts/scout/scout_taunt_rps_lose_03.mp3"
+static const char g_LasershotReady[][]= {
+	"vo/sniper_dominationengineer03.mp3",
+	"vo/sniper_dominationengineer05.mp3",
+	"vo/sniper_goodjob01.mp3"
 };
-static const char StunballPickupeSound[][] = {
-	"vo/scout_stunballpickup01.mp3",
-	"vo/scout_stunballpickup02.mp3",
-	"vo/scout_stunballpickup03.mp3",
-	"vo/scout_stunballpickup04.mp3",
-	"vo/scout_stunballpickup05.mp3"
+static const char g_PlayRocketshotready[][] = {
+	"vo/sniper_specialcompleted20.mp3",
+	"vo/sniper_specialcompleted16.mp3",
+	"vo/sniper_dominationsoldier02.mp3"
+
 };
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
@@ -131,6 +118,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MG42AttackSounds)); i++) { PrecacheSound(g_MG42AttackSounds[i]); }
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
 	PrecacheSound(g_AngerReaction);
@@ -138,9 +126,8 @@ static void ClotPrecache()
 	PrecacheSound(g_BoomSounds);
 	PrecacheSound(g_IncomingBoomSounds);
 	for (int i = 0; i < (sizeof(g_HomerunSounds));   i++) { PrecacheSound(g_HomerunSounds[i]);   }
-	for (int i = 0; i < (sizeof(StunballPickupeSound));   i++) { PrecacheSound(StunballPickupeSound[i]);   }
-	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
-	for (int i = 0; i < (sizeof(g_HomerunfailSounds));   i++) { PrecacheSound(g_HomerunfailSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_PlayRocketshotready));   i++) { PrecacheSound(g_PlayRocketshotready[i]);   }
+	for (int i = 0; i < (sizeof(g_LasershotReady));   i++) { PrecacheSound(g_LasershotReady[i]);   }
 	PrecacheModel("models/player/sniper.mdl");
 	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
 }
@@ -159,10 +146,10 @@ methodmap Harrison < CClotBody
 		public get()							{ return i_TimesSummoned[this.index]; }
 		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
 	}
-	public void NiceCatchKnucklehead() {
+	public void PlayRocketshotready() {
 	
-		int sound = GetRandomInt(0, sizeof(StunballPickupeSound) - 1);
-		EmitSoundToAll(StunballPickupeSound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		int sound = GetRandomInt(0, sizeof(g_PlayRocketshotready) - 1);
+		EmitSoundToAll(g_PlayRocketshotready[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayAngerSound() {
 	
@@ -186,8 +173,8 @@ methodmap Harrison < CClotBody
 	}
 	public void PlayHomerunMissSound() {
 	
-		EmitSoundToAll(g_HomerunfailSounds[GetRandomInt(0, sizeof(g_HomerunfailSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_HomerunfailSounds[GetRandomInt(0, sizeof(g_HomerunfailSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_LasershotReady[GetRandomInt(0, sizeof(g_LasershotReady) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_LasershotReady[GetRandomInt(0, sizeof(g_LasershotReady) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayIdleAlertSound() 
 	{
@@ -217,16 +204,6 @@ methodmap Harrison < CClotBody
 		
 	}
 	
-	public void PlayMissSound() 
-	{
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		int sound = GetRandomInt(0, sizeof(g_MissAbilitySound) - 1);
-		EmitSoundToAll(g_MissAbilitySound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_MissAbilitySound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -234,16 +211,20 @@ methodmap Harrison < CClotBody
 	
 	public void PlayRangedSound()
 	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,110));
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
 	}
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayGunSound()
+	{
+		EmitSoundToAll(g_MG42AttackSounds[GetRandomInt(0, sizeof(g_MG42AttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
+	}
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		//EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	property float m_flTimeUntillSummonRocket
 	{
@@ -259,6 +240,11 @@ methodmap Harrison < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property float m_flTimeUntillGunReload
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
 	property int m_iAmountProjectiles
 	{
@@ -306,8 +292,10 @@ methodmap Harrison < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
 		npc.m_flTimeUntillDroneSniperShot = GetGameTime() + 5.0;
+		npc.m_flTimeUntillGunReload = GetGameTime() + 12.5;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_iAmountProjectiles = 0;
+		npc.m_iAttacksTillReload = 0;
 		
 		npc.m_fbRangedSpecialOn = false;
 		Zero(b_said_player_weaponline);
@@ -582,6 +570,11 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
 	
+	if(npc.m_flTimeUntillGunReload < gameTime)
+	{
+		npc.m_iAttacksTillReload =  RoundToNearest(float(CountPlayersOnRed(2)) * 5); 
+		npc.m_flTimeUntillGunReload = 30.0 + gameTime;
+	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -717,7 +710,7 @@ static void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
-				// ResetHarrisonWeapon(npc, 1);
+					ResetHarrisonWeapon(npc, 1);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
@@ -728,7 +721,7 @@ static void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-				//	ResetHarrisonWeapon(npc, 1);
+					ResetHarrisonWeapon(npc, 1);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_PRIMARY");
@@ -742,7 +735,7 @@ static void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-				//	ResetHarrisonWeapon(npc, 0);
+					ResetHarrisonWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -753,7 +746,7 @@ static void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-				//	ResetHarrisonWeapon(npc, 0);
+					ResetHarrisonWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
@@ -779,6 +772,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
+				npc.PlayRocketshotready()
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.5);
@@ -790,7 +784,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			case 1:
 			{
 				UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-				int enemy[7];
+				int enemy[8];
 				GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 				for(int i; i < sizeof(enemy); i++)
 				{
@@ -814,7 +808,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				if(playsounds)npc.PlayHomerunSound();
 				I_cant_do_this_all_day[npc.index]=0;
 				npc.m_flTimeUntillSummonRocket = 0.0;
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 25.0;
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 30.0;
 				npc.m_flTimeUntillNextRailgunShots = gameTime + 2.0;
 			}
 		}
@@ -847,7 +841,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		}
 		else
 		{
-			npc.m_flTimeUntillNextRailgunShots = gameTime + 25.0;
+			npc.m_flTimeUntillNextRailgunShots = gameTime + 22.5;
 			npc.m_iOverlordComboAttack = 0;
 		}
 		
@@ -867,8 +861,8 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			//float flPos[3]; GetEntPropVector(npc.index, Prop_Data, "head", flPos);
 			float flPosEdit[3]; 
 			flPosEdit = flPos;
-			flPosEdit[0] += 0.0;
-			flPosEdit[1] += 30.0;
+			flPosEdit[0] += 15.0;
+			flPosEdit[1] += 25.0;
 			flPosEdit[2] += 5.0;
 
 			float RocketDamage = 100.0;
@@ -895,65 +889,102 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-		
-			if(IsValidEnemy(npc.index, target))
+
+			if(npc.m_iAttacksTillReload > 0)
 			{
-				int HowManyEnemeisAoeMelee = 64;
-				Handle swingTrace;
-				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-				npc.FaceTowards(VecEnemy, 15000.0);
-				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
-				delete swingTrace;
-				bool PlaySound = false;
-				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+				if(gameTime > npc.m_flNextMeleeAttack)
 				{
-					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+					float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+					if(IsValidEnemy(npc.index, target))
 					{
-						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						npc.PlayGunSound();
+						npc.FaceTowards(vecTarget, 20000.0);
+						Handle swingTrace;
+						if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 						{
-							PlaySound = true;
-							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							target = TR_GetEntityIndex(swingTrace);	
+								
 							float vecHit[3];
-							
-							WorldSpaceCenter(targetTrace, vecHit);
+							TR_GetEndPosition(vecHit, swingTrace);
+							float origin[3], angles[3];
+							view_as<CClotBody>(npc.index).GetAttachment("effect_hand_r", origin, angles);
+							ShootLaser(npc.index, "bullet_tracer02_blue_crit", origin, vecHit, false );
 
-							float damage = 70.0;
-							damage *= 1.15;
+							if(IsValidEnemy(npc.index, target))
+							{
+								float damageDealt = 5.0;
 
-							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * RaidModeScaling, DMG_BULLET, -1, _, vecHit);
+							}
+							npc.m_iAttacksTillReload -= 1;
+						}
+						delete swingTrace;
+					}
+				}
+			}
+			else
+			{
+				if(IsValidEnemy(npc.index, target))
+				{
+					int HowManyEnemeisAoeMelee = 64;
+					Handle swingTrace;
+					float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+					npc.FaceTowards(VecEnemy, 15000.0);
+					npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+					delete swingTrace;
+					bool PlaySound = false;
+					for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+					{
+						if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+						{
+							if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+							{
+								PlaySound = true;
+								int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+								float vecHit[3];
+								
+								WorldSpaceCenter(targetTrace, vecHit);
+
+								float damage = 70.0;
+								damage *= 1.15;
+
+								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
+									
+								
+								// Hit particle
 								
 							
-							// Hit particle
-							
-						
-							
-							bool Knocked = false;
-										
-							if(IsValidClient(targetTrace))
-							{
-								if(!NpcStats_IsEnemySilenced(npc.index))
+								
+								bool Knocked = false;
+											
+								if(IsValidClient(targetTrace))
 								{
-									if(target > MaxClients)
+									if(!NpcStats_IsEnemySilenced(npc.index))
 									{
-										StartBleedingTimer_Against_Client(target, npc.index, 15.0, 10);
-									}
-									else
-									{
-										if (!IsInvuln(target))
+										if(target > MaxClients)
 										{
 											StartBleedingTimer_Against_Client(target, npc.index, 15.0, 10);
 										}
+										else
+										{
+											if (!IsInvuln(target))
+											{
+												StartBleedingTimer_Against_Client(target, npc.index, 15.0, 10);
+											}
+										}
 									}
 								}
-							}
-										
-							if(!Knocked)
-								Custom_Knockback(npc.index, targetTrace, 150.0, true); 
-						} 
+											
+								if(!Knocked)
+									Custom_Knockback(npc.index, targetTrace, 150.0, true); 
+							} 
+						}
 					}
+					if(PlaySound)
+						npc.PlayMeleeHitSound();
 				}
-				if(PlaySound)
-					npc.PlayMeleeHitSound();
 			}
 		}
 	}
@@ -962,6 +993,29 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 	{
 		if(IsValidEnemy(npc.index, target)) 
 		{
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5) && npc.m_iAttacksTillReload > 0)
+			{
+				int Enemy_I_See;
+									
+				Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+						
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					target = Enemy_I_See;
+
+					npc.PlayMeleeSound();
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
+					
+					float time = 0.1;
+					if(NpcStats_VictorianCallToArms(npc.index))
+					{
+						time *= 0.75;
+					}
+					npc.m_flAttackHappens = gameTime + time;
+					npc.m_flNextMeleeAttack = gameTime + time;
+					npc.m_flDoingAnimation = gameTime + time;
+				}
+			}
 			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
@@ -987,7 +1041,14 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}	
 	}
-	return 0;
+	if(npc.m_iAttacksTillReload >0)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 
@@ -1095,8 +1156,8 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 150.0;
-	float FarDamage = 75.0;
+	float CloseDamage = 50.0;
+	float FarDamage = 20.0;
 	float MaxDistance = 750.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
@@ -1144,7 +1205,7 @@ static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 		vecSelf[2] += 80.0;
 		vecSelf[0] += GetRandomFloat(-20.0, 20.0);
 		vecSelf[1] += GetRandomFloat(-20.0, 20.0);
-		float RocketDamage = 200.0;
+		float RocketDamage = 40.0;
 		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
 		if(IsValidEntity(RocketGet))
 		{
@@ -1156,4 +1217,29 @@ static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 		npc.FaceTowards(vecTarget, 99999.0);
 	}
 	return Plugin_Stop;
+}
+
+void ResetSoldineWeapon(Soldine npc, int weapon_Type)
+{
+	if(IsValidEntity(npc.m_iWearable1))
+	{
+		RemoveEntity(npc.m_iWearable1);
+	}
+	switch(weapon_Type)
+	{
+		case 1:
+		{
+			npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
+			SetVariantString("0.75");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			SetVariantInt(32);
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		}
+		case 0:
+		{	
+			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
+			SetVariantString("1.0");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		}
+	}
 }

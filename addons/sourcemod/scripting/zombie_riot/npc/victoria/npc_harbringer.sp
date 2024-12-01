@@ -307,7 +307,7 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
 						float origin[3], angles[3];
-						view_as<CClotBody>(npc.index).GetAttachment("head", origin, angles);
+						view_as<CClotBody>(npc.index).GetAttachment("effect_hand_r", origin, angles);
 						ShootLaser(npc.index, "bullet_tracer02_blue_crit", origin, vecHit, false );
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.05;
 
