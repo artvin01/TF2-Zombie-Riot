@@ -107,6 +107,7 @@ static int I_cant_do_this_all_day[MAXENTITIES];
 static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
+static int i_AmountProjectiles[MAXENTITIES];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 
 void Harrison_OnMapStart_NPC()
@@ -251,15 +252,20 @@ methodmap Harrison < CClotBody
 	}
 	property float m_flTimeUntillDroneSniperShot
 	{
-		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
 	property float m_flTimeUntillNextRailgunShots
 	{
-		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
-	
+	property int m_iAmountProjectiles
+	{
+		public get()							{ return i_AmountProjectiles[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
+	}
+
 	public Harrison(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Harrison npc = view_as<Harrison>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
@@ -297,9 +303,12 @@ methodmap Harrison < CClotBody
 		npc.i_GunMode = 0;
 		npc.m_flTimeUntillNextRailgunShots = GetGameTime() + 22.5;
 		npc.m_flTimeUntillSummonRocket = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
-		npc.m_flTimeUntillDroneSniperShot = 0.0;
+		npc.m_flTimeUntillDroneSniperShot = GetGameTime() + 5.0;
 		npc.m_iOverlordComboAttack = 0;
+		npc.m_iAmountProjectiles = 0;
+		
 		npc.m_fbRangedSpecialOn = false;
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
@@ -649,7 +658,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			npc.m_fbRangedSpecialOn = true;
 			FTL[npc.index] += 25.0;
 			RaidModeTime += 25.0;
-			npc.m_flNextRangedAttack += 5.0;
 			npc.PlayAngerReaction();
 		}
 	}
@@ -861,6 +869,41 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			npc.m_iOverlordComboAttack = 0;
 		}
 		
+	}
+	else if(npc.m_flTimeUntillDroneSniperShot < gameTime)
+	{
+		if(npc.m_flNextRangedAttack < gameTime)
+		{	
+			npc.m_iAmountProjectiles += 1;
+			npc.m_flNextRangedAttack = gameTime + 0.1;
+			npc.PlayRangedSound();
+					
+			float flPos[3]; // original
+			float flPos[3]; GetEntPropVector(npc.index, Prop_Data, "head", flPos);
+			float flPosEdit[3]; 
+			flPosEdit = flPos;
+			flPosEdit[0] += 0.0;
+			flPosEdit[1] += 20.0;
+			flPosEdit[2] += 0.0;
+
+			float RocketDamage = 100.0;
+			float RocketSpeed = 900.0;
+			float Radius = 250.0;
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+			float vecDest[3];
+			vecDest = vecTarget;
+			vecDest[0] += GetRandomFloat(-100.0, 100.0);
+			vecDest[1] += GetRandomFloat(-100.0, 100.0);
+			vecDest[2] += GetRandomFloat(-100.0, 100.0);
+						
+			npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling , RocketSpeed , Radius , "raygun_projectile_blue_crit", true,_, true, flPosEdit);
+			if (npc.m_iAmountProjectiles >= 10)
+			{
+				npc.m_iAmountProjectiles = 0;
+				npc.m_flTimeUntillDroneSniperShot = gameTime + 15.0;
+			}
+		}
 	}
 	else if(npc.m_flAttackHappens)
 	{
