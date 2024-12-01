@@ -102,8 +102,8 @@ static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
 static float Vs_DelayTime[MAXENTITIES];
-static float Vs_RechargeTime[MAXENTITIES];
-static float Vs_RechargeTimeMax[MAXENTITIES];
+float Vs_RechargeTime[MAXENTITIES];
+float Vs_RechargeTimeMax[MAXENTITIES];
 static int Vs_Target[MAXENTITIES];
 static int Vs_ParticleSpawned[MAXENTITIES];
 static float Vs_Temp_Pos[MAXENTITIES][3];

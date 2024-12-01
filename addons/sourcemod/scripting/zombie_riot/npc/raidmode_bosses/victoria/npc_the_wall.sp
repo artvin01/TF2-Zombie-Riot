@@ -44,6 +44,7 @@ static int I_cant_do_this_all_day[MAXENTITIES];
 static int i_Huscarls_eye_particle[MAXENTITIES];
 static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
+static bool MyGundammmmmm[MAXENTITIES];
 
 static float DMGTypeArmorDuration[MAXENTITIES];
 static float GetArmor[MAXENTITIES];
@@ -199,6 +200,7 @@ methodmap Huscarls < CClotBody
 		Delay_Attribute[npc.index] = 0.0;
 		YaWeFxxked[npc.index] = false;
 		ParticleSpawned[npc.index] = false;
+		MyGundammmmmm[npc.index] = false;
 		npc.m_bFUCKYOU = false;
 		npc.Anger = false;
 		npc.m_fbRangedSpecialOn = false;
@@ -234,7 +236,7 @@ methodmap Huscarls < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Sensal Arrived");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Huscarls Arrived");
 				Frozen_Player[client_check]=false;
 			}
 		}
@@ -349,8 +351,10 @@ static void Internal_ClotThink(int iNPC)
 		i_Huscarls_eye_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
-	}	
-
+	}
+	bool GETVictoria_Support=false;
+	if(npc.Anger && npc.m_fbRangedSpecialOn && !MyGundammmmmm[npc.index] && Victoria_Support(npc))
+		GETVictoria_Support=true;
 	if(LastMann)
 	{
 		if(!npc.m_fbGunout)
@@ -383,9 +387,9 @@ static void Internal_ClotThink(int iNPC)
 		switch(GetRandomInt(1, 4))
 		{
 			case 1:CPrintToChatAll("{lightblue}Huscarls{default}: Ok. Enough. {crimson}Time to Finish.{default}");
-			case 2:CPrintToChatAll("{lightblue}Huscarls{default}: The troops have arrived and will begin destroying the intruders!");
-			case 3:CPrintToChatAll("{lightblue}Huscarls{default}: Backup team has arrived. Catch those damn bastards!");
-			case 4:CPrintToChatAll("{lightblue}Huscarls{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
+			case 2:CPrintToChatAll("{lightblue}Huscarls{default}: Ok. Enough. {crimson}Time to Finish.{default}");
+			case 3:CPrintToChatAll("{lightblue}Huscarls{default}: Ok. Enough. {crimson}Time to Finish.{default}");
+			case 4:CPrintToChatAll("{lightblue}Huscarls{default}: Ok. Enough. {crimson}Time to Finish.{default}");
 		}
 		BlockLoseSay = true;
 		YaWeFxxked[npc.index] = true;
@@ -450,7 +454,7 @@ static void Internal_ClotThink(int iNPC)
 					int spawn_index = NPC_CreateByName("npc_avangard", -1, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), "only");
 					if(spawn_index > MaxClients)
 					{
-						int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.25);
+						int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.15);
 						fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
 						fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
 						fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
@@ -467,7 +471,8 @@ static void Internal_ClotThink(int iNPC)
 					}
 					for(int i = 0; i < (sizeof(LifeSupportDevice[])); i++)
 					{
-						if(IsValidEntity(LifeSupportDevice[npc.index][i]))
+						if(IsValidEntity(LifeSupportDevice[npc.index][i])&& i_NpcInternalId[LifeSupportDevice[npc.index][i]] == VictorianAvangard_ID()
+						&& !b_NpcHasDied[LifeSupportDevice[npc.index][i]] && GetTeam(LifeSupportDevice[npc.index][i]) == GetTeam(npc.index))
 						{
 							FreezeNpcInTime(LifeSupportDevice[npc.index][i], 1.6, true);
 							IncreaceEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
@@ -483,6 +488,7 @@ static void Internal_ClotThink(int iNPC)
 				{
 					npc.AddActivityViaSequence("tauntrussian_rubdown_outro");
 					npc.SetPlaybackRate(1.0);
+					Delay_Attribute[npc.index] = gameTime + 1.5;
 					I_cant_do_this_all_day[npc.index]=5;
 				}
 			}
@@ -493,14 +499,17 @@ static void Internal_ClotThink(int iNPC)
 					EmitSoundToAll("mvm/mvm_tank_horn.wav", _, _, _, _, 1.0);
 					/*npc.PlayAngerSound();
 					npc.PlayAngerReaction();*/
-					npc.m_flHuscarlsRushCoolDown += 6.0;
-					npc.m_flHuscarlsAdaptiveArmorCoolDown += 6.0;
-					npc.m_flHuscarlsDeployEnergyShieldCoolDown += 6.0;
+					npc.m_flHuscarlsRushCoolDown += 1.0;
+					npc.m_flHuscarlsAdaptiveArmorCoolDown += 1.0;
+					npc.m_flHuscarlsDeployEnergyShieldCoolDown += 1.0;
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_bFUCKYOU=false;
 				}
 			}
 		}
+		npc.m_flHuscarlsRushCoolDown += 0.1;
+		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		return;
 	}
 	
@@ -509,7 +518,8 @@ static void Internal_ClotThink(int iNPC)
 		bool StillAlive=false;
 		for(int i = 0; i < (sizeof(LifeSupportDevice[])); i++)
 		{
-			if(IsValidEntity(LifeSupportDevice[npc.index][i]))
+			if(IsValidEntity(LifeSupportDevice[npc.index][i])&& i_NpcInternalId[LifeSupportDevice[npc.index][i]] == VictorianAvangard_ID()
+				&& !b_NpcHasDied[LifeSupportDevice[npc.index][i]] && GetTeam(LifeSupportDevice[npc.index][i]) == GetTeam(npc.index))
 				StillAlive=true;
 			else
 			{
@@ -528,11 +538,52 @@ static void Internal_ClotThink(int iNPC)
 			f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
 			b_NpcIsInvulnerable[npc.index] = false;
 			npc.m_fbRangedSpecialOn = true;
+			npc.m_flHuscarlsRushCoolDown += 3.0;
+			npc.m_flHuscarlsAdaptiveArmorCoolDown += 3.0;
+			npc.m_flHuscarlsDeployEnergyShieldCoolDown += 3.0;
+			I_cant_do_this_all_day[npc.index]=0;
+			MyGundammmmmm[npc.index] = true;
 		}
 	}
-	if(npc.Anger && npc.m_fbRangedSpecialOn && Victoria_Support(npc))
+	if(npc.Anger && npc.m_fbRangedSpecialOn)
 	{
+		if(MyGundammmmmm[npc.index])
+		{
+			switch(I_cant_do_this_all_day[npc.index])
+			{
+				case 0:
+				{
+					npc.AddActivityViaSequence("=taunt_soviet_showoff");
+					npc.m_flAttackHappens = 0.0;
+					npc.SetCycle(0.8);
+					npc.SetPlaybackRate(1.2);
+					npc.m_flDoingAnimation = gameTime + 1.0;
+					Delay_Attribute[npc.index] = gameTime + 1.5;
+					I_cant_do_this_all_day[npc.index] = 1;
+				}
+				case 1:
+				{
+					if(Delay_Attribute[npc.index] < gameTime)
+					{
+						MyGundammmmmm[npc.index]=false;
+						I_cant_do_this_all_day[npc.index] = 0;
+					}
+				}
+			}
+			NPC_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 0;
+			npc.m_flHuscarlsRushCoolDown += 0.1;
+			npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+			npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+			npc.m_flDoingAnimation = gameTime + 0.1;
+			return;
+		}
+		else if(GETVictoria_Support)
+		{
 		
+		}
 	}
 	
 	npc.m_flSpeed = 300.0+ExtraMovement[npc.index];
@@ -882,7 +933,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 3.4;
-				Delay_Attribute[npc.index] = gameTime + 1.0;
+				Delay_Attribute[npc.index] = gameTime + 1.2;
 				I_cant_do_this_all_day[npc.index] = 1;
 			}
 			case 1:
@@ -929,6 +980,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				I_cant_do_this_all_day[npc.index] = 0;
 			}
 		}
+		npc.m_flHuscarlsRushCoolDown += 0.1;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		SpecialAttack=true;
 	}
 	else if(npc.m_flHuscarlsRushCoolDown < gameTime)
@@ -1111,6 +1164,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				ExtraMovement[npc.index] = 0.0;
 			}
 		}
+		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		SpecialAttack=true;
 	}
 	if(SpecialAttack)
