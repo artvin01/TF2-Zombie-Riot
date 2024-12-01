@@ -1450,7 +1450,7 @@ static void Fire_Wave_Barrage(Karlas npc)
 			return;
 			
 		
-		if(Nearby_Players(npc, 9999.0) <=0)
+		if(Nearby_Players(npc, 9000.0) <=0)
 			return;
 	}
 	if(npc.m_flSlicerBarrageActive > GameTime && (npc.m_iNClockonState != 0 || npc.m_flNC_LockedOn > GameTime))

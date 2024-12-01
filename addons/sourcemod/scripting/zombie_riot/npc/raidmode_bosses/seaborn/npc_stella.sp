@@ -1162,7 +1162,7 @@ static bool Lunar_Grace(Stella npc)
 	if(npc.m_flLunar_Grace_CD > GameTime)
 		return false;
 
-	if(Nearby_Players(npc, 99999.0) <= 0)
+	if(Nearby_Players(npc, 9000.0) <= 0)
 		return false;
 	
 	npc.m_bKarlasRetreat = true;
@@ -1422,16 +1422,16 @@ static bool b_MoveTowardsKarlas(Stella npc)
 	if(i_current_wave[npc.index] < 30)
 		return false;
 
-	int Near_Stella = Nearby_Players(npc, 99999.0);
+	int Near_Stella = Nearby_Players(npc, 9000.0);
 
 	Karlas npc2 = view_as<Karlas>(npc.Ally);
 	Stella npc3 = view_as<Stella>(npc.Ally);
 
 	float Karlas_Wanna_Loc[3];
 	CanIseeNCEndLoc(npc2,Karlas_Wanna_Loc);
-	int Near_Karlas = Nearby_Players(npc3, 99999.0, Karlas_Wanna_Loc);
+	int Near_Karlas = Nearby_Players(npc3, 9000.0, Karlas_Wanna_Loc);
 	if(Near_Karlas<=0)
-		Near_Karlas = Nearby_Players(npc3, 99999.0);
+		Near_Karlas = Nearby_Players(npc3, 9000.0);
 
 	//stella has no targets in sight.
 	if(Near_Stella <= 0)
@@ -1831,7 +1831,7 @@ static void FindKarlas(int client, int entity, int damagetype, float damage)
 	if(entity == npc.Ally)
 	{
 		Stella faker = view_as<Stella>(npc.Ally);
-		if(Nearby_Players(faker, 99999.0)<=0)
+		if(Nearby_Players(faker, 9000.0)<=0)
 			return;
 
 		Karlas karl = view_as<Karlas>(npc.Ally);
@@ -2247,9 +2247,9 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	//unlike most ruina lasers, this one deals damage every tick.
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Basic(Range);
-	Laser.Damage = Modify_Damage(-1, 8.0)/TickrateModify;
+	Laser.Damage = Modify_Damage(-1, 4.0)/TickrateModify;
 	Laser.Radius = radius;
-	Laser.Bonus_Damage = (Modify_Damage(-1, 8.0)*6.0)/TickrateModify;
+	Laser.Bonus_Damage = (Modify_Damage(-1, 4.0)*6.0)/TickrateModify;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage();
 
