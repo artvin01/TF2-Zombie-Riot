@@ -868,8 +868,8 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			float flPosEdit[3]; 
 			flPosEdit = flPos;
 			flPosEdit[0] += 0.0;
-			flPosEdit[1] -= 15.0;
-			flPosEdit[2] += 30.0;
+			flPosEdit[1] += 30.0;
+			flPosEdit[2] += 5.0;
 
 			float RocketDamage = 100.0;
 			float RocketSpeed = 900.0;
@@ -878,9 +878,9 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 			float vecDest[3];
 			vecDest = vecTarget;
-			vecDest[0] += GetRandomFloat(-100.0, 100.0);
-			vecDest[1] += GetRandomFloat(-100.0, 100.0);
-			vecDest[2] += GetRandomFloat(-100.0, 100.0);
+			vecDest[0] += GetRandomFloat(-50.0, 50.0);
+			vecDest[1] += GetRandomFloat(-50.0, 50.0);
+			vecDest[2] += GetRandomFloat(-50.0, 50.0);
 						
 			npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling , RocketSpeed , Radius , "raygun_projectile_blue_crit", true,_, true, flPosEdit);
 			if (npc.m_iAmountProjectiles >= 10)
