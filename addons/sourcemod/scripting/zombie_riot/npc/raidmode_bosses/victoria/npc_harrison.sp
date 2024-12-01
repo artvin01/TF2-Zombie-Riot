@@ -1002,10 +1002,10 @@ void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float Vector
 
 	int red = 200;
 	int green = 200;
-	int blue = 255;
+	int blue = 200;
 	int colorLayer4[4];
-	float diameter = float(10 * 4);
-	SetColorRGBA(colorLayer4, red, green, blue, 100);
+	float diameter = float(12 * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, 150);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
 	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
@@ -1056,7 +1056,7 @@ void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	int blue = 255;
 	int colorLayer4[4];
 	float diameter = float(13 * 4);
-	SetColorRGBA(colorLayer4, red, green, blue, 200);
+	SetColorRGBA(colorLayer4, red, green, blue, 255);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
 	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
