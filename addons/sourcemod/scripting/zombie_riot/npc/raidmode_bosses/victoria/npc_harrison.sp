@@ -249,7 +249,7 @@ methodmap Harrison < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
-	property float m_flTimeUntillNextSummonRocket
+	property float m_flTimeUntillDroneSniperShot
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
@@ -295,9 +295,10 @@ methodmap Harrison < CClotBody
 		ParticleSpawned[npc.index] = false;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
-		npc.m_flTimeUntillNextRailgunShots = GetGameTime() + 22.5;
-		npc.m_flTimeUntillSummonRocket = GetGameTime() + 10.0;
-		npc.m_flTimeUntillNextSummonRocket = 0.0;
+		npc.m_flTimeUntillRailgunShots = GetGameTime() + 22.5;
+		npc.m_flTimeUntillSummonRocket = 0.0;
+		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
+		npc.m_flTimeUntillDroneSniperShot = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_fbRangedSpecialOn = false;
 		Zero(b_said_player_weaponline);
@@ -762,93 +763,79 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 	{
 		npc.i_GunMode = 0;
 
-		if(npc.m_iChanged_WalkCycle != 5) 	
+		switch(I_cant_do_this_all_day[npc.index])
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-			npc.m_bisWalking = false;
-			npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
-			npc.m_flAttackHappens = 0.0;
-			npc.SetCycle(0.01);
-			npc.SetPlaybackRate(1.5);
-			npc.m_iChanged_WalkCycle = 0;
-			npc.m_flDoingAnimation = gameTime + 1.5;	
-			npc.m_flTimeUntillSummonRocket = gameTime + 1.5;
-		}
-		
-		if(npc.m_flTimeUntillSummonRocket < gameTime)
-		{
-			/*
-			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy_2[MAXENTITIES];
-			GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable3);
-			for(int i; i < sizeof(enemy_2); i++)
+			case 0:
 			{
-				if(IsValidEntity(enemy_2[i]) && IsValidEnemy(npc.index, enemy_2[i]))
-				{
-					//npc.PlayRocketSound();
-					float vecSelf[3];
-					WorldSpaceCenter(npc.index, vecSelf);
-					vecSelf[2] += 80.0;
-					vecSelf[0] += GetRandomFloat(-15.0, 15.0);
-					vecSelf[1] += GetRandomFloat(-15.0, 15.0);
-					float RocketDamage = 200.0;
-					int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
-					npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
-					if(IsValidEntity(RocketGet))
-					{
-						DataPack pack;
-						CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-						pack.WriteCell(EntIndexToEntRef(RocketGet));
-						pack.WriteCell(EntIndexToEntRef(enemy_2[i]));
-					}
-				}
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.5);
+				npc.m_iChanged_WalkCycle = 0;
+				npc.m_flDoingAnimation = gameTime + 1.5;	
+				npc.m_flTimeUntillSummonRocket = gameTime + 1.5;
+				I_cant_do_this_all_day[npc.index]=1;
 			}
-			*/
-			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[7];
-			bool playsounds=false;
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+			case 1:
+			{
+				if(npc.m_flTimeUntillSummonRocket < gameTime)
+				{
+					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+					int enemy[7];
+					bool playsounds=false;
+					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 
-			for(int i; i < sizeof(enemy); i++)
-			{
-				for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
-				{
-					if(enemy[i])
+					for(int i; i < sizeof(enemy); i++)
 					{
-						float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
-						ParticleEffectAt(vecTarget, "npc_boss_bomb_shadow", 3.0);
-						playsounds=true;
-						
-						float vecSelf[3];
-						WorldSpaceCenter(npc.index, vecSelf);
-						vecSelf[2] += 80.0;
-						vecSelf[0] += GetRandomFloat(-20.0, 20.0);
-						vecSelf[1] += GetRandomFloat(-20.0, 20.0);
-						float RocketDamage = 200.0;
-						int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
-						if(IsValidEntity(RocketGet))
+						for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
 						{
-							DataPack pack;
-							CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-							pack.WriteCell(EntIndexToEntRef(RocketGet));
-							pack.WriteCell(EntIndexToEntRef(enemy[i]));
+							if(enemy[i])
+							{
+								float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
+								ParticleEffectAt(vecTarget, "npc_boss_bomb_shadow", 3.0);
+								playsounds=true;
+								
+								float vecSelf[3];
+								WorldSpaceCenter(npc.index, vecSelf);
+								vecSelf[2] += 80.0;
+								vecSelf[0] += GetRandomFloat(-20.0, 20.0);
+								vecSelf[1] += GetRandomFloat(-20.0, 20.0);
+								float RocketDamage = 200.0;
+								int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+								if(IsValidEntity(RocketGet))
+								{
+									DataPack pack;
+									CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+									pack.WriteCell(EntIndexToEntRef(RocketGet));
+									pack.WriteCell(EntIndexToEntRef(enemy[i]));
+								}
+								npc.FaceTowards(vecTarget, 99999.0);
+							}
 						}
-						npc.FaceTowards(vecTarget, 99999.0);
-						npc.m_flTimeUntillNextSummonRocket += 0.1;
 					}
+					if(playsounds)npc.PlayHomerunSound();
+					I_cant_do_this_all_day[npc.index]=2;
 				}
 			}
-			if(playsounds)npc.PlayHomerunSound();
-			npc.m_flTimeUntillSummonRocket = gameTime + 20.0;
+			case 2:
+			{
+				I_cant_do_this_all_day[npc.index]=0;
+				npc.m_flTimeUntillSummonRocket = 0.0;
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 25.0;
+				npc.m_flTimeUntillNextRailgunShots = gameTime + 2.0;
+			}
 		}
-		npc.m_flNextRangedSpecialAttackHappens = gameTime + 15.0;
 		return 1;
 	}
 	else if(npc.m_flTimeUntillNextRailgunShots < gameTime)
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float projectile_speed = 800.0;
+
+		npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
 
 		PredictSubjectPositionForProjectiles(npc, target, projectile_speed, 40.0, vecTarget);
 		if(!Can_I_See_Enemy_Only(npc.index, target)) //cant see enemy in the predicted position, we will instead just attack normally

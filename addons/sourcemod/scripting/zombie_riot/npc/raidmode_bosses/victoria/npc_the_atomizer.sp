@@ -603,8 +603,6 @@ static void Internal_ClotThink(int iNPC)
 				npc.SetPlaybackRate(2.0);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 1.5;	
-				/*npc.GetAttachment("effect_hand_r", flPos, flAng);
-				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_projectile_core01", npc.index, "effect_hand_r", {0.0,0.0,0.0});*/
 				Delay_Attribute[npc.index] = gameTime + 1.4;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
