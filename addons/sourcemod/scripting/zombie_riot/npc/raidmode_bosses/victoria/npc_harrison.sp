@@ -881,9 +881,9 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			float flPos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 			float flPosEdit[3]; 
 			flPosEdit = flPos;
-			flPosEdit[0] += 10.0;
-			flPosEdit[1] += 0.0;
-			flPosEdit[2] += 40.0;
+			flPosEdit[0] += 0.0;
+			flPosEdit[1] += 50.0;
+			flPosEdit[2] += 160.0;
 
 			float RocketDamage = 100.0;
 			float RocketSpeed = 900.0;
