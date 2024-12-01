@@ -86,7 +86,7 @@ public void Ion_Beam_Wand_MapStart()
 //Tottal charge time is these 2 combined
 
 #define NEUVELLETE_BASELINE_ION_DMG 350.0
-#define NEUVELLETE_BASELINE_ION_RANGE 200.0
+#define NEUVELLETE_BASELINE_ION_RANGE 500.0
 
 #define NEUVELLETE_BASELINE_DAMAGE 140.0
 #define NEUVELLETE_BASELINE_RANGE 1000.0				//how far the laser can reach
@@ -269,7 +269,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 			}
 			Mana_Cost += RoundToFloor(float(Mana_Cost)*0.1);
 			
-			DamagE *= 1.45;
+			DamagE *= 1.52;
 			
 			Effects |= (1 << 7); //pulse
 			
@@ -641,10 +641,7 @@ static void Witch_Hexagon_Witchery(int client, int weapon)
 	
 	float DamagE = NEUVELLETE_BASELINE_ION_DMG*(fl_ion_charge_ammount[client]/100.0);
 	
-	float range = NEUVELLETE_BASELINE_ION_RANGE * (fl_ion_charge_ammount[client]/100.0);
-		
-	
-	
+	float range = NEUVELLETE_BASELINE_ION_RANGE * (fl_ion_charge_ammount[client]/1000.0);
 	
 	float Null = 0.0;
 	int Null2 = 0;
@@ -733,7 +730,7 @@ static Action Hexagon_Witchery_Tick(int client)
 						tempAngles[2] = 0.0;
 						
 						GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-						ScaleVector(Direction, range*0.25);
+						ScaleVector(Direction, range);
 						AddVectors(origin_vec, Direction, EndLoc);
 						vec_temp[i] = EndLoc;
 					}			
@@ -788,7 +785,7 @@ static Action Hexagon_Witchery_Tick(int client)
 					tempAngles[2] = 0.0;
 					
 					GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-					ScaleVector(Direction, range*0.25);
+					ScaleVector(Direction, range);
 					AddVectors(origin_vec, Direction, EndLoc);
 					vec_temp[i] = EndLoc;
 				}			
@@ -833,9 +830,9 @@ static Action Hexagon_Witchery_Tick(int client)
 		colour[0] = 255;
 		colour[1] = 255;
 		colour[2] = 255;
-		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.10, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*3.25);
-		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 2.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.2, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*2.0);
-		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 3.5, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.35, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*1.75);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.10, 5.0, 1.25, 1 , range*3.25);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 2.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.2, 5.0, 1.25, 1 , range*2.0);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 3.5, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.35, 5.0, 1.25, 1 , range*1.75);
 		
 		TE_SetupExplosion(origin_vec, gExplosive1, 0.1, 1, 0, 0, 0);
 		TE_SendToAll();
@@ -1162,21 +1159,9 @@ static void Get_Loc(int client, float Start_Loc[3], float Beam_Angles[3], float 
 	GetClientEyePosition(client, Pos);
 	float PosEffects[3];
 	PosEffects = Pos;
-	
-	int viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 
-	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));	//note: redo the laser turning so its less choopy, also make it use ENV beams instead of Te
-	
-	if(IsValidEntity(viewmodelModel) && !HasWings)
-	{
-		float flAng[3];
-		GetAttachment(viewmodelModel, "effect_hand_r", PosEffects, flAng);	
-	}
-	else
-	{
-		PosEffects[2] -= 35.0;
-		Pos[2] -= 35.0;
-	}
+	PosEffects[2] -= 35.0;
+	Pos[2] -= 35.0;
 
 	Handle trace = TR_TraceRayFilterEx(Pos, Beam_Angles, 11, RayType_Infinite, Prismatic_TraceWallsOnly);
 	TR_GetEndPosition(Target_Loc, trace);
@@ -1429,6 +1414,8 @@ public void Neuvellete_Menu(int client, int weapon)
 		
 	Menu menu2 = new Menu(Neuvellete_Menu_Selection);
 	int flags = i_Neuvellete_HEX_Array[client];
+
+	SetGlobalTransTarget(client);
 	
 	if(i_Neuvellete_Skill_Points[client]>0)
 	{

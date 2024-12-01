@@ -4006,4 +4006,16 @@
 	{
 		"en"	"Attacks deal extra damage and mark the main target.\nHas a chance to explode and stun when hitting marked targets.\nAbility grants sentry buildings and a limited-ammo rocket launcher."
 	}
+	"Wand of Rot Desc"
+	{
+		"en"	"Fires a slow homing projectile with medium damage. \nDeals an adinational hit of damage to enemies under an elemental debuff. \nAbility increases damage, firarate, projectile speed and passive bonus, also fires 2 projectiles.\nDeal Osmosis Damage, see Extra Desc."
+	}
+	"Wand of Rot Desc 2"
+	{
+		"en"	"When triggered: Osmosis elemental debuff gives allies 2 second cooldown reduction on their abilities once each trigger on their active weapon."
+	}
+	"Wand of Decay Desc"
+	{
+		"en"	"Increased damage and fire rate"
+	}
 }

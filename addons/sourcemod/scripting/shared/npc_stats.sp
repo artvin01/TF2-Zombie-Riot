@@ -2176,7 +2176,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
 		this.ResetSequenceInfo();
-		this.m_iState = iSequence;
+		this.m_iAnimationState = iSequence;
 	//	int layer = this.FindGestureLayerBySequence(iSequence);
 	//	if(layer != -1)
 	//	{
@@ -2251,9 +2251,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(Is_sequence)
 		{
 			int sequence = this.LookupSequence(animation);
-			if(sequence > 0 && sequence != this.m_iState)
+			if(sequence > 0 && sequence != this.m_iAnimationState)
 			{
-				this.m_iState = sequence;
+				this.m_iAnimationState = sequence;
 				this.m_iActivity = 0;
 				
 				this.SetSequence(sequence);
@@ -2265,9 +2265,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		else
 		{
 			int activity = this.LookupActivity(animation);
-			if(activity > 0 && activity != this.m_iState)
+			if(activity > 0 && activity != this.m_iAnimationState)
 			{
-				this.m_iState = activity;
+				this.m_iAnimationState = activity;
 				this.StartActivity(activity);
 			}
 		}
@@ -8497,6 +8497,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_WasPathingToHere[entity][2] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_ElementalAmplification[entity] = 0.0;
+	
 	f_LudoDebuff[entity] = 0.0;
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
@@ -8559,6 +8560,11 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_CheckIfStuckPlayerDelay[entity] = 0.0;
 	f_QuickReviveHealing[entity] = 0.0;
 #if defined ZR
+	OsmosisElementalEffectEnable(entity, -1.0);
+	for(int i; i < Element_MAX; i++)
+	{
+		f_ArmorCurrosionImmunity[entity][i] = 0.0;
+	}
 	ResetBoundVillageAlly(entity);
 	ResetFreeze(entity);
 #endif
