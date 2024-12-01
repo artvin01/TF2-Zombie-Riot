@@ -623,6 +623,6 @@ void OsmosisElementalEffect_Detection(int attacker, int victim)
 
 	Osmosis_ClientGaveBuff[victim][attacker] = true;
 	//play a little sound!
-	Saga_ChargeReduction(victim, weapon_holding, 2.0);
+	Saga_ChargeReduction(attacker, weapon_holding, 2.0);
 	ClientCommand(attacker, "playgamesound ui/mm_medal_click.wav");
 }
