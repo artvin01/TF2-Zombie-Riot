@@ -705,7 +705,7 @@ static void Internal_NPCDeath(int entity)
 
 }
 
-void HarrisonAnimationChange(Harrison npc)
+static void HarrisonAnimationChange(Harrison npc)
 {
 	if(npc.m_iChanged_WalkCycle == 0)
 		npc.m_iChanged_WalkCycle = -1;
@@ -765,12 +765,12 @@ void HarrisonAnimationChange(Harrison npc)
 
 }
 
-int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance)
+static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 	{
 		npc.i_GunMode = 0;
-
+		bool playsounds=false;
 		switch(I_cant_do_this_all_day[npc.index])
 		{
 			case 0:
@@ -783,53 +783,35 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.5);
 				npc.m_iChanged_WalkCycle = 0;
-				npc.m_flDoingAnimation = gameTime + 1.5;	
-				npc.m_flTimeUntillSummonRocket = gameTime + 1.5;
+				npc.m_flDoingAnimation = gameTime + 1.5;
+				npc.m_flTimeUntillSummonRocket = 1.5;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
 			case 1:
 			{
-				if(npc.m_flTimeUntillSummonRocket < gameTime)
+				UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+				int enemy[7];
+				GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+				for(int i; i < sizeof(enemy); i++)
 				{
-					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-					int enemy[7];
-					bool playsounds=false;
-					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
-
-					for(int i; i < sizeof(enemy); i++)
+					for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
 					{
-						for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
+						if(enemy[i])
 						{
-							if(enemy[i])
-							{
-								float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
-								ParticleEffectAt(vecTarget, "npc_boss_bomb_shadow", 3.0);
-								playsounds=true;
-								
-								float vecSelf[3];
-								WorldSpaceCenter(npc.index, vecSelf);
-								vecSelf[2] += 80.0;
-								vecSelf[0] += GetRandomFloat(-20.0, 20.0);
-								vecSelf[1] += GetRandomFloat(-20.0, 20.0);
-								float RocketDamage = 200.0;
-								int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
-								if(IsValidEntity(RocketGet))
-								{
-									DataPack pack;
-									CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
-									pack.WriteCell(EntIndexToEntRef(RocketGet));
-									pack.WriteCell(EntIndexToEntRef(enemy[i]));
-								}
-								npc.FaceTowards(vecTarget, 99999.0);
-							}
+							DataPack pack;
+							CreateDataTimer(npc.m_flTimeUntillSummonRocket, Timer_Quad_Rocket_Shot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+							pack.WriteCell(EntIndexToEntRef(npc.index));
+							pack.WriteCell(EntIndexToEntRef(enemy[i]));
+							npc.m_flTimeUntillSummonRocket += 1.5;
+							playsounds=true;
 						}
 					}
-					if(playsounds)npc.PlayHomerunSound();
-					I_cant_do_this_all_day[npc.index]=2;
 				}
+				I_cant_do_this_all_day[npc.index]=2;
 			}
 			case 2:
 			{
+				if(playsounds)npc.PlayHomerunSound();
 				I_cant_do_this_all_day[npc.index]=0;
 				npc.m_flTimeUntillSummonRocket = 0.0;
 				npc.m_flNextRangedSpecialAttackHappens = gameTime + 25.0;
@@ -1009,9 +991,9 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 }
 
 
-int HarrisonHitDetected[MAXENTITIES];
+static int HarrisonHitDetected[MAXENTITIES];
 
-void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
+static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
 	float vecForward[3], vecRight[3], Angles[3];
 
@@ -1064,7 +1046,7 @@ void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float Vector
 	RequestFrames(HarrisonInitiateLaserAttack_DamagePart, 50, pack);
 }
 
-void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
+static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
@@ -1136,16 +1118,42 @@ void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 }
 
 
-public bool Harrison_BEAM_TraceUsers(int entity, int contentsMask, int client)
+static bool Harrison_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
-	if (IsEntityAlive(entity))
-	{
+	if(IsEntityAlive(entity))
 		HarrisonHitDetected[entity] = true;
-	}
 	return false;
 }
 
-public bool Harrison_TraceWallsOnly(int entity, int contentsMask)
+static bool Harrison_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
+}
+
+static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	Harrison npc = view_as<Harrison>(EntRefToEntIndex(pack.ReadCell()));
+	int enemy = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(enemy))
+	{
+		float vecTarget[3]; WorldSpaceCenter(enemy, vecTarget);
+		ParticleEffectAt(vecTarget, "npc_boss_bomb_shadow", 3.0);
+		float vecSelf[3];
+		WorldSpaceCenter(npc.index, vecSelf);
+		vecSelf[2] += 80.0;
+		vecSelf[0] += GetRandomFloat(-20.0, 20.0);
+		vecSelf[1] += GetRandomFloat(-20.0, 20.0);
+		float RocketDamage = 200.0;
+		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+		if(IsValidEntity(RocketGet))
+		{
+			DataPack pack2;
+			CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack2, TIMER_FLAG_NO_MAPCHANGE);
+			pack2.WriteCell(EntIndexToEntRef(RocketGet));
+			pack2.WriteCell(EntIndexToEntRef(enemy));
+		}
+		npc.FaceTowards(vecTarget, 99999.0);
+	}
+	return Plugin_Stop;
 }
