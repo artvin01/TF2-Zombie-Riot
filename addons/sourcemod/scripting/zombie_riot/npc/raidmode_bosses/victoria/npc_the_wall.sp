@@ -15,7 +15,14 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/fist_hit_world1.wav",
 	"weapons/fist_hit_world2.wav"
 };
-static const char g_EnergyshieldSounds[][] = {
+static const char g_AdaptiveArmorSounds[][] = {
+	"weapons/fx/rics/ric1.wav",
+	"weapons/fx/rics/ric2.wav",
+	"weapons/fx/rics/ric3.wav",
+	"weapons/fx/rics/ric4.wav",
+	"weapons/fx/rics/ric5.wav"
+};
+static const char g_StartAdaptiveArmorSounds[][] = {
 	"weapons/fx/rics/ric1.wav",
 	"weapons/fx/rics/ric2.wav",
 	"weapons/fx/rics/ric3.wav",
@@ -23,15 +30,20 @@ static const char g_EnergyshieldSounds[][] = {
 	"weapons/fx/rics/ric5.wav"
 };
 
+static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
+static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
-static float FTL[MAXENTITIES];
+static float Vs_DelayTime[MAXENTITIES];
+static int Vs_Target[MAXENTITIES];
+static int Vs_ParticleSpawned[MAXENTITIES];
+static float Vs_Temp_Pos[MAXENTITIES][3];
+
 static float Delay_Attribute[MAXENTITIES];
 
 static int I_cant_do_this_all_day[MAXENTITIES];
 static int i_Huscarls_eye_particle[MAXENTITIES];
 static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
-static bool SUPERHIT[MAXENTITIES];
 
 static float DMGTypeArmorDuration[MAXENTITIES];
 static float GetArmor[MAXENTITIES];
@@ -45,6 +57,14 @@ static bool BulletArmor[MAXENTITIES];
 static float DynamicCharger[MAXENTITIES];
 static float ExtraMovement[MAXENTITIES];
 static bool Frozen_Player[MAXTF2PLAYERS];
+
+static int MechanizedProtector[MAXENTITIES][3];
+static int LifeSupportDevice[MAXENTITIES][3];
+
+static int gLaser1;
+static int gRedPoint;
+static int g_BeamIndex_heal;
+static int g_HALO_Laser;
 
 void Huscarls_OnMapStart_NPC()
 {
@@ -65,8 +85,16 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_EnergyshieldSounds)); i++) { PrecacheSound(g_EnergyshieldSounds[i]); }
+	for (int i = 0; i < (sizeof(g_AdaptiveArmorSounds)); i++) { PrecacheSound(g_AdaptiveArmorSounds[i]); }
+	PrecacheSound("mvm/mvm_tele_deliver.wav");
+	PrecacheSound(g_BoomSounds);
+	PrecacheSound(g_IncomingBoomSounds);
 	PrecacheModel("models/player/heavy.mdl");
+	PrecacheModel(LASERBEAM);
+	gRedPoint = PrecacheModel("sprites/redglow1.vmt");
+	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
+	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
 }
 
@@ -89,6 +117,17 @@ methodmap Huscarls < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		//EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayTeleportSound(){
+		EmitSoundToAll("mvm/mvm_tele_deliver.wav", this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayBoomSound()
+	{
+		EmitSoundToAll(g_BoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayIncomingBoomSound()
+	{
+		EmitSoundToAll(g_IncomingBoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	property int i_GunMode
@@ -137,7 +176,7 @@ methodmap Huscarls < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -160,7 +199,9 @@ methodmap Huscarls < CClotBody
 		Delay_Attribute[npc.index] = 0.0;
 		YaWeFxxked[npc.index] = false;
 		ParticleSpawned[npc.index] = false;
-		SUPERHIT[npc.index] = false;
+		npc.m_bFUCKYOU = false;
+		npc.Anger = false;
+		npc.m_fbRangedSpecialOn = false;
 		I_cant_do_this_all_day[npc.index] = 0;
 		DMGTypeArmorDuration[npc.index] = 0.0;
 		GetArmor[npc.index] = 0.0;
@@ -180,6 +221,8 @@ methodmap Huscarls < CClotBody
 		npc.m_flHuscarlsAdaptiveArmorDuration = 0.0;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gametime + 5.0;
 		npc.m_flHuscarlsDeployEnergyShieldDuration = 0.0;
+		Vs_RechargeTimeMax[npc.index] = 20.0;
+		Victoria_Support_RechargeTimeMax(npc.index, 20.0);
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -195,8 +238,7 @@ methodmap Huscarls < CClotBody
 				Frozen_Player[client_check]=false;
 			}
 		}
-		FTL[npc.index] = 200.0;
-		RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
+		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
@@ -228,8 +270,7 @@ methodmap Huscarls < CClotBody
 		}
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
-			FTL[npc.index] = 220.0;
-			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
+			RaidModeTime = GetGameTime(npc.index) + 220;
 			RaidModeScaling *= 0.65;
 		}
 		MusicEnum music;
@@ -380,6 +421,118 @@ static void Internal_ClotThink(int iNPC)
 	{
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
+	}
+	
+	if(npc.m_bFUCKYOU)
+	{
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
+		switch(I_cant_do_this_all_day[npc.index])
+		{
+			case 0:
+			{
+				npc.AddActivityViaSequence("tauntrussian_rubdown");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.5);
+				npc.SetPlaybackRate(1.0);
+				npc.m_iChanged_WalkCycle = 0;
+				npc.m_flDoingAnimation = gameTime + 0.5;
+				Delay_Attribute[npc.index] = gameTime + 0.5;
+				I_cant_do_this_all_day[npc.index]=1;
+			}
+			case 1, 2, 3:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.SetPlaybackRate(0.0);
+					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					int spawn_index = NPC_CreateByName("npc_avangard", -1, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), "only");
+					if(spawn_index > MaxClients)
+					{
+						int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.25);
+						fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+						fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+						fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
+						fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
+						if(GetTeam(iNPC) != TFTeam_Red)
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
+						i_AttacksTillMegahit[spawn_index] = 600;
+						SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
+						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
+						LifeSupportDevice[npc.index][I_cant_do_this_all_day[npc.index]-1] = spawn_index;
+						MechanizedProtector[npc.index][I_cant_do_this_all_day[npc.index]-1] = ConnectWithBeam(npc.index, spawn_index, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
+						TeleportDiversioToRandLocation(spawn_index,_,2500.0, 1750.0);
+						npc.PlayTeleportSound();
+					}
+					for(int i = 0; i < (sizeof(LifeSupportDevice[])); i++)
+					{
+						if(IsValidEntity(LifeSupportDevice[npc.index][i]))
+						{
+							FreezeNpcInTime(LifeSupportDevice[npc.index][i], 1.6, true);
+							IncreaceEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
+						}
+					}
+					Delay_Attribute[npc.index] = gameTime + 1.5;
+					I_cant_do_this_all_day[npc.index]++;
+				}
+			}
+			case 4:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.AddActivityViaSequence("tauntrussian_rubdown_outro");
+					npc.SetPlaybackRate(1.0);
+					I_cant_do_this_all_day[npc.index]=5;
+				}
+			}
+			case 5:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					EmitSoundToAll("mvm/mvm_tank_horn.wav", _, _, _, _, 1.0);
+					/*npc.PlayAngerSound();
+					npc.PlayAngerReaction();*/
+					npc.m_flHuscarlsRushCoolDown += 6.0;
+					npc.m_flHuscarlsAdaptiveArmorCoolDown += 6.0;
+					npc.m_flHuscarlsDeployEnergyShieldCoolDown += 6.0;
+					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_bFUCKYOU=false;
+				}
+			}
+		}
+		return;
+	}
+	
+	if(npc.Anger && !npc.m_fbRangedSpecialOn)
+	{
+		bool StillAlive=false;
+		for(int i = 0; i < (sizeof(LifeSupportDevice[])); i++)
+		{
+			if(IsValidEntity(LifeSupportDevice[npc.index][i]))
+				StillAlive=true;
+			else
+			{
+				if(IsValidEntity(MechanizedProtector[npc.index][i]))
+					RemoveEntity(MechanizedProtector[npc.index][i]);
+			}
+		}
+		if(!StillAlive)
+		{
+			int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", health+RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.1));
+			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)+RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.25));
+			if((RaidModeTime - GetGameTime()) < 60.0)
+				RaidModeTime = gameTime + 60.0;
+			RaidModeTime += 20.0;
+			f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+			b_NpcIsInvulnerable[npc.index] = false;
+			npc.m_fbRangedSpecialOn = true;
+		}
+	}
+	if(npc.Anger && npc.m_fbRangedSpecialOn && Victoria_Support(npc))
+	{
+		
 	}
 	
 	npc.m_flSpeed = 300.0+ExtraMovement[npc.index];
@@ -570,11 +723,25 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		DynamicCharger[npc.index] += damage;
 		if(!IsFakeClient(attacker) && IsValidClient(attacker))
-			EmitSoundToClient(attacker, g_EnergyshieldSounds[GetRandomInt(0, sizeof(g_EnergyshieldSounds) - 1)], _, _, _, _, 0.7, _, _, _, _, false);
+			EmitSoundToClient(attacker, g_AdaptiveArmorSounds[GetRandomInt(0, sizeof(g_AdaptiveArmorSounds) - 1)], _, _, _, _, 0.7, _, _, _, _, false);
 		if(IsValidEntity(npc.m_iWearable2))
 		{
 			ExtinguishTarget(npc.m_iWearable2);
 			IgniteTargetEffect(npc.m_iWearable2);
+		}
+	}
+	
+	//Huscarls_Weapon_Lines(npc, attacker);
+	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	float ratio = float(health) / float(maxhealth);
+	if(ratio<0.33 || (float(health)-damage)<(maxhealth*0.3))
+	{
+		if(!npc.Anger)
+		{
+			I_cant_do_this_all_day[npc.index]=0;
+			npc.m_bFUCKYOU=true;
+			b_NpcIsInvulnerable[npc.index] = true;
+			npc.Anger = true;
 		}
 	}
 	
@@ -589,6 +756,9 @@ static void Internal_NPCDeath(int entity)
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
+	
+	Vs_RechargeTime[npc.index]=0.0;
+	Vs_RechargeTimeMax[npc.index]=0.0;
 	
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
@@ -612,6 +782,12 @@ static void Internal_NPCDeath(int entity)
 	{
 		RemoveEntity(particle);
 		i_Huscarls_eye_particle[npc.index]=INVALID_ENT_REFERENCE;
+	}
+	
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client) && !IsFakeClient(client))
+			Vs_LockOn[client]=false;
 	}
 
 	if(BlockLoseSay)
@@ -714,6 +890,15 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					DynamicCharger[npc.index] = 0.0;
+					if(b_NpcIsInvulnerable[npc.index])
+					{
+						if(IsValidEntity(npc.m_iWearable2))
+						{
+							ExtinguishTarget(npc.m_iWearable2);
+							IgniteTargetEffect(npc.m_iWearable2);
+						}
+						DynamicCharger[npc.index]+=1500.0;
+					}
 					npc.m_flHuscarlsAdaptiveArmorDuration = gameTime + 3.0;
 					I_cant_do_this_all_day[npc.index] = 2;
 				}
@@ -730,17 +915,17 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				}
 				else
 				{
-					npc.m_flHuscarlsRushCoolDown = gameTime + 3.0;
+					npc.m_flHuscarlsRushCoolDown += 3.0;
 					npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + 15.0;
-					npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + 3.0;	
+					npc.m_flHuscarlsDeployEnergyShieldCoolDown += 3.0;
 					I_cant_do_this_all_day[npc.index] = 0;
 				}
 			}
 			case 3:
 			{
-				npc.m_flHuscarlsRushCoolDown = gameTime + 3.0;
+				npc.m_flHuscarlsRushCoolDown += 3.0;
 				npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + 30.0;
-				npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + 3.0;
+				npc.m_flHuscarlsDeployEnergyShieldCoolDown += 3.0;
 				I_cant_do_this_all_day[npc.index] = 0;
 			}
 		}
@@ -752,8 +937,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		{
 			case 0:
 			{
-				npc.m_flDoingAnimation = gameTime + 0.5;
-				Delay_Attribute[npc.index] = gameTime + 0.5;
+				npc.m_flDoingAnimation = gameTime + 1.0;
+				Delay_Attribute[npc.index] = gameTime + 1.0;
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
@@ -771,22 +956,11 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					ExtraMovement[npc.index] = 300.0;
 					npc.m_flHuscarlsRushDuration = gameTime + 5.0;
 					I_cant_do_this_all_day[npc.index] = 2;
+					Delay_Attribute[npc.index] = gameTime + 0.2;
 				}
 			}
 			case 2:
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				npc.m_bisWalking = false;
-				npc.AddActivityViaSequence("layer_taunt_bare_knuckle_beatdown_outro");
-				npc.m_flAttackHappens = 0.0;
-				npc.SetCycle(0.01);
-				npc.SetPlaybackRate(1.0);
-				npc.m_flDoingAnimation = gameTime + 1.0;
-				npc.m_iChanged_WalkCycle = 0;
-
-				if(IsValidEntity(npc.m_iWearable7))
-						RemoveEntity(npc.m_iWearable7);
 				static float vOrigin[3], vAngles[3], tOrigin[3];
 				WorldSpaceCenter(npc.index, vOrigin);
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
@@ -811,8 +985,6 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				}
 				else if(npc.m_flHuscarlsRushDuration < gameTime)
 				{
-					if(IsValidEntity(npc.m_iWearable7))
-						RemoveEntity(npc.m_iWearable7);
 					static float flMyPos[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
 					static float hullcheckmaxs[3];
@@ -880,26 +1052,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				else
 				{
 					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, Got_it_fucking_shit);
-					//npc.AddActivityViaSequence("layer_PASSTIME_throw_end");
-					//npc.AddActivityViaSequence("PASSTIME_throw_end");
-					/*
-					npc.SetActivity("PASSTIME_throw_end", true);
-					npc.m_flAttackHappens = 0.0;
-					npc.SetCycle(0.4);
-					npc.SetPlaybackRate(0.0);
-					npc.AddGesture("ACT_MP_RUN_MELEE");
-					//npc.SetActivity("ACT_MP_RUN_MELEE");
-					npc.m_flDoingAnimation = gameTime + 4.9;
-					*/
-					if(IsValidEntity(npc.m_iWearable7))
-						RemoveEntity(npc.m_iWearable7);
-					if(!IsValidEntity(npc.m_iWearable7))
-					{
-						float flPos[3];
-						float flAng[3];
-						npc.GetAttachment("effect_hand_r", flPos, flAng);
-						npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "scout_dodge_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-					}
+					npc.AddGestureViaSequence("PASSTIME_throw_middle",false);
+					npc.m_flDoingAnimation = gameTime + 0.5;
 					return 3;
 				}
 			}
@@ -951,8 +1105,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			case 6:
 			{
 				npc.m_flHuscarlsRushCoolDown = gameTime + 20.0;
-				npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + 6.0;
-				npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + 6.0;
+				npc.m_flHuscarlsAdaptiveArmorCoolDown += 6.0;
+				npc.m_flHuscarlsDeployEnergyShieldCoolDown += 6.0;
 				I_cant_do_this_all_day[npc.index] = 0;
 				ExtraMovement[npc.index] = 0.0;
 			}
@@ -1227,4 +1381,98 @@ static int Huscarls_Get_HighDMGType(int entity)
 		}
 	}
 	return DMGType;
+}
+
+static bool Victoria_Support(Huscarls npc)
+{
+	float GameTime = GetGameTime();
+	if(Vs_DelayTime[npc.index] > GameTime)
+		return false;
+	Vs_DelayTime[npc.index] = GameTime + 0.1;
+	
+	Vs_Target[npc.index] = Victoria_GetTargetDistance(npc.index, true, false);
+	if(!IsValidEnemy(npc.index, Vs_Target[npc.index]))
+		return false;
+	if(Vs_RechargeTime[npc.index] >= 1.0 && Vs_RechargeTime[npc.index] <= 3.0 && IsValidEntity(Vs_ParticleSpawned[npc.index]))
+		RemoveEntity(Vs_ParticleSpawned[npc.index]);
+	Vs_RechargeTime[npc.index] += 0.1;
+	if(Vs_RechargeTime[npc.index]>(Vs_RechargeTimeMax[npc.index]+1.0))
+		Vs_RechargeTime[npc.index]=0.0;
+	
+	float vecTarget[3];
+	GetEntPropVector(Vs_Target[npc.index], Prop_Data, "m_vecAbsOrigin", vecTarget);
+	vecTarget[2] += 5.0;
+	
+	if(Vs_RechargeTime[npc.index] < Vs_RechargeTimeMax[npc.index])
+	{
+		float position[3];
+		position[0] = vecTarget[0];
+		position[1] = vecTarget[1];
+		position[2] = vecTarget[2] + 3000.0;
+		if(Vs_RechargeTime[npc.index] < (Vs_RechargeTimeMax[npc.index] - 3.0))
+		{
+			Vs_Temp_Pos[npc.index][0] = position[0];
+			Vs_Temp_Pos[npc.index][1] = position[1];
+			Vs_Temp_Pos[npc.index][2] = position[2] - 3000.0;
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsValidClient(client) && !IsFakeClient(client))
+					Vs_LockOn[client]=false;
+			}
+			Vs_LockOn[Vs_Target[npc.index]]=true;
+		}
+		else
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsValidClient(client) && !IsFakeClient(client))
+					Vs_LockOn[client]=false;
+			}
+		}
+		TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index], 1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0), (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
+		TE_SendToAll();
+		float position2[3];
+		position2[0] = Vs_Temp_Pos[npc.index][0];
+		position2[1] = Vs_Temp_Pos[npc.index][1];
+		position2[2] = Vs_Temp_Pos[npc.index][2] + 65.0;
+		TE_SetupBeamRingPoint(position2, 1000.0, 1000.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+		TE_SendToAll();
+		TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index], 1000.0, 1000.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+		TE_SendToAll();
+		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, gLaser1, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
+		TE_SendToAll();
+		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], gRedPoint, 0.1, 1.0, 255);
+		TE_SendToAll();
+		if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0) && !IsValidEntity(Vs_ParticleSpawned[npc.index]))
+		{
+			position[0] = 525.0;
+			position[1] = 1600.0;
+			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
+			if(HasEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID"))
+				SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
+			npc.PlayIncomingBoomSound();
+		}
+	}
+	else if(IsValidEntity(Vs_ParticleSpawned[npc.index]))
+	{
+		float position[3];
+		position[0] = Vs_Temp_Pos[npc.index][0];
+		position[1] = Vs_Temp_Pos[npc.index][1];
+		position[2] = Vs_Temp_Pos[npc.index][2] - 100.0;
+		TeleportEntity(Vs_ParticleSpawned[npc.index], position, NULL_VECTOR, NULL_VECTOR);
+		position[2] += 100.0;
+		
+		b_ThisNpcIsSawrunner[npc.index] = true;
+		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+		Explode_Logic_Custom(4500.0, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
+		b_ThisNpcIsSawrunner[npc.index] = false;
+		ParticleEffectAt(position, "hightower_explosion", 1.0);
+		i_ExplosiveProjectileHexArray[npc.index] = 0; 
+		npc.PlayBoomSound();
+		Vs_RechargeTime[npc.index]=0.0;
+		Vs_RechargeTime[npc.index]=0.0;
+		return true;
+	}
+	return false;
 }
