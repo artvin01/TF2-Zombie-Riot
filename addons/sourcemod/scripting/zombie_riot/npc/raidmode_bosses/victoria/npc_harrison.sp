@@ -762,17 +762,19 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 	{
 		npc.i_GunMode = 0;
 
-		/*
 		if(npc.m_iChanged_WalkCycle != 5) 	
 		{
-			npc.m_bisWalking = false;
-			npc.m_flSpeed = 0.0;
 			NPC_StopPathing(npc.index);
-			npc.m_iChanged_WalkCycle = 5;
-			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
-			npc.m_flTimeUntillSummonRocket = gameTime + 1.0;
+			npc.m_bPathing = false;
+			npc.m_bisWalking = false;
+			npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
+			npc.m_flAttackHappens = 0.0;
+			npc.SetCycle(0.01);
+			npc.SetPlaybackRate(1.5);
+			npc.m_iChanged_WalkCycle = 0;
+			npc.m_flDoingAnimation = gameTime + 1.5;	
+			npc.m_flTimeUntillSummonRocket = gameTime + 1.5;
 		}
-		*/
 		
 		if(npc.m_flTimeUntillSummonRocket < gameTime)
 		{
@@ -815,7 +817,7 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 					if(enemy[i])
 					{
 						float vecTarget[3]; WorldSpaceCenter(enemy[i], vecTarget);
-						ParticleEffectAt(vecTarget, "water_bulletsplash01", 3.0);
+						ParticleEffectAt(vecTarget, "npc_boss_bomb_shadow", 3.0);
 						playsounds=true;
 						
 						float vecSelf[3];
@@ -854,12 +856,15 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			WorldSpaceCenter(target, vecTarget );
 		}
 
-		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		float flPos[3];
+		float flAng[3];
+		npc.GetAttachment("effect_hand_l", flPos, flAng);
+		//float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		if(npc.m_iOverlordComboAttack < 6)
 		{
 			npc.m_iOverlordComboAttack += 1;
-			HarrisonInitiateLaserAttack(npc.index, vecTarget, WorldSpaceVec);
-			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE", .SetGestureSpeed = 2.0);
+			HarrisonInitiateLaserAttack(npc.index, vecTarget, flPos); //laser finger!
+			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flTimeUntillNextRailgunShots = gameTime + 0.5;
 		}
@@ -867,7 +872,6 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 		{
 			npc.m_flTimeUntillNextRailgunShots = gameTime + 25.0;
 			npc.m_iOverlordComboAttack = 0;
-			
 		}
 		
 	}
