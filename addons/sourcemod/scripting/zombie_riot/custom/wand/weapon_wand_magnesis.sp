@@ -1130,7 +1130,7 @@ void Utility_FireProjectile(int client, int weapon, int tier, bool isNewtonian)
 			if(IsValidEnemy(client, target))
 			{
 				DataPack pack = new DataPack();
-				CreateDataTimer(0.1, Magnesis_DelayHoming, pack, TIMER_FLAG_NO_MAPCHANGE);
+				RequestFrames(Magnesis_DelayHoming, 5, pack);
 				pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
 				pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
 			}
@@ -1140,13 +1140,13 @@ void Utility_FireProjectile(int client, int weapon, int tier, bool isNewtonian)
 	Magnesis_Tier[client] = tier;
 }
 
-public Action Magnesis_DelayHoming(Handle timely, DataPack pack)
+public void Magnesis_DelayHoming(DataPack pack)
 {
 	ResetPack(pack);
 	int projectile = EntRefToEntIndex(ReadPackCell(pack));
 	int target = EntRefToEntIndex(ReadPackCell(pack));
 	if (!IsValidEntity(projectile) || !IsValidEntity(target))
-		return Plugin_Continue;
+		return;
 
 	if(Can_I_See_Enemy_Only(target, projectile)) //Insta home!
 	{
@@ -1158,9 +1158,7 @@ public Action Magnesis_DelayHoming(Handle timely, DataPack pack)
 	pack2.WriteCell(EntIndexToEntRef(projectile)); //projectile
 	pack2.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
 
-	EmitSoundToAll(SND_MAGNESIS_HOMING_BEGIN, projectile, _, _, _, 0.5, GetRandomInt(60, 80));
-
-	return Plugin_Continue;
+	EmitSoundToAll(SND_MAGNESIS_HOMING_BEGIN, projectile, _, _, _, 0.66, GetRandomInt(60, 80));
 }
 
 void Utility_NotEnoughMana(int client, int cost)
