@@ -62,9 +62,6 @@
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
 
-#if !defined NOG
-bool SpawningBot = false;
-#endif
 
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
@@ -515,6 +512,7 @@ float f_ElementalAmplification[MAXENTITIES];
 float f_WeaponSpecificClassBuff[MAXENTITIES][1];
 bool b_WeaponSpecificClassBuff[MAXENTITIES][3];
 float f_HighTeslarDebuff[MAXENTITIES];
+float f_VoidAfflictionStandOn[MAXENTITIES];
 float f_VoidAfflictionStrength[MAXENTITIES];
 float f_VoidAfflictionStrength2[MAXENTITIES];
 float f_Silenced[MAXENTITIES];
@@ -731,7 +729,7 @@ bool b_BobsTrueFear[MAXTF2PLAYERS];
 bool b_TwirlHairpins[MAXTF2PLAYERS];
 bool b_KahmlLastWish[MAXTF2PLAYERS];
 bool b_VoidPortalOpened[MAXTF2PLAYERS];
-float f_ArmorCurrosionImmunity[MAXENTITIES];
+float f_ArmorCurrosionImmunity[MAXENTITIES][Element_MAX];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
@@ -987,17 +985,19 @@ enum
 */
 //#define ZR_TEST_MODEL	"models/zombie_riot/weapons/test_models9.mdl"
 
-#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1.mdl"
+#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_1.mdl"
 enum
 {
 	WINGS_FUSION 	= 1,
 	WINGS_LANCELOT	= 2,
 	WINGS_RULIANA	= 4,
 	WINGS_TWIRL		= 8,
-	WINGS_HELIA		= 16
+	WINGS_HELIA		= 16,
+	WINGS_STELLA	= 32,
+	WINGS_KARLAS	= 64
 }
 
-#define RUINA_CUSTOM_MODELS_1			"models/zombie_riot/weapons/ruina_models_1_1.mdl"
+#define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_1.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out
 {		
 	RUINA_ICBM 				= 1,		//1
@@ -1015,7 +1015,7 @@ enum	//it appears if I try to make it go above 14 it starts glitching out
 	RUINA_W30_HAND_CREST	= 4096,		//13
 	RUINA_IANA_BLADE		= 8192,		//14
 }
-#define RUINA_CUSTOM_MODELS_2			"models/zombie_riot/weapons/ruina_models_2_2.mdl"
+#define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_2.mdl"
 enum
 {
 	RUINA_QUINCY_BOW_2		= 1,			//1
@@ -1059,9 +1059,13 @@ enum
 	RUINA_TWIRL_CREST_4		= 8192,			//14
 	RUINA_QUINCY_BOW_3		= 16384			//15
 }
-
-
-
+#define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_1.mdl"
+enum
+{
+	RUINA_STELLA_CREST			= 1,			//1
+	RUINA_STELLA_CREST_CHARGING	= 2,			//2
+	RUINA_KARLAS_PROJECTILE		= 4				//4 ITS A SPACE SHIP, BUT ACTUALLY NOT!
+}
 
 
 #if defined ZR
@@ -1857,6 +1861,7 @@ public void OnMapStart()
 	PrecacheModel(RUINA_CUSTOM_MODELS_1);
 	PrecacheModel(RUINA_CUSTOM_MODELS_2);
 	PrecacheModel(RUINA_CUSTOM_MODELS_3);
+	PrecacheModel(RUINA_CUSTOM_MODELS_4);
 	
 #if defined ZR
 	PrecacheSound("npc/scanner/cbot_discharge1.wav");

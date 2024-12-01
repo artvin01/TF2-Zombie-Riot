@@ -102,6 +102,11 @@ static int Silvester_TE_Used;
 static bool b_RageAnimated[MAXENTITIES];
 static bool b_RageProjectile[MAXENTITIES];
 
+int SensalID;
+int SensalNPCID()
+{
+	return SensalID;
+}
 void Sensal_OnMapStart_NPC()
 {
 	if(!IsFileInDownloads(WEAPON_CUSTOM_WEAPONRY_1))
@@ -116,7 +121,7 @@ void Sensal_OnMapStart_NPC()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	SensalID = NPC_Add(data);
 }
 
 static void ClotPrecache()
@@ -1343,6 +1348,7 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 			int EnemySearch = GetClosestTarget(Projectile, true, _, true, _, _, _, true, .UseVectorDistance = true);
 			if(IsValidEntity(EnemySearch))
 			{
+				TeleportEntity(Projectile, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 				SensalEffects(Projectile,view_as<int>(npc.Anger),"", 1);
 				DoHoming = false;
 				DataPack pack1;

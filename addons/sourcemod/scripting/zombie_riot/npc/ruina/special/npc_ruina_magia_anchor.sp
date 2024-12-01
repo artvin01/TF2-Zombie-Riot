@@ -570,7 +570,11 @@ static void Spawning_Logic(Magia_Anchor npc)
 	float Time = 1.0 + Ratio;
 	fl_ruina_battery_timer[npc.index] = GameTime + Time;
 	float ratio = float(wave)/60.0;
-	int health = RoundToFloor(30000.0*ratio);
+	int health = RoundToFloor(15000.0*ratio);
+	if(wave >=35)
+		health = RoundToFloor(health * 2.0);
+	if(wave >=60)
+		health = RoundToFloor(health * 1.5);
 	//whats a "switch" statement??
 	if(wave<=15)	
 	{

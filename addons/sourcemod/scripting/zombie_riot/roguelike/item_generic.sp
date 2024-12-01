@@ -23,7 +23,7 @@ static float GrigoriCoinPurseCalc()
 {
 	int Ingots = Rogue_GetIngots();
 	
-	return 100.0 / (100.0 + float(Ingots));
+	return 150.0 / (150.0 + float(Ingots));
 	//at 100 ingots, we double our attackspeed
 }
 

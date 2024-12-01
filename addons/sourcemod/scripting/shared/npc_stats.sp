@@ -2346,7 +2346,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
 		this.ResetSequenceInfo();
-		this.m_iState = iSequence;
+		this.m_iAnimationState = iSequence;
 	//	int layer = this.FindGestureLayerBySequence(iSequence);
 	//	if(layer != -1)
 	//	{
@@ -2421,9 +2421,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(Is_sequence)
 		{
 			int sequence = this.LookupSequence(animation);
-			if(sequence > 0 && sequence != this.m_iState)
+			if(sequence > 0 && sequence != this.m_iAnimationState)
 			{
-				this.m_iState = sequence;
+				this.m_iAnimationState = sequence;
 				this.m_iActivity = 0;
 				
 				this.SetSequence(sequence);
@@ -2435,9 +2435,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		else
 		{
 			int activity = this.LookupActivity(animation);
-			if(activity > 0 && activity != this.m_iState)
+			if(activity > 0 && activity != this.m_iAnimationState)
 			{
-				this.m_iState = activity;
+				this.m_iAnimationState = activity;
 				this.StartActivity(activity);
 			}
 		}
@@ -6394,7 +6394,14 @@ public void NpcBaseThink(int iNPC)
 	
 		if(b_thisNpcIsARaid[iNPC])
 		{
-			HealingAmount *= 0.01;
+			HealingAmount *= 0.025;
+			//this means it uses scaling somehow.
+			if(i_MedkitAnnoyance[iNPC] != 0)
+			{
+				int CurrentPlayersAlive = CountPlayersOnRed(1);
+				float HpScalingDecreace = float(CurrentPlayersAlive) / float(i_MedkitAnnoyance[iNPC]);
+				HealingAmount *= HpScalingDecreace;
+			}
 		}
 		else if(b_thisNpcIsABoss[iNPC])
 		{
@@ -8925,6 +8932,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_WasPathingToHere[entity][2] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_ElementalAmplification[entity] = 0.0;
+	
 	f_LudoDebuff[entity] = 0.0;
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
@@ -8932,6 +8940,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_VoidAfflictionStrength[entity] = 0.0;
 	f_VoidAfflictionStrength2[entity] = 0.0;
+	f_VoidAfflictionStandOn[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
 	f_SpecterDyingDebuff[entity] = 0.0;
 	f_VeryLowIceDebuff[entity] = 0.0;
@@ -8981,10 +8990,16 @@ public void SetDefaultValuesToZeroNPC(int entity)
 //	b_EntityInCrouchSpot[entity] = false;
 //	b_NpcResizedForCrouch[entity] = false;
 	i_Changed_WalkCycle[entity] = -1;
+	i_MedkitAnnoyance[entity] = 0;
 	f_TextEntityDelay[entity] = 0.0;
 	f_CheckIfStuckPlayerDelay[entity] = 0.0;
 	f_QuickReviveHealing[entity] = 0.0;
 #if defined ZR
+	OsmosisElementalEffectEnable(entity, -1.0);
+	for(int i; i < Element_MAX; i++)
+	{
+		f_ArmorCurrosionImmunity[entity][i] = 0.0;
+	}
 	ResetBoundVillageAlly(entity);
 	ResetFreeze(entity);
 #endif
