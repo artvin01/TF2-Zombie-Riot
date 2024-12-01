@@ -886,8 +886,8 @@ int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance
 			float flPosEdit[3]; 
 			flPosEdit = flPos;
 			flPosEdit[0] += 0.0;
-			flPosEdit[1] -= 15.0;
-			flPosEdit[2] += 30.0;
+			flPosEdit[1] += 30.0;
+			flPosEdit[2] += 10.0;
 
 			float RocketDamage = 100.0;
 			float RocketSpeed = 900.0;
