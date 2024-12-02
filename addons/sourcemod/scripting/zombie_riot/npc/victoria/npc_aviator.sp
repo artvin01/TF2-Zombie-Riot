@@ -58,7 +58,7 @@ void Aviator_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Aviator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aviator");
-	strcopy(data.Icon, sizeof(data.Icon), "spy");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_aviator");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
