@@ -52,7 +52,6 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/sniper_specialcompleted40.mp3",
 	"vo/sniper_specialcompleted41.mp3",
 	"vo/sniper_specialcompleted42.mp3",
-	"vo/sniper_specialcompleted43.mp3",
 	"vo/sniper_specialcompleted44.mp3",
 	"vo/sniper_specialcompleted45.mp3",
 	"vo/sniper_specialcompleted46.mp3",
@@ -68,7 +67,7 @@ static const char g_MG42AttackSounds[][] = {
 };
 static const char g_MeleeHitSounds[] = "weapons/cbar_hitbod1.wav";
 static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
-static const char g_AngerReaction[] = "vo/scout_revenge06.mp3";
+static const char g_AngerReaction[] = "vo/sniper_specialcompleted43.mp3";
 static const char g_HomerunHitSounds[] = "mvm/melee_impacts/bat_baseball_hit_robo01.wav";
 static const char g_HomerunSounds[][]= {
 	"vo/sniper_jaratetoss02/mp3",
