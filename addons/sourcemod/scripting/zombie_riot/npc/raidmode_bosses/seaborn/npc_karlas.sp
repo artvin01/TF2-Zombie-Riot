@@ -546,6 +546,9 @@ methodmap Karlas < CClotBody
 			npc.Anger = true;
 		}
 			
+
+		if((StrContains(data, "anger") != -1))
+			npc.Anger = true;
 		
 		return npc;
 	}

@@ -120,6 +120,8 @@ static int i_current_wave[MAXENTITIES];
 static bool b_bobwave[MAXENTITIES];
 static bool b_IonStormInitiated[MAXENTITIES];
 static bool b_LastMannLines[MAXENTITIES];
+static bool b_NormLaserOnly[MAXENTITIES];
+static float fl_TurnBackUp[MAXENTITIES];
 
 static const char NameColour[] = "{aqua}";
 static const char TextColour[] = "{snow}";
@@ -235,6 +237,11 @@ methodmap Stella < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flNorm_Attack_Throttle
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
 	property float m_flNorm_Attack_In
 	{
@@ -627,7 +634,7 @@ methodmap Stella < CClotBody
 		
 		c_NpcName[npc.index] = "Stella";
 
-		//data: test , force15, force30, force45, force60, hell, solo, triple_enemies, nomusic, anger, twirl, bob
+		//data: test , force15, force30, force45, force60, hell, solo, triple_enemies, nomusic, anger, twirl, bob, normonly
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
@@ -643,6 +650,8 @@ methodmap Stella < CClotBody
 			wave = 60;
 		else if(StrContains(data, "hell") != -1)
 			wave = -1;
+
+		b_NormLaserOnly[npc.index] = (StrContains(data, "normonly") != -1);
 
 		npc.m_bSaidWinLine = false;
 		b_bobwave[npc.index] = false;
@@ -801,6 +810,7 @@ methodmap Stella < CClotBody
 		npc.m_flNCspecialTargetTimer = 0.0;
 		npc.m_flNC_Grace = 0.0;
 		npc.m_bInKame = false;
+		fl_TurnBackUp[npc.index] = FAR_FUTURE;
 
 		npc.m_flLunar_Grace_CD = GetGameTime() + GetRandomFloat(45.0, 75.0);
 
@@ -1166,6 +1176,9 @@ static void Lunar_Body_Pitch(Stella npc)
 }
 static bool Lunar_Grace(Stella npc)
 {
+	if(b_NormLaserOnly[npc.index])
+		return false;
+
 	float GameTime = GetGameTime(npc.index);
 
 	if(npc.m_flLunar_Grace_CD > GameTime)
@@ -1441,6 +1454,18 @@ static bool b_MoveTowardsKarlas(Stella npc)
 	int Near_Karlas = Nearby_Players(npc3, 9000.0, Karlas_Wanna_Loc);
 	if(Near_Karlas<=0)
 		Near_Karlas = Nearby_Players(npc3, 9000.0);
+	else
+	{
+		float GameTime = GetGameTime(npc.index);
+		fl_TurnBackUp[npc.index] += 0.5;
+		if(fl_TurnBackUp[npc.index] > GameTime + 2.0)
+			fl_TurnBackUp[npc.index] = GameTime + 2.0;
+
+		if(fl_TurnBackUp[npc.index] < GameTime)
+			fl_TurnBackUp[npc.index] = GameTime;
+	}
+		
+		
 
 	//stella has no targets in sight.
 	if(Near_Stella <= 0)
@@ -1515,9 +1540,9 @@ static void Handle_NC_TurnSpeed(Stella npc)
 		Turn_Speed *=0.95;
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	if(!Check_Line_Of_Sight_Vector(VecSelfNpc, vecTarget, npc.index))
+	if(!Check_Line_Of_Sight_Vector(VecSelfNpc, vecTarget, npc.index) && fl_TurnBackUp[npc.index] > GameTime)
 		return;
-	
+
 	npc.FaceTowards(vecTarget, Turn_Speed);
 	Body_Pitch(npc, VecSelfNpc, vecTarget);
 }
@@ -1568,6 +1593,9 @@ static bool b_Valid_NC_Initialistaion(Stella npc, int type = 0)
 }
 static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vecTarget[3])
 {
+	if(b_NormLaserOnly[npc.index])
+		return false;
+
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNC_Recharge > GameTime)
 		return false;
@@ -1617,7 +1645,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		npc.m_flDoingAnimation = GameTime + STELLA_NC_DURATION + 1.5;
 			
 		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+		if(IsValidEnemy(npc.index, Enemy_I_See) && !BlockTurn(npc)) //Check if i can even see.
 		{
 			npc.FaceTowards(vecTarget, 200000.0);
 			npc.FaceTowards(vecTarget, 200000.0);
@@ -2148,6 +2176,20 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 	
 	float Range = fl_Normal_Laser_Range(npc);
 
+	if(npc.m_flNorm_Attack_In > GameTime)
+	{
+		Ruina_Laser_Logic Laser;
+		if(NpcStats_IsEnemySilenced(npc.index))
+			Range *=0.95;
+		Laser.client = npc.index;
+		Laser.DoForwardTrace_Basic(Range);
+		int color[4]; Ruina_Color(color);
+		float flPos[3];
+		npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
+		TE_SetupBeamPoints(flPos, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 2.0, 2.0, 0, 0.01, color, 3);	
+		TE_SendToAll(0.0);
+	}
+
 	float Attack_Speed = 3.3;	//how often she attacks.
 	float Attack_Delay = 1.0;	//how long until she actually attacks
 	float Attack_Time = 0.7;	//how long the normal attack laser lasts
@@ -2184,6 +2226,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 	{
 		npc.m_flNorm_Attack_In = 0.0;
 		npc.m_flNorm_Attack_Duration = GameTime + Attack_Time;
+		npc.m_flNorm_Attack_Throttle = 0.0;
 		Fire_Laser(npc);
 		npc.PlayLaserAttackSound();
 	}
@@ -2215,38 +2258,19 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		return Plugin_Stop;
 	}
 
+	bool update = false;
+	if(npc.m_flNorm_Attack_Throttle < GameTime)
+	{
+		npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
+		update = true;
+	}
+
 	npc.m_bAllowBackWalking = true;
 
 	bool Silence = NpcStats_IsEnemySilenced(npc.index);
 
 	float Range = fl_Normal_Laser_Range(npc);
-	int target = i_Get_Laser_Target(npc, Range);
-	if(IsValidEnemy(npc.index, target))
-	{
-		//times these value has been altered: 24.
-		float Bonus_Speed_Range = 270.0*270.0;
-		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-		float Self_Vec[3]; WorldSpaceCenter(npc.index, Self_Vec);
-		float Dist = GetVectorDistance(vecTarget, Self_Vec, true);
-
-		float Turn_Rate = (npc.Anger ? 0.5 : 0.18);
-		float Turn_Speed = (RUINA_FACETOWARDS_BASE_TURNSPEED*Turn_Rate);
-		
-		if(Dist <= 0.0)
-			Dist = 1.0;
-
-		if(Dist < Bonus_Speed_Range)
-		{
-			Turn_Speed*= ((1.0-(Dist/Bonus_Speed_Range))*2.0);
-		}
-
-		if(Silence)
-			Turn_Speed *= 0.95;
-
-		Turn_Rate /= TickrateModify;
-		npc.FaceTowards(vecTarget, Turn_Speed);
-	}
-
+	
 	float radius = 10.0;
 
 	Ruina_Laser_Logic Laser;
@@ -2255,18 +2279,53 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	//unlike most ruina lasers, this one deals damage every tick.
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Basic(Range);
-	Laser.Damage = Modify_Damage(-1, 4.0)/TickrateModify;
-	Laser.Radius = radius;
-	Laser.Bonus_Damage = (Modify_Damage(-1, 4.0)*6.0)/TickrateModify;
-	Laser.damagetype = DMG_PLASMA;
-	Laser.Deal_Damage();
+	
+	int target = i_Get_Laser_Target(npc, Range);
+
+	if(IsValidEnemy(npc.index, target))
+	{
+		//times these value has been altered: 31.
+		//warp_turn_speed
+		float Bonus_Speed_Range = 500.0*500.0;
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float Self_Vec[3]; WorldSpaceCenter(npc.index, Self_Vec);
+		float Dist = GetVectorDistance(vecTarget, Self_Vec, true);
+
+		float Turn_Rate = (npc.Anger ? 0.09 : 0.07);
+		float Turn_Speed = (RUINA_FACETOWARDS_BASE_TURNSPEED*Turn_Rate);
+		
+		if(Dist <= 0.0)
+			Dist = 1.0;
+
+		//if(!BlockTurn(npc))
+
+		if(Dist < Bonus_Speed_Range)
+		{
+			Turn_Speed*= 1.0 + ((Bonus_Speed_Range - Dist)/Bonus_Speed_Range)*2.0;
+		}
+
+		if(Silence)
+			Turn_Speed *= 0.95;
+
+		Turn_Speed /=TickrateModify;
+
+		npc.FaceTowards(vecTarget, Turn_Speed);
+	}
+
+	if(update)
+	{
+		Laser.Damage = Modify_Damage(-1, 4.0);
+		Laser.Radius = radius;
+		Laser.Bonus_Damage = (Modify_Damage(-1, 4.0)*6.0);
+		Laser.damagetype = DMG_PLASMA;
+		Laser.Deal_Damage();
+	}
 
 	float startPoint[3], endPoint[3];
 	float flPos[3], flAng[3];
 	npc.GetAttachment("effect_hand_r", flPos, flAng);
 	startPoint  = flPos;
 	endPoint	= Laser.End_Point;
-
 	float diameter = radius *1.0;
 	int color[4];
 	Ruina_Color(color);
