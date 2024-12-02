@@ -96,6 +96,8 @@ static void ClotPrecache()
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
+	PrecacheModel("models/props_mvm/mvm_player_shield.mdl", true);
+	PrecacheModel("models/props_mvm/mvm_player_shield2.mdl", true);
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
 }
 
@@ -221,7 +223,7 @@ methodmap Huscarls < CClotBody
 		npc.m_flHuscarlsRushDuration = 0.0;
 		npc.m_flHuscarlsAdaptiveArmorCoolDown = gametime + 30.0;
 		npc.m_flHuscarlsAdaptiveArmorDuration = 0.0;
-		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gametime + 5.0;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gametime + 40.0;
 		npc.m_flHuscarlsDeployEnergyShieldDuration = 0.0;
 		Vs_RechargeTimeMax[npc.index] = 20.0;
 		Victoria_Support_RechargeTimeMax(npc.index, 20.0);
@@ -990,16 +992,13 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		{
 			case 0:
 			{
-				npc.m_flDoingAnimation = gameTime + 1.0;
-				Delay_Attribute[npc.index] = gameTime + 1.0;
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				npc.m_bisWalking = false;
-				npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
+				npc.AddActivityViaSequence("taunt_soviet_showoff");
 				npc.m_flAttackHappens = 0.0;
-				npc.SetCycle(0.5);
-				npc.SetPlaybackRate(1.0);
+				npc.SetCycle(0.6);
+				npc.SetPlaybackRate(1.2);
 				npc.m_iChanged_WalkCycle = 0;
+				npc.m_flDoingAnimation = gameTime + 1.0;
+				Delay_Attribute[npc.index] = gameTime + 1.8;
 				I_cant_do_this_all_day[npc.index] = 1;
 			}
 			case 1:
@@ -1167,6 +1166,16 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		SpecialAttack=true;
+	}
+	else if(npc.m_flHuscarlsDeployEnergyShieldCoolDown < gameTime)
+	{
+		//npc.AddGesture("gesture_MELEE_cheer");
+		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
+		npc.m_flDoingAnimation = gameTime + 1.0;
+		Fire_Shield_Projectile(npc, 10.0);
+		npc.m_flHuscarlsRushCoolDown += 0.8;
+		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.8;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + 40.0;
 	}
 	if(SpecialAttack)
 	{
@@ -1531,3 +1540,75 @@ static bool Victoria_Support(Huscarls npc)
 	}
 	return false;
 }
+
+static void Fire_Shield_Projectile(Huscarls npc, float Time)
+{
+	static float vOrigin[3], vAngles[3], vTarget[3];
+	WorldSpaceCenter(npc.index, vOrigin);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
+	for(int i=1; i<=4; i++)
+	{
+		EntityLookPoint(npc.index, vAngles, vOrigin, vTarget);
+		int RocketGet = npc.FireParticleRocket(vTarget, 0.0, (npc.Anger ? 350.0 : 300.0), 400.0, "critical_rocket_blue", false);
+		if(!IsValidEntity(RocketGet))
+			return;
+		CreateTimer(Time, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
+		SetEntityMoveType(RocketGet, MOVETYPE_NOCLIP);
+		int Shield = npc.SpawnShield(-1.0, "models/props_mvm/mvm_player_shield2.mdl",80.0, false);
+		TeleportEntity(Shield, NULL_VECTOR, vAngles, NULL_VECTOR);
+		SetVariantString("!activator");
+		AcceptEntityInput(Shield, "SetParent", RocketGet);
+		SDKHook(Shield, SDKHook_StartTouch, Huscarls_Shield_StartTouch);
+		vAngles[1] += 90.0;
+	}
+}
+
+static Action Huscarls_Shield_StartTouch(int entity, int target)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		owner = 0;
+	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	{
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+		if(inflictor == -1)
+			inflictor = owner;
+			
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+		SDKHooks_TakeDamage(target, owner, inflictor, 1.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	
+		if(!IsInvuln(target))
+		{
+			TF2_StunPlayer(target, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+			Custom_Knockback(entity, target, 150.0, true, true, true);
+		}
+		else Custom_Knockback(entity, target, 300.0, true, true, true);
+	}
+	return Plugin_Continue;
+}
+
+/*stock int MVM_Shield(int entity, bool big=false)
+{
+	if(!IsValidEntity(entity))
+		return -1;
+	int shield = CreateEntityByName("entity_medigun_shield");
+	if(!IsValidEntity(shield))
+		return -1;
+	SetEntPropEnt(shield, Prop_Send, "m_hOwnerEntity", entity);  
+	SetEntProp(shield, Prop_Send, "m_iTeamNum", GetTeam(entity));  
+	SetEntProp(shield, Prop_Data, "m_iInitialTeamNum", GetTeam(entity));
+	if(big)DispatchKeyValue(shield, "model", "models/props_mvm/mvm_player_shield2.mdl");
+	else DispatchKeyValue(shield, "model", "models/props_mvm/mvm_player_shield.mdl");
+	if(GetTeam(entity)==TFTeam_Red) DispatchKeyValue(shield, "skin", "0");
+	else if(GetTeam(entity)==TFTeam_Blue) DispatchKeyValue(shield, "skin", "1");
+	
+	if(big)SetEntityModel(shield, "models/props_mvm/mvm_player_shield2.mdl");
+	else SetEntityModel(shield, "models/props_mvm/mvm_player_shield.mdl");
+
+	DispatchSpawn(shield);
+	return shield;
+}*/

@@ -255,8 +255,8 @@ methodmap Harrison < CClotBody
 	}
 	property float m_flAirRaidDelay
 	{
-		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
 	property int m_iAmountProjectiles
 	{
@@ -665,40 +665,41 @@ static void Internal_ClotThink(int iNPC)
 				}
 			}
 		}
-	}
-
-	if(AirRaidStart[npc.index] && npc.m_flAirRaidDelay < gameTime)
-	{
-		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-		int enemy[MAXENTITIES];
-		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
-		for(int i; i < sizeof(enemy); i++)
+		if(AirRaidStart[npc.index] && npc.m_flAirRaidDelay < gameTime)
 		{
-			for(int k; k < 1; k++)
+			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+			int enemy[MAXENTITIES];
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+			for(int i; i < sizeof(enemy); i++)
 			{
-				if(enemy[i])
+				for(int k; k < 1; k++)
 				{
-					float vEnd[3];
-					float RocketDamage = 50.0;
-					RocketDamage *= RaidModeScaling;
+					if(enemy[i])
+					{
+						float vEnd[3];
+						float RocketDamage = 50.0;
+						RocketDamage *= RaidModeScaling;
+							
+						GetAbsOrigin(enemy[i], vEnd);
+						Handle pack;
+						CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+						WritePackCell(pack, EntIndexToEntRef(npc.index));
+						WritePackFloat(pack, 0.0);
+						WritePackFloat(pack, vEnd[0]);
+						WritePackFloat(pack, vEnd[1]);
+						WritePackFloat(pack, vEnd[2]);
+						WritePackFloat(pack, RocketDamage);
+							
+						spawnRing_Vectors(vEnd, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BOMBBARDING_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
 						
-					GetAbsOrigin(enemy[i], vEnd);
-					Handle pack;
-					CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-					WritePackCell(pack, EntIndexToEntRef(npc.index));
-					WritePackFloat(pack, 0.0);
-					WritePackFloat(pack, vEnd[0]);
-					WritePackFloat(pack, vEnd[1]);
-					WritePackFloat(pack, vEnd[2]);
-					WritePackFloat(pack, RocketDamage);
-						
-					spawnRing_Vectors(vEnd, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BOMBBARDING_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
-					
+					}
 				}
 			}
+			npc.m_flAirRaidDelay = gameTime + 4.0;
 		}
-		npc.m_flAirRaidDelay = gameTime + 4.0;
+		return;
 	}
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -926,7 +927,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				npc.SetPlaybackRate(1.5);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 1.5;
-				npc.m_flTimeUntillSummonRocket = 1.5;
+				npc.m_flTimeUntillSummonRocket = 0.15;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
 			case 1:
@@ -944,7 +945,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 							CreateDataTimer(npc.m_flTimeUntillSummonRocket, Timer_Quad_Rocket_Shot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(npc.index));
 							pack.WriteCell(EntIndexToEntRef(enemy[i]));
-							npc.m_flTimeUntillSummonRocket += 1.5;
+							npc.m_flTimeUntillSummonRocket += 0.15;
 							playsounds=true;
 						}
 					}
@@ -1032,48 +1033,48 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			}
 		}
 	}
-	else if(npc.m_flAttackHappens)
+	if(npc.m_iAttacksTillReload > 0)
 	{
-		if(npc.m_flAttackHappens < gameTime)
+		if(gameTime > npc.m_flNextMeleeAttack)
 		{
-			npc.m_flAttackHappens = 0.0;
-
-			if(npc.m_iAttacksTillReload > 0)
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+			//float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			//float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			if(IsValidEnemy(npc.index, target))
 			{
-				if(gameTime > npc.m_flNextMeleeAttack)
+				npc.PlayGunSound();
+				npc.FaceTowards(vecTarget, 20000.0);
+				Handle swingTrace;
+				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 				{
-					float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-					//float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-					//float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+					target = TR_GetEntityIndex(swingTrace);	
+						
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					float origin[3], angles[3];
+					view_as<CClotBody>(npc.index).GetAttachment("effect_hand_r", origin, angles);
+					ShootLaser(npc.index, "bullet_tracer02_blue_crit", origin, vecHit, false );
+
 					if(IsValidEnemy(npc.index, target))
 					{
-						npc.PlayGunSound();
-						npc.FaceTowards(vecTarget, 20000.0);
-						Handle swingTrace;
-						if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
-						{
-							target = TR_GetEntityIndex(swingTrace);	
-								
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-							float origin[3], angles[3];
-							view_as<CClotBody>(npc.index).GetAttachment("effect_hand_r", origin, angles);
-							ShootLaser(npc.index, "bullet_tracer02_blue_crit", origin, vecHit, false );
+						float damageDealt = 5.0;
 
-							if(IsValidEnemy(npc.index, target))
-							{
-								float damageDealt = 5.0;
-
-								SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * RaidModeScaling, DMG_BULLET, -1, _, vecHit);
-							}
-							npc.m_iAttacksTillReload -= 1;
-						}
-						delete swingTrace;
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * RaidModeScaling, DMG_BULLET, -1, _, vecHit);
 					}
+					npc.m_iAttacksTillReload -= 1;
 				}
+				delete swingTrace;
 			}
-			else
+		}
+	}
+	else
+	{
+		if(npc.m_flAttackHappens)
+		{
+			if(npc.m_flAttackHappens < gameTime)
 			{
+				npc.m_flAttackHappens = 0.0;
+
 				if(IsValidEnemy(npc.index, target))
 				{
 					int HowManyEnemeisAoeMelee = 64;
@@ -1135,59 +1136,59 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				}
 			}
 		}
-	}
-	//Melee attack, last prio
-	else if(gameTime > npc.m_flNextMeleeAttack)
-	{
-		if(IsValidEnemy(npc.index, target)) 
+		//Melee attack, last prio
+		else if(gameTime > npc.m_flNextMeleeAttack)
 		{
-			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5) && npc.m_iAttacksTillReload > 0)
+			if(IsValidEnemy(npc.index, target)) 
 			{
-				int Enemy_I_See;
-									
-				Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5) && npc.m_iAttacksTillReload > 0)
 				{
-					target = Enemy_I_See;
-
-					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
-					
-					float time = 0.1;
-					if(NpcStats_VictorianCallToArms(npc.index))
-					{
-						time *= 0.75;
-					}
-					npc.m_flAttackHappens = gameTime + time;
-					npc.m_flNextMeleeAttack = gameTime + time;
-					npc.m_flDoingAnimation = gameTime + time;
-				}
-			}
-			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
-			{
-				int Enemy_I_See;
-									
-				Enemy_I_See = Can_I_See_Enemy(npc.index, target);
-						
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					target = Enemy_I_See;
-
-					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					int Enemy_I_See;
+										
+					Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 							
-					npc.m_flAttackHappens = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
-					npc.m_flDoingAnimation = gameTime + 0.25;
+					if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+					{
+						target = Enemy_I_See;
+
+						npc.PlayMeleeSound();
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
+						
+						float time = 0.1;
+						if(NpcStats_VictorianCallToArms(npc.index))
+						{
+							time *= 0.75;
+						}
+						npc.m_flAttackHappens = gameTime + time;
+						npc.m_flNextMeleeAttack = gameTime + time;
+						npc.m_flDoingAnimation = gameTime + time;
+					}
+				}
+				if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+				{
+					int Enemy_I_See;
+										
+					Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+							
+					if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+					{
+						target = Enemy_I_See;
+
+						npc.PlayMeleeSound();
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+								
+						npc.m_flAttackHappens = gameTime + 0.25;
+						npc.m_flNextMeleeAttack = gameTime + 1.0;
+						npc.m_flDoingAnimation = gameTime + 0.25;
+					}
 				}
 			}
+			else
+			{
+				npc.m_flGetClosestTargetTime = 0.0;
+				npc.m_iTarget = GetClosestTarget(npc.index);
+			}	
 		}
-		else
-		{
-			npc.m_flGetClosestTargetTime = 0.0;
-			npc.m_iTarget = GetClosestTarget(npc.index);
-		}	
 	}
 	if(npc.m_iAttacksTillReload >0)
 	{
