@@ -1996,10 +1996,12 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 #endif
 
+#if defined ZR
 	if(Osmosis_CurrentlyInDebuff(victim))
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⟁", Debuff_Adder_left);		
 	}
+#endif
 	if(IgniteFor[victim] > 0) //burn
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s~", Debuff_Adder_left);			

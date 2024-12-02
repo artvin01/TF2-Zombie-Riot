@@ -58,6 +58,7 @@ public void Weapon_Nymph_M1(int client, int weapon, bool &result, int slot)
 		int	  projectile;
 		if (IsAbilityActive[client] == 1)
 		{
+			damage *= 0.65;
 			for (int HowOften = 0; HowOften <= 1; HowOften++)
 			{
 				GetClientEyeAngles(client, Angles);
@@ -72,7 +73,7 @@ public void Weapon_Nymph_M1(int client, int weapon, bool &result, int slot)
 				Initiate_HomingProjectile(projectile,
 										  client,
 										  90.0,			 // float lockonAngleMax,
-										  8.0,			 // float homingaSec,
+										  12.0,			 // float homingaSec,
 										  LockOnOnce,	 // bool LockOnlyOnce,
 										  true,			 // bool changeAngles,
 										  Angles,
@@ -93,7 +94,7 @@ public void Weapon_Nymph_M1(int client, int weapon, bool &result, int slot)
 			Initiate_HomingProjectile(projectile,
 									  client,
 									  90.0,			 // float lockonAngleMax,
-									  8.0,			 // float homingaSec,
+									  12.0,			 // float homingaSec,
 									  LockOnOnce,	 // bool LockOnlyOnce,
 									  true,			 // bool changeAngles,
 									  Angles,
