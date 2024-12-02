@@ -1794,7 +1794,6 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 5, Dist, false, radius, 1.0);			//5
 	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, 2.0);		//15
 	Stella_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, -2.0);		//18
-	
 
 	if(fl_initial_windup[npc.index] > GameTime)
 	{
@@ -1818,6 +1817,8 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			
 			Karlas karl = view_as<Karlas>(npc.Ally);
 			npc.m_flNC_LockedOn = GetGameTime(karl.index) + 1.0;
+
+			Laser.End_Point = Karl_Laser.Start_Point;
 
 			Ruina_Laser_Logic Karl_Laser;
 			Karl_Laser.client = npc.Ally;
@@ -2314,9 +2315,9 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 	if(update)
 	{
-		Laser.Damage = Modify_Damage(-1, 4.0);
+		Laser.Damage = Modify_Damage(-1, 3.0);
 		Laser.Radius = radius;
-		Laser.Bonus_Damage = (Modify_Damage(-1, 4.0)*6.0);
+		Laser.Bonus_Damage = (Modify_Damage(-1, 3.0)*6.0);
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 	}
