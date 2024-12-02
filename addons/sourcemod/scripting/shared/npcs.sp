@@ -715,14 +715,12 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		i_HasBeenHeadShotted[victim] = false;
 #if defined ZR || defined RPG
 		bool DoCalcReduceHeadshotFalloff = false;
-		if(i_WeaponCannotHeadshot[weapon])
-		{
-			//Buff bodyshot damage.
-			damage *= 1.4;
-		}
 
 		if(!i_WeaponCannotHeadshot[weapon])
 		{
+			//Buff bodyshot damage.
+			damage *= 1.4;
+
 			bool Blitzed_By_Riot = false;
 			if(f_TargetWasBlitzedByRiotShield[victim][weapon] > GetGameTime())
 			{
@@ -758,11 +756,11 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
-					damage *= 1.4;
+					damage *= 1.42;
 					DoCalcReduceHeadshotFalloff = true;
 				}
 				else
-					damage *= 1.2;
+					damage *= 1.185;
 
 				if(Blitzed_By_Riot) //Extra damage.
 				{
@@ -921,10 +919,13 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				{
 					WeaponDamageFalloff *= 0.8;
 				}
-				if(DoCalcReduceHeadshotFalloff)
+				if(DoCalcReduceHeadshotFalloff && WeaponDamageFalloff <= 1.0)
 				{
 					WeaponDamageFalloff *= 1.3;
+					if(WeaponDamageFalloff >= 1.0)
+						WeaponDamageFalloff = 1.0;
 				}
+				
 
 				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 			}
