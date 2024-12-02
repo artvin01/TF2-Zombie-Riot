@@ -137,6 +137,8 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_LasershotReady));   i++) { PrecacheSound(g_LasershotReady[i]);   }
 	PrecacheModel("models/player/sniper.mdl");
 	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
+	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
+	
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -195,9 +197,11 @@ methodmap Harrison < CClotBody
 	public void PlayBoomSound()
 	{
 		EmitSoundToAll(g_BoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_BoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayIncomingBoomSound()
 	{
+		EmitSoundToAll(g_IncomingBoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_IncomingBoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayHurtSound() 
@@ -637,8 +641,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_bPathing = false;
 					npc.m_bisWalking = false;
 					AirRaidStart[npc.index] = true;
-					npc.m_flDoingAnimation = gameTime + 10.0;	
-					Delay_Attribute[npc.index] = gameTime + 10.0;
+					npc.m_flDoingAnimation = gameTime + 30.0;	
+					Delay_Attribute[npc.index] = gameTime + 30.0;
 					I_cant_do_this_all_day[npc.index]=2;
 				}
 			}
@@ -695,7 +699,7 @@ static void Internal_ClotThink(int iNPC)
 					}
 				}
 			}
-			npc.m_flAirRaidDelay = gameTime + 4.0;
+			npc.m_flAirRaidDelay = gameTime + 2.5;
 		}
 		return;
 	}
@@ -775,8 +779,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			npc.m_bFUCKYOU=true;
-			FTL[npc.index] += 25.0;
-			RaidModeTime += 25.0;
+			FTL[npc.index] += 35.0;
+			RaidModeTime += 35.0;
 		}
 	}
 
@@ -1452,7 +1456,7 @@ public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 			AcceptEntityInput(prop2, "DisableCollision");
 			vAngles[0] += 90.0;
 			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
-			CreateTimer(5.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
 		}
 
 		/*
