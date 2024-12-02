@@ -729,6 +729,31 @@ static void HarrisonAnimationChange(Harrison npc)
 				}	
 			}
 		}
+		case 2: //secondary
+		{
+			if(npc.IsOnGround())
+			{
+				if(npc.m_iChanged_WalkCycle != 1)
+				{
+					ResetHarrisonWeapon(npc, 2);
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
+					npc.StartPathing();
+				}	
+			}
+			else
+			{
+				if(npc.m_iChanged_WalkCycle != 2)
+				{
+					ResetHarrisonWeapon(npc, 2);
+					npc.m_bisWalking = false;
+					npc.m_iChanged_WalkCycle = 2;
+					npc.SetActivity("ACT_MP_JUMP_FLOAT_SECONDARY");
+					npc.StartPathing();
+				}	
+			}
+		}
 		case 0: //Melee
 		{
 			if (npc.IsOnGround())
@@ -772,7 +797,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
-				npc.PlayRocketshotready()
+				npc.PlayRocketshotready();
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.5);
@@ -895,8 +920,8 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				if(gameTime > npc.m_flNextMeleeAttack)
 				{
 					float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-					float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-					float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+					//float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+					//float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 					if(IsValidEnemy(npc.index, target))
 					{
 						npc.PlayGunSound();
@@ -1219,7 +1244,7 @@ static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
-void ResetSoldineWeapon(Soldine npc, int weapon_Type)
+static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 {
 	if(IsValidEntity(npc.m_iWearable1))
 	{
@@ -1228,6 +1253,14 @@ void ResetSoldineWeapon(Soldine npc, int weapon_Type)
 	switch(weapon_Type)
 	{
 		case 1:
+		{
+			npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
+			SetVariantString("0.75");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			SetVariantInt(32);
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		}
+		case 2:
 		{
 			npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
 			SetVariantString("0.75");
