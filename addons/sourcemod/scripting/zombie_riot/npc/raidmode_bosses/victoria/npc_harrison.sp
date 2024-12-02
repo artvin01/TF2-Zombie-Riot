@@ -93,9 +93,16 @@ static float Delay_Attribute[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
 static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
+static bool AirRaidStart[MAXENTITIES];
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static int i_AmountProjectiles[MAXENTITIES];
 static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
+#define BOMBBARDING_CHARGE_TIME 3.0
+#define BOMBBARDING_CHARGE_SPAN 1.0
+#define BOMBBARDING_LIGHTNING_RANGE 150.0
+
 
 void Harrison_OnMapStart_NPC()
 {
@@ -246,6 +253,11 @@ methodmap Harrison < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
+	property float m_flAirRaidDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	property int m_iAmountProjectiles
 	{
 		public get()							{ return i_AmountProjectiles[this.index]; }
@@ -285,11 +297,13 @@ methodmap Harrison < CClotBody
 		Delay_Attribute[npc.index] = 0.0;
 		YaWeFxxked[npc.index] = false;
 		ParticleSpawned[npc.index] = false;
+		npc.m_bFUCKYOU = false;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
 		npc.m_flTimeUntillNextRailgunShots = GetGameTime() + 22.5;
 		npc.m_flTimeUntillSummonRocket = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flAirRaidDelay = 0.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
 		npc.m_flTimeUntillDroneSniperShot = GetGameTime() + 5.0;
 		npc.m_flTimeUntillGunReload = GetGameTime() + 12.5;
@@ -298,6 +312,7 @@ methodmap Harrison < CClotBody
 		npc.m_iAttacksTillReload = 0;
 		
 		npc.m_fbRangedSpecialOn = false;
+		AirRaidStart[npc.index] = false;
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		Victoria_Support_RechargeTimeMax(npc.index, 20.0);
@@ -575,6 +590,115 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_iAttacksTillReload =  RoundToNearest(float(CountPlayersOnRed(2)) * 5); 
 		npc.m_flTimeUntillGunReload = 30.0 + gameTime;
 	}
+
+	if(npc.m_bFUCKYOU)
+	{
+		switch(I_cant_do_this_all_day[npc.index])
+		{
+			case 0:
+			{
+				/*
+				if(npc.m_iChanged_WalkCycle != 5)
+				{
+					ResetHarrisonWeapon(npc, 2);
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetActivity("ACT_MP_RUN_MELEE");
+					npc.StartPathing();
+				}
+				*/
+				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
+				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				b_NpcIsInvulnerable[npc.index] = true;
+				npc.AddActivityViaSequence("layer_taunt_most_wanted");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.0);
+				npc.m_iChanged_WalkCycle = 0;
+				npc.m_flDoingAnimation = gameTime + 0.75;	
+				Delay_Attribute[npc.index] = gameTime + 0.75;
+				I_cant_do_this_all_day[npc.index]=1;
+			}
+			case 1:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.AddActivityViaSequence("layer_taunt_most_wanted");
+					npc.m_flAttackHappens = 0.0;
+					npc.SetCycle(0.3);
+					npc.SetPlaybackRate(0.0);
+					npc.m_iChanged_WalkCycle = 0;
+					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					npc.m_bisWalking = false;
+					AirRaidStart[npc.index] = true;
+					npc.m_flDoingAnimation = gameTime + 10.0;	
+					Delay_Attribute[npc.index] = gameTime + 10.0;
+					I_cant_do_this_all_day[npc.index]=2;
+				}
+			}
+			case 2:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.PlayAngerSound();
+					npc.PlayAngerReaction();
+					npc.AddActivityViaSequence("layer_taunt_most_wanted");
+					npc.m_flAttackHappens = 0.0;
+					npc.SetCycle(0.8);
+					npc.SetPlaybackRate(1.0);
+					npc.m_flDoingAnimation = gameTime + 0.5;
+					npc.m_iChanged_WalkCycle = 0;
+					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_flTimeUntillDroneSniperShot += 4.0;
+					npc.m_flTimeUntillNextRailgunShots += 4.0;
+					npc.m_flNextRangedSpecialAttackHappens += 4.0;
+					npc.m_bFUCKYOU=false;
+					AirRaidStart[npc.index] = false;
+					b_NpcIsInvulnerable[npc.index] = false;
+				}
+			}
+		}
+	}
+
+	if(AirRaidStart[npc.index] && npc.m_flAirRaidDelay < gameTime)
+	{
+		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+		int enemy[MAXENTITIES];
+		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+		for(int i; i < sizeof(enemy); i++)
+		{
+			for(int k; k < 1; k++)
+			{
+				if(enemy[i])
+				{
+					float vEnd[3];
+					float RocketDamage = 50.0;
+					RocketDamage *= RaidModeScaling;
+						
+					GetAbsOrigin(enemy[i], vEnd);
+					Handle pack;
+					CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+					WritePackCell(pack, EntIndexToEntRef(npc.index));
+					WritePackFloat(pack, 0.0);
+					WritePackFloat(pack, vEnd[0]);
+					WritePackFloat(pack, vEnd[1]);
+					WritePackFloat(pack, vEnd[2]);
+					WritePackFloat(pack, RocketDamage);
+						
+					spawnRing_Vectors(vEnd, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BOMBBARDING_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
+					
+				}
+			}
+		}
+		npc.m_flAirRaidDelay = gameTime + 4.0;
+	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -649,9 +773,9 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
 			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
+			npc.m_bFUCKYOU=true;
 			FTL[npc.index] += 25.0;
 			RaidModeTime += 25.0;
-			npc.PlayAngerReaction();
 		}
 	}
 
@@ -787,7 +911,6 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 {
 	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 	{
-		npc.i_GunMode = 0;
 		bool playsounds=false;
 		switch(I_cant_do_this_all_day[npc.index])
 		{
@@ -902,7 +1025,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			vecDest[2] += GetRandomFloat(-50.0, 50.0);
 						
 			npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling , RocketSpeed , Radius , "raygun_projectile_blue_crit", true,_, true, flPosEdit);
-			if (npc.m_iAmountProjectiles >= 10)
+			if (npc.m_iAmountProjectiles >= 15)
 			{
 				npc.m_iAmountProjectiles = 0;
 				npc.m_flTimeUntillDroneSniperShot = gameTime + 15.0;
@@ -1068,12 +1191,13 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 	}
 	if(npc.m_iAttacksTillReload >0)
 	{
-		return 1;
+		npc.i_GunMode = 1;
 	}
 	else
 	{
-		return 0;
+		npc.i_GunMode = 0;
 	}
+	return 0;
 }
 
 
@@ -1246,33 +1370,136 @@ static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 
 static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 {
-	if(IsValidEntity(npc.m_iWearable1))
+	if(IsValidEntity(npc.m_iWearable2))
 	{
-		RemoveEntity(npc.m_iWearable1);
+		RemoveEntity(npc.m_iWearable2);
 	}
 	switch(weapon_Type)
 	{
 		case 1:
 		{
-			npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
+			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
 			SetVariantString("0.75");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			SetVariantInt(32);
-			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+			AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		}
 		case 2:
 		{
-			npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
+			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
 			SetVariantString("0.75");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			SetVariantInt(32);
-			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+			AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		}
 		case 0:
 		{	
-			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
+			npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
 			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		}
 	}
+}
+
+public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
+{
+	ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	
+	if (!IsValidEntity(entity))
+	{
+		return Plugin_Stop;
+	}
+		
+	float NumLoops = ReadPackFloat(pack);
+	float spawnLoc[3];
+	for (int GetVector = 0; GetVector < 3; GetVector++)
+	{
+		spawnLoc[GetVector] = ReadPackFloat(pack);
+	}
+	
+	float damage = ReadPackFloat(pack);
+	
+	if (NumLoops >= BOMBBARDING_CHARGE_TIME)
+	{
+		float secondLoc[3];
+		for (int replace = 0; replace < 3; replace++)
+		{
+			secondLoc[replace] = spawnLoc[replace];
+		}
+		
+		for (int sequential = 1; sequential <= 5; sequential++)
+		{
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (BOMBBARDING_LIGHTNING_RANGE * 5.0)/float(sequential));
+			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
+		}
+		
+		secondLoc[2] = 1500.0;
+		
+		float vAngles[3];
+		int prop2 = CreateEntityByName("prop_dynamic_override");
+		if(IsValidEntity(prop2))
+		{
+			DispatchKeyValue(prop2, "model", "models/props_combine/headcrabcannister01a.mdl");
+			DispatchKeyValue(prop2, "modelscale", "1.00");
+			DispatchKeyValue(prop2, "StartDisabled", "false");
+			DispatchKeyValue(prop2, "Solid", "0");
+			SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+			DispatchSpawn(prop2);
+			SetEntityCollisionGroup(prop2, 1);
+			AcceptEntityInput(prop2, "DisableShadow");
+			AcceptEntityInput(prop2, "DisableCollision");
+			vAngles[0] += 90.0;
+			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
+			CreateTimer(5.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
+		}
+
+		/*
+		spawnBeam(0.8, 255, 50, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
+		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
+		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);	
+		*/
+
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(spawnLoc[0]);
+		pack_boom.WriteFloat(spawnLoc[1]);
+		pack_boom.WriteFloat(spawnLoc[2]);
+		pack_boom.WriteCell(1);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+		
+		CreateEarthquake(spawnLoc, 1.0, BOMBBARDING_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOMBBARDING_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
+	
+		return Plugin_Stop;
+	}
+	else
+	{
+		spawnRing_Vectors(spawnLoc, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
+		
+		ResetPack(pack);
+		WritePackCell(pack, EntIndexToEntRef(entity));
+		WritePackFloat(pack, NumLoops + BOMBBARDING_CHARGE_TIME);
+		WritePackFloat(pack, spawnLoc[0]);
+		WritePackFloat(pack, spawnLoc[1]);
+		WritePackFloat(pack, spawnLoc[2]);
+		WritePackFloat(pack, damage);
+	}
+	
+	return Plugin_Continue;
+}
+
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+		
+	int SPRITE_INT = PrecacheModel(sprite, false);
+
+	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	TE_SendToAll();
 }
