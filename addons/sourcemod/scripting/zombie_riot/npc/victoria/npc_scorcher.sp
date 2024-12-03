@@ -140,12 +140,15 @@ methodmap VictoriaScorcher < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/fall17_firemanns_essentials/fall17_firemanns_essentials.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/hwn2023_dead_heat/hwn2023_dead_heat.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr18_tundra_top/spr18_tundra_top_pyro.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/player/items/mvm_loot/pyro/pyrobo_backpack.mdl");
+		
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 
 		npc.m_bDissapearOnDeath = true;
 		
@@ -273,12 +276,17 @@ public void VictoriaScorcher_NPCDeath(int entity)
 		SetVariantString("1.0");
 		AcceptEntityInput(prop.m_iWearable5, "SetModelScale");
 
+		prop.m_iWearable6 = prop.EquipItem("head", "models/player/items/mvm_loot/pyro/pyrobo_backpack.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(prop.m_iWearable6, "SetModelScale");
+
 		DispatchKeyValue(entity_death, "skin", "1");
 		DispatchKeyValue(prop.m_iWearable1, "skin", "1");
 		DispatchKeyValue(prop.m_iWearable2, "skin", "1");
 		DispatchKeyValue(prop.m_iWearable3, "skin", "1");
 		DispatchKeyValue(prop.m_iWearable4, "skin", "1");
 		DispatchKeyValue(prop.m_iWearable5, "skin", "1");
+		DispatchKeyValue(prop.m_iWearable6, "skin", "1");
 
 		SetVariantInt(5);
 		AcceptEntityInput(entity_death, "SetBodyGroup");
@@ -293,6 +301,7 @@ public void VictoriaScorcher_NPCDeath(int entity)
 		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable5), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable6), TIMER_FLAG_NO_MAPCHANGE);
 	}
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
