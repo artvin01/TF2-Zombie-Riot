@@ -146,6 +146,8 @@ methodmap VictorianPulverizer < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+
+		npc.m_bDissapearOnDeath = true;
 		
 		return npc;
 	}
