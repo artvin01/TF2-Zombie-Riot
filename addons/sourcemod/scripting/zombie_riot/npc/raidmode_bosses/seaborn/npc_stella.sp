@@ -1818,11 +1818,10 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			Karlas karl = view_as<Karlas>(npc.Ally);
 			npc.m_flNC_LockedOn = GetGameTime(karl.index) + 1.0;
 
-
 			Ruina_Laser_Logic Karl_Laser;
-			Laser.End_Point = Karl_Laser.Start_Point;
 			Karl_Laser.client = npc.Ally;
 			Karl_Laser.DoForwardTrace_Basic(-1.0);
+			Laser.End_Point = Karl_Laser.Start_Point;
 			NC_CoreBeamEffects(npc, 
 			Karl_Laser.Start_Point, 
 			Karl_Laser.End_Point, 
@@ -1835,8 +1834,8 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			//oh also, karlas's turn rate for the laser is also nerfed by 20%
 			if(update)	//like the main laser, the damage is dealt 10 times a second
 			{
-				Karl_Laser.Damage = Modify_Damage(-1, 10.0);
-				Karl_Laser.Bonus_Damage = Modify_Damage(-1, 10.0)*6.0;
+				Karl_Laser.Damage = Modify_Damage(-1, 20.0);
+				Karl_Laser.Bonus_Damage = Modify_Damage(-1, 20.0)*6.0;
 				Karl_Laser.damagetype = DMG_PLASMA;
 				Karl_Laser.Deal_Damage();
 			}
@@ -2315,9 +2314,10 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 	if(update)
 	{
-		Laser.Damage = Modify_Damage(-1, 3.0);
+		//11~ the same as twirl's Retreat laser. (the triangle one)
+		Laser.Damage = Modify_Damage(-1, 9.0);
 		Laser.Radius = radius;
-		Laser.Bonus_Damage = (Modify_Damage(-1, 3.0)*6.0);
+		Laser.Bonus_Damage = (Modify_Damage(-1, 9.0)*6.0);
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 	}
