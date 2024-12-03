@@ -586,6 +586,7 @@ void NPC_ConfigSetup()
 	Zapper_OnMapStart_NPC();
 	VictorianPayback_OnMapStart_NPC();
 	Blocker_OnMapStart_NPC();
+	VictoriaDestructor_Precache();
 	VictorianIronShield_OnMapStart_NPC();
 	Aviator_OnMapStart_NPC();
 	
@@ -1709,6 +1710,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/victoria/npc_zapper.sp"
 #include "zombie_riot/npc/victoria/npc_payback.sp"
 #include "zombie_riot/npc/victoria/npc_blocker.sp"
+#include "zombie_riot/npc/victoria/npc_destructor.sp"
 #include "zombie_riot/npc/victoria/npc_ironshield.sp"
 #include "zombie_riot/npc/victoria/npc_aviator.sp"
 
