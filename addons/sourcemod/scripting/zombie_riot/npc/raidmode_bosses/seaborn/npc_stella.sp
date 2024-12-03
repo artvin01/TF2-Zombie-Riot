@@ -2316,9 +2316,9 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	if(update)
 	{
 		//11~ the same as twirl's Retreat laser. (the triangle one)
-		Laser.Damage = Modify_Damage(-1, 11.0);
+		Laser.Damage = Modify_Damage(-1, 9.0);
 		Laser.Radius = radius;
-		Laser.Bonus_Damage = (Modify_Damage(-1, 11.0)*6.0);
+		Laser.Bonus_Damage = (Modify_Damage(-1, 9.0)*6.0);
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 	}
