@@ -236,6 +236,76 @@ public void VictorianPulverizer_NPCDeath(int entity)
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_dg_loop.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/flame_thrower_pilot.wav");
 	
+	int entity_death = CreateEntityByName("prop_dynamic_override");
+	if(IsValidEntity(entity_death))
+	{
+		VictorianPulverizer prop = view_as<VictorianPulverizer>(entity_death);
+		float pos[3];
+		float Angles[3];
+		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
+
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
+
+		DispatchKeyValue(entity_death, "model", "models/player/pyro.mdl");
+
+		DispatchSpawn(entity_death);
+		
+		prop.m_iWearable1 = prop.EquipItem("head", "models/workshop/player/items/pyro/hw2013_rugged_respirator/hw2013_rugged_respirator.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(prop.m_iWearable1, "SetModelScale");
+
+		prop.m_iWearable2 = prop.EquipItem("head", "models/workshop/player/items/pyro/sum24_fire_marshal/sum24_fire_marshal.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(prop.m_iWearable2, "SetModelScale");
+
+		prop.m_iWearable3 = prop.EquipItem("head", "models/workshop/player/items/pyro/sum24_invisible_flame_style2/sum24_invisible_flame_style2.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(prop.m_iWearable3, "SetModelScale");
+		
+		prop.m_iWearable4 = prop.EquipItem("head", "models/workshop/player/items/pyro/sum24_scorched_stompers_style2/sum24_scorched_stompers_style2.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(prop.m_iWearable4, "SetModelScale");
+
+
+		DispatchKeyValue(entity_death, "skin", "1");
+		DispatchKeyValue(prop.m_iWearable1, "skin", "1");
+		DispatchKeyValue(prop.m_iWearable2, "skin", "1");
+		DispatchKeyValue(prop.m_iWearable3, "skin", "1");
+		DispatchKeyValue(prop.m_iWearable4, "skin", "1");
+
+		SetVariantInt(5);
+		AcceptEntityInput(entity_death, "SetBodyGroup");
+ 
+		SetEntityCollisionGroup(entity_death, 2);
+		SetVariantString("dieviolent");
+		AcceptEntityInput(entity_death, "SetAnimation");
+		
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable1), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		float startPosition[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
+		startPosition[2] += 45;
+
+		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
+		b_NpcIsTeamkiller[npc.index] = true;
+		Explode_Logic_Custom(50.0, -1, npc.index, -1, startPosition, 100.0, _, _, true, _, true);
+		b_NpcIsTeamkiller[npc.index] = false;
+
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(startPosition[0]);
+		pack_boom.WriteFloat(startPosition[1]);
+		pack_boom.WriteFloat(startPosition[2]);
+		pack_boom.WriteCell(1);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+	}
+
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
