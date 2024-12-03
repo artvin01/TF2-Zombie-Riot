@@ -1052,6 +1052,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		Damageaftercalc = 0.0;
 		return Plugin_Handled;
 	}
+	//a triggerhurt can never deal more then 10% of a raids health as damage.
+	if(b_IsATriggerHurt[attacker] && b_thisNpcIsARaid[victim])
+	{
+		if(damage >= float(ReturnEntityMaxHealth(victim)) * 0.1)
+		{
+			damage = float(ReturnEntityMaxHealth(victim)) * 0.1;
+		}
+	}
 	CClotBody npcBase = view_as<CClotBody>(victim);
 	
 	//LogEntryInvicibleTest(victim, attacker, damage, 3);
