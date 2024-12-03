@@ -1262,6 +1262,7 @@ bool b_ShowNpcHealthbar[MAXENTITIES];
 bool b_TryToAvoidTraverse[MAXENTITIES];
 bool b_NoKnockbackFromSources[MAXENTITIES];
 bool b_IsATrigger[MAXENTITIES];
+bool b_IsATriggerHurt[MAXENTITIES];
 int i_NpcWeight[MAXENTITIES]; //This is used for scaling.
 bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
@@ -3189,6 +3190,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		WildingenBuilder2[entity] = false;
 		Armor_Charge[entity] = 0;
 		b_IsATrigger[entity] = false;
+		b_IsATriggerHurt[entity] = false;
 #endif
 
 #if defined ZR || defined RPG
@@ -3386,6 +3388,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "trigger_teleport")) //npcs think they cant go past this sometimes, lol
 		{
 			b_IsATrigger[entity] = true;
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "trigger_hurt")) //npcs think they cant go past this sometimes, lol
+		{
+			b_IsATriggerHurt[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}

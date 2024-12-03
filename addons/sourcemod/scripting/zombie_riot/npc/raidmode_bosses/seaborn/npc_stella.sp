@@ -1818,9 +1818,9 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			Karlas karl = view_as<Karlas>(npc.Ally);
 			npc.m_flNC_LockedOn = GetGameTime(karl.index) + 1.0;
 
-			Laser.End_Point = Karl_Laser.Start_Point;
 
 			Ruina_Laser_Logic Karl_Laser;
+			Laser.End_Point = Karl_Laser.Start_Point;
 			Karl_Laser.client = npc.Ally;
 			Karl_Laser.DoForwardTrace_Basic(-1.0);
 			NC_CoreBeamEffects(npc, 
