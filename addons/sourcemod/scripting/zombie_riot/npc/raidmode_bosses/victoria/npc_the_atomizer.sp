@@ -108,6 +108,7 @@ static int Vs_Target[MAXENTITIES];
 static int Vs_ParticleSpawned[MAXENTITIES];
 static float Vs_Temp_Pos[MAXENTITIES][3];
 bool Vs_LockOn[MAXTF2PLAYERS];
+int Vs_Atomizer_To_Huscarls;
 
 static float FTL[MAXENTITIES];
 static float Delay_Attribute[MAXENTITIES];
@@ -181,37 +182,29 @@ methodmap Atomizer < CClotBody
 		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
 	}
 	public void NiceCatchKnucklehead() {
-	
-		int sound = GetRandomInt(0, sizeof(StunballPickupeSound) - 1);
-		EmitSoundToAll(StunballPickupeSound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(StunballPickupeSound[GetRandomInt(0, sizeof(StunballPickupeSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayAngerSound() {
-	
 		EmitSoundToAll(g_AngerSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_AngerSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayAngerReaction() {
-	
 		EmitSoundToAll(g_AngerReaction, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_AngerReaction, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayHomerunHitSound() {
-	
 		EmitSoundToAll(g_HomerunHitSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_HomerunHitSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayHomerunSound() {
-	
 		EmitSoundToAll(g_HomerunSounds[GetRandomInt(0, sizeof(g_HomerunSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_HomerunSounds[GetRandomInt(0, sizeof(g_HomerunSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayHomerunMissSound() {
-	
 		EmitSoundToAll(g_HomerunfailSounds[GetRandomInt(0, sizeof(g_HomerunfailSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_HomerunfailSounds[GetRandomInt(0, sizeof(g_HomerunfailSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayIdleAlertSound() 
-	{
+	public void PlayIdleAlertSound(){
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 	
@@ -219,27 +212,21 @@ methodmap Atomizer < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
-	public void PlayBoomSound()
-	{
+	public void PlayBoomSound(){
 		EmitSoundToAll(g_BoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayIncomingBoomSound()
-	{
+	public void PlayIncomingBoomSound(){
 		EmitSoundToAll(g_IncomingBoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayHurtSound() 
-	{
+	public void PlayHurtSound(){
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
 	}
-	
-	public void PlayMissSound() 
-	{
+	public void PlayMissSound(){
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
@@ -247,24 +234,17 @@ methodmap Atomizer < CClotBody
 		EmitSoundToAll(g_MissAbilitySound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_MissAbilitySound[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayDeathSound() 
-	{
+	public void PlayDeathSound(){
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayRangedSound()
-	{
+	public void PlayRangedSound(){
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,110));
 	}
-	public void PlayMeleeSound()
-	{
+	public void PlayMeleeSound(){
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeHitSound() 
-	{
+	public void PlayMeleeHitSound(){
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		//EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -303,6 +283,7 @@ methodmap Atomizer < CClotBody
 		ParticleSpawned[npc.index] = false;
 		SUPERHIT[npc.index] = false;
 		NiceMiss[npc.index] = 0.0;
+		Vs_Atomizer_To_Huscarls = 0;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
@@ -415,7 +396,7 @@ methodmap Atomizer < CClotBody
 		npc.m_bTeamGlowDefault = false;
 		SetVariantColor(view_as<int>({100, 150, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-		
+		Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
 		CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let the get out alive!");
 		
 		return npc;
@@ -562,6 +543,15 @@ static void Internal_ClotThink(int iNPC)
 		BlockLoseSay = true;
 		YaWeFxxked[npc.index] = true;
 	}
+	if(YaWeFxxked[npc.index])
+	{
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
+				f_VictorianCallToArms[entity] = gameTime;
+		}
+	}
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -605,6 +595,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_flDoingAnimation = gameTime + 1.5;	
 				Delay_Attribute[npc.index] = gameTime + 1.4;
 				I_cant_do_this_all_day[npc.index]=1;
+				if(!LastMann)Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
 			}
 			case 1:
 			{
@@ -1070,6 +1061,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 						AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 						SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 						NiceMiss[npc.index] = gameTime + 10.0;
+						if(!LastMann)Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
 						I_cant_do_this_all_day[npc.index]=2;
 					}
 				}
@@ -1529,6 +1521,30 @@ static bool ONLYBSP(int entity, int contentsMask, any data)
 	return true;
 }
 
+static int Victoria_Melee_or_Ranged(Atomizer npc)
+{
+	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+	int enemy[MAXENTITIES];
+	GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+	float SelfLocation[3]; WorldSpaceCenter(npc.index, SelfLocation);
+	int MeleeS,RangedS;
+	for(int i; i < sizeof(enemy); i++)
+	{
+		static float EntityLocation[3]; WorldSpaceCenter(enemy[i], EntityLocation);
+		float distance = GetVectorDistance(SelfLocation, EntityLocation, true); 
+		if(distance <= (500.0 * 500.0))
+			MeleeS++;
+		else
+			RangedS++;
+	}
+	if(MeleeS==RangedS)
+		return 0;
+	if(MeleeS>RangedS)
+		return 1;
+	else
+		return 2;
+}
+
 public bool EntityLookPoint(int entity, float flAng[3], float flPos[3], float pos[3])
 {
 	Handle trace = TR_TraceRayFilterEx(flPos, flAng, MASK_SHOT, RayType_Infinite, ONLYBSP, entity);
@@ -1568,11 +1584,15 @@ static void Atomizer_Weapon_Lines(Atomizer npc, int client)
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_SEABORNMELEE: switch(GetRandomInt(0,3)){
+		/*case WEAPON_SEABORNMELEE: switch(GetRandomInt(0,3)){
 			case 0: Format(Text_Lines, sizeof(Text_Lines), "Damn it! {darkblue}Seaborn{default} is here Again!");
 			case 1: Format(Text_Lines, sizeof(Text_Lines), "ha. {darkblue}Seaborn{default}!?");
 			case 2: Format(Text_Lines, sizeof(Text_Lines), "I found an {darkblue}Infected{default} person, I need a Backup!");
 			case 3: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{default}? I knew it, you {darkblue}Seaborn{default} Bastard!", client);}
+		case WEAPON_EXPLORER: switch(GetRandomInt(0,2)){
+			case 0: Format(Text_Lines, sizeof(Text_Lines), "{purple}Void{default}...");
+			case 1: Format(Text_Lines, sizeof(Text_Lines), "HQ? There's a serious problem. He's using the {purple}Void{default}.");
+			case 2: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{default}, You're going to pay a price for bringing {purple}Void{default} into Victoria!", client);}*/
 		default:
 		{
 			valid = false;

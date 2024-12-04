@@ -237,7 +237,7 @@ static void ClotThink(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 		
-	if(!IsValidAlly(npc.index, GetClosestAlly(npc.index)) || (gameTime > npc.m_flAttackHappens && Limit[npc.index]))
+	if((!IsValidAlly(npc.index, GetClosestAlly(npc.index)) && !ISVOLI[npc.index]) || (gameTime > npc.m_flAttackHappens && Limit[npc.index]))
 	{
 		SmiteNpcToDeath(npc.index);
 		return;
@@ -513,7 +513,6 @@ static bool TraceEntityFilterIgnorePlayersAndSelf(int entity, int contentsMask, 
 
 stock int ProjectileDetection(int entity, float Targetdist=146.0, bool Remove = false)
 {
-	static char classname[64];
 	float position[3], position2[3], distance[3], dist;
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	int team = GetTeam(entity);
@@ -522,22 +521,16 @@ stock int ProjectileDetection(int entity, float Targetdist=146.0, bool Remove = 
 	int Owner = -1;
 	while((projectile = FindEntityByClassname(projectile, "tf_projectile_*")) != INVALID_ENT_REFERENCE)
 	{
-		GetEntityClassname(projectile, classname, sizeof(classname));
-		if(StrEqual(classname, "tf_projectile_sentryrocket", false) && HasEntProp(projectile, Prop_Send, "m_hBuilder"))
-			Owner = GetEntPropEnt(projectile, Prop_Send, "m_hBuilder");
+		if(HasEntProp(projectile, Prop_Send, "m_hOriginalLauncher"))
+			Owner=GetEntPropEnt(projectile, Prop_Send, "m_hOriginalLauncher");
+		else if(HasEntProp(projectile, Prop_Send, "m_hOwnerprojectile"))
+			Owner=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerprojectile");
+		else if(HasEntProp(projectile, Prop_Data, "m_hOwnerEntity"))
+			Owner=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerEntity");
 		else
-		{
-			if(HasEntProp(projectile, Prop_Send, "m_hOriginalLauncher"))
-				Owner=GetEntPropEnt(projectile, Prop_Send, "m_hOriginalLauncher");
-			else if(HasEntProp(projectile, Prop_Send, "m_hOwnerprojectile"))
-				Owner=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerprojectile");
-			else if(HasEntProp(projectile, Prop_Data, "m_hOwnerEntity"))
-				Owner=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerEntity");
-			else if(HasEntProp(projectile, Prop_Data, "m_hOwnerEntity"))
-				Owner=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerEntity");
-		}
-		int OwnerTeam=view_as<int>(TFTeam_Unassigned);
-		if(IsValidClient(Owner))
+			continue;
+		int OwnerTeam=TFTeam_Stalkers;
+		if(IsValidEntity(Owner))
 			 OwnerTeam = GetTeam(Owner);
 		if(team!=OwnerTeam)
 		{
@@ -549,7 +542,8 @@ stock int ProjectileDetection(int entity, float Targetdist=146.0, bool Remove = 
 				if(Remove)
 				{
 					if(projectile <= 0 || !IsValidEntity(projectile))
-						return -1;
+						continue;
+					RemoveEntity(projectile);
 					AcceptEntityInput(projectile, "Kill");
 				}
 				success=true;

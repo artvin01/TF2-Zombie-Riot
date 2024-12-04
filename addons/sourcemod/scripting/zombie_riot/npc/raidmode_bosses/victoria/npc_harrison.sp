@@ -97,11 +97,18 @@ static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static int i_AmountProjectiles[MAXENTITIES];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 
+static float Vs_DelayTime[MAXENTITIES];
+static float Vs_Temp_Pos[MAXENTITIES][MAXENTITIES][3];
+static int Vs_ParticleSpawned[MAXENTITIES][MAXENTITIES];
+
+static int gLaser1;
+static int gRedPoint;
+static int g_BeamIndex_heal;
+static int g_HALO_Laser;
 
 #define BOMBBARDING_CHARGE_TIME 3.0
 #define BOMBBARDING_CHARGE_SPAN 1.0
 #define BOMBBARDING_LIGHTNING_RANGE 150.0
-
 
 void Harrison_OnMapStart_NPC()
 {
@@ -138,6 +145,11 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
 	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
 	
+	PrecacheModel(LASERBEAM);
+	gRedPoint = PrecacheModel("sprites/redglow1.vmt");
+	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
+	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -318,6 +330,7 @@ methodmap Harrison < CClotBody
 		AirRaidStart[npc.index] = false;
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
+		Vs_RechargeTimeMax[npc.index] = 20.0;
 		Victoria_Support_RechargeTimeMax(npc.index, 20.0);
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -675,32 +688,29 @@ static void Internal_ClotThink(int iNPC)
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 			for(int i; i < sizeof(enemy); i++)
 			{
-				for(int k; k < 1; k++)
+				float Spam_delay=0.0;
+				for(int k; k < 3; k++)
 				{
 					if(enemy[i])
 					{
-						float vEnd[3];
-						float RocketDamage = 50.0;
-						RocketDamage *= RaidModeScaling;
-							
-						GetAbsOrigin(enemy[i], vEnd);
-						Handle pack;
-						CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-						WritePackCell(pack, EntIndexToEntRef(npc.index));
-						WritePackFloat(pack, 0.0);
-						WritePackFloat(pack, vEnd[0]);
-						WritePackFloat(pack, vEnd[1]);
-						WritePackFloat(pack, vEnd[2]);
-						WritePackFloat(pack, RocketDamage);
-							
-						spawnRing_Vectors(vEnd, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BOMBBARDING_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
-						
+						DataPack pack;
+						CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
+						pack.WriteCell(EntIndexToEntRef(npc.index));
+						pack.WriteCell(EntIndexToEntRef(enemy[i]));
+						Spam_delay += 0.15;
 					}
 				}
 			}
 			npc.m_flAirRaidDelay = gameTime + 2.5;
 		}
+		npc.m_flNextRangedSpecialAttackHappens += 0.1;
+		npc.m_flTimeUntillNextRailgunShots += 0.1;
+		npc.m_flTimeUntillDroneSniperShot += 0.1;
 		return;
+	}
+	if(NpcStats_VictorianCallToArms(npc.index) && Victoria_Support(npc))
+	{
+	
 	}
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -945,7 +955,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 						if(enemy[i])
 						{
 							DataPack pack;
-							CreateDataTimer(npc.m_flTimeUntillSummonRocket, Timer_Quad_Rocket_Shot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+							CreateDataTimer(npc.m_flTimeUntillSummonRocket, Timer_Quad_Rocket_Shot, pack, TIMER_FLAG_NO_MAPCHANGE);
 							pack.WriteCell(EntIndexToEntRef(npc.index));
 							pack.WriteCell(EntIndexToEntRef(enemy[i]));
 							npc.m_flTimeUntillSummonRocket += 0.15;
@@ -1405,6 +1415,34 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 	}
 }
 
+static Action Timer_Bomb_Spam(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	Harrison npc = view_as<Harrison>(EntRefToEntIndex(pack.ReadCell()));
+	int enemy = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(enemy))
+	{
+		float vEnd[3];
+		float RocketDamage = 50.0;
+		RocketDamage *= RaidModeScaling;
+			
+		GetAbsOrigin(enemy, vEnd);
+		vEnd[0] += GetRandomFloat(-250.0, 250.0);
+		vEnd[1] += GetRandomFloat(-250.0, 250.0);
+		Handle pack2;
+		CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		WritePackCell(pack2, EntIndexToEntRef(npc.index));
+		WritePackFloat(pack2, 0.0);
+		WritePackFloat(pack2, vEnd[0]);
+		WritePackFloat(pack2, vEnd[1]);
+		WritePackFloat(pack2, vEnd[2]);
+		WritePackFloat(pack2, RocketDamage);
+			
+		spawnRing_Vectors(vEnd, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BOMBBARDING_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
+	}
+	return Plugin_Stop;
+}
+
 public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 {
 	ResetPack(pack);
@@ -1493,7 +1531,7 @@ public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 	return Plugin_Continue;
 }
 
-static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+/*static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
 {
 	int color[4];
 	color[0] = r;
@@ -1506,4 +1544,111 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
 	
 	TE_SendToAll();
+}*/
+
+static bool Victoria_Support(Harrison npc)
+{
+	float GameTime = GetGameTime();
+	if(Vs_DelayTime[npc.index] > GameTime)
+		return false;
+	Vs_DelayTime[npc.index] = GameTime + 0.1;
+	bool Vs_Online=false;
+	bool Vs_Fired=false;
+	bool Vs_IncomingBoom=false;
+	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+	int enemy[MAXENTITIES];
+	GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+	for(int i; i < sizeof(enemy); i++)
+	{
+		if(!IsValidEnemy(npc.index, enemy[i]))
+			continue;
+		Vs_Online = true;
+		
+		if(Vs_RechargeTime[npc.index] >= 1.0 && Vs_RechargeTime[npc.index] <= 3.0 && IsValidEntity(Vs_ParticleSpawned[npc.index][enemy[i]]))
+			RemoveEntity(Vs_ParticleSpawned[npc.index][enemy[i]]);
+		
+		float vecTarget[3];
+		GetEntPropVector(enemy[i], Prop_Data, "m_vecAbsOrigin", vecTarget);
+		vecTarget[2] += 5.0;
+	
+		if(Vs_RechargeTime[npc.index] < Vs_RechargeTimeMax[npc.index])
+		{
+			float position[3];
+			position[0] = vecTarget[0];
+			position[1] = vecTarget[1];
+			position[2] = vecTarget[2] + 3000.0;
+			if(Vs_RechargeTime[npc.index] < (Vs_RechargeTimeMax[npc.index] - 3.0))
+			{
+				Vs_Temp_Pos[npc.index][enemy[i]][0] = position[0];
+				Vs_Temp_Pos[npc.index][enemy[i]][1] = position[1];
+				Vs_Temp_Pos[npc.index][enemy[i]][2] = position[2] - 3000.0;
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsValidClient(client) && !IsFakeClient(client))
+						Vs_LockOn[client]=false;
+				}
+				if(IsValidClient(enemy[i]) && !IsFakeClient(enemy[i])) Vs_LockOn[enemy[i]]=true;
+			}
+			else
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsValidClient(client) && !IsFakeClient(client))
+						Vs_LockOn[client]=false;
+				}
+			}
+			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], 150.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0), (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
+			TE_SendToAll();
+			float position2[3];
+			position2[0] = Vs_Temp_Pos[npc.index][enemy[i]][0];
+			position2[1] = Vs_Temp_Pos[npc.index][enemy[i]][1];
+			position2[2] = Vs_Temp_Pos[npc.index][enemy[i]][2] + 65.0;
+			TE_SetupBeamRingPoint(position2, 150.0, 150.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+			TE_SendToAll();
+			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], 150.0, 150.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+			TE_SendToAll();
+			TE_SetupBeamPoints(Vs_Temp_Pos[npc.index][enemy[i]], position, gLaser1, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
+			TE_SendToAll();
+			TE_SetupGlowSprite(Vs_Temp_Pos[npc.index][enemy[i]], gRedPoint, 0.1, 1.0, 255);
+			TE_SendToAll();
+			if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0) && !IsValidEntity(Vs_ParticleSpawned[npc.index][enemy[i]]))
+			{
+				Vs_ParticleSpawned[npc.index][enemy[i]] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+				SetEdictFlags(Vs_ParticleSpawned[npc.index][enemy[i]], (GetEdictFlags(Vs_ParticleSpawned[npc.index][enemy[i]]) | FL_EDICT_ALWAYS));
+				if(HasEntProp(Vs_ParticleSpawned[npc.index][enemy[i]], Prop_Data, "m_iHammerID"))
+					SetEntProp(Vs_ParticleSpawned[npc.index][enemy[i]], Prop_Data, "m_iHammerID", npc.index);
+				Vs_IncomingBoom=true;
+			}
+		}
+		else if(IsValidEntity(Vs_ParticleSpawned[npc.index][enemy[i]]))
+		{
+			float position[3];
+			position[0] = Vs_Temp_Pos[npc.index][enemy[i]][0];
+			position[1] = Vs_Temp_Pos[npc.index][enemy[i]][1];
+			position[2] = Vs_Temp_Pos[npc.index][enemy[i]][2] - 100.0;
+			TeleportEntity(Vs_ParticleSpawned[npc.index][enemy[i]], position, NULL_VECTOR, NULL_VECTOR);
+			position[2] += 100.0;
+			
+			b_ThisNpcIsSawrunner[npc.index] = true;
+			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+			Explode_Logic_Custom(4500.0, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
+			b_ThisNpcIsSawrunner[npc.index] = false;
+			ParticleEffectAt(position, "hightower_explosion", 1.0);
+			i_ExplosiveProjectileHexArray[npc.index] = 0; 
+			Vs_RechargeTime[npc.index]=0.0;
+			Vs_RechargeTime[npc.index]=0.0;
+			Vs_Fired = true;
+		}
+	}
+	
+	if(Vs_IncomingBoom)npc.PlayIncomingBoomSound();
+	if(Vs_Fired)npc.PlayBoomSound();
+	if(Vs_Online)
+	{
+		Vs_RechargeTime[npc.index] += 0.1;
+		if(Vs_RechargeTime[npc.index]>(Vs_RechargeTimeMax[npc.index]+1.0))
+			Vs_RechargeTime[npc.index]=0.0;
+	}
+	
+	return Vs_Fired;
 }
