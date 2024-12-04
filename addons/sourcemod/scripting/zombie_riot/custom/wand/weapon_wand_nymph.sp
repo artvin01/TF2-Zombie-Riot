@@ -109,12 +109,34 @@ public void Weapon_Nymph_ActivateAbility(int client, int weapon, bool crit, int 
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
-			Ability_Apply_Cooldown(client, slot, 60.0);
-			IsAbilityActive[client] = 1;
-			ApplyTempAttrib(weapon, 6, 0.6, 15.0);
-			ApplyTempAttrib(weapon, 410, 2.2, 15.0);
-			CreateTimer(15.0, Disable_Nymph_Ability, client, TIMER_FLAG_NO_MAPCHANGE);
+			if (IsAbilityActive[client] == 0)
+			{
+				Rogue_OnAbilityUse(weapon);
+				Ability_Apply_Cooldown(client, slot, 60.0);
+				IsAbilityActive[client] = 1;
+				ApplyTempAttrib(weapon, 6, 0.6, 15.0);
+				ApplyTempAttrib(weapon, 410, 2.2, 15.0);
+				CreateTimer(15.0, Disable_Nymph_Ability, client, TIMER_FLAG_NO_MAPCHANGE);
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability already Active");
+			}
+		}
+		else
+		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}
 	}
 }
