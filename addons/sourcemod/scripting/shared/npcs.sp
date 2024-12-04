@@ -714,41 +714,13 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		f_TraceAttackWasTriggeredSameFrame[victim] = GetGameTime();
 		i_HasBeenHeadShotted[victim] = false;
 #if defined ZR || defined RPG
-		if(damagetype & DMG_BULLET)
-		{
-			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
-			{
-				if(b_ProximityAmmo[attacker])
-				{
-					damage *= 1.15;
-				}
-
-				float AttackerPos[3];
-				float VictimPos[3];
-				
-				WorldSpaceCenter(attacker, AttackerPos);
-				WorldSpaceCenter(victim, VictimPos);
-
-				float distance = GetVectorDistance(AttackerPos, VictimPos, true);
-				
-				distance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
-
-				if(distance < 0.1)
-				{
-					distance = 0.1;
-				}
-				float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
-				if(b_ProximityAmmo[attacker])
-				{
-					WeaponDamageFalloff *= 0.8;
-				}
-
-				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
-			}
-		}
+		bool DoCalcReduceHeadshotFalloff = false;
 
 		if(!i_WeaponCannotHeadshot[weapon])
 		{
+			//Buff bodyshot damage.
+			damage *= 1.4;
+
 			bool Blitzed_By_Riot = false;
 			if(f_TargetWasBlitzedByRiotShield[victim][weapon] > GetGameTime())
 			{
@@ -780,16 +752,15 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					damage *= 2.0;
 				}
 #endif	// ZR
-
 				damage *= f_HeadshotDamageMultiNpc[victim];
+
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
-					damage *= 2.0;
+					damage *= 1.42;
+					DoCalcReduceHeadshotFalloff = true;
 				}
 				else
-				{
-					damage *= 1.65;
-				}
+					damage *= 1.185;
 
 				if(Blitzed_By_Riot) //Extra damage.
 				{
@@ -880,7 +851,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 						}
 					}
 				}
-				return Plugin_Changed;
 			}
 			else
 			{
@@ -917,9 +887,47 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 0.65;
-					return Plugin_Changed;
 				}
-				return Plugin_Changed;
+			}
+		}
+		
+		if(damagetype & DMG_BULLET)
+		{
+			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
+			{
+				if(b_ProximityAmmo[attacker])
+				{
+					damage *= 1.15;
+				}
+
+				float AttackerPos[3];
+				float VictimPos[3];
+				
+				WorldSpaceCenter(attacker, AttackerPos);
+				WorldSpaceCenter(victim, VictimPos);
+
+				float distance = GetVectorDistance(AttackerPos, VictimPos, true);
+				
+				distance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
+
+				if(distance < 0.1)
+				{
+					distance = 0.1;
+				}
+				float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
+				if(b_ProximityAmmo[attacker])
+				{
+					WeaponDamageFalloff *= 0.8;
+				}
+				if(DoCalcReduceHeadshotFalloff && WeaponDamageFalloff <= 1.0)
+				{
+					WeaponDamageFalloff *= 1.3;
+					if(WeaponDamageFalloff >= 1.0)
+						WeaponDamageFalloff = 1.0;
+				}
+				
+
+				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 			}
 		}
 #endif
@@ -1043,6 +1051,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		damage = 0.0;
 		Damageaftercalc = 0.0;
 		return Plugin_Handled;
+	}
+	//a triggerhurt can never deal more then 10% of a raids health as damage.
+	if(b_IsATriggerHurt[attacker] && b_thisNpcIsARaid[victim])
+	{
+		if(damage >= float(ReturnEntityMaxHealth(victim)) * 0.1)
+		{
+			damage = float(ReturnEntityMaxHealth(victim)) * 0.1;
+		}
 	}
 	CClotBody npcBase = view_as<CClotBody>(victim);
 	
@@ -2030,6 +2046,8 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
 	if(f_HighTeslarDebuff[npc] > GameTime)
+		return true;
+	if(f_VoidAfflictionStandOn[npc] > GameTime)
 		return true;
 	if(f_VoidAfflictionStrength2[npc] > GameTime)
 		return true;

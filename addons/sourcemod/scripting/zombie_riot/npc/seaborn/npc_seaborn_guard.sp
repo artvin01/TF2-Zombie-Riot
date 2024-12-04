@@ -206,10 +206,10 @@ public void SeabornGuard_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = 130.0;
+						float attack = 150.0;
 
 						if(npc.m_iOverlordComboAttack == 2 || ShouldNpcDealBonusDamage(target))
-							attack *= 3.0;
+							attack *= 4.0;
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);

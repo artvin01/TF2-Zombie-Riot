@@ -423,7 +423,7 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 
 			if(npc.m_bAllowBackWalking)
 			{
-				npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+				npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 				npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 			}
 			else

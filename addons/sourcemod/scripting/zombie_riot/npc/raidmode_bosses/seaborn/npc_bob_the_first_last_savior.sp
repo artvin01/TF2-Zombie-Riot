@@ -262,7 +262,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 				char npc_classname[60];
 				NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 
-				if(entity != INVALID_ENT_REFERENCE && (StrEqual(npc_classname, "npc_sea_donnerkrieg") || StrEqual(npc_classname, "npc_sea_schwertkrieg")) && IsEntityAlive(entity))
+				if(entity != INVALID_ENT_REFERENCE && (StrEqual(npc_classname, "npc_stella") || StrEqual(npc_classname, "npc_karlas")) && IsEntityAlive(entity))
 				{
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 					SmiteNpcToDeath(entity);
@@ -753,7 +753,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 							TeleportEntity(npc.index, pos);
 
-							npc.m_iState = -1;
+							npc.m_iAnimationState = -1;
 							npc.m_bisWalking = false;
 							npc.SetActivity("ACT_PUSH_PLAYER");
 							npc.SetPlaybackRate(3.0);
@@ -1261,7 +1261,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					if(npc.m_iAttackType == 13)
 					{
 						npc.m_iAttackType = 14;
-						npc.m_iState = -1;	// Replay the animation regardless
+						npc.m_iAnimationState = -1;	// Replay the animation regardless
 						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_PUSH_PLAYER");
 						npc.SetPlaybackRate(2.0);
@@ -1650,14 +1650,14 @@ static void SetupMidWave(int entity)
 
 	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgun", RoundToCeil(10.0 * MultiGlobalEnemy), 1000);
+	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgunner", RoundToCeil(10.0 * MultiGlobalEnemy), 1000);
 
 	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", RoundToCeil(5.0 * MultiGlobalEnemy), 1100);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(5.0 * MultiGlobalEnemy), 1500);
 	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(5.0 * MultiGlobalEnemy), 5000);
-	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgun", RoundToCeil(5.0 * MultiGlobalEnemy), 1000);
+	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgunner", RoundToCeil(5.0 * MultiGlobalEnemy), 1000);
 	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", RoundToCeil(5.0 * MultiGlobalEnemy), 1100);
 	AddBobEnemy(entity, "npc_combine_police_smg", _, RoundToCeil(5.0 * MultiGlobalEnemy), 700);
 	AddBobEnemy(entity, "npc_combine_police_pistol", _, RoundToCeil(5.0 * MultiGlobalEnemy), 550);

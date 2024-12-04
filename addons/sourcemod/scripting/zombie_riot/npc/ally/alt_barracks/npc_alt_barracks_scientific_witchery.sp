@@ -35,7 +35,7 @@ static bool Scientific_Witchery_BEAM_HitDetected[MAXENTITIES];
 static int Scientific_Witchery_BEAM_BuildingHit[MAXENTITIES];
 static float fl_runaway_timer_timeout[MAXENTITIES];
 
-static float fl_trace_target_timeout[MAXENTITIES][MAXENTITIES];
+float fl_trace_target_timeout[MAXENTITIES][MAXENTITIES];
 
 
 static int i_AmountProjectiles[MAXENTITIES];
