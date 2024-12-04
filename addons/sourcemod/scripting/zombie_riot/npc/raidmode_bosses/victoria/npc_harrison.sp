@@ -689,15 +689,27 @@ static void Internal_ClotThink(int iNPC)
 			for(int i; i < sizeof(enemy); i++)
 			{
 				float Spam_delay=0.0;
-				for(int k; k < 3; k++)
+				for(int k; k < 4; k++)
 				{
 					if(enemy[i])
 					{
+						float vEnd[3];
+						float RocketDamage = 50.0;
+						RocketDamage *= RaidModeScaling;
+						GetAbsOrigin(enemy[i], vEnd);
 						DataPack pack;
 						CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
 						pack.WriteCell(EntIndexToEntRef(npc.index));
 						pack.WriteCell(EntIndexToEntRef(enemy[i]));
 						Spam_delay += 0.15;
+						Handle pack2;
+						CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+						WritePackCell(pack2, EntIndexToEntRef(npc.index));
+						WritePackFloat(pack2, 0.0);
+						WritePackFloat(pack2, vEnd[0]);
+						WritePackFloat(pack2, vEnd[1]);
+						WritePackFloat(pack2, vEnd[2]);
+						WritePackFloat(pack2, RocketDamage);
 					}
 				}
 			}
@@ -1597,7 +1609,7 @@ static bool Victoria_Support(Harrison npc)
 						Vs_LockOn[client]=false;
 				}
 			}
-			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], 150.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0), (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
+			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], 150.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*150.0), (150.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*150.0))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
 			TE_SendToAll();
 			float position2[3];
 			position2[0] = Vs_Temp_Pos[npc.index][enemy[i]][0];
