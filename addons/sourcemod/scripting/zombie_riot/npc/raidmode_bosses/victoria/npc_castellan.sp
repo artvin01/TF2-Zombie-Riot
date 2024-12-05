@@ -312,12 +312,11 @@ methodmap Castellan < CClotBody
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
 		npc.m_flTimeUntillSupportSpawn = GetGameTime() + 35.0;
-		npc.m_flTimeUntillSummonRocket = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAirRaidDelay = 0.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
-		npc.m_flTimeUntillDroneSniperShot = GetGameTime() + 5.0;
-		npc.m_flTimeUntillGunReload = GetGameTime() + 12.5;
+		//npc.m_flTimeUntillDroneSniperShot = GetGameTime() + 5.0;
+		//npc.m_flTimeUntillGunReload = GetGameTime() + 12.5;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_iAmountProjectiles = 0;
 		npc.m_iAttacksTillReload = 0;
@@ -598,12 +597,13 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
 	
+	/*
 	if(npc.m_flTimeUntillGunReload < gameTime)
 	{
 		npc.m_iAttacksTillReload =  RoundToNearest(float(CountPlayersOnRed(2)) * 5); 
 		npc.m_flTimeUntillGunReload = 30.0 + gameTime;
 	}
-
+	*/
 	if(npc.m_bFUCKYOU)
 	{
 		switch(I_cant_do_this_all_day[npc.index])
@@ -668,8 +668,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 0;
 					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
 					I_cant_do_this_all_day[npc.index]=0;
-					npc.m_flTimeUntillDroneSniperShot += 4.0;
-					npc.m_flTimeUntillNextRailgunShots += 4.0;
+					//npc.m_flTimeUntillDroneSniperShot += 4.0;
+					//npc.m_flTimeUntillNextRailgunShots += 4.0;
 					npc.m_flNextRangedSpecialAttackHappens += 4.0;
 					npc.m_bFUCKYOU=false;
 					b_NpcIsInvulnerable[npc.index] = false;
@@ -896,6 +896,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		npc.m_flTimeUntillSupportSpawn = gameTime + 35.0;
 		CreateSupport_Castellan(npc.index, target, SelfPos);
 	}
+	/*
 	else if(npc.m_flTimeUntillNextRailgunShots < gameTime)
 	{
 		
@@ -904,6 +905,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 	{
 		
 	}
+	*/
 	if(npc.m_iAttacksTillReload > 0)
 	{
 		if(gameTime > npc.m_flNextMeleeAttack)
