@@ -532,8 +532,16 @@ static void Clone_ClotThink(int iNPC)
 			if(playsounds)npc.PlayHomerunSound();
 			I_cant_do_this_all_day[npc.index]=0;
 			npc.m_flTimeUntillSummonRocket = 0.0;
-			npc.m_flNextRangedSpecialAttackHappens = gameTime + 30.0;
-			npc.m_flTimeUntillNextRailgunShots = gameTime + 2.0;
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				
+			ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+			npc.PlayDeathSound();
+			
+			b_NpcForcepowerupspawn[npc.index] = 0;
+			i_RaidGrantExtra[npc.index] = 0;
+			b_DissapearOnDeath[npc.index] = true;
+			b_DoGibThisNpc[npc.index] = true;
+			SmiteNpcToDeath(npc.index);
 		}
 	}
 	return 1;
