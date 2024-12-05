@@ -305,7 +305,8 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 10.0;
+					float damageDealt = 4.0;
+					/*
 					float TimeMultiplier = 1.0;
 					TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
 					TimeMultiplier *= 0.50;
@@ -319,9 +320,10 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 					}
 
 					damageDealt *= TimeMultiplier;
+					*/
 
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
+						damageDealt *= (npc.m_flSpeed * 0.1);
 					if(NpcStats_IsEnemySilenced(npc.index))
 					{
 						damageDealt *= 0.75;

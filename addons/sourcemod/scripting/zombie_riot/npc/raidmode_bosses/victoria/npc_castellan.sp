@@ -92,14 +92,10 @@ static float Delay_Attribute[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
 static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
-static bool AirRaidStart[MAXENTITIES];
+static bool AlreadySpawned[MAXENTITIES];
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static int i_AmountProjectiles[MAXENTITIES];
 static float fl_said_player_weaponline_time[MAXENTITIES];
-
-static float Vs_DelayTime[MAXENTITIES];
-static float Vs_Temp_Pos[MAXENTITIES][MAXENTITIES][3];
-static int Vs_ParticleSpawned[MAXENTITIES][MAXENTITIES];
 
 static int gLaser1;
 static int gRedPoint;
@@ -110,11 +106,11 @@ static int g_HALO_Laser;
 #define BOMBBARDING_CHARGE_SPAN 1.0
 #define BOMBBARDING_LIGHTNING_RANGE 150.0
 
-void Harrison_OnMapStart_NPC()
+void Castellan_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victoria Harrison");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_harrison");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Castellan");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_castellan");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_atomizer_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
@@ -154,12 +150,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Harrison(client, vecPos, vecAng, ally, data);
+	return Castellan(client, vecPos, vecAng, ally, data);
 }
 
-static int i_Harrison_eye_particle[MAXENTITIES];
+static int i_Castellan_eye_particle[MAXENTITIES];
 
-methodmap Harrison < CClotBody
+methodmap Castellan < CClotBody
 {
 	property int i_GunMode
 	{
@@ -248,22 +244,22 @@ methodmap Harrison < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	property float m_flTimeUntillSummonRocket
+	property float m_flTimeUntillSupportSpawn
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
-	property float m_flTimeUntillDroneSniperShot
+	property float m_flTimeUntillHuscarlsSpawn
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
-	property float m_flTimeUntillNextRailgunShots
+	property float m_flTimeUntillCastellanSpawn
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
-	property float m_flTimeUntillGunReload
+	property float m_flTimeUntillSupportDespawn
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
@@ -279,9 +275,9 @@ methodmap Harrison < CClotBody
 		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
 	}
 
-	public Harrison(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Castellan(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Harrison npc = view_as<Harrison>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		Castellan npc = view_as<Castellan>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -289,7 +285,7 @@ methodmap Harrison < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(3);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -298,7 +294,7 @@ methodmap Harrison < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_bDissapearOnDeath = true;
-		npc.m_flMeleeArmor = 1.25;	
+		npc.m_flMeleeArmor = 1.25;
 		
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
@@ -315,7 +311,7 @@ methodmap Harrison < CClotBody
 		npc.m_bFUCKYOU = false;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
-		npc.m_flTimeUntillNextRailgunShots = GetGameTime() + 22.5;
+		npc.m_flTimeUntillSupportSpawn = GetGameTime() + 35.0;
 		npc.m_flTimeUntillSummonRocket = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAirRaidDelay = 0.0;
@@ -327,15 +323,13 @@ methodmap Harrison < CClotBody
 		npc.m_iAttacksTillReload = 0;
 		
 		npc.m_fbRangedSpecialOn = false;
-		AirRaidStart[npc.index] = false;
+		AlreadySpawned[npc.index] = false;
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
-		Vs_RechargeTimeMax[npc.index] = 20.0;
 
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		b_thisNpcIsARaid[npc.index] = true;
-		b_angered_twice[npc.index] = false;
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -440,7 +434,7 @@ methodmap Harrison < CClotBody
 		SetVariantColor(view_as<int>({150, 150, 150, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
-		CPrintToChatAll("{blue}Harrison{default}: Intruders in sight, I won't let the get out alive!");
+		CPrintToChatAll("{blue}Castellan{default}: Intruders in sight, I won't let the get out alive!");
 		
 		return npc;
 	}
@@ -448,7 +442,7 @@ methodmap Harrison < CClotBody
 
 static void Internal_ClotThink(int iNPC)
 {
-	Harrison npc = view_as<Harrison>(iNPC);
+	Castellan npc = view_as<Castellan>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 
 	if(npc.m_flNextDelayTime > gameTime)
@@ -461,7 +455,7 @@ static void Internal_ClotThink(int iNPC)
 		float flPos[3], flAng[3];
 				
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		i_Harrison_eye_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
+		i_Castellan_eye_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
 	}	
@@ -475,15 +469,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Harrison{default}: Ready to die?");
+					CPrintToChatAll("{blue}Castellan{default}: Ready to die?");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Harrison{default}: You can't run forever.");
+					CPrintToChatAll("{blue}Castellan{default}: You can't run forever.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Harrison{default}: All of your comrades are fallen.");
+					CPrintToChatAll("{blue}Castellan{default}: All of your comrades are fallen.");
 				}
 			}
 		}
@@ -497,10 +491,10 @@ static void Internal_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:CPrintToChatAll("{blue}Harrison{default}: Victoria will be in peace. Once and for all.");
-			case 2:CPrintToChatAll("{blue}Harrison{default}: The troops have arrived and will begin destroying the intruders!");
-			case 3:CPrintToChatAll("{blue}Harrison{default}: Backup team has arrived. Catch those damn bastards!");
-			case 4:CPrintToChatAll("{blue}Harrison{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
+			case 1:CPrintToChatAll("{blue}Castellan{default}: Victoria will be in peace. Once and for all.");
+			case 2:CPrintToChatAll("{blue}Castellan{default}: The troops have arrived and will begin destroying the intruders!");
+			case 3:CPrintToChatAll("{blue}Castellan{default}: Backup team has arrived. Catch those damn bastards!");
+			case 4:CPrintToChatAll("{blue}Castellan{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
 		}
 		for(int i=1; i<=15; i++)
 		{
@@ -614,7 +608,7 @@ static void Internal_ClotThink(int iNPC)
 				/*
 				if(npc.m_iChanged_WalkCycle != 5)
 				{
-					ResetHarrisonWeapon(npc, 2);
+					ResetCastellanWeapon(npc, 2);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -650,7 +644,6 @@ static void Internal_ClotThink(int iNPC)
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					npc.m_bisWalking = false;
-					AirRaidStart[npc.index] = true;
 					npc.m_flDoingAnimation = gameTime + 30.0;	
 					Delay_Attribute[npc.index] = gameTime + 30.0;
 					I_cant_do_this_all_day[npc.index]=2;
@@ -674,48 +667,10 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flTimeUntillNextRailgunShots += 4.0;
 					npc.m_flNextRangedSpecialAttackHappens += 4.0;
 					npc.m_bFUCKYOU=false;
-					AirRaidStart[npc.index] = false;
 					b_NpcIsInvulnerable[npc.index] = false;
 				}
 			}
 		}
-		if(AirRaidStart[npc.index] && npc.m_flAirRaidDelay < gameTime)
-		{
-			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[MAXENTITIES];
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
-			for(int i; i < sizeof(enemy); i++)
-			{
-				float Spam_delay=0.0;
-				for(int k; k < 4; k++)
-				{
-					if(enemy[i])
-					{
-						float vEnd[3];
-						float RocketDamage = 50.0;
-						RocketDamage *= RaidModeScaling;
-						GetAbsOrigin(enemy[i], vEnd);
-						DataPack pack;
-						CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
-						pack.WriteCell(EntIndexToEntRef(npc.index));
-						pack.WriteCell(EntIndexToEntRef(enemy[i]));
-						Spam_delay += 0.15;
-						Handle pack2;
-						CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-						WritePackCell(pack2, EntIndexToEntRef(npc.index));
-						WritePackFloat(pack2, 0.0);
-						WritePackFloat(pack2, vEnd[0]);
-						WritePackFloat(pack2, vEnd[1]);
-						WritePackFloat(pack2, vEnd[2]);
-						WritePackFloat(pack2, RocketDamage);
-					}
-				}
-			}
-			npc.m_flAirRaidDelay = gameTime + 2.5;
-		}
-		npc.m_flNextRangedSpecialAttackHappens += 0.1;
-		npc.m_flTimeUntillNextRailgunShots += 0.1;
-		npc.m_flTimeUntillDroneSniperShot += 0.1;
 		return;
 	}
 
@@ -725,7 +680,7 @@ static void Internal_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = HarrisonSelfDefense(npc,gameTime, npc.m_iTarget, flDistanceToTarget); 
+		SetGoalVectorIndex = CastellanSelfDefense(npc,gameTime, npc.m_iTarget, flDistanceToTarget); 
 
 		switch(SetGoalVectorIndex)
 		{
@@ -761,14 +716,14 @@ static void Internal_ClotThink(int iNPC)
 
 	if(npc.m_flDoingAnimation < gameTime)
 	{
-		HarrisonAnimationChange(npc);
+		CastellanAnimationChange(npc);
 	}
 	npc.PlayIdleAlertSound();
 }
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Harrison npc = view_as<Harrison>(victim);
+	Castellan npc = view_as<Castellan>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -804,7 +759,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 static void Internal_NPCDeath(int entity)
 {
-	Harrison npc = view_as<Harrison>(entity);
+	Castellan npc = view_as<Castellan>(entity);
 	/*
 		Explode on death code here please
 
@@ -835,14 +790,14 @@ static void Internal_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{blue}Harrison{default}: Ugh, I need backup");
-		case 1:CPrintToChatAll("{blue}Harrison{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
-		case 2:CPrintToChatAll("{blue}Harrison{default}: You intruders will soon face the {crimson}Real Deal.{default}");
+		case 0:CPrintToChatAll("{blue}Castellan{default}: Ugh, I need backup");
+		case 1:CPrintToChatAll("{blue}Castellan{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
+		case 2:CPrintToChatAll("{blue}Castellan{default}: You intruders will soon face the {crimson}Real Deal.{default}");
 	}
 
 }
 
-static void HarrisonAnimationChange(Harrison npc)
+static void CastellanAnimationChange(Castellan npc)
 {
 	if(npc.m_iChanged_WalkCycle == 0)
 		npc.m_iChanged_WalkCycle = -1;
@@ -854,7 +809,7 @@ static void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
-					ResetHarrisonWeapon(npc, 1);
+					ResetCastellanWeapon(npc, 1);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
@@ -865,7 +820,7 @@ static void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-					ResetHarrisonWeapon(npc, 1);
+					ResetCastellanWeapon(npc, 1);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_PRIMARY");
@@ -879,7 +834,7 @@ static void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
-					ResetHarrisonWeapon(npc, 2);
+					ResetCastellanWeapon(npc, 2);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
@@ -890,7 +845,7 @@ static void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-					ResetHarrisonWeapon(npc, 2);
+					ResetCastellanWeapon(npc, 2);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_SECONDARY");
@@ -904,7 +859,7 @@ static void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-					ResetHarrisonWeapon(npc, 0);
+					ResetCastellanWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -915,7 +870,7 @@ static void HarrisonAnimationChange(Harrison npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-					ResetHarrisonWeapon(npc, 0);
+					ResetCastellanWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
@@ -927,130 +882,22 @@ static void HarrisonAnimationChange(Harrison npc)
 
 }
 
-static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance)
+static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float distance)
 {
-	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+	if(npc.m_flTimeUntillSupportSpawn < gameTime)
 	{
-		bool playsounds=false;
-		switch(I_cant_do_this_all_day[npc.index])
-		{
-			case 0:
-			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				npc.m_bisWalking = false;
-				npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
-				npc.PlayRocketshotready();
-				npc.m_flAttackHappens = 0.0;
-				npc.SetCycle(0.01);
-				npc.SetPlaybackRate(1.5);
-				npc.m_iChanged_WalkCycle = 0;
-				npc.m_flDoingAnimation = gameTime + 1.5;
-				npc.m_flTimeUntillSummonRocket = 0.15;
-				I_cant_do_this_all_day[npc.index]=1;
-			}
-			case 1:
-			{
-				UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-				int enemy[8];
-				GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
-				for(int i; i < sizeof(enemy); i++)
-				{
-					for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
-					{
-						if(enemy[i])
-						{
-							DataPack pack;
-							CreateDataTimer(npc.m_flTimeUntillSummonRocket, Timer_Quad_Rocket_Shot, pack, TIMER_FLAG_NO_MAPCHANGE);
-							pack.WriteCell(EntIndexToEntRef(npc.index));
-							pack.WriteCell(EntIndexToEntRef(enemy[i]));
-							npc.m_flTimeUntillSummonRocket += 0.15;
-							playsounds=true;
-						}
-					}
-				}
-				I_cant_do_this_all_day[npc.index]=2;
-			}
-			case 2:
-			{
-				if(playsounds)npc.PlayHomerunSound();
-				I_cant_do_this_all_day[npc.index]=0;
-				npc.m_flTimeUntillSummonRocket = 0.0;
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 30.0;
-				npc.m_flTimeUntillNextRailgunShots = gameTime + 2.0;
-			}
-		}
-		return 1;
+		float SelfPos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+		npc.m_flTimeUntillSupportSpawn = gameTime + 35.0;
+		CreateSupport_Castellan(npc.index, target, SelfPos);
 	}
 	else if(npc.m_flTimeUntillNextRailgunShots < gameTime)
 	{
-		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-		float projectile_speed = 800.0;
-
-		npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
-
-		PredictSubjectPositionForProjectiles(npc, target, projectile_speed, 40.0, vecTarget);
-		if(!Can_I_See_Enemy_Only(npc.index, target)) //cant see enemy in the predicted position, we will instead just attack normally
-		{
-			WorldSpaceCenter(target, vecTarget );
-		}
-
-		float flPos[3];
-		float flAng[3];
-		npc.GetAttachment("effect_hand_l", flPos, flAng);
-		//float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-		if(npc.m_iOverlordComboAttack < 6)
-		{
-			npc.m_iOverlordComboAttack += 1;
-			HarrisonInitiateLaserAttack(npc.index, vecTarget, flPos); //laser finger!
-			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
-			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flTimeUntillNextRailgunShots = gameTime + 0.5;
-		}
-		else
-		{
-			npc.m_flTimeUntillNextRailgunShots = gameTime + 22.5;
-			npc.m_iOverlordComboAttack = 0;
-		}
 		
 	}
 	else if(npc.m_flTimeUntillDroneSniperShot < gameTime)
 	{
-		if(npc.m_flNextRangedAttack < gameTime)
-		{	
-			npc.m_iAmountProjectiles += 1;
-			npc.m_flNextRangedAttack = gameTime + 0.1;
-			npc.PlayRangedSound();
-
-			float flPos[3], flAng[3];
-					
-			npc.GetAttachment("head", flPos, flAng);
-
-			//float flPos[3]; GetEntPropVector(npc.index, Prop_Data, "head", flPos);
-			float flPosEdit[3]; 
-			flPosEdit = flPos;
-			flPosEdit[0] += 15.0;
-			flPosEdit[1] += 25.0;
-			flPosEdit[2] += 5.0;
-
-			float RocketDamage = 100.0;
-			float RocketSpeed = 900.0;
-			float Radius = 250.0;
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-			float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
-			float vecDest[3];
-			vecDest = vecTarget;
-			vecDest[0] += GetRandomFloat(-50.0, 50.0);
-			vecDest[1] += GetRandomFloat(-50.0, 50.0);
-			vecDest[2] += GetRandomFloat(-50.0, 50.0);
-						
-			npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling , RocketSpeed , Radius , "raygun_projectile_blue_crit", true,_, true, flPosEdit);
-			if (npc.m_iAmountProjectiles >= 15)
-			{
-				npc.m_iAmountProjectiles = 0;
-				npc.m_flTimeUntillDroneSniperShot = gameTime + 15.0;
-			}
-		}
+		
 	}
 	if(npc.m_iAttacksTillReload > 0)
 	{
@@ -1220,175 +1067,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 	return 0;
 }
 
-
-static int HarrisonHitDetected[MAXENTITIES];
-
-static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
-{
-	float vecForward[3], vecRight[3], Angles[3];
-
-	MakeVectorFromPoints(VectorStart, VectorTarget, vecForward);
-	GetVectorAngles(vecForward, Angles);
-	GetAngleVectors(vecForward, vecForward, vecRight, VectorTarget);
-
-	Handle trace = TR_TraceRayFilterEx(VectorStart, Angles, 11, RayType_Infinite, Harrison_TraceWallsOnly);
-	if (TR_DidHit(trace))
-	{
-		TR_GetEndPosition(VectorTarget, trace);
-		
-		float lineReduce = 10.0 * 2.0 / 3.0;
-		float curDist = GetVectorDistance(VectorStart, VectorTarget, false);
-		if (curDist > lineReduce)
-		{
-			ConformLineDistance(VectorTarget, VectorStart, VectorTarget, curDist - lineReduce);
-		}
-	}
-	delete trace;
-
-	int red = 200;
-	int green = 200;
-	int blue = 200;
-	int colorLayer4[4];
-	float diameter = float(12 * 4);
-	SetColorRGBA(colorLayer4, red, green, blue, 150);
-	//we set colours of the differnet laser effects to give it more of an effect
-	int colorLayer1[4];
-	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.4, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.2, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-	int glowColor[4];
-	SetColorRGBA(glowColor, red, green, blue, 100);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Glow, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
-	TE_SendToAll(0.0);
-
-	DataPack pack = new DataPack();
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteFloat(VectorTarget[0]);
-	pack.WriteFloat(VectorTarget[1]);
-	pack.WriteFloat(VectorTarget[2]);
-	pack.WriteFloat(VectorStart[0]);
-	pack.WriteFloat(VectorStart[1]);
-	pack.WriteFloat(VectorStart[2]);
-	RequestFrames(HarrisonInitiateLaserAttack_DamagePart, 50, pack);
-}
-
-static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
-{
-	for (int i = 1; i < MAXENTITIES; i++)
-	{
-		HarrisonHitDetected[i] = false;
-	}
-	pack.Reset();
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(!IsValidEntity(entity))
-		entity = 0;
-
-	float VectorTarget[3];
-	float VectorStart[3];
-	VectorTarget[0] = pack.ReadFloat();
-	VectorTarget[1] = pack.ReadFloat();
-	VectorTarget[2] = pack.ReadFloat();
-	VectorStart[0] = pack.ReadFloat();
-	VectorStart[1] = pack.ReadFloat();
-	VectorStart[2] = pack.ReadFloat();
-
-	int red = 155;
-	int green = 155;
-	int blue = 255;
-	int colorLayer4[4];
-	float diameter = float(13 * 4);
-	SetColorRGBA(colorLayer4, red, green, blue, 255);
-	//we set colours of the differnet laser effects to give it more of an effect
-	int colorLayer1[4];
-	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-
-	float hullMin[3];
-	float hullMax[3];
-	hullMin[0] = -float(10);
-	hullMin[1] = hullMin[0];
-	hullMin[2] = hullMin[0];
-	hullMax[0] = -hullMin[0];
-	hullMax[1] = -hullMin[1];
-	hullMax[2] = -hullMin[2];
-
-	Handle trace;
-	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
-	delete trace;
-			
-	float CloseDamage = 50.0;
-	float FarDamage = 20.0;
-	float MaxDistance = 750.0;
-	float playerPos[3];
-	for (int victim = 1; victim < MAXENTITIES; victim++)
-	{
-		if (HarrisonHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
-		{
-			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-			float distance = GetVectorDistance(VectorStart, playerPos, false);
-			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
-			if (damage < 0)
-				damage *= -1.0;
-
-
-			SDKHooks_TakeDamage(victim, entity, entity, damage * RaidModeScaling, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
-				
-		}
-	}
-	delete pack;
-}
-
-
-static bool Harrison_BEAM_TraceUsers(int entity, int contentsMask, int client)
-{
-	if(IsEntityAlive(entity))
-		HarrisonHitDetected[entity] = true;
-	return false;
-}
-
-static bool Harrison_TraceWallsOnly(int entity, int contentsMask)
-{
-	return !entity;
-}
-
-static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	Harrison npc = view_as<Harrison>(EntRefToEntIndex(pack.ReadCell()));
-	int enemy = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(enemy))
-	{
-		float vecTarget[3]; WorldSpaceCenter(enemy, vecTarget);
-		ParticleEffectAt(vecTarget, "npc_boss_bomb_shadow", 3.0);
-		float vecSelf[3];
-		WorldSpaceCenter(npc.index, vecSelf);
-		vecSelf[2] += 80.0;
-		vecSelf[0] += GetRandomFloat(-20.0, 20.0);
-		vecSelf[1] += GetRandomFloat(-20.0, 20.0);
-		float RocketDamage = 40.0;
-		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
-		if(IsValidEntity(RocketGet))
-		{
-			DataPack pack2;
-			CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack2, TIMER_FLAG_NO_MAPCHANGE);
-			pack2.WriteCell(EntIndexToEntRef(RocketGet));
-			pack2.WriteCell(EntIndexToEntRef(enemy));
-		}
-		npc.FaceTowards(vecTarget, 99999.0);
-	}
-	return Plugin_Stop;
-}
-
-static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
+static void ResetCastellanWeapon(Castellan npc, int weapon_Type)
 {
 	if(IsValidEntity(npc.m_iWearable2))
 	{
@@ -1421,133 +1100,38 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 	}
 }
 
-static Action Timer_Bomb_Spam(Handle timer, DataPack pack)
+
+void CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3])
 {
-	pack.Reset();
-	Harrison npc = view_as<Harrison>(EntRefToEntIndex(pack.ReadCell()));
-	int enemy = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(enemy))
+	int SupportTeam;
+	switch(GetRandomInt(1, 3))
 	{
-		float vEnd[3];
-		float RocketDamage = 50.0;
-		RocketDamage *= RaidModeScaling;
-			
-		GetAbsOrigin(enemy, vEnd);
-		vEnd[0] += GetRandomFloat(-250.0, 250.0);
-		vEnd[1] += GetRandomFloat(-250.0, 250.0);
-		Handle pack2;
-		CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-		WritePackCell(pack2, EntIndexToEntRef(npc.index));
-		WritePackFloat(pack2, 0.0);
-		WritePackFloat(pack2, vEnd[0]);
-		WritePackFloat(pack2, vEnd[1]);
-		WritePackFloat(pack2, vEnd[2]);
-		WritePackFloat(pack2, RocketDamage);
-			
-		spawnRing_Vectors(vEnd, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BOMBBARDING_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
+		case 1:
+		{
+			SupportTeam = NPC_CreateByName("npc_atomizer", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "support_ability"); //can only be enemy
+		}
+		case 2:
+		{
+			SupportTeam = NPC_CreateByName("npc_the_wall", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "support_ability"); //can only be enemy
+		}
+		case 3:
+		{
+			SupportTeam = NPC_CreateByName("npc_harrison", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "support_ability"); //can only be enemy
+		}
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
+		}
+
 	}
-	return Plugin_Stop;
+	if(IsValidEntity(SupportTeam))
+	{
+		MakeObjectIntangeable(SupportTeam);
+		b_DoNotUnStuck[SupportTeam] = true;
+		b_NoKnockbackFromSources[SupportTeam] = true;
+		b_ThisEntityIgnored[SupportTeam] = true;
+		Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(SupportTeam);
+		npc.m_iTarget = enemySelect;
+		npc.m_bDissapearOnDeath = true;
+	}
 }
-
-public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
-{
-	ResetPack(pack);
-	int entity = EntRefToEntIndex(ReadPackCell(pack));
-	
-	if (!IsValidEntity(entity))
-	{
-		return Plugin_Stop;
-	}
-		
-	float NumLoops = ReadPackFloat(pack);
-	float spawnLoc[3];
-	for (int GetVector = 0; GetVector < 3; GetVector++)
-	{
-		spawnLoc[GetVector] = ReadPackFloat(pack);
-	}
-	
-	float damage = ReadPackFloat(pack);
-	
-	if (NumLoops >= BOMBBARDING_CHARGE_TIME)
-	{
-		float secondLoc[3];
-		for (int replace = 0; replace < 3; replace++)
-		{
-			secondLoc[replace] = spawnLoc[replace];
-		}
-		
-		for (int sequential = 1; sequential <= 5; sequential++)
-		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (BOMBBARDING_LIGHTNING_RANGE * 5.0)/float(sequential));
-			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
-		}
-		
-		secondLoc[2] = 1500.0;
-		
-		float vAngles[3];
-		int prop2 = CreateEntityByName("prop_dynamic_override");
-		if(IsValidEntity(prop2))
-		{
-			DispatchKeyValue(prop2, "model", "models/props_combine/headcrabcannister01a.mdl");
-			DispatchKeyValue(prop2, "modelscale", "1.00");
-			DispatchKeyValue(prop2, "StartDisabled", "false");
-			DispatchKeyValue(prop2, "Solid", "0");
-			SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
-			DispatchSpawn(prop2);
-			SetEntityCollisionGroup(prop2, 1);
-			AcceptEntityInput(prop2, "DisableShadow");
-			AcceptEntityInput(prop2, "DisableCollision");
-			vAngles[0] += 90.0;
-			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
-			CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
-		}
-
-		/*
-		spawnBeam(0.8, 255, 50, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);	
-		*/
-
-		DataPack pack_boom = new DataPack();
-		pack_boom.WriteFloat(spawnLoc[0]);
-		pack_boom.WriteFloat(spawnLoc[1]);
-		pack_boom.WriteFloat(spawnLoc[2]);
-		pack_boom.WriteCell(1);
-		RequestFrame(MakeExplosionFrameLater, pack_boom);
-		
-		CreateEarthquake(spawnLoc, 1.0, BOMBBARDING_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOMBBARDING_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
-	
-		return Plugin_Stop;
-	}
-	else
-	{
-		spawnRing_Vectors(spawnLoc, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
-	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
-		
-		ResetPack(pack);
-		WritePackCell(pack, EntIndexToEntRef(entity));
-		WritePackFloat(pack, NumLoops + BOMBBARDING_CHARGE_TIME);
-		WritePackFloat(pack, spawnLoc[0]);
-		WritePackFloat(pack, spawnLoc[1]);
-		WritePackFloat(pack, spawnLoc[2]);
-		WritePackFloat(pack, damage);
-	}
-	
-	return Plugin_Continue;
-}
-
-/*static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
-{
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = a;
-		
-	int SPRITE_INT = PrecacheModel(sprite, false);
-
-	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
-	
-	TE_SendToAll();
-}*/

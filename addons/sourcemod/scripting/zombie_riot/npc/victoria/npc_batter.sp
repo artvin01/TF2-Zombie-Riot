@@ -181,6 +181,14 @@ public void VictoriaBatter_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
+	if(NpcStats_VictorianCallToArms(owner))
+	{
+		npc.m_flSpeed = 400.0;
+	}
+	else
+	{
+		npc.m_flSpeed = 320.0;
+	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
