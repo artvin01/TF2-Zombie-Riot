@@ -525,9 +525,9 @@ static void Internal_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:CPrintToChatAll("{blue}Harrison{default}: Victoria will be in peace. Once and for all.");
-			case 2:CPrintToChatAll("{blue}Harrison{default}: The troops have arrived and will begin destroying the intruders!");
-			case 3:CPrintToChatAll("{blue}Harrison{default}: Backup team has arrived. Catch those damn bastards!");
+			case 1:CPrintToChatAll("{blue}Harrison{default}: That's it. Calling in for special forces.");
+			case 2:CPrintToChatAll("{blue}Harrison{default}: Your small knights won't save you now");
+			case 3:CPrintToChatAll("{blue}Harrison{default}: Time to head back to the frontlines");
 			case 4:CPrintToChatAll("{blue}Harrison{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
 		}
 		for(int i=1; i<=15; i++)
@@ -561,44 +561,6 @@ static void Internal_ClotThink(int iNPC)
 				case 7:
 				{
 					VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-			}
-		}
-		for(int i=1; i<=15; i++)
-		{
-			switch(GetRandomInt(1, 8))
-			{
-				case 1:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 2:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 3:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}	
-				case 4:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 5:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 6:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 7:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 8:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 				}
 			}
 		}
