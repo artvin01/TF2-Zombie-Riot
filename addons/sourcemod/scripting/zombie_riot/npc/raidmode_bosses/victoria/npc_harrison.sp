@@ -1505,7 +1505,7 @@ public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 			AcceptEntityInput(prop2, "DisableCollision");
 			vAngles[0] += 90.0;
 			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
-			CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
 		}
 
 		/*
@@ -1528,7 +1528,7 @@ public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 	}
 	else
 	{
-		spawnRing_Vectors(spawnLoc, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+		spawnRing_Vectors(spawnLoc, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
 	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
 		
 		ResetPack(pack);
