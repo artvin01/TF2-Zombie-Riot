@@ -905,7 +905,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
-				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddActivityViaSequence("layer_taunt05");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.7);
@@ -947,7 +946,9 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_flDoingAnimation = gameTime + 0.5;	
 					Delay_Attribute[npc.index] = gameTime + 0.5;
 					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_flTimeUntillNextSummonDrones = gameTime + 25.0;
 				}
+				return;
 			}
 		}
 	}
@@ -960,7 +961,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
-				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddActivityViaSequence("layer_taunt_cheers_soldier");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
@@ -1006,6 +1006,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_flDoingAnimation = gameTime + 0.5;	
 					Delay_Attribute[npc.index] = gameTime + 0.5;
 					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_flTimeUntillNextSummonHardenerDrones = gameTime + 25.0;
 				}
 			}
 		}
