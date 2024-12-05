@@ -77,6 +77,7 @@ static const char g_MeleeHitSounds[] = "weapons/bat_hit.wav";
 static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
 static const char g_AngerReaction[] = "vo/scout_revenge06.mp3";
 static const char g_HomerunHitSounds[] = "mvm/melee_impacts/bat_baseball_hit_robo01.wav";
+static const char g_SupportSounds[] = "vo/scout_revenge05.mp3";
 static const char g_HomerunSounds[][]= {
 	"vo/scout_stunballhit01.mp3",
 	"vo/scout_stunballhit02.mp3",
@@ -155,6 +156,7 @@ static void ClotPrecache()
 	PrecacheSound(g_AngerSounds);
 	PrecacheSound(g_AngerReaction);
 	PrecacheSound(g_HomerunHitSounds);
+	PrecacheSound(g_SupportSounds);
 	PrecacheSound(g_BoomSounds);
 	PrecacheSound(g_IncomingBoomSounds);
 	gRedPoint = PrecacheModel("sprites/redglow1.vmt");
@@ -197,6 +199,10 @@ methodmap Atomizer < CClotBody
 	public void PlayHomerunHitSound() {
 		EmitSoundToAll(g_HomerunHitSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_HomerunHitSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlaySupportSpawnSound() {
+		EmitSoundToAll(g_SupportSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_SupportSounds, this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayHomerunSound() {
 		EmitSoundToAll(g_HomerunSounds[GetRandomInt(0, sizeof(g_HomerunSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
@@ -288,7 +294,7 @@ methodmap Atomizer < CClotBody
 			npc.m_flAngerDelay = GetGameTime() + 99.0;
 			Death[npc.index] = false;
 			Support[npc.index] = true;
-
+			npc.PlaySupportSpawnSound();
 			CPrintToChatAll("{blue}Atomizer{default}: Did you really thought we would let you sabotage our Radiotower?");
 		}
 		else
@@ -443,7 +449,7 @@ static void Internal_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-	if(NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index])
+	if(NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index] && !Support[npc.index])
 	{
 		float flPos[3], flAng[3];
 				
@@ -491,7 +497,7 @@ static void Internal_ClotThink(int iNPC)
 		}
 	}
 	npc.m_flSpeed = 300.0+(((FTL[npc.index]-(RaidModeTime - GetGameTime()))/FTL[npc.index])*150.0);
-	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
+	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red && !Support[npc.index])
 	{
 		npc.m_flMeleeArmor = 0.33;
 		npc.m_flRangedArmor = 0.33;
@@ -611,7 +617,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
 	
-	if(npc.m_bFUCKYOU)
+	if(npc.m_bFUCKYOU && !Support[npc.index])
 	{
 		switch(I_cant_do_this_all_day[npc.index])
 		{
@@ -675,7 +681,7 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(GETVictoria_Support && npc.m_flDoingAnimation < gameTime)
+	if(GETVictoria_Support && npc.m_flDoingAnimation < gameTime && !Support[npc.index])
 	{
 	
 	
@@ -1047,7 +1053,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 {
 	npc.i_GunMode = 0;
 
-	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+	if(npc.m_flNextRangedSpecialAttackHappens < gameTime && !Support[npc.index])
 	{
 		int Enemy_I_See;
 									
@@ -1063,7 +1069,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 			npc.m_iOverlordComboAttack =  RoundToNearest(float(CountPlayersOnRed(2)) * 2.5); 
 		}
 	}
-	else if(npc.m_flRangedSpecialDelay < gameTime)
+	else if(npc.m_flRangedSpecialDelay < gameTime && !Support[npc.index])
 	{
 		int Enemy_I_See;
 									
@@ -1137,7 +1143,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 			}
 		}
 	}	
-	else if(npc.m_flAttackHappens)
+	else if(npc.m_flAttackHappens && !Support[npc.index])
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
@@ -1656,7 +1662,7 @@ static void Atomizer_Weapon_Lines(Atomizer npc, int client)
 static bool Victoria_Support(Atomizer npc)
 {
 	float GameTime = GetGameTime();
-	if(Vs_DelayTime[npc.index] > GameTime)
+	if(Vs_DelayTime[npc.index] > GameTime && Support[npc.index])
 		return false;
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
 	
