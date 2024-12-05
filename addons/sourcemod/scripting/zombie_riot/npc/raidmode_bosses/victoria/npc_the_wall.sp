@@ -80,6 +80,9 @@ static bool Frozen_Player[MAXTF2PLAYERS];
 static int MechanizedProtector[MAXENTITIES][3];
 static int LifeSupportDevice[MAXENTITIES][3];
 
+static bool Death[MAXENTITIES];
+static bool Support[MAXENTITIES];
+
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 
@@ -265,6 +268,7 @@ methodmap Huscarls < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
 		npc.m_bDissapearOnDeath = true;
 		switch(Vs_Atomizer_To_Huscarls)
 		{
@@ -288,61 +292,98 @@ methodmap Huscarls < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
-
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
-		npc.m_flSpeed = 330.0;
-		Delay_Attribute[npc.index] = 0.0;
-		YaWeFxxked[npc.index] = false;
-		ParticleSpawned[npc.index] = false;
-		MyGundammmmmm[npc.index] = false;
-		npc.m_bFUCKYOU = false;
-		npc.Anger = false;
-		npc.m_fbRangedSpecialOn = false;
-		I_cant_do_this_all_day[npc.index] = 0;
-		DMGTypeArmorDuration[npc.index] = 0.0;
-		GetArmor[npc.index] = 0.0;
-		BlastDMG[npc.index] = 0.0;
-		MagicDMG[npc.index] = 0.0;
-		BulletDMG[npc.index] = 0.0;
-		BlastArmor[npc.index] = false;
-		MagicArmor[npc.index] = false;
-		BulletArmor[npc.index] = false;
-		DynamicCharger[npc.index] = 0.0;
-		ExtraMovement[npc.index] = 0.0;
-		npc.i_GunMode = 0;
 		float gametime = GetGameTime();
-		npc.m_flHuscarlsRushCoolDown = gametime + 15.0;
-		npc.m_flHuscarlsRushDuration = 0.0;
-		npc.m_flHuscarlsAdaptiveArmorCoolDown = gametime + 30.0;
-		npc.m_flHuscarlsAdaptiveArmorDuration = 0.0;
-		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gametime + 15.0;
-		npc.m_flHuscarlsDeployEnergyShieldDuration = 0.0;
-		Vs_RechargeTimeMax[npc.index] = 20.0;
-		Victoria_Support_RechargeTimeMax(npc.index, 20.0);
-		
-		Zero(b_said_player_weaponline);
-		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
-		
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		b_thisNpcIsARaid[npc.index] = true;
-		b_angered_twice[npc.index] = false;
-		for(int client_check=1; client_check<=MaxClients; client_check++)
+
+		bool CloneDo = StrContains(data, "clone_ability") != -1;
+		if(CloneDo)
 		{
-			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
-			{
-				LookAtTarget(client_check, npc.index);
-				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Huscarls Arrived");
-				Frozen_Player[client_check]=false;
-			}
+			MakeObjectIntangeable(npc.index);
+			b_DoNotUnStuck[npc.index] = true;
+			b_NoKnockbackFromSources[npc.index] = true;
+			b_ThisEntityIgnored[npc.index] = true;
+			b_NoKillFeed[npc.index] = true;
+			Death[npc.index] = false;
+			Support[npc.index] = true;
+
+			npc.m_flHuscarlsRushCoolDown = gametime + 99.0;
+			npc.m_flHuscarlsRushDuration = 0.0;
+			npc.m_flHuscarlsAdaptiveArmorCoolDown = gametime + 99.0;
+			npc.m_flHuscarlsAdaptiveArmorDuration = 0.0;
+			npc.m_flHuscarlsDeployEnergyShieldCoolDown = gametime + 0.1;
+			npc.m_flHuscarlsDeployEnergyShieldDuration = 0.0;
+
+			CPrintToChatAll("{lightblue}Huscarls{default}: You are now facing Victoria's Elite forces.");
 		}
-		RaidModeTime = GetGameTime(npc.index) + 200.0;
-		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = false;
+		else
+		{
+			npc.m_iState = 0;
+			npc.m_flGetClosestTargetTime = 0.0;
+			npc.StartPathing();
+			npc.m_flSpeed = 330.0;
+			Delay_Attribute[npc.index] = 0.0;
+			YaWeFxxked[npc.index] = false;
+			ParticleSpawned[npc.index] = false;
+			MyGundammmmmm[npc.index] = false;
+			npc.m_bFUCKYOU = false;
+			npc.Anger = false;
+			Death[npc.index] = false;
+			Support[npc.index] = false;
+			npc.m_fbRangedSpecialOn = false;
+			I_cant_do_this_all_day[npc.index] = 0;
+			DMGTypeArmorDuration[npc.index] = 0.0;
+			GetArmor[npc.index] = 0.0;
+			BlastDMG[npc.index] = 0.0;
+			MagicDMG[npc.index] = 0.0;
+			BulletDMG[npc.index] = 0.0;
+			BlastArmor[npc.index] = false;
+			MagicArmor[npc.index] = false;
+			BulletArmor[npc.index] = false;
+			DynamicCharger[npc.index] = 0.0;
+			ExtraMovement[npc.index] = 0.0;
+			npc.i_GunMode = 0;
+			npc.m_flHuscarlsRushCoolDown = gametime + 15.0;
+			npc.m_flHuscarlsRushDuration = 0.0;
+			npc.m_flHuscarlsAdaptiveArmorCoolDown = gametime + 30.0;
+			npc.m_flHuscarlsAdaptiveArmorDuration = 0.0;
+			npc.m_flHuscarlsDeployEnergyShieldCoolDown = gametime + 15.0;
+			npc.m_flHuscarlsDeployEnergyShieldDuration = 0.0;
+			Vs_RechargeTimeMax[npc.index] = 20.0;
+			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
+
+			Zero(b_said_player_weaponline);
+			fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
+			
+			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+			b_thisNpcIsARaid[npc.index] = true;
+			b_angered_twice[npc.index] = false;
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					LookAtTarget(client_check, npc.index);
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "item_armor", 1, "%t", "Huscarls Arrived");
+					Frozen_Player[client_check]=false;
+				}
+			}
+			RaidModeTime = GetGameTime(npc.index) + 200.0;
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidAllowsBuildings = false;
+
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_huscarls.mp3");
+			music.Time = 132;
+			music.Volume = 3.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Dance of the Dreadnought (Original Soundtrack Vol. II)");
+			strcopy(music.Artist, sizeof(music.Artist), "Deep Rock Galactic");
+			Music_SetRaidMusic(music);
+			npc.m_iChanged_WalkCycle = -1;
+
+			CPrintToChatAll("{lightblue}Huscarls{default}: You will not Pass ''Iron Gate''!");
+		}
+		//IDLE
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		if(RaidModeScaling < 55)
@@ -375,15 +416,7 @@ methodmap Huscarls < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220;
 			RaidModeScaling *= 0.65;
 		}
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_huscarls.mp3");
-		music.Time = 132;
-		music.Volume = 3.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Dance of the Dreadnought (Original Soundtrack Vol. II)");
-		strcopy(music.Artist, sizeof(music.Artist), "Deep Rock Galactic");
-		Music_SetRaidMusic(music);
-		npc.m_iChanged_WalkCycle = -1;
+		
 
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -426,7 +459,7 @@ methodmap Huscarls < CClotBody
 		SetVariantColor(view_as<int>({100, 150, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
-		CPrintToChatAll("{lightblue}Huscarls{default}: You will not Pass ''Iron Gate''!");
+		
 		
 		return npc;
 	}
@@ -452,6 +485,16 @@ static void Internal_ClotThink(int iNPC)
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
 	}
+
+	if(Death[npc.index])
+	{
+		float pos[3];
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+		pos[2] += 10.0;
+		TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		SmiteNpcToDeath(npc.index);
+	}
+	
 	bool GETVictoria_Support=false;
 	if(npc.Anger && npc.m_fbRangedSpecialOn && !MyGundammmmmm[npc.index] && Victoria_Support(npc))
 		GETVictoria_Support=true;
@@ -468,7 +511,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index])
+	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && !Support[npc.index])
 	{
 		DeleteAndRemoveAllNpcs = 10.0;
 		mp_bonusroundtime.IntValue = (12 * 2);
@@ -551,7 +594,7 @@ static void Internal_ClotThink(int iNPC)
 			RemoveEntity(npc.m_iWearable1);
 	}
 	
-	if(npc.m_bFUCKYOU)
+	if(npc.m_bFUCKYOU && !Support[npc.index])
 	{
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
@@ -646,7 +689,7 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(npc.Anger && !npc.m_fbRangedSpecialOn)
+	if(npc.Anger && !npc.m_fbRangedSpecialOn && !Support[npc.index])
 	{
 		bool StillAlive=false;
 		for(int i = 0; i < (sizeof(LifeSupportDevice[])); i++)
@@ -676,7 +719,7 @@ static void Internal_ClotThink(int iNPC)
 			MyGundammmmmm[npc.index] = true;
 		}
 	}
-	if(npc.Anger && npc.m_fbRangedSpecialOn)
+	if(npc.Anger && npc.m_fbRangedSpecialOn && !Support[npc.index])
 	{
 		if(MyGundammmmmm[npc.index])
 		{
@@ -687,7 +730,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.PlayAngerSound();
 					switch(GetRandomInt(0, 1))
 					{
-						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin can, I knew it when it broke");
+						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin can, I knew it would broke");
 						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed performance issues when the robots were disabled");
 					}
 					npc.AddActivityViaSequence("taunt_soviet_showoff");
@@ -997,12 +1040,17 @@ static void Internal_NPCDeath(int entity)
 
 	if(BlockLoseSay)
 		return;
-	switch(GetRandomInt(0,2))
+
+	if(!Support[npc.index])
 	{
-		case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Retreat! This is a tactical retreat.");
-		case 1:CPrintToChatAll("{lightblue}Huscarls{default}: {gold}Victoria{default} is in trouble again.");
-		case 2:CPrintToChatAll("{lightblue}Huscarls{default}: Next time I'll {crimson}crush you{default}");
+		switch(GetRandomInt(0,2))
+		{
+			case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Retreat! This is a tactical retreat.");
+			case 1:CPrintToChatAll("{lightblue}Huscarls{default}: {gold}Victoria{default} is in trouble again.");
+			case 2:CPrintToChatAll("{lightblue}Huscarls{default}: Next time I'll {crimson}crush you{default}");
+		}
 	}
+	
 	npc.PlayDeathSound();	
 }
 
@@ -1071,7 +1119,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 {
 	bool SpecialAttack;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	if(npc.m_flHuscarlsAdaptiveArmorCoolDown < gameTime)
+	if(npc.m_flHuscarlsAdaptiveArmorCoolDown < gameTime && !Support[npc.index])
 	{
 		switch(I_cant_do_this_all_day[npc.index])
 		{
@@ -1147,7 +1195,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		SpecialAttack=true;
 	}
-	else if(npc.m_flHuscarlsRushCoolDown < gameTime)
+	else if(npc.m_flHuscarlsRushCoolDown < gameTime && !Support[npc.index])
 	{
 		SpecialAttack=true;
 		switch(I_cant_do_this_all_day[npc.index])
@@ -1341,21 +1389,53 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 	else if(npc.m_flHuscarlsDeployEnergyShieldCoolDown < gameTime)
 	{
 		//npc.AddGesture("gesture_MELEE_cheer");
-		if(npc.m_flDoingAnimation < gameTime)
+
+		if(Support[npc.index])
+		{
+			switch(I_cant_do_this_all_day[npc.index])
+			{
+				case 0:
+				{
+					npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
+					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
+					npc.m_flAttackHappens = 0.0;
+					npc.SetCycle(0.5);
+					npc.SetPlaybackRate(1.0);
+					npc.m_iChanged_WalkCycle = 0;
+					npc.m_flDoingAnimation = gameTime + 1.0;
+					Delay_Attribute[npc.index] = gameTime + 1.1;
+					I_cant_do_this_all_day[npc.index] = 1;
+				}
+				case 1:
+				{
+					if(Delay_Attribute[npc.index] < gameTime)
+					{
+						I_cant_do_this_all_day[npc.index] = 0;
+						npc.PlayShieldSound();
+						Fire_Shield_Projectile(npc, 10.0);
+						Death[npc.index] = true;
+					}
+				}	
+			}
+		}
+		else
+		{
+			if(npc.m_flDoingAnimation < gameTime)
 			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-		npc.m_flDoingAnimation = gameTime + 1.0;
-		npc.PlayShieldSound();
-		Fire_Shield_Projectile(npc, 10.0);
-		npc.m_flHuscarlsRushCoolDown += 1.1;
-		npc.m_flHuscarlsAdaptiveArmorCoolDown += 1.1;
-		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + 21.0;
+			npc.m_flDoingAnimation = gameTime + 1.0;
+			npc.PlayShieldSound();
+			Fire_Shield_Projectile(npc, 10.0);
+			npc.m_flHuscarlsRushCoolDown += 1.1;
+			npc.m_flHuscarlsAdaptiveArmorCoolDown += 1.1;
+			npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + 21.0;
+		}
 	}
 	if(SpecialAttack)
 	{
 		npc.m_flDoingAnimation = gameTime + 0.5;
 		return 2;
 	}
-	else if(npc.m_flAttackHappens)
+	else if(npc.m_flAttackHappens && !Support[npc.index])
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
