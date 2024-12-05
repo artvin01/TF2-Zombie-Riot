@@ -924,7 +924,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 
 					int health = ReturnEntityMaxHealth(npc.index) / 20;
 					
-					int summon1 = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "limit");
+					int summon1 = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "mk2;limit");
 
 					{
 						if(GetTeam(npc.index) != TFTeam_Red)
@@ -947,6 +947,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					Delay_Attribute[npc.index] = gameTime + 0.5;
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flTimeUntillNextSummonDrones = gameTime + 25.0;
+					npc.m_flTimeUntillNextSummonHardenerDrones = gameTime + 2.0;
 					return 0;
 				}
 			}
@@ -985,7 +986,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 
 					int health = ReturnEntityMaxHealth(npc.index) / 25;
 					
-					int summon = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "limit");
+					int summon = NPC_CreateByName("npc_victoria_anvil", -1, pos, ang, GetTeam(npc.index), "mk2;limit");
 					{
 						if(GetTeam(npc.index) != TFTeam_Red)
 							Zombies_Currently_Still_Ongoing++;
@@ -1006,7 +1007,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_flDoingAnimation = gameTime + 0.5;	
 					Delay_Attribute[npc.index] = gameTime + 0.5;
 					I_cant_do_this_all_day[npc.index]=0;
-					npc.m_flTimeUntillNextSummonHardenerDrones = gameTime + 25.0;
+					npc.m_flTimeUntillNextSummonHardenerDrones = gameTime + 31.0;
+					npc.m_flTimeUntillNextSummonDrones = gameTime + 2.0;
 					return 0;
 				}
 			}
