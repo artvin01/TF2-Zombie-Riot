@@ -116,7 +116,7 @@ public void Weapon_Nymph_ActivateAbility(int client, int weapon, bool crit, int 
 				IsAbilityActive[client] = 1;
 				ApplyTempAttrib(weapon, 6, 0.6, 15.0);
 				ApplyTempAttrib(weapon, 410, 2.2, 15.0);
-				CreateTimer(15.0, Disable_Nymph_Ability, client, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(15.0, Disable_Nymph_Ability, client);
 			}
 			else
 			{
