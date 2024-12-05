@@ -922,7 +922,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-					pos[3] += 70.0;
 
 					int health = ReturnEntityMaxHealth(npc.index) / 20;
 					
@@ -983,7 +982,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-					pos[3] += 70.0;
 
 					int health = ReturnEntityMaxHealth(npc.index) / 25;
 					
