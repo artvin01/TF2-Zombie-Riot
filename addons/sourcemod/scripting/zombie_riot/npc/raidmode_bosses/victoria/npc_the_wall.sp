@@ -80,11 +80,10 @@ static bool Frozen_Player[MAXTF2PLAYERS];
 static int MechanizedProtector[MAXENTITIES][3];
 static int LifeSupportDevice[MAXENTITIES][3];
 
-static bool Death[MAXENTITIES];
-static bool Support[MAXENTITIES];
-
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
+
+static int OverrideOwner[MAXENTITIES];
 
 static int gLaser1;
 static int gRedPoint;
@@ -94,7 +93,7 @@ static int g_HALO_Laser;
 void Huscarls_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Huscarls");
+	strcopy(data.Name, sizeof(data.Name), "Victoria Huscarls");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_the_wall");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_huscarls_raid");
 	data.IconCustom = true;
@@ -152,8 +151,9 @@ methodmap Huscarls < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		int sound = GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1);
+		EmitSoundToAll(g_MeleeHitSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayPowerHitSound() 
 	{
@@ -288,22 +288,29 @@ methodmap Huscarls < CClotBody
 				npc.m_flRangedArmor = 1.0;
 			}
 		}
-		
-		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		float gametime = GetGameTime();
-
-		bool CloneDo = StrContains(data, "clone_ability") != -1;
+		OverrideOwner[npc.index] = -1;
+		bool CloneDo=false;
+		static char countext[20][1024];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
+		{
+			if(i>=count)break;
+			else if(!StrContains(countext[i], "support_ability"))CloneDo=true;
+			int ownerdata = StringToInt(countext[i]);
+			if(IsValidEntity(ownerdata)) OverrideOwner[npc.index] = ownerdata;
+		}
 		if(CloneDo)
 		{
+			func_NPCDeath[npc.index] = view_as<Function>(Clone_NPCDeath);
+			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Clone_OnTakeDamage);
+			func_NPCThink[npc.index] = view_as<Function>(Clone_ClotThink);
+		
 			MakeObjectIntangeable(npc.index);
 			b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			Death[npc.index] = false;
-			Support[npc.index] = true;
 
 			npc.m_flHuscarlsRushCoolDown = gametime + 99.0;
 			npc.m_flHuscarlsRushDuration = 0.0;
@@ -316,6 +323,10 @@ methodmap Huscarls < CClotBody
 		}
 		else
 		{
+			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		
 			npc.m_iState = 0;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.StartPathing();
@@ -326,8 +337,6 @@ methodmap Huscarls < CClotBody
 			MyGundammmmmm[npc.index] = false;
 			npc.m_bFUCKYOU = false;
 			npc.Anger = false;
-			Death[npc.index] = false;
-			Support[npc.index] = false;
 			npc.m_fbRangedSpecialOn = false;
 			I_cant_do_this_all_day[npc.index] = 0;
 			DMGTypeArmorDuration[npc.index] = 0.0;
@@ -459,10 +468,93 @@ methodmap Huscarls < CClotBody
 		SetVariantColor(view_as<int>({100, 150, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
-		
-		
 		return npc;
 	}
+}
+
+static void Clone_ClotThink(int iNPC)
+{
+	Huscarls npc = view_as<Huscarls>(iNPC);
+	float gameTime = GetGameTime(npc.index);
+	
+	if(npc.m_flNextDelayTime > gameTime)
+		return;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.Update();
+	
+	if(npc.m_flNextThinkTime > gameTime)
+		return;
+
+	npc.m_flNextThinkTime = gameTime + 0.1;
+	
+
+	switch(I_cant_do_this_all_day[npc.index])
+	{
+		case 0:
+		{
+			npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
+			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
+			npc.m_flAttackHappens = 0.0;
+			npc.SetCycle(0.5);
+			npc.SetPlaybackRate(1.0);
+			npc.m_iChanged_WalkCycle = 0;
+			npc.m_flDoingAnimation = gameTime + 1.0;
+			Delay_Attribute[npc.index] = gameTime + 1.1;
+			I_cant_do_this_all_day[npc.index] = 1;
+		}
+		case 1:
+		{
+			if(Delay_Attribute[npc.index] < gameTime)
+			{
+				I_cant_do_this_all_day[npc.index] = 0;
+				npc.PlayShieldSound();
+				if(IsValidEntity(OverrideOwner[npc.index]))
+				{
+					Huscarls npcGetInfo = view_as<Huscarls>(OverrideOwner[npc.index]);
+					Fire_Shield_Projectile(npcGetInfo, 10.0);
+				}
+				else Fire_Shield_Projectile(npc, 10.0);
+				
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				
+				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+				npc.PlayDeathSound();
+				
+				b_NpcForcepowerupspawn[npc.index] = 0;
+				i_RaidGrantExtra[npc.index] = 0;
+				b_DissapearOnDeath[npc.index] = true;
+				b_DoGibThisNpc[npc.index] = true;
+				SmiteNpcToDeath(npc.index);
+			}
+		}	
+	}
+}
+
+static Action Clone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	return Plugin_Handled;
+}
+
+static void Clone_NPCDeath(int entity)
+{
+	Huscarls npc = view_as<Huscarls>(entity);
+
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
 }
 
 static void Internal_ClotThink(int iNPC)
@@ -485,16 +577,6 @@ static void Internal_ClotThink(int iNPC)
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
 	}
-
-	if(Death[npc.index])
-	{
-		float pos[3];
-		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-		pos[2] += 10.0;
-		TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-		SmiteNpcToDeath(npc.index);
-	}
-	
 	bool GETVictoria_Support=false;
 	if(npc.Anger && npc.m_fbRangedSpecialOn && !MyGundammmmmm[npc.index] && Victoria_Support(npc))
 		GETVictoria_Support=true;
@@ -511,7 +593,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && !Support[npc.index])
+	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index])
 	{
 		DeleteAndRemoveAllNpcs = 10.0;
 		mp_bonusroundtime.IntValue = (12 * 2);
@@ -594,7 +676,7 @@ static void Internal_ClotThink(int iNPC)
 			RemoveEntity(npc.m_iWearable1);
 	}
 	
-	if(npc.m_bFUCKYOU && !Support[npc.index])
+	if(npc.m_bFUCKYOU)
 	{
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
@@ -603,7 +685,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Huscarls{default}: Time to Plan B, {gold]Mechanist{default}. teleport the Robots right now!");
+				CPrintToChatAll("{lightblue}Huscarls{default}: Time to Plan B, {gold}Mechanist{default}. teleport the Robots right now!");
 				npc.AddActivityViaSequence("tauntrussian_rubdown");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.5);
@@ -689,7 +771,7 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(npc.Anger && !npc.m_fbRangedSpecialOn && !Support[npc.index])
+	if(npc.Anger && !npc.m_fbRangedSpecialOn)
 	{
 		bool StillAlive=false;
 		for(int i = 0; i < (sizeof(LifeSupportDevice[])); i++)
@@ -719,7 +801,7 @@ static void Internal_ClotThink(int iNPC)
 			MyGundammmmmm[npc.index] = true;
 		}
 	}
-	if(npc.Anger && npc.m_fbRangedSpecialOn && !Support[npc.index])
+	if(npc.Anger && npc.m_fbRangedSpecialOn)
 	{
 		if(MyGundammmmmm[npc.index])
 		{
@@ -730,10 +812,10 @@ static void Internal_ClotThink(int iNPC)
 					npc.PlayAngerSound();
 					switch(GetRandomInt(0, 1))
 					{
-						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin can, I knew it would broke");
+						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin can, I knew it when it broke");
 						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed performance issues when the robots were disabled");
 					}
-					npc.AddActivityViaSequence("taunt_soviet_showoff");
+					npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
 					npc.m_flAttackHappens = 0.0;
 					npc.SetCycle(0.6);
 					npc.SetPlaybackRate(1.2);
@@ -1040,17 +1122,12 @@ static void Internal_NPCDeath(int entity)
 
 	if(BlockLoseSay)
 		return;
-
-	if(!Support[npc.index])
+	switch(GetRandomInt(0,2))
 	{
-		switch(GetRandomInt(0,2))
-		{
-			case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Retreat! This is a tactical retreat.");
-			case 1:CPrintToChatAll("{lightblue}Huscarls{default}: {gold}Victoria{default} is in trouble again.");
-			case 2:CPrintToChatAll("{lightblue}Huscarls{default}: Next time I'll {crimson}crush you{default}");
-		}
+		case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Retreat! This is a tactical retreat.");
+		case 1:CPrintToChatAll("{lightblue}Huscarls{default}: {gold}Victoria{default} is in trouble again.");
+		case 2:CPrintToChatAll("{lightblue}Huscarls{default}: Next time I'll {crimson}crush you{default}");
 	}
-	
 	npc.PlayDeathSound();	
 }
 
@@ -1119,7 +1196,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 {
 	bool SpecialAttack;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	if(npc.m_flHuscarlsAdaptiveArmorCoolDown < gameTime && !Support[npc.index])
+	if(npc.m_flHuscarlsAdaptiveArmorCoolDown < gameTime)
 	{
 		switch(I_cant_do_this_all_day[npc.index])
 		{
@@ -1195,7 +1272,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		SpecialAttack=true;
 	}
-	else if(npc.m_flHuscarlsRushCoolDown < gameTime && !Support[npc.index])
+	else if(npc.m_flHuscarlsRushCoolDown < gameTime)
 	{
 		SpecialAttack=true;
 		switch(I_cant_do_this_all_day[npc.index])
@@ -1389,53 +1466,21 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 	else if(npc.m_flHuscarlsDeployEnergyShieldCoolDown < gameTime)
 	{
 		//npc.AddGesture("gesture_MELEE_cheer");
-
-		if(Support[npc.index])
-		{
-			switch(I_cant_do_this_all_day[npc.index])
-			{
-				case 0:
-				{
-					npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
-					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
-					npc.m_flAttackHappens = 0.0;
-					npc.SetCycle(0.5);
-					npc.SetPlaybackRate(1.0);
-					npc.m_iChanged_WalkCycle = 0;
-					npc.m_flDoingAnimation = gameTime + 1.0;
-					Delay_Attribute[npc.index] = gameTime + 1.1;
-					I_cant_do_this_all_day[npc.index] = 1;
-				}
-				case 1:
-				{
-					if(Delay_Attribute[npc.index] < gameTime)
-					{
-						I_cant_do_this_all_day[npc.index] = 0;
-						npc.PlayShieldSound();
-						Fire_Shield_Projectile(npc, 10.0);
-						Death[npc.index] = true;
-					}
-				}	
-			}
-		}
-		else
-		{
-			if(npc.m_flDoingAnimation < gameTime)
+		if(npc.m_flDoingAnimation < gameTime)
 			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-			npc.m_flDoingAnimation = gameTime + 1.0;
-			npc.PlayShieldSound();
-			Fire_Shield_Projectile(npc, 10.0);
-			npc.m_flHuscarlsRushCoolDown += 1.1;
-			npc.m_flHuscarlsAdaptiveArmorCoolDown += 1.1;
-			npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + 21.0;
-		}
+		npc.m_flDoingAnimation = gameTime + 1.0;
+		npc.PlayShieldSound();
+		Fire_Shield_Projectile(npc, 10.0);
+		npc.m_flHuscarlsRushCoolDown += 1.1;
+		npc.m_flHuscarlsAdaptiveArmorCoolDown += 1.1;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + 21.0;
 	}
 	if(SpecialAttack)
 	{
 		npc.m_flDoingAnimation = gameTime + 0.5;
 		return 2;
 	}
-	else if(npc.m_flAttackHappens && !Support[npc.index])
+	else if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
@@ -1548,36 +1593,28 @@ static void Got_it_fucking_shit(int entity, int victim, float damage, int weapon
 {
 	Huscarls npc = view_as<Huscarls>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-	if(IsValidEntity(npc.index) && GetTeam(npc.index) != GetTeam(victim) && Can_I_See_Enemy(npc.index, victim))
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim) && Can_I_See_Enemy(npc.index, victim))
 	{
-		char classname[60];
-		GetEntityClassname(victim, classname, sizeof(classname));
-		if(!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
+		if(IsValidClient(victim))
 		{
-			if(victim <= MaxClients)
-			{
-				if(IsValidClient(victim))
-				{
-					//AcceptEntityInput(victim, "ClearParent");
-					float flPos[3]; // original
-					float flAng[3]; // original
-			
-					npc.GetAttachment("RightHand", flPos, flAng);
-				
-					TeleportEntity(victim, flPos, NULL_VECTOR, {0.0,0.0,0.0});
-					TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
-					TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
-					SetEntityCollisionGroup(victim, 1);
-					/*SetParent(npc.index, victim, "RightHand");
-					TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});*/
-					Frozen_Player[victim]=true;
-				}
-				else
-				{
-					SDKHooks_TakeDamage(victim, npc.index, npc.index, 1000.0, DMG_CLUB, -1, _, vecHit);
-					Custom_Knockback(npc.index, victim, 1500.0, true);
-				}
-			}
+			//AcceptEntityInput(victim, "ClearParent");
+			float flPos[3]; // original
+			float flAng[3]; // original
+	
+			npc.GetAttachment("RightHand", flPos, flAng);
+		
+			TeleportEntity(victim, flPos, NULL_VECTOR, {0.0,0.0,0.0});
+			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
+			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
+			SetEntityCollisionGroup(victim, 1);
+			/*SetParent(npc.index, victim, "RightHand");
+			TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});*/
+			Frozen_Player[victim]=true;
+		}
+		else
+		{
+			SDKHooks_TakeDamage(victim, npc.index, npc.index, 1000.0, DMG_SLASH, -1, _, vecHit);
+			Custom_Knockback(npc.index, victim, 1500.0, true);
 		}
 	}
 }
@@ -1586,55 +1623,38 @@ static void Compressor(int entity, int victim, float damage, int weapon)
 {
 	Huscarls npc = view_as<Huscarls>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-	if(IsValidEntity(npc.index) && GetTeam(npc.index) != GetTeam(victim))
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
-		char classname[60];
-		GetEntityClassname(victim, classname, sizeof(classname));
-		if(!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
+		damage = 40.0 * RaidModeScaling;
+		damage += ReturnEntityMaxHealth(victim)*0.1;
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+		if(IsValidClient(victim))
 		{
-			if(victim <= MaxClients)
-			{
-				damage = 40.0 * RaidModeScaling;
-				damage += ReturnEntityMaxHealth(victim)*0.1;
-				SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-				if(IsValidClient(victim))
-				{
-					TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
-					TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
-				}
-				else FreezeNpcInTime(victim, 1.0, true);
-				Custom_Knockback(npc.index, victim, 1500.0, true);
-			}
+			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
+			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
 		}
+		else FreezeNpcInTime(victim, 1.0, true);
+		Custom_Knockback(npc.index, victim, 1500.0, true);
 	}
 }
 
 static void ToTheMoon(int entity, int victim, float damage, int weapon)
 {
 	Huscarls npc = view_as<Huscarls>(entity);
-	if(IsValidEntity(npc.index) && GetTeam(npc.index) != GetTeam(victim))
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
-		char classname[60];
-		GetEntityClassname(victim, classname, sizeof(classname));
-		if(!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
+		float fVelocity[3];
+		fVelocity[2] = 1000.0;
+		if(IsValidClient(victim))
 		{
-			if(victim <= MaxClients)
-			{
-				float fVelocity[3];
-				fVelocity[2] = 1000.0;
-				if(IsValidClient(victim))
-				{
-					TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 2.0, 0);
-					TF2_AddCondition(victim, TFCond_CompetitiveLoser, 2.0, 0);
-					TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, fVelocity);
-				}
-				else
-				{
-					PluginBot_Jump(victim, fVelocity);
-					FreezeNpcInTime(victim, 1.0, true);
-				}
-				
-			}
+			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 2.0, 0);
+			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 2.0, 0);
+			TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, fVelocity);
+		}
+		else
+		{
+			PluginBot_Jump(victim, fVelocity);
+			FreezeNpcInTime(victim, 1.0, true);
 		}
 	}
 }
@@ -1643,29 +1663,20 @@ static void Ground_pound(int entity, int victim, float damage, int weapon)
 {
 	Huscarls npc = view_as<Huscarls>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-	if(IsValidEntity(npc.index) && GetTeam(npc.index) != GetTeam(victim))
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
-		char classname[60];
-		GetEntityClassname(npc.index, classname, sizeof(classname));
-		if(!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
+		damage = 40.0 * RaidModeScaling;
+		damage += ReturnEntityMaxHealth(victim)*0.05;
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+		float fVelocity[3];
+		fVelocity[2] = -2000.0;
+		if(IsValidClient(victim))
 		{
-			if(victim <= MaxClients)
-			{
-				damage = 40.0 * RaidModeScaling;
-				damage += ReturnEntityMaxHealth(victim)*0.05;
-				SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-				float fVelocity[3];
-				fVelocity[2] = -2000.0;
-				if(IsValidClient(victim))
-				{
-					TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
-					TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
-				}
-				else FreezeNpcInTime(victim, 1.0, true);
-				TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, fVelocity);
-				
-			}
+			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
+			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
 		}
+		else FreezeNpcInTime(victim, 1.0, true);
+		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, fVelocity);
 	}
 }
 
@@ -1875,7 +1886,7 @@ static void Huscarls_Shield_StartTouch(DataPack pack)
 					continue;
 				RemoveEntity(projectile);
 				AcceptEntityInput(projectile, "Kill");
-				EmitSoundToClient(enemy, g_AdaptiveArmorSounds[GetRandomInt(0, sizeof(g_AdaptiveArmorSounds) - 1)], _, _, _, _, 0.7, _, _, _, _, false);
+				EmitSoundToAll(g_AdaptiveArmorSounds[GetRandomInt(0, sizeof(g_AdaptiveArmorSounds) - 1)], Owner, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, _, _, _, _, false);
 				continue;
 			}
 			else continue;
