@@ -115,6 +115,8 @@ static float Delay_Attribute[MAXENTITIES];
 static bool DrinkPOWERUP[MAXENTITIES];
 static float NiceMiss[MAXENTITIES];
 static bool OnMiss[MAXENTITIES];
+static bool Death[MAXENTITIES];
+static bool Support[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool YaWeFxxked[MAXENTITIES];
@@ -246,7 +248,6 @@ methodmap Atomizer < CClotBody
 	public void PlayMeleeHitSound(){
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
 	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Atomizer npc = view_as<Atomizer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
@@ -281,11 +282,12 @@ methodmap Atomizer < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			npc.m_flCloneSuicide = GetGameTime() + 1.0;
 			npc.m_flNextRangedAttack = GetGameTime() + 0.1;
 			npc.m_flRangedSpecialDelay = GetGameTime() + 99.0;
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 99.0;
 			npc.m_flAngerDelay = GetGameTime() + 99.0;
+			Death[npc.index] = false;
+			Support[npc.index] = true;
 
 			CPrintToChatAll("{blue}Atomizer{default}: Did you really thought we would let you sabotage our Radiotower?");
 		}
@@ -304,6 +306,8 @@ methodmap Atomizer < CClotBody
 			Vs_Atomizer_To_Huscarls = 0;
 			I_cant_do_this_all_day[npc.index] = 0;
 			npc.i_GunMode = 0;
+			Death[npc.index] = false;
+			Support[npc.index] = false;
 			npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
 			npc.m_flNextRangedAttack = GetGameTime() + 30.0;
@@ -449,6 +453,14 @@ static void Internal_ClotThink(int iNPC)
 		ParticleSpawned[npc.index] = true;
 	}	
 
+	if(Death[npc.index])
+	{
+		float pos[3];
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+		pos[2] += 10.0;
+		TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		SmiteNpcToDeath(npc.index);
+	}
 	if(NiceMiss[npc.index] < gameTime)
 	{
 		if(IsValidEntity(npc.m_iWearable1))
@@ -784,7 +796,16 @@ static void Internal_ClotThink(int iNPC)
 			else npc.PlayHomerunMissSound();
 			I_cant_do_this_all_day[npc.index]=0;
 			npc.StartPathing();
-			npc.m_flNextRangedAttack = gameTime + (DrinkPOWERUP[npc.index] ? 22.5 : 40.0);
+			
+			if(Support[npc.index])
+			{
+				Death[npc.index] = true;
+			}
+			else
+			{
+				npc.m_flNextRangedAttack = gameTime + (DrinkPOWERUP[npc.index] ? 22.5 : 40.0);
+			}
+			
 		}
 		return;
 	}
