@@ -62,7 +62,7 @@ methodmap VictorianFactory < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextRangedAttack = GetGameTime() + 180.0;
+		npc.m_flNextRangedAttack = GetGameTime() + 60.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
 		i_AttacksTillMegahit[npc.index] = 0;
@@ -76,7 +76,8 @@ methodmap VictorianFactory < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		i_NpcIsABuilding[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
-		GiveNpcOutLineLastOrBoss(npc.index, true);
+		GiveNpcOutLineLastOrBoss(npc.index, false);
+		b_thisNpcHasAnOutline[npc.index] = false;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 1.0;
 		if(ally != TFTeam_Red)
 		{
@@ -320,6 +321,10 @@ static void ClotThink(int iNPC)
 			MakeObjectIntangeable(npc.m_iWearable2);
 			EmitSoundToAll("misc/hologram_start.wav", _, _, _, _, 1.0);
 			EmitSoundToAll("misc/hologram_start.wav", _, _, _, _, 1.0);
+			npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+			npc.m_bTeamGlowDefault = false;
+			SetVariantColor(view_as<int>({255, 255, 255, 200}));
+			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 			i_AttacksTillMegahit[npc.index] = 607;
 			return;
 		}
@@ -409,9 +414,9 @@ static void ClotThink(int iNPC)
 			if(YPOS>1000.0)
 				DownSpeed=100.0;
 			else if(YPOS>100.0)
-				DownSpeed=15.0;
+				DownSpeed=50.0;
 			else if(YPOS>20.0)
-				DownSpeed=5.0;
+				DownSpeed=10.0;
 			Parts[2]-=DownSpeed;
 			TeleportEntity(npc.m_iWearable3, Parts, NULL_VECTOR, NULL_VECTOR);
 			i_AttacksTillMegahit[npc.index] += 1;
