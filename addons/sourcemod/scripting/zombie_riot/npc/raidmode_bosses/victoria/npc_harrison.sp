@@ -106,6 +106,9 @@ static int gRedPoint;
 static int g_BeamIndex_heal;
 static int g_HALO_Laser;
 
+static bool Death[MAXENTITIES];
+static bool Support[MAXENTITIES];
+
 #define BOMBBARDING_CHARGE_TIME 3.0
 #define BOMBBARDING_CHARGE_SPAN 1.0
 #define BOMBBARDING_LIGHTNING_RANGE 150.0
@@ -305,51 +308,66 @@ methodmap Harrison < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
-		Delay_Attribute[npc.index] = 0.0;
-		YaWeFxxked[npc.index] = false;
-		ParticleSpawned[npc.index] = false;
-		npc.m_bFUCKYOU = false;
-		I_cant_do_this_all_day[npc.index] = 0;
-		npc.i_GunMode = 0;
-		npc.m_flTimeUntillNextRailgunShots = GetGameTime() + 22.5;
-		npc.m_flTimeUntillSummonRocket = 0.0;
-		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flAirRaidDelay = 0.0;
-		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
-		npc.m_flTimeUntillDroneSniperShot = GetGameTime() + 5.0;
-		npc.m_flTimeUntillGunReload = GetGameTime() + 12.5;
-		npc.m_iOverlordComboAttack = 0;
-		npc.m_iAmountProjectiles = 0;
-		npc.m_iAttacksTillReload = 0;
-		
-		npc.m_fbRangedSpecialOn = false;
-		AirRaidStart[npc.index] = false;
-		Zero(b_said_player_weaponline);
-		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
-		Vs_RechargeTimeMax[npc.index] = 20.0;
-		Victoria_Support_RechargeTimeMax(npc.index, 20.0);
-		
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		b_thisNpcIsARaid[npc.index] = true;
-		b_angered_twice[npc.index] = false;
-		for(int client_check=1; client_check<=MaxClients; client_check++)
+
+		bool CloneDo = StrContains(data, "support_ability") != -1;
+		if(CloneDo)
 		{
-			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
-			{
-				LookAtTarget(client_check, npc.index);
-				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Harrison Arrived");
-			}
+			MakeObjectIntangeable(npc.index);
+			b_DoNotUnStuck[npc.index] = true;
+			b_NoKnockbackFromSources[npc.index] = true;
+			b_ThisEntityIgnored[npc.index] = true;
+			b_NoKillFeed[npc.index] = true;
+			Death[npc.index] = false;
+			Support[npc.index] = true;
 		}
-		FTL[npc.index] = 200.0;
-		RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
-		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = false;
+		else
+		{
+			npc.m_iState = 0;
+			npc.m_flGetClosestTargetTime = 0.0;
+			npc.StartPathing();
+			npc.m_flSpeed = 300.0;
+			Delay_Attribute[npc.index] = 0.0;
+			YaWeFxxked[npc.index] = false;
+			ParticleSpawned[npc.index] = false;
+			npc.m_bFUCKYOU = false;
+			I_cant_do_this_all_day[npc.index] = 0;
+			npc.i_GunMode = 0;
+			npc.m_flTimeUntillNextRailgunShots = GetGameTime() + 22.5;
+			npc.m_flTimeUntillSummonRocket = 0.0;
+			npc.m_flNextRangedAttack = 0.0;
+			npc.m_flAirRaidDelay = 0.0;
+			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
+			npc.m_flTimeUntillDroneSniperShot = GetGameTime() + 5.0;
+			npc.m_flTimeUntillGunReload = GetGameTime() + 12.5;
+			npc.m_iOverlordComboAttack = 0;
+			npc.m_iAmountProjectiles = 0;
+			npc.m_iAttacksTillReload = 0;
+			
+			npc.m_fbRangedSpecialOn = false;
+			AirRaidStart[npc.index] = false;
+			Zero(b_said_player_weaponline);
+			fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
+			Vs_RechargeTimeMax[npc.index] = 20.0;
+			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
+			
+			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+			b_thisNpcIsARaid[npc.index] = true;
+			b_angered_twice[npc.index] = false;
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					LookAtTarget(client_check, npc.index);
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "item_armor", 1, "%t", "Harrison Arrived");
+				}
+			}
+			FTL[npc.index] = 200.0;
+			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidAllowsBuildings = false;
+		}
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		if(RaidModeScaling < 55)
@@ -468,6 +486,14 @@ static void Internal_ClotThink(int iNPC)
 		ParticleSpawned[npc.index] = true;
 	}	
 
+	if(Death[npc.index])
+	{
+		float pos[3];
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+		pos[2] += 10.0;
+		TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		SmiteNpcToDeath(npc.index);
+	}
 	if(LastMann)
 	{
 		if(!npc.m_fbGunout)
@@ -490,7 +516,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
+	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red && !Support[npc.index])
 	{
 		npc.m_flMeleeArmor = 0.33;
 		npc.m_flRangedArmor = 0.33;
@@ -601,13 +627,83 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
 	
-	if(npc.m_flTimeUntillGunReload < gameTime)
+	if(npc.m_flTimeUntillGunReload < gameTime && !Support[npc.index])
 	{
 		npc.m_iAttacksTillReload =  RoundToNearest(float(CountPlayersOnRed(2)) * 5); 
 		npc.m_flTimeUntillGunReload = 30.0 + gameTime;
 	}
 
-	if(npc.m_bFUCKYOU)
+	if(Support[npc.index])
+	{
+		switch(I_cant_do_this_all_day[npc.index])
+		{
+			case 0:
+			{
+				/*
+				if(npc.m_iChanged_WalkCycle != 5)
+				{
+					ResetHarrisonWeapon(npc, 2);
+					npc.m_bisWalking = true;
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetActivity("ACT_MP_RUN_MELEE");
+					npc.StartPathing();
+				}
+				*/
+				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
+				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("layer_taunt_most_wanted");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.0);
+				npc.m_iChanged_WalkCycle = 0;
+				npc.m_flDoingAnimation = gameTime + 0.75;	
+				Delay_Attribute[npc.index] = gameTime + 0.75;
+				I_cant_do_this_all_day[npc.index]=1;
+			}
+			case 1:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.AddActivityViaSequence("layer_taunt_most_wanted");
+					npc.m_flAttackHappens = 0.0;
+					npc.SetCycle(0.3);
+					npc.SetPlaybackRate(0.0);
+					npc.m_iChanged_WalkCycle = 0;
+					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					npc.m_bisWalking = false;
+					AirRaidStart[npc.index] = true;
+					npc.m_flDoingAnimation = gameTime + 15.0;	
+					Delay_Attribute[npc.index] = gameTime + 15.0;
+					I_cant_do_this_all_day[npc.index]=2;
+				}
+			}
+			case 2:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.PlayAngerSound();
+					npc.PlayAngerReaction();
+					npc.AddActivityViaSequence("layer_taunt_most_wanted");
+					npc.m_flAttackHappens = 0.0;
+					npc.SetCycle(0.8);
+					npc.SetPlaybackRate(1.0);
+					npc.m_flDoingAnimation = gameTime + 0.5;
+					npc.m_iChanged_WalkCycle = 0;
+					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+					I_cant_do_this_all_day[npc.index]=0;
+					AirRaidStart[npc.index] = false;
+					Death[npc.index] = true;
+				}
+			}
+		}
+	}
+	if(npc.m_bFUCKYOU && !Support[npc.index])
 	{
 		switch(I_cant_do_this_all_day[npc.index])
 		{
@@ -839,12 +935,16 @@ static void Internal_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-	switch(GetRandomInt(0,2))
+	if(!Support[npc.index])
 	{
-		case 0:CPrintToChatAll("{blue}Harrison{default}: Ugh, I need backup");
-		case 1:CPrintToChatAll("{blue}Harrison{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
-		case 2:CPrintToChatAll("{blue}Harrison{default}: You intruders will soon face the {crimson}Real Deal.{default}");
+		switch(GetRandomInt(0,2))
+		{
+			case 0:CPrintToChatAll("{blue}Harrison{default}: Ugh, I need backup");
+			case 1:CPrintToChatAll("{blue}Harrison{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
+			case 2:CPrintToChatAll("{blue}Harrison{default}: You intruders will soon face the {crimson}Real Deal.{default}");
+		}
 	}
+	
 
 }
 
@@ -935,7 +1035,7 @@ static void HarrisonAnimationChange(Harrison npc)
 
 static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance)
 {
-	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+	if(npc.m_flNextRangedSpecialAttackHappens < gameTime && !Support[npc.index])
 	{
 		bool playsounds=false;
 		switch(I_cant_do_this_all_day[npc.index])
@@ -988,7 +1088,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		}
 		return 1;
 	}
-	else if(npc.m_flTimeUntillNextRailgunShots < gameTime)
+	else if(npc.m_flTimeUntillNextRailgunShots < gameTime && !Support[npc.index])
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float projectile_speed = 800.0;
@@ -1020,7 +1120,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		}
 		
 	}
-	else if(npc.m_flTimeUntillDroneSniperShot < gameTime)
+	else if(npc.m_flTimeUntillDroneSniperShot < gameTime && !Support[npc.index])
 	{
 		if(npc.m_flNextRangedAttack < gameTime)
 		{	
@@ -1058,7 +1158,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			}
 		}
 	}
-	if(npc.m_iAttacksTillReload > 0)
+	if(npc.m_iAttacksTillReload > 0 && !Support[npc.index])
 	{
 		if(gameTime > npc.m_flNextMeleeAttack)
 		{
@@ -1094,7 +1194,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 	}
 	else
 	{
-		if(npc.m_flAttackHappens)
+		if(npc.m_flAttackHappens && !Support[npc.index])
 		{
 			if(npc.m_flAttackHappens < gameTime)
 			{
