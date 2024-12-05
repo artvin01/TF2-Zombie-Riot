@@ -1450,35 +1450,57 @@ public void OnPostThink(int client)
 			}
 		}
 		int armor = abs(Armor_Charge[armorEnt]);
-		for(int i=6; i>0; i--)
+		if(!b_EnableNumeralArmor[client])
 		{
-			if(Armor_Charge[armorEnt] == 0)
+			for(int i=6; i>0; i--)
 			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, "--");
+				if(Armor_Charge[armorEnt] == 0)
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, "--");
+				}
+				else if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+				}
+				else if(armor > Armor_Max*(i*0.1666 - 1.0/15.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+				}
+				else if(armor > Armor_Max*(i*0.1666 - 1.0/10.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+				}
+				
+				if((i % 2) == 1)
+				{
+					Format(buffer, sizeof(buffer), "%s\n", buffer);
+				}
 			}
-			else if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
+		}
+		else
+		{
+			char c_ArmorCurrent[255];
+			if(Armor_Charge[armorEnt] >= 0)
 			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-			}
-			else if(armor > Armor_Max*(i*0.1666 - 1.0/15.0))
-			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-			}
-			else if(armor > Armor_Max*(i*0.1666 - 1.0/10.0))
-			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				IntToString(armor,c_ArmorCurrent, sizeof(c_ArmorCurrent));
+				int offset = armor < 0 ? 1 : 0;
+				ThousandString(c_ArmorCurrent[offset], sizeof(c_ArmorCurrent) - offset);
+				Format(buffer, sizeof(buffer), "%s|%s|\n", buffer, c_ArmorCurrent);
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
-			}
-			
-			if((i % 2) == 1)
-			{
-				Format(buffer, sizeof(buffer), "%s\n", buffer);
+				
+				Armor_Max -= armor;
+				IntToString(Armor_Max,c_ArmorCurrent, sizeof(c_ArmorCurrent));
+				int offset = Armor_Max < 0 ? 1 : 0;
+				ThousandString(c_ArmorCurrent[offset], sizeof(c_ArmorCurrent) - offset);
+				Format(buffer, sizeof(buffer), "%s|%s|\n", buffer, c_ArmorCurrent);
 			}
 		}
-			
 		if(i_CurrentEquippedPerk[client] == 6)
 		{
 			static float slowdown_amount;

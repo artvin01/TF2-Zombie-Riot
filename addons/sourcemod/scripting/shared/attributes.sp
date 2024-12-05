@@ -13,7 +13,9 @@ enum
 	Attrib_OverrideExplodeDmgRadiusFalloff = 4029,
 	Attrib_CritChance = 4030,
 	Attrib_ReviveTimeCut = 4033,
-	Attrib_ExtendExtraCashGain = 4034
+	Attrib_ExtendExtraCashGain = 4034,
+	Attrib_ReduceMedifluidCost = 4035,
+	Attrib_ReduceMetalCost = 4036
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

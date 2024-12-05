@@ -3904,6 +3904,10 @@
 	{
 		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nIf you love it, enable it again."
 	}
+	"Enable Numeral Armor"
+	{
+		"en"	"Enable Numeral Armor"
+	}
 	"Enable Ammobox Count Perma"
 	{
 		"en"	"Enable Ammobox Count Perma"

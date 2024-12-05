@@ -50,6 +50,7 @@ public Action EventOverride_ArrowImpact(Event event, const char[] name, bool don
 	
 	return Plugin_Changed;
 }
+
 void EventOverride_ArrowImpact_ZRSeperate(int AttachedEntity, int ShooterEntity, int WhatBoneAttached,
 float BonePosition[3], float BoneAngles[3], int ProjectileType, bool IsCrit)
 {

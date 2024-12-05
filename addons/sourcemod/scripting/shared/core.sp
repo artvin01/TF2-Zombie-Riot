@@ -374,6 +374,7 @@ bool b_DisableDynamicMusic[MAXTF2PLAYERS];
 bool b_EnableRightSideAmmoboxCount[MAXTF2PLAYERS];
 bool b_EnableCountedDowns[MAXTF2PLAYERS];
 bool b_EnableClutterSetting[MAXTF2PLAYERS];
+bool b_EnableNumeralArmor[MAXTF2PLAYERS];
 int i_CustomModelOverrideIndex[MAXTF2PLAYERS];
 int FogEntity = INVALID_ENT_REFERENCE;
 int PlayerPoints[MAXTF2PLAYERS];
