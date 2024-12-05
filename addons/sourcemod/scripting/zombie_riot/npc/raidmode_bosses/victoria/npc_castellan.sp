@@ -249,12 +249,12 @@ methodmap Castellan < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
-	property float m_flTimeUntillNextSummonRobots
+	property float m_flTimeUntillNextSummonDrones
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
-	property float m_flTimeUntillCastellanSpawn
+	property float m_flTimeUntillNextSummonHardenerDrones
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
@@ -315,8 +315,8 @@ methodmap Castellan < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAirRaidDelay = 0.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
-		npc.m_flTimeUntillNextSummonRobots = GetGameTime() + 5.0;
-		//npc.m_flTimeUntillGunReload = GetGameTime() + 12.5;
+		npc.m_flTimeUntillNextSummonDrones = GetGameTime() + 10.0;
+		npc.m_flTimeUntillNextSummonHardenerDrones = GetGameTime() + 13.5;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_iAmountProjectiles = 0;
 		npc.m_iAttacksTillReload = 0;
@@ -669,7 +669,7 @@ static void Internal_ClotThink(int iNPC)
 					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
 					I_cant_do_this_all_day[npc.index]=0;
 					//npc.m_flTimeUntillDroneSniperShot += 4.0;
-					//npc.m_flTimeUntillNextSummonRobots += 4.0;
+					//npc.m_flTimeUntillNextSummonDrones += 4.0;
 					npc.m_flNextRangedSpecialAttackHappens += 4.0;
 					npc.m_bFUCKYOU=false;
 					b_NpcIsInvulnerable[npc.index] = false;
@@ -896,29 +896,134 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		npc.m_flTimeUntillSupportSpawn = gameTime + 20.0;
 		CreateSupport_Castellan(npc.index, target, SelfPos);
 	}
-	else if(npc.m_flTimeUntillNextSummonRobots < gameTime)
+	else if(npc.m_flTimeUntillNextSummonDrones < gameTime)
 	{
-		
+		case 0:
+		{
+			NPC_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.m_bisWalking = false;
+			b_NpcIsInvulnerable[npc.index] = true;
+			npc.AddActivityViaSequence("layer_taunt05");
+			npc.m_flAttackHappens = 0.0;
+			npc.SetCycle(0.7);
+			npc.SetPlaybackRate(1.5);
+			npc.m_iChanged_WalkCycle = 0;
+			npc.m_flDoingAnimation = gameTime + 0.5;	
+			Delay_Attribute[npc.index] = gameTime + 0.5;
+			I_cant_do_this_all_day[npc.index]=1;
+		}
+		case 1:
+		{
+			if(Delay_Attribute[npc.index] < gameTime)
+			{
+				
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				pos[3] += 70.0;
+
+				int health = ReturnEntityMaxHealth(npc.index) / 20;
+				
+				int summon = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "limit");
+
+				{
+					if(GetTeam(npc.index) != TFTeam_Red)
+						Zombies_Currently_Still_Ongoing++;
+					
+					SetEntProp(entity, Prop_Data, "m_iHealth", health);
+					SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+					
+					fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+					fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+					fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+					fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
+					view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+				}
+
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				npc.m_flDoingAnimation = gameTime + 0.5;	
+				Delay_Attribute[npc.index] = gameTime + 0.5;
+				I_cant_do_this_all_day[npc.index]=0;
+			}
+		}
 	}
+	else if(npc.m_flTimeUntillNextSummonHardenerDrones < gameTime)
+	{
+		case 0:
+		{
+			NPC_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.m_bisWalking = false;
+			b_NpcIsInvulnerable[npc.index] = true;
+			npc.AddActivityViaSequence("layer_taunt_cheers_soldier");
+			npc.m_flAttackHappens = 0.0;
+			npc.SetCycle(0.01);
+			npc.SetPlaybackRate(1.0);
+			npc.m_iChanged_WalkCycle = 0;
+			npc.m_flDoingAnimation = gameTime + 0.5;	
+			Delay_Attribute[npc.index] = gameTime + 0.5;
+			I_cant_do_this_all_day[npc.index]=1;
+		}
+		case 1:
+		{
+			if(Delay_Attribute[npc.index] < gameTime)
+			{
+				npc.AddActivityViaSequence("layer_taunt_cheers_soldier");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.2);
+				npc.SetPlaybackRate(0.0);
+				npc.m_iChanged_WalkCycle = 0;
+
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				pos[3] += 70.0;
+
+				int health = ReturnEntityMaxHealth(npc.index) / 25;
+				
+				int summon = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "limit");
+				{
+					if(GetTeam(npc.index) != TFTeam_Red)
+						Zombies_Currently_Still_Ongoing++;
+					
+					SetEntProp(entity, Prop_Data, "m_iHealth", health);
+					SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+					
+					fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+					fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+					fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+					fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
+					view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+				}
+
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				npc.m_flDoingAnimation = gameTime + 0.5;	
+				Delay_Attribute[npc.index] = gameTime + 0.5;
+				I_cant_do_this_all_day[npc.index]=0;
+			}
+		}
+	}
+	/*
 	else if(npc.m_flTimeUntillDroneSniperShot < gameTime)
 	{
 		switch(I_cant_do_this_all_day[npc.index])
 		{
 			case 0:
 			{
-				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
-				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				b_NpcIsInvulnerable[npc.index] = true;
-				npc.AddActivityViaSequence("layer_taunt_most_wanted");
+				npc.AddActivityViaSequence("layer_taunt09");
 				npc.m_flAttackHappens = 0.0;
-				npc.SetCycle(0.01);
+				npc.SetCycle(0.85);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
-				npc.m_flDoingAnimation = gameTime + 0.75;	
-				Delay_Attribute[npc.index] = gameTime + 0.75;
+				npc.m_flDoingAnimation = gameTime + 0.5;	
+				Delay_Attribute[npc.index] = gameTime + 0.5;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
 			case 1:
@@ -933,32 +1038,29 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 
 					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 					int enemy[MAXENTITIES];
-					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy),_,_,_,(550.0 * 550.0));
 					for(int i; i < sizeof(enemy); i++)
 					{
 						float Spam_delay=0.0;
-						for(int k; k < 4; k++)
+						if(enemy[i])
 						{
-							if(enemy[i])
-							{
-								float vEnd[3];
-								float RocketDamage = 50.0;
-								RocketDamage *= RaidModeScaling;
-								GetAbsOrigin(enemy[i], vEnd);
-								DataPack pack;
-								CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
-								pack.WriteCell(EntIndexToEntRef(npc.index));
-								pack.WriteCell(EntIndexToEntRef(enemy[i]));
-								Spam_delay += 0.15;
-								Handle pack2;
-								CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-								WritePackCell(pack2, EntIndexToEntRef(npc.index));
-								WritePackFloat(pack2, 0.0);
-								WritePackFloat(pack2, vEnd[0]);
-								WritePackFloat(pack2, vEnd[1]);
-								WritePackFloat(pack2, vEnd[2]);
-								WritePackFloat(pack2, RocketDamage);
-							}
+							float vEnd[3];
+							float RocketDamage = 50.0;
+							RocketDamage *= RaidModeScaling ;
+							GetAbsOrigin(enemy[i], vEnd);
+							DataPack pack;
+							CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
+							pack.WriteCell(EntIndexToEntRef(npc.index));
+							pack.WriteCell(EntIndexToEntRef(enemy[i]));
+							Spam_delay += 0.15;
+							Handle pack2;
+							CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+							WritePackCell(pack2, EntIndexToEntRef(npc.index));
+							WritePackFloat(pack2, 0.0);
+							WritePackFloat(pack2, vEnd[0]);
+							WritePackFloat(pack2, vEnd[1]);
+							WritePackFloat(pack2, vEnd[2]);
+							WritePackFloat(pack2, RocketDamage);
 						}
 					}
 
@@ -986,7 +1088,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
 					I_cant_do_this_all_day[npc.index]=0;
 					//npc.m_flTimeUntillDroneSniperShot += 4.0;
-					//npc.m_flTimeUntillNextSummonRobots += 4.0;
+					//npc.m_flTimeUntillNextSummonDrones += 4.0;
 					npc.m_flNextRangedSpecialAttackHappens += 4.0;
 					npc.m_bFUCKYOU=false;
 					b_NpcIsInvulnerable[npc.index] = false;
@@ -995,6 +1097,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		}
 		return;
 	}
+	*/
 	if(npc.m_iAttacksTillReload > 0)
 	{
 		if(gameTime > npc.m_flNextMeleeAttack)
@@ -1010,7 +1113,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 				{
 					target = TR_GetEntityIndex(swingTrace);	
-						
+					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
