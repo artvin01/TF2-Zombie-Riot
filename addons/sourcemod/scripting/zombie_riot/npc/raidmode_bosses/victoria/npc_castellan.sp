@@ -1119,7 +1119,7 @@ void CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3])
 		}
 		case 2:
 		{
-			SupportTeam = NPC_CreateByName("npc_the_wall", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "support_ability"); //can only be enemy
+			SupportTeam = NPC_CreateByName("npc_the_wall", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "support_ability;%i",entity); //can only be enemy
 		}
 		case 3:
 		{
@@ -1127,9 +1127,8 @@ void CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3])
 		}
 		default: //This should not happen
 		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
+			PrintToChatAll("An error occured. Scream at devs");//none
 		}
-
 	}
 	if(IsValidEntity(SupportTeam))
 	{
