@@ -132,7 +132,7 @@ methodmap VictoriaMortar < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 100.0;
 		
 		
 		int skin = 1;
@@ -216,7 +216,7 @@ public void VictoriaMortar_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 1;
 				npc.SetActivity("ACT_MP_RUN_MELEE");
 				npc.StartPathing();
-				npc.m_flSpeed = 200.0;
+				npc.m_flSpeed = 100.0;
 			}
 		}
 		else
@@ -227,7 +227,7 @@ public void VictoriaMortar_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 2;
 				npc.SetActivity("ACT_MP_RUN_PRIMARY");
 				npc.StartPathing();
-				npc.m_flSpeed = 200.0;
+				npc.m_flSpeed = 100.0;
 			}
 		}
 	}
@@ -254,11 +254,11 @@ public void VictoriaMortar_ClotThink(int iNPC)
 				{
 					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
-				npc.m_flSpeed = 200.0;
+				npc.m_flSpeed = 100.0;
 			}
 			case 1:
 			{
-				npc.m_flSpeed = 100.0;
+				npc.m_flSpeed = 50.0;
 				//Move slower.
 			}
 		}
@@ -329,7 +329,7 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 				float RocketSpeed = 650.0;
 				if(NpcStats_VictorianCallToArms(npc.index))
 				{
-					RocketDamage *= 0.33;
+					RocketDamage *= 0.5;
 				}
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
@@ -344,7 +344,7 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, RocketSpeed,_,vecTarget);
-					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 2.0, 1.0);
 					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 
@@ -379,9 +379,11 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
+			/*
 			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
 			npc.FaceTowards(VecAim, 20000.0);
-			//stand
+			*/
+			//walk slower
 			return 1;
 		}
 		//cant see enemy somewhy.
