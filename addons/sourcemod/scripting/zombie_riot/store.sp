@@ -1892,6 +1892,17 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-83", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Enable Visual Clutter");
+	if(b_EnableClutterSetting[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-84", buffer);
+
 	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed Increace");
 	if(b_TauntSpeedIncreace[client])
 	{
@@ -2298,6 +2309,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				{
 					b_EnableCountedDowns[client] = !b_EnableCountedDowns[client];
 					ReShowSettingsHud(client);
+				}
+				case -84:
+				{
+					b_EnableClutterSetting[client] = !b_EnableClutterSetting[client];
+					ReShowSettingsHud(client);
+					SetGlobalTransTarget(client);
+					PrintToChat(client,"%t", "Enable Visual Clutter Desc");
 				}
 				case -64: //Lower Volume
 				{

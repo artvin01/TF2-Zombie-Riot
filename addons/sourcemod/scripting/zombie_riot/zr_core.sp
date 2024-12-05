@@ -251,6 +251,8 @@ ConVar zr_waitingtime;
 ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
 ConVar zr_raidmultihp;
+ConVar zr_multi_maxcap;
+ConVar zr_multi_multiplier;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;

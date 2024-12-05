@@ -737,6 +737,8 @@ public void OnPostThink(int client)
 		}
 
 		Armor_regen_delay[client] = GameTime + 1.0;
+		SDkHooks_Think_TutorialStepsDo(client);
+
 	}
 #endif	// ZR
 
@@ -3230,4 +3232,9 @@ stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 	if(!b_AggreviatedSilence[client])
 		mana_regen[client] = 0.0;
 #endif
+}
+
+void SDkHooks_Think_TutorialStepsDo(int client)
+{
+	DoTutorialStep(client, true);
 }
