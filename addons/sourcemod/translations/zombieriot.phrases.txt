@@ -4024,4 +4024,8 @@
 	{
 		"en"	"Crowbar"
 	}
+	"Ability already Active"
+	{
+		"en"	"Ability is currently active"
+	}
 }
