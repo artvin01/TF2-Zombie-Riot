@@ -273,50 +273,79 @@ methodmap Atomizer < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
-		Delay_Attribute[npc.index] = 0.0;
-		DrinkPOWERUP[npc.index] = false;
-		YaWeFxxked[npc.index] = false;
-		ParticleSpawned[npc.index] = false;
-		SUPERHIT[npc.index] = false;
-		NiceMiss[npc.index] = 0.0;
-		Vs_Atomizer_To_Huscarls = 0;
-		I_cant_do_this_all_day[npc.index] = 0;
-		npc.i_GunMode = 0;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
-		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
-		npc.m_flNextRangedAttack = GetGameTime() + 30.0;
-		npc.m_flAngerDelay = GetGameTime() + 15.0;
-		npc.m_iOverlordComboAttack = 0;
-		OnMiss[npc.index] = false;
-		npc.m_fbRangedSpecialOn = false;
-		npc.m_bFUCKYOU = false;
-		Zero(b_said_player_weaponline);
-		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
-		Vs_RechargeTimeMax[npc.index] = 20.0;
-		Victoria_Support_RechargeTimeMax(npc.index, 20.0);
-		
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		b_thisNpcIsARaid[npc.index] = true;
-		b_angered_twice[npc.index] = false;
-		for(int client_check=1; client_check<=MaxClients; client_check++)
+		bool CloneDo = StrContains(data, "clone_ability") != -1;
+		if(CloneDo)
 		{
-			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
-			{
-				LookAtTarget(client_check, npc.index);
-				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Atomizer Arrived");
-			}
+			MakeObjectIntangeable(npc.index);
+			b_DoNotUnStuck[npc.index] = true;
+			b_NoKnockbackFromSources[npc.index] = true;
+			b_ThisEntityIgnored[npc.index] = true;
+			b_NoKillFeed[npc.index] = true;
+			npc.m_flCloneSuicide = GetGameTime() + 1.0;
+			npc.m_flNextRangedAttack = GetGameTime() + 0.1;
+			npc.m_flRangedSpecialDelay = GetGameTime() + 99.0;
+			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 99.0;
+			npc.m_flAngerDelay = GetGameTime() + 99.0;
+
+			CPrintToChatAll("{blue}Atomizer{default}: Did you really thought we would let you sabotage our Radiotower?");
 		}
-		FTL[npc.index] = 200.0;
-		RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
-		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = false;
-		
+		else
+		{
+			NPC_StartPathing(npc.index);
+			npc.m_iState = 0;
+			npc.m_flGetClosestTargetTime = 0.0;
+			npc.m_flSpeed = 300.0;
+			Delay_Attribute[npc.index] = 0.0;
+			DrinkPOWERUP[npc.index] = false;
+			YaWeFxxked[npc.index] = false;
+			ParticleSpawned[npc.index] = false;
+			SUPERHIT[npc.index] = false;
+			NiceMiss[npc.index] = 0.0;
+			Vs_Atomizer_To_Huscarls = 0;
+			I_cant_do_this_all_day[npc.index] = 0;
+			npc.i_GunMode = 0;
+			npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
+			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
+			npc.m_flNextRangedAttack = GetGameTime() + 30.0;
+			npc.m_flAngerDelay = GetGameTime() + 15.0;
+			npc.m_iOverlordComboAttack = 0;
+			OnMiss[npc.index] = false;
+			npc.m_fbRangedSpecialOn = false;
+			npc.m_bFUCKYOU = false;
+			Zero(b_said_player_weaponline);
+			fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
+			Vs_RechargeTimeMax[npc.index] = 20.0;
+			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
+			
+			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+			b_thisNpcIsARaid[npc.index] = true;
+			b_angered_twice[npc.index] = false;
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					LookAtTarget(client_check, npc.index);
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "item_armor", 1, "%t", "Atomizer Arrived");
+				}
+			}
+			FTL[npc.index] = 200.0;
+			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidAllowsBuildings = false;
+
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
+			music.Time = 128;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
+			strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
+			Music_SetRaidMusic(music);
+			
+			CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let the get out alive!");
+		}
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		if(RaidModeScaling < 55)
 		{
@@ -345,18 +374,13 @@ methodmap Atomizer < CClotBody
 		}
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
-			FTL[npc.index] = 220.0;
-			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
+			if(!CloneDo)
+			{
+				FTL[npc.index] = 220.0;
+				RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
+			}
 			RaidModeScaling *= 0.65;
 		}
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
-		music.Time = 128;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
-		strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
-		Music_SetRaidMusic(music);
 		npc.m_iChanged_WalkCycle = -1;
 
 		int skin = 1;
@@ -397,8 +421,9 @@ methodmap Atomizer < CClotBody
 		SetVariantColor(view_as<int>({100, 150, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
-		CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let the get out alive!");
 		
+		
+
 		return npc;
 	}
 }
