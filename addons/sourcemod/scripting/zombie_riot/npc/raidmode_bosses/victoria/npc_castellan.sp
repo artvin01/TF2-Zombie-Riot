@@ -102,9 +102,9 @@ static int gRedPoint;
 static int g_BeamIndex_heal;
 static int g_HALO_Laser;
 
-#define BOMBBARDING_CHARGE_TIME 2.0
-#define BOMBBARDING_CHARGE_SPAN 1.0
-#define BOMBBARDING_LIGHTNING_RANGE 150.0
+#define BombDrop_CHARGE_TIME 2.0
+#define BombDrop_CHARGE_SPAN 1.0
+#define BombDrop_LIGHTNING_RANGE 150.0
 
 void Castellan_OnMapStart_NPC()
 {
@@ -390,8 +390,8 @@ methodmap Castellan < CClotBody
 		npc.m_fbGunout = false;
 
 		SetGlobalTransTarget(client);
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
-		SetVariantString("1.2");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_fireaxe_pyro/c_fireaxe_pyro.mdl");
+		SetVariantString("0.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		CPrintToChatAll("{blue}%s{default}: Intruders in sight, I won't let the get out alive!", c_NpcName[npc.index]);
 
@@ -898,111 +898,117 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 	}
 	else if(npc.m_flTimeUntillNextSummonDrones < gameTime)
 	{
-		case 0:
+		switch(I_cant_do_this_all_day[npc.index])
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-			npc.m_bisWalking = false;
-			b_NpcIsInvulnerable[npc.index] = true;
-			npc.AddActivityViaSequence("layer_taunt05");
-			npc.m_flAttackHappens = 0.0;
-			npc.SetCycle(0.7);
-			npc.SetPlaybackRate(1.5);
-			npc.m_iChanged_WalkCycle = 0;
-			npc.m_flDoingAnimation = gameTime + 0.5;	
-			Delay_Attribute[npc.index] = gameTime + 0.5;
-			I_cant_do_this_all_day[npc.index]=1;
-		}
-		case 1:
-		{
-			if(Delay_Attribute[npc.index] < gameTime)
+			case 0:
 			{
-				
-				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-				pos[3] += 70.0;
-
-				int health = ReturnEntityMaxHealth(npc.index) / 20;
-				
-				int summon = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "limit");
-
-				{
-					if(GetTeam(npc.index) != TFTeam_Red)
-						Zombies_Currently_Still_Ongoing++;
-					
-					SetEntProp(entity, Prop_Data, "m_iHealth", health);
-					SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-					
-					fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
-					fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
-					fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
-					fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
-					view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
-				}
-
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
+				b_NpcIsInvulnerable[npc.index] = true;
+				npc.AddActivityViaSequence("layer_taunt05");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.7);
+				npc.SetPlaybackRate(1.5);
+				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 0.5;	
 				Delay_Attribute[npc.index] = gameTime + 0.5;
-				I_cant_do_this_all_day[npc.index]=0;
+				I_cant_do_this_all_day[npc.index]=1;
+			}
+			case 1:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					
+					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+					pos[3] += 70.0;
+
+					int health = ReturnEntityMaxHealth(npc.index) / 20;
+					
+					int summon = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "limit");
+
+					{
+						if(GetTeam(npc.index) != TFTeam_Red)
+							Zombies_Currently_Still_Ongoing++;
+						
+						SetEntProp(entity, Prop_Data, "m_iHealth", health);
+						SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+						
+						fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+						fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
+						view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+					}
+
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					npc.m_bisWalking = false;
+					npc.m_flDoingAnimation = gameTime + 0.5;	
+					Delay_Attribute[npc.index] = gameTime + 0.5;
+					I_cant_do_this_all_day[npc.index]=0;
+				}
 			}
 		}
 	}
 	else if(npc.m_flTimeUntillNextSummonHardenerDrones < gameTime)
 	{
-		case 0:
+		switch(I_cant_do_this_all_day[npc.index])
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-			npc.m_bisWalking = false;
-			b_NpcIsInvulnerable[npc.index] = true;
-			npc.AddActivityViaSequence("layer_taunt_cheers_soldier");
-			npc.m_flAttackHappens = 0.0;
-			npc.SetCycle(0.01);
-			npc.SetPlaybackRate(1.0);
-			npc.m_iChanged_WalkCycle = 0;
-			npc.m_flDoingAnimation = gameTime + 0.5;	
-			Delay_Attribute[npc.index] = gameTime + 0.5;
-			I_cant_do_this_all_day[npc.index]=1;
-		}
-		case 1:
-		{
-			if(Delay_Attribute[npc.index] < gameTime)
+			case 0:
 			{
-				npc.AddActivityViaSequence("layer_taunt_cheers_soldier");
-				npc.m_flAttackHappens = 0.0;
-				npc.SetCycle(0.2);
-				npc.SetPlaybackRate(0.0);
-				npc.m_iChanged_WalkCycle = 0;
-
-				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-				pos[3] += 70.0;
-
-				int health = ReturnEntityMaxHealth(npc.index) / 25;
-				
-				int summon = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "limit");
-				{
-					if(GetTeam(npc.index) != TFTeam_Red)
-						Zombies_Currently_Still_Ongoing++;
-					
-					SetEntProp(entity, Prop_Data, "m_iHealth", health);
-					SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-					
-					fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
-					fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
-					fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
-					fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
-					view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
-				}
-
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
+				b_NpcIsInvulnerable[npc.index] = true;
+				npc.AddActivityViaSequence("layer_taunt_cheers_soldier");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.0);
+				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 0.5;	
 				Delay_Attribute[npc.index] = gameTime + 0.5;
-				I_cant_do_this_all_day[npc.index]=0;
+				I_cant_do_this_all_day[npc.index]=1;
+			}
+			case 1:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.AddActivityViaSequence("layer_taunt_cheers_soldier");
+					npc.m_flAttackHappens = 0.0;
+					npc.SetCycle(0.2);
+					npc.SetPlaybackRate(0.0);
+					npc.m_iChanged_WalkCycle = 0;
+
+					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+					pos[3] += 70.0;
+
+					int health = ReturnEntityMaxHealth(npc.index) / 25;
+					
+					int summon = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "limit");
+					{
+						if(GetTeam(npc.index) != TFTeam_Red)
+							Zombies_Currently_Still_Ongoing++;
+						
+						SetEntProp(entity, Prop_Data, "m_iHealth", health);
+						SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+						
+						fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+						fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
+						view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+					}
+
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					npc.m_bisWalking = false;
+					npc.m_flDoingAnimation = gameTime + 0.5;	
+					Delay_Attribute[npc.index] = gameTime + 0.5;
+					I_cant_do_this_all_day[npc.index]=0;
+				}
 			}
 		}
 	}
@@ -1054,7 +1060,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 							pack.WriteCell(EntIndexToEntRef(enemy[i]));
 							Spam_delay += 0.15;
 							Handle pack2;
-							CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+							CreateDataTimer(BombDrop_CHARGE_SPAN, Smite_Timer_BombDrop, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 							WritePackCell(pack2, EntIndexToEntRef(npc.index));
 							WritePackFloat(pack2, 0.0);
 							WritePackFloat(pack2, vEnd[0]);
@@ -1276,24 +1282,20 @@ static void ResetCastellanWeapon(Castellan npc, int weapon_Type)
 	{
 		case 1:
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
-			SetVariantString("0.75");
+			npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
+			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-			SetVariantInt(32);
-			AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		}
 		case 2:
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
-			SetVariantString("0.75");
+			npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_reserve_shooter/c_reserve_shooter.mdl");
+			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-			SetVariantInt(32);
-			AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		}
 		case 0:
 		{	
-			npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
-			SetVariantString("1.0");
+			npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_fireaxe_pyro/c_fireaxe_pyro.mdl");
+			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		}
 	}
@@ -1354,7 +1356,7 @@ static Action Timer_Bomb_Spam(Handle timer, DataPack pack)
 		vEnd[0] += GetRandomFloat(-250.0, 250.0);
 		vEnd[1] += GetRandomFloat(-250.0, 250.0);
 		Handle pack2;
-		CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		CreateDataTimer(BombDrop_CHARGE_SPAN, Smite_Timer_BombDrop, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		WritePackCell(pack2, EntIndexToEntRef(npc.index));
 		WritePackFloat(pack2, 0.0);
 		WritePackFloat(pack2, vEnd[0]);
@@ -1362,12 +1364,12 @@ static Action Timer_Bomb_Spam(Handle timer, DataPack pack)
 		WritePackFloat(pack2, vEnd[2]);
 		WritePackFloat(pack2, RocketDamage);
 			
-		spawnRing_Vectors(vEnd, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BOMBBARDING_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
+		spawnRing_Vectors(vEnd, BombDrop_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BombDrop_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
 	}
 	return Plugin_Stop;
 }
 
-public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
+public Action Smite_Timer_BombDrop(Handle Smite_Logic, DataPack pack)
 {
 	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
@@ -1386,7 +1388,7 @@ public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 	
 	float damage = ReadPackFloat(pack);
 	
-	if (NumLoops >= BOMBBARDING_CHARGE_TIME)
+	if (NumLoops >= BombDrop_CHARGE_TIME)
 	{
 		float secondLoc[3];
 		for (int replace = 0; replace < 3; replace++)
@@ -1396,7 +1398,7 @@ public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 		
 		for (int sequential = 1; sequential <= 5; sequential++)
 		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (BOMBBARDING_LIGHTNING_RANGE * 5.0)/float(sequential));
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (BombDrop_LIGHTNING_RANGE * 5.0)/float(sequential));
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
 		
@@ -1433,19 +1435,19 @@ public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 		pack_boom.WriteCell(1);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
-		CreateEarthquake(spawnLoc, 1.0, BOMBBARDING_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOMBBARDING_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
+		CreateEarthquake(spawnLoc, 1.0, BombDrop_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BombDrop_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
 	
 		return Plugin_Stop;
 	}
 	else
 	{
-		spawnRing_Vectors(spawnLoc, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+		spawnRing_Vectors(spawnLoc, BombDrop_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
 	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
 		
 		ResetPack(pack);
 		WritePackCell(pack, EntIndexToEntRef(entity));
-		WritePackFloat(pack, NumLoops + BOMBBARDING_CHARGE_TIME);
+		WritePackFloat(pack, NumLoops + BombDrop_CHARGE_TIME);
 		WritePackFloat(pack, spawnLoc[0]);
 		WritePackFloat(pack, spawnLoc[1]);
 		WritePackFloat(pack, spawnLoc[2]);
