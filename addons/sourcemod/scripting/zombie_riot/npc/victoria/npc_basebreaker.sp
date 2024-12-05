@@ -182,7 +182,7 @@ public void VictoriaBaseBreaker_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
-	if(NpcStats_VictorianCallToArms(owner))
+	if(NpcStats_VictorianCallToArms(npc.index))
 	{
 		npc.m_flSpeed = 400.0;
 	}
