@@ -544,10 +544,6 @@ static void Clone_ClotThink(int iNPC)
 			SmiteNpcToDeath(npc.index);
 		}
 	}
-	return 1;
-	npc.m_flNextRangedSpecialAttackHappens += 0.1;
-	npc.m_flTimeUntillNextRailgunShots += 0.1;
-	npc.m_flTimeUntillDroneSniperShot += 0.1;
 }
 
 static Action Clone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
