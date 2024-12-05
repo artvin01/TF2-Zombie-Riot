@@ -102,7 +102,7 @@ methodmap VictoriaBatter < CClotBody
 	
 	public VictoriaBatter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaBatter npc = view_as<VictoriaBatter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "300", ally));
+		VictoriaBatter npc = view_as<VictoriaBatter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "750", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
