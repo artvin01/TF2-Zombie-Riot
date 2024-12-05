@@ -1111,19 +1111,23 @@ static void ResetCastellanWeapon(Castellan npc, int weapon_Type)
 void CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3])
 {
 	int SupportTeam;
+	char Adddeta[512];
+	FormatEx(Adddeta, sizeof(Adddeta), "support_ability");
 	switch(GetRandomInt(1, 3))
 	{
 		case 1:
 		{
-			SupportTeam = NPC_CreateByName("npc_atomizer", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "support_ability"); //can only be enemy
+			SupportTeam = NPC_CreateByName("npc_atomizer", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), Adddeta); //can only be enemy
 		}
 		case 2:
 		{
-			SupportTeam = NPC_CreateByName("npc_the_wall", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "support_ability;%i",entity); //can only be enemy
+			FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, entity);
+			SupportTeam = NPC_CreateByName("npc_the_wall", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), Adddeta);
 		}
 		case 3:
 		{
-			SupportTeam = NPC_CreateByName("npc_harrison", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "support_ability"); //can only be enemy
+			FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, entity);
+			SupportTeam = NPC_CreateByName("npc_harrison", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), Adddeta);
 		}
 		default: //This should not happen
 		{
