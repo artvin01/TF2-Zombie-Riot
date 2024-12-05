@@ -947,8 +947,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					Delay_Attribute[npc.index] = gameTime + 0.5;
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flTimeUntillNextSummonDrones = gameTime + 25.0;
+					return 0;
 				}
-				return;
 			}
 		}
 	}
@@ -1007,6 +1007,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					Delay_Attribute[npc.index] = gameTime + 0.5;
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flTimeUntillNextSummonHardenerDrones = gameTime + 25.0;
+					return 0;
 				}
 			}
 		}
