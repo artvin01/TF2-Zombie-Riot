@@ -487,112 +487,59 @@ static void Clone_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	
+	bool playsounds=false;
 	switch(I_cant_do_this_all_day[npc.index])
 	{
 		case 0:
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
-			SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_bisWalking = false;
-			npc.AddActivityViaSequence("layer_taunt_most_wanted");
+			npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
+			npc.PlayRocketshotready();
 			npc.m_flAttackHappens = 0.0;
 			npc.SetCycle(0.01);
-			npc.SetPlaybackRate(1.0);
+			npc.SetPlaybackRate(1.5);
 			npc.m_iChanged_WalkCycle = 0;
-			npc.m_flDoingAnimation = gameTime + 0.75;	
-			Delay_Attribute[npc.index] = gameTime + 0.75;
+			npc.m_flDoingAnimation = gameTime + 1.5;
+			npc.m_flTimeUntillSummonRocket = 0.15;
 			I_cant_do_this_all_day[npc.index]=1;
 		}
 		case 1:
 		{
-			if(Delay_Attribute[npc.index] < gameTime)
+			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+			int enemy[8];
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+			for(int i; i < sizeof(enemy); i++)
 			{
-				npc.AddActivityViaSequence("layer_taunt_most_wanted");
-				npc.m_flAttackHappens = 0.0;
-				npc.SetCycle(0.3);
-				npc.SetPlaybackRate(0.0);
-				npc.m_iChanged_WalkCycle = 0;
-				EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
-				EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				npc.m_bisWalking = false;
-				AirRaidStart[npc.index] = true;
-				npc.m_flDoingAnimation = gameTime + 15.0;	
-				Delay_Attribute[npc.index] = gameTime + 15.0;
-				I_cant_do_this_all_day[npc.index]=2;
+				for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
+				{
+					if(enemy[i])
+					{
+						DataPack pack;
+						CreateDataTimer(npc.m_flTimeUntillSummonRocket, Timer_Quad_Rocket_Shot, pack, TIMER_FLAG_NO_MAPCHANGE);
+						pack.WriteCell(EntIndexToEntRef(npc.index));
+						pack.WriteCell(EntIndexToEntRef(enemy[i]));
+						npc.m_flTimeUntillSummonRocket += 0.15;
+						playsounds=true;
+					}
+				}
 			}
+			I_cant_do_this_all_day[npc.index]=2;
 		}
 		case 2:
 		{
-			if(Delay_Attribute[npc.index] < gameTime)
-			{
-				npc.PlayAngerSound();
-				npc.PlayAngerReaction();
-				I_cant_do_this_all_day[npc.index]=0;
-				AirRaidStart[npc.index] = false;
-				
-				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-				
-				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
-				npc.PlayDeathSound();
-				
-				b_NpcForcepowerupspawn[npc.index] = 0;
-				i_RaidGrantExtra[npc.index] = 0;
-				b_DissapearOnDeath[npc.index] = true;
-				b_DoGibThisNpc[npc.index] = true;
-				SmiteNpcToDeath(npc.index);
-			}
+			if(playsounds)npc.PlayHomerunSound();
+			I_cant_do_this_all_day[npc.index]=0;
+			npc.m_flTimeUntillSummonRocket = 0.0;
+			npc.m_flNextRangedSpecialAttackHappens = gameTime + 30.0;
+			npc.m_flTimeUntillNextRailgunShots = gameTime + 2.0;
 		}
 	}
-	if(AirRaidStart[npc.index] && npc.m_flAirRaidDelay < gameTime)
-	{
-		int enemy[MAXENTITIES];
-		if(IsValidEntity(OverrideOwner[npc.index]))
-		{
-			UnderTides npcGetInfo = view_as<UnderTides>(OverrideOwner[npc.index]);
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
-		}
-		else
-		{
-			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
-		}
-		for(int i; i < sizeof(enemy); i++)
-		{
-			float Spam_delay=0.0;
-			for(int k; k < 4; k++)
-			{
-				if(enemy[i])
-				{
-					float vEnd[3];
-					float RocketDamage = 50.0;
-					RocketDamage *= RaidModeScaling;
-					GetAbsOrigin(enemy[i], vEnd);
-					DataPack pack;
-					CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
-					pack.WriteCell(EntIndexToEntRef(npc.index));
-					pack.WriteCell(EntIndexToEntRef(enemy[i]));
-					Spam_delay += 0.15;
-					Handle pack2;
-					CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-					WritePackCell(pack2, (IsValidEntity(OverrideOwner[npc.index]) ? EntIndexToEntRef(OverrideOwner[npc.index]) : EntIndexToEntRef(npc.index)));
-					WritePackFloat(pack2, 0.0);
-					WritePackFloat(pack2, vEnd[0]);
-					WritePackFloat(pack2, vEnd[1]);
-					WritePackFloat(pack2, vEnd[2]);
-					WritePackFloat(pack2, RocketDamage);
-				}
-			}
-		}
-		npc.m_flAirRaidDelay = gameTime + 2.5;
-	}
+	return 1;
 	npc.m_flNextRangedSpecialAttackHappens += 0.1;
 	npc.m_flTimeUntillNextRailgunShots += 0.1;
 	npc.m_flTimeUntillDroneSniperShot += 0.1;
-	return;
 }
 
 static Action Clone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
