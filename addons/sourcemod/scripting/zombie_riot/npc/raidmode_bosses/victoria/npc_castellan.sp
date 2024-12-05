@@ -926,20 +926,20 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 
 					int health = ReturnEntityMaxHealth(npc.index) / 20;
 					
-					int summon = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "limit");
+					int summon1 = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "limit");
 
 					{
 						if(GetTeam(npc.index) != TFTeam_Red)
 							Zombies_Currently_Still_Ongoing++;
 						
-						SetEntProp(entity, Prop_Data, "m_iHealth", health);
-						SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+						SetEntProp(summon1, Prop_Data, "m_iHealth", health);
+						SetEntProp(summon1, Prop_Data, "m_iMaxHealth", health);
 						
-						fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
-						fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
-						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
-						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
-						view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+						fl_Extra_MeleeArmor[summon1] = fl_Extra_MeleeArmor[npc.index];
+						fl_Extra_RangedArmor[summon1] = fl_Extra_RangedArmor[npc.index];
+						fl_Extra_Speed[summon1] = fl_Extra_Speed[npc.index];
+						fl_Extra_Damage[summon1] = fl_Extra_Damage[npc.index];
+						view_as<CClotBody>(summon1).m_iBleedType = BLEEDTYPE_METAL;
 					}
 
 					NPC_StopPathing(npc.index);
@@ -992,14 +992,14 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 						if(GetTeam(npc.index) != TFTeam_Red)
 							Zombies_Currently_Still_Ongoing++;
 						
-						SetEntProp(entity, Prop_Data, "m_iHealth", health);
-						SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+						SetEntProp(summon, Prop_Data, "m_iHealth", health);
+						SetEntProp(summon, Prop_Data, "m_iMaxHealth", health);
 						
-						fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
-						fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
-						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
-						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
-						view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+						fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[npc.index];
+						fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[npc.index];
+						fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index];
+						fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index];
+						view_as<CClotBody>(summon).m_iBleedType = BLEEDTYPE_METAL;
 					}
 
 					NPC_StopPathing(npc.index);
