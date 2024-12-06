@@ -101,9 +101,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Ruliana(client, vecPos, vecAng, ally, data);
+	return Ruliana(vecPos, vecAng, team, data);
 }
 
 static float fl_npc_basespeed;
@@ -255,7 +255,7 @@ methodmap Ruliana < CClotBody
 		}
 	}
 	
-	public Ruliana(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Ruliana(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Ruliana npc = view_as<Ruliana>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -311,6 +311,7 @@ methodmap Ruliana < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
+		//speed is low since otherwise allied npc's can't keep up with her.
 		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -364,8 +365,7 @@ methodmap Ruliana < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Ruliana npc = view_as<Ruliana>(iNPC);
@@ -442,13 +442,13 @@ static void ClotThink(int iNPC)
 			{
 				npc.m_flDoingAnimation = GameTime + 1.0;
 
-				Master_Apply_Defense_Buff(npc.index, 150.0, 5.0, 0.9);	//10% dmg resist
+				Master_Apply_Defense_Buff(npc.index, 325.0, 5.0, 0.9);	//10% dmg resist
 			}
 		}
 		else
 			Ruina_Master_Rally(npc.index, false);
 			
-		if(Ratio < 0.25)
+		if(Ratio < 0.35)
 			SacrificeAllies(npc.index);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
 
 	}
@@ -499,7 +499,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}
 		else
@@ -695,19 +695,6 @@ static bool Retreat(Ruliana npc, bool custom = false)
 
 
 	return true;
-}
-static bool Similar_Vec(float Vec1[3], float Vec2[3])
-{
-	bool similar = true;
-	for(int i=0 ; i < 3 ; i ++)
-	{
-		similar = Similar(Vec1[i], Vec2[i]);
-	}
-	return similar;
-}
-static bool Similar(float val1, float val2)
-{
-	return fabs(val1 - val2) < 2.0;
 }
 static bool Directional_Trace(Ruliana npc, float Origin[3], float Angle[3], float Result[3])
 {
@@ -988,21 +975,21 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(Ratio < 0.5)
 	{
 		npc.Anger = true; //	>:(
+		fl_npc_basespeed = 350.0;
 		if(!b_angered_once[npc.index])
 		{
 			b_angered_once[npc.index] = true;
 			npc.PlayAngerSound();
-
-			fl_npc_basespeed = 270.0;
 			
 			if(npc.m_bThisNpcIsABoss)
 			{
 				npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 			}
 		}
-}
+	}
 	else
 	{
+		fl_npc_basespeed = 250.0;
 		npc.Anger = false;
 	}
 	

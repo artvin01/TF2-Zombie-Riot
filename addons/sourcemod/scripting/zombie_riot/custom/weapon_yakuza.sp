@@ -51,6 +51,7 @@ static int WeaponRef[MAXTF2PLAYERS] = {-1, ...};
 static int WeaponLevel[MAXTF2PLAYERS];
 static int WeaponCharge[MAXTF2PLAYERS];
 static int WeaponStyle[MAXTF2PLAYERS];
+static bool SuperDragon[MAXTF2PLAYERS];
 static int LastAttack[MAXTF2PLAYERS];
 static int LastVictim[MAXTF2PLAYERS] = {-1, ...};
 static float BlockNextFor[MAXTF2PLAYERS];
@@ -126,7 +127,7 @@ void Yakuza_AddCharge(int client, int amount)
 {
 	if(amount)
 	{
-		if(WeaponStyle[client] == Style_Dragon)
+		if(!SuperDragon[client] && WeaponStyle[client] == Style_Dragon)
 		{
 			//Dragon style CANNOT gain heat at all
 			if(amount >= 0)
@@ -251,6 +252,7 @@ void Yakuza_Enable(int client, int weapon)
 		// Weapon Setup
 		WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 		WeaponRef[client] = EntIndexToEntRef(weapon);
+		SuperDragon[client] = Attributes_Get(weapon, 6123, 0.0) != 0.0;
 
 		delete WeaponTimer[client];
 		WeaponTimer[client] = CreateTimer(0.6, WeaponTimerFunc, client, TIMER_REPEAT);
@@ -282,7 +284,7 @@ static Action WeaponTimerFunc(Handle timer, int client)
 				if(LastMann)
 					TF2_AddCondition(client, TFCond_InHealRadius, 1.1);
 				
-				if(WeaponStyle[client] == Style_Dragon)
+				if(!SuperDragon[client] && WeaponStyle[client] == Style_Dragon)
 				{
 					Yakuza_AddCharge(client, -1);
 					if(WeaponCharge[client] < 1)
@@ -327,7 +329,7 @@ public void Weapon_Yakuza_R(int client, int weapon, bool crit, int slot)
 	{
 		if(WeaponLevel[client] > 2)
 		{
-			if(WeaponCharge[client] >= 80)
+			if(SuperDragon[client] || WeaponCharge[client] >= 80)
 			{
 				WeaponStyle[client] = Style_Dragon;
 			}
@@ -841,7 +843,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		BlockStale[attacker] = 0;
 		
 	LastVictim[attacker] = EntIndexToEntRef(victim);
-	int HeatGive = 5;
+	int HeatGive = 4;
 
 	switch(WeaponStyle[attacker])
 	{
@@ -855,7 +857,10 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 			HeatGive = 2;
 
 		case Style_Dragon:
-			HeatGive = 0;
+		{
+			if(!SuperDragon[attacker])
+				HeatGive = 0;
+		}
 	}
 	if(b_thisNpcIsARaid[victim])
 	{

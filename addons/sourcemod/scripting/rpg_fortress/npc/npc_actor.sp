@@ -101,28 +101,22 @@ methodmap NPCActor < CClotBody
 		kv.GetString("wear1", buffer1, sizeof(buffer1));
 		if(buffer1[0])
 		{
-			npc.m_iWearable1 = npc.EquipItem("head", buffer1);
-			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+			npc.m_iWearable1 = npc.EquipItem("head", buffer1, _, skin, kv.GetFloat("wear1_size", 1.0));
+			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", kv.GetNum("wear1_skin", 0));
 		}
 
 		kv.GetString("wear2", buffer1, sizeof(buffer1));
 		if(buffer1[0])
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", buffer1);
-			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-			SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+			npc.m_iWearable2 = npc.EquipItem("head", buffer1, _, skin, kv.GetFloat("wear2_size", 1.0));
+			SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", kv.GetNum("wear2_skin", 0));
 		}
 
 		kv.GetString("wear3", buffer1, sizeof(buffer1));
 		if(buffer1[0])
 		{
-			npc.m_iWearable3 = npc.EquipItem("head", buffer1);
-			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-			SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+			npc.m_iWearable3 = npc.EquipItem("head", buffer1, _, skin, kv.GetFloat("wear3_size", 1.0));
+			SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", kv.GetNum("wear3_skin", 0));
 		}
 
 		SetVariantInt(kv.GetNum("bodygroup"));
@@ -140,12 +134,18 @@ void NPCActor_TalkStart(int iNPC, int client, float time = 60.0)
 	NPCActor npc = view_as<NPCActor>(iNPC);
 	npc.m_iTargetAlly = client;
 	npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + time;
+
+	if(TalkAnim[npc.index][0])
+		npc.SetActivity(TalkAnim[npc.index]);
 }
 
 void NPCActor_TalkEnd(int iNPC)
 {
 	NPCActor npc = view_as<NPCActor>(iNPC);
 	npc.m_iTargetAlly = -1;
+	
+	if(LeaveAnim[npc.index][0])
+		npc.SetActivity(LeaveAnim[npc.index]);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextMeleeAttack < gameTime)

@@ -1396,7 +1396,7 @@ void CreateCardEffect(int client)
 		int particle = ParticleEffectAt(flPos, CardParticle[client], 0.0);
 		GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 		SetParent(viewmodelModel, particle, "effect_hand_r");
-		i_CardParticle[client][0] = EntIndexToEntRef(particle);
+		i_CardParticle[client] = EntIndexToEntRef(particle);
 	}
 }
 
@@ -1527,9 +1527,13 @@ public void Weapon_Ludo_WandTouch(int entity, int target)
 				case 1:
 				{
 					float StunDuration = 3.0;
+					if(b_thisNpcIsABoss[target])
+					{
+						StunDuration = 1.7;
+					}	
 					if(b_thisNpcIsARaid[target])
 					{
-						StunDuration = 1.5;
+						StunDuration = 1.0;
 					}	
 
 					FreezeNpcInTime(target, StunDuration);
@@ -1537,9 +1541,13 @@ public void Weapon_Ludo_WandTouch(int entity, int target)
 				case 2:
 				{
 					float StunDuration = 5.0;
+					if(b_thisNpcIsABoss[target])
+					{
+						StunDuration = 2.0;
+					}	
 					if(b_thisNpcIsARaid[target])
 					{
-						StunDuration = 2.5;
+						StunDuration = 1.25;
 					}	
 
 					FreezeNpcInTime(target, StunDuration);

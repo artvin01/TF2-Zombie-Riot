@@ -164,6 +164,11 @@ void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = fa
 {
 	b_HideCosmeticsPlayer[client] = DontShowCosmetics;
 	i_PlayerModelOverrideIndexWearable[client] = index;
+	if(ForceNiko)
+	{
+		b_HideCosmeticsPlayer[client] = true;
+		i_PlayerModelOverrideIndexWearable[client] = NIKO_2;
+	}
 	ViewChange_Update(client, true);
 	int entity;
 	if(DontShowCosmetics)
@@ -298,6 +303,7 @@ void ViewChange_Update(int client, bool full = true)
 	if(full)
 		ViewChange_DeleteHands(client);
 	
+
 	if(b_AntiSameFrameUpdate[client][0])
 		return;
 		
@@ -307,9 +313,15 @@ void ViewChange_Update(int client, bool full = true)
 	char classname[36];
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1)
+	{
+		f_Client_BackwardsWalkPenalty[client] = f_Weapon_BackwardsWalkPenalty[weapon];
 		GetEntityClassname(weapon, classname, sizeof(classname));
+	}
 	
 	ViewChange_Switch(client, weapon, classname);
+#if defined ZR
+	SDKHooks_UpdateMarkForDeath(client);
+#endif
 }
 
 void ViewChange_Switch(int client, int active, const char[] classname)
@@ -623,10 +635,17 @@ static void ImportSkinAttribs(int wearable, int weapon)
 	SetEntProp(wearable, Prop_Send, "m_bOnlyIterateItemViewAttributes", true);
 	Attributes_Set(wearable, 834, Attributes_Get(weapon, 834, 0.0));
 	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));
-#if defined ZR
-	Attributes_Set(wearable, 866, float(CurrentGame));//Attributes_Get(weapon, 866, 0.0));
+#if defined RPG
+	// TODO: Add proper randomizing
+	Attributes_Set(wearable, 866, float(index));
+#elseif defined ZR
+	Attributes_Set(wearable, 866, float(CurrentGame));
 #endif
+#if defined RPG
+	Attributes_Set(wearable, 867, float(index));
+#else
 	Attributes_Set(wearable, 867, float(index));//Attributes_Get(weapon, 867, 0.0));
+#endif
 	Attributes_Set(wearable, 2013, Attributes_Get(weapon, 2013, 0.0));
 	Attributes_Set(wearable, 2014, Attributes_Get(weapon, 2014, 0.0));
 	Attributes_Set(wearable, 2025, Attributes_Get(weapon, 2025, 0.0));

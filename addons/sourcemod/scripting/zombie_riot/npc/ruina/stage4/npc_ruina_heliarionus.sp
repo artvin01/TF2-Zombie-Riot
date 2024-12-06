@@ -66,9 +66,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheModel("models/player/sniper.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Heliarionus(client, vecPos, vecAng, ally);
+	return Heliarionus(vecPos, vecAng, team);
 }
 
 
@@ -152,7 +152,7 @@ methodmap Heliarionus < CClotBody
 		}
 	}
 
-	public Heliarionus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Heliarionus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Heliarionus npc = view_as<Heliarionus>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1250", ally));
 		
@@ -235,8 +235,7 @@ methodmap Heliarionus < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Heliarionus npc = view_as<Heliarionus>(iNPC);

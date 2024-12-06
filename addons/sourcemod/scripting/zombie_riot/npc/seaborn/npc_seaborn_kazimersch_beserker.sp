@@ -62,9 +62,9 @@ void KazimierzBeserker_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return KazimierzBeserker(client, vecPos, vecAng, ally);
+	return KazimierzBeserker(vecPos, vecAng, team);
 }
 
 methodmap KazimierzBeserker < CClotBody
@@ -130,9 +130,9 @@ methodmap KazimierzBeserker < CClotBody
 	}
 	
 	
-	public KazimierzBeserker(int client, float vecPos[3], float vecAng[3], int ally)
+	public KazimierzBeserker(float vecPos[3], float vecAng[3], int ally)
 	{
-		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", ally,_, true));
+		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "32500", ally,_, true));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -213,8 +213,7 @@ methodmap KazimierzBeserker < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void KazimierzBeserker_ClotThink(int iNPC)
 {
 	KazimierzBeserker npc = view_as<KazimierzBeserker>(iNPC);
@@ -302,9 +301,10 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 						damage *= 4.0;
 					}
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
 					Custom_Knockback(npc.index, target, 250.0);
@@ -457,7 +457,7 @@ public void KazimierzBeserker_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 }
 
-public void KazimierzBeserker_AllyDeath(int ally, int self)
+public void KazimierzBeserker_AllyDeath(int self, int ally)
 {
 	KazimierzBeserker npc = view_as<KazimierzBeserker>(self);
 

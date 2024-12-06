@@ -76,9 +76,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Heliara(client, vecPos, vecAng, ally);
+	return Heliara(vecPos, vecAng, team);
 }
 
 
@@ -170,7 +170,7 @@ methodmap Heliara < CClotBody
 		}
 	}
 	
-	public Heliara(int client, float vecPos[3], float vecAng[3], int ally)
+	public Heliara(float vecPos[3], float vecAng[3], int ally)
 	{
 		Heliara npc = view_as<Heliara>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -242,8 +242,7 @@ methodmap Heliara < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Heliara npc = view_as<Heliara>(iNPC);

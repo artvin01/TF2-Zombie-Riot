@@ -327,13 +327,11 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				}
 				case 5:
 				{
-					TF2_RemoveCondition(client, TFCond_MarkedForDeathSilent);
 					TF2_AddCondition(client, TFCond_DefenseBuffed, 3.75);
 				}
 				case 6:
 				{
 					TF2_RemoveCondition(client, TFCond_DefenseBuffed);
-					TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 2.0);
 				}
 				case 7:
 				{

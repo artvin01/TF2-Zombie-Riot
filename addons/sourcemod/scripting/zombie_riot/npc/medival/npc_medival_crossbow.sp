@@ -83,9 +83,9 @@ void MedivalCrossbowMan_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalCrossbowMan(client, vecPos, vecAng, ally);
+	return MedivalCrossbowMan(vecPos, vecAng, team);
 }
 methodmap MedivalCrossbowMan < CClotBody
 {
@@ -147,7 +147,7 @@ methodmap MedivalCrossbowMan < CClotBody
 		
 	}
 	
-	public MedivalCrossbowMan(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalCrossbowMan(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "900", ally));
 		SetVariantInt(1);
@@ -211,8 +211,7 @@ methodmap MedivalCrossbowMan < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalCrossbowMan_ClotThink(int iNPC)
 {
 	MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(iNPC);

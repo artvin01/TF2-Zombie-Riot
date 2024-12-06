@@ -20,13 +20,60 @@ void Events_PluginStart()
 	HookEvent("mvm_wave_failed", OnWinPanel, EventHookMode_Pre);
 	HookEvent("mvm_mission_complete", OnWinPanel, EventHookMode_Pre);
 	HookEvent("restart_timer_time", OnRestartTimer, EventHookMode_Pre);
-#endif
+	HookEvent("arrow_impact", EventOverride_ArrowImpact, EventHookMode_Pre);
+
+#endif	
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
 	
 	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
 }
 
+#if defined ZR
+public Action EventOverride_ArrowImpact(Event event, const char[] name, bool dontBroadcast)
+{
+	int AttachedEntity = event.GetInt("attachedEntity");
+	int ShooterEntity = event.GetInt("shooter");
+	int WhatBoneAttached = event.GetInt("boneIndexAttached");
+	float BonePosition[3];
+	BonePosition[0] = event.GetFloat("bonePositionX");
+	BonePosition[1] = event.GetFloat("bonePositionY");
+	BonePosition[2] = event.GetFloat("bonePositionZ");
+	float BoneAngles[3];
+	BoneAngles[0] = event.GetFloat("boneAnglesX");
+	BoneAngles[1] = event.GetFloat("boneAnglesY");
+	BoneAngles[2] = event.GetFloat("boneAnglesZ");
+	int ProjectileType = event.GetInt("projectileType");
+	bool IsCrit = event.GetBool("isCrit");
+	event.BroadcastDisabled = true;
+	EventOverride_ArrowImpact_ZRSeperate(AttachedEntity, ShooterEntity, WhatBoneAttached, BonePosition, BoneAngles, ProjectileType, IsCrit);
+	
+	return Plugin_Changed;
+}
+
+void EventOverride_ArrowImpact_ZRSeperate(int AttachedEntity, int ShooterEntity, int WhatBoneAttached,
+float BonePosition[3], float BoneAngles[3], int ProjectileType, bool IsCrit)
+{
+	Event event = CreateEvent("arrow_impact", true);
+
+	event.SetInt("attachedEntity", AttachedEntity);
+	event.SetInt("shooter", ShooterEntity);
+	event.SetInt("boneIndexAttached", WhatBoneAttached);
+	event.SetFloat("bonePositionX", BonePosition[0]);
+	event.SetFloat("bonePositionY", BonePosition[1]);
+	event.SetFloat("bonePositionZ", BonePosition[2]);
+	event.SetFloat("boneAnglesX", BoneAngles[0]);
+	event.SetFloat("boneAnglesY", BoneAngles[1]);
+	event.SetFloat("boneAnglesZ", BoneAngles[2]);
+	event.SetInt("projectileType", ProjectileType);
+	event.SetBool("isCrit", IsCrit);
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && b_EnableClutterSetting[client])
+			event.FireToClient(client);
+	}
+}
+#endif	
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
@@ -51,6 +98,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	CurrentGibCount = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
+		i_AmountDowned[client] = 0;
 		for(int i; i<Ammo_MAX; i++)
 		{
 			CurrentAmmo[client][i] = CurrentAmmo[0][i];
@@ -176,7 +224,6 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
 	MVMHud_Disable();
 	GameRules_SetProp("m_iRoundState", RoundState_TeamWin);
-	Store_RandomizeNPCStore(1);
 	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
 	GlobalExtraCash = 0;
@@ -402,7 +449,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				SetAmmo(client, i, CurrentAmmo[client][i]);
 			}
 			
-			PrintHintText(client, "%T", "Open Store", client);
+			//PrintHintText(client, "%T", "Open Store", client);
 		}
 #endif
 
@@ -536,7 +583,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	Skulls_PlayerKilled(client);
 	// Save current uber.
 	ClientSaveUber(client);
-
+	SDKHooks_UpdateMarkForDeath(client, true);
 #endif
 
 #if defined RPG
@@ -635,7 +682,7 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 					{
 						dieingstate[client] = 0;
 						Store_ApplyAttribs(client);
-						TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+						SDKCall_SetSpeed(client);
 						int entity_wearable, i;
 						while(TF2U_GetWearable(client, entity_wearable, i))
 						{

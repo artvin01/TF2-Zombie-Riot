@@ -139,6 +139,7 @@ void PrecacheMusicZr()
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
 	AltExtraLogic = FindInfoTarget("zr_alternative_extras");
+	ForceNiko = FindInfoTarget("zr_niko");
 
 	if(XenoMapExtra)
 	{
@@ -183,7 +184,7 @@ void StopMapMusicAll()
 	char sSound[256];
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsValidClient(client) && (b_IgnoreMapMusic[client] || !Database_IsCached(client)))
+		if(IsValidClient(client) && (b_IgnoreMapMusic[client] || (!Database_IsLan() && !Database_IsCached(client))))
 		{
 			for (int i = 0; i < g_iNumSounds; i++)
 			{
@@ -250,7 +251,7 @@ void Music_EndLastmann()
 
 				SetMusicTimer(client, 0);
 				StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 				TF2_RemoveCondition(client, TFCond_DefenseBuffed);
 				TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 				TF2_RemoveCondition(client, TFCond_RuneHaste);
@@ -292,7 +293,7 @@ void Music_RoundEnd(int victim, bool music = true)
 			if(music)
 				SetMusicTimer(client, GetTime() + 45);
 			
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+			SDKCall_SetSpeed(client);
 			TF2_RemoveCondition(client, TFCond_DefenseBuffed);
 			TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 			TF2_RemoveCondition(client, TFCond_RuneHaste);
@@ -482,6 +483,11 @@ void Music_PostThink(int client)
 	if(f_ClientMusicVolume[client] < 0.05)
 		return;
 
+	//if in menu, dont play new music.
+	//but dont kill old music either.
+	if(SkillTree_InMenu(client))
+		return;
+
 	if(Music_Timer[client] < GetTime() && Music_Timer_2[client] < GetTime())
 	{
 		bool RoundHasCustomMusic = false;
@@ -601,6 +607,7 @@ void Music_PostThink(int client)
 			}
 			return;
 		}
+
 		if(XenoExtraLogic() && !LastMann)
 		{
 			//This is special code for a map.
@@ -616,6 +623,10 @@ void Music_PostThink(int client)
 			}
 			return;
 		}
+		// Player disabled ZR Music
+		if(b_DisableDynamicMusic[client] && !LastMann)
+			return;
+
 		float f_intencity;
 		float targPos[3];
 		float chargerPos[3];
@@ -652,21 +663,18 @@ void Music_PostThink(int client)
 				}
 			}
 		}
+		
+		//TODO: move somewhere else
 		if(RaidbossIgnoreBuildingsLogic())
 		{
 			//if they arent on red, do this.
-			if(GetTeam(EntRefToEntIndex(RaidBossActive)) != TFTeam_Red)
-			{
-				f_intencity += 9999.9; //absolute max.
-				GlobalIntencity += 9999;
-			}
-			else
+			if(GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red)
 			{
 				//thes are on red, set this.
 				RaidAllowsBuildings = true;
 			}
 		}
-
+		
 		if(!ZombieMusicPlayed)//once set in a wave, it should stay untill the next mass revive.
 		{
 			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)

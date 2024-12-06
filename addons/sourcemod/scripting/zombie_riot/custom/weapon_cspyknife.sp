@@ -105,7 +105,6 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 					fl_IncreaseDamageTaken[client] = TF2Attrib_GetValue(address);
 					Attributes_Set(weapon, 412, fl_IncreaseDamageTaken[client] * TakeMoreDamageMultiplier);
 					CreateTimer(0.88, Reset_TakeMoreDmg, client, TIMER_FLAG_NO_MAPCHANGE);*/
-					TF2_AddCondition(client, TFCond_MarkedForDeathSilent, MinicritTimer, 0);
 					//PrintToChat(client, "Take More Dmg")
 				}
 				case 7:
@@ -286,7 +285,6 @@ public Action TakeMoreDmg(Handle cut_timer, int client)
 		//int weapon = EntRefToEntIndex(weapon_id[client]);
 		//ApplyTempAttrib(weapon, 412, TakeMoreDamageMultiplier_Pap, ResetTakeMoreDmgTimer);
 		//PrintToChat(client, "More Attack Damage works!")
-		TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 0.44, 0);
 	}
 	return Plugin_Handled;
 }

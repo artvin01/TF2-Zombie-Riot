@@ -57,9 +57,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/pyro.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Europa(client, vecPos, vecAng, ally);
+	return Europa(vecPos, vecAng, team);
 }
 
 methodmap Europa < CClotBody
@@ -116,7 +116,7 @@ methodmap Europa < CClotBody
 	}
 	
 	
-	public Europa(int client, float vecPos[3], float vecAng[3], int ally)
+	public Europa(float vecPos[3], float vecAng[3], int ally)
 	{
 		Europa npc = view_as<Europa>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1250", ally));
 		
@@ -190,8 +190,7 @@ methodmap Europa < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Europa npc = view_as<Europa>(iNPC);
@@ -246,7 +245,7 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
 		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
-		if(Zombies_Currently_Still_Ongoing < RoundToFloor(NPC_HARD_LIMIT*0.5))
+		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
 			Europa_Spawn_Minnions(npc);
 		}
@@ -306,7 +305,7 @@ static void ClotThink(int iNPC)
 		}
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}
 		else

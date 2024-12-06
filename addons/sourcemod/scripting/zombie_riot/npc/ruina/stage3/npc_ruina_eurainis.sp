@@ -56,9 +56,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/pyro.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Eurainis(client, vecPos, vecAng, ally);
+	return Eurainis(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -136,7 +136,7 @@ methodmap Eurainis < CClotBody
 		}
 	}
 	
-	public Eurainis(int client, float vecPos[3], float vecAng[3], int ally)
+	public Eurainis(float vecPos[3], float vecAng[3], int ally)
 	{
 		Eurainis npc = view_as<Eurainis>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1250", ally));
 		
@@ -207,8 +207,7 @@ methodmap Eurainis < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Eurainis npc = view_as<Eurainis>(iNPC);
@@ -265,7 +264,7 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
 		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
-		if(Zombies_Currently_Still_Ongoing < RoundToFloor(NPC_HARD_LIMIT*0.5))
+		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
 			Eurainis_Spawn_Minnions(npc);
 		}
@@ -505,7 +504,7 @@ static void Eurainis_SelfDefense(Eurainis npc, float gameTime, int Anchor_Id)	//
 	}
 	if(npc.m_bAllowBackWalking)
 	{
-		npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+		npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 		npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 	}	
 	else

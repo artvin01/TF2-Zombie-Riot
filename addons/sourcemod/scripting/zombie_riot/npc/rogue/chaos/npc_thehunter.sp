@@ -37,9 +37,9 @@ void TheHunter_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return TheHunter(client, vecPos, vecAng, ally);
+	return TheHunter(vecPos, vecAng, team);
 }
 
 methodmap TheHunter < CClotBody
@@ -61,7 +61,7 @@ methodmap TheHunter < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public TheHunter(int client, float vecPos[3], float vecAng[3], int ally)
+	public TheHunter(float vecPos[3], float vecAng[3], int ally)
 	{
 		TheHunter npc = view_as<TheHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "50000", ally));
 		
@@ -88,9 +88,7 @@ methodmap TheHunter < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		Is_a_Medic[npc.index] = true;
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.m_bStaticNPC = true;
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
@@ -341,17 +339,16 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				if(target > MaxClients || Rogue_Paradox_RedMoon() || TF2_IsPlayerInCondition(target, TFCond_MarkedForDeath))
+				if(Rogue_Paradox_RedMoon() || NpcStats_IberiaIsEnemyMarked(target))
 				{
 					SDKHooks_TakeDamage(target, npc.index, npc.index, 100000.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-					if(target <= MaxClients)
-						TF2_RemoveCondition(target, TFCond_MarkedForDeath);
+					f_IberiaMarked[target] = 0.0;
 				}
 				else
 				{
 					SDKHooks_TakeDamage(target, npc.index, npc.index, CountPlayersOnServer() * 50.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-					if(!dieingstate[target] && IsPlayerAlive(target))
-						TF2_AddCondition(target, TFCond_MarkedForDeath, 120.0);
+					if(target > MaxClients || (!dieingstate[target] && IsPlayerAlive(target)))
+						NpcStats_IberiaMarkEnemy(target, 120.0);
 				}
 			} 
 		}

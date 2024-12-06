@@ -32,9 +32,9 @@ void MedivalRam_OnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return MedivalRam(client, vecPos, vecAng, ally, data);
+	return MedivalRam(vecPos, vecAng, team, data);
 }
 static int Garrison[MAXENTITIES];
 
@@ -55,7 +55,7 @@ methodmap MedivalRam < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public MedivalRam(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public MedivalRam(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.65", "30000", ally, false, true));
 		i_NpcWeight[npc.index] = 5;
@@ -117,8 +117,7 @@ public void RamTouchDamageTouch(int entity, int other)
 		SDKHooks_TakeDamage(other, entity, entity, 10.0, DMG_CRUSH, -1, _);
 	}
 }
-//TODO 
-//Rewrite
+
 public void MedivalRam_ClotThink(int iNPC)
 {
 	MedivalRam npc = view_as<MedivalRam>(iNPC);

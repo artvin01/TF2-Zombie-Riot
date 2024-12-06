@@ -40,6 +40,7 @@ public float AbilityBingBang(int client, int index, char name[48])
 		return 0.0;
 	}
 	
+	
 	int StatsForCalcMultiAdd;
 	Stats_Strength(client, StatsForCalcMultiAdd);
 	StatsForCalcMultiAdd /= 4;
@@ -52,6 +53,11 @@ public float AbilityBingBang(int client, int index, char name[48])
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Stamina");
 		return 0.0;
 	}
+	int Type = 1;
+	if(Stats_Intelligence(client) >= 2000)
+	{
+		Type = 2;
+	}
 	RPGCore_CancelMovementAbilities(client);
 	RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd);
 	StatsForCalcMultiAdd = Stats_Strength(client);
@@ -59,7 +65,7 @@ public float AbilityBingBang(int client, int index, char name[48])
 	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd);
 
 	damageDelt *= 4.2;
-	PlayerAnimationSettingFreeze(client, 1, damageDelt);
+	PlayerAnimationSettingFreeze(client, Type, damageDelt);
 	EmitSoundToAll(BING_BANG_SOUND, client, SNDCHAN_AUTO, 80, _, 1.0, 100);
 	EmitSoundToAll(BING_BANG_SOUND, client, SNDCHAN_AUTO, 80, _, 1.0, 100);
 	return (GetGameTime() + 15.0);
@@ -73,6 +79,10 @@ void PlayerAnimationSettingFreeze(int client, int type, float damage)
 		case 1:
 		{
 			TimeUntillUnfreeze = 2.0;
+		}
+		case 2:
+		{
+			TimeUntillUnfreeze = 1.0;
 		}
 	}
 	IncreaceEntityDamageTakenBy(client, 0.5, TimeUntillUnfreeze);
@@ -104,7 +114,7 @@ void PlayerAnimationSettingFreeze(int client, int type, float damage)
 public Action PlayerAnimationSettingFreezePost(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int clientindex = pack.ReadCell();
+	pack.ReadCell();
 	int client = GetClientOfUserId(pack.ReadCell());
 	int camreadelete = EntRefToEntIndex(pack.ReadCell());
 	int DeleteKillEntity = EntRefToEntIndex(pack.ReadCell());

@@ -63,9 +63,9 @@ public void MadRoost_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MadRoost(client, vecPos, vecAng, ally);
+	return MadRoost(vecPos, vecAng, team);
 }
 
 methodmap MadRoost < CClotBody
@@ -105,7 +105,7 @@ methodmap MadRoost < CClotBody
 	}
 	
 	
-	public MadRoost(int client, float vecPos[3], float vecAng[3], int ally)
+	public MadRoost(float vecPos[3], float vecAng[3], int ally)
 	{
 		MadRoost npc = view_as<MadRoost>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.8", "300", ally, false));
 		
@@ -170,8 +170,7 @@ methodmap MadRoost < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MadRoost_ClotThink(int iNPC)
 {
 	MadRoost npc = view_as<MadRoost>(iNPC);
@@ -226,9 +225,10 @@ public void MadRoost_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 65.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");

@@ -69,9 +69,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/spy.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Ruina_Drone(client, vecPos, vecAng, ally);
+	return Ruina_Drone(vecPos, vecAng, team);
 }
 
 methodmap Ruina_Drone < CClotBody
@@ -135,7 +135,7 @@ methodmap Ruina_Drone < CClotBody
 	}
 	
 	
-	public Ruina_Drone(int client, float vecPos[3], float vecAng[3], int ally)
+	public Ruina_Drone(float vecPos[3], float vecAng[3], int ally)
 	{
 		Ruina_Drone npc = view_as<Ruina_Drone>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
@@ -208,8 +208,7 @@ methodmap Ruina_Drone < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(iNPC);

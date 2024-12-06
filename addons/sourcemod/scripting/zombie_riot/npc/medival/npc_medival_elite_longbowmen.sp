@@ -82,9 +82,9 @@ void MedivalEliteLongbowmen_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalEliteLongbowmen(client, vecPos, vecAng, ally);
+	return MedivalEliteLongbowmen(vecPos, vecAng, team);
 }
 methodmap MedivalEliteLongbowmen < CClotBody
 {
@@ -146,7 +146,7 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		
 	}
 	
-	public MedivalEliteLongbowmen(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalEliteLongbowmen(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalEliteLongbowmen npc = view_as<MedivalEliteLongbowmen>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "17500", ally));
 		SetVariantInt(1);
@@ -212,8 +212,7 @@ methodmap MedivalEliteLongbowmen < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalEliteLongbowmen_ClotThink(int iNPC)
 {
 	MedivalEliteLongbowmen npc = view_as<MedivalEliteLongbowmen>(iNPC);

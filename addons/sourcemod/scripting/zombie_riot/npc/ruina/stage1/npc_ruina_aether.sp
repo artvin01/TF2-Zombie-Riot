@@ -62,9 +62,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/sniper.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Aether(client, vecPos, vecAng, ally);
+	return Aether(vecPos, vecAng, team);
 }
 static float fl_npc_basespeed;
 methodmap Aether < CClotBody
@@ -122,7 +122,7 @@ methodmap Aether < CClotBody
 	}
 	
 	
-	public Aether(int client, float vecPos[3], float vecAng[3], int ally)
+	public Aether(float vecPos[3], float vecAng[3], int ally)
 	{
 		Aether npc = view_as<Aether>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1250", ally));
 
@@ -213,8 +213,7 @@ methodmap Aether < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Aether npc = view_as<Aether>(iNPC);
@@ -317,7 +316,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}
 		else

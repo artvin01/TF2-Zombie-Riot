@@ -57,9 +57,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/demo.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Laz(client, vecPos, vecAng, ally);
+	return Laz(vecPos, vecAng, team);
 }
 
 methodmap Laz < CClotBody
@@ -106,7 +106,7 @@ methodmap Laz < CClotBody
 	}
 	
 	
-	public Laz(int client, float vecPos[3], float vecAng[3], int ally)
+	public Laz(float vecPos[3], float vecAng[3], int ally)
 	{
 		Laz npc = view_as<Laz>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 		
@@ -175,8 +175,7 @@ methodmap Laz < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Laz npc = view_as<Laz>(iNPC);
@@ -291,7 +290,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			if(npc.m_flAttackHappens > GameTime - 1.0)
 				npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*1.5);
 			else

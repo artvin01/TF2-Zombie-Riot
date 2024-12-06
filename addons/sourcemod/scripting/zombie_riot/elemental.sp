@@ -10,6 +10,7 @@ enum
 	Element_Cyro,
 	Element_Necrosis,
 	Element_Void,
+	Element_Osmosis,
 
 	Element_MAX
 }
@@ -20,7 +21,8 @@ static const char ElementName[][] =
 	"CH",
 	"CY",
 	"NE",
-	"VO"
+	"VO",
+	"OS"
 };
 
 static float LastTime[MAXENTITIES];
@@ -43,6 +45,17 @@ stock bool Elemental_HasDamage(int entity)
 	for(int i; i < Element_MAX; i++)
 	{
 		if(ElementDamage[entity][i])
+			return true;
+	}
+	
+	return false;
+}
+
+stock bool Elemental_GoingCritical(int entity)
+{
+	for(int i; i < Element_MAX; i++)
+	{
+		if((ElementDamage[entity][i] * 5 / 4) > TriggerDamage(entity, i))
 			return true;
 	}
 	
@@ -115,13 +128,18 @@ static int TriggerDamage(int entity, int type)
 bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 {
 	float gameTime = GetGameTime();
-	if(f_ArmorCurrosionImmunity[entity] > gameTime)
+	
+	// An elemental effect is in cooldown
+	for(int i; i < Element_MAX; i++)
 	{
-		// An elemental effect is in cooldown
-		Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %ds>", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity] - gameTime));
-		return true;
+		if(LastElement[entity] == i && f_ArmorCurrosionImmunity[entity][i] > GetGameTime())
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %ds>", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity][i] - gameTime));
+			return true;
+		}
 	}
 	
+
 	// Don't display anything after 5 seconds of nothing
 	if((LastTime[entity] + 5.0) < gameTime && GetTeam(entity) != TFTeam_Red)
 		return false;
@@ -154,10 +172,14 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
 	if(victim <= MaxClients && victim > 0)
 	{
 		Armor_DebuffType[victim] = 1;
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1))
+		if(f_ArmorCurrosionImmunity[victim][Element_Nervous] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
@@ -173,7 +195,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
 					Armor_Charge[victim] = 0;
-					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+					f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
 
 					TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
 
@@ -187,7 +209,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime())
+		if(f_ArmorCurrosionImmunity[victim][Element_Nervous]  < GetGameTime())
 		{
 			int trigger;
 			if(Citizen_IsIt(victim))	// Rebels
@@ -209,7 +231,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			if(ElementDamage[victim][Element_Nervous] > trigger)
 			{
 				ElementDamage[victim][Element_Nervous] = 0;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+				f_ArmorCurrosionImmunity[victim][Element_Nervous]  = GetGameTime() + 5.0;
 
 				if(GetTeam(victim) == TFTeam_Red)
 				{
@@ -234,30 +256,20 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 }
 
-void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
-{
-	if(i_ChaosArrowAmount[attacker] > 0)
-	{
-		Elemental_AddChaosDamage(victim, attacker, RoundToCeil(float(i_ChaosArrowAmount[attacker]) * Scale));
-	}
-	if(i_VoidArrowAmount[attacker] > 0)
-	{
-		Elemental_AddVoidDamage(victim, attacker, RoundToCeil(float(i_VoidArrowAmount[attacker]) * Scale));
-	}
-	if(i_NervousImpairmentArrowAmount[attacker] > 0)
-	{
-#if defined ZR
-		Elemental_AddNervousDamage(victim, attacker, RoundToCeil(float(i_NervousImpairmentArrowAmount[attacker]) * Scale));
-#endif
-	}	
-}
 void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(b_NpcIsInvulnerable[victim])
+		return;
+
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 2;
-		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Chaos]  < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
@@ -295,7 +307,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 					_,
 					SakratanGroupDebuff);
 					b_NpcIsTeamkiller[victim] = false;
-					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 10.0;
+					f_ArmorCurrosionImmunity[victim][Element_Chaos]  = GetGameTime() + 10.0;
 				//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 				}
 			}
@@ -306,7 +318,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime())
+		if(f_ArmorCurrosionImmunity[victim][Element_Chaos] < GetGameTime())
 		{
 			int trigger;
 			if(Citizen_IsIt(victim))	// Rebels
@@ -327,7 +339,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			if(ElementDamage[victim][Element_Chaos] > trigger)
 			{
 				ElementDamage[victim][Element_Chaos] = 0;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+				f_ArmorCurrosionImmunity[victim][Element_Chaos]  = GetGameTime() + 5.0;
 
 				IncreaceEntityDamageTakenBy(victim, 1.30, 10.0);
 				NPC_Ignite(victim, attacker, 10.0, -1);
@@ -347,16 +359,21 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 
 void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, bool VoidWeaponDo = false)
 {
+	if(b_NpcIsInvulnerable[victim])
+		return;
 	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
 		return;
 	//cant void other voids!
 
-
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 3;
-		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Void] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
@@ -378,7 +395,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 					VoidArea_SpawnNethersea(ProjectileLoc, VoidWeaponDo);
 					FramingInfestorSpread(victim);
 					EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+					f_ArmorCurrosionImmunity[victim][Element_Void] = GetGameTime() + 5.0;
 					//Do code for void spread
 				}
 			}
@@ -389,7 +406,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime())
+		if(f_ArmorCurrosionImmunity[victim][Element_Void] < GetGameTime())
 		{
 			int trigger;
 			if(Citizen_IsIt(victim))	// Rebels
@@ -411,7 +428,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			if(ElementDamage[victim][Element_Void] > trigger)
 			{
 				ElementDamage[victim][Element_Void] = 0;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+				f_ArmorCurrosionImmunity[victim][Element_Void] = GetGameTime() + 5.0;
 				float ProjectileLoc[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 				ProjectileLoc[2] += 5.0;
@@ -459,7 +476,13 @@ static void SakratanGroupDebuffInternal(int victim)
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 {
+	if(b_NpcIsInvulnerable[victim])
+		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
 	if(victim <= MaxClients)
 	{
 		// Cyro is treated as Chaos vs Players
@@ -467,7 +490,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime())
+		if(f_ArmorCurrosionImmunity[victim][Element_Cyro] < GetGameTime())
 		{
 			int trigger = TriggerDamage(victim, Element_Cyro);
 
@@ -477,7 +500,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 			if(ElementDamage[victim][Element_Cyro] > trigger)
 			{
 				ElementDamage[victim][Element_Cyro] = 0;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + (9.5 + (type * 0.5));
+				f_ArmorCurrosionImmunity[victim][Element_Cyro] = GetGameTime() + (9.5 + (type * 0.5));
 
 				Cryo_FreezeZombie(victim, type);
 			}
@@ -491,14 +514,20 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 
 void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int weapon = -1)
 {
+	if(b_NpcIsInvulnerable[victim])
+		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
 	if(victim <= MaxClients)
 	{
 		// No effect currently for Necrosis vs Players
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime())
+		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime())
 		{
 			int trigger = TriggerDamage(victim, Element_Necrosis);
 
@@ -508,7 +537,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 			if(ElementDamage[victim][Element_Necrosis] > trigger)
 			{
 				ElementDamage[victim][Element_Necrosis] = 0;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 7.5;
+				f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 7.5;
 
 				StartBleedingTimer(victim, attacker, 800.0, 15, weapon, DMG_SLASH, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				
@@ -521,4 +550,79 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 			}
 		}
 	}
+}
+
+
+void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
+{
+	if(b_NpcIsInvulnerable[victim])
+		return;
+	
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
+	if(victim <= MaxClients)
+	{
+		// No effect currently for Necrosis vs Players
+	}
+	else if(!b_NpcHasDied[victim])	// NPCs
+	{
+		if(f_ArmorCurrosionImmunity[victim][Element_Osmosis] < GetGameTime())
+		{
+			int trigger = TriggerDamage(victim, Element_Osmosis);
+
+			LastTime[victim] = GetGameTime();
+			LastElement[victim] = Element_Osmosis;
+			ElementDamage[victim][Element_Osmosis] += damage;
+			if(ElementDamage[victim][Element_Osmosis] > trigger)
+			{
+				ElementDamage[victim][Element_Osmosis] = 0;
+				f_ArmorCurrosionImmunity[victim][Element_Osmosis] = GetGameTime() + 15.0;
+				OsmosisElementalEffectEnable(victim, 7.5);
+			}
+		}
+	}
+}
+
+bool Osmosis_ClientGaveBuff[MAXENTITIES][MAXTF2PLAYERS];
+float Osmosis_TimeUntillOver[MAXENTITIES];
+
+void OsmosisElementalEffectEnable(int victim, float time)
+{
+	//Reset hit detection on all players
+	for(int i; i < MaxClients; i++)
+	{
+		Osmosis_ClientGaveBuff[victim][i] = false;
+	}
+	Osmosis_TimeUntillOver[victim] = GetGameTime() + time;
+}
+
+bool Osmosis_CurrentlyInDebuff(int victim)
+{
+	if(Osmosis_TimeUntillOver[victim] > GetGameTime())
+		return true;
+
+	return false;
+}
+void OsmosisElementalEffect_Detection(int attacker, int victim)
+{
+	if(Osmosis_TimeUntillOver[victim] < GetGameTime())
+		return;
+	
+	if(Osmosis_ClientGaveBuff[victim][attacker])
+		return;
+
+	int weapon_holding = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == -1)
+		return;
+
+	if(!Saga_IsChargeWeapon(attacker, weapon_holding))
+		return;
+
+	Osmosis_ClientGaveBuff[victim][attacker] = true;
+	//play a little sound!
+	Saga_ChargeReduction(attacker, weapon_holding, 2.0);
+	ClientCommand(attacker, "playgamesound ui/mm_medal_click.wav");
 }

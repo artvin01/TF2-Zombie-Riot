@@ -61,9 +61,9 @@ void PyroGiant_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return PyroGiant(client, vecPos, vecAng, ally);
+	return PyroGiant(vecPos, vecAng, team);
 }
 methodmap PyroGiant < CClotBody
 {
@@ -125,7 +125,7 @@ methodmap PyroGiant < CClotBody
 	}
 	
 	
-	public PyroGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public PyroGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		PyroGiant npc = view_as<PyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "75000", ally, false, true));
 		
@@ -190,8 +190,7 @@ methodmap PyroGiant < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void PyroGiant_ClotThink(int iNPC)
 {
 	PyroGiant npc = view_as<PyroGiant>(iNPC);

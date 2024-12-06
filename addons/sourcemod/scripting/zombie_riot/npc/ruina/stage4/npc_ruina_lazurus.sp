@@ -56,9 +56,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/demo.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Lazurus(client, vecPos, vecAng, ally);
+	return Lazurus(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -125,7 +125,7 @@ methodmap Lazurus < CClotBody
 			}
 		}
 	}
-	public Lazurus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lazurus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Lazurus npc = view_as<Lazurus>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 		
@@ -193,8 +193,7 @@ methodmap Lazurus < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lazurus npc = view_as<Lazurus>(iNPC);
@@ -300,7 +299,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			if(npc.m_flAttackHappens > GameTime - 1.0)
 				npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*1.5);
 			else

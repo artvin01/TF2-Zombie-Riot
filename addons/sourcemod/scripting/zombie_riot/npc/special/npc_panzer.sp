@@ -91,15 +91,15 @@ public void NaziPanzer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return NaziPanzer(client, vecPos, vecAng, ally);
+	return NaziPanzer(vecPos, vecAng, team);
 }
 static char[] GetPanzerHealth()
 {
 	int health = 110;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	
@@ -253,7 +253,7 @@ methodmap NaziPanzer < CClotBody
 		}
 	}
 	
-	public NaziPanzer(int client, float vecPos[3], float vecAng[3], int ally)
+	public NaziPanzer(float vecPos[3], float vecAng[3], int ally)
 	{
 		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_2.mdl", "1.15", GetPanzerHealth(), ally, false, true));
 		
@@ -352,8 +352,7 @@ methodmap NaziPanzer < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void NaziPanzer_ClotThink(int iNPC)
 {
 	NaziPanzer npc = view_as<NaziPanzer>(iNPC);

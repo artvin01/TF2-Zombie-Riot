@@ -43,9 +43,9 @@ public void WhiteflowerTank_OnMapStart_NPC()
 	PrecacheSound("weapons/sentry_rocket.wav");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WhiteflowerTank(client, vecPos, vecAng, ally);
+	return WhiteflowerTank(vecPos, vecAng, team);
 }
 
 methodmap WhiteflowerTank < CClotBody
@@ -90,9 +90,9 @@ methodmap WhiteflowerTank < CClotBody
 	}
 	
 	
-	public WhiteflowerTank(int client, float vecPos[3], float vecAng[3], int ally)
+	public WhiteflowerTank(float vecPos[3], float vecAng[3], int ally)
 	{
-		WhiteflowerTank npc = view_as<WhiteflowerTank>(CClotBody(vecPos, vecAng, "models/combine_apc.mdl", "1.0", "300", ally, _, true, .CustomThreeDimensions = {100.0, 100.0, 100.0}));
+		WhiteflowerTank npc = view_as<WhiteflowerTank>(CClotBody(vecPos, vecAng, "models/combine_apc.mdl", "1.0", "300", ally, _, true, .CustomThreeDimensions = {60.0, 60.0, 80.0}));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
@@ -128,8 +128,7 @@ methodmap WhiteflowerTank < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void WhiteflowerTank_ClotThink(int iNPC)
 {
 	WhiteflowerTank npc = view_as<WhiteflowerTank>(iNPC);
@@ -231,7 +230,7 @@ public void WhiteflowerTank_ClotThink(int iNPC)
 					vecDir[1] = DirShoot[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = DirShoot[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					FireBullet(npc.index, npc.index, vecSelf, vecDir, 100000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					FireBullet(npc.index, npc.index, vecSelf, vecDir, 135000.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					
 
 					float npcAng[3];
@@ -287,13 +286,23 @@ void WhiteflowerTank_RocketBarrageDo(WhiteflowerTank npc, float gameTime)
 			vecSelf[2] += 50.0;
 			vecSelf[0] += GetRandomFloat(-10.0, 10.0);
 			vecSelf[1] += GetRandomFloat(-10.0, 10.0);
-			float RocketDamage = 500000.0;
-			int RocketGet = npc.FireRocket(vecSelf, RocketDamage, 150.0);
+			float RocketDamage = 250000.0;
+			float RocketSpeed = 150.0;
+			
+			if(npc.m_iOverlordComboAttack == 1)
+				RocketSpeed *= 2.0;
+			int RocketGet = npc.FireRocket(vecSelf, RocketDamage, RocketSpeed);
 			DataPack pack;
-			CreateDataTimer(1.0, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+			if(npc.m_iOverlordComboAttack != 1)
+				CreateDataTimer(1.0, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+			else
+				CreateDataTimer(0.5, WhiteflowerTank_Rocket_Stand, pack, TIMER_FLAG_NO_MAPCHANGE);
+
 			pack.WriteCell(EntIndexToEntRef(RocketGet));
 			pack.WriteCell(EntIndexToEntRef(npc.m_iTarget));
 			npc.m_flRocketBarrageBetweenShots = gameTime + 0.25;
+			if(npc.m_iOverlordComboAttack == 1)
+				npc.m_flRocketBarrageBetweenShots = gameTime + 0.125;
 		}
 		if(npc.m_flRocketBarrageDoTime < gameTime)
 		{
@@ -334,6 +343,7 @@ public Action WhiteflowerTank_Rocket_Stand(Handle timer, DataPack pack)
 	pack2.WriteCell(EntIndexToEntRef(RocketEnt));
 	pack2.WriteCell(EntIndexToEntRef(EnemyEnt));
 	pack2.WriteFloat(GetGameTime() + 1.0); //time till rocketing to enemy
+	return Plugin_Stop;
 }
 
 
@@ -364,7 +374,7 @@ public Action WhiteflowerTank_Rocket_Stand_Fire(Handle timer, DataPack pack)
 	GetVectorAngles(vecAngles, vecAngles);
 	if(TimeTillRocketing < GetGameTime())
 	{
-		float SpeedApply = 1500.0;
+		float SpeedApply = 1000.0;
 		VecSpeedToDo[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*SpeedApply;
 		VecSpeedToDo[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*SpeedApply;
 		VecSpeedToDo[2] = Sine(DegToRad(vecAngles[0]))*-SpeedApply;

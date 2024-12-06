@@ -50,9 +50,9 @@ void WinterSkinHunter_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return WinterSkinHunter(client, vecPos, vecAng, ally);
+	return WinterSkinHunter(vecPos, vecAng, team);
 }
 methodmap WinterSkinHunter < CClotBody
 {
@@ -93,7 +93,7 @@ methodmap WinterSkinHunter < CClotBody
 	}
 	
 	
-	public WinterSkinHunter(int client, float vecPos[3], float vecAng[3], int ally)
+	public WinterSkinHunter(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterSkinHunter npc = view_as<WinterSkinHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "7000", ally));
 		
@@ -119,9 +119,7 @@ methodmap WinterSkinHunter < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
 		Is_a_Medic[npc.index] = true;

@@ -78,9 +78,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Magianas(client, vecPos, vecAng, ally);
+	return Magianas(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -174,7 +174,7 @@ methodmap Magianas < CClotBody
 		}
 	}
 	
-	public Magianas(int client, float vecPos[3], float vecAng[3], int ally)
+	public Magianas(float vecPos[3], float vecAng[3], int ally)
 	{
 		Magianas npc = view_as<Magianas>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -251,8 +251,7 @@ methodmap Magianas < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Magianas npc = view_as<Magianas>(iNPC);
@@ -409,7 +408,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}
 		else

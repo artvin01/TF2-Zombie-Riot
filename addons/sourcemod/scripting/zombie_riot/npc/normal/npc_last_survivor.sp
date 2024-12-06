@@ -129,9 +129,9 @@ public void FatherGrigori_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FatherGrigori(client, vecPos, vecAng, ally);
+	return FatherGrigori(vecPos, vecAng, team);
 }
 methodmap FatherGrigori < CClotBody
 {
@@ -225,7 +225,7 @@ methodmap FatherGrigori < CClotBody
 		
 	}
 	
-	public FatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
+	public FatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
 		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally));
 		
@@ -316,8 +316,7 @@ methodmap FatherGrigori < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void FatherGrigori_ClotThink(int iNPC)
 {
 	FatherGrigori npc = view_as<FatherGrigori>(iNPC);

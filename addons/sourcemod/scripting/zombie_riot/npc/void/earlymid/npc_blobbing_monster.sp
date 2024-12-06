@@ -50,9 +50,9 @@ void VoidBlobbingMonster_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidBlobbingMonster(client, vecPos, vecAng, ally);
+	return VoidBlobbingMonster(vecPos, vecAng, team);
 }
 methodmap VoidBlobbingMonster < CClotBody
 {
@@ -93,7 +93,7 @@ methodmap VoidBlobbingMonster < CClotBody
 	}
 	
 	
-	public VoidBlobbingMonster(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidBlobbingMonster(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidBlobbingMonster npc = view_as<VoidBlobbingMonster>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.25", "8000", ally, false, true));
 		
@@ -116,9 +116,7 @@ methodmap VoidBlobbingMonster < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidBlobbingMonster_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
 		

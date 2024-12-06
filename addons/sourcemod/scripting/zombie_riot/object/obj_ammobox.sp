@@ -74,7 +74,7 @@ static bool ClotCanUse(ObjectAmmobox npc, int client)
 static void ClotShowInteractHud(ObjectAmmobox npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Ammobox Tooltip");
+	PrintCenterText(client, "%t", "Ammobox Tooltip", Ammo_Count_Ready - Ammo_Count_Used[client]);
 }
 
 static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)

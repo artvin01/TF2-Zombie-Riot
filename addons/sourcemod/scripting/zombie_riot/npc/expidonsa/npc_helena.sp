@@ -57,9 +57,9 @@ void Helena_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Helena(client, vecPos, vecAng, ally);
+	return Helena(vecPos, vecAng, team);
 }
 methodmap Helena < CClotBody
 {
@@ -108,7 +108,7 @@ methodmap Helena < CClotBody
 		
 		
 	}
-	public Helena(int client, float vecPos[3], float vecAng[3], int ally)
+	public Helena(float vecPos[3], float vecAng[3], int ally)
 	{
 		Helena npc = view_as<Helena>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5500", ally));
 		
@@ -204,8 +204,7 @@ methodmap Helena < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Helena_ClotThink(int iNPC)
 {
 	Helena npc = view_as<Helena>(iNPC);

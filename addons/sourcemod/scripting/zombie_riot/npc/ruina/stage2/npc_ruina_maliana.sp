@@ -68,9 +68,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel("models/player/engineer.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Maliana(client, vecPos, vecAng, ally);
+	return Maliana(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -136,7 +136,7 @@ methodmap Maliana < CClotBody
 
 	}
 	
-	public Maliana(int client, float vecPos[3], float vecAng[3], int ally)
+	public Maliana(float vecPos[3], float vecAng[3], int ally)
 	{
 		Maliana npc = view_as<Maliana>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -217,8 +217,7 @@ methodmap Maliana < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Maliana npc = view_as<Maliana>(iNPC);
@@ -369,7 +368,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}	
 		else

@@ -45,9 +45,9 @@ void KazimierzLongArcher_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return KazimierzLongArcher(client, vecPos, vecAng, ally);
+	return KazimierzLongArcher(vecPos, vecAng, team);
 }
 
 methodmap KazimierzLongArcher < CClotBody
@@ -89,7 +89,7 @@ methodmap KazimierzLongArcher < CClotBody
 	}
 
 	
-	public KazimierzLongArcher(int client, float vecPos[3], float vecAng[3], int ally)
+	public KazimierzLongArcher(float vecPos[3], float vecAng[3], int ally)
 	{
 		KazimierzLongArcher npc = view_as<KazimierzLongArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "17500", ally));
 		SetVariantInt(4);
@@ -121,7 +121,6 @@ methodmap KazimierzLongArcher < CClotBody
 		func_NPCThink[npc.index] = KazimierzLongArcher_ClotThink;
 		func_NPCAnimEvent[npc.index] = HandleAnimEventKazimierzLongArcher;
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -158,8 +157,7 @@ methodmap KazimierzLongArcher < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void KazimierzLongArcher_ClotThink(int iNPC)
 {
 	KazimierzLongArcher npc = view_as<KazimierzLongArcher>(iNPC);

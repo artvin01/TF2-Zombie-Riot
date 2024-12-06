@@ -89,6 +89,12 @@ static void ClotShowInteractHud(ObjectPackAPunch npc, int client)
 
 static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 {
+	if(ClientTutorialStep(client) == 5)
+	{
+		SetClientTutorialStep(client, 6);
+		DoTutorialStep(client, false);	
+		TutorialEndFully(client);
+	}
 	f_CheckWeaponDelay[client] = 0.0;
 	if(!ClotCanUse(npc, client))
 	{
@@ -111,6 +117,10 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 			}
 		}
 	}
+
+	if(owner > MaxClients)
+		owner = client;
+
 	Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
 	return true;
 }

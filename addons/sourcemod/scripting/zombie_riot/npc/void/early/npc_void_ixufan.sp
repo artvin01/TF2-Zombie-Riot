@@ -72,9 +72,9 @@ void VoidIxufan_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidIxufan(client, vecPos, vecAng, ally);
+	return VoidIxufan(vecPos, vecAng, team);
 }
 methodmap VoidIxufan < CClotBody
 {
@@ -115,7 +115,7 @@ methodmap VoidIxufan < CClotBody
 	}
 	
 	
-	public VoidIxufan(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidIxufan(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidIxufan npc = view_as<VoidIxufan>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "15000", ally, false, true));
 		
@@ -138,9 +138,7 @@ methodmap VoidIxufan < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidIxufan_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 290.0;
 		

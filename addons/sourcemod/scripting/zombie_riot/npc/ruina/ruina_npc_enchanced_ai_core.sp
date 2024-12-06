@@ -84,7 +84,7 @@ bool b_ruina_nerf_healing[MAXENTITIES];
 
 
 #define RUINA_POINT_MODEL	"models/props_c17/canister01a.mdl"
-#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY		0.7		//for npc's that walk backwards, how much slower (or faster :3) should be walk
+#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY		0.7		//for npc's that walk backwards, how much slower (or faster :3) should be walk
 #define RUINA_FACETOWARDS_BASE_TURNSPEED			475.0	//for npc's that constantly face towards a target, how fast can they turn
 
 static bool b_master_is_rallying[MAXENTITIES];
@@ -136,6 +136,7 @@ enum
 }
 
 //static char gLaser1;
+int g_Ruina_Laser_BEAM;
 int g_Ruina_BEAM_Diamond;
 int g_Ruina_BEAM_Laser;
 int g_Ruina_HALO_Laser;
@@ -143,7 +144,7 @@ int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
 int g_Ruina_BEAM_lightning;
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return -1;
 }
@@ -236,7 +237,7 @@ void Ruina_Ai_Core_Mapstart()
 
 	i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
 	
-	//gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	g_Ruina_Laser_BEAM = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
 	g_Ruina_BEAM_Diamond = PrecacheModel("materials/sprites/physring1.vmt", true);
 	g_Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
@@ -1377,9 +1378,6 @@ stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_a
 			}
 		}
 
-		if(i_BarbariansMind[Target])
-			flat_amt = RoundToFloor(flat_amt*0.9);
-
 		Current_Mana[Target] += RoundToCeil(max_mana[Target]*Multi+flat_amt);
 
 		if(OverMana_Ratio>2.0)
@@ -1450,10 +1448,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Mana_Regen_Delay[Target] = GameTime + Timeout;
 	Mana_Regen_Block_Timer[Target] = GameTime + Timeout;
 
-	if(i_BarbariansMind[Target])
-		TF2_StunPlayer(Target, Slow_Time, 0.4, TF_STUNFLAG_SLOWDOWN);	//40% slower
-	else
-		TF2_StunPlayer(Target, Slow_Time, 0.6, TF_STUNFLAG_SLOWDOWN);	//60% slower
+	TF2_StunPlayer(Target, Slow_Time, 0.5, TF_STUNFLAG_SLOWDOWN);	//50% slower
 
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
@@ -1637,6 +1632,9 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
 
+	if(AtEdictLimit(EDICT_NPC))
+		return Plugin_Stop;
+		
 	int laser;
 	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 7.0, 7.0, 1.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
@@ -1740,20 +1738,24 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 
 	if(Ratio > 1.0)
 	{//the target npc has overheal, nerf the healing ratio
-		healingammount*=0.25;
+		healingammount*=0.2;
 	}
 	
 	if(fl_npc_healing_duration[npc.index] < GetGameTime(npc.index))
 	{//the npc is not retreating to a healer npc. simply put, if the npc is running towards a healer npc, they won't get their healing nerfed from this specific value.
-
-		if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target] || b_ruina_nerf_healing[healed_target])
-		{//this npc is a raid/boss/nerfed healing target
+		
+		if(b_ruina_nerf_healing[healed_target])
+		{//the npc is a special case that needs to get less healing otherwise unfun balance happens
+			healingammount *=0.7;
+		}
+		else if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])
+		{//this npc is a raid/boss healing target
 			healingammount *=0.5;
 		}
 	}
 	if(b_ruina_npc_healer[healed_target])
-	{//this npc MUST have less healing. AND BY A LOT
-		healingammount *=0.1;
+	{//this npc MUST have less healing.
+		healingammount *=0.5;
 	}
 
 	if(!b_ruina_npc[healed_target])
@@ -2444,6 +2446,8 @@ enum struct Ruina_Laser_Logic
 	bool trace_hit;
 	bool trace_hit_enemy;
 
+	float Custom_Hull[3];
+
 	/*
 		Todo: 
 			If needed, add a trace version that only triggers a void instead of also dealing damage.
@@ -2501,21 +2505,58 @@ enum struct Ruina_Laser_Logic
 		}
 		delete trace;
 	}
+	bool Any_entities;
+	//in this case, no default func since this things entire point is to find entities
+	void Detect_Entities(Function Attack_Function)
+	{
+		Zero(Ruina_Laser_BEAM_HitDetected);
+
+		i_targets_hit = 0;
+
+		float hullMin[3], hullMax[3];
+		this.SetHull(hullMin, hullMax);
+
+		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+
+				
+		for (int loop = 0; loop < i_targets_hit; loop++)
+		{
+			int victim = Ruina_Laser_BEAM_HitDetected[loop];
+			if (victim && (this.Any_entities || IsValidEnemy(this.client, victim)))
+			{
+				this.trace_hit_enemy=true;
+
+				float playerPos[3];
+				WorldSpaceCenter(victim, playerPos);
+
+				//still send the dmg over.
+				float Dmg = this.Damage;
+
+				if(ShouldNpcDealBonusDamage(victim))
+					Dmg = this.Bonus_Damage;
+
+				Call_StartFunction(null, Attack_Function);
+				Call_PushCell(this.client);
+				Call_PushCell(victim);
+				Call_PushCell(this.damagetype);
+				Call_PushFloat(Dmg);
+				Call_Finish();
+
+				//static void On_LaserHit(int client, int target, int damagetype, float damage)
+			}
+		}
+	}
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)
 	{
 
 		Zero(Ruina_Laser_BEAM_HitDetected);
 
-		i_targets_hit = 0;	//todo: test this! | so far works!
+		i_targets_hit = 0;
 
 		float hullMin[3], hullMax[3];
-		hullMin[0] = -this.Radius;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
+		this.SetHull(hullMin, hullMax);
 
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
@@ -2536,7 +2577,8 @@ enum struct Ruina_Laser_Logic
 				if(ShouldNpcDealBonusDamage(victim))
 					Dmg = this.Bonus_Damage;
 				
-				SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
+				if(Dmg!=0.0)
+					SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
 
 				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
 				{	
@@ -2544,13 +2586,32 @@ enum struct Ruina_Laser_Logic
 					Call_PushCell(this.client);
 					Call_PushCell(victim);
 					Call_PushCell(this.damagetype);
-					Call_PushFloat(this.Damage);
+					Call_PushFloat(Dmg);
 					Call_Finish();
 
 					//static void On_LaserHit(int client, int target, int damagetype, float damage)
 				}
 			}
 		}
+	}
+	void SetHull(float hullMin[3], float hullMax[3])
+	{
+		if(this.Custom_Hull[0] != 0.0 || this.Custom_Hull[1] != 0.0 || this.Custom_Hull[2] != 0.0)
+		{
+			hullMin[0] = -this.Custom_Hull[0];
+			hullMin[1] = -this.Custom_Hull[1];
+			hullMin[2] = -this.Custom_Hull[2];
+			return;
+		}
+		else
+		{
+			hullMin[0] = -this.Radius;
+			hullMin[1] = hullMin[0];
+			hullMin[2] = hullMin[0];
+		}
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
 	}
 }
 

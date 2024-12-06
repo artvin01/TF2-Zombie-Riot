@@ -136,7 +136,7 @@ public Action Hose_RemoveUber(Handle remove, int id)
 public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float speed, float baseHeal, float loss, float minHeal, int NumParticles, float spread, char ParticleName[255], bool giveUber)
 {
 	float healmult = 1.0;
-	healmult = Attributes_GetOnPlayer(client, 8, true, true);
+	healmult = Attributes_GetOnWeapon(client, weapon, 8, true);
 
 	if (Hose_ShotgunCharge[client])
 	{
@@ -290,6 +290,7 @@ public bool Hose_Heal(int owner, int entity, float amt)
 
 		
 	new_ammo -= ammoSubtract;
+	ReduceMediFluidCost(owner, ammoSubtract);
 	SetAmmo(owner, 21, new_ammo);
 	HealEntityGlobal(owner, owner, amt * SelfHealMult, 1.0, 0.0);	
 	CurrentAmmo[owner][21] = GetAmmo(owner, 21);
@@ -403,7 +404,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 				HealAmmount *= 3.0;
 			}
 
-			HealAmmount *= Attributes_GetOnPlayer(client, 8, true, true);
+			HealAmmount *= Attributes_GetOnWeapon(client, weapon, 8, true);
 
 			float GameTime = GetGameTime();
 			if(f_TimeUntillNormalHeal[target] > GameTime)
@@ -440,10 +441,11 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 
 			SetGlobalTransTarget(client);
-			int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
 			if(target <= MaxClients)
 				PrintHintText(client, "%t", "You healed for", target, ammo_amount_left);
 
+			ReduceMediFluidCost(client, ammo_amount_left);
+			int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
 			SetAmmo(client, 21, new_ammo);
 			for(int i; i<Ammo_MAX; i++)
 			{
@@ -540,7 +542,7 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 
 	float HealAmmount = 30.0;
 
-	HealAmmount *= Attributes_GetOnPlayer(client, 8, true, true);
+	HealAmmount *= Attributes_GetOnPlayer(client, 8, true);
 
 	int prop = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(prop))
@@ -588,6 +590,10 @@ public void TouchHealthKit(int entity, int other)
 		if(f_TimeUntillNormalHeal[other] > GameTime)
 		{
 			HealingAmount /= 2.0;
+		}
+		if(!IsValidEntity(Owner))
+		{
+			Owner = other; //if there is no invalid owner, just make the one that picks it up the owner
 		}
 		int healing_done = HealEntityGlobal(Owner, other, HealingAmount, 1.0, _, _);
 		if(healing_done <= 0)

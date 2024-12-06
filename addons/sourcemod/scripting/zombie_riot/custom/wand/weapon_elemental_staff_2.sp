@@ -9,6 +9,7 @@ static float client_slammed_pos[MAXTF2PLAYERS][3];
 static float client_slammed_forward[MAXTF2PLAYERS][3];
 static float client_slammed_right[MAXTF2PLAYERS][3];
 static float f_OriginalDamage[MAXTF2PLAYERS];
+static bool HitAlreadyWithSame[MAXTF2PLAYERS][MAXENTITIES];
 
 public void Wand_Elemental_2_ClearAll()
 {
@@ -42,7 +43,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 				Current_Mana[client] -= mana_cost;
 				
 				delay_hud[client] = 0.0;
-				float damage = 160.0;
+				float damage = 500.0;
 				damage *= Attributes_Get(weapon, 410, 1.0);
 					
 				f_OriginalDamage[client] = damage;
@@ -69,7 +70,11 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 				pack.WriteCell(1);
 				RequestFrame(MakeExplosionFrameLater, pack);
 				
-				Explode_Logic_Custom(damage, client, client, weapon,vecUp,_,_,_,false);
+				for(int i; i<MAXENTITIES; i++)
+				{
+					HitAlreadyWithSame[client][i] = false;
+				}
+				Explode_Logic_Custom(damage, client, client, weapon,vecUp,_,_,_,false, .FunctionToCallBeforeHit = Elemental_BeforeExplodeHit);
 			
 				CreateTimer(0.1, shockwave_explosions, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			}
@@ -94,6 +99,29 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 		}
 	}
+}
+
+static float Elemental_BeforeExplodeHit(int attacker, int victim, float &damage, int weapon)
+{
+	if(HitAlreadyWithSame[attacker][victim])
+	{
+		//Each next hit deals much less damage.
+		damage *= 0.1;
+	}
+	HitAlreadyWithSame[attacker][victim] = true;
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		//double!
+		bool PlaySound = false;
+		if(f_MinicritSoundDelay[attacker] < GetGameTime())
+		{
+			PlaySound = true;
+			f_MinicritSoundDelay[attacker] = GetGameTime() + 0.01;
+		}
+		DisplayCritAboveNpc(victim, attacker, PlaySound); //Display crit above head
+		return damage;
+	}
+	return 0.0;
 }
 
 public Action shockwave_explosions(Handle timer, int client)
@@ -128,7 +156,7 @@ public Action shockwave_explosions(Handle timer, int client)
 						
 			AcceptEntityInput(ent, "explode");
 			AcceptEntityInput(ent, "kill");
-			Explode_Logic_Custom(f_OriginalDamage[client], client, client, -1, vecSwingEnd,_,_,_,false);
+			Explode_Logic_Custom(f_OriginalDamage[client], client, client, -1, vecSwingEnd,_,_,_,false, .FunctionToCallBeforeHit = Elemental_BeforeExplodeHit);
 		}
 		if(client_slammed_how_many_times[client] > client_slammed_how_many_times_limit[client])
 		{
@@ -629,8 +657,8 @@ void Passanger_CauseCoolSoundEffect(float StartLightningPos[3])
 	Angles [1] = GetRandomFloat(-180.0, 180.0);
 	TeleportEntity(particle_extra, NULL_VECTOR, Angles, NULL_VECTOR);				
 
-	EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_HIT, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, StartLightningPos);
-	EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_HIT, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, StartLightningPos);	
+	EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_HIT, 0, SNDCHAN_AUTO, 80, SND_NOFLAGS, 0.9, SNDPITCH_NORMAL, -1, StartLightningPos);
+	EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_HIT, 0, SNDCHAN_AUTO, 80, SND_NOFLAGS, 0.9, SNDPITCH_NORMAL, -1, StartLightningPos);	
 }
 
 void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])

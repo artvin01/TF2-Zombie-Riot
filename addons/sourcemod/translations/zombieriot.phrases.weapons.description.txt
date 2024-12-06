@@ -1,6 +1,5 @@
 "Phrases"
 {
-
 	"Multi Pellet"
 	{
 		"en"		"Archetype: Multi Pellet"
@@ -68,7 +67,7 @@
 	{
 		"en"		"Archetype: Brawler"
 		"fr"		"Archetype: Bagarreur"
-		"ru"		"Архетип: Боец"
+		"ru"		"Архетип: Потасовщик"
 		"chi"		"类型：战士"
 	}
 	"Ambusher"
@@ -82,7 +81,7 @@
 	{
 		"en"		"Archetype: Combatant"
 		"fr"		"Archetype: Combatant"
-		"ru"		"Архетип: Комбатант"
+		"ru"		"Архетип: Боец"
 		"chi"		"类型：斗士"
 	}
 	"Aberration"
@@ -124,53 +123,59 @@
 	{
 		"en"		"Archetype: Chain Caster"
 		"fr"		"Archetype: Sortilèges Successifs"
-		"ru"		"Архетип: Мастер цепей"
+		"ru"		"Архетип: Маг цепей"
 		"chi"		"类型：连环法师"
 	}
 	"Multi Caster"
 	{
 		"en"		"Archetype: Multi Caster"
 		"fr"		"Archetype: Multi-sortilèges"
-		"ru"		"Архетип: Мультизаклинатель"
+		"ru"		"Архетип: Мульти маг"
 		"chi"		"类型：多重法师"
 	}
 	"Base Caster"
 	{
 		"en"		"Archetype: Base Caster"
 		"fr"		"Archetype: Sortilèges Amateurs"
-		"ru"		"Архетип: Базовый заклинатель"
+		"ru"		"Архетип: Базовый маг"
 	}
 	"Mythic Caster"
 	{
 		"en"		"Archetype: Mythic Caster"
 		"fr"		"Archetype: Sortilèges Mythiques"
 		"chi"		"类型：至尊法师"
+		"ru"		"Архетип: Мифический маг"
 	}
 	"Psychic Warlord"
 	{
 		"en"		"Archetype: Psychic Warlord"
+		"ru"		"Архетип: психический полководец"
 	}
 	"Abyssal Hunter"
 	{
 		"en"		"Archetype: Abyssal Hunter"
 		"fr"		"Archetype: Chasseur des Abîmes"
+		"ru"		"Архетип: Охотник Бездны"
 		"chi"		"类型：深海猎人"
 	}
 	"Kazimierz"
 	{
 		"en"		"Archetype: Kazimierz"
+		"ru"		"Архетип: Казимерз"
 		"fr"		"Archetype: Kazimierz"
 		"chi"		"类型：卡齐米日"
 	}
 	"Bloodletter"
 	{
 		"en"		"Archetype: Bloodletter"
+		"ru"		"Арехтип: Кровопускатель"
 		"fr"		"Archetype: Hémorragie"
 		"chi"		"类型：放血者"
 	}
 	"Bloody Butcher"
 	{
 		"en"		"Archetype: Bloody Butcher"
+		"ru"		"Архетип: Кровавый Мясник"
 		"fr"		"Archetype: Boucher Dégorgeur"
 		"chi"		"类型：血腥屠夫"
 	}
@@ -192,10 +197,7 @@
 
 	"Syringe Gun Desc"
 	{
-		"en"		"Low Damage but very high bleed duration"
-		"fr"		"Peu de dégats, mais fais saigner pour longtemps"
-		"ru"		"Низкий урон, но очень высокая длительность кровотечения."
-		"chi"       	"低伤害，但流血持续时间非常高"
+		"en"		"Low Damage but very high bleed duration\nDeals 15%% less damage against raids."
 	}
 	"Syringe Gun Pap 1 Desc"
 	{
@@ -229,16 +231,13 @@
 	}
 	"Sniper Rifle Pap 3"
 	{
-		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged."
-		"fr"		"5 balles utilisées par tir.\nDes lunettes pourrait améliorer les dégats pour des charges pleines"
-		"ru"		"Дорогое суперулучшение, 5 пуль одновременно для нанес. огромн. урона.\nНекоторые очки могут ещё больше увелич. урон при полном заряде."
-		"chi"       "昂贵的超级升级，5发子弹一次造成极端伤害。\n有些护目镜在充满电时可能会进一步增加伤害。"
+		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged.\nDeals extreme damage to any enemy not hit by your rifle within 20 seconds!"
 	}
 	"Sniper Rifle Pap 4"
 	{
 		"en"		"Heavily increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
-		"ru"		"Сильное Увеличенный урон и скорость атаки."
+		"ru"		"Сильно Увеличенный урон и скорость атаки."
 		"chi"       "大幅增加伤害和攻击速度"
 	}
 	"Sniper Rifle Pap 5"
@@ -289,7 +288,7 @@
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed."
 		"fr"		"Dégats et cadence de tir améliorés, barrage amélioré"
-		"ru"		"Увеличенный урон и скорость атаки, усиление способности М2."
+		"ru"		"Увеличенный урон и скорость атаки, усилена способность М2."
 		"chi"       "增加伤害和攻击速度，加强右键技能。"
 	}
 	"Huntsman Pap 2"
@@ -546,10 +545,7 @@
 	
 	"Terroriser Bomb Implanter Sniperrifle Desc"
 	{
-		"en"	"Implant a bomb onto the target you hit, press R to detonate them.\nImplant multiple for more dmg. More charge = more bombs, headshot = more bombs"
-		"fr"	"Plante une bombe dans vos cibles, appuyez sur R pour les détoner.\nPlantez plus de bombes pour plus de dégats. Les tirs en pleine tête et une charge plus grande augmuntent le nombre de bombes."
-		"ru"	"Устанавливает бомбу на цель, в которую вы попали, нажмите R, чтобы взорвать её.\nУстановите несколько бомб для большего урона. Больше зарядов = больше бомб, выстрел в голову = больше бомб."
-		"chi"   "射击将会发出黏弹，按R引爆它们。\n部下多颗黏弹可造成更多伤害.更多的冲锋=更多的炸弹，爆头=更多的炸弹"
+		"en"	"Implant a bomb onto the target you hit, press R to detonate them. More charge = more bombs, headshot = more bombs\nBombs dont suffer from downed dmg reduction.\nBomblimit = 200-ish"
 	}
 	"Terroriser Bomb Implanter Sniperrifle Desc PaP 1"
 	{
@@ -1237,10 +1233,7 @@
 	
 	"Fire Wand Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Shoots a more powerful Fireball."
-		"fr"	"Chaque attaque utilise du Mana. M2 lance une boule de feu."
-		"ru"	"Расходует ману при каждом выстреле. М2 - стреляет более мощным огненным шаром."
-		"chi"   "每次射击消耗法力值。M2发射更强大的火球。"
+		"en"	"Consumes mana with each shot. M2 Shoots a more powerful Fireball.\nAfterburn damage is doubled."
 	}
 	"Fire Wand Pap 1"
 	{
@@ -1375,10 +1368,7 @@
 	
 	"Elemental Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons a Earth Shattering Aimed Quake."
-		"fr"	"Chaque attaque utilise du Mana. M2 cause un tremblement de terre dirigé."
-		"ru"	"Потребляет ману с каждым выстрелом. М2 - вызывает сокрушительное направленное землетрясение."
-		"chi"   "每次射击消耗法力值。M2召唤一场震天动地的地震。"
+		"en"	"Consumes mana with each shot. M2 Summons a Earth Shattering Aimed Quake.\nApplies Elemental debuff\nBoosts bleed damage by 15%%, burn by 20%%, elemental damage applied by 30%%\nEarthquake deals 2x damage to enemies with this debuff."
 	}
 	
 	"Throwable Armor Grenade Desc"
@@ -1561,10 +1551,7 @@
 	
 	"Copium Desc"
 	{
-		"en"	"25%% melee resistance with melee equipped"
-		"fr"	"+25%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"25%% сопр. ближнему бою при использ. оружия ближнего боя."
-		"chi"   "使用近战武器时+25%%的近战抵抗"
+		"en"	"28.75%% melee resistance, 5%% ranged resistance, and 10%% extra damage with melee equipped"
 	}
 	
 	"Cocain Desc"
@@ -1639,17 +1626,11 @@
 	
 	"Alien Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate"
-		"fr"	"+2x vitesse de réparation"
-		"ru"	"2,0-кратная скорость починки."
-		"chi"   "修复建筑生命值提高2.0倍"
+		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25%% (Cant go below 1)"
 	}
 	"Engineering Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate"
-		"fr"	"+2x vitesse de réparation"
-		"ru"	"2,0-кратная скорость починки."
-		"chi"   "修复建筑生命值提高2.0倍"
+		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25%% (Cant go below 1)"
 	}
 	"Construction Worker Desc"
 	{
@@ -1660,10 +1641,7 @@
 	
 	"Cosmic Repair Handling book Desc"
 	{
-		"en"	"3x Repair Rate"
-		"fr"	"+3x vitesse de réparation"
-		"ru"	"Трёхкратная скорость починки."
-		"chi"   "修复建筑生命值提高2倍"
+		"en"	"3x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25%% (Cant go below 1)"
 	}
 	
 	"Construction Expert Desc"
@@ -1671,7 +1649,6 @@
 		"en"	"1.7x more building health and 2.25x Sentry damage and increased attack speed by 1.2x, 4 more support buildings added"
 		"fr"	"+1.7x durabilité pour constructions, +2.25x dégats par votre mitrailleuse, +1.2x cadence de tir. +4 espaces pour construction de support."
 		"chi"	"建筑物血量*1.7，布哨伤害*2.25，+4辅助建筑上限。"
-
 	}
 	
 	"Construction Master Desc"
@@ -1736,7 +1713,7 @@
 	
 	"Magical Haste Desc"
 	{
-		"en"	"25%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana"
+		"en"	"25%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana, 7%% more mage damage."
 		"fr"	"+25%% cadence des attaques magiques, +50%% Mana maximum et regénération Mana"
 		"ru"	"На 25%% быстрее скорость огненной магии и на 50%% восстановления маны и максимальной маны"
 		"chi"   "提升25%%法杖攻速，50%%的法力回复和最大法力值"
@@ -1752,10 +1729,7 @@
 	
 	"Hastening Potion Desc"
 	{
-		"en"	"15%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana, 50+ HP and 5%% melee resistance"
-		"fr"	"+15%% cadence des attaques magiques, +50%% Mana maximum et regénération Mana, +50 santé\n+5% résistance contre les dégats corps-à-corps"
-		"ru"	"На 15%% быстрее скорость огненной магии и на 50%% восстановления маны и максимальной маны, 50+ ед. здоровья и 5%% сопр. ближнему бою"
-		"chi"   "提升15%%法杖攻速和50%%的法力回复、最大法力值，提高50生命值和获得5%%近战抗性"
+		"en"	"15%% Faster Mage Fire Speed and 50%% Mana Regen and Max Mana, 50+ HP and 5%% melee resistance, 7%% more mage damage."
 	}
 	
 	"The Bombinomicon Desc"
@@ -1768,10 +1742,7 @@
 	
 	"Betweenlands Potion Desc"
 	{
-		"en"	"20%% Faster Mage Fire Speed and 100%% Mana Regen and Max Mana, 100+ HP and 5%% melee resistance"
-		"fr"	"+20%% cadence des attaques magiques, +100%% Mana maximum et regénération Mana, +100 santé\n+5% résistance contre les dégats corps-à-corps"
-		"ru"	"На 20%% быстрее скорость огненной магии и на 100%% восстановления маны и максимальной маны, 100+ ед. здоровья и 5%% сопр. ближнему бою"
-		"chi"   "提升20%%法杖攻速和100%%的法力回复、最大法力值，提高100生命值和获得5%%近战抗性"
+		"en"	"20%% Faster Mage Fire Speed and 100%% Mana Regen and Max Mana, 100+ HP and 5%% melee resistance, 7%% more mage damage."
 	}
 	
 	"Master Sorcerer Desc"
@@ -1836,51 +1807,32 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+2x puissance Medigun\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
-		"ru"	"Двукратный урон и лечение у лечебной пушки, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+2倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"2x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 40%% (cant go below 1)"
 	}
 	
 	"Professor Certificate Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+1.5x puissance Medigun\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
-		"ru"	"1,5-кратный урон и лечение у лечебной пушки, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.5倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
 	}
 	
 	"Death Certificate Desc"
 	{
-		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+1.4x puissance Medigun, +2 secondes de Über\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
-		"ru"	"1,4-кратный урон и лечение у лечебной пушки и +2 секунды убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.4倍的医枪伤害和治疗效果，每秒恢复2的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+1.45x puissance Medigun, +1 seconde de Über\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
-		"ru"	"1,45-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.45倍的医枪伤害和治疗效果，每秒恢复1的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+1.45x puissance Medigun, +1 seconde de Über\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
-		"ru"	"1,45-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.45倍的医枪伤害和治疗效果，每秒恢复的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
-		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
-		"fr"	"+1.5x puissance Medigun\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez votre Medigun"
-		"ru"	"1,5-кратный урон и лечение у лечебной пушки и 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.5倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
 	}
 	
 	"Panic Attack Desc"
@@ -1971,10 +1923,7 @@
 	
 	"Headshot Affinity Desc"
 	{
-		"en"	"Headshots deal 2.0x the dmg instead of 1.65x, but deal 35%% less bodyshot damage"
-		"fr"	"Les tirs en pleine tête infligent 2x dégats au lieu de 1.65x, -35%% dégats si vous manquez."
-		"ru"	"Выстрелы в голову наносят двукратно больше урона вместо 1,65-кратного, но наносят на 35%% меньше урона от выстрелов в тело"
-		"chi"   "爆头造成的伤害增加2.0倍，但造成的身体伤害减少35%%"
+		"en"	"Headshots deal 1.4x the dmg instead of 1.2, but deal 35%% less bodyshot damage\nFalloff, if you headshot, is reduced by 30%."
 	}
 	"Proximity Ammunition Desc"
 	{
@@ -3277,9 +3226,7 @@
 	}
 	"Broken Rapier Desc"
 	{
-		"en"	"A rapier that has been degraded to a state of hopelessness.\nUnpredictable footing: You permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot (affected by Daiquiri and Affinity).\nDestreza: Every 2nd hit speeds you up."
-		"fr"	"Cet arme peut frapper en pleine tête (affecté par Daiquiri et Affinité.)\nVoutre vitesse augmunte tous les deux coups.\nVous souffrez 20%% plus de dégats.\nUne rapière dégradé à un état de désespoir."
-		"chi"	"一把被时间摧毁的西洋剑。\n平衡失调：+20%%受到的伤害。\n精准攻击：此武器可以击中头部造成暴击。Destreza：每两次攻击会给你加速。"
+		"en"	"A rapier that has been degraded to a state of hopelessness.\nYou permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot.\nHitting speed you up\nYou have no backwards walking penalty."
 	}
 	"Bent Rapier Desc"
 	{
@@ -3439,8 +3386,6 @@
 	"Outlaw Railcannon Desc Pap 3"
 	{
 		"en"	"We found this left behind on an old rusty mad max car.\nSeems to have had significant use."
-		// todo
-		"fr"	""
 		"chi"	"我们在某个奇怪的拦车找到了这玩意。\n貌似很重要。"
 	}
 	"Outlaw Railcannon Desc Pap 4"
@@ -3522,8 +3467,7 @@
 	}
 	"Helena's Elite Medicine Desc"
 	{
-		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+1.6x puissance Medigun\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
+		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 40% (cant go below 1)"
 	}
 	"Messenger Launcher Desc"
 	{
@@ -3578,23 +3522,23 @@
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects."
+		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70%% Building Health, +181.25% Weapon Damage, +50 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects."
+		"en"	"+70%% Building Health, +181.25% Weapon Damage, +50 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown."
+		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown."
+		"en"	"+160% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown."
+		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"West Pap 1 Desc"
 	{
@@ -3753,12 +3697,12 @@
 		"en"	"Ranged Basic combine unit. It reloads when his clip is empty"
 		"fr"	"Combine qui fait le combat à distance. Recharge quand son chargeur est vide."
 	}
-	"Barracks Combine Shotgunner Desc"
+	"Barracks Shotgunner Desc"
 	{
 		"en"	"Ranged unit but it tends to get close to the target"
 		"fr"	"Unité à portée qui s'approche des cibles."
 	}
-	"Barracks Combine Swordsman Desc"
+	"Barracks Swordsman Desc"
 	{
 		"en"	"Melee unit which will regularly gain an armor while attacking"
 		"fr"	"Unité corps-à-corps qui reçoit de l'armure pour ses attaques."
@@ -3768,47 +3712,47 @@
 		"en"	"Upgraded unit of Metro Cop. Has better clip and damage"
 		"fr"	"Un Métro-police avec dégats et chargeur amélioré."
 	}
-	"Barracks Combine Soldier Desc"
+	"Barracks Soldier Desc"
 	{
 		"en"	"Upgraded unit of Metro Raider. Has better clip, damage, and armor"
 		"fr"	"Un Métro-Raider avec dégats, chargeur et armure amélioré."
 	}
-	"Barracks Combine DDT Desc"
+	"Barracks DDT Desc"
 	{
 		"en"	"Fast and hard hitting robotic Combine Unit"
 		"fr"	"Combine robotique qui va vite et frappe fort."
 	}
-	"Barracks Combine Elite Desc"
+	"Barracks Elite Desc"
 	{
 		"en"	"Ranged Combine unit which will often fire explosive combine energy ball"
 		"fr"	"Combine qui tire des balles énergétiques explosives"
 	}
-	"Barracks Combine Deflector Desc"
+	"Barracks Deflector Desc"
 	{
 		"en"	"Armored Combine knight who will regularly parry melee attacks"
 		"fr"	"Chevalier Combine qui bloque les attaques corps-à-corps"
 	}
-	"Barracks Combine Sniper Desc"
+	"Barracks Sniper Desc"
 	{
 		"en"	"Super Ranged unit with high damage but slow attack speed"
 		"fr"	"Hauts dégats, cadence d'attaque lente"
 	}
-	"Barracks Combine Collos Desc"
+	"Barracks Collos Desc"
 	{
 		"en"	"Giant Combine swordsman which has better armor and damage"
 		"fr"	"Épéiste Combine avec bons armure et dégats"
 	}
-	"Barracks Combine Giant ddt Desc"
+	"Barracks Giant ddt Desc"
 	{
 		"en"	"Giant robotic unit with fast speed, damage, and armor"
 		"fr"	"Combine robotique géant. Beacoup d'armure, va vite et frappe fort."
 	}
-	"Barracks Combine Super Desc"
+	"Barracks Super Desc"
 	{
 		"en"	"A melee unit which will gain resistance and chance to evade when below half health."
 		"fr"	"Quand sous moitié santé, reçoit de la résistance et une chance d'éviter les attaques."
 	}
-	"Barracks Combine Commander Desc"
+	"Barracks Commander Desc"
 	{
 		"en"	"A ranged super unit which will buff allies around it regularly."
 		"fr"	"Améliore les alliés qui l'entoure"
@@ -3922,7 +3866,7 @@
 	}
 		"Telekinesis Desc"
 	{
-		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nRapidly fires projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw the zombie."
+		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles, which home in on the target you were aiming at.\nM2: Grab and hold a zombie, rapidly draining your mana.\nPress M2 again to throw the zombie."
 		"chi"	"''一管试验性药剂，可增强服用者的精神力。''\n M1高速发射低射程的攻击。\n[M2]抓住一名敌人，持续消耗大量MP。被抓住的敌人会被眩晕。\n再次M2可将敌人抛出。"
 	}
 	"Telekinesis PaP 1"
@@ -3947,7 +3891,7 @@
 	}
 	"Telekinesis Desc"
 	{
-		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles with a short lifespan.\nM2: Grab and hold a zombie, rapidly draining your mana. Grabbed zombies are stunned.\nPress M2 again to throw it.
+		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles, which home in on the target you were aiming at.\nM2: Grab and hold a zombie, rapidly draining your mana.\nM2 again to throw it."
 	}
 	"Telekinesis PaP 1"
 	{
@@ -4000,5 +3944,45 @@
 	"Yakuza Pap 6"
 	{
 		"en"	"+25 max HEAT. Base stats increased."
+	}
+	"Abyssal Greatsword desc"
+	{
+		"en"	"A worn sword covered with blue goo. Once used by a great abyssal hunter\nGain Faster attack speed and higher damage as a cost of aoe attack and Solemny. \n weapon's Archetype changed to Abyssal hunters and all abyssal hunter weapons will receive 10% damage bonus"
+	}
+	"Abyssal Greatsword Pap 1 desc"
+	{
+		"en"	"She always wished to keep her teams safe and strong. Now, her dream is fulfilled. \n Unlock new ability: When used, gain 10% damage buff every hit that adds up(Max x2.0 dmg) and gain slight resistance"
+	}
+	"Hunting Rifle desc"
+	{
+		"en"	"A hunting rifle with a small clip size, reloads slowly but each bullet packs a punch."
+	}
+	"Hunting Rifle Pap 1 desc"
+	{
+		"en"	"Clip size, damage increased. \nUnlocks an ability which boosts reload speed and increases damage."
+	}
+	"Hunting Rifle Pap 2 desc"
+	{
+		"en"	"Clip size, damage and ability duration increased."
+	}
+	"Whistle Stop Desc"
+	{
+		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals True Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
+	}
+	"Ancestor Launcher Desc"
+	{
+		"en"	"Attacks deal extra damage and mark the main target.\nHas a chance to explode and stun when hitting marked targets.\nAbility grants sentry buildings and a limited-ammo rocket launcher."
+	}
+	"Wand of Rot Desc"
+	{
+		"en"	"Fires a slow homing projectile with medium damage. \nDeals an adinational hit of damage to enemies under an elemental debuff. \nAbility increases damage, firarate, projectile speed and passive bonus, also fires 2 projectiles.\nDeal Osmosis Damage, see Extra Desc."
+	}
+	"Wand of Rot Desc 2"
+	{
+		"en"	"When triggered: Osmosis elemental debuff gives allies 2 second cooldown reduction on their abilities once each trigger on their active weapon."
+	}
+	"Wand of Decay Desc"
+	{
+		"en"	"Increased damage and fire rate"
 	}
 }

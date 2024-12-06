@@ -68,6 +68,11 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	SetStoreMenuLogic(client, false);
 	SetGlobalTransTarget(client);
 	
+	if(ClientTutorialStep(client) == 4)
+	{
+		SetClientTutorialStep(client, 5);
+		DoTutorialStep(client, false);	
+	}
 	char buffer[32];
 	Menu menu2 = new Menu(Building_ConfirmMountedAction);
 	menu2.SetTitle("%t", "Which perk do you desire?");
@@ -92,9 +97,6 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Quick Revive");
 	menu2.AddItem("-3", buffer);
-					
-	FormatEx(buffer, sizeof(buffer), "%t", "No");
-	menu2.AddItem("-2", buffer);
 						
 	menu2.Display(client, MENU_TIME_FOREVER);
 	
@@ -203,7 +205,7 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	if((GetEntityFlags(client) & FL_DUCKING))
 	{
 		SetGlobalTransTarget(client);
-		PrintToChat(client, "{green} %t", PerkNames_Recieved[what_perk]);
+		CPrintToChat(client, "{green} %t", PerkNames_Recieved[what_perk]);
 		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
 		ClotInteract(client, -1, npc);
 		return;

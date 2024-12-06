@@ -27,15 +27,15 @@ static char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/chuckle.wav",
 };
 
-static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_MeleeAttackSounds[][] = {
 	"weapons/rpg/rocketfire1.wav",
 };
 
 static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
@@ -57,9 +57,9 @@ public void Whiteflower_Rocketeer_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Whiteflower_Rocketeer(client, vecPos, vecAng, ally);
+	return Whiteflower_Rocketeer(vecPos, vecAng, team);
 }
 
 methodmap Whiteflower_Rocketeer < CClotBody
@@ -140,7 +140,7 @@ methodmap Whiteflower_Rocketeer < CClotBody
 	}
 	
 	
-	public Whiteflower_Rocketeer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Whiteflower_Rocketeer(float vecPos[3], float vecAng[3], int ally)
 	{
 		Whiteflower_Rocketeer npc = view_as<Whiteflower_Rocketeer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
@@ -193,8 +193,7 @@ methodmap Whiteflower_Rocketeer < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Whiteflower_Rocketeer_ClotThink(int iNPC)
 {
 	Whiteflower_Rocketeer npc = view_as<Whiteflower_Rocketeer>(iNPC);
@@ -302,7 +301,7 @@ public void Whiteflower_Rocketeer_ClotThink(int iNPC)
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
 
 					npc.PlayMeleeSound();
-					float DamageDeal = 500000.0;
+					float DamageDeal = 350000.0;
 					int RocketGet = npc.FireRocket(vecTarget, DamageDeal, 1100.0);
 					npc.m_iAttacksTillReload++;
 

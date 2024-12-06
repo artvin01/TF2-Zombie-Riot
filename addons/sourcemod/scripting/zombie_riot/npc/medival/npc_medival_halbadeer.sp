@@ -104,9 +104,9 @@ void MedivalHalb_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalHalb(client, vecPos, vecAng, ally);
+	return MedivalHalb(vecPos, vecAng, team);
 }
 
 methodmap MedivalHalb < CClotBody
@@ -169,7 +169,7 @@ methodmap MedivalHalb < CClotBody
 		
 	}
 	
-	public MedivalHalb(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalHalb(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalHalb npc = view_as<MedivalHalb>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "15000", ally));
 		SetVariantInt(1);
@@ -224,8 +224,7 @@ methodmap MedivalHalb < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalHalb_ClotThink(int iNPC)
 {
 	MedivalHalb npc = view_as<MedivalHalb>(iNPC);

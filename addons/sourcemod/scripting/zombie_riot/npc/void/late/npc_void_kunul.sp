@@ -58,9 +58,9 @@ void VoidKunul_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidKunul(client, vecPos, vecAng, ally);
+	return VoidKunul(vecPos, vecAng, team);
 }
 methodmap VoidKunul < CClotBody
 {
@@ -101,7 +101,7 @@ methodmap VoidKunul < CClotBody
 	}
 	
 	
-	public VoidKunul(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidKunul(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidKunul npc = view_as<VoidKunul>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "0.8", "9000", ally));
 		
@@ -125,9 +125,7 @@ methodmap VoidKunul < CClotBody
 		f_HeadshotDamageMultiNpc[npc.index] = 0.0;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 310.0;
 		

@@ -55,9 +55,9 @@ void ChaosSupporter_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ChaosSupporter(client, vecPos, vecAng, ally);
+	return ChaosSupporter(vecPos, vecAng, team);
 }
 methodmap ChaosSupporter < CClotBody
 {
@@ -108,7 +108,7 @@ methodmap ChaosSupporter < CClotBody
 	}
 	
 	
-	public ChaosSupporter(int client, float vecPos[3], float vecAng[3], int ally)
+	public ChaosSupporter(float vecPos[3], float vecAng[3], int ally)
 	{
 		ChaosSupporter npc = view_as<ChaosSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		
@@ -131,9 +131,7 @@ methodmap ChaosSupporter < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ChaosSupporter_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 175.0;
 		npc.m_flChaosSupporterHeal = 0.0;

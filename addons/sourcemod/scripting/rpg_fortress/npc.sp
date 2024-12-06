@@ -84,15 +84,23 @@ void NPC_ConfigSetup()
 	Whiteflower_AcclaimedSwordsman_OnMapStart_NPC();
 	Whiteflower_Ekas_Piloteer_OnMapStart_NPC();
 	Whiteflower_Rocketeer_OnMapStart_NPC();
-	Whiteflower_selected_few_OnMapStart_NPC();
 	Whiteflower_PrototypeDDT_OnMapStart_NPC();
-/*
-	ArkSlug_MapStart();
-	ArkSinger_MapStart();
-	ArkSlugAcid_MapStart();
-	ArkSlugInfused_MapStart();
-	CombineTurtle_MapStart();
-*/
+	Whiteflower_Nano_Blaster_OnMapStart_NPC();
+
+	Whiteflower_selected_few_OnMapStart_NPC();
+
+	Whiteflower_Mage_Blaster_OnMapStart_NPC();
+	Whiteflower_ExtremeKnight_OnMapStart_NPC();
+	Whiteflower_ExtremeKnightGiant_OnMapStart_NPC();
+	Whiteflower_ExpertFighter_OnMapStart_NPC();
+	Whiteflower_FloweringDarkness_OnMapStart_NPC();
+	Whiteflower_RagingBlader_OnMapStart_NPC();
+	Whiteflower_Boss_OnMapStart_NPC();
+
+	RiverSeaMelee_Setup();
+	RiverSeaRanged_Setup();
+	RiverSeaFast_Setup();
+	RiverSeaTank_Setup();
 }
 
 int NPC_Add(NPCData data)
@@ -193,14 +201,14 @@ void NPCDeath(int entity)
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		if(IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		int DeathNoticer = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if(IsValidEntity(DeathNoticer) && !b_NpcHasDied[DeathNoticer])
 		{
-			Function func = func_NPCDeathForward[baseboss_index];
+			Function func = func_NPCDeathForward[DeathNoticer];
 			if(func && func != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, func);
-				Call_PushCell(baseboss_index);
+				Call_PushCell(DeathNoticer);
 				Call_PushCell(entity);
 				Call_Finish();
 			}
@@ -291,7 +299,7 @@ stock void NPC_Despawn(int entity)
 	}
 }
 
-stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
+stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false, Function ExtraValidityFunction = INVALID_FUNCTION)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 	
@@ -301,7 +309,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 		{
 			distance = 99999.9;
 		}
-		int entity_found = GetClosestTarget(npc.index, false, distance, .UseVectorDistance = true);
+		int entity_found = GetClosestTarget(npc.index, false, distance, .UseVectorDistance = true, .ExtraValidityFunction = ExtraValidityFunction);
 		if(npc.m_flGetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
 		{
 			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
@@ -364,9 +372,9 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 			{
 				npc.SetGoalVector(f3_SpawnPosition[npc.index]);
 				npc.m_bisWalking = true;
-				if(npc.m_iChanged_WalkCycle != 4) 	
+				if(npc.m_iChanged_WalkCycle != -1) 	
 				{
-					npc.m_iChanged_WalkCycle = 4;
+					npc.m_iChanged_WalkCycle = -1;
 					if(walkback_use_sequence)
 					{
 						npc.AddActivityViaSequence(WalkBack);
@@ -401,12 +409,10 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 				}
 				//Slowly heal when we are standing still.
 
-				Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-
 				npc.m_bisWalking = false;
-				if(npc.m_iChanged_WalkCycle != 5) 	//Stand still.
+				if(npc.m_iChanged_WalkCycle != -2) 	//Stand still.
 				{
-					npc.m_iChanged_WalkCycle = 5;
+					npc.m_iChanged_WalkCycle = -2;
 					if(standstill_use_sequence)
 					{
 						npc.AddActivityViaSequence(StandStill);
@@ -492,6 +498,29 @@ void RPGNpc_UpdateHpHud(int entity)
 	}
 }
 
+void HealOutOfBattleNpc(int entity)
+{
+	int MaxHealth = ReturnEntityMaxHealth(entity);
+	int Health = GetEntProp(entity, Prop_Data, "m_iHealth");
+
+	int HealthToHealPerIncrement = MaxHealth / 100;
+
+	if(HealthToHealPerIncrement < 1) //should never be 0
+	{
+		HealthToHealPerIncrement = 1;
+	}
+
+	SetEntProp(entity, Prop_Data, "m_iHealth", Health + HealthToHealPerIncrement);
+	
+
+	if((Health + HealthToHealPerIncrement) >= MaxHealth)
+	{
+		SetEntProp(entity, Prop_Data, "m_iHealth", MaxHealth);
+	}
+	//Slowly heal when we are standing still.
+	RPGNpc_UpdateHpHud(entity);
+	
+}
 stock bool ShouldNpcJumpAtThisClient(int iNpc, int client)
 {
 	bool AllowJump = true;
@@ -524,6 +553,9 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 }
 
 #include "rpg_fortress/npc/npc_actor.sp"
+
+#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
+
 #include "rpg_fortress/npc/normal/npc_chicken_2.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"
@@ -590,23 +622,30 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_rocketeer.sp"
 #include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_selected_few.sp"
 #include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_prototype_durable_titan.sp"
+#include "rpg_fortress/npc/whiteflower_combine_elite/npc_combine_nano_blaster.sp"
 
-/*
-#include "rpg_fortress/npc/normal/npc_ark_slug.sp"
-#include "rpg_fortress/npc/normal/npc_ark_singer.sp"
-#include "rpg_fortress/npc/normal/npc_ark_slug_acid.sp"
-#include "rpg_fortress/npc/normal/npc_ark_slug_infused.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_aggrat.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_bloomer.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_dreadlander.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_guarder.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_outlander_leader.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_penetrator.sp"
+#include "rpg_fortress/npc/whiteflower_combine_rush/npc_combine_threat_cleaner.sp"
 
-#include "rpg_fortress/npc/combine/npc_basesquad.sp"
-#include "rpg_fortress/npc/combine/npc_combine_pistol.sp"
-#include "rpg_fortress/npc/combine/npc_combine_smg.sp"
-#include "rpg_fortress/npc/combine/npc_combine_ar2.sp"
-#include "rpg_fortress/npc/combine/npc_combine_elite.sp"
-#include "rpg_fortress/npc/combine/npc_combine_shotgun.sp"
-#include "rpg_fortress/npc/combine/npc_combine_swordsman.sp"
-#include "rpg_fortress/npc/combine/npc_combine_giant.sp"
-#include "rpg_fortress/npc/combine/npc_combine_overlord.sp"
-#include "rpg_fortress/npc/combine/npc_townguard_pistol.sp"
-#include "rpg_fortress/npc/combine/npc_combine_overlord_cc.sp"
-#include "rpg_fortress/npc/combine/npc_combine_turtle.sp"
-*/
+
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_mage.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_extreme_knight.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_extreme_knight_giant.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_expert_fighter.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_raging_blader.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_master_mage.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_flowering_darkness.sp"
+#include "rpg_fortress/npc/whiteflower_combine_bodyguards/npc_combine_whiteflower.sp"
+
+#include "rpg_fortress/npc/seaborn/npc_sea_shared.sp"
+#include "rpg_fortress/npc/seaborn/npc_riversea_melee.sp"
+#include "rpg_fortress/npc/seaborn/npc_riversea_ranged.sp"
+#include "rpg_fortress/npc/seaborn/npc_riversea_fast.sp"
+#include "rpg_fortress/npc/seaborn/npc_riversea_tank.sp"
+
+//#include "rpg_fortress/npc/superbosses/npc_levita.sp"

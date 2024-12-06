@@ -353,6 +353,8 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 				{
 					VoidWave_ApplyBuff(entity, 1.0);
 				}
+				if(RenderToAll)
+					f_VoidAfflictionStandOn[entity] = GetGameTime() + 1.0;
 			}
 		}
 	}
@@ -366,6 +368,9 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 			CNavArea nav = TheNavMesh.GetNavArea(pos, 70.0);
 			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
 			{
+				if(RenderToAll)
+					f_VoidAfflictionStandOn[client] = GetGameTime() + 1.0;
+					
 				if(ClientPossesesVoidBlade(client))
 				{
 					VoidWave_ApplyBuff(client, 1.0);

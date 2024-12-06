@@ -230,7 +230,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 			npc.m_bThisEntityIgnored = true;
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + 10.0;
+			f_Duration[entity] = GetGameTime() + (Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0);
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
@@ -388,7 +388,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			Healing_Amount *= Attributes_GetOnPlayer(client, 8, true, true);
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + 10.0;
+			f_Duration[entity] = GetGameTime() + (Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0);
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
@@ -763,7 +763,7 @@ public void DeleteBuildingLookedAt(int client)
 			{
 				if(!StrContains(buffer, "obj_"))
 				{
-					if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
+					if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") > MaxClients)
 					{
 						i_BuildingSelectedToBeDeleted[client] = EntIndexToEntRef(entity);
 						DataPack pack;
@@ -822,10 +822,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 	{
 		case MenuAction_End:
 		{
-			if(IsValidClient(client))
-			{
-				ResetStoreMenuLogic(client);	
-			}
+			delete menu;
 		}
 		case MenuAction_Cancel:
 		{
@@ -1132,7 +1129,7 @@ public void PlaceableTempomaryRepairGrenade(int client)
 			npc.m_bThisEntityIgnored = true;
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + 10.0;
+			f_Duration[entity] = GetGameTime() + (Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0);
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
@@ -1251,11 +1248,7 @@ public int UnClaimBuildingMenu(Menu menu, MenuAction action, int client, int cho
 	{
 		case MenuAction_End:
 		{
-			if(IsValidClient(client))
-			{
-				ResetStoreMenuLogic(client);
-				i_BuildingSelectedToBeUnClaimed[client] = -1;		
-			}
+			delete menu;
 		}
 		case MenuAction_Cancel:
 		{
@@ -1308,11 +1301,7 @@ public int DeleteBuildingMenu(Menu menu, MenuAction action, int client, int choi
 	{
 		case MenuAction_End:
 		{
-			if(IsValidClient(client))
-			{
-				ResetStoreMenuLogic(client);
-				i_BuildingSelectedToBeDeleted[client] = -1;		
-			}
+			delete menu;
 		}
 		case MenuAction_Cancel:
 		{

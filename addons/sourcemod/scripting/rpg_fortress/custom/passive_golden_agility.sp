@@ -60,7 +60,7 @@ void PostThink_GoldenAgility(int client)
 		GetClientAbsOrigin(client, ClientPos);
 		if (GetVectorDistance(ClientPos, SavePos, true) <= (RangeCircleBig * RangeCircleBig))
 		{
-			f_GoldenAgilityCooldown[client] = GetGameTime() + 6.0;
+			f_GoldenAgilityCooldown[client] = GetGameTime() + 18.0;
 			f_GoldenAgilityActiveFor[client] = 0.0; //fail.
 			//Circle yippie.
 			//Do stuff now.
@@ -81,14 +81,14 @@ void PostThink_GoldenAgility(int client)
 			}
 			//if they dont hold a ranged weapon, then they dont get anything. Fuck u
 			
-			ApplyTempAttrib(client, 442, 1.35, 5.9);
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-			ApplyTempAttrib(weapon, 2, 1.35, 6.0);	
-			ApplyTempAttrib(weapon, 6, 0.75, 6.0);
-			ApplyTempAttrib(weapon, 97, 0.75, 6.0);
-			ApplyTempAttrib(weapon, 4004, 0.75, 6.0);
-			ApplyTempAttrib(weapon, 4003, 0.75, 6.0);
-			CreateTimer(6.0, Timer_UpdateMovementSpeed, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			ApplyTempAttrib(client, 442, 1.35, 17.9);
+			SDKCall_SetSpeed(client);
+			ApplyTempAttrib(weapon, 2, 1.35, 18.0);	
+			ApplyTempAttrib(weapon, 6, 0.75, 18.0);
+			ApplyTempAttrib(weapon, 97, 0.75, 18.0);
+			ApplyTempAttrib(weapon, 4004, 0.75, 18.0);
+			ApplyTempAttrib(weapon, 4003, 0.75, 18.0);
+			CreateTimer(18.0, Timer_UpdateMovementSpeed, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 			EmitSoundToClient(client, PICKUP_SPOT_GOLDEN_SOUND, client, SNDCHAN_STATIC, 100, _);
 			TE_Particle("teleportedin_red", SavePos, NULL_VECTOR, NULL_VECTOR, 0, _, _, _, _, _, _, _, _, _, 0.0);
 		}
@@ -187,5 +187,4 @@ void PostThink_GoldenAgility(int client)
 	VecAbove2[2] += 30.0;
 	spawnRing_Vectors(VecAbove2, RangeCircleBig * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 50, 200, 1, /*DURATION*/ 0.75, 12.0, 0.1, 1,_,client);
 	f_GoldenAgilityThrottle[client] =  GetGameTime() + 0.3;
-
 }

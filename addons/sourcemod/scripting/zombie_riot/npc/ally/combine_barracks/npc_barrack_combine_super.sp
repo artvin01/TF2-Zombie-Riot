@@ -57,7 +57,7 @@ void Barracks_Combine_Super_Precache()
 	
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Super");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Super");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_super");
 	data.IconCustom = false;
 	data.Flags = 0;

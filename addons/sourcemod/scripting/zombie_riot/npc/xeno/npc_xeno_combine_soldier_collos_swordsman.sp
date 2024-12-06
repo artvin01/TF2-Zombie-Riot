@@ -79,7 +79,7 @@ public void XenoCombineCollos_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Golden Collos");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Golden Collos");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_collos_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_gold");
 	data.IconCustom = true;
@@ -89,9 +89,9 @@ public void XenoCombineCollos_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombineCollos(client, vecPos, vecAng, ally);
+	return XenoCombineCollos(vecPos, vecAng, team);
 }
 methodmap XenoCombineCollos < CClotBody
 {
@@ -166,7 +166,7 @@ methodmap XenoCombineCollos < CClotBody
 	}
 	
 	
-	public XenoCombineCollos(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineCollos(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineCollos npc = view_as<XenoCombineCollos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "30000", ally, false, true));
 		SetVariantInt(1);
@@ -193,7 +193,6 @@ methodmap XenoCombineCollos < CClotBody
 		func_NPCOnTakeDamage[npc.index] = XenoCombineCollos_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoCombineCollos_ClotThink;
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -225,8 +224,7 @@ methodmap XenoCombineCollos < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineCollos_ClotThink(int iNPC)
 {
 	XenoCombineCollos npc = view_as<XenoCombineCollos>(iNPC);

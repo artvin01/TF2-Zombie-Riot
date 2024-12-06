@@ -32,7 +32,8 @@ static const char Categories[][] =
 	"Chaos Allience",
 	"Voided Subjects",
 	"Ruina",
-	"Iberia Expidonsa Alliance"
+	"Iberia Expidonsa Alliance",
+	"Whiteflower Specials"
 };
 
 enum struct GiftItem
@@ -75,24 +76,33 @@ void Items_SetupConfig()
 
 	KeyValues kv = new KeyValues("GiftItems");
 	kv.ImportFromFile(buffer);
+	kv.GotoFirstSubKey();
 	
 	GiftItem item;
-	for(int i; ; i++)	// Done this method due to saving by ID instead
+	do	// TODO: Replace ArrayList with IntMap
 	{
-		IntToString(i, item.Name, sizeof(item.Name));
-		if(kv.JumpToKey(item.Name))
-		{
-			kv.GetString("name", item.Name, sizeof(item.Name));
-			item.Rarity = kv.GetNum("rarity", Rarity_None);
-			GiftItems.PushArray(item);
+		kv.GetSectionName(item.Name, sizeof(item.Name));
+		int index = StringToInt(item.Name);
 
-			kv.GoBack();
+		item.Name[0] = 0;
+		item.Rarity = Rarity_None;
+		while(GiftItems.Length < index)
+		{
+			GiftItems.PushArray(item);
+		}
+
+		kv.GetString("name", item.Name, sizeof(item.Name));
+		item.Rarity = kv.GetNum("rarity", Rarity_None);
+		if(GiftItems.Length == index)
+		{
+			GiftItems.PushArray(item);
 		}
 		else
 		{
-			break;
+			GiftItems.SetArray(index, item);
 		}
 	}
+	while(kv.GotoNextKey());
 
 	delete kv;
 }
@@ -201,7 +211,7 @@ public Action Items_GiveAllCmd(int client, int args)
 			{
 				int count;
 				int length2 = GiftItems.Length;
-				for(int  id; id < length2; id++)
+				for(int id; id < length2; id++)
 				{
 					static GiftItem item;
 					GiftItems.GetArray(id, item);
@@ -570,21 +580,15 @@ void Gift_DropChance(int entity)
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 20.0;
-				for (int client = 1; client <= MaxClients; client++)
+				int rarity = RollRandom(); //Random for each clie
+				if(!IsPointHazard(VecOrigin)) //Is it valid?
 				{
-					if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
-					{
-						int rarity = RollRandom(); //Random for each clie
-						if(!IsPointHazard(VecOrigin)) //Is it valid?
-						{
-							b_ForceSpawnNextTime = false;
-							Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, rarity);
-						}
-						else //Not a valid position, we must force it! next time we try!
-						{
-							b_ForceSpawnNextTime = true;
-						}
-					}
+					b_ForceSpawnNextTime = false;
+					Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, rarity);
+				}
+				else //Not a valid position, we must force it! next time we try!
+				{
+					b_ForceSpawnNextTime = true;
 				}
 			}	
 			else
@@ -612,106 +616,127 @@ static int RollRandom()
 	return Rarity_Common;
 }
 
-
 public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int glow = EntRefToEntIndex(pack.ReadCell());
-	int client = GetClientOfUserId(pack.ReadCell());
+	int Rarity = pack.ReadCell();
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
-		if(IsValidClient(client))
+		float powerup_pos[3];
+		WorldSpaceCenter(entity, powerup_pos);
+		bool DoJump = false;
+		if(f_RingDelayGift[entity] < GetGameTime())
 		{
-			float powerup_pos[3];
-			float client_pos[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
-			if(f_RingDelayGift[entity] < GetGameTime())
+			float DelayTime = 2.0;
+			switch(Rarity)
 			{
-				f_RingDelayGift[entity] = GetGameTime() + 2.0;
-				EmitSoundToClient(client, SOUND_BEEP, entity, _, 90, _, 1.0);
-				int color[4];
-				
-				color[0] = RenderColors_RPG[i_RarityType[entity]][0];
-				color[1] = RenderColors_RPG[i_RarityType[entity]][1];
-				color[2] = RenderColors_RPG[i_RarityType[entity]][2];
-				color[3] = RenderColors_RPG[i_RarityType[entity]][3];
-		
-				TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, color, 0, 0);
-	   			TE_SendToClient(client);
-
-				GiftJumpTowardsYou(entity, client); //Terror.
-   			}
-			if (IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
+				case Rarity_Common:
+					DelayTime = 2.0;
+				case Rarity_Uncommon:
+					DelayTime = 1.5;
+				case Rarity_Rare:
+					DelayTime = 1.0;
+				case Rarity_Legend:
+					DelayTime = 0.65;
+				case Rarity_Mythic:
+					DelayTime = 0.35;
+			}
+			f_RingDelayGift[entity] = GetGameTime() + DelayTime;
+			EmitSoundToAll(SOUND_BEEP, entity, _, 90, _, 1.0);
+			int color[4];
+			
+			color[0] = RenderColors_RPG[i_RarityType[entity]][0];
+			color[1] = RenderColors_RPG[i_RarityType[entity]][1];
+			color[2] = RenderColors_RPG[i_RarityType[entity]][2];
+			color[3] = RenderColors_RPG[i_RarityType[entity]][3];
+	
+			TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, color, 0, 0);
+			TE_SendToAll();
+			DoJump = true;
+		}
+		float TargetDistance = 0.0; 
+		int ClosestTarget = 0; 
+		for( int i = 1; i <= MaxClients; i++ ) 
+		{
+			if (IsValidClient(i))
 			{
-				GetClientAbsOrigin(client, client_pos);
-				if(GetVectorDistance(powerup_pos, client_pos, true) < 4096.0)
+				if (GetTeam(i)== TFTeam_Red && IsEntityAlive(i))
 				{
-					if(IsValidEntity(glow))
-						RemoveEntity(glow);
+					float TargetLocation[3]; 
+					WorldSpaceCenter(i, TargetLocation);
 					
-					RemoveEntity(entity);
 					
-					static GiftItem item;
-					int rand = GetURandomInt();
-					int length = GiftItems.Length;
-					int[] items = new int[length];
-					for(int r = i_RarityType[entity]; r >= 0; r--)
+					float distance = GetVectorDistance( powerup_pos, TargetLocation, true ); 
+					if( TargetDistance ) 
 					{
-						int maxitems;
-						for(int i; i < length; i++)
+						if( distance < TargetDistance ) 
 						{
-							GiftItems.GetArray(i, item);
-							if(item.Rarity == r)
-							{
-								items[maxitems++] = i;
-							}
+							ClosestTarget = i; 
+							TargetDistance = distance;		  
 						}
-
-						int start = (rand % maxitems);
-						int i = start;
-						do
-						{
-							i++;
-							if(i >= maxitems)
-							{
-								i = -1;
-								continue;
-							}
-
-							if(Items_GiveIdItem(client, items[i]))	// Gives item, returns true if newly obtained, false if they already have
-							{
-								static const char Colors[][] = { "default", "green", "blue", "yellow", "darkred" };
-								
-								GiftItems.GetArray(items[i], item);
-								CPrintToChat(client, "{default}You have found {%s}%s{default}!", Colors[r], item.Name);
-								r = -1;
-								length = 0;
-								break;
-							}
-						}
-						while(i != start);
-					}
-					
-					if(length)
+					} 
+					else 
 					{
-						PrintToChat(client, "You already have everything in this rarity, but where given %d Scrap as a compensation.", i_RarityType[entity] + 1);
-						Scrap[client] += i_RarityType[entity] + 1;
-					}
-
-					return Plugin_Stop;
+						ClosestTarget = i; 
+						TargetDistance = distance;
+					}		
 				}
 			}
 		}
-		else
+		if(ClosestTarget > 0 && TargetDistance <= (50.0 * 50.0))
 		{
+			//picked up!
+			char NameOfTheHero[64];
+			Format(NameOfTheHero, sizeof(NameOfTheHero), "%N", ClosestTarget);
+			for( int i = 1; i <= MaxClients; i++ ) 
+			{
+				if (IsValidClient(i))
+				{
+					if (GetTeam(i)== TFTeam_Red)
+					{
+						SetGlobalTransTarget(i);
+						int MultiExtra = 1;
+						switch(Rarity)
+						{
+							case Rarity_Common:
+								MultiExtra = 1;
+							case Rarity_Uncommon:
+								MultiExtra = 2;
+							case Rarity_Rare:
+								MultiExtra = 5;
+							case Rarity_Legend:
+								MultiExtra = 10;
+							case Rarity_Mythic:
+								MultiExtra = 40;
+						}
+						//xp to give?
+						int TempCalc = Level[i];
+						if(TempCalc >= 101) //fix shitty rounding to 995 xp to 1000 xp
+							TempCalc = 101;
+
+						TempCalc = LevelToXp(TempCalc) - LevelToXp(TempCalc - 1);
+						TempCalc /= 40;
+
+						int XpToGive = TempCalc * MultiExtra;
+						CPrintToChat(i,"%t", "Pickup Gift", NameOfTheHero, XpToGive);
+						XP[i] += XpToGive;
+						GiveXP(i, 0);
+					}
+				}
+			}
 			if (IsValidEntity(glow))
 			{
 				RemoveEntity(glow);
 			}
 			RemoveEntity(entity);
-			return Plugin_Stop;			
+			return Plugin_Stop;		
 		}
+		if(ClosestTarget > 0 && TargetDistance <= (500.0 * 500.0) && DoJump)
+		{
+			GiftJumpAwayYou(entity, ClosestTarget); //Terror.
+		}	
 	}
 	else
 	{
@@ -720,7 +745,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime, int client, int rarity)
+stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime, int rarity)
 {
 	int m_iGift = CreateEntityByName("prop_physics_override")
 	if(m_iGift != -1)
@@ -753,18 +778,15 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		
 		SetVariantColor(view_as<int>(color));
 		AcceptEntityInput(glow, "SetGlowColor");
-		
-		SetEntPropEnt(glow, Prop_Send, "m_hOwnerEntity", client);
-		SetEntPropEnt(m_iGift, Prop_Send, "m_hOwnerEntity", client);
 			
 		
-		f_RingDelayGift[m_iGift] = GetGameTime() + 2.0;
+		f_RingDelayGift[m_iGift] = 0.0;
 
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Detect_Player_Near_Gift, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		pack.WriteCell(EntIndexToEntRef(m_iGift));
 		pack.WriteCell(EntIndexToEntRef(glow));	
-		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(rarity);	
 		
 		
 		DataPack pack_2;
@@ -773,7 +795,7 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		pack_2.WriteCell(EntIndexToEntRef(glow));	
 		
 	//	SDKHook(entity, SDKHook_SetTransmit, GiftTransmit);
-		SDKHook(m_iGift, SDKHook_SetTransmit, GiftTransmit);
+	//	SDKHook(m_iGift, SDKHook_SetTransmit, GiftTransmit);
 	}
 }
 
@@ -803,7 +825,7 @@ public Action GiftTransmit(int entity, int target)
 }
 
 //This is probably the silliest thing ever.
-public void GiftJumpTowardsYou(int Gift, int client)
+public void GiftJumpAwayYou(int Gift, int client)
 {
 	float Jump_1_frame[3];
 	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", Jump_1_frame);
@@ -849,14 +871,17 @@ public void GiftJumpTowardsYou(int Gift, int client)
 	vecJumpVel[2] = speed;
 		
 	// Don't jump too far/fast.
-	float flJumpSpeed = GetVectorLength(vecJumpVel);
-	float flMaxSpeed = 350.0;
+	float flJumpSpeed = 400.0;
+	float flMaxSpeed = 400.0;
 	if ( flJumpSpeed > flMaxSpeed )
 	{
 		vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
 		vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
 		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
 	}
+	//jump away!
+	vecJumpVel [0] *= -1.0;
+	vecJumpVel [1] *= -1.0;
 	TeleportEntity(Gift, NULL_VECTOR, NULL_VECTOR, vecJumpVel);
 }
 

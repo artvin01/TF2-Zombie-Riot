@@ -32,7 +32,7 @@ static float fl_m2_timer[MAXTF2PLAYERS + 1];
 static int i_Neuvellete_penetration[MAXTF2PLAYERS + 1];
 
 static float fl_Neuvellete_Beam_Timeout[MAXTF2PLAYERS + 1];
-static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][6];
+static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][5];
 static int i_skill_point_used[MAXTF2PLAYERS + 1];
 static int i_Neuvellete_HEX_Array[MAXTF2PLAYERS + 1];
 static int i_Neuvellete_Skill_Points[MAXTF2PLAYERS + 1];
@@ -85,8 +85,8 @@ public void Ion_Beam_Wand_MapStart()
 #define NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER 1.5	//THIS MUST ALWAYS BE LESS THEN THE ONE ABOVE IT
 //Tottal charge time is these 2 combined
 
-#define NEUVELLETE_BASELINE_ION_DMG 750.0
-#define NEUVELLETE_BASELINE_ION_RANGE 15.0
+#define NEUVELLETE_BASELINE_ION_DMG 350.0
+#define NEUVELLETE_BASELINE_ION_RANGE 500.0
 
 #define NEUVELLETE_BASELINE_DAMAGE 140.0
 #define NEUVELLETE_BASELINE_RANGE 1000.0				//how far the laser can reach
@@ -139,9 +139,16 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 
 	if(RaidbossIgnoreBuildingsLogic(1))
 	{
-		DamagE *=1.33;
-		Turn_Speed += 1.25;
-		Pitch_Speed += 1.25;
+		DamagE *=1.22;
+		if(IsValidEntity(weapon))
+		{
+			if(i_CustomWeaponEquipLogic[weapon] != WEAPON_ION_BEAM_NIGHT)	//Don't buff turn speed.
+			{
+				Turn_Speed += 1.25;
+				Pitch_Speed += 1.25;
+			}
+		}
+		
 	}
 
 
@@ -157,7 +164,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_1_MANA_EFFICIENCY)
 	{
-		Mana_Cost -= RoundToFloor(float(Mana_Cost) * 0.25);
+		Mana_Cost -= RoundToFloor(float(Mana_Cost) * 0.2);
 		Effects |= (1 << 1); //adds the spinning shape
 	}
 	
@@ -199,7 +206,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	if(flags & FLAG_NEUVELLETE_PAP_4_TURNRATE)
 	{
 		Turn_Speed += 0.25;
-		Pitch_Speed += 0.1;
+		Pitch_Speed += 0.25;
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_4_PENETRATION)
 	{
@@ -207,10 +214,10 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_4_MANA_EFFICIENCY)
 	{
-		Mana_Cost -= RoundToFloor(float(Mana_Cost) * 0.25);
+		Mana_Cost -= RoundToFloor(float(Mana_Cost) * 0.2);
 		Effects |= (1 << 5);	//adds +1 to the spinning shape
 	}
-
+	//somehow invalid weapon, just buff dmg by 2x and hope for the best.
 	if(!IsValidEntity(weapon))
 	{
 		if(i_pap[client]>=5)
@@ -223,13 +230,13 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_ION_BEAM_FEED:
+		case WEAPON_ION_BEAM_FEED:	//Higher max damage, dmg takes time to ramp up, mana cost ramps up alongside damage.
 		{
 			float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
 			float Ration = Duration*1.15 - Duration;
 			
-			if(Ration>2.5)
-				Ration = 2.5;
+			if(Ration>2.0)
+				Ration = 2.0;
 			
 			DamagE *= Ration;
 
@@ -240,20 +247,20 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		
 			Effects |= (1 << 8); //feedback
 		}
-		case WEAPON_ION_BEAM_NIGHT:
+		case WEAPON_ION_BEAM_NIGHT:	//Instant high dps, Lower mana cost, More Range. Non-existant turn speed. cool looking pattern
 		{
 			Range *= 1.25;
 		
 			Turn_Speed *= 0.5;
 			Pitch_Speed *= 0.5;
 			
-			DamagE *= 2.1;
+			DamagE *= 1.8;
 
 			Mana_Cost -= RoundToFloor(float(Mana_Cost)*0.1);
 			
 			Effects |= (1 << 6);	//nightmare
 		}
-		case WEAPON_ION_BEAM_PULSE:
+		case WEAPON_ION_BEAM_PULSE:	//Lowest damage, higher mana cost, Instant turn speed, "timeout" is lessened, need to hold M1 to have the beam active. very cool looking pattern
 		{
 			if(GameTime > fl_Special_Timer[client] + 1.75)
 			{
@@ -262,9 +269,9 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 			}
 			Mana_Cost += RoundToFloor(float(Mana_Cost)*0.1);
 			
-			DamagE *= 1.9;
+			DamagE *= 1.52;
 			
-			Effects |= (1 << 7); //
+			Effects |= (1 << 7); //pulse
 			
 		}
 	}
@@ -283,7 +290,7 @@ public void Activate_Neuvellete(int client, int weapon)
 			h_TimerNeuvellete_Management[client] = null;
 			
 			int pap = Get_Pap(weapon);
-			if(pap!=0 && pap < 6)
+			if(pap!=0 && pap < 5)
 				Give_Skill_Points(client, pap);
 
 			i_pap[client] = pap;
@@ -299,7 +306,7 @@ public void Activate_Neuvellete(int client, int weapon)
 	if(IsPrismatic(weapon))
 	{
 		int pap = Get_Pap(weapon);
-		if(pap!=0 && pap < 6)
+		if(pap!=0 && pap < 5)
 			Give_Skill_Points(client, pap);
 
 		i_pap[client] = pap;
@@ -571,10 +578,10 @@ static void Neuvellete_Hud(int client, int weapon)
 			float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
 			float Ration = Duration*1.15 - Duration;
 			
-			if(Ration>2.5)
-				Ration = 2.5;
+			if(Ration>2.0)
+				Ration = 2.0;
 				
-			Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online | Power: (%.1f/2.5)]", HUDText, Ration);
+			Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online | Power: (%.1f/2.2)]", HUDText, Ration);
 		}
 		else
 		{
@@ -606,6 +613,11 @@ static void Neuvellete_Hud(int client, int weapon)
 			Format(HUDText, sizeof(HUDText), "%s\nHexagon Cannon: [Recharging | %.1f] ", HUDText, duration);
 		}
 	}
+
+	if(i_Neuvellete_Skill_Points[client])
+	{
+		Format(HUDText, sizeof(HUDText), "%s\nYou have [%.i] Unused Skill points\nHold M2 and interact with the pack-a-punch to use them!", HUDText, i_Neuvellete_Skill_Points[client]);
+	}
 	
 	
 	PrintHintText(client, HUDText);
@@ -629,10 +641,7 @@ static void Witch_Hexagon_Witchery(int client, int weapon)
 	
 	float DamagE = NEUVELLETE_BASELINE_ION_DMG*(fl_ion_charge_ammount[client]/100.0);
 	
-	float range = NEUVELLETE_BASELINE_ION_RANGE * (fl_ion_charge_ammount[client]/100.0);
-		
-	
-	
+	float range = NEUVELLETE_BASELINE_ION_RANGE * (fl_ion_charge_ammount[client]/1000.0);
 	
 	float Null = 0.0;
 	int Null2 = 0;
@@ -721,7 +730,7 @@ static Action Hexagon_Witchery_Tick(int client)
 						tempAngles[2] = 0.0;
 						
 						GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-						ScaleVector(Direction, range*2.0);
+						ScaleVector(Direction, range);
 						AddVectors(origin_vec, Direction, EndLoc);
 						vec_temp[i] = EndLoc;
 					}			
@@ -776,7 +785,7 @@ static Action Hexagon_Witchery_Tick(int client)
 					tempAngles[2] = 0.0;
 					
 					GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-					ScaleVector(Direction, range*2.0);
+					ScaleVector(Direction, range);
 					AddVectors(origin_vec, Direction, EndLoc);
 					vec_temp[i] = EndLoc;
 				}			
@@ -821,9 +830,9 @@ static Action Hexagon_Witchery_Tick(int client)
 		colour[0] = 255;
 		colour[1] = 255;
 		colour[2] = 255;
-		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.10, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*3.25);
-		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 2.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.2, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*2.0);
-		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 3.5, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.35, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*1.75);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.10, 5.0, 1.25, 1 , range*3.25);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 2.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.2, 5.0, 1.25, 1 , range*2.0);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 3.5, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.35, 5.0, 1.25, 1 , range*1.75);
 		
 		TE_SetupExplosion(origin_vec, gExplosive1, 0.1, 1, 0, 0, 0);
 		TE_SendToAll();
@@ -893,7 +902,7 @@ public void Ion_Beam_On_Buy_Reset(int client)
 	i_Neuvellete_HEX_Array[client] = 0;
 	i_Neuvellete_Skill_Points[client] = 0;
 	i_skill_point_used[client] = 0;
-	for(int i=0 ; i < 6 ; i++)
+	for(int i=0 ; i < 5 ; i++)
 	{
 		b_skill_points_give_at_pap[client][i] = false;
 	}
@@ -1071,7 +1080,7 @@ public Action Neuvellete_tick(int client)
 		int Effects = i_Effect_Hex[client];	
 
 		Current_Mana[client] -=mana_cost;
-		SDKhooks_SetManaRegenDelayTime(client, 1.0);
+		SDKhooks_SetManaRegenDelayTime(client, 2.0);
 
 		if(IsValidEntity(weapon_active) && i_CustomWeaponEquipLogic[weapon_active] == WEAPON_ION_BEAM_PULSE)
 		{
@@ -1150,21 +1159,9 @@ static void Get_Loc(int client, float Start_Loc[3], float Beam_Angles[3], float 
 	GetClientEyePosition(client, Pos);
 	float PosEffects[3];
 	PosEffects = Pos;
-	
-	int viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 
-	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));	//note: redo the laser turning so its less choopy, also make it use ENV beams instead of Te
-	
-	if(IsValidEntity(viewmodelModel) && !HasWings)
-	{
-		float flAng[3];
-		GetAttachment(viewmodelModel, "effect_hand_r", PosEffects, flAng);	
-	}
-	else
-	{
-		PosEffects[2] -= 35.0;
-		Pos[2] -= 35.0;
-	}
+	PosEffects[2] -= 35.0;
+	Pos[2] -= 35.0;
 
 	Handle trace = TR_TraceRayFilterEx(Pos, Beam_Angles, 11, RayType_Infinite, Prismatic_TraceWallsOnly);
 	TR_GetEndPosition(Target_Loc, trace);
@@ -1417,6 +1414,8 @@ public void Neuvellete_Menu(int client, int weapon)
 		
 	Menu menu2 = new Menu(Neuvellete_Menu_Selection);
 	int flags = i_Neuvellete_HEX_Array[client];
+
+	SetGlobalTransTarget(client);
 	
 	if(i_Neuvellete_Skill_Points[client]>0)
 	{

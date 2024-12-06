@@ -287,7 +287,7 @@ void CreateRedBladeEffect(int client)
 	int particle = ParticleEffectAt(flPos, "utaunt_tarotcard_red_glow", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle);
-	i_RedBladeFireParticle[client][0] = EntIndexToEntRef(particle);
+	i_RedBladeFireParticle[client] = EntIndexToEntRef(particle);
 }
 
 bool IsRedBladeEffectSpawned(int client)

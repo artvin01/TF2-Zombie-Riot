@@ -48,7 +48,7 @@ void Barracks_Combine_Elite_Precache()
 	PrecacheSoundArray(g_IdleAlert);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Elite");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Elite");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_elite");
 	data.IconCustom = false;
 	data.Flags = 0;

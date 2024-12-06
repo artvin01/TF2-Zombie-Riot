@@ -98,9 +98,9 @@ public void OriginalInfected_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return OriginalInfected(client, vecPos, vecAng, ally);
+	return OriginalInfected(vecPos, vecAng, team, data);
 }
 
 methodmap OriginalInfected < CClotBody
@@ -158,7 +158,7 @@ methodmap OriginalInfected < CClotBody
 	{
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public OriginalInfected(int client, float vecPos[3], float vecAng[3], int ally)
+	public OriginalInfected(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		OriginalInfected npc = view_as<OriginalInfected>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "300", ally, false, true));
 		
@@ -187,6 +187,11 @@ methodmap OriginalInfected < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, OriginalInfected_OnTakeDamagePost);
 		npc.m_iOverlordComboAttack = 0;
 
+		bool HardBattle = StrContains(data, "hardmode") != -1;
+		if(HardBattle)
+		{
+			npc.m_iOverlordComboAttack = 1;
+		}
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 0, 125, 255);
 
@@ -226,8 +231,7 @@ methodmap OriginalInfected < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void OriginalInfected_ClotThink(int iNPC)
 {
 	OriginalInfected npc = view_as<OriginalInfected>(iNPC);
@@ -282,9 +286,10 @@ public void OriginalInfected_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 250000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						KillFeed_SetKillIcon(npc.index, "sword");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 

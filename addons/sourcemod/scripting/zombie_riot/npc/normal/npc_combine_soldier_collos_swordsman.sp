@@ -67,7 +67,7 @@ void CombineCollos_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Golden Collos");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Golden Collos");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_collos_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_gold");
 	data.IconCustom = true;
@@ -77,9 +77,9 @@ void CombineCollos_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineCollos(client, vecPos, vecAng, ally);
+	return CombineCollos(vecPos, vecAng, team);
 }
 methodmap CombineCollos < CClotBody
 {
@@ -155,7 +155,7 @@ methodmap CombineCollos < CClotBody
 	}
 	
 	
-	public CombineCollos(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineCollos(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineCollos npc = view_as<CombineCollos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "30000", ally, false, true));
 		
@@ -216,8 +216,7 @@ methodmap CombineCollos < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineCollos_ClotThink(int iNPC)
 {
 	CombineCollos npc = view_as<CombineCollos>(iNPC);

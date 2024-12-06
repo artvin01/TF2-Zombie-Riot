@@ -62,9 +62,9 @@ void TrashMan_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return TrashMan(client, vecPos, vecAng, ally);
+	return TrashMan(client, vecPos, vecAng, team);
 }
 
 methodmap TrashMan < CClotBody
@@ -74,29 +74,29 @@ methodmap TrashMan < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IdleSound[GetURandomInt() % sizeof(g_IdleSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleSound[GetURandomInt() % sizeof(g_IdleSound)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSound[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSound[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayDeathSound() 
-	{
-		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_DeathSounds)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	{	
+		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_DeathSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayWinSound() 
 	{
-		EmitSoundToAll(g_WinSounds[GetURandomInt() % sizeof(g_WinSounds)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_WinSounds[GetURandomInt() % sizeof(g_WinSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + 12.0;
 	}
 	public void PlayReloadSound()
  	{
-		EmitSoundToAll(g_ReloadSounds[GetURandomInt() % sizeof(g_ReloadSounds)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_ReloadSounds[GetURandomInt() % sizeof(g_ReloadSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public TrashMan(int client, float vecPos[3], float vecAng[3], int team)
@@ -198,7 +198,7 @@ static void ClotThink(int iNPC)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", _, _, _, 3.0);
 			npc.PlayMeleeSound();
 
-			if(npc.g_TimesSummoned > 14 || (targeted && (GetURandomInt() % 5)))
+			if(npc.g_TimesSummoned > 4 || (targeted && (GetURandomInt() % 7)))
 			{
 				npc.FireRocket(vecTarget, CasinoShared_GetDamage(npc, 0.8), 600.0);
 			}
@@ -211,16 +211,14 @@ static void ClotThink(int iNPC)
 				int summon = NPC_CreateByName("npc_casinoratboom", -1, pos, ang, GetTeam(npc.index));
 				if(summon > MaxClients)
 				{
-					int health = ReturnEntityMaxHealth(npc.index) / 30;
-
-					Level[summon] = Level[npc.index];
+					Level[summon] = 6500;
 					i_OwnerToGoTo[summon] = EntIndexToEntRef(npc.index);
-					i_HpRegenInBattle[summon] = i_HpRegenInBattle[summon] / 30;
+					i_HpRegenInBattle[summon] = 6000;
 
-					Apply_Text_Above_Npc(summon, 0, health);
+					Apply_Text_Above_Npc(summon, 0, 2000000);
 					CreateTimer(0.1, TimerHeavyBearBossInitiateStuff, EntIndexToEntRef(summon), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-					SetEntProp(summon, Prop_Data, "m_iHealth", health);
-					SetEntProp(summon, Prop_Data, "m_iMaxHealth", health);
+					SetEntProp(summon, Prop_Data, "m_iHealth", 2000000);
+					SetEntProp(summon, Prop_Data, "m_iMaxHealth", 2000000);
 					npc.g_TimesSummoned++;
 
 					if(targeted)
@@ -258,7 +256,7 @@ static void ClotThink(int iNPC)
 			if(npc.m_iAttacksTillReload < 3)
 			{
 				npc.PlayReloadSound();
-				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY2", _, _, _, 1.8);
+				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY", _, _, _, 1.8);
 				npc.m_iAttacksTillReload++;
 				npc.m_flDoingAnimation = gameTime + 0.4;
 				npc.m_flNextMeleeAttack = gameTime + 0.45;

@@ -81,6 +81,7 @@ void NPC_ConfigSetup()
 	ObjectBarracks_MapStart();
 	ObjectVillage_MapStart();
 	ObjectTinkerBrew_MapStart();
+	ObjectRevenant_Setup();
 	// Buildings
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -172,6 +173,7 @@ void NPC_ConfigSetup()
 	XenoFortifiedEarlyZombie_OnMapStart_NPC();
 	XenoPatientFew_OnMapStart_NPC();
 	XenoOuroborosEkas_OnMapStart_NPC();
+
 	
 	NaziPanzer_OnMapStart_NPC();
 	WanderingSpirit_OnMapStart_NPC();
@@ -644,8 +646,8 @@ void NPC_ConfigSetup()
 	RaidbossMrX_OnMapStart();
 	GodAlaxios_OnMapStart();
 	Sensal_OnMapStart_NPC();
-	Raidboss_Schwertkrieg_OnMapStart_NPC();
-	Raidboss_Donnerkrieg_OnMapStart_NPC();
+	Karlas_OnMapStart_NPC();
+	Stella_OnMapStart_NPC();
 	RaidbossBobTheFirst_OnMapStart();
 	TheMessenger_OnMapStart_NPC();
 	ChaosKahmlstein_OnMapStart_NPC();
@@ -686,6 +688,16 @@ void NPC_ConfigSetup()
 	// Rogue Mode Low Prio
 	OverlordRogue_OnMapStart_NPC();
 	RaidbossBladedance_MapStart();
+	//whiteflower special:
+	Whiteflower_Boss_OnMapStart_NPC();
+	WFOuroborosEkas_OnMapStart_NPC();
+	Whiteflower_Ekas_Piloteer_OnMapStart_NPC();
+	AcclaimedSwordsman_OnMapStart_NPC();
+	Whiteflower_ExtremeKnightGiant_OnMapStart_NPC();
+	Whiteflower_RagingBlader_OnMapStart_NPC();
+	Whiteflower_FloweringDarkness_OnMapStart_NPC();
+
+	//Normal rogue again:
 	RogueCondition_Setup();
 	GogglesFollower_Setup();
 	TheHunter_Setup();
@@ -697,6 +709,7 @@ void NPC_ConfigSetup()
 	ChaosInsane_OnMapStart_NPC();
 	ChaosSickKnight_OnMapStart_NPC();
 	ChaosInjuredCultist_OnMapStart_NPC();
+	DuckFollower_Setup();
 
 	// Survival
 	Nightmare_OnMapStart_NPC();
@@ -930,14 +943,14 @@ void NPCDeath(int entity)
 	}
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		int DeathNoticer = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(DeathNoticer) && !b_NpcHasDied[DeathNoticer])
 		{
-			Function func = func_NPCDeathForward[baseboss_index];
+			Function func = func_NPCDeathForward[DeathNoticer];
 			if(func && func != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, func);
-				Call_PushCell(baseboss_index);
+				Call_PushCell(DeathNoticer);
 				Call_PushCell(entity);
 				Call_Finish();
 			}
@@ -977,7 +990,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 //BASES FOR ENEMIES
 
-#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
+#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp" //ALSO IN RPG!
 #include "zombie_riot/npc/seaborn/npc_nethersea_shared.sp"
 
 //BUILDINGS
@@ -996,6 +1009,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_village.sp"
 #include "zombie_riot/object/obj_barracks.sp"
 #include "zombie_riot/object/obj_brewing_stand.sp"
+#include "zombie_riot/object/obj_revenant.sp"
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
@@ -1110,7 +1124,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_necromancy_combine.sp"
 #include "zombie_riot/npc/ally/npc_necromancy_calcium.sp"
 #include "zombie_riot/npc/ally/npc_cured_last_survivor.sp"
-#include "zombie_riot/npc/ally/npc_citizen.sp"
+#include "zombie_riot/npc/ally/npc_citizen_new.sp"
 #include "zombie_riot/npc/ally/npc_allied_sensal_afterimage.sp"
 #include "zombie_riot/npc/ally/npc_allied_leper_visualiser.sp"
 #include "zombie_riot/npc/ally/npc_allied_kahml_afterimage.sp"
@@ -1191,6 +1205,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver_mid.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_twirl.sp"
+//#include "zombie_riot/npc/raidmode_bosses/npc_levita.sp"
 
 #endif
 
@@ -1415,8 +1430,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_isharmla.sp"
 #include "zombie_riot/npc/seaborn/npc_isharmla_trans.sp"
 
-#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_donnerkrieg.sp"
-#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_schwertkrieg.sp"
+#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_stella.sp"
+#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_karlas.sp"
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_bob_the_first_last_savior.sp"
 
 #include "zombie_riot/npc/expidonsa/npc_benera.sp"
@@ -1452,6 +1467,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_whiteflower.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_acclaimed_swordsman.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_ekas_piloteer.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_ekas_robo.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_extreme_knight_giant.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_flowering_darkness.sp"
+#include "zombie_riot/npc/rogue/whiteflower_rogue/npc_combine_raging_blader.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_the_messenger.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_chaos_kahmlstein.sp"
@@ -1551,6 +1573,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_sick_knight.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_injured_cultist.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_duck_follower.sp"
 
 #include "zombie_riot/npc/survival/npc_nightmare.sp"
 #include "zombie_riot/npc/survival/npc_petrisisbaron.sp"

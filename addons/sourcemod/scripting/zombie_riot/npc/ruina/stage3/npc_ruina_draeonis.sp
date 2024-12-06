@@ -67,9 +67,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Draeonis(client, vecPos, vecAng, ally);
+	return Draeonis(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -151,7 +151,7 @@ methodmap Draeonis < CClotBody
 		}
 	}
 	
-	public Draeonis(int client, float vecPos[3], float vecAng[3], int ally)
+	public Draeonis(float vecPos[3], float vecAng[3], int ally)
 	{
 		Draeonis npc = view_as<Draeonis>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -231,8 +231,7 @@ methodmap Draeonis < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Draeonis npc = view_as<Draeonis>(iNPC);
@@ -320,7 +319,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}	
 		else
