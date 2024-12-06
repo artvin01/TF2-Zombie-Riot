@@ -468,6 +468,7 @@ static void Internal_ClotThink(int iNPC)
 
 	if(Gone[npc.index])
 	{
+		npc.m_iChanged_WalkCycle = 0;
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
@@ -485,7 +486,7 @@ static void Internal_ClotThink(int iNPC)
 		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable8, 255, 255, 255, 0);
 	}
-	else
+	else if(!Gone[npc.index])
 	{
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
@@ -1072,8 +1073,9 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.m_flDoingAnimation = gameTime + 1.0;	
 				Delay_Attribute[npc.index] = gameTime + 1.0;
 				I_cant_do_this_all_day[npc.index]=1;
-				npc.m_flTimeUntillNextSummonDrones +=  22.0;
-				npc.m_flTimeUntillNextSummonHardenerDrones += 22.0;
+				npc.m_flTimeUntillSupportSpawn += 25.0;
+				npc.m_flTimeUntillNextSummonDrones +=  25.0;
+				npc.m_flTimeUntillNextSummonHardenerDrones += 25.0;
 			}
 			case 1:
 			{
