@@ -1128,7 +1128,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			flPosEdit[1] += 25.0;
 			flPosEdit[2] += 5.0;
 
-			float RocketDamage = 100.0;
+			float RocketDamage = 35.0;
 			float RocketSpeed = 900.0;
 			float Radius = 250.0;
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );

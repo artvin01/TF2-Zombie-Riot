@@ -1243,26 +1243,48 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			{
 				npc.PlayGunSound();
 				npc.FaceTowards(vecTarget, 20000.0);
-				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+				float SpeedProjectile = 1000.0;
+				float ProjectileDamage = 400.0;
+				int Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_red");
+
+				ProjectileDamage *= 0.35;
+				SpeedProjectile *= 0.65;
+				float vecForward[3];
+
+				float vAngles[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
+				for(int LoopDo = 1 ; LoopDo <= 2; LoopDo++)
 				{
-					target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					float origin[3], angles[3];
-					view_as<CClotBody>(npc.index).GetAttachment("effect_hand_r", origin, angles);
-					ShootLaser(npc.index, "bullet_tracer02_blue_crit", origin, vecHit, false );
-
-					if(IsValidEnemy(npc.index, target))
+					Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_blue");
+					float vAnglesProj[3];
+					GetEntPropVector(Projectile, Prop_Data, "m_angRotation", vAnglesProj);
+					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
+					vAnglesProj[1] = vAngles[1];
+					switch(LoopDo)
 					{
-						float damageDealt = 5.0;
+						case 1:
+							vAnglesProj[1] -= 30.0;
 
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * RaidModeScaling, DMG_BULLET, -1, _, vecHit);
+						case 2:
+							vAnglesProj[1] += 30.0;
 					}
-					npc.m_iAttacksTillReload -= 1;
+					
+					vecForward[0] = Cosine(DegToRad(vAnglesProj[0]))*Cosine(DegToRad(vAnglesProj[1]))*SpeedProjectile;
+					vecForward[1] = Cosine(DegToRad(vAnglesProj[0]))*Sine(DegToRad(vAnglesProj[1]))*SpeedProjectile;
+					vecForward[2] = Sine(DegToRad(vAnglesProj[0]))*-SpeedProjectile;
+
+					TeleportEntity(Projectile, NULL_VECTOR, vAnglesProj, vecForward); 
+
+					Initiate_HomingProjectile(Projectile,
+					npc.index,
+					9999.0,			// float lockonAngleMax,
+					13.0,			// float homingaSec,
+					false,			// bool LockOnlyOnce,
+					true,			// bool changeAngles,
+					vAnglesProj,
+					npc.m_iTarget);			// float AnglesInitiate[3]);
+					
 				}
-				delete swingTrace;
 			}
 		}
 	}
