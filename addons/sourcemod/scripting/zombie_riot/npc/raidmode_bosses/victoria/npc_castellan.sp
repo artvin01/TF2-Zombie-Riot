@@ -1244,7 +1244,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.PlayGunSound();
 				npc.FaceTowards(vecTarget, 20000.0);
 				float SpeedProjectile = 1000.0;
-				float ProjectileDamage = 40.0;
+				float ProjectileDamage = 30.0;
 				int Projectile = npc.FireRocket(vecTarget, ProjectileDamage * RaidModeScaling, SpeedProjectile ,"models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 
 				ProjectileDamage *= 0.35;
@@ -1268,17 +1268,13 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 						case 2:
 							vAnglesProj[1] += 30.0;
 							
-						case 1:
+						case 3:
 							vAnglesProj[2] -= 30.0;
 
-						case 2:
+						case 4:
 							vAnglesProj[2] += 30.0;
 					}
 					
-					vecForward[0] = Cosine(DegToRad(vAnglesProj[0]))*Cosine(DegToRad(vAnglesProj[1]))*SpeedProjectile;
-					vecForward[1] = Cosine(DegToRad(vAnglesProj[0]))*Sine(DegToRad(vAnglesProj[1]))*SpeedProjectile;
-					vecForward[2] = Sine(DegToRad(vAnglesProj[0]))*-SpeedProjectile;
-
 					TeleportEntity(Projectile, NULL_VECTOR, vAnglesProj, vecForward); 
 
 					Initiate_HomingProjectile(Projectile,
