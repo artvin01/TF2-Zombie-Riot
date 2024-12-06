@@ -117,7 +117,7 @@ void Harrison_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Harrison");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_harrison");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_atomizer_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_harrison_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -1683,7 +1683,7 @@ static bool Victoria_Support(Harrison npc)
 			position[0] = vecTarget[0];
 			position[1] = vecTarget[1];
 			position[2] = vecTarget[2] + 3000.0;
-			if(Vs_RechargeTime[npc.index] < (Vs_RechargeTimeMax[npc.index] - 3.0))
+			if(Vs_RechargeTime[npc.index] < (Vs_RechargeTimeMax[npc.index] - 2.0))
 			{
 				Vs_Temp_Pos[npc.index][enemy[i]][0] = position[0];
 				Vs_Temp_Pos[npc.index][enemy[i]][1] = position[1];

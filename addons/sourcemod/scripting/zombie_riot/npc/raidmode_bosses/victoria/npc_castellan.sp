@@ -1118,8 +1118,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					I_cant_do_this_all_day[npc.index]=0;
 				}
 			}
-			return 0;
 		}
+		return 0;
 	}
 	/*
 	else if(npc.m_flTimeUntillDroneSniperShot < gameTime)
