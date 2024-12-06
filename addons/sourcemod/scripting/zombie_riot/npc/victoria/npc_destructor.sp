@@ -247,4 +247,7 @@ void VictoriaDestructor_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 }
