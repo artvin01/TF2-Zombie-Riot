@@ -444,8 +444,8 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			if(target <= MaxClients)
 				PrintHintText(client, "%t", "You healed for", target, ammo_amount_left);
 
+			ReduceMediFluidCost(client, ammo_amount_left);
 			int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
-			ReduceMediFluidCost(client, new_ammo);
 			SetAmmo(client, 21, new_ammo);
 			for(int i; i<Ammo_MAX; i++)
 			{

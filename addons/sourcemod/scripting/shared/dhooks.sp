@@ -1859,8 +1859,8 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			SetGlobalTransTarget(owner);
 			
 			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
+			ReduceMediFluidCost(owner, ammo_amount_left);
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
-			ReduceMediFluidCost(owner, new_ammo);
 			SetAmmo(owner, 21, new_ammo);
 			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
 			Increaced_Overall_damage_Low[target] = GameTime + 15.0;
