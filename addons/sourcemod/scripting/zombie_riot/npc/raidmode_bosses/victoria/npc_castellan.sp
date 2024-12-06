@@ -270,6 +270,11 @@ methodmap Castellan < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
+	property float m_flTimeUntillHomingStrike
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	property int m_iAmountProjectiles
 	{
 		public get()							{ return i_AmountProjectiles[this.index]; }
@@ -319,6 +324,7 @@ methodmap Castellan < CClotBody
 		npc.m_flTimeUntillAirStrike = GetGameTime() + 10.0;
 		npc.m_flTimeUntillNextSummonDrones = GetGameTime() + 15.0;
 		npc.m_flTimeUntillNextSummonHardenerDrones = GetGameTime() + 13.5;
+		npc.m_flTimeUntillHomingStrike = GetGameTime() + 30.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_iAmountProjectiles = 0;
 		npc.m_iAttacksTillReload = 0;
@@ -337,7 +343,7 @@ methodmap Castellan < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Harrison Arrived");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Castellan Arrived");
 			}
 		}
 		FTL[npc.index] = 200.0;
@@ -1076,6 +1082,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.m_flTimeUntillSupportSpawn += 25.0;
 				npc.m_flTimeUntillNextSummonDrones +=  25.0;
 				npc.m_flTimeUntillNextSummonHardenerDrones += 25.0;
+				npc.m_flTimeUntillHomingStrike += 25.0;
 			}
 			case 1:
 			{
@@ -1144,8 +1151,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		}
 		return 0;
 	}
-	/*
-	else if(npc.m_flTimeUntillDroneSniperShot < gameTime)
+	else if(npc.m_flTimeUntillHomingStrike <gameTime)
 	{
 		switch(I_cant_do_this_all_day[npc.index])
 		{
@@ -1154,10 +1160,9 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
-				b_NpcIsInvulnerable[npc.index] = true;
-				npc.AddActivityViaSequence("layer_taunt09");
+				npc.AddActivityViaSequence("layer_taunt_neck_snap_soldier");
 				npc.m_flAttackHappens = 0.0;
-				npc.SetCycle(0.85);
+				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 0.5;	
@@ -1168,74 +1173,27 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
-					npc.AddActivityViaSequence("layer_taunt_most_wanted");
-					npc.m_flAttackHappens = 0.0;
-					npc.SetCycle(0.3);
-					npc.SetPlaybackRate(0.0);
-					npc.m_iChanged_WalkCycle = 0;
-
 					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-					int enemy[MAXENTITIES];
-					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy),_,_,_,(550.0 * 550.0));
+					int enemy[20];
+					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 					for(int i; i < sizeof(enemy); i++)
 					{
-						float Spam_delay=0.0;
 						if(enemy[i])
 						{
-							float vEnd[3];
-							float RocketDamage = 50.0;
-							RocketDamage *= RaidModeScaling ;
-							GetAbsOrigin(enemy[i], vEnd);
 							DataPack pack;
-							CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
+							CreateDataTimer(npc.m_flTimeUntillSummonRocket, Timer_Rocket_Shot, pack, TIMER_FLAG_NO_MAPCHANGE);
 							pack.WriteCell(EntIndexToEntRef(npc.index));
 							pack.WriteCell(EntIndexToEntRef(enemy[i]));
-							Spam_delay += 0.15;
-							Handle pack2;
-							CreateDataTimer(BombDrop_CHARGE_SPAN, Smite_Timer_BombDrop, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-							WritePackCell(pack2, EntIndexToEntRef(npc.index));
-							WritePackFloat(pack2, 0.0);
-							WritePackFloat(pack2, vEnd[0]);
-							WritePackFloat(pack2, vEnd[1]);
-							WritePackFloat(pack2, vEnd[2]);
-							WritePackFloat(pack2, RocketDamage);
+							npc.m_flTimeUntillSummonRocket += 0.15;
+							playsounds=true;
 						}
 					}
-
-					npc.m_flAirRaidDelay = gameTime + 2.5;
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
-					npc.m_bisWalking = false;
-					npc.m_flDoingAnimation = gameTime + 30.0;	
-					Delay_Attribute[npc.index] = gameTime + 30.0;
-					I_cant_do_this_all_day[npc.index]=2;
 				}
-			}
-			case 2:
-			{
-				if(Delay_Attribute[npc.index] < gameTime)
-				{
-					npc.PlayAngerSound();
-					npc.PlayAngerReaction();
-					npc.AddActivityViaSequence("layer_taunt_most_wanted");
-					npc.m_flAttackHappens = 0.0;
-					npc.SetCycle(0.8);
-					npc.SetPlaybackRate(1.0);
-					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_iChanged_WalkCycle = 0;
-					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
-					I_cant_do_this_all_day[npc.index]=0;
-					//npc.m_flTimeUntillDroneSniperShot += 4.0;
-					//npc.m_flTimeUntillNextSummonDrones += 4.0;
-					npc.m_flNextRangedSpecialAttackHappens += 4.0;
-					npc.m_bFUCKYOU=false;
-					b_NpcIsInvulnerable[npc.index] = false;
-				}
+				I_cant_do_this_all_day[npc.index]=0;
+				npc.m_flTimeUntillHomingStrike = gameTime + 35.0;
 			}
 		}
-		return;
 	}
-	*/
 	if(npc.m_iAttacksTillReload > 0)
 	{
 		if(gameTime > npc.m_flNextMeleeAttack)
@@ -1478,7 +1436,7 @@ void CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3])
 		case 3:
 		{
 			FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, entity);
-			SupportTeam = NPC_CreateByName("npc_harrison", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), Adddeta);
+			SupportTeam = NPC_CreateByName("npc_Castellan", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), Adddeta);
 		}
 		default: //This should not happen
 		{
@@ -1501,7 +1459,7 @@ void CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3])
 static Action Timer_Bomb_Spam(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	Harrison npc = view_as<Harrison>(EntRefToEntIndex(pack.ReadCell()));
+	Castellan npc = view_as<Castellan>(EntRefToEntIndex(pack.ReadCell()));
 	int enemy = EntRefToEntIndex(pack.ReadCell());
 	if(IsValidEntity(enemy))
 	{
@@ -1612,4 +1570,34 @@ public Action Smite_Timer_BombDrop(Handle Smite_Logic, DataPack pack)
 	}
 	
 	return Plugin_Continue;
+}
+
+static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	Castellan npc = view_as<Castellan>(EntRefToEntIndex(pack.ReadCell()));
+	int enemy = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(enemy))
+	{
+		float vecTarget[3]; WorldSpaceCenter(enemy, vecTarget);
+		float vecSelf[3];
+		WorldSpaceCenter(npc.index, vecSelf);
+		vecSelf[2] += 80.0;
+		vecSelf[0] += GetRandomFloat(-20.0, 20.0);
+		vecSelf[1] += GetRandomFloat(-20.0, 20.0);
+		float RocketDamage = 40.0;
+		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+		if(IsValidEntity(RocketGet))
+		{
+			for(int r=1; r<=5; r++)
+			{
+				DataPack pack2;
+				CreateDataTimer(2.5, WhiteflowerTank_Rocket_Stand, pack2, TIMER_FLAG_NO_MAPCHANGE);
+				pack2.WriteCell(EntIndexToEntRef(RocketGet));
+				pack2.WriteCell(EntIndexToEntRef(enemy));
+			}
+		}
+		npc.FaceTowards(vecTarget, 99999.0);
+	}
+	return Plugin_Stop;
 }
