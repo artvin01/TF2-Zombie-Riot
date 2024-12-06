@@ -253,7 +253,7 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 {
 	if(!npc.m_flNextRangedAttackHappening)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 30.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0))
 		{
 			int Enemy_I_See;
 								
@@ -281,7 +281,7 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 			{
 				RemoveEntity(npc.m_iWearable1);
 			}
-			float RocketDamage = 300.0;
+			float RocketDamage = 150.0;
 			if(NpcStats_VictorianCallToArms(npc.index))
 			{
 				RocketDamage *= 1.5;

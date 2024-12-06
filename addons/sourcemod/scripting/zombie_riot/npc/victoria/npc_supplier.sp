@@ -249,7 +249,7 @@ public void VictorianSupplier_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.00;
-		ExpidonsaGroupHeal(npc.index, 100.0, 5, 40.0, 1.0, false,SupplierGiveArmor);
+		ExpidonsaGroupHeal(npc.index, 100.0, 3, 20.0, 1.0, false,SupplierGiveArmor);
 	}
 	VictorianSupplierSelfDefense(npc, npc.m_iTarget, GetGameTime(npc.index)); 
 }
@@ -345,7 +345,7 @@ void SupplierGiveArmor(int entity, int victim)
 		return;
 
 	VictorianSupplier npc1 = view_as<VictorianSupplier>(entity);
-	GrantEntityArmor(victim, false, 2.0, 0.33, 0,
+	GrantEntityArmor(victim, false, 2.0, 0.75, 0,
 	npc1.m_flArmorToGive * 0.5);
 }
 

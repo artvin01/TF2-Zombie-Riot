@@ -1072,6 +1072,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.m_flDoingAnimation = gameTime + 1.0;	
 				Delay_Attribute[npc.index] = gameTime + 1.0;
 				I_cant_do_this_all_day[npc.index]=1;
+				npc.m_flTimeUntillNextSummonDrones +=  22.0;
+				npc.m_flTimeUntillNextSummonHardenerDrones += 22.0;
 			}
 			case 1:
 			{
@@ -1091,7 +1093,10 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 0.25;	
 				Delay_Attribute[npc.index] = gameTime + 0.25;
-
+				I_cant_do_this_all_day[npc.index]=3;
+			}
+			case 3:
+			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					Gone[npc.index] = true;
@@ -1101,10 +1106,10 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_bPathing = false;
 					npc.m_bisWalking = false;
 					Delay_Attribute[npc.index] = gameTime + 20.0;
-					I_cant_do_this_all_day[npc.index]=3;
-				}
+					I_cant_do_this_all_day[npc.index]=4;
+				}	
 			}
-			case 3:
+			case 4:
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{

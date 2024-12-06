@@ -305,7 +305,7 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				float RocketDamage = 75.0;
+				float RocketDamage = 35.0;
 				float RocketSpeed = 900.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );

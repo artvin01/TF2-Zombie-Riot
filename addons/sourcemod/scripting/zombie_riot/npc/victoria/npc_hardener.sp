@@ -316,7 +316,7 @@ public void VictorianHardener_ClotThink(int iNPC)
 						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(npc.m_iWearable4, 255, 215, 0, 255);
 					}
-					HealEntityGlobal(npc.index, PrimaryThreatIndex, 75.0, 1.0);
+					HealEntityGlobal(npc.index, PrimaryThreatIndex, 45.0, 1.0);
 					
 					float Armortogive = 75.0;
 					if(NpcStats_VictorianCallToArms(npc.index))
