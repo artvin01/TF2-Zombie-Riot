@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\zombie_riot\matrix\smithhead"
+	"$bumpmap" "models\zombie_riot\matrix\smithhead-normal"
+	
+	"$halflambert" 1
+}
