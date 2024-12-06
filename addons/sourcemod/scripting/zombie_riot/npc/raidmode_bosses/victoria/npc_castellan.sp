@@ -1130,7 +1130,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.AddActivityViaSequence("layer_taunt_maggots_condolence");
 					npc.m_flAttackHappens = 0.0;
 					npc.SetCycle(0.01);
-					npc.SetPlaybackRate(1.5);
+					npc.SetPlaybackRate(1.25);
 					npc.m_iChanged_WalkCycle = 0;
 					npc.m_flDoingAnimation = gameTime + 0.75;	
 					npc.m_flTimeUntillAirStrike = gameTime + 40.0;
