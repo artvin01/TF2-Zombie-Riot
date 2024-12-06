@@ -262,13 +262,13 @@ methodmap Castellan < CClotBody
 	}
 	property float m_flTimeUntillHomingStrike
 	{
-		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	property float m_flTimeUntillSummonRocket
 	{
-		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
 	property int m_iAmountProjectiles
 	{
@@ -458,20 +458,27 @@ static void Internal_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-	if(NpcStats_VictorianCallToArms(npc.index) && !ParticleSpawned[npc.index])
+	if(NpcStats_VictorianCallToArms(npc.index) && !Gone_Stats[npc.index] && !ParticleSpawned[npc.index])
 	{
 		float flPos[3], flAng[3];
-				
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
 		i_Castellan_eye_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "eye_powerup_blue_lvl_3", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
-	}	
+	}
 
 	if(IsValidEntity(npc.index)&&Gone[npc.index])
 	{
 		if(Gone_Stats[npc.index])
 		{
+			int particle = EntRefToEntIndex(i_Castellan_eye_particle[npc.index]);
+			if(IsValidEntity(particle))
+			{
+				RemoveEntity(particle);
+				i_Castellan_eye_particle[npc.index]=INVALID_ENT_REFERENCE;
+			}
+			ParticleSpawned[npc.index] = false;
+		
 			npc.m_iChanged_WalkCycle = 0;
 			b_NoHealthbar[npc.index]=true;
 			Npc_BossHealthBar(npc);
@@ -886,6 +893,16 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+		
+	int particle = EntRefToEntIndex(i_Castellan_eye_particle[npc.index]);
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+		i_Castellan_eye_particle[npc.index]=INVALID_ENT_REFERENCE;
+	}
+
+	if(BlockLoseSay)
+		return;
 
 	switch(GetRandomInt(0,2))
 	{
