@@ -91,6 +91,7 @@ static float FTL[MAXENTITIES];
 static float Delay_Attribute[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
 static bool YaWeFxxked[MAXENTITIES];
+static bool Gone[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AlreadySpawned[MAXENTITIES];
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
@@ -259,7 +260,7 @@ methodmap Castellan < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
-	property float m_flTimeUntillSupportDespawn
+	property float m_flTimeUntillAirStrike
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
@@ -308,13 +309,14 @@ methodmap Castellan < CClotBody
 		Delay_Attribute[npc.index] = 0.0;
 		YaWeFxxked[npc.index] = false;
 		ParticleSpawned[npc.index] = false;
+		Gone[npc.index] = false;
 		npc.m_bFUCKYOU = false;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
 		npc.m_flTimeUntillSupportSpawn = GetGameTime() + 15.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAirRaidDelay = 0.0;
-		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
+		npc.m_flTimeUntillAirStrike = GetGameTime() + 10.0;
 		npc.m_flTimeUntillNextSummonDrones = GetGameTime() + 10.0;
 		npc.m_flTimeUntillNextSummonHardenerDrones = GetGameTime() + 13.5;
 		npc.m_iOverlordComboAttack = 0;
@@ -463,6 +465,45 @@ static void Internal_ClotThink(int iNPC)
 		npc.GetAttachment("", flPos, flAng);
 		ParticleSpawned[npc.index] = true;
 	}	
+
+	if(Gone[npc.index])
+	{
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 0);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 0);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 0);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 0);
+		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 0);
+		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 0);
+		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable8, 255, 255, 255, 0);
+	}
+	else
+	{
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 50, 50, 50, 255);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 255);
+		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable8, 50, 50, 50, 255);
+	}
 
 	if(LastMann)
 	{
@@ -670,7 +711,7 @@ static void Internal_ClotThink(int iNPC)
 					I_cant_do_this_all_day[npc.index]=0;
 					//npc.m_flTimeUntillDroneSniperShot += 4.0;
 					//npc.m_flTimeUntillNextSummonDrones += 4.0;
-					npc.m_flNextRangedSpecialAttackHappens += 4.0;
+					//npc.m_flNextRangedSpecialAttackHappens += 4.0;
 					npc.m_bFUCKYOU=false;
 					b_NpcIsInvulnerable[npc.index] = false;
 				}
@@ -922,7 +963,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-					int health = ReturnEntityMaxHealth(npc.index) / 20;
+					int health = ReturnEntityMaxHealth(npc.index) / 30;
 					
 					int summon1 = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), "mk2;limit");
 
@@ -1012,6 +1053,72 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					return 0;
 				}
 			}
+		}
+	}
+	else if(npc.m_flTimeUntillAirStrike <gameTime)
+	{
+		switch(I_cant_do_this_all_day[npc.index])
+		{
+			case 0:
+			{
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("layer_taunt_cyoa_PDA_intro");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.0);
+				npc.m_iChanged_WalkCycle = 0;
+				npc.m_flDoingAnimation = gameTime + 1.0;	
+				Delay_Attribute[npc.index] = gameTime + 1.0;
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.i_GunMode = 1;
+					npc.m_iAttacksTillReload += 8;
+					I_cant_do_this_all_day[npc.index]=1;
+				}
+			}
+			case 1:
+			{
+				npc.AddActivityViaSequence("layer_tuant_vehicle_tank_end");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.0);
+				npc.m_iChanged_WalkCycle = 0;
+				npc.m_flDoingAnimation = gameTime + 0.25;	
+				Delay_Attribute[npc.index] = gameTime + 0.25;
+
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					Gone[npc.index] = true;
+					b_DoNotUnStuck[npc.index] = true;
+					b_NoKnockbackFromSources[npc.index] = true;
+					b_ThisEntityIgnored[npc.index] = true;
+					npc.m_bPathing = false;
+					npc.m_bisWalking = false;
+					Delay_Attribute[npc.index] = gameTime + 20.0;
+					I_cant_do_this_all_day[npc.index]=2;
+				}
+			}
+			case 2:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					Gone[npc.index] = false;
+					b_DoNotUnStuck[npc.index] = false;
+					b_NoKnockbackFromSources[npc.index] = false;
+					b_ThisEntityIgnored[npc.index] = false;
+					npc.AddActivityViaSequence("layer_taunt_maggots_condolence");
+					npc.m_flAttackHappens = 0.0;
+					npc.SetCycle(0.01);
+					npc.SetPlaybackRate(1.5);
+					npc.m_iChanged_WalkCycle = 0;
+					npc.m_flDoingAnimation = gameTime + 0.75;	
+					npc.m_flTimeUntillAirStrike = gameTime + 40.0;
+					I_cant_do_this_all_day[npc.index]=0;
+				}
+			}
+			return 0;
 		}
 	}
 	/*
