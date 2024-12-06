@@ -149,8 +149,6 @@ methodmap VictoriaAntiarmorInfantry < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetVariantString("1.3");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		return npc;
 	}
