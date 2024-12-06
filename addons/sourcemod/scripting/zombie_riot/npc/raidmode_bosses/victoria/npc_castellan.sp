@@ -75,20 +75,27 @@ static int I_cant_do_this_all_day[MAXENTITIES];
 static int HowManyMelee[MAXENTITIES];
 static bool YaWeFxxked[MAXENTITIES];
 static bool Gone[MAXENTITIES];
+static bool Gone_Stats[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AlreadySpawned[MAXENTITIES];
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static int i_AmountProjectiles[MAXENTITIES];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 
+static int Temp_Target[MAXENTITIES];
+
 static int gLaser1;
 static int gRedPoint;
 static int g_BeamIndex_heal;
 static int g_HALO_Laser;
 
-#define THIRDSHOT_CHARGE_TIME 3.0
-#define THIRDSHOT_CHARGE_SPAN 1.0
-#define THIRDSHOT_LIGHTNING_RANGE 150.0
+#define Castellan_THIRDSHOT_CHARGE_TIME 3.0
+#define Castellan_THIRDSHOT_CHARGE_SPAN 1.0
+#define Castellan_THIRDSHOT_LIGHTNING_RANGE 150.0
+
+#define Castellan_BombDrop_CHARGE_TIME 3.0
+#define Castellan_BombDrop_CHARGE_SPAN 1.0
+#define Castellan_BombDrop_LIGHTNING_RANGE 150.0
 
 void Castellan_OnMapStart_NPC()
 {
@@ -258,6 +265,11 @@ methodmap Castellan < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
+	property float m_flTimeUntillSummonRocket
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
 	property int m_iAmountProjectiles
 	{
 		public get()							{ return i_AmountProjectiles[this.index]; }
@@ -298,6 +310,7 @@ methodmap Castellan < CClotBody
 		YaWeFxxked[npc.index] = false;
 		ParticleSpawned[npc.index] = false;
 		Gone[npc.index] = false;
+		Gone_Stats[npc.index] = false;
 		npc.m_bFUCKYOU = false;
 		I_cant_do_this_all_day[npc.index] = 0;
 		npc.i_GunMode = 0;
@@ -327,7 +340,7 @@ methodmap Castellan < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Castellan Arrived");
+				ShowGameText(client_check, "obj_status_sentrygun_3", 1, "%t", "Castellan Arrived");
 			}
 		}
 		FTL[npc.index] = 200.0;
@@ -385,7 +398,6 @@ methodmap Castellan < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_fireaxe_pyro/c_fireaxe_pyro.mdl");
 		SetVariantString("0.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		CPrintToChatAll("{blue}%s{default}: Intruders in sight, I won't let the get out alive!", c_NpcName[npc.index]);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/soldier/fdu.mdl");
 		SetVariantString("1.0");
@@ -456,44 +468,135 @@ static void Internal_ClotThink(int iNPC)
 		ParticleSpawned[npc.index] = true;
 	}	
 
-	if(Gone[npc.index])
+	if(IsValidEntity(npc.index)&&Gone[npc.index])
 	{
-		npc.m_iChanged_WalkCycle = 0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 0);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 0);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 0);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 0);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 0);
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 0);
-		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable8, 255, 255, 255, 0);
-	}
-	else if(!Gone[npc.index])
-	{
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 50, 50, 50, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 255);
-		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable8, 50, 50, 50, 255);
+		if(Gone_Stats[npc.index])
+		{
+			npc.m_iChanged_WalkCycle = 0;
+			b_NoHealthbar[npc.index]=true;
+			Npc_BossHealthBar(npc);
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 1.0);
+			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 1);
+				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 1.0);
+				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 1.0);
+			}
+			if(IsValidEntity(npc.m_iWearable3))
+			{
+				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 1);
+				SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 1.0);
+				SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 1.0);
+			}
+			if(IsValidEntity(npc.m_iWearable4))
+			{
+				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable4, 50, 50, 50, 1);
+				SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 1.0);
+				SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 1.0);
+			}
+			if(IsValidEntity(npc.m_iWearable5))
+			{
+				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 1);
+				SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 1.0);
+				SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 1.0);
+			}
+			if(IsValidEntity(npc.m_iWearable6))
+			{
+				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 1);
+				SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 1.0);
+				SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 1.0);
+			}
+			if(IsValidEntity(npc.m_iWearable7))
+			{
+				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 1);
+				SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMinDist", 1.0);
+				SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 1.0);
+			}
+			if(IsValidEntity(npc.m_iWearable8))
+			{
+				SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable8, 50, 50, 50, 1);
+				SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMinDist", 1.0);
+				SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMaxDist", 1.0);
+			}
+			if(IsValidEntity(npc.m_iTeamGlow))
+				RemoveEntity(npc.m_iTeamGlow);
+		}
+		else
+		{
+			b_NoHealthbar[npc.index]=false;
+			Npc_BossHealthBar(npc);
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 30000.0);
+			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 30000.0);
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
+				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 30000.0);
+				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 30000.0);
+			}
+			if(IsValidEntity(npc.m_iWearable3))
+			{
+				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
+				SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 30000.0);
+				SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 30000.0);
+			}
+			if(IsValidEntity(npc.m_iWearable4))
+			{
+				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable4, 50, 50, 50, 255);
+				SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 30000.0);
+				SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 30000.0);
+			}
+			if(IsValidEntity(npc.m_iWearable5))
+			{
+				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
+				SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 30000.0);
+				SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 30000.0);
+			}
+			if(IsValidEntity(npc.m_iWearable6))
+			{
+				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 255);
+				SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 30000.0);
+				SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 30000.0);
+			}
+			if(IsValidEntity(npc.m_iWearable7))
+			{
+				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 255);
+				SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMinDist", 30000.0);
+				SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 30000.0);
+			}
+			if(IsValidEntity(npc.m_iWearable8))
+			{
+				SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable8, 50, 50, 50, 255);
+				SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMinDist", 30000.0);
+				SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMaxDist", 30000.0);
+			}
+			if(!IsValidEntity(npc.m_iTeamGlow))
+			{
+				npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+				npc.m_bTeamGlowDefault = false;
+				SetVariantColor(view_as<int>({150, 150, 150, 200}));
+				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			}
+		}
+		Gone[npc.index]=false;
 	}
 
 	if(LastMann)
@@ -694,6 +797,13 @@ static void Internal_ClotThink(int iNPC)
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+			}
+			case 2:
+			{
+				npc.StopPathing();
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
+				npc.m_flDoingAnimation += 0.1;
 			}
 		}
 	}
@@ -1000,19 +1110,17 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 	}
 	else if(npc.m_flTimeUntillAirStrike <gameTime)
 	{
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		npc.m_flDoingAnimation = gameTime + 0.35;
 		switch(I_cant_do_this_all_day[npc.index])
 		{
 			case 0:
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_cyoa_PDA_intro");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
-				npc.m_flDoingAnimation = gameTime + 1.0;	
 				Delay_Attribute[npc.index] = gameTime + 1.0;
 				I_cant_do_this_all_day[npc.index]=1;
 				npc.m_flTimeUntillSupportSpawn += 25.0;
@@ -1026,9 +1134,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				{
 					npc.i_GunMode = 1;
 					npc.m_iAttacksTillReload += 8;
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
-					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 0;
 					I_cant_do_this_all_day[npc.index]=2;
 				}
@@ -1036,14 +1141,10 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			case 2:
 			{
 				npc.AddActivityViaSequence("layer_tuant_vehicle_tank_end");
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				npc.m_bisWalking = false;
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
-				npc.m_flDoingAnimation = gameTime + 0.34;	
 				Delay_Attribute[npc.index] = gameTime + 0.35;
 				I_cant_do_this_all_day[npc.index]=3;
 			}
@@ -1051,14 +1152,25 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
+					Gone_Stats[npc.index] = true;
 					Gone[npc.index] = true;
 					b_DoNotUnStuck[npc.index] = true;
 					b_NoKnockbackFromSources[npc.index] = true;
 					b_ThisEntityIgnored[npc.index] = true;
-					npc.m_bPathing = false;
-					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
 					npc.m_iChanged_WalkCycle = 0;
+					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+					npc.PlayDeathSound();
+					Temp_Target[npc.index]=-1;
+					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+					int enemy[MAXENTITIES];
+					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+					do
+					{
+						Temp_Target[npc.index] = enemy[GetRandomInt(0, sizeof(g_PlayRocketshotready) - 1)];
+					}
+					while(!IsValidEntity(Temp_Target[npc.index]) || GetTeam(npc.index) == GetTeam(Temp_Target[npc.index]) || npc.index==Temp_Target[npc.index]);
+					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					Delay_Attribute[npc.index] = gameTime + 20.0;
 					I_cant_do_this_all_day[npc.index]=4;
 				}	
@@ -1067,13 +1179,15 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
-					Gone[npc.index] = false;
+					npc.m_flNextMeleeAttack = gameTime + 2.0;
+					Temp_Target[npc.index]=-1;
+					Gone_Stats[npc.index] = false;
+					Gone[npc.index] = true;
+					Gone[npc.index] = true;
 					b_DoNotUnStuck[npc.index] = false;
 					b_NoKnockbackFromSources[npc.index] = false;
 					b_ThisEntityIgnored[npc.index] = false;
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
-					npc.m_bisWalking = false;
+					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 					npc.AddActivityViaSequence("layer_taunt_maggots_condolence");
 					npc.m_flAttackHappens = 0.0;
 					npc.SetCycle(0.01);
@@ -1085,7 +1199,37 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				}
 			}
 		}
-		return 0;
+		if(IsValidEntity(Temp_Target[npc.index]) && npc.m_flAirRaidDelay < gameTime)
+		{
+			float vEnd[3];
+			GetAbsOrigin(Temp_Target[npc.index], vEnd);
+			float AirRaidDamage = 50.0;
+			AirRaidDamage *= RaidModeScaling;
+			Handle pack2;
+			CreateDataTimer(1.0, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+			WritePackCell(pack2, EntIndexToEntRef(npc.index));
+			WritePackFloat(pack2, 0.0);
+			WritePackFloat(pack2, vEnd[0]);
+			WritePackFloat(pack2, vEnd[1]);
+			WritePackFloat(pack2, vEnd[2]);
+			WritePackFloat(pack2, AirRaidDamage);
+			Harrison npcGetInfo = view_as<Harrison>(npc.index);
+			float Spam_delay=0.0;
+			for(int AirRaid; AirRaid < 5; AirRaid++)
+			{
+				DataPack pack;
+				CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
+				pack.WriteCell(EntIndexToEntRef(npcGetInfo.index));
+				pack.WriteCell(EntIndexToEntRef(Temp_Target[npc.index]));
+				Spam_delay += 0.15;
+			}
+			npc.m_flAirRaidDelay = gameTime + 2.5;
+		}
+		npc.m_flTimeUntillSupportSpawn += 0.1;
+		npc.m_flTimeUntillNextSummonDrones +=  0.1;
+		npc.m_flTimeUntillNextSummonHardenerDrones += 0.1;
+		npc.m_flTimeUntillHomingStrike += 0.1;
+		return 2;
 	}
 	else if(npc.m_flTimeUntillHomingStrike <gameTime)
 	{
@@ -1109,6 +1253,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
+					npc.m_flTimeUntillSummonRocket = 0.0;
 					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 					int enemy[20];
 					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
@@ -1121,7 +1266,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 							pack.WriteCell(EntIndexToEntRef(npc.index));
 							pack.WriteCell(EntIndexToEntRef(enemy[i]));
 							npc.m_flTimeUntillSummonRocket += 0.15;
-							playsounds=true;
 						}
 					}
 				}
@@ -1139,6 +1283,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			//float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			if(IsValidEnemy(npc.index, target))
 			{
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.PlayGunSound();
 				npc.FaceTowards(vecTarget, 20000.0);
 				float SpeedProjectile = 1000.0;
@@ -1186,6 +1331,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					
 				}
 				npc.m_iAttacksTillReload -= 1;
+				npc.m_flNextMeleeAttack = gameTime + 0.35;
 			}
 		}
 	}
@@ -1208,7 +1354,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					bool PlaySound = false;
 					for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 					{
-						if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+						float Spam_delay=0.0;
+						if(i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 						{
 							if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
 							{
@@ -1263,10 +1410,10 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 									DataPack pack;
 									CreateDataTimer(Spam_delay, Timer_Third_Rocket, pack, TIMER_FLAG_NO_MAPCHANGE);
 									pack.WriteCell(EntIndexToEntRef(npc.index));
-									pack.WriteCell(EntIndexToEntRef(enemy[i]));
+									pack.WriteCell(EntIndexToEntRef(target));
 									Spam_delay += 0.15;
 									Handle pack2;
-									CreateDataTimer(THIRDSHOT_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+									CreateDataTimer(Castellan_THIRDSHOT_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 									WritePackCell(pack2, EntIndexToEntRef(npc.index));
 									WritePackFloat(pack2, 0.0);
 									WritePackFloat(pack2, vEnd[0]);
@@ -1279,7 +1426,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								{
 									HowManyMelee[npc.index] += 1;
 								}
-							} 
+							}
 						}
 					}
 					if(PlaySound)
@@ -1327,7 +1474,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 
 						npc.PlayMeleeSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						
+								
 						npc.m_flAttackHappens = gameTime + 0.25;
 						npc.m_flNextMeleeAttack = gameTime + 1.0;
 						npc.m_flDoingAnimation = gameTime + 0.25;
@@ -1401,7 +1548,7 @@ void CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3])
 		case 3:
 		{
 			FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, entity);
-			SupportTeam = NPC_CreateByName("npc_Castellan", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), Adddeta);
+			SupportTeam = NPC_CreateByName("npc_harrison", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), Adddeta);
 		}
 		default: //This should not happen
 		{
@@ -1420,7 +1567,6 @@ void CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3])
 	}
 }
 
-
 static Action Timer_Third_Rocket(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -1436,7 +1582,7 @@ static Action Timer_Third_Rocket(Handle timer, DataPack pack)
 		vEnd[0] += GetRandomFloat(-250.0, 250.0);
 		vEnd[1] += GetRandomFloat(-250.0, 250.0);
 		Handle pack2;
-		CreateDataTimer(BombDrop_CHARGE_SPAN, Smite_Timer_BombDrop, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		CreateDataTimer(Castellan_BombDrop_CHARGE_SPAN, Smite_Timer_BombDrop, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		WritePackCell(pack2, EntIndexToEntRef(npc.index));
 		WritePackFloat(pack2, 0.0);
 		WritePackFloat(pack2, vEnd[0]);
@@ -1444,12 +1590,12 @@ static Action Timer_Third_Rocket(Handle timer, DataPack pack)
 		WritePackFloat(pack2, vEnd[2]);
 		WritePackFloat(pack2, RocketDamage);
 			
-		spawnRing_Vectors(vEnd, BombDrop_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BombDrop_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
+		spawnRing_Vectors(vEnd, Castellan_BombDrop_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, Castellan_BombDrop_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
 	}
 	return Plugin_Stop;
 }
 
-public Action Smite_Timer_BombDrop(Handle Smite_Logic, DataPack pack)
+static Action Smite_Timer_BombDrop(Handle Smite_Logic, DataPack pack)
 {
 	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
@@ -1468,7 +1614,7 @@ public Action Smite_Timer_BombDrop(Handle Smite_Logic, DataPack pack)
 	
 	float damage = ReadPackFloat(pack);
 	
-	if (NumLoops >= BombDrop_CHARGE_TIME)
+	if (NumLoops >= Castellan_BombDrop_CHARGE_TIME)
 	{
 		float secondLoc[3];
 		for (int replace = 0; replace < 3; replace++)
@@ -1478,7 +1624,7 @@ public Action Smite_Timer_BombDrop(Handle Smite_Logic, DataPack pack)
 		
 		for (int sequential = 1; sequential <= 5; sequential++)
 		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (BombDrop_LIGHTNING_RANGE * 5.0)/float(sequential));
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (Castellan_BombDrop_LIGHTNING_RANGE * 5.0)/float(sequential));
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
 		
@@ -1515,19 +1661,19 @@ public Action Smite_Timer_BombDrop(Handle Smite_Logic, DataPack pack)
 		pack_boom.WriteCell(1);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
-		CreateEarthquake(spawnLoc, 1.0, BombDrop_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BombDrop_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
+		CreateEarthquake(spawnLoc, 1.0, Castellan_BombDrop_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, Castellan_BombDrop_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
 	
 		return Plugin_Stop;
 	}
 	else
 	{
-		spawnRing_Vectors(spawnLoc, BombDrop_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+		spawnRing_Vectors(spawnLoc, Castellan_BombDrop_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
 	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
 		
 		ResetPack(pack);
 		WritePackCell(pack, EntIndexToEntRef(entity));
-		WritePackFloat(pack, NumLoops + BombDrop_CHARGE_TIME);
+		WritePackFloat(pack, NumLoops + Castellan_BombDrop_CHARGE_TIME);
 		WritePackFloat(pack, spawnLoc[0]);
 		WritePackFloat(pack, spawnLoc[1]);
 		WritePackFloat(pack, spawnLoc[2]);
@@ -1560,44 +1706,15 @@ static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
                 CreateDataTimer(2.5 * float(r), WhiteflowerTank_Rocket_Stand, pack2, TIMER_FLAG_NO_MAPCHANGE);
                 pack2.WriteCell(EntIndexToEntRef(RocketGet));
                 pack2.WriteCell(EntIndexToEntRef(enemy));
-
             }
-			CreateTimer(2.5 * 7.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(2.5 * 7.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		npc.FaceTowards(vecTarget, 99999.0);
 	}
 	return Plugin_Stop;
 }
 
-static Action Timer_Third_Rocket(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	Harrison npc = view_as<Harrison>(EntRefToEntIndex(pack.ReadCell()));
-	int enemy = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(enemy))
-	{
-		float vEnd[3];
-		float RocketDamage = 50.0;
-		RocketDamage *= RaidModeScaling;
-			
-		GetAbsOrigin(enemy, vEnd);
-		vEnd[0] += GetRandomFloat(-250.0, 250.0);
-		vEnd[1] += GetRandomFloat(-250.0, 250.0);
-		Handle pack2;
-		CreateDataTimer(THIRDSHOT_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-		WritePackCell(pack2, EntIndexToEntRef(npc.index));
-		WritePackFloat(pack2, 0.0);
-		WritePackFloat(pack2, vEnd[0]);
-		WritePackFloat(pack2, vEnd[1]);
-		WritePackFloat(pack2, vEnd[2]);
-		WritePackFloat(pack2, RocketDamage);
-			
-		spawnRing_Vectors(vEnd, THIRDSHOT_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, THIRDSHOT_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
-	}
-	return Plugin_Stop;
-}
-
-public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
+static Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 {
 	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
@@ -1616,7 +1733,7 @@ public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 	
 	float damage = ReadPackFloat(pack);
 	
-	if (NumLoops >= THIRDSHOT_CHARGE_TIME)
+	if (NumLoops >= Castellan_THIRDSHOT_CHARGE_TIME)
 	{
 		float secondLoc[3];
 		for (int replace = 0; replace < 3; replace++)
@@ -1626,7 +1743,7 @@ public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 		
 		for (int sequential = 1; sequential <= 5; sequential++)
 		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (THIRDSHOT_LIGHTNING_RANGE * 5.0)/float(sequential));
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (Castellan_THIRDSHOT_LIGHTNING_RANGE * 5.0)/float(sequential));
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
 		
@@ -1663,19 +1780,19 @@ public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 		pack_boom.WriteCell(1);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
-		CreateEarthquake(spawnLoc, 1.0, THIRDSHOT_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, THIRDSHOT_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
+		CreateEarthquake(spawnLoc, 1.0, Castellan_THIRDSHOT_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, Castellan_THIRDSHOT_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
 	
 		return Plugin_Stop;
 	}
 	else
 	{
-		spawnRing_Vectors(spawnLoc, THIRDSHOT_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+		spawnRing_Vectors(spawnLoc, Castellan_THIRDSHOT_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
 	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
 		
 		ResetPack(pack);
 		WritePackCell(pack, EntIndexToEntRef(entity));
-		WritePackFloat(pack, NumLoops + THIRDSHOT_CHARGE_TIME);
+		WritePackFloat(pack, NumLoops + Castellan_THIRDSHOT_CHARGE_TIME);
 		WritePackFloat(pack, spawnLoc[0]);
 		WritePackFloat(pack, spawnLoc[1]);
 		WritePackFloat(pack, spawnLoc[2]);

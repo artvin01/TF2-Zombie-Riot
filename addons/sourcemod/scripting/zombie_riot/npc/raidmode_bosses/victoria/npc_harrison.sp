@@ -144,7 +144,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_PlayRocketshotready));   i++) { PrecacheSound(g_PlayRocketshotready[i]);   }
 	for (int i = 0; i < (sizeof(g_LasershotReady));   i++) { PrecacheSound(g_LasershotReady[i]);   }
 	PrecacheModel("models/player/sniper.mdl");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria/raid_harrison.mp3");
 	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
 	
 	PrecacheModel(LASERBEAM);
@@ -322,7 +322,7 @@ methodmap Harrison < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			CPrintToChatAll("{blue}Harrison{default}: Intruders in sight, I won't let the get out alive!");
+			CPrintToChatAll("{skyblue}Harrison{default}: Intruders in sight, I won't let the get out alive!");
 		}
 		else
 		{
@@ -368,14 +368,14 @@ methodmap Harrison < CClotBody
 				{
 					LookAtTarget(client_check, npc.index);
 					SetGlobalTransTarget(client_check);
-					ShowGameText(client_check, "item_armor", 1, "%t", "Harrison Arrived");
+					ShowGameText(client_check, "deflect_rocket", 1, "%t", "Harrison Arrived");
 				}
 			}
 			FTL[npc.index] = 200.0;
 			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
-			CPrintToChatAll("{blue}Harrison{default}: Intruders in sight, I won't let the get out alive!");
+			CPrintToChatAll("{skyblue}Harrison{default}: Intruders in sight, I won't let the get out alive!");
 			
 			RaidModeScaling = float(ZR_GetWaveCount()+1);
 			if(RaidModeScaling < 55)
@@ -410,12 +410,12 @@ methodmap Harrison < CClotBody
 				RaidModeScaling *= 0.65;
 			}
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
 			music.Time = 128;
 			music.Volume = 2.0;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
-			strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
+			strcopy(music.Artist, sizeof(music.Artist), "Arknights");
 			Music_SetRaidMusic(music);
 			npc.m_iChanged_WalkCycle = -1;
 		}
@@ -484,6 +484,7 @@ static void Clone_ClotThink(int iNPC)
 		return;
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	if(!IsValidEntity(OverrideOwner[npc.index]))OverrideOwner[npc.index] = npc.index;
 	
 	bool playsounds=false;
 	switch(I_cant_do_this_all_day[npc.index])
@@ -510,13 +511,13 @@ static void Clone_ClotThink(int iNPC)
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 			for(int i; i < sizeof(enemy); i++)
 			{
-				for(int k; k < (NpcStats_VictorianCallToArms(npc.index) ? 2 : 1); k++)
+				for(int k; k < (NpcStats_VictorianCallToArms(OverrideOwner[npc.index]) ? 3 : 2); k++)
 				{
 					if(enemy[i])
 					{
 						DataPack pack;
 						CreateDataTimer(npc.m_flTimeUntillSummonRocket, Timer_Quad_Rocket_Shot, pack, TIMER_FLAG_NO_MAPCHANGE);
-						pack.WriteCell(EntIndexToEntRef(npc.index));
+						pack.WriteCell(EntIndexToEntRef(OverrideOwner[npc.index]));
 						pack.WriteCell(EntIndexToEntRef(enemy[i]));
 						npc.m_flTimeUntillSummonRocket += 0.15;
 						playsounds=true;
@@ -606,15 +607,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Harrison{default}: Ready to die?");
+					CPrintToChatAll("{skyblue}Harrison{default}: Ready to die?");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Harrison{default}: You can't run forever.");
+					CPrintToChatAll("{skyblue}Harrison{default}: You can't run forever.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Harrison{default}: All of your comrades are fallen.");
+					CPrintToChatAll("{skyblue}Harrison{default}: All of your comrades are fallen.");
 				}
 			}
 		}
@@ -628,10 +629,10 @@ static void Internal_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:CPrintToChatAll("{blue}Harrison{default}: That's it. Calling in for special forces.");
-			case 2:CPrintToChatAll("{blue}Harrison{default}: Your small knights won't save you now");
-			case 3:CPrintToChatAll("{blue}Harrison{default}: Time to head back to the frontlines");
-			case 4:CPrintToChatAll("{blue}Harrison{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
+			case 1:CPrintToChatAll("{skyblue}Harrison{default}: That's it. Calling in for special forces.");
+			case 2:CPrintToChatAll("{skyblue}Harrison{default}: Your small knights won't save you now");
+			case 3:CPrintToChatAll("{skyblue}Harrison{default}: Time to head back to the frontlines");
+			case 4:CPrintToChatAll("{skyblue}Harrison{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
 		}
 		for(int i=1; i<=15; i++)
 		{
@@ -779,28 +780,29 @@ static void Internal_ClotThink(int iNPC)
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 			for(int i; i < sizeof(enemy); i++)
 			{
-				float Spam_delay=0.0;
-				for(int k; k < 4; k++)
+				if(enemy[i])
 				{
-					if(enemy[i])
+					float vEnd[3];
+					float RocketDamage = 50.0;
+					RocketDamage *= RaidModeScaling;
+					GetAbsOrigin(enemy[i], vEnd);
+					float Spam_delay=0.0;
+					Handle pack2;
+					CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+					WritePackCell(pack2, EntIndexToEntRef(npc.index));
+					WritePackFloat(pack2, 0.0);
+					WritePackFloat(pack2, vEnd[0]);
+					WritePackFloat(pack2, vEnd[1]);
+					WritePackFloat(pack2, vEnd[2]);
+					WritePackFloat(pack2, RocketDamage);
+
+					for(int k; k < 4; k++)
 					{
-						float vEnd[3];
-						float RocketDamage = 50.0;
-						RocketDamage *= RaidModeScaling;
-						GetAbsOrigin(enemy[i], vEnd);
 						DataPack pack;
 						CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
 						pack.WriteCell(EntIndexToEntRef(npc.index));
 						pack.WriteCell(EntIndexToEntRef(enemy[i]));
 						Spam_delay += 0.15;
-						Handle pack2;
-						CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-						WritePackCell(pack2, EntIndexToEntRef(npc.index));
-						WritePackFloat(pack2, 0.0);
-						WritePackFloat(pack2, vEnd[0]);
-						WritePackFloat(pack2, vEnd[1]);
-						WritePackFloat(pack2, vEnd[2]);
-						WritePackFloat(pack2, RocketDamage);
 					}
 				}
 			}
@@ -939,9 +941,9 @@ static void Internal_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{blue}Harrison{default}: Ugh, I need backup");
-		case 1:CPrintToChatAll("{blue}Harrison{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
-		case 2:CPrintToChatAll("{blue}Harrison{default}: You intruders will soon face the {crimson}Real Deal.{default}");
+		case 0:CPrintToChatAll("{skyblue}Harrison{default}: Ugh, I need backup");
+		case 1:CPrintToChatAll("{skyblue}Harrison{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
+		case 2:CPrintToChatAll("{skyblue}Harrison{default}: You intruders will soon face the {crimson}Real Deal.{default}");
 	}
 
 }
@@ -1525,7 +1527,7 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 	}
 }
 
-static Action Timer_Bomb_Spam(Handle timer, DataPack pack)
+public Action Timer_Bomb_Spam(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	Harrison npc = view_as<Harrison>(EntRefToEntIndex(pack.ReadCell()));
@@ -1553,7 +1555,7 @@ static Action Timer_Bomb_Spam(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
-public Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
+static Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 {
 	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
