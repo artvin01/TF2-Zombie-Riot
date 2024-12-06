@@ -209,13 +209,11 @@ methodmap Harrison < CClotBody
 	}
 	public void PlayBoomSound()
 	{
-		EmitSoundToAll(g_BoomSounds, _, _, _, _, 0.6);
-		EmitSoundToAll(g_BoomSounds, _, _, _, _, 0.6);
+		EmitSoundToAll(g_BoomSounds, _, _, _, _, 0.7);
 	}
 	public void PlayIncomingBoomSound()
 	{
-		EmitSoundToAll(g_IncomingBoomSounds, _, _, _, _, 0.6);
-		EmitSoundToAll(g_IncomingBoomSounds, _, _, _, _, 0.6);
+		EmitSoundToAll(g_IncomingBoomSounds, _, _, _, _, 0.7);
 	}
 	public void PlayHurtSound() 
 	{
@@ -579,7 +577,7 @@ static void Internal_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 	//bool GETVictoria_Support = Victoria_Support(npc);
 	
-	if(NpcStats_VictorianCallToArms(npc.index) && Victoria_Support(npc))
+	if(!AirRaidStart[npc.index] && NpcStats_VictorianCallToArms(npc.index) && Victoria_Support(npc))
 	{
 	
 	}
@@ -885,7 +883,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_fbRangedSpecialOn)
 		{
 			I_cant_do_this_all_day[npc.index]=0;
-			f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
 			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			npc.m_bFUCKYOU=true;
@@ -911,6 +908,9 @@ static void Internal_NPCDeath(int entity)
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
+	Vs_RechargeTime[npc.index]=0.0;
+	Vs_RechargeTimeMax[npc.index]=0.0;
+	
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
@@ -927,6 +927,15 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+		
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client) && !IsFakeClient(client))
+			Vs_LockOn[client]=false;
+	}
+	
+	if(BlockLoseSay)
+		return;
 
 	switch(GetRandomInt(0,2))
 	{
@@ -1659,6 +1668,11 @@ static bool Victoria_Support(Harrison npc)
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy[MAXENTITIES];
 	GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client) && !IsFakeClient(client) && !IsPlayerAlive(client) && TeutonType[client] != TEUTON_NONE)
+			Vs_LockOn[client]=false;
+	}
 	for(int i; i < sizeof(enemy); i++)
 	{
 		if(!IsValidEnemy(npc.index, enemy[i]))
@@ -1688,11 +1702,6 @@ static bool Victoria_Support(Harrison npc)
 				Vs_Temp_Pos[npc.index][enemy[i]][0] = position[0];
 				Vs_Temp_Pos[npc.index][enemy[i]][1] = position[1];
 				Vs_Temp_Pos[npc.index][enemy[i]][2] = position[2] - 3000.0;
-				for(int client=1; client<=MaxClients; client++)
-				{
-					if(IsValidClient(client) && !IsFakeClient(client))
-						Vs_LockOn[client]=false;
-				}
 				if(IsValidClient(enemy[i]) && !IsFakeClient(enemy[i])) Vs_LockOn[enemy[i]]=true;
 			}
 			else

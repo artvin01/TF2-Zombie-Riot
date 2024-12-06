@@ -31,6 +31,12 @@ static const char g_ReloadSound[][] = {
 	"weapons/ar2/npc_ar2_reload.wav",
 };
 
+static const char g_ExplosionSounds[][]= {
+	"weapons/explode1.wav",
+	"weapons/explode2.wav",
+	"weapons/explode3.wav"
+};
+
 static int m_iGunType;
 
 
@@ -40,12 +46,13 @@ void VictoriaBigpipe_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_ExplosionSounds)); i++) { PrecacheSound(g_ExplosionSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bigpipe");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bigpipe");
 	strcopy(data.Icon, sizeof(data.Icon), "big_pipe");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -53,9 +60,9 @@ void VictoriaBigpipe_OnMapStart_NPC()
 
 static float fl_npc_basespeed;
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaBigpipe(client, vecPos, vecAng, ally);
+	return VictoriaBigpipe(client, vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaBigpipe < CClotBody
@@ -78,7 +85,6 @@ methodmap VictoriaBigpipe < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
 
 	public void PlayReloadSound() 
@@ -125,7 +131,7 @@ methodmap VictoriaBigpipe < CClotBody
 		}
 	}
 	
-	public VictoriaBigpipe(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaBigpipe(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaBigpipe npc = view_as<VictoriaBigpipe>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally,false));
 		
@@ -143,10 +149,24 @@ methodmap VictoriaBigpipe < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
+		bool IconOnly = StrContains(data, "icononly") != -1;
+		if(IconOnly)
+		{
+			func_NPCDeath[npc.index] = INVALID_FUNCTION;
+			func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
+			func_NPCThink[npc.index] = INVALID_FUNCTION;
+			
+			b_NpcForcepowerupspawn[npc.index] = 0;
+			i_RaidGrantExtra[npc.index] = 0;
+			b_DissapearOnDeath[npc.index] = true;
+			b_DoGibThisNpc[npc.index] = true;
+			SmiteNpcToDeath(npc.index);
+			return npc;
+		}
+
 		func_NPCDeath[npc.index] = view_as<Function>(VictoriaBigpipe_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaBigpipe_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VictoriaBigpipe_ClotThink);
-		
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -383,11 +403,6 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.m_iTarget = Enemy_I_See;
-				float RocketDamage = 100.0;
-				if(ZR_GetWaveCount()+1 > 12)
-					RocketDamage *= float(ZR_GetWaveCount()+1)*0.2;
-				if(ShouldNpcDealBonusDamage(npc.m_iTarget))
-					RocketDamage *= 1.0+(float(ZR_GetWaveCount()+1)*0.05);
 				float RocketSpeed = 1500.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
@@ -409,7 +424,8 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 					float SpeedReturn[3];
 					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
-					int RocketGet = npc.FireRocket(vecDest, RocketDamage, RocketSpeed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl", 1.2);
+					int RocketGet = npc.FireRocket(vecDest, 0.0, RocketSpeed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl", 1.2);
+					SDKHook(RocketGet, SDKHook_StartTouch, HEGrenade_StartTouch);
 					SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
@@ -486,5 +502,44 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 	else //enemy is too far away.
 	{
 		return 0;
+	}
+}
+
+static Action HEGrenade_StartTouch(int entity, int target)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		owner = 0;
+	int inflictor = h_ArrowInflictorRef[entity];
+	if(inflictor != -1)
+		inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+	if(inflictor == -1)
+		inflictor = owner;
+		
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, 146.0, _, _, true, _, false, _, HEGrenade);
+	ParticleEffectAt(ProjectileLoc, "ExplosionCore_MidAir", 1.0);
+	EmitSoundToAll(g_ExplosionSounds[GetRandomInt(0, sizeof(g_ExplosionSounds) - 1)], 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, -1, ProjectileLoc);
+	RemoveEntity(entity);
+	return Plugin_Handled;
+}
+
+static void HEGrenade(int entity, int victim, float damage, int weapon)
+{
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(GetTeam(entity) != GetTeam(victim))
+	{
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+		if(inflictor == -1)
+			inflictor = entity;
+		damage = 100.0;
+		if(ShouldNpcDealBonusDamage(victim))
+			damage *= 3.0;
+		SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);
 	}
 }

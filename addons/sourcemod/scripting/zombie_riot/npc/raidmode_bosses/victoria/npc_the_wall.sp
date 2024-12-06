@@ -37,6 +37,15 @@ static char g_RushSounds[][] = {
 	"vo/heavy_battlecry05.mp3"
 };
 
+static char g_RushHitSounds[][] = {
+	"weapons/demo_charge_hit_world1.wav",
+	"weapons/demo_charge_hit_world2.wav",
+	"weapons/demo_charge_hit_world3.wav",
+	"weapons/demo_charge_hit_flesh1.wav",
+	"weapons/demo_charge_hit_flesh2.wav",
+	"weapons/demo_charge_hit_flesh3.wav"
+};
+
 static char g_ExplodSounds[][] = {
 	"weapons/air_burster_explode1.wav",
 	"weapons/air_burster_explode2.wav",
@@ -111,6 +120,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_AdaptiveArmorSounds)); i++) { PrecacheSound(g_AdaptiveArmorSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RushSounds)); i++) { PrecacheSound(g_RushSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RushHitSounds)); i++) { PrecacheSound(g_RushHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_AngerSounds)); i++) { PrecacheSound(g_AngerSounds[i]); }
 	for (int i = 0; i < (sizeof(g_BotArrivedSounds)); i++) { PrecacheSound(g_BotArrivedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_ExplodSounds)); i++) { PrecacheSound(g_ExplodSounds[i]); }
@@ -194,6 +204,12 @@ methodmap Huscarls < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_RushSounds) - 1);
 		EmitSoundToAll(g_RushSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_RushSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayRushHitSound()
+	{
+		int sound = GetRandomInt(0, sizeof(g_RushHitSounds) - 1);
+		EmitSoundToAll(g_RushHitSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RushHitSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayExplodSound()
 	{
@@ -326,7 +342,7 @@ methodmap Huscarls < CClotBody
 			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
-		
+			//IDLE
 			npc.m_iState = 0;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.StartPathing();
@@ -391,42 +407,39 @@ methodmap Huscarls < CClotBody
 			npc.m_iChanged_WalkCycle = -1;
 
 			CPrintToChatAll("{lightblue}Huscarls{default}: You will not Pass ''Iron Gate''!");
-		}
-		//IDLE
-		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
-		if(RaidModeScaling < 55)
-		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
-		}
-		else
-		{
-			RaidModeScaling *= 0.38;
-		}
-		
-		float amount_of_people = float(CountPlayersOnRed());
-		if(amount_of_people > 12.0)
-		{
-			amount_of_people = 12.0;
-		}
-		amount_of_people *= 0.12;
-		
-		if(amount_of_people < 1.0)
-			amount_of_people = 1.0;
+			
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			if(RaidModeScaling < 55)
+			{
+				RaidModeScaling *= 0.19; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.38;
+			}
+			
+			float amount_of_people = float(CountPlayersOnRed());
+			if(amount_of_people > 12.0)
+			{
+				amount_of_people = 12.0;
+			}
+			amount_of_people *= 0.12;
+			
+			if(amount_of_people < 1.0)
+				amount_of_people = 1.0;
 
-		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-		{
-			RaidModeScaling *= 0.85;
+			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+			
+			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+			{
+				RaidModeScaling *= 0.85;
+			}
+			else if(ZR_GetWaveCount()+1 > 55)
+			{
+				RaidModeTime = GetGameTime(npc.index) + 220;
+				RaidModeScaling *= 0.65;
+			}
 		}
-		else if(ZR_GetWaveCount()+1 > 55)
-		{
-			RaidModeTime = GetGameTime(npc.index) + 220;
-			RaidModeScaling *= 0.65;
-		}
-		
-
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		npc.m_fbGunout = false;
@@ -436,7 +449,6 @@ methodmap Huscarls < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-	//	Weapon
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_sr3_punch/c_sr3_punch.mdl");
 		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
@@ -486,7 +498,6 @@ static void Clone_ClotThink(int iNPC)
 		return;
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
-	
 
 	switch(I_cant_do_this_all_day[npc.index])
 	{
@@ -1323,6 +1334,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					Delay_Attribute[npc.index] = gameTime + 1.0;
 					I_cant_do_this_all_day[npc.index] = 5;
 					CreateEarthquake(vOrigin, 0.5, 350.0, 16.0, 255.0);
+					npc.PlayRushHitSound();
 					SpecialAttack=true;
 				}
 				else if(npc.m_flHuscarlsRushDuration < gameTime)
@@ -1369,6 +1381,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 						flMyPos[0] = flMyPos_2[0];
 						flMyPos[1] = flMyPos_2[1];
 						PluginBot_Jump(npc.index, flMyPos);
+						ParticleEffectAt(vOrigin, "mvm_soldier_shockwave", 1.0);
 						Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, ToTheMoon);
 						SetEntityCollisionGroup(npc.index, 1);
 						npc.PlaySuperJumpSound();
@@ -1910,25 +1923,18 @@ static void Shield_Knockback(int entity, int victim, float damage, int weapon)
 		return;
 	Huscarls npc = view_as<Huscarls>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-	if(IsValidEntity(npc.index) && GetTeam(npc.index) != GetTeam(victim))
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
-		char classname[60];
-		GetEntityClassname(npc.index, classname, sizeof(classname));
-		if(!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
+		damage = 1.0 * RaidModeScaling;
+		if(damage<1.0)damage=1.0;
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_BULLET, -1, _, vecHit);
+		if(!IsInvuln(victim))
 		{
-			if(victim <= MaxClients)
-			{
-				damage = 1.0 * RaidModeScaling;
-				if(damage<1.0)damage=1.0;
-				SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_BULLET, -1, _, vecHit);
-				if(!IsInvuln(victim))
-				{
-					TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
-					Custom_Knockback(entity, victim, 70.0, true);
-				}
-				else Custom_Knockback(entity, victim, 140.0, true);
-			}
+			if(IsValidClient(victim))
+				TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+			Custom_Knockback(entity, victim, 70.0, true);
 		}
+		else Custom_Knockback(entity, victim, 140.0, true);
 	}
 }
 

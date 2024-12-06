@@ -47,7 +47,7 @@ void VictoriaHarbringer_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_harbringer");
 	strcopy(data.Icon, sizeof(data.Icon), "knight");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -55,9 +55,9 @@ void VictoriaHarbringer_OnMapStart_NPC()
 
 //static int i_ally_index;
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaHarbringer(client, vecPos, vecAng, ally);
+	return VictoriaHarbringer(client, vecPos, vecAng, ally, data);
 }
 
 /*
@@ -100,7 +100,7 @@ methodmap VictoriaHarbringer < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.6);
 	}
 
-	public VictoriaHarbringer(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaHarbringer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaHarbringer npc = view_as<VictoriaHarbringer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "1000", ally));
 		
@@ -120,6 +120,21 @@ methodmap VictoriaHarbringer < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		
+		bool IconOnly = StrContains(data, "icononly") != -1;
+		if(IconOnly)
+		{
+			func_NPCDeath[npc.index] = INVALID_FUNCTION;
+			func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
+			func_NPCThink[npc.index] = INVALID_FUNCTION;
+			
+			b_NpcForcepowerupspawn[npc.index] = 0;
+			i_RaidGrantExtra[npc.index] = 0;
+			b_DissapearOnDeath[npc.index] = true;
+			b_DoGibThisNpc[npc.index] = true;
+			SmiteNpcToDeath(npc.index);
+			return npc;
+		}
 		
 		func_NPCDeath[npc.index] = VictoriaHarbringer_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = VictoriaHarbringer_OnTakeDamage;
