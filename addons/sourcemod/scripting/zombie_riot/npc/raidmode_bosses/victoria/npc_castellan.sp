@@ -317,7 +317,7 @@ methodmap Castellan < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAirRaidDelay = 0.0;
 		npc.m_flTimeUntillAirStrike = GetGameTime() + 10.0;
-		npc.m_flTimeUntillNextSummonDrones = GetGameTime() + 10.0;
+		npc.m_flTimeUntillNextSummonDrones = GetGameTime() + 15.0;
 		npc.m_flTimeUntillNextSummonHardenerDrones = GetGameTime() + 13.5;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_iAmountProjectiles = 0;
@@ -988,7 +988,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_flDoingAnimation = gameTime + 0.5;	
 					Delay_Attribute[npc.index] = gameTime + 0.5;
 					I_cant_do_this_all_day[npc.index]=0;
-					npc.m_flTimeUntillNextSummonDrones = gameTime + 25.0;
+					npc.m_flTimeUntillNextSummonDrones = gameTime + 15.0;
 					npc.m_flTimeUntillNextSummonHardenerDrones += 2.0;
 					return 0;
 				}
@@ -1049,7 +1049,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_flDoingAnimation = gameTime + 0.5;	
 					Delay_Attribute[npc.index] = gameTime + 0.5;
 					I_cant_do_this_all_day[npc.index]=0;
-					npc.m_flTimeUntillNextSummonHardenerDrones = gameTime + 31.0;
+					npc.m_flTimeUntillNextSummonHardenerDrones = gameTime + 20.0;
 					npc.m_flTimeUntillNextSummonDrones +=  2.0;
 					return 0;
 				}
@@ -1083,6 +1083,10 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				{
 					npc.i_GunMode = 1;
 					npc.m_iAttacksTillReload += 8;
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					npc.m_bisWalking = false;
+					npc.m_iChanged_WalkCycle = 0;
 					I_cant_do_this_all_day[npc.index]=2;
 				}
 			}
