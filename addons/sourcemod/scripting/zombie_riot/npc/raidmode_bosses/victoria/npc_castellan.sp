@@ -1071,14 +1071,18 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 1.0;	
 				Delay_Attribute[npc.index] = gameTime + 1.0;
+				I_cant_do_this_all_day[npc.index]=1;
+			}
+			case 1:
+			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					npc.i_GunMode = 1;
 					npc.m_iAttacksTillReload += 8;
-					I_cant_do_this_all_day[npc.index]=1;
+					I_cant_do_this_all_day[npc.index]=2;
 				}
 			}
-			case 1:
+			case 2:
 			{
 				npc.AddActivityViaSequence("layer_tuant_vehicle_tank_end");
 				npc.m_flAttackHappens = 0.0;
@@ -1097,10 +1101,10 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_bPathing = false;
 					npc.m_bisWalking = false;
 					Delay_Attribute[npc.index] = gameTime + 20.0;
-					I_cant_do_this_all_day[npc.index]=2;
+					I_cant_do_this_all_day[npc.index]=3;
 				}
 			}
-			case 2:
+			case 3:
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{

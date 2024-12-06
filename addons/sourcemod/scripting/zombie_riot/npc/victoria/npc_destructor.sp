@@ -176,14 +176,19 @@ public void VictoriaDestructor_ClotThink(int iNPC)
 			float radius = 250.0;
 			if(NpcStats_VictorianCallToArms(npc.index))
 			{
-				radius *= 2.0;
+				radius *= 1.5;
+			}
+			float pradius = 250.0;
+			if(NpcStats_VictorianCallToArms(npc.index))
+			{
+				pradius *= 1.5;
 			}
 
 			npc.PlayExplosionSound();
-
-			spawnRing_Vectors(vecMe, radius, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 100, 150, 255, 175, 1, 0.5, 6.0, 0.1, 1, 640.0);
 			
-			Explode_Logic_Custom(75.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, VictoriaDestructor_ExplodePost);
+			spawnRing_Vectors(vecMe, pradius, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 100, 150, 255, 175, 1, 0.5, 6.0, 0.1, 1, 640.0);
+			
+			Explode_Logic_Custom(35.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, VictoriaDestructor_ExplodePost);
 		}
 	}
 	else
