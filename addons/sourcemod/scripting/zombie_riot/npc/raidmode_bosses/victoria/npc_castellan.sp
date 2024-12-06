@@ -1245,7 +1245,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.FaceTowards(vecTarget, 20000.0);
 				float SpeedProjectile = 1000.0;
 				float ProjectileDamage = 40.0;
-				int Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_red");
 				int Projectile = npc.FireRocket(vecTarget, ProjectileDamage * RaidModeScaling, SpeedProjectile ,"models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 
 				ProjectileDamage *= 0.35;
