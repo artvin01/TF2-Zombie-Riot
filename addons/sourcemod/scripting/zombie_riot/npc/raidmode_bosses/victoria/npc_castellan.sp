@@ -1244,8 +1244,9 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.PlayGunSound();
 				npc.FaceTowards(vecTarget, 20000.0);
 				float SpeedProjectile = 1000.0;
-				float ProjectileDamage = 400.0;
+				float ProjectileDamage = 40.0;
 				int Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_red");
+				int Projectile = npc.FireRocket(vecTarget, ProjectileDamage * RaidModeScaling, SpeedProjectile ,"models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 
 				ProjectileDamage *= 0.35;
 				SpeedProjectile *= 0.65;
@@ -1253,9 +1254,9 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 
 				float vAngles[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
-				for(int LoopDo = 1 ; LoopDo <= 2; LoopDo++)
+				for(int LoopDo = 1 ; LoopDo <= 4; LoopDo++)
 				{
-					Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_blue");
+					Projectile = npc.FireRocket(vecTarget, ProjectileDamage * RaidModeScaling, SpeedProjectile ,"models/weapons/w_models/w_rocket.mdl");
 					float vAnglesProj[3];
 					GetEntPropVector(Projectile, Prop_Data, "m_angRotation", vAnglesProj);
 					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
@@ -1267,6 +1268,12 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 
 						case 2:
 							vAnglesProj[1] += 30.0;
+							
+						case 1:
+							vAnglesProj[2] -= 30.0;
+
+						case 2:
+							vAnglesProj[2] += 30.0;
 					}
 					
 					vecForward[0] = Cosine(DegToRad(vAnglesProj[0]))*Cosine(DegToRad(vAnglesProj[1]))*SpeedProjectile;
@@ -1285,6 +1292,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_iTarget);			// float AnglesInitiate[3]);
 					
 				}
+				npc.m_iAttacksTillReload -= 1;
 			}
 		}
 	}
@@ -1375,7 +1383,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 						npc.PlayMeleeSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
 						
-						float time = 0.1;
+						float time = 2.0;
 						if(NpcStats_VictorianCallToArms(npc.index))
 						{
 							time *= 0.75;
