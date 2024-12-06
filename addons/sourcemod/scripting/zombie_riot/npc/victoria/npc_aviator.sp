@@ -235,10 +235,10 @@ public void Aviator_ClotThink(int iNPC)
 			SetEntProp(entity, Prop_Data, "m_iHealth", Health);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", Health);
 			
-			fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index] * 0.75;
-			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index] * 0.65;
-			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 0.75;
-			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 3.0;
+			fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
 			b_thisNpcIsABoss[entity] = b_thisNpcIsABoss[npc.index];
 			b_StaticNPC[entity] = b_StaticNPC[npc.index];
 			view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;

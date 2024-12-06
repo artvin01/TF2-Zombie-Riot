@@ -246,7 +246,7 @@ static void ClotThink(int iNPC)
 			float Cooldown = 5.0;
 			if(NpcStats_VictorianCallToArms(npc.index))
 			{
-				Cooldown *= 0.5;
+				Cooldown *= 0.75;
 			}
 			npc.m_flNextRangedAttack = gameTime + Cooldown;
 

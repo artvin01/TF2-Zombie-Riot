@@ -1087,12 +1087,15 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			case 2:
 			{
 				npc.AddActivityViaSequence("layer_tuant_vehicle_tank_end");
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
-				npc.m_flDoingAnimation = gameTime + 0.25;	
-				Delay_Attribute[npc.index] = gameTime + 0.25;
+				npc.m_flDoingAnimation = gameTime + 0.34;	
+				Delay_Attribute[npc.index] = gameTime + 0.35;
 				I_cant_do_this_all_day[npc.index]=3;
 			}
 			case 3:
@@ -1105,6 +1108,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					b_ThisEntityIgnored[npc.index] = true;
 					npc.m_bPathing = false;
 					npc.m_bisWalking = false;
+					NPC_StopPathing(npc.index);
+					npc.m_iChanged_WalkCycle = 0;
 					Delay_Attribute[npc.index] = gameTime + 20.0;
 					I_cant_do_this_all_day[npc.index]=4;
 				}	
@@ -1117,6 +1122,9 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					b_DoNotUnStuck[npc.index] = false;
 					b_NoKnockbackFromSources[npc.index] = false;
 					b_ThisEntityIgnored[npc.index] = false;
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					npc.m_bisWalking = false;
 					npc.AddActivityViaSequence("layer_taunt_maggots_condolence");
 					npc.m_flAttackHappens = 0.0;
 					npc.SetCycle(0.01);

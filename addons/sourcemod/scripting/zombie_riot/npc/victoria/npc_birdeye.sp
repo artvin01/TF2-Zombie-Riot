@@ -803,6 +803,11 @@ void VictoriaBirdeye_SpawnAllyDuo(int ref)
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
+			b_thisNpcIsABoss[spawn_index] = b_thisNpcIsABoss[npc.index];
 		}
 		if(spawn_index2 > MaxClients)
 		{
@@ -811,6 +816,11 @@ void VictoriaBirdeye_SpawnAllyDuo(int ref)
 			NpcAddedToZombiesLeftCurrently(spawn_index2, true);
 			SetEntProp(spawn_index2, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index2, Prop_Data, "m_iMaxHealth", maxhealth);
+			fl_Extra_MeleeArmor[spawn_index2] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[spawn_index2] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[spawn_index2] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[spawn_index2] = fl_Extra_Damage[npc.index];
+			b_thisNpcIsABoss[spawn_index2] = b_thisNpcIsABoss[npc.index];
 		}
 	}
 }
