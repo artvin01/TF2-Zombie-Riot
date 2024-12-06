@@ -1555,12 +1555,14 @@ static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
 		if(IsValidEntity(RocketGet))
 		{
 			for(int r=1; r<=5; r++)
-			{
-				DataPack pack2;
-				CreateDataTimer(2.5, WhiteflowerTank_Rocket_Stand, pack2, TIMER_FLAG_NO_MAPCHANGE);
-				pack2.WriteCell(EntIndexToEntRef(RocketGet));
-				pack2.WriteCell(EntIndexToEntRef(enemy));
-			}
+            { 
+                DataPack pack2;
+                CreateDataTimer(2.5 * float(r), WhiteflowerTank_Rocket_Stand, pack2, TIMER_FLAG_NO_MAPCHANGE);
+                pack2.WriteCell(EntIndexToEntRef(RocketGet));
+                pack2.WriteCell(EntIndexToEntRef(enemy));
+
+            }
+			CreateTimer(2.5 * 7.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		npc.FaceTowards(vecTarget, 99999.0);
 	}
