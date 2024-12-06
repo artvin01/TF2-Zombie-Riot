@@ -6,55 +6,37 @@ static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_02.wav"
 };
 static const char g_HurtSounds[][] = {
-	"vo/sniper_painsharp01.mp3",
-	"vo/sniper_painsharp02.mp3",
-	"vo/sniper_painsharp03.mp3",
-	"vo/sniper_painsharp04.mp3",
+	"vo/soldier_painsharp01.mp3",
+	"vo/soldier_painsharp02.mp3",
+	"vo/soldier_painsharp03.mp3",
+	"vo/soldier_painsharp04.mp3",
+	"vo/soldier_painsharp05.mp3",
+	"vo/soldier_painsharp06.mp3",
+	"vo/soldier_painsharp07.mp3",
+	"vo/soldier_painsharp08.mp3"
 };
 static const char g_IdleAlertedSounds[][] = {
-	"vo/sniper_specialcompleted01.mp3",
-	"vo/sniper_specialcompleted02.mp3",
-	"vo/sniper_specialcompleted03.mp3",
-	"vo/sniper_specialcompleted04.mp3",
-	"vo/sniper_specialcompleted05.mp3",
-	"vo/sniper_specialcompleted06.mp3",
-	"vo/sniper_specialcompleted07.mp3",
-	"vo/sniper_specialcompleted08.mp3",
-	"vo/sniper_specialcompleted09.mp3",
-	"vo/sniper_specialcompleted10.mp3",
-	"vo/sniper_specialcompleted11.mp3",
-	"vo/sniper_specialcompleted12.mp3",
-	"vo/sniper_specialcompleted13.mp3",
-	"vo/sniper_specialcompleted14.mp3",
-	"vo/sniper_specialcompleted15.mp3",
-	"vo/sniper_specialcompleted17.mp3",
-	"vo/sniper_specialcompleted18.mp3",
-	"vo/sniper_specialcompleted19.mp3",
-	"vo/sniper_specialcompleted21.mp3",
-	"vo/sniper_specialcompleted22.mp3",
-	"vo/sniper_specialcompleted23.mp3",
-	"vo/sniper_specialcompleted24.mp3",
-	"vo/sniper_specialcompleted25.mp3",
-	"vo/sniper_specialcompleted26.mp3",
-	"vo/sniper_specialcompleted27.mp3",
-	"vo/sniper_specialcompleted28.mp3",
-	"vo/sniper_specialcompleted29.mp3",
-	"vo/sniper_specialcompleted30.mp3",
-	"vo/sniper_specialcompleted31.mp3",
-	"vo/sniper_specialcompleted32.mp3",
-	"vo/sniper_specialcompleted33.mp3",
-	"vo/sniper_specialcompleted34.mp3",
-	"vo/sniper_specialcompleted35.mp3",
-	"vo/sniper_specialcompleted36.mp3",
-	"vo/sniper_specialcompleted37.mp3",
-	"vo/sniper_specialcompleted38.mp3",
-	"vo/sniper_specialcompleted39.mp3",
-	"vo/sniper_specialcompleted40.mp3",
-	"vo/sniper_specialcompleted41.mp3",
-	"vo/sniper_specialcompleted42.mp3",
-	"vo/sniper_specialcompleted44.mp3",
-	"vo/sniper_specialcompleted45.mp3",
-	"vo/sniper_specialcompleted46.mp3",
+	"vo/taunts/soldier_taunts01.mp3",
+	"vo/taunts/soldier_taunts02.mp3",
+	"vo/taunts/soldier_taunts03.mp3",
+	"vo/taunts/soldier_taunts04.mp3",
+	"vo/taunts/soldier_taunts05.mp3",
+	"vo/taunts/soldier_taunts06.mp3",
+	"vo/taunts/soldier_taunts07.mp3",
+	"vo/taunts/soldier_taunts08.mp3",
+	"vo/taunts/soldier_taunts09.mp3",
+	"vo/taunts/soldier_taunts10.mp3",
+	"vo/taunts/soldier_taunts11.mp3",
+	"vo/taunts/soldier_taunts12.mp3",
+	"vo/taunts/soldier_taunts13.mp3",
+	"vo/taunts/soldier_taunts14.mp3",
+	"vo/taunts/soldier_taunts15.mp3",
+	"vo/taunts/soldier_taunts16.mp3",
+	"vo/taunts/soldier_taunts17.mp3",
+	"vo/taunts/soldier_taunts18.mp3",
+	"vo/taunts/soldier_taunts19.mp3",
+	"vo/taunts/soldier_taunts20.mp3",
+	"vo/taunts/soldier_taunts21.mp3",
 };
 static const char g_RangedAttackSounds[][] = {
 	"weapons/capper_shoot.wav",
@@ -62,12 +44,12 @@ static const char g_RangedAttackSounds[][] = {
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/machete_swing.wav",
 };
-static const char g_MG42AttackSounds[][] = {
+static const char g_RocketAttackSounds[][] = {
 	"weapons/rpg/rocketfire1.wav",
 };
 static const char g_MeleeHitSounds[] = "weapons/cbar_hitbod1.wav";
 static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
-static const char g_AngerReaction[] = "vo/sniper_specialcompleted43.mp3";
+static const char g_AngerReaction[] = "vo/compmode/cm_soldier_pregamefirst_rare_06.mp3";
 static const char g_HomerunHitSounds[] = "mvm/melee_impacts/bat_baseball_hit_robo01.wav";
 static const char g_HomerunSounds[][]= {
 	"vo/sniper_jaratetoss02/mp3",
@@ -129,7 +111,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MG42AttackSounds)); i++) { PrecacheSound(g_MG42AttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RocketAttackSounds)); i++) { PrecacheSound(g_RocketAttackSounds[i]); }
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
 	PrecacheSound(g_AngerReaction);
@@ -239,7 +221,7 @@ methodmap Castellan < CClotBody
 	}
 	public void PlayGunSound()
 	{
-		EmitSoundToAll(g_MG42AttackSounds[GetRandomInt(0, sizeof(g_MG42AttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
+		EmitSoundToAll(g_RocketAttackSounds[GetRandomInt(0, sizeof(g_RocketAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -646,83 +628,35 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
-	
-	/*
-	if(npc.m_flTimeUntillGunReload < gameTime)
-	{
-		npc.m_iAttacksTillReload =  RoundToNearest(float(CountPlayersOnRed(2)) * 5); 
-		npc.m_flTimeUntillGunReload = 30.0 + gameTime;
-	}
-	*/
 	if(npc.m_bFUCKYOU)
 	{
 		switch(I_cant_do_this_all_day[npc.index])
 		{
 			case 0:
 			{
-				/*
-				if(npc.m_iChanged_WalkCycle != 5)
-				{
-					ResetCastellanWeapon(npc, 2);
-					npc.m_bisWalking = true;
-					npc.m_iChanged_WalkCycle = 5;
-					npc.SetActivity("ACT_MP_RUN_MELEE");
-					npc.StartPathing();
-				}
-				*/
-				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
-				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				b_NpcIsInvulnerable[npc.index] = true;
-				npc.AddActivityViaSequence("layer_taunt_most_wanted");
+				npc.AddActivityViaSequence("layer_tauntcan_it");
 				npc.m_flAttackHappens = 0.0;
-				npc.SetCycle(0.01);
+				npc.SetCycle(0.5);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
-				npc.m_flDoingAnimation = gameTime + 0.75;	
-				Delay_Attribute[npc.index] = gameTime + 0.75;
+				npc.m_flDoingAnimation = gameTime + 1.5;	
+				Delay_Attribute[npc.index] = gameTime + 1.5;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
 			case 1:
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
-					npc.AddActivityViaSequence("layer_taunt_most_wanted");
-					npc.m_flAttackHappens = 0.0;
-					npc.SetCycle(0.3);
-					npc.SetPlaybackRate(0.0);
-					npc.m_iChanged_WalkCycle = 0;
-					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
-					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
-					npc.m_bisWalking = false;
-					npc.m_flDoingAnimation = gameTime + 30.0;	
-					Delay_Attribute[npc.index] = gameTime + 30.0;
-					I_cant_do_this_all_day[npc.index]=2;
-				}
-			}
-			case 2:
-			{
-				if(Delay_Attribute[npc.index] < gameTime)
-				{
 					npc.PlayAngerSound();
 					npc.PlayAngerReaction();
-					npc.AddActivityViaSequence("layer_taunt_most_wanted");
-					npc.m_flAttackHappens = 0.0;
-					npc.SetCycle(0.8);
-					npc.SetPlaybackRate(1.0);
-					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_iChanged_WalkCycle = 0;
 					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
-					I_cant_do_this_all_day[npc.index]=0;
-					//npc.m_flTimeUntillDroneSniperShot += 4.0;
-					//npc.m_flTimeUntillNextSummonDrones += 4.0;
-					//npc.m_flNextRangedSpecialAttackHappens += 4.0;
-					npc.m_bFUCKYOU=false;
 					b_NpcIsInvulnerable[npc.index] = false;
+					I_cant_do_this_all_day[npc.index]=0;
+					npc.m_bFUCKYOU = false;
 				}
 			}
 		}
@@ -795,7 +729,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	float ratio = float(health) / float(maxhealth);
-	if(ratio<0.33 || (float(health)-damage)<(maxhealth*0.3))
+	if(ratio<0.25 || (float(health)-damage)<(maxhealth*0.3))
 	{
 		if(!npc.m_fbRangedSpecialOn)
 		{
