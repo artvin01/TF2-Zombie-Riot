@@ -63,7 +63,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/machete_swing.wav",
 };
 static const char g_MG42AttackSounds[][] = {
-	"weapons/csgo_awp_shoot.wav",
+	"weapons/rpg/rocketfire1.wav",
 };
 static const char g_MeleeHitSounds[] = "weapons/cbar_hitbod1.wav";
 static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
