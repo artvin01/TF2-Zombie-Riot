@@ -83,12 +83,12 @@ static int i_AmountProjectiles[MAXENTITIES];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 
 static int Temp_Target[MAXENTITIES];
-
+/*
 static int gLaser1;
 static int gRedPoint;
 static int g_BeamIndex_heal;
 static int g_HALO_Laser;
-
+*/
 void Castellan_OnMapStart_NPC()
 {
 	NPCData data;
@@ -125,10 +125,10 @@ static void ClotPrecache()
 	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
 	
 	PrecacheModel(LASERBEAM);
-	gRedPoint = PrecacheModel("sprites/redglow1.vmt");
-	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
-	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
-	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
+//	gRedPoint = PrecacheModel("sprites/redglow1.vmt");
+//	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
+//	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+//	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -1023,7 +1023,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				{
 					
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-					pos[3] += 50.0;
+					pos[2] += 50.0;
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
 					int health = ReturnEntityMaxHealth(npc.index) / 30;
@@ -1096,7 +1096,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_iChanged_WalkCycle = 0;
 
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-					pos[3] += 50.0;
+					pos[2] += 50.0;
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
 					int health = ReturnEntityMaxHealth(npc.index) / 25;

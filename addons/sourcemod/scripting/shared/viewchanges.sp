@@ -528,7 +528,7 @@ void MedicAdjustModel(int client)
 		{
 			case 211:
 			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[entity])
 				{
 					RemoveMedicBackpack = false;
 					break;

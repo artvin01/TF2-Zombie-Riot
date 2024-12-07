@@ -329,7 +329,7 @@ methodmap Karlas < CClotBody
 	{
 		public get()		 
 		{ 
-			int returnint = EntRefToEntIndex(i_particle_effects[this.index][0]);
+			int returnint = EntRefToEntIndex(i_particle_effects[this.index]);
 			if(returnint == -1)
 			{
 				return 0;
@@ -341,11 +341,11 @@ methodmap Karlas < CClotBody
 		{
 			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
 			{
-				i_particle_effects[this.index][0] = INVALID_ENT_REFERENCE;
+				i_particle_effects[this.index] = INVALID_ENT_REFERENCE;
 			}
 			else
 			{
-				i_particle_effects[this.index][0] = EntIndexToEntRef(iInt);
+				i_particle_effects[this.index] = EntIndexToEntRef(iInt);
 			}
 		}
 	}

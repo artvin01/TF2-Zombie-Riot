@@ -1318,11 +1318,11 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-					float Damage = 50.0;
+					float DamageDo = 50.0;
 					float Range = 400.0;
 					ParticleEffectAt(WorldSpaceVec, "mvm_soldier_shockwave", 0.5);
 					CreateEarthquake(WorldSpaceVec, 1.0, Range * 1.25, 16.0, 255.0);
-					Explode_Logic_Custom(Damage * RaidModeScaling, 0, npc.index, -1, _, Range, 1.0, 0.75, true, 20);
+					Explode_Logic_Custom(DamageDo * RaidModeScaling, 0, npc.index, -1, _, Range, 1.0, 0.75, true, 20);
 					I_cant_do_this_all_day[npc.index] = 0;
 					Delay_Attribute[npc.index] = gameTime + 0.2;
 					if(NpcStats_VictorianCallToArms(npc.index))
@@ -1846,8 +1846,7 @@ static bool Victoria_Support(Huscarls npc)
 			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
-			if(HasEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID"))
-				SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
+			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
 		}
 	}
@@ -1932,18 +1931,7 @@ static void Huscarls_Shield_StartTouch(DataPack pack)
 	int projectile = -1;
 	while((projectile = FindEntityByClassname(projectile, "tf_projectile_*")) != INVALID_ENT_REFERENCE)
 	{
-		int enemy = -1;
-		if(HasEntProp(projectile, Prop_Send, "m_hOriginalLauncher")) 
-			enemy=GetEntPropEnt(projectile, Prop_Send, "m_hOriginalLauncher");
-		else if(HasEntProp(projectile, Prop_Send, "m_hOwnerprojectile"))
-			enemy=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerprojectile");
-		else if(HasEntProp(projectile, Prop_Data, "m_hOwnerEntity"))
-			enemy=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerEntity");
-		else
-			continue;
-		int EnemyTeam=TFTeam_Red;
-		if(IsValidEntity(enemy))
-			 EnemyTeam = GetTeam(enemy);
+		EnemyTeam = GetTeam(projectile);
 		if(team!=EnemyTeam)
 		{
 			GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", position2);

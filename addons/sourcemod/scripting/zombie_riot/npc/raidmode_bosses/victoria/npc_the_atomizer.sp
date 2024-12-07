@@ -1661,7 +1661,7 @@ static Action Atomizer_Rocket_Particle_Bounce(int entity, int owner)
 	GetVectorAngles(vVelocity, TempANG);
 	TeleportEntity(entity, NULL_VECTOR, TempANG, vVelocity);
 
-	Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, NOTME, entity);
+	Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, NotSameEntity, entity);
 	if(!TR_DidHit(trace))
 	{
 		trace.Close();
@@ -1709,7 +1709,7 @@ static Action Atomizer_Rocket_Particle_Bounce(int entity, int owner)
 	return Plugin_Handled;
 }
 
-static bool NOTME(int entity, int contentsMask, any data)
+static bool NotSameEntity(int entity, int contentsMask, any data)
 {
 	return entity != data;
 }
@@ -1877,8 +1877,7 @@ static bool Victoria_Support(Atomizer npc)
 			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
-			if(HasEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID"))
-				SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
+			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
 		}
 	}

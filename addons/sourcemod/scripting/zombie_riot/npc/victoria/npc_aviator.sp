@@ -245,12 +245,12 @@ public void Aviator_ClotThink(int iNPC)
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
-				Delay_Attribute[npc.index] = gameTime + 2.0;
+				Delay_Attribute[npc.index] = GetGameTime(npc.index) + 2.0;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
 			case 1:
 			{
-				if(Delay_Attribute[npc.index] < gameTime)
+				if(Delay_Attribute[npc.index] < GetGameTime(npc.index))
 				{
 					npc.PlaySuitUpSound();
 					int Health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))* 1.5);	

@@ -267,7 +267,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 				{
 					for(int ii=1; ii<=ISVOLI; ii++)
 					{
-						switch(GetRandomInt(1, 8))
+						switch(GetRandomInt(1, 9))
 						{
 							case 1:
 							{
@@ -301,7 +301,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 							{
 								VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",35000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
-							case 8:
+							case 9:
 							{
 								VictoriaRadiomastSpawnEnemy(npc.index,"npc_destructor",35000,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
 							}
