@@ -50,12 +50,12 @@ void AgentJohnson_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	PrecacheSoundCustom("#zombiesurvival/matrix/navras.mp3");
 	PrecacheModel("models/player/spy.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Agent Johnson");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_johnson");
 	strcopy(data.Icon, sizeof(data.Icon), "matrix_agent_johnson");
+	PrecacheSound("#zombiesurvival/matrix/navras.mp3");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Matrix;
@@ -179,7 +179,7 @@ methodmap AgentJohnson < CClotBody
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/navras.mp3");
 		music.Time = 181;
 		music.Volume = 2.0;
-		music.Custom = true;
+		music.Custom = false;
 		strcopy(music.Name, sizeof(music.Name), "Navras");
 		strcopy(music.Artist, sizeof(music.Artist), "Juno Reactor");
 		Music_SetRaidMusic(music);

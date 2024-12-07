@@ -52,7 +52,7 @@ void AgentThompson_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	PrecacheSoundCustom("#zombiesurvival/matrix/furiousangels.mp3");
+	PrecacheSound("#zombiesurvival/matrix/furiousangels.mp3");
 	PrecacheSound("weapons/physgun_off.wav");
 	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
@@ -167,7 +167,7 @@ methodmap AgentThompson < CClotBody
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/furiousangels.mp3");
 		music.Time = 161;
 		music.Volume = 2.0;
-		music.Custom = true;
+		music.Custom = false;
 		strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
 		strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");
 		Music_SetRaidMusic(music);
