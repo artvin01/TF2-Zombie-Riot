@@ -669,7 +669,7 @@ static void Internal_ClotThink(int iNPC)
 	npc.m_flSpeed = 300.0+(((FTL[npc.index]-(RaidModeTime - GetGameTime()))/FTL[npc.index])*150.0);
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
-		npc.m_flMeleeArmor = 0.33;
+		npc.m_flMeleeArmor = 0.3696;
 		npc.m_flRangedArmor = 0.33;
 		int MaxHealth = RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")*1.25);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth);

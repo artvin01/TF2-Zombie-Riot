@@ -304,7 +304,7 @@ methodmap Harrison < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_bDissapearOnDeath = true;
-		npc.m_flMeleeArmor = 1.0;
+		npc.m_flMeleeArmor = 1.25;
 		
 		OverrideOwner[npc.index] = -1;
 		bool CloneDo=false;
@@ -626,7 +626,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
+	if(RaidBossActive != INVALID_ENT_REFERENCE && IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
