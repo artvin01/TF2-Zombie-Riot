@@ -283,6 +283,10 @@ static void ClotThink(int iNPC)
 	if((!IsValidAlly(npc.index, GetClosestAlly(npc.index)) && !ISVOLI[npc.index] && !IsValidAlly(npc.index, OverrideAlly[npc.index]))
 	|| (gameTime > npc.m_flAttackHappens && Limit[npc.index]))
 	{
+		b_NpcForcepowerupspawn[npc.index] = 0;
+		i_RaidGrantExtra[npc.index] = 0;
+		b_DissapearOnDeath[npc.index] = true;
+		b_DoGibThisNpc[npc.index] = true;
 		SmiteNpcToDeath(npc.index);
 		return;
 	}
@@ -332,6 +336,10 @@ static void ClotThink(int iNPC)
 			int health = GetEntProp(npc.index, Prop_Data, "m_iHealth")-maxhealth;
 			if(health<=0)
 			{
+				b_NpcForcepowerupspawn[npc.index] = 0;
+				i_RaidGrantExtra[npc.index] = 0;
+				b_DissapearOnDeath[npc.index] = true;
+				b_DoGibThisNpc[npc.index] = true;
 				SmiteNpcToDeath(npc.index);
 				return;
 			}
