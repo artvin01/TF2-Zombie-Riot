@@ -4038,7 +4038,7 @@
 	}
 	"Victoria Raid Desc"
 	{
-		"en" "(11) You went to ruins of Victoria."
+		"en" "(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
    }
 	"Ability already Active"
 	{
