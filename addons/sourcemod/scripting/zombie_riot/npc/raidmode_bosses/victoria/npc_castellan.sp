@@ -708,7 +708,7 @@ static void Internal_ClotThink(int iNPC)
 				TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
 			}
 		}
-		npc.PlayTeleportSound();
+		npc.PlayDeathSound();
 		BlockLoseSay = true;
 		YaWeFxxked[npc.index] = true;
 	}
