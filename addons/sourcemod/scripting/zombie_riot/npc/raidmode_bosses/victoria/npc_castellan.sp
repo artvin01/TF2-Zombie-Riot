@@ -1269,6 +1269,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.m_flTimeUntillNextSummonDrones +=  12.0;
 				npc.m_flTimeUntillNextSummonHardenerDrones += 12.0;
 				npc.m_flTimeUntillHomingStrike += 12.0;
+				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
+				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
 			}
 			case 1:
 			{
