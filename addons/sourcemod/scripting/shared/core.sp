@@ -1773,6 +1773,7 @@ public void OnMapStart()
 	PrecacheSound("ambient/explosions/explode_3.wav");
 	PrecacheSound("ui/medic_alert.wav");
 	PrecacheSound("weapons/drg_wrench_teleport.wav");
+	PrecacheSound("weapons/medigun_no_target.wav");
 
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");

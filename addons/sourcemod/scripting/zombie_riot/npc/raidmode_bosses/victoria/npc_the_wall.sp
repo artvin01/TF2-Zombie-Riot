@@ -856,7 +856,7 @@ static void Internal_ClotThink(int iNPC)
 					if(Delay_Attribute[npc.index] < gameTime)
 					{
 						b_NpcIsInvulnerable[npc.index] = false;
-						f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+						f_VictorianCallToArms[npc.index] = GetGameTime(npc.index) + 999.0;
 						MyGundammmmmm[npc.index]=false;
 						I_cant_do_this_all_day[npc.index] = 0;
 					}
@@ -1815,7 +1815,7 @@ static int Huscarls_Get_HighDMGType(int entity)
 
 static bool Victoria_Support(Huscarls npc)
 {
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	if(Vs_DelayTime[npc.index] > GameTime)
 		return false;
 	Vs_DelayTime[npc.index] = GameTime + 0.1;

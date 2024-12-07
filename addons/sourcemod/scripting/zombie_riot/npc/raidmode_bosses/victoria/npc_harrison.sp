@@ -346,13 +346,13 @@ methodmap Harrison < CClotBody
 			npc.m_bFUCKYOU = false;
 			I_cant_do_this_all_day[npc.index] = 0;
 			npc.i_GunMode = 0;
-			npc.m_flTimeUntillNextRailgunShots = GetGameTime() + 22.5;
+			npc.m_flTimeUntillNextRailgunShots = GetGameTime(npc.index) + 22.5;
 			npc.m_flTimeUntillSummonRocket = 0.0;
 			npc.m_flNextRangedAttack = 0.0;
 			npc.m_flAirRaidDelay = 0.0;
-			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
-			npc.m_flTimeUntillDroneSniperShot = GetGameTime() + 5.0;
-			npc.m_flTimeUntillGunReload = GetGameTime() + 12.5;
+			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 10.0;
+			npc.m_flTimeUntillDroneSniperShot = GetGameTime(npc.index) + 5.0;
+			npc.m_flTimeUntillGunReload = GetGameTime(npc.index) + 12.5;
 			npc.m_iOverlordComboAttack = 0;
 			npc.m_iAmountProjectiles = 0;
 			npc.m_iAttacksTillReload = 0;
@@ -360,7 +360,7 @@ methodmap Harrison < CClotBody
 			npc.m_fbRangedSpecialOn = false;
 			AirRaidStart[npc.index] = false;
 			Zero(b_said_player_weaponline);
-			fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
+			fl_said_player_weaponline_time[npc.index] = GetGameTime(npc.index) + GetRandomFloat(0.0, 5.0);
 			Vs_RechargeTimeMax[npc.index] = 20.0;
 			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
 			
@@ -732,7 +732,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.SetPlaybackRate(1.0);
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_iChanged_WalkCycle = 0;
-					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+					f_VictorianCallToArms[npc.index] = GetGameTime(npc.index) + 999.0;
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flTimeUntillDroneSniperShot += 4.0;
 					npc.m_flTimeUntillNextRailgunShots += 4.0;
@@ -1652,7 +1652,7 @@ static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
 
 static bool Victoria_Support(Harrison npc)
 {
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	if(Vs_DelayTime[npc.index] > GameTime)
 		return false;
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
