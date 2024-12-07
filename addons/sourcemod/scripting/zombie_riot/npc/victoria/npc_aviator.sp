@@ -64,7 +64,7 @@ void Aviator_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Victoria Aviator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aviator");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_aviator");
-	data.IconCustom = false;
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
