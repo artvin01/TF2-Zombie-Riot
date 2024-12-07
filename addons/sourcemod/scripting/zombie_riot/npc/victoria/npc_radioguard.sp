@@ -269,7 +269,7 @@ void Victorian_RadioguardSelfDefense(Victorian_Radioguard npc, float gameTime)
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 4;
 			npc.SetActivity("ACT_MP_RUN_PRIMARY");
-			npc.m_flSpeed = 250.0;
+			npc.m_flSpeed = 255.0;
 			npc.StartPathing();
 		}
 		return;
