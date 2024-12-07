@@ -458,6 +458,7 @@
 	"Victorian Radiomast Is Here!"
 	{
 		"en"	"Victorian Radiomast Is Here! Break this to end the wave"
+		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"
 	}
 	"Atomizer Arrived"
 	{
