@@ -618,11 +618,6 @@ void NPC_ConfigSetup()
 	VictoriaRadiomast_OnMapStart_NPC();
 	VictoriaRepair_OnMapStart_NPC();
 	Victorian_Radioguard_OnMapStart_NPC();
-	VictorianDroneFragments_MapStart();
-	VictorianDroneAnvil_MapStart();
-	VictorianFactory_MapStart();
-	Victorian_TacticalProtector_OnMapStart_NPC();
-	Victorian_Tacticalunit_OnMapStart_NPC();
 
 //raid
 	Atomizer_OnMapStart_NPC();
@@ -1849,9 +1844,3 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/matrix/raids/npc_agentthompson.sp"
 #include "zombie_riot/npc/matrix/raids/npc_twins.sp"
 #include "zombie_riot/npc/matrix/raids/npc_agent_smith.sp"
-
-#include "zombie_riot/npc/victoria/npc_victorian_factory.sp"
-#include "zombie_riot/npc/victoria/npc_victorian_fragments.sp"
-#include "zombie_riot/npc/victoria/npc_victorian_moru.sp"
-#include "zombie_riot/npc/victoria/npc_victoria_tacticalunit.sp"
-#include "zombie_riot/npc/victoria/npc_victoria_tacticalprotector.sp"
