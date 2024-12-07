@@ -399,7 +399,7 @@ methodmap Castellan < CClotBody
 
 		SetGlobalTransTarget(client);
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_fireaxe_pyro/c_fireaxe_pyro.mdl");
-		SetVariantString("0.75");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 150, 255, 255);
