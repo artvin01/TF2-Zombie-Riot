@@ -4028,8 +4028,12 @@
 	{
 		"en"	"Crowbar"
 	}
+	"Victoria Raid Desc"
+	{
+		"en" "(11) You went to ruins of Victoria."
+   }
 	"Ability already Active"
 	{
-		"en"	"Ability is currently active"
+    "en"	"Ability already Active"
 	}
 }

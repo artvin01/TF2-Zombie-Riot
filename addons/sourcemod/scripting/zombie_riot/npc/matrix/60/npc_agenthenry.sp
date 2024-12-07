@@ -1,6 +1,5 @@
 #pragma semicolon 1
 #pragma newdecls required
-#define BUFF_RANGE 500.0
 
 static const char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",

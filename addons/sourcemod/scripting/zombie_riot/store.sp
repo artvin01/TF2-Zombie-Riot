@@ -5145,16 +5145,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	ClientSaveRageMeterStatus(client);
 	ClientSaveUber(client);
 
-	/*
-	int weapon = GetPlayerWeaponSlot(client, 1); //Secondary
-	if(IsValidEntity(weapon))
-	{
-		if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
-		{
-			f_MedigunChargeSave[client] = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel");
-		}
-	}
-	*/
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		TF2_RemoveAllWeapons(client);

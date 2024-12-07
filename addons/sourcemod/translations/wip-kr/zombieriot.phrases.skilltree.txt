@@ -1,0 +1,419 @@
+
+"Phrases"
+{
+	"Skill Tree"
+	{
+		"en"	"Skill Tree"
+		"ko"	"스킬 트리"
+	}
+	"Skill Points"
+	{
+		"#format"	"{1:d}"
+		"en"	"Skill Points: {1}"
+		"ko"	"스킬 포인트: {1}"
+	}
+	"Browse Skill Tree"
+	{
+		"en"	"Browse Skill Tree"
+		"ko"	"스킬 트리 열기"
+	}
+	"Reset Skill Tree"
+	{
+		"en"	"Reset Skill Tree"
+		"ko"	"스킬 트리 초기화"
+	}
+	"Reset Skill Tree Confirm"
+	{
+		"en"	"Are you sure you wish to reset your skill tree?\nThis can not be undone."
+		"ko"	"스킬 트리를 재설정하시겠습니까?\n이 작업은 취소할 수 없습니다."
+	}
+	"Unlock Skill"
+	{
+		"en"	"Unlock Skill"
+		"ko"	"해금된 스킬"
+	}
+	"Fully Upgraded"
+	{
+		"en"	"Fully Upgraded"
+		"ko"	"최대 강화"
+	}
+	"Upgrade Skill"
+	{
+		"en"	"Upgrade Skill"
+		"ko"	"스킬 강화"
+	}
+	"Unlocked"
+	{
+		"en"	"Unlocked"
+		"ko"	"해금됨"
+	}
+	"Luck Up 1"
+	{
+		"en" 		"Luck Up"
+		"ko"		"운빨 상승"
+	}
+	"Luck Up 1 Desc"
+	{
+		"en" 		"Gain an additional +0.005%% chance to crit an enemy for 2x damage on any damage instance."
+		"ko"		"적에게 2배의 피해를 주는 확률을 +0.005％ 만큼 증가 시킵니다."
+	}
+	"Weapon Damage All 1"
+	{
+		"en" 		"Weapon Damage"
+		"ko"		"무기 피해량"
+	}
+	"Weapon Damage All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.05%% damage buff to all weapons."
+		"ko"		"모든 무기의 피해량을 +0.05％ 만큼 증가 시킵니다."
+	}
+	"Weapon Damage All 1 High"
+	{
+		"en" 		"Weapon Damage High"
+		"ko"		"강력한 무기 피해량"
+	}
+	"Weapon Damage All 1 High Desc"
+	{
+		"en" 		"Gain a multiplicative +0.2%% damage buff to all weapons."
+		"ko"		"모든 무기의 피해량을 +0.2％ 만큼 증가 시킵니다."
+	}
+	"Attackspeed & Reload All 1"
+	{
+		"en" 		"Attack & Reloadspeed"
+		"ko"		"공격 속도와 장전속도"
+	}
+	"Attackspeed & Reload All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.05%% attackspeed & reload buff to all weapons."
+		"ko"		"모든 무기의 공/장속을 +0.05％ 만큼 증가 시킵니다."
+	}
+	"Attackspeed & Reload All 1 High"
+	{
+		"en" 		"Attack & Reloadspeed"
+		"ko"		"전술적 무기 속도및 장전 속도"
+	}
+	"Attackspeed & Reload All 1 High Desc"
+	{
+		"en" 		"Gain a multiplicative +0.2%% attackspeed & reload buff to all weapons."
+		"ko"		"모든 무기의 공/장속을 +0.2％ 만큼 증가 시킵니다."
+	}
+	"Health Up 1"
+	{
+		"en" 		"Health Up"
+		"ko"		"건강 증진"
+	}
+	"Health Up 1 Desc"
+	{
+		"en" 		"Gain a +1 HP"
+		"ko"		"최대 체력 +1"
+	}
+	"Health Up 1 High"
+	{
+		"en" 		"Health Up"
+		"ko"		"HP 증가량 향상"
+	}
+	"Health Up 1 High Desc"
+	{
+		"en" 		"Gain a +5 HP"
+		"ko"		"최대 체력 +5"
+	}
+	"Health Up 1 Infinite"
+	{
+		"en" 		"Health Up"
+		"ko"		"Triple Fat Layer"
+	}
+	"Health Up 1 Infinite Desc"
+	{
+		"en" 		"Gain a +0.1 HP, this can be used infinitly, and thus is not efficient use in skillpoints."
+		"ko"		"최대 체력 +0.1, 무한히 강화가 가능합니다만. 그다지 효율적이지않습니다."
+	}
+	"Resist 1"
+	{
+		"en" 		"Total Resistance"
+		"ko"		"방어구 강화"
+	}
+	"Resist 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.05%% Resistance to all sources"
+		"ko"		"모든 피해 저항이 +0.05％ 만큼 증가 합니다."
+	}
+	"Cash Up 1"
+	{
+		"en" 		"Extra Cash"
+		"ko"		"엑스트라 자금"
+	}
+	"Cash Up 1 Desc"
+	{
+		"en" 		"Gain +2 Extra Cash"
+		"ko"		"엑스트라 자금 +2"
+	}
+	"Cash Up 1 Infinite"
+	{
+		"en" 		"Extra Cash Infinite"
+	}
+	"Cash Up 1 Infinite Desc"
+	{
+		"en" 		"Gain +0.2 Extra Cash, this can be used infinitly, and thus is not efficient use in skillpoints."
+		"ko"		"엑스트라 자금 +0.2, 무한히 강화가 가능합니다만. 그다지 효율적이지않습니다."
+	}
+	"Cash Up 1 High"
+	{
+		"en" 		"Extra Cash"
+		"ko"		"Free Robux!"
+	}
+	"Cash Up 1 High Desc"
+	{
+		"en" 		"Gain +20 Extra Cash"
+		"ko"		"엑스트라 자금 +20"
+	}
+	"Reload All 1"
+	{
+		"en" 		"Reloadspeed"
+		"ko"		"전술 재장전"
+	}
+	"Reload All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.025%% reload buff to all weapons."
+		"ko"		"모든 무기의 장전 속도를 +0.025％ 만큼 증가 시킵니다."
+	}
+	"Attackspeed All 1"
+	{
+		"en" 		"Attack Speed"
+		"ko"		"공격 속도"
+	}
+	"Attackspeed All 1 Desc"
+	{
+		"en" 		"Gain a multiplicative +0.02%% Attackspeed buff to all weapons."
+		"ko"		"모든 무기의 공격 속도를 +0.02％ 만큼 증가 시킵니다."
+	}
+	"FusionBuffDo"
+	{
+		"en" 		"Fusion Warrior Buff"
+		"ko"		"퓨전 워리어 버프"
+	}
+	"FusionBuffDo Desc"
+	{
+		"en" 		"Gain a multiplicative +0.25%% Extra Damage and multiplicative +0.5%% Resistance."
+		"ko"		"피해량 +0.25％ 및 피해 저항 +0.5％ 증가"
+	}
+	"Kahmlstein Buff"
+	{
+		"en" 		"Kahmlstein Buff"
+		"ko"		"카멜스타인 버프"
+	}
+	"Kahmlstein Buff Desc"
+	{
+		"en" 		"Gain a multiplicative +1%% Extra Damage."
+		"ko"		"피해량 +1％  증가"
+	}
+	"Cash Up Barney 1"
+	{
+		"en" 		"Sellable Chainsaw"
+		"ko"		"쌀먹 가능한 전기톱"
+	}
+	"Cash Up Barney 1 Desc"
+	{
+		"en" 		"Gain a +30 extra cash."
+		"ko"		"엑스트라 자금 +30"
+	}
+	"Sensal Buff Do"
+	{
+		"en" 		"Expidonsan Battery Buff"
+		"ko"		"엑스피돈산 배터리 버프"
+	}
+	"Sensal Buff Do Desc"
+	{
+		"en" 		"Gain a multiplicative +0.35%% Extra Damage and multiplicative +1.0%% Resistance."
+		"ko"		"피해량 +0.35％ 및 피해 저항 +1.0％ 증가"
+	}
+	"Alaxios Godly Powerup"
+	{
+		"en" 		"Alaxios' Full Buff"
+		"ko"		"알렉시오스의 풀버프"
+	}
+	"Alaxios Godly Powerup Desc"
+	{
+		"en" 		"Gain a multiplicative +1.0%% Resistance and 15 HP."
+		"ko"		"최대체력 +15 및 피해 저항 +1％ 증가"
+	}
+	"Bob's Healing Hand"
+	{
+		"en" 		"Bob's Healing Hand Buff"
+		"ko" 		"밥의 치유의손 버프"
+	}
+	"Bob's Healing Hand Desc"
+	{
+		"en" 		"Gain a 25 HP.\nAn additional +0.05%% luck and 1%% building HP and reduces revive time by 5 out of 250"
+		"ko"		"최대체력 +25 및 치명타 확률 +0.05％ 증가 구조물 최대 체력 +1％, 소생 시간을 250/5만큼 단축시킵니다."
+	}
+	"Blitzkrieg Buff"
+	{
+		"en" 		"Blitzkrieg Buff"
+		"ko" 		"블리츠크리그 버프"
+	}
+	"Blitzkrieg Buff Desc"
+	{
+		"en" 		"Gain a multiplicative +0.5%% Attackspeed and reload speed bonus."
+		"ko"		"모든 무기의 공/장속을 +0.5％ 만큼 증가 시킵니다."
+	}
+	"Waldch's Blue Goggles"
+	{
+		"en" 		"Waldch's Blue Goggles"
+		"ko" 		"왈츠의 블루 고글"
+	}
+	"Waldch's Blue Goggles Desc"
+	{
+		"en" 		"Gain a multiplicative +1.5%% Reload speed bonus."
+		"ko"		"모든 무기의 장전 속도을 +1.5％ 만큼 증가 시킵니다."
+	}
+	"Iberia's Last Hope Up"
+	{
+		"en" 		"Iberia's Last Hope Sparkle"
+		"ko"		"이베리아의 마지막 희망 스파클"
+	}
+	"Iberia's Last Hope Up Desc"
+	{
+		"en" 		"Gain a multiplicative +1.0%% Attackspeed speed bonus."
+		"ko"		"모든 무기의 공격 속도을 +1％ 만큼 증가 시킵니다."
+	}
+	"Calmaticus Heart Up"
+	{
+		"en" 		"Calmaticus Heart Up"
+		"ko"		"칼마티쿠스 하트 업"
+	}
+	"Calmaticus Heart Up Desc"
+	{
+		"en" 		"Gain an extra 0.25 Hp regen a second."
+		"ko"		"초당 0.25의 추가 체력 재생을 얻습니다."
+	}
+	"Xeno Vial Up"
+	{
+		"en" 		"Xeno Vial Up"
+		"ko"		"제노 바이알 업"
+	}
+	"Xeno Vial Up Desc"
+	{
+		"en" 		"Gain an extra 0.25 Hp regen a second."
+		"ko"		"초당 0.25의 추가 체력 재생을 얻습니다."
+	}
+	"Building Hp Up 1"
+	{
+		"en" 		"Building Hp Up"
+		"ko" 		"구조물 내구도 강화"
+	}
+	"Building Hp Up 1 Desc"
+	{
+		"en" 		"Your buildings gain a multiplicative +0.1%% HP"
+		"ko"		"구조물의 최대 체력을 +0.1％ 만큼 증가 시킵니다."
+	}
+	"Building Repair Up 1"
+	{
+		"en" 		"Building Repair Speed Up"
+		"ko" 		"구조물 수리 강화"
+	}
+	"Building Repair Up 1 Desc"
+	{
+		"en" 		"Your Repairspeed gains a multiplicative +0.1%% speed"
+		"ko"		"수리 속도를 +0.1％ 만큼 증가 시킵니다."
+	}
+	"Building Extra Damage Up 1"
+	{
+		"en" 		"Building Hp Up"
+		"ko" 		"센트리 탄약 코팅"
+	}
+	"Building Extra Damage Up 1 Desc"
+	{
+		"en" 		"Your buildings gain a multiplicative +0.1%% Damage"
+		"ko"		"센트리 피해량을 +0.1％ 만큼 증가 시킵니다."
+	}
+	"Twirl Hairpin 1"
+	{
+		"en" 		"Twirls Magical Hairpin"
+		"ko" 		"트윌의 매지컬 머리핀"
+	}
+	"Twirl Hairpin 1 Desc"
+	{
+		"en" 		"Gain 0.5%% Extra mana Regen"
+		"ko"		"마나 리젠 속도를 +0.5％ 만큼 증가 시킵니다."
+	}
+	"Iberia Training"
+	{
+		"en" 		"Nemals Special Help"
+		"ko" 		"네말의 '스페샬' 헬프"
+	}
+	"Iberia Training Desc"
+	{
+		"en" 		"Gain a multiplicative +1%% Attackspeed and reload speed bonus."
+		"ko"		"공/장속을 +1％ 만큼 증가 시킵니다."
+	}
+	"Extra Healing Up"
+	{
+		"en" 		"Extra Healing Up"
+		"ko" 		"강력한 백신"
+	}
+	"Extra Healing Up Desc"
+	{
+		"en" 		"Gain a multiplicative +0.1%% Extra Healing from all sources."
+		"ko"		"모든 치료량을 +0.1％ 만큼 증가 시킵니다."
+	}
+	"Extra Healing Up High"
+	{
+		"en" 		"Extra Healing Up High"
+		"ko" 		"POWER HEALING"
+	}
+	"Extra Healing Up High Desc"
+	{
+		"en" 		"Gain a multiplicative +0.5%% Extra Healing from all sources."
+		"ko"		"모든 치료량을 +0.5％ 만큼 증가 시킵니다."
+	}
+	"ReviveTime Reduce"
+	{
+		"en" 		"Revive Time Down"
+		"ko" 		"소생 시간 단축"
+	}
+	"ReviveTime Reduce Desc"
+	{
+		"en" 		"Reduce your revive time by 1 out of 250"
+		"ko" 		"소생 시간을 250/1만큼 단축시킵니다."
+	}
+	"ReviveTime Reduce High"
+	{
+		"en" 		"Revive Time Down High"
+		"ko" 		"GET THE FxxK UP"
+	}
+	"ReviveTime Reduce High Desc"
+	{
+		"en" 		"Reduce your revive time by 5 out of 250"
+		"ko" 		"소생 시간을 250/5만큼 단축시킵니다."
+	}
+	"Extra Cash Building Up"
+	{
+		"en"	"Extra Cash Building Up"
+		"ko"	"구조물 자금 회수 강화"
+	}
+	"Extra Cash Building Up Desc"
+	{
+		"en"	"Increace your max cap of building extra cash from 5000 by 100"
+		"ko" 	"구조물의 최대 자금 회수량을 100증가 시킵니다."
+	}
+	"Extra Cash Building Up High"
+	{
+		"en"	"Extra Cash Building UpHigh"
+		"ko"	"확장된 구조물 자금 회수장치"
+	}
+	"Extra Cash Building Up High Desc"
+	{
+		"en"	"Increace your max cap of building extra cash from 5000 by 500"
+		"ko" 	"구조물의 최대 자금 회수량을 500증가 시킵니다."
+	}
+	"Ingot Up 1"
+	{
+		"en"	"Ingot Up"
+		"ko" 	"주괴 강화"
+	}
+	"Ingot Up 1 Desc"
+	{
+		"en"	"Gain 1 extra australium ingot in the roguelike, only he highest skill of a player on the server counts."
+		"ko" 	"로그라이크 게임에서는 오스트레일륨 주괴 1개를 추가로 얻을 수 있으며, 서버에서 플레이어의 가장 높은 스킬만 적용됩니다."
+	}
+}

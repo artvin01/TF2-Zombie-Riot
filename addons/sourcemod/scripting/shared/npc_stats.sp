@@ -1451,6 +1451,18 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.20;
 		}
+		if(f_SquadLeaderBuff[this.index] > Gametime)
+		{
+			speed_for_return *= 1.33;
+		}
+		if(f_VictorianCallToArms[this.index] > Gametime)
+		{
+			speed_for_return *= 1.15;
+		}
+		if(f_CaffeinatorBuff[this.index] > Gametime)
+		{
+			speed_for_return *= 1.5;
+		}
 		if(f_VoidAfflictionStrength2[this.index] > Gametime)
 		{
 			speed_for_return *= 1.15;
@@ -2586,7 +2598,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	 float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 },
 	  float vecSwingMins[3] = { -64.0, -64.0, -128.0 },
 	   float vecSwingStartOffset = 55.0,
-	    int Npc_type = 0,
+		int Npc_type = 0,
 		 int Ignore_Buildings = 0,
 		  int countAoe = 0)
 	{
@@ -5015,7 +5027,7 @@ stock int GetClosestTarget(int entity,
  bool IgnoreBuildings = false,
   float fldistancelimit = 99999.9,
    bool camoDetection=false,
-    bool onlyPlayers = false,
+	bool onlyPlayers = false,
 	 int ingore_client = -1, 
 	 float EntityLocation[3] = {0.0,0.0,0.0},
 	  bool CanSee = false,
@@ -6397,7 +6409,7 @@ stock void Custom_Knockback(int attacker,
  int enemy,
   float knockback,
    bool ignore_attribute = false,
-    bool override = false,
+	bool override = false,
 	 bool work_on_entity = false,
 	 float PullDuration = 0.0,
 	 bool RecieveInfo = false,
@@ -7204,11 +7216,11 @@ stock bool makeexplosion(
 	int attacker = 0,
 	 int inflictor = -1,
 	  float attackposition[3],
-	    char[] weaponname = "",
+		char[] weaponname = "",
 		 int Damage_for_boom = 200,
 		  int Range_for_boom = 200,
 		   float Knockback = 200.0,
-		    int flags = 0,
+			int flags = 0,
 			 bool FromNpcForced = false,
 			  bool do_explosion_effect = true,
 			  float dmg_against_entity_multiplier = 3.0)
@@ -8198,6 +8210,54 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	return ClosestTarget; 
 }
 
+stock int GetClosestBuilding(int entity, float limitsquared = 99999999.9, int ingore_thisAlly = 0,Function ExtraValidityFunction = INVALID_FUNCTION)
+{
+	float TargetDistancetoBuilding = 0.0; 
+	int ClosestTarget1 = 0; 
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if (IsValidEntity(i) && i != entity && i != ingore_thisAlly && (i <= MaxClients || !b_NpcHasDied[i]))
+		{
+			if(GetTeam(entity) == GetTeam(i) && !Is_a_Medic[i] && IsEntityAlive(i, true) && i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i] && !b_NpcIsInvulnerable[i])  //Making go for the building
+			{
+				if(ExtraValidityFunction != INVALID_FUNCTION)
+				{
+					bool WasValid1;
+					Call_StartFunction(null, ExtraValidityFunction);
+					Call_PushCell(entity);
+					Call_PushCell(i);
+					Call_Finish(WasValid1);
+
+					if(!WasValid1)
+						continue;
+				}
+				float EntityLocation[3], TargetLocation[3]; 
+				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+				GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+				if( distance < limitsquared )
+				{
+					if( TargetDistancetoBuilding ) 
+					{
+						if( distance < TargetDistancetoBuilding ) 
+						{
+							ClosestTarget1 = i; 
+							TargetDistancetoBuilding = distance;		  
+						}
+					} 
+					else 
+					{
+						ClosestTarget1 = i; 
+						TargetDistancetoBuilding = distance;
+					}			
+				}
+			}
+		}
+	}
+	return ClosestTarget1; 
+}
+
 
 stock bool IsValidAlly(int index, int ally)
 {
@@ -8542,6 +8602,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	f_PernellBuff[entity] = 0.0;
 	f_HussarBuff[entity] = 0.0;
+	f_SquadLeaderBuff[entity] = 0.0;
+	f_VictorianCallToArms[entity] = 0.0;
+	f_CaffeinatorBuff[entity] = 0.0;
 	f_GodAlaxiosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
@@ -8866,15 +8929,15 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool
 
 
 bool TraceFilterClients(int entity, int mask, any data)
-{    
-    if (entity > 0 && entity <= MAXENTITIES) 
-    { 
-        return false; 
-    }
-    else 
-    { 
-        return true; 
-    } 
+{	
+	if (entity > 0 && entity <= MAXENTITIES) 
+	{ 
+		return false; 
+	}
+	else 
+	{ 
+		return true; 
+	} 
 } 
 
 
@@ -9183,6 +9246,18 @@ stock bool NpcStats_IsEnemySilenced(int enemy)
 		return true; //they dont exist, pretend as if they are silenced.
 
 	if(f_Silenced[enemy] < GetGameTime())
+	{
+		return false;
+	}
+	return true;
+}
+
+stock bool NpcStats_VictorianCallToArms(int enemy)
+{
+	if(!IsValidEntity(enemy))
+		return true; //they dont exist, pretend as if they are silenced.
+
+	if(f_VictorianCallToArms[enemy] < GetGameTime())
 	{
 		return false;
 	}
@@ -9537,7 +9612,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 	{
 		char sColor[32];
 		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
-		DispatchKeyValue(npc.m_iTextEntity5,     "color", sColor);
+		DispatchKeyValue(npc.m_iTextEntity5,	 "color", sColor);
 		DispatchKeyValue(npc.m_iTextEntity5, "message", HealthText);
 	}
 	else
@@ -9580,6 +9655,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(NpcStats_IberiaIsEnemyMarked(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "%sM",HealthText);
+	}
+	if(NpcStats_VictorianCallToArms(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "✇",HealthText);
 	}
 
 #if defined ZR
@@ -9639,7 +9718,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		//	char sColor[32];
 		//	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
-		//	DispatchKeyValue(npc.m_iTextEntity1,     "color", sColor);
+		//	DispatchKeyValue(npc.m_iTextEntity1,	 "color", sColor);
 		// Colour will never be Edited probably.
 		DispatchKeyValue(npc.m_iTextEntity4, "message", HealthText);
 	}
