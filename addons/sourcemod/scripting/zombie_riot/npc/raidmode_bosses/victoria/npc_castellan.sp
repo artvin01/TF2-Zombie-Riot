@@ -102,7 +102,7 @@ void Castellan_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Castellan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_castellan");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_atomizer_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_castellan_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
