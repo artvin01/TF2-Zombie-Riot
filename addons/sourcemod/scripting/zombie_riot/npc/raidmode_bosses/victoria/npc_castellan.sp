@@ -393,7 +393,7 @@ methodmap Castellan < CClotBody
 		{
 			FTL[npc.index] = 220.0;
 			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
-			RaidModeScaling *= 0.85;
+			RaidModeScaling *= 0.75;
 		}
 		bool final = StrContains(data, "final_item") != -1;
 		
@@ -1085,7 +1085,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					pos[2] += 50.0;
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-					int health = ReturnEntityMaxHealth(npc.index) / 30;
+					int health = ReturnEntityMaxHealth(npc.index) / 85;
 					char Adddeta[512];
 					FormatEx(Adddeta, sizeof(Adddeta), "mk2;limit");
 					FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, npc.index);
@@ -1159,7 +1159,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					pos[2] += 50.0;
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-					int health = ReturnEntityMaxHealth(npc.index) / 25;
+					int health = ReturnEntityMaxHealth(npc.index) / 75;
 					char Adddeta[512];
 					FormatEx(Adddeta, sizeof(Adddeta), "mk2;limit");
 					FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, npc.index);
@@ -1487,7 +1487,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								
 								WorldSpaceCenter(targetTrace, vecHit);
 
-								float damage = 70.0;
+								float damage = 50.0;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									
