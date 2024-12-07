@@ -616,55 +616,18 @@ static void Internal_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
-		npc.m_flMeleeArmor = 0.33;
-		npc.m_flRangedArmor = 0.33;
-		int MaxHealth = RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")*1.25);
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth);
-		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		BlockLoseSay = true;
 		switch(GetRandomInt(1, 4))
 		{
 			case 1:CPrintToChatAll("{skyblue}Harrison{default}: That's it. Calling in for special forces.");
 			case 2:CPrintToChatAll("{skyblue}Harrison{default}: Your small knight pals won't save you now");
-			case 3:CPrintToChatAll("{skyblue}Harrison{default}: Time to head back to the frontlines");
+			case 3:CPrintToChatAll("{skyblue}Harrison{default}: The artilleries are fully loaded. Bombardment in 3...2...1...");
 			case 4:CPrintToChatAll("{skyblue}Harrison{default}: {unique}I need beer.{default}");
 		}
-		for(int i=1; i<=15; i++)
-		{
-			switch(GetRandomInt(1, 7))
-			{
-				case 1:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 2:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 3:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}	
-				case 4:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 5:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 6:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 7:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-			}
-		}
-		BlockLoseSay = true;
 		YaWeFxxked[npc.index] = true;
 	}
 	

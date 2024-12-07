@@ -678,90 +678,37 @@ static void Internal_ClotThink(int iNPC)
 	}
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
-		npc.m_flMeleeArmor = 0.33;
-		npc.m_flRangedArmor = 0.33;
-		int MaxHealth = RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")*1.25);
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth);
-		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
+		DeleteAndRemoveAllNpcs = 10.0;
+		mp_bonusroundtime.IntValue = (12 * 2);
+		ZR_NpcTauntWinClear();
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:CPrintToChatAll("{blue}Castellan{default}: Victoria will be in peace. Once and for all.");
+			case 1:CPrintToChatAll("{blue}Castellan{default}: All Tanks refueled, RUSH THEM!");
 			case 2:CPrintToChatAll("{blue}Castellan{default}: Ziberia will pay with their blood for this");
-			case 3:CPrintToChatAll("{blue}Castellan{default}: Next time? There would be no next time");
+			case 3:CPrintToChatAll("{blue}Castellan{default}: Times up! RUN OVER THEM!");
 			case 4:CPrintToChatAll("{blue}Castellan{default}: Seems like your precious knight friends didn't help you so much this time.");
 		}
-		for(int i=1; i<=15; i++)
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		for(int i; i<10; i++)
 		{
-			switch(GetRandomInt(1, 7))
+			int spawn_index = NPC_CreateByName("npc_victorian_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "only");
+			if(spawn_index > MaxClients)
 			{
-				case 1:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 2:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 3:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}	
-				case 4:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 5:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 6:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 7:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
+				int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 3.0);
+				fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+				fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+				fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index] * 10.0;
+				fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index]* 20.0;
+				if(GetTeam(iNPC) != TFTeam_Red)
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
+				TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
 			}
 		}
-		for(int i=1; i<=15; i++)
-		{
-			switch(GetRandomInt(1, 8))
-			{
-				case 1:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 2:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 3:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}	
-				case 4:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 5:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 6:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 7:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 8:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-			}
-		}
+		npc.PlayTeleportSound();
 		BlockLoseSay = true;
 		YaWeFxxked[npc.index] = true;
 	}

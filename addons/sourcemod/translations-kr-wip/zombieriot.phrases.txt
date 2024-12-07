@@ -2464,6 +2464,14 @@
 		"ru"		"Это последняя волна, приготовьтесь."
 		"chi"		"这是最后一波，做好准备。"
 	}
+	"Tower_Message"
+	{
+		"en"		"You see a giant radiotower at the distance."
+	}
+	"Victoria_Help_Message"
+	{
+		"en"		"Ziberian Guerillas are here to help."
+	}
 	"Void_Help_Message"
 	{
 		"en"		"Expidonsan's are trying to send help, but the void interfeers, only guarduses could get here."
