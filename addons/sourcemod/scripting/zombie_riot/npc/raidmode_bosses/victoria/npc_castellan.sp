@@ -1090,8 +1090,10 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
 					int health = ReturnEntityMaxHealth(npc.index) / 25;
-					
-					int summon = NPC_CreateByName("npc_victoria_anvil", -1, pos, ang, GetTeam(npc.index), "mk2;limit");
+					char Adddeta[512];
+					FormatEx(Adddeta, sizeof(Adddeta), "mk2;limit");
+					FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, npc.index);
+					int summon = NPC_CreateByName("npc_victoria_anvil", -1, pos, ang, GetTeam(npc.index), Adddeta);
 					{
 						if(GetTeam(npc.index) != TFTeam_Red)
 							Zombies_Currently_Still_Ongoing++;
