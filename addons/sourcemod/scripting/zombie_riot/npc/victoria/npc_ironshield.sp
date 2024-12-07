@@ -160,13 +160,15 @@ methodmap VictorianIronShield < CClotBody
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/big_jaw.mdl");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2016_mad_mask/hwn2016_mad_mask.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_impact_impaler/dec23_impact_impaler.mdl");
+		SetVariantString("0.9");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/spr17_blast_defense/spr17_blast_defense.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_helmet/tw_heavybot_helmet.mdl");
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 80, 50, 50, 255);
+		SetEntityRenderColor(npc.m_iWearable4, 150, 150, 150, 255);
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_armor/tw_heavybot_armor.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
