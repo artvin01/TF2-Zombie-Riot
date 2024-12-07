@@ -66,6 +66,15 @@ static const char g_PlayRocketshotready[][] = {
 	"vo/sniper_dominationsoldier02.mp3"
 
 };
+
+static const char g_SummonDroneSound[][] = {
+	"mvm/mvm_bought_in.wav",
+};
+static const char g_SummonAlotOfRockets[][] = {
+	"weapons/rocket_ll_shoot.wav",
+};
+
+
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
@@ -110,6 +119,8 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RocketAttackSounds)); i++) { PrecacheSound(g_RocketAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_SummonDroneSound)); i++) { PrecacheSound(g_SummonDroneSound[i]); }
+	for (int i = 0; i < (sizeof(g_SummonAlotOfRockets)); i++) { PrecacheSound(g_SummonAlotOfRockets[i]); }
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
 	PrecacheSound(g_AngerReaction);
@@ -169,6 +180,14 @@ methodmap Castellan < CClotBody
 		EmitSoundToAll(g_HomerunSounds[GetRandomInt(0, sizeof(g_HomerunSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_HomerunSounds[GetRandomInt(0, sizeof(g_HomerunSounds) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayDroneSummonSound() {
+	
+		EmitSoundToAll(g_SummonDroneSound[GetRandomInt(0, sizeof(g_SummonDroneSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayHomingBadRocketSound() {
+	
+		EmitSoundToAll(g_SummonAlotOfRockets[GetRandomInt(0, sizeof(g_SummonAlotOfRockets) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
 	public void PlayHomerunMissSound() {
 	
 		EmitSoundToAll(g_LasershotReady[GetRandomInt(0, sizeof(g_LasershotReady) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
@@ -219,7 +238,7 @@ methodmap Castellan < CClotBody
 	}
 	public void PlayGunSound()
 	{
-		EmitSoundToAll(g_RocketAttackSounds[GetRandomInt(0, sizeof(g_RocketAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
+		EmitSoundToAll(g_RocketAttackSounds[GetRandomInt(0, sizeof(g_RocketAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL - 5, _, BOSS_ZOMBIE_VOLUME, 85);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -1121,6 +1140,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					char Adddeta[512];
 					FormatEx(Adddeta, sizeof(Adddeta), "mk2;limit");
 					FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, npc.index);
+					npc.PlayDroneSummonSound();
 					int summon1 = NPC_CreateByName("npc_victoria_fragments", -1, pos, ang, GetTeam(npc.index), Adddeta);
 
 					{
@@ -1194,6 +1214,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					char Adddeta[512];
 					FormatEx(Adddeta, sizeof(Adddeta), "mk2;limit");
 					FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, npc.index);
+					npc.PlayDroneSummonSound();
 					int summon = NPC_CreateByName("npc_victoria_anvil", -1, pos, ang, GetTeam(npc.index), Adddeta);
 					{
 						if(GetTeam(npc.index) != TFTeam_Red)
@@ -1516,7 +1537,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								WorldSpaceCenter(targetTrace, vecHit);
 
 								float damage = 70.0;
-								damage *= 1.15;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									
@@ -1533,13 +1553,13 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 									{
 										if(target > MaxClients)
 										{
-											StartBleedingTimer_Against_Client(target, npc.index, 15.0, 10);
+											StartBleedingTimer_Against_Client(target, npc.index, damage * 0.15, 5);
 										}
 										else
 										{
 											if (!IsInvuln(target))
 											{
-												StartBleedingTimer_Against_Client(target, npc.index, 15.0, 10);
+												StartBleedingTimer_Against_Client(target, npc.index, damage * 0.15, 5);
 											}
 										}
 									}
@@ -1733,6 +1753,7 @@ static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
 		vecSelf[1] += GetRandomFloat(-20.0, 20.0);
 		float RocketDamage = 40.0;
 		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 50.0 ,"models/buildables/sentry3_rockets.mdl");
+		npc.PlayHomingBadRocketSound();
 		if(IsValidEntity(RocketGet))
 		{
 			for(int r=1; r<=5; r++)
