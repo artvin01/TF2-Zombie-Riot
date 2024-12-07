@@ -47,6 +47,10 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_06.wav",
 	"weapons/cleaver_hit_07.wav",
 };
+
+static const char g_suitup[][] = {
+	"mvm/mvm_tank_start.wav",
+};
 void Aviator_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -55,6 +59,7 @@ void Aviator_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_suitup)); i++) { PrecacheSound(g_suitup[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Aviator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aviator");
@@ -66,6 +71,8 @@ void Aviator_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
+static int I_cant_do_this_all_day[MAXENTITIES];
+static float Delay_Attribute[MAXENTITIES];
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
@@ -118,7 +125,13 @@ methodmap Aviator < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
-	
+	public void PlaySuitUpSound() 
+	{
+		EmitSoundToAll(g_suitup[GetRandomInt(0, sizeof(g_suitup) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_suitup[GetRandomInt(0, sizeof(g_suitup) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+
+	}
+
 	
 	public Aviator(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -143,7 +156,9 @@ methodmap Aviator < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Aviator_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Aviator_ClotThink);
 		
-		npc.m_flAngerDelay = GetGameTime() + 35.0;
+		npc.m_flAngerDelay = GetGameTime() + 15.0;
+		I_cant_do_this_all_day[npc.index] = 0;
+		Delay_Attribute[npc.index] = 0.0;
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
@@ -221,29 +236,50 @@ public void Aviator_ClotThink(int iNPC)
 
 	if(npc.m_flAngerDelay < GetGameTime(npc.index))
 	{
-		int Health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))* 3.0);	
-
-		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-
-		int entity = NPC_CreateByName("npc_ironshield", -1, pos, ang, GetTeam(npc.index));
-		if(entity > MaxClients)
+		switch(I_cant_do_this_all_day[npc.index])
 		{
-			if(GetTeam(npc.index) != TFTeam_Red)
-				Zombies_Currently_Still_Ongoing++;
-			
-			SetEntProp(entity, Prop_Data, "m_iHealth", Health);
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", Health);
-			
-			fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
-			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
-			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
-			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
-			b_thisNpcIsABoss[entity] = b_thisNpcIsABoss[npc.index];
-			b_StaticNPC[entity] = b_StaticNPC[npc.index];
-			view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+			case 0:
+			{
+				npc.AddActivityViaSequence("layer_taunt_drg_melee");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(1.0);
+				npc.m_iChanged_WalkCycle = 0;
+				Delay_Attribute[npc.index] = gameTime + 2.0;
+				I_cant_do_this_all_day[npc.index]=1;
+			}
+			case 1:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					npc.PlaySuitUpSound();
+					int Health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))* 1.5);	
+
+					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
+					int entity = NPC_CreateByName("npc_ironshield", -1, pos, ang, GetTeam(npc.index));
+					if(entity > MaxClients)
+					{
+						if(GetTeam(npc.index) != TFTeam_Red)
+							Zombies_Currently_Still_Ongoing++;
+						
+						SetEntProp(entity, Prop_Data, "m_iHealth", Health);
+						SetEntProp(entity, Prop_Data, "m_iMaxHealth", Health);
+						
+						fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index]* 0.90;
+						fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index]* 0.90;
+						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 1.1;
+						b_thisNpcIsABoss[entity] = b_thisNpcIsABoss[npc.index];
+						b_StaticNPC[entity] = b_StaticNPC[npc.index];
+						view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+					}
+					SmiteNpcToDeath(npc.index);
+					I_cant_do_this_all_day[npc.index]=0;
+				}
+			}
 		}
-		SmiteNpcToDeath(npc.index);
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -424,7 +460,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 				
 					npc.PlayMeleeHitSound();
 					if(target_hit <= MaxClients)
-						TF2_StunPlayer(target, 0.6, 0.9, TF_STUNFLAG_SLOWDOWN);
+						TF2_StunPlayer(target, 1.5, 0.5, TF_STUNFLAG_SLOWDOWN);
 				} 
 			}
 			delete swingTrace;
@@ -445,7 +481,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 			npc.m_flAttackHappens = gameTime + 0.25;
 			npc.m_flDoingAnimation = gameTime + 0.25;
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-			npc.m_flNextMeleeAttack = gameTime + 5.00;
+			npc.m_flNextMeleeAttack = gameTime + 2.00;
 			npc.PlayMeleeSound();
 			//We are close enough to melee attack, lets melee.
 		}
@@ -482,7 +518,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 30.0;
+						float damageDealt = 60.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 7.5;
 
@@ -492,7 +528,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 				}
 				delete swingTrace;
 			}
-			npc.m_flNextRangedAttack = gameTime + 1.5;
+			npc.m_flNextRangedAttack = gameTime + 1.0;
 		}
 	}
 	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))

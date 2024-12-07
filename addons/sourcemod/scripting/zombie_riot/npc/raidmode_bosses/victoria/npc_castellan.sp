@@ -1110,7 +1110,14 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_flDoingAnimation = gameTime + 0.5;	
 					Delay_Attribute[npc.index] = gameTime + 0.5;
 					I_cant_do_this_all_day[npc.index]=0;
-					npc.m_flTimeUntillNextSummonHardenerDrones = gameTime + 20.0;
+					if(NpcStats_VictorianCallToArms(npc.index))
+					{
+						npc.m_flTimeUntillNextSummonHardenerDrones = gameTime + 10.0;
+					}
+					else
+					{
+						npc.m_flTimeUntillNextSummonHardenerDrones = gameTime + 20.0;
+					}
 					npc.m_flTimeUntillNextSummonDrones +=  2.0;
 					return 0;
 				}
@@ -1130,7 +1137,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
-				Delay_Attribute[npc.index] = gameTime + 1.0;
+				Delay_Attribute[npc.index] = gameTime + 1.3;
 				I_cant_do_this_all_day[npc.index]=1;
 				npc.m_flTimeUntillSupportSpawn += 25.0;
 				npc.m_flTimeUntillNextSummonDrones +=  25.0;
@@ -1155,6 +1162,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
 				Delay_Attribute[npc.index] = gameTime + 0.35;
+				RaidModeTime += 10.0;
 				I_cant_do_this_all_day[npc.index]=3;
 			}
 			case 3:
@@ -1168,6 +1176,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					b_ThisEntityIgnored[npc.index] = true;
 					npc.m_iChanged_WalkCycle = 0;
 					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+					ParticleEffectAt(WorldSpaceVec, "smoke_marker", 10.0);
 					npc.PlayDeathSound();
 					Temp_Target[npc.index]=-1;
 					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
@@ -1199,11 +1208,18 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 					npc.AddActivityViaSequence("layer_taunt_maggots_condolence");
 					npc.m_flAttackHappens = 0.0;
-					npc.SetCycle(0.01);
+					npc.SetCycle(0.5);
 					npc.SetPlaybackRate(1.25);
 					npc.m_iChanged_WalkCycle = 0;
 					npc.m_flDoingAnimation = gameTime + 0.75;	
-					npc.m_flTimeUntillAirStrike = gameTime + 40.0;
+					if(NpcStats_VictorianCallToArms(npc.index))
+					{
+						npc.m_flTimeUntillAirStrike = gameTime + 30.0;
+					}
+					else
+					{
+						npc.m_flTimeUntillAirStrike = gameTime + 40.0;
+					}
 					I_cant_do_this_all_day[npc.index]=0;
 				}
 			}
@@ -1262,8 +1278,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
-				npc.m_flDoingAnimation = gameTime + 0.5;	
-				Delay_Attribute[npc.index] = gameTime + 0.5;
+				npc.m_flDoingAnimation = gameTime + 1.0;	
+				Delay_Attribute[npc.index] = gameTime + 1.0;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
 			case 1:
