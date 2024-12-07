@@ -58,6 +58,7 @@ static char g_AngerSoundsPassed[] = "vo/heavy_specialcompleted08.mp3";
 static char g_StartAdaptiveArmorSounds[] = "vo/heavy_specialcompleted06.mp3";
 
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
+static const char g_KaboomSounds[] = "items/cart_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
 static float Vs_DelayTime[MAXENTITIES];
@@ -129,6 +130,7 @@ static void ClotPrecache()
 	PrecacheSound(g_AngerSoundsPassed);
 	PrecacheSound(g_StartAdaptiveArmorSounds);
 	PrecacheSound(g_BoomSounds);
+	PrecacheSound(g_KaboomSounds);
 	PrecacheSound(g_IncomingBoomSounds);
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav", true);
 	PrecacheSound("weapons/medi_shield_deploy.wav", true);
@@ -176,6 +178,11 @@ methodmap Huscarls < CClotBody
 	public void PlayBoomSound()
 	{
 		EmitSoundToAll(g_BoomSounds, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayKaboomSound()
+	{
+		EmitSoundToAll(g_KaboomSounds, this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_KaboomSounds, this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayIncomingBoomSound()
 	{
@@ -265,6 +272,11 @@ methodmap Huscarls < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
+	property float m_flHuscarlsGroundSlamCoolDown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
 	
 	public Huscarls(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -333,6 +345,7 @@ methodmap Huscarls < CClotBody
 			npc.m_flHuscarlsAdaptiveArmorCoolDown = gametime + 99.0;
 			npc.m_flHuscarlsAdaptiveArmorDuration = 0.0;
 			npc.m_flHuscarlsDeployEnergyShieldCoolDown = gametime + 0.1;
+			npc.m_flHuscarlsGroundSlamCoolDown = gametime + 99.0;
 			npc.m_flHuscarlsDeployEnergyShieldDuration = 0.0;
 
 			CPrintToChatAll("{lightblue}Huscarls{default}: You are now facing Victoria's Elite forces.");
@@ -371,6 +384,7 @@ methodmap Huscarls < CClotBody
 			npc.m_flHuscarlsAdaptiveArmorCoolDown = gametime + 30.0;
 			npc.m_flHuscarlsAdaptiveArmorDuration = 0.0;
 			npc.m_flHuscarlsDeployEnergyShieldCoolDown = gametime + 15.0;
+			npc.m_flHuscarlsGroundSlamCoolDown = gametime + 10.0;
 			npc.m_flHuscarlsDeployEnergyShieldDuration = 0.0;
 			Vs_RechargeTimeMax[npc.index] = 20.0;
 			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
@@ -1282,6 +1296,48 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		npc.m_flHuscarlsRushCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		SpecialAttack=true;
+	}
+	else if(npc.m_flHuscarlsGroundSlamCoolDown < gameTime)
+	{
+		switch(I_cant_do_this_all_day[npc.index])
+		{
+			case 0:
+			{
+				npc.AddActivityViaSequence("layer_taunt_yeti_prop");
+				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.9);
+				npc.SetPlaybackRate(1.0);
+				npc.m_iChanged_WalkCycle = 0;
+				npc.m_flDoingAnimation = gameTime + 1.0;
+				Delay_Attribute[npc.index] = gameTime + 1.0;
+				I_cant_do_this_all_day[npc.index] = 1;
+			}
+			case 1:
+			{
+				if(Delay_Attribute[npc.index] < gameTime)
+				{
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+					float Damage = 50.0;
+					float Range = 400.0;
+					ParticleEffectAt(WorldSpaceVec, "mvm_soldier_shockwave", 0.5);
+					CreateEarthquake(WorldSpaceVec, 1.0, Range * 1.25, 16.0, 255.0);
+					Explode_Logic_Custom(Damage * RaidModeScaling, 0, npc.index, -1, _, Range, 1.0, 0.75, true, 20);
+					I_cant_do_this_all_day[npc.index] = 0;
+					Delay_Attribute[npc.index] = gameTime + 0.2;
+					if(NpcStats_VictorianCallToArms(npc.index))
+					{
+						npc.m_flHuscarlsGroundSlamCoolDown = gameTime + 20.0;
+					}
+					else
+					{
+						npc.m_flHuscarlsGroundSlamCoolDown = gameTime + 25.0;
+					}
+					npc.PlayKaboomSound();
+				}
+				return 0;
+			}
+		}
 	}
 	else if(npc.m_flHuscarlsRushCoolDown < gameTime)
 	{
