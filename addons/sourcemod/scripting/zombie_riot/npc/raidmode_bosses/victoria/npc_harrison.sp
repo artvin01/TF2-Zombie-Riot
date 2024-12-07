@@ -141,7 +141,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_LasershotReady));   i++) { PrecacheSound(g_LasershotReady[i]);   }
 	PrecacheModel("models/player/sniper.mdl");
 	PrecacheSoundCustom("#zombiesurvival/victoria/raid_harrison.mp3");
-	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
+	PrecacheSound("mvm/ambient_mp3/mvm_siren.mp3");
 	
 	PrecacheModel(LASERBEAM);
 	gRedPoint = PrecacheModel("sprites/redglow1.vmt");

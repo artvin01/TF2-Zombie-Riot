@@ -1587,7 +1587,6 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 							
 							WorldSpaceCenter(targetTrace, vecHit);
 							float damagebasic = 50.0;
-							damagebasic *= 1.15;
 							float damage = damagebasic;
 							if(DynamicCharger[npc.index]>0.0 && npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 							{
