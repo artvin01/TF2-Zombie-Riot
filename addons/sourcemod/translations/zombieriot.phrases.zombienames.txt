@@ -3612,7 +3612,7 @@
 	"Victoria Castellan"
 	{
 		"en"	"Castellan"
-		"ko"	"빵 ㅋㅋ"
+		"ko"	"카스텔란"
 	}
 	"Agent John"
 	{
