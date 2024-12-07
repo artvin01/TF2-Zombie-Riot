@@ -59,14 +59,6 @@
 		"ru" 		"Иберец/Экспидонец Немал прибыла."
 		"fr" 		"Le Iberiain/Expidonsian Nemal est ici."
 	}
-	"Atomizer Arrived"
-	{
-		"en" 		"Leatherboots Scoutsquad's elite, the Atomizer has arrived."
-	}
-	"Harrison Arrived"
-	{
-		"en" 		"Leatherboots Scoutsquad's elite, Harrison has arrived."
-	}
 	"Vhxis arrived"
 	{
 		"en" 		"Vhxis the void keeper halts you."
@@ -462,5 +454,25 @@
 	{
 		"en"		"Omega makes an appearance."
 		"fr"		"Omega apparaît."
+	}
+	"Victorian Radiomast Teleported in!"
+	{
+		"en"	"Victorian Radiomast Teleported in!"
+	}
+	"Atomizer Arrived"
+	{
+		"en" 		"Leatherboots Scoutsquad's elite, Incoming Atomizer."
+	}
+	"Huscarls Arrived"
+	{
+		"en" 		 "Huscarls halts you."
+	}
+	"Harrison Arrived"
+	{
+		"en" 		 "Harrison Arrived."
+	}
+	"Castellan Arrived"
+	{
+		"en" 		 "Castellan arrives to put end to this."
 	}
 }

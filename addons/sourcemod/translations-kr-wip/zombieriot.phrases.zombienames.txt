@@ -3941,47 +3941,47 @@
 	}
 	"Batter"
 	{
-		"en"	"Leatherboots ScoutSquad Batter"
+		"en"	"Leatherboots Batter"
 		"ko"	"가죽부츠 정찰대 타자"
 	}
 	"Charger"
 	{
-		"en"	"Leatherboots ScoutSquad Charger"
+		"en"	"Leatherboots Charger"
 		"ko"	"가죽부츠 정찰대 돌격병"
 	}
 	"Teslar"
 	{
-		"en"	"Leatherboots ScoutSquad Teslar"
+		"en"	"Leatherboots Teslar"
 		"ko"	"가죽부츠 정찰대 테슬라"
 	}
 	"Victorian Vanguard"
 	{
-		"en"	"Leatherboots ScoutSquad Vanguard"
+		"en"	"Leatherboots Vanguard"
 		"ko"	"가죽부츠 정찰대 뱅가드"
 	}
 	"Victorian Igniter"
 	{
-		"en"	"Leatherboots ScoutSquad Igniter"
+		"en"	"Leatherboots Igniter"
 		"ko"	"가죽부츠 정찰대 점화병"
 	}
 	"Grenadier"
 	{
-		"en"	"Leatherboots ScoutSquad Grenadier"
+		"en"	"Leatherboots Grenadier"
 		"ko"	"가죽부츠 정찰대 투척병"
 	}
 	"Victorian ScoutSquad Leader"
 	{
-		"en"	"Leatherboots ScoutSquad Leader"
+		"en"	"Leatherboots Leader"
 		"ko"	"가죽부츠 정찰대 리더"
 	}
 	"Supplier"
 	{
-		"en"	"Leatherboots ScoutSquad Supplier"
+		"en"	"Leatherboots Supplier"
 		"ko"	"가죽부츠 정찰대 보급병"
 	}
 	"Ballista"
 	{
-		"en"	"Leatherboots ScoutSquad Ballista"
+		"en"	"Leatherboots Ballista"
 		"ko"	"가죽부츠 정찰대 발리스타"
 	}
 	"Birdeye"

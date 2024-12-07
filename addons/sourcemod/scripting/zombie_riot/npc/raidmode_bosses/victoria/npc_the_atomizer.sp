@@ -383,12 +383,12 @@ methodmap Atomizer < CClotBody
 		}
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
+			RaidModeScaling *= 0.85;
 			if(!CloneDo)
 			{
 				FTL[npc.index] = 220.0;
 				RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
 			}
-			RaidModeScaling *= 0.65;
 		}
 		npc.m_iChanged_WalkCycle = -1;
 
@@ -1797,7 +1797,8 @@ static bool Victoria_Support(Atomizer npc)
 			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
-			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
+			if(HasEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID"))
+				SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
 		}
 	}

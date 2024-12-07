@@ -403,7 +403,7 @@ methodmap Harrison < CClotBody
 			{
 				FTL[npc.index] = 220.0;
 				RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
-				RaidModeScaling *= 0.65;
+				RaidModeScaling *= 0.85;
 			}
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
