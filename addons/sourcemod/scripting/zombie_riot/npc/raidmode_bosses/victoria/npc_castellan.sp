@@ -374,7 +374,7 @@ methodmap Castellan < CClotBody
 		{
 			FTL[npc.index] = 220.0;
 			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
-			RaidModeScaling *= 0.65;
+			RaidModeScaling *= 0.85;
 		}
 		bool final = StrContains(data, "final_item") != -1;
 		
@@ -895,11 +895,11 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 			ReviveAll(true);
 
-			f_TimeSinceHasBeenHurt = GetGameTime() + 40.0;
+			f_TimeSinceHasBeenHurt = GetGameTime() + 36.0;
 			RaidModeTime += 900.0;
 			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
-			b_NpcIsInvulnerable[npc.index] = true;
-			RemoveNpcFromEnemyList(npc.index);
+			SetEntityCollisionGroup(npc.index, 24);
+			SetTeam(npc.index, TFTeam_Red);
 			GiveProgressDelay(45.0);
 			
 			float SelfPos[3];
@@ -1732,17 +1732,16 @@ static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
 		vecSelf[0] += GetRandomFloat(-20.0, 20.0);
 		vecSelf[1] += GetRandomFloat(-20.0, 20.0);
 		float RocketDamage = 40.0;
-		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 150.0 ,"models/buildables/sentry3_rockets.mdl");
+		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 50.0 ,"models/buildables/sentry3_rockets.mdl");
 		if(IsValidEntity(RocketGet))
 		{
 			for(int r=1; r<=5; r++)
             { 
                 DataPack pack2;
-                CreateDataTimer(1.0 * float(r), WhiteflowerTank_Rocket_Stand, pack2, TIMER_FLAG_NO_MAPCHANGE);
+                CreateDataTimer(1.35 * float(r), WhiteflowerTank_Rocket_Stand, pack2, TIMER_FLAG_NO_MAPCHANGE);
                 pack2.WriteCell(EntIndexToEntRef(RocketGet));
                 pack2.WriteCell(EntIndexToEntRef(enemy));
             }
-			CreateTimer(1.0 * 7.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		npc.FaceTowards(vecTarget, 99999.0);
 	}

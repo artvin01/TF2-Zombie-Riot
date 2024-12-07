@@ -383,12 +383,12 @@ methodmap Atomizer < CClotBody
 		}
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
+			RaidModeScaling *= 0.85;
 			if(!CloneDo)
 			{
 				FTL[npc.index] = 220.0;
 				RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
 			}
-			RaidModeScaling *= 0.65;
 		}
 		npc.m_iChanged_WalkCycle = -1;
 
