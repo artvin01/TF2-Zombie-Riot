@@ -237,6 +237,7 @@ static void ClotThink(int iNPC)
 		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
 		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
 	}
+
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 
@@ -524,4 +525,53 @@ static bool TraceEntityFilterIgnorePlayersAndSelf(int entity, int contentsMask, 
 		return false;
 
 	return true;
+}
+
+stock int ProjectileDetection(int entity, float Targetdist=146.0, bool Remove = false, float DMG)
+{
+	float position[3], position2[3], distance[3], dist;
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	int team = GetTeam(entity);
+	bool success;
+	int projectile = -1;
+	int Owner = -1;
+	while((projectile = FindEntityByClassname(projectile, "tf_projectile_*")) != INVALID_ENT_REFERENCE)
+	{
+		if(HasEntProp(projectile, Prop_Send, "m_hOriginalLauncher"))
+			Owner=GetEntPropEnt(projectile, Prop_Send, "m_hOriginalLauncher");
+		else if(HasEntProp(projectile, Prop_Send, "m_hOwnerprojectile"))
+			Owner=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerprojectile");
+		else if(HasEntProp(projectile, Prop_Data, "m_hOwnerEntity"))
+			Owner=GetEntPropEnt(projectile, Prop_Data, "m_hOwnerEntity");
+		else
+			continue;
+		int OwnerTeam=TFTeam_Stalkers;
+		if(IsValidEntity(Owner))
+			 OwnerTeam = GetTeam(Owner);
+		if(team!=OwnerTeam)
+		{
+			GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", position2);
+			MakeVectorFromPoints(position, position2, distance);
+			dist = GetVectorLength(distance);
+			if(dist<Targetdist)
+			{
+				if(HasEntProp(projectile, Prop_Send, "m_flDamage"))
+					DMG = GetEntPropFloat(projectile, Prop_Send, "m_flDamage");
+				else DMG=-1.0;
+				if(Remove)
+				{
+					if(projectile <= 0 || !IsValidEntity(projectile))
+						continue;
+					RemoveEntity(projectile);
+					AcceptEntityInput(projectile, "Kill");
+				}
+				success=true;
+				continue;
+			}
+			else continue;
+		}
+	}
+	if(success)
+		return Owner;
+	return -1;
 }

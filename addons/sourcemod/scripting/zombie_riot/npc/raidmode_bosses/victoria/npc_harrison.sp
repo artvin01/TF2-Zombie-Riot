@@ -1747,7 +1747,8 @@ static bool Victoria_Support(Harrison npc)
 			{
 				Vs_ParticleSpawned[npc.index][enemy[i]] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
 				SetEdictFlags(Vs_ParticleSpawned[npc.index][enemy[i]], (GetEdictFlags(Vs_ParticleSpawned[npc.index][enemy[i]]) | FL_EDICT_ALWAYS));
-				SetEntProp(Vs_ParticleSpawned[npc.index][enemy[i]], Prop_Data, "m_iHammerID", npc.index);
+				if(HasEntProp(Vs_ParticleSpawned[npc.index][enemy[i]], Prop_Data, "m_iHammerID"))
+					SetEntProp(Vs_ParticleSpawned[npc.index][enemy[i]], Prop_Data, "m_iHammerID", npc.index);
 				Vs_IncomingBoom=true;
 			}
 		}

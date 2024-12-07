@@ -386,8 +386,8 @@ methodmap Huscarls < CClotBody
 			npc.m_flHuscarlsDeployEnergyShieldCoolDown = gametime + 15.0;
 			npc.m_flHuscarlsGroundSlamCoolDown = gametime + 10.0;
 			npc.m_flHuscarlsDeployEnergyShieldDuration = 0.0;
-			Vs_RechargeTimeMax[npc.index] = 20.0;
-			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
+			Vs_RechargeTimeMax[npc.index] = 15.0;
+			Victoria_Support_RechargeTimeMax(npc.index, 15.0);
 
 			Zero(b_said_player_weaponline);
 			fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
@@ -785,6 +785,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flHuscarlsRushCoolDown += 1.0;
 					npc.m_flHuscarlsAdaptiveArmorCoolDown += 1.0;
 					npc.m_flHuscarlsDeployEnergyShieldCoolDown += 1.0;
+					npc.m_flHuscarlsGroundSlamCoolDown += 1.0;
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_bFUCKYOU=false;
 				}
@@ -793,6 +794,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flHuscarlsRushCoolDown += 0.1;
 		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
 		return;
 	}
 	
@@ -822,6 +824,7 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_flHuscarlsRushCoolDown += 3.0;
 			npc.m_flHuscarlsAdaptiveArmorCoolDown += 3.0;
 			npc.m_flHuscarlsDeployEnergyShieldCoolDown += 3.0;
+			npc.m_flHuscarlsGroundSlamCoolDown += 3.0;
 			I_cant_do_this_all_day[npc.index]=0;
 			MyGundammmmmm[npc.index] = true;
 		}
@@ -1282,6 +1285,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					npc.m_flHuscarlsRushCoolDown += 3.0;
 					npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + 15.0;
 					npc.m_flHuscarlsDeployEnergyShieldCoolDown += 3.0;
+					npc.m_flHuscarlsGroundSlamCoolDown += 3.0;
 					I_cant_do_this_all_day[npc.index] = 0;
 				}
 			}
@@ -1290,11 +1294,13 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				npc.m_flHuscarlsRushCoolDown += 3.0;
 				npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + 30.0;
 				npc.m_flHuscarlsDeployEnergyShieldCoolDown += 3.0;
+				npc.m_flHuscarlsGroundSlamCoolDown += 3.0;
 				I_cant_do_this_all_day[npc.index] = 0;
 			}
 		}
 		npc.m_flHuscarlsRushCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
 		SpecialAttack=true;
 	}
 	else if(npc.m_flHuscarlsGroundSlamCoolDown < gameTime)
@@ -1318,11 +1324,11 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-					float DamageDo = 50.0;
+					float SlamDMG = 50.0;
 					float Range = 400.0;
 					ParticleEffectAt(WorldSpaceVec, "mvm_soldier_shockwave", 0.5);
 					CreateEarthquake(WorldSpaceVec, 1.0, Range * 1.25, 16.0, 255.0);
-					Explode_Logic_Custom(DamageDo * RaidModeScaling, 0, npc.index, -1, _, Range, 1.0, 0.75, true, 20);
+					Explode_Logic_Custom(SlamDMG * RaidModeScaling, 0, npc.index, -1, _, Range, 1.0, 0.75, true, 20, _, _, Ground_Slam);
 					I_cant_do_this_all_day[npc.index] = 0;
 					Delay_Attribute[npc.index] = gameTime + 0.2;
 					if(NpcStats_VictorianCallToArms(npc.index))
@@ -1335,9 +1341,12 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					}
 					npc.PlayKaboomSound();
 				}
-				return 0;
 			}
 		}
+		npc.m_flHuscarlsRushCoolDown += 0.1;
+		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+		return 2;
 	}
 	else if(npc.m_flHuscarlsRushCoolDown < gameTime)
 	{
@@ -1524,6 +1533,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				npc.m_flHuscarlsRushCoolDown = gameTime + 20.0;
 				npc.m_flHuscarlsRushCoolDown = gameTime + 20.0;
 				npc.m_flHuscarlsAdaptiveArmorCoolDown += 6.0;
+				npc.m_flHuscarlsGroundSlamCoolDown += 6.0;
 				npc.m_flHuscarlsDeployEnergyShieldCoolDown += 1.0;
 				I_cant_do_this_all_day[npc.index] = 0;
 				ExtraMovement[npc.index] = 0.0;
@@ -1531,6 +1541,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		}
 		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
 	}
 	else if(npc.m_flHuscarlsDeployEnergyShieldCoolDown < gameTime)
 	{
@@ -1542,6 +1553,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		Fire_Shield_Projectile(npc, 10.0);
 		npc.m_flHuscarlsRushCoolDown += 1.1;
 		npc.m_flHuscarlsAdaptiveArmorCoolDown += 1.1;
+		npc.m_flHuscarlsGroundSlamCoolDown += 1.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + 21.0;
 	}
 	if(SpecialAttack)
@@ -1749,6 +1761,30 @@ static void Ground_pound(int entity, int victim, float damage, int weapon)
 	}
 }
 
+static void Ground_Slam(int entity, int victim, float damage, int weapon)
+{
+	Huscarls npc = view_as<Huscarls>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(IsValidEntity(npc.index) && GetTeam(entity) != GetTeam(victim))
+	{
+		if(IsValidClient(victim))
+		{
+			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 0.2, 0);
+			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 0.2, 0);
+			TF2_AddCondition(victim, TFCond_LostFooting, 1.0);
+			TF2_AddCondition(victim, TFCond_AirCurrent, 1.0);
+		}
+		else FreezeNpcInTime(victim, 0.2, true);
+		if(!IsInvuln(victim))
+		{
+			if(IsValidClient(victim))
+				TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+			Custom_Knockback(entity, victim, 70.0, true);
+		}
+		else Custom_Knockback(entity, victim, 140.0, true);
+	}
+}
+
 static int Huscarls_Get_HighDMGType(int entity)
 {
 	Huscarls npc = view_as<Huscarls>(entity);
@@ -1846,7 +1882,8 @@ static bool Victoria_Support(Huscarls npc)
 			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
-			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
+			if(HasEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID"))
+				SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
 		}
 	}
@@ -1861,7 +1898,7 @@ static bool Victoria_Support(Huscarls npc)
 		
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
-		Explode_Logic_Custom(4500.0, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
+		Explode_Logic_Custom(100.0*RaidModeScaling, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
 		b_ThisNpcIsSawrunner[npc.index] = false;
 		ParticleEffectAt(position, "hightower_explosion", 1.0);
 		i_ExplosiveProjectileHexArray[npc.index] = 0; 
