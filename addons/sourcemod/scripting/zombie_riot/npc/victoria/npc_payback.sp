@@ -338,7 +338,7 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, .Npc_type = 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 				float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 				float MaxHealth = float(ReturnEntityMaxHealth(npc.index));			
