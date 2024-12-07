@@ -1023,6 +1023,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				{
 					
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+					pos[3] += 50.0;
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
 					int health = ReturnEntityMaxHealth(npc.index) / 30;
@@ -1049,7 +1050,15 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_flDoingAnimation = gameTime + 0.5;	
 					Delay_Attribute[npc.index] = gameTime + 0.5;
 					I_cant_do_this_all_day[npc.index]=0;
-					npc.m_flTimeUntillNextSummonDrones = gameTime + 15.0;
+					if(NpcStats_VictorianCallToArms(npc.index))
+					{
+						npc.m_flTimeUntillNextSummonDrones = gameTime + 10.0;
+					}
+					else
+					{
+						npc.m_flTimeUntillNextSummonDrones = gameTime + 15.0;
+					}
+					
 					npc.m_flTimeUntillNextSummonHardenerDrones += 2.0;
 					return 0;
 				}
@@ -1085,6 +1094,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					npc.m_iChanged_WalkCycle = 0;
 
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+					pos[3] += 50.0;
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
 					int health = ReturnEntityMaxHealth(npc.index) / 25;
@@ -1301,9 +1311,16 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 							npc.m_flTimeUntillSummonRocket += 0.15;
 						}
 					}
+					I_cant_do_this_all_day[npc.index]=0;
+					if(NpcStats_VictorianCallToArms(npc.index))
+					{
+						npc.m_flTimeUntillHomingStrike = gameTime + 22.5;
+					}
+					else
+					{
+						npc.m_flTimeUntillHomingStrike = gameTime + 35.0;
+					}
 				}
-				I_cant_do_this_all_day[npc.index]=0;
-				npc.m_flTimeUntillHomingStrike = gameTime + 35.0;
 			}
 		}
 	}
@@ -1485,7 +1502,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 						npc.PlayMeleeSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
 						
-						float time = 2.0;
+						float time = 3.0;
 						if(NpcStats_VictorianCallToArms(npc.index))
 						{
 							time *= 0.75;
