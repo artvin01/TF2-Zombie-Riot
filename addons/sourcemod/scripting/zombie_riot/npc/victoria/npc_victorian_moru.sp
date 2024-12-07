@@ -5,6 +5,10 @@ static const char g_DeathSounds[] = "npc/scanner/scanner_explode_crash2.wav";
 static const char g_HealSound[] = "physics/metal/metal_box_strain1.wav";
 static bool MK2[MAXENTITIES];
 static bool Limit[MAXENTITIES];
+static int OverrideAlly[MAXENTITIES];
+
+static int SaveSolidFlags[MAXENTITIES];
+static int SaveSolidType[MAXENTITIES];
 
 void VictorianDroneAnvil_MapStart()
 {
@@ -50,8 +54,12 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 		
+		SaveSolidFlags[npc.index]=GetEntProp(npc.index, Prop_Send, "m_usSolidFlags");
+		SaveSolidType[npc.index]=GetEntProp(npc.index, Prop_Send, "m_nSolidType");
+		
 		MK2[npc.index]=false;
 		Limit[npc.index]=false;
+		OverrideAlly[npc.index]=-1;
 		
 		bool FactorySpawn;
 		static char countext[20][1024];
@@ -62,7 +70,8 @@ methodmap VictorianDroneAnvil < CClotBody
 			if(!StrContains(countext[i], "factory"))FactorySpawn=true;
 			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Anvil MK2");}
 			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
-			else if(!StrContains(countext[i], "factory"))FactorySpawn=true;
+			int targetdata = StringToInt(countext[i]);
+			if(IsValidEntity(targetdata) && GetTeam(npc.index) == GetTeam(targetdata))OverrideAlly[npc.index] = targetdata;
 		}
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
@@ -179,24 +188,12 @@ static void ClotThink(int iNPC)
 		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
 		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
 	}
-	int attacker = ProjectileDetection(npc.index, _, true);
-	if(IsValidClient(attacker))
-	{
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float damage = 45.0;
-		damage *= Attributes_GetOnPlayer(attacker, 1, true, true);
-		damage *= Attributes_GetOnPlayer(attacker, 2, true, true);
-		damage *= Attributes_GetOnPlayer(attacker, 1000, true, true);
-		damage *= Attributes_GetOnPlayer(attacker, 410, true, true)+1.0;
-		
-		Explode_Logic_Custom(damage, attacker, attacker, -1, VecSelfNpc, 65.0,_,_,false);
-		FreezeNpcInTime(npc.index, 0.1, true);
-	}
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 		
-	if(!IsValidAlly(npc.index, GetClosestAlly(npc.index)) || (gameTime > npc.m_flAttackHappens && Limit[npc.index]))
+	if((!IsValidAlly(npc.index, GetClosestAlly(npc.index)) && !IsValidAlly(npc.index, OverrideAlly[npc.index]))
+	|| (gameTime > npc.m_flAttackHappens && Limit[npc.index]))
 	{
 		SmiteNpcToDeath(npc.index);
 		return;
@@ -220,9 +217,12 @@ static void ClotThink(int iNPC)
 		case 0://attack
 		{
 			npc.m_bisWalking = false;
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12);
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 2); 
-			SetEntityCollisionGroup(npc.index, 6);
+			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
+			SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
+			if(GetTeam(npc.index) == TFTeam_Red)
+				SetEntityCollisionGroup(npc.index, 24);
+			else
+				SetEntityCollisionGroup(npc.index, 9);
 			npc.m_flCharge_delay = gameTime + 0.8;
 			
 			if(!npc.Anger && Limit[npc.index])

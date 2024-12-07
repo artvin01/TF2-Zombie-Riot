@@ -9,7 +9,11 @@ static bool MK2[MAXENTITIES];
 static bool Limit[MAXENTITIES];
 static bool ISVOLI[MAXENTITIES];
 static int OverrideTarget[MAXENTITIES];
+static int OverrideAlly[MAXENTITIES];
 static float IDiying[MAXENTITIES];
+
+static int SaveSolidFlags[MAXENTITIES];
+static int SaveSolidType[MAXENTITIES];
 
 void VictorianDroneFragments_MapStart()
 {
@@ -62,11 +66,13 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
-		
+		SaveSolidFlags[npc.index]=GetEntProp(npc.index, Prop_Send, "m_usSolidFlags");
+		SaveSolidType[npc.index]=GetEntProp(npc.index, Prop_Send, "m_nSolidType");
 		MK2[npc.index]=false;
 		Limit[npc.index]=false;
 		ISVOLI[npc.index]=false;
 		OverrideTarget[npc.index] = -1;
+		OverrideAlly[npc.index] = -1;
 		
 		bool FactorySpawn;
 		static char countext[20][1024];
@@ -79,7 +85,13 @@ methodmap VictorianDroneFragments < CClotBody
 			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
 			else if(!StrContains(countext[i], "isvoli"))ISVOLI[npc.index]=true;
 			int targetdata = StringToInt(countext[i]);
-			if(IsValidEntity(targetdata)) OverrideTarget[npc.index] = targetdata;
+			if(IsValidEntity(targetdata))
+			{
+				if(GetTeam(npc.index) != GetTeam(targetdata))
+					OverrideTarget[npc.index] = targetdata;
+				else
+					OverrideAlly[npc.index] = targetdata;
+			}
 		}
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
@@ -225,24 +237,51 @@ static void ClotThink(int iNPC)
 		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
 		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
 	}
-	int attacker = ProjectileDetection(npc.index, _, true);
+	//"Source Spaghetti" is made without asking for help. Don't be afraid to ask for help.
+	/*float ProjectileDamage = -1.0;
+	int attacker = ProjectileDetection(npc.index, _, true, ProjectileDamage);
 	if(IsValidClient(attacker))
 	{
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float damage = 45.0;
-		damage *= Attributes_GetOnPlayer(attacker, 1, true, true);
-		damage *= Attributes_GetOnPlayer(attacker, 2, true, true);
-		damage *= Attributes_GetOnPlayer(attacker, 1000, true, true);
-		damage *= Attributes_GetOnPlayer(attacker, 410, true, true)+1.0;
-		
-		Explode_Logic_Custom(damage, attacker, attacker, -1, VecSelfNpc, 65.0,_,_,false);
-		FreezeNpcInTime(npc.index, 0.1, true);
+		if(ProjectileDamage<0.0)
+		{
+			int primary = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+			int secondary = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Secondary);
+			int melee = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
+			int active = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
+			int GotWeapons = -1;
+			if(IsValidEntity(active))
+			{
+				if(IsValidEntity(primary) && active==primary)GotWeapons=primary;
+				else if(IsValidEntity(secondary) && active==secondary)GotWeapons=secondary;
+				else if(IsValidEntity(melee) && active==melee)GotWeapons=melee;
+			}
+			if(IsValidEntity(GotWeapons))
+			{
+				damage *= Attributes_Get(GotWeapons, 1, 1.0);
+				damage *= Attributes_Get(GotWeapons, 2, 1.0);
+				damage *= Attributes_Get(GotWeapons, 1000, 1.0);
+				damage *= Attributes_Get(GotWeapons, 410, 1.0);
+				if(damage<45.0)damage=45.0;
+			}
+		}
+		else damage=ProjectileDamage;
+		Explode_Logic_Custom(damage, attacker, attacker, -1, VecSelfNpc, 125.0,_,_,false);
 	}
+	else if(IsValidEntity(attacker))
+	{
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float damage = 150.0;
+		if(ProjectileDamage>0.0)damage=ProjectileDamage;
+		Explode_Logic_Custom(damage, attacker, attacker, -1, VecSelfNpc, 125.0,_,_,false);
+	}*/
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
-		
-	if((!IsValidAlly(npc.index, GetClosestAlly(npc.index)) && !ISVOLI[npc.index]) || (gameTime > npc.m_flAttackHappens && Limit[npc.index]))
+
+	if((!IsValidAlly(npc.index, GetClosestAlly(npc.index)) && !ISVOLI[npc.index] && !IsValidAlly(npc.index, OverrideAlly[npc.index]))
+	|| (gameTime > npc.m_flAttackHappens && Limit[npc.index]))
 	{
 		SmiteNpcToDeath(npc.index);
 		return;
@@ -256,14 +295,14 @@ static void ClotThink(int iNPC)
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float DistanceToTarget = GetVectorDistance(VecEnemy, VecSelfNpc, true);
 	
-	if(npc.m_flGetClosestTargetTime < gameTime)
+	if(npc.m_flGetClosestTargetTime < gameTime || !IsValidEntity(target))
 		target = VictoriaFragmentsGetTarget(npc.index, gameTime, (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 50.0));
 	
 	if(!npc.Anger)
 	{
 		npc.SetVelocity({0.0,0.0,0.0});
 		int LZ = -1;
-		if(IsValidEntity(OverrideTarget[npc.index]))LZ = OverrideTarget[npc.index];
+		if(IsValidEntity(OverrideTarget[npc.index]) && GetTeam(npc.index) != GetTeam(OverrideTarget[npc.index]))LZ = OverrideTarget[npc.index];
 		else LZ = GetClosestTarget(npc.index);
 		if(IsValidEnemy(npc.index,LZ))
 		{
@@ -347,9 +386,12 @@ static void ClotThink(int iNPC)
 		if(GetVectorDistance(SET_XZY_POS[npc.index], VecSelfNpc) < 200.0)
 		{
 			float NPCAng[3];
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12);
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", 2); 
-			SetEntityCollisionGroup(npc.index, 6);
+			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
+			SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
+			if(GetTeam(npc.index) == TFTeam_Red)
+				SetEntityCollisionGroup(npc.index, 24);
+			else
+				SetEntityCollisionGroup(npc.index, 9);
 			npc.m_flSpeed = 0.0;
 			VecSelfNpc[2] += 500.0;
 			npc.SetVelocity({0.0,0.0,0.0});
@@ -516,7 +558,7 @@ static bool TraceEntityFilterIgnorePlayersAndSelf(int entity, int contentsMask, 
 	return true;
 }
 
-stock int ProjectileDetection(int entity, float Targetdist=146.0, bool Remove = false)
+stock int ProjectileDetection(int entity, float Targetdist=146.0, bool Remove = false, float DMG)
 {
 	float position[3], position2[3], distance[3], dist;
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
@@ -544,6 +586,9 @@ stock int ProjectileDetection(int entity, float Targetdist=146.0, bool Remove = 
 			dist = GetVectorLength(distance);
 			if(dist<Targetdist)
 			{
+				if(HasEntProp(projectile, Prop_Send, "m_flDamage"))
+					DMG = GetEntPropFloat(projectile, Prop_Send, "m_flDamage");
+				else DMG=-1.0;
 				if(Remove)
 				{
 					if(projectile <= 0 || !IsValidEntity(projectile))
