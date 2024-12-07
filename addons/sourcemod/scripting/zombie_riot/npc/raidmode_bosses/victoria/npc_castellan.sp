@@ -132,7 +132,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_LasershotReady));   i++) { PrecacheSound(g_LasershotReady[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/victoria/raid_castellan.mp3");
-	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
+	PrecacheSound("mvm/ambient_mp3/mvm_siren.mp3");
 	
 	PrecacheModel(LASERBEAM);
 	PrecacheModel("sprites/redglow1.vmt");
@@ -393,7 +393,7 @@ methodmap Castellan < CClotBody
 		{
 			FTL[npc.index] = 220.0;
 			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
-			RaidModeScaling *= 0.85;
+			RaidModeScaling *= 0.75;
 		}
 		bool final = StrContains(data, "final_item") != -1;
 		
@@ -404,11 +404,11 @@ methodmap Castellan < CClotBody
 		}
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
-		music.Time = 247;
+		music.Time = 154;
 		music.Volume = 2.0;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "06Graveyard_Arena3");
-		strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?");
+		strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
 		Music_SetRaidMusic(music);
 		npc.m_iChanged_WalkCycle = -1;
 
@@ -1086,7 +1086,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					pos[2] += 50.0;
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-					int health = ReturnEntityMaxHealth(npc.index) / 30;
+					int health = ReturnEntityMaxHealth(npc.index) / 85;
 					char Adddeta[512];
 					FormatEx(Adddeta, sizeof(Adddeta), "mk2;limit");
 					FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, npc.index);
@@ -1160,7 +1160,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					pos[2] += 50.0;
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-					int health = ReturnEntityMaxHealth(npc.index) / 25;
+					int health = ReturnEntityMaxHealth(npc.index) / 75;
 					char Adddeta[512];
 					FormatEx(Adddeta, sizeof(Adddeta), "mk2;limit");
 					FormatEx(Adddeta, sizeof(Adddeta), "%s;%i", Adddeta, npc.index);
@@ -1492,7 +1492,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								
 								WorldSpaceCenter(targetTrace, vecHit);
 
-								float damage = 70.0;
+								float damage = 50.0;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									

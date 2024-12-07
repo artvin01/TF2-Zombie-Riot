@@ -58,7 +58,7 @@ void Twin1_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	PrecacheModel("models/player/scout.mdl");
-	PrecacheSoundCustom("#zombiesurvival/matrix/doubletrouble.mp3");
+	PrecacheSound("#zombiesurvival/matrix/doubletrouble.mp3");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Twin No.");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_twins");
@@ -172,7 +172,7 @@ methodmap Matrix_Twins < CClotBody
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/doubletrouble.mp3");
 			music.Time = 114;
 			music.Volume = 1.1;
-			music.Custom = true;
+			music.Custom = false;
 			strcopy(music.Name, sizeof(music.Name), "Double Trouble");
 			strcopy(music.Artist, sizeof(music.Artist), "Don Davis");
 			Music_SetRaidMusic(music);

@@ -1065,7 +1065,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	if(npc.m_flHuscarlsAdaptiveArmorDuration > gameTime)
 	{
 		DynamicCharger[npc.index] += damage;
-		if(!IsFakeClient(attacker) && IsValidClient(attacker))
+		if(IsValidClient(attacker))
 			EmitSoundToClient(attacker, g_AdaptiveArmorSounds[GetRandomInt(0, sizeof(g_AdaptiveArmorSounds) - 1)], _, _, _, _, 0.7, _, _, _, _, false);
 		if(IsValidEntity(npc.m_iWearable2))
 		{
@@ -1589,7 +1589,6 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 							
 							WorldSpaceCenter(targetTrace, vecHit);
 							float damagebasic = 50.0;
-							damagebasic *= 1.15;
 							float damage = damagebasic;
 							if(DynamicCharger[npc.index]>0.0 && npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 							{
