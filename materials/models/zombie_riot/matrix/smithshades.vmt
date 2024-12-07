@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\zombie_riot\matrix\soria-env"
+	//"$nodecal" "1"
+	"$envmap" "models\zombie_riot\matrix\soria-env"
+	//"$envmapcontrast" 1.1
+	//"$envmapsaturation" 0
+
+	"$halflambert" 1
+	
+}

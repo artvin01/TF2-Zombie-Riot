@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\zombie_riot\matrix\smithshoe"
+	"$nodecal" "1"
+	"$bumpmap" "models\zombie_riot\matrix\smithshoe-normal"
+	"$envmap" "models\zombie_riot\matrix\soria-env"
+	"$envmapcontrast" 1.1
+	"$envmapsaturation" 0
+	
+	"$halflambert" 1
+	
+}

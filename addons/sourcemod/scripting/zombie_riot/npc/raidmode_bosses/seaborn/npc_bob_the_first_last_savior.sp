@@ -753,7 +753,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 							TeleportEntity(npc.index, pos);
 
-							npc.m_iState = -1;
+							npc.m_iAnimationState = -1;
 							npc.m_bisWalking = false;
 							npc.SetActivity("ACT_PUSH_PLAYER");
 							npc.SetPlaybackRate(3.0);
@@ -1261,7 +1261,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					if(npc.m_iAttackType == 13)
 					{
 						npc.m_iAttackType = 14;
-						npc.m_iState = -1;	// Replay the animation regardless
+						npc.m_iAnimationState = -1;	// Replay the animation regardless
 						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_PUSH_PLAYER");
 						npc.SetPlaybackRate(2.0);

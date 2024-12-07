@@ -1626,17 +1626,11 @@
 	
 	"Alien Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate"
-		"fr"	"+2x vitesse de réparation"
-		"ru"	"2,0-кратная скорость починки."
-		"chi"   "修复建筑生命值提高2.0倍"
+		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25%% (Cant go below 1)"
 	}
 	"Engineering Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate"
-		"fr"	"+2x vitesse de réparation"
-		"ru"	"2,0-кратная скорость починки."
-		"chi"   "修复建筑生命值提高2.0倍"
+		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25%% (Cant go below 1)"
 	}
 	"Construction Worker Desc"
 	{
@@ -1647,10 +1641,7 @@
 	
 	"Cosmic Repair Handling book Desc"
 	{
-		"en"	"3x Repair Rate"
-		"fr"	"+3x vitesse de réparation"
-		"ru"	"Трёхкратная скорость починки."
-		"chi"   "修复建筑生命值提高2倍"
+		"en"	"3x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25%% (Cant go below 1)"
 	}
 	
 	"Construction Expert Desc"
@@ -1658,7 +1649,6 @@
 		"en"	"1.7x more building health and 2.25x Sentry damage and increased attack speed by 1.2x, 4 more support buildings added"
 		"fr"	"+1.7x durabilité pour constructions, +2.25x dégats par votre mitrailleuse, +1.2x cadence de tir. +4 espaces pour construction de support."
 		"chi"	"建筑物血量*1.7，布哨伤害*2.25，+4辅助建筑上限。"
-
 	}
 	
 	"Construction Master Desc"
@@ -1817,51 +1807,32 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+2x puissance Medigun\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
-		"ru"	"Двукратный урон и лечение у лечебной пушки, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+2倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"2x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 40%% (cant go below 1)"
 	}
 	
 	"Professor Certificate Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+1.5x puissance Medigun\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
-		"ru"	"1,5-кратный урон и лечение у лечебной пушки, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.5倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
 	}
 	
 	"Death Certificate Desc"
 	{
-		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+1.4x puissance Medigun, +2 secondes de Über\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
-		"ru"	"1,4-кратный урон и лечение у лечебной пушки и +2 секунды убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.4倍的医枪伤害和治疗效果，每秒恢复2的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+1.45x puissance Medigun, +1 seconde de Über\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
-		"ru"	"1,45-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.45倍的医枪伤害和治疗效果，每秒恢复1的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+1.45x puissance Medigun, +1 seconde de Über\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
-		"ru"	"1,45-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.45倍的医枪伤害和治疗效果，每秒恢复的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
-		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
-		"fr"	"+1.5x puissance Medigun\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez votre Medigun"
-		"ru"	"1,5-кратный урон и лечение у лечебной пушки и 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.5倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
 	}
 	
 	"Panic Attack Desc"
@@ -1952,10 +1923,7 @@
 	
 	"Headshot Affinity Desc"
 	{
-		"en"	"Headshots deal 2.0x the dmg instead of 1.65x, but deal 35%% less bodyshot damage"
-		"fr"	"Les tirs en pleine tête infligent 2x dégats au lieu de 1.65x, -35%% dégats si vous manquez."
-		"ru"	"Выстрелы в голову наносят двукратно больше урона вместо 1,65-кратного, но наносят на 35%% меньше урона от выстрелов в тело"
-		"chi"   "爆头造成的伤害增加2.0倍，但造成的身体伤害减少35%%"
+		"en"	"Headshots deal 1.4x the dmg instead of 1.2, but deal 35%% less bodyshot damage\nFalloff, if you headshot, is reduced by 30%."
 	}
 	"Proximity Ammunition Desc"
 	{
@@ -3499,8 +3467,7 @@
 	}
 	"Helena's Elite Medicine Desc"
 	{
-		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
-		"fr"	"+1.6x puissance Medigun\n+5% résistance contre les dégats corps-à-corps pendant que vous tenez des armes de support."
+		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 40% (cant go below 1)"
 	}
 	"Messenger Launcher Desc"
 	{
@@ -3555,23 +3522,23 @@
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects."
+		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70%% Building Health, +181.25% Weapon Damage, +50 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects."
+		"en"	"+70%% Building Health, +181.25% Weapon Damage, +50 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown."
+		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown."
+		"en"	"+160% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown."
+		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"West Pap 1 Desc"
 	{

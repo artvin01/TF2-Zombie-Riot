@@ -937,7 +937,7 @@ methodmap Citizen < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.m_iState = -1;
+		npc.m_iAnimationState = -1;
 		npc.SetActivity("ACT_BUSY_SIT_GROUND", 0.0);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -1231,10 +1231,10 @@ methodmap Citizen < CClotBody
 		if(Is_sequence)
 		{
 			int sequence = this.LookupSequence(animation);
-			if(sequence > 0 && sequence != this.m_iState)
+			if(sequence > 0 && sequence != this.m_iAnimationState)
 			{
 				this.m_flSpeed = speed;
-				this.m_iState = sequence;
+				this.m_iAnimationState = sequence;
 				this.m_bisWalking = false;
 				this.m_iActivity = 0;
 				
@@ -1247,10 +1247,10 @@ methodmap Citizen < CClotBody
 		else
 		{
 			int activity = this.LookupActivity(animation);
-			if(activity > 0 && activity != this.m_iState)
+			if(activity > 0 && activity != this.m_iAnimationState)
 			{
 				this.m_flSpeed = speed;
-				this.m_iState = activity;
+				this.m_iAnimationState = activity;
 				this.m_bisWalking = false;
 				this.StartActivity(activity);
 
@@ -3308,7 +3308,7 @@ public void Citizen_ClotThink(int iNPC)
 								if(npc.m_iWearable1 > 0)
 									AcceptEntityInput(npc.m_iWearable1, "Enable");
 								
-								npc.m_iState = -1;
+								npc.m_iAnimationState = -1;
 								npc.AddGesture("ACT_RANGE_ATTACK_PISTOL");
 								
 								float vecSpread = 0.1;
@@ -3604,7 +3604,7 @@ public void Citizen_ClotThink(int iNPC)
 								npc.SetActivity("ACT_IDLE_ANGRY_AR2", 0.0);
 								walkStatus = -1;	// Don't move
 								
-								npc.m_iState = -1;
+								npc.m_iAnimationState = -1;
 								npc.AddGesture("ACT_RANGE_ATTACK_SHOTGUN");
 								
 								float vecSpread = 0.1;
@@ -3712,7 +3712,7 @@ public void Citizen_ClotThink(int iNPC)
 								npc.SetActivity("ACT_IDLE_ANGRY_RPG", 0.0);
 								walkStatus = -1;	// Don't move
 								
-								npc.m_iState = -1;
+								npc.m_iAnimationState = -1;
 								npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
 
 								npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);

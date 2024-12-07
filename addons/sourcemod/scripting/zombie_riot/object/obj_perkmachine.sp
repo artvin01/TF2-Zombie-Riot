@@ -68,6 +68,11 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	SetStoreMenuLogic(client, false);
 	SetGlobalTransTarget(client);
 	
+	if(ClientTutorialStep(client) == 4)
+	{
+		SetClientTutorialStep(client, 5);
+		DoTutorialStep(client, false);	
+	}
 	char buffer[32];
 	Menu menu2 = new Menu(Building_ConfirmMountedAction);
 	menu2.SetTitle("%t", "Which perk do you desire?");
