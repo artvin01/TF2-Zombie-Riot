@@ -2519,10 +2519,7 @@ stock void spawnRing(int client, float range, float modif_X, float modif_Y, floa
 		}
 		else if (client > MaxClients) //If our entity is just an entity, grab its m_vecOrigin
 		{
-			if (HasEntProp(client, Prop_Send, "m_vecOrigin"))
-			{
-				GetEntPropVector(client, Prop_Send, "m_vecOrigin", center);
-			}
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", center);
 		}
 		
 		if (IsValidMulti(client, true, false, false)) //If the entity is a dead player, abort

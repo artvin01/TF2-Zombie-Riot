@@ -303,7 +303,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 						int entity, i;
 						while(TF2_GetItem(client, entity, i))
 						{
-							if(b_IsAMedigun[entity])	//if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+							if(b_IsAMedigun[entity])
 								list.Push(entity);
 						}
 

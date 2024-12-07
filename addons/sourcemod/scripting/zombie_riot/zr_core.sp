@@ -2393,21 +2393,21 @@ void ClientSaveUber(int client)
 		{
 			case 411:
 			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[entity])
 				{
 					f_MedigunChargeSave[client][0] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
 				}
 			}
 			case 211:
 			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[entity])
 				{
 					f_MedigunChargeSave[client][1] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
 				}
 			}
 			case 998:
 			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[entity])
 				{
 					f_MedigunChargeSave[client][2] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
 				}
@@ -2426,7 +2426,7 @@ void ClientApplyMedigunUber(int client)
 		{
 			case 411:
 			{
-				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[weapon])
 				{
 					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
 					f_MedigunChargeSave[client][0] = 0.0;
@@ -2434,7 +2434,7 @@ void ClientApplyMedigunUber(int client)
 			}
 			case 211:
 			{
-				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[weapon])
 				{
 					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][1]);
 					f_MedigunChargeSave[client][1] = 0.0;
@@ -2442,7 +2442,7 @@ void ClientApplyMedigunUber(int client)
 			}
 			case 998:
 			{
-				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[weapon])
 				{
 					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][2]);
 					f_MedigunChargeSave[client][2] = 0.0;

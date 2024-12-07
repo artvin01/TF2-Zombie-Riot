@@ -237,45 +237,6 @@ static void ClotThink(int iNPC)
 		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
 		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
 	}
-	//"Source Spaghetti" is made without asking for help. Don't be afraid to ask for help.
-	/*float ProjectileDamage = -1.0;
-	int attacker = ProjectileDetection(npc.index, _, true, ProjectileDamage);
-	if(IsValidClient(attacker))
-	{
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float damage = 45.0;
-		if(ProjectileDamage<0.0)
-		{
-			int primary = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
-			int secondary = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Secondary);
-			int melee = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
-			int active = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
-			int GotWeapons = -1;
-			if(IsValidEntity(active))
-			{
-				if(IsValidEntity(primary) && active==primary)GotWeapons=primary;
-				else if(IsValidEntity(secondary) && active==secondary)GotWeapons=secondary;
-				else if(IsValidEntity(melee) && active==melee)GotWeapons=melee;
-			}
-			if(IsValidEntity(GotWeapons))
-			{
-				damage *= Attributes_Get(GotWeapons, 1, 1.0);
-				damage *= Attributes_Get(GotWeapons, 2, 1.0);
-				damage *= Attributes_Get(GotWeapons, 1000, 1.0);
-				damage *= Attributes_Get(GotWeapons, 410, 1.0);
-				if(damage<45.0)damage=45.0;
-			}
-		}
-		else damage=ProjectileDamage;
-		Explode_Logic_Custom(damage, attacker, attacker, -1, VecSelfNpc, 125.0,_,_,false);
-	}
-	else if(IsValidEntity(attacker))
-	{
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float damage = 150.0;
-		if(ProjectileDamage>0.0)damage=ProjectileDamage;
-		Explode_Logic_Custom(damage, attacker, attacker, -1, VecSelfNpc, 125.0,_,_,false);
-	}*/
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;

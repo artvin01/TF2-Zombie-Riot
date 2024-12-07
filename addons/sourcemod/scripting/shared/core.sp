@@ -351,6 +351,7 @@ bool b_DoNotUnStuck[MAXENTITIES];
 float f_NoUnstuckVariousReasons[MAXENTITIES];
 bool b_PlayerIsInAnotherPart[MAXENTITIES];
 bool b_EntityIsStairAbusing[MAXENTITIES];
+bool b_EntityCantBeColoured[MAXENTITIES];
 float f_EntityIsStairAbusing[MAXENTITIES];
 int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
@@ -3182,7 +3183,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponArchetype[entity] = 0;
 		i_WeaponForceClass[entity] = 0;
 		b_ProjectileCollideWithPlayerOnly[entity] = false;
-
+		b_EntityCantBeColoured[entity] = false;
 #if defined RTS
 		TeamNumber[entity] = 0;
 #else
@@ -3526,7 +3527,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 			Hook_DHook_UpdateTransmitState(entity);
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
-		}
+			b_EntityCantBeColoured[entity] = true;
+ 		}
 		else if(!StrContains(classname, "info_target"))
 		{
 			b_ThisEntityIgnored[entity] = true;
