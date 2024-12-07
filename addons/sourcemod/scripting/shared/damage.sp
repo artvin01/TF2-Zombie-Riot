@@ -2197,7 +2197,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	if(f_VictorianCallToArms[victim] > GameTime)
 	{
-		Format(Debuff_Adder_right, SizeOfChar, "✇%s", Debuff_Adder_right);
+		Format(Debuff_Adder_right, SizeOfChar, "@%s", Debuff_Adder_right);
 	}
 	if(f_CaffeinatorBuff[victim] > GameTime)
 	{

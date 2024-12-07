@@ -352,7 +352,7 @@ methodmap Atomizer < CClotBody
 			strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
 			Music_SetRaidMusic(music);
 			
-			CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let the get out alive!");
+			CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let them get out alive!");
 			Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
 		}
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
