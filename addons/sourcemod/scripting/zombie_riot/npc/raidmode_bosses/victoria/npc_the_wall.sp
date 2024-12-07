@@ -1230,6 +1230,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		{
 			case 0:
 			{
+				CPrintToChatAll("{lightblue}Huscarls{default}: Hit me. I DARE YOU.");
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
@@ -1274,6 +1275,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			{
 				if(npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 				{
+					CPrintToChatAll("{lightblue}Huscarls{default}: Come closer, I will give you this back.");
 					int maxhealth = ReturnEntityMaxHealth(npc.index);
 					float MAXCharger = (DynamicCharger[npc.index]/(float(maxhealth)*0.05))*0.05;
 					if(MAXCharger > 0.05)MAXCharger = 0.05;

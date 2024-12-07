@@ -408,7 +408,7 @@ methodmap Harrison < CClotBody
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
 			music.Time = 92;
-			music.Volume = 2.0;
+			music.Volume = 1.0;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "RAGE");
 			strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
@@ -674,6 +674,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.StartPathing();
 				}
 				*/
+				CPrintToChatAll("{skyblue}Harrison{default}: Hide if you can. I'll get some ammo for my gun.");
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				NPC_StopPathing(npc.index);
@@ -1013,6 +1014,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		{
 			case 0:
 			{
+				CPrintToChatAll("{skyblue}Harrison{default}: Do you think I would miss?");
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;

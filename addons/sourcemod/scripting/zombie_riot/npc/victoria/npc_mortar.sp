@@ -108,7 +108,7 @@ methodmap VictoriaMortar < CClotBody
 	
 	public VictoriaMortar(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMortar npc = view_as<VictoriaMortar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "2200", ally));
+		VictoriaMortar npc = view_as<VictoriaMortar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -134,6 +134,7 @@ methodmap VictoriaMortar < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 100.0;
 		
+		npc.m_flMeleeArmor = 1.50;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
