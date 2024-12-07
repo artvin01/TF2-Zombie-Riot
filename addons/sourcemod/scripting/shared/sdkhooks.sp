@@ -1377,6 +1377,13 @@ public void OnPostThink(int client)
 					green = 143;
 					blue = 255;
 				}
+				//matrix
+				case 4:
+				{
+					red = 0;
+					green = 255;
+					blue = 0;
+				}
 			}
 		}
 		else if(Armor_Charge[armorEnt] < Armor_Max)

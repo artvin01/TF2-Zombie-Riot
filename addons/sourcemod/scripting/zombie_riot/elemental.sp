@@ -11,6 +11,7 @@ enum
 	Element_Necrosis,
 	Element_Void,
 	Element_Osmosis,
+	Element_Corruption,
 
 	Element_MAX
 }
@@ -22,7 +23,8 @@ static const char ElementName[][] =
 	"CY",
 	"NE",
 	"VO",
-	"OS"
+	"OS",
+	"CO"
 };
 
 static float LastTime[MAXENTITIES];
@@ -625,4 +627,170 @@ void OsmosisElementalEffect_Detection(int attacker, int victim)
 	//play a little sound!
 	Saga_ChargeReduction(attacker, weapon_holding, 2.0);
 	ClientCommand(attacker, "playgamesound ui/mm_medal_click.wav");
+}
+void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
+{
+	if(b_NpcIsInvulnerable[victim])
+		return;
+
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+
+	if(f_ElementalAmplification[victim] > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
+	if(victim <= MaxClients)
+	{
+		Armor_DebuffType[victim] = 4;
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
+		{
+			if(i_HealthBeforeSuit[victim] > 0)
+			{
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				{
+					Armor_Charge[victim] = 0;
+					
+					int count = RoundToCeil(2.0 * MultiGlobalEnemy);
+					Matrix_Spawning(attacker, count);
+
+					EmitSoundToAll("ambient/energy/weld1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					f_ArmorCurrosionImmunity[victim][Element_Corruption] = GetGameTime() + 5.0;
+				}
+			}
+			
+			if(sound || !Armor_Charge[victim])
+				ClientCommand(victim, "playgamesound buttons/combine_button1.wav ; playgamesound buttons/combine_button1.wav");
+		}
+	}
+	else if(!b_NpcHasDied[victim])	// NPCs
+	{
+		if(f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime())
+		{
+			int trigger;
+			if(Citizen_IsIt(victim))	// Rebels
+			{
+				if(!ignoreArmor)
+				{
+					// Has "armor" at 75% HP
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
+						return;
+				}
+			}
+			
+			trigger = TriggerDamage(victim, Element_Corruption);
+
+			LastTime[victim] = GetGameTime();
+			LastElement[victim] = Element_Corruption;
+			ElementDamage[victim][Element_Corruption] += damage;
+			if(ElementDamage[victim][Element_Corruption] > trigger)
+			{
+				ElementDamage[victim][Element_Corruption] = 0;
+				f_ArmorCurrosionImmunity[victim][Element_Corruption] = GetGameTime() + 5.0;
+				EmitSoundToAll("ambient/energy/weld1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				int count = RoundToCeil(3.0 * MultiGlobalEnemy);
+				Matrix_Spawning(attacker, count);
+			}
+		}
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		//removes repair of buildings.
+		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
+		Repair -= damage;
+		if(Repair <= 0)
+			Repair = 0;
+		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
+	}
+}
+
+static char g_Agent_Summons[][] =
+{
+	//wave 1-29 | 0-6
+	"npc_agent_john",
+	"npc_agent_james",
+	"npc_agent_chase",
+	"npc_agent_dave",
+	"npc_agent_alexander",
+	"npc_agent_steve",
+	"npc_agent_alan",
+	"npc_agent_eric",
+	"npc_agent_jack",
+	"npc_agent_jim",
+	"npc_agent_josh",
+	"npc_agent_kenneth",
+	"npc_agent_paul",
+	"npc_agent_tyler",
+	"npc_agent_wayne",
+
+	//wave 30-59 | 7-11
+	"npc_agent_alan",
+	"npc_agent_eric",
+	"npc_agent_jack",
+	"npc_agent_jim",
+	"npc_agent_josh",
+	"npc_agent_kenneth",
+	"npc_agent_paul",
+	"npc_agent_tyler",
+	"npc_agent_wayne",
+	"npc_agent_ben",
+	"npc_agent_chad",
+	"npc_agent_chris",
+	"npc_agent_dick",
+	"npc_agent_ian",
+	"npc_agent_mike",
+	"npc_agent_sam",
+
+	//wave 60 | 12-16
+	"npc_agent_connor",
+	"npc_agent_henry",
+	"npc_agent_jeremy",
+	"npc_agent_kurt",
+	"npc_agent_logan",
+	"npc_agent_ross",
+	"npc_agent_spencer",
+	"npc_agent_todd",
+};
+
+static void Matrix_Spawning(int entity, int count)
+{
+	int summon = GetRandomInt(0, 6);
+	int wave = (ZR_GetWaveCount() + 1);
+	if(wave >= 30)
+	{
+		summon = GetRandomInt(7, 11);
+	}
+	if(wave >= 60)
+	{
+		summon = GetRandomInt(12, 16);
+	}
+
+	char name[255];
+	FormatEx(name, sizeof(name), "%s", g_Agent_Summons[summon]);
+
+	Enemy enemy;
+	enemy.Index = NPC_GetByPlugin(name);
+	enemy.Health = ReturnEntityMaxHealth(entity);
+	if(enemy.Health >= 50000)
+	{
+  		enemy.Health = 50000;
+	}
+	enemy.Is_Outlined = false;
+	enemy.Is_Immune_To_Nuke = true;
+	//do not bother outlining.
+	enemy.ExtraMeleeRes = 1.0;
+	enemy.ExtraRangedRes = 1.0;
+	enemy.ExtraSpeed = 1.0;
+	enemy.ExtraDamage = 1.0;
+	enemy.ExtraSize = 1.0;		
+	enemy.Team = GetTeam(entity);
+	for(int i; i<count; i++)
+	{
+		Waves_AddNextEnemy(enemy);
+	}
+	Zombies_Currently_Still_Ongoing += count;
 }

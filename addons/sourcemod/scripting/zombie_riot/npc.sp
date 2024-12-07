@@ -716,6 +716,49 @@ void NPC_ConfigSetup()
 	PetrisBaron_OnMapStart_NPC();
 	Sphynx_OnMapStart_NPC();
 	ZombineSurvival_OnMapStart_NPC();
+
+	// Matrix
+	AgentAlan_OnMapStart_NPC();
+	AgentAlexander_OnMapStart_NPC();
+	AgentChase_OnMapStart_NPC();
+	AgentDave_OnMapStart_NPC();
+	AgentGraham_OnMapStart_NPC();
+	AgentJames_OnMapStart_NPC();
+	AgentJohn_OnMapStart_NPC();
+	AgentSteve_OnMapStart_NPC();
+	AgentEric_OnMapStart_NPC();
+	AgentJack_OnMapStart_NPC();
+	AgentJim_OnMapStart_NPC();
+	AgentJosh_OnMapStart_NPC();
+	AgentKenneth_OnMapStart_NPC();
+	AgentPaul_OnMapStart_NPC();
+	AgentTyler_OnMapStart_NPC();
+	AgentWayne_OnMapStart_NPC();
+	Merovingian_OnMapStart_NPC();
+	AgentBen_OnMapStart_NPC();
+	AgentChad_OnMapStart_NPC();
+	AgentChris_OnMapStart_NPC();
+	AgentDick_OnMapStart_NPC();
+	AgentIan_OnMapStart_NPC();
+	AgentJackson_OnMapStart_NPC();
+	AgentMike_OnMapStart_NPC();
+	AgentSam_OnMapStart_NPC();
+	AgentZack_OnMapStart_NPC();
+	AgentConnor_OnMapStart_NPC();
+	AgentHenry_OnMapStart_NPC();
+	AgentJeremy_OnMapStart_NPC();
+	AgentJones_OnMapStart_NPC();
+	AgentKurt_OnMapStart_NPC();
+	AgentLogan_OnMapStart_NPC();
+	AgentRoss_OnMapStart_NPC();
+	AgentSpencer_OnMapStart_NPC();
+	AgentTodd_OnMapStart_NPC();
+
+	//Matrix Raids
+	AgentJohnson_OnMapStart_NPC();
+	AgentThompson_OnMapStart_NPC();
+	Twin1_OnMapStart_NPC();
+	AgentSmith_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1627,3 +1670,43 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
+
+#include "zombie_riot/npc/matrix/15/npc_agentalan.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentalexander.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentchase.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentdave.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentgraham.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentjames.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentjohn.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentsteve.sp"
+#include "zombie_riot/npc/matrix/30/npc_agenteric.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentjack.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentjim.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentjosh.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentkenneth.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentpaul.sp"
+#include "zombie_riot/npc/matrix/30/npc_agenttyler.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentwayne.sp"
+#include "zombie_riot/npc/matrix/30/npc_merovingian.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentben.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentchad.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentchris.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentdick.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentian.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentjackson.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentmike.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentsam.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentzack.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentconnor.sp"
+#include "zombie_riot/npc/matrix/60/npc_agenthenry.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentjeremy.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentjones.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentkurt.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentlogan.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentross.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentspencer.sp"
+#include "zombie_riot/npc/matrix/60/npc_agenttodd.sp"
+#include "zombie_riot/npc/matrix/raids/npc_agentjohnson.sp"
+#include "zombie_riot/npc/matrix/raids/npc_agentthompson.sp"
+#include "zombie_riot/npc/matrix/raids/npc_twins.sp"
+#include "zombie_riot/npc/matrix/raids/npc_agent_smith.sp"
