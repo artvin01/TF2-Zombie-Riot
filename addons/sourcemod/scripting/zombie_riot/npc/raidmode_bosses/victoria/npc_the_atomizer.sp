@@ -1665,18 +1665,6 @@ static Action Atomizer_Rocket_Particle_Bounce(int entity, int owner)
 	if(!TR_DidHit(trace))
 	{
 		trace.Close();
-		/*int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
-		if(GETBOUNS > 30)
-		{
-			int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-			if(IsValidEntity(particle))
-				RemoveEntity(particle);
-			RemoveEntity(entity);
-			SDKUnhook(entity, SDKHook_Touch, Atomizer_Rocket_Particle_Bounce);
-			SDKUnhook(entity, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
-		}
-		else
-			SetEntProp(entity, Prop_Data, "m_iHammerID", GETBOUNS+1);*/
 		return Plugin_Continue;
 	}
 

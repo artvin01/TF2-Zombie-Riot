@@ -1931,7 +1931,7 @@ static void Huscarls_Shield_StartTouch(DataPack pack)
 	int projectile = -1;
 	while((projectile = FindEntityByClassname(projectile, "tf_projectile_*")) != INVALID_ENT_REFERENCE)
 	{
-		EnemyTeam = GetTeam(projectile);
+		int EnemyTeam = GetTeam(projectile);
 		if(team!=EnemyTeam)
 		{
 			GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", position2);
