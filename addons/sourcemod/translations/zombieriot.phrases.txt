@@ -4038,10 +4038,10 @@
 	}
 	"Victoria Raid Desc"
 	{
-		"en" "(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
-   }
+		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
+	}
 	"Ability already Active"
 	{
-    "en"	"Ability already Active"
+		"en"	"Ability already Active"
 	}
 }

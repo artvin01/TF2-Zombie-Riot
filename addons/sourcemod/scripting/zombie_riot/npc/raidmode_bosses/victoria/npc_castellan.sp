@@ -404,11 +404,11 @@ methodmap Castellan < CClotBody
 		}
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
-		music.Time = 247;
+		music.Time = 154;
 		music.Volume = 2.0;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "06Graveyard_Arena3");
-		strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?");
+		strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
 		Music_SetRaidMusic(music);
 		npc.m_iChanged_WalkCycle = -1;
 
