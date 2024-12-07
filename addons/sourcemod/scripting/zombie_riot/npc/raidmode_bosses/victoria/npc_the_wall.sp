@@ -1318,7 +1318,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 1.0;
-				Delay_Attribute[npc.index] = gameTime + 1.0;
+				Delay_Attribute[npc.index] = gameTime + 0.6;
 				I_cant_do_this_all_day[npc.index] = 1;
 			}
 			case 1:
@@ -1334,13 +1334,9 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					I_cant_do_this_all_day[npc.index] = 0;
 					Delay_Attribute[npc.index] = gameTime + 0.2;
 					if(NpcStats_VictorianCallToArms(npc.index))
-					{
 						npc.m_flHuscarlsGroundSlamCoolDown = gameTime + 20.0;
-					}
 					else
-					{
 						npc.m_flHuscarlsGroundSlamCoolDown = gameTime + 25.0;
-					}
 					npc.PlayKaboomSound();
 				}
 			}
