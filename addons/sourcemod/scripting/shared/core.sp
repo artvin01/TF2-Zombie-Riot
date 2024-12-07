@@ -24,7 +24,7 @@
 #include <sourcescramble>
 //#include <handledebugger>
 
-#pragma dynamic    131072
+#pragma dynamic	131072
 
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
@@ -63,15 +63,15 @@
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
 
 
-//#pragma dynamic    131072
+//#pragma dynamic	131072
 //Allah This plugin has so much we need to do this.
 
 // THESE ARE TO TOGGLE THINGS!
 enum OSType
 {
-    OS_Linux = 0,
-    OS_Windows,
-    OS_Unknown
+	OS_Linux = 0,
+	OS_Windows,
+	OS_Unknown
 }
 
 enum
@@ -159,23 +159,23 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define MAXTF2PLAYERS	101
 //double for 100 player support????
 
-#define    HIDEHUD_WEAPONSELECTION        ( 1<<0 )    // Hide ammo count & weapon selection
-#define    HIDEHUD_FLASHLIGHT            ( 1<<1 )
-#define    HIDEHUD_ALL                    ( 1<<2 )
-#define HIDEHUD_HEALTH                ( 1<<3 )    // Hide health & armor / suit battery
-#define HIDEHUD_PLAYERDEAD            ( 1<<4 )    // Hide when local player's dead
-#define HIDEHUD_NEEDSUIT            ( 1<<5 )    // Hide when the local player doesn't have the HEV suit
-#define HIDEHUD_MISCSTATUS            ( 1<<6 )    // Hide miscellaneous status elements (trains, pickup history, death notices, etc)
-#define HIDEHUD_CHAT                ( 1<<7 )    // Hide all communication elements (saytext, voice icon, etc)
-#define    HIDEHUD_CROSSHAIR            ( 1<<8 )    // Hide crosshairs
-#define    HIDEHUD_VEHICLE_CROSSHAIR    ( 1<<9 )    // Hide vehicle crosshair
-#define HIDEHUD_INVEHICLE            ( 1<<10 )
-#define HIDEHUD_BONUS_PROGRESS        ( 1<<11 )    // Hide bonus progress display (for bonus map challenges)
-#define HIDEHUD_BUILDING_STATUS        ( 1<<12 )  
-#define HIDEHUD_CLOAK_AND_FEIGN        ( 1<<13 )   
-#define HIDEHUD_PIPES_AND_CHARGE        ( 1<<14 )    
-#define HIDEHUD_METAL        ( 1<<15 )    
-#define HIDEHUD_TARGET_ID        ( 1<<16 )    
+#define	HIDEHUD_WEAPONSELECTION		( 1<<0 )	// Hide ammo count & weapon selection
+#define	HIDEHUD_FLASHLIGHT			( 1<<1 )
+#define	HIDEHUD_ALL					( 1<<2 )
+#define HIDEHUD_HEALTH				( 1<<3 )	// Hide health & armor / suit battery
+#define HIDEHUD_PLAYERDEAD			( 1<<4 )	// Hide when local player's dead
+#define HIDEHUD_NEEDSUIT			( 1<<5 )	// Hide when the local player doesn't have the HEV suit
+#define HIDEHUD_MISCSTATUS			( 1<<6 )	// Hide miscellaneous status elements (trains, pickup history, death notices, etc)
+#define HIDEHUD_CHAT				( 1<<7 )	// Hide all communication elements (saytext, voice icon, etc)
+#define	HIDEHUD_CROSSHAIR			( 1<<8 )	// Hide crosshairs
+#define	HIDEHUD_VEHICLE_CROSSHAIR	( 1<<9 )	// Hide vehicle crosshair
+#define HIDEHUD_INVEHICLE			( 1<<10 )
+#define HIDEHUD_BONUS_PROGRESS		( 1<<11 )	// Hide bonus progress display (for bonus map challenges)
+#define HIDEHUD_BUILDING_STATUS		( 1<<12 )  
+#define HIDEHUD_CLOAK_AND_FEIGN		( 1<<13 )   
+#define HIDEHUD_PIPES_AND_CHARGE		( 1<<14 )	
+#define HIDEHUD_METAL		( 1<<15 )	
+#define HIDEHUD_TARGET_ID		( 1<<16 )	
 
 #define MULTIDMG_NONE 		 ( 1<<0 )
 #define MULTIDMG_MAGIC_WAND  ( 1<<1 )
@@ -351,6 +351,7 @@ bool b_DoNotUnStuck[MAXENTITIES];
 float f_NoUnstuckVariousReasons[MAXENTITIES];
 bool b_PlayerIsInAnotherPart[MAXENTITIES];
 bool b_EntityIsStairAbusing[MAXENTITIES];
+bool b_EntityCantBeColoured[MAXENTITIES];
 float f_EntityIsStairAbusing[MAXENTITIES];
 int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
@@ -373,6 +374,8 @@ bool b_IgnoreMapMusic[MAXTF2PLAYERS];
 bool b_DisableDynamicMusic[MAXTF2PLAYERS];
 bool b_EnableRightSideAmmoboxCount[MAXTF2PLAYERS];
 bool b_EnableCountedDowns[MAXTF2PLAYERS];
+bool b_EnableClutterSetting[MAXTF2PLAYERS];
+bool b_EnableNumeralArmor[MAXTF2PLAYERS];
 int i_CustomModelOverrideIndex[MAXTF2PLAYERS];
 int FogEntity = INVALID_ENT_REFERENCE;
 int PlayerPoints[MAXTF2PLAYERS];
@@ -530,6 +533,9 @@ float f_RaidStunResistance[MAXENTITIES];
 float f_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
 float f_CombineCommanderBuff[MAXENTITIES];
+float f_SquadLeaderBuff[MAXENTITIES];
+float f_CaffeinatorBuff[MAXENTITIES];
+float f_VictorianCallToArms[MAXENTITIES];
 #if defined RUINA_BASE
 float f_Ruina_Speed_Buff[MAXENTITIES];
 float f_Ruina_Speed_Buff_Amt[MAXENTITIES];
@@ -616,7 +622,7 @@ int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 
 
 
-#define ABILITY_NONE                 0          	//Nothing special.
+#define ABILITY_NONE				 0		  	//Nothing special.
 
 #define ABILITY_M1				(1 << 1) 
 #define ABILITY_M2				(1 << 2) 
@@ -631,7 +637,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 //Use what already exists in tf2 please, only add stuff here if it needs extra spacing like ice damage and so on
 //I dont want to use DMG_SHOCK for example due to its extra ugly effect thats annoying!
 
-#define ZR_DAMAGE_NONE                			0          	//Nothing special.
+#define ZR_DAMAGE_NONE							0		  	//Nothing special.
 #define ZR_DAMAGE_ICE							(1 << 1)
 #define ZR_DAMAGE_LASER_NO_BLAST				(1 << 2)
 #define ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED	(1 << 3)
@@ -644,7 +650,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_NPC_REFLECT					(1 << 10)	//this npc reflects damage to another npc that can also reflect damage, use this to filter out the damage.
 #define ZR_DAMAGE_CANNOTGIB_REGARDLESS			(1 << 11)
 
-#define HEAL_NO_RULES	            0     	 
+#define HEAL_NO_RULES				0	 	 
 //Nothing special.
 #define HEAL_SELFHEAL				(1 << 1) 
 //Most healing debuffs shouldnt work with this.
@@ -830,14 +836,14 @@ bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
 int h_NpcSolidHookType[MAXENTITIES];
-#define EP_GENERIC                  		0          					// Nothing special.
-#define EP_NO_KNOCKBACK              		(1 << 0)   					// No knockback
-#define EP_DEALS_SLASH_DAMAGE              	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
-#define EP_DEALS_CLUB_DAMAGE              	(1 << 2)   					// To deal melee damage.
-#define EP_GIBS_REGARDLESS              	(1 << 3)   					// Even if its anything then blast, it will still gib.
-#define EP_DEALS_PLASMA_DAMAGE             	(1 << 4)   					// for wands to deal plasma dmg
-#define EP_DEALS_DROWN_DAMAGE             	(1 << 5)
-#define EP_IS_ICE_DAMAGE              		(1 << 6)   					// Even if its anything then blast, it will still gib.
+#define EP_GENERIC				  		0		  					// Nothing special.
+#define EP_NO_KNOCKBACK			  		(1 << 0)   					// No knockback
+#define EP_DEALS_SLASH_DAMAGE			  	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
+#define EP_DEALS_CLUB_DAMAGE			  	(1 << 2)   					// To deal melee damage.
+#define EP_GIBS_REGARDLESS			  	(1 << 3)   					// Even if its anything then blast, it will still gib.
+#define EP_DEALS_PLASMA_DAMAGE			 	(1 << 4)   					// for wands to deal plasma dmg
+#define EP_DEALS_DROWN_DAMAGE			 	(1 << 5)
+#define EP_IS_ICE_DAMAGE			  		(1 << 6)   					// Even if its anything then blast, it will still gib.
 
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];
@@ -1956,13 +1962,13 @@ public Action Command_PlayViewmodelAnim(int client, int args)
 {
 	//What are you.
 	if(args < 1)
-    {
-        ReplyToCommand(client, "[SM] Usage: sm_play_viewmodel_anim <target> <index>");
-        return Plugin_Handled;
-    }
-    
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_play_viewmodel_anim <target> <index>");
+		return Plugin_Handled;
+	}
+	
 	static char targetName[MAX_TARGET_LENGTH];
-    
+	
 	static char pattern[PLATFORM_MAX_PATH];
 	GetCmdArg(1, pattern, sizeof(pattern));
 	
@@ -1996,13 +2002,13 @@ public Action Command_FakeDeathCount(int client, int args)
 {
 	//What are you.
 	if(args < 1)
-    {
-        ReplyToCommand(client, "[SM] Usage: sm_fake_death_client <target> <count>");
-        return Plugin_Handled;
-    }
-    
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_fake_death_client <target> <count>");
+		return Plugin_Handled;
+	}
+	
 	static char targetName[MAX_TARGET_LENGTH];
-    
+	
 	static char pattern[PLATFORM_MAX_PATH];
 	GetCmdArg(1, pattern, sizeof(pattern));
 	
@@ -2242,6 +2248,9 @@ public void OnClientPutInServer(int client)
 	npc.m_bThisEntityIgnored = false;
 	f_HussarBuff[client] = 0.0;
 	f_CombineCommanderBuff[client] = 0.0;
+	f_SquadLeaderBuff[client] = 0.0;
+	f_VictorianCallToArms[client] = 0.0;
+	f_CaffeinatorBuff[client] = 0.0;
 	f_Ocean_Buff_Stronk_Buff[client] = 0.0;
 	f_Ocean_Buff_Weak_Buff[client] = 0.0;
 #if defined RUINA_BASE
@@ -3065,6 +3074,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		f_HussarBuff[entity] = 0.0;
 		f_CombineCommanderBuff[entity] = 0.0;
+		f_SquadLeaderBuff[entity] = 0.0;
+		f_CaffeinatorBuff[entity] = 0.0;
+		f_VictorianCallToArms[entity]=0.0;
 #if defined RUINA_BASE
 		Ruina_Reset_Stats_Npc(entity);
 #endif
@@ -3171,7 +3183,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponArchetype[entity] = 0;
 		i_WeaponForceClass[entity] = 0;
 		b_ProjectileCollideWithPlayerOnly[entity] = false;
-
+		b_EntityCantBeColoured[entity] = false;
 #if defined RTS
 		TeamNumber[entity] = 0;
 #else
@@ -3515,7 +3527,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 			Hook_DHook_UpdateTransmitState(entity);
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
-		}
+			b_EntityCantBeColoured[entity] = true;
+ 		}
 		else if(!StrContains(classname, "info_target"))
 		{
 			b_ThisEntityIgnored[entity] = true;

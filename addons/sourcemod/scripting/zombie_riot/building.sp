@@ -341,20 +341,11 @@ static int GetCost(int client, int id, float multi)
 	}
 
 
-	if(Rogue_Mode() && (GameRules_GetRoundState() != RoundState_BetweenRounds))
+	if(Rogue_Mode())
 		buildCost /= 3;
-	else if(GameRules_GetRoundState() == RoundState_BetweenRounds)
-	{
-		int metal = GetAmmo(client, Ammo_Metal);
-		if((metal - buildCost) < 200)
-		{
-			//anti abuse.
-			buildCost += 200;
-		}
-	}
 
-		
-	
+	ReduceMetalCost(client, buildCost);
+
 	return buildCost;
 }
 
@@ -1603,6 +1594,7 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 	HealDo = HealGiven / 3;
 	if(HealDo <= 1)
 		HealDo = 1;
+	ReduceMetalCost(client, HealDo);
 	new_ammo -= HealDo;
 	SetAmmo(client, 3, new_ammo);
 	CurrentAmmo[client][3] = GetAmmo(client, 3);
