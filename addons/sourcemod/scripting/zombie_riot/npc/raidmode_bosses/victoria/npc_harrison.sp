@@ -84,6 +84,10 @@ static const char g_PlayRocketshotready[][] = {
 	"vo/sniper_dominationsoldier02.mp3"
 
 };
+
+static const char g_LaserBeamSounds[][] = {
+	"weapons/bumper_car_speed_boost_start.wav",
+};
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
@@ -243,6 +247,10 @@ methodmap Harrison < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayLaserBeamSound()
+	{
+		EmitSoundToAll(g_LaserBeamSounds[GetRandomInt(0, sizeof(g_LaserBeamSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80,125));
 	}
 	property float m_flTimeUntillSummonRocket
 	{
@@ -1065,6 +1073,8 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float projectile_speed = 800.0;
+
+		npc.PlayLaserBeamSound()
 
 		npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
 
