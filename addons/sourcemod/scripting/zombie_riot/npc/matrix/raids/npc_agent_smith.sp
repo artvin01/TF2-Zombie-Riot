@@ -1004,7 +1004,7 @@ static void AgentSmith_GrantItem()
 		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 		{
 			//Items_GiveNamedItem(client, "Matrix's Curse");
-			CPrintToChat(client,"{default}After all that fighting. {olive}Agent Smith{default} affected you with {green} nothing...{default}for now...");
+			CPrintToChat(client,"{default}After all that fighting. {olive}Agent Smith{default} affected you with {green}Matrix's Curse{default}.");
 		}
 	}
 }
