@@ -1633,74 +1633,6 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 	return Plugin_Handled;
 }
 
-static Action Atomizer_Rocket_Particle_Bounce(int entity, int owner)
-{
-	/*float fVelocity[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecVelocity", fVelocity);
-	fVelocity[2] = 650.0;
-	TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVelocity);*/
-	
-	static float vOrigin[3], vAngles[3], vVelocity[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vOrigin);
-	GetEntPropVector(entity, Prop_Data, "m_angRotation", vAngles);
-	GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vVelocity);
-	float TempANG[3], tOrigin[3];
-	TempANG[0]=90.0;
-	EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
-	float distance = GetVectorDistance(vOrigin, tOrigin);
-	if(distance<65.0)
-		vVelocity[2] = 600.0;
-	else
-	{
-		TempANG[0]=-90.0;
-		EntityLookPoint(entity, TempANG, vOrigin, tOrigin);
-		distance = GetVectorDistance(vOrigin, tOrigin);
-		if(distance<65.0)
-			vVelocity[2] = -600.0;
-	}
-	GetVectorAngles(vVelocity, TempANG);
-	TeleportEntity(entity, NULL_VECTOR, TempANG, vVelocity);
-
-	Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, NOTME, entity);
-	if(!TR_DidHit(trace))
-	{
-		trace.Close();
-		return Plugin_Continue;
-	}
-
-	static float vNormal[3];
-	TR_GetPlaneNormal(trace, vNormal);
-	trace.Close();
-
-	float dotProduct = GetVectorDotProduct(vNormal, vVelocity);
-	ScaleVector(vNormal, dotProduct);
-	ScaleVector(vNormal, 2.0);
-
-	static float vBounceVec[3];
-	SubtractVectors(vVelocity, vNormal, vBounceVec);
-	GetVectorAngles(vBounceVec, vAngles);
-	
-	TeleportEntity(entity, NULL_VECTOR, vAngles, vBounceVec);
-	
-	int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
-	if(GETBOUNS > 20)
-	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		if(IsValidEntity(particle))
-			RemoveEntity(particle);
-		RemoveEntity(entity);
-		SDKUnhook(entity, SDKHook_Touch, Atomizer_Rocket_Particle_Bounce);
-		SDKUnhook(entity, SDKHook_StartTouch, Atomizer_Rocket_Particle_StartTouch);
-	}
-	else
-		SetEntProp(entity, Prop_Data, "m_iHammerID", GETBOUNS+1);
-	return Plugin_Handled;
-}
-
-static bool NOTME(int entity, int contentsMask, any data)
-{
-	return entity != data;
-}
 
 static bool ONLYBSP(int entity, int contentsMask, any data)
 {
@@ -1865,8 +1797,7 @@ static bool Victoria_Support(Atomizer npc)
 			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
-			if(HasEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID"))
-				SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
+			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
 		}
 	}
