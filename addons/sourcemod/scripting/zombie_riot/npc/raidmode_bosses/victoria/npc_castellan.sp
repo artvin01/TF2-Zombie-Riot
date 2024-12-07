@@ -391,6 +391,8 @@ methodmap Castellan < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_fireaxe_pyro/c_fireaxe_pyro.mdl");
 		SetVariantString("0.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 150, 150, 255, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/soldier/fdu.mdl");
 		SetVariantString("1.0");
@@ -435,7 +437,7 @@ methodmap Castellan < CClotBody
 		SetVariantColor(view_as<int>({150, 150, 150, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
-		CPrintToChatAll("{blue}Castellan{default}: Intruders in sight, I won't let the get out alive!");
+		CPrintToChatAll("{blue}Castellan{default}: In the name of Victoria, I won't allow you to proceed any further.");
 		
 		return npc;
 	}
@@ -638,11 +640,11 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Castellan{default}: Ready to die?");
+					CPrintToChatAll("{blue}Castellan{default}: Weaklings");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Castellan{default}: You can't run forever.");
+					CPrintToChatAll("{blue}Castellan{default}: After you, Im going back to the frontlines");
 				}
 				case 2:
 				{
@@ -661,9 +663,9 @@ static void Internal_ClotThink(int iNPC)
 		switch(GetRandomInt(1, 4))
 		{
 			case 1:CPrintToChatAll("{blue}Castellan{default}: Victoria will be in peace. Once and for all.");
-			case 2:CPrintToChatAll("{blue}Castellan{default}: The troops have arrived and will begin destroying the intruders!");
-			case 3:CPrintToChatAll("{blue}Castellan{default}: Backup team has arrived. Catch those damn bastards!");
-			case 4:CPrintToChatAll("{blue}Castellan{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
+			case 2:CPrintToChatAll("{blue}Castellan{default}: Ziberia will pay with their blood for this");
+			case 3:CPrintToChatAll("{blue}Castellan{default}: Next time? There would be no next time");
+			case 4:CPrintToChatAll("{blue}Castellan{default}: Seems like your precious knight friends didn't help you so much this time.");
 		}
 		for(int i=1; i<=15; i++)
 		{

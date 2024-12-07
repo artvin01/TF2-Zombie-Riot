@@ -710,7 +710,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Huscarls{default}: Time to Plan B, {gold}Mechanist{default}. teleport the Robots right now!");
+				CPrintToChatAll("{lightblue}Huscarls{default}: Time for Plan B, {gold}Mechanist{default}. teleport the Robots right now!");
 				npc.AddActivityViaSequence("tauntrussian_rubdown");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.5);
@@ -840,8 +840,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.PlayAngerSound();
 					switch(GetRandomInt(0, 1))
 					{
-						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin can, I knew it when it broke");
-						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed performance issues when the robots were disabled");
+						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin cans, I knew it would broke");
+						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed its performance issues when they were disabled");
 					}
 					npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
 					npc.m_flAttackHappens = 0.0;
@@ -1152,8 +1152,8 @@ static void Internal_NPCDeath(int entity)
 		return;
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Retreat! This is a tactical retreat.");
-		case 1:CPrintToChatAll("{lightblue}Huscarls{default}: {gold}Victoria{default} is in trouble again.");
+		case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Retreat! This is a tactical retreat by the way.");
+		case 1:CPrintToChatAll("{lightblue}Huscarls{default}: {gold}Victoria{default} is in trouble.");
 		case 2:CPrintToChatAll("{lightblue}Huscarls{default}: Next time I'll {crimson}crush you{default}");
 	}
 	npc.PlayDeathSound();	

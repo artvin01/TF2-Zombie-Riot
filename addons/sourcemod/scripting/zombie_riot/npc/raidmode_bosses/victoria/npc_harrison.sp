@@ -318,7 +318,7 @@ methodmap Harrison < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			CPrintToChatAll("{skyblue}Harrison{default}: Intruders in sight, I won't let the get out alive!");
+			CPrintToChatAll("{skyblue}Harrison{default}: I see you Intruders.");
 		}
 		else
 		{
@@ -371,7 +371,7 @@ methodmap Harrison < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
-			CPrintToChatAll("{skyblue}Harrison{default}: Intruders in sight, I won't let the get out alive!");
+			CPrintToChatAll("{skyblue}Harrison{default}: Spotted the Intruders. I guess they leave me no chance but to do it myself");
 			
 			RaidModeScaling = float(ZR_GetWaveCount()+1);
 			if(RaidModeScaling < 55)
@@ -603,15 +603,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: Ready to die?");
+					CPrintToChatAll("{skyblue}Harrison{default}: You guys are weaker than I expected");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: You can't run forever.");
+					CPrintToChatAll("{skyblue}Harrison{default}: Comeon, where is your 'adrenaline'?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: All of your comrades are fallen.");
+					CPrintToChatAll("{skyblue}Harrison{default}: Can't believe {lightblue}Huscarls{default} and {lightblue}Atomizer{default} was defeated by these weaklings.");
 				}
 			}
 		}
@@ -626,9 +626,9 @@ static void Internal_ClotThink(int iNPC)
 		switch(GetRandomInt(1, 4))
 		{
 			case 1:CPrintToChatAll("{skyblue}Harrison{default}: That's it. Calling in for special forces.");
-			case 2:CPrintToChatAll("{skyblue}Harrison{default}: Your small knights won't save you now");
+			case 2:CPrintToChatAll("{skyblue}Harrison{default}: Your small knight pals won't save you now");
 			case 3:CPrintToChatAll("{skyblue}Harrison{default}: Time to head back to the frontlines");
-			case 4:CPrintToChatAll("{skyblue}Harrison{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
+			case 4:CPrintToChatAll("{skyblue}Harrison{default}: {unique}I need beer.{default}");
 		}
 		for(int i=1; i<=15; i++)
 		{
@@ -949,8 +949,8 @@ static void Internal_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{skyblue}Harrison{default}: Ugh, I need backup");
-		case 1:CPrintToChatAll("{skyblue}Harrison{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
+		case 0:CPrintToChatAll("{skyblue}Harrison{default}: Dammit it hurts!");
+		case 1:CPrintToChatAll("{skyblue}Harrison{default}: I should've brought more Explosives...");
 		case 2:CPrintToChatAll("{skyblue}Harrison{default}: You intruders will soon face the {crimson}Real Deal.{default}");
 	}
 
