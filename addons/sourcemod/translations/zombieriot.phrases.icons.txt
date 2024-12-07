@@ -455,9 +455,9 @@
 		"en"		"Omega makes an appearance."
 		"fr"		"Omega apparaît."
 	}
-	"Victorian Radiomast Teleported in!"
+	"Victorian Radiomast Is Here!"
 	{
-		"en"	"Victorian Radiomast Teleported in!"
+		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"
 	}
 	"Atomizer Arrived"
 	{
@@ -469,7 +469,7 @@
 	}
 	"Harrison Arrived"
 	{
-		"en" 		 "Harrison Arrived."
+		"en" 		 "The Pilot of Victorian Artillery, Harrison Arrived."
 	}
 	"Castellan Arrived"
 	{
