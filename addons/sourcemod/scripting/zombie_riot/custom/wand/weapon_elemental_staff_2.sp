@@ -43,7 +43,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 				Current_Mana[client] -= mana_cost;
 				
 				delay_hud[client] = 0.0;
-				float damage = 800.0;
+				float damage = 500.0;
 				damage *= Attributes_Get(weapon, 410, 1.0);
 					
 				f_OriginalDamage[client] = damage;
