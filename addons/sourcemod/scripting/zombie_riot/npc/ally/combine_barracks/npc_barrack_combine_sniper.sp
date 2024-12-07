@@ -122,8 +122,6 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum24_aimframe/sum24_aimframe.mdl");
-		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		

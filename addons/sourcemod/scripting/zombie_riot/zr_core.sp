@@ -230,6 +230,7 @@ enum
 	Type_Ruina,
 	Type_IberiaExpiAlliance,
 	Type_WhiteflowerSpecial,
+	Type_Victoria,
 	Type_Matrix,
 }
 

@@ -3324,6 +3324,182 @@
 	{
 		"en"	"Bob's Duck ''Dubby''"
 	}
+	"Batter"
+	{
+		"en"	"Leatherboots Batter"
+	}
+	"Charger"
+	{
+		"en"	"Leatherboots Charger"
+	}
+	"Teslar"
+	{
+		"en"	"Leatherboots Teslar"
+	}
+	"Victorian Vanguard"
+	{
+		"en"	"Leatherboots Vanguard"
+	}
+	"Igniter"
+	{
+		"en"	"Leatherboots Igniter"
+	}
+	"Grenadier"
+	{
+		"en"	"Leatherboots Grenadier"
+	}
+	"Victorian ScoutSquad Leader"
+	{
+		"en"	"Leatherboots ScoutSquad Leader"
+	}
+	"Supplier"
+	{
+		"en"	"Leatherboots Supplier"
+	}
+	"Ballista"
+	{
+		"en"	"Leatherboots Ballista"
+	}
+	"Signaller"
+	{
+		"en"	"Leatherboots Signaller"
+	}
+	"Humbee"
+	{
+		"en"	"Irongate Humbee"
+	}
+	"Shotgunner"
+	{
+		"en"	"Irongate Shotgunner"
+	}
+	"Bulldozer"
+	{
+		"en"	"Irongate Bulldozer"
+	}
+	"Hardender"
+	{
+		"en"	"Irongate Hardender"
+	}
+	"Raider"
+	{
+		"en"	"Irongate Raider"
+	}
+	"Zapper"
+	{
+		"en"	"Irongate Zapper"
+	}
+	"Payback"
+	{
+		"en"	"Irongate Payback"
+	}
+	"Blocker"
+	{
+		"en"	"Irongate Blocker"
+	}
+	"IronShield"
+	{
+		"en"	"Irongate IronShield"
+	}
+	"Basebreaker"
+	{
+		"en"	"Trooper  Basebreaker"
+	}
+	"Booster"
+	{
+		"en"	"Trooper  Booster"
+	}
+	"Scorcher"
+	{
+		"en"	"Trooper  Scorcher"
+	}	
+	"Mowdown"
+	{
+		"en"	"Trooper  Mowdown"
+	}
+	"Mechafist"
+	{
+		"en"	"Trooper  Mechafist"
+	}
+	"Assulter"
+	{
+		"en"	"Trooper  Assulter"
+	}
+	"Anti-Armor Infantry"
+	{
+		"en"	"Trooper  Anti-Armor Infantry"
+	}
+	"Mortar"
+	{
+		"en"	"Trooper  Mortar"
+	}
+	"Bomb Cart"
+	{
+		"en"	"Trooper  Bombcart"
+	}
+	"Breachcart"
+	{
+		"en"	"Trooper  Breachcart"
+	}
+	"Birdeye"
+	{
+		"en"	"Birdeye"
+	}
+	"Harbringer"
+	{
+		"en"	"Harbringer"
+	}
+	"Bigpipe"
+	{
+		"en"	"Bigpipe"
+	}
+	"Caffeinator"
+	{
+		"en"	"Brassbunker Caffeinator"
+	}
+	"Welder"
+	{
+		"en"	"Brassbunker Welder"
+	}
+	"Mechanist"
+	{
+		"en"	"Brassbunker Mechanist"
+	}
+	"Avangard"
+	{
+		"en"	"Brassbunker Avangard"
+	}
+	"Tanker"
+	{
+		"en"	"Brassbunker Tanker"
+	}
+	"Ambusher"
+	{
+		"en"	"Brassbunker Ambusher"
+	}
+	"Pulverizer"
+	{
+		"en"	"Brassbunker Pulverizer"
+	}
+	"Taser"
+	{
+		"en"	"Brassbunker Taser"
+	}
+	"Tank"
+	{
+		"en"	"Brassbunker Tank"
+	}
+	"Victoria Radiomast"
+	{
+		"en"	"Victorian Radiomast"
+	}
+	"Radio Guard"
+	{
+		"en"	"Radiomast Guard"
+	}
+	"Radio Repair"
+	{
+		"en"	"Radio Repair"
+  }
 	"Agent John"
 	{
 		"en"		"Agent John"
