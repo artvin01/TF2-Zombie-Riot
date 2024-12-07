@@ -69,6 +69,7 @@ static const char g_PlayRocketshotready[][] = {
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
+static float f_TimeSinceHasBeenHurt;
 static float FTL[MAXENTITIES];
 static float Delay_Attribute[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
@@ -293,6 +294,7 @@ methodmap Castellan < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Castellan_Sensal_Win);
 
 		//IDLE
 		npc.m_iState = 0;
@@ -303,6 +305,7 @@ methodmap Castellan < CClotBody
 		YaWeFxxked[npc.index] = false;
 		ParticleSpawned[npc.index] = false;
 		Gone[npc.index] = false;
+		f_TimeSinceHasBeenHurt = 0.0;
 		Gone_Stats[npc.index] = false;
 		npc.m_bFUCKYOU = false;
 		I_cant_do_this_all_day[npc.index] = 0;
@@ -314,7 +317,7 @@ methodmap Castellan < CClotBody
 		npc.m_flTimeUntillAirStrike = GetGameTime() + 10.0;
 		npc.m_flTimeUntillNextSummonDrones = GetGameTime() + 15.0;
 		npc.m_flTimeUntillNextSummonHardenerDrones = GetGameTime() + 13.5;
-		npc.m_flTimeUntillHomingStrike = GetGameTime() + 30.0;
+		npc.m_flTimeUntillHomingStrike = GetGameTime() + 5.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_iAmountProjectiles = 0;
 		npc.m_iAttacksTillReload = 0;
@@ -372,6 +375,13 @@ methodmap Castellan < CClotBody
 			FTL[npc.index] = 220.0;
 			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
 			RaidModeScaling *= 0.65;
+		}
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
@@ -451,6 +461,19 @@ static void Internal_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
+	if(f_TimeSinceHasBeenHurt)
+	{
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
+		BlockLoseSay = true;
+
+		if(f_TimeSinceHasBeenHurt < GetGameTime())
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		}
+		return;
+	}
 	if(NpcStats_VictorianCallToArms(npc.index) && !Gone_Stats[npc.index] && !ParticleSpawned[npc.index])
 	{
 		float flPos[3], flAng[3];
@@ -864,7 +887,45 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
+	if(i_RaidGrantExtra[npc.index] == 1)
+	{
+		if((RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
+		{
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+
+			ReviveAll(true);
+
+			f_TimeSinceHasBeenHurt = GetGameTime() + 40.0;
+			RaidModeTime += 900.0;
+			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			b_NpcIsInvulnerable[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(45.0);
+			
+			float SelfPos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+			float AllyAng[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
+			int Spawner_entity = GetRandomActiveSpawner();
+			if(IsValidEntity(Spawner_entity))
+			{
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
+			}
+			int SensalSpawn = NPC_CreateByName("npc_sensal", -1, SelfPos, AllyAng, GetTeam(npc.index), "victoria_cutscene"); //can only be enemy
+			if(IsValidEntity(SensalSpawn))
+			{
+				if(GetTeam(SensalSpawn) != TFTeam_Red)
+				{
+					NpcAddedToZombiesLeftCurrently(SensalSpawn, true);
+				}
+				SetEntProp(SensalSpawn, Prop_Data, "m_iHealth", 100000000);
+				SetEntProp(SensalSpawn, Prop_Data, "m_iMaxHealth", 100000000);
+			}
+			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
+			return Plugin_Handled;
+		}
+	}	
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	float ratio = float(health) / float(maxhealth);
@@ -1183,10 +1244,10 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.m_iChanged_WalkCycle = 0;
 				Delay_Attribute[npc.index] = gameTime + 1.3;
 				I_cant_do_this_all_day[npc.index]=1;
-				npc.m_flTimeUntillSupportSpawn += 25.0;
-				npc.m_flTimeUntillNextSummonDrones +=  25.0;
-				npc.m_flTimeUntillNextSummonHardenerDrones += 25.0;
-				npc.m_flTimeUntillHomingStrike += 25.0;
+				npc.m_flTimeUntillSupportSpawn += 12.0;
+				npc.m_flTimeUntillNextSummonDrones +=  12.0;
+				npc.m_flTimeUntillNextSummonHardenerDrones += 12.0;
+				npc.m_flTimeUntillHomingStrike += 12.0;
 			}
 			case 1:
 			{
@@ -1235,7 +1296,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					while(!IsValidEntity(Temp_Target[npc.index]) || GetTeam(npc.index) == GetTeam(Temp_Target[npc.index]) || npc.index==Temp_Target[npc.index]);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
-					Delay_Attribute[npc.index] = gameTime + 20.0;
+					Delay_Attribute[npc.index] = gameTime + 10.0;
 					I_cant_do_this_all_day[npc.index]=4;
 				}	
 			}
@@ -1311,10 +1372,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			}
 			npc.m_flAirRaidDelay = gameTime + 2.5;
 		}
-		npc.m_flTimeUntillSupportSpawn += 0.1;
-		npc.m_flTimeUntillNextSummonDrones +=  0.1;
-		npc.m_flTimeUntillNextSummonHardenerDrones += 0.1;
-		npc.m_flTimeUntillHomingStrike += 0.1;
 		RaidModeTime += 0.1;
 		return 2;
 	}
@@ -1675,19 +1732,26 @@ static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
 		vecSelf[0] += GetRandomFloat(-20.0, 20.0);
 		vecSelf[1] += GetRandomFloat(-20.0, 20.0);
 		float RocketDamage = 40.0;
-		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
+		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 150.0 ,"models/buildables/sentry3_rockets.mdl");
 		if(IsValidEntity(RocketGet))
 		{
 			for(int r=1; r<=5; r++)
             { 
                 DataPack pack2;
-                CreateDataTimer(2.5 * float(r), WhiteflowerTank_Rocket_Stand, pack2, TIMER_FLAG_NO_MAPCHANGE);
+                CreateDataTimer(1.0 * float(r), WhiteflowerTank_Rocket_Stand, pack2, TIMER_FLAG_NO_MAPCHANGE);
                 pack2.WriteCell(EntIndexToEntRef(RocketGet));
                 pack2.WriteCell(EntIndexToEntRef(enemy));
             }
-			CreateTimer(2.5 * 7.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(1.0 * 7.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		npc.FaceTowards(vecTarget, 99999.0);
 	}
 	return Plugin_Stop;
+}
+
+
+public void Raidmode_Castellan_Sensal_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	BlockLoseSay = true;
 }
