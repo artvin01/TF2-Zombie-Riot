@@ -473,6 +473,6 @@
 	}
 	"Castellan Arrived"
 	{
-		"en" 		 "Castellan Arrived."
+		"en" 		 "Castellan arrives to put end to this."
 	}
 }
