@@ -3324,182 +3324,296 @@
 	{
 		"en"	"Bob's Duck ''Dubby''"
 	}
+	"Factory"
+	{
+		"en"	"Factory"
+		"ko"	"군수 공장"
+	}
 	"Batter"
 	{
 		"en"	"Leatherboots Batter"
+		"ko"	"가죽부츠 정찰대 타자"
 	}
 	"Charger"
 	{
 		"en"	"Leatherboots Charger"
+		"ko"	"가죽부츠 정찰대 돌격병"
 	}
 	"Teslar"
 	{
 		"en"	"Leatherboots Teslar"
+		"ko"	"가죽부츠 정찰대 테슬라"
 	}
 	"Victorian Vanguard"
 	{
 		"en"	"Leatherboots Vanguard"
+		"ko"	"가죽부츠 정찰대 뱅가드"
 	}
-	"Igniter"
+	"Victorian Igniter"
 	{
 		"en"	"Leatherboots Igniter"
+		"ko"	"가죽부츠 정찰대 점화병"
 	}
 	"Grenadier"
 	{
 		"en"	"Leatherboots Grenadier"
+		"ko"	"가죽부츠 정찰대 투척병"
 	}
 	"Victorian ScoutSquad Leader"
 	{
-		"en"	"Leatherboots ScoutSquad Leader"
+		"en"	"Leatherboots Leader"
+		"ko"	"가죽부츠 정찰대 리더"
 	}
 	"Supplier"
 	{
 		"en"	"Leatherboots Supplier"
+		"ko"	"가죽부츠 정찰대 보급병"
 	}
 	"Ballista"
 	{
 		"en"	"Leatherboots Ballista"
-	}
-	"Signaller"
-	{
-		"en"	"Leatherboots Signaller"
-	}
-	"Humbee"
-	{
-		"en"	"Irongate Humbee"
-	}
-	"Shotgunner"
-	{
-		"en"	"Irongate Shotgunner"
-	}
-	"Bulldozer"
-	{
-		"en"	"Irongate Bulldozer"
-	}
-	"Hardender"
-	{
-		"en"	"Irongate Hardender"
-	}
-	"Raider"
-	{
-		"en"	"Irongate Raider"
-	}
-	"Zapper"
-	{
-		"en"	"Irongate Zapper"
-	}
-	"Payback"
-	{
-		"en"	"Irongate Payback"
-	}
-	"Blocker"
-	{
-		"en"	"Irongate Blocker"
-	}
-	"IronShield"
-	{
-		"en"	"Irongate IronShield"
-	}
-	"Basebreaker"
-	{
-		"en"	"Trooper  Basebreaker"
-	}
-	"Booster"
-	{
-		"en"	"Trooper  Booster"
-	}
-	"Scorcher"
-	{
-		"en"	"Trooper  Scorcher"
-	}	
-	"Mowdown"
-	{
-		"en"	"Trooper  Mowdown"
-	}
-	"Mechafist"
-	{
-		"en"	"Trooper  Mechafist"
-	}
-	"Assulter"
-	{
-		"en"	"Trooper  Assulter"
-	}
-	"Anti-Armor Infantry"
-	{
-		"en"	"Trooper  Anti-Armor Infantry"
-	}
-	"Mortar"
-	{
-		"en"	"Trooper  Mortar"
-	}
-	"Bomb Cart"
-	{
-		"en"	"Trooper  Bombcart"
-	}
-	"Breachcart"
-	{
-		"en"	"Trooper  Breachcart"
+		"ko"	"가죽부츠 정찰대 발리스타"
 	}
 	"Birdeye"
 	{
 		"en"	"Birdeye"
+		"ko"	"버드아이"
+	}
+	"Bigpipe"
+	{
+		"en"	"Big pipe"
+		"ko"	"빅 파이프"
 	}
 	"Harbringer"
 	{
 		"en"	"Harbringer"
+		"ko"	"하브링거"
 	}
-	"Bigpipe"
+	"Signaller"
 	{
-		"en"	"Bigpipe"
+		"en"	"Victorian Signaller"
+		"ko"	"빅토리아 전령병"
+	}
+	"Humbee"
+	{
+		"en"	"Irongate Humbee"
+		"ko"	"강철게이트 험비"
+	}
+	"Shotgunner"
+	{
+		"en"	"Irongate Shotgunner"
+		"ko"	"강철게이트 샷거너"
+	}
+	"Bulldozer"
+	{
+		"en"	"Irongate Bulldozer"
+		"ko"	"강철게이트 불도져"
+	}
+	"Hardender"
+	{
+		"en"	"Irongate Hardender"
+		"ko"	"강철게이트 경화자"
+	}
+	"Raider"
+	{
+		"en"	"Irongate Raider"
+		"ko"	"강철게이트 침략자"
+	}
+	"Zapper"
+	{
+		"en"	"Irongate Zapper"
+		"ko"	"강철게이트 잽퍼"
+	}
+	"Payback"
+	{
+		"en"	"Irongate Payback"
+		"ko"	"강철게이트 복수자"
+	}
+	"Blocker"
+	{
+		"en"	"Irongate Blocker"
+		"ko"	"강철게이트 블록커"
+	}
+	"Victoria Destructor"
+	{
+		"en"	"Irongate Destructor"
+		"ko"	"강철게이트 페기물 소각자"
+	}
+	"Victoria Tactical Protector"
+	{
+		"en"	"Irongate Tactical Protector"
+		"ko"	"강철게이트 전술 프로텍터"
+	}
+	"Victoria Aviator"
+	{
+		"en"	"Irongate Aviator"
+		"ko"	"아이언 실드에 타라 신지"
+	}
+	"IronShield"
+	{
+		"en"	"Irongate IronShield"
+		"ko"	"강철게이트 아이언실드"
+	}
+	"Basebreaker"
+	{
+		"en"	"Trooper  Basebreaker"
+		"ko"	"트루퍼 기지파괴자"
+	}
+	"Booster"
+	{
+		"en"	"Trooper  Booster"
+		"ko"	"트루퍼 부스터"
+	}
+	"Scorcher"
+	{
+		"en"	"Trooper  Scorcher"
+		"ko"	"트루퍼 방화병"
+	}	
+	"Mowdown"
+	{
+		"en"	"Trooper  Mowdown"
+		"ko"	"트루퍼 벌집피자 제조기"
+	}
+	"Mechafist"
+	{
+		"en"	"Trooper  Mechafist"
+		"ko"	"트루퍼 메카피스트"
+	}
+	"Assulter"
+	{
+		"en"	"Trooper  Assulter"
+		"ko"	"트루퍼 보병"
+	}
+	"Anti-Armor Infantry"
+	{
+		"en"	"Trooper  Anti-Armor Infantry"
+		"ko"	"트루퍼 대전차 보병"
+	}
+	"Victorian Mortar"
+	{
+		"en"	"Trooper  Mortar"
+		"ko"	"트루퍼 박격포병"
+	}
+	"Bomb Cart"
+	{
+		"en"	"Trooper  Bombcart"
+		"ko"	"트루퍼 폭탄 C.A.R.T"
+	}
+	"Breachcart"
+	{
+		"en"	"Trooper  Breachcart"
+		"ko"	"트루퍼 브리칭 전차"
+	}
+	"Victoria Tacticalunit"
+	{
+		"en"	"Trooper Tactical Operator"
+		"ko"	"트루퍼 전술 오퍼레이터"
 	}
 	"Caffeinator"
 	{
 		"en"	"Brassbunker Caffeinator"
+		"ko"	"브라스벙커 카'페인'네이터"
 	}
 	"Welder"
 	{
 		"en"	"Brassbunker Welder"
+		"ko"	"브라스벙커 용접 전사"
 	}
 	"Mechanist"
 	{
 		"en"	"Brassbunker Mechanist"
+		"ko"	"브라스벙커 메카니스트"
 	}
 	"Avangard"
 	{
 		"en"	"Brassbunker Avangard"
+		"ko"	"브라스벙커 아방가르드"
 	}
 	"Tanker"
 	{
 		"en"	"Brassbunker Tanker"
+		"ko"	"브라스벙커 탱커"
 	}
-	"Ambusher"
+	"Brassbunker Ambusher"
 	{
 		"en"	"Brassbunker Ambusher"
+		"ko"	"브라스벙커 매복자"
 	}
 	"Pulverizer"
 	{
 		"en"	"Brassbunker Pulverizer"
+		"ko"	"브라스벙커 분쇄기"
 	}
-	"Taser"
+	"Victoria Taser"
 	{
 		"en"	"Brassbunker Taser"
+		"ko"	"브라스벙커 테이저"
 	}
-	"Tank"
+	"Victoria Tank"
 	{
 		"en"	"Brassbunker Tank"
+		"ko"	"브라스벙커 탱크"
+	}
+	"Victoria Factory"
+	{
+		"en"	"Victorian Factory"
+		"ko"	"빅토리아 군수공장"
 	}
 	"Victoria Radiomast"
 	{
 		"en"	"Victorian Radiomast"
+		"ko"	"빅토리아 라디오마스트"
 	}
 	"Radio Guard"
 	{
 		"en"	"Radiomast Guard"
+		"ko"	"라디오마스트 가드"
 	}
 	"Radio Repair"
 	{
 		"en"	"Radio Repair"
-  }
+		"ko"	"라디오 수리 전문가"
+	}
+	"Victoria Anvil"
+	{
+		"en"	"''Anvil''"
+		"ko"	"''모루''"
+	}
+	"Victoria Anvil MK2"
+	{
+		"en"	"''Anvil'' Mk2"
+		"ko"	"''모루'' Mk2"
+	}
+	"Victoria Fragments"
+	{
+		"en"	"''Fragments''"
+		"ko"	"''파편''"
+	}
+	"Victoria Fragments MK2"
+	{
+		"en"	"''Fragments'' Mk2"
+		"ko"	"''파편'' Mk2"
+	}
+	"Victoria Atomizer"
+	{
+		"en"	"Atomizer"
+		"ko"	"인수분해"
+	}
+	"Victoria Huscarls"
+	{
+		"en"	"Huscarls"
+		"ko"	"허스칼"
+	}
+	"Victoria Harrison"
+	{
+		"en"	"Harrison"
+		"ko"	"해리슨"
+	}
+	"Victoria Castellan"
+	{
+		"en"	"Castellan"
+		"ko"	"빵 ㅋㅋ"
+	}
 	"Agent John"
 	{
 		"en"		"Agent John"
