@@ -89,14 +89,6 @@ static int gRedPoint;
 static int g_BeamIndex_heal;
 static int g_HALO_Laser;
 
-#define Castellan_THIRDSHOT_CHARGE_TIME 3.0
-#define Castellan_THIRDSHOT_CHARGE_SPAN 1.0
-#define Castellan_THIRDSHOT_LIGHTNING_RANGE 150.0
-
-#define Castellan_BombDrop_CHARGE_TIME 3.0
-#define Castellan_BombDrop_CHARGE_SPAN 1.0
-#define Castellan_BombDrop_LIGHTNING_RANGE 150.0
-
 void Castellan_OnMapStart_NPC()
 {
 	NPCData data;
@@ -1218,26 +1210,34 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		}
 		if(IsValidEntity(Temp_Target[npc.index]) && npc.m_flAirRaidDelay < gameTime)
 		{
-			float vEnd[3];
-			GetAbsOrigin(Temp_Target[npc.index], vEnd);
-			float AirRaidDamage = 50.0;
-			AirRaidDamage *= RaidModeScaling;
-			Handle pack2;
-			CreateDataTimer(1.0, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-			WritePackCell(pack2, EntIndexToEntRef(npc.index));
-			WritePackFloat(pack2, 0.0);
-			WritePackFloat(pack2, vEnd[0]);
-			WritePackFloat(pack2, vEnd[1]);
-			WritePackFloat(pack2, vEnd[2]);
-			WritePackFloat(pack2, AirRaidDamage);
-			Harrison npcGetInfo = view_as<Harrison>(npc.index);
+			float BombPos[3];
+			float BombDamage = 50.0;
+			BombDamage *= RaidModeScaling;
 			float Spam_delay=0.0;
 			for(int AirRaid; AirRaid < 5; AirRaid++)
 			{
+				GetAbsOrigin(Temp_Target[npc.index], BombPos);
+				if(AirRaid>4)
+				{
+					PredictSubjectPositionForProjectiles(npc, Temp_Target[npc.index], 100.0, _,BombPos);
+					BombPos[0] += GetRandomFloat(-25.0, 25.0);
+					BombPos[1] += GetRandomFloat(-25.0, 25.0);
+				}
+				else if(AirRaid>0)
+				{
+					BombPos[0] += GetRandomFloat(-500.0, 500.0);
+					BombPos[1] += GetRandomFloat(-500.0, 500.0);
+				}
 				DataPack pack;
 				CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(EntIndexToEntRef(npcGetInfo.index));
-				pack.WriteCell(EntIndexToEntRef(Temp_Target[npc.index]));
+				pack.WriteCell(EntIndexToEntRef(npc.index));
+				pack.WriteFloat(BombPos[0]);
+				pack.WriteFloat(BombPos[1]);
+				pack.WriteFloat(BombPos[2]);
+				pack.WriteFloat(BombDamage);
+				pack.WriteFloat(3.0);
+				pack.WriteFloat(1.0);
+				pack.WriteFloat(150.0);
 				Spam_delay += 0.15;
 			}
 			npc.m_flAirRaidDelay = gameTime + 2.5;
@@ -1371,7 +1371,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					bool PlaySound = false;
 					for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 					{
-						float Spam_delay=0.0;
 						if(i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 						{
 							if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
@@ -1417,26 +1416,27 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								
 								if(HowManyMelee[npc.index] > 2)
 								{
-									float vEnd[3];
-									float RocketDamage = 100.0;
-									RocketDamage *= RaidModeScaling;
-
-									float projectile_speed = 300.0;
-									PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,vEnd);
-									
-									DataPack pack;
-									CreateDataTimer(Spam_delay, Timer_Third_Rocket, pack, TIMER_FLAG_NO_MAPCHANGE);
-									pack.WriteCell(EntIndexToEntRef(npc.index));
-									pack.WriteCell(EntIndexToEntRef(target));
-									Spam_delay += 0.15;
-									Handle pack2;
-									CreateDataTimer(Castellan_THIRDSHOT_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-									WritePackCell(pack2, EntIndexToEntRef(npc.index));
-									WritePackFloat(pack2, 0.0);
-									WritePackFloat(pack2, vEnd[0]);
-									WritePackFloat(pack2, vEnd[1]);
-									WritePackFloat(pack2, vEnd[2]);
-									WritePackFloat(pack2, RocketDamage);
+									float BombPos[3];
+									float BombDamage = 100.0;
+									BombDamage *= RaidModeScaling;
+									for(int AirRaid; AirRaid < 2; AirRaid++)
+									{
+										GetAbsOrigin(target, BombPos);
+										if(AirRaid>0)
+										{
+											PredictSubjectPositionForProjectiles(npc, target, 125.0, _,BombPos);
+										}
+										DataPack pack;
+										CreateDataTimer(0.01, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
+										pack.WriteCell(EntIndexToEntRef(npc.index));
+										pack.WriteFloat(BombPos[0]);
+										pack.WriteFloat(BombPos[1]);
+										pack.WriteFloat(BombPos[2]);
+										pack.WriteFloat(BombDamage);
+										pack.WriteFloat(3.0);
+										pack.WriteFloat(1.0);
+										pack.WriteFloat(150.0);
+									}
 									HowManyMelee[npc.index] = 0;
 								}
 								else
@@ -1584,122 +1584,6 @@ void CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3])
 	}
 }
 
-static Action Timer_Third_Rocket(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	Castellan npc = view_as<Castellan>(EntRefToEntIndex(pack.ReadCell()));
-	int enemy = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(enemy))
-	{
-		float vEnd[3];
-		float RocketDamage = 50.0;
-		RocketDamage *= RaidModeScaling;
-			
-		GetAbsOrigin(enemy, vEnd);
-		vEnd[0] += GetRandomFloat(-250.0, 250.0);
-		vEnd[1] += GetRandomFloat(-250.0, 250.0);
-		Handle pack2;
-		CreateDataTimer(Castellan_BombDrop_CHARGE_SPAN, Smite_Timer_BombDrop, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-		WritePackCell(pack2, EntIndexToEntRef(npc.index));
-		WritePackFloat(pack2, 0.0);
-		WritePackFloat(pack2, vEnd[0]);
-		WritePackFloat(pack2, vEnd[1]);
-		WritePackFloat(pack2, vEnd[2]);
-		WritePackFloat(pack2, RocketDamage);
-			
-		spawnRing_Vectors(vEnd, Castellan_BombDrop_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, Castellan_BombDrop_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
-	}
-	return Plugin_Stop;
-}
-
-static Action Smite_Timer_BombDrop(Handle Smite_Logic, DataPack pack)
-{
-	ResetPack(pack);
-	int entity = EntRefToEntIndex(ReadPackCell(pack));
-	
-	if (!IsValidEntity(entity))
-	{
-		return Plugin_Stop;
-	}
-		
-	float NumLoops = ReadPackFloat(pack);
-	float spawnLoc[3];
-	for (int GetVector = 0; GetVector < 3; GetVector++)
-	{
-		spawnLoc[GetVector] = ReadPackFloat(pack);
-	}
-	
-	float damage = ReadPackFloat(pack);
-	
-	if (NumLoops >= Castellan_BombDrop_CHARGE_TIME)
-	{
-		float secondLoc[3];
-		for (int replace = 0; replace < 3; replace++)
-		{
-			secondLoc[replace] = spawnLoc[replace];
-		}
-		
-		for (int sequential = 1; sequential <= 5; sequential++)
-		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (Castellan_BombDrop_LIGHTNING_RANGE * 5.0)/float(sequential));
-			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
-		}
-		
-		secondLoc[2] = 1500.0;
-		
-		float vAngles[3];
-		int prop2 = CreateEntityByName("prop_dynamic_override");
-		if(IsValidEntity(prop2))
-		{
-			DispatchKeyValue(prop2, "model", "models/props_combine/headcrabcannister01a.mdl");
-			DispatchKeyValue(prop2, "modelscale", "1.00");
-			DispatchKeyValue(prop2, "StartDisabled", "false");
-			DispatchKeyValue(prop2, "Solid", "0");
-			SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
-			DispatchSpawn(prop2);
-			SetEntityCollisionGroup(prop2, 1);
-			AcceptEntityInput(prop2, "DisableShadow");
-			AcceptEntityInput(prop2, "DisableCollision");
-			vAngles[0] += 90.0;
-			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
-			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
-		}
-
-		/*
-		spawnBeam(0.8, 255, 50, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);	
-		*/
-
-		DataPack pack_boom = new DataPack();
-		pack_boom.WriteFloat(spawnLoc[0]);
-		pack_boom.WriteFloat(spawnLoc[1]);
-		pack_boom.WriteFloat(spawnLoc[2]);
-		pack_boom.WriteCell(1);
-		RequestFrame(MakeExplosionFrameLater, pack_boom);
-		
-		CreateEarthquake(spawnLoc, 1.0, Castellan_BombDrop_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, Castellan_BombDrop_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
-	
-		return Plugin_Stop;
-	}
-	else
-	{
-		spawnRing_Vectors(spawnLoc, Castellan_BombDrop_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
-	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
-		
-		ResetPack(pack);
-		WritePackCell(pack, EntIndexToEntRef(entity));
-		WritePackFloat(pack, NumLoops + Castellan_BombDrop_CHARGE_TIME);
-		WritePackFloat(pack, spawnLoc[0]);
-		WritePackFloat(pack, spawnLoc[1]);
-		WritePackFloat(pack, spawnLoc[2]);
-		WritePackFloat(pack, damage);
-	}
-	
-	return Plugin_Continue;
-}
-
 static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -1729,92 +1613,4 @@ static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
 		npc.FaceTowards(vecTarget, 99999.0);
 	}
 	return Plugin_Stop;
-}
-
-static Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
-{
-	ResetPack(pack);
-	int entity = EntRefToEntIndex(ReadPackCell(pack));
-	
-	if (!IsValidEntity(entity))
-	{
-		return Plugin_Stop;
-	}
-		
-	float NumLoops = ReadPackFloat(pack);
-	float spawnLoc[3];
-	for (int GetVector = 0; GetVector < 3; GetVector++)
-	{
-		spawnLoc[GetVector] = ReadPackFloat(pack);
-	}
-	
-	float damage = ReadPackFloat(pack);
-	
-	if (NumLoops >= Castellan_THIRDSHOT_CHARGE_TIME)
-	{
-		float secondLoc[3];
-		for (int replace = 0; replace < 3; replace++)
-		{
-			secondLoc[replace] = spawnLoc[replace];
-		}
-		
-		for (int sequential = 1; sequential <= 5; sequential++)
-		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (Castellan_THIRDSHOT_LIGHTNING_RANGE * 5.0)/float(sequential));
-			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
-		}
-		
-		secondLoc[2] = 1500.0;
-		
-		float vAngles[3];
-		int prop2 = CreateEntityByName("prop_dynamic_override");
-		if(IsValidEntity(prop2))
-		{
-			DispatchKeyValue(prop2, "model", "models/props_combine/headcrabcannister01a.mdl");
-			DispatchKeyValue(prop2, "modelscale", "1.00");
-			DispatchKeyValue(prop2, "StartDisabled", "false");
-			DispatchKeyValue(prop2, "Solid", "0");
-			SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
-			DispatchSpawn(prop2);
-			SetEntityCollisionGroup(prop2, 1);
-			AcceptEntityInput(prop2, "DisableShadow");
-			AcceptEntityInput(prop2, "DisableCollision");
-			vAngles[0] += 90.0;
-			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
-			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
-		}
-
-		/*
-		spawnBeam(0.8, 255, 50, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);	
-		*/
-
-		DataPack pack_boom = new DataPack();
-		pack_boom.WriteFloat(spawnLoc[0]);
-		pack_boom.WriteFloat(spawnLoc[1]);
-		pack_boom.WriteFloat(spawnLoc[2]);
-		pack_boom.WriteCell(1);
-		RequestFrame(MakeExplosionFrameLater, pack_boom);
-		
-		CreateEarthquake(spawnLoc, 1.0, Castellan_THIRDSHOT_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, Castellan_THIRDSHOT_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
-	
-		return Plugin_Stop;
-	}
-	else
-	{
-		spawnRing_Vectors(spawnLoc, Castellan_THIRDSHOT_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
-	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
-		
-		ResetPack(pack);
-		WritePackCell(pack, EntIndexToEntRef(entity));
-		WritePackFloat(pack, NumLoops + Castellan_THIRDSHOT_CHARGE_TIME);
-		WritePackFloat(pack, spawnLoc[0]);
-		WritePackFloat(pack, spawnLoc[1]);
-		WritePackFloat(pack, spawnLoc[2]);
-		WritePackFloat(pack, damage);
-	}
-	
-	return Plugin_Continue;
 }

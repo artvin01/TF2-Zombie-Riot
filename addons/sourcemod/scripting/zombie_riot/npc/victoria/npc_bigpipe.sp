@@ -428,11 +428,12 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 					SDKHook(RocketGet, SDKHook_StartTouch, HEGrenade_StartTouch);
 					SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
 					//Reducing gravity, reduces speed, lol.
-					SetEntityGravity(RocketGet, 1.0); 	
+					//SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
 					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.75, 1.0);
-					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+					//SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+					Better_Gravity_Rocket(RocketGet, 55.0);
 
 					//This will return vecTarget as the speed we need.
 					npc.m_iOverlordComboAttack --;
@@ -542,4 +543,35 @@ static void HEGrenade(int entity, int victim, float damage, int weapon)
 			damage *= 3.0;
 		SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);
 	}
+}
+
+public void Better_Gravity_Rocket(int entity, float gravity)
+{
+	DataPack GravityProjectile = new DataPack();
+	GravityProjectile.WriteCell(EntIndexToEntRef(entity));
+	GravityProjectile.WriteFloat(gravity);
+	RequestFrame(GravityProjectileThink, GravityProjectile);
+}
+static void GravityProjectileThink(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	float gravity = pack.ReadFloat();
+	if(!IsValidEntity(entity))
+		return;
+	float vel[3],ang[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
+	vel[2] -= gravity;
+	GetVectorAngles(vel, ang);
+	SetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vel);
+	SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+	delete pack;
+	DataPack pack2 = new DataPack();
+	pack2.WriteCell(EntIndexToEntRef(entity));
+	pack2.WriteFloat(gravity);
+	float Throttle = 0.04;	//0.025
+	int frames_offset = RoundToCeil(66.0*Throttle);	//no need to call this every frame if avoidable
+	if(frames_offset < 0)
+		frames_offset = 1;
+	RequestFrames(GravityProjectileThink, frames_offset, pack2);
 }

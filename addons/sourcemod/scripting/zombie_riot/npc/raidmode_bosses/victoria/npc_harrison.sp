@@ -108,10 +108,6 @@ static int gRedPoint;
 static int g_BeamIndex_heal;
 static int g_HALO_Laser;
 
-#define BOMBBARDING_CHARGE_TIME 3.0
-#define BOMBBARDING_CHARGE_SPAN 1.0
-#define BOMBBARDING_LIGHTNING_RANGE 150.0
-
 void Harrison_OnMapStart_NPC()
 {
 	NPCData data;
@@ -144,7 +140,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_PlayRocketshotready));   i++) { PrecacheSound(g_PlayRocketshotready[i]);   }
 	for (int i = 0; i < (sizeof(g_LasershotReady));   i++) { PrecacheSound(g_LasershotReady[i]);   }
 	PrecacheModel("models/player/sniper.mdl");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_harrison.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
 	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
 	
 	PrecacheModel(LASERBEAM);
@@ -410,7 +406,7 @@ methodmap Harrison < CClotBody
 				RaidModeScaling *= 0.65;
 			}
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
 			music.Time = 128;
 			music.Volume = 2.0;
 			music.Custom = true;
@@ -782,26 +778,38 @@ static void Internal_ClotThink(int iNPC)
 			{
 				if(enemy[i])
 				{
-					float vEnd[3];
-					float RocketDamage = 50.0;
-					RocketDamage *= RaidModeScaling;
-					GetAbsOrigin(enemy[i], vEnd);
+					float BombPos[3];
+					float BombDamage = 50.0;
+					BombDamage *= RaidModeScaling;
 					float Spam_delay=0.0;
-					Handle pack2;
-					CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-					WritePackCell(pack2, EntIndexToEntRef(npc.index));
-					WritePackFloat(pack2, 0.0);
-					WritePackFloat(pack2, vEnd[0]);
-					WritePackFloat(pack2, vEnd[1]);
-					WritePackFloat(pack2, vEnd[2]);
-					WritePackFloat(pack2, RocketDamage);
-
-					for(int k; k < 4; k++)
+					for(int k; k < 5; k++)
 					{
+						GetAbsOrigin(enemy[i], BombPos);
+						if(k>4)
+						{
+							BombPos[0] += GetRandomFloat(-750.0, 750.0);
+							BombPos[1] += GetRandomFloat(-750.0, 250.0);
+						}
+						else if(k>2)
+						{
+							BombPos[0] += GetRandomFloat(-500.0, 500.0);
+							BombPos[1] += GetRandomFloat(-500.0, 500.0);
+						}
+						else if(k>0)
+						{
+							BombPos[0] += GetRandomFloat(-250.0, 250.0);
+							BombPos[1] += GetRandomFloat(-250.0, 250.0);
+						}
 						DataPack pack;
 						CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
 						pack.WriteCell(EntIndexToEntRef(npc.index));
-						pack.WriteCell(EntIndexToEntRef(enemy[i]));
+						pack.WriteFloat(BombPos[0]);
+						pack.WriteFloat(BombPos[1]);
+						pack.WriteFloat(BombPos[2]);
+						pack.WriteFloat(BombDamage);
+						pack.WriteFloat(3.0);
+						pack.WriteFloat(1.0);
+						pack.WriteFloat(150.0);
 						Spam_delay += 0.15;
 					}
 				}
@@ -1530,32 +1538,35 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 public Action Timer_Bomb_Spam(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	Harrison npc = view_as<Harrison>(EntRefToEntIndex(pack.ReadCell()));
-	int enemy = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(enemy))
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	float BombPos[3];
+	for (int GetVector = 0; GetVector < 3; GetVector++)
 	{
-		float vEnd[3];
-		float RocketDamage = 50.0;
-		RocketDamage *= RaidModeScaling;
-			
-		GetAbsOrigin(enemy, vEnd);
-		vEnd[0] += GetRandomFloat(-250.0, 250.0);
-		vEnd[1] += GetRandomFloat(-250.0, 250.0);
+		BombPos[GetVector] = pack.ReadFloat();
+	}
+	float BombDamage = pack.ReadFloat();
+	float BombChargeTime = pack.ReadFloat();
+	float BombChargeSpan = pack.ReadFloat();
+	float BombRange = pack.ReadFloat();
+	if(IsValidEntity(entity))
+	{
 		Handle pack2;
-		CreateDataTimer(BOMBBARDING_CHARGE_SPAN, Smite_Timer_BOMBBARDING, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-		WritePackCell(pack2, EntIndexToEntRef(npc.index));
+		CreateDataTimer(BombChargeSpan, Delay_Drop_Rocket, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		WritePackCell(pack2, EntIndexToEntRef(entity));
 		WritePackFloat(pack2, 0.0);
-		WritePackFloat(pack2, vEnd[0]);
-		WritePackFloat(pack2, vEnd[1]);
-		WritePackFloat(pack2, vEnd[2]);
-		WritePackFloat(pack2, RocketDamage);
+		WritePackFloat(pack2, BombPos[0]);
+		WritePackFloat(pack2, BombPos[1]);
+		WritePackFloat(pack2, BombPos[2]);
+		WritePackFloat(pack2, BombDamage);
+		WritePackFloat(pack2, BombChargeTime);
+		WritePackFloat(pack2, BombRange);
 			
-		spawnRing_Vectors(vEnd, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BOMBBARDING_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
+		spawnRing_Vectors(BombPos, BombRange * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, BombChargeTime, 6.0, 0.1, 1, 1.0);
 	}
 	return Plugin_Stop;
 }
 
-static Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
+static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
 {
 	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
@@ -1573,8 +1584,10 @@ static Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 	}
 	
 	float damage = ReadPackFloat(pack);
+	float BombChargeTime = ReadPackFloat(pack);
+	float BombRange = ReadPackFloat(pack);
 	
-	if (NumLoops >= BOMBBARDING_CHARGE_TIME)
+	if (NumLoops >= BombChargeTime)
 	{
 		float secondLoc[3];
 		for (int replace = 0; replace < 3; replace++)
@@ -1584,7 +1597,7 @@ static Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 		
 		for (int sequential = 1; sequential <= 5; sequential++)
 		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (BOMBBARDING_LIGHTNING_RANGE * 5.0)/float(sequential));
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 120, 1, 0.33, 6.0, 0.4, 1, (BombRange * 5.0)/float(sequential));
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
 		
@@ -1621,23 +1634,25 @@ static Action Smite_Timer_BOMBBARDING(Handle Smite_Logic, DataPack pack)
 		pack_boom.WriteCell(1);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
-		CreateEarthquake(spawnLoc, 1.0, BOMBBARDING_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOMBBARDING_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
+		CreateEarthquake(spawnLoc, 1.0, BombRange * 2.5, 16.0, 255.0);
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BombRange * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
 	
 		return Plugin_Stop;
 	}
 	else
 	{
-		spawnRing_Vectors(spawnLoc, BOMBBARDING_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+		spawnRing_Vectors(spawnLoc, BombRange * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 250, 150, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
 	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
 		
 		ResetPack(pack);
 		WritePackCell(pack, EntIndexToEntRef(entity));
-		WritePackFloat(pack, NumLoops + BOMBBARDING_CHARGE_TIME);
+		WritePackFloat(pack, NumLoops + BombChargeTime);
 		WritePackFloat(pack, spawnLoc[0]);
 		WritePackFloat(pack, spawnLoc[1]);
 		WritePackFloat(pack, spawnLoc[2]);
 		WritePackFloat(pack, damage);
+		WritePackFloat(pack, BombChargeTime);
+		WritePackFloat(pack, BombRange);
 	}
 	
 	return Plugin_Continue;
