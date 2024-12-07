@@ -792,6 +792,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
+				CPrintToChatAll("{blue}Atomizer{default}: Not Enough Energy! Nitro Fuel going in!");
 				if(IsValidEntity(npc.m_iWearable2))
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/taunt_cheers/taunt_cheers_pyro.mdl");
@@ -837,6 +838,7 @@ static void Internal_ClotThink(int iNPC)
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+					CPrintToChatAll("{blue}Atomizer{default}: Oh yes! I FEEL ALIVE!");
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flNextRangedAttack += 2.0;
 					npc.m_flRangedSpecialDelay += 2.0;
@@ -861,6 +863,7 @@ static void Internal_ClotThink(int iNPC)
 		float ProjLocBase[3];
 		if(I_cant_do_this_all_day[npc.index] <= 0)
 		{
+			CPrintToChatAll("{blue}Atomizer{default}: Ready to fly?");
 			npc.AddActivityViaSequence("taunt05");
 			npc.SetCycle(0.01);
 			npc.SetPlaybackRate(1.4);

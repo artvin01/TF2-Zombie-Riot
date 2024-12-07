@@ -321,9 +321,9 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 
 					damageDealt *= TimeMultiplier;
 					*/
-
+					damageDealt *= (npc.m_flSpeed * 0.1);
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= (npc.m_flSpeed * 0.1);
+						damageDealt *= 2.45;
 					if(NpcStats_IsEnemySilenced(npc.index))
 					{
 						damageDealt *= 0.75;

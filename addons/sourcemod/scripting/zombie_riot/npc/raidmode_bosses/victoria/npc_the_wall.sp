@@ -1230,6 +1230,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		{
 			case 0:
 			{
+				CPrintToChatAll("{lightblue}Huscarls{default}: Hit me. I DARE YOU.");
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
@@ -1274,6 +1275,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			{
 				if(npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 				{
+					CPrintToChatAll("{lightblue}Huscarls{default}: Come closer, I will give you this back.");
 					int maxhealth = ReturnEntityMaxHealth(npc.index);
 					float MAXCharger = (DynamicCharger[npc.index]/(float(maxhealth)*0.05))*0.05;
 					if(MAXCharger > 0.05)MAXCharger = 0.05;
@@ -1316,7 +1318,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
 				npc.m_flDoingAnimation = gameTime + 1.0;
-				Delay_Attribute[npc.index] = gameTime + 1.0;
+				Delay_Attribute[npc.index] = gameTime + 0.6;
 				I_cant_do_this_all_day[npc.index] = 1;
 			}
 			case 1:
@@ -1332,13 +1334,9 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					I_cant_do_this_all_day[npc.index] = 0;
 					Delay_Attribute[npc.index] = gameTime + 0.2;
 					if(NpcStats_VictorianCallToArms(npc.index))
-					{
 						npc.m_flHuscarlsGroundSlamCoolDown = gameTime + 20.0;
-					}
 					else
-					{
 						npc.m_flHuscarlsGroundSlamCoolDown = gameTime + 25.0;
-					}
 					npc.PlayKaboomSound();
 				}
 			}

@@ -373,7 +373,7 @@ void VictoriaAssulterSelfDefense(VictoriaAssulter npc, float gameTime)
 
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 10.0;
+							float damageDealt = 7.5;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 3.0;
 

@@ -106,7 +106,7 @@ methodmap VictorianPayback < CClotBody
 	
 	public VictorianPayback(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.5", "10000", ally, false, true));
+		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.5", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
