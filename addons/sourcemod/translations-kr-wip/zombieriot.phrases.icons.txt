@@ -470,9 +470,9 @@
 		"en"		"Base is under attack."
 		"ko"		"기지가 공격받고 있습니다."
 	}
-	"Victorian Radiomast Teleported in!"
+	"Victorian Radiomast Is Here!"
 	{
-		"en"	"Victorian Radiomast Teleported in!"
+		"en"	"Victorian Radiomast Is Here! Break this to end the wave"
 	}
 	"The Trumpet Skeleton 1"
 	{

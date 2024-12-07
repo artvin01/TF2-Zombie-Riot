@@ -275,13 +275,13 @@ methodmap Atomizer < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;
 
-		//IDLE
 		bool CloneDo = StrContains(data, "support_ability") != -1;
 		if(CloneDo)
 		{
 			func_NPCDeath[npc.index] = view_as<Function>(Clone_NPCDeath);
 			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Clone_OnTakeDamage);
 			func_NPCThink[npc.index] = view_as<Function>(Clone_ClotThink);
+			
 			MakeObjectIntangeable(npc.index);
 			b_DoNotUnStuck[npc.index] = true;
 			b_NoKnockbackFromSources[npc.index] = true;
@@ -299,6 +299,8 @@ methodmap Atomizer < CClotBody
 			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
+			//IDLE
 			NPC_StartPathing(npc.index);
 			npc.m_iState = 0;
 			npc.m_flGetClosestTargetTime = 0.0;
@@ -352,42 +354,40 @@ methodmap Atomizer < CClotBody
 			strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
 			Music_SetRaidMusic(music);
 			
-			CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let the get out alive!");
+			CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let them get out alive!");
 			Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
-		}
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
-		if(RaidModeScaling < 55)
-		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
-		}
-		else
-		{
-			RaidModeScaling *= 0.38;
-		}
-		
-		float amount_of_people = float(CountPlayersOnRed());
-		if(amount_of_people > 12.0)
-		{
-			amount_of_people = 12.0;
-		}
-		amount_of_people *= 0.12;
-		
-		if(amount_of_people < 1.0)
-			amount_of_people = 1.0;
+			
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			if(RaidModeScaling < 55)
+			{
+				RaidModeScaling *= 0.19; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.38;
+			}
+			
+			float amount_of_people = float(CountPlayersOnRed());
+			if(amount_of_people > 12.0)
+			{
+				amount_of_people = 12.0;
+			}
+			amount_of_people *= 0.12;
+			
+			if(amount_of_people < 1.0)
+				amount_of_people = 1.0;
 
-		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-		{
-			RaidModeScaling *= 0.85;
-		}
-		else if(ZR_GetWaveCount()+1 > 55)
-		{
-			RaidModeScaling *= 0.85;
-			if(!CloneDo)
+			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+			
+			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+			{
+				RaidModeScaling *= 0.85;
+			}
+			else if(ZR_GetWaveCount()+1 > 55)
 			{
 				FTL[npc.index] = 220.0;
 				RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
+				RaidModeScaling *= 0.65;
 			}
 		}
 		npc.m_iChanged_WalkCycle = -1;
@@ -480,10 +480,7 @@ static void Clone_ClotThink(int iNPC)
 		{
 			if(IsValidEnemy(npc.index, EnemyLoop, true, true))
 			{
-				float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget );
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc);
-				if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && flDistanceToTarget < 750.0)
+				if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
 				{
 					GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
 					
@@ -657,6 +654,18 @@ static void Internal_ClotThink(int iNPC)
 			}
 		}
 	}
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		DeleteAndRemoveAllNpcs = 3.0;
+		npc.m_bisWalking = false;
+		npc.AddActivityViaSequence("taunt_peace_out");
+		npc.SetCycle(0.01);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		BlockLoseSay = true;
+		
+		CPrintToChatAll("{blue}Atomizer{default}: Mission Accomplished, we will figure out who is behind them");
+		return;
+	}
 	npc.m_flSpeed = 300.0+(((FTL[npc.index]-(RaidModeTime - GetGameTime()))/FTL[npc.index])*150.0);
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
@@ -744,7 +753,6 @@ static void Internal_ClotThink(int iNPC)
 				}
 			}
 		}
-		BlockLoseSay = true;
 		YaWeFxxked[npc.index] = true;
 	}
 	if(YaWeFxxked[npc.index])
@@ -1589,7 +1597,6 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 			int GETBOUNS = GetEntProp(entity, Prop_Data, "m_iHammerID");
 			if(GETBOUNS < 20)
 			{
-				//SDKHook(entity, SDKHook_Touch, Atomizer_Rocket_Particle_Bounce);
 				static float vOrigin[3], vVelocity[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vOrigin);
 				GetEntPropVector(entity, Prop_Data, "m_vecVelocity", vVelocity);
@@ -1632,7 +1639,6 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 	RemoveEntity(entity);
 	return Plugin_Handled;
 }
-
 
 static bool ONLYBSP(int entity, int contentsMask, any data)
 {
@@ -1797,8 +1803,7 @@ static bool Victoria_Support(Atomizer npc)
 			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
-			if(HasEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID"))
-				SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
+			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
 		}
 	}
@@ -1813,7 +1818,7 @@ static bool Victoria_Support(Atomizer npc)
 		
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
-		Explode_Logic_Custom(4500.0, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
+		Explode_Logic_Custom(100.0*RaidModeScaling, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
 		b_ThisNpcIsSawrunner[npc.index] = false;
 		ParticleEffectAt(position, "hightower_explosion", 1.0);
 		i_ExplosiveProjectileHexArray[npc.index] = 0; 

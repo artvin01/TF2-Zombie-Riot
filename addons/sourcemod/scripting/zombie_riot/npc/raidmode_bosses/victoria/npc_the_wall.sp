@@ -710,7 +710,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Huscarls{default}: Time to Plan B, {gold}Mechanist{default}. teleport the Robots right now!");
+				CPrintToChatAll("{lightblue}Huscarls{default}: Time for Plan B, {gold}Mechanist{default}. teleport the Robots right now!");
 				npc.AddActivityViaSequence("tauntrussian_rubdown");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.5);
@@ -840,8 +840,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.PlayAngerSound();
 					switch(GetRandomInt(0, 1))
 					{
-						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin can, I knew it when it broke");
-						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed performance issues when the robots were disabled");
+						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin cans, I knew it would broke");
+						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed its performance issues when they were disabled");
 					}
 					npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
 					npc.m_flAttackHappens = 0.0;
@@ -1152,8 +1152,8 @@ static void Internal_NPCDeath(int entity)
 		return;
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Retreat! This is a tactical retreat.");
-		case 1:CPrintToChatAll("{lightblue}Huscarls{default}: {gold}Victoria{default} is in trouble again.");
+		case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Retreat! This is a tactical retreat by the way.");
+		case 1:CPrintToChatAll("{lightblue}Huscarls{default}: {gold}Victoria{default} is in trouble.");
 		case 2:CPrintToChatAll("{lightblue}Huscarls{default}: Next time I'll {crimson}crush you{default}");
 	}
 	npc.PlayDeathSound();	
@@ -1962,31 +1962,26 @@ static void Huscarls_Shield_StartTouch(DataPack pack)
 		return;
 	if(!IsValidEntity(Owner))
 		return;
-	float position[3], position2[3], distance[3], dist;
+	float position[3];
 	GetEntPropVector(Shield, Prop_Data, "m_vecAbsOrigin", position);
-	int team = GetTeam(Shield);
-	int projectile = -1;
-	while((projectile = FindEntityByClassname(projectile, "tf_projectile_*")) != INVALID_ENT_REFERENCE)
+	float vecTarget[3];
+	bool PlaySounds=false;
+	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 	{
-		int EnemyTeam = GetTeam(projectile);
-		if(team!=EnemyTeam)
+		if(IsValidEntity(EnemyLoop) && b_IsAProjectile[EnemyLoop] && GetTeam(Owner) != GetTeam(EnemyLoop))
 		{
-			GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", position2);
-			MakeVectorFromPoints(position, position2, distance);
-			dist = GetVectorLength(distance);
-			if(dist<550.0)
+			WorldSpaceCenter(EnemyLoop, vecTarget);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, position);
+			if(flDistanceToTarget < 250.0)
 			{
-				if(projectile <= 0 || !IsValidEntity(projectile))
-					continue;
-				RemoveEntity(projectile);
-				AcceptEntityInput(projectile, "Kill");
-				EmitSoundToAll(g_AdaptiveArmorSounds[GetRandomInt(0, sizeof(g_AdaptiveArmorSounds) - 1)], Owner, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, _, _, _, _, false);
-				continue;
+				ParticleEffectAt(vecTarget, "manmelter_impact_electro", 1.0);
+				RemoveEntity(EnemyLoop);
+				PlaySounds=true;
 			}
-			else continue;
 		}
 	}
-	Explode_Logic_Custom(0.0, projectile, Owner, -1, position, 142.0, _, _, true, _, false, _, Shield_Knockback);
+	if(PlaySounds)EmitSoundToAll(g_AdaptiveArmorSounds[GetRandomInt(0, sizeof(g_AdaptiveArmorSounds) - 1)], 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.7, _, -1, vecTarget);
+	Explode_Logic_Custom(0.0, Owner, Owner, -1, position, 142.0, _, _, true, _, false, _, Shield_Knockback);
 	delete pack;
 	DataPack pack2 = new DataPack();
 	pack2.WriteCell(EntIndexToEntRef(Shield));

@@ -618,11 +618,6 @@ void NPC_ConfigSetup()
 	VictoriaRadiomast_OnMapStart_NPC();
 	VictoriaRepair_OnMapStart_NPC();
 	Victorian_Radioguard_OnMapStart_NPC();
-	VictorianDroneFragments_MapStart();
-	VictorianDroneAnvil_MapStart();
-	VictorianFactory_MapStart();
-	Victorian_TacticalProtector_OnMapStart_NPC();
-	Victorian_Tacticalunit_OnMapStart_NPC();
 
 //raid
 	Atomizer_OnMapStart_NPC();
@@ -825,6 +820,13 @@ void NPC_ConfigSetup()
 	AgentThompson_OnMapStart_NPC();
 	Twin1_OnMapStart_NPC();
 	AgentSmith_OnMapStart_NPC();
+	
+
+	VictorianFactory_MapStart();
+	VictorianDroneFragments_MapStart();
+	VictorianDroneAnvil_MapStart();
+	Victorian_Tacticalunit_OnMapStart_NPC();
+	Victorian_TacticalProtector_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)

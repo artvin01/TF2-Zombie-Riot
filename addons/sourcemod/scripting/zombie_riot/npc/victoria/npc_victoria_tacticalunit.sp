@@ -106,7 +106,7 @@ methodmap VictoriaTacticalunit < CClotBody
 	}
 	public VictoriaTacticalunit(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictoriaTacticalunit npc = view_as<VictoriaTacticalunit>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1000", ally));
+		VictoriaTacticalunit npc = view_as<VictoriaTacticalunit>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "7500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		

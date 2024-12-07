@@ -102,7 +102,7 @@ void Castellan_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Castellan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_castellan");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_atomizer_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_castellan_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -131,7 +131,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_PlayRocketshotready));   i++) { PrecacheSound(g_PlayRocketshotready[i]);   }
 	for (int i = 0; i < (sizeof(g_LasershotReady));   i++) { PrecacheSound(g_LasershotReady[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria/raid_castellan.mp3");
 	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
 	
 	PrecacheModel(LASERBEAM);
@@ -403,12 +403,12 @@ methodmap Castellan < CClotBody
 			b_NpcUnableToDie[npc.index] = true;
 		}
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
-		music.Time = 128;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
+		music.Time = 247;
 		music.Volume = 2.0;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
-		strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
+		strcopy(music.Name, sizeof(music.Name), "06Graveyard_Arena3");
+		strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?");
 		Music_SetRaidMusic(music);
 		npc.m_iChanged_WalkCycle = -1;
 
@@ -418,8 +418,10 @@ methodmap Castellan < CClotBody
 
 		SetGlobalTransTarget(client);
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_fireaxe_pyro/c_fireaxe_pyro.mdl");
-		SetVariantString("0.75");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 150, 150, 255, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/soldier/fdu.mdl");
 		SetVariantString("1.0");
@@ -464,7 +466,7 @@ methodmap Castellan < CClotBody
 		SetVariantColor(view_as<int>({150, 150, 150, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
-		CPrintToChatAll("{blue}Castellan{default}: Intruders in sight, I won't let the get out alive!");
+		CPrintToChatAll("{blue}Castellan{default}: In the name of Victoria, I won't allow you to proceed any further.");
 		
 		return npc;
 	}
@@ -680,11 +682,11 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Castellan{default}: Ready to die?");
+					CPrintToChatAll("{blue}Castellan{default}: Weaklings");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Castellan{default}: You can't run forever.");
+					CPrintToChatAll("{blue}Castellan{default}: After you, Im going back to the frontlines");
 				}
 				case 2:
 				{
@@ -695,90 +697,37 @@ static void Internal_ClotThink(int iNPC)
 	}
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
-		npc.m_flMeleeArmor = 0.33;
-		npc.m_flRangedArmor = 0.33;
-		int MaxHealth = RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")*1.25);
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth);
-		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
+		DeleteAndRemoveAllNpcs = 10.0;
+		mp_bonusroundtime.IntValue = (12 * 2);
+		ZR_NpcTauntWinClear();
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:CPrintToChatAll("{blue}Castellan{default}: Victoria will be in peace. Once and for all.");
-			case 2:CPrintToChatAll("{blue}Castellan{default}: The troops have arrived and will begin destroying the intruders!");
-			case 3:CPrintToChatAll("{blue}Castellan{default}: Backup team has arrived. Catch those damn bastards!");
-			case 4:CPrintToChatAll("{blue}Castellan{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
+			case 1:CPrintToChatAll("{blue}Castellan{default}: All Tanks refueled, RUSH THEM!");
+			case 2:CPrintToChatAll("{blue}Castellan{default}: Ziberia will pay with their blood for this");
+			case 3:CPrintToChatAll("{blue}Castellan{default}: Times up! RUN OVER THEM!");
+			case 4:CPrintToChatAll("{blue}Castellan{default}: Seems like your precious knight friends didn't help you so much this time.");
 		}
-		for(int i=1; i<=15; i++)
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		for(int i; i<10; i++)
 		{
-			switch(GetRandomInt(1, 7))
+			int spawn_index = NPC_CreateByName("npc_victorian_tank", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "only");
+			if(spawn_index > MaxClients)
 			{
-				case 1:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 2:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 3:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}	
-				case 4:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 5:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 6:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 7:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
+				int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 3.0);
+				fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+				fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+				fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index] * 10.0;
+				fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index]* 20.0;
+				if(GetTeam(iNPC) != TFTeam_Red)
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
+				TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
 			}
 		}
-		for(int i=1; i<=15; i++)
-		{
-			switch(GetRandomInt(1, 8))
-			{
-				case 1:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_humbee",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 2:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_shotgunner",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 3:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_bulldozer",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}	
-				case 4:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_hardener",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 5:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_raider",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 6:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_zapper",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 7:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_payback",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 8:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_blocker",_,2.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-			}
-		}
+		npc.PlayDeathSound();
 		BlockLoseSay = true;
 		YaWeFxxked[npc.index] = true;
 	}

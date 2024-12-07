@@ -140,7 +140,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_PlayRocketshotready));   i++) { PrecacheSound(g_PlayRocketshotready[i]);   }
 	for (int i = 0; i < (sizeof(g_LasershotReady));   i++) { PrecacheSound(g_LasershotReady[i]);   }
 	PrecacheModel("models/player/sniper.mdl");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria/raid_harrison.mp3");
 	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
 	
 	PrecacheModel(LASERBEAM);
@@ -318,7 +318,7 @@ methodmap Harrison < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			CPrintToChatAll("{skyblue}Harrison{default}: Intruders in sight, I won't let the get out alive!");
+			CPrintToChatAll("{skyblue}Harrison{default}: I see you Intruders.");
 		}
 		else
 		{
@@ -371,7 +371,7 @@ methodmap Harrison < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
-			CPrintToChatAll("{skyblue}Harrison{default}: Intruders in sight, I won't let the get out alive!");
+			CPrintToChatAll("{skyblue}Harrison{default}: Spotted the Intruders. I guess they leave me no chance but to do it myself");
 			
 			RaidModeScaling = float(ZR_GetWaveCount()+1);
 			if(RaidModeScaling < 55)
@@ -406,12 +406,12 @@ methodmap Harrison < CClotBody
 				RaidModeScaling *= 0.85;
 			}
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
-			music.Time = 128;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
+			music.Time = 92;
 			music.Volume = 2.0;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
-			strcopy(music.Artist, sizeof(music.Artist), "Arknights");
+			strcopy(music.Name, sizeof(music.Name), "RAGE");
+			strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
 			Music_SetRaidMusic(music);
 			npc.m_iChanged_WalkCycle = -1;
 		}
@@ -603,68 +603,31 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: Ready to die?");
+					CPrintToChatAll("{skyblue}Harrison{default}: You guys are weaker than I expected");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: You can't run forever.");
+					CPrintToChatAll("{skyblue}Harrison{default}: Comeon, where is your 'adrenaline'?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: All of your comrades are fallen.");
+					CPrintToChatAll("{skyblue}Harrison{default}: Can't believe {lightblue}Huscarls{default} and {lightblue}Atomizer{default} was defeated by these weaklings.");
 				}
 			}
 		}
 	}
-	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
-		npc.m_flMeleeArmor = 0.33;
-		npc.m_flRangedArmor = 0.33;
-		int MaxHealth = RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")*1.25);
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth);
-		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		BlockLoseSay = true;
 		switch(GetRandomInt(1, 4))
 		{
 			case 1:CPrintToChatAll("{skyblue}Harrison{default}: That's it. Calling in for special forces.");
-			case 2:CPrintToChatAll("{skyblue}Harrison{default}: Your small knights won't save you now");
-			case 3:CPrintToChatAll("{skyblue}Harrison{default}: Time to head back to the frontlines");
-			case 4:CPrintToChatAll("{skyblue}Harrison{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
+			case 2:CPrintToChatAll("{skyblue}Harrison{default}: Your small knight pals won't save you now");
+			case 3:CPrintToChatAll("{skyblue}Harrison{default}: The artilleries are fully loaded. Bombardment in 3...2...1...");
+			case 4:CPrintToChatAll("{skyblue}Harrison{default}: {unique}I need beer.{default}");
 		}
-		for(int i=1; i<=15; i++)
-		{
-			switch(GetRandomInt(1, 7))
-			{
-				case 1:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_batter",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 2:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_charger",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 3:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_teslar",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}	
-				case 4:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_victorian_vanguard",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 5:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_supplier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 6:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_ballista",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-				case 7:
-				{
-					VictoriaRadiomastSpawnEnemy(npc.index,"npc_grenadier",_,3.0, RoundToCeil(4.0 * MultiGlobalEnemy));
-				}
-			}
-		}
-		BlockLoseSay = true;
 		YaWeFxxked[npc.index] = true;
 	}
 	
@@ -949,8 +912,8 @@ static void Internal_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{skyblue}Harrison{default}: Ugh, I need backup");
-		case 1:CPrintToChatAll("{skyblue}Harrison{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
+		case 0:CPrintToChatAll("{skyblue}Harrison{default}: Dammit it hurts!");
+		case 1:CPrintToChatAll("{skyblue}Harrison{default}: I should've brought more Explosives...");
 		case 2:CPrintToChatAll("{skyblue}Harrison{default}: You intruders will soon face the {crimson}Real Deal.{default}");
 	}
 

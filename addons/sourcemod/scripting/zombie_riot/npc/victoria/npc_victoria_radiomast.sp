@@ -105,7 +105,7 @@ methodmap VictoriaRadiomast < CClotBody
 			RaidModeTime = FAR_FUTURE;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = true;
-			RaidModeScaling = 0.0;
+			RaidModeScaling = 19.721;
 		}
 
 		func_NPCDeath[npc.index] = view_as<Function>(VictoriaRadiomast_NPCDeath);
@@ -142,7 +142,7 @@ methodmap VictoriaRadiomast < CClotBody
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			{
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "voice_player", 1, "%t", "Victorian Radiomast Teleported in!");
+				ShowGameText(client_check, "obj_status_dispenser", 1, "%t", "Victorian Radiomast Is Here!");
 			}
 		}
 		EmitSoundToAll("weapons/rescue_ranger_teleport_receive_01.wav", npc.index, SNDCHAN_STATIC, 120, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
