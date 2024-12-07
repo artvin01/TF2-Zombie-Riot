@@ -364,7 +364,7 @@ methodmap Harrison < CClotBody
 				{
 					LookAtTarget(client_check, npc.index);
 					SetGlobalTransTarget(client_check);
-					ShowGameText(client_check, "deflect_rocket", 1, "%t", "Harrison Arrived");
+					ShowGameText(client_check, "obj_status_sentrygun_2", 1, "%t", "Harrison Arrived");
 				}
 			}
 			FTL[npc.index] = 200.0;
