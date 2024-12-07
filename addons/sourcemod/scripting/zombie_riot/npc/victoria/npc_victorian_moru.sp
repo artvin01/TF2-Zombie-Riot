@@ -39,7 +39,7 @@ methodmap VictorianDroneAnvil < CClotBody
 	}
 	public void PlayHealSound() 
 	{
-		EmitSoundToAll(g_HealSound[GetRandomInt(0, sizeof(g_HealSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.1, 110);
+		EmitSoundToAll(g_HealSound, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.1, 110);
 	}
 	
 	public VictorianDroneAnvil(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

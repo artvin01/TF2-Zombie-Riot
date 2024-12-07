@@ -955,7 +955,7 @@ static void PrepareSmith_Raid(AgentSmith npc)
 	else if(ZR_GetWaveCount()+1 > 55)
 	{
 		RaidModeTime = GetGameTime(npc.index) + 220.0;
-		RaidModeScaling *= 0.65;
+		RaidModeScaling *= 0.85;
 	}
 
 	MusicEnum music;
