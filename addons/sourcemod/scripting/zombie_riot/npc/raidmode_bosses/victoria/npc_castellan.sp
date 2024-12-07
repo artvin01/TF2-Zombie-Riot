@@ -83,12 +83,10 @@ static int i_AmountProjectiles[MAXENTITIES];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 
 static int Temp_Target[MAXENTITIES];
-/*
-static int gLaser1;
-static int gRedPoint;
-static int g_BeamIndex_heal;
-static int g_HALO_Laser;
-*/
+
+static int SaveSolidFlags[MAXENTITIES];
+static int SaveSolidType[MAXENTITIES];
+
 void Castellan_OnMapStart_NPC()
 {
 	NPCData data;
@@ -125,10 +123,10 @@ static void ClotPrecache()
 	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
 	
 	PrecacheModel(LASERBEAM);
-//	gRedPoint = PrecacheModel("sprites/redglow1.vmt");
-//	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
-//	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
-//	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
+	PrecacheModel("sprites/redglow1.vmt");
+	PrecacheModel("materials/sprites/laser.vmt");
+	PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	PrecacheModel("materials/sprites/halo01.vmt", true);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -280,6 +278,9 @@ methodmap Castellan < CClotBody
 		
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
+		SaveSolidFlags[npc.index]=GetEntProp(npc.index, Prop_Send, "m_usSolidFlags");
+		SaveSolidType[npc.index]=GetEntProp(npc.index, Prop_Send, "m_nSolidType");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -470,10 +471,18 @@ static void Internal_ClotThink(int iNPC)
 				i_Castellan_eye_particle[npc.index]=INVALID_ENT_REFERENCE;
 			}
 			ParticleSpawned[npc.index] = false;
-		
 			npc.m_iChanged_WalkCycle = 0;
 			b_NoHealthbar[npc.index]=true;
 			Npc_BossHealthBar(npc);
+			
+			if(IsValidEntity(i_InvincibleParticle[npc.index]))
+			{
+				particle = EntRefToEntIndex(i_InvincibleParticle[npc.index]);
+				SetEntityRenderMode(particle, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(particle, 255, 255, 255, 1);
+				SetEntPropFloat(particle, Prop_Send, "m_fadeMinDist", 1.0);
+				SetEntPropFloat(particle, Prop_Send, "m_fadeMaxDist", 1.0);
+			}
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 1.0);
@@ -534,6 +543,28 @@ static void Internal_ClotThink(int iNPC)
 		{
 			b_NoHealthbar[npc.index]=false;
 			Npc_BossHealthBar(npc);
+			if(IsValidEntity(i_InvincibleParticle[npc.index]))
+			{
+				int Shield = EntRefToEntIndex(i_InvincibleParticle[npc.index]);
+				if(b_NpcIsInvulnerable[npc.index])
+				{
+					if(i_InvincibleParticlePrev[Shield] != 0)
+					{
+						SetEntityRenderColor(Shield, 0, 255, 0, 255);
+						i_InvincibleParticlePrev[Shield] = 0;
+					}
+				}
+				else if(i_npcspawnprotection[npc.index] == 1)
+				{
+					if(i_InvincibleParticlePrev[Shield] != 1)
+					{
+						SetEntityRenderColor(Shield, 0, 50, 50, 35);
+						i_InvincibleParticlePrev[Shield] = 1;
+					}
+				}
+				SetEntPropFloat(Shield, Prop_Send, "m_fadeMinDist", 30000.0);
+				SetEntPropFloat(Shield, Prop_Send, "m_fadeMaxDist", 30000.0);
+			}
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 30000.0);
@@ -813,10 +844,9 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	if(npc.m_flDoingAnimation < gameTime)
-	{
 		CastellanAnimationChange(npc);
-	}
-	npc.PlayIdleAlertSound();
+	if(Gone_Stats[npc.index])
+		npc.PlayIdleAlertSound();
 }
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -1176,7 +1206,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
 				Delay_Attribute[npc.index] = gameTime + 0.35;
-				RaidModeTime += 10.0;
 				I_cant_do_this_all_day[npc.index]=3;
 			}
 			case 3:
@@ -1187,9 +1216,12 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					Gone[npc.index] = true;
 					b_DoNotUnStuck[npc.index] = true;
 					b_NoKnockbackFromSources[npc.index] = true;
+					b_NpcIsInvulnerable[npc.index] = true;
 					b_ThisEntityIgnored[npc.index] = true;
+					MakeObjectIntangeable(npc.index);
 					npc.m_iChanged_WalkCycle = 0;
 					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+					WorldSpaceVec[2]=-5.0;
 					ParticleEffectAt(WorldSpaceVec, "smoke_marker", 10.0);
 					npc.PlayDeathSound();
 					Temp_Target[npc.index]=-1;
@@ -1218,7 +1250,14 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					Gone[npc.index] = true;
 					b_DoNotUnStuck[npc.index] = false;
 					b_NoKnockbackFromSources[npc.index] = false;
+					b_NpcIsInvulnerable[npc.index] = false;
 					b_ThisEntityIgnored[npc.index] = false;
+					SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
+					SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
+					if(GetTeam(npc.index) == TFTeam_Red)
+						SetEntityCollisionGroup(npc.index, 24);
+					else
+						SetEntityCollisionGroup(npc.index, 9);
 					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 					npc.AddActivityViaSequence("layer_taunt_maggots_condolence");
 					npc.m_flAttackHappens = 0.0;
@@ -1276,6 +1315,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		npc.m_flTimeUntillNextSummonDrones +=  0.1;
 		npc.m_flTimeUntillNextSummonHardenerDrones += 0.1;
 		npc.m_flTimeUntillHomingStrike += 0.1;
+		RaidModeTime += 0.1;
 		return 2;
 	}
 	else if(npc.m_flTimeUntillHomingStrike <gameTime)
