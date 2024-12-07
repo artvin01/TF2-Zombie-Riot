@@ -623,6 +623,7 @@ void NPC_ConfigSetup()
 	Atomizer_OnMapStart_NPC();
 	Huscarls_OnMapStart_NPC();
 	Harrison_OnMapStart_NPC();
+	Castellan_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1747,3 +1748,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/raidmode_bosses/victoria/npc_the_atomizer.sp"
 #include "zombie_riot/npc/raidmode_bosses/victoria/npc_the_wall.sp"
 #include "zombie_riot/npc/raidmode_bosses/victoria/npc_harrison.sp"
+#include "zombie_riot/npc/raidmode_bosses/victoria/npc_castellan.sp"
