@@ -1076,7 +1076,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float projectile_speed = 800.0;
 
-		npc.PlayLaserBeamSound()
+		npc.PlayLaserBeamSound();
 
 		npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
 
