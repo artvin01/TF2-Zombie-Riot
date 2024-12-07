@@ -120,7 +120,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_PlayRocketshotready));   i++) { PrecacheSound(g_PlayRocketshotready[i]);   }
 	for (int i = 0; i < (sizeof(g_LasershotReady));   i++) { PrecacheSound(g_LasershotReady[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_atomizer.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria/raid_castellan.mp3");
 	PrecacheSoundCustom("mvm/ambient_mp3/mvm_siren.mp3");
 	
 	PrecacheModel(LASERBEAM);
@@ -384,12 +384,12 @@ methodmap Castellan < CClotBody
 			b_NpcUnableToDie[npc.index] = true;
 		}
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
-		music.Time = 128;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
+		music.Time = 247;
 		music.Volume = 2.0;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
-		strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
+		strcopy(music.Name, sizeof(music.Name), "06Graveyard_Arena3");
+		strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?");
 		Music_SetRaidMusic(music);
 		npc.m_iChanged_WalkCycle = -1;
 
