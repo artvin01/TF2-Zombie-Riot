@@ -820,6 +820,13 @@ void NPC_ConfigSetup()
 	AgentThompson_OnMapStart_NPC();
 	Twin1_OnMapStart_NPC();
 	AgentSmith_OnMapStart_NPC();
+	
+
+	VictorianFactory_MapStart();
+	VictorianDroneFragments_MapStart();
+	VictorianDroneAnvil_MapStart();
+	Victorian_Tacticalunit_OnMapStart_NPC();
+	Victorian_TacticalProtector_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1832,3 +1839,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/matrix/raids/npc_agentthompson.sp"
 #include "zombie_riot/npc/matrix/raids/npc_twins.sp"
 #include "zombie_riot/npc/matrix/raids/npc_agent_smith.sp"
+
+#include "zombie_riot/npc/victoria/npc_victorian_factory.sp"
+#include "zombie_riot/npc/victoria/npc_victorian_fragments.sp"
+#include "zombie_riot/npc/victoria/npc_victorian_moru.sp"
+#include "zombie_riot/npc/victoria/npc_victoria_tacticalunit.sp"
+#include "zombie_riot/npc/victoria/npc_victoria_tacticalprotector.sp"
