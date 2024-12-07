@@ -451,7 +451,7 @@ methodmap Huscarls < CClotBody
 			else if(ZR_GetWaveCount()+1 > 55)
 			{
 				RaidModeTime = GetGameTime(npc.index) + 220;
-				RaidModeScaling *= 0.65;
+				RaidModeScaling *= 0.85;
 			}
 		}
 		int skin = 1;
