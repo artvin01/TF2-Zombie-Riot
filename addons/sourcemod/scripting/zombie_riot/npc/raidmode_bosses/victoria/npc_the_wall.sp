@@ -1558,7 +1558,6 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
-		//PrintToChatAll("RushStats: %i",I_cant_do_this_all_day[npc.index]);
 		return 2;
 	}
 	else if(npc.m_flHuscarlsDeployEnergyShieldCoolDown < gameTime)
