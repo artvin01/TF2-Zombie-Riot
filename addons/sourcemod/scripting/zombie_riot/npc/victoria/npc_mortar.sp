@@ -108,7 +108,7 @@ methodmap VictoriaMortar < CClotBody
 	
 	public VictoriaMortar(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMortar npc = view_as<VictoriaMortar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
+		VictoriaMortar npc = view_as<VictoriaMortar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -345,7 +345,7 @@ int VictoriaMortarSelfDefense(VictoriaMortar npc, float gameTime, float distance
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, RocketSpeed,_,vecTarget);
-					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 2.0, 1.0);
+					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.5, 1.0);
 					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 

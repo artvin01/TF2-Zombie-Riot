@@ -1492,7 +1492,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								
 								WorldSpaceCenter(targetTrace, vecHit);
 
-								float damage = 50.0;
+								float damage = 40.0;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									

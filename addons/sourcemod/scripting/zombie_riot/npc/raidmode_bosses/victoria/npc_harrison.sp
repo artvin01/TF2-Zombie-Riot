@@ -1032,7 +1032,14 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		{
 			case 0:
 			{
-				CPrintToChatAll("{skyblue}Harrison{default}: Do you think I would miss?");
+				
+				switch(GetRandomInt(1, 4))
+				{
+					case 1:CPrintToChatAll("{skyblue}Harrison{default}: Do you think I would miss?");
+					case 2:CPrintToChatAll("{skyblue}Harrison{default}: I see you.");
+					case 3:CPrintToChatAll("{skyblue}Harrison{default}: They won't miss you. Probably.");
+					case 4:CPrintToChatAll("{skyblue}Harrison{default}: Auto Rockets are fully charged");
+				}
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
@@ -1225,7 +1232,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 								
 								WorldSpaceCenter(targetTrace, vecHit);
 
-								float damage = 70.0;
+								float damage = 40.0;
 								damage *= 1.15;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
@@ -1270,7 +1277,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		{
 			if(IsValidEnemy(npc.index, target)) 
 			{
-				if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.5) && npc.m_iAttacksTillReload > 0)
+				if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5) && npc.m_iAttacksTillReload > 0)
 				{
 					int Enemy_I_See;
 										
