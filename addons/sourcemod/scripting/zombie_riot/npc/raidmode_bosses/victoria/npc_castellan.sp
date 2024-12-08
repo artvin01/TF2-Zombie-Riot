@@ -79,7 +79,6 @@ static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
 static float f_TimeSinceHasBeenHurt;
-static float FTL[MAXENTITIES];
 static float Delay_Attribute[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
 static int HowManyMelee[MAXENTITIES];
@@ -358,8 +357,7 @@ methodmap Castellan < CClotBody
 				ShowGameText(client_check, "obj_status_sentrygun_3", 1, "%t", "Castellan Arrived");
 			}
 		}
-		FTL[npc.index] = 200.0;
-		RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
+		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
@@ -391,8 +389,7 @@ methodmap Castellan < CClotBody
 		}
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
-			FTL[npc.index] = 220.0;
-			RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
+			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.75;
 		}
 		bool final = StrContains(data, "final_item") != -1;
@@ -906,7 +903,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			npc.m_bFUCKYOU=true;
-			FTL[npc.index] += 35.0;
 			RaidModeTime += 35.0;
 		}
 	}
@@ -1320,10 +1316,10 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			float BombDamage = 50.0;
 			BombDamage *= RaidModeScaling;
 			float Spam_delay=0.0;
-			for(int AirRaid; AirRaid < 5; AirRaid++)
+			for(int AirRaid; AirRaid < 9; AirRaid++)
 			{
 				GetAbsOrigin(Temp_Target[npc.index], BombPos);
-				if(AirRaid>4)
+				if(AirRaid>5)
 				{
 					PredictSubjectPositionForProjectiles(npc, Temp_Target[npc.index], 100.0, _,BombPos);
 					BombPos[0] += GetRandomFloat(-25.0, 25.0);
