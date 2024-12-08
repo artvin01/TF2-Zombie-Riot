@@ -1235,7 +1235,6 @@ void HuscarlsAnimationChange(Huscarls npc)
 
 int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance)
 {
-	bool SpecialAttack;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	if(npc.m_flHuscarlsAdaptiveArmorCoolDown < gameTime)
 	{
@@ -1316,7 +1315,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		npc.m_flHuscarlsRushCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
-		SpecialAttack=true;
+		return 2;
 	}
 	else if(npc.m_flHuscarlsGroundSlamCoolDown < gameTime)
 	{
@@ -1362,7 +1361,6 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 	}
 	else if(npc.m_flHuscarlsRushCoolDown < gameTime)
 	{
-		SpecialAttack=true;
 		switch(I_cant_do_this_all_day[npc.index])
 		{
 			case 0:
@@ -1412,7 +1410,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					I_cant_do_this_all_day[npc.index] = 5;
 					CreateEarthquake(vOrigin, 0.5, 350.0, 16.0, 255.0);
 					npc.PlayRushHitSound();
-					SpecialAttack=true;
+					return 2;
 				}
 				else if(npc.m_flHuscarlsRushDuration < gameTime)
 				{
@@ -1489,7 +1487,9 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 						npc.AddGesture("PASSTIME_throw_middle");
 					Delay_Attribute[npc.index] = gameTime + 1.0;
 					npc.m_flDoingAnimation = gameTime + 0.5;
-					SpecialAttack=false;
+					npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
+					npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
+					npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
 					return 3;
 				}
 			}
@@ -1554,6 +1554,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		npc.m_flHuscarlsAdaptiveArmorCoolDown += 0.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown += 0.1;
 		npc.m_flHuscarlsGroundSlamCoolDown += 0.1;
+		return 2;
 	}
 	else if(npc.m_flHuscarlsDeployEnergyShieldCoolDown < gameTime)
 	{
@@ -1567,11 +1568,6 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		npc.m_flHuscarlsAdaptiveArmorCoolDown += 1.1;
 		npc.m_flHuscarlsGroundSlamCoolDown += 1.1;
 		npc.m_flHuscarlsDeployEnergyShieldCoolDown = gameTime + 21.0;
-	}
-	if(SpecialAttack)
-	{
-		npc.m_flDoingAnimation = gameTime + 0.5;
-		return 2;
 	}
 	else if(npc.m_flAttackHappens)
 	{
@@ -1996,7 +1992,6 @@ static void Huscarls_Shield_StartTouch(DataPack pack)
 	if(frames_offset < 0)
 		frames_offset = 1;
 	RequestFrames(Huscarls_Shield_StartTouch, frames_offset, pack2);
-	return Plugin_Handled;
 }
 
 static void Shield_Knockback(int entity, int victim, float damage, int weapon)

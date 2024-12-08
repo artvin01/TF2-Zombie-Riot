@@ -723,8 +723,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_bPathing = false;
 					npc.m_bisWalking = false;
 					AirRaidStart[npc.index] = true;
-					npc.m_flDoingAnimation = gameTime + 30.0;	
-					Delay_Attribute[npc.index] = gameTime + 30.0;
+					npc.m_flDoingAnimation = gameTime + 15.0;	
+					Delay_Attribute[npc.index] = gameTime + 15.0;
 					I_cant_do_this_all_day[npc.index]=2;
 				}
 			}
@@ -1156,6 +1156,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		if(gameTime > npc.m_flNextMeleeAttack)
 		{
 			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			//float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			//float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			if(IsValidEnemy(npc.index, target))
@@ -1184,7 +1185,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				vecDir[2] = vecDirShooting[2] + x * vecRight[2] + y * vecUp[2]; 
 				NormalizeVector(vecDir, vecDir);
 				
-				float damage = (5.0 + float(tier)) * 0.1 * RaidModeScaling;
+				float damage = 5.0 * 0.1 * RaidModeScaling;
 				if(distance > 100000.0)	// 316 HU
 					damage *= 100000.0 / distance;	// Lower damage based on distance
 				
