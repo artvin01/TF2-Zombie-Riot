@@ -209,9 +209,9 @@ public void VictorianCharger_ClotThink(int iNPC)
 
 	TimeMultiplier *= 0.50;
 
-	if(TimeMultiplier > 10.0)
+	if(TimeMultiplier > 20.0)
 	{
-		TimeMultiplier = 10.0;
+		TimeMultiplier = 20.0;
 		if(!npc.Anger)
 		{
 			npc.PlayAngerSound();
