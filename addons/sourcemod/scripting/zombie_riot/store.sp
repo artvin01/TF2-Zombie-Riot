@@ -5301,6 +5301,14 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_VoidPortalOpened[client] = false;
 	}
+	if(Items_HasNamedItem(client, "Avangard's Processing Core-B"))
+	{
+		b_AvangardCoreB[client] = true;
+	}
+	else
+	{
+		b_AvangardCoreB[client] = false;
+	}
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);

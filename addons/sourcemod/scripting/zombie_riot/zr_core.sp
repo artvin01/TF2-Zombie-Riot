@@ -207,7 +207,8 @@ enum
 	WEAPON_LOGOS = 127,
 	WEAPON_WALTER = 128,
 	WEAPON_OLDINFINITYBLADE = 129,
-	WEAPON_NYMPH = 130
+	WEAPON_NYMPH = 130,
+	WEAPON_CASTLEBREAKER = 130
 }
 
 enum
@@ -571,6 +572,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/wand/weapon_logos.sp"
 #include "zombie_riot/custom/weapon_walter.sp"
 #include "zombie_riot/custom/wand/weapon_wand_nymph.sp"
+#include "zombie_riot/custom/weapon_castlebreaker.sp"
 
 void ZR_PluginLoad()
 {

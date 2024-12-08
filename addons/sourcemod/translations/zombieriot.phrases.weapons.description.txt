@@ -3985,4 +3985,16 @@
 	{
 		"en"	"Increased damage and fire rate"
 	}
+	"CastleBreaker Desc"
+	{
+		"en"	"A Spear that Victoria's trained vanguards use.\n This weapon has long reach but short width.\n Can gain cost per kill\n Some processing core may enhance this weapon...\deals extra damage to building enemies"
+	}
+	"CastleBreaker Pap 1"
+	{
+		"en"	"Overall Better Stats"
+	}
+	"CastleBreaker Pap 2"
+	{
+		"en"	"A giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\n Unlocks new ability(m2)\n Attack 2 targets at once and attack twice."
+	}
 }
