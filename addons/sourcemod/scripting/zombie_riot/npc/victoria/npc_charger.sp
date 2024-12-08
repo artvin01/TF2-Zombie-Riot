@@ -342,7 +342,7 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) * 0.6)
 		{
 			int Enemy_I_See;
 								
