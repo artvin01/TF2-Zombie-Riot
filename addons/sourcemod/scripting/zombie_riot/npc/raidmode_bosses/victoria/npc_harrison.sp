@@ -726,6 +726,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flDoingAnimation = gameTime + 15.0;	
 					Delay_Attribute[npc.index] = gameTime + 15.0;
 					I_cant_do_this_all_day[npc.index]=2;
+					RaidModeTime += 15.0;
 				}
 			}
 			case 2:

@@ -404,7 +404,7 @@ methodmap Castellan < CClotBody
 		}
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
-		music.Time = 247;
+		music.Time = 154;
 		music.Volume = 2.0;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "06Graveyard_Arena3");
@@ -1348,7 +1348,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			}
 			npc.m_flAirRaidDelay = gameTime + 2.5;
 		}
-		RaidModeTime += 0.1;
+		RaidModeTime += (0.1 + DEFAULT_UPDATE_DELAY_FLOAT);
 		return 2;
 	}
 	else if(npc.m_flTimeUntillHomingStrike <gameTime)
