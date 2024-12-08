@@ -377,12 +377,14 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						//self heal
 						int ammoSubtract;
 						ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
-						ReduceMediFluidCost(owner, ammoSubtract);
+						if(ammoSubtract > 0)
+							ReduceMediFluidCost(owner, ammoSubtract);
 						new_ammo -= ammoSubtract;
 
 						//Ally Heal
 						ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
-						ReduceMediFluidCost(owner, ammoSubtract);
+						if(ammoSubtract > 0)
+							ReduceMediFluidCost(owner, ammoSubtract);
 						new_ammo -= ammoSubtract;
 
 						if(!b_NpcHasDied[healTarget])
