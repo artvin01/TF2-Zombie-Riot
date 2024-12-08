@@ -269,7 +269,7 @@ void TeslarSelfDefense(Teslar npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 40.0;
+					float damageDealt = 25.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 2.0;
 
