@@ -314,10 +314,10 @@ methodmap Atomizer < CClotBody
 			Vs_Atomizer_To_Huscarls = 0;
 			I_cant_do_this_all_day[npc.index] = 0;
 			npc.i_GunMode = 0;
-			npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
-			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
-			npc.m_flNextRangedAttack = GetGameTime() + 30.0;
-			npc.m_flAngerDelay = GetGameTime() + 15.0;
+			npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 15.0;
+			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
+			npc.m_flAngerDelay = GetGameTime(npc.index) + 15.0;
 			npc.m_iOverlordComboAttack = 0;
 			OnMiss[npc.index] = false;
 			npc.m_fbRangedSpecialOn = false;
@@ -669,7 +669,7 @@ static void Internal_ClotThink(int iNPC)
 	npc.m_flSpeed = 300.0+(((FTL[npc.index]-(RaidModeTime - GetGameTime()))/FTL[npc.index])*150.0);
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
-		npc.m_flMeleeArmor = 0.33;
+		npc.m_flMeleeArmor = 0.3696;
 		npc.m_flRangedArmor = 0.33;
 		int MaxHealth = RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")*1.25);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth);

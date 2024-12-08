@@ -1374,7 +1374,7 @@ public void OnPostThink(int client)
 				case 4:
 				{
 					red = 0;
-					green = 255;
+					green = 200;
 					blue = 0;
 				}
 				//seaborn

@@ -1051,6 +1051,7 @@ void NPCDeath(int entity)
 			}
 		}
 		CurrentCash += GiveMoney;
+		Waves_AddCashGivenThisWaveViaKills(CurrentCash);
 	}
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{

@@ -1358,6 +1358,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			CPrintToChatAll("{blue}Castellan{default}: These rockets won't miss you");
 			case 0:
 			{
+				CPrintToChatAll("{blue}Castellan{default}: These rockets won't miss you");
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
