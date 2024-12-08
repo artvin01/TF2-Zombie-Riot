@@ -87,18 +87,18 @@ methodmap VictorianFactory < CClotBody
 				EmitSoundToAll("misc/rd_points_return01.wav", _, _, _, _, 1.0);
 			}
 			LastSpawnDiversio = GetGameTime() + 5.0;
-			int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1250.0, 500.0);
+			int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
 			switch(Decicion)
 			{
 				case 2:
 				{
-					Decicion = TeleportDiversioToRandLocation(npc.index, true, 500.0, 350.0);
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0);
 					if(Decicion == 2)
 					{
-						Decicion = TeleportDiversioToRandLocation(npc.index, true, 350.0, 150.0);
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0);
 						if(Decicion == 2)
 						{
-							Decicion = TeleportDiversioToRandLocation(npc.index, true, 150.0, 0.0);
+							Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
 						}
 					}
 				}
