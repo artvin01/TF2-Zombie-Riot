@@ -54,18 +54,8 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 	{
 		if(!b_AbilityDone[client])
 		{
-			if(!b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
-			{
-				b_WeaponAttackSpeedModified[weapon] = true;
-				attackspeed = (attackspeed / 0.15);
-				Attributes_Set(weapon, 6, attackspeed);
-			}
-			else
-			{
-				b_WeaponAttackSpeedModified[weapon] = false;
-				attackspeed = (attackspeed * 0.15);
-				Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
-			}
+			attackspeed = 1.0;
+			Attributes_Set(weapon, 6, attackspeed);
 			b_AbilityDone[client] = true;
 		}
 	}
