@@ -311,7 +311,7 @@ public void VictoriaScorcher_NPCDeath(int entity)
 
 		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 		b_NpcIsTeamkiller[npc.index] = true;
-		Explode_Logic_Custom(50.0, -1, npc.index, -1, startPosition, 100.0, _, _, true, _, true);
+		Explode_Logic_Custom(20.0, -1, npc.index, -1, startPosition, 100.0, _, _, true, _, true);
 		b_NpcIsTeamkiller[npc.index] = false;
 
 		DataPack pack_boom = new DataPack();
