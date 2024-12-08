@@ -250,7 +250,7 @@ static void ClotThink(int iNPC)
 					if(entity != -1)
 					{
 						//max duration of 4 seconds beacuse of simply how fast they fire
-						CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(2.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					}
 
 					npc.m_iOverlordComboAttack--;

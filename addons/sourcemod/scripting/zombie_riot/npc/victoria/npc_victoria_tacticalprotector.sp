@@ -92,7 +92,7 @@ methodmap VictoriaProtector < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
-		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
+		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		func_NPCDeath[npc.index] = view_as<Function>(VictoriaProtector_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictoriaProtector_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VictoriaProtector_ClotThink);

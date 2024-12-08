@@ -133,7 +133,7 @@ methodmap VictoriaAssulter < CClotBody
 
 	public VictoriaAssulter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaAssulter npc = view_as<VictoriaAssulter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "7000", ally));
+		VictoriaAssulter npc = view_as<VictoriaAssulter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -363,17 +363,15 @@ void VictoriaAssulterSelfDefense(VictoriaAssulter npc, float gameTime)
 						else
 						{
 							npc.m_iOverlordComboAttack --;
-							float ShorterFire = 0.1;
+							float ShorterFire = 0.2;
 							if(NpcStats_VictorianCallToArms(npc.index))
-							{
 								ShorterFire *= 0.5;
-							}
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + ShorterFire;
 						}
 
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 7.5;
+							float damageDealt = 5.5;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 3.0;
 
