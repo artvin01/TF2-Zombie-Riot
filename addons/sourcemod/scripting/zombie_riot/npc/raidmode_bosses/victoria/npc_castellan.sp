@@ -836,7 +836,7 @@ static void Internal_ClotThink(int iNPC)
 
 	if(npc.m_flDoingAnimation < gameTime)
 		CastellanAnimationChange(npc);
-	if(Gone_Stats[npc.index])
+	if(!Gone_Stats[npc.index])
 		npc.PlayIdleAlertSound();
 }
 
@@ -1258,7 +1258,6 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					MakeObjectIntangeable(npc.index);
 					npc.m_iChanged_WalkCycle = 0;
 					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
-					WorldSpaceVec[2]=-5.0;
 					ParticleEffectAt(WorldSpaceVec, "smoke_marker", 10.0);
 					npc.PlayDeathSound();
 					Temp_Target[npc.index]=-1;
@@ -1272,6 +1271,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					while(!IsValidEntity(Temp_Target[npc.index]) || GetTeam(npc.index) == GetTeam(Temp_Target[npc.index]) || npc.index==Temp_Target[npc.index]);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+					TeleportDiversioToRandLocation(npc.index,_,1250.0, 750.0);
 					Delay_Attribute[npc.index] = gameTime + 10.0;
 					I_cant_do_this_all_day[npc.index]=4;
 				}	
@@ -1348,7 +1348,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			}
 			npc.m_flAirRaidDelay = gameTime + 2.5;
 		}
-		RaidModeTime += 0.1;
+		RaidModeTime += (0.1 + DEFAULT_UPDATE_DELAY_FLOAT);
 		return 2;
 	}
 	else if(npc.m_flTimeUntillHomingStrike <gameTime)
@@ -1492,7 +1492,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								
 								WorldSpaceCenter(targetTrace, vecHit);
 
-								float damage = 50.0;
+								float damage = 40.0;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									

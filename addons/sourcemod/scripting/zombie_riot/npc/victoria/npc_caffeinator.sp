@@ -380,7 +380,7 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 				if(iActivity > 0) npc.StartActivity(iActivity);
 				npc.m_bFUCKYOU_move_anim = true;
 			}
-			npc.m_flSpeed = 450.0;
+			npc.m_flSpeed = 275.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		}
