@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
-static Handle h_TimerCastleBreakerWeaponManagement[MAXPLAYERS+1] = {null, ...};
-static bool b_AbilityActivated[MAXPLAYERS];
-static bool b_AbilityDone[MAXPLAYERS];
-int i_NextAttackDoubleHit[MAXENTITIES];
+static Handle h_TimerCastleBreakerWeaponManagement[MAXTF2PLAYERS] = {null, ...};
+static bool b_AbilityActivated[MAXTF2PLAYERS];
+static bool b_AbilityDone[MAXTF2PLAYERS];
+static int i_CastleBreakerDoubleHit[MAXENTITIES];
 
 void ResetMapStartCastleBreakerWeapon()
 {
@@ -19,7 +19,7 @@ void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &Cust
 {
 	CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.15;
 	CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.85;
-	if(b_AbilityActivated)
+	if(b_AbilityActivated[client])
 	{
 		enemies_hit_aoe = 2; //hit 2 targets.
 	}
@@ -28,15 +28,15 @@ void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &Cust
 void Reset_stats_CastleBreaker_Singular_Weapon(int weapon) //This is on weapon remake. cannot set to 0 outright.
 {
 	b_WeaponAttackSpeedModified[weapon] = false;
-	i_NextAttackDoubleHit[weapon] = 0;
+	i_CastleBreakerDoubleHit[weapon] = 0;
 }
 
 public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 {
 	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
-	if(b_AbilityActivated)
+	if(b_AbilityActivated[client])
 	{
-		b_AbilityDone(client) = false;
+		b_AbilityDone[client] = false;
 		if(!b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 		{
 			b_WeaponAttackSpeedModified[weapon] = true;
@@ -52,7 +52,7 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 	}
 	else
 	{
-		if(!b_AbilityDone)
+		if(!b_AbilityDone[client])
 		{
 			if(!b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 			{
@@ -66,7 +66,7 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 				attackspeed = (attackspeed * 0.15);
 				Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
 			}
-			b_AbilityDone(client) = true;
+			b_AbilityDone[client] = true;
 		}
 	}
 }
@@ -96,7 +96,7 @@ public void CastleBreaker_Ability_M2(int client, int weapon, bool crit, int slot
 			EmitSoundToAll("ambient/cp_harbor/furnace_1_shot_05.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
 			b_AbilityActivated[client] = true;
 			CreateTimer(15.0, Timer_Bool_CastleBreaker, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-			SetParent(client, particle_Base, "m_vecAbsOrigin");
+			//SetParent(client, particle_Base, "m_vecAbsOrigin");
 		}
 		else
 		{
@@ -150,7 +150,7 @@ public Action Timer_Management_CastleBreaker(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		b_AbilityActivated[client] = false;
-		b_AbilityDone(client) = true;
+		b_AbilityDone[client] = true;
 		h_TimerCastleBreakerWeaponManagement[client] = null;
 		return Plugin_Stop;
 	}	
@@ -162,7 +162,7 @@ public Action Timer_Management_CastleBreaker(Handle timer, DataPack pack)
 	}
 	else
 	{
-		b_AbilityDone(client) = true;
+		b_AbilityDone[client] = true;
 		b_AbilityActivated[client] = false;
 	}
 
