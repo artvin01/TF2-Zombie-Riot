@@ -3987,7 +3987,7 @@
 	}
 	"CastleBreaker Desc"
 	{
-		"en"	"A Spear that Victoria's trained vanguards use.\n This weapon has long reach but short width.\n Can gain cost per kill\n Some processing core may enhance this weapon...\deals extra damage to building enemies"
+		"en"	"A Spear that Victoria's trained vanguards use.\n This weapon has long reach but short width.\n Can gain cost per kill\n Some processing core may enhance this weapon...\n Deals extra damage to building enemies"
 	}
 	"CastleBreaker Pap 1"
 	{
