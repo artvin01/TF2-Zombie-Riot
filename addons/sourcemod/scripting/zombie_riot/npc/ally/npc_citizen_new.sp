@@ -4100,9 +4100,9 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		bool medic = npc.m_iClassRole == Cit_Medic && npc.m_iHasPerk == npc.m_iGunType;
 		
-		float vecTarget[3]; WorldSpaceCenter(ally, vecTarget );
+		float VecAlly[3]; WorldSpaceCenter(ally, VecAlly );
 		float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself, true);
+		float flDistanceToTarget = GetVectorDistance(VecAlly, Vecself, true);
 		if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.8))
 		{
 			if(ally <= MaxClients)
