@@ -763,7 +763,7 @@ static void Internal_ClotThink(int iNPC)
 				if(enemy[i])
 				{
 					float BombPos[3];
-					float BombDamage = 50.0;
+					float BombDamage = 45.0;
 					BombDamage *= RaidModeScaling;
 					float Spam_delay=0.0;
 					for(int k; k < 5; k++)
@@ -1234,7 +1234,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 								
 								WorldSpaceCenter(targetTrace, vecHit);
 
-								float damage = 40.0;
+								float damage = 35.0;
 								damage *= 1.15;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
@@ -1444,8 +1444,8 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 50.0;
-	float FarDamage = 20.0;
+	float CloseDamage = 45.0;
+	float FarDamage = 18.0;
 	float MaxDistance = 750.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
@@ -1493,7 +1493,7 @@ static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 		vecSelf[2] += 80.0;
 		vecSelf[0] += GetRandomFloat(-20.0, 20.0);
 		vecSelf[1] += GetRandomFloat(-20.0, 20.0);
-		float RocketDamage = 40.0;
+		float RocketDamage = 36.0;
 		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 300.0 ,"models/buildables/sentry3_rockets.mdl");
 		if(IsValidEntity(RocketGet))
 		{
