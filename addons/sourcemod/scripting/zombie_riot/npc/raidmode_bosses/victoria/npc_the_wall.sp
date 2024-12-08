@@ -414,7 +414,7 @@ methodmap Huscarls < CClotBody
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_huscarls.mp3");
 			music.Time = 132;
-			music.Volume = 3.0;
+			music.Volume = 2.3;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "Dance of the Dreadnought (Original Soundtrack Vol. II)");
 			strcopy(music.Artist, sizeof(music.Artist), "Deep Rock Galactic");
