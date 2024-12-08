@@ -35,6 +35,36 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return VictorianFactory(client, vecPos, vecAng, ally);
 }
 
+static char[] GetBuildingHealth()
+{
+	int health = 120;
+	
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
+	
+	float temp_float_hp = float(health);
+	
+	if(ZR_GetWaveCount()+1 < 30)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+	}
+	else if(ZR_GetWaveCount()+1 < 45)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+	}
+	else
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+	}
+	
+	health /= 2;
+	health = RoundToCeil(float(health) * 1.2);
+	health = RoundToCeil(float(health) * 0.67);//wtf
+	
+	char buffer[16];
+	IntToString(health, buffer, sizeof(buffer));
+	return buffer;
+}
+
 methodmap VictorianFactory < CClotBody
 {
 	public void PlayDeathSound() 
@@ -44,7 +74,7 @@ methodmap VictorianFactory < CClotBody
 	
 	public VictorianFactory (int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", "12500", ally, _, true));
+		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", GetBuildingHealth(), ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		
