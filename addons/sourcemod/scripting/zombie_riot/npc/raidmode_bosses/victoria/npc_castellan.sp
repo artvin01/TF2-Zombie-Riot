@@ -74,6 +74,8 @@ static const char g_SummonAlotOfRockets[][] = {
 	"weapons/rocket_ll_shoot.wav",
 };
 
+static int gLaser1;
+static int gBluePoint;
 
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
@@ -132,10 +134,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/victoria/raid_castellan.mp3");
 	PrecacheSound("mvm/ambient_mp3/mvm_siren.mp3");
-	
 	PrecacheModel(LASERBEAM);
-	PrecacheModel("sprites/redglow1.vmt");
-	PrecacheModel("materials/sprites/laser.vmt");
+	gBluePoint = PrecacheModel("sprites/blueglow1.vmt");
+	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	PrecacheModel("materials/sprites/halo01.vmt", true);
 }
@@ -1261,9 +1262,10 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 					do
 					{
-						Temp_Target[npc.index] = enemy[GetRandomInt(0, sizeof(g_PlayRocketshotready) - 1)];
+						Temp_Target[npc.index] = enemy[GetRandomInt(0, sizeof(enemy) - 1)];
 					}
 					while(!IsValidEntity(Temp_Target[npc.index]) || GetTeam(npc.index) == GetTeam(Temp_Target[npc.index]) || npc.index==Temp_Target[npc.index]);
+					Vs_LockOn[Temp_Target[npc.index]]=true;
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					TeleportDiversioToRandLocation(npc.index,_,1250.0, 750.0);
@@ -1276,6 +1278,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					npc.m_flNextMeleeAttack = gameTime + 2.0;
+					Vs_LockOn[Temp_Target[npc.index]]=false;
 					Temp_Target[npc.index]=-1;
 					Gone_Stats[npc.index] = false;
 					Gone[npc.index] = true;
@@ -1315,10 +1318,20 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			float BombDamage = 50.0;
 			BombDamage *= RaidModeScaling;
 			float Spam_delay=0.0;
-			for(int AirRaid; AirRaid < 9; AirRaid++)
+			for(int AirRaid; AirRaid < 8; AirRaid++)
 			{
+				float TempPos[3];
 				GetAbsOrigin(Temp_Target[npc.index], BombPos);
-				if(AirRaid>5)
+				TempPos[0] = BombPos[0];
+				TempPos[1] = BombPos[1];
+				TempPos[2] = BombPos[2] + 3000.0;
+				BombPos[2] += 5.0;
+				TE_SetupBeamPoints(BombPos, TempPos, gLaser1, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
+				TE_SendToAll();
+				TE_SetupGlowSprite(BombPos, gBluePoint, 0.1, 1.0, 255);
+				TE_SendToAll();
+				BombPos[2] -= 5.0;
+				if(AirRaid>4)
 				{
 					PredictSubjectPositionForProjectiles(npc, Temp_Target[npc.index], 100.0, _,BombPos);
 					BombPos[0] += GetRandomFloat(-25.0, 25.0);
@@ -1454,7 +1467,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					
 				}
 				npc.m_iAttacksTillReload -= 1;
-				npc.m_flNextMeleeAttack = gameTime + 0.35;
+				npc.m_flNextMeleeAttack = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 0.75 : 1.5);
 			}
 		}
 	}

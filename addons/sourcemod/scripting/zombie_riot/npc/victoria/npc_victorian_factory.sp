@@ -35,6 +35,36 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return VictorianFactory(client, vecPos, vecAng, ally);
 }
 
+static char[] GetBuildingHealth()
+{
+	int health = 120;
+	
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
+	
+	float temp_float_hp = float(health);
+	
+	if(ZR_GetWaveCount()+1 < 30)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+	}
+	else if(ZR_GetWaveCount()+1 < 45)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+	}
+	else
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+	}
+	
+	health /= 2;
+	health = RoundToCeil(float(health) * 1.2);
+	health = RoundToCeil(float(health) * 0.67);//wtf
+	
+	char buffer[16];
+	IntToString(health, buffer, sizeof(buffer));
+	return buffer;
+}
+
 methodmap VictorianFactory < CClotBody
 {
 	public void PlayDeathSound() 
@@ -44,7 +74,7 @@ methodmap VictorianFactory < CClotBody
 	
 	public VictorianFactory (int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", "12500", ally, _, true));
+		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", GetBuildingHealth(), ally, _, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -87,18 +117,18 @@ methodmap VictorianFactory < CClotBody
 				EmitSoundToAll("misc/rd_points_return01.wav", _, _, _, _, 1.0);
 			}
 			LastSpawnDiversio = GetGameTime() + 5.0;
-			int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1250.0, 500.0);
+			int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
 			switch(Decicion)
 			{
 				case 2:
 				{
-					Decicion = TeleportDiversioToRandLocation(npc.index, true, 500.0, 350.0);
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0);
 					if(Decicion == 2)
 					{
-						Decicion = TeleportDiversioToRandLocation(npc.index, true, 350.0, 150.0);
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0);
 						if(Decicion == 2)
 						{
-							Decicion = TeleportDiversioToRandLocation(npc.index, true, 150.0, 0.0);
+							Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
 						}
 					}
 				}
