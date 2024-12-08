@@ -96,6 +96,7 @@ static float FTL[MAXENTITIES];
 static float Delay_Attribute[MAXENTITIES];
 static int I_cant_do_this_all_day[MAXENTITIES];
 static bool YaWeFxxked[MAXENTITIES];
+static bool GETBFG[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AirRaidStart[MAXENTITIES];
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
@@ -342,6 +343,7 @@ methodmap Harrison < CClotBody
 			npc.m_flSpeed = 300.0;
 			Delay_Attribute[npc.index] = 0.0;
 			YaWeFxxked[npc.index] = false;
+			GETBFG[npc.index] = false;
 			ParticleSpawned[npc.index] = false;
 			npc.m_bFUCKYOU = false;
 			I_cant_do_this_all_day[npc.index] = 0;
@@ -584,7 +586,7 @@ static void Internal_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 	//bool GETVictoria_Support = Victoria_Support(npc);
 	
-	if(!AirRaidStart[npc.index] && NpcStats_VictorianCallToArms(npc.index) && Victoria_Support(npc))
+	if(!YaWeFxxked[npc.index] && !AirRaidStart[npc.index] && NpcStats_VictorianCallToArms(npc.index) && Victoria_Support(npc))
 	{
 	
 	}
@@ -621,12 +623,12 @@ static void Internal_ClotThink(int iNPC)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: Can't believe {lightblue}Huscarls{default} and {lightblue}Atomizer{default} was defeated by these weaklings.");
+					CPrintToChatAll("{skyblue}Harrison{default}: Can't believe {lightblue}Huscarls{default} and {blue}Atomizer{default} was defeated by these weaklings.");
 				}
 			}
 		}
 	}
-	if(RaidBossActive != INVALID_ENT_REFERENCE && IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
+	if(!YaWeFxxked[npc.index] && RaidBossActive != INVALID_ENT_REFERENCE && IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -639,7 +641,13 @@ static void Internal_ClotThink(int iNPC)
 			case 4:CPrintToChatAll("{skyblue}Harrison{default}: {unique}I need beer.{default}");
 		}
 		YaWeFxxked[npc.index] = true;
+		Vs_RechargeTimeMax[npc.index] = 3.0;
+		Victoria_Support_RechargeTimeMax(npc.index, 3.0);
+		Vs_RechargeTime[npc.index]=0.0;
+		GETBFG[npc.index] = true;
 	}
+	if(GETBFG[npc.index] && Victoria_Support(npc))
+		GETBFG[npc.index] = false;
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -1154,26 +1162,36 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			{
 				npc.PlayGunSound();
 				npc.FaceTowards(vecTarget, 20000.0);
-				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
-				{
-					target = TR_GetEntityIndex(swingTrace);	
-						
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					float origin[3], angles[3];
-					view_as<CClotBody>(npc.index).GetAttachment("effect_hand_r", origin, angles);
-					ShootLaser(npc.index, "bullet_tracer02_blue_crit", origin, vecHit, false );
+				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
-					if(IsValidEnemy(npc.index, target))
-					{
-						float damageDealt = 5.0;
-
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * RaidModeScaling, DMG_BULLET, -1, _, vecHit);
-					}
-					npc.m_iAttacksTillReload -= 1;
-				}
-				delete swingTrace;
+				float eyePitch[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+				
+				float x = GetRandomFloat( -0.01, 0.01 ) + GetRandomFloat( -0.01, 0.01 );
+				float y = GetRandomFloat( -0.01, 0.01 ) + GetRandomFloat( -0.01, 0.01 );
+				
+				float vecDirShooting[3], vecRight[3], vecUp[3];
+				
+				vecTarget[2] += 15.0;
+				MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+				GetVectorAngles(vecDirShooting, vecDirShooting);
+				vecDirShooting[1] = eyePitch[1];
+				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+				
+				float vecDir[3];
+				vecDir[0] = vecDirShooting[0] + x * vecRight[0] + y * vecUp[0]; 
+				vecDir[1] = vecDirShooting[1] + x * vecRight[1] + y * vecUp[1]; 
+				vecDir[2] = vecDirShooting[2] + x * vecRight[2] + y * vecUp[2]; 
+				NormalizeVector(vecDir, vecDir);
+				
+				float damage = (5.0 + float(tier)) * 0.1 * RaidModeScaling;
+				if(distance > 100000.0)	// 316 HU
+					damage *= 100000.0 / distance;	// Lower damage based on distance
+				
+				damage *= 3.5;
+				FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
+				npc.m_flNextMeleeAttack = gameTime + 0.1;
+				npc.m_iAttacksTillReload -= 1;
 			}
 		}
 	}
@@ -1656,6 +1674,7 @@ static bool Victoria_Support(Harrison npc)
 	if(Vs_DelayTime[npc.index] > GameTime)
 		return false;
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
+	float Vs_Raged = (YaWeFxxked[npc.index] ? 1000.0 : 250.0);
 	bool Vs_Online=false;
 	bool Vs_Fired=false;
 	bool Vs_IncomingBoom=false;
@@ -1706,15 +1725,15 @@ static bool Victoria_Support(Harrison npc)
 						Vs_LockOn[client]=false;
 				}
 			}
-			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], 250.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*250.0), (250.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*250.0))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
+			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], Vs_Raged- ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*Vs_Raged), (Vs_Raged - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*Vs_Raged))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
 			TE_SendToAll();
 			float position2[3];
 			position2[0] = Vs_Temp_Pos[npc.index][enemy[i]][0];
 			position2[1] = Vs_Temp_Pos[npc.index][enemy[i]][1];
 			position2[2] = Vs_Temp_Pos[npc.index][enemy[i]][2] + 65.0;
-			TE_SetupBeamRingPoint(position2, 250.0, 250.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+			TE_SetupBeamRingPoint(position2, Vs_Raged, Vs_Raged+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
 			TE_SendToAll();
-			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], 250.0, 250.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], Vs_Raged, Vs_Raged+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
 			TE_SendToAll();
 			TE_SetupBeamPoints(Vs_Temp_Pos[npc.index][enemy[i]], position, gLaser1, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
 			TE_SendToAll();
@@ -1740,7 +1759,7 @@ static bool Victoria_Support(Harrison npc)
 			
 			b_ThisNpcIsSawrunner[npc.index] = true;
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
-			Explode_Logic_Custom(100.0*RaidModeScaling, 0, npc.index, -1, position, 125.0, 1.0, _, true, 20);
+			Explode_Logic_Custom((YaWeFxxked[npc.index] ? 9001.0 : 100.0*RaidModeScaling), 0, npc.index, -1, position, (YaWeFxxked[npc.index] ? 1000.0 : 125.0), 1.0, _, true, 20);
 			b_ThisNpcIsSawrunner[npc.index] = false;
 			ParticleEffectAt(position, "hightower_explosion", 1.0);
 			i_ExplosiveProjectileHexArray[npc.index] = 0; 

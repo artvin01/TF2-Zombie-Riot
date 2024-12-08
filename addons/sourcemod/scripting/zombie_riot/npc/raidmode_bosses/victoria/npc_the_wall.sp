@@ -355,6 +355,7 @@ methodmap Huscarls < CClotBody
 			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 			//IDLE
 			npc.m_iState = 0;
 			npc.m_flGetClosestTargetTime = 0.0;
@@ -617,6 +618,18 @@ static void Internal_ClotThink(int iNPC)
 				case 2:CPrintToChatAll("{lightblue}Huscarls{default}: You'll never see {gold}Victoria{default} again.");
 			}
 		}
+	}
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		DeleteAndRemoveAllNpcs = 3.0;
+		npc.m_bisWalking = false;
+		npc.AddActivityViaSequence("layer_taunt_crushing_headache");
+		npc.SetCycle(0.01);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		BlockLoseSay = true;
+		
+		CPrintToChatAll("{lightblue}Huscarls{default}: Mission Accomplished, we will figure out who is behind them");
+		return;
 	}
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index])
 	{
@@ -1328,7 +1341,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					float SlamDMG = 50.0;
 					float Range = 400.0;
-					ParticleEffectAt(WorldSpaceVec, "mvm_soldier_shockwave", 0.5);
+					ParticleEffectAt(WorldSpaceVec, "mvm_soldier_shockwave", 1.0);
+					ParticleEffectAt(WorldSpaceVec, "ExplosionCore_MidAir", 1.0);
 					CreateEarthquake(WorldSpaceVec, 1.0, Range * 1.25, 16.0, 255.0);
 					Explode_Logic_Custom(SlamDMG * RaidModeScaling, 0, npc.index, -1, _, Range, 1.0, 0.75, true, 20, _, _, Ground_Slam);
 					I_cant_do_this_all_day[npc.index] = 0;
@@ -1528,8 +1542,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			}
 			case 6:
 			{
-				npc.m_flHuscarlsRushCoolDown = gameTime + 20.0;
-				npc.m_flHuscarlsRushCoolDown = gameTime + 20.0;
+				npc.m_flHuscarlsRushCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 15.0 : 20.0);
+				npc.m_flHuscarlsRushCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 15.0 : 20.0);
 				npc.m_flHuscarlsAdaptiveArmorCoolDown += 6.0;
 				npc.m_flHuscarlsGroundSlamCoolDown += 6.0;
 				npc.m_flHuscarlsDeployEnergyShieldCoolDown += 1.0;
@@ -1675,18 +1689,12 @@ static void Got_it_fucking_shit(int entity, int victim, float damage, int weapon
 	{
 		if(IsValidClient(victim))
 		{
-			//AcceptEntityInput(victim, "ClearParent");
-			float flPos[3]; // original
-			float flAng[3]; // original
-	
-			npc.GetAttachment("RightHand", flPos, flAng);
+			float flPos[3]; WorldSpaceCenter(entity, flPos);
 		
 			TeleportEntity(victim, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 			TF2_AddCondition(victim, TFCond_HalloweenKartNoTurn, 1.0, 0);
 			TF2_AddCondition(victim, TFCond_CompetitiveLoser, 1.0, 0);
 			SetEntityCollisionGroup(victim, 1);
-			/*SetParent(npc.index, victim, "RightHand");
-			TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});*/
 			Frozen_Player[victim]=true;
 		}
 		else
@@ -1762,7 +1770,7 @@ static void Ground_Slam(int entity, int victim, float damage, int weapon)
 {
 	Huscarls npc = view_as<Huscarls>(entity);
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
-	if(IsValidEntity(npc.index) && GetTeam(entity) != GetTeam(victim))
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(entity) != GetTeam(victim))
 	{
 		if(IsValidClient(victim))
 		{
@@ -1988,6 +1996,7 @@ static void Huscarls_Shield_StartTouch(DataPack pack)
 	if(frames_offset < 0)
 		frames_offset = 1;
 	RequestFrames(Huscarls_Shield_StartTouch, frames_offset, pack2);
+	return Plugin_Handled;
 }
 
 static void Shield_Knockback(int entity, int victim, float damage, int weapon)
