@@ -69,6 +69,7 @@ static const char g_MeleeHitSounds[] = "weapons/cbar_hitbod1.wav";
 static const char g_AngerSounds[] = "mvm/mvm_tele_activate.wav";
 static const char g_AngerReaction[] = "vo/sniper_specialcompleted43.mp3";
 static const char g_HomerunHitSounds[] = "mvm/melee_impacts/bat_baseball_hit_robo01.wav";
+static const char g_DronShotHitSounds[] = "weapons/drg_pomson_drain_01.wav";
 static const char g_HomerunSounds[][]= {
 	"vo/sniper_jaratetoss02/mp3",
 	"vo/sniper_jaratetoss03/mp3",
@@ -83,6 +84,10 @@ static const char g_PlayRocketshotready[][] = {
 	"vo/sniper_specialcompleted16.mp3",
 	"vo/sniper_dominationsoldier02.mp3"
 
+};
+
+static const char g_LaserBeamSounds[][] = {
+	"weapons/bumper_car_speed_boost_start.wav",
 };
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
@@ -130,6 +135,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MG42AttackSounds)); i++) { PrecacheSound(g_MG42AttackSounds[i]); }
+	PrecacheSound(g_DronShotHitSounds);
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
 	PrecacheSound(g_AngerReaction);
@@ -244,6 +250,10 @@ methodmap Harrison < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_MeleeHitSounds, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayLaserBeamSound()
+	{
+		EmitSoundToAll(g_LaserBeamSounds[GetRandomInt(0, sizeof(g_LaserBeamSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80,125));
+	}
 	property float m_flTimeUntillSummonRocket
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
@@ -294,7 +304,7 @@ methodmap Harrison < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_bDissapearOnDeath = true;
-		npc.m_flMeleeArmor = 1.0;
+		npc.m_flMeleeArmor = 1.25;
 		
 		OverrideOwner[npc.index] = -1;
 		bool CloneDo=false;
@@ -336,13 +346,13 @@ methodmap Harrison < CClotBody
 			npc.m_bFUCKYOU = false;
 			I_cant_do_this_all_day[npc.index] = 0;
 			npc.i_GunMode = 0;
-			npc.m_flTimeUntillNextRailgunShots = GetGameTime() + 22.5;
+			npc.m_flTimeUntillNextRailgunShots = GetGameTime(npc.index) + 22.5;
 			npc.m_flTimeUntillSummonRocket = 0.0;
 			npc.m_flNextRangedAttack = 0.0;
 			npc.m_flAirRaidDelay = 0.0;
-			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 10.0;
-			npc.m_flTimeUntillDroneSniperShot = GetGameTime() + 5.0;
-			npc.m_flTimeUntillGunReload = GetGameTime() + 12.5;
+			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 10.0;
+			npc.m_flTimeUntillDroneSniperShot = GetGameTime(npc.index) + 5.0;
+			npc.m_flTimeUntillGunReload = GetGameTime(npc.index) + 12.5;
 			npc.m_iOverlordComboAttack = 0;
 			npc.m_iAmountProjectiles = 0;
 			npc.m_iAttacksTillReload = 0;
@@ -350,7 +360,7 @@ methodmap Harrison < CClotBody
 			npc.m_fbRangedSpecialOn = false;
 			AirRaidStart[npc.index] = false;
 			Zero(b_said_player_weaponline);
-			fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
+			fl_said_player_weaponline_time[npc.index] = GetGameTime(npc.index) + GetRandomFloat(0.0, 5.0);
 			Vs_RechargeTimeMax[npc.index] = 20.0;
 			Victoria_Support_RechargeTimeMax(npc.index, 20.0);
 			
@@ -408,7 +418,7 @@ methodmap Harrison < CClotBody
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
 			music.Time = 92;
-			music.Volume = 2.0;
+			music.Volume = 1.0;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "RAGE");
 			strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
@@ -616,7 +626,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
+	if(RaidBossActive != INVALID_ENT_REFERENCE && IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -674,6 +684,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.StartPathing();
 				}
 				*/
+				CPrintToChatAll("{skyblue}Harrison{default}: Hide if you can. I'll get some ammo for my gun.");
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				NPC_StopPathing(npc.index);
@@ -721,7 +732,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.SetPlaybackRate(1.0);
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_iChanged_WalkCycle = 0;
-					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+					f_VictorianCallToArms[npc.index] = GetGameTime(npc.index) + 999.0;
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flTimeUntillDroneSniperShot += 4.0;
 					npc.m_flTimeUntillNextRailgunShots += 4.0;
@@ -1013,6 +1024,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		{
 			case 0:
 			{
+				CPrintToChatAll("{skyblue}Harrison{default}: Do you think I would miss?");
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
@@ -1064,6 +1076,8 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float projectile_speed = 800.0;
 
+		npc.PlayLaserBeamSound();
+
 		npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
 
 		PredictSubjectPositionForProjectiles(npc, target, projectile_speed, 40.0, vecTarget);
@@ -1110,18 +1124,18 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			flPosEdit[1] += 25.0;
 			flPosEdit[2] += 5.0;
 
-			float RocketDamage = 35.0;
 			float RocketSpeed = 900.0;
-			float Radius = 250.0;
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-			float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 			float vecDest[3];
 			vecDest = vecTarget;
 			vecDest[0] += GetRandomFloat(-50.0, 50.0);
 			vecDest[1] += GetRandomFloat(-50.0, 50.0);
 			vecDest[2] += GetRandomFloat(-50.0, 50.0);
-						
-			npc.FireParticleRocket(vecDest, RocketDamage * RaidModeScaling , RocketSpeed , Radius , "raygun_projectile_blue_crit", true,_, true, flPosEdit);
+
+			int DronShot = npc.FireParticleRocket(vecDest, 0.0, RocketSpeed, 0.0, "raygun_projectile_blue_crit", true,_, true, flPosEdit);
+			SDKUnhook(DronShot, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+			SDKHook(DronShot, SDKHook_StartTouch, Dron_Laser_Particle_StartTouch);
+			
 			if (npc.m_iAmountProjectiles >= 15)
 			{
 				npc.m_iAmountProjectiles = 0;
@@ -1638,7 +1652,7 @@ static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
 
 static bool Victoria_Support(Harrison npc)
 {
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	if(Vs_DelayTime[npc.index] > GameTime)
 		return false;
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
@@ -1692,15 +1706,15 @@ static bool Victoria_Support(Harrison npc)
 						Vs_LockOn[client]=false;
 				}
 			}
-			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], 150.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*150.0), (150.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*150.0))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
+			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], 250.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*250.0), (250.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*250.0))+0.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {255, 255, 255, 150}, 0, 0);
 			TE_SendToAll();
 			float position2[3];
 			position2[0] = Vs_Temp_Pos[npc.index][enemy[i]][0];
 			position2[1] = Vs_Temp_Pos[npc.index][enemy[i]][1];
 			position2[2] = Vs_Temp_Pos[npc.index][enemy[i]][2] + 65.0;
-			TE_SetupBeamRingPoint(position2, 150.0, 150.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+			TE_SetupBeamRingPoint(position2, 250.0, 250.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
 			TE_SendToAll();
-			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], 150.0, 150.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
+			TE_SetupBeamRingPoint(Vs_Temp_Pos[npc.index][enemy[i]], 250.0, 250.5, g_BeamIndex_heal, g_HALO_Laser, 0, 5, 0.1, 1.0, 1.0, {145, 47, 47, 150}, 0, 0);
 			TE_SendToAll();
 			TE_SetupBeamPoints(Vs_Temp_Pos[npc.index][enemy[i]], position, gLaser1, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {145, 47, 47, 150}, 3);
 			TE_SendToAll();
@@ -1726,7 +1740,7 @@ static bool Victoria_Support(Harrison npc)
 			
 			b_ThisNpcIsSawrunner[npc.index] = true;
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
-			Explode_Logic_Custom(4500.0, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
+			Explode_Logic_Custom(100.0*RaidModeScaling, 0, npc.index, -1, position, 125.0, 1.0, _, true, 20);
 			b_ThisNpcIsSawrunner[npc.index] = false;
 			ParticleEffectAt(position, "hightower_explosion", 1.0);
 			i_ExplosiveProjectileHexArray[npc.index] = 0; 
@@ -1746,4 +1760,30 @@ static bool Victoria_Support(Harrison npc)
 	}
 	
 	return Vs_Fired;
+}
+
+static Action Dron_Laser_Particle_StartTouch(int entity, int target)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		owner = 0;
+	int inflictor = h_ArrowInflictorRef[entity];
+	if(inflictor != -1)
+		inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+	if(inflictor == -1)
+		inflictor = owner;
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	float damage = 35.0;
+	damage *= RaidModeScaling;
+	Explode_Logic_Custom(damage, owner, inflictor, -1, ProjectileLoc, 250.0, _, _, true, _, false, _);
+	ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
+	ParticleEffectAt(ProjectileLoc, "drg_cow_explosion_sparkles_blue", 1.5);
+	EmitSoundToAll(g_DronShotHitSounds, 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, -1, ProjectileLoc);
+	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+	if(IsValidEntity(particle))
+		RemoveEntity(particle);
+	RemoveEntity(entity);
+	return Plugin_Handled;
 }

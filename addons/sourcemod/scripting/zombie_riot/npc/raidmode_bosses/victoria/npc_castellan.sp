@@ -1053,6 +1053,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 {
 	if(npc.m_flTimeUntillSupportSpawn < gameTime)
 	{
+		CPrintToChatAll("{blue}Castellan{default}: Comeon boys, I need some support.");
 		float SelfPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
 		npc.m_flTimeUntillSupportSpawn = gameTime + 20.0;
@@ -1201,12 +1202,14 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 	}
 	else if(npc.m_flTimeUntillAirStrike <gameTime)
 	{
+		
 		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		npc.m_flDoingAnimation = gameTime + 0.35;
 		switch(I_cant_do_this_all_day[npc.index])
 		{
 			case 0:
 			{
+				CPrintToChatAll("{blue}Castellan{default}: I got primary target in sight. {skyblue}Harrison{default}!");
 				npc.AddActivityViaSequence("layer_taunt_cyoa_PDA_intro");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
@@ -1245,6 +1248,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
+					CPrintToChatAll("{skyblue}Harrison{default}: Roger that. Targetting primary threat");
 					Gone_Stats[npc.index] = true;
 					Gone[npc.index] = true;
 					b_DoNotUnStuck[npc.index] = true;
@@ -1353,6 +1357,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		{
 			case 0:
 			{
+				CPrintToChatAll("{blue}Castellan{default}: These rockets won't miss you");
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;

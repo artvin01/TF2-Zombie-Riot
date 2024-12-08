@@ -89,7 +89,7 @@ methodmap VictoriaMowdown < CClotBody
             if(this.i_GunMode != 0)
             {
                 StopSound(this.index, SNDCHAN_STATIC, "mvm/giant_heavy/giant_heavy_gunspin.wav");
-                EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, 0.70);
+                EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, 0.70);
             }
             this.i_GunMode = 0;
         }
@@ -106,7 +106,7 @@ methodmap VictoriaMowdown < CClotBody
 
 	public VictoriaMowdown(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.4", "13000", ally));
+		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.4", "26000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

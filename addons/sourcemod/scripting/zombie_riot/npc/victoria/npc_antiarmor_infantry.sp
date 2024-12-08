@@ -279,7 +279,7 @@ void VictoriaAntiarmorInfantrySelfDefense(VictoriaAntiarmorInfantry npc, float g
 			{
 				RemoveEntity(npc.m_iWearable1);
 			}
-			float RocketDamage = 150.0;
+			float RocketDamage = 100.0;
 			if(NpcStats_VictorianCallToArms(npc.index))
 			{
 				RocketDamage *= 1.5;
