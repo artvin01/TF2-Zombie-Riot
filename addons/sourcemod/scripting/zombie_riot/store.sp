@@ -6029,6 +6029,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Hunting_Rifle(client, entity);
 		Weapon_Anti_Material_Rifle_Deploy(client, entity);
 		Walter_Enable(client, entity);
+		Enable_CastleBreakerWeapon(client, weapon);
 	}
 
 	return entity;
