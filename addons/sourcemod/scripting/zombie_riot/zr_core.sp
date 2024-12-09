@@ -832,6 +832,7 @@ void ZR_MapStart()
 	Yakuza_MapStart();
 	ResetMapStartSkadiWeapon();
 	Logos_MapStart();
+	ResetMapStartCastleBreakerWeapon();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
