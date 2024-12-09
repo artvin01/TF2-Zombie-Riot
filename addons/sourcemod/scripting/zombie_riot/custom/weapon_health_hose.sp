@@ -290,7 +290,8 @@ public bool Hose_Heal(int owner, int entity, float amt)
 
 		
 	new_ammo -= ammoSubtract;
-	ReduceMediFluidCost(owner, ammoSubtract);
+	if(ammoSubtract > 0)
+		ReduceMediFluidCost(owner, ammoSubtract);
 	SetAmmo(owner, 21, new_ammo);
 	HealEntityGlobal(owner, owner, amt * SelfHealMult, 1.0, 0.0);	
 	CurrentAmmo[owner][21] = GetAmmo(owner, 21);
@@ -444,7 +445,8 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			if(target <= MaxClients)
 				PrintHintText(client, "%t", "You healed for", target, ammo_amount_left);
 
-			ReduceMediFluidCost(client, ammo_amount_left);
+			if(ammo_amount_left > 0)
+				ReduceMediFluidCost(client, ammo_amount_left);
 			int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
 			SetAmmo(client, 21, new_ammo);
 			for(int i; i<Ammo_MAX; i++)
