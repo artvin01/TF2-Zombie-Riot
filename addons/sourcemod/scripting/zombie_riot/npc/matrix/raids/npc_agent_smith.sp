@@ -447,7 +447,6 @@ static void RaidSmith_SelfDefense(AgentSmith npc, float gameTime, int target, fl
 							}
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-							Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 100 : 10);
 							//Reduce damage after dealing
 							damage *= 0.92;
 							// On Hit stuff
