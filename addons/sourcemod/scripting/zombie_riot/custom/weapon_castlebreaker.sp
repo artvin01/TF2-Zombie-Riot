@@ -130,7 +130,7 @@ public void CastleBreaker_Ability_M2(int client, int weapon, bool crit, int slot
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
 			Rogue_OnAbilityUse(weapon);
-			Ability_Apply_Cooldown(client, slot, 50.0);
+			Ability_Apply_Cooldown(client, slot, 60.0);
 			EmitSoundToAll("ambient/cp_harbor/furnace_1_shot_05.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
 			b_AbilityActivated[client] = true;
 			CreateTimer(15.0, Timer_Bool_CastleBreaker, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -217,6 +217,7 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 	}
 	if(b_AbilityActivated[attacker])
 	{
+		damage *= 0.65;
 		if(b_thisNpcIsARaid[victim])
 		{
 			damage *= 1.15;
@@ -260,7 +261,15 @@ public Action Timer_Bool_CastleBreaker(Handle timer, any userid)
 void CreateCastleBreakerEffect(int client)
 {
 	int new_ammo = GetAmmo(client, 8);
-	PrintHintText(client,"Blast Shells: %i", new_ammo);
+	if(Change[client] == true)
+	{
+		PrintHintText(client,"Mode: BLAST / Blast Shells: %i", new_ammo);
+	}
+	else if(Change[client] == false)
+	{
+		PrintHintText(client,"Mode: PIERCE / Blast Shells: %i", new_ammo);
+	}
+	
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	if(!IsValidEntity(i_VictoriaParticle[client]))
 	{

@@ -368,6 +368,8 @@ public void Aviator_NPCDeath(int entity)
 
 void AviatorAnimationChange(Aviator npc)
 {
+	if(npc.m_iChanged_WalkCycle == 0)
+		npc.m_iChanged_WalkCycle = -1;
 	switch(npc.i_GunMode)
 	{
 		case 1: //primary
