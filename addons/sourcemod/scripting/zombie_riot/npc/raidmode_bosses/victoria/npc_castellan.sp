@@ -1265,7 +1265,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 						Temp_Target[npc.index] = enemy[GetRandomInt(0, sizeof(enemy) - 1)];
 					}
 					while(!IsValidEntity(Temp_Target[npc.index]) || GetTeam(npc.index) == GetTeam(Temp_Target[npc.index]) || npc.index==Temp_Target[npc.index]);
-					Vs_LockOn[Temp_Target[npc.index]]=true;
+					if(IsValidClient(Temp_Target[npc.index]))Vs_LockOn[Temp_Target[npc.index]]=true;
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					TeleportDiversioToRandLocation(npc.index,_,1250.0, 750.0);
