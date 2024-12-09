@@ -207,7 +207,8 @@ enum
 	WEAPON_LOGOS = 127,
 	WEAPON_WALTER = 128,
 	WEAPON_OLDINFINITYBLADE = 129,
-	WEAPON_NYMPH = 130
+	WEAPON_NYMPH = 130,
+	WEAPON_CASTLEBREAKER = 131
 }
 
 enum
@@ -571,6 +572,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/wand/weapon_logos.sp"
 #include "zombie_riot/custom/weapon_walter.sp"
 #include "zombie_riot/custom/wand/weapon_wand_nymph.sp"
+#include "zombie_riot/custom/weapon_castlebreaker.sp"
 
 void ZR_PluginLoad()
 {
@@ -830,6 +832,7 @@ void ZR_MapStart()
 	Yakuza_MapStart();
 	ResetMapStartSkadiWeapon();
 	Logos_MapStart();
+	ResetMapStartCastleBreakerWeapon();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

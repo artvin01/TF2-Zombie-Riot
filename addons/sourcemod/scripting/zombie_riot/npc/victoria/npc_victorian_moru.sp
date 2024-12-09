@@ -97,6 +97,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = true;
 		npc.Anger = false;
+		Is_a_Medic[npc.index] = true;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);

@@ -791,6 +791,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			FullMoon_SanctuaryApplyBuffs(victim, damage);
 		}
+		case WEAPON_CASTLEBREAKER:
+		{
+			WeaponCastleBreaker_OnTakeDamage(attacker, victim, damage);
+		}
 	}
 	return damage;
 }
@@ -1073,6 +1077,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_WALTER:
 		{
 			Walter_NPCTakeDamage(victim, attacker, damage, weapon);
+		}
+		case WEAPON_CASTLEBREAKER:
+		{
+			WeaponCastleBreaker_OnTakeDamageNpc(attacker, victim, damage, weapon);
 		}
 	}
 #endif

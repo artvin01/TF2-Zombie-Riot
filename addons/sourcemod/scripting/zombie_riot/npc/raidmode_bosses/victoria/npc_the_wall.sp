@@ -380,7 +380,7 @@ methodmap Huscarls < CClotBody
 			DynamicCharger[npc.index] = 0.0;
 			ExtraMovement[npc.index] = 0.0;
 			npc.i_GunMode = 0;
-			npc.m_flHuscarlsRushCoolDown = gametime + 15.0;
+			npc.m_flHuscarlsRushCoolDown = gametime + 11.0;
 			npc.m_flHuscarlsRushDuration = 0.0;
 			npc.m_flHuscarlsAdaptiveArmorCoolDown = gametime + 30.0;
 			npc.m_flHuscarlsAdaptiveArmorDuration = 0.0;
@@ -1383,6 +1383,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					npc.m_flHuscarlsRushDuration = gameTime + 5.0;
 					I_cant_do_this_all_day[npc.index] = 2;
 					Delay_Attribute[npc.index] = gameTime + 0.2;
+					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 200.0, _, _, true, _, false, _, NPC_Go_away);
 					npc.PlayRushSound();
 				}
 			}
@@ -1406,7 +1407,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 							Frozen_Player[client_check]=false;
 						}
 					}
-					Delay_Attribute[npc.index] = gameTime + 1.0;
+					npc.m_flDoingAnimation = gameTime + 0.25;
+					Delay_Attribute[npc.index] = gameTime + 0.75;
 					I_cant_do_this_all_day[npc.index] = 5;
 					CreateEarthquake(vOrigin, 0.5, 350.0, 16.0, 255.0);
 					npc.PlayRushHitSound();
@@ -1475,7 +1477,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 								Frozen_Player[client_check]=false;
 							}
 						}
-						Delay_Attribute[npc.index] = gameTime + 1.0;
+						npc.m_flDoingAnimation = gameTime + 0.25;
+						Delay_Attribute[npc.index] = gameTime + 0.75;
 						I_cant_do_this_all_day[npc.index] = 5;
 						CreateEarthquake(vOrigin, 0.5, 350.0, 16.0, 255.0);
 					}
@@ -1483,6 +1486,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				else
 				{
 					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 125.0, _, _, true, _, false, _, Got_it_fucking_shit);
+					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, 200.0, _, _, true, _, false, _, NPC_Go_away);
 					if(Delay_Attribute[npc.index] < gameTime)
 						npc.AddGesture("PASSTIME_throw_middle");
 					Delay_Attribute[npc.index] = gameTime + 1.0;
@@ -1542,8 +1546,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			}
 			case 6:
 			{
-				npc.m_flHuscarlsRushCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 15.0 : 20.0);
-				npc.m_flHuscarlsRushCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 15.0 : 20.0);
+				npc.m_flHuscarlsRushCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 14.0 : 15.0);
+				npc.m_flHuscarlsRushCoolDown = gameTime + (NpcStats_VictorianCallToArms(npc.index) ? 14.0 : 15.0);
 				npc.m_flHuscarlsAdaptiveArmorCoolDown += 6.0;
 				npc.m_flHuscarlsGroundSlamCoolDown += 6.0;
 				npc.m_flHuscarlsDeployEnergyShieldCoolDown += 1.0;
@@ -1693,11 +1697,16 @@ static void Got_it_fucking_shit(int entity, int victim, float damage, int weapon
 			SetEntityCollisionGroup(victim, 1);
 			Frozen_Player[victim]=true;
 		}
-		else
-		{
-			SDKHooks_TakeDamage(victim, npc.index, npc.index, 1000.0, DMG_SLASH, -1, _, vecHit);
-			Custom_Knockback(npc.index, victim, 1500.0, true);
-		}
+	}
+}
+static void NPC_Go_away(int entity, int victim, float damage, int weapon)
+{
+	Huscarls npc = view_as<Huscarls>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && !IsValidClient(victim) && GetTeam(npc.index) != GetTeam(victim))
+	{
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, 1000.0, DMG_SLASH, -1, _, vecHit);
+		Custom_Knockback(npc.index, victim, 1500.0, true);
 	}
 }
 
@@ -1707,8 +1716,8 @@ static void Compressor(int entity, int victim, float damage, int weapon)
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
-		damage = 40.0 * RaidModeScaling;
-		damage += ReturnEntityMaxHealth(victim)*0.1;
+		damage = 50.0 * RaidModeScaling;
+		damage += ReturnEntityMaxHealth(victim)*0.25;
 		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 		if(IsValidClient(victim))
 		{
@@ -1723,8 +1732,12 @@ static void Compressor(int entity, int victim, float damage, int weapon)
 static void ToTheMoon(int entity, int victim, float damage, int weapon)
 {
 	Huscarls npc = view_as<Huscarls>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
+		damage = 40.0 * RaidModeScaling;
+		damage += ReturnEntityMaxHealth(victim)*0.05;
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 		float fVelocity[3];
 		fVelocity[2] = 1000.0;
 		if(IsValidClient(victim))
@@ -1883,8 +1896,7 @@ static bool Victoria_Support(Huscarls npc)
 			position[1] = 1600.0;
 			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
-			if(HasEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID"))
-				SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
+			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
 		}
 	}

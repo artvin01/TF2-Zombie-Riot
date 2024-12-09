@@ -2372,6 +2372,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			WrathfulBlade_OnKill(attacker, victim);
 		}
+		case WEAPON_CASTLEBREAKER:
+		{
+			CastleBreakerCashOnKill(attacker);
+		}
 	}
 }
 #endif
