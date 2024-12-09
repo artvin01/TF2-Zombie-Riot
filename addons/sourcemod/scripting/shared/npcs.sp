@@ -1046,7 +1046,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	//LogEntryInvicibleTest(victim, attacker, damage, 2);
 	// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
-	if(b_NpcIsInvulnerable[victim] && damage < 9999999.9)
+	if(b_NpcIsInvulnerable[victim]/* && damage < 9999999.9*/)
 	{
 		damage = 0.0;
 		Damageaftercalc = 0.0;
@@ -1076,7 +1076,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Handled;
 		//nothing happens.
 	}
-	else if(damage < 9999999.9)
+	else/* if(damage < 9999999.9)*/
 	{
 		if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		{
