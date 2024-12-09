@@ -6,7 +6,6 @@ static bool b_AbilityDone[MAXTF2PLAYERS];
 static int i_CastleBreakerDoubleHit[MAXENTITIES];
 static bool Change[MAXPLAYERS];
 static int i_VictoriaParticle[MAXTF2PLAYERS];
-#define SOUND_MES_CHANGE 	"weapons/bumper_car_accelerate.wav"
 
 void ResetMapStartCastleBreakerWeapon()
 {
@@ -16,7 +15,6 @@ void ResetMapStartCastleBreakerWeapon()
 void CastleBreaker_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
 	PrecacheSound("ambient/cp_harbor/furnace_1_shot_05.wav");
-	PrecacheSound(SOUND_MES_CHANGE);
 }
 
 void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
