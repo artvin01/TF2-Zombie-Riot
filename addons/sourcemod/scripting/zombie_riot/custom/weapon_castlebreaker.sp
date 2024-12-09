@@ -197,13 +197,13 @@ public Action Timer_Management_CastleBreaker(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		CreateVictoriaEffect(client);
+		CreateCastleBreakerEffect(client);
 	}
 	else
 	{
 		b_AbilityDone[client] = true;
 		b_AbilityActivated[client] = false;
-		DestroyVictoriaEffect(client);
+		DestroyCastleBreakerEffect(client);
 	}
 
 	return Plugin_Continue;
@@ -257,7 +257,7 @@ public Action Timer_Bool_CastleBreaker(Handle timer, any userid)
 	return Plugin_Stop;
 }
 
-void CreateVictoriaEffect(int client)
+void CreateCastleBreakerEffect(int client)
 {
 	int new_ammo = GetAmmo(client, 8);
 	PrintHintText(client,"Blast Shells: %i", new_ammo);
@@ -266,17 +266,17 @@ void CreateVictoriaEffect(int client)
 	{
 		return;
 	}
-	DestroyVictoriaEffect(client);
+	DestroyCastleBreakerEffect(client);
 	
 	float flPos[3];
 	float flAng[3];
 	GetAttachment (client, "eyeglow_l", flPos, flAng);
-	int particle = ParticleEffectAt(flPos, "eye_powerup_red_lvl_2", 0.0);
+	int particle = ParticleEffectAt(flPos, "eye_powerup_blue_lvl_3", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle, "eyeglow_l");
 	i_VictoriaParticle[client] = EntIndexToEntRef(particle);
 }
-void DestroyVictoriaEffect(int client)
+void DestroyCastleBreakerEffect(int client)
 {
 	int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
 	if(IsValidEntity(entity))
