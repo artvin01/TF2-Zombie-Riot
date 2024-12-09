@@ -3,7 +3,6 @@
 static Handle h_TimerCastleBreakerWeaponManagement[MAXTF2PLAYERS] = {null, ...};
 static bool b_AbilityActivated[MAXTF2PLAYERS];
 static bool b_AbilityDone[MAXTF2PLAYERS];
-static int i_CastleBreakerDoubleHit[MAXENTITIES];
 static bool Change[MAXPLAYERS];
 static int i_VictoriaParticle[MAXTF2PLAYERS];
 
@@ -27,11 +26,6 @@ void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &Cust
 	}
 }
 
-void Reset_stats_CastleBreaker_Singular_Weapon(int weapon) //This is on weapon remake. cannot set to 0 outright.
-{
-	b_WeaponAttackSpeedModified[weapon] = false;
-	i_CastleBreakerDoubleHit[weapon] = 0;
-}
 
 public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 {
@@ -52,15 +46,13 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 			Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
 		}
 	}
-	else
+	else if(b_WeaponAttackSpeedModified[weapon])
 	{
-		if(!b_AbilityDone[client])// reset attack speed
-		{
-			attackspeed = 1.0; // aint too sure if this is a right method
-			Attributes_Set(weapon, 6, attackspeed);
-			b_AbilityDone[client] = true;
-		}
+		b_WeaponAttackSpeedModified[weapon] = false;
+		attackspeed = (attackspeed / 0.15);
+		Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
 	}
+
 	if(Change[client] == true)
 	{
 		int new_ammo = GetAmmo(client, 8); //rocket ammo
@@ -245,7 +237,7 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 	ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 }
 
-void WeaponCastleBreaker_OnTakeDamage(int attacker, int victim, float &damage)
+void WeaponCastleBreaker_OnTakeDamage( int victim, float &damage)
 {
 	if(b_AbilityActivated[victim])
 	{

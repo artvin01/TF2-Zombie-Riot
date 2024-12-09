@@ -793,7 +793,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_CASTLEBREAKER:
 		{
-			WeaponCastleBreaker_OnTakeDamage(attacker, victim, damage);
+			WeaponCastleBreaker_OnTakeDamage(victim, damage);
 		}
 	}
 	return damage;

@@ -2529,6 +2529,12 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		{
 			return Player_OnTakeDamage_VoidBlade_Hud(victim);
 		}
+		case WEAPON_CASTLEBREAKER:
+		{
+			float damage = 1.0;
+			WeaponCastleBreaker_OnTakeDamage(victim, damage);
+			return damage;
+		}
 		case WEAPON_FULLMOON:
 		{
 			float damage = 1.0;
