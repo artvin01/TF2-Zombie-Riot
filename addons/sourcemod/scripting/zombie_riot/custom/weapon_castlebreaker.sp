@@ -209,7 +209,7 @@ public Action Timer_Management_CastleBreaker(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage)
+void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage, int weapon)
 {
 	if(i_IsABuilding[victim])
 	{
@@ -223,14 +223,18 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 			damage *= 1.15;
 		}
 	}
-	if(Change[client] == true)
+	if(Change[attacker] == true)
 	{
 		damage *= 0.5;
 	}
+	static float angles[3];
+	GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+	float vecForward[3];
+	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 	float position[3];
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
 	float spawnLoc[3];
-	float BaseDMG = 250.0;
+	float BaseDMG = 500.0;
 	BaseDMG *= Attributes_Get(weapon, 2, 1.0);
 	float Radius = EXPLOSION_RADIUS;
 	Radius *= Attributes_Get(weapon, 99, 1.0);
@@ -239,7 +243,7 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 
 	Explode_Logic_Custom(BaseDMG, attacker, attacker, weapon, position, Radius, Falloff);
 	
-	EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, entity, 70,_, 0.9, 70);
+	EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, victim, 70,_, 0.9, 70);
 	ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 }
 
