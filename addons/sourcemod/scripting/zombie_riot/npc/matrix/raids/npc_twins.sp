@@ -427,6 +427,7 @@ static void Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int targe
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+						Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 50 : 10);
 						npc.PlayMeleeHitSound();
 					}
 					/*else
