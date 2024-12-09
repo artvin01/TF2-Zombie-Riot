@@ -3263,7 +3263,9 @@ stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 #endif
 }
 
+#if defined ZR
 void SDkHooks_Think_TutorialStepsDo(int client)
 {
 	DoTutorialStep(client, true);
 }
+#endif

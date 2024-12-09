@@ -3676,6 +3676,7 @@ public void OnEntityDestroyed(int entity)
 
 		if(entity > MaxClients)
 		{
+			LeanteanWandCheckDeletion(entity);
 			MedigunCheckAntiCrash(entity);
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);

@@ -1917,8 +1917,8 @@
 	
 	"Army Belt Desc"
 	{
-		"en"	"5%% Faster reload but have a 2x longer weapon switch"
-		"fr"	"+5%% vitesse de rechargement, 2x vitesse de changement d'arme plus lente"
+		"en"	"10%% Faster reload but have a 1.45x longer weapon switch"
+		"fr"	"+10%% vitesse de rechargement, 1.45x vitesse de changement d'arme plus lente"
 	}
 	
 	"Headshot Affinity Desc"
