@@ -112,15 +112,6 @@ methodmap AgentThompson < CClotBody
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
-	public void PlayTeleportSound() 
-	{
-		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME * 2.0);
-	}
-	property float f_CaptinoAgentusTeleport
-	{
-		public get()							{ return fl_AttackHappensMaximum[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
-	}
 	
 	public AgentThompson(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -454,39 +445,10 @@ public void AgentThompson_ClotThink(int iNPC)
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 
 									Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 15 : 10);
-									static float hullcheckmaxs[3];
-									static float hullcheckmins[3];
-									hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-									hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
-									float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-									float vPredictedPos[3];
-									PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-									vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
-
-									float PreviousPos[3];
-									WorldSpaceCenter(npc.index, PreviousPos);
-									float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-						
-									bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
-									if(Succeed)
-									{
-										float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-										float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-										npc.PlayTeleportSound();
-
-										TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-										TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-										TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-										TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-										npc.FaceTowards(VecEnemy, 15000.0);
-										npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 1.5;
-
-										npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1; //so they cant instastab you!
-									}
+								
 									// Hit sound
 									npc.PlayMeleeHitSound();
-							
-								}
+								} 
 							}
 						delete swingTrace;
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
