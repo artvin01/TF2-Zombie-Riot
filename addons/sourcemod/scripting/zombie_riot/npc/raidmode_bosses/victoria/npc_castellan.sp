@@ -1278,7 +1278,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					npc.m_flNextMeleeAttack = gameTime + 2.0;
-					Vs_LockOn[Temp_Target[npc.index]]=false;
+					if(IsValidClient(Temp_Target[npc.index]))Vs_LockOn[Temp_Target[npc.index]]=false;
 					Temp_Target[npc.index]=-1;
 					Gone_Stats[npc.index] = false;
 					Gone[npc.index] = true;
