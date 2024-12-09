@@ -274,6 +274,20 @@ static void Nuke_Old_Drone(int client)
 	}
 }
 
+void LeanteanWandCheckDeletion(int entity)
+{
+	if(b_is_lantean[entity])
+	{
+		int Owner = EntRefToEntIndex(i_WandOwner[entity]);
+		if(IsValidClient(Owner))
+		{
+			lantean_Wand_Drone_Count[Owner] -= 1;
+			b_is_lantean[entity]=false;
+		}
+	}
+}
+
+
 
 static void Weapon_lantean_Wand(int client, int weapon, int penetration_count, float penetration_dmg_penalty, float overcharge_dmg_penalty,
 float damage,

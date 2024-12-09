@@ -66,10 +66,20 @@ void FileNetwork_ClientPutInServer(int client)
 {
 	FileNetwork_ClientDisconnect(client);
 #if !defined UseDownloadTable
-	SendNextFile(client);
+	//give 3 seconds of breathing
+	CreateTimer(3.0, Timer_FilenetworkBegin, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 #endif
 }
 
+public Action Timer_FilenetworkBegin(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidClient(client))
+		return Plugin_Stop;
+
+	SendNextFile(client);
+	return Plugin_Stop;
+}
 void FileNetwork_ClientDisconnect(int client)
 {
 	StartedQueue[client] = false;
@@ -408,7 +418,7 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			File filec = OpenFile(filecheck, "wt");
 			if(filec)
 			{
-				filec.WriteLine("Used for file checks for ZR/RPG");
+				filec.WriteLine("Verify");
 				filec.Close();
 				if(!FileNet_SendFile(client, filecheck, FileNetwork_SendFileCheck))
 				{

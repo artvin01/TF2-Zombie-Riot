@@ -248,6 +248,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				enemies_hit_aoe = 10;
 			}
+			case WEAPON_CASTLEBREAKER:
+			{
+				CastleBreaker_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
+			}
 		}	
 	}
 #endif

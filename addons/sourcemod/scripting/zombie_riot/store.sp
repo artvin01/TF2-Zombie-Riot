@@ -5301,6 +5301,14 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_VoidPortalOpened[client] = false;
 	}
+	if(Items_HasNamedItem(client, "Avangard's Processing Core-B"))
+	{
+		b_AvangardCoreB[client] = true;
+	}
+	else
+	{
+		b_AvangardCoreB[client] = false;
+	}
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);
@@ -5800,9 +5808,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						b_ArmorVisualiser[client] = true;
 					}
 
+					int CostDo;
+
 					if(EntityIsAWeapon)
 					{
-						bool apply = CheckEntitySlotIndex(info.Index, slot, entity);
+						ItemCost(client, item, CostDo);
+						bool apply = CheckEntitySlotIndex(info.Index, slot, entity, CostDo);
 						
 						if(apply)
 						{
@@ -5831,7 +5842,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 							}
 						}
 
-						apply = CheckEntitySlotIndex(info.Index2, slot, entity);
+						apply = CheckEntitySlotIndex(info.Index2, slot, entity, CostDo);
 						
 						if(apply)
 						{
@@ -6021,6 +6032,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Hunting_Rifle(client, entity);
 		Weapon_Anti_Material_Rifle_Deploy(client, entity);
 		Walter_Enable(client, entity);
+		Enable_CastleBreakerWeapon(client, entity);
 	}
 
 	return entity;
@@ -6645,16 +6657,16 @@ bool Store_CheckEntitySlotIndex(int index, int entity)
 	char classname[64];
 	GetEntityClassname(entity, classname, sizeof(classname));
 	int slot = TF2_GetClassnameSlot(classname);
-	return CheckEntitySlotIndex(index, slot, entity);
+	return CheckEntitySlotIndex(index, slot, entity, 1);
 }
 
-static bool CheckEntitySlotIndex(int index, int slot, int entity)
+static bool CheckEntitySlotIndex(int index, int slot, int entity, int costOfUpgrade)
 {
 	switch(index)
 	{
 		case 0, 1, 2:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 			
 			if(index == slot && !i_IsWandWeapon[entity] && !i_IsWrench[entity])
@@ -6662,7 +6674,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		}
 		case 6:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 			
 			if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity] && !i_IsWrench[entity]))
@@ -6670,7 +6682,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		}
 		case 7:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 			
 			if(slot == TFWeaponSlot_Primary || slot == TFWeaponSlot_Secondary)
@@ -6678,7 +6690,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		}
 		case 8:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 			
 			if(i_IsWandWeapon[entity])
@@ -6686,7 +6698,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		}
 		case 9:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 			
 			if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity]))
@@ -6698,7 +6710,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		}
 		case 11:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 
 			if(i_IsSupportWeapon[entity])

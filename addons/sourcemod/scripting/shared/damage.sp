@@ -791,6 +791,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			FullMoon_SanctuaryApplyBuffs(victim, damage);
 		}
+		case WEAPON_CASTLEBREAKER:
+		{
+			WeaponCastleBreaker_OnTakeDamage(victim, damage);
+		}
 	}
 	return damage;
 }
@@ -1073,6 +1077,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_WALTER:
 		{
 			Walter_NPCTakeDamage(victim, attacker, damage, weapon);
+		}
+		case WEAPON_CASTLEBREAKER:
+		{
+			WeaponCastleBreaker_OnTakeDamageNpc(attacker, victim, damage, weapon);
 		}
 	}
 #endif
@@ -2084,6 +2092,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%sM", Debuff_Adder_left);
 	}
+#if defined ZR
 	if(Victoria_Support_RechargeTime(victim))
 	{
 		FormatEx(Debuff_Adder_left, SizeOfChar, "%s[◈ %i％]", Debuff_Adder_left, Victoria_Support_RechargeTime(victim));
@@ -2092,6 +2101,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		FormatEx(Debuff_Adder_left, SizeOfChar, "%s!Lock on!", Debuff_Adder_left);
 	}
+#endif
 
 
 	//BUFFS GO HERE.

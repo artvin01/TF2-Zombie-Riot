@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sm-version: ['1.12.X']
+        sm-version: [ '1.12.7163']
     
     steps:
       - name: Install Checkout
