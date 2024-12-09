@@ -3991,9 +3991,13 @@
 	}
 	"CastleBreaker Pap 1"
 	{
-		"en"	"Overall Better Stats"
+		"en"	"Added new R ability that will allow you to switch weapon's playstle. You will do 50% less damage but will create a small explosion when it hits the enemy. Explosion costs ammo."
 	}
 	"CastleBreaker Pap 2"
+	{
+		"en"	"Overall Better Stats"
+	}
+	"CastleBreaker Pap 3"
 	{
 		"en"	"A giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\n Unlocks new ability(m2)\n Attack 2 targets at once and attack twice."
 	}
