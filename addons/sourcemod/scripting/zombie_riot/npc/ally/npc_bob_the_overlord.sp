@@ -379,7 +379,7 @@ public void BobTheGod_ClotThink(int iNPC)
 		{
 			float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
 			float Vecself[3]; WorldSpaceCenter(npc.index, Vecself );
-			flDistanceToOwner = GetVectorDistance(vecTarget, Vecself);
+			flDistanceToOwner = GetVectorDistance(vecTarget, Vecself, true);
 		}
 		else
 		{
@@ -408,7 +408,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			
 			float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
 			float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);	
-			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself, true);
 			
 			if(!IsPlayerAlive(client))
 			{
@@ -416,7 +416,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				// Just kill him off, makes it easier on us.
 				flDistanceToTarget = 0.0;
 			}
-			if(flDistanceToTarget < 1000.0)
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.0))
 			{
 				npc.m_iTarget = attacker;
 			}
@@ -428,7 +428,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	}
 	
 	
-	if(npc.m_iTarget != 0 && npc.m_flComeToMe < GetGameTime(npc.index) && npc.m_flDoingSpecial < GetGameTime(npc.index) && !npc.m_bIsFriendly && (flDistanceToOwner < 1000 || !npc.m_b_stand_still))
+	if(npc.m_iTarget != 0 && npc.m_flComeToMe < GetGameTime(npc.index) && npc.m_flDoingSpecial < GetGameTime(npc.index) && !npc.m_bIsFriendly && (flDistanceToOwner < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.0) || !npc.m_b_stand_still))
 	{
 		npc.m_iState = 1;
 		
@@ -754,7 +754,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
 			
 			float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);	
-			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself, true);
 			
 			if (flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{

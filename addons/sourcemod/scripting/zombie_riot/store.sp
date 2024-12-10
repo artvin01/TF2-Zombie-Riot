@@ -1892,6 +1892,28 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-83", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Enable Visual Clutter");
+	if(b_EnableClutterSetting[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-84", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Enable Numeral Armor");
+	if(b_EnableNumeralArmor[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-85", buffer);
+
 	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed Increace");
 	if(b_TauntSpeedIncreace[client])
 	{
@@ -2298,6 +2320,19 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				{
 					b_EnableCountedDowns[client] = !b_EnableCountedDowns[client];
 					ReShowSettingsHud(client);
+				}
+				case -84:
+				{
+					b_EnableClutterSetting[client] = !b_EnableClutterSetting[client];
+					ReShowSettingsHud(client);
+					SetGlobalTransTarget(client);
+					PrintToChat(client,"%t", "Enable Visual Clutter Desc");
+				}
+				case -85:
+				{
+					b_EnableNumeralArmor[client] = !b_EnableNumeralArmor[client];
+					ReShowSettingsHud(client);
+					SetGlobalTransTarget(client);
 				}
 				case -64: //Lower Volume
 				{
@@ -5110,16 +5145,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	ClientSaveRageMeterStatus(client);
 	ClientSaveUber(client);
 
-	/*
-	int weapon = GetPlayerWeaponSlot(client, 1); //Secondary
-	if(IsValidEntity(weapon))
-	{
-		if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
-		{
-			f_MedigunChargeSave[client] = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel");
-		}
-	}
-	*/
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		TF2_RemoveAllWeapons(client);
@@ -5275,6 +5300,14 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	else
 	{
 		b_VoidPortalOpened[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Avangard's Processing Core-B"))
+	{
+		b_AvangardCoreB[client] = true;
+	}
+	else
+	{
+		b_AvangardCoreB[client] = false;
 	}
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
@@ -5775,9 +5808,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						b_ArmorVisualiser[client] = true;
 					}
 
+					int CostDo;
+
 					if(EntityIsAWeapon)
 					{
-						bool apply = CheckEntitySlotIndex(info.Index, slot, entity);
+						ItemCost(client, item, CostDo);
+						bool apply = CheckEntitySlotIndex(info.Index, slot, entity, CostDo);
 						
 						if(apply)
 						{
@@ -5806,7 +5842,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 							}
 						}
 
-						apply = CheckEntitySlotIndex(info.Index2, slot, entity);
+						apply = CheckEntitySlotIndex(info.Index2, slot, entity, CostDo);
 						
 						if(apply)
 						{
@@ -5996,6 +6032,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Hunting_Rifle(client, entity);
 		Weapon_Anti_Material_Rifle_Deploy(client, entity);
 		Walter_Enable(client, entity);
+		Enable_CastleBreakerWeapon(client, entity);
 	}
 
 	return entity;
@@ -6620,16 +6657,16 @@ bool Store_CheckEntitySlotIndex(int index, int entity)
 	char classname[64];
 	GetEntityClassname(entity, classname, sizeof(classname));
 	int slot = TF2_GetClassnameSlot(classname);
-	return CheckEntitySlotIndex(index, slot, entity);
+	return CheckEntitySlotIndex(index, slot, entity, 1);
 }
 
-static bool CheckEntitySlotIndex(int index, int slot, int entity)
+static bool CheckEntitySlotIndex(int index, int slot, int entity, int costOfUpgrade)
 {
 	switch(index)
 	{
 		case 0, 1, 2:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 			
 			if(index == slot && !i_IsWandWeapon[entity] && !i_IsWrench[entity])
@@ -6637,7 +6674,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		}
 		case 6:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 			
 			if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity] && !i_IsWrench[entity]))
@@ -6645,7 +6682,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		}
 		case 7:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 			
 			if(slot == TFWeaponSlot_Primary || slot == TFWeaponSlot_Secondary)
@@ -6653,7 +6690,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		}
 		case 8:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 			
 			if(i_IsWandWeapon[entity])
@@ -6661,7 +6698,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		}
 		case 9:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 			
 			if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity]))
@@ -6673,7 +6710,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		}
 		case 11:
 		{
-			if(i_IsAloneWeapon[entity])
+			if(i_IsAloneWeapon[entity] && costOfUpgrade != 0)
 				return false;
 
 			if(i_IsSupportWeapon[entity])

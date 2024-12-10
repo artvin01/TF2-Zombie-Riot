@@ -94,7 +94,7 @@ public void Wrathful_Blade_ResetAll()
 #define SND_WRATHSTRIKE_SMASH_2			")mvm/giant_soldier/giant_soldier_explode.wav"
 #define SND_WRATHSTRIKE_SWING			")misc/halloween/strongman_fast_whoosh_01.wav"
 
-#define FURY_AURA						"burningplayer_red"
+#define FURY_AURA						"burningplayer_corpse"
 #define FURY_RINGS						"heavy_ring_of_fire"
 #define WRATH_OBLITERATED				"hammer_impact_button_dust"
 

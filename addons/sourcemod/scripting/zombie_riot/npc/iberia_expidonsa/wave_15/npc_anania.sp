@@ -388,5 +388,5 @@ void IberiaMoraleGivingInternal(int shielder, int victim)
 {
 	CClotBody npc = view_as<CClotBody>(shielder);
 	npc.m_flNextRangedSpecialAttack = FAR_FUTURE;
-	GiveEntityMoraleBoost(shielder, victim, f_MoraleAddAnania[shielder]);
+	GiveEntityMoraleBoost(victim, f_MoraleAddAnania[shielder]);
 }

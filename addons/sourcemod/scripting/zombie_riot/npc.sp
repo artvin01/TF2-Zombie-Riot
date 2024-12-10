@@ -564,6 +564,67 @@ void NPC_ConfigSetup()
 	IberiaDeathMarker_OnMapStart_NPC();
 	Iberia_inqusitor_irene_OnMapStart_NPC();
 
+//Victorian Raid
+//wave 1~15
+	Victoria_Batter_OnMapStart_NPC();
+	Victorian_Charger_OnMapStart_NPC();
+	Victorian_Teslar_OnMapStart_NPC();
+	VictorianBallista_OnMapStart_NPC();
+	VictorianVanguard_OnMapStart_NPC();
+	VictorianSupplier_OnMapStart_NPC();
+	VictorianIgniter_OnMapStart_NPC();
+	VictorianGrenadier_OnMapStart_NPC();
+	VictorianSquadleader_OnMapStart_NPC();
+	VictorianSignaller_OnMapStart_NPC();
+	
+//wave 16~30
+	VictorianHumbee_MapStart();
+	VictorianShotgunner_OnMapStart_NPC();
+	Bulldozer_OnMapStart_NPC();
+	VictorianHardener_OnMapStart_NPC();
+	VictorianRaider_OnMapStart_NPC();
+	Zapper_OnMapStart_NPC();
+	VictorianPayback_OnMapStart_NPC();
+	Blocker_OnMapStart_NPC();
+	VictoriaDestructor_Precache();
+	VictorianIronShield_OnMapStart_NPC();
+	Aviator_OnMapStart_NPC();
+	
+//wave 31~45
+	Victoria_BaseBreaker_OnMapStart_NPC();
+	VictoriaAntiarmorInfantry_OnMapStart_NPC();
+	VictoriaAssulter_OnMapStart_NPC();
+	VictorianMechafist_OnMapStart_NPC();
+	VictorianBooster_OnMapStart_NPC();
+	VictoriaScorcher_OnMapStart_NPC();
+	VictoriaMowdown_OnMapStart_NPC();
+	VictoriaMortar_OnMapStart_NPC();
+	VictoriaBreachcart_MapStart();
+	VictoriaBombcart_Precache();
+	VictoriaBigpipe_OnMapStart_NPC();
+	VictoriaHarbringer_OnMapStart_NPC();
+	VictoriaBirdeye_OnMapStart_NPC();
+
+//wave 46~60
+	VictorianCaffeinator_OnMapStart_NPC();
+	VictorianMechanist_as_OnMapStart_NPC();
+	VictorianOfflineAvangard_MapStart();
+	VictorianWelder_OnMapStart_NPC();
+	VIctorianTanker_OnMapStart_NPC();
+	VictorianPulverizer_OnMapStart_NPC();
+	VIctorianAmbusher_OnMapStart_NPC();
+	VictoriaTank_MapStart();
+	VictoriaTaser_OnMapStart_NPC();
+	VictoriaRadiomast_OnMapStart_NPC();
+	VictoriaRepair_OnMapStart_NPC();
+	Victorian_Radioguard_OnMapStart_NPC();
+
+//raid
+	Atomizer_OnMapStart_NPC();
+	Huscarls_OnMapStart_NPC();
+	Harrison_OnMapStart_NPC();
+	Castellan_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -716,6 +777,56 @@ void NPC_ConfigSetup()
 	PetrisBaron_OnMapStart_NPC();
 	Sphynx_OnMapStart_NPC();
 	ZombineSurvival_OnMapStart_NPC();
+
+	// Matrix
+	AgentAlan_OnMapStart_NPC();
+	AgentAlexander_OnMapStart_NPC();
+	AgentChase_OnMapStart_NPC();
+	AgentDave_OnMapStart_NPC();
+	AgentGraham_OnMapStart_NPC();
+	AgentJames_OnMapStart_NPC();
+	AgentJohn_OnMapStart_NPC();
+	AgentSteve_OnMapStart_NPC();
+	AgentEric_OnMapStart_NPC();
+	AgentJack_OnMapStart_NPC();
+	AgentJim_OnMapStart_NPC();
+	AgentJosh_OnMapStart_NPC();
+	AgentKenneth_OnMapStart_NPC();
+	AgentPaul_OnMapStart_NPC();
+	AgentTyler_OnMapStart_NPC();
+	AgentWayne_OnMapStart_NPC();
+	Merovingian_OnMapStart_NPC();
+	AgentBen_OnMapStart_NPC();
+	AgentChad_OnMapStart_NPC();
+	AgentChris_OnMapStart_NPC();
+	AgentDick_OnMapStart_NPC();
+	AgentIan_OnMapStart_NPC();
+	AgentJackson_OnMapStart_NPC();
+	AgentMike_OnMapStart_NPC();
+	AgentSam_OnMapStart_NPC();
+	AgentZack_OnMapStart_NPC();
+	AgentConnor_OnMapStart_NPC();
+	AgentHenry_OnMapStart_NPC();
+	AgentJeremy_OnMapStart_NPC();
+	AgentJones_OnMapStart_NPC();
+	AgentKurt_OnMapStart_NPC();
+	AgentLogan_OnMapStart_NPC();
+	AgentRoss_OnMapStart_NPC();
+	AgentSpencer_OnMapStart_NPC();
+	AgentTodd_OnMapStart_NPC();
+
+	//Matrix Raids
+	AgentJohnson_OnMapStart_NPC();
+	AgentThompson_OnMapStart_NPC();
+	Twin1_OnMapStart_NPC();
+	AgentSmith_OnMapStart_NPC();
+	
+
+	VictorianFactory_MapStart();
+	VictorianDroneFragments_MapStart();
+	VictorianDroneAnvil_MapStart();
+	Victorian_Tacticalunit_OnMapStart_NPC();
+	Victorian_TacticalProtector_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -940,6 +1051,7 @@ void NPCDeath(int entity)
 			}
 		}
 		CurrentCash += GiveMoney;
+		Waves_AddCashGivenThisWaveViaKills(CurrentCash);
 	}
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
@@ -1627,3 +1739,109 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
+
+//Victoria
+//Wave 1~15
+#include "zombie_riot/npc/victoria/npc_batter.sp"
+#include "zombie_riot/npc/victoria/npc_charger.sp"
+#include "zombie_riot/npc/victoria/npc_teslar.sp"
+#include "zombie_riot/npc/victoria/npc_victorian_vanguard.sp"
+#include "zombie_riot/npc/victoria/npc_supplier.sp"
+#include "zombie_riot/npc/victoria/npc_ballista.sp"
+#include "zombie_riot/npc/victoria/npc_igniter.sp"
+#include "zombie_riot/npc/victoria/npc_grenadier.sp"
+#include "zombie_riot/npc/victoria/npc_squadleader.sp"
+#include "zombie_riot/npc/victoria/npc_signaller.sp"
+
+//wave 16~30
+#include "zombie_riot/npc/victoria/npc_humbee.sp"
+#include "zombie_riot/npc/victoria/npc_shotgunner.sp"
+#include "zombie_riot/npc/victoria/npc_bulldozer.sp"
+#include "zombie_riot/npc/victoria/npc_hardener.sp"
+#include "zombie_riot/npc/victoria/npc_raider.sp"
+#include "zombie_riot/npc/victoria/npc_zapper.sp"
+#include "zombie_riot/npc/victoria/npc_payback.sp"
+#include "zombie_riot/npc/victoria/npc_blocker.sp"
+#include "zombie_riot/npc/victoria/npc_destructor.sp"
+#include "zombie_riot/npc/victoria/npc_ironshield.sp"
+#include "zombie_riot/npc/victoria/npc_aviator.sp"
+
+//wave 31~45
+#include "zombie_riot/npc/victoria/npc_basebreaker.sp"
+#include "zombie_riot/npc/victoria/npc_booster.sp"
+#include "zombie_riot/npc/victoria/npc_scorcher.sp"
+#include "zombie_riot/npc/victoria/npc_mowdown.sp"
+#include "zombie_riot/npc/victoria/npc_mechafist.sp"
+#include "zombie_riot/npc/victoria/npc_assaulter.sp"
+#include "zombie_riot/npc/victoria/npc_antiarmor_infantry.sp"
+#include "zombie_riot/npc/victoria/npc_mortar.sp"
+#include "zombie_riot/npc/victoria/npc_bombcart.sp"
+#include "zombie_riot/npc/victoria/npc_breachcart.sp"
+#include "zombie_riot/npc/victoria/npc_birdeye.sp"
+#include "zombie_riot/npc/victoria/npc_harbringer.sp"
+#include "zombie_riot/npc/victoria/npc_bigpipe.sp"
+
+//wave 46~60
+#include "zombie_riot/npc/victoria/npc_caffeinator.sp"
+#include "zombie_riot/npc/victoria/npc_welder.sp"
+#include "zombie_riot/npc/victoria/npc_mechanist.sp"
+#include "zombie_riot/npc/victoria/npc_avangard.sp"
+#include "zombie_riot/npc/victoria/npc_tanker.sp"
+#include "zombie_riot/npc/victoria/npc_pulverizer.sp"
+#include "zombie_riot/npc/victoria/npc_ambusher.sp"
+#include "zombie_riot/npc/victoria/npc_taser.sp"
+#include "zombie_riot/npc/victoria/npc_victorian_tank.sp"
+#include "zombie_riot/npc/victoria/npc_victoria_radiomast.sp"
+#include "zombie_riot/npc/victoria/npc_radioguard.sp"
+#include "zombie_riot/npc/victoria/npc_radio_repair.sp"
+
+#include "zombie_riot/npc/victoria/npc_victorian_moru.sp"
+#include "zombie_riot/npc/victoria/npc_victorian_fragments.sp"
+#include "zombie_riot/npc/victoria/npc_victorian_factory.sp"
+#include "zombie_riot/npc/victoria/npc_victoria_tacticalprotector.sp"
+#include "zombie_riot/npc/victoria/npc_victoria_tacticalunit.sp"
+//raidbosses
+#include "zombie_riot/npc/raidmode_bosses/victoria/npc_the_atomizer.sp"
+#include "zombie_riot/npc/raidmode_bosses/victoria/npc_the_wall.sp"
+#include "zombie_riot/npc/raidmode_bosses/victoria/npc_harrison.sp"
+#include "zombie_riot/npc/raidmode_bosses/victoria/npc_castellan.sp"
+
+#include "zombie_riot/npc/matrix/15/npc_agentalan.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentalexander.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentchase.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentdave.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentgraham.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentjames.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentjohn.sp"
+#include "zombie_riot/npc/matrix/15/npc_agentsteve.sp"
+#include "zombie_riot/npc/matrix/30/npc_agenteric.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentjack.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentjim.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentjosh.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentkenneth.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentpaul.sp"
+#include "zombie_riot/npc/matrix/30/npc_agenttyler.sp"
+#include "zombie_riot/npc/matrix/30/npc_agentwayne.sp"
+#include "zombie_riot/npc/matrix/30/npc_merovingian.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentben.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentchad.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentchris.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentdick.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentian.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentjackson.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentmike.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentsam.sp"
+#include "zombie_riot/npc/matrix/45/npc_agentzack.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentconnor.sp"
+#include "zombie_riot/npc/matrix/60/npc_agenthenry.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentjeremy.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentjones.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentkurt.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentlogan.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentross.sp"
+#include "zombie_riot/npc/matrix/60/npc_agentspencer.sp"
+#include "zombie_riot/npc/matrix/60/npc_agenttodd.sp"
+#include "zombie_riot/npc/matrix/raids/npc_agentjohnson.sp"
+#include "zombie_riot/npc/matrix/raids/npc_agentthompson.sp"
+#include "zombie_riot/npc/matrix/raids/npc_twins.sp"
+#include "zombie_riot/npc/matrix/raids/npc_agent_smith.sp"

@@ -2108,6 +2108,14 @@
 		"nl"		"Nu dat je een wapen hebt ben je voorbereid.\nKoop betere wapens en upgrades in latere golven en probeer tot het einde te overleven!\nVerdere hulp vind je onder de winkel bij ''help?''\nTeamwork is de sleutel voor victorie!"
 		"chi"       "现在你已经拥有了武器，你准备好了吗？\n去买更好的枪和升级你的武器，生存到最后!\n更多的帮助可以在“帮助”中查看\n团队合作是胜利的关键!"
 	}
+	"Tutorial Show Hint Perk Machine"
+	{
+		"en"		"Use this machine to get a tempomary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
+	}
+	"Tutorial Show Hint Pack a Punch"
+	{
+		"en"		"Use this machine with your holding weapon to upgrade it with a cost!\nNot all weapons can be upgraded!"
+	}
 	"Is already at full hp"
 	{
 		"en"		"is already at full hp."
@@ -2453,6 +2461,21 @@
 		"fr"		"Ceci est la dernière vague. Préparez-vous."
 		"ru"		"Это последняя волна, приготовьтесь."
 		"chi"		"这是最后一波，做好准备。"
+	}
+	"Tower_Message"
+	{
+		"en"		"You see a giant radiotower at the distance."
+		"ko"		"저멀리 거대한 라디오 타워가 보입니다."
+	}
+	"Victoria_Help_Message"
+	{
+		"en"		"Ziberian Guerillas are here to help."
+		"ko"		"지베리안 게릴라의 지원이 도착했습니다."
+	}
+	"RadioTower_here_Message"
+	{
+		"en"		"Radiotower is here, Prepare."
+		"ko"		"라디오 타워가 여기있습니다, 전투 준비."
 	}
 	"Void_Help_Message"
 	{
@@ -3888,6 +3911,18 @@
 	{
 		"en"	"Enable Visible Downs"
 	}
+	"Enable Visual Clutter"
+	{
+		"en"	"Enable Visual Clutter"
+	}
+	"Enable Visual Clutter Desc"
+	{
+		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nIf you love it, enable it again."
+	}
+	"Enable Numeral Armor"
+	{
+		"en"	"Enable Numeral Armor"
+	}
 	"Enable Ammobox Count Perma"
 	{
 		"en"	"Enable Ammobox Count Perma"
@@ -4008,8 +4043,12 @@
 	{
 		"en"	"Crowbar"
 	}
+	"Victoria Raid Desc"
+	{
+		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
+	}
 	"Ability already Active"
 	{
-		"en"	"Ability is currently active"
+		"en"	"Ability already Active"
 	}
 }

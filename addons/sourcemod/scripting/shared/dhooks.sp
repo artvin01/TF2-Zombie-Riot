@@ -99,6 +99,11 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
+
+	//Borrowed from Mikusch, thanks!
+	//https://github.com/Mikusch/MannVsMann/blob/db821cd173a53aad4cc499babbcbd118f4cea234/addons/sourcemod/scripting/mannvsmann/dhooks.sp#L315
+	//
+	DHook_CreateDetour(gamedata, "CTFGameRules::IsQuickBuildTime", DHookCallback_CTFGameRules_IsQuickBuildTime_Pre);
 #endif
 
 #if !defined RTS
@@ -1849,12 +1854,15 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 
 			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
 			
-			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 			SetGlobalTransTarget(owner);
 			
 			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
+			if(ammo_amount_left > 0)
+				ReduceMediFluidCost(owner, ammo_amount_left);
+				
+			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			SetAmmo(owner, 21, new_ammo);
 			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
 			Increaced_Overall_damage_Low[target] = GameTime + 15.0;
@@ -2280,4 +2288,12 @@ int SetEntityTransmitState(int entity, int newFlags)
 	SetEdictFlags(entity, flags);
 
 	return flags;
+}
+
+
+
+static MRESReturn DHookCallback_CTFGameRules_IsQuickBuildTime_Pre(DHookReturn ret)
+{
+	ret.Value = false;
+	return MRES_Supercede;
 }

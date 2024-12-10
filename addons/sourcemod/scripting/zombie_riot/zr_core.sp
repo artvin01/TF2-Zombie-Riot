@@ -207,7 +207,8 @@ enum
 	WEAPON_LOGOS = 127,
 	WEAPON_WALTER = 128,
 	WEAPON_OLDINFINITYBLADE = 129,
-	WEAPON_NYMPH = 130
+	WEAPON_NYMPH = 130,
+	WEAPON_CASTLEBREAKER = 131
 }
 
 enum
@@ -230,6 +231,8 @@ enum
 	Type_Ruina,
 	Type_IberiaExpiAlliance,
 	Type_WhiteflowerSpecial,
+	Type_Victoria,
+	Type_Matrix,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -251,6 +254,8 @@ ConVar zr_waitingtime;
 ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
 ConVar zr_raidmultihp;
+ConVar zr_multi_maxcap;
+ConVar zr_multi_multiplier;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -567,6 +572,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/wand/weapon_logos.sp"
 #include "zombie_riot/custom/weapon_walter.sp"
 #include "zombie_riot/custom/wand/weapon_wand_nymph.sp"
+#include "zombie_riot/custom/weapon_castlebreaker.sp"
 
 void ZR_PluginLoad()
 {
@@ -826,6 +832,7 @@ void ZR_MapStart()
 	Yakuza_MapStart();
 	ResetMapStartSkadiWeapon();
 	Logos_MapStart();
+	ResetMapStartCastleBreakerWeapon();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -2389,21 +2396,21 @@ void ClientSaveUber(int client)
 		{
 			case 411:
 			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[entity])
 				{
 					f_MedigunChargeSave[client][0] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
 				}
 			}
 			case 211:
 			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[entity])
 				{
 					f_MedigunChargeSave[client][1] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
 				}
 			}
 			case 998:
 			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[entity])
 				{
 					f_MedigunChargeSave[client][2] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
 				}
@@ -2422,7 +2429,7 @@ void ClientApplyMedigunUber(int client)
 		{
 			case 411:
 			{
-				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[weapon])
 				{
 					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
 					f_MedigunChargeSave[client][0] = 0.0;
@@ -2430,7 +2437,7 @@ void ClientApplyMedigunUber(int client)
 			}
 			case 211:
 			{
-				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[weapon])
 				{
 					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][1]);
 					f_MedigunChargeSave[client][1] = 0.0;
@@ -2438,7 +2445,7 @@ void ClientApplyMedigunUber(int client)
 			}
 			case 998:
 			{
-				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				if(b_IsAMedigun[weapon])
 				{
 					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][2]);
 					f_MedigunChargeSave[client][2] = 0.0;

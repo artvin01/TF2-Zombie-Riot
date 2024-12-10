@@ -1046,7 +1046,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	//LogEntryInvicibleTest(victim, attacker, damage, 2);
 	// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
-	if(b_NpcIsInvulnerable[victim] && damage < 9999999.9)
+	if(b_NpcIsInvulnerable[victim]/* && damage < 9999999.9*/)
 	{
 		damage = 0.0;
 		Damageaftercalc = 0.0;
@@ -1076,7 +1076,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Handled;
 		//nothing happens.
 	}
-	else if(damage < 9999999.9)
+	else/* if(damage < 9999999.9)*/
 	{
 		if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		{
@@ -2097,6 +2097,12 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_HussarBuff[npc] > GameTime)
 		return true;
+	else if(f_SquadLeaderBuff[npc] > GameTime)
+		return true;
+	else if(f_VictorianCallToArms[npc] > GameTime)
+		return true;
+	else if(f_CaffeinatorBuff[npc] > GameTime)
+		return true;
 	else if(f_PernellBuff[npc])
 		return true;
 	else if(f_PotionShrinkEffect[npc] > GameTime)
@@ -2366,6 +2372,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			WrathfulBlade_OnKill(attacker, victim);
 		}
+		case WEAPON_CASTLEBREAKER:
+		{
+			CastleBreakerCashOnKill(attacker);
+		}
 	}
 }
 #endif
@@ -2440,7 +2450,7 @@ void GiveProgressDelay(float Time)
 #if defined ZR
 int MaxNpcEnemyAllowed()
 {
-	return NPC_HARD_LIMIT;
+	return RoundToNearest(float(NPC_HARD_LIMIT) * zr_multi_maxcap.FloatValue);
 }
 
 float MaxEnemyMulti()

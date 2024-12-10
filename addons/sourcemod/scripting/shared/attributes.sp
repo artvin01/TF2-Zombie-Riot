@@ -13,7 +13,9 @@ enum
 	Attrib_OverrideExplodeDmgRadiusFalloff = 4029,
 	Attrib_CritChance = 4030,
 	Attrib_ReviveTimeCut = 4033,
-	Attrib_ExtendExtraCashGain = 4034
+	Attrib_ExtendExtraCashGain = 4034,
+	Attrib_ReduceMedifluidCost = 4035,
+	Attrib_ReduceMetalCost = 4036
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -301,7 +303,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 						int entity, i;
 						while(TF2_GetItem(client, entity, i))
 						{
-							if(b_IsAMedigun[entity])	//if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+							if(b_IsAMedigun[entity])
 								list.Push(entity);
 						}
 

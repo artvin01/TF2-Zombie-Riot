@@ -4100,20 +4100,26 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		bool medic = npc.m_iClassRole == Cit_Medic && npc.m_iHasPerk == npc.m_iGunType;
 		
-		if(ally <= MaxClients)
+		float VecAlly[3]; WorldSpaceCenter(ally, VecAlly );
+		float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);	
+		float flDistanceToTarget = GetVectorDistance(VecAlly, Vecself, true);
+		if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.8))
 		{
-			if(dieingstate[ally] > 0)
+			if(ally <= MaxClients)
 			{
-				ReviveClientFromOrToEntity(ally, npc.index, _, medic ? 0 : 1);
+				if(dieingstate[ally] > 0)
+				{
+					ReviveClientFromOrToEntity(ally, npc.index, _, medic ? 0 : 1);
+					isReviving = true;
+				}
+			}
+			else if(Citizen_ThatIsDowned(ally))
+			{
+				int speed = medic ? 6 : 3;
+				Rogue_ReviveSpeed(speed);
+				Citizen_ReviveTicks(ally, speed, 0);
 				isReviving = true;
 			}
-		}
-		else if(Citizen_ThatIsDowned(ally))
-		{
-			int speed = medic ? 6 : 3;
-			Rogue_ReviveSpeed(speed);
-			Citizen_ReviveTicks(ally, speed, 0);
-			isReviving = true;
 		}
 	}
 
@@ -4123,7 +4129,7 @@ public void Citizen_ClotThink(int iNPC)
 		if(npc.m_flidle_talk == 0.0)
 			npc.m_flidle_talk = gameTime + 5.0 + (GetURandomFloat() * 5.0) + (float(npc.m_iSeed) / 214748364.7);
 		
-			/*
+		/*
 		if(isReviving)
 		{
 			if(npc.m_iGunType != Cit_Melee)

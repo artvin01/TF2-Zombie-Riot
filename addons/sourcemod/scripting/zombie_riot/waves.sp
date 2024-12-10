@@ -55,6 +55,7 @@ enum struct Round
 {
 	int Xp;
 	int Cash;
+	int CashShould;
 	int AmmoBoxExtra;
 	bool MapSetupRelay;
 	bool Custom_Refresh_Npc_Store;
@@ -737,6 +738,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	Rounds = new ArrayList(sizeof(Round));
 	
 	Waves_ClearWaves();
+	Waves_ResetCashGiveWaveEnd();
 	
 	char buffer[128], plugin[64];
 
@@ -902,6 +904,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 					round.Waves.SetArray(i, wave);
 				}
 
+				round.CashShould = round.Cash;
 				round.Cash = 0;
 			}
 		}
@@ -1505,6 +1508,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			Citizen_WaveStart();
 			ExcuteRelay("zr_wavedone");
+			Waves_ResetCashGiveWaveEnd();
 			CurrentRound++;
 			CurrentWave = -1;
 			//This ensures no invalid spawn happens.
@@ -3144,6 +3148,16 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		{
 			CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
 		}
+		else
+		{
+			//Thisi s responseable for auto balance scaling for raids.
+			int ExtraCashGive = round.CashShould - Waves_CashGainedTotalThisWave();
+			if(ExtraCashGive > 0)
+			{
+				CurrentCash += ExtraCashGive;
+			}
+		}
+		Waves_ResetCashGiveWaveEnd();
 		bool music_stop = false;
 		if(round.music_round_outro[0])
 		{
@@ -3358,5 +3372,18 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 	return false;
 }
 */
+int CashGainedTotal;
+void Waves_ResetCashGiveWaveEnd()
+{
+	CashGainedTotal = 0;
+}
+void Waves_AddCashGivenThisWaveViaKills(int cash)
+{
+	CashGainedTotal += cash;
+}
+int Waves_CashGainedTotalThisWave()
+{
+	return CashGainedTotal;
+}
 
 #include "zombie_riot/modifiers.sp"
