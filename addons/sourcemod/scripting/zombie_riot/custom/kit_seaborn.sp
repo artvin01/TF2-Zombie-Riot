@@ -331,30 +331,35 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 	if(ammo > 4)
 	{
 		StartPlayerOnlyLagComp(client, true);
-		int target = GetClientPointVisible(client, 150.0 , false, false,_,1);
+		float pos[3];
+		int target = GetClientPointVisiblePlayersNPCs(client, 120.0, pos, false);
 		EndPlayerOnlyLagComp(client);
 
 		int AllowHealing = 0;
-		if(IsValidClient(target) && dieingstate[target] == 0)
+		if(IsValidEntity(target))
 		{
-			AllowHealing = 1;
-		}
-		if(Citizen_IsIt(target))
-		{
-			if(!Citizen_ThatIsDowned(target))
+			if(IsValidClient(target))
+			{
+				if(dieingstate[target] == 0)
+					AllowHealing = 1;
+			}
+			else if(Citizen_IsIt(target))
+			{
+				if(!Citizen_ThatIsDowned(target))
+					AllowHealing = 2;
+			}
+			else if(!b_NpcHasDied[target])
+			{
 				AllowHealing = 2;
-		}
-		else if(!b_NpcHasDied[target])
-		{
-			AllowHealing = 2;
+			}
 		}
 		
 		if(AllowHealing > 0)
 		{
 			SetGlobalTransTarget(client);
 
-			int health = GetEntProp(target, Prop_Send, "m_iHealth");
-			int maxHealth = SDKCall_GetMaxHealth(target);
+			int health = GetEntProp(target, Prop_Data, "m_iHealth");
+			int maxHealth = ReturnEntityMaxHealth(target);
 			if(health < maxHealth)
 			{
 				int healing = maxHealth - health;
