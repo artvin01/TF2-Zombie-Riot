@@ -1730,7 +1730,6 @@ static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
                 pack2.WriteCell(EntIndexToEntRef(enemy));
             }
 		}
-		npc.FaceTowards(vecTarget, 99999.0);
 	}
 	return Plugin_Stop;
 }
