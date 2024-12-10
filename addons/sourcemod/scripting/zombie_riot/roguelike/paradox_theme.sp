@@ -82,7 +82,7 @@ void Rogue_Paradox_SpawnCooldown(float &time)
 void Rogue_Paradox_ReviveSpeed(int &amount)
 {
 	if(ExtremeHeat)
-		amount /= 2;
+		amount = RoundToNearest(float(amount) * 1.25);
 }
 
 bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
@@ -188,7 +188,7 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
-				case WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SEABORNMELEE:
+				case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SEABORNMELEE, WEAPON_SKADI:
 				{
 					seaborn = true;
 					break;

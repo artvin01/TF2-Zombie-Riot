@@ -109,7 +109,7 @@ bool b_Crystal_active;
 static bool b_Crystal_Thrown;
 static int i_crystal_index;
 
-static bool b_angered_twice[MAXENTITIES];
+
 
 //static float fl_divine_intervention_retry;
 
@@ -217,7 +217,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 
 static any ClotSummon(int client, const float vecPos[3], const float vecAng[3], int team, const char[] data)
 {
-	return Raidboss_Donnerkrieg(client, vecPos, vecAng, team, data);
+	return Raidboss_Donnerkrieg(vecPos, vecAng, team, data);
 }
 methodmap Raidboss_Donnerkrieg < CClotBody
 {
@@ -270,9 +270,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public Raidboss_Donnerkrieg(int client, const float vecPos[3], const float vecAng[3], int ally, const char[] data)
 	{
@@ -556,8 +554,7 @@ static void Calculate_Combined_Health(Raidboss_Donnerkrieg npc)
 	}
 }*/
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);

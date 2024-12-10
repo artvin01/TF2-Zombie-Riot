@@ -55,9 +55,9 @@ void DesertAtilla_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DesertAtilla(client, vecPos, vecAng, ally);
+	return DesertAtilla(vecPos, vecAng, team);
 }
 methodmap DesertAtilla < CClotBody
 {
@@ -98,7 +98,7 @@ methodmap DesertAtilla < CClotBody
 	}
 	
 	
-	public DesertAtilla(int client, float vecPos[3], float vecAng[3], int ally)
+	public DesertAtilla(float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertAtilla npc = view_as<DesertAtilla>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "700", ally));
 		
@@ -119,9 +119,7 @@ methodmap DesertAtilla < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(DesertAtilla_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 

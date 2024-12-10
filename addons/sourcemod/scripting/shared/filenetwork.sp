@@ -66,10 +66,20 @@ void FileNetwork_ClientPutInServer(int client)
 {
 	FileNetwork_ClientDisconnect(client);
 #if !defined UseDownloadTable
-	SendNextFile(client);
+	//give 3 seconds of breathing
+	CreateTimer(3.0, Timer_FilenetworkBegin, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 #endif
 }
 
+public Action Timer_FilenetworkBegin(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidClient(client))
+		return Plugin_Stop;
+
+	SendNextFile(client);
+	return Plugin_Stop;
+}
 void FileNetwork_ClientDisconnect(int client)
 {
 	StartedQueue[client] = false;
@@ -89,9 +99,14 @@ void FileNetwork_ConfigSetup(KeyValues map)
 
 	KeyValues kv = new KeyValues("Downloads");
 	kv.ImportFromFile(buffer);
-
 	
 #if defined RPG
+//This adds another ''//'' for no reason.
+/*
+	2 addons\sourcemod\configs\rpg_fortress\downloads.cfg
+	3 addons\sourcemod\configs\rpg_fortress\\downloads.cfg
+
+*/
 	RPG_BuildPath(buffer, sizeof(buffer), "downloads");
 	KeyValues enabled = new KeyValues("Packages");
 	enabled.ImportFromFile(buffer);
@@ -106,7 +121,6 @@ void FileNetwork_ConfigSetup(KeyValues map)
 
 	if(!enabled)
 	{
-#if defined ZR
 		zr_downloadconfig.GetString(buffer, sizeof(buffer));
 		if(buffer[0])
 		{
@@ -114,14 +128,13 @@ void FileNetwork_ConfigSetup(KeyValues map)
 
 			enabled = new KeyValues("Packages");
 			enabled.ImportFromFile(buffer);
-			RequestFrame(DeleteHandle, enabled);
 		}
 		else
 		{
 			enabled = kv;
 			enabled.JumpToKey("Default");
 		}
-#endif
+
 	}
 #endif
 
@@ -337,7 +350,7 @@ static void SendNextFile(int client)
 		Downloading[client] = false;
 
 		PrintToConsole(client, "---");
-		PrintToConsole(client, "[ZR] Finished Downloading/Verifying Files! You will hear and see everything as intended now.");
+		PrintToConsole(client, "[ZR/RPG] Finished Downloading/Verifying Files! You will hear and see everything as intended now.");
 		PrintToConsole(client, "---");
 	}
 }
@@ -380,7 +393,7 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 		else
 		{
 			// So the client doesn't freak out about existing CreateFragmentsFromFile spam
-			PrintToConsole(client, "[ZR] Downloading '%s'", download);
+			PrintToConsole(client, "[ZR/RPG] Downloading '%s'", download);
 			if(FileNet_SendFile(client, download, FileNetwork_SendResults, pack))
 				return;
 			
@@ -405,7 +418,7 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			File filec = OpenFile(filecheck, "wt");
 			if(filec)
 			{
-				filec.WriteLine("Used for file checks for ZR");
+				filec.WriteLine("Verify");
 				filec.Close();
 				if(!FileNet_SendFile(client, filecheck, FileNetwork_SendFileCheck))
 				{

@@ -64,9 +64,9 @@ void Soldier_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Soldier(client, vecPos, vecAng, ally);
+	return Soldier(vecPos, vecAng, team);
 }
 methodmap Soldier < CClotBody
 {
@@ -113,16 +113,12 @@ methodmap Soldier < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, 80, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -131,7 +127,7 @@ methodmap Soldier < CClotBody
 		
 	}
 	
-	public Soldier(int client, float vecPos[3], float vecAng[3], int ally)
+	public Soldier(float vecPos[3], float vecAng[3], int ally)
 	{
 		Soldier npc = view_as<Soldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2000", ally));
 		
@@ -182,8 +178,7 @@ methodmap Soldier < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Soldier_ClotThink(int iNPC)
 {
 	Soldier npc = view_as<Soldier>(iNPC);

@@ -54,9 +54,9 @@ void HeavyGambler_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeavyGambler(client, vecPos, vecAng, ally);
+	return HeavyGambler(client, vecPos, vecAng, team);
 }
 
 methodmap HeavyGambler < CClotBody
@@ -93,6 +93,7 @@ methodmap HeavyGambler < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.SetActivity("ACT_MP_STAND_MELEE");
 		KillFeed_SetKillIcon(npc.index, "eviction_notice");
+		i_NpcWeight[npc.index] = 2;
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -101,7 +102,7 @@ methodmap HeavyGambler < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		f3_SpawnPosition[npc.index] = vecPos;	
+		f3_SpawnPosition[npc.index] = vecPos;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -172,7 +173,7 @@ static void ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 0.6), DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 0.6), DMG_CLUB, _, _, vecHit);
 						CasinoShared_RobMoney(npc, target, 10);
 						CasinoShared_StealNearbyItems(npc, vecHit);
 					}
@@ -203,6 +204,7 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 		npc.SetActivity("ACT_MP_RUN_MELEE");
+		npc.m_bisWalking = true;
 
 		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
@@ -214,7 +216,7 @@ static void ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", _, _, _, 2.0);
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = 0.25;
+				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.5;
 				npc.m_flNextMeleeAttack = gameTime + 0.45;
 			}

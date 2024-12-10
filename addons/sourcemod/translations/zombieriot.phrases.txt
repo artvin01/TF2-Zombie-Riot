@@ -9,7 +9,7 @@
 		"de"		"Artvin: NPC und Spielmodus entwickler\nBatfoxkid: Spielmodus Entwickler\nPelipoika: Original NPC basis und hilfe\nAlex: Waffen Plugins und überall plugin hilfe\nSuza: Waffe und etwas Basismaterial geholfen\nMikusch früher spieldatei helfer\nKenzzer: NPC hilfe und bug fix hilfe\nAlex Turtle, Stranger, Syko: Map Hilfe\nCrusty Model/Animationen\njDeivid: Alternative Wellen\nGMOD Zombie überleben Entwickler: Musik und Basis konzept von ihnen"
 		"pt"		"Artvin: Desenvolvimento de NPCs e Gameplay\nBatfoxkid: Desenvolvimento de Gameplay\nPelipoika: Base original de NPCs e assistencia\nAlex: Plugin de armas e assistencia no geral\nSuza: Armas e algumas assistencias com a base de stock\nMikusch: Ajudou com a gamedata inicial\nKenzzer: ajudou com NPCs e correções de bugs\nAlex Turtle & Stranger & Syko: Ajudaram no mapa\nCrusty: Modelagem e Animação\nDeivid: Ondas alternativas\nGMOD Zombie Survival Devs: Música e conceito base"
 		"nl"		"Artvin: NPC en Spelmodus Ontwikkeling\nBatfoxkid: Spelmodus Ontwikkeling\nPelipoika: Originele NPC Base en hulp\nAlex: Algemene Plugin en Wapen Plugin Assistentie\nSuza: Wapens en Basis Stock hulp\nMikusch: Vroege SpelData hulp\nKenzzer: Npc hulp en bug fixing hulp\nAlex Turtle & Stranger & Syko: Map assistentie\nCrusty: Modellen/Animaties\njDeivid: Alternatieve Golven\nGMOD Zombie Survival Devs: Muziek en basis concepten van hun"
-		"chi" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: NPC help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them\n中文汉化:蔡徐坤 Q群:962426527"
+		"chi" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: NPC help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them\n中文汉化:蔡徐坤，Snacks"
 	}
 	"Open Store"
 	{
@@ -23,6 +23,10 @@
 		"pt"		"Pressione %%+showscores%% para abrir a loja"
 		"nl"		"Druk %%+showscores%% om de winkel te openen"
 		"chi"		"按下 %%+showscores%% 来打开商店"
+	}
+	"Press To Open Store"
+	{
+		"en"		"%%+showscores%% OPEN STORE MENU"
 	}
 	"Last Alive"
 	{
@@ -92,10 +96,16 @@
 		"nl"		"Krediet: {1} (+{2})"
 		"chi"		"现金: {1} (+{2})"
 	}
+	"Current Skill Points"
+	{
+		"#format"	"{1:d}"
+		"en"		"{green}Current Skillpoints: {1}"
+	}
 	"Credits_Menu_New"
 	{
 		"#format"	"{1:d}"
 		"en"		"Extra Cash: +{1}"
+		"ru"		"Дополнительные кредиты: +{1}"
 		"fr"		"Argent Extra: +{1}"
 		"pt"		"Crédito Extra: +{1}"
 	}
@@ -159,7 +169,7 @@
 		"#format"	"{1:d}"
 		"en"		"Healing Done: {1}"
 		"it"		"Guarigione Compiuta: {1}"
-		"ru"		"Ед. здор. вылечено: {1}"
+		"ru"		"вылечено: {1}"
 		"pl"		"Uleczono: {1}"
 		"es"		"Curación total: {1}"
 		"fr"		"Soins Donnés: {1}"
@@ -254,7 +264,7 @@
 		"en"		"Buy with scrap"
 		"fr"		"Acheter avec Feraille"
 		"pt"		"Comprar com sucata"
-		"ru"		"Куп. за металл"
+		"ru"		"Купить за металл"
 		"nl"		"Koop met scrap"
 		"chi"       "使用废料购买"
 	}
@@ -289,6 +299,10 @@
 		"pt"		"Itens Comprados"
 		"nl"		"Gekochte Artikelen"
 		"chi"       "已购买物品"
+	}
+	"Confirm Loadout"
+	{
+		"en"		"Confirm Loadout"
 	}
 	"N/A"
 	{
@@ -926,16 +940,30 @@
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
 		"chi"       "技能冷却还有 {1} 的时间!"
 	}
+	"Unspeakable Teleport Taunt"
+	{
+		"en"		"Behind you."
+	}
 	"Rusty Ability Blocked"
 	{
 		"en"		"You can't do that right now!"
 		"fr"		"Vous êtes incapable de faire ça maintenant!"
+	}
+	"Not enough charge"
+	{
+		"en"		"Not enough charge."
 	}
 	"Rusty Ability Cooldown"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"Big Shot is on cooldown: {1}"
 		"fr"		"Big Shot se recharge: {1}"
+	}
+	"Crouch for ability"
+	{
+		"en" 		"Crouch to use this ability!"
+		"fr" 		"Accroupissez-vous pour utiliser cette abilité!"
+		"pt"		"Se abaixe pra usar essa habilidade!"
 	}
 	"Wrathful Ability Cooldown"
 	{
@@ -945,10 +973,12 @@
 	"Wrathful Ability Blocked"
 	{
 		"en"		"Infernal Fury cannot be used right now."
+		"chi"		"火愤现在无法被使用。"
 	}
 	"Wrath Strike Fully Charged"
 	{
 		"en"		"WRATH STRIKE IS FULLY CHARGED!"
+		"chi"		"！怒斩已完全蓄力！"
 	}
 	"Magnesis Target Immune to Knockback"
 	{
@@ -990,11 +1020,40 @@
 	{
 		"en"		"Grab target is out of your line of sight."
 	}
-	"Crouch for ability"
+	"Magnesis Target Immune to Knockback"
 	{
-		"en" 		"Crouch to use this ability!"
-		"fr" 		"Accroupissez-vous pour utiliser cette abilité!"
-		"pt"		"Se abaixe pra usar essa habilidade!"
+		"en"		"Grab target is immune to knockback."
+		"chi"		"目标免疫击退"
+	}
+	"Magnesis Target Invulnerable"
+	{
+		"en"		"Grab target is invulnerable."
+		"chi"		"目标无敌"
+	}
+	"Magnesis Target Too Strong"
+	{
+		"en"		"Grab target is too strong."
+		"chi"		"目标太强"
+	}
+	"Magnesis No Target Found"
+	{
+		"en"		"No valid targets within range."
+		"chi"		"未监测到有效目标"
+	}
+	"Magnesis Already Grabbed"
+	{
+		"en"		"That enemy is already being grabbed!"
+		"chi"		"目标已经被抓了！"
+	}
+	"Magnesis Throw Failed"
+	{
+		"en"		"Not enough mana to throw! Target was dropped instead."
+		"chi"		"MP不足！目标已被放下"
+	}
+	"Magnesis Grabbed Too Soon"
+	{
+		"en"		"That enemy was grabbed too recently!"
+		"chi"		"目标最近已经被抓了！ "
 	}
 	"Gamemode Credits"
 	{
@@ -1294,7 +1353,7 @@
 	{
 		"en" 		"Special Zombies Help?"
 		"fr" 		"Aide Zombies Spéciaux?"
-		"ru" 		"Особые зомби?"
+		"ru" 		"Помощь с Особыми зомби?"
 		"de"		"Speziale Zombies Hilfe?"
 		"pt"		"Ajuda com zumbis especiais?"
 		"nl"		"Hulp met speciale zombies?"
@@ -1304,7 +1363,7 @@
 	{
 		"en" 		"Revival Help?"
 		"fr" 		"Aide Résurrection?"
-		"ru" 		"Оживл. игрока?"
+		"ru" 		"Оживление игрока?"
 		"de"		"Wiederbelebungshilfe?"
 		"pt"		"Ajuda com Ressureções?"
 		"nl"		"Hulp met het tot leven brengen?"
@@ -1362,13 +1421,7 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/tp'' To toggle thirdperson.\n''/make_niko'' To toggle niko (This is more of a silly thing the anything)."
-		"fr" 		"''/tp'' pour utiliser la vue à la troisième personne."
-		"ru" 		"''/tp'' для переключения режима от 3-го лица.\n''/make_niko'' для переключения Нико (это скорее глупая вещь, чем что-либо ещё)."
-		"de"		"''/tp'' Umschaltung für Dritte Person."
-		"pt"		"''/tp'' Para ativar modo de 3ª pessoa"
-		"nl"		"''/tp'' Schakelt derde persoon in.\n''/make_niko'' Transformeerd je naar niko (Dit is meer voor genot dan iets anders)."
-		"chi"       "''/tp'' 来切换第三人称 \n''/make_niko'' 来切换成niko模型(重生后生效)"
+		"en" 		"''/tp'' To toggle thirdperson.\n''/me'' To write something above yourself."
 	}
 	"Difficulty Help Explained"
 	{
@@ -1466,8 +1519,8 @@
 	}
 	"Ammobox Tooltip"
 	{
-		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon.\nWill try to fill empty weapons first in your inventory."
-		"fr" 		"Appuyez RELOAD sur la boîte à munitions pour recevoir des munitions pour l'arme que vous tenez.\nLes armes vides auront priorité pour remplissage."
+		"#format"	"{1:d}"
+		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
 	}
 	"Warn Client Ammo None"
 	{
@@ -1649,7 +1702,7 @@
 	{
 		"en" 		"Connect 4"
 		"fr" 		"Puissance 4"
-		"ru" 		"Собери 4"
+		"ru" 		"Соедени 4"
 		"de"		"Verbinden 4"
 		"pt"		"Conecte-4"
 		"nl"		"Connect Vier"
@@ -1708,14 +1761,17 @@
 	{
 		"en" 		"Raidboss"
 		"fr" 		"Boss de Raid"
-		"ru" 		"Босс"
+		"ru" 		"Рейд Босс"
 		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
 		"nl"		"Invalsbaas"
+		"chi"		"世界级Boss"
 	}
 	"Superboss"
 	{
 		"en" 		"Superboss"
+		"ru" 		"Супер босс"
 		"fr" 		"Super Boss"
+		"chi"		"Super-Boss"
 	}
 	"Power"
 	{
@@ -1725,13 +1781,13 @@
 		"de"		"Kraft"
 		"pt"		"Força"
 		"nl"		"Kracht"
-		"chi"       "权力"
+		"chi"       "力量"
 	}
 	"TIME LEFT"
 	{
 		"en" 		"TIME LEFT"
 		"fr" 		"TEMPS RESTANT"
-		"ru" 		"ОСТАЛОСЬ"
+		"ru" 		"ОСТАЛОСЬ ВРЕМЕНИ"
 		"de"		"ZEIT VERBLEIBT"
 		"pt"		"TEMPO RESTANTE"
 		"nl"		"OVERIGE TIJD"
@@ -1757,10 +1813,16 @@
 		"nl"		"Grigori werd genezen!\nJe kunt met hem praten tijdens de opstellingstijd om een 20%% korting te krijgen op verschillende items!"
 		"chi"       "格里神父已被救出！\n你可以在休息回合中与他交易，与他交易的商品都会折扣20%%"
 	}
+	"The World Machine Spawn"
+	{
+		"en"		"Niko! What are you doing here?"
+	}
 	"TF2: Zombie Riot"
 	{
 		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
+		"ru" 		"TF2: Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
 		"fr" 		"TF2: Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
+		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
 	}
 	"Father Grigori's Store"
 	{
@@ -1771,6 +1833,10 @@
 		"pt"		"Loja do Senhor Grigori"
 		"nl"		"Vader Grigori's Winkel"
 		"chi"       "神父商店"
+	}
+	"The World Machine's Items"
+	{
+		"en" 		"The World Machine's Items"
 	}
 	"Credits After Selling"
 	{
@@ -1800,6 +1866,16 @@
 //		"de"		"All Gegenstände sind 20%% off hier!"
 		"pt"		"Todos os itens estão com 20%% de desconto aqui! {$}\n1 Item está a 30%% de desconto {$$}"
 		"nl"		"Alle items hier hebben een 20%% korting! {$}\nÉén item heeft een 30%% korting! {$$}"
+		"chi"       "所有商品在这都会打8折 {$}\n一件物品打7折 {$$}"
+	}	
+	"All Items are 10%% off here!"
+	{
+		"en"		"All Items are 10%% off here! {$}\nOne Item is 15%% off! {$$}"
+		"fr"		"Tous achats ont un rabais de 10%%! {$}\nUn achat a un rabais de 15%%! {$$}"
+		"ru"		"На все товары скидка 10%%! {$}\nНа один товар скидка 15%! {$$}"
+//		"de"		"All Gegenstände sind 20%% off hier!"
+		"pt"		"Todos os itens estão com 10%% de desconto aqui! {$}\n1 Item está a 15%% de desconto {$$}"
+		"nl"		"Alle items hier hebben een 10%% korting! {$}\nÉén item heeft een 15%% korting! {$$}"
 		"chi"       "所有商品在这都会打8折 {$}\n一件物品打7折 {$$}"
 	}	
 	"Can Be Pack-A-Punched"
@@ -1835,6 +1911,7 @@
 	{
 
 	//	"en"		"Your last equipped level perks were restored"
+	//	"ru"		"Ваш последний экипированный Навык уровня был восстоновлен"
 	//	"de"		"Ihre letzten level perks wurden wiederhergestellt."
 	//	"pt"		"Sua ultima habilidade de nível foi restaurada"
 	//	"nl"		"Uw laatste gebruike level perks werden herstelt
@@ -1845,6 +1922,11 @@
 		"ru"		"Не удалось купить {1}."
 		"nl"		"Kon niet worden gekocht {1}."
 		"chi"       "无法购买 {1}."
+	}
+	"Pickup Gift"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"{green}''{1}'' picked up a gift box! Everyone gains {2} XP!"
 	}
 	"Press TAB To open the store"
 	{
@@ -1890,7 +1972,7 @@
 	{
 		"en"		"Difficulty set to"
 		"fr"		"La difficulté est maintenant"
-		"ru"		"Установлена сложность"
+		"ru"		"Сложность установлена на"
 		"de"		"Schwierigkeitgrad eingestellt auf"
 		"pt"		"Dificuldade definida para"
 		"nl"		"Moeilijkheidsgraad werd gesteld op"
@@ -1916,12 +1998,7 @@
 	}
 	"Which perk do you desire?"
 	{
-		"en"		"Which Bottle do you wish to drink?"
-		"fr"		"Que voulez-vous boire?"
-		"ru"		"Какую бутылку вы хотите выпить?"
-		"pt"		"Qual garrafa você quer beber?"
-		"nl"		"Uit welke fles wil je drinken?"
-		"chi"       "你想喝哪一瓶?"
+		"en"		"Which Bottle do you wish to drink?\nCrouch and click to see what it does."
 	}	
 	"Reviving"
 	{
@@ -1948,7 +2025,7 @@
 		"#format"	"{1:d}"
 		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
 		"fr"		"L'ennemi à recherché le niveau {1} pour leur technologie!!!!"
-		"ru"		"Враг исследовал своё снаряжение до уров. {1}!!!"
+		"ru"		"Враг исследовал своё снаряжение до {1}!!! уровня"
 		"pt"		"O adversario pesquisou seu equipamento para duelar {1}!!!"
 		"nl"		"De vijand heeft hun uitrusting naar level {1} gebracht!!!"
 		"chi"       "僵尸的装备已升级!!!{1}"
@@ -2031,6 +2108,14 @@
 		"nl"		"Nu dat je een wapen hebt ben je voorbereid.\nKoop betere wapens en upgrades in latere golven en probeer tot het einde te overleven!\nVerdere hulp vind je onder de winkel bij ''help?''\nTeamwork is de sleutel voor victorie!"
 		"chi"       "现在你已经拥有了武器，你准备好了吗？\n去买更好的枪和升级你的武器，生存到最后!\n更多的帮助可以在“帮助”中查看\n团队合作是胜利的关键!"
 	}
+	"Tutorial Show Hint Perk Machine"
+	{
+		"en"		"Use this machine to get a tempomary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
+	}
+	"Tutorial Show Hint Pack a Punch"
+	{
+		"en"		"Use this machine with your holding weapon to upgrade it with a cost!\nNot all weapons can be upgraded!"
+	}
 	"Is already at full hp"
 	{
 		"en"		"is already at full hp."
@@ -2049,6 +2134,11 @@
 		"pt"		"Você curou [{1}] por [{2}] de vida!"
 		"nl"		"U hebt [{1}] voor [{2}] Gezondheidspunten genezen!"
 		"chi"       "你为[{1}]治疗了[{2}]的生命值!"
+	}
+	"You healed for NpcName"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en"		"You Healed [{1}] for [{2}] HP!"
 	}
 	"Loadouts"
 	{
@@ -2071,7 +2161,7 @@
 	{
 		"en"		"Buy Only Free Items"
 		"fr"		"Recevoir Seulement Gratuit"
-		"ru"		"Купить бесплатные"
+		"ru"		"Купить только бесплатные"
 		"pt"		"Comprar apenas os itens grátis"
 		"nl"		"Koop alleen graties artikelen"
 		"chi"       "只购买免费商品"
@@ -2109,15 +2199,6 @@
 		"pt"		"Assegure-se de não passar de 32 caracteres e não inserir caracteres especiais no nome"
 		"nl"		"Wees zeker dat je naam onder de 32 karakters is en geen speciale tekens bevat"
 		"chi"       "请确保您的名字不超过32个字符，并且不包含特殊字符"
-	}
-	"Loadout Slots"
-	{
-		"#format"	"{1:d}"
-		"en"		"{1} Loadout Slot(s)"
-		"fr"		"{1} Espace(s) de Chargement"
-		"ru"		"Ячеек: {1}"
-		"pt"		"Vagas para Loadout: {1}"
-		"nl"		"{1} Loadout Slot(en)"
 	}
 	"All Weapons Unlocked"
 	{
@@ -2161,7 +2242,7 @@
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
 		"fr"		"Vous ne pouvez plus équipper plus d'armes, des armes pourraient être pas équippés."
-		"ru"		"Вы достигли максимального количества оружия, некоторые из них могли быть не выданы."
+		"ru"		"Вы достигли максимального количества оружия, некоторые из них могли быть не экипированны."
 		"pt"		"Você alcançou o numero maximo de armas que você pode segurar, algumas podem não ter sido equipadas."
 		"nl"		"Je hebt het maximaal toegelaten wapens dat je mag dragen berijkt. Sommige werden niet gedragen."
 		"chi"       "你的武器数量达到了最大值，有些可能还没有装备。"
@@ -2348,33 +2429,53 @@
 	{
 		"en"		"Un-Claim a building."
 		"fr"		"Abandonner une construction."
+		"chi"		"舍弃建筑"
 	}
 	"UnClaim Current Marked Building"
 	{
 		"en"		"Un-Claim the current marked building?"
 		"fr"		"Abandonner cette construction?"
+		"chi"		"舍弃此建筑？"
 	}
 	"Extra Menu"
 	{
 		"en"		"Extra Menu"
 		"fr"		"Menu Extra"
+		"chi"		"建筑管理菜单"
 	}
 	"Destroy all your non-Mounted Buildings"
 	{
 		"en"		"Destroy all your non-Mounted, non-Visible Buildings"
 		"fr"		"Détruire tous les constructions non montés et non visibles."
+		"chi"		"摧毁所有地上建筑"
 	}
 	"Destroy all your non-Mounted Buildings Sure"
 	{
 		"en"		"Are you sure that you want to delete all your own non mounted buildings?\nThis will not delete buildings that are in your line of sight."
 		"fr"		"Détruire tous vos constructions non montés?\nLes constructions que vous sont visibles ne seront pas détruits."
+		"chi"		"确认摧毁所有地上建筑？\n！不会摧毁视野外建筑！"
 	}
 	"Final_wave_message"
 	{
 		"en"		"This is the final wave, Prepare."
 		"fr"		"Ceci est la dernière vague. Préparez-vous."
 		"ru"		"Это последняя волна, приготовьтесь."
-		"chi"		"这是最后一波，准备。"
+		"chi"		"这是最后一波，做好准备。"
+	}
+	"Tower_Message"
+	{
+		"en"		"You see a giant radiotower at the distance."
+		"ko"		"저멀리 거대한 라디오 타워가 보입니다."
+	}
+	"Victoria_Help_Message"
+	{
+		"en"		"Ziberian Guerillas are here to help."
+		"ko"		"지베리안 게릴라의 지원이 도착했습니다."
+	}
+	"RadioTower_here_Message"
+	{
+		"en"		"Radiotower is here, Prepare."
+		"ko"		"라디오 타워가 여기있습니다, 전투 준비."
 	}
 	"Void_Help_Message"
 	{
@@ -2385,19 +2486,22 @@
 		"en"		"Silvester shares his power with you..."
 		"fr"		"Silvester vous partage son pouvoir..."
 		"ru"		"Сильвестр делится с вами своей силой..."
-		"chi"		"希尔维斯特和你分享他的力量…"
+		"chi"		"西尔维斯特和你分享他的力量…"
 	}
 	"Kahmlstein Courage"
 	{
 		"en"		"You feel Kahmlsteins Courage..."
-		"fr"		"Vous sentez le courage de Kahmlstein..."
+	}
+	"Last Down Warning"
+	{
+		"en"		"This is your last down."
 	}
 	"Opened store via command"
 	{
 		"en"		"In the future, use the TAB/Scoreboard button, it will open the shop without any commands!"
 		"fr"		"Utilisez le bouton TAB, la boutique s'ouvrira sans commandes!"
 		"ru"		"В будущем используйте кнопку TAB/таблицы очков, она откроет магазин без всяких команд!"
-		"chi"		"在未来，使用TAB/计分板按钮，它将打开商店没有任何命令!"
+		"chi"		"在未来，使用TAB/计分板按钮打开菜单，无需输入指令!"
 	}
 	"Invulnerable Npc"
 	{
@@ -2464,10 +2568,10 @@
 	}
 	"Xeno_Wave_2"
 	{
-		"en"		"Silvester and Goggles didnt attack you for no reason."
+		"en"		"Silvester and Waldch didnt attack you for no reason."
 		"fr"		"Silvester et Goggles n'ont pas attaqué pour aucune raison."
-		"ru"		"Сильвестр и Гогглз не нападали на вас без причины."
-		"chi"		"西尔维斯特和护目镜不是无缘无故攻击你的。"
+		"ru"		"Сильвестр и Валдч не нападали на вас без причины."
+		"chi"		"西尔维斯特和瓦德奇不是无缘无故攻击你的。"
 	}
 	"Xeno_Wave_3"
 	{
@@ -2495,7 +2599,7 @@
 		"#format"	"{1:d},{2:d}"
 		"en"		"You have summoned {1}/{2} Skull Servant(s)."
 		"fr"		"Vous avez convoqué {1}/{2} Crâne(s) Esclaves."
-		"ru"		"Вы вызвали {1}/{2} слуг черепа."
+		"ru"		"Вы вызвали {1}/{2} слугу череп."
 		"chi"		"你已经召唤了{1}/{2}骷髅仆人."
 	}
 	"Npc Stuck Spot Warning"
@@ -3042,59 +3146,63 @@
 	}
 	"Barracks Villager Desc"
 	{
-		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."	
+		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."
+		"ru" 		"Вспомогательная рука которая чинит,собирает ресурсы,И строит 1 башню для вас."	
 		"fr"		"Un assistant qui répare vos constructions, collectionne des ressources, et construit une tour pour vous."
 		"chi"       "一个修理、收集资源，为你建造一座塔的帮手。"
 	}
 	"Barracks Teutonic Knight Desc"
 	{
 		"en"		"The strongest of the strongest. Ultimate melee unit."	
+		"ru" 		"Сильнейший из сильнейших.Ультимативный блжиний юнит."
 		"fr"		"Le meilleur des meilleurs. L'unité corps à corps ultime."	
 		"chi"       "强者中的强者。终极近战单位。"
-	}
-	"Barracks Troop Classes"
-	{
-		"en"		"Barracks Troop Classes"
-		"fr"		"Formation d'Unités"
-		"chi"       "兵营部队等级"
-	}
-	"Barracks Troop Classes Desc"
-	{
-		"en"		"Allows the training of troops, but it will set your support building max to 1 (the villgaer is excluded from this.)"
-		"fr"		"Permet la formation d'unités, mais limite votre capacité de constructions de support à 1. ( Le villageois est exclus de ceci. )"
-		"chi"       "允许训练部队，但它会将你的支援建筑最大值设置为1.（村民不包括在内）"
 	}
 	"Research Troop Classes"
 	{
 		"en"		"Research Troop Classes to train units (excludes villager)"
+	}
+	"Barracks Troop Classes"
+	{
+		"en"		"Research Troop Classes to train units (excludes villager)"
+		"ru" 		"Исследовать классы войск что бы тренеровать их (кроме жителя)"
 		"fr"		"Recherchez des Unités pour débuter leur formation. ( Le villageois est exclus. )"
 		"chi"       "训练士兵的专项技能（村民不包括在内）"
 	}
+	"Barracks Troop Classes Desc"
+	{
+		"en"		"Allows the training of troops, but it will set your support building max to 2, and barricades to 1 (the villager is excluded from this.)"
+	}
 	"Spike Masspickup Confirm"
 	{
-		"en"		"Look up and Press M2 again to confirm picking up all your spikes!"		
+		"en"		"Look up and Press M2 again to confirm picking up all your spikes!"
+		"ru" 		"Посмотрите вверх и снова нажмите M2 что бы подтвердить что вы взяли все шипы!"	
 		"fr"		"Visez vers le haut et appuyez sur M2 encore pour ramasser vos piques!"
 	}
 	"Spike Masspickup Done"
 	{
-		"en"		"Picked up all your spikes!"		
+		"en"		"Picked up all your spikes!"
+		"ru" 		"Вы подняли все ваши шипы!"		
 		"fr"		"Vous avez ramassé vos piques!"
 	}
 	"Spike Masspickup None"
 	{
-		"en"		"There are no spikes left to pick up."		
+		"en"		"There are no spikes left to pick up."	
+		"ru" 		"Больше нет шипов которые можно подобрать."	
 		"fr"		"Pas de piques à ramasser."
 		"chi"       "没有钉子可捡了。"
 	}
 	"Pre Round Pap Limit"
 	{
-		"en"		"The PAP is still booting up, wait untill the round starts."		
+		"en"		"The PAP is still booting up, wait untill the round starts."
+		"ru" 		"Машина улучшения все ещё загружается,Подождите пока начнётся раунд."		
 		"fr"		"La machine Pack-a-Punch se démarre, attendez pour le début du jeu."
 		"chi"       "PAP仍在启动，请等待回合开始。"
 	}
 	"Zombie Volume Setting Show"
 	{
 		"en"		"Zombie Volume Setting"
+		"ru" 		"Настройка Громкости Зомби"
 		"fr"		"Paramètres Volume des Zombies"
 		"chi"       "僵尸声音设置"
 	}
@@ -3107,6 +3215,7 @@
 	"Zombie In Battle Show"
 	{
 		"en"		"Zombie In Battle Time"
+		"ru" 		"Зомби во время битвы"
 		"fr"		"Temps en Combat pour Zombies"
 	}
 	"Zombie In Battle Logic Setting"
@@ -3130,7 +3239,7 @@
 	{
 		"en"		"Burstpack already used this round, recharging..."	
 		"fr"		"Vous avez déja épuisé votre Burstpack cette vague, rechargement..."
-		"chi"       "Burstpack这一轮已经用过了，正在充电。。。"	
+		"chi"       "Burstpack这一轮已经用过了，冷却中。。。"	
 	}
 	"Quincy Menu First"
 	{
@@ -3384,31 +3493,33 @@
 	{
 		"en"	"Crouch on ground for ability"
 		"fr"	"Accroupissez-vous pour cet abilité"
+		"chi"	"蹲下时使用技能"
 	}
 	"Railcannon Charged"
 	{
 		"en"	"Railcannon is fully charged"
 		"fr"	"Canon à rail est rechargé"
+		"chi"	"轨道炮充能完毕"
 	}
 	"Default Desc"
 	{
 		"en"	"Fight against the classic zombies and combine!"
 		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
+		"chi"	"击败尸群，打败联合军！"
 	}
-	"True Fusion Warrior Desc"
+	"True Fusion Warrior Wave Desc"
 	{
-		"en"	"(1) Raids appear at the end of every 15 waves, they get more stronger with more abilities!"
-		"fr"	"À tous les 15 vagues, des Raids vont apparaître. Leur prouesse et abilités s'amélioreront graduellement!"
+		"en"	"(1) ''True fusion warrior'' Is infected with the xeno virus, his gear prevents spreading of it, it even made him forget his name."
 	}
 	"Alternative Desc"
 	{
 		"en"	"Fight with a new twist on the classic with magical new enemies!"
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
+		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
 	}
-	"Blitzkrieg Desc"
+	"Blitzkrieg Wave Desc"
 	{
-		"en"	"(2) The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
-		"fr"	"La machine qui tire rapidement des roquettes et choque les survivants hors de sa portée!\nÉvitez de se bagarrer contre lui dans des zones Expidonsannes..."
+		"en"	"(2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -3419,92 +3530,104 @@
 	{
 		"en"	"The Xeno infection has arrived, mutating enemies with new abilities!"
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
+		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 	}
 	"Silvester Waldch Desc"
 	{
-		"en"	"(3) Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
-		"fr"	"Silvester attaque avec des rayons laser et des roches, alors que Waldch tir à distance!"
+		"en"	"(3) You trying to find out what xeno is... Silverster and waldch are here to stop you from getting infected."
 	}
 	"Xeno Hard Desc"
 	{
 		"en"	"You enter the source of the Xeno infection, they're much stronger here, beware..."
 		"fr"	"Vouz avez trouvé la source de l'infection Xéno. Les ennemis sont beaucoup plus forts ici, gare à vous..."
+		"chi"	"你们找到了感染的来源。小心点… 它们在这里更强。"
 	}
 	"Medieval Desc"
 	{
 		"en"	"Fight against the middle-age with their armor to counter melee or ranged attacks!"
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
+		"chi"	"对抗中世纪的剑与盾！"
 	}
-	"God Alaxios Desc"
+	"God Alaxios Wave Desc"
 	{
 		"en"	"(4) Fight him and his rapidly spawning army, kill the army first whenever they show up!"
 		"fr"	"Alaxios apporte son armée, tuez ses unités en premier quand ils apparaîssent!"
+		"chi"	"准备迎接一场全面的战争。记得先处理掉他的军队！"
 	}
 	"Expidonsa Desc"
 	{
 		"en"	"Hold back against the advanced underground city, watch out for their self-healing and surprise attacks!"
 		"fr"	"Résiste cette ville souterraine avancée, faites garde à leur soins regénératifs et leurs attaques surprises!"
+		"chi"	"抵抗Expidonsa的高科技。别小看他们的盾牌，同时看好自己背后……"
 	}
-	"Sensal Desc"
+	"Sensal Wave Desc"
 	{
-		"en"	"(5) The scouting party operative which rapidly summons homing scythes and laser attacks!"
-		"fr"	"Le capitaine d'un groupe de scouts qui convoque des scythes chercheurs et des rayons laser!"
+		"en"	"(5) The scouting party operative, you harmed silvester and waldch, but they were unable to tell sensal that this was a false alarm, brace yourself."
 	}
 	"Deep Sea Desc"
 	{
 		"en"	"The Seaborn infection has arrived, Armor Corrosion attacks will infect your armor, cure it with armor tables!"
 		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
+		"chi"	"海嗣感染将会侵蚀你的盾。"
 	}
 	"Interitus Desc"
 	{
 		"en"	"(7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
+		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"(6) Karlas charges you down with his Lance while Stella fires laser attacks!"
-		"fr"	"Karlas vous perce avec sa Lance alors que Stella vous vire des rayons laser!"
+		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this tempomary alliance."
 	}
 	"Khaml Desc"
 	{
 		"en"	"The judges of your actions have arrived."
 		"fr"	"Voiçi le juge de vos actions."
+		"chi"	"审判者来了。"
 	}
 	"Void Desc"
 	{
 		"en"	"Help Kahmlstein agains the void!"
 		"fr"	"Aidez Kahmlstein contre le Void!"
+		"chi"	"帮卡姆斯坦因击退深渊！"
 	}
 	"Unspeakable Raid Desc"
 	{
 		"en"	"(8) Directly after you release the void in rogue2..."
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
+		"chi"	"深渊已被释放。"
 	}
 	"Twirl Raid Desc"
 	{
 		"en"	"(9) A certain individual has taken an interest in your group"
 		"fr"	"Cet individuel s'est intéressé dans votre groupe."
+		"chi"	"你貌似引起了 她 的兴趣"
 	}
 	"Ruina waves Desc"
 	{
 		"en"	"Can you withstand the power of magic?"
 		"fr"	"Pouvez-vous survivre la prouesse de la magie?"
+		"chi"	"你能阻挡魔法之力吗》"
 	}
 	"CoF Normal Desc"
 	{
 		"en"	"Enter Simon's Book."
 		"fr"	"Entrez le Livre de Simon."
+		"chi"	"进入西蒙的书中。"
 	}
 	"CoF Nightmare Desc"
 	{
 		"en"	"Enter Simon's Mind."
 		"fr"	"Entrez les Pensées de Simon."
+		"chi"	"进入西蒙的噩梦。"
 	}
 	"Wait for power"
 	{
 		"#format"	"{1:.1f}"
 		"en" "You need to rest: [{1}]"
 		"fr" "Vous avez besoin de vous reposer pour [{1}]."
+		"chi"	"你需要休息！[{1}]"
 	}
 	"Stop playing with"
 	{
@@ -3571,174 +3694,361 @@
 		"#format"	"{1:s}"
 		"en"		"{darkgrey}Raidboss by: {community}{1}"
 		"fr"		"{darkgrey}Raid boss par: {community}{1}"
+		"chi"		"{darkgrey}Raidboss作者：{community}{1}"
 	}
 	"Now Playing Song"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"{darkgrey}Now Playing: {community}{1} {default}| {lightgreen}{2}"
-		"fr"		"{darkgrey}Musique : {community}{1} {default}| {lightgreen}{2}"
+		"en"		"{darkgrey}Now Playing: {community}{1} {default}- {lightgreen}{2}"
+		"fr"		"{darkgrey}Musique : {community}{1} {default}- {lightgreen}{2}"
+		"chi"		"{darkgrey}现在播放：{community}{1} {default}- {lightgreen}{2}"
 	}
 	"Blacksmith Tooltip"
 	{
 		"en"		"Press RELOAD to apply a tinker effect to your active weapon."
 		"fr"		"Appuyez sur RELOAD pour appliquer un effet de forge sur votre arme"
+		"chi"		"按 装弹键 打开菜单，抽取随机武器属性"
 	}
 	"Blacksmith Used"
 	{
 		"en"		"Someone used your Tinker Station, you gain +20 Cash!"
 		"fr"		"Quelqu'un a utilisé votre Station de Forgerie, vous obtenez +20 Argent!"
+		"chi"		"有人用了你的铁砧，+20现金！"
 	}
 	"Blacksmith Maxed"
 	{
 		"en"		"Maximum amount of attributes applied to this weapon"
 		"fr"		"Le maximum d'effets de forge est atteint sur cet arme."
+		"chi"		"抵达武器属性上限！"
 	}
 	"Blacksmith Underleveled"
 	{
 		"en"		"You can not tinker this weapon"
 		"fr"		"Vous ne pouvez pas appliquer un effet de forge sur cet arme."
+		"chi"		"此武器无法被修改。"
 	}
 	"The Blacksmith Failed!"
 	{
 		"en"		"The blacksmith is no longer alive or a tinker, anvil broke!"
 		"fr"		"Le forgeron n'est plus présent. L'enclume s'est cassé!"
+		"chi"		"铁砧的主人已死或者已不是匠工，导致铁砧被摧毁！"
 	}
 	"Blacksmith No Attribs"
 	{
 		"en"		"You have no tinker stats."
 		"fr"		"Vous n'avez pas d'effet de forge."
+		"chi"		"你没有任何匠工效果。"
 	}
 	"Removed Tinker Attributes"
 	{
 		"en"		"Removed Tinker Attributes"
 		"fr"		"Enlevé les effets de forge."
+		"chi"		"已移除匠工效果。"
 	}
 	"View Modifiers"
 	{
 		"en"	"View Modifiers"
 		"fr"	"Voir effets de forge"
 		"de" 	"oha ein deutscher!"
+		"chi"	"查看效果"
 	}
 	"Bring up Class Change Menu"
 	{
 		"en"	"Bring up Class Change Menu"
 		"fr"	"Montrer le Menu de Changement de Classe"
+		"chi"	"打开兵种切换菜单"
 	}
 	"Corrode"
 	{
 		"en"	"Corrode"
 		"fr"	"Corrosion"
+		"chi"	"腐蚀"
 	}
 	"Chaos"
 	{
 		"en"	"Chaos"
 		"fr"	"Chaos"
+		"chi"	"混沌"
 	}
 	"Cyro"
 	{
 		"en"	"Cyro"
 		"fr"	"Cryo"
+		"chi"	"冰"
 	}
 	"Necrosis"
 	{
 		"en"	"Necrosis"
 		"fr"	"Nécrose"
+		"chi"	"咒死"
 	}
 	"Building Menu"
 	{
 		"en"	"Building Menu\nHold crouch for more info"
 		"fr"	"Menu de Construction\nAccroupissez-vous pour plus d'informations"
+		"chi"	"建筑菜单\n蹲下查看详细信息"
 	}
 	"Barracks Gained Resources"
 	{
 		"en"	"Your barracks gained resouces from this action!"
 		"fr"	"Votre caserne a reçu des ressources par cet action!"
+		"chi"	"你的兵营获得了屋子！"
 	}
 	"Resource Gain Mult Villager"
 	{
 		"#format"	"{1:.1f},{2:.1f}"
 		"en" 		"Resource Mult: {1}x\nGold Mult: {2}x"
 		"fr" 		"Revenu Ressources : {1}x\nRevenu Or : {2}x"
+		"chi"		"物资倍率：{1}x\n黄金倍率：{2}x"
 	}
 	"Barbarians Mind Warning"
 	{
 		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
+		"ru" 	"Вы Слишком Глупы что бы наносить урон чем либо кроме Ближнего боя!!"
 		"fr"	"Vous êtes trop enragés pour utiliser des armes autre que corps à corps!!"
+		"chi"	"你装备了野蛮人思维，无法造成近战外任何伤害！"
 	}
 	"purnell_message"
 	{
 		"en"	"Relax, I'm not one of them."
 		"fr"	"Calmez-vous, je ne suis pas avec eux."
+		"chi"	"放心。我和他们不一样。"
 	}
 	"Modifier set to"
 	{
 		"en"	"Modifier set to"
+		"ru" 	"Модификатор установлен на"
 		"fr"	"Le modifieur est maintenant"
+		"chi"	"难度已设为："
 	}
 	"Vote for the modifier"
 	{
 		"en"	"Vote for the modifier"
 		"fr"	"Votez pour le modifieur"
+		"chi"	"选择难度"
 	}
 	"Anvil Menu Main"
 	{
 		"en"	"What do you wish to do with the Anvil?"
 		"fr"	"Que voulez-vous faire avec l'enclume?"
+		"chi"	"您想对铁砧做什么？"
 	}
 	"Re-Roll Weapon Stats"
 	{
 		"en"	"Re-Roll Weapon Stats"
 		"fr"	"Obtenir des effets aléatoires"
+		"chi"	"获取新属性"
 	}
 	"Remove Weapon Stats"
 	{
 		"en"	"Remove Weapon Stats"
 		"fr"	"Enlever les effets de cet arme"
+		"chi"	"移除武器属性"
 	}
 	"Display Current Stats"
 	{
 		"en"	"Display Current Stats"
 		"fr"	"Voir les effets de cet arme"
+		"chi"	"查看当前属性"
 	}
 	"Custom Models"
 	{
 		"en"	"Custom Models"
 		"fr"	"Modèles personnalisés"
+		"chi"	"自定义模型"
 	}
 	"TF2 Class"
 	{
 		"en"	"TF2 Class"
 		"fr"	"Classes TF2"
+		"chi"	"兵种模型"
 	}
 	"Barney"
 	{
 		"en"	"Barney"
 		"fr"	"Barney"
+		"chi"	"巴尼"
 	}
 	"Niko Oneshot"
 	{
 		"en"	"Niko Oneshot"
 		"fr"	"Niko Oneshot"
+		"chi"	"Niko [Oneshot]"
 	}
 	"Skeleboy"
 	{
 		"en"	"Skeleboy"
 		"fr"	"M. Squelette"
+		"chi"	"骷髅"
 	}
 	"Kleiner"
 	{
 		"en"	"Kleiner"
 		"fr"	"Kleiner"
+		"chi"	"克莱恩"
 	}
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
+		"ru" "Иберия & Немал"
 		"fr" "Iberia & Nemal"
+		"chi"	"伊比利亚 & 尼莫尔"
 	}
 	"Iberia Nemal Desc"
 	{
-		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremaly seriously."
+		"en" "(10) Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
 		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 	}
-	
+	"Revenant's Shadow"
+	{
+		"en" "Revenant's Shadow"
+	}
+	"Disable Ambient Music"
+	{
+		"en"	"Disable Ambient Music"
+	}
+	"Enable Visible Downs"
+	{
+		"en"	"Enable Visible Downs"
+	}
+	"Enable Visual Clutter"
+	{
+		"en"	"Enable Visual Clutter"
+	}
+	"Enable Visual Clutter Desc"
+	{
+		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nIf you love it, enable it again."
+	}
+	"Enable Numeral Armor"
+	{
+		"en"	"Enable Numeral Armor"
+	}
+	"Enable Ammobox Count Perma"
+	{
+		"en"	"Enable Ammobox Count Perma"
+	}
+	"DPS Class"
+	{
+		"en"	"DPS Class\nFocus on damage and get Speed Cola perk"
+	}
+	"Tank Class"
+	{
+		"en"	"Tank Class\nFocus on tanking and get Juggernog perk"
+	}
+	"Healer Class"
+	{
+		"en"	"Healer Class\nAble to heal, less DPS, and get Quick Revive perk"
+	}
+	"Builder Class"
+	{
+		"en"	"Builder Class\nAble to build, repair, and get Double Tap perk"
+	}
+	"Don't Follow Me"
+	{
+		"en"	"Don't Follow Me"
+	}
+	"Switch Class"
+	{
+		"en"	"Switch Class"
+	}
+	"Switch Weapons"
+	{
+		"en"	"Switch Weapons"
+	}
+	"Weapon Preference"
+	{
+		"en"	"Your Preference"
+	}
+	"Preference Alyx"
+	{
+		"en"	"I'll just stick with my gun thanks.\nAnd don't worry, I'll patch you up whenever I can."
+	}
+	"Preference Barney"
+	{
+		"en"	"Well I like anything I can get my hands on.\nDon't need to tell me what to get, I'll use it."
+	}
+	"Preference Normal"
+	{
+		"en"	"Just standard weapons, nothing special."
+	}
+	"Preference Speed"
+	{
+		"en"	"I like wepaons with a little more fire rate."
+	}
+	"Preference Heavy"
+	{
+		"en"	"I like wepaons with a little more damage per shot."
+	}
+	"Preference No Clip"
+	{
+		"en"	"I like ranged weapons without needing to reload."
+	}
+	"Preference Super Speed"
+	{
+		"en"	"I really like weapons with alot of attack speed."
+	}
+	"Preference Super Heavy"
+	{
+		"en"	"I really like weapons that can nuke at once."
+	}
+	"Build Healing Station At Me"
+	{
+		"en"	"Build Healing Station At Me"
+	}
+	"Build Barricade At Me"
+	{
+		"en"	"Build Barricade At Me"
+	}
+	"Build Sentry At Me"
+	{
+		"en"	"Build Sentry At Me"
+	}
+	"Build Ammo Box At Me"
+	{
+		"en"	"Build Ammo Box At Me"
+	}
+	"Build Armor Table At Me"
+	{
+		"en"	"Build Armor Table At Me"
+	}
+	"Build Perk Machine At Me"
+	{
+		"en"	"Build Perk Machine At Me"
+	}
+	"Build Pack-a-Punch At Me"
+	{
+		"en"	"Build Pack-a-Punch At Me"
+	}
+	"Pistol"
+	{
+		"en"	"Pistol"
+	}
+	"SMG"
+	{
+		"en"	"SMG"
+	}
+	"AR2"
+	{
+		"en"	"AR2"
+	}
+	"Shotgun"
+	{
+		"en"	"Shotgun"
+	}
+	"RPG"
+	{
+		"en"	"RPG"
+	}
+	"Crowbar"
+	{
+		"en"	"Crowbar"
+	}
+	"Victoria Raid Desc"
+	{
+		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
+	}
+	"Ability already Active"
+	{
+		"en"	"Ability already Active"
+	}
 }

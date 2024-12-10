@@ -58,9 +58,9 @@ public void HeavyExtreme_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeavyExtreme(client, vecPos, vecAng, ally);
+	return HeavyExtreme(vecPos, vecAng, team);
 }
 
 methodmap HeavyExtreme < CClotBody
@@ -106,7 +106,7 @@ methodmap HeavyExtreme < CClotBody
 	
 	
 	
-	public HeavyExtreme(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeavyExtreme(float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyExtreme npc = view_as<HeavyExtreme>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "300", ally, false,_,_,_,_));
 		
@@ -151,8 +151,7 @@ methodmap HeavyExtreme < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void HeavyExtreme_ClotThink(int iNPC)
 {
 	HeavyExtreme npc = view_as<HeavyExtreme>(iNPC);
@@ -207,9 +206,10 @@ public void HeavyExtreme_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 170000.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 					}
 				}
@@ -275,11 +275,9 @@ public void HeavyExtreme_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;

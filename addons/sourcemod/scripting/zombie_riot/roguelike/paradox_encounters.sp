@@ -608,6 +608,7 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 				}
 				default:
 				{
+					Rogue_AddIngots(-4);
 					title = 'a';
 				}
 			}

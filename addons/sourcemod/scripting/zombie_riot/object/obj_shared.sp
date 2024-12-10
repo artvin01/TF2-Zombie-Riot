@@ -512,7 +512,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
 	int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
 	float Ratio = float(health) / float(maxhealth);
-
+		
 	if(Ratio < 0.15)
 	{
 		if(!objstats.m_bBurning)
@@ -740,7 +740,7 @@ int Object_NamedBuildings(int owner = 0, const char[] name)
 	int count;
 	
 	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "obj_")) != -1)
+	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
 		if(owner == 0 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
@@ -829,14 +829,23 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 	{
 		if(!ingore_glass)
-			maxAllowed = 1;
+		{
+			if(maxAllowed > 2)
+			{
+				maxAllowed = 2;
+
+			}
+		}
 	}
 	return maxAllowed;
 }
 
 float Object_GetMaxHealthMulti(int client)
 {
-	return Attributes_GetOnPlayer(client, 286);
+	if(client <= MaxClients)
+		return Attributes_GetOnPlayer(client, 286);
+	
+	return 2.5 + (view_as<Citizen>(client).m_iGunValue * 0.000135);
 }
 
 Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -873,7 +882,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 
 	damage *= 0.1;
-	if(Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
 		return Plugin_Handled;
 	}
@@ -886,24 +895,13 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		i_BarricadeHasBeenDamaged[Owner] += dmg;
 	}
-
-	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
 	if(health < 0)
 	{
-		objstats.PlayDeathSound();
-		float VecOrigin[3];
-		GetAbsOrigin(victim, VecOrigin);
-		VecOrigin[2] += 15.0;
-		DataPack pack = new DataPack();
-		pack.WriteFloat(VecOrigin[0]);
-		pack.WriteFloat(VecOrigin[1]);
-		pack.WriteFloat(VecOrigin[2]);
-		pack.WriteCell(0);
-		RequestFrame(MakeExplosionFrameLater, pack);
-		RemoveEntity(victim);
+		DestroyBuildingDo(victim);
 		return Plugin_Handled;
 	}
 	
+	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
 	if(objstats.PlayHurtSound())
 	{
 		damagePosition[2] -= 40.0;
@@ -913,6 +911,22 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	SetEntProp(victim, Prop_Data, "m_iHealth", health);
 	return Plugin_Handled;
+}
+
+void DestroyBuildingDo(int entity)
+{
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	objstats.PlayDeathSound();
+	float VecOrigin[3];
+	GetAbsOrigin(entity, VecOrigin);
+	VecOrigin[2] += 15.0;
+	DataPack pack = new DataPack();
+	pack.WriteFloat(VecOrigin[0]);
+	pack.WriteFloat(VecOrigin[1]);
+	pack.WriteFloat(VecOrigin[2]);
+	pack.WriteCell(0);
+	RequestFrame(MakeExplosionFrameLater, pack);
+	RemoveEntity(entity);
 }
 
 public void ObjBaseThinkPost(int building)
@@ -1002,8 +1016,10 @@ void BuildingDisplayRepairLeft(int entity)
 		int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 		if(IsValidClient(Owner))
 			Format(HealthText, sizeof(HealthText), "%N", Owner);
+		else if(Owner != -1 && Citizen_IsIt(Owner))
+			strcopy(HealthText, sizeof(HealthText), "Rebel");
 		else
-			Format(HealthText, sizeof(HealthText), "%s", " ");
+			strcopy(HealthText, sizeof(HealthText), " ");
 		float Offset[3];
 		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2];
 		Offset[2] += 6.0;

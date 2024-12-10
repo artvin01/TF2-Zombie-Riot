@@ -77,9 +77,9 @@ public void Fortified_HeadcrabZombie_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FortifiedHeadcrabZombie(client, vecPos, vecAng, ally);
+	return FortifiedHeadcrabZombie(vecPos, vecAng, team);
 }
 
 methodmap FortifiedHeadcrabZombie < CClotBody
@@ -116,16 +116,12 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -136,7 +132,7 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 	
 	
 	
-	public FortifiedHeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public FortifiedHeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "500", ally, false));
 		
@@ -173,8 +169,7 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 {
 	FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(iNPC);

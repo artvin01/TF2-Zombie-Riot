@@ -77,9 +77,9 @@ public void FortifiedFastZombie_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FortifiedFastZombie(client, vecPos, vecAng, ally);
+	return FortifiedFastZombie(vecPos, vecAng, team);
 }
 
 
@@ -167,16 +167,12 @@ methodmap FortifiedFastZombie < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -187,7 +183,7 @@ methodmap FortifiedFastZombie < CClotBody
 	
 	
 	
-	public FortifiedFastZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public FortifiedFastZombie(float vecPos[3], float vecAng[3], int ally)
 	{
 		FortifiedFastZombie npc = view_as<FortifiedFastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "300", ally, false));
 		
@@ -225,8 +221,7 @@ methodmap FortifiedFastZombie < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void FortifiedFastZombie_ClotThink(int iNPC)
 {
 	FortifiedFastZombie npc = view_as<FortifiedFastZombie>(iNPC);

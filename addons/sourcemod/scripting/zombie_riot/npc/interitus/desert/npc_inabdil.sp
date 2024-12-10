@@ -58,9 +58,9 @@ void DesertInabdil_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DesertInabdil(client, vecPos, vecAng, ally);
+	return DesertInabdil(vecPos, vecAng, team);
 }
 methodmap DesertInabdil < CClotBody
 {
@@ -101,7 +101,7 @@ methodmap DesertInabdil < CClotBody
 	}
 	
 	
-	public DesertInabdil(int client, float vecPos[3], float vecAng[3], int ally)
+	public DesertInabdil(float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertInabdil npc = view_as<DesertInabdil>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
 	
@@ -127,9 +127,7 @@ methodmap DesertInabdil < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(DesertInabdil_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		npc.m_flNextRangedAttack = GetGameTime();

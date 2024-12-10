@@ -51,9 +51,9 @@ void SeaSlider_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaSlider(client, vecPos, vecAng, ally, data);
+	return SeaSlider(vecPos, vecAng, team, data);
 }
 
 methodmap SeaSlider < CSeaBody
@@ -83,7 +83,7 @@ methodmap SeaSlider < CSeaBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public SeaSlider(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SeaSlider(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeaSlider npc = view_as<SeaSlider>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", data[0] ? "540" : "420", ally, false));
 		// 2800 x 0.15

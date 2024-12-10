@@ -216,22 +216,43 @@ static void GetNearestPond(const float pos[3], char[] found, int leng)
 bool Fishing_Interact(int client, int weapon)
 {
 	bool rod = (weapon != -1 && EntityFuncAttack[weapon] == Fishing_RodM1);
-	if(GetEntProp(client, Prop_Send, "m_nWaterLevel") > 0)
+
+	//We are in water. Fire a trace and see if we can see water.
+	
+	float f_pos[3];
+	GetClientEyePosition(client,f_pos);
+	float f_ang[3];
+	GetClientEyeAngles(client, f_ang);
+	float f_resulthit[3];
+	Handle trace; 
+	trace = TR_TraceRayFilterEx(f_pos, f_ang, ( MASK_WATER | MASK_SHOT_HULL ), RayType_Infinite, HitOnlyWorld, client);
+	//Do we hit water?
+	TR_GetEndPosition(f_resulthit, trace);
+	f_resulthit[2] -= 0.1;
+	delete trace;
+	if(TR_GetPointContents(f_resulthit) & CONTENTS_WATER) //We have hit water, hit groundto get the middle.
+	{
+		if(!rod)
+		{
+			float dist = GetVectorDistance(f_pos, f_resulthit);
+			if(dist >= 100.0)
+			{
+				return false;
+			}
+			if(!Store_SwitchToWeaponSlot(client, 4))
+			{
+				SPrintToChat(client, "You must equip a fishing rod!");
+			}
+		}
+		return true;
+	}
+	else
 	{
 		if(rod)
-			return false;
-		
-		if(!Store_SwitchToWeaponSlot(client, 4))
-			SPrintToChat(client, "You must equip a fishing rod!");
-		
-		return true;
+		{
+			Store_SwitchToWeaponSlot(client, 2);
+		}
 	}
-	else if(rod)
-	{
-		Store_SwitchToWeaponSlot(client, 2);
-		return true;
-	}
-
 	return false;
 }
 
@@ -463,6 +484,9 @@ public void FishingRodSetRarity(int client, int weapon, int index)
 {
 	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
 	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	int totalInt = Stats_Intelligence(client);
+	if(totalInt >= 5000)
+		FishingRate[client] *= 0.75;
 	Desired_FishingTier[client] = FishingTier[client]; //Set the desired fishing tier to the tier of the rod.
 }
 
@@ -470,6 +494,10 @@ public void FishingRodCycleRarity(int client, int weapon, int index)
 {
 	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
 	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	int totalInt = Stats_Intelligence(client);
+	if(totalInt >= 5000)
+		FishingRate[client] *= 0.75;
+		
 	Desired_FishingTier[client] -= 1;
 	if(Desired_FishingTier[client] < 1)
 	{
@@ -522,15 +550,21 @@ public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
 		{
 			TE_ParticleInt(g_FishCaughtParticle, FishPos);
 			TE_SendToClient(client);
-			DisplayCritAboveNpc(_, client, true,FishPos, g_FishCaughtText); //Display crit above head
+			DisplayHitEnemyTarget(client, FishPos, true);
 			PoolList.GetArray(choosen, pool);
 			PoolList.Erase(choosen);
 			
 			GetClientEyePosition(client, pos);
 			TextStore_DropNamedItem(client, pool.Name, pos, 1);
+			Tinker_GainXP(client, weapon);
 		}
 	}
 	return Plugin_Handled;
+}
+
+void DisplayHitEnemyTarget(int client, float Vec[3], bool playsound)
+{
+	DisplayCritAboveNpc(_, client, playsound,Vec, g_FishCaughtText); //Display crit above head
 }
 
 public void Fishing_RodM2(int client, int weapon)

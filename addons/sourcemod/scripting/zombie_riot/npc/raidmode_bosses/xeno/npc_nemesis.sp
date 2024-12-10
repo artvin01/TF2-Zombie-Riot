@@ -34,7 +34,10 @@ static char g_RangedAttackSounds[][] =
 	"npc/zombie_poison/pz_throw2.wav",
 	"npc/zombie_poison/pz_throw3.wav",
 };
-
+static char g_RangedAttackSounds2[][] =
+{
+	"weapons/csgo_awp_shoot.wav",
+};
 static char g_RangedSpecialAttackSounds[][] =
 {
 	"npc/fast_zombie/leap1.wav",
@@ -126,6 +129,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));    i++) { PrecacheSound(g_MeleeHitSounds[i]);    }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));    i++) { PrecacheSound(g_MeleeAttackSounds[i]);    }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds2));   i++) { PrecacheSound(g_RangedAttackSounds2[i]);   }
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
 	PrecacheModel(INFECTION_MODEL);
@@ -134,9 +138,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombie_riot/320_now_1.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RaidbossNemesis(client, vecPos, vecAng, ally, data);
+	return RaidbossNemesis(vecPos, vecAng, team, data);
 }
 methodmap RaidbossNemesis < CClotBody
 {
@@ -164,6 +168,10 @@ methodmap RaidbossNemesis < CClotBody
 	public void PlayRangedSound()
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,65);
+	}
+	public void PlayRangedSoundMinigun()
+	{
+		EmitSoundToAll(g_RangedAttackSounds2[GetRandomInt(0, sizeof(g_RangedAttackSounds2) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.5,65);
 	}
 	public void PlayRangedSpecialSound()
 	{
@@ -197,7 +205,7 @@ methodmap RaidbossNemesis < CClotBody
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RaidbossNemesis(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, NEMESIS_MODEL, "2.25", "20000000", ally, false, true, true,true)); //giant!
 		
@@ -237,7 +245,6 @@ methodmap RaidbossNemesis < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
-		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.5;
 
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -1011,6 +1018,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0, _,vecTarget);
 				float VecSave[3];
 				VecSave = vecTarget;
+				npc.PlayRangedSoundMinigun();
 
 				for(int repeat = 1; repeat <= 2; repeat++)
 				{
@@ -1022,6 +1030,22 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					vecTarget[2] += GetRandomFloat(-50.0,50.0);
 
 					i_GunAmmo[npc.index] -= 1;
+					//nemesis failsafe.
+					if(npc.m_iChanged_WalkCycle != 10) 	
+					{
+						i_GunMode[npc.index] = 1;
+						i_GunAmmo[npc.index] = 250;
+						int iActivity = npc.LookupActivity("ACT_FT_WALK");
+						if(iActivity > 0) npc.StartActivity(iActivity);
+						npc.m_iChanged_WalkCycle = 10;
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 50.0;
+						if(npc.Anger)
+							npc.m_flSpeed = 100.0;
+
+						npc.StartPathing();
+						f_NpcTurnPenalty[npc.index] = 1.0;
+					}	
 						
 					float damage = 105.0;
 
@@ -1140,7 +1164,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		DispatchKeyValue(entity_death, "model", NEMESIS_MODEL);
 		DispatchSpawn(entity_death);
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.75); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 2.25); 
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("ft2_death");
 		AcceptEntityInput(entity_death, "SetAnimation");

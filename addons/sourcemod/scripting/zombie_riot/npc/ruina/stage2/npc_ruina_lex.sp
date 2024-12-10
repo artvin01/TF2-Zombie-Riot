@@ -94,9 +94,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Lex(client, vecPos, vecAng, ally, data);
+	return Lex(vecPos, vecAng, team, data);
 }
 
 static float fl_npc_basespeed;
@@ -368,7 +368,7 @@ methodmap Lex < CClotBody
 		return this.m_iTarget;
 	}
 	
-	public Lex(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Lex(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Lex npc = view_as<Lex>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -474,12 +474,9 @@ static void Do_OnSpawn(int ref)
 		npc.m_flRange = (300.0*300.0);
 		npc.Spawn_Ally();
 	}
-	
-	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lex npc = view_as<Lex>(iNPC);
@@ -630,7 +627,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}
 		else

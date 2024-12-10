@@ -21,7 +21,7 @@ void CitizenRunner_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return CitizenRunner(client, vecPos, vecAng, data);
 }

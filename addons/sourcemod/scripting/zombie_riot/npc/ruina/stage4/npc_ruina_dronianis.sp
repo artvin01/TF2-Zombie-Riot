@@ -71,9 +71,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/spy.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Dronianis(client, vecPos, vecAng, ally);
+	return Dronianis(vecPos, vecAng, team);
 }
 
 methodmap Dronianis < CClotBody
@@ -122,16 +122,12 @@ methodmap Dronianis < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -161,7 +157,7 @@ methodmap Dronianis < CClotBody
 	}
 	
 	
-	public Dronianis(int client, float vecPos[3], float vecAng[3], int ally)
+	public Dronianis(float vecPos[3], float vecAng[3], int ally)
 	{
 		Dronianis npc = view_as<Dronianis>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
@@ -228,8 +224,7 @@ methodmap Dronianis < CClotBody
 		return npc;
 	}
 }
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Dronianis npc = view_as<Dronianis>(iNPC);

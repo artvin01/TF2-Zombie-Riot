@@ -43,9 +43,9 @@ void UnderTides_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return UnderTides(client, vecPos, vecAng, ally, data);
+	return UnderTides(vecPos, vecAng, team, data);
 }
 
 methodmap UnderTides < CClotBody
@@ -75,7 +75,7 @@ methodmap UnderTides < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public UnderTides(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public UnderTides(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 100.0}));
 		// 100,000 x 0.15
@@ -186,7 +186,7 @@ public void UnderTides_ClotThink(int iNPC)
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
 				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = npc.index;
+				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
 				break;
 			}
 		}

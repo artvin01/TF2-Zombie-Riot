@@ -51,9 +51,9 @@ void PathshaperFractal_Precache()
 	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return PathshaperFractal(client, vecPos, vecAng, ally);
+	return PathshaperFractal(vecPos, vecAng, team);
 }
 
 methodmap PathshaperFractal < CClotBody
@@ -83,7 +83,7 @@ methodmap PathshaperFractal < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
-	public PathshaperFractal(int client, float vecPos[3], float vecAng[3], int ally)
+	public PathshaperFractal(float vecPos[3], float vecAng[3], int ally)
 	{
 		PathshaperFractal npc = view_as<PathshaperFractal>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "1.3", "20000", ally));
 		// 20000 x 1.0

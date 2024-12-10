@@ -25,6 +25,12 @@
 				"linux"		"@_ZN15CTFPlayerShared27RecalculatePlayerBodygroupsEv"
 			}
 			
+			// "mod_build_rate" -> the next non-attribute call
+			"CTFGameRules::IsQuickBuildTime"
+			{
+				"linux"		"@_ZN12CTFGameRules16IsQuickBuildTimeEv"
+				"windows"	"\x80\xB9\x72\x0C\x00\x00\x00\x74\x2A\x80\xB9\xD1\x03\x00\x00\x00"
+			}
 			"CBasePlayer::SnapEyeAngles"
 			{
 				// string "Usage:  setang pitch yaw <roll optional"
@@ -313,7 +319,7 @@
 				"linux64"			"@_ZNK18CTFWeaponBaseMelee13GetShootSoundEi"
 				"windows64"		"\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x20\x8B\xEA\x48\x8B\xF9"
 
-				"linu4"			"@_ZNK18CTFWeaponBaseMelee13GetShootSoundEi"
+				"linux"			"@_ZNK18CTFWeaponBaseMelee13GetShootSoundEi"
 				"windows"			"\x55\x8B\xEC\x53\x8B\x5D\x08\x57\x8B\xF9\x83\xFB\x09"
 
 			}
@@ -442,6 +448,13 @@
 						"type"	"vectorptr"
 					}
 				}
+			}
+			"CTFGameRules::IsQuickBuildTime"
+			{
+				"signature"	"CTFGameRules::IsQuickBuildTime"
+				"callconv"	"thiscall"
+				"return"	"bool"
+				"this"		"ignore"
 			}
 			"CTFPlayerShared::PulseRageBuff()"
 			{

@@ -57,9 +57,9 @@ void Helena_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Helena(client, vecPos, vecAng, ally);
+	return Helena(vecPos, vecAng, team);
 }
 methodmap Helena < CClotBody
 {
@@ -95,16 +95,12 @@ methodmap Helena < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -112,7 +108,7 @@ methodmap Helena < CClotBody
 		
 		
 	}
-	public Helena(int client, float vecPos[3], float vecAng[3], int ally)
+	public Helena(float vecPos[3], float vecAng[3], int ally)
 	{
 		Helena npc = view_as<Helena>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5500", ally));
 		
@@ -208,8 +204,7 @@ methodmap Helena < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Helena_ClotThink(int iNPC)
 {
 	Helena npc = view_as<Helena>(iNPC);

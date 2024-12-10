@@ -78,7 +78,7 @@ public void XenoCombineDDT_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine DDT");
+	strcopy(data.Name, sizeof(data.Name), "Xeno DDT");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_swordsman_ddt");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;
@@ -88,9 +88,9 @@ public void XenoCombineDDT_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombineDDT(client, vecPos, vecAng, ally);
+	return XenoCombineDDT(vecPos, vecAng, team);
 }
 methodmap XenoCombineDDT < CClotBody
 {
@@ -128,23 +128,17 @@ methodmap XenoCombineDDT < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
@@ -160,7 +154,7 @@ methodmap XenoCombineDDT < CClotBody
 	}
 	
 	
-	public XenoCombineDDT(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineDDT(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineDDT npc = view_as<XenoCombineDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
 		SetVariantInt(1);
@@ -190,7 +184,6 @@ methodmap XenoCombineDDT < CClotBody
 		
 		
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 340.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -218,8 +211,7 @@ methodmap XenoCombineDDT < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineDDT_ClotThink(int iNPC)
 {
 	XenoCombineDDT npc = view_as<XenoCombineDDT>(iNPC);

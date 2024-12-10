@@ -109,11 +109,8 @@ static const char g_LastMannAnnouncer[][] =
 
 int g_iSoundEnts[MAXENTITIES];
 int g_iNumSounds;
-
-void Music_MapStart()
+void PrecacheMusicZr()
 {
-	Zero(DelayStopSoundAll);
-	PrecacheSoundArray(g_LastMannAnnouncer);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/1.mp3",_,0);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/2.mp3",_,0);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/3.mp3",_,0);
@@ -142,13 +139,21 @@ void Music_MapStart()
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
 	AltExtraLogic = FindInfoTarget("zr_alternative_extras");
+	ForceNiko = FindInfoTarget("zr_niko");
 
 	if(XenoMapExtra)
 	{
 		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/inside_lab.mp3",_,1);
 		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/outside_wasteland.mp3",_,1);
 	}
+}
+void Music_MapStart()
+{
+	Zero(DelayStopSoundAll);
+	PrecacheSoundArray(g_LastMannAnnouncer);
+	
 	EventRoundStartMusicFilter();
+	PrecacheMusicZr();
 }
 
 void EventRoundStartMusicFilter()
@@ -179,7 +184,7 @@ void StopMapMusicAll()
 	char sSound[256];
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsValidClient(client) && (b_IgnoreMapMusic[client] || !Database_IsCached(client)))
+		if(IsValidClient(client) && (b_IgnoreMapMusic[client] || (!Database_IsLan() && !Database_IsCached(client))))
 		{
 			for (int i = 0; i < g_iNumSounds; i++)
 			{
@@ -241,9 +246,12 @@ void Music_EndLastmann()
 		{
 			if(IsClientInGame(client))
 			{
+				if(Yakuza_Lastman())
+					StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/yakuza_lastman.mp3", 2.0);
+
 				SetMusicTimer(client, 0);
 				StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				SDKCall_SetSpeed(client);
 				TF2_RemoveCondition(client, TFCond_DefenseBuffed);
 				TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 				TF2_RemoveCondition(client, TFCond_RuneHaste);
@@ -257,6 +265,7 @@ void Music_EndLastmann()
 			}
 		}
 		LastMann = false;
+		Yakuza_Lastman(false);
 	}
 }
 
@@ -274,6 +283,8 @@ void PlayTeamDeadSound()
 void Music_RoundEnd(int victim, bool music = true)
 {
 	ExcuteRelay("zr_gamelost");
+	//lastman fail. end music.
+	Music_EndLastmann();
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -282,7 +293,7 @@ void Music_RoundEnd(int victim, bool music = true)
 			if(music)
 				SetMusicTimer(client, GetTime() + 45);
 			
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+			SDKCall_SetSpeed(client);
 			TF2_RemoveCondition(client, TFCond_DefenseBuffed);
 			TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 			TF2_RemoveCondition(client, TFCond_RuneHaste);
@@ -472,6 +483,11 @@ void Music_PostThink(int client)
 	if(f_ClientMusicVolume[client] < 0.05)
 		return;
 
+	//if in menu, dont play new music.
+	//but dont kill old music either.
+	if(SkillTree_InMenu(client))
+		return;
+
 	if(Music_Timer[client] < GetTime() && Music_Timer_2[client] < GetTime())
 	{
 		bool RoundHasCustomMusic = false;
@@ -591,6 +607,7 @@ void Music_PostThink(int client)
 			}
 			return;
 		}
+
 		if(XenoExtraLogic() && !LastMann)
 		{
 			//This is special code for a map.
@@ -606,6 +623,10 @@ void Music_PostThink(int client)
 			}
 			return;
 		}
+		// Player disabled ZR Music
+		if(b_DisableDynamicMusic[client] && !LastMann)
+			return;
+
 		float f_intencity;
 		float targPos[3];
 		float chargerPos[3];
@@ -642,12 +663,18 @@ void Music_PostThink(int client)
 				}
 			}
 		}
+		
+		//TODO: move somewhere else
 		if(RaidbossIgnoreBuildingsLogic())
 		{
-			f_intencity += 9999.9; //absolute max.
-			GlobalIntencity += 9999;
+			//if they arent on red, do this.
+			if(GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red)
+			{
+				//thes are on red, set this.
+				RaidAllowsBuildings = true;
+			}
 		}
-
+		
 		if(!ZombieMusicPlayed)//once set in a wave, it should stay untill the next mass revive.
 		{
 			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
@@ -658,8 +685,16 @@ void Music_PostThink(int client)
 		
 		if(LastMann)
 		{
-			EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-			SetMusicTimer(client, GetTime() + 120);		
+			if(Yakuza_Lastman())
+			{
+				EmitCustomToClient(client, "#zombiesurvival/yakuza_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				SetMusicTimer(client, GetTime() + 163);		
+			}
+			else
+			{
+				EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				SetMusicTimer(client, GetTime() + 120);		
+			}
 		}
 		else if(f_intencity < 1.0)
 		{

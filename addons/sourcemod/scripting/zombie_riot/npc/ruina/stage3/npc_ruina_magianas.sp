@@ -78,9 +78,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Magianas(client, vecPos, vecAng, ally);
+	return Magianas(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -139,16 +139,12 @@ methodmap Magianas < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -178,7 +174,7 @@ methodmap Magianas < CClotBody
 		}
 	}
 	
-	public Magianas(int client, float vecPos[3], float vecAng[3], int ally)
+	public Magianas(float vecPos[3], float vecAng[3], int ally)
 	{
 		Magianas npc = view_as<Magianas>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -255,8 +251,7 @@ methodmap Magianas < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Magianas npc = view_as<Magianas>(iNPC);
@@ -341,8 +336,8 @@ static void ClotThink(int iNPC)
 					Ang[0] = -45.0;
 					Projectile.Angles = Ang;
 					Projectile.speed = 750.0;
-					Projectile.radius = 300.0;
-					Projectile.damage = 500.0;
+					Projectile.radius = 175.0;
+					Projectile.damage = 225.0;
 					Projectile.bonus_dmg = 2.5;
 					Projectile.Time = 10.0;
 
@@ -363,7 +358,7 @@ static void ClotThink(int iNPC)
 							AcceptEntityInput(ModelApply, "SetBodyGroup");
 						}
 
-						float 	Homing_Power = 15.0,
+						float 	Homing_Power = 10.0,
 								Homing_Lockon = 90.0;
 
 						Initiate_HomingProjectile(Proj,
@@ -413,7 +408,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}
 		else
@@ -502,13 +497,13 @@ static void Func_On_Proj_Touch(int projectile, int other)
 		owner = 0;
 	}
 
-	Ruina_Add_Mana_Sickness(owner, other, 0.0, 800);	//very heavy FLAT amount of mana sickness
+	Ruina_Add_Mana_Sickness(owner, other, 0.0, 200);	//very heavy FLAT amount of mana sickness
 		
 	float ProjectileLoc[3];
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
 	Explode_Logic_Custom(fl_ruina_Projectile_dmg[projectile] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[projectile] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[projectile]);
-
+	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	Ruina_Remove_Projectile(projectile);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

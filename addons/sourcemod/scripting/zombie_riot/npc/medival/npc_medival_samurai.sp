@@ -105,9 +105,9 @@ void MedivalSamurai_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalSamurai(client, vecPos, vecAng, ally);
+	return MedivalSamurai(vecPos, vecAng, team);
 }
 float f_RangedPainTolerance[MAXENTITIES];
 
@@ -146,16 +146,12 @@ methodmap MedivalSamurai < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 		
 
@@ -167,7 +163,7 @@ methodmap MedivalSamurai < CClotBody
 	
 	
 	
-	public MedivalSamurai(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalSamurai(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSamurai npc = view_as<MedivalSamurai>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally));
 		SetVariantInt(1);
@@ -227,8 +223,7 @@ methodmap MedivalSamurai < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalSamurai_ClotThink(int iNPC)
 {
 	MedivalSamurai npc = view_as<MedivalSamurai>(iNPC);

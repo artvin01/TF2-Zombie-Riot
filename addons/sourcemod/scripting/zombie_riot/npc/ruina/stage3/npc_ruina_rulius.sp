@@ -70,9 +70,9 @@ static void ClotPrecache()
 	Zero(i_damage_taken);
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Rulius(client, vecPos, vecAng, ally);
+	return Rulius(vecPos, vecAng, team);
 }
 methodmap Rulius < CClotBody
 {
@@ -109,16 +109,12 @@ methodmap Rulius < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -137,7 +133,7 @@ methodmap Rulius < CClotBody
 	
 	
 	
-	public Rulius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Rulius(float vecPos[3], float vecAng[3], int ally)
 	{
 		Rulius npc = view_as<Rulius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
@@ -209,6 +205,8 @@ methodmap Rulius < CClotBody
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 10, 4);		//priority 4, just lower then the actual bosses
 
+		b_ruina_nerf_healing[npc.index] = true;
+
 		return npc;
 	}
 	//npc.AdjustWalkCycle();
@@ -234,8 +232,7 @@ methodmap Rulius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Rulius npc = view_as<Rulius>(iNPC);
@@ -375,7 +372,7 @@ static void Rulius_Special(CClotBody npc, int PrimaryThreatIndex)
 	float type = (wide_set*2) / RUINA_RUIANUS_LOOP_AMT;
 	ang_Look[1] -= type;
 	
-	float Timer = 2.5;
+	float Timer = 1.5;
 	fl_ability_timer[npc.index] = Timer + GetGameTime();
 	int Last_Proj = -1;
 	for(int i=0 ; i<RUINA_RUIANUS_LOOP_AMT; i++)
@@ -404,7 +401,7 @@ static void Rulius_Special(CClotBody npc, int PrimaryThreatIndex)
 		Projectile.iNPC = npc.index;
 		Projectile.Start_Loc = Npc_Vec;
 		Projectile.Angles = Proj_Ang;
-		Projectile.speed = 500.0;
+		Projectile.speed = 300.0;
 		Projectile.Time = Timer+0.1;
 
 		int Proj = Projectile.Launch_Projectile();

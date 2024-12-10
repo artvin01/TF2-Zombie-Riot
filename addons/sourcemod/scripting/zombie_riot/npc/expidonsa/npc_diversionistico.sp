@@ -75,9 +75,9 @@ int DiversionisticoID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Diversionistico(client, vecPos, vecAng, ally, data);
+	return Diversionistico(vecPos, vecAng, team, data);
 }
 
 void DiversionSpawnNpcReset(int index)
@@ -136,7 +136,7 @@ methodmap Diversionistico < CClotBody
 		
 	}
 
-	public Diversionistico(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Diversionistico(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Diversionistico npc = view_as<Diversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, false, true));
 		
@@ -158,9 +158,7 @@ methodmap Diversionistico < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Diversionistico_OnTakeDamage;
 		func_NPCThink[npc.index] = Diversionistico_ClotThink;
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		b_TryToAvoidTraverse[npc.index] = true;
@@ -562,21 +560,6 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 	return 2;
 }
 
-float[] GetBehindTarget(int target, float Distance, float origin[3])
-{
-	float VecForward[3];
-	float vecRight[3];
-	float vecUp[3];
-	
-	GetVectors(target, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
-	
-	float vecSwingEnd[3];
-	vecSwingEnd[0] = origin[0] - VecForward[0] * (Distance);
-	vecSwingEnd[1] = origin[1] - VecForward[1] * (Distance);
-	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
-
-	return vecSwingEnd;
-}
 void DiversionCalmDownCheese(int npcindex)
 {
 	i_DiversioAntiCheese_Tolerance[npcindex] -= 2;

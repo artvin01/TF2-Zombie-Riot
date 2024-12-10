@@ -64,9 +64,9 @@ void Sniper_railgunner_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Sniper_railgunner(client, vecPos, vecAng, ally);
+	return Sniper_railgunner(vecPos, vecAng, team);
 }
 
 static int i_overcharge[MAXENTITIES];
@@ -117,16 +117,12 @@ methodmap Sniper_railgunner < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME-25, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME-25, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -137,7 +133,7 @@ methodmap Sniper_railgunner < CClotBody
 	
 	
 	
-	public Sniper_railgunner(int client, float vecPos[3], float vecAng[3], int ally)
+	public Sniper_railgunner(float vecPos[3], float vecAng[3], int ally)
 	{
 		Sniper_railgunner npc = view_as<Sniper_railgunner>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12500", ally));
 		
@@ -196,8 +192,7 @@ methodmap Sniper_railgunner < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Sniper_railgunner npc = view_as<Sniper_railgunner>(iNPC);

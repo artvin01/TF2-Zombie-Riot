@@ -129,9 +129,9 @@ public void FatherGrigori_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FatherGrigori(client, vecPos, vecAng, ally);
+	return FatherGrigori(vecPos, vecAng, team);
 }
 methodmap FatherGrigori < CClotBody
 {
@@ -178,9 +178,7 @@ methodmap FatherGrigori < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayAngerSound() {
@@ -196,9 +194,7 @@ methodmap FatherGrigori < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayPullSound() {
@@ -220,9 +216,7 @@ methodmap FatherGrigori < CClotBody
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -231,7 +225,7 @@ methodmap FatherGrigori < CClotBody
 		
 	}
 	
-	public FatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
+	public FatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
 		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally));
 		
@@ -308,8 +302,8 @@ methodmap FatherGrigori < CClotBody
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", this.index);
 			
-			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 75.0); 
-			f_CustomGrenadeDamage[entity] = 75.0;	
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 76.0); 
+			f_CustomGrenadeDamage[entity] = 76.0;	
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
@@ -322,8 +316,7 @@ methodmap FatherGrigori < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void FatherGrigori_ClotThink(int iNPC)
 {
 	FatherGrigori npc = view_as<FatherGrigori>(iNPC);

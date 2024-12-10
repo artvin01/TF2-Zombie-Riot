@@ -86,9 +86,9 @@ public void XenoCombinePoliceSmg_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombinePoliceSmg(client, vecPos, vecAng, ally);
+	return XenoCombinePoliceSmg(vecPos, vecAng, team);
 }
 methodmap XenoCombinePoliceSmg < CClotBody
 {
@@ -141,16 +141,12 @@ methodmap XenoCombinePoliceSmg < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
@@ -166,7 +162,7 @@ methodmap XenoCombinePoliceSmg < CClotBody
 	}
 	
 	
-	public XenoCombinePoliceSmg(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombinePoliceSmg(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombinePoliceSmg npc = view_as<XenoCombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "900", ally));
 		
@@ -200,7 +196,6 @@ methodmap XenoCombinePoliceSmg < CClotBody
 		npc.m_iAttacksTillReload = 45;
 		npc.m_bmovedelay = false;
 		
-		npc.m_iState = 0;
 		npc.m_flSpeed = 190.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -222,8 +217,7 @@ methodmap XenoCombinePoliceSmg < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombinePoliceSmg_ClotThink(int iNPC)
 {
 	XenoCombinePoliceSmg npc = view_as<XenoCombinePoliceSmg>(iNPC);

@@ -76,9 +76,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Loonaris(client, vecPos, vecAng, ally);
+	return Loonaris(vecPos, vecAng, team);
 }
 
 methodmap Loonaris < CClotBody
@@ -135,16 +135,12 @@ methodmap Loonaris < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -173,7 +169,7 @@ methodmap Loonaris < CClotBody
 		}
 	}
 
-	public Loonaris(int client, float vecPos[3], float vecAng[3], int ally)
+	public Loonaris(float vecPos[3], float vecAng[3], int ally)
 	{
 		Loonaris npc = view_as<Loonaris>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -255,8 +251,7 @@ methodmap Loonaris < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Loonaris npc = view_as<Loonaris>(iNPC);
@@ -304,7 +299,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Speed_Buff(npc.index, 140.0, 1.0, 1.3);
+		Master_Apply_Speed_Buff(npc.index, 140.0, 1.0, 1.125);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
@@ -315,7 +310,7 @@ static void ClotThink(int iNPC)
 		float Range_Min = (125.0*125.0);
 		float Range_Max = (1250.0 * 1250.0);
 
-		if(Lanius_Teleport_Logic(npc.index, PrimaryThreatIndex, Range_Min, Range_Max, (npc.Anger ? 22.5 : 30.0), 50.0, 7.5, On_LaserHit))
+		if(Lanius_Teleport_Logic(npc.index, PrimaryThreatIndex, Range_Min, Range_Max, (npc.Anger ? 45.0 : 60.0), 50.0, 7.5))
 			npc.PlayTeleportSound();	
 
 		Ruina_Self_Defense Melee;
@@ -358,10 +353,6 @@ static void ClotThink(int iNPC)
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
 	Ruina_Add_Mana_Sickness(iNPC, Target, 0.0, 30);
-}
-static void On_LaserHit(int client, int Target, int damagetype, float damage)
-{
-	Ruina_Add_Mana_Sickness(client, Target, 0.1, 50);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {

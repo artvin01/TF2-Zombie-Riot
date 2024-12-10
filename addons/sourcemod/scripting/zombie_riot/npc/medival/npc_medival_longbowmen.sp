@@ -83,9 +83,9 @@ void MedivalLongbowmen_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalLongbowmen(client, vecPos, vecAng, ally);
+	return MedivalLongbowmen(vecPos, vecAng, team);
 }
 methodmap MedivalLongbowmen < CClotBody
 {
@@ -132,17 +132,13 @@ methodmap MedivalLongbowmen < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -151,7 +147,7 @@ methodmap MedivalLongbowmen < CClotBody
 		
 	}
 	
-	public MedivalLongbowmen(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalLongbowmen(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalLongbowmen npc = view_as<MedivalLongbowmen>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		SetVariantInt(1);
@@ -217,8 +213,7 @@ methodmap MedivalLongbowmen < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalLongbowmen_ClotThink(int iNPC)
 {
 	MedivalLongbowmen npc = view_as<MedivalLongbowmen>(iNPC);

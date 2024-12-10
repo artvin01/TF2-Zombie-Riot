@@ -2,10 +2,9 @@
 #pragma newdecls required
 
 
-static char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+static const char g_DeathSounds[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
 static char g_HurtSounds[][] = {
@@ -87,7 +86,7 @@ static bool Silvester_BEAM_UseWeapon[MAXENTITIES];
 static float fl_Timebeforekamehameha[MAXENTITIES];
 static int i_InKame[MAXENTITIES];
 static bool b_RageAnimated[MAXENTITIES];
-static bool b_angered_twice[MAXENTITIES];
+
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 static int i_SadText;
@@ -157,9 +156,9 @@ void Silvester_TBB_Precahce()
 	PrecacheSoundCustom("#zombiesurvival/silvester_raid/silvester.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RaidbossSilvester(client, vecPos, vecAng, ally, data);
+	return RaidbossSilvester(vecPos, vecAng, team, data);
 }
 #define EMPOWER_SOUND "items/powerup_pickup_king.wav"
 #define EMPOWER_MATERIAL "materials/sprites/laserbeam.vmt"
@@ -189,10 +188,6 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll(g_IdleSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_IdleSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	
 	}
 	
@@ -205,10 +200,6 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_IdleAlertedSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayHurtSound() {
@@ -218,10 +209,6 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_HurtSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayDeathSound() {
@@ -229,11 +216,6 @@ methodmap RaidbossSilvester < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
 		
 		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_DeathSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayMeleeSound() {
@@ -247,21 +229,12 @@ methodmap RaidbossSilvester < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
 		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_AngerSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayAngerSoundPassed() {
 	
 		int sound = GetRandomInt(0, sizeof(g_AngerSoundsPassed) - 1);
 		EmitSoundToAll(g_AngerSoundsPassed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_AngerSoundsPassed[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav", this.index, SNDCHAN_STATIC, 80, _, 0.8);
 	}
 	
@@ -271,9 +244,7 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayPullSound() {
@@ -304,7 +275,7 @@ methodmap RaidbossSilvester < CClotBody
 		
 		
 	}
-	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RaidbossSilvester(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossSilvester npc = view_as<RaidbossSilvester>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -353,6 +324,7 @@ methodmap RaidbossSilvester < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
 		i_SadText = false;
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_bThisNpcIsABoss = true;
 		
@@ -371,7 +343,7 @@ methodmap RaidbossSilvester < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
@@ -393,11 +365,11 @@ methodmap RaidbossSilvester < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
+		/*
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_buttler/bak_buttler_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
+		*/
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_hat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
@@ -429,8 +401,6 @@ methodmap RaidbossSilvester < CClotBody
 		npc.GetAttachment("head", flPos, flAng);
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,0.0});
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
@@ -439,6 +409,8 @@ methodmap RaidbossSilvester < CClotBody
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
+
+
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -511,8 +483,7 @@ methodmap RaidbossSilvester < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(iNPC);
@@ -1471,10 +1442,10 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 static void Internal_NPCDeath(int entity)
 {
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
-	if(!npc.m_bDissapearOnDeath)
-	{
-		npc.PlayDeathSound();
-	}
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 	StopSound(entity, SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
@@ -1500,6 +1471,8 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;
@@ -2341,7 +2314,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				{
 					ReviveAll(true);
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painfull for you.");
+						CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painful for you.");
 					else
 						CPrintToChatAll("{gold}Silvester{default}: You never listen. I will not assist you more.");
 					i_TalkDelayCheck += 1;
@@ -2349,7 +2322,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{darkblue}Waldch{default}: There is a far greater enemy then us, we can't beat him.");
+						CPrintToChatAll("{darkblue}Waldch{default}: There is a far greater enemy than us, we can't beat him.");
 					else
 						CPrintToChatAll("{darkblue}Waldch{default}: It appears like you already know what you get yourself into.");
 
@@ -2390,12 +2363,21 @@ void SilvesterApplyEffects(int entity, bool withoutweapon = false)
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
 	if(!npc.Anger)
 	{
+		if(IsValidEntity(npc.m_iWearable8))
+			RemoveEntity(npc.m_iWearable8);
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+
 		ExpidonsaRemoveEffects(entity);
 		if(!withoutweapon)
 			SilvesterApplyEffectsForm1(entity);
 	}
 	else
 	{
+		if(IsValidEntity(npc.m_iWearable8))
+			RemoveEntity(npc.m_iWearable8);
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
 		ExpidonsaRemoveEffects(entity);
 		SilvesterApplyEffectsForm2(entity, withoutweapon);			
 	}
@@ -2406,6 +2388,16 @@ void SilvesterApplyEffectsForm1(int entity)
 	if(AtEdictLimit(EDICT_RAID))
 		return;
 	
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
+	if(IsValidEntity(npc.m_iWearable1))
+	{
+		RemoveEntity(npc.m_iWearable1);
+	}
+	npc.m_iWearable1 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
+	SetVariantInt(2048);
+	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");	
+	/*
 	int red = 255;
 	int green = 255;
 	int blue = 255;
@@ -2464,6 +2456,7 @@ void SilvesterApplyEffectsForm1(int entity)
 	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
 	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
 	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
+	*/
 }
 
 
@@ -2471,14 +2464,20 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 {
 	if(AtEdictLimit(EDICT_RAID))
 		return;
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
 	
-	int red = 255;
-	int green = 255;
-	int blue = 0;
-	float flPos[3];
-	float flAng[3];
 	if(!withoutweapon)
 	{
+		
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			RemoveEntity(npc.m_iWearable1);
+		}
+		npc.m_iWearable1 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 3);
+		SetVariantInt(2048);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");	
+		/*
 		int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 		
 		int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
@@ -2532,9 +2531,20 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 		i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
 		i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
 		i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
+		*/
 			
 	}
 
+	if(IsValidEntity(npc.m_iWearable8))
+	{
+		RemoveEntity(npc.m_iWearable8);
+	}
+	npc.m_iWearable8 = npc.EquipItem("head", WINGS_MODELS_1);
+	SetVariantInt(1);
+	AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");	
+	SetVariantString("1.35");
+	AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
+//	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
 	//possible loop function?
 
 	/*
@@ -2545,6 +2555,7 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 		2nd: Up and down, negative up, positive down.
 		3rd: front and back, negative goes back.
 	*/
+	/*
 	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	GetAttachment(entity, "flag", flPos, flAng);
 	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
@@ -2759,29 +2770,6 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	i_ExpidonsaEnergyEffect[entity][67] = EntIndexToEntRef(Laser_3_Wingset_6);
 	i_ExpidonsaEnergyEffect[entity][68] = EntIndexToEntRef(Laser_4_Wingset_6);
 	i_ExpidonsaEnergyEffect[entity][69] = EntIndexToEntRef(ParticleOffsetMain);
-
-
-
-
-
-/*
-
-	//XYZ
-	int particle_1_Wingset_99 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_2_Wingset_99 = InfoTargetParentAt({0.0,-50.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_3_Wingset_99 = InfoTargetParentAt({0.0,50.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_4_Wingset_99 = InfoTargetParentAt({-50.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_5_Wingset_99 = InfoTargetParentAt({50.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int Laser_1_Wingset_99 = ConnectWithBeamClient(particle_2_Wingset_99, particle_3_Wingset_99, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_99 = ConnectWithBeamClient(particle_4_Wingset_99, particle_5_Wingset_99, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-
-	SetParent(particle_1_Wingset_99, particle_2_Wingset_99, "",_, true);
-	SetParent(particle_1_Wingset_99, particle_3_Wingset_99, "",_, true);
-	SetParent(particle_1_Wingset_99, particle_4_Wingset_99, "",_, true);
-	SetParent(particle_1_Wingset_99, particle_5_Wingset_99, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_99, flPos);
-	SetParent(entity, particle_1_Wingset_99, "flag",_);
 */
 }
 
@@ -2837,7 +2825,7 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 		}
 		else
 		{
-			CPrintToChatAll("{darkblue}Waldch{default}: Way better then to die to {green}Him.");
+			CPrintToChatAll("{darkblue}Waldch{default}: Way better than to die to {green}Him.");
 		}
 	}
 }

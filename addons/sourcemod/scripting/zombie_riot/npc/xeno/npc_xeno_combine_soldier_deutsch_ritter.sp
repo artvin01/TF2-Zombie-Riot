@@ -79,7 +79,7 @@ public void XenoCombineDeutsch_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Deutsch Ritter");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Deutsch Ritter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_deutsch_ritter");
 	strcopy(data.Icon, sizeof(data.Icon), "teutons");
 	data.IconCustom = true;
@@ -89,9 +89,9 @@ public void XenoCombineDeutsch_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombineDeutsch(client, vecPos, vecAng, ally);
+	return XenoCombineDeutsch(vecPos, vecAng, team);
 }
 methodmap XenoCombineDeutsch < CClotBody
 {
@@ -138,39 +138,29 @@ methodmap XenoCombineDeutsch < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -180,7 +170,7 @@ methodmap XenoCombineDeutsch < CClotBody
 	}
 	
 	
-	public XenoCombineDeutsch(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineDeutsch(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "110000", ally));
 		SetVariantInt(1);
@@ -209,7 +199,6 @@ methodmap XenoCombineDeutsch < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 
-		npc.m_iState = 0;
 		npc.m_flSpeed = 270.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -245,8 +234,7 @@ methodmap XenoCombineDeutsch < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineDeutsch_ClotThink(int iNPC)
 {
 	XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(iNPC);

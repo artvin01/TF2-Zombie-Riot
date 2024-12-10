@@ -67,9 +67,9 @@ public void XenoHeavyGiant_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoHeavyGiant(client, vecPos, vecAng, ally);
+	return XenoHeavyGiant(vecPos, vecAng, team);
 }
 methodmap XenoHeavyGiant < CClotBody
 {
@@ -131,7 +131,7 @@ methodmap XenoHeavyGiant < CClotBody
 	}
 	
 	
-	public XenoHeavyGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoHeavyGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoHeavyGiant npc = view_as<XenoHeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "15000", ally, false, true));
 		
@@ -159,7 +159,6 @@ methodmap XenoHeavyGiant < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 200.0;
-		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -184,8 +183,7 @@ methodmap XenoHeavyGiant < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void XenoHeavyGiant_ClotThink(int iNPC)
 {
 	XenoHeavyGiant npc = view_as<XenoHeavyGiant>(iNPC);

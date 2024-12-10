@@ -37,9 +37,9 @@ void LiberiOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Liberi(client, vecPos, vecAng, ally);
+	return Liberi(vecPos, vecAng, team);
 }
 static float LiberiBuff[MAXENTITIES];
 
@@ -62,7 +62,7 @@ methodmap Liberi < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public Liberi(int client, float vecPos[3], float vecAng[3], int ally)
+	public Liberi(float vecPos[3], float vecAng[3], int ally)
 	{
 		Liberi npc = view_as<Liberi>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "35000", ally));
 		

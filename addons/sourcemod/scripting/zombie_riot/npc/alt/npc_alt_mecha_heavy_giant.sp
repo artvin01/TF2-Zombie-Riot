@@ -67,9 +67,9 @@ void Mecha_HeavyGiant_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Mecha_HeavyGiant(client, vecPos, vecAng, ally);
+	return Mecha_HeavyGiant(vecPos, vecAng, team);
 }
 
 methodmap Mecha_HeavyGiant < CClotBody
@@ -117,16 +117,12 @@ methodmap Mecha_HeavyGiant < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -136,7 +132,7 @@ methodmap Mecha_HeavyGiant < CClotBody
 	}
 	
 	
-	public Mecha_HeavyGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public Mecha_HeavyGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		Mecha_HeavyGiant npc = view_as<Mecha_HeavyGiant>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.35", "15000", ally, false, true));
 		
@@ -172,8 +168,7 @@ methodmap Mecha_HeavyGiant < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	Mecha_HeavyGiant npc = view_as<Mecha_HeavyGiant>(iNPC);

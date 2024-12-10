@@ -59,8 +59,6 @@ void PlayCustomSoundSpecter(int client)
 		bool rand = view_as<bool>(GetURandomInt() % 2);
 		int pitch = GetRandomInt(65,75);
 		EmitSoundToAll(rand ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, client, SNDCHAN_AUTO, 75,_,0.8,pitch);
-//		EmitSoundToAll(rand ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, client, SNDCHAN_AUTO, 80,_,_,pitch);
-//		EmitSoundToAll(SPECTER_SURVIVEHIT, client, SNDCHAN_AUTO, 80);
 	}
 	else
 	{
@@ -93,9 +91,10 @@ stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		int maxhealth = SDKCall_GetMaxHealth(attacker);
 		float attackerHealthRatio = float(health) / float(maxhealth);
 		float victimHealthRatio = float(GetEntProp(victim, Prop_Data, "m_iHealth")) / float(ReturnEntityMaxHealth(victim));
+		victimHealthRatio *= 2.0; //make ratios easier.
 		
-		if(victimHealthRatio < attackerHealthRatio)
-		{
+		if(victimHealthRatio > attackerHealthRatio)
+		{/*
 			// If victim has less health %, self damage (1.5% of max health)
 			health -= maxhealth * 3 / 200;
 			if(health < 1)
@@ -105,8 +104,9 @@ stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		}
 		else
 		{
-			// If victim has more health %, bonus damage (+70% damage)
-			damage *= 1.7;
+		*/
+			// If victim has more health %, bonus damage (+50% damage)
+			damage *= 1.5;
 			DisplayCritAboveNpc(victim, attacker, false);
 			if((flags & SPECTER_REVIVE) &&  dieingstate[attacker] < 1 && SpecterCharge[attacker] < SpecterMaxCharge(attacker))
 				SpecterCharge[attacker] += 5;
@@ -150,21 +150,19 @@ public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 		ClientCommand(client, "playgamesound %s", SPECTER_BONEFRACTURE);
 
 		TF2_AddCondition(client, TFCond_MegaHeal, SPECTER_BONE_FRACTURE_DURATION);
-		TF2_AddCondition(client, TFCond_NoHealingDamageBuff, SPECTER_BONE_FRACTURE_DURATION);
 		MakePlayerGiveResponseVoice(client, 1); //haha!
 
 		if(RaidbossIgnoreBuildingsLogic(1))
 		{
-			ApplyTempAttrib(weapon, 412, 0.25, SPECTER_BONE_FRACTURE_DURATION);
+			ApplyTempAttrib(weapon, 412, 0.35, SPECTER_BONE_FRACTURE_DURATION);
+			CreateTimer(0.5, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		}
 		else
 		{
-			TF2_AddCondition(client, TFCond_UberchargedHidden, SPECTER_BONE_FRACTURE_DURATION);
 			CreateTimer(0.1, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		}
 
-		ApplyTempAttrib(weapon, 6, 0.40,SPECTER_BONE_FRACTURE_DURATION);
-	//	ApplyTempAttrib(weapon, 2, 0.75,SPECTER_BONE_FRACTURE_DURATION);
+		ApplyTempAttrib(weapon, 6, 0.5,SPECTER_BONE_FRACTURE_DURATION);
 		
 		float flPos[3]; // original
 		float flAng[3]; // original
@@ -189,13 +187,9 @@ public Action Specter_DrainTimer(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden))
+		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_MegaHeal))
 		{
-			int health = GetClientHealth(client) * 9 / 10;
-			if(health < 1)
-				health = 1;
-			
-			SetEntityHealth(client, health);
+			TF2_AddCondition(client, TFCond_PreventDeath, 0.2);
 			return Plugin_Continue;
 		}
 	}
@@ -208,17 +202,14 @@ public Action Specter_BoneTimer(Handle timer, int userid)
 	if(client)
 	{
 		TF2_RemoveCondition(client, TFCond_MegaHeal);
-		TF2_RemoveCondition(client, TFCond_UberchargedHidden);
-		TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 		f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
-		if(!dieingstate[client])
-		{
-			if(!RaidbossIgnoreBuildingsLogic(1))
-				SetEntityHealth(client, 1);
-		}
-			
+		//if(!dieingstate[client])
+		//{
+		//	if(!RaidbossIgnoreBuildingsLogic(1))
+		//		SetEntityHealth(client, 1);
+		//}
 		
-		TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
+		TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
 		StopSound(client, SNDCHAN_STATIC, "player/pl_impact_stun.wav");
 	}
 	return Plugin_Stop;
@@ -226,6 +217,12 @@ public Action Specter_BoneTimer(Handle timer, int userid)
 
 public void Weapon_SpecterSurvive(int client, int weapon, bool &result, int slot)
 {
+	if(GetClientButtons(client) & IN_DUCK)
+	{
+		Weapon_SpecterBone(client, weapon, result, slot);
+		//is the client ducking? if yes, allow old usage.
+		return;
+	}
 	float cooldown = Ability_Check_Cooldown(client, slot);
 	if(cooldown < 0.0)
 	{
@@ -236,8 +233,8 @@ public void Weapon_SpecterSurvive(int client, int weapon, bool &result, int slot
 
 		SpecterSurviveFor[client] = GetGameTime() + 9.8;
 
-		ApplyTempAttrib(weapon, 2, 3.6, 10.0);
-		ApplyTempAttrib(weapon, 6, 2.0, 10.0);
+		ApplyTempAttrib(weapon, 2, 2.3, 10.0);
+		ApplyTempAttrib(weapon, 6, 1.6, 10.0);
 		ApplyTempAttrib(weapon, 412, 0.333, 10.0);
 		ApplyTempAttrib(weapon, 740, 0.333, 10.0);
 		Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 11.0 : 109.8);
@@ -328,7 +325,8 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 
 					i_ExplosiveProjectileHexArray[weapon] = 0;
 					i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
-					Explode_Logic_Custom(f_SpecterDeadDamage[client] * 4.0, client, weapon, weapon, flPos, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
+					i_ExplosiveProjectileHexArray[weapon] |= ZR_DAMAGE_IGNORE_DEATH_PENALTY;
+					Explode_Logic_Custom(f_SpecterDeadDamage[client], client, weapon, weapon, flPos, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
 					//Bleed sucks but thats on purpose
 
 					float vecTarget[3];

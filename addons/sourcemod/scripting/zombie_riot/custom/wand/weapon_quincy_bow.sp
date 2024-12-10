@@ -19,7 +19,7 @@ static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
 #define QUINCY_BOW_ONHIT_MULTI_ARROW 10.0
 static float fl_hyper_arrow_charge[MAXTF2PLAYERS];
 
-float fl_trace_target_timeout[MAXTF2PLAYERS+1][MAXENTITIES];
+
 static float fl_quincy_hyper_arrow_timeout[MAXTF2PLAYERS];
 static float fl_sound_timer[MAXTF2PLAYERS + 1];
 

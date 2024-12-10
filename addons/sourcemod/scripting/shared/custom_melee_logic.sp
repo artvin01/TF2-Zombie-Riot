@@ -236,6 +236,22 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				enemies_hit_aoe = Ulpianus_EnemyHitCount();
 			}
+			case WEAPON_YAKUZA:
+			{
+				Yakuza_EnemiesHit(client, weapon, enemies_hit_aoe);
+			}
+			case WEAPON_FULLMOON:
+			{
+				FullMoon_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
+			}
+			case WEAPON_OLDINFINITYBLADE:
+			{
+				enemies_hit_aoe = 10;
+			}
+			case WEAPON_CASTLEBREAKER:
+			{
+				CastleBreaker_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
+			}
 		}	
 	}
 #endif
@@ -405,6 +421,16 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 	if(target == -1)
 		return ZEROSOUND;
 
+#if defined ZR
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_FULLMOON:
+		{
+			if(FullMoonAbilityOn(client))
+				return ZEROSOUND;
+		}
+	}
+#endif
 	if(target > 0 && (!b_NpcHasDied[target] || target <= MaxClients))
 	{
 		switch(weapon_index)
@@ -655,7 +681,6 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 
 #if defined ZR
 			damage *= BuildingWeaponDamageModif(1);
-			damage *= 0.5;
 #endif
 		}
 
@@ -716,6 +741,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							Blitzkrieg_Kit_OnHitEffect(client);
 						}
+						case WEAPON_FULLMOON:
+						{
+							FullMoon_Meleetrace_Hit_Before(client, damage, i_EntitiesHitAoeSwing[counter]);
+						}
 						default:
 						{
 							
@@ -732,9 +761,17 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							damage *= 0.5;
 						}
+						case WEAPON_SPECTER:
+						{
+							damage *= 0.8; //each target hit reduces damage done.
+						}	
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
 							Angelic_Shotgun_Meleetrace_Hit_After(client, damage);
+						}
+						case WEAPON_FULLMOON:
+						{
+							FullMoon_Meleetrace_Hit_After(damage);
 						}
 						default:
 						{
@@ -749,7 +786,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			i_EntitiesHitAoeSwing[i] = -1;
 		}
-
+#if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
 			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
@@ -757,7 +794,12 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 				if(PlayOnceOnly) //It hit atleast 1 target!
 					SuperUbersaw_Post(client);
 			}
+			case WEAPON_YAKUZA: //yes, if we miss, then we do other stuff.
+			{
+				YakuzaWeaponSwingDid(client);
+			}
 		}
+#endif
 
 		if(i_EntitiesHitAtOnceMax <= 1 && target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
 		{
@@ -766,6 +808,16 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			
 			float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
 			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, vecHit);	
+			//this only happens if it only tried to hit 1 target anyways.
+#if defined ZR
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_FULLMOON:
+				{
+					FullMoon_Meleetrace_Hit_Before(client, damage, target);
+				}
+			}
+#endif
 		}
 		else if(target > -1 && i_CustomWeaponEquipLogic[weapon] == WEAPON_BOOM_HAMMER)
 		{

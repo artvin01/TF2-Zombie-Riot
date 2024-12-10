@@ -46,9 +46,9 @@ void SeaFounder_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeaFounder(client, vecPos, vecAng, ally, data);
+	return SeaFounder(vecPos, vecAng, team, data);
 }
 
 methodmap SeaFounder < CSeaBody
@@ -74,7 +74,7 @@ methodmap SeaFounder < CSeaBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaFounder(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SeaFounder(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
@@ -370,6 +370,8 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 			}
 		}
 
+		//If Only allow 25 navs to spread at once
+		int AllowMaxSpread = 0;
 		int length = NavList.Length;
 		for(int a; a < length; a++)	// Spread creap to all tiles it touches
 		{
@@ -382,9 +384,16 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 					int count = nav1.GetAdjacentCount(b);
 					for(int c; c < count; c++)
 					{
+						if(AllowMaxSpread >= 25)
+						{
+							break;
+						}
 						CNavArea nav2 = nav1.GetAdjacentArea(b, c);
 						if(nav2 != NULL_AREA && !nav2.HasAttributes(NAV_MESH_NO_HOSTAGES) && NavList.FindValue(nav2) == -1)
+						{
+							AllowMaxSpread++;
 							NavList.Push(nav2);
+						}
 					}
 				}
 			}

@@ -54,9 +54,9 @@ void VausMagica_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VausMagica(client, vecPos, vecAng, ally);
+	return VausMagica(vecPos, vecAng, team);
 }
 
 methodmap VausMagica < CClotBody
@@ -96,7 +96,7 @@ methodmap VausMagica < CClotBody
 		EmitSoundToAll(g_ShieldAttackSounds[GetRandomInt(0, sizeof(g_ShieldAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public VausMagica(int client, float vecPos[3], float vecAng[3], int ally)
+	public VausMagica(float vecPos[3], float vecAng[3], int ally)
 	{
 		VausMagica npc = view_as<VausMagica>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "5000", ally));
 		
@@ -121,9 +121,7 @@ methodmap VausMagica < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 150.0;
 		
@@ -266,7 +264,7 @@ void VausMagicaShieldGiving(VausMagica npc, float gameTime)
 	{
 		return;
 	}
-	if(npc.m_flNextRangedSpecialAttack > gameTime + 990.0)
+	if(npc.m_flNextRangedSpecialAttack == FAR_FUTURE)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 15.0;
 		float flPos[3];
@@ -351,6 +349,6 @@ void VausMagicaShield(int entity, int victim, float damage, int weapon)
 void VausMagicaShieldInternal(int shielder, int victim)
 {
 	VausMagica npc = view_as<VausMagica>(shielder);
-	npc.m_flNextRangedSpecialAttack = GetGameTime(shielder) + 999.0;
+	npc.m_flNextRangedSpecialAttack = FAR_FUTURE;
 	VausMagicaGiveShield(victim, 3);
 }

@@ -59,6 +59,10 @@ void Configs_ConfigsExecuted()
 	}
 	
 #if defined RPG
+	RPG_SetupMapSpecific(mapname);
+#endif
+
+#if defined RPG
 	FileNetwork_ConfigSetup();
 	NPC_ConfigSetup();
 #else
@@ -69,13 +73,13 @@ void Configs_ConfigsExecuted()
 #if defined ZR
 	Building_ConfigSetup();
 	Items_SetupConfig();
+	SkillTree_ConfigSetup();
 	Store_ConfigSetup();
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 #endif
-	
 #if defined RPG
-	RPG_ConfigSetup(mapname);
+	RPG_ConfigSetup();
 #endif
 
 #if defined RTS
@@ -534,7 +538,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 #endif	// Non-RTS
 
 #if defined ZR
-bool Config_CreateNPCStats(const char[] classname, const int[] attrib, const float[] value, int attribs, WeaponData data)
+stock bool Config_CreateNPCStats(const char[] classname, const int[] attrib, const float[] value, int attribs, WeaponData data)
 {
 	int i;
 	int val = WeaponList.Length;

@@ -24,7 +24,7 @@
 	{
 		"en"		"Fire Rate"
 		"fr"		"Intervalle d'attaque"
-		"ru"		"Скоростр."
+		"ru"		"Скорострельность"
 		"de"		"Feuerrate"
 		"pt"		"Cadência de tiro"
 		"nl"		"Vuursnelheid"
@@ -34,7 +34,7 @@
 	{
 		"en"		"Reload"
 		"fr"		"Rechargement"
-		"ru"		"Перезар."
+		"ru"		"Перезарядка"
 		"de"		"Nachladen"
 		"pt"		"Recarga"
 		"nl"		"Herlaad"
@@ -64,7 +64,7 @@
 	{
 		"en"		"Charge Damage"
 		"fr"		"Dégats du Charge"
-		"ru"		"Урон от рывка"
+		"ru"		"Урон рывка"
 		"de"		"Ladungsschaden"
 		"pt"		"Dano da Carga"
 		"nl"		"Ladingsschade"
@@ -84,7 +84,7 @@
 	{
 		"en"		"Range"
 		"fr"		"Portée"
-		"ru"		"Радиус"
+		"ru"		"Дальность"
 		"de"		"Reichweite"
 		"pt"		"Distancia"
 		"nl"		"Afstand"
@@ -204,7 +204,7 @@
 	{
 		"en"		"Tommygun"
 		"fr"		"Tommygun"
-		"ru"		"Автомат Томми"
+		"ru"		"Томислав"
 		"de"		"Tommygun"
 		"pt"		"Tommygun"
 		"nl"		"Tommygun"
@@ -254,7 +254,7 @@
 	{
 		"en"		"Aresenal's Tripmine Layer"
 		"fr"		"Placeur de Mines de Aresenal"
-		"ru"		"Арсенальный миномёт"
+		"ru"		"Устоновщик мин Арсенала"
 		"de"		"Aresenals Tripminschicht"
 		"pt"		"Camada de Minas do Aresenal"
 		"nl"		"Aresenal's Explosieve Valmijn legger"
@@ -294,7 +294,7 @@
 	{
 		"en"		"Boomstick"
 		"fr"		"Boomstick"
-		"ru"		"Громовая палка"
+		"ru"		"Бумстик"
 		"de"		"Kaboomstock"
 		"pt"		"Cano de Vassoura"
 		"nl"		"Boomstick"
@@ -314,7 +314,7 @@
 	{
 		"en"		"Rampager Automatic Rifle"
 		"fr"		"Fusil Automatique de Ravageur"
-		"ru"		"Яростный автомат"
+		"ru"		"Автоматическая винтовка ''Ремпейджер''"
 		"de"		"Rampager-Automatikgewehr"
 		"pt"		"Rifle de Barragem Automática"
 		"nl"		"Razende Automatisch geweer"
@@ -374,7 +374,7 @@
 	{
 		"en"		"Infected Rampager Assault Rifle"
 		"fr"		"Fusil Automatique Ravageur des Infectés"
-		"ru"		"Заражённая яростная штурмовая винтовка"
+		"ru"		"Инфецированная Осадная пушка ''Ремпейджер''"
 		"de"		"Infizierte Rampager Sturmgewehr"
 		"pt"		"Rifle de Barragem Automática Infectado"
 		"nl"		"Geinfecteerde Razende Aanvalsgeweer"
@@ -384,7 +384,7 @@
 	{
 		"en"		"Star Shooter"
 		"fr"		"Lance-étoiles"
-		"ru"		"Звёздный стрелок"
+		"ru"		"Звёздометатель"
 		"de"		"Sternen Schütze"
 		"pt"		"Estrela Cadente"
 		"nl"		"Sterrenschieter"
@@ -394,7 +394,7 @@
 	{
 		"en"		"Secondary Weapons"
 		"fr"		"Armes Secondaires"
-		"ru"		"Доп. оружие"
+		"ru"		"Вторичное оружие"
 		"de"		"Sekundär Waffen"
 		"pt"		"Armas Secundárias"
 		"nl"		"Tweede Wapen"
@@ -424,7 +424,7 @@
 	{
 		"en"		"Nail Gun"
 		"fr"		"Fusil à Clous"
-		"ru"		"Гвоздемёт"
+		"ru"		"Гвоздомёт"
 		"de"		"Nagelpistole"
 		"pt"		"Arma de Pregos"
 		"nl"		"Nagelgeweer"
@@ -434,7 +434,7 @@
 	{
 		"en"		"Deagle"
 		"fr"		"Deagle"
-		"ru"		"Пустынный орёл"
+		"ru"		"Орёл"
 		"de"		"Deagle"
 		"pt"		"Deagle"
 		"nl"		"Deagle"
@@ -464,7 +464,7 @@
 	{
 		"en"		"Mage Potion"
 		"fr"		"Potion de Magicien"
-		"ru"		"Зелье мага"
+		"ru"		"Магическое зелье"
 		"de"		"Magie Trank"
 		"pt"		"Poção de Mago"
 		"nl"		"Magisch Drankje"
@@ -610,7 +610,7 @@
 	{
 		"en"		"PhlogStorms Detonator"
 		"fr"		"Phlogistorage Détonateur"
-		"ru"		"Детонатор «ФлогШторм»"
+		"ru"		"Детонатор ФлогШторма"
 		"de"		"PhlogStorms Zünder"
 		"pt"		"Detonador FlogisTade"
 		"nl"		"PhlogStorms onsteker"
@@ -630,7 +630,7 @@
 	{
 		"en"		"Mounter"
 		"fr"		"Monteur"
-		"ru"		"Монтажник"
+		"ru"		"Возонситель"
 		"de"		"Aufheber"
 		"pt"		"Montador"
 		"nl"		"Drager"
@@ -670,7 +670,7 @@
 	{
 		"en"		"Hammer"
 		"fr"		"Marteau"
-		"ru"		"Молот"
+		"ru"		"Кувалда"
 		"de"		"Hammer"
 		"pt"		"Martelo"
 		"nl"		"Hamer"
@@ -739,7 +739,7 @@
 	{
 		"en"		"Fists Of Kahmlstein"
 		"fr"		"Poings de Kahmlstein"
-		"ru"		"Кулаки Кахмльштейна"
+		"ru"		"Кулаки Кахмлштейна"
 		"de"		"Fäuste von Kahmlstein"
 		"pt"		"Punhos de Kahmlstein"
 		"nl"		"Vuisten van Kahmlstein"
@@ -769,7 +769,7 @@
 	{
 		"en"		"Bad Wand"
 		"fr"		"Baguette Médiocre"
-		"ru"		"Жезл вреда"
+		"ru"		"Плохой посох"
 		"de"		"Schlechter Zauberstab"
 		"pt"		"Cajado Ruim"
 		"nl"		"Slecht Toverstok"
@@ -779,7 +779,7 @@
 	{
 		"en"		"Fire Wand"
 		"fr"		"Baguette des Flammes"
-		"ru"		"Жезл огня"
+		"ru"		"Посох огня"
 		"de"		"Feuer Zauberstab"
 		"pt"		"Cajado Incendiário"
 		"nl"		"Vuurstok"
@@ -789,7 +789,7 @@
 	{
 		"en"		"Lightning Staff"
 		"fr"		"Bâton des Éclairs"
-		"ru"		"Жезл молнии"
+		"ru"		"Посох молнии"
 		"de"		"Blitz Stab"
 		"pt"		"Cajado Elétrico"
 		"nl"		"Bliksem staf"
@@ -819,7 +819,7 @@
 	{
 		"en"		"Wind Staff"
 		"fr"		"Bâton des Cyclônes"
-		"ru"		"Посох воздуха"
+		"ru"		"Посох ветра"
 		"de"		"Wind Stab"
 		"pt"		"Cajado do Vento"
 		"nl"		"Wind staf"
@@ -829,7 +829,7 @@
 	{
 		"en"		"Elemental Staff"
 		"fr"		"Bâton des Éléments"
-		"ru"		"Посох стихий"
+		"ru"		"Элементальный посох"
 		"de"		"Elementarstab"
 		"pt"		"Cajado Elemental"
 		"nl"		"elementale Staf"
@@ -848,57 +848,77 @@
 	"Decorative Object"
 	{
 		"en"		"Decorative Object"
+		"ru"		"Декоративный объект"
 		"fr"		"Objet Décoratif"
 	}
 	"Barricade"
 	{
 		"en"		"Barricade"
+		"ru"		"Барикада"
 		"fr"		"Barrière"
+		"chi"		"路障"
 	}
 	"Armor Table"
 	{
 		"en"		"Armor Table"
+		"ru"		"Стол с бронёй"
 		"fr"		"Table d'Armure"
+		"chi"		"装甲柜"
 	}
 	"Ammo Box"
 	{
 		"en"		"Ammo Box"
+		"ru"		"Ящик с патронами"
 		"fr"		"Boîte de Munitions"
+		"chi"		"弹药箱"
 	}
 	"Perk Machine"
 	{
 		"en"		"Perk Machine"
+		"ru"		"Машина Перков"
 		"fr"		"Machine de Perks"
+		"chi"		"可乐机"
 	}
 	"Pack-a-Punch"
 	{
 		"en"		"Pack-a-Punch"
+		"ru"		"Машина для улучшения"
 		"fr"		"Machine Pack-a-Punch"
+		"chi"		"升级站"
 	}
 	"Sentrygun"
 	{
 		"en"		"Sentrygun"
+		"ru"		"Турель"
 		"fr"		"Mitrailleuse"
+		"chi"		"步哨"
 	}
 	"Mortar"
 	{
 		"en"		"Mortar"
 		"fr"		"Mortier"
+		"chi"		"迫击炮"
 	}
 	"Food Fridge"
 	{
 		"en"		"Food Fridge"
+		"ru"		"Холодильник"
 		"fr"		"Frigo de Bouffe"
+		"chi"		"冰箱"
 	}
 	"Village"
 	{
 		"en"        "Village"
+		"ru"	    "Деревня"
 		"fr"        "Village"
+		"chi"		"村庄"
 	}
 	"Metal"
 	{
 		"en"		"Metal"
+		"ru"		"Метал"
 		"fr"		"Métal"
+		"chi"		"金属"
 	}
 	"Chooseable Buildings (Only one)"
 	{
@@ -991,7 +1011,7 @@
 	{
 		"en"		"God's Might"
 		"fr"		"Force de Dieu"
-		"ru"		"Божье могущество"
+		"ru"		"Божья мощь"
 		"de"		"Gottes Macht"
 		"pt"		"Coragem dos deuses"
 		"nl"		"God's Macht"
@@ -1131,7 +1151,7 @@
 	{
 		"en"		"Ranged Upgrades"
 		"fr"		"Améliorations Armes à Portée"
-		"ru"		"Улучшения винтовки"
+		"ru"		"Улучшения дальнего боя"
 		"de"		"Fernkampf-Upgrades"
 		"pt"		"Melhorias de Armas de fogo"
 		"nl"		"Range-upgrades"
@@ -1151,7 +1171,7 @@
 	{
 		"en"		"Ammo Coat"
 		"fr"		"Manteau de Munitions"
-		"ru"		"Патронное пальто"
+		"ru"		"Защитное покрытие"
 		"de"		"Munition Mantel"
 		"pt"		"Colete de Munição"
 		"nl"		"Munitie jas"
@@ -1161,7 +1181,7 @@
 	{
 		"en"		"Ammo Coat Elite"
 		"fr"		"Manteau de Munitions Élites"
-		"ru"		"Элитное патронное пальто"
+		"ru"		"Элитное защитное покрытие"
 		"de"		"Munition Mantel Elite"
 		"pt"		"Colete de Munição Aprimorado"
 		"nl"		"Elite Munitie Jas"
@@ -1181,7 +1201,7 @@
 	{
 		"en"		"Anti-Matter Bullets"
 		"fr"		"Munitions Antimatières"
-		"ru"		"Пули из антиматерии"
+		"ru"		"Пули антиматерии"
 		"de"		"Anti-Materie-Kugeln"
 		"pt"		"Balas de Anti-Matéria"
 		"nl"		"Anti-materie Kogels"
@@ -1231,7 +1251,7 @@
 	{
 		"en"		"Betweenlands Potion"
 		"fr"		"Potion Entre-Terre"
-		"ru"		"Зелье межземелья"
+		"ru"		"Зелье междумирья"
 		"de"		"Zwischenlande-Trank"
 		"pt"		"Poção Entre Terras"
 		"nl"		"Tussenlandse toverdrank"
@@ -1261,7 +1281,7 @@
 	{
 		"en"		"Passive Upgrades"
 		"fr"		"Améliorations Passives"
-		"ru"		"Постоянные улучшения"
+		"ru"		"Пассивные улучшения"
 		"de"		"Passive Upgrades"
 		"pt"		"Melhorias Passivas"
 		"nl"		"Passieve Upgrades"
@@ -1291,7 +1311,7 @@
 	{
 		"en"		"Kevlar"
 		"fr"		"Kevlar"
-		"ru"		"Бронежилет"
+		"ru"		"Кевлар"
 		"de"		"Kevlar"
 		"pt"		"Kevlar"
 		"nl"		"Kevlar"
@@ -1331,7 +1351,7 @@
 	{
 		"en"		"Healthy Apple from Bob"
 		"fr"		"Pomme Santé de Bob"
-		"ru"		"Вкусное яблоко от Боба"
+		"ru"		"Здоровое яблоко от Боба"
 		"de"		"Gesunder Apfel von Bob"
 		"pt"		"Maçã Saudável de Bob"
 		"nl"		"Gezonde Appel van Bob"
@@ -1491,7 +1511,7 @@
 	{
 		"en"		"Ranged Perk"
 		"fr"		"Bonus Armes à Portée"
-		"ru"		"Перк винтовки"
+		"ru"		"Перки дальнего боя"
 		"de"		"Fernkampf Vorteil"
 		"pt"		"Habilidades de Arma de fogo"
 		"nl"		"Ranged extras"
@@ -1521,7 +1541,7 @@
 	{
 		"en"		"Headshot Affinity"
 		"fr"		"Affinité des Tirs en Pleine Tête"
-		"ru"		"Близость к выстрелу в голову"
+		"ru"		"Стрелок по головам"
 		"de"		"Kopfschussaffinität"
 		"pt"		"Afinidade com Tiros na Cabeça"
 		"nl"		"Hoofdschot Affiniteit"
@@ -1804,6 +1824,7 @@
 		"de"		"Bonus-Affe! [Selten]"
 		"pt"		"Macaco Bonus! [Raro]"
 		"nl"		"Bonus Aap! [Zeldzaam]"
+		"chi"		"额外猴子！[稀有]"
 	}
 	"Big Bunch [Rare]"
 	{
@@ -1813,6 +1834,7 @@
 		"de"		"Große Menge [Selten]"
 		"pt"		"Punhado Grande [Raro]"
 		"nl"		"Grote Tros [Zeldzaam]"
+		"chi"		"大群[稀有]"
 	}
 	"Accelerated Aerodarts [Uncommon]"
 	{
@@ -1822,6 +1844,7 @@
 		"de"		"Beschleunigte Luftpfeile [Ungewöhnlich]"
 		"pt"		"Dardos Aereos Acelerados [Incomum]"
 		"nl"		"Versnelde Lucht Darts [Ongewoon]"
+		"chi"		"超速针刺[稀有]"
 	}
 	"Faster Takedowns [Common]"
 	{
@@ -1831,6 +1854,7 @@
 		"de"		"Schnellere Takedowns [Gewöhnlich]"
 		"pt"		"Derrubada Rápida [Comum]"
 		"nl"		"Snellere Neerhalingen [Gewoon]"
+		"chi"		"快速击倒[常见]"
 	}
 	"Extra Burny Stuff [Uncommon]"
 	{
@@ -1840,6 +1864,7 @@
 		"de"		"Extra Burny Stuff [Ungewöhnlich]"
 		"pt"		"Coisas Incendiárias Extras [Incomum]"
 		"nl"		"Extra brandende spullen [Ongewoon]"
+		"chi"		"可燃物[罕见]"
 	}
 	"Quad Burst [Legendary]"
 	{
@@ -1849,6 +1874,7 @@
 		"de"		"Quad Burst [Legendär]"
 		"pt"		"Rajada Quádrupla [Lendário]"
 		"nl"		"Viersuitbarsting [Legendarisch]"
+		"chi"		"四倍爆发[传奇]"
 	}
 	"Gun Coolant [Rare]"
 	{
@@ -1858,6 +1884,7 @@
 		"de"		"Waffenkühlmittel [Selten]"
 		"pt"		"Refrigerador de Armas [Raro]"
 		"nl"		"Pistool koelvloeistof [Zeldzaam]"
+		"chi"		"冷却剂[稀有]"
 	}
 	"Flanking Maneuvers [Rare]"
 	{
@@ -1867,6 +1894,7 @@
 		"de"		"Flankenmanöver [Selten]"
 		"pt"		"Manuseios de Emboscada [Raro]"
 		"nl"		"Flankerende maneuvers [Zeldzaam]"
+		"chi"		"战技：偷袭[稀有]"
 	}
 	"Charged Chinooks [Uncommon]"
 	{
@@ -1876,6 +1904,7 @@
 		"de"		"Geladene Chinooks [Ungewöhnlich]"
 		"pt"		"Chinooks Carregado [Incomum]"
 		"nl"		"Opgeladen Chinooks [Ongewoon]"
+		"chi"		"充能奇诺克[罕见]"
 	}
 	"Big Bloon Sabotage [Legendary]"
 	{
@@ -1885,6 +1914,7 @@
 		"de"		"Großer Bloon Sabotage [Legendär]"
 		"pt"		"Grande Sabotador de Bloons [Lendário]"
 		"nl"		"Groot Ballonsabotage [Legendarisch]"
+		"chi"		"大型气球毁灭者[传奇]"
 	}
 	"SUPER Range [Rare]"
 	{
@@ -1894,6 +1924,7 @@
 		"de"		"SUPER Reichweite [Selten]"
 		"pt"		"SUPER Alcançe [Raro]"
 		"nl"		"SUPER Afstand [Zeldzaam]"
+		"chi"		"超级射程[稀有]"
 	}
 	"Heavy Knockback [Legendary]"
 	{
@@ -1903,6 +1934,7 @@
 		"de"		"Starker Rückstoß [Legendär]"
 		"pt"		"Repulsão Pesada [Lendário]"
 		"nl"		"Zware terugslag [Legendarisch]"
+		"chi"		"超级击退[传奇]"
 	}
 	"Speedy Brewing [Uncommon]"
 	{
@@ -1912,6 +1944,7 @@
 	//	"de"		""
 		"pt"		"Fervura Veloz [Incomum]"
 		"nl"		"Snel Brouwen [Ongewoon]"
+		"chi"		"快速酿造[罕见]"
 	}
 	"Strike Down The False [Uncommon]"
 	{
@@ -1921,6 +1954,7 @@
 		"de"		"Schnelles Brühen [Ungewöhnlich]"
 		"pt"		"Derrube o Falso [Incomum]"
 		"nl"		"Sla neer de valse [ongewoon]"
+		"chi"		"测谎仪[罕见]"
 	}
 	"Flame Jet [Common]"
 	{
@@ -1930,6 +1964,7 @@
 		"de"		"Flammenstrahl [Gewöhnlich]"
 		"pt"		"Jato de Labaredas [Comum]"
 		"nl"		"Vlamstraal [Gewoon]"
+		"chi"		"火焰喷射器[常见]"
 	}
 	"Strong Tonic [Rare]"
 	{
@@ -1938,6 +1973,7 @@
 		"ru"		"Крепкий тоник [Редкое]"
 		"de"		"Starkes Stärkungsmittel [Selten]"
 		"nl"		"Sterke Tonic [Zeldzaam]"
+		"chi"		"高浓度汤力水[稀有]"
 	}
 	"Arcane Impale [Rare]"
 	{
@@ -1947,6 +1983,7 @@
 		"de"		"Arkanes Aufspießen [Selten]"
 		"pt"		"Impalamento Arcano [Raro]"
 		"nl"		"Geheimzinnige spietsing [Zeldzaam]"
+		"chi"		"灵力穿透[稀有]"
 	}
 	"Deadly Tranquility [Uncommon]"
 	{
@@ -1956,6 +1993,7 @@
 		"de"		"Tödliche Ruhe [Ungewöhnlich]"
 		"pt"		"Tranquilidade Mortal [Incomum]"
 		"nl"		"Dodelijke Rust [Ongewoon]"
+		"chi"		"死寂[罕见]"
 	}
 	"There Can Be Only One [Mythic]"
 	{
@@ -1965,6 +2003,7 @@
 		"de"		"Es kann nur einen geben [Mythisch]"
 		"pt"		"So Pode Existir Um [Mítico]"
 		"nl"		"Er Is Er Maar Één [Mythisch]"
+		"chi"		"There Can be Only One[神话]"
 	}
 	"Tiny Tornadoes [Rare]"
 	{
@@ -1974,6 +2013,7 @@
 		"de"		"Kleines Tornados [Selten]"
 		"pt"		"Pequenos Tornados [Raro]"
 		"nl"		"Kleine tornado's [Zeldzaam]"
+		"chi"		"迷你龙卷风[稀有]"
 	}
 	"Mana Shield [Legendary]"
 	{
@@ -1983,6 +2023,7 @@
 		"de"		"Manaschild [Legendär]"
 		"pt"		"Escudo de Mana [Lendário]"
 		"nl"		"Mana Schild [Legendarisch]"
+		"chi"		"能量盾[传说]"
 	}
 	"Vigilant Sentries [Common]"
 	{
@@ -1992,6 +2033,7 @@
 		"de"		"Wachsame Wachposten [Gewöhnlich]"
 		"pt"		"Vigilante Sentinela [Comum]"
 		"nl"		"Voorzichtige Schildwachters [Gewoon]"
+		"chi"		"高警惕步哨[常见]"
 	}
 	"To ARMS! [Legendary]"
 	{
@@ -2001,6 +2043,7 @@
 		"de"		"Zu den Waffen! [Legendär]"
 		"pt"		"Para os BRAÇOS! [Lendário]"
 		"nl"		"Ten Armen! [Legendarisch]"
+		"chi"		"预备！[传说]"
 	}
 	"Healthy Bananas [Legendary]"
 	{
@@ -2010,6 +2053,7 @@
 		"de"		"Gesunde Bananen [Legendär]"
 		"pt"		"Bananas Saúdaveis [Lendário]"
 		"nl"		"Gezonde Bananen [Legendarisch]"
+		"chi"		"健康の香蕉[常见]"
 	}
 	"Veteran Monkey Training [Uncommon]"
 	{
@@ -2019,6 +2063,7 @@
 		"de"		"Veteranen-Affentraining [Ungewöhnlich]"
 		"pt"		"Treinamento Veterano de Primata [Incomum]"
 		"nl"		"Veteraan Apentraining [Ongewoon]"
+		"chi"		"老兵猴子训练[罕见]"
 	}
 	"Pre-Game Prep [Legendary]"
 	{
@@ -2028,6 +2073,8 @@
 		"de"		"Spielvorbereitung [Legendär]"
 		"pt"		"Preparação antes Jogo [Lendário]"
 		"nl"		"Voorspel Voorbereiding [Legendarisch]"
+
+		"chi"		"提前准备[传说]"
 	}
 	"Builder Gear"
 	{
@@ -2125,7 +2172,7 @@
 		"en"       "Beam Wand"
 		"fr"       "Baguette Rayonneuse"
 		"ru"       "Жезл луча"
-		"chi"       "光射发胀"
+		"chi"       "光之法杖"
 	}
 	"Cryo Staff"
 	{
@@ -2133,7 +2180,6 @@
 		"fr"       "Bâton des Glaces"
 		"chi"       "寒冰法杖"
 	}
-
 	"Only one allowed, sell to see and buy others."
 	{
 		"en"       "Only one allowed, sell to see and buy others."
@@ -2173,6 +2219,7 @@
 	{
 		"en"       "Throwable Repair Kit"
 		"fr"       "Kit de Réparation Lançable"
+		"chi"		"维修手雷"
 	}
 	"Primary Builder Weapons"
 	{
@@ -2337,6 +2384,7 @@
 	{
 		"en"	"Barracks"
 		"fr"	"Caserne"
+		"chi"	"兵营"
 	}
 	"Nearl Silvester Spear"
 	{
@@ -2509,12 +2557,14 @@
 	"Quincy's Bow"
 	{
 		"en"	"Quincy's Bow"
+		"ru"	"Лук Квинси"
 		"fr"	"Arc de Quincy"
 		"chi"	"昆西弓"
 	}
 	"The Standchen"
 	{
 		"en"	"De Ständchen"
+		"ru"	"De Ständchen"
 		"fr"	"De Ständchen"
 		"chi"	"[韵文]"
 	}
@@ -2528,11 +2578,13 @@
 	{
 		"en"	"De Ständchen de Disharmonie"
 		"fr"	"De Ständchen de Disharmonie"
+		"chi"	"][韵文]["
 	}
 	"The Standchen AltPap 2"
 	{
 		"en"	"De Ständchen de Stille"
 		"fr"	"De Ständchen de Stille"
+		"chi"	"]]韵文[["
 	}
 	"Combo Kits"
 	{
@@ -2543,23 +2595,30 @@
 	"Seaborn Infection"
 	{
 		"en"	"Seaborn Infection"
+		"ru"	"Морерождённая инфекция"
 		"fr"	"Infection Seaborn"
 		"chi"	"海嗣感染"
 	}
 	"Seaborn Claws"
 	{
 		"en"	"Seaborn Claws"
+		"ru"	"Когти морерождённого"
 		"fr"	"Griffes Seaborn"
+		"chi"	"海嗣利爪"
 	}
 	"Seaborn Spines"
 	{
 		"en"	"Seaborn Spines"
+		"ru"	"Шипы морерождённого"
 		"fr"	"Épines Seaborn"
+		"chi"	"海嗣颈骨"
 	}
 	"Seaborn Salve"
 	{
 		"en"	"Seaborn Salve"
+		"ru"	"Фласка Морерождённого"
 		"fr"	"Baume Seaborn"
+		"chi"	"海嗣药膏"
 	}
 	"The Flagellant"
 	{
@@ -2570,141 +2629,178 @@
 	"Punish"
 	{
 		"en"	"Punish"
+		"ru"	"Наказать"
 		"fr"	"Punition"
 		"chi"	"惩罚"
 	}
 	"Deathless"
 	{
 		"en"	"Deathless"
+		"ru"	"Бессмертный"
 		"fr"	"Sans Mort"
 		"chi"	"无死"
 	}
 	"Ion-Blitz"
 	{
 		"en"	"Ion-Blitz"
+		"ru"	"Блитз-ион"
 		"fr"	"Ion-Blitz"
 		"chi"	"闪光"
+		"chi"	"闪「光」"
 	}
 	"Blitz-Blade"
 	{
 		"en"	"Blitz-Blade"
+		"ru"	"Блитз-клинок"
 		"fr"	"Lame Blitz"
 		"chi"	"闪电刃"
+		"chi"	"电「刃」"
 	}
 	"Hurricane-Blitz"
 	{
 		"en"	"Hurricane-Blitz"
+		"ru"	"Ураган-Блитз"
 		"fr"	"Cyclone Blitz"
 		"chi"	"闪电战"
+		"chi"	"「闪电战」"
 	}
 	"Gravaton Spell"
 	{
 		"en"	"Gravaton Spell"
+		"ru"	"Заклинание гравитации"
 		"fr"	"Sortilège du Gravaton"
 		"chi"	"引力法术"
 	}
 	"Heavy Particle Rifle"
 	{
 		"en"	"Heavy Particle Rifle"
+		"ru"	"Винтовка тяжёлых частиц"
 		"fr"	"Fusil de Particules Lourdes"
 		"chi"	"重型粒子步枪"
 	}
 	"Flash Grenade"
 	{
 		"en"	"Flash Grenade"
+		"ru"	"Светошумовая граната"
 		"fr"	"Grenade Flash"
 		"chi"	"闪光弹"
 	}
 	"Flashier Grenade"
 	{
 		"en"	"Flashier Grenade"
+		"ru"	"Очень яркая граната"
 		"fr"	"Grenade Flash Intense"
 		"chi"	"升级闪光弹"
 	}
 	"Energized Riot Gun"
 	{
 		"en"	"Energized Riot Gun"
+		"ru"	"Заряженный полицейский пистолет"
 		"fr"	"Pistolet des Émeutes Énergisé"
 		"chi"	"充能暴动步枪"
 	}
 	"The Tinker"
 	{
 		"en"	"The Tinker"
+		"ru"	"Жестянщик"
 		"fr"	"Le Forgeur"
 		"chi"	"匠工"
 	}
 	"Tinker's Wrench"
 	{
 		"en"	"Tinker's Wrench"
+		"ru"	"Гаечный ключ жестянщика"
 		"fr"	"Clé du Forgeron"
 		"chi"	"匠工扳手"
 	}
 	"Tinker's Texan Mounter"
 	{
 		"en"	"Tinker's Texan Mounter"
+		"ru"	"Техатский возводитель Жестянщика"
 		"fr"	"Monteur du Forgeron"
 		"chi"	"多功能扳手"
 	}
 	"Tinker Workshop"
 	{
 		"en"	"Tinker Workshop"
+		"ru"	"мастерская Жестянщика"
 		"fr"	"Laboratoire du Forgeron"
+		"chi"	"匠工坊"
 	}
 	"Merchant Brewing Stand"
 	{
 		"en"	"Merchant Brewing Stand"
+		"ru"	"Подставка для заваривания Торговца"
 	}
 	"Tinker Research"
 	{
 		"en"	"Tinker Research"
+		"ru"	"Исследование Жестянщика"
 		"fr"	"Recherche du Forgeron"
 		"chi"	"匠工研究"
 	}
 	"Tinker Ranger"
 	{
 		"en"	"Tinker Ranger"
+		"ru"	"Рейнджер Жестянщика"
 		"fr"	"Tireur Forgeron"
 		"chi"	"匠工射手"
 	}
 	"The Merchant"
 	{
 		"en"	"The Merchant"
+		"ru"	"Торговец"
 		"fr"	"Le Marchand"
+		"chi"	"商人"
 	}
 	"Merchant's Wrench"
 	{
 		"en"	"Merchant's Wrench"
+		"ru"	"Гаечынй ключ Торговца"
 		"fr"	"Clé du Marchand"
+		"chi"	"商人扳手"
 	}
 	"Merchant Emergency Button"
 	{
 		"en"	"Merchant Emergency Button"
+		"ru"	"Аварийная кнопка торговца"
 		"fr"	"Bouton de Secours du Marchand"
+		"chi"	"商人紧急按钮"
 	}
 	"The Merchant Skilled"
 	{
 		"en"	"The Merchant: Skilled"
+		"ru"	"Торговец:Умелый"
 		"fr"	"Le Marchand: Qualifié"
+		"chi"	"进阶商人"
 	}
 	"The Merchant Elite"
 	{
 		"en"	"The Merchant: Elite"
+		"ru"	"Торговец:Элитный"
 		"fr"	"Le Marchand: Élite"
+		"chi"	"精英商人"
 	}
 	"The Merchant Mastery 1"
 	{
 		"en"	"The Merchant: Mastery 1"
+		"ru"	"Торговец:Мастерство 1"
 		"fr"	"Le Marchand: Maître 1"
+		"chi"	"商人精通： 1"
 	}
 	"The Merchant Mastery 2"
 	{
 		"en"	"The Merchant: Mastery 2"
+		"ru"	"Торговец:Мастретсво 2"
 		"fr"	"Le Marchand: Maître 2"
+		"chi"	"商人精通： 3"
 	}
 	"The Merchant Mastery 3"
 	{
 		"en"	"The Merchant: Mastery 3"
+		"ru"	"Торговец: Мастерство 3"
 		"fr"	"Le Marchand: Maître 3"
+		"chi"	"商人精通： 3"
 	}
 	//"Pinus Knight"
 	//{
@@ -2714,21 +2810,57 @@
 	"Flaming Tail Knight"
 	{
 		"en"	"Flaming Tail Knight"
+		"ru"	"Рыцарь горящего хвоста"
 		"fr"	"Chevalier à Queue Enflamée"
 	}
 	"Song Of The Ocean"
 	{
 		"en"	"Song Of The Ocean"
+		"ru"	"Песян Океана"
 		"fr"	"Chant de l'Océan"
+		"chi"	"海洋之歌"
 	}
 	"Taurus Judge"
 	{
 		"en"	"Taurus Judge"
 		"fr"	"Juge Taurus"
+		"chi"	"金牛座法官"
 	}
 	"Vows of the Sea"
 	{
 		"en"	"Vows of the Sea"
+		"ru"	"Клятвы моря"
 		"fr"	"Voeu Océanique"
+		"chi"	"海之宣言"
+	}
+	"Ludomania"
+	{
+		"en"	"Ludomania"
+		"ru"	"Людомания"
+		"chi"	"卢多狂热"
+	}
+	"Ludomancy"
+	{
+		"en"	"Ludomancy"
+		"ru"	"Людомантия"
+		"chi"	"「圣」卢多"
+	}
+	"The Dragon of Dojima"
+	{
+		"en"	"The Dragon of Dojima"
+		"ru"	"Дракон Доджимы"
+	}
+	"Normal Fists"
+	{
+		"en"	"''Normal Fists''"
+		"ru"	"''Нормальные кулаки''"
+	}
+	"Whistle Stop"
+	{
+		"en"	"Whistle Stop"
+	}
+	"Ancestor Launcher"
+	{
+		"en"	"Ancestor Launcher"
 	}
 }

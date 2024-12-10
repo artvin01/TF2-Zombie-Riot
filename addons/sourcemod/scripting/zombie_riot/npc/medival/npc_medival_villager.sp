@@ -75,9 +75,9 @@ int MedivalVillager_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalVillager(client, vecPos, vecAng, ally);
+	return MedivalVillager(vecPos, vecAng, team);
 }
 #define MAXTRIESVILLAGER 25
 
@@ -133,17 +133,13 @@ methodmap MedivalVillager < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -152,7 +148,7 @@ methodmap MedivalVillager < CClotBody
 		
 	}
 	
-	public MedivalVillager(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalVillager(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetVillagerHealth(), ally));
 		
@@ -230,61 +226,74 @@ methodmap MedivalVillager < CClotBody
 				}
 
 				float vecGoal[3]; RandomArea.GetCenter(vecGoal);
+				vecGoal[2] += 1.0;
 
-				vecGoal[2] += 20.0;
+				if(IsPointHazard(vecGoal)) //Retry.
+					continue;
+				if(IsPointHazard(vecGoal)) //Retry.
+					continue;
+
 				static float hullcheckmaxs_Player_Again[3];
 				static float hullcheckmins_Player_Again[3];
 
 				hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
 				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
+				
 				if(IsPointHazard(vecGoal)) //Retry.
+					continue;
+				
+				vecGoal[2] += 18.0;
+				if(IsPointHazard(vecGoal)) //Retry.
+					continue;
+				
+				vecGoal[2] -= 18.0;
+				vecGoal[2] -= 18.0;
+				vecGoal[2] -= 18.0;
+				if(IsPointHazard(vecGoal)) //Retry.
+					continue;
+				vecGoal[2] += 18.0;
+				vecGoal[2] += 18.0;
+				if(IsSpaceOccupiedIgnorePlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 				{
 					continue;
 				}
-				else if(IsSpaceOccupiedIgnorePlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+				float Accumulated_Points;
+				for(int client_check=1; client_check<=MaxClients; client_check++)
 				{
-					continue;
-				}
-				else
-				{
-					float Accumulated_Points;
-					for(int client_check=1; client_check<=MaxClients; client_check++)
-					{
-						if(IsClientInGame(client_check) && IsPlayerAlive(client_check) && GetClientTeam(client_check)==2 && TeutonType[client_check] == TEUTON_NONE && dieingstate[client_check] == 0)
-						{		
-							float f3_PositionTemp[3];
-							GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-							float distance = GetVectorDistance( f3_PositionTemp, vecGoal, true); 
-							//leave it all squared for optimsation sake!
-							float inverting_score_calc;
+					if(IsClientInGame(client_check) && IsPlayerAlive(client_check) && GetClientTeam(client_check)==2 && TeutonType[client_check] == TEUTON_NONE && dieingstate[client_check] == 0)
+					{		
+						float f3_PositionTemp[3];
+						GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+						float distance = GetVectorDistance( f3_PositionTemp, vecGoal, true); 
+						//leave it all squared for optimsation sake!
+						float inverting_score_calc;
 
-							inverting_score_calc = ( distance / 100000000.0);
+						inverting_score_calc = ( distance / 100000000.0);
 
-							if(ally == TFTeam_Red)
-							{
-								inverting_score_calc -= 1;
-
-								inverting_score_calc *= -1.0;					
-							}
-
-							Accumulated_Points += inverting_score_calc;
-						}
-					}
-					if(Accumulated_Points > CurrentPoints)
-					{
-						vecGoal[2] -= 20.0;
-						f3_AreasCollected = vecGoal;
-						CurrentPoints = Accumulated_Points;
-					}
-					AreasCollected += 1;
-					if(AreasCollected >= MAXTRIESVILLAGER)
-					{
-						if(vecGoal[0])
+						if(ally == TFTeam_Red)
 						{
-							TeleportEntity(npc.index, f3_AreasCollected, NULL_VECTOR, NULL_VECTOR);
+							inverting_score_calc -= 1;
+
+							inverting_score_calc *= -1.0;					
 						}
-						break;
+
+						Accumulated_Points += inverting_score_calc;
 					}
+				}
+				if(Accumulated_Points > CurrentPoints)
+				{
+					vecGoal[2] -= 20.0;
+					f3_AreasCollected = vecGoal;
+					CurrentPoints = Accumulated_Points;
+				}
+				AreasCollected += 1;
+				if(AreasCollected >= MAXTRIESVILLAGER)
+				{
+					if(vecGoal[0])
+					{
+						TeleportEntity(npc.index, f3_AreasCollected, NULL_VECTOR, NULL_VECTOR);
+					}
+					break;
 				}
 			}
 		}
@@ -771,9 +780,10 @@ void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 35.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						if(!ShouldNpcDealBonusDamage(target))
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB);
@@ -868,7 +878,7 @@ static char[] GetVillagerHealth()
 {
 	int health = 60;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

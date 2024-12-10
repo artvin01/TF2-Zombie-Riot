@@ -73,9 +73,9 @@ static void ClotPrecache()
 	
 	PrecacheSound("misc/halloween/gotohell.wav");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Adiantum(client, vecPos, vecAng, ally);
+	return Adiantum(vecPos, vecAng, team);
 }
 
 
@@ -104,16 +104,12 @@ methodmap Adiantum < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -139,7 +135,7 @@ methodmap Adiantum < CClotBody
 		
 		
 	}
-	public Adiantum(int client, float vecPos[3], float vecAng[3], int ally)
+	public Adiantum(float vecPos[3], float vecAng[3], int ally)
 	{
 		Adiantum npc = view_as<Adiantum>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "13500", ally));
 		
@@ -230,8 +226,7 @@ methodmap Adiantum < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Adiantum npc = view_as<Adiantum>(iNPC);

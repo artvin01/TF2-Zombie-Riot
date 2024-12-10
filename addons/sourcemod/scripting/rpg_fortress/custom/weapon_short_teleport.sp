@@ -3,7 +3,6 @@
 
 static int ST_HitEntitiesTeleportTrace[MAXENTITIES];
 
-#define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 #define WAND_TELEPORT_SOUND "misc/halloween/spell_teleport.wav"
 
 static int ShortTeleportLaserIndex;
@@ -128,15 +127,33 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level, float damage)
 
 	if(Player_Teleport_Safe(client, endPos))
 	{
+		bool MagicFocus = false;
+		if(MagicFocusReady(client))
+		{
+			MagicFocus = true;
+			MagicFocusUse(client);
+		}
 		float Range = 100.0;
 		float Time = 0.25;
-		spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
-		spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
-		spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
-		spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 		255, 255, 255, 200, 1, 		Time, 10.0, 8.0, 1,Range * 2.0);	
-		spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt",		255, 255, 255, 200, 1,		Time, 10.0, 8.0, 1,Range * 2.0);		
-		spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", 		255, 255, 255, 200, 1, 		Time, 10.0, 8.0, 1,Range * 2.0);		
-		
+		if(MagicFocus)
+		{
+			spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
+			spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
+			spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", 100, 100, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
+			spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 		100, 100, 255, 200, 1, 		Time, 10.0, 8.0, 1,Range * 2.0);	
+			spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt",		100, 100, 255, 200, 1,		Time, 10.0, 8.0, 1,Range * 2.0);		
+			spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", 		100, 100, 255, 200, 1, 		Time, 10.0, 8.0, 1,Range * 2.0);		
+		}
+		else
+		{
+			spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
+			spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
+			spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
+			spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 		255, 255, 255, 200, 1, 		Time, 10.0, 8.0, 1,Range * 2.0);	
+			spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt",		255, 255, 255, 200, 1,		Time, 10.0, 8.0, 1,Range * 2.0);		
+			spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", 		255, 255, 255, 200, 1, 		Time, 10.0, 8.0, 1,Range * 2.0);				
+		}
+
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		Explode_Logic_Custom(damage, client, client, weapon, abspos, Range, _, _, false, _, _, _);
@@ -169,12 +186,28 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level, float damage)
 			SDKHooks_TakeDamage(ST_HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamage, VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;
 			Teleport_CD = 10.0;
+			if(MagicFocus)
+			{
+				FreezeNpcInTime(ST_HitEntitiesTeleportTrace[entity_traced], 1.0);
+			}
 		}
 		FinishLagCompensation_Base_boss();
+		if(MagicFocus)
+		{
+			Teleport_CD *= 0.5;
+		}
 		abspos[2] += 40.0;
 		endPos[2] += 40.0;
-		TE_SetupBeamPoints(abspos, endPos, ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {255,255,255,200}, 3);
-		TE_SendToAll(0.0);
+		if(MagicFocus)
+		{
+			TE_SetupBeamPoints(abspos, endPos, ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {100,100,255,200}, 3);
+			TE_SendToAll(0.0);
+		}
+		else
+		{
+			TE_SetupBeamPoints(abspos, endPos, ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {255,255,255,200}, 3);
+			TE_SendToAll(0.0);
+		}
 		return Teleport_CD;
 	}
 	ClientCommand(client, "playgamesound items/medshotno1.wav");

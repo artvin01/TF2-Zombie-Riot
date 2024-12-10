@@ -43,9 +43,9 @@ void DesertQanaas_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DesertQanaas(client, vecPos, vecAng, ally);
+	return DesertQanaas(vecPos, vecAng, team);
 }
 
 methodmap DesertQanaas < CClotBody
@@ -81,7 +81,7 @@ methodmap DesertQanaas < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public DesertQanaas(int client, float vecPos[3], float vecAng[3], int ally)
+	public DesertQanaas(float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertQanaas npc = view_as<DesertQanaas>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "550", ally));
 		
@@ -118,9 +118,7 @@ methodmap DesertQanaas < CClotBody
 			fl_Extra_Speed[npc.index] *= 1.2;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		if(ally != TFTeam_Red)
 		{
 			if(LastSpawnDiversio < GetGameTime())
@@ -300,7 +298,7 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 			return 0;
 		}
 	}
-	if(RogueTheme == BlueParadox && i_npcspawnprotection[npc.index] == 1)
+	if(Rogue_Mode() && i_npcspawnprotection[npc.index] == 1)
 		return 0;
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 	npc.FaceTowards(VecEnemy, 15000.0);

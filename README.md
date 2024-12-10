@@ -28,7 +28,7 @@ The performance heavy things are Lagcompensation and pathfinder, but i tried to 
 Most of the code is made towards client prediction to make the best experience.
 
 Use THIS compiler version if you dont want any wierd issues:
-1.12.0.7053
+1.12.0.7163
 
 Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.
 
@@ -61,6 +61,9 @@ Main Server:
 "zr_maxplayersplaying" = "14" ( def. "14" )
 -Max players allowed to play at once, it should be set lower on linux due to performance drops on it
 -You may set it to any value, but i recomment 14-20
+
+"zr_raidmultihp" = "1.0" (def. "1.0)
+-Multiplies raid scaling type of HP (good for big maps.)
 
  
  
@@ -102,16 +105,16 @@ For both linux and Windows, not all linux gamedata might be here.
 
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
-- [Nosoop's TF2Attribute fork](https://github.com/nosoop/tf2attributes)
+- [Flaming Sarge's TF2Attribute fork](https://github.com/FlaminSarge/tf2attributes)
 - [TF2Items](https://builds.limetech.io/?project=tf2items)
+- [SteamWorks](https://users.alliedmods.net/~kyles/builds/SteamWorks/)
 - [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
 - [CBaseNpc](https://github.com/TF2-DMB/CBaseNPC)
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264) Not needed if you are on linux.
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
-- [some Gamedata and source scramble](https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
-ONLY install gamedata for edict limiter, NOT the plugin FOR edict limiter.
+- [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
 
 ## Credits
 

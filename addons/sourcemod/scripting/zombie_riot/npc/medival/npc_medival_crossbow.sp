@@ -83,9 +83,9 @@ void MedivalCrossbowMan_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalCrossbowMan(client, vecPos, vecAng, ally);
+	return MedivalCrossbowMan(vecPos, vecAng, team);
 }
 methodmap MedivalCrossbowMan < CClotBody
 {
@@ -132,17 +132,13 @@ methodmap MedivalCrossbowMan < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -151,7 +147,7 @@ methodmap MedivalCrossbowMan < CClotBody
 		
 	}
 	
-	public MedivalCrossbowMan(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalCrossbowMan(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "900", ally));
 		SetVariantInt(1);
@@ -215,8 +211,7 @@ methodmap MedivalCrossbowMan < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalCrossbowMan_ClotThink(int iNPC)
 {
 	MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(iNPC);

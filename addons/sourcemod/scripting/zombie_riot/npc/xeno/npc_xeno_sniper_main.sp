@@ -64,9 +64,9 @@ public void XenoSniperMain_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoSniperMain(client, vecPos, vecAng, ally);
+	return XenoSniperMain(vecPos, vecAng, team);
 }
 methodmap XenoSniperMain < CClotBody
 {
@@ -113,16 +113,12 @@ methodmap XenoSniperMain < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -133,7 +129,7 @@ methodmap XenoSniperMain < CClotBody
 	
 	
 	
-	public XenoSniperMain(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoSniperMain(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoSniperMain npc = view_as<XenoSniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "22500", ally));
 		
@@ -211,8 +207,7 @@ methodmap XenoSniperMain < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoSniperMain_ClotThink(int iNPC)
 {
 	XenoSniperMain npc = view_as<XenoSniperMain>(iNPC);

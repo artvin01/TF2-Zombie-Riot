@@ -37,6 +37,7 @@ static bool Dont_Move_Allied_Npc;											//dont move buildings
 
 static bool b_LagCompNPC;
 
+//static DynamicHook HookCreateFakeClientStuff;
 static DynamicHook HookItemIterateAttribute;
 static ArrayList RawEntityHooks;
 static int m_bOnlyIterateItemViewAttributes;
@@ -48,6 +49,7 @@ static int g_OffsetWeaponMode;
 static int g_OffsetWeaponInfo;
 static int g_OffsetWeaponPunchAngle;
 */
+static bool GrenadeExplodedAlready[MAXENTITIES];
 
 //#include <dhooks_gameconf_shim>
 
@@ -97,6 +99,11 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
+
+	//Borrowed from Mikusch, thanks!
+	//https://github.com/Mikusch/MannVsMann/blob/db821cd173a53aad4cc499babbcbd118f4cea234/addons/sourcemod/scripting/mannvsmann/dhooks.sp#L315
+	//
+	DHook_CreateDetour(gamedata, "CTFGameRules::IsQuickBuildTime", DHookCallback_CTFGameRules_IsQuickBuildTime_Pre);
 #endif
 
 #if !defined RTS
@@ -139,7 +146,10 @@ void DHook_Setup()
 	{
 		SetFailState("Failed to create hook CBaseEntity::UpdateTransmitState() offset from ZR gamedata!");
 	}
+
+//	HookCreateFakeClientStuff			= DHookCreateEx(gamedata, "CVEngineServer::CreateFakeClientEx",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, Create_FakeClientExPre);
 	
+
 	ForceRespawn = DynamicHook.FromConf(gamedata, "CBasePlayer::ForceRespawn");
 	if(!ForceRespawn)
 		LogError("[Gamedata] Could not find CBasePlayer::ForceRespawn");
@@ -218,7 +228,8 @@ int ClientThatWasChanged = 0;
 int SavedClassForClient = 0;
 public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
 {
-	if(pThis == -1)     
+	//-1 isnt enough.
+	if(!IsValidEntity(pThis))     
 		return MRES_Ignored;
 
 	int active = GetEntPropEnt(pThis, Prop_Send, "m_hActiveWeapon");
@@ -227,7 +238,7 @@ public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
 		if(b_IsAMedigun[active])
 		{
 			int healTarget = GetEntPropEnt(active, Prop_Send, "m_hHealingTarget");
-			if(healTarget > 0 && healTarget <= MaxClients)
+			if(IsValidClient(healTarget))
 			{
 				SavedClassForClient = GetEntProp(healTarget, Prop_Send, "m_iClass");
 				if(SavedClassForClient != view_as<int>(TFClass_Scout))
@@ -444,14 +455,19 @@ MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 
 public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 {
+	GrenadeExplodedAlready[entity] = false;
 	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
 	g_DHookGrenade_Detonate.HookEntity(Hook_Pre, entity, DHook_GrenadeDetonatePre);
-	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch);
+	if(Sticky)
+		DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch);
+	else
+		DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch_Grenade);
 	
 	if(Sticky)
 	{
 		SDKHook(entity, SDKHook_StartTouch, SdkHook_StickStickybombToBaseBoss);
 	}
+
 	
 	//Hacky? yes, But i gotta.
 	
@@ -570,6 +586,19 @@ static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle param
 	}
 	return MRES_Ignored;
 }
+static MRESReturn GrenadePipebombProjectile_PipebombTouch_Grenade(int self, Handle params) 
+{
+	int other = DHookGetParam(params, 1);
+
+	bool result = PassfilterGlobal(self, other, true);
+	SetEntProp(self, Prop_Send, "m_bTouched", false);
+
+	if(!result)
+	{
+		return MRES_Supercede;
+	}
+	return MRES_Ignored;
+}
 /*
 	GrenadePipebombProjectile_PipebombTouch is from From:
 	
@@ -608,6 +637,11 @@ public MRESReturn DHook_GrenadeDetonatePre(int entity)
 float f_SameExplosionSound[MAXENTITIES];
 void DoGrenadeExplodeLogic(int entity)
 {
+	if(GrenadeExplodedAlready[entity])
+	{
+		return;
+	}
+	GrenadeExplodedAlready[entity] = true;
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hThrower");
 	//do not allow normal explosion, this causes screenshake, which in zr is a problem as many happen, and can cause headaches.
 	float GrenadePos[3];
@@ -668,6 +702,7 @@ void DoGrenadeExplodeLogic(int entity)
 		if(f_CustomGrenadeDamage[entity] < 999999.9)
 		{
 			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
+			
 			if(f_CustomGrenadeDamage[entity] > 1.0)
 			{
 				original_damage = f_CustomGrenadeDamage[entity];
@@ -851,6 +886,7 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
+	
 	if(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES)
 	{
 		result = PassfilterGlobal(ent1, ent2, true);
@@ -863,6 +899,7 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 			return Plugin_Handled;
 		}
 	}
+	
 	return Plugin_Continue;
 }
 
@@ -903,7 +940,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #else
 		return false;
 #endif
-	}	
+	}
 	
 	for( int ent = 1; ent <= 2; ent++ ) 
 	{
@@ -928,6 +965,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif
 
 #if defined ZR
+	
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
@@ -1016,6 +1054,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			
 			//dont colldide with wsame team if its
 			else if(GetTeam(entity2) == GetTeam(entity1) && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
@@ -1046,6 +1085,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 #endif	
 			}
+			
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{
@@ -1093,6 +1133,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			
 #if defined RPG
 			else if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime() || OnTakeDamageRpgPartyLogic(entity1, entity2, GetGameTime())))
 #else
@@ -1102,15 +1143,17 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				//if a player needs to get unstuck.
 				return false;
 			}
+			
 		}
 //allied NPC
 #if !defined RTS
 		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
+			
 			//dont be solid to buildings
 			if(i_IsABuilding[entity2] && GetTeam(entity2) == TFTeam_Red)
 				return false;
-			
+
 			///????? i dont know
 			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == TFTeam_Red)
 			{	
@@ -1122,6 +1165,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			
 		}
 #endif
 	}
@@ -1305,7 +1349,11 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
+#if defined ZR
+				//if its a downed citizen, dont!!!
+				if(!Citizen_ThatIsDowned(baseboss_index_allied))
+#endif
+					b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
 			}
 		}
 	}
@@ -1361,6 +1409,21 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	return MRES_Supercede;
 }
 
+/*
+void Dhook_BotFastNow(int bot)
+{
+	if(HookCreateFakeClientStuff)
+	{
+		int RawHookGive = DHookRaw(HookCreateFakeClientStuff, true, view_as<Address>(baseNPC.GetBody()));
+	}
+}
+public MRESReturn Create_FakeClientExPre(Address pThis, Handle hReturn, Handle hParams)			  
+{ 
+	//this sets the fakebot to true.
+	DHookSetParam(hParams, 2, true);
+	return MRES_Supercede; 
+}
+*/
 void DHook_HookClient(int client)
 {
 
@@ -1455,7 +1518,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 
 #if defined RPG
 	if(!Saves_HasCharacter(client))
+	{
+		ChangeClientTeam(client, TFTeam_Spectator);
 		return MRES_Supercede;
+	}
 	
 	if(!Dungeon_CanClientRespawn(client))
 		return MRES_Supercede;
@@ -1551,6 +1617,17 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		else if(f3_PositionArrival[client][0])
 		{
 			TeleportEntity(client, f3_PositionArrival[client], NULL_VECTOR, NULL_VECTOR);
+		}
+		else
+		{
+			Race race;
+			Races_GetClientInfo(client, race);
+			if(race.StartPos[0])
+			{
+				float ang[3];
+				ang[1] = race.StartAngle;
+				TeleportEntity(client, race.StartPos, ang, NULL_VECTOR);
+			}
 		}
 #endif
 	}
@@ -1735,7 +1812,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	{
 		float HealAmmount = 20.0;
 
-		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, !Merchant_IsAMerchant(owner));
+		HealAmmount *= Attributes_GetOnWeapon(owner, originalLauncher, 8, true);
 		
 
 		
@@ -1775,14 +1852,17 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 				ammo_amount_left = Health_To_Max;
 			}
 
-			int HealDone = HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
+			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
 			
-			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 			SetGlobalTransTarget(owner);
 			
-			PrintHintText(owner, "%t", "You healed for", target, HealDone);
+			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
+			if(ammo_amount_left > 0)
+				ReduceMediFluidCost(owner, ammo_amount_left);
+				
+			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			SetAmmo(owner, 21, new_ammo);
 			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
 			Increaced_Overall_damage_Low[target] = GameTime + 15.0;
@@ -1863,8 +1943,9 @@ void DHook_ScoutSecondaryFireAbilityDelay(int ref)
 			int Active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(Active != entity)
 				return;
-			
+#if defined ZR
 			Enforcer_AbilityM2(client, entity, 1, 5, 1.25, true);
+#endif
 			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 4.0);
 			Ability_Apply_Cooldown(client, 2, 4.0);
 		}
@@ -2034,6 +2115,15 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 	if(ClientHasBannersWithCD(client) == 0)
 		return Plugin_Continue;
 
+	int SettingDo;
+	if(MagiaWingsDo(client))
+		SettingDo = 1;
+	if(SilvesterWingsDo(client))
+		SettingDo = 2;
+	//no equipping this wearable.
+	if(SettingDo != 0)
+		return Plugin_Continue;
+
 	entity = CreateEntityByName("tf_wearable");
 	if(entity > MaxClients)
 	{
@@ -2198,4 +2288,12 @@ int SetEntityTransmitState(int entity, int newFlags)
 	SetEdictFlags(entity, flags);
 
 	return flags;
+}
+
+
+
+static MRESReturn DHookCallback_CTFGameRules_IsQuickBuildTime_Pre(DHookReturn ret)
+{
+	ret.Value = false;
+	return MRES_Supercede;
 }

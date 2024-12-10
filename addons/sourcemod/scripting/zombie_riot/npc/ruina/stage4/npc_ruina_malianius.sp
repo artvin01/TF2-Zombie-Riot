@@ -68,9 +68,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel("models/player/engineer.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Malianius(client, vecPos, vecAng, ally);
+	return Malianius(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -128,19 +128,15 @@ methodmap Malianius < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 
-	public Malianius(int client, float vecPos[3], float vecAng[3], int ally)
+	public Malianius(float vecPos[3], float vecAng[3], int ally)
 	{
 		Malianius npc = view_as<Malianius>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -221,8 +217,7 @@ methodmap Malianius < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Malianius npc = view_as<Malianius>(iNPC);
@@ -276,10 +271,10 @@ static void ClotThink(int iNPC)
 		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
 		TE_SendToAll();
 
-		Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.9);	//10% resistances
+		Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.70);	//30% resistances
 
-		npc.m_flRangedArmor = 0.1;
-		npc.m_flMeleeArmor 	= 0.1;
+		npc.m_flRangedArmor = 0.25;
+		npc.m_flMeleeArmor 	= 0.25;
 
 		Fire_Random_Ion(npc);
 
@@ -378,7 +373,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}	
 		else
@@ -414,14 +409,14 @@ static void Fire_Random_Ion(Malianius npc)
 
 			GetEntPropVector(enemy_2[i], Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
 
-			float Time = 1.0;
+			float Time = 4.0;
 
-			ScaleVector(SubjectAbsVelocity, Time);
+			ScaleVector(SubjectAbsVelocity, 1.0);
 			AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
 
 			//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
 
-			float Radius = 250.0;
+			float Radius = 175.0;
 
 			float Thickness = 6.0;
 			TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
@@ -436,7 +431,7 @@ static void Fire_Random_Ion(Malianius npc)
 			pack.WriteFloatArray(Predicted_Pos, sizeof(Predicted_Pos));
 			pack.WriteCellArray(color, sizeof(color));
 			pack.WriteFloat(Radius);		//radius
-			pack.WriteFloat(400.0);			//dmg
+			pack.WriteFloat(250.0);			//dmg
 			pack.WriteFloat(0.1);			//Sickness %
 			pack.WriteCell(200);			//Sickness flat
 			pack.WriteCell(true);			//Override sickness timeout

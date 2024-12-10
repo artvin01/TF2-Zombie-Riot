@@ -42,7 +42,8 @@ void SteamWorks_UpdateGameTitle()
 		
 		if(Rogue_Mode())
 		{
-			FormatEx(buffer, sizeof(buffer), "ZR Rogue (Floor %d-%d)", Rogue_GetFloor() + 1, Rogue_GetCount() + 1);
+		//	FormatEx(buffer, sizeof(buffer), "ZR Rogue (Floor %d-%d)", Rogue_GetFloor() + 1, Rogue_GetCount() + 1);
+			FormatEx(buffer, sizeof(buffer), "ZR Rogue");
 		}
 		else if(Waves_InFreeplay() && WhatDifficultySetting_Internal[0])
 		{
@@ -50,7 +51,8 @@ void SteamWorks_UpdateGameTitle()
 		}
 		else if(Waves_Started() && WhatDifficultySetting_Internal[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "ZR %s (Wave %d/%d)", WhatDifficultySetting_Internal, Waves_GetRound() + 1, Waves_GetMaxRound());
+			FormatEx(buffer, sizeof(buffer), "ZR %s", WhatDifficultySetting_Internal);
+		//	FormatEx(buffer, sizeof(buffer), "ZR %s (Wave %d/%d)", WhatDifficultySetting_Internal, Waves_GetRound() + 1, Waves_GetMaxRound());
 		}
 		else
 		{

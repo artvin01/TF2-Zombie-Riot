@@ -54,9 +54,9 @@ public void AltMedicCharger_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AltMedicCharger(client, vecPos, vecAng, ally);
+	return AltMedicCharger(vecPos, vecAng, team);
 }
 
 methodmap AltMedicCharger < CClotBody
@@ -99,7 +99,7 @@ methodmap AltMedicCharger < CClotBody
 		
 		
 	}
-	public AltMedicCharger(int client, float vecPos[3], float vecAng[3], int ally)
+	public AltMedicCharger(float vecPos[3], float vecAng[3], int ally)
 	{
 		AltMedicCharger npc = view_as<AltMedicCharger>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		
@@ -182,8 +182,7 @@ methodmap AltMedicCharger < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	AltMedicCharger npc = view_as<AltMedicCharger>(iNPC);

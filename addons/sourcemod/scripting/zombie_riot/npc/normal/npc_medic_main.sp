@@ -54,9 +54,9 @@ void MedicMain_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedicMain(client, vecPos, vecAng, ally);
+	return MedicMain(vecPos, vecAng, team);
 }
 
 methodmap MedicMain < CClotBody
@@ -94,16 +94,12 @@ methodmap MedicMain < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -114,7 +110,7 @@ methodmap MedicMain < CClotBody
 	
 	
 	
-	public MedicMain(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedicMain(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedicMain npc = view_as<MedicMain>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
@@ -168,8 +164,7 @@ methodmap MedicMain < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedicMain_ClotThink(int iNPC)
 {
 	MedicMain npc = view_as<MedicMain>(iNPC);

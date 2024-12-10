@@ -42,9 +42,9 @@ void Huirgrajo_Setup()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Huirgrajo(client, vecPos, vecAng, ally);
+	return Huirgrajo(vecPos, vecAng, team);
 }
 
 methodmap Huirgrajo < CClotBody
@@ -66,7 +66,7 @@ methodmap Huirgrajo < CClotBody
 		EmitSoundToAll(g_RangedReloadSounds[GetURandomInt() % sizeof(g_RangedReloadSounds)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public Huirgrajo(int client, float vecPos[3], float vecAng[3], int ally)
+	public Huirgrajo(float vecPos[3], float vecAng[3], int ally)
 	{
 		Huirgrajo npc = view_as<Huirgrajo>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "300", ally, false));
 

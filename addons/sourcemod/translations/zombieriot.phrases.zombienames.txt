@@ -82,61 +82,93 @@
 		"pt"		"Policial Invasor"
 		"nl"		"Metro Aanvaller"
 	}
-	"Combine Rifler"
+	"W.F. Rifler"
 	{
-		"en" 		"Combine Rifler"
-		"ru" 		"Комбайн с винтовкой"
-		"pt"		"Fuzileiro da Combine"
-		"nl"		"Combine Scherpschutter"
+		"en" 		"W.F. Rifler"
 	}
-	"Combine Shotgunner"
+	"First Rifler"
 	{
-		"en" 		"Combine Shotgunner"
-		"ru" 		"Комбайн с дробовиком"
-		"pt"		"Artilheiro da Combine"
-		"nl"		"Combine Jachtgeweerder"
+		"en" 		"First Rifler"
 	}
-	"Combine Swordsman"
+	"Last Rifler"
 	{
-		"en" 		"Combine Swordsman"
-		"ru" 		"Комбайн-мечник"
-		"pt"		"Espadachim da Combine"
-		"nl"		"Combine Zwaardvechter"
+		"en" 		"Last Rifler"
 	}
-	"Combine Elite"
+	"W.F. Shotgunner"
 	{
-		"en" 		"Combine Elite"
-		"ru" 		"Элитный комбайн"
-		"pt"		"Elite da Combine"
-		"nl"		"Combine Elite"
+		"en" 		"W.F. Shotgunner"
 	}
-	"Combine Giant Swordsman"
+	"First Shotgunner"
 	{
-		"en" 		"Combine Giant Swordsman"
-		"ru" 		"Гигантский комбайн-мечник"
-		"pt"		"Espadachim Gigante da Combine"
-		"nl"		"Combine Gigantische Zwaardvechter"
+		"en" 		"First Shotgunner"
 	}
-	"Combine DDT"
+	"Last Shotgunner"
 	{
-		"en" 		"Combine DDT"
-		"ru" 		"Комбайн DDT"
-		"pt"		"Combine DDT"
-		"nl"		"Combine DDT"
+		"en" 		"Last Shotgunner"
 	}
-	"Combine Golden Collos"
+	"W.F. Swordsman"
 	{
-		"en" 		"Combine Golden Collos"
-		"ru" 		"Золотой комбайн-коллос"
-		"pt"		"Soldado do Coliseu Doudado da Combine"
-		"nl"		"Combine Gouden Colossus"
+		"en" 		"W.F. Swordsman"
 	}
-	"Combine Overlord"
+	"First Swordsman"
 	{
-		"en" 		"Combine Overlord"
-		"ru" 		"Комбайн-владыка"
-		"pt"		"SobreLorde Combine"
-		"nl"		"Combine Opperheer"
+		"en" 		"First Swordsman"
+	}
+	"Last Swordsman"
+	{
+		"en" 		"Last Swordsman"
+	}
+	"W.F. Elite"
+	{
+		"en" 		"W.F. Elite"
+	}
+	"First Elite"
+	{
+		"en" 		"First Elite"
+	}
+	"Last Elite"
+	{
+		"en" 		"Last Elite"
+	}
+	"W.F. Giant Swordsman"
+	{
+		"en" 		"W.F. Giant Swordsman"
+	}
+	"First Giant Swordsman"
+	{
+		"en" 		"First Giant Swordsman"
+	}
+	"Last Giant Swordsman"
+	{
+		"en" 		"Last Giant Swordsman"
+	}
+	"W.F. DDT"
+	{
+		"en" 		"W.F. DDT"
+	}
+	"First DDT"
+	{
+		"en" 		"First DDT"
+	}
+	"Last DDT"
+	{
+		"en" 		"Last DDT"
+	}
+	"W.F. Golden Collos"
+	{
+		"en" 		"W.F. Golden Collos"
+	}
+	"First Golden Collos"
+	{
+		"en" 		"First Golden Collos"
+	}
+	"Last Golden Collos"
+	{
+		"en" 		"Last Golden Collos"
+	}
+	"W.F. Overlord"
+	{
+		"en" 		"W.F. Overlord"
 	}
 	"Scout Assulter"
 	{
@@ -271,12 +303,9 @@
 		"pt"		"Pyro Main Gigante"
 		"nl"		"Gigantische Pyro Main"
 	}
-	"Combine Deutsch Ritter"
+	"W.F. Deutsch Ritter"
 	{
-		"en" 		"Combine Deutsch Ritter"
-		"ru" 		"Немецкий комбайн-рыцарь"
-		"pt"		"Deutsch Ritter da Combine"
-		"nl"		"Combine Duitse Ridder"
+		"en" 		"W.F. Deutsch Ritter"
 	}
 	"X10 Spy Main"
 	{
@@ -365,61 +394,37 @@
 		"pt"		"Xeno Policial Invasor"
 		"nl"		"Xeno Metro Aanvaller"
 	}
-	"Xeno Combine Rifler"
+	"Xeno Rifler"
 	{
-		"en" 		"Xeno Combine Rifler"
-		"ru" 		"Ксенокомбайн с винтовкой"
-		"pt"		"Xeno Fuzileiro da Combine"
-		"nl"		"Xeno Combine Scherpschutter"
+		"en" 		"Xeno Rifler"
 	}
-	"Xeno Combine Shotgunner"
+	"Xeno Shotgunner"
 	{
-		"en" 		"Xeno Combine Shotgunner"
-		"ru" 		"Ксенокомбайн с дробовиком"
-		"pt"		"Xeno Artilheiro da Combine"
-		"nl"		"Xeno Combine Jachtgeweerder"
+		"en" 		"Xeno Shotgunner"
 	}
-	"Xeno Combine Swordsman"
+	"Xeno Swordsman"
 	{
-		"en" 		"Xeno Combine Swordsman"
-		"ru" 		"Ксенокомбайн мечник"
-		"pt"		"Xeno Espadachim da Combine"
-		"nl"		"Xeno Combine Zwaardvechter"
+		"en" 		"Xeno Swordsman"
 	}
-	"Xeno Combine Elite"
+	"Xeno Elite"
 	{
-		"en" 		"Xeno Combine Elite"
-		"ru" 		"Элитный ксенокомбайн"
-		"pt"		"Xeno Combine Elite"
-		"nl"		"Xeno Combine Elite"
+		"en" 		"Xeno Elite"
 	}
-	"Xeno Combine Giant Swordsman"
+	"Xeno Giant Swordsman"
 	{
-		"en" 		"Xeno Combine Giant Swordsman"
-		"ru" 		"Гигантский ксенокомбайн мечник"
-		"pt"		"Xeno Combine Gigante Espadachim"
-		"nl"		"Xeno Combine Gigantische Zwaardvechter"
+		"en" 		"Xeno Giant Swordsman"
 	}
-	"Xeno Combine DDT"
+	"Xeno DDT"
 	{
-		"en" 		"Xeno Combine DDT"
-		"ru" 		"Ксенокомбайн DDT"
-		"pt"		"Xeno Combine DDT"
-		"nl"		"Xeno Combine DDT"
+		"en" 		"Xeno DDT"
 	}
-	"Xeno Combine Golden Collos"
+	"Xeno Golden Collos"
 	{
-		"en" 		"Xeno Combine Golden Collos"
-		"ru" 		"Золотой ксенокомбайн-коллос"
-		"pt"		"Xeno Combine Colossus Dourado"
-		"nl"		"Xeno Combine Gouden Colossus"
+		"en" 		"Xeno Golden Collos"
 	}
-	"Xeno Combine Overlord"
+	"Xeno Overlord"
 	{
-		"en" 		"Xeno Combine Overlord"
-		"ru" 		"Ксенокомбайн владыка"
-		"pt"		"Xeno Combine Senhor Supremo"
-		"nl"		"Xeno Combine Opperheer"
+		"en" 		"Xeno Overlord"
 	}
 	"Xeno Scout Assulter"
 	{
@@ -554,12 +559,9 @@
 		"pt"		"Xeno Pyro Main Gigante"
 		"nl"		"Xeno Gigantische Pyro Main"
 	}
-	"Xeno Combine Deutsch Ritter"
+	"Xeno Deutsch Ritter"
 	{
-		"en" 		"Xeno Combine Deutsch Ritter"
-		"ru" 		"Немецкий ксенокомбайн-рыцарь"
-		"pt"		"Xeno Deutsch Ritter da Combine"
-		"nl"		"Xeno Combine Duitse Ridder"
+		"en" 		"Xeno Deutsch Ritter"
 	}
 	"Xeno X10 Spy Main"
 	{
@@ -586,12 +588,9 @@
 		"pt"		"Bob o todo poderoso destruidor de multiversos"
 		"nl"		"Bob the Oppergod van Goden en vernietigaar van Multiversums"
 	}
-	"Revived Combine DDT"
+	"Revived DDT"
 	{
-		"en" 		"Revived Combine DDT"
-		"ru" 		"Оживлённый комбайн DDT"
-		"pt"		"Combine DDT Revivido"
-		"nl"		"Nieuw Leven Ingeblazen Combine DDT"
+		"en" 		"Revived DDT"
 	}
 	"Spookmaster Boner"
 	{
@@ -607,12 +606,9 @@
 		"pt"		"Senhor Grigori Curado"
 		"nl"		"Genezen Vader Grigori"
 	}
-	"Combine Mage"
+	"W.F. Mage"
 	{
-		"en" 		"Combine Mage"
-		"ru" 		"Комбайн-маг"
-		"pt"		"Mago da Combine"
-		"nl"		"Combine Magier"
+		"en" 		"W.F. Mage"
 	}
 	"Bloon"
 	{
@@ -685,7 +681,7 @@
 	"True Fusion Warrior"
 	{
 		"en" 		"True Fusion Warrior"
-		"ru" 		"Истинный воин фьюжна"
+		"ru" 		"Истинный Термоядерный Воин"
 		"pt"		"Verdadeiro Guerreiro de Fusão"
 		"nl"		"Ware Fuzie Krijger"
 	}
@@ -713,62 +709,88 @@
 	"Barracks Metro Cop"
 	{
 		"en" 		"Metro Cop"
+		"ru" 		"Метро коп"
 	}
-	"Barracks Combine Swordsman"
+	"Barracks Swordsman"
 	{
 		"en" 		"Combine Swordsman"
+		"ru" 		"Комбайн мечник"
+		"en" 		"Barracks Swordsman"
 	}
 	"Barracks Metro Raider"
 	{
 		"en" 		"Metro Raider"
+		"ru" 		"Метро Рейдер"
 	}
-	"Barracks Combine Shotgunner"
+	"Barracks Shotgunner"
 	{
 		"en" 		"Combine Shotgunner"
+		"ru" 		"Комбайн с дробовиком"
+		"en" 		"Barracks Shotgunner"
 	}
-	"Barracks Combine Soldier"
+	"Barracks Soldier"
 	{
 		"en" 		"Combine Soldier"
+		"ru" 		"Комбайн Солдат"
+		"en" 		"Barracks Soldier"
 	}
-	"Barracks Combine DDT"
+	"Barracks DDT"
 	{
 		"en" 		"Combine DDT"
+		"ru" 		"Комбайн DDT"
+		"en" 		"Barracks DDT"
 	}
-	"Barracks Combine Elite"
+	"Barracks Elite"
 	{
 		"en" 		"Combine Elite"
+		"ru" 		"Элитный Комбайн"
+		"en" 		"Barracks Elite"
 	}
-	"Barracks Combine Deflector"
+	"Barracks Deflector"
 	{
 		"en" 		"Combine Deflector"
+		"ru" 		"Комбайн Отражатель"
+		"en" 		"Barracks Deflector"
 	}
-	"Barracks Combine Sniper"
+	"Barracks Sniper"
 	{
 		"en" 		"Combine Sniper"
+		"ru" 		"Комбайн Снайпер"
+		"en" 		"Barracks Sniper"
 	}
-	"Barracks Combine Super"
+	"Barracks Super"
 	{
 		"en" 		"Combine Warrior"
+		"ru" 		"Комбайн Воин"
+		"en" 		"Barracks Warrior"
 	}
-	"Barracks Combine Commander"
+	"Barracks Commander"
 	{
 		"en" 		"Combine Commander"
+		"ru" 		"Комбайн Командир"
+		"en" 		"Barracks Commander"
 	}
-	"Barracks Combine Giant ddt"
+	"Barracks Giant ddt"
 	{
 		"en" 		"Combine Giant DDT"
+		"ru" 		"Гигантский Комбайн DDT"
+		"en" 		"Barracks Giant DDT"
 	}
-	"Barracks Combine Collos"
+	"Barracks Collos"
 	{
 		"en"		"Combine Collos"
+		"ru" 		"Комбайн Коллос"
+		"en"		"Barracks Collos"
 	}
 	"Barracks Iberian Runner"
 	{
 		"en"		"Iberian Runner"
+		"ru" 		"Бегун Иберии"
 	}
 	"Barracks Iberian Gunner"
 	{
 		"en"		"Iberian Gunner"
+		"ru" 		"Стрелок Иберии"
 	}
 	"Barracks Iberian Tanker"
 	{
@@ -777,34 +799,42 @@
 	"Barracks Iberian Rocketeer"
 	{
 		"en"		"Iberian Rocketeer"
+		"ru" 		"Ракетомётчик Иберии"
 	}	
 	"Barracks Iberian Healer"
 	{
 		"en"		"Iberian Healer"
+		"ru" 		"Медик Иберии"
 	}
 	"Barracks Iberian Healtanker"
 	{
 		"en"		"Iberian Healtanker"
+		"ru" 		"Лечащий танк иберии"
 	}	
 	"Barracks Iberia Boomstick"
 	{
 		"en"		"Iberian Boomsticker"
+		"ru" 		"Бумстикер Иберии"
 	}
 	"Barracks Iberian Guards"
 	{
 		"en"		"Iberian Guards"
+		"ru" 		"Стражи Иберии"
 	}
 	"Barracks Iberian Elite Gunner"
 	{
 		"en"		"Iberian Elite Gunner"
+		"ru" 		"Элитный Стрелок Иберии"
 	}	
 	"Barracks Iberia Headhunter"
 	{
 		"en"		"Iberian Headhunter"
+		"ru" 		"Охотник за головами Иберии"
 	}	
 	"Barracks Iberian Lighthouse Guardian"
 	{
 		"en"		"Guardian of the Lighthouse"
+		"ru" 		"Хранитель Маяка"
 	}	
 	"Barracks Militia"
 	{
@@ -925,6 +955,14 @@
 		"pt"		"Rebelde"
 		"nl"		"Rebel"
 	}
+	"Barney"
+	{
+		"en" 		"Barney"
+	}
+	"Alyx"
+	{
+		"en" 		"Alyx"
+	}
 	"Eagle Scout"
 	{
 		"en" 		"Eagle Scout"
@@ -995,13 +1033,14 @@
 	"Kahmlstein"
 	{
 		"en"		"Kahmlstein"
-		"ru"		"Кахмльштайн"
+		"ru"		"Кахмлстайн"
 		"pt"		"Kahmlstein" 
 		"nl"		"Kahmlstein"
 	}
 	"Chaos Kahmlstein"
 	{
 		"en"		"Chaos Kahmlstein"
+		"ru" 		"Хаос Кахмлстайн"
 	}
 	"L4D2 Tank"
 	{
@@ -1183,14 +1222,14 @@
 		"en"	"Booty Executioner"
 		"pt"	"Executor de Bundas"
 		"de"	"Booty Executioner"
-		"ru"	"Ягодичный Палач"
+		"ru"	"Жопный Палач"
 	}
 	"Sandvich Slayer"
 	{
 		"en"	"Sandvich Slayer"
 		"pt"	"Caçador de Sanduíches"
 		"de"	"Sandvich Slayer"
-		"ru"	"Палач Бутербродов"
+		"ru"	"Убийца Бутербродов"
 	}
 	"Payday Cloaker"
 	{
@@ -1203,13 +1242,13 @@
 	{
 		"en"		"Bunker Kahmlstein"
 		"pt"		"Bunker Kahmlstein"
-		"ru"		"Бункерный Кахмльштайн"
+		"ru"		"Бункерный Кахмлстайн"
 	}
 	"Zerofuse"
 	{
 		"en"		"Zerofuse"
 		"pt"		"Zerofuse"
-		"ru"		"Зерофуз"
+		"ru"		"Zerofuse"
 	}
 	"Bunker Bot Soldier"
 	{
@@ -1420,23 +1459,22 @@
 	{
 		"en"		"Nearl Radiant Sword"
 		"pt"		"Espada Quase Radiante"
-		"ru"		"Лучезарный меч Нерл"
+		"ru"		"Сияющий меч Нерл"
 	}
-	"Spawned Combine"
+	"W.F. Subject"
 	{
-		"en"		"Spawned Combine"
-		"pt"		"Combine Gerado"
-		"ru"		"Созданный комбайн"
+		"en"		"W.F. Subject"
 	}
-	"Spawned Father Grigori"
+	"Corrupted Father Grigori"
 	{
-		"en"		"Spawned Father Grigori"
+		"en"		"Corrupted Father Grigori"
 		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
 	}
 	"Machina Waldch"
 	{
 		"en"		"Machina Waldch"
+		"ru" 		"Махина Валдч"
 	}
 	"Silvester"
 	{
@@ -1447,13 +1485,14 @@
 	"Waldch"
 	{
 		"en"		"Waldch"
+		"ru"		"Валдч"
 		"pt"		"Waldch"
 	}
 	"Angeled Silvester"
 	{
 		"en"		"Angeled Silvester"
 		"pt"		"Silvester Angelical"
-		"ru"		"Угловатый Сильвестр"
+		"ru"		"Ангел Сильвестр"
 	}
 	"Nemesis"
 	{
@@ -1464,6 +1503,7 @@
 	"Enraged Nemesis"
 	{
 		"en"		"Enraged Nemesis"
+		"ru" 		"Разъяренный Немезид"
 		"pt"		"Nemesis Enfurecido"
 	}
 	"Shell Sea Runner"
@@ -1725,13 +1765,13 @@
 	"Thorns"
 	{
 		"en"		"Thorns"
-		"ru"		"Шипы"
+		"ru"		"Торнс"
 		"chi"		"棘刺"
 	}
 	"God Alaxios"
 	{
 		"en"		"God Alaxios"
-		"ru"		"Бог Аркантос"
+		"ru"		"Бог Алаксиос"
 	}
 	"Seaborn Scout"
 	{
@@ -1865,16 +1905,19 @@
 	"Pathshaper"
 	{
 		"en"		"Pathshaper"
+		"ru" 		"Создатель пути"
 		"chi"		"塑路者"
 	}
 	"Pathshaper"
 	{
 		"en"		"Pathshaper"
+		"ru" 		"Создатель Пути"
 		"chi"		"塑路者"
 	}
 	"Pathshaper Fractal"
 	{
 		"en"		"Pathshaper Fractal"
+		"ru" 		"Фрактал Создателя Пути"
 		"chi"		"塑路者分形"
 	}
 	"Barracks Teutonic Knight"
@@ -1905,35 +1948,43 @@
 	"Scientific Witchery"
 	{
 		"en"	"Scientific Witchery"
+		"ru" 	"Научное Колдовство"
 	}
 	"Ishar'mla, Heart of Corruption"
 	{
 		"en"		"Ishar'mla, Heart of Corruption"
+		"ru" 		"Ишармла, Сердце инфекции"
 		"chi"		"伊莎玛拉，腐化之心"
 	}
 	"Seaborn Guard"
 	{
 		"en"		"Seaborn Guard"
+		"ru" 		"Морерождённый страж"
 	}
 	"Seaborn Defender"
 	{
 		"en"		"Seaborn Defender"
+		"ru" 		"Морерождённый Защитник"
 	}
 	"Seaborn Vanguard"
 	{
 		"en"		"Seaborn Vanguard"
+		"ru" 		"Морерождённый Авангард"
 	}
 	"Seaborn Caster"
 	{
 		"en"		"Seaborn Caster"
+		"ru" 		"Морерождённый Маг"
 	}
 	"Seaborn Specialist"
 	{
 		"en"		"Seaborn Specialist"
+		"ru" 		"Морерождённый Специалист"
 	}
 	"Seaborn Supporter"
 	{
 		"en"		"Seaborn Supporter"
+		"ru" 		"Морерождённый Поддерживающий"
 	}
 	"Theocracy"
 	{
@@ -2030,6 +2081,7 @@
 	"Sensal"
 	{
 		"en"	"Sensal"
+		"ru" 	"Сенсал"
 	}
 	"Dual Rea"
 	{
@@ -2075,13 +2127,17 @@
 	{
 		"en"	"Allied Sensal Afterimage"
 	}
+	"Allied Kiryu Afterimage"
+	{
+		"en"	"Allied Kiryu Afterimage"
+	}
 	"Overlord The Last"
 	{
 		"en"	"Overlord The Last"
 	}
-	"Bladedance The Combine"
+	"Bladedance The Betrayed"
 	{
-		"en"	"Bladedance The Combine"
+		"en"	"Bladedance The Betrayed"
 	}
 	"Allied Leper Afterimage"
 	{
@@ -2090,10 +2146,12 @@
 	"Stella"
 	{
 		"en"	"Stella"
+		"ru" 	"Стелла"
 	}
 	"Karlas"
 	{
 		"en"	"Karlas"
+		"ru" 	"Карлас"
 	}
 	"Heliara"
 	{
@@ -2194,6 +2252,7 @@
 	"Beheaded Kamikaze"
 	{
 		"en"	"Beheaded Kamikaze"
+		"ru" 	"Безголовый Камикадзе"
 	}
 	"?????????????"
 	{
@@ -2202,14 +2261,17 @@
 	"??????? First"
 	{
 		"en"	"??????? First"
+		"ru" 	"?????? Первый"
 	}
 	"??? the First"
 	{
 		"en"	"??? the First"
+		"ru" 	"??? Первый"
 	}
 	"Bob the First"
 	{
 		"en"	"Bob the First"
+		"ru" 	"Боб Первый"
 	}
 	"Ahim"
 	{
@@ -2366,10 +2428,12 @@
 	"The Messenger"
 	{
 		"en"	"The Messenger"
+		"ru" 	"Предвестник"
 	}
 	"The Purge"
 	{
 		"en"	"The Purge"
+		"ru" 	"Зачищик"
 	}
 	"Rouge Expidonsan Doctor"
 	{
@@ -2382,6 +2446,7 @@
 	"Bob the Second"
 	{
 		"en"	"Bob the Second"
+		"ru" 	"Боб Второй"
 	}
 	"Wildingen Hitman"
 	{
@@ -2390,6 +2455,7 @@
 	"Mr.X"
 	{
 		"en"	"Mr.X"
+		"ru" 	"Мистер X"
 	}
 	"Xeno Acclaimed Swordsman"
 	{
@@ -2418,6 +2484,7 @@
 	"Fallen Warrior"
 	{
 		"en"	"Guln the Fallen One"
+		"ru" 	"Павший Гулн"
 	}
 	"Lex"
 	{
@@ -2574,10 +2641,12 @@
 	"Twirl"
 	{
 		"en"	"Twirl"
+		"ru" 	"Твёрл"
 	}
 	"Twirl Desc"
 	{
 		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
+		"ru" 	"Лидер Руины\nОна не сражается с вами с полную силу...\nОна только использует силу магического гребеня\nЕсли вы увидете эффекты на её руках,Это озночает что одно из её Комбо готово"
 	}
 	"Ealing"
 	{
@@ -2814,10 +2883,12 @@
 	"Unspeakable"
 	{
 		"en"	"Unspeakable"
+		"ru" 	"Невырзимый"
 	}
 	"Unspeakable Desc"
 	{
-		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks."
+		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
+		"ru" 	"Сердце Бездны...\nПервая способность:Засасывает всех союзников и если слишком близко,Наносит очень много урона.\nМожет ударить несколько раз подряд если долго никого не бил.\nВо время его существования,Распостронение бездны Очень усилено.\nКоллоны бездны появляются под врагами.\nЕсли Уровень здоровья пал до низкого начнёт распостронять бездну там где ходит.\n(заглушение)ослабляет Усиление от бездны"
 	}
 	"Voided Diversionistico"
 	{
@@ -2854,10 +2925,12 @@
 	"Vhxis"
 	{
 		"en"	"Vhxis"
+		"ru" 	"Всикс"
 	}
 	"Vhxis Desc"
 	{
-		"en"	"The void keeper, killing him is not a good idea..."
+		"en"	"The void keeper, killing him is not a good idea...\n(Silence makes voidbuff weaker)"
+		"ru" 	"Хранитель Бездны,Не стоит его убивать...\n(Заглушение Ослабивает Усиление от бездны)"
 	}
 	"Chaos Mage"
 	{
@@ -2934,18 +3007,22 @@
 	"Zombine"
 	{
 		"en" 		"Zombine"
+		"ru" 		"Зомбайн"
 	}
 	"Omega"
 	{
 		"en"		"Omega"
+		"ru" 		"Омега"
 	}
 	"Nemal"
 	{
 		"en"		"Nemal"
+		"ru" 		"Немал"
 	}
 	"Nemal Desc"
 	{
 		"en"		"Each 4th hit gives you a teslar debuff.\nLays mines:\nRed: damages, marks you, if marked, more damage.\nGreen: Cures of teslar debuff, launches up, cant be sniped for 4 seconds and no fall damage\nEach 10 seconds she marks you if hit with melee.\nLaser attack predicts, anti predict it.\nWave ability predicts if youre marked.\nSimular abilities on Silvester.\nHer melee makes you glide (Silencable)"
+		"ru" 		"Каждая 4-ая атака накладывает Теслар Дебафф.\nУстанавливает мины:\nКрасные:Наносят урон,Помечают вас,Если вы помечены,получаете больше урона.\nЗелёные:Лечит вас от Дебаффа Теслар,Запускает вверх,Не может быть Застрелен в течении 4 секунд и не получает урон от падения\nКаждые 10 секунд помечает вас если ударила вас.\nАттаки Лазерами предугадывают вас,противодействуйте наведению.\nПохожие способности у Сильвестера.\nЕё Ближний бой заставляет скользить вас(Можно Заглушить)"
 	}
 	"Sentinel"
 	{
@@ -3210,5 +3287,491 @@
 	"Death Marker Desc"
 	{
 		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+	}
+	"Death Marker Desc"
+	{
+		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+	}
+	"W.F. Flowering Darkness"
+	{
+		"en"	"W.F. Flowering Darkness"
+	}	
+	"W.F. Acclaimed Swordsman"
+	{
+		"en"	"W.F. Acclaimed Swordsman"
+	}	
+	"W.F. Ekas Piloteer"
+	{
+		"en"	"W.F. Ekas Piloteer"
+	}	
+	"W.F. Extreme Knight Giant"
+	{
+		"en"	"W.F. Extreme Knight Giant"
+	}	
+	"W.F. Raging Blader"
+	{
+		"en"	"W.F. Raging Blader"
+	}	
+	"Whiteflower The Traitor"
+	{
+		"en"	"Whiteflower The Traitor"
+	}	
+	"Ouroboros Ekas"
+	{
+		"en"	"Ouroboros Ekas"
+	}
+	"Bob's Duck ''Dubby''"
+	{
+		"en"	"Bob's Duck ''Dubby''"
+	}
+	"Factory"
+	{
+		"en"	"Factory"
+		"ko"	"군수 공장"
+	}
+	"Batter"
+	{
+		"en"	"Leatherboots Batter"
+		"ko"	"가죽부츠 정찰대 타자"
+	}
+	"Charger"
+	{
+		"en"	"Leatherboots Charger"
+		"ko"	"가죽부츠 정찰대 돌격병"
+	}
+	"Teslar"
+	{
+		"en"	"Leatherboots Teslar"
+		"ko"	"가죽부츠 정찰대 테슬라"
+	}
+	"Victorian Vanguard"
+	{
+		"en"	"Leatherboots Vanguard"
+		"ko"	"가죽부츠 정찰대 뱅가드"
+	}
+	"Victorian Igniter"
+	{
+		"en"	"Leatherboots Igniter"
+		"ko"	"가죽부츠 정찰대 점화병"
+	}
+	"Grenadier"
+	{
+		"en"	"Leatherboots Grenadier"
+		"ko"	"가죽부츠 정찰대 투척병"
+	}
+	"Victorian ScoutSquad Leader"
+	{
+		"en"	"Leatherboots Leader"
+		"ko"	"가죽부츠 정찰대 리더"
+	}
+	"Supplier"
+	{
+		"en"	"Leatherboots Supplier"
+		"ko"	"가죽부츠 정찰대 보급병"
+	}
+	"Ballista"
+	{
+		"en"	"Leatherboots Ballista"
+		"ko"	"가죽부츠 정찰대 발리스타"
+	}
+	"Birdeye"
+	{
+		"en"	"Birdeye"
+		"ko"	"버드아이"
+	}
+	"Bigpipe"
+	{
+		"en"	"Big pipe"
+		"ko"	"빅 파이프"
+	}
+	"Harbringer"
+	{
+		"en"	"Harbringer"
+		"ko"	"하브링거"
+	}
+	"Signaller"
+	{
+		"en"	"Victorian Signaller"
+		"ko"	"빅토리아 전령병"
+	}
+	"Humbee"
+	{
+		"en"	"Irongate Humbee"
+		"ko"	"강철게이트 험비"
+	}
+	"Shotgunner"
+	{
+		"en"	"Irongate Shotgunner"
+		"ko"	"강철게이트 샷거너"
+	}
+	"Bulldozer"
+	{
+		"en"	"Irongate Bulldozer"
+		"ko"	"강철게이트 불도져"
+	}
+	"Hardender"
+	{
+		"en"	"Irongate Hardender"
+		"ko"	"강철게이트 경화자"
+	}
+	"Raider"
+	{
+		"en"	"Irongate Raider"
+		"ko"	"강철게이트 침략자"
+	}
+	"Zapper"
+	{
+		"en"	"Irongate Zapper"
+		"ko"	"강철게이트 잽퍼"
+	}
+	"Payback"
+	{
+		"en"	"Irongate Payback"
+		"ko"	"강철게이트 복수자"
+	}
+	"Blocker"
+	{
+		"en"	"Irongate Blocker"
+		"ko"	"강철게이트 블록커"
+	}
+	"Victoria Destructor"
+	{
+		"en"	"Irongate Destructor"
+		"ko"	"강철게이트 페기물 소각자"
+	}
+	"Victoria Tactical Protector"
+	{
+		"en"	"Irongate Tactical Protector"
+		"ko"	"강철게이트 전술 프로텍터"
+	}
+	"Victoria Aviator"
+	{
+		"en"	"Irongate Aviator"
+		"ko"	"아이언 실드에 타라 신지"
+	}
+	"IronShield"
+	{
+		"en"	"Irongate IronShield"
+		"ko"	"강철게이트 아이언실드"
+	}
+	"Basebreaker"
+	{
+		"en"	"Trooper  Basebreaker"
+		"ko"	"트루퍼 기지파괴자"
+	}
+	"Booster"
+	{
+		"en"	"Trooper  Booster"
+		"ko"	"트루퍼 부스터"
+	}
+	"Scorcher"
+	{
+		"en"	"Trooper  Scorcher"
+		"ko"	"트루퍼 방화병"
+	}	
+	"Mowdown"
+	{
+		"en"	"Trooper  Mowdown"
+		"ko"	"트루퍼 벌집피자 제조기"
+	}
+	"Mechafist"
+	{
+		"en"	"Trooper  Mechafist"
+		"ko"	"트루퍼 메카피스트"
+	}
+	"Assulter"
+	{
+		"en"	"Trooper  Assulter"
+		"ko"	"트루퍼 보병"
+	}
+	"Anti-Armor Infantry"
+	{
+		"en"	"Trooper  Anti-Armor Infantry"
+		"ko"	"트루퍼 대전차 보병"
+	}
+	"Victorian Mortar"
+	{
+		"en"	"Trooper  Mortar"
+		"ko"	"트루퍼 박격포병"
+	}
+	"Bomb Cart"
+	{
+		"en"	"Trooper  Bombcart"
+		"ko"	"트루퍼 폭탄 C.A.R.T"
+	}
+	"Breachcart"
+	{
+		"en"	"Trooper  Breachcart"
+		"ko"	"트루퍼 브리칭 전차"
+	}
+	"Victoria Tacticalunit"
+	{
+		"en"	"Trooper Tactical Operator"
+		"ko"	"트루퍼 전술 오퍼레이터"
+	}
+	"Caffeinator"
+	{
+		"en"	"Brassbunker Caffeinator"
+		"ko"	"브라스벙커 카'페인'네이터"
+	}
+	"Welder"
+	{
+		"en"	"Brassbunker Welder"
+		"ko"	"브라스벙커 용접 전사"
+	}
+	"Mechanist"
+	{
+		"en"	"Brassbunker Mechanist"
+		"ko"	"브라스벙커 메카니스트"
+	}
+	"Avangard"
+	{
+		"en"	"Brassbunker Avangard"
+		"ko"	"브라스벙커 아방가르드"
+	}
+	"Tanker"
+	{
+		"en"	"Brassbunker Tanker"
+		"ko"	"브라스벙커 탱커"
+	}
+	"Brassbunker Ambusher"
+	{
+		"en"	"Brassbunker Ambusher"
+		"ko"	"브라스벙커 매복자"
+	}
+	"Pulverizer"
+	{
+		"en"	"Brassbunker Pulverizer"
+		"ko"	"브라스벙커 분쇄기"
+	}
+	"Victoria Taser"
+	{
+		"en"	"Brassbunker Taser"
+		"ko"	"브라스벙커 테이저"
+	}
+	"Victoria Tank"
+	{
+		"en"	"Brassbunker Tank"
+		"ko"	"브라스벙커 탱크"
+	}
+	"Victoria Factory"
+	{
+		"en"	"Victorian Factory"
+		"ko"	"빅토리아 군수공장"
+	}
+	"Victoria Radiomast"
+	{
+		"en"	"Victorian Radiomast"
+		"ko"	"빅토리아 라디오마스트"
+	}
+	"Radio Guard"
+	{
+		"en"	"Radiomast Guard"
+		"ko"	"라디오마스트 가드"
+	}
+	"Radio Repair"
+	{
+		"en"	"Radio Repair"
+		"ko"	"라디오 수리 전문가"
+	}
+	"Victoria Anvil"
+	{
+		"en"	"''Anvil''"
+		"ko"	"''모루''"
+	}
+	"Victoria Anvil MK2"
+	{
+		"en"	"''Anvil'' Mk2"
+		"ko"	"''모루'' Mk2"
+	}
+	"Victoria Fragments"
+	{
+		"en"	"''Fragments''"
+		"ko"	"''파편''"
+	}
+	"Victoria Fragments MK2"
+	{
+		"en"	"''Fragments'' Mk2"
+		"ko"	"''파편'' Mk2"
+	}
+	"Victoria Atomizer"
+	{
+		"en"	"Atomizer"
+		"ko"	"인수분해"
+	}
+	"Victoria Huscarls"
+	{
+		"en"	"Huscarls"
+		"ko"	"허스칼"
+	}
+	"Victoria Harrison"
+	{
+		"en"	"Harrison"
+		"ko"	"해리슨"
+	}
+	"Victoria Castellan"
+	{
+		"en"	"Castellan"
+		"ko"	"카스텔란"
+	}
+	"Agent John"
+	{
+		"en"		"Agent John"
+	}
+	"Agent James"
+	{
+		"en"		"Agent James"
+	}
+	"Agent Alexander"
+	{
+		"en"		"Agent Alexander"
+	}
+	"Agent Alan"
+	{
+		"en"		"Agent Alan"
+	}
+	"Agent Chase"
+	{
+		"en"		"Agent Chase"
+	}
+	"Agent Dave"
+	{
+		"en"		"Agent Dave"
+	}
+	"Agent Graham"
+	{
+		"en"		"Agent Graham"
+	}
+	"Agent Steve"
+	{
+		"en"		"Agent Steve"
+	}
+	"Agent Eric"
+	{
+		"en"		"Agent Eric"
+	}
+	"Agent Jack"
+	{
+		"en"		"Agent Jack"
+	}
+	"Agent Jim"
+	{
+		"en"		"Agent Jim"
+	}
+	"Agent Josh"
+	{
+		"en"		"Agent Josh"
+	}
+	"Agent Kenneth"
+	{
+		"en"		"Agent Kenneth"
+	}
+	"Agent Paul"
+	{
+		"en"		"Agent Paul"
+	}
+	"Agent Tyler"
+	{
+		"en"		"Agent Tyler"
+	}
+	"Agent Wayne"
+	{
+		"en"		"Agent Wayne"
+	}
+	"Merovingian"
+	{
+		"en"		"Merovingian"
+	}
+	"Agent Ben"
+	{
+		"en"		"Agent Ben"
+	}
+	"Agent Chad"
+	{
+		"en"		"Agent Chad"
+	}
+	"Agent Chris"
+	{
+		"en"		"Agent Chris"
+	}
+	"Agent Dick"
+	{
+		"en"		"Agent Dick"
+	}
+	"Agent Ian"
+	{
+		"en"		"Agent Ian"
+	}
+	"Agent Jackson"
+	{
+		"en"		"Agent Jackson"
+	}
+	"Agent Mike"
+	{
+		"en"		"Agent Mike"
+	}
+	"Agent Sam"
+	{
+		"en"		"Agent Sam"
+	}
+	"Agent Zack"
+	{
+		"en"		"Agent Zack"
+	}
+	"Agent Connor"
+	{
+		"en"		"Agent Connor"
+	}
+	"Agent Henry"
+	{
+		"en"		"Agent Henry"
+	}
+	"Agent Jeremy"
+	{
+		"en"		"Agent Jeremy"
+	}
+	"Agent Jones"
+	{
+		"en"		"Agent Jones"
+	}
+	"Agent Kurt"
+	{
+		"en"		"Agent Kurt"
+	}
+	"Agent Logan"
+	{
+		"en"		"Agent Logan"
+	}
+	"Agent Ross"
+	{
+		"en"		"Agent Ross"
+	}
+	"Agent Spencer"
+	{
+		"en"		"Agent Spencer"
+	}
+	"Agent Todd"
+	{
+		"en"		"Agent Todd"
+	}
+	"Agent Thompson"
+	{
+		"en"		"Agent Thompson"
+	}
+	"Agent Johnson"
+	{
+		"en"		"Agent Johnson"
+	}
+	"Twin No."
+	{
+		"en"		"Twin No."
+	}
+	"Agent Smith"
+	{
+		"en"		"Agent Smith"
+	}
+	"Smith"
+	{
+		"en"		"Smith"
 	}
 }

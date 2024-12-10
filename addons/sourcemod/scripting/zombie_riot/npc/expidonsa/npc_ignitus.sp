@@ -61,9 +61,9 @@ void Ignitus_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Ignitus(client, vecPos, vecAng, ally);
+	return Ignitus(vecPos, vecAng, team);
 }
 methodmap Ignitus < CClotBody
 {
@@ -110,16 +110,12 @@ methodmap Ignitus < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -129,7 +125,7 @@ methodmap Ignitus < CClotBody
 	}
 	
 	
-	public Ignitus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Ignitus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Ignitus npc = view_as<Ignitus>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "27500", ally, false, true));
 		
@@ -194,8 +190,7 @@ methodmap Ignitus < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Ignitus_ClotThink(int iNPC)
 {
 	Ignitus npc = view_as<Ignitus>(iNPC);

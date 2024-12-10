@@ -65,9 +65,9 @@ void GiantTankus_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return GiantTankus(client, vecPos, vecAng, ally);
+	return GiantTankus(vecPos, vecAng, team);
 }
 methodmap GiantTankus < CClotBody
 {
@@ -114,16 +114,12 @@ methodmap GiantTankus < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -133,7 +129,7 @@ methodmap GiantTankus < CClotBody
 	}
 	
 	
-	public GiantTankus(int client, float vecPos[3], float vecAng[3], int ally)
+	public GiantTankus(float vecPos[3], float vecAng[3], int ally)
 	{
 		GiantTankus npc = view_as<GiantTankus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "85000", ally, false, true));
 		
@@ -188,8 +184,7 @@ methodmap GiantTankus < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void GiantTankus_ClotThink(int iNPC)
 {
 	GiantTankus npc = view_as<GiantTankus>(iNPC);

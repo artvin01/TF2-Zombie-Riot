@@ -72,11 +72,21 @@ public void HeadcrabZombieElectro_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_headcrab_zombie_electro");
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	NPCData data2;
+	strcopy(data2.Name, sizeof(data2.Name), "Electro Zombie");
+	strcopy(data2.Plugin, sizeof(data2.Plugin), "npc_headcrab_zombie_electro_yes");
+	data2.Func = ClotSummon2;
+	NPC_Add(data2);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HeadcrabZombieElectro(client, vecPos, vecAng, ally);
+	return HeadcrabZombieElectro(client, vecPos, vecAng, team, 1);
+}
+static any ClotSummon2(float vecPos[3], float vecAng[3], int ally)
+{
+	return HeadcrabZombieElectro(-1, vecPos, vecAng, ally, 2);
 }
 
 methodmap HeadcrabZombieElectro < CClotBody
@@ -121,7 +131,7 @@ methodmap HeadcrabZombieElectro < CClotBody
 	}
 	
 	
-	public HeadcrabZombieElectro(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeadcrabZombieElectro(int client, float vecPos[3], float vecAng[3], int ally, int num)
 	{
 		HeadcrabZombieElectro npc = view_as<HeadcrabZombieElectro>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
@@ -148,6 +158,11 @@ methodmap HeadcrabZombieElectro < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
+		if(num == 2)
+		{
+			CBaseNPC baseNPC = view_as<CClotBody>(npc.index).GetBaseNPC();
+			baseNPC.flStepSize = 51.0;
+		}
 		
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -158,11 +173,9 @@ methodmap HeadcrabZombieElectro < CClotBody
 		
 		return npc;
 	}
-	
 }
 
-//TODO 
-//Rewrite
+
 public void HeadcrabZombieElectro_ClotThink(int iNPC)
 {
 	HeadcrabZombieElectro npc = view_as<HeadcrabZombieElectro>(iNPC);
@@ -220,9 +233,10 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 8500.0;
 
-					npc.PlayMeleeHitSound();
+					
 					if(target > 0) 
 					{
+						npc.PlayMeleeHitSound();
 						KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						KillFeed_SetKillIcon(npc.index, "huntsman");
@@ -318,11 +332,9 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
@@ -340,11 +352,9 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 			}
 			case 2:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				//Dont even check if its the same enemy, just engage in killing, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;

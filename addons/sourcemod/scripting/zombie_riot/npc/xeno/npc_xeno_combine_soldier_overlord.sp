@@ -84,7 +84,7 @@ public void XenoCombineOverlord_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Overlord");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Overlord");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_overlord");
 	strcopy(data.Icon, sizeof(data.Icon), "combine_overlord");
 	data.IconCustom = true;
@@ -94,9 +94,9 @@ public void XenoCombineOverlord_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoCombineOverlord(client, vecPos, vecAng, ally);
+	return XenoCombineOverlord(vecPos, vecAng, team);
 }
 methodmap XenoCombineOverlord < CClotBody
 {
@@ -150,23 +150,17 @@ methodmap XenoCombineOverlord < CClotBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
@@ -187,7 +181,7 @@ methodmap XenoCombineOverlord < CClotBody
 		
 	}
 	
-	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3], int ally)
+	public XenoCombineOverlord(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
 		SetVariantInt(3);
@@ -213,7 +207,6 @@ methodmap XenoCombineOverlord < CClotBody
 		
 		
 		npc.m_bThisNpcIsABoss = true;
-		npc.m_iState = 0;
 		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -260,8 +253,7 @@ methodmap XenoCombineOverlord < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void XenoCombineOverlord_ClotThink(int iNPC)
 {
 	XenoCombineOverlord npc = view_as<XenoCombineOverlord>(iNPC);

@@ -74,9 +74,9 @@ void SoldierGiant_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SoldierGiant(client, vecPos, vecAng, ally);
+	return SoldierGiant(vecPos, vecAng, team);
 }
 methodmap SoldierGiant < CClotBody
 {
@@ -124,24 +124,18 @@ methodmap SoldierGiant < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -151,7 +145,7 @@ methodmap SoldierGiant < CClotBody
 	}
 	
 	
-	public SoldierGiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public SoldierGiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "200000", ally, false, true));
 		
@@ -222,8 +216,7 @@ methodmap SoldierGiant < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void SoldierGiant_ClotThink(int iNPC)
 {
 	SoldierGiant npc = view_as<SoldierGiant>(iNPC);

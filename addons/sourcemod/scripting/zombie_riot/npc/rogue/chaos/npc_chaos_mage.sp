@@ -50,9 +50,9 @@ void ChaosMage_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ChaosMage(client, vecPos, vecAng, ally);
+	return ChaosMage(vecPos, vecAng, team);
 }
 methodmap ChaosMage < CClotBody
 {
@@ -98,7 +98,7 @@ methodmap ChaosMage < CClotBody
 	}
 	
 	
-	public ChaosMage(int client, float vecPos[3], float vecAng[3], int ally)
+	public ChaosMage(float vecPos[3], float vecAng[3], int ally)
 	{
 		ChaosMage npc = view_as<ChaosMage>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		
@@ -122,9 +122,7 @@ methodmap ChaosMage < CClotBody
 		b_NpcUnableToDie[npc.index] = true;
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 270.0;
 		fl_TotalArmor[npc.index] = 0.25;

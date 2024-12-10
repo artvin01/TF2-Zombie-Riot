@@ -472,9 +472,9 @@ public Action lantean_Wand_Touch_World(int entity, int other)
 				
 				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 			}
-			RemoveEntity(entity);
 			b_is_lantean[entity]=false;
 			lantean_Wand_Drone_Count[owner] -= 1;
+			RemoveEntity(entity);
 		}
 	}
 	//Simular to buildings, it can vanish if touching skyboxes or npcs.
@@ -535,9 +535,9 @@ public void lantean_Wand_Touch(int entity, int target)
 			}
 			if(i_drone_targets_penetrated[entity] >= i_lantean_max_penetration[entity])
 			{
-				RemoveEntity(entity);
 				b_is_lantean[entity]=false;
 				lantean_Wand_Drone_Count[owner] -= 1;
+				RemoveEntity(entity);
 				if(IsValidEntity(particle))
 				{
 					RemoveEntity(particle);
@@ -653,4 +653,18 @@ static void Lantean_HomingProjectile_TurnToTarget(float Vec[3], int Projectile)
 	
 	ScaleVector(flNewVec, flSpeedInit);
 	TeleportEntity(Projectile, NULL_VECTOR, flAng, flNewVec, true);
+}
+
+
+void LeanteanWandCheckDeletion(int entity)
+{
+	if(b_is_lantean[entity])
+	{
+		int Owner = EntRefToEntIndex(i_WandOwner[entity]);
+		if(IsValidClient(Owner))
+		{
+			lantean_Wand_Drone_Count[Owner] -= 1;
+			b_is_lantean[entity]=false;
+		}
+	}
 }

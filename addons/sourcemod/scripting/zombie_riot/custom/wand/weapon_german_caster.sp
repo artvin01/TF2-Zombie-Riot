@@ -45,6 +45,8 @@ public void Weapon_German_M1_AltModule2(int client, int weapon, bool &result, in
 static void Weapon_German_M1(int client, int weapon, int maxcharge)
 {
 	int cost = GermanSilence[client] ? 75 : 100;
+	cost = RoundToNearest(Attributes_Get(weapon, 733, 1.0) * float(cost));
+
 	if(Current_Mana[client] < cost)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -295,7 +297,7 @@ void Weapon_German_WandTouch(int entity, int target)
 
 		if(GermanAltModule[owner] > 1)
 		{
-			if(f_ArmorCurrosionImmunity[target] > GetGameTime())
+			if(Nymph_AllowBonusDamage(target))
 				StartBleedingTimer(target, owner, DamageWand * 0.075, 4, weapon, DMG_SLASH, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 		}
 

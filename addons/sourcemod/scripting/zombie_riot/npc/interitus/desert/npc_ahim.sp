@@ -61,9 +61,9 @@ void DesertAhim_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return DesertAhim(client, vecPos, vecAng, ally);
+	return DesertAhim(vecPos, vecAng, team);
 }
 
 methodmap DesertAhim < CClotBody
@@ -108,7 +108,7 @@ methodmap DesertAhim < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public DesertAhim(int client, float vecPos[3], float vecAng[3], int ally)
+	public DesertAhim(float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertAhim npc = view_as<DesertAhim>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "550", ally));
 		
@@ -135,9 +135,7 @@ methodmap DesertAhim < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 400.0;
 

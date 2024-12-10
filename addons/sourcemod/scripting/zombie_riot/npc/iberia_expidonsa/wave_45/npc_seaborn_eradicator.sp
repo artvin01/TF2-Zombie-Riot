@@ -47,9 +47,9 @@ void Iberia_SeabornAnnihilator_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Iberia_SeabornAnnihilator(client, vecPos, vecAng, ally, data);
+	return Iberia_SeabornAnnihilator(vecPos, vecAng, team, data);
 }
 
 methodmap Iberia_SeabornAnnihilator < CClotBody
@@ -92,7 +92,7 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 	}
 	
 	
-	public Iberia_SeabornAnnihilator(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Iberia_SeabornAnnihilator(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Iberia_SeabornAnnihilator npc = view_as<Iberia_SeabornAnnihilator>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "50000000", ally, false, true));
 		
@@ -120,9 +120,7 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberia_SeabornAnnihilator_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Iberia_SeabornAnnihilator_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 30.0;
 		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(5.0, 15.0);
@@ -131,7 +129,7 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
 				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = npc.index;
+				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
 				break;
 			}
 		}

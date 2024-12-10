@@ -245,15 +245,8 @@ stock void Brittle_AttachParticle(int entity, char type[255], float duration = 0
 		if (IsValidEdict(part1))
 		{
 			float pos[3];
-			if (HasEntProp(entity, Prop_Data, "m_vecAbsOrigin"))
-			{
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-			}
-			else if (HasEntProp(entity, Prop_Send, "m_vecOrigin"))
-			{
-				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-			}
-			
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+		
 			if (zTrans != 0.0)
 			{
 				pos[2] += zTrans;
@@ -278,8 +271,7 @@ stock void Brittle_AttachParticle(int entity, char type[255], float duration = 0
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void BrittleBones_ClotThink(int iNPC)
 {
 	BrittleBones npc = view_as<BrittleBones>(iNPC);

@@ -231,9 +231,9 @@ static void ClotPrecache()
 	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Bloon(client, vecPos, vecAng, ally, data);
+	return Bloon(vecPos, vecAng, team, data);
 }
 
 static int BType[MAXENTITIES];
@@ -464,7 +464,7 @@ methodmap Bloon < CClotBody
 			}
 		}
 	}
-	public Bloon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Bloon(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool camo, regrow, fortified;
 		int type = GetBloonTypeOfData(data, camo, fortified, regrow);
@@ -514,8 +514,7 @@ methodmap Bloon < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void Bloon_ClotThink(int iNPC)
 {
 	Bloon npc = view_as<Bloon>(iNPC);

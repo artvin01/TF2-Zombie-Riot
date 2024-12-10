@@ -7,7 +7,7 @@
 
 static bool BlockLoseSay;
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
@@ -102,6 +102,11 @@ static int Silvester_TE_Used;
 static bool b_RageAnimated[MAXENTITIES];
 static bool b_RageProjectile[MAXENTITIES];
 
+int SensalID;
+int SensalNPCID()
+{
+	return SensalID;
+}
 void Sensal_OnMapStart_NPC()
 {
 	if(!IsFileInDownloads(WEAPON_CUSTOM_WEAPONRY_1))
@@ -116,7 +121,7 @@ void Sensal_OnMapStart_NPC()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	SensalID = NPC_Add(data);
 }
 
 static void ClotPrecache()
@@ -138,9 +143,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Sensal(client, vecPos, vecAng, ally, data);
+	return Sensal(vecPos, vecAng, team, data);
 }
 
 methodmap Sensal < CClotBody
@@ -251,7 +256,7 @@ methodmap Sensal < CClotBody
 	}
 	
 	
-	public Sensal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Sensal(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Sensal npc = view_as<Sensal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
@@ -277,9 +282,7 @@ methodmap Sensal < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSensal_OnTakeDamagePost);
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.i_GunMode = 0;
@@ -312,6 +315,11 @@ methodmap Sensal < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 50;
 		}
+		bool cutscene2 = StrContains(data, "victoria_cutscene") != -1;
+		if(cutscene2)
+		{
+			i_RaidGrantExtra[npc.index] = 51;
+		}
 		bool tripple = StrContains(data, "triple_enemies") != -1;
 		if(tripple)
 		{
@@ -343,7 +351,7 @@ methodmap Sensal < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 		
-		float amount_of_people = float(CountPlayersOnRed());
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
@@ -364,7 +372,7 @@ methodmap Sensal < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.65;
 		}
-		if(!cutscene && !tripple)
+		if(!cutscene && !cutscene2 && !tripple)
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 			MusicEnum music;
@@ -463,6 +471,99 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.m_flGetClosestTargetTime = 0.0;
 		}
+		return;
+	}
+	if(i_RaidGrantExtra[npc.index] == 51)
+	{
+		npc.m_flSpeed = 660.0;
+		BlockLoseSay = true;
+		if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+		{
+			npc.m_iTarget = GetClosestAlly(npc.index);
+			npc.m_flGetClosestTargetTime = GetRandomRetargetTime();
+		}
+		if(IsValidAlly(npc.index, npc.m_iTarget))
+		{
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			if(flDistanceToTarget < npc.GetLeadRadius()) 
+			{
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+			}
+			else 
+			{
+				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.StartPathing();
+			}
+		}
+		else
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+		}
+
+		if(npc.f_SensalMeleeCooldown > GetGameTime())
+		{
+			return;
+		}
+		npc.f_SensalMeleeCooldown = GetGameTime() + 4.0;
+		switch(npc.i_GunMode)
+		{
+			case 0:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Stop the fight this instant.");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: What is happening here?");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{blue}Castellan{default}: They attacked us while invading Ziberia, what else is there to add?");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Invading Ziberia? Right after {darkblue}Kahmlstein{default} Perished?");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: There are more important matters to attend to.\nZiberia is not like Him.");
+			}
+			case 5:
+			{
+				CPrintToChatAll("{blue}Castellan{default}: Youre meaning to say that he was the cause?");
+			}
+			case 6:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Correct. The country itself isnt at fault. Now leave, I also believe Victoria has to deal with chaos.");
+			}
+			case 7:
+			{
+				CPrintToChatAll("{blue}Castellan{default}: I remember you mentioning chaos before, if you say its in our city walls, then we will immedietly return and assess the situation.");
+			}
+			case 8:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Good.");
+			}
+			case 9:
+			{
+				CPrintToChatAll("{blue}Castellan{default}: We will return to Victoria now.");
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					{
+						Items_GiveNamedItem(client, "Avangard's Processing Core-B");
+						CPrintToChat(client,"{default}As Castellan and his army leave, they drop something: {darkblue}''Avangard's Processing Core-B''{default}!");
+					}
+				}
+			}
+			default:
+			{
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			}
+		}
+		npc.i_GunMode++;
 		return;
 	}
 	if(SensalTalkPostWin(npc))
@@ -707,8 +808,12 @@ static void Internal_NPCDeath(int entity)
 		if(XenoExtraLogic())
 			CPrintToChatAll("{blue}Sensal{default}: This area is restricted for all of you.");
 		else
-			CPrintToChatAll("{blue}Sensal{default}: You all are comming with me.");
+			CPrintToChatAll("{blue}Sensal{default}: You all are coming with me.");
 
+		return;
+	}
+	if(i_RaidGrantExtra[npc.index] == 51)
+	{
 		return;
 	}
 	if(BlockLoseSay)
@@ -1037,7 +1142,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 }
 
 
-void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r")
+void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r", int colourdiff = 0)
 {
 	if(attachment[0])
 	{
@@ -1074,13 +1179,20 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	{
 		int ModelApply = ApplyCustomModelToWandProjectile(iNpc, WEAPON_CUSTOM_WEAPONRY_1, 1.65, "scythe_spin");
 
-		if(colour)
+		if(colourdiff)
 		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
+			SetEntityRenderColor(ModelApply, 255, 255, 255, 2);
 		}
 		else
 		{
-			SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+			if(colour)
+			{
+				SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
+			}
+			else
+			{
+				SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+			}
 		}
 		SetVariantInt(2);
 		AcceptEntityInput(ModelApply, "SetBodyGroup");
@@ -1325,7 +1437,6 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		}
 
 		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
-		SensalEffects(Projectile,view_as<int>(npc.Anger),"");
 		b_RageProjectile[Projectile] = npc.Anger;
 		//dont exist !
 		SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
@@ -1333,13 +1444,32 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 		static float ang_Look[3];
 		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
-		Initiate_HomingProjectile(Projectile,
-		 npc.index,
-		 	70.0,			// float lockonAngleMax,
-		   	9.0,				//float homingaSec,
-			true,				// bool LockOnlyOnce,
-			true,				// bool changeAngles,
-			  ang_Look);// float AnglesInitiate[3]);
+		bool DoHoming = true;
+		if(count == 2)
+		{
+			int EnemySearch = GetClosestTarget(Projectile, true, _, true, _, _, _, true, .UseVectorDistance = true);
+			if(IsValidEntity(EnemySearch))
+			{
+				TeleportEntity(Projectile, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
+				SensalEffects(Projectile,view_as<int>(npc.Anger),"", 1);
+				DoHoming = false;
+				DataPack pack1;
+				CreateDataTimer(0.1, WhiteflowerTank_Rocket_Stand, pack1, TIMER_FLAG_NO_MAPCHANGE);
+				pack1.WriteCell(EntIndexToEntRef(Projectile));
+				pack1.WriteCell(EntIndexToEntRef(EnemySearch));
+			}
+		}
+		if(DoHoming)
+		{
+			SensalEffects(Projectile,view_as<int>(npc.Anger),"");
+			Initiate_HomingProjectile(Projectile,
+			npc.index,
+				70.0,			// float lockonAngleMax,
+				9.0,				//float homingaSec,
+				true,				// bool LockOnlyOnce,
+				true,				// bool changeAngles,
+				ang_Look);// float AnglesInitiate[3]);
+		}
 
 		if(volume == 0.25)
 		{
@@ -1505,7 +1635,7 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of your's now aswell.");
+		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of yours now aswell.");
 	}
 	return true; //He is trying to help.
 }
@@ -2055,7 +2185,13 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "OH MY GOD, {snow}BOB THE FIRST{default} IS ON YOUR SIDE?!");
 		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "Howd you get {lightblue}Nemal's{default} Weapon{gold}%N{default}?",client);
 		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "The lance... the only weapon that was forged from both ruina and {gold}expidonsa{default}...");
-
+		/*
+		//uncomment on release
+		case WEAPON_NECRO_WANDS:
+		{
+			Format(Text_Lines, sizeof(Text_Lines), "What is this, the dead, an imitation...? Is this a prank again{green} Spookmaster Bones{default}?");
+		}
+		*/
 		default:
 		{
 			valid = false;

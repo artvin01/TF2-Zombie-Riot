@@ -68,7 +68,7 @@ void CombineSwordsman_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combine Swordsman");
+	strcopy(data.Name, sizeof(data.Name), "W.F. Swordsman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combine_soldier_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
 	data.IconCustom = false;
@@ -78,9 +78,9 @@ void CombineSwordsman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return CombineSwordsman(client, vecPos, vecAng, ally);
+	return CombineSwordsman(vecPos, vecAng, team);
 }
 
 methodmap CombineSwordsman < CClotBody
@@ -128,39 +128,29 @@ methodmap CombineSwordsman < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -170,7 +160,7 @@ methodmap CombineSwordsman < CClotBody
 	}
 	
 	
-	public CombineSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public CombineSwordsman(float vecPos[3], float vecAng[3], int ally)
 	{
 		CombineSwordsman npc = view_as<CombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		SetVariantInt(1);
@@ -226,8 +216,7 @@ methodmap CombineSwordsman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void CombineSwordsman_ClotThink(int iNPC)
 {
 	CombineSwordsman npc = view_as<CombineSwordsman>(iNPC);

@@ -5,7 +5,7 @@
 #define Silvester_BASE_RANGED_SCYTHE_DAMGAE 13.0
 #define Silvester_LASER_THICKNESS 25
 
-static bool b_angered_twice[MAXENTITIES];
+
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
@@ -129,9 +129,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/soldier.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Silvester(client, vecPos, vecAng, ally, data);
+	return Silvester(vecPos, vecAng, team, data);
 }
 
 methodmap Silvester < CClotBody
@@ -300,7 +300,7 @@ methodmap Silvester < CClotBody
 
 	
 	
-	public Silvester(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Silvester(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Silvester npc = view_as<Silvester>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
@@ -351,6 +351,8 @@ methodmap Silvester < CClotBody
 		b_SilvesterAttackSame[npc.index] = false;
 		
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_bThisNpcIsABoss = true;
+		
 		b_angered_twice[npc.index] = false;
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{
@@ -462,11 +464,11 @@ methodmap Silvester < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		npc.m_fbGunout = false;
-		
+		/*
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_buttler/bak_buttler_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
+		*/
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_hat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
@@ -496,9 +498,10 @@ methodmap Silvester < CClotBody
 		float flAng[3]; // original
 		npc.GetAttachment("head", flPos, flAng);
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,0.0});
-		
+		/*
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 192, 192, 192, 255);
+		*/
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
@@ -532,13 +535,16 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	bool NemalAssistance = false;
+	if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+		NemalAssistance = true; //they are alive and helping.
 
 
 	if(npc.m_flSilvesterHudCD < GetGameTime())
 	{
 		npc.m_flSilvesterHudCD = GetGameTime() + 0.2;
 		//Set raid to this one incase the previous one has died or somehow vanished
-		if(!IsPartnerGivingUpNemalSilv(npc.index) && IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+		if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
 		{
 			for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
 			{
@@ -548,12 +554,10 @@ static void Internal_ClotThink(int iNPC)
 				}	
 			}
 		}
-		else if((EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive))) || (IsPartnerGivingUpNemalSilv(npc.index) && EntRefToEntIndex(RaidBossActive) != npc.index))
+		else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
 		{	
-			
 			RaidBossActive = EntIndexToEntRef(npc.index);
 		}
-		
 	}
 
 	if(b_angered_twice[npc.index])
@@ -689,12 +693,12 @@ static void Internal_ClotThink(int iNPC)
 		}
 		BlockLoseSay = true;
 	}
-	if(SilvesterTransformation(npc))
+	if(SilvesterTransformation(npc, NemalAssistance))
 		return;
 
 	if(npc.Anger)
 	{
-		if(SilvesterSwordSlicer(npc))
+		if(SilvesterSwordSlicer(npc, NemalAssistance))
 			return;
 	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -718,7 +722,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	bool ForceRedo = false;
-	if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+	if(NemalAssistance)
 	{
 		//Nemal is alive and didnt give up! Try to target someone near her....
 		CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
@@ -772,7 +776,8 @@ static void Internal_ClotThink(int iNPC)
 			}
 			npc.m_flChangeTargetsSilvester = GetGameTime(npc.index) + (GetRandomRetargetTime());
 		}
-		npc.m_iTarget = npc.m_iTargetWalkTo;
+	//cant have this here, issue being that he'll just target the wrong person.
+	//	npc.m_iTarget = npc.m_iTargetWalkTo;
 		//we STILL didnt find any target somehow, just stand still.
 		//We also stand still if the last target is not downed, and we just patiently wait.
 		int ForceStandStill = CountPlayersOnRed(2);
@@ -845,7 +850,7 @@ static void Internal_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		SetGoalVectorIndex = SilvesterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		SetGoalVectorIndex = SilvesterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget, NemalAssistance); 
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
 		if(iPitch < 0)
@@ -864,6 +869,11 @@ static void Internal_ClotThink(int iNPC)
 		float flPitch = npc.GetPoseParameter(iPitch);
 								
 		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+	}
+	else
+	{
+		//instantly set target!
+		npc.m_flSetTargetFromWalkTarget = 0.0;
 	}
 	//What to do towrads the enemy we want to walk to
 	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
@@ -1017,6 +1027,8 @@ static void Internal_NPCDeath(int entity)
 	RaidBossActive = INVALID_ENT_REFERENCE;
 		
 	
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
@@ -1134,7 +1146,7 @@ void SilvesterAnimationChange(Silvester npc)
 	}
 
 }
-int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distance)
+int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distance, bool NemalAssistance)
 {
 	if(npc.Anger)
 	{
@@ -1155,12 +1167,9 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 				PluginBot_Jump(npc.index, flPos);
 				npc.m_flSilvesterSlicerHappening = GetGameTime(npc.index) + 1.0;
 				float cooldownDo  = 30.0;
-				if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
-					cooldownDo = 30.0;
-				else
-				{
+				if(!NemalAssistance)
 					cooldownDo *= 0.5;
-				}
+
 				if(i_RaidGrantExtra[npc.index] >= 4)
 					cooldownDo *= 0.75;
 
@@ -1210,12 +1219,9 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			0.75);	
 			
 			float cooldownDo  = 7.0;
-			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
-				cooldownDo = 7.0;
-			else
-			{
+			if(!NemalAssistance)
 				cooldownDo *= 0.5;
-			}
+
 			npc.m_flSilvesterAirbornAttack = GetGameTime(npc.index) + cooldownDo;
 		}
 	}
@@ -1251,11 +1257,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 								damage *= 0.75;
 							}
 							
-							if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
-							{
-
-							}
-							else
+							if(!NemalAssistance)
 								damage *= 1.35;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
@@ -1392,13 +1394,10 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 							
 					npc.f_SilvesterMeleeSliceHappening = gameTime + 0.25;
 					
-					float cooldownDo  = 4.5;
-					if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
-						cooldownDo = 7.0;
-					else
-					{
+					float cooldownDo = 4.5;
+					if(!NemalAssistance)
 						cooldownDo *= 0.5;
-					}
+
 					if(i_RaidGrantExtra[npc.index] >= 4)
 						cooldownDo *= 0.75;
 
@@ -1412,7 +1411,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 	return 0;
 }
 
-bool SilvesterTransformation(Silvester npc)
+bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 {
 	if(npc.Anger)
 	{
@@ -1461,7 +1460,7 @@ bool SilvesterTransformation(Silvester npc)
 			npc.m_flDoingAnimation = 0.0;
 
 			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");
-			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+			if(NemalAssistance)
 			{
 				CPrintToChatAll("{lightblue}Nemal{default}: Guess ill try harder aswell, or try to.");
 			}
@@ -1546,9 +1545,11 @@ static void Silvester_Weapon_Lines(Silvester npc, int client)
 
 void Nemal_SilvesterApplyEffects(int entity, bool withoutweapon = false)
 {
-	Silvester npc = view_as<Silvester>(entity);
+	Silvester npc = view_as<Silvester>(entity);	
 	if(npc.Anger)
 	{
+		if(IsValidEntity(npc.m_iWearable9))
+			RemoveEntity(npc.m_iWearable9);
 		ExpidonsaRemoveEffects(entity);
 		if(withoutweapon)
 			Nemal_SilvesterApplyEffectsForm2(entity, 0);	
@@ -1557,6 +1558,8 @@ void Nemal_SilvesterApplyEffects(int entity, bool withoutweapon = false)
 	}
 	else
 	{
+		if(IsValidEntity(npc.m_iWearable9))
+			RemoveEntity(npc.m_iWearable9);
 		ExpidonsaRemoveEffects(entity);
 		if(withoutweapon)
 			Nemal_SilvesterApplyEffectsForm2(entity, 0);	
@@ -1569,14 +1572,32 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 {
 	if(AtEdictLimit(EDICT_RAID))
 		return;
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
 	
 	int red = 255;
 	int green = 255;
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
+
+	npc.m_iWearable9 = npc.EquipItem("head", WINGS_MODELS_1);
+	SetVariantInt(1);
+	AcceptEntityInput(npc.m_iWearable9, "SetBodyGroup");	
+	SetVariantString("1.35");
+	AcceptEntityInput(npc.m_iWearable9, "SetModelScale");
+	
 	if(WeaponSettingDo == 1 || WeaponSettingDo == 2)
 	{
+		if(WeaponSettingDo == 1)
+		{
+			npc.m_iWearable1 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 3);
+			SetVariantInt(2048);
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");	
+			return;
+		}
 		int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 		
 		int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
@@ -1602,10 +1623,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 
 		Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
 		SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-		if(WeaponSettingDo == 1)
-			SetParent(entity, particle_1, "effect_hand_R",_);
-		else
-			SetParent(entity, particle_1, "effect_hand_L",_);
+		SetParent(entity, particle_1, "effect_hand_l",_);
 
 
 		int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
@@ -1632,8 +1650,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 		i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_5_1);
 		i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
 		i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
-		i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
-			
+		i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);	
 	}
 
 	//possible loop function?
@@ -1646,6 +1663,8 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 		2nd: Up and down, negative up, positive down.
 		3rd: front and back, negative goes back.
 	*/
+
+	/*
 	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	GetAttachment(entity, "flag", flPos, flAng);
 	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
@@ -1860,11 +1879,12 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 	i_ExpidonsaEnergyEffect[entity][67] = EntIndexToEntRef(Laser_3_Wingset_6);
 	i_ExpidonsaEnergyEffect[entity][68] = EntIndexToEntRef(Laser_4_Wingset_6);
 	i_ExpidonsaEnergyEffect[entity][69] = EntIndexToEntRef(ParticleOffsetMain);
+	*/
 }
 
 static int LastEnemyTargeted[MAXENTITIES];
 
-bool SilvesterSwordSlicer(Silvester npc)
+bool SilvesterSwordSlicer(Silvester npc, bool NemalAssistance)
 {
 	if(npc.m_flSilvesterSlicerHappening)
 	{
@@ -1872,7 +1892,7 @@ bool SilvesterSwordSlicer(Silvester npc)
 		{
 			bool ForceRedo = false;
 			npc.m_flGetClosestTargetTime = 0.0;
-			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+			if(NemalAssistance)
 			{
 				CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
 				if(allynpc.m_iTarget == npc.m_iTarget)

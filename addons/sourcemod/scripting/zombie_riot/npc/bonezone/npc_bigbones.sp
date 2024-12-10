@@ -198,8 +198,7 @@ methodmap BigBones < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 public void BigBones_ClotThink(int iNPC)
 {
 	BigBones npc = view_as<BigBones>(iNPC);

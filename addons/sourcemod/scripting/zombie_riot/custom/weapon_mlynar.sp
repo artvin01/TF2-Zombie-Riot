@@ -526,8 +526,18 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
-			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
-			ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+			f_AniSoundSpam[victim] = GetGameTime() + 0.2;			
+			switch(GetRandomInt(1,2))
+			{
+				case 1:
+				{
+					EmitSoundToClient(victim, "weapons/rescue_ranger_charge_01.wav", victim, _, 85, _, 0.8, GetRandomInt(90, 100));
+				}
+				case 2:
+				{
+					EmitSoundToClient(victim, "weapons/rescue_ranger_charge_02.wav", victim, _, 85, _, 0.8, GetRandomInt(90, 100));
+				}
+			}
 		}
 		static float Entity_Position[3];
 		WorldSpaceCenter(attacker, Entity_Position );

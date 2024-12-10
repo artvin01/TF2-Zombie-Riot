@@ -74,9 +74,9 @@ void Iberia_Anania_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberia_Anania(client, vecPos, vecAng, ally);
+	return Iberia_Anania(vecPos, vecAng, team);
 }
 
 methodmap Iberia_Anania < CClotBody
@@ -125,7 +125,7 @@ methodmap Iberia_Anania < CClotBody
 	}
 	
 	
-	public Iberia_Anania(int client, float vecPos[3], float vecAng[3], int ally)
+	public Iberia_Anania(float vecPos[3], float vecAng[3], int ally)
 	{
 		Iberia_Anania npc = view_as<Iberia_Anania>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "3500", ally, false, true));
 		
@@ -146,9 +146,7 @@ methodmap Iberia_Anania < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberia_Anania_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Iberia_Anania_ClotThink);
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
 		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(5.0, 15.0);
@@ -295,7 +293,7 @@ void Iberia_AnaniaSelfDefense(Iberia_Anania npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 60.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 3.5;
 
@@ -339,7 +337,7 @@ void IberiaMoraleGivingDo(int iNpc, float gameTime, bool DoSounds = true, float 
 	{
 		return;
 	}
-	if(npc.m_flNextRangedSpecialAttack > gameTime + 990.0)
+	if(npc.m_flNextRangedSpecialAttack == FAR_FUTURE)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 15.0;
 		if(DoSounds)
@@ -380,7 +378,7 @@ void IberiaMoraleGiving(int entity, int victim, float damage, int weapon)
 	if(entity == victim)
 		return;
 
-	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
 	{
 		IberiaMoraleGivingInternal(entity,victim);
 	}
@@ -389,6 +387,6 @@ void IberiaMoraleGiving(int entity, int victim, float damage, int weapon)
 void IberiaMoraleGivingInternal(int shielder, int victim)
 {
 	CClotBody npc = view_as<CClotBody>(shielder);
-	npc.m_flNextRangedSpecialAttack = GetGameTime(shielder) + 9999.0;
-	GiveEntityMoraleBoost(shielder, victim, f_MoraleAddAnania[shielder]);
+	npc.m_flNextRangedSpecialAttack = FAR_FUTURE;
+	GiveEntityMoraleBoost(victim, f_MoraleAddAnania[shielder]);
 }

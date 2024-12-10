@@ -101,9 +101,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Ruliana(client, vecPos, vecAng, ally, data);
+	return Ruliana(vecPos, vecAng, team, data);
 }
 
 static float fl_npc_basespeed;
@@ -162,16 +162,12 @@ methodmap Ruliana < CClotBody
 	public void PlayPrimaryFireSound() {
 		EmitSoundToAll(g_PrimaryFireSounds[GetRandomInt(0, sizeof(g_PrimaryFireSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -259,7 +255,7 @@ methodmap Ruliana < CClotBody
 		}
 	}
 	
-	public Ruliana(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Ruliana(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Ruliana npc = view_as<Ruliana>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -315,7 +311,8 @@ methodmap Ruliana < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		fl_npc_basespeed = 290.0;
+		//speed is low since otherwise allied npc's can't keep up with her.
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -368,8 +365,7 @@ methodmap Ruliana < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Ruliana npc = view_as<Ruliana>(iNPC);
@@ -442,21 +438,17 @@ static void ClotThink(int iNPC)
 		{
 			Ruina_Master_Rally(npc.index, true);
 
-			if(npc.m_flDoingAnimation < GameTime)	//so allies can actually keep up
+			if(npc.m_flDoingAnimation < GameTime)
 			{
 				npc.m_flDoingAnimation = GameTime + 1.0;
-				if(Ratio < 0.1)
-					Master_Apply_Speed_Buff(npc.index, 25000.0, 0.75, 3.0);
-				else
-					Master_Apply_Speed_Buff(npc.index, 25000.0, 0.75, 1.75);
 
-				Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.9);	//10% dmg resist
+				Master_Apply_Defense_Buff(npc.index, 325.0, 5.0, 0.9);	//10% dmg resist
 			}
 		}
 		else
 			Ruina_Master_Rally(npc.index, false);
 			
-		if(Ratio < 0.25)
+		if(Ratio < 0.35)
 			SacrificeAllies(npc.index);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
 
 	}
@@ -507,7 +499,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}
 		else
@@ -518,9 +510,9 @@ static void ClotThink(int iNPC)
 			fl_ruina_battery_timeout[npc.index] = GameTime + 5.0;
 			Ruliana_Barrage_Invoke(npc, Battery_Cost);
 		}
-		else
+		else if(fl_ruina_battery[npc.index]<=Battery_Cost)
 		{
-			npc.m_flNextRangedBarrage_Singular = GameTime + 10.0; 
+			npc.m_flNextRangedBarrage_Singular = GameTime + 15.0; 
 		}
 
 		//Target close enough to hit
@@ -567,10 +559,10 @@ static void ClotThink(int iNPC)
 			
 						int Proj = npc.FireParticleRocket(target_vec, (npc.Anger ? 125.0 : 50.0) , projectile_speed , (npc.Anger ? 150.0 : 75.0) , "raygun_projectile_blue", _, _, true, flPos);
 
-						if(battery_Ratio > 0.5 && IsValidEntity(Proj))
+						if(battery_Ratio > 0.5 && IsValidEntity(Proj) && !LastMann)
 						{
-							float Homing_Power = (npc.Anger ? 8.0 : 7.0);
-							float Homing_Lockon = (npc.Anger ? 75.0 : 50.0);
+							float Homing_Power = (npc.Anger ? 7.0 : 5.0);
+							float Homing_Lockon = (npc.Anger ? 50.0 : 30.0);
 
 							float Ang[3];
 							MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
@@ -704,19 +696,6 @@ static bool Retreat(Ruliana npc, bool custom = false)
 
 	return true;
 }
-static bool Similar_Vec(float Vec1[3], float Vec2[3])
-{
-	bool similar = true;
-	for(int i=0 ; i < 3 ; i ++)
-	{
-		similar = Similar(Vec1[i], Vec2[i]);
-	}
-	return similar;
-}
-static bool Similar(float val1, float val2)
-{
-	return fabs(val1 - val2) < 2.0;
-}
 static bool Directional_Trace(Ruliana npc, float Origin[3], float Angle[3], float Result[3])
 {
 	Ruina_Laser_Logic Laser;
@@ -773,7 +752,7 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 	float GameTime = GetGameTime(npc.index);
 
 	bool FIREEVERYTHING = false;
-	if(npc.m_flNextRangedBarrage_Singular < GameTime)
+	if(npc.m_flNextRangedBarrage_Singular < GameTime && !LastMann)
 	{
 		minimum_targets = 1;
 		FIREEVERYTHING = true;	//OBLITERATE THEM
@@ -850,10 +829,16 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 				valid_targets[i] = previous_target;
 			else
 				previous_target = Target;
+
 		}
+		targets_aquired = (RULIANA_MAX_BARRAGE_SIZE-1);
 	}
 
-	targets_aquired = RULIANA_MAX_BARRAGE_SIZE;
+	if(npc.m_flNextRangedBarrage_Singular < GameTime)
+		npc.m_flNextRangedBarrage_Singular = GameTime + 10.0;
+
+	if(targets_aquired >= RULIANA_MAX_BARRAGE_SIZE)	///somehow we have more then 15 targets?
+		targets_aquired = (RULIANA_MAX_BARRAGE_SIZE-1);
 
 	float Base_Recharge = Cost;
 	float Modify_Charge = Base_Recharge*(float(targets_aquired)/float(RULIANA_MAX_BARRAGE_SIZE));
@@ -968,7 +953,7 @@ static void Func_On_Proj_Touch(int projectile, int other)
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
 	Explode_Logic_Custom(fl_ruina_Projectile_dmg[projectile] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[projectile] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[projectile]);
-
+	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	Ruina_Remove_Projectile(projectile);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -990,21 +975,21 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(Ratio < 0.5)
 	{
 		npc.Anger = true; //	>:(
+		fl_npc_basespeed = 350.0;
 		if(!b_angered_once[npc.index])
 		{
 			b_angered_once[npc.index] = true;
 			npc.PlayAngerSound();
-
-			fl_npc_basespeed = 330.0;
 			
 			if(npc.m_bThisNpcIsABoss)
 			{
 				npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 			}
 		}
-}
+	}
 	else
 	{
+		fl_npc_basespeed = 250.0;
 		npc.Anger = false;
 	}
 	

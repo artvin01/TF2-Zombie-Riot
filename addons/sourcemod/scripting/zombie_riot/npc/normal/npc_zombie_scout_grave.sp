@@ -67,9 +67,9 @@ void Scout_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Scout(client, vecPos, vecAng, ally);
+	return Scout(vecPos, vecAng, team);
 }
 methodmap Scout < CClotBody
 {
@@ -117,16 +117,12 @@ methodmap Scout < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -136,7 +132,7 @@ methodmap Scout < CClotBody
 	}
 	
 	
-	public Scout(int client, float vecPos[3], float vecAng[3], int ally)
+	public Scout(float vecPos[3], float vecAng[3], int ally)
 	{
 		Scout npc = view_as<Scout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
@@ -183,8 +179,7 @@ methodmap Scout < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void Scout_ClotThink(int iNPC)
 {
 	Scout npc = view_as<Scout>(iNPC);

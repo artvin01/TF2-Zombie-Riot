@@ -79,13 +79,17 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 				if (target > 0 && target <= MaxClients)
 				{
 					//dont heal downed targets that have left for dead.
+#if defined ZR
 					if(b_LeftForDead[target] && dieingstate[target] > 0)
+#endif
 					{
 						DHookSetReturn(hReturn, false);
 						return MRES_Supercede;		
 
 					}
+#if defined ZR
 					return MRES_Ignored;
+#endif
 					//This is just normal code, let it be itself.
 				}
 				else if(b_ThisWasAnNpc[target] && !b_NpcHasDied[target] && GetTeam(target) == TFTeam_Red)
@@ -174,8 +178,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 
-					flDrainRate *= Attributes_Get(medigun, 8, 1.0);
-					flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
+					flDrainRate *= Attributes_GetOnWeapon(owner, medigun, 8, true);
 					if(TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
 						target_sucked_long[healTarget] += 0.21;
@@ -196,7 +199,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						static float Entity_Position[3];
 						WorldSpaceCenter(healTarget, Entity_Position );
+#if defined ZR
 						AddHealthToUbersaw(owner, 1, 0.0015);
+#endif		
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime() * 3.0, DMG_PLASMA, medigun, _, Entity_Position);
 					}
 					else
@@ -219,8 +224,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						static float Entity_Position[3];
 						WorldSpaceCenter(healTarget, Entity_Position );
-						
+#if defined ZR
 						AddHealthToUbersaw(owner, 1, 0.0005);
+#endif		
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 					}
 					
@@ -256,8 +262,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					bool Is_Allied_Npc = false;
 					MedigunChargeUber(owner, medigun, 1.0);
 					
-					float Healing_Value = Attributes_Get(medigun, 8, 1.0);
-					Healing_Value *= Attributes_GetOnPlayer(owner, 8, true, true);
+					float Healing_Value = Attributes_GetOnWeapon(owner, medigun, 8, true);
 					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
@@ -284,10 +289,19 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 					}
 #if defined ZR
-					if(healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
+					if(Citizen_ThatIsDowned(healTarget) || healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
 					{
-						if(!b_LeftForDead[healTarget])
+						if(healTarget <= MaxClients)
+						{
+							if(!b_LeftForDead[healTarget])
+							{
+								ReviveClientFromOrToEntity(healTarget, owner,_, 1);
+							}
+						}
+						else
+						{
 							ReviveClientFromOrToEntity(healTarget, owner,_, 1);
+						}
 					}
 					else
 #endif
@@ -363,10 +377,14 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						//self heal
 						int ammoSubtract;
 						ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
+						if(ammoSubtract > 0)
+							ReduceMediFluidCost(owner, ammoSubtract);
 						new_ammo -= ammoSubtract;
 
 						//Ally Heal
 						ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
+						if(ammoSubtract > 0)
+							ReduceMediFluidCost(owner, ammoSubtract);
 						new_ammo -= ammoSubtract;
 
 						if(!b_NpcHasDied[healTarget])
@@ -447,9 +465,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 				int new_ammo = GetAmmo(owner, 22);
 				
-				flDrainRate *= Attributes_Get(medigun, 8, 1.0);
 				flDrainRate *= Attributes_Get(medigun, 1, 1.0);
-				flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
+				flDrainRate *= Attributes_GetOnWeapon(owner, medigun, 8, true);
 				//there are some updgras that require medigun damage only!
 				
 				target_sucked_long[healTarget] += 0.07;
@@ -708,4 +725,29 @@ public void Adaptive_MedigunChangeBuff(int client, int weapon, bool crit, int sl
 	{
 		MedigunModeSet[client] = 0;
 	}
+}
+
+
+public void ReduceMediFluidCost(int client, int &cost)
+{
+	float Attribute = Attributes_GetOnPlayer(client, Attrib_ReduceMedifluidCost, true, true);
+	if(Attribute == 1.0 || Attribute == 0.0)
+	{
+		return;
+	}
+	cost = RoundToNearest(float(cost) * Attribute);
+	if(cost <= 1)
+		cost = 1;
+}
+
+public void ReduceMetalCost(int client, int &cost)
+{
+	float Attribute = Attributes_GetOnPlayer(client, Attrib_ReduceMetalCost, true, true);
+	if(Attribute == 1.0 || Attribute == 0.0)
+	{
+		return;
+	}
+	cost = RoundToNearest(float(cost) * Attribute);
+	if(cost <= 1)
+		cost = 1;
 }

@@ -64,9 +64,9 @@ void SpyThief_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SpyThief(client, vecPos, vecAng, ally);
+	return SpyThief(vecPos, vecAng, team);
 }
 
 methodmap SpyThief < CClotBody
@@ -115,16 +115,12 @@ methodmap SpyThief < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -135,7 +131,7 @@ methodmap SpyThief < CClotBody
 	
 	
 	
-	public SpyThief(int client, float vecPos[3], float vecAng[3], int ally)
+	public SpyThief(float vecPos[3], float vecAng[3], int ally)
 	{
 		SpyThief npc = view_as<SpyThief>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "7500", ally));
 		
@@ -196,8 +192,7 @@ methodmap SpyThief < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SpyThief_ClotThink(int iNPC)
 {
 	SpyThief npc = view_as<SpyThief>(iNPC);

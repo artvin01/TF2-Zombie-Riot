@@ -277,6 +277,10 @@ methodmap BarrackBody < CClotBody
 	{
 		public get()
 		{
+			if(view_as<int>(this) <= -1)
+			{
+				return -1;
+			}
 			return BarrackOwner[view_as<int>(this)];
 		}
 	}
@@ -510,7 +514,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 	bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer || command == Command_RTSMove);
 
 	// Only retarget when can we had an existing target before
-	if(!newTarget && !retreating && i_Target[npc.index] != -1)
+	if(!newTarget && !retreating && npc.m_iTarget != -1)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTarget);
 
 	// Only retarget when can we had an existing target before
@@ -542,10 +546,12 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);	
 		}
+		/*
 		else
 		{
 			npc.m_iTarget = -1;
 		}
+		*/
 		
 		if(npc.m_iTargetAlly > 0 && !passive)
 		{
@@ -820,13 +826,7 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	int client = GetClientOfUserId(npc.OwnerUserId);
 	if(client > 0)
 	{
-		float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
-		float VecSelfNpc[3]; WorldSpaceCenter(victim, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget >= (600.0 * 600.0))
-		{
-			damage *= 2.0;
-		}
+
 		damage = Barracks_UnitOnTakeDamage(npc.index, client, damage);
 	}
 	damage -= Rogue_Barracks_FlatArmor();
@@ -1046,13 +1046,6 @@ float Barracks_UnitExtraDamageCalc(int entity, int client, float damage, int dam
 	if(b_ExpertTrapper[client])
 	{
 		DmgMulti *= 0.25; 
-	}
-	float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
-	float VecSelfNpc[3]; WorldSpaceCenter(entity, VecSelfNpc);
-	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget >= (600.0 * 600.0))
-	{
-		damage *= 0.5;
 	}
 	if(damagetype == 0) //0 means melee
 	{

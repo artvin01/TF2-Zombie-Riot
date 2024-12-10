@@ -3,7 +3,7 @@
 
 methodmap TownGuardPistol < BaseSquad
 {
-	public TownGuardPistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public TownGuardPistol(float vecPos[3], float vecAng[3], int ally)
 	{
 		char model[PLATFORM_MAX_PATH];
 

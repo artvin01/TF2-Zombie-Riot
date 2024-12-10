@@ -81,9 +81,9 @@ void MechaSoldier_Barrager_OnMapStart_NPC()
 	NPC_Add(data);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return MechaSoldier_Barrager(client, vecPos, vecAng, ally);
+	return MechaSoldier_Barrager(vecPos, vecAng, team);
 }
 
 static int i_ammo_count[MAXENTITIES];
@@ -146,12 +146,10 @@ methodmap MechaSoldier_Barrager < CClotBody
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
+
 	}
 	
-	public MechaSoldier_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
+	public MechaSoldier_Barrager(float vecPos[3], float vecAng[3], int ally)
 	{
 		MechaSoldier_Barrager npc = view_as<MechaSoldier_Barrager>(CClotBody(vecPos, vecAng, ALTBOTSOLDIERMODEL, "1.0", "2000", ally));
 
@@ -215,8 +213,7 @@ methodmap MechaSoldier_Barrager < CClotBody
 	}
 }
 
-//TODO 
-//Rewrite
+
 static void Internal_ClotThink(int iNPC)
 {
 	MechaSoldier_Barrager npc = view_as<MechaSoldier_Barrager>(iNPC);

@@ -81,9 +81,9 @@ static void ClotPrecache()
 	PrecacheModel(RUINA_STORM_WEAVER_HEAD_MODEL);
 	Zero(i_storm_weaver_damage_instance);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Storm_Weaver(client, vecPos, vecAng, ally, data);
+	return Storm_Weaver(vecPos, vecAng, team, data);
 }
 
 static float fl_touch_timeout[MAXENTITIES];
@@ -117,7 +117,7 @@ methodmap Storm_Weaver < CClotBody
 		EmitSoundToAll(g_AdvAttackSounds[GetRandomInt(0, sizeof(g_AdvAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	
-	public Storm_Weaver(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Storm_Weaver(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Storm_Weaver npc = view_as<Storm_Weaver>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_HEAD_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
@@ -291,7 +291,7 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 	}
 	return spawn_index;
 }
-public void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3], bool Los)
+void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3], bool Los)
 {
 	float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
 	
@@ -621,8 +621,7 @@ void Storm_Weaver_Restore_Collisions(int iNPC)
 	SetEntProp(npc.index, Prop_Data, "m_nSolidType", 2); 
 	SetEntityCollisionGroup(npc.index, 6);
 }
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Storm_Weaver npc = view_as<Storm_Weaver>(iNPC);

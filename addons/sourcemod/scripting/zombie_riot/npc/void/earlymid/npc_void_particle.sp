@@ -53,9 +53,9 @@ void VoidParticle_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidParticle(client, vecPos, vecAng, ally);
+	return VoidParticle(vecPos, vecAng, team);
 }
 methodmap VoidParticle < CClotBody
 {
@@ -96,7 +96,7 @@ methodmap VoidParticle < CClotBody
 	}
 	
 	
-	public VoidParticle(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidParticle(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidParticle npc = view_as<VoidParticle>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2000", ally));
 		
@@ -119,9 +119,7 @@ methodmap VoidParticle < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VoidParticle_ClotThink);
 		
 		
-		//IDLE
-		npc.m_iState = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		
 		npc.StartPathing();
 		npc.m_flSpeed = 270.0;
 		

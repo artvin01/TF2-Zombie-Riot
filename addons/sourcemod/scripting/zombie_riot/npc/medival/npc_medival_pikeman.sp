@@ -105,9 +105,9 @@ void MedivalPikeman_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MedivalPikeman(client, vecPos, vecAng, ally);
+	return MedivalPikeman(vecPos, vecAng, team);
 }
 
 methodmap MedivalPikeman < CClotBody
@@ -155,17 +155,13 @@ methodmap MedivalPikeman < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -174,7 +170,7 @@ methodmap MedivalPikeman < CClotBody
 		
 	}
 	
-	public MedivalPikeman(int client, float vecPos[3], float vecAng[3], int ally)
+	public MedivalPikeman(float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalPikeman npc = view_as<MedivalPikeman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2500", ally));
 		SetVariantInt(1);
@@ -233,8 +229,7 @@ methodmap MedivalPikeman < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void MedivalPikeman_ClotThink(int iNPC)
 {
 	MedivalPikeman npc = view_as<MedivalPikeman>(iNPC);

@@ -70,9 +70,9 @@ void SoldierMinion_OnMapStart_NPC()
 
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SoldierMinion(client, vecPos, vecAng, ally);
+	return SoldierMinion(vecPos, vecAng, team);
 }
 methodmap SoldierMinion < CClotBody
 {
@@ -120,16 +120,12 @@ methodmap SoldierMinion < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -137,7 +133,7 @@ methodmap SoldierMinion < CClotBody
 		
 		
 	}
-	public SoldierMinion(int client, float vecPos[3], float vecAng[3], int ally)
+	public SoldierMinion(float vecPos[3], float vecAng[3], int ally)
 	{
 		SoldierMinion npc = view_as<SoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "10", ally));
 		
@@ -185,8 +181,7 @@ methodmap SoldierMinion < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 public void SoldierMinion_ClotThink(int iNPC)
 {
 	SoldierMinion npc = view_as<SoldierMinion>(iNPC);

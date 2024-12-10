@@ -88,9 +88,7 @@ methodmap Barrack_Alt_Berserker < BarrackBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public Barrack_Alt_Berserker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -171,8 +169,16 @@ public void Barrack_Alt_Berserker_ClotThink(int iNPC)
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 					float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 					
-					float damage = (1500.0) * (1.0+(1-(Health/MaxHealth))*2);
-					float speed = (0.25*npc.BonusFireRate) * (Health / MaxHealth)+0.1;
+					float damage = (800.0) * (1.0+(1-(Health/MaxHealth)));
+					float speed = (0.25*npc.BonusFireRate) * (Health / MaxHealth)+0.2;
+					/*
+						Asuming:
+						max hp: 1k
+						current hp: 1.
+						BonusFireRate: 0.25.
+
+						total dps: 7993.502031
+					*/
 					//Play attack ani
 					
 					if (!npc.m_flAttackHappenswillhappen)

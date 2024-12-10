@@ -78,9 +78,9 @@ static void ClotPrecache()
 
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Magnium(client, vecPos, vecAng, ally);
+	return Magnium(vecPos, vecAng, team);
 }
 
 static float fl_npc_basespeed;
@@ -173,7 +173,7 @@ methodmap Magnium < CClotBody
 		}
 	}
 
-	public Magnium(int client, float vecPos[3], float vecAng[3], int ally)
+	public Magnium(float vecPos[3], float vecAng[3], int ally)
 	{
 		Magnium npc = view_as<Magnium>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -254,8 +254,7 @@ methodmap Magnium < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Magnium npc = view_as<Magnium>(iNPC);
@@ -340,8 +339,8 @@ static void ClotThink(int iNPC)
 					Ang[0] = -45.0;
 					Projectile.Angles = Ang;
 					Projectile.speed = 600.0;
-					Projectile.radius = 300.0;
-					Projectile.damage = 450.0;
+					Projectile.radius = 150.0;
+					Projectile.damage = 175.0;
 					Projectile.bonus_dmg = 2.5;
 					Projectile.Time = 10.0;
 
@@ -362,7 +361,7 @@ static void ClotThink(int iNPC)
 							AcceptEntityInput(ModelApply, "SetBodyGroup");
 						}
 
-						float 	Homing_Power = 15.0,
+						float 	Homing_Power = 8.0,
 								Homing_Lockon = 90.0;
 
 						Initiate_HomingProjectile(Proj,
@@ -412,7 +411,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}
 		else
@@ -484,13 +483,14 @@ static void Func_On_Proj_Touch(int projectile, int other)
 		owner = 0;
 	}
 
-	Ruina_Add_Mana_Sickness(owner, other, 0.0, 500);	//very heavy FLAT amount of mana sickness
+	Ruina_Add_Mana_Sickness(owner, other, 0.0, 100);	//very heavy FLAT amount of mana sickness
 		
 	float ProjectileLoc[3];
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
 	Explode_Logic_Custom(fl_ruina_Projectile_dmg[projectile] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[projectile] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[projectile]);
 
+	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	Ruina_Remove_Projectile(projectile);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

@@ -96,9 +96,9 @@ static void ClotPrecache()
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM2);
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM3);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Lancelot(client, vecPos, vecAng, ally);
+	return Lancelot(vecPos, vecAng, team);
 }
 static float fl_npc_basespeed;
 methodmap Lancelot < CClotBody
@@ -153,16 +153,12 @@ methodmap Lancelot < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+
 	}
 	public void PlayAngerSound() {
 	
@@ -194,7 +190,7 @@ methodmap Lancelot < CClotBody
 		}
 	}
 
-	public Lancelot(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lancelot(float vecPos[3], float vecAng[3], int ally)
 	{
 		Lancelot npc = view_as<Lancelot>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -346,8 +342,7 @@ static bool Lancelot_Leader(Lancelot npc)
 	return false;
 
 }
-//TODO 
-//Rewrite
+
 static void ClotThink(int iNPC)
 {
 	Lancelot npc = view_as<Lancelot>(iNPC);
@@ -549,7 +544,7 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 			NPC_SetGoalVector(npc.index, vBackoffPos, true);
 			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 		}
 	}
 
@@ -649,7 +644,7 @@ static bool Particle_Accelerator_Check(Lancelot npc, float range, float EndLoc[3
 
 	EndLoc = Laser.End_Point;
 	//CPrintToChatAll("Targets: %i", i_targets_inrange);
-	if(i_targets_inrange > 2 || LastMann)
+	if(i_targets_inrange > 2)
 	{
 		return true;
 	}
@@ -669,7 +664,7 @@ static float Modify_Damage(Lancelot npc, int Target, float damage)
 		damage *=0.5;
 
 	if(npc.Anger)
-		damage *=1.5;
+		damage *=1.3;
 
 	if(Target > MaxClients)
 		return damage;
@@ -685,7 +680,7 @@ static float Modify_Damage(Lancelot npc, int Target, float damage)
 	int weapon_slot = TF2_GetClassnameSlot(classname);
 
 	if(weapon_slot != 2 || i_IsWandWeapon[weapon])
-		damage *= 2.0;
+		damage *= 1.7;
 
 	return damage;
 }
