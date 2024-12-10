@@ -1344,6 +1344,10 @@ float fl_ArmorSetting[MAXENTITIES][3];
 int i_ArmorSetting[MAXENTITIES][2];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
+int b_OnDeathExtraLogicNpc[MAXENTITIES];
+#define	ZRNPC_DEATH_NOHEALTH		( 1<<0 )	// Do not give health on kill!
+#define	ZRNPC_DEATH_NOGIB		( 1<<1 )	// Do not give health on kill!
+
 bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];
 bool b_movedelay_walk[MAXENTITIES];

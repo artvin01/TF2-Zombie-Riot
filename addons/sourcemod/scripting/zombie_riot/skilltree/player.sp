@@ -77,7 +77,7 @@ public void SkillPlayer_ExtraBuildingHP(int client, StringMap map, int amount)
 public void SkillPlayer_RegenUpCalmaticus(int client, StringMap map, int amount)
 {
 	// 0.25 hp regen every skill up
-	PlayerMulti(map, "57", float(amount) * 0.25);
+	PlayerAdd(map, "57", float(amount) * 0.25);
 }
 
 public void SkillPlayer_ExtraDamageBuilding(int client, StringMap map, int amount)
