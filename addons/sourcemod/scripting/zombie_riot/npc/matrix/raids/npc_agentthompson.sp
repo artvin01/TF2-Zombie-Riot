@@ -112,6 +112,15 @@ methodmap AgentThompson < CClotBody
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
+	public void PlayTeleportSound() 
+	{
+		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME * 2.0);
+	}
+	property float f_CaptinoAgentusTeleport
+	{
+		public get()							{ return fl_AttackHappensMaximum[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
+	}
 	
 	public AgentThompson(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -274,193 +283,27 @@ public void AgentThompson_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
-	int PrimaryThreatIndex = npc.m_iTarget;
+	int closest = npc.m_iTarget;
 	
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	if(IsValidEnemy(npc.index, closest))
 	{
-			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
-			{
-				if (!npc.m_bmovedelay)
-				{
-					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
-					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-					npc.m_bmovedelay = true;
-
-				}
-
-				AcceptEntityInput(npc.m_iWearable1, "Disable");
-			//	npc.FaceTowards(vecTarget);
-				
-			}
-			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
-			{
-				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
-				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-				npc.m_bmovedelay = false;
-				AcceptEntityInput(npc.m_iWearable1, "Enable");
-			//	npc.FaceTowards(vecTarget, 1000.0);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-			}
+		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 			
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float gameTime = GetGameTime(npc.index);
+		//Predict their pos.
+		if(flDistanceToTarget < npc.GetLeadRadius())
+		{
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else
+		{
+			NPC_SetGoalEntity(npc.index, closest);
+		}
 		
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-				
-			/*	int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-			
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
-				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime(npc.index))
-			{
-				int Enemy_I_See;
-			
-				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				
-				if(!IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					if (!npc.m_bmovedelay)
-					{
-						int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
-						if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-						npc.m_bmovedelay = true;
-					}
-	
-					AcceptEntityInput(npc.m_iWearable1, "Disable");
-					npc.StartPathing();
-					
-					npc.m_fbGunout = false;
-				}
-				else
-				{
-					npc.m_fbGunout = true;
-					
-					npc.m_bmovedelay = false;
-					
-					npc.FaceTowards(vecTarget, 10000.0);
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.5;
-					npc.m_iAttacksTillReload -= 1;
-					
-					float vecSpread = 0.1;
-				
-					float eyePitch[3];
-					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-					
-					
-					float x, y;
-					x = GetRandomFloat( -0.15, 0.15 ) + GetRandomFloat( -0.15, 0.15 );
-					y = GetRandomFloat( -0.15, 0.15 ) + GetRandomFloat( -0.15, 0.15 );
-					
-					float vecDirShooting[3], vecRight[3], vecUp[3];
-					
-					vecTarget[2] += 15.0;
-					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
-					GetVectorAngles(vecDirShooting, vecDirShooting);
-					vecDirShooting[1] = eyePitch[1];
-					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-					
-					
-					if (npc.m_iAttacksTillReload == 0)
-					{
-						npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
-						npc.m_flReloadDelay = GetGameTime(npc.index) + 1.4;
-						npc.m_iAttacksTillReload = 12;
-						npc.PlayRangedReloadSound();
-					}
-					
-					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
-					float vecDir[3];
-					vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
-					NormalizeVector(vecDir, vecDir);
-					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-					
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 5.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 5.0 * RaidModeScaling, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					
-					npc.PlayRangedSound();
-				}
-			}
-			if((flDistanceToTarget < 62500 || flDistanceToTarget > 122500) && npc.m_flReloadDelay < GetGameTime(npc.index))
-			{
-				npc.StartPathing();
-				
-				npc.m_fbGunout = false;
-				//Look at target so we hit.
-			//	npc.FaceTowards(vecTarget, 500.0);
-				
-				if((npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) || npc.m_flAttackHappenswillhappen)
-				{
-					if (!npc.m_flAttackHappenswillhappen)
-					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
-						npc.m_flAttackHappenswillhappen = true;
-					}
-						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						npc.FaceTowards(vecTarget, 20000.0);
-						Handle swingTrace;
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-
-								float damage = 7.0;
-								damage *= 1.10;
-								
-								if(target > 0) 
-								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-
-									Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 15 : 10);
-								
-									// Hit sound
-									npc.PlayMeleeHitSound();
-								} 
-							}
-						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
-						npc.m_flAttackHappenswillhappen = false;
-					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-					}
-				}
-			}
+		Thompsons_SelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget);
 	}
 	else
 	{
@@ -468,6 +311,249 @@ public void AgentThompson_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+}
+
+static void Thompsons_SelfDefense(AgentThompson npc, float gameTime, int target, float flDistanceToTarget)
+{
+	if(npc.m_flAttackHappens)
+	{
+		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		{
+			npc.m_flAttackHappens = 0.0;
+			
+			if(IsValidEnemy(npc.index, target))
+			{
+				int HowManyEnemeisAoeMelee = 64;
+				Handle swingTrace;
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
+				delete swingTrace;
+				bool PlaySound = false;
+				float damage = 14.0;
+				damage *= RaidModeScaling;
+				bool silenced = NpcStats_IsEnemySilenced(npc.index);
+				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+				{
+					if(i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+					{
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						{
+							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							
+							WorldSpaceCenter(targetTrace, vecHit);
+
+							if(damage <= 1.0)
+							{
+								damage = 1.0;
+							}
+							Elemental_AddCorruptionDamage(targetTrace, npc.index, 15);
+							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+							//Reduce damage after dealing
+							damage *= 0.92;
+							// On Hit stuff
+							bool Knocked = false;
+							if(!PlaySound)
+							{
+								static float hullcheckmaxs[3];
+								static float hullcheckmins[3];
+								hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+								hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
+								WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+								float vPredictedPos[3];
+								PredictSubjectPosition(npc, targetTrace,_,_, vPredictedPos);
+								vPredictedPos = GetBehindTarget(npc.m_iTarget, 30.0 ,vPredictedPos);
+
+								float PreviousPos[3];
+								WorldSpaceCenter(npc.index, PreviousPos);
+								float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+					
+								bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
+								if(Succeed)
+								{
+									float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+									float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+									npc.PlayTeleportSound();
+
+									TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+									TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+									TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+									TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+									npc.FaceTowards(VecEnemy, 15000.0);
+									npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 1.5;
+
+									//npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1; //so they cant instastab you!
+								}
+								PlaySound = true;
+							}
+							
+							if(IsValidClient(targetTrace))
+							{
+								if (IsInvuln(targetTrace))
+								{
+									Knocked = true;
+									Custom_Knockback(npc.index, targetTrace, 180.0, true);
+									if(!silenced)
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
+								}
+								else
+								{
+									if(!silenced)
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
+								}
+							}
+										
+							if(!Knocked)
+								Custom_Knockback(npc.index, targetTrace, 450.0, true); 
+						} 
+					}
+				}
+				if(PlaySound)
+				{
+					npc.PlayMeleeHitSound();
+				}
+			}
+		}
+	}
+
+	if(npc.m_flNextRangedSpecialAttack)
+	{
+		if(npc.m_flNextRangedSpecialAttack < gameTime)
+		{
+			npc.m_flNextRangedSpecialAttack = 0.0;
+			
+			if(npc.m_iTarget > 0)
+			{
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+				npc.FaceTowards(vecTarget, 15000.0);
+				
+				// Can dodge bullets by moving
+				PredictSubjectPositionForProjectiles(npc, target, 400.0, _, vecTarget);
+				
+				float eyePitch[3], vecDirShooting[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+				npc.FaceTowards(vecTarget, 10000.0);
+				
+				vecTarget[2] += 15.0;
+				MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+				GetVectorAngles(vecDirShooting, vecDirShooting);
+
+				vecDirShooting[1] = eyePitch[1];
+
+				npc.m_flNextRangedAttack = gameTime + 0.5;
+				npc.m_iAttacksTillReload--;
+
+				if(npc.m_iAttacksTillReload < 1)
+				{
+					npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 1.4;
+					npc.m_iAttacksTillReload = 12;
+					npc.PlayRangedReloadSound();
+				}
+				
+				float x = GetRandomFloat( -0.15, 0.15 );
+				float y = GetRandomFloat( -0.15, 0.15 );
+				
+				float vecRight[3], vecUp[3];
+				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+				
+				float vecDir[3];
+				for(int i; i < 3; i++)
+				{
+					vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
+				}
+
+				NormalizeVector(vecDir, vecDir);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+				KillFeed_SetKillIcon(npc.index, "shotgun_primary");
+
+				float damage = 5.0;
+				damage *= RaidModeScaling;
+
+				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+				
+				npc.PlayRangedSound();
+			}
+		}
+		return;
+	}
+
+	if(gameTime > npc.m_flNextMeleeAttack)
+	{
+		if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		{
+			int Enemy_I_See;
+			Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				Thompsons_WeaponSwaps(npc);
+				npc.m_iTarget = Enemy_I_See;
+
+				npc.PlayMeleeSound();
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");//He will SMACK you
+				npc.m_flAttackHappens = gameTime + 0.1;
+				float attack = 1.0;
+				npc.m_flNextMeleeAttack = gameTime + attack;
+				return;
+			}
+		}
+	}
+
+	if(gameTime > npc.m_flNextRangedAttack)
+	{
+		if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
+		{
+			int Enemy_I_See;
+			Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+					
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				Thompsons_WeaponSwaps(npc, 2);
+				npc.m_iTarget = Enemy_I_See;
+				npc.PlayRangedSound();
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");//ACT_MP_ATTACK_STAND_ITEM1 | ACT_MP_ATTACK_STAND_MELEE_ALLCLASS
+						
+				npc.m_flNextRangedSpecialAttack = gameTime + 0.15;
+				npc.m_flNextRangedAttack = gameTime + 1.85;
+			}
+		}
+	}
+}
+
+static void Thompsons_WeaponSwaps(AgentThompson npc, int number = 1)
+{
+	switch(number)
+	{
+		case 1:
+		{
+			if(npc.m_iChanged_WalkCycle != 3)
+			{
+				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
+				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+				AcceptEntityInput(npc.m_iWearable1, "Disable");
+				npc.m_iChanged_WalkCycle = 3;
+			}
+		}
+		case 2:
+		{
+			if(npc.m_iChanged_WalkCycle != 4)
+			{
+				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
+				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+				AcceptEntityInput(npc.m_iWearable1, "Enable");
+				npc.m_iChanged_WalkCycle = 4;
+			}
+		}
+	}
 }
 
 public Action AgentThompson_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

@@ -402,15 +402,14 @@ public Action AgentSpencer_OnTakeDamage(int victim, int &attacker, int &inflicto
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flDead_Ringer_Invis >= gameTime)
     {
-        float parrydamage = GetRandomFloat(75.0, 100.0);
-        damage *= 0.1;//how much the npc takes
-        //if the victim on purpose deals that little to trigger parry damage gets boosted
-		//if(parrydamage < 3.99 || parrydamage < 7.99)
-		//	parrydamage *= 10.0;
-		//if(parrydamage < 25.99)
-		//	parrydamage *= 4.0;
-        
-       	SDKHooks_TakeDamage(attacker, npc.index, npc.index, parrydamage, DMG_CLUB, -1);
+		if(fl_MatrixReflect[attacker] <= GetGameTime())
+		{
+			fl_MatrixReflect[attacker] = GetGameTime() + 1.0;
+			float parrydamage = GetRandomFloat(30.0, 50.0);
+			//damage *= 0.1;//how much the npc takes
+			
+			SDKHooks_TakeDamage(attacker, npc.index, npc.index, parrydamage, DMG_CLUB, -1);
+		}
     }
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -445,6 +444,8 @@ static void AgentSpencer_Reflect_Enable(AgentSpencer npc)
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	vecMe[2] += 50.0;
 	npc.m_iWearable6 = ParticleEffectAt(vecMe, "powerup_icon_reflect", -1.0);
+	npc.m_flMeleeArmor = 0.1;
+	npc.m_flRangedArmor = 0.1;
 	if(IsValidEntity(npc.m_iWearable6))
 		SetParent(npc.index, npc.m_iWearable6);
 }
@@ -463,6 +464,8 @@ static void AgentSpencer_Reflect_Disable(AgentSpencer npc)
 	SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable5, 0, 0, 0, 255);
 	npc.m_flDead_Ringer_Invis_bool = false;
+	npc.m_flMeleeArmor = 1.0;
+	npc.m_flRangedArmor = 1.0;
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 }

@@ -113,6 +113,11 @@ methodmap Matrix_Twins < CClotBody
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	property float fl_Anger_Influence
+	{
+		public get()							{ return fl_RangedSpecialDelay[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_RangedSpecialDelay[this.index] = TempValueForProperty; }
+	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -155,6 +160,7 @@ methodmap Matrix_Twins < CClotBody
 		npc.fl_Healing_Notifier = 0.0;
 		npc.fl_Heal_Amount = 0.0;
 		npc.fl_Heal_Limit = 0.0;
+		npc.fl_Anger_Influence = 0.0;
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -379,7 +385,21 @@ public void Matrix_Twins_ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 
-		Matrix_Twins_SelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget);
+		int value = Matrix_Twins_SelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget);
+		switch(value)
+		{
+			case 1:
+			{
+				npc.fl_Anger_Influence += 0.1;
+				if(npc.fl_Anger_Influence >= 1.0)
+					npc.fl_Anger_Influence = 1.0;
+			}
+			case 2:
+			{
+				if(npc.fl_Anger_Influence >= 0.1)
+					npc.fl_Anger_Influence -= 0.1;
+			}
+		}
 	}
 	else
 	{
@@ -389,8 +409,9 @@ public void Matrix_Twins_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static void Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target, float flDistanceToTarget)
+static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target, float flDistanceToTarget)
 {
+	bool anger = (npc.fl_Anger_Influence >= 1.0);
 	if(npc.m_bmovedelay)
 	{
 		if(npc.m_iChanged_WalkCycle != 4)
@@ -411,31 +432,79 @@ static void Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int targe
 		if (npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-			Handle swingTrace;
-			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 
-			npc.FaceTowards(vecTarget, 20000.0);
-			if(npc.DoSwingTrace(swingTrace, target))
+			if(IsValidEnemy(npc.index, target))
 			{
-				target = TR_GetEntityIndex(swingTrace);	
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				if(IsValidEnemy(npc.index, target))
+				int HowManyEnemeisAoeMelee = 64;
+				Handle swingTrace;
+				float damage = 17.0;
+				damage *= RaidModeScaling;
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
+				delete swingTrace;
+				bool PlaySound = false;
+				bool silenced = NpcStats_IsEnemySilenced(npc.index);
+				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 				{
-					float damage = 10.0;
-					damage *= RaidModeScaling;
-					if(target > 0) 
+					if(i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-						npc.PlayMeleeHitSound();
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						{
+							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							
+							WorldSpaceCenter(targetTrace, vecHit);
+
+							if(damage <= 1.0)
+							{
+								damage = 1.0;
+							}
+							Elemental_AddCorruptionDamage(targetTrace, npc.index, 50);
+							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+							//Reduce damage after dealing
+							damage *= 0.92;
+							// On Hit stuff
+							bool Knocked = false;
+							if(!PlaySound)
+							{
+								PlaySound = true;
+							}
+							float knock = anger ? 700.0 : 450.0;
+							if(IsValidClient(targetTrace))
+							{
+								if (IsInvuln(targetTrace))
+								{
+									Knocked = true;
+									knock = anger ? 550.0 : 300.0;
+									Custom_Knockback(npc.index, targetTrace, knock, true);
+									if(!silenced)
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
+								}
+								else
+								{
+									if(!silenced)
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
+								}
+							}
+										
+							if(!Knocked)
+								Custom_Knockback(npc.index, targetTrace, 450.0, true); 
+						} 
 					}
-					/*else
-					{
-						npc.PlayMeleeMissSound();
-					}*/
 				}
+				if(PlaySound)
+				{
+					npc.PlayMeleeHitSound();
+				}
+				return 1;
 			}
-			delete swingTrace;
 		}
 	}
 
@@ -512,7 +581,7 @@ static void Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int targe
 				}
 			}
 		}
-		return;
+		return 2;
 	}
 
 	if(gameTime > npc.m_flNextMeleeAttack)
@@ -528,7 +597,7 @@ static void Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int targe
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");//He will SMACK you with this
 				npc.m_flAttackHappens = gameTime + 0.3;
-				float attack = 1.0;
+				float attack = anger ? 0.4 : 0.7;
 				npc.m_flNextMeleeAttack = gameTime + attack;
 			}
 		}
@@ -547,7 +616,8 @@ static void Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int targe
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");//ACT_MP_ATTACK_STAND_ITEM1 | ACT_MP_ATTACK_STAND_MELEE_ALLCLASS
 						
 				npc.m_flNextRangedSpecialAttack = gameTime + 0.15;
-				npc.m_flNextRangedAttack = gameTime + 1.85;
+				float attack = anger ? 0.75 : 1.85;
+				npc.m_flNextRangedAttack = gameTime + attack;
 			}
 		}
 		else
@@ -561,6 +631,7 @@ static void Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int targe
 			}
 		}
 	}
+	return 0;
 }
 
 public Action Matrix_Twins_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

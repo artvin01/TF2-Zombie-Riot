@@ -386,9 +386,12 @@ public void AgentJones_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(IsValidEnemy(npc.index, target))
 						{
+							float damage = 70.0;
+							if(ShouldNpcDealBonusDamage(target))
+							damage *= 15.0;
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 
 								Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 100 : 10);
 								// Hit sound

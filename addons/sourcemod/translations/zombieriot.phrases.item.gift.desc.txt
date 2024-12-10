@@ -2231,39 +2231,39 @@
 	}
 	"Agent James Desc"
 	{
-		"en"		"Slightly less generic. Has a gun. Applies Corruption debuff."
+		"en"		"Slightly less generic.\nHas a gun.\nApplies Corruption debuff."
 	}
 	"Agent Alexander Desc"
 	{
-		"en"		"Gets stronger the lower his health is. Has a gun. Applies Corruption Debuff."
+		"en"		"Gets stronger the lower his health is.\nHas a gun.\nApplies Corruption Debuff."
 	}
 	"Agent Alan Desc"
 	{
-		"en"		"This agent gets buffed if you're too close to his proximity. Has a gun. Applies Corruption Debuff."
+		"en"		"This agent gets buffed if you're too close to his proximity.\nHas a gun.\nApplies Corruption Debuff."
 	}
 	"Agent Chase Desc"
 	{
-		"en"		"Starts off extremely slow, but gains velocity overtime, uncapped. Has a gun. Applies Corruption Debuff."
+		"en"		"Starts off extremely slow, but gains velocity overtime, uncapped.\nHas a gun.\nApplies Corruption Debuff."
 	}
 	"Agent Dave Desc"
 	{
-		"en"		"Has the ability to reflect incoming attacks, gains insane resistance under reflect. Has a gun. Applies Corruption Debuff."
+		"en"		"Has the ability to reflect incoming attacks, gains insane resistance under reflect.\nHas a gun.\nApplies Corruption Debuff."
 	}
 	"Agent Graham Desc"
 	{
-		"en"		"Applies insane Corruption Debuff. Has a gun."
+		"en"		"Applies insane Corruption Debuff.\nHas a gun."
 	}
 	"Agent Steve Desc"
 	{
-		"en"		"Attacks faster the less health he has. Has a gun. Applies Corruption Debuff."
+		"en"		"Attacks faster the less health he has.\nHas a gun.\nApplies Corruption Debuff."
 	}
 	"Agent Eric Desc"
 	{
-		"en"		"Gets even stronger the lower his health is. Has a gun. Applies Corruption Debuff."
+		"en"		"Gets even stronger the lower his health is.\nHas a gun.\nApplies Corruption Debuff."
 	}
 	"Agent Jack Desc"
 	{
-		"en"		"Attacks even faster the less health he has. Has a gun. Applies Corruption Debuff."
+		"en"		"Attacks even faster the less health he has.\nHas a gun.\nApplies Corruption Debuff."
 	}
 	"Agent Jim Desc"
 	{
@@ -2275,11 +2275,11 @@
 	}
 	"Agent Kenneth Desc"
 	{
-		"en"		"Starts off somewhat slow, gains velocity faster than Agent Chase. Has a gun. Applies Corruption Debuff."
+		"en"		"Starts off somewhat slow, gains velocity faster than Agent Chase.\nHas a gun.\nApplies Corruption Debuff."
 	}
 	"Agent Paul Desc"
 	{
-		"en"		"Stronger variant of Agent Alan. Has bigger proximity and more buffs."
+		"en"		"Stronger variant of Agent Alan.\nHas bigger proximity and more buffs."
 	}
 	"Agent Tyler Desc"
 	{
@@ -2287,11 +2287,11 @@
 	}
 	"Agent Wayne Desc"
 	{
-		"en"		"Stronger variant of Agent Dave. Reflect lasts longer and has a shorter cooldown."
+		"en"		"Stronger variant of Agent Dave.\nReflect lasts longer and has a shorter cooldown."
 	}
-	"Merovingian"
+	"Merovingian Desc"
 	{
-		"en"		"Generally nearly the same as other Spy Agents, however hitting a barricade will cause him to create a temporary spawn point on it."
+		"en"		"Generally nearly the same as other Spy Agents.\nHitting a barricade will cause him to create a temporary spawn point on it."
 	}
 	"Agent Ben Desc"
 	{
@@ -2299,7 +2299,7 @@
 	}
 	"Agent Chad Desc"
 	{
-		"en"		"Stronger variant of Agent Paul. Has an even bigger proximity and even more buffs."
+		"en"		"Stronger variant of Agent Paul.\nHas an even bigger proximity and even more buffs."
 	}
 	"Agent Chris Desc"
 	{
@@ -2335,15 +2335,15 @@
 	}
 	"Agent Henry Desc"
 	{
-		"en"		"Strongest variant of Medic Agents. Gets almost every buff and has a huge proximity radius."
+		"en"		"Strongest variant of Medic Agents.\nGets almost every buff and has a huge proximity radius."
 	}
 	"Agent Jeremy Desc"
 	{
-		"en"		"Strongest variant of Pyro Agents. Has enormous Corruption Debuff."
+		"en"		"Strongest variant of Pyro Agents.\nHas enormous Corruption Debuff."
 	}
 	"Agent Jones Desc"
 	{
-		"en"		"Independent Agent. Has a continuous pull around him, don't get pinned."
+		"en"		"Independent Agent.\nHas a continuous pull around him, don't get pinned."
 	}
 	"Agent Kurt Desc"
 	{
@@ -2367,22 +2367,18 @@
 	}
 	"Agent Thompson Desc"
 	{
-		"en"		"Independent Agent. Appears to have the ability to dodge upcoming attacks. However in return takes more damage from melee and ranged sources."
+		"en"		"Independent Agent.\nAppears to have the ability to dodge upcoming attacks.\nHowever in return takes more damage from melee and ranged sources."
 	}
 	"Agent Johnson Desc"
 	{
-		"en"		"Independent Agent. Adapts very fast to the type of damage he takes. Better have a balanced team of melee and ranged users."
+		"en"		"Independent Agent.\nAdapts very fast to the type of damage he takes.\nBetter have a balanced team of melee and ranged users."
 	}
-	"Twin No. 1 Desc"
+	"Twin No. Desc"
 	{
-		"en"		"We are getting aggravated. Shares the same characteristics as the second twin. has a chance to switch his health with the second twin."
-	}
-	"Twin No. 2 Desc"
-	{
-		"en"		"Yes we are. Shares the same characteristics as the first twin. has a chance to switch his health with the first twin."
+		"en"		"We are getting aggravated.\nYes we are.\nThey share the same characteristics and skill sets.\nBetter focus on one of them to prevent them from fully healing back."
 	}
 	"Agent Smith Desc"
 	{
-		"en"		"It is purpose that defines us. Initially appears as a normal boss which can multiply for up to 64 times. Appears later on once more, with the ability to infect players and turn them into clones, better cure them fast!"
+		"en"		"It is purpose that defines us.\nInitially appears as a normal boss which can multiply for up to 64 times.\nAppears later on once more, with the ability to infect players and turn them into clones, better cure them fast!"
 	}
 }
