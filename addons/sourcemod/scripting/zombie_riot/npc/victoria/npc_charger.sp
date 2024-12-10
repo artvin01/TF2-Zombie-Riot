@@ -209,9 +209,9 @@ public void VictorianCharger_ClotThink(int iNPC)
 
 	TimeMultiplier *= 0.50;
 
-	if(TimeMultiplier > 10.0)
+	if(TimeMultiplier > 20.0)
 	{
-		TimeMultiplier = 10.0;
+		TimeMultiplier = 20.0;
 		if(!npc.Anger)
 		{
 			npc.PlayAngerSound();
@@ -321,9 +321,9 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 
 					damageDealt *= TimeMultiplier;
 					*/
-
+					damageDealt *= (npc.m_flSpeed * 0.1);
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= (npc.m_flSpeed * 0.1);
+						damageDealt *= 2.45;
 					if(NpcStats_IsEnemySilenced(npc.index))
 					{
 						damageDealt *= 0.75;
@@ -342,7 +342,7 @@ void VictorianChargerSelfDefense(VictorianCharger npc, float gameTime, int targe
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) * 0.6)
 		{
 			int Enemy_I_See;
 								

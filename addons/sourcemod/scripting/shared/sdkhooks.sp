@@ -1374,7 +1374,7 @@ public void OnPostThink(int client)
 				case 4:
 				{
 					red = 0;
-					green = 255;
+					green = 200;
 					blue = 0;
 				}
 				//seaborn
@@ -2529,6 +2529,12 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		{
 			return Player_OnTakeDamage_VoidBlade_Hud(victim);
 		}
+		case WEAPON_CASTLEBREAKER:
+		{
+			float damage = 1.0;
+			WeaponCastleBreaker_OnTakeDamage(victim, damage);
+			return damage;
+		}
 		case WEAPON_FULLMOON:
 		{
 			float damage = 1.0;
@@ -3263,7 +3269,9 @@ stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 #endif
 }
 
+#if defined ZR
 void SDkHooks_Think_TutorialStepsDo(int client)
 {
 	DoTutorialStep(client, true);
 }
+#endif

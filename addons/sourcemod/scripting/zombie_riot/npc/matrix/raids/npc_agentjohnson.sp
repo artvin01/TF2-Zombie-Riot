@@ -507,7 +507,7 @@ public Action AgentJohnson_OnTakeDamage(int victim, int &attacker, int &inflicto
 		{	
 			npc.m_flMeleeArmor -= 0.05;
 			if(npc.m_flMeleeArmor < 0.05)
-			npc.m_flMeleeArmor = 0.05;
+			npc.m_flMeleeArmor = 0.50;
 
 			npc.m_flRangedArmor += 0.05;
 			if(npc.m_flRangedArmor > 2.0)
@@ -518,7 +518,7 @@ public Action AgentJohnson_OnTakeDamage(int victim, int &attacker, int &inflicto
 			npc.m_flRangedArmor -= 0.05;
 			if(npc.m_flRangedArmor < 0.05)
 			{
-				npc.m_flRangedArmor = 0.05;
+				npc.m_flRangedArmor = 0.50;
 			}
 			npc.m_flMeleeArmor += 0.05;
 			if(npc.m_flMeleeArmor > 2.0)

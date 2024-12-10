@@ -139,7 +139,7 @@ methodmap VictoriaBreachcart < CClotBody
 		npc.m_flReloadDelay = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flMeleeArmor = 0.80;
+		npc.m_flMeleeArmor = 2.00;
 		npc.m_flRangedArmor = 0.75;
 
 		b_CannotBeStunned[npc.index] = true;
@@ -410,7 +410,7 @@ static void ClotDeath(int entity)
 
 	npc.PlayDeathSound();
 
-	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("rd_robot_explosion_smoke_linger", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);	

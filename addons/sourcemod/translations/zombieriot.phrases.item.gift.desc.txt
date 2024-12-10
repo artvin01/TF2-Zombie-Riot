@@ -2225,4 +2225,164 @@
 		"en"		"Super unit that takes 2 slot. It does melee damage when it has armor. Then, it pulls out a shotgun to deal ranged damage. It will often buff near allies"
 		"ru"		"Супер юнит который забирает 2 слота.Наносит урон ближнего боя когда есть броня,затем достаёт дробовик что бы наносить дальний урон.Он часто будет баффать союзников поблизости"
 	}
+	"Agent John Desc"
+	{
+		"en"		"Generic Agent."
+	}
+	"Agent James Desc"
+	{
+		"en"		"Slightly less generic. Has a gun. Applies Corruption debuff."
+	}
+	"Agent Alexander Desc"
+	{
+		"en"		"Gets stronger the lower his health is. Has a gun. Applies Corruption Debuff."
+	}
+	"Agent Alan Desc"
+	{
+		"en"		"This agent gets buffed if you're too close to his proximity. Has a gun. Applies Corruption Debuff."
+	}
+	"Agent Chase Desc"
+	{
+		"en"		"Starts off extremely slow, but gains velocity overtime, uncapped. Has a gun. Applies Corruption Debuff."
+	}
+	"Agent Dave Desc"
+	{
+		"en"		"Has the ability to reflect incoming attacks, gains insane resistance under reflect. Has a gun. Applies Corruption Debuff."
+	}
+	"Agent Graham Desc"
+	{
+		"en"		"Applies insane Corruption Debuff. Has a gun."
+	}
+	"Agent Steve Desc"
+	{
+		"en"		"Attacks faster the less health he has. Has a gun. Applies Corruption Debuff."
+	}
+	"Agent Eric Desc"
+	{
+		"en"		"Gets even stronger the lower his health is. Has a gun. Applies Corruption Debuff."
+	}
+	"Agent Jack Desc"
+	{
+		"en"		"Attacks even faster the less health he has. Has a gun. Applies Corruption Debuff."
+	}
+	"Agent Jim Desc"
+	{
+		"en"		"Stronger variant of Agent James."
+	}
+	"Agent Josh Desc"
+	{
+		"en"		"Stronger variant of Agent John."
+	}
+	"Agent Kenneth Desc"
+	{
+		"en"		"Starts off somewhat slow, gains velocity faster than Agent Chase. Has a gun. Applies Corruption Debuff."
+	}
+	"Agent Paul Desc"
+	{
+		"en"		"Stronger variant of Agent Alan. Has bigger proximity and more buffs."
+	}
+	"Agent Tyler Desc"
+	{
+		"en"		"Stronger variant of Agent Graham."
+	}
+	"Agent Wayne Desc"
+	{
+		"en"		"Stronger variant of Agent Dave. Reflect lasts longer and has a shorter cooldown."
+	}
+	"Merovingian"
+	{
+		"en"		"Generally nearly the same as other Spy Agents, however hitting a barricade will cause him to create a temporary spawn point on it."
+	}
+	"Agent Ben Desc"
+	{
+		"en"		"Stronger variant of Agent Jack."
+	}
+	"Agent Chad Desc"
+	{
+		"en"		"Stronger variant of Agent Paul. Has an even bigger proximity and even more buffs."
+	}
+	"Agent Chris Desc"
+	{
+		"en"		"Stronger variant of Agent Jim."
+	}
+	"Agent Dick Desc"
+	{
+		"en"		"Stronger variant of Agent Eric."
+	}
+	"Agent Ian Desc"
+	{
+		"en"		"Stronger variant of Agent Wayne."
+	}
+	"Agent Jackson Desc"
+	{
+		"en"		"Independent Agent. Acts as a spawn point for the other agents."
+	}
+	"Agent Mike Desc"
+	{
+		"en"		"Stronger variant of Agent Tyler."
+	}
+	"Agent Sam Desc"
+	{
+		"en"		"Stronger variant of Agent Josh."
+	}
+	"Agent Zack Desc"
+	{
+		"en"		"Stronger variant of Agent Kenneth."
+	}
+	"Agent Connor Desc"
+	{
+		"en"		"Strongest variant of Spy Agents."
+	}
+	"Agent Henry Desc"
+	{
+		"en"		"Strongest variant of Medic Agents. Gets almost every buff and has a huge proximity radius."
+	}
+	"Agent Jeremy Desc"
+	{
+		"en"		"Strongest variant of Pyro Agents. Has enormous Corruption Debuff."
+	}
+	"Agent Jones Desc"
+	{
+		"en"		"Independent Agent. Has a continuous pull around him, don't get pinned."
+	}
+	"Agent Kurt Desc"
+	{
+		"en"		"Strongest variant of Soldier Agents."
+	}
+	"Agent Logan Desc"
+	{
+		"en"		"Strongest variant of Engineer Agents."
+	}
+	"Agent Ross Desc"
+	{
+		"en"		"Strongest variant of Sniper Agents."
+	}
+	"Agent Spencer Desc"
+	{
+		"en"		"Strongest variant of Heavy Agents."
+	}
+	"Agent Todd Desc"
+	{
+		"en"		"Strongest variant of Scout Agents."
+	}
+	"Agent Thompson Desc"
+	{
+		"en"		"Independent Agent. Appears to have the ability to dodge upcoming attacks. However in return takes more damage from melee and ranged sources."
+	}
+	"Agent Johnson Desc"
+	{
+		"en"		"Independent Agent. Adapts very fast to the type of damage he takes. Better have a balanced team of melee and ranged users."
+	}
+	"Twin No. 1 Desc"
+	{
+		"en"		"We are getting aggravated. Shares the same characteristics as the second twin. has a chance to switch his health with the second twin."
+	}
+	"Twin No. 2 Desc"
+	{
+		"en"		"Yes we are. Shares the same characteristics as the first twin. has a chance to switch his health with the first twin."
+	}
+	"Agent Smith Desc"
+	{
+		"en"		"It is purpose that defines us. Initially appears as a normal boss which can multiply for up to 64 times. Appears later on once more, with the ability to infect players and turn them into clones, better cure them fast!"
+	}
 }

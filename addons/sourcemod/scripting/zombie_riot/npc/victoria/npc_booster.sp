@@ -307,7 +307,7 @@ public void VictorianBooster_ClotThink(int iNPC)
 					if(IsValidEntity(npc.m_iWearable4))
 					{
 						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 255, 215, 0, 255);
+						SetEntityRenderColor(npc.m_iWearable4, 0, 205, 255, 255);
 					}
 					HealEntityGlobal(npc.index, PrimaryThreatIndex, 150.0, 1.0);
 					f_Ocean_Buff_Stronk_Buff[PrimaryThreatIndex] = GetGameTime() + 1.1;

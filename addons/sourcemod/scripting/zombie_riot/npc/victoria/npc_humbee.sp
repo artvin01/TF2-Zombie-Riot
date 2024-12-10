@@ -69,7 +69,7 @@ methodmap VictorianHumbee < CClotBody
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flAttackHappens = 0.0;
 
-		npc.m_flMeleeArmor = 1.50;
+		npc.m_flMeleeArmor = 1.75;
 		npc.m_flRangedArmor = 0.75;
 
 		b_CannotBeStunned[npc.index] = true;
@@ -199,7 +199,7 @@ static void ClotDeath(int entity)
 
 	npc.PlayDeathSound();
 
-	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("rd_robot_explosion_smoke_linger", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	int team = GetTeam(npc.index);
 
 	int health = ReturnEntityMaxHealth(npc.index) / 4;

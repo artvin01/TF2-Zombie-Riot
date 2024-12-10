@@ -82,8 +82,7 @@ methodmap VictoriaRadiomast < CClotBody
 		npc.m_iWearable3 = npc.EquipItemSeperate("partyhat", VictoriaRadiomast_MODEL_3,_,1);
 		SetVariantString("0.95");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_flNextMeleeAttack = 0.0;
+
 		
 		npc.m_flMeleeArmor = 2.5;
 		npc.m_flRangedArmor = 1.0;
@@ -195,7 +194,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 	npc.m_flNextRangedSpecialAttack = 0.0;
 
 	gameTime = GetGameTime() + 0.5;
-	//float InfiniteWave = 5.0;
+	float InfiniteWave = 5.0;
 	int team = GetTeam(npc.index);
 	if(team == 2)
 	{
@@ -208,14 +207,12 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 		}
 	}
 	
-	/*
 	if(IsValidEntity(RaidBossActive) && RaidBossActive == EntIndexToEntRef(npc.index))
 		RaidModeScaling = (InfiniteWave-(npc.m_flNextMeleeAttack - gameTime))/InfiniteWave;
-	*/
 	if(Waves_IsEmpty())
 	{
 		int ISVOLI= 1;
-		ISVOLI = RoundToNearest(float(CountPlayersOnRed(1)) * 1.5); 
+		ISVOLI = RoundToNearest(4.0); 
 		int VICTORIA= 1;
 		VICTORIA = RoundToNearest(float(CountPlayersOnRed(1)) * 1.0); 
 		for(int i=1; i<=VICTORIA; i++)
@@ -396,7 +393,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 				}
 			}
 		}
-		//npc.m_flNextMeleeAttack = gameTime+InfiniteWave;
+		npc.m_flNextMeleeAttack = gameTime+InfiniteWave;
 	}
 
 	for(int i; i < i_MaxcountNpcTotal; i++)

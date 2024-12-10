@@ -3,6 +3,7 @@
 
 static const char g_DeathSounds[] = "mvm/giant_soldier/giant_soldier_explode.wav";
 static const char g_MeleeAttackSounds[] = "weapons/sentry_rocket.wav";
+static const char g_ActivationSounds[] = "mvm/mvm_tank_horn.wav";
 
 static const char g_HurtSounds[][] = {
 	"weapons/sentry_damage1.wav",
@@ -14,10 +15,10 @@ static int NPCId;
 
 void VictorianOfflineAvangard_MapStart()
 {
-	PrecacheSound("mvm/mvm_tank_horn.wav");
 	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	PrecacheSound(g_DeathSounds);
+	PrecacheSound(g_ActivationSounds);
 	PrecacheSound(g_MeleeAttackSounds);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Avangard");
@@ -48,6 +49,10 @@ methodmap VictorianOfflineAvangard < CClotBody
 	}
 	public void PlayMeleeSound()
  	{
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL-20, _, BOSS_ZOMBIE_VOLUME, _);
+	}
+	public void PlayActivationSound()
+ 	{
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);
 	}
 	public void PlayHurtSound() 
@@ -57,7 +62,7 @@ methodmap VictorianOfflineAvangard < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,110));
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,110));
 		
 	}
 	
@@ -182,7 +187,7 @@ static void ClotThink(int iNPC)
 		{
 			if(!npc.m_bFUCKYOU)
 			{
-				EmitSoundToAll("mvm/mvm_tank_horn.wav", _, _, _, _, 1.0);
+				npc.PlayActivationSound();
 				IncreaceEntityDamageTakenBy(npc.index, 0.000001, 1.0);
 			}
 			i_AttacksTillMegahit[iNPC] = 601;
@@ -250,7 +255,7 @@ static void ClotThink(int iNPC)
 					if(entity != -1)
 					{
 						//max duration of 4 seconds beacuse of simply how fast they fire
-						CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(2.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					}
 
 					npc.m_iOverlordComboAttack--;

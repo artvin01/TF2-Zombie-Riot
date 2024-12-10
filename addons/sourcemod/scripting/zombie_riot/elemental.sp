@@ -641,6 +641,10 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 	if(victim <= MaxClients)
 	{
+		if(Items_HasNamedItem(victim, "Matrix's Curse"))
+		{
+			damage = RoundToNearest(float(damage) * 1.2);
+		}
 		Armor_DebuffType[victim] = 4;
 		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
 		{

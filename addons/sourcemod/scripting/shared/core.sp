@@ -735,6 +735,7 @@ bool b_BobsTrueFear[MAXTF2PLAYERS];
 bool b_TwirlHairpins[MAXTF2PLAYERS];
 bool b_KahmlLastWish[MAXTF2PLAYERS];
 bool b_VoidPortalOpened[MAXTF2PLAYERS];
+bool b_AvangardCoreB[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES][Element_MAX];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
 float mana_regen[MAXTF2PLAYERS];
@@ -1773,6 +1774,7 @@ public void OnMapStart()
 	PrecacheSound("ambient/explosions/explode_3.wav");
 	PrecacheSound("ui/medic_alert.wav");
 	PrecacheSound("weapons/drg_wrench_teleport.wav");
+	PrecacheSound("weapons/medigun_no_target.wav");
 
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
@@ -3675,6 +3677,7 @@ public void OnEntityDestroyed(int entity)
 
 		if(entity > MaxClients)
 		{
+			LeanteanWandCheckDeletion(entity);
 			MedigunCheckAntiCrash(entity);
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);

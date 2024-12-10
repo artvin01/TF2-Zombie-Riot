@@ -321,7 +321,7 @@ public void VictoriaRepair_ClotThink(int iNPC)
 					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 				}
-				HealEntityGlobal(npc.index, PrimaryThreatIndex, 500.0, 1.0);
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, 3000.0, 1.0);
 				f_BattilonsNpcBuff[PrimaryThreatIndex] = GetGameTime() + 1.1;
 			}
 			else

@@ -1807,32 +1807,32 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 40%% (cant go below 1)"
+		"en"	"2x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 30%% (cant go below 1)"
 	}
 	
 	"Professor Certificate Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
+		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15%% (cant go below 1)"
 	}
 	
 	"Death Certificate Desc"
 	{
-		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
+		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15%% (cant go below 1)"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
+		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15%% (cant go below 1)"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
+		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15%% (cant go below 1)"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 25%% (cant go below 1)"
+		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15%% (cant go below 1)"
 	}
 	
 	"Panic Attack Desc"
@@ -1917,8 +1917,8 @@
 	
 	"Army Belt Desc"
 	{
-		"en"	"5%% Faster reload but have a 2x longer weapon switch"
-		"fr"	"+5%% vitesse de rechargement, 2x vitesse de changement d'arme plus lente"
+		"en"	"10%% Faster reload but have a 1.45x longer weapon switch"
+		"fr"	"+10%% vitesse de rechargement, 1.45x vitesse de changement d'arme plus lente"
 	}
 	
 	"Headshot Affinity Desc"
@@ -3984,5 +3984,21 @@
 	"Wand of Decay Desc"
 	{
 		"en"	"Increased damage and fire rate"
+	}
+	"CastleBreaker Desc"
+	{
+		"en"	"A Spear that Victoria's trained vanguards use.\n This weapon has long reach but short width.\n Can gain cost per kill\n Some processing core may enhance this weapon...\n Deals extra damage to building enemies"
+	}
+	"CastleBreaker Pap 1"
+	{
+		"en"	"Added new R ability that will allow you to switch weapon's playstle. You will do 50% less damage but will create a small explosion when it hits the enemy. Explosion costs ammo."
+	}
+	"CastleBreaker Pap 2"
+	{
+		"en"	"Overall Better Stats"
+	}
+	"CastleBreaker Pap 3"
+	{
+		"en"	"A giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\n Unlocks new ability(m2)\n Attack 2 targets at once and attack twice."
 	}
 }

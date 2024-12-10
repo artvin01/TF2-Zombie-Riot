@@ -119,6 +119,7 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_bisWalking = true;
 		npc.m_bFUCKYOU = true;
 		npc.Anger = false;
+		Is_a_Medic[npc.index] = true;
 		SET_XZY_POS[npc.index]={0.0, 0.0, 0.0};
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
