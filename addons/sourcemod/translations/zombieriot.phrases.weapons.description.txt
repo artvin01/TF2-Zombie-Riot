@@ -4001,4 +4001,28 @@
 	{
 		"en"	"A giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\n Unlocks new ability(m2)\n Attack 2 targets at once and attack twice."
 	}
+	"Magia Fractal"
+	{
+		"en"	"Magia Fractal"
+	}
+	"Fractal-Lenz"
+	{
+		"en"	"Fractal-Lenz"
+	}
+	"Fractal-Harvester"
+	{
+		"en"	"Fractal-Harvester"
+	}
+	"Fractal-Fantasia"
+	{
+		"en"	"Fractal-Fantasia"
+	}
+	"Magia Fractal Desc"
+	{
+		"en"	"it do magic stuff"
+	}
+	"Fractal Kit Desc 0"
+	{
+		"en"	"magic"
+	}
 }

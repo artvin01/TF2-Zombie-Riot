@@ -220,7 +220,7 @@ static void Fire_Beam(int client, int weapon, bool update)
 			return;
 		}
 
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 2.5);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -353,10 +353,10 @@ static void Fire_Beam(int client, int weapon, bool update)
 }
 void Format_Fancy_Hud(char Text[255])
 {
-	ReplaceString(Text, 128, "Ą", "「");
-	ReplaceString(Text, 128, "Č", "」");
-	ReplaceString(Text, 128, "Ę", "【");
-	ReplaceString(Text, 128, "Ė", "】");
+	ReplaceString(Text, 500, "Ą", "「");
+	ReplaceString(Text, 500, "Č", "」");
+	ReplaceString(Text, 500, "Ę", "【");
+	ReplaceString(Text, 500, "Ė", "】");
 }
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {
@@ -429,10 +429,11 @@ static void Kill_Animation(int client)
 	if(!IsClientInGame(client))
 		return;
 
-	if(b_Thirdperson_Before[client] && thirdperson[client])
+	if(!b_Thirdperson_Before[client] && !thirdperson[client])
 	{
-		SetVariantInt(1);
+		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
+		ViewChange_Update(client, false);
 	}
 
 	int WeaponModel;
@@ -524,7 +525,6 @@ static int i_fantasia_particle[MAXTF2PLAYERS][FRACTAL_FANTASIA_AMT];
 
 static float fl_fantasia_angles[MAXTF2PLAYERS][FRACTAL_FANTASIA_AMT][3];
 
-static float fl_fantasia_cost;
 static float fl_fantasia_origin[MAXTF2PLAYERS][3];
 static float fl_fantasia_throttle[MAXTF2PLAYERS];
 static float fl_fantasia_duration[MAXTF2PLAYERS];
@@ -558,6 +558,35 @@ static float fl_fantasia_targetshit[MAXTF2PLAYERS];
 static float fl_fantasia_damage[MAXTF2PLAYERS];
 public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 {
+	if(b_cannon_animation_active[client])
+	{
+		return;
+	}
+	if(i_current_crystal_amt[client] < FRACTAL_KIT_FANTASIA_COST)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+		return;
+	}
+	int mana_cost;
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+
+	if(mana_cost > Current_Mana[client] && !b_cannon_animation_active[client])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		return;
+	}
+
+	i_current_crystal_amt[client] -=FRACTAL_KIT_FANTASIA_COST;
+	Current_Mana[client] -=mana_cost;
+	SDKhooks_SetManaRegenDelayTime(client, 2.5);
+	Mana_Hud_Delay[client] = 0.0;
+
 	Delete_Fantasia(client);
 
 	float GameTime = GetGameTime();
@@ -1138,7 +1167,7 @@ public void Kit_Fractal_Primary_Cannon(int client, int weapon, bool &result, int
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Must be alive to use the Laser Cannon");
 			return;
 		}
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 2.5);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -1228,53 +1257,6 @@ static void Fractal_Cannon_Tick(int client)
 
 	Turn_Animation(client, weapon_holding);
 }
-/*
-void Fractal_Kit_Modify_Mana(int client, int weapon_holding)
-{
-	switch(Pap(weapon_holding))
-	{
-		case 0:
-		{
-			mana_regen[client] *= 0.4;
-			max_mana[client] *= 2.0;
-		}
-		case 1:
-		{
-			mana_regen[client] *= 0.5;
-			max_mana[client] *= 4.0;
-		}
-		case 2:
-		{
-			mana_regen[client] *= 0.7;
-			max_mana[client] *= 8.0;
-		}
-		case 3:
-		{
-			mana_regen[client] *= 0.9;
-			max_mana[client] *= 9.0;
-		}
-		case 4:
-		{
-			mana_regen[client] *= 1.0;
-			max_mana[client] *= 12.0;
-		}
-		case 5:
-		{
-			mana_regen[client] *= 1.25;
-			max_mana[client] *= 14.0;
-		}
-		case 6:
-		{
-			//mana_regen[client] *= 2.0;
-			max_mana[client] *= 17.0;
-
-			mana_regen[client] *= 99.0;
-		}
-	}
-	if(b_TwirlHairpins[client])
-		max_mana[client] *= 1.1;
-}
-*/
 static Action Timer_Weapon_Managment(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -1342,10 +1324,16 @@ static void Hud(int client, int weapon)
 		{
 			if(b_cannon_animation_active[client])
 			{
-				Format(HUDText, sizeof(HUDText), "How in thE FUCK CAN YOU SEE THIS TEXT????????  Error: Secondary slot while cannon is active");
+				Format(HUDText, sizeof(HUDText), "Error: Secondary slot while cannon is active");
 			}
 			else
 			{
+				Format(HUDText, sizeof(HUDText), "Hold [M1] To Cast ĄMana HarvesterČ [Cost:]");
+
+				if(i_current_crystal_amt[client] >= FRACTAL_KIT_STARFALL_COST)
+					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Cast ĄStarFallČ [Cost:%i]",HUDText, FRACTAL_KIT_STARFALL_COST);
+				else
+					Format(HUDText, sizeof(HUDText), "%s\nNot Enough Crystals To Cast ĄStarFallČ [%i/%i]",HUDText, i_current_crystal_amt[client], FRACTAL_KIT_STARFALL_COST);
 				//m1: mana harvester.
 				//m2: Mana Ion.
 			}
@@ -1354,11 +1342,11 @@ static void Hud(int client, int weapon)
 		{
 			if(b_cannon_animation_active[client])
 			{
-				Format(HUDText, sizeof(HUDText), "How in thE FUCK CAN YOU SEE THIS TEXT?? Error: Melee slot while cannon is active");
+				Format(HUDText, sizeof(HUDText), "Error: Melee slot while cannon is active");
 			}
 			else
 			{
-
+				Format(HUDText, sizeof(HUDText), "Press [M1] To Cast ĄFantasiaČ [Cost:%i]", FRACTAL_KIT_FANTASIA_COST);
 				//fantasia
 			}
 		}

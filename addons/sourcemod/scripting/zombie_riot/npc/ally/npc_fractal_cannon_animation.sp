@@ -7,6 +7,7 @@ static const char g_LaserLoop[][] = {
 };
 
 static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+static int i_wingslot[MAXENTITIES];
 
 void Kit_Fractal_NPC_MapStart()
 {
@@ -33,6 +34,30 @@ methodmap Fracatal_Kit_Animation < CClotBody
 		
 		EmitCustomToAll(g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)], this.index, SNDCHAN_STATIC, 80, _, 0.9);
 		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
+	}
+	property int m_iWingSlot
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_wingslot[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_wingslot[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_wingslot[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
 	}
 
 	
@@ -102,6 +127,21 @@ methodmap Fracatal_Kit_Animation < CClotBody
 					}
 					break;
 				}
+			}
+		}
+		if(IsValidEntity(Cosmetic_WearableExtra[client]))
+		{
+			int SettingDo;
+			if(MagiaWingsDo(client))	//do we even have the wings item?
+				SettingDo = MagiaWingsType(client);	//we do, what type of wings do we want?
+			if(SilvesterWingsDo(client))
+				SettingDo = WINGS_FUSION;
+
+			if(SettingDo != 0)
+			{
+				npc.m_iWingSlot = npc.EquipItem("head", WINGS_MODELS_1);
+				SetVariantInt(SettingDo);
+				AcceptEntityInput(npc.m_iWingSlot, "SetBodyGroup");
 			}
 		}
 		npc.m_bisWalking = false;
@@ -194,4 +234,7 @@ static void NPC_Death(int entity)
 
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+
+	if(IsValidEntity(npc.m_iWingSlot))
+		RemoveEntity(npc.m_iWingSlot);
 }
