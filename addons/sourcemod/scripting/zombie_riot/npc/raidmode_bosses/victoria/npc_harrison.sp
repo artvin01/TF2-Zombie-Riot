@@ -727,7 +727,6 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flDoingAnimation = gameTime + 15.0;	
 					Delay_Attribute[npc.index] = gameTime + 15.0;
 					I_cant_do_this_all_day[npc.index]=2;
-					RaidModeTime += 15.0;
 				}
 			}
 			case 2:
@@ -803,7 +802,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flNextRangedSpecialAttackHappens += 0.1;
 		npc.m_flTimeUntillNextRailgunShots += 0.1;
 		npc.m_flTimeUntillDroneSniperShot += 0.1;
-		RaidModeTime += 0.1;
+		RaidModeTime += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
 		return;
 	}
 

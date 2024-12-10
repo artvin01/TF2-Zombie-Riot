@@ -199,8 +199,11 @@ public Action Timer_Management_CastleBreaker(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage, int weapon)
+void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage, int weapon, int damagetype)
 {
+	if((damagetype & DMG_CLUB))
+		return;
+	
 	if(i_IsABuilding[victim])
 	{
 		damage *= 1.2;
