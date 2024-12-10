@@ -145,7 +145,7 @@ methodmap AgentJohnson < CClotBody
 		EmitSoundToAll("weapons/physgun_off.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("weapons/physgun_off.wav", _, _, _, _, 1.0);	
 
-		RaidModeTime = GetGameTime(npc.index) + 160.0;
+		RaidModeTime = GetGameTime(npc.index) + 170.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		
