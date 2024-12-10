@@ -97,7 +97,6 @@ static bool b_swords_created[MAXENTITIES];
 
 static float fl_retreat_timer[MAXENTITIES];
 static float fl_spinning_angle[MAXENTITIES];
-static float fl_karlas_armour[MAXENTITIES][2];
 static float fl_karlas_sword_battery[MAXENTITIES];
 
 
@@ -121,7 +120,6 @@ void Karlas_OnMapStart_NPC()
 	Zero(fl_dance_of_light_sound_spam_timer);
 	Zero2(fl_dance_of_light_sword_throttle);
 	Zero(fl_spinning_angle);
-	Zero2(fl_karlas_armour);
 	Zero(fl_karlas_sword_battery);
 
 	NPCData data;
@@ -378,6 +376,80 @@ methodmap Karlas < CClotBody
 			}
 		}
 	}
+	property float m_flKarlMeleeArmour
+	{
+		public get()		 
+		{ 
+			return this.m_flMeleeArmor;
+		}
+		public set(float fAmt) 
+		{
+			//we are teleporting and also can't move, take a heavily defensive position.	
+			if(b_teleport_strike_active[this.index])
+				fAmt -=0.8;
+
+			//we are retreating to stella, take a more defensive position.
+			if(this.m_bRetreat)
+				fAmt -=0.25;
+			
+			//we are doing our "amazon delivery service", we cannot move, give uis armour
+			if(this.m_flSlicerBarrageCD == FAR_FUTURE)
+				fAmt -= 0.6;
+
+			//we are being used as a mirror, cannot move, take defensive stance.
+			if(this.m_flNC_LockedOn > GetGameTime(this.index))
+				fAmt -= 0.45;
+			
+			if(this.Anger)
+				fAmt -=0.25;
+
+			//hard limit, although unlikely to be hit.
+			if(fAmt < 0.05)
+				fAmt = 0.05;	
+			
+			if(b_lostOVERDRIVE[this.index])
+				fAmt = 0.01699;
+
+			this.m_flMeleeArmor = fAmt;
+		}
+	}
+	property float m_flKarlRangedArmour
+	{
+		public get()		 
+		{ 
+			return this.m_flRangedArmor;
+		}
+		public set(float fAmt) 
+		{
+			//we are teleporting and also can't move, take a heavily defensive position.	
+			if(b_teleport_strike_active[this.index])
+				fAmt -=0.5;
+
+			//we are retreating to stella, take a more defensive position.
+			if(this.m_bRetreat)
+				fAmt -=0.25;
+			
+			//we are doing our "amazon delivery service", we cannot move, give uis armour
+			if(this.m_flSlicerBarrageCD == FAR_FUTURE)
+				fAmt -= 0.6;
+
+			//we are being used as a mirror, cannot move, take defensive stance.
+			if(this.m_flNC_LockedOn > GetGameTime(this.index))
+				fAmt -= 0.45;
+
+			if(this.Anger)
+				fAmt -=0.25;
+
+			//hard limit, although unlikely to be hit.
+			if(fAmt < 0.05)
+				fAmt = 0.05;	
+			
+			if(b_lostOVERDRIVE[this.index])
+				fAmt = 0.01699;
+
+			this.m_flRangedArmor = fAmt;
+		}
+	}
 	public void LanceState(bool activate)
 	{
 		if(IsValidEntity(this.m_iWearable8))
@@ -504,11 +576,8 @@ methodmap Karlas < CClotBody
 		npc.StartPathing();
 		npc.Set_Particle("raygun_projectile_blue_crit", "eyeglow_L");
 
-		fl_karlas_armour[npc.index][0] = 1.0;	//ranged
-		fl_karlas_armour[npc.index][1] = 1.5;	//melee
-
-		npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
-		npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
+		npc.m_flKarlMeleeArmour = 1.5;
+		npc.m_flKarlRangedArmour = 1.0;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 
@@ -531,9 +600,6 @@ methodmap Karlas < CClotBody
 			NpcSpeechBubble(npc.index, ">:)", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 
 			fl_karlas_sword_battery[npc.index] = FAR_FUTURE;
-
-			fl_karlas_armour[npc.index][0] = 0.0;
-			fl_karlas_armour[npc.index][1] = 0.0;
 
 			npc.m_flSlicerBarrageCD = FAR_FUTURE;
 
@@ -603,9 +669,6 @@ static void Internal_ClotThink(int iNPC)
 
 		fl_karlas_sword_battery[npc.index] = FAR_FUTURE;
 
-		fl_karlas_armour[npc.index][0] = 0.0169;
-		fl_karlas_armour[npc.index][1] = 0.0169;
-
 		npc.m_flSlicerBarrageCD = FAR_FUTURE;
 
 		GiveOneRevive(true);
@@ -621,6 +684,9 @@ static void Internal_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+
+	npc.m_flKarlMeleeArmour = 1.5;
+	npc.m_flKarlRangedArmour = 1.0;
 			
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -634,12 +700,6 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GameTime + 0.1;
-
-	if(b_lostOVERDRIVE[npc.index])
-	{
-		npc.m_flRangedArmor = 0.01699;
-		npc.m_flMeleeArmor = 0.01699;
-	}
 
 	//Set raid to this one incase the previous one has died or somehow vanished
 	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
@@ -666,8 +726,6 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(abort_teleport && Karlas_Status(npc, GameTime)==1 && b_teleport_strike_active[npc.index])
 	{
-		npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
-		npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
 		npc.m_flSpeed =fl_npc_basespeed;
 		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -684,19 +742,6 @@ static void Internal_ClotThink(int iNPC)
 
 	if(npc.m_flNC_LockedOn > GameTime)
 	{
-		if(Karlas_Status(npc, GameTime)!=1)
-		{
-			if(npc.m_bRetreat)
-			{
-				npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1] - 0.25;
-				npc.m_flRangedArmor = fl_karlas_armour[npc.index][0] - 0.25;
-			}	
-			else
-			{
-				npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
-				npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
-			}
-		}
 		return;
 	}
 	if(!IsValidEntity(RaidBossActive))
@@ -721,6 +766,7 @@ static void Internal_ClotThink(int iNPC)
 		f_NpcTurnPenalty[npc.index]=1.0;
 		i_NpcWeight[npc.index]=3;
 		b_NpcIsInvulnerable[npc.index]=false;
+		b_CannotBeStunned[npc.index] = false;
 		npc.PlayAngerSoundPassed();
 		npc.SetPlaybackRate(1.0);
 
@@ -730,6 +776,9 @@ static void Internal_ClotThink(int iNPC)
 		npc.LanceState(true);
 
 		npc.m_bisWalking = true;
+
+		if(fl_teleport_strike_recharge[npc.index] < GameTime+5.0)
+			fl_teleport_strike_recharge[npc.index]=GameTime+5.0; 
 
 		npc.m_flSpeed=fl_npc_basespeed;
 
@@ -766,7 +815,18 @@ static void Internal_ClotThink(int iNPC)
 	npc.AdjustWalkCycle();
 
 	Body_Pitch(npc, npc_Vec, vecTarget);
-	Healing_Logic(npc, PrimaryThreatIndex, flDistanceToTarget);
+
+	//use same logic for teleport aborting.
+	//this will alos override where we are walking to.
+	//but only override where we are walking to IF the abort teleport is invalid.
+	if(Healing_Logic(npc, PrimaryThreatIndex, flDistanceToTarget) && !abort_teleport)
+	{
+		return;
+	}
+		
+	//STELLA NEEDS HEALING, QUICKLY CALL AN AMBULANCE.
+	//BUT NOT FOR ME
+
 
 	if(npc.m_bRetreat)
 	{
@@ -778,11 +838,6 @@ static void Internal_ClotThink(int iNPC)
 			float flDistanceToAlly = GetVectorDistance(vecAlly, npc_Vec, true);
 			Karlas_Movement_Ally_Movement(npc, flDistanceToAlly, Ally, GameTime, PrimaryThreatIndex, flDistanceToTarget);
 
-			if(Karlas_Status(npc, GameTime)!=1)
-			{
-				npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1] - 0.25;
-				npc.m_flRangedArmor = fl_karlas_armour[npc.index][0] - 0.25;
-			}
 			if(flDistanceToAlly < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 && Can_I_See_Enemy_Only(npc.index, Ally))
 			{
 				NPCStats_RemoveAllDebuffs(Ally);
@@ -798,8 +853,6 @@ static void Internal_ClotThink(int iNPC)
 		if(Karlas_Status(npc, GameTime)!=1)
 		{
 			npc.m_flSpeed =  fl_npc_basespeed;
-			npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
-			npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
 		}	
 		Karlas_Movement(npc, flDistanceToTarget, PrimaryThreatIndex);
 		Karlas_Aggresive_Behavior(npc, PrimaryThreatIndex, GameTime, flDistanceToTarget, vecTarget);
@@ -807,26 +860,20 @@ static void Internal_ClotThink(int iNPC)
 
 	Blade_Logic(npc);
 
-	if(b_lostOVERDRIVE[npc.index])
-	{
-		npc.m_flRangedArmor = 0.01699;
-		npc.m_flMeleeArmor = 0.01699;
-	}
-
 	npc.PlayIdleAlertSound();
 }
-static void Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceToTarget)
+static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceToTarget)
 {
 	int Ally = npc.Ally;
 
 	float GameTime = GetGameTime(npc.index);
 
 	if(npc.m_flNextRangedBarrage_Singular > GameTime)
-		return;
+		return false;
 	
 	Ally = npc.Ally;
 	if(!IsValidAlly(npc.index, Ally))
-		return;
+		return false;
 	
 	int AllyMaxHealth = ReturnEntityMaxHealth(Ally);
 	int AllyHealth = GetEntProp(Ally, Prop_Data, "m_iHealth");
@@ -868,8 +915,11 @@ static void Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 			npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 30.0;
 
 			npc.PlayBuffSound();
+			return false;
 		}	
+		return true;
 	}
+	return false;
 }
 static void Body_Pitch(Karlas npc, float VecSelfNpc[3], float vecTarget[3])
 {
@@ -1354,9 +1404,6 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 					{
 						float meleedmg= Modify_Damage(target, 50.0);	//karlas hurts like a fucking truck
 
-						if(npc.Anger)
-							meleedmg*1.25;
-
 						if(fl_karlas_sword_battery[npc.index]> GameTime)
 						{
 							fl_karlas_sword_battery[npc.index] +=1.5;
@@ -1458,8 +1505,6 @@ static void Fire_Wave_Barrage(Karlas npc)
 	}
 	if(npc.m_flSlicerBarrageActive > GameTime && (npc.m_iNClockonState != 0 || npc.m_flNC_LockedOn > GameTime))
 	{
-		npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
-		npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
 		npc.m_flSpeed =fl_npc_basespeed;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -1482,8 +1527,6 @@ static void Fire_Wave_Barrage(Karlas npc)
 
 	if(npc.m_iSlicersFired > Amt+1)
 	{
-		npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
-		npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
 		npc.m_flSpeed =fl_npc_basespeed;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -1515,9 +1558,6 @@ static void Fire_Wave_Barrage(Karlas npc)
 		npc.m_flSpeed = 0.0;
 
 		npc.m_iSlicersFired = 1;
-
-		npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1] - 0.8;
-		npc.m_flRangedArmor = fl_karlas_armour[npc.index][0] - 0.5;
 
 		return;
 	}
@@ -1641,8 +1681,6 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 			EmitSoundToAll(KARLAS_TELEPORT_STRIKE_INITIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 			EmitSoundToAll(KARLAS_TELEPORT_STRIKE_INITIALIZE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 
-			npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1]-1.0;
-			npc.m_flRangedArmor = fl_karlas_armour[npc.index][0]-0.5;
 
 			npc_Loc[2]+=10.0;
 			int color[4];
@@ -1654,8 +1692,6 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 	}
 	if(b_teleport_strike_active[npc.index] && npc.m_flDoingAnimation < GameTime)
 	{
-		npc.m_flMeleeArmor = fl_karlas_armour[npc.index][1];
-		npc.m_flRangedArmor = fl_karlas_armour[npc.index][0];
 		npc.m_flSpeed =fl_npc_basespeed;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -1913,7 +1949,6 @@ static Action Karlas_Boom(Handle Smite_Logic, DataPack pack)
 	if(npc.Anger)
 	{
 		radius *= 1.25;	
-		damage *=1.25;
 	}
 
 	Explode_Logic_Custom(damage, npc.index, npc.index, -1, spawnLoc, radius,_,0.8, true);
@@ -2241,6 +2276,8 @@ static void Karlas_Lifeloss_Initialize(Karlas npc)
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 
+	b_CannotBeStunned[npc.index] = true;
+
 	npc.m_iWearable7 = npc.EquipItemSeperate("head", KARLAS_LIGHT_MODEL ,_,_,_,300.0);
 	
 }
@@ -2527,7 +2564,7 @@ static void Internal_NPCDeath(int entity)
 		Stella donner = view_as<Stella>(ally);
 		donner.Anger=true;
 	}
-
+	RaidModeScaling *= 1.2;
 	RaidModeTime +=50.0;
 	if(npc.Ally)
 	{
