@@ -330,7 +330,7 @@ static void Thompsons_SelfDefense(AgentThompson npc, float gameTime, int target,
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
-				float damage = 14.0;
+				float damage = 12.0;
 				damage *= RaidModeScaling;
 				bool silenced = NpcStats_IsEnemySilenced(npc.index);
 				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)

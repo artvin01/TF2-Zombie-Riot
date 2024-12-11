@@ -215,7 +215,7 @@ methodmap AgentSmith < CClotBody
 			npc.m_bFUCKYOU = false;
 		}
 		float gameTime = GetGameTime(npc.index);
-		npc.m_flAbilityOrAttack0 = gameTime + 5.0;
+		npc.m_flAbilityOrAttack0 = gameTime + 1.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		i_Victim_Infection[npc.index] = -1;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -343,7 +343,7 @@ static void AgentSmith_ClotThink(int iNPC)
 		}
 		if(npc.m_flAbilityOrAttack0 <= gameTime)
         {
-			npc.m_flAbilityOrAttack0 = gameTime + 5.0;
+			npc.m_flAbilityOrAttack0 = gameTime + 1.0;
 			Agent_Smith_Cloner(npc, 1, RoundToCeil(15000.0 * MultiGlobalEnemy), 2.0);
         }
 	}
