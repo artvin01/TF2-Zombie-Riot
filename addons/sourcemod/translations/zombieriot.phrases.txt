@@ -178,6 +178,16 @@
 		"nl"		"Genezing gedaan: {1}"
 		"chi"		"治疗效果: {1}"
 	}
+	"Damage Tanked"
+	{
+		"#format"	"{1:d}"
+		"en"		"Damage Tanked: {1}"
+	}
+	"Total Score"
+	{
+		"#format"	"{1:d}"
+		"en"		"Total Score: {1}"
+	}
 	"XP and Level"
 	{
 		"#format"	"{1:d},{2:d},{3:d}"

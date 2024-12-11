@@ -982,6 +982,11 @@ methodmap Citizen < CClotBody
 		GunRangeBonus[npc.index] = 1.0;
 		CanBuild[npc.index] = 0;
 		PendingGesture[npc.index] = 0;
+		Damage_dealt_in_total[npc.index] = 0.0;
+		Healing_done_in_total[npc.index] = 0;
+		Resupplies_Supplied[npc.index] = 0;
+		i_BarricadeHasBeenDamaged[npc.index] = 0;
+		i_PlayerDamaged[npc.index] = 0;
 		
 		npc.m_iAttacksTillReload = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -1601,6 +1606,37 @@ bool Citizen_Interact(int client, int entity)
 	return false;
 }
 
+static int GetCitizenPoints(int entity)
+{
+	int Points;
+	
+	Points += Healing_done_in_total[entity] / 3;
+
+	if(Rogue_Mode())
+	{
+		Points += RoundToCeil(Damage_dealt_in_total[entity]) / 250;
+	}
+	else
+	{
+		Points += RoundToCeil(Damage_dealt_in_total[entity]) / 50;
+	}
+
+	Points += Resupplies_Supplied[entity] * 4;
+	
+	Points += i_BarricadeHasBeenDamaged[entity] / 5;
+
+	if(Rogue_Mode())
+	{
+		Points += i_PlayerDamaged[entity] / 10;
+	}
+	else
+	{
+		Points += i_PlayerDamaged[entity] / 5;
+	}
+
+	return Points;
+}
+
 static void CitizenMenu(int client, int page = 0)
 {
 	Citizen npc = view_as<Citizen>(EntRefToEntIndex(MenuEntRef[client]));
@@ -1612,7 +1648,11 @@ static void CitizenMenu(int client, int page = 0)
 	char buffer[64];
 
 	Menu menu = new Menu(CitizenMenuH);
-	menu.SetTitle("%t:\n ", "Rebel");
+	menu.SetTitle("%t\n \n%t\n%t\n%t\n%t\n ", "Rebel",
+			"Total Score", GetCitizenPoints(npc.index),
+			"Damage Dealt", Damage_dealt_in_total[npc.index],
+			"Healing Done", Healing_done_in_total[npc.index],
+			"Damage Tanked", i_PlayerDamaged[npc.index] + i_BarricadeHasBeenDamaged[npc.index]);
 
 	switch(page)
 	{
@@ -4553,6 +4593,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			}
 			else
 			{
+				i_PlayerDamaged[victim] += RoundFloat(damage);
 				npc.PlaySound(Cit_Hurt);
 
 				if(npc.m_iTarget < 1)
