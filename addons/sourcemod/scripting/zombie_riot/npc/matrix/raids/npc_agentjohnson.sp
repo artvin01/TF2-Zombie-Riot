@@ -145,7 +145,7 @@ methodmap AgentJohnson < CClotBody
 		EmitSoundToAll("weapons/physgun_off.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("weapons/physgun_off.wav", _, _, _, _, 1.0);	
 
-		RaidModeTime = GetGameTime(npc.index) + 170.0;
+		RaidModeTime = GetGameTime(npc.index) + 185.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		
@@ -341,7 +341,7 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
-				float damage = 16.0;
+				float damage = 13.0;
 				damage *= RaidModeScaling;
 				bool silenced = NpcStats_IsEnemySilenced(npc.index);
 				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)

@@ -72,7 +72,7 @@ public void AgentSmith_OnMapStart_NPC()
 }
 static void ClotPrecache()
 {
-	PrecacheModel("models/zombie_riot/matrix/smith28.mdl");
+	PrecacheModel("models/zombie_riot/matrix/smith30.mdl");
 	PrecacheSound("#zombiesurvival/matrix/neodammerung.mp3");
 	PrecacheSound("weapons/physgun_off.wav");
 	PrecacheSoundArray(g_TeleDeathSound);
@@ -168,7 +168,7 @@ methodmap AgentSmith < CClotBody
 	public AgentSmith(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool raid = StrContains(data, "raid_time") != -1;
-		AgentSmith npc = view_as<AgentSmith>(CClotBody(vecPos, vecAng, "models/zombie_riot/matrix/smith28.mdl", raid ? "1.15" : "1.0", "30000", ally, false));
+		AgentSmith npc = view_as<AgentSmith>(CClotBody(vecPos, vecAng, "models/zombie_riot/matrix/smith30.mdl", raid ? "1.15" : "1.0", "30000", ally, false));
 		
 		if(raid)
 		{
@@ -215,7 +215,7 @@ methodmap AgentSmith < CClotBody
 			npc.m_bFUCKYOU = false;
 		}
 		float gameTime = GetGameTime(npc.index);
-		npc.m_flAbilityOrAttack0 = gameTime + 5.0;
+		npc.m_flAbilityOrAttack0 = gameTime + 1.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		i_Victim_Infection[npc.index] = -1;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -343,7 +343,7 @@ static void AgentSmith_ClotThink(int iNPC)
 		}
 		if(npc.m_flAbilityOrAttack0 <= gameTime)
         {
-			npc.m_flAbilityOrAttack0 = gameTime + 5.0;
+			npc.m_flAbilityOrAttack0 = gameTime + 1.0;
 			Agent_Smith_Cloner(npc, 1, RoundToCeil(15000.0 * MultiGlobalEnemy), 2.0);
         }
 	}
