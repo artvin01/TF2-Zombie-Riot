@@ -1650,7 +1650,7 @@ static void CitizenMenu(int client, int page = 0)
 	char points[32], healing[32], tanked[32];
 	IntToString(GetCitizenPoints(npc.index), points, sizeof(points));
 	ThousandString(points, sizeof(points));
-	IntToString(Damage_dealt_in_total[npc.index], buffer, sizeof(buffer));
+	IntToString(RoundFloat(Damage_dealt_in_total[npc.index]), buffer, sizeof(buffer));
 	ThousandString(buffer, sizeof(buffer));
 	IntToString(Healing_done_in_total[npc.index], healing, sizeof(healing));
 	ThousandString(healing, sizeof(points));
