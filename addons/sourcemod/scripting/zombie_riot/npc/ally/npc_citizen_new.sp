@@ -1647,12 +1647,22 @@ static void CitizenMenu(int client, int page = 0)
 
 	char buffer[64];
 
+	char points[32], healing[32], tanked[32];
+	IntToString(GetCitizenPoints(npc.index), points, sizeof(points));
+	ThousandString(points, sizeof(points));
+	IntToString(Damage_dealt_in_total[npc.index], buffer, sizeof(buffer));
+	ThousandString(buffer, sizeof(buffer));
+	IntToString(Healing_done_in_total[npc.index], healing, sizeof(healing));
+	ThousandString(healing, sizeof(points));
+	IntToString(i_PlayerDamaged[npc.index] + i_BarricadeHasBeenDamaged[npc.index], tanked, sizeof(tanked));
+	ThousandString(tanked, sizeof(tanked));
+
 	Menu menu = new Menu(CitizenMenuH);
-	menu.SetTitle("%t\n \n%t\n%t\n%t\n%t\n ", "Rebel",
-			"Total Score", GetCitizenPoints(npc.index),
-			"Damage Dealt", Damage_dealt_in_total[npc.index],
-			"Healing Done", Healing_done_in_total[npc.index],
-			"Damage Tanked", i_PlayerDamaged[npc.index] + i_BarricadeHasBeenDamaged[npc.index]);
+	menu.SetTitle("%t\n \n%t %s\n%t %s\n%t %s\n%t %s\n ", "Rebel",
+			"Total Score", points,
+			"Damage Dealt", buffer,
+			"Healing Done", healing,
+			"Damage Tanked", tanked);
 
 	switch(page)
 	{
