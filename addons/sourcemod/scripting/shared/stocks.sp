@@ -1338,8 +1338,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 #if defined ZR
 	if(healer != reciever && HealOverThisDuration != 0.0)
 	{
-		if(healer > 0 && healer <= MaxClients)
-			Healing_done_in_total[healer] += RoundToNearest(HealTotal);
+		Healing_done_in_total[healer] += RoundToNearest(HealTotal);
 	}
 #endif
 	if(HealOverThisDuration == 0.0)
@@ -1349,10 +1348,11 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		if(HealingDoneInt > 0)
 		{
 #if defined ZR
-		if(healer != reciever && healer <= MaxClients)
+		if(healer != reciever)
 		{
 			Healing_done_in_total[healer] += HealingDoneInt;
-			AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+			if(healer <= MaxClients)
+				AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
 		}
 #endif
 //only apply heal event if its not a passive self heal
@@ -1430,11 +1430,12 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	if(HealthHealed > 0)
 	{
 		ApplyHealEvent(entity, HealthHealed);	// Show healing number
-		if(healer > 0 && healer != entity && healer <= MaxClients)
+		if(healer > 0 && healer != entity)
 		{
 			Healing_done_in_total[healer] += HealthHealed;
 #if defined ZR
-			AddHealthToUbersaw(healer, HealthHealed, 0.0);
+			if(healer <= MaxClients)
+				AddHealthToUbersaw(healer, HealthHealed, 0.0);
 #endif
 		}
 	}

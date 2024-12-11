@@ -891,7 +891,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	health -= dmg;
 
 	int Owner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
-	if(Owner > 0 && Owner <= MaxClients)
+	if(Owner != -1)
 	{
 		i_BarricadeHasBeenDamaged[Owner] += dmg;
 	}

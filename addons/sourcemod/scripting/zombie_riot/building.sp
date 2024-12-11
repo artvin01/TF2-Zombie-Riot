@@ -205,8 +205,9 @@ void Building_ResetRewardValuesWave()
 	Zero(i_GiveAmmoSupplyLimit);
 }
 
-void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = true, float AmmoSupply = 0.0, bool SupplyLimit = true)
+void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit = true, float AmmoSupply = 0.0, bool SupplyLimit = true)
 {
+	int owner = trueOwner;
 	if(owner > MaxClients)
 		owner = client;
 	
@@ -253,7 +254,8 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 	if(ConvertedAmmoSupplyGive <= 0)
 		return;
 		
-	Resupplies_Supplied[owner] += ConvertedAmmoSupplyGive * 2;
+	Resupplies_Supplied[trueOwner] += ConvertedAmmoSupplyGive;
+	Resupplies_Supplied[owner] += ConvertedAmmoSupplyGive;
 	if(SupplyLimit)
 	{
 		if(i_GiveAmmoSupplyLimit[owner] < MAX_SUPPLIES_EACH_WAVE)
