@@ -340,6 +340,8 @@ stock bool ViewChange_IsViewmodelRef(int ref)
 		if(HandRef[client] == ref)
 			return true;
 	}
+
+	return false;
 }
 
 void ViewChange_Switch(int client, int active, const char[] classname)
