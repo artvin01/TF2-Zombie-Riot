@@ -4310,7 +4310,7 @@ public void Citizen_ClotThink(int iNPC)
 
 static bool CanOutRun(int entity, int target)
 {
-	return (view_as<CClotBody>(entity).GetRunSpeed() * 0.9) > view_as<CClotBody>(target).GetRunSpeed();
+	return (target <= MaxClients || (view_as<CClotBody>(entity).GetRunSpeed() * 0.9) > view_as<CClotBody>(target).GetRunSpeed());
 }
 
 void Citizen_MiniBossSpawn()
