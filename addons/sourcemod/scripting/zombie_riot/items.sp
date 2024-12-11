@@ -34,6 +34,7 @@ static const char Categories[][] =
 	"Ruina",
 	"Iberia Expidonsa Alliance",
 	"Whiteflower Specials",
+	"Victoria",
 	"Matrix"
 };
 
