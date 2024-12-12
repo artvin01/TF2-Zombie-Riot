@@ -1633,6 +1633,8 @@ static int GetCitizenPoints(int entity)
 	{
 		Points += i_PlayerDamaged[entity] / 5;
 	}
+	
+	Points /= 10;
 
 	return Points;
 }
