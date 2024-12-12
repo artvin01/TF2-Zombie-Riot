@@ -130,7 +130,7 @@ methodmap VictorianSquadleader < CClotBody
 	
 	public VictorianSquadleader(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianSquadleader npc = view_as<VictorianSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally));
+		VictorianSquadleader npc = view_as<VictorianSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -338,7 +338,7 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 				npc.FaceTowards(VecEnemy, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 								
 					target = TR_GetEntityIndex(swingTrace);	
@@ -365,7 +365,7 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 
 		if(gameTime > npc.m_flNextMeleeAttack)
 		{
-			if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+			if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
 									
@@ -387,7 +387,7 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
 		{
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 					
@@ -427,12 +427,12 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 				}
 				delete swingTrace;
 			}
-			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+			if(distance > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 			{
 				//target is too far, try to close in
 				return 0;
 			}
-			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
+			else if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
 			{
 				if(Can_I_See_Enemy_Only(npc.index, target))
 				{
@@ -444,12 +444,12 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 		}
 		else
 		{
-			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+			if(distance > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 			{
 				//target is too far, try to close in
 				return 0;
 			}
-			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
+			else if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
 			{
 				if(Can_I_See_Enemy_Only(npc.index, target))
 				{
@@ -461,12 +461,12 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 	}
 	else
 	{
-		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+		if(distance > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 		{
 			//target is too far, try to close in
 			return 0;
 		}
-		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
+		else if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
 		{
 			if(Can_I_See_Enemy_Only(npc.index, target))
 			{

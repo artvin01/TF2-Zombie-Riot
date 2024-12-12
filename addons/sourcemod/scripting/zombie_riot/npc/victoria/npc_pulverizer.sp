@@ -336,7 +336,7 @@ void VictorianPulverizerSelfDefense(VictorianPulverizer npc)
 		npc.PlayMinigunSound(true);
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 12.0, 1000.0, 150.0, "superrare_burning2", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 9.0, 1000.0, 150.0, "superrare_burning2", true);
 		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);

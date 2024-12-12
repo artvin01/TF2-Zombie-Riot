@@ -86,7 +86,7 @@ methodmap SeabornSpy < CClotBody
 	
 	public SeabornSpy(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornSpy npc = view_as<SeabornSpy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "2500", ally));
+		SeabornSpy npc = view_as<SeabornSpy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "5000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");

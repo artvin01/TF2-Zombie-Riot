@@ -1087,6 +1087,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		}
 		return 1;
 	}
+	/*
 	else if(npc.m_flTimeUntillNextRailgunShots < gameTime)
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
@@ -1121,6 +1122,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		}
 		
 	}
+	*/
 	else if(npc.m_flTimeUntillDroneSniperShot < gameTime)
 	{
 		if(npc.m_flNextRangedAttack < gameTime)
@@ -1338,7 +1340,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 	return 0;
 }
 
-
+/*
 static int HarrisonHitDetected[MAXENTITIES];
 
 static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
@@ -1477,7 +1479,7 @@ static bool Harrison_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
-
+*/
 static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 {
 	pack.Reset();
