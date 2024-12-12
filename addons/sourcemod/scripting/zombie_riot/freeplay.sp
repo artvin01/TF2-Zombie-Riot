@@ -186,6 +186,28 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Index = NPC_GetByPlugin("npc_ruina_twirl");
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
+			case 19:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_agent_thompson");
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 20:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_twins");
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "Im_The_raid;My_Twin";
+			}
+			case 21:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_agent_jackson");
+				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 22:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_agent_smith");
+				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "raid_time";
+			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
@@ -353,7 +375,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 
 	int rand = 6;
 	if((++RerollTry) < 4)
-		rand = GetURandomInt() % 62;
+		rand = GetURandomInt() % 66;
 	
 	char message[128];
 	switch(rand)
@@ -797,6 +819,26 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			strcopy(message, sizeof(message), "{red}The next enemy group will be Twirl! Killing awards 5k credits!");
 			RaidFight = 18;
+		}
+		case 62:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Agent Thompson! Killing awards 5k credits!");
+			RaidFight = 19;
+		}
+		case 63:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Twins! Killing awards 5k credits!");
+			RaidFight = 20;
+		}
+		case 64:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Agent Jackson! Killing awards 5k credits!");
+			RaidFight = 21;
+		}
+		case 65:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Agent Smith! Killing awards 5k credits!");
+			RaidFight = 22;
 		}
 		default:
 		{

@@ -358,7 +358,8 @@ methodmap CClotBody < CBaseCombatCharacter
 						bool IgnoreBuildings = false,
 						bool IsRaidBoss = false,
 						const float CustomThreeDimensions[3] = {0.0,0.0,0.0},
-						bool Ally_Collideeachother = false)
+						bool Ally_Collideeachother = false,
+						const float CustomThreeDimensionsextra[3] = {0.0,0.0,0.0})
 #endif
 	{
 
@@ -520,10 +521,21 @@ methodmap CClotBody < CBaseCombatCharacter
 			m_vecMaxs[0] = f3_CustomMinMaxBoundingBox[npc][0];
 			m_vecMaxs[1] = f3_CustomMinMaxBoundingBox[npc][1];
 			m_vecMaxs[2] = f3_CustomMinMaxBoundingBox[npc][2];
-
-			m_vecMins[0] = -f3_CustomMinMaxBoundingBox[npc][0];
-			m_vecMins[1] = -f3_CustomMinMaxBoundingBox[npc][1];
-			m_vecMins[2] = 0.0;
+			if(CustomThreeDimensionsextra[1] != 0.0)
+			{
+				m_vecMins[0] = CustomThreeDimensionsextra[0];
+				m_vecMins[1] = CustomThreeDimensionsextra[1];
+				m_vecMins[2] = CustomThreeDimensionsextra[2];
+			}
+			else
+			{
+				m_vecMins[0] = -f3_CustomMinMaxBoundingBox[npc][0];
+				m_vecMins[1] = -f3_CustomMinMaxBoundingBox[npc][1];
+				m_vecMins[2] = 0.0;
+			}
+			f3_CustomMinMaxBoundingBoxMinExtra[npc][0] = CustomThreeDimensionsextra[0];
+			f3_CustomMinMaxBoundingBoxMinExtra[npc][1] = CustomThreeDimensionsextra[1];
+			f3_CustomMinMaxBoundingBoxMinExtra[npc][2] = CustomThreeDimensionsextra[2];
 		}
 		//Fix collisions
 		
@@ -3630,13 +3642,13 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		MakeObjectIntangeable(pThis);
 		b_ThisEntityIgnored[pThis] = true;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
-	//Do not remove pather here.
+		//Do not remove pather here.
 		RemoveNpcFromEnemyList(pThis, true);
 		b_StaticNPC[pThis] = false;
 
 		if(!npc.m_bDissapearOnDeath)
 		{
-			if(!npc.m_bGib)
+			if((b_OnDeathExtraLogicNpc[pThis] & ZRNPC_DEATH_NOGIB) || !npc.m_bGib)
 			{
 				MakeEntityRagdollNpc(npc.index);
 			}
@@ -3654,12 +3666,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		Waves_UpdateMvMStats();
 #endif
 	}
-	/*
-	else
-	{	
-		SetNpcToDeadViaGib(pThis);
-	}
-	*/
 }
 
 
@@ -8386,6 +8392,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #endif
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
+	b_OnDeathExtraLogicNpc[entity] = 0;
 	f_DoNotUnstuckDuration[entity] = 0.0;
 	f_UnstuckTimerCheck[entity][0] = 0.0;
 	f_UnstuckTimerCheck[entity][1] = 0.0;
@@ -10610,7 +10617,7 @@ void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClien
 			Timer_Ingition_ReApply[target] = null;
 		}		
 		DataPack pack;
-		Timer_Ingition_ReApply[target] = CreateDataTimer(5.0, IgniteTimerVisual_Reignite, pack, TIMER_FLAG_NO_MAPCHANGE);
+		Timer_Ingition_ReApply[target] = CreateDataTimer(5.0, IgniteTimerVisual_Reignite, pack);
 		pack.WriteCell(target);
 		pack.WriteCell(EntIndexToEntRef(target));
 	}

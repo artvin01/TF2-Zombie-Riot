@@ -314,7 +314,7 @@ float f_BackstabHealTotal[MAXENTITIES];
 float f_BackstabBossDmgPenalty[MAXENTITIES];
 float f_BackstabBossDmgPenaltyNpcTime[MAXENTITIES][MAXTF2PLAYERS];
 float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
-float Damage_dealt_in_total[MAXTF2PLAYERS];
+float Damage_dealt_in_total[MAXENTITIES];
 int Animation_Setting[MAXTF2PLAYERS];
 int Animation_Index[MAXTF2PLAYERS];
 int Animation_Retry[MAXTF2PLAYERS];
@@ -360,8 +360,8 @@ int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
 float f_InBattleDelay[MAXENTITIES];
 
-int Healing_done_in_total[MAXTF2PLAYERS];
-int i_PlayerDamaged[MAXTF2PLAYERS];
+int Healing_done_in_total[MAXENTITIES];
+int i_PlayerDamaged[MAXENTITIES];
 bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarXpMultiplier;
@@ -699,9 +699,9 @@ float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 int i_SpecialGrigoriReplace;
 float f_TimeSinceLastGiveWeapon[MAXENTITIES]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
-int Resupplies_Supplied[MAXTF2PLAYERS];
+int Resupplies_Supplied[MAXENTITIES];
 bool b_LeftForDead[MAXTF2PLAYERS];
-int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
+int i_BarricadeHasBeenDamaged[MAXENTITIES];
 int i_CurrentEquippedPerkPreviously[MAXENTITIES];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
@@ -1229,6 +1229,7 @@ bool b_NoHealthbar[MAXENTITIES];
 //Arrays for npcs!
 int i_NoEntityFoundCount[MAXENTITIES]={0, ...};
 float f3_CustomMinMaxBoundingBox[MAXENTITIES][3];
+float f3_CustomMinMaxBoundingBoxMinExtra[MAXENTITIES][3];
 bool b_DissapearOnDeath[MAXENTITIES];
 bool b_IsGiant[MAXENTITIES];
 bool b_Pathing[MAXENTITIES];
@@ -1343,6 +1344,10 @@ float fl_HookDamageTaken[MAXENTITIES];
 float fl_ArmorSetting[MAXENTITIES][3];
 int i_ArmorSetting[MAXENTITIES][2];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
+
+int b_OnDeathExtraLogicNpc[MAXENTITIES];
+#define	ZRNPC_DEATH_NOHEALTH		( 1<<0 )	// Do not give health on kill!
+#define	ZRNPC_DEATH_NOGIB		( 1<<1 )	// Do not give health on kill!
 
 bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];

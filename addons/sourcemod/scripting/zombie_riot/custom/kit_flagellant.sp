@@ -203,7 +203,7 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 			{
 				float pos[3];
 				StartPlayerOnlyLagComp(client, true);
-				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
 				EndPlayerOnlyLagComp(client);
 
 				bool validAlly;
@@ -259,7 +259,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				b_LagCompNPC_No_Layers = true;
 				b_LagCompNPC_OnlyAllies = false;
 				StartLagCompensation_Base_Boss(client);
-				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, true);
 				FinishLagCompensation_Base_boss();
 
 				bool validEnemy;
@@ -401,7 +401,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
 	float pos[3];
-	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
 	EndPlayerOnlyLagComp(client);
 
 	bool validAlly;
@@ -535,7 +535,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
-	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, true);
 	FinishLagCompensation_Base_boss();
 
 	bool validEnemy;
@@ -613,7 +613,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
 	float pos[3];
-	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
 	EndPlayerOnlyLagComp(client);
 
 	bool validAlly;
@@ -726,7 +726,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 	b_LagCompNPC_OnlyAllies = false;
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
-	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, true);
 	FinishLagCompensation_Base_boss();
 
 	bool validEnemy;
@@ -877,13 +877,18 @@ static void TriggerDeathDoor(int client, int &healing)
 	}
 }
 
-static int GetClientPointVisiblePlayersNPCs(int iClient, float flDistance, float vecEndOrigin[3])
+int GetClientPointVisiblePlayersNPCs(int iClient, float flDistance, float vecEndOrigin[3], bool enemy)
 {
 	float vecOrigin[3], vecAngles[3];
 	GetClientEyePosition(iClient, vecOrigin);
 	GetClientEyeAngles(iClient, vecAngles);
 	
-	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientOrNPC, iClient);
+	Handle hTrace;
+	if(enemy)
+		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientOrNPCEnemy, iClient);
+	else
+		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientOrNPCAlly, iClient);
+	
 	TR_GetEndPosition(vecEndOrigin, hTrace);
 	
 	int iReturn = -1;
@@ -896,16 +901,42 @@ static int GetClientPointVisiblePlayersNPCs(int iClient, float flDistance, float
 	return iReturn;
 }
 
-public bool Trace_ClientOrNPC(int entity, int mask, any data)
+public bool Trace_ClientOrNPCEnemy(int entity, int mask, any data)
 {
 	if(entity == data)
 		return false;
 	
 	if(entity <= MaxClients)
-		return true;
+	{
+		if(IsValidEnemy(data, entity, true, true))
+			return true;
+	}
 	
 	if(!b_NpcHasDied[entity])
-		return true;
+	{
+		if(IsValidEnemy(data, entity, true, true))
+			return true;
+	}
+	
+	return false;
+}
+
+public bool Trace_ClientOrNPCAlly(int entity, int mask, any data)
+{
+	if(entity == data)
+		return false;
+	
+	if(entity <= MaxClients)
+	{
+		if(IsValidAlly(data, entity))
+			return true;
+	}
+	
+	if(!b_NpcHasDied[entity])
+	{
+		if(IsValidAlly(data, entity))
+			return true;
+	}
 	
 	return false;
 }

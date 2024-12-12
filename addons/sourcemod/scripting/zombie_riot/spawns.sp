@@ -99,7 +99,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 
 	int bestIndex = -1;
 	float bestPoints = 0.0;
-
+	bool SpawnWasDeleted = false;
 	int nonBossSpawners;
 	int length = SpawnerList.Length;
 	for(int i; i < length; i++)
@@ -140,6 +140,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 					SpawnerList.Erase(i);
 					i--; //we try again.
 					length--;
+					SpawnWasDeleted = true;
 					//EDIT:looks like deleting it is bad.
 					continue;
 				}
@@ -166,6 +167,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				SpawnerList.Erase(i);
 				i--; //we try again.
 				length--;
+				SpawnWasDeleted = true;
 				continue;
 			}
 
@@ -187,6 +189,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 						SpawnerList.Erase(i);
 						i--; //we try again.
 						length--;
+						SpawnWasDeleted = true;
 						continue;
 					}
 				}
@@ -202,7 +205,14 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	}
 
 	if(bestIndex == -1)
+	{
+		if(SpawnWasDeleted)
+		{
+			//Update all spawns.	
+			Spawners_Timer();
+		}
 		return false;
+	}
 	
 	SpawnerList.GetArray(bestIndex, spawn);
 	GetEntPropVector(spawn.EntRef, Prop_Data, "m_vecOrigin", pos);
@@ -257,6 +267,11 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	{
 		//never give spawnprotection if it spawns from an NPC.
 		spawnerSetting |= 1;
+	}
+	if(SpawnWasDeleted)
+	{
+		//Update all spawns.	
+		Spawners_Timer();
 	}
 	return true;
 }
@@ -341,7 +356,7 @@ void Spawners_Timer()
 		{
 			if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
 			{
-				PlayersGathered ++;
+				PlayersGathered++;
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
 
 				for(int index; index < length; index++)

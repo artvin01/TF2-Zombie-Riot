@@ -98,7 +98,7 @@ methodmap Pathshaper < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Pathshaper_OnTakeDamage;
 		func_NPCThink[npc.index] = Pathshaper_ClotThink;
 		
-		npc.m_flSpeed = 125.0;	// 0.5 x 250
+		npc.m_flSpeed = 250.0;	// 0.5 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -176,7 +176,7 @@ public void Pathshaper_ClotThink(int iNPC)
 					if(target > 0)
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 8000.0 : 400.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 8000.0 : 800.0, DMG_CLUB);
 						// 800 x 0.5
 
 						Custom_Knockback(npc.index, target, 750.0);

@@ -822,8 +822,14 @@ void NPC_ConfigSetup()
 	AgentThompson_OnMapStart_NPC();
 	Twin1_OnMapStart_NPC();
 	AgentSmith_OnMapStart_NPC();
-	
 
+	//Matrix Freeplay
+	AgentDaveFreeplay_OnMapStart_NPC();
+	AgentWayneFreeplay_OnMapStart_NPC();
+	AgentIanFreeplay_OnMapStart_NPC();
+	AgentSpencerFreeplay_OnMapStart_NPC();
+
+	//Victoria stuff? idfk, come back in 1.5 years and comment on it Beep
 	VictorianFactory_MapStart();
 	VictorianDroneFragments_MapStart();
 	VictorianDroneAnvil_MapStart();
@@ -1849,3 +1855,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/matrix/raids/npc_agentthompson.sp"
 #include "zombie_riot/npc/matrix/raids/npc_twins.sp"
 #include "zombie_riot/npc/matrix/raids/npc_agent_smith.sp"
+#include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentdave.sp"
+#include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentwayne.sp"
+#include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentian.sp"
+#include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentspencer.sp"

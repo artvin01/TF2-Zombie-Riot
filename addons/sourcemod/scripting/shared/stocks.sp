@@ -479,26 +479,6 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 	return iReturn;
 }
 
-stock int GetClientPointVisibleOnlyClient(int iClient, float flDistance = 100.0)
-{
-	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
-	GetClientEyePosition(iClient, vecOrigin);
-	GetClientEyeAngles(iClient, vecAngles);
-	
-
-	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_OnlyPlayer, iClient);
-	TR_GetEndPosition(vecEndOrigin, hTrace);
-	
-	int iReturn = -1;
-	int iHit = TR_GetEntityIndex(hTrace);
-	
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
-		iReturn = iHit;
-	
-	delete hTrace;
-	return iReturn;
-}
-
 stock void ShowGameText(int client, const char[] icon="leaderboard_streak", int color=0, const char[] buffer, any ...)
 {
 	char message[512];
@@ -1358,8 +1338,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 #if defined ZR
 	if(healer != reciever && HealOverThisDuration != 0.0)
 	{
-		if(healer > 0 && healer <= MaxClients)
-			Healing_done_in_total[healer] += RoundToNearest(HealTotal);
+		Healing_done_in_total[healer] += RoundToNearest(HealTotal);
 	}
 #endif
 	if(HealOverThisDuration == 0.0)
@@ -1369,10 +1348,11 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		if(HealingDoneInt > 0)
 		{
 #if defined ZR
-		if(healer != reciever && healer <= MaxClients)
+		if(healer != reciever)
 		{
 			Healing_done_in_total[healer] += HealingDoneInt;
-			AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+			if(healer <= MaxClients)
+				AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
 		}
 #endif
 //only apply heal event if its not a passive self heal
@@ -1450,11 +1430,12 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	if(HealthHealed > 0)
 	{
 		ApplyHealEvent(entity, HealthHealed);	// Show healing number
-		if(healer > 0 && healer != entity && healer <= MaxClients)
+		if(healer > 0 && healer != entity)
 		{
 			Healing_done_in_total[healer] += HealthHealed;
 #if defined ZR
-			AddHealthToUbersaw(healer, HealthHealed, 0.0);
+			if(healer <= MaxClients)
+				AddHealthToUbersaw(healer, HealthHealed, 0.0);
 #endif
 		}
 	}

@@ -16,11 +16,12 @@ static const char g_HurtSounds[][] = {
 	")physics/metal/metal_box_impact_bullet2.wav",
 	")physics/metal/metal_box_impact_bullet3.wav",
 };
-//int LighthouseID;
 /*
-int LighthouseGlobaID()
+int RadioMastID;
+
+int RadioMastGlobaID()
 {
-	return LighthouseID;
+	return RadioMastID;
 }
 */
 void VictoriaRadiomast_OnMapStart_NPC()
@@ -35,11 +36,10 @@ void VictoriaRadiomast_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
-	//LighthouseID = NPC_Add(data);
+	NPC_Add(data);
 	PrecacheModel(VictoriaRadiomast_MODEL_1);
 	PrecacheModel(VictoriaRadiomast_MODEL_2);
 	PrecacheModel(VictoriaRadiomast_MODEL_3);
-	NPC_Add(data);
 }
 
 
