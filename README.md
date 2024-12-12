@@ -20,14 +20,14 @@ Compile zombie_riot.sp for this.
 THIS CODE IS COMPRISED OF MULTIPLE CODERS JUST ADDING THEIR THINGS!
 SO HOW THIS CODE WORKS CAN HEAVILY VARY FROM FILE TO FILE!!!
 
-**YOU MUST USE SOURCEMOD 1.12 FOR THIS PLUGIN!!!!!!!!!!!!!!!**
-
 If you wish to use this plugin for your own server, please keep all the credits that are here or i WILL cry.
 Do not go above 14 players(you can have 32 slots, i recommend 16+) but dont allow more inside the plugin itself (Inside queue.sp), as the server doesnt support that interms of performance, the npc's are limited at 32 for a reason.
 The performance heavy things are Lagcompensation and pathfinder, but i tried to optimise those as much as i could.
 Most of the code is made towards client prediction to make the best experience.
 
-Use THIS compiler version if you dont want any wierd issues:
+if you for some ungodly reason need 100 player zr, grab the 100 player version, otherwise use the other version for more performance and less ram usage.
+
+Use THIS compiler version if you dont want any wierd issues when coding yourself:
 1.12.0.7163
 
 Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.

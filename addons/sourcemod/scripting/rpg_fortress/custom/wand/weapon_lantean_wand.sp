@@ -17,7 +17,6 @@ static float fl_hud_timer[MAXPLAYERS+1]={0.0, ...};
 static float fl_AimbotTimer[MAXPLAYERS+1]={0.0, ...};
 
 static float fl_lantean_Wand_Drone_Life[MAXENTITIES] = { 0.0, ... };
-static float fl_lantean_Wand_Drone_HitSafe[MAXENTITIES][MAXENTITIES];
 
 static int i_drone_targets_penetrated[MAXENTITIES] = { 0, ... };
 
