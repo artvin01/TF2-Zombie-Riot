@@ -378,22 +378,22 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 									Custom_Knockback(npc.index, targetTrace, 180.0, true);
 									if(!silenced)
 									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
 									}
 								}
 								else
 								{
 									if(!silenced)
 									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
 									}
 								}
 							}
 										
 							if(!Knocked)
-								Custom_Knockback(npc.index, targetTrace, 450.0, true); 
+								Custom_Knockback(npc.index, targetTrace, 225.0, true); 
 						} 
 					}
 				}
@@ -415,14 +415,10 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 			{
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 				float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-				npc.FaceTowards(vecTarget, 15000.0);
-				
-				// Can dodge bullets by moving
-				PredictSubjectPositionForProjectiles(npc, target, 400.0, _, vecTarget);
+				npc.FaceTowards(vecTarget, 150.0);
 				
 				float eyePitch[3], vecDirShooting[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-				npc.FaceTowards(vecTarget, 10000.0);
 				
 				vecTarget[2] += 15.0;
 				MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
@@ -457,7 +453,7 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "pistol");
 
-				float damage = 10.0;
+				float damage = 6.0;
 				damage *= RaidModeScaling;
 
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");

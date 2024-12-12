@@ -344,6 +344,7 @@ static void AgentSmith_ClotThink(int iNPC)
 		}
 		if(npc.m_flAbilityOrAttack0 <= gameTime)
         {
+			Smith_Timeslow(GetRandomFloat(1.0, 0.7), 3.0);
 			npc.m_flAbilityOrAttack0 = gameTime + 1.0;
 			Agent_Smith_Cloner(npc, 1, RoundToCeil(15000.0 * MultiGlobalEnemy), 2.0);
         }
@@ -1262,4 +1263,17 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
+}
+
+static void Smith_Timeslow(float amount = 1.0, float revert = 0.1)
+{
+    for(int i = 1; i <= MaxClients; i++)
+    {
+        if(IsClientInGame(i) && !IsFakeClient(i))
+        {
+            SendConVarValue(i, sv_cheats, "1");
+        }
+    }
+    cvarTimeScale.SetFloat(amount);
+    CreateTimer(revert, SetTimeBack);
 }
