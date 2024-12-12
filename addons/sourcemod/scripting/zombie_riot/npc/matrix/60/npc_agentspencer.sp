@@ -405,9 +405,10 @@ public Action AgentSpencer_OnTakeDamage(int victim, int &attacker, int &inflicto
 		if(fl_MatrixReflect[attacker] <= GetGameTime())
 		{
 			fl_MatrixReflect[attacker] = GetGameTime() + 1.0;
-			float parrydamage = GetRandomFloat(30.0, 50.0);
+			float parrydamage = GetRandomFloat(50.0, 60.0);
 			//damage *= 0.1;//how much the npc takes
-			
+
+			Elemental_AddCorruptionDamage(attacker, npc.index, npc.index ? 45 : 10);
 			SDKHooks_TakeDamage(attacker, npc.index, npc.index, parrydamage, DMG_CLUB, -1);
 		}
     }

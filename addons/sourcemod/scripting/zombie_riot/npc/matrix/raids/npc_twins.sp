@@ -518,7 +518,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 			{
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 				float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-				npc.FaceTowards(vecTarget, 15000.0);
+				npc.FaceTowards(vecTarget, 150.0);
 				
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
@@ -530,12 +530,9 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 					AcceptEntityInput(npc.m_iWearable1, "Enable");
 				}
-				// Can dodge bullets by moving
-				PredictSubjectPositionForProjectiles(npc, target, 400.0, _, vecTarget);
 				
 				float eyePitch[3], vecDirShooting[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-				npc.FaceTowards(vecTarget, 10000.0);
 				
 				vecTarget[2] += 15.0;
 				MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
@@ -562,7 +559,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "enforcer");
 
-				float damage = 12.0;
+				float damage = 8.0;
 				damage *= RaidModeScaling;
 
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");

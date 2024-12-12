@@ -44,7 +44,7 @@ static char g_RangedReloadSound[][] = {
 	"weapons/revolver_worldreload.wav",
 };
 
-void AgentDave_OnMapStart_NPC()
+void AgentDaveFreeplay_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -56,7 +56,7 @@ void AgentDave_OnMapStart_NPC()
 	PrecacheModel("models/player/engineer.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Agent Dave");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_dave");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_freeplay_agent_dave");
 	strcopy(data.Icon, sizeof(data.Icon), "matrix_engineer_reflect");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -69,9 +69,9 @@ static float fl_DodgeReflect[MAXENTITIES];
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentDave(client, vecPos, vecAng, ally);
+	return AgentDaveFreeplay(client, vecPos, vecAng, ally);
 }
-methodmap AgentDave < CClotBody
+methodmap AgentDaveFreeplay < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -117,9 +117,9 @@ methodmap AgentDave < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentDave(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentDaveFreeplay(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		AgentDave npc = view_as<AgentDave>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "700", ally));
+		AgentDaveFreeplay npc = view_as<AgentDaveFreeplay>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "700", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -137,9 +137,9 @@ methodmap AgentDave < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(AgentDave_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AgentDave_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(AgentDave_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AgentDaveFreeplay_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AgentDaveFreeplay_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AgentDaveFreeplay_ClotThink);
 		
 		
 		//IDLE
@@ -182,9 +182,9 @@ methodmap AgentDave < CClotBody
 	}
 }
 
-public void AgentDave_ClotThink(int iNPC)
+public void AgentDaveFreeplay_ClotThink(int iNPC)
 {
-	AgentDave npc = view_as<AgentDave>(iNPC);
+	AgentDaveFreeplay npc = view_as<AgentDaveFreeplay>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -218,7 +218,7 @@ public void AgentDave_ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTarget;
 	if(npc.m_flDead_Ringer_Invis < GetGameTime(npc.index) && npc.m_flDead_Ringer_Invis_bool)
 	{
-		AgentDave_Reflect_Disable(npc);
+		AgentDaveFreeplay_Reflect_Disable(npc);
 	}
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -398,22 +398,21 @@ public void AgentDave_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action AgentDave_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AgentDaveFreeplay_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker <= 0)
 	return Plugin_Continue;
 
-	AgentDave npc = view_as<AgentDave>(victim);
+	AgentDaveFreeplay npc = view_as<AgentDaveFreeplay>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flDead_Ringer_Invis >= gameTime)
     {
 		if(fl_MatrixReflect[attacker] <= GetGameTime())
 		{
-			fl_MatrixReflect[attacker] = GetGameTime() + 1.0;
-			float parrydamage = GetRandomFloat(20.0, 25.0);
+			fl_MatrixReflect[attacker] = GetGameTime() + 0.0;
+			float parrydamage = GetRandomFloat(25.0, 35.0);
 			//damage *= 0.1;//how much the npc takes
-
 			Elemental_AddCorruptionDamage(attacker, npc.index, npc.index ? 9 : 7);
 			SDKHooks_TakeDamage(attacker, npc.index, npc.index, parrydamage, DMG_CLUB, -1);
 		}
@@ -427,13 +426,13 @@ public Action AgentDave_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 
 	if(npc.m_flDead_Ringer < GetGameTime(npc.index) && !npc.m_flDead_Ringer_Invis_bool)
 	{
-		AgentDave_Reflect_Enable(npc);
+		AgentDaveFreeplay_Reflect_Enable(npc);
 	}
 	
 	return Plugin_Changed;
 }
 //did this for you so it's simpler to learn
-static void AgentDave_Reflect_Enable(AgentDave npc)
+static void AgentDaveFreeplay_Reflect_Enable(AgentDaveFreeplay npc)
 {
 	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.index, 0, 255, 0, 125);
@@ -457,7 +456,7 @@ static void AgentDave_Reflect_Enable(AgentDave npc)
 		SetParent(npc.index, npc.m_iWearable5);
 }
 
-static void AgentDave_Reflect_Disable(AgentDave npc)
+static void AgentDaveFreeplay_Reflect_Disable(AgentDaveFreeplay npc)
 {
 	AcceptEntityInput(npc.m_iWearable5, "Disable");
 	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -477,9 +476,9 @@ static void AgentDave_Reflect_Disable(AgentDave npc)
 		RemoveEntity(npc.m_iWearable5);
 }
 
-static void AgentDave_NPCDeath(int entity)
+static void AgentDaveFreeplay_NPCDeath(int entity)
 {
-	AgentDave npc = view_as<AgentDave>(entity);
+	AgentDaveFreeplay npc = view_as<AgentDaveFreeplay>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
