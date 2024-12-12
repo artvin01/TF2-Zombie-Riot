@@ -458,8 +458,9 @@ int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 
 //Used for any double arrays like lantean wand or health hose.
 float f_GlobalHitDetectionLogic[MAXENTITIES][MAXENTITIES];
+#if defined ZR
 bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
-
+#endif
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
