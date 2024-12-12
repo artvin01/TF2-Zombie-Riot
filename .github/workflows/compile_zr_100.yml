@@ -1,4 +1,4 @@
-name: Compile ZR
+name: Compile ZR 100 Player
 
 on:
   push:
