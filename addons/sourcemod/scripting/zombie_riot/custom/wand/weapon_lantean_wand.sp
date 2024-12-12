@@ -6,7 +6,6 @@ static float fl_hud_timer[MAXPLAYERS+1]={0.0, ...};
 static float fl_AimbotTimer[MAXPLAYERS+1]={0.0, ...};
 
 static float fl_lantean_Wand_Drone_Life[MAXENTITIES] = { 0.0, ... };
-static float fl_lantean_Wand_Drone_HitSafe[MAXENTITIES][MAXENTITIES];
 
 static int i_drone_targets_penetrated[MAXENTITIES] = { 0, ... };
 
@@ -49,7 +48,7 @@ public void Weapon_lantean_Wand_ClearAll()
 	Zero(fl_AimbotTimer);
 	Zero(fl_hud_timer);
 	Zero(fl_lantean_Wand_Drone_Life);
-	Zero2(fl_lantean_Wand_Drone_HitSafe);
+	Zero2(f_GlobalHitDetectionLogic);
 	Zero(fl_lantean_drone_life);
 	Zero(fl_targetshit);
 	Zero(b_is_lantean);
@@ -396,7 +395,7 @@ float time)
 	//Dont instantly collide for reasons.
 	for (int entity = 0; entity < MAXENTITIES; entity++)
 	{
-		fl_lantean_Wand_Drone_HitSafe[projectile][entity] = GameTimeExtra;
+		f_GlobalHitDetectionLogic[projectile][entity] = GameTimeExtra;
 	}
 	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 	SDKHook(projectile, SDKHook_Touch, lantean_Wand_Touch_World);//need collisions all the time!
@@ -487,11 +486,11 @@ public void lantean_Wand_Touch(int entity, int target)
 {
 	if (target > 0)	
 	{
-		if(fl_lantean_Wand_Drone_HitSafe[entity][target] > GetGameTime())
+		if(f_GlobalHitDetectionLogic[entity][target] > GetGameTime())
 		{
 			return;
 		}
-		fl_lantean_Wand_Drone_HitSafe[entity][target] = GetGameTime() + 0.3;
+		f_GlobalHitDetectionLogic[entity][target] = GetGameTime() + 0.3;
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);

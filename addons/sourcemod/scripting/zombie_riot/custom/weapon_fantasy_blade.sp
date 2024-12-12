@@ -67,7 +67,6 @@ public void Fantasy_Blade_MapStart()
 	Zero(fl_blade_swing_reload_time);
 	Zero(fl_teleport_recharge_time);
 	Zero(fl_hud_timer);
-	Zero2(fl_trace_target_timeout);
 	Zero(h_TimerFantasyManagement);
 	Zero(fl_Shard_Ammount);
 	ShortTeleportLaserIndex = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -954,9 +953,9 @@ static bool Fantasy_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity) && Fantasy_Blade_BEAM_BuildingHit[client]<=FANTASY_BLADE_MAX_PENETRATION)
 	{
-		if(fl_trace_target_timeout[client][entity]<=GetGameTime())
+		if(f_GlobalHitDetectionLogic[entity][client]<=GetGameTime())
 		{
-			fl_trace_target_timeout[client][entity] = GetGameTime() + 0.25;
+			f_GlobalHitDetectionLogic[entity][client] = GetGameTime() + 0.25;
 			Fantasy_Blade_BEAM_BuildingHit[client]++;
 			Fantasy_Blade_BEAM_HitDetected[entity] = true;
 		}
