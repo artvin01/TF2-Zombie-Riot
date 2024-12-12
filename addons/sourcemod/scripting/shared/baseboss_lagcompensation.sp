@@ -443,10 +443,20 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1, bool DoReset 
 						m_vecMaxs[0] = f3_CustomMinMaxBoundingBox[entity][0];
 						m_vecMaxs[1] = f3_CustomMinMaxBoundingBox[entity][1];
 						m_vecMaxs[2] = f3_CustomMinMaxBoundingBox[entity][2];
+						
+						if(f3_CustomMinMaxBoundingBoxMinExtra[entity][1] != 0.0)
+						{
+							m_vecMins[0] = f3_CustomMinMaxBoundingBoxMinExtra[entity][0];
+							m_vecMins[1] = f3_CustomMinMaxBoundingBoxMinExtra[entity][1];
+							m_vecMins[2] = f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
+						}
+						else
+						{
+							m_vecMins[0] = -f3_CustomMinMaxBoundingBox[entity][0];
+							m_vecMins[1] = -f3_CustomMinMaxBoundingBox[entity][1];
+							m_vecMins[2] = 0.0;
+						}
 
-						m_vecMins[0] = -f3_CustomMinMaxBoundingBox[entity][0];
-						m_vecMins[1] = -f3_CustomMinMaxBoundingBox[entity][1];
-						m_vecMins[2] = 0.0;
 					}
 
 					SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);

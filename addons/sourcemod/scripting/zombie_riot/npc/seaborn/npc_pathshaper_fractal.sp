@@ -100,7 +100,7 @@ methodmap PathshaperFractal < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = PathshaperFractal_ClotThink;
 		
-		npc.m_flSpeed = 100.0;	// 0.4 x 250
+		npc.m_flSpeed = 300.0;	// 0.4 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;

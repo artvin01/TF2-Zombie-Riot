@@ -132,7 +132,7 @@ methodmap KazimierzBeserker < CClotBody
 	
 	public KazimierzBeserker(float vecPos[3], float vecAng[3], int ally)
 	{
-		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "32500", ally,_, true));
+		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "70000", ally,_, true));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -285,7 +285,7 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 75.0;
+					float damage = 100.0;
 					
 					if(npc.m_flPercentageAngry == 1.0)
 					{

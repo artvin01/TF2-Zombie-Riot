@@ -358,7 +358,8 @@ methodmap CClotBody < CBaseCombatCharacter
 						bool IgnoreBuildings = false,
 						bool IsRaidBoss = false,
 						const float CustomThreeDimensions[3] = {0.0,0.0,0.0},
-						bool Ally_Collideeachother = false)
+						bool Ally_Collideeachother = false,
+						const float CustomThreeDimensionsextra[3] = {0.0,0.0,0.0})
 #endif
 	{
 
@@ -520,10 +521,21 @@ methodmap CClotBody < CBaseCombatCharacter
 			m_vecMaxs[0] = f3_CustomMinMaxBoundingBox[npc][0];
 			m_vecMaxs[1] = f3_CustomMinMaxBoundingBox[npc][1];
 			m_vecMaxs[2] = f3_CustomMinMaxBoundingBox[npc][2];
-
-			m_vecMins[0] = -f3_CustomMinMaxBoundingBox[npc][0];
-			m_vecMins[1] = -f3_CustomMinMaxBoundingBox[npc][1];
-			m_vecMins[2] = 0.0;
+			if(CustomThreeDimensionsextra[1] != 0.0)
+			{
+				m_vecMins[0] = CustomThreeDimensionsextra[0];
+				m_vecMins[1] = CustomThreeDimensionsextra[1];
+				m_vecMins[2] = CustomThreeDimensionsextra[2];
+			}
+			else
+			{
+				m_vecMins[0] = -f3_CustomMinMaxBoundingBox[npc][0];
+				m_vecMins[1] = -f3_CustomMinMaxBoundingBox[npc][1];
+				m_vecMins[2] = 0.0;
+			}
+			f3_CustomMinMaxBoundingBoxMinExtra[npc][0] = CustomThreeDimensionsextra[0];
+			f3_CustomMinMaxBoundingBoxMinExtra[npc][1] = CustomThreeDimensionsextra[1];
+			f3_CustomMinMaxBoundingBoxMinExtra[npc][2] = CustomThreeDimensionsextra[2];
 		}
 		//Fix collisions
 		
