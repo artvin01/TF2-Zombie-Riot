@@ -783,7 +783,7 @@ static void Matrix_Spawning(int entity, int count)
 	
 	Enemy enemy;
 	enemy.Index = NPC_GetByPlugin(name);
-	enemy.Health = ReturnEntityMaxHealth(entity);
+	enemy.Health = health;
 	enemy.Is_Outlined = false;
 	enemy.Is_Immune_To_Nuke = true;
 	//do not bother outlining.
