@@ -474,7 +474,7 @@ static void Thompsons_SelfDefense(AgentThompson npc, float gameTime, int target,
 				float damage = 4.0;
 				damage *= RaidModeScaling;
 
-				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");
 				
 				npc.PlayRangedSound();
 			}
