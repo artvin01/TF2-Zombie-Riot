@@ -308,6 +308,7 @@ stock bool Expidonsa_DontHealSameIndex(int entity, int victim, float &healingamm
 
 	return false;
 }
+#if defined ZR
 #define IBERIA_BARRACKS_COOLDOWN_HEAL 2.0
 stock bool IberiaBarracks_HealSelfLimitCD(int entity, int victim, float &healingammount)
 {
@@ -318,7 +319,6 @@ stock bool IberiaBarracks_HealSelfLimitCD(int entity, int victim, float &healing
 
 	return false;
 }
-#if defined ZR
 float ExpidonsanShieldBroke(int entity)
 {
 	return(f_Expidonsa_ShieldBroke[entity]);
