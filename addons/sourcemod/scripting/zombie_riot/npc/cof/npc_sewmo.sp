@@ -271,7 +271,7 @@ void SewmoSelfDefense(Sewmo npc, float gameTime, int target, float distance)
 				{
 					float damageDealt = 25.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 5.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
