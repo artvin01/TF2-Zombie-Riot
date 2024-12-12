@@ -411,7 +411,7 @@ public Action AgentWayneFreeplay_OnTakeDamage(int victim, int &attacker, int &in
 			fl_MatrixReflect[attacker] = GetGameTime() + 0.0;
 			float parrydamage = GetRandomFloat(35.0, 45.0);
 			//damage *= 0.1;//how much the npc takes
-			
+			Elemental_AddCorruptionDamage(attacker, npc.index, npc.index ? 25 : 10);
 			SDKHooks_TakeDamage(attacker, npc.index, npc.index, parrydamage, DMG_CLUB, -1);
 		}
     }
