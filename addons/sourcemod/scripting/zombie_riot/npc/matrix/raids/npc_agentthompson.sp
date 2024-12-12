@@ -567,13 +567,13 @@ public Action AgentThompson_OnTakeDamage(int victim, int &attacker, int &inflict
 	
 	if(attacker <= MaxClients && attacker > 0)
     {
-        switch(GetRandomInt(1, 4))
+        switch(GetRandomInt(1, 8))
         {
-            case 1,2:
+            case 1,2,3,4,5,6:
             {
                 
             }
-            case 3,4:
+            case 7,8:
             {
                 float chargerPos[3];
                 GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
