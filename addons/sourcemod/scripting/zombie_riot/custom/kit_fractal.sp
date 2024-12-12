@@ -786,10 +786,9 @@ void Fractal_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
 static void OnFantasiaHit(int client, int target, int damagetype, float damage)
 {
 	float GameTime = GetGameTime();
-		
-	if(fl_trace_target_timeout[client][target] < GameTime)
+	if(f_GlobalHitDetectionLogic[client][target] < GameTime)
 	{
-		fl_trace_target_timeout[client][target] = GameTime + 1.0;
+		f_GlobalHitDetectionLogic[client][target] = GameTime + 1.0;
 		float dps = fl_fantasia_damage[client]*fl_fantasia_targetshit[client];
 		fl_fantasia_targetshit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 		SDKHooks_TakeDamage(target, client, client, dps, DMG_PLASMA);
