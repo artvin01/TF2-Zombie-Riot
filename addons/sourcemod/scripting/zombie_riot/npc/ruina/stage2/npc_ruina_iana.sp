@@ -354,12 +354,12 @@ static void ClotThink(int iNPC)
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 			{
-				int amt_ion = (npc.Anger ? 30 : 15);
+				int amt_ion = (npc.Anger ? 20 : 10);
 				if(npc.m_iState < amt_ion)
 				{
-					npc.m_flNextRangedBarrage_Singular = GameTime + (npc.Anger ? 0.4 : 0.7);
+					npc.m_flNextRangedBarrage_Singular = GameTime + (npc.Anger ? 0.5 : 0.8);
 					npc.m_iState++;
-					float Time = (npc.Anger ? 0.6 : 1.0);
+					float Time = (npc.Anger ? 1.2 : 2.5);
 					float Predicted_Pos[3],
 					SubjectAbsVelocity[3];
 
@@ -371,7 +371,7 @@ static void ClotThink(int iNPC)
 					//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
 
 					float Radius = (npc.Anger ? 125.0 : 100.0);
-					float dmg = (npc.Anger ? 450.0 : 300.0);
+					float dmg = (npc.Anger ? 300.0 : 250.0);
 					int color[4]; Ruina_Color(color);
 
 					float Thickness = 6.0;
