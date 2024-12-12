@@ -67,7 +67,6 @@ void AgentSpencerFreeplay_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static float fl_DodgeReflect[MAXENTITIES];
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -84,11 +83,6 @@ methodmap AgentSpencerFreeplay < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	property float f_DodgeReflect
-	{
-		public get()							{ return fl_DodgeReflect[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_DodgeReflect[this.index] = TempValueForProperty; }
-	}
 	
 	public void PlayHurtSound() 
 	{
