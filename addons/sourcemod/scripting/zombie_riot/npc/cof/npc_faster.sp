@@ -25,7 +25,7 @@ static const char g_MeleeHitSounds[][] = {
 	"cof/faster/faster_hit3.mp3",
 };
 
-static float fl_DefaultSpeed_Faster = 250.0;
+static float fl_DefaultSpeed_Faster = 270.0;
 static float fl_DefaultSpeed_Faster_Nightmare = 300.0;
 static bool b_IsNightmare[MAXENTITIES];
 
@@ -139,7 +139,7 @@ methodmap Faster < CClotBody
 		
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 250.0;
+		npc.m_flSpeed = 270.0;
 
 		npc.m_bDissapearOnDeath = true;
 		
@@ -299,7 +299,7 @@ void FasterSelfDefense(Faster npc, float gameTime, int target, float distance)
 				{
 					float damageDealt = 30.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 5.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					if(npc.b_Nightmare)

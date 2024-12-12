@@ -289,7 +289,7 @@ void CrazyladySelfDefense(Crazylady npc, float gameTime, int target, float dista
 				{
 					float damageDealt = 30.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 5.0;
 
 					if(!NpcStats_IsEnemySilenced(npc.index))
 					{

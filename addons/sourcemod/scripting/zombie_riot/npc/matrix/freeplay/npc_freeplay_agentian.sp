@@ -2,28 +2,28 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/engineer_paincrticialdeath01.mp3",
-	"vo/engineer_paincrticialdeath02.mp3",
-	"vo/engineer_paincrticialdeath03.mp3",
+	"vo/heavy_paincrticialdeath01.mp3",
+	"vo/heavy_paincrticialdeath02.mp3",
+	"vo/heavy_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/engineer_painsharp01.mp3",
-	"vo/engineer_painsharp02.mp3",
-	"vo/engineer_painsharp03.mp3",
-	"vo/engineer_painsharp04.mp3",
-	"vo/engineer_painsharp05.mp3",
-	"vo/engineer_painsharp06.mp3",
-	"vo/engineer_painsharp07.mp3",
-	"vo/engineer_painsharp08.mp3",
+	"vo/heavy_painsharp01.mp3",
+	"vo/heavy_painsharp02.mp3",
+	"vo/heavy_painsharp03.mp3",
+	"vo/heavy_painsharp04.mp3",
+	"vo/heavy_painsharp05.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/engineer_taunts01.mp3",
-	"vo/taunts/engineer_taunts03.mp3",
-	"vo/taunts/engineer_taunts06.mp3",
-	"vo/taunts/engineer_taunts09.mp3",
+	"vo/taunts/heavy_taunts02.mp3",
+	"vo/taunts/heavy_taunts04.mp3",
+	"vo/taunts/heavy_taunts07.mp3",
+	"vo/taunts/heavy_taunts10.mp3",
+	"vo/taunts/heavy_taunts15.mp3",
+	"vo/taunts/heavy_taunts18.mp3",
 };
+
 
 static const char g_MeleeAttackSounds[][] = {
 	"player/taunt_yeti_standee_demo_swing.wav",
@@ -37,14 +37,14 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 static char g_RangedAttackSounds[][] = {
-	"weapons/revolver_shoot.wav",
+	"weapons/tf2_backshot_shotty.wav",
 };
 
 static char g_RangedReloadSound[][] = {
-	"weapons/revolver_worldreload.wav",
+	"weapons/shotgun_reload.wav",
 };
 
-void AgentDave_OnMapStart_NPC()
+void AgentIanFreeplay_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -53,11 +53,11 @@ void AgentDave_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	PrecacheModel("models/player/engineer.mdl");
+	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Agent Dave");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_dave");
-	strcopy(data.Icon, sizeof(data.Icon), "matrix_engineer_reflect");
+	strcopy(data.Name, sizeof(data.Name), "Agent Ian");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_freeplay_agent_ian");
+	strcopy(data.Icon, sizeof(data.Icon), "matrix_heavy_reflect");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Matrix;
@@ -69,9 +69,9 @@ static float fl_DodgeReflect[MAXENTITIES];
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentDave(client, vecPos, vecAng, ally);
+	return AgentIanFreeplay(client, vecPos, vecAng, ally);
 }
-methodmap AgentDave < CClotBody
+methodmap AgentIanFreeplay < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -117,19 +117,19 @@ methodmap AgentDave < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentDave(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentIanFreeplay(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		AgentDave npc = view_as<AgentDave>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "700", ally));
+		AgentIanFreeplay npc = view_as<AgentIanFreeplay>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "700", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iAttacksTillReload = 3;
+		npc.m_iAttacksTillReload = 9;
 
 		npc.m_fbGunout = false;
 
@@ -137,9 +137,9 @@ methodmap AgentDave < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(AgentDave_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AgentDave_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(AgentDave_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AgentIanFreeplay_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AgentIanFreeplay_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AgentIanFreeplay_ClotThink);
 		
 		
 		//IDLE
@@ -151,40 +151,29 @@ methodmap AgentDave < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_ambassador/c_ambassador_xmas.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_trenchgun/c_trenchgun.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/engineer/mullet_hat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/coupe_disaster.mdl");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/jul13_sweet_shades_s1/jul13_sweet_shades_s1_engineer.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop_partner/player/items/heavy/hm_shirt/hm_shirt.mdl");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum24_desk_engineer_style1/sum24_desk_engineer_style1.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/cc_summer2015_el_duderino/cc_summer2015_el_duderino.mdl");
 
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2015_roboot/hwn2015_roboot.mdl");
-
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 		
 		return npc;
 	}
 }
 
-public void AgentDave_ClotThink(int iNPC)
+public void AgentIanFreeplay_ClotThink(int iNPC)
 {
-	AgentDave npc = view_as<AgentDave>(iNPC);
+	AgentIanFreeplay npc = view_as<AgentIanFreeplay>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -218,7 +207,7 @@ public void AgentDave_ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTarget;
 	if(npc.m_flDead_Ringer_Invis < GetGameTime(npc.index) && npc.m_flDead_Ringer_Invis_bool)
 	{
-		AgentDave_Reflect_Disable(npc);
+		AgentIanFreeplay_Reflect_Disable(npc);
 	}
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -228,7 +217,7 @@ public void AgentDave_ClotThink(int iNPC)
 		{
 			if (!npc.m_bmovedelay)
 			{
-				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay = true;
 			}
@@ -271,7 +260,7 @@ public void AgentDave_ClotThink(int iNPC)
 			{
 				if (!npc.m_bmovedelay)
 				{
-					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 					npc.m_bmovedelay = true;
 				}
@@ -328,11 +317,11 @@ public void AgentDave_ClotThink(int iNPC)
 				
 				if(EscapeModeForNpc)
 				{
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 5.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 				}
 				else
 				{
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 5.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 				}
 				
 				npc.PlayRangedSound();
@@ -350,7 +339,7 @@ public void AgentDave_ClotThink(int iNPC)
 			{
 				if (!npc.m_flAttackHappenswillhappen)
 				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayMeleeSound();
 					npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
 					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 3.00;
@@ -370,9 +359,9 @@ public void AgentDave_ClotThink(int iNPC)
 						
 						if(target > 0) 
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
 
-							Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 9 : 7);
+							Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 35 : 10);
 							
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -398,26 +387,25 @@ public void AgentDave_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action AgentDave_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AgentIanFreeplay_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker <= 0)
 	return Plugin_Continue;
 
-	AgentDave npc = view_as<AgentDave>(victim);
+	AgentIanFreeplay npc = view_as<AgentIanFreeplay>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flDead_Ringer_Invis >= gameTime)
     {
 		if(fl_MatrixReflect[attacker] <= GetGameTime())
 		{
-			fl_MatrixReflect[attacker] = GetGameTime() + 1.0;
-			float parrydamage = GetRandomFloat(20.0, 25.0);
+			fl_MatrixReflect[attacker] = GetGameTime() + 0.0;
+			float parrydamage = GetRandomFloat(45.0, 55.0);
 			//damage *= 0.1;//how much the npc takes
-
-			Elemental_AddCorruptionDamage(attacker, npc.index, npc.index ? 9 : 7);
+			Elemental_AddCorruptionDamage(attacker, npc.index, npc.index ? 35 : 10);
 			SDKHooks_TakeDamage(attacker, npc.index, npc.index, parrydamage, DMG_CLUB, -1);
 		}
-    }
+	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -427,13 +415,13 @@ public Action AgentDave_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 
 	if(npc.m_flDead_Ringer < GetGameTime(npc.index) && !npc.m_flDead_Ringer_Invis_bool)
 	{
-		AgentDave_Reflect_Enable(npc);
+		AgentIanFreeplay_Reflect_Enable(npc);
 	}
 	
 	return Plugin_Changed;
 }
 //did this for you so it's simpler to learn
-static void AgentDave_Reflect_Enable(AgentDave npc)
+static void AgentIanFreeplay_Reflect_Enable(AgentIanFreeplay npc)
 {
 	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.index, 0, 255, 0, 125);
@@ -443,9 +431,7 @@ static void AgentDave_Reflect_Enable(AgentDave npc)
 	SetEntityRenderColor(npc.m_iWearable3, 0, 255, 0, 125);
 	SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable4, 0, 255, 0, 125);
-	SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(npc.m_iWearable6, 0, 255, 0, 125);
-	npc.m_flDead_Ringer_Invis = GetGameTime(npc.index) + 3.0;
+	npc.m_flDead_Ringer_Invis = GetGameTime(npc.index) + 5.0;
 	npc.m_flDead_Ringer = GetGameTime(npc.index) + 10.0;
 	npc.m_flDead_Ringer_Invis_bool = true;
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
@@ -457,7 +443,7 @@ static void AgentDave_Reflect_Enable(AgentDave npc)
 		SetParent(npc.index, npc.m_iWearable5);
 }
 
-static void AgentDave_Reflect_Disable(AgentDave npc)
+static void AgentIanFreeplay_Reflect_Disable(AgentIanFreeplay npc)
 {
 	AcceptEntityInput(npc.m_iWearable5, "Disable");
 	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -468,8 +454,6 @@ static void AgentDave_Reflect_Disable(AgentDave npc)
 	SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
 	SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-	SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 	npc.m_flDead_Ringer_Invis_bool = false;
 	npc.m_flMeleeArmor = 1.0;
 	npc.m_flRangedArmor = 1.0;
@@ -477,16 +461,14 @@ static void AgentDave_Reflect_Disable(AgentDave npc)
 		RemoveEntity(npc.m_iWearable5);
 }
 
-static void AgentDave_NPCDeath(int entity)
+static void AgentIanFreeplay_NPCDeath(int entity)
 {
-	AgentDave npc = view_as<AgentDave>(entity);
+	AgentIanFreeplay npc = view_as<AgentIanFreeplay>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
