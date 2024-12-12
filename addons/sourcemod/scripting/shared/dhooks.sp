@@ -232,6 +232,9 @@ public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
 	if(!IsValidEntity(pThis))     
 		return MRES_Ignored;
 
+	if(!IsClientInGame(pThis))
+		return MRES_Ignored;
+		
 	int active = GetEntPropEnt(pThis, Prop_Send, "m_hActiveWeapon");
 	if(active != -1)
 	{

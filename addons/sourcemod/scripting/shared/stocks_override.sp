@@ -562,3 +562,21 @@ bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int
 }
 
 #define AcceptEntityInput Stock_AcceptEntityInput
+
+stock void Stock_RemoveEntity(int entity)
+{
+	if(entity >= 0 && entity <= MaxClients)
+	{
+		ThrowError("Unintended RemoveEntity on entity %d.", entity);
+		return;
+	}
+
+	if(entity > MaxClients && entity < MAXENTITIES && ViewChange_IsViewmodelRef(EntIndexToEntRef(entity)))
+	{
+		LogStackTrace("Possible unintended RemoveEntity entity index leaking.");
+	}
+
+	RemoveEntity(entity);
+}
+
+#define RemoveEntity Stock_RemoveEntity

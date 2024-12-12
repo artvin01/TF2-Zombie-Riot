@@ -338,6 +338,7 @@ static void AgentSmith_ClotThink(int iNPC)
 		}
 		if(EntRefToEntIndex(i_Victim_Infection[npc.index]) > 0)
 		{
+			RaidModeTime += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
 			Smith_Infection(npc);
 			return;
 		}

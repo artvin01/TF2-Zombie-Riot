@@ -139,22 +139,22 @@ void ViewChange_ClientDisconnect(int client)
 	int entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(entity != -1)
 	{
-		TF2_RemoveWearable(client, entity);
 		i_Viewmodel_PlayerModel[client] = -1;
+		TF2_RemoveWearable(client, entity);
 	}
 	
 	entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);
 	if(entity != -1)
 	{
-		RemoveEntity(entity);
 		WeaponRef_viewmodel[client] = -1;
+		RemoveEntity(entity);
 	}
 	
 	entity = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 	if(entity != -1)
 	{
-		TF2_RemoveWearable(client, entity);
 		i_Worldmodel_WeaponModel[client] = -1;
+		TF2_RemoveWearable(client, entity);
 	}
 
 	ViewChange_DeleteHands(client);
@@ -324,20 +324,40 @@ void ViewChange_Update(int client, bool full = true)
 #endif
 }
 
+stock bool ViewChange_IsViewmodelRef(int ref)
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(i_Viewmodel_PlayerModel[client] == ref)
+			return true;
+		
+		if(WeaponRef_viewmodel[client] == ref)
+			return true;
+		
+		if(i_Worldmodel_WeaponModel[client] == ref)
+			return true;
+		
+		if(HandRef[client] == ref)
+			return true;
+	}
+
+	return false;
+}
+
 void ViewChange_Switch(int client, int active, const char[] classname)
 {
 	int entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);
 	if(entity != -1)
 	{
-		RemoveEntity(entity);
 		WeaponRef_viewmodel[client] = -1;
+		RemoveEntity(entity);
 	}
 	
 	entity = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 	if(entity != -1)
 	{
-		TF2_RemoveWearable(client, entity);
 		i_Worldmodel_WeaponModel[client] = -1;
+		TF2_RemoveWearable(client, entity);
 	}
 
 	entity = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
@@ -545,10 +565,10 @@ void MedicAdjustModel(int client)
 void ViewChange_DeleteHands(int client)
 {
 	int entity = EntRefToEntIndex(HandRef[client]);
+	HandRef[client] = INVALID_ENT_REFERENCE;
+
 	if(entity != -1)
 		RemoveEntity(entity);
-
-	HandRef[client] = INVALID_ENT_REFERENCE;
 }
 
 int ViewChange_UpdateHands(int client, TFClassType class)
@@ -577,7 +597,7 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 	return entity;
 }
 
-bool Viewchanges_NotAWearable(int client, int wearable)
+stock bool Viewchanges_NotAWearable(int client, int wearable)
 {
 	if(EntRefToEntIndex(HandRef[client]) == wearable)
 		return true;
