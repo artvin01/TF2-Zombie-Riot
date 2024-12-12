@@ -768,21 +768,22 @@ static void Matrix_Spawning(int entity, int count)
 	{
 		summon = GetRandomInt(7, 11);
 	}
-	if(wave >= 60)
+	if(wave >= 45)
 	{
 		summon = GetRandomInt(12, 16);
 	}
 
 	char name[255];
 	FormatEx(name, sizeof(name), "%s", g_Agent_Summons[summon]);
-
+	int health = ReturnEntityMaxHealth(entity);
+	if(b_thisNpcIsARaid[entity])
+	{
+		health = (ReturnEntityMaxHealth(entity)/100);
+	}
+	
 	Enemy enemy;
 	enemy.Index = NPC_GetByPlugin(name);
-	enemy.Health = ReturnEntityMaxHealth(entity);
-	if(enemy.Health >= 50000)
-	{
-  		enemy.Health = 50000;
-	}
+	enemy.Health = health;
 	enemy.Is_Outlined = false;
 	enemy.Is_Immune_To_Nuke = true;
 	//do not bother outlining.

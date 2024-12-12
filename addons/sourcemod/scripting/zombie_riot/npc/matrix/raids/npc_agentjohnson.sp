@@ -456,7 +456,7 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 				float damage = 6.0;
 				damage *= RaidModeScaling;
 
-				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");
 				
 				npc.PlayRangedSound();
 			}
