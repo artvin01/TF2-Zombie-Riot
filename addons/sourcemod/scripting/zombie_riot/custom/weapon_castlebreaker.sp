@@ -3,8 +3,13 @@
 static Handle h_TimerCastleBreakerWeaponManagement[MAXTF2PLAYERS] = {null, ...};
 static bool b_AbilityActivated[MAXTF2PLAYERS];
 static bool b_AbilityDone[MAXTF2PLAYERS];
-static bool Change[MAXPLAYERS];
+static bool Change[MAXTF2PLAYERS];
 static int i_VictoriaParticle[MAXTF2PLAYERS];
+static int CastleBreaker_WeaponPap[MAXTF2PLAYERS];
+static float CastleBreaker_HUDDelay[MAXTF2PLAYERS];
+
+static int CastleBreaker_Cylinder[MAXTF2PLAYERS];
+static float CastleBreaker_SoundsDelay[MAXTF2PLAYERS];
 
 void ResetMapStartCastleBreakerWeapon()
 {
@@ -14,6 +19,11 @@ void ResetMapStartCastleBreakerWeapon()
 void CastleBreaker_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
 	PrecacheSound("ambient/cp_harbor/furnace_1_shot_05.wav");
+	PrecacheSound("weapons/grenade_launcher_worldreload.wav");
+	PrecacheSound("weapons/syringegun_reload_air1.wav");
+	PrecacheSound("weapons/syringegun_reload_air2.wav");
+	PrecacheSound("weapons/sniper_railgun_world_reload.wav");
+	PrecacheSound("weapons/sniper_railgun_bolt_back.wav");
 }
 
 void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
@@ -25,7 +35,6 @@ void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &Cust
 		enemies_hit_aoe = 2; //hit 2 targets.
 	}
 }
-
 
 public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 {
@@ -53,17 +62,28 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 		Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
 	}
 
-	if(Change[client] == true)
+	if(Change[client])
 	{
+		int Ammo_Cost = 12;
 		int new_ammo = GetAmmo(client, 8); //rocket ammo
 		if(new_ammo < 12)
 		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			ClientCommand(client, "playgamesound weapons/shotgun_empty.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Ammo", Ammo_Cost);
+			Ability_Apply_Cooldown(client, 3, 5.0);
+			Change[client]=false;
+			DataPack pack;
+			CreateDataTimer(0.1, Timer_ChangeSound, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			pack.WriteCell(GetClientUserId(client));
+			pack.WriteCell(weapon);
+			pack.WriteCell(Change[client]);
 			return;
 		}
 		new_ammo -= 12;
 		SetAmmo(client, 8, new_ammo);
-		CurrentAmmo[client][8] = GetAmmo(client, 8);	
+		CurrentAmmo[client][8] = GetAmmo(client, 8);
 	}
 }
 
@@ -71,21 +91,18 @@ public void CastleBreaker_Modechange(int client, int weapon, bool crit, int slot
 {
 	if(IsValidEntity(client))
 	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0)
+		int Ammo_Cost = 12;
+		int new_ammo = GetAmmo(client, 8); //rocket ammo
+		if(new_ammo < 12)
 		{
-			Rogue_OnAbilityUse(weapon);
-			Ability_Apply_Cooldown(client, slot, 5.0);
-			EmitSoundToAll(SOUND_MES_CHANGE, client, SNDCHAN_AUTO, 65, _, 0.45, 115);
-			if(Change[client])
-			{
-				Change[client]=false;
-			}
-			else
-			{
-				Change[client]=true;
-			}
+			ClientCommand(client, "playgamesound weapons/shotgun_empty.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Ammo", Ammo_Cost);
+			Change[client]=false;
+			return;
 		}
-		else
+		if(Ability_Check_Cooldown(client, slot) > 0.0)
 		{
 			float Ability_CD = Ability_Check_Cooldown(client, slot);
 			if(Ability_CD <= 0.0)
@@ -94,8 +111,18 @@ public void CastleBreaker_Modechange(int client, int weapon, bool crit, int slot
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			return;
 		}
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, 5.0);
+		Change[client]=!Change[client];
+		CastleBreaker_Cylinder[client]=0;
+		DataPack pack;
+		CreateDataTimer(0.1, Timer_ChangeSound, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(weapon);
+		pack.WriteCell(Change[client]);
 	}
 }
 
@@ -187,7 +214,10 @@ public Action Timer_Management_CastleBreaker(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		CreateCastleBreakerEffect(client);
+		CastleBreaker_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
+		if(CastleBreaker_WeaponPap[client]!=0)
+			CreateCastleBreakerEffect(client);
+		else Change[client] = false;
 	}
 	else
 	{
@@ -201,9 +231,6 @@ public Action Timer_Management_CastleBreaker(Handle timer, DataPack pack)
 
 void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage, int weapon, int damagetype)
 {
-	if((damagetype & DMG_CLUB))
-		return;
-	
 	if(i_IsABuilding[victim])
 	{
 		damage *= 1.2;
@@ -216,30 +243,31 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 			damage *= 1.15;
 		}
 	}
-	if(Change[attacker] == true)
+	if(Change[attacker]&& (damagetype & DMG_CLUB))
 	{
 		damage *= 0.5;
+		static float angles[3];
+		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		float position[3];
+		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+		float spawnLoc[3];
+		float BaseDMG = 200.0;
+		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
+		float Radius = EXPLOSION_RADIUS;
+		Radius *= Attributes_Get(weapon, 99, 1.0);
+		float Falloff = Attributes_Get(weapon, 117, 1.0);
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+
+		Explode_Logic_Custom(BaseDMG, attacker, attacker, weapon, position, Radius, Falloff);
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime(weapon)+1.2);
+		SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime(attacker)+1.2);
+		
+		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, victim, 70,_, 0.9, 70);
+		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 	}
-	static float angles[3];
-	GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
-	float vecForward[3];
-	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-	float position[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
-	float spawnLoc[3];
-	float BaseDMG = 500.0;
-	BaseDMG *= Attributes_Get(weapon, 2, 1.0);
-	float Radius = EXPLOSION_RADIUS;
-	Radius *= Attributes_Get(weapon, 99, 1.0);
-	float Falloff = Attributes_Get(weapon, 117, 1.0);
-	float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-
-	Explode_Logic_Custom(BaseDMG, attacker, attacker, weapon, position, Radius, Falloff);
-	
-	EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, victim, 70,_, 0.9, 70);
-	ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 }
-
 void WeaponCastleBreaker_OnTakeDamage( int victim, float &damage)
 {
 	if(b_AbilityActivated[victim])
@@ -258,36 +286,97 @@ public Action Timer_Bool_CastleBreaker(Handle timer, any userid)
 void CreateCastleBreakerEffect(int client)
 {
 	int new_ammo = GetAmmo(client, 8);
-	if(Change[client] == true)
+	if(CastleBreaker_HUDDelay[client] < GetGameTime())
 	{
-		PrintHintText(client,"Mode: BLAST / Blast Shells: %i", new_ammo);
+		if(Change[client])
+			PrintHintText(client,"Mode: BLAST / Blast Shells: %i", new_ammo);
+		else
+			PrintHintText(client,"Mode: PIERCE / Blast Shells: %i", new_ammo);
+
+		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		CastleBreaker_HUDDelay[client] = GetGameTime() + 0.5;
 	}
-	else if(Change[client] == false)
+	if(b_AbilityActivated[client])
 	{
-		PrintHintText(client,"Mode: PIERCE / Blast Shells: %i", new_ammo);
+		int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+		if(!IsValidEntity(entity))
+		{
+			entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+			if(IsValidEntity(entity))
+			{
+				float flPos[3];
+				float flAng[3];
+				GetAttachment(entity, "eyeglow_l", flPos, flAng);
+				int particle = ParticleEffectAt(flPos, "eye_powerup_blue_lvl_3", 0.0);
+				AddEntityToThirdPersonTransitMode(entity, particle);
+				SetParent(entity, particle, "eyeglow_l");
+				i_VictoriaParticle[client] = EntIndexToEntRef(particle);
+			}
+		}
 	}
-	
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-	if(!IsValidEntity(i_VictoriaParticle[client]))
-	{
-		return;
-	}
-	DestroyCastleBreakerEffect(client);
-	
-	float flPos[3];
-	float flAng[3];
-	GetAttachment (client, "eyeglow_l", flPos, flAng);
-	int particle = ParticleEffectAt(flPos, "eye_powerup_blue_lvl_3", 0.0);
-	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(client, particle, "eyeglow_l");
-	i_VictoriaParticle[client] = EntIndexToEntRef(particle);
+	else
+		DestroyCastleBreakerEffect(client);
 }
 void DestroyCastleBreakerEffect(int client)
 {
 	int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
 	if(IsValidEntity(entity))
-	{
 		RemoveEntity(entity);
-	}
 	i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;
+}
+
+static Action Timer_ChangeSound(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
+	int weapon = pack.ReadCell();
+	bool GetMode = pack.ReadCell();
+	if(CastleBreaker_SoundsDelay[client] > GetGameTime())
+		return Plugin_Continue;
+	if(GetMode)
+	{
+		switch(CastleBreaker_Cylinder[client])
+		{
+			case 5:
+			{
+				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", client, SNDCHAN_AUTO, 65, _, 1.0, 115);
+				CastleBreaker_Cylinder[client]=0;
+				return Plugin_Stop;
+			}
+			default:
+			{
+				EmitSoundToAll("weapons/grenade_launcher_worldreload.wav", client, SNDCHAN_AUTO, 65, _, 0.8, 115);
+				CastleBreaker_Cylinder[client]++;
+				CastleBreaker_SoundsDelay[client] = GetGameTime() + (CastleBreaker_Cylinder[client]>5 ? 0.3 : 0.01);
+			}
+		}
+	}
+	else
+	{
+		switch(CastleBreaker_Cylinder[client])
+		{
+			case 0:
+			{
+				EmitSoundToAll("weapons/sniper_railgun_bolt_back.wav", client, SNDCHAN_AUTO, 65, _, 1.0, 115);
+				
+				CastleBreaker_Cylinder[client]++;
+				CastleBreaker_SoundsDelay[client] = GetGameTime() + 0.01;
+			}
+			case 1:
+			{
+				EmitSoundToAll("weapons/syringegun_reload_air2.wav", client, SNDCHAN_AUTO, 65, _, 0.8, 115);
+				CastleBreaker_Cylinder[client]++;
+				CastleBreaker_SoundsDelay[client] = GetGameTime() + 0.01;
+			}
+			default:
+			{
+				EmitSoundToAll("weapons/syringegun_reload_air1.wav", client, SNDCHAN_AUTO, 65, _, 0.8, 115);
+				CastleBreaker_Cylinder[client]=0;
+				return Plugin_Stop;
+			}
+		}
+	}
+	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime(weapon)+1.0);
+	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime(client)+1.0);
+	return Plugin_Continue;
 }

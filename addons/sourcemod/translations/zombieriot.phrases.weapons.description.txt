@@ -179,6 +179,11 @@
 		"fr"		"Archetype: Boucher Dégorgeur"
 		"chi"		"类型：血腥屠夫"
 	}
+	"Archetype Victoria"
+	{
+		"en"		"Archetype: Victoria"
+		"ko"		"유형: 빅토리아"
+	}
 
 	"Common Pap Damage Attack Speed Firearm Desc"
 	{
