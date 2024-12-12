@@ -411,9 +411,10 @@ public Action AgentDave_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		if(fl_MatrixReflect[attacker] <= GetGameTime())
 		{
 			fl_MatrixReflect[attacker] = GetGameTime() + 1.0;
-			float parrydamage = GetRandomFloat(10.0, 15.0);
+			float parrydamage = GetRandomFloat(20.0, 25.0);
 			//damage *= 0.1;//how much the npc takes
-				
+
+			Elemental_AddCorruptionDamage(attacker, npc.index, npc.index ? 9 : 7);
 			SDKHooks_TakeDamage(attacker, npc.index, npc.index, parrydamage, DMG_CLUB, -1);
 		}
     }
