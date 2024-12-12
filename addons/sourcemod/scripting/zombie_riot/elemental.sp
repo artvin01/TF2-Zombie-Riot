@@ -776,7 +776,7 @@ static void Matrix_Spawning(int entity, int count)
 	char name[255];
 	FormatEx(name, sizeof(name), "%s", g_Agent_Summons[summon]);
 	int health = ReturnEntityMaxHealth(entity);
-	if(b_ThisNpcIsARaid[entity])
+	if(b_thisNpcIsARaid[entity])
 	{
 		health = (ReturnEntityMaxHealth(entity)/100);
 	}
