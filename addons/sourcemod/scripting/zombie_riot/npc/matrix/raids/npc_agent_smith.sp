@@ -72,7 +72,7 @@ public void AgentSmith_OnMapStart_NPC()
 }
 static void ClotPrecache()
 {
-	PrecacheModel("models/zombie_riot/matrix/smith28.mdl");
+	PrecacheModel("models/zombie_riot/matrix/smith30.mdl");
 	PrecacheSound("#zombiesurvival/matrix/neodammerung.mp3");
 	PrecacheSound("weapons/physgun_off.wav");
 	PrecacheSoundArray(g_TeleDeathSound);
@@ -168,7 +168,7 @@ methodmap AgentSmith < CClotBody
 	public AgentSmith(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool raid = StrContains(data, "raid_time") != -1;
-		AgentSmith npc = view_as<AgentSmith>(CClotBody(vecPos, vecAng, "models/zombie_riot/matrix/smith28.mdl", raid ? "1.15" : "1.0", "30000", ally, false));
+		AgentSmith npc = view_as<AgentSmith>(CClotBody(vecPos, vecAng, "models/zombie_riot/matrix/smith30.mdl", raid ? "1.15" : "1.0", "30000", ally, false));
 		
 		if(raid)
 		{
@@ -207,6 +207,7 @@ methodmap AgentSmith < CClotBody
 		else if(clone)
 		{
 			npc.m_bFUCKYOU = true;
+			b_OnDeathExtraLogicNpc[npc.index] |= ZRNPC_DEATH_NOGIB;
 		}
 		else if(!raid && !clone)
 		{
@@ -214,6 +215,7 @@ methodmap AgentSmith < CClotBody
 			npc.m_bFUCKYOU = false;
 		}
 		float gameTime = GetGameTime(npc.index);
+		npc.m_flAbilityOrAttack0 = gameTime + 1.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		i_Victim_Infection[npc.index] = -1;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -336,9 +338,16 @@ static void AgentSmith_ClotThink(int iNPC)
 		}
 		if(EntRefToEntIndex(i_Victim_Infection[npc.index]) > 0)
 		{
+			RaidModeTime += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
 			Smith_Infection(npc);
 			return;
 		}
+		if(npc.m_flAbilityOrAttack0 <= gameTime)
+        {
+			Smith_Timeslow(GetRandomFloat(1.0, 0.7), 3.0);
+			npc.m_flAbilityOrAttack0 = gameTime + 1.0;
+			Agent_Smith_Cloner(npc, 1, RoundToCeil(15000.0 * MultiGlobalEnemy), 2.0);
+        }
 	}
 
 	if(npc.i_HitSwings)
@@ -447,6 +456,7 @@ static void RaidSmith_SelfDefense(AgentSmith npc, float gameTime, int target, fl
 							}
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+							Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 100 : 10);
 							//Reduce damage after dealing
 							damage *= 0.92;
 							// On Hit stuff
@@ -655,6 +665,11 @@ static void Smith_SelfDefense(AgentSmith npc, float gameTime, int target, float 
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damage = 90.0;
+					if(!npc.m_bFUCKYOU)
+					{
+						if(ShouldNpcDealBonusDamage(target))
+						damage *= 5.0;
+					}
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
@@ -865,7 +880,7 @@ static void Agent_CloningAmount(AgentSmith npc)
 	Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2);
 }
 
-static void Agent_Smith_Cloner(AgentSmith npc, int amount, int health)
+static void Agent_Smith_Cloner(AgentSmith npc, int amount, int health, float damage_mult = 1.0)
 {
 	Enemy enemy;
 	enemy.Index = smith_id;
@@ -878,7 +893,7 @@ static void Agent_Smith_Cloner(AgentSmith npc, int amount, int health)
 	enemy.ExtraMeleeRes = 1.0;
 	enemy.ExtraRangedRes = 1.0;
 	enemy.ExtraSpeed = 1.0;
-	enemy.ExtraDamage = 1.0;
+	enemy.ExtraDamage = damage_mult;
 	enemy.ExtraSize = 1.0;
 	enemy.Data = "clone";
     
@@ -919,10 +934,42 @@ static void PrepareSmith_Raid(AgentSmith npc)
 			ShowGameText(i, "item_armor", 1, "%s", "Agent Smith Arrived");
 		}
 	}
+	int victim = EntRefToEntIndex(i_Victim_Infection[npc.index]);
+	switch(CountPlayersOnRed(2))
+	{
+		case 2:
+		{
+			fl_Infection_Meter[victim] += 0.060;
+		}
+		case 3, 4:
+		{
+			fl_Infection_Meter[victim] += 0.070;
+		}
+		case 5, 6:
+		{
+			fl_Infection_Meter[victim] += 0.080;
+		}
+		case 7, 8:
+		{
+			fl_Infection_Meter[victim] += 0.085;
+		}
+		case 9, 10:
+		{
+			fl_Infection_Meter[victim] += 0.090;
+		}
+		case 11, 12:
+		{
+			fl_Infection_Meter[victim] += 0.095;
+		}
+		case 13, 14:
+		{
+			fl_Infection_Meter[victim] += 0.102;
+		}
+	}
 	i_NpcWeight[npc.index] = 4;
 	b_thisNpcIsARaid[npc.index] = true;
 	npc.m_bThisNpcIsABoss = true;
-	RaidModeTime = GetGameTime(npc.index) + 240.0;
+	RaidModeTime = GetGameTime(npc.index) + 245.0;
 	RaidBossActive = EntIndexToEntRef(npc.index);
 	RaidAllowsBuildings = false;
 	RaidModeScaling = float(ZR_GetWaveCount()+1);
@@ -1216,4 +1263,17 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
+}
+
+static void Smith_Timeslow(float amount = 1.0, float revert = 0.1)
+{
+    for(int i = 1; i <= MaxClients; i++)
+    {
+        if(IsClientInGame(i) && !IsFakeClient(i))
+        {
+            SendConVarValue(i, sv_cheats, "1");
+        }
+    }
+    cvarTimeScale.SetFloat(amount);
+    CreateTimer(revert, SetTimeBack);
 }

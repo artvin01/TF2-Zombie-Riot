@@ -86,7 +86,7 @@ methodmap Ursus < CClotBody
 	
 	public Ursus(float vecPos[3], float vecAng[3], int ally)
 	{
-		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "60000", ally));
+		Ursus npc = view_as<Ursus>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "80000", ally));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_RUN_MELEE");

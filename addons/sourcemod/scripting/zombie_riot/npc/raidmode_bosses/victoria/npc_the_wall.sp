@@ -1160,7 +1160,16 @@ static void Internal_NPCDeath(int entity)
 		if(IsValidEntity(MechanizedProtector[npc.index][i]))
 			RemoveEntity(MechanizedProtector[npc.index][i]);
 	}
-
+	for(int client_check=1; client_check<=MaxClients; client_check++)
+	{
+		if(IsValidClient(client_check) && Frozen_Player[client_check])
+		{
+			TF2_AddCondition(client_check, TFCond_LostFooting, 1.0);
+			TF2_AddCondition(client_check, TFCond_AirCurrent, 1.0);
+			SetEntityCollisionGroup(client_check, 5);
+			Frozen_Player[client_check]=false;
+		}
+	}
 	if(BlockLoseSay)
 		return;
 	switch(GetRandomInt(0,2))

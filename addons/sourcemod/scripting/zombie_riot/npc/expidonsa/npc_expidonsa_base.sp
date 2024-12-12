@@ -7,6 +7,7 @@
 
 
 #if defined ZR
+float f_HealCooldownSetDoGlobal[MAXENTITIES];
 int i_ExpidonsaEnergyEffect[MAXENTITIES][MAX_EXPI_ENERGY_EFFECTS];
 int i_ExpidonsaShieldCapacity[MAXENTITIES];
 int i_ExpidonsaShieldCapacity_Mini[MAXENTITIES];
@@ -29,6 +30,7 @@ stock void ExpidonsaRemoveEffects(int iNpc)
 
 void Expidonsa_SetToZero(int iNpc)
 {
+	f_HealCooldownSetDoGlobal[iNpc] = 0.0;
 	f_Expidonsa_ShieldBroke[iNpc] = 0.0;
 	i_ExpidonsaShieldCapacity[iNpc] = 0;
 	i_ExpidonsaShieldCapacity_Mini[iNpc] = 0;
@@ -307,6 +309,16 @@ stock bool Expidonsa_DontHealSameIndex(int entity, int victim, float &healingamm
 	return false;
 }
 #if defined ZR
+#define IBERIA_BARRACKS_COOLDOWN_HEAL 2.0
+stock bool IberiaBarracks_HealSelfLimitCD(int entity, int victim, float &healingammount)
+{
+	if(f_HealCooldownSetDoGlobal[victim] > GetGameTime())
+		return true;
+
+	f_HealCooldownSetDoGlobal[victim] = GetGameTime() + IBERIA_BARRACKS_COOLDOWN_HEAL;
+
+	return false;
+}
 float ExpidonsanShieldBroke(int entity)
 {
 	return(f_Expidonsa_ShieldBroke[entity]);

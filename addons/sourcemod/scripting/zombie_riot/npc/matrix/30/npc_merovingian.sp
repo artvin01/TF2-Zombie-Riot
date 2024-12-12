@@ -79,6 +79,16 @@ methodmap Merovingian < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
+	property float m_flSpawnSpawnpointCooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property int m_iMaxSpawnsSpawnAllow
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
 	
 	public void PlayHurtSound() 
 	{
@@ -135,6 +145,8 @@ methodmap Merovingian < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		npc.m_iMaxSpawnsSpawnAllow = 0;
+		npc.m_flSpawnSpawnpointCooldown = 0.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Merovingian_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Merovingian_OnTakeDamage);
@@ -374,8 +386,13 @@ public void Merovingian_ClotThink(int iNPC)
 								}
 								if(i_IsABuilding[target])
 								{
-								float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
-								Void_PlaceZRSpawnpoint(VecSelfNpcabs, 0, 2, "utaunt_poweraura_green_base", 5, false);
+									if(npc.m_flSpawnSpawnpointCooldown < GetGameTime() && npc.m_iMaxSpawnsSpawnAllow <= 10)
+									{
+										npc.m_iMaxSpawnsSpawnAllow++;
+										npc.m_flSpawnSpawnpointCooldown = GetGameTime() + 5.0;
+										float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+										Void_PlaceZRSpawnpoint(VecSelfNpcabs, 0, 2, "utaunt_poweraura_green_base", 10, false);
+									}
 								}
 							}
 						delete swingTrace;

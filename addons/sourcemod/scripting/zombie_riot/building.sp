@@ -205,8 +205,9 @@ void Building_ResetRewardValuesWave()
 	Zero(i_GiveAmmoSupplyLimit);
 }
 
-void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = true, float AmmoSupply = 0.0, bool SupplyLimit = true)
+void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit = true, float AmmoSupply = 0.0, bool SupplyLimit = true)
 {
+	int owner = trueOwner;
 	if(owner > MaxClients)
 		owner = client;
 	
@@ -223,7 +224,15 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		//affected by limit.
 		int MaxCashBuildings = MAX_CASH_VIA_BUILDINGS;
 		MaxCashBuildings += RoundToNearest(Attributes_FindOnPlayerZR(owner, Attrib_ExtendExtraCashGain, false, 0.0));
-		if(i_GiveCashBuilding[owner] < MaxCashBuildings)
+		//max cash overall should be 50000
+		int MaxBuildingCashAllow = CurrentCash / 7;
+		if(MaxBuildingCashAllow <= 1000)
+			MaxBuildingCashAllow = 1000;
+
+		if(MaxBuildingCashAllow >= MaxCashBuildings)
+			MaxBuildingCashAllow = MaxCashBuildings;
+
+		if(i_GiveCashBuilding[owner] < MaxBuildingCashAllow)
 		{
 			i_GiveCashBuilding[owner] += Cash;
 			GiveCredits(owner, Cash, true);
@@ -253,7 +262,8 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 	if(ConvertedAmmoSupplyGive <= 0)
 		return;
 		
-	Resupplies_Supplied[owner] += ConvertedAmmoSupplyGive * 2;
+	Resupplies_Supplied[trueOwner] += ConvertedAmmoSupplyGive;
+	Resupplies_Supplied[owner] += ConvertedAmmoSupplyGive;
 	if(SupplyLimit)
 	{
 		if(i_GiveAmmoSupplyLimit[owner] < MAX_SUPPLIES_EACH_WAVE)

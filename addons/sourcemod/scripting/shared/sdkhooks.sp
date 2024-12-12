@@ -691,7 +691,7 @@ public void OnPostThink(int client)
 		float attrib = Attributes_GetOnPlayer(client, 57, false) +
 				Attributes_GetOnPlayer(client, 190, false) +
 				Attributes_GetOnPlayer(client, 191, false);
-		
+				
 		if(attrib)
 		{
 			if(dieingstate[client] == 0)

@@ -370,10 +370,6 @@ int i_PreviousPointAmount[MAXTF2PLAYERS];
 
 bool WaitingInQueue[MAXTF2PLAYERS];
 
-int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 
 float MultiGlobalEnemy = 0.25;
@@ -417,6 +413,7 @@ bool b_SpecialGrigoriStore = true;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 int i_WaveHasFreeplay = 0;
+float fl_MatrixReflect[MAXENTITIES];
 
 
 #include "zombie_riot/npc.sp"	// Global NPC List
@@ -697,10 +694,6 @@ void ZR_MapStart()
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
-	Zero2(Armor_table_money_limit);
-	Zero2(i_Healing_station_money_limit);
-	Zero2(Perk_Machine_money_limit);
-	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero2(fl_blitz_ioc_punish_timer);
 	Zero(b_HideCosmeticsPlayer);
 	KahmlFistMapStart();
@@ -723,6 +716,7 @@ void ZR_MapStart()
 	Zero(f_WasRecentlyRevivedViaNonWaveClassChange);
 	Zero(f_TimeAfterSpawn);
 	Zero2(f_ArmorCurrosionImmunity);
+	Zero(fl_MatrixReflect);
 	Reset_stats_Irene_Global();
 	Reset_stats_PHLOG_Global();
 	Irene_Map_Precache();
@@ -1569,7 +1563,6 @@ public Action Timer_Dieing(Handle timer, int client)
 	
 	return Plugin_Stop;
 }
-
 
 public void Spawn_Bob_Combine(int client)
 {

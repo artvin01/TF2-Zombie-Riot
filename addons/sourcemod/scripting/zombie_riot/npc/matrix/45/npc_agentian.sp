@@ -65,7 +65,6 @@ void AgentIan_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static float fl_DodgeReflect[MAXENTITIES];
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -82,11 +81,6 @@ methodmap AgentIan < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	property float f_DodgeReflect
-	{
-		public get()							{ return fl_DodgeReflect[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_DodgeReflect[this.index] = TempValueForProperty; }
-	}
 	
 	public void PlayHurtSound() 
 	{
@@ -397,16 +391,16 @@ public Action AgentIan_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flDead_Ringer_Invis >= gameTime)
     {
-        float parrydamage = GetRandomFloat(50.0, 75.0);
-        damage *= 0.1;//how much the npc takes
-        //if the victim on purpose deals that little to trigger parry damage gets boosted
-		//if(parrydamage < 3.99 || parrydamage < 7.99)
-		//	parrydamage *= 10.0;
-		//if(parrydamage < 25.99)
-		//	parrydamage *= 4.0;
-        
-       	SDKHooks_TakeDamage(attacker, npc.index, npc.index, parrydamage, DMG_CLUB, -1);
-    }
+		if(fl_MatrixReflect[attacker] <= GetGameTime())
+		{
+			fl_MatrixReflect[attacker] = GetGameTime() + 1.0;
+			float parrydamage = GetRandomFloat(40.0, 50.0);
+			//damage *= 0.1;//how much the npc takes
+
+			Elemental_AddCorruptionDamage(attacker, npc.index, npc.index ? 35 : 10);
+			SDKHooks_TakeDamage(attacker, npc.index, npc.index, parrydamage, DMG_CLUB, -1);
+		}
+	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -438,6 +432,8 @@ static void AgentIan_Reflect_Enable(AgentIan npc)
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	vecMe[2] += 50.0;
 	npc.m_iWearable5 = ParticleEffectAt(vecMe, "powerup_icon_reflect", -1.0);
+	npc.m_flMeleeArmor = 0.1;
+	npc.m_flRangedArmor = 0.1;
 	if(IsValidEntity(npc.m_iWearable5))
 		SetParent(npc.index, npc.m_iWearable5);
 }
@@ -454,6 +450,8 @@ static void AgentIan_Reflect_Disable(AgentIan npc)
 	SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 	npc.m_flDead_Ringer_Invis_bool = false;
+	npc.m_flMeleeArmor = 1.0;
+	npc.m_flRangedArmor = 1.0;
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 }

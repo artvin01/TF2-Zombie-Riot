@@ -1191,6 +1191,16 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		GiveRageOnDamage(attacker, Damageaftercalc);
 		Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
 	}
+	else
+	{
+		float damageCalc = Damageaftercalc;
+		int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+		if(Health <= 0)
+		{
+			damageCalc += Health;
+		}
+		Damage_dealt_in_total[attacker] += damageCalc;
+	}
 	OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 #endif
 

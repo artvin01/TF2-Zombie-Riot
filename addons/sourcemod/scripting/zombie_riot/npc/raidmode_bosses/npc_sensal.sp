@@ -963,7 +963,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			{
 				npc.m_flReloadIn = gameTime + 1.5;
 				npc.SetPlaybackRate(2.0);
-				npc.m_flAngerDelay = gameTime + 30.0;
+				npc.m_flAngerDelay = gameTime + 45.0;
 			}
 
 		}
