@@ -3592,18 +3592,21 @@
 		"en"	"The pride of Victoria. A mortar that deals more damage the longer it travels, upto 1 second. \nSlow attack speed and grants heavy ranged resistance.\nYou will be vulnerable to melee damage."
 		"fr"	"Un mortier qui fais plus de dégats avec le temps pris pour frapper une cible.\nCadence de tir lente.\nRésistance contre les attaques à distance, mais donne une vulnérabilité contre les attaques corps-à-corps.\nLa fierté de Victoria."
 		"chi"	"维多利亚的骄傲。\n随着距离增加伤害的迫击炮。上限为1秒。\n装备时大幅度增加远程抗性，减少近战抗性。\n低射速。"
+		"ko"	"빅토리아의 자랑. 투사체 비행 시간이 길어질수록 데미지가 커지는 박격포로, 최대 1초까지 지속됩니다.\n공격 속도가 느리고 원거리 피해 저항력이 강합니다.\n근접 피해에 취약해집니다."
 	}
 	"Victorian 2 Desc"
 	{
 		"en"	"Increased damage, ranged res, and firing speed. \nNew abiity - Charged Shot: Press M2 to load up 10 powerful shells. \nWhen reaching 5, you will be able to fire all remaining shells.\n Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
 		"chi"	"增加伤害，远程抗性，以及射速。\n新技能：[M2]蓄力炮：长按M2填装炮弹，上限10发\n填入5发后可发射所有炮弹。\n[警告]发射后武器将会过热，会扣除自身血量，并且武器一段时间内将无法使用。"
+		"ko"	"피해량 증가, 원거리 피해 저항, 발사 속도 증가.\n새로운 능력(M2) - 충전 사격: 강력한 포탄 10개를 장전합니다.\n5개에 도달하면 남은 포탄을 모두 발사할 수 있습니다.\n경고! 체력을 잃고 무기가 과열되어 잠시 로켓을 쏠 수 없습니다."
 	}
 	"Victorian 3 Desc"
 	{
 		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
 		"chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
+		"ko"	"빅토리아의 영광스러운 창.\n피해량과 원거리 피해 저항이 증가.\n새로운 능력 - 폭격: 30초 동안 공격 속도가 엄청나게 짧아지고 15초 후에는 피해량도 증가합니다.\n 경고! 15초 후에 체력이 감소하기 시작합니다."
 	}
 	"VictorianLauncher Desc Extra"
 	{
