@@ -59,6 +59,9 @@ static const char g_IdleAlertedSounds[][] = {
 static const char g_RangedAttackSounds[][] = {
 	"weapons/capper_shoot.wav",
 };
+static const char g_RangedAttackSoundsPrepare[][] = {
+	"weapons/cow_mangler_over_charge_shot.wav",
+};
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/machete_swing.wav",
 };
@@ -136,6 +139,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RangedAttackSoundsPrepare)); i++) { PrecacheSound(g_RangedAttackSoundsPrepare[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MG42AttackSounds)); i++) { PrecacheSound(g_MG42AttackSounds[i]); }
 	PrecacheSound(g_DronShotHitSounds);
@@ -240,13 +244,18 @@ methodmap Harrison < CClotBody
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
 	}
+	public void PlayRangedSoundPrepare()
+	{
+		EmitSoundToAll(g_RangedAttackSoundsPrepare[GetRandomInt(0, sizeof(g_RangedAttackSoundsPrepare) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 140);
+		EmitSoundToAll(g_RangedAttackSoundsPrepare[GetRandomInt(0, sizeof(g_RangedAttackSoundsPrepare) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 140);
+	}
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayGunSound()
 	{
-		EmitSoundToAll(g_MG42AttackSounds[GetRandomInt(0, sizeof(g_MG42AttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
+		EmitSoundToAll(g_MG42AttackSounds[GetRandomInt(0, sizeof(g_MG42AttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 85);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -255,7 +264,7 @@ methodmap Harrison < CClotBody
 	}
 	public void PlayLaserBeamSound()
 	{
-		EmitSoundToAll(g_LaserBeamSounds[GetRandomInt(0, sizeof(g_LaserBeamSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80,125));
+		EmitSoundToAll(g_LaserBeamSounds[GetRandomInt(0, sizeof(g_LaserBeamSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
 	}
 	property float m_flTimeUntillSummonRocket
 	{
@@ -287,6 +296,11 @@ methodmap Harrison < CClotBody
 		public get()							{ return i_AmountProjectiles[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
 	}
+	property int m_iCurrentAbilityDo
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
 
 	public Harrison(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -302,6 +316,7 @@ methodmap Harrison < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_iCurrentAbilityDo = -1;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -742,6 +757,10 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_iChanged_WalkCycle = 0;
 					f_VictorianCallToArms[npc.index] = GetGameTime(npc.index) + 999.0;
+					
+					npc.m_flSpeed = 300.0;
+					if(IsValidEntity(npc.m_iWearable8))
+						RemoveEntity(npc.m_iWearable8);
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flTimeUntillDroneSniperShot += 4.0;
 					npc.m_flTimeUntillNextRailgunShots += 4.0;
@@ -1026,14 +1045,14 @@ static void HarrisonAnimationChange(Harrison npc)
 
 static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float distance)
 {
-	if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+	if(npc.m_flNextRangedSpecialAttackHappens < gameTime && (npc.m_iCurrentAbilityDo == -1 || npc.m_iCurrentAbilityDo == 1))
 	{
 		bool playsounds=false;
 		switch(I_cant_do_this_all_day[npc.index])
 		{
 			case 0:
 			{
-				
+				npc.m_iCurrentAbilityDo = 1;
 				switch(GetRandomInt(1, 4))
 				{
 					case 1:CPrintToChatAll("{skyblue}Harrison{default}: Do you think I would miss?");
@@ -1078,83 +1097,114 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 			}
 			case 2:
 			{
+				npc.m_iCurrentAbilityDo = -1;
 				if(playsounds)npc.PlayHomerunSound();
 				I_cant_do_this_all_day[npc.index]=0;
 				npc.m_flTimeUntillSummonRocket = 0.0;
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 30.0;
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 12.0;
 				npc.m_flTimeUntillNextRailgunShots = gameTime + 2.0;
 			}
 		}
 		return 1;
 	}
-	/*
-	else if(npc.m_flTimeUntillNextRailgunShots < gameTime)
+	else if(npc.m_flTimeUntillNextRailgunShots < gameTime && (npc.m_iCurrentAbilityDo == -1 || npc.m_iCurrentAbilityDo == 2))
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float projectile_speed = 800.0;
 
 		npc.PlayLaserBeamSound();
 
-		npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
-
 		PredictSubjectPositionForProjectiles(npc, target, projectile_speed, 40.0, vecTarget);
 		if(!Can_I_See_Enemy_Only(npc.index, target)) //cant see enemy in the predicted position, we will instead just attack normally
 		{
 			WorldSpaceCenter(target, vecTarget );
 		}
+		npc.m_iCurrentAbilityDo = 2;
 
+		npc.m_flSpeed = 100.0;
 		float flPos[3];
 		float flAng[3];
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
+		
+		if(!IsValidEntity(npc.m_iWearable8))
+		{
+			npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
+		}
 		//float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-		if(npc.m_iOverlordComboAttack < 6)
+		if(npc.m_iOverlordComboAttack < 12)
 		{
 			npc.m_iOverlordComboAttack += 1;
 			HarrisonInitiateLaserAttack(npc.index, vecTarget, flPos); //laser finger!
 			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flTimeUntillNextRailgunShots = gameTime + 0.5;
+			npc.m_flTimeUntillNextRailgunShots = gameTime + 0.25;
 		}
 		else
 		{
-			npc.m_flTimeUntillNextRailgunShots = gameTime + 22.5;
+			if(IsValidEntity(npc.m_iWearable8))
+			{
+				RemoveEntity(npc.m_iWearable8);
+			}
+			npc.m_iCurrentAbilityDo = -1;
+			npc.m_flSpeed = 300.0;
+			npc.m_flTimeUntillNextRailgunShots = gameTime + 18.5;
 			npc.m_iOverlordComboAttack = 0;
 		}
 	}
-	*/
-	else if(npc.m_flTimeUntillDroneSniperShot < gameTime)
+	else if(npc.m_flTimeUntillDroneSniperShot < gameTime && (npc.m_iCurrentAbilityDo == -1 || npc.m_iCurrentAbilityDo == 3))
 	{
 		if(npc.m_flNextRangedAttack < gameTime)
 		{	
+			npc.m_iCurrentAbilityDo = 3;
 			npc.m_iAmountProjectiles += 1;
+			npc.m_flSpeed = 200.0;
 			npc.m_flNextRangedAttack = gameTime + 0.1;
-			npc.PlayRangedSound();
 
 			float flPos[3], flAng[3];
-					
+						
 			npc.GetAttachment("head", flPos, flAng);
-
-			//float flPos[3]; GetEntPropVector(npc.index, Prop_Data, "head", flPos);
 			float flPosEdit[3]; 
 			flPosEdit = flPos;
 			flPosEdit[0] += 15.0;
 			flPosEdit[1] += 25.0;
 			flPosEdit[2] += 5.0;
 
-			float RocketSpeed = 900.0;
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			float vecDest[3];
-			vecDest = vecTarget;
-			vecDest[0] += GetRandomFloat(-50.0, 50.0);
-			vecDest[1] += GetRandomFloat(-50.0, 50.0);
-			vecDest[2] += GetRandomFloat(-50.0, 50.0);
-
-			int DronShot = npc.FireParticleRocket(vecDest, 0.0, RocketSpeed, 0.0, "raygun_projectile_blue_crit", true,_, true, flPosEdit);
-			SDKUnhook(DronShot, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-			SDKHook(DronShot, SDKHook_StartTouch, Dron_Laser_Particle_StartTouch);
-			
-			if (npc.m_iAmountProjectiles >= 15)
+			if (npc.m_iAmountProjectiles == 1)
 			{
+				if(!IsValidEntity(npc.m_iWearable8))
+				{
+					npc.m_iWearable8 = ParticleEffectAt(flPosEdit, "raygun_projectile_blue_crit", -1.0);
+					SetParent(npc.index, npc.m_iWearable8);
+				}
+				npc.PlayRangedSoundPrepare();
+			}
+
+			if (npc.m_iAmountProjectiles >= 10)
+			{
+				npc.PlayRangedSound();
+
+				float RocketSpeed = 1200.0;
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+				float vecDest[3];
+				vecDest = vecTarget;
+				vecDest[0] += GetRandomFloat(-50.0, 50.0);
+				vecDest[1] += GetRandomFloat(-50.0, 50.0);
+				vecDest[2] += GetRandomFloat(-50.0, 50.0);
+				int DronShot = npc.FireParticleRocket(vecDest, 0.0, RocketSpeed, 0.0, "raygun_projectile_blue_crit", true,_, true, flPosEdit);
+				SDKUnhook(DronShot, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+				SDKHook(DronShot, SDKHook_StartTouch, Dron_Laser_Particle_StartTouch);
+			}
+		
+	
+			
+			if (npc.m_iAmountProjectiles >= 35)
+			{
+				if(IsValidEntity(npc.m_iWearable8))
+				{
+					RemoveEntity(npc.m_iWearable8);
+				}
+				npc.m_iCurrentAbilityDo = -1;
+				npc.m_flSpeed = 300.0;
 				npc.m_iAmountProjectiles = 0;
 				npc.m_flTimeUntillDroneSniperShot = gameTime + 15.0;
 			}
@@ -1199,7 +1249,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 					damage *= 100000.0 / distance;	// Lower damage based on distance
 				
 				damage *= 3.5;
-				FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
+				FireBullet(npc.index, npc.m_iWearable2, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
 				npc.m_flNextMeleeAttack = gameTime + 0.1;
 				npc.m_iAttacksTillReload -= 1;
 			}
@@ -1252,13 +1302,13 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 									{
 										if(target > MaxClients)
 										{
-											StartBleedingTimer_Against_Client(target, npc.index, 15.0, 10);
+											StartBleedingTimer_Against_Client(target, npc.index, damage * 0.1, 4);
 										}
 										else
 										{
 											if (!IsInvuln(target))
 											{
-												StartBleedingTimer_Against_Client(target, npc.index, 15.0, 10);
+												StartBleedingTimer_Against_Client(target, npc.index, damage * 0.1, 4);
 											}
 										}
 									}
@@ -1339,7 +1389,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 	return 0;
 }
 
-/*
+
 static int HarrisonHitDetected[MAXENTITIES];
 
 static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
@@ -1368,20 +1418,20 @@ static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float
 	int green = 200;
 	int blue = 200;
 	int colorLayer4[4];
-	float diameter = float(12 * 4);
-	SetColorRGBA(colorLayer4, red, green, blue, 150);
+	float diameter = float(5 * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, 200);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
 	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Combine_Black, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
 	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.4, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Combine_Black, 0, 0, 0, 0.4, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
 	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.2, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Combine_Black, 0, 0, 0, 0.2, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
 	TE_SendToAll(0.0);
 	int glowColor[4];
-	SetColorRGBA(glowColor, red, green, blue, 100);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Glow, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
+	SetColorRGBA(glowColor, red, green, blue, 200);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
 	TE_SendToAll(0.0);
 
 	DataPack pack = new DataPack();
@@ -1424,11 +1474,11 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
 	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Diamond, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
 	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Diamond, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
 	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Diamond, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
 	TE_SendToAll(0.0);
 
 	float hullMin[3];
@@ -1444,9 +1494,9 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 45.0;
-	float FarDamage = 18.0;
-	float MaxDistance = 750.0;
+	float CloseDamage = 35.0 * RaidModeScaling;
+	float FarDamage = 30.0 * RaidModeScaling;
+	float MaxDistance = 5000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
@@ -1478,7 +1528,7 @@ static bool Harrison_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
-*/
+
 static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -1487,7 +1537,6 @@ static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 	if(IsValidEntity(enemy))
 	{
 		float vecTarget[3]; WorldSpaceCenter(enemy, vecTarget);
-		ParticleEffectAt(vecTarget, "npc_boss_bomb_shadow", 3.0);
 		float vecSelf[3];
 		WorldSpaceCenter(npc.index, vecSelf);
 		vecSelf[2] += 80.0;
