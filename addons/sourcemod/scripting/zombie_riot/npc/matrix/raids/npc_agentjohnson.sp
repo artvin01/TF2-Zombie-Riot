@@ -160,7 +160,14 @@ methodmap AgentJohnson < CClotBody
 		}
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
-
+		if(RaidModeScaling < 55)
+		{
+			RaidModeScaling *= 0.19; //abit low, inreacing
+		}
+		else
+		{
+			RaidModeScaling *= 0.38;
+		}
 		float amount_of_people = float(CountPlayersOnRed());
 		
 		if(amount_of_people > 12.0)
@@ -341,7 +348,7 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
-				float damage = 13.0;
+				float damage = 35.0;
 				damage *= RaidModeScaling;
 				bool silenced = NpcStats_IsEnemySilenced(npc.index);
 				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
@@ -453,7 +460,7 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "pistol");
 
-				float damage = 6.0;
+				float damage = 15.0;
 				damage *= RaidModeScaling;
 
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");
