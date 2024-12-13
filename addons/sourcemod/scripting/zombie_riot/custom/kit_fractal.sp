@@ -1119,6 +1119,129 @@ static Action Timer_StarfallIon(Handle Timer, DataPack pack)
 
 	return Plugin_Stop;
 }
+enum struct Harvester_Enum
+{
+	int weapon;
+	float throttle;
+	int Enumerated_Ents[MAX_TARGETS_HIT];
+	bool Active;
+}
+static Harvester_Enum struct_Harvester_Data[MAXTF2PLAYERS];
+public void Kit_Fractal_Mana_Harvester(int client, int weapon, bool &result, int slot)
+{
+	struct_Harvester_Data[client].weapon = EntIndexToEntRef(weapon);
+
+	struct_Harvester_Data[client].throttle = 0.0;
+
+	for(int i=0 ; i < MAX_TARGETS_HIT ; i++)
+	{
+		struct_Harvester_Data[client].Enumerated_Ents[i] = 0;
+	}
+	struct_Harvester_Data[client].Active = true;
+	SDKUnhook(client, SDKHook_PreThink, Mana_Harvester_Tick);
+	SDKHook(client, SDKHook_PreThink, Mana_Harvester_Tick);
+}
+static Action Mana_Harvester_Tick(int client)
+{
+	bool Mouse1 = (GetClientButtons(client) & IN_ATTACK) != 0;
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int weapon = EntRefToEntIndex(struct_Harvester_Data[client].weapon);
+	if(!Mouse1 || weapon_holding != weapon || !IsValidEntity(weapon))
+	{
+		struct_Harvester_Data[client].Active = false;
+		SDKUnhook(client, SDKHook_PreThink, Mana_Harvester_Tick);
+		return Plugin_Stop;
+	}
+
+	float GameTime = GetGameTime();
+
+	if(struct_Harvester_Data[client].throttle > GameTime)
+		return Plugin_Continue;
+
+	struct_Harvester_Data[client].throttle = GameTime + 0.25;
+
+	//we want to get like 10 entities infront of the player in a 45 degree angle within a set range.
+	//start with finding entities.
+	//a sphere trace should do the trick, both a range check / gets every ent.
+
+	
+		
+	for(int i=0 ; i < MAX_TARGETS_HIT ; i++)
+	{
+		struct_Harvester_Data[client].Enumerated_Ents[i] = 0;
+	}
+	float range = 300.0;
+	float Origin[3]; WorldSpaceCenter(client, Origin);
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	TR_EnumerateEntitiesSphere(Origin, range, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Fractal_Harvester, client);
+	FinishLagCompensation_Base_boss();
+	//we now have every valid target within range / within line of sight, comence the harvesting!
+	int color[4]; color = Kit_Color(client);
+	for(int i=0 ; i < MAX_TARGETS_HIT ; i++)
+	{
+		if(!struct_Harvester_Data[client].Enumerated_Ents[i])
+			break;	//we have run out of targets, abort loop.
+
+		int laser;
+		laser = ConnectWithBeam(client, struct_Harvester_Data[client].Enumerated_Ents[i], color[0], color[1], color[2], 5.0, 3.0, 2.0, BEAM_COMBINE_BLACK);
+
+		CreateTimer(0.25, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	return Plugin_Continue;
+}
+static int[] Kit_Color(int client)
+{
+	int color[4] = {25,175,255,255};
+	return color;
+}
+static bool TraceEntityEnumerator_Fractal_Harvester(int entity, int client)
+{
+	//This will automatically take care of all the checks, very handy.
+	if(!IsValidEnemy(client, entity, true)) //Must detect camo.
+		return true;
+
+	//is the target within 45 degrees of the client?
+	if(!IsTargetInfrontOfPlayer(client, entity))
+		return true;
+	
+	for(int i=0; i < MAX_TARGETS_HIT; i++)
+	{
+		if(!struct_Harvester_Data[client].Enumerated_Ents[i])
+		{
+			struct_Harvester_Data[client].Enumerated_Ents[i] = entity;
+			break;
+		}
+	}
+	//always keep going!
+	return true;
+}
+static bool IsTargetInfrontOfPlayer(int client, int Target)
+{
+	// need position of either the inflictor or the attacker
+	float Vic_Pos[3];
+	WorldSpaceCenter(Target, Vic_Pos);
+	float npc_pos[3];
+	float angle[3];
+	float eyeAngles[3];
+	WorldSpaceCenter(client, npc_pos);
+	
+	GetVectorAnglesTwoPoints(npc_pos, Vic_Pos, angle);
+	GetClientEyeAngles(client, eyeAngles);
+
+	// need the yaw offset from the player's POV, and set it up to be between (-180.0..180.0)
+	float yawOffset = fixAngle(angle[1]) - fixAngle(eyeAngles[1]);
+	if (yawOffset <= -180.0)
+		yawOffset += 360.0;
+	else if (yawOffset > 180.0)
+		yawOffset -= 360.0;
+
+	//if its more then 180, its on the other side of the client / behind
+	if(fabs(yawOffset) > 45)
+		return false;
+	else
+		return true;
+}
 
 public void Kit_Fractal_Primary_Cannon(int client, int weapon, bool &result, int slot)
 {
@@ -1327,7 +1450,10 @@ static void Hud(int client, int weapon)
 			}
 			else
 			{
-				Format(HUDText, sizeof(HUDText), "Hold [M1] To Cast ĄMana HarvesterČ [Cost:]");
+				if(struct_Harvester_Data[client].Active)
+					Format(HUDText, sizeof(HUDText), "ĄMana HarvesterČ Active!");
+				else
+					Format(HUDText, sizeof(HUDText), "Hold [M1] To Cast ĄMana HarvesterČ [Cost:]");
 
 				if(i_current_crystal_amt[client] >= FRACTAL_KIT_STARFALL_COST)
 					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Cast ĄStarFallČ [Cost:%i]",HUDText, FRACTAL_KIT_STARFALL_COST);
@@ -1346,7 +1472,8 @@ static void Hud(int client, int weapon)
 			else
 			{
 				Format(HUDText, sizeof(HUDText), "Press [M1] To Cast ĄFantasiaČ [Cost:%i]", FRACTAL_KIT_FANTASIA_COST);
-				//fantasia
+				//m1: fantasia
+				//m2: teleport??
 			}
 		}
 	}
