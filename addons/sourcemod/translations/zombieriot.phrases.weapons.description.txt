@@ -3605,6 +3605,11 @@
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
 		"chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
 	}
+	"VictorianLauncher Desc Extra"
+	{
+		"en"	"Increases the Explosion Radius of 'Archetype: Victoria' by +10％."
+		"ko"	"'유형: 빅토리아'인 다른 무기에 폭발 범위 +10％"
+	}
 	"The Merchant Desc"
 	{
 		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time.\nAllows the construction of the brewing stand."
@@ -3992,18 +3997,27 @@
 	}
 	"CastleBreaker Desc"
 	{
-		"en"	"A Spear that Victoria's trained vanguards use.\n This weapon has long reach but short width.\n Can gain cost per kill\n Some processing core may enhance this weapon...\n Deals extra damage to building enemies"
+		"en"	"A Spear that Victoria's trained vanguards use.\nThis weapon has long reach but short width.\nCan gain cost per kill\nDeals extra damage to building enemies\n Some processing core may enhance this weapon..."
+		"ko"	"훈련된 빅토리아의 선봉대가 사용하는 창입니다.\n무기의 길이가 길지만 범위가 좁습니다.\n처치시, 자금 +1 회수\n구조물 대상에게 추가 피해\n특정 논리회로가 이무기를 강화시킬수도..."
 	}
 	"CastleBreaker Pap 1"
 	{
-		"en"	"Added new R ability that will allow you to switch weapon's playstle. You will do 50% less damage but will create a small explosion when it hits the enemy. Explosion costs ammo."
+		"en"	"Added new R ability that will allow you to switch weapon's playstyle.\nYou will do 50％ less damage but will create a small explosion when it hits the enemy.\nAttack speed is Reduced and Attack costs ammo."
+		"ko"	"무기 변경(R키) 해금\n블라스트 모드는 근접무기 피해량이 50％ 감소하지만 때릴때마다 폭발이 일어납니다!\n휘두를때마다 탄약을 소모하며 공격속도가 감소합니다."
 	}
 	"CastleBreaker Pap 2"
 	{
 		"en"	"Overall Better Stats"
+		"ko"	"스탯 강화"
 	}
 	"CastleBreaker Pap 3"
 	{
-		"en"	"A giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\n Unlocks new ability(m2)\n Attack 2 targets at once and attack twice."
+		"en"	"A giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\nUnlocks new ability(M2)\nAttack 2 targets at once and attack twice."
+		"ko"	"거대 빅토리아 엘리트 로봇이 사용하는 거대한 창. 강력하면서도 무겁습니다.\n새로운 능력(M2)해금\n한 번에 두 대상을 공격하고 두 번 공격합니다."
+	}
+	"CastleBreaker Desc Extra"
+	{
+		"en"	"Increases the Explosion damage of 'Archetype: Victoria' by +10％."
+		"ko"	"'유형: 빅토리아'인 다른 무기에 폭발 피해 +10％ 추가"
 	}
 }

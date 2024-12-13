@@ -71,7 +71,6 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		}
 		return;
 	}
-		
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 	{
 		HasRocketSteam[client] = false;
@@ -81,6 +80,17 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		h_TimerVictorianLauncherManagement[client] = CreateDataTimer(0.25, Timer_Management_Victoria, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+	if(i_WeaponArchetype[weapon] == 28)	// Victoria
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(h_TimerVictorianLauncherManagement[i])
+			{
+				b_WeaponSpecificClassBuff[weapon][4] = true;
+				Attributes_SetMulti(weapon, 99, 1.1);
+			}
+		}
 	}
 }
 
@@ -315,6 +325,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float BaseDMG = 950.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
+		BaseDMG *= Attributes_Get(weapon, 621, 1.0);
 
 		if(f_ProjectileSinceSpawn[entity] > GetGameTime())
 		{

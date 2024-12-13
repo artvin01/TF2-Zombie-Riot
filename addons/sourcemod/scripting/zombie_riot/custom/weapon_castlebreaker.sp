@@ -128,11 +128,14 @@ public void CastleBreaker_Modechange(int client, int weapon, bool crit, int slot
 
 void CastleBreakerCashOnKill(int client)
 {
+	//cash on kil
 	if(!Waves_InSetup())
 	{
-		float cashgain = 1.0; // 1cash on kill
+		float cashgain = 1.0;
 		if(b_AvangardCoreB[client])//do you have this unlock?
-			cashgain = 2.0;//2 cash on kill
+			cashgain += 1.0;
+		if(CastleBreaker_WeaponPap[client]>=2)
+			cashgain += 1.0;
 		int cash = RoundFloat(cashgain * ResourceRegenMulti);
 		CashRecievedNonWave[client] += cash;
 		CashSpent[client] -= cash;
@@ -194,7 +197,18 @@ public void Enable_CastleBreakerWeapon(int client, int weapon) // Enable managem
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
 		
-	}	
+	}
+	if(i_WeaponArchetype[weapon] == 28)	// Victoria
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(h_TimerCastleBreakerWeaponManagement[i])
+			{
+				b_WeaponSpecificClassBuff[weapon][3] = true;
+				Attributes_SetMulti(weapon, 621, 1.1);
+			}
+		}
+	}
 }
 
 public Action Timer_Management_CastleBreaker(Handle timer, DataPack pack)
@@ -255,6 +269,7 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 		float spawnLoc[3];
 		float BaseDMG = 200.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
+		BaseDMG *= Attributes_Get(weapon, 621, 1.0);
 		float Radius = EXPLOSION_RADIUS;
 		Radius *= Attributes_Get(weapon, 99, 1.0);
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
@@ -339,13 +354,13 @@ static Action Timer_ChangeSound(Handle timer, DataPack pack)
 		{
 			case 5:
 			{
-				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", client, SNDCHAN_AUTO, 65, _, 1.0, 115);
+				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", client, SNDCHAN_AUTO, 65, _, 1.1, 115);
 				CastleBreaker_Cylinder[client]=0;
 				return Plugin_Stop;
 			}
 			default:
 			{
-				EmitSoundToAll("weapons/grenade_launcher_worldreload.wav", client, SNDCHAN_AUTO, 65, _, 0.8, 115);
+				EmitSoundToAll("weapons/grenade_launcher_worldreload.wav", client, SNDCHAN_AUTO, 65, _, 0.9, 115);
 				CastleBreaker_Cylinder[client]++;
 				CastleBreaker_SoundsDelay[client] = GetGameTime() + (CastleBreaker_Cylinder[client]>5 ? 0.3 : 0.01);
 			}
@@ -357,20 +372,20 @@ static Action Timer_ChangeSound(Handle timer, DataPack pack)
 		{
 			case 0:
 			{
-				EmitSoundToAll("weapons/sniper_railgun_bolt_back.wav", client, SNDCHAN_AUTO, 65, _, 1.0, 115);
+				EmitSoundToAll("weapons/sniper_railgun_bolt_back.wav", client, SNDCHAN_AUTO, 65, _, 1.1, 115);
 				
 				CastleBreaker_Cylinder[client]++;
 				CastleBreaker_SoundsDelay[client] = GetGameTime() + 0.01;
 			}
 			case 1:
 			{
-				EmitSoundToAll("weapons/syringegun_reload_air2.wav", client, SNDCHAN_AUTO, 65, _, 0.8, 115);
+				EmitSoundToAll("weapons/syringegun_reload_air2.wav", client, SNDCHAN_AUTO, 65, _, 0.9, 115);
 				CastleBreaker_Cylinder[client]++;
 				CastleBreaker_SoundsDelay[client] = GetGameTime() + 0.01;
 			}
 			default:
 			{
-				EmitSoundToAll("weapons/syringegun_reload_air1.wav", client, SNDCHAN_AUTO, 65, _, 0.8, 115);
+				EmitSoundToAll("weapons/syringegun_reload_air1.wav", client, SNDCHAN_AUTO, 65, _, 0.9, 115);
 				CastleBreaker_Cylinder[client]=0;
 				return Plugin_Stop;
 			}
