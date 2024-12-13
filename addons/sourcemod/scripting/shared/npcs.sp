@@ -1822,7 +1822,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			Timer_Show = 0.0;
 
 		//if raid is on red, dont do timer.
-		if(Timer_Show > 800.0 || GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red)
+		if(Timer_Show > 800.0/* || GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red*/)
 		{
 			RaidModeTime = 99999999.9;
 		}
