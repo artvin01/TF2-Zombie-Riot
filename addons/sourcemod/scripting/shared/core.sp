@@ -175,6 +175,8 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define BANNER_DURATION_FIX_FLOAT 1.0
 
 #define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
+//Needs to be global.
+
 
 #define ABILITY_NONE				 0		  	//Nothing special.
 
