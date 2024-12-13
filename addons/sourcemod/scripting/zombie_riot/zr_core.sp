@@ -370,10 +370,6 @@ int i_PreviousPointAmount[MAXTF2PLAYERS];
 
 bool WaitingInQueue[MAXTF2PLAYERS];
 
-int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 
 float MultiGlobalEnemy = 0.25;
@@ -698,10 +694,6 @@ void ZR_MapStart()
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
-	Zero2(Armor_table_money_limit);
-	Zero2(i_Healing_station_money_limit);
-	Zero2(Perk_Machine_money_limit);
-	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero2(fl_blitz_ioc_punish_timer);
 	Zero(b_HideCosmeticsPlayer);
 	KahmlFistMapStart();

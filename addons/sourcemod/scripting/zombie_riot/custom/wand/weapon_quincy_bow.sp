@@ -888,9 +888,9 @@ public void Quincy_Touch(int entity, int target)
 
 		float GameTime = GetGameTime();
 
-		if(fl_trace_target_timeout[owner][target] < GameTime)
+		if(f_GlobalHitDetectionLogic[owner][target] < GameTime)
 		{
-			fl_trace_target_timeout[owner][target] = GameTime+0.25;
+			f_GlobalHitDetectionLogic[owner][target] = GameTime+0.25;
 			float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 			
 			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity]*fl_quincy_penetrated[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?

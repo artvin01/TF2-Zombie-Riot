@@ -84,10 +84,6 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	LastMann = false;
 	Ammo_Count_Ready = 0;
 	Zero(Ammo_Count_Used);
-	Zero2(Armor_table_money_limit);
-	Zero2(i_Healing_station_money_limit);
-	Zero2(Perk_Machine_money_limit);
-	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero(Healing_done_in_total);
 	Zero(Damage_dealt_in_total);
 	Zero(Resupplies_Supplied);

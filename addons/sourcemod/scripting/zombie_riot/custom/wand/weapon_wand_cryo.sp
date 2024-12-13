@@ -39,7 +39,6 @@ static bool Cryo_Frozen[MAXENTITIES]={false, ...}; //Is this zombie frozen?
 static bool Cryo_Slowed[MAXENTITIES]={false, ...}; //Is this zombie frozen?
 static bool Cryo_IsCryo[MAXENTITIES] = {false, ...}; //Is this entity a cryo projectile?
 
-static bool Cryo_AlreadyHit[MAXENTITIES][MAXENTITIES];
 
 
 
@@ -266,8 +265,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 			EmitSoundToAll(SOUND_WAND_CRYO_M1, client, _, 60, _, 0.4, 80);
 			for (int entity = 0; entity < MAXENTITIES; entity++)
 			{
-		//		Cryo_AlreadyHit[i][iCarrier] = false; //This will make all rehitable with the same projectile, i doubt thats what you want.
-				Cryo_AlreadyHit[projectile][entity] = false;
+				f_GlobalHitDetectionLogic[projectile][entity] = 0.0;
 			}
 			SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 
@@ -308,7 +306,7 @@ public void Cryo_Touch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		if(!Cryo_AlreadyHit[entity][target])
+		if(!f_GlobalHitDetectionLogic[entity][target])
 		{
 			WorldSpaceCenter(target, VicLoc);
 			//Code to do damage position and ragdolls
@@ -361,7 +359,7 @@ public void Cryo_Touch(int entity, int target)
 				Elemental_AddCyroDamage(target, owner, RoundFloat(f_WandDamage[entity]), Cryo_SlowType[entity]);
 			}
 			
-			Cryo_AlreadyHit[entity][target] = true;
+			f_GlobalHitDetectionLogic[entity][target] = 1.0;
 			f_WandDamage[entity] *= Cryo_M1_ReductionScale;
 		}
 	}
@@ -490,10 +488,4 @@ public void CleanAllApplied_Cryo(int entity)
 	Cryo_Frozen[entity] = false;
 	Cryo_Slowed[entity] = false;
 	Cryo_IsCryo[entity] = false;
-	
-	for (int i = 0; i < MAXENTITIES; i++)
-	{
-		Cryo_AlreadyHit[i][entity] = false;
-//		Cryo_AlreadyHit[entity][i] = false;
-	}
 }

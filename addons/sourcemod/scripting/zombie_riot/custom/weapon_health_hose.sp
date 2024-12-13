@@ -10,7 +10,6 @@ static float SelfHealMult = 0.33;
 static float Hose_LossPerHit = 2.0;
 static float Hose_Min = 1.0;
 
-static bool Hose_AlreadyHealed[MAXENTITIES][MAXENTITIES];
 static float Hose_Healing[MAXENTITIES] = { 0.0, ... };
 static float Hose_HealLoss[MAXENTITIES] = { 0.0, ... };
 static float Hose_HealMin[MAXENTITIES] = { 0.0, ... };
@@ -169,8 +168,7 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 		Hose_Owner[projectile] = -1;
 		for (int i2 = 0; i2 < MAXENTITIES; i2++)
 		{
-			Hose_AlreadyHealed[i2][projectile] = false;
-			Hose_AlreadyHealed[projectile][i2] = false;
+			f_GlobalHitDetectionLogic[projectile][i2] = 0.0;
 		}
 
 		Hose_Healing[projectile] = FinalHeal;
@@ -182,11 +180,6 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 		//Remove unused hook.
 		//SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
 
-		for (int entity = 0; entity < MAXENTITIES; entity++)
-		{
-			Hose_AlreadyHealed[projectile][entity] = false;
-		}
-			
 		SetEntityCollisionGroup(projectile, 27); //Do not collide.
 		SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
@@ -228,7 +221,7 @@ public void Hose_Touch(int entity, int other)
 		return;
 
 
-	if (Hose_AlreadyHealed[entity][other])
+	if (f_GlobalHitDetectionLogic[entity][other])
 		return;
 		
 	if (IsValidAlly(other, owner))	
@@ -244,7 +237,7 @@ public void Hose_Touch(int entity, int other)
 			Hose_Healing[entity] = Hose_HealMin[entity];
 		}
 		
-		Hose_AlreadyHealed[entity][other] = true;
+		f_GlobalHitDetectionLogic[entity][other] = 1.0;
 		
 		if (Hose_GiveUber[entity])
 		{
