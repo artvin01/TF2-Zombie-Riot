@@ -95,7 +95,8 @@ public const char ItemArchetype[][] =
 	"Bloodletter",	//24, Vampire Knives fast-attack path
 	"Bloody Butcher", //25, Vampire Knives cleaver path
 	"Mythic Caster",	// 26
-	"Psychic Warlord"	//27, Psychokinesis and Magnesis Staff, possibly more in the future
+	"Psychic Warlord",	//27, Psychokinesis and Magnesis Staff, possibly more in the future
+	"Archetype Victoria" //28, Damn this is an Archetype for a Victorian weapon made by beep.
 };
 
 public const int RenderColors_RPG[][] =
@@ -350,7 +351,7 @@ float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_ElementalAmplification[MAXENTITIES];
 float f_WeaponSpecificClassBuff[MAXENTITIES][1];
-bool b_WeaponSpecificClassBuff[MAXENTITIES][3];
+bool b_WeaponSpecificClassBuff[MAXENTITIES][5];
 float f_HighTeslarDebuff[MAXENTITIES];
 float f_VoidAfflictionStandOn[MAXENTITIES];
 float f_VoidAfflictionStrength[MAXENTITIES];
