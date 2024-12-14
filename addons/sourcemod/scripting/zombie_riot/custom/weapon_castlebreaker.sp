@@ -10,10 +10,18 @@ static float CastleBreaker_HUDDelay[MAXTF2PLAYERS];
 
 static int CastleBreaker_Cylinder[MAXTF2PLAYERS];
 static float CastleBreaker_SoundsDelay[MAXTF2PLAYERS];
+static int CashGainLimitWavePer_CastleBreaker[MAXTF2PLAYERS];
+
+#define MAX_CASH_PER_WAVE_CASTLEBREAKER 500
 
 void ResetMapStartCastleBreakerWeapon()
 {
 	CastleBreaker_Map_Precache();
+}
+
+void CastleBreaker_ResetCashGain()
+{
+	Zero(CashGainLimitWavePer_CastleBreaker);
 }
 
 void CastleBreaker_Map_Precache() //Anything that needs to be precaced like sounds or something.
@@ -128,6 +136,8 @@ public void CastleBreaker_Modechange(int client, int weapon, bool crit, int slot
 
 void CastleBreakerCashOnKill(int client)
 {
+	if(CashGainLimitWavePer_CastleBreaker[client] >= MAX_CASH_PER_WAVE_CASTLEBREAKER)
+		return;
 	//cash on kil
 	if(!Waves_InSetup())
 	{
@@ -139,6 +149,7 @@ void CastleBreakerCashOnKill(int client)
 		int cash = RoundFloat(cashgain * ResourceRegenMulti);
 		CashRecievedNonWave[client] += cash;
 		CashSpent[client] -= cash;
+		CashGainLimitWavePer_CastleBreaker[client] += cash;
 	}
 }
 
