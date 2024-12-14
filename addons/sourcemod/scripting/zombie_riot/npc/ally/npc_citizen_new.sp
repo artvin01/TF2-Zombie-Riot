@@ -3145,7 +3145,7 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							float vecPos[3], vecAng[3];
 							GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", vecPos);
-							vecPos[2] += 60.0;
+							vecPos[2] += 30.0;
 							GetEntPropVector(ally, Prop_Data, "m_angRotation", vecAng);
 							vecAng[0] = 0.0;
 							vecAng[2] = 0.0;

@@ -291,6 +291,7 @@ void Building_MapStart()
 	PrecacheSound("physics/metal/metal_box_strain4.wav");
 	PrecacheSound("npc/manhack/bat_away.wav");
 	Zero(f_ExpidonsanRepairDelay);
+	Zero(i_IDependOnThisBuilding);
 }
 
 // Called after NPC_ConfigSetup()
@@ -1288,7 +1289,7 @@ void Building_RotateAllDepencencies(int entityLost = 0)
 		if(!IsValidEntity(i))
 			continue;
 			
-		if(EntRefToEntIndex(i_IDependOnThisBuilding[i]) == entityLost)
+		if(i_IsABuilding[i] && EntRefToEntIndex(i_IDependOnThisBuilding[i]) == entityLost)
 		{
 			BuildingAdjustMe(i, entityLost);
 		}

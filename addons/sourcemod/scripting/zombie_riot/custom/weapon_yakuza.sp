@@ -465,6 +465,7 @@ void Yakuza_WeaponCooldown(int weapon)
 
 	float cooldown = 4.0;
 	cooldown *= Attributes_Get(weapon, 6, 1.0);
+	cooldown *= Attributes_Get(weapon, 396, 1.0);
 	DataPack pack2 = new DataPack();
 	RequestFrame(Yakuza_ApplyWeaponCD, pack2);
 	pack2.WriteCell(EntIndexToEntRef(weapon));
