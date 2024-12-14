@@ -24,6 +24,18 @@ void CastleBreaker_ResetCashGain()
 	Zero(CashGainLimitWavePer_CastleBreaker);
 }
 
+bool AllowMaxCashgainWaveCustom(int client)
+{
+	if(CashGainLimitWavePer_CastleBreaker[client] >= MAX_CASH_PER_WAVE_CASTLEBREAKER)
+		return false;
+
+	return true;
+}
+void AddCustomCashMadeThisWave(int client, int cash)
+{
+	CashGainLimitWavePer_CastleBreaker[client] += cash;
+}
+
 void CastleBreaker_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
 	PrecacheSound("ambient/cp_harbor/furnace_1_shot_05.wav");

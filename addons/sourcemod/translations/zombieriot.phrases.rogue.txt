@@ -1662,7 +1662,7 @@
 	}
 	"Hand of Geek Desc"
 	{
-		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' weapons grant +3 health on hit and 35%% Ranged Damage REsistance."
+		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' and ''Victoria'' weapons grant +3 health on hit and 35%% Ranged Damage Resistance, ''Victoria'' weapons gain the health benifit 5x more."
 	}
 	"Hand of Incredible Speeds"
 	{

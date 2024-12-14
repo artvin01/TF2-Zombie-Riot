@@ -41,11 +41,7 @@ void Flametail_Enable(int client, int weapon)
 			{
 				WeaponTimer[client] = CreateTimer(3.7 / ResourceRegenMulti, Flametail_Timer1, client, TIMER_REPEAT);
 			}
-			case 1:
-			{
-
-			}
-			case 2:
+			case 1, 2:
 			{
 
 			}
@@ -64,10 +60,11 @@ public Action Flametail_Timer1(Handle timer, int client)
 		int weapon = EntRefToEntIndex(WeaponRef[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			if(!Waves_InSetup() && weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+			if(!Waves_InSetup() && weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") && AllowMaxCashgainWaveCustom(client))
 			{
 				CashRecievedNonWave[client]++;
 				CashSpent[client]--;
+				AddCustomCashMadeThisWave(client, 1);
 			}
 			
 			return Plugin_Continue;
@@ -128,6 +125,8 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 			}
 		}
 
+		cash *= 3;
+
 		if(WeaponLevel[client] > 1)
 		{
 			DodgeFor[client] = GetGameTime() + 4.0;
@@ -142,11 +141,12 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 
 		DodgeNext[client] = true;
 		
-		if(!Waves_InSetup())
+		if(!Waves_InSetup() && AllowMaxCashgainWaveCustom(client))
 		{
 			cash = RoundFloat(cash * ResourceRegenMulti);
 			CashRecievedNonWave[client] += cash;
 			CashSpent[client] -= cash;
+			AddCustomCashMadeThisWave(client, cash);
 		}
 
 		Ability_Apply_Cooldown(client, slot, cooldown);

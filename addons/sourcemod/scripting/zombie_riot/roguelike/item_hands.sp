@@ -127,10 +127,14 @@ public void Rogue_HandAmbusher_Weapon(int entity)
 }
 public void Rogue_HandInfinite_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 3 || i_WeaponArchetype[entity] == 10)	// Infinite Fire && // Debuff
+	if(i_WeaponArchetype[entity] == 3 || i_WeaponArchetype[entity] == 10 || i_WeaponArchetype[entity] == 28)	// Infinite Fire && // Debuff && Victorian
 	{
 		// +3 health on hit
-		Attributes_SetAdd(entity, 16, 3.0);
+		if(i_WeaponArchetype[entity] == 28)
+			Attributes_SetAdd(entity, 16, 15.0);
+		else
+			Attributes_SetAdd(entity, 16, 3.0);
+
 		Attributes_SetMulti(entity, 205, 0.65);
 	}
 }
