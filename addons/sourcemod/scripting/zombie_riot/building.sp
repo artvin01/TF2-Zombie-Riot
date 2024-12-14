@@ -1214,7 +1214,7 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask, any iEx
 	if(b_ThisEntityIgnored[entity])
 		return false;
 
-	if(i_IsABuilding[entity]) // We don't want to build on teleporters(exploits, stuck, ...) You know what i mean.
+	if(i_IsABuilding[entity]) // Only buildings should be allowed
 	{
 		return true;
 	}

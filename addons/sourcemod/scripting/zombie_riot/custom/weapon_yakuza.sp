@@ -654,10 +654,12 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				{
 					case Style_Brawler:
 					{
-						float DamageBase = 200.0;
+						float DamageBase = 250.0;
 						DamageBase *= HEATACTION_DMG_MULTI;
 						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_1", 2.5 * Yakuza_DurationDoEnemy(target), target);
+						flMaxhealth *= 1.25;
+						//more healing and damage for brawler
 					}
 
 					case Style_Beast:
@@ -750,7 +752,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		EmitSoundToAll(IRENE_KICKUP_1, client, _, 75, _, 0.60);
 		float DistanceCheck[3];
 		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", DistanceCheck);
-		spawnRing_Vectors(DistanceCheck, 0.0, 50.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1);	
+		spawnRing_Vectors(DistanceCheck, 50.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1);	
 		if(i_NpcWeight[target] < 4)
 		{
 			Rogue_OnAbilityUse(weapon);
@@ -949,18 +951,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		{
 			damage = 1.0;
 			HeatGive *= 2;
-			float duration = 1.0;
-			switch(WeaponStyle[attacker])
-			{
-				case Style_Beast:
-					duration = 1.6;
-				
-				case Style_Rush:
-					duration = 0.8;
-
-				case Style_Dragon:
-					duration = 1.25;
-			}
+			float duration = 1.35;
 			if(!LastMann && b_thisNpcIsARaid[victim])
 			{
 				//Give bigger cooldown.
@@ -971,7 +962,6 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 				Ability_Apply_Cooldown(attacker, 1, cooldown);
 				duration *= 0.85;
 			}
-			
 			FreezeNpcInTime(victim, duration * Yakuza_DurationDoEnemy(victim));
 		}
 	}
@@ -1207,13 +1197,19 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 			}
 		}
 	}
-	
+	int ExtraLogic = 0;
+	if(!StrContains(animation, "brawler_heat_3"))
+	{
+		ExtraLogic = 1;
+		//Extra Logic
+	}
 	DataPack pack;
 	CreateDataTimer(duration, Leper_SuperHitInitital_After, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(client);
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(EntIndexToEntRef(viewcontrol));
 	pack.WriteCell(EntIndexToEntRef(spawn_index));
+	pack.WriteCell(ExtraLogic);
 	
 	TF2_AddCondition(client, TFCond_FreezeInput, -1.0);
 
