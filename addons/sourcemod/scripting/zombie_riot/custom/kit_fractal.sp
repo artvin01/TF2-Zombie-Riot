@@ -16,14 +16,15 @@ static float fl_fractal_laser_trace_throttle[MAXTF2PLAYERS];
 static float fl_fractal_turn_throttle[MAXTF2PLAYERS];
 static float fl_fractal_dmg_throttle[MAXTF2PLAYERS];
 
-#define FRACTAL_KIT_CRYSTAL_THROW_COST 25
-#define FRACTAL_KIT_CRYSTAL_REFLECTION 4	//how many targets the crysal can attack at the same time
-#define FRACTAL_KIT_FANTASIA_COST 5
-#define FRACTAL_KIT_FANTASIA_GAIN 1
-#define FRACTAL_KIT_STARFALL_COST 75
+#define FRACTAL_KIT_CRYSTAL_THROW_COST 25.0
+#define FRACTAL_KIT_CRYSTAL_REFLECTION 4.0	//how many targets the crysal can attack at the same time
+#define FRACTAL_KIT_FANTASIA_COST 5.0
+#define FRACTAL_KIT_FANTASIA_GAIN 2.0
+#define FRACTAL_KIT_STARFALL_COST 75.0
 #define KRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
-static int i_max_crystal_amt[MAXTF2PLAYERS];
-static int i_current_crystal_amt[MAXTF2PLAYERS];
+#define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.05
+static float fl_max_crystal_amt[MAXTF2PLAYERS];
+static float fl_current_crystal_amt[MAXTF2PLAYERS];
 static bool b_is_crystal[MAXENTITIES];
 static int i_crystal_index[MAXTF2PLAYERS];
 static bool b_on_crystal[MAXTF2PLAYERS];
@@ -46,41 +47,45 @@ static void Adjust_Crystal_Stats(int client, int weapon)
 	{
 		case 0:
 		{
-			i_max_crystal_amt[client] = 75;
+			fl_max_crystal_amt[client] = 75.0;
 		}
 		case 1:
 		{
-			i_max_crystal_amt[client] = 85;
+			fl_max_crystal_amt[client] = 85.0;
 		}
 		case 2:
 		{
-			i_max_crystal_amt[client] = 100;
+			fl_max_crystal_amt[client] = 100.0;
 		}
 		case 3:
 		{
-			i_max_crystal_amt[client] = 100;
+			fl_max_crystal_amt[client] = 100.0;
 		}
 		case 4:
 		{
-			i_max_crystal_amt[client] = 100;
+			fl_max_crystal_amt[client] = 100.0;
 		}
 		case 5:
 		{
-			i_max_crystal_amt[client] = 100;
+			fl_max_crystal_amt[client] = 100.0;
 		}
 		case 6:
 		{
-			i_max_crystal_amt[client] = 100;
+			fl_max_crystal_amt[client] = 100.0;
+		}	
+		case 7:
+		{
+			fl_max_crystal_amt[client] = 100.0;
 		}	
 	}
 	if(b_TwirlHairpins[client])
-		i_max_crystal_amt[client] += 25;
+		fl_max_crystal_amt[client] += 25.0;
 		
 }
 
 void Kit_Fractal_MapStart()
 {
-	Zero(i_max_crystal_amt);
+	Zero(fl_max_crystal_amt);
 	Zero(fl_fractal_laser_trace_throttle);
 	Zero(fl_hud_timer);
 	Zero(b_cannon_animation_active);
@@ -562,7 +567,7 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 	{
 		return;
 	}
-	if(i_current_crystal_amt[client] < FRACTAL_KIT_FANTASIA_COST)
+	if(fl_current_crystal_amt[client] < FRACTAL_KIT_FANTASIA_COST)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -582,7 +587,7 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 		return;
 	}
 
-	i_current_crystal_amt[client] -=FRACTAL_KIT_FANTASIA_COST;
+	fl_current_crystal_amt[client] -=FRACTAL_KIT_FANTASIA_COST;
 	Current_Mana[client] -=mana_cost;
 	SDKhooks_SetManaRegenDelayTime(client, 2.5);
 	Mana_Hud_Delay[client] = 0.0;
@@ -607,6 +612,11 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 	Create_Fantasia(client, Origin);
 
 	fl_fantasia_origin[client] = Origin;
+
+	for(int i=0 ; i < MAXENTITIES ; i++)
+	{
+		f_GlobalHitDetectionLogic[client][i] = 0.0;
+	}
 
 	SDKUnhook(client, SDKHook_PreThink, Fantasia_Tick);
 	SDKHook(client, SDKHook_PreThink, Fantasia_Tick);
@@ -786,13 +796,16 @@ void Fractal_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
 static void OnFantasiaHit(int client, int target, int damagetype, float damage)
 {
 	float GameTime = GetGameTime();
-	if(f_GlobalHitDetectionLogic[client][target] < GameTime)
-	{
-		f_GlobalHitDetectionLogic[client][target] = GameTime + 1.0;
-		float dps = fl_fantasia_damage[client]*fl_fantasia_targetshit[client];
-		fl_fantasia_targetshit[client] *= LASER_AOE_DAMAGE_FALLOFF;
-		SDKHooks_TakeDamage(target, client, client, dps, DMG_PLASMA);
-	}
+	if(f_GlobalHitDetectionLogic[client][target] > GameTime)
+		return;
+	f_GlobalHitDetectionLogic[client][target] = GameTime + 1.0;
+	float dps = fl_fantasia_damage[client]*fl_fantasia_targetshit[client];
+	fl_fantasia_targetshit[client] *= LASER_AOE_DAMAGE_FALLOFF;
+	SDKHooks_TakeDamage(target, client, client, dps, DMG_PLASMA);
+	fl_current_crystal_amt[client] +=FRACTAL_KIT_FANTASIA_GAIN;
+
+	if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
+		fl_current_crystal_amt[client] = fl_max_crystal_amt[client];
 }
 public void Kit_Fractal_Throw_Crystal(int client, int weapon, bool &result, int slot)
 {
@@ -804,7 +817,7 @@ public void Kit_Fractal_Throw_Crystal(int client, int weapon, bool &result, int 
 		ShowSyncHudText(client,  SyncHud_Notifaction, "The Laser Cannon is Recharging [%.1fs]", fl_animation_cooldown[client]-GetGameTime());
 		return;
 	}
-	if(i_current_crystal_amt[client] < FRACTAL_KIT_CRYSTAL_THROW_COST)
+	if(fl_current_crystal_amt[client] < FRACTAL_KIT_CRYSTAL_THROW_COST)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -820,7 +833,7 @@ public void Kit_Fractal_Throw_Crystal(int client, int weapon, bool &result, int 
 	}
 	b_on_crystal[client] = false;
 		
-	i_current_crystal_amt[client] -=FRACTAL_KIT_CRYSTAL_THROW_COST;
+	fl_current_crystal_amt[client] -=FRACTAL_KIT_CRYSTAL_THROW_COST;
 	
 	float speed = 1250.0;
 	float time = 5.0;
@@ -972,7 +985,7 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 	{
 		return;
 	}
-	if(i_current_crystal_amt[client] < FRACTAL_KIT_STARFALL_COST)
+	if(fl_current_crystal_amt[client] < FRACTAL_KIT_STARFALL_COST)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -995,7 +1008,7 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 	{
 		i_targeted_ID[client][i] = INVALID_ENT_REFERENCE;
 	}
-	i_current_crystal_amt[client] -=FRACTAL_KIT_STARFALL_COST;
+	fl_current_crystal_amt[client] -=FRACTAL_KIT_STARFALL_COST;
 	Player_Laser_Logic Laser;
 	Laser.client = client;
 	float Range = 1500.0;
@@ -1127,7 +1140,7 @@ enum struct Harvester_Enum
 	bool Active;
 }
 static Harvester_Enum struct_Harvester_Data[MAXTF2PLAYERS];
-public void Kit_Fractal_Mana_Harvester(int client, int weapon, bool &result, int slot)
+public void Kit_Fractal_Mana_Harvester(int client, int weapon, bool &result, int slot)	//warp_harvester
 {
 	struct_Harvester_Data[client].weapon = EntIndexToEntRef(weapon);
 
@@ -1164,7 +1177,20 @@ static Action Mana_Harvester_Tick(int client)
 	//start with finding entities.
 	//a sphere trace should do the trick, both a range check / gets every ent.
 
-	
+	int mana_cost;
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0)*0.1);
+	float damage = 4.0 * Attributes_Get(weapon, 410, 1.0);
+	if(Current_Mana[client] < mana_cost)
+	{
+		struct_Harvester_Data[client].Active = false;
+		SDKUnhook(client, SDKHook_PreThink, Mana_Harvester_Tick);
+		return Plugin_Stop;
+	}
+
+	Current_Mana[client] -=mana_cost;
+	SDKhooks_SetManaRegenDelayTime(client, 2.5);
+	Mana_Hud_Delay[client] = 0.0;
+	delay_hud[client] = 0.0;
 		
 	for(int i=0 ; i < MAX_TARGETS_HIT ; i++)
 	{
@@ -1185,9 +1211,19 @@ static Action Mana_Harvester_Tick(int client)
 
 		int laser;
 		laser = ConnectWithBeam(client, struct_Harvester_Data[client].Enumerated_Ents[i], color[0], color[1], color[2], 5.0, 3.0, 2.0, BEAM_COMBINE_BLACK);
+		
+		if(Current_Mana[client] < max_mana[client]*1.2)
+		Current_Mana[client] += RoundToFloor(mana_cost*0.75);
+
+		fl_current_crystal_amt[client] += FRACTAL_KIT_HARVESTER_CRYSTALGAIN;
+
+		SDKHooks_TakeDamage(struct_Harvester_Data[client].Enumerated_Ents[i], client, client, damage, DMG_PLASMA);
 
 		CreateTimer(0.25, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
+	if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
+		fl_current_crystal_amt[client] = fl_max_crystal_amt[client];
+
 	return Plugin_Continue;
 }
 static int[] Kit_Color(int client)
@@ -1400,9 +1436,9 @@ static Action Timer_Weapon_Managment(Handle timer, DataPack pack)
 
 	Hud(client, weapon_holding);
 
-	if(i_current_crystal_amt[client] < 100)	//10
+	if(fl_current_crystal_amt[client] < 10.0)	//10
 	{
-		i_current_crystal_amt[client] +=1;
+		fl_current_crystal_amt[client] +=0.1;
 	}
 
 	return Plugin_Continue;
@@ -1427,7 +1463,7 @@ static void Hud(int client, int weapon)
 			{
 				Format(HUDText, sizeof(HUDText), "ĄHyper CannonČ Active Ę[M1] to DissableĖ");
 
-				Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Throw ĄCrystalČ [Cost:%i]",HUDText, FRACTAL_KIT_CRYSTAL_THROW_COST);
+				Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Throw ĄCrystalČ [Cost:%.0f]",HUDText, FRACTAL_KIT_CRYSTAL_THROW_COST);
 			}
 			else
 			{
@@ -1438,7 +1474,7 @@ static void Hud(int client, int weapon)
 				else
 				{
 					Format(HUDText, sizeof(HUDText), "ĄHyper CannonČ Ready Ę[M1] to ActivateĖ");
-					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Throw ĄCrystalČ [Cost:%i]",HUDText, FRACTAL_KIT_CRYSTAL_THROW_COST);
+					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Throw ĄCrystalČ [Cost:%.0f]",HUDText, FRACTAL_KIT_CRYSTAL_THROW_COST);
 				}
 			}
 		}
@@ -1455,10 +1491,10 @@ static void Hud(int client, int weapon)
 				else
 					Format(HUDText, sizeof(HUDText), "Hold [M1] To Cast ĄMana HarvesterČ [Cost:]");
 
-				if(i_current_crystal_amt[client] >= FRACTAL_KIT_STARFALL_COST)
-					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Cast ĄStarFallČ [Cost:%i]",HUDText, FRACTAL_KIT_STARFALL_COST);
+				if(fl_current_crystal_amt[client] >= FRACTAL_KIT_STARFALL_COST)
+					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Cast ĄStarFallČ [Cost:%.0f]",HUDText, FRACTAL_KIT_STARFALL_COST);
 				else
-					Format(HUDText, sizeof(HUDText), "%s\nNot Enough Crystals To Cast ĄStarFallČ [%i/%i]",HUDText, i_current_crystal_amt[client], FRACTAL_KIT_STARFALL_COST);
+					Format(HUDText, sizeof(HUDText), "%s\nNot Enough Crystals To Cast ĄStarFallČ [%.0f/%.0f]",HUDText, fl_current_crystal_amt[client], FRACTAL_KIT_STARFALL_COST);
 				//m1: mana harvester.
 				//m2: Mana Ion.
 			}
@@ -1471,14 +1507,13 @@ static void Hud(int client, int weapon)
 			}
 			else
 			{
-				Format(HUDText, sizeof(HUDText), "Press [M1] To Cast ĄFantasiaČ [Cost:%i]", FRACTAL_KIT_FANTASIA_COST);
+				Format(HUDText, sizeof(HUDText), "Press [M1] To Cast ĄFantasiaČ [Cost:%.0f]", FRACTAL_KIT_FANTASIA_COST);
 				//m1: fantasia
-				//m2: teleport??
 			}
 		}
 	}
 
-	Format(HUDText, sizeof(HUDText), "%s\nĄCrystals:Ę%i/%iĖČ",HUDText, i_current_crystal_amt[client], i_max_crystal_amt[client]);
+	Format(HUDText, sizeof(HUDText), "%s\nĄCrystals:Ę%.0f/%.0fĖČ",HUDText, fl_current_crystal_amt[client], fl_max_crystal_amt[client]);
 		
 
 	Format_Fancy_Hud(HUDText);
@@ -1596,6 +1631,10 @@ enum struct Player_Laser_Logic
 
 	void Detect_Targets(Function Attack_Function)
 	{
+		if(this.max_targets)
+			i_maxtargets_hit = this.max_targets;
+		else
+			i_maxtargets_hit = MAX_TARGETS_HIT;
 
 		Zero(Player_Laser_BEAM_HitDetected);
 
