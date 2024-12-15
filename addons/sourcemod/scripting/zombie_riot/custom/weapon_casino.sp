@@ -5,6 +5,172 @@ Handle Timer_Casino_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static Handle DamageFalloff_timer[MAXPLAYERS+1];
 static Handle AmmoRefill_timer[MAXPLAYERS+1];
 static Handle Frenzy_timer[MAXPLAYERS+1];
+<<<<<<< Updated upstream
+=======
+static Handle Payday_timer[MAXPLAYERS+1];
+
+char g_RandomColoursDo[][] = {
+	"aliceblue", 
+	"allies",
+	"ancient",
+	"antiquewhite",
+	"aqua", 
+	"aquamarine",
+	"arcana",
+	"axis",
+	"azure",
+	"beige",
+	"bisque",
+	"black",
+	"blue", 
+	"blueviolet",
+	"brown",
+	"burlywood", 
+	"cadetblue", 
+	"chartreuse",
+	"chocolate", 
+	"collectors",
+	"common",
+	"community", 
+	"coral",
+	"cornsilk",
+	"corrupted", 
+	"crimson",
+	"cyan",
+	"darkblue", 
+	"darkcyan", 
+	"darkgray", 
+	"darkgrey",
+	"darkgreen", 
+	"darkkhaki", 
+	"darkmagenta",
+	"darkolivegreen",
+	"darkorange",
+	"darkorchid",
+	"darkred",
+	"darksalmon",
+	"darkseagreen",
+	"darkslateblue",
+	"darkviolet",
+	"deeppink",
+	"deepskyblue",
+	"dimgray",
+	"dimgrey",
+	"dodgerblue",
+	"exalted",
+	"firebrick", 
+	"floralwhite",
+	"forestgreen",
+	"frozen", 
+	"fuchsia", 
+	"fullblue",
+	"fullred",
+	"gainsboro", 
+	"genuine",
+	"ghostwhite",
+	"gold",
+	"goldenrod", 
+	"gray",
+	"grey",
+	"green", 
+	"greenyellow",
+	"haunted",
+	"honeydew",
+	"hotpink", 
+	"immortal",
+	"indianred",
+	"indigo", 
+	"ivory",
+	"khaki", 
+	"lavender", 
+	"lawngreen", 
+	"legendary", 
+	"lightblue", 
+	"lightcoral",
+	"lightcyan", 
+	"lightgray", 
+	"lightgrey", 
+	"lightgreen",
+	"lightpink", 
+	"lightsalmon",
+	"lightyellow",
+	"lime", 
+	"limegreen", 
+	"linen",
+	"magenta",
+	"maroon",
+	"mediumblue",
+	"mintcream", 
+	"mistyrose", 
+	"moccasin",
+	"mythical",
+	"navajowhite",
+	"navy", 
+	"normal",
+	"oldlace", 
+	"olive",
+	"olivedrab", 
+	"orange",
+	"orangered", 
+	"orchid",
+	"palegreen", 
+	"papayawhip",
+	"peachpuff", 
+	"peru",
+	"pink",
+	"plum",
+	"powderblue",
+	"purple",
+	"rare",
+	"red",
+	"rosybrown", 
+	"royalblue", 
+	"saddlebrown",
+	"salmon", 
+	"sandybrown",
+	"seagreen",
+	"seashell",
+	"selfmade",
+	"sienna",
+	"silver", 
+	"skyblue",
+	"slateblue", 
+	"slategray", 
+	"slategrey", 
+	"snow", 
+	"springgreen",
+	"steelblue", 
+	"strange", 
+	"tan", 
+	"teal", 
+	"thistle",
+	"tomato",
+	"turquoise", 
+	"uncommon", 
+	"unique", 
+	"unusual",
+	"valve", 
+	"vintage",
+	"violet", 
+	"wheat", 
+	"white",
+	"whitesmoke",
+	"yellow",
+	"yellowgreen",
+};
+
+/*
+	TO DO
+	1a) An ability that paps the weapon for free - i cant do this on my own ill have to ask artvin for helpsies
+	||1b) Pap 1, 3, 5 and 7 that are in-between paps - easy ??? i do this later.
+	||2) Switch blood ammo to slots 7/7/X - very easy|| DONE
+	||3) Make PayDay ability (more cash) - doable for me [X]
+	|| 4) Redo The Big One - doable for me
+	||5) Replace Cryo bullets with Cursed bullets - relatively simple - NO IT WASNT [X]
+	6) Make the buffs into actual timers so that they don't disappear when the weapon gets updated somehow - incredibly time consuming but should be doable - NEVERMIND!
+	||7) config changes (damage, around 10% unpapped, 10% papped, 25% 2nd pap and 30% 3rd pap) - I LOVE TESTING I LOVE TESTING [X]? - this will obviously need to be tested in game
+*/
+>>>>>>> Stashed changes
 
 static float Casino_hud_delay[MAXTF2PLAYERS];
 static float fl_Damage_Ammount[MAXTF2PLAYERS+1];
@@ -19,7 +185,7 @@ static float fl_major_damage_cooldown[MAXTF2PLAYERS+1];
 static float fl_major_speed_cooldown[MAXTF2PLAYERS+1];
 static float fl_ammo_cooldown[MAXTF2PLAYERS+1];
 static float fl_frenzy_cooldown[MAXTF2PLAYERS+1];
-static float fl_jackpot_cooldown[MAXTF2PLAYERS+1];
+//static float fl_jackpot_cooldown[MAXTF2PLAYERS+1];
 ////////////////
 
 static int i_CryoShot[MAXTF2PLAYERS+1];
@@ -38,6 +204,7 @@ static bool CryoEasy;
 #define CASINO_SALARY_GAIN_PER_HIT 1
 #define CASINO_DAMAGE_GAIN_PER_HIT 0.5
 #define CASINO_MAX_DAMAGE 50.0
+
 
 public void Casino_MapStart() //idk what to precisely precache so hopefully this is good enough
 {
@@ -61,7 +228,7 @@ public void Casino_MapStart() //idk what to precisely precache so hopefully this
 	Zero(fl_major_speed_cooldown);
 	Zero(fl_ammo_cooldown);
 	Zero(fl_frenzy_cooldown);
-	Zero(fl_jackpot_cooldown);
+//	Zero(fl_jackpot_cooldown);
 }
 
 /*void Reset_stats_Casino_Global()
@@ -107,7 +274,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 				if(fl_Damage_Ammount[attacker]>= CASINO_MAX_DAMAGE)
 					fl_Damage_Ammount[attacker] = CASINO_MAX_DAMAGE;
 			}
-			case 3:
+			case 3,4:
 			{
 				i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * 3;
 				if(i_Dollars_Ammount[attacker]>=CASINO_MAX_DOLLARS)
@@ -208,7 +375,7 @@ void CasinoSalaryPerKill(int client, int weapon) //cash gain on KILL MURDER OBLI
 				fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
 			}
 		}
-		case 3:
+		case 3,4:
 		{
 			i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 7;
 			if(i_Dollars_Ammount[client]>=CASINO_MAX_DOLLARS)
@@ -498,6 +665,19 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						fl_minor_reload_cooldown[client] = GameTime + 60.0;
 						ClientCommand(client, "playgamesound ui/hitsound_vortex2.wav");
 					}
+<<<<<<< Updated upstream
+=======
+					case 4:
+					{
+						ApplyTempAttrib(weapon, 97, 0.4, 60.0);
+
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Reload+]!");
+						fl_minor_reload_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound ui/hitsound_vortex2.wav");
+					}
+>>>>>>> Stashed changes
 				}
 			}
 			else
@@ -902,10 +1082,11 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 		}
 		case 14: //jackpot
 		{
-			if(fl_jackpot_cooldown[client] < GameTime)
+			switch(pap)
 			{
-				switch(pap)
+				case 0:
 				{
+<<<<<<< Updated upstream
 					case 0:
 					{
 						ApplyTempAttrib(weapon, 2, 1.35, 90.0);
@@ -983,6 +1164,54 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
 				}
+=======
+					Store_WeaponUpgradeByOnePap(client, weapon);
+					SetDefaultHudPosition(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
+					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");
+				}
+				case 1:
+				{
+					Store_WeaponUpgradeByOnePap(client, weapon);
+
+					SetDefaultHudPosition(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
+					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");
+				}
+				case 2:
+				{
+					Store_WeaponUpgradeByOnePap(client, weapon);
+
+					SetDefaultHudPosition(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
+					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");
+				}
+				case 3:
+				{
+					Store_WeaponUpgradeByOnePap(client, weapon);
+
+					SetDefaultHudPosition(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
+					
+					for(int RandomLoop; RandomLoop < 15; RandomLoop++)
+					{
+						CPrintToChatAll("{%s}%N {%s}HAS GOTTEN THE {%s}BIG WINS!!!!!",g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)], client,g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)],g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)]);		
+					}	
+					for(int client1=1; client1<=MaxClients; client1++)
+					{
+						if(IsClientConnected(client1))
+						{
+							ClientCommand(client1, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");		
+						}
+					}	
+				}
+				case 4:
+				{
+					SetDefaultHudPosition(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]\nSadly the casino banned you for cheating.");
+					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");			
+				}
+>>>>>>> Stashed changes
 			}
 		}
 		default: //womp womp

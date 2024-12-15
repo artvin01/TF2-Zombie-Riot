@@ -956,6 +956,7 @@ int Store_GetSpecialOfSlot(int client, int slot)
 
 void Store_ConfigSetup()
 {
+	ClearAllTempAttributes();
 	delete StoreTags;
 	StoreTags = new ArrayList(ByteCountToCells(32));
 
@@ -6033,6 +6034,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Weapon_Anti_Material_Rifle_Deploy(client, entity);
 		Walter_Enable(client, entity);
 		Enable_CastleBreakerWeapon(client, entity);
+
+		//give all revelant things back
+		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
 	}
 
 	return entity;
@@ -6737,4 +6741,93 @@ void SetStoreMenuLogic(int client, bool store = true)
 void SetStoreMenuLogicDelay(int client)
 {
 	LastStoreMenu[client] = GetGameTime();
+}
+
+
+static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
+
+/*
+	Example:
+
+	static TempAttribStore TempStoreAttrib;
+
+	TempStoreAttrib.Attribute = 6;
+	TempStoreAttrib.Value = 0.75;
+	TempStoreAttrib.GameTimeRemoveAt = GetGameTime() + 5.0; //5 second duration
+	TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[weapon];
+	TempStoreAttrib.Apply_TempAttrib(client, weapon);
+
+	//gives attackspeed for 5 seconds with an increace of 25%!
+
+
+*/
+enum struct TempAttribStore
+{
+	int Attribute;
+	float Value;
+	float GameTimeRemoveAt;
+	int Weapon_StoreIndex;
+	/*
+	Function FuncBeforeApply;
+	Function FuncAfterApply;
+	*/
+	void Apply_TempAttrib(int client, int weapon)
+	{
+		ApplyTempAttrib_Internal(weapon, this.Attribute, this.Value, this.GameTimeRemoveAt - GetGameTime());
+		if(!List_TempApplyWeaponPer[client])
+			List_TempApplyWeaponPer[client] = new ArrayList(sizeof(TempAttribStore));
+
+		List_TempApplyWeaponPer[client].PushArray(this);
+	}
+}
+
+//on map restart
+void ClearAllTempAttributes()
+{
+	for(int c = 0; c < MAXTF2PLAYERS; c++)
+	{
+		delete List_TempApplyWeaponPer[c];
+	}
+}
+
+void WeaponSpawn_Reapply(int client, int weapon, int storeindex)
+{
+	if(!List_TempApplyWeaponPer[client])
+	{
+		return;
+	}
+	static TempAttribStore TempStoreAttrib;
+	int length = List_TempApplyWeaponPer[client].Length;
+	for(int i; i<length; i++)
+	{
+		List_TempApplyWeaponPer[client].GetArray(i, TempStoreAttrib);
+		if(TempStoreAttrib.GameTimeRemoveAt < GetGameTime())
+		{
+			List_TempApplyWeaponPer[client].Erase(i);
+			i--;
+			length--;
+			continue;
+		}
+		if(storeindex == TempStoreAttrib.Weapon_StoreIndex)
+		{
+			ApplyTempAttrib_Internal(weapon, TempStoreAttrib.Attribute, TempStoreAttrib.Value, TempStoreAttrib.GameTimeRemoveAt - GetGameTime());
+			//Give all the things needed to the weapon again.
+		}
+	}
+	//????
+}
+
+//this is ONLY used for casino
+void Store_WeaponUpgradeByOnePap(int client, int weapon)
+{
+	static Item item;
+	StoreItems.GetArray(StoreWeapon[weapon], item);
+	if(item.Owned[client])
+	{
+		item.Owned[client]++;
+		StoreItems.SetArray(StoreWeapon[weapon], item);
+		TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, GetClientHealth(client));
+	}
 }
