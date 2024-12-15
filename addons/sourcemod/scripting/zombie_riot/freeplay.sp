@@ -25,6 +25,8 @@ static int StalkerBuff;
 static int PerkMachine;
 static int RaidFight;
 static float SpeedMult;
+static float MeleeMult;
+static float RangedMult;
 static bool WaveSkulls;
 
 void Freeplay_ResetAll()
@@ -53,6 +55,8 @@ void Freeplay_ResetAll()
 	PerkMachine = 0;
 	RaidFight = 0;
 	SpeedMult = 1.0;
+	MeleeMult = 1.0;
+	RangedMult = 1.0;
 	WaveSkulls = false;
 
 	EscapeModeForNpc = false;
@@ -356,8 +360,9 @@ void Freeplay_SpawnEnemy(int entity)
 		}
 	}
 
-	// speed mult thingy (hope it works lol)
 	fl_Extra_Speed[entity] *= SpeedMult;
+	fl_Extra_MeleeArmor[entity] *= MeleeMult;
+	fl_Extra_RangedArmor[entity] *= RangedMult;
 }
 
 void Freeplay_OnEndWave(int postWaves, int &cash)
@@ -681,7 +686,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 35:
 		{
-			strcopy(message, sizeof(message), "{red}The {yellow}True Fusion Warrior {red}will appear in the next wave! {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave! {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 1;
 		}
 		case 36:
@@ -805,52 +810,52 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 56:
 		{
-			strcopy(message, sizeof(message), "Corrupted Barney {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming... {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 13;
 		}
 		case 57:
 		{
-			strcopy(message, sizeof(message), "Whiteflower {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave. {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 14;
 		}
 		case 58:
 		{
-			strcopy(message, sizeof(message), "Unspeakable {green}Defeating it will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching... {green}Defeating it will award you with 5000 credits.");
 			RaidFight = 15;
 		}
 		case 59:
 		{
-			strcopy(message, sizeof(message), "Vhxis {green}Defeating it will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave. {green}Defeating it will award you with 5000 credits.");
 			RaidFight = 16;
 		}
 		case 60:
 		{
-			strcopy(message, sizeof(message), "Nemal & Silvester {green}Defeating them will award you with 5000 credits.);
+			strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave! {green}Defeating them will award you with 5000 credits.);
 			RaidFight = 17;
 		}
 		case 61:
 		{
-			strcopy(message, sizeof(message), "Twirl {green}Defeating her will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave! {green}Defeating her will award you with 5000 credits.");
 			RaidFight = 18;
 		}
 		case 62:
 		{
-			strcopy(message, sizeof(message), "Agent Thompson {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave. {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 19;
 		}
 		case 63:
 		{
-			strcopy(message, sizeof(message), "Twins {green}Defeating them will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave. {green}Defeating them will award you with 5000 credits.");
 			RaidFight = 20;
 		}
 		case 64:
 		{
-			strcopy(message, sizeof(message), "Agent Jackson {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave. {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 21;
 		}
 		case 65:
 		{
-			strcopy(message, sizeof(message), "Agent Smith {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave. {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 22;
 		}
 		case 66:
@@ -882,6 +887,82 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			}
 			strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
 			SpeedMult -= 0.15;
+		}
+		case 70:
+		{
+			strcopy(message, sizeof(message), "{green}Enemies will now take 10% more melee damage.");
+			MeleeMult += 0.10;
+		}
+		case 71:
+		{
+			strcopy(message, sizeof(message), "{green}Enemies will now take 15% more melee damage.");
+			MeleeMult += 0.15;
+		}
+		case 72:
+		{
+			if(MeleeMult < 0.05) // 95% melee res max
+			{
+				Freeplay_SetupStart(postWaves, wave);
+				return;
+			}
+			strcopy(message, sizeof(message), "{red}Enemies will now take 10% less melee damage.");
+			MeleeMult -= 0.10;
+			if(MeleeMult < 0.05)
+			{
+				MeleeMult = 0.05;
+			}
+		}
+		case 73:
+		{
+			if(MeleeMult < 0.05)
+			{
+				Freeplay_SetupStart(postWaves, wave);
+				return;
+			}
+			strcopy(message, sizeof(message), "{red}Enemies will now take 15% less melee damage.");
+			MeleeMult -= 0.15;
+			if(MeleeMult < 0.05)
+			{
+				MeleeMult = 0.05;
+			}
+		}
+		case 74:
+		{
+			strcopy(message, sizeof(message), "{green}Enemies will now take 10% more ranged damage.");
+			RangedMult += 0.10;
+		}
+		case 75:
+		{
+			strcopy(message, sizeof(message), "{green}Enemies will now take 15% more ranged damage.");
+			RangedMult += 0.15;
+		}
+		case 76:
+		{
+			if(RangedMult < 0.05) // 95% ranged res max
+			{
+				Freeplay_SetupStart(postWaves, wave);
+				return;
+			}
+			strcopy(message, sizeof(message), "{red}Enemies will now take 10% less ranged damage.");
+			RangedMult -= 0.10;
+			if(RangedMult < 0.05)
+			{
+				RangedMult = 0.05;
+			}
+		}
+		case 77:
+		{
+			if(RangedMult < 0.05)
+			{
+				Freeplay_SetupStart(postWaves, wave);
+				return;
+			}
+			strcopy(message, sizeof(message), "{red}Enemies will now take 15% less ranged damage.");
+			RangedMult -= 0.15;
+			if(RangedMult < 0.05)
+			{
+				RangedMult = 0.05;
+			}
 		}
 		default:
 		{
