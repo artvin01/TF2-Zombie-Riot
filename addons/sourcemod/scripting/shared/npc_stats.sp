@@ -9171,9 +9171,12 @@ public void KillNpc(int ref)
 stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = false)
 {
 	if(!IgnoreAllLogic && b_CannotBeStunned[npc])
-	{
 		return;
-	}
+
+	//Emergency incase it wasnt an npc.
+	if(!b_ThisWasAnNpc[npc])
+		return;
+
 	float GameTime = GetGameTime();
 	float TimeSinceLastStunSubtract;
 	TimeSinceLastStunSubtract = f_TimeSinceLastStunHit[npc] - GameTime;
