@@ -2073,6 +2073,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_SpadeLudoDebuff[npc] > GameTime)
 		return true;
+	else if(f_CasinoDebuff[npc] > GameTime)
+		return true;
 	else if(BleedAmountCountStack[npc] > 0) //bleed
 		return true;
 	else if(IgniteFor[npc] > 0) //burn

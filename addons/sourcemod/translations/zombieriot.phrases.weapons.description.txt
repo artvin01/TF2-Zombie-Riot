@@ -2897,11 +2897,19 @@
 		"fr"	"Tuer et frapper les ennemis vous donne des dollars.\nAppuyez M2 pour échanger 20 dollars et rouler la machine à sous.\nLa machine à sous a une chance de vous donner un effet spécial.\nDégats changent avec votre opulence.\n«La fortune est la puissance.»"
 		"chi"	"击中，击杀敌人获得$$$。\nM2花费20$开赌。有几率获得各种buff。\n伤害根据金钱增加。\n''金钱=力量''"
 	}
+	"Walmart Desc"
+	{
+		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
+	}
 	"Flush Desc"
 	{
 		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''Take it or leave it.''"
 		"fr"	"Arme est amélioré, vous obtenez plus de dollars.\nLa machine à sous vous donne des effets meilleurs.\n«Prenez-la ou laissez-la.»"
 		"chi"	"属性加强，获得更多钱。\n加强赌博提供的buff。\n''白要不要''"
+	}
+	"Flushed Away Desc"
+	{
+		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
 	}
 	"Straight Desc"
 	{
@@ -2909,15 +2917,23 @@
 		"fr"	"Arme est amélioré.\nLa machine à sous vous donne des effets meilleurs.\n«ALL IN BABY!»"
 		"chi"	"属性升级。\n加强buff。\n''ALL IN''\n''ALL IN''\n''ALL IN''"
 	}
+	"Homosexual Desc"
+	{
+		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
+	}
 	"Royal Desc"
 	{
 		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''The game was rigged from the start''"
 		"fr"	"Arme est amélioré, vous obtenez plus de dollars.\nLa machine à sous vous donne des effets meilleurs.\n«Le jeu était truqué depuis le début.»"
 		"chi"	"加强属性，更多钱。\n加强buff。\n''买的没有卖的精。''"
 	}
+	"Gambler's Ruin Desc"
+	{
+		"en"	"The ultimate version of the Casino.\nCan you feel the high?\n''Music... Start!''" // least cringe manga inclusion
+	}
 	"Casino Desc Extra"
 	{
-		"en"	"R. deals damage up to 5 enemies in a single shot, C. applies freeze, T.B.O. deals massive damage based on your clip.\nBlood ammo gives ammo on kill.\nGambling frenzy makes M2 ability free."
+		"en"	"R. deals AOE damage, C. applies Gambler's curse, T.B.O. deals massive damage based on your clip.\nBlood ammo gives ammo on kill.\nGambling frenzy makes M2 ability free.\nPayday doubles all cash."
 		"fr"	"R. : Fais des dégats à 5 ennemis. C. : Gèle les ennemis. T.B.O. : Fais des dégats basés sur le niveau de votre chargeur.\nBlood ammo : Donne des munitions quand vous tuez.\nFrénésie du Jeu : La machine à sous est gratuite."
 		"chi"	"R. 造成穿透性伤害，上限5名敌人。C. 冰冻敌人，T.B.O. 根据弹夹弹量造成超高伤害，血腥子弹在击杀后获得子弹。\n「连胜」：免费赌博！"
 	}

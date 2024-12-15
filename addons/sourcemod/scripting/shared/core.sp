@@ -1037,6 +1037,8 @@ public void OnMapStart()
 	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);
+	Zero(f_CasinoDebuff);
+	Zero(f_CasinoDebuffValue);
 	Building_MapStart();
 #endif
 
@@ -2252,6 +2254,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_CustomWeaponEquipLogic[entity] = -1;
 		Resistance_for_building_High[entity] = 0.0;
 		Building_Mounted[entity] = 0;
+		f_CasinoDebuffValue[entity] = 0.0;
+		f_CasinoDebuff[entity] = 0.0;
 		BarracksEntityCreated(entity);
 #endif
 #if defined ZR || defined RPG
