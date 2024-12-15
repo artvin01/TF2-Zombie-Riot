@@ -53,6 +53,8 @@ static bool b_ForceSpawnNextTimeMoney;
 static bool b_ForceSpawnNextTimeGrigori;
 static float f_PowerupSpawnMulti;
 
+static bool SpawnedExtraCashThisWave;
+
 void Map_Precache_Zombie_Drops()
 {
 	PrecacheModel(NUKE_MODEL, true);
@@ -70,7 +72,10 @@ void Map_Precache_Zombie_Drops()
 	PrecacheModel(GRIGORI_POWERUP_MODEL, true);
 	PrecacheSound(GRIGORI_POWERUP_SOUND, true);
 }
-
+void ZombieDrops_AllowExtraCash()
+{
+	SpawnedExtraCashThisWave = false;
+}
 public void Renable_Powerups()
 {
 	i_AllowMaxammo = true;
@@ -219,7 +224,7 @@ public void DropPowerupChance(int entity)
 		}
 	}
 	i_KilledThisMany_Money += 1;
-	if(i_KilledThisMany_Money > i_KillTheseManyMorePowerup_Money || b_ForceSpawnNextTimeMoney)
+	if(!SpawnedExtraCashThisWave && i_KilledThisMany_Money > i_KillTheseManyMorePowerup_Money || b_ForceSpawnNextTimeMoney)
 	{
 		if((GetRandomFloat(0.0, 1.0) * f_PowerupSpawnMulti) < 0.01 || b_ForceSpawnNextTimeMoney)
 		{
@@ -234,6 +239,7 @@ public void DropPowerupChance(int entity)
 				{
 					b_ForceSpawnNextTimeMoney = false;
 					SpawnMoney(entity);
+					SpawnedExtraCashThisWave = true;
 				}
 				else //Not a valid position, we must force it! next time we try!
 				{

@@ -2288,6 +2288,14 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			{
 				Format(Debuff_Adder_right, SizeOfChar, "✣%s", Debuff_Adder_right);
 			}
+			if(b_WeaponSpecificClassBuff[Victim_weapon][3])
+			{
+				Format(Debuff_Adder_right, SizeOfChar, "㎽%s", Debuff_Adder_right);
+			}
+			if(b_WeaponSpecificClassBuff[Victim_weapon][4])
+			{
+				Format(Debuff_Adder_right, SizeOfChar, "㎾%s", Debuff_Adder_right);
+			}
 			if(FlameTail_Global_Buff() && IsWeaponKazimierz(Victim_weapon))
 			{	
 				Format(Debuff_Adder_right, SizeOfChar, "F%s", Debuff_Adder_right);

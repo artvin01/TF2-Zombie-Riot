@@ -154,9 +154,9 @@ public Action Saga_Timer1(Handle timer, int client)
 		int weapon = EntRefToEntIndex(WeaponRef[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			if(!Waves_InSetup() && weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+			if(!Waves_InSetup() && weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") && AllowMaxCashgainWaveCustom(client))
 			{
-				int amount = 1;
+				int amount = 2;
 				/*
 				 + (WeaponCharge[client] * 7 / 2);
 
@@ -169,6 +169,7 @@ public Action Saga_Timer1(Handle timer, int client)
 				
 				CashRecievedNonWave[client] += amount;
 				CashSpent[client] -= amount;
+				AddCustomCashMadeThisWave(client, amount);
 			}
 			
 			return Plugin_Continue;
@@ -262,11 +263,12 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 		Rogue_OnAbilityUse(weapon);
 		MakePlayerGiveResponseVoice(client, 4); //haha!
 		WeaponCharge[client] -= cost + 1;
-		if(!Waves_InSetup())
+		if(!Waves_InSetup() && AllowMaxCashgainWaveCustom(client))
 		{
-			int cash = RoundFloat(4.0 * ResourceRegenMulti);
+			int cash = RoundFloat(6.0 * ResourceRegenMulti);
 			CashRecievedNonWave[client] += cash;
 			CashSpent[client] -= cash;
+			AddCustomCashMadeThisWave(client, cash);
 		}
 		
 		float damage = mastery ? 260.0 : 208.0;	// 400%, 320%

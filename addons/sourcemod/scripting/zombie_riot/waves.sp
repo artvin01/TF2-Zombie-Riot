@@ -2277,6 +2277,8 @@ void WaveEndLogicExtra()
 	LeperResetUses();
 	Building_ResetRewardValuesWave();
 	FallenWarriorGetRandomSeedEachWave();
+	CastleBreaker_ResetCashGain();
+	ZombieDrops_AllowExtraCash();
 	Zero(i_MaxArmorTableUsed);
 	for(int client; client <= MaxClients; client++)
 	{
