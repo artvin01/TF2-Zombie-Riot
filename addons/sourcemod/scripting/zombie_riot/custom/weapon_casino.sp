@@ -1217,71 +1217,68 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 			{
 				case 0:
 				{
-					case 0:
-					{
-						ApplyTempAttrib(weapon, 2, 1.35, 90.0);
-						ApplyTempAttrib(weapon, 6, 0.8, 90.0);
-						ApplyTempAttrib(weapon, 97, 0.8, 90.0);
-						i_Ricochet[client] += GetRandomInt(0, 10);
-						i_CryoShot[client] += GetRandomInt(0, 25);
+					ApplyTempAttrib(weapon, 2, 1.35, 90.0);
+					ApplyTempAttrib(weapon, 6, 0.8, 90.0);
+					ApplyTempAttrib(weapon, 97, 0.8, 90.0);
+					i_Ricochet[client] += GetRandomInt(0, 10);
+					i_CryoShot[client] += GetRandomInt(0, 25);
 
-						SetDefaultHudPosition(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
-						fl_jackpot_cooldown[client] = GameTime + 90.0;
-						ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");
-					}
-					case 1:
-					{
-						ApplyTempAttrib(weapon, 2, 1.4, 90.0);
-						ApplyTempAttrib(weapon, 6, 0.75, 90.0);
-						ApplyTempAttrib(weapon, 97, 0.75, 90.0);
-						i_Ricochet[client] += GetRandomInt(0, 15);
-						i_CryoShot[client] += GetRandomInt(0, 30);
+					SetDefaultHudPosition(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
+					fl_jackpot_cooldown[client] = GameTime + 90.0;
+					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");
+				}
+				case 1:
+				{
+					ApplyTempAttrib(weapon, 2, 1.4, 90.0);
+					ApplyTempAttrib(weapon, 6, 0.75, 90.0);
+					ApplyTempAttrib(weapon, 97, 0.75, 90.0);
+					i_Ricochet[client] += GetRandomInt(0, 15);
+					i_CryoShot[client] += GetRandomInt(0, 30);
 
-						SetDefaultHudPosition(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
-						fl_jackpot_cooldown[client] = GameTime + 90.0;
-						ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");
-					}
-					case 2:
-					{
-						ApplyTempAttrib(weapon, 2, 1.45, 90.0);
-						ApplyTempAttrib(weapon, 6, 0.7, 90.0);
-						ApplyTempAttrib(weapon, 97, 0.7, 90.0);
-						i_Ricochet[client] += GetRandomInt(5, 15);
-						i_CryoShot[client] += GetRandomInt(5, 30);
+					SetDefaultHudPosition(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
+					fl_jackpot_cooldown[client] = GameTime + 90.0;
+					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");
+				}
+				case 2:
+				{
+					ApplyTempAttrib(weapon, 2, 1.45, 90.0);
+					ApplyTempAttrib(weapon, 6, 0.7, 90.0);
+					ApplyTempAttrib(weapon, 97, 0.7, 90.0);
+					i_Ricochet[client] += GetRandomInt(5, 15);
+					i_CryoShot[client] += GetRandomInt(5, 30);
 
-						SetDefaultHudPosition(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
-						fl_jackpot_cooldown[client] = GameTime + 90.0;
-						ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");
-					}
-					case 3:
-					{
-						ApplyTempAttrib(weapon, 2, 1.5, 90.0);
-						ApplyTempAttrib(weapon, 6, 0.65, 90.0);
-						ApplyTempAttrib(weapon, 97, 0.65, 90.0);
-						i_Ricochet[client] += GetRandomInt(5, 20);
-						i_CryoShot[client] += GetRandomInt(10, 30);
+					SetDefaultHudPosition(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
+					fl_jackpot_cooldown[client] = GameTime + 90.0;
+					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");
+				}
+				case 3:
+				{
+					ApplyTempAttrib(weapon, 2, 1.5, 90.0);
+					ApplyTempAttrib(weapon, 6, 0.65, 90.0);
+					ApplyTempAttrib(weapon, 97, 0.65, 90.0);
+					i_Ricochet[client] += GetRandomInt(5, 20);
+					i_CryoShot[client] += GetRandomInt(10, 30);
 
-						SetDefaultHudPosition(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
-						fl_jackpot_cooldown[client] = GameTime + 90.0;
-						ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");					
-					}
-					case 4:
-					{
-						ApplyTempAttrib(weapon, 2, 1.6, 90.0);
-						ApplyTempAttrib(weapon, 6, 0.6, 90.0);
-						ApplyTempAttrib(weapon, 97, 0.6, 90.0);
-						i_Ricochet[client] += GetRandomInt(10, 20);
-						i_CryoShot[client] += GetRandomInt(15, 30);
+					SetDefaultHudPosition(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
+					fl_jackpot_cooldown[client] = GameTime + 90.0;
+					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");					
+				}
+				case 4:
+				{
+					ApplyTempAttrib(weapon, 2, 1.6, 90.0);
+					ApplyTempAttrib(weapon, 6, 0.6, 90.0);
+					ApplyTempAttrib(weapon, 97, 0.6, 90.0);
+					i_Ricochet[client] += GetRandomInt(10, 20);
+					i_CryoShot[client] += GetRandomInt(15, 30);
 
-						SetDefaultHudPosition(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
-						fl_jackpot_cooldown[client] = GameTime + 90.0;
-						ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");					
-					}
+					SetDefaultHudPosition(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
+					fl_jackpot_cooldown[client] = GameTime + 90.0;
+					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");					
 				}
 			}
 			else
