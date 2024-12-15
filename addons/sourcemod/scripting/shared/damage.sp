@@ -1843,13 +1843,17 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	{
 		damage += basedamage * (0.2 * DamageBuffExtraScaling);
 	}
-	else if(f_LudoDebuff[victim] > GameTime)
+	if(f_LudoDebuff[victim] > GameTime)
 	{
 		damage += basedamage * (GetRandomFloat(0.05,0.15) * DamageBuffExtraScaling);
 	}
-	else if(f_SpadeLudoDebuff[victim] > GameTime)
+	if(f_SpadeLudoDebuff[victim] > GameTime)
 	{
-		damage += basedamage * (GetRandomFloat(0.10,0.15) * DamageBuffExtraScaling);
+		damage += basedamage * (GetRandomFloat(0.10,0.15) * DamageBuffExtraScaling); //otherwise id just use this
+	}
+	if(f_CasinoDebuff[victim] > GameTime)
+	{
+		damage += basedamage * (f_CasinoDebuffValue[victim] * DamageBuffExtraScaling); //i need it to be preset random damage
 	}
 	if(f_PotionShrinkEffect[victim] > GameTime)
 	{
@@ -2055,6 +2059,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_CrippleDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⯯", Debuff_Adder_left);
+	}
+	if(f_CasinoDebuff[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s$", Debuff_Adder_left);
 	}
 	if(f_GoldTouchDebuff[victim] > GameTime)
 	{
