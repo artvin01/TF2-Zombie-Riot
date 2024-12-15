@@ -102,7 +102,11 @@
 	}
 	"SSB Spawn"
 	{
-		"en"		"SSB is here to wreak chaos!"
+		"en"		"SSB is here to wreak havoc!"
+	}
+	"SSB Spawn Finale"
+	{
+		"en"		"SSB is here to- wait, why is he in a chair?"
 	}
 	"You have alerted the horde..."
 	{

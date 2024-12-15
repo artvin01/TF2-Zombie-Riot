@@ -535,6 +535,7 @@ methodmap Godfather < CClotBody
 		f_NextDirtyKick[npc.index] = GetGameTime(npc.index) + Dirty_StartingCooldown;
 		f_NextKick[npc.index] = GetGameTime(npc.index) + Kick_StartingCooldown;
 		f_NextGuns[npc.index] = GetGameTime(npc.index) + Friends_StartingCooldown;
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		return npc;
 	}

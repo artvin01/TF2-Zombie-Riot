@@ -8,7 +8,6 @@ static float SSB_RaidPower[4] = { 0.001, 0.01, 0.1, 1.0 };
 #define BONES_SUPREME_SCALE				"1.45"
 #define BONES_SUPREME_SKIN				"1"
 #define BONES_SUPREME_HP				"35000"
-#define MODEL_SSB   					"models/zombie_riot/the_bone_zone/supreme_spookmaster_bones.mdl"
 #define MODEL_SKULL						"models/props_mvm/mvm_human_skull_collide.mdl"
 #define MODEL_HIDDEN_PROJECTILE			"models/weapons/w_models/w_drg_ball.mdl"
 
@@ -50,7 +49,6 @@ static float SSB_RaidPower[4] = { 0.001, 0.01, 0.1, 1.0 };
 #define SND_HELL_END			")misc/halloween/merasmus_disappear.wav"
 #define SND_HELL_FIRE			")misc/halloween/spell_meteor_cast.wav"
 
-#define PARTICLE_SSB_SPAWN					"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1				"merasmus_spawn_flash"
 #define PARTICLE_OBJECTSPAWN_2				"merasmus_spawn_flash2"
 #define PARTICLE_GREENBLAST_SSB				"merasmus_dazed_explosion"
@@ -359,7 +357,6 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_SSBGenericWindup_Sounds));   i++) { PrecacheSound(g_SSBGenericWindup_Sounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBStunned_Sounds));   i++) { PrecacheSound(g_SSBStunned_Sounds[i]);   }
 
-	PrecacheModel(MODEL_SSB);
 	PrecacheModel(MODEL_SKULL);
 	PrecacheModel(MODEL_HIDDEN_PROJECTILE);
 
@@ -4018,6 +4015,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_SKELETON;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		npc.StartPathing();
 		npc.PlayIntroSound();

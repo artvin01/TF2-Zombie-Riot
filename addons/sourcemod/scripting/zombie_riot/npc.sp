@@ -744,6 +744,7 @@ void NPC_ConfigSetup()
 
 	GrimReaper_OnMapStart_NPC();
 	SupremeSpookmasterBones_OnMapStart_NPC();
+	SSBChair_OnMapStart_NPC();
 	#endif
 }
 
@@ -1634,7 +1635,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/wave60/npc_peasant.sp"
 #include "zombie_riot/npc/bonezone/wave60/npc_boss_executioner.sp"
 //////
-#include "zombie_riot/npc/bonezone/npc_ssb.sp"
+#include "zombie_riot/npc/raidmode_bosses/ssb/npc_ssb.sp"
+#include "zombie_riot/npc/raidmode_bosses/ssb/npc_ssb_finale_phase1.sp" 
 #include "zombie_riot/npc/special/npc_reaper.sp"
 #endif
 

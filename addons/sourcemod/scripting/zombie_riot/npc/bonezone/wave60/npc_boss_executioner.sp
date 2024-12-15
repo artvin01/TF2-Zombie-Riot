@@ -402,6 +402,7 @@ methodmap Lordread < CClotBody
 		b_IsSkeleton[npc.index] = true;
 		b_thisNpcIsABoss[npc.index] = true;
 		npc.m_bisWalking = false;
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Lordread_NPCDeath);
 		//func_NPCOnTakeDamage[npc.index] = view_as<Function>(Lordread_OnTakeDamage);

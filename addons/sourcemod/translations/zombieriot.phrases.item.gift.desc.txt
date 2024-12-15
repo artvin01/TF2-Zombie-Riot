@@ -2383,6 +2383,10 @@
 	}
 	"Supreme Spookmaster Bones Desc"
 	{
-		"en"		"The ruler of Necropolis, Eternal City of the Dead.\nWhenever someone dies, they show up in a long queue, stripped of their skin and turned into a skeleton.\nAt the front of this queue, SSB judges the recently-deceased, deciding whether they should be allowed\ninto Necropolis or turned away, doomed to wander purgatory alone for eternity.\nHas a very strange but friendly rivalry with Sensal."
+		"en"		"The ruler of Necropolis, Eternal City of the Dead.\nSSB is seen by his subjects as a fair, noble, and affable ruler... so why is he trying so hard to kill the mercenaries?\nYou almost entirely wiped out the Xeno infection and have been fighting to keep the world safe.\nIf anything, SSB should be thanking you! Something seems wrong...\nHas a strange but friendly rivalry with Sensal."
+	}
+	"Supreme Spookmaster Bones: Magistrate of the Dead Desc"
+	{
+		"en"		"• Summons an army every time he loses 1/4 of his max HP.\n• Invulnerable while an army is active.\n \n\nWhenever someone dies, they show up in a long queue, stripped of their skin and turned into a skeleton.\nAt the front of this queue, SSB judges the recently-deceased, deciding whether they should be allowed\ninto Necropolis or turned away, doomed to wander purgatory alone for eternity."
 	}
 }

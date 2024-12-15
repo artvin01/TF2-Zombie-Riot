@@ -418,6 +418,7 @@ methodmap Captain < CClotBody
 		Captain_UsingPearls[npc.index] = false;
 		Captain_SetPearlsLoop[npc.index] = false;
 		b_AnchorSprinting[npc.index] = false;
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		
 		return npc;
 	}

@@ -3136,6 +3136,10 @@
 	{
 		"en"	"Supreme Spookmaster Bones"
 	}
+	"Supreme Spookmaster Bones: Magistrate of the Dead"
+	{
+		"en"	"Supreme Spookmaster Bones: Magistrate of the Dead"
+	}
 	"Sphynx"
 	{
 		"en" 		"Sphynx"
