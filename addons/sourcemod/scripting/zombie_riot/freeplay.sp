@@ -27,7 +27,10 @@ static int RaidFight;
 static float SpeedMult;
 static float MeleeMult;
 static float RangedMult;
-static bool WaveSkulls;
+static float ExtraArmor;
+static bool SuperMiniBoss;
+static int ExtraSkulls;
+static int SkullTimes;
 
 void Freeplay_ResetAll()
 {
@@ -57,7 +60,10 @@ void Freeplay_ResetAll()
 	SpeedMult = 1.0;
 	MeleeMult = 1.0;
 	RangedMult = 1.0;
-	WaveSkulls = false;
+	ExtraArmor = 0.0;
+	ExtraSkulls = 0;
+	SkullTimes = 0;
+	SuperMiniBoss = false;
 
 	EscapeModeForNpc = false;
 }
@@ -91,6 +97,7 @@ int Freeplay_GetDangerLevelCurrent()
 	}
 	return DangerLevel;
 }
+
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 {
 	if(RaidFight)
@@ -244,6 +251,58 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		if(enemy.ExtraDamage)
 			enemy.ExtraDamage *= 10.0;
 	}
+	else if(SuperMiniBoss)
+	{
+		enemy.Is_Outlined = true;
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Boss = 3;
+
+		switch(GetRandomInt(1, 7))
+		{
+			case 1: // Rogue cta doctor
+			{
+				enemy.Index = NPC_GetByPlugin("npc_doctor");
+				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 2: // Guln
+			{
+				enemy.Index = NPC_GetByPlugin("npc_fallen_warrior");
+				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 3: // L4D2 Tank
+			{
+				enemy.Index = NPC_GetByPlugin("npc_l4d2_tank");
+				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 4: // Amogus
+			{
+				enemy.Index = NPC_GetByPlugin("npc_omega");
+				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 5: // Panzer
+			{
+				enemy.Index = NPC_GetByPlugin("npc_panzer");
+				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 6: // Lucius or lucian or luciaus or whatever the name is  i forgor
+			{
+				enemy.Index = NPC_GetByPlugin("npc_phantom_knight");
+				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 7: // Sawrunner
+			{
+				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
+				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+		}
+		enemy.Credits += 500.0;
+		enemy.ExtraDamage *= 1.65; // Give them extra damage since some aren't too good at causing mayhem
+		enemy.ExtraSpeed = 1.25;
+		enemy.ExtraSize = 1.75; // big
+
+		count = 5;
+		SuperMiniBoss = false;
+	}
 	else
 	{
 		if(enemy.Health)
@@ -360,6 +419,9 @@ void Freeplay_SpawnEnemy(int entity)
 		}
 	}
 
+	if(ExtraArmor > 0.0)
+		GrantEntityArmor(entity, false, 1.0, 0.5, 0, ExtraArmor);
+
 	fl_Extra_Speed[entity] *= SpeedMult;
 	fl_Extra_MeleeArmor[entity] *= MeleeMult;
 	fl_Extra_RangedArmor[entity] *= RangedMult;
@@ -367,20 +429,11 @@ void Freeplay_SpawnEnemy(int entity)
 
 void Freeplay_OnEndWave(int postWaves, int &cash)
 {
-	if(WaveSkulls)
-		Freeplay_SetupStart(postWaves, true);
-	
 	cash += CashBonus;
 }
 
-void Freeplay_SetupStart(int postWaves, bool wave = false)
+void Freeplay_SetupStart(bool again)
 {
-	if(WaveSkulls && !wave)
-	{
-		WaveSkulls = false;
-		return;
-	}
-
 	static int RerollTry;
 
 	int rand = 6;
@@ -437,16 +490,23 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{green}All enemies have -5% health");
 			HealthMulti *= 0.95;
 		}
-		case 9, 10:
+		case 9:
 		{
 			if(EscapeModeForNpc)
 			{
-				Freeplay_SetupStart(postWaves, wave);
-				return;
+				strcopy(message, sizeof(message), "{green}Weaker enemies lose the given extra speed and damage.");
+				EscapeModeForNpc = false;
 			}
-
-			strcopy(message, sizeof(message), "{red}Weaker enemies gain extra speed and damage");
-			EscapeModeForNpc = true;
+			else
+			{
+				strcopy(message, sizeof(message), "{red}Weaker enemies gain extra speed and damage.");
+				EscapeModeForNpc = true;
+			}
+		}
+		case 10:
+		{
+			strcopy(message, sizeof(message), "{red}5 random SUPER Minibosses will spawn in the next wave! {green}Defeating them will grant 500 extra credits each.");
+			SuperMiniBoss = true;
 		}
 		case 11:
 		{
@@ -460,20 +520,14 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 13:
 		{
-			if(KillBonus > 0)
-			{
-				Freeplay_SetupStart(postWaves, wave);
-				return;
-			}
-
 			strcopy(message, sizeof(message), "{green}All enemies give +1 credits on death");
-			KillBonus++;
+			KillBonus += 1;
 		}
 		case 14:
 		{
 			if(KillBonus < 1)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -494,7 +548,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(CashBonus < 100)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -510,7 +564,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(EnemyBosses == 1)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -528,7 +582,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(ImmuneNuke == 1)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -546,51 +600,44 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(HussarBuff)
 			{
-				Freeplay_SetupStart(postWaves, wave);
-				return;
+				strcopy(message, sizeof(message), "{green}All enemies lose the Hussar buff!");
+				HussarBuff = false;
 			}
-
-			strcopy(message, sizeof(message), "{red}All enemies gain the Hussar buff");
-			HussarBuff = true;
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies gain the Hussar buff.");
+				HussarBuff = true;
+			}
 		}
 		case 22:
 		{
 			if(PernellBuff)
 			{
-				Freeplay_SetupStart(postWaves, wave);
-				return;
+				strcopy(message, sizeof(message), "{green}All enemies lose the Purnell buff!");
+				PernellBuff = true;
 			}
-
-			strcopy(message, sizeof(message), "{red}All enemies gain the Pernell buff for 15 seconds");
-			PernellBuff = true;
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies gain the Purnell buff for 15 seconds.");
+				PernellBuff = true;
+			}
 		}
 		case 23:
 		{
 			if(PerkMachine == 1)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
 			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Juggernog, And thus gain resistance.");
 			PerkMachine = 1;
 		}
-		case 24:
+		case 24, 25:
 		{
 			if(PerkMachine == 2)
 			{
-				Freeplay_SetupStart(postWaves, wave);
-				return;
-			}
-
-			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Deadshot Daiquiri, And thus gain Extra Damage.");
-			PerkMachine = 2;
-		}
-		case 25:
-		{
-			if(PerkMachine == 2)
-			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -601,7 +648,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(PerkMachine == 3)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -612,7 +659,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(PerkMachine == 4)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -623,7 +670,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(PerkMachine == 0)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -634,7 +681,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(IceDebuff > 2)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -645,7 +692,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(TeslarDebuff > 1)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -656,7 +703,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(FusionBuff > 2)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -667,7 +714,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(OceanBuff > 1)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -676,7 +723,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 33:
 		{
-			strcopy(message, sizeof(message), "{green}The next 300 enemies gain Cripple debuff");
+			strcopy(message, sizeof(message), "{green}The next 300 enemies gain the Crippled debuff");
 			CrippleDebuff += 300;
 		}
 		case 34:
@@ -689,12 +736,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave! {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 1;
 		}
-		case 36:
-		{
-			strcopy(message, sizeof(message), "{yellow}Every wave will add a new skull until setup");
-			WaveSkulls = true;
-		}
-		case 37, 38, 39, 40:
+		case 36, 37, 38, 39:
 		{
 			//if(EnemyChance > 8)
 			//{
@@ -705,11 +747,11 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}Stronger enemy types are more likely to appear");
 			EnemyChance++;
 		}
-		case 41:
+		case 40, 41:
 		{
 			if(EnemyCount < 6)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -720,7 +762,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(EnemyChance < 3)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -731,7 +773,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(Medival_Difficulty_Level <= 0.1)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 
@@ -830,7 +872,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 60:
 		{
-			strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave! {green}Defeating them will award you with 5000 credits.);
+			strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave! {green}Defeating them will award you with 5000 credits.");
 			RaidFight = 17;
 		}
 		case 61:
@@ -872,7 +914,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(SpeedMult < 0.35) // i'll go with a minimum of -65% movement speed since freeplay enemies move way faster than usual, and certain buffs make them faster
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 			strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
@@ -882,7 +924,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(SpeedMult < 0.35)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 			strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
@@ -902,7 +944,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(MeleeMult < 0.05) // 95% melee res max
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 10% less melee damage.");
@@ -916,7 +958,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(MeleeMult < 0.05)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 15% less melee damage.");
@@ -940,7 +982,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(RangedMult < 0.05) // 95% ranged res max
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 10% less ranged damage.");
@@ -954,7 +996,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			if(RangedMult < 0.05)
 			{
-				Freeplay_SetupStart(postWaves, wave);
+				Freeplay_SetupStart(false);
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 15% less ranged damage.");
@@ -962,6 +1004,44 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			if(RangedMult < 0.05)
 			{
 				RangedMult = 0.05;
+			}
+		}
+		case 78:
+		{
+			strcopy(message, sizeof(message), "{red}All enemies now gain 5000 extra armor, which halves their damage taken.");
+			ExtraArmor += 5000.0;
+		}
+		case 79:
+		{
+			strcopy(message, sizeof(message), "{red}All enemies now gain 10000 extra armor, which halves their damage taken.");
+			ExtraArmor += 10000.0;
+		}
+		case 80:
+		{
+			if(ExtraArmor < 0.0)
+			{
+				Freeplay_SetupStart(false);
+				return;
+			}
+			strcopy(message, sizeof(message), "{green}All enemies now have 2500 less armor.");
+			ExtraArmor -= 2500.0;
+			if(ExtraArmor < 0.0)
+			{
+				ExtraArmor = 0.0;
+			}
+		}
+		case 81:
+		{
+			if(ExtraArmor < 0.0)
+			{
+				Freeplay_SetupStart(false);
+				return;
+			}
+			strcopy(message, sizeof(message), "{green}All enemies now have 5000 less armor.");
+			ExtraArmor -= 5000.0;
+			if(ExtraArmor < 0.0)
+			{
+				ExtraArmor = 0.0;
 			}
 		}
 		default:
@@ -973,4 +1053,18 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 
 	RerollTry = 0;
 	CPrintToChatAll("{orange}New Skull{default}: %s", message);
+
+	float exskull = GetRandomInt(0, 100)
+	if(exskull > 90) // 10% chance
+	{
+		ExtraSkulls++;
+		CPrintToChatAll("{yellow}ALERT!!! {orange}Setups will now contain one additional skull.");
+	}
+
+	SkullTimes = ExtraSkulls;
+	if(SkullTimes < 0 && again)
+	{
+		SkullTimes--;
+		Freplay_SetupStart(true);
+	}
 }
