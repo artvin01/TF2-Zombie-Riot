@@ -3211,7 +3211,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			Freeplay_SetupStart(postWaves);
+			Freeplay_SetupStart(false);
 
 			Cooldown = GetGameTime() + 15.0;
 			
@@ -3338,7 +3338,7 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 
 		if((CurrentRound % 5) == 4)
 		{
-			Freeplay_SetupStart(postWaves);
+			Freeplay_SetupStart(false);
 
 			Cooldown = GetGameTime() + 15.0;
 			
