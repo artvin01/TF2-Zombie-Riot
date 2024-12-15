@@ -909,7 +909,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	if(i_RaidGrantExtra[npc.index] == 5)
 	{
-		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
+		if(!b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] && RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 

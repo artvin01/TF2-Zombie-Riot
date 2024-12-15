@@ -2337,14 +2337,7 @@ static int Ruina_AttachParticle(int entity, char type[255], float duration = 0.0
 		if (IsValidEdict(part1))
 		{
 			float pos[3];
-			if (HasEntProp(entity, Prop_Data, "m_vecAbsOrigin"))
-			{
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-			}
-			else if (HasEntProp(entity, Prop_Send, "m_vecOrigin"))
-			{
-				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-			}
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 			
 			if (zTrans != 0.0)
 			{

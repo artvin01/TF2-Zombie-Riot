@@ -320,7 +320,7 @@ void OnMapStart_NPC_Base()
 	
 	PrecacheEffect("ParticleEffect");
 	PrecacheEffect("ParticleEffectStop");
-	PrecacheParticleEffect("burningplayer_red");
+	PrecacheParticleEffect("burningplayer_corpse");
 
 	for (int NpcIndexNumber = 0; NpcIndexNumber < ZR_MAX_NPCS; NpcIndexNumber++)
 	{
@@ -425,7 +425,8 @@ methodmap CClotBody < CBaseCombatCharacter
 						bool IgnoreBuildings = false,
 						bool IsRaidBoss = false,
 						const float CustomThreeDimensions[3] = {0.0,0.0,0.0},
-						bool Ally_Collideeachother = false)
+						bool Ally_Collideeachother = false,
+						const float CustomThreeDimensionsextra[3] = {0.0,0.0,0.0})
 #endif
 	{
 
@@ -587,10 +588,21 @@ methodmap CClotBody < CBaseCombatCharacter
 			m_vecMaxs[0] = f3_CustomMinMaxBoundingBox[npc][0];
 			m_vecMaxs[1] = f3_CustomMinMaxBoundingBox[npc][1];
 			m_vecMaxs[2] = f3_CustomMinMaxBoundingBox[npc][2];
-
-			m_vecMins[0] = -f3_CustomMinMaxBoundingBox[npc][0];
-			m_vecMins[1] = -f3_CustomMinMaxBoundingBox[npc][1];
-			m_vecMins[2] = 0.0;
+			if(CustomThreeDimensionsextra[1] != 0.0)
+			{
+				m_vecMins[0] = CustomThreeDimensionsextra[0];
+				m_vecMins[1] = CustomThreeDimensionsextra[1];
+				m_vecMins[2] = CustomThreeDimensionsextra[2];
+			}
+			else
+			{
+				m_vecMins[0] = -f3_CustomMinMaxBoundingBox[npc][0];
+				m_vecMins[1] = -f3_CustomMinMaxBoundingBox[npc][1];
+				m_vecMins[2] = 0.0;
+			}
+			f3_CustomMinMaxBoundingBoxMinExtra[npc][0] = CustomThreeDimensionsextra[0];
+			f3_CustomMinMaxBoundingBoxMinExtra[npc][1] = CustomThreeDimensionsextra[1];
+			f3_CustomMinMaxBoundingBoxMinExtra[npc][2] = CustomThreeDimensionsextra[2];
 		}
 		//Fix collisions
 		
@@ -1621,6 +1633,18 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(f_HussarBuff[this.index] > Gametime)
 		{
 			speed_for_return *= 1.20;
+		}
+		if(f_SquadLeaderBuff[this.index] > Gametime)
+		{
+			speed_for_return *= 1.33;
+		}
+		if(f_VictorianCallToArms[this.index] > Gametime)
+		{
+			speed_for_return *= 1.15;
+		}
+		if(f_CaffeinatorBuff[this.index] > Gametime)
+		{
+			speed_for_return *= 1.5;
 		}
 		if(f_VoidAfflictionStrength2[this.index] > Gametime)
 		{
@@ -2946,7 +2970,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	 float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 },
 	  float vecSwingMins[3] = { -64.0, -64.0, -128.0 },
 	   float vecSwingStartOffset = 55.0,
-	    int Npc_type = 0,
+		int Npc_type = 0,
 		 int Ignore_Buildings = 0,
 		  int countAoe = 0)
 	{
@@ -3998,13 +4022,13 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		MakeObjectIntangeable(pThis);
 		b_ThisEntityIgnored[pThis] = true;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
-	//Do not remove pather here.
+		//Do not remove pather here.
 		RemoveNpcFromEnemyList(pThis, true);
 		b_StaticNPC[pThis] = false;
 
 		if(!npc.m_bDissapearOnDeath)
 		{
-			if(!npc.m_bGib)
+			if((b_OnDeathExtraLogicNpc[pThis] & ZRNPC_DEATH_NOGIB) || !npc.m_bGib)
 			{
 				MakeEntityRagdollNpc(npc.index);
 			}
@@ -4022,12 +4046,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		Waves_UpdateMvMStats();
 #endif
 	}
-	/*
-	else
-	{	
-		SetNpcToDeadViaGib(pThis);
-	}
-	*/
 }
 
 
@@ -5446,7 +5464,7 @@ stock int GetClosestTarget(int entity,
  bool IgnoreBuildings = false,
   float fldistancelimit = 99999.9,
    bool camoDetection=false,
-    bool onlyPlayers = false,
+	bool onlyPlayers = false,
 	 int ingore_client = -1, 
 	 float EntityLocation[3] = {0.0,0.0,0.0},
 	  bool CanSee = false,
@@ -6828,7 +6846,7 @@ stock void Custom_Knockback(int attacker,
  int enemy,
   float knockback,
    bool ignore_attribute = false,
-    bool override = false,
+	bool override = false,
 	 bool work_on_entity = false,
 	 float PullDuration = 0.0,
 	 bool RecieveInfo = false,
@@ -7635,11 +7653,11 @@ stock bool makeexplosion(
 	int attacker = 0,
 	 int inflictor = -1,
 	  float attackposition[3],
-	    char[] weaponname = "",
+		char[] weaponname = "",
 		 int Damage_for_boom = 200,
 		  int Range_for_boom = 200,
 		   float Knockback = 200.0,
-		    int flags = 0,
+			int flags = 0,
 			 bool FromNpcForced = false,
 			  bool do_explosion_effect = true,
 			  float dmg_against_entity_multiplier = 3.0)
@@ -8629,6 +8647,54 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	return ClosestTarget; 
 }
 
+stock int GetClosestBuilding(int entity, float limitsquared = 99999999.9, int ingore_thisAlly = 0,Function ExtraValidityFunction = INVALID_FUNCTION)
+{
+	float TargetDistancetoBuilding = 0.0; 
+	int ClosestTarget1 = 0; 
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if (IsValidEntity(i) && i != entity && i != ingore_thisAlly && (i <= MaxClients || !b_NpcHasDied[i]))
+		{
+			if(GetTeam(entity) == GetTeam(i) && !Is_a_Medic[i] && IsEntityAlive(i, true) && i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i] && !b_NpcIsInvulnerable[i])  //Making go for the building
+			{
+				if(ExtraValidityFunction != INVALID_FUNCTION)
+				{
+					bool WasValid1;
+					Call_StartFunction(null, ExtraValidityFunction);
+					Call_PushCell(entity);
+					Call_PushCell(i);
+					Call_Finish(WasValid1);
+
+					if(!WasValid1)
+						continue;
+				}
+				float EntityLocation[3], TargetLocation[3]; 
+				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+				GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+				if( distance < limitsquared )
+				{
+					if( TargetDistancetoBuilding ) 
+					{
+						if( distance < TargetDistancetoBuilding ) 
+						{
+							ClosestTarget1 = i; 
+							TargetDistancetoBuilding = distance;		  
+						}
+					} 
+					else 
+					{
+						ClosestTarget1 = i; 
+						TargetDistancetoBuilding = distance;
+					}			
+				}
+			}
+		}
+	}
+	return ClosestTarget1; 
+}
+
 
 stock bool IsValidAlly(int index, int ally)
 {
@@ -8762,6 +8828,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #endif
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
+	b_OnDeathExtraLogicNpc[entity] = 0;
 	f_DoNotUnstuckDuration[entity] = 0.0;
 	f_UnstuckTimerCheck[entity][0] = 0.0;
 	f_UnstuckTimerCheck[entity][1] = 0.0;
@@ -8978,6 +9045,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	f_PernellBuff[entity] = 0.0;
 	f_HussarBuff[entity] = 0.0;
+	f_SquadLeaderBuff[entity] = 0.0;
+	f_VictorianCallToArms[entity] = 0.0;
+	f_CaffeinatorBuff[entity] = 0.0;
 	f_GodAlaxiosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
@@ -9302,15 +9372,15 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool
 
 
 bool TraceFilterClients(int entity, int mask, any data)
-{    
-    if (entity > 0 && entity <= MAXENTITIES) 
-    { 
-        return false; 
-    }
-    else 
-    { 
-        return true; 
-    } 
+{	
+	if (entity > 0 && entity <= MAXENTITIES) 
+	{ 
+		return false; 
+	}
+	else 
+	{ 
+		return true; 
+	} 
 } 
 
 
@@ -9619,6 +9689,18 @@ stock bool NpcStats_IsEnemySilenced(int enemy)
 		return true; //they dont exist, pretend as if they are silenced.
 
 	if(f_Silenced[enemy] < GetGameTime())
+	{
+		return false;
+	}
+	return true;
+}
+
+stock bool NpcStats_VictorianCallToArms(int enemy)
+{
+	if(!IsValidEntity(enemy))
+		return true; //they dont exist, pretend as if they are silenced.
+
+	if(f_VictorianCallToArms[enemy] < GetGameTime())
 	{
 		return false;
 	}
@@ -9973,7 +10055,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 	{
 		char sColor[32];
 		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
-		DispatchKeyValue(npc.m_iTextEntity5,     "color", sColor);
+		DispatchKeyValue(npc.m_iTextEntity5,	 "color", sColor);
 		DispatchKeyValue(npc.m_iTextEntity5, "message", HealthText);
 	}
 	else
@@ -10016,6 +10098,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(NpcStats_IberiaIsEnemyMarked(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "%sM",HealthText);
+	}
+	if(NpcStats_VictorianCallToArms(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "@",HealthText);
 	}
 
 #if defined ZR
@@ -10075,7 +10161,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		//	char sColor[32];
 		//	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
-		//	DispatchKeyValue(npc.m_iTextEntity1,     "color", sColor);
+		//	DispatchKeyValue(npc.m_iTextEntity1,	 "color", sColor);
 		// Colour will never be Edited probably.
 		DispatchKeyValue(npc.m_iTextEntity4, "message", HealthText);
 	}
@@ -10930,10 +11016,13 @@ void NpcSpeechBubbleTalk(int iNPC)
 #define THIRDPERSON 2
 
 Handle Timer_Ingition_Settings[MAXENTITIES] = {INVALID_HANDLE, ...};
+Handle Timer_Ingition_ReApply[MAXENTITIES] = {INVALID_HANDLE, ...};
 bool ClientHasSetFire[MAXENTITIES][MAXTF2PLAYERS];
+float Reapply_BurningCorpse[MAXENTITIES];
 
 void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClient = 0)
 {
+	Reapply_BurningCorpse[target] = GetGameTime() + 5.0;
 	if(ViewmodelSetting > 0)
 	{
 		for( int i = 0; i <= MaxClients; i++ ) 
@@ -10955,12 +11044,36 @@ void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClien
 	}
 	else
 	{
-		TE_SetupParticleEffect("burningplayer_red", PATTACH_ABSORIGIN_FOLLOW, target);
+		TE_SetupParticleEffect("burningplayer_corpse", PATTACH_ABSORIGIN_FOLLOW, target);
 		TE_WriteNum("m_bControlPoint1", target);	
-		TE_SendToAll();		
+		TE_SendToAll();
+		if(Timer_Ingition_ReApply[target] != null)
+		{
+			delete Timer_Ingition_ReApply[target];
+			Timer_Ingition_ReApply[target] = null;
+		}		
+		DataPack pack;
+		Timer_Ingition_ReApply[target] = CreateDataTimer(5.0, IgniteTimerVisual_Reignite, pack);
+		pack.WriteCell(target);
+		pack.WriteCell(EntIndexToEntRef(target));
 	}
 }
 
+public Action IgniteTimerVisual_Reignite(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int targetoriginal = pack.ReadCell();
+	int target = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(target))
+	{
+		Timer_Ingition_ReApply[targetoriginal] = null;
+		return Plugin_Continue;
+	}	
+	ExtinguishTarget(target, true);
+	Timer_Ingition_ReApply[targetoriginal] = null;
+	IgniteTargetEffect(target);
+	return Plugin_Continue;
+}
 public Action IgniteTimerVisual(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -10977,6 +11090,11 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 	{
 		if (IsValidClient(client))
 		{
+			//extinquish shortly.
+			if(Reapply_BurningCorpse[target] < GetGameTime())
+			{
+				IngiteTargetClientside(target, client, false);
+			}
 			if(b_FirstPersonUsesWorldModel[client])
 			{
 				//always ignited.
@@ -11053,7 +11171,7 @@ void IngiteTargetClientside(int target, int client, bool ingite)
 	if(ingite && !ClientHasSetFire[target][client])
 	{
 		ClientHasSetFire[target][client] = true;
-		TE_SetupParticleEffect("burningplayer_red", PATTACH_ABSORIGIN_FOLLOW, target);
+		TE_SetupParticleEffect("burningplayer_corpse", PATTACH_ABSORIGIN_FOLLOW, target);
 		TE_WriteNum("m_bControlPoint1", target);	
 		TE_SendToClient(client);
 	}
@@ -11065,26 +11183,34 @@ void IngiteTargetClientside(int target, int client, bool ingite)
 		if(target > 0)
 			TE_WriteNum("entindex", target);
 		
-		TE_WriteNum("m_nHitBox", GetParticleEffectIndex("burningplayer_red"));
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex("burningplayer_corpse"));
 		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 		TE_SendToClient(client);	
 	}
 
 }
-void ExtinguishTarget(int target)
+void ExtinguishTarget(int target, bool dontkillTimer = false)
 {
 	TE_Start("EffectDispatch");
 	
 	if(target > 0)
 		TE_WriteNum("entindex", target);
 	
-	TE_WriteNum("m_nHitBox", GetParticleEffectIndex("burningplayer_red"));
+	TE_WriteNum("m_nHitBox", GetParticleEffectIndex("burningplayer_corpse"));
 	TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 	TE_SendToAll();
 	if(Timer_Ingition_Settings[target] != null)
 	{
 		delete Timer_Ingition_Settings[target];
 		Timer_Ingition_Settings[target] = null;
+	}
+	if(!dontkillTimer)
+	{
+		if(Timer_Ingition_ReApply[target] != null)
+		{
+			delete Timer_Ingition_ReApply[target];
+			Timer_Ingition_ReApply[target] = null;
+		}	
 	}
 }
 

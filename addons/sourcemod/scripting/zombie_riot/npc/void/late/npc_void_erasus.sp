@@ -281,7 +281,7 @@ void VoidedErasusSelfDefense(VoidedErasus npc, float gameTime, int target, float
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 120.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 5.0;
 

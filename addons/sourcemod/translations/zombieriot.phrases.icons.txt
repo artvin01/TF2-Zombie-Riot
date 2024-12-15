@@ -460,4 +460,24 @@
 	{
 		"en"		"An agent of Necropolis has arrived."
 	}
+	"Victorian Radiomast Is Here!"
+	{
+		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"
+	}
+	"Atomizer Arrived"
+	{
+		"en" 		"Leatherboots Scoutsquad's elite, Incoming Atomizer."
+	}
+	"Huscarls Arrived"
+	{
+		"en" 		 "Huscarls halts you."
+	}
+	"Harrison Arrived"
+	{
+		"en" 		 "The Pilot of Victorian Artillery, Harrison Arrived."
+	}
+	"Castellan Arrived"
+	{
+		"en" 		 "Castellan arrives to put end to this."
+	}
 }

@@ -377,10 +377,14 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						//self heal
 						int ammoSubtract;
 						ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
+						if(ammoSubtract > 0)
+							ReduceMediFluidCost(owner, ammoSubtract);
 						new_ammo -= ammoSubtract;
 
 						//Ally Heal
 						ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
+						if(ammoSubtract > 0)
+							ReduceMediFluidCost(owner, ammoSubtract);
 						new_ammo -= ammoSubtract;
 
 						if(!b_NpcHasDied[healTarget])
@@ -721,4 +725,29 @@ public void Adaptive_MedigunChangeBuff(int client, int weapon, bool crit, int sl
 	{
 		MedigunModeSet[client] = 0;
 	}
+}
+
+
+public void ReduceMediFluidCost(int client, int &cost)
+{
+	float Attribute = Attributes_GetOnPlayer(client, Attrib_ReduceMedifluidCost, true, true);
+	if(Attribute == 1.0 || Attribute == 0.0)
+	{
+		return;
+	}
+	cost = RoundToNearest(float(cost) * Attribute);
+	if(cost <= 1)
+		cost = 1;
+}
+
+public void ReduceMetalCost(int client, int &cost)
+{
+	float Attribute = Attributes_GetOnPlayer(client, Attrib_ReduceMetalCost, true, true);
+	if(Attribute == 1.0 || Attribute == 0.0)
+	{
+		return;
+	}
+	cost = RoundToNearest(float(cost) * Attribute);
+	if(cost <= 1)
+		cost = 1;
 }

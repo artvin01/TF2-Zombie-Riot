@@ -5,7 +5,6 @@ static int SSS_overheat[MAXENTITIES]={0, ...};
 static float starshooter_hud_delay[MAXTF2PLAYERS];
 static float StarShooterCoolDelay[MAXTF2PLAYERS];
 static int IsAbilityActive[MAXTF2PLAYERS];
-static bool SSS_AlreadyHit[MAXENTITIES][MAXENTITIES];
 
 Handle Timer_Starshooter_Management[MAXPLAYERS+1] = {null, ...};
 
@@ -82,7 +81,7 @@ public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 	for (int entity = 0; entity < MAXENTITIES; entity++)
 	{
-		SSS_AlreadyHit[projectile][entity] = false;
+		f_GlobalHitDetectionLogic[projectile][entity] = 0.0;
 	}
 }
 
@@ -138,7 +137,7 @@ public void Super_Star_Shooter_pap1_Main(int client, int weapon, bool crit, int 
 	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 	for (int entity = 0; entity < MAXENTITIES; entity++)
 	{
-		SSS_AlreadyHit[projectile][entity] = false;
+		f_GlobalHitDetectionLogic[projectile][entity] = 0.0;
 	}
 }
 
@@ -186,10 +185,10 @@ public void SuperStarShooterOnHit(int entity, int target)
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
 	{
-		if(SSS_AlreadyHit[entity][target])
+		if(f_GlobalHitDetectionLogic[entity][target])
 			return;
 
-		SSS_AlreadyHit[entity][target] = true;
+		f_GlobalHitDetectionLogic[entity][target] = 1.0;
 		//Code to do damage position and ragdolls
 		static float angles[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);

@@ -331,13 +331,35 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 	if(ammo > 4)
 	{
 		StartPlayerOnlyLagComp(client, true);
-		int target = GetClientPointVisibleOnlyClient(client, 150.0);
+		float pos[3];
+		int target = GetClientPointVisiblePlayersNPCs(client, 120.0, pos, false);
 		EndPlayerOnlyLagComp(client);
 
-		if(target > 0 && target <= MaxClients && dieingstate[target] == 0)
+		int AllowHealing = 0;
+		if(IsValidEntity(target))
 		{
-			int health = GetEntProp(target, Prop_Send, "m_iHealth");
-			int maxHealth = SDKCall_GetMaxHealth(target);
+			if(IsValidClient(target))
+			{
+				if(dieingstate[target] == 0)
+					AllowHealing = 1;
+			}
+			else if(Citizen_IsIt(target))
+			{
+				if(!Citizen_ThatIsDowned(target))
+					AllowHealing = 2;
+			}
+			else if(!b_NpcHasDied[target])
+			{
+				AllowHealing = 2;
+			}
+		}
+		
+		if(AllowHealing > 0)
+		{
+			SetGlobalTransTarget(client);
+
+			int health = GetEntProp(target, Prop_Data, "m_iHealth");
+			int maxHealth = ReturnEntityMaxHealth(target);
 			if(health < maxHealth)
 			{
 				int healing = maxHealth - health;
@@ -375,7 +397,10 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 					return;
 				}
 				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
+
+				if(AllowHealing == 1)
+					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
+
 				float cooldown;
 				if(Pap != 0.0)
 				{
@@ -392,17 +417,27 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				if(cooldown > 15.0)
 					cooldown = 15.0;
 				
-				PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
+				if(AllowHealing == 1)
+					PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
+				else
+					PrintHintText(client, "You Healed %t for %d HP!, you gain a %.0f healing cooldown.", c_NpcName[target], healing, cooldown);
+
 
 				Ability_Apply_Cooldown(client, 1, cooldown);
 				Ability_Apply_Cooldown(client, 2, cooldown);
 
 				CurrentAmmo[client][21] = ammo - healing;
 				SetAmmo(client, 21, CurrentAmmo[client][21]);
+
+				int BeamIndex = ConnectWithBeam(client, target, 70, 200, 70, 2.0, 2.0, 1.1, "sprites/laserbeam.vmt");
+				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
+
 				return;
 			}
-			
-			PrintHintText(client, "%N Is already at full hp.", target);
+			if(AllowHealing == 1)
+				PrintHintText(client, "%N Is already at full hp.", target);
+			else
+				PrintHintText(client, "%t Is already at full hp.", c_NpcName[target]);
 		}
 	}
 

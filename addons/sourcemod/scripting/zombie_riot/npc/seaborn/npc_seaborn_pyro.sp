@@ -83,7 +83,7 @@ methodmap SeabornPyro < CClotBody
 	
 	public SeabornPyro(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "3500", ally));
+		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");

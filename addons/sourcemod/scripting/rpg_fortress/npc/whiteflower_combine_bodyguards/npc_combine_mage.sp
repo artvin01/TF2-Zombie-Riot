@@ -313,7 +313,7 @@ public void Whiteflower_Mage_Blaster_ClotThink(int iNPC)
 					{
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 7;
-						npc.m_iState = -1; //makes sure the below works even if its the same animation.
+						npc.m_iAnimationState = -1;
 						npc.SetActivity("ACT_IDLE");
 						npc.m_flSpeed = 0.0;
 						NPC_StopPathing(npc.index);

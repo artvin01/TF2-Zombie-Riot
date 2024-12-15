@@ -20,13 +20,60 @@ void Events_PluginStart()
 	HookEvent("mvm_wave_failed", OnWinPanel, EventHookMode_Pre);
 	HookEvent("mvm_mission_complete", OnWinPanel, EventHookMode_Pre);
 	HookEvent("restart_timer_time", OnRestartTimer, EventHookMode_Pre);
-#endif
+	HookEvent("arrow_impact", EventOverride_ArrowImpact, EventHookMode_Pre);
+
+#endif	
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
 	
 	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
 }
 
+#if defined ZR
+public Action EventOverride_ArrowImpact(Event event, const char[] name, bool dontBroadcast)
+{
+	int AttachedEntity = event.GetInt("attachedEntity");
+	int ShooterEntity = event.GetInt("shooter");
+	int WhatBoneAttached = event.GetInt("boneIndexAttached");
+	float BonePosition[3];
+	BonePosition[0] = event.GetFloat("bonePositionX");
+	BonePosition[1] = event.GetFloat("bonePositionY");
+	BonePosition[2] = event.GetFloat("bonePositionZ");
+	float BoneAngles[3];
+	BoneAngles[0] = event.GetFloat("boneAnglesX");
+	BoneAngles[1] = event.GetFloat("boneAnglesY");
+	BoneAngles[2] = event.GetFloat("boneAnglesZ");
+	int ProjectileType = event.GetInt("projectileType");
+	bool IsCrit = event.GetBool("isCrit");
+	event.BroadcastDisabled = true;
+	EventOverride_ArrowImpact_ZRSeperate(AttachedEntity, ShooterEntity, WhatBoneAttached, BonePosition, BoneAngles, ProjectileType, IsCrit);
+	
+	return Plugin_Changed;
+}
+
+void EventOverride_ArrowImpact_ZRSeperate(int AttachedEntity, int ShooterEntity, int WhatBoneAttached,
+float BonePosition[3], float BoneAngles[3], int ProjectileType, bool IsCrit)
+{
+	Event event = CreateEvent("arrow_impact", true);
+
+	event.SetInt("attachedEntity", AttachedEntity);
+	event.SetInt("shooter", ShooterEntity);
+	event.SetInt("boneIndexAttached", WhatBoneAttached);
+	event.SetFloat("bonePositionX", BonePosition[0]);
+	event.SetFloat("bonePositionY", BonePosition[1]);
+	event.SetFloat("bonePositionZ", BonePosition[2]);
+	event.SetFloat("boneAnglesX", BoneAngles[0]);
+	event.SetFloat("boneAnglesY", BoneAngles[1]);
+	event.SetFloat("boneAnglesZ", BoneAngles[2]);
+	event.SetInt("projectileType", ProjectileType);
+	event.SetBool("isCrit", IsCrit);
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && b_EnableClutterSetting[client])
+			event.FireToClient(client);
+	}
+}
+#endif	
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
@@ -37,10 +84,6 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	LastMann = false;
 	Ammo_Count_Ready = 0;
 	Zero(Ammo_Count_Used);
-	Zero2(Armor_table_money_limit);
-	Zero2(i_Healing_station_money_limit);
-	Zero2(Perk_Machine_money_limit);
-	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero(Healing_done_in_total);
 	Zero(Damage_dealt_in_total);
 	Zero(Resupplies_Supplied);

@@ -16,12 +16,15 @@ void Tutorial_ClientSetup(int client, int value)
 {
 	f_TutorialUpdateStep[client] = 0.0;
 	
-	if(value != 2)
+	if(value != 6)
 	{
 	 	StartTutorial(client);
 	}
 	else
 	{
+		//reset tutorial to start if they didnt buy anything.
+		if(value <= 3)
+			value = 0;
 		SetClientTutorialStep(client, 0);
 		b_IsInTutorialMode[client] = false;
 	}
@@ -98,6 +101,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 			vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * 30.0;
 			
 			char TutorialText[256];*/
+			static int UniqueIdDo;
 			switch(i_TutorialStep[client])
 			{
 				case 1:
@@ -120,48 +124,85 @@ void DoTutorialStep(int client, bool obeycooldown)
 				case 3:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, -1.0, 8.0, 255, 0, 0, 255);
+					SetHudTextParams(-1.0, -1.0, 5.0, 255, 0, 0, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_3");
-					f_TutorialUpdateStep[client] = GetGameTime() + 8.0;
+					f_TutorialUpdateStep[client] = GetGameTime() + 5.0;
+					SetClientTutorialStep(client, 4);
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 8.0, -1);
 					//"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
-				
-					//two means done.
-					
-					Database_GlobalSetInt(client, DATATABLE_MISC, "tutorial", 2);
-	
-					CreateTimer(8.0, TimerTutorial_End, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+				}
+				case 4:
+				{
+					float vecTarget[3];
+					int entity = MaxClients + 1;
+					char buffer[255];
+					while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+					{
+						NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+						if(!StrContains(buffer, "obj_perkmachine"))
+						{
+							GetAbsOrigin(entity, vecTarget);
+							vecTarget[2] += 70.0;
+							
+							SetGlobalTransTarget(client);
+							Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Perk Machine");
+							Event event = CreateEvent("show_annotation");
+							if(event)
+							{
+								event.SetFloat("worldPosX", vecTarget[0]);
+								event.SetFloat("worldPosY", vecTarget[1]);
+								event.SetFloat("worldPosZ", vecTarget[2]);
+								event.SetFloat("lifetime", 10.0);
+								event.SetString("text", buffer);
+								event.SetString("play_sound", "vo/null.mp3");
+								event.SetInt("id", UniqueIdDo++);
+								event.FireToClient(client);
+							}
+							break;
+						}
+					}
+					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
+				}
+				case 5:
+				{
+					float vecTarget[3];
+					int entity = MaxClients + 1;
+					char buffer[255];
+					while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+					{
+						NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+						if(!StrContains(buffer, "obj_packapunch"))
+						{
+							GetAbsOrigin(entity, vecTarget);
+							vecTarget[2] += 70.0;
+
+							SetGlobalTransTarget(client);
+							Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Pack a Punch");
+							Event event = CreateEvent("show_annotation");
+							if(event)
+							{
+								event.SetFloat("worldPosX", vecTarget[0]);
+								event.SetFloat("worldPosY", vecTarget[1]);
+								event.SetFloat("worldPosZ", vecTarget[2]);
+								event.SetFloat("lifetime", 10.0);
+								event.SetString("text", buffer);
+								event.SetString("play_sound", "vo/null.mp3");
+								event.SetInt("id", UniqueIdDo++);
+								event.FireToClient(client);
+							}
+							break;
+						}
+					}
+					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 				}
 			}
 		}
 	}
 }
 
-public Action TimerTutorial_End(Handle timer, int ref)
-{
-	int client = EntRefToEntIndex(ref);
-	if(IsValidClient(client))
-	{
-		SetClientTutorialMode(client, false);
-		SetClientTutorialStep(client, 0);
-		
-		/*float pos[3], ang[3];
-		GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
-		GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-		DHook_RespawnPlayer(client);
-		
-		SetEntProp(client, Prop_Send, "m_bDucked", true);
-		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
-		if (TeutonType[client] == TEUTON_NONE) 
-		{
-			CClotBody npc = view_as<CClotBody>(client);
-			npc.m_bThisEntityIgnored = false;
-		}
-		TeleportEntity(client, pos, ang, NULL_VECTOR);
-					
-		TF2_RemoveCondition(client, TFCond_FreezeInput); //make it 1 second long, incase anything breaks, that itll kill itself eventually.
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 5.0); //Give 5 seconds of uber so they dont get instamurdered.*/
-	}
-	return Plugin_Stop;
-}
 
+void TutorialEndFully(int client)
+{
+	Database_GlobalSetInt(client, DATATABLE_MISC, "tutorial", 6);
+	SetClientTutorialMode(client, false);
+}

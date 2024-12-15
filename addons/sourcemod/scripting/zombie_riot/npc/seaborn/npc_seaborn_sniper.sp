@@ -83,7 +83,7 @@ methodmap SeabornSniper < CClotBody
 	
 	public SeabornSniper(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornSniper npc = view_as<SeabornSniper>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "5000", ally));
+		SeabornSniper npc = view_as<SeabornSniper>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "9000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");

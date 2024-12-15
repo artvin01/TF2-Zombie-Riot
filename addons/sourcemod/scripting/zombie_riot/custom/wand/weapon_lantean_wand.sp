@@ -6,7 +6,6 @@ static float fl_hud_timer[MAXPLAYERS+1]={0.0, ...};
 static float fl_AimbotTimer[MAXPLAYERS+1]={0.0, ...};
 
 static float fl_lantean_Wand_Drone_Life[MAXENTITIES] = { 0.0, ... };
-static float fl_lantean_Wand_Drone_HitSafe[MAXENTITIES][MAXENTITIES];
 
 static int i_drone_targets_penetrated[MAXENTITIES] = { 0, ... };
 
@@ -49,7 +48,7 @@ public void Weapon_lantean_Wand_ClearAll()
 	Zero(fl_AimbotTimer);
 	Zero(fl_hud_timer);
 	Zero(fl_lantean_Wand_Drone_Life);
-	Zero2(fl_lantean_Wand_Drone_HitSafe);
+	Zero2(f_GlobalHitDetectionLogic);
 	Zero(fl_lantean_drone_life);
 	Zero(fl_targetshit);
 	Zero(b_is_lantean);
@@ -396,7 +395,7 @@ float time)
 	//Dont instantly collide for reasons.
 	for (int entity = 0; entity < MAXENTITIES; entity++)
 	{
-		fl_lantean_Wand_Drone_HitSafe[projectile][entity] = GameTimeExtra;
+		f_GlobalHitDetectionLogic[projectile][entity] = GameTimeExtra;
 	}
 	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 	SDKHook(projectile, SDKHook_Touch, lantean_Wand_Touch_World);//need collisions all the time!
@@ -472,9 +471,9 @@ public Action lantean_Wand_Touch_World(int entity, int other)
 				
 				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 			}
-			RemoveEntity(entity);
 			b_is_lantean[entity]=false;
 			lantean_Wand_Drone_Count[owner] -= 1;
+			RemoveEntity(entity);
 		}
 	}
 	//Simular to buildings, it can vanish if touching skyboxes or npcs.
@@ -487,11 +486,11 @@ public void lantean_Wand_Touch(int entity, int target)
 {
 	if (target > 0)	
 	{
-		if(fl_lantean_Wand_Drone_HitSafe[entity][target] > GetGameTime())
+		if(f_GlobalHitDetectionLogic[entity][target] > GetGameTime())
 		{
 			return;
 		}
-		fl_lantean_Wand_Drone_HitSafe[entity][target] = GetGameTime() + 0.3;
+		f_GlobalHitDetectionLogic[entity][target] = GetGameTime() + 0.3;
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
@@ -535,9 +534,9 @@ public void lantean_Wand_Touch(int entity, int target)
 			}
 			if(i_drone_targets_penetrated[entity] >= i_lantean_max_penetration[entity])
 			{
-				RemoveEntity(entity);
 				b_is_lantean[entity]=false;
 				lantean_Wand_Drone_Count[owner] -= 1;
+				RemoveEntity(entity);
 				if(IsValidEntity(particle))
 				{
 					RemoveEntity(particle);
@@ -653,4 +652,18 @@ static void Lantean_HomingProjectile_TurnToTarget(float Vec[3], int Projectile)
 	
 	ScaleVector(flNewVec, flSpeedInit);
 	TeleportEntity(Projectile, NULL_VECTOR, flAng, flNewVec, true);
+}
+
+
+void LeanteanWandCheckDeletion(int entity)
+{
+	if(b_is_lantean[entity])
+	{
+		int Owner = EntRefToEntIndex(i_WandOwner[entity]);
+		if(IsValidClient(Owner))
+		{
+			lantean_Wand_Drone_Count[Owner] -= 1;
+			b_is_lantean[entity]=false;
+		}
+	}
 }

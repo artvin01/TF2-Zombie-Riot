@@ -714,41 +714,13 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		f_TraceAttackWasTriggeredSameFrame[victim] = GetGameTime();
 		i_HasBeenHeadShotted[victim] = false;
 #if defined ZR || defined RPG
-		if(damagetype & DMG_BULLET)
-		{
-			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
-			{
-				if(b_ProximityAmmo[attacker])
-				{
-					damage *= 1.15;
-				}
-
-				float AttackerPos[3];
-				float VictimPos[3];
-				
-				WorldSpaceCenter(attacker, AttackerPos);
-				WorldSpaceCenter(victim, VictimPos);
-
-				float distance = GetVectorDistance(AttackerPos, VictimPos, true);
-				
-				distance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
-
-				if(distance < 0.1)
-				{
-					distance = 0.1;
-				}
-				float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
-				if(b_ProximityAmmo[attacker])
-				{
-					WeaponDamageFalloff *= 0.8;
-				}
-
-				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
-			}
-		}
+		bool DoCalcReduceHeadshotFalloff = false;
 
 		if(!i_WeaponCannotHeadshot[weapon])
 		{
+			//Buff bodyshot damage.
+			damage *= 1.4;
+
 			bool Blitzed_By_Riot = false;
 			if(f_TargetWasBlitzedByRiotShield[victim][weapon] > GetGameTime())
 			{
@@ -780,16 +752,15 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					damage *= 2.0;
 				}
 #endif	// ZR
-
 				damage *= f_HeadshotDamageMultiNpc[victim];
+
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
-					damage *= 2.0;
+					damage *= 1.42;
+					DoCalcReduceHeadshotFalloff = true;
 				}
 				else
-				{
-					damage *= 1.65;
-				}
+					damage *= 1.185;
 
 				if(Blitzed_By_Riot) //Extra damage.
 				{
@@ -880,7 +851,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 						}
 					}
 				}
-				return Plugin_Changed;
 			}
 			else
 			{
@@ -917,9 +887,47 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 0.65;
-					return Plugin_Changed;
 				}
-				return Plugin_Changed;
+			}
+		}
+		
+		if(damagetype & DMG_BULLET)
+		{
+			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
+			{
+				if(b_ProximityAmmo[attacker])
+				{
+					damage *= 1.15;
+				}
+
+				float AttackerPos[3];
+				float VictimPos[3];
+				
+				WorldSpaceCenter(attacker, AttackerPos);
+				WorldSpaceCenter(victim, VictimPos);
+
+				float distance = GetVectorDistance(AttackerPos, VictimPos, true);
+				
+				distance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
+
+				if(distance < 0.1)
+				{
+					distance = 0.1;
+				}
+				float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
+				if(b_ProximityAmmo[attacker])
+				{
+					WeaponDamageFalloff *= 0.8;
+				}
+				if(DoCalcReduceHeadshotFalloff && WeaponDamageFalloff <= 1.0)
+				{
+					WeaponDamageFalloff *= 1.3;
+					if(WeaponDamageFalloff >= 1.0)
+						WeaponDamageFalloff = 1.0;
+				}
+				
+
+				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 			}
 		}
 #endif
@@ -1038,11 +1046,19 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	//LogEntryInvicibleTest(victim, attacker, damage, 2);
 	// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
-	if(b_NpcIsInvulnerable[victim] && damage < 9999999.9)
+	if(b_NpcIsInvulnerable[victim]/* && damage < 9999999.9*/)
 	{
 		damage = 0.0;
 		Damageaftercalc = 0.0;
 		return Plugin_Handled;
+	}
+	//a triggerhurt can never deal more then 10% of a raids health as damage.
+	if(b_IsATriggerHurt[attacker] && b_thisNpcIsARaid[victim])
+	{
+		if(damage >= float(ReturnEntityMaxHealth(victim)) * 0.1)
+		{
+			damage = float(ReturnEntityMaxHealth(victim)) * 0.1;
+		}
 	}
 	CClotBody npcBase = view_as<CClotBody>(victim);
 	
@@ -1060,7 +1076,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Handled;
 		//nothing happens.
 	}
-	else if(damage < 9999999.9)
+	else/* if(damage < 9999999.9)*/
 	{
 		if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		{
@@ -1174,6 +1190,16 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	{
 		GiveRageOnDamage(attacker, Damageaftercalc);
 		Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
+	}
+	else
+	{
+		float damageCalc = Damageaftercalc;
+		int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+		if(Health <= 0)
+		{
+			damageCalc += Health;
+		}
+		Damage_dealt_in_total[attacker] += damageCalc;
 	}
 	OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 #endif
@@ -1796,7 +1822,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			Timer_Show = 0.0;
 
 		//if raid is on red, dont do timer.
-		if(Timer_Show > 800.0 || GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red)
+		if(Timer_Show > 800.0/* || GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red*/)
 		{
 			RaidModeTime = 99999999.9;
 		}
@@ -2081,6 +2107,12 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_HussarBuff[npc] > GameTime)
 		return true;
+	else if(f_SquadLeaderBuff[npc] > GameTime)
+		return true;
+	else if(f_VictorianCallToArms[npc] > GameTime)
+		return true;
+	else if(f_CaffeinatorBuff[npc] > GameTime)
+		return true;
 	else if(f_PernellBuff[npc])
 		return true;
 	else if(f_PotionShrinkEffect[npc] > GameTime)
@@ -2350,6 +2382,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			WrathfulBlade_OnKill(attacker, victim);
 		}
+		case WEAPON_CASTLEBREAKER:
+		{
+			CastleBreakerCashOnKill(attacker);
+		}
 	}
 }
 #endif
@@ -2424,7 +2460,7 @@ void GiveProgressDelay(float Time)
 #if defined ZR
 int MaxNpcEnemyAllowed()
 {
-	return NPC_HARD_LIMIT;
+	return RoundToNearest(float(NPC_HARD_LIMIT) * zr_multi_maxcap.FloatValue);
 }
 
 float MaxEnemyMulti()

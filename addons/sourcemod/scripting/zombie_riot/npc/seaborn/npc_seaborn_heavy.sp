@@ -86,7 +86,7 @@ methodmap SeabornHeavy < CClotBody
 	
 	public SeabornHeavy(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornHeavy npc = view_as<SeabornHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "10000", ally));
+		SeabornHeavy npc = view_as<SeabornHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "15000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");

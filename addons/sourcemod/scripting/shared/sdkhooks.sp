@@ -691,7 +691,7 @@ public void OnPostThink(int client)
 		float attrib = Attributes_GetOnPlayer(client, 57, false) +
 				Attributes_GetOnPlayer(client, 190, false) +
 				Attributes_GetOnPlayer(client, 191, false);
-		
+				
 		if(attrib)
 		{
 			if(dieingstate[client] == 0)
@@ -737,6 +737,8 @@ public void OnPostThink(int client)
 		}
 
 		Armor_regen_delay[client] = GameTime + 1.0;
+		SDkHooks_Think_TutorialStepsDo(client);
+
 	}
 #endif	// ZR
 
@@ -1368,6 +1370,13 @@ public void OnPostThink(int client)
 					green = 8;
 					blue = 209;
 				}
+				//matrix
+				case 4:
+				{
+					red = 0;
+					green = 200;
+					blue = 0;
+				}
 				//seaborn
 				default:
 				{
@@ -1448,35 +1457,57 @@ public void OnPostThink(int client)
 			}
 		}
 		int armor = abs(Armor_Charge[armorEnt]);
-		for(int i=6; i>0; i--)
+		if(!b_EnableNumeralArmor[client])
 		{
-			if(Armor_Charge[armorEnt] == 0)
+			for(int i=6; i>0; i--)
 			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, "--");
+				if(Armor_Charge[armorEnt] == 0)
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, "--");
+				}
+				else if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+				}
+				else if(armor > Armor_Max*(i*0.1666 - 1.0/15.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+				}
+				else if(armor > Armor_Max*(i*0.1666 - 1.0/10.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+				}
+				
+				if((i % 2) == 1)
+				{
+					Format(buffer, sizeof(buffer), "%s\n", buffer);
+				}
 			}
-			else if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
+		}
+		else
+		{
+			char c_ArmorCurrent[255];
+			if(Armor_Charge[armorEnt] >= 0)
 			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-			}
-			else if(armor > Armor_Max*(i*0.1666 - 1.0/15.0))
-			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-			}
-			else if(armor > Armor_Max*(i*0.1666 - 1.0/10.0))
-			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				IntToString(armor,c_ArmorCurrent, sizeof(c_ArmorCurrent));
+				int offset = armor < 0 ? 1 : 0;
+				ThousandString(c_ArmorCurrent[offset], sizeof(c_ArmorCurrent) - offset);
+				Format(buffer, sizeof(buffer), "%s|%s|\n", buffer, c_ArmorCurrent);
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
-			}
-			
-			if((i % 2) == 1)
-			{
-				Format(buffer, sizeof(buffer), "%s\n", buffer);
+				
+				Armor_Max -= armor;
+				IntToString(Armor_Max,c_ArmorCurrent, sizeof(c_ArmorCurrent));
+				int offset = Armor_Max < 0 ? 1 : 0;
+				ThousandString(c_ArmorCurrent[offset], sizeof(c_ArmorCurrent) - offset);
+				Format(buffer, sizeof(buffer), "%s|%s|\n", buffer, c_ArmorCurrent);
 			}
 		}
-			
 		if(i_CurrentEquippedPerk[client] == 6)
 		{
 			static float slowdown_amount;
@@ -2498,6 +2529,12 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		{
 			return Player_OnTakeDamage_VoidBlade_Hud(victim);
 		}
+		case WEAPON_CASTLEBREAKER:
+		{
+			float damage = 1.0;
+			WeaponCastleBreaker_OnTakeDamage(victim, damage);
+			return damage;
+		}
 		case WEAPON_FULLMOON:
 		{
 			float damage = 1.0;
@@ -3231,3 +3268,10 @@ stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 		mana_regen[client] = 0.0;
 #endif
 }
+
+#if defined ZR
+void SDkHooks_Think_TutorialStepsDo(int client)
+{
+	DoTutorialStep(client, true);
+}
+#endif

@@ -315,6 +315,11 @@ methodmap Sensal < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 50;
 		}
+		bool cutscene2 = StrContains(data, "victoria_cutscene") != -1;
+		if(cutscene2)
+		{
+			i_RaidGrantExtra[npc.index] = 51;
+		}
 		bool tripple = StrContains(data, "triple_enemies") != -1;
 		if(tripple)
 		{
@@ -367,7 +372,7 @@ methodmap Sensal < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.65;
 		}
-		if(!cutscene && !tripple)
+		if(!cutscene && !cutscene2 && !tripple)
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 			MusicEnum music;
@@ -466,6 +471,99 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.m_flGetClosestTargetTime = 0.0;
 		}
+		return;
+	}
+	if(i_RaidGrantExtra[npc.index] == 51)
+	{
+		npc.m_flSpeed = 660.0;
+		BlockLoseSay = true;
+		if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+		{
+			npc.m_iTarget = GetClosestAlly(npc.index);
+			npc.m_flGetClosestTargetTime = GetRandomRetargetTime();
+		}
+		if(IsValidAlly(npc.index, npc.m_iTarget))
+		{
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			if(flDistanceToTarget < npc.GetLeadRadius()) 
+			{
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+			}
+			else 
+			{
+				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.StartPathing();
+			}
+		}
+		else
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+		}
+
+		if(npc.f_SensalMeleeCooldown > GetGameTime())
+		{
+			return;
+		}
+		npc.f_SensalMeleeCooldown = GetGameTime() + 4.0;
+		switch(npc.i_GunMode)
+		{
+			case 0:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Stop the fight this instant.");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: What is happening here?");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{blue}Castellan{default}: They attacked us while invading Ziberia, what else is there to add?");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Invading Ziberia? Right after {darkblue}Kahmlstein{default} Perished?");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: There are more important matters to attend to.\nZiberia is not like Him.");
+			}
+			case 5:
+			{
+				CPrintToChatAll("{blue}Castellan{default}: Youre meaning to say that he was the cause?");
+			}
+			case 6:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Correct. The country itself isnt at fault. Now leave, I also believe Victoria has to deal with chaos.");
+			}
+			case 7:
+			{
+				CPrintToChatAll("{blue}Castellan{default}: I remember you mentioning chaos before, if you say its in our city walls, then we will immedietly return and assess the situation.");
+			}
+			case 8:
+			{
+				CPrintToChatAll("{blue}Sensal{default}: Good.");
+			}
+			case 9:
+			{
+				CPrintToChatAll("{blue}Castellan{default}: We will return to Victoria now.");
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					{
+						Items_GiveNamedItem(client, "Avangard's Processing Core-B");
+						CPrintToChat(client,"{default}As Castellan and his army leave, they drop something: {darkblue}''Avangard's Processing Core-B''{default}!");
+					}
+				}
+			}
+			default:
+			{
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			}
+		}
+		npc.i_GunMode++;
 		return;
 	}
 	if(SensalTalkPostWin(npc))
@@ -714,6 +812,10 @@ static void Internal_NPCDeath(int entity)
 
 		return;
 	}
+	if(i_RaidGrantExtra[npc.index] == 51)
+	{
+		return;
+	}
 	if(BlockLoseSay)
 		return;
 
@@ -861,7 +963,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			{
 				npc.m_flReloadIn = gameTime + 1.5;
 				npc.SetPlaybackRate(2.0);
-				npc.m_flAngerDelay = gameTime + 30.0;
+				npc.m_flAngerDelay = gameTime + 45.0;
 			}
 
 		}

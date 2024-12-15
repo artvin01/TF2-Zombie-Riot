@@ -937,7 +937,7 @@ methodmap Citizen < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.m_iState = -1;
+		npc.m_iAnimationState = -1;
 		npc.SetActivity("ACT_BUSY_SIT_GROUND", 0.0);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -982,6 +982,11 @@ methodmap Citizen < CClotBody
 		GunRangeBonus[npc.index] = 1.0;
 		CanBuild[npc.index] = 0;
 		PendingGesture[npc.index] = 0;
+		Damage_dealt_in_total[npc.index] = 0.0;
+		Healing_done_in_total[npc.index] = 0;
+		Resupplies_Supplied[npc.index] = 0;
+		i_BarricadeHasBeenDamaged[npc.index] = 0;
+		i_PlayerDamaged[npc.index] = 0;
 		
 		npc.m_iAttacksTillReload = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -1231,10 +1236,10 @@ methodmap Citizen < CClotBody
 		if(Is_sequence)
 		{
 			int sequence = this.LookupSequence(animation);
-			if(sequence > 0 && sequence != this.m_iState)
+			if(sequence > 0 && sequence != this.m_iAnimationState)
 			{
 				this.m_flSpeed = speed;
-				this.m_iState = sequence;
+				this.m_iAnimationState = sequence;
 				this.m_bisWalking = false;
 				this.m_iActivity = 0;
 				
@@ -1247,10 +1252,10 @@ methodmap Citizen < CClotBody
 		else
 		{
 			int activity = this.LookupActivity(animation);
-			if(activity > 0 && activity != this.m_iState)
+			if(activity > 0 && activity != this.m_iAnimationState)
 			{
 				this.m_flSpeed = speed;
-				this.m_iState = activity;
+				this.m_iAnimationState = activity;
 				this.m_bisWalking = false;
 				this.StartActivity(activity);
 
@@ -1601,6 +1606,39 @@ bool Citizen_Interact(int client, int entity)
 	return false;
 }
 
+static int GetCitizenPoints(int entity)
+{
+	int Points;
+	
+	Points += Healing_done_in_total[entity] / 3;
+
+	if(Rogue_Mode())
+	{
+		Points += RoundToCeil(Damage_dealt_in_total[entity]) / 250;
+	}
+	else
+	{
+		Points += RoundToCeil(Damage_dealt_in_total[entity]) / 50;
+	}
+
+	Points += Resupplies_Supplied[entity] * 4;
+	
+	Points += i_BarricadeHasBeenDamaged[entity] / 5;
+
+	if(Rogue_Mode())
+	{
+		Points += i_PlayerDamaged[entity] / 10;
+	}
+	else
+	{
+		Points += i_PlayerDamaged[entity] / 5;
+	}
+	
+	Points /= 10;
+
+	return Points;
+}
+
 static void CitizenMenu(int client, int page = 0)
 {
 	Citizen npc = view_as<Citizen>(EntRefToEntIndex(MenuEntRef[client]));
@@ -1611,8 +1649,22 @@ static void CitizenMenu(int client, int page = 0)
 
 	char buffer[64];
 
+	char points[32], healing[32], tanked[32];
+	IntToString(GetCitizenPoints(npc.index), points, sizeof(points));
+	ThousandString(points, sizeof(points));
+	IntToString(RoundFloat(Damage_dealt_in_total[npc.index]), buffer, sizeof(buffer));
+	ThousandString(buffer, sizeof(buffer));
+	IntToString(Healing_done_in_total[npc.index], healing, sizeof(healing));
+	ThousandString(healing, sizeof(points));
+	IntToString(i_PlayerDamaged[npc.index] + i_BarricadeHasBeenDamaged[npc.index], tanked, sizeof(tanked));
+	ThousandString(tanked, sizeof(tanked));
+
 	Menu menu = new Menu(CitizenMenuH);
-	menu.SetTitle("%t:\n ", "Rebel");
+	menu.SetTitle("%t\n \n%t %s\n%t %s\n%t %s\n%t %s\n ", "Rebel",
+			"Total Score", points,
+			"Damage Dealt", buffer,
+			"Healing Done", healing,
+			"Damage Tanked", tanked);
 
 	switch(page)
 	{
@@ -3093,7 +3145,7 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							float vecPos[3], vecAng[3];
 							GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", vecPos);
-							vecPos[2] += 60.0;
+							vecPos[2] += 30.0;
 							GetEntPropVector(ally, Prop_Data, "m_angRotation", vecAng);
 							vecAng[0] = 0.0;
 							vecAng[2] = 0.0;
@@ -3308,7 +3360,7 @@ public void Citizen_ClotThink(int iNPC)
 								if(npc.m_iWearable1 > 0)
 									AcceptEntityInput(npc.m_iWearable1, "Enable");
 								
-								npc.m_iState = -1;
+								npc.m_iAnimationState = -1;
 								npc.AddGesture("ACT_RANGE_ATTACK_PISTOL");
 								
 								float vecSpread = 0.1;
@@ -3604,7 +3656,7 @@ public void Citizen_ClotThink(int iNPC)
 								npc.SetActivity("ACT_IDLE_ANGRY_AR2", 0.0);
 								walkStatus = -1;	// Don't move
 								
-								npc.m_iState = -1;
+								npc.m_iAnimationState = -1;
 								npc.AddGesture("ACT_RANGE_ATTACK_SHOTGUN");
 								
 								float vecSpread = 0.1;
@@ -3712,7 +3764,7 @@ public void Citizen_ClotThink(int iNPC)
 								npc.SetActivity("ACT_IDLE_ANGRY_RPG", 0.0);
 								walkStatus = -1;	// Don't move
 								
-								npc.m_iState = -1;
+								npc.m_iAnimationState = -1;
 								npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
 
 								npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
@@ -4100,20 +4152,26 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		bool medic = npc.m_iClassRole == Cit_Medic && npc.m_iHasPerk == npc.m_iGunType;
 		
-		if(ally <= MaxClients)
+		float VecAlly[3]; WorldSpaceCenter(ally, VecAlly );
+		float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);	
+		float flDistanceToTarget = GetVectorDistance(VecAlly, Vecself, true);
+		if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.8))
 		{
-			if(dieingstate[ally] > 0)
+			if(ally <= MaxClients)
 			{
-				ReviveClientFromOrToEntity(ally, npc.index, _, medic ? 0 : 1);
+				if(dieingstate[ally] > 0)
+				{
+					ReviveClientFromOrToEntity(ally, npc.index, _, medic ? 0 : 1);
+					isReviving = true;
+				}
+			}
+			else if(Citizen_ThatIsDowned(ally))
+			{
+				int speed = medic ? 6 : 3;
+				Rogue_ReviveSpeed(speed);
+				Citizen_ReviveTicks(ally, speed, 0);
 				isReviving = true;
 			}
-		}
-		else if(Citizen_ThatIsDowned(ally))
-		{
-			int speed = medic ? 6 : 3;
-			Rogue_ReviveSpeed(speed);
-			Citizen_ReviveTicks(ally, speed, 0);
-			isReviving = true;
 		}
 	}
 
@@ -4123,7 +4181,7 @@ public void Citizen_ClotThink(int iNPC)
 		if(npc.m_flidle_talk == 0.0)
 			npc.m_flidle_talk = gameTime + 5.0 + (GetURandomFloat() * 5.0) + (float(npc.m_iSeed) / 214748364.7);
 		
-			/*
+		/*
 		if(isReviving)
 		{
 			if(npc.m_iGunType != Cit_Melee)
@@ -4304,7 +4362,7 @@ public void Citizen_ClotThink(int iNPC)
 
 static bool CanOutRun(int entity, int target)
 {
-	return (view_as<CClotBody>(entity).GetRunSpeed() * 0.9) > view_as<CClotBody>(target).GetRunSpeed();
+	return (target <= MaxClients || (view_as<CClotBody>(entity).GetRunSpeed() * 0.9) > view_as<CClotBody>(target).GetRunSpeed());
 }
 
 void Citizen_MiniBossSpawn()
@@ -4547,6 +4605,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			}
 			else
 			{
+				i_PlayerDamaged[victim] += RoundFloat(damage);
 				npc.PlaySound(Cit_Hurt);
 
 				if(npc.m_iTarget < 1)

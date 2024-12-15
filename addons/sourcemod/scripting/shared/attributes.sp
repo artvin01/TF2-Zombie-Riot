@@ -13,7 +13,9 @@ enum
 	Attrib_OverrideExplodeDmgRadiusFalloff = 4029,
 	Attrib_CritChance = 4030,
 	Attrib_ReviveTimeCut = 4033,
-	Attrib_ExtendExtraCashGain = 4034
+	Attrib_ExtendExtraCashGain = 4034,
+	Attrib_ReduceMedifluidCost = 4035,
+	Attrib_ReduceMetalCost = 4036
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -301,7 +303,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 						int entity, i;
 						while(TF2_GetItem(client, entity, i))
 						{
-							if(b_IsAMedigun[entity])	//if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+							if(b_IsAMedigun[entity])
 								list.Push(entity);
 						}
 
@@ -451,19 +453,22 @@ void Attributes_OnKill(int victim, int client, int weapon)
 
 	if(IsValidEntity(weapon) && weapon > MaxClients)
 	{
-		value = Attributes_Get(weapon, 180, 0.0);	// heal on kill
-
-		if(value)
+		//dont give health on kill!
+		if(!(b_OnDeathExtraLogicNpc[victim] & ZRNPC_DEATH_NOHEALTH))
 		{
-			if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+			value = Attributes_Get(weapon, 180, 0.0);	// heal on kill
+			if(value)
 			{
-				value *= 4.0;
+				if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+				{
+					value *= 4.0;
+				}
+				else if(b_IsGiant[victim])
+				{
+					value *= 2.0;
+				}
+				HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
 			}
-			else if(b_IsGiant[victim])
-			{
-				value *= 2.0;
-			}
-			HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
 		}
 		
 		value = Attributes_Get(weapon, 613, 0.0);	// minicritboost on kill
