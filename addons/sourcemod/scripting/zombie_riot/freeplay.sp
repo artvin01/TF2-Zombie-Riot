@@ -24,6 +24,7 @@ static int CudgelDebuff;
 static int StalkerBuff;
 static int PerkMachine;
 static int RaidFight;
+static float SpeedMult;
 static bool WaveSkulls;
 
 void Freeplay_ResetAll()
@@ -51,6 +52,7 @@ void Freeplay_ResetAll()
 	StalkerBuff = 0;
 	PerkMachine = 0;
 	RaidFight = 0;
+	SpeedMult = 1.0;
 	WaveSkulls = false;
 
 	EscapeModeForNpc = false;
@@ -353,6 +355,9 @@ void Freeplay_SpawnEnemy(int entity)
 			b_CannotBeSlowed[entity] = true;
 		}
 	}
+
+	// speed mult thingy (hope it works lol)
+	fl_Extra_Speed[entity] *= SpeedMult;
 }
 
 void Freeplay_OnEndWave(int postWaves, int &cash)
@@ -676,7 +681,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 35:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be True Fusion Warrior! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{red}The {yellow}True Fusion Warrior {red}will appear in the next wave! {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 1;
 		}
 		case 36:
@@ -717,7 +722,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{green}Stronger enemy types are less likely to appear");
 			EnemyChance--;
 		}
-		case 43:
+		case 43: // is this ever used?
 		{
 			if(Medival_Difficulty_Level <= 0.1)
 			{
@@ -732,113 +737,151 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 44:
 		{
-			strcopy(message, sizeof(message), "{green}The next 300 enemies gain Cudgel debuff");
+			strcopy(message, sizeof(message), "{green}The next 300 enemies will gain the Cudgel debuff.");
 			CudgelDebuff += 300;
 		}
 		case 45:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Blitzkrieg Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave! {green}Defeating it will award you with 5000 credits.");
 			RaidFight = 2;
 		}
 		case 46:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Silvester And Waldch Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave! {green}Defeating them will award you with 5000 credits.");
 			RaidFight = 3;
 		}
 		case 47:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be God Alaxios Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave! {green}Defeating them will award you with 5000 credits.");
 			RaidFight = 4;
 		}
 		case 48:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Sensal Killing awards 5k credits!");
+			float chance = GetRandomFloat(0.0, 1.0);
+			if(chance > 0.9) // 10% chance for pencil
+			{
+				strcopy(message, sizeof(message), "{yellow}Pencil will draw his way on to victory in the next wave! {green}Defeating him will award you with 5000 credits.");
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave! {green}Defeating him will award you with 5000 credits.");
+			}
 			RaidFight = 5;
 		}
 		case 49:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Karlas and Stella! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave! {green}Defeating them will award you with 5000 credits.");
 			RaidFight = 6;
 		}
 		case 50:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be The Purge! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave. {green}Defeating it will award you with 5000 credits.");
 			RaidFight = 7;
 		}
 		case 51:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be The Messenger! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave. {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 8;
 		}
 		case 52:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be ?????? Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{white}????????????? is coming... {green}Defeating it will award you with 5000 credits.");
 			RaidFight = 9;
 		}
 		case 53:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Chaos Kahmlstein! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave. {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 10;
 		}
 		case 54:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Nemesis! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave... Defeating him will award you with 5000 credits.");
 			RaidFight = 11;
 		}
 		case 55:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Mr.X! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave... Defeating him will award you with 5000 credits.");
 			RaidFight = 12;
 		}
 		case 56:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Corrupted Barney! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "Corrupted Barney {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 13;
 		}
 		case 57:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Whiteflower! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "Whiteflower {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 14;
 		}
 		case 58:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Unspeakable! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "Unspeakable {green}Defeating it will award you with 5000 credits.");
 			RaidFight = 15;
 		}
 		case 59:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Vhxis! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "Vhxis {green}Defeating it will award you with 5000 credits.");
 			RaidFight = 16;
 		}
 		case 60:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Nemal & Silvester! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "Nemal & Silvester {green}Defeating them will award you with 5000 credits.);
 			RaidFight = 17;
 		}
 		case 61:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Twirl! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "Twirl {green}Defeating her will award you with 5000 credits.");
 			RaidFight = 18;
 		}
 		case 62:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Agent Thompson! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "Agent Thompson {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 19;
 		}
 		case 63:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Twins! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "Twins {green}Defeating them will award you with 5000 credits.");
 			RaidFight = 20;
 		}
 		case 64:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Agent Jackson! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "Agent Jackson {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 21;
 		}
 		case 65:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Agent Smith! Killing awards 5k credits!");
+			strcopy(message, sizeof(message), "Agent Smith {green}Defeating him will award you with 5000 credits.");
 			RaidFight = 22;
+		}
+		case 66:
+		{
+			strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
+			SpeedMult += 0.1;
+		}
+		case 67:
+		{
+			strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
+			SpeedMult += 0.15;
+		}
+		case 68:
+		{
+			if(SpeedMult < 0.35) // i'll go with a minimum of -65% movement speed since freeplay enemies move way faster than usual, and certain buffs make them faster
+			{
+				Freeplay_SetupStart(postWaves, wave);
+				return;
+			}
+			strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
+			SpeedMult -= 0.1;
+		}
+		case 69:
+		{
+			if(SpeedMult < 0.35)
+			{
+				Freeplay_SetupStart(postWaves, wave);
+				return;
+			}
+			strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
+			SpeedMult -= 0.15;
 		}
 		default:
 		{
