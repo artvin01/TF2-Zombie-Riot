@@ -868,6 +868,7 @@ void NPC_ConfigSetup()
 void NPC_MapEnd()
 {
 	SSB_DeleteAbilities();
+	SSBChair_DeleteAbilities();
 }
 
 int NPC_Add(NPCData data)

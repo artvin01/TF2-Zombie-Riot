@@ -8,6 +8,9 @@
 static float SSB_CHAIR_SPEED = 240.0;
 static float SSBChair_RaidTime = 481.0;		//I recommend not changing this, 8:01 is synced up to the duration of the phase 1 theme. Mercs should NEVER take 8 minutes to beat phase 1 anyways, if they are then something is wrong.
 
+static int Chair_Tier[2049] = { 0, ... };	//The current "tier" the raid is on. Starts at 0 and increments by 1 each time SSB's army is defeated.
+static bool Chair_UsingAbility[2049] = { false, ... };	//Whether or not SSB is currently using an ability. Set to TRUE upon ability activation and FALSE once the ability is finished. Otherwise, he can use abilities while using other abilities, which can break animations. Very stinky!
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -66,7 +69,7 @@ public void SSBChair_OnMapStart_NPC()
 	PrecacheSound(SND_SPAWN_ALERT);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones: Magistrate of the Dead");
+	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones, Magistrate of the Dead");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ssb_finale_phase1");
 	strcopy(data.Icon, sizeof(data.Icon), "pyro");
 	data.IconCustom = false;
@@ -79,6 +82,118 @@ public void SSBChair_OnMapStart_NPC()
 static any Summon_SSBChair(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return SSBChair(client, vecPos, vecAng, ally);
+}
+
+#define SSBCHAIR_MAX_ABILITIES 99999
+
+ArrayList SSB_ChairSpells[2049];
+
+bool SSBChair_AbilitySlotUsed[SSBCHAIR_MAX_ABILITIES] = {false, ...};
+
+Function ChairSpell_Function[SSBCHAIR_MAX_ABILITIES] = { INVALID_FUNCTION, ... };	//The function to call when this ability is successfully activated.
+Function ChairSpell_Filter[SSBCHAIR_MAX_ABILITIES] = { INVALID_FUNCTION, ... };		//The function to call when this ability is about to be activated, to check manually if it can be used or not. Must take one SSBChair and an entity index for the victim as parameters, and return a bool (true: activate, false: don't).
+
+float ChairSpell_Cooldown[SSBCHAIR_MAX_ABILITIES] = { 0.0, ... };
+float ChairSpell_NextUse[SSBCHAIR_MAX_ABILITIES] = { 0.0, ... };
+
+int ChairSpell_Tier[SSBCHAIR_MAX_ABILITIES] = { 0, ... };
+
+methodmap SSBChair_Spell __nullable__
+{
+	public SSBChair_Spell()
+	{
+		int index = 0;
+		while (SSBChair_AbilitySlotUsed[index] && index < SSBCHAIR_MAX_ABILITIES - 1)
+			index++;
+
+		if (index >= SSBCHAIR_MAX_ABILITIES)
+			LogError("ERROR: SSB (Finale Phase 1) SOMEHOW has more than %i spells...\nThis should never happen.", SSBCHAIR_MAX_ABILITIES);
+		
+		SSBChair_AbilitySlotUsed[index] = true;
+
+		return view_as<SSBChair_Spell>(index);
+	}
+
+	public void Activate(SSBChair user, int target = -1)
+	{
+		Call_StartFunction(null, this.ActivationFunction);
+		Call_PushCell(user);
+		Call_PushCell(target);
+		Call_Finish();
+
+		this.NextUse = GetGameTime(user.index) + this.Cooldown;
+	}
+
+	public bool CheckCanUse(SSBChair user, int target = -1)
+	{
+		if (Chair_UsingAbility[user.index])
+			return false;
+
+		if (GetGameTime(user.index) < this.NextUse)
+			return false;
+
+		if (Chair_Tier[user.index] < this.Tier)
+			return false;
+
+		if (this.FilterFunction == INVALID_FUNCTION)
+			return true;
+
+		bool success;
+
+		Call_StartFunction(null, this.FilterFunction);
+		Call_PushCell(user);
+		Call_PushCell(target);
+		Call_Finish(success);
+
+		return success;
+	}
+
+	public void Delete()
+	{
+		this.ActivationFunction = INVALID_FUNCTION;
+		this.NextUse = 0.0;
+		SSBChair_AbilitySlotUsed[this.Index] = false;
+	}
+
+	property int Index
+	{ 
+		public get() { return view_as<int>(this); }
+	}
+
+	property int Tier
+	{
+		public get() { return ChairSpell_Tier[this.Index]; }
+		public set(int value) { ChairSpell_Tier[this.Index] = value; }
+	}
+
+	property Function ActivationFunction
+	{
+		public get() { return ChairSpell_Function[this.Index]; }
+		public set(Function value) { ChairSpell_Function[this.Index] = value; }
+	}
+
+	property Function FilterFunction
+	{
+		public get() { return ChairSpell_Filter[this.Index]; }
+		public set(Function value) { ChairSpell_Filter[this.Index] = value; }
+	}
+
+	property float Cooldown
+	{
+		public get () { return ChairSpell_Cooldown[this.Index]; }
+		public set(float value) { ChairSpell_Cooldown[this.Index] = value; }
+	}
+
+	property float NextUse
+	{
+		public get () { return ChairSpell_NextUse[this.Index]; }
+		public set(float value) { ChairSpell_NextUse[this.Index] = value; }
+	}
+}
+
+public void SSB_SugmaTest(SSBChair ssb, int target)
+{
+	CPrintToChatAll("{unusual}Sugma phase {haunted}%i", Chair_Tier[ssb.index]);
 }
 
 methodmap SSBChair < CClotBody
@@ -153,6 +268,58 @@ methodmap SSBChair < CClotBody
 		#endif
 	}
 
+	public void PrepareAbilities()
+	{
+		this.DeleteAbilities();
+		SSB_ChairSpells[this.index] = new ArrayList(255);
+
+		//TODO: Populate abilities here
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(5.0, 0.0, 0, SSB_SugmaTest));
+	}
+
+	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
+	{
+		SSBChair_Spell spell = new SSBChair_Spell();
+
+		spell.NextUse = GetGameTime(this.index) + startingCD;
+		spell.Cooldown = cooldown;
+		spell.ActivationFunction = ActivationFunction;
+		spell.FilterFunction = FilterFunction;
+		spell.Tier = tier;
+
+		return spell;
+	}
+
+	public void DeleteAbilities()
+	{
+		if (SSB_ChairSpells[this.index] != null)
+		{
+			for (int spell = 0; spell < GetArraySize(SSB_ChairSpells[this.index]); spell++)
+			{
+				SSBChair_Spell ability = GetArrayCell(SSB_ChairSpells[this.index], spell);
+				ability.Delete();
+			}
+		}
+
+		delete SSB_ChairSpells[this.index];
+	}
+
+	public void AttemptCast()
+	{
+		if (SSB_ChairSpells[this.index] != null)
+		{
+			for (int spell = 0; spell < GetArraySize(SSB_ChairSpells[this.index]); spell++)
+			{
+				SSBChair_Spell ability = GetArrayCell(SSB_ChairSpells[this.index], spell);
+				if (ability.CheckCanUse(this, this.m_iTarget))
+				{
+					ability.Activate(this, this.m_iTarget);
+					break;
+				}
+			}
+		}
+	}
+
 	public SSBChair(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
 		SSBChair npc = view_as<SSBChair>(CClotBody(vecPos, vecAng, MODEL_SSB, SSB_CHAIR_SCALE, SSB_CHAIR_HP, ally));
@@ -162,6 +329,7 @@ methodmap SSBChair < CClotBody
 		b_IsSkeleton[npc.index] = true;
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bisWalking = false;
+		Chair_UsingAbility[npc.index] = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(SSBChair_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(SSBChair_OnTakeDamage);
@@ -181,6 +349,7 @@ methodmap SSBChair < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
+		Chair_Tier[npc.index] = 0;
 
 		//IDLE
 		npc.m_flSpeed = SSB_CHAIR_SPEED;
@@ -221,7 +390,26 @@ methodmap SSBChair < CClotBody
 			}
 		}
 		
+		npc.PrepareAbilities();
+
 		return npc;
+	}
+}
+
+public void SSBChair_DeleteAbilities()
+{
+	for (int i = 0; i < 2049; i++)
+	{
+		if (SSB_ChairSpells[i] != null)
+		{
+			for (int spell = 0; spell < GetArraySize(SSB_ChairSpells[i]); spell++)
+			{
+				SSB_Ability ability = GetArrayCell(SSB_ChairSpells[i], spell);
+				ability.Delete();
+			}
+		}
+
+		delete SSB_ChairSpells[i];
 	}
 }
 
@@ -291,6 +479,8 @@ public void SSBChair_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
+	npc.AttemptCast();
+
 	npc.PlayIdleSound();
 }
 
@@ -315,6 +505,8 @@ public void SSBChair_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
+	npc.DeleteAbilities();
+
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 }

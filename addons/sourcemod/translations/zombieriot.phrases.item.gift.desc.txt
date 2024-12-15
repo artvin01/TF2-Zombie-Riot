@@ -2385,9 +2385,13 @@
 	{
 		"en"		"The ruler of Necropolis, Eternal City of the Dead.\nSSB is seen by his subjects as a fair, noble, and affable ruler... so why is he trying so hard to kill the mercenaries?\nYou almost entirely wiped out the Xeno infection and have been fighting to keep the world safe.\nIf anything, SSB should be thanking you! Something seems wrong...\nHas a strange but friendly rivalry with Sensal."
 	}
-	"Supreme Spookmaster Bones: Magistrate of the Dead Desc"
+	"Supreme Spookmaster Bones, Magistrate of the Dead Desc"
 	{
 		"en"		"• Summons an army every time he loses 1/4 of his max HP.\n• Invulnerable while an army is active.\n \n\nWhenever someone dies, they show up in a long queue, stripped of their skin and turned into a skeleton.\nAt the front of this queue, SSB judges the recently-deceased, deciding whether they should be allowed\ninto Necropolis or turned away, doomed to wander purgatory alone for eternity."
+	}
+	"Supreme Spookmaster Bones, Eternal Master of the Damned Desc"
+	{
+		"en"		"SSB's job as ruler of the dead is really important, sure, but it gets really boring after the first couple million years.\nPoor guy doesn't even get holidays off; it's not like people magically stop dying on Christmas, after all.\nHe puts in all of this hard work to make Necropolis a good place, but the same few mortals keep coming back to life somehow.\nWhat a slap in the face! No wonder he snapped."
 	}
 	"Agent John Desc"
 	{
