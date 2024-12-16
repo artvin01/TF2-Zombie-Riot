@@ -31,6 +31,7 @@ static float ExtraArmor;
 static bool SuperMiniBoss;
 static int ExtraSkulls;
 static int SkullTimes;
+static bool ExplodingNPC;
 
 void Freeplay_ResetAll()
 {
@@ -64,6 +65,7 @@ void Freeplay_ResetAll()
 	ExtraSkulls = 0;
 	SkullTimes = 0;
 	SuperMiniBoss = false;
+	ExplodingNPC = false;
 
 	EscapeModeForNpc = false;
 }
@@ -71,6 +73,14 @@ void Freeplay_ResetAll()
 int Freeplay_EnemyCount()
 {
 	return EnemyCount;
+}
+
+void Freeplay_OnNPCDeath(int entity)
+{
+	if(ExplodingNPC)
+	{
+		// stuff for later
+	}
 }
 
 int Freeplay_GetDangerLevelCurrent()
@@ -429,6 +439,9 @@ void Freeplay_SpawnEnemy(int entity)
 
 void Freeplay_OnEndWave(int &cash)
 {
+	if(ExplodingNPC)
+		ExplodingNPC = false;
+
 	cash += CashBonus;
 }
 
@@ -1146,6 +1159,16 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 			SuperMiniBoss = true;
 		}
+		case 83:
+		{
+			if(ExplodingNPC)
+			{
+				Freeplay_SetupStart);
+				return;
+			}
+			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death, damaging everything (except other enemies) around them!");
+			ExplodingNPC = true;
+		}
 		default:
 		{
 			strcopy(message, sizeof(message), "{yellow}Nothing!");
@@ -1158,6 +1181,9 @@ void Freeplay_SetupStart(bool extra = false)
 
 	if(RaidFight)
 		CPrintToChatAll("{green}Winning this wave will reward you with 5000 extra credits.");
+
+	if(ExplodingNPC)
+		CPrintToChatAll("{yellow}The explosive enemies skull lasts till next wave.");
 
 	if(extra)
 	{
