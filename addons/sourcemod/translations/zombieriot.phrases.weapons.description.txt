@@ -1206,6 +1206,10 @@
 		"ru"	"Увеличенный урон и скорость атаки, эффект значительно сильнее, враги получают на 35%% больше урона."
 		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
 	}
+	"Medusa Teslar Stick Pap 2"
+	{
+		"en"	"Increased damage and attackspeed, bleed lasts longer, extra melee resistance."
+	}
 	
 	"Fists Of Kahmlstein Desc"
 	{

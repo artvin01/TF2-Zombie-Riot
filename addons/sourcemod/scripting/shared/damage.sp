@@ -2038,7 +2038,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s❇", Debuff_Adder_left);
+		Format(Debuff_Adder_left, SizeOfChar, "%s❈", Debuff_Adder_left);
 	}
 	else if(f_LowIceDebuff[victim] > GameTime)
 	{
@@ -2046,7 +2046,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	else if (f_VeryLowIceDebuff[victim] > GameTime)
 	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s❅", Debuff_Adder_left);	
+		Format(Debuff_Adder_left, SizeOfChar, "%s❉", Debuff_Adder_left);	
 	}
 	if (f_BuildingAntiRaid[victim] > GameTime)
 	{
