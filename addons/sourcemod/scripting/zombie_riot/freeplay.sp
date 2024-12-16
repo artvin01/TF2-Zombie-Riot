@@ -490,7 +490,7 @@ void Freeplay_SetupStart(bool again)
 			strcopy(message, sizeof(message), "{green}All enemies now have 5% less health.");
 			HealthMulti *= 0.95;
 		}
-		case 9:
+		case 9, 10:
 		{
 			if(EscapeModeForNpc)
 			{
@@ -503,11 +503,6 @@ void Freeplay_SetupStart(bool again)
 				EscapeModeForNpc = true;
 			}
 		}
-		case 10:
-		{
-			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Defeating them will grant 250 extra credits each.");
-			SuperMiniBoss = true;
-		}
 		case 11:
 		{
 			strcopy(message, sizeof(message), "{green}All enemies now have 10% more health!");
@@ -515,7 +510,7 @@ void Freeplay_SetupStart(bool again)
 		}
 		case 12:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies now have 20% more health");
+			strcopy(message, sizeof(message), "{red}All enemies now have 20% more health!");
 			HealthMulti *= 1.2;
 		}
 		case 13:
@@ -731,12 +726,7 @@ void Freeplay_SetupStart(bool again)
 			strcopy(message, sizeof(message), "{red}The next enemy will become a Stalker! {yellow}(x25 HP, x15 DMG)");
 			StalkerBuff++;
 		}
-		case 35:
-		{
-			strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
-			RaidFight = 1;
-		}
-		case 36, 37, 38, 39:
+		case 35, 36, 37, 38:
 		{
 			//if(EnemyChance > 8)
 			//{
@@ -747,7 +737,7 @@ void Freeplay_SetupStart(bool again)
 			strcopy(message, sizeof(message), "{red}Stronger enemy types are now more likely to appear!");
 			EnemyChance++;
 		}
-		case 40, 41:
+		case 39, 40, 41:
 		{
 			if(EnemyCount < 6)
 			{
@@ -769,23 +759,15 @@ void Freeplay_SetupStart(bool again)
 			strcopy(message, sizeof(message), "{green}Stronger enemy types are now less likely to appear.");
 			EnemyChance--;
 		}
-		case 43: // is this ever used?
-		{
-			if(Medival_Difficulty_Level <= 0.1)
-			{
-				Freeplay_SetupStart(false);
-				return;
-			}
-
-			strcopy(message, sizeof(message), "{red}Mediveal armour was improved");
-			Medival_Difficulty_Level *= 0.9;
-			if(Medival_Difficulty_Level < 0.1)
-				Medival_Difficulty_Level = 0.1;
-		}
-		case 44:
+		case 43:
 		{
 			strcopy(message, sizeof(message), "{green}The next 300 enemies will now gain the Cudgel debuff.");
 			CudgelDebuff += 300;
+		}
+		case 44:
+		{
+			strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
+			RaidFight = 1;
 		}
 		case 45:
 		{
@@ -1043,6 +1025,16 @@ void Freeplay_SetupStart(bool again)
 			{
 				ExtraArmor = 0.0;
 			}
+		}
+		case 82:
+		{
+			if(SuperMiniBoss)
+			{
+				Freeplay_SetupStart(false);
+				return;
+			}
+			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Defeating them will grant 250 extra credits each.");
+			SuperMiniBoss = true;
 		}
 		default:
 		{
