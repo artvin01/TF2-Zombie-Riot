@@ -3208,7 +3208,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		
 		CheckAlivePlayers();
 
-		if((CurrentRound % 4) == 3)
+		if((CurrentRound % 5) == 4)
 		{
 			Freeplay_SetupStart(false);
 
