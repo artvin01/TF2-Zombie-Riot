@@ -427,7 +427,7 @@ void Freeplay_SpawnEnemy(int entity)
 	fl_Extra_RangedArmor[entity] *= RangedMult;
 }
 
-void Freeplay_OnEndWave(int postWaves, int &cash)
+void Freeplay_OnEndWave(int &cash)
 {
 	cash += CashBonus;
 }
@@ -1054,7 +1054,7 @@ void Freeplay_SetupStart(bool again)
 	RerollTry = 0;
 	CPrintToChatAll("{orange}New Skull{default}: %s", message);
 
-	float exskull = GetRandomInt(0, 100);
+	int exskull = GetRandomInt(0, 100);
 	if(exskull > 90) // 10% chance
 	{
 		ExtraSkulls++;
