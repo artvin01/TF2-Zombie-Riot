@@ -352,6 +352,7 @@ methodmap Huscarls < CClotBody
 		}
 		else
 		{
+			RemoveAllDamageAddition();
 			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);

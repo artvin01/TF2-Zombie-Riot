@@ -686,6 +686,7 @@ methodmap Twirl < CClotBody
 			b_tripple_raid[npc.index] = true;
 			default_theme = false;
 		}
+		RemoveAllDamageAddition();
 			
 
 		if(default_theme)

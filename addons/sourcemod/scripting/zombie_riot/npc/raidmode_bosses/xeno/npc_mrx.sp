@@ -281,6 +281,7 @@ methodmap RaidbossMrX < CClotBody
 		{
 			Music_SetRaidMusicSimple("#zombiesurvival/xeno_raid/mr_x_solo.mp3", 127, true, 1.6);
 		}
+		RemoveAllDamageAddition();
 
 		GiveOneRevive(true);
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	

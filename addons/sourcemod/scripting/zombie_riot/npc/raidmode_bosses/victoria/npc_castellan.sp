@@ -357,6 +357,7 @@ methodmap Castellan < CClotBody
 				ShowGameText(client_check, "obj_status_sentrygun_3", 1, "%t", "Castellan Arrived");
 			}
 		}
+		RemoveAllDamageAddition();
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;

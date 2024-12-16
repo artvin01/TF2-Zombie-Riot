@@ -407,6 +407,7 @@ methodmap Nemal < CClotBody
 		{
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
+		RemoveAllDamageAddition();
 		
 
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;

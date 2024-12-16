@@ -590,7 +590,7 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 		if(IsRaidBoss)
 		{
-			RemoveAllDamageAddition();
+		//	RemoveAllDamageAddition();
 		}
 #endif
 	

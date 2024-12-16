@@ -373,6 +373,7 @@ methodmap ChaosKahmlstein < CClotBody
 		}
 		else
 		{
+			RemoveAllDamageAddition();
 			func_NPCFuncWin[npc.index] = view_as<Function>(ChaosKahmlstein_Win);
 			SDKHook(npc.index, SDKHook_OnTakeDamagePost, ChaosKahmlstein_OnTakeDamagePost);
 			EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	

@@ -768,7 +768,7 @@ methodmap Stella < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Donnerkrieg And Schwertkrieg Spawn");
 			}
 		}
-		
+		RemoveAllDamageAddition();
 		Citizen_MiniBossSpawn();
 		
 		b_tripple_raid[npc.index] = (StrContains(data, "triple_enemies") != -1);

@@ -378,6 +378,7 @@ methodmap Blitzkrieg < CClotBody
 //		npc.m_flPlayMusicSound = 0.0;
 
 		b_winline = false;
+		RemoveAllDamageAddition();
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	

@@ -340,6 +340,7 @@ methodmap Levita < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
+		RemoveAllDamageAddition();
 
 		npc.m_iAttacksTillMegahit = 0;
 		

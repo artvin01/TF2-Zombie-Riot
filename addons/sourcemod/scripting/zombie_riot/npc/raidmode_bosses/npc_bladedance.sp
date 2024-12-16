@@ -145,6 +145,7 @@ methodmap RaidbossBladedance < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 1;
 		}
+		RemoveAllDamageAddition();
 
 		npc.m_bThisNpcIsABoss = true;
 		npc.Anger = false;

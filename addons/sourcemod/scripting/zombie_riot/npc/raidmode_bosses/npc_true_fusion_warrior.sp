@@ -325,6 +325,7 @@ methodmap TrueFusionWarrior < CClotBody
 		{
 			RaidModeScaling *= 0.38;
 		}
+		RemoveAllDamageAddition();
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
