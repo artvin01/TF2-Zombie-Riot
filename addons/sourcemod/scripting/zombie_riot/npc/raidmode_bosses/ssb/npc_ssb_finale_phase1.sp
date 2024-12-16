@@ -10,6 +10,17 @@ static float SSBChair_RaidTime = 481.0;		//I recommend not changing this, 8:01 i
 
 static int Chair_Tier[2049] = { 0, ... };	//The current "tier" the raid is on. Starts at 0 and increments by 1 each time SSB's army is defeated.
 static bool Chair_UsingAbility[2049] = { false, ... };	//Whether or not SSB is currently using an ability. Set to TRUE upon ability activation and FALSE once the ability is finished. Otherwise, he can use abilities while using other abilities, which can break animations. Very stinky!
+Function Chair_QueuedSpell[2049];			//The spell which will be cast when SSB's cast animation plays out.
+
+static bool Chair_ChangeSequence[2049] = { false, ... };
+static char Chair_Sequence[2049][255];
+
+static float Bombardment_Radius[4] = { 180.0, 220.0, 260.0, 300.0 };		//Blast radius.
+static float Bombardment_Delay[4] = { 2.0, 1.75, 1.5, 1.25 };				//Time until the blast hits.
+static float Bombardment_DMG[4]	= { 200.0, 400.0, 800.0, 1600.0 };			//Damage dealt by the blast.
+static float Bombardment_EntityMult[4] = { 5.0, 10.0, 15.0, 20.0 };			//Amount to multiply damage dealt to entities.
+static float Bombardment_Falloff_MultiHit[4] = { 0.66, 0.7, 0.75, 0.8 };	//Amount to multiply damage per target hit.
+static float Bombardment_Falloff_Radius[4] = { 0.5, 0.66, 0.75, 0.8 };		//Maximum distance-based falloff.
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -53,7 +64,21 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
-#define SND_SPAWN_ALERT			"misc/halloween/merasmus_appear.wav"
+static char g_SSBGenericSpell_Sounds[][] = {
+	")zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_genericspell_1.mp3",
+	")zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_genericspell_2.mp3"
+};
+
+//#define SND_SPAWN_ALERT			"misc/halloween/merasmus_appear.wav"
+#define SND_SNAP				"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_snap.mp3"
+#define SND_BOMBARDMENT_STRIKE		")misc/halloween/spell_spawn_boss.wav"
+#define SND_BOMBARDMENT_MARKED		")misc/halloween/hwn_bomb_flash.wav"
+#define SND_BOMBARDMENT_CHARGEUP	")items/powerup_pickup_crits.wav"
+
+#define PARTICLE_SNAP			"merasmus_dazed_bits"
+#define PARTICLE_SNAP2			"hammer_bell_ring_shockwave2"
+//#define PARTICLE_SPAWNVFX_GREEN				"duck_collect_green"
+#define PARTICLE_BOMBARDMENT_HAND		"superrare_burning2"
 
 public void SSBChair_OnMapStart_NPC()
 {
@@ -65,8 +90,13 @@ public void SSBChair_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBGenericSpell_Sounds));   i++) { PrecacheSound(g_SSBGenericSpell_Sounds[i]);   }
 
 	PrecacheSound(SND_SPAWN_ALERT);
+	PrecacheSound(SND_SNAP);
+	PrecacheSound(SND_BOMBARDMENT_STRIKE);
+	PrecacheSound(SND_BOMBARDMENT_MARKED);
+	PrecacheSound(SND_BOMBARDMENT_CHARGEUP);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones, Magistrate of the Dead");
@@ -191,9 +221,92 @@ methodmap SSBChair_Spell __nullable__
 	}
 }
 
-public void SSB_SugmaTest(SSBChair ssb, int target)
+public void SSBChair_Bombardment(SSBChair ssb, int target)
 {
-	CPrintToChatAll("{unusual}Sugma phase {haunted}%i", Chair_Tier[ssb.index]);
+	//CPrintToChatAll("{unusual}Sugma phase {haunted}%i", Chair_Tier[ssb.index]);
+	int activity = ssb.LookupActivity("ACT_FINALE_CHAIR_SNAP");
+	if (activity > 0)
+	{
+		ssb.StartActivity(activity);
+		Chair_UsingAbility[ssb.index] = true;
+		Chair_QueuedSpell[ssb.index] = SSBChair_Bombardment_Activate;
+
+		float pos[3], trash[3];
+		ssb.GetAttachment("effect_hand_L", pos, trash);
+		ssb.m_iWearable3 = ParticleEffectAt_Parent(pos, PARTICLE_BOMBARDMENT_HAND, ssb.index, "effect_hand_L");
+		EmitSoundToAll(SND_BOMBARDMENT_CHARGEUP, ssb.index, _, 120);
+	}
+}
+
+public void SSBChair_Bombardment_Activate(SSBChair ssb, int target)
+{
+	float pos[3];
+	ssb.WorldSpaceCenter(pos);
+	
+	for (int i = 1; i < 2049; i++)
+	{
+		if (IsValidEnemy(ssb.index, i))
+			SSBChair_Bombardment_Mark(ssb.index, i);
+	}
+
+	ssb.PlayGenericSpell();
+}
+
+public void SSBChair_Bombardment_Mark(int attacker, int victim)
+{
+	SSBChair ssb = view_as<SSBChair>(attacker);
+
+	float pos[3];
+	GetEntPropVector(victim, Prop_Send, "m_vecOrigin", pos);
+	spawnRing_Vectors(pos, Bombardment_Radius[Chair_Tier[ssb.index]] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 0, Bombardment_Delay[Chair_Tier[ssb.index]], 6.0, 0.0, 0);
+	spawnRing_Vectors(pos, Bombardment_Radius[Chair_Tier[ssb.index]] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 0, Bombardment_Delay[Chair_Tier[ssb.index]], 4.0, 0.0, 0, 0.0);
+
+	int particle = ParticleEffectAt(pos, PARTICLE_SPAWNVFX_GREEN);
+	EmitSoundToAll(SND_BOMBARDMENT_MARKED, particle, _, _, _, _, GetRandomInt(80, 110));
+
+	DataPack pack = new DataPack();
+	CreateDataTimer(Bombardment_Delay[Chair_Tier[ssb.index]], SSBChair_Bombardment_Hit, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack, GetClientUserId(victim));
+	WritePackFloat(pack, pos[0]);
+	WritePackFloat(pack, pos[1]);
+	WritePackFloat(pack, pos[2]);
+}
+
+public Action SSBChair_Bombardment_Hit(Handle timer, DataPack pack)
+{
+	ResetPack(pack);
+
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	int target = GetClientOfUserId(ReadPackCell(pack));
+	float pos[3], skyPos[3];
+	for (int i = 0; i < 3; i++)
+		pos[i] = ReadPackFloat(pack);
+
+	if (!IsValidEntity(ent) || !IsValidEntity(target))
+		return Plugin_Continue;
+
+	if (!IsValidEnemy(ent, target, true, true))
+		return Plugin_Continue;
+
+	SSBChair ssb = view_as<SSBChair>(ent);
+
+	skyPos = pos;
+	skyPos[2] += 9999.0;
+
+	int particle = ParticleEffectAt(pos, PARTICLE_GREENBLAST_SSB, 2.0);
+	SpawnBeam_Vectors(skyPos, pos, 0.33, 0, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 36.0, 36.0, _, 0.0);
+	SpawnBeam_Vectors(skyPos, pos, 0.33, 0, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 36.0, 36.0, _, 0.0);
+	SpawnBeam_Vectors(skyPos, pos, 0.33, 0, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 36.0, 36.0, _, 20.0);
+
+	bool isBlue = GetEntProp(ent, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(Bombardment_DMG[Chair_Tier[ssb.index]], ent, ent, 0, pos, Bombardment_Radius[Chair_Tier[ssb.index]], Bombardment_Falloff_MultiHit[Chair_Tier[ssb.index]], Bombardment_Falloff_Radius[Chair_Tier[ssb.index]], isBlue, _, _, Bombardment_EntityMult[Chair_Tier[ssb.index]]);
+
+	int pitch = GetRandomInt(80, 110);
+	EmitSoundToAll(SND_BOMBARDMENT_STRIKE, particle, _, _, _, _, pitch);
+	EmitSoundToAll(SND_BOMBARDMENT_STRIKE, particle, _, _, _, _, pitch);
+
+	return Plugin_Continue;
 }
 
 methodmap SSBChair < CClotBody
@@ -268,13 +381,22 @@ methodmap SSBChair < CClotBody
 		#endif
 	}
 
+	public void PlayGenericSpell()
+	{
+		EmitSoundToAll(g_SSBGenericSpell_Sounds[GetRandomInt(0, sizeof(g_SSBGenericSpell_Sounds) - 1)], _, _, 120);
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSSBChair::PlayGenericSpell()");
+		#endif
+	}
+
 	public void PrepareAbilities()
 	{
 		this.DeleteAbilities();
 		SSB_ChairSpells[this.index] = new ArrayList(255);
 
 		//TODO: Populate abilities here
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(5.0, 0.0, 0, SSB_SugmaTest));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(15.0, 5.0, 0, SSBChair_Bombardment));
 	}
 
 	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
@@ -334,6 +456,7 @@ methodmap SSBChair < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(SSBChair_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(SSBChair_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(SSBChair_ClotThink);
+		func_NPCAnimEvent[npc.index] = SSBChair_AnimEvent;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -349,6 +472,7 @@ methodmap SSBChair < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
+		Chair_ChangeSequence[npc.index] = false;
 		Chair_Tier[npc.index] = 0;
 
 		//IDLE
@@ -413,6 +537,43 @@ public void SSBChair_DeleteAbilities()
 	}
 }
 
+public void SSBChair_AnimEvent(int entity, int event)
+{
+	if (!IsValidEntity(entity))
+		return;
+
+	SSBChair npc = view_as<SSBChair>(entity);
+
+	switch(event)
+	{
+		case 1002:	//Fingers have snapped, cast whatever spell has been queued up.
+		{
+			if (Chair_QueuedSpell[npc.index] != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, Chair_QueuedSpell[npc.index]);
+				Call_PushCell(npc);
+				Call_PushCell(npc.m_iTarget);
+				Call_Finish();
+			}
+
+			EmitSoundToAll(SND_SNAP, _, _, 120);
+			float pos[3], trash[3];
+			npc.GetAttachment("effect_hand_L", pos, trash);
+			ParticleEffectAt(pos, PARTICLE_SNAP);
+			ParticleEffectAt(pos, PARTICLE_SNAP2);
+
+			if (IsValidEntity(npc.m_iWearable3))
+				RemoveEntity(npc.m_iWearable3);
+		}
+		case 1003:	//Snap finished, go back to idle animation and remove "UsingAbility" flag.
+		{
+			Chair_ChangeSequence[npc.index] = true;
+			Chair_Sequence[npc.index] = "ACT_FINALE_CHAIR_IDLE";
+			Chair_UsingAbility[npc.index] = false;
+		}
+	}
+}
+
 //TODO 
 //Rewrite
 public void SSBChair_ClotThink(int iNPC)
@@ -439,6 +600,15 @@ public void SSBChair_ClotThink(int iNPC)
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
+	}
+
+	if (Chair_ChangeSequence[npc.index])
+	{
+		int activity = npc.LookupActivity(Chair_Sequence[npc.index]);
+		if (activity > 0)
+			npc.StartActivity(activity);
+		
+		Chair_ChangeSequence[npc.index] = false;
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
