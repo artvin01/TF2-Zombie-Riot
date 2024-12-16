@@ -248,6 +248,8 @@ public void Rogue_SoulTerraria_Weapon(int entity, int client)
 	if(StrContains(buffer, "Fractured Ark", false) != -1 ||
 		StrContains(buffer, "Ark of the ", false) != -1 ||
 		StrContains(buffer, "Repaired Ark", false) != -1 ||
+		StrContains(buffer, "Star Shooter", false) != -1 ||
+		StrContains(buffer, "Super Star Shooter", false) != -1 ||
 		StrContains(buffer, "Tinker's Wrench", false) != -1)
 	{
 		AnnounceSoulBuff(client, entity, 5);

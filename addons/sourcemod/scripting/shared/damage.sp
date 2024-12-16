@@ -1944,7 +1944,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	//All debuffs go here!
 	if(f_HighTeslarDebuff[victim] > GameTime)
 	{
-		Format(Debuff_Adder_left, SizeOfChar, "⌁⌁");
+		Format(Debuff_Adder_left, SizeOfChar, "⏧");
 	}
 	else if(f_LowTeslarDebuff[victim] > GameTime)
 	{
@@ -2038,11 +2038,11 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s❅❅❅", Debuff_Adder_left);
+		Format(Debuff_Adder_left, SizeOfChar, "%s❇", Debuff_Adder_left);
 	}
 	else if(f_LowIceDebuff[victim] > GameTime)
 	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s❅❅", Debuff_Adder_left);
+		Format(Debuff_Adder_left, SizeOfChar, "%s❆", Debuff_Adder_left);
 	}
 	else if (f_VeryLowIceDebuff[victim] > GameTime)
 	{

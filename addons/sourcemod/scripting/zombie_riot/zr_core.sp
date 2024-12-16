@@ -582,13 +582,43 @@ void ZR_PluginStart()
 	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
+	
+
+	//any noob will eventually type these!!
 	RegConsoleCmd("sm_store", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_market", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_zmarket", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_weapons", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_walmart", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_tesco", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_buy", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_guns", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_gun", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_givegun", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_giveweapons", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_giveweapon", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_cmd", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_cmds", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_commands", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_help", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_giveweapon", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_info", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_menu", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_givemeall", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_giveall", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_freeitems", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_wear", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_wearme", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_zr", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_lidlnord", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_lidlsüd", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_kaufland", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_ikea", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_zabka", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_penny", Access_StoreViaCommand, "Please Press TAB instad");
+
+
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");
 	

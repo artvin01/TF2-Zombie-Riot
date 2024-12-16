@@ -337,7 +337,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 			i_CryoShot[attacker] -= 1;
 		}
 	}
-	if(i_HasBeenHeadShotted[victim] == true)
+	if(i_HasBeenHeadShotted[victim])
 	{
 		i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * Payday;
 		if(i_Dollars_Ammount[attacker]>=CASINO_MAX_DOLLARS)			
@@ -366,6 +366,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 				fl_Damage_Ammount[attacker] = 25.0 + (pap + 1) * 6.25;
 		}
 	}
+	Casino_hud_delay[attacker]  = 0.0; //Reset hud cooldown on shooting
 	return damage *= damageMod;
 }
 
@@ -579,6 +580,45 @@ public void Weapon_Casino_M1(int client, int weapon)
 	}
 }
 
+public void CasinoWeaponHoldM2(int client, int weapon, const char[] classname, bool &result)
+{
+	f_AttackDelayKnife[client] = 0.0;
+	SDKUnhook(client, SDKHook_PreThink, CasinoWeaponHoldM2_Prethink);
+	SDKHook(client, SDKHook_PreThink, CasinoWeaponHoldM2_Prethink);
+}
+
+public void CasinoWeaponHoldM2_Prethink(int client)
+{
+	if(GetClientButtons(client) & IN_ATTACK2)
+	{
+		if(f_AttackDelayKnife[client] > GetGameTime())
+		{
+			return;
+		}
+		f_AttackDelayKnife[client] = GetGameTime() + 0.25;
+		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_active < 0)
+		{
+			SDKUnhook(client, SDKHook_PreThink, CasinoWeaponHoldM2_Prethink);
+			return;
+		}
+		if(i_CustomWeaponEquipLogic[weapon_active] != WEAPON_CASINO)
+		{
+			SDKUnhook(client, SDKHook_PreThink, CasinoWeaponHoldM2_Prethink);
+			return;
+		}
+
+		Weapon_Casino_M2(client, weapon_active);
+		Casino_Show_Hud(client);
+		//Update Hud On use
+
+	}
+	else
+	{
+		SDKUnhook(client, SDKHook_PreThink, CasinoWeaponHoldM2_Prethink);
+		return;
+	}
+}
 public void Weapon_Casino_M2(int client, int weapon)
 {
 	switch(Frenzy_timer[client])
@@ -596,7 +636,7 @@ public void Weapon_Casino_M2(int client, int weapon)
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "You're too poor!"); //lmao nerd
+			//	ShowSyncHudText(client,  SyncHud_Notifaction, "You're too poor!"); //lmao nerd
 			}
 		}
 		default:
