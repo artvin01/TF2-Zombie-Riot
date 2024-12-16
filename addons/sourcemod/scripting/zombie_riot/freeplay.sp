@@ -733,7 +733,7 @@ void Freeplay_SetupStart(bool again)
 		}
 		case 35:
 		{
-			strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave! {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
 			RaidFight = 1;
 		}
 		case 36, 37, 38, 39:
@@ -789,17 +789,17 @@ void Freeplay_SetupStart(bool again)
 		}
 		case 45:
 		{
-			strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave! {green}Defeating it will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
 			RaidFight = 2;
 		}
 		case 46:
 		{
-			strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave! {green}Defeating them will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
 			RaidFight = 3;
 		}
 		case 47:
 		{
-			strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave! {green}Defeating them will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
 			RaidFight = 4;
 		}
 		case 48:
@@ -807,97 +807,97 @@ void Freeplay_SetupStart(bool again)
 			float chance = GetRandomFloat(0.0, 1.0);
 			if(chance > 0.9) // 10% chance for pencil
 			{
-				strcopy(message, sizeof(message), "{yellow}Pencil will draw his way on to victory in the next wave! {green}Defeating him will award you with 5000 credits.");
+				strcopy(message, sizeof(message), "{yellow}Pencil will draw his way on to victory in the next wave!");
 			}
 			else
 			{
-				strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave! {green}Defeating him will award you with 5000 credits.");
+				strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
 			}
 			RaidFight = 5;
 		}
 		case 49:
 		{
-			strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave! {green}Defeating them will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
 			RaidFight = 6;
 		}
 		case 50:
 		{
-			strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave. {green}Defeating it will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
 			RaidFight = 7;
 		}
 		case 51:
 		{
-			strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave. {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave.");
 			RaidFight = 8;
 		}
 		case 52:
 		{
-			strcopy(message, sizeof(message), "{white}????????????? is coming... {green}Defeating it will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{white}????????????? is coming...");
 			RaidFight = 9;
 		}
 		case 53:
 		{
-			strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave. {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
 			RaidFight = 10;
 		}
 		case 54:
 		{
-			strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave... Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave...");
 			RaidFight = 11;
 		}
 		case 55:
 		{
-			strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave... Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave...");
 			RaidFight = 12;
 		}
 		case 56:
 		{
-			strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming... {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming...");
 			RaidFight = 13;
 		}
 		case 57:
 		{
-			strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave. {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave.");
 			RaidFight = 14;
 		}
 		case 58:
 		{
-			strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching... {green}Defeating it will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching...");
 			RaidFight = 15;
 		}
 		case 59:
 		{
-			strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave. {green}Defeating it will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
 			RaidFight = 16;
 		}
 		case 60:
 		{
-			strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave! {green}Defeating them will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
 			RaidFight = 17;
 		}
 		case 61:
 		{
-			strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave! {green}Defeating her will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
 			RaidFight = 18;
 		}
 		case 62:
 		{
-			strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave. {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave.");
 			RaidFight = 19;
 		}
 		case 63:
 		{
-			strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave. {green}Defeating them will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave.");
 			RaidFight = 20;
 		}
 		case 64:
 		{
-			strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave. {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave.");
 			RaidFight = 21;
 		}
 		case 65:
 		{
-			strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave. {green}Defeating him will award you with 5000 credits.");
+			strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
 			RaidFight = 22;
 		}
 		case 66:
@@ -1053,6 +1053,8 @@ void Freeplay_SetupStart(bool again)
 
 	RerollTry = 0;
 	CPrintToChatAll("{orange}New Skull{default}: %s", message);
+	if(RaidFight)
+		CPrintToChatAll("{green}Winning this wave will reward you with 5000 extra credits.");
 
 	int exskull = GetRandomInt(0, 100);
 	if(exskull > 90 && !again) // 10% chance
