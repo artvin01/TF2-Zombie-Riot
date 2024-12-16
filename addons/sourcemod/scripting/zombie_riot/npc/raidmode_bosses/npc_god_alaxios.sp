@@ -206,6 +206,7 @@ methodmap GodAlaxios < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 9999.0;
 			RaidAllowsBuildings = true;
 		}
+		RemoveAllDamageAddition();
 
 		npc.m_iChanged_WalkCycle = 4;
 		npc.SetActivity("ACT_WALK");

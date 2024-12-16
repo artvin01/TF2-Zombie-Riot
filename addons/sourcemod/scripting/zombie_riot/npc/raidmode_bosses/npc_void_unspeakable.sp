@@ -241,6 +241,7 @@ methodmap VoidUnspeakable < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = -5;
 		}
+		RemoveAllDamageAddition();
 		npc.m_flDeathAnimation = 0.0;
 		i_NpcWeight[npc.index] = 4;
 		npc.g_TimesSummoned = 1;

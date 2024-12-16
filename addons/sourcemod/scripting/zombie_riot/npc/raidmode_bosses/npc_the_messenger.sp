@@ -270,6 +270,7 @@ methodmap TheMessenger < CClotBody
 		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
 		b_thisNpcIsARaid[npc.index] = true;
+		RemoveAllDamageAddition();
 		
 
 		bool final = StrContains(data, "Cutscene_Khaml") != -1;
