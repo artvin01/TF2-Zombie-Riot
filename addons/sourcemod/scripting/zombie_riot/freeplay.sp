@@ -432,7 +432,7 @@ void Freeplay_OnEndWave(int &cash)
 	cash += CashBonus;
 }
 
-void Freeplay_SetupStart(bool again = false)
+void Freeplay_SetupStart(bool donotretry = false)
 {
 	static int RerollTry;
 
@@ -522,7 +522,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(KillBonus < 1)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -543,7 +543,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(CashBonus < 100)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -559,7 +559,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(EnemyBosses == 1)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -577,7 +577,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(ImmuneNuke == 1)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -621,7 +621,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(PerkMachine == 1)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -632,7 +632,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(PerkMachine == 2)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -643,7 +643,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(PerkMachine == 3)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -654,7 +654,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(PerkMachine == 4)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -665,7 +665,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(PerkMachine == 0)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -676,7 +676,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(IceDebuff > 2)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -687,7 +687,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(TeslarDebuff > 1)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -698,7 +698,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(FusionBuff > 2)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -709,7 +709,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(OceanBuff > 1)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -730,7 +730,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			//if(EnemyChance > 8)
 			//{
-			//	Freeplay_SetupStart(postWaves, wave);
+			//	Freeplay_SetupStart(true);
 			//	return;
 			//}
 
@@ -741,7 +741,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(EnemyCount < 6)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -752,7 +752,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(EnemyChance < 3)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 
@@ -896,7 +896,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(SpeedMult < 0.35) // i'll go with a minimum of -65% movement speed since freeplay enemies move way faster than usual, and certain buffs make them faster
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 			strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
@@ -906,7 +906,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(SpeedMult < 0.35)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 			strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
@@ -926,7 +926,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(MeleeMult < 0.05) // 95% melee res max
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 10% less melee damage.");
@@ -940,7 +940,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(MeleeMult < 0.05)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 15% less melee damage.");
@@ -964,7 +964,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(RangedMult < 0.05) // 95% ranged res max
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 10% less ranged damage.");
@@ -978,7 +978,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(RangedMult < 0.05)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 15% less ranged damage.");
@@ -1002,7 +1002,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(ExtraArmor < 0.0)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 			strcopy(message, sizeof(message), "{green}All enemies now have 2500 less armor.");
@@ -1016,7 +1016,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(ExtraArmor < 0.0)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 			strcopy(message, sizeof(message), "{green}All enemies now have 5000 less armor.");
@@ -1030,7 +1030,7 @@ void Freeplay_SetupStart(bool again = false)
 		{
 			if(SuperMiniBoss)
 			{
-				Freeplay_SetupStart(false);
+				Freeplay_SetupStart(true);
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Defeating them will grant 250 extra credits each.");
@@ -1049,7 +1049,7 @@ void Freeplay_SetupStart(bool again = false)
 		CPrintToChatAll("{green}Winning this wave will reward you with 5000 extra credits.");
 
 	int exskull = GetRandomInt(0, 100);
-	if(exskull > 90 && !again) // 10% chance
+	if(exskull > 90 && !donotretry) // 10% chance
 	{
 		ExtraSkulls++;
 		CPrintToChatAll("{yellow}ALERT!!! {orange}Setups will now contain one additional skull.");
