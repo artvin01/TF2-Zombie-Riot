@@ -295,12 +295,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 		}
-		enemy.Credits += 500.0;
-		enemy.ExtraDamage *= 1.65; // Give them extra damage since some aren't too good at causing mayhem
-		enemy.ExtraSpeed = 1.25;
-		enemy.ExtraSize = 1.75; // big
+		enemy.Credits += 250.0;
+		enemy.ExtraDamage *= 1.33;
+		enemy.ExtraSpeed = 1.33;
+		enemy.ExtraSize = 1.65; // big
 
-		count = 5;
+		count = GetRandomInt(2, 10);
 		SuperMiniBoss = false;
 	}
 	else
@@ -389,8 +389,8 @@ void Freeplay_SpawnEnemy(int entity)
 	if(StalkerBuff > 0)
 	{
 		b_StaticNPC[entity] = true;
-		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 50);
-		fl_Extra_Damage[entity] *= 10.0;
+		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 25);
+		fl_Extra_Damage[entity] *= 15.0;
 		StalkerBuff--;
 	}
 
@@ -505,7 +505,7 @@ void Freeplay_SetupStart(bool again)
 		}
 		case 10:
 		{
-			strcopy(message, sizeof(message), "{red}5 random SUPER Minibosses will spawn in the next wave! {green}Defeating them will grant 500 extra credits each.");
+			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Defeating them will grant 250 extra credits each.");
 			SuperMiniBoss = true;
 		}
 		case 11:
@@ -1055,7 +1055,7 @@ void Freeplay_SetupStart(bool again)
 	CPrintToChatAll("{orange}New Skull{default}: %s", message);
 
 	int exskull = GetRandomInt(0, 100);
-	if(exskull > 90) // 10% chance
+	if(exskull > 90 && !again) // 10% chance
 	{
 		ExtraSkulls++;
 		CPrintToChatAll("{yellow}ALERT!!! {orange}Setups will now contain one additional skull.");
