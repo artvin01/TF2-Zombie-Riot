@@ -1065,6 +1065,6 @@ void Freeplay_SetupStart(bool again)
 	if(SkullTimes < 0 && again)
 	{
 		SkullTimes--;
-		Freplay_SetupStart(true);
+		Freeplay_SetupStart(true);
 	}
 }
