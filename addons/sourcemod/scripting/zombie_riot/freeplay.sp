@@ -32,6 +32,7 @@ static bool SuperMiniBoss;
 static int ExtraSkulls;
 static int SkullTimes;
 static bool ExplodingNPC;
+static int ExplodeNPCDamage;
 
 void Freeplay_ResetAll()
 {
@@ -64,9 +65,9 @@ void Freeplay_ResetAll()
 	ExtraArmor = 0.0;
 	ExtraSkulls = 0;
 	SkullTimes = 0;
+	ExplodeNPCDamage = 0;
 	SuperMiniBoss = false;
 	ExplodingNPC = false;
-
 	EscapeModeForNpc = false;
 }
 
@@ -79,7 +80,10 @@ void Freeplay_OnNPCDeath(int entity)
 {
 	if(ExplodingNPC)
 	{
-		// stuff for later
+		float startPosition[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
+		startPosition[2] += 45;
+		makeexplosion(entity, entity, startPosition, "", ExplodeNPCDamage, 150, _, _, true, true, 6.0);
 	}
 }
 
@@ -1166,7 +1170,8 @@ void Freeplay_SetupStart(bool extra = false)
 				Freeplay_SetupStart);
 				return;
 			}
-			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death, damaging everything (except other enemies) around them!");
+			ExplodeNPCDamage = GetRandomInt(100, 500)
+			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death, dealing %d damage in a short radius!", ExplodeNPCDamage);
 			ExplodingNPC = true;
 		}
 		default:
