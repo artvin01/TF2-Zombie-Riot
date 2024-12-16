@@ -3210,15 +3210,15 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			Freeplay_SetupStart(false);
+			Freeplay_SetupStart(true);
 
-			Cooldown = GetGameTime() + 15.0;
+			Cooldown = GetGameTime() + 25.0;
 			
 			InSetup = true;
 			ExcuteRelay("zr_setuptime");
 			
-			SpawnTimer(15.0);
-			CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+			SpawnTimer(25.0);
+			CreateTimer(25.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			RequestFrames(StopMapMusicAll, 60);
 			
 			Citizen_SetupStart();
@@ -3297,7 +3297,7 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 		WaveEndLogicExtra();
 
 		int postWaves = CurrentRound - length;
-		Freeplay_OnEndWave(postWaves, round.Cash);
+		Freeplay_OnEndWave(round.Cash);
 		CurrentCash += round.Cash;
 
 		if(round.Cash)
@@ -3337,15 +3337,15 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 
 		if((CurrentRound % 5) == 4)
 		{
-			Freeplay_SetupStart(false);
+			Freeplay_SetupStart(true);
 
-			Cooldown = GetGameTime() + 15.0;
+			Cooldown = GetGameTime() + 25.0;
 			
 			InSetup = true;
 			ExcuteRelay("zr_setuptime");
 			
-			SpawnTimer(15.0);
-			CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+			SpawnTimer(25.0);
+			CreateTimer(25.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			
 			Menu menu = new Menu(Waves_FreeplayVote);
 			menu.SetTitle("Continue Freeplay..?\nThis will be asked every 5 waves.\n ");
