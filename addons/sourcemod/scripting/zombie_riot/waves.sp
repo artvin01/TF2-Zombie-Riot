@@ -3142,7 +3142,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		WaveEndLogicExtra();
 
 		int postWaves = CurrentRound - length;
-		Freeplay_OnEndWave(postWaves, round.Cash);
+		Freeplay_OnEndWave(round.Cash);
 		
 		CurrentCash += round.Cash;
 
