@@ -445,61 +445,61 @@ void Freeplay_SetupStart(bool again)
 	{
 		case 0:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies have +60000 health");
+			strcopy(message, sizeof(message), "{red}All enemies now have 60000 more health!");
 			HealthBonus += 60000;
 		}
 		case 1:
 		{
-			strcopy(message, sizeof(message), "{green}Gain a random group of friendly units");
+			strcopy(message, sizeof(message), "{green}You will gain 15 random friendly units.");
 			FriendlyDay = true;
 		}
 		case 2:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies have +15% health");
+			strcopy(message, sizeof(message), "{red}All enemies now have 15% more health!");
 			HealthMulti *= 1.15;
 		}
 		case 3:
 		{
-			strcopy(message, sizeof(message), "{yellow}All enemies have {green}-60000 health {yellow}but {red}+20% health");
+			strcopy(message, sizeof(message), "{yellow}All enemies now have {green}60000 less health {yellow}but {red}20% more health.");
 			HealthBonus -= 60000;
 			HealthMulti *= 1.2;
 		}
 		case 4:
 		{
-			strcopy(message, sizeof(message), "{yellow}All enemies have {red}+60000 health {yellow}but {green}-20% health");
+			strcopy(message, sizeof(message), "{yellow}All enemies now have {red}60000 more health {yellow}but {green}20% less health.");
 			HealthBonus += 60000;
 			HealthMulti /= 1.2;
 		}
 		case 5:
 		{
-			strcopy(message, sizeof(message), "{red}One extra enemy will spawn in each enemy group");
+			strcopy(message, sizeof(message), "{red}One extra enemy will spawn in each enemy group!");
 			CountBonus++;
 		}
 		case 6:
 		{
-			strcopy(message, sizeof(message), "{red}15% more enemies will spawn in each enemy group");
+			strcopy(message, sizeof(message), "{red}15% more enemies will spawn in each enemy group!");
 			CountMulti *= 1.15;
 		}
 		case 7:
 		{
-			strcopy(message, sizeof(message), "{green}10% less enemies will spawn in each enemy group");
+			strcopy(message, sizeof(message), "{green}10% less enemies will spawn in each enemy group.");
 			CountMulti /= 1.1;
 		}
 		case 8:
 		{
-			strcopy(message, sizeof(message), "{green}All enemies have -5% health");
+			strcopy(message, sizeof(message), "{green}All enemies now have 5% less health.");
 			HealthMulti *= 0.95;
 		}
 		case 9:
 		{
 			if(EscapeModeForNpc)
 			{
-				strcopy(message, sizeof(message), "{green}Weaker enemies lose the given extra speed and damage.");
+				strcopy(message, sizeof(message), "{green}Weaker enemies lose the given extra speed and damage from before.");
 				EscapeModeForNpc = false;
 			}
 			else
 			{
-				strcopy(message, sizeof(message), "{red}Weaker enemies gain extra speed and damage.");
+				strcopy(message, sizeof(message), "{red}Weaker enemies now gain extra speed and damage!");
 				EscapeModeForNpc = true;
 			}
 		}
@@ -510,17 +510,17 @@ void Freeplay_SetupStart(bool again)
 		}
 		case 11:
 		{
-			strcopy(message, sizeof(message), "{green}All enemies have -10% health");
+			strcopy(message, sizeof(message), "{green}All enemies now have 10% more health!");
 			HealthMulti *= 0.9;
 		}
 		case 12:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies have +20% health");
+			strcopy(message, sizeof(message), "{red}All enemies now have 20% more health");
 			HealthMulti *= 1.2;
 		}
 		case 13:
 		{
-			strcopy(message, sizeof(message), "{green}All enemies give +1 credits on death");
+			strcopy(message, sizeof(message), "{green}All enemies now give out 1 extra credits on death.");
 			KillBonus += 1;
 		}
 		case 14:
@@ -531,17 +531,17 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies give -1 credits on death");
+			strcopy(message, sizeof(message), "{red}Reduced the credit per enemy kill by 1!");
 			KillBonus--;
 		}
 		case 15:
 		{
-			strcopy(message, sizeof(message), "{red}Mini-boss spawn rate +50%");
+			strcopy(message, sizeof(message), "{red}Mini-boss spawn rate has been increased by 50%!");
 			MiniBossChance *= 1.5;
 		}
 		case 16:
 		{
-			strcopy(message, sizeof(message), "{green}Mini-boss spawn rate -25%");
+			strcopy(message, sizeof(message), "{green}Mini-boss spawn rate has been reduced by 25%.");
 			MiniBossChance *= 0.75;
 		}
 		case 17:
@@ -552,12 +552,12 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}-100 credits gained per round");
+			strcopy(message, sizeof(message), "{red}Reduced extra credits gained per wave by 100!");
 			CashBonus -= 100;
 		}
 		case 18:
 		{
-			strcopy(message, sizeof(message), "{green}+120 credits gained per round");
+			strcopy(message, sizeof(message), "{green}You now gain 120 extra credits per wave.");
 			CashBonus += 120;
 		}
 		case 19:
@@ -568,7 +568,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}Some enemy types gain boss resistances");
+			strcopy(message, sizeof(message), "{red}Some enemy types now gain boss resistances!");
 			if(EnemyBosses)
 			{
 				EnemyBosses--;
@@ -586,7 +586,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}Some enemy types are immune to the Nuke Powerup");
+			strcopy(message, sizeof(message), "{red}Some enemy types are now immune to the Nuke Powerup!");
 			if(ImmuneNuke)
 			{
 				ImmuneNuke--;
@@ -600,12 +600,12 @@ void Freeplay_SetupStart(bool again)
 		{
 			if(HussarBuff)
 			{
-				strcopy(message, sizeof(message), "{green}All enemies lose the Hussar buff!");
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Hussar buff.");
 				HussarBuff = false;
 			}
 			else
 			{
-				strcopy(message, sizeof(message), "{red}All enemies gain the Hussar buff.");
+				strcopy(message, sizeof(message), "{red}All enemies now gain the Hussar buff!");
 				HussarBuff = true;
 			}
 		}
@@ -613,12 +613,12 @@ void Freeplay_SetupStart(bool again)
 		{
 			if(PernellBuff)
 			{
-				strcopy(message, sizeof(message), "{green}All enemies lose the Purnell buff!");
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Purnell buff.");
 				PernellBuff = true;
 			}
 			else
 			{
-				strcopy(message, sizeof(message), "{red}All enemies gain the Purnell buff for 15 seconds.");
+				strcopy(message, sizeof(message), "{red}All enemies now gain the Purnell buff for 15 seconds!");
 				PernellBuff = true;
 			}
 		}
@@ -630,7 +630,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Juggernog, And thus gain resistance.");
+			strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain resistance!");
 			PerkMachine = 1;
 		}
 		case 24, 25:
@@ -641,7 +641,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Double Tap, And thus gain Extra Damage.");
+			strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain Extra Damage!");
 			PerkMachine = 2;
 		}
 		case 26:
@@ -652,7 +652,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Widows Wine, And thus gain camo.");
+			strcopy(message, sizeof(message), "{red}All enemies are now using the Widows Wine perk, And thus gain camo! {yellow}(Allied NPCS and Sentry-a-like buildings cannot target them now.)");
 			PerkMachine = 3;
 		}
 		case 27:
@@ -663,7 +663,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Speed Cola, and thus cannot be slowed.");
+			strcopy(message, sizeof(message), "{red}All enemies are now using the Speed Cola perk, and thus cannot be slowed!");
 			PerkMachine = 4;
 		}
 		case 28:
@@ -674,7 +674,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{green}All enemies are now using the perk Quick Revive, this is useless and makes them lose perks.");
+			strcopy(message, sizeof(message), "{green}All enemies are now using the Quick Revive perk, this is useless and removes their previous perk.");
 			PerkMachine = 0;
 		}
 		case 29:
@@ -685,7 +685,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{green}All enemies gain a layer of Cyro debuff");
+			strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Cyro debuff.");
 			IceDebuff++;
 		}
 		case 30:
@@ -696,7 +696,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{green}All enemies gain a layer of Teslar debuff");
+			strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Teslar debuff.");
 			TeslarDebuff++;
 		}
 		case 31:
@@ -707,7 +707,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies gain a layer of Fusion buff");
+			strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Fusion buff!");
 			FusionBuff++;
 		}
 		case 32:
@@ -718,17 +718,17 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies gain a layer of Ocean buff");
+			strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Ocean buff!");
 			OceanBuff++;
 		}
 		case 33:
 		{
-			strcopy(message, sizeof(message), "{green}The next 300 enemies gain the Crippled debuff");
+			strcopy(message, sizeof(message), "{green}The next 300 enemies will now gain the Crippled debuff.");
 			CrippleDebuff += 300;
 		}
 		case 34:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy becomes a Stalker");
+			strcopy(message, sizeof(message), "{red}The next enemy will become a Stalker! {yellow}(x25 HP, x15 DMG)");
 			StalkerBuff++;
 		}
 		case 35:
@@ -744,7 +744,7 @@ void Freeplay_SetupStart(bool again)
 			//	return;
 			//}
 
-			strcopy(message, sizeof(message), "{red}Stronger enemy types are more likely to appear");
+			strcopy(message, sizeof(message), "{red}Stronger enemy types are now more likely to appear!");
 			EnemyChance++;
 		}
 		case 40, 41:
@@ -755,7 +755,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}More enemy groups can appear");
+			strcopy(message, sizeof(message), "{red}Now, more enemy groups can appear!");
 			EnemyCount++;
 		}
 		case 42:
@@ -766,7 +766,7 @@ void Freeplay_SetupStart(bool again)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{green}Stronger enemy types are less likely to appear");
+			strcopy(message, sizeof(message), "{green}Stronger enemy types are now less likely to appear.");
 			EnemyChance--;
 		}
 		case 43: // is this ever used?
@@ -784,7 +784,7 @@ void Freeplay_SetupStart(bool again)
 		}
 		case 44:
 		{
-			strcopy(message, sizeof(message), "{green}The next 300 enemies will gain the Cudgel debuff.");
+			strcopy(message, sizeof(message), "{green}The next 300 enemies will now gain the Cudgel debuff.");
 			CudgelDebuff += 300;
 		}
 		case 45:
