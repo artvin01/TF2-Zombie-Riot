@@ -4200,6 +4200,27 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 #if !defined RTS
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
 {
+	if(entity <= MaxClients)
+	{
+		//if were giving it to a client directly, dont do the below.
+		ApplyTempAttrib_Internal(entity, index, multi, duration);
+		return;
+	}
+	if(Attributes_Has(entity,index))
+	{
+		//We need to get the owner!!
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		TempAttribStore TempStoreAttrib;
+		TempStoreAttrib.Attribute = index;
+		TempStoreAttrib.Value = multi;
+		TempStoreAttrib.GameTimeRemoveAt = GetGameTime() + duration;
+		TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[entity];
+		TempStoreAttrib.Apply_TempAttrib(owner, entity);
+	}
+}
+
+stock void ApplyTempAttrib_Internal(int entity, int index, float multi, float duration = 0.3)
+{
 	if(Attributes_Has(entity,index))
 	{
 		Attributes_SetMulti(entity, index, multi);
