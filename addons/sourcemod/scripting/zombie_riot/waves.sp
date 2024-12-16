@@ -3141,7 +3141,6 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 	{
 		WaveEndLogicExtra();
 
-		int postWaves = CurrentRound - length;
 		Freeplay_OnEndWave(round.Cash);
 		
 		CurrentCash += round.Cash;
@@ -3209,7 +3208,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		
 		CheckAlivePlayers();
 
-		if((CurrentRound % 5) == 4)
+		if((CurrentRound % 4) == 3)
 		{
 			Freeplay_SetupStart(false);
 
