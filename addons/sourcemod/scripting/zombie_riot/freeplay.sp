@@ -432,7 +432,7 @@ void Freeplay_OnEndWave(int &cash)
 	cash += CashBonus;
 }
 
-void Freeplay_SetupStart(bool again)
+void Freeplay_SetupStart(bool again = false)
 {
 	static int RerollTry;
 
@@ -1056,7 +1056,7 @@ void Freeplay_SetupStart(bool again)
 	}
 
 	SkullTimes = ExtraSkulls;
-	if(SkullTimes < 0 && again)
+	if(SkullTimes < 0)
 	{
 		SkullTimes--;
 		Freeplay_SetupStart(true);
