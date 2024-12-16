@@ -1053,9 +1053,9 @@ void Freeplay_SetupStart(bool donotretry = false)
 	{
 		ExtraSkulls++;
 		CPrintToChatAll("{yellow}ALERT!!! {orange}Setups will now contain one additional skull.");
+		SkullTimes = ExtraSkulls;  
 	}
 
-	SkullTimes = ExtraSkulls;
 	if(SkullTimes > 0)
 	{
 		SkullTimes--;
