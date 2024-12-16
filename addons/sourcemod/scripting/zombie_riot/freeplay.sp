@@ -1054,7 +1054,7 @@ void Freeplay_SetupStart(bool again)
 	RerollTry = 0;
 	CPrintToChatAll("{orange}New Skull{default}: %s", message);
 
-	float exskull = GetRandomInt(0, 100)
+	float exskull = GetRandomInt(0, 100);
 	if(exskull > 90) // 10% chance
 	{
 		ExtraSkulls++;
