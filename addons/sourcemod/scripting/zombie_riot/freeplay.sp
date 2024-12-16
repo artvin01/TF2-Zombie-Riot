@@ -242,14 +242,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	else if(FriendlyDay)
 	{
 		enemy.Team = TFTeam_Red;
-		count /= 10;
+		count = 15;
 		FriendlyDay = false;
 
 		if(enemy.Health)
 			enemy.Health /= 10;
 
 		if(enemy.ExtraDamage)
-			enemy.ExtraDamage *= 10.0;
+			enemy.ExtraDamage *= 15.0;
 	}
 	else if(SuperMiniBoss)
 	{
@@ -262,37 +262,37 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 1: // Rogue cta doctor
 			{
 				enemy.Index = NPC_GetByPlugin("npc_doctor");
-				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 2: // Guln
 			{
 				enemy.Index = NPC_GetByPlugin("npc_fallen_warrior");
-				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 3: // L4D2 Tank
 			{
 				enemy.Index = NPC_GetByPlugin("npc_l4d2_tank");
-				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 4: // Amogus
 			{
 				enemy.Index = NPC_GetByPlugin("npc_omega");
-				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 5: // Panzer
 			{
 				enemy.Index = NPC_GetByPlugin("npc_panzer");
-				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(3500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 6: // Lucius or lucian or luciaus or whatever the name is  i forgor
 			{
 				enemy.Index = NPC_GetByPlugin("npc_phantom_knight");
-				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 7: // Sawrunner
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
-				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 		}
 		enemy.Credits += 250.0;
@@ -432,7 +432,7 @@ void Freeplay_OnEndWave(int &cash)
 	cash += CashBonus;
 }
 
-void Freeplay_SetupStart(bool donotretry = false)
+void Freeplay_SetupStart(bool extra = false)
 {
 	static int RerollTry;
 
@@ -522,7 +522,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(KillBonus < 1)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -543,7 +543,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(CashBonus < 100)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -559,7 +559,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(EnemyBosses == 1)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -577,7 +577,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(ImmuneNuke == 1)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -621,7 +621,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(PerkMachine == 1)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -632,7 +632,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(PerkMachine == 2)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -643,7 +643,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(PerkMachine == 3)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -654,7 +654,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(PerkMachine == 4)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -665,7 +665,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(PerkMachine == 0)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -676,7 +676,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(IceDebuff > 2)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -687,7 +687,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(TeslarDebuff > 1)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -698,7 +698,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(FusionBuff > 2)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -709,7 +709,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(OceanBuff > 1)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -730,7 +730,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			//if(EnemyChance > 8)
 			//{
-			//	Freeplay_SetupStart(true);
+			//	Freeplay_SetupStart();
 			//	return;
 			//}
 
@@ -741,7 +741,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(EnemyCount < 6)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -752,7 +752,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(EnemyChance < 3)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 
@@ -766,28 +766,53 @@ void Freeplay_SetupStart(bool donotretry = false)
 		}
 		case 44:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
 			RaidFight = 1;
 		}
 		case 45:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
 			RaidFight = 2;
 		}
 		case 46:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
 			RaidFight = 3;
 		}
 		case 47:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
 			RaidFight = 4;
 		}
 		case 48:
 		{
-			float chance = GetRandomFloat(0.0, 1.0);
-			if(chance > 0.9) // 10% chance for pencil
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+			int chance = GetRandomInt(0, 100);
+			if(chance < 10) // 10% chance for pencil
 			{
 				strcopy(message, sizeof(message), "{yellow}Pencil will draw his way on to victory in the next wave!");
 			}
@@ -799,86 +824,171 @@ void Freeplay_SetupStart(bool donotretry = false)
 		}
 		case 49:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
 			RaidFight = 6;
 		}
 		case 50:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
 			RaidFight = 7;
 		}
 		case 51:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave.");
 			RaidFight = 8;
 		}
 		case 52:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{white}????????????? is coming...");
 			RaidFight = 9;
 		}
 		case 53:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
 			RaidFight = 10;
 		}
 		case 54:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave...");
 			RaidFight = 11;
 		}
 		case 55:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave...");
 			RaidFight = 12;
 		}
 		case 56:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming...");
 			RaidFight = 13;
 		}
 		case 57:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave.");
 			RaidFight = 14;
 		}
 		case 58:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching...");
 			RaidFight = 15;
 		}
 		case 59:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
 			RaidFight = 16;
 		}
 		case 60:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
 			RaidFight = 17;
 		}
 		case 61:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
 			RaidFight = 18;
 		}
 		case 62:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave.");
 			RaidFight = 19;
 		}
 		case 63:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave.");
 			RaidFight = 20;
 		}
 		case 64:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave.");
 			RaidFight = 21;
 		}
 		case 65:
 		{
+			if(RaidFight)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
 			strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
 			RaidFight = 22;
 		}
@@ -896,7 +1006,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(SpeedMult < 0.35) // i'll go with a minimum of -65% movement speed since freeplay enemies move way faster than usual, and certain buffs make them faster
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 			strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
@@ -906,7 +1016,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(SpeedMult < 0.35)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 			strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
@@ -926,7 +1036,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(MeleeMult < 0.05) // 95% melee res max
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 10% less melee damage.");
@@ -940,7 +1050,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(MeleeMult < 0.05)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 15% less melee damage.");
@@ -964,7 +1074,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(RangedMult < 0.05) // 95% ranged res max
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 10% less ranged damage.");
@@ -978,7 +1088,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(RangedMult < 0.05)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}Enemies will now take 15% less ranged damage.");
@@ -1002,7 +1112,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(ExtraArmor < 0.0)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 			strcopy(message, sizeof(message), "{green}All enemies now have 2500 less armor.");
@@ -1016,7 +1126,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(ExtraArmor < 0.0)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart();
 				return;
 			}
 			strcopy(message, sizeof(message), "{green}All enemies now have 5000 less armor.");
@@ -1030,10 +1140,10 @@ void Freeplay_SetupStart(bool donotretry = false)
 		{
 			if(SuperMiniBoss)
 			{
-				Freeplay_SetupStart(true);
+				Freeplay_SetupStart);
 				return;
 			}
-			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Defeating them will grant 250 extra credits each.");
+			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 			SuperMiniBoss = true;
 		}
 		default:
@@ -1045,20 +1155,24 @@ void Freeplay_SetupStart(bool donotretry = false)
 
 	RerollTry = 0;
 	CPrintToChatAll("{orange}New Skull{default}: %s", message);
+
 	if(RaidFight)
 		CPrintToChatAll("{green}Winning this wave will reward you with 5000 extra credits.");
 
-	int exskull = GetRandomInt(0, 100);
-	if(exskull > 90 && !donotretry) // 10% chance
+	if(extra)
 	{
-		ExtraSkulls++;
-		CPrintToChatAll("{yellow}ALERT!!! {orange}Setups will now contain one additional skull.");
-		SkullTimes = ExtraSkulls;  
-	}
+		int exskull = GetRandomInt(0, 100);
+		if(exskull < 10) // 10% chance
+		{
+			ExtraSkulls++;
+			CPrintToChatAll("{yellow}ALERT!!! {orange}Setups will now contain one additional skull."); 
+		}
 
-	if(SkullTimes > 0)
-	{
-		SkullTimes--;
-		Freeplay_SetupStart(true);
+		SkullTimes = ExtraSkulls;
+		if(SkullTimes > 0)
+		{
+			SkullTimes--;
+			Freeplay_SetupStart();
+		}
 	}
 }
