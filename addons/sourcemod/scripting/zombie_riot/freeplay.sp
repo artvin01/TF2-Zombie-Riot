@@ -1056,7 +1056,7 @@ void Freeplay_SetupStart(bool donotretry = false)
 	}
 
 	SkullTimes = ExtraSkulls;
-	if(SkullTimes < 0)
+	if(SkullTimes > 0)
 	{
 		SkullTimes--;
 		Freeplay_SetupStart(true);
