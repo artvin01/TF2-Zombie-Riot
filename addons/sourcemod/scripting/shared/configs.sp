@@ -69,6 +69,7 @@ void Configs_ConfigsExecuted()
 	FileNetwork_ConfigSetup(kv);
 	NPC_ConfigSetup();
 #endif
+	InitStatusEffects();
 	
 #if defined ZR
 	Building_ConfigSetup();

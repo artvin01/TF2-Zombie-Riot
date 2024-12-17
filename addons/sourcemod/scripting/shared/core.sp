@@ -679,6 +679,7 @@ int Cosmetic_WearableExtra[MAXTF2PLAYERS];
 #include "shared/baseboss_lagcompensation.sp"
 #include "shared/configs.sp"
 #include "shared/damage.sp"
+#include "shared/status_effects.sp"
 #include "shared/filenetwork.sp"
 #include "shared/npcs.sp"
 #include "shared/sdkcalls.sp"

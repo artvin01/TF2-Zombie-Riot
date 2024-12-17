@@ -1400,12 +1400,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public set(float TempValueForProperty) 	{ f_WidowsWineDebuff[this.index] = TempValueForProperty; }
 	}
 	
-	property bool m_bFrozen
-	{
-		public get()				{ return b_Frozen[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Frozen[this.index] = TempValueForProperty; }
-	}
-	
 	property bool m_bAllowBackWalking
 	{
 		public get()				{ return b_AllowBackWalking[this.index]; }
@@ -1450,11 +1444,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return = 0.0;
 			return speed_for_return;
 		}
-		if (this.m_bFrozen && !b_CannotBeSlowed[this.index])
-		{
-			speed_for_return = 0.0;
-			return speed_for_return;
-		}	
 		if(f_PernellBuff[this.index] > Gametime)
 		{
 			speed_for_return *= 1.25;
@@ -1549,18 +1538,6 @@ methodmap CClotBody < CBaseCombatCharacter
 				speed_for_return *= 0.4;
 			}
 			
-			if(f_HighIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.85;
-			}
-			else if(f_LowIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.90;
-			}
-			else if (f_VeryLowIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.95;
-			}
 			else if (f_LudoDebuff[this.index] > Gametime)
 			{
 				speed_for_return *= GetRandomFloat(0.7, 0.9);
@@ -1653,7 +1630,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				}	
 			}
 			speed_for_return *= slowdown_amount;
-		}		
+		}	
 
 		return speed_for_return;
 	}
@@ -1671,6 +1648,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		float GetPercentageAdjust = 1.0;
 		GetPercentageAdjust = this.GetDebuffPercentage();	
+		StatusEffect_SpeedModifier(this.index, GetPercentageAdjust);
 		CBaseNPC baseNPC = view_as<CClotBody>(this.index).GetBaseNPC();
 
 #if defined ZR
@@ -8363,6 +8341,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {
+	StatusEffectReset(entity);
 #if defined ZR
 	b_NpcHasBeenAddedToZombiesLeft[entity] = false;
 	i_SpawnProtectionEntity[entity] = -1; 

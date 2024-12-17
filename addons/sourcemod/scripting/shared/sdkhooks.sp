@@ -1286,7 +1286,7 @@ public void OnPostThink(int client)
 				Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
 #endif
 		}
-
+		StatusEffect_Expired(client);
 		//BUFFS!
 		char Debuff_Adder_left[64];
 		char Debuff_Adder_right[64];

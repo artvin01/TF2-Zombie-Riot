@@ -18,6 +18,7 @@ void DamageModifMapStart()
 
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	StatusEffect_Expired(victim);
 	//LogEntryInvicibleTest(victim, attacker, damage, 5);
 	
 	if(Damage_AnyVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
@@ -641,21 +642,11 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float &
 			damage *= 1.25;
 		}
 	}
-	
+	StatusEffect_OnTakeDamage_DealNegative(victim, attacker, damage);
 	float DamageRes = 1.0;
 	if(f_PotionShrinkEffect[attacker] > GameTime)
 	{
 		DamageRes *= 0.75;
-	}
-
-	if(f_EnfeebleEffect[attacker] > GameTime)
-	{
-		// Enfeeble fades out with time
-		float resist = (f_EnfeebleEffect[attacker] - GameTime) / 15.0;
-		if(resist < 0.9)
-			resist = 0.9;
-		
-		DamageRes *= resist;
 	}
 
 	if(f_LeeSuperEffect[attacker] > GameTime)
@@ -1387,11 +1378,11 @@ static stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &in
 #if defined ZR
 	if(i_HighTeslarStaff[weapon] == 1)
 	{
-		f_HighTeslarDebuff[victim] = GameTime + 5.0;
+		ApplyStatusEffect(attacker, victim, "Teslar Electricution", 5.0);
 	}
 	else if(i_LowTeslarStaff[weapon] == 1)
 	{
-		f_LowTeslarDebuff[victim] = GameTime + 5.0;
+		ApplyStatusEffect(attacker, victim, "Teslar Shock", 5.0);
 	}
 #endif
 	return false;
@@ -1645,6 +1636,7 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 
 stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
+	StatusEffect_OnTakeDamage_TakenPositive(victim, attacker, damage);
 	float DamageRes = 1.0;
 	//Resistance buffs will not count towards this flat decreace, they will be universal!hussar!
 	//these are absolutes
@@ -1835,22 +1827,8 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	}
 #endif
 
-	if(f_HighTeslarDebuff[victim] > GameTime)
-	{
-		damage += basedamage * (0.25 * DamageBuffExtraScaling);
-	}
-	else if(f_LowTeslarDebuff[victim] > GameTime)
-	{
-		damage += basedamage * (0.2 * DamageBuffExtraScaling);
-	}
-	if(f_LudoDebuff[victim] > GameTime)
-	{
-		damage += basedamage * (GetRandomFloat(0.05,0.15) * DamageBuffExtraScaling);
-	}
-	if(f_SpadeLudoDebuff[victim] > GameTime)
-	{
-		damage += basedamage * (GetRandomFloat(0.10,0.15) * DamageBuffExtraScaling); //otherwise id just use this
-	}
+	StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, damage);
+
 	if(f_CasinoDebuff[victim] > GameTime)
 	{
 		damage += basedamage * (f_CasinoDebuffValue[victim] * DamageBuffExtraScaling); //i need it to be preset random damage
@@ -1858,33 +1836,6 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	if(f_PotionShrinkEffect[victim] > GameTime)
 	{
 		damage += basedamage * (0.35 * DamageBuffExtraScaling);
-	}
-	if(f_HighIceDebuff[victim] > GameTime)
-	{
-#if defined ZR	
-		if(IsZombieFrozen(victim))
-			damage += basedamage * (0.30 * DamageBuffExtraScaling);
-		else
-#endif
-			damage += basedamage * (0.15 * DamageBuffExtraScaling);
-	}
-	else if(f_LowIceDebuff[victim] > GameTime)
-	{
-#if defined ZR	
-		if(IsZombieFrozen(victim))
-			damage += basedamage * (0.20 * DamageBuffExtraScaling);
-		else
-#endif
-			damage += basedamage * (0.10 * DamageBuffExtraScaling);
-	}
-	else if(f_VeryLowIceDebuff[victim] > GameTime)
-	{
-#if defined ZR	
-		if(IsZombieFrozen(victim))
-			damage += basedamage * (0.10 * DamageBuffExtraScaling);
-		else
-#endif
-			damage += basedamage * (0.05 * DamageBuffExtraScaling);
 	}
 	if(f_BuildingAntiRaid[victim] > GameTime)
 	{
@@ -1942,6 +1893,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	int SizeOfChar = 64;
 	
 	//All debuffs go here!
+	/*
 	if(f_HighTeslarDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⏧", Debuff_Adder_left);
@@ -1950,6 +1902,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⌁", Debuff_Adder_left);
 	}
+	*/
 	if (f_ElementalAmplification[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⋔", Debuff_Adder_left);	
@@ -2036,18 +1989,6 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s~", Debuff_Adder_left);			
 	}
-	if(f_HighIceDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s❈", Debuff_Adder_left);
-	}
-	else if(f_LowIceDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s❆", Debuff_Adder_left);
-	}
-	else if (f_VeryLowIceDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s❉", Debuff_Adder_left);	
-	}
 	if (f_BuildingAntiRaid[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%sR", Debuff_Adder_left);	
@@ -2079,10 +2020,6 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_MaimDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s↓", Debuff_Adder_left);
-	}
-	if(f_PotionShrinkEffect[victim] > GameTime || f_EnfeebleEffect[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s▼", Debuff_Adder_left);
 	}
 	if(f_LeeMinorEffect[victim] > GameTime || f_LeeMajorEffect[victim] > GameTime || f_LeeSuperEffect[victim] > GameTime)
 	{
@@ -2323,6 +2260,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	//Display Modifiers here.
 	char BufferAdd[6];
 	ZRModifs_CharBuffToAdd(BufferAdd);
+	StatusEffects_HudHurt(victim, attacker, Debuff_Adder_left, Debuff_Adder_right, SizeOfChar);
 	if(BufferAdd[0])
 	{
 		if(GetTeam(victim) != TFTeam_Red)
