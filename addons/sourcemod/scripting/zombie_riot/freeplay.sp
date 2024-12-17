@@ -522,7 +522,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		case 11:
 		{
-			strcopy(message, sizeof(message), "{green}All enemies now have 10% more health!");
+			strcopy(message, sizeof(message), "{green}All enemies now have 10% less health.");
 			HealthMulti *= 0.9;
 		}
 		case 12:
