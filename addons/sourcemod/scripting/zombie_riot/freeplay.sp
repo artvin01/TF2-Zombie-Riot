@@ -1171,7 +1171,7 @@ void Freeplay_SetupStart(bool extra = false)
 				return;
 			}
 			ExplodeNPCDamage = GetRandomInt(35, 175);
-			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death, dealing %d base damage in a short radius!", ExplodeNPCDamage);
+			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death!");
 			ExplodingNPC = true;
 		}
 		default:
@@ -1188,7 +1188,7 @@ void Freeplay_SetupStart(bool extra = false)
 		CPrintToChatAll("{green}Winning this wave will reward you with 5000 extra credits.");
 
 	if(ExplodingNPC)
-		CPrintToChatAll("{yellow}The explosive enemies skull lasts till next wave.");
+		CPrintToChatAll("{yellow}The exploding enemy skull lasts 1 wave. | Current Base damage: %d", ExplodeNPCDamage);
 
 	if(extra)
 	{
