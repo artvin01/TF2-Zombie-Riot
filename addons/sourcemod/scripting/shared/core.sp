@@ -2366,11 +2366,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 
 		f_BannerDurationActive[entity] = 0.0;
-		f_BannerAproxDur[entity] = 0.0;
-		f_BuffBannerNpcBuff[entity] = 0.0;
-		f_BobDuckBuff[entity] = 0.0;
-		f_BattilonsNpcBuff[entity] = 0.0;
-		f_AncientBannerNpcBuff[entity] = 0.0;
 		f_DuelStatus[entity] = 0.0;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;

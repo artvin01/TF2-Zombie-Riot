@@ -248,11 +248,18 @@ void StatusEffectReset(int victim)
 	delete E_AL_StatusEffects[victim];
 }
 
+bool StatusEffects_HasDebuffOrBuff(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return false;
+	
+	return true;
+}
 //any buff that gives you resistances
 /*
 	Meaning the VICTIM gets LESS damage!!
 */
-void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &damage)
+void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &damage, int damagetype)
 {
 	if(!E_AL_StatusEffects[victim])
 		return;
@@ -285,6 +292,7 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 			continue;
 		}
 		
+		float DamageToNegate = Apply_MasterStatusEffect.DamageDealMulti;
 		if(Apply_MasterStatusEffect.OnTakeDamage_TakenFunc != INVALID_FUNCTION)
 		{
 			//We have a valid function ignore the original value.
@@ -297,13 +305,13 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 			Call_Finish(DamageToNegate);
 		}
 
-		if(!Apply_MasterStatusEffect.ShouldScaleWithPlayerCount || Apply_StatusEffect.TotalOwners[attacker])
+		if(!Apply_MasterStatusEffect.ShouldScaleWithPlayerCount || Apply_StatusEffect.TotalOwners[victim])
 		{
-			damage *= Apply_MasterStatusEffect.DamageTakenMulti;
+			damage *= DamageToNegate;
 		}
 		else
 		{
-			DamageRes *= Apply_MasterStatusEffect.DamageTakenMulti;
+			DamageRes *= DamageToNegate;
 		}
 	}
 #if defined ZR
@@ -485,7 +493,7 @@ void StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, int infli
 	if(length < 1)
 		delete E_AL_StatusEffects[victim];
 
-	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker, inflictor, basedamage, int damagetype);
+	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker, inflictor, basedamage, damagetype);
 }
 
 
@@ -494,6 +502,7 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, int infli
 {
 	if(!E_AL_StatusEffects[attacker])
 		return 0.0;
+
 	float DamageAdd;
 	float DamageBuffExtraScaling = 1.0;
 
@@ -665,7 +674,6 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 		{
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.Status_SpeedFunc);
-			Call_PushCell(attacker);
 			Call_PushCell(victim);
 			Call_PushArray(Apply_MasterStatusEffect);
 			Call_PushArray(Apply_StatusEffect);
@@ -715,8 +723,21 @@ void StatusEffects_TeslarStick()
 	data.Slot						= 1;
 	data.SlotPriority				= 2;
 	StatusEffect_AddGlobal(data);
+/*
+	strcopy(data.BuffName, sizeof(data.BuffName), "Eno DEbuff give me shit");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Icon");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= 0.35;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+*/
 }
-
+// ApplyStatusEffect(npc.index, client, "Eno DEbuff give me shit", 5.0);
 
 void StatusEffects_Ludo()
 {
@@ -829,7 +850,6 @@ void StatusEffects_PotionWand()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
-
 }
 
 void StatusEffects_Enfeeble()
@@ -848,7 +868,7 @@ void StatusEffects_Enfeeble()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.OnTakeDamage_DealFunc 		= view_as<func>(Enfeeble_Internal_DamageDealFunc);
+	data.OnTakeDamage_DealFunc 		= Enfeeble_Internal_DamageDealFunc;
 	StatusEffect_AddGlobal(data);
 }
 
@@ -896,7 +916,7 @@ void StatusEffects_WidowsWine()
 	data.Status_SpeedFunc			= WidowsWine_SlowdownFunc;
 	StatusEffect_AddGlobal(data);
 }
-float WidowsWine_SlowdownFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+float WidowsWine_SlowdownFunc(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	float slowdown_amount = Apply_StatusEffect.TimeUntillOver - GetGameTime();
 	float max_amount = FL_WIDOWS_WINE_DURATION;
@@ -1105,12 +1125,12 @@ stock bool NpcStats_IsEnemySilenced(int victim)
 	if(!E_AL_StatusEffects[victim])
 		return false;
 
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(SilenceIndex, E_StatusEffect::BuffIndex);
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(SilenceIndex, E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			E_AL_StatusEffects[victim].Erase(ArrayPosition);
 			i--;
 			length--;
 		}
@@ -1149,7 +1169,7 @@ stock bool NpcStats_IberiaIsEnemyMarked(int victim)
 	if(!E_AL_StatusEffects[victim])
 		return false;
 
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(DebuffMarkedIndex, E_StatusEffect::BuffIndex);
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(DebuffMarkedIndex, E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
@@ -1265,7 +1285,7 @@ stock bool NpcStats_WeakVoidBuff(int victim)
 	if(!E_AL_StatusEffects[victim])
 		return false;
 
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(VoidStrengthIndex1, E_StatusEffect::BuffIndex);
+int ArrayPosition = E_AL_StatusEffects[victim].FindValue(VoidStrengthIndex1, E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
@@ -1290,7 +1310,7 @@ stock bool NpcStats_StrongVoidBuff(int victim)
 	if(!E_AL_StatusEffects[victim])
 		return false;
 
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(VoidStrengthIndex2, E_StatusEffect::BuffIndex);
+int ArrayPosition = E_AL_StatusEffects[victim].FindValue(VoidStrengthIndex2, E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
@@ -1378,7 +1398,7 @@ stock bool NpcStats_VictorianCallToArms(int victim)
 	if(!E_AL_StatusEffects[victim])
 		return false;
 
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(VictoriaCallToArmsIndex, E_StatusEffect::BuffIndex);
+int ArrayPosition = E_AL_StatusEffects[victim].FindValue(VictoriaCallToArmsIndex, E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
@@ -1576,6 +1596,7 @@ void StatusEffects_SupportWeapons()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnTakeDamage_TakenFunc 	= INVALID_HANDLE;
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ally Empowerment");
@@ -1589,6 +1610,7 @@ void StatusEffects_SupportWeapons()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnTakeDamage_TakenFunc 	= INVALID_HANDLE;
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ancient Banner");
@@ -1602,6 +1624,7 @@ void StatusEffects_SupportWeapons()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnTakeDamage_TakenFunc 	= INVALID_HANDLE;
 	AncientBannerIndex = StatusEffect_AddGlobal(data);
 }
 
@@ -1613,7 +1636,7 @@ stock bool NpcStats_AncientBanner(int victim)
 	if(!E_AL_StatusEffects[victim])
 		return false;
 
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(AncientBannerIndex, E_StatusEffect::BuffIndex);
+int ArrayPosition = E_AL_StatusEffects[victim].FindValue(AncientBannerIndex, E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
@@ -1696,7 +1719,7 @@ stock bool NpcStats_ElementalAmp(int victim)
 	if(!E_AL_StatusEffects[victim])
 		return false;
 
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(ElementalWandIndex , E_StatusEffect::BuffIndex);
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(ElementalWandIndex , E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
@@ -1741,7 +1764,7 @@ stock bool NpcStats_HeavyPresence(int victim)
 	if(!E_AL_StatusEffects[victim])
 		return false;
 
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(FallenWarriorIndex , E_StatusEffect::BuffIndex);
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(FallenWarriorIndex , E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
@@ -1783,9 +1806,10 @@ stock void NpcStats_CasinoDebuffStengthen(int victim, float NewBuffValue)
 
 	static StatusEffect Apply_MasterStatusEffect;
 	static E_StatusEffect Apply_StatusEffect;
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(CasinoDebuffIndex , E_StatusEffect::BuffIndex);
+i	nt ArrayPosition = E_AL_StatusEffects[victim].FindValue(CasinoDebuffIndex , E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
@@ -1893,7 +1917,7 @@ stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
 
 	static StatusEffect Apply_MasterStatusEffect;
 	static E_StatusEffect Apply_StatusEffect;
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(RuinaBuffSpeed , E_StatusEffect::BuffIndex);
+int ArrayPosition = E_AL_StatusEffects[victim].FindValue(RuinaBuffSpeed , E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
@@ -1916,7 +1940,7 @@ stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
 		delete E_AL_StatusEffects[victim];
 }
 
-float RuinasAgility_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+float RuinasAgility_Func(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	return Apply_StatusEffect.DataForUse;
 }
@@ -1928,7 +1952,7 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 
 	static StatusEffect Apply_MasterStatusEffect;
 	static E_StatusEffect Apply_StatusEffect;
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(RuinaBuffDefense , E_StatusEffect::BuffIndex);
+int ArrayPosition = E_AL_StatusEffects[victim].FindValue(RuinaBuffDefense , E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
@@ -1962,7 +1986,7 @@ stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue)
 
 	static StatusEffect Apply_MasterStatusEffect;
 	static E_StatusEffect Apply_StatusEffect;
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(RuinaBuffDamage , E_StatusEffect::BuffIndex);
+int ArrayPosition = E_AL_StatusEffects[victim].FindValue(RuinaBuffDamage , E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
@@ -1993,6 +2017,7 @@ float Ruinas_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatu
 
 
 int KazimierzDodgeIndex;
+int OsmosisDebuffIndex;
 void StatusEffects_WeaponSpecific_VisualiseOnly()
 {
 	StatusEffect data;
@@ -2088,7 +2113,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Crafted Potion");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "WIP");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⅋");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -2125,6 +2150,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Mystery Beer");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌂");
@@ -2137,6 +2163,21 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Osmosis'ity");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⟁");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= OsmosisHud_Func;
+	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
 }
 
 stock bool NpcStats_KazimierzDodge(int victim)
@@ -2144,7 +2185,29 @@ stock bool NpcStats_KazimierzDodge(int victim)
 	if(!E_AL_StatusEffects[victim])
 		return false;
 
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(KazimierzDodgeIndex , E_StatusEffect::BuffIndex);
+int ArrayPosition = E_AL_StatusEffects[victim].FindValue(KazimierzDodgeIndex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(i);
+			i--;
+			length--;
+		}
+		else
+			return true;
+	}
+	if(length < 1)
+		delete E_AL_StatusEffects[victim];
+
+	return false;
+}
+stock bool NpcStats_InOsmosis(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return false;
+
+int ArrayPosition = E_AL_StatusEffects[victim].FindValue(OsmosisDebuffIndex , E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
@@ -2164,4 +2227,77 @@ stock bool NpcStats_KazimierzDodge(int victim)
 void PotionHudDisplay_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
 	Format(HudToDisplay, SizeOfChar, "⅋(%.0fs)", Apply_StatusEffect.TimeUntillOver - GetGameTime());
+}
+void OsmosisHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	if(attacker > MaxClients)
+		return;
+
+	if(!Osmosis_ClientGaveBuff[victim][attacker])
+		Format(HudToDisplay, SizeOfChar, "⟁");
+}
+
+
+
+void StatusEffects_EncyclopediaOnly()
+{
+	StatusEffect data;
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Village");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌒");
+	data.Positive 					= true;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Jungle Drums");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌭");
+	data.Positive 					= true;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Intelligence");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌬");
+	data.Positive 					= true;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Homeland Defense");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⍣");
+	data.Positive 					= true;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Call To Arms");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⍤");
+	data.Positive 					= true;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Iberia Lighthouse");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "i");
+	data.Positive 					= true;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Victoria Nuke");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "◈");
+	data.Positive 					= false;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Locked On");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "LOCK");
+	data.Positive 					= false;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Shield");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "S");
+	data.Positive 					= true;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Chaos Infliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛡");
+	data.Positive 					= false;
+	StatusEffect_AddGlobal(data);
 }

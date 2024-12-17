@@ -436,7 +436,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	{
 		DMG_Final *= 0.65;
 	}
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		DMG_Final *= 1.15;
 	}

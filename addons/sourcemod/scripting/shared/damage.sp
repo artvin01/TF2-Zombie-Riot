@@ -1584,7 +1584,7 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 
 stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
-	StatusEffect_OnTakeDamage_TakenPositive(victim, attacker, damage);
+	StatusEffect_OnTakeDamage_TakenPositive(victim, attacker, damage, damagetype);
 	float DamageRes = 1.0;
 	//Resistance buffs will not count towards this flat decreace, they will be universal!hussar!
 	//these are absolutes
@@ -1602,11 +1602,6 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		}
 	}
 #endif
-	if(f_BobDuckBuff[victim] > GameTime)
-		DamageRes *= 0.9;
-
-	if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.
-		DamageRes *= 0.93;
 
 #if defined ZR
 	if(MoraleBoostLevelAt(victim) > 0)
@@ -1646,34 +1641,6 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 
 	damage *= DamageRes;	
 
-	//this shouldnt be scaled, as it only applies onto 1 target at a time.
-	if(Resistance_Overall_Low[victim] > GameTime)
-		damage *= RES_MEDIGUN_LOW;
-
-	if(Adaptive_MedigunBuff[victim][0] > GameTime)
-		damage *= 0.95;
-
-	if(damagetype & (DMG_CLUB)) // if you want anything to be melee based, just give them this.
-	{
-		if(Adaptive_MedigunBuff[victim][1] > GameTime)
-			damage *= 0.85;
-	}
-	else
-	{
-		if(Adaptive_MedigunBuff[victim][2] > GameTime)
-			damage *= 0.85;
-	}
-
-	if(f_EmpowerStateSelf[victim] > GameTime) //Allow stacking.
-		damage *= 0.9;
-		
-#if defined RUINA_BASE
-	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.
-	{
-		damage *= f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
-	}
-#endif
-		
 #if !defined RPG
 	if(attacker > MaxClients && i_npcspawnprotection[attacker] == 1)
 	{
@@ -1715,7 +1682,6 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 #endif
 
 	StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, damage, damagetype);
-#endif
 
 #if defined RPG	
 	if(damagePosition[2] != 6969420.0)
@@ -1725,7 +1691,6 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	}
 #endif
 }
-#endif	// Non-RTS
 
 
 void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[] Debuff_Adder_right)
@@ -1805,10 +1770,6 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 #endif
 
 #if defined ZR
-	if(Osmosis_CurrentlyInDebuff(victim))
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s⟁", Debuff_Adder_left);		
-	}
 	if(Victoria_Support_RechargeTime(victim))
 	{
 		FormatEx(Debuff_Adder_left, SizeOfChar, "%s[◈ %i％]", Debuff_Adder_left, Victoria_Support_RechargeTime(victim));
@@ -1821,16 +1782,16 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "S(%i)%s",VausMagicaShieldLeft(victim),Debuff_Adder_right);
 	}
-	if(MoraleBoostLevelAt(victim) > 0) //hussar!
-	{
-		//Display morale!
-		MoraleIconShowHud(victim, Debuff_Adder_right, SizeOfChar);
-	}
 	if(GetTeam(victim) == 2 && Rogue_GetChaosLevel() > 0)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "⛡%s", Debuff_Adder_right);
 	}
 
+	if(MoraleBoostLevelAt(victim) > 0) //hussar!
+	{
+		//Display morale!
+		MoraleIconShowHud(victim, Debuff_Adder_right, SizeOfChar);
+	}
 	if(victim <= MaxClients)
 	{
 

@@ -109,7 +109,7 @@ static float Elemental_BeforeExplodeHit(int attacker, int victim, float &damage,
 		damage *= 0.1;
 	}
 	HitAlreadyWithSame[attacker][victim] = true;
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		//double!
 		bool PlaySound = false;

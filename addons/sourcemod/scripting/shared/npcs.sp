@@ -634,7 +634,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				{
 					BurnDamage[entity] = value;
 				}
-				if(f_ElementalAmplification[entity] > GetGameTime())
+				if(NpcStats_ElementalAmp(entity))
 				{
 					value *= 1.2;
 				}
@@ -2055,6 +2055,8 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 
 stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
+	if(StatusEffects_HasDebuffOrBuff(npc))
+		return true;
 	else if(BleedAmountCountStack[npc] > 0) //bleed
 		return true;
 	else if(IgniteFor[npc] > 0) //burn
