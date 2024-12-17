@@ -356,30 +356,8 @@ public void DeathWaver_Knockback(int attacker, int victim, float damage)
 	if (b_NoKnockbackFromSources[victim] || b_NpcIsInvulnerable[victim])
 		return;
 
-	float dummy[3], pos[3], pos2[3], ang[3];
-	WorldSpaceCenter(attacker, pos);
-	WorldSpaceCenter(victim, pos2);
-	Priest_GetAngleToPoint(attacker, pos, pos2, dummy, ang);
-
-	if (ang[0] > -40.0)
-		ang[0] = -40.0;
-
-	/*GetAngleVectors(ang, dummy, NULL_VECTOR, NULL_VECTOR);
-	ScaleVector(dummy, Waver_Knockback[Chair_Tier[attacker]]);
-
-	float vel[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecVelocity", vel);
-	for (int vec = 0; vec < 3; vec++)
-		vel[vec] += dummy[vec];*/
-
 	EmitSoundToAll(SND_WAVER_KNOCKBACK, victim, _, _, _, _, GetRandomInt(80, 100));
-
 	Custom_Knockback(attacker, victim, Waver_Knockback[Chair_Tier[attacker]], true, _, true, _, _, _, _, true);
-
-	/*if (IsValidClient(victim))
-		TeleportEntity(victim, _, _, vel);
-	else
-		Anchor_NPCKB(victim, vel);*/
 }
 
 public void SSBChair_Bombardment(SSBChair ssb, int target)
