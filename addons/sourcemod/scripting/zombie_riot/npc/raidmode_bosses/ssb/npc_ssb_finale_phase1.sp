@@ -14,13 +14,30 @@ Function Chair_QueuedSpell[2049];			//The spell which will be cast when SSB's ca
 
 static bool Chair_ChangeSequence[2049] = { false, ... };
 static char Chair_Sequence[2049][255];
+static char Chair_SnapEffect[2049][255];
+static char Chair_SnapEffectExtra[2049][255];
 
+//NECROTIC BOMBARDMENT: SSB marks every enemy's location, and then strikes that location with a blast of necrotic energy after a short delay.
 static float Bombardment_Radius[4] = { 180.0, 220.0, 260.0, 300.0 };		//Blast radius.
 static float Bombardment_Delay[4] = { 2.0, 1.75, 1.5, 1.25 };				//Time until the blast hits.
 static float Bombardment_DMG[4]	= { 200.0, 400.0, 800.0, 1600.0 };			//Damage dealt by the blast.
 static float Bombardment_EntityMult[4] = { 5.0, 10.0, 15.0, 20.0 };			//Amount to multiply damage dealt to entities.
 static float Bombardment_Falloff_MultiHit[4] = { 0.66, 0.7, 0.75, 0.8 };	//Amount to multiply damage per target hit.
 static float Bombardment_Falloff_Radius[4] = { 0.5, 0.66, 0.75, 0.8 };		//Maximum distance-based falloff.
+
+//RING OF HELL: SSB fires a cluster of explosive skulls in a ring pattern. These skulls transform into homing skulls after a short delay.
+static int HellRing_NumSkulls[4] = { 12, 16, 20, 28 };						//The number of skulls fired.
+static int HellRing_MaxTargets[4] = { 3, 4, 5, 8 };							//Maximum targets hit by a single skull explosion.
+static float HellRing_Velocity[4] = { 400.0, 450.0, 500.0, 550.0 };			//Skull velocity.
+static float HellRing_HomingDelay[4] = { 1.0, 0.75, 0.5, 0.25 };			//Delay after firing before skulls gain homing properties.
+static float HellRing_HomingAngle[4] = { 90.0, 95.0, 100.0, 105.0 };		//Skulls' maximum homing angle.
+static float HellRing_HomingPerSecond[4] = { 9.0, 10.0, 11.0, 12.0 };		//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
+static float HellRing_DMG[4] = { 60.0, 90.0, 160.0, 250.0 };				//Skull base damage.
+static float HellRing_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };				//Amount to multiply damage dealt by skulls to entities.
+static float HellRing_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };			//Skull explosion radius.
+static float HellRing_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };		//Skull falloff, based on radius.
+static float HellRing_Falloff_MultiHit[4] = { 0.66, 0.76, 0.86, 1.0 }; 		//Amount to multiply explosion damage for each target hit.
+static float HellRing_Pitch[4] = { 5.0, 5.0, 5.0, 5.0 };				//Amount to tilt skull vertical velocity on spawn, used mainly for VFX.
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -69,15 +86,29 @@ static char g_SSBGenericSpell_Sounds[][] = {
 	")zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_genericspell_2.mp3"
 };
 
-//#define SND_SPAWN_ALERT			"misc/halloween/merasmus_appear.wav"
-#define SND_SNAP				"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_snap.mp3"
+static char g_SSBChair_ChairThudSounds[][] = {
+	")physics/wood/wood_box_footstep1.wav",
+	")physics/wood/wood_box_footstep2.wav",
+	")physics/wood/wood_box_footstep3.wav",
+	")physics/wood/wood_box_footstep4.wav"
+};
+
+#define SND_SNAP					"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_snap.mp3"
 #define SND_BOMBARDMENT_STRIKE		")misc/halloween/spell_spawn_boss.wav"
 #define SND_BOMBARDMENT_MARKED		")misc/halloween/hwn_bomb_flash.wav"
 #define SND_BOMBARDMENT_CHARGEUP	")items/powerup_pickup_crits.wav"
+#define SND_HELL_CHARGEUP			")misc/halloween_eyeball/book_spawn.wav"
+#define SND_HELL_SHOOT				")misc/halloween/spell_meteor_cast.wav"
+#define SND_HELL_SHOOT_2			")misc/halloween_eyeball/book_exit.wav"
 
-#define PARTICLE_SNAP			"merasmus_dazed_bits"
-#define PARTICLE_SNAP2			"hammer_bell_ring_shockwave2"
-//#define PARTICLE_SPAWNVFX_GREEN				"duck_collect_green"
+#define PARTICLE_BOMBARDMENT_SNAP		"merasmus_dazed_bits"
+#define PARTICLE_BOMBARDMENT_SNAP_EXTRA	"hammer_bell_ring_shockwave2"
+#define PARTICLE_HELL_HAND				"spell_fireball_small_red"
+#define PARTICLE_HELL_SNAP				"spell_fireball_tendril_parent_red"
+#define PARTICLE_HELL_TRAIL				"spell_fireball_small_red"
+#define PARTICLE_HELL_TRAIL_HOMING		"spell_fireball_small_blue"
+#define PARTICLE_HELL_BLAST				"spell_fireball_tendril_parent_red"
+#define PARTICLE_HELL_BLAST_HOMING		"spell_fireball_tendril_parent_blue"
 #define PARTICLE_BOMBARDMENT_HAND		"superrare_burning2"
 
 public void SSBChair_OnMapStart_NPC()
@@ -91,12 +122,16 @@ public void SSBChair_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBGenericSpell_Sounds));   i++) { PrecacheSound(g_SSBGenericSpell_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBChair_ChairThudSounds));   i++) { PrecacheSound(g_SSBChair_ChairThudSounds[i]);   }
 
 	PrecacheSound(SND_SPAWN_ALERT);
 	PrecacheSound(SND_SNAP);
 	PrecacheSound(SND_BOMBARDMENT_STRIKE);
 	PrecacheSound(SND_BOMBARDMENT_MARKED);
 	PrecacheSound(SND_BOMBARDMENT_CHARGEUP);
+	PrecacheSound(SND_HELL_CHARGEUP);
+	PrecacheSound(SND_HELL_SHOOT);
+	PrecacheSound(SND_HELL_SHOOT_2);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones, Magistrate of the Dead");
@@ -223,19 +258,7 @@ methodmap SSBChair_Spell __nullable__
 
 public void SSBChair_Bombardment(SSBChair ssb, int target)
 {
-	//CPrintToChatAll("{unusual}Sugma phase {haunted}%i", Chair_Tier[ssb.index]);
-	int activity = ssb.LookupActivity("ACT_FINALE_CHAIR_SNAP");
-	if (activity > 0)
-	{
-		ssb.StartActivity(activity);
-		Chair_UsingAbility[ssb.index] = true;
-		Chair_QueuedSpell[ssb.index] = SSBChair_Bombardment_Activate;
-
-		float pos[3], trash[3];
-		ssb.GetAttachment("effect_hand_L", pos, trash);
-		ssb.m_iWearable3 = ParticleEffectAt_Parent(pos, PARTICLE_BOMBARDMENT_HAND, ssb.index, "effect_hand_L");
-		EmitSoundToAll(SND_BOMBARDMENT_CHARGEUP, ssb.index, _, 120);
-	}
+	ssb.CastSnap(SSBChair_Bombardment_Activate, PARTICLE_BOMBARDMENT_HAND, PARTICLE_BOMBARDMENT_SNAP, PARTICLE_BOMBARDMENT_SNAP_EXTRA, SND_BOMBARDMENT_CHARGEUP);
 }
 
 public void SSBChair_Bombardment_Activate(SSBChair ssb, int target)
@@ -305,6 +328,89 @@ public Action SSBChair_Bombardment_Hit(Handle timer, DataPack pack)
 	int pitch = GetRandomInt(80, 110);
 	EmitSoundToAll(SND_BOMBARDMENT_STRIKE, particle, _, _, _, _, pitch);
 	EmitSoundToAll(SND_BOMBARDMENT_STRIKE, particle, _, _, _, _, pitch);
+
+	return Plugin_Continue;
+}
+
+public void SSBChair_RingOfHell(SSBChair ssb, int target)
+{
+	ssb.CastSnap(SSBChair_RingOfHell_Activate, PARTICLE_HELL_HAND, PARTICLE_HELL_SNAP, "", SND_HELL_CHARGEUP);
+}
+
+public void SSBChair_RingOfHell_Activate(SSBChair ssb, int target)
+{
+	float pos[3], ang[3];
+	ssb.GetAttachment("effect_hand_L", pos, ang);
+
+	ang[0] = HellRing_Pitch[Chair_Tier[ssb.index]];
+
+	float skullFloat = float(HellRing_NumSkulls[Chair_Tier[ssb.index]]);
+	float amt = 360.0 / skullFloat;
+
+	for (ang[1] = 0.0; ang[1] < 360.0; ang[1] += amt)
+	{
+		HellRing_ShootSkull(ssb, pos, ang, HellRing_Velocity[Chair_Tier[ssb.index]]);
+	}
+
+	ssb.PlayGenericSpell();
+	EmitSoundToAll(SND_HELL_SHOOT, ssb.index, _, 120, _, _, GetRandomInt(80, 110));
+	EmitSoundToAll(SND_HELL_SHOOT_2, ssb.index, _, 120, _, _, GetRandomInt(80, 110));
+}
+
+public MRESReturn HellRing_Collide(int entity)
+{
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+
+	ParticleEffectAt(position, b_IsHoming[entity] ? PARTICLE_HELL_BLAST_HOMING : PARTICLE_HELL_BLAST, 1.0);
+	EmitSoundToAll(SND_FIREBALL_EXPLODE, entity);
+	
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	if(IsValidEntity(owner))
+	{
+		bool isBlue = GetEntProp(owner, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+		Explode_Logic_Custom(HellRing_DMG[Chair_Tier[owner]], owner, entity, 0, position, HellRing_Radius[Chair_Tier[owner]], HellRing_Falloff_MultiHit[Chair_Tier[owner]],
+		HellRing_Falloff_Radius[Chair_Tier[owner]], isBlue, HellRing_MaxTargets[Chair_Tier[owner]], true, HellRing_EntityMult[Chair_Tier[owner]]);
+	}
+
+	RemoveEntity(entity);
+	return MRES_Supercede;
+}
+
+public void HellRing_ShootSkull(SSBChair ssb, float pos[3], float ang[3], float vel)
+{
+	int skull = SSBChair_CreateProjectile(ssb, MODEL_SKULL, pos, ang, vel, GetRandomFloat(0.8, 1.2), HellRing_Collide);
+	if (IsValidEntity(skull))
+	{
+		b_IsHoming[skull] = false;
+		i_SkullParticle[skull] = EntIndexToEntRef(SSB_AttachParticle(skull, PARTICLE_HELL_TRAIL, _, ""));
+		CreateTimer(HellRing_HomingDelay[Chair_Tier[ssb.index]], HellRing_StartHoming, EntIndexToEntRef(skull), TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
+
+public Action HellRing_StartHoming(Handle timer, int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (!IsValidEntity(ent))
+		return Plugin_Continue;
+
+	int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
+	if (IsValidEntity(owner))
+	{
+		int particle = EntRefToEntIndex(i_SkullParticle[ent]);
+		if (IsValidEntity(particle))
+			RemoveEntity(particle);
+
+		i_SkullParticle[ent] = EntIndexToEntRef(SSB_AttachParticle(ent, PARTICLE_HELL_TRAIL_HOMING, _, ""));
+
+		EmitSoundToAll(SND_HOMING_ACTIVATE, ent, _, 120, _, _, GetRandomInt(80, 110));
+		EmitSoundToAll(g_WitchLaughs[GetRandomInt(0, sizeof(g_WitchLaughs) - 1)], ent, _, 120, _, 0.8, GetRandomInt(80, 110));
+
+		float ang[3];
+		GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
+		Initiate_HomingProjectile(ent, owner, HellRing_HomingAngle[Chair_Tier[owner]], HellRing_HomingPerSecond[Chair_Tier[owner]], false, true, ang);
+		b_IsHoming[ent] = true;
+	}
 
 	return Plugin_Continue;
 }
@@ -390,6 +496,14 @@ methodmap SSBChair < CClotBody
 		#endif
 	}
 
+	public void PlayChairThud() {
+		EmitSoundToAll(g_SSBChair_ChairThudSounds[GetRandomInt(0, sizeof(g_SSBChair_ChairThudSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 110));
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CSSBChair::PlayChairThud()");
+		#endif
+	}
+
 	public void PrepareAbilities()
 	{
 		this.DeleteAbilities();
@@ -397,6 +511,7 @@ methodmap SSBChair < CClotBody
 
 		//TODO: Populate abilities here
 		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(15.0, 5.0, 0, SSBChair_Bombardment));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(18.0, 8.0, 0, SSBChair_RingOfHell));
 	}
 
 	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
@@ -439,6 +554,24 @@ methodmap SSBChair < CClotBody
 					break;
 				}
 			}
+		}
+	}
+
+	public void CastSnap(Function spell, char handParticle[255], char snapParticle[255], char snapParticleExtra[255], char sound[255])
+	{
+		int activity = this.LookupActivity("ACT_FINALE_CHAIR_SNAP");
+		if (activity > 0)
+		{
+			this.StartActivity(activity);
+			Chair_UsingAbility[this.index] = true;
+			Chair_QueuedSpell[this.index] = spell;
+			Chair_SnapEffect[this.index] = snapParticle;
+			Chair_SnapEffectExtra[this.index] = snapParticleExtra;
+
+			float pos[3], trash[3];
+			this.GetAttachment("effect_hand_L", pos, trash);
+			this.m_iWearable3 = ParticleEffectAt_Parent(pos, handParticle, this.index, "effect_hand_L");
+			EmitSoundToAll(sound, this.index, _, 120);
 		}
 	}
 
@@ -559,8 +692,18 @@ public void SSBChair_AnimEvent(int entity, int event)
 			EmitSoundToAll(SND_SNAP, _, _, 120);
 			float pos[3], trash[3];
 			npc.GetAttachment("effect_hand_L", pos, trash);
-			ParticleEffectAt(pos, PARTICLE_SNAP);
-			ParticleEffectAt(pos, PARTICLE_SNAP2);
+
+			char the[255];	//This is stupid as hell, but I get an unavoidable error if I don't do it.
+			if (!StrEqual(Chair_SnapEffect[npc.index], ""))
+			{
+				the = Chair_SnapEffect[npc.index];
+				ParticleEffectAt(pos, the);
+			}
+			if (!StrEqual(Chair_SnapEffectExtra[npc.index], ""))
+			{
+				the = Chair_SnapEffectExtra[npc.index];
+				ParticleEffectAt(pos, the);
+			}
 
 			if (IsValidEntity(npc.m_iWearable3))
 				RemoveEntity(npc.m_iWearable3);
@@ -570,6 +713,10 @@ public void SSBChair_AnimEvent(int entity, int event)
 			Chair_ChangeSequence[npc.index] = true;
 			Chair_Sequence[npc.index] = "ACT_FINALE_CHAIR_IDLE";
 			Chair_UsingAbility[npc.index] = false;
+		}
+		case 1004:	//Any and all parts of any animation where the chair itself hits something, play a thud sound.
+		{
+			npc.PlayChairThud();
 		}
 	}
 }
@@ -679,4 +826,54 @@ public void SSBChair_NPCDeath(int entity)
 
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
+}
+
+int SSBChair_CreateProjectile(SSBChair owner, char model[255], float pos[3], float ang[3], float velocity, float scale, DHookCallback CollideCallback, int skin = 0)
+{
+	int prop = CreateEntityByName("zr_projectile_base");
+			
+	if (IsValidEntity(prop))
+	{
+		DispatchKeyValue(prop, "targetname", "ssb_projectile"); 
+				
+		SetEntDataFloat(prop, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+		SetTeam(prop, GetTeam(owner.index));
+				
+		DispatchSpawn(prop);
+				
+		ActivateEntity(prop);
+		
+		SetEntityModel(prop, model);
+		char scaleChar[16];
+		Format(scaleChar, sizeof(scaleChar), "%f", scale);
+		DispatchKeyValue(prop, "modelscale", scaleChar);
+		
+		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", owner.index);
+		SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
+		
+		char skinChar[16];
+		Format(skinChar, 16, "%i", skin);
+		DispatchKeyValue(prop, "skin", skinChar);
+		
+		float propVel[3], buffer[3];
+
+		GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
+		
+		SetEntityMoveType(prop, MOVETYPE_FLY);
+		
+		propVel[0] = buffer[0]*velocity;
+		propVel[1] = buffer[1]*velocity;
+		propVel[2] = buffer[2]*velocity;
+			
+		TeleportEntity(prop, pos, ang, propVel);
+		SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
+		
+		g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
+
+		RequestFrame(SSB_DeleteIfOwnerDisappears, EntIndexToEntRef(prop));
+		
+		return prop;
+	}
+	
+	return -1;
 }
