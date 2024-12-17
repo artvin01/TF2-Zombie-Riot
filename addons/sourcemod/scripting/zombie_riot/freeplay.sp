@@ -1157,7 +1157,7 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			if(SuperMiniBoss)
 			{
-				Freeplay_SetupStart);
+				Freeplay_SetupStart();
 				return;
 			}
 			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
@@ -1167,7 +1167,7 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			if(ExplodingNPC)
 			{
-				Freeplay_SetupStart);
+				Freeplay_SetupStart();
 				return;
 			}
 			ExplodeNPCDamage = GetRandomInt(35, 175)
