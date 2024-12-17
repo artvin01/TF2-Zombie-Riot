@@ -313,8 +313,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 		}
 		enemy.Credits += 250.0;
-		enemy.ExtraDamage *= 1.33;
-		enemy.ExtraSpeed = 1.33;
+		enemy.ExtraDamage *= 1.65;
+		enemy.ExtraSpeed = 1.35;
 		enemy.ExtraSize = 1.65; // big
 
 		count = GetRandomInt(2, 10);
