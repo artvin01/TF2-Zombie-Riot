@@ -1206,12 +1206,12 @@ void Freeplay_SetupStart(bool extra = false)
 			ExtraSkulls++;
 			CPrintToChatAll("{yellow}ALERT!!! {orange}Setups will now contain one additional skull."); 
 		}
-
 		SkullTimes = ExtraSkulls;
-		if(SkullTimes > 0)
-		{
-			SkullTimes--;
-			Freeplay_SetupStart();
-		}
+	}
+
+	if(SkullTimes > 0)
+	{
+		SkullTimes--;
+		Freeplay_SetupStart();
 	}
 }
