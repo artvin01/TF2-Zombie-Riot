@@ -746,7 +746,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}The next enemy will become a Stalker! {yellow}(x25 HP, x15 DMG)");
 			StalkerBuff++;
 		}
-		case 35, 36, 37, 38:
+		case 35, 36, 37:
 		{
 			//if(EnemyChance > 8)
 			//{
@@ -757,7 +757,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}Stronger enemy types are now more likely to appear!");
 			EnemyChance++;
 		}
-		case 39, 40, 41:
+		case 38, 39, 40:
 		{
 			if(EnemyCount < 6)
 			{
@@ -768,7 +768,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}Now, more enemy groups can appear!");
 			EnemyCount++;
 		}
-		case 42:
+		case 41, 42:
 		{
 			if(EnemyChance < 3)
 			{
@@ -831,15 +831,7 @@ void Freeplay_SetupStart(bool extra = false)
 				Freeplay_SetupStart();
 				return;
 			}
-			int chance = GetRandomInt(0, 100);
-			if(chance < 10) // 10% chance for pencil
-			{
-				strcopy(message, sizeof(message), "{yellow}Pencil will draw his way on to victory in the next wave!");
-			}
-			else
-			{
-				strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
-			}
+			strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
 			RaidFight = 5;
 		}
 		case 49:
