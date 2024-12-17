@@ -37,7 +37,7 @@ static float HellRing_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };				//Amount to mul
 static float HellRing_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };			//Skull explosion radius.
 static float HellRing_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };		//Skull falloff, based on radius.
 static float HellRing_Falloff_MultiHit[4] = { 0.66, 0.76, 0.86, 1.0 }; 		//Amount to multiply explosion damage for each target hit.
-static float HellRing_Pitch[4] = { 5.0, 5.0, 5.0, 5.0 };				//Amount to tilt skull vertical velocity on spawn, used mainly for VFX.
+static float HellRing_Pitch[4] = { 5.0, 5.0, 5.0, 5.0 };					//Amount to tilt skull vertical velocity on spawn, used mainly for VFX.
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -370,7 +370,7 @@ public MRESReturn HellRing_Collide(int entity)
 	{
 		bool isBlue = GetEntProp(owner, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
 		Explode_Logic_Custom(HellRing_DMG[Chair_Tier[owner]], owner, entity, 0, position, HellRing_Radius[Chair_Tier[owner]], HellRing_Falloff_MultiHit[Chair_Tier[owner]],
-		HellRing_Falloff_Radius[Chair_Tier[owner]], isBlue, HellRing_MaxTargets[Chair_Tier[owner]], true, HellRing_EntityMult[Chair_Tier[owner]]);
+		HellRing_Falloff_Radius[Chair_Tier[owner]], isBlue, HellRing_MaxTargets[Chair_Tier[owner]], false, HellRing_EntityMult[Chair_Tier[owner]]);
 	}
 
 	RemoveEntity(entity);
