@@ -3,6 +3,12 @@
 
 static ArrayList NPCList;
 
+#if defined ZR
+
+static bool zrfreeplay = true;
+
+#endif
+
 enum struct NPCData
 {
 	char Plugin[64];
@@ -128,9 +134,8 @@ void NPCDeath(int entity)
 		Call_Finish();
 	}
 
-#if defined ZR
-	Freeplay_OnNPCDeath(entity);
-#endif
+	if(zrfreeplay)
+		Freeplay_OnNPCDeath(entity);
 }
 
 void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
