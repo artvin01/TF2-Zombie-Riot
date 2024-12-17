@@ -454,6 +454,18 @@ void Freeplay_OnEndWave(int &cash)
 
 void Freeplay_SetupStart(bool extra = false)
 {
+	if(extra)
+	{
+		int exskull = GetRandomInt(0, 100);
+		if(exskull < 15) // 15% chance
+		{
+			ExtraSkulls++;
+			CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
+			CPrintToChatAll("{yellow}Current extra skulls: {orange}%d", ExtraSkulls); 
+		}
+		SkullTimes = ExtraSkulls;
+	}
+
 	static int RerollTry;
 
 	int rand = 6;
@@ -1197,17 +1209,6 @@ void Freeplay_SetupStart(bool extra = false)
 
 	if(ExplodingNPC)
 		CPrintToChatAll("{yellow}The exploding enemy skull lasts 1 wave. | Current Base damage: %d", ExplodeNPCDamage);
-
-	if(extra)
-	{
-		int exskull = GetRandomInt(0, 100);
-		if(exskull < 15) // 15% chance
-		{
-			ExtraSkulls++;
-			CPrintToChatAll("{yellow}ALERT!!! {orange}Setups will now contain one additional skull."); 
-		}
-		SkullTimes = ExtraSkulls;
-	}
 
 	if(SkullTimes > 0)
 	{
