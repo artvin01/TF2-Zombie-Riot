@@ -458,7 +458,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 8)
-		rand = GetURandomInt() % 66;
+		rand = GetURandomInt() % 84;
 	
 	char message[128];
 	switch(rand)
