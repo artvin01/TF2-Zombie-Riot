@@ -1383,22 +1383,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()							{ return view_as<bool>(i_InSafeZone[this.index]); }
 	}
-	property float m_fHighTeslarDebuff 
-	{
-		public get()							{ return f_HighTeslarDebuff[this.index]; }
-		public set(float TempValueForProperty) 	{ f_HighTeslarDebuff[this.index] = TempValueForProperty; }
-	}
-	property float m_fLowTeslarDebuff 
-	{
-		public get()							{ return f_LowTeslarDebuff[this.index]; }
-		public set(float TempValueForProperty) 	{ f_LowTeslarDebuff[this.index] = TempValueForProperty; }
-	}
-	
-	property float mf_WidowsWineDebuff 
-	{
-		public get()							{ return f_WidowsWineDebuff[this.index]; }
-		public set(float TempValueForProperty) 	{ f_WidowsWineDebuff[this.index] = TempValueForProperty; }
-	}
 	
 	property bool m_bAllowBackWalking
 	{
@@ -1595,42 +1579,6 @@ methodmap CClotBody < CBaseCombatCharacter
 				speed_for_return *= 0.75;
 			}
 		}
-		if(this.mf_WidowsWineDebuff > Gametime && !b_CannotBeSlowed[this.index])
-		{
-			float slowdown_amount = this.mf_WidowsWineDebuff - Gametime;
-			
-			float max_amount = FL_WIDOWS_WINE_DURATION;
-			
-			slowdown_amount = slowdown_amount / max_amount;
-			
-			slowdown_amount -= 1.0;
-			
-			slowdown_amount *= -1.0;
-			
-			if(!Is_Boss)
-			{
-				if(slowdown_amount < 0.1)
-				{
-					slowdown_amount = 0.1;
-				}
-				else if(slowdown_amount > 1.0)
-				{
-					slowdown_amount = 1.0;
-				}	
-			}
-			else
-			{
-				if(slowdown_amount < 0.8)
-				{
-					slowdown_amount = 0.8;
-				}
-				else if(slowdown_amount > 1.0)
-				{
-					slowdown_amount = 1.0;
-				}	
-			}
-			speed_for_return *= slowdown_amount;
-		}	
 
 		return speed_for_return;
 	}
@@ -9217,29 +9165,7 @@ stock void NpcStats_IberiaMarkEnemy(int enemy, float duration)
 		f_IberiaMarked[enemy] = GameTime + duration; //make sure longer silence buff is prioritised.
 	}
 }
-stock bool NpcStats_IberiaIsEnemyMarked(int enemy)
-{
-	if(!IsValidEntity(enemy))
-		return true; //they dont exist, pretend as if they are silenced.
 
-	if(f_IberiaMarked[enemy] < GetGameTime())
-	{
-		return false;
-	}
-	return true;
-}
-
-stock bool NpcStats_IsEnemySilenced(int enemy)
-{
-	if(!IsValidEntity(enemy))
-		return true; //they dont exist, pretend as if they are silenced.
-
-	if(f_Silenced[enemy] < GetGameTime())
-	{
-		return false;
-	}
-	return true;
-}
 
 stock bool NpcStats_VictorianCallToArms(int enemy)
 {

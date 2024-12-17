@@ -89,8 +89,6 @@ static float Magnesis_DamageTakenWhileGrabbed[2049] = { 0.0, ... };
 static float Magnesis_DroppedAt[2049] = { 0.0, ... };
 static float Magnesis_GrabbedAt[2049] = { 0.0, ... };
 static float Magnesis_NextDrainTick[MAXPLAYERS + 1] = { 0.0, ... };
-static int Magnesis_GrabberTier[2049] = { 0, ... };
-static bool Magnesis_Strangled[2049] = { false, ... };
 static float Magnesis_GrabCost_Bucket[MAXPLAYERS + 1] = { 0.0, ... };
 
 static int Magnesis_GrabWeapon[MAXPLAYERS + 1] = { -1, ... };
@@ -109,6 +107,10 @@ public void Magnesis_ResetAll()
 	}
 }
 
+float MagnesisDamageBuff(int Tier)
+{
+	return Magnesis_Grab_Vulnerability[Tier];
+}
 #define SND_MAGNESIS_M1         	")weapons/shooting_star_shoot.wav"
 #define SND_MAGNESIS_M1_2			")weapons/bison_main_shot_01.wav"
 #define SND_MAGNESIS_M1_COLLIDE		")weapons/flare_detonator_explode_world.wav"
@@ -188,18 +190,6 @@ float Player_OnTakeDamage_Magnesis(int victim, float &damage, int attacker)
 	if (IsValidEnemy(victim, grabber) && grabber == attacker)
 	{
 		damage *= Magnesis_Resistance[Magnesis_Tier[victim]];
-	}
-
-	return damage;
-}
-
-public float Magnesis_StrangleDebuffMultiplier(int victim, float damage)
-{
-	if (Magnesis_Strangled[victim])
-		Magnesis_Strangled[victim] = false;
-	else
-	{
-		damage *= Magnesis_Grab_Vulnerability[Magnesis_GrabberTier[victim]];
 	}
 
 	return damage;
@@ -503,7 +493,6 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 
 		Magnesis_Tier[client] = tier;
 		Magnesis_Grabbed[victim] = true;
-		Magnesis_GrabberTier[victim] = tier;
 		Magnesis_GrabCost_Bucket[client] = 0.0;
 		Magnesis_GrabWeapon[client] = EntIndexToEntRef(weapon);
 		Magnesis_GrabbedAt[victim] = GetGameTime();
@@ -648,8 +637,9 @@ public void Magnesis_Logic(DataPack pack)
 		if (dmg > 0.0)
 		{
 			dmg *= Attributes_Get(weapon, 410, 1.0);
-			Magnesis_Strangled[target] = true;
+			dmg *= ((MagnesisDamageBuff(Magnesis_Tier[client]) - -1.0) * -1.0);
 			f_StrangleDebuff[target] = GetGameTime() + 0.1;
+			MagnesisDamageBuff
 			SDKHooks_TakeDamage(target, client, client, dmg, _, weapon, _, _, false);
 		}
 	}

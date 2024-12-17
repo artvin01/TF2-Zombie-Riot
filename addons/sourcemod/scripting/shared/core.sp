@@ -1050,7 +1050,6 @@ public void OnMapStart()
 	Zero(b_IsAGib);
 	Zero(i_Hex_WeaponUsesTheseAbilities);
 	Zero(f_WidowsWineDebuffPlayerCooldown);
-	Zero(f_WidowsWineDebuff);
 	Zero(f_TempCooldownForVisualManaPotions);
 	Zero(i_IsABuilding);
 	Zero(f_ImmuneToFalldamage);

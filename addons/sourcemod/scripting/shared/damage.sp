@@ -6,7 +6,6 @@
 
 #define DMG_MEDIGUN_LOW 1.25
 #define DMG_WIDOWS_WINE 1.35
-#define DMG_ANTI_RAID 1.1
 
 
 
@@ -18,7 +17,6 @@ void DamageModifMapStart()
 
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	StatusEffect_Expired(victim);
 	//LogEntryInvicibleTest(victim, attacker, damage, 5);
 	
 	if(Damage_AnyVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
@@ -642,7 +640,7 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float &
 			damage *= 1.25;
 		}
 	}
-	StatusEffect_OnTakeDamage_DealNegative(victim, attacker, damage);
+	StatusEffect_OnTakeDamage_DealNegative(victim, attacker, damage, damagetype);
 	float DamageRes = 1.0;
 	if(f_PotionShrinkEffect[attacker] > GameTime)
 	{
@@ -1827,44 +1825,14 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	}
 #endif
 
-	StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, damage);
+	StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, damage, damagetype);
 
 	if(f_CasinoDebuff[victim] > GameTime)
 	{
 		damage += basedamage * (f_CasinoDebuffValue[victim] * DamageBuffExtraScaling); //i need it to be preset random damage
 	}
-	if(f_PotionShrinkEffect[victim] > GameTime)
-	{
-		damage += basedamage * (0.35 * DamageBuffExtraScaling);
-	}
-	if(f_BuildingAntiRaid[victim] > GameTime)
-	{
-		damage += basedamage * ((DMG_ANTI_RAID - 1.0)* DamageBuffExtraScaling);
-	}
-	if(f_WidowsWineDebuff[victim] > GameTime)
-	{
-		damage += basedamage * ((DMG_WIDOWS_WINE - 1.0) * DamageBuffExtraScaling);
-	}
-	
-	if(f_CrippleDebuff[victim] > GameTime)
-	{
-		damage += basedamage * (0.3 * DamageBuffExtraScaling);
-	}
-	if(f_GoldTouchDebuff[victim] > GameTime)
-	{
-		damage += basedamage * (0.2 * DamageBuffExtraScaling);
-	}
-#if defined ZR	
-	if (f_StrangleDebuff[victim] > GameTime)
-	{
-		damage += Magnesis_StrangleDebuffMultiplier(victim, basedamage);
-	}
 #endif
 
-	if(f_CudgelDebuff[victim] > GameTime)
-	{
-		damage += basedamage * (0.3 * DamageBuffExtraScaling);
-	}	
 #if defined RPG	
 	if(damagePosition[2] != 6969420.0)
 	{
@@ -1872,14 +1840,6 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 		damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);
 	}
 #endif
-	if(f_LogosDebuff[victim] > GameTime)
-	{
-		if((damagetype & DMG_PLASMA) || (damagetype & DMG_SHOCK) || (i_HexCustomDamageTypes[victim] & ZR_DAMAGE_LASER_NO_BLAST))
-		{
-			damage += basedamage * (0.1 * DamageBuffExtraScaling);
-			damage += 1500.0;
-		}
-	}
 }
 #endif	// Non-RTS
 
@@ -1989,53 +1949,9 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s~", Debuff_Adder_left);			
 	}
-	if (f_BuildingAntiRaid[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%sR", Debuff_Adder_left);	
-	}
-	if(f_WidowsWineDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s४", Debuff_Adder_left);
-	}
-	if(f_CrippleDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s⯯", Debuff_Adder_left);
-	}
 	if(f_CasinoDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s$", Debuff_Adder_left);
-	}
-	if(f_GoldTouchDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s⯏", Debuff_Adder_left);
-	}
-	if(f_StrangleDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s☼", Debuff_Adder_left);
-	}
-	if(f_CudgelDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s‼", Debuff_Adder_left);
-	}
-	if(f_MaimDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s↓", Debuff_Adder_left);
-	}
-	if(f_LeeMinorEffect[victim] > GameTime || f_LeeMajorEffect[victim] > GameTime || f_LeeSuperEffect[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s☯", Debuff_Adder_left);
-	}
-	if(f_LogosDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s#", Debuff_Adder_left);
-	}
-	if(NpcStats_IsEnemySilenced(victim))
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%sX", Debuff_Adder_left);
-	}
-	if(NpcStats_IberiaIsEnemyMarked(victim))
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%sM", Debuff_Adder_left);
 	}
 #if defined ZR
 	if(Victoria_Support_RechargeTime(victim))
@@ -2048,20 +1964,6 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 #endif
 
-
-	//BUFFS GO HERE.
-	if(f_VoidAfflictionStrength2[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "vV%s", Debuff_Adder_right);
-	}
-	else if(f_VoidAfflictionStrength[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "v%s", Debuff_Adder_right);
-	}
-	else if (f_VoidAfflictionStandOn[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "⌄%s", Debuff_Adder_left);
-	}
 	if(Increaced_Overall_damage_Low[victim] > GameTime)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "⌃%s", Debuff_Adder_right);
