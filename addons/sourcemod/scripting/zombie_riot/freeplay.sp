@@ -1201,7 +1201,7 @@ void Freeplay_SetupStart(bool extra = false)
 	if(extra)
 	{
 		int exskull = GetRandomInt(0, 100);
-		if(exskull < 10) // 10% chance
+		if(exskull < 15) // 15% chance
 		{
 			ExtraSkulls++;
 			CPrintToChatAll("{yellow}ALERT!!! {orange}Setups will now contain one additional skull."); 
