@@ -1144,7 +1144,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		case 80:
 		{
-			if(ExtraArmor < 0.0)
+			if(ExtraArmor <= 0.0)
 			{
 				Freeplay_SetupStart();
 				return;
@@ -1158,7 +1158,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		case 81:
 		{
-			if(ExtraArmor < 0.0)
+			if(ExtraArmor <= 0.0)
 			{
 				Freeplay_SetupStart();
 				return;
