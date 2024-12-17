@@ -637,9 +637,8 @@ public void Magnesis_Logic(DataPack pack)
 		if (dmg > 0.0)
 		{
 			dmg *= Attributes_Get(weapon, 410, 1.0);
-			dmg *= ((MagnesisDamageBuff(Magnesis_Tier[client]) - -1.0) * -1.0);
+			dmg *= ((MagnesisDamageBuff(Magnesis_Tier[client]) -1.0) * -1.0);
 			f_StrangleDebuff[target] = GetGameTime() + 0.1;
-			MagnesisDamageBuff
 			SDKHooks_TakeDamage(target, client, client, dmg, _, weapon, _, _, false);
 		}
 	}

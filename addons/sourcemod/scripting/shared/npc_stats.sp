@@ -1428,38 +1428,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return = 0.0;
 			return speed_for_return;
 		}
-		if(f_PernellBuff[this.index] > Gametime)
-		{
-			speed_for_return *= 1.25;
-		}
-		if(f_HussarBuff[this.index] > Gametime)
-		{
-			speed_for_return *= 1.20;
-		}
-		if(f_SquadLeaderBuff[this.index] > Gametime)
-		{
-			speed_for_return *= 1.33;
-		}
-		if(f_VictorianCallToArms[this.index] > Gametime)
-		{
-			speed_for_return *= 1.15;
-		}
-		if(f_CaffeinatorBuff[this.index] > Gametime)
-		{
-			speed_for_return *= 1.5;
-		}
-		if(f_VoidAfflictionStrength2[this.index] > Gametime)
-		{
-			speed_for_return *= 1.15;
-		}
-		else if(f_VoidAfflictionStrength[this.index] > Gametime)
-		{
-			speed_for_return *= 1.05;
-		}
-		if(f_GodAlaxiosBuff[this.index] > Gametime)
-		{
-			speed_for_return *= 1.50;
-		}
 #if defined ZR
 		if(MoraleBoostLevelAt(this.index) > 0)
 		{
@@ -9146,37 +9114,6 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	{
 		view_as<CClotBody>(npc).SetLayerPlaybackRate(i, 0.0);
 	}
-}
-
-stock void NpcStats_SilenceEnemy(int enemy, float duration)
-{
-	float GameTime = GetGameTime();
-	if(f_Silenced[enemy] < (GameTime + duration))
-	{
-		f_Silenced[enemy] = GameTime + duration; //make sure longer silence buff is prioritised.
-	}
-}
-
-stock void NpcStats_IberiaMarkEnemy(int enemy, float duration)
-{
-	float GameTime = GetGameTime();
-	if(f_IberiaMarked[enemy] < (GameTime + duration))
-	{
-		f_IberiaMarked[enemy] = GameTime + duration; //make sure longer silence buff is prioritised.
-	}
-}
-
-
-stock bool NpcStats_VictorianCallToArms(int enemy)
-{
-	if(!IsValidEntity(enemy))
-		return true; //they dont exist, pretend as if they are silenced.
-
-	if(f_VictorianCallToArms[enemy] < GetGameTime())
-	{
-		return false;
-	}
-	return true;
 }
 
 #if defined ZR

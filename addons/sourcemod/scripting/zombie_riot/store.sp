@@ -5928,10 +5928,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			Attributes_Set(entity, 49, 1.0);
 		}
-		for(int i; i < sizeof(b_WeaponSpecificClassBuff[]); i++)
-		{
-			b_WeaponSpecificClassBuff[entity][i] = false;
-		}
 
 		SkillTree_GiveItem(client, entity);
 		Rogue_GiveItem(client, entity);

@@ -2055,102 +2055,12 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 
 stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
-	if(f_HighTeslarDebuff[npc] > GameTime)
-		return true;
-	if(f_VoidAfflictionStandOn[npc] > GameTime)
-		return true;
-	if(f_VoidAfflictionStrength2[npc] > GameTime)
-		return true;
-	if(f_VoidAfflictionStrength[npc] > GameTime)
-		return true;
-	else if(f_LowTeslarDebuff[npc] > GameTime)
-		return true;
-	else if(f_ElementalAmplification[npc] > GameTime)
-		return true;
-	else if(f_FallenWarriorDebuff[npc] > GameTime)
-		return true;
-	else if(f_LudoDebuff[npc] > GameTime)
-		return true;
-	else if(f_SpadeLudoDebuff[npc] > GameTime)
-		return true;
-	else if(f_CasinoDebuff[npc] > GameTime)
-		return true;
 	else if(BleedAmountCountStack[npc] > 0) //bleed
 		return true;
 	else if(IgniteFor[npc] > 0) //burn
 		return true;
-	else if(f_HighIceDebuff[npc] > GameTime)
-		return true;
-	else if(f_LowIceDebuff[npc] > GameTime)
-		return true;
-	else if(f_BuildingAntiRaid[npc] > GameTime)
-		return true;
-	else if (f_VeryLowIceDebuff[npc] > GameTime)
-		return true;
-	else if(f_WidowsWineDebuff[npc] > GameTime)
-		return true;
-	else if(f_CrippleDebuff[npc] > GameTime)
-		return true;
-	else if(f_GoldTouchDebuff[npc] > GameTime)
-		return true;
-	else if(f_CudgelDebuff[npc] > GameTime)
-		return true;
 	else if(f_DuelStatus[npc] > GameTime)
 		return true;
-	else if(f_MaimDebuff[npc] > GameTime)
-		return true;
-	else if(NpcStats_IsEnemySilenced(npc))
-		return true;
-	else if(Increaced_Overall_damage_Low[npc] > GameTime)
-		return true;
-	else if(Resistance_Overall_Low[npc] > GameTime)
-		return true;
-	else if(f_EmpowerStateOther[npc] > GameTime)
-		return true;
-	else if(f_HussarBuff[npc] > GameTime)
-		return true;
-	else if(f_SquadLeaderBuff[npc] > GameTime)
-		return true;
-	else if(f_VictorianCallToArms[npc] > GameTime)
-		return true;
-	else if(f_CaffeinatorBuff[npc] > GameTime)
-		return true;
-	else if(f_PernellBuff[npc])
-		return true;
-	else if(f_PotionShrinkEffect[npc] > GameTime)
-		return true;
-	else if(f_EnfeebleEffect[npc] > GameTime)
-		return true;
-	else if(f_LeeMinorEffect[npc] > GameTime)
-		return true;
-	else if(f_LeeMajorEffect[npc] > GameTime)
-		return true;
-	else if(f_LeeSuperEffect[npc] > GameTime)
-		return true;
-	else if(f_LogosDebuff[npc] > GameTime)
-		return true;
-	else if(f_GodAlaxiosBuff[npc] > GameTime)
-		return true;
-	else if(f_Ocean_Buff_Stronk_Buff[npc] > GameTime)
-		return true;
-	else if(f_Ocean_Buff_Weak_Buff[npc] > GameTime)
-		return true;
-	else if(f_BattilonsNpcBuff[npc] > GameTime)
-		return true;
-	else if(f_BuffBannerNpcBuff[npc] > GameTime)
-		return true;
-	else if(f_BobDuckBuff[npc] > GameTime)
-		return true;
-	else if(f_AncientBannerNpcBuff[npc] > GameTime)
-		return true;
-	#if defined RUINA_BASE
-	else if(f_Ruina_Defense_Buff[npc] > GameTime)
-		return true;
-	else if(f_Ruina_Speed_Buff[npc] > GameTime)
-		return true;
-	else if(f_Ruina_Attack_Buff[npc] > GameTime)
-		return true;
-	#endif
 #if defined RPG
 	else if(TrueStrength_StacksOnEntity(client, npc))
 		return true;

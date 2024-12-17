@@ -1003,8 +1003,6 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit_mini4.wav");
 	PrecacheSound("mvm/mvm_revive.wav");
 	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
-	Zero2(f_WeaponSpecificClassBuff);
-	Zero2(b_WeaponSpecificClassBuff);
 	Zero(f_PreventMedigunCrashMaybe);
 
 #if defined ZR || defined RPG

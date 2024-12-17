@@ -329,8 +329,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 		if((f_CasinoDebuff[victim] - 1.4) < GetGameTime())
 		{
 			f_CasinoDebuff[victim] = GetGameTime() + 1.5;
-			if(CasinoDebuffDamage[attacker] >= 0.0)
-				f_CasinoDebuffValue[victim] = CasinoDebuffDamage[attacker];
+			NpcStats_CasinoDebuffStengthen(victim, CasinoDebuffDamage[attacker]);
 		}
 		if(CryoEasy == true)
 		{

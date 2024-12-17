@@ -110,6 +110,7 @@ void Blacksmith_Enable(int client, int weapon)
 
 	if(Tinkers)
 	{
+		ApplyStatusEffect(weapon, weapon, "Tinkering Curiosity", 99999999.9);
 		int account = GetSteamAccountID(client, false);
 		if(account)
 		{

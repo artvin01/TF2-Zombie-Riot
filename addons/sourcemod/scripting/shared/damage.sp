@@ -529,52 +529,6 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
 #endif
-	if(!NpcStats_IsEnemySilenced(attacker))
-	{
-		if(f_HussarBuff[attacker] > GameTime) //hussar!
-		{
-			damage += basedamage * (0.1 * DamageBuffExtraScaling);
-		}
-		if(f_VoidAfflictionStrength2[attacker] > GameTime)
-			damage += basedamage * (0.3 * DamageBuffExtraScaling);
-		else if(f_VoidAfflictionStrength[attacker] > GameTime)
-			damage += basedamage * (0.2 * DamageBuffExtraScaling);
-	}
-	else
-	{
-		//silence weakens them.
-		if(f_VoidAfflictionStrength2[attacker] > GameTime)
-			damage += basedamage * (0.15 * DamageBuffExtraScaling);
-		else if(f_VoidAfflictionStrength[attacker] > GameTime)
-			damage += basedamage * (0.1 * DamageBuffExtraScaling);
-	}
-
-	if(f_SquadLeaderBuff[attacker] > GameTime)
-		damage += basedamage * (0.10 * DamageBuffExtraScaling); //10% more damage!
-
-	if(f_VictorianCallToArms[attacker] > GameTime)
-		damage += basedamage * (0.20 * DamageBuffExtraScaling); //20% more damage!
-
-	if(f_CombineCommanderBuff[attacker] > GameTime)
-		damage += basedamage * (0.25 * DamageBuffExtraScaling); //25% more damage!
-	
-	if(f_PernellBuff[attacker] > GameTime)
-		damage += basedamage * (0.5 * DamageBuffExtraScaling); //50% more damage!
-	
-	if(f_CaffeinatorBuff[attacker] > GameTime)
-		damage += basedamage * (0.5 * DamageBuffExtraScaling); //50% more damage!
-	
-	if(f_GodAlaxiosBuff[attacker] > GameTime)
-		damage += basedamage * (0.5 * DamageBuffExtraScaling); //50% more damage!
-	
-	if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime)
-	{
-		damage += basedamage * (0.25 * DamageBuffExtraScaling);
-	}
-	else if(f_Ocean_Buff_Weak_Buff[attacker] > GameTime)
-	{
-		damage += basedamage * (0.1 * DamageBuffExtraScaling);
-	}
 
 #if defined ZR
 	if(MoraleBoostLevelAt(attacker) > 0)
@@ -591,10 +545,6 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 
 	if(f_BobDuckBuff[attacker] > GameTime)
 		damage += basedamage * (0.25 * DamageBuffExtraScaling);
-	
-	//dont do reduce per player, its only 1 o 1 !!!
-	if(Increaced_Overall_damage_Low[attacker] > GameTime)	//this doesnt get applied in groups.
-		damage += basedamage * (DMG_MEDIGUN_LOW - 1.0);
 		
 
 	#if defined RUINA_BASE
@@ -762,7 +712,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_FLAMETAIL:
 		{
-			Flametail_SelfTakeDamage(victim, damage, damagetype);
+			Flametail_SelfTakeDamage(victim, damage, damagetype, equipped_weapon);
 		}
 		case WEAPON_WRATHFUL_BLADE:
 		{
@@ -1652,17 +1602,6 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		}
 	}
 #endif
-	if(f_PernellBuff[victim] > GameTime)
-	{
-		DamageRes *= 0.6;
-	}
-	if(f_GodAlaxiosBuff[victim] > GameTime) //hussar!
-	{
-		DamageRes *= 0.75;
-	}
-	if(f_BattilonsNpcBuff[victim] > GameTime)
-		DamageRes *= RES_BATTILONS;
-
 	if(f_BobDuckBuff[victim] > GameTime)
 		DamageRes *= 0.9;
 
@@ -1673,45 +1612,6 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	if(MoraleBoostLevelAt(victim) > 0)
 		DamageRes *= EntityMoraleBoostReturn(victim, 3);
 #endif
-
-	if(!NpcStats_IsEnemySilenced(victim))
-	{
-		if(f_HussarBuff[victim] > GameTime) //hussar!
-		{
-			DamageRes *= 0.90;
-		}
-		if(f_VoidAfflictionStrength2[victim] > GameTime)
-		{
-			DamageRes *= ((victim <= MaxClients) ? 0.85 : 0.8);
-		}
-		else if(f_VoidAfflictionStrength[victim] > GameTime)
-		{
-			DamageRes *= ((victim <= MaxClients) ? 0.9 : 0.85);
-		}
-	}
-	else
-	{
-		if(f_VoidAfflictionStrength2[victim] > GameTime)
-		{
-			DamageRes *= ((victim <= MaxClients) ? 0.9 : 0.85);
-		}
-		else if(f_VoidAfflictionStrength[victim] > GameTime)
-		{
-			DamageRes *= ((victim <= MaxClients) ? 0.95 : 0.9);
-		}
-	}
-	if(f_CombineCommanderBuff[victim] > GameTime)
-	{
-		DamageRes *= 0.8;
-	}
-	if(f_SquadLeaderBuff[victim] > GameTime)
-	{
-		DamageRes *= 0.9;
-	}
-	if(f_CaffeinatorBuff[victim] > GameTime)
-	{
-		DamageRes *= 1.25;
-	}
 	
 
 #if defined ZR
@@ -1814,23 +1714,7 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	}
 #endif
 
-	float DamageBuffExtraScaling = 1.0;
-
-#if defined ZR
-	if(attacker != 0 && (attacker <= MaxClients || inflictor <= MaxClients))
-	{
-		//only scale if its a player, and if the attacking npc is red too
-		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
-			DamageBuffExtraScaling = PlayerCountBuffScaling;
-	}
-#endif
-
 	StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, damage, damagetype);
-
-	if(f_CasinoDebuff[victim] > GameTime)
-	{
-		damage += basedamage * (f_CasinoDebuffValue[victim] * DamageBuffExtraScaling); //i need it to be preset random damage
-	}
 #endif
 
 #if defined RPG	
@@ -1852,37 +1736,18 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 
 	int SizeOfChar = 64;
 	
-	//All debuffs go here!
-	/*
-	if(f_HighTeslarDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s⏧", Debuff_Adder_left);
-	}
-	else if(f_LowTeslarDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s⌁", Debuff_Adder_left);
-	}
-	*/
-	if (f_ElementalAmplification[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s⋔", Debuff_Adder_left);	
-	}
-	if (f_FallenWarriorDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s⋡", Debuff_Adder_left);	
-	}
-	if(f_LudoDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s^", Debuff_Adder_left);	
-	}
-	if(f_SpadeLudoDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s^^", Debuff_Adder_left);	
-	}	
-	if(BleedAmountCountStack[victim] > 0) //bleed
+	//These buffs/Debuffs stay how they are for the foreseeable future.
+	if(BleedAmountCountStack[victim] > 0)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s❣(%i)", Debuff_Adder_left, BleedAmountCountStack[victim]);			
 	}
+	if(IgniteFor[victim] > 0)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s~", Debuff_Adder_left);			
+	}
+
+
+
 #if defined RPG
 	if(victim < MaxClients)
 	{
@@ -1944,16 +1809,6 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⟁", Debuff_Adder_left);		
 	}
-#endif
-	if(IgniteFor[victim] > 0) //burn
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s~", Debuff_Adder_left);			
-	}
-	if(f_CasinoDebuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s$", Debuff_Adder_left);
-	}
-#if defined ZR
 	if(Victoria_Support_RechargeTime(victim))
 	{
 		FormatEx(Debuff_Adder_left, SizeOfChar, "%s[◈ %i％]", Debuff_Adder_left, Victoria_Support_RechargeTime(victim));
@@ -1962,37 +1817,6 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		FormatEx(Debuff_Adder_left, SizeOfChar, "%s!Lock on!", Debuff_Adder_left);
 	}
-#endif
-
-	if(Increaced_Overall_damage_Low[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⌃%s", Debuff_Adder_right);
-	}
-	if(Adaptive_MedigunBuff[victim][0] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⍫%s", Debuff_Adder_right);
-	}
-	if(Adaptive_MedigunBuff[victim][1] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⍬%s", Debuff_Adder_right);
-	}
-	if(Adaptive_MedigunBuff[victim][2] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⍭%s", Debuff_Adder_right);
-	}
-	if(Resistance_Overall_Low[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⌅%s", Debuff_Adder_right);
-	}
-	if(f_EmpowerStateSelf[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⍋%s", Debuff_Adder_right);
-	}
-	if(f_EmpowerStateOther[victim] > GameTime) //Do not show fusion self buff.
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⍋%s", Debuff_Adder_right);
-	}
-#if defined ZR
 	if(VausMagicaShieldLeft(victim) > 0)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "S(%i)%s",VausMagicaShieldLeft(victim),Debuff_Adder_right);
@@ -2002,91 +1826,13 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		//Display morale!
 		MoraleIconShowHud(victim, Debuff_Adder_right, SizeOfChar);
 	}
-#endif
-	if(f_HussarBuff[victim] > GameTime) //hussar!
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "ᐩ%s", Debuff_Adder_right);
-	}
-	if(f_PernellBuff[victim] > GameTime) //hussar!
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "P%s", Debuff_Adder_right);
-	}
-	if(f_GodAlaxiosBuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "ß%s", Debuff_Adder_right);
-	}
-	if(f_Ocean_Buff_Stronk_Buff[victim] > GameTime) //hussar!
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⍟%s", Debuff_Adder_right);
-	}
-	else if(f_Ocean_Buff_Weak_Buff[victim] > GameTime) //hussar!
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⌾%s", Debuff_Adder_right);
-	}
-	if(f_BattilonsNpcBuff[victim] > GameTime) //hussar!
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⛨%s", Debuff_Adder_right);
-	}
-	if(f_BuffBannerNpcBuff[victim] > GameTime) //hussar!
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "↖%s", Debuff_Adder_right);
-	}
-	if(f_BobDuckBuff[victim] > GameTime) 
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "BOB%s", Debuff_Adder_right);
-	}
-	if(f_AncientBannerNpcBuff[victim] > GameTime) //hussar!
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "➤%s", Debuff_Adder_right);
-	}
-#if defined ZR
 	if(GetTeam(victim) == 2 && Rogue_GetChaosLevel() > 0)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "⛡%s", Debuff_Adder_right);
 	}
-	if(f_CombineCommanderBuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "⛠%s", Debuff_Adder_right);
-	}
-	if(f_SquadLeaderBuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "∏%s", Debuff_Adder_right);
-	}
-	if(f_VictorianCallToArms[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "@%s", Debuff_Adder_right);
-	}
-	if(f_CaffeinatorBuff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "♨%s", Debuff_Adder_right);
-	}
-	
-#endif
-#if defined RUINA_BASE
-	if(f_Ruina_Defense_Buff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "♜%s", Debuff_Adder_right);
-	}
-	if(f_Ruina_Speed_Buff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "♝%s", Debuff_Adder_right);
-	}
-	if(f_Ruina_Attack_Buff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "♟%s", Debuff_Adder_right);
-	}
-#endif
-#if defined ZR
+
 	if(victim <= MaxClients)
 	{
-		if(Wands_Potions_HasBuff(victim))
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌂%s", Debuff_Adder_right);
-		}
-		if(Wands_Potions_HasTonicBuff(victim))
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌇%s", Debuff_Adder_right);
-		}
 
 		static int VillageBuffs;
 		VillageBuffs = Building_GetClientVillageFlags(victim);
@@ -2115,54 +1861,18 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		{
 			Format(Debuff_Adder_right, SizeOfChar, "i%s", Debuff_Adder_right);
 		}
-		//0 is gladia
-		if(f_WeaponSpecificClassBuff[victim][0] > GetGameTime())
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "G%s", Debuff_Adder_right);
-		}
-		int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(Victim_weapon))
-		{
-			if(b_WeaponSpecificClassBuff[Victim_weapon][0])
-			{
-				Format(Debuff_Adder_right, SizeOfChar, "S%s", Debuff_Adder_right);
-			}
-			if(b_WeaponSpecificClassBuff[Victim_weapon][1])
-			{
-				Format(Debuff_Adder_right, SizeOfChar, "UL%s", Debuff_Adder_right);
-			}
-			if(b_WeaponSpecificClassBuff[Victim_weapon][2])
-			{
-				Format(Debuff_Adder_right, SizeOfChar, "✣%s", Debuff_Adder_right);
-			}
-			if(b_WeaponSpecificClassBuff[Victim_weapon][3])
-			{
-				Format(Debuff_Adder_right, SizeOfChar, "㎽%s", Debuff_Adder_right);
-			}
-			if(b_WeaponSpecificClassBuff[Victim_weapon][4])
-			{
-				Format(Debuff_Adder_right, SizeOfChar, "㎾%s", Debuff_Adder_right);
-			}
-			if(FlameTail_Global_Buff() && IsWeaponKazimierz(Victim_weapon))
-			{	
-				Format(Debuff_Adder_right, SizeOfChar, "F%s", Debuff_Adder_right);
-			}
-			if(Blacksmith_HasTinker(victim, StoreWeapon[Victim_weapon]))
-			{	
-				Format(Debuff_Adder_right, SizeOfChar, "⍡%s", Debuff_Adder_right);
-			}
-			static float DurationLeft;
-			if(BlacksmithBrew_HasEffect(victim, StoreWeapon[Victim_weapon], DurationLeft))
-			{	
-				Format(Debuff_Adder_right, SizeOfChar, "⅋(%.0fs)%s", DurationLeft, Debuff_Adder_right);
-			}
-		}
 	}
 	
 	//Display Modifiers here.
 	char BufferAdd[6];
 	ZRModifs_CharBuffToAdd(BufferAdd);
-	StatusEffects_HudHurt(victim, attacker, Debuff_Adder_left, Debuff_Adder_right, SizeOfChar);
+	int Victim_weapon = -1;
+
+	if(victim <= MaxClients)
+		Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+
+	StatusEffects_HudHurt(victim, attacker, Debuff_Adder_left, Debuff_Adder_right, SizeOfChar, Victim_weapon);
+
 	if(BufferAdd[0])
 	{
 		if(GetTeam(victim) != TFTeam_Red)

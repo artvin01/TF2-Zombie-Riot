@@ -294,12 +294,6 @@ bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
 bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
 float f_ZombieVolumeSetting[MAXTF2PLAYERS];
 
-float Increaced_Overall_damage_Low[MAXENTITIES];
-float Resistance_Overall_Low[MAXENTITIES];
-float f_EmpowerStateSelf[MAXENTITIES];
-float f_EmpowerStateOther[MAXENTITIES];
-
-float Adaptive_MedigunBuff[MAXENTITIES][3];
 
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];;
@@ -346,42 +340,15 @@ float flNpcCreationTime[MAXENTITIES];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 int i_npcspawnprotection[MAXENTITIES];
 float f_DomeInsideTest[MAXENTITIES];
-float f_ElementalAmplification[MAXENTITIES];
-float f_WeaponSpecificClassBuff[MAXENTITIES][1];
-bool b_WeaponSpecificClassBuff[MAXENTITIES][5];
-float f_CasinoDebuff[MAXENTITIES];
-float f_CasinoDebuffValue[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
 bool b_NoGravity[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
 float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_RaidStunResistance[MAXENTITIES];
-float f_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
-float f_CombineCommanderBuff[MAXENTITIES];
-float f_SquadLeaderBuff[MAXENTITIES];
-float f_CaffeinatorBuff[MAXENTITIES];
-float f_VictorianCallToArms[MAXENTITIES];
-#if defined RUINA_BASE
-float f_Ruina_Speed_Buff[MAXENTITIES];
-float f_Ruina_Speed_Buff_Amt[MAXENTITIES];
-float f_Ruina_Defense_Buff[MAXENTITIES];
-float f_Ruina_Defense_Buff_Amt[MAXENTITIES];
-float f_Ruina_Attack_Buff[MAXENTITIES];
-float f_Ruina_Attack_Buff_Amt[MAXENTITIES];
-#endif
-float f_GodAlaxiosBuff[MAXENTITIES];
-float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
-float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
 float f_BannerAproxDur[MAXENTITIES];
-float f_BuffBannerNpcBuff[MAXENTITIES];
-float f_BobDuckBuff[MAXENTITIES];
-float f_AncientBannerNpcBuff[MAXENTITIES];
-float f_FallenWarriorDebuff[MAXENTITIES];
-float f_BattilonsNpcBuff[MAXENTITIES];
-float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
