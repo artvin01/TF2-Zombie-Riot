@@ -1170,7 +1170,7 @@ void Freeplay_SetupStart(bool extra = false)
 				Freeplay_SetupStart();
 				return;
 			}
-			ExplodeNPCDamage = GetRandomInt(35, 175)
+			ExplodeNPCDamage = GetRandomInt(35, 175);
 			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death, dealing %d base damage in a short radius!", ExplodeNPCDamage);
 			ExplodingNPC = true;
 		}
