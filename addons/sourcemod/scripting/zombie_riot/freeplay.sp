@@ -696,45 +696,55 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			if(IceDebuff > 2)
 			{
-				Freeplay_SetupStart();
-				return;
+				strcopy(message, sizeof(message), "{red}All enemies have lost the Cryo debuff!");
+				IceDebuff = 0;
 			}
-
-			strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Cyro debuff.");
-			IceDebuff++;
+			else
+			{
+				strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Cyro debuff.");
+				IceDebuff++;
+			}
 		}
 		case 30:
 		{
 			if(TeslarDebuff > 1)
 			{
-				Freeplay_SetupStart();
-				return;
+				strcopy(message, sizeof(message), "{red}All enemies have lost the Teslar debuff!");
+				TeslarDebuff = 0;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Teslar debuff.");
+				TeslarDebuff++;
 			}
 
-			strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Teslar debuff.");
-			TeslarDebuff++;
 		}
 		case 31:
 		{
 			if(FusionBuff > 2)
 			{
-				Freeplay_SetupStart();
-				return;
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Fusion buff.");
+				FusionBuff = 0;
 			}
-
-			strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Fusion buff!");
-			FusionBuff++;
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Fusion buff!");
+				FusionBuff++;
+			}
+			
 		}
 		case 32:
 		{
 			if(OceanBuff > 1)
 			{
-				Freeplay_SetupStart();
-				return;
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Ocean buff.");
+				OceanBuff = 0;
 			}
-
-			strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Ocean buff!");
-			OceanBuff++;
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Ocean buff!");
+				OceanBuff++;
+			}
 		}
 		case 33:
 		{
