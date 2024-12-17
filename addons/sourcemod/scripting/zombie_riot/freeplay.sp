@@ -33,6 +33,7 @@ static int ExtraSkulls;
 static int SkullTimes;
 static bool ExplodingNPC;
 static int ExplodeNPCDamage;
+static bool IsRaidWave;
 
 void Freeplay_ResetAll()
 {
@@ -69,6 +70,7 @@ void Freeplay_ResetAll()
 	SuperMiniBoss = false;
 	ExplodingNPC = false;
 	EscapeModeForNpc = false;
+	IsRaidWave = false;
 }
 
 int Freeplay_EnemyCount()
@@ -252,6 +254,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Does_Not_Scale = 1;
 		count = 1;
 		RaidFight = 0;
+		IsRaidWave = false;
 	}
 	else if(FriendlyDay)
 	{
@@ -1184,8 +1187,11 @@ void Freeplay_SetupStart(bool extra = false)
 	RerollTry = 0;
 	CPrintToChatAll("{orange}New Skull{default}: %s", message);
 
-	if(RaidFight)
+	if(RaidFight && !IsRaidWave)
+	{
+		IsRaidWave = true;
 		CPrintToChatAll("{green}Winning this wave will reward you with 5000 extra credits.");
+	}
 
 	if(ExplodingNPC)
 		CPrintToChatAll("{yellow}The exploding enemy skull lasts 1 wave. | Current Base damage: %d", ExplodeNPCDamage);
