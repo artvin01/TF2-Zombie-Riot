@@ -6851,7 +6851,8 @@ stock void Custom_Knockback(int attacker,
 	 float PullDuration = 0.0,
 	 bool RecieveInfo = false,
 	 float RecievePullInfo[3] = {0.0,0.0,0.0},
-	 float OverrideLookAng[3] ={0.0,0.0,0.0})
+	 float OverrideLookAng[3] ={0.0,0.0,0.0},
+	  bool area_push = false)
 {
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{
@@ -6888,13 +6889,34 @@ stock void Custom_Knockback(int attacker,
 				//so thery always should be pulled abit...
 				SubtractVectors(pos1, pos2, vector1);
 				NormalizeVector(vector1, vector1);
-				GetVectorAngles(vector1, vAngles); 
+				GetVectorAngles(vector1, vAngles);
 			}
 		}
 		else
 		{
 			GetEntPropVector(attacker, Prop_Data, "m_angRotation", vAngles);
 			vAngles[0] = -45.0;
+			if(OverrideLookAng[0] != 0.0)
+				vAngles = OverrideLookAng;
+		}
+
+		if (area_push)
+		{
+			float vector1[3];
+			float pos1[3];
+			float pos2[3];
+			WorldSpaceCenter(enemy, pos1);
+			WorldSpaceCenter(attacker, pos2);
+			//GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos1); 
+			//GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos2);
+			pos2[2] += 50.0; 
+			//so thery always should be pulled abit...
+			SubtractVectors(pos1, pos2, vector1);
+			NormalizeVector(vector1, vector1);
+			GetVectorAngles(vector1, vAngles);
+
+			if (vAngles[0] > -40.0)
+				vAngles[0] = -40.0;
 		}
 		
 		if(enemy <= MaxClients)	

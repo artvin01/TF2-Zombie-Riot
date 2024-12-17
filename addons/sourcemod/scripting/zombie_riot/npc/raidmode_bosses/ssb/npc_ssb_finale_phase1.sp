@@ -14,12 +14,29 @@ Function Chair_QueuedSpell[2049];			//The spell which will be cast when SSB's ca
 
 static bool Chair_ChangeSequence[2049] = { false, ... };
 static char Chair_Sequence[2049][255];
-static char Chair_SnapEffect[2049][255];
-static char Chair_SnapEffectExtra[2049][255];
+static char Chair_SpellEffect[2049][255];
+static char Chair_SpellEffectExtra[2049][255];
+static char Chair_SpellEffect_Point[2049][255];
+
+//DEATH WAVER: If at least X enemies and/or Y allies are within radius, SSB waves his hand, healing all allies within radius while damaging and knocking back all enemies.
+//This is NOT a Spell Card, and is thus unaffected by the casting system. It DOES get stronger based on tier, though.
+static int Waver_MinEnemies[4] = { 1, 1, 1, 1 };							//Minimum enemies within radius required to use.
+static int Waver_MinAllies[4] = { 3, 3, 3, 3 };								//Minimum allies within radius required to use.
+static float Waver_Radius_DMG[4] = { 140.0, 143.33, 146.66, 150.0 };		//Radius in which enemies will be damaged by this ability.
+static float Waver_Radius_Healing[4] = { 400.0, 600.0, 800.0, 1200.0 };		//Radius in which allies will be healed by this ability.
+static float Waver_Healing[4] = { 0.33, 0.5, 0.66, 0.75 };					//Percentage of max HP to heal allies for.
+static float Waver_MinHealing[4] = { 10000.0, 15000.0, 20000.0, 40000.0 };		//Minimum healing provided by allies healed by this ability.
+static float Waver_MaxHealing[4] = { 20000.0, 50000.0, 100000.0, 200000.0 };		//Maximum healing given to each ally healed by this ability.
+static float Waver_DMG[4] = { 200.0, 350.0, 500.0, 650.0 };					//Damage dealt to enemies within radius.
+static float Waver_Falloff_MultiHit[4] = { 0.66, 0.7, 0.75, 0.8 };			//Amount to multiply damage for each target hit.
+static float Waver_Falloff_Radius[4] = { 0.66, 0.75, 0.8, 0.85 };			//Maximum damage falloff fbased on radius.
+static float Waver_EntityMult[4] = { 5.0, 6.0, 7.0, 8.0 };					//Amount to multiply damage dealt to entities.
+static float Waver_Knockback[4] = { 600.0, 900.0, 1200.0, 1500.0 };			//Knockback velocity applied to enemies who get hit.
+static float Waver_Cooldown[4] = { 12.0, 11.0, 10.0, 9.0 };					//Cooldown between uses.
 
 //NECROTIC BOMBARDMENT: SSB marks every enemy's location, and then strikes that location with a blast of necrotic energy after a short delay.
 static float Bombardment_Radius[4] = { 180.0, 220.0, 260.0, 300.0 };		//Blast radius.
-static float Bombardment_Delay[4] = { 2.0, 1.75, 1.5, 1.25 };				//Time until the blast hits.
+static float Bombardment_Delay[4] = { 2.0, 1.9, 1.8, 1.66 };				//Time until the blast hits.
 static float Bombardment_DMG[4]	= { 200.0, 400.0, 800.0, 1600.0 };			//Damage dealt by the blast.
 static float Bombardment_EntityMult[4] = { 5.0, 10.0, 15.0, 20.0 };			//Amount to multiply damage dealt to entities.
 static float Bombardment_Falloff_MultiHit[4] = { 0.66, 0.7, 0.75, 0.8 };	//Amount to multiply damage per target hit.
@@ -28,13 +45,13 @@ static float Bombardment_Falloff_Radius[4] = { 0.5, 0.66, 0.75, 0.8 };		//Maximu
 //RING OF HELL: SSB fires a cluster of explosive skulls in a ring pattern. These skulls transform into homing skulls after a short delay.
 static int HellRing_NumSkulls[4] = { 12, 16, 20, 28 };						//The number of skulls fired.
 static int HellRing_MaxTargets[4] = { 3, 4, 5, 8 };							//Maximum targets hit by a single skull explosion.
-static float HellRing_Velocity[4] = { 400.0, 450.0, 500.0, 550.0 };			//Skull velocity.
+static float HellRing_Velocity[4] = { 265.0, 300.0, 350.0, 400.0 };			//Skull velocity.
 static float HellRing_HomingDelay[4] = { 1.0, 0.75, 0.5, 0.25 };			//Delay after firing before skulls gain homing properties.
-static float HellRing_HomingAngle[4] = { 90.0, 95.0, 100.0, 105.0 };		//Skulls' maximum homing angle.
-static float HellRing_HomingPerSecond[4] = { 9.0, 10.0, 11.0, 12.0 };		//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
+static float HellRing_HomingAngle[4] = { 60.0, 70.0, 80.0, 90.0 };			//Skulls' maximum homing angle.
+static float HellRing_HomingPerSecond[4] = { 9.0, 9.5, 10.0, 10.5 };		//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
 static float HellRing_DMG[4] = { 60.0, 90.0, 160.0, 250.0 };				//Skull base damage.
 static float HellRing_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };				//Amount to multiply damage dealt by skulls to entities.
-static float HellRing_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };			//Skull explosion radius.
+static float HellRing_Radius[4] = { 50.0, 50.0, 50.0, 50.0 };				//Skull explosion radius.
 static float HellRing_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };		//Skull falloff, based on radius.
 static float HellRing_Falloff_MultiHit[4] = { 0.66, 0.76, 0.86, 1.0 }; 		//Amount to multiply explosion damage for each target hit.
 static float HellRing_Pitch[4] = { 5.0, 5.0, 5.0, 5.0 };					//Amount to tilt skull vertical velocity on spawn, used mainly for VFX.
@@ -100,6 +117,11 @@ static char g_SSBChair_ChairThudSounds[][] = {
 #define SND_HELL_CHARGEUP			")misc/halloween_eyeball/book_spawn.wav"
 #define SND_HELL_SHOOT				")misc/halloween/spell_meteor_cast.wav"
 #define SND_HELL_SHOOT_2			")misc/halloween_eyeball/book_exit.wav"
+#define SND_BIG_SWING				")misc/halloween/strongman_fast_whoosh_01.wav"
+#define SND_WAVER_CAST				")items/powerup_pickup_strength"
+#define SND_WAVER_BLAST				")weapons/bumper_car_spawn.wav"
+#define SND_WAVER_BLAST_2			")weapons/cow_mangler_explode.wav"
+#define SND_WAVER_KNOCKBACK			")weapons/bumper_car_hit_ball.wav"
 
 #define PARTICLE_BOMBARDMENT_SNAP		"merasmus_dazed_bits"
 #define PARTICLE_BOMBARDMENT_SNAP_EXTRA	"hammer_bell_ring_shockwave2"
@@ -110,6 +132,11 @@ static char g_SSBChair_ChairThudSounds[][] = {
 #define PARTICLE_HELL_BLAST				"spell_fireball_tendril_parent_red"
 #define PARTICLE_HELL_BLAST_HOMING		"spell_fireball_tendril_parent_blue"
 #define PARTICLE_BOMBARDMENT_HAND		"superrare_burning2"
+#define PARTICLE_WAVER_HAND				"raygun_projectile_red_crit"
+#define PARTICLE_WAVER_CAST				"drg_cow_explosioncore_charged"
+#define PARTICLE_WAVER_BLAST			"mvm_soldier_shockwave"
+#define PARTICLE_WAVER_HEAL_BLUE		"spell_cast_wheel_blue"
+#define PARTICLE_WAVER_HEAL_RED			"spell_cast_wheel_red"
 
 public void SSBChair_OnMapStart_NPC()
 {
@@ -132,6 +159,11 @@ public void SSBChair_OnMapStart_NPC()
 	PrecacheSound(SND_HELL_CHARGEUP);
 	PrecacheSound(SND_HELL_SHOOT);
 	PrecacheSound(SND_HELL_SHOOT_2);
+	PrecacheSound(SND_BIG_SWING);
+	PrecacheSound(SND_WAVER_CAST);
+	PrecacheSound(SND_WAVER_BLAST);
+	PrecacheSound(SND_WAVER_BLAST_2);
+	PrecacheSound(SND_WAVER_KNOCKBACK);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones, Magistrate of the Dead");
@@ -256,9 +288,103 @@ methodmap SSBChair_Spell __nullable__
 	}
 }
 
+public void DeathWaver_Pulse(SSBChair ssb, int target)
+{
+	float pos[3];
+	ssb.WorldSpaceCenter(pos);
+	ParticleEffectAt(pos, PARTICLE_WAVER_BLAST);
+
+	EmitSoundToAll(SND_WAVER_BLAST, ssb.index, _, 120);
+	EmitSoundToAll(SND_WAVER_BLAST_2, ssb.index, _, 120, _, _, 80);
+	ssb.PlayGenericSpell();
+
+	bool isBlue = GetEntProp(ssb.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(Waver_DMG[Chair_Tier[ssb.index]], ssb.index, ssb.index, 0, pos, Waver_Radius_DMG[Chair_Tier[ssb.index]], Waver_Falloff_MultiHit[Chair_Tier[ssb.index]], Waver_Falloff_Radius[Chair_Tier[ssb.index]], isBlue, _, _, Waver_EntityMult[Chair_Tier[ssb.index]], DeathWaver_Knockback);
+
+	float allyPos[3];
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		if (!IsValidEntity(i) || i_IsABuilding[i] || i == ssb.index)
+			continue;
+				
+		if (!IsValidAlly(ssb.index, i))
+			continue;
+
+		GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", allyPos);
+		if (GetVectorDistance(pos, allyPos) <= Waver_Radius_Healing[Chair_Tier[ssb.index]])
+		{
+			CClotBody ally = view_as<CClotBody>(i);
+
+			if (ally.BoneZone_IsASkeleton() && !ally.BoneZone_GetBuffedState())
+				ally.BoneZone_SetBuffedState(true);
+
+			float health = float(GetEntProp(i, Prop_Data, "m_iHealth"));
+			float maxhealth;
+
+			if (IsValidClient(i) && dieingstate[i] == 0)
+			{
+				maxhealth = float(SDKCall_GetMaxHealth(i));
+			}
+			else if (!IsValidClient(i))
+			{
+				maxhealth = float(ReturnEntityMaxHealth(i));
+			}
+
+			if (maxhealth > 0.0 && health < maxhealth)
+			{
+				float heals = maxhealth * Waver_Healing[Chair_Tier[ssb.index]];
+				if (heals < Waver_MinHealing[Chair_Tier[ssb.index]])
+					heals = Waver_MinHealing[Chair_Tier[ssb.index]];
+				if (heals > Waver_MaxHealing[Chair_Tier[ssb.index]])
+					heals = Waver_MaxHealing[Chair_Tier[ssb.index]];
+
+				health += heals;
+				if (health > maxhealth)
+					health = maxhealth;
+
+				SetEntProp(i, Prop_Data, "m_iHealth", RoundToFloor(health));
+			}
+
+			ParticleEffectAt(allyPos, (GetTeam(i) != 2 ? PARTICLE_WAVER_HEAL_BLUE : PARTICLE_WAVER_HEAL_RED));
+			EmitSoundToAll(g_WitchLaughs[GetRandomInt(0, sizeof(g_WitchLaughs) - 1)], i, _, _, _, _, GetRandomInt(80, 120));
+		}
+	}
+}
+
+public void DeathWaver_Knockback(int attacker, int victim, float damage)
+{
+	if (b_NoKnockbackFromSources[victim] || b_NpcIsInvulnerable[victim])
+		return;
+
+	float dummy[3], pos[3], pos2[3], ang[3];
+	WorldSpaceCenter(attacker, pos);
+	WorldSpaceCenter(victim, pos2);
+	Priest_GetAngleToPoint(attacker, pos, pos2, dummy, ang);
+
+	if (ang[0] > -40.0)
+		ang[0] = -40.0;
+
+	/*GetAngleVectors(ang, dummy, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(dummy, Waver_Knockback[Chair_Tier[attacker]]);
+
+	float vel[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecVelocity", vel);
+	for (int vec = 0; vec < 3; vec++)
+		vel[vec] += dummy[vec];*/
+
+	EmitSoundToAll(SND_WAVER_KNOCKBACK, victim, _, _, _, _, GetRandomInt(80, 100));
+
+	Custom_Knockback(attacker, victim, Waver_Knockback[Chair_Tier[attacker]], true, _, true, _, _, _, _, true);
+
+	/*if (IsValidClient(victim))
+		TeleportEntity(victim, _, _, vel);
+	else
+		Anchor_NPCKB(victim, vel);*/
+}
+
 public void SSBChair_Bombardment(SSBChair ssb, int target)
 {
-	ssb.CastSnap(SSBChair_Bombardment_Activate, PARTICLE_BOMBARDMENT_HAND, PARTICLE_BOMBARDMENT_SNAP, PARTICLE_BOMBARDMENT_SNAP_EXTRA, SND_BOMBARDMENT_CHARGEUP);
+	ssb.CastSpellWithAnimation("ACT_FINALE_CHAIR_SNAP", SSBChair_Bombardment_Activate, PARTICLE_BOMBARDMENT_HAND, PARTICLE_BOMBARDMENT_SNAP, PARTICLE_BOMBARDMENT_SNAP_EXTRA, "effect_hand_L", SND_BOMBARDMENT_CHARGEUP);
 }
 
 public void SSBChair_Bombardment_Activate(SSBChair ssb, int target)
@@ -334,7 +460,7 @@ public Action SSBChair_Bombardment_Hit(Handle timer, DataPack pack)
 
 public void SSBChair_RingOfHell(SSBChair ssb, int target)
 {
-	ssb.CastSnap(SSBChair_RingOfHell_Activate, PARTICLE_HELL_HAND, PARTICLE_HELL_SNAP, "", SND_HELL_CHARGEUP);
+	ssb.CastSpellWithAnimation("ACT_FINALE_CHAIR_SNAP", SSBChair_RingOfHell_Activate, PARTICLE_HELL_HAND, PARTICLE_HELL_SNAP, "", "effect_hand_L", SND_HELL_CHARGEUP);
 }
 
 public void SSBChair_RingOfHell_Activate(SSBChair ssb, int target)
@@ -504,6 +630,71 @@ methodmap SSBChair < CClotBody
 		#endif
 	}
 
+	public int GetNearbyAllies(float radius)
+	{
+		int numAllies;
+
+		float myPos[3], allyPos[3];
+		WorldSpaceCenter(this.index, myPos);
+
+		for (int i = 1; i < MAXENTITIES; i++)
+		{
+			if (!IsValidAlly(this.index, i) || i_IsABuilding[i] || i == this.index)
+				continue;
+
+			WorldSpaceCenter(i, allyPos);
+			if (GetVectorDistance(myPos, allyPos) <= radius)
+			{
+				numAllies++;
+			}
+		}
+
+		return numAllies;
+	}
+
+	public int GetNearbyEnemies(float radius)
+	{
+		int numEnemies;
+
+		float myPos[3], enemyPos[3];
+		WorldSpaceCenter(this.index, myPos);
+
+		for (int i = 1; i < MAXENTITIES; i++)
+		{
+			if (!IsValidEnemy(this.index, i) || i_IsABuilding[i] || i == this.index)
+				continue;
+				
+			WorldSpaceCenter(i, enemyPos);
+			if (GetVectorDistance(myPos, enemyPos) <= radius)
+			{
+				numEnemies++;
+			}
+		}
+
+		return numEnemies;
+	}
+
+	public bool CanUseWaver()
+	{
+		if (Chair_UsingAbility[this.index])
+			return false;
+
+		if (GetGameTime(this.index) < this.m_flNextMeleeAttack)
+			return false;
+
+		if (this.GetNearbyAllies(Waver_Radius_Healing[Chair_Tier[this.index]]) < Waver_MinAllies[Chair_Tier[this.index]]
+		 && this.GetNearbyEnemies(Waver_Radius_DMG[Chair_Tier[this.index]]) < Waver_MinEnemies[Chair_Tier[this.index]])
+			return false;
+
+		return true;
+	}
+
+	public void DeathWaver()
+	{
+		this.CastSpellWithAnimation("ACT_FINALE_CHAIR_WAVE", DeathWaver_Pulse, PARTICLE_WAVER_HAND, PARTICLE_WAVER_CAST, "", "effect_hand_R", SND_WAVER_CAST);
+		this.m_flNextMeleeAttack = GetGameTime(this.index) + Waver_Cooldown[Chair_Tier[this.index]] + 2.0;
+	}
+
 	public void PrepareAbilities()
 	{
 		this.DeleteAbilities();
@@ -557,20 +748,21 @@ methodmap SSBChair < CClotBody
 		}
 	}
 
-	public void CastSnap(Function spell, char handParticle[255], char snapParticle[255], char snapParticleExtra[255], char sound[255])
+	public void CastSpellWithAnimation(char sequence[255], Function spell, char handParticle[255], char snapParticle[255], char snapParticleExtra[255], char effectPoint[255], char sound[255])
 	{
-		int activity = this.LookupActivity("ACT_FINALE_CHAIR_SNAP");
+		int activity = this.LookupActivity(sequence);
 		if (activity > 0)
 		{
 			this.StartActivity(activity);
 			Chair_UsingAbility[this.index] = true;
 			Chair_QueuedSpell[this.index] = spell;
-			Chair_SnapEffect[this.index] = snapParticle;
-			Chair_SnapEffectExtra[this.index] = snapParticleExtra;
+			Chair_SpellEffect[this.index] = snapParticle;
+			Chair_SpellEffectExtra[this.index] = snapParticleExtra;
+			Chair_SpellEffect_Point[this.index] = effectPoint;
 
 			float pos[3], trash[3];
-			this.GetAttachment("effect_hand_L", pos, trash);
-			this.m_iWearable3 = ParticleEffectAt_Parent(pos, handParticle, this.index, "effect_hand_L");
+			this.GetAttachment(effectPoint, pos, trash);
+			this.m_iWearable3 = ParticleEffectAt_Parent(pos, handParticle, this.index, effectPoint);
 			EmitSoundToAll(sound, this.index, _, 120);
 		}
 	}
@@ -633,7 +825,7 @@ methodmap SSBChair < CClotBody
 		npc.m_iWearable1 = ParticleEffectAt_Parent(rightEye, "eye_powerup_green_lvl_4", npc.index, "righteye", {0.0,0.0,0.0});
 		npc.m_iWearable2 = ParticleEffectAt_Parent(leftEye, "eye_powerup_green_lvl_4", npc.index, "lefteye", {0.0,0.0,0.0});
 
-		TeleportDiversioToRandLocation(npc.index);
+		TeleportDiversioToRandLocation(npc.index, _, 600.0);
 		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
 		EmitSoundToAll(SND_SPAWN_ALERT);
 
@@ -679,7 +871,11 @@ public void SSBChair_AnimEvent(int entity, int event)
 
 	switch(event)
 	{
-		case 1002:	//Fingers have snapped, cast whatever spell has been queued up.
+		case 1001:	//Any and all parts of any animation where the chair itself hits something, play a thud sound.
+		{
+			npc.PlayChairThud();
+		}
+		case 1002:	//The cast animation has reached its peak, cast whatever spell has been queued up.
 		{
 			if (Chair_QueuedSpell[npc.index] != INVALID_FUNCTION)
 			{
@@ -689,34 +885,36 @@ public void SSBChair_AnimEvent(int entity, int event)
 				Call_Finish();
 			}
 
-			EmitSoundToAll(SND_SNAP, _, _, 120);
 			float pos[3], trash[3];
-			npc.GetAttachment("effect_hand_L", pos, trash);
-
+			npc.GetAttachment(Chair_SpellEffect_Point[npc.index], pos, trash);
 			char the[255];	//This is stupid as hell, but I get an unavoidable error if I don't do it.
-			if (!StrEqual(Chair_SnapEffect[npc.index], ""))
+			if (!StrEqual(Chair_SpellEffect[npc.index], ""))
 			{
-				the = Chair_SnapEffect[npc.index];
+				the = Chair_SpellEffect[npc.index];
 				ParticleEffectAt(pos, the);
 			}
-			if (!StrEqual(Chair_SnapEffectExtra[npc.index], ""))
+			if (!StrEqual(Chair_SpellEffectExtra[npc.index], ""))
 			{
-				the = Chair_SnapEffectExtra[npc.index];
+				the = Chair_SpellEffectExtra[npc.index];
 				ParticleEffectAt(pos, the);
 			}
 
 			if (IsValidEntity(npc.m_iWearable3))
 				RemoveEntity(npc.m_iWearable3);
 		}
-		case 1003:	//Snap finished, go back to idle animation and remove "UsingAbility" flag.
+		case 1003:	//Cast animation finished, go back to idle animation and remove "UsingAbility" flag.
 		{
 			Chair_ChangeSequence[npc.index] = true;
 			Chair_Sequence[npc.index] = "ACT_FINALE_CHAIR_IDLE";
 			Chair_UsingAbility[npc.index] = false;
 		}
-		case 1004:	//Any and all parts of any animation where the chair itself hits something, play a thud sound.
+		case 1004:	//Fingers have snapped, play sound.
 		{
-			npc.PlayChairThud();
+			EmitSoundToAll(SND_SNAP, _, _, 120);
+		}
+		case 1005:	//Death Waver spell cast, arm has been swung, play sound.
+		{
+			EmitSoundToAll(SND_BIG_SWING, npc.index, _, 120);
 		}
 	}
 }
@@ -767,6 +965,7 @@ public void SSBChair_ClotThink(int iNPC)
 		//npc.StartPathing();
 	}
 	
+	//TODO: Probably erase all of this pathing logic, we won't end up needing it unless the concept changes during development
 	int closest = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, closest))
@@ -797,6 +996,8 @@ public void SSBChair_ClotThink(int iNPC)
 	}
 
 	npc.AttemptCast();
+	if (npc.CanUseWaver())
+		npc.DeathWaver();
 
 	npc.PlayIdleSound();
 }
