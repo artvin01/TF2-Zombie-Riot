@@ -291,6 +291,7 @@ void Building_MapStart()
 	PrecacheSound("physics/metal/metal_box_strain4.wav");
 	PrecacheSound("npc/manhack/bat_away.wav");
 	Zero(f_ExpidonsanRepairDelay);
+	Zero(i_IDependOnThisBuilding);
 }
 
 // Called after NPC_ConfigSetup()
@@ -1213,7 +1214,7 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask, any iEx
 	if(b_ThisEntityIgnored[entity])
 		return false;
 
-	if(i_IsABuilding[entity]) // We don't want to build on teleporters(exploits, stuck, ...) You know what i mean.
+	if(i_IsABuilding[entity]) // Only buildings should be allowed
 	{
 		return true;
 	}
@@ -1288,7 +1289,7 @@ void Building_RotateAllDepencencies(int entityLost = 0)
 		if(!IsValidEntity(i))
 			continue;
 			
-		if(EntRefToEntIndex(i_IDependOnThisBuilding[i]) == entityLost)
+		if(i_IsABuilding[i] && EntRefToEntIndex(i_IDependOnThisBuilding[i]) == entityLost)
 		{
 			BuildingAdjustMe(i, entityLost);
 		}

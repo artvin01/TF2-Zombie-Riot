@@ -195,14 +195,6 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 								b_IsGiant[target])
 								{
 									damage *= 2.5;
-									/*
-									if((f_LowIceDebuff[target] - 1.0) < GetGameTime())
-									{
-										f_LowIceDebuff[target] = GetGameTime() + 1.1;
-									}
-									*/
-									//random debuff is random
-									
 								}
 								
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);

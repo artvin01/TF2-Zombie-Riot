@@ -15,19 +15,6 @@ static float TonicBuff_CD[MAXTF2PLAYERS];
 static Handle ShrinkTimer[MAXENTITIES];
 static float f_RaidShrinkImmunity[MAXENTITIES];
 
-bool Wands_Potions_HasBuff(int client)
-{
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon != -1)
-		return view_as<bool>(BuffTimer[weapon]);
-	
-	return false;
-}
-
-bool Wands_Potions_HasTonicBuff(int client)
-{
-	return TonicBuff[client] > GetGameTime();
-}
 
 void Wands_Potions_EntityCreated(int entity)
 {
@@ -276,6 +263,8 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 			{
 				Attributes_SetMulti(weapon, 6, multi);
 			}
+			
+			ApplyStatusEffect(weapon, weapon, "Mystery Beer", 5.5);
 
 			DataPack pack;
 			BuffTimer[weapon] = CreateDataTimer(5.5, Weapon_Wand_PotionBuffRemove, pack);
@@ -307,6 +296,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 							Attributes_SetMulti(weapon, 6, multi);
 						}
 
+						ApplyStatusEffect(weapon, weapon, "Mystery Beer", 5.5);
 						DataPack pack;
 						BuffTimer[weapon] = CreateDataTimer(5.5, Weapon_Wand_PotionBuffRemove, pack);
 						pack.WriteCell(weapon);
@@ -360,6 +350,7 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 						Attributes_SetMulti(weapon, 6, multi);
 					}
 
+					ApplyStatusEffect(weapon, weapon, "Mystery Beer", 7.5);
 					DataPack pack;
 					BuffTimer[weapon] = CreateDataTimer(7.5, Weapon_Wand_PotionBuffRemove, pack);
 					pack.WriteCell(weapon);
@@ -411,6 +402,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 						Attributes_SetMulti(weapon, 6, multi);
 					}
 
+					ApplyStatusEffect(weapon, weapon, "Mystery Beer", 999.9);
 					DataPack pack;
 					BuffTimer[weapon] = CreateDataTimer(999.9, Weapon_Wand_PotionBuffRemove, pack);
 					pack.WriteCell(weapon);
@@ -606,6 +598,7 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 					EmitSoundToClient(target, SOUND_TRANSFORM2);
 
 					TonicBuff[target] = Mana_Regen_Delay[client];
+					ApplyStatusEffect(client, target, "Tonic Affliction", 10.0);
 
 					if(++count > 2)
 						break;
@@ -737,9 +730,7 @@ public void WandPotion_PotionGoldDo(int entity, int enemy, float damage_Dontuse,
 	{
 		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_SLASH);
 	}
-	float time = GetGameTime() + 1.5;
-	if(f_GoldTouchDebuff[enemy] < time)
-		f_GoldTouchDebuff[enemy] = time;
+	ApplyStatusEffect(owner, enemy, "Golden Curse", 1.5);
 }
 
 bool ShrinkOnlyOneTarget = false;
@@ -801,7 +792,10 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 		if(GetTeam(enemy) == TFTeam_Red)
 			return;
 	}
-
+	if(HasSpecificBuff(enemy, "Hardened Aura"))
+	{
+		return;
+	}
 	if(b_thisNpcIsABoss[enemy] || b_StaticNPC[enemy] || b_thisNpcIsARaid[enemy])
 	{
 		if(!ShrinkOnlyOneTarget && f_RaidShrinkImmunity[enemy] < GetGameTime())
@@ -814,8 +808,7 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 			f_RaidShrinkImmunity[enemy] = GetGameTime() + (time * 3.0);
 			ShrinkOnlyOneTarget = true;
 			
-			if(f_PotionShrinkEffect[enemy] < (GetGameTime() + time))
-				f_PotionShrinkEffect[enemy] =  (GetGameTime() + time);
+			ApplyStatusEffect(owner, enemy, "Shrinking", time);
 			
 			if(ShrinkTimer[enemy] != null)
 				delete ShrinkTimer[enemy];
@@ -833,13 +826,12 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 	}
 	else
 	{
-		if(f_PotionShrinkEffect[enemy] < GetGameTime())
+		if(!NpcStats_IsEnemyShank(enemy))
 		{
 			float scale = GetEntPropFloat(enemy, Prop_Send, "m_flModelScale");
 			SetEntPropFloat(enemy, Prop_Send, "m_flModelScale", scale * 0.5);
 		}
-		
-		f_PotionShrinkEffect[enemy] = FAR_FUTURE;
+		ApplyStatusEffect(owner, enemy, "Shrinking", FAR_FUTURE);
 		Stock_TakeDamage(enemy, owner, owner, GetEntProp(enemy, Prop_Data, "m_iHealth") / 2.0, DMG_SLASH, weapon);
 	}
 }

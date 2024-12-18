@@ -202,7 +202,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
 			{
-				f_VictorianCallToArms[client] = gameTime;
+				ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
 			}
 		}
 	}
@@ -401,7 +401,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
-			f_VictorianCallToArms[entity] = gameTime;
+			ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
 		}
 	}
 

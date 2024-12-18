@@ -320,10 +320,11 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 						SetEntityRenderColor(npc.m_iWearable4, 255, 0, 0, 255);
 					}
 					HealEntityGlobal(npc.index, PrimaryThreatIndex, 750.0, 1.0);
-					f_CaffeinatorBuff[PrimaryThreatIndex] = GetGameTime() + 1.1;
+					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated", 1.1);
+					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated Drain", 1.1);
 					if(NpcStats_VictorianCallToArms(npc.index))
 					{
-						f_HussarBuff[PrimaryThreatIndex] = GetGameTime() + 1.1;
+						ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Hussar's Warscream", 1.1);
 					}
 				}
 				else
@@ -556,10 +557,11 @@ void VictoriaCaffeinatorAOEBuff(VictorianCaffeinator npc, float gameTime)
 					if(GetVectorDistance(pos1, pos2, true) < (150 * 150))
 					{
 						//give 200 armor at most.
-						f_CaffeinatorBuff[entitycount] = GetGameTime() + 2.6;
+						ApplyStatusEffect(npc.index, entitycount, "Caffinated", 2.6);
+						ApplyStatusEffect(npc.index, entitycount, "Caffinated Drain", 1.1);
 						if(NpcStats_VictorianCallToArms(npc.index))
 						{
-							f_BuffBannerNpcBuff[entitycount] = GetGameTime() + 2.6;
+							ApplyStatusEffect(npc.index, entitycount, "Buff Banner", 2.6);
 						}
 					}
 				}

@@ -321,16 +321,6 @@ void Ruina_Set_Overlord(int client, bool state)
 	}
 }
 
-void Ruina_Reset_Stats_Npc(int client)
-{
-	f_Ruina_Speed_Buff[client] = 0.0;
-	f_Ruina_Defense_Buff[client] = 0.0;
-	f_Ruina_Attack_Buff[client] = 0.0;
-	f_Ruina_Speed_Buff_Amt[client] = 0.0;
-	f_Ruina_Defense_Buff_Amt[client] = 0.0;
-	f_Ruina_Attack_Buff_Amt[client] = 0.0;
-}
-
 public void Ruina_Master_Release_Slaves(int client)
 {
 	i_master_current_slaves[client] = 0;	//reset
@@ -2175,11 +2165,7 @@ static bool Block_Buffs(int entity)
 
 	return false;
 }
-/*
-	f_Ruina_Speed_Buff[entity] = 0.0;
-	f_Ruina_Defense_Buff[entity] = 0.0;
-	f_Ruina_Attack_Buff[entity] = 0.0;
-*/
+
 void Ruina_Apply_Defense_buff(int entity, int victim, float damage, int weapon)
 {
 	if(entity==victim)
@@ -2193,19 +2179,8 @@ void Ruina_Apply_Defense_buff(int entity, int victim, float damage, int weapon)
 	{
 		float time = fl_ruina_buff_time[entity];
 		float amt = fl_ruina_buff_amt[entity];
-		float GameTime = GetGameTime();
-		if(f_Ruina_Defense_Buff[victim]>GameTime)
-		{
-			if(amt>f_Ruina_Defense_Buff_Amt[victim])	//higher is better
-			{
-				f_Ruina_Defense_Buff_Amt[victim] = amt;
-			}
-		}
-		else
-		{
-			f_Ruina_Defense_Buff_Amt[victim] = amt;
-		}
-		f_Ruina_Defense_Buff[victim] = GameTime + time;
+		ApplyStatusEffect(entity, victim, "Ruina's Defense", time);
+		NpcStats_RuinaDefenseStengthen(victim, amt);
 
 	}
 	
@@ -2225,19 +2200,8 @@ void Ruina_Apply_Speed_buff(int entity, int victim, float damage, int weapon)
 		float time = fl_ruina_buff_time[entity];
 		float amt = fl_ruina_buff_amt[entity];
 
-		float GameTime = GetGameTime();
-		if(f_Ruina_Speed_Buff[victim]>GameTime)
-		{
-			if(amt>f_Ruina_Speed_Buff_Amt[victim])	//higher is better
-			{
-				f_Ruina_Speed_Buff_Amt[victim] = amt;
-			}
-		}
-		else
-		{
-			f_Ruina_Speed_Buff_Amt[victim] = amt;
-		}
-		f_Ruina_Speed_Buff[victim] = GameTime + time;
+		ApplyStatusEffect(entity, victim, "Ruina's Agility", time);
+		NpcStats_RuinaAgilityStengthen(victim, amt);
 	}
 }
 void Ruina_Apply_Attack_buff(int entity, int victim, float damage, int weapon)
@@ -2253,21 +2217,8 @@ void Ruina_Apply_Attack_buff(int entity, int victim, float damage, int weapon)
 	{
 		float time = fl_ruina_buff_time[entity];
 		float amt = fl_ruina_buff_amt[entity];
-
-		float GameTime = GetGameTime();
-		if(f_Ruina_Attack_Buff[victim]>GameTime)
-		{
-			if(amt>f_Ruina_Attack_Buff_Amt[victim])	//higher is better
-			{
-				f_Ruina_Attack_Buff_Amt[victim] = amt;
-			}
-		}
-		else
-		{
-			
-			f_Ruina_Attack_Buff_Amt[victim] = amt;
-		}
-		f_Ruina_Attack_Buff[victim] = GameTime + time;
+		ApplyStatusEffect(entity, victim, "Ruina's Damage", time);
+		NpcStats_RuinaDamageStengthen(victim, amt);
 	}
 }
 

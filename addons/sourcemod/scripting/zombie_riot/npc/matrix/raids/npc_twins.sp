@@ -426,7 +426,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				float damage = 17.0;
+				float damage = 35.0;
 				damage *= RaidModeScaling;
 				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 				npc.FaceTowards(VecEnemy, 15000.0);
@@ -548,7 +548,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "enforcer");
 
-				float damage = 8.0;
+				float damage = 15.0;
 				damage *= RaidModeScaling;
 
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");
@@ -649,7 +649,7 @@ static void Matrix_Twins_Apply_Healing(Matrix_Twins npc, float gameTime)
 	npc.m_flDead_Ringer_Invis = gameTime + 1.0;
 	npc.m_flDead_Ringer_Invis_bool = true;
 	float Maxhealth = float(ReturnEntityMaxHealth(npc.index));
-	float reduction = npc.b_Twin_On ? 0.35 : 0.45;
+	float reduction = npc.b_Twin_On ? 0.20 : 0.25;
 	float healingamt = (Maxhealth * reduction);
 	float minimum = (Maxhealth * 0.1);
 	

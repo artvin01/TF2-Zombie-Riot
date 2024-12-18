@@ -655,13 +655,8 @@ public Action StalkerCombine_OnTakeDamage(int victim, int &attacker, int &inflic
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	// This stalker can't be killed but can be slowed via normal means
-	if(f_SpecterDyingDebuff[victim] < gameTime)
-		f_SpecterDyingDebuff[victim] = gameTime;
 	
-	f_SpecterDyingDebuff[victim] += damage / 150.0;
-	if(f_SpecterDyingDebuff[victim] > (gameTime + 5.0))
-		f_SpecterDyingDebuff[victim] = gameTime + 5.0;
+	ApplyStatusEffect(victim, victim, "Specter's Aura", 5.0);
 
 	if(!b_StaticNPC[victim])
 		return Plugin_Changed;

@@ -71,7 +71,6 @@ void FallenWarriorEntityCreated(int entity)
 {
 	b_ClientHasAncientBanner[entity] = false;
 	b_EntityRecievedBuff[entity] = false;
-	f_FallenWarriorDebuff[entity] = 0.0;
 }
 
 void FallenWarriorGetRandomSeedEachWave()
@@ -833,7 +832,7 @@ void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 			GetClientAbsOrigin(ally, targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= (GULN_DEBUFF_RANGE * GULN_DEBUFF_RANGE))
 			{
-				f_FallenWarriorDebuff[ally] = GetGameTime() + 0.5;
+				ApplyStatusEffect(ally, ally, "Heavy Presence", 0.5);
 			}
 		}
 	}
@@ -845,7 +844,7 @@ void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= (GULN_DEBUFF_RANGE * GULN_DEBUFF_RANGE))
 			{
-				f_FallenWarriorDebuff[ally] = GetGameTime() + 0.5;
+				ApplyStatusEffect(ally, ally, "Heavy Presence", 0.5);
 			}
 		}
 	}
@@ -854,7 +853,7 @@ void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 	{
 		if(IsClientInGame(ally) && IsPlayerAlive(ally) && GetTeam(ally) != Team)
 		{
-			if(f_FallenWarriorDebuff[ally] > GetGameTime())
+			if(HasSpecificBuff(ally, "Heavy Presence"))
 			{
 				ModifyEntityAncientBuff(ally, 1, 1.5, true, 0.5);
 			}
@@ -869,7 +868,7 @@ void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != Team)
 		{
-			if(f_FallenWarriorDebuff[ally] > GetGameTime())
+			if(HasSpecificBuff(ally, "Heavy Presence"))
 			{
 				ModifyEntityAncientBuff(ally, 2, 1.5, true, 0.5);
 			}

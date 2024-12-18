@@ -3112,28 +3112,10 @@ public void Citizen_ClotThink(int iNPC)
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 							HealEntityGlobal(npc.index, ally, healing, _, 3.0);
 
-							
-							float duration;
-							duration = Increaced_Overall_damage_Low[npc.index] - GetGameTime();
-							if(duration < 5.2)
-							{
-								Increaced_Overall_damage_Low[npc.index] = GetGameTime() + 5.0;
-							}
-							duration = Resistance_Overall_Low[npc.index] - GetGameTime();
-							if(duration < 5.2)
-							{
-								Resistance_Overall_Low[npc.index] = GetGameTime() + 5.0;
-							}
-							duration = Increaced_Overall_damage_Low[ally] - GetGameTime();
-							if(duration < 5.2)
-							{
-								Increaced_Overall_damage_Low[ally] = GetGameTime() + 5.0;
-							}
-							duration = Resistance_Overall_Low[ally] - GetGameTime();
-							if(duration < 5.2)
-							{
-								Resistance_Overall_Low[ally] = GetGameTime() + 5.0;
-							}
+							ApplyStatusEffect(npc.index, ally, "Healing Strength", 5.0);
+							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 5.0);
+							ApplyStatusEffect(npc.index, ally, "Healing Strength", 5.0);
+							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 5.0);
 							
 							if(ally <= MaxClients)
 								ClientCommand(ally, "playgamesound items/smallmedkit1.wav");
@@ -3145,7 +3127,7 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							float vecPos[3], vecAng[3];
 							GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", vecPos);
-							vecPos[2] += 60.0;
+							vecPos[2] += 30.0;
 							GetEntPropVector(ally, Prop_Data, "m_angRotation", vecAng);
 							vecAng[0] = 0.0;
 							vecAng[2] = 0.0;

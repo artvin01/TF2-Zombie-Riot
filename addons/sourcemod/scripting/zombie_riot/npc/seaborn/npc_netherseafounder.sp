@@ -685,8 +685,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					Elemental_AddNervousDamage(entity, 0, 1, false);
 					// 20 x 0.25 x 0.2
 					*/
-					if(f_LowTeslarDebuff[entity] - 1.0 < GetGameTime())
-						f_LowTeslarDebuff[entity] = GetGameTime() + 1.0;
+					ApplyStatusEffect(entity, entity, "Teslar Shock", 1.0);
 
 					NervousTouching[entity] = NervousTouching[0];
 				}

@@ -75,20 +75,14 @@ void GetHighDefTargets(CClotBody npc, int[] enemy, int count, bool respectTrace 
 			for(int i; i < count; i++)
 			{
 				int defense = 0;
-				if(f_EmpowerStateOther[client] > gameTime)
+				if(HasSpecificBuff(client, "Ally Empowerment"))
 					defense++;
 				
-				if(f_EmpowerStateSelf[client] > gameTime)
+				if(HasSpecificBuff(client, "Self Empowerment"))
 					defense++;
 				
-				if(f_HussarBuff[client] > gameTime)
+				if(HasSpecificBuff(client, "Hussar's Warscream"))
 					defense++;
-				
-				if(Resistance_Overall_Low[client] > gameTime)
-					defense += 2;
-				
-				if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
-					defense += 4;
 
 				if(enemy[i])
 				{
@@ -137,10 +131,7 @@ void GetHighDefTargets(CClotBody npc, int[] enemy, int count, bool respectTrace 
 						if(fl_RangedArmor[entity] < 1.0)
 							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);
 
-						if(Resistance_Overall_Low[entity] > gameTime)
-							defense += 2;
-						
-						if(f_BattilonsNpcBuff[entity] > gameTime)
+						if(HasSpecificBuff(entity, "Battilons Backup"))
 							defense += 4;
 
 						if(enemy[i] && def[i] < defense)

@@ -634,7 +634,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				{
 					BurnDamage[entity] = value;
 				}
-				if(f_ElementalAmplification[entity] > GetGameTime())
+				if(NpcStats_ElementalAmp(entity))
 				{
 					value *= 1.2;
 				}
@@ -653,7 +653,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					BurnDamage[entity] = 0.0;
 					return Plugin_Stop;
 				}
-				if(f_NpcImmuneToBleed[entity] > GetGameTime())
+				if(HasSpecificBuff(entity, "Hardened Aura"))
 				{
 					ExtinguishTarget(entity);
 					IgniteTimer[entity] = null;
@@ -1600,14 +1600,6 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 				}
 			}
 #endif
-			/*
-			BarrackBody npc = view_as<BarrackBody>(victim);
-			int client = GetClientOfUserId(npc.OwnerUserId);
-			//theres no way to tell if the unit is melee or ranged, so we shouldnt let it be on the hud.
-			if(IsValidClient(client))
-				Barracks_UnitExtraDamageCalc(victim, client, percentageGlobal, int damagetype)
-				//show barrak units res
-			*/
 		}
 
 		if((DamagePercDo != 100.0) && !b_NpcIsInvulnerable[victim])	
@@ -1822,7 +1814,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			Timer_Show = 0.0;
 
 		//if raid is on red, dont do timer.
-		if(Timer_Show > 800.0 || GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red)
+		if(Timer_Show > 800.0/* || GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red*/)
 		{
 			RaidModeTime = 99999999.9;
 		}
@@ -2055,106 +2047,12 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 
 stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
-	if(f_HighTeslarDebuff[npc] > GameTime)
+	char BufferTest1[1];
+	char BufferTest2[1];
+	EntityBuffHudShow(npc, client, BufferTest1, BufferTest2);
+	if(BufferTest1[0] || BufferTest2[0])
 		return true;
-	if(f_VoidAfflictionStandOn[npc] > GameTime)
-		return true;
-	if(f_VoidAfflictionStrength2[npc] > GameTime)
-		return true;
-	if(f_VoidAfflictionStrength[npc] > GameTime)
-		return true;
-	else if(f_LowTeslarDebuff[npc] > GameTime)
-		return true;
-	else if(f_ElementalAmplification[npc] > GameTime)
-		return true;
-	else if(f_FallenWarriorDebuff[npc] > GameTime)
-		return true;
-	else if(f_LudoDebuff[npc] > GameTime)
-		return true;
-	else if(f_SpadeLudoDebuff[npc] > GameTime)
-		return true;
-	else if(BleedAmountCountStack[npc] > 0) //bleed
-		return true;
-	else if(IgniteFor[npc] > 0) //burn
-		return true;
-	else if(f_HighIceDebuff[npc] > GameTime)
-		return true;
-	else if(f_LowIceDebuff[npc] > GameTime)
-		return true;
-	else if(f_BuildingAntiRaid[npc] > GameTime)
-		return true;
-	else if (f_VeryLowIceDebuff[npc] > GameTime)
-		return true;
-	else if(f_WidowsWineDebuff[npc] > GameTime)
-		return true;
-	else if(f_CrippleDebuff[npc] > GameTime)
-		return true;
-	else if(f_GoldTouchDebuff[npc] > GameTime)
-		return true;
-	else if(f_CudgelDebuff[npc] > GameTime)
-		return true;
-	else if(f_DuelStatus[npc] > GameTime)
-		return true;
-	else if(f_MaimDebuff[npc] > GameTime)
-		return true;
-	else if(NpcStats_IsEnemySilenced(npc))
-		return true;
-	else if(Increaced_Overall_damage_Low[npc] > GameTime)
-		return true;
-	else if(Resistance_Overall_Low[npc] > GameTime)
-		return true;
-	else if(f_EmpowerStateOther[npc] > GameTime)
-		return true;
-	else if(f_HussarBuff[npc] > GameTime)
-		return true;
-	else if(f_SquadLeaderBuff[npc] > GameTime)
-		return true;
-	else if(f_VictorianCallToArms[npc] > GameTime)
-		return true;
-	else if(f_CaffeinatorBuff[npc] > GameTime)
-		return true;
-	else if(f_PernellBuff[npc])
-		return true;
-	else if(f_PotionShrinkEffect[npc] > GameTime)
-		return true;
-	else if(f_EnfeebleEffect[npc] > GameTime)
-		return true;
-	else if(f_LeeMinorEffect[npc] > GameTime)
-		return true;
-	else if(f_LeeMajorEffect[npc] > GameTime)
-		return true;
-	else if(f_LeeSuperEffect[npc] > GameTime)
-		return true;
-	else if(f_LogosDebuff[npc] > GameTime)
-		return true;
-	else if(f_GodAlaxiosBuff[npc] > GameTime)
-		return true;
-	else if(f_Ocean_Buff_Stronk_Buff[npc] > GameTime)
-		return true;
-	else if(f_Ocean_Buff_Weak_Buff[npc] > GameTime)
-		return true;
-	else if(f_BattilonsNpcBuff[npc] > GameTime)
-		return true;
-	else if(f_BuffBannerNpcBuff[npc] > GameTime)
-		return true;
-	else if(f_BobDuckBuff[npc] > GameTime)
-		return true;
-	else if(f_AncientBannerNpcBuff[npc] > GameTime)
-		return true;
-	#if defined RUINA_BASE
-	else if(f_Ruina_Defense_Buff[npc] > GameTime)
-		return true;
-	else if(f_Ruina_Speed_Buff[npc] > GameTime)
-		return true;
-	else if(f_Ruina_Attack_Buff[npc] > GameTime)
-		return true;
-	#endif
-#if defined RPG
-	else if(TrueStrength_StacksOnEntity(client, npc))
-		return true;
-	else if(BubbleProcStatusLogicCheck(client) != 0)
-		return true;
-#endif
+
 	return false;
 }
 void DoMeleeAnimationFrameLater(DataPack pack)

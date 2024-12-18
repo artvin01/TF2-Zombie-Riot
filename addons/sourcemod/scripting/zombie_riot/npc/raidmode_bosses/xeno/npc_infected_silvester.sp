@@ -309,6 +309,7 @@ methodmap RaidbossSilvester < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Waldch Arrived.");
 			}
 		}
+		RemoveAllDamageAddition();
 		bool final = StrContains(data, "final_item") != -1;
 		
 		Zero(b_said_player_weaponline);

@@ -240,7 +240,7 @@ public void CombineElite_ClotThink(int iNPC)
 						WorldSpaceCenter(ally.index, vecTarget);
 						if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 						{
-							f_PernellBuff[ally.index] = GetGameTime() + 10.0;
+							ApplyStatusEffect(npc.index, ally.index, "False Therapy", 10.0);
 							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
 							break;
 						}

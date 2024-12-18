@@ -352,6 +352,7 @@ methodmap Huscarls < CClotBody
 		}
 		else
 		{
+			RemoveAllDamageAddition();
 			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
@@ -678,7 +679,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
-				f_VictorianCallToArms[entity] = gameTime;
+				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}
 	}
 	
@@ -869,7 +870,7 @@ static void Internal_ClotThink(int iNPC)
 					if(Delay_Attribute[npc.index] < gameTime)
 					{
 						b_NpcIsInvulnerable[npc.index] = false;
-						f_VictorianCallToArms[npc.index] = GetGameTime(npc.index) + 999.0;
+						ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 						MyGundammmmmm[npc.index]=false;
 						I_cant_do_this_all_day[npc.index] = 0;
 					}
@@ -1903,7 +1904,7 @@ static bool Victoria_Support(Huscarls npc)
 		{
 			position[0] = 525.0;
 			position[1] = 1600.0;
-			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+			Vs_ParticleSpawned[npc.index] = EntIndexToEntRef(ParticleEffectAt(position, "kartimpacttrail", 2.0));
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
 			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
@@ -1915,7 +1916,7 @@ static bool Victoria_Support(Huscarls npc)
 		position[0] = Vs_Temp_Pos[npc.index][0];
 		position[1] = Vs_Temp_Pos[npc.index][1];
 		position[2] = Vs_Temp_Pos[npc.index][2] - 100.0;
-		TeleportEntity(Vs_ParticleSpawned[npc.index], position, NULL_VECTOR, NULL_VECTOR);
+		TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[npc.index]), position, NULL_VECTOR, NULL_VECTOR);
 		position[2] += 100.0;
 		
 		b_ThisNpcIsSawrunner[npc.index] = true;

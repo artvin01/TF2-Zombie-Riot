@@ -188,7 +188,7 @@ public void Weapon_Wand_OblitirationShot(int client, int weapon, int level, floa
 			} 	
 			if(MagicFocusReady(client))
 			{
-				f_LowTeslarDebuff[HitEnemy] = GetGameTime() + 5.0;
+				ApplyStatusEffect(client, HitEnemy, "Teslar Shock", 5.0);
 			}
 			float DamageDiff = damage;
 			if(HeadshotDone)

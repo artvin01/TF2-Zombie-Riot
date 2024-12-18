@@ -31,7 +31,7 @@ static const char g_RangedSpecialAttackSoundsSecondary[][] = {
 	"npc/combine_soldier/vo/prison_soldier_fallback_b4.wav"
 };
 
-void RaidbossBladedance_MapStart()
+void RaidbossBladedance_Duo_MapStart()
 {
 	PrecacheModel("models/effects/combineball.mdl");
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -42,8 +42,8 @@ void RaidbossBladedance_MapStart()
 	for (int i = 0; i < (sizeof(g_RangedSpecialAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedSpecialAttackSoundsSecondary[i]);	}
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bladedance The Betrayed");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bladedance");
+	strcopy(data.Name, sizeof(data.Name), "Bladedance, True Teamwork");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bladedance_duo");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -54,10 +54,40 @@ void RaidbossBladedance_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RaidbossBladedance(vecPos, vecAng, team, data);
+	return RaidbossBladedance_Duo(vecPos, vecAng, team, data);
 }
 
-methodmap RaidbossBladedance < CClotBody
+/*
+TODO:
+bladedance
+List of abiltiies:
+1. Every 10 seconds, switches from melee swinging to orb throwing
+During orb throwing, simular to normal bladedance, applies those debuffs
+He also backs off a certain distance while he throws orbs
+
+Everytime bladedance hits anyone, he will mark them for 5 seconds
+
+2. Spawns 2 Mercs, one is a melee, another is ranger/Mage (random which), both must be taken out, while they are alive, both bladedance and bob are buffed
+3. spawns a medic merc, supports him and bob, (whoever is lower) with health, must be killed fast
+
+4. Exchanges places with bob after casting an animation for a few seconds, anyone near him will be taken with him but take alot of damage
+After said exchange, he causes an aoe on where he is now/bob used to be
+
+5. Runs to bob and casts a spell, for a certain amount of time, there will be a lighting link between them, anyone caught in it will take heavy damage, the further away they are, the bigger/fatter
+This link becomes, its time limited.
+
+6. Kicks an enemy up, if bob is too far away, bob will instantly teleport to said kicked up target and kick them down, dealing extreme damage
+If the target is marked, the target will be stunned as both bob and bladedance stand side by side and fire a massive laser, bascically instantly killing the player and anyone in that vercinity
+
+If bob is close enough, bob will instead throw a very fast orb, but this orb can be dodged by the kicked up player, however the orb can then home onto other players
+
+7. Casts a spell where all buildings will be death zones for a 15 seconds,
+
+8. Bladedance can do a combo attack where he punches a target 3 times, then shoots a orb at them, doesnt have to hit the same target either
+
+9. If bladedance recives too much damage in a short timeframe, a tempomary bob clone will appear near him which will support bladedance for a 10 seconds or so
+*/
+methodmap RaidbossBladedance_Duo < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -116,9 +146,9 @@ methodmap RaidbossBladedance < CClotBody
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public RaidbossBladedance(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RaidbossBladedance_Duo(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		RaidbossBladedance npc = view_as<RaidbossBladedance>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1500000", ally, false));
+		RaidbossBladedance_Duo npc = view_as<RaidbossBladedance_Duo>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1500000", ally, false));
 		
 		i_NpcWeight[npc.index] = 5;
 		
@@ -127,9 +157,9 @@ methodmap RaidbossBladedance < CClotBody
 
 		npc.SetActivity("ACT_CUSTOM_WALK_BOW");
 
-		func_NPCDeath[npc.index] = RaidbossBladedance_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = RaidbossBladedance_OnTakeDamage;
-		func_NPCThink[npc.index] = RaidbossBladedance_ClotThink;
+		func_NPCDeath[npc.index] = RaidbossBladedance_Duo_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = RaidbossBladedance_Duo_OnTakeDamage;
+		func_NPCThink[npc.index] = RaidbossBladedance_Duo_ClotThink;
 		
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 
@@ -137,15 +167,6 @@ methodmap RaidbossBladedance < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		npc.m_bDissapearOnDeath = true;
-
-		
-		bool final = StrContains(data, "final_item") != -1;
-		
-		if(final)
-		{
-			i_RaidGrantExtra[npc.index] = 1;
-		}
-		RemoveAllDamageAddition();
 
 		npc.m_bThisNpcIsABoss = true;
 		npc.Anger = false;
@@ -183,13 +204,6 @@ methodmap RaidbossBladedance < CClotBody
 				LookAtTarget(client_check, npc.index);
 		}
 
-		SetVariantInt(3);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-
-		RaidModeScaling = 9999999.99;
-		RaidModeTime = GetGameTime() + ((300.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
-		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
-
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
 
@@ -197,9 +211,9 @@ methodmap RaidbossBladedance < CClotBody
 	}
 }
 
-public void RaidbossBladedance_ClotThink(int iNPC)
+public void RaidbossBladedance_Duo_ClotThink(int iNPC)
 {
-	RaidbossBladedance npc = view_as<RaidbossBladedance>(iNPC);
+	RaidbossBladedance_Duo npc = view_as<RaidbossBladedance_Duo>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
 
@@ -257,169 +271,28 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
-	if(npc.Anger)
-	{
-		if(--npc.m_iOverlordComboAttack < 1)
-			npc.Anger = false;
-	}
-	else if(npc.m_iOverlordComboAttack > 99)
-	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			npc.Anger = true;
-			
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-			npc.FaceTowards(vecTarget, 30000.0);
-			
-			npc.PlayRangedSpecialAttackSecondarySound(vecTarget);
-			npc.AddGesture("ACT_METROPOLICE_POINT");
-			
-			npc.m_flDoingAnimation = gameTime + 0.9;
-			npc.m_flNextRangedAttackHappening = 0.0;
-			npc.m_bisWalking = false;
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-
-			float pos[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
-
-			int team = GetTeam(npc.index);
-			int entity = -1;
-			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
-			{
-				if(!b_NpcHasDied[entity] && GetTeam(entity) == team)
-				{
-					ApplyStatusEffect(npc.index, entity, "Godly Motivation", 16.0);
-					ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
-				}
-			}
-			
-			return;
-		}
-	}
-
-	if(npc.m_flNextRangedAttackHappening)
-	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-			npc.FaceTowards(vecTarget, 30000.0);
-			if(npc.m_flNextRangedAttackHappening < gameTime)
-			{
-				npc.m_flNextRangedAttackHappening = 0.0;
-				
-				float vPredictedPos[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 400.0, _,vPredictedPos);
-				npc.FireRocket(vPredictedPos, 1000.0, 400.0, "models/effects/combineball.mdl");
-				npc.PlayRangedSound();
-
-				Elemental_AddNervousDamage(npc.m_iTarget, npc.index, 200);
-			}
-		}
-	}
-	
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
-	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			
-		//Predict their pos.
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
-		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
-		}
-		else
-		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-		}
-		//Get position for just travel here.
-
-		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
-		{
-			npc.m_iState = -1;
-		}
-		else if(flDistanceToTarget < 160000 && npc.m_flNextRangedAttack < gameTime)
-		{
-			npc.m_iState = 1;
-		}
-		else 
-		{
-			npc.m_iState = 0; //stand and look if close enough.
-		}
-		
-		switch(npc.m_iState)
-		{
-			case -1:
-			{
-				return; //Do nothing.
-			}
-			case 0:
-			{
-				//Walk to target
-				if(!npc.m_bPathing)
-					npc.StartPathing();
-					
-				npc.m_bisWalking = true;
-				if(npc.m_iChanged_WalkCycle != 4)
-				{
-					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_CUSTOM_WALK_BOW");
-				}
-			}
-			case 1:
-			{			
-				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					npc.m_iTarget = Enemy_I_See;
-
-					npc.SetActivity("ACT_IDLE_PISTOL");
-					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-					npc.m_iChanged_WalkCycle = 5;
-
-					npc.m_flNextRangedAttackHappening = gameTime + 0.4;
-
-					npc.m_flDoingAnimation = gameTime + 0.7;
-					npc.m_flNextRangedAttack = gameTime + 1.0;
-
-					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
-				}
-			}
-		}
-	}
-
-	npc.PlayIdleSound();
 }
 
-public Action RaidbossBladedance_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action RaidbossBladedance_Duo_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
 
-	RaidbossBladedance npc = view_as<RaidbossBladedance>(victim);
+	RaidbossBladedance_Duo npc = view_as<RaidbossBladedance_Duo>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flHeadshotCooldown < gameTime)
 	{
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
-		if(!npc.Anger)
-			npc.m_iOverlordComboAttack++;
 	}
 
 	return Plugin_Changed;
 }
 
-public void RaidbossBladedance_NPCDeath(int entity)
+public void RaidbossBladedance_Duo_NPCDeath(int entity)
 {
-	Waves_ClearWave();
-
-	RaidbossBladedance npc = view_as<RaidbossBladedance>(entity);
+	RaidbossBladedance_Duo npc = view_as<RaidbossBladedance_Duo>(entity);
 	
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		
@@ -431,31 +304,6 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
 	WavesUpdateDifficultyName();
 	
-	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
-	{
-		CPrintToChatAll("{crimson}Bladedance{default}: You and Bob the first.. you both missunderstand who the enemy is.. its {white}Whiteflower{default} you fools! He betrayed {crimson}Guln{default} aswell!");
-		CPrintToChatAll("{crimson}Bladedance{default} escapes from you... and gains the ability to copy {crimson}you.");
-		for (int client = 0; client < MaxClients; client++)
-		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
-			{
-				Items_GiveNamedItem(client, "Bob's true fear");
-				CPrintToChat(client,"{default}This battle wasnt something that should have happend. You had little to no chance... This is... {red}''Bob's True fear.''{default}!");
-			}
-		}
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int entitynpc = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(IsValidEntity(entitynpc))
-			{
-				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
-				{
-					SmiteNpcToDeath(entitynpc);
-				}
-			}
-		}
-		ForcePlayerWin();
-	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	

@@ -71,7 +71,6 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		}
 		return;
 	}
-		
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 	{
 		HasRocketSteam[client] = false;
@@ -81,6 +80,17 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		h_TimerVictorianLauncherManagement[client] = CreateDataTimer(0.25, Timer_Management_Victoria, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+	if(i_WeaponArchetype[weapon] == 28)	// Victoria
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(h_TimerVictorianLauncherManagement[i])
+			{
+				ApplyStatusEffect(weapon, weapon, "Victorian Launcher's Call", 9999999.0);
+				Attributes_SetMulti(weapon, 99, 1.1);
+			}
+		}
 	}
 }
 
@@ -535,19 +545,26 @@ void CreateVictoriaEffect(int client)
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	TF2_AddCondition(client, TFCond_CritOnKill, 0.3);
 	StopSound(client, SNDCHAN_STATIC, "weapons/crit_power.wav");
-	if(!IsValidEntity(i_VictoriaParticle[client]))
+	if(During_Ability[client])
 	{
-		return;
+		int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+		if(!IsValidEntity(entity))
+		{
+			entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+			if(IsValidEntity(entity))
+			{
+				float flPos[3];
+				float flAng[3];
+				GetAttachment(entity, "eyeglow_l", flPos, flAng);
+				int particle = ParticleEffectAt(flPos, "eye_powerup_red_lvl_2", 0.0);
+				AddEntityToThirdPersonTransitMode(entity, particle);
+				SetParent(entity, particle, "eyeglow_l");
+				i_VictoriaParticle[client] = EntIndexToEntRef(particle);
+			}
+		}
 	}
-	DestroyVictoriaEffect(client);
-	
-	float flPos[3];
-	float flAng[3];
-	GetAttachment (client, "eyeglow_l", flPos, flAng);
-	int particle = ParticleEffectAt(flPos, "eye_powerup_red_lvl_2", 0.0);
-	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(client, particle, "eyeglow_l");
-	i_VictoriaParticle[client] = EntIndexToEntRef(particle);
+	else
+		DestroyVictoriaEffect(client);
 }
 void DestroyVictoriaEffect(int client)
 {

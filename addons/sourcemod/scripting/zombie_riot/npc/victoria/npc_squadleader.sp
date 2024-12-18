@@ -497,7 +497,7 @@ void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool 
 					{
 						if(i_NpcInternalId[entitycount] != NPCId) //They cannot buff eachother.
 						{
-							f_SquadLeaderBuff[entitycount] = GetGameTime() + 15.0; //allow buffing of players too if on red.
+							ApplyStatusEffect(npc.index, entitycount, "Squad Leader", 15.0);
 							//Buff this entity.
 							buffed_anyone = true;
 						}
@@ -547,59 +547,3 @@ void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool 
 		}
 	}
 }
-
-/*
-void VictorianCalltoArmsRange(int iNpc)
-{
-	b_NpcIsTeamkiller[iNpc] = true;
-	Explode_Logic_Custom(0.0,
-	iNpc,
-	iNpc,
-	-1,
-	_,
-	9999.0,
-	_,
-	_,
-	false,
-	99,
-	false,
-	_,
-	VictoriaCalltoArmsGiving);
-	b_NpcIsTeamkiller[iNpc] = false;
-}
-
-void VictoriaCalltoArmsGiving(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
-	{
-		f_SquadLeaderBuff[victim] = GetGameTime() + 1.0;
-	}
-}
-
-
-void VictoriaCalltoArmsGiving(int entity, int victim, float gameTime)
-{
-	if(entity == victim)
-		return;
-	
-	float pos1[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-	if(IsValidEntity(victim) && victim != entity && (!b_NpcHasDied[victim])) //Cannot buff self like this.
-	{
-		if(GetTeam(victim) == GetTeam(entity) && IsEntityAlive(victim))
-		{
-			static float pos2[3];
-			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
-			{
-				f_SquadLeaderBuff[victim] = GetGameTime() + 1.0;;
-			}
-		}
-	}
-	npc.PlayMeleeWarCry();
-}
-
-*/

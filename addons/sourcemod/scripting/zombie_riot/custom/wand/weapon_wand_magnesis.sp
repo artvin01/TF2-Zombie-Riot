@@ -89,8 +89,6 @@ static float Magnesis_DamageTakenWhileGrabbed[2049] = { 0.0, ... };
 static float Magnesis_DroppedAt[2049] = { 0.0, ... };
 static float Magnesis_GrabbedAt[2049] = { 0.0, ... };
 static float Magnesis_NextDrainTick[MAXPLAYERS + 1] = { 0.0, ... };
-static int Magnesis_GrabberTier[2049] = { 0, ... };
-static bool Magnesis_Strangled[2049] = { false, ... };
 static float Magnesis_GrabCost_Bucket[MAXPLAYERS + 1] = { 0.0, ... };
 
 static int Magnesis_GrabWeapon[MAXPLAYERS + 1] = { -1, ... };
@@ -109,6 +107,10 @@ public void Magnesis_ResetAll()
 	}
 }
 
+float MagnesisDamageBuff(int Tier)
+{
+	return Magnesis_Grab_Vulnerability[Tier];
+}
 #define SND_MAGNESIS_M1         	")weapons/shooting_star_shoot.wav"
 #define SND_MAGNESIS_M1_2			")weapons/bison_main_shot_01.wav"
 #define SND_MAGNESIS_M1_COLLIDE		")weapons/flare_detonator_explode_world.wav"
@@ -177,7 +179,6 @@ void Magnesis_OnKill(int victim)
 {
 	Newtonian_Airborne[victim] = false;
 	Magnesis_Grabbed[victim] = false;
-	Magnesis_Strangled[victim] = false;
 	Magnesis_DroppedAt[victim] = 0.0;
 	Magnesis_DamageTakenWhileGrabbed[victim] = 0.0;
 }
@@ -188,18 +189,6 @@ float Player_OnTakeDamage_Magnesis(int victim, float &damage, int attacker)
 	if (IsValidEnemy(victim, grabber) && grabber == attacker)
 	{
 		damage *= Magnesis_Resistance[Magnesis_Tier[victim]];
-	}
-
-	return damage;
-}
-
-public float Magnesis_StrangleDebuffMultiplier(int victim, float damage)
-{
-	if (Magnesis_Strangled[victim])
-		Magnesis_Strangled[victim] = false;
-	else
-	{
-		damage *= Magnesis_Grab_Vulnerability[Magnesis_GrabberTier[victim]];
 	}
 
 	return damage;
@@ -503,13 +492,20 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 
 		Magnesis_Tier[client] = tier;
 		Magnesis_Grabbed[victim] = true;
-		Magnesis_GrabberTier[victim] = tier;
 		Magnesis_GrabCost_Bucket[client] = 0.0;
 		Magnesis_GrabWeapon[client] = EntIndexToEntRef(weapon);
 		Magnesis_GrabbedAt[victim] = GetGameTime();
 		Magnesis_GrabTarget[client] = EntIndexToEntRef(victim);
 		Magnesis_NextDrainTick[client] = GetGameTime() + 0.1;
-		f_StrangleDebuff[victim] = GetGameTime() + 0.1;
+		switch(tier)
+		{
+			case 1:
+				ApplyStatusEffect(client, victim, "Stranglation I", 0.1);
+			case 2:
+				ApplyStatusEffect(client, victim, "Stranglation II", 0.1);
+			case 3:
+				ApplyStatusEffect(client, victim, "Stranglation III", 0.1);
+		}
 		float cd = Magnesis_Grab_Cooldown_Normal[tier];
 		if (b_thisNpcIsARaid[victim])
 			cd = Magnesis_Grab_Cooldown_Raids[tier];
@@ -648,8 +644,16 @@ public void Magnesis_Logic(DataPack pack)
 		if (dmg > 0.0)
 		{
 			dmg *= Attributes_Get(weapon, 410, 1.0);
-			Magnesis_Strangled[target] = true;
-			f_StrangleDebuff[target] = GetGameTime() + 0.1;
+			dmg *= ((MagnesisDamageBuff(Magnesis_Tier[client]) -1.0) * -1.0);
+			switch(Magnesis_Tier[client])
+			{
+				case 1:
+					ApplyStatusEffect(client, target, "Stranglation I", 0.1);
+				case 2:
+					ApplyStatusEffect(client, target, "Stranglation II", 0.1);
+				case 3:
+					ApplyStatusEffect(client, target, "Stranglation III", 0.1);
+			}
 			SDKHooks_TakeDamage(target, client, client, dmg, _, weapon, _, _, false);
 		}
 	}

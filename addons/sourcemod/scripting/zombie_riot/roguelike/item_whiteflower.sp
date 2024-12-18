@@ -248,6 +248,8 @@ public void Rogue_SoulTerraria_Weapon(int entity, int client)
 	if(StrContains(buffer, "Fractured Ark", false) != -1 ||
 		StrContains(buffer, "Ark of the ", false) != -1 ||
 		StrContains(buffer, "Repaired Ark", false) != -1 ||
+		StrContains(buffer, "Star Shooter", false) != -1 ||
+		StrContains(buffer, "Super Star Shooter", false) != -1 ||
 		StrContains(buffer, "Tinker's Wrench", false) != -1)
 	{
 		AnnounceSoulBuff(client, entity, 5);
@@ -379,7 +381,7 @@ public void Rogue_RottenBone_Remove()
 
 public void Rogue_Silence30_Enemy(int entity)
 {
-	NpcStats_SilenceEnemy(entity, 10.0);
+	ApplyStatusEffect(entity, entity, "Silenced", 30.0);
 }
 
 public void Rogue_CopperOre_Weapon(int entity)

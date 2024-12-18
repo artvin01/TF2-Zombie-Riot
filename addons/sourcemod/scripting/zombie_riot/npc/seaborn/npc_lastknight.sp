@@ -455,9 +455,9 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 	}
 
 	gameTime = GetGameTime();
-	if(f_VeryLowIceDebuff[attacker] < gameTime)
+	if(!NpcStats_IsEnemyFrozen(attacker, 1) && !NpcStats_IsEnemyFrozen(attacker, 2) && !NpcStats_IsEnemyFrozen(attacker, 3))
 	{
-		f_VeryLowIceDebuff[attacker] = gameTime + (npc.m_iPhase ? 2.0 : 1.0);
+		ApplyStatusEffect(npc.index, attacker, "Freeze", (npc.m_iPhase ? 2.0 : 1.0));
 
 		if(IsValidEntity(weapon))
 		{
@@ -466,10 +466,9 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 				ApplyTempAttrib(weapon, 6, 1.2, npc.m_iPhase ? 2.0 : 1.0);
 		}
 	}
-	else if(f_LowIceDebuff[attacker] < gameTime)
+	else if(!NpcStats_IsEnemyFrozen(attacker, 2) && !NpcStats_IsEnemyFrozen(attacker, 3))
 	{
-		f_LowIceDebuff[attacker] = f_VeryLowIceDebuff[attacker];
-		f_VeryLowIceDebuff[attacker] += (npc.m_iPhase ? 2.0 : 1.0);
+		ApplyStatusEffect(npc.index, attacker, "Cryo", (npc.m_iPhase ? 2.0 : 1.0));
 
 		if(IsValidEntity(weapon))
 		{
@@ -478,12 +477,8 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 				ApplyTempAttrib(weapon, 6, 1.2, npc.m_iPhase ? 2.0 : 1.0);
 		}
 	}
-	else if(f_HighIceDebuff[attacker] < gameTime)
+	else if(!NpcStats_IsEnemyFrozen(attacker, 3))
 	{
-		f_HighIceDebuff[attacker] = f_LowIceDebuff[attacker];
-		f_LowIceDebuff[attacker] += (npc.m_iPhase ? 2.0 : 1.0);
-		f_VeryLowIceDebuff[attacker] += (npc.m_iPhase ? 2.0 : 1.0);
-
 		if(IsValidEntity(weapon))
 		{
 			char buffer[36];
@@ -494,17 +489,17 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 	else if(attacker > MaxClients)
 	{
 		if(!b_NpcHasDied[attacker] && f_TimeFrozenStill[attacker] < gameTime)
-			Cryo_FreezeZombie(attacker, npc.m_iPhase ? 1 : 0);
+			Cryo_FreezeZombie(npc.index, attacker, npc.m_iPhase ? 1 : 0);
 	}
 	else if(!TF2_IsPlayerInCondition(attacker, TFCond_Dazed))
 	{
-		TF2_StunPlayer(attacker, f_HighIceDebuff[attacker] - gameTime, 0.8, TF_STUNFLAG_SLOWDOWN);
+		TF2_StunPlayer(attacker, 3.0, 0.8, TF_STUNFLAG_SLOWDOWN);
 
 		if(IsValidEntity(weapon))
 		{
 			char buffer[36];
 			if(GetEntityClassname(weapon, buffer, sizeof(buffer)) && !StrContains(buffer, "tf_weap"))
-				ApplyTempAttrib(weapon, 6, 1.4, f_HighIceDebuff[attacker] - gameTime);
+				ApplyTempAttrib(weapon, 6, 1.4, 3.0);
 		}
 	}
 }
