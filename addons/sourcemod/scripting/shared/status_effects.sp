@@ -2199,7 +2199,7 @@ int CasinoDebuffIndex;
 void StatusEffects_CasinoDebuff()
 {
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Gambler's Ruin");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Gambler's Ruin Total");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "$");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused

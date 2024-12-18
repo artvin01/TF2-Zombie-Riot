@@ -329,7 +329,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 		NpcStats_CasinoDebuffStengthen(victim, CasinoDebuffDamage[attacker]);
 		if(CryoEasy)
 		{
-			ApplyStatusEffect(attacker, victim, "Gambler's Ruin", 1.5);
+			ApplyStatusEffect(attacker, victim, "Gambler's Ruin Total", 1.5);
 			i_CryoShot[attacker] -= 1;
 		}
 	}

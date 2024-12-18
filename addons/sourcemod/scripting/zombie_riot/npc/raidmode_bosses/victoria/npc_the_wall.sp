@@ -754,7 +754,7 @@ static void Internal_ClotThink(int iNPC)
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
 						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
 						LifeSupportDevice[npc.index][I_cant_do_this_all_day[npc.index]-1] = spawn_index;
-						MechanizedProtector[npc.index][I_cant_do_this_all_day[npc.index]-1] = ConnectWithBeam(npc.index, spawn_index, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
+						MechanizedProtector[npc.index][I_cant_do_this_all_day[npc.index]-1] = EntIndexToEntRef(ConnectWithBeam(npc.index, spawn_index, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM));
 						TeleportDiversioToRandLocation(spawn_index,_,2500.0, 1750.0);
 						npc.PlayTeleportSound();
 					}
