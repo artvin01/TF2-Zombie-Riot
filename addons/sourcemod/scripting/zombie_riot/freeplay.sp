@@ -519,7 +519,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 80;
+		rand = GetURandomInt() % 81;
 	
 	char message[128];
 	switch(rand)
@@ -1210,7 +1210,7 @@ void Freeplay_SetupStart(bool extra = false)
 				return;
 			}
 			ElementalEnabled = true;
-			ElementalAdd = GetRandomInt(0, 6)
+			ElementalAdd = GetRandomInt(0, 6);
 			switch(ElementalAdd)
 			{
 				case 1:
