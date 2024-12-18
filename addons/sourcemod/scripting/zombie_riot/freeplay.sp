@@ -283,19 +283,19 @@ void Freeplay_SpawnEnemy(int entity)
 		f_PernellBuff[entity] = GetGameTime() + 15.0;
 	
 	if(IceDebuff > 2)
-		f_HighIceDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Near Zero", FAR_FUTURE);
 	
 	if(IceDebuff > 1)
-		f_LowIceDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Cryo", FAR_FUTURE);
 	
 	if(IceDebuff > 0)
-		f_VeryLowIceDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Freeze", FAR_FUTURE);
 	
 	if(TeslarDebuff > 1)
-		f_HighTeslarDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Teslar Electricution", FAR_FUTURE);
 	
 	if(TeslarDebuff > 0)
-		f_LowTeslarDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Teslar Shock", FAR_FUTURE);
 	
 	if(FusionBuff > 1)
 		f_EmpowerStateSelf[entity] = FAR_FUTURE;
@@ -311,7 +311,7 @@ void Freeplay_SpawnEnemy(int entity)
 	
 	if(CrippleDebuff > 0)
 	{
-		f_CrippleDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Cripple", 9999999.9);
 		CrippleDebuff--;
 	}
 	

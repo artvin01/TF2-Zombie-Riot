@@ -328,7 +328,7 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 
 			// Jaye: Silence Effect
 			if(!MerchantEffect[attacker])
-				NpcStats_SilenceEnemy(victim, MerchantLevel[attacker] > 3 ? 2.0 : 1.0);
+				ApplyStatusEffect(attacker, victim, "Silenced", MerchantLevel[attacker] > 3 ? 2.0 : 1.0);
 		}
 		case Merchant_Nothing:
 		{
@@ -339,9 +339,7 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 				// Nothing: Debuff Effect
 				if(MerchantEffect[attacker] == Nothing_Debuff)
 				{
-					float time = gameTime + 2.5;
-					if(f_CrippleDebuff[victim] < time)
-						f_CrippleDebuff[victim] = time;
+					ApplyStatusEffect(attacker, victim, "Cripple", 2.5);
 				}
 
 				// Nothing: Stun Effect

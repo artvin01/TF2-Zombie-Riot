@@ -381,7 +381,7 @@ public void Rogue_RottenBone_Remove()
 
 public void Rogue_Silence30_Enemy(int entity)
 {
-	NpcStats_SilenceEnemy(entity, 10.0);
+	ApplyStatusEffect(entity, entity, "Silenced", 30.0);
 }
 
 public void Rogue_CopperOre_Weapon(int entity)

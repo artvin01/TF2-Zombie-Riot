@@ -402,8 +402,8 @@ public void Cryo_FreezeZombie(int client, int zombie, float damage, int weapon)
 		SetEntityRenderColor(zombie, 0, 0, 255, 255, false, false, true);
 		float position[3];
 		GetEntPropVector(zombie, Prop_Data, "m_vecAbsOrigin", position);
-
-		f_HighIceDebuff[zombie] = GetGameTime() + (8.0 + FreezeDuration);
+		
+		ApplyStatusEffect(client, zombie, "Near Zero", 8.0 + FreezeDuration);
 
 		//Un-comment the following line if you want a particle to appear on frozen zombies:
 		//int particle = ParticleEffectAt(position, CRYO_FREEZE_PARTICLE, Cryo_FreezeDuration);

@@ -504,7 +504,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 				ElementDamage[victim][Element_Cyro] = 0;
 				f_ArmorCurrosionImmunity[victim][Element_Cyro] = GetGameTime() + (9.5 + (type * 0.5));
 
-				Cryo_FreezeZombie(victim, type);
+				Cryo_FreezeZombie(attacker, victim, type);
 			}
 		}
 	}

@@ -181,7 +181,7 @@ public void SeabornSniper_ClotThink(int iNPC)
 						
 						if(!NpcStats_IsEnemySilenced(npc.index))
 						{
-							NpcStats_SilenceEnemy(npc.index, 20.0);
+							ApplyStatusEffect(npc.index, npc.index, "Silenced", 20.0);
 
 							if(target > MaxClients)
 							{

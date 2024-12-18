@@ -416,7 +416,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		value = Attributes_Get(weapon, 218, 0.0);	// mark for death
 		if(value)
 		{
-			NpcStats_SilenceEnemy(victim, value);
+			ApplyStatusEffect(client, victim, "Silenced", value);
 		}
 
 		/*

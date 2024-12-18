@@ -179,7 +179,6 @@ void Magnesis_OnKill(int victim)
 {
 	Newtonian_Airborne[victim] = false;
 	Magnesis_Grabbed[victim] = false;
-	Magnesis_Strangled[victim] = false;
 	Magnesis_DroppedAt[victim] = 0.0;
 	Magnesis_DamageTakenWhileGrabbed[victim] = 0.0;
 }

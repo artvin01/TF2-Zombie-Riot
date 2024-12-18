@@ -87,7 +87,7 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		{
 			if(h_TimerVictorianLauncherManagement[i])
 			{
-				b_WeaponSpecificClassBuff[weapon][4] = true;
+				ApplyStatusEffect(weapon, weapon, "Victorian Launcher's Call", 9999999.0);
 				Attributes_SetMulti(weapon, 99, 1.1);
 			}
 		}

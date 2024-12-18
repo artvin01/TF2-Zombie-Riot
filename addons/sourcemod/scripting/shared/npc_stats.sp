@@ -1447,14 +1447,6 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		if(!Is_Boss && !b_CannotBeSlowed[this.index]) //Make sure that any slow debuffs dont affect these.
 		{
-			if(f_MaimDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.35;
-			}
-			if(f_PotionShrinkEffect[this.index] > Gametime)
-			{
-				speed_for_return *= 0.35;
-			}
 			if(f_PassangerDebuff[this.index] > Gametime)
 			{
 #if defined ZR
@@ -1476,20 +1468,11 @@ methodmap CClotBody < CBaseCombatCharacter
 				}
 			}
 #endif
-			if(this.m_fHighTeslarDebuff > Gametime)
-			{
-				speed_for_return *= 0.65;
-			}
-			else if(this.m_fLowTeslarDebuff > Gametime)
-			{
-				speed_for_return *= 0.75;
-			}
 
 			if(f_SpecterDyingDebuff[this.index] > Gametime)
 			{
 				speed_for_return *= 0.4;
 			}
-			
 			else if (f_LudoDebuff[this.index] > Gametime)
 			{
 				speed_for_return *= GetRandomFloat(0.7, 0.9);
@@ -1513,35 +1496,11 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				speed_for_return *= 0.9;
 			}
-			if(f_MaimDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.9;
-			}
 			if(f_PotionShrinkEffect[this.index] > Gametime)
 			{
 				speed_for_return *= 0.5;
 			}
 			
-			if(f_HighIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.95;
-			}
-			else if(f_LowIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.96;
-			}
-			else if (f_VeryLowIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.97;
-			}
-			else if (f_LudoDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.96;
-			}
-			else if (f_SpadeLudoDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.94;
-			}
 			if(f_SpecterDyingDebuff[this.index] > Gametime)
 			{
 				speed_for_return *= 0.75;
@@ -8462,20 +8421,14 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_IberiaMarked[entity] = 0.0;
-	f_HighTeslarDebuff[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
 	f_SpecterDyingDebuff[entity] = 0.0;
-	f_VeryLowIceDebuff[entity] = 0.0;
-	f_LowIceDebuff[entity] = 0.0;
-	f_HighIceDebuff[entity] = 0.0;
 	b_Frozen[entity] = false;
 	b_NoGravity[entity] = false;
 	f_TankGrabbedStandStill[entity] = 0.0;
 	f_TimeFrozenStill[entity] = 0.0;
 	f_BuildingAntiRaid[entity] = 0.0;
-	f_MaimDebuff[entity] = 0.0;
 	f_PassangerDebuff[entity] = 0.0;
-	f_CrippleDebuff[entity] = 0.0;
 	f_GoldTouchDebuff[entity] = 0.0;
 	f_StrangleDebuff[entity] = 0.0;
 	f_CudgelDebuff[entity] = 0.0;
@@ -9114,20 +9067,13 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 #if defined ZR
 void NPCStats_RemoveAllDebuffs(int enemy)
 {
-	f_HighTeslarDebuff[enemy] = 0.0;
-	f_LowTeslarDebuff[enemy] = 0.0;
 	f_LudoDebuff[enemy] = 0.0;
 	f_SpadeLudoDebuff[enemy] = 0.0;
 	IgniteFor[enemy] = 0;
-	f_HighIceDebuff[enemy] = 0.0;
-	f_LowIceDebuff[enemy] = 0.0;
-	f_VeryLowIceDebuff[enemy] = 0.0;
 	f_WidowsWineDebuff[enemy] = 0.0;
-	f_CrippleDebuff[enemy] = 0.0;
 	f_GoldTouchDebuff[enemy] = 0.0;
 	f_StrangleDebuff[enemy] = 0.0;
 	f_CudgelDebuff[enemy] = 0.0;
-	f_MaimDebuff[enemy] = 0.0;
 	f_PotionShrinkEffect[enemy] = 0.0;
 	f_EnfeebleEffect[enemy] = 0.0;
 	f_LeeMinorEffect[enemy] = 0.0;

@@ -31,7 +31,7 @@ void ResetFlameTail()
 	//begone!
 	for(int client; client <= MaxClients; client++)
 	{
-		if(IsValidClients(client))
+		if(IsValidClient(client))
 		{
 			if(IsValidEntity(WeaponRef[client]) && (WeaponLevel[client] == 3 || WeaponLevel[client] == 4))
 			{

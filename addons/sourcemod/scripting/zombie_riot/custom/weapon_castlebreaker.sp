@@ -227,7 +227,7 @@ public void Enable_CastleBreakerWeapon(int client, int weapon) // Enable managem
 		{
 			if(h_TimerCastleBreakerWeaponManagement[i])
 			{
-				b_WeaponSpecificClassBuff[weapon][3] = true;
+				ApplyStatusEffect(weapon, weapon, "Castle Breaking Power", 9999999.0);
 				Attributes_SetMulti(weapon, 621, 1.1);
 			}
 		}

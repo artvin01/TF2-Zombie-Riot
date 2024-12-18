@@ -176,7 +176,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 								if(flDistanceToTarget < 90000)
 								{
 									ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
-									f_WidowsWineDebuff[baseboss_index] = GameTime + FL_WIDOWS_WINE_DURATION;
+									ApplyStatusEffect(victim, baseboss_index, "Widows Wine", FL_WIDOWS_WINE_DURATION);
 								}
 							}
 						}
@@ -534,23 +534,7 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 	if(MoraleBoostLevelAt(attacker) > 0)
 		damage += basedamage * (EntityMoraleBoostReturn(attacker, 2) * DamageBuffExtraScaling);
 #endif
-	if(f_EmpowerStateOther[attacker] > GameTime)
-		damage += basedamage * (0.1 * DamageBuffExtraScaling);
-	
-	if(f_EmpowerStateSelf[attacker] > GameTime)
-		damage += basedamage * (0.15 * DamageBuffExtraScaling);
-	
-	if(f_BuffBannerNpcBuff[attacker] > GameTime)
-		damage += basedamage * (0.25 * DamageBuffExtraScaling);
 
-	if(f_BobDuckBuff[attacker] > GameTime)
-		damage += basedamage * (0.25 * DamageBuffExtraScaling);
-		
-
-	#if defined RUINA_BASE
-		if(f_Ruina_Attack_Buff[attacker] > GameTime)
-			damage += basedamage * (f_Ruina_Attack_Buff_Amt[attacker] * DamageBuffExtraScaling);	//x% dmg bonus			
-	#endif
 
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
@@ -591,33 +575,6 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float &
 		}
 	}
 	StatusEffect_OnTakeDamage_DealNegative(victim, attacker, damage, damagetype);
-	float DamageRes = 1.0;
-	if(f_PotionShrinkEffect[attacker] > GameTime)
-	{
-		DamageRes *= 0.75;
-	}
-
-	if(f_LeeSuperEffect[attacker] > GameTime)
-	{
-		DamageRes *= 0.85;
-	}
-	else if(f_LeeMajorEffect[attacker] > GameTime)
-	{
-		DamageRes *= 0.9;
-	}
-	else if(f_LeeMinorEffect[attacker] > GameTime)
-	{
-		DamageRes *= 0.95;
-	}
-
-	//if inflictor is 9999999, then that means its called by seperate code, HUD elements.
-	if(RaidbossIgnoreBuildingsLogic(1) && (GetTeam(victim) == TFTeam_Red))
-	{
-		//invert, then convert!
-		float NewRes = 1.0 + ((DamageRes - 1.0) * PlayerCountResBuffScaling);
-		DamageRes = NewRes;
-	}
-	damage *= DamageRes;	
 #endif	//zr
 	return false;
 }
@@ -1246,7 +1203,7 @@ static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflict
 			EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 60, _, 1.0);
 
 			damage *= 0.5;
-			f_WidowsWineDebuff[attacker] = GameTime + FL_WIDOWS_WINE_DURATION_NPC;
+			ApplyStatusEffect(attacker, attacker, "Widows Wine", FL_WIDOWS_WINE_DURATION_NPC);
 		}
 	}
 }

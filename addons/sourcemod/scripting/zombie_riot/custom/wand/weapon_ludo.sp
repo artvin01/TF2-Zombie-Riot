@@ -1557,11 +1557,11 @@ public void Weapon_Ludo_WandTouch(int entity, int target)
 			{
 				case 1:
 				{
-					NpcStats_SilenceEnemy(target, 10.0);
+					ApplyStatusEffect(attacker, target, "Silenced", 10.0);
 				}
 				case 2:
 				{
-					NpcStats_SilenceEnemy(target, 15.0);
+					ApplyStatusEffect(attacker, target, "Silenced", 15.0);
 				}
 			}
 			switch(EighthDebuff[owner])
