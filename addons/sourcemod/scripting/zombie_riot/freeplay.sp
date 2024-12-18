@@ -122,6 +122,7 @@ Action Freeplay_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 				case 6:
 				{
 					StartBleedingTimer_Against_Client(victim, attacker, 10.0, 5);
+					TF2_IgnitePlayer(victimt, attacker, 5.0);
 				}
 				default:
 				{
