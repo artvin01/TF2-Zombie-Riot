@@ -757,7 +757,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.SetPlaybackRate(1.0);
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_iChanged_WalkCycle = 0;
-					f_VictorianCallToArms[npc.index] = GetGameTime(npc.index) + 999.0;
+					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 					
 					npc.m_flSpeed = 300.0;
 					if(IsValidEntity(npc.m_iWearable8))
@@ -1791,7 +1791,7 @@ static bool Victoria_Support(Harrison npc)
 			TE_SendToAll();
 			if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0))
 			{
-				Vs_ParticleSpawned[enemy[i]] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+				Vs_ParticleSpawned[enemy[i]] = EntIndexToEntRef(ParticleEffectAt(position, "kartimpacttrail", 2.0));
 				SetEdictFlags(Vs_ParticleSpawned[enemy[i]], (GetEdictFlags(Vs_ParticleSpawned[enemy[i]]) | FL_EDICT_ALWAYS));
 				Vs_IncomingBoom=true;
 			}
@@ -1802,7 +1802,7 @@ static bool Victoria_Support(Harrison npc)
 			position[0] = Vs_Temp_Pos[enemy[i]][0];
 			position[1] = Vs_Temp_Pos[enemy[i]][1];
 			position[2] = Vs_Temp_Pos[enemy[i]][2] - 100.0;
-			TeleportEntity(Vs_ParticleSpawned[enemy[i]], position, NULL_VECTOR, NULL_VECTOR);
+			TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[enemy[i]]), position, NULL_VECTOR, NULL_VECTOR);
 			position[2] += 100.0;
 			
 			b_ThisNpcIsSawrunner[npc.index] = true;

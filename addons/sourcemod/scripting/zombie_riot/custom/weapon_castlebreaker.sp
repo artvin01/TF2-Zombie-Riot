@@ -227,8 +227,8 @@ public void Enable_CastleBreakerWeapon(int client, int weapon) // Enable managem
 		{
 			if(h_TimerCastleBreakerWeaponManagement[i])
 			{
-				b_WeaponSpecificClassBuff[weapon][3] = true;
-				Attributes_SetMulti(weapon, 621, 1.1);
+				ApplyStatusEffect(weapon, weapon, "Castle Breaking Power", 9999999.0);
+				Attributes_SetMulti(weapon, 2, 1.1);
 			}
 		}
 	}
@@ -292,13 +292,10 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 		float spawnLoc[3];
 		float BaseDMG = 200.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
-		BaseDMG *= Attributes_Get(weapon, 621, 1.0);
-		float Radius = EXPLOSION_RADIUS;
-		Radius *= Attributes_Get(weapon, 99, 1.0);
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 
-		Explode_Logic_Custom(BaseDMG, attacker, attacker, weapon, position, Radius, Falloff);
+		Explode_Logic_Custom(BaseDMG, attacker, attacker, weapon, position, _, Falloff);
 		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime(weapon)+1.2);
 		SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime(attacker)+1.2);
 		

@@ -393,71 +393,7 @@ public void MedivalMonk_ClotThink(int iNPC)
 
 	npc.PlayIdleSound();
 }
-/*
-void HussarAOEBuff(MedivalMonk npc, float gameTime)
-{
-	float pos1[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-	if(npc.m_flAttackHappens_bullshit < gameTime)
-	{
-		bool buffed_anyone;
-		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-		{
-			if(IsValidEntity(entitycount) && entitycount != npc.index && (entitycount <= MaxClients || !b_NpcHasDied[entitycount])) //Cannot buff self like this.
-			{
-				if(GetEntProp(entitycount, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(entitycount))
-				{
-					static float pos2[3];
-					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
-					{
-						if(i_NpcInternalId[entitycount] != MEDIVAL_HUSSAR) //Hussars cannot buff eachother.
-						{
-							f_HussarBuff[entitycount] = GetGameTime() + 5.0; //allow buffing of players too if on red.
-							//Buff this entity.
-							buffed_anyone = true;	
-						}
-					}
-				}
-			}
-		}
-		if(buffed_anyone)
-		{
-			npc.m_flAttackHappens_bullshit = gameTime + 10.0;
-			f_HussarBuff[npc.index] = GetGameTime() + 5.0;
-			static int r;
-			static int g;
-			static int b ;
-			static int a = 255;
-			if(b_Is_Blue_Npc[npc.index])
-			{
-				r = 125;
-				g = 125;
-				b = 255;
-			}
-			else
-			{
-				r = 255;
-				g = 125;
-				b = 125;
-			}
-			static float UserLoc[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", UserLoc);
-			spawnRing(npc.index, MONK_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.0, 6.0, 6.1, 1);
-			spawnRing(npc.index, MONK_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.8, 6.0, 6.1, 1);
-			spawnRing(npc.index, MONK_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.7, 6.0, 6.1, 1);
-			spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.75, 12.0, 6.1, 1, MONK_MAXRANGE * 2.0);		
-			f3_PlaceLocated[npc.index] = UserLoc;
-			
-			npc.PlayMeleeWarCry();
-		}
-		else
-		{
-			npc.m_flAttackHappens_bullshit = gameTime + 1.0; //Try again in a second.
-		}
-	}
-}
-*/
+
 void MonkSelfDefense(MedivalMonk npc, float gameTime)
 {
 	if(npc.m_flGetClosestTargetTime < gameTime)

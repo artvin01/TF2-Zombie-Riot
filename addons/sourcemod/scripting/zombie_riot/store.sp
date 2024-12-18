@@ -3596,6 +3596,9 @@ static void MenuPage(int client, int section)
 
 			FormatEx(buffer, sizeof(buffer), "%t", "Encyclopedia");
 			menu.AddItem("-13", buffer);
+
+			FormatEx(buffer, sizeof(buffer), "%t", "Status Effect List");
+			menu.AddItem("-100", buffer);
 /*
 			zr_tagblacklist.GetString(buffer, sizeof(buffer));
 			if(StrContains(buffer, "private", false) == -1)
@@ -3896,6 +3899,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -13:
 					{
 						Items_EncyclopediaMenu(client);
+					}
+					case -100:
+					{
+						Items_StatusEffectListMenu(client);
 					}
 					case -14:
 					{
@@ -5927,10 +5934,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || i_IsWandWeapon[entity])
 		{
 			Attributes_Set(entity, 49, 1.0);
-		}
-		for(int i; i < sizeof(b_WeaponSpecificClassBuff[]); i++)
-		{
-			b_WeaponSpecificClassBuff[entity][i] = false;
 		}
 
 		SkillTree_GiveItem(client, entity);

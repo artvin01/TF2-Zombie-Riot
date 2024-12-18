@@ -196,7 +196,7 @@ void HolyLightAoeHealInternal(int entity, int victim, float damage, int weapon)
 		if(b_WasMagicFocus[entity])
 		{
 			HealEntityGlobal(entity, victim, f_HealAmount[entity] * 0.1, 1.0, 5.0, HEAL_NO_RULES);
-			f_EmpowerStateOther[victim] = GetGameTime() + 10.0;
+			ApplyStatusEffect(entity, victim, "Ally Empowerment", 10.0);
 		}
 	}
 }

@@ -842,7 +842,7 @@ public void Melee_LapplandArkTouch(int entity, int target)
 
 		if(f_LappLandAbilityActive[owner] < GetGameTime())
 		{
-			NpcStats_SilenceEnemy(target, LAPPLAND_SILENCE_DUR_NORMAL);
+			ApplyStatusEffect(owner, target, "Silenced", LAPPLAND_SILENCE_DUR_NORMAL);
 			i_LappLandHitsDone[owner] += 1;
 			if(i_LappLandHitsDone[owner] >= LAPPLAND_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 			{
@@ -1034,7 +1034,7 @@ float Npc_OnTakeDamage_LappLand(float damage ,int attacker, int damagetype, int 
 		{
 			if(f_LappLandAbilityActive[attacker] < GetGameTime())
 			{
-				NpcStats_SilenceEnemy(victim, LAPPLAND_SILENCE_DUR_NORMAL);
+				ApplyStatusEffect(attacker, victim, "Silenced", LAPPLAND_SILENCE_DUR_NORMAL);
 				i_LappLandHitsDone[attacker] += 2;
 				if(i_LappLandHitsDone[attacker] >= LAPPLAND_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 				{
@@ -1076,7 +1076,7 @@ void Weapon_Ark_SilenceAOE(int enemyStruck, float duration)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EnemyPos);
 			if (GetVectorDistance(EnemyPos, VictimPos, true) <= (LAPPLAND_AOE_SILENCE_RANGE_SQUARED))
 			{
-				NpcStats_SilenceEnemy(entity, duration);
+				ApplyStatusEffect(entity, entity, "Silenced", duration);
 			}
 		}
 	}
@@ -1167,7 +1167,7 @@ float Npc_OnTakeDamage_Quibai(float damage ,int attacker, int damagetype, int in
 			ChangeAttackspeedQuibai(attacker,weapon);
 			if(f_LappLandAbilityActive[attacker] < GetGameTime())
 			{
-				NpcStats_SilenceEnemy(victim, QUIBAI_SILENCE_DUR_NORMAL);
+				ApplyStatusEffect(attacker, victim, "Silenced", QUIBAI_SILENCE_DUR_NORMAL);
 				i_LappLandHitsDone[attacker] += 2;
 				if(i_LappLandHitsDone[attacker] >= QUIBAI_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 				{
@@ -1203,7 +1203,7 @@ public void Melee_QuibaiArkTouch(int entity, int target)
 
 		if(f_LappLandAbilityActive[owner] < GetGameTime())
 		{
-			NpcStats_SilenceEnemy(target, QUIBAI_SILENCE_DUR_NORMAL);
+			ApplyStatusEffect(owner, target, "Silenced", QUIBAI_SILENCE_DUR_NORMAL);
 			i_LappLandHitsDone[owner] += 1;
 			if(i_LappLandHitsDone[owner] >= QUIBAI_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 			{

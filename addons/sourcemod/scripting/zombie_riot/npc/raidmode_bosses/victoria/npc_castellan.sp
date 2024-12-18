@@ -775,7 +775,7 @@ static void Internal_ClotThink(int iNPC)
 				{
 					npc.PlayAngerSound();
 					npc.PlayAngerReaction();
-					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 					b_NpcIsInvulnerable[npc.index] = false;
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_bFUCKYOU = false;
@@ -863,7 +863,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 			f_TimeSinceHasBeenHurt = GetGameTime() + 36.0;
 			RaidModeTime += 900.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			SetEntityCollisionGroup(npc.index, 24);
 			SetTeam(npc.index, TFTeam_Red);
 			GiveProgressDelay(45.0);
@@ -900,7 +900,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_fbRangedSpecialOn)
 		{
 			I_cant_do_this_all_day[npc.index]=0;
-			f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+			ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			npc.m_bFUCKYOU=true;

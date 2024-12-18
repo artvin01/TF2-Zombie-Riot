@@ -100,9 +100,7 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 		
 		if(f_ChargeTerroriserSniper[weapon] > 70.0)
 		{
-			duration += GetGameTime();
-			if(duration > f_MaimDebuff[victim])
-				f_MaimDebuff[victim] = duration;
+			ApplyStatusEffect(attacker, victim, "Maimed", duration);
 		}
 	}
 
@@ -120,13 +118,10 @@ float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float 
 		
 		if(f_ChargeTerroriserSniper[weapon] > 70.0)
 		{
-			float time = GetGameTime();
-			if((duration + time) > f_MaimDebuff[victim])
-				f_MaimDebuff[victim] = (duration + time);
+			ApplyStatusEffect(attacker, victim, "Maimed", duration);
 			
 			duration *= 2.0;
-			if((duration + time) > f_CrippleDebuff[victim])
-				f_CrippleDebuff[victim] = (duration + time);
+			ApplyStatusEffect(attacker, victim, "Cripple", duration);
 		}
 	}
 	

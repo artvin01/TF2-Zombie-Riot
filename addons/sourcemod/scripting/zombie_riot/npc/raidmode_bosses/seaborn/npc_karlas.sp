@@ -840,9 +840,8 @@ static void Internal_ClotThink(int iNPC)
 
 			if(flDistanceToAlly < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 && Can_I_See_Enemy_Only(npc.index, Ally))
 			{
-				NPCStats_RemoveAllDebuffs(Ally);
-				f_NpcImmuneToBleed[Ally] = GetGameTime(Ally) + 1.0;
-				f_BattilonsNpcBuff[Ally] = GetGameTime(Ally) + 2.5;
+				NPCStats_RemoveAllDebuffs(Ally, 1.0);
+				ApplyStatusEffect(npc.index, Ally, "Battilons Backup", 2.5);
 			}
 
 			//Karlas_Teleport_Core(npc, PrimaryThreatIndex);
@@ -909,9 +908,8 @@ static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 			spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 			spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
-			NPCStats_RemoveAllDebuffs(Ally);
-			f_NpcImmuneToBleed[Ally] = GetGameTime(Ally) + 5.0;
-			f_HussarBuff[Ally] = GetGameTime(Ally) + 10.0;
+			NPCStats_RemoveAllDebuffs(Ally, 5.0);
+			ApplyStatusEffect(npc.index, Ally, "Hussar's Warscream", 10.0);
 			npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 30.0;
 
 			npc.PlayBuffSound();

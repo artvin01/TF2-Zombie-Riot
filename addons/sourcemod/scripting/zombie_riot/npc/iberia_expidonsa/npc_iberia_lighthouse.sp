@@ -481,7 +481,7 @@ int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 					damageDealt *= 5.5;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				NpcStats_IberiaMarkEnemy(target, 10.0);
+				ApplyStatusEffect(npc.index, target, "Marked", 10.0);
 			} 
 		}
 	}
@@ -597,7 +597,7 @@ int IberiaLighthouseCloseDefense(IberiaLighthouse npc, float gameTime)
 					damageDealt *= 5.5;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				NpcStats_IberiaMarkEnemy(target, 1.0);
+				ApplyStatusEffect(npc.index, target, "Marked", 1.0);
 			} 
 			npc.m_iTargetWalkTo = 0;
 		}

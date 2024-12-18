@@ -191,7 +191,7 @@ public void Doctor_ClotThink(int iNPC)
 			if(!ally.m_bLostHalfHealth)
 			{
 				ally.m_bLostHalfHealth = true;
-				f_PernellBuff[target] = GetGameTime() + 30.0;
+				ApplyStatusEffect(npc.index, target, "False Therapy", 30.0);
 				npc.AddGesture("ACT_SIGNAL");
 			}
 		}

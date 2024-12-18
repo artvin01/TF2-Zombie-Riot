@@ -1222,7 +1222,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(f_NpcImmuneToBleed[entity] > GetGameTime())
+	if(HasSpecificBuff(entity, "Hardened Aura"))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
@@ -1234,7 +1234,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
 	float DamageDeal = pack.ReadFloat();
-	if(f_ElementalAmplification[entity] > GetGameTime())
+	if(NpcStats_ElementalAmp(entity))
 	{
 		DamageDeal *= 1.15;
 	}

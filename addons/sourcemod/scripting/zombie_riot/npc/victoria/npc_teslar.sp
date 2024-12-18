@@ -284,13 +284,11 @@ void TeslarSelfDefense(Teslar npc, float gameTime, int target, float distance)
 						{
 							if(NpcStats_VictorianCallToArms(npc.index))
 							{
-								if(f_LowTeslarDebuff[target] - 7.5 < GetGameTime())
-								f_LowTeslarDebuff[target] = GetGameTime() + 7.5;
+								ApplyStatusEffect(npc.index, target, "Teslar Shock", 7.5);
 							}
 							else
 							{
-								if(f_LowTeslarDebuff[target] - 5.0 < GetGameTime())
-								f_LowTeslarDebuff[target] = GetGameTime() + 5.0;	
+								ApplyStatusEffect(npc.index, target, "Teslar Shock", 5.0);
 							}
 						}
 					}		

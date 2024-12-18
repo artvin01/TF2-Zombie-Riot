@@ -109,7 +109,7 @@ static float Elemental_BeforeExplodeHit(int attacker, int victim, float &damage,
 		damage *= 0.1;
 	}
 	HitAlreadyWithSame[attacker][victim] = true;
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		//double!
 		bool PlaySound = false;
@@ -607,7 +607,7 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 		Passanger_Lightning_Effect(StartLightningPos, EnemyVecPos, 1);
 	}
 	WorldSpaceCenter(target, StartLightningPos);
-	f_PassangerDebuff[target] = GetGameTime() + 0.3;
+	ApplyStatusEffect(client, target, "Electric Impairability", 0.3);
 	SDKHooks_TakeDamage(target, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
 	f_CooldownForHurtHud[client] = 0.0;
 	b_EntityHitByLightning[target] = true;
@@ -625,7 +625,7 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 				if(Firstlightning == false)
 					damage /= 0.5;
 			}
-			f_PassangerDebuff[enemy] = GetGameTime() + 0.3;
+			ApplyStatusEffect(client, enemy, "Electric Impairability", 0.3);
 			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
 			f_CooldownForHurtHud[client] = 0.0;
 			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecHit);

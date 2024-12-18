@@ -2909,6 +2909,7 @@ static bool Magia_Overflow(Twirl npc)
 	fl_magia_angle[npc.index] = GetRandomFloat(0.0, 360.0);
 
 	npc.m_bInKame = true;
+	NPCStats_RemoveAllDebuffs(npc.index);
 
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
@@ -2942,6 +2943,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 
 		return Plugin_Stop;
 	}
+	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 0.25);
 
 	npc.m_flSpeed = 0.0;	//DON'T MOVE
 

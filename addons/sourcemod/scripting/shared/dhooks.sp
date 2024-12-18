@@ -1843,10 +1843,10 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			SetGlobalTransTarget(owner);
 			PrintHintText(owner,"%N %t", target, "Is already at full hp");
 			
-			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
-			Increaced_Overall_damage_Low[target] = GameTime + 15.0;
-			Resistance_Overall_Low[owner] = GameTime + 5.0;
-			Resistance_Overall_Low[target] = GameTime + 15.0;
+			ApplyStatusEffect(owner, owner, 	"Healing Strength", 5.0);
+			ApplyStatusEffect(owner, target, 	"Healing Strength", 15.0);
+			ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
+			ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
 		}
 		else
 		{
@@ -1867,10 +1867,10 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 				
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			SetAmmo(owner, 21, new_ammo);
-			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
-			Increaced_Overall_damage_Low[target] = GameTime + 15.0;
-			Resistance_Overall_Low[owner] = GameTime + 5.0;
-			Resistance_Overall_Low[target] = GameTime + 15.0;
+			ApplyStatusEffect(owner, owner, 	"Healing Strength", 5.0);
+			ApplyStatusEffect(owner, target, 	"Healing Strength", 15.0);
+			ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
+			ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
 			for(int i; i<Ammo_MAX; i++)
 			{
 				CurrentAmmo[owner][i] = GetAmmo(owner, i);

@@ -56,7 +56,6 @@ static int RandomSeed;
 static ArrayList Brews;
 static ArrayList Crafts;
 static Handle BrewTimer;
-static float ExtraGameTime;
 
 enum struct CraftEnum
 {
@@ -78,7 +77,7 @@ enum struct CraftEnum
 
 static float GetGameTimeBrew()
 {
-	return GetGameTime() + ExtraGameTime;
+	return GetGameTime();
 }
 
 void BlacksmithBrew_RoundStart()
@@ -92,7 +91,6 @@ void BlacksmithBrew_RoundStart()
 	delete Brews;
 	delete Crafts;
 	delete BrewTimer;
-	ExtraGameTime = 0.0;
 	RandomSeed = GetURandomInt() / 2;
 }
 
@@ -131,6 +129,7 @@ static void CacheBrewer()
 	c.Add(Brew_502, A_Agility, A_Strength, A_Water);
 }
 
+/*
 bool BlacksmithBrew_HasEffect(int client, int index, float &duration)
 {
 	if(Brews)
@@ -154,7 +153,7 @@ bool BlacksmithBrew_HasEffect(int client, int index, float &duration)
 	
 	return false;
 }
-
+*/
 void BlacksmithBrew_ExtraDesc(int client, int weapon, bool first = false)
 {
 	if(Brews)
@@ -221,6 +220,7 @@ void BlacksmithBrew_Enable(int client, int weapon)
 				if(brew.AccountId == account && brew.StoreIndex == StoreWeapon[weapon])
 				{
 					brew.EntRef = EntIndexToEntRef(weapon);
+					ApplyStatusEffect(weapon, weapon, "Tinkering Curiosity", brew.EndAt - GetGameTime());
 
 					int attrib[TINKER_LIMIT];
 					float value[TINKER_LIMIT];
@@ -354,11 +354,7 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 		return Plugin_Stop;
 	}
 
-	if(Waves_InSetup())
-	{
-		ExtraGameTime -= 1.0;
-		return Plugin_Continue;
-	}
+
 
 	float gameTime = GetGameTimeBrew();
 	
@@ -367,6 +363,21 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 	for(int a; a < length; a++)
 	{
 		Brews.GetArray(a, brew);
+		if(Waves_InSetup())
+		{
+			brew.EndAt += 1.0;
+			if(brew.EntRef != -1)
+			{
+				int weapon = EntRefToEntIndex(brew.EntRef);
+				if(weapon != -1)
+				{
+					ApplyStatusEffect(weapon, weapon, "Crafted Potion", brew.EndAt - GetGameTime());
+
+				}
+			}
+			Brews.SetArray(a, brew);
+			continue;
+		}
 		if(brew.EndAt < gameTime)
 		{
 			if(brew.EntRef != -1)
