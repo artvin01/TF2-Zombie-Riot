@@ -91,7 +91,7 @@ void Freeplay_OnNPCDeath(int entity)
 	}
 }
 
-Action Freeplay_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+Action Freeplay_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
 	if(IsValidClient(victim))
 	{
