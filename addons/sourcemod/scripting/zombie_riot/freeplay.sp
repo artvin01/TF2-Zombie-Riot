@@ -1187,7 +1187,7 @@ void Freeplay_SetupStart(bool extra = false)
 				Freeplay_SetupStart();
 				return;
 			}
-			ExplodeNPCDamage = GetRandomInt(35, 175);
+			ExplodeNPCDamage = GetRandomInt(50, 250);
 			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death!");
 			ExplodingNPC = true;
 		}
