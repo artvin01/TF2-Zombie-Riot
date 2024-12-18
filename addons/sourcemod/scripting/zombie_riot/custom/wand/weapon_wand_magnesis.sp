@@ -497,7 +497,15 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 		Magnesis_GrabbedAt[victim] = GetGameTime();
 		Magnesis_GrabTarget[client] = EntIndexToEntRef(victim);
 		Magnesis_NextDrainTick[client] = GetGameTime() + 0.1;
-		f_StrangleDebuff[victim] = GetGameTime() + 0.1;
+		switch(tier)
+		{
+			case 1:
+				ApplyStatusEffect(client, victim, "Stranglation I", 0.1);
+			case 2:
+				ApplyStatusEffect(client, victim, "Stranglation II", 0.1);
+			case 3:
+				ApplyStatusEffect(client, victim, "Stranglation III", 0.1);
+		}
 		float cd = Magnesis_Grab_Cooldown_Normal[tier];
 		if (b_thisNpcIsARaid[victim])
 			cd = Magnesis_Grab_Cooldown_Raids[tier];
@@ -637,7 +645,15 @@ public void Magnesis_Logic(DataPack pack)
 		{
 			dmg *= Attributes_Get(weapon, 410, 1.0);
 			dmg *= ((MagnesisDamageBuff(Magnesis_Tier[client]) -1.0) * -1.0);
-			f_StrangleDebuff[target] = GetGameTime() + 0.1;
+			switch(Magnesis_Tier[client])
+			{
+				case 1:
+					ApplyStatusEffect(client, target, "Stranglation I", 0.1);
+				case 2:
+					ApplyStatusEffect(client, target, "Stranglation II", 0.1);
+				case 3:
+					ApplyStatusEffect(client, target, "Stranglation III", 0.1);
+			}
 			SDKHooks_TakeDamage(target, client, client, dmg, _, weapon, _, _, false);
 		}
 	}

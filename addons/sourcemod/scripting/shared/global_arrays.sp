@@ -349,16 +349,9 @@ float f_RaidStunResistance[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
 float f_BannerAproxDur[MAXENTITIES];
-float f_PassangerDebuff[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
-float f_CudgelDebuff[MAXENTITIES];
 float f_DuelStatus[MAXENTITIES];
-float f_EnfeebleEffect[MAXENTITIES];
-float f_LeeMinorEffect[MAXENTITIES];
-float f_LeeMajorEffect[MAXENTITIES];
-float f_LeeSuperEffect[MAXENTITIES];
-float f_LogosDebuff[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int i_RaidGrantExtra[MAXENTITIES];
@@ -403,7 +396,6 @@ int i_FreezeWearable[MAXENTITIES];
 int i_InvincibleParticle[MAXENTITIES];
 int i_InvincibleParticlePrev[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
-float f_SpecterDyingDebuff[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 

@@ -1036,8 +1036,6 @@ public void OnMapStart()
 	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);
-	Zero(f_CasinoDebuff);
-	Zero(f_CasinoDebuffValue);
 	Building_MapStart();
 #endif
 
@@ -1058,9 +1056,6 @@ public void OnMapStart()
 	Zero(f_ClientWasTooLongInsideHurtZoneStairs);
 	Zero(f_ClientWasTooLongInsideHurtZoneDamageStairs);
 	Zero(delay_hud);
-	Zero(Increaced_Overall_damage_Low);
-	Zero2(Adaptive_MedigunBuff);
-	Zero(Resistance_Overall_Low);
 	Zero(Increaced_Sentry_damage_Low);
 	Zero(Increaced_Sentry_damage_High);
 	Zero(Resistance_for_building_Low);
@@ -1465,8 +1460,6 @@ public void OnClientPutInServer(int client)
 	f_SquadLeaderBuff[client] = 0.0;
 	f_VictorianCallToArms[client] = 0.0;
 	f_CaffeinatorBuff[client] = 0.0;
-	f_Ocean_Buff_Stronk_Buff[client] = 0.0;
-	f_Ocean_Buff_Weak_Buff[client] = 0.0;
 #if defined RUINA_BASE
 	Ruina_Reset_Stats_Npc(client);
 #endif
@@ -2253,8 +2246,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_CustomWeaponEquipLogic[entity] = -1;
 		Resistance_for_building_High[entity] = 0.0;
 		Building_Mounted[entity] = 0;
-		f_CasinoDebuffValue[entity] = 0.0;
-		f_CasinoDebuff[entity] = 0.0;
 		BarracksEntityCreated(entity);
 #endif
 #if defined ZR || defined RPG
@@ -2277,12 +2268,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponVMTExtraSetting[entity] = -1;
 		i_WeaponBodygroup[entity] = -1;
 		i_WeaponFakeIndex[entity] = -1;
-		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
-		f_EnfeebleEffect[entity] = 0.0;
-		f_LeeMinorEffect[entity] = 0.0;
-		f_LeeMajorEffect[entity] = 0.0;
-		f_LeeSuperEffect[entity] = 0.0;
-		f_LogosDebuff[entity] = 0.0;
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 #if defined ZR
 		f_HealDelayParticle[entity] = 0.0;
@@ -2299,9 +2284,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		f_GodAlaxiosBuff[entity] = 0.0;
 		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;
-		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
 		b_NoKnockbackFromSources[entity] = false;
-		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
 #if defined ZR
 		i_CurrentEquippedPerk[entity] = 0;
 		i_CurrentEquippedPerkPreviously[entity] = 0;

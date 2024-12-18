@@ -2187,7 +2187,8 @@ public void Dungeon_Spawn_NormalEnemyBuffWF(int entity)
 
 public void Dungeon_Spawn_TempMegaBuff(int entity)
 {
-	f_BuffBannerNpcBuff[entity] = GetGameTime() + 5.0;
+	ApplyStatusEffect(entity, entity, "Buff Banner", 5.0);
+	ApplyStatusEffect(entity, entity, "Cudgelled", FAR_FUTURE);
 	f_BattilonsNpcBuff[entity] = GetGameTime() + 5.0;
 }
 

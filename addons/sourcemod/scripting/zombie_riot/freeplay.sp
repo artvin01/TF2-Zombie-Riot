@@ -304,20 +304,20 @@ void Freeplay_SpawnEnemy(int entity)
 		f_EmpowerStateOther[entity] = FAR_FUTURE;
 	
 	if(OceanBuff > 1)
-		f_Ocean_Buff_Stronk_Buff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Oceanic Scream", FAR_FUTURE);
 	
 	if(OceanBuff > 0)
-		f_Ocean_Buff_Weak_Buff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Oceanic Singing", FAR_FUTURE);
 	
 	if(CrippleDebuff > 0)
 	{
-		ApplyStatusEffect(entity, entity, "Cripple", 9999999.9);
+		ApplyStatusEffect(entity, entity, "Cripple", FAR_FUTURE);
 		CrippleDebuff--;
 	}
 	
 	if(CudgelDebuff > 0)
 	{
-		f_CudgelDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Cudgelled", FAR_FUTURE);
 		CudgelDebuff--;
 	}
 
@@ -333,11 +333,11 @@ void Freeplay_SpawnEnemy(int entity)
 	{
 		case 1:
 		{
-			Resistance_Overall_Low[entity] = FAR_FUTURE;
+			ApplyStatusEffect(entity, entity, "Healing Resolve", FAR_FUTURE);
 		}
 		case 2:
 		{
-			Increaced_Overall_damage_Low[entity] = FAR_FUTURE;
+			ApplyStatusEffect(entity, entity, "Healing Strength", FAR_FUTURE);
 		}
 		case 3:
 		{

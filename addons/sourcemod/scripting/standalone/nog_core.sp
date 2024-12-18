@@ -83,12 +83,6 @@ void GetHighDefTargets(CClotBody npc, int[] enemy, int count, bool respectTrace 
 				
 				if(f_HussarBuff[client] > gameTime)
 					defense++;
-				
-				if(Resistance_Overall_Low[client] > gameTime)
-					defense += 2;
-				
-				if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
-					defense += 4;
 
 				if(enemy[i])
 				{
@@ -137,9 +131,6 @@ void GetHighDefTargets(CClotBody npc, int[] enemy, int count, bool respectTrace 
 						if(fl_RangedArmor[entity] < 1.0)
 							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);
 
-						if(Resistance_Overall_Low[entity] > gameTime)
-							defense += 2;
-						
 						if(f_BattilonsNpcBuff[entity] > gameTime)
 							defense += 4;
 

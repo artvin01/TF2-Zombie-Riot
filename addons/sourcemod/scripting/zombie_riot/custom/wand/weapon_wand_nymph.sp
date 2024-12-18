@@ -165,8 +165,6 @@ void Weapon_Nymph_ProjectileTouch(int entity, int target)
 		float Dmg_Force[3];
 		CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 
-		// f_LogosDebuff[target] = GetGameTime() + 5.0;
-
 	 	Elemental_AddOsmosisDamage(target, owner, RoundToCeil(f_WandDamage[entity]* 0.75));
 
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	 // base projectile damage

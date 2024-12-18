@@ -342,7 +342,7 @@ void WinterArcticMageAllyHealInternal(int entity, int victim)
 		if(flHealth > flMaxHealth)
 		{
 			//super power!
-			f_BuffBannerNpcBuff[victim] = FAR_FUTURE;
+			ApplyStatusEffect(entity, victim, "Buff Banner", FAR_FUTURE);
 			f_BattilonsNpcBuff[victim] = FAR_FUTURE;
 		}
 	}

@@ -326,12 +326,8 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 	}
 	if(i_CryoShot[attacker] >= 1 && i_MegaShot[attacker] == 0)
 	{
-		if((f_CasinoDebuff[victim] - 1.4) < GetGameTime())
-		{
-			f_CasinoDebuff[victim] = GetGameTime() + 1.5;
-			NpcStats_CasinoDebuffStengthen(victim, CasinoDebuffDamage[attacker]);
-		}
-		if(CryoEasy == true)
+		NpcStats_CasinoDebuffStengthen(victim, CasinoDebuffDamage[attacker]);
+		if(CryoEasy)
 		{
 			i_CryoShot[attacker] -= 1;
 		}
@@ -986,7 +982,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 			{
 				case 0: 
 				{
-					CasinoDebuffDamage[client] = GetRandomFloat(0.5, 0.15);
+					CasinoDebuffDamage[client] = GetRandomFloat(0.05, 0.15);
 				}
 				case 1: 
 				{
@@ -996,7 +992,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					CasinoDebuffDamage[client] = GetRandomFloat(0.1, 0.2);
 				}
-				case 3: 
+				case 3, 4: 
 				{
 					CasinoDebuffDamage[client] = GetRandomFloat(0.15, 0.2);
 				}

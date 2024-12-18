@@ -185,7 +185,7 @@ public void SeabornSniper_ClotThink(int iNPC)
 
 							if(target > MaxClients)
 							{
-								f_WidowsWineDebuff[target] = GetGameTime() + 5.0;
+								ApplyStatusEffect(npc.index, target, "Widows Wine", 5.0);
 							}
 							else
 							{

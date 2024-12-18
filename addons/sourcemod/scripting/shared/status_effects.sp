@@ -135,6 +135,40 @@ void RemoveSpecificBuff(int owner, int victim, const char[] name)
 			delete E_AL_StatusEffects[victim];
 	}
 }
+
+//Got lazy, tired of doing so many indexs.
+bool HasSpecificBuff(int victim, const char[] name)
+{
+	int index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
+	if(index == -1)
+	{
+		CPrintToChatAll("{crimson} A DEV FUCKED UP!!!!!!!!! Name %s GET AN ADMIN RIGHT NOWWWWWWWWWWWWWW!^!!!!!!!!!!!!!!!!!!one111 (more then 0)",name);
+		LogError("ApplyStatusEffect A DEV FUCKED UP!!!!!!!!! Name %s",name);
+		return false;
+	}
+	E_StatusEffect Apply_StatusEffect;
+
+	int ArrayPosition;
+	if(E_AL_StatusEffects[victim])
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		ArrayPosition = E_AL_StatusEffects[victim].FindValue(index, E_StatusEffect::BuffIndex);
+		if(ArrayPosition != -1)
+		{
+			if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+			{
+				E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			}
+			else
+			{
+				return true;
+			}
+		}
+		if(E_AL_StatusEffects[victim].Length < 1)
+			delete E_AL_StatusEffects[victim];
+	}
+	return false;
+}
 void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration)
 {
 	int index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
@@ -694,6 +728,12 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 	//speed debuffs will now behave the excat same as damage buffs
 	if(SpeedWasNerfed)
 		SpeedModifPercentage -= (TotalSlowdown * Effectiveness);
+
+	//No magical backwards shit
+	if(SpeedModifPercentage <= 0.0)
+	{
+		SpeedModifPercentage = 0.0;
+	}
 }
 
 int LowTeslarIndex;
@@ -725,21 +765,34 @@ void StatusEffects_TeslarStick()
 	data.Slot						= 1;
 	data.SlotPriority				= 2;
 	HighTeslarIndex = StatusEffect_AddGlobal(data);
-/*
-	strcopy(data.BuffName, sizeof(data.BuffName), "Eno DEbuff give me shit");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Icon");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
-	data.DamageTakenMulti 			= 0.35;
+
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Specter's Aura");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₪");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
+	data.MovementspeedModif			= 0.6;
 	data.Positive 					= false;
-	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 0;
-	data.SlotPriority				= 0;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
-*/
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Electric Impairability");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ꝿ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.8;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
-// ApplyStatusEffect(npc.index, client, "Eno DEbuff give me shit", 5.0);
 
 stock bool NpcStats_IsEnemyTeslar(int victim, bool High)
 {
@@ -777,7 +830,7 @@ void StatusEffects_Ludo()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.10;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
+	data.MovementspeedModif			= 0.2;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -789,7 +842,7 @@ void StatusEffects_Ludo()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	data.DamageTakenMulti 			= 0.12;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
+	data.MovementspeedModif			= 0.22;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0;
@@ -841,8 +894,9 @@ void StatusEffects_Cryo()
 	data.SlotPriority				= 3;
 	Cryo3Index = StatusEffect_AddGlobal(data);
 
+	//elemental, shouldnt show here.
 	strcopy(data.BuffName, sizeof(data.BuffName), "Frozen");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "F");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	data.DamageTakenMulti 			= 0.15;
 	data.DamageDealMulti			= -1.0;
@@ -891,6 +945,7 @@ stock bool NpcStats_IsEnemyFrozen(int victim, int TierDo)
 	return false;
 }
 
+int ShrinkingStatusEffectIndex;
 void StatusEffects_PotionWand()
 {
 	StatusEffect data;
@@ -905,7 +960,7 @@ void StatusEffects_PotionWand()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	StatusEffect_AddGlobal(data);
+	ShrinkingStatusEffectIndex = StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Golden Curse");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⯏");
@@ -919,6 +974,29 @@ void StatusEffects_PotionWand()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+}
+
+stock bool NpcStats_IsEnemyShank(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return false;
+
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(ShrinkingStatusEffectIndex, E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_StatusEffect Apply_StatusEffect;
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+		}
+		else
+			return true;
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+
+	return false;
 }
 
 void StatusEffects_Enfeeble()
@@ -990,17 +1068,16 @@ float WidowsWine_SlowdownFunc(int victim, StatusEffect Apply_MasterStatusEffect,
 	float slowdown_amount = Apply_StatusEffect.TimeUntillOver - GetGameTime();
 	float max_amount = FL_WIDOWS_WINE_DURATION;
 	slowdown_amount = slowdown_amount / max_amount;
-	slowdown_amount -= 1.0;
-	slowdown_amount *= -1.0;
 
-	if(slowdown_amount < 0.8)
+	if(slowdown_amount > 0.8)
 	{
 		slowdown_amount = 0.8;
 	}
-	else if(slowdown_amount > 1.0)
+	else if(slowdown_amount < 0.0)
 	{
-		slowdown_amount = 1.0;
+		slowdown_amount = 0.0;
 	}
+	
 	return slowdown_amount;
 }
 
@@ -1188,9 +1265,6 @@ void StatusEffects_Silence()
 
 stock bool NpcStats_IsEnemySilenced(int victim)
 {
-	if(!IsValidEntity(victim))
-		return true; //they dont exist, pretend as if they are silenced.
-	
 	if(!E_AL_StatusEffects[victim])
 		return false;
 
@@ -1578,6 +1652,19 @@ void StatusEffects_SupportWeapons()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.25;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Battilons Backup");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "WIP");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.85;
+	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
@@ -2106,14 +2193,14 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Ulpianus' Seriousness");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "UL");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Specter's Aura");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₪");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
+	data.MovementspeedModif			= 0.6;
+	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.

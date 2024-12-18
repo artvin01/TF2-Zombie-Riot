@@ -559,7 +559,7 @@ void VictoriaCaffeinatorAOEBuff(VictorianCaffeinator npc, float gameTime)
 						f_CaffeinatorBuff[entitycount] = GetGameTime() + 2.6;
 						if(NpcStats_VictorianCallToArms(npc.index))
 						{
-							f_BuffBannerNpcBuff[entitycount] = GetGameTime() + 2.6;
+							ApplyStatusEffect(npc.index, entitycount, "Buff Banner", 2.6);
 						}
 					}
 				}

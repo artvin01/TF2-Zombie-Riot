@@ -547,8 +547,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				if(b_thisNpcIsARaid[victim])
 					time = 3.0;
 				
-				if(f_EnfeebleEffect[victim] < (GetGameTime() + time))
-					f_EnfeebleEffect[victim] =  (GetGameTime() + time);
+				ApplyStatusEffect(attacker, victim, "Enfeeble", time);
 			}
 		}
 	}

@@ -418,14 +418,11 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 						}
 
 						f_CombineCommanderBuff[entitycount] = GetGameTime() + DurationGive;
-						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + DurationGive;
+						ApplyStatusEffect(npc.index, entitycount, "Buff Banner", DurationGive);
 						f_BattilonsNpcBuff[entitycount] = GetGameTime() + DurationGive;
 						f_PernellBuff[entitycount] = GetGameTime() + DurationGive;
-						Adaptive_MedigunBuff[entitycount][0] = GetGameTime() + DurationGive;
-						Adaptive_MedigunBuff[entitycount][1] = GetGameTime() + DurationGive;
-						Adaptive_MedigunBuff[entitycount][2] = GetGameTime() + DurationGive;
-						Increaced_Overall_damage_Low[entitycount] = GetGameTime() + DurationGive;
-						Resistance_Overall_Low[entitycount] = GetGameTime() + DurationGive;
+						ApplyStatusEffect(npc.index, entitycount, "Healing Strength", DurationGive);
+						ApplyStatusEffect(npc.index, entitycount, "Healing Resolve", DurationGive);
 						f_EmpowerStateSelf[entitycount] = GetGameTime() + DurationGive;
 						f_EmpowerStateOther[entitycount] = GetGameTime() + DurationGive;
 					}

@@ -181,7 +181,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 						{
 							f_PernellBuff[ally.index] = GetGameTime() + 10.0;
 							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
-							f_BuffBannerNpcBuff[ally.index] = GetGameTime() + 7.0;
+							ApplyStatusEffect(npc.index, ally.index, "Buff Banner", 7.0);
 							float flMaxhealth = float(ReturnEntityMaxHealth(ally.index));
 							flMaxhealth *= 0.35;
 							HealEntityGlobal(ally.index, ally.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);

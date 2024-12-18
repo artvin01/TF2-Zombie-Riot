@@ -420,11 +420,11 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 				{
 					if(f_OceanBuffAbility[client] > GetGameTime())
 					{
-						f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
+						ApplyStatusEffect(client, ally, "Oceanic Scream", 0.21);
 					}
 					else 
 					{
-						f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
+						ApplyStatusEffect(client, ally, "Oceanic Singing", 0.21);
 					}
 				}
 			}
@@ -464,11 +464,11 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 				{
 					if(f_OceanBuffAbility[client] > GetGameTime())
 					{
-						f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
+						ApplyStatusEffect(client, ally, "Oceanic Scream", 0.21);
 					}
 					else 
 					{
-						f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
+						ApplyStatusEffect(client, ally, "Oceanic Singing", 0.21);
 					}
 				}
 			}

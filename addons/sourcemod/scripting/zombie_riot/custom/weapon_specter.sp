@@ -340,7 +340,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 							float flDistanceToTarget = GetVectorDistance(flPos, vecTarget, true);
 							if(flDistanceToTarget < (SPECTER_DEAD_RANGE * SPECTER_DEAD_RANGE))
 							{
-								f_SpecterDyingDebuff[baseboss_index] = GetGameTime() + 1.0;
+								ApplyStatusEffect(client, baseboss_index, "Specter's Aura", 1.0);
 							}
 						}
 					}

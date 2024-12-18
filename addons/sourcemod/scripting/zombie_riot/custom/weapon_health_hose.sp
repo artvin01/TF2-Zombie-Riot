@@ -448,10 +448,10 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			}
 		}
 		
-		Increaced_Overall_damage_Low[client] = GetGameTime() + 5.0;
-		Increaced_Overall_damage_Low[target] = GetGameTime() + 15.0;
-		Resistance_Overall_Low[client] = GetGameTime() + 5.0;
-		Resistance_Overall_Low[target] = GetGameTime() + 15.0;
+		ApplyStatusEffect(client, target, "Healing Strength", 15.0);
+		ApplyStatusEffect(client, client, "Healing Resolve", 5.0);
+		ApplyStatusEffect(client, target, "Healing Strength", 15.0);
+		ApplyStatusEffect(client, client, "Healing Resolve", 5.0);
 		static float belowBossEyes[3];
 		belowBossEyes[0] = 0.0;
 		belowBossEyes[1] = 0.0;
@@ -600,8 +600,8 @@ public void TouchHealthKit(int entity, int other)
 			PrintHintText(Owner, "%t", "You healed for", other, healing_done);
 		}
 		ClientCommand(other, "playgamesound items/smallmedkit1.wav");
-		Increaced_Overall_damage_Low[other] = GetGameTime() + 15.0;
-		Resistance_Overall_Low[other] = GetGameTime() + 15.0;
+		ApplyStatusEffect(Owner, other, "Healing Strength", 15.0);
+		ApplyStatusEffect(Owner, other, "Healing Resolve", 15.0);
 		RemoveEntity(entity);	
 	}
 }
