@@ -334,8 +334,6 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		{
 			if(MerchantEffect[attacker] >= 0)
 			{
-				float gameTime = GetGameTime();
-				
 				// Nothing: Debuff Effect
 				if(MerchantEffect[attacker] == Nothing_Debuff)
 				{

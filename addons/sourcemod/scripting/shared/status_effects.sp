@@ -3,12 +3,6 @@
 
 static ArrayList AL_StatusEffects;
 
-/*
-	TODO: make b_CannotBeSlowed work here
-	Make Buff owner work correctly and fully
-
-*/
-
 enum struct StatusEffect
 {
 	char BuffName[64];			 //Used to identify
@@ -103,6 +97,15 @@ void InitStatusEffects()
 	StatusEffects_LogosDebuff();
 	StatusEffects_Victoria();
 	StatusEffects_Pernell();
+	StatusEffects_Medieval();
+	StatusEffects_SupportWeapons();
+	StatusEffects_BobDuck();
+	StatusEffects_ElementalWand();
+	StatusEffects_FallenWarrior();
+	StatusEffects_CasinoDebuff();
+	StatusEffects_Ruiania();
+	StatusEffects_WeaponSpecific_VisualiseOnly();
+	StatusEffects_EncyclopediaOnly();
 }
 
 int StatusEffect_AddGlobal(StatusEffect data)
@@ -110,7 +113,7 @@ int StatusEffect_AddGlobal(StatusEffect data)
 	return AL_StatusEffects.PushArray(data);
 }
 
-void RemoveSpecificBuff(int owner, int victim, const char[] name)
+void RemoveSpecificBuff(int victim, const char[] name)
 {
 	int index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
 	if(index == -1)
@@ -135,6 +138,7 @@ void RemoveSpecificBuff(int owner, int victim, const char[] name)
 			delete E_AL_StatusEffects[victim];
 	}
 }
+
 
 //Got lazy, tired of doing so many indexs.
 bool HasSpecificBuff(int victim, const char[] name)
@@ -253,7 +257,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration)
 }
 
 //never usually needed
-void StatusEffect_Expired(int victim)
+stock void StatusEffect_Expired(int victim)
 {
 	if(!E_AL_StatusEffects[victim])
 		return;
@@ -327,15 +331,15 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 			continue;
 		}
 		
-		float DamageToNegate = Apply_MasterStatusEffect.DamageDealMulti;
+		float DamageToNegate = Apply_MasterStatusEffect.DamageTakenMulti;
 		if(Apply_MasterStatusEffect.OnTakeDamage_TakenFunc != INVALID_FUNCTION)
 		{
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_TakenFunc);
 			Call_PushCell(attacker);
 			Call_PushCell(victim);
-			Call_PushArray(Apply_MasterStatusEffect);
-			Call_PushArray(Apply_StatusEffect);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
 			Call_PushCell(damagetype);
 			Call_Finish(DamageToNegate);
 		}
@@ -363,8 +367,9 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 		delete E_AL_StatusEffects[victim];
 }
 
-//any buff that makes the attacker deal LESS damgae
-//its as if the enemy has resistances, the one we attack!
+/*
+	Me, as the attacker, will deal less damage towards other targets.
+*/
 void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &damage, int damagetype)
 {
 	if(!E_AL_StatusEffects[attacker])
@@ -392,9 +397,9 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 			//Skip.
 			continue;
 		}
-		if(!Apply_MasterStatusEffect.Positive)
+		if(Apply_MasterStatusEffect.Positive)
 		{
-			//Not positive. skip.
+			//Positive, skip
 			continue;
 		}
 		float DamageToNegate = Apply_MasterStatusEffect.DamageDealMulti;
@@ -404,8 +409,8 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_DealFunc);
 			Call_PushCell(attacker);
 			Call_PushCell(victim);
-			Call_PushArray(Apply_MasterStatusEffect);
-			Call_PushArray(Apply_StatusEffect);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
 			Call_PushCell(damagetype);
 			Call_Finish(DamageToNegate);
 		}
@@ -432,88 +437,50 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 		delete E_AL_StatusEffects[victim];
 }
 
-//Damage vulnerabilities, this means i TAKE more damage
+//Damage vulnerabilities, when i get HURT, this means i TAKE more damage
 void StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, int inflictor, float &damage, int damagetype)
 {
-	if(!E_AL_StatusEffects[victim])
-		return;
-
 	float basedamage = damage;
-	
-	float DamageBuffExtraScaling = 1.0;
-
-#if defined ZR
-	if(attacker <= MaxClients || inflictor <= MaxClients)
+	if(E_AL_StatusEffects[victim])
 	{
-		//only scale if its a player, and if the attacking npc is red too
-		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
-			DamageBuffExtraScaling = PlayerCountBuffScaling;
-	}
-#endif
-	static StatusEffect Apply_MasterStatusEffect;
-	static E_StatusEffect Apply_StatusEffect;
-	//No debuffs or status effects, skip.
-	int length = E_AL_StatusEffects[victim].Length;
-	for(int i; i<length; i++)
-	{
-		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
-		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(i);
-			i--;
-			length--;
-			continue;
-		}
-		if(Apply_MasterStatusEffect.DamageTakenMulti == -1.0)
-		{
-			//Skip.
-			continue;
-		}
-		if(Apply_MasterStatusEffect.Positive)
-		{
-			//positive. skip.
-			continue;
-		}
-		static float DamageBuffScalingDo;
-		DamageBuffScalingDo = DamageBuffExtraScaling;
-		float DamageToNegate = Apply_MasterStatusEffect.DamageDealMulti;
+		float DamageBuffExtraScaling = 1.0;
 
-		bool Ignore_NormalValue = false;
-		if(Apply_MasterStatusEffect.OnTakeDamage_TakenFunc != INVALID_FUNCTION)
+		#if defined ZR
+		if(attacker <= MaxClients || inflictor <= MaxClients)
 		{
-			float DamageAdded;
-			//We have a valid function ignore the original value.
-			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_TakenFunc);
-			Call_PushCell(attacker);
-			Call_PushCell(victim);
-			Call_PushArray(Apply_MasterStatusEffect);
-			Call_PushArray(Apply_StatusEffect);
-			Call_PushCell(damagetype);
-			Call_PushCell(basedamage);
-			Call_PushFloat(DamageBuffScalingDo);
-			Call_Finish(DamageAdded);
-			damage += DamageAdded;
-			Ignore_NormalValue = true;
+			//only scale if its a player, and if the attacking npc is red too
+			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
+				DamageBuffExtraScaling = PlayerCountBuffScaling;
 		}
-		if(Apply_MasterStatusEffect.OnTakeDamage_DealFunc != INVALID_FUNCTION)
+		#endif
+		static StatusEffect Apply_MasterStatusEffect;
+		static E_StatusEffect Apply_StatusEffect;
+		//No debuffs or status effects, skip.
+		int length = E_AL_StatusEffects[victim].Length;
+		for(int i; i<length; i++)
 		{
-			float DamageAdded;
-			//We have a valid function ignore the original value.
-			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_DealFunc);
-			Call_PushCell(attacker);
-			Call_PushCell(victim);
-			Call_PushArray(Apply_MasterStatusEffect);
-			Call_PushArray(Apply_StatusEffect);
-			Call_PushCell(damagetype);
-			Call_PushCell(basedamage);
-			Call_PushFloat(DamageBuffScalingDo);
-			Call_Finish(DamageAdded);
-			damage += DamageAdded;
-			Ignore_NormalValue = true;
-		}
-		if(!Ignore_NormalValue)
-		{
+			E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+			AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+			if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+			{
+				E_AL_StatusEffects[victim].Erase(i);
+				i--;
+				length--;
+				continue;
+			}
+			if(Apply_MasterStatusEffect.DamageTakenMulti == -1.0)
+			{
+				//Skip.
+				continue;
+			}
+			if(Apply_MasterStatusEffect.Positive)
+			{
+				//positive. skip.
+				continue;
+			}
+			static float DamageBuffScalingDo;
+			DamageBuffScalingDo = DamageBuffExtraScaling;
+
 			if(!Apply_MasterStatusEffect.ShouldScaleWithPlayerCount || Apply_StatusEffect.TotalOwners[attacker])
 			{
 				//It does NOT Scale, OR the user is the owner, give full buff/boosted buff
@@ -522,17 +489,39 @@ void StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, int infli
 					DamageBuffScalingDo = 1.0;
 				}
 			}
-			damage += basedamage * (Apply_MasterStatusEffect.DamageTakenMulti * DamageBuffExtraScaling);
+			bool Ignore_NormalValue = false;
+			if(Apply_MasterStatusEffect.OnTakeDamage_TakenFunc != INVALID_FUNCTION)
+			{
+				float DamageAdded;
+				//We have a valid function ignore the original value.
+				Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_TakenFunc);
+				Call_PushCell(attacker);
+				Call_PushCell(victim);
+				Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+				Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
+				Call_PushCell(damagetype);
+				Call_PushCell(basedamage);
+				Call_PushFloat(DamageBuffScalingDo);
+				Call_Finish(DamageAdded);
+				damage += DamageAdded;
+				Ignore_NormalValue = true;
+			}
+			if(!Ignore_NormalValue)
+			{
+				damage += basedamage * (Apply_MasterStatusEffect.DamageTakenMulti * DamageBuffScalingDo);
+			}
 		}
+		if(length < 1)
+			delete E_AL_StatusEffects[victim];
+		
 	}
-	if(length < 1)
-		delete E_AL_StatusEffects[victim];
+
 
 	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker, inflictor, basedamage, damagetype);
 }
 
 
-//Damage Buffs!
+//Damage Buffs, when i attack!
 float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, int inflictor, float basedamage, int damagetype)
 {
 	if(!E_AL_StatusEffects[attacker])
@@ -559,7 +548,7 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, int infli
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			E_AL_StatusEffects[attacker].Erase(i);
 			i--;
 			length--;
 			continue;
@@ -576,6 +565,8 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, int infli
 		}
 		static float DamageBuffScalingDo;
 		DamageBuffScalingDo = DamageBuffExtraScaling;
+		bool Ignore_NormalValue = false;
+		
 		if(!Apply_MasterStatusEffect.ShouldScaleWithPlayerCount || Apply_StatusEffect.TotalOwners[attacker])
 		{
 			//It does NOT Scale, OR the user is the owner, give full buff/boosted buff
@@ -584,10 +575,29 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, int infli
 				DamageBuffScalingDo = 1.0;
 			}
 		}
-		DamageAdd += basedamage * (Apply_MasterStatusEffect.DamageDealMulti * DamageBuffExtraScaling);
+		if(Apply_MasterStatusEffect.OnTakeDamage_DealFunc != INVALID_FUNCTION)
+		{
+			float DamageAdded;
+			//We have a valid function ignore the original value.
+			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_DealFunc);
+			Call_PushCell(attacker);
+			Call_PushCell(victim);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
+			Call_PushCell(damagetype);
+			Call_PushCell(basedamage);
+			Call_PushFloat(DamageBuffScalingDo);
+			Call_Finish(DamageAdded);
+			DamageAdd += DamageAdded;
+			Ignore_NormalValue = true;
+		}
+		if(!Ignore_NormalValue)
+		{
+			DamageAdd += basedamage * (Apply_MasterStatusEffect.DamageDealMulti * DamageBuffExtraScaling);
+		}
 	}
 	if(length < 1) 		
-		delete E_AL_StatusEffects[victim];
+		delete E_AL_StatusEffects[attacker];
 	return DamageAdd;
 }
 
@@ -596,7 +606,7 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, int infli
 
 void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, char[] Debuff_Adder_right, int SizeOfChar, int DisplayWeapon = -1)
 {
-	if(DisplayWeapon)
+	if(DisplayWeapon > 0)
 	{
 		//already checking weapon, so dont repeat!
 		StatusEffects_HudHurt(DisplayWeapon, attacker, Debuff_Adder_left, Debuff_Adder_right, SizeOfChar, -1);
@@ -614,6 +624,13 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		//left are debuffs
 		//Right are buffs
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(i);
+			i--;
+			length--;
+			continue;
+		}
 		if(!Apply_MasterStatusEffect.HudDisplay[0])
 			continue;
 		
@@ -624,10 +641,10 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 			Call_StartFunction(null, Apply_MasterStatusEffect.HudDisplay_Func);
 			Call_PushCell(attacker);
 			Call_PushCell(victim);
-			Call_PushArray(Apply_MasterStatusEffect);
-			Call_PushArray(Apply_StatusEffect);
-			Call_PushArray(sizeof(HudDisplayCustom));
-			Call_PushStringEx(HudDisplayCustom);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
+			Call_PushCell(sizeof(HudDisplayCustom));
+			Call_PushStringEx(HudDisplayCustom, sizeof(HudDisplayCustom), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
 			Call_Finish();
 
 			if(!Apply_MasterStatusEffect.Positive)
@@ -651,9 +668,11 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 			}
 		}
 	}
+	if(length < 1) 		
+		delete E_AL_StatusEffects[victim];
 }
 
-void StatusEffects_HudAbove(int victim, int attacker, char[] HudAbove, int SizeOfChar)
+void StatusEffects_HudAbove(int victim, char[] HudAbove, int SizeOfChar)
 {
 	if(!E_AL_StatusEffects[victim])
 		return;
@@ -666,11 +685,20 @@ void StatusEffects_HudAbove(int victim, int attacker, char[] HudAbove, int SizeO
 	{
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(i);
+			i--;
+			length--;
+			continue;
+		}
 		if(!Apply_MasterStatusEffect.AboveEnemyDisplay[0])
 			continue;
 
 		Format(HudAbove, SizeOfChar, "%s%s", Apply_MasterStatusEffect.AboveEnemyDisplay, HudAbove);
 	}
+	if(length < 1) 		
+		delete E_AL_StatusEffects[victim];
 }
 
 //Speed Buff modif!
@@ -699,6 +727,13 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 	{
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(i);
+			i--;
+			length--;
+			continue;
+		}
 		if(Apply_MasterStatusEffect.MovementspeedModif == -1.0)
 		{
 			//Skip.
@@ -710,8 +745,8 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.Status_SpeedFunc);
 			Call_PushCell(victim);
-			Call_PushArray(Apply_MasterStatusEffect);
-			Call_PushArray(Apply_StatusEffect);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
 			Call_Finish(SpeedModif);
 		}
 		if(Apply_MasterStatusEffect.Positive)
@@ -734,6 +769,8 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 	{
 		SpeedModifPercentage = 0.0;
 	}
+	if(length < 1) 		
+		delete E_AL_StatusEffects[victim];
 }
 
 int LowTeslarIndex;
@@ -1503,24 +1540,37 @@ void StatusEffects_Victoria()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
-	
+	//This buff is unique, so we need 2 buffs at once.
 	strcopy(data.BuffName, sizeof(data.BuffName), "Caffinated");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♨");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 1.25;
-	data.DamageDealMulti			= 0.5;
+	data.DamageDealMulti			= 0.5; //Deal 50% more damage
 	data.MovementspeedModif			= 1.5;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
-	
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Caffinated Drain");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= 0.5;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Call To Victoria");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "@");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "@"); //dont display above head, so empty
-	//-1.0 means unused
+	//Takes 20% less damage, and deals 20% more damage
+	//while being 15% faster
 	data.DamageTakenMulti 			= 0.8;
 	data.DamageDealMulti			= 0.2;
 	data.MovementspeedModif			= 1.15;
@@ -1660,7 +1710,7 @@ void StatusEffects_SupportWeapons()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Battilons Backup");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "WIP");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛨");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.85;
@@ -1739,6 +1789,7 @@ void StatusEffects_SupportWeapons()
 	data.OnTakeDamage_TakenFunc 	= AdaptiveMedigun_RangedFunc;
 	StatusEffect_AddGlobal(data);
 
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Self Empowerment");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⍋");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -1750,7 +1801,7 @@ void StatusEffects_SupportWeapons()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.OnTakeDamage_TakenFunc 	= INVALID_HANDLE;
+	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ally Empowerment");
@@ -1764,7 +1815,7 @@ void StatusEffects_SupportWeapons()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.OnTakeDamage_TakenFunc 	= INVALID_HANDLE;
+	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ancient Banner");
@@ -1778,7 +1829,7 @@ void StatusEffects_SupportWeapons()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.OnTakeDamage_TakenFunc 	= INVALID_HANDLE;
+	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	AncientBannerIndex = StatusEffect_AddGlobal(data);
 }
 
@@ -1834,7 +1885,7 @@ void StatusEffects_BobDuck()
 {
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Bobs Duck Dubby");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "BOB");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "≝");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.9;
@@ -1987,32 +2038,6 @@ float GamblersRuin_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_
 {
 	return (basedamage * (Apply_StatusEffect.DataForUse * DamageBuffExtraScaling));
 }
-
-/*
-
-
-	if(f_Ruina_Defense_Buff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "♜%s", Debuff_Adder_right);
-	}
-	if(f_Ruina_Speed_Buff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "♝%s", Debuff_Adder_right);
-	}
-	if(f_Ruina_Attack_Buff[victim] > GameTime)
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "♟%s", Debuff_Adder_right);
-	}
-#if defined RUINA_BASE
-float f_Ruina_Speed_Buff[MAXENTITIES];
-float f_Ruina_Speed_Buff_Amt[MAXENTITIES];
-float f_Ruina_Defense_Buff[MAXENTITIES];
-float f_Ruina_Defense_Buff_Amt[MAXENTITIES];
-float f_Ruina_Attack_Buff[MAXENTITIES];
-float f_Ruina_Attack_Buff_Amt[MAXENTITIES];
-#endif
-
-*/
 int RuinaBuffSpeed;
 int RuinaBuffDefense;
 int RuinaBuffDamage;
@@ -2283,6 +2308,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= INVALID_FUNCTION;
 	KazimierzDodgeIndex = StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Tonic Affliction");
@@ -2309,6 +2335,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Osmosis'ity");
@@ -2376,7 +2403,7 @@ void PotionHudDisplay_Func(int attacker, int victim, StatusEffect Apply_MasterSt
 }
 void OsmosisHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	if(attacker > MaxClients)
+	if(attacker < 0 && attacker > MaxClients)
 		return;
 
 	if(!Osmosis_ClientGaveBuff[victim][attacker])

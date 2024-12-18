@@ -1400,7 +1400,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		speed_for_return *= RTS_GameSpeed();
 #endif
 
-		bool Is_Boss = true;
 #if defined ZR
 		if(IS_MusicReleasingRadio() && GetTeam(this.index) != TFTeam_Red)
 			speed_for_return *= 0.9;
@@ -1410,13 +1409,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return *= 1.25;
 		}
 #endif
-		if(!this.m_bThisNpcIsABoss)
-		{
-			if(!b_thisNpcIsARaid[this.index])
-			{
-				Is_Boss = false;
-			}
-		}
 		if(f_TankGrabbedStandStill[this.index] > Gametime)
 		{
 			speed_for_return = 0.0;
@@ -8382,12 +8374,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_Extra_Damage[entity] = 1.0;
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
-	f_PernellBuff[entity] = 0.0;
-	f_HussarBuff[entity] = 0.0;
-	f_SquadLeaderBuff[entity] = 0.0;
-	f_VictorianCallToArms[entity] = 0.0;
-	f_CaffeinatorBuff[entity] = 0.0;
-	f_GodAlaxiosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
 	f_RaidStunResistance[entity] = 0.0;
@@ -9359,19 +9345,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	HealthColour[2] = 255;
 	HealthColour[3] = 255;
 
-	if(NpcStats_IsEnemySilenced(npc.index))
-	{
-		Format(HealthText, sizeof(HealthText), "X");
-	}
-	if(NpcStats_IberiaIsEnemyMarked(npc.index))
-	{
-		Format(HealthText, sizeof(HealthText), "%sM",HealthText);
-	}
-	if(NpcStats_VictorianCallToArms(npc.index))
-	{
-		Format(HealthText, sizeof(HealthText), "@",HealthText);
-	}
-
+	StatusEffects_HudAbove(npc.index, HealthText, sizeof(HealthText));
 #if defined ZR
 	VausMagicaRemoveShield(npc.index);
 	if(MoraleBoostLevelAt(npc.index) > 0) //hussar!

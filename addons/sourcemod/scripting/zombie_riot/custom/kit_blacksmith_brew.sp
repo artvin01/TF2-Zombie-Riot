@@ -129,6 +129,7 @@ static void CacheBrewer()
 	c.Add(Brew_502, A_Agility, A_Strength, A_Water);
 }
 
+/*
 bool BlacksmithBrew_HasEffect(int client, int index, float &duration)
 {
 	if(Brews)
@@ -152,7 +153,7 @@ bool BlacksmithBrew_HasEffect(int client, int index, float &duration)
 	
 	return false;
 }
-
+*/
 void BlacksmithBrew_ExtraDesc(int client, int weapon, bool first = false)
 {
 	if(Brews)

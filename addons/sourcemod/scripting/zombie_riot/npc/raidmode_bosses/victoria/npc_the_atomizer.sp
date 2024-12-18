@@ -762,7 +762,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
-				f_VictorianCallToArms[entity] = gameTime;
+				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}
 	}
 	
@@ -838,7 +838,7 @@ static void Internal_ClotThink(int iNPC)
 					SetVariantString("1.2");
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 					CPrintToChatAll("{blue}Atomizer{default}: Oh yes! I FEEL ALIVE!");
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flNextRangedAttack += 2.0;

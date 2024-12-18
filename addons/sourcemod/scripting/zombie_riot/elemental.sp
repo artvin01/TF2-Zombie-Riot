@@ -596,7 +596,8 @@ void OsmosisElementalEffectEnable(int victim, float time)
 	{
 		Osmosis_ClientGaveBuff[victim][i] = false;
 	}
-	ApplyStatusEffect(victim, victim, "Osmosis'ity", time);
+	if(time > 0.0)
+		ApplyStatusEffect(victim, victim, "Osmosis'ity", time);
 }
 
 bool Osmosis_CurrentlyInDebuff(int victim)
@@ -645,7 +646,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 			damage = RoundToNearest(float(damage) * 1.2);
 		}
 		Armor_DebuffType[victim] = 4;
-		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{

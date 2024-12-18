@@ -679,7 +679,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
-				f_VictorianCallToArms[entity] = gameTime;
+				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}
 	}
 	
@@ -870,7 +870,7 @@ static void Internal_ClotThink(int iNPC)
 					if(Delay_Attribute[npc.index] < gameTime)
 					{
 						b_NpcIsInvulnerable[npc.index] = false;
-						f_VictorianCallToArms[npc.index] = GetGameTime(npc.index) + 999.0;
+						ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 						MyGundammmmmm[npc.index]=false;
 						I_cant_do_this_all_day[npc.index] = 0;
 					}

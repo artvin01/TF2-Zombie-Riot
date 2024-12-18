@@ -516,7 +516,6 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 
 stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	float GameTime = GetGameTime();
 	float basedamage = damage;
 	
 	float DamageBuffExtraScaling = 1.0;
@@ -565,8 +564,6 @@ stock bool Damage_PlayerAttacker(int victim, int &attacker, int &inflictor, floa
 stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
-	float GameTime = GetGameTime();
-
 	if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
 	{
 		if(i_CurrentEquippedPerk[attacker] == 5)
@@ -1621,7 +1618,6 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 
 stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime, float damagePosition[3] = NULL_VECTOR)
 {
-	float basedamage = damage;
 #if defined ZR
 	if(inflictor > 0)
 	{
@@ -1653,9 +1649,6 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[] Debuff_Adder_right)
 {
 	//This hud is for debuffs thats shared between players and enemies
-
-	float GameTime = GetGameTime();
-
 	int SizeOfChar = 64;
 	
 	//These buffs/Debuffs stay how they are for the foreseeable future.

@@ -343,7 +343,7 @@ void WinterArcticMageAllyHealInternal(int entity, int victim)
 		{
 			//super power!
 			ApplyStatusEffect(entity, victim, "Buff Banner", FAR_FUTURE);
-			f_BattilonsNpcBuff[victim] = FAR_FUTURE;
+			ApplyStatusEffect(entity, victim, "Battilons Backup", FAR_FUTURE);
 		}
 	}
 	

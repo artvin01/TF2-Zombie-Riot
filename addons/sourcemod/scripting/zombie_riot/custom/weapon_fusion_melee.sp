@@ -183,7 +183,7 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 		CreateTimer(0.1, Empower_ringTracker, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Empower_ringTracker_effect, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.0, Empower_ringTracker_effect, client, TIMER_FLAG_NO_MAPCHANGE); //Make it happen atleast once instantly
-		f_EmpowerStateSelf[client] = GetGameTime() + 0.6;
+		ApplyStatusEffect(client, client, "Self Empowerment", 0.6);
 		spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 30, 0.51, EMPOWER_WIDTH, 6.0, 10);
 	}
 	else
@@ -224,7 +224,7 @@ public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, in
 		CreateTimer(0.1, Empower_ringTracker, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Empower_ringTracker_effect, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.0, Empower_ringTracker_effect, client, TIMER_FLAG_NO_MAPCHANGE); //Make it happen atleast once instantly
-		f_EmpowerStateSelf[client] = GetGameTime() + 0.6;
+		ApplyStatusEffect(client, client, "Self Empowerment", 0.6);
 		spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 30, 0.51, EMPOWER_WIDTH, 6.0, 10);
 	}
 	else
@@ -252,7 +252,7 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 		{
 			spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 10, 0.11, EMPOWER_WIDTH, 6.0, 10);
 			
-			f_EmpowerStateSelf[client] = GetGameTime() + 0.6;
+			ApplyStatusEffect(client, client, "Self Empowerment", 0.6);
 
 			float chargerPos[3];
 			float targPos[3];
@@ -264,7 +264,7 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 					GetClientAbsOrigin(targ, targPos);
 					if (targ != client && GetVectorDistance(chargerPos, targPos, true) <= (EMPOWER_RANGE * EMPOWER_RANGE))
 					{
-						f_EmpowerStateOther[targ] = GetGameTime() + 0.6;
+						ApplyStatusEffect(client, targ, "Ally Empowerment", 0.6);
 					}
 				}
 			}
@@ -278,7 +278,7 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 					GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", chargerPos);
 					if (GetVectorDistance(chargerPos, targPos, true) <= (EMPOWER_RANGE * EMPOWER_RANGE))
 					{
-						f_EmpowerStateOther[baseboss_index_allied] = GetGameTime() + 0.6;
+						ApplyStatusEffect(client, baseboss_index_allied, "Ally Empowerment", 0.6);
 					}
 				}
 			}
@@ -1687,7 +1687,7 @@ public void Void_MeleeDoubleTapAbility(int client, int weapon, bool crit, int sl
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
 		f_VoidDoubleTapAbility[client] = GetGameTime() + 10.0; //Just a test.
-		f_EmpowerStateSelf[client] = GetGameTime() + 10.0;
+		ApplyStatusEffect(client, client, "Self Empowerment", 10.0);
 		EmitSoundToAll(NEARL_ACTIVE_SOUND, client, SNDCHAN_STATIC, 85, _, 0.5, 70);
 	}
 	else

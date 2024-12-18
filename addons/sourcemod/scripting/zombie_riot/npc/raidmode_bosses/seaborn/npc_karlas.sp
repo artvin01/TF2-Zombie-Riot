@@ -842,7 +842,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				NPCStats_RemoveAllDebuffs(Ally);
 				f_NpcImmuneToBleed[Ally] = GetGameTime(Ally) + 1.0;
-				f_BattilonsNpcBuff[Ally] = GetGameTime(Ally) + 2.5;
+				ApplyStatusEffect(npc.index, Ally, "Battilons Backup", 2.5);
 			}
 
 			//Karlas_Teleport_Core(npc, PrimaryThreatIndex);
@@ -911,7 +911,7 @@ static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 
 			NPCStats_RemoveAllDebuffs(Ally);
 			f_NpcImmuneToBleed[Ally] = GetGameTime(Ally) + 5.0;
-			f_HussarBuff[Ally] = GetGameTime(Ally) + 10.0;
+			ApplyStatusEffect(npc.index, Ally, "Hussar's Warscream", 10.0);
 			npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 30.0;
 
 			npc.PlayBuffSound();

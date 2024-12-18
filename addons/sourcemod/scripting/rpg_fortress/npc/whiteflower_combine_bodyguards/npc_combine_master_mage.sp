@@ -179,7 +179,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 						WorldSpaceCenter(ally.index, vecTarget);
 						if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 						{
-							f_PernellBuff[ally.index] = GetGameTime() + 10.0;
+							ApplyStatusEffect(npc.index, ally.index, "False Therapy", 10.0);
 							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
 							ApplyStatusEffect(npc.index, ally.index, "Buff Banner", 7.0);
 							float flMaxhealth = float(ReturnEntityMaxHealth(ally.index));

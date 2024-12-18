@@ -21,10 +21,7 @@ bool IsWeaponKazimierz(int weapon)
 {
 	return (i_WeaponArchetype[weapon] == 23 || i_CustomWeaponEquipLogic[weapon] == WEAPON_NEARL);
 }
-bool FlameTail_Global_Buff()
-{
-	return KaziBuffed;
-}
+
 void ResetFlameTail()
 {
 	KaziBuffed = false;
@@ -232,7 +229,7 @@ void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype, int wea
 	{
 		if(!KaziBuffed)
 		{
-			RemoveSpecificBuff(weaponinhand, weaponinhand, "Flaming Agility");
+			RemoveSpecificBuff(weaponinhand, "Flaming Agility");
 			return;
 		}
 		// Kazimierz Global Buff

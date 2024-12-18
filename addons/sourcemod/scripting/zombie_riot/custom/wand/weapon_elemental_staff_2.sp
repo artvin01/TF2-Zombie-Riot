@@ -607,7 +607,7 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 		Passanger_Lightning_Effect(StartLightningPos, EnemyVecPos, 1);
 	}
 	WorldSpaceCenter(target, StartLightningPos);
-	ApplyStatusEffect(client, victim, "Electric Impairability", 0.3);
+	ApplyStatusEffect(client, target, "Electric Impairability", 0.3);
 	SDKHooks_TakeDamage(target, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
 	f_CooldownForHurtHud[client] = 0.0;
 	b_EntityHitByLightning[target] = true;

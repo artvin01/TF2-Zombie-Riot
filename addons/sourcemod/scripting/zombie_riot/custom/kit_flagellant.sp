@@ -668,7 +668,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
 		Elemental_AddNervousDamage(target, client, 10, _, true);
-		f_HussarBuff[target] = GetGameTime() + 10.0;
+		ApplyStatusEffect(client, target, "Hussar's Warscream", 10.0);
 
 		if(target > MaxClients)
 		{

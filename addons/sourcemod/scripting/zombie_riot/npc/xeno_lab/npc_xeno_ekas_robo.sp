@@ -193,7 +193,7 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 			{
 				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && !Is_a_Medic[client])
 				{
-					f_HussarBuff[client] = gameTime + 0.5;
+					ApplyStatusEffect(npc.index, client, "Hussar's Warscream", 0.5);
 					ApplyStatusEffect(npc.index, client, "Buff Banner", 0.5);
 				}
 			}
@@ -204,7 +204,7 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team && !Is_a_Medic[entity])
 			{
-				f_HussarBuff[entity] = gameTime + 0.5;
+				ApplyStatusEffect(npc.index, entity, "Hussar's Warscream", 0.5);
 				ApplyStatusEffect(npc.index, entity, "Buff Banner", 0.5);
 			}
 		}

@@ -417,14 +417,14 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 							GrantEntityArmor(entitycount, true, 1.2, 0.33, 0);
 						}
 
-						f_CombineCommanderBuff[entitycount] = GetGameTime() + DurationGive;
+						ApplyStatusEffect(npc.index, entitycount, "Combine Command", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Buff Banner", DurationGive);
-						f_BattilonsNpcBuff[entitycount] = GetGameTime() + DurationGive;
-						f_PernellBuff[entitycount] = GetGameTime() + DurationGive;
+						ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", DurationGive);
+						ApplyStatusEffect(npc.index, entitycount, "False Therapy", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Healing Strength", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Healing Resolve", DurationGive);
-						f_EmpowerStateSelf[entitycount] = GetGameTime() + DurationGive;
-						f_EmpowerStateOther[entitycount] = GetGameTime() + DurationGive;
+						ApplyStatusEffect(npc.index, entitycount, "Self Empowerment", DurationGive);
+						ApplyStatusEffect(npc.index, entitycount, "Ally Empowerment", DurationGive);
 					}
 				}
 			}

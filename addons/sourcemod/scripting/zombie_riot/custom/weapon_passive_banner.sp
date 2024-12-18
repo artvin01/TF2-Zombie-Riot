@@ -249,7 +249,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 				GetClientAbsOrigin(ally, targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 				{
-					f_BattilonsNpcBuff[ally] = GetGameTime() + 1.1;
+					ApplyStatusEffect(client, ally, "Battilons Backup", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -262,7 +262,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 				{
-					f_BattilonsNpcBuff[ally] = GetGameTime() + 0.5;
+					ApplyStatusEffect(client, ally, "Battilons Backup", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}

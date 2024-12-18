@@ -277,10 +277,10 @@ bool Freeplay_ShouldMiniBoss()
 void Freeplay_SpawnEnemy(int entity)
 {
 	if(HussarBuff)
-		f_HussarBuff[entity] = FAR_FUTURE;
-	
+		ApplyStatusEffect(entity, entity, "Hussar's Warscream", FAR_FUTURE);
+
 	if(PernellBuff)
-		f_PernellBuff[entity] = GetGameTime() + 15.0;
+		ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
 	
 	if(IceDebuff > 2)
 		ApplyStatusEffect(entity, entity, "Near Zero", FAR_FUTURE);
@@ -298,10 +298,10 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Teslar Shock", FAR_FUTURE);
 	
 	if(FusionBuff > 1)
-		f_EmpowerStateSelf[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Self Empowerment", FAR_FUTURE);
 	
 	if(FusionBuff == 1 || FusionBuff > 2)
-		f_EmpowerStateOther[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Ally Empowerment", FAR_FUTURE);
 	
 	if(OceanBuff > 1)
 		ApplyStatusEffect(entity, entity, "Oceanic Scream", FAR_FUTURE);

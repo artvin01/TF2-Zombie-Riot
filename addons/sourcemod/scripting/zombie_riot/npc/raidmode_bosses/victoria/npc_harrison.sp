@@ -757,7 +757,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.SetPlaybackRate(1.0);
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_iChanged_WalkCycle = 0;
-					f_VictorianCallToArms[npc.index] = GetGameTime(npc.index) + 999.0;
+					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 					
 					npc.m_flSpeed = 300.0;
 					if(IsValidEntity(npc.m_iWearable8))

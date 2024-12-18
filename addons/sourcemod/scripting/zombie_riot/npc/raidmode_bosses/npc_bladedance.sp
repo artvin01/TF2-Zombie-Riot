@@ -290,7 +290,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			{
 				if(!b_NpcHasDied[entity] && GetTeam(entity) == team)
 				{
-					f_GodAlaxiosBuff[entity] = GetGameTime() + 16.0;
+					ApplyStatusEffect(npc.index, entity, "Godly Motivation", 16.0);
 					ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 				}
 			}

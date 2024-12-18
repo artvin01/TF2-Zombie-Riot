@@ -489,7 +489,7 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 	else if(attacker > MaxClients)
 	{
 		if(!b_NpcHasDied[attacker] && f_TimeFrozenStill[attacker] < gameTime)
-			Cryo_FreezeZombie(attacker, npc.m_iPhase ? 1 : 0);
+			Cryo_FreezeZombie(npc.index, attacker, npc.m_iPhase ? 1 : 0);
 	}
 	else if(!TF2_IsPlayerInCondition(attacker, TFCond_Dazed))
 	{

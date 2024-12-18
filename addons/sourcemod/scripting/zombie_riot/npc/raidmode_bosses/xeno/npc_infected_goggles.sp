@@ -719,7 +719,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 				NPCStats_RemoveAllDebuffs(ally);
 				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 5.0;
-				f_HussarBuff[ally] = GetGameTime(ally) + 10.0;
+				ApplyStatusEffect(npc.index, ally, "Hussar's Warscream", 10.0);
 
 				npc.PlayBuffSound();
 			}

@@ -1073,8 +1073,6 @@ public void OnMapStart()
 	Zero2(f_TargetWasBlitzedByRiotShield);
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
-	Zero(f_EmpowerStateSelf);
-	Zero(f_EmpowerStateOther);
 	Zero(b_NetworkedCrouch);
 	
 #if defined VIEW_CHANGES
@@ -1455,14 +1453,6 @@ public void OnClientPutInServer(int client)
 	
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
-	f_HussarBuff[client] = 0.0;
-	f_CombineCommanderBuff[client] = 0.0;
-	f_SquadLeaderBuff[client] = 0.0;
-	f_VictorianCallToArms[client] = 0.0;
-	f_CaffeinatorBuff[client] = 0.0;
-#if defined RUINA_BASE
-	Ruina_Reset_Stats_Npc(client);
-#endif
 	f_MultiDamageTaken[client] = 1.0;
 	f_MultiDamageTaken_Flat[client] = 1.0;
 	f_MultiDamageDealt[client] = 1.0;
@@ -2221,7 +2211,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
-		StatusEffectReset(victim);
+		StatusEffectReset(entity);
 		f_InBattleDelay[entity] = 0.0;
 		b_AllowCollideWithSelfTeam[entity] = false;
 		func_NPCDeath[entity] = INVALID_FUNCTION;
@@ -2241,25 +2231,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_KnockbackPullDuration[entity] = 0.0;
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
-#if defined ZR
-		b_FaceStabber[entity] = false;
-		i_CustomWeaponEquipLogic[entity] = -1;
-		Resistance_for_building_High[entity] = 0.0;
-		Building_Mounted[entity] = 0;
-		BarracksEntityCreated(entity);
-#endif
 #if defined ZR || defined RPG
 		CoinEntityCreated(entity);
 #endif
 		b_ThisWasAnNpc[entity] = false;
-#if defined ZR
-		SetEntitySpike(entity, false);
-		StoreWeapon[entity] = -1;
-		Building_Mounted[entity] = -1;
-		EntitySpawnToDefaultSiccerino(entity);
-		b_NpcIsTeamkiller[entity] = false;
-		IberiaEntityCreated(entity);
-#endif
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;
 		f_WeaponSizeOverrideViewmodel[entity] = 1.0;
@@ -2268,28 +2243,38 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponVMTExtraSetting[entity] = -1;
 		i_WeaponBodygroup[entity] = -1;
 		i_WeaponFakeIndex[entity] = -1;
+		b_NoKnockbackFromSources[entity] = false;
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 #if defined ZR
+		b_FaceStabber[entity] = false;
+		i_CustomWeaponEquipLogic[entity] = -1;
+		Resistance_for_building_High[entity] = 0.0;
+		Building_Mounted[entity] = 0;
+		BarracksEntityCreated(entity);
+		SetEntitySpike(entity, false);
+		StoreWeapon[entity] = -1;
+		Building_Mounted[entity] = -1;
+		EntitySpawnToDefaultSiccerino(entity);
+		b_NpcIsTeamkiller[entity] = false;
+		IberiaEntityCreated(entity);
 		f_HealDelayParticle[entity] = 0.0;
 		f_DelayAttackspeedPreivous[entity] = 1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
-#endif
-		f_HussarBuff[entity] = 0.0;
-		f_CombineCommanderBuff[entity] = 0.0;
-		f_SquadLeaderBuff[entity] = 0.0;
-		f_CaffeinatorBuff[entity] = 0.0;
-		f_VictorianCallToArms[entity]=0.0;
-#if defined RUINA_BASE
-		Ruina_Reset_Stats_Npc(entity);
-#endif
-		f_GodAlaxiosBuff[entity] = 0.0;
 		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;
 		b_NoKnockbackFromSources[entity] = false;
-#if defined ZR
 		i_CurrentEquippedPerk[entity] = 0;
 		i_CurrentEquippedPerkPreviously[entity] = 0;
 		i_WandIdNumber[entity] = -1;
 		i_IsAloneWeapon[entity] = false;
+		i_SemiAutoWeapon[entity] = false;
+		HasMechanic[entity] = false;
+		FinalBuilder[entity] = false;
+		GlassBuilder[entity] = false;
+		WildingenBuilder[entity] = false;
+		WildingenBuilder2[entity] = false;
+		Armor_Charge[entity] = 0;
+		b_IsATrigger[entity] = false;
+		b_IsATriggerHurt[entity] = false;
 #endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
@@ -2345,10 +2330,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		h_NpcSolidHookType[entity] = 0;
 		SetDefaultValuesToZeroNPC(entity);
 
-#if defined ZR
-		i_SemiAutoWeapon[entity] = false;
-#endif
-
 		f_BannerDurationActive[entity] = 0.0;
 		f_DuelStatus[entity] = 0.0;
 		b_BuildingHasDied[entity] = true;
@@ -2389,17 +2370,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		fl_Extra_Speed[entity] 				= 1.0;
 		fl_Extra_Damage[entity] 			= 1.0;
 		fl_GibVulnerablity[entity] 			= 1.0;
-#if defined ZR
-		HasMechanic[entity] = false;
-		FinalBuilder[entity] = false;
-		GlassBuilder[entity] = false;
-		WildingenBuilder[entity] = false;
-		WildingenBuilder2[entity] = false;
-		Armor_Charge[entity] = 0;
-		b_IsATrigger[entity] = false;
-		b_IsATriggerHurt[entity] = false;
-#endif
-
 #if defined ZR || defined RPG
 		KillFeed_EntityCreated(entity);
 #endif

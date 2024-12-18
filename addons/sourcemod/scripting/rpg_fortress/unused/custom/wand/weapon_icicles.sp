@@ -389,7 +389,6 @@ public void Cryo_FreezeZombie(int client, int zombie, float damage, int weapon)
 	if(!Cryo_Slowed[zombie] && !Cryo_Frozen[zombie])
 	{
 		CClotBody ZNPC = view_as<CClotBody>(zombie);
-		ZNPC.m_bFrozen = true;
 		Cryo_Frozen[zombie] = true;
 		float FreezeDuration;
 
@@ -425,7 +424,6 @@ public Action Cryo_Unfreeze(Handle Unfreeze, int ref)
 		Cryo_Frozen[zombie] = false;
 		Cryo_Slowed[zombie] = true;
 		CClotBody ZNPC = view_as<CClotBody>(zombie);
-		ZNPC.m_bFrozen = false;		
 		CreateTimer(8.0, Cryo_Unslow, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 		
 		SetEntityRenderMode(zombie, i_EntityRenderMode[zombie], true, 2, false, true);

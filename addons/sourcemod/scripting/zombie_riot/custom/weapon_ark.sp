@@ -1203,7 +1203,7 @@ public void Melee_QuibaiArkTouch(int entity, int target)
 
 		if(f_LappLandAbilityActive[owner] < GetGameTime())
 		{
-			ApplyStatusEffect(attacker, target, "Silenced", QUIBAI_SILENCE_DUR_NORMAL);
+			ApplyStatusEffect(owner, target, "Silenced", QUIBAI_SILENCE_DUR_NORMAL);
 			i_LappLandHitsDone[owner] += 1;
 			if(i_LappLandHitsDone[owner] >= QUIBAI_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 			{

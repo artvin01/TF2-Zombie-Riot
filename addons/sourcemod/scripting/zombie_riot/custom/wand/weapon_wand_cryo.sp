@@ -69,11 +69,6 @@ void Wand_Cryo_Precache()
 	PrecacheModel("models/props_moonbase/moon_gravel_crystal_blue.mdl");
 }
 
-bool IsZombieFrozen(int entity)
-{
-	return Cryo_Frozen[entity];
-}
-
 void ResetFreeze(int entity)
 {
 	Cryo_FreezeLevel[entity] = 0.0;
@@ -365,7 +360,6 @@ public void Cryo_FreezeZombie(int client, int zombie, int type)
 	
 	EmitSoundToAll(SOUND_WAND_CRYO_FREEZE, zombie, SNDCHAN_STATIC, 80);
 	CClotBody ZNPC = view_as<CClotBody>(zombie);
-	ZNPC.m_bFrozen = true;
 	Cryo_Frozen[zombie] = true;
 	Cryo_FreezeLevel[zombie] = 0.0;
 	float FreezeDuration;
@@ -448,9 +442,6 @@ public Action Cryo_Unfreeze(Handle Unfreeze, int ref)
 	{
 		Cryo_Frozen[zombie] = false;
 		Cryo_Slowed[zombie] = true;
-		
-		CClotBody ZNPC = view_as<CClotBody>(zombie);
-		ZNPC.m_bFrozen = false;
 		
 		CreateTimer(Cryo_SlowDuration, Cryo_Unslow, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 		

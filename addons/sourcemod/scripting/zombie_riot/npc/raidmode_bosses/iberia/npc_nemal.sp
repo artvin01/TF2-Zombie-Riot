@@ -1525,7 +1525,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 							if(npc.m_flTimeUntillMark < GetGameTime(npc.index))
 							{
 								damage *= 1.35;
-								NpcStats_IberiaMarkEnemy(targetTrace, 5.0);
+								ApplyStatusEffect(npc.index, targetTrace, "Marked", 5.0);
 								MarkCooldown = true;
 							}
 							
@@ -1854,7 +1854,7 @@ bool NemalTransformation(Nemal npc)
 			i_NpcWeight[npc.index] = 4;
 			npc.m_flRangedArmor = 0.35;
 			npc.m_flMeleeArmor = 1.75;		
-			f_BattilonsNpcBuff[npc.index] = GetGameTime() + 5.0;
+			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
 			npc.m_flNemalSuperRes = GetGameTime() + 5.0;
 			npc.m_flDoingAnimation = 0.0;
 
@@ -2951,7 +2951,7 @@ float NemalMineExploder(int entity, int victim, float damage, int weapon)
 	else
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,1000.0});
 
-	NpcStats_IberiaMarkEnemy(victim, 15.0);
+	ApplyStatusEffect(entity, victim, "Marked", 15.0);
 	
 	//if it was a barracks units, half damage
 	if(victim > MaxClients)
