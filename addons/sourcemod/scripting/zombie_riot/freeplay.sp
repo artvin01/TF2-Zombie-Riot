@@ -33,6 +33,7 @@ static int SkullTimes;
 static bool ExplodingNPC;
 static int ExplodeNPCDamage;
 static bool IsRaidWave;
+static int ElementalAdd;
 
 void Freeplay_ResetAll()
 {
@@ -69,6 +70,7 @@ void Freeplay_ResetAll()
 	ExplodingNPC = false;
 	EscapeModeForNpc = false;
 	IsRaidWave = false;
+	ElementalAdd = 0;
 }
 
 int Freeplay_EnemyCount()
@@ -85,6 +87,24 @@ void Freeplay_OnNPCDeath(int entity)
 		startPosition[2] += 45;
 		makeexplosion(entity, entity, startPosition, "", ExplodeNPCDamage, 150, _, _, true, true, 6.0);
 	}
+}
+
+Action Freeplay_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if(victim <= 0)
+		return Plugin_Continue;
+
+	if(ElementalAdd)
+	{
+		switch(ElementalAdd)
+		{
+			default:
+			{
+				// grah
+			}
+		}
+	}
+	return Plugin_Changed;
 }
 
 int Freeplay_GetDangerLevelCurrent()
