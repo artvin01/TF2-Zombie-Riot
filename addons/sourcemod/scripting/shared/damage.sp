@@ -534,7 +534,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 		damage += basedamage * (EntityMoraleBoostReturn(attacker, 2) * DamageBuffExtraScaling);
 #endif
 
-
+	//This buffs up damage in anyway possible
+	damage += StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, basedamage, damagetype);
+	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker,inflictor, basedamage, damagetype);
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
 	if(GetTeam(attacker) != TFTeam_Red && Medival_Difficulty_Level != 0.0)
@@ -571,7 +573,6 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float &
 			damage *= 1.25;
 		}
 	}
-	StatusEffect_OnTakeDamage_DealNegative(victim, attacker, damage, damagetype);
 #endif	//zr
 	return false;
 }
@@ -1539,6 +1540,7 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
 	StatusEffect_OnTakeDamage_TakenPositive(victim, attacker, damage, damagetype);
+	StatusEffect_OnTakeDamage_DealNegative(victim, attacker, damage, damagetype);
 	float DamageRes = 1.0;
 	//Resistance buffs will not count towards this flat decreace, they will be universal!hussar!
 	//these are absolutes
@@ -1633,9 +1635,6 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 		}
 	}
 #endif
-
-	StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, damage, damagetype);
-
 #if defined RPG	
 	if(damagePosition[2] != 6969420.0)
 	{

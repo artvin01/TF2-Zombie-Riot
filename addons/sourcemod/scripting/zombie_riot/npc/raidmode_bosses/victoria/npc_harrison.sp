@@ -1791,7 +1791,7 @@ static bool Victoria_Support(Harrison npc)
 			TE_SendToAll();
 			if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0))
 			{
-				Vs_ParticleSpawned[enemy[i]] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+				Vs_ParticleSpawned[enemy[i]] = EntIndexToEntRef(ParticleEffectAt(position, "kartimpacttrail", 2.0));
 				SetEdictFlags(Vs_ParticleSpawned[enemy[i]], (GetEdictFlags(Vs_ParticleSpawned[enemy[i]]) | FL_EDICT_ALWAYS));
 				Vs_IncomingBoom=true;
 			}
@@ -1802,7 +1802,7 @@ static bool Victoria_Support(Harrison npc)
 			position[0] = Vs_Temp_Pos[enemy[i]][0];
 			position[1] = Vs_Temp_Pos[enemy[i]][1];
 			position[2] = Vs_Temp_Pos[enemy[i]][2] - 100.0;
-			TeleportEntity(Vs_ParticleSpawned[enemy[i]], position, NULL_VECTOR, NULL_VECTOR);
+			TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[enemy[i]]), position, NULL_VECTOR, NULL_VECTOR);
 			position[2] += 100.0;
 			
 			b_ThisNpcIsSawrunner[npc.index] = true;

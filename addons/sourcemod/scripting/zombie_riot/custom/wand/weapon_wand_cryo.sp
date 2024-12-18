@@ -387,6 +387,7 @@ public void Cryo_FreezeZombie(int client, int zombie, int type)
 
 	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 	FreezeNpcInTime(zombie, FreezeDuration);
+	ApplyStatusEffect(client, zombie, "Frozen", FreezeDuration);
 	if (!IsValidEntity(ZNPC.m_iFreezeWearable))
 	{
 		float offsetToHeight = 40.0;

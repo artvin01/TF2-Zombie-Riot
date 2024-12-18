@@ -325,7 +325,6 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float BaseDMG = 950.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
-		BaseDMG *= Attributes_Get(weapon, 621, 1.0);
 
 		if(f_ProjectileSinceSpawn[entity] > GetGameTime())
 		{

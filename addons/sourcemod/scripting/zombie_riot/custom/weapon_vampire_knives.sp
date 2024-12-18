@@ -398,6 +398,12 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		BleedAmountCountStack[victim] -= 1;
 		return Plugin_Stop;
 	}
+
+	if(HasSpecificBuff(victim, "Hardened Aura"))
+	{
+		BleedAmountCountStack[victim] -= 1;
+		return Plugin_Stop;
+	}
 	
 	int NumHits = ReadPackCell(pack);
 	int HitQuota = ReadPackCell(pack);

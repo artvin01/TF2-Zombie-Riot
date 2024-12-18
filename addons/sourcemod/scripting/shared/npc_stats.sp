@@ -8343,7 +8343,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	IgniteFor[entity] = 0;
 	BurnDamage[entity] = 0.0;
 	IgniteRef[entity] = -1;
-	f_NpcImmuneToBleed[entity] = 0.0;
 	f_CreditsOnKill[entity] = 0.0;
 	i_PluginBot_ApproachDelay[entity] = 0;
 	i_npcspawnprotection[entity] = 0;
@@ -8983,9 +8982,15 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 }
 
 #if defined ZR
-void NPCStats_RemoveAllDebuffs(int enemy)
+void NPCStats_RemoveAllDebuffs(int enemy, float Duration = 0.0)
 {
 	IgniteFor[enemy] = 0;
+	//for 0.6 seconds, so all bleed get cleared
+	if(Duration <= 0.6)
+		Duration = 0.6;
+
+	RemoveAllBuffs(enemy, false);
+	ApplyStatusEffect(enemy, enemy, "Hardened Aura", Duration);
 }
 #endif
 

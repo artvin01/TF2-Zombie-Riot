@@ -544,7 +544,6 @@ int i_WandOwner[MAXENTITIES]; //				//785
 
 
 
-float f_NpcImmuneToBleed[MAXENTITIES];
 bool b_NpcIsInvulnerable[MAXENTITIES];
 bool b_NpcUnableToDie[MAXENTITIES];
 

@@ -798,6 +798,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
 //	LoadTranslations("realtime.phrases");
 	LoadTranslations("common.phrases");
+	LoadTranslations("zombieriot.phrases.status_effects");
 	
 	DHook_Setup();
 	SDKCall_Setup();
@@ -806,7 +807,6 @@ public void OnPluginStart()
 	SDKHook_PluginStart();
 	OnPluginStart_LagComp();
 	NPC_Base_InitGamedata();
-
 #if defined NPC_CAMERA
 	NPCCamera_PluginStart();
 #endif
@@ -1041,6 +1041,7 @@ public void OnMapStart()
 
 	DamageModifMapStart();
 	SDKHooks_ClearAll();
+	InitStatusEffects();
 
 	Zero(f_MinicritSoundDelay);
 	Zero(b_IsAGib);
@@ -2344,7 +2345,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IgnoredByPlayerProjectiles[entity] = false;
 		b_DoNotUnStuck[entity] = false;
 		f_NoUnstuckVariousReasons[entity] = 0.0;
-		f_NpcImmuneToBleed[entity] = 0.0;
 		b_NpcIsInvulnerable[entity] = false;
 		b_NpcUnableToDie[entity] = false;
 		i_NpcInternalId[entity] = 0;

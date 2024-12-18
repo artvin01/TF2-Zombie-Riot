@@ -996,7 +996,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 			b_angered_twice[npc.index] = true; //	>:(
 			RaidModeTime += 60.0;
 
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
 			GiveProgressDelay(20.0);
 			RemoveNpcFromEnemyList(npc.index);
@@ -1034,14 +1034,6 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
 		}
-	}
-	if(f_NpcImmuneToBleed[npc.index] > GetGameTime())
-	{
-		damage = 0.0;
-	}
-	else if(f_NpcImmuneToBleed[npc.index] + 1.0 > GetGameTime()) //for 2 seconds he will take next to no damage.
-	{
-		damage *= 0.1;
 	}
 	return Plugin_Changed;
 }

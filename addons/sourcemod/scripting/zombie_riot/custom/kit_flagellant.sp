@@ -784,9 +784,9 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
 		
-		f_NpcImmuneToBleed[target] = GetGameTime() + 0.6;
+		
 		float extra = BleedAmountCountStack[target] * 1000.0;
-
+		NPCStats_RemoveAllDebuffs(target, 0.6);
 		SDKHooks_TakeDamage(target, client, client, (3200.0 * multi), DMG_PLASMA, secondary);
 		if(extra)
 			SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);

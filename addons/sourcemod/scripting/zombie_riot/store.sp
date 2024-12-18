@@ -3596,6 +3596,9 @@ static void MenuPage(int client, int section)
 
 			FormatEx(buffer, sizeof(buffer), "%t", "Encyclopedia");
 			menu.AddItem("-13", buffer);
+
+			FormatEx(buffer, sizeof(buffer), "%t", "Status Effect List");
+			menu.AddItem("-100", buffer);
 /*
 			zr_tagblacklist.GetString(buffer, sizeof(buffer));
 			if(StrContains(buffer, "private", false) == -1)
@@ -3896,6 +3899,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -13:
 					{
 						Items_EncyclopediaMenu(client);
+					}
+					case -100:
+					{
+						Items_StatusEffectListMenu(client);
 					}
 					case -14:
 					{

@@ -792,7 +792,10 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 		if(GetTeam(enemy) == TFTeam_Red)
 			return;
 	}
-
+	if(HasSpecificBuff(enemy, "Hardened Aura"))
+	{
+		return;
+	}
 	if(b_thisNpcIsABoss[enemy] || b_StaticNPC[enemy] || b_thisNpcIsARaid[enemy])
 	{
 		if(!ShrinkOnlyOneTarget && f_RaidShrinkImmunity[enemy] < GetGameTime())

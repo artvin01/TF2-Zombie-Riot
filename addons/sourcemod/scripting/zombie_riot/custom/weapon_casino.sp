@@ -329,6 +329,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 		NpcStats_CasinoDebuffStengthen(victim, CasinoDebuffDamage[attacker]);
 		if(CryoEasy)
 		{
+			ApplyStatusEffect(attacker, victim, "Gambler's Ruin", 1.5);
 			i_CryoShot[attacker] -= 1;
 		}
 	}
@@ -662,7 +663,7 @@ public Action FrenzyCasino(Handle cut_timer, int client)
 public Action PaydayCasino(Handle cut_timer, int client)
 {
 	Payday = 1;
-	Frenzy_timer[client] = null;
+	Payday_timer[client] = null;
 	return Plugin_Handled;
 }
 

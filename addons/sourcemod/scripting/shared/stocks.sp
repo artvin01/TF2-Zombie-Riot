@@ -1222,7 +1222,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(f_NpcImmuneToBleed[entity] > GetGameTime())
+	if(HasSpecificBuff(entity, "Hardened Aura"))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;

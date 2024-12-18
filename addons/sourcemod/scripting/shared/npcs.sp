@@ -653,7 +653,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					BurnDamage[entity] = 0.0;
 					return Plugin_Stop;
 				}
-				if(f_NpcImmuneToBleed[entity] > GetGameTime())
+				if(HasSpecificBuff(entity, "Hardened Aura"))
 				{
 					ExtinguishTarget(entity);
 					IgniteTimer[entity] = null;
@@ -1600,14 +1600,6 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 				}
 			}
 #endif
-			/*
-			BarrackBody npc = view_as<BarrackBody>(victim);
-			int client = GetClientOfUserId(npc.OwnerUserId);
-			//theres no way to tell if the unit is melee or ranged, so we shouldnt let it be on the hud.
-			if(IsValidClient(client))
-				Barracks_UnitExtraDamageCalc(victim, client, percentageGlobal, int damagetype)
-				//show barrak units res
-			*/
 		}
 
 		if((DamagePercDo != 100.0) && !b_NpcIsInvulnerable[victim])	
@@ -2055,20 +2047,12 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 
 stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
-	if(StatusEffects_HasDebuffOrBuff(npc))
+	char BufferTest1[1];
+	char BufferTest2[1];
+	EntityBuffHudShow(npc, client, BufferTest1, BufferTest2);
+	if(BufferTest1[0] || BufferTest2[0])
 		return true;
-	else if(BleedAmountCountStack[npc] > 0) //bleed
-		return true;
-	else if(IgniteFor[npc] > 0) //burn
-		return true;
-	else if(f_DuelStatus[npc] > GameTime)
-		return true;
-#if defined RPG
-	else if(TrueStrength_StacksOnEntity(client, npc))
-		return true;
-	else if(BubbleProcStatusLogicCheck(client) != 0)
-		return true;
-#endif
+
 	return false;
 }
 void DoMeleeAnimationFrameLater(DataPack pack)

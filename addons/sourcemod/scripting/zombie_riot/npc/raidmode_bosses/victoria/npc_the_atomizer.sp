@@ -1804,7 +1804,7 @@ static bool Victoria_Support(Atomizer npc)
 		{
 			position[0] = 525.0;
 			position[1] = 1600.0;
-			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+			Vs_ParticleSpawned[npc.index] = EntIndexToEntRef(ParticleEffectAt(position, "kartimpacttrail", 2.0));
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
 			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
@@ -1816,7 +1816,7 @@ static bool Victoria_Support(Atomizer npc)
 		position[0] = Vs_Temp_Pos[npc.index][0];
 		position[1] = Vs_Temp_Pos[npc.index][1];
 		position[2] = Vs_Temp_Pos[npc.index][2] - 700.0;
-		TeleportEntity(Vs_ParticleSpawned[npc.index], position, NULL_VECTOR, NULL_VECTOR);
+		TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[npc.index]), position, NULL_VECTOR, NULL_VECTOR);
 		position[2] += 700.0;
 		
 		b_ThisNpcIsSawrunner[npc.index] = true;

@@ -863,7 +863,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 			f_TimeSinceHasBeenHurt = GetGameTime() + 36.0;
 			RaidModeTime += 900.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			SetEntityCollisionGroup(npc.index, 24);
 			SetTeam(npc.index, TFTeam_Red);
 			GiveProgressDelay(45.0);
