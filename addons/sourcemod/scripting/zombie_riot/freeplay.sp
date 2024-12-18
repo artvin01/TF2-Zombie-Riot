@@ -32,8 +32,9 @@ static int ExtraSkulls;
 static int SkullTimes;
 static bool ExplodingNPC;
 static int ExplodeNPCDamage;
-static bool IsRaidWave;
+static bool IsRaidWave; // to prevent the message from popping up twice
 static int ElementalAdd;
+static bool ElementalEnabled; // to prevent multiple elemental rolls, which override the previous one
 
 void Freeplay_ResetAll()
 {
@@ -71,6 +72,7 @@ void Freeplay_ResetAll()
 	EscapeModeForNpc = false;
 	IsRaidWave = false;
 	ElementalAdd = 0;
+	ElementalEnabled = false;
 }
 
 int Freeplay_EnemyCount()
@@ -91,19 +93,48 @@ void Freeplay_OnNPCDeath(int entity)
 
 Action Freeplay_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(victim <= 0)
-		return Plugin_Continue;
-
-	if(ElementalAdd)
+	if(IsValidClient(victim))
 	{
-		switch(ElementalAdd)
+		if(ElementalAdd)
 		{
-			default:
+			switch(ElementalAdd)
 			{
-				// grah
+				case 1:
+				{
+					Elemental_AddChaosDamage(victim, attacker, 30, true, true);
+				}
+				case 2:
+				{
+					Elemental_AddVoidDamage(victim, attacker, 30, true, false);
+				}
+				case 3:
+				{
+					Elemental_AddNervousDamage(victim, attacker, 30, true, false);
+				}
+				case 4:
+				{
+					Ruina_Add_Mana_Sickness(attacker, victim, 0.2, 60);
+				}
+				case 5:
+				{
+					Elemental_AddCorruptionDamage(victim, attacker, 30);
+				}
+				case 6:
+				{
+					StartBleedingTimer_Against_Client(victim, attacker, 10.0, 5);
+				}
+				default:
+				{
+					// nothing
+				}
 			}
 		}
 	}
+	else
+	{
+		return Plugin_Continue;
+	}
+	
 	return Plugin_Changed;
 }
 
@@ -297,42 +328,42 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 1: // Rogue cta doctor
 			{
 				enemy.Index = NPC_GetByPlugin("npc_doctor");
-				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 2: // Guln
 			{
 				enemy.Index = NPC_GetByPlugin("npc_fallen_warrior");
-				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 3: // L4D2 Tank
 			{
 				enemy.Index = NPC_GetByPlugin("npc_l4d2_tank");
-				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(3500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 4: // Amogus
 			{
 				enemy.Index = NPC_GetByPlugin("npc_omega");
-				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 5: // Panzer
 			{
 				enemy.Index = NPC_GetByPlugin("npc_panzer");
-				enemy.Health = RoundToFloor(3500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 6: // Lucius or lucian or luciaus or whatever the name is  i forgor
 			{
 				enemy.Index = NPC_GetByPlugin("npc_phantom_knight");
-				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 7: // Sawrunner
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
-				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 		}
 		enemy.Credits += 250.0;
 		enemy.ExtraDamage *= 1.65;
-		enemy.ExtraSpeed = 1.35;
+		enemy.ExtraSpeed = 1.45;
 		enemy.ExtraSize = 1.65; // big
 
 		count = GetRandomInt(2, 10);
@@ -463,6 +494,9 @@ void Freeplay_OnEndWave(int &cash)
 {
 	if(ExplodingNPC)
 		ExplodingNPC = false;
+
+	if(ElementalEnabled)
+		ElementalEnabled = false;
 
 	cash += CashBonus;
 }
@@ -1167,6 +1201,47 @@ void Freeplay_SetupStart(bool extra = false)
 			ExplodeNPCDamage = GetRandomInt(50, 250);
 			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death!");
 			ExplodingNPC = true;
+		}
+		case 80:
+		{
+			if(ElementalEnabled)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+			ElementalEnabled = true;
+			ElementalAdd = GetRandomInt(0, 6)
+			switch(ElementalAdd)
+			{
+				case 1:
+				{
+					strcopy(message, sizeof(message), "{red}Now, enemies will apply additional Elemental Chaos damage!");
+				}
+				case 2:
+				{
+					strcopy(message, sizeof(message), "{red}Now, enemies will apply additional Elemental Void damage!");
+				}
+				case 3:
+				{
+					strcopy(message, sizeof(message), "{red}Now, enemies will apply additional Elemental Corrosion damage!");
+				}
+				case 4:
+				{
+					strcopy(message, sizeof(message), "{red}Now, enemies will apply additional Mana Overflow!");
+				}
+				case 5:
+				{
+					strcopy(message, sizeof(message), "{red}Now, enemies will apply additional Elemental Corruption Damage!");
+				}
+				case 6:
+				{
+					strcopy(message, sizeof(message), "{red}Now, enemies will apply an additional afterburn stack!");
+				}
+				default:
+				{
+					strcopy(message, sizeof(message), "{green}Now, enemies won't apply any additional effect on hit.");
+				}
+			}
 		}
 		default:
 		{
