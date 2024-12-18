@@ -649,9 +649,9 @@ static void Matrix_Twins_Apply_Healing(Matrix_Twins npc, float gameTime)
 	npc.m_flDead_Ringer_Invis = gameTime + 1.0;
 	npc.m_flDead_Ringer_Invis_bool = true;
 	float Maxhealth = float(ReturnEntityMaxHealth(npc.index));
-	float reduction = npc.b_Twin_On ? 0.20 : 0.25;
+	float reduction = npc.b_Twin_On ? 0.15 : 0.15;
 	float healingamt = (Maxhealth * reduction);
-	float minimum = (Maxhealth * 0.1);
+	float minimum = (Maxhealth * 0.05);
 	
 	if(npc.fl_Heal_Amount >= healingamt)
 	{
