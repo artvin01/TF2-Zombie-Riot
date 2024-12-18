@@ -1291,9 +1291,10 @@ static void Projectile_Detect_Loop(DataPack pack)
 }
 static void On_LaserHit(int client, int target, int damagetype, float damage)
 {
-	if(fl_trace_target_timeout[client][target] > GetGameTime())
+	if(f_GlobalHitDetectionLogic[client][target] > GetGameTime())
 		return;
-	fl_trace_target_timeout[client][target] = GetGameTime() + 0.25;	//if they walk backwards, its likely to hit them 2 times, but who on earth would willingly walk backwards/alongside the trajectory of the projectile
+	
+	f_GlobalHitDetectionLogic[client][target] = GetGameTime() + 0.25;	//if they walk backwards, its likely to hit them 2 times, but who on earth would willingly walk backwards/alongside the trajectory of the projectile
 
 	int pitch = GetRandomInt(125,135);
 	EmitSoundToAll(KARLAS_SLICER_HIT, target, SNDCHAN_AUTO, 75,_,0.8,pitch);

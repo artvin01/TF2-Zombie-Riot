@@ -79,7 +79,6 @@ static float fl_ThrowPlayerImmenent[MAXENTITIES];
 static bool b_ThrowPlayerImmenent[MAXENTITIES];
 static int i_GrabbedThis[MAXENTITIES];
 
-static bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
 static float fl_ThrowDelay[MAXENTITIES];
 static int i_TankThrewThis[MAXENTITIES];
 
@@ -974,6 +973,10 @@ void ApplySdkHookTankThrow(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
+		for(int entity1=1; entity1 < MAXENTITIES; entity1++)
+		{
+			b_AlreadyHitTankThrow[entity][entity1] = false;
+		}
 		fl_ThrowDelay[entity] = GetGameTime(entity) + 0.1;
 		SDKHook(entity, SDKHook_Think, contact_throw_tank_entity);		
 	}

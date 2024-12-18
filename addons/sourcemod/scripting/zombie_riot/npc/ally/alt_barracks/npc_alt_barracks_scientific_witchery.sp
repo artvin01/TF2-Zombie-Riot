@@ -35,8 +35,6 @@ static bool Scientific_Witchery_BEAM_HitDetected[MAXENTITIES];
 static int Scientific_Witchery_BEAM_BuildingHit[MAXENTITIES];
 static float fl_runaway_timer_timeout[MAXENTITIES];
 
-float fl_trace_target_timeout[MAXENTITIES][MAXENTITIES];
-
 
 static int i_AmountProjectiles[MAXENTITIES];
 
@@ -48,7 +46,7 @@ public void Barrack_Alt_Scientific_Witchery_MapStart()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));   i++) 			{ PrecacheSound(g_IdleAlertedSounds[i]);	}
 	
 	Zero(fl_self_heal_timer);
-	Zero2(fl_trace_target_timeout);
+	Zero2(f_GlobalHitDetectionLogic);
 	
 	gLaser2 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 
@@ -550,13 +548,15 @@ static void Scientific_Witchery_Ability(int client, float Vec_1[3], float Vec_2[
 	
 	
 }
+
+
 static bool Scientific_Witchery_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity) && Scientific_Witchery_BEAM_BuildingHit[client]<11)
 	{
-		if(fl_trace_target_timeout[client][entity]<=GetGameTime())
+		if(f_GlobalHitDetectionLogic[entity][client] <=GetGameTime())
 		{
-			fl_trace_target_timeout[client][entity] = GetGameTime() + 0.25;
+			f_GlobalHitDetectionLogic[entity][client] = GetGameTime() + 0.25;
 			Scientific_Witchery_BEAM_BuildingHit[client]++;
 			Scientific_Witchery_BEAM_HitDetected[entity] = true;
 		}
