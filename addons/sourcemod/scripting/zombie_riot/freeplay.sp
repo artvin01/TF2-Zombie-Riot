@@ -27,7 +27,6 @@ static int RaidFight;
 static float SpeedMult;
 static float MeleeMult;
 static float RangedMult;
-static float ExtraArmor;
 static bool SuperMiniBoss;
 static int ExtraSkulls;
 static int SkullTimes;
@@ -63,7 +62,6 @@ void Freeplay_ResetAll()
 	SpeedMult = 1.0;
 	MeleeMult = 1.0;
 	RangedMult = 1.0;
-	ExtraArmor = 0.0;
 	ExtraSkulls = 0;
 	SkullTimes = 0;
 	ExplodeNPCDamage = 0;
@@ -436,9 +434,6 @@ void Freeplay_SpawnEnemy(int entity)
 		}
 	}
 
-	if(ExtraArmor > 0.0)
-		GrantEntityArmor(entity, false, 1.0, 0.5, 0, ExtraArmor);
-
 	fl_Extra_Speed[entity] *= SpeedMult;
 	fl_Extra_MeleeArmor[entity] *= MeleeMult;
 	fl_Extra_RangedArmor[entity] *= RangedMult;
@@ -470,7 +465,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 84;
+		rand = GetURandomInt() % 80;
 	
 	char message[128];
 	switch(rand)
@@ -1134,44 +1129,6 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		case 78:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies now gain 5000 extra armor, which halves their damage taken.");
-			ExtraArmor += 5000.0;
-		}
-		case 79:
-		{
-			strcopy(message, sizeof(message), "{red}All enemies now gain 10000 extra armor, which halves their damage taken.");
-			ExtraArmor += 10000.0;
-		}
-		case 80:
-		{
-			if(ExtraArmor <= 0.0)
-			{
-				Freeplay_SetupStart();
-				return;
-			}
-			strcopy(message, sizeof(message), "{green}All enemies now have 2500 less armor.");
-			ExtraArmor -= 2500.0;
-			if(ExtraArmor < 0.0)
-			{
-				ExtraArmor = 0.0;
-			}
-		}
-		case 81:
-		{
-			if(ExtraArmor <= 0.0)
-			{
-				Freeplay_SetupStart();
-				return;
-			}
-			strcopy(message, sizeof(message), "{green}All enemies now have 5000 less armor.");
-			ExtraArmor -= 5000.0;
-			if(ExtraArmor < 0.0)
-			{
-				ExtraArmor = 0.0;
-			}
-		}
-		case 82:
-		{
 			if(SuperMiniBoss)
 			{
 				Freeplay_SetupStart();
@@ -1180,7 +1137,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 			SuperMiniBoss = true;
 		}
-		case 83:
+		case 79:
 		{
 			if(ExplodingNPC)
 			{
