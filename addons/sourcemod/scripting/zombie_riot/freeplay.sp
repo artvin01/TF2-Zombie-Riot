@@ -253,7 +253,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 			case 21:
 			{
-				enemy.Index = NPC_GetByPlugin("npc_agent_jackson");
+				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
 				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 22:
