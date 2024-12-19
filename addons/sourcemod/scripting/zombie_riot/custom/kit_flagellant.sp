@@ -139,6 +139,8 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 							ParticleRef[client] = EntIndexToEntRef(entity);
 						}
 					}
+					ApplyRapidSuturing(client);
+					ApplyStatusEffect(client, client, "Thick Blood", 0.6);
 					
 					return Plugin_Continue;
 				}
@@ -789,8 +791,9 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 			multi *= 1.2;
 		
 		
-		float extra = BleedAmountCountStack[target] * 1000.0;
-		ApplyStatusEffect(target, target, "Hardened Aura", 0.6);
+		float extra = BleedAmountCountStack[target] * 200.0 * multi;
+		ApplyRapidSuturing(target);
+		
 		SDKHooks_TakeDamage(target, client, client, (3200.0 * multi), DMG_PLASMA, secondary);
 		if(extra)
 			SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);

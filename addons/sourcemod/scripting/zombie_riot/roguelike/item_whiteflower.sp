@@ -353,7 +353,7 @@ public void Rogue_RareWeapon_Collect()
 			strcopy(name, sizeof(name), "Ancestor Launcher");
 	}
 
-	Store_DiscountNamedItem(name, 30);
+	Store_DiscountNamedItem(name, 999);
 	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
 }
 

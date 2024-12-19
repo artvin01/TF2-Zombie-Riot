@@ -1496,6 +1496,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
 		baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 #endif
+		//in freeplay there should be a speed limit, otherwise they will just have infinite speed and youre screwed.
+		if(Waves_InFreeplay())
+		{
+			if((this.m_flSpeed * GetPercentageAdjust) > 500.0)
+				return 500.0;
+		}
 
 		return (this.m_flSpeed * GetPercentageAdjust);
 	}
@@ -8990,8 +8996,10 @@ void NPCStats_RemoveAllDebuffs(int enemy, float Duration = 0.0)
 		Duration = 0.6;
 
 	RemoveAllBuffs(enemy, false);
+	ApplyRapidSuturing(enemy);
 	ApplyStatusEffect(enemy, enemy, "Hardened Aura", Duration);
 }
+
 #endif
 
 

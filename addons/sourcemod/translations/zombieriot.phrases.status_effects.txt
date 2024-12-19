@@ -1,5 +1,9 @@
 "Phrases"
 {
+	"Is Elemental"
+	{
+		"en"	"This is an Elemental status effect."
+	}
 	"Teslar Shock"
 	{
 		"en"	"Teslar Shock"
@@ -214,7 +218,23 @@
 	}
 	"Hardened Aura Desc"
 	{
-		"en"	"Immune to any and ALL debuffs."
+		"en"	"Immune to any and ALL debuffs.\nElemental Is excluded from this."
+	}
+	"Thick Blood"
+	{
+		"en"	"Thick Blood"
+	}
+	"Thick Blood Desc"
+	{
+		"en"	"Immune To all Bleed, cleanses all Bleed."
+	}
+	"Rapid Suturing"
+	{
+		"en"	"Rapid Suturing"
+	}
+	"Rapid Suturing Desc"
+	{
+		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very tempomary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
 	}
 	"Marked"
 	{
@@ -479,6 +499,14 @@
 	"Specter's Resolve Desc"
 	{
 		"en"	"Increases max health by 200"
+	}
+	"Ulpianus' Seriousness"
+	{
+		"en"	"Ulpianus' Seriousness"
+	}
+	"Ulpianus' Seriousness Desc"
+	{
+		"en"	"Attackspeed increaced by 20%%.\nIncreases Max Health by 540."
 	}
 	"Skadi's Skills"
 	{

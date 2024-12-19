@@ -260,7 +260,7 @@ public void VausMagica_NPCDeath(int entity)
 
 void VausMagicaShieldGiving(VausMagica npc, float gameTime)
 {
-	if(npc.m_flDoingAnimation)
+	if(gameTime < npc.m_flDoingAnimation)
 	{
 		return;
 	}
@@ -297,7 +297,7 @@ void VausMagicaShieldGiving(VausMagica npc, float gameTime)
 
 void VausMagicaSelfDefense(VausMagica npc, float gameTime, int target, float distance)
 {
-	if(npc.m_flDoingAnimation)
+	if(gameTime < npc.m_flDoingAnimation)
 	{
 		return;
 	}

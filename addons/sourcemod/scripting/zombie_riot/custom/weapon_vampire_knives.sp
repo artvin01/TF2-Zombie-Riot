@@ -358,12 +358,15 @@ public void Vamp_ApplyBloodlust(int attacker, int victim, int VampType, bool IsC
 
 	if(HasSpecificBuff(victim, "Hardened Aura"))
 		return;
+	if(HasSpecificBuff(victim, "Thick Blood"))
+		return;
 	BleedAmountCountStack[victim] += 1;
 	Handle pack;
 	CreateDataTimer(BleedRate, Vamp_BloodlustTick, pack, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack, GetClientUserId(attacker));
 	WritePackCell(pack, EntIndexToEntRef(victim));
 	WritePackCell(pack, victim);
+	WritePackFloat(pack, GetGameTime());
 	WritePackCell(pack, 0);
 	WritePackCell(pack, NumStacks);
 	WritePackCell(pack, MaxHeal);
@@ -382,6 +385,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	int attacker = GetClientOfUserId(ReadPackCell(pack));
 	int victim = EntRefToEntIndex(ReadPackCell(pack));
 	int victimOriginalId = ReadPackCell(pack);
+	float GameTimeClense = ReadPackFloat(pack);
 	
 	if (!IsValidClient(attacker) || !IsValidEntity(victim))
 	{
@@ -401,12 +405,24 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		return Plugin_Stop;
 	}
 
-	if(HasSpecificBuff(victim, "Hardened Aura"))
+	if(StatusEffects_RapidSuturingCheck(victim, GameTimeClense))
 	{
-		BleedAmountCountStack[victim] -= 1;
 		return Plugin_Stop;
 	}
-	
+	if(HasSpecificBuff(victim, "Hardened Aura"))
+	{
+		BleedAmountCountStack[victimOriginalId] -= 1;
+		if(BleedAmountCountStack[victimOriginalId] < 0)
+			BleedAmountCountStack[victimOriginalId] = 0;
+		return Plugin_Stop;
+	}
+	if(HasSpecificBuff(victim, "Thick Blood"))
+	{
+		BleedAmountCountStack[victimOriginalId] -= 1;
+		if(BleedAmountCountStack[victimOriginalId] < 0)
+			BleedAmountCountStack[victimOriginalId] = 0;
+		return Plugin_Stop;
+	}
 	int NumHits = ReadPackCell(pack);
 	int HitQuota = ReadPackCell(pack);
 	float MaxHeal = ReadPackCell(pack);
@@ -482,7 +498,9 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	NumHits++;
 	if (NumHits >= HitQuota)
 	{
-		BleedAmountCountStack[victim] -= 1;
+		BleedAmountCountStack[victimOriginalId] -= 1;
+		if(BleedAmountCountStack[victimOriginalId] < 0)
+			BleedAmountCountStack[victimOriginalId] = 0;
 		return Plugin_Stop;
 	}
 	Handle pack2;
@@ -490,6 +508,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	WritePackCell(pack2, GetClientUserId(attacker));
 	WritePackCell(pack2, EntIndexToEntRef(victim));
 	WritePackCell(pack2, victim);
+	WritePackFloat(pack2, GameTimeClense);
 	WritePackCell(pack2, NumHits);
 	WritePackCell(pack2, HitQuota);
 	WritePackCell(pack2, MaxHeal);
