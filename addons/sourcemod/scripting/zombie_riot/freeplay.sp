@@ -42,6 +42,11 @@ static int StrangleDebuff;
 static int ProsperityDebuff;
 static bool SilenceDebuff;
 
+void Freeplay_OnMapStart()
+{
+	PrecacheSound("ui/vote_success.wav", true);
+}
+
 void Freeplay_ResetAll()
 {
 	HealthMulti = 1.0;
