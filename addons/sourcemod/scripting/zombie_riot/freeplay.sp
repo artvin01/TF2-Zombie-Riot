@@ -465,11 +465,16 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 80;
+		rand = GetURandomInt() % 73;
 	
 	char message[128];
 	switch(rand)
 	{
+		// The way I (samuu) manage the skulls is ordering the original ones, 
+		// and at the very bottom, i put on the new ones (below raid skulls)
+		// So i don't later have to worry about changing every case number
+
+		/// HEALTH SKULLS ///
 		case 0:
 		{
 			strcopy(message, sizeof(message), "{red}All enemies now have 60000 more health!");
@@ -477,47 +482,39 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		case 1:
 		{
-			strcopy(message, sizeof(message), "{green}You will gain 15 random friendly units.");
-			FriendlyDay = true;
-		}
-		case 2:
-		{
 			strcopy(message, sizeof(message), "{red}All enemies now have 15% more health!");
 			HealthMulti *= 1.15;
 		}
-		case 3:
+		case 2:
 		{
 			strcopy(message, sizeof(message), "{yellow}All enemies now have {green}60000 less health {yellow}but {red}20% more health.");
 			HealthBonus -= 60000;
 			HealthMulti *= 1.2;
 		}
-		case 4:
+		case 3:
 		{
 			strcopy(message, sizeof(message), "{yellow}All enemies now have {red}60000 more health {yellow}but {green}20% less health.");
 			HealthBonus += 60000;
 			HealthMulti /= 1.2;
 		}
-		case 5:
-		{
-			strcopy(message, sizeof(message), "{red}One extra enemy will spawn in each enemy group!");
-			CountBonus++;
-		}
-		case 6:
-		{
-			strcopy(message, sizeof(message), "{red}15% more enemies will spawn in each enemy group!");
-			CountMulti *= 1.15;
-		}
-		case 7:
-		{
-			strcopy(message, sizeof(message), "{green}10% less enemies will spawn in each enemy group.");
-			CountMulti /= 1.1;
-		}
-		case 8:
+		case 4:
 		{
 			strcopy(message, sizeof(message), "{green}All enemies now have 5% less health.");
 			HealthMulti *= 0.95;
 		}
-		case 9, 10:
+		case 5:
+		{
+			strcopy(message, sizeof(message), "{green}All enemies now have 10% less health.");
+			HealthMulti *= 0.9;
+		}
+		case 6:
+		{
+			strcopy(message, sizeof(message), "{red}All enemies now have 20% more health!");
+			HealthMulti *= 1.2;
+		}
+
+		/// BUFF/DEBUFF SKULLS //
+		case 7:
 		{
 			if(EscapeModeForNpc)
 			{
@@ -530,22 +527,109 @@ void Freeplay_SetupStart(bool extra = false)
 				EscapeModeForNpc = true;
 			}
 		}
+		case 8:
+		{
+			if(HussarBuff)
+			{
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Hussar buff.");
+				HussarBuff = false;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now gain the Hussar buff!");
+				HussarBuff = true;
+			}
+		}
+		case 9:
+		{
+			if(PernellBuff)
+			{
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Purnell buff.");
+				PernellBuff = true;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now gain the Purnell buff for 15 seconds!");
+				PernellBuff = true;
+			}
+		}
+		case 10:
+		{
+			if(IceDebuff > 2)
+			{
+				strcopy(message, sizeof(message), "{red}All enemies have lost the Cryo debuff!");
+				IceDebuff = 0;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Cyro debuff.");
+				IceDebuff++;
+			}
+		}
 		case 11:
 		{
-			strcopy(message, sizeof(message), "{green}All enemies now have 10% less health.");
-			HealthMulti *= 0.9;
+			if(TeslarDebuff > 2)
+			{
+				strcopy(message, sizeof(message), "{red}All enemies have lost the Teslar debuff!");
+				TeslarDebuff = 0;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Teslar debuff.");
+				TeslarDebuff++;
+			}
+
 		}
 		case 12:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies now have 20% more health!");
-			HealthMulti *= 1.2;
+			if(FusionBuff > 2)
+			{
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Fusion buff.");
+				FusionBuff = 0;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Fusion buff!");
+				FusionBuff++;
+			}
+			
 		}
 		case 13:
+		{
+			if(OceanBuff > 2)
+			{
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Ocean buff.");
+				OceanBuff = 0;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Ocean buff!");
+				OceanBuff++;
+			}
+		}
+		case 14:
+		{
+			strcopy(message, sizeof(message), "{green}The next 300 enemies will now gain the Crippled debuff.");
+			CrippleDebuff += 300;
+		}
+		case 15:
+		{
+			strcopy(message, sizeof(message), "{red}The next 2 enemies will become Stalkers! {yellow}(x25 HP, x15 DMG)");
+			StalkerBuff += 2;
+		}
+		case 16:
+		{
+			strcopy(message, sizeof(message), "{green}The next 300 enemies will now gain the Cudgel debuff.");
+			CudgelDebuff += 300;
+		}
+
+		/// CREDIT SKULLS //
+		case 17:
 		{
 			strcopy(message, sizeof(message), "{green}All enemies now give out 1 extra credits on death.");
 			KillBonus += 1;
 		}
-		case 14:
+		case 18:
 		{
 			if(KillBonus < 1)
 			{
@@ -556,17 +640,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}Reduced the credit per enemy kill by 1!");
 			KillBonus--;
 		}
-		case 15:
-		{
-			strcopy(message, sizeof(message), "{red}Mini-boss spawn rate has been increased by 50%!");
-			MiniBossChance *= 1.5;
-		}
-		case 16:
-		{
-			strcopy(message, sizeof(message), "{green}Mini-boss spawn rate has been reduced by 25%.");
-			MiniBossChance *= 0.75;
-		}
-		case 17:
+		case 19:
 		{
 			if(CashBonus < 100)
 			{
@@ -577,12 +651,114 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}Reduced extra credits gained per wave by 100!");
 			CashBonus -= 100;
 		}
-		case 18:
+		case 20:
 		{
 			strcopy(message, sizeof(message), "{green}You now gain 120 extra credits per wave.");
 			CashBonus += 120;
 		}
-		case 19:
+
+		/// ENEMY COUNT BUFFS ///
+		case 21:
+		{
+			strcopy(message, sizeof(message), "{red}One extra enemy will spawn in each enemy group!");
+			CountBonus++;
+		}
+		case 22:
+		{
+			strcopy(message, sizeof(message), "{red}15% more enemies will spawn in each enemy group!");
+			CountMulti *= 1.15;
+		}
+		case 23:
+		{
+			strcopy(message, sizeof(message), "{green}10% less enemies will spawn in each enemy group.");
+			CountMulti /= 1.1;
+		}
+		case 24:
+		{
+			strcopy(message, sizeof(message), "{green}You will gain 15 random friendly units.");
+			FriendlyDay = true;
+		}
+		case 25:
+		{
+			if(EnemyCount < 6)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+
+			strcopy(message, sizeof(message), "{red}Now, more enemy groups can appear!");
+			EnemyCount++;
+		}
+
+		/// PERK SKULLS ///
+		case 26:
+		{
+			if(PerkMachine == 1)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+
+			strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain resistance!");
+			PerkMachine = 1;
+		}
+		case 27:
+		{
+			if(PerkMachine == 2)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+
+			strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain Extra Damage!");
+			PerkMachine = 2;
+		}
+		case 28:
+		{
+			if(PerkMachine == 3)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+
+			strcopy(message, sizeof(message), "{red}All enemies are now using the Widows Wine perk, And thus gain camo! {yellow}(Allied NPCS and Sentry-a-like buildings cannot target them now.)");
+			PerkMachine = 3;
+		}
+		case 29:
+		{
+			if(PerkMachine == 4)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+
+			strcopy(message, sizeof(message), "{red}All enemies are now using the Speed Cola perk, and thus cannot be slowed!");
+			PerkMachine = 4;
+		}
+		case 30:
+		{
+			if(PerkMachine == 0)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+
+			strcopy(message, sizeof(message), "{green}All enemies are now using the Quick Revive perk, this is useless and removes their previous perk.");
+			PerkMachine = 0;
+		}
+
+		/// MISCELANEOUS SKULLS ///
+		case 31:
+		{
+			strcopy(message, sizeof(message), "{red}Mini-boss spawn rate has been increased by 50%!");
+			MiniBossChance *= 1.5;
+		}
+		case 32:
+		{
+			strcopy(message, sizeof(message), "{green}Mini-boss spawn rate has been reduced by 25%.");
+			MiniBossChance *= 0.75;
+		}
+		case 33:
 		{
 			if(EnemyBosses == 1)
 			{
@@ -600,7 +776,7 @@ void Freeplay_SetupStart(bool extra = false)
 				EnemyBosses = 6;
 			}
 		}
-		case 20:
+		case 34:
 		{
 			if(ImmuneNuke == 1)
 			{
@@ -618,152 +794,8 @@ void Freeplay_SetupStart(bool extra = false)
 				ImmuneNuke = 4;
 			}
 		}
-		case 21:
-		{
-			if(HussarBuff)
-			{
-				strcopy(message, sizeof(message), "{green}All enemies have lost the Hussar buff.");
-				HussarBuff = false;
-			}
-			else
-			{
-				strcopy(message, sizeof(message), "{red}All enemies now gain the Hussar buff!");
-				HussarBuff = true;
-			}
-		}
-		case 22:
-		{
-			if(PernellBuff)
-			{
-				strcopy(message, sizeof(message), "{green}All enemies have lost the Purnell buff.");
-				PernellBuff = true;
-			}
-			else
-			{
-				strcopy(message, sizeof(message), "{red}All enemies now gain the Purnell buff for 15 seconds!");
-				PernellBuff = true;
-			}
-		}
-		case 23:
-		{
-			if(PerkMachine == 1)
-			{
-				Freeplay_SetupStart();
-				return;
-			}
-
-			strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain resistance!");
-			PerkMachine = 1;
-		}
-		case 24, 25:
-		{
-			if(PerkMachine == 2)
-			{
-				Freeplay_SetupStart();
-				return;
-			}
-
-			strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain Extra Damage!");
-			PerkMachine = 2;
-		}
-		case 26:
-		{
-			if(PerkMachine == 3)
-			{
-				Freeplay_SetupStart();
-				return;
-			}
-
-			strcopy(message, sizeof(message), "{red}All enemies are now using the Widows Wine perk, And thus gain camo! {yellow}(Allied NPCS and Sentry-a-like buildings cannot target them now.)");
-			PerkMachine = 3;
-		}
-		case 27:
-		{
-			if(PerkMachine == 4)
-			{
-				Freeplay_SetupStart();
-				return;
-			}
-
-			strcopy(message, sizeof(message), "{red}All enemies are now using the Speed Cola perk, and thus cannot be slowed!");
-			PerkMachine = 4;
-		}
-		case 28:
-		{
-			if(PerkMachine == 0)
-			{
-				Freeplay_SetupStart();
-				return;
-			}
-
-			strcopy(message, sizeof(message), "{green}All enemies are now using the Quick Revive perk, this is useless and removes their previous perk.");
-			PerkMachine = 0;
-		}
-		case 29:
-		{
-			if(IceDebuff > 2)
-			{
-				strcopy(message, sizeof(message), "{red}All enemies have lost the Cryo debuff!");
-				IceDebuff = 0;
-			}
-			else
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Cyro debuff.");
-				IceDebuff++;
-			}
-		}
-		case 30:
-		{
-			if(TeslarDebuff > 1)
-			{
-				strcopy(message, sizeof(message), "{red}All enemies have lost the Teslar debuff!");
-				TeslarDebuff = 0;
-			}
-			else
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Teslar debuff.");
-				TeslarDebuff++;
-			}
-
-		}
-		case 31:
-		{
-			if(FusionBuff > 2)
-			{
-				strcopy(message, sizeof(message), "{green}All enemies have lost the Fusion buff.");
-				FusionBuff = 0;
-			}
-			else
-			{
-				strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Fusion buff!");
-				FusionBuff++;
-			}
-			
-		}
-		case 32:
-		{
-			if(OceanBuff > 1)
-			{
-				strcopy(message, sizeof(message), "{green}All enemies have lost the Ocean buff.");
-				OceanBuff = 0;
-			}
-			else
-			{
-				strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Ocean buff!");
-				OceanBuff++;
-			}
-		}
-		case 33:
-		{
-			strcopy(message, sizeof(message), "{green}The next 300 enemies will now gain the Crippled debuff.");
-			CrippleDebuff += 300;
-		}
-		case 34:
-		{
-			strcopy(message, sizeof(message), "{red}The next enemy will become a Stalker! {yellow}(x25 HP, x15 DMG)");
-			StalkerBuff++;
-		}
-		case 35, 36, 37:
+		
+		case 35:
 		{
 			//if(EnemyChance > 8)
 			//{
@@ -774,18 +806,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}Stronger enemy types are now more likely to appear!");
 			EnemyChance++;
 		}
-		case 38, 39, 40:
-		{
-			if(EnemyCount < 6)
-			{
-				Freeplay_SetupStart();
-				return;
-			}
-
-			strcopy(message, sizeof(message), "{red}Now, more enemy groups can appear!");
-			EnemyCount++;
-		}
-		case 41, 42:
+		case 36:
 		{
 			if(EnemyChance < 3)
 			{
@@ -796,12 +817,9 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{green}Stronger enemy types are now less likely to appear.");
 			EnemyChance--;
 		}
-		case 43:
-		{
-			strcopy(message, sizeof(message), "{green}The next 300 enemies will now gain the Cudgel debuff.");
-			CudgelDebuff += 300;
-		}
-		case 44:
+
+		/// RAID SKULLS ///
+		case 37:
 		{
 			if(RaidFight)
 			{
@@ -811,7 +829,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
 			RaidFight = 1;
 		}
-		case 45:
+		case 38:
 		{
 			if(RaidFight)
 			{
@@ -821,7 +839,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
 			RaidFight = 2;
 		}
-		case 46:
+		case 39:
 		{
 			if(RaidFight)
 			{
@@ -831,7 +849,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
 			RaidFight = 3;
 		}
-		case 47:
+		case 40:
 		{
 			if(RaidFight)
 			{
@@ -841,7 +859,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
 			RaidFight = 4;
 		}
-		case 48:
+		case 41:
 		{
 			if(RaidFight)
 			{
@@ -851,7 +869,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
 			RaidFight = 5;
 		}
-		case 49:
+		case 42:
 		{
 			if(RaidFight)
 			{
@@ -861,7 +879,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
 			RaidFight = 6;
 		}
-		case 50:
+		case 43:
 		{
 			if(RaidFight)
 			{
@@ -871,7 +889,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
 			RaidFight = 7;
 		}
-		case 51:
+		case 44:
 		{
 			if(RaidFight)
 			{
@@ -881,7 +899,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave.");
 			RaidFight = 8;
 		}
-		case 52:
+		case 45:
 		{
 			if(RaidFight)
 			{
@@ -891,7 +909,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{white}????????????? is coming...");
 			RaidFight = 9;
 		}
-		case 53:
+		case 46:
 		{
 			if(RaidFight)
 			{
@@ -901,7 +919,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
 			RaidFight = 10;
 		}
-		case 54:
+		case 47:
 		{
 			if(RaidFight)
 			{
@@ -911,7 +929,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave...");
 			RaidFight = 11;
 		}
-		case 55:
+		case 48:
 		{
 			if(RaidFight)
 			{
@@ -921,7 +939,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave...");
 			RaidFight = 12;
 		}
-		case 56:
+		case 49:
 		{
 			if(RaidFight)
 			{
@@ -931,7 +949,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming...");
 			RaidFight = 13;
 		}
-		case 57:
+		case 50:
 		{
 			if(RaidFight)
 			{
@@ -941,7 +959,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave.");
 			RaidFight = 14;
 		}
-		case 58:
+		case 51:
 		{
 			if(RaidFight)
 			{
@@ -951,7 +969,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching...");
 			RaidFight = 15;
 		}
-		case 59:
+		case 52:
 		{
 			if(RaidFight)
 			{
@@ -961,7 +979,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
 			RaidFight = 16;
 		}
-		case 60:
+		case 53:
 		{
 			if(RaidFight)
 			{
@@ -971,7 +989,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
 			RaidFight = 17;
 		}
-		case 61:
+		case 54:
 		{
 			if(RaidFight)
 			{
@@ -981,7 +999,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
 			RaidFight = 18;
 		}
-		case 62:
+		case 55:
 		{
 			if(RaidFight)
 			{
@@ -991,7 +1009,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave.");
 			RaidFight = 19;
 		}
-		case 63:
+		case 56:
 		{
 			if(RaidFight)
 			{
@@ -1001,7 +1019,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave.");
 			RaidFight = 20;
 		}
-		case 64:
+		case 57:
 		{
 			if(RaidFight)
 			{
@@ -1011,7 +1029,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave.");
 			RaidFight = 21;
 		}
-		case 65:
+		case 58:
 		{
 			if(RaidFight)
 			{
@@ -1021,17 +1039,19 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
 			RaidFight = 22;
 		}
-		case 66:
+
+		/// SAMU'S SKULLS (new!) ///
+		case 59:
 		{
 			strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
 			SpeedMult += 0.1;
 		}
-		case 67:
+		case 60:
 		{
 			strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
 			SpeedMult += 0.15;
 		}
-		case 68:
+		case 61:
 		{
 			if(SpeedMult < 0.35) // i'll go with a minimum of -65% movement speed since freeplay enemies move way faster than usual, and certain buffs make them faster
 			{
@@ -1041,7 +1061,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
 			SpeedMult -= 0.1;
 		}
-		case 69:
+		case 62:
 		{
 			if(SpeedMult < 0.35)
 			{
@@ -1051,17 +1071,17 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
 			SpeedMult -= 0.15;
 		}
-		case 70:
+		case 63:
 		{
 			strcopy(message, sizeof(message), "{green}Enemies will now take 10% more melee damage.");
 			MeleeMult += 0.10;
 		}
-		case 71:
+		case 64:
 		{
 			strcopy(message, sizeof(message), "{green}Enemies will now take 15% more melee damage.");
 			MeleeMult += 0.15;
 		}
-		case 72:
+		case 65:
 		{
 			if(MeleeMult < 0.05) // 95% melee res max
 			{
@@ -1075,7 +1095,7 @@ void Freeplay_SetupStart(bool extra = false)
 				MeleeMult = 0.05;
 			}
 		}
-		case 73:
+		case 66:
 		{
 			if(MeleeMult < 0.05)
 			{
@@ -1089,17 +1109,17 @@ void Freeplay_SetupStart(bool extra = false)
 				MeleeMult = 0.05;
 			}
 		}
-		case 74:
+		case 67:
 		{
 			strcopy(message, sizeof(message), "{green}Enemies will now take 10% more ranged damage.");
 			RangedMult += 0.10;
 		}
-		case 75:
+		case 68:
 		{
 			strcopy(message, sizeof(message), "{green}Enemies will now take 15% more ranged damage.");
 			RangedMult += 0.15;
 		}
-		case 76:
+		case 69:
 		{
 			if(RangedMult < 0.05) // 95% ranged res max
 			{
@@ -1113,7 +1133,7 @@ void Freeplay_SetupStart(bool extra = false)
 				RangedMult = 0.05;
 			}
 		}
-		case 77:
+		case 70:
 		{
 			if(RangedMult < 0.05)
 			{
@@ -1127,7 +1147,7 @@ void Freeplay_SetupStart(bool extra = false)
 				RangedMult = 0.05;
 			}
 		}
-		case 78:
+		case 71:
 		{
 			if(SuperMiniBoss)
 			{
@@ -1137,7 +1157,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 			SuperMiniBoss = true;
 		}
-		case 79:
+		case 72:
 		{
 			if(ExplodingNPC)
 			{
@@ -1148,7 +1168,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death!");
 			ExplodingNPC = true;
 		}
-		case 80:
+		case 73:
 		{
 			
 		}
