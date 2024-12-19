@@ -328,20 +328,16 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 
 			// Jaye: Silence Effect
 			if(!MerchantEffect[attacker])
-				NpcStats_SilenceEnemy(victim, MerchantLevel[attacker] > 3 ? 2.0 : 1.0);
+				ApplyStatusEffect(attacker, victim, "Silenced", MerchantLevel[attacker] > 3 ? 2.0 : 1.0);
 		}
 		case Merchant_Nothing:
 		{
 			if(MerchantEffect[attacker] >= 0)
 			{
-				float gameTime = GetGameTime();
-				
 				// Nothing: Debuff Effect
 				if(MerchantEffect[attacker] == Nothing_Debuff)
 				{
-					float time = gameTime + 2.5;
-					if(f_CrippleDebuff[victim] < time)
-						f_CrippleDebuff[victim] = time;
+					ApplyStatusEffect(attacker, victim, "Cripple", 2.5);
 				}
 
 				// Nothing: Stun Effect
@@ -443,17 +439,17 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 					{
 						case 0:
 						{
-							f_LeeMinorEffect[victim] = GetGameTime() + 0.75;
+							ApplyStatusEffect(attacker, victim, "Prosperity I", 0.75);
 							reduce = 0.035;
 						}
 						case 1:
 						{
-							f_LeeMajorEffect[victim] = GetGameTime() + 0.75;
+							ApplyStatusEffect(attacker, victim, "Prosperity II", 0.75);
 							reduce = 0.07;
 						}
 						case 2:
 						{
-							f_LeeSuperEffect[victim] = GetGameTime() + 0.75;
+							ApplyStatusEffect(attacker, victim, "Prosperity III", 0.75);
 							reduce = 0.14;
 						}
 					}

@@ -409,47 +409,47 @@ bool Freeplay_ShouldMiniBoss()
 void Freeplay_SpawnEnemy(int entity)
 {
 	if(HussarBuff)
-		f_HussarBuff[entity] = FAR_FUTURE;
-	
+		ApplyStatusEffect(entity, entity, "Hussar's Warscream", FAR_FUTURE);
+
 	if(PernellBuff)
-		f_PernellBuff[entity] = GetGameTime() + 15.0;
+		ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
 	
 	if(IceDebuff > 2)
-		f_HighIceDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Near Zero", FAR_FUTURE);
 	
 	if(IceDebuff > 1)
-		f_LowIceDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Cryo", FAR_FUTURE);
 	
 	if(IceDebuff > 0)
-		f_VeryLowIceDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Freeze", FAR_FUTURE);
 	
 	if(TeslarDebuff > 1)
-		f_HighTeslarDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Teslar Electricution", FAR_FUTURE);
 	
 	if(TeslarDebuff > 0)
-		f_LowTeslarDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Teslar Shock", FAR_FUTURE);
 	
 	if(FusionBuff > 1)
-		f_EmpowerStateSelf[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Self Empowerment", FAR_FUTURE);
 	
 	if(FusionBuff == 1 || FusionBuff > 2)
-		f_EmpowerStateOther[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Ally Empowerment", FAR_FUTURE);
 	
 	if(OceanBuff > 1)
-		f_Ocean_Buff_Stronk_Buff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Oceanic Scream", FAR_FUTURE);
 	
 	if(OceanBuff > 0)
-		f_Ocean_Buff_Weak_Buff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Oceanic Singing", FAR_FUTURE);
 	
 	if(CrippleDebuff > 0)
 	{
-		f_CrippleDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Cripple", FAR_FUTURE);
 		CrippleDebuff--;
 	}
 	
 	if(CudgelDebuff > 0)
 	{
-		f_CudgelDebuff[entity] = FAR_FUTURE;
+		ApplyStatusEffect(entity, entity, "Cudgelled", FAR_FUTURE);
 		CudgelDebuff--;
 	}
 
@@ -465,11 +465,11 @@ void Freeplay_SpawnEnemy(int entity)
 	{
 		case 1:
 		{
-			Resistance_Overall_Low[entity] = FAR_FUTURE;
+			ApplyStatusEffect(entity, entity, "Healing Resolve", FAR_FUTURE);
 		}
 		case 2:
 		{
-			Increaced_Overall_damage_Low[entity] = FAR_FUTURE;
+			ApplyStatusEffect(entity, entity, "Healing Strength", FAR_FUTURE);
 		}
 		case 3:
 		{

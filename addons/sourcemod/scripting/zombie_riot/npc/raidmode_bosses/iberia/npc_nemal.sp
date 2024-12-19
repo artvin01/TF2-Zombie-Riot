@@ -920,7 +920,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 			RaidModeTime += 25.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
@@ -1163,14 +1163,12 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 							if(npc.m_iNemalComboAttack >= 3)
 							{
 								//if they already have teslar, do stronger one
-								if(f_LowTeslarDebuff[targetTrace] > GetGameTime())
+								if(NpcStats_IsEnemyTeslar(targetTrace, false) || NpcStats_IsEnemyTeslar(targetTrace, true))
 								{
-									if(f_HighTeslarDebuff[targetTrace] - 5.0 < GetGameTime())
-										f_HighTeslarDebuff[targetTrace] = GetGameTime() + 5.0;
+									ApplyStatusEffect(npc.index, targetTrace, "Teslar Electricution", 5.0);
 								}
 
-								if(f_LowTeslarDebuff[targetTrace] - 5.0 < GetGameTime())
-									f_LowTeslarDebuff[targetTrace] = GetGameTime() + 5.0;
+								ApplyStatusEffect(npc.index, targetTrace, "Teslar Shock", 5.0);
 
 								ResetStack = true;
 							}
@@ -1512,14 +1510,12 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 							if(npc.m_iNemalComboAttack >= 3)
 							{
 								//if they already have teslar, do stronger one
-								if(f_LowTeslarDebuff[targetTrace] > GetGameTime())
+								if(NpcStats_IsEnemyTeslar(targetTrace, false) || NpcStats_IsEnemyTeslar(targetTrace, true))
 								{
-									if(f_HighTeslarDebuff[targetTrace] - 5.0 < GetGameTime())
-										f_HighTeslarDebuff[targetTrace] = GetGameTime() + 5.0;
+									ApplyStatusEffect(npc.index, targetTrace, "Teslar Electricution", 5.0);
 								}
 
-								if(f_LowTeslarDebuff[targetTrace] - 5.0 < GetGameTime())
-									f_LowTeslarDebuff[targetTrace] = GetGameTime() + 5.0;
+								ApplyStatusEffect(npc.index, targetTrace, "Teslar Shock", 5.0);
 
 								ResetStack = true;
 							}
@@ -1529,7 +1525,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 							if(npc.m_flTimeUntillMark < GetGameTime(npc.index))
 							{
 								damage *= 1.35;
-								NpcStats_IberiaMarkEnemy(targetTrace, 5.0);
+								ApplyStatusEffect(npc.index, targetTrace, "Marked", 5.0);
 								MarkCooldown = true;
 							}
 							
@@ -1858,7 +1854,7 @@ bool NemalTransformation(Nemal npc)
 			i_NpcWeight[npc.index] = 4;
 			npc.m_flRangedArmor = 0.35;
 			npc.m_flMeleeArmor = 1.75;		
-			f_BattilonsNpcBuff[npc.index] = GetGameTime() + 5.0;
+			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
 			npc.m_flNemalSuperRes = GetGameTime() + 5.0;
 			npc.m_flDoingAnimation = 0.0;
 
@@ -2711,8 +2707,7 @@ public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 						SDKHooks_TakeDamage(Loop, OwnerEntity, OwnerEntity, f_WandDamage[Projectile] * 0.5, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 					}
 				
-					if(f_LowTeslarDebuff[Loop] - 5.0 < GetGameTime())
-						f_LowTeslarDebuff[Loop] = GetGameTime() + 5.0;
+					ApplyStatusEffect(OwnerEntity, Loop, "Teslar Shock", 5.0);
 				}
 			}
 		}
@@ -2919,8 +2914,6 @@ float NemalMineExploderFriendly(int entity, int victim, float damage, int weapon
 	//Knock target up
 	if(victim <= MaxClients)
 	{
-		f_HighTeslarDebuff[victim] = 0.0;
-		f_LowTeslarDebuff[victim] = 0.0;
 		NemalAntiLaserDo[victim] = GetGameTime() + 4.0;
 		DetonateCurrentMine = true;
 		float vDirection[3];
@@ -2958,7 +2951,7 @@ float NemalMineExploder(int entity, int victim, float damage, int weapon)
 	else
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,1000.0});
 
-	NpcStats_IberiaMarkEnemy(victim, 15.0);
+	ApplyStatusEffect(entity, victim, "Marked", 15.0);
 	
 	//if it was a barracks units, half damage
 	if(victim > MaxClients)

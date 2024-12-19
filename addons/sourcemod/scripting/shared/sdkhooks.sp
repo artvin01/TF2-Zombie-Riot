@@ -726,11 +726,11 @@ public void OnPostThink(int client)
 			}
 		}
 		
-		if(ClientPossesesVoidBlade(client) >= 2 && (f_VoidAfflictionStrength[client] > GetGameTime() || f_VoidAfflictionStrength2[client] > GetGameTime()))
+		if(ClientPossesesVoidBlade(client) >= 2 && (NpcStats_WeakVoidBuff(client) || NpcStats_StrongVoidBuff(client)))
 		{
 			float HealingAmount = float(ReturnEntityMaxHealth(client)) * 0.01;
 
-			if(f_VoidAfflictionStrength2[client] > GetGameTime())
+			if(NpcStats_StrongVoidBuff(client))
 				HealingAmount *= 1.5;
 			
 			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
@@ -1286,7 +1286,6 @@ public void OnPostThink(int client)
 				Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
 #endif
 		}
-
 		//BUFFS!
 		char Debuff_Adder_left[64];
 		char Debuff_Adder_right[64];

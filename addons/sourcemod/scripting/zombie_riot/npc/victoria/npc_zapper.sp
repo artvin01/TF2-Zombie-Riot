@@ -299,13 +299,11 @@ void ZapperSelfdefense(Zapper npc, float gameTime, int target, float distance)
 					{
 						if(NpcStats_VictorianCallToArms(npc.index))
 						{
-							if(f_HighTeslarDebuff[target] - 7.5 < GetGameTime())
-							f_HighTeslarDebuff[target] = GetGameTime() + 7.5;
+							ApplyStatusEffect(npc.index, target, "Teslar Electricution", 7.5);
 						}
 						else
 						{
-							if(f_HighTeslarDebuff[target] - 5.0 < GetGameTime())
-							f_HighTeslarDebuff[target] = GetGameTime() + 5.0;	
+							ApplyStatusEffect(npc.index, target, "Teslar Electricution", 5.0);
 						}
 					}
 					if(!ShouldNpcDealBonusDamage(target))

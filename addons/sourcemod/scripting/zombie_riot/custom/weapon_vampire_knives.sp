@@ -355,7 +355,9 @@ public void Vamp_ApplyBloodlust(int attacker, int victim, int VampType, bool IsC
 		EmitSoundToClient(attacker, IsCleaver ? SND_BLOODLUST_CLEAVER : SND_BLOODLUST_KNIFE, _, _, _, _, _, GetRandomInt(80, 110));
 		f_VampNextHitSound[attacker] = GetGameTime() + 0.1;
 	}
-	
+
+	if(HasSpecificBuff(victim, "Hardened Aura"))
+		return;
 	BleedAmountCountStack[victim] += 1;
 	Handle pack;
 	CreateDataTimer(BleedRate, Vamp_BloodlustTick, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -398,6 +400,12 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		BleedAmountCountStack[victim] -= 1;
 		return Plugin_Stop;
 	}
+
+	if(HasSpecificBuff(victim, "Hardened Aura"))
+	{
+		BleedAmountCountStack[victim] -= 1;
+		return Plugin_Stop;
+	}
 	
 	int NumHits = ReadPackCell(pack);
 	int HitQuota = ReadPackCell(pack);
@@ -436,7 +444,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	{
 		DMG_Final *= 0.65;
 	}
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		DMG_Final *= 1.15;
 	}

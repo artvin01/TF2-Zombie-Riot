@@ -1,0 +1,659 @@
+"Phrases"
+{
+	"Teslar Shock"
+	{
+		"en"	"Teslar Shock"
+	}
+	"Teslar Shock Desc"
+	{
+		"en"	"Increases Damage Taken by 20%%\nSlows NPC'S by 25%%"
+	}
+	"Teslar Electricution"
+	{
+		"en"	"Teslar Electricution"
+	}
+	"Teslar Electricution Desc"
+	{
+		"en"	"Increases Damage Taken by 25%%\nSlows NPC'S by 35%%"
+	}
+	"Specter's Aura"
+	{
+		"en"	"Specter's Aura"
+	}
+	"Specter's Aura Desc"
+	{
+		"en"	"Slows NPC'S by 60%%"
+	}
+	"Electric Impairability"
+	{
+		"en"	"Electric Impairability"
+	}
+	"Electric Impairability Desc"
+	{
+		"en"	"Slows NPC'S by 80%%"
+	}
+	"Ludo-Maniancy"
+	{
+		"en"	"Ludo-Maniancy"
+	}
+	"Ludo-Maniancy Desc"
+	{
+		"en"	"Increases Damage Taken by 10%%\nSlows NPC'S by 20%%"
+	}
+	"Spade Ludo-Maniancy"
+	{
+		"en"	"Spade Ludo-Maniancy"
+	}
+	"Spade Ludo-Maniancy Desc"
+	{
+		"en"	"Increases Damage Taken by 12%%\nSlows NPC'S by 22%%"
+	}
+	"Freeze"
+	{
+		"en"	"Freeze"
+	}
+	"Freeze Desc"
+	{
+		"en"	"Increases Damage Taken by 5%%\nSlows NPC'S by 5%%"
+	}
+	"Cryo"
+	{
+		"en"	"Cryo"
+	}
+	"Cryo Desc"
+	{
+		"en"	"Increases Damage Taken by 10%%\nSlows NPC'S by 10%%"
+	}
+	"Near Zero"
+	{
+		"en"	"Near Zero"
+	}
+	"Near Zero Desc"
+	{
+		"en"	"Increases Damage Taken by 15%%\nSlows NPC'S by 15%%"
+	}
+	"Frozen"
+	{
+		"en"	"Frozen"
+	}
+	"Frozen Desc"
+	{
+		"en"	"Increases Damage Taken by 15%%\nSlows NPC'S by 15%%"
+	}
+	"Shrinking"
+	{
+		"en"	"Shrinking"
+	}
+	"Shrinking Desc"
+	{
+		"en"	"Increases Damage Taken by 35%%\nSlows NPC'S by 35%%\nLowers Damage Delt by 25%%"
+	}
+	"Golden Curse"
+	{
+		"en"	"Golden Curse"
+	}
+	"Golden Curse Desc"
+	{
+		"en"	"Increases Damage Taken by 20%%"
+	}
+	"Enfeeble"
+	{
+		"en"	"Enfeeble"
+	}
+	"Enfeeble Desc"
+	{
+		"en"	"Lowers Damage Delt by 10%%, which lowers over time up untill 0%%"
+	}
+	"Iberia's Anti Raid"
+	{
+		"en"	"Iberia's Anti Raid"
+	}
+	"Iberia's Anti Raid Desc"
+	{
+		"en"	"Increases Damage Taken by 10%%"
+	}
+	"Widows Wine"
+	{
+		"en"	"Widows Wine"
+	}
+	"Widows Wine Desc"
+	{
+		"en"	"Increases Damage Taken by 35%%\nSlows NPC'S by 80%%, which lowers over time up untill 0%%"
+	}
+	"Cripple"
+	{
+		"en"	"Cripple"
+	}
+	"Cripple Desc"
+	{
+		"en"	"Increases Damage Taken by 30%%"
+	}
+	"Stranglation I"
+	{
+		"en"	"Stranglation I"
+	}
+	"Stranglation I Desc"
+	{
+		"en"	"Increases Damage Taken by 10%%"
+	}
+	"Stranglation II"
+	{
+		"en"	"Stranglation II"
+	}
+	"Stranglation II Desc"
+	{
+		"en"	"Increases Damage Taken by 15%%"
+	}
+	"Stranglation III"
+	{
+		"en"	"Stranglation III"
+	}
+	"Stranglation III Desc"
+	{
+		"en"	"Increases Damage Taken by 20%%"
+	}
+	"Cudgelled"
+	{
+		"en"	"Cudgelled"
+	}
+	"Cudgelled Desc"
+	{
+		"en"	"Increases Damage Taken by 30%%"
+	}
+	"Maimed"
+	{
+		"en"	"Maimed"
+	}
+	"Maimed Desc"
+	{
+		"en"	"Increases Damage Taken by 30%%,\nSlows down NPC's by 35%%"
+	}
+	"Prosperity I"
+	{
+		"en"	"Prosperity I"
+	}
+	"Prosperity I Desc"
+	{
+		"en"	"Lowers Damage Delt by 5%%"
+	}
+	"Prosperity II"
+	{
+		"en"	"Prosperity II"
+	}
+	"Prosperity II Desc"
+	{
+		"en"	"Lowers Damage Delt by 10%%"
+	}
+	"Prosperity III"
+	{
+		"en"	"Prosperity III"
+	}
+	"Prosperity III Desc"
+	{
+		"en"	"Lowers Damage Delt by 15%%"
+	}
+	"Aeternam"
+	{
+		"en"	"Aeternam"
+	}
+	"Aeternam Desc"
+	{
+		"en"	"Increaces Magic/Laser damage by 10%%, And adds an additional 1500 on each hit."
+	}
+	"Silenced"
+	{
+		"en"	"Silenced"
+	}
+	"Silenced Desc"
+	{
+		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances."
+	}
+	"Hardened Aura"
+	{
+		"en"	"Hardened Aura"
+	}
+	"Hardened Aura Desc"
+	{
+		"en"	"Immune to any and ALL debuffs."
+	}
+	"Marked"
+	{
+		"en"	"Marked"
+	}
+	"Marked Desc"
+	{
+		"en"	"Certain Enemies gain extra abilities against marked, See Encyclopedia entrances."
+	}
+	"Void Presence"
+	{
+		"en"	"Void Presence"
+	}
+	"Void Presence Desc"
+	{
+		"en"	"Shows that youre standing in void creep."
+	}
+	"Void Strength I"
+	{
+		"en"	"Void Strength I"
+	}
+	"Void Strength I Desc"
+	{
+		"en"	"Slowly Heals dependant on %% of max HP overtime.\nBoosts NPC'S Speed by 5%%\nLess damage taken by 15%%\nBeing a player, or/and being silenced each reduces this by 5%% flat.\nIncreases Damage delt by 20%%, If silenced, this is 10%%"
+	}
+	"Void Strength II"
+	{
+		"en"	"Void Strength II"
+	}
+	"Void Strength II Desc"
+	{
+		"en"	"Slowly Heals dependant on %% of max HP overtime.\nBoosts NPC'S Speed by 15%%\nLess damage taken by 20%%\nBeing a player, or/and being silenced each reduces this by 5%% flat.\nIncreases Damage delt by 30%%, If silenced, this is 15%%"
+	}
+	"Combine Command"
+	{
+		"en"	"Combine Command"
+	}
+	"Combine Command Desc"
+	{
+		"en"	"Reduces damage taken by 20%%\nBoosts damage delt by 25%%"
+	}
+	"Squad Leader"
+	{
+		"en"	"Squad Leader"
+	}
+	"Squad Leader Desc"
+	{
+		"en"	"Reduces damage taken by 10%%\nBoosts damage delt by 10%%\nBoosts NPC'S Movementspeed by 33%%"
+	}
+	"Caffinated"
+	{
+		"en"	"Caffinated"
+	}
+	"Caffinated Desc"
+	{
+		"en"	"Boosts damage delt by 50%%\nBoosts NPC'S Movementspeed by 50%%, See Caffinated Drain for more info as it a combined effect..."
+	}
+	"Caffinated Drain"
+	{
+		"en"	"Caffinated Drain"
+	}
+	"Caffinated Drain Desc"
+	{
+		"en"	"Increas damage taken by 25%%"
+	}
+	"Call To Victoria"
+	{
+		"en"	"Call To Victoria"
+	}
+	"Call To Victoria Desc"
+	{
+		"en"	"Reduces damage taken by 20%%\nBoosts damage delt by 20%%\nBoosts NPC'S Movementspeed by 15%%\nAll Victorian enemeies gain extra abilities upon reciving this buff."
+	}
+	"False Therapy"
+	{
+		"en"	"False Therapy"
+	}
+	"False Therapy Desc"
+	{
+		"en"	"Reduces damage taken by 40%%\nBoosts damage delt by 50%%\nBoosts NPC'S Movementspeed by 25%%"
+	}
+	"Godly Motivation"
+	{
+		"en"	"Godly Motivation"
+	}
+	"Godly Motivation Desc"
+	{
+		"en"	"Increases damage dealt by 50%%\nDecreases damage taken by 25%%\nIncreases NPC'S movement speed by 50%%"
+	}
+	"Hussar's Warscream"
+	{
+		"en"	"Hussar's Warscream"
+	}
+	"Hussar's Warscream Desc"
+	{
+		"en"	"Increases damage dealt by 10%%\nBlocked by Silence."
+	}
+	"Oceanic Singing"
+	{
+		"en"	"Oceanic Singing"
+	}
+	"Oceanic Singing Desc"
+	{
+		"en"	"Increases damage dealt by 10%%"
+	}
+	"Oceanic Scream"
+	{
+		"en"	"Oceanic Scream"
+	}
+	"Oceanic Scream Desc"
+	{
+		"en"	"Increases damage dealt by 25%%"
+	}
+	"Buff Banner"
+	{
+		"en"	"Buff Banner"
+	}
+	"Buff Banner Desc"
+	{
+		"en"	"Increases damage dealt by 25%%"
+	}
+	"Battilons Backup"
+	{
+		"en"	"Battilons Backup"
+	}
+	"Battilons Backup Desc"
+	{
+		"en"	"Decreases damage taken by 15%%"
+	}
+	"Healing Strength"
+	{
+		"en"	"Healing Strength"
+	}
+	"Healing Strength Desc"
+	{
+		"en"	"Increases damage dealt by 25%%"
+	}
+	"Healing Resolve"
+	{
+		"en"	"Healing Resolve"
+	}
+	"Healing Resolve Desc"
+	{
+		"en"	"Decreases damage taken by 5%%"
+	}
+	"Healing Adaptiveness All"
+	{
+		"en"	"Healing Adaptiveness All"
+	}
+	"Healing Adaptiveness All Desc"
+	{
+		"en"	"Decreases damage taken by 5%%"
+	}
+	"Healing Adaptiveness Melee"
+	{
+		"en"	"Healing Adaptiveness Melee"
+	}
+	"Healing Adaptiveness Melee Desc"
+	{
+		"en"	"Decreases damage taken from melee sources by 5%%"
+	}
+	"Healing Adaptiveness Ranged"
+	{
+		"en"	"Healing Adaptiveness Ranged"
+	}
+	"Healing Adaptiveness Ranged Desc"
+	{
+		"en"	"Decreases damage taken from ranged sources by 5%%"
+	}
+	"Self Empowerment"
+	{
+		"en"	"Self Empowerment"
+	}
+	"Self Empowerment Desc"
+	{
+		"en"	"Increases damage dealt by 15%%\nDecreases damage taken by 10%%"
+	}
+	"Ally Empowerment"
+	{
+		"en"	"Ally Empowerment"
+	}
+	"Ally Empowerment Desc"
+	{
+		"en"	"Increases damage dealt by 10%%\nDecreases damage taken by 7%%"
+	}
+	"Ancient Banner"
+	{
+		"en"	"Ancient Banner"
+	}
+	"Ancient Banner Desc"
+	{
+		"en"	"Increases attack speed by a certain amount."
+	}
+	"Bobs Duck Dubby"
+	{
+		"en"	"Bobs Duck Dubby"
+	}
+	"Bobs Duck Dubby Desc"
+	{
+		"en"	"Increases damage dealt by 25%%\nDecreases damage taken by 10%%"
+	}
+	"Elemental Amplification"
+	{
+		"en"	"Elemental Amplification"
+	}
+	"Elemental Amplification Desc"
+	{
+		"en"	"Increaces Bleed damage by 15%%\nIncreaces Burn damage by 20%%\nBoosts all elemental type of damage, on how fast it fills the bar by 30%%."
+	}
+	"Heavy Presence"
+	{
+		"en"	"Heavy Presence"
+	}
+	"Heavy Presence Desc"
+	{
+		"en"	"Decreased attack speed by a certain amount."
+	}
+	"Gambler's Ruin Total"
+	{
+		"en"	"Gambler's Ruin Total"
+	}
+	"Gambler's Ruin Total Desc"
+	{
+		"en"	"Increased damage taken by a certain amount."
+	}
+	"Ruina's Agility"
+	{
+		"en"	"Ruina's Agility"
+	}
+	"Ruina's Agility Desc"
+	{
+		"en"	"Changed movement NPC'S speed by a certain amount."
+	}
+	"Ruina's Defense"
+	{
+		"en"	"Ruina's Defense"
+	}
+	"Ruina's Defense Desc"
+	{
+		"en"	"Changed damage taken by a certain amount."
+	}
+	"Ruina's Damage"
+	{
+		"en"	"Ruina's Damage"
+	}
+	"Ruina's Damage Desc"
+	{
+		"en"	"Changed damage dealt by a certain amount."
+	}
+	"Waterless Training"
+	{
+		"en"	"Waterless Training"
+	}
+	"Waterless Training Desc"
+	{
+		"en"	"Regernate health based on max health and it's applier.\nDecreases damage taken from certain sources."
+	}
+	"Specter's Resolve"
+	{
+		"en"	"Specter's Resolve"
+	}
+	"Specter's Resolve Desc"
+	{
+		"en"	"Increases max health by 200"
+	}
+	"Skadi's Skills"
+	{
+		"en"	"Skadi's Skills"
+	}
+	"Skadi's Skills Desc"
+	{
+		"en"	"Increaces Abyssalhunter weapons damage by 10%%"
+	}
+	"Castle Breaking Power"
+	{
+		"en"	"Castle Breaking Power"
+	}
+	"Castle Breaking Power Desc"
+	{
+		"en"	"Increaces Victorian weapons damage by 10%%"
+	}
+	"Victorian Launcher's Call"
+	{
+		"en"	"Victorian Launcher's Call"
+	}
+	"Victorian Launcher's Call Desc"
+	{
+		"en"	"Increaces Victorian Weapons Explosive Radius by 10%%"
+	}
+	"Tinkering Curiosity"
+	{
+		"en"	"Tinkering Curiosity"
+	}
+	"Tinkering Curiosity Desc"
+	{
+		"en"	"Provides a certain effect based on it's chance."
+	}
+	"Crafted Potion"
+	{
+		"en"	"Crafted Potion"
+	}
+	"Crafted Potion Desc"
+	{
+		"en"	"Provides a certain effect based on the creation."
+	}
+	"Flaming Agility"
+	{
+		"en"	"Flaming Agility"
+	}
+	"Flaming Agility Desc"
+	{
+		"en"	"Grants a chance to dodge melee attacks."
+	}
+	"Tonic Affliction"
+	{
+		"en"	"Tonic Affliction"
+	}
+	"Tonic Affliction Desc"
+	{
+		"en"	"Increases attack speed by 67%%\nDecreases damage dealt by 40%%"
+	}
+	"Mystery Beer"
+	{
+		"en"	"Mystery Beer"
+	}
+	"Mystery Beer Desc"
+	{
+		"en"	"Increases base attack speed based on it's level."
+	}
+	"Osmosis'ity"
+	{
+		"en"	"Osmosis'ity"
+	}
+	"Osmosis'ity Desc"
+	{
+		"en"	"On hit, Reduces ability cooldown by 2 seconds, can only happen once per attacker."
+	}
+	"Village"
+	{
+		"en"	"Village"
+	}
+	"Village Desc"
+	{
+		"en"	"Increases projectile speed and range by 10%%"
+	}
+	"Jungle Drums"
+	{
+		"en"	"Jungle Drums"
+	}
+	"Jungle Drums Desc"
+	{
+		"en"	"Increases attack speed by 2.5%%"
+	}
+	"Intelligence"
+	{
+		"en"	"Intelligence"
+	}
+	"Intelligence Desc"
+	{
+		"en"	"Increases damage dealt by 5%%"
+	}
+	"Homeland Defense"
+	{
+		"en"	"Homeland Defense"
+	}
+	"Homeland Defense Desc"
+	{
+		"en"	"Increases attack speed by 12%%"
+	}
+	"Call To Arms"
+	{
+		"en"	"Call To Arms"
+	}
+	"Call To Arms Desc"
+	{
+		"en"	"Increases attack speed by 12%%"
+	}
+	"Iberia Light"
+	{
+		"en"	"Iberia Light"
+	}
+	"Iberia Light Desc"
+	{
+		"en"	"Increases attack speed by 10%%"
+	}
+	"Victoria Nuke"
+	{
+		"en"	"Victoria Nuke"
+	}
+	"Victoria Nuke Desc"
+	{
+		"en"	"Launches a Victoria Nuke when full.\nRemoves Locked On from all enemies when at a certain amount."
+	}
+	"Locked On"
+	{
+		"en"	"Locked On"
+	}
+	"Locked On Desc"
+	{
+		"en"	"The Victoria Nuke will always target the victim."
+	}
+	"Shield"
+	{
+		"en"	"Shield"
+	}
+	"Shield Desc"
+	{
+		"en"	"Reduces the next damage taken by 75%%, stacks up to a limit.\nEach hit removes 1 stack, Bleed and burn are excluded.\nSome weapons need 2 hits to remove 1 shield.\nThis shield even helps against true damage."
+	}
+	"Chaos Infliction"
+	{
+		"en"	"Chaos Infliction"
+	}
+	"Chaos Infliction Desc"
+	{
+		"en"	"Randomly changes damage and HUD elements depending on it's level."
+	}
+	"Iberia Morale Boost"
+	{
+		"en" 	"Iberia Morale Boost"
+	}
+	"Iberia Morale Boost Desc"
+	{
+		"en"	"Increaces damage, speed and resistances.\nThis dependant on how high the motivation is, 1 being the lowest, 4 being the highest.\nWith each tier giving much more."
+	}
+	"Bleed"
+	{
+		"en"	"Bleed"
+	}
+	"Bleed Desc"
+	{
+		"en"	"Deals Melee, or ranged damage, all dependant on the weapon that it comes from over time.\nSome weapons deal true damage with this.\nStacks infinitly."
+	}
+	"Burn"
+	{
+		"en"	"Burn"
+	}
+	"Burn Desc"
+	{
+		"en"	"Deals True damage overtime, upto a maximum of 20 seconds if not extended.\nEach hit extends its time.\nThe damage and owner depends on the weapon that delt the most fire damage.\nExtending does not weaken the buff."
+	}
+}

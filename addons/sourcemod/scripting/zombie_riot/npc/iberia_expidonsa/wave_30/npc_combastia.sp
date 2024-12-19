@@ -129,7 +129,7 @@ methodmap IberiaCombastia < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(IberiaCombastia_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaCombastia_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(IberiaCombastia_ClotThink);
-		f_NpcImmuneToBleed[npc.index] = FAR_FUTURE;
+		NPCStats_RemoveAllDebuffs(npc.index, FAR_FUTURE);
 		
 		
 		npc.StartPathing();

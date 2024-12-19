@@ -717,9 +717,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
-				NPCStats_RemoveAllDebuffs(ally);
-				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 5.0;
-				f_HussarBuff[ally] = GetGameTime(ally) + 10.0;
+				NPCStats_RemoveAllDebuffs(ally, 5.0);
+				ApplyStatusEffect(npc.index, ally, "Hussar's Warscream", 10.0);
 
 				npc.PlayBuffSound();
 			}

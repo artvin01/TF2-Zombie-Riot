@@ -448,7 +448,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 	//float point impresicion...
 	if(Alaxiosspeedint[npc.index] == 320)
 	{
-		if(f_GodAlaxiosBuff[npc.index] > GetGameTime())
+		if(HasSpecificBuff(npc.index, "Godly Motivation"))
 		{
 			npc.m_flSpeed = 220.0;
 			Alaxiosspeedint[npc.index] = 220;
@@ -456,7 +456,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 	}
 	else if(Alaxiosspeedint[npc.index] == 220)
 	{
-		if(f_GodAlaxiosBuff[npc.index] < GetGameTime())
+		if(!HasSpecificBuff(npc.index, "Godly Motivation"))
 		{
 			Alaxiosspeedint[npc.index] = 320;
 			npc.m_flSpeed = 320.0;
@@ -1741,7 +1741,7 @@ void GodAlaxiosAOEBuff(GodAlaxios npc, float gameTime, bool mute = false)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (ALAXIOS_BUFF_MAXRANGE * ALAXIOS_BUFF_MAXRANGE))
 					{
-						f_GodAlaxiosBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
+						ApplyStatusEffect(npc.index, entitycount, "Godly Motivation", 10.0);
 						//Buff this entity.
 						buffed_anyone = true;	
 						if(entitycount != npc.index)
@@ -1768,11 +1768,11 @@ void GodAlaxiosAOEBuff(GodAlaxios npc, float gameTime, bool mute = false)
 			npc.m_flAlaxiosBuffEffect = gameTime + 10.0;
 			if(!NpcStats_IsEnemySilenced(npc.index))
 			{
-				f_GodAlaxiosBuff[npc.index] = GetGameTime() + 5.0; //the buff for alaxios himself is half the time.
+				ApplyStatusEffect(npc.index, npc.index, "Godly Motivation", 5.0);
 			}
 			else
 			{
-				f_GodAlaxiosBuff[npc.index] = GetGameTime() + 3.0; //the buff for alaxios himself is half the time.
+				ApplyStatusEffect(npc.index, npc.index, "Godly Motivation", 3.0);
 			}
 			static int r;
 			static int g;

@@ -668,7 +668,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
 		Elemental_AddNervousDamage(target, client, 10, _, true);
-		f_HussarBuff[target] = GetGameTime() + 10.0;
+		ApplyStatusEffect(client, target, "Hussar's Warscream", 10.0);
 
 		if(target > MaxClients)
 		{
@@ -784,9 +784,9 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
 		
-		f_NpcImmuneToBleed[target] = GetGameTime() + 0.6;
+		
 		float extra = BleedAmountCountStack[target] * 1000.0;
-
+		NPCStats_RemoveAllDebuffs(target, 0.6);
 		SDKHooks_TakeDamage(target, client, client, (3200.0 * multi), DMG_PLASMA, secondary);
 		if(extra)
 			SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);

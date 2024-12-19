@@ -131,7 +131,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 						if(amount)
 						{
-							f_WeaponSpecificClassBuff[client][0] = GetGameTime() + 0.5;
+							ApplyStatusEffect(client, client, "Waterless Training", 0.5);
 							int maxhealth = SDKCall_GetMaxHealth(client);
 							if(maxhealth > 1000)
 								maxhealth = 1000;

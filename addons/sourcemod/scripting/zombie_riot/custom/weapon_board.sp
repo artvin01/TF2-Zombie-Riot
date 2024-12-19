@@ -370,9 +370,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		{
 			Board_Hits[victim] += 1;
 			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
-			float time = GetGameTime() + 3.95;
-			if(f_CudgelDebuff[attacker] <= time)
-				f_CudgelDebuff[attacker] = time;
+			ApplyStatusEffect(victim, attacker, "Cudgelled", 4.0);
 		}
 		else if(Board_Level[victim] == 0)
 		{

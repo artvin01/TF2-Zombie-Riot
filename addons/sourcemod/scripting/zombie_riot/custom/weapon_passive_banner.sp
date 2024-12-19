@@ -25,7 +25,6 @@ void BannerOnEntityCreated(int entity)
 {
 	b_ClientHasAncientBanner[entity] = false;
 	b_EntityRecievedBuff[entity] = 0.0;
-	f_AncientBannerNpcBuff[entity] = 0.0;
 }
 
 enum
@@ -93,7 +92,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 			GetClientAbsOrigin(ally, targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 			{
-				f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
+				ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
 				i_ExtraPlayerPoints[client] += 1;
 			}
 		}
@@ -106,7 +105,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 			{
-				f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
+				ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
 				i_ExtraPlayerPoints[client] += 1;
 			}
 		}
@@ -170,7 +169,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 				GetClientAbsOrigin(ally, targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 				{
-					f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
+					ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -183,7 +182,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 				{
-					f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
+					ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -250,7 +249,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 				GetClientAbsOrigin(ally, targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 				{
-					f_BattilonsNpcBuff[ally] = GetGameTime() + 1.1;
+					ApplyStatusEffect(client, ally, "Battilons Backup", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -263,7 +262,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 				{
-					f_BattilonsNpcBuff[ally] = GetGameTime() + 0.5;
+					ApplyStatusEffect(client, ally, "Battilons Backup", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -313,7 +312,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 					GetClientAbsOrigin(ally, targPos);
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 					{
-						f_AncientBannerNpcBuff[ally] = GetGameTime() + 0.5;
+						ApplyStatusEffect(client, ally, "Ancient Banner", 0.5);
 						i_ExtraPlayerPoints[client] += 1;
 					}
 				}
@@ -326,7 +325,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 					{
-						f_AncientBannerNpcBuff[ally] = GetGameTime() + 0.5;
+						ApplyStatusEffect(client, ally, "Ancient Banner", 0.5);
 						i_ExtraPlayerPoints[client] += 1;
 					}
 				}
@@ -339,7 +338,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 		{
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
-				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
+				if(HasSpecificBuff(ally, "Ancient Banner"))
 				{
 					ModifyEntityAncientBuff(ally, 1, 0.8, true, 1.2);
 				}
@@ -354,7 +353,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
-				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
+				if(HasSpecificBuff(ally, "Ancient Banner"))
 				{
 					ModifyEntityAncientBuff(ally, 2, 0.8, true, 1.2);
 				}

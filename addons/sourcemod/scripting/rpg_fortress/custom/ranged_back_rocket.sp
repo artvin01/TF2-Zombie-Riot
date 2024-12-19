@@ -436,7 +436,7 @@ public float Ability_ExplosiveBall(int client, int level, int weapon)
 	pack.WriteFloat(MaxDurationC4 + GetGameTime());
 	pack.WriteFloat(damageDelt);
 	pack.WriteFloat(radius);
-	f_HighIceDebuff[target] = GetGameTime() + 3.5;
+	ApplyStatusEffect(client, target, "Near Zero", 3.5);
 	
 	return 20.0;
 }
