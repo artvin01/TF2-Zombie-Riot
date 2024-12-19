@@ -1579,8 +1579,6 @@ stock bool StatusEffects_RapidSuturingCheck(int victim, float BleedTimeActive)
 		}
 		else
 		{
-			PrintToChatAll("Apply_StatusEffect.DataForUse %f",Apply_StatusEffect.DataForUse);
-			PrintToChatAll("BleedTimeActive %f",BleedTimeActive);
 			if(BleedTimeActive <= Apply_StatusEffect.DataForUse)
 			{
 				return true;
