@@ -41,10 +41,13 @@ static bool Coffee;
 static int StrangleDebuff;
 static int ProsperityDebuff;
 static bool SilenceDebuff;
+static float ExtraEnemySize;
 
 void Freeplay_OnMapStart()
 {
 	PrecacheSound("ui/vote_success.wav", true);
+	PrecacheSound("passtime/ball_dropped.wav", true);
+	PrecacheSound("ui/mm_medal_silver.wav", true);
 }
 
 void Freeplay_ResetAll()
@@ -90,6 +93,7 @@ void Freeplay_ResetAll()
 	StrangleDebuff = 0;
 	ProsperityDebuff = 0;
 	SilenceDebuff = false;
+	ExtraEnemySize = 0.0;
 }
 
 int Freeplay_EnemyCount()
@@ -367,6 +371,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 	if(count < 1)
 		count = 1;
+
+	enemy.ExtraSize *= ExtraEnemySize;
 }
 
 bool Freeplay_ShouldMiniBoss()
@@ -526,12 +532,14 @@ void Freeplay_SetupStart(bool extra = false)
 {
 	if(extra)
 	{
+		EmitSoundToAll("ui/vote_success.wav");
 		int exskull = GetRandomInt(0, 100);
 		if(exskull < 15) // 15% chance
 		{
 			ExtraSkulls++;
 			CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
-			CPrintToChatAll("{yellow}Current extra skulls: {orange}%d", ExtraSkulls); 
+			CPrintToChatAll("{yellow}Current extra skulls: {orange}%d", ExtraSkulls);
+			EmitSoundToAll("passtime/ball_dropped.wav", _, _, _, _, 0.67);
 		}
 		SkullTimes = ExtraSkulls;
 	}
@@ -540,7 +548,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 84;
+		rand = GetURandomInt() % 88;
 	
 	char message[128];
 	switch(rand)
@@ -1231,6 +1239,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 			SuperMiniBoss = true;
+			EmitSoundToAll("mvm/mvm_warning.wav");
 		}
 		case 72:
 		{
@@ -1242,6 +1251,7 @@ void Freeplay_SetupStart(bool extra = false)
 			ExplodeNPCDamage = GetRandomInt(50, 250);
 			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death!");
 			ExplodingNPC = true;
+			EmitSoundToAll("ui/mm_medal_silver.wav");
 		}
 		case 73:
 		{
@@ -1366,6 +1376,46 @@ void Freeplay_SetupStart(bool extra = false)
 				SilenceDebuff = true;
 			}
 		}
+		case 84:
+		{
+			if(ExtraEnemySize <= 0.35) // 65% less size max
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+			strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes reduced by 10%");
+			ExtraEnemySize -= 0.10;
+		}
+		case 85:
+		{
+			if(ExtraEnemySize <= 0.35) // 65% less size max
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+			strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes reduced by 15%");
+			ExtraEnemySize -= 0.15;
+		}
+		case 86:
+		{
+			if(ExtraEnemySize >= 4.0) // 300% more size max
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+			strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 10%");
+			ExtraEnemySize -= 0.10;
+		}
+		case 87:
+		{
+			if(ExtraEnemySize >= 4.0) // 300% more size max
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+			strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 10%");
+			ExtraEnemySize -= 0.10;
+		}
 		default:
 		{
 			strcopy(message, sizeof(message), "{yellow}Nothing!");
@@ -1380,6 +1430,7 @@ void Freeplay_SetupStart(bool extra = false)
 	{
 		IsRaidWave = true;
 		CPrintToChatAll("{green}Winning this wave will reward you with 5000 extra credits.");
+		EmitSoundToAll("mvm/mvm_used_powerup.wav", _, _, _, _, 0.67);
 	}
 
 	if(ExplodingNPC)
