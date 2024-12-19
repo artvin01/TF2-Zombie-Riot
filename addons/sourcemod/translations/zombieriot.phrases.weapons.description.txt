@@ -3062,9 +3062,7 @@
 	}
 	"The Flagellant Desc"
 	{
-		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage."
-		"fr"	"Donne de la santé extra avec l'abilié de vous soigner, mais vous inflige des dégats en retour.\nLe fantasisme : une flétrissure de l'esprit."
-		"chi"	"狂热 - 对灵魂不朽的摧残。\n更多血量，可以自疗，但是会对自己造成伤害。"
+		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage.\nYou are immune to all bleed effects."
 	}
 	"The Flagellant Extra Desc"
 	{
