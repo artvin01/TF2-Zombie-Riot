@@ -93,7 +93,7 @@ void Freeplay_ResetAll()
 	StrangleDebuff = 0;
 	ProsperityDebuff = 0;
 	SilenceDebuff = false;
-	ExtraEnemySize = 0.0;
+	ExtraEnemySize = 1.0;
 }
 
 int Freeplay_EnemyCount()
