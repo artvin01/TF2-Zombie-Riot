@@ -203,6 +203,7 @@ methodmap AgentSmith < CClotBody
 			npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_ambassador/c_ambassador_xmas.mdl");
 			npc.m_bFUCKYOU = false;
 			AgentSmith_WeaponSwaps(npc);
+			Zero(b_said_player_weaponline);
 		}
 		else if(clone)
 		{
@@ -226,7 +227,6 @@ methodmap AgentSmith < CClotBody
 		
 		f_TalkDelayCheck = 0.0;
 		i_TalkDelayCheck = 0;
-		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		//npc.m_bDissapearOnDeath = true;
 		
