@@ -191,6 +191,10 @@ void Waves_MapStart()
 	int objective = GetObjectiveResource();
 	if(objective != -1)
 		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", -1);
+
+	PrecacheSound("ui/duel_challenge.wav", true);
+	PrecacheSound("ui/duel_challenge_accepted.wav", true);
+	PrecacheSound("ui/duel_challenge_rejected.wav", true);
 	
 	Waves_UpdateMvMStats();
 }
@@ -3212,6 +3216,23 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		if((CurrentRound % 5) == 4)
 		{
 			Freeplay_SetupStart(true);
+
+			// Adding sounds to freeplay so it doesn't feel empty
+			switch(GetRandomInt(1, 3))
+			{
+				case 1:
+				{
+					EmitSoundToAll("ui/duel_challenge.wav");
+				}
+				case 2:
+				{
+					EmitSoundToAll("ui/duel_challenge_accepted.wav");
+				}
+				case 3:
+				{
+					EmitSoundToAll("ui/duel_challenge_rejected.wav");
+				}
+			}
 
 			Cooldown = GetGameTime() + 15.0;
 			
