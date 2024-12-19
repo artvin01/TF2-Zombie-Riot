@@ -412,10 +412,10 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Oceanic Singing", FAR_FUTURE);
 
 	if(VoidBuff > 1)
-		ApplyStatusEffect(entity, entity, "Void Strength II", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Void Strength II", 12.0);
 
 	if(VoidBuff > 0)
-		ApplyStatusEffect(entity, entity, "Void Strength I", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Void Strength I", 6.0);
 
 	if(VictoriaBuff)
 		ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
@@ -1254,13 +1254,13 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		case 73:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
-			EnemyShields += 6;
+			strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
+			EnemyShields += 3;
 		}
 		case 74:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies receieve 12 expidonsan shields!");
-			EnemyShields += 12;
+			strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
+			EnemyShields += 6;
 		}
 		case 75:
 		{
@@ -1270,8 +1270,8 @@ void Freeplay_SetupStart(bool extra = false)
 				Freeplay_SetupStart();
 				return;
 			}
-			strcopy(message, sizeof(message), "{green}All enemies lose 3 expidonsan shields.");
-			EnemyShields -= 3;
+			strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
+			EnemyShields -= 2;
 		}
 		case 76:
 		{
@@ -1281,8 +1281,8 @@ void Freeplay_SetupStart(bool extra = false)
 				Freeplay_SetupStart();
 				return;
 			}
-			strcopy(message, sizeof(message), "{green}All enemies lose 6 expidonsan shields.");
-			EnemyShields -= 6;
+			strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
+			EnemyShields -= 4;
 		}
 		case 77:
 		{
