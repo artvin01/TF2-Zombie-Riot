@@ -107,7 +107,7 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 							}
 						}
 
-						if(ParticleRef[client] == -1)
+						if(MeleeLevel[client] >= 0 && ParticleRef[client] == -1)
 						{
 							float pos[3]; GetClientAbsOrigin(client, pos);
 							pos[2] += 1.0;
@@ -164,6 +164,10 @@ void SeaMelee_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMel
 {
 	switch(MeleeLevel[client])
 	{
+		case -1:
+		{
+			enemies_hit_aoe = 2;
+		}
 		case 1:
 		{
 			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
