@@ -191,7 +191,7 @@ void Waves_MapStart()
 	int objective = GetObjectiveResource();
 	if(objective != -1)
 		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", -1);
-	
+
 	Waves_UpdateMvMStats();
 }
 
@@ -3142,8 +3142,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 	{
 		WaveEndLogicExtra();
 
-		int postWaves = CurrentRound - length;
-		Freeplay_OnEndWave(postWaves, round.Cash);
+		Freeplay_OnEndWave(round.Cash);
 		
 		CurrentCash += round.Cash;
 
@@ -3212,7 +3211,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			Freeplay_SetupStart(postWaves);
+			Freeplay_SetupStart(true);
 
 			Cooldown = GetGameTime() + 15.0;
 			
@@ -3299,7 +3298,7 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 		WaveEndLogicExtra();
 
 		int postWaves = CurrentRound - length;
-		Freeplay_OnEndWave(postWaves, round.Cash);
+		Freeplay_OnEndWave(round.Cash);
 		CurrentCash += round.Cash;
 
 		if(round.Cash)
@@ -3339,7 +3338,7 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 
 		if((CurrentRound % 5) == 4)
 		{
-			Freeplay_SetupStart(postWaves);
+			Freeplay_SetupStart(true);
 
 			Cooldown = GetGameTime() + 15.0;
 			
