@@ -130,7 +130,7 @@ public void CastleBreaker_Modechange(int client, int weapon, bool crit, int slot
 		if(!ignore && GetEntityFlags(client) & FL_DUCKING)
 		{
 			CastleBreaker_ModeLock[client]=!CastleBreaker_ModeLock[client];
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			ClientCommand(client, "playgamesound weapons/vaccinator_toggle.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			if(CastleBreaker_ModeLock[client])

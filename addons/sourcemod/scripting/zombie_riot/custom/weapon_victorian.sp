@@ -319,13 +319,25 @@ static void Shell_VictorianTouch(int entity, int target)
 		}
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float spawnLoc[3];
-		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, f_ProjectileRadius[entity], Falloff);
+		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, f_ProjectileRadius[entity], Falloff, _, _, _, _, _, Did_Someone_Get_Hit);
 		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, entity, 70,_, 0.9, 70);
 		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 		
 		if(IsValidEntity(particle))
 			RemoveEntity(particle);
 		RemoveEntity(entity);
+	}
+}
+
+static void Did_Someone_Get_Hit(int entity, int victim, float damage, int weapon)
+{
+	if(IsValidEntity(entity))
+	{
+		float Ability_CD = Ability_Check_Cooldown(entity, 2);
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+		else
+			Ability_Apply_Cooldown(entity, 2, Ability_CD-(b_thisNpcIsARaid[victim] ? 1.0 : 0.2));
 	}
 }
 
