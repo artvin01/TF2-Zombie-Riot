@@ -436,8 +436,8 @@ void Freeplay_SpawnEnemy(int entity)
 
 	if(Coffee)
 	{
-		ApplyStatusEffect(entity, entity, "Caffinated", 10.0);
-		ApplyStatusEffect(entity, entity, "Caffinated Drain", 10.0);
+		ApplyStatusEffect(entity, entity, "Caffinated", 15.0);
+		ApplyStatusEffect(entity, entity, "Caffinated Drain", 15.0);
 	}
 
 	if(StalkerBuff > 0)
