@@ -192,8 +192,6 @@ void Waves_MapStart()
 	if(objective != -1)
 		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", -1);
 
-	Freeplay_OnMapStart();
-	
 	Waves_UpdateMvMStats();
 }
 
