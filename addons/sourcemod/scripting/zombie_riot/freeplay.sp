@@ -508,7 +508,7 @@ void Freeplay_SpawnEnemy(int entity)
 		Elemental_AddVoidDamage(entity, entity, Elemental_VoidDmg);
 
 	if(Elemental_CryoDmg > 0)
-		Elemental_AddCyroDamage(entity, entity, Elemental_CryoDmg);
+		Elemental_AddCyroDamage(entity, entity, Elemental_CryoDmg, 2);
 
 	if(Elemental_NecrosisDmg > 0)
 		Elemental_AddNecrosisDamage(entity, entity, Elemental_NecrosisDmg);
