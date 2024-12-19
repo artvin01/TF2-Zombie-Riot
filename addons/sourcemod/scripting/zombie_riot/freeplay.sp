@@ -37,7 +37,7 @@ static int ExplodeNPCDamage;
 static int EnemyShields;
 static bool IsRaidWave; // to prevent the message from popping up twice
 static int VoidBuff;
-static bool RuinaBuff; // jdeivid might ionize me for this but i HAVE to do it!!!!!!!!!!
+//static bool RuinaBuff; // jdeivid might ionize me for this but i HAVE to do it!!!!!!!!!!
 static bool SquadBuff;
 static bool Coffee;
 static int StrangleDebuff;
@@ -89,7 +89,7 @@ void Freeplay_ResetAll()
 	IsRaidWave = false;
 	EnemyShields = 0;
 	VoidBuff = 0;
-	RuinaBuff = false;
+	//RuinaBuff = false;
 	SquadBuff = false;
 	Coffee = false;
 	StrangleDebuff = 0;
@@ -416,6 +416,7 @@ void Freeplay_SpawnEnemy(int entity)
 	if(VoidBuff > 0)
 		ApplyStatusEffect(entity, entity, "Void Strength I", FAR_FUTURE);
 
+	/*
 	if(RuinaBuff)
 	{
 		float dur = 10.0;
@@ -428,7 +429,8 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Ruina's Damage", dur);
 		NpcStats_RuinaDamageStengthen(entity, 0.35);
 	}
-
+	*/
+	
 	if(SquadBuff)
 		ApplyStatusEffect(entity, entity, "Squad Leader", FAR_FUTURE);
 
@@ -1272,7 +1274,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 			SuperMiniBoss = true;
 		}
-		case 72:
+		case 72, 73:
 		{
 			if(ExplodingNPC)
 			{
@@ -1283,17 +1285,17 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{red}Now, enemies will explode on death!");
 			ExplodingNPC = true;
 		}
-		case 73:
+		case 74:
 		{
 			strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
 			EnemyShields += 6;
 		}
-		case 74:
+		case 75:
 		{
 			strcopy(message, sizeof(message), "{red}All enemies receieve 12 expidonsan shields!");
 			EnemyShields += 12;
 		}
-		case 75:
+		case 76:
 		{
 			if(EnemyShields <= 0)
 			{
@@ -1304,7 +1306,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{green}All enemies lose 3 expidonsan shields.");
 			EnemyShields -= 3;
 		}
-		case 76:
+		case 77:
 		{
 			if(EnemyShields <= 0)
 			{
@@ -1315,7 +1317,7 @@ void Freeplay_SetupStart(bool extra = false)
 			strcopy(message, sizeof(message), "{green}All enemies lose 6 expidonsan shields.");
 			EnemyShields -= 6;
 		}
-		case 77:
+		case 78:
 		{
 			if(VoidBuff > 2)
 			{
@@ -1328,6 +1330,7 @@ void Freeplay_SetupStart(bool extra = false)
 				VoidBuff++;
 			}
 		}
+		/*
 		case 78:
 		{
 			if(RuinaBuff)
@@ -1341,6 +1344,7 @@ void Freeplay_SetupStart(bool extra = false)
 				RuinaBuff = true;
 			}
 		}
+		*/
 		case 79:
 		{
 			if(SquadBuff)
@@ -1363,7 +1367,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			else
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now gain the Caffinated buff for 10 seconds! {yellow}(Includes Caffinated Drain)");
+				strcopy(message, sizeof(message), "{red}All enemies now gain the Caffinated buff for 15 seconds! {yellow}(Includes Caffinated Drain)");
 				Coffee = true;
 			}
 		}
@@ -1423,28 +1427,28 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					if(GetRandomInt(1, 2) > 1)
 					{
-						if(Elemental_NerveDmg >= 2000)
+						if(Elemental_NerveDmg >= 4000)
 						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corrosion damage granted to enemies by 100.");
-							Elemental_NerveDmg -= 100;
-						}
-						else
-						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Corrosion damage.");
-							Elemental_NerveDmg += 100;
-						}
-					}
-					else
-					{
-						if(Elemental_NerveDmg >= 2000)
-						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corrosion damage granted to enemies by 100.");
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corrosion damage granted to enemies by 200.");
 							Elemental_NerveDmg -= 200;
 						}
 						else
 						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Corrosion damage.");
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 200 base Elemental Corrosion damage.");
 							Elemental_NerveDmg += 200;
+						}
+					}
+					else
+					{
+						if(Elemental_NerveDmg >= 4000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corrosion damage granted to enemies by 400.");
+							Elemental_NerveDmg -= 400;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 400 base Elemental Corrosion damage.");
+							Elemental_NerveDmg += 400;
 						}
 					}
 				}
@@ -1452,28 +1456,28 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					if(GetRandomInt(1, 2) > 1)
 					{
-						if(Elemental_ChaosDmg >= 2000)
+						if(Elemental_ChaosDmg >= 4000)
 						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Chaos damage granted to enemies by 100.");
-							Elemental_ChaosDmg -= 100;
-						}
-						else
-						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Chaos damage.");
-							Elemental_ChaosDmg += 100;
-						}
-					}
-					else
-					{
-						if(Elemental_ChaosDmg >= 2000)
-						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Chaos damage granted to enemies by 100.");
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Chaos damage granted to enemies by 200.");
 							Elemental_ChaosDmg -= 200;
 						}
 						else
 						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Chaos damage.");
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 200 base Elemental Chaos damage.");
 							Elemental_ChaosDmg += 200;
+						}
+					}
+					else
+					{
+						if(Elemental_ChaosDmg >= 4000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Chaos damage granted to enemies by 400.");
+							Elemental_ChaosDmg -= 400;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 400 base Elemental Chaos damage.");
+							Elemental_ChaosDmg += 400;
 						}
 					}
 				}
@@ -1481,28 +1485,28 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					if(GetRandomInt(1, 2) > 1)
 					{
-						if(Elemental_VoidDmg >= 2000)
+						if(Elemental_VoidDmg >= 4000)
 						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Void damage granted to enemies by 100.");
-							Elemental_VoidDmg -= 100;
-						}
-						else
-						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Void damage.");
-							Elemental_VoidDmg += 100;
-						}
-					}
-					else
-					{
-						if(Elemental_VoidDmg >= 2000)
-						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Void damage granted to enemies by 100.");
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Void damage granted to enemies by 200.");
 							Elemental_VoidDmg -= 200;
 						}
 						else
 						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Void damage.");
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 200 base Elemental Void damage.");
 							Elemental_VoidDmg += 200;
+						}
+					}
+					else
+					{
+						if(Elemental_VoidDmg >= 4000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Void damage granted to enemies by 400.");
+							Elemental_VoidDmg -= 400;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 400 base Elemental Void damage.");
+							Elemental_VoidDmg += 400;
 						}
 					}
 				}
@@ -1510,28 +1514,28 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					if(GetRandomInt(1, 2) > 1)
 					{
-						if(Elemental_CryoDmg >= 2000)
+						if(Elemental_CryoDmg >= 4000)
 						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Cryo damage granted to enemies by 100.");
-							Elemental_CryoDmg -= 100;
-						}
-						else
-						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Cryo damage.");
-							Elemental_CryoDmg += 100;
-						}
-					}
-					else
-					{
-						if(Elemental_CryoDmg >= 2000)
-						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Cryo damage granted to enemies by 100.");
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Cryo damage granted to enemies by 200.");
 							Elemental_CryoDmg -= 200;
 						}
 						else
 						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Cryo damage.");
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 200 base Elemental Cryo damage.");
 							Elemental_CryoDmg += 200;
+						}
+					}
+					else
+					{
+						if(Elemental_CryoDmg >= 4000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Cryo damage granted to enemies by 400.");
+							Elemental_CryoDmg -= 400;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 400 base Elemental Cryo damage.");
+							Elemental_CryoDmg += 400;
 						}
 					}
 				}
@@ -1539,28 +1543,28 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					if(GetRandomInt(1, 2) > 1)
 					{
-						if(Elemental_NecrosisDmg >= 2000)
+						if(Elemental_NecrosisDmg >= 4000)
 						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Necrosis damage granted to enemies by 100.");
-							Elemental_NecrosisDmg -= 100;
-						}
-						else
-						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Necrosis damage.");
-							Elemental_NecrosisDmg += 100;
-						}
-					}
-					else
-					{
-						if(Elemental_NecrosisDmg >= 2000)
-						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Necrosis damage granted to enemies by 100.");
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Necrosis damage granted to enemies by 200.");
 							Elemental_NecrosisDmg -= 200;
 						}
 						else
 						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Necrosis damage.");
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 200 base Elemental Necrosis damage.");
 							Elemental_NecrosisDmg += 200;
+						}
+					}
+					else
+					{
+						if(Elemental_NecrosisDmg >= 4000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Necrosis damage granted to enemies by 400.");
+							Elemental_NecrosisDmg -= 400;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 400 base Elemental Necrosis damage.");
+							Elemental_NecrosisDmg += 400;
 						}
 					}
 				}
@@ -1568,28 +1572,28 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					if(GetRandomInt(1, 2) > 1)
 					{
-						if(Elemental_OsmosisDmg >= 2000)
+						if(Elemental_OsmosisDmg >= 4000)
 						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Osmosis damage granted to enemies by 100.");
-							Elemental_OsmosisDmg -= 100;
-						}
-						else
-						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Osmosis damage.");
-							Elemental_OsmosisDmg += 100;
-						}
-					}
-					else
-					{
-						if(Elemental_OsmosisDmg >= 2000)
-						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Osmosis damage granted to enemies by 100.");
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Osmosis damage granted to enemies by 200.");
 							Elemental_OsmosisDmg -= 200;
 						}
 						else
 						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Osmosis damage.");
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 200 base Elemental Osmosis damage.");
 							Elemental_OsmosisDmg += 200;
+						}
+					}
+					else
+					{
+						if(Elemental_OsmosisDmg >= 4000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Osmosis damage granted to enemies by 400.");
+							Elemental_OsmosisDmg -= 400;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 400 base Elemental Osmosis damage.");
+							Elemental_OsmosisDmg += 400;
 						}
 					}
 				}
@@ -1597,28 +1601,28 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					if(GetRandomInt(1, 2) > 1)
 					{
-						if(Elemental_CorruptionDmg >= 2000)
+						if(Elemental_CorruptionDmg >= 4000)
 						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corruption damage granted to enemies by 100.");
-							Elemental_CorruptionDmg -= 100;
-						}
-						else
-						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Corruption damage.");
-							Elemental_CorruptionDmg += 100;
-						}
-					}
-					else
-					{
-						if(Elemental_CorruptionDmg >= 2000)
-						{
-							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corruption damage granted to enemies by 100.");
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corruption damage granted to enemies by 200.");
 							Elemental_CorruptionDmg -= 200;
 						}
 						else
 						{
-							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Corruption damage.");
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 200 base Elemental Corruption damage.");
 							Elemental_CorruptionDmg += 200;
+						}
+					}
+					else
+					{
+						if(Elemental_CorruptionDmg >= 4000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corruption damage granted to enemies by 400.");
+							Elemental_CorruptionDmg -= 400;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 400 base Elemental Corruption damage.");
+							Elemental_CorruptionDmg += 400;
 						}
 					}
 				}
