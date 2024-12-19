@@ -178,7 +178,7 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 
 void Flagellant_DoSwingTrace(int client)
 {
-	TriggerSelfDamage(client, 0.0001);
+	TriggerSelfDamage(client, 0.005);
 }
 
 void Flagellant_OnTakeDamage(int victim)
@@ -495,7 +495,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 					cooldown = 10.0;
 				}
 
-				Ability_Apply_Cooldown(client, slot, 10.0);
+				Ability_Apply_Cooldown(client, slot, cooldown);
 				
 				if(target > MaxClients)
 				{
@@ -585,7 +585,8 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 public void Flagellant_AcidHitPost(int attacker, int victim, float damage, int weapon)
 {
 	float multi = Attributes_Get(weapon, 2, 1.0);
-	StartBleedingTimer(victim, attacker, multi * 4.0, HealLevel[attacker] > 1 ? 15 : 10, weapon, DMG_PLASMA);
+	StartBleedingTimer(victim, attacker, multi, HealLevel[attacker] > 1 ? 40 : 30, weapon, DMG_PLASMA);
+	StartBleedingTimer(victim, attacker, multi, HealLevel[attacker] > 1 ? 40 : 30, weapon, DMG_PLASMA);
 }
 
 public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int slot)
@@ -635,6 +636,9 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		}
 	}
 
+	if(Elemental_GoingCritical(target))
+		validAlly = false;
+
 	if(validAlly)
 	{
 		int healing = RoundToFloor(maxhealth * (HealLevel[client] > 1 ? 0.35 : 0.25));
@@ -667,7 +671,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		HealedAlly[2] += 10.0;
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
-		Elemental_AddNervousDamage(target, client, 10, _, true);
+		Elemental_AddChaosDamage(target, client, 10, _, true);
 		ApplyStatusEffect(client, target, "Hussar's Warscream", 10.0);
 
 		if(target > MaxClients)
@@ -786,7 +790,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		
 		
 		float extra = BleedAmountCountStack[target] * 1000.0;
-		NPCStats_RemoveAllDebuffs(target, 0.6);
+		ApplyStatusEffect(target, target, "Hardened Aura", 0.6);
 		SDKHooks_TakeDamage(target, client, client, (3200.0 * multi), DMG_PLASMA, secondary);
 		if(extra)
 			SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
