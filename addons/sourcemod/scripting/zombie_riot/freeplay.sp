@@ -522,9 +522,6 @@ void Freeplay_OnEndWave(int &cash)
 	if(ExplodingNPC)
 		ExplodingNPC = false;
 
-	if(ElementalAdded)
-		ElementalAdded = false;
-
 	cash += CashBonus;
 }
 
