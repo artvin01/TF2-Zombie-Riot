@@ -1,3 +1,5 @@
+// DON'T LOOK AT SKULL N°84. I BEG YOU.
+
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -32,7 +34,23 @@ static int ExtraSkulls;
 static int SkullTimes;
 static bool ExplodingNPC;
 static int ExplodeNPCDamage;
+static int EnemyShields;
 static bool IsRaidWave; // to prevent the message from popping up twice
+static int VoidBuff;
+static bool RuinaBuff; // jdeivid might ionize me for this but i HAVE to do it!!!!!!!!!!
+static bool SquadBuff;
+static bool Coffee;
+static int StrangleDebuff;
+static int ProsperityDebuff;
+static bool SilenceDebuff;
+static bool ElementalAdded; // to prevent any additional elemental stuff to be rolled, as only one elemental debuff has to be added
+static int Elemental_NerveDmg;
+static int Elemental_ChaosDmg;
+static int Elemental_VoidDmg;
+static int Elemental_CryoDmg;
+static int Elemental_NecrosisDmg;
+static int Elemental_OsmosisDmg;
+static int Elemental_CorruptionDmg;
 
 void Freeplay_ResetAll()
 {
@@ -69,6 +87,22 @@ void Freeplay_ResetAll()
 	ExplodingNPC = false;
 	EscapeModeForNpc = false;
 	IsRaidWave = false;
+	EnemyShields = 0;
+	VoidBuff = 0;
+	RuinaBuff = false;
+	SquadBuff = false;
+	Coffee = false;
+	StrangleDebuff = 0;
+	ProsperityDebuff = 0;
+	SilenceDebuff = false;
+	ElementalAdded = false;
+	Elemental_NerveDmg = 0;
+	Elemental_ChaosDmg = 0;
+	Elemental_VoidDmg = 0;
+	Elemental_CryoDmg = 0;
+	Elemental_NecrosisDmg = 0;
+	Elemental_OsmosisDmg = 0;
+	Elemental_CorruptionDmg = 0;
 }
 
 int Freeplay_EnemyCount()
@@ -310,7 +344,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 		}
-		enemy.Credits += 250.0;
+		enemy.Credits += 125.0;
 		enemy.ExtraDamage *= 1.65;
 		enemy.ExtraSpeed = 1.45;
 		enemy.ExtraSize = 1.65; // big
@@ -356,12 +390,85 @@ bool Freeplay_ShouldMiniBoss()
 
 void Freeplay_SpawnEnemy(int entity)
 {
+	//// BUFFS ////
+
 	if(HussarBuff)
 		ApplyStatusEffect(entity, entity, "Hussar's Warscream", FAR_FUTURE);
 
 	if(PernellBuff)
 		ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
 	
+	if(FusionBuff > 1)
+		ApplyStatusEffect(entity, entity, "Self Empowerment", FAR_FUTURE);
+	
+	if(FusionBuff == 1 || FusionBuff > 2)
+		ApplyStatusEffect(entity, entity, "Ally Empowerment", FAR_FUTURE);
+	
+	if(OceanBuff > 1)
+		ApplyStatusEffect(entity, entity, "Oceanic Scream", FAR_FUTURE);
+	
+	if(OceanBuff > 0)
+		ApplyStatusEffect(entity, entity, "Oceanic Singing", FAR_FUTURE);
+
+	if(VoidBuff > 1)
+		ApplyStatusEffect(entity, entity, "Void Strength II", FAR_FUTURE);
+
+	if(VoidBuff > 0)
+		ApplyStatusEffect(entity, entity, "Void Strength I", FAR_FUTURE);
+
+	if(RuinaBuff)
+	{
+		float dur = 10.0;
+		ApplyStatusEffect(entity, entity, "Ruina's Defense", dur);
+		NpcStats_RuinaDefenseStengthen(entity, 0.65);
+
+		ApplyStatusEffect(entity, entity, "Ruina's Agility", dur);
+		NpcStats_RuinaAgilityStengthen(entity, 0.35);
+
+		ApplyStatusEffect(entity, entity, "Ruina's Damage", dur);
+		NpcStats_RuinaDamageStengthen(entity, 0.35);
+	}
+
+	if(SquadBuff)
+		ApplyStatusEffect(entity, entity, "Squad Leader", FAR_FUTURE);
+
+	if(Coffee)
+	{
+		ApplyStatusEffect(entity, entity, "Caffinated", 10.0);
+		ApplyStatusEffect(entity, entity, "Caffinated Drain", 10.0);
+	}
+
+	if(StalkerBuff > 0)
+	{
+		b_StaticNPC[entity] = true;
+		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 25);
+		fl_Extra_Damage[entity] *= 15.0;
+		StalkerBuff--;
+	}
+
+	//// DEBUFFS ////
+
+	if(SilenceDebuff)
+		ApplyStatusEffect(entity, entity, "Silenced", 10.0);
+
+	if(ProsperityDebuff > 2)
+		ApplyStatusEffect(entity, entity, "Prosperity III", FAR_FUTURE);
+
+	if(ProsperityDebuff > 1)
+		ApplyStatusEffect(entity, entity, "Prosperity II", FAR_FUTURE);
+
+	if(ProsperityDebuff > 0)
+		ApplyStatusEffect(entity, entity, "Prosperity I", FAR_FUTURE);
+
+	if(StrangleDebuff > 2)
+		ApplyStatusEffect(entity, entity, "Stranglation III", FAR_FUTURE);
+
+	if(StrangleDebuff > 1)
+		ApplyStatusEffect(entity, entity, "Stranglation II", FAR_FUTURE);
+
+	if(StrangleDebuff > 0)
+		ApplyStatusEffect(entity, entity, "Stranglation I", FAR_FUTURE);
+
 	if(IceDebuff > 2)
 		ApplyStatusEffect(entity, entity, "Near Zero", FAR_FUTURE);
 	
@@ -377,18 +484,6 @@ void Freeplay_SpawnEnemy(int entity)
 	if(TeslarDebuff > 0)
 		ApplyStatusEffect(entity, entity, "Teslar Shock", FAR_FUTURE);
 	
-	if(FusionBuff > 1)
-		ApplyStatusEffect(entity, entity, "Self Empowerment", FAR_FUTURE);
-	
-	if(FusionBuff == 1 || FusionBuff > 2)
-		ApplyStatusEffect(entity, entity, "Ally Empowerment", FAR_FUTURE);
-	
-	if(OceanBuff > 1)
-		ApplyStatusEffect(entity, entity, "Oceanic Scream", FAR_FUTURE);
-	
-	if(OceanBuff > 0)
-		ApplyStatusEffect(entity, entity, "Oceanic Singing", FAR_FUTURE);
-	
 	if(CrippleDebuff > 0)
 	{
 		ApplyStatusEffect(entity, entity, "Cripple", FAR_FUTURE);
@@ -401,14 +496,30 @@ void Freeplay_SpawnEnemy(int entity)
 		CudgelDebuff--;
 	}
 
-	if(StalkerBuff > 0)
-	{
-		b_StaticNPC[entity] = true;
-		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 25);
-		fl_Extra_Damage[entity] *= 15.0;
-		StalkerBuff--;
-	}
+	//// ELEMENTAL DAMAGE ////
 
+	if(Elemental_NerveDmg > 0)
+		Elemental_AddNervousDamage(entity, entity, Elemental_NerveDmg);
+
+	if(Elemental_ChaosDmg > 0)
+		Elemental_AddChaosDamage(entity, entity, Elemental_ChaosDmg);
+
+	if(Elemental_VoidDmg > 0)
+		Elemental_AddVoidDamage(entity, entity, Elemental_VoidDmg);
+
+	if(Elemental_CryoDmg > 0)
+		Elemental_AddCryoDamage(entity, entity, Elemental_CryoDmg);
+
+	if(Elemental_NecrosisDmg > 0)
+		Elemental_AddNecrosisDamage(entity, entity, Elemental_NecrosisDmg);
+
+	if(Elemental_OsmosisDmg > 0)
+		Elemental_AddOsmosisDamage(entity, entity, Elemental_OsmosisDmg);
+
+	if(Elemental_CorruptionDmg > 0)
+		Elemental_AddCorruptionDamage(entity, entity, Elemental_CorruptionDmg);
+
+	// OTHER //
 	switch(PerkMachine)
 	{
 		case 1:
@@ -433,16 +544,20 @@ void Freeplay_SpawnEnemy(int entity)
 			b_CannotBeSlowed[entity] = true;
 		}
 	}
-
 	fl_Extra_Speed[entity] *= SpeedMult;
 	fl_Extra_MeleeArmor[entity] *= MeleeMult;
 	fl_Extra_RangedArmor[entity] *= RangedMult;
+	if(EnemyShields > 0)
+		VausMagicaGiveShield(entity, EnemyShields);
 }
 
 void Freeplay_OnEndWave(int &cash)
 {
 	if(ExplodingNPC)
 		ExplodingNPC = false;
+
+	if(ElementalAdded)
+		ElementalAdded = false;
 
 	cash += CashBonus;
 }
@@ -465,7 +580,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 73;
+		rand = GetURandomInt() % 85;
 	
 	char message[128];
 	switch(rand)
@@ -555,7 +670,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		case 10:
 		{
-			if(IceDebuff > 2)
+			if(IceDebuff > 3)
 			{
 				strcopy(message, sizeof(message), "{red}All enemies have lost the Cryo debuff!");
 				IceDebuff = 0;
@@ -1170,7 +1285,344 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		case 73:
 		{
-			
+			strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
+			EnemyShields += 6;
+		}
+		case 74:
+		{
+			strcopy(message, sizeof(message), "{red}All enemies receieve 12 expidonsan shields!");
+			EnemyShields += 12;
+		}
+		case 75:
+		{
+			if(EnemyShields <= 0)
+			{
+				EnemyShields = 0;
+				Freeplay_SetupStart();
+				return;
+			}
+			strcopy(message, sizeof(message), "{green}All enemies lose 3 expidonsan shields.");
+			EnemyShields -= 3;
+		}
+		case 76:
+		{
+			if(EnemyShields <= 0)
+			{
+				EnemyShields = 0;
+				Freeplay_SetupStart();
+				return;
+			}
+			strcopy(message, sizeof(message), "{green}All enemies lose 6 expidonsan shields.");
+			EnemyShields -= 6;
+		}
+		case 77:
+		{
+			if(VoidBuff > 2)
+			{
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Void buff.");
+				VoidBuff = 0;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Void buff!");
+				VoidBuff++;
+			}
+		}
+		case 78:
+		{
+			if(RuinaBuff)
+			{
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Ruina buff.");
+				RuinaBuff = false;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now gain the Ruina buff for 10 seconds! {yellow}(+35% dmg, res and spd)");
+				RuinaBuff = true;
+			}
+		}
+		case 79:
+		{
+			if(SquadBuff)
+			{
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Squad Leader buff.");
+				SquadBuff = false;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff!");
+				SquadBuff = true;
+			}
+		}
+		case 80:
+		{
+			if(Coffee)
+			{
+				strcopy(message, sizeof(message), "{green}All enemies have lost the Caffinated buff.");
+				Coffee = false;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now gain the Caffinated buff for 10 seconds! {yellow}(Includes Caffinated Drain)");
+				Coffee = true;
+			}
+		}
+		case 81:
+		{
+			if(StrangleDebuff > 3)
+			{
+				strcopy(message, sizeof(message), "{red}All enemies have lost the Stranglation debuff!");
+				StrangleDebuff = 0;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{green}All enemies now gain a layer of the Stranglation debuff.");
+				StrangleDebuff++;
+			}
+		}
+		case 82:
+		{
+			if(ProsperityDebuff > 3)
+			{
+				strcopy(message, sizeof(message), "{red}All enemies have lost the Prosperity debuff!");
+				ProsperityDebuff = 0;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{green}All enemies now gain a layer of the Prosperity debuff.");
+				ProsperityDebuff++;
+			}
+		}
+		case 83:
+		{
+			if(SilenceDebuff)
+			{
+				strcopy(message, sizeof(message), "{red}All enemies have been Unsilenced!");
+				SilenceDebuff = false;
+			}
+			else
+			{
+				strcopy(message, sizeof(message), "{green}All enemies are now silenced for 10 seconds after spawning.");
+				SilenceDebuff = true;
+			}
+		}
+
+		// this skull is a nightmare
+		case 84:
+		{
+			if(ElementalAdded)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+			ElementalAdded = true;
+
+			switch(GetRandomInt(1, 7))
+			{
+				case 1:
+				{
+					if(GetRandomInt(1, 2) > 1)
+					{
+						if(Elemental_NerveDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corrosion damage granted to enemies by 100.");
+							Elemental_NerveDmg -= 100;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Corrosion damage.");
+							Elemental_NerveDmg += 100;
+						}
+					}
+					else
+					{
+						if(Elemental_NerveDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corrosion damage granted to enemies by 100.");
+							Elemental_NerveDmg -= 200;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Corrosion damage.");
+							Elemental_NerveDmg += 200;
+						}
+					}
+				}
+				case 2:
+				{
+					if(GetRandomInt(1, 2) > 1)
+					{
+						if(Elemental_ChaosDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Chaos damage granted to enemies by 100.");
+							Elemental_ChaosDmg -= 100;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Chaos damage.");
+							Elemental_ChaosDmg += 100;
+						}
+					}
+					else
+					{
+						if(Elemental_ChaosDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Chaos damage granted to enemies by 100.");
+							Elemental_ChaosDmg -= 200;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Chaos damage.");
+							Elemental_ChaosDmg += 200;
+						}
+					}
+				}
+				case 3:
+				{
+					if(GetRandomInt(1, 2) > 1)
+					{
+						if(Elemental_VoidDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Void damage granted to enemies by 100.");
+							Elemental_VoidDmg -= 100;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Void damage.");
+							Elemental_VoidDmg += 100;
+						}
+					}
+					else
+					{
+						if(Elemental_VoidDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Void damage granted to enemies by 100.");
+							Elemental_VoidDmg -= 200;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Void damage.");
+							Elemental_VoidDmg += 200;
+						}
+					}
+				}
+				case 4:
+				{
+					if(GetRandomInt(1, 2) > 1)
+					{
+						if(Elemental_CryoDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Cryo damage granted to enemies by 100.");
+							Elemental_CryoDmg -= 100;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Cryo damage.");
+							Elemental_CryoDmg += 100;
+						}
+					}
+					else
+					{
+						if(Elemental_CryoDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Cryo damage granted to enemies by 100.");
+							Elemental_CryoDmg -= 200;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Cryo damage.");
+							Elemental_CryoDmg += 200;
+						}
+					}
+				}
+				case 5:
+				{
+					if(GetRandomInt(1, 2) > 1)
+					{
+						if(Elemental_NecrosisDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Necrosis damage granted to enemies by 100.");
+							Elemental_NecrosisDmg -= 100;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Necrosis damage.");
+							Elemental_NecrosisDmg += 100;
+						}
+					}
+					else
+					{
+						if(Elemental_NecrosisDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Necrosis damage granted to enemies by 100.");
+							Elemental_NecrosisDmg -= 200;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Necrosis damage.");
+							Elemental_NecrosisDmg += 200;
+						}
+					}
+				}
+				case 6:
+				{
+					if(GetRandomInt(1, 2) > 1)
+					{
+						if(Elemental_OsmosisDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Osmosis damage granted to enemies by 100.");
+							Elemental_OsmosisDmg -= 100;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Osmosis damage.");
+							Elemental_OsmosisDmg += 100;
+						}
+					}
+					else
+					{
+						if(Elemental_OsmosisDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Osmosis damage granted to enemies by 100.");
+							Elemental_OsmosisDmg -= 200;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Osmosis damage.");
+							Elemental_OsmosisDmg += 200;
+						}
+					}
+				}
+				case 7:
+				{
+					if(GetRandomInt(1, 2) > 1)
+					{
+						if(Elemental_CorruptionDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corruption damage granted to enemies by 100.");
+							Elemental_CorruptionDmg -= 100;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Corruption damage.");
+							Elemental_CorruptionDmg += 100;
+						}
+					}
+					else
+					{
+						if(Elemental_CorruptionDmg >= 2000)
+						{
+							strcopy(message, sizeof(message), "{red}Reduced the base Elemental Corruption damage granted to enemies by 100.");
+							Elemental_CorruptionDmg -= 200;
+						}
+						else
+						{
+							strcopy(message, sizeof(message), "{green}All enemies will now recieve 100 base Elemental Corruption damage.");
+							Elemental_CorruptionDmg += 200;
+						}
+					}
+				}
+			}
 		}
 		default:
 		{
