@@ -8990,8 +8990,10 @@ void NPCStats_RemoveAllDebuffs(int enemy, float Duration = 0.0)
 		Duration = 0.6;
 
 	RemoveAllBuffs(enemy, false);
+	ApplyRapidSuturing(enemy);
 	ApplyStatusEffect(enemy, enemy, "Hardened Aura", Duration);
 }
+
 #endif
 
 
