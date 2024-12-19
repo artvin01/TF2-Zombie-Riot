@@ -1580,7 +1580,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				{
 					break;
 				}
-				else if(info.Cost > 1000 && StarterCashMode[client])
+				else if(info.Cost_Unlock > 1000 && StarterCashMode[client])
 				{
 					break;
 				}
@@ -2852,6 +2852,12 @@ static void MenuPage(int client, int section)
 			maxCash = StartCash;
 		
 		cash = maxCash - CashSpent[client];
+		if(cash < 0)
+		{
+			StarterCashMode[client] = false;
+			MenuPage(client, section);
+			return;
+		}
 	}
 	
 	static Item item;
@@ -3463,7 +3469,7 @@ static void MenuPage(int client, int section)
 				{
 					continue;
 				}
-				else if(info.Cost > 1000 && StartCash < 750 && StarterCashMode[client])
+				else if(info.Cost_Unlock > 1000 && StartCash < 750 && StarterCashMode[client])
 				{
 					continue;
 				}
@@ -6290,7 +6296,7 @@ static void ItemCost(int client, Item item, int &cost)
 
 	if(StarterCashMode[client])
 	{
-		if(StartCash < 750 && (!item.ParentKit || cost <= 1000)) //give super discount for normal waves
+		if(StartCash < 750 && cost <= 1000) //give super discount for normal waves
 		{
 			cost = RoundToCeil(float(cost) * 0.35);
 		}

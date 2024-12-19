@@ -527,6 +527,9 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 
 void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 {
+	if(HasSpecificBuff(entity, "Hardened Aura"))
+		return;
+	
 	bool wasBurning = view_as<bool>(IgniteFor[entity]);
 
 	IgniteFor[entity] += RoundToCeil(duration*2.0);

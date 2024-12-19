@@ -1126,6 +1126,9 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 
 void StartBleedingTimer_Against_Client(int client, int entity, float damage, int amount)
 {
+	if(HasSpecificBuff(client, "Hardened Aura"))
+		return;
+
 	BleedAmountCountStack[client] += 1;
 	DataPack pack;
 	CreateDataTimer(0.5, Timer_Bleeding_Against_Client, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -1183,6 +1186,9 @@ stock void StartBleedingTimer(int entity, int client, float damage, int amount, 
 {
 	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
 	{
+		if(HasSpecificBuff(entity, "Hardened Aura"))
+			return;
+
 		BleedAmountCountStack[entity] += 1;
 		DataPack pack;
 		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);

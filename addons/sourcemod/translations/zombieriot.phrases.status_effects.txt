@@ -432,11 +432,11 @@
 	{
 		"en"	"Decreased attack speed by a certain amount."
 	}
-	"Gambler's Ruin"
+	"Gambler's Ruin Total"
 	{
-		"en"	"Gambler's Ruin"
+		"en"	"Gambler's Ruin Total"
 	}
-	"Gambler's Ruin Desc"
+	"Gambler's Ruin Total Desc"
 	{
 		"en"	"Increased damage taken by a certain amount."
 	}
@@ -479,14 +479,6 @@
 	"Specter's Resolve Desc"
 	{
 		"en"	"Increases max health by 200"
-	}
-	"Specter's Aura"
-	{
-		"en"	"Specter's Aura"
-	}
-	"Specter's Aura Desc"
-	{
-		"en"	"Decreases movement NPC'S speed by 40%%"
 	}
 	"Skadi's Skills"
 	{
