@@ -946,6 +946,13 @@
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
 		"chi"       "技能冷却还有 {1} 的时间!"
 	}
+	"Not Enough Ammo"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Not Enough Ammo! You need {1} Ammo!"
+		"de"		"Nicht Genügend Ammo! Du brauchst {1} Ammo!"
+		"ko"		"탄약 부족! {1}만큼의 탄약이 필요합니다!"
+	}
 	"Unspeakable Teleport Taunt"
 	{
 		"en"		"Behind you."

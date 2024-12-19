@@ -1128,12 +1128,14 @@ void StartBleedingTimer_Against_Client(int client, int entity, float damage, int
 {
 	if(HasSpecificBuff(client, "Hardened Aura"))
 		return;
-
+	if(HasSpecificBuff(client, "Thick Blood"))
+		return;
 	BleedAmountCountStack[client] += 1;
 	DataPack pack;
 	CreateDataTimer(0.5, Timer_Bleeding_Against_Client, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteCell(client);
+	pack.WriteFloat(GetGameTime());
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteFloat(damage);
 	pack.WriteCell(amount);
@@ -1144,9 +1146,12 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = EntRefToEntIndex(pack.ReadCell());
 	int OriginalIndex = pack.ReadCell();
+	float GameTimeClense = pack.ReadFloat();
 	if(!IsValidEntity(client))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
 	else
@@ -1156,11 +1161,32 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 			if(!b_NpcHasDied[client])
 			{
 				BleedAmountCountStack[OriginalIndex] -= 1;
+				if(BleedAmountCountStack[OriginalIndex] < 0)
+					BleedAmountCountStack[OriginalIndex] = 0;
 				return Plugin_Stop;
 			}
 		}
 	}
 		
+	if(StatusEffects_RapidSuturingCheck(OriginalIndex, GameTimeClense))
+	{
+		return Plugin_Stop;
+	}
+	if(HasSpecificBuff(OriginalIndex, "Hardened Aura"))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
+		return Plugin_Stop;
+	}
+	if(HasSpecificBuff(OriginalIndex, "Thick Blood"))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
+		return Plugin_Stop;
+	}
+	
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity == -1)
 		entity = 0;
@@ -1189,11 +1215,14 @@ stock void StartBleedingTimer(int entity, int client, float damage, int amount, 
 		if(HasSpecificBuff(entity, "Hardened Aura"))
 			return;
 
+		if(HasSpecificBuff(entity, "Thick Blood"))
+			return;
 		BleedAmountCountStack[entity] += 1;
 		DataPack pack;
 		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(entity));
 		pack.WriteCell(entity);
+		pack.WriteFloat(GetGameTime());
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(damagetype);
@@ -1208,9 +1237,12 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int OriginalIndex = pack.ReadCell();
+	float GameTimeClense = pack.ReadFloat();
 	if(entity<=MaxClients || !IsValidEntity(entity) || b_NpcHasDied[entity])
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
 		
@@ -1218,6 +1250,8 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	if(weapon<=MaxClients || !IsValidEntity(weapon))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
 
@@ -1225,15 +1259,29 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
-
+	
+	if(StatusEffects_RapidSuturingCheck(entity, GameTimeClense))
+	{
+		return Plugin_Stop;
+	}
 	if(HasSpecificBuff(entity, "Hardened Aura"))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
-
+	if(HasSpecificBuff(entity, "Thick Blood"))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
+		return Plugin_Stop;
+	}
 	float pos[3], ang[3];
 	
 	WorldSpaceCenter(entity, pos);

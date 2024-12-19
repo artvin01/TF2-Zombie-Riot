@@ -1478,6 +1478,7 @@ float Aeternam_Internal_DamageTakenFunc(int attacker, int victim, StatusEffect A
 }
 
 int SilenceIndex;
+int RapidSuturingIndex;
 void StatusEffects_Silence()
 {
 	StatusEffect data;
@@ -1507,8 +1508,92 @@ void StatusEffects_Silence()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+
+	//Immunity To Bleed
+	strcopy(data.BuffName, sizeof(data.BuffName), "Thick Blood");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₰");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	//Cleanses all Bleeding that happend before this time.
+	strcopy(data.BuffName, sizeof(data.BuffName), "Rapid Suturing");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	RapidSuturingIndex = StatusEffect_AddGlobal(data);
 }
 
+stock void ApplyRapidSuturing(int victim)
+{
+	ApplyStatusEffect(victim, victim, "Rapid Suturing", 1.0);
+	BleedAmountCountStack[victim] = 0;
+	//Instantly clean all bleed.
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(RapidSuturingIndex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+		}
+		else
+		{
+			Apply_StatusEffect.DataForUse = GetGameTime();
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+}
+stock bool StatusEffects_RapidSuturingCheck(int victim, float BleedTimeActive)
+{
+	if(!E_AL_StatusEffects[victim])
+		return false;
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(RapidSuturingIndex, E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_StatusEffect Apply_StatusEffect;
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+		}
+		else
+		{
+			PrintToChatAll("Apply_StatusEffect.DataForUse %f",Apply_StatusEffect.DataForUse);
+			PrintToChatAll("BleedTimeActive %f",BleedTimeActive);
+			if(BleedTimeActive <= Apply_StatusEffect.DataForUse)
+			{
+				return true;
+				//This current bleedstack was already calculated to be invalid, remove.
+			}
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+
+	return false;
+
+}
 stock bool NpcStats_IsEnemySilenced(int victim)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -2235,6 +2320,7 @@ stock void NpcStats_CasinoDebuffStengthen(int victim, float NewBuffValue)
 			if(NewBuffValue >= Apply_StatusEffect.DataForUse)
 			{
 				Apply_StatusEffect.DataForUse = NewBuffValue;
+				E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 			}
 		}
 	}
@@ -2317,6 +2403,7 @@ stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
 			if(NewBuffValue >= Apply_StatusEffect.DataForUse)
 			{
 				Apply_StatusEffect.DataForUse = NewBuffValue;
+				E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 			}
 		}
 	}
@@ -2350,6 +2437,7 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 			if(NewBuffValue >= Apply_StatusEffect.DataForUse)
 			{
 				Apply_StatusEffect.DataForUse = NewBuffValue;
+				E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 			}
 		}
 	}
@@ -2382,6 +2470,7 @@ stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue)
 			if(NewBuffValue >= Apply_StatusEffect.DataForUse)
 			{
 				Apply_StatusEffect.DataForUse = NewBuffValue;
+				E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 			}
 		}
 	}

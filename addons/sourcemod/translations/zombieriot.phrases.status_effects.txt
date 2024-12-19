@@ -216,6 +216,22 @@
 	{
 		"en"	"Immune to any and ALL debuffs."
 	}
+	"Thick Blood"
+	{
+		"en"	"Thick Blood"
+	}
+	"Thick Blood Desc"
+	{
+		"en"	"Immune To all Bleed, cleanses all Bleed."
+	}
+	"Rapid Suturing"
+	{
+		"en"	"Rapid Suturing"
+	}
+	"Rapid Suturing Desc"
+	{
+		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very tempomary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
+	}
 	"Marked"
 	{
 		"en"	"Marked"

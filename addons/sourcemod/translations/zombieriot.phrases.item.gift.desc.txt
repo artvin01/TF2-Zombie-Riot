@@ -2367,7 +2367,7 @@
 	}
 	"Agent Thompson Desc"
 	{
-		"en"		"Independent Agent.\nAppears to have the ability to dodge upcoming attacks.\nHowever in return takes more damage from melee and ranged sources."
+		"en"		"Independent Agent.\nAppears to have the ability to teleport behind the enemy on hit."
 	}
 	"Agent Johnson Desc"
 	{

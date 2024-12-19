@@ -55,6 +55,9 @@ stock bool Elemental_HasDamage(int entity)
 
 stock bool Elemental_GoingCritical(int entity)
 {
+	if(entity <= MaxClients)
+		return (Armor_Charge[entity] * 5 / 4) < (-MaxArmorCalculation(Armor_Level[entity], entity, 1.0));
+	
 	for(int i; i < Element_MAX; i++)
 	{
 		if((ElementDamage[entity][i] * 5 / 4) > TriggerDamage(entity, i))

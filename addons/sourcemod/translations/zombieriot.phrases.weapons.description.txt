@@ -3006,9 +3006,7 @@
 	}
 	"Seaborn Claws Desc"
 	{
-		"en"	"Hits up to 3 targets and increased melee range."
-		"fr"	"Griffes ont une longue portée. Frappe 3 ennemis."
-		"chi"	"可同时击中三名敌人。"
+		"en"	"Hits up to 2 targets."
 	}
 	"Seaborn Spines Desc"
 	{
@@ -3021,6 +3019,10 @@
 		"en"	"Heals allies up to 100 health and self up to 30 health."
 		"fr"	"Soigne les alliés pour 100 santé, soignez-vous pour 30 santé."
 		"chi"	"可治疗队友100hp，自己30hp。"
+	}
+	"Seaborn Infection Pap 0"
+	{
+		"en"	"Claws now hits up to 3 targets and increased melee range.\nSpines reload faster and gain a Salve that can heal allies and self."
 	}
 	"Seaborn Infection Pap 1"
 	{
@@ -3060,9 +3062,7 @@
 	}
 	"The Flagellant Desc"
 	{
-		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage."
-		"fr"	"Donne de la santé extra avec l'abilié de vous soigner, mais vous inflige des dégats en retour.\nLe fantasisme : une flétrissure de l'esprit."
-		"chi"	"狂热 - 对灵魂不朽的摧残。\n更多血量，可以自疗，但是会对自己造成伤害。"
+		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage.\nYou are immune to all bleed effects."
 	}
 	"The Flagellant Extra Desc"
 	{
@@ -3105,6 +3105,10 @@
 		"en"	"Melee alt-fire ability ''Sepsis'' gives yourself to store damage taken to later be restored after the ability ends.\nPrimary and Secondary also gain an alt-fire ability."
 		"fr"	"Abilité arme corps-\-corps «Sepsis» : Absorbez des dégats pour vous soigner avec quand l'abilité finit.\nVos armes principale et secondaire reçoivent aussi une abilité."
 		"chi"	"近战M2技能：''败血''\n激活时存储受到的伤害，技能结束后再受到此伤害。\n主武器和副武器也获得M2技能。"
+	}
+	"The Flagellant Pap 0"
+	{
+		"en"	"Gain +300 max health and doubles bleed damage, unlocks Acid Rain primary weapon."
 	}
 	"The Flagellant Pap 2"
 	{
@@ -3539,31 +3543,35 @@
 	{
 		"en"	"Fires bolt projectiles."
 	}
+	"Tinker Pap 0 Desc"
+	{
+		"en"	"Grants a ranged weapon that fires special bolt projectiles and Tinker Research now generates metal while active."
+	}
 	"Tinker Pap 1 Desc"
 	{
-		"en"	"+65%% Building Health, +202% Weapon Damage, +100%% Repair Rate, +15 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
-		"fr"	"+65%% durabilité pour constructions, +202% dégats, +100%% vitesse de réparation, +15 regénération de métal, +3 espaces pour construction de support et -30s temps de rechargement de l'enclume."
-		"chi"	"+65%%建筑血量，+202%武器伤害，+100%%修复速度，+15金属回复，+3辅助建筑，-30s工作台"
+		"en"	"+65%% Building Health, +202% Weapon Damage, +100%% Repair Rate, +6 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
+		"fr"	"+65%% durabilité pour constructions, +202% dégats, +100%% vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -30s temps de rechargement de l'enclume."
+		"chi"	"+65%%建筑血量，+202%武器伤害，+100%%修复速度，+6金属回复，+3辅助建筑，-30s工作台"
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
+		"en"	"+65%% Building Health, +75% Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70%% Building Health, +181.25% Weapon Damage, +50 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70%% Building Health, +181.25% Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+40%% Building Health, +181.25% Weapon Damage, +10 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+160% Weapon Damage, +15 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70%% Building Health, +250% Weapon Damage, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"West Pap 1 Desc"
 	{
@@ -3635,11 +3643,15 @@
 	}
 	"The Merchant Desc"
 	{
-		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time.\nAllows the construction of the brewing stand."
+		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand."
+	}
+	"Merchant Pap -1 Desc"
+	{
+		"en"	"Able to supercharge by using the device, but consumes metal over time."
 	}
 	"Merchant Pap 0 Desc"
 	{
-		"en"	"Improves Stats Overall"
+		"en"	"Base stats improved"
 	}
 	"Merchant Pap 1 Desc"
 	{
@@ -4040,11 +4052,7 @@
 	}
 	"CastleBreaker Desc Extra"
 	{
-		"en"	"Increases the Explosion damage of 'Archetype: Victoria' by +10％."
-		"ko"	"'유형: 빅토리아'인 다른 무기에 폭발 피해 +10％ 추가"
-	}
-	"Not Enough Ammo"
-	{
-		"en"	"Not Enough Ammo"
+		"en"	"Increases the Damage of 'Archetype: Victoria' by +10％."
+		"ko"	"'유형: 빅토리아'인 다른 무기에 피해량 +10％ 추가"
 	}
 }

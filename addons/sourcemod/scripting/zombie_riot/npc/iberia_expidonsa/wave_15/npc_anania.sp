@@ -333,7 +333,7 @@ void Iberia_AnaniaSelfDefense(Iberia_Anania npc, float gameTime, int target, flo
 void IberiaMoraleGivingDo(int iNpc, float gameTime, bool DoSounds = true, float range = 500.0)
 {
 	Iberia_Anania npc = view_as<Iberia_Anania>(iNpc);
-	if(npc.m_flDoingAnimation)
+	if(gameTime < npc.m_flDoingAnimation)
 	{
 		return;
 	}

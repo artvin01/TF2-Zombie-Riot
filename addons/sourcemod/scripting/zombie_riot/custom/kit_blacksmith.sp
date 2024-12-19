@@ -14,9 +14,9 @@ enum struct TinkerEnum
 	int Rarity;
 }
 
-static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
-static const int MetalGain[] = { 5, 8, 11, 15, 20, 35 };
-static const float Cooldowns[] = { 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
+static const int SupportBuildings[] = { 2, 2, 5, 9, 14, 14, 15 };
+static const int MetalGain[] = { 0, 5, 8, 11, 15, 20, 35 };
+static const float Cooldowns[] = { 180.0, 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
 static int SmithLevel[MAXTF2PLAYERS] = {-1, ...};
 static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};
 
@@ -97,7 +97,7 @@ void Blacksmith_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)
 	{
-		SmithLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
+		SmithLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0)) + 1;
 
 		if(SmithLevel[client] >= sizeof(MetalGain))
 			SmithLevel[client] = sizeof(MetalGain) - 1;
@@ -155,7 +155,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 
 					i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];
 
-					if(ParticleRef[client] == -1)
+					if(SmithLevel[client] > 0 && ParticleRef[client] == -1)
 					{
 						float pos[3]; GetClientAbsOrigin(client, pos);
 						pos[2] += 1.0;
