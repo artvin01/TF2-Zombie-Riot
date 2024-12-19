@@ -1,5 +1,9 @@
 "Phrases"
 {
+	"Is Elemental"
+	{
+		"en"	"This is an Elemental status effect."
+	}
 	"Teslar Shock"
 	{
 		"en"	"Teslar Shock"
@@ -214,7 +218,7 @@
 	}
 	"Hardened Aura Desc"
 	{
-		"en"	"Immune to any and ALL debuffs."
+		"en"	"Immune to any and ALL debuffs.\nElemental Is excluded from this."
 	}
 	"Thick Blood"
 	{
@@ -495,6 +499,14 @@
 	"Specter's Resolve Desc"
 	{
 		"en"	"Increases max health by 200"
+	}
+	"Ulpianus' Seriousness"
+	{
+		"en"	"Ulpianus' Seriousness"
+	}
+	"Ulpianus' Seriousness Desc"
+	{
+		"en"	"Attackspeed increaced by 20%%.\nIncreases Max Health by 540."
 	}
 	"Skadi's Skills"
 	{

@@ -42,6 +42,7 @@ static int StrangleDebuff;
 static int ProsperityDebuff;
 static bool SilenceDebuff;
 static float ExtraEnemySize;
+static bool UnlockedSpeed;
 
 void Freeplay_OnMapStart()
 {
@@ -94,6 +95,7 @@ void Freeplay_ResetAll()
 	ProsperityDebuff = 0;
 	SilenceDebuff = false;
 	ExtraEnemySize = 1.0;
+	UnlockedSpeed = false;
 }
 
 int Freeplay_EnemyCount()
@@ -531,7 +533,7 @@ void Freeplay_SetupStart(bool extra = false)
 	{
 		EmitSoundToAll("ui/vote_success.wav");
 		int exskull = GetRandomInt(0, 100);
-		if(exskull < 15) // 15% chance
+		if(exskull < 20) // 15% chance
 		{
 			ExtraSkulls++;
 			CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
@@ -545,7 +547,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 88;
+		rand = GetURandomInt() % 90;
 	
 	char message[128];
 	switch(rand)
@@ -1412,6 +1414,28 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 10%");
 			ExtraEnemySize -= 0.10;
+		}
+		case 88:
+		{
+			//10% chance, otherwise retry.
+			if(GetRandomFloat(0.0, 1.0) <= 0.1)
+				Rogue_RareWeapon_Collect();
+			else
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+		}
+		case 89:
+		{
+			if(UnlockedSpeed)
+			{
+				Freeplay_SetupStart();
+				return;
+			}
+			UnlockedSpeed = true;
+			Store_DiscountNamedItem("Adrenaline", 999);
+			strcopy(message, sizeof(message), "{green}Adrenaline is now buyable in the passive store!");
 		}
 		default:
 		{
