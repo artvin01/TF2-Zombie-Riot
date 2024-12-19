@@ -3213,23 +3213,6 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		{
 			Freeplay_SetupStart(true);
 
-			// Adding sounds to freeplay so it doesn't feel empty
-			switch(GetRandomInt(1, 3))
-			{
-				case 1:
-				{
-					EmitSoundToAll("ui/duel_challenge.wav");
-				}
-				case 2:
-				{
-					EmitSoundToAll("ui/duel_challenge_accepted.wav");
-				}
-				case 3:
-				{
-					EmitSoundToAll("ui/duel_challenge_rejected.wav");
-				}
-			}
-
 			Cooldown = GetGameTime() + 15.0;
 			
 			InSetup = true;
