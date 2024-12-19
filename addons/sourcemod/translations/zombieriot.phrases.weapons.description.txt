@@ -4054,11 +4054,7 @@
 	}
 	"CastleBreaker Desc Extra"
 	{
-		"en"	"Increases the Explosion damage of 'Archetype: Victoria' by +10％."
-		"ko"	"'유형: 빅토리아'인 다른 무기에 폭발 피해 +10％ 추가"
-	}
-	"Not Enough Ammo"
-	{
-		"en"	"Not Enough Ammo"
+		"en"	"Increases the Damage of 'Archetype: Victoria' by +10％."
+		"ko"	"'유형: 빅토리아'인 다른 무기에 피해량 +10％ 추가"
 	}
 }
