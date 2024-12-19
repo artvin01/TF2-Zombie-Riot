@@ -192,9 +192,7 @@ void Waves_MapStart()
 	if(objective != -1)
 		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", -1);
 
-	PrecacheSound("ui/duel_challenge.wav", true);
-	PrecacheSound("ui/duel_challenge_accepted.wav", true);
-	PrecacheSound("ui/duel_challenge_rejected.wav", true);
+	Freeplay_OnMapStart();
 	
 	Waves_UpdateMvMStats();
 }
