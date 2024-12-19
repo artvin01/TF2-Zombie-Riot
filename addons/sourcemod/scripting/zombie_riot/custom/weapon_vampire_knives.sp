@@ -355,7 +355,9 @@ public void Vamp_ApplyBloodlust(int attacker, int victim, int VampType, bool IsC
 		EmitSoundToClient(attacker, IsCleaver ? SND_BLOODLUST_CLEAVER : SND_BLOODLUST_KNIFE, _, _, _, _, _, GetRandomInt(80, 110));
 		f_VampNextHitSound[attacker] = GetGameTime() + 0.1;
 	}
-	
+
+	if(HasSpecificBuff(victim, "Hardened Aura"))
+		return;
 	BleedAmountCountStack[victim] += 1;
 	Handle pack;
 	CreateDataTimer(BleedRate, Vamp_BloodlustTick, pack, TIMER_FLAG_NO_MAPCHANGE);
