@@ -33,8 +33,6 @@ static int SkullTimes;
 static bool ExplodingNPC;
 static int ExplodeNPCDamage;
 static bool IsRaidWave; // to prevent the message from popping up twice
-static int ElementalAdd;
-static bool ElementalEnabled; // to prevent multiple elemental rolls, which override the previous one
 
 void Freeplay_ResetAll()
 {
@@ -71,8 +69,6 @@ void Freeplay_ResetAll()
 	ExplodingNPC = false;
 	EscapeModeForNpc = false;
 	IsRaidWave = false;
-	ElementalAdd = 0;
-	ElementalEnabled = false;
 }
 
 int Freeplay_EnemyCount()
@@ -89,54 +85,6 @@ void Freeplay_OnNPCDeath(int entity)
 		startPosition[2] += 45;
 		makeexplosion(entity, entity, startPosition, "", ExplodeNPCDamage, 150, _, _, true, true, 6.0);
 	}
-}
-
-Action Freeplay_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
-{
-	if(IsValidClient(victim))
-	{
-		if(ElementalAdd)
-		{
-			switch(ElementalAdd)
-			{
-				case 1:
-				{
-					Elemental_AddChaosDamage(victim, attacker, 30, true, true);
-				}
-				case 2:
-				{
-					Elemental_AddVoidDamage(victim, attacker, 30, true, false);
-				}
-				case 3:
-				{
-					Elemental_AddNervousDamage(victim, attacker, 30, true, false);
-				}
-				case 4:
-				{
-					Ruina_Add_Mana_Sickness(attacker, victim, 0.2, 60);
-				}
-				case 5:
-				{
-					Elemental_AddCorruptionDamage(victim, attacker, 30);
-				}
-				case 6:
-				{
-					StartBleedingTimer_Against_Client(victim, attacker, 10.0, 5);
-					TF2_IgnitePlayer(victimt, attacker, 5.0);
-				}
-				default:
-				{
-					// nothing
-				}
-			}
-		}
-	}
-	else
-	{
-		return Plugin_Continue;
-	}
-	
-	return Plugin_Changed;
 }
 
 int Freeplay_GetDangerLevelCurrent()
@@ -496,9 +444,6 @@ void Freeplay_OnEndWave(int &cash)
 	if(ExplodingNPC)
 		ExplodingNPC = false;
 
-	if(ElementalEnabled)
-		ElementalEnabled = false;
-
 	cash += CashBonus;
 }
 
@@ -520,7 +465,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 81;
+		rand = GetURandomInt() % 80;
 	
 	char message[128];
 	switch(rand)
@@ -1205,44 +1150,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		case 80:
 		{
-			if(ElementalEnabled)
-			{
-				Freeplay_SetupStart();
-				return;
-			}
-			ElementalEnabled = true;
-			ElementalAdd = GetRandomInt(0, 6);
-			switch(ElementalAdd)
-			{
-				case 1:
-				{
-					strcopy(message, sizeof(message), "{red}Now, enemies will apply additional Elemental Chaos damage!");
-				}
-				case 2:
-				{
-					strcopy(message, sizeof(message), "{red}Now, enemies will apply additional Elemental Void damage!");
-				}
-				case 3:
-				{
-					strcopy(message, sizeof(message), "{red}Now, enemies will apply additional Elemental Corrosion damage!");
-				}
-				case 4:
-				{
-					strcopy(message, sizeof(message), "{red}Now, enemies will apply additional Mana Overflow!");
-				}
-				case 5:
-				{
-					strcopy(message, sizeof(message), "{red}Now, enemies will apply additional Elemental Corruption Damage!");
-				}
-				case 6:
-				{
-					strcopy(message, sizeof(message), "{red}Now, enemies will apply an additional afterburn stack!");
-				}
-				default:
-				{
-					strcopy(message, sizeof(message), "{green}Now, enemies won't apply any additional effect on hit.");
-				}
-			}
+			
 		}
 		default:
 		{
