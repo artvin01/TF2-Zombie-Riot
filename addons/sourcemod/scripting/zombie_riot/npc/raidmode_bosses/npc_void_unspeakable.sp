@@ -1264,8 +1264,8 @@ public void VoidUnspeakableWin(int entity)
 
 	AlreadySaidWin = true;
 	//b_NpcHasDied[client]
-	CPrintToChatAll("{purple}The void consumes and goes forth to destroy everything and everyone... {green}Xeno{purple} was nothing in comparison to this.");
-	CPrintToChatAll("{purple}Ruina.. Expidonsa... Ziberia... Wildingen... all countries have no chance.");
+	CPrintToChatAll("{purple}After detroying everyrhing here, it leaves to plan another attack.");
+	CPrintToChatAll("{crimson}At the rest of Irln.");
 }
 
 
