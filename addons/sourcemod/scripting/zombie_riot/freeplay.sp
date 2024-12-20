@@ -530,8 +530,13 @@ void Freeplay_SpawnEnemy(int entity)
 		VausMagicaGiveShield(entity, EnemyShields);
 }
 
-void Freeplay_OnWaveStart()
+void Freeplay_OnEndWave(int &cash)
 {
+	if(ExplodingNPC)
+		ExplodingNPC = false;
+
+	cash += CashBonus;
+
 	for (int client = 0; client < MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))
@@ -594,14 +599,6 @@ void Freeplay_OnWaveStart()
 			}
 		}
 	}
-}
-
-void Freeplay_OnEndWave(int &cash)
-{
-	if(ExplodingNPC)
-		ExplodingNPC = false;
-
-	cash += CashBonus;
 }
 
 void Freeplay_SetupStart(bool extra = false)
