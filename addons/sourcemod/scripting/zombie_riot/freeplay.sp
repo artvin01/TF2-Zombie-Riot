@@ -1276,7 +1276,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Widows Wine perk, And thus gain camo! {yellow}(Allied NPCS and Sentry-a-like buildings cannot target them now.)");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Widows Wine perk, And thus gain camo! {yellow}(Allies and Sentry-a-likes won't target enemies)");
 				PerkMachine = 3;
 			}
 			case 29:
