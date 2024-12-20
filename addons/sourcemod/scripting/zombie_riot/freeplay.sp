@@ -545,7 +545,6 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 {
 	if(FreeplayBuffTimer <= 0)
 	{
-		KillTimer(Freeplay_BuffTimer);
 		return Plugin_Stop;
 		PrintToChatAll("buff stopped");
 	}
