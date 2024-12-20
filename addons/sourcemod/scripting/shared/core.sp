@@ -1057,8 +1057,6 @@ public void OnMapStart()
 	Zero(f_ClientWasTooLongInsideHurtZoneStairs);
 	Zero(f_ClientWasTooLongInsideHurtZoneDamageStairs);
 	Zero(delay_hud);
-	Zero(Increaced_Sentry_damage_Low);
-	Zero(Increaced_Sentry_damage_High);
 	Zero(Resistance_for_building_Low);
 	Zero(f_BotDelayShow);
 	Zero(f_OneShotProtectionTimer);

@@ -55,9 +55,8 @@ void GiveEntityMoraleBoost(int entity, float MoraleValue)
 	if(i_NpcIsABuilding[entity])
 		return;
 	//dont scale if its the lighthouse.
-
-	//double morale gain ,its too low.
-	MoraleValue *= 2.0;
+	
+	MoraleValue *= 1.3;
 	
 	f_MoraleBoostCurrent[entity] += MoraleValue;
 	f_TimeSinceMoraleBoost[entity] = GetGameTime() + 7.5;
