@@ -921,7 +921,7 @@ public void OnPostThink(int client)
 			}
 			float percentage_melee = 100.0;
 			float percentage_ranged = 100.0;
-			static int i_TheWorld;
+			int i_TheWorld = 0;
 			int testvalue = 1;
 			float testvalue1[3];
 			CheckInHudEnable(1);
@@ -943,13 +943,13 @@ public void OnPostThink(int client)
 				{
 					if(percentage_melee < 10.0)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [☛%.2f%%", buffer, percentage_melee);
+						FormatEx(buffer, sizeof(buffer), "%s[☛%.2f%%", buffer, percentage_melee);
 						had_An_ability = true;
 					}
 					else
 					{
 
-						FormatEx(buffer, sizeof(buffer), "%s [☛%.0f%%", buffer, percentage_melee);
+						FormatEx(buffer, sizeof(buffer), "%s[☛%.0f%%", buffer, percentage_melee);
 						had_An_ability = true;
 					}
 				}

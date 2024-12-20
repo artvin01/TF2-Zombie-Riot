@@ -565,7 +565,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	if(wrathofirln)
 	{
-		float randomhp1 = GetRandomInt(-60000, 60000);
+		int randomhp1 = GetRandomInt(-60000, 60000);
 		HealthBonus += randomhp1;
 		if(randomhp1 > 1.0)
 		{
@@ -723,6 +723,7 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			CPrintToChatAll("{red}15% more enemies will spawn in each enemy group!");
 			CountMulti *= 1.15;
+		}
 		else
 		{	
 			CPrintToChatAll("{green}10% less enemies will spawn in each enemy group.");
@@ -738,6 +739,7 @@ void Freeplay_SetupStart(bool extra = false)
 		if(randommini > 1.0)
 		{
 			CPrintToChatAll("{red}Mini-boss spawn rate has been multiplied by %.1fx!", randommini);
+		}
 		else
 		{	
 			CPrintToChatAll("{green}Mini-boss spawn rate has been multiplied by %.1fx.", randommini);
