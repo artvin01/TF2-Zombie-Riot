@@ -566,7 +566,6 @@ void Freeplay_SetupStart(bool extra = false)
 
 	if(wrathofirln)
 	{
-		CPrintToChatAll("{yellow}-----EFFECTS END HERE-----");
 		int randomhp1 = GetRandomInt(-60000, 60000);
 		HealthBonus += randomhp1;
 		if(randomhp1 > 0)
@@ -748,6 +747,7 @@ void Freeplay_SetupStart(bool extra = false)
 		if(randommini > 1.0)
 		{
 			CPrintToChatAll("{red}Mini-boss spawn rate has been multiplied by %.1fx!", randommini);
+		}
 		else
 		{	
 			CPrintToChatAll("{green}Mini-boss spawn rate has been multiplied by %.1fx.", randommini);

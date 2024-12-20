@@ -638,7 +638,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		}
 	}
 
-	if(Elemental_GoingCritical(target))
+	if(target > 0 && Elemental_GoingCritical(target))
 		validAlly = false;
 
 	if(validAlly)

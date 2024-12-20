@@ -1541,12 +1541,12 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		{
 			if(percentage_melee < 10.0)
 			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☛%.2f%%", Debuff_Adder, percentage_melee);
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s[☛%.2f%%", Debuff_Adder, percentage_melee);
 				ResAdded = true;
 			}
 			else
 			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☛%.0f%%", Debuff_Adder, percentage_melee);
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s[☛%.0f%%", Debuff_Adder, percentage_melee);
 				ResAdded = true;
 			}
 			armor_added = true;
