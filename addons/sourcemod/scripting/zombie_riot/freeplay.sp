@@ -539,6 +539,8 @@ static Action activatebuffs(Handle timer)
 		FreeplayBuffTimer = 1;
 		CreateTimer(1.0, Freeplay_BuffTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	}
+
+	return Plugin_Continue;
 }
 
 static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
@@ -667,6 +669,8 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			}
 		}
 	}
+
+	return Plugin_Continue;
 }
 
 void Freeplay_OnEndWave(int &cash)
