@@ -703,6 +703,23 @@ void Freeplay_SetupStart(bool extra = false)
 	bool wrathofirln = false;
 	if(extra)
 	{
+		for (int client = 0; client < MaxClients; client++)
+		{
+			if(IsValidClient(client) && IsPlayerAlive(client))
+			{
+				if(CheesyPresence)
+					ApplyStatusEffect(client, client, "Cheesy Presence", 10.0);
+			}
+		}
+		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+		{
+			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
+			{
+				if(CheesyPresence)
+					ApplyStatusEffect(ally, ally, "Cheesy Presence", 10.0);
+			}
+		}
 		FreeplayBuffTimer = 0;
 		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 		int wrathchance = GetRandomInt(0, 100);
