@@ -49,6 +49,7 @@ void Freeplay_OnMapStart()
 	PrecacheSound("ui/vote_success.wav", true);
 	PrecacheSound("passtime/ball_dropped.wav", true);
 	PrecacheSound("ui/mm_medal_silver.wav", true);
+	PrecacheSound("ambient/halloween/thunder_01.wav", true);
 }
 
 void Freeplay_ResetAll()
@@ -346,7 +347,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		}
 
 		// Leaving this in here in the case i have to nerf super miniboss health
-		enemy.Health = RoundToCeil(float(enemy.Health) * 1.0);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.75);
 		enemy.Credits += 125.0;
 		enemy.ExtraSpeed = 1.45;
 		enemy.ExtraSize = 1.65; // big
@@ -581,11 +582,11 @@ void Freeplay_SetupStart(bool extra = false)
 		HealthMulti *= randomhp2;
 		if(randomhp2 > 1.0)
 		{
-			CPrintToChatAll("{red}Enemy health is multiplied by %.1fx!", randomhp2);
+			CPrintToChatAll("{red}Enemy health is multiplied by %.2fx!", randomhp2);
 		}
 		else
 		{
-			CPrintToChatAll("{green}Enemy health is multiplied by %.1fx.", randomhp2);
+			CPrintToChatAll("{green}Enemy health is multiplied by %.2fx.", randomhp2);
 		}
 
 		if(EscapeModeForNpc)
@@ -746,44 +747,44 @@ void Freeplay_SetupStart(bool extra = false)
 		MiniBossChance *= randommini;
 		if(randommini > 1.0)
 		{
-			CPrintToChatAll("{red}Mini-boss spawn rate has been multiplied by %.1fx!", randommini);
+			CPrintToChatAll("{red}Mini-boss spawn rate has been multiplied by %.2fx!", randommini);
 		}
 		else
 		{	
-			CPrintToChatAll("{green}Mini-boss spawn rate has been multiplied by %.1fx.", randommini);
+			CPrintToChatAll("{green}Mini-boss spawn rate has been multiplied by %.2fx.", randommini);
 		}
 
 		float randomspeed = GetRandomFloat(0.75, 1.25);
 		SpeedMult *= randomspeed;
 		if(randomspeed > 1.0)
 		{
-			CPrintToChatAll("{red}Enemy speed has been multiplied by %.1fx!", randomspeed);
+			CPrintToChatAll("{red}Enemy speed has been multiplied by %.2fx!", randomspeed);
 		}
 		else
 		{
-			CPrintToChatAll("{green}Enemy speed has been multiplied by %.1fx.", randomspeed);
+			CPrintToChatAll("{green}Enemy speed has been multiplied by %.2fx.", randomspeed);
 		}
 
 		float randommelee = GetRandomFloat(0.75, 1.25);
 		MeleeMult *= randommelee;
 		if(randommelee < 1.0)
 		{
-			CPrintToChatAll("{red}Enemy melee vulnerability has been multiplied by %.1fx!", randommelee);
+			CPrintToChatAll("{red}Enemy melee vulnerability has been multiplied by %.2fx!", randommelee);
 		}
 		else
 		{
-			CPrintToChatAll("{green}Enemy melee vulnerability has been multiplied by %.1fx.", randommelee);
+			CPrintToChatAll("{green}Enemy melee vulnerability has been multiplied by %.2fx.", randommelee);
 		}
 
 		float randomranged = GetRandomFloat(0.75, 1.25);
 		RangedMult *= randomranged;
 		if(randomranged < 1.0)
 		{
-			CPrintToChatAll("{red}Enemy ranged vulnerability has been multiplied by %.1fx!", randomranged);
+			CPrintToChatAll("{red}Enemy ranged vulnerability has been multiplied by %.2fx!", randomranged);
 		}
 		else
 		{
-			CPrintToChatAll("{green}Enemy ranged vulnerability has been multiplied by %.1fx.", randomranged);
+			CPrintToChatAll("{green}Enemy ranged vulnerability has been multiplied by %.2fx.", randomranged);
 		}
 
 		int randomshield = GetRandomInt(-4, 4);
@@ -890,7 +891,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 		float randomsize = GetRandomFloat(0.75, 1.25);
 		ExtraEnemySize *= randomsize;
-		CPrintToChatAll("{yellow}Enemy size has been multiplied by %.1fx!", randomsize);
+		CPrintToChatAll("{yellow}Enemy size has been multiplied by %.2fx!", randomsize);
 
 		switch(GetRandomInt(1, 22))
 		{
@@ -1009,7 +1010,7 @@ void Freeplay_SetupStart(bool extra = false)
 		// if this works i WILL kill arvin
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsClientInGame(client) && !b_IsPlayerABot[client])
+			if(IsValidClient(client) && !b_IsPlayerABot[client])
 			{
 				SetHudTextParams(-1.0, -1.0, 5.0, 255, 135, 0, 255);
 				ShowHudText(client, -1, "Suffer the Wrath of Irln.");
