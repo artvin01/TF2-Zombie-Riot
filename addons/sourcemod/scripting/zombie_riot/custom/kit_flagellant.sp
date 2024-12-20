@@ -486,15 +486,15 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 
 				if(target < MaxClients)
 					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-
-				float cooldown = healing / 30.0;
-				if(cooldown < 2.0)
+				
+				float cooldown = (healing / multi) / 15.0;
+				if(cooldown < 5.0)
 				{
-					cooldown = 2.0;
+					cooldown = 5.0;
 				}
-				else if(cooldown > 10.0)
+				else if(cooldown > 15.0)
 				{
-					cooldown = 10.0;
+					cooldown = 15.0;
 				}
 
 				Ability_Apply_Cooldown(client, slot, cooldown);

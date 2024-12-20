@@ -446,7 +446,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 									}
 									else
 									{
-										int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+										int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 										int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 										if (i_WeaponAmmoAdjustable[weapon])
 										{

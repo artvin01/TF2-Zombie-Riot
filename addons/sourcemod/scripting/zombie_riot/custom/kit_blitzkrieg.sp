@@ -237,7 +237,7 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 	int max_clip = RoundFloat(Attributes_Get(weapon, 868, 40.0));
 
 	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");	//ammo type
+	int Ammo_type = GetAmmoType_WeaponPrimary(weapon);	//ammo type
 	int reserve_ammo = GetAmmo(client, Ammo_type);							//reserve
 	int ammo = GetEntData(weapon, iAmmoTable, 4);							//clip
 	if(reserve_ammo < max_clip)	//abort abort!

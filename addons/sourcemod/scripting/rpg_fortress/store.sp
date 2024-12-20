@@ -1380,6 +1380,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_MeleeAttackFrameDelay[entity] = info.Melee_AttackDelayFrame;
 					b_MeleeCanHeadshot[entity] = info.Melee_Allows_Headshots;
 					
+					OriginalWeapon_AmmoType[entity] = -1;
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
@@ -1389,6 +1390,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								if(info.Ammo == 30)
 								{
 									SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", -1);
+									OriginalWeapon_AmmoType[entity] = -1;
 								}
 								else
 								{
@@ -1420,21 +1422,27 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									if(info.Ammo) //my man broke my shit.
 									{
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
+										OriginalWeapon_AmmoType[entity] = info.Ammo;
 									}
 								}
 							}
 						}
+						/*
+
+						//This broke as of 20/12/2024, the 64bit update brok it to be specific.
+
 						//CANT USE AMMO 1 or 2 or something,
 						//Allows you to switch to the weapon even though it has no ammo, there is PROOOOOOOOOOOOOOOOOOOBAABLY no weapon in the game that actually uses this
 						//IF IT DOES!!! then make an exception, but as far as i know, no need.	
 						
-						if(info.Ammo/* != Ammo_Hand_Grenade && info.Ammo != Ammo_Potion_Supply*/) //Excluding Grenades and other chargeable stuff so you cant switch to them if they arent even ready. cus it makes no sense to have it in your hand
+						if(info.Ammo != Ammo_Hand_Grenade && info.Ammo != Ammo_Potion_Supply //Excluding Grenades and other chargeable stuff so you cant switch to them if they arent even ready. cus it makes no sense to have it in your hand
 						{
 							//It varies between 29 and 30, its better to just test it after each update
 							//my guess is that the compiler optimiser from valve changes it, since its client and serverside varies
 							SetAmmo(client, 29, 99999);
 							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 29);
 						}
+						*/
 					}
 					
 					if(info.IsWand > 0)
@@ -2065,4 +2073,10 @@ public void Ammo_TagDeploy(int client, int weapon, int index)
 			i_TagColor[client] =	{255,255,255,255};
 		}
 	}
+}
+
+
+int GetAmmoType_WeaponPrimary(int weapon)
+{
+	return OriginalWeapon_AmmoType[weapon];
 }
