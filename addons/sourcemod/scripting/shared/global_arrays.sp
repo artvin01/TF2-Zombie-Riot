@@ -95,7 +95,8 @@ public const char ItemArchetype[][] =
 	"Bloodletter",	//24, Vampire Knives fast-attack path
 	"Bloody Butcher", //25, Vampire Knives cleaver path
 	"Mythic Caster",	// 26
-	"Psychic Warlord"	//27, Psychokinesis and Magnesis Staff, possibly more in the future
+	"Psychic Warlord",	//27, Psychokinesis and Magnesis Staff, possibly more in the future
+	"Archetype Victoria" //28, Damn this is an Archetype for a Victorian weapon made by beep.
 };
 
 public const int RenderColors_RPG[][] =
@@ -282,8 +283,6 @@ float f_ClientBeingReviveDelay[MAXENTITIES];
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
 
-float Increaced_Sentry_damage_Low[MAXENTITIES];
-float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
 
 bool b_DisplayDamageHud[MAXTF2PLAYERS];
@@ -293,12 +292,6 @@ bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
 bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
 float f_ZombieVolumeSetting[MAXTF2PLAYERS];
 
-float Increaced_Overall_damage_Low[MAXENTITIES];
-float Resistance_Overall_Low[MAXENTITIES];
-float f_EmpowerStateSelf[MAXENTITIES];
-float f_EmpowerStateOther[MAXENTITIES];
-
-float Adaptive_MedigunBuff[MAXENTITIES][3];
 
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];;
@@ -345,67 +338,17 @@ float flNpcCreationTime[MAXENTITIES];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 int i_npcspawnprotection[MAXENTITIES];
 float f_DomeInsideTest[MAXENTITIES];
-float f_LudoDebuff[MAXENTITIES];
-float f_SpadeLudoDebuff[MAXENTITIES];
-float f_LowTeslarDebuff[MAXENTITIES];
-float f_ElementalAmplification[MAXENTITIES];
-float f_WeaponSpecificClassBuff[MAXENTITIES][1];
-bool b_WeaponSpecificClassBuff[MAXENTITIES][3];
-float f_HighTeslarDebuff[MAXENTITIES];
-float f_VoidAfflictionStandOn[MAXENTITIES];
-float f_VoidAfflictionStrength[MAXENTITIES];
-float f_VoidAfflictionStrength2[MAXENTITIES];
-float f_Silenced[MAXENTITIES];
-float f_IberiaMarked[MAXENTITIES];
-float f_VeryLowIceDebuff[MAXENTITIES];
-float f_LowIceDebuff[MAXENTITIES];
-float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
 bool b_NoGravity[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
 float f_TimeFrozenStill[MAXENTITIES];
-float f_BuildingAntiRaid[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_RaidStunResistance[MAXENTITIES];
-float f_PernellBuff[MAXENTITIES];
-float f_HussarBuff[MAXENTITIES];
-float f_CombineCommanderBuff[MAXENTITIES];
-float f_SquadLeaderBuff[MAXENTITIES];
-float f_CaffeinatorBuff[MAXENTITIES];
-float f_VictorianCallToArms[MAXENTITIES];
-#if defined RUINA_BASE
-float f_Ruina_Speed_Buff[MAXENTITIES];
-float f_Ruina_Speed_Buff_Amt[MAXENTITIES];
-float f_Ruina_Defense_Buff[MAXENTITIES];
-float f_Ruina_Defense_Buff_Amt[MAXENTITIES];
-float f_Ruina_Attack_Buff[MAXENTITIES];
-float f_Ruina_Attack_Buff_Amt[MAXENTITIES];
-#endif
-float f_GodAlaxiosBuff[MAXENTITIES];
-float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
-float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
 float f_BannerAproxDur[MAXENTITIES];
-float f_BuffBannerNpcBuff[MAXENTITIES];
-float f_BobDuckBuff[MAXENTITIES];
-float f_AncientBannerNpcBuff[MAXENTITIES];
-float f_FallenWarriorDebuff[MAXENTITIES];
-float f_BattilonsNpcBuff[MAXENTITIES];
-float f_MaimDebuff[MAXENTITIES];
-float f_PassangerDebuff[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
-float f_CrippleDebuff[MAXENTITIES];
-float f_GoldTouchDebuff[MAXENTITIES];
-float f_StrangleDebuff[MAXENTITIES];
-float f_CudgelDebuff[MAXENTITIES];
 float f_DuelStatus[MAXENTITIES];
-float f_PotionShrinkEffect[MAXENTITIES];
-float f_EnfeebleEffect[MAXENTITIES];
-float f_LeeMinorEffect[MAXENTITIES];
-float f_LeeMajorEffect[MAXENTITIES];
-float f_LeeSuperEffect[MAXENTITIES];
-float f_LogosDebuff[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int i_RaidGrantExtra[MAXENTITIES];
@@ -449,17 +392,16 @@ int i_Wearable[MAXENTITIES][9];
 int i_FreezeWearable[MAXENTITIES];
 int i_InvincibleParticle[MAXENTITIES];
 int i_InvincibleParticlePrev[MAXENTITIES];
-float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
-float f_SpecterDyingDebuff[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 
 
 //Used for any double arrays like lantean wand or health hose.
 float f_GlobalHitDetectionLogic[MAXENTITIES][MAXENTITIES];
+#if defined ZR
 bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
-
+#endif
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -600,7 +542,6 @@ int i_WandOwner[MAXENTITIES]; //				//785
 
 
 
-float f_NpcImmuneToBleed[MAXENTITIES];
 bool b_NpcIsInvulnerable[MAXENTITIES];
 bool b_NpcUnableToDie[MAXENTITIES];
 
@@ -746,7 +687,6 @@ float f_GibHealingAmount[MAXENTITIES];
 
 float f_MinicritSoundDelay[MAXTF2PLAYERS];
 
-float f_IsThisExplosiveHitscan[MAXENTITIES];
 float f_CustomGrenadeDamage[MAXENTITIES];
 
 float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];

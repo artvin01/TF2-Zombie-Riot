@@ -311,7 +311,7 @@ static void ClotThink(int iNPC)
 							npc.PlayMeleeHitSound();
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
 							if(target > MaxClients || (!dieingstate[target] && IsPlayerAlive(target)))
-								NpcStats_IberiaMarkEnemy(target, 30.0);
+								ApplyStatusEffect(npc.index, target, "Marked", 30.0);
 							
 							Custom_Knockback(npc.index, target, 1000.0, true); 
 						}

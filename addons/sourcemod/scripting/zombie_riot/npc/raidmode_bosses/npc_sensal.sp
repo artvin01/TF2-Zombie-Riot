@@ -323,6 +323,7 @@ methodmap Sensal < CClotBody
 		bool tripple = StrContains(data, "triple_enemies") != -1;
 		if(tripple)
 		{
+			RemoveAllDamageAddition();
 			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
 			GiveOneRevive(true);
 		}
@@ -374,6 +375,7 @@ methodmap Sensal < CClotBody
 		}
 		if(!cutscene && !cutscene2 && !tripple)
 		{
+			RemoveAllDamageAddition();
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
@@ -744,7 +746,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 			RaidModeTime += 60.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);

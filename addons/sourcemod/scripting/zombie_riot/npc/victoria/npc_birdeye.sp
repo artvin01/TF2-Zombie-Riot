@@ -665,7 +665,7 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 				if(IsValidClient(target))
 					IncreaceEntityDamageTakenBy(target, 0.5, 5.0, true);
 				else
-					NpcStats_SilenceEnemy(target, (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 30.0 : 60.0));
+					ApplyStatusEffect(npc.index, target, "Silenced", (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 30.0 : 60.0));
 			} 
 		}
 	}

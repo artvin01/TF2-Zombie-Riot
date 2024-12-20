@@ -1,6 +1,4 @@
 #pragma semicolon 1
-//#pragma dynamic    131072
-//Allah This plugin has so much we need to do this.
 
 enum ParticleAttachment_t {
 	PATTACH_ABSORIGIN = 0,
@@ -1126,11 +1124,16 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 
 void StartBleedingTimer_Against_Client(int client, int entity, float damage, int amount)
 {
+	if(HasSpecificBuff(client, "Hardened Aura"))
+		return;
+	if(HasSpecificBuff(client, "Thick Blood"))
+		return;
 	BleedAmountCountStack[client] += 1;
 	DataPack pack;
 	CreateDataTimer(0.5, Timer_Bleeding_Against_Client, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteCell(client);
+	pack.WriteFloat(GetGameTime());
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteFloat(damage);
 	pack.WriteCell(amount);
@@ -1141,9 +1144,12 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = EntRefToEntIndex(pack.ReadCell());
 	int OriginalIndex = pack.ReadCell();
+	float GameTimeClense = pack.ReadFloat();
 	if(!IsValidEntity(client))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
 	else
@@ -1153,11 +1159,32 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 			if(!b_NpcHasDied[client])
 			{
 				BleedAmountCountStack[OriginalIndex] -= 1;
+				if(BleedAmountCountStack[OriginalIndex] < 0)
+					BleedAmountCountStack[OriginalIndex] = 0;
 				return Plugin_Stop;
 			}
 		}
 	}
 		
+	if(StatusEffects_RapidSuturingCheck(OriginalIndex, GameTimeClense))
+	{
+		return Plugin_Stop;
+	}
+	if(HasSpecificBuff(OriginalIndex, "Hardened Aura"))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
+		return Plugin_Stop;
+	}
+	if(HasSpecificBuff(OriginalIndex, "Thick Blood"))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
+		return Plugin_Stop;
+	}
+	
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity == -1)
 		entity = 0;
@@ -1183,11 +1210,17 @@ stock void StartBleedingTimer(int entity, int client, float damage, int amount, 
 {
 	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
 	{
+		if(HasSpecificBuff(entity, "Hardened Aura"))
+			return;
+
+		if(HasSpecificBuff(entity, "Thick Blood"))
+			return;
 		BleedAmountCountStack[entity] += 1;
 		DataPack pack;
 		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(entity));
 		pack.WriteCell(entity);
+		pack.WriteFloat(GetGameTime());
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(damagetype);
@@ -1202,9 +1235,12 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int OriginalIndex = pack.ReadCell();
+	float GameTimeClense = pack.ReadFloat();
 	if(entity<=MaxClients || !IsValidEntity(entity) || b_NpcHasDied[entity])
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
 		
@@ -1212,6 +1248,8 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	if(weapon<=MaxClients || !IsValidEntity(weapon))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
 
@@ -1219,22 +1257,36 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
-
-	if(f_NpcImmuneToBleed[entity] > GetGameTime())
+	
+	if(StatusEffects_RapidSuturingCheck(entity, GameTimeClense))
+	{
+		return Plugin_Stop;
+	}
+	if(HasSpecificBuff(entity, "Hardened Aura"))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
-
+	if(HasSpecificBuff(entity, "Thick Blood"))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
+		return Plugin_Stop;
+	}
 	float pos[3], ang[3];
 	
 	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
 	float DamageDeal = pack.ReadFloat();
-	if(f_ElementalAmplification[entity] > GetGameTime())
+	if(NpcStats_ElementalAmp(entity))
 	{
 		DamageDeal *= 1.15;
 	}
@@ -4199,6 +4251,27 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 
 #if !defined RTS
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
+{
+	if(entity <= MaxClients)
+	{
+		//if were giving it to a client directly, dont do the below.
+		ApplyTempAttrib_Internal(entity, index, multi, duration);
+		return;
+	}
+	if(Attributes_Has(entity,index))
+	{
+		//We need to get the owner!!
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		TempAttribStore TempStoreAttrib;
+		TempStoreAttrib.Attribute = index;
+		TempStoreAttrib.Value = multi;
+		TempStoreAttrib.GameTimeRemoveAt = GetGameTime() + duration;
+		TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[entity];
+		TempStoreAttrib.Apply_TempAttrib(owner, entity);
+	}
+}
+
+stock void ApplyTempAttrib_Internal(int entity, int index, float multi, float duration = 0.3)
 {
 	if(Attributes_Has(entity,index))
 	{

@@ -136,6 +136,11 @@ methodmap Matrix_Twins < CClotBody
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
+	property float fl_HudDisplayCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
 	
 	public Matrix_Twins(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -161,6 +166,7 @@ methodmap Matrix_Twins < CClotBody
 		npc.fl_Heal_Amount = 0.0;
 		npc.fl_Heal_Limit = 0.0;
 		npc.fl_Anger_Influence = 0.0;
+		npc.fl_HudDisplayCD = 0.0;
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -293,40 +299,23 @@ public void Matrix_Twins_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(!npc.b_Twin_On)
+	if(npc.fl_HudDisplayCD < GetGameTime())
 	{
-		if(Twin_Alive)
+		npc.fl_HudDisplayCD = GetGameTime() + 0.2;
+		//Set raid to this one incase the previous one has died or somehow vanished
+		if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
 		{
-			for(int client; client <= MaxClients; client++)
+			for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
 			{
-				if(IsValidClient(client)) //Add to hud as a duo raid.
+				if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
 				{
-					Calculate_And_Display_hp(client, twin, 0.0, false);	
-				}
+					Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+				}	
 			}
 		}
-	}
-	else
-	{
-		if(!Twin_Alive)
-		{
-			if(!IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
-			{
-				RaidBossActive = EntIndexToEntRef(npc.index);
-			}
-		}
-		else
-		{
-			if(Twin_Alive)
-			{
-				for(int client; client <= MaxClients; client++)
-				{
-					if(IsValidClient(client)) //Add to hud as a duo raid.
-					{
-						Calculate_And_Display_hp(client, twin, 0.0, false);	
-					}
-				}
-			}
+		else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
+		{	
+			RaidBossActive = EntIndexToEntRef(npc.index);
 		}
 	}
 	
@@ -437,7 +426,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				float damage = 17.0;
+				float damage = 35.0;
 				damage *= RaidModeScaling;
 				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 				npc.FaceTowards(VecEnemy, 15000.0);
@@ -559,10 +548,10 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "enforcer");
 
-				float damage = 8.0;
+				float damage = 15.0;
 				damage *= RaidModeScaling;
 
-				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");
 				
 				npc.PlayRangedSound();
 				if(npc.m_iAttacksTillReload < 1)
@@ -660,9 +649,9 @@ static void Matrix_Twins_Apply_Healing(Matrix_Twins npc, float gameTime)
 	npc.m_flDead_Ringer_Invis = gameTime + 1.0;
 	npc.m_flDead_Ringer_Invis_bool = true;
 	float Maxhealth = float(ReturnEntityMaxHealth(npc.index));
-	float reduction = npc.b_Twin_On ? 0.35 : 0.45;
+	float reduction = npc.b_Twin_On ? 0.15 : 0.15;
 	float healingamt = (Maxhealth * reduction);
-	float minimum = (Maxhealth * 0.1);
+	float minimum = (Maxhealth * 0.05);
 	
 	if(npc.fl_Heal_Amount >= healingamt)
 	{

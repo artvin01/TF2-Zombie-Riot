@@ -203,6 +203,7 @@ methodmap AgentSmith < CClotBody
 			npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_ambassador/c_ambassador_xmas.mdl");
 			npc.m_bFUCKYOU = false;
 			AgentSmith_WeaponSwaps(npc);
+			Zero(b_said_player_weaponline);
 		}
 		else if(clone)
 		{
@@ -226,7 +227,6 @@ methodmap AgentSmith < CClotBody
 		
 		f_TalkDelayCheck = 0.0;
 		i_TalkDelayCheck = 0;
-		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		//npc.m_bDissapearOnDeath = true;
 		
@@ -346,7 +346,7 @@ static void AgentSmith_ClotThink(int iNPC)
         {
 			Smith_Timeslow(GetRandomFloat(1.0, 0.7), 3.0);
 			npc.m_flAbilityOrAttack0 = gameTime + 1.0;
-			Agent_Smith_Cloner(npc, 1, RoundToCeil(15000.0 * MultiGlobalEnemy), 2.0);
+			Agent_Smith_Cloner(npc, 1, RoundToCeil(150000.0 * MultiGlobalEnemy), 2.0);
         }
 	}
 
@@ -557,7 +557,7 @@ static void RaidSmith_SelfDefense(AgentSmith npc, float gameTime, int target, fl
 				float damage = 12.0;
 				damage *= RaidModeScaling;
 
-				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");
 				
 				npc.PlayRangedSound();
 			}

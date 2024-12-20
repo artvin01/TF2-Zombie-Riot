@@ -423,7 +423,7 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime, bool mute = false)
 					{
 						if(i_NpcInternalId[entitycount] != NPCId) //Hussars cannot buff eachother.
 						{
-							f_HussarBuff[entitycount] = GetGameTime() + 5.0; //allow buffing of players too if on red.
+							ApplyStatusEffect(npc.index, entitycount, "Hussar's Warscream", 5.0);
 							//Buff this entity.
 							buffed_anyone = true;	
 						}
@@ -434,7 +434,7 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime, bool mute = false)
 		if(buffed_anyone)
 		{
 			npc.m_flAttackHappens_bullshit = gameTime + 10.0;
-			f_HussarBuff[npc.index] = GetGameTime() + 5.0;
+			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 5.0);
 			static int r;
 			static int g;
 			static int b ;

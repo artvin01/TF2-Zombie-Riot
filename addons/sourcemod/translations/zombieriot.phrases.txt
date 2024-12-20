@@ -946,6 +946,13 @@
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
 		"chi"       "技能冷却还有 {1} 的时间!"
 	}
+	"Not Enough Ammo"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Not Enough Ammo! You need {1} Ammo!"
+		"de"		"Nicht Genügend Ammo! Du brauchst {1} Ammo!"
+		"ko"		"탄약 부족! {1}만큼의 탄약이 필요합니다!"
+	}
 	"Unspeakable Teleport Taunt"
 	{
 		"en"		"Behind you."
@@ -1410,6 +1417,10 @@
 		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee %% damage taken, arrow means ranged %% damage taken."
 		"fr" 		"À votre gauche sera vous affaiblissements.\nÀ votre droite sera vos buffs.\nChaque symbol sera un buff ou affaiblissement.\nLa main représente le %% des dégats corps à corps reçus, La flèche représente le %% des dégats à portée reçus."
 	}
+	"Debuff/Buff Explain 2"
+	{
+		"en" 		"There are too many buffs and debuffs to be shown.\nSee ''Status Effect List'' For every single buff."
+	}
 	"Show Debuffs"
 	{
 		"en" 		"Extra Info"
@@ -1419,11 +1430,6 @@
 	{
 		"en" 		"Extra Info"
 		"fr" 		"Plus d'information"
-	}
-	"Debuff/Buff Explain 2"
-	{
-		"en" 		"There are too many buffs and debuffs to be shown.\nBuffs and debuffs will be on weapons themselves instead, not all are added currently in that list."
-		"fr" 		"Il y de buffs et affaiblissements à montrer.\nIls seront présents sur vos armes, mais ils ne sont pas tous dans la liste."
 	}
 	"Command Help Explained"
 	{
@@ -1829,6 +1835,14 @@
 		"ru" 		"TF2: Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
 		"fr" 		"TF2: Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
+	}
+	"StatusEffectList"
+	{
+		"en" 		"Status Effect List"
+	}
+	"Status Effect List"
+	{
+		"en" 		"Status Effect List"
 	}
 	"Father Grigori's Store"
 	{

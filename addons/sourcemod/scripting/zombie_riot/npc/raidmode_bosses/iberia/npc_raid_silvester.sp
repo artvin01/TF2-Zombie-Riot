@@ -988,7 +988,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 			RaidModeTime += 25.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
@@ -1456,7 +1456,7 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 			i_NpcWeight[npc.index] = 4;
 			RaidModeScaling *= 1.10;
-			f_BattilonsNpcBuff[npc.index] = GetGameTime() + 5.0;
+			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
 			npc.m_flDoingAnimation = 0.0;
 
 			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");

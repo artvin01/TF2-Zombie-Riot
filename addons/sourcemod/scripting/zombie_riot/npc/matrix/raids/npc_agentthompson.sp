@@ -157,7 +157,14 @@ methodmap AgentThompson < CClotBody
 		}
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
-
+		if(RaidModeScaling < 55)
+		{
+			RaidModeScaling *= 0.19; //abit low, inreacing
+		}
+		else
+		{
+			RaidModeScaling *= 0.38;
+		}
 		float amount_of_people = float(CountPlayersOnRed());
 		
 		if(amount_of_people > 12.0)
@@ -193,9 +200,9 @@ methodmap AgentThompson < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		
-		npc.m_flSpeed = 330.0;
-		npc.m_flMeleeArmor = 1.30;
-		npc.m_flRangedArmor = 1.15;
+		npc.m_flSpeed = 320.0;
+		npc.m_flMeleeArmor = 1.20;
+		npc.m_flRangedArmor = 1.10;
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -330,7 +337,7 @@ static void Thompsons_SelfDefense(AgentThompson npc, float gameTime, int target,
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
-				float damage = 12.0;
+				float damage = 35.0;
 				damage *= RaidModeScaling;
 				bool silenced = NpcStats_IsEnemySilenced(npc.index);
 				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
@@ -471,10 +478,10 @@ static void Thompsons_SelfDefense(AgentThompson npc, float gameTime, int target,
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "shotgun_primary");
 
-				float damage = 4.0;
+				float damage = 15.0;
 				damage *= RaidModeScaling;
 
-				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");
 				
 				npc.PlayRangedSound();
 			}
@@ -565,32 +572,6 @@ public Action AgentThompson_OnTakeDamage(int victim, int &attacker, int &inflict
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	if(attacker <= MaxClients && attacker > 0)
-    {
-        switch(GetRandomInt(1, 8))
-        {
-            case 1,2,3,4,5,6:
-            {
-                
-            }
-            case 7,8:
-            {
-                float chargerPos[3];
-                GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-                if(b_BoundingBoxVariant[victim] == 1)
-                {
-                    chargerPos[2] += 120.0;
-                }
-                else
-                {
-                    chargerPos[2] += 82.0;
-                }
-                TE_ParticleInt(g_particleMissText, chargerPos);
-                TE_SendToClient(attacker);
-                damage = 0.0;
-            }
-        }
-    }
 	return Plugin_Changed;
 }
 

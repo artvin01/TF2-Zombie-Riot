@@ -200,6 +200,7 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(EntIndexToEntRef(CameraDelete));
 		pack.WriteCell(EntIndexToEntRef(ModelToDelete));
+		pack.WriteCell(0);
 	}
 	else
 	{
@@ -233,6 +234,7 @@ void LeperOnSuperHitEffect(int client)
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(EntIndexToEntRef(CameraDelete));
 	pack.WriteCell(EntIndexToEntRef(ModelToDelete));
+	pack.WriteCell(0);
 
 
 	TF2_AddCondition(client, TFCond_FreezeInput, -1.0);
@@ -258,6 +260,7 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 	int client = GetClientOfUserId(pack.ReadCell());
 	int camreadelete = EntRefToEntIndex(pack.ReadCell());
 	int DeleteKillEntity = EntRefToEntIndex(pack.ReadCell());
+	int ExtraLogic = pack.ReadCell();
 	LeperSwingEffect[clientindex] = false;
 
 	if(camreadelete != -1)
@@ -305,6 +308,24 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 	{
 		SetVariantInt(1);
 		AcceptEntityInput(client, "SetForcedTauntCam");
+	}
+	if(ExtraLogic == 1)
+	{
+		ClientCommand(client, "playgamesound weapons/air_burster_explode3.wav");
+		static float anglesB[3];
+		GetClientEyeAngles(client, anglesB);
+		static float velocity[3];
+		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+		float knockback = -325.0;
+		// knockback is the overall force with which you be pushed, don't touch other stuff
+		ScaleVector(velocity, knockback);
+		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+			velocity[2] = fmax(velocity[2], 300.0);
+		else
+			velocity[2] += 150.0;    // a little boost to alleviate arcing issues
+
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+		//knockback target
 	}
 	return Plugin_Stop;
 }

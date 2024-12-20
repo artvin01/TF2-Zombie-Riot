@@ -2158,7 +2158,7 @@ public void Dungeon_Spawn_WhiteflowerLeadersStrong(int entity)
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);
 		fl_Extra_Speed[entity] *= 1.05;
-		f_HussarBuff[entity] = GetGameTime() + 15.0;
+		ApplyStatusEffect(entity, entity, "Hussar's Warscream", 15.0);
 	}
 }
 
@@ -2187,8 +2187,8 @@ public void Dungeon_Spawn_NormalEnemyBuffWF(int entity)
 
 public void Dungeon_Spawn_TempMegaBuff(int entity)
 {
-	f_BuffBannerNpcBuff[entity] = GetGameTime() + 5.0;
-	f_BattilonsNpcBuff[entity] = GetGameTime() + 5.0;
+	ApplyStatusEffect(entity, entity, "Buff Banner", 5.0);
+	ApplyStatusEffect(entity, entity, "Battilons Backup", 5.0);
 }
 
 

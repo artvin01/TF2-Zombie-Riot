@@ -69,11 +69,6 @@ void Wand_Cryo_Precache()
 	PrecacheModel("models/props_moonbase/moon_gravel_crystal_blue.mdl");
 }
 
-bool IsZombieFrozen(int entity)
-{
-	return Cryo_Frozen[entity];
-}
-
 void ResetFreeze(int entity)
 {
 	Cryo_FreezeLevel[entity] = 0.0;
@@ -300,6 +295,7 @@ public void Cryo_Touch(int entity, int target)
 {
 	if (target > 0)	
 	{
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		static float angles[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);		
 		float ProjLoc[3], VicLoc[3];
@@ -315,30 +311,20 @@ public void Cryo_Touch(int entity, int target)
 			{
 				case 0:
 				{
-					if((f_VeryLowIceDebuff[target] - 1.0) < GetGameTime())
-					{
-						f_VeryLowIceDebuff[target] = GetGameTime() + 1.1;
-					}
+					ApplyStatusEffect(owner, target, "Freeze", 1.0);
 				}
 				case 1:
 				{
-					if((f_LowIceDebuff[target] - 1.0) < GetGameTime())
-					{
-						f_LowIceDebuff[target] = GetGameTime() + 1.1;
-					}
+					ApplyStatusEffect(owner, target, "Cryo", 1.0);
 				}
 				case 2:
 				{
-					if((f_HighIceDebuff[target] - 1.0) < GetGameTime())
-					{
-						f_HighIceDebuff[target] = GetGameTime() + 1.1;
-					}
+					ApplyStatusEffect(owner, target, "Near Zero", 1.0);
 				}
 			}
 			
 			//float Health_Before_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 
-			int owner = EntRefToEntIndex(i_WandOwner[entity]);
 			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 			if(owner == -1)
 			{
@@ -365,16 +351,15 @@ public void Cryo_Touch(int entity, int target)
 	}
 }
 
-public void Cryo_FreezeZombie(int zombie, int type)
+public void Cryo_FreezeZombie(int client, int zombie, int type)
 {
 	if (!IsValidEntity(zombie))
-	return;
+		return;
 
 	Cryo_SlowType_Zombie[zombie] = type;
 	
 	EmitSoundToAll(SOUND_WAND_CRYO_FREEZE, zombie, SNDCHAN_STATIC, 80);
 	CClotBody ZNPC = view_as<CClotBody>(zombie);
-	ZNPC.m_bFrozen = true;
 	Cryo_Frozen[zombie] = true;
 	Cryo_FreezeLevel[zombie] = 0.0;
 	float FreezeDuration;
@@ -402,6 +387,7 @@ public void Cryo_FreezeZombie(int zombie, int type)
 
 	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 	FreezeNpcInTime(zombie, FreezeDuration);
+	ApplyStatusEffect(client, zombie, "Frozen", FreezeDuration);
 	if (!IsValidEntity(ZNPC.m_iFreezeWearable))
 	{
 		float offsetToHeight = 40.0;
@@ -431,15 +417,15 @@ public void Cryo_FreezeZombie(int zombie, int type)
 	{
 		case 0:
 		{
-			f_VeryLowIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + FreezeDuration);
+			ApplyStatusEffect(client, zombie, "Freeze", Cryo_SlowDuration + FreezeDuration);
 		}
 		case 1:
 		{
-			f_LowIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + FreezeDuration);
+			ApplyStatusEffect(client, zombie, "Cryo", Cryo_SlowDuration + FreezeDuration);
 		}
 		case 2:
 		{
-			f_HighIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + FreezeDuration);
+			ApplyStatusEffect(client, zombie, "Near Zero", Cryo_SlowDuration + FreezeDuration);
 		}
 	}
 	//Un-comment the following line if you want a particle to appear on frozen zombies:
@@ -457,9 +443,6 @@ public Action Cryo_Unfreeze(Handle Unfreeze, int ref)
 	{
 		Cryo_Frozen[zombie] = false;
 		Cryo_Slowed[zombie] = true;
-		
-		CClotBody ZNPC = view_as<CClotBody>(zombie);
-		ZNPC.m_bFrozen = false;
 		
 		CreateTimer(Cryo_SlowDuration, Cryo_Unslow, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 		

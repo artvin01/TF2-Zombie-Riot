@@ -122,7 +122,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 			//This is action 1 as an example.
 			/*
 				heavy model:
-				taunt_cheers_heavy frame 5 out of 195
+				taunt_cheers_heavy frame 5 out of 195fex
 				lasts untill frame 37
 				->
 				taunt_yetipunch frame 87 out of 156
@@ -514,10 +514,14 @@ void BrawlerHeat2(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 				npc.m_iChanged_WalkCycle = 3;
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-					SensalCauseKnockback(npc.index, npc.m_iTarget,_,_);
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+				//	CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+					float EnemyVecPos[3]; WorldSpaceCenter(npc.m_iTarget, EnemyVecPos);
+					i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
+					i_ExplosiveProjectileHexArray[npc.index] |= EP_GIBS_REGARDLESS;
+					Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 5, .FunctionToCallOnHit = DealAoeKnockbackBeastMode);
+					i_ExplosiveProjectileHexArray[npc.index] == 0;
 					c_KiyruAttachmentDo[npc.index] = "";
 					npc.b_NoLongerResetVel = true;
 				}
@@ -610,11 +614,16 @@ void BeastBuildingHeat1(int owner, AlliedKiryuVisualiserAbility npc, float GameT
 				{
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+					float EnemyVecPos[3]; WorldSpaceCenter(npc.m_iTarget, EnemyVecPos);
+				//	CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+					i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
+					i_ExplosiveProjectileHexArray[npc.index] |= EP_GIBS_REGARDLESS;
+					Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 5);
+					i_ExplosiveProjectileHexArray[npc.index] == 0;
 					c_KiyruAttachmentDo[npc.index] = "";
 					npc.b_NoLongerResetVel = true;
 					if(IsValidEntity(npc.m_iWearable8))
-						SDKHooks_TakeDamage(npc.m_iWearable8, 0, 0, 1000000.0, DMG_SLASH);
+						DestroyBuildingDo(npc.m_iWearable8);
 
 					npc.SetPlaybackRate(0.25);
 				}
@@ -684,4 +693,10 @@ public void AlliedKiryuVisualiserAbility_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
+}
+
+
+void DealAoeKnockbackBeastMode(int entity, int victim, float damage, int weapon)
+{
+	SensalCauseKnockback(entity, victim,_,_);
 }

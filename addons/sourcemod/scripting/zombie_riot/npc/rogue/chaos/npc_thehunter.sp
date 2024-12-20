@@ -342,13 +342,13 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 				if(Rogue_Paradox_RedMoon() || NpcStats_IberiaIsEnemyMarked(target))
 				{
 					SDKHooks_TakeDamage(target, npc.index, npc.index, 100000.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-					f_IberiaMarked[target] = 0.0;
+					RemoveSpecificBuff(target, "Marked");
 				}
 				else
 				{
 					SDKHooks_TakeDamage(target, npc.index, npc.index, CountPlayersOnServer() * 50.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
 					if(target > MaxClients || (!dieingstate[target] && IsPlayerAlive(target)))
-						NpcStats_IberiaMarkEnemy(target, 120.0);
+						ApplyStatusEffect(npc.index, target, "Marked", 30.0);
 				}
 			} 
 		}

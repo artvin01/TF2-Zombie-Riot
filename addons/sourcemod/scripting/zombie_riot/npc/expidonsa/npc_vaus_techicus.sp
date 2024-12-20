@@ -281,7 +281,7 @@ public void VausTechicus_NPCDeath(int entity)
 
 void VausTechicusShieldGiving(VausTechicus npc, float gameTime)
 {
-	if(npc.m_flDoingAnimation)
+	if(gameTime < npc.m_flDoingAnimation)
 	{
 		return;
 	}
@@ -319,7 +319,7 @@ void VausTechicusShieldGiving(VausTechicus npc, float gameTime)
 
 void VausTechicusSelfDefense(VausTechicus npc, float gameTime, int target, float distance)
 {
-	if(npc.m_flDoingAnimation)
+	if(gameTime < npc.m_flDoingAnimation)
 	{
 		return;
 	}

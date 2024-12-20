@@ -55,6 +55,9 @@ stock bool Elemental_HasDamage(int entity)
 
 stock bool Elemental_GoingCritical(int entity)
 {
+	if(entity <= MaxClients)
+		return (Armor_Charge[entity] * 5 / 4) < (-MaxArmorCalculation(Armor_Level[entity], entity, 1.0));
+	
 	for(int i; i < Element_MAX; i++)
 	{
 		if((ElementDamage[entity][i] * 5 / 4) > TriggerDamage(entity, i))
@@ -174,7 +177,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
@@ -264,7 +267,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 		return;
 
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
@@ -368,7 +371,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 	//cant void other voids!
 
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
@@ -481,7 +484,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
@@ -504,7 +507,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 				ElementDamage[victim][Element_Cyro] = 0;
 				f_ArmorCurrosionImmunity[victim][Element_Cyro] = GetGameTime() + (9.5 + (type * 0.5));
 
-				Cryo_FreezeZombie(victim, type);
+				Cryo_FreezeZombie(attacker, victim, type);
 			}
 		}
 	}
@@ -519,7 +522,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
@@ -547,8 +550,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				if(b_thisNpcIsARaid[victim])
 					time = 3.0;
 				
-				if(f_EnfeebleEffect[victim] < (GetGameTime() + time))
-					f_EnfeebleEffect[victim] =  (GetGameTime() + time);
+				ApplyStatusEffect(attacker, victim, "Enfeeble", time);
 			}
 		}
 	}
@@ -561,7 +563,7 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 		return;
 	
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
@@ -589,7 +591,6 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 }
 
 bool Osmosis_ClientGaveBuff[MAXENTITIES][MAXTF2PLAYERS];
-float Osmosis_TimeUntillOver[MAXENTITIES];
 
 void OsmosisElementalEffectEnable(int victim, float time)
 {
@@ -598,19 +599,21 @@ void OsmosisElementalEffectEnable(int victim, float time)
 	{
 		Osmosis_ClientGaveBuff[victim][i] = false;
 	}
-	Osmosis_TimeUntillOver[victim] = GetGameTime() + time;
+	if(time > 0.0)
+		ApplyStatusEffect(victim, victim, "Osmosis'ity", time);
 }
 
 bool Osmosis_CurrentlyInDebuff(int victim)
 {
-	if(Osmosis_TimeUntillOver[victim] > GetGameTime())
+	if(NpcStats_InOsmosis(victim))
 		return true;
 
 	return false;
 }
+
 void OsmosisElementalEffect_Detection(int attacker, int victim)
 {
-	if(Osmosis_TimeUntillOver[victim] < GetGameTime())
+	if(!NpcStats_InOsmosis(victim))
 		return;
 	
 	if(Osmosis_ClientGaveBuff[victim][attacker])
@@ -635,7 +638,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
@@ -646,7 +649,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 			damage = RoundToNearest(float(damage) * 1.2);
 		}
 		Armor_DebuffType[victim] = 4;
-		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
@@ -768,21 +771,26 @@ static void Matrix_Spawning(int entity, int count)
 	{
 		summon = GetRandomInt(7, 11);
 	}
-	if(wave >= 60)
+	if(wave >= 45)
 	{
 		summon = GetRandomInt(12, 16);
 	}
 
 	char name[255];
 	FormatEx(name, sizeof(name), "%s", g_Agent_Summons[summon]);
-
+	int health = ReturnEntityMaxHealth(entity);
+	if(b_thisNpcIsABoss[entity])
+	{
+		health = (ReturnEntityMaxHealth(entity)/10);
+	}
+	if(b_thisNpcIsARaid[entity])
+	{
+		health = (ReturnEntityMaxHealth(entity)/100);
+	}
+	
 	Enemy enemy;
 	enemy.Index = NPC_GetByPlugin(name);
-	enemy.Health = ReturnEntityMaxHealth(entity);
-	if(enemy.Health >= 50000)
-	{
-  		enemy.Health = 50000;
-	}
+	enemy.Health = health;
 	enemy.Is_Outlined = false;
 	enemy.Is_Immune_To_Nuke = true;
 	//do not bother outlining.

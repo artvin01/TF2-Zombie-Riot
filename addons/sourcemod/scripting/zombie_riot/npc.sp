@@ -1018,6 +1018,7 @@ void ZR_NpcTauntWin()
 
 void NPCDeath(int entity)
 {
+	Freeplay_OnNPCDeath(entity);
 	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
 	{
 		int GiveMoney = 0;

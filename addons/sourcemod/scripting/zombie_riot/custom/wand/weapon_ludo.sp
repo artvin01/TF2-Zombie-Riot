@@ -1557,11 +1557,11 @@ public void Weapon_Ludo_WandTouch(int entity, int target)
 			{
 				case 1:
 				{
-					NpcStats_SilenceEnemy(target, 10.0);
+					ApplyStatusEffect(owner, target, "Silenced", 10.0);
 				}
 				case 2:
 				{
-					NpcStats_SilenceEnemy(target, 15.0);
+					ApplyStatusEffect(owner, target, "Silenced", 15.0);
 				}
 			}
 			switch(EighthDebuff[owner])
@@ -1590,15 +1590,11 @@ public void Weapon_Ludo_WandTouch(int entity, int target)
 			{
 				case 1:
 				{
-					float time = GetGameTime() + 12.5;
-					if(f_LudoDebuff[target] <= time)
-						f_LudoDebuff[target] = time;
+					ApplyStatusEffect(owner, target, "Ludo-Maniancy", 12.5);
 				}
 				case 2:
 				{
-					float time = GetGameTime() + 20.0;
-					if(f_SpadeLudoDebuff[target] <= time)
-						f_SpadeLudoDebuff[target] = time;
+					ApplyStatusEffect(owner, target, "Spade Ludo-Maniancy", 20.0);
 				}
 			}
 		}

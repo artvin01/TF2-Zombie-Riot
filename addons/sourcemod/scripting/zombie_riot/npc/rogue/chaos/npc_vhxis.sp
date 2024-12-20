@@ -719,7 +719,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 					}
 					else
 					{
-						f_LowTeslarDebuff[victim] = GetGameTime() + 5.0;
+						ApplyStatusEffect(npc.index, victim, "Teslar Shock", 5.0);
 						if(!b_ThisWasAnNpc[victim])
 						{
 							GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", victimPos); 
