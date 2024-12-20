@@ -637,7 +637,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 90;
+		rand = GetURandomInt() % 93;
 
 	if(wrathofirln)
 	{
