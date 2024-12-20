@@ -453,7 +453,7 @@ public void Weapon_Casino_M1(int client, int weapon)
 			i_WeaponDamageFalloff[weapon] = 1.0;
 		}
 	}
-	if(i_CryoShot[client] > 1)
+	if(i_CryoShot[client] >= 1)
 	{
 		i_CryoShot[client] -= 1;
 		CryoEasy[client] = true;
@@ -462,6 +462,7 @@ public void Weapon_Casino_M1(int client, int weapon)
 	{
 		CryoEasy[client] = false;
 	}
+	
 	if(i_MegaShot[client] >= 1)
 	{
 		Attributes_Set(weapon, 305, 0.0);
