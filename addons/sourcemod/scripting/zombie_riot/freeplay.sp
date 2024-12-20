@@ -270,7 +270,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		}
 		//raids otherwise have too much damage.
 		enemy.ExtraDamage *= 0.55;
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.5);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
 		//some raids dont scale with DMG, fix it here
 
 		enemy.Credits += 5000.0;
@@ -354,7 +354,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	else
 	{
 		if(enemy.Health)
-			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01250)));
+			enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01250))) * 0.9);
 		
 		count = CountBonus + RoundToFloor(count * CountMulti * (((postWaves * 2) + 99) * 0.01250));
 
@@ -1419,7 +1419,10 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			//10% chance, otherwise retry.
 			if(GetRandomFloat(0.0, 1.0) <= 0.1)
+			{
+				strcopy(message, sizeof(message), "{green}A new special weapon is now available for purchase!");
 				Rogue_RareWeapon_Collect();
+			}
 			else
 			{
 				Freeplay_SetupStart();
