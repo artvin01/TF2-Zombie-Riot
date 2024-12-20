@@ -186,7 +186,7 @@ static int i_Current_Pap[MAXTF2PLAYERS+1];
 static int LastHitTarget;
 static int Payday = 1;
 
-static bool CryoEasy;
+static bool CryoEasy[MAXTF2PLAYERS+1];
 static bool MegaShot[2049] = { false, ... };
 
 #define CASINO_MAX_DOLLARS 100
@@ -324,13 +324,9 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 			i_Ricochet[attacker] -= 1;
 		}
 	}
-	if(i_CryoShot[attacker] >= 1 && i_MegaShot[attacker] == 0)
+	if(CryoEasy[attacker] && i_MegaShot[attacker] == 0)
 	{
-		if(CryoEasy)
-		{
-			ApplyStatusEffect(attacker, victim, "Gambler's Ruin Total", 1.5);
-			i_CryoShot[attacker] -= 1;
-		}
+		ApplyStatusEffect(attacker, victim, "Gambler's Ruin Total", 1.5);
 		NpcStats_CasinoDebuffStengthen(victim, CasinoDebuffDamage[attacker]);
 	}
 	if(i_HasBeenHeadShotted[victim])
@@ -413,7 +409,7 @@ void CasinoSalaryPerKill(int client, int weapon) //cash gain on KILL MURDER OBLI
 	}
 	if(AmmoRefill_timer[client])
 	{
-		int AmmoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+		int AmmoType = GetAmmoType_WeaponPrimary(weapon);
 		AddAmmoClient(client, AmmoType ,(pap) + 4,1.0, true);
 	}
 }
@@ -460,11 +456,11 @@ public void Weapon_Casino_M1(int client, int weapon)
 	if(i_CryoShot[client] > 1)
 	{
 		i_CryoShot[client] -= 1;
-		CryoEasy = false;
+		CryoEasy[client] = true;
 	}
 	else
 	{
-		CryoEasy = true;
+		CryoEasy[client] = false;
 	}
 	if(i_MegaShot[client] >= 1)
 	{

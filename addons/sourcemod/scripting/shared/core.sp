@@ -615,6 +615,8 @@ int Armor_Wearable[MAXTF2PLAYERS];
 int Cosmetic_WearableExtra[MAXTF2PLAYERS];
 #endif
 
+int OriginalWeapon_AmmoType[MAXENTITIES];
+
 /*
 	Above Are Variables/Defines That Are Shared
 
@@ -1978,7 +1980,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			}
 			if(ConsumeAmmoReserve >= 1)
 			{
-				int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+				int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) - ConsumeAmmoReserve);
 			}
 		}
@@ -1995,7 +1997,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			}
 			if(ConsumeAmmoReserve >= 1)
 			{
-				int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+				int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + ConsumeAmmoReserve);
 			}
 		}
@@ -2034,6 +2036,10 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		PrintHintText(client, buffer);
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
+	DataPack pack_WeaponAmmo = new DataPack();
+	pack_WeaponAmmo.WriteCell(EntIndexToEntRef(client));
+	pack_WeaponAmmo.WriteCell(EntIndexToEntRef(weapon));
+	RequestFrame(CheckWeaponAmmoLogicExternal, pack_WeaponAmmo);
 	
 	float GameTime = GetGameTime();
 	int WeaponSlot = TF2_GetClassnameSlot(classname);

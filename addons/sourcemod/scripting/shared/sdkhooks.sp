@@ -164,10 +164,10 @@ stock void SDKHook_HookClient(int client)
 #if defined ZR
 	SDKUnhook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 	SDKHook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
-/*
+
 	SDKUnhook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
 	SDKHook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
-*/
+
 #endif
 #endif
 
@@ -187,16 +187,63 @@ stock void SDKHook_HookClient(int client)
 }
 
 #if defined ZR 
-bool WeaponWasGivenAmmo[MAXENTITIES];
+bool WeaponWasGivenInfiniteDelay[MAXENTITIES];
 
 void WeaponWeaponAdditionOnRemoved(int entity)
 {
-	WeaponWasGivenAmmo[entity] = false;
+	WeaponWasGivenInfiniteDelay[entity] = false;
+}
+
+public void CheckWeaponAmmoLogicExternal(DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(client) && IsValidEntity(weapon))
+		IsWeaponEmptyCompletly(client, weapon);
+		
+	delete pack;
+}
+bool IsWeaponEmptyCompletly(int client, int weapon, bool CheckOnly = false)
+{
+	int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
+	if(Ammo_type > 0)
+	{
+		if(GetAmmo(client, Ammo_type) <= 0)
+		{
+			if(b_WeaponHasNoClip[weapon])
+			{
+				if(!CheckOnly)
+				{
+					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
+					WeaponWasGivenInfiniteDelay[weapon] = true;
+				}
+				return true;
+			}
+			else
+			{
+				//We check for clip.
+				int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+				int GetClip = GetEntData(weapon, iAmmoTable, 4);
+				if(GetClip <= 0)
+				{
+					if(!CheckOnly)
+					{
+						SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
+						WeaponWasGivenInfiniteDelay[weapon] = true;
+					}
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 public Action WeaponSwtichToWarning(int client, int weapon)
 {
-	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+	/*
+	int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 	if(Ammo_type > 0 && Ammo_type != Ammo_Potion_Supply && Ammo_type != Ammo_Hand_Grenade)
 	{
 		if(GetAmmo(client, Ammo_type) <= 0)
@@ -205,77 +252,21 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 			PrintToChat(client, "%t", "Warn Client Ammo None");
 		}
 	}
+	*/
 
-	/*
+	
+//	int WeaponToForce;
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
-		if(IsValidEntity(weapon1))
+		//make sure to not brick melees...
+		if(IsValidEntity(weapon1) && GetAmmoType_WeaponPrimary(weapon1) > 0)
 		{
-			if(weapon == 0)
-			{
-				int weapon2 = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon2 == weapon1)
-					continue;
-			}
-			
-			if(f_TimeSinceLastGiveWeapon[weapon1] > GetGameTime())
-				return Plugin_Continue;
-
-			if(b_WeaponHasNoClip[weapon1] && !WeaponWasGivenAmmo[weapon1])
-			{
-				WeaponWasGivenAmmo[weapon1] = false;
-			}
-			
-			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
-			if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
-			{
-				//found a weapon that has ammo.
-				if(CurrentAmmo[client][Ammo_type] <= 0)
-				{
-					if(b_WeaponHasNoClip[weapon1])
-					{
-						WeaponWasGivenAmmo[weapon1] = true;
-						SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] + 1);
-						CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
-					}
-					else
-					{			
-						int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-						int GetClip = GetEntData(weapon1, iAmmoTable, 4);
-						if(GetClip == 0)
-						{
-							WeaponWasGivenAmmo[weapon1] = true;
-							SetEntData(weapon1, iAmmoTable, 1);
-							SetEntProp(weapon1, Prop_Send, "m_iClip1", 1); // weapon clip amount bullets	
-						}
-					}
-					//we give these weapons atleast 1 clip, this is to ensure you can switch to them client side.
-					//we also set WeaponWasGivenAmmo, so when you actually switch to the weapon, its clip gets set to 0.
-				}
-			}
+			if(IsWeaponEmptyCompletly(client, weapon1, true))
+				SetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType", 1);
 		}
 	}
-	*/
 	return Plugin_Continue;
-}
-/*
-public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if (IsValidEntity(entity))
-	{
-		WeaponWasGivenAmmo[entity] = false;
-	}
-	return Plugin_Handled;
-}
-void WeaponSwtichToWarningPostDestroyed(int weapon)
-{
-	if(WeaponWasGivenAmmo[weapon])
-	{
-		int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-		WeaponSwtichToWarningPost(client, weapon);
-	}
 }
 
 public Action WeaponSwtichToWarningPost(int client, int weapon)
@@ -294,46 +285,36 @@ void WeaponSwtichToWarningPostFrame(int ref)
 	if(client == -1)
 		return;
 
+	int WeaponToForce;
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
-		if(WeaponWasGivenAmmo[weapon1])
+		//make sure to not brick melees...
+		if(IsValidEntity(weapon1) && GetAmmoType_WeaponPrimary(weapon1) > 0)
 		{
-			f_TimeSinceLastGiveWeapon[weapon1] = GetGameTime() + 0.05;
-			if(b_WeaponHasNoClip[weapon1])
+			if(weapon == 0)
 			{
-				int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
-
-				if(CurrentAmmo[client][Ammo_type] >= 1)
+				int weapon2 = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon2 == weapon1)
 				{
-					SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] -1);
-					CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
+					WeaponToForce = weapon2;
+					continue;
 				}
 			}
 			else
 			{
-				static int iAmmoTable;
-				if(!iAmmoTable)
-					iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-				
-				SetEntData(weapon1, iAmmoTable, 0);
-				SetEntProp(weapon1, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+				WeaponToForce = weapon;
+				continue;
 			}
-			SetEntPropFloat(weapon1, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
 		}
-		WeaponWasGivenAmmo[weapon1] = false;
 	}
-	RequestFrames(WeaponSwtichToWarningPostFrameRegive, 1, EntIndexToEntRef(client));
+	if(WeaponToForce)
+	{
+		IsWeaponEmptyCompletly(client, WeaponToForce);
+		//Swtiched to the active weapon!!!! yippie!!
+		SetEntProp(WeaponToForce, Prop_Send, "m_iPrimaryAmmoType", GetAmmoType_WeaponPrimary(WeaponToForce));
+	}
 }
-void WeaponSwtichToWarningPostFrameRegive(int ref)
-{
-	int client = EntRefToEntIndex(ref);
-	if(client == -1)
-		return;
-
-	WeaponSwtichToWarning(client, 0);
-}
-*/
 #endif
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)
@@ -761,6 +742,13 @@ public void OnPostThink(int client)
 		
 		if(IsValidEntity(weapon))
 		{
+			if(WeaponWasGivenInfiniteDelay[weapon] && !IsWeaponEmptyCompletly(client, weapon, true))
+			{
+				//tiny delay to prevent abuse?
+				SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
+				SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.5);
+				WeaponWasGivenInfiniteDelay[weapon] = false;
+			}
 			static float cooldown_time;
 			had_An_ability = false;
 			static bool IsReady;

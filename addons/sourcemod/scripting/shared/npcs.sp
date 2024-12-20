@@ -1635,11 +1635,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			//there is a raid, then this displays a hud below the raid hud.
 			RaidHudOffsetSave = 0.135;
 
-			if(percentage_melee != 100.0 || percentage_ranged != 100.0 || DamagePercDo != 100.0)
-			{
-				RaidHudOffsetSave += 0.035;
-			}
-			if(DoesNpcHaveHudDebuffOrBuff(attacker, victim, GameTime))	
+			if(percentage_melee != 100.0 || percentage_ranged != 100.0 || DamagePercDo != 100.0 || DoesNpcHaveHudDebuffOrBuff(attacker, victim, GameTime))
 			{
 				RaidHudOffsetSave += 0.035;
 			}

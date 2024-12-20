@@ -126,9 +126,9 @@ void Wrathful_Blade_Precache()
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
-float Player_OnTakeDamage_WrathfulBlade(int victim, float &damage, int attacker)
+float Player_OnTakeDamage_WrathfulBlade(int victim, float &damage)
 {
-	if (Fury_Active[victim] && attacker != 0)
+	if (Fury_Active[victim]/* && attacker != 0*/)
 	{
 		damage *= Fury_ResMult[Fury_Tier[victim]];
 	}
