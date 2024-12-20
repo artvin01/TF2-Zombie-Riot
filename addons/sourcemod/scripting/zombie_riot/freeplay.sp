@@ -551,7 +551,7 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 
 	for (int client = 0; client < MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsPlayerAlive(client))
+		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
 			if(CheesyPresence)
 				ApplyStatusEffect(client, client, "Cheesy Presence", 10.0);
