@@ -103,7 +103,7 @@ public float Player_OnTakeDamage_Rapier(int victim, int attacker, float &damage)
 	int pap = i_Current_Pap_Rapier[victim];
 
 	damage *= 1.15;
-	if(f_DuelStatus[attacker] > 0.0 && DuelState_timer[victim] != INVALID_HANDLE)
+	if(!CheckInHud() && f_DuelStatus[attacker] > 0.0 && DuelState_timer[victim] != INVALID_HANDLE)
 	{
 		Client_Shake(victim, 0, 10.0, 5.0, 0.5);
 		return damage *= 0.9259; // 25% more damage taken

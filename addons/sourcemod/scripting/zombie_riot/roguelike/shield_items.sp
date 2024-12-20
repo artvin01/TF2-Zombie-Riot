@@ -33,39 +33,44 @@ bool OnTakeDamage_ShieldLogic(int victim, int damagetype)
 {
 	float DodgeChance = 1.0;
 	// 0.0 means guranteed dodge
-	
-	if(damagetype & (DMG_CLUB|DMG_SLASH))
+	if(!CheckInHud())
 	{
+		if(damagetype & (DMG_CLUB|DMG_SLASH))
+		{
+			
+		}
+		else
+		{
+			if(b_ElasticFlyingCape) //10% dodge chance
+			{
+				DodgeChance *= 0.9;
+			}
+		}
 		
-	}
-	else
-	{
-		if(b_ElasticFlyingCape) //10% dodge chance
+		if(b_BraceletsOfAgility) //10% dodge chance
 		{
 			DodgeChance *= 0.9;
 		}
-	}
-	
-	if(b_BraceletsOfAgility) //10% dodge chance
-	{
-		DodgeChance *= 0.9;
-	}
-	if(DodgeChance != 1.0 && GetRandomFloat(0.0,1.0) > DodgeChance)
-	{
-		float chargerPos[3];
-		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-		chargerPos[2] += 82.0;
-		TE_ParticleInt(g_particleMissText, chargerPos);
-		TE_SendToAll();
-		return true;
+		if(DodgeChance != 1.0 && GetRandomFloat(0.0,1.0) > DodgeChance)
+		{
+			float chargerPos[3];
+			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+			chargerPos[2] += 82.0;
+			TE_ParticleInt(g_particleMissText, chargerPos);
+			TE_SendToAll();
+			return true;
+		}
 	}
 	
 	if(b_MalfunctionShield)
 	{
 		if(i_MalfunctionShield[victim] > 0)
 		{
-			ShieldBlockEffect(victim);
-			i_MalfunctionShield[victim] -= 1;
+			if(!CheckInHud())
+			{
+				ShieldBlockEffect(victim);
+				i_MalfunctionShield[victim] -= 1;
+			}
 			return true;
 		}
 	}

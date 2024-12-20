@@ -236,7 +236,7 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 		else
 		{
-			if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(victim))
+			if((damagetype & DMG_BLAST))
 			{
 				hot = true;
 				pierce = true;

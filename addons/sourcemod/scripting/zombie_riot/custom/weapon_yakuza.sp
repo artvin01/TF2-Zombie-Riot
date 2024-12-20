@@ -1001,14 +1001,17 @@ void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damaget
 	//With beastmode, you cant actually block youre just immune to knockback, but that in ZR sucks, so it should be the best to block with.
 	if((damagetype & DMG_CLUB) && BlockNextFor[victim] > GetGameTime())
 	{
-		int rand = (GetURandomInt() % 4) + 1;
-		ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
-		ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
+		if(!CheckInHud())
+		{
+			int rand = (GetURandomInt() % 4) + 1;
+			ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
+			ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
+		}
 		damage = 0.0;
 		return;
 	}
-
-	Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));
+	if(!CheckInHud())
+		Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));
 }
 
 

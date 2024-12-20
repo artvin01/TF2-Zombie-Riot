@@ -1227,6 +1227,7 @@ float Siccerino_Melee_DmgBonus(int victim, int attacker, int weapon)
 	}	
 	return 1.0;
 }
+
 public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, int weapon)
 {
 	float ExtraDamageDo;
@@ -1235,14 +1236,17 @@ public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, 
 		ExtraDamageDo = SICCERINO_BONUS_DAMAGE;
 	else
 		ExtraDamageDo = SICCERINO_BONUS_DAMAGE_WALDCH;
+		
+	if(!CheckInHud())
+	{
+		f_SiccerinoExtraDamage[attacker][victim] += ExtraDamageDo;
 
-	f_SiccerinoExtraDamage[attacker][victim] += ExtraDamageDo;
-
-	DataPack pack;
-	CreateDataTimer(SICCERINO_DEBUFF_FADE, Siccerino_revert_damageBonus, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(attacker));
-	pack.WriteCell(EntIndexToEntRef(victim));		
-	pack.WriteFloat(ExtraDamageDo);		
+		DataPack pack;
+		CreateDataTimer(SICCERINO_DEBUFF_FADE, Siccerino_revert_damageBonus, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(attacker));
+		pack.WriteCell(EntIndexToEntRef(victim));		
+		pack.WriteFloat(ExtraDamageDo);		
+	}
 
 	return damage;
 }
@@ -1605,18 +1609,6 @@ void WeaponVoidBlade_OnTakeDamage(int attacker, int victim, int zr_damage_custom
 	VoidTimerHudShow(attacker);
 }
 
-public float Player_OnTakeDamage_VoidBlade_Hud(int victim)
-{
-	float damage = 1.0;
-	if(i_VoidCurrentShields[victim] >= 1)
-	{
-		if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
-			damage *= 0.6;
-		else
-			damage *= 0.25;
-	}
-	return damage;
-}
 public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
 	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
@@ -1638,6 +1630,9 @@ public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attack
 		else
 			damage *= 0.25;
 			
+		if(!CheckInHud())
+			return damage;
+		
 		i_VoidCurrentShields[victim]--;
 		if(i_VoidCurrentShields[victim] <= 0)
 		{

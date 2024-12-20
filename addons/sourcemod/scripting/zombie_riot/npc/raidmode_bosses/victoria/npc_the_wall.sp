@@ -997,7 +997,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	else
 	{
-		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != gameTime)
+		if((damagetype & DMG_BLAST))
 		{
 			hot = true;
 			pierce = true;

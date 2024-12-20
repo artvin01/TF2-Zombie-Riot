@@ -651,14 +651,14 @@ float StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, int infl
 	float ExtraDamageAdd;
 	float DamageBuffExtraScaling = 1.0;
 
-	#if defined ZR
+#if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
 		//only scale if its a player, and if the attacking npc is red too
 		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
-	#endif
+#endif
 	static StatusEffect Apply_MasterStatusEffect;
 	static E_StatusEffect Apply_StatusEffect;
 	//No debuffs or status effects, skip.

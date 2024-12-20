@@ -72,50 +72,53 @@ bool Ability_TrueStrength_Shield_OnTakeDamage(int victim)
 	{
 		if(TrueStrengthShieldCounter[victim] > 80)
 		{
-			TrueStrengthShieldCounter[victim] = 0;
-			TF2_RemoveCondition(victim, TFCond_UberFireResist);
-
-			switch(GetRandomInt(1,4))
+			if(!CheckInHud())
 			{
-				case 1:
+				TrueStrengthShieldCounter[victim] = 0;
+				TF2_RemoveCondition(victim, TFCond_UberFireResist);
+
+				switch(GetRandomInt(1,4))
 				{
-					EmitSoundToAll("player/resistance_heavy1.wav", victim,_,70);
-					EmitSoundToAll("player/resistance_heavy1.wav", victim,_,70);
+					case 1:
+					{
+						EmitSoundToAll("player/resistance_heavy1.wav", victim,_,70);
+						EmitSoundToAll("player/resistance_heavy1.wav", victim,_,70);
+					}
+					case 2:
+					{
+						EmitSoundToAll("player/resistance_heavy2.wav", victim,_,70);
+						EmitSoundToAll("player/resistance_heavy2.wav", victim,_,70);
+					}
+					case 3:
+					{
+						EmitSoundToAll("player/resistance_heavy3.wav", victim,_,70);
+						EmitSoundToAll("player/resistance_heavy3.wav", victim,_,70);
+					}
+					case 4:
+					{
+						EmitSoundToAll("player/resistance_heavy4.wav", victim,_,70);
+						EmitSoundToAll("player/resistance_heavy4.wav", victim,_,70);
+					}
 				}
-				case 2:
+
+				int MaxHealth = SDKCall_GetMaxHealth(victim);
+				int Health = GetEntProp(victim, Prop_Send, "m_iHealth");
+
+				float PercentageHeal = 0.1;
+				
+				int NewHealth = Health + RoundToCeil(float(MaxHealth) * PercentageHeal);
+
+				if(NewHealth > MaxHealth)
 				{
-					EmitSoundToAll("player/resistance_heavy2.wav", victim,_,70);
-					EmitSoundToAll("player/resistance_heavy2.wav", victim,_,70);
+					NewHealth = MaxHealth;
 				}
-				case 3:
-				{
-					EmitSoundToAll("player/resistance_heavy3.wav", victim,_,70);
-					EmitSoundToAll("player/resistance_heavy3.wav", victim,_,70);
-				}
-				case 4:
-				{
-					EmitSoundToAll("player/resistance_heavy4.wav", victim,_,70);
-					EmitSoundToAll("player/resistance_heavy4.wav", victim,_,70);
-				}
+				TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
+				float pos[3];
+				GetEntPropVector(victim, Prop_Send, "m_vecOrigin", pos);
+				pos[2] += 45.0;
+				TE_Particle("peejar_impact_cloud_milk", pos, NULL_VECTOR, NULL_VECTOR, victim, _, _, _, _, _, _, _, _, _, 0.0);
+				SetEntProp(victim, Prop_Send, "m_iHealth", NewHealth);
 			}
-
-			int MaxHealth = SDKCall_GetMaxHealth(victim);
-			int Health = GetEntProp(victim, Prop_Send, "m_iHealth");
-
-			float PercentageHeal = 0.1;
-			
-			int NewHealth = Health + RoundToCeil(float(MaxHealth) * PercentageHeal);
-
-			if(NewHealth > MaxHealth)
-			{
-				NewHealth = MaxHealth;
-			}
-			TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
-			float pos[3];
-			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", pos);
-			pos[2] += 45.0;
-			TE_Particle("peejar_impact_cloud_milk", pos, NULL_VECTOR, NULL_VECTOR, victim, _, _, _, _, _, _, _, _, _, 0.0);
-			SetEntProp(victim, Prop_Send, "m_iHealth", NewHealth);
 			return true;
 		}
 	}
