@@ -532,7 +532,6 @@ void Freeplay_SpawnEnemy(int entity)
 
 void Freeplay_OnWaveStart()
 {
-	PrintToChatAll("wave started! yay!");
 	for (int client = 0; client < MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))
