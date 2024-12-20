@@ -1412,7 +1412,7 @@ void StatusEffects_Freeplay1()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 0; //0 means ignored
+	data.Slot						= 7; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
@@ -1425,7 +1425,7 @@ void StatusEffects_Freeplay1()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 0; //0 means ignored
+	data.Slot						= 7; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
@@ -1438,7 +1438,7 @@ void StatusEffects_Freeplay1()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 0; //0 means ignored
+	data.Slot						= 7; //0 means ignored
 	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
@@ -1455,7 +1455,7 @@ void StatusEffects_Freeplay2()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 0; //0 means ignored
+	data.Slot						= 8; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
@@ -1468,7 +1468,7 @@ void StatusEffects_Freeplay2()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 0; //0 means ignored
+	data.Slot						= 8; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
@@ -1481,7 +1481,7 @@ void StatusEffects_Freeplay2()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 0; //0 means ignored
+	data.Slot						= 8; //0 means ignored
 	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
