@@ -1014,31 +1014,6 @@ void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damaget
 		Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));
 }
 
-
-float Yakuza_SelfTakeDamageHud(int victim, int weapon)
-{
-	float damagereturn = 1.0;
-	if(LastMann)
-	{
-		damagereturn *= 0.75;
-	}
-
-	if(WeaponStyle[victim] == Style_Brawler)
-		damagereturn *= 0.90;
-
-	if(WeaponStyle[victim] == Style_Dragon)
-		damagereturn *= 0.8;
-
-	if(WeaponStyle[victim] == Style_Beast)
-	{
-		if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
-			damagereturn *= 0.7;
-		else
-			damagereturn *= 0.8;
-	}
-
-	return damagereturn;
-}
 static int DoSpecialActionYakuza(int client, float DamageBase, const char[] animation, float duration, int target)
 {
 	//Reduce the damgae they take in half during the animtion, just incase, evne though they are untargetable anyways.

@@ -1509,7 +1509,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		float percentage_ranged = 100.0;
 		int testvalue = 1;
 		int attackertestDo = attacker;
-		int testvalue1[3];
+		float testvalue1[3];
 
 		if(!b_NpcIsInvulnerable[victim])
 		{
@@ -1519,6 +1519,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 				attackertestDo = 0;
 
 			NPC_OnTakeDamage(victim, attackertestDo, attackertestDo, percentage_melee, DmgType, weapon, testvalue1, testvalue1,testvalue);
+			
 			DmgType = DMG_BULLET;
 			NPC_OnTakeDamage(victim, attackertestDo, attackertestDo, percentage_ranged, DmgType, weapon, testvalue1, testvalue1,testvalue);
 			CheckInHudEnable(0);

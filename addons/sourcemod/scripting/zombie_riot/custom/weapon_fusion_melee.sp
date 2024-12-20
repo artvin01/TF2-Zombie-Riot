@@ -1185,11 +1185,11 @@ static Action Siccerino_revert_toNormal(Handle ringTracker, int ref)
 	return Plugin_Stop;
 }
 
-#define SICCERINO_BONUS_DAMAGE 0.025
+#define SICCERINO_BONUS_DAMAGE 0.05
 #define SICCERINO_BONUS_DAMAGE_MAX 2.0
 #define SICCERINO_BONUS_DAMAGE_MAX_RAID 1.5
 
-#define SICCERINO_BONUS_DAMAGE_WALDCH 0.03
+#define SICCERINO_BONUS_DAMAGE_WALDCH 0.06
 #define SICCERINO_BONUS_DAMAGE_MAX_WALDCH 2.2
 #define SICCERINO_BONUS_DAMAGE_MAX_RAID_WALDCH 1.65
 
@@ -1231,7 +1231,8 @@ float Siccerino_Melee_DmgBonus(int victim, int attacker, int weapon)
 public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, int weapon)
 {
 	float ExtraDamageDo;
-	damage *= f_SiccerinoExtraDamage[attacker][victim];
+	damage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
+
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO)
 		ExtraDamageDo = SICCERINO_BONUS_DAMAGE;
 	else

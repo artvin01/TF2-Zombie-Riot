@@ -923,7 +923,7 @@ public void OnPostThink(int client)
 			float percentage_ranged = 100.0;
 			static int i_TheWorld;
 			int testvalue = 1;
-			int testvalue1[3];
+			float testvalue1[3];
 			CheckInHudEnable(1);
 			int DmgType = DMG_CLUB;
 			Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_melee, DmgType, weapon, testvalue1, testvalue1,testvalue);
