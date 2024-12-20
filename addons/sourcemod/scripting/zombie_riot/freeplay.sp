@@ -44,6 +44,9 @@ static int ProsperityDebuff;
 static bool SilenceDebuff;
 static float ExtraEnemySize;
 static bool UnlockedSpeed;
+static bool CheesyPresence;
+static int EloquenceBuff;
+static int RampartBuff;
 
 void Freeplay_OnMapStart()
 {
@@ -98,6 +101,9 @@ void Freeplay_ResetAll()
 	SilenceDebuff = false;
 	ExtraEnemySize = 1.0;
 	UnlockedSpeed = false;
+	CheesyPresence = true;
+	EloquenceBuff = 0;
+	RampartBuff = 0;
 }
 
 int Freeplay_EnemyCount()
@@ -524,6 +530,73 @@ void Freeplay_SpawnEnemy(int entity)
 		VausMagicaGiveShield(entity, EnemyShields);
 }
 
+void Freeplay_OnWaveStart()
+{
+	PrintToChatAll("wave started! yay!");
+	for (int client = 0; client < MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			if(CheesyPresence)
+				ApplyStatusEffect(client, client, "Cheesy Presence", 10.0);
+
+			switch(EloquenceBuff)
+			{
+				case 1:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Eloquence I", FAR_FUTURE);
+				}
+				case 2:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Eloquence II", FAR_FUTURE);
+				}
+				case 3:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Eloquence III", FAR_FUTURE);
+				}
+				default:
+				{
+					if(HasSpecificBuff(client, "Freeplay Eloquence I"))
+						RemoveSpecificBuff(client, "Freeplay Eloquence I");
+
+					if(HasSpecificBuff(client, "Freeplay Eloquence II"))
+						RemoveSpecificBuff(client, "Freeplay Eloquence II");
+
+					if(HasSpecificBuff(client, "Freeplay Eloquence III"))
+						RemoveSpecificBuff(client, "Freeplay Eloquence III");
+				}
+			}
+
+			switch(RampartBuff)
+			{
+				case 1:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Rampart I", FAR_FUTURE);
+				}
+				case 2:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Rampart II", FAR_FUTURE);
+				}
+				case 3:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Rampart III", FAR_FUTURE);
+				}
+				default:
+				{
+					if(HasSpecificBuff(client, "Freeplay Rampart I"))
+						RemoveSpecificBuff(client, "Freeplay Rampart I");
+
+					if(HasSpecificBuff(client, "Freeplay Rampart II"))
+						RemoveSpecificBuff(client, "Freeplay Rampart II");
+
+					if(HasSpecificBuff(client, "Freeplay Rampart III"))
+						RemoveSpecificBuff(client, "Freeplay Rampart III");
+				}
+			}
+		}
+	}
+}
+
 void Freeplay_OnEndWave(int &cash)
 {
 	if(ExplodingNPC)
@@ -894,6 +967,39 @@ void Freeplay_SetupStart(bool extra = false)
 		ExtraEnemySize *= randomsize;
 		CPrintToChatAll("{yellow}Enemy size has been multiplied by %.2fx!", randomsize);
 
+		if(CheesyPresence)
+		{
+			CPrintToChatAll("{red}You no longer feel a {orange}Cheesy Presence {red}around you.");
+			CheesyPresence = false;
+		}
+		else
+		{
+			CPrintToChatAll("{green}You start to feel a {orange}Cheesy Presence {red}around you... {yellow}(Lasts 10 secs, applied every wave)");
+			CheesyPresence = true;
+		}
+
+		if(EloquenceBuff > 3)
+		{
+			CPrintToChatAll("{red}Removed the Eloquence buff from everyone!");
+			EloquenceBuff = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{green}All players now gain a layer of the Eloquence buff.");
+			EloquenceBuff++;
+		}
+
+		if(RampartBuff > 3)
+		{
+			CPrintToChatAll("{red}Removed the Rampart buff from everyone!");
+			RampartBuff = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{green}All players now gain a layer of the Rampart buff.");
+			RampartBuff++;
+		}
+
 		switch(GetRandomInt(1, 22))
 		{
 			case 1:
@@ -1008,7 +1114,6 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		// if this works i WILL kill arvin
 		for (int client = 0; client < MaxClients; client++)
 		{
 			if(IsValidClient(client) && !b_IsPlayerABot[client])
@@ -1925,6 +2030,45 @@ void Freeplay_SetupStart(bool extra = false)
 				UnlockedSpeed = true;
 				Store_DiscountNamedItem("Adrenaline", 999);
 				strcopy(message, sizeof(message), "{green}Adrenaline is now buyable in the passive store!");
+			}
+			case 90:
+			{
+				if(CheesyPresence)
+				{
+					strcopy(message, sizeof(message), "{red}You no longer feel a {orange}Cheesy Presence {red}around you.");
+					CheesyPresence = false;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{green}You start to feel a {orange}Cheesy Presence {red}around you... {yellow}(Lasts 10 secs, applied every wave)");
+					CheesyPresence = true;
+				}
+			}
+			case 91:
+			{
+				if(EloquenceBuff > 3)
+				{
+					strcopy(message, sizeof(message), "{red}Removed the Eloquence buff from everyone!");
+					EloquenceBuff = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{green}All players now gain a layer of the Eloquence buff.");
+					EloquenceBuff++;
+				}
+			}
+			case 92:
+			{
+				if(RampartBuff > 3)
+				{
+					strcopy(message, sizeof(message), "{red}Removed the Rampart buff from everyone!");
+					RampartBuff = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{green}All players now gain a layer of the Rampart buff.");
+					RampartBuff++;
+				}
 			}
 			default:
 			{
