@@ -344,6 +344,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.ExtraDamage *= 1.65;
 			}
 		}
+
+		// Leaving this in here in the case i have to nerf super miniboss health
+		enemy.Health = RoundToCeil(float(enemy.Health) * 1.0);
 		enemy.Credits += 125.0;
 		enemy.ExtraSpeed = 1.45;
 		enemy.ExtraSize = 1.65; // big
@@ -524,8 +527,6 @@ void Freeplay_OnEndWave(int &cash)
 	if(ExplodingNPC)
 		ExplodingNPC = false;
 
-	
-
 	cash += CashBonus;
 }
 
@@ -565,26 +566,27 @@ void Freeplay_SetupStart(bool extra = false)
 
 	if(wrathofirln)
 	{
-		float randomhp1 = GetRandomInt(-60000, 60000);
+		CPrintToChatAll("{yellow}-----EFFECTS END HERE-----");
+		int randomhp1 = GetRandomInt(-60000, 60000);
 		HealthBonus += randomhp1;
-		if(randomhp1 > 1.0)
+		if(randomhp1 > 0)
 		{
-			CPrintToChatAll("{red}+%d enemy health!", randomhp1);
+			CPrintToChatAll("{red}Enemies now have %d more health!", randomhp1);
 		}
 		else
 		{
-			CPrintToChatAll("{green}-%d enemy health!", randomhp1);
+			CPrintToChatAll("{green}Enemies now have %d less health.", randomhp1);
 		}
 
 		float randomhp2 = GetRandomFloat(0.8, 1.2);
 		HealthMulti *= randomhp2;
 		if(randomhp2 > 1.0)
 		{
-			CPrintToChatAll("{red}+%.1fx enemy health!", randomhp2);
+			CPrintToChatAll("{red}Enemy health is multiplied by %.1fx!", randomhp2);
 		}
 		else
 		{
-			CPrintToChatAll("{green}-%.1fx enemy health!", randomhp2);
+			CPrintToChatAll("{green}Enemy health is multiplied by %.1fx.", randomhp2);
 		}
 
 		if(EscapeModeForNpc)
@@ -723,15 +725,23 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			CPrintToChatAll("{red}15% more enemies will spawn in each enemy group!");
 			CountMulti *= 1.15;
+		}
 		else
 		{	
 			CPrintToChatAll("{green}10% less enemies will spawn in each enemy group.");
 			CountMulti /= 1.1;
 		}
-				
-		CPrintToChatAll("{green}You will gain 15 random friendly units.");
-		FriendlyDay = true;
 
+		if(GetRandomInt(1, 2) > 1)
+		{
+			CPrintToChatAll("{green}You will gain 15 random friendly units.");
+			FriendlyDay = true;
+		}
+		else
+		{	
+			CPrintToChatAll("{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
+			SuperMiniBoss = true;
+		}
 
 		float randommini = GetRandomFloat(0.75, 1.5);
 		MiniBossChance *= randommini;
@@ -741,18 +751,272 @@ void Freeplay_SetupStart(bool extra = false)
 		else
 		{	
 			CPrintToChatAll("{green}Mini-boss spawn rate has been multiplied by %.1fx.", randommini);
-		}	
+		}
+
+		float randomspeed = GetRandomFloat(0.75, 1.25);
+		SpeedMult *= randomspeed;
+		if(randomspeed > 1.0)
+		{
+			CPrintToChatAll("{red}Enemy speed has been multiplied by %.1fx!", randomspeed);
+		}
+		else
+		{
+			CPrintToChatAll("{green}Enemy speed has been multiplied by %.1fx.", randomspeed);
+		}
+
+		float randommelee = GetRandomFloat(0.75, 1.25);
+		MeleeMult *= randommelee;
+		if(randommelee < 1.0)
+		{
+			CPrintToChatAll("{red}Enemy melee vulnerability has been multiplied by %.1fx!", randommelee);
+		}
+		else
+		{
+			CPrintToChatAll("{green}Enemy melee vulnerability has been multiplied by %.1fx.", randommelee);
+		}
+
+		float randomranged = GetRandomFloat(0.75, 1.25);
+		RangedMult *= randomranged;
+		if(randomranged < 1.0)
+		{
+			CPrintToChatAll("{red}Enemy ranged vulnerability has been multiplied by %.1fx!", randomranged);
+		}
+		else
+		{
+			CPrintToChatAll("{green}Enemy ranged vulnerability has been multiplied by %.1fx.", randomranged);
+		}
+
+		int randomshield = GetRandomInt(-4, 4);
+		EnemyShields += randomshield;
+		if(EnemyShields > 15)
+			EnemyShields = 15;
+
+		if(randomshield > 0)
+		{
+			CPrintToChatAll("{red}All enemies receieve %d expidonsan shields!", randomshield);
+		}
+		else
+		{
+			CPrintToChatAll("{green}All enemies lose %d expidonsan shields.", randomshield);
+		}
+
+		if(VoidBuff > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Void buff.");
+			VoidBuff = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Void buff!");
+			VoidBuff++;
+		}
+
+		if(VoidBuff > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Void buff.");
+			VoidBuff = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Void buff!");
+			VoidBuff++;
+		}
+
+		if(VictoriaBuff)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Call to Victoria buff.");
+			VictoriaBuff = false;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain the Call to Victoria buff for 10 seconds!");
+			VictoriaBuff = true;
+		}
+
+		if(SquadBuff)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Squad Leader buff.");
+			SquadBuff = false;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff!");
+			SquadBuff = true;
+		}
+
+		if(Coffee)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Caffinated buff.");
+			Coffee = false;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain the Caffinated buff for 15 seconds! {yellow}(Includes Caffinated Drain)");
+			Coffee = true;
+		}
+
+		if(StrangleDebuff > 3)
+		{
+			CPrintToChatAll("{red}All enemies have lost the Stranglation debuff!");
+			StrangleDebuff = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{green}All enemies now gain a layer of the Stranglation debuff.");
+			StrangleDebuff++;
+		}
+
+		if(ProsperityDebuff > 3)
+		{
+			CPrintToChatAll("{red}All enemies have lost the Prosperity debuff!");
+			ProsperityDebuff = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{green}All enemies now gain a layer of the Prosperity debuff.");
+			ProsperityDebuff++;
+		}
+
+		if(SilenceDebuff)
+		{
+			CPrintToChatAll("{red}All enemies have been Unsilenced!");
+			SilenceDebuff = false;
+		}
+		else
+		{
+			CPrintToChatAll("{green}All enemies are now silenced for 10 seconds after spawning.");
+			SilenceDebuff = true;
+		}
+
+		float randomsize = GetRandomFloat(0.75, 1.25);
+		ExtraEnemySize *= randomsize;
+		CPrintToChatAll("{yellow}Enemy size has been multiplied by %.1fx!", randomsize);
+
+		switch(GetRandomInt(1, 22))
+		{
+			case 1:
+			{
+				CPrintToChatAll("{yellow}The True Fusion Warrior will appear in the next wave!");
+				RaidFight = 1;
+			}
+			case 2:
+			{
+				CPrintToChatAll("{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
+				RaidFight = 2;
+			}
+			case 3:
+			{
+				CPrintToChatAll("{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
+				RaidFight = 3;
+			}
+			case 4:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
+				RaidFight = 4;
+			}
+			case 5:
+			{
+				CPrintToChatAll("{blue}Sensal is on his way to arrest you and your team in the next wave!");
+				RaidFight = 5;
+			}
+			case 6:
+			{
+				CPrintToChatAll("{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
+				RaidFight = 6;
+			}
+			case 7:
+			{
+				CPrintToChatAll("{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
+				RaidFight = 7;
+			}
+			case 8:
+			{
+				CPrintToChatAll("{lightblue}The Messenger will deliver you a deadly message next wave.");
+				RaidFight = 8;
+			}
+			case 9:
+			{
+				CPrintToChatAll("{white}????????????? is coming...");
+				RaidFight = 9;
+			}
+			case 10:
+			{
+				CPrintToChatAll("{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
+				RaidFight = 10;
+			}
+			case 11:
+			{
+				CPrintToChatAll("{green}Nemesis has come to spread the xeno infection on the next wave...");
+				RaidFight = 11;
+			}
+			case 12:
+			{
+				CPrintToChatAll("{green}Mr.X has come to spread the xeno infection on the next wave...");
+				RaidFight = 12;
+			}
+			case 13:
+			{
+				CPrintToChatAll("{midnightblue}Corrupted Barney is coming...");
+				RaidFight = 13;
+			}
+			case 14:
+			{
+				CPrintToChatAll("{crimson}Whiteflower, the Traitor, will appear in the next wave.");
+				RaidFight = 14;
+			}
+			case 15:
+			{
+				CPrintToChatAll("{purple}An Unspeakable entity is approaching...");
+				RaidFight = 15;
+			}
+			case 16:
+			{
+				CPrintToChatAll("{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
+				RaidFight = 16;
+			}
+			case 17:
+			{
+				CPrintToChatAll("{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
+				RaidFight = 17;
+			}
+			case 18:
+			{
+				CPrintToChatAll("{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
+				RaidFight = 18;
+			}
+			case 19:
+			{
+				CPrintToChatAll("{community}Agent Thompson will appear in the next wave.");
+				RaidFight = 19;
+			}
+			case 20:
+			{
+				CPrintToChatAll("{forestgreen}The Twins will appear in the next wave.");
+				RaidFight = 20;
+			}
+			case 21:
+			{
+				CPrintToChatAll("{community}Agent Jackson will appear in the next wave.");
+				RaidFight = 21;
+			}
+			case 22:
+			{
+				CPrintToChatAll("{darkgreen}Agent Smith will appear in the next wave.");
+				RaidFight = 22;
+			}
+		}
 
 		// if this works i WILL kill arvin
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2)
+			if(IsClientInGame(client) && !b_IsPlayerABot[client])
 			{
-				SetDefaultHudPosition(client, 255, 135, 0, 6.0);
-				ShowSyncHudText(client, SyncHud_Notifaction, "Suffer the Wrath of Irln.");
+				SetHudTextParams(-1.0, -1.0, 5.0, 255, 135, 0, 255);
+				ShowHudText(client, -1, "Suffer the Wrath of Irln.");
 			}
 		}
 
+		EmitSoundToAll("ambient/halloween/thunder_01.wav");
 		CPrintToChatAll("{orange}Wrath of Irln: {yellow}(almost) {crimson}ALL SKULLS HAVE BEEN ACTIVATED. The effects are described above.");
 	}
 	else
@@ -1462,11 +1726,23 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 73:
 			{
+				if(EnemyShields >= 15)
+				{
+					EnemyShields = 15;
+					Freeplay_SetupStart();
+					return;
+				}
 				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
 				EnemyShields += 3;
 			}
 			case 74:
 			{
+				if(EnemyShields >= 15)
+				{
+					EnemyShields = 15;
+					Freeplay_SetupStart();
+					return;
+				}
 				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
 				EnemyShields += 6;
 			}
@@ -1611,7 +1887,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 10%");
-				ExtraEnemySize -= 0.10;
+				ExtraEnemySize += 0.10;
 			}
 			case 87:
 			{
@@ -1620,8 +1896,8 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 10%");
-				ExtraEnemySize -= 0.10;
+				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 15%");
+				ExtraEnemySize += 0.15;
 			}
 			case 88:
 			{
