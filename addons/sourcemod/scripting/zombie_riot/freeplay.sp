@@ -545,7 +545,7 @@ void Freeplay_SetupStart(bool extra = false)
 			EmitSoundToAll("ui/vote_success.wav");
 			int exskull = GetRandomInt(0, 100);
 
-			if(exskull < 15) // EXACTLY 15% chance
+			if(exskull < 20) // 20% chance
 			{
 				ExtraSkulls++;
 				CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
