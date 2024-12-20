@@ -1445,6 +1445,7 @@ void StatusEffects_Freeplay1()
 
 void StatusEffects_Freeplay2()
 {
+	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Rampart I");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FR1");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
