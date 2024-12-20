@@ -748,7 +748,7 @@ void Freeplay_SetupStart(bool extra = false)
 		// if this works i WILL kill arvin
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2)
+			if(IsValidClient(client) && GetTeam(client) == 2)
 			{
 				SetDefaultHudPosition(client, 255, 135, 0, 6.0);
 				ShowSyncHudText(client, SyncHud_Notifaction, "Suffer the Wrath of Irln.");
