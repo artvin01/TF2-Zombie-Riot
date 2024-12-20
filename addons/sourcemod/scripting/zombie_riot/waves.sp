@@ -2033,7 +2033,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else
 			PrintToChatAll("epic fail");
 
-		Freeplay_OnWaveStart();
 		if(EarlyReturn)
 		{
 			return;
