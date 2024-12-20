@@ -546,16 +546,12 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 	if(FreeplayBuffTimer <= 0)
 	{
 		return Plugin_Stop;
-
 	}
 
 	for (int client = 0; client < MaxClients; client++)
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
-			if(CheesyPresence)
-				ApplyStatusEffect(client, client, "Cheesy Presence", 10.0);
-
 			switch(EloquenceBuff)
 			{
 				case 1:
@@ -616,9 +612,6 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
-			if(CheesyPresence)
-				ApplyStatusEffect(ally, ally, "Cheesy Presence", 10.0);
-
 			switch(EloquenceBuff)
 			{
 				case 1:
@@ -681,6 +674,23 @@ void Freeplay_OnEndWave(int &cash)
 	if(ExplodingNPC)
 		ExplodingNPC = false;
 
+	for (int client = 0; client < MaxClients; client++)
+	{
+		if(IsValidClient(client) && IsPlayerAlive(client))
+		{
+			if(CheesyPresence)
+				ApplyStatusEffect(client, client, "Cheesy Presence", 10.0);
+		}
+	}
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+	{
+		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
+		{
+			if(CheesyPresence)
+				ApplyStatusEffect(ally, ally, "Cheesy Presence", 10.0);
+		}
+	}
 	cash += CashBonus;
 }
 
