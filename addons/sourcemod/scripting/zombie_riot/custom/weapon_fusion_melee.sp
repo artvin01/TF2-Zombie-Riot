@@ -1228,8 +1228,11 @@ float Siccerino_Melee_DmgBonus(int victim, int attacker, int weapon)
 	return 1.0;
 }
 
-public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, int weapon)
+public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, int weapon, int damagetype)
 {
+	if(!(damagetype & DMG_CLUB))
+		return damage;
+		
 	float ExtraDamageDo;
 	damage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 

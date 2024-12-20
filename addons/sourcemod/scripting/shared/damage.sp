@@ -994,7 +994,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL, WEAPON_WALDCH_SWORD_REAL:
 		{
-			return Npc_OnTakeDamage_Siccerino(attacker, victim, damage, weapon);
+			return Npc_OnTakeDamage_Siccerino(attacker, victim, damage, weapon, damagetype);
 		}
 		case WEAPON_DIMENSION_RIPPER:
 		{
