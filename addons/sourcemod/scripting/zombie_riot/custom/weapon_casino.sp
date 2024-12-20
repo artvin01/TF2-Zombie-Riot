@@ -326,12 +326,12 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 	}
 	if(i_CryoShot[attacker] >= 1 && i_MegaShot[attacker] == 0)
 	{
-		NpcStats_CasinoDebuffStengthen(victim, CasinoDebuffDamage[attacker]);
 		if(CryoEasy)
 		{
 			ApplyStatusEffect(attacker, victim, "Gambler's Ruin Total", 1.5);
 			i_CryoShot[attacker] -= 1;
 		}
+		NpcStats_CasinoDebuffStengthen(victim, CasinoDebuffDamage[attacker]);
 	}
 	if(i_HasBeenHeadShotted[victim])
 	{
