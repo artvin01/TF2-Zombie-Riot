@@ -102,7 +102,7 @@ void Freeplay_ResetAll()
 	SilenceDebuff = false;
 	ExtraEnemySize = 1.0;
 	UnlockedSpeed = false;
-	CheesyPresence = true;
+	CheesyPresence = false;
 	EloquenceBuff = 0;
 	RampartBuff = 0;
 	FreeplayBuffTimer = 0;
@@ -546,7 +546,7 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 	if(FreeplayBuffTimer <= 0)
 	{
 		return Plugin_Stop;
-		PrintToChatAll("buff stopped");
+
 	}
 
 	for (int client = 0; client < MaxClients; client++)
