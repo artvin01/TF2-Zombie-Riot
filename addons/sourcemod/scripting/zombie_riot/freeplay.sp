@@ -47,6 +47,7 @@ static bool UnlockedSpeed;
 static bool CheesyPresence;
 static int EloquenceBuff;
 static int RampartBuff;
+static int FreeplayBuffTimer;
 
 void Freeplay_OnMapStart()
 {
@@ -104,6 +105,7 @@ void Freeplay_ResetAll()
 	CheesyPresence = true;
 	EloquenceBuff = 0;
 	RampartBuff = 0;
+	FreeplayBuffTimer = 0;
 }
 
 int Freeplay_EnemyCount()
@@ -530,16 +532,27 @@ void Freeplay_SpawnEnemy(int entity)
 		VausMagicaGiveShield(entity, EnemyShields);
 }
 
-void Freeplay_OnEndWave(int &cash)
+static Action activatebuffs(Handle timer)
 {
-	if(ExplodingNPC)
-		ExplodingNPC = false;
+	if(FreeplayBuffTimer <= 0)
+	{
+		FreeplayBuffTimer = 1;
+		CreateTimer(1.0, Freeplay_BuffTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
 
-	cash += CashBonus;
+static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
+{
+	if(FreeplayBuffTimer <= 0)
+	{
+		KillTimer(Freeplay_BuffTimer);
+		return Plugin_Stop;
+		PrintToChatAll("buff stopped");
+	}
 
 	for (int client = 0; client < MaxClients; client++)
 	{
-		if(IsValidClient(client) && IsPlayerAlive(client))
+		if(IsClientInGame(client) && IsPlayerAlive(client))
 		{
 			if(CheesyPresence)
 				ApplyStatusEffect(client, client, "Cheesy Presence", 10.0);
@@ -599,6 +612,77 @@ void Freeplay_OnEndWave(int &cash)
 			}
 		}
 	}
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+	{
+		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
+		{
+			if(CheesyPresence)
+				ApplyStatusEffect(ally, ally, "Cheesy Presence", 10.0);
+
+			switch(EloquenceBuff)
+			{
+				case 1:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence I", FAR_FUTURE);
+				}
+				case 2:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence II", FAR_FUTURE);
+				}
+				case 3:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence III", FAR_FUTURE);
+				}
+				default:
+				{
+					if(HasSpecificBuff(ally, "Freeplay Eloquence I"))
+						RemoveSpecificBuff(ally, "Freeplay Eloquence I");
+
+					if(HasSpecificBuff(ally, "Freeplay Eloquence II"))
+						RemoveSpecificBuff(ally, "Freeplay Eloquence II");
+
+					if(HasSpecificBuff(ally, "Freeplay Eloquence III"))
+						RemoveSpecificBuff(ally, "Freeplay Eloquence III");
+				}
+			}
+
+			switch(RampartBuff)
+			{
+				case 1:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart I", FAR_FUTURE);
+				}
+				case 2:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart II", FAR_FUTURE);
+				}
+				case 3:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart III", FAR_FUTURE);
+				}
+				default:
+				{
+					if(HasSpecificBuff(ally, "Freeplay Rampart I"))
+						RemoveSpecificBuff(ally, "Freeplay Rampart I");
+
+					if(HasSpecificBuff(ally, "Freeplay Rampart II"))
+						RemoveSpecificBuff(ally, "Freeplay Rampart II");
+
+					if(HasSpecificBuff(ally, "Freeplay Rampart III"))
+						RemoveSpecificBuff(ally, "Freeplay Rampart III");
+				}
+			}
+		}
+	}
+}
+
+void Freeplay_OnEndWave(int &cash)
+{
+	if(ExplodingNPC)
+		ExplodingNPC = false;
+
+	cash += CashBonus;
 }
 
 void Freeplay_SetupStart(bool extra = false)
@@ -606,6 +690,8 @@ void Freeplay_SetupStart(bool extra = false)
 	bool wrathofirln = false;
 	if(extra)
 	{
+		FreeplayBuffTimer = 0;
+		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 		int wrathchance = GetRandomInt(0, 100);
 		if(wrathchance < 2) // 2% chance
 		{
