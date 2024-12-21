@@ -3519,7 +3519,11 @@ void Twirl_OnStellaKarlasDeath(int karlas)
 
 	Twirl npc = view_as<Twirl>(Twirl_Index);
 	//karlas is dead.
-	if(karlas == -2)
+	//-2 == karlas is dead 100%
+	//is valid ent is for when stella dies, we need to check if karlas is still valid or not.
+	//TECHNICALLY, its possible for karlas to die first, meaning stella is still alive when twirl unlocks herself.
+	//but like, when the fuck is karlas ever killed first????
+	if(karlas == -2 || !IsValidEntity(karlas))
 	{
 		switch(GetRandomInt(0, 2))
 		{
