@@ -1082,6 +1082,11 @@ static void ClotThink(int iNPC)
 		}
 		fl_magia_overflow_recharge[npc.index] -= 15.0;
 		npc.m_flNextTeleport -= 10.0;
+
+		b_NoKnockbackFromSources[npc.index] = false;
+		b_CannotBeStunned[npc.index] = false;
+		b_CannotBeKnockedUp[npc.index] = false;
+		b_CannotBeSlowed[npc.index] = false;
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
@@ -1456,6 +1461,10 @@ static void lunar_Radiance(Twirl npc)
 
 		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
+	b_NoKnockbackFromSources[npc.index] = true;
+	b_CannotBeStunned[npc.index] = true;
+	b_CannotBeKnockedUp[npc.index] = true;
+	b_CannotBeSlowed[npc.index] = true;
 
 	switch(GetRandomInt(0, 17))
 	{
@@ -1540,6 +1549,11 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 
 	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+
+	b_NoKnockbackFromSources[npc.index] = false;
+	b_CannotBeStunned[npc.index] = false;
+	b_CannotBeKnockedUp[npc.index] = false;
+	b_CannotBeSlowed[npc.index] = false;
 
 	npc.m_flSpeed = fl_npc_basespeed;
 	npc.StartPathing();
@@ -2663,6 +2677,11 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 
 	npc.FaceTowards(Last_Pos, 10000.0);
 
+	b_NoKnockbackFromSources[npc.index] = true;
+	b_CannotBeStunned[npc.index] = true;
+	b_CannotBeKnockedUp[npc.index] = true;
+	b_CannotBeSlowed[npc.index] = true;
+
 	if(!npc.Anger)
 	{
 		NPC_StopPathing(npc.index);
@@ -2693,6 +2712,11 @@ static Action Retreat_Laser_Tick(int iNPC)
 		npc.StartPathing();
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+
+		b_NoKnockbackFromSources[npc.index] = false;
+		b_CannotBeStunned[npc.index] = false;
+		b_CannotBeKnockedUp[npc.index] = false;
+		b_CannotBeSlowed[npc.index] = false;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_iChanged_WalkCycle = 1;
@@ -2744,9 +2768,9 @@ static Action Retreat_Laser_Tick(int iNPC)
 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
-	Laser.Damage = Modify_Damage(-1, 15.0);
+	Laser.Damage = Modify_Damage(-1, 10.0);
 	Laser.Radius = Radius;
-	Laser.Bonus_Damage = Modify_Damage(-1, 15.0)*6.0;
+	Laser.Bonus_Damage = Modify_Damage(-1, 10.0)*6.0;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage();
 
@@ -2911,6 +2935,11 @@ static bool Magia_Overflow(Twirl npc)
 	npc.m_bInKame = true;
 	NPCStats_RemoveAllDebuffs(npc.index);
 
+	b_NoKnockbackFromSources[npc.index] = true;
+	b_CannotBeStunned[npc.index] = true;
+	b_CannotBeKnockedUp[npc.index] = true;
+	b_CannotBeSlowed[npc.index] = true;
+
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 
@@ -2927,6 +2956,11 @@ static Action Magia_Overflow_Tick(int iNPC)
 
 		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
 		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
+
+		b_NoKnockbackFromSources[npc.index] = false;
+		b_CannotBeStunned[npc.index] = false;
+		b_CannotBeKnockedUp[npc.index] = false;
+		b_CannotBeSlowed[npc.index] = false;
 
 		npc.m_bisWalking = true;
 		f_NpcTurnPenalty[npc.index] = 1.0;
@@ -3157,6 +3191,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			b_NpcIsInvulnerable[npc.index] = true;
 			damage = 0.0;
 
+			b_NoKnockbackFromSources[npc.index] = true;
+			b_CannotBeStunned[npc.index] = true;
+			b_CannotBeKnockedUp[npc.index] = true;
+			b_CannotBeSlowed[npc.index] = true;
+
 			ReviveAll(true);
 
 			npc.m_flSpeed = 0.0;
@@ -3208,6 +3247,10 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		RaidModeScaling *= 1.35;
 
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+		b_NoKnockbackFromSources[npc.index] = true;
+		b_CannotBeStunned[npc.index] = true;
+		b_CannotBeKnockedUp[npc.index] = true;
+		b_CannotBeSlowed[npc.index] = true;
 
 		int color[4]; 
 		Ruina_Color(color);
@@ -3267,13 +3310,14 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
+		case WEAPON_MAGNESIS: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "I've had it up to here MISTER {gold}%N{snow}.", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "How would you feel {gold}%N{snow} if I grabbed YOU?", client);}
 		
 		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, {gold}%N{snow}, you're trying to copy the Machine?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, how foolish {gold}%N{snow} Blitzkrieg was a poor mistake to copy...", client);}	//IT ACTUALLY WORKS, LMFAO
 		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, the Cosmic Terror, haven't seen that relic in a long while"); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "The moon is a deadly laser, am I right {gold}%N{snow}?",client);}
 		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, {gold}%N{snow}, Those drones, {crimson}how cute...", client); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "I applaud your efforts {gold}%N{snow} for trying to use the Lantean staff here...", client);}
 		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s a little {aqua}Motivated", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "Go fourth {gold}%N{snow}, AND BECOME {aqua}THE STORM THAT IS APROACHING{crimson}!", client);}
 		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, dual energy Pylons, nice choice {gold}%N", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "So, are you Team {aqua}Particle Cannon{snow} or Team{orange} Particle Beam{gold} %N{snow}?", client);}	
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh how {crimson}cute{gold} %N{snow}, you're using {crimson}Karlas's{snow} Old blade", client); 			case 1: Format(Text_Lines, sizeof(Text_Lines), "The Fantasy blade is quite the weapon, {gold}%N{snow} but you're not using it correctly.", client);}	
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh how {crimson}cute{gold} %N{snow}, you're using {crimson}Karlas's{snow} Old blade", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "The Fantasy blade is quite the weapon, {gold}%N{snow} but you're not using it correctly.", client);}	
 		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s being a {aqua}Quincy{snow}, quick call the {crimson}Shinigami{snow}!", client);	case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, what a shame {gold}%N{snow} Here I thought you were a true {aqua}Quincy", client);}	
 		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "That laser is still quite young {gold}%N{snow} It needs more upgrades",client); 						case 1: Format(Text_Lines, sizeof(Text_Lines), "Your Prismatic Laser has potential {gold}%N{snow}!", client);}	
 		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "I see, {gold}%N{snow}, You decided to go down the pulse path!", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I do quite enjoy a faster pulsating laser, just like you {gold}%N{snow} by the looks of it", client);}	
@@ -3346,6 +3390,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(ent);
 	}
 	i_hand_particles[npc.index] = INVALID_ENT_REFERENCE;
+
+	b_tripple_raid[npc.index] = false;
 
 
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
@@ -3447,4 +3493,50 @@ static void Twirl_Lines(Twirl npc, const char[] text)
 		return;
 
 	CPrintToChatAll("%s %s", npc.GetName(), text);
+}
+void Twirl_OnStellaKarlasDeath(int karlas)
+{
+	int Twirl_Index = -1;
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(IsValidEntity(entity))
+		{
+			char npc_classname[60];
+			NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+
+			if(entity != INVALID_ENT_REFERENCE && (StrEqual(npc_classname, "npc_ruina_twirl") && IsEntityAlive(entity)))
+			{
+				Twirl_Index = entity;
+				break;
+			}
+		}
+	}
+	
+	//twirl is dead, simple.
+	if(!IsValidEntity(Twirl_Index))
+		return;
+
+	Twirl npc = view_as<Twirl>(Twirl_Index);
+	//karlas is dead.
+	if(karlas == -2)
+	{
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:Twirl_Lines(npc, "Ohoh, You think this is gonna end easily, you are {crimson}SORELY MISTAKEN");
+			case 1:Twirl_Lines(npc, "{crimson}I won't let you win");
+			case 2:Twirl_Lines(npc, "{crimson}This is where your story ends");
+		}
+		b_tripple_raid[Twirl_Index] = false;
+		return;
+	}
+	else
+	{
+		Twirl_Lines(npc, "{crimson}Karlas{snow}! Switch to me, I'm now your priority");
+	}
+	Set_Karlas_Ally(Twirl_Index, karlas, i_current_wave[Twirl_Index], false, true);
+	Stella stella = view_as<Stella>(Twirl_Index);
+	Karlas karl = view_as<Karlas>(karlas);
+	karl.m_flNextRangedBarrage_Singular -= 15.0;
+	stella.m_bKarlasRetreat = false;
 }

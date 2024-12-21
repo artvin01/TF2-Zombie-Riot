@@ -511,7 +511,7 @@ methodmap Stella < CClotBody
 		if(spawn_index > MaxClients)
 		{
 			this.Ally = spawn_index;
-			Set_Karlas_Ally(spawn_index, this.index, i_current_wave[this.index], b_bobwave[this.index]);
+			Set_Karlas_Ally(spawn_index, this.index, i_current_wave[this.index], b_bobwave[this.index], b_tripple_raid[this.index]);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -894,7 +894,7 @@ methodmap Stella < CClotBody
 		if(b_test_mode[npc.index])
 			RaidModeTime = FAR_FUTURE;
 		
-		if(!b_bobwave[npc.index])
+		if(!b_bobwave[npc.index] && !b_tripple_raid[npc.index])
 		{
 			switch(GetRandomInt(0, 6))
 			{
@@ -1265,6 +1265,10 @@ static bool Lunar_Grace(Stella npc)
 	SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
 	SDKHook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
 
+	b_CannotBeStunned[npc.index] = true;
+	b_CannotBeKnockedUp[npc.index] = true;
+	b_CannotBeSlowed[npc.index] = true;
+
 	npc.AddActivityViaSequence("secondrate_sorcery_medic");
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.0);
@@ -1313,6 +1317,9 @@ static Action Lunar_Grace_Tick(int iNPC)
 		npc.m_bAllowBackWalking = false;
 		npc.m_bKarlasRetreat = false;
 
+		b_CannotBeStunned[npc.index] = false;
+		b_CannotBeKnockedUp[npc.index] = false;
+		b_CannotBeSlowed[npc.index] = false;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -1732,7 +1739,10 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 
 			default: CPrintToChatAll("%s It seems my master forgot to set a proper dialogue line for this specific number, how peculiar. Anyway, here's the ID: [%i]", npc.GetName(), npc.m_iNC_Dialogue);
 		}
-
+		b_NoKnockbackFromSources[npc.index] = true;
+		b_CannotBeStunned[npc.index] = true;
+		b_CannotBeKnockedUp[npc.index] = true;
+		b_CannotBeSlowed[npc.index] = true;
 		npc.AddActivityViaSequence("taunt_mourning_mercs_medic");
 		npc.SetPlaybackRate(2.0);	
 		npc.SetCycle(0.0);
@@ -1797,6 +1807,10 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		npc.m_bKarlasRetreat = false;
 		npc.m_iKarlasNCState = 0;
 		npc.SetCrestState(true);
+		b_NoKnockbackFromSources[npc.index] = false;
+		b_CannotBeStunned[npc.index] = false;
+		b_CannotBeKnockedUp[npc.index] = false;
+		b_CannotBeSlowed[npc.index] = false;
 
 		if(IsValidEntity(npc.m_iParticles2))	
 			RemoveEntity(npc.m_iParticles2);
@@ -2112,6 +2126,11 @@ static void Internal_NPCDeath(int entity)
 	npc.m_bKarlasRetreat = false;
 
 	RaidModeScaling *= 1.2;
+
+	if(b_tripple_raid[npc.index])
+	{
+		Twirl_OnStellaKarlasDeath(npc.Ally);
+	}
 
 	if(!npc.m_bSaidWinLine)
 	{

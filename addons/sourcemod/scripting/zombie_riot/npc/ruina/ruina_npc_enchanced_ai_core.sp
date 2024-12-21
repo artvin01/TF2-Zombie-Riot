@@ -1401,7 +1401,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	if(wave<=15)
 	{
 		Radius		= 100.0;
-		dmg 		= mana;	//evil.
+		dmg 		= mana+200.0;	//evil.
 		time 		= 5.0;
 		Timeout 	= 6.0;
 		Slow_Time 	= 5.0;
@@ -1409,7 +1409,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	else if(wave<=30)
 	{
 		Radius		= 125.0;
-		dmg 		= mana*1.25;
+		dmg 		= mana*1.25+400.0;
 		time 		= 4.5;
 		Timeout 	= 5.5;
 		Slow_Time 	= 5.0;
@@ -1417,7 +1417,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	else if(wave<=45)
 	{
 		Radius		= 175.0;
-		dmg 		= mana*1.5;
+		dmg 		= mana*1.5+600.0;
 		time 		= 4.0;
 		Timeout 	= 5.0;
 		Slow_Time 	= 5.5;
@@ -1425,7 +1425,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	else
 	{
 		Radius		= 200.0;
-		dmg 		= mana*2.0;
+		dmg 		= mana*2.0+800.0;
 		time 		= 3.0;
 		Timeout 	= 4.5;
 		Slow_Time 	= 6.0;
