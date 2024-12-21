@@ -554,30 +554,22 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
+			if(CheesyPresence)
+				ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+
 			switch(EloquenceBuff)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Eloquence I", FAR_FUTURE);
+					ApplyStatusEffect(client, client, "Freeplay Eloquence I", 1.25);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Eloquence II", FAR_FUTURE);
+					ApplyStatusEffect(client, client, "Freeplay Eloquence II", 1.25);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Eloquence III", FAR_FUTURE);
-				}
-				default:
-				{
-					if(HasSpecificBuff(client, "Freeplay Eloquence I"))
-						RemoveSpecificBuff(client, "Freeplay Eloquence I");
-
-					if(HasSpecificBuff(client, "Freeplay Eloquence II"))
-						RemoveSpecificBuff(client, "Freeplay Eloquence II");
-
-					if(HasSpecificBuff(client, "Freeplay Eloquence III"))
-						RemoveSpecificBuff(client, "Freeplay Eloquence III");
+					ApplyStatusEffect(client, client, "Freeplay Eloquence III", 1.25);
 				}
 			}
 
@@ -585,26 +577,15 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Rampart I", FAR_FUTURE);
+					ApplyStatusEffect(client, client, "Freeplay Rampart I", 1.25);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Rampart II", FAR_FUTURE);
+					ApplyStatusEffect(client, client, "Freeplay Rampart II", 1.25);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Rampart III", FAR_FUTURE);
-				}
-				default:
-				{
-					if(HasSpecificBuff(client, "Freeplay Rampart I"))
-						RemoveSpecificBuff(client, "Freeplay Rampart I");
-
-					if(HasSpecificBuff(client, "Freeplay Rampart II"))
-						RemoveSpecificBuff(client, "Freeplay Rampart II");
-
-					if(HasSpecificBuff(client, "Freeplay Rampart III"))
-						RemoveSpecificBuff(client, "Freeplay Rampart III");
+					ApplyStatusEffect(client, client, "Freeplay Rampart III", 1.25);
 				}
 			}
 		}
@@ -614,30 +595,22 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
+			if(CheesyPresence)
+				ApplyStatusEffect(ally, ally, "Cheesy Presence", 1.25);
+
 			switch(EloquenceBuff)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Eloquence I", FAR_FUTURE);
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence I", 1.25);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Eloquence II", FAR_FUTURE);
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence II", 1.25);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Eloquence III", FAR_FUTURE);
-				}
-				default:
-				{
-					if(HasSpecificBuff(ally, "Freeplay Eloquence I"))
-						RemoveSpecificBuff(ally, "Freeplay Eloquence I");
-
-					if(HasSpecificBuff(ally, "Freeplay Eloquence II"))
-						RemoveSpecificBuff(ally, "Freeplay Eloquence II");
-
-					if(HasSpecificBuff(ally, "Freeplay Eloquence III"))
-						RemoveSpecificBuff(ally, "Freeplay Eloquence III");
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence III", 1.25);
 				}
 			}
 
@@ -645,26 +618,15 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Rampart I", FAR_FUTURE);
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart I", 1.25);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Rampart II", FAR_FUTURE);
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart II", 1.25);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Rampart III", FAR_FUTURE);
-				}
-				default:
-				{
-					if(HasSpecificBuff(ally, "Freeplay Rampart I"))
-						RemoveSpecificBuff(ally, "Freeplay Rampart I");
-
-					if(HasSpecificBuff(ally, "Freeplay Rampart II"))
-						RemoveSpecificBuff(ally, "Freeplay Rampart II");
-
-					if(HasSpecificBuff(ally, "Freeplay Rampart III"))
-						RemoveSpecificBuff(ally, "Freeplay Rampart III");
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart III", 1.25);
 				}
 			}
 		}
@@ -678,23 +640,6 @@ void Freeplay_OnEndWave(int &cash)
 	if(ExplodingNPC)
 		ExplodingNPC = false;
 
-	for (int client = 0; client < MaxClients; client++)
-	{
-		if(IsValidClient(client) && IsPlayerAlive(client))
-		{
-			if(CheesyPresence)
-				ApplyStatusEffect(client, client, "Cheesy Presence", 10.0);
-		}
-	}
-	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
-		{
-			if(CheesyPresence)
-				ApplyStatusEffect(ally, ally, "Cheesy Presence", 10.0);
-		}
-	}
 	cash += CashBonus;
 }
 
@@ -703,23 +648,6 @@ void Freeplay_SetupStart(bool extra = false)
 	bool wrathofirln = false;
 	if(extra)
 	{
-		for (int client = 0; client < MaxClients; client++)
-		{
-			if(IsValidClient(client) && IsPlayerAlive(client))
-			{
-				if(CheesyPresence)
-					ApplyStatusEffect(client, client, "Cheesy Presence", 25.0);
-			}
-		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
-			{
-				if(CheesyPresence)
-					ApplyStatusEffect(ally, ally, "Cheesy Presence", 25.0);
-			}
-		}
 		FreeplayBuffTimer = 0;
 		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 		int wrathchance = GetRandomInt(0, 100);
@@ -998,17 +926,6 @@ void Freeplay_SetupStart(bool extra = false)
 			VoidBuff++;
 		}
 
-		if(VoidBuff > 2)
-		{
-			CPrintToChatAll("{green}All enemies have lost the Void buff.");
-			VoidBuff = 0;
-		}
-		else
-		{
-			CPrintToChatAll("{red}All enemies now gain a layer of the Void buff!");
-			VoidBuff++;
-		}
-
 		if(VictoriaBuff)
 		{
 			CPrintToChatAll("{green}All enemies have lost the Call to Victoria buff.");
@@ -1086,29 +1003,29 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{green}You start to feel a {orange}Cheesy Presence {red}around you... {yellow}(Lasts 10 secs, applied every wave)");
+			CPrintToChatAll("{green}You start to feel a {orange}Cheesy Presence {green}around you...");
 			CheesyPresence = true;
 		}
 
-		if(EloquenceBuff > 3)
+		if(EloquenceBuff > 2)
 		{
 			CPrintToChatAll("{red}Removed the Eloquence buff from everyone!");
 			EloquenceBuff = 0;
 		}
 		else
 		{
-			CPrintToChatAll("{green}All players now gain a layer of the Eloquence buff.");
+			CPrintToChatAll("{green}All players and allied npcs now gain a layer of the Eloquence buff.");
 			EloquenceBuff++;
 		}
 
-		if(RampartBuff > 3)
+		if(RampartBuff > 2)
 		{
 			CPrintToChatAll("{red}Removed the Rampart buff from everyone!");
 			RampartBuff = 0;
 		}
 		else
 		{
-			CPrintToChatAll("{green}All players now gain a layer of the Rampart buff.");
+			CPrintToChatAll("{green}All players and allied npcs now gain a layer of the Rampart buff.");
 			RampartBuff++;
 		}
 
@@ -2152,33 +2069,33 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{green}You start to feel a {orange}Cheesy Presence {red}around you... {yellow}(Lasts 10 secs, applied every wave)");
+					strcopy(message, sizeof(message), "{green}You start to feel a {orange}Cheesy Presence {green}around you...");
 					CheesyPresence = true;
 				}
 			}
 			case 91:
 			{
-				if(EloquenceBuff > 3)
+				if(EloquenceBuff > 2)
 				{
 					strcopy(message, sizeof(message), "{red}Removed the Eloquence buff from everyone!");
 					EloquenceBuff = 0;
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{green}All players now gain a layer of the Eloquence buff.");
+					strcopy(message, sizeof(message), "{green}All players and allied npcs now gain a layer of the Eloquence buff.");
 					EloquenceBuff++;
 				}
 			}
 			case 92:
 			{
-				if(RampartBuff > 3)
+				if(RampartBuff > 2)
 				{
 					strcopy(message, sizeof(message), "{red}Removed the Rampart buff from everyone!");
 					RampartBuff = 0;
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{green}All players now gain a layer of the Rampart buff.");
+					strcopy(message, sizeof(message), "{green}All players and allied npcs now gain a layer of the Rampart buff.");
 					RampartBuff++;
 				}
 			}
