@@ -708,7 +708,7 @@ void Freeplay_SetupStart(bool extra = false)
 			if(IsValidClient(client) && IsPlayerAlive(client))
 			{
 				if(CheesyPresence)
-					ApplyStatusEffect(client, client, "Cheesy Presence", 10.0);
+					ApplyStatusEffect(client, client, "Cheesy Presence", 25.0);
 			}
 		}
 		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
@@ -717,7 +717,7 @@ void Freeplay_SetupStart(bool extra = false)
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				if(CheesyPresence)
-					ApplyStatusEffect(ally, ally, "Cheesy Presence", 10.0);
+					ApplyStatusEffect(ally, ally, "Cheesy Presence", 25.0);
 			}
 		}
 		FreeplayBuffTimer = 0;
