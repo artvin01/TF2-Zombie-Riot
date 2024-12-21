@@ -666,7 +666,7 @@ void Freeplay_SetupStart(bool extra = false)
 		FreeplayBuffTimer = 0;
 		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 		int wrathchance = GetRandomInt(0, 100);
-		if(wrathchance < 60) // 2% chance
+		if(wrathchance < 2) // 2% chance
 		{
 			wrathofirln = true;
 		}
@@ -692,8 +692,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetRandomInt(59, 92);
-		//rand = GetURandomInt() % 93;
+		rand = GetURandomInt() % 93;
 
 	if(wrathofirln)
 	{
