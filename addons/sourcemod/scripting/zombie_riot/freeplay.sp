@@ -554,6 +554,11 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
+			if(CheesyPresence)
+				ApplyStatusEffect(client, client, "Cheesy Presence", 1.1);
+			else
+				RemoveSpecificBuff(client, "Cheesy Presence");
+			
 			switch(EloquenceBuff)
 			{
 				case 1:
@@ -592,6 +597,11 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
+			if(CheesyPresence)
+				ApplyStatusEffect(ally, ally, "Cheesy Presence", 1.1);
+			else
+				RemoveSpecificBuff(ally, "Cheesy Presence");
+			
 			switch(EloquenceBuff)
 			{
 				case 1:
@@ -634,27 +644,6 @@ void Freeplay_OnEndWave(int &cash)
 	if(ExplodingNPC)
 		ExplodingNPC = false;
 
-	for (int client = 0; client < MaxClients; client++)
-	{
-		if(IsValidClient(client) && IsPlayerAlive(client))
-		{
-			if(CheesyPresence)
-				ApplyStatusEffect(client, client, "Cheesy Presence", FAR_FUTURE);
-			else
-				RemoveSpecificBuff(client, "Cheesy Presence");
-		}
-	}
-	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
-		{
-			if(CheesyPresence)
-				ApplyStatusEffect(ally, ally, "Cheesy Presence", FAR_FUTURE);
-			else
-				RemoveSpecificBuff(ally, "Cheesy Presence");
-		}
-	}
 	cash += CashBonus;
 }
 
@@ -1166,30 +1155,6 @@ void Freeplay_SetupStart(bool extra = false)
 				ShowHudText(client, -1, "Suffer the Wrath of Irln.");
 			}
 		}
-		
-
-			for (int client = 0; client < MaxClients; client++)
-			{
-				if(IsValidClient(client) && IsPlayerAlive(client))
-				{
-					if(CheesyPresence)	
-						ApplyStatusEffect(client, client, "Cheesy Presence", FAR_FUTURE);
-					else
-						RemoveSpecificBuff(client, "Cheesy Presence");
-				}
-			}
-			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-			{
-				int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-				if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
-				{
-					if(CheesyPresence)	
-						ApplyStatusEffect(ally, ally, "Cheesy Presence", FAR_FUTURE);
-					else
-						RemoveSpecificBuff(ally, "Cheesy Presence");
-				}
-			}
-
 
 		EmitSoundToAll("ambient/halloween/thunder_01.wav");
 		CPrintToChatAll("{orange}Wrath of Irln: {yellow}(almost) {crimson}ALL SKULLS HAVE BEEN ACTIVATED. The effects are described above.");
@@ -2142,31 +2107,6 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				strcopy(message, sizeof(message), "{yellow}Nothing!");
 				// If this shows up, FIX YOUR CODE :)
-			}
-		}
-		
-		if(extra)
-		{
-			for (int client = 0; client < MaxClients; client++)
-			{
-				if(IsValidClient(client) && IsPlayerAlive(client))
-				{
-					if(CheesyPresence)
-						ApplyStatusEffect(client, client, "Cheesy Presence", FAR_FUTURE);
-					else
-						RemoveSpecificBuff(client, "Cheesy Presence");
-				}
-			}
-			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-			{
-				int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-				if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
-				{
-					if(CheesyPresence)
-						ApplyStatusEffect(ally, ally, "Cheesy Presence", FAR_FUTURE);
-					else
-						RemoveSpecificBuff(ally, "Cheesy Presence");
-				}
 			}
 		}
 
