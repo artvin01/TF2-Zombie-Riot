@@ -162,7 +162,7 @@
 	}
 	"Cheesy Presence Desc"
 	{
-		"en"	"May your Freeplay run be cheesy.\nIncreases damage and resistance by 15%%\nIncreases speed by 10%"
+		"en"	"May your Freeplay run be cheesy.\nIncreases damage and resistance by 15%%\nIncreases ALLY (not player) speed by 10%"
 	}
 	"Freeplay Eloquence I"
 	{
