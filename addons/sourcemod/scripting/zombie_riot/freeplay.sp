@@ -310,43 +310,45 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 1: // Rogue cta doctor
 			{
 				enemy.Index = NPC_GetByPlugin("npc_doctor");
-				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 2: // Guln
 			{
 				enemy.Index = NPC_GetByPlugin("npc_fallen_warrior");
-				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 3: // L4D2 Tank
 			{
 				enemy.Index = NPC_GetByPlugin("npc_l4d2_tank");
-				enemy.Health = RoundToFloor(3500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 4: // Amogus
 			{
 				enemy.Index = NPC_GetByPlugin("npc_omega");
-				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(1250000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage *= 0.75;
 			}
 			case 5: // Panzer
 			{
 				enemy.Index = NPC_GetByPlugin("npc_panzer");
-				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 6: // Lucius or lucian or luciaus or whatever the name is  i forgor
 			{
 				enemy.Index = NPC_GetByPlugin("npc_phantom_knight");
-				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 7: // Sawrunner
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
-				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 		}
 
 		// Leaving this in here in the case i have to nerf super miniboss health
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
+		// 22/12/2024 - lesson learned, i went way too overboard
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.3);
+		enemy.ExtraDamage *= 0.75;
 		enemy.Credits += 125.0;
 		enemy.ExtraSpeed = 1.3;
 		enemy.ExtraSize = 1.75; // big
