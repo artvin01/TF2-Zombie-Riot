@@ -377,8 +377,19 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	else
 	{
 		if(enemy.Health)
-			enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.7);
-		
+		{
+			// Nerfing bob the first's army health due to freeplay scaling
+			// Basically the same hp formula except HealthBonus is not there
+			if(StrContains(enemy.CustomName, "First ") != -1)
+			{
+				enemy.Health = RoundToCeil(((enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.7);
+			}
+			else
+			{
+				enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.7);
+			}
+		}
+
 		count = RoundToFloor((count * (((postWaves * 2) + 99) * 0.009)) * 0.5);
 
 		if(count > 45)
@@ -1386,7 +1397,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Widows Wine perk, And thus gain camo! {yellow}(Allies and Sentry-a-likes won't target enemies)");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Widows Wine perk, And thus gain camo! {yellow}(Allies/Sentry-a-likes won't target enemies)");
 				PerkMachine = 3;
 			}
 			case 24:
