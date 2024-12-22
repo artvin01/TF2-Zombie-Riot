@@ -127,6 +127,8 @@ static bool UpdateFramed;
 static int WaveGiftItem;
 static char LastWaveWas[64];
 
+static int Freeplay_Info;
+
 public Action Waves_ProgressTimer(Handle timer)
 {
 	if(Classic_Mode() && ProgressTimerType)
@@ -187,6 +189,7 @@ void Waves_MapStart()
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
+	Freeplay_Info = 0;
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -1934,12 +1937,17 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						}
 						else
 						{
-							CPrintToChatAll("{orange}You proved you're worthy...");
-							CPrintToChatAll("{orange}Worthy of taking on the journey... of {haunted}Freeplay.");
-							CPrintToChatAll("{orange}As you progress, every setup will add a {yellow}Skull.");
-							CPrintToChatAll("{yellow}Skulls {orange}are effects or events that can have positive/negative effects");
-							CPrintToChatAll("{orange}More and more enemies will approach as you progress.");
-							CPrintToChatAll("{crimson}Good luck.");
+							for (int client = 0; client < MaxClients; client++)
+							{
+								if(IsValidClient(client) && GetClientTeam(client) == 2)
+								{
+									SetHudTextParams(-1.0, -1.0, 7.5, 0, 255, 255, 255);
+									SetGlobalTransTarget(client);
+									ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_1");
+								}
+							}
+							Freeplay_Info = 1;
+							CreateTimer(7.5, Freeplay_HudInfoTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 					else
@@ -2091,6 +2099,62 @@ void Waves_Progress(bool donotAdvanceRound = false)
 //	PrintToChatAll("Wave: %d - %d", CurrentRound+1, CurrentWave+1);
 
 	Waves_UpdateMvMStats();
+}
+
+static Action Freeplay_HudInfoTimer(Handle timer)
+{
+	switch(Freeplay_Info)
+	{
+		case 0:
+		{
+			return Plugin_Stop;
+		}
+		case 1:
+		{
+			for (int client = 0; client < MaxClients; client++)
+			{
+				if(IsValidClient(client) && GetClientTeam(client) == 2)
+				{
+					SetHudTextParams(-1.0, -1.0, 7.5, 0, 255, 255, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_2");
+				}
+			}
+			Freeplay_Info = 2;
+		}
+		case 2:
+		{
+			for (int client = 0; client < MaxClients; client++)
+			{
+				if(IsValidClient(client) && GetClientTeam(client) == 2)
+				{
+					SetHudTextParams(-1.0, -1.0, 7.5, 255, 0, 0, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_3");
+				}
+			}
+			Freeplay_Info = 3;
+		}
+		case 3:
+		{
+			for (int client = 0; client < MaxClients; client++)
+			{
+				if(IsValidClient(client) && GetClientTeam(client) == 2)
+				{
+					SetHudTextParams(-1.0, -1.0, 7.5, 0, 255, 255, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_4");
+				}
+			}
+			Freeplay_Info = 0;
+		}
+		default:
+		{
+			return Plugin_Stop;
+		}
+	}
+
+	return Plugin_Continue;
 }
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
