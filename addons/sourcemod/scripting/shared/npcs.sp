@@ -1023,7 +1023,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	
 	//drown is out of map stuff.
-	if((damagetype & DMG_DROWN))
+	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		damage = 5.0;
 		Damageaftercalc = 5.0;

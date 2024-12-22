@@ -1530,7 +1530,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 {
 #if defined ZR
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlivePost");
-	if(!(damagetype & (DMG_DROWN|DMG_FALL)))
+	if(!(damagetype & (DMG_OUTOFBOUNDS|DMG_FALL)))
 	{
 		int i_damage = RoundToCeil(damage / f_LatestDamageRes[victim]);
 		//dont credit for more then 4k damage at once.
@@ -1543,7 +1543,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 		}
 	}
 	
-	if((damagetype & DMG_DROWN))
+	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		//the player has died to a stuckzone.
 		if(dieingstate[victim] > 0)
@@ -1651,7 +1651,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	//needs to be above everything aside extra damage
 	if(!CheckInHud())
 	{
-		if(!(damagetype & (DMG_FALL|DMG_DROWN|DMG_TRUEDAMAGE)))
+		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
 		{
 			RPG_FlatRes(victim, attacker, weapon, damage);
 		}
@@ -1719,7 +1719,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	else
 	{
 		//if its not during raids, do...
-		if(!(damagetype & DMG_DROWN))
+		if(!(damagetype & DMG_OUTOFBOUNDS))
 		{
 			if(IsInvuln(victim))
 			{
@@ -1805,7 +1805,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 	
 #if defined ZR
-	if((damagetype & DMG_DROWN) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+	if((damagetype & DMG_OUTOFBOUNDS) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
 		if(damage < 10000.0)
 		{
@@ -1816,7 +1816,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 	
 #if defined RPG
-	if((damagetype & DMG_DROWN) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+	if((damagetype & DMG_OUTOFBOUNDS) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
 		if(damage < 1000.0)
 		{
@@ -1828,7 +1828,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 
 #if defined ZR
-	if((damagetype & DMG_DROWN))
+	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		//NOTHING blocks it.
 		return Plugin_Changed;
@@ -1853,7 +1853,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		return Plugin_Handled;
 	}
-
 	f_LatestDamageRes[victim] = damage / GetCurrentDamage;
 
 #if !defined RTS
@@ -1907,7 +1906,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 #endif	
 	}
-
 	return Plugin_Changed;
 }
 

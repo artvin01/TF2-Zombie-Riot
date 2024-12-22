@@ -111,10 +111,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(VIPBuilding_Active())
 		return true;
 #endif
-
 #if defined ZR
-	if(attacker > MaxClients)
-		return false;
 
 	if(attacker <= MaxClients && attacker > 0 && attacker != 0)
 	{
@@ -195,6 +192,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 			}
 		}
 	}
+
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 
 	if(i_HealthBeforeSuit[victim] == 0)
@@ -245,17 +243,10 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 			}
 		}
 
-		if(armorEnt == victim)
+		if(!(damagetype & DMG_TRUEDAMAGE))
 		{
-			if(!(damagetype & DMG_TRUEDAMAGE))
-			{
-				float percentage = ArmorPlayerReduction(victim);
-					damage *= percentage;
-			}
-		}
-		else
-		{
-			damage *= 0.65;
+			float percentage = ArmorPlayerReduction(victim);
+			damage *= percentage;
 		}
 	}
 #endif	// ZR
