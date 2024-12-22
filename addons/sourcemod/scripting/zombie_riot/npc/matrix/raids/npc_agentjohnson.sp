@@ -564,7 +564,7 @@ static Action AgentJohnson_OnTakeDamage(int victim, int &attacker, int &inflicto
 			if(npc.m_flRangedArmor > 2.0)
 			npc.m_flRangedArmor = 2.0;
 		}
-		else if(!(damagetype & DMG_SLASH))
+		else if(!(damagetype & DMG_TRUEDAMAGE))
 		{
 			npc.m_flRangedArmor -= 0.05;
 			if(npc.m_flRangedArmor < 0.05)

@@ -199,8 +199,11 @@ void BlemishineAbilityHit3(int entity, int victim, float damage, int weapon)
 
 	FreezeNpcInTime(victim, StunDuration);
 }
-public float Player_OnTakeDamage_Blemishine(int victim, int attacker, float &damage)
+public float Player_OnTakeDamage_Blemishine(int victim, int attacker, float &damage, int damagetype)
 {
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
+
 	if(GetGameTime() < f_Blemishine_AbilityActive[victim])
 	{
 		switch(i_BlemishineWhichAbility[victim])

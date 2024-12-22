@@ -341,11 +341,15 @@ static bool Shield_TraceTargets(int entity, int contentsMask, int client)
 }
 
 //taken and edited from ff2_sarysapub3
-public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
 	// Require armor charge
 	if(Armor_Charge[victim] < 1)
 		return damage;
+
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
+
 	
 	// need position of either the inflictor or the attacker
 	float actualDamagePos[3];

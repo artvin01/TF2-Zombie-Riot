@@ -240,7 +240,7 @@ void SeabornHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				if(npc.m_flRangedArmor > 1.5)
 					npc.m_flRangedArmor = 1.5;
 			}
-			else if(!(damagetype & DMG_SLASH))
+			else if(!(damagetype & DMG_TRUEDAMAGE))
 			{
 				npc.m_flRangedArmor -= 0.05;
 				if(npc.m_flRangedArmor < 0.05)

@@ -1192,7 +1192,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	float pos[3];
 	WorldSpaceCenter(client, pos);
 	
-	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	int bleed_count = pack.ReadCell();
 	if(bleed_count < 1)
@@ -1320,20 +1320,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 
 stock void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 {
-#if defined ZR
-	b_ThisNpcIsSawrunner[attacker] = true;
-#endif
-	if(victim <= MaxClients)
-	{
-		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_DROWN, -1);
-	}
-	else
-	{
-		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_SLASH, -1);
-	}
-#if defined ZR
-	b_ThisNpcIsSawrunner[attacker] = false;
-#endif
+	SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_TRUEDAMAGE, -1);
 }
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
 {
@@ -3090,23 +3077,19 @@ int inflictor = 0)
 	
 	int damage_flags = 0;
 	int custom_flags = 0;
-	if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_SLASH_DAMAGE))
-	{
-		damage_flags |= DMG_SLASH;
-	}
-	else if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_CLUB_DAMAGE))
+	if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_CLUB_DAMAGE))
 	{
 		damage_flags |= DMG_CLUB;
 	}
-	else if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_PLASMA_DAMAGE))
+	if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_PLASMA_DAMAGE))
 	{
 		damage_flags |= DMG_PLASMA;
 	}
-	else if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_DROWN_DAMAGE))
+	if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_TRUE_DAMAGE))
 	{
-		damage_flags |= DMG_DROWN;
+		damage_flags |= DMG_TRUEDAMAGE;
 	}
-	else
+	if(damage_flags == 0)
 	{
 		damage_flags |= DMG_BLAST;
 	}
@@ -3293,14 +3276,7 @@ int inflictor = 0)
 			{
 				//npcs do not take damage from drown damage, so what we will do instead
 				//is to make it do slash damage, slash damage ignores most resistances like drown does.
-				if(ClosestTarget > MaxClients)
-				{
-					if((damage_flags & DMG_DROWN))
-					{
-						damage_flags &= ~DMG_DROWN;
-						damage_flags |= DMG_SLASH; 
-					}
-				}
+
 				damage_1 += GetBeforeDamage;
 
 				ClosestDistance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
@@ -3532,19 +3508,10 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 	playerPos[1] = pack.ReadFloat();
 	playerPos[2] = pack.ReadFloat();
 	int damage_type_Custom = pack.ReadCell();
-	if(damage_type & DMG_SLASH)
-	{
-#if defined ZR
-	b_ThisNpcIsSawrunner[client] = true;
-#endif
-	}
 	if(IsValidEntity(Victim) && IsValidEntity(client) && IsValidEntity(weapon) && IsValidEntity(inflictor))
 	{
 		SDKHooks_TakeDamage(Victim, client, inflictor, damage, damage_type, weapon, damage_force, playerPos, _,damage_type_Custom);
 	}
-#if defined ZR
-	b_ThisNpcIsSawrunner[client] = false;
-#endif
 //	pack.delete;
 	delete pack;
 }

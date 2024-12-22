@@ -11,6 +11,7 @@ static float f_EntityOutOfNav[MAXTF2PLAYERS];
 static float f_LatestDamageRes[MAXTF2PLAYERS];
 static float f_TimeSinceLastRegenStop[MAXTF2PLAYERS];
 static bool b_GaveMarkForDeath[MAXTF2PLAYERS];
+static float f_RecievedTruedamageHit[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
@@ -32,6 +33,7 @@ void SDKHooks_ClearAll()
 	{
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
+	Zero(f_RecievedTruedamageHit);
 	Zero(f_EntityHazardCheckDelay);
 	Zero(f_EntityOutOfNav);
 	
@@ -359,7 +361,7 @@ public void OnPostThink(int client)
 
 			if(damageTrigger > 1.0)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
 			}
 		}
 	}
@@ -1528,7 +1530,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 {
 #if defined ZR
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlivePost");
-	if(!(damagetype & (DMG_DROWN|DMG_FALL)))
+	if(!(damagetype & (DMG_OUTOFBOUNDS|DMG_FALL)))
 	{
 		int i_damage = RoundToCeil(damage / f_LatestDamageRes[victim]);
 		//dont credit for more then 4k damage at once.
@@ -1541,7 +1543,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 		}
 	}
 	
-	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
+	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		//the player has died to a stuckzone.
 		if(dieingstate[victim] > 0)
@@ -1649,7 +1651,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	//needs to be above everything aside extra damage
 	if(!CheckInHud())
 	{
-		if(!(damagetype & (DMG_FALL|DMG_DROWN)))
+		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
 		{
 			RPG_FlatRes(victim, attacker, weapon, damage);
 		}
@@ -1669,6 +1671,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(TeutonType[victim])
 	{
 		//do not protect them.
+		//i.e. something crushes them, die.
 		if(!(damagetype & DMG_CRUSH))
 		{
 			damage = 0.0;
@@ -1691,8 +1694,16 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+	if(damagetype & DMG_TRUEDAMAGE)
+	{
+		if(f_RecievedTruedamageHit[victim] < GetGameTime())
+		{
+			f_RecievedTruedamageHit[victim] = GetGameTime() + 0.5;
+			ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
+		}
+	}
 
-	if(RaidbossIgnoreBuildingsLogic(1))
+	if(RaidbossIgnoreBuildingsLogic(1) || (damagetype & DMG_TRUEDAMAGE))
 	{
 		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
 		{
@@ -1701,13 +1712,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				i_WasInUber[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
 				TF2_RemoveCondition(victim, TFCond_Ubercharged);
 			}
-			damage *= 0.5;
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				damage *= 0.5;
 		}
 	}
 	else
 	{
 		//if its not during raids, do...
-		if(!(damagetype & DMG_DROWN))
+		if(!(damagetype & DMG_OUTOFBOUNDS))
 		{
 			if(IsInvuln(victim))
 			{
@@ -1793,21 +1805,18 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 	
 #if defined ZR
-	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker] && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+	if((damagetype & DMG_OUTOFBOUNDS) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
-		if(!b_ThisNpcIsSawrunner[attacker])
+		if(damage < 10000.0)
 		{
-			if(damage < 10000.0)
-			{
-				if(!CheckInHud())
-					NpcStuckZoneWarning(victim, damage);
-			}
+			if(!CheckInHud())
+				NpcStuckZoneWarning(victim, damage);
 		}
 	}
 #endif
 	
 #if defined RPG
-	if((damagetype & DMG_DROWN) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+	if((damagetype & DMG_OUTOFBOUNDS) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
 		if(damage < 1000.0)
 		{
@@ -1819,7 +1828,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 
 #if defined ZR
-	if((damagetype & DMG_DROWN) && b_ThisNpcIsSawrunner[attacker])
+	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		//NOTHING blocks it.
 		return Plugin_Changed;
@@ -1844,7 +1853,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		return Plugin_Handled;
 	}
-
 	f_LatestDamageRes[victim] = damage / GetCurrentDamage;
 
 #if !defined RTS
@@ -1898,7 +1906,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 #endif	
 	}
-
 	return Plugin_Changed;
 }
 
@@ -2150,7 +2157,8 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 			i_WasInDefenseBuff[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_DefenseBuffed);
 			TF2_RemoveCondition(victim, TFCond_DefenseBuffed);
 		}
-		damage *= 0.65;
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			damage *= 0.65;
 	}
 	if(!CheckInHud() && TF2_IsPlayerInCondition(victim, TFCond_RuneResist))
 	{
@@ -2158,8 +2166,11 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		TF2_RemoveCondition(victim, TFCond_RuneResist);
 		//This is purely visual, it doesnt grant anything by itself.
 	}
+	if(damagetype & DMG_TRUEDAMAGE)
+		return;
+		
 	float value;
-	if(damagetype & (DMG_CLUB|DMG_SLASH))
+	if(damagetype & (DMG_CLUB))
 	{
 		value = Attributes_FindOnPlayerZR(victim, 206, true, 0.0, true, true);	// MELEE damage resitance
 		if(value)
@@ -2187,7 +2198,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 	if(weapon != -1)
 	{
 		damage *= Attributes_Get(weapon, 4009, 1.0);
-		if(damagetype & (DMG_CLUB|DMG_SLASH))
+		if(damagetype & (DMG_CLUB))
 		{
 			value = Attributes_Get(weapon, 4007, 1.0);	// MELEE damage resitance
 			if(value)

@@ -127,11 +127,13 @@ void WeaponSkadi_OnTakeDamageNpc(int attacker,float &damage)
 	}
 }
 
-void WeaponSkadi_OnTakeDamage(int attacker, int victim, float &damage)
+void WeaponSkadi_OnTakeDamage(int attacker, int victim, float &damage, int damagetype)
 {
 	if(b_AbilityActivated[victim])
 	{
-		damage *= 0.80;
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			damage *= 0.80;
+
 		if(b_thisNpcIsARaid[attacker])
 		{
 			damage *= 1.1;

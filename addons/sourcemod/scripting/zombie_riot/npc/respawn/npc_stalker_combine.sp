@@ -628,7 +628,7 @@ public Action StalkerCombine_OnTakeDamage(int victim, int &attacker, int &inflic
 	if(damage > 9999999.9)
 		return Plugin_Continue;
 	
-	if(damagetype & DMG_DROWN)
+	if(damagetype & DMG_OUTOFBOUNDS)
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{

@@ -420,7 +420,7 @@ public void MedivalSamurai_ClotDamaged_Post(int victim, int attacker, int inflic
 {
 	MedivalSamurai npc = view_as<MedivalSamurai>(victim);
 
-	if(!(damagetype & (DMG_CLUB|DMG_SLASH)))
+	if(!(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE)))
 	{
 		f_RangedPainTolerance[npc.index] += damage;
 		if((ReturnEntityMaxHealth(npc.index) / 2 ) < f_RangedPainTolerance[npc.index]) //npc.Anger after half hp/400 hp

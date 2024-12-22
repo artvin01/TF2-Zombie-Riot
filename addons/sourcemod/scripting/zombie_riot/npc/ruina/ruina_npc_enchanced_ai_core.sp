@@ -1499,7 +1499,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	float Radius	= data.ReadFloat();
 	float dmg 		= data.ReadFloat();
 
-	//DMG_SLASH is true dmg?
+	//DMG_TRUEDAMAGE is true dmg?
 
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.75, Thickness, 0.75, color, 1, 0);
@@ -1531,7 +1531,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 
 		EmitSoundToClient(client, RUINA_ION_CANNON_SOUND_ATTACK);
 
-		SDKHooks_TakeDamage(client, 0, 0, dmg, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+		SDKHooks_TakeDamage(client, 0, 0, dmg, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 
 		int laser;
 		laser = ConnectWithBeam(-1, client, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
@@ -1551,7 +1551,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 			if(GetVectorDistance(Vic_Pos, end_point, true) > Radius)
 				continue;
 
-			SDKHooks_TakeDamage(entity, 0, 0, dmg*2.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+			SDKHooks_TakeDamage(entity, 0, 0, dmg*2.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 
 			int laser;
 			laser = ConnectWithBeam(-1, entity, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
@@ -1572,7 +1572,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 				if(GetVectorDistance(Vic_Pos, end_point, true) > Radius)
 					continue;
 
-				SDKHooks_TakeDamage(entity, 0, 0, dmg*2.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+				SDKHooks_TakeDamage(entity, 0, 0, dmg*2.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 				int laser;
 				laser = ConnectWithBeam(-1, entity, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
 				CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);

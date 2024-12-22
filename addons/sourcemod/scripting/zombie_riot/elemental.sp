@@ -188,7 +188,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 			}
 			else
 			{
@@ -209,7 +209,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			}
 			
 			if(sound || !Armor_Charge[victim])
-				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
+				ClientCommand(victim, "playgamesound weapons/drg_pomson_drain_01.wav");
 		}
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
@@ -241,12 +241,12 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				if(GetTeam(victim) == TFTeam_Red)
 				{
 					FreezeNpcInTime(victim, 3.0);
-					SDKHooks_TakeDamage(victim, attacker, attacker, 400.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+					SDKHooks_TakeDamage(victim, attacker, attacker, 400.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 				}
 				else
 				{
 					FreezeNpcInTime(victim, b_thisNpcIsARaid[victim] ? 3.0 : 5.0);
-					SDKHooks_TakeDamage(victim, attacker, attacker, 1000.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+					SDKHooks_TakeDamage(victim, attacker, attacker, 1000.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 				}
 			}
 		}
@@ -278,7 +278,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 			}
 			else
 			{
@@ -382,7 +382,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 			}
 			else
 			{
@@ -544,7 +544,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				ElementDamage[victim][Element_Necrosis] = 0;
 				f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 7.5;
 
-				StartBleedingTimer(victim, attacker, 800.0, 15, weapon, DMG_SLASH, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+				StartBleedingTimer(victim, attacker, 800.0, 15, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				
 				float time = 7.5;
 				if(b_thisNpcIsARaid[victim])
@@ -653,7 +653,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 			}
 			else
 			{

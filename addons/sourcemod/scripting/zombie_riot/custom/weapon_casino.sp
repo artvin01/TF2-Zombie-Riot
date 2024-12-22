@@ -310,12 +310,12 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 	}
 	if(i_Ricochet[attacker] >= 1 && i_MegaShot[attacker] == 0)
 	{
-		if(LastHitTarget != victim && !(damagetype & DMG_SLASH) && !(damagetype & DMG_BLAST))
+		if(LastHitTarget != victim && !(damagetype & DMG_TRUEDAMAGE) && !(damagetype & DMG_BLAST))
 		{
 			damageMod *= 0;
-			damagetype |= DMG_SLASH;
+			damagetype |= DMG_TRUEDAMAGE;
 			int value = i_ExplosiveProjectileHexArray[attacker];
-			i_ExplosiveProjectileHexArray[attacker] = 0;	// If DMG_SLASH doesn't block NPC_OnTakeDamage_Equipped_Weapon_Logic, adjust this
+			i_ExplosiveProjectileHexArray[attacker] = 0;	// If DMG_TRUEDAMAGE doesn't block NPC_OnTakeDamage_Equipped_Weapon_Logic, adjust this
 			LastHitTarget = victim;
 			
 			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 0.83, _, false, 3);		

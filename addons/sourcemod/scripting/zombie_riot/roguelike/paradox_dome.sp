@@ -186,7 +186,7 @@ static Action Dome_TimerBleed(Handle hTimer)
 				float health = float(GetClientHealth(iClient));
 				if(health < flDamage)
 				{
-					SDKHooks_TakeDamage(iClient, 0, 0, flDamage, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+					SDKHooks_TakeDamage(iClient, 0, 0, flDamage, DMG_OUTOFBOUNDS|DMG_PREVENT_PHYSICS_FORCE);
 				}
 				else
 				{

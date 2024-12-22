@@ -171,7 +171,6 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 				case 15:
 				{
 					PrintHintText(attacker,"J̸̨͝Ä̷̻͆Ç̸̛̮K̵̻͗þ̸̤͝Ơ̶͚̈†̸̲̍!̴̡́");
-					ClientCommand(attacker, "playgamesound player/crit_received1.wav");
 					DisplayCritAboveNpc(victim, attacker, true);
 					DamageMod = 6.0;
 					ApplyTempAttrib(weapon, 6, 0.8, 5.0);

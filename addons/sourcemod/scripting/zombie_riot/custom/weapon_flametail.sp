@@ -210,9 +210,7 @@ void Flametail_NPCTakeDamage(int attacker, float &damage, int weapon, float dama
 
 void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype, int weaponinhand)
 {
-	if(damagetype & DMG_SLASH)
-		return;
-	
+	//i mean its a dodge, dont ignore.
 	bool dodged;
 	
 	if(DodgeNext[victim])

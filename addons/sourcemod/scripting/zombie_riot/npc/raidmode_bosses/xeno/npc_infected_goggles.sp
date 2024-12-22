@@ -976,10 +976,9 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						
 						vecMe[2] += 45;
 						
-						b_ThisNpcIsSawrunner[npc.index] = true;
-						i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+						i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
 						Explode_Logic_Custom(3000.0 * zr_smallmapbalancemulti.FloatValue, 0, npc.index, -1, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 20);
-						b_ThisNpcIsSawrunner[npc.index] = false;
+					
 						
 						npc.PlayBoomSound();
 						TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);

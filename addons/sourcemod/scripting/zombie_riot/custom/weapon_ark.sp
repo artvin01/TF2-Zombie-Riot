@@ -483,7 +483,7 @@ public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for
 
 
 //stuff that gets activated upon taking damage
-public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
 	if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
 	{
@@ -586,8 +586,10 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 			RequestFrame(CauseDamageLaterSDKHooks_Takedamage, packdmg);
 				
 		}
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage * 0.1;
 
-		return damage * 0.1;
+		return damage;
 	}
 	else 
 	{

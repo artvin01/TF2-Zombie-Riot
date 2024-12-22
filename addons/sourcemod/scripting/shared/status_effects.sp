@@ -510,6 +510,10 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 	if(!E_AL_StatusEffects[victim])
 		return;
 
+	//nope!! no resistances!!
+	if(damagetype & DMG_TRUEDAMAGE)
+		return;
+
 	float DamageRes = 1.0;
 	
 	static StatusEffect Apply_MasterStatusEffect;
@@ -581,7 +585,10 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 {
 	if(!E_AL_StatusEffects[attacker])
 		return;
-
+	//Nope, damage nef doesnt work on true damage!
+	if(damagetype & DMG_TRUEDAMAGE)
+		return;
+		
 	float DamageRes = 1.0;
 	
 	static StatusEffect Apply_MasterStatusEffect;
