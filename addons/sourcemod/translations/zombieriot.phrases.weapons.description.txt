@@ -3390,26 +3390,15 @@
 	}
 	"Outlaw Railcannon Desc"
 	{
-		"en"	"Hand portable cannon that charges tofire TAU particles at incredible speeds.\nDoes more damage while airborne, but dissipates quickly over distance.\nSuffers mid-game, but becomes a solid weapon late-game."
-		"fr"	"Tire des particules TAU à des vélocités incroyables.\nFais plus de dégats alors que vous êtes en plein air, mais s'affaiblit rapidement avec la distance.\nSouffre au milieu du jeu, mais exelle plus tard."
-		"chi"	"可发射高速TAU粒子的手炮。\n空中时造成更多伤害。严重伤害衰减。"
+		"en"	"Deals damage twice, 2nd damage instance deals 15%% of your damage as true damage.\nZoom with m2.\nHas poor pierce and low damage falloff, but a very thin laser."
 	}
 	"Outlaw Railcannon Desc Pap 1"
 	{
-		"en"	"Higher quality capacitors allows for shooting at lower charges.\nLess DPS than counterpart, but can fire when bar is 1/3rd full.\nIdeal for cramped maps."
-		"fr"	"Peut tirer avec seulement un tiers de charge, pour moins de dégats."
-		"chi"	"增加了高质量电阻，消耗更少能量。\n不过dps更低。适合狭窄的地图。"
+		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 20%%"
 	}
 	"Outlaw Railcannon Desc Pap 2"
 	{
-		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in inverted damage falloff.\nCan zoom in with M2.\nIdeal for large open spaces."
-		"fr"	"Entrez le mode zoom avec M2.\nGagne des dégats avec la distance."
-		"chi"	"增加了高容量电阻，可以发射更快的粒子。\n粒子在空中会分裂，越远伤害越高。M2可以开镜。\n适合开阔的地图。"
-	}
-	"Outlaw Railcannon Desc Pap 3"
-	{
-		"en"	"We found this left behind on an old rusty mad max car.\nSeems to have had significant use."
-		"chi"	"我们在某个奇怪的拦车找到了这玩意。\n貌似很重要。"
+		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 25%%"
 	}
 	"Outlaw Railcannon Desc Pap 4"
 	{
