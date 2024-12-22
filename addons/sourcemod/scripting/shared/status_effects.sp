@@ -97,8 +97,6 @@ void InitStatusEffects()
 	StatusEffects_WidowsWine();
 	StatusEffects_CrippleDebuff();
 	StatusEffects_MagnesisStrangle();
-	StatusEffects_Freeplay1();
-	StatusEffects_Freeplay2();
 	StatusEffects_Cudgel();
 	StatusEffects_MaimDebuff();
 	StatusEffects_Prosperity();
@@ -653,14 +651,14 @@ float StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, int infl
 	float ExtraDamageAdd;
 	float DamageBuffExtraScaling = 1.0;
 
-#if defined ZR
+	#if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
 		//only scale if its a player, and if the attacking npc is red too
 		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
-#endif
+	#endif
 	static StatusEffect Apply_MasterStatusEffect;
 	static E_StatusEffect Apply_StatusEffect;
 	//No debuffs or status effects, skip.
@@ -1383,105 +1381,6 @@ void StatusEffects_MagnesisStrangle()
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 3; //0 means ignored
-	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
-	StatusEffect_AddGlobal(data);
-}
-
-void StatusEffects_Freeplay1()
-{
-	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Cheesy Presence");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), ":3");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "-w-"); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.85;
-	data.DamageDealMulti			= 0.15;
-	data.MovementspeedModif			= 1.1;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 0; //0 means ignored
-	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	StatusEffect_AddGlobal(data);
-	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Eloquence I");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FE1");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.1;
-	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 7; //0 means ignored
-	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
-	StatusEffect_AddGlobal(data);
-
-	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Eloquence II");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FE2");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.2;
-	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 7; //0 means ignored
-	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
-	StatusEffect_AddGlobal(data);
-
-	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Eloquence III");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FE3");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.3;
-	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 7; //0 means ignored
-	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
-	StatusEffect_AddGlobal(data);
-}
-
-void StatusEffects_Freeplay2()
-{
-	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Rampart I");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FR1");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.9;
-	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 8; //0 means ignored
-	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
-	StatusEffect_AddGlobal(data);
-
-	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Rampart II");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FR2");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.8;
-	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 8; //0 means ignored
-	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
-	StatusEffect_AddGlobal(data);
-
-	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Rampart III");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FR3");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.7;
-	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 8; //0 means ignored
 	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
@@ -2463,7 +2362,6 @@ void StatusEffects_Ruiania()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.Status_SpeedFunc 			= RuinasAgility_Func;
-	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	RuinaBuffSpeed = StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ruina's Defense");
@@ -2478,7 +2376,6 @@ void StatusEffects_Ruiania()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= RuinasDefense_Func;
-	data.Status_SpeedFunc 			= INVALID_FUNCTION;
 	RuinaBuffDefense = StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ruina's Damage");
@@ -2492,8 +2389,6 @@ void StatusEffects_Ruiania()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
-	data.Status_SpeedFunc 			= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= Ruinas_DamageFunc;
 	RuinaBuffDamage = StatusEffect_AddGlobal(data);
 }
@@ -2508,7 +2403,6 @@ stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(RuinaBuffSpeed , E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
@@ -2517,7 +2411,7 @@ stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
 		else
 		{
 			//Buffs the damgae for casino, and saves it, as its random somewhat
-			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse)
+			if(NewBuffValue >= Apply_StatusEffect.DataForUse)
 			{
 				Apply_StatusEffect.DataForUse = NewBuffValue;
 				E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
@@ -2543,7 +2437,6 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(RuinaBuffDefense , E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
@@ -2552,7 +2445,7 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 		else
 		{
 			//Buffs the damgae for casino, and saves it, as its random somewhat
-			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse)
+			if(NewBuffValue >= Apply_StatusEffect.DataForUse)
 			{
 				Apply_StatusEffect.DataForUse = NewBuffValue;
 				E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
@@ -2562,7 +2455,6 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 	if(E_AL_StatusEffects[victim].Length < 1)
 		delete E_AL_StatusEffects[victim];
 }
-
 float RuinasDefense_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 	return Apply_StatusEffect.DataForUse;
@@ -2578,7 +2470,6 @@ stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue)
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(RuinaBuffDamage , E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
@@ -2587,7 +2478,7 @@ stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue)
 		else
 		{
 			//Buffs the damgae for casino, and saves it, as its random somewhat
-			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse)
+			if(NewBuffValue >= Apply_StatusEffect.DataForUse)
 			{
 				Apply_StatusEffect.DataForUse = NewBuffValue;
 				E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);

@@ -44,11 +44,11 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 		//LogEntryInvicibleTest(victim, attacker, damage, 9);
 	}
 
-	if(attacker >= 0)
+	if(attacker > 0)
 	{
 		if(Damage_AnyAttacker(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
-		
+
 		//LogEntryInvicibleTest(victim, attacker, damage, 13);
 		if(attacker <= MaxClients)
 		{
@@ -96,7 +96,6 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 
 	
 #if defined RPG
-	if(!CheckInHud())
 		if(b_ThisWasAnNpc[attacker])
 			f_InBattleDelay[attacker] = GetGameTime() + 6.0;
 #endif
@@ -124,8 +123,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 			return true;
 
 #if defined RPG
-		if(!CheckInHud())
-			LastHitRef[victim] = EntIndexToEntRef(attacker);
+		LastHitRef[victim] = EntIndexToEntRef(attacker);
 #endif	
 	}
 	float GameTime = GetGameTime();
@@ -135,55 +133,50 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(Victim_weapon))
 	{
-		if(!CheckInHud())
-			OnTakeDamage_ProvokedAnger(Victim_weapon);
+		OnTakeDamage_ProvokedAnger(Victim_weapon);
 		damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
 	}
-	
+
 	if(OnTakeDamage_ShieldLogic(victim, damagetype))
 		return true;
 
-	if(!CheckInHud())
-		if(RaidbossIgnoreBuildingsLogic(1) && i_HealthBeforeSuit[victim] > 0)
-			damage *= 3.0;	//when a raid is alive, make quantum armor 8x as bad at tanking.
-			
-	if(!CheckInHud())
+	if(RaidbossIgnoreBuildingsLogic(1) && i_HealthBeforeSuit[victim] > 0)
+		damage *= 3.0;	//when a raid is alive, make quantum armor 8x as bad at tanking.
+
+	switch(i_CurrentEquippedPerk[victim])
 	{
-		switch(i_CurrentEquippedPerk[victim])
+		case 6:
 		{
-			case 6:
+			int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+			int flMaxHealth = SDKCall_GetMaxHealth(victim);
+		
+			if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
 			{
-				int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
-				int flMaxHealth = SDKCall_GetMaxHealth(victim);
-			
-				if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
+				f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
+				
+				float vecVictim[3]; WorldSpaceCenter(victim, vecVictim);
+				
+				ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
+				
+				EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 80, _, 1.0);
+				
+				damage *= 0.25;
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
-					f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
-					
-					float vecVictim[3]; WorldSpaceCenter(victim, vecVictim);
-					
-					ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
-					
-					EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 80, _, 1.0);
-					
-					damage *= 0.25;
-					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					if (IsValidEntity(baseboss_index))
 					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-						if (IsValidEntity(baseboss_index))
+						if(!b_NpcHasDied[baseboss_index])
 						{
-							if(!b_NpcHasDied[baseboss_index])
+							if (GetTeam(victim)!=GetTeam(baseboss_index)) 
 							{
-								if (GetTeam(victim)!=GetTeam(baseboss_index)) 
+								float vecTarget[3]; WorldSpaceCenter(baseboss_index, vecTarget);
+								
+								float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
+								if(flDistanceToTarget < 90000)
 								{
-									float vecTarget[3]; WorldSpaceCenter(baseboss_index, vecTarget);
-									
-									float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
-									if(flDistanceToTarget < 90000)
-									{
-										ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
-										ApplyStatusEffect(victim, baseboss_index, "Widows Wine", FL_WIDOWS_WINE_DURATION);
-									}
+									ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
+									ApplyStatusEffect(victim, baseboss_index, "Widows Wine", FL_WIDOWS_WINE_DURATION);
 								}
 							}
 						}
@@ -197,48 +190,44 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(i_HealthBeforeSuit[victim] == 0)
 	{
 		int armorEnt = victim;
-		/*
 		int vehicle = GetEntPropEnt(victim, Prop_Data, "m_hVehicle");
 		if(vehicle != -1)
 			armorEnt = vehicle;
-		*/
-		if(!CheckInHud())
-		{
-			if(Armor_Charge[armorEnt] > 0)
-			{
-				int dmg_through_armour = RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED);
-				switch(GetRandomInt(1,3))
-				{
-					case 1:
-						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-					
-					case 2:
-						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet2.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-					
-					case 3:
-						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-				}						
-				if(RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION) >= Armor_Charge[armorEnt])
-				{
-					int damage_recieved_after_calc;
-					damage_recieved_after_calc = RoundToCeil(damage) - Armor_Charge[armorEnt];
-					Armor_Charge[armorEnt] = 0;
-					damage = float(damage_recieved_after_calc);
 
-					//armor is broken!
-					if(f_Armor_BreakSoundDelay[victim] < GetGameTime())
-					{
-						f_Armor_BreakSoundDelay[victim] = GetGameTime() + 5.0;	
-						EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
-						//\sound\npc\assassin\ball_zap1.wav
-					}
-				}
-				else
+		if(Armor_Charge[armorEnt] > 0)
+		{
+			int dmg_through_armour = RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED);
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+					EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+				
+				case 2:
+					EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet2.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+				
+				case 3:
+					EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+			}						
+			if(RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION) >= Armor_Charge[armorEnt])
+			{
+				int damage_recieved_after_calc;
+				damage_recieved_after_calc = RoundToCeil(damage) - Armor_Charge[armorEnt];
+				Armor_Charge[armorEnt] = 0;
+				damage = float(damage_recieved_after_calc);
+
+				//armor is broken!
+				if(f_Armor_BreakSoundDelay[victim] < GetGameTime())
 				{
-					Armor_Charge[armorEnt] -= RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION);
-					damage = 0.0;
-					damage += float(dmg_through_armour);
+					f_Armor_BreakSoundDelay[victim] = GetGameTime() + 5.0;	
+					EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
+					//\sound\npc\assassin\ball_zap1.wav
 				}
+			}
+			else
+			{
+				Armor_Charge[armorEnt] -= RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION);
+				damage = 0.0;
+				damage += float(dmg_through_armour);
 			}
 		}
 
@@ -253,10 +242,9 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		}
 	}
 #endif	// ZR
-	
+
 #if defined RPG
-	if(!CheckInHud())
-		Player_Ability_Warcry_OnTakeDamage(victim, damage);
+	Player_Ability_Warcry_OnTakeDamage(victim, damage);
 
 	if(TrueStength_ClientBuff(victim))
 		damage *= 0.85;
@@ -272,10 +260,9 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 
 	if(WarCry_Enabled_Buff(victim))
 		damage *= WarCry_ResistanceBuff(victim);
-	
+
 	RPG_BobsPureRage(victim, attacker, damage);
-	if(!CheckInHud())
-		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
+	NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
 #endif	// RPG
 
 	return false;
@@ -290,20 +277,17 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 #if defined ZR
 	if(Rogue_Mode() && GetTeam(victim) != TFTeam_Red)
 	{
-		if(!CheckInHud())
+		if(Rogue_GetChaosLevel() > 1)
 		{
-			if(Rogue_GetChaosLevel() > 1)
-			{
-				damage *= GetRandomFloat(0.9, 1.1);
-			}
+			damage *= GetRandomFloat(0.9, 1.1);
+		}
 
-			if(Rogue_GetChaosLevel() > 2 && !(GetURandomInt() % 49))
-			{
-				if(attacker <= MaxClients)
-					DisplayCritAboveNpc(victim, attacker, true, damagePosition);
-				
-				damage *= 2.0;
-			}
+		if(Rogue_GetChaosLevel() > 2 && !(GetURandomInt() % 49))
+		{
+			if(attacker <= MaxClients)
+				DisplayCritAboveNpc(victim, attacker, true, damagePosition);
+			
+			damage *= 2.0;
 		}
 
 		int scale = Rogue_GetRoundScale();
@@ -335,76 +319,74 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 #endif
 
 #if defined RPG
-		if(!CheckInHud())
+		if(OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
+			return true;
+		
+		if(inflictor > 0 && inflictor <= MaxClients)
 		{
-			if(OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
-				return true;
-			
-			if(inflictor > 0 && inflictor <= MaxClients)
-			{
-				f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
-				RPGCore_AddClientToHurtList(victim, inflictor);
-			}
-			else if(attacker > 0 && attacker <= MaxClients)
-			{
-				f_InBattleDelay[attacker] = GetGameTime() + 3.0;
-				RPGCore_AddClientToHurtList(victim, attacker);
-			}
+			f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
+			RPGCore_AddClientToHurtList(victim, inflictor);
+		}
+		else if(attacker > 0 && attacker <= MaxClients)
+		{
+			f_InBattleDelay[attacker] = GetGameTime() + 3.0;
+			RPGCore_AddClientToHurtList(victim, attacker);
 		}
 #endif
 
 #if defined ZR || defined NOG || defined RPG
 		OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 #endif
-		
+
 #if defined ZR || defined NOG
-		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,i_HexCustomDamageTypes[victim], weapon);
+		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim], weapon);
 #endif
 
 #if defined ZR
-		if(!CheckInHud())
-			OnTakeDamageWidowsWine(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
+		OnTakeDamageWidowsWine(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 		OnTakeDamage_RogueItemGeneric(attacker, damage, damagetype, inflictor);
 #endif
 
-		
+
 #if !defined RTS
 		OnTakeDamageDamageBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime, damagePosition);
 
 		OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 		
-		if(!CheckInHud() && attacker <= MaxClients && attacker > 0)
+		if(attacker <= MaxClients && attacker > 0)
 			OnTakeDamagePlayerSpecific(victim, attacker, inflictor, damage, damagetype, weapon);
 #endif
 
-#if defined ZR	
-		if(!CheckInHud())		
-			OnTakeDamageScalingWaveDamage(victim, attacker, inflictor, damage, damagetype, weapon);
+#if defined ZR			
+		OnTakeDamageScalingWaveDamage(victim, attacker, inflictor, damage, damagetype, weapon);
+#endif
+
+#if !defined RTS
+		OnTakeDamageVehicleDamage(attacker, inflictor, damage, damagetype);
 #endif
 
 		if(attacker <= MaxClients && attacker > 0)
 		{
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			{
-				if(!CheckInHud())
-					DoClientHitmarker(attacker);
+
+				DoClientHitmarker(attacker);
 
 				if(IsValidEntity(weapon))
 				{
+
 					damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, i_HexCustomDamageTypes[victim]);
 
-					if(!CheckInHud())
-					{
 #if defined ZR
-						OnTakeDamage_HandOfElderMages(attacker, weapon);
-						OsmosisElementalEffect_Detection(attacker, victim);
+					OnTakeDamage_HandOfElderMages(attacker, weapon);
+					OsmosisElementalEffect_Detection(attacker, victim);
 #endif
 
 #if !defined RTS
-						OnTakeDamageOldExtraWeapons(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
-						OnTakeDamageBackstab(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
+					OnTakeDamageOldExtraWeapons(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
+					OnTakeDamageBackstab(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 #endif
-					}
+
 				}
 			}
 			
@@ -412,17 +394,14 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 			if(TF2_IsPlayerInCondition(attacker, TFCond_NoHealingDamageBuff) || (damagetype & DMG_CRIT))
 			{
 				damage *= 1.35;
-				if(!CheckInHud())
+				bool PlaySound = false;
+				if(f_MinicritSoundDelay[attacker] < GetGameTime())
 				{
-					bool PlaySound = false;
-					if(f_MinicritSoundDelay[attacker] < GetGameTime())
-					{
-						PlaySound = true;
-						f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
-					}
-					
-					DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
+					PlaySound = true;
+					f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
 				}
+				
+				DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
 
 				damagetype &= ~DMG_CRIT;
 			}
@@ -435,26 +414,18 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 #endif
 
 #if defined RPG
-	if(!CheckInHud())
-	{
-		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
-		RPG_ChaosSurgance(victim, attacker, weapon, damage);
-	}
+	NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
+	RPG_ChaosSurgance(victim, attacker, weapon, damage);
 	RPG_BobsPureRage(victim, attacker, damage);
 
 	//this should be last for npcs.
-	if(!CheckInHud())
-		RPG_FlatRes(victim, attacker, weapon, damage);
+	RPG_FlatRes(victim, attacker, weapon, damage);
 #endif
-	
+
 	NpcArmorExtra(victim, attacker, inflictor, damage, damagetype);
-	if(!CheckInHud())
-		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 	//Do armor.
-	if(CheckInHud())
-		return false;
-
 	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 	{
 		if(attacker <= MaxClients && attacker > 0)
@@ -475,47 +446,42 @@ void NpcArmorExtra(int victim, int &attacker, int &inflictor, float &damage, int
 	CClotBody npc = view_as<CClotBody>(victim);
 	if(npc.m_flArmorCount > 0.0)
 	{
-		if(!CheckInHud())
+		if(damagetype & DMG_CLUB)
 		{
-			if(damagetype & DMG_CLUB)
+			npc.m_flArmorCount -= ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)) * 1.35);
+			//armored enemies get more damage.
+			int DisplayCritSoundTo;
+			if(attacker <= MaxClients)
+				DisplayCritSoundTo = attacker;
+			else if(inflictor <= MaxClients)
+				DisplayCritSoundTo = inflictor;
+				
+			if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
 			{
-				npc.m_flArmorCount -= ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)) * 1.35);
-				//armored enemies get more damage.
-				int DisplayCritSoundTo;
-				if(attacker <= MaxClients)
-					DisplayCritSoundTo = attacker;
-				else if(inflictor <= MaxClients)
-					DisplayCritSoundTo = inflictor;
-					
-				if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
+				bool PlaySound = false;
+				if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
 				{
-					bool PlaySound = false;
-					if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
-					{
-						PlaySound = true;
-						f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
-					}
-					
-					DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
+					PlaySound = true;
+					f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
 				}
+				
+				DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
+			}
 
-			}
-			else
-			{
-				npc.m_flArmorCount -= (damage * ((npc.m_flArmorProtect - 1.0) * -1.0));
-			}
+		}
+		else
+		{
+			npc.m_flArmorCount -= (damage * ((npc.m_flArmorProtect - 1.0) * -1.0));
 		}
 		damage *= npc.m_flArmorProtect; //negate damage
-		if(!CheckInHud())
-		{
-			if(npc.m_iArmorType == 0)
-				npc.PlayHurtArmorSound();
+		
+		if(npc.m_iArmorType == 0)
+			npc.PlayHurtArmorSound();
 
-			if(npc.m_flArmorCount <= 0.0) //over damage, add as damage.
-			{
-				//let melee be really good against armor and stuff to reward them.
-				damage -= npc.m_flArmorCount;
-			}
+		if(npc.m_flArmorCount <= 0.0) //over damage, add as damage.
+		{
+			//let melee be really good against armor and stuff to reward them.
+			damage -= npc.m_flArmorCount;
 		}
 	}
 }
@@ -569,9 +535,7 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 #endif
 
 	//This buffs up damage in anyway possible
-	if(CheckInHud() != 2)
-		damage += StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, basedamage, damagetype);
-
+	damage += StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, basedamage, damagetype);
 	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker,inflictor, basedamage, damagetype);
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
@@ -586,10 +550,15 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 #if !defined RTS
 stock bool Damage_PlayerAttacker(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	float GameTime = GetGameTime();
+
 #if defined ZR
 	if(Rogue_InItallianWrath(weapon))
 		damage *= 2.0;
 #endif
+
+	OnTakeDamageBuildingBonusDamage(attacker, inflictor, damage, damagetype, weapon, GameTime);
+
 	return false;
 }
 #endif
@@ -628,8 +597,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_NEARL, WEAPON_FUSION_PAP2:
 		{
-			if(!CheckInHud())
-				return Player_OnTakeDamage_Fusion(victim, damage, attacker, equipped_weapon, damagePosition);
+			return Player_OnTakeDamage_Fusion(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
 		case WEAPON_EXPLORER:
 		{
@@ -637,30 +605,26 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_RIOT_SHIELD:
 		{
-			if(!CheckInHud())
-				return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition);
+			return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
 		case WEAPON_MLYNAR: // weapon_ark
 		{
-			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
+			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
 		}
 		case WEAPON_MLYNAR_PAP: // weapon_ark
 		{
-			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
+			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
 		}
 		case WEAPON_MLYNAR_PAP_2: // weapon_ark
 		{
-			if(!CheckInHud())
-				Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
+			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
 		}
 		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
 		{
-			if(!CheckInHud() && i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_ULPIANUS)
+			if(i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_ULPIANUS)
 				Ulpianus_OnTakeDamageSelf(victim);
 				
-			if(!CheckInHud() && i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_SKADI)
+			if(i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_SKADI)
 				WeaponSkadi_OnTakeDamage(attacker, victim, damage);
 			
 			return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
@@ -683,8 +647,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL:
 		{
-			if(!CheckInHud())
-				Flagellant_OnTakeDamage(victim);
+			Flagellant_OnTakeDamage(victim);
 		}
 		case WEAPON_RAPIER:
 		{
@@ -696,27 +659,23 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_HEAVY_PARTICLE_RIFLE:
 		{
-			if(!CheckInHud())
-				return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
+			return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
 		case WEAPON_MERCHANT:
 		{
-			if(!CheckInHud())
-				Merchant_SelfTakeDamage(victim, attacker, damage);
+			Merchant_SelfTakeDamage(victim, attacker, damage);
 		}
 		case WEAPON_FLAMETAIL:
 		{
-			if(!CheckInHud())
-				Flametail_SelfTakeDamage(victim, damage, damagetype, equipped_weapon);
+			Flametail_SelfTakeDamage(victim, damage, damagetype, equipped_weapon);
 		}
 		case WEAPON_WRATHFUL_BLADE:
 		{
-			Player_OnTakeDamage_WrathfulBlade(victim, damage);
+			Player_OnTakeDamage_WrathfulBlade(victim, damage, attacker);
 		}
 		case WEAPON_MAGNESIS:
 		{
-			if(!CheckInHud())
-				Player_OnTakeDamage_Magnesis(victim, damage, attacker);
+			Player_OnTakeDamage_Magnesis(victim, damage, attacker);
 		}
 		case WEAPON_YAKUZA:
 		{
@@ -774,33 +733,35 @@ static stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflicto
 static bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
 	//we list off all on hit things that are neccecary, or absolute damage resistances that apply no matter what.
-	if(!CheckInHud())
+	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
+	i_HasBeenBackstabbed[victim] = false;
+	if(f_TraceAttackWasTriggeredSameFrame[victim] != GameTime)
 	{
-		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
-		i_HasBeenBackstabbed[victim] = false;
-		if(f_TraceAttackWasTriggeredSameFrame[victim] != GameTime)
-		{
-			i_HasBeenHeadShotted[victim] = false;
-		}
-		
+		i_HasBeenHeadShotted[victim] = false;
 	}
 		
 #if defined ZR
-	if(!CheckInHud())
+	if(GetTeam(victim) == TFTeam_Red)
 	{
-		if(GetTeam(victim) == TFTeam_Red)
+		if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 		{
-			if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
-			{
-				damage *= f_FreeplayDamageExtra;
-			}
-			if(OnTakeDamage_ShieldLogic(victim, damagetype))
-			{
-				return true;
-			}
+			damage *= f_FreeplayDamageExtra;
+		}
+		if(OnTakeDamage_ShieldLogic(victim, damagetype))
+		{
+			return true;
 		}
 	}
 #endif
+	CClotBody npcBase = view_as<CClotBody>(victim);
+	if(f_IsThisExplosiveHitscan[attacker] == GameTime)
+	{
+		float v[3];
+		CalculateDamageForceSelfCalculated(attacker, 10000.0, v);
+		npcBase.m_vecpunchforce(v, true);
+		damagetype |= DMG_BULLET; //add bullet logic
+		damagetype &= ~DMG_BLAST; //remove blast logic			
+	}
 	return false;
 }
 
@@ -808,7 +769,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 {
 #if defined ZR
 	//did we hit any headshot ?
-	if(!CheckInHud() && b_MeleeCanHeadshot[weapon])
+	if(b_MeleeCanHeadshot[weapon])
 	{
 		static int DummyAmmotype = 0; //useless but needed
 		NPC_TraceAttack(victim, attacker, inflictor, damage, damagetype, DummyAmmotype, 0, i_MeleeHitboxHit[attacker]);
@@ -818,93 +779,75 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 	{
 		case WEAPON_BOUNCING:
 		{
-			if(!CheckInHud())
-				return SniperMonkey_BouncingBullets(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+			return SniperMonkey_BouncingBullets(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
 		case WEAPON_MAIMMOAB:
 		{
-			if(!CheckInHud())
-				return SniperMonkey_MaimMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+			return SniperMonkey_MaimMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
 		case WEAPON_CRIPPLEMOAB:
 		{
-			if(!CheckInHud())
-				return SniperMonkey_CrippleMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+			return SniperMonkey_CrippleMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
 		case WEAPON_IRENE:
 		{
-			if(!CheckInHud())
-				Npc_OnTakeDamage_Iberia(attacker, damagetype);
+			Npc_OnTakeDamage_Iberia(attacker, damagetype);
 		}
 		case 7://WEAPON_PHLOG:
 		{
-			if(!CheckInHud())
-				Npc_OnTakeDamage_Phlog(attacker);
+			Npc_OnTakeDamage_Phlog(attacker);
 		}
 		case WEAPON_NEARL: //pap fusion
 		{
-			if(!CheckInHud())
-				return Npc_OnTakeDamage_PaP_Fusion(attacker, victim, damage, weapon);
+			return Npc_OnTakeDamage_PaP_Fusion(attacker, victim, damage, weapon);
 		}
 		case WEAPON_LAPPLAND: //pap ark alt
 		{
-			if(!CheckInHud())
-				return Npc_OnTakeDamage_LappLand(damage, attacker, damagetype, inflictor, victim);
+			return Npc_OnTakeDamage_LappLand(damage, attacker, damagetype, inflictor, victim);
 		}
 		case WEAPON_QUIBAI: //pap ark alt
 		{
-			if(!CheckInHud())
-				return Npc_OnTakeDamage_Quibai(damage, attacker, damagetype, inflictor, victim, weapon);
+			return Npc_OnTakeDamage_Quibai(damage, attacker, damagetype, inflictor, victim, weapon);
 		}
 		case WEAPON_SPECTER:
 		{
-			if(!CheckInHud())
-				Specter_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+			Specter_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
 		case WEAPON_YAMATO:
 		{
-			if(!CheckInHud())
-				Npc_OnTakeDamage_Yamato(attacker, damagetype);
+			Npc_OnTakeDamage_Yamato(attacker, damagetype);
 		}
 		case WEAPON_BEAM_PAP:
 		{
-			if(!CheckInHud())
-				Npc_OnTakeDamage_BeamWand_Pap(attacker, damagetype);
+			Npc_OnTakeDamage_BeamWand_Pap(attacker, damagetype);
 		}
 		case WEAPON_GLADIIA:
 		{
-			if(!CheckInHud())
-				Gladiia_OnTakeDamageEnemy(victim, attacker, damage);
+			Gladiia_OnTakeDamageEnemy(victim, attacker, damage);
 		}
 		case WEAPON_BLEMISHINE:
 		{
-			if(!CheckInHud())
-				NPC_OnTakeDamage_Blemishine(attacker, victim, damage,weapon);
+			NPC_OnTakeDamage_Blemishine(attacker, victim, damage,weapon);
 		}
 		case WEAPON_HAZARD, WEAPON_HAZARD_UNSTABLE, WEAPON_HAZARD_LUNATIC, WEAPON_HAZARD_CHAOS, WEAPON_HAZARD_STABILIZED, WEAPON_HAZARD_DEMI, WEAPON_HAZARD_PERFECT:
 		{
-			if(!CheckInHud())
-				NPC_OnTakeDamage_Hazard(attacker, victim, damage,weapon);
+			NPC_OnTakeDamage_Hazard(attacker, victim, damage,weapon);
 		}
 		case WEAPON_CASINO:
 		{
-			if(!CheckInHud())
-				Npc_OnTakeDamage_Casino(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+			Npc_OnTakeDamage_Casino(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
 		case WEAPON_FANTASY_BLADE:
 		{
-			if(!CheckInHud())
-				Npc_OnTakeDamage_Fantasy_Blade(attacker, damagetype);
+			Npc_OnTakeDamage_Fantasy_Blade(attacker, damagetype);
 		}
 		case WEAPON_CHAINSAW:
 		{
-			if(!CheckInHud())
-				Npc_OnTakeDamage_Chainsaw(attacker, damagetype);
+			Npc_OnTakeDamage_Chainsaw(attacker, damagetype);
 		}
 		case WEAPON_SPEEDFISTS:
 		{
-			if(!CheckInHud())
-				Npc_OnTakeDamage_SpeedFists(attacker,victim, damage);
+			Npc_OnTakeDamage_SpeedFists(attacker,victim, damage);
 		}
 		case WEAPON_BOOMSTICK:
 		{
@@ -915,53 +858,43 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_VAMPKNIVES_1:
 		{
-			if(!CheckInHud())
-				Vamp_ApplyBloodlust(attacker, victim, 1, false, false);
+			Vamp_ApplyBloodlust(attacker, victim, 1, false, false);
 		}
 		case WEAPON_VAMPKNIVES_2:
 		{
-			if(!CheckInHud())
-				Vamp_ApplyBloodlust(attacker, victim, 2, false, false);
+			Vamp_ApplyBloodlust(attacker, victim, 2, false, false);
 		}
 		case WEAPON_VAMPKNIVES_2_CLEAVER:
 		{
-			if(!CheckInHud())
-				Vamp_ApplyBloodlust(attacker, victim, 2, true, false);
+			Vamp_ApplyBloodlust(attacker, victim, 2, true, false);
 		}
 		case WEAPON_VAMPKNIVES_3:
 		{
-			if(!CheckInHud())
-				Vamp_ApplyBloodlust(attacker, victim, 3, false, false);
+			Vamp_ApplyBloodlust(attacker, victim, 3, false, false);
 		}
 		case WEAPON_VAMPKNIVES_3_CLEAVER:
 		{
-			if(!CheckInHud())
-				Vamp_ApplyBloodlust(attacker, victim, 3, true, false);
+			Vamp_ApplyBloodlust(attacker, victim, 3, true, false);
 		}
 		case WEAPON_VAMPKNIVES_4:
 		{
-			if(!CheckInHud())
-				Vamp_ApplyBloodlust(attacker, victim, 4, false, false);
+			Vamp_ApplyBloodlust(attacker, victim, 4, false, false);
 		}
 		case WEAPON_VAMPKNIVES_4_CLEAVER:
 		{
-			if(!CheckInHud())
-				Vamp_ApplyBloodlust(attacker, victim, 4, true, false);
+			Vamp_ApplyBloodlust(attacker, victim, 4, true, false);
 		}
 		case WEAPON_SENSAL_SCYTHE, WEAPON_SENSAL_SCYTHE_PAP_1, WEAPON_SENSAL_SCYTHE_PAP_2, WEAPON_SENSAL_SCYTHE_PAP_3:
 		{
-			if(!CheckInHud())
-				WeaponSensal_Scythe_OnTakeDamage(attacker, victim,weapon, zr_custom_damage);
+			WeaponSensal_Scythe_OnTakeDamage(attacker, victim,weapon, zr_custom_damage);
 		}
 		case WEAPON_EXPLORER:
 		{
-			if(!CheckInHud())
-				WeaponVoidBlade_OnTakeDamage(attacker, victim, zr_custom_damage);
+			WeaponVoidBlade_OnTakeDamage(attacker, victim, zr_custom_damage);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{
-			if(!CheckInHud())
-				WeaponLeper_OnTakeDamage(attacker, damage,weapon, zr_custom_damage);
+			WeaponLeper_OnTakeDamage(attacker, damage,weapon, zr_custom_damage);
 		}
 		case WEAPON_URANIUM_RIFLE:
 		{
@@ -969,97 +902,79 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_TEXAN_BUISNESS:
 		{
-			if(!CheckInHud())
-				Weapon_TexanBuisness(attacker, damage, damagetype);
+			Weapon_TexanBuisness(attacker, damage, damagetype);
 		}
 		case WEAPON_ANGELIC_SHOTGUN:
 		{
-			if(!CheckInHud())
-				Weapon_AngelicShotgun(attacker, damage, damagetype);
+			Weapon_AngelicShotgun(attacker, damage, damagetype);
 		}
 		case WEAPON_RAPIER:
 		{
-			if(!CheckInHud())
-				NPC_OnTakeDamage_Rapier(attacker, victim, damage, weapon);
+			NPC_OnTakeDamage_Rapier(attacker, victim, damage, weapon);
 		}
 		case WEAPON_GRAVATON_WAND:
 		{
-			if(!CheckInHud())
-				NPC_OnTakeDmg_Gravaton_Wand(attacker, damagetype);
+			NPC_OnTakeDmg_Gravaton_Wand(attacker, damagetype);
 		}
 		case WEAPON_RED_BLADE:
 		{
-			if(!CheckInHud())
-				WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
+			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
 		}
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL, WEAPON_WALDCH_SWORD_REAL:
 		{
-			return Npc_OnTakeDamage_Siccerino(attacker, victim, damage, weapon, damagetype);
+			return Npc_OnTakeDamage_Siccerino(attacker, victim, damage, weapon);
 		}
 		case WEAPON_DIMENSION_RIPPER:
 		{
-			if(!CheckInHud())
-				Npc_OnTakeDamage_DimensionalRipper(attacker);
+			Npc_OnTakeDamage_DimensionalRipper(attacker);
 		}	
 		case WEAPON_OBUCH:
 		{
-			if(!CheckInHud())
-				Npc_OnTakeDamage_ObuchHammer(attacker, weapon);
+			Npc_OnTakeDamage_ObuchHammer(attacker, weapon);
 		}
 		case WEAPON_MERCHANT:
 		{
-			if(!CheckInHud())
-				Merchant_NPCTakeDamage(victim, attacker, damage, weapon);
+			Merchant_NPCTakeDamage(victim, attacker, damage, weapon);
 		}
 		case WEAPON_MERCHANTGUN:
 		{
-			if(!CheckInHud())
-				Merchant_GunTakeDamage(victim, attacker, damage);
+			Merchant_GunTakeDamage(victim, attacker, damage);
 		}
 		case WEAPON_RUSTY_RIFLE:
 		{
-			if(!CheckInHud())
-				return Rusty_OnNPCDamaged(victim, attacker, damage);
+			return Rusty_OnNPCDamaged(victim, attacker, damage);
 		}
 		case WEAPON_FLAMETAIL:
 		{
-			if(!CheckInHud())
-				Flametail_NPCTakeDamage(attacker, damage, weapon, damagePosition);
+			Flametail_NPCTakeDamage(attacker, damage, weapon, damagePosition);
 		}
 		case WEAPON_MAGNESIS:
 		{
-			if(!CheckInHud())
-				Magnesis_OnNPCDamaged(victim, damage);
+			Magnesis_OnNPCDamaged(victim, damage);
 		}
 		case WEAPON_WRATHFUL_BLADE:
 		{
-			if(!CheckInHud())
-				return WrathfulBlade_OnNPCDamaged(victim, attacker, weapon, damage, inflictor);
+			return WrathfulBlade_OnNPCDamaged(victim, attacker, weapon, damage, inflictor);
 		}
 		case WEAPON_SUPERUBERSAW:
 		{
-			if(!CheckInHud())
-				Superubersaw_OnTakeDamage(victim, attacker, damage);
+			Superubersaw_OnTakeDamage(victim, attacker, damage);
 		}
 		case WEAPON_YAKUZA:
 		{
-			if(!CheckInHud())
-				Yakuza_NPCTakeDamage(victim, attacker, damage, weapon);
+			Yakuza_NPCTakeDamage(victim, attacker, damage, weapon);
 		}
 		case WEAPON_SKADI:
 		{
-			if(!CheckInHud())
-				WeaponSkadi_OnTakeDamageNpc(attacker,damage);
+			WeaponSkadi_OnTakeDamageNpc(attacker,damage);
 		}
 		case WEAPON_WALTER:
 		{
-			if(!CheckInHud())
-				Walter_NPCTakeDamage(victim, attacker, damage, weapon);
+			Walter_NPCTakeDamage(victim, attacker, damage, weapon);
 		}
 		case WEAPON_CASTLEBREAKER:
 		{
-			if(!CheckInHud())
-				WeaponCastleBreaker_OnTakeDamageNpc(attacker, victim, damage, weapon, damagetype);
+			WeaponCastleBreaker_OnTakeDamageNpc(attacker, victim, damage, weapon, damagetype);
 		}
 	}
 #endif
@@ -1344,6 +1259,19 @@ static stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int 
 }
 #endif
 
+static stock void OnTakeDamageVehicleDamage(int &attacker, int &inflictor, float &damage, int &damagetype)
+{
+	if((damagetype & DMG_VEHICLE) && IsValidEntity(inflictor) && b_IsVehicle[inflictor])
+	{
+		static ConVar cvar;
+		if(!cvar)
+			cvar = FindConVar("vehicle_physics_damage_modifier");
+		
+		if(cvar)
+			damage *= cvar.FloatValue;
+	}
+}
+
 #if !defined RTS
 static stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {	
@@ -1544,6 +1472,24 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 }
 #endif	// Non-RTS
 
+static stock bool OnTakeDamageBuildingBonusDamage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
+{	
+	if(IsValidEntity(inflictor) && inflictor>MaxClients)// && attacker<=MaxClients)
+	{
+		if(i_IsABuilding[inflictor])
+		{
+			if(Increaced_Sentry_damage_Low[inflictor] > GameTime)
+			{
+				damage *= 1.15;
+			}
+			else if(Increaced_Sentry_damage_High[inflictor] > GameTime)
+			{
+				damage *= 1.3;
+			}
+		}
+	}
+	return false;
+}
 
 #if !defined RTS
 static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
@@ -1690,7 +1636,7 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	}
 #endif
 #if defined RPG	
-	if(!CheckInHud() && damagePosition[2] != 6969420.0)
+	if(damagePosition[2] != 6969420.0)
 	{
 		//There is crit damage from this item.
 		damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);

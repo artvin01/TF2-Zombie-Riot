@@ -314,7 +314,7 @@ public Action DDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		npc.PlayHitSound();
 	}
-	else if((damagetype & DMG_BLAST))
+	else if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
 	{
 		damage *= 0.15;
 

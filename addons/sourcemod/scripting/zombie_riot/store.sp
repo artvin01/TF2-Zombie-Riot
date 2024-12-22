@@ -5518,7 +5518,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_WeaponAmmoAdjustable[entity] = info.AmmoBuyMenuOnly;
 					}
-					OriginalWeapon_AmmoType[entity] = -1;
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
@@ -5528,7 +5527,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								if(info.Ammo == 30)
 								{
 									SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", -1);
-									OriginalWeapon_AmmoType[entity] = -1;
 								}
 								else
 								{
@@ -5560,7 +5558,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									if(info.Ammo) //my man broke my shit.
 									{
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
-										OriginalWeapon_AmmoType[entity] = info.Ammo;
 									}
 								}
 							}
@@ -6842,8 +6839,4 @@ void Store_WeaponUpgradeByOnePap(int client, int weapon)
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
 	}
-}
-int GetAmmoType_WeaponPrimary(int weapon)
-{
-	return OriginalWeapon_AmmoType[weapon];
 }

@@ -393,8 +393,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 						
 						ApplyStatusEffect(owner, healTarget, "Healing Strength", 1.0);
-						ApplyStatusEffect(owner, healTarget, "Healing Resolve", 1.0);
-						ApplyStatusEffect(owner, owner, "Healing Strength", 1.0);
+						ApplyStatusEffect(owner, owner, "Healing Resolve", 1.0);
+						ApplyStatusEffect(owner, healTarget, "Healing Strength", 1.0);
 						ApplyStatusEffect(owner, owner, "Healing Resolve", 1.0);
 						
 					}

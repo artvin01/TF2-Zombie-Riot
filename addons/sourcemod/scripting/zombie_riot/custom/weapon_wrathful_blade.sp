@@ -126,16 +126,24 @@ void Wrathful_Blade_Precache()
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
-float Player_OnTakeDamage_WrathfulBlade(int victim, float &damage)
+float Player_OnTakeDamage_WrathfulBlade(int victim, float &damage, int attacker)
 {
-	if (Fury_Active[victim]/* && attacker != 0*/)
+	if (Fury_Active[victim] && attacker != 0)
 	{
 		damage *= Fury_ResMult[Fury_Tier[victim]];
 	}
-	if(!CheckInHud())
-		Fury_DamagedAt[victim] = GetGameTime() + 3.0;
+
+	Fury_DamagedAt[victim] = GetGameTime() + 3.0;
 
 	return damage;
+}
+
+float Player_OnTakeDamage_WrathfulBlade_Hud(int victim)
+{
+	if (Fury_Active[victim])
+		return Fury_ResMult[Fury_Tier[victim]];
+
+	return 1.0;
 }
 
 void WrathfulBlade_OnKill(int client, int victim)

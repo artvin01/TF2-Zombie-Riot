@@ -1,4 +1,6 @@
 #pragma semicolon 1
+//#pragma dynamic    131072
+//Allah This plugin has so much we need to do this.
 
 enum ParticleAttachment_t {
 	PATTACH_ABSORIGIN = 0,
