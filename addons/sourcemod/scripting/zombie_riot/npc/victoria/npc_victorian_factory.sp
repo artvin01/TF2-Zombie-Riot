@@ -211,7 +211,7 @@ static void ClotThink(int iNPC)
 					{
 						float MaxHealth = float(ReturnEntityMaxHealth(entity));
 						float damage=(MaxHealth*2.0);
-						SDKHooks_TakeDamage(entity, npc.index, npc.index, damage, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+						SDKHooks_TakeDamage(entity, npc.index, npc.index, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 					}
 				}
 			}
@@ -224,7 +224,7 @@ static void ClotThink(int iNPC)
 					if(distance<=200.0)
 					{
 						int health = GetClientHealth(target);
-						SDKHooks_TakeDamage(target, npc.index, npc.index, float(health)*10.0, DMG_SLASH|DMG_CRIT);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, float(health)*10.0, DMG_TRUEDAMAGE|DMG_CRIT);
 					}
 				}
 			}

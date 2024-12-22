@@ -298,8 +298,11 @@ void Gladiia_OnTakeDamageEnemy(int victim, int attacker, float &damage)
 	}
 }
 
-float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage)
+float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage, int damagetype)
 {
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
+
 	switch(EliteLevel[victim])
 	{
 		case 1:
@@ -321,12 +324,14 @@ float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage)
 	return damage;
 }
 
-float Gladiia_OnTakeDamageAlly(int victim, int attacker, float damage)
+float Gladiia_OnTakeDamageAlly(int victim, int attacker, float damage, int damagetype)
 {
 	if(EliteLevel[victim])	// Being two fishes are we?
 		return damage;
-	
-	return Gladiia_OnTakeDamageSelf(GetHighestGladiiaClient(), attacker, damage);
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
+
+	return Gladiia_OnTakeDamageSelf(GetHighestGladiiaClient(), attacker, damage, damagetype);
 }
 
 static int GetHighestGladiiaClient()

@@ -248,103 +248,100 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		{
 			return;
 		}
-		if(!(damagetype & DMG_SLASH)) //Exclude itself so it doesnt do inf repeats! no weapon uses slash so we will use slash for any debuffs onto zombies that stacks
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
-			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+			float value = Attributes_Get(weapon, 16, 0.0) +
+				Attributes_Get(weapon, 98, 0.0) +
+				Attributes_Get(weapon, 110, 0.0) +
+				Attributes_Get(weapon, 111, 0.0);	// add_onhit_addhealth
+				
+			if(value)
 			{
-				float value = Attributes_Get(weapon, 16, 0.0) +
-					Attributes_Get(weapon, 98, 0.0) +
-					Attributes_Get(weapon, 110, 0.0) +
-					Attributes_Get(weapon, 111, 0.0);	// add_onhit_addhealth
+				HealEntityGlobal(client, client, value, 1.0, 0.0, HEAL_SELFHEAL);
+			}
+			
+	
+			value = Attributes_Get(weapon, 149, 0.0);	// bleeding duration
+			if(value)
+				StartBleedingTimer(victim, client, Attributes_Get(weapon, 2, 1.0) * 4.0, RoundFloat(value * 2.0), weapon, damagetype);
+			
+			value = Attributes_Get(weapon, 208, 0.0);	// Set DamageType Ignite
+
+			if(value)
+			{
+
+				if(value == 1.0)
+					value = 7.5;
+
+				if(value < 1.0)
+					value = 2.0;
 					
-				if(value)
+				NPC_Ignite(victim, client, value, weapon);
+			}	
+			
+			if(Attributes_Get(weapon, 638, 0.0))	// Extinquisher
+			{
+				if(IgniteFor[victim] > 0)
 				{
-					HealEntityGlobal(client, client, value, 1.0, 0.0, HEAL_SELFHEAL);
+					damage *= 1.5;
+					DisplayCritAboveNpc(victim, client, true);
 				}
-				
-		
-				value = Attributes_Get(weapon, 149, 0.0);	// bleeding duration
-				if(value)
-					StartBleedingTimer(victim, client, Attributes_Get(weapon, 2, 1.0) * 4.0, RoundFloat(value * 2.0), weapon, damagetype);
-				
-				value = Attributes_Get(weapon, 208, 0.0);	// Set DamageType Ignite
-
-				if(value)
+				//dont actually extinquish, just give them more damage.
+			}
+			
+			value = Attributes_Get(weapon, 17, 0.0);
+			if(value)
+			{
+				if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
 				{
-
-					if(value == 1.0)
-						value = 7.5;
-
-					if(value < 1.0)
-						value = 2.0;
+					// add uber charge on hit
+					
+					ArrayList list = new ArrayList();
 						
-					NPC_Ignite(victim, client, value, weapon);
-				}	
-				
-				if(Attributes_Get(weapon, 638, 0.0))	// Extinquisher
-				{
-					if(IgniteFor[victim] > 0)
+					int entity, i;
+					while(TF2_GetItem(client, entity, i))
 					{
-						damage *= 1.5;
-						DisplayCritAboveNpc(victim, client, true);
+						if(b_IsAMedigun[entity])
+							list.Push(entity);
 					}
-					//dont actually extinquish, just give them more damage.
-				}
-				
-				value = Attributes_Get(weapon, 17, 0.0);
-				if(value)
-				{
-					if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
-					{
-						// add uber charge on hit
-						
-						ArrayList list = new ArrayList();
-							
-						int entity, i;
-						while(TF2_GetItem(client, entity, i))
-						{
-							if(b_IsAMedigun[entity])
-								list.Push(entity);
-						}
 
-						int length = list.Length;
-						if(length)
+					int length = list.Length;
+					if(length)
+					{
+						value /= float(length);
+						float extra;
+						for(i = length - 1; i >= 0; i--)
 						{
-							value /= float(length);
-							float extra;
-							for(i = length - 1; i >= 0; i--)
+							entity = list.Get(i);
+							float uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+							if(Attributes_Get(entity, 2046, 0.0) == 4.0)
 							{
-								entity = list.Get(i);
-								float uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-								if(Attributes_Get(entity, 2046, 0.0) == 4.0)
-								{
-									uber -= value + extra;
-								}
-								else
-								{
-									uber += value + extra;
-								}
-									
-								if(uber > 1.0)
-								{
-									extra = uber - 1.0;
-									uber = 1.0;
-								}
-								else if(uber < 0.0)
-								{
-									extra = -uber;
-									uber = 0.0;
-								}
-								else
-								{
-									extra = 0.0;
-								}
-									
-								SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", uber);
+								uber -= value + extra;
 							}
+							else
+							{
+								uber += value + extra;
+							}
+								
+							if(uber > 1.0)
+							{
+								extra = uber - 1.0;
+								uber = 1.0;
+							}
+							else if(uber < 0.0)
+							{
+								extra = -uber;
+								uber = 0.0;
+							}
+							else
+							{
+								extra = 0.0;
+							}
+								
+							SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", uber);
 						}
-						delete list;
 					}
+					delete list;
 				}
 			}
 		}

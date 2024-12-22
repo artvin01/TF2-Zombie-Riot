@@ -29,7 +29,6 @@ bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 float Medival_Difficulty_Level = 0.0;
-bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
@@ -8171,7 +8170,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
-	b_ThisNpcIsSawrunner[entity] = false;
 	f_AvoidObstacleNavTime[entity] = 0.0;
 	b_NameNoTranslation[entity] = false;
 #endif
@@ -9894,7 +9892,7 @@ stock void SmiteNpcToDeath(int entity)
 		return;
 		
 	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
-	CBaseCombatCharacter_EventKilledLocal(entity, 0, 0, 1.0, DMG_SLASH, -1, {0.0,0.0,0.0}, {0.0,0.0,0.0});
+	CBaseCombatCharacter_EventKilledLocal(entity, 0, 0, 1.0, DMG_TRUEDAMAGE, -1, {0.0,0.0,0.0}, {0.0,0.0,0.0});
 }
 
 void MapStartResetNpc()
@@ -10664,7 +10662,7 @@ stock void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 			NpcStuckZoneWarning(client, damage, 0);	
 			if(damage >= 0.25)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
 			}
 		}
 	}

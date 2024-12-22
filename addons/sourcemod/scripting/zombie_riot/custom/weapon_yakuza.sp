@@ -973,42 +973,45 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 
 void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damagetype, int weapon)
 {
-	if(LastMann)
+	if(!(damagetype & DMG_TRUEDAMAGE))
 	{
-		damage *= 0.75;
-	}
-	if(WeaponStyle[victim] == Style_Brawler)
-		damage *= 0.90;
-
-	if(WeaponStyle[victim] == Style_Dragon)
-		damage *= 0.8;
-
-	if(WeaponStyle[victim] == Style_Beast)
-	{
-		if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
-			damage *= 0.7;
-		else
-			damage *= 0.8;
-	}
-
-	if((damagetype & DMG_SLASH) || attacker <= MaxClients)
-		return;
-	
-	//You actually gain alot of heat with brawler mode when blocking!
-	//todo: add logic during brawlermode and Dragon mode
-	//dragon mode has limited heatgain on block in kiwami, but with hnow ZR works and how dragonmode works here, it sohuldnt be limited.
-	
-	//With beastmode, you cant actually block youre just immune to knockback, but that in ZR sucks, so it should be the best to block with.
-	if((damagetype & DMG_CLUB) && BlockNextFor[victim] > GetGameTime())
-	{
-		if(!CheckInHud())
+		if(LastMann)
 		{
-			int rand = (GetURandomInt() % 4) + 1;
-			ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
-			ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
+			damage *= 0.75;
 		}
-		damage = 0.0;
-		return;
+		if(WeaponStyle[victim] == Style_Brawler)
+			damage *= 0.90;
+
+		if(WeaponStyle[victim] == Style_Dragon)
+			damage *= 0.8;
+
+		if(WeaponStyle[victim] == Style_Beast)
+		{
+			if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
+				damage *= 0.7;
+			else
+				damage *= 0.8;
+		}
+
+		if((damagetype & DMG_TRUEDAMAGE) || attacker <= MaxClients)
+			return;
+		
+		//You actually gain alot of heat with brawler mode when blocking!
+		//todo: add logic during brawlermode and Dragon mode
+		//dragon mode has limited heatgain on block in kiwami, but with hnow ZR works and how dragonmode works here, it sohuldnt be limited.
+		
+		//With beastmode, you cant actually block youre just immune to knockback, but that in ZR sucks, so it should be the best to block with.
+		if((damagetype & DMG_CLUB) && BlockNextFor[victim] > GetGameTime())
+		{
+			if(!CheckInHud())
+			{
+				int rand = (GetURandomInt() % 4) + 1;
+				ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
+				ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
+			}
+			damage = 0.0;
+			return;
+		}
 	}
 	if(!CheckInHud())
 		Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));

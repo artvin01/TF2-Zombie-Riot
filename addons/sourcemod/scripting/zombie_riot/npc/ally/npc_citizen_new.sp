@@ -4551,7 +4551,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			{
 				damage *= 0.7;
 
-				if(damagetype & (DMG_CLUB|DMG_SLASH))
+				if(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))
 				{
 					if(value > 40000)
 					{

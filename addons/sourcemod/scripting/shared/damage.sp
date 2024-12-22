@@ -113,7 +113,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 #endif
 
 #if defined ZR
-	if(attacker > MaxClients && b_ThisNpcIsSawrunner[attacker])
+	if(attacker > MaxClients)
 		return false;
 
 	if(attacker <= MaxClients && attacker > 0 && attacker != 0)
@@ -137,6 +137,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	{
 		if(!CheckInHud())
 			OnTakeDamage_ProvokedAnger(Victim_weapon);
+
 		damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
 	}
 	
@@ -165,8 +166,10 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 					ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
 					
 					EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 80, _, 1.0);
-					
-					damage *= 0.25;
+
+					if(!(damagetype & DMG_TRUEDAMAGE))
+						damage *= 0.25;
+						
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 					{
 						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
@@ -244,8 +247,11 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 
 		if(armorEnt == victim)
 		{
-			float percentage = ArmorPlayerReduction(victim);
-			damage *= percentage;
+			if(!(damagetype & DMG_TRUEDAMAGE))
+			{
+				float percentage = ArmorPlayerReduction(victim);
+					damage *= percentage;
+			}
 		}
 		else
 		{
@@ -258,19 +264,22 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(!CheckInHud())
 		Player_Ability_Warcry_OnTakeDamage(victim, damage);
 
-	if(TrueStength_ClientBuff(victim))
+	if(!(damagetype & DMG_TRUEDAMAGE) && TrueStength_ClientBuff(victim))
 		damage *= 0.85;
 
 	switch(BubbleProcStatusLogicCheck(victim))
 	{
 		case -1:
-			damage *= 0.85;
+		{
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				damage *= 0.85;
+		}
 		
 		case 1:
 			damage *= 1.15;
 	}
 
-	if(WarCry_Enabled_Buff(victim))
+	if(WarCry_Enabled_Buff(victim) && !(damagetype & DMG_TRUEDAMAGE))
 		damage *= WarCry_ResistanceBuff(victim);
 	
 	RPG_BobsPureRage(victim, attacker, damage);
@@ -358,6 +367,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 #endif
 		
 #if defined ZR || defined NOG
+		//true damage does NOT Ignore this.
 		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,i_HexCustomDamageTypes[victim], weapon);
 #endif
 
@@ -538,7 +548,7 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 	if(b_ThisEntityIgnored[victim])
 	{
 		//True damage ignores this.
-		if(!(damagetype & (DMG_SLASH)))
+		if(!(damagetype & (DMG_TRUEDAMAGE)))
 		{
 			damage = 0.0;
 			return true;
@@ -575,7 +585,7 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker,inflictor, basedamage, damagetype);
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
-	if(GetTeam(attacker) != TFTeam_Red && Medival_Difficulty_Level != 0.0)
+	if(attacker >= MaxClients && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0)
 	{
 		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
 	}
@@ -597,7 +607,7 @@ stock bool Damage_PlayerAttacker(int victim, int &attacker, int &inflictor, floa
 stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
-	if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
+	if(!(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))) //if its not melee damage
 	{
 		if(i_CurrentEquippedPerk[attacker] == 5)
 		{
@@ -624,21 +634,21 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	{
 		case WEAPON_ARK: // weapon_ark
 		{
-			return Player_OnTakeDamage_Ark(victim, damage, attacker, equipped_weapon, damagePosition);
+			return Player_OnTakeDamage_Ark(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
 		}
 		case WEAPON_NEARL, WEAPON_FUSION_PAP2:
 		{
 			if(!CheckInHud())
-				return Player_OnTakeDamage_Fusion(victim, damage, attacker, equipped_weapon, damagePosition);
+				return Player_OnTakeDamage_Fusion(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
 		}
 		case WEAPON_EXPLORER:
 		{
-			return Player_OnTakeDamage_VoidBlade(victim, damage, attacker, equipped_weapon, damagePosition);
+			return Player_OnTakeDamage_VoidBlade(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
 		}
 		case WEAPON_RIOT_SHIELD:
 		{
 			if(!CheckInHud())
-				return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition);
+				return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
 		}
 		case WEAPON_MLYNAR: // weapon_ark
 		{
@@ -661,25 +671,25 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 				Ulpianus_OnTakeDamageSelf(victim);
 				
 			if(!CheckInHud() && i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_SKADI)
-				WeaponSkadi_OnTakeDamage(attacker, victim, damage);
+				WeaponSkadi_OnTakeDamage(attacker, victim, damage, damagetype);
 			
-			return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
+			return Gladiia_OnTakeDamageAlly(victim, attacker, damage, damagetype);
 		}
 		case WEAPON_GLADIIA:
 		{
-			return Gladiia_OnTakeDamageSelf(victim, attacker, damage);
+			return Gladiia_OnTakeDamageSelf(victim, attacker, damage, damagetype);
 		}
 		case WEAPON_BLEMISHINE:
 		{
-			return Player_OnTakeDamage_Blemishine(victim, attacker, damage);
+			return Player_OnTakeDamage_Blemishine(victim, attacker, damage, damagetype);
 		}
 		case WEAPON_BOARD:
 		{
-			return Player_OnTakeDamage_Board(victim, damage, attacker, equipped_weapon, damagePosition);
+			return Player_OnTakeDamage_Board(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{
-			return WeaponLeper_OnTakeDamagePlayer(victim, damage, attacker, equipped_weapon, damagePosition);
+			return WeaponLeper_OnTakeDamagePlayer(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
 		}
 		case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL:
 		{
@@ -688,16 +698,20 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_RAPIER:
 		{
-			Player_OnTakeDamage_Rapier(victim, attacker, damage);
+			//uhhh idk
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				Player_OnTakeDamage_Rapier(victim, attacker, damage);
 		}
 		case WEAPON_RED_BLADE:
 		{
-			WeaponRedBlade_OnTakeDamage(attacker, victim, damage);
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				WeaponRedBlade_OnTakeDamage(attacker, victim, damage);
 		}
 		case WEAPON_HEAVY_PARTICLE_RIFLE:
 		{
-			if(!CheckInHud())
-				return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				if(!CheckInHud())
+					return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
 		case WEAPON_MERCHANT:
 		{
@@ -711,12 +725,14 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_WRATHFUL_BLADE:
 		{
-			Player_OnTakeDamage_WrathfulBlade(victim, damage);
-		}
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				Player_OnTakeDamage_WrathfulBlade(victim, damage);
+		}	
 		case WEAPON_MAGNESIS:
 		{
-			if(!CheckInHud())
-				Player_OnTakeDamage_Magnesis(victim, damage, attacker);
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				if(!CheckInHud())
+					Player_OnTakeDamage_Magnesis(victim, damage, attacker);
 		}
 		case WEAPON_YAKUZA:
 		{
@@ -724,11 +740,13 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_FULLMOON:
 		{
-			FullMoon_SanctuaryApplyBuffs(victim, damage);
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				FullMoon_SanctuaryApplyBuffs(victim, damage);
 		}
 		case WEAPON_CASTLEBREAKER:
 		{
-			WeaponCastleBreaker_OnTakeDamage(victim, damage);
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				WeaponCastleBreaker_OnTakeDamage(victim, damage);
 		}
 	}
 	return damage;
@@ -1209,7 +1227,7 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 		}
 		damage *= fl_TotalArmor[victim];
 	}
-	else if(!(damagetype & DMG_SLASH))
+	else if(!(damagetype & DMG_TRUEDAMAGE))
 	{
 		if(!trueArmorOnly)
 		{
@@ -1241,7 +1259,7 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 		}
 		damage *= fl_TotalArmor[victim];
 	}
-	else if((damagetype & DMG_SLASH))
+	else if((damagetype & DMG_TRUEDAMAGE))
 	{
 		if(!trueArmorOnly)
 		{
@@ -1251,17 +1269,30 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 				damage *= 1.25;
 			}
 #endif
-			if(fl_RangedArmor[victim] > 1.0)
-				damage *= fl_RangedArmor[victim];
-			if(fl_Extra_RangedArmor[victim] > 1.0)
-				damage *= fl_Extra_RangedArmor[victim];
-			if(fl_MeleeArmor[victim] > 1.0)
-				damage *= fl_MeleeArmor[victim];
-			if(fl_Extra_MeleeArmor[victim] > 1.0)
-				damage *= fl_Extra_MeleeArmor[victim];
+			//we will treat these as if it was just one.
+			float TotalRangedRes = fl_TotalArmor[victim] * fl_RangedArmor[victim] * fl_Extra_RangedArmor[victim];
+			float TotalMeleeRes = fl_TotalArmor[victim] * fl_MeleeArmor[victim] * fl_Extra_MeleeArmor[victim];
+
+			//for truedamage, only take in the weakest.
+			if(TotalRangedRes >= 1.0 || TotalMeleeRes >= 1.0)
+			{
+				if(TotalRangedRes >= TotalMeleeRes)
+				{
+					damage *= TotalRangedRes;
+				}
+				else
+				{
+					damage *= TotalMeleeRes;
+				}
+				//any is bigger.
+			}
 		}
-		if(fl_TotalArmor[victim] > 1.0)
-			damage *= fl_TotalArmor[victim];
+		else
+		{
+			//idk jsut multi fuck it.
+			if(fl_TotalArmor[victim] > 1.0)
+				damage *= fl_TotalArmor[victim];
+		}
 	}
 	if(!trueArmorOnly)
 	{
@@ -1285,7 +1316,9 @@ static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflict
 				
 			EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 60, _, 1.0);
 
-			damage *= 0.5;
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				damage *= 0.5;
+
 			ApplyStatusEffect(attacker, attacker, "Widows Wine", FL_WIDOWS_WINE_DURATION_NPC);
 		}
 	}
@@ -1622,7 +1655,8 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 #if defined ZR
 	if(GetTeam(victim) == 2 && Rogue_GetChaosLevel() > 0)
 	{
-		DamageRes *= 0.95;
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			DamageRes *= 0.95;
 	}
 #endif
 			
@@ -1631,7 +1665,8 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	{
 		case -1:
 		{
-			DamageRes *= 0.85;
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				DamageRes *= 0.85;
 		}
 		case 1:
 		{
@@ -1657,17 +1692,20 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		damage *= 1.5;
 	}
 #endif
+
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
-		damage *= f_MultiDamageTaken[victim];
+		if(f_MultiDamageTaken[victim] <= 1.0 && (!(damagetype & DMG_TRUEDAMAGE)))
+			damage *= f_MultiDamageTaken[victim];
 	}
 	if(f_MultiDamageTaken_Flat[victim] != 1.0)
 	{
-		damage *= f_MultiDamageTaken_Flat[victim];
+		if(f_MultiDamageTaken_Flat[victim] <= 1.0 && (!(damagetype & DMG_TRUEDAMAGE)))
+			damage *= f_MultiDamageTaken_Flat[victim];
 	}
 
 #if defined ZR
-	if(i_CurrentEquippedPerk[victim] == 2)
+	if(i_CurrentEquippedPerk[victim] == 2 && (!(damagetype & DMG_TRUEDAMAGE)))
 		damage *= 0.85;
 #endif
 }
@@ -1679,7 +1717,7 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	{
 		if(b_ThisWasAnNpc[inflictor])
 		{
-			if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
+			if(!(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))) //if its not melee damage
 			{
 				if(i_CurrentEquippedPerk[inflictor] == 5)
 				{

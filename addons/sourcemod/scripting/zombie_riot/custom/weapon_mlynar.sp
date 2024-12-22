@@ -547,7 +547,7 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		pack.WriteCell(EntIndexToEntRef(victim));
 		pack.WriteCell(EntIndexToEntRef(victim));
 		pack.WriteFloat(damageModif);
-		pack.WriteCell(DMG_SLASH);
+		pack.WriteCell(DMG_TRUEDAMAGE);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteFloat(0.0);
 		pack.WriteFloat(0.0);

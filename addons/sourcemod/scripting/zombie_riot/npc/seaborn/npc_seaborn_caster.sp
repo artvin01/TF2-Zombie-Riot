@@ -90,8 +90,6 @@ methodmap SeabornCaster < CClotBody
 		func_NPCDeath[npc.index] = SeabornCaster_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = SeabornCaster_ClotThink;
-
-		b_ThisNpcIsSawrunner[npc.index] = true;
 		
 		npc.m_flSpeed = 230.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -177,7 +175,7 @@ public void SeabornCaster_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
-				npc.FireParticleRocket(vecTarget, 180.0, 600.0, 150.0, "raygun_projectile_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
+				npc.FireParticleRocket(vecTarget, 180.0, 600.0, 150.0, "raygun_projectile_blue", true, true, _, _, EP_DEALS_TRUE_DAMAGE);
 			}
 
 			npc.m_flSpeed = 115.0;

@@ -1419,7 +1419,7 @@ static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float
 	int green = 200;
 	int blue = 200;
 	int colorLayer4[4];
-	float diameter = float(5 * 4);
+	float diameter = float(10 * 4);
 	SetColorRGBA(colorLayer4, red, green, blue, 200);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
@@ -1432,7 +1432,7 @@ static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float
 	TE_SendToAll(0.0);
 	int glowColor[4];
 	SetColorRGBA(glowColor, red, green, blue, 200);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.2), 0, 0.5, glowColor, 0);
 	TE_SendToAll(0.0);
 
 	DataPack pack = new DataPack();
@@ -1805,13 +1805,11 @@ static bool Victoria_Support(Harrison npc)
 			TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[enemy[i]]), position, NULL_VECTOR, NULL_VECTOR);
 			position[2] += 100.0;
 			
-			b_ThisNpcIsSawrunner[npc.index] = true;
-			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
 			if(YaWeFxxked[npc.index])
 				Explode_Logic_Custom(9001.0, 0, npc.index, -1, position, 1000.0, 1.0, _, true, 20, _, _, FxxkOFF);
 			else
 				Explode_Logic_Custom((YaWeFxxked[npc.index] ? 9001.0 : 100.0*RaidModeScaling), 0, npc.index, -1, position, (YaWeFxxked[npc.index] ? 1000.0 : 125.0), 1.0, _, true, 20);
-			b_ThisNpcIsSawrunner[npc.index] = false;
 			ParticleEffectAt(position, "hightower_explosion", 1.0);
 			i_ExplosiveProjectileHexArray[npc.index] = 0; 
 			Vs_Fired = true;
