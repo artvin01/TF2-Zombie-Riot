@@ -1461,10 +1461,6 @@ static void lunar_Radiance(Twirl npc)
 
 		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
-	b_NoKnockbackFromSources[npc.index] = true;
-	b_CannotBeStunned[npc.index] = true;
-	b_CannotBeKnockedUp[npc.index] = true;
-	b_CannotBeSlowed[npc.index] = true;
 
 	switch(GetRandomInt(0, 17))
 	{
@@ -1549,11 +1545,6 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 
 	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-
-	b_NoKnockbackFromSources[npc.index] = false;
-	b_CannotBeStunned[npc.index] = false;
-	b_CannotBeKnockedUp[npc.index] = false;
-	b_CannotBeSlowed[npc.index] = false;
 
 	npc.m_flSpeed = fl_npc_basespeed;
 	npc.StartPathing();
@@ -2677,11 +2668,6 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 
 	npc.FaceTowards(Last_Pos, 10000.0);
 
-	b_NoKnockbackFromSources[npc.index] = true;
-	b_CannotBeStunned[npc.index] = true;
-	b_CannotBeKnockedUp[npc.index] = true;
-	b_CannotBeSlowed[npc.index] = true;
-
 	if(!npc.Anger)
 	{
 		NPC_StopPathing(npc.index);
@@ -2712,11 +2698,6 @@ static Action Retreat_Laser_Tick(int iNPC)
 		npc.StartPathing();
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-
-		b_NoKnockbackFromSources[npc.index] = false;
-		b_CannotBeStunned[npc.index] = false;
-		b_CannotBeKnockedUp[npc.index] = false;
-		b_CannotBeSlowed[npc.index] = false;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_iChanged_WalkCycle = 1;
@@ -3172,7 +3153,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(IsValidClient(attacker))
 	{
 		//doing it via "damage" instead of instances of damage so a player with a cheap high firerate weapon cant trick twirl into thinking they are a melee when they switch to a hyper bursty slow attacking weapon.
-		if(damagetype & DMG_TRUEDAMAGE || damagetype & DMG_CLUB)
+		if(damagetype & DMG_CLUB)
 			fl_player_weapon_score[attacker]+=damage;
 		else
 			fl_player_weapon_score[attacker]-=damage;
@@ -3435,13 +3416,25 @@ static void NPC_Death(int entity)
 		}
 		else
 		{
-			switch(GetRandomInt(0, 4))
+			if(b_tripple_raid[npc.index])
 			{
-				case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
-				case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
-				case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
-				case 3: Twirl_Lines(npc, "toodles!");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				switch(GetRandomInt(0, 2))
+				{
+					case 0: Twirl_Lines(npc, "Nice job.");
+					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
+					case 2: Twirl_Lines(npc, "Good luck with the rest~");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0, 4))
+				{
+					case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
+					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
+					case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
+					case 3: Twirl_Lines(npc, "toodles!");
+					case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				}
 			}
 		}
 	}
