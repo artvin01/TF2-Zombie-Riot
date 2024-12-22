@@ -575,7 +575,7 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker,inflictor, basedamage, damagetype);
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
-	if(GetTeam(attacker) != TFTeam_Red && Medival_Difficulty_Level != 0.0)
+	if(attacker >= MaxClients && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0)
 	{
 		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
 	}

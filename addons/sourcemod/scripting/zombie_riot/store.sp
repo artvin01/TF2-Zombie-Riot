@@ -5518,7 +5518,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_WeaponAmmoAdjustable[entity] = info.AmmoBuyMenuOnly;
 					}
-					OriginalWeapon_AmmoType[entity] = info.Ammo;
+					OriginalWeapon_AmmoType[entity] = -1;
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
