@@ -345,7 +345,7 @@ static void AgentSmith_ClotThink(int iNPC)
 		if(npc.m_flAbilityOrAttack0 <= gameTime)
         {
 			Smith_Timeslow(GetRandomFloat(1.0, 0.7), 3.0);
-			npc.m_flAbilityOrAttack0 = gameTime + 2.0;
+			npc.m_flAbilityOrAttack0 = gameTime + 1.0;
 			Agent_Smith_Cloner(npc, 1, RoundToCeil(75000.0 * MultiGlobalEnemy), 2.0);
         }
 	}
