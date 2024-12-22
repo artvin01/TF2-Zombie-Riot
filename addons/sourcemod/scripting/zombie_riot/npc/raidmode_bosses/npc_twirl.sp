@@ -2916,11 +2916,6 @@ static bool Magia_Overflow(Twirl npc)
 	npc.m_bInKame = true;
 	NPCStats_RemoveAllDebuffs(npc.index);
 
-	b_NoKnockbackFromSources[npc.index] = true;
-	b_CannotBeStunned[npc.index] = true;
-	b_CannotBeKnockedUp[npc.index] = true;
-	b_CannotBeSlowed[npc.index] = true;
-
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
 
@@ -2938,11 +2933,6 @@ static Action Magia_Overflow_Tick(int iNPC)
 		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
 		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
 
-		b_NoKnockbackFromSources[npc.index] = false;
-		b_CannotBeStunned[npc.index] = false;
-		b_CannotBeKnockedUp[npc.index] = false;
-		b_CannotBeSlowed[npc.index] = false;
-
 		npc.m_bisWalking = true;
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
@@ -2959,6 +2949,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 		return Plugin_Stop;
 	}
 	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 0.25);
+	ApplyStatusEffect(npc.index, npc.index, "Clear Head", 0.25);		//replace stun
 
 	npc.m_flSpeed = 0.0;	//DON'T MOVE
 

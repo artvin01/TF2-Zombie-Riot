@@ -280,6 +280,14 @@
 	{
 		"en"	"Thick Blood"
 	}
+	"Clear Head"
+	{
+		"en"	"Clear Head"
+	}
+	"Clear Head Desc"
+	{
+		"en"	"Immune to all stuns"
+	}
 	"Thick Blood Desc"
 	{
 		"en"	"Immune To all Bleed, cleanses all Bleed."

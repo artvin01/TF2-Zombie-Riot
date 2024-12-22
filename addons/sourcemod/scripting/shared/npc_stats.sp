@@ -8934,6 +8934,9 @@ public void KillNpc(int ref)
 
 stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = false)
 {
+	if(HasSpecificBuff(npc, "Clear Head"))
+		return;
+
 	if(!IgnoreAllLogic && b_CannotBeStunned[npc])
 		return;
 

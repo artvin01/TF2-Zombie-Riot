@@ -1265,10 +1265,6 @@ static bool Lunar_Grace(Stella npc)
 	SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
 	SDKHook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
 
-	b_CannotBeStunned[npc.index] = true;
-	b_CannotBeKnockedUp[npc.index] = true;
-	b_CannotBeSlowed[npc.index] = true;
-
 	npc.AddActivityViaSequence("secondrate_sorcery_medic");
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.0);
@@ -1317,10 +1313,6 @@ static Action Lunar_Grace_Tick(int iNPC)
 		npc.m_bAllowBackWalking = false;
 		npc.m_bKarlasRetreat = false;
 
-		b_CannotBeStunned[npc.index] = false;
-		b_CannotBeKnockedUp[npc.index] = false;
-		b_CannotBeSlowed[npc.index] = false;
-
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -1340,6 +1332,8 @@ static Action Lunar_Grace_Tick(int iNPC)
 		
 		struct_Lunar_Grace_Data[npc.index].Throttle = GameTime + 0.1;
 		Update = true;
+
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 0.25);		//replace stun
 	}
 
 	int color[4]; Ruina_Color(color);
@@ -1739,10 +1733,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 
 			default: CPrintToChatAll("%s It seems my master forgot to set a proper dialogue line for this specific number, how peculiar. Anyway, here's the ID: [%i]", npc.GetName(), npc.m_iNC_Dialogue);
 		}
-		b_NoKnockbackFromSources[npc.index] = true;
-		b_CannotBeStunned[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeSlowed[npc.index] = true;
+		
 		npc.AddActivityViaSequence("taunt_mourning_mercs_medic");
 		npc.SetPlaybackRate(2.0);	
 		npc.SetCycle(0.0);
@@ -1807,10 +1798,6 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		npc.m_bKarlasRetreat = false;
 		npc.m_iKarlasNCState = 0;
 		npc.SetCrestState(true);
-		b_NoKnockbackFromSources[npc.index] = false;
-		b_CannotBeStunned[npc.index] = false;
-		b_CannotBeKnockedUp[npc.index] = false;
-		b_CannotBeSlowed[npc.index] = false;
 
 		if(IsValidEntity(npc.m_iParticles2))	
 			RemoveEntity(npc.m_iParticles2);
@@ -1834,6 +1821,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	{
 		fl_NC_thorttle[npc.index] = GameTime + 0.1;
 		update = true;
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 0.25);		//replace stun
 	}
 
 	bool Silence = NpcStats_IsEnemySilenced(npc.index);

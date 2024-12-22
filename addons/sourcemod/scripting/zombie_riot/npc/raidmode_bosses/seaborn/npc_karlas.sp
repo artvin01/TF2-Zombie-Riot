@@ -771,6 +771,7 @@ static void Internal_ClotThink(int iNPC)
 		b_CannotBeStunned[npc.index] = false;
 		b_CannotBeKnockedUp[npc.index] = false;
 		b_CannotBeSlowed[npc.index] = false;
+		b_CannotBeKnockedUp[npc.index] = false;
 		npc.PlayAngerSoundPassed();
 		npc.SetPlaybackRate(1.0);
 
@@ -1516,10 +1517,6 @@ static void Fire_Wave_Barrage(Karlas npc)
 		npc.m_flSlicerBarrageCD = GameTime + 10.0;
 		npc.m_bisWalking = true;
 
-		b_CannotBeStunned[npc.index] = false;
-		b_CannotBeKnockedUp[npc.index] = false;
-		b_CannotBeSlowed[npc.index] = false;
-
 		npc.LanceState(true);
 		return;
 	}
@@ -1542,10 +1539,6 @@ static void Fire_Wave_Barrage(Karlas npc)
 		npc.m_iSlicersFired = 0;
 		npc.m_bisWalking = true;
 
-		b_CannotBeStunned[npc.index] = false;
-		b_CannotBeKnockedUp[npc.index] = false;
-		b_CannotBeSlowed[npc.index] = false;
-
 		npc.LanceState(true);
 		return;
 	}
@@ -1557,10 +1550,6 @@ static void Fire_Wave_Barrage(Karlas npc)
 		npc.m_bisWalking = false;
 		//look into using "setcycle" when we fire the projectile as we "crack" the hands, allowing us to "crack" an infinite amount of hands if we wanted to, to fire a proj
 		npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
-
-		b_CannotBeStunned[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeSlowed[npc.index] = true;
 
 		npc.m_flSlicerBarrageCD = FAR_FUTURE;
 
@@ -1689,10 +1678,7 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
-			b_NoKnockbackFromSources[npc.index] = true;
-			b_CannotBeStunned[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
-			b_CannotBeSlowed[npc.index] = true;
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", Time);		//replace stun
 
 			npc.LanceState(false);
 
@@ -1736,10 +1722,6 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 			//100 infront of the target
 			Test_Origin = Original_Origin;
 			Offset_Vector({100.0, 0.0, 0.0}, Angles, Test_Origin);
-			b_NoKnockbackFromSources[npc.index] = false;
-			b_CannotBeStunned[npc.index] = false;
-			b_CannotBeKnockedUp[npc.index] = false;
-			b_CannotBeSlowed[npc.index] = false;
 			
 
 			//float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
@@ -2273,6 +2255,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.SetCycle(0.01);
 		npc.Anger = true;
 
+		b_CannotBeKnockedUp[npc.index] = true;
 		b_CannotBeStunned[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
 		b_CannotBeSlowed[npc.index] = true;
