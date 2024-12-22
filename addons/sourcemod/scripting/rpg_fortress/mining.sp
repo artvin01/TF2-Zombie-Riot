@@ -169,7 +169,7 @@ public void AntiTouchStuckMine(int entity, int other)
 			{
 				f_ClientStartedTouch[other] = GetGameTime() + 5.0;
 				f_TouchedThisManyTimes[other] *= 2.0;
-				SDKHooks_TakeDamage(other, entity, entity, f_TouchedThisManyTimes[other], DMG_DROWN, -1);
+				SDKHooks_TakeDamage(other, entity, entity, f_TouchedThisManyTimes[other], DMG_TRUEDAMAGE, -1);
 
 				//Already touched before!
 			}
@@ -178,7 +178,7 @@ public void AntiTouchStuckMine(int entity, int other)
 				//new touch!
 				f_ClientStartedTouch[other] = GetGameTime() + 5.0;
 				f_TouchedThisManyTimes[other] = 1.0;
-				SDKHooks_TakeDamage(other, entity, entity, f_TouchedThisManyTimes[other], DMG_DROWN, -1);
+				SDKHooks_TakeDamage(other, entity, entity, f_TouchedThisManyTimes[other], DMG_TRUEDAMAGE, -1);
 			}
 		}
 	}

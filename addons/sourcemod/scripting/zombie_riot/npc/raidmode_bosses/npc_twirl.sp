@@ -3138,7 +3138,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(IsValidClient(attacker))
 	{
 		//doing it via "damage" instead of instances of damage so a player with a cheap high firerate weapon cant trick twirl into thinking they are a melee when they switch to a hyper bursty slow attacking weapon.
-		if(damagetype & DMG_SLASH || damagetype & DMG_CLUB)
+		if(damagetype & DMG_TRUEDAMAGE || damagetype & DMG_CLUB)
 			fl_player_weapon_score[attacker]+=damage;
 		else
 			fl_player_weapon_score[attacker]-=damage;

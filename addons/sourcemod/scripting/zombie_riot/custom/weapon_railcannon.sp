@@ -207,7 +207,7 @@ static Action Ability_ORC(Handle timer, DataPack pack)
 		Strength[client] = 500.0;
 		Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 		Strength[client] *= Attributes_Get(weapon, 2, 1.0);
-		Attack_Railcannon(client, 4, true);
+	//	Attack_Railcannon(client, 4, true);
 		SetEntityMoveType(client, MOVETYPE_WALK);
 	}
 
@@ -308,7 +308,7 @@ static void Check_Railcannon(int client, int weapon, int pap)
 		}
 		*/
 
-		Attack_Railcannon(client, pap, false);
+		Attack_Railcannon(client,weapon, pap, false);
 	}
 }
 /*
@@ -359,7 +359,7 @@ static void Knockback_Railcannon(int client, int weapon, bool analogue)
 	Client_Shake(client, 0, 35.0 * shakiness, 20.0, 0.8);
 }
 */
-static void Attack_Railcannon(int client, int pap, bool supercharged)
+static void Attack_Railcannon(int client, int weapon, int pap, bool supercharged)
 {
 	for (int building = 0; building < RAILCANNON_MAXTARGETS; building++)
 	{
@@ -411,7 +411,7 @@ static void Attack_Railcannon(int client, int pap, bool supercharged)
 			EmitSoundToAll(RAILCANNON_BOOM, client, SNDCHAN_STATIC, 90, _, 0.5, 150);
 	}
 	*/
-	EmitSoundToAll(RAILCANNON_BOOM, client, SNDCHAN_STATIC, 75, _, 0.75, GetRandomInt(140,150));
+	EmitSoundToAll(RAILCANNON_BOOM, weapon, SNDCHAN_WEAPON, 75, _, 0.75, GetRandomInt(140,150));
 	
 	Railcannon_Tick(client, pap, supercharged);
 }
@@ -561,9 +561,9 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 						damage *= -1.0;
 					damage *= BEAM_Targets_Hit[client];
 					Damage_Railgun(BEAM_BuildingHit[building], client, damage, DMG_PLASMA, weapon_active, damage_force, playerPos);
-					Damage_Railgun(BEAM_BuildingHit[building], client, damage * TruedamagePercentage, DMG_SLASH, weapon_active, damage_force, playerPos);
+					Damage_Railgun(BEAM_BuildingHit[building], client, damage * TruedamagePercentage, DMG_TRUEDAMAGE, weapon_active, damage_force, playerPos);
 					//single target damage
-					BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF + 0.1);
+					BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF * 0.5);
 				}
 				else
 				{

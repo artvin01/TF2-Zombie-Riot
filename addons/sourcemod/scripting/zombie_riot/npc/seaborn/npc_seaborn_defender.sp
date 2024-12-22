@@ -230,7 +230,7 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		bool magic;
 		bool pierce;
 		
-		if((damagetype & DMG_SLASH) || NpcStats_IsEnemySilenced(victim))
+		if((damagetype & DMG_TRUEDAMAGE) || NpcStats_IsEnemySilenced(victim))
 		{
 			pierce = true;
 		}

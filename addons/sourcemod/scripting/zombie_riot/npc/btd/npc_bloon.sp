@@ -665,7 +665,7 @@ public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 	bool magic;
 	bool pierce;
 	
-	if((damagetype & DMG_SLASH))
+	if((damagetype & DMG_TRUEDAMAGE))
 	{
 		pierce = true;
 	}

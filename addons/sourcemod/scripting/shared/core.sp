@@ -81,7 +81,6 @@ enum
 	EDICT_RAID,
 	EDICT_EFFECT
 }
-
 //maybe doing this will help lag, as there are no aim layers in zombies, they always look forwards no matter what.
 
 //edit: No, makes you miss more often.
@@ -624,6 +623,7 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 */
 
 #include "shared/stocks_override.sp"
+#include "shared/master_takedamage.sp"
 #include "shared/npc_stats.sp"	// NPC Stats is required here due to important methodmap
 #include "shared/npc_collision_logic.sp"	// NPC collisions are sepearted for ease
 #include "shared/npc_trace_filters.sp"	// NPC trace filters are sepearted for ease

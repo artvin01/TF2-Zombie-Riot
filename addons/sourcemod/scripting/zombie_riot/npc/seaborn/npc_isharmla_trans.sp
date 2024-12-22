@@ -108,7 +108,6 @@ methodmap IsharmlaTrans < CClotBody
 		npc.Anger = false;
 		npc.m_flMeleeArmor = 1.5;
 
-		b_ThisNpcIsSawrunner[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 35.0;
 		
@@ -167,7 +166,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 				
 				if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 				{
-					SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 500000.0, DMG_SLASH);
+					SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 500000.0, DMG_TRUEDAMAGE);
 					float pos[3];
 					GetEntPropVector(npc.m_iTarget, Prop_Send, "m_vecOrigin", pos);
 					pos[2] += 25.0;
@@ -186,7 +185,7 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 						}
 					}
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0,_,vecTarget);
-					npc.FireParticleRocket(vecTarget, npc.Anger ? 750.0 : 500.0, 1000.0, 275.0, "drg_cow_rockettrail_burst_charged_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
+					npc.FireParticleRocket(vecTarget, npc.Anger ? 750.0 : 500.0, 1000.0, 275.0, "drg_cow_rockettrail_burst_charged_blue", true, true, _, _, EP_DEALS_TRUE_DAMAGE);
 				}
 			}
 

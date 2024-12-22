@@ -35,7 +35,7 @@ bool OnTakeDamage_ShieldLogic(int victim, int damagetype)
 	// 0.0 means guranteed dodge
 	if(!CheckInHud())
 	{
-		if(damagetype & (DMG_CLUB|DMG_SLASH))
+		if(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))
 		{
 			
 		}

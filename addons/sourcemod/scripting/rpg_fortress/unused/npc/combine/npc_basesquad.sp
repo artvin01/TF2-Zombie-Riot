@@ -824,7 +824,7 @@ public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, fl
 				npc.m_flMeleeArmor = 1.5;
 		}
 	}
-	else if(!(damagetype & DMG_SLASH))
+	else if(!(damagetype & DMG_TRUEDAMAGE))
 	{
 		if(npc.m_flRangedArmor < 1.5)
 		{

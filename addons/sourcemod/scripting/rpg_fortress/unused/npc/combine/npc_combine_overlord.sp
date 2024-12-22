@@ -241,7 +241,7 @@ public Action CombineOverlord_TakeDamage(int victim, int &attacker, int &inflict
 				npc.m_flMeleeArmor = 1.5;
 		}
 	}
-	else if(!(damagetype & DMG_SLASH))
+	else if(!(damagetype & DMG_TRUEDAMAGE))
 	{
 		if(npc.m_flRangedArmor < 1.5)
 		{

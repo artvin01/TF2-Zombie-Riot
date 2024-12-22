@@ -580,12 +580,12 @@ int h_NpcCollissionHookType[MAXENTITIES];
 int h_NpcSolidHookType[MAXENTITIES];
 #define EP_GENERIC				  		0		  					// Nothing special.
 #define EP_NO_KNOCKBACK			  		(1 << 0)   					// No knockback
-#define EP_DEALS_SLASH_DAMAGE			  	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
-#define EP_DEALS_CLUB_DAMAGE			  	(1 << 2)   					// To deal melee damage.
+#define EP_DEALS_UNUSED_1			  	(1 << 1)   				// Slash Damage (For no npc scaling, or ignoring resistances.)
+#define EP_DEALS_CLUB_DAMAGE			  	(1 << 2)   				// To deal melee damage.
 #define EP_GIBS_REGARDLESS			  	(1 << 3)   					// Even if its anything then blast, it will still gib.
-#define EP_DEALS_PLASMA_DAMAGE			 	(1 << 4)   					// for wands to deal plasma dmg
-#define EP_DEALS_DROWN_DAMAGE			 	(1 << 5)
-#define EP_IS_ICE_DAMAGE			  		(1 << 6)   					// Even if its anything then blast, it will still gib.
+#define EP_DEALS_PLASMA_DAMAGE			 	(1 << 4)   				// for wands to deal plasma dmg
+#define EP_DEALS_TRUE_DAMAGE			 	(1 << 5)
+#define EP_IS_ICE_DAMAGE			  		(1 << 6)   				// Even if its anything then blast, it will still gib.
 
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];
