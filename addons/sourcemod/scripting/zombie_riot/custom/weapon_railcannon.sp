@@ -575,7 +575,7 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 		static float belowBossEyes[3];
 		GetBeamDrawStartPoint(client, belowBossEyes);
 		int colorLayer4[4];
-		SetColorRGBA(colorLayer4, r, g, b, 30);
+		SetColorRGBA(colorLayer4, r, g, b, 25);
 		int colorLayer3[4];
 		SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 255);
 		int colorLayer2[4];
@@ -585,7 +585,7 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 		TE_SetupBeamPoints(belowBossEyes, endPoint, Beam_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1 * 0.8), ClampBeamWidth(diameter * 1 * 0.8), 0, 1.0, colorLayer1, 3);
 		TE_SendToAll(0.0);
 		int glowColor[4];
-		SetColorRGBA(glowColor, r, g, b, 100);
+		SetColorRGBA(glowColor, r, g, b, 50);
 		TE_SetupBeamPoints(belowBossEyes, endPoint, Beam_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 2 * 0.8), ClampBeamWidth(diameter * 2 * 0.8), 0, 1.5, glowColor, 0);
 		TE_SendToAll(0.0);
 	}
