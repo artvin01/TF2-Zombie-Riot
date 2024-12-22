@@ -346,11 +346,7 @@ static void AgentSmith_ClotThink(int iNPC)
         {
 			Smith_Timeslow(GetRandomFloat(1.0, 0.7), 3.0);
 			npc.m_flAbilityOrAttack0 = gameTime + 1.0;
-<<<<<<< HEAD
 			Agent_Smith_Cloner(npc, 1, RoundToCeil(75000.0 * MultiGlobalEnemy), 2.0);
-=======
-			Agent_Smith_Cloner(npc, 1, RoundToCeil(150000.0 * MultiGlobalEnemy), 2.0);
->>>>>>> parent of 4dae6dd1b (smith smithing)
         }
 	}
 
@@ -973,7 +969,7 @@ static void PrepareSmith_Raid(AgentSmith npc)
 	i_NpcWeight[npc.index] = 4;
 	b_thisNpcIsARaid[npc.index] = true;
 	npc.m_bThisNpcIsABoss = true;
-	RaidModeTime = GetGameTime(npc.index) + 245.0;
+	RaidModeTime = GetGameTime(npc.index) + 225.0;
 	RaidBossActive = EntIndexToEntRef(npc.index);
 	RaidAllowsBuildings = false;
 	RaidModeScaling = float(ZR_GetWaveCount()+1);
