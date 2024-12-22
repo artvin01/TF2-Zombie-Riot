@@ -1413,7 +1413,7 @@ void Freeplay_SetupStart(bool extra = false)
 			/// MISCELANEOUS SKULLS ///
 			case 26:
 			{
-				if8FriendlyDay)
+				if(FriendlyDay)
 				{
 					Freeplay_SetupStart();
 					return;
