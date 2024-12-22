@@ -207,7 +207,7 @@ public void CheckWeaponAmmoLogicExternal(DataPack pack)
 bool IsWeaponEmptyCompletly(int client, int weapon, bool CheckOnly = false)
 {
 	int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
-	if(Ammo_type > 0)
+	if(Ammo_type > 3)
 	{
 		if(GetAmmo(client, Ammo_type) <= 0)
 		{
@@ -260,7 +260,7 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 	while(TF2_GetItem(client, weapon1, ie))
 	{
 		//make sure to not brick melees...
-		if(IsValidEntity(weapon1) && GetAmmoType_WeaponPrimary(weapon1) > 0)
+		if(IsValidEntity(weapon1) && GetAmmoType_WeaponPrimary(weapon1) > 2)
 		{
 			if(IsWeaponEmptyCompletly(client, weapon1, true))
 				SetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType", 1);
@@ -290,7 +290,7 @@ void WeaponSwtichToWarningPostFrame(int ref)
 	while(TF2_GetItem(client, weapon1, ie))
 	{
 		//make sure to not brick melees...
-		if(IsValidEntity(weapon1) && GetAmmoType_WeaponPrimary(weapon1) > 0)
+		if(IsValidEntity(weapon1) && GetAmmoType_WeaponPrimary(weapon1) > 3)
 		{
 			if(weapon == 0)
 			{
@@ -308,7 +308,7 @@ void WeaponSwtichToWarningPostFrame(int ref)
 			}
 		}
 	}
-	if(WeaponToForce)
+	if(GetAmmoType_WeaponPrimary(WeaponToForce) > 3)
 	{
 		IsWeaponEmptyCompletly(client, WeaponToForce);
 		//Swtiched to the active weapon!!!! yippie!!
