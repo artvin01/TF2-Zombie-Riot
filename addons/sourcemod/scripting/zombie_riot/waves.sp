@@ -1934,14 +1934,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						}
 						else
 						{
-							Menu menu = new Menu(Waves_FreeplayVote);
-							menu.SetTitle("%t","Victory Menu");
-							menu.AddItem("", "Yes");
-							menu.AddItem("", "No");
-							menu.ExitButton = false;
-							menu.DisplayVote(players, total, 30);
+							CPrintToChatAll("{orange}You proved you're worthy...");
+							CPrintToChatAll("{orange}Worthy of taking on the journey... of {haunted}Freeplay.");
+							CPrintToChatAll("{orange}As you progress, every setup will add a {yellow}Skull.");
+							CPrintToChatAll("{yellow}Skulls {orange}are effects or events that can have positive/negative effects");
+							CPrintToChatAll("{orange}More and more enemies will approach as you progress.");
+							CPrintToChatAll("{crimson}Good luck.");
 						}
-						
 					}
 					else
 					{
