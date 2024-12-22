@@ -2,6 +2,53 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static float HealthMulti;
+static int HealthBonus;
+static int EnemyChance;
+static int EnemyCount;
+static int EnemyBosses;
+static int ImmuneNuke;
+static int CashBonus;
+static bool FriendlyDay;
+static float KillBonus;
+static int CountBonus;
+static float CountMulti;
+static float MiniBossChance;
+static bool HussarBuff;
+static bool PernellBuff;
+static int IceDebuff;
+static int TeslarDebuff;
+static int FusionBuff;
+static int OceanBuff;
+static int CrippleDebuff;
+static int CudgelDebuff;
+static int StalkerBuff;
+static int PerkMachine;
+static int RaidFight;
+static float SpeedMult;
+static float MeleeMult;
+static float RangedMult;
+static bool SuperMiniBoss;
+static int ExtraSkulls;
+static int SkullTimes;
+static bool ExplodingNPC;
+static int ExplodeNPCDamage;
+static int EnemyShields;
+static bool IsRaidWave; // to prevent the message from popping up twice
+static int VoidBuff;
+static bool VictoriaBuff;
+static bool SquadBuff;
+static bool Coffee;
+static int StrangleDebuff;
+static int ProsperityDebuff;
+static bool SilenceDebuff;
+static float ExtraEnemySize;
+static bool UnlockedSpeed;
+static bool CheesyPresence;
+static int EloquenceBuff;
+static int RampartBuff;
+static int FreeplayBuffTimer;
+
 void Freeplay_OnMapStart()
 {
 	PrecacheSound("ui/vote_success.wav", true);
