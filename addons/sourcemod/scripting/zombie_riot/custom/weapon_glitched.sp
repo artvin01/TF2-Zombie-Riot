@@ -60,7 +60,7 @@ public void Glitched_Attack(int client, int weapon, bool crit)
 			else
 				Attributes_Set(weapon, 298, 1.0);	// prevent being stuck (rare but can happen)
 			
-			int ammoType = (GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType"));
+			int ammoType = (GetAmmoType_WeaponPrimary(weapon));
 			if (ammoType!=-1)
 			{
 				if(clip>=4)
@@ -71,7 +71,7 @@ public void Glitched_Attack(int client, int weapon, bool crit)
 		}
 		else
 		{
-			int ammoType = (GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType"));
+			int ammoType = (GetAmmoType_WeaponPrimary(weapon));
 			if (ammoType!=-1)
 			{
 				SetEntProp(client, Prop_Data, "m_iAmmo", GetRandomInt(50, 999999), _, ammoType);
@@ -170,7 +170,7 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 			Attributes_Set(weapon, 96, glitchBaseReloadRate[client]); // Reload rate
 		}
 	}
-	int ammoType = (GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType"));
+	int ammoType = (GetAmmoType_WeaponPrimary(weapon));
 	if (ammoType!=-1)
 	{
 		SetEntProp(client, Prop_Data, "m_iAmmo", GetRandomInt(50, 999999), _, ammoType);
@@ -190,7 +190,7 @@ public void Glitched_Attack2(int client, int weapon, bool crit)
 			else
 				Attributes_Set(weapon, 298, 1.0);	// prevent being stuck (rare but can happen)
 			
-			int ammoType = (GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType"));
+			int ammoType = (GetAmmoType_WeaponPrimary(weapon));
 			if (ammoType!=-1)
 			{
 				if(clip>=4)
@@ -201,7 +201,7 @@ public void Glitched_Attack2(int client, int weapon, bool crit)
 		}
 		else
 		{
-			int ammoType = (GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType"));
+			int ammoType = (GetAmmoType_WeaponPrimary(weapon));
 			if (ammoType!=-1)
 			{
 				SetEntProp(client, Prop_Data, "m_iAmmo", GetRandomInt(50, 999999), _, ammoType);
@@ -342,7 +342,7 @@ public void Glitched_Reload2(int client, int weapon, const char[] classname)
 	Attributes_Set(weapon, 96, glitchBaseReloadRate[client]*GetRandomFloat(0.5,1.5)); // Reload rate
 	
 	
-	int ammoType = (GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType"));
+	int ammoType = (GetAmmoType_WeaponPrimary(weapon));
 	if (ammoType!=-1)
 	{
 		SetEntProp(client, Prop_Data, "m_iAmmo", GetRandomInt(50, 999999), _, ammoType);

@@ -118,12 +118,13 @@ int AmmoboxUsed(int client, int entity)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 
+	/*
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
 		if(IsValidEntity(weapon1))
 		{
-			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
+			int Ammo_type = GetAmmoType_WeaponPrimary(weapon1);
 			if(Ammo_type > 0 && Ammo_type != Ammo_Potion_Supply && Ammo_type != Ammo_Hand_Grenade)
 			{
 				//found a weapon that has ammo.
@@ -135,6 +136,7 @@ int AmmoboxUsed(int client, int entity)
 			}
 		}
 	}
+	*/
 
 	if(IsValidEntity(weapon))
 	{
@@ -185,7 +187,7 @@ int AmmoboxUsed(int client, int entity)
 		}
 		else
 		{
-			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+			int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 			int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 			if (i_WeaponAmmoAdjustable[weapon])
 			{

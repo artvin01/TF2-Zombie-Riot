@@ -334,9 +334,12 @@ public Action HealPurgatory(Handle cut_timer, int client)
 //stuff that gets activated upon taking any damage
 public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
-	BlockHealEasy[victim] = true;
-	delete HealPurgatory_timer[victim];
-	if (f_ParryDuration[victim] > GetGameTime())
+	if(!CheckInHud())
+	{
+		BlockHealEasy[victim] = true;
+		delete HealPurgatory_timer[victim];	
+	}
+	if (!CheckInHud() && f_ParryDuration[victim] > GetGameTime())
 	{
 		if(Board_Level[victim] == 1)
 		{
@@ -471,43 +474,49 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	else if(Board_Level[victim] == 0) //board
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 1) //spike
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		return damage * 0.95;
 	}
 	else if(Board_Level[victim] == 2) //leaf
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
 		return damage * 0.85;
 	}
 	else if(Board_Level[victim] == 3) //rookie
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 4) //punish
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 5) //ramp
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
 		return damage * 0.75;
 	}
 	else if(Board_Level[victim] == 6) //the last one cudgel
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		return damage * 0.85;
 	}
 	else

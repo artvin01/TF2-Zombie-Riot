@@ -2181,7 +2181,6 @@ void Ruina_Apply_Defense_buff(int entity, int victim, float damage, int weapon)
 		float amt = fl_ruina_buff_amt[entity];
 		ApplyStatusEffect(entity, victim, "Ruina's Defense", time);
 		NpcStats_RuinaDefenseStengthen(victim, amt);
-
 	}
 	
 }

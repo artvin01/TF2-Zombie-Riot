@@ -156,6 +156,62 @@
 	{
 		"en"	"Increases Damage Taken by 20%%"
 	}
+	"Cheesy Presence"
+	{
+		"en"	"Cheesy Presence"
+	}
+	"Cheesy Presence Desc"
+	{
+		"en"	"May your Freeplay run be cheesy.\nIncreases damage and resistance by 15%%\nIncreases ALLY (not player) speed by 10%"
+	}
+	"Freeplay Eloquence I"
+	{
+		"en"	"Freeplay Eloquence I"
+	}
+	"Freeplay Eloquence I Desc"
+	{
+		"en"	"Increases damage dealt by 10%"
+	}
+	"Freeplay Eloquence II"
+	{
+		"en"	"Freeplay Eloquence II"
+	}
+	"Freeplay Eloquence II Desc"
+	{
+		"en"	"Increases damage dealt by 20%"
+	}
+	"Freeplay Eloquence III"
+	{
+		"en"	"Freeplay Eloquence III"
+	}
+	"Freeplay Eloquence III Desc"
+	{
+		"en"	"Increases damage dealt by 30%"
+	}
+	"Freeplay Rampart I"
+	{
+		"en"	"Freeplay Rampart I"
+	}
+	"Freeplay Rampart I Desc"
+	{
+		"en"	"Reduces damage taken by 10%"
+	}
+	"Freeplay Rampart II"
+	{
+		"en"	"Freeplay Rampart II"
+	}
+	"Freeplay Rampart II Desc"
+	{
+		"en"	"Reduces damage taken by 20%"
+	}
+	"Freeplay Rampart III"
+	{
+		"en"	"Freeplay Rampart III"
+	}
+	"Freeplay Rampart III Desc"
+	{
+		"en"	"Reduces damage taken by 30%"
+	}
 	"Cudgelled"
 	{
 		"en"	"Cudgelled"
