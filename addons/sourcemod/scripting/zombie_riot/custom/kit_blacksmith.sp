@@ -110,7 +110,6 @@ void Blacksmith_Enable(int client, int weapon)
 
 	if(Tinkers)
 	{
-		ApplyStatusEffect(weapon, weapon, "Tinkering Curiosity", 99999999.9);
 		int account = GetSteamAccountID(client, false);
 		if(account)
 		{
@@ -121,6 +120,7 @@ void Blacksmith_Enable(int client, int weapon)
 				Tinkers.GetArray(a, tinker);
 				if(tinker.AccountId == account && tinker.StoreIndex == StoreWeapon[weapon])
 				{
+					ApplyStatusEffect(weapon, weapon, "Tinkering Curiosity", 99999999.9);
 					for(int b; b < sizeof(tinker.Attrib); b++)
 					{
 						if(!tinker.Attrib[b])
