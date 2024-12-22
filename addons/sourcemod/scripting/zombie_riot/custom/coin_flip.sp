@@ -33,7 +33,7 @@ public void Ability_Coin_Flip(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Ability_Apply_Cooldown(client, slot, 10.0);
+		Ability_Apply_Cooldown(client, slot, 30.0);
 		CreateTimer(0.0, flip_extra, client, TIMER_FLAG_NO_MAPCHANGE);
 	}
 	else
@@ -59,7 +59,7 @@ public void Ability_Coin_Flip2(int client, int weapon, bool crit, int slot)
 		if(coins_flipped[client] >= 2)
 		{
 			coins_flipped[client] = 0;
-			Ability_Apply_Cooldown(client, slot, 10.0);
+			Ability_Apply_Cooldown(client, slot, 30.0);
 		}
 	}
 	else
@@ -85,7 +85,7 @@ public void Ability_Coin_Flip3(int client, int weapon, bool crit, int slot)
 		if(coins_flipped[client] >= 3)
 		{
 			coins_flipped[client] = 0;
-			Ability_Apply_Cooldown(client, slot, 10.0);
+			Ability_Apply_Cooldown(client, slot, 30.0);
 		}
 	}
 	else
@@ -110,7 +110,7 @@ public void Ability_Coin_Flip4(int client, int weapon, bool crit, int slot)
 		if(coins_flipped[client] >= 4)
 		{
 			coins_flipped[client] = 0;
-			Ability_Apply_Cooldown(client, slot, 10.0);
+			Ability_Apply_Cooldown(client, slot, 30.0);
 		}
 	}
 	else
@@ -197,14 +197,15 @@ public Action flip_extra(Handle timer, int client)
 		
 		GetClientEyeAngles( client, fPlayerAngles );
 		GetClientEyePosition( client, fPlayerPos );
+
+		fPlayerAngles[0] += GetRandomFloat(-5.0, 5.0);
+		fPlayerAngles[1] += GetRandomFloat(-5.0, 5.0);
 	
 		float fLen = gf_gordon_propthrowoffset * Sine( DegToRad( fPlayerAngles[0] + 90.0 ) );
 		
 		int entity = CreateEntityByName( "prop_physics_multiplayer" );
 		if(entity != -1)
 		{
-		//	SetEntityCollisionGroup(entity, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
-		//	SDKHook(entity, SDKHook_ShouldCollide, Gib_ShouldCollide);
 			AddEntityToLagCompList(entity);
 			b_DoNotIgnoreDuringLagCompAlly[entity] = true;
 			Entity_Owner[entity] = client;
