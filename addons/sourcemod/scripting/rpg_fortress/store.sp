@@ -1380,7 +1380,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_MeleeAttackFrameDelay[entity] = info.Melee_AttackDelayFrame;
 					b_MeleeCanHeadshot[entity] = info.Melee_Allows_Headshots;
 					
-					OriginalWeapon_AmmoType[entity] = -1;
+					OriginalWeapon_AmmoType[entity] = info.Ammo;
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
