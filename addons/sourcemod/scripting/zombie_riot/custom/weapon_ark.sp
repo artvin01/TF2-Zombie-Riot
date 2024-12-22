@@ -487,101 +487,105 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 {
 	if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
 	{
-		float damage_reflected = damage;
-		if(damage_reflected >= 300.0)
-			damage_reflected = 300.0;
-
-		//PrintToChatAll("parry worked");
-		if(Ark_Level[victim] == 3)
+		if(!CheckInHud())
 		{
-			damage_reflected *= 40.0;
-			
-			if(Ark_Hits[victim] < 25)
+			float damage_reflected = damage;
+			if(damage_reflected >= 300.0)
+				damage_reflected = 300.0;
+
+			//PrintToChatAll("parry worked");
+			if(Ark_Level[victim] == 3)
 			{
-				Ark_Hits[victim] = 25;
+				damage_reflected *= 40.0;
+				
+				if(Ark_Hits[victim] < 25)
+				{
+					Ark_Hits[victim] = 25;
+				}
+				Ark_Hits[victim] += 1;
 			}
-			Ark_Hits[victim] += 1;
-		}
-		else if(Ark_Level[victim] == 2)
-		{
-			damage_reflected *= 30.0;
-			
-			if(Ark_Hits[victim] < 20)
+			else if(Ark_Level[victim] == 2)
 			{
-				Ark_Hits[victim] = 20;
+				damage_reflected *= 30.0;
+				
+				if(Ark_Hits[victim] < 20)
+				{
+					Ark_Hits[victim] = 20;
+				}
+				Ark_Hits[victim] += 1;		
 			}
-			Ark_Hits[victim] += 1;		
-		}
-		else if(Ark_Level[victim] == 1)
-		{
-			damage_reflected *= 15.0;
-			
-			if(Ark_Hits[victim] < 12)
+			else if(Ark_Level[victim] == 1)
 			{
-				Ark_Hits[victim] = 12;
+				damage_reflected *= 15.0;
+				
+				if(Ark_Hits[victim] < 12)
+				{
+					Ark_Hits[victim] = 12;
+				}
+				Ark_Hits[victim] += 1;		
 			}
-			Ark_Hits[victim] += 1;		
-		}
-		else
-		{
-			damage_reflected *= 6.0;
-			
-			if(Ark_Hits[victim] < 3)
+			else
 			{
-				Ark_Hits[victim] = 3;
+				damage_reflected *= 6.0;
+				
+				if(Ark_Hits[victim] < 3)
+				{
+					Ark_Hits[victim] = 3;
+				}
+				Ark_Hits[victim] += 1;	
 			}
-			Ark_Hits[victim] += 1;	
+			
+			if(f_AniSoundSpam[victim] < GetGameTime())
+			{
+				f_AniSoundSpam[victim] = GetGameTime() + 0.2;
+				ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+			}
+			
+			static float angles[3];
+			GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+			float vecForward[3];
+			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+			static float Entity_Position[3];
+			WorldSpaceCenter(attacker, Entity_Position );
+			
+			float flPos[3]; // original
+			float flAng[3]; // original
+			
+			GetAttachment(victim, "effect_hand_r", flPos, flAng);
+			
+			int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.15);
+
+
+		//	TE_Particle("mvm_soldier_shockwave", damagePosition, NULL_VECTOR, flAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
+			
+			DataPack pack = new DataPack();
+			pack.WriteCell(EntIndexToEntRef(particler));
+			pack.WriteFloat(Entity_Position[0]);
+			pack.WriteFloat(Entity_Position[1]);
+			pack.WriteFloat(Entity_Position[2]);
+			
+			RequestFrame(TeleportParticleArk, pack);
+
+			float ReflectPosVec[3];
+			CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
+
+			DataPack packdmg = new DataPack();
+			packdmg.WriteCell(EntIndexToEntRef(attacker));
+			packdmg.WriteCell(EntIndexToEntRef(victim));
+			packdmg.WriteCell(EntIndexToEntRef(victim));
+			packdmg.WriteFloat(damage_reflected);
+			packdmg.WriteCell(DMG_CLUB);
+			packdmg.WriteCell(EntIndexToEntRef(weapon));
+			packdmg.WriteFloat(ReflectPosVec[0]);
+			packdmg.WriteFloat(ReflectPosVec[1]);
+			packdmg.WriteFloat(ReflectPosVec[2]);
+			packdmg.WriteFloat(Entity_Position[0]);
+			packdmg.WriteFloat(Entity_Position[1]);
+			packdmg.WriteFloat(Entity_Position[2]);
+			packdmg.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
+			RequestFrame(CauseDamageLaterSDKHooks_Takedamage, packdmg);
+				
 		}
-		
-		if(f_AniSoundSpam[victim] < GetGameTime())
-		{
-			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
-			ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
-		}
-		
-		static float angles[3];
-		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		WorldSpaceCenter(attacker, Entity_Position );
-		
-		float flPos[3]; // original
-		float flAng[3]; // original
-		
-		GetAttachment(victim, "effect_hand_r", flPos, flAng);
-		
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.15);
-
-
-	//	TE_Particle("mvm_soldier_shockwave", damagePosition, NULL_VECTOR, flAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
-		
-		DataPack pack = new DataPack();
-		pack.WriteCell(EntIndexToEntRef(particler));
-		pack.WriteFloat(Entity_Position[0]);
-		pack.WriteFloat(Entity_Position[1]);
-		pack.WriteFloat(Entity_Position[2]);
-		
-		RequestFrame(TeleportParticleArk, pack);
-
-		float ReflectPosVec[3];
-		CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
-
-		DataPack packdmg = new DataPack();
-		packdmg.WriteCell(EntIndexToEntRef(attacker));
-		packdmg.WriteCell(EntIndexToEntRef(victim));
-		packdmg.WriteCell(EntIndexToEntRef(victim));
-		packdmg.WriteFloat(damage_reflected);
-		packdmg.WriteCell(DMG_CLUB);
-		packdmg.WriteCell(EntIndexToEntRef(weapon));
-		packdmg.WriteFloat(ReflectPosVec[0]);
-		packdmg.WriteFloat(ReflectPosVec[1]);
-		packdmg.WriteFloat(ReflectPosVec[2]);
-		packdmg.WriteFloat(Entity_Position[0]);
-		packdmg.WriteFloat(Entity_Position[1]);
-		packdmg.WriteFloat(Entity_Position[2]);
-		packdmg.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
-		RequestFrame(CauseDamageLaterSDKHooks_Takedamage, packdmg);
 
 		return damage * 0.1;
 	}

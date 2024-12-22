@@ -164,7 +164,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 		else
 		{
 			//ONLY give back ammo IF the Spike has full health.
-			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+			int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 			SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1); //Give ammo back that they just spend like an idiot
@@ -181,7 +181,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 	else
 	{
 		//ONLY give back ammo IF the Spike has full health.
-		int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+		int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1); //Give ammo back that they just spend like an idiot
@@ -213,7 +213,7 @@ public void Weapon_Arsenal_Trap_M2(int client, int weapon, const char[] classnam
 					{
 						Trip_Owner[entity] = -1;
 						//ONLY give back ammo IF the Spike has full health.
-						int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+						int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
@@ -252,7 +252,7 @@ public void Spike_Pick_Back_up_Arse(int client, int weapon, const char[] classna
 							SetEntitySpike(entity, 0);
 							Trip_Owner[entity] = -1;
 							//ONLY give back ammo IF the Spike has full health.
-							int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+							int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 							PlaySound = true;
 							SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
 							for(int i; i<Ammo_MAX; i++)
@@ -302,7 +302,7 @@ public void Spike_Pick_Back_up_Arse(int client, int weapon, const char[] classna
 					{
 						SetEntitySpike(entity, 0);
 						Trip_Owner[entity] = -1;
-						int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+						int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);

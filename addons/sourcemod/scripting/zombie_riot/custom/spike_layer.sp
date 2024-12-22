@@ -110,7 +110,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		if(15 <= Spikes_Alive[client])
 		{
 			//ONLY give back ammo IF the Spike has full health.
-			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+			int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 			SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1); //Give ammo back that they just spend like an idiot
@@ -208,7 +208,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 		if(20 <= Spikes_Alive[client])
 		{
 			//ONLY give back ammo IF the Spike has full health.
-			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+			int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 			SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1); //Give ammo back that they just spend like an idiot
@@ -443,7 +443,7 @@ public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, b
 							if(Spike_Health[entity] == Spike_MaxHealth[entity])
 							{
 								//ONLY give back ammo IF the Spike has full health.
-								int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+								int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 								PlaySound = true;
 								SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
 								for(int i; i<Ammo_MAX; i++)
@@ -498,7 +498,7 @@ public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, b
 						if(Spike_Health[entity] == Spike_MaxHealth[entity])
 						{
 							//ONLY give back ammo IF the Spike has full health.
-							int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+							int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 							ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 							ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 							SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);

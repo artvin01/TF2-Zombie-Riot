@@ -121,7 +121,7 @@ public void Judge_Cooldown_Logic(int client, int weapon)
 
 void Add_Back_One_Clip_Judge(int entity, int client)
 {
-	int AmmoType = GetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType");
+	int AmmoType = GetAmmoType_WeaponPrimary(entity);
 	int CurrentReserveAmmo = GetAmmo(client, AmmoType);
 	if(CurrentReserveAmmo < 1)
 		return;

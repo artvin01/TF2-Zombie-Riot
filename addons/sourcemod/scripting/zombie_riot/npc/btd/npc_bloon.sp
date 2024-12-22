@@ -671,7 +671,7 @@ public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 	}
 	else
 	{
-		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
+		if((damagetype & DMG_BLAST))
 		{
 			hot = true;
 			pierce = true;

@@ -220,7 +220,7 @@ void BlacksmithBrew_Enable(int client, int weapon)
 				if(brew.AccountId == account && brew.StoreIndex == StoreWeapon[weapon])
 				{
 					brew.EntRef = EntIndexToEntRef(weapon);
-					ApplyStatusEffect(weapon, weapon, "Tinkering Curiosity", brew.EndAt - GetGameTime());
+					ApplyStatusEffect(weapon, weapon, "Crafted Potion", brew.EndAt - GetGameTime());
 
 					int attrib[TINKER_LIMIT];
 					float value[TINKER_LIMIT];
@@ -372,7 +372,6 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 				if(weapon != -1)
 				{
 					ApplyStatusEffect(weapon, weapon, "Crafted Potion", brew.EndAt - GetGameTime());
-
 				}
 			}
 			Brews.SetArray(a, brew);
