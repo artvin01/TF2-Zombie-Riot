@@ -268,7 +268,7 @@ public Action Bulldozer_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			if(IsValidEntity(npc.m_iWearable4))
 				RemoveEntity(npc.m_iWearable4);
 		}
-		if((damagetype & DMG_BLAST))
+		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(victim))
 		{
 			damage *= 0.1;
 

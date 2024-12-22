@@ -292,7 +292,6 @@ void TeslarSelfDefense(Teslar npc, float gameTime, int target, float distance)
 							}
 						}
 					}		
-					ApplyStatusEffect(npc.index, target, "Teslar Shock", 7.5);
 				} 
 			}
 			delete swingTrace;

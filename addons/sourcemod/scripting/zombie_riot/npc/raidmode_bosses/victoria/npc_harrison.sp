@@ -1419,7 +1419,7 @@ static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float
 	int green = 200;
 	int blue = 200;
 	int colorLayer4[4];
-	float diameter = float(10 * 4);
+	float diameter = float(5 * 4);
 	SetColorRGBA(colorLayer4, red, green, blue, 200);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
@@ -1432,7 +1432,7 @@ static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float
 	TE_SendToAll(0.0);
 	int glowColor[4];
 	SetColorRGBA(glowColor, red, green, blue, 200);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.2), 0, 0.5, glowColor, 0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
 	TE_SendToAll(0.0);
 
 	DataPack pack = new DataPack();

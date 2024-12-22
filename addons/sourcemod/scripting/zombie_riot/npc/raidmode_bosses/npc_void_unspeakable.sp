@@ -822,8 +822,6 @@ bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 						SetGlobalTransTarget(EnemyLoop);
 						ShowSyncHudText(EnemyLoop,  SyncHud_Notifaction, "%t", "Unspeakable Teleport Taunt");
 					}
-					//Set target
-					npc.m_iTarget = npc.index;
 					int red = 125;
 					int green = 0;
 					int blue = 125;

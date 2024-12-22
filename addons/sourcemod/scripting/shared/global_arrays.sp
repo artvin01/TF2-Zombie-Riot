@@ -283,6 +283,8 @@ float f_ClientBeingReviveDelay[MAXENTITIES];
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
 
+float Increaced_Sentry_damage_Low[MAXENTITIES];
+float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
 
 bool b_DisplayDamageHud[MAXTF2PLAYERS];
@@ -687,6 +689,7 @@ float f_GibHealingAmount[MAXENTITIES];
 
 float f_MinicritSoundDelay[MAXTF2PLAYERS];
 
+float f_IsThisExplosiveHitscan[MAXENTITIES];
 float f_CustomGrenadeDamage[MAXENTITIES];
 
 float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];

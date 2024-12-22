@@ -313,11 +313,17 @@
 	
 	"Deagle Desc"
 	{
-		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\nTime correctly after a blue flash, and throw multiple for even more damage.\nThis projectile always counts as a HEADSHOT.\nHas less damage falloff."
+		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\nTime correctly after a blue flash, and throw multiple for even more damage.\nThis projectile always counts as a HEADSHOT."
+		"fr"		"Lancez des objets avec M2, et tirez-les pour des dégats additionels.\nLancez plusieurs pour davantage de dégats, essayez de syncroniser avec le flash bleu.\nL'objet effectuera toujours des tirs en pleine tête."
+		"ru"		"Орёл, который бросает предметы клавишей М2, стреляйте ими, чтобы нанести ещё больше урона.\nРассчитайте время после синей вспышки и бросайте несколько раз для нанесения ещё большего урона.\nЭти снаряды всегда засчитываются как ВЫСТРЕЛ В ГОЛОВУ."
+		"chi"       "M2投出硬币，击中硬币将子弹反射到敌人弱点造成暴击。如在硬币发出闪光后击中，造成额外伤害。空中如有多个硬币，则可以多次反弹，叠加伤害。"
 	}
 	"Deagle Pap 1"
 	{
-		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\nYou will now always gib."
+		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable."
+		"fr"		"Dégats et cadence de tir améliorés, abilité objet amélioré, capacité d'objets augmunté"
+		"ru"		"Увелич. урон и скорость атаки, усиление способности на М2 получает один доп. бросок."
+		"chi"       "增加伤害和攻击速度，可投硬币+1。"
 	}
 	"Deagle Pap 2"
 	{
@@ -3569,7 +3575,9 @@
 	}
 	"West Pap 1 Desc"
 	{
-		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nYou gain damage resistance but the weapon's dmg falloff is increased\nNew abiity: M2 for rapid fire.\nYou loose guranteed gibs."
+		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nYou gain damage resistance but the weapon's dmg falloff is increased\nNew abiity: M2 for rapid fire."
+		"fr"	"Cadence de tir lente, dégats hauts.\nRésistance améliorée en échange de plus de perte de dégats avec la distance.\nAppuyez M2 pour accélérer la cadence de tir.\nUne arme du Wild West."
+		"chi"	"一把来自狂野西部的武器。\n射速低，伤害高。\n获得更高的抗性，但同时增加距离衰减。\n新技能：[M2]快速开火"
 	}
 	"West Pap 2 Desc"
 	{
