@@ -552,7 +552,7 @@ void Freeplay_SpawnEnemy(int entity)
 		}
 		case 4:
 		{
-			b_CannotBeSlowed[entity] = true;
+			ApplyStatusEffect(entity, entity, "Fluid Movement", FAR_FUTURE);	
 		}
 	}
 	fl_Extra_Speed[entity] *= SpeedMult;

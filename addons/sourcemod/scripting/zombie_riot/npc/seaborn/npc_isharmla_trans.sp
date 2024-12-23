@@ -108,7 +108,7 @@ methodmap IsharmlaTrans < CClotBody
 		npc.Anger = false;
 		npc.m_flMeleeArmor = 1.5;
 
-		b_CannotBeKnockedUp[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
 		f_ExtraOffsetNpcHudAbove[npc.index] = 35.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

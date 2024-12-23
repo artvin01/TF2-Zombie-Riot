@@ -768,10 +768,9 @@ static void Internal_ClotThink(int iNPC)
 		f_NpcTurnPenalty[npc.index]=1.0;
 		i_NpcWeight[npc.index]=3;
 		b_NpcIsInvulnerable[npc.index]=false;
-		b_CannotBeStunned[npc.index] = false;
-		b_CannotBeKnockedUp[npc.index] = false;
-		b_CannotBeSlowed[npc.index] = false;
-		b_CannotBeKnockedUp[npc.index] = false;
+		RemoveSpecificBuff(npc.index, "Clear Head");
+		RemoveSpecificBuff(npc.index, "Solid Stance");
+		RemoveSpecificBuff(npc.index, "Fluid Movement");
 		npc.PlayAngerSoundPassed();
 		npc.SetPlaybackRate(1.0);
 
@@ -1678,7 +1677,7 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
-			ApplyStatusEffect(npc.index, npc.index, "Clear Head", Time);		//replace stun
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", Time);
 
 			npc.LanceState(false);
 
@@ -2255,10 +2254,10 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.SetCycle(0.01);
 		npc.Anger = true;
 
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeStunned[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeSlowed[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 
 		if(npc.m_flSlicerBarrageActive > GetGameTime(npc.index))
 		{

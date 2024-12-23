@@ -1084,9 +1084,9 @@ static void ClotThink(int iNPC)
 		npc.m_flNextTeleport -= 10.0;
 
 		b_NoKnockbackFromSources[npc.index] = false;
-		b_CannotBeStunned[npc.index] = false;
-		b_CannotBeKnockedUp[npc.index] = false;
-		b_CannotBeSlowed[npc.index] = false;
+		RemoveSpecificBuff(npc.index, "Clear Head");
+		RemoveSpecificBuff(npc.index, "Solid Stance");
+		RemoveSpecificBuff(npc.index, "Fluid Movement");
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
@@ -2949,7 +2949,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 		return Plugin_Stop;
 	}
 	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 0.25);
-	ApplyStatusEffect(npc.index, npc.index, "Clear Head", 0.25);		//replace stun
+	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 
 	npc.m_flSpeed = 0.0;	//DON'T MOVE
 
@@ -3164,9 +3164,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			damage = 0.0;
 
 			b_NoKnockbackFromSources[npc.index] = true;
-			b_CannotBeStunned[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
-			b_CannotBeSlowed[npc.index] = true;
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 
 			ReviveAll(true);
 
@@ -3220,9 +3220,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		b_NoKnockbackFromSources[npc.index] = true;
-		b_CannotBeStunned[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeSlowed[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 
 		int color[4]; 
 		Ruina_Color(color);
