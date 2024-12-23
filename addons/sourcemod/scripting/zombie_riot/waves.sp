@@ -269,8 +269,11 @@ bool Waves_CallVote(int client, int force = 0)
 		menu.SetTitle("%t:\n ", Voting ? "Vote for the difficulty" : "Vote for the modifier");
 		
 		Vote vote;
-		Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
-		menu.AddItem(NULL_STRING, vote.Name);
+		if(Voting)
+		{
+			Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
+			menu.AddItem(NULL_STRING, vote.Name);
+		}
 
 		if(Voting)
 		{
