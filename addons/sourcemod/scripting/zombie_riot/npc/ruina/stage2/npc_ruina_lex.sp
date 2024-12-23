@@ -1004,7 +1004,7 @@ static void Initiate_Laser(Lex npc)
 
 	f_NpcTurnPenalty[npc.index] = 0.0;
 	
-	CreateTimer(Duration+WindUp, Laser_Revert, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(Duration, Laser_Revert, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 
 	fl_ruina_throttle[npc.index] = 0.0;
 	i_effect_amt[npc.index] = 0;
