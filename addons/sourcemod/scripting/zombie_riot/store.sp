@@ -2761,6 +2761,10 @@ public Action Access_StoreViaCommand(int client, int args)
 
 void Store_Menu(int client)
 {
+	if(CvarInfiniteCash.BoolValue)
+	{
+		StarterCashMode[client] = false;
+	}
 	Store_OnCached(client);
 	if(LastStoreMenu[client])
 	{

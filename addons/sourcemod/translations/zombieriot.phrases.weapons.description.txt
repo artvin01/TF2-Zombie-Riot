@@ -317,19 +317,15 @@
 	}
 	"Deagle Pap 1"
 	{
-		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\nYou will now always gib."
+		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\nYou will now always gib."
 	}
 	"Deagle Pap 2"
 	{
-		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
-		"fr"		"Dégats et cadence de tir améliorés, abilité objet amélioré, capacité d'objets augmunté\n2 balles utilisées par tir"
-		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один доп. бросок.\n2 пули за выстрел."
-		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗2颗子弹"
+		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
 	}
 	"Deagle Pap 3"
 	{
-		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
-		"fr"		"Dégats et cadence de tir améliorés, abilité objet amélioré, capacité d'objets augmunté\n2 balles utilisées par tir"
+		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
 	}
 	
 	"Flamethrower Pap 1"

@@ -89,8 +89,8 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_flMeleeArmor = 1.00;
 		npc.m_flRangedArmor = 1.00;
 		
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeSlowed[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		b_IgnoreAllCollisionNPC[npc.index]=true;

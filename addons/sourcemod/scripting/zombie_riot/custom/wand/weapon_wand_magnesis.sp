@@ -468,6 +468,9 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 		TR_TraceHullFilter(pos, endPos, hullMin, hullMax, 1073741824, Magnesis_GrabTrace, client);
 		int victim = TR_GetEntityIndex();
 		FinishLagCompensation_Base_boss();
+		
+		if(HasSpecificBuff(victim, "Solid Stance"))
+			return;
 
 		if (!IsValidEntity(victim))
 		{
@@ -574,7 +577,7 @@ public void Magnesis_Logic(DataPack pack)
 		delete pack;
 		return;
 	}
-
+	
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"); 
 	if (!IsValidEntity(weapon))
 	{
@@ -601,7 +604,13 @@ public void Magnesis_Logic(DataPack pack)
 	if (Magnesis_NextDrainTick[client] <= gt)
 	{
 		int target = EntRefToEntIndex(Magnesis_GrabTarget[client]);
-
+		
+		if(HasSpecificBuff(target, "Solid Stance"))
+		{
+			Magnesis_TerminateEffects(client, startPart, endPart);
+			delete pack;
+			return;
+		}
 		float manaPercentage = Magnesis_Grab_Cost_Scaling_Normal[Magnesis_Tier[client]];
 		float cost = Magnesis_Grab_Cost_Normal[Magnesis_Tier[client]];
 		if (b_thisNpcIsARaid[target])

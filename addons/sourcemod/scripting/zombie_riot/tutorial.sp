@@ -14,8 +14,13 @@ void Tutorial_PluginStart()
 
 void Tutorial_ClientSetup(int client, int value)
 {
+	if(CvarInfiniteCash.BoolValue)
+	{
+		TutorialEndFully(client);
+		return;
+	}
 	f_TutorialUpdateStep[client] = 0.0;
-	
+
 	if(value != 6)
 	{
 	 	StartTutorial(client);

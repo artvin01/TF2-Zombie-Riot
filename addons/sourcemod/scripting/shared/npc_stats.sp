@@ -1431,7 +1431,7 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 
 #if defined RPG
-		if(!Is_Boss && !b_CannotBeSlowed[this.index]) //Make sure that any slow debuffs dont affect these.
+		if(!Is_Boss && !HasSpecificBuff(this.index, "Fluid Movement")) //Make sure that any slow debuffs dont affect these.
 		{
 			switch(BubbleProcStatusLogicCheck(this.index))
 			{
@@ -6221,6 +6221,12 @@ stock void Custom_Knockback(int attacker,
 	 float RecievePullInfo[3] = {0.0,0.0,0.0},
 	 float OverrideLookAng[3] ={0.0,0.0,0.0})
 {
+	if(HasSpecificBuff(enemy, "Solid Stance"))
+	{
+		//dont be immune to self displacements
+		if(attacker != enemy)
+			return;
+	}
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{
 		float vAngles[3], vDirection[3];
@@ -8292,9 +8298,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_NextRangedBarrage_Singular[entity] = 0.0;
 	b_CannotBeHeadshot[entity] = false;
 	b_CannotBeBackstabbed[entity] = false;
-	b_CannotBeStunned[entity] = false;
-	b_CannotBeKnockedUp[entity] = false;
-	b_CannotBeSlowed[entity] = false;
 	b_AvoidObstacleType_Time[entity] = 0.0;
 
 	b_NextRangedBarrage_OnGoing[entity] = false;
@@ -8934,7 +8937,7 @@ public void KillNpc(int ref)
 
 stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = false)
 {
-	if(!IgnoreAllLogic && b_CannotBeStunned[npc])
+	if(HasSpecificBuff(npc, "Clear Head") && !IgnoreAllLogic)
 		return;
 
 	//Emergency incase it wasnt an npc.

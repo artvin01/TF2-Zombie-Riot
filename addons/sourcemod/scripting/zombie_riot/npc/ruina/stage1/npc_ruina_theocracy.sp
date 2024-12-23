@@ -553,13 +553,15 @@ static void Theocracy_Melee_Hit(int ref, int enemy, float vecHit[3])
 		
 		int valid_entity = 0;
 		bool valid_target[MAXENTITIES];	//what?
-		bool red_npc = false;
 		float flAng[3]; // original
 		float npc_loc[3];
 		GetAttachment(client, "effect_hand_r", npc_loc, flAng);
 		
 		for(int player=1 ; player<MAXTF2PLAYERS ; player++)	//get valid/within range players
 		{
+			if(view_as<CClotBody>(player).m_bThisEntityIgnored)
+				continue;
+
 			if(IsValidClient(player) && IsClientInGame(player) && GetClientTeam(player)==2 && IsPlayerAlive(player) && TeutonType[player] == TEUTON_NONE && dieingstate[player] == 0)	//filter out: offline, blue/spec, dead, teuton, downed players!
 			{
 				float target_vec[3]; GetAbsOrigin(player, target_vec);
@@ -579,6 +581,10 @@ static void Theocracy_Melee_Hit(int ref, int enemy, float vecHit[3])
 		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
 			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+
+			if(view_as<CClotBody>(ally).m_bThisEntityIgnored)
+				continue;
+
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != GetTeam(client))
 			{
 				float target_vec[3]; GetAbsOrigin(ally, target_vec);
@@ -586,7 +592,6 @@ static void Theocracy_Melee_Hit(int ref, int enemy, float vecHit[3])
 				
 				if(dist<=range)
 				{
-					red_npc = true;
 					valid_entity++;
 					valid_target[ally] = true;
 				}
@@ -602,15 +607,7 @@ static void Theocracy_Melee_Hit(int ref, int enemy, float vecHit[3])
 		if(valid_entity>0)	//incase of fuckup, default to normal melee
 		{
 			float damage = (dmg / valid_entity)*damage_multi;
-			int loop_for;
-			if(red_npc)	//might be dumb, might not save any preformance, but heck..
-			{
-				loop_for=MAXENTITIES;
-			}
-			else
-			{
-				loop_for=MAXTF2PLAYERS;
-			}
+			int loop_for = MAXENTITIES;
 			for(int entity=1 ; entity<loop_for ; entity++)	//deal damage/do effect to vaild targets. 
 			{
 				if(valid_target[entity])

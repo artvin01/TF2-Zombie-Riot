@@ -274,11 +274,35 @@
 	}
 	"Hardened Aura Desc"
 	{
-		"en"	"Immune to any and ALL debuffs.\nElemental Is excluded from this."
+		"en"	"Immune to any and ALL that debuffs.\nElemental Is excluded from this.\nStuns and movement displacements are not counted as bebuffs."
 	}
 	"Thick Blood"
 	{
 		"en"	"Thick Blood"
+	}
+	"Clear Head"
+	{
+		"en"	"Clear Head"
+	}
+	"Clear Head Desc"
+	{
+		"en"	"Immune to all stuns"
+	}
+	"Solid Stance"
+	{
+		"en"	"Solid Stance"
+	}
+	"Solid Stance Desc"
+	{
+		"en"	"Immune to knockback or displacements"
+	}
+	"Fluid Movement"
+	{
+		"en"	"Fluid Movement"
+	}
+	"Fluid Movement Desc"
+	{
+		"en"	"Immune to Slowness Effects"
 	}
 	"Thick Blood Desc"
 	{

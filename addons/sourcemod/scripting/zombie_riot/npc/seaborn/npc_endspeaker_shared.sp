@@ -329,7 +329,7 @@ methodmap EndSpeaker < CClotBody
 
 		if(this.m_hBuffs & BUFF_SWARMCALLER)
 		{
-			b_CannotBeSlowed[this.index] = true;
+			ApplyStatusEffect(this.index, this.index, "Fluid Movement", FAR_FUTURE);	
 			this.m_bThisNpcIsABoss = true;
 
 			this.m_iWearable5 = ParticleEffectAt(vecTarget, "powerup_icon_agility", -1.0);

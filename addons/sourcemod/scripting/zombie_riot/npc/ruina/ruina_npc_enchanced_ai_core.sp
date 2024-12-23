@@ -1401,7 +1401,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	if(wave<=15)
 	{
 		Radius		= 100.0;
-		dmg 		= mana;	//evil.
+		dmg 		= mana+100.0;	//evil.
 		time 		= 5.0;
 		Timeout 	= 6.0;
 		Slow_Time 	= 5.0;
@@ -1409,7 +1409,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	else if(wave<=30)
 	{
 		Radius		= 125.0;
-		dmg 		= mana*1.25;
+		dmg 		= mana*1.25+200.0;
 		time 		= 4.5;
 		Timeout 	= 5.5;
 		Slow_Time 	= 5.0;
@@ -1417,7 +1417,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	else if(wave<=45)
 	{
 		Radius		= 175.0;
-		dmg 		= mana*1.5;
+		dmg 		= mana*1.5+300.0;
 		time 		= 4.0;
 		Timeout 	= 5.0;
 		Slow_Time 	= 5.5;
@@ -1425,7 +1425,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	else
 	{
 		Radius		= 200.0;
-		dmg 		= mana*2.0;
+		dmg 		= mana*2.0+400.0;
 		time 		= 3.0;
 		Timeout 	= 4.5;
 		Slow_Time 	= 6.0;
@@ -1460,6 +1460,9 @@ static void Apply_Sickness(int iNPC, int Target)
 	pack.WriteCellArray(color, sizeof(color));
 	pack.WriteFloat(Radius);
 	pack.WriteFloat(dmg);
+
+	if(AtEdictLimit(EDICT_NPC))
+		return;
 
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=500.0; end_point[2]-=100.0;
 
@@ -1499,14 +1502,15 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	float Radius	= data.ReadFloat();
 	float dmg 		= data.ReadFloat();
 
-	//DMG_TRUEDAMAGE is true dmg?
-
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.75, Thickness, 0.75, color, 1, 0);
 	TE_SendToAll();
 
+	
+
 	Radius = Radius*Radius;
 
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
 	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
 
 	for(int client = 1; client <= MaxClients; client++)
@@ -1529,6 +1533,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 		if(GetVectorDistance(Vic_Pos, end_point, true) > Radius)
 			continue;
 
+		EmitSoundToClient(client, RUINA_ION_CANNON_SOUND_ATTACK);
 		EmitSoundToClient(client, RUINA_ION_CANNON_SOUND_ATTACK);
 
 		SDKHooks_TakeDamage(client, 0, 0, dmg, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
@@ -1580,6 +1585,9 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 		}
 	}
 
+	if(AtEdictLimit(EDICT_NPC))
+		return Plugin_Stop; 
+
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
 
 	int laser;
@@ -1587,6 +1595,10 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 5.0, 5.0, 0.1, LASERBEAM, end_point, Sky_Loc);
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+
+	int particle = ParticleEffectAt(Sky_Loc, "kartimpacttrail", 1.0);
+	SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
+	CreateTimer(0.25, Nearl_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 
 	return Plugin_Stop;
 }
@@ -1630,6 +1642,10 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 5.0, 5.0, 0.1, LASERBEAM, end_point, Sky_Loc);
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+
+	int particle = ParticleEffectAt(Sky_Loc, "kartimpacttrail", 1.0);
+	SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
+	CreateTimer(0.25, Nearl_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 
 	return Plugin_Stop;
 }
