@@ -1254,7 +1254,7 @@ void Freeplay_SetupStart(bool extra = false)
 				if(PernellBuff)
 				{
 					strcopy(message, sizeof(message), "{green}All enemies have lost the Purnell buff.");
-					PernellBuff = true;
+					PernellBuff = false;
 				}
 				else
 				{
