@@ -269,8 +269,11 @@ bool Waves_CallVote(int client, int force = 0)
 		menu.SetTitle("%t:\n ", Voting ? "Vote for the difficulty" : "Vote for the modifier");
 		
 		Vote vote;
-		Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
-		menu.AddItem(NULL_STRING, vote.Name);
+		if(Voting)
+		{
+			Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
+			menu.AddItem(NULL_STRING, vote.Name);
+		}
 
 		if(Voting)
 		{
@@ -279,8 +282,8 @@ bool Waves_CallVote(int client, int force = 0)
 			{
 				Voting.GetArray(i, vote);
 				vote.Name[0] = CharToUpper(vote.Name[0]);
-				
-				if(vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
+				//There must be atleast 4 selections for the cooldown to work.
+				if(length >= 4 &&vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
 					menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);

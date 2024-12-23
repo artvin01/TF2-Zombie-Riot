@@ -469,14 +469,15 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 		int victim = TR_GetEntityIndex();
 		FinishLagCompensation_Base_boss();
 		
-		if(HasSpecificBuff(victim, "Solid Stance"))
-			return;
 
 		if (!IsValidEntity(victim))
 		{
 			Utility_HUDNotification_Translation(client, "Magnesis No Target Found", true);
 			return;
 		}
+		
+		if(HasSpecificBuff(victim, "Solid Stance"))
+			return;
 
 		if (Magnesis_Grabbed[victim])
 		{
