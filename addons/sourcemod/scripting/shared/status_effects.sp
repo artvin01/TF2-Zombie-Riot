@@ -1657,6 +1657,20 @@ void StatusEffects_Silence()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	RapidSuturingIndex = StatusEffect_AddGlobal(data);
+
+	//Immunity to stun effects
+	strcopy(data.BuffName, sizeof(data.BuffName), "Clear Head");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ֆ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
 
 stock void ApplyRapidSuturing(int victim)

@@ -290,7 +290,7 @@ static void Equalize_HP(Lancelot npc, int &attacker, int &inflictor, float &dama
 {
 
 	int valids[10];
-	int i=1;
+	int i=0;
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
 		if(i > 9)

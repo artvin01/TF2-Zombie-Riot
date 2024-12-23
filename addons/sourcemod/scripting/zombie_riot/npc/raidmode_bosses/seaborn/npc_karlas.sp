@@ -73,6 +73,7 @@ static char g_Sword_Impact_Sound[][] = {
 
 static float fl_teleport_strike_recharge[MAXENTITIES];
 static bool b_teleport_strike_active[MAXENTITIES];
+static bool b_tripple_raid[MAXENTITIES];
 
 
 
@@ -637,7 +638,7 @@ static void Win_Line(int entity)
 		
 	CPrintToChatAll("{crimson}Karlas{snow}: Oyaya?");
 }
-void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob)
+void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob, bool tripple)
 {	
 	if(wave == -2)
 		wave = ZR_GetWaveCount()+1;
@@ -645,6 +646,7 @@ void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob)
 	i_current_wave[karlas] = wave;
 	i_ally_index[karlas] = EntIndexToEntRef(stella);
 	b_bobwave[karlas] = bob;
+	b_tripple_raid[karlas] = tripple;
 }
 
 static void Internal_ClotThink(int iNPC)
@@ -754,7 +756,7 @@ static void Internal_ClotThink(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 0.0;	//:)
 		i_NpcWeight[npc.index]=999;	//HE ONE HEAFTY BOI!
 		float Anim_Timer = 6.25;
-		if(npc.m_flNextChargeSpecialAttack < GameTime + Anim_Timer)
+		if(npc.m_flNextChargeSpecialAttack < GetGameTime() + Anim_Timer)
 		{
 			npc.SetPlaybackRate(0.0);
 			Karlas_Lifeloss_Logic(npc);
@@ -767,6 +769,9 @@ static void Internal_ClotThink(int iNPC)
 		i_NpcWeight[npc.index]=3;
 		b_NpcIsInvulnerable[npc.index]=false;
 		b_CannotBeStunned[npc.index] = false;
+		b_CannotBeKnockedUp[npc.index] = false;
+		b_CannotBeSlowed[npc.index] = false;
+		b_CannotBeKnockedUp[npc.index] = false;
 		npc.PlayAngerSoundPassed();
 		npc.SetPlaybackRate(1.0);
 
@@ -1673,6 +1678,8 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", Time);		//replace stun
+
 			npc.LanceState(false);
 
 			float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc);
@@ -2248,6 +2255,11 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.SetCycle(0.01);
 		npc.Anger = true;
 
+		b_CannotBeKnockedUp[npc.index] = true;
+		b_CannotBeStunned[npc.index] = true;
+		b_CannotBeKnockedUp[npc.index] = true;
+		b_CannotBeSlowed[npc.index] = true;
+
 		if(npc.m_flSlicerBarrageActive > GetGameTime(npc.index))
 		{
 			npc.m_flSlicerBarrageCD = GetGameTime(npc.index) + 20.0;
@@ -2274,8 +2286,6 @@ static void Karlas_Lifeloss_Initialize(Karlas npc)
 {
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
-
-	b_CannotBeStunned[npc.index] = true;
 
 	npc.m_iWearable7 = npc.EquipItemSeperate("head", KARLAS_LIGHT_MODEL ,_,_,_,300.0);
 	
@@ -2565,6 +2575,12 @@ static void Internal_NPCDeath(int entity)
 	}
 	RaidModeScaling *= 1.2;
 	RaidModeTime +=50.0;
+
+	if(b_tripple_raid[npc.index])
+	{
+		Twirl_OnStellaKarlasDeath(-2);
+	}
+
 	if(npc.Ally)
 	{
 		Stella stella = view_as<Stella>(ally);
