@@ -137,7 +137,8 @@ Current coders that in anyway actively helped, in order of how much:
 - [Pelipoika](https://github.com/Pelipoika) (Npc base code that we heavily edited, thank you SO much for publishing it all.)
 - [backwards] (backwards#8236) on discord. (Helped with sdkcall lag compensation.)
 
-Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
-rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
+Some Code is borrowed/just takes from other plugins i or friends made, often with permission,
+rarely without because i couldnt contact the person or it was just open sourcecode, credited anyways when i did that inside the code.
+All was under the GLP3.0 lisence.
 
 IF YOU HAVE ANY QUESTIONS, CONTACT ME. My things are in my Bio.
