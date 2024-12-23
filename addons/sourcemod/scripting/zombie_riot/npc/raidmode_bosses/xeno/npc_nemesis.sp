@@ -1136,7 +1136,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	if(IsValidEntity(client))
 	{
 		AcceptEntityInput(client, "ClearParent");
-		b_NoGravity[client] = true;
+		b_NoGravity[client] = false;
 		npc.SetVelocity({0.0,0.0,0.0});
 		if(IsValidClient(client))
 		{
