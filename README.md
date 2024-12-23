@@ -32,12 +32,15 @@ Use THIS compiler version if you dont want any wierd issues when coding yourself
 
 IF you wish to see the plugin in action/or just are interrested in playing this gamemode rather then coding/messing with it, the main server for the plugin is this one hosted by disc.ff:
 
-Main Server:
+Main Servers:
 (American)
+
 74.91.119.154:27017 ( steam://connect/74.91.119.154:27017 )
+
 74.91.113.50:27016 ( steam://connect/74.91.113.50:27016 )
 
 (European)
+
 145.239.70.42:27015 ( steam://connect/145.239.70.42:27015 )
 
 
