@@ -71,7 +71,7 @@ methodmap Isharmla < CClotBody
 		npc.m_iPoints = 0;
 		npc.m_bSpeed = false;
 
-		b_CannotBeKnockedUp[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
 		Is_a_Medic[npc.index] = true;
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");

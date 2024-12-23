@@ -494,7 +494,7 @@ int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, 
 						}
 						else if(!b_NpcHasDied[target])
 						{
-							if(!b_CannotBeKnockedUp[target])
+							if(!HasSpecificBuff(target, "Solid Stance"))
 							{
 								FreezeNpcInTime(target, 2.0);
 								

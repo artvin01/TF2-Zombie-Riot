@@ -1333,7 +1333,7 @@ static Action Lunar_Grace_Tick(int iNPC)
 		struct_Lunar_Grace_Data[npc.index].Throttle = GameTime + 0.1;
 		Update = true;
 
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 0.25);		//replace stun
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 	}
 
 	int color[4]; Ruina_Color(color);
@@ -1821,7 +1821,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	{
 		fl_NC_thorttle[npc.index] = GameTime + 0.1;
 		update = true;
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 0.25);		//replace stun
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);		//replace stun
 	}
 
 	bool Silence = NpcStats_IsEnemySilenced(npc.index);

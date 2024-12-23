@@ -761,7 +761,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			
 			float VicLoc[3];
 			VicLoc[2] += halved ? 250.0 : 450.0; //Jump up.
-			if(!VIPBuilding_Active())
+			if(!VIPBuilding_Active() && !HasSpecificBuff(target, "Solid Stance"))
 			{
 				SDKUnhook(target, SDKHook_Think, NpcJumpThink);
 				f3_KnockbackToTake[target] = VicLoc;

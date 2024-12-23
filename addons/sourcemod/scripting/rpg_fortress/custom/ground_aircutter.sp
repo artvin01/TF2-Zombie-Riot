@@ -129,7 +129,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 		spawnRing_Vectors(OldPosSave[client], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);
 
 		SDKUnhook(target, SDKHook_Think, Npc_AirCutter_Launch);
-		if(!b_CannotBeKnockedUp[target] && target > MaxClients)
+		if(!HasSpecificBuff(target, "Solid Stance") && target > MaxClients)
 			SDKHook(target, SDKHook_Think, Npc_AirCutter_Launch);
 
 		i_NpcToTarget[client] = target;

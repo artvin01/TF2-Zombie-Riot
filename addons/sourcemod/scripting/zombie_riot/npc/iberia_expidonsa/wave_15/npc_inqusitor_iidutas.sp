@@ -426,7 +426,7 @@ int Iberiainqusitor_iidutasSelfDefense(Iberiainqusitor_iidutas npc, float gameTi
 						}
 						else if(!b_NpcHasDied[target])
 						{
-							if(!b_CannotBeKnockedUp[target])
+							if(!HasSpecificBuff(target, "Solid Stance"))
 							{
 								FreezeNpcInTime(target, 2.0);
 								

@@ -100,9 +100,9 @@ methodmap VictorianFactory < CClotBody
 		npc.m_flMeleeArmor = 0.0;
 		npc.m_flRangedArmor = 0.0;
 		b_IgnorePlayerCollisionNPC[npc.index] = true;
-		b_CannotBeStunned[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeSlowed[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 		npc.m_bDissapearOnDeath = true;
 		i_NpcIsABuilding[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;

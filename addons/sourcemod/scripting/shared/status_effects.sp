@@ -97,8 +97,6 @@ void InitStatusEffects()
 	StatusEffects_WidowsWine();
 	StatusEffects_CrippleDebuff();
 	StatusEffects_MagnesisStrangle();
-	StatusEffects_Freeplay1();
-	StatusEffects_Freeplay2();
 	StatusEffects_Cudgel();
 	StatusEffects_MaimDebuff();
 	StatusEffects_Prosperity();
@@ -118,6 +116,9 @@ void InitStatusEffects()
 	StatusEffects_Ruiania();
 	StatusEffects_WeaponSpecific_VisualiseOnly();
 	StatusEffects_StatusEffectListOnly();
+	//freeplay last.
+	StatusEffects_Freeplay1();
+	StatusEffects_Freeplay2();
 }
 
 static int CategoryPage[MAXTF2PLAYERS];
@@ -920,8 +921,6 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 		return;
 
 	//No change
-	if(b_CannotBeSlowed[victim])
-		return;
 	static StatusEffect Apply_MasterStatusEffect;
 	static E_StatusEffect Apply_StatusEffect;
 
@@ -971,8 +970,11 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 		}
 		else
 		{
-			SpeedWasNerfed = true;
-			TotalSlowdown *= SpeedModif;
+			if(!HasSpecificBuff(victim, "Fluid Movement"))
+			{
+				SpeedWasNerfed = true;
+				TotalSlowdown *= SpeedModif;
+			}
 		}
 	}
 	//speed debuffs will now behave the excat same as damage buffs
@@ -1661,6 +1663,34 @@ void StatusEffects_Silence()
 	//Immunity to stun effects
 	strcopy(data.BuffName, sizeof(data.BuffName), "Clear Head");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ֆ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	//Immunity to displacing
+	strcopy(data.BuffName, sizeof(data.BuffName), "Solid Stance");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ѯ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	//Immunity to slows
+	strcopy(data.BuffName, sizeof(data.BuffName), "Fluid Movement");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ѷ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
