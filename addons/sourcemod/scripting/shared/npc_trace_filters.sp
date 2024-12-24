@@ -89,18 +89,18 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return false;
 #endif
 
+#if defined ZR
+	if(YakuzaTestStunOnlyTrace())
+	{
+		if(f_TimeFrozenStill[entity] < GetGameTime(entity))
+		{
+			//The target was NOT stunned.
+			return false;
+		}
+	}
+#endif
 	if(!b_NpcHasDied[iExclude])
 	{	
-#if defined ZR
-		if(YakuzaTestStunOnlyTrace())
-		{
-			if(f_TimeFrozenStill[iExclude] < GetGameTime(iExclude))
-			{
-				//The target was NOT stunned.
-				return false;
-			}
-		}
-#endif
 		//1 means we treat it as a bullet trace
 		return NpcCollisionCheck(iExclude, entity, 1);
 	}

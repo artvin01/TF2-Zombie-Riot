@@ -139,6 +139,8 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 							ParticleRef[client] = EntIndexToEntRef(entity);
 						}
 					}
+					ApplyRapidSuturing(client);
+					ApplyStatusEffect(client, client, "Thick Blood", 0.6);
 					
 					return Plugin_Continue;
 				}
@@ -178,7 +180,7 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 
 void Flagellant_DoSwingTrace(int client)
 {
-	TriggerSelfDamage(client, 0.0001);
+	TriggerSelfDamage(client, 0.005);
 }
 
 void Flagellant_OnTakeDamage(int victim)
@@ -484,18 +486,18 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 
 				if(target < MaxClients)
 					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-
-				float cooldown = healing / 30.0;
-				if(cooldown < 2.0)
+				
+				float cooldown = (healing / multi) / 15.0;
+				if(cooldown < 5.0)
 				{
-					cooldown = 2.0;
+					cooldown = 5.0;
 				}
-				else if(cooldown > 10.0)
+				else if(cooldown > 15.0)
 				{
-					cooldown = 10.0;
+					cooldown = 15.0;
 				}
 
-				Ability_Apply_Cooldown(client, slot, 10.0);
+				Ability_Apply_Cooldown(client, slot, cooldown);
 				
 				if(target > MaxClients)
 				{
@@ -585,7 +587,8 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 public void Flagellant_AcidHitPost(int attacker, int victim, float damage, int weapon)
 {
 	float multi = Attributes_Get(weapon, 2, 1.0);
-	StartBleedingTimer(victim, attacker, multi * 4.0, HealLevel[attacker] > 1 ? 15 : 10, weapon, DMG_PLASMA);
+	StartBleedingTimer(victim, attacker, multi, HealLevel[attacker] > 1 ? 40 : 30, weapon, DMG_PLASMA);
+	StartBleedingTimer(victim, attacker, multi, HealLevel[attacker] > 1 ? 40 : 30, weapon, DMG_PLASMA);
 }
 
 public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int slot)
@@ -635,6 +638,9 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		}
 	}
 
+	if(target > 0 && Elemental_GoingCritical(target))
+		validAlly = false;
+
 	if(validAlly)
 	{
 		int healing = RoundToFloor(maxhealth * (HealLevel[client] > 1 ? 0.35 : 0.25));
@@ -667,8 +673,8 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		HealedAlly[2] += 10.0;
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
-		Elemental_AddNervousDamage(target, client, 10, _, true);
-		f_HussarBuff[target] = GetGameTime() + 10.0;
+		Elemental_AddChaosDamage(target, client, 10, _, true);
+		ApplyStatusEffect(client, target, "Hussar's Warscream", 10.0);
 
 		if(target > MaxClients)
 		{
@@ -784,12 +790,13 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
 		
-		f_NpcImmuneToBleed[target] = GetGameTime() + 0.6;
-		float extra = BleedAmountCountStack[target] * 1000.0;
-
+		
+		float extra = BleedAmountCountStack[target] * 200.0 * multi;
+		ApplyRapidSuturing(target);
+		
 		SDKHooks_TakeDamage(target, client, client, (3200.0 * multi), DMG_PLASMA, secondary);
 		if(extra)
-			SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+			SDKHooks_TakeDamage(target, client, client, extra, DMG_TRUEDAMAGE, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 		ParticleEffectAt(pos, PARTICLE_JARATE, 2.0);
 		Ability_Apply_Cooldown(client, slot, 50.0);

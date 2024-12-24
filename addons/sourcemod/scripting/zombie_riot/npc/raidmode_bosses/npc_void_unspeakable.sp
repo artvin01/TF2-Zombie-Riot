@@ -241,6 +241,7 @@ methodmap VoidUnspeakable < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = -5;
 		}
+		RemoveAllDamageAddition();
 		npc.m_flDeathAnimation = 0.0;
 		i_NpcWeight[npc.index] = 4;
 		npc.g_TimesSummoned = 1;
@@ -723,7 +724,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		if((health / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;
-			f_BattilonsNpcBuff[npc.index] = GetGameTime() + 5.0;
+			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
 			npc.m_flResistanceBuffs = GetGameTime() + 2.0;
 			float ProjectileLoc[3];	
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
@@ -762,8 +763,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 
 float VoidUnspeakable_Absorber(int entity, int victim, float damage, int weapon)
 {
-	if(f_LowTeslarDebuff[victim] - 5.0 < GetGameTime())
-		f_LowTeslarDebuff[victim] = GetGameTime() + 5.0;
+	ApplyStatusEffect(entity, victim, "Teslar Shock", 5.0);
 
 	float damageDealt = 10.0 * RaidModeScaling;
 	Elemental_AddVoidDamage(victim, entity, RoundToNearest(damageDealt), true, true);	
@@ -822,6 +822,8 @@ bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 						SetGlobalTransTarget(EnemyLoop);
 						ShowSyncHudText(EnemyLoop,  SyncHud_Notifaction, "%t", "Unspeakable Teleport Taunt");
 					}
+					//Set target
+					npc.m_iTarget = npc.index;
 					int red = 125;
 					int green = 0;
 					int blue = 125;
@@ -1264,8 +1266,8 @@ public void VoidUnspeakableWin(int entity)
 
 	AlreadySaidWin = true;
 	//b_NpcHasDied[client]
-	CPrintToChatAll("{purple}The void consumes and goes forth to destroy everything and everyone... {green}Xeno{purple} was nothing in comparison to this.");
-	CPrintToChatAll("{purple}Ruina.. Expidonsa... Ziberia... Wildingen... all countries have no chance.");
+	CPrintToChatAll("{purple}After detroying everyrhing here, it leaves to plan another attack.");
+	CPrintToChatAll("{crimson}At the rest of Irln.");
 }
 
 

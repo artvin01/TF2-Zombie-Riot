@@ -110,7 +110,7 @@ static void ClotThink(int iNPC)
 		{
 			// Close enough
 			npc.StopPathing();
-			f_BobDuckBuff[ally] = GetGameTime() + 3.0;
+			ApplyStatusEffect(npc.index, ally, "Bobs Duck Dubby", 3.0);
 		}
 		else
 		{

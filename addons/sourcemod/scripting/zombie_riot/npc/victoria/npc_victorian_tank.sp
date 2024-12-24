@@ -76,9 +76,9 @@ methodmap VictoriaTank < CClotBody
 		npc.m_flMeleeArmor = 2.0;
 		npc.m_flRangedArmor = 0.7;
 
-		b_CannotBeStunned[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeSlowed[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 
 		return npc;
 	}

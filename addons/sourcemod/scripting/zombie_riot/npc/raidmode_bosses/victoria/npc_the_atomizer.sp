@@ -296,6 +296,7 @@ methodmap Atomizer < CClotBody
 		}
 		else
 		{
+			RemoveAllDamageAddition();
 			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
@@ -761,7 +762,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
-				f_VictorianCallToArms[entity] = gameTime;
+				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}
 	}
 	
@@ -837,7 +838,7 @@ static void Internal_ClotThink(int iNPC)
 					SetVariantString("1.2");
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 					CPrintToChatAll("{blue}Atomizer{default}: Oh yes! I FEEL ALIVE!");
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flNextRangedAttack += 2.0;
@@ -1803,7 +1804,7 @@ static bool Victoria_Support(Atomizer npc)
 		{
 			position[0] = 525.0;
 			position[1] = 1600.0;
-			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+			Vs_ParticleSpawned[npc.index] = EntIndexToEntRef(ParticleEffectAt(position, "kartimpacttrail", 2.0));
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
 			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
@@ -1815,13 +1816,12 @@ static bool Victoria_Support(Atomizer npc)
 		position[0] = Vs_Temp_Pos[npc.index][0];
 		position[1] = Vs_Temp_Pos[npc.index][1];
 		position[2] = Vs_Temp_Pos[npc.index][2] - 700.0;
-		TeleportEntity(Vs_ParticleSpawned[npc.index], position, NULL_VECTOR, NULL_VECTOR);
+		TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[npc.index]), position, NULL_VECTOR, NULL_VECTOR);
 		position[2] += 700.0;
 		
-		b_ThisNpcIsSawrunner[npc.index] = true;
-		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
 		Explode_Logic_Custom(100.0*RaidModeScaling, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
-		b_ThisNpcIsSawrunner[npc.index] = false;
+		
 		ParticleEffectAt(position, "hightower_explosion", 1.0);
 		i_ExplosiveProjectileHexArray[npc.index] = 0; 
 		npc.PlayBoomSound();

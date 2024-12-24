@@ -3782,4 +3782,12 @@
 	{
 		"en"		"Matrix"
 	}
+	"Positive"
+	{
+		"en"		"Positive"
+	}
+	"Negative"
+	{
+		"en"		"Negative"
+	}
 }

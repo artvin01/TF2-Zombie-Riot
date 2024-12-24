@@ -291,6 +291,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		if(StrContains(data, "final_item") != -1)
 		{
+			RemoveAllDamageAddition();
 			b_NpcUnableToDie[npc.index] = true;
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_BobFirst_Win);
 			i_RaidGrantExtra[npc.index] = 1;
@@ -313,6 +314,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		}
 		else if(StrContains(data, "nobackup") != -1)
 		{
+			RemoveAllDamageAddition();
 			npc.m_bSecondPhase = true;
 			npc.g_TimesSummoned = -2;
 		}
@@ -329,6 +331,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		}
 		else
 		{
+			RemoveAllDamageAddition();
 			npc.m_bSecondPhase = false;
 			npc.m_flNextDelayTime = GetGameTime(npc.index) + 5.0;
 			npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 5.0;
@@ -861,7 +864,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		npc.m_flNextMeleeAttack = gameTime + 2.0;
 	}
 
-	if(npc.m_flGetClosestTargetTime < gameTime || !IsEntityAlive(npc.m_iTarget))
+	if(npc.m_flGetClosestTargetTime < gameTime || !IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;

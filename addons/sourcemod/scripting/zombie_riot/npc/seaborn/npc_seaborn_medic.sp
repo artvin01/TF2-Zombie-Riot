@@ -133,7 +133,7 @@ public void SeabornMedic_ClotThink(int iNPC)
 		
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 		if(!NpcStats_IsEnemySilenced(npc.index))
-			f_EmpowerStateOther[npc.m_iTargetAlly] = GetGameTime() + 1.5;
+			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 1.5);
 	}
 
 	gameTime = GetGameTime() + 0.5;
@@ -147,7 +147,7 @@ public void SeabornMedic_ClotThink(int iNPC)
 			{
 				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
 				{
-					f_HussarBuff[client] = gameTime;
+					ApplyStatusEffect(npc.index, client, "Hussar's Warscream", 0.5);
 				}
 			}
 		}
@@ -157,7 +157,7 @@ public void SeabornMedic_ClotThink(int iNPC)
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
 			{
-				f_HussarBuff[entity] = gameTime;
+				ApplyStatusEffect(npc.index, entity, "Hussar's Warscream", 0.5);
 			}
 		}
 	}

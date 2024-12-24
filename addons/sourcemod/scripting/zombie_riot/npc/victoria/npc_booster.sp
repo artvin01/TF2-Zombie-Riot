@@ -310,10 +310,10 @@ public void VictorianBooster_ClotThink(int iNPC)
 						SetEntityRenderColor(npc.m_iWearable4, 0, 205, 255, 255);
 					}
 					HealEntityGlobal(npc.index, PrimaryThreatIndex, 150.0, 1.0);
-					f_Ocean_Buff_Stronk_Buff[PrimaryThreatIndex] = GetGameTime() + 1.1;
+					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Oceanic Scream", 1.1);
 					if(NpcStats_VictorianCallToArms(npc.index))
 					{
-						f_BuffBannerNpcBuff[PrimaryThreatIndex] = GetGameTime() + 1.1;
+						ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Buff Banner", 1.1);
 					}
 				}
 				else

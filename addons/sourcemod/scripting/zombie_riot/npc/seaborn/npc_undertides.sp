@@ -327,7 +327,6 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 	}
 	int team = GetTeam(npc.index);
 	int[] def = new int[count];
-	float gameTime = GetGameTime();
 	float Pos1[3];
 	if(RangeLimit > 0.0)
 	{
@@ -368,19 +367,16 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 					if(Armor_Charge[client] > 0)
 						defense += 10;
 					
-					if(f_EmpowerStateOther[client] > gameTime)
+					if(HasSpecificBuff(client, "Ally Empowerment"))
 						defense++;
 					
-					if(f_EmpowerStateSelf[client] > gameTime)
+					if(HasSpecificBuff(client, "Self Empowerment"))
 						defense++;
 					
-					if(f_HussarBuff[client] > gameTime)
+					if(HasSpecificBuff(client, "Hussar's Warscream"))
 						defense++;
 					
 					if(i_CurrentEquippedPerk[client] == 2)
-						defense += 2;
-					
-					if(Resistance_Overall_Low[client] > gameTime)
 						defense += 2;
 					
 					if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
@@ -433,11 +429,8 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 						
 						if(fl_RangedArmor[entity] < 1.0)
 							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);
-
-						if(Resistance_Overall_Low[entity] > gameTime)
-							defense += 2;
 						
-						if(f_BattilonsNpcBuff[entity] > gameTime)
+						if(HasSpecificBuff(entity, "Battilons Backup"))
 							defense += 4;
 
 						if(Citizen_IsIt(entity))

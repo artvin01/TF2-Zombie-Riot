@@ -359,7 +359,7 @@ static void ClotThink(int iNPC)
 				{
 					npc.m_flNextRangedBarrage_Singular = GameTime + (npc.Anger ? 0.5 : 0.8);
 					npc.m_iState++;
-					float Time = (npc.Anger ? 1.2 : 2.5);
+					float Time = (npc.Anger ? 1.3 : 2.5);
 					float Predicted_Pos[3],
 					SubjectAbsVelocity[3];
 
@@ -370,7 +370,7 @@ static void ClotThink(int iNPC)
 
 					//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
 
-					float Radius = (npc.Anger ? 125.0 : 100.0);
+					float Radius = (npc.Anger ? 115.0 : 100.0);
 					float dmg = (npc.Anger ? 300.0 : 250.0);
 					int color[4]; Ruina_Color(color);
 

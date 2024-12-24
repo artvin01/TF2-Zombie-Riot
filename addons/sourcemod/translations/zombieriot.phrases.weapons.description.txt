@@ -313,29 +313,19 @@
 	
 	"Deagle Desc"
 	{
-		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\nTime correctly after a blue flash, and throw multiple for even more damage.\nThis projectile always counts as a HEADSHOT."
-		"fr"		"Lancez des objets avec M2, et tirez-les pour des dégats additionels.\nLancez plusieurs pour davantage de dégats, essayez de syncroniser avec le flash bleu.\nL'objet effectuera toujours des tirs en pleine tête."
-		"ru"		"Орёл, который бросает предметы клавишей М2, стреляйте ими, чтобы нанести ещё больше урона.\nРассчитайте время после синей вспышки и бросайте несколько раз для нанесения ещё большего урона.\nЭти снаряды всегда засчитываются как ВЫСТРЕЛ В ГОЛОВУ."
-		"chi"       "M2投出硬币，击中硬币将子弹反射到敌人弱点造成暴击。如在硬币发出闪光后击中，造成额外伤害。空中如有多个硬币，则可以多次反弹，叠加伤害。"
+		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\nTime correctly after a blue flash, and throw multiple for even more damage.\nThis projectile always counts as a HEADSHOT.\nHas less damage falloff."
 	}
 	"Deagle Pap 1"
 	{
-		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable."
-		"fr"		"Dégats et cadence de tir améliorés, abilité objet amélioré, capacité d'objets augmunté"
-		"ru"		"Увелич. урон и скорость атаки, усиление способности на М2 получает один доп. бросок."
-		"chi"       "增加伤害和攻击速度，可投硬币+1。"
+		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\nYou will now always gib."
 	}
 	"Deagle Pap 2"
 	{
-		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
-		"fr"		"Dégats et cadence de tir améliorés, abilité objet amélioré, capacité d'objets augmunté\n2 balles utilisées par tir"
-		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один доп. бросок.\n2 пули за выстрел."
-		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗2颗子弹"
+		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
 	}
 	"Deagle Pap 3"
 	{
-		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
-		"fr"		"Dégats et cadence de tir améliorés, abilité objet amélioré, capacité d'objets augmunté\n2 balles utilisées par tir"
+		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
 	}
 	
 	"Flamethrower Pap 1"
@@ -1205,6 +1195,10 @@
 		"fr"	"Dégats et cadence des attaques améliorés. Ennemis frappés prennent 35%% plus de dégats."
 		"ru"	"Увеличенный урон и скорость атаки, эффект значительно сильнее, враги получают на 35%% больше урона."
 		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
+	}
+	"Medusa Teslar Stick Pap 2"
+	{
+		"en"	"Increased damage and attackspeed, bleed lasts longer, extra melee resistance."
 	}
 	
 	"Fists Of Kahmlstein Desc"
@@ -2897,11 +2891,19 @@
 		"fr"	"Tuer et frapper les ennemis vous donne des dollars.\nAppuyez M2 pour échanger 20 dollars et rouler la machine à sous.\nLa machine à sous a une chance de vous donner un effet spécial.\nDégats changent avec votre opulence.\n«La fortune est la puissance.»"
 		"chi"	"击中，击杀敌人获得$$$。\nM2花费20$开赌。有几率获得各种buff。\n伤害根据金钱增加。\n''金钱=力量''"
 	}
+	"Walmart Desc"
+	{
+		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
+	}
 	"Flush Desc"
 	{
 		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''Take it or leave it.''"
 		"fr"	"Arme est amélioré, vous obtenez plus de dollars.\nLa machine à sous vous donne des effets meilleurs.\n«Prenez-la ou laissez-la.»"
 		"chi"	"属性加强，获得更多钱。\n加强赌博提供的buff。\n''白要不要''"
+	}
+	"Flushed Away Desc"
+	{
+		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
 	}
 	"Straight Desc"
 	{
@@ -2909,15 +2911,23 @@
 		"fr"	"Arme est amélioré.\nLa machine à sous vous donne des effets meilleurs.\n«ALL IN BABY!»"
 		"chi"	"属性升级。\n加强buff。\n''ALL IN''\n''ALL IN''\n''ALL IN''"
 	}
+	"Homosexual Desc"
+	{
+		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
+	}
 	"Royal Desc"
 	{
 		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''The game was rigged from the start''"
 		"fr"	"Arme est amélioré, vous obtenez plus de dollars.\nLa machine à sous vous donne des effets meilleurs.\n«Le jeu était truqué depuis le début.»"
 		"chi"	"加强属性，更多钱。\n加强buff。\n''买的没有卖的精。''"
 	}
+	"Gambler's Ruin Desc"
+	{
+		"en"	"The ultimate version of the Casino.\nCan you feel the high?\n''Music... Start!''" // least cringe manga inclusion
+	}
 	"Casino Desc Extra"
 	{
-		"en"	"R. deals damage up to 5 enemies in a single shot, C. applies freeze, T.B.O. deals massive damage based on your clip.\nBlood ammo gives ammo on kill.\nGambling frenzy makes M2 ability free."
+		"en"	"R. deals AOE damage, C. applies Gambler's curse, T.B.O. deals massive damage based on your clip.\nBlood ammo gives ammo on kill.\nGambling frenzy makes M2 ability free.\nPayday doubles all cash."
 		"fr"	"R. : Fais des dégats à 5 ennemis. C. : Gèle les ennemis. T.B.O. : Fais des dégats basés sur le niveau de votre chargeur.\nBlood ammo : Donne des munitions quand vous tuez.\nFrénésie du Jeu : La machine à sous est gratuite."
 		"chi"	"R. 造成穿透性伤害，上限5名敌人。C. 冰冻敌人，T.B.O. 根据弹夹弹量造成超高伤害，血腥子弹在击杀后获得子弹。\n「连胜」：免费赌博！"
 	}
@@ -2986,9 +2996,47 @@
 	}
 	"Seaborn Claws Desc"
 	{
-		"en"	"Hits up to 3 targets and increased melee range."
-		"fr"	"Griffes ont une longue portée. Frappe 3 ennemis."
-		"chi"	"可同时击中三名敌人。"
+		"en"	"Hits up to 2 targets."
+	}
+	"Zealot"
+	{
+		"en"	"Zealot."
+	}
+	"Zealot Desc"
+	{
+		"en"	"Become a workshipper of sigmar!\nRapier: headshots, m2 blocks with a healthbar.\nR with any weapon: Dashes in any direction except forwards.\nHold R with revolver for rapid fire\nHitting enemeis reduces cooldowns (headshots more)."
+	}
+	"Zealot Pap 1 Desc"
+	{
+		"en"	"Boost stats.\nGain a potion that gives a random buff, see random buff in weapon hud.\nIncreaces cooldown reductions."
+	}
+	"Zealot Pap 2 Desc"
+	{
+		"en"	"Boost stats."
+	}
+	"Zealot Pap 3 Desc"
+	{
+		"en"	"Boost stats.\nIncreaces cooldown reductions.\nYour raipier now has an ability when crouching with M2\nDash through targets and gain extra attackspeed for 5 seconds."
+	}
+	"Zealot Pap 4 Desc"
+	{
+		"en"	"Boost stats."
+	}
+	"Zealot Pap 4 Desc"
+	{
+		"en"	"Boost stats."
+	}
+	"Zealot Pap 5 Desc"
+	{
+		"en"	"Boost stats.\nIncreaces cooldown reductions."
+	}
+	"Zealot Pap 6 Desc"
+	{
+		"en"	"Boost stats.\nIncreaces cooldown reductions."
+	}
+	"Zealot Pap 7 Desc"
+	{
+		"en"	"Boost stats.\nIncreaces cooldown reductions."
 	}
 	"Seaborn Spines Desc"
 	{
@@ -3001,6 +3049,10 @@
 		"en"	"Heals allies up to 100 health and self up to 30 health."
 		"fr"	"Soigne les alliés pour 100 santé, soignez-vous pour 30 santé."
 		"chi"	"可治疗队友100hp，自己30hp。"
+	}
+	"Seaborn Infection Pap 0"
+	{
+		"en"	"Claws now hits up to 3 targets and increased melee range.\nSpines reload faster and gain a Salve that can heal allies and self."
 	}
 	"Seaborn Infection Pap 1"
 	{
@@ -3040,9 +3092,7 @@
 	}
 	"The Flagellant Desc"
 	{
-		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage."
-		"fr"	"Donne de la santé extra avec l'abilié de vous soigner, mais vous inflige des dégats en retour.\nLe fantasisme : une flétrissure de l'esprit."
-		"chi"	"狂热 - 对灵魂不朽的摧残。\n更多血量，可以自疗，但是会对自己造成伤害。"
+		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage.\nYou are immune to all bleed effects."
 	}
 	"The Flagellant Extra Desc"
 	{
@@ -3085,6 +3135,10 @@
 		"en"	"Melee alt-fire ability ''Sepsis'' gives yourself to store damage taken to later be restored after the ability ends.\nPrimary and Secondary also gain an alt-fire ability."
 		"fr"	"Abilité arme corps-\-corps «Sepsis» : Absorbez des dégats pour vous soigner avec quand l'abilité finit.\nVos armes principale et secondaire reçoivent aussi une abilité."
 		"chi"	"近战M2技能：''败血''\n激活时存储受到的伤害，技能结束后再受到此伤害。\n主武器和副武器也获得M2技能。"
+	}
+	"The Flagellant Pap 0"
+	{
+		"en"	"Gain +300 max health and doubles bleed damage, unlocks Acid Rain primary weapon."
 	}
 	"The Flagellant Pap 2"
 	{
@@ -3372,26 +3426,15 @@
 	}
 	"Outlaw Railcannon Desc"
 	{
-		"en"	"Hand portable cannon that charges tofire TAU particles at incredible speeds.\nDoes more damage while airborne, but dissipates quickly over distance.\nSuffers mid-game, but becomes a solid weapon late-game."
-		"fr"	"Tire des particules TAU à des vélocités incroyables.\nFais plus de dégats alors que vous êtes en plein air, mais s'affaiblit rapidement avec la distance.\nSouffre au milieu du jeu, mais exelle plus tard."
-		"chi"	"可发射高速TAU粒子的手炮。\n空中时造成更多伤害。严重伤害衰减。"
+		"en"	"Deals damage twice, 2nd damage instance deals 15%% of your damage as true damage.\nZoom with m2.\nHas poor pierce and low damage falloff, but a very thin laser."
 	}
 	"Outlaw Railcannon Desc Pap 1"
 	{
-		"en"	"Higher quality capacitors allows for shooting at lower charges.\nLess DPS than counterpart, but can fire when bar is 1/3rd full.\nIdeal for cramped maps."
-		"fr"	"Peut tirer avec seulement un tiers de charge, pour moins de dégats."
-		"chi"	"增加了高质量电阻，消耗更少能量。\n不过dps更低。适合狭窄的地图。"
+		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 20%%"
 	}
 	"Outlaw Railcannon Desc Pap 2"
 	{
-		"en"	"Higher capacity capacitors allow for incredibly fast particles.\nParticles split in the air, resulting in inverted damage falloff.\nCan zoom in with M2.\nIdeal for large open spaces."
-		"fr"	"Entrez le mode zoom avec M2.\nGagne des dégats avec la distance."
-		"chi"	"增加了高容量电阻，可以发射更快的粒子。\n粒子在空中会分裂，越远伤害越高。M2可以开镜。\n适合开阔的地图。"
-	}
-	"Outlaw Railcannon Desc Pap 3"
-	{
-		"en"	"We found this left behind on an old rusty mad max car.\nSeems to have had significant use."
-		"chi"	"我们在某个奇怪的拦车找到了这玩意。\n貌似很重要。"
+		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 25%%"
 	}
 	"Outlaw Railcannon Desc Pap 4"
 	{
@@ -3519,37 +3562,39 @@
 	{
 		"en"	"Fires bolt projectiles."
 	}
+	"Tinker Pap 0 Desc"
+	{
+		"en"	"Grants a ranged weapon that fires special bolt projectiles and Tinker Research now generates metal while active."
+	}
 	"Tinker Pap 1 Desc"
 	{
-		"en"	"+65%% Building Health, +202% Weapon Damage, +100%% Repair Rate, +15 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
-		"fr"	"+65%% durabilité pour constructions, +202% dégats, +100%% vitesse de réparation, +15 regénération de métal, +3 espaces pour construction de support et -30s temps de rechargement de l'enclume."
-		"chi"	"+65%%建筑血量，+202%武器伤害，+100%%修复速度，+15金属回复，+3辅助建筑，-30s工作台"
+		"en"	"+65%% Building Health, +202% Weapon Damage, +100%% Repair Rate, +6 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
+		"fr"	"+65%% durabilité pour constructions, +202% dégats, +100%% vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -30s temps de rechargement de l'enclume."
+		"chi"	"+65%%建筑血量，+202%武器伤害，+100%%修复速度，+6金属回复，+3辅助建筑，-30s工作台"
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65%% Building Health, +75% Weapon Damage, +25 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
+		"en"	"+65%% Building Health, +75% Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70%% Building Health, +181.25% Weapon Damage, +50 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70%% Building Health, +181.25% Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40%% Building Health, +181.25% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+40%% Building Health, +181.25% Weapon Damage, +10 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160% Weapon Damage, +100 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+160% Weapon Damage, +15 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70%% Building Health, +250% Weapon Damage, +100 Metal Regen, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70%% Building Health, +250% Weapon Damage, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"West Pap 1 Desc"
 	{
-		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nYou gain damage resistance but the weapon's dmg falloff is increased\nNew abiity: M2 for rapid fire."
-		"fr"	"Cadence de tir lente, dégats hauts.\nRésistance améliorée en échange de plus de perte de dégats avec la distance.\nAppuyez M2 pour accélérer la cadence de tir.\nUne arme du Wild West."
-		"chi"	"一把来自狂野西部的武器。\n射速低，伤害高。\n获得更高的抗性，但同时增加距离衰减。\n新技能：[M2]快速开火"
+		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nYou gain damage resistance but the weapon's dmg falloff is increased\nNew abiity: M2 for rapid fire.\nYou loose guranteed gibs."
 	}
 	"West Pap 2 Desc"
 	{
@@ -3615,11 +3660,15 @@
 	}
 	"The Merchant Desc"
 	{
-		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time.\nAllows the construction of the brewing stand."
+		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand."
+	}
+	"Merchant Pap -1 Desc"
+	{
+		"en"	"Able to supercharge by using the device, but consumes metal over time."
 	}
 	"Merchant Pap 0 Desc"
 	{
-		"en"	"Improves Stats Overall"
+		"en"	"Base stats improved"
 	}
 	"Merchant Pap 1 Desc"
 	{
@@ -4020,8 +4069,44 @@
 	}
 	"CastleBreaker Desc Extra"
 	{
-		"en"	"Increases the Explosion damage of 'Archetype: Victoria' by +10％."
-		"ko"	"'유형: 빅토리아'인 다른 무기에 폭발 피해 +10％ 추가"
+		"en"	"Increases the Damage of 'Archetype: Victoria' by +10％."
+		"ko"	"'유형: 빅토리아'인 다른 무기에 피해량 +10％ 추가"
+	}
+	"Zealot Dash Denie Spam"
+	{
+		"en" 		"You cant dash, you must hit someone with your rapier at least once!"
+	}
+	"Potion of Vigor"
+	{
+		"en"	"Potion of Vigor"
+	}
+	"Potion of Vigor Desc"
+	{
+		"en"	"Gain extra passive health regen for a limited time."
+	}
+	"Potion of Swiftness"
+	{
+		"en"	"Potion of Swiftness"
+	}
+	"Potion of Swiftness Desc"
+	{
+		"en"	"Dash cooldown is reduced."
+	}
+	"Potion of Resilience"
+	{
+		"en"	"Potion of Resilience"
+	}
+	"Potion of Resilience Desc"
+	{
+		"en"	"You have more stamina to block with."
+	}
+	"Potion of Focus"
+	{
+		"en"	"Potion of Focus"
+	}
+	"Potion of Focus Desc"
+	{
+		"en"	"Your headshots deal more damage."
 	}
 	"Magia Fractal"
 	{

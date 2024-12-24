@@ -361,7 +361,7 @@ void RTS_TakeDamage(int victim, float &damage, int damagetype)
 
 	if(dmg > 0)
 	{
-		if(damagetype & DMG_SLASH)
+		if(damagetype & DMG_TRUEDAMAGE)
 		{
 		}
 		else if(damagetype & DMG_CLUB)

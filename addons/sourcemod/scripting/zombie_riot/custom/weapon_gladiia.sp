@@ -131,7 +131,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 						if(amount)
 						{
-							f_WeaponSpecificClassBuff[client][0] = GetGameTime() + 0.5;
+							ApplyStatusEffect(client, client, "Waterless Training", 0.5);
 							int maxhealth = SDKCall_GetMaxHealth(client);
 							if(maxhealth > 1000)
 								maxhealth = 1000;
@@ -298,8 +298,11 @@ void Gladiia_OnTakeDamageEnemy(int victim, int attacker, float &damage)
 	}
 }
 
-float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage)
+float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage, int damagetype)
 {
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
+
 	switch(EliteLevel[victim])
 	{
 		case 1:
@@ -321,33 +324,14 @@ float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage)
 	return damage;
 }
 
-float Gladiia_OnTakeDamageSelf_Hud(int victim)
-{
-	switch(EliteLevel[victim])
-	{
-		case 3:
-		{
-			return 0.85;//0.7;
-		}
-	}
-
-	return 1.0;
-}
-
-float Gladiia_OnTakeDamageAlly(int victim, int attacker, float damage)
+float Gladiia_OnTakeDamageAlly(int victim, int attacker, float damage, int damagetype)
 {
 	if(EliteLevel[victim])	// Being two fishes are we?
 		return damage;
-	
-	return Gladiia_OnTakeDamageSelf(GetHighestGladiiaClient(), attacker, damage);
-}
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
 
-float Gladiia_OnTakeDamageAlly_Hud(int victim)
-{
-	if(EliteLevel[victim])	// Being two fishes are we?
-		return 1.0;
-	
-	return Gladiia_OnTakeDamageSelf_Hud(GetHighestGladiiaClient());
+	return Gladiia_OnTakeDamageSelf(GetHighestGladiiaClient(), attacker, damage, damagetype);
 }
 
 static int GetHighestGladiiaClient()

@@ -535,11 +535,8 @@ public void Shock_ChainToVictim(int inflictor, int client, int weapon, float dam
 		float vicLoc[3];
 		WorldSpaceCenter(victim, vicLoc);
 		SDKHooks_TakeDamage(victim, inflictor, client, damage, DMG_BLAST | DMG_ALWAYSGIB, weapon);
-		
-		if (f_PassangerDebuff[victim] < gt)
-			f_PassangerDebuff[victim] = gt + f_ShockPassangerTime[tier];
-		else
-			f_PassangerDebuff[victim] += f_ShockPassangerTime[tier];
+
+		ApplyStatusEffect(client, victim, "Electric Impairability", f_ShockPassangerTime[tier]);
 		
 		f_NextShockTime[victim] = gt + 0.01;
 		
@@ -806,7 +803,7 @@ public MRESReturn Ice_Explode(int entity)
 
 void Trash_IceHitPre(int entity, int victim, float damage, int weapon)
 {
-	Cryo_FreezeZombie(victim, 1);
+	Cryo_FreezeZombie(entity, victim, 1);
 }
 
 public bool Trash_RollTrash(int client, int tier)

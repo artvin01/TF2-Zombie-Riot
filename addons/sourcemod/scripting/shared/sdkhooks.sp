@@ -11,6 +11,7 @@ static float f_EntityOutOfNav[MAXTF2PLAYERS];
 static float f_LatestDamageRes[MAXTF2PLAYERS];
 static float f_TimeSinceLastRegenStop[MAXTF2PLAYERS];
 static bool b_GaveMarkForDeath[MAXTF2PLAYERS];
+static float f_RecievedTruedamageHit[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
@@ -32,6 +33,7 @@ void SDKHooks_ClearAll()
 	{
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
+	Zero(f_RecievedTruedamageHit);
 	Zero(f_EntityHazardCheckDelay);
 	Zero(f_EntityOutOfNav);
 	
@@ -164,10 +166,10 @@ stock void SDKHook_HookClient(int client)
 #if defined ZR
 	SDKUnhook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 	SDKHook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
-/*
+
 	SDKUnhook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
 	SDKHook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
-*/
+
 #endif
 #endif
 
@@ -187,16 +189,63 @@ stock void SDKHook_HookClient(int client)
 }
 
 #if defined ZR 
-bool WeaponWasGivenAmmo[MAXENTITIES];
+bool WeaponWasGivenInfiniteDelay[MAXENTITIES];
 
 void WeaponWeaponAdditionOnRemoved(int entity)
 {
-	WeaponWasGivenAmmo[entity] = false;
+	WeaponWasGivenInfiniteDelay[entity] = false;
+}
+
+public void CheckWeaponAmmoLogicExternal(DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(client) && IsValidEntity(weapon))
+		IsWeaponEmptyCompletly(client, weapon);
+		
+	delete pack;
+}
+bool IsWeaponEmptyCompletly(int client, int weapon, bool CheckOnly = false)
+{
+	int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
+	if(Ammo_type > 3)
+	{
+		if(GetAmmo(client, Ammo_type) <= 0)
+		{
+			if(b_WeaponHasNoClip[weapon])
+			{
+				if(!CheckOnly)
+				{
+					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
+					WeaponWasGivenInfiniteDelay[weapon] = true;
+				}
+				return true;
+			}
+			else
+			{
+				//We check for clip.
+				int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+				int GetClip = GetEntData(weapon, iAmmoTable, 4);
+				if(GetClip <= 0)
+				{
+					if(!CheckOnly)
+					{
+						SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
+						WeaponWasGivenInfiniteDelay[weapon] = true;
+					}
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 public Action WeaponSwtichToWarning(int client, int weapon)
 {
-	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+	/*
+	int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 	if(Ammo_type > 0 && Ammo_type != Ammo_Potion_Supply && Ammo_type != Ammo_Hand_Grenade)
 	{
 		if(GetAmmo(client, Ammo_type) <= 0)
@@ -205,77 +254,21 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 			PrintToChat(client, "%t", "Warn Client Ammo None");
 		}
 	}
+	*/
 
-	/*
+	
+//	int WeaponToForce;
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
-		if(IsValidEntity(weapon1))
+		//make sure to not brick melees...
+		if(IsValidEntity(weapon1) && GetAmmoType_WeaponPrimary(weapon1) > 2)
 		{
-			if(weapon == 0)
-			{
-				int weapon2 = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon2 == weapon1)
-					continue;
-			}
-			
-			if(f_TimeSinceLastGiveWeapon[weapon1] > GetGameTime())
-				return Plugin_Continue;
-
-			if(b_WeaponHasNoClip[weapon1] && !WeaponWasGivenAmmo[weapon1])
-			{
-				WeaponWasGivenAmmo[weapon1] = false;
-			}
-			
-			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
-			if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
-			{
-				//found a weapon that has ammo.
-				if(CurrentAmmo[client][Ammo_type] <= 0)
-				{
-					if(b_WeaponHasNoClip[weapon1])
-					{
-						WeaponWasGivenAmmo[weapon1] = true;
-						SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] + 1);
-						CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
-					}
-					else
-					{			
-						int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-						int GetClip = GetEntData(weapon1, iAmmoTable, 4);
-						if(GetClip == 0)
-						{
-							WeaponWasGivenAmmo[weapon1] = true;
-							SetEntData(weapon1, iAmmoTable, 1);
-							SetEntProp(weapon1, Prop_Send, "m_iClip1", 1); // weapon clip amount bullets	
-						}
-					}
-					//we give these weapons atleast 1 clip, this is to ensure you can switch to them client side.
-					//we also set WeaponWasGivenAmmo, so when you actually switch to the weapon, its clip gets set to 0.
-				}
-			}
+			if(IsWeaponEmptyCompletly(client, weapon1, true))
+				SetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType", 1);
 		}
 	}
-	*/
 	return Plugin_Continue;
-}
-/*
-public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if (IsValidEntity(entity))
-	{
-		WeaponWasGivenAmmo[entity] = false;
-	}
-	return Plugin_Handled;
-}
-void WeaponSwtichToWarningPostDestroyed(int weapon)
-{
-	if(WeaponWasGivenAmmo[weapon])
-	{
-		int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-		WeaponSwtichToWarningPost(client, weapon);
-	}
 }
 
 public Action WeaponSwtichToWarningPost(int client, int weapon)
@@ -294,46 +287,36 @@ void WeaponSwtichToWarningPostFrame(int ref)
 	if(client == -1)
 		return;
 
+	int WeaponToForce;
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
-		if(WeaponWasGivenAmmo[weapon1])
+		//make sure to not brick melees...
+		if(IsValidEntity(weapon1) && GetAmmoType_WeaponPrimary(weapon1) > 3)
 		{
-			f_TimeSinceLastGiveWeapon[weapon1] = GetGameTime() + 0.05;
-			if(b_WeaponHasNoClip[weapon1])
+			if(weapon == 0)
 			{
-				int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
-
-				if(CurrentAmmo[client][Ammo_type] >= 1)
+				int weapon2 = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon2 == weapon1)
 				{
-					SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] -1);
-					CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
+					WeaponToForce = weapon2;
+					continue;
 				}
 			}
 			else
 			{
-				static int iAmmoTable;
-				if(!iAmmoTable)
-					iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-				
-				SetEntData(weapon1, iAmmoTable, 0);
-				SetEntProp(weapon1, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+				WeaponToForce = weapon;
+				continue;
 			}
-			SetEntPropFloat(weapon1, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
 		}
-		WeaponWasGivenAmmo[weapon1] = false;
 	}
-	RequestFrames(WeaponSwtichToWarningPostFrameRegive, 1, EntIndexToEntRef(client));
+	if(GetAmmoType_WeaponPrimary(WeaponToForce) > 3)
+	{
+		IsWeaponEmptyCompletly(client, WeaponToForce);
+		//Swtiched to the active weapon!!!! yippie!!
+		SetEntProp(WeaponToForce, Prop_Send, "m_iPrimaryAmmoType", GetAmmoType_WeaponPrimary(WeaponToForce));
+	}
 }
-void WeaponSwtichToWarningPostFrameRegive(int ref)
-{
-	int client = EntRefToEntIndex(ref);
-	if(client == -1)
-		return;
-
-	WeaponSwtichToWarning(client, 0);
-}
-*/
 #endif
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)
@@ -344,6 +327,7 @@ public void OnPreThinkPost(int client)
 	}
 	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
 	Cvar_clamp_back_speed.FloatValue = f_Client_BackwardsWalkPenalty[client];
+	Cvar_LoostFooting.FloatValue = f_Client_LostFriction[client];
 }
 #endif	// ZR & RPG
 
@@ -378,7 +362,7 @@ public void OnPostThink(int client)
 
 			if(damageTrigger > 1.0)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
 			}
 		}
 	}
@@ -443,7 +427,13 @@ public void OnPostThink(int client)
 		Cvar_clamp_back_speed.ReplicateToClient(client, IntToStringDo); //set down
 		ReplicateClient_BackwardsWalk[client] = f_Client_BackwardsWalkPenalty[client];
 	}
-		
+	if(ReplicateClient_LostFooting[client] != ReplicateClient_LostFooting[client])
+	{
+		char IntToStringDo[4];
+		FloatToString(f_Client_LostFriction[client], IntToStringDo, sizeof(IntToStringDo));
+		Cvar_LoostFooting.ReplicateToClient(client, IntToStringDo); //set down
+		ReplicateClient_LostFooting[client] = f_Client_LostFriction[client];
+	}
 	//Reduce knockback when airborn, this is to fix issues regarding flying way too high up, making it really easy to tank groups!
 	bool WasAirborn = false;
 
@@ -739,11 +729,11 @@ public void OnPostThink(int client)
 			}
 		}
 		
-		if(ClientPossesesVoidBlade(client) >= 2 && (f_VoidAfflictionStrength[client] > GetGameTime() || f_VoidAfflictionStrength2[client] > GetGameTime()))
+		if(ClientPossesesVoidBlade(client) >= 2 && (NpcStats_WeakVoidBuff(client) || NpcStats_StrongVoidBuff(client)))
 		{
 			float HealingAmount = float(ReturnEntityMaxHealth(client)) * 0.01;
 
-			if(f_VoidAfflictionStrength2[client] > GetGameTime())
+			if(NpcStats_StrongVoidBuff(client))
 				HealingAmount *= 1.5;
 			
 			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
@@ -774,6 +764,16 @@ public void OnPostThink(int client)
 		
 		if(IsValidEntity(weapon))
 		{
+			if(WeaponWasGivenInfiniteDelay[weapon] && !IsWeaponEmptyCompletly(client, weapon, true))
+			{
+				//tiny delay to prevent abuse?
+				if(Attributes_Get(weapon, 4015, 0.0) == 0.0)
+				{
+					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
+					SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.5);
+				}
+				WeaponWasGivenInfiniteDelay[weapon] = false;
+			}
 			static float cooldown_time;
 			had_An_ability = false;
 			static bool IsReady;
@@ -932,162 +932,81 @@ public void OnPostThink(int client)
 				HudY -= 0.035;
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
 			}
-			float percentage = 100.0;
-			float percentage_Global = 1.0;
-			float value = 1.0;
-
-#if defined ZR
-			
-			percentage_Global *= ArmorPlayerReduction(client);
-			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
-			int testvalue1 = 0;
-			OnTakeDamageDamageBuffs(client, testvalue1, testvalue1, percentage_Global, testvalue1, testvalue1, GetGameTime());	
-#endif
-			
-			if(IsInvuln(client, true) || f_ClientInvul[client] > GetGameTime())
-			{
-				percentage_Global = 0.0;
-			}
-#if defined ZR
-			else if(RaidbossIgnoreBuildingsLogic(1))
-			{
-				if(TF2_IsPlayerInCondition(client, TFCond_Ubercharged))
-				{
-					percentage_Global *= 0.5;
-				}
-			}
-#endif
-			else
-			{
-				if(TF2_IsPlayerInCondition(client, TFCond_Ubercharged))
-				{
-					percentage_Global *= 0.0;
-				}
-			}
-
-			value = Attributes_FindOnPlayerZR(client, 412, true);	// Overall damage resistance
-			if(value)
-				percentage_Global *= value;
-
-			if(TF2_IsPlayerInCondition(client, TFCond_MarkedForDeathSilent))
-			{
-				percentage_Global *= 1.15;
-			}
-			if(TF2_IsPlayerInCondition(client, TFCond_Jarated))
-			{
-				percentage_Global *= 1.35;
-			}
-			if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
-			{
-				percentage_Global *= 0.65;
-			}
-#if defined RPG
-			switch(BubbleProcStatusLogicCheck(client))
-			{
-				case -1:
-				{
-					percentage_Global *= 0.85;
-				}
-				case 1:
-				{
-					percentage_Global *= 1.15;
-				}
-			}
-			if(TrueStength_ClientBuff(client))
-			{
-				percentage_Global *= 0.85;
-			}
-			if(WarCry_Enabled(client))
-			{
-				percentage_Global *= 0.75;
-			}
-			if(WarCry_Enabled_Buff(client))
-			{
-				percentage_Global *= WarCry_ResistanceBuff(client);
-			}
-			RPG_BobsPureRage(client, -1, percentage_Global);
-#endif
-			percentage_Global *= Attributes_Get(weapon, 4009, 1.0);
-			value = Attributes_FindOnPlayerZR(client, 206, true, 0.0, true, true);	// MELEE damage resistance
-			if(value)
-				percentage *= value;
-				
-			value = Attributes_Get(weapon, 4007, 0.0);	// MELEE damage resitance
-			if(value)
-				percentage *= value;
-			//melee res
-			percentage *= percentage_Global;
-			had_An_ability = false;
-			
+			float percentage_melee = 100.0;
+			float percentage_ranged = 100.0;
+			int i_TheWorld = 0;
 			int testvalue = 1;
+			float testvalue1[3];
+			CheckInHudEnable(1);
 			int DmgType = DMG_CLUB;
-			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
-			if(percentage != 100.0 && percentage > 0.0)
-			{
-				if(percentage < 10.0)
-				{
-					FormatEx(buffer, sizeof(buffer), "%s [☛%.2f%%", buffer, percentage);
-					had_An_ability = true;
-				}
-				else
-				{
-
-					FormatEx(buffer, sizeof(buffer), "%s [☛%.0f%%", buffer, percentage);
-					had_An_ability = true;
-				}
-			}
-			
-			percentage = 100.0;
-			percentage *= percentage_Global;
-			value = Attributes_FindOnPlayerZR(client, 205, true, 0.0, true, true);	// MELEE damage resistance
-			if(value)
-				percentage *= value;
-				
-
-			value = Attributes_Get(weapon, 4008, 0.0);	// RANGED damage resistance
-			if(value)
-				percentage *= value;
-
+			Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_melee, DmgType, weapon, testvalue1, testvalue1,testvalue);
 			DmgType = DMG_BULLET;
-			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
-			if(percentage != 100.0 && percentage > 0.0)
+			Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_ranged, DmgType, weapon, testvalue1, testvalue1,testvalue);
+			CheckInHudEnable(0);
+
+			had_An_ability = false;
+			if(percentage_melee <= 0.0 && percentage_ranged <= 0.0)
 			{
-				if(had_An_ability)
-				{
-					FormatEx(buffer, sizeof(buffer), "%s|", buffer);
-					if(percentage < 10.0)
-					{
-						FormatEx(buffer, sizeof(buffer), "%s➶%.2f%%]", buffer, percentage);
-						had_An_ability = true;
-					}
-					else
-					{
-						FormatEx(buffer, sizeof(buffer), "%s➶%.0f%%]", buffer, percentage);
-						had_An_ability = true;
-					}
-				}
-				else
-				{
-					if(percentage < 10.0)
-					{
-						FormatEx(buffer, sizeof(buffer), "%s [➶%.2f%%]", buffer, percentage);
-						had_An_ability = true;
-					}
-					else
-					{
-						FormatEx(buffer, sizeof(buffer), "%s [➶%.0f%%]", buffer, percentage);
-						had_An_ability = true;
-					}
-				}
+				FormatEx(buffer, sizeof(buffer), "%s %t",buffer, "Invulnerable Npc");
+				had_An_ability = true;
 			}
 			else
 			{
-				if(had_An_ability)
-					FormatEx(buffer, sizeof(buffer), "%s]", buffer);
+				if(percentage_melee != 100.0 && percentage_melee > 0.0)
+				{
+					if(percentage_melee < 10.0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s[☛%.2f%%", buffer, percentage_melee);
+						had_An_ability = true;
+					}
+					else
+					{
+
+						FormatEx(buffer, sizeof(buffer), "%s[☛%.0f%%", buffer, percentage_melee);
+						had_An_ability = true;
+					}
+				}
+				
+				if(percentage_ranged != 100.0 && percentage_ranged > 0.0)
+				{
+					if(had_An_ability)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s|", buffer);
+						if(percentage_ranged < 10.0)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s➶%.2f%%]", buffer, percentage_ranged);
+							had_An_ability = true;
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%s➶%.0f%%]", buffer, percentage_ranged);
+							had_An_ability = true;
+						}
+					}
+					else
+					{
+						if(percentage_ranged < 10.0)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [➶%.2f%%]", buffer, percentage_ranged);
+							had_An_ability = true;
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [➶%.0f%%]", buffer, percentage_ranged);
+							had_An_ability = true;
+						}
+					}
+				}
+				else
+				{
+					if(had_An_ability)
+						FormatEx(buffer, sizeof(buffer), "%s]", buffer);
+				}
 			}
 			
-			percentage = 1.0;
-			value = Attributes_FindOnPlayerZR(client, Attrib_FormRes, true, 0.0, true, true);	// MELEE damage resistance
+			//Form res
+			float percentage = 1.0;
+			float value = Attributes_FindOnPlayerZR(client, Attrib_FormRes, true, 0.0, true, true);
 			if(value)
 				percentage *= value;
 
@@ -1098,11 +1017,6 @@ public void OnPostThink(int client)
 				had_An_ability = true;
 			}
 
-			if(percentage_Global <= 0.0)
-			{
-				FormatEx(buffer, sizeof(buffer), "%s %t",buffer, "Invulnerable Npc");
-				had_An_ability = true;
-			}
 			if(had_An_ability)
 			{
 				HudY -= 0.035;
@@ -1299,7 +1213,6 @@ public void OnPostThink(int client)
 				Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
 #endif
 		}
-
 		//BUFFS!
 		char Debuff_Adder_left[64];
 		char Debuff_Adder_right[64];
@@ -1640,7 +1553,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 {
 #if defined ZR
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlivePost");
-	if(!(damagetype & (DMG_DROWN|DMG_FALL)))
+	if(!(damagetype & (DMG_OUTOFBOUNDS|DMG_FALL)))
 	{
 		int i_damage = RoundToCeil(damage / f_LatestDamageRes[victim]);
 		//dont credit for more then 4k damage at once.
@@ -1653,7 +1566,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 		}
 	}
 	
-	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
+	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		//the player has died to a stuckzone.
 		if(dieingstate[victim] > 0)
@@ -1725,50 +1638,74 @@ static stock void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 #endif
 }
 
+//This is so it doesnt set anything or so
+int CheckInHudTest;
+void CheckInHudEnable(int ModeSet)
+{
+	CheckInHudTest = ModeSet;
+}
+int CheckInHud()
+{
+	return CheckInHudTest;
+}
+
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	ClientPassAliveCheck[victim] = false;
+	if(!CheckInHud())
+	{
+		ClientPassAliveCheck[victim] = false;
 #if defined ZR
-	i_WasInUber[victim] = 0.0;
-	i_WasInMarkedForDeathSilent[victim] = 0.0;
-	i_WasInMarkedForDeath[victim] = 0.0;
-	i_WasInDefenseBuff[victim] = 0.0;
+		i_WasInUber[victim] = 0.0;
+		i_WasInMarkedForDeathSilent[victim] = 0.0;
+		i_WasInMarkedForDeath[victim] = 0.0;
+		i_WasInDefenseBuff[victim] = 0.0;
 #endif
+	}
 	//dmg bonus before everything!
 	//This is for players in specific, both handle it here!
 	if(attacker > 0 && attacker <= MAXENTITIES)
 		damage *= fl_Extra_Damage[attacker];
 #if defined RPG
-		
-	if(attacker <= MaxClients)
+	if(!CheckInHud() && attacker <= MaxClients)
 	{
 		//in pvp, we half the damage. this is also BEFORE flat resistance.
 		damage *= 0.5;
 	}
 	//needs to be above everything aside extra damage
-	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
+	if(!CheckInHud())
 	{
-		RPG_FlatRes(victim, attacker, weapon, damage);
+		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
+		{
+			RPG_FlatRes(victim, attacker, weapon, damage);
+		}
 	}
-	float value = Attributes_FindOnPlayerZR(victim, Attrib_FormRes, true, 0.0, true, true);
-	if(value)
+	float value;
+	if(!CheckInHud())
 	{
-		damage *= value;
+		value = Attributes_FindOnPlayerZR(victim, Attrib_FormRes, true, 0.0, true, true);
+		if(value)
+		{
+			damage *= value;
+		}
 	}
 #endif
-
 
 #if defined ZR
 	if(TeutonType[victim])
 	{
 		//do not protect them.
+		//i.e. something crushes them, die.
 		if(!(damagetype & DMG_CRUSH))
 		{
+			damage = 0.0;
 			return Plugin_Handled;
 		}
 		else
 		{
-			ClientPassAliveCheck[victim] = true;
+			if(!CheckInHud())
+			{
+				ClientPassAliveCheck[victim] = true;
+			}
 			return Plugin_Continue;
 		}
 	}
@@ -1777,27 +1714,44 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	float GameTime = GetGameTime();
 	if(f_ClientInvul[victim] > GameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
 	{
+		damage = 0.0;
 		return Plugin_Handled;
 	}
+	if(damagetype & DMG_TRUEDAMAGE)
+	{
+		if(f_RecievedTruedamageHit[victim] < GetGameTime())
+		{
+			f_RecievedTruedamageHit[victim] = GetGameTime() + 0.5;
+			ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
+		}
+	}
 
-	if(RaidbossIgnoreBuildingsLogic(1))
+	if(RaidbossIgnoreBuildingsLogic(1) || (damagetype & DMG_TRUEDAMAGE))
 	{
 		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
 		{
-			i_WasInUber[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
-			TF2_RemoveCondition(victim, TFCond_Ubercharged);
-			damage *= 0.5;
+			if(!CheckInHud())
+			{
+				i_WasInUber[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
+				TF2_RemoveCondition(victim, TFCond_Ubercharged);
+			}
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				damage *= 0.5;
 		}
 	}
 	else
 	{
 		//if its not during raids, do...
-		if(!(damagetype & DMG_DROWN))
+		if(!(damagetype & DMG_OUTOFBOUNDS))
 		{
 			if(IsInvuln(victim))
 			{
-				f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
-				ClientPassAliveCheck[victim] = true;
+				if(!CheckInHud())
+				{
+					f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
+					ClientPassAliveCheck[victim] = true;
+				}
+				damage = 0.0;
 				return Plugin_Handled;	
 			}
 		}
@@ -1808,29 +1762,30 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
 	}
 
-
+	if(!CheckInHud())
+	{
 #if defined ZR
-	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
-	if(dieingstate[victim] > 0)
-	{
-		if(flHealth < 1)
+		int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+		if(dieingstate[victim] > 0)
 		{
-			//This kills the target.
-			MakePlayerGiveResponseVoice(victim, 2); //dead!
-			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamage 1");
-			damage = 2.0;
-			ClientPassAliveCheck[victim] = true;
-			return Plugin_Changed;	
-		}
-		return Plugin_Handled;
-	}
-	else
-#endif
-	{
-		if(victim == attacker)
+			if(flHealth < 1)
+			{
+				//This kills the target.
+				MakePlayerGiveResponseVoice(victim, 2); //dead!
+				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamage 1");
+				damage = 2.0;
+				ClientPassAliveCheck[victim] = true;
+				return Plugin_Changed;	
+			}
 			return Plugin_Handled;
+		}
+		else
+#endif
+		{
+			if(victim == attacker)
+				return Plugin_Handled;
+		}
 	}
-	
 	//Fall damage logic
 	if(damagetype & DMG_FALL)
 	{
@@ -1861,30 +1816,30 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 			return Plugin_Handled;	
 
-#if defined RPG
-		LastHitRef[victim] = EntIndexToEntRef(attacker);
+#if defined RPG		
+		if(!CheckInHud())
+			LastHitRef[victim] = EntIndexToEntRef(attacker);
 #endif
 	}
 	else if (attacker != 0)
 	{
-		LastHitRef[victim] = EntIndexToEntRef(attacker);
+		if(!CheckInHud())
+			LastHitRef[victim] = EntIndexToEntRef(attacker);
 	}
 	
 #if defined ZR
-	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker] && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+	if((damagetype & DMG_OUTOFBOUNDS) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
-		if(!b_ThisNpcIsSawrunner[attacker])
+		if(damage < 10000.0)
 		{
-			if(damage < 10000.0)
-			{
+			if(!CheckInHud())
 				NpcStuckZoneWarning(victim, damage);
-			}
 		}
 	}
 #endif
 	
 #if defined RPG
-	if((damagetype & DMG_DROWN) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+	if((damagetype & DMG_OUTOFBOUNDS) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
 		if(damage < 1000.0)
 		{
@@ -1892,36 +1847,35 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 #endif
-
-	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
+	if(!CheckInHud())
+		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 
 #if defined ZR
-	if((damagetype & DMG_DROWN) && b_ThisNpcIsSawrunner[attacker])
+	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		//NOTHING blocks it.
 		return Plugin_Changed;
 	}
 #endif
+
 #if defined RPG
 	if(Ability_TrueStrength_Shield_OnTakeDamage(victim))
 	{
+		damage = 0.0;
 		return Plugin_Handled;	
 	}
 	f_InBattleDelay[victim] = GetGameTime() + 3.0;
 #endif
-
 	float GetCurrentDamage = damage;
 	f_LatestDamageRes[victim] = 1.0;
-
 #if defined ZR || defined RPG
 	Replicate_Damage_Medications(victim, damage, damagetype);
 #endif
-
+	
 	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
 		return Plugin_Handled;
 	}
-
 	f_LatestDamageRes[victim] = damage / GetCurrentDamage;
 
 #if !defined RTS
@@ -1931,48 +1885,50 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	else if(IsValidClient(attacker))
 		ClientAttacker = attacker;
 
-	if(ClientAttacker > 0)
+	if(!CheckInHud())
 	{
-		Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
-		if(IsValidEntity(weapon))
+		if(ClientAttacker > 0)
 		{
-			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
-			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
+			Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
+			if(IsValidEntity(weapon))
+			{
+				float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
+				Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
+			}
 		}
-	}
 #endif
 #if defined RPG
-	if(i_TransformationLevel[victim] > 0)
-	{
-		Race race;
-		if(Races_GetRaceByIndex(RaceIndex[victim], race) && race.Forms)
+		if(i_TransformationLevel[victim] > 0)
 		{
-			Form form;
-			race.Forms.GetArray(i_TransformationLevel[victim] - 1, form);
-			
-			if(form.Func_FormTakeDamage != INVALID_FUNCTION)
+			Race race;
+			if(Races_GetRaceByIndex(RaceIndex[victim], race) && race.Forms)
 			{
-				Call_StartFunction(null, form.Func_FormTakeDamage);
-				Call_PushCell(victim);
-				Call_PushCellRef(attacker);
-				Call_PushCellRef(inflictor);
-				Call_PushFloatRef(damage);
-				Call_PushCellRef(damagetype);
-				Call_PushCellRef(weapon);
-				Call_PushArrayEx(damageForce, sizeof(damageForce), SM_PARAM_COPYBACK);
-				Call_PushArrayEx(damagePosition, sizeof(damagePosition), SM_PARAM_COPYBACK);
-				Call_PushCell(damagecustom);
-				Call_Finish();
-
-				if(damage <= 0.0)
+				Form form;
+				race.Forms.GetArray(i_TransformationLevel[victim] - 1, form);
+				
+				if(form.Func_FormTakeDamage != INVALID_FUNCTION)
 				{
-					return Plugin_Handled;
+					Call_StartFunction(null, form.Func_FormTakeDamage);
+					Call_PushCell(victim);
+					Call_PushCellRef(attacker);
+					Call_PushCellRef(inflictor);
+					Call_PushFloatRef(damage);
+					Call_PushCellRef(damagetype);
+					Call_PushCellRef(weapon);
+					Call_PushArrayEx(damageForce, sizeof(damageForce), SM_PARAM_COPYBACK);
+					Call_PushArrayEx(damagePosition, sizeof(damagePosition), SM_PARAM_COPYBACK);
+					Call_PushCell(damagecustom);
+					Call_Finish();
+
+					if(damage <= 0.0)
+					{
+						return Plugin_Handled;
+					}
 				}
 			}
 		}
+#endif	
 	}
-#endif
-
 	return Plugin_Changed;
 }
 
@@ -2192,37 +2148,52 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 #if defined ZR || defined RPG
 void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 {
-	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeath))
+	if(!CheckInHud() && TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeath))
 	{
 		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeath);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeath);
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
+		if(!CheckInHud())
+		{
+			i_WasInMarkedForDeathSilent[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
+			TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
+		}
 		i_WasInMarkedForDeathSilent[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
 		damage *= 1.15;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_Jarated))
 	{
-		i_WasInJarate[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Jarated);
-		TF2_RemoveCondition(victim, TFCond_Jarated);
+		if(!CheckInHud())
+		{
+			i_WasInJarate[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Jarated);
+			TF2_RemoveCondition(victim, TFCond_Jarated);
+		}
 		damage *= 1.35;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 	{
-		i_WasInDefenseBuff[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_DefenseBuffed);
-		TF2_RemoveCondition(victim, TFCond_DefenseBuffed);
-		damage *= 0.65;
+		if(!CheckInHud())
+		{
+			i_WasInDefenseBuff[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_DefenseBuffed);
+			TF2_RemoveCondition(victim, TFCond_DefenseBuffed);
+		}
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			damage *= 0.65;
 	}
-	if(TF2_IsPlayerInCondition(victim, TFCond_RuneResist))
+	if(!CheckInHud() && TF2_IsPlayerInCondition(victim, TFCond_RuneResist))
 	{
 		i_WasInResPowerup[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_RuneResist);
 		TF2_RemoveCondition(victim, TFCond_RuneResist);
 		//This is purely visual, it doesnt grant anything by itself.
 	}
+	if(damagetype & DMG_TRUEDAMAGE)
+		return;
+		
 	float value;
-	if(damagetype & (DMG_CLUB|DMG_SLASH))
+	if(damagetype & (DMG_CLUB))
 	{
 		value = Attributes_FindOnPlayerZR(victim, 206, true, 0.0, true, true);	// MELEE damage resitance
 		if(value)
@@ -2250,7 +2221,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 	if(weapon != -1)
 	{
 		damage *= Attributes_Get(weapon, 4009, 1.0);
-		if(damagetype & (DMG_CLUB|DMG_SLASH))
+		if(damagetype & (DMG_CLUB))
 		{
 			value = Attributes_Get(weapon, 4007, 1.0);	// MELEE damage resitance
 			if(value)
@@ -2493,76 +2464,11 @@ public void OnWeaponSwitchPre(int client, int weapon)
 #endif	// Non-RTS
 
 #if defined ZR
-static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapon)
-{
-	switch(i_CustomWeaponEquipLogic[weapon])
-	{
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
-		{
-			float DmgMulti = 1.0;
-			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SKADI)
-			{
-				WeaponSkadi_OnTakeDamage(1,victim, DmgMulti);
-			}
-			return (DmgMulti * Gladiia_OnTakeDamageAlly_Hud(victim));
-		}
-		case WEAPON_GLADIIA:
-		{
-			return Gladiia_OnTakeDamageSelf_Hud(victim);
-		}
-		case WEAPON_BLEMISHINE:
-		{
-			return Player_OnTakeDamage_Blemishine_Hud(victim);
-		}
-		case WEAPON_BOARD:
-		{
-			return Player_OnTakeDamage_Board_Hud(victim);
-		}
-		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
-		{
-			return WeaponLeper_OnTakeDamagePlayer_Hud(victim);
-		}
-		case WEAPON_RAPIER:
-		{
-			return Player_OnTakeDamage_Rapier_Hud(victim);
-		}
-		case WEAPON_RED_BLADE:
-		{
-			return WeaponRedBlade_OnTakeDamage_Hud(victim);
-		}
-		case WEAPON_WRATHFUL_BLADE:
-		{
-			return Player_OnTakeDamage_WrathfulBlade_Hud(victim);
-		}
-		case WEAPON_YAKUZA:
-		{
-			return Yakuza_SelfTakeDamageHud(victim, weapon);
-		}
-		case WEAPON_EXPLORER:
-		{
-			return Player_OnTakeDamage_VoidBlade_Hud(victim);
-		}
-		case WEAPON_CASTLEBREAKER:
-		{
-			float damage = 1.0;
-			WeaponCastleBreaker_OnTakeDamage(victim, damage);
-			return damage;
-		}
-		case WEAPON_FULLMOON:
-		{
-			float damage = 1.0;
-			FullMoon_SanctuaryApplyBuffs(victim, damage);
-			return damage;
-		}
-	}
-	return 1.0;
-}
-
 
 void ApplyLastmanOrDyingOverlay(int client)
 {
 	if(LastMann && Yakuza_Lastman())
-		return;
+		return;	
 	
 	DoOverlay(client, "debug/yuv");
 	if(LastMann)

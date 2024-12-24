@@ -71,7 +71,7 @@ methodmap Isharmla < CClotBody
 		npc.m_iPoints = 0;
 		npc.m_bSpeed = false;
 
-		b_CannotBeKnockedUp[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
 		Is_a_Medic[npc.index] = true;
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
@@ -299,7 +299,7 @@ public void Isharmla_ClotThink(int iNPC)
 					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
 					NPCStats_RemoveAllDebuffs(npc.m_iTarget);
-					f_GodAlaxiosBuff[npc.m_iTarget] = GetGameTime() + 7.0;
+					ApplyStatusEffect(npc.index, npc.m_iTarget, "Godly Motivation", 7.0);
 				}
 				
 				int ally = GetClosestAlly(npc.index, _, npc.m_iTarget);
@@ -337,7 +337,7 @@ public void Isharmla_ClotThink(int iNPC)
 					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
 					NPCStats_RemoveAllDebuffs(ally);
-					f_GodAlaxiosBuff[ally] = GetGameTime() + 7.0;
+					ApplyStatusEffect(npc.index, ally, "Godly Motivation", 7.0);
 				}
 			}
 		}

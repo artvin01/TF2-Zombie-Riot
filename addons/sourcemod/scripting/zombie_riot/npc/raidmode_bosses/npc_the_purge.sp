@@ -211,6 +211,7 @@ methodmap ThePurge < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "The Purge Arrived");
 			}
 		}
+		RemoveAllDamageAddition();
 		CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engaging the targets.");
 			
 		RaidModeTime = GetGameTime(npc.index) + 200.0;

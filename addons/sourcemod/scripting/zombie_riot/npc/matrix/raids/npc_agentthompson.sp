@@ -200,9 +200,9 @@ methodmap AgentThompson < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		
-		npc.m_flSpeed = 330.0;
-		npc.m_flMeleeArmor = 1.30;
-		npc.m_flRangedArmor = 1.15;
+		npc.m_flSpeed = 320.0;
+		npc.m_flMeleeArmor = 1.20;
+		npc.m_flRangedArmor = 1.10;
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -572,32 +572,6 @@ public Action AgentThompson_OnTakeDamage(int victim, int &attacker, int &inflict
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	if(attacker <= MaxClients && attacker > 0)
-    {
-        switch(GetRandomInt(1, 8))
-        {
-            case 1,2,3,4,5,6:
-            {
-                
-            }
-            case 7,8:
-            {
-                float chargerPos[3];
-                GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-                if(b_BoundingBoxVariant[victim] == 1)
-                {
-                    chargerPos[2] += 120.0;
-                }
-                else
-                {
-                    chargerPos[2] += 82.0;
-                }
-                TE_ParticleInt(g_particleMissText, chargerPos);
-                TE_SendToClient(attacker);
-                damage = 0.0;
-            }
-        }
-    }
 	return Plugin_Changed;
 }
 
