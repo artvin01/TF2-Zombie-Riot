@@ -244,7 +244,7 @@ methodmap Storm_Weaver < CClotBody
 
 		float Origin[3]; WorldSpaceCenter(npc.index, Origin);
 		Flight_Computer[npc.index].Create(Origin);
-		Flight_Computer[npc.index].Speed = RUINA_STORM_WEAVER_FLIGHT_SPEED;
+		Flight_Computer[npc.index].Speed = RUINA_STORM_WEAVER_FLIGHT_SPEED*fl_Extra_Speed[npc.index];
 		Flight_Computer[npc.index].Acceleration = 75.0;
 
 		//if(StrContains(data, "anchor") != -1)
@@ -375,7 +375,6 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 		SaveSolidType[spawn_index]=GetEntProp(spawn_index, Prop_Send, "m_nSolidType");
 
 		fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
-		fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
 		fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
 		fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
 
