@@ -4062,13 +4062,17 @@
 	{
 		"en"	"Ability already Active"
 	}
+	"freeplay_intro"
+	{
+		"en"		"You shall not proceed further.\nProve you're worthy."
+	}
 	"freeplay_start_1"
 	{
 		"en"		"You've proved you're worthy.\nWorthy to take on the journey of Freeplay.\nAs you progress, more stronger enemies will come.\nEvery 5 waves, a setup will occur, and a skull will appear.\n"
 	}
 	"freeplay_start_2"
 	{
-		"en"		"Skulls are random events or effects that can be temporary or permanent.\nEach setup has a 20%% chance of adding an extra skull,\nand this stacks infinitely as you proceed."
+		"en"		"Skulls are random events or effects that can be temporary or permanent.\nEach setup has a 20%% chance of adding an extra skull,\nand this stacks infinitely as you progress."
 	}
 	"freeplay_start_3"
 	{
