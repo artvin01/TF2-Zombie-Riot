@@ -684,11 +684,11 @@ float Zealot_RegenerateStaminaMAx(int client)
 	switch(i_PaPLevel[client])
 	{
 		case 1:
-			MaxStamina *= 1.2;
+			MaxStamina *= 1.1;
 		case 2:
-			MaxStamina *= 1.3;
+			MaxStamina *= 1.15;
 		case 3:
-			MaxStamina *= 1.5;
+			MaxStamina *= 1.2;
 	}
 	return MaxStamina;
 }
