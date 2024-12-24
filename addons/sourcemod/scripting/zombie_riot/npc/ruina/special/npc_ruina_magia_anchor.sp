@@ -857,15 +857,19 @@ static bool Charging(Magia_Anchor npc)
 		return false;
 		
 	}
+
 	if(fl_ruina_battery[npc.index]<300 && fl_ruina_battery[npc.index]>=254) 
 	{
-		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		if(GetTeam(npc.index) != TFTeam_Red)
 		{
-			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			for(int i; i < ZR_MAX_SPAWNERS; i++)
 			{
-				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
-				break;
+				if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+				{
+					Spawns_AddToArray(npc.index, true);
+					i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
+					break;
+				}
 			}
 		}
 		
@@ -875,6 +879,7 @@ static bool Charging(Magia_Anchor npc)
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 	}
+
 
 	return true;
 }
