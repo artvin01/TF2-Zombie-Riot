@@ -764,4 +764,20 @@
 	{
 		"en"	"Deals True damage overtime, upto a maximum of 20 seconds if not extended.\nEach hit extends its time.\nThe damage and owner depends on the weapon that delt the most fire damage.\nExtending does not weaken the buff."
 	}
+	"Zealot's Random Drinks"
+	{
+		"en" "Zealot's Random Drinks"
+	}
+	"Zealot's Random Drinks Desc"
+	{
+		"en" "Grants a random buff from the selected that the Zealot kit provides."
+	}
+	"Zealot's Rush"
+	{
+		"en" "Zealot's Extreme Rush"
+	}
+	"Zealot's Rush Desc"
+	{
+		"en" "Grants 25%% Attackspeed."
+	}
 }

@@ -310,8 +310,8 @@ bool HasSpecificBuff(int victim, const char[] name)
 		return false;
 	}
 	E_StatusEffect Apply_StatusEffect;
-
 	int ArrayPosition;
+	bool Return = false;
 	if(E_AL_StatusEffects[victim])
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
@@ -324,13 +324,13 @@ bool HasSpecificBuff(int victim, const char[] name)
 			}
 			else
 			{
-				return true;
+				Return = true;
 			}
 		}
 		if(E_AL_StatusEffects[victim].Length < 1)
 			delete E_AL_StatusEffects[victim];
 	}
-	return false;
+	return Return;
 }
 void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 {
@@ -2305,9 +2305,9 @@ void StatusEffects_SupportWeapons()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
-	AncientBannerIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Zealot's Extreme Rush");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Zealot's Rush");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ź");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -2319,7 +2319,7 @@ void StatusEffects_SupportWeapons()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
-	AncientBannerIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 }
 
 stock bool NpcStats_AncientBanner(int victim)
