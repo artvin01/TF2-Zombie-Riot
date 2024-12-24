@@ -29,6 +29,7 @@ static bool SuperMiniBoss;
 static int ExtraSkulls;
 static int SkullTimes;
 static bool ExplodingNPC;
+static bool IsExplodeWave; // to prevent the message from popping up twice
 static int ExplodeNPCDamage;
 static int EnemyShields;
 static bool IsRaidWave; // to prevent the message from popping up twice
@@ -85,6 +86,7 @@ void Freeplay_ResetAll()
 	ExplodeNPCDamage = 0;
 	SuperMiniBoss = false;
 	ExplodingNPC = false;
+	IsExplodeWave = false;
 	EscapeModeForNpc = false;
 	IsRaidWave = false;
 	EnemyShields = 0;
@@ -367,10 +369,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Index = NPC_GetByPlugin("npc_sentinel");
 		enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
-
 		enemy.ExtraSpeed = 2.0;
 		enemy.ExtraSize = 0.25; // smol
 		enemy.Credits += 1.0;
+		strcopy(enemy.CustomName, sizeof(enemy.CustomName), "Antinel");
+
 		count = 1;
 		AntinelNextWave = false;
 	}
@@ -535,11 +538,13 @@ void Freeplay_SpawnEnemy(int entity)
 	{
 		case 1:
 		{
-			ApplyStatusEffect(entity, entity, "Healing Resolve", FAR_FUTURE);
+			fl_Extra_MeleeArmor[entity] *= 0.85;
+			fl_Extra_RangedArmor[entity] *= 0.85;
+			SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 1.1);
 		}
 		case 2:
 		{
-			ApplyStatusEffect(entity, entity, "Healing Strength", FAR_FUTURE);
+			fl_Extra_Damage[entity] *= 1.25;
 		}
 		case 3:
 		{
@@ -668,7 +673,10 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 void Freeplay_OnEndWave(int &cash)
 {
 	if(ExplodingNPC)
+	{
 		ExplodingNPC = false;
+		IsExplodeWave = false;
+	}
 
 	cash += CashBonus;
 }
@@ -1759,12 +1767,12 @@ void Freeplay_SetupStart(bool extra = false)
 			case 59:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more melee damage.");
-				MeleeMult += 0.10;
+				MeleeMult += 0.2;
 			}
 			case 60:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more melee damage.");
-				MeleeMult += 0.15;
+				MeleeMult += 0.25;
 			}
 			case 61:
 			{
@@ -1797,12 +1805,12 @@ void Freeplay_SetupStart(bool extra = false)
 			case 63:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more ranged damage.");
-				RangedMult += 0.10;
+				RangedMult += 0.20;
 			}
 			case 64:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more ranged damage.");
-				RangedMult += 0.15;
+				RangedMult += 0.25;
 			}
 			case 65:
 			{
@@ -2121,9 +2129,12 @@ void Freeplay_SetupStart(bool extra = false)
 			EmitSoundToAll("mvm/mvm_used_powerup.wav", _, _, _, _, 0.67);
 		}
 
-		if(ExplodingNPC)
+		if(ExplodingNPC && !IsExplodeWave)
+		{
 			CPrintToChatAll("{yellow}The exploding enemy skull lasts 1 wave. | Current Base damage: %d", ExplodeNPCDamage);
-	
+			IsExplodeWave = true;
+		}
+
 		if(SkullTimes > 0)
 		{
 			SkullTimes--;
