@@ -379,7 +379,8 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 		fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
 
 		//b_ForceCollisionWithProjectile[spawn_index]=true;
-		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+		if(GetTeam(npc.index) != TFTeam_Red)
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		CClotBody tail = view_as<CClotBody>(spawn_index);
 		tail.m_flNextRangedAttack = GetGameTime(tail.index)+1.0+(Section/10.0);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
