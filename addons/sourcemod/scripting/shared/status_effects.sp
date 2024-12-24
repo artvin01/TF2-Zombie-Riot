@@ -313,9 +313,9 @@ bool HasSpecificBuff(int victim, const char[] name)
 	int ArrayPosition;
 	bool Return = false;
 	ArrayPosition = E_AL_StatusEffects[victim].FindValue(index, E_StatusEffect::BuffIndex);
-	E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 	if(ArrayPosition != -1)
 	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
 			E_AL_StatusEffects[victim].Erase(ArrayPosition);
