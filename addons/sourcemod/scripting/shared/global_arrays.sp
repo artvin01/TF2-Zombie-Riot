@@ -53,6 +53,7 @@ enum
 	Ammo_Hand_Grenade,		// 24 Hand Grenade types
 	Ammo_Potion_Supply,		// 25 Drink Types
 	Ammo_Metal_Sub,		// 26 Used to display metal on other types of weapons.
+	Ammo_ClassSpecific,		// 27 This is used for weapons that require their own ammo.
 	Ammo_MAX
 };
 
@@ -130,6 +131,7 @@ ConVar CvarMpSolidObjects; //mp_solidobjects
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
+ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
 #endif
 ConVar sv_cheats;
 ConVar nav_edit;
@@ -254,6 +256,7 @@ bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
 float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.7, ...};
 float f_Client_BackwardsWalkPenalty[MAXTF2PLAYERS]={0.7, ...};
+float f_Client_LostFriction[MAXTF2PLAYERS]={0.1, ...};
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
@@ -374,6 +377,7 @@ float f_PullStrength[MAXENTITIES];
 
 float ReplicateClient_Svairaccelerate[MAXTF2PLAYERS];
 float ReplicateClient_BackwardsWalk[MAXTF2PLAYERS];
+float ReplicateClient_LostFooting[MAXTF2PLAYERS];
 int ReplicateClient_Tfsolidobjects[MAXTF2PLAYERS];
 int ReplicateClient_RollAngle[MAXTF2PLAYERS];
 

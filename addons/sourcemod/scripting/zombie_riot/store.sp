@@ -545,7 +545,10 @@ static const char AmmoNames[][] =
 	"Medigun Fluid",
 	"Laser Battery",
 	"Hand Grenade",
-	"Potion Supply"
+	"Potion Supply",
+	"N/A",
+	"N/A",
+	"N/A"
 };
 
 static ArrayList StoreItems;
@@ -6017,6 +6020,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Activate_Neuvellete(client, entity);
 		SeaMelee_Enable(client, entity);
 		Enable_Leper(client, entity);
+		Enable_Zealot(client, entity);
 		Flagellant_Enable(client, entity);
 		Enable_Impact_Lance(client, entity);
 		Enable_Trash_Cannon(client, entity);

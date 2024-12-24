@@ -2998,6 +2998,46 @@
 	{
 		"en"	"Hits up to 2 targets."
 	}
+	"Zealot"
+	{
+		"en"	"Zealot."
+	}
+	"Zealot Desc"
+	{
+		"en"	"Become a workshipper of sigmar!\nRapier: headshots, m2 blocks with a healthbar.\nR with any weapon: Dashes in any direction except forwards.\nHold R with revolver for rapid fire\nHitting enemeis reduces cooldowns (headshots more)."
+	}
+	"Zealot Pap 1 Desc"
+	{
+		"en"	"Boost stats.\nGain a potion that gives a random buff, see random buff in weapon hud.\nIncreaces cooldown reductions."
+	}
+	"Zealot Pap 2 Desc"
+	{
+		"en"	"Boost stats."
+	}
+	"Zealot Pap 3 Desc"
+	{
+		"en"	"Boost stats.\nIncreaces cooldown reductions.\nYour raipier now has an ability when crouching with M2\nDash through targets and gain extra attackspeed for 5 seconds."
+	}
+	"Zealot Pap 4 Desc"
+	{
+		"en"	"Boost stats."
+	}
+	"Zealot Pap 4 Desc"
+	{
+		"en"	"Boost stats."
+	}
+	"Zealot Pap 5 Desc"
+	{
+		"en"	"Boost stats.\nIncreaces cooldown reductions."
+	}
+	"Zealot Pap 6 Desc"
+	{
+		"en"	"Boost stats.\nIncreaces cooldown reductions."
+	}
+	"Zealot Pap 7 Desc"
+	{
+		"en"	"Boost stats.\nIncreaces cooldown reductions."
+	}
 	"Seaborn Spines Desc"
 	{
 		"en"	"A crossbow that does more damage the further the target is."
@@ -4031,5 +4071,41 @@
 	{
 		"en"	"Increases the Damage of 'Archetype: Victoria' by +10％."
 		"ko"	"'유형: 빅토리아'인 다른 무기에 피해량 +10％ 추가"
+	}
+	"Zealot Dash Denie Spam"
+	{
+		"en" 		"You cant dash, you must hit someone with your rapier at least once!"
+	}
+	"Potion of Vigor"
+	{
+		"en"	"Potion of Vigor"
+	}
+	"Potion of Vigor Desc"
+	{
+		"en"	"Gain extra passive health regen for a limited time."
+	}
+	"Potion of Swiftness"
+	{
+		"en"	"Potion of Swiftness"
+	}
+	"Potion of Swiftness Desc"
+	{
+		"en"	"Dash cooldown is reduced."
+	}
+	"Potion of Resilience"
+	{
+		"en"	"Potion of Resilience"
+	}
+	"Potion of Resilience Desc"
+	{
+		"en"	"You have more stamina to block with."
+	}
+	"Potion of Focus"
+	{
+		"en"	"Potion of Focus"
+	}
+	"Potion of Focus Desc"
+	{
+		"en"	"Your headshots deal more damage."
 	}
 }

@@ -1065,6 +1065,9 @@ public Action Timer_WF_SupportGrenade(Handle timer, DataPack pack)
 		}
 	}
 	
+	if(!IsValidEntity(Projectile))
+		return Plugin_Stop;
+		
 	float DamageDeal = pack.ReadFloat();
 	float RangeSupport = pack.ReadFloat();
 	float HealDo = pack.ReadFloat();

@@ -1192,7 +1192,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	float pos[3];
 	WorldSpaceCenter(client, pos);
 	
-	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	int bleed_count = pack.ReadCell();
 	if(bleed_count < 1)

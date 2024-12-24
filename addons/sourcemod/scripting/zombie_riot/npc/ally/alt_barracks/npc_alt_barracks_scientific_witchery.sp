@@ -554,9 +554,9 @@ static bool Scientific_Witchery_BEAM_TraceUsers(int entity, int contentsMask, in
 {
 	if (IsEntityAlive(entity) && Scientific_Witchery_BEAM_BuildingHit[client]<11)
 	{
-		if(f_GlobalHitDetectionLogic[entity][client] <=GetGameTime())
+		if(f_GlobalHitDetectionLogic[client][entity] <=GetGameTime())
 		{
-			f_GlobalHitDetectionLogic[entity][client] = GetGameTime() + 0.25;
+			f_GlobalHitDetectionLogic[client][entity] = GetGameTime() + 0.25;
 			Scientific_Witchery_BEAM_BuildingHit[client]++;
 			Scientific_Witchery_BEAM_HitDetected[entity] = true;
 		}

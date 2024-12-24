@@ -739,6 +739,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 			if(!(damagetype & DMG_TRUEDAMAGE))
 				WeaponCastleBreaker_OnTakeDamage(victim, damage);
 		}
+		case WEAPON_ZEALOT_MELEE, WEAPON_ZEALOT_GUN, WEAPON_ZEALOT_POTION:
+		{
+			if(!CheckInHud())
+				return Player_OnTakeDamage_Zealot(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
+		}
 	}
 	return damage;
 }
@@ -1069,6 +1074,16 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			if(!CheckInHud())
 				WeaponCastleBreaker_OnTakeDamageNpc(attacker, victim, damage, weapon, damagetype);
+		}
+		case WEAPON_ZEALOT_MELEE:
+		{
+			if(!CheckInHud())
+				WeaponZealot_OnTakeDamage(attacker, victim, damage);
+		}
+		case WEAPON_ZEALOT_GUN:
+		{
+			if(!CheckInHud())
+				WeaponZealot_OnTakeDamage_Gun(attacker, victim, damage);
 		}
 	}
 #endif

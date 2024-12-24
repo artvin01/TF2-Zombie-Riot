@@ -47,7 +47,9 @@ public const int AmmoData[][] =
 	{ 10, 500 },		//Medigun Fluid
 	{ 10, 80 },			//Laser Battery
 	{ 0, 0 },			//Hand Grenade
-	{ 0, 0 }			//Drinks like potions
+	{ 0, 0 },			//???
+	{ 0, 0 },			//???
+	{ 0, 0 }			//???
 };
 
 
@@ -208,7 +210,10 @@ enum
 	WEAPON_WALTER = 128,
 	WEAPON_OLDINFINITYBLADE = 129,
 	WEAPON_NYMPH = 130,
-	WEAPON_CASTLEBREAKER = 131
+	WEAPON_CASTLEBREAKER = 131,
+	WEAPON_ZEALOT_MELEE = 132,
+	WEAPON_ZEALOT_GUN = 133,
+	WEAPON_ZEALOT_POTION = 134
 }
 
 enum
@@ -367,6 +372,7 @@ int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
 int i_ExtraPlayerPoints[MAXTF2PLAYERS];
 int i_PreviousPointAmount[MAXTF2PLAYERS];
+int SpecialLastMan;
 
 bool WaitingInQueue[MAXTF2PLAYERS];
 
@@ -534,6 +540,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/kit_seaborn.sp"
 #include "zombie_riot/custom/weapon_class_leper.sp"
 #include "zombie_riot/custom/kit_flagellant.sp"
+#include "zombie_riot/custom/kit_zealot.sp"
 #include "zombie_riot/custom/cosmetics/silvester_cosmetics_yay.sp"
 #include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
@@ -858,6 +865,7 @@ void ZR_MapStart()
 	ResetMapStartSkadiWeapon();
 	Logos_MapStart();
 	ResetMapStartCastleBreakerWeapon();
+	OnMapStartZealot();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1645,7 +1653,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
 		LastMann = false;
-		Yakuza_Lastman(false);
+		Yakuza_Lastman(0);
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -1682,7 +1690,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				else if(LastMann)
 				{
 					LastMann = false;
-					Yakuza_Lastman(false);
+					Yakuza_Lastman(0);
 				}
 				
 			}
@@ -1778,8 +1786,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						if(Yakuza_IsNotInJoint(client))
 						{
 							Yakuza_AddCharge(client, 99999);
-							Yakuza_Lastman(true);
+							Yakuza_Lastman(1);
 							CPrintToChatAll("{crimson}Something awakens inside %N.......",client);
+						}
+						if(Zealot_Sugmar(client))
+						{
+							Yakuza_Lastman(2);
+							CPrintToChatAll("{crimson}%N descended into a fanatical worship of Sigmar, and set out to cleanse the unrighteous themselves.",client);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)

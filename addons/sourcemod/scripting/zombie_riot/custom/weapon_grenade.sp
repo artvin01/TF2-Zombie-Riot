@@ -33,7 +33,7 @@ public void Enable_Management_GrenadeHud(int client, int weapon) // Enable manag
 {
 	if (TimerHudGrenade[client] != null)
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_GRENADEHUD)
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_GRENADEHUD || i_CustomWeaponEquipLogic[weapon] == WEAPON_ZEALOT_POTION)
 		{
 			delete TimerHudGrenade[client];
 			TimerHudGrenade[client] = null;
@@ -45,7 +45,7 @@ public void Enable_Management_GrenadeHud(int client, int weapon) // Enable manag
 		}
 	}
 
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_GRENADEHUD)
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_GRENADEHUD || i_CustomWeaponEquipLogic[weapon] == WEAPON_ZEALOT_POTION)
 	{	
 		DataPack pack;
 		TimerHudGrenade[client] = CreateDataTimer(0.5, TimerHudGrenade_Manager, pack, TIMER_REPEAT);

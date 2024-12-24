@@ -737,6 +737,7 @@ public void OnPluginStart()
 	100,
 	1,
 	1,
+	1,
 	1};
 #endif
 	
@@ -777,6 +778,10 @@ public void OnPluginStart()
 	Cvar_clamp_back_speed = FindConVar("tf_clamp_back_speed");
 	if(Cvar_clamp_back_speed)
 		Cvar_clamp_back_speed.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
+	Cvar_LoostFooting = FindConVar("tf_movement_lost_footing_friction");
+	if(Cvar_LoostFooting)
+		Cvar_LoostFooting.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	CvarTfMMMode = FindConVar("tf_mm_servermode");
 	if(CvarTfMMMode)
@@ -1520,6 +1525,7 @@ public void OnClientDisconnect(int client)
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	ReplicateClient_Svairaccelerate[client] = -1.0;
 	ReplicateClient_BackwardsWalk[client] = -1.0;
+	ReplicateClient_LostFooting[client] = -1.0;
 	ReplicateClient_Tfsolidobjects[client] = -1;
 	ReplicateClient_RollAngle[client] = -1;
 	b_NetworkedCrouch[client] = false;
