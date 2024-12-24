@@ -31,7 +31,7 @@ static float f_PotionCooldownDo[MAXPLAYERS+1];
 static float f_ChargeDuration[MAXPLAYERS+1];
 static float f_ZealotDamageSave[MAXPLAYERS+1];
 static int f_PistolGet[MAXPLAYERS+1];
-static int i_WeaponGotLastmanBuff[MAXTF2PLAYERS];
+static int i_WeaponGotLastmanBuff[MAXENTITIES];
 static bool Precached;
 static int i_WhatPotionDrink[MAXPLAYERS+1];
 void OnMapStartZealot()
