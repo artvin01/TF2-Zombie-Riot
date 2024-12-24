@@ -114,6 +114,8 @@ static bool b_tripple_raid[MAXENTITIES];
 #define STELLA_NC_TURNRATE_ANGER 400.0
 #define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/donner_schwert_5.mp3"
 
+#define STELLA_NORMAL_LASER_DURATION 0.7
+
 static float fl_npc_basespeed;
 static bool b_test_mode[MAXENTITIES];
 static int i_current_wave[MAXENTITIES];
@@ -2256,7 +2258,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 
 	float Attack_Speed = 3.3;	//how often she attacks.
 	float Attack_Delay = 1.0;	//how long until she actually attacks
-	float Attack_Time = 0.7;	//how long the normal attack laser lasts
+	float Attack_Time = STELLA_NORMAL_LASER_DURATION;	//how long the normal attack laser lasts
 
 	if(npc.m_flNorm_Attack_In > GameTime)
 		npc.m_bAllowBackWalking = true;
@@ -2346,9 +2348,14 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	
 	int target = i_Get_Laser_Target(npc, Range);
 
+	float Ratio = 1.0 - (npc.m_flNorm_Attack_Duration - GameTime) / STELLA_NORMAL_LASER_DURATION;
+
+	if(Ratio < 0.001)
+		Ratio = 0.001;
+
 	if(IsValidEnemy(npc.index, target))
 	{
-		//times these value has been altered: 31.
+		//times these value has been altered: 32.
 		//warp_turn_speed
 		float Bonus_Speed_Range = 500.0*500.0;
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
@@ -2373,22 +2380,29 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 		Turn_Speed /=TickrateModify;
 
+		float Turn_Extra = 0.94 + ((Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5));	
+		//this ^ what I did here is ass. NORMALLY what you would do is (Ratio+0.5)^4.0. BUT FOR WHATEVER REASON, doing that results in numbers that physically shouldn't be possible.
+		//CPrintToChatAll("Turn Extra: %f", Turn_Extra);
+		Turn_Speed *= Turn_Extra;
+
 		npc.FaceTowards(vecTarget, Turn_Speed);
 	}
 
 	if(update)
 	{
-		//11~ the same as twirl's Retreat laser. (the triangle one)
-		Laser.Damage = Modify_Damage(-1, 15.0);
+		float Dmg = Modify_Damage(-1, 15.0);
+		Dmg *= (0.75-Logarithm(Ratio));
+		//the 0.75 is min dmg it will reach at ability end.
+		Laser.Damage = Dmg;
 		Laser.Radius = radius;
-		Laser.Bonus_Damage = (Modify_Damage(-1, 15.0)*6.0);
+		Laser.Bonus_Damage = Dmg*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 	}
 
 	float startPoint[3], endPoint[3];
-	float flPos[3], flAng[3];
-	npc.GetAttachment("effect_hand_r", flPos, flAng);
+	float flPos[3];
+	npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
 	startPoint  = flPos;
 	endPoint	= Laser.End_Point;
 	float diameter = radius *1.0;

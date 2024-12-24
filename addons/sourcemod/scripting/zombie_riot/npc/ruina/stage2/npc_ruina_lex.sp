@@ -61,6 +61,7 @@ static char g_AngerSounds[][] = {
 #define LEX_LASER_LOOP_SOUND	"player/taunt_rocket_hover_loop.wav"//"weapons/gauss/chargeloop.wav"
 #define LEX_LASER_LOOP_SOUND1	"ambient/machines/combine_shield_touch_loop1.wav"
 #define LEX_LASER_ENDSOUND		"weapons/physcannon/physcannon_drop.wav"
+#define LEX_LASER_DURATION 		5.5
 
 void Lex_OnMapStart_NPC()
 {
@@ -984,7 +985,8 @@ static void Initiate_Laser(Lex npc)
 	npc.m_flRangedArmor = 0.5;
 	npc.m_flMeleeArmor = 0.5;
 
-	float Duration = 5.5;
+	float WindUp = 1.5;
+	float Duration = LEX_LASER_DURATION + WindUp;
 
 	float GameTime = GetGameTime();
 
@@ -1006,7 +1008,7 @@ static void Initiate_Laser(Lex npc)
 
 	fl_ruina_throttle[npc.index] = 0.0;
 	i_effect_amt[npc.index] = 0;
-	npc.m_flReloadIn = GameTime + 0.75;
+	npc.m_flReloadIn = GameTime + WindUp;
 
 	float npc_vec[3];
 	GetAbsOrigin(npc.index, npc_vec);
@@ -1054,8 +1056,7 @@ static void Initiate_Laser(Lex npc)
 		TeleportEntity(Hand_Thing, NULL_VECTOR, flAng, NULL_VECTOR);
 
 	}
-
-	
+	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
 	SDKHook(npc.index, SDKHook_Think, Laser_Tick);
 }
 
@@ -1068,6 +1069,8 @@ static Action Laser_Tick(int client)
 	if(npc.m_flDoingAnimation < GameTime)
 	{
 		SDKUnhook(npc.index, SDKHook_Think, Laser_Tick);
+
+		RemoveSpecificBuff(npc.index, "Solid Stance");
 
 		EmitSoundToAll(LEX_LASER_ENDSOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL);
 		EmitSoundToAll(LEX_LASER_ENDSOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL);
@@ -1110,8 +1113,12 @@ static Action Laser_Tick(int client)
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Basic(2500.0);
 	Laser.Radius = Radius;
-	Laser.Damage = 100.0;
-	Laser.Bonus_Damage = 200.0;
+	float Ratio = 1.0 - (npc.m_flDoingAnimation - GameTime) / LEX_LASER_DURATION;
+	if(Ratio < 0.1)	
+		Ratio = 0.1;
+	float dmg = 125.0 * Ratio;
+	Laser.Damage = dmg;
+	Laser.Bonus_Damage = dmg*2.0;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage(On_LaserHit_Big);
 

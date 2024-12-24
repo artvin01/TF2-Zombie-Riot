@@ -1111,7 +1111,6 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy[MAXENTITIES];
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
-			bool PlayTeleSound;
 			for(int i; i < sizeof(enemy); i++)
 			{
 				if(enemy[i])
