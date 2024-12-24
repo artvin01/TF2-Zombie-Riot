@@ -3008,7 +3008,7 @@
 	}
 	"Zealot Pap 1 Desc"
 	{
-		"en"	"Boost stats.\nGain a potion that gives a random buff, see random buff in weapon hud.\nIncreaces cooldown reductions."
+		"en"	"Boost stats.\nGain a potion that gives a random buff and heals upto half of your max health.\nSee random buff in weapon hud.\nIncreaces cooldown reductions."
 	}
 	"Zealot Pap 2 Desc"
 	{
@@ -3032,11 +3032,11 @@
 	}
 	"Zealot Pap 6 Desc"
 	{
-		"en"	"Boost stats.\nIncreaces cooldown reductions."
+		"en"	"Boost stats."
 	}
 	"Zealot Pap 7 Desc"
 	{
-		"en"	"Boost stats.\nIncreaces cooldown reductions."
+		"en"	"Boost stats."
 	}
 	"Seaborn Spines Desc"
 	{

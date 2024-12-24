@@ -6306,9 +6306,12 @@ static void ItemCost(int client, Item item, int &cost)
 	cost += item.Scale * scaled; 
 	cost += item.CostPerWave * Rogue_GetRoundScale();
 
+
+	static ItemInfo info;
+	item.GetItemInfo(0, info);
 	if(StarterCashMode[client])
 	{
-		if(StartCash < 750 && cost <= 1000) //give super discount for normal waves
+		if(StartCash < 750 && (cost <= 1000 || info.Cost_Unlock <= 1000)) //give super discount for normal waves
 		{
 			cost = RoundToCeil(float(cost) * 0.35);
 		}

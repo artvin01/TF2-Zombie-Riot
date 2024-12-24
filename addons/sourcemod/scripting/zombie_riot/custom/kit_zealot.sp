@@ -44,6 +44,7 @@ void OnMapStartZealot()
 	Zero(f_StaminaLeftZealot);
 	Zero(f_PotionCooldownDo);
 	Precached = false;
+	PrecacheSound("plats/tram_hit4.wav");
 }
 
 bool Zealot_Sugmar(int client)
@@ -132,7 +133,7 @@ public void Weapon_ZealotBlockRapier(int client, int weapon, bool &result, int s
 
 				//giver faster attackspeed
 				ApplyTempAttrib(weapon, 6, 0.75, 5.0);
-				ApplyStatusEffect(client, client, "Zealot's Extreme Rush", 5.0);
+				ApplyStatusEffect(client, client, "Zealot's Rush", 5.0);
 				
 				int viewmodelModel;
 				viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -325,8 +326,6 @@ void WeaponZealot_OnTakeDamage_Gun(int attacker, int victim, float &damage)
 }
 void WeaponZealot_OnTakeDamage(int attacker, int victim, float &damage)
 {
-	if(CheckInHud())
-		return;
 	//Anti delay
 	int ammo = GetAmmo(attacker, Ammo_ClassSpecific) + 1;
 	if(i_HasBeenHeadShotted[victim])
@@ -593,6 +592,12 @@ public void Client_ZealotThink(int client)
 	}
 	Zealot_ApplyGlobalRCooldown(client, CooldownDo);
 	EmitSoundToAll("passtime/projectile_swoosh3.wav", client, SNDCHAN_STATIC,80,_,1.0, GetRandomInt(100, 105));
+	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+	
+	TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	//Not holding Reload. block.
 }
@@ -627,6 +632,14 @@ public Action Timer_Management_Zealot(Handle timer, DataPack pack)
 		{
 			i_WeaponGotLastmanBuff[weapon] = true;
 			Attributes_SetMulti(weapon, 6, 0.75);
+		}
+	}
+	else
+	{
+		if(i_WeaponGotLastmanBuff[weapon])
+		{
+			i_WeaponGotLastmanBuff[weapon] = false;
+			Attributes_SetMulti(weapon, 6, 1 / 0.75);
 		}
 	}
 	Zealot_Hud_Logic(client, weapon, false);
@@ -671,11 +684,11 @@ float Zealot_RegenerateStaminaMAx(int client)
 	switch(i_PaPLevel[client])
 	{
 		case 1:
-			MaxStamina *= 1.2;
+			MaxStamina *= 1.1;
 		case 2:
-			MaxStamina *= 1.3;
+			MaxStamina *= 1.15;
 		case 3:
-			MaxStamina *= 1.5;
+			MaxStamina *= 1.2;
 	}
 	return MaxStamina;
 }
@@ -736,21 +749,21 @@ public void Client_ZealotChargeDo(int client)
 	
 	float vecMe[3];
 	WorldSpaceCenter(client, vecMe);
-	Explode_Logic_Custom(DamageDeal, client, client, -1, vecMe, EXPLOSION_RADIUS * 0.75,_,_,false,_,_,_,_,ZealotOnlyHitOnce);
+	Explode_Logic_Custom(DamageDeal, client, client, -1, vecMe, EXPLOSION_RADIUS * 0.75,_,_,false, .FunctionToCallBeforeHit = ZealotOnlyHitOnce);
 }
 
 
-float ZealotOnlyHitOnce(int entity, int victim, float damage, int weapon)
+float ZealotOnlyHitOnce(int attacker, int victim, float &damage, int weapon)
 {
-	if(f_GlobalHitDetectionLogic[entity][victim])
+	if(f_GlobalHitDetectionLogic[attacker][victim])
 	{
-		damage *= -1.0;
-		return damage;
+		damage = 0.0;
+		return 0.0;
 	}
 	float targPos[3];
 	WorldSpaceCenter(victim, targPos);
 	EmitSoundToAll("plats/tram_hit4.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 	TE_Particle("skull_island_embers", targPos, NULL_VECTOR, NULL_VECTOR, victim, _, _, _, _, _, _, _, _, _, 0.0);
-	f_GlobalHitDetectionLogic[entity][victim] = 1.0;
-	return damage;
+	f_GlobalHitDetectionLogic[attacker][victim] = 1.0;
+	return 0.0;
 }
