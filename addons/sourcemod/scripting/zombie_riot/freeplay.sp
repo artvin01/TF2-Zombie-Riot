@@ -1383,7 +1383,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain resistance!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +15% resist and +10% health!");
 				PerkMachine = 1;
 			}
 			case 22:
@@ -1394,7 +1394,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain Extra Damage!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain 25% Extra Damage!");
 				PerkMachine = 2;
 			}
 			case 23:
