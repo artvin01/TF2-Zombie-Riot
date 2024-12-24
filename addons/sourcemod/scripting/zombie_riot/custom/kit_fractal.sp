@@ -1144,7 +1144,9 @@ public void Kit_Fractal_Mana_Harvester(int client, int weapon, bool &result, int
 {
 	struct_Harvester_Data[client].weapon = EntIndexToEntRef(weapon);
 
-	struct_Harvester_Data[client].throttle = 0.0;
+	//failsafe.
+	if(struct_Harvester_Data[client].throttle > GetGameTime() + 10.0)
+		struct_Harvester_Data[client].throttle = 0.0;
 
 	for(int i=0 ; i < MAX_TARGETS_HIT ; i++)
 	{
