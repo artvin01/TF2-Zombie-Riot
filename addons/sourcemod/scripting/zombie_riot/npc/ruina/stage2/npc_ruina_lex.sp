@@ -76,6 +76,10 @@ void Lex_OnMapStart_NPC()
 	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
+
+	PrecacheSound(LEX_LASER_LOOP_SOUND);
+	PrecacheSound(LEX_LASER_LOOP_SOUND1);
+	PrecacheSound(LEX_LASER_ENDSOUND);
 }
 static void ClotPrecache()
 {
@@ -88,10 +92,6 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_AngerSounds);
-
-	PrecacheSound(LEX_LASER_LOOP_SOUND);
-	PrecacheSound(LEX_LASER_LOOP_SOUND1);
-	PrecacheSound(LEX_LASER_ENDSOUND);
 
 	PrecacheModel("models/player/medic.mdl");
 }

@@ -15,11 +15,6 @@ static float fl_laser_last_fired[MAXTF2PLAYERS];
 #define LAZ_LASER_CANNON_OVERHEAT_TIMER	7.5	//how long must the player forcefully not shoot for the laser cannon to recharge without having to heatdump.
 #define LAZ_LASER_CANNON_REPLACE_COST 500	//how much laser battery to consume upon replacing the core
 
-void Laz_Laser_Cannon_MapStart()
-{
-	
-}
-
 public void Laz_Cannon_Mouse1(int client, int weapon, bool &result, int slot)
 {
 	float GameTime = GetGameTime();

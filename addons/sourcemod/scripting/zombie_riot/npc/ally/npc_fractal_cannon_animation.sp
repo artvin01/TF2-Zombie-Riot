@@ -8,6 +8,7 @@ static const char g_LaserLoop[][] = {
 
 static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
 static int i_wingslot[MAXENTITIES];
+static int i_haloslot[MAXENTITIES];
 
 void Kit_Fractal_NPC_MapStart()
 {
@@ -56,6 +57,30 @@ methodmap Fracatal_Kit_Animation < CClotBody
 			else
 			{
 				i_wingslot[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iHaloSlot
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_haloslot[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_haloslot[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_haloslot[this.index] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -143,6 +168,12 @@ methodmap Fracatal_Kit_Animation < CClotBody
 				SetVariantInt(SettingDo);
 				AcceptEntityInput(npc.m_iWingSlot, "SetBodyGroup");
 			}
+		}
+		if(b_TwirlHairpins[client])
+		{
+			float flPos[3], flAng[3];
+			npc.GetAttachment("head", flPos, flAng);	
+			npc.m_iHaloSlot = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
 		}
 		npc.m_bisWalking = false;
 	
@@ -237,4 +268,7 @@ static void NPC_Death(int entity)
 
 	if(IsValidEntity(npc.m_iWingSlot))
 		RemoveEntity(npc.m_iWingSlot);
+
+	if(IsValidEntity(npc.m_iHaloSlot))
+		RemoveEntity(npc.m_iHaloSlot);
 }
