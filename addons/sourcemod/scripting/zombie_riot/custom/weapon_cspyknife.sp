@@ -109,7 +109,8 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 				}
 				case 7:
 				{
-					TF2_StunPlayer(client, SlowStunTimer, SlownessAmount, TF_STUNFLAG_SLOWDOWN, _);
+					if(!HasSpecificBuff(client, "Fluid Movement"))
+						TF2_StunPlayer(client, SlowStunTimer, SlownessAmount, TF_STUNFLAG_SLOWDOWN, _);
 					//PrintToChat(client, "You got slowed ha!")
 				}
 			}
@@ -165,7 +166,8 @@ public void Weapon_CspyKnife_Pap(int client, int weapon, bool crit, int slot)
 				}
 				case 8:
 				{
-					TF2_StunPlayer(client, SlowStunTimer_Pap, SlownessAmount_Pap, TF_STUNFLAG_SLOWDOWN, _);
+					if(!HasSpecificBuff(client, "Fluid Movement"))
+						TF2_StunPlayer(client, SlowStunTimer_Pap, SlownessAmount_Pap, TF_STUNFLAG_SLOWDOWN, _);
 					//PrintToChat(client, "You got slowed ha!")
 				}
 				case 9:
@@ -195,7 +197,8 @@ public void Weapon_CspyKnife_Pap(int client, int weapon, bool crit, int slot)
 				case 13:
 				{
 					CreateTimer(0.01, MoreAttackSpeed, client, TIMER_FLAG_NO_MAPCHANGE);
-					TF2_StunPlayer(client, SlowStunTimer_Pap, SlownessAmount_Pap, TF_STUNFLAG_SLOWDOWN, _);
+					if(!HasSpecificBuff(client, "Fluid Movement"))
+						TF2_StunPlayer(client, SlowStunTimer_Pap, SlownessAmount_Pap, TF_STUNFLAG_SLOWDOWN, _);
 				}
 			}
 		}
