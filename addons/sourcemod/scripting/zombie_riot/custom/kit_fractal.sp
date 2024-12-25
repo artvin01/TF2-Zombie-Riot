@@ -1140,7 +1140,8 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 	int color[4] = {255, 255, 255, 255};
 	if(first)
 	{
-		
+		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Loc);
+		EmitSoundToClient(client, RUINA_ION_CANNON_SOUND_SPAWN, client, SNDCHAN_STATIC, 45, _, 1.0);
 		DataPack pack;
 		CreateDataTimer(speed, Timer_StarfallIon, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(client));
@@ -1180,6 +1181,8 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 			pack.WriteCell(cycle);
 			pack.WriteFloatArray(pos1, 3);
 			pos1[2]+=10.0;
+			EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, pos1);
+			EmitSoundToClient(client, RUINA_ION_CANNON_SOUND_SPAWN, client, SNDCHAN_STATIC, 45, _, 1.0);
 			TE_SetupBeamRingPoint(pos1, Radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
 			Send_Te_Client_ZR(client);
 			pos1[2]-=10.0;
@@ -1216,6 +1219,9 @@ static Action Timer_StarfallIon(Handle Timer, DataPack pack)
 	Loc[2]-=10.0;
 	Check_StarfallAOE(client, Loc, radius, cycle-1, damage);
 
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Loc);
+	EmitSoundToClient(client, RUINA_ION_CANNON_SOUND_TOUCHDOWN, client, SNDCHAN_STATIC, 45, _, 1.0);
+
 	return Plugin_Stop;
 }
 enum struct Harvester_Enum
@@ -1224,10 +1230,23 @@ enum struct Harvester_Enum
 	float throttle;
 	int Enumerated_Ents[MAX_TARGETS_HIT];
 	bool Active;
+
+	float Lockout;
 }
 static Harvester_Enum struct_Harvester_Data[MAXTF2PLAYERS];
 public void Kit_Fractal_Mana_Harvester(int client, int weapon, bool &result, int slot)	//warp_harvester
 {
+	if(struct_Harvester_Data[client].Lockout > GetGameTime() + 30.0)
+		struct_Harvester_Data[client].Lockout = 0.0;
+
+	if(struct_Harvester_Data[client].Lockout > GetGameTime())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "The Harvester is Recharging [%.1fs]", struct_Harvester_Data[client].Lockout-GetGameTime());
+		return;
+	}
 	struct_Harvester_Data[client].weapon = EntIndexToEntRef(weapon);
 
 	//failsafe.
@@ -1259,6 +1278,8 @@ static Action Mana_Harvester_Tick(int client)
 	int weapon = EntRefToEntIndex(struct_Harvester_Data[client].weapon);
 	if(!Mouse1 || weapon_holding != weapon || !IsValidEntity(weapon) || i_CustomWeaponEquipLogic[weapon_holding] != WEAPON_KIT_FRACTAL)
 	{
+		struct_Harvester_Data[client].Lockout = GetGameTime() + 0.5;
+		
 		struct_Harvester_Data[client].Active = false;
 		SDKUnhook(client, SDKHook_PreThink, Mana_Harvester_Tick);
 
@@ -1298,6 +1319,8 @@ static Action Mana_Harvester_Tick(int client)
 		StopSound(client, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
 		StopSound(client, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
 		StopSound(client, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
+
+		struct_Harvester_Data[client].Lockout = GameTime + 5.0;
 		return Plugin_Stop;
 	}
 
@@ -1317,7 +1340,11 @@ static Action Mana_Harvester_Tick(int client)
 	TR_EnumerateEntitiesSphere(Origin, range, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Fractal_Harvester, client);
 	FinishLagCompensation_Base_boss();
 	//we now have every valid target within range / within line of sight, comence the harvesting!
-	int color[4]; color = Kit_Color(client);
+	int color[4]; color = Kit_Color();
+
+	int Amt = Pap(weapon_holding);
+	if(Amt < 3)
+		Amt = 3;
 	for(int i=0 ; i < MAX_TARGETS_HIT ; i++)
 	{
 		if(!struct_Harvester_Data[client].Enumerated_Ents[i])
@@ -1327,7 +1354,7 @@ static Action Mana_Harvester_Tick(int client)
 		//"effect_hand_l"
 		laser = ConnectWithBeam(client, struct_Harvester_Data[client].Enumerated_Ents[i], color[0], color[1], color[2], 5.0, 3.0, 2.0, BEAM_COMBINE_BLACK, _,_,"effect_hand_l");
 		
-		if(i <=5 || LastMann)
+		if(i <= Amt || LastMann)
 			if(Current_Mana[client] < max_mana[client]*1.2)
 				Current_Mana[client] += RoundToFloor(mana_cost*0.75);
 
@@ -1344,7 +1371,7 @@ static Action Mana_Harvester_Tick(int client)
 
 	return Plugin_Continue;
 }
-static int[] Kit_Color(int client)
+static int[] Kit_Color()
 {
 	int color[4] = {25,175,255,255};
 	return color;
@@ -1609,10 +1636,18 @@ static void Hud(int client, int weapon)
 			}
 			else
 			{
-				if(struct_Harvester_Data[client].Active)
-					Format(HUDText, sizeof(HUDText), "ĄMana HarvesterČ Active!");
+				if(struct_Harvester_Data[client].Lockout > GameTime)
+				{
+					Format(HUDText, sizeof(HUDText), "ĄMana HarvesterČ Recharging [%.1f]", struct_Harvester_Data[client].Lockout - GameTime);
+				}
 				else
-					Format(HUDText, sizeof(HUDText), "Hold [M1] To Cast ĄMana HarvesterČ");
+				{
+					if(struct_Harvester_Data[client].Active)
+						Format(HUDText, sizeof(HUDText), "ĄMana HarvesterČ Active!");
+					else
+						Format(HUDText, sizeof(HUDText), "Hold [M1] To Cast ĄMana HarvesterČ");
+				}
+				
 
 				if(fl_current_crystal_amt[client] >= FRACTAL_KIT_STARFALL_COST)
 					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Cast ĄStarFallČ [Cost:%.0f]",HUDText, FRACTAL_KIT_STARFALL_COST);
