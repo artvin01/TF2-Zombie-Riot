@@ -1471,7 +1471,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			GetPercentageAdjust *= 1.1;
 		}
-
 		if(GetTeam(this.index) != TFTeam_Red && Zombie_DelayExtraSpeed() != 1.0)
 		{
 			GetPercentageAdjust *= Zombie_DelayExtraSpeed();
@@ -1496,12 +1495,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 #endif
 		//in freeplay there should be a speed limit, otherwise they will just have infinite speed and youre screwed.
+		
+
 		if(Waves_InFreeplay())
 		{
 			if((this.m_flSpeed * GetPercentageAdjust) > 500.0)
-				return 500.0;
+				return 500.0 *= Zombie_DelayExtraSpeed();
 		}
-
+		
 		return (this.m_flSpeed * GetPercentageAdjust);
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
