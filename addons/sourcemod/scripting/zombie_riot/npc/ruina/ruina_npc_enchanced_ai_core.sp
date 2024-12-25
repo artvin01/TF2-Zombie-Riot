@@ -1453,8 +1453,12 @@ static void Apply_Sickness(int iNPC, int Target)
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.1, color, 1, 0);
 	TE_SendToAll();
 
-	EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.5, SNDPITCH_NORMAL, -1, end_point);
-	EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.5, SNDPITCH_NORMAL, -1, end_point);
+	//BECOME LOUDER!!!!!!1111111!!1!!!!!!!!!!!!!1!!!!
+	EmitSoundToClient(Target, RUINA_ION_CANNON_SOUND_SPAWN, Target, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 1.0);
+	EmitSoundToClient(Target, RUINA_ION_CANNON_SOUND_SPAWN, Target, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 0.7);
+
+	Ruina_IonSoundInvoke(end_point);
+
 	DataPack pack;
 	CreateDataTimer(time, Ruina_Mana_Sickness_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(GetTeam(iNPC));
@@ -1624,6 +1628,7 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, end_point, Radius, _, _, true, _ , _    , 2.0, Generic_ion_OnHit);
 
 	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
 
 	if(Sickness_flat || Sickness_Multi)
 		Ruina_AOE_Add_Mana_Sickness(end_point, iNPC, Radius, Sickness_Multi, Sickness_flat,Override);
@@ -1650,6 +1655,11 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 	CreateTimer(0.25, Nearl_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 
 	return Plugin_Stop;
+}
+void Ruina_IonSoundInvoke(float Loc[3])
+{
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Loc);
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Loc);
 }
 static void Generic_ion_OnHit(int entity, int victim, float damage, int weapon)
 {
