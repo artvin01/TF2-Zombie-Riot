@@ -309,6 +309,7 @@ methodmap RaidbossSilvester < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Waldch Arrived.");
 			}
 		}
+		RemoveAllDamageAddition();
 		bool final = StrContains(data, "final_item") != -1;
 		
 		Zero(b_said_player_weaponline);
@@ -598,9 +599,9 @@ static void Internal_ClotThink(int iNPC)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			b_CannotBeStunned[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
-			b_CannotBeSlowed[npc.index] = true;
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 		}
 	}
 
@@ -611,9 +612,9 @@ static void Internal_ClotThink(int iNPC)
 		{
 			b_CannotBeHeadshot[npc.index] = false;
 			b_CannotBeBackstabbed[npc.index] = false;
-			b_CannotBeStunned[npc.index] = false;
-			b_CannotBeKnockedUp[npc.index] = false;
-			b_CannotBeSlowed[npc.index] = false;
+			RemoveSpecificBuff(npc.index, "Clear Head");
+			RemoveSpecificBuff(npc.index, "Solid Stance");
+			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			NPC_StartPathing(npc.index);
 			npc.m_bPathing = true;
@@ -1617,7 +1618,6 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 }
 
 
-static bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
 static float fl_ThrowDelay[MAXENTITIES];
 public Action contact_throw_Silvester_entity(int client)
 {
@@ -1724,6 +1724,10 @@ void ApplySdkHookSilvesterThrow(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
+		for(int entity1=1; entity1 < MAXENTITIES; entity1++)
+		{
+			b_AlreadyHitTankThrow[entity][entity1] = false;
+		}
 		fl_ThrowDelay[entity] = GetGameTime(entity) + 0.1;
 		SDKHook(entity, SDKHook_PreThink, contact_throw_Silvester_entity);		
 	}

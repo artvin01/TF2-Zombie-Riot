@@ -504,7 +504,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		return;
 	}
 
-	if(npc.m_flGetClosestTargetTime < gameTime || !IsEntityAlive(npc.m_iTarget))
+	if(npc.m_flGetClosestTargetTime < gameTime || !IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
@@ -606,7 +606,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.m_flSpeed = 290.0;
 			SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
 			AcceptEntityInput(npc.index, "ClearParent");
-			b_CannotBeKnockedUp[npc.index] = false;
+			RemoveSpecificBuff(npc.index, "Solid Stance");
 			b_NoGravity[npc.index] = false;
 			float flPos[3]; // original
 			b_DoNotUnStuck[npc.index] = false;
@@ -717,9 +717,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
-				NPCStats_RemoveAllDebuffs(ally);
-				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 5.0;
-				f_HussarBuff[ally] = GetGameTime(ally) + 10.0;
+				NPCStats_RemoveAllDebuffs(ally, 5.0);
+				ApplyStatusEffect(npc.index, ally, "Hussar's Warscream", 10.0);
 
 				npc.PlayBuffSound();
 			}
@@ -754,7 +753,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				SetParent(npcally.index, npc.index, "");
 				b_NoGravity[npc.index] = true;
 				b_DoNotUnStuck[npc.index] = true;
-				b_CannotBeKnockedUp[npc.index] = true;
+				ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
 				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
 				npc.SetVelocity({0.0,0.0,0.0});
 				GetEntPropVector(npcally.index, Prop_Data, "m_angRotation", eyePitch);
@@ -977,10 +976,9 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						
 						vecMe[2] += 45;
 						
-						b_ThisNpcIsSawrunner[npc.index] = true;
-						i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+						i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
 						Explode_Logic_Custom(3000.0 * zr_smallmapbalancemulti.FloatValue, 0, npc.index, -1, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 20);
-						b_ThisNpcIsSawrunner[npc.index] = false;
+					
 						
 						npc.PlayBoomSound();
 						TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);

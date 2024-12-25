@@ -86,7 +86,7 @@ methodmap SeabornScout < CClotBody
 	
 	public SeabornScout(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornScout npc = view_as<SeabornScout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "2000", ally));
+		SeabornScout npc = view_as<SeabornScout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "3500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");

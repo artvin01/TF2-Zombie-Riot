@@ -197,7 +197,7 @@ public Action Timer_Multiple_Arrows(Handle timer, int client)
 	{
 		if(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == Client_To_Weapon[client])
 		{
-			int Ammo_type = GetEntProp(Client_To_Weapon[client], Prop_Send, "m_iPrimaryAmmoType");
+			int Ammo_type = GetAmmoType_WeaponPrimary(Client_To_Weapon[client]);
 			int Ammo_Currently = GetAmmo(client, Ammo_type);
 			if(Ammo_Currently > 1)
 			{
@@ -309,7 +309,7 @@ public void Weapon_Shoot_Arrow_Crossbow_PAP(int client, int weapon, bool crit, i
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+		int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 		int Ammo_Currently = GetAmmo(client, Ammo_type);
 		if(Ammo_Currently > 1)
 		{
@@ -381,7 +381,7 @@ public void Weapon_Shoot_Arrow_Crossbow_PAP_1(int client, int weapon, bool crit,
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+		int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 		int Ammo_Currently = GetAmmo(client, Ammo_type);
 		if(Ammo_Currently > 1)
 		{
@@ -454,7 +454,7 @@ public void Weapon_Shoot_Arrow_Crossbow_PAP_2(int client, int weapon, bool crit,
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+		int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 		int Ammo_Currently = GetAmmo(client, Ammo_type);
 		if(Ammo_Currently > 1)
 		{

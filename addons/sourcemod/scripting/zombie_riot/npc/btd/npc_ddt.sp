@@ -310,11 +310,11 @@ public Action DDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	
 	DDT npc = view_as<DDT>(victim);
 	
-	if((damagetype & DMG_PLASMA) || (damagetype & DMG_SLASH))
+	if((damagetype & DMG_PLASMA) || (damagetype & DMG_TRUEDAMAGE))
 	{
 		npc.PlayHitSound();
 	}
-	else if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
+	else if((damagetype & DMG_BLAST))
 	{
 		damage *= 0.15;
 

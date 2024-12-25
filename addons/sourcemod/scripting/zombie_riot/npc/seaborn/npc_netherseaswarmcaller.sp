@@ -91,7 +91,7 @@ methodmap SeaSwarmcaller < CSeaBody
 		npc.m_flSpeed = 200.0;	// 0.8 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		b_CannotBeSlowed[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 		npc.m_bThisNpcIsABoss = true;
 		b_thisNpcHasAnOutline[npc.index] = true;
 		

@@ -86,7 +86,7 @@ methodmap SeabornHeavy < CClotBody
 	
 	public SeabornHeavy(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornHeavy npc = view_as<SeabornHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "10000", ally));
+		SeabornHeavy npc = view_as<SeabornHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "15000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -240,7 +240,7 @@ void SeabornHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				if(npc.m_flRangedArmor > 1.5)
 					npc.m_flRangedArmor = 1.5;
 			}
-			else if(!(damagetype & DMG_SLASH))
+			else if(!(damagetype & DMG_TRUEDAMAGE))
 			{
 				npc.m_flRangedArmor -= 0.05;
 				if(npc.m_flRangedArmor < 0.05)

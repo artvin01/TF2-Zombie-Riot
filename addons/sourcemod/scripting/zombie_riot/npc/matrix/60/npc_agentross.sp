@@ -350,9 +350,12 @@ public void AgentRoss_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(IsValidEnemy(npc.index, target))
 						{
-							if(target > 0) 
+							float damage = 70.0;
+							if(ShouldNpcDealBonusDamage(target))
+							damage *= 5.0;
+							if(target > 0)
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 
 								Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 45 : 10);
 								// Hit sound
@@ -400,23 +403,37 @@ public Action AgentRoss_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 
 static float AgentHealthSpeedMulti(CClotBody npc)
 {
-    float flNextMeleeAttack = 0.30;
-    float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-    float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-    float ratio = health / maxhealth;
-    if(ratio <= 0.85)
-    {
-        flNextMeleeAttack = 0.25;
-    }
-    if(ratio <= 0.50)
-    {
-        flNextMeleeAttack = 0.20;
-    }
-    if(ratio <= 0.25)
-    {
-    	flNextMeleeAttack = 0.15;
+	float flNextMeleeAttack = 0.30;
+	float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+	float ratio = health / maxhealth;
+	float flPos[3]; // original
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+	if(ratio <= 0.85)
+	{
+		flNextMeleeAttack = 0.25;
+		if(!IsValidEntity(npc.m_iWearable8))
+		{
+			float flAng[3]; // dummy thats needed
+			npc.GetAttachment("effect_hand_R", flPos, flAng);
+			npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "superrare_burning2", npc.index, "effect_hand_R", {0.0, 0.0, 0.0});
+		}
 	}
-    return flNextMeleeAttack;
+	if(ratio <= 0.50)
+	{
+		flNextMeleeAttack = 0.20;
+		if(!IsValidEntity(npc.m_iWearable8))
+		{
+			float flAng[3]; // dummy thats needed
+			npc.GetAttachment("effect_hand_R", flPos, flAng);
+			npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "superrare_burning2", npc.index, "effect_hand_R", {0.0, 0.0, 0.0});
+		}
+	}
+	if(ratio <= 0.25)
+	{
+		flNextMeleeAttack = 0.15;
+	}
+	return flNextMeleeAttack;
 }
 
 public void AgentRoss_NPCDeath(int entity)
@@ -427,6 +444,8 @@ public void AgentRoss_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -435,5 +454,4 @@ public void AgentRoss_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }

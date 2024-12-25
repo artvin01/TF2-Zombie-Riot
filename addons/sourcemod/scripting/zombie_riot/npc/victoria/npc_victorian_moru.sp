@@ -44,7 +44,7 @@ methodmap VictorianDroneAnvil < CClotBody
 	
 	public VictorianDroneAnvil(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true));
+		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
@@ -89,8 +89,8 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_flMeleeArmor = 1.00;
 		npc.m_flRangedArmor = 1.00;
 		
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeSlowed[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		b_IgnoreAllCollisionNPC[npc.index]=true;

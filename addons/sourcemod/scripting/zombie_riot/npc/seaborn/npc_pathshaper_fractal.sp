@@ -100,7 +100,7 @@ methodmap PathshaperFractal < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = PathshaperFractal_ClotThink;
 		
-		npc.m_flSpeed = 100.0;	// 0.4 x 250
+		npc.m_flSpeed = 300.0;	// 0.4 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -116,7 +116,7 @@ public void PathshaperFractal_ClotThink(int iNPC)
 {
 	PathshaperFractal npc = view_as<PathshaperFractal>(iNPC);
 
-	SDKHooks_TakeDamage(npc.index, 0, 0, ReturnEntityMaxHealth(npc.index) / 2970.0, DMG_SLASH, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	SDKHooks_TakeDamage(npc.index, 0, 0, ReturnEntityMaxHealth(npc.index) / 2970.0, DMG_TRUEDAMAGE, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)

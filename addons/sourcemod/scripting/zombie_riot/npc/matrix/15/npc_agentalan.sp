@@ -221,8 +221,8 @@ public void AgentAlan_ClotThink(int iNPC)
 	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.1) && distance < 7500.0)
 	{
 		vecTarget2[2] += 300.0;
-		f_HussarBuff[npc.index] = GetGameTime() + 5.0;
-		f_EmpowerStateOther[npc.index] = GetGameTime() + 5.0;
+		ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 5.0);
+		ApplyStatusEffect(npc.index, npc.index, "Ally Empowerment", 5.0);
 		npc.f_Cooldown = gameTime + 10.0;
 	}
 	if(npc.f_Cooldown >= gameTime)

@@ -76,7 +76,7 @@ methodmap SeabornDefender < CClotBody
 	
 	public SeabornDefender(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornDefender npc = view_as<SeabornDefender>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "60000", ally, false));
+		SeabornDefender npc = view_as<SeabornDefender>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "100000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -204,7 +204,7 @@ public void SeabornDefender_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 400.0 : 125.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 500.0 : 130.0, DMG_CLUB);
 					}
 				}
 
@@ -230,13 +230,13 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		bool magic;
 		bool pierce;
 		
-		if((damagetype & DMG_SLASH) || NpcStats_IsEnemySilenced(victim))
+		if((damagetype & DMG_TRUEDAMAGE) || NpcStats_IsEnemySilenced(victim))
 		{
 			pierce = true;
 		}
 		else
 		{
-			if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(victim))
+			if((damagetype & DMG_BLAST))
 			{
 				hot = true;
 				pierce = true;

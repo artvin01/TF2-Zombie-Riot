@@ -74,7 +74,7 @@ methodmap SeabornSupporter < CClotBody
 	
 	public SeabornSupporter(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornSupporter npc = view_as<SeabornSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "45000", ally, false));
+		SeabornSupporter npc = view_as<SeabornSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "70000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -91,7 +91,6 @@ methodmap SeabornSupporter < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = SeabornSupporter_ClotThink;
 
-		b_ThisNpcIsSawrunner[npc.index] = true;
 		
 		npc.m_flSpeed = 240.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -177,7 +176,7 @@ public void SeabornSupporter_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
-				npc.FireParticleRocket(vecTarget, 120.0, 700.0, 100.0, "raygun_projectile_blue", false, true, _, _, EP_DEALS_DROWN_DAMAGE);
+				npc.FireParticleRocket(vecTarget, 120.0, 700.0, 100.0, "raygun_projectile_blue", false, true, _, _, EP_DEALS_TRUE_DAMAGE);
 			}
 
 			npc.m_flSpeed = 120.0;

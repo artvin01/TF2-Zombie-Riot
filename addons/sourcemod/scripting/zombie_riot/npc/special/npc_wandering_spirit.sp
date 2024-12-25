@@ -229,7 +229,9 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 					if(target <= MaxClients)
 					{
 						Client_Shake(target, 0, 100.0, 100.0, 0.5, false);
-						TF2_StunPlayer(target, 0.5, 0.9, TF_STUNFLAG_SLOWDOWN);
+						if(!HasSpecificBuff(target, "Fluid Movement"))
+							TF2_StunPlayer(target, 0.5, 0.9, TF_STUNFLAG_SLOWDOWN);
+							
 						UTIL_ScreenFade(target, 66, 1, FFADE_OUT, 0, 0, 0, 255);
 						npc.m_iState -= 1;
 						maxhealth /= 5;

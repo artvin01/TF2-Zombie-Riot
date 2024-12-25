@@ -83,7 +83,7 @@ methodmap SeabornSniper < CClotBody
 	
 	public SeabornSniper(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornSniper npc = view_as<SeabornSniper>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "5000", ally));
+		SeabornSniper npc = view_as<SeabornSniper>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "9000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -181,11 +181,11 @@ public void SeabornSniper_ClotThink(int iNPC)
 						
 						if(!NpcStats_IsEnemySilenced(npc.index))
 						{
-							NpcStats_SilenceEnemy(npc.index, 20.0);
+							ApplyStatusEffect(npc.index, npc.index, "Silenced", 20.0);
 
 							if(target > MaxClients)
 							{
-								f_WidowsWineDebuff[target] = GetGameTime() + 5.0;
+								ApplyStatusEffect(npc.index, target, "Widows Wine", 5.0);
 							}
 							else
 							{

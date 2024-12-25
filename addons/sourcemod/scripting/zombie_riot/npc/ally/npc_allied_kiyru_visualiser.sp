@@ -122,7 +122,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 			//This is action 1 as an example.
 			/*
 				heavy model:
-				taunt_cheers_heavy frame 5 out of 195
+				taunt_cheers_heavy frame 5 out of 195fex
 				lasts untill frame 37
 				->
 				taunt_yetipunch frame 87 out of 156
@@ -253,7 +253,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 		npc.m_iNpcStepVariation = 0;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
-		b_CannotBeStunned[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
 		
 		func_NPCDeath[npc.index] = AlliedKiryuVisualiserAbility_NPCDeath;
 		func_NPCThink[npc.index] = AlliedKiryuVisaluser_ClotThink;
@@ -289,7 +289,8 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				if(!VIPBuilding_Active())
 				{
 					FreezeNpcInTime(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim), true);
-					SetAirtimeNpc(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim));
+					if(!HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
+						SetAirtimeNpc(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim));
 				}
 			}
 			case 2:
@@ -304,7 +305,8 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				if(!VIPBuilding_Active())
 				{
 					FreezeNpcInTime(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim), true);
-					SetAirtimeNpc(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim));
+					if(!HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
+						SetAirtimeNpc(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim));
 				}
 			}
 			case 3:
@@ -318,7 +320,8 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				if(!VIPBuilding_Active())
 				{
 					FreezeNpcInTime(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim), true);
-					SetAirtimeNpc(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim));
+					if(!HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
+						SetAirtimeNpc(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim));
 				}
 			}
 			case 4:
@@ -342,7 +345,8 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				if(!VIPBuilding_Active())
 				{
 					FreezeNpcInTime(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim), true);
-					SetAirtimeNpc(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim));
+					if(!HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
+						SetAirtimeNpc(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim));
 				}
 			}
 		}
@@ -388,9 +392,8 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 			TeleportEntity(npc.m_iTargetWalkTo, NULL_VECTOR, flAngles, NULL_VECTOR);
 		}
 	}
-	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active())
+	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active() && !HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
 	{	
-
 		if(f_NoUnstuckVariousReasons[npc.m_iTarget] < GetGameTime() + 0.5)
 			f_NoUnstuckVariousReasons[npc.m_iTarget] = GetGameTime() + 0.5;
 
@@ -514,10 +517,14 @@ void BrawlerHeat2(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 				npc.m_iChanged_WalkCycle = 3;
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-					SensalCauseKnockback(npc.index, npc.m_iTarget,_,_);
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+				//	CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+					float EnemyVecPos[3]; WorldSpaceCenter(npc.m_iTarget, EnemyVecPos);
+					i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
+					i_ExplosiveProjectileHexArray[npc.index] |= EP_GIBS_REGARDLESS;
+					Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 5, .FunctionToCallOnHit = DealAoeKnockbackBeastMode);
+					i_ExplosiveProjectileHexArray[npc.index] == 0;
 					c_KiyruAttachmentDo[npc.index] = "";
 					npc.b_NoLongerResetVel = true;
 				}
@@ -610,11 +617,16 @@ void BeastBuildingHeat1(int owner, AlliedKiryuVisualiserAbility npc, float GameT
 				{
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+					float EnemyVecPos[3]; WorldSpaceCenter(npc.m_iTarget, EnemyVecPos);
+				//	CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+					i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
+					i_ExplosiveProjectileHexArray[npc.index] |= EP_GIBS_REGARDLESS;
+					Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 5);
+					i_ExplosiveProjectileHexArray[npc.index] == 0;
 					c_KiyruAttachmentDo[npc.index] = "";
 					npc.b_NoLongerResetVel = true;
 					if(IsValidEntity(npc.m_iWearable8))
-						SDKHooks_TakeDamage(npc.m_iWearable8, 0, 0, 1000000.0, DMG_SLASH);
+						DestroyBuildingDo(npc.m_iWearable8);
 
 					npc.SetPlaybackRate(0.25);
 				}
@@ -684,4 +696,10 @@ public void AlliedKiryuVisualiserAbility_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
+}
+
+
+void DealAoeKnockbackBeastMode(int entity, int victim, float damage, int weapon)
+{
+	SensalCauseKnockback(entity, victim,_,_);
 }

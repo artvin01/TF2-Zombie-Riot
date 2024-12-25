@@ -308,7 +308,7 @@ int VIctorianTankerSelfDefense(VIctorianTanker npc, float gameTime, int target, 
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 130.0;
+						float damageDealt = 90.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 

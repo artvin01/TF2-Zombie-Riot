@@ -323,6 +323,7 @@ methodmap Sensal < CClotBody
 		bool tripple = StrContains(data, "triple_enemies") != -1;
 		if(tripple)
 		{
+			RemoveAllDamageAddition();
 			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
 			GiveOneRevive(true);
 		}
@@ -374,6 +375,7 @@ methodmap Sensal < CClotBody
 		}
 		if(!cutscene && !cutscene2 && !tripple)
 		{
+			RemoveAllDamageAddition();
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
@@ -744,7 +746,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 			RaidModeTime += 60.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
@@ -963,7 +965,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			{
 				npc.m_flReloadIn = gameTime + 1.5;
 				npc.SetPlaybackRate(2.0);
-				npc.m_flAngerDelay = gameTime + 30.0;
+				npc.m_flAngerDelay = gameTime + 45.0;
 			}
 
 		}
@@ -1655,9 +1657,9 @@ bool SensalTransformation(Sensal npc)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			b_CannotBeStunned[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
-			b_CannotBeSlowed[npc.index] = true;
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 			npc.m_flAttackHappens_2 = 0.0;	
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -1683,9 +1685,9 @@ bool SensalTransformation(Sensal npc)
 			AcceptEntityInput(npc.index, "SetBodyGroup");
 			b_CannotBeHeadshot[npc.index] = false;
 			b_CannotBeBackstabbed[npc.index] = false;
-			b_CannotBeStunned[npc.index] = false;
-			b_CannotBeKnockedUp[npc.index] = false;
-			b_CannotBeSlowed[npc.index] = false;
+			RemoveSpecificBuff(npc.index, "Clear Head");
+			RemoveSpecificBuff(npc.index, "Solid Stance");
+			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			NPC_StartPathing(npc.index);
 			npc.m_bPathing = true;

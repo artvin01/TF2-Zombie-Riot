@@ -22,8 +22,9 @@ static const char g_MeleeAttackSounds[][] = {
 static const char g_MeleeAttackShortSounds[][] = {
 	"weapons/sniper_rifle_classic_shoot.wav",
 };
-//int LighthouseID;
 /*
+int LighthouseID;
+
 int LighthouseGlobaID()
 {
 	return LighthouseID;
@@ -43,7 +44,7 @@ void Iberia_Lighthouse_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
-	//LighthouseID = NPC_Add(data);
+	NPC_Add(data);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_1);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_2);
 }
@@ -480,7 +481,7 @@ int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 					damageDealt *= 5.5;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				NpcStats_IberiaMarkEnemy(target, 10.0);
+				ApplyStatusEffect(npc.index, target, "Marked", 10.0);
 			} 
 		}
 	}
@@ -596,7 +597,7 @@ int IberiaLighthouseCloseDefense(IberiaLighthouse npc, float gameTime)
 					damageDealt *= 5.5;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				NpcStats_IberiaMarkEnemy(target, 1.0);
+				ApplyStatusEffect(npc.index, target, "Marked", 1.0);
 			} 
 			npc.m_iTargetWalkTo = 0;
 		}

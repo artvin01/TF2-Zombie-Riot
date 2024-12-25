@@ -89,7 +89,7 @@ methodmap SeabornGuard < CClotBody
 	
 	public SeabornGuard(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornGuard npc = view_as<SeabornGuard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "30000", ally, false));
+		SeabornGuard npc = view_as<SeabornGuard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "40000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -206,7 +206,7 @@ public void SeabornGuard_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = 150.0;
+						float attack = 200.0;
 
 						if(npc.m_iOverlordComboAttack == 2 || ShouldNpcDealBonusDamage(target))
 							attack *= 4.0;

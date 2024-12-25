@@ -510,7 +510,7 @@ methodmap Silvester < CClotBody
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
-		
+
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
@@ -988,7 +988,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 			RaidModeTime += 25.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
@@ -1427,9 +1427,9 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			b_CannotBeStunned[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
-			b_CannotBeSlowed[npc.index] = true;
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 			npc.m_flSilvesterSlicerHappening = 0.0;	
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
@@ -1445,9 +1445,9 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 		{
 			b_CannotBeHeadshot[npc.index] = false;
 			b_CannotBeBackstabbed[npc.index] = false;
-			b_CannotBeStunned[npc.index] = false;
-			b_CannotBeKnockedUp[npc.index] = false;
-			b_CannotBeSlowed[npc.index] = false;
+			RemoveSpecificBuff(npc.index, "Clear Head");
+			RemoveSpecificBuff(npc.index, "Solid Stance");
+			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			NPC_StartPathing(npc.index);
 			npc.m_bPathing = true;
@@ -1456,7 +1456,7 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 			i_NpcWeight[npc.index] = 4;
 			RaidModeScaling *= 1.10;
-			f_BattilonsNpcBuff[npc.index] = GetGameTime() + 5.0;
+			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
 			npc.m_flDoingAnimation = 0.0;
 
 			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");

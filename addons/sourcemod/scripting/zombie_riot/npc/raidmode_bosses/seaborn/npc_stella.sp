@@ -110,9 +110,11 @@ static bool b_InKame[MAXENTITIES];
 static bool b_tripple_raid[MAXENTITIES];
 
 #define STELLA_NC_DURATION 23.0
-#define STELLA_NC_TURNRATE 250.0	//max turnrate.
+#define STELLA_NC_TURNRATE 300.0	//max turnrate.
 #define STELLA_NC_TURNRATE_ANGER 400.0
 #define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/donner_schwert_5.mp3"
+
+#define STELLA_NORMAL_LASER_DURATION 0.7
 
 static float fl_npc_basespeed;
 static bool b_test_mode[MAXENTITIES];
@@ -511,7 +513,7 @@ methodmap Stella < CClotBody
 		if(spawn_index > MaxClients)
 		{
 			this.Ally = spawn_index;
-			Set_Karlas_Ally(spawn_index, this.index, i_current_wave[this.index], b_bobwave[this.index]);
+			Set_Karlas_Ally(spawn_index, this.index, i_current_wave[this.index], b_bobwave[this.index], b_tripple_raid[this.index]);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -624,6 +626,61 @@ methodmap Stella < CClotBody
 		}
 		
 	}
+	property float m_flStellaMeleeArmour
+	{
+		public get()		 
+		{ 
+			return this.m_flMeleeArmor;
+		}
+		public set(float fAmt) 
+		{
+			float GameTime = GetGameTime(this.index);
+			//we are casting Lunar Grace and also can't move, take a heavily defensive position.	
+			if(this.m_flLunar_Grace_Duration > GameTime)
+				fAmt -=0.7;
+
+			if(this.m_flNC_Duration > GameTime)
+				fAmt -=0.95;
+
+			if(this.Anger)
+				fAmt -=0.25;
+		
+
+			//hard limit, although unlikely to be hit.
+			if(fAmt < 0.05)
+				fAmt = 0.05;	
+
+			this.m_flMeleeArmor = fAmt;
+		}
+	}
+	property float m_flStellaRangedArmour
+	{
+		public get()		 
+		{ 
+			return this.m_flRangedArmor;
+		}
+		public set(float fAmt) 
+		{
+			float GameTime = GetGameTime(this.index);
+			//we are casting Lunar Grace and also can't move, take a heavily defensive position.	
+			if(this.m_flLunar_Grace_Duration > GameTime)
+				fAmt -=0.7;
+			
+			if(this.m_flNC_Duration > GameTime)
+				fAmt -=0.7;
+
+			if(this.Anger)
+				fAmt -=0.25;
+
+
+			//hard limit, although unlikely to be hit.
+			if(fAmt < 0.05)
+				fAmt = 0.05;	
+			
+
+			this.m_flRangedArmor = fAmt;
+		}
+	}
 	public Stella(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Stella npc = view_as<Stella>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
@@ -713,7 +770,7 @@ methodmap Stella < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Donnerkrieg And Schwertkrieg Spawn");
 			}
 		}
-		
+		RemoveAllDamageAddition();
 		Citizen_MiniBossSpawn();
 		
 		b_tripple_raid[npc.index] = (StrContains(data, "triple_enemies") != -1);
@@ -833,12 +890,13 @@ methodmap Stella < CClotBody
 
 		npc.m_flDoingAnimation = 0.0;
 
-		npc.m_flMeleeArmor = 1.25;
+		npc.m_flStellaMeleeArmour = 1.25;
+		npc.m_flStellaRangedArmour = 1.0;
 
 		if(b_test_mode[npc.index])
 			RaidModeTime = FAR_FUTURE;
 		
-		if(!b_bobwave[npc.index])
+		if(!b_bobwave[npc.index] && !b_tripple_raid[npc.index])
 		{
 			switch(GetRandomInt(0, 6))
 			{
@@ -978,6 +1036,9 @@ static void Internal_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+
+	npc.m_flStellaMeleeArmour = 1.25;
+	npc.m_flStellaRangedArmour = 1.0;
 			
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -1206,8 +1267,6 @@ static bool Lunar_Grace(Stella npc)
 	SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
 	SDKHook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
 
-	npc.m_flRangedArmor = 0.5;
-	npc.m_flMeleeArmor = 0.75;
 	npc.AddActivityViaSequence("secondrate_sorcery_medic");
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.0);
@@ -1256,9 +1315,6 @@ static Action Lunar_Grace_Tick(int iNPC)
 		npc.m_bAllowBackWalking = false;
 		npc.m_bKarlasRetreat = false;
 
-		npc.m_flRangedArmor = 1.0;
-		npc.m_flMeleeArmor = 1.25;
-
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -1278,6 +1334,8 @@ static Action Lunar_Grace_Tick(int iNPC)
 		
 		struct_Lunar_Grace_Data[npc.index].Throttle = GameTime + 0.1;
 		Update = true;
+
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 	}
 
 	int color[4]; Ruina_Color(color);
@@ -1616,7 +1674,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 
 		npc.m_bKarlasRetreat = true;
-		int chose = GetRandomInt(1, 11);
+		int chose = GetRandomInt(1, 12);
 		switch(chose)
 		{
 			case 1: Stella_Lines(npc, "{snow}Thats it {crimson}i'm going to kill you{snow}.");	
@@ -1630,6 +1688,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 			case 9: Stella_Lines(npc, "Heh {crimson}This is{snow} gonna be funny.");
 			case 10:Stella_Lines(npc, "This has become quite troublesome.");
 			case 11:Stella_Lines(npc, "Master....");
+			case 12:Stella_Lines(npc, "I've got a question for you, how do you think Holy Water is made?");
 		}
 		//CPrintToChatAll("Chose %i", chose);
 		npc.m_iNC_Dialogue = chose;
@@ -1651,8 +1710,6 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 			npc.FaceTowards(vecTarget, 200000.0);
 		}
 		npc.SetCrestState(false);
-		npc.m_flRangedArmor = 0.3;
-		npc.m_flMeleeArmor = 0.3;
 
 		npc.Set_Particle("utaunt_portalswirl_purple_parent", "", 1);
 		npc.Set_Particle("utaunt_runeprison_yellow_parent", "", 2);
@@ -1674,10 +1731,11 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 			case 9: Stella_Lines(npc, "{crimson}HERE COMES THE FUNNY{snow}.");
 			case 10:Stella_Lines(npc, "So I'll just {crimson}remove{snow} the troublesome component!");
 			case 11:Stella_Lines(npc, "{aqua}SPARK!");
+			case 12:Stella_Lines(npc, "By boiling the hell out of it, {aqua}hehehe....");
 
 			default: CPrintToChatAll("%s It seems my master forgot to set a proper dialogue line for this specific number, how peculiar. Anyway, here's the ID: [%i]", npc.GetName(), npc.m_iNC_Dialogue);
 		}
-
+		
 		npc.AddActivityViaSequence("taunt_mourning_mercs_medic");
 		npc.SetPlaybackRate(2.0);	
 		npc.SetCycle(0.0);
@@ -1738,7 +1796,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	if(npc.m_flNC_Duration<GameTime)
 	{
 		npc.m_bInKame=false;
-		npc.m_flNC_Recharge = GameTime + (npc.Anger ? 34.0 : 60.0);
+		npc.m_flNC_Recharge = GameTime + (npc.Anger ? 30.0 : 45.0);
 		npc.m_bKarlasRetreat = false;
 		npc.m_iKarlasNCState = 0;
 		npc.SetCrestState(true);
@@ -1748,8 +1806,6 @@ public Action Stella_Nightmare_Tick(int iNPC)
 		if(IsValidEntity(npc.m_iParticles3))	
 			RemoveEntity(npc.m_iParticles3);
 
-		npc.m_flRangedArmor = 1.0;
-		npc.m_flMeleeArmor = 1.25;
 		npc.m_bisWalking = true;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_iNC_Dialogue = 0;
@@ -1767,6 +1823,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	{
 		fl_NC_thorttle[npc.index] = GameTime + 0.1;
 		update = true;
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);		//replace stun
 	}
 
 	bool Silence = NpcStats_IsEnemySilenced(npc.index);
@@ -1834,8 +1891,8 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			//oh also, karlas's turn rate for the laser is also nerfed by 20%
 			if(update)	//like the main laser, the damage is dealt 10 times a second
 			{
-				Karl_Laser.Damage = Modify_Damage(-1, 20.0);
-				Karl_Laser.Bonus_Damage = Modify_Damage(-1, 20.0)*6.0;
+				Karl_Laser.Damage = Modify_Damage(-1, 25.0);
+				Karl_Laser.Bonus_Damage = Modify_Damage(-1, 25.0)*6.0;
 				Karl_Laser.damagetype = DMG_PLASMA;
 				Karl_Laser.Deal_Damage();
 			}
@@ -2058,6 +2115,13 @@ static void Internal_NPCDeath(int entity)
 
 	npc.m_bKarlasRetreat = false;
 
+	RaidModeScaling *= 1.2;
+
+	if(b_tripple_raid[npc.index])
+	{
+		Twirl_OnStellaKarlasDeath(npc.Ally);
+	}
+
 	if(!npc.m_bSaidWinLine)
 	{
 		if(b_bobwave[npc.index])
@@ -2073,6 +2137,8 @@ static void Internal_NPCDeath(int entity)
 		{
 			if(npc.Ally)
 			{
+				Karlas karl = view_as<Karlas>(npc.Ally);
+				karl.Anger = true;
 				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 				switch(GetRandomInt(1,3))
 				{
@@ -2192,7 +2258,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 
 	float Attack_Speed = 3.3;	//how often she attacks.
 	float Attack_Delay = 1.0;	//how long until she actually attacks
-	float Attack_Time = 0.7;	//how long the normal attack laser lasts
+	float Attack_Time = STELLA_NORMAL_LASER_DURATION;	//how long the normal attack laser lasts
 
 	if(npc.m_flNorm_Attack_In > GameTime)
 		npc.m_bAllowBackWalking = true;
@@ -2282,9 +2348,14 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	
 	int target = i_Get_Laser_Target(npc, Range);
 
+	float Ratio = 1.0 - (npc.m_flNorm_Attack_Duration - GameTime) / STELLA_NORMAL_LASER_DURATION;
+
+	if(Ratio < 0.001)
+		Ratio = 0.001;
+
 	if(IsValidEnemy(npc.index, target))
 	{
-		//times these value has been altered: 31.
+		//times these value has been altered: 32.
 		//warp_turn_speed
 		float Bonus_Speed_Range = 500.0*500.0;
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
@@ -2309,22 +2380,29 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 		Turn_Speed /=TickrateModify;
 
+		float Turn_Extra = 0.94 + ((Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5));	
+		//this ^ what I did here is ass. NORMALLY what you would do is (Ratio+0.5)^4.0. BUT FOR WHATEVER REASON, doing that results in numbers that physically shouldn't be possible.
+		//CPrintToChatAll("Turn Extra: %f", Turn_Extra);
+		Turn_Speed *= Turn_Extra;
+
 		npc.FaceTowards(vecTarget, Turn_Speed);
 	}
 
 	if(update)
 	{
-		//11~ the same as twirl's Retreat laser. (the triangle one)
-		Laser.Damage = Modify_Damage(-1, 9.0);
+		float Dmg = Modify_Damage(-1, 15.0);
+		Dmg *= (0.75-Logarithm(Ratio));
+		//the 0.75 is min dmg it will reach at ability end.
+		Laser.Damage = Dmg;
 		Laser.Radius = radius;
-		Laser.Bonus_Damage = (Modify_Damage(-1, 9.0)*6.0);
+		Laser.Bonus_Damage = Dmg*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 	}
 
 	float startPoint[3], endPoint[3];
-	float flPos[3], flAng[3];
-	npc.GetAttachment("effect_hand_r", flPos, flAng);
+	float flPos[3];
+	npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
 	startPoint  = flPos;
 	endPoint	= Laser.End_Point;
 	float diameter = radius *1.0;

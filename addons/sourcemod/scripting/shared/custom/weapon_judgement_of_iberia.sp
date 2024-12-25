@@ -353,7 +353,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 					}
 					spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE * 0.5);	
 					SDKUnhook(target, SDKHook_Think, Npc_Irene_Launch);
-					if(!b_CannotBeKnockedUp[target])
+					if(!HasSpecificBuff(target, "Solid Stance"))
 						SDKHook(target, SDKHook_Think, Npc_Irene_Launch);
 					//For now, there is no limit.
 				}

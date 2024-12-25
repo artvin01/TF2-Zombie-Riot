@@ -467,23 +467,31 @@ public Action AgentEric_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 
 static float AgentHealthDamageMulti(CClotBody npc)
 {
-    float damage = 50.0;
-    float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-    float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-    float ratio = health / maxhealth;
-    if(ratio <= 0.85)
-    {
-        damage *= 2.0; //100 damage
-    }
-    if(ratio <= 0.50)
-    {
-        damage *= 1.5; //150 damage
-    }
-    if(ratio <= 0.25)
-    {
-    	damage *= 1.1; //165 damage
+	float damage = 50.0;
+	float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+	float ratio = health / maxhealth;
+	Handle swingTrace;
+	int target = TR_GetEntityIndex(swingTrace);
+	if(ratio <= 0.85)
+	{
+		damage *= 2.0; //100 damage
+		if(ShouldNpcDealBonusDamage(target))
+		damage *= 2.5;
 	}
-    return (0.0 + damage);
+	if(ratio <= 0.50)
+	{
+		damage *= 1.5; //150 damage
+		if(ShouldNpcDealBonusDamage(target))
+		damage *= 2.5;
+	}
+	if(ratio <= 0.25)
+	{
+		damage *= 1.1; //165 damage
+		if(ShouldNpcDealBonusDamage(target))
+		damage *= 2.5;
+	}
+	return (0.0 + damage);
 }
 
 public void AgentEric_NPCDeath(int entity)

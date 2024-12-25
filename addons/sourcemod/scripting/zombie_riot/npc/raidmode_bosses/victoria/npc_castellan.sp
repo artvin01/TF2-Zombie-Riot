@@ -357,6 +357,7 @@ methodmap Castellan < CClotBody
 				ShowGameText(client_check, "obj_status_sentrygun_3", 1, "%t", "Castellan Arrived");
 			}
 		}
+		RemoveAllDamageAddition();
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
@@ -774,7 +775,7 @@ static void Internal_ClotThink(int iNPC)
 				{
 					npc.PlayAngerSound();
 					npc.PlayAngerReaction();
-					f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 					b_NpcIsInvulnerable[npc.index] = false;
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_bFUCKYOU = false;
@@ -862,7 +863,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 			f_TimeSinceHasBeenHurt = GetGameTime() + 36.0;
 			RaidModeTime += 900.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			SetEntityCollisionGroup(npc.index, 24);
 			SetTeam(npc.index, TFTeam_Red);
 			GiveProgressDelay(45.0);
@@ -899,7 +900,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_fbRangedSpecialOn)
 		{
 			I_cant_do_this_all_day[npc.index]=0;
-			f_VictorianCallToArms[npc.index] = GetGameTime() + 999.0;
+			ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			npc.m_bFUCKYOU=true;
@@ -1312,52 +1313,52 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				}
 			}
 		}
-        if(IsValidEntity(Temp_Target[npc.index]))
-        {
-            float BombPos[3], TempPos[3];
-            GetAbsOrigin(Temp_Target[npc.index], BombPos);
-            TempPos[0] = BombPos[0];
-            TempPos[1] = BombPos[1];
-            TempPos[2] = BombPos[2] + 3000.0;
-            BombPos[2] += 5.0;
-            TE_SetupBeamPoints(BombPos, TempPos, gLaser1, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {115, 125, 255, 255}, 3);
-            TE_SendToAll();
-            TE_SetupGlowSprite(BombPos, gBluePoint, 0.1, 1.0, 255);
-            TE_SendToAll();
-            BombPos[2] -= 5.0;
-            if(npc.m_flAirRaidDelay < gameTime)
-            {
-                float BombDamage = 50.0;
-                BombDamage *= RaidModeScaling;
-                float Spam_delay=0.0;
-                for(int AirRaid; AirRaid < 8; AirRaid++)
-                {
-                    if(AirRaid>4)
-                    {
-                        PredictSubjectPositionForProjectiles(npc, Temp_Target[npc.index], 100.0, _,BombPos);
-                        BombPos[0] += GetRandomFloat(-25.0, 25.0);
-                        BombPos[1] += GetRandomFloat(-25.0, 25.0);
-                    }
-                    else if(AirRaid>0)
-                    {
-                        BombPos[0] += GetRandomFloat(-500.0, 500.0);
-                        BombPos[1] += GetRandomFloat(-500.0, 500.0);
-                    }
-                    DataPack pack;
-                    CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
-                    pack.WriteCell(EntIndexToEntRef(npc.index));
-                    pack.WriteFloat(BombPos[0]);
-                    pack.WriteFloat(BombPos[1]);
-                    pack.WriteFloat(BombPos[2]);
-                    pack.WriteFloat(BombDamage);
-                    pack.WriteFloat(3.0);
-                    pack.WriteFloat(1.0);
-                    pack.WriteFloat(150.0);
-                    Spam_delay += 0.15;
-                }
-                npc.m_flAirRaidDelay = gameTime + 2.5;
-            }
-        }
+		if(IsValidEntity(Temp_Target[npc.index]))
+		{
+			float BombPos[3], TempPos[3];
+			GetAbsOrigin(Temp_Target[npc.index], BombPos);
+			TempPos[0] = BombPos[0];
+			TempPos[1] = BombPos[1];
+			TempPos[2] = BombPos[2] + 3000.0;
+			BombPos[2] += 5.0;
+			TE_SetupBeamPoints(BombPos, TempPos, gLaser1, -1, 0, 0, 0.1, 0.0, 25.0, 0, 1.0, {115, 125, 255, 255}, 3);
+			TE_SendToAll();
+			TE_SetupGlowSprite(BombPos, gBluePoint, 0.1, 1.0, 255);
+			TE_SendToAll();
+			BombPos[2] -= 5.0;
+			if(npc.m_flAirRaidDelay < gameTime)
+			{
+				float BombDamage = 50.0;
+				BombDamage *= RaidModeScaling;
+				float Spam_delay=0.0;
+				for(int AirRaid; AirRaid < 8; AirRaid++)
+				{
+				if(AirRaid>4)
+				{
+					PredictSubjectPositionForProjectiles(npc, Temp_Target[npc.index], 100.0, _,BombPos);
+					BombPos[0] += GetRandomFloat(-25.0, 25.0);
+					BombPos[1] += GetRandomFloat(-25.0, 25.0);
+				}
+				else if(AirRaid>0)
+				{
+					BombPos[0] += GetRandomFloat(-500.0, 500.0);
+					BombPos[1] += GetRandomFloat(-500.0, 500.0);
+				}
+				DataPack pack;
+				CreateDataTimer(Spam_delay, Timer_Bomb_Spam, pack, TIMER_FLAG_NO_MAPCHANGE);
+				pack.WriteCell(EntIndexToEntRef(npc.index));
+				pack.WriteFloat(BombPos[0]);
+				pack.WriteFloat(BombPos[1]);
+				pack.WriteFloat(BombPos[2]);
+				pack.WriteFloat(BombDamage);
+				pack.WriteFloat(3.0);
+				pack.WriteFloat(1.0);
+				pack.WriteFloat(150.0);
+				Spam_delay += 0.15;
+				}
+				npc.m_flAirRaidDelay = gameTime + 2.5;
+			}
+		}
 		RaidModeTime += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
 		return 2;
 	}
@@ -1730,7 +1731,6 @@ static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
                 pack2.WriteCell(EntIndexToEntRef(enemy));
             }
 		}
-		npc.FaceTowards(vecTarget, 99999.0);
 	}
 	return Plugin_Stop;
 }

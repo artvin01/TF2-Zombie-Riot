@@ -16,11 +16,12 @@ static const char g_HurtSounds[][] = {
 	")physics/metal/metal_box_impact_bullet2.wav",
 	")physics/metal/metal_box_impact_bullet3.wav",
 };
-//int LighthouseID;
 /*
-int LighthouseGlobaID()
+int RadioMastID;
+
+int RadioMastGlobaID()
 {
-	return LighthouseID;
+	return RadioMastID;
 }
 */
 void VictoriaRadiomast_OnMapStart_NPC()
@@ -35,11 +36,10 @@ void VictoriaRadiomast_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
 	data.Func = ClotSummon;
-	//LighthouseID = NPC_Add(data);
+	NPC_Add(data);
 	PrecacheModel(VictoriaRadiomast_MODEL_1);
 	PrecacheModel(VictoriaRadiomast_MODEL_2);
 	PrecacheModel(VictoriaRadiomast_MODEL_3);
-	NPC_Add(data);
 }
 
 
@@ -202,7 +202,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
 			{
-				f_VictorianCallToArms[client] = gameTime;
+				ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
 			}
 		}
 	}
@@ -401,7 +401,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
-			f_VictorianCallToArms[entity] = gameTime;
+			ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
 		}
 	}
 

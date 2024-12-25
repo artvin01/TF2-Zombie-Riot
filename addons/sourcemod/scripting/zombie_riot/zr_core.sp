@@ -47,7 +47,9 @@ public const int AmmoData[][] =
 	{ 10, 500 },		//Medigun Fluid
 	{ 10, 80 },			//Laser Battery
 	{ 0, 0 },			//Hand Grenade
-	{ 0, 0 }			//Drinks like potions
+	{ 0, 0 },			//???
+	{ 0, 0 },			//???
+	{ 0, 0 }			//???
 };
 
 
@@ -208,7 +210,10 @@ enum
 	WEAPON_WALTER = 128,
 	WEAPON_OLDINFINITYBLADE = 129,
 	WEAPON_NYMPH = 130,
-	WEAPON_CASTLEBREAKER = 131
+	WEAPON_CASTLEBREAKER = 131,
+	WEAPON_ZEALOT_MELEE = 132,
+	WEAPON_ZEALOT_GUN = 133,
+	WEAPON_ZEALOT_POTION = 134
 }
 
 enum
@@ -367,13 +372,10 @@ int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
 int i_ExtraPlayerPoints[MAXTF2PLAYERS];
 int i_PreviousPointAmount[MAXTF2PLAYERS];
+int SpecialLastMan;
 
 bool WaitingInQueue[MAXTF2PLAYERS];
 
-int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 
 float MultiGlobalEnemy = 0.25;
@@ -417,6 +419,7 @@ bool b_SpecialGrigoriStore = true;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 int i_WaveHasFreeplay = 0;
+float fl_MatrixReflect[MAXENTITIES];
 
 
 #include "zombie_riot/npc.sp"	// Global NPC List
@@ -537,6 +540,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/kit_seaborn.sp"
 #include "zombie_riot/custom/weapon_class_leper.sp"
 #include "zombie_riot/custom/kit_flagellant.sp"
+#include "zombie_riot/custom/kit_zealot.sp"
 #include "zombie_riot/custom/cosmetics/silvester_cosmetics_yay.sp"
 #include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
@@ -585,13 +589,43 @@ void ZR_PluginStart()
 	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
+	
+
+	//any noob will eventually type these!!
 	RegConsoleCmd("sm_store", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_market", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_zmarket", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_weapons", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_walmart", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_tesco", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_buy", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_guns", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_gun", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_givegun", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_giveweapons", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_giveweapon", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_cmd", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_cmds", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_commands", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_help", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_giveweapon", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_info", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_menu", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_givemeall", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_giveall", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_freeitems", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_wear", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_wearme", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_zr", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_lidlnord", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_lidlsüd", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_kaufland", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_ikea", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_zabka", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_penny", Access_StoreViaCommand, "Please Press TAB instad");
+
+
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");
 	
@@ -697,10 +731,6 @@ void ZR_MapStart()
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
-	Zero2(Armor_table_money_limit);
-	Zero2(i_Healing_station_money_limit);
-	Zero2(Perk_Machine_money_limit);
-	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero2(fl_blitz_ioc_punish_timer);
 	Zero(b_HideCosmeticsPlayer);
 	KahmlFistMapStart();
@@ -723,6 +753,7 @@ void ZR_MapStart()
 	Zero(f_WasRecentlyRevivedViaNonWaveClassChange);
 	Zero(f_TimeAfterSpawn);
 	Zero2(f_ArmorCurrosionImmunity);
+	Zero(fl_MatrixReflect);
 	Reset_stats_Irene_Global();
 	Reset_stats_PHLOG_Global();
 	Irene_Map_Precache();
@@ -738,6 +769,7 @@ void ZR_MapStart()
 	Blemishine_Map_Precache();
 	
 	Waves_MapStart();
+	Freeplay_OnMapStart();
 	Music_MapStart();
 	Star_Shooter_MapStart();
 	Bison_MapStart();
@@ -833,6 +865,7 @@ void ZR_MapStart()
 	ResetMapStartSkadiWeapon();
 	Logos_MapStart();
 	ResetMapStartCastleBreakerWeapon();
+	OnMapStartZealot();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1570,7 +1603,6 @@ public Action Timer_Dieing(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-
 public void Spawn_Bob_Combine(int client)
 {
 	float flPos[3], flAng[3];
@@ -1621,7 +1653,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
 		LastMann = false;
-		Yakuza_Lastman(false);
+		Yakuza_Lastman(0);
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -1658,7 +1690,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				else if(LastMann)
 				{
 					LastMann = false;
-					Yakuza_Lastman(false);
+					Yakuza_Lastman(0);
 				}
 				
 			}
@@ -1696,7 +1728,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				if((killed != client || Hurtviasdkhook != client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0)
 				{
 					Died[client] = true;
-					SDKHooks_TakeDamage(client, client, client, 99999.0, DMG_DROWN, _, _, _, true);
+					SDKHooks_TakeDamage(client, client, client, 99999.0, DMG_TRUEDAMAGE, _, _, _, true);
 					ForcePlayerSuicide(client);
 				}
 			}
@@ -1754,8 +1786,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						if(Yakuza_IsNotInJoint(client))
 						{
 							Yakuza_AddCharge(client, 99999);
-							Yakuza_Lastman(true);
+							Yakuza_Lastman(1);
 							CPrintToChatAll("{crimson}Something awakens inside %N.......",client);
+						}
+						if(Zealot_Sugmar(client))
+						{
+							Yakuza_Lastman(2);
+							CPrintToChatAll("{crimson}%N descended into a fanatical worship of Sigmar, and set out to cleanse the unrighteous themselves.",client);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)

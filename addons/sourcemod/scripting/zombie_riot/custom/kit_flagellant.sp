@@ -139,6 +139,8 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 							ParticleRef[client] = EntIndexToEntRef(entity);
 						}
 					}
+					ApplyRapidSuturing(client);
+					ApplyStatusEffect(client, client, "Thick Blood", 0.6);
 					
 					return Plugin_Continue;
 				}
@@ -178,7 +180,7 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 
 void Flagellant_DoSwingTrace(int client)
 {
-	TriggerSelfDamage(client, 0.0001);
+	TriggerSelfDamage(client, 0.005);
 }
 
 void Flagellant_OnTakeDamage(int victim)
@@ -203,7 +205,7 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 			{
 				float pos[3];
 				StartPlayerOnlyLagComp(client, true);
-				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
 				EndPlayerOnlyLagComp(client);
 
 				bool validAlly;
@@ -259,7 +261,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				b_LagCompNPC_No_Layers = true;
 				b_LagCompNPC_OnlyAllies = false;
 				StartLagCompensation_Base_Boss(client);
-				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, true);
 				FinishLagCompensation_Base_boss();
 
 				bool validEnemy;
@@ -401,7 +403,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
 	float pos[3];
-	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
 	EndPlayerOnlyLagComp(client);
 
 	bool validAlly;
@@ -484,18 +486,18 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 
 				if(target < MaxClients)
 					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-
-				float cooldown = healing / 30.0;
-				if(cooldown < 2.0)
+				
+				float cooldown = (healing / multi) / 15.0;
+				if(cooldown < 5.0)
 				{
-					cooldown = 2.0;
+					cooldown = 5.0;
 				}
-				else if(cooldown > 10.0)
+				else if(cooldown > 15.0)
 				{
-					cooldown = 10.0;
+					cooldown = 15.0;
 				}
 
-				Ability_Apply_Cooldown(client, slot, 10.0);
+				Ability_Apply_Cooldown(client, slot, cooldown);
 				
 				if(target > MaxClients)
 				{
@@ -535,7 +537,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
-	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, true);
 	FinishLagCompensation_Base_boss();
 
 	bool validEnemy;
@@ -585,7 +587,8 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 public void Flagellant_AcidHitPost(int attacker, int victim, float damage, int weapon)
 {
 	float multi = Attributes_Get(weapon, 2, 1.0);
-	StartBleedingTimer(victim, attacker, multi * 4.0, HealLevel[attacker] > 1 ? 15 : 10, weapon, DMG_PLASMA);
+	StartBleedingTimer(victim, attacker, multi, HealLevel[attacker] > 1 ? 40 : 30, weapon, DMG_PLASMA);
+	StartBleedingTimer(victim, attacker, multi, HealLevel[attacker] > 1 ? 40 : 30, weapon, DMG_PLASMA);
 }
 
 public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int slot)
@@ -613,7 +616,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
 	float pos[3];
-	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
 	EndPlayerOnlyLagComp(client);
 
 	bool validAlly;
@@ -634,6 +637,9 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 			validAlly = true;
 		}
 	}
+
+	if(target > 0 && Elemental_GoingCritical(target))
+		validAlly = false;
 
 	if(validAlly)
 	{
@@ -667,8 +673,8 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		HealedAlly[2] += 10.0;
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
-		Elemental_AddNervousDamage(target, client, 10, _, true);
-		f_HussarBuff[target] = GetGameTime() + 10.0;
+		Elemental_AddChaosDamage(target, client, 10, _, true);
+		ApplyStatusEffect(client, target, "Hussar's Warscream", 10.0);
 
 		if(target > MaxClients)
 		{
@@ -726,7 +732,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 	b_LagCompNPC_OnlyAllies = false;
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
-	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, true);
 	FinishLagCompensation_Base_boss();
 
 	bool validEnemy;
@@ -784,12 +790,13 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
 		
-		f_NpcImmuneToBleed[target] = GetGameTime() + 0.6;
-		float extra = BleedAmountCountStack[target] * 1000.0;
-
+		
+		float extra = BleedAmountCountStack[target] * 200.0 * multi;
+		ApplyRapidSuturing(target);
+		
 		SDKHooks_TakeDamage(target, client, client, (3200.0 * multi), DMG_PLASMA, secondary);
 		if(extra)
-			SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+			SDKHooks_TakeDamage(target, client, client, extra, DMG_TRUEDAMAGE, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 		ParticleEffectAt(pos, PARTICLE_JARATE, 2.0);
 		Ability_Apply_Cooldown(client, slot, 50.0);
@@ -877,13 +884,18 @@ static void TriggerDeathDoor(int client, int &healing)
 	}
 }
 
-static int GetClientPointVisiblePlayersNPCs(int iClient, float flDistance, float vecEndOrigin[3])
+int GetClientPointVisiblePlayersNPCs(int iClient, float flDistance, float vecEndOrigin[3], bool enemy)
 {
 	float vecOrigin[3], vecAngles[3];
 	GetClientEyePosition(iClient, vecOrigin);
 	GetClientEyeAngles(iClient, vecAngles);
 	
-	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientOrNPC, iClient);
+	Handle hTrace;
+	if(enemy)
+		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientOrNPCEnemy, iClient);
+	else
+		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientOrNPCAlly, iClient);
+	
 	TR_GetEndPosition(vecEndOrigin, hTrace);
 	
 	int iReturn = -1;
@@ -896,16 +908,42 @@ static int GetClientPointVisiblePlayersNPCs(int iClient, float flDistance, float
 	return iReturn;
 }
 
-public bool Trace_ClientOrNPC(int entity, int mask, any data)
+public bool Trace_ClientOrNPCEnemy(int entity, int mask, any data)
 {
 	if(entity == data)
 		return false;
 	
 	if(entity <= MaxClients)
-		return true;
+	{
+		if(IsValidEnemy(data, entity, true, true))
+			return true;
+	}
 	
 	if(!b_NpcHasDied[entity])
-		return true;
+	{
+		if(IsValidEnemy(data, entity, true, true))
+			return true;
+	}
+	
+	return false;
+}
+
+public bool Trace_ClientOrNPCAlly(int entity, int mask, any data)
+{
+	if(entity == data)
+		return false;
+	
+	if(entity <= MaxClients)
+	{
+		if(IsValidAlly(data, entity))
+			return true;
+	}
+	
+	if(!b_NpcHasDied[entity])
+	{
+		if(IsValidAlly(data, entity))
+			return true;
+	}
 	
 	return false;
 }

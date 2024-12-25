@@ -385,7 +385,7 @@ int VIctorianAmbusherSelfDefense(int iNPC, int target, float gameTime)
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 15.0;
+						float damageDealt = 10.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);

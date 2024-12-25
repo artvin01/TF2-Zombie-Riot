@@ -208,10 +208,9 @@ methodmap Aviator < CClotBody
 public void Aviator_ClotThink(int iNPC)
 {
 	Aviator npc = view_as<Aviator>(iNPC);
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
-	{
+	float gametime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gametime)
 		return;
-	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
@@ -222,42 +221,43 @@ public void Aviator_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
+	if(npc.m_flNextThinkTime > gametime)
 		return;
-	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = gametime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime <gametime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = gametime + GetRandomRetargetTime();
 	}
 
-	if(npc.m_flAngerDelay < GetGameTime(npc.index))
+	if(npc.m_flAngerDelay < gametime)
 	{
 		switch(I_cant_do_this_all_day[npc.index])
 		{
 			case 0:
 			{
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_drg_melee");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
 				npc.SetPlaybackRate(1.0);
 				npc.m_iChanged_WalkCycle = 0;
-				Delay_Attribute[npc.index] = GetGameTime(npc.index) + 2.0;
+				Delay_Attribute[npc.index] = gametime + 2.0;
 				I_cant_do_this_all_day[npc.index]=1;
 			}
 			case 1:
 			{
-				if(Delay_Attribute[npc.index] < GetGameTime(npc.index))
+				if(Delay_Attribute[npc.index] < gametime)
 				{
 					npc.PlaySuitUpSound();
 					int Health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))* 1.5);	
 
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-
+					Explode_Logic_Custom(0.0, npc.index, npc.index, -1, pos, 200.0, _, _, true, _, false, _, NPC_Go_away);
 					int entity = NPC_CreateByName("npc_ironshield", -1, pos, ang, GetTeam(npc.index));
 					if(entity > MaxClients)
 					{
@@ -271,15 +271,21 @@ public void Aviator_ClotThink(int iNPC)
 						fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index]* 0.90;
 						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
 						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 1.1;
-						b_thisNpcIsABoss[entity] = b_thisNpcIsABoss[npc.index];
 						b_StaticNPC[entity] = b_StaticNPC[npc.index];
+						b_thisNpcIsABoss[entity] = b_thisNpcIsABoss[npc.index];
+						b_thisNpcHasAnOutline[entity] = b_thisNpcHasAnOutline[npc.index];
 						view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
 					}
-					SmiteNpcToDeath(npc.index);
 					I_cant_do_this_all_day[npc.index]=0;
+					b_NpcForcepowerupspawn[npc.index] = 0;
+					i_RaidGrantExtra[npc.index] = 0;
+					b_DissapearOnDeath[npc.index] = true;
+					b_DoGibThisNpc[npc.index] = true;
+					SmiteNpcToDeath(npc.index);
 				}
 			}
 		}
+		return;
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -346,9 +352,7 @@ public void Aviator_NPCDeath(int entity)
 {
 	Aviator npc = view_as<Aviator>(entity);
 	if(!npc.m_bGib)
-	{
 		npc.PlayDeathSound();	
-	}
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
@@ -462,7 +466,8 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 				
 					npc.PlayMeleeHitSound();
 					if(target_hit <= MaxClients)
-						TF2_StunPlayer(target, 1.5, 0.5, TF_STUNFLAG_SLOWDOWN);
+						if(!HasSpecificBuff(target, "Fluid Movement"))
+							TF2_StunPlayer(target, 1.5, 0.5, TF_STUNFLAG_SLOWDOWN);
 				} 
 			}
 			delete swingTrace;
@@ -502,6 +507,11 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
+				if(IsValidEntity(npc.m_iWearable1))
+					RemoveEntity(npc.m_iWearable1);
+				npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_pda_engineer/c_pda_engineer.mdl");
+				SetVariantString("0.8");
+				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayRangedSound();
@@ -515,15 +525,14 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
-					view_as<CClotBody>(npc.m_iWearable3).GetAttachment("muzzle", origin, angles);
-					ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecHit, false );
+					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
 
 					if(IsValidEnemy(npc.index, target))
 					{
 						float damageDealt = 60.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 7.5;
-
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}
@@ -571,5 +580,15 @@ void ResetAviatorWeapon(Aviator npc, int weapon_Type)
 			SetVariantString("0.8");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		}
+	}
+}
+
+static void NPC_Go_away(int entity, int victim, float damage, int weapon)
+{
+	Huscarls npc = view_as<Huscarls>(entity);
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(IsValidEntity(npc.index) && IsValidEntity(victim) && !IsValidClient(victim) && GetTeam(npc.index) != GetTeam(victim))
+	{
+		Custom_Knockback(npc.index, victim, 600.0, true);
 	}
 }

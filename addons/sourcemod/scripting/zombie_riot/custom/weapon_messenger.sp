@@ -185,17 +185,11 @@ public void Gun_MessengerTouch(int entity, int target)
 			}
 			else if(pap > 1)
 			{
-				if((f_LowIceDebuff[target] - 0.5) < GetGameTime())
-				{
-					f_LowIceDebuff[target] = GetGameTime() + 0.6;
-				}
+				ApplyStatusEffect(owner, target, "Cryo", 0.6);
 			}
 			else
 			{
-				if((f_VeryLowIceDebuff[target] - 0.5) < GetGameTime())
-				{
-					f_VeryLowIceDebuff[target] = GetGameTime() + 0.6;
-				}
+				ApplyStatusEffect(owner, target, "Freeze", 0.6);
 			}
 			
 		}

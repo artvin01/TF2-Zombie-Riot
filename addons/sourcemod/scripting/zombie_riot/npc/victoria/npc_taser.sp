@@ -398,15 +398,15 @@ public void VictoriaTaser_Rocket_Particle_StartTouch(int entity, int target)
 		{
 			if(NpcStats_VictorianCallToArms(entity))
 			{
-				if(f_HighTeslarDebuff[target] - 4.0 < GetGameTime())
-				f_HighTeslarDebuff[target] = GetGameTime() + 4.0;
-				TF2_StunPlayer(target, f_HighTeslarDebuff[target] - GetGameTime(), 0.8, TF_STUNFLAG_SLOWDOWN);
+				ApplyStatusEffect(owner, target, "Teslar Electricution", 4.0);
+				if(!HasSpecificBuff(target, "Fluid Movement"))
+					TF2_StunPlayer(target, 1.0, 0.8, TF_STUNFLAG_SLOWDOWN);
 			}
 			else
 			{
-				if(f_HighTeslarDebuff[target] - 3.0 < GetGameTime())
-				f_HighTeslarDebuff[target] = GetGameTime() + 3.0;	
-				TF2_StunPlayer(target, f_HighTeslarDebuff[target] - GetGameTime(), 0.8, TF_STUNFLAG_SLOWDOWN);
+				ApplyStatusEffect(owner, target, "Teslar Electricution", 3.0);	
+				if(!HasSpecificBuff(target, "Fluid Movement"))
+					TF2_StunPlayer(target, 1.0, 0.8, TF_STUNFLAG_SLOWDOWN);
 			}
 		}
 

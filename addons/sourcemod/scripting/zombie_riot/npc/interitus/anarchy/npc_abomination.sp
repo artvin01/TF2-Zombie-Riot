@@ -316,7 +316,7 @@ public Action AnarchyAbomination_OnTakeDamage(int victim, int &attacker, int &in
 				npc.Anger = true;
 			}
 		}
-		else if(!(damagetype & DMG_SLASH))
+		else if(!(damagetype & DMG_TRUEDAMAGE))
 		{
 			npc.m_flRangedArmor -= 0.05;
 			if(npc.m_flRangedArmor < 0.05)

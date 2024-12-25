@@ -7,6 +7,7 @@
 
 
 #if defined ZR
+float f_HealCooldownSetDoGlobal[MAXENTITIES];
 int i_ExpidonsaEnergyEffect[MAXENTITIES][MAX_EXPI_ENERGY_EFFECTS];
 int i_ExpidonsaShieldCapacity[MAXENTITIES];
 int i_ExpidonsaShieldCapacity_Mini[MAXENTITIES];
@@ -29,6 +30,7 @@ stock void ExpidonsaRemoveEffects(int iNpc)
 
 void Expidonsa_SetToZero(int iNpc)
 {
+	f_HealCooldownSetDoGlobal[iNpc] = 0.0;
 	f_Expidonsa_ShieldBroke[iNpc] = 0.0;
 	i_ExpidonsaShieldCapacity[iNpc] = 0;
 	i_ExpidonsaShieldCapacity_Mini[iNpc] = 0;
@@ -67,41 +69,45 @@ stock int VausMagicaShieldLeft(int victim)
 {
 	return i_ExpidonsaShieldCapacity[victim];
 }
-void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damage, int damagetype, int ZrDamageType, int weapon)
+void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damage, int ZrDamageType, int weapon)
 {
 	if(i_ExpidonsaShieldCapacity[victim] > 0 && (!(ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
 	{
+		if(!CheckInHud())
+		{
 #if defined ZR
-		if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
+			if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
 #else
-		if(attacker <=MaxClients)
+			if(attacker <=MaxClients)
 #endif
-		{
-			i_ExpidonsaShieldCapacity_Mini[victim]++;
-			if(i_ExpidonsaShieldCapacity_Mini[victim] <= 1)
-				return;
+			{
+				i_ExpidonsaShieldCapacity_Mini[victim]++;
+				if(i_ExpidonsaShieldCapacity_Mini[victim] <= 1)
+					return;
 
-			i_ExpidonsaShieldCapacity_Mini[victim] = 0;
-			i_ExpidonsaShieldCapacity[victim] -= 1;
+				i_ExpidonsaShieldCapacity_Mini[victim] = 0;
+				i_ExpidonsaShieldCapacity[victim] -= 1;
+			}
+			else
+			{
+				i_ExpidonsaShieldCapacity[victim] -= 1;
+			}
 		}
-		else
-		{
-			i_ExpidonsaShieldCapacity[victim] -= 1;
-		}
 
-		if(!(damagetype & DMG_SLASH))
-			damage *= 0.25;
-
-		if(i_ExpidonsaShieldCapacity[victim] <= 0)
+		damage *= 0.25;
+		if(!CheckInHud())
 		{
-			if(!EnemyShieldCantBreak[victim])
-				f_Expidonsa_ShieldBroke[victim] = GetGameTime() + 5.0;
+			if(i_ExpidonsaShieldCapacity[victim] <= 0)
+			{
+				if(!EnemyShieldCantBreak[victim])
+					f_Expidonsa_ShieldBroke[victim] = GetGameTime() + 5.0;
 
-			VausMagicaRemoveShield(victim);
-		}
-		else
-		{
-			VausMagicaGiveShield(victim, 0); //update shield ocapacity
+				VausMagicaRemoveShield(victim);
+			}
+			else
+			{
+				VausMagicaGiveShield(victim, 0); //update shield ocapacity
+			}
 		}
 	}
 }
@@ -307,6 +313,16 @@ stock bool Expidonsa_DontHealSameIndex(int entity, int victim, float &healingamm
 	return false;
 }
 #if defined ZR
+#define IBERIA_BARRACKS_COOLDOWN_HEAL 2.0
+stock bool IberiaBarracks_HealSelfLimitCD(int entity, int victim, float &healingammount)
+{
+	if(f_HealCooldownSetDoGlobal[victim] > GetGameTime())
+		return true;
+
+	f_HealCooldownSetDoGlobal[victim] = GetGameTime() + IBERIA_BARRACKS_COOLDOWN_HEAL;
+
+	return false;
+}
 float ExpidonsanShieldBroke(int entity)
 {
 	return(f_Expidonsa_ShieldBroke[entity]);

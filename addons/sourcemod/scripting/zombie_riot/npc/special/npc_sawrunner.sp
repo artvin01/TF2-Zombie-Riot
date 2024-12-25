@@ -184,7 +184,6 @@ methodmap SawRunner < CClotBody
 		func_NPCThink[npc.index] = SawRunner_ClotThink;
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
-		b_ThisNpcIsSawrunner[npc.index] = true;
 		
 		npc.m_flSpeed = 200.0;
 		npc.m_flNextRangedAttack = 0.0;

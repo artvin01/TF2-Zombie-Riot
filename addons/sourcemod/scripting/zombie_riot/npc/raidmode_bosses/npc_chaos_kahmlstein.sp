@@ -270,7 +270,7 @@ methodmap ChaosKahmlstein < CClotBody
 	}
 	public void PlayTeleportSound() 
 	{
-		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, 120, _, 3.0);	
+		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, 80, _, 3.0);	
 	}
 	
 	public ChaosKahmlstein(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -345,6 +345,7 @@ methodmap ChaosKahmlstein < CClotBody
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			b_NoKillFeed[npc.index] = true;
+			npc.PlayTeleportSound();
 		}
 		else if(StrContains(data, "fake_3") != -1)
 		{
@@ -358,6 +359,7 @@ methodmap ChaosKahmlstein < CClotBody
 			npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 10.0;
 			npc.i_GunMode = 1;
 			b_NoKillFeed[npc.index] = true;
+			npc.PlayTeleportSound();
 		}
 		else if(StrContains(data, "fake_4") != -1)
 		{
@@ -370,9 +372,11 @@ methodmap ChaosKahmlstein < CClotBody
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flRangedSpecialDelay = 0.0;
 			b_NoKillFeed[npc.index] = true;
+			npc.PlayTeleportSound();
 		}
 		else
 		{
+			RemoveAllDamageAddition();
 			func_NPCFuncWin[npc.index] = view_as<Function>(ChaosKahmlstein_Win);
 			SDKHook(npc.index, SDKHook_OnTakeDamagePost, ChaosKahmlstein_OnTakeDamagePost);
 			EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
@@ -1008,7 +1012,6 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false, false);
 					if(Succeed)
 					{
-						npc.PlayTeleportSound();
 						ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						float WorldSpaceVec[3]; WorldSpaceCenter(Target, WorldSpaceVec);
@@ -1129,7 +1132,6 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, false, false);
 					if(Succeed)
 					{
-						npc.PlayTeleportSound();
 						ParticleEffectAt(SelfPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						ParticleEffectAt(vPredictedPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						float WorldSpaceVec[3]; WorldSpaceCenter(Target, WorldSpaceVec);

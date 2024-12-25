@@ -273,18 +273,18 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							case 0:
 							{
-								Adaptive_MedigunBuff[owner][0] = GetGameTime() + 0.15;
-								Adaptive_MedigunBuff[healTarget][0] = GetGameTime() + 0.15;
+								ApplyStatusEffect(owner, owner, "Healing Adaptiveness All", 0.15);
+								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness All", 0.15);
 							}
 							case 1:
 							{
-								Adaptive_MedigunBuff[owner][1] = GetGameTime() + 0.15;
-								Adaptive_MedigunBuff[healTarget][1] = GetGameTime() + 0.15;
+								ApplyStatusEffect(owner, owner, "Healing Adaptiveness Melee", 0.15);
+								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness Melee", 0.15);
 							}
 							case 2:
 							{
-								Adaptive_MedigunBuff[owner][2] = GetGameTime() + 0.15;
-								Adaptive_MedigunBuff[healTarget][2] = GetGameTime() + 0.15;
+								ApplyStatusEffect(owner, owner, "Healing Adaptiveness Ranged", 0.15);
+								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness Ranged", 0.15);
 							}
 						}
 					}
@@ -392,28 +392,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							Calculate_And_Display_hp(owner, healTarget, 0.0, true);
 						}
 						
-						float duration;
-
-						duration = Increaced_Overall_damage_Low[owner] - GetGameTime();
-						if(duration < 1.2)
-						{
-							Increaced_Overall_damage_Low[owner] = GetGameTime() + 1.0;
-						}
-						duration = Resistance_Overall_Low[owner] - GetGameTime();
-						if(duration < 1.2)
-						{
-							Resistance_Overall_Low[owner] = GetGameTime() + 1.0;
-						}
-						duration = Increaced_Overall_damage_Low[healTarget] - GetGameTime();
-						if(duration < 1.2)
-						{
-							Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 1.0;
-						}
-						duration = Resistance_Overall_Low[healTarget] - GetGameTime();
-						if(duration < 1.2)
-						{
-							Resistance_Overall_Low[healTarget] = GetGameTime() + 1.0;
-						}
+						ApplyStatusEffect(owner, healTarget, "Healing Strength", 1.0);
+						ApplyStatusEffect(owner, healTarget, "Healing Resolve", 1.0);
+						ApplyStatusEffect(owner, owner, "Healing Strength", 1.0);
+						ApplyStatusEffect(owner, owner, "Healing Resolve", 1.0);
 						
 					}
 				}

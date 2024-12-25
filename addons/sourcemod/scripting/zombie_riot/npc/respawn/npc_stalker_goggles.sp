@@ -567,7 +567,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 	if(attacker > 0 && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
 		return Plugin_Changed;
 	
-	if(damagetype & DMG_DROWN)
+	if(damagetype & DMG_OUTOFBOUNDS)
 	{
 		damage *= 10000.0;
 		return Plugin_Changed;
@@ -577,19 +577,6 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 		return Plugin_Continue;
 
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);
-
-	if(npc.m_iSurrender)
-	{
-		if(f_NpcImmuneToBleed[npc.index] > GetGameTime())
-		{
-			damage = 0.0;
-		}
-		else if(f_NpcImmuneToBleed[npc.index] + 1.0 > GetGameTime()) //for 3 seconds he will take next to no damage.
-		{
-			damage *= 0.1;
-		}
-		return Plugin_Changed;
-	}
 
 	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
 	{
@@ -601,7 +588,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 		npc.AddGesture("ACT_MP_STUN_BEGIN");
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
 
-		f_NpcImmuneToBleed[npc.index] = GetGameTime() + 2.0;
+		NPCStats_RemoveAllDebuffs(npc.index, 2.0);
 
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
