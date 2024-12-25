@@ -419,7 +419,20 @@ public float Player_OnTakeDamage_Zealot(int victim, float &damage, int attacker,
 		}
 	}
 	if(!IsValidEntity(WeaponCheckExistBlock[victim]))
+	{
+		if(i_PaPLevel[victim] >= 3)
+		{
+			int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+			if(Zealot_OneshotProtection[victim] < GetGameTime() && damage >= flHealth)
+			{
+				damage = 0.0;
+				GiveCompleteInvul(victim, 2.0);
+				EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.5, 70);
+				Zealot_OneshotProtection[victim] = GetGameTime() + 300.0; // 60 second cooldown
+			}
+		}
 		return damage;
+	}
 
 	if(f_StaminaLeftZealot[victim] > 0.0)
 	{
@@ -469,7 +482,6 @@ public float Player_OnTakeDamage_Zealot(int victim, float &damage, int attacker,
 			GiveCompleteInvul(victim, 2.0);
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.5, 70);
 			Zealot_OneshotProtection[victim] = GetGameTime() + 300.0; // 60 second cooldown
-			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 5");
 		}
 	}
 	return damage;
