@@ -3004,7 +3004,7 @@
 	}
 	"Zealot Desc"
 	{
-		"en"	"Become a workshipper of sigmar!\nRapier: headshots, m2 blocks with a healthbar.\nR with any weapon: Dashes in any direction except forwards.\nHold R with revolver for rapid fire\nHitting enemeis reduces cooldowns (headshots more)."
+		"en"	"Become a workshipper of sigmar!\nRapier: headshots, m2 blocks with a healthbar.\nR: Dashes in any direction except forwards.\nHold R with revolver for rapid fire\nHitting enemeis reduces cooldowns (headshots more).\nLess backwalk penalty (0.9)"
 	}
 	"Zealot Pap 1 Desc"
 	{
