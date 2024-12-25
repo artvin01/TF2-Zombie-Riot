@@ -72,6 +72,11 @@ methodmap VictorianPulverizer < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
+	property float m_flPulveriserAttackDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public void PlayDeathSound() 
 	{
@@ -323,6 +328,12 @@ public void VictorianPulverizer_NPCDeath(int entity)
 
 void VictorianPulverizerSelfDefense(VictorianPulverizer npc)
 {
+	if(npc.m_flPulveriserAttackDelay > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flPulveriserAttackDelay = GetGameTime(npc.index) + 0.2;
+
 	int target;
 	target = npc.m_iTarget;
 	//some Ranged units will behave differently.
@@ -336,7 +347,7 @@ void VictorianPulverizerSelfDefense(VictorianPulverizer npc)
 		npc.PlayMinigunSound(true);
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 9.0, 1000.0, 150.0, "superrare_burning2", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 18.0, 1000.0, 150.0, "superrare_burning2", true);
 		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
@@ -382,13 +393,13 @@ public void VictorianPulverizer_Rocket_Particle_StartTouch(int entity, int targe
 		}
 		if(target > MaxClients)
 		{
-			StartBleedingTimer_Against_Client(target, entity, 10.0, BurninHell);
+			StartBleedingTimer_Against_Client(target, entity, 20.0, BurninHell);
 		}
 		else
 		{
 			if (!IsInvuln(target))
 			{
-				StartBleedingTimer_Against_Client(target, entity, 10.0, BurninHell);
+				StartBleedingTimer_Against_Client(target, entity, 20.0, BurninHell);
 				TF2_IgnitePlayer(target, target, 2.0);
 			}
 		}
