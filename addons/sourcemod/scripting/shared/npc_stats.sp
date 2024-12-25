@@ -1500,7 +1500,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(Waves_InFreeplay())
 		{
 			if((this.m_flSpeed * GetPercentageAdjust) > 500.0)
-				return 500.0 *= Zombie_DelayExtraSpeed();
+				return (500.0 * Zombie_DelayExtraSpeed());
 		}
 		
 		return (this.m_flSpeed * GetPercentageAdjust);

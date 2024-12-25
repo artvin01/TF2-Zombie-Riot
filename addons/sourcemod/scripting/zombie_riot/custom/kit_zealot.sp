@@ -719,9 +719,9 @@ public void Zealot_Hud_Logic(int client, int weapon, bool ignoreCD)
 		GrenadeApplyCooldownHud(client, f_PotionCooldownDo[client] - GetGameTime());
 	}
 	char ZealotHud[255];
-	int ammo = GetAmmo(attacker, Ammo_ClassSpecific);
+	int ammo = GetAmmo(client, Ammo_ClassSpecific);
 	int maxammodo = 10;
-	int WeaponPistol = EntRefToEntIndex(f_PistolGet[attacker]);
+	int WeaponPistol = EntRefToEntIndex(f_PistolGet[client]);
 	if(IsValidEntity(WeaponPistol))
 	{
 		maxammodo = RoundFloat(float(maxammodo) * Attributes_Get(WeaponPistol, 4, 0.0));

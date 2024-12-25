@@ -439,10 +439,10 @@ public void GodAlaxios_ClotThink(int iNPC)
 	}
 	if(f_AlaxiosCantDieLimit[npc.index] && f_AlaxiosCantDieLimit[npc.index] < GetGameTime())
 	{
-		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		int RandSound = GetRandomInt(0, sizeof(g_RandomGroupScream) - 1);
+		EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 	}
 	//float point impresicion...

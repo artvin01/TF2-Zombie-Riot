@@ -362,7 +362,7 @@ public void OnPostThink(int client)
 
 			if(damageTrigger > 1.0)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_OUTOFBOUND, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_OUTOFBOUNDS, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
 			}
 		}
 	}
