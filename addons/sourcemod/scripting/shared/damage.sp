@@ -31,7 +31,7 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 		//LogEntryInvicibleTest(victim, attacker, damage, 7);
 #endif
 	}
-	else if(!b_NpcHasDied[victim])
+	else if(b_ThisWasAnNpc[victim])
 	{
 		if(Damage_NPCVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
@@ -58,7 +58,7 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 #endif
 			//LogEntryInvicibleTest(victim, attacker, damage, 14);
 		}
-		else if(!b_NpcHasDied[attacker])
+		else if(b_ThisWasAnNpc[attacker])
 		{
 			if(Damage_NPCAttacker(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
@@ -775,6 +775,7 @@ static stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflicto
 		}
 	}
 #endif
+//For huds, show anyways!
 	if(!b_NpcIsTeamkiller[attacker])
 	{
 		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
