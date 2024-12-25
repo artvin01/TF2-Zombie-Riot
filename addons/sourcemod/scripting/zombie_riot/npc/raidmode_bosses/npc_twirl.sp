@@ -3300,8 +3300,36 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 
 		/*can't think of any lines */ //case WEAPON_HEAVY_PARTICLE_RIFLE: switch(GetRandomInt(0,1)) {case 0: Format(Text_Lines, sizeof(Text_Lines), ""); case 1: Format(Text_Lines, sizeof(Text_Lines), "");}		
 		
-		case WEAPON_KIT_FRACTAL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so your trying to use my own power's aggainst me {gold}%N{snow}?", client); 				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Have you mastered {gold}Nuclear Fusion{snow} that the Fractal Holds?", client);}
-
+		case WEAPON_KIT_FRACTAL: 
+		{
+			switch(GetRandomInt(0,4)) 		
+			{
+				case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so your trying to use my own power's aggainst me {gold}%N{snow}?", client); 				
+				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Do you take pleasure in stealing other people's belongings?", client);
+				case 2: Format(Text_Lines, sizeof(Text_Lines), "So you {gold}%N{snow} just taught me that the people at the department of anti-theft are complete idiots, I'm firing them when I get home", client);
+				case 3:
+				{
+					if(!IsValidEntity(Cosmetic_WearableExtra[client]))
+						Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} You don't even have the wings, how dare you use that?", client);
+					else
+					{
+						if(MagiaWingsDo(client))
+						{
+							Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} You, you have OUR WINGS???, And your using the {aqua}Fractal{snow}, atleast that makes sense", client);
+						}
+						else if(SilvesterWingsDo(client))
+						{
+							Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} Wait a minute, those are {gold}Silvesters{snow} wings, and your using our spells?. That doesn't make sense", client);
+						}
+						else
+						{
+							Format(Text_Lines, sizeof(Text_Lines), "You Mr {gold}%N{snow} are using MY {aqua}Fractal{snow}, but you're wings aren't known to me.. huh?", client);
+						}
+					}
+				}
+				case 4: Format(Text_Lines, sizeof(Text_Lines), "Mr {gold}%N{snow}. I'm coming for you. {crimson} you cannot hide{snow}. You will pay for stealing the {aqua}Fractal{snow}.", client);
+			}
+		}
 		default:
 		{
 			valid = false;

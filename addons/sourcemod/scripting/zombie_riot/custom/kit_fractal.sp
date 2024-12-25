@@ -48,25 +48,29 @@ static void Adjust_Crystal_Stats(int client, int weapon)
 {
 	switch(Pap(weapon))
 	{
+		case -1:
+		{
+			fl_max_crystal_amt[client] = 50.0;
+		}
 		case 0:
 		{
 			fl_max_crystal_amt[client] = 75.0;
 		}
 		case 1:
 		{
-			fl_max_crystal_amt[client] = 85.0;
+			fl_max_crystal_amt[client] = 80.0;
 		}
 		case 2:
 		{
-			fl_max_crystal_amt[client] = 100.0;
+			fl_max_crystal_amt[client] = 85.0;
 		}
 		case 3:
 		{
-			fl_max_crystal_amt[client] = 100.0;
+			fl_max_crystal_amt[client] = 90.0;
 		}
 		case 4:
 		{
-			fl_max_crystal_amt[client] = 100.0;
+			fl_max_crystal_amt[client] = 95.0;
 		}
 		case 5:
 		{
@@ -74,11 +78,11 @@ static void Adjust_Crystal_Stats(int client, int weapon)
 		}
 		case 6:
 		{
-			fl_max_crystal_amt[client] = 100.0;
+			fl_max_crystal_amt[client] = 105.0;
 		}	
 		case 7:
 		{
-			fl_max_crystal_amt[client] = 100.0;
+			fl_max_crystal_amt[client] = 110.0;
 		}	
 	}
 	if(b_TwirlHairpins[client])
@@ -1552,7 +1556,7 @@ static Action Timer_Weapon_Managment(Handle timer, DataPack pack)
 
 	Hud(client, weapon_holding);
 
-	if(fl_current_crystal_amt[client] < 10.0)	//10
+	if(fl_current_crystal_amt[client] < (b_TwirlHairpins[client] ? 25.0 : 10.0))	//10
 	{
 		fl_current_crystal_amt[client] +=0.1;
 	}
