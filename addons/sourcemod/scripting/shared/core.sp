@@ -279,7 +279,8 @@ enum
 	RUINA_STELLA_CREST_CHARGING	= 2,			//2
 	RUINA_KARLAS_PROJECTILE		= 4,			//4 ITS A SPACE SHIP, BUT ACTUALLY NOT!
 	RUINA_FANTASY_BLADE			= 8,			//8 its a sword, that looks like a spaceship..
-	RUINA_FRACTAL_LENZ			= 16			//16 the primary medic weapon animation is ASSSSSSSS for making a magic-spell weapon specifically for what I wanted. so the model effort is "eh". but I had no choice :(
+	RUINA_FRACTAL_LENZ			= 16,			//16 the primary medic weapon animation is ASSSSSSSS for making a magic-spell weapon specifically for what I wanted. so the model effort is "eh". but I had no choice :(
+	RUINA_FRACTAL_HARVESTER		= 32
 }
 
 

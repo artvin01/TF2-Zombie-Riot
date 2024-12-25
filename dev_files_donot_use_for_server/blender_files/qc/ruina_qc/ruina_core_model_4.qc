@@ -28,6 +28,11 @@ $bodygroup "fractal_lenz"
 	blank
 	studio "v4/fractal_lenz.smd"
 }
+$bodygroup "fractal_harvester"	
+{
+	blank
+	studio "v4/fractal_harvester.smd"
+}
 
 
 

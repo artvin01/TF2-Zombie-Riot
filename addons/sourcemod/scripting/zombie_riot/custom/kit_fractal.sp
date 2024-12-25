@@ -1212,7 +1212,8 @@ static Action Mana_Harvester_Tick(int client)
 			break;	//we have run out of targets, abort loop.
 
 		int laser;
-		laser = ConnectWithBeam(client, struct_Harvester_Data[client].Enumerated_Ents[i], color[0], color[1], color[2], 5.0, 3.0, 2.0, BEAM_COMBINE_BLACK);
+		//"effect_hand_l"
+		laser = ConnectWithBeam(client, struct_Harvester_Data[client].Enumerated_Ents[i], color[0], color[1], color[2], 5.0, 3.0, 2.0, BEAM_COMBINE_BLACK, _,_,"effect_hand_l");
 		
 		if(Current_Mana[client] < max_mana[client]*1.2)
 		Current_Mana[client] += RoundToFloor(mana_cost*0.75);
