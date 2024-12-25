@@ -1438,7 +1438,8 @@ static void Apply_Sickness(int iNPC, int Target)
 	Mana_Regen_Delay[Target] = GameTime + Timeout;
 	Mana_Regen_Block_Timer[Target] = GameTime + Timeout;
 
-	TF2_StunPlayer(Target, Slow_Time, 0.5, TF_STUNFLAG_SLOWDOWN);	//50% slower
+	if(!HasSpecificBuff(Target, "Fluid Movement"))
+		TF2_StunPlayer(Target, Slow_Time, 0.5, TF_STUNFLAG_SLOWDOWN);	//50% slower
 
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);

@@ -201,8 +201,9 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				{
 					Armor_Charge[victim] = 0;
 					f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
-
-					TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+					
+					if(!HasSpecificBuff(victim, "Fluid Movement"))
+						TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
 
 					DealTruedamageToEnemy(0, victim, b_BobsTrueFear[victim] ? 400.0 : 500.0);
 				}

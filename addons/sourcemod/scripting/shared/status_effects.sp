@@ -312,24 +312,21 @@ bool HasSpecificBuff(int victim, const char[] name)
 	E_StatusEffect Apply_StatusEffect;
 	int ArrayPosition;
 	bool Return = false;
-	if(E_AL_StatusEffects[victim])
+	ArrayPosition = E_AL_StatusEffects[victim].FindValue(index, E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		ArrayPosition = E_AL_StatusEffects[victim].FindValue(index, E_StatusEffect::BuffIndex);
-		if(ArrayPosition != -1)
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-			{
-				E_AL_StatusEffects[victim].Erase(ArrayPosition);
-			}
-			else
-			{
-				Return = true;
-			}
+			E_AL_StatusEffects[victim].Erase(ArrayPosition);
 		}
-		if(E_AL_StatusEffects[victim].Length < 1)
-			delete E_AL_StatusEffects[victim];
+		else
+		{
+			Return = true;
+		}
 	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
 	return Return;
 }
 void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)

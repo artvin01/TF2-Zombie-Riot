@@ -1802,7 +1802,8 @@ static void Ground_Slam(int entity, int victim, float damage, int weapon)
 		if(!IsInvuln(victim))
 		{
 			if(IsValidClient(victim))
-				TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+				if(!HasSpecificBuff(victim, "Fluid Movement"))
+					TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 			Custom_Knockback(entity, victim, 70.0, true);
 		}
 		else Custom_Knockback(entity, victim, 140.0, true);
@@ -2029,7 +2030,8 @@ static void Shield_Knockback(int entity, int victim, float damage, int weapon)
 		if(!IsInvuln(victim))
 		{
 			if(IsValidClient(victim))
-				TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+				if(!HasSpecificBuff(victim, "Fluid Movement"))
+					TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 			Custom_Knockback(entity, victim, 70.0, true);
 		}
 		else Custom_Knockback(entity, victim, 140.0, true);

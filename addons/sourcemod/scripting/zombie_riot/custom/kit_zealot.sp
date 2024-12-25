@@ -34,6 +34,11 @@ static int f_PistolGet[MAXPLAYERS+1];
 static int i_WeaponGotLastmanBuff[MAXENTITIES];
 static bool Precached;
 static int i_WhatPotionDrink[MAXPLAYERS+1];
+static float Zealot_OneshotProtection[MAXPLAYERS+1];
+static float Zealot_BonusMeleeDamage[MAXPLAYERS+1];
+static float Zealot_BonusMeleeDamageDuration[MAXPLAYERS+1];
+static float Zealot_BonusMeleeDamageWearoff[MAXPLAYERS+1];
+
 void OnMapStartZealot()
 {
 	PrecacheSound("passtime/projectile_swoosh3.wav");
@@ -44,7 +49,10 @@ void OnMapStartZealot()
 	Zero(f_StaminaLeftZealot);
 	Zero(f_PotionCooldownDo);
 	Precached = false;
+	Zero(Zealot_OneshotProtection);
 	PrecacheSound("plats/tram_hit4.wav");
+	Zero(Zealot_BonusMeleeDamageDuration);
+	Zero(Zealot_BonusMeleeDamageWearoff);
 }
 
 bool Zealot_Sugmar(int client)
@@ -128,9 +136,18 @@ public void Weapon_ZealotBlockRapier(int client, int weapon, bool &result, int s
 				TF2_AddCondition(client, TFCond_FreezeInput, CHARGE_DURATION);
 				IncreaceEntityDamageTakenBy(client, 0.25, CHARGE_DURATION);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + CHARGE_DURATION + 0.5;
+				if(i_PaPLevel[client] >= 4)
+				{
+					f_AntiStuckPhaseThrough[client] = GetGameTime() + 5.0;
+				}
 				//only take 25% damage overall.
 				// knockback is the overall force with which you be pushed, don't touch other stuff
-
+				if(i_PaPLevel[client] >= 5)
+				{
+					Zealot_BonusMeleeDamageWearoff[client] = GetGameTime() + 15.0;
+					Zealot_BonusMeleeDamageDuration[client] = GetGameTime() + 5.0;
+					Zealot_BonusMeleeDamage[client] = 1.0;
+				}
 				//giver faster attackspeed
 				ApplyTempAttrib(weapon, 6, 0.75, 5.0);
 				ApplyStatusEffect(client, client, "Zealot's Rush", 5.0);
@@ -224,10 +241,10 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 		float BuffDuration = 5.0;
 		switch(i_PaPLevel[client])
 		{
-			case 2:
-				BuffDuration = 7.0;
-			case 3:
-				BuffDuration = 15.0;
+			case 2,3:
+				BuffDuration = 8.0;
+			case 4,5:
+				BuffDuration = 13.0;
 		}
 		char DescDo[255];
 		Format(DescDo, sizeof(DescDo), "%s Desc", PotionNames[i_RandomCurrentPotion[client]]);
@@ -239,6 +256,10 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 		{
 			HealEntityGlobal(client, client, MaxHealth / 2.0, 1.0, BuffDuration, HEAL_SELFHEAL);
 		}
+		//regen stamina to full.
+		if(i_WhatPotionDrink[client] == 2)
+			Zealot_RegenerateStamina(client, true, 99.0);
+
 		HealEntityGlobal(client, client, MaxHealth / 2.0, 1.0, 2.0, HEAL_SELFHEAL);
 		i_WhatPotionDrink[client] = i_RandomCurrentPotion[client];
 		EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
@@ -316,6 +337,15 @@ void WeaponZealot_OnTakeDamage_Gun(int attacker, int victim, float &damage)
 	Zealot_ReduceGlobalRCooldown(attacker, ReduceCD);
 	Zealot_ReduceGlobalRCooldown(attacker, ReduceCD, true);
 
+	if(Zealot_BonusMeleeDamageWearoff[attacker] > GetGameTime())
+	{
+		damage *= Zealot_BonusMeleeDamage[attacker];
+	}
+	else
+	{
+		Zealot_BonusMeleeDamage[attacker] = 1.0;
+	}
+
 	if(HasSpecificBuff(attacker, "Zealot's Random Drinks"))
 	{
 		if(i_WhatPotionDrink[attacker] == 2 && i_HasBeenHeadShotted[victim])
@@ -327,6 +357,22 @@ void WeaponZealot_OnTakeDamage_Gun(int attacker, int victim, float &damage)
 void WeaponZealot_OnTakeDamage(int attacker, int victim, float &damage)
 {
 	//Anti delay
+	if(Zealot_BonusMeleeDamageDuration[attacker] > GetGameTime())
+	{
+		Zealot_BonusMeleeDamage[attacker] += 0.05;
+		if(Zealot_BonusMeleeDamage[attacker] >= 1.5)
+		{	
+			Zealot_BonusMeleeDamage[attacker] = 1.5;
+		}
+	}
+	if(Zealot_BonusMeleeDamageWearoff[attacker] > GetGameTime())
+	{
+		damage *= Zealot_BonusMeleeDamage[attacker];
+	}
+	else
+	{
+		Zealot_BonusMeleeDamage[attacker] = 1.0;
+	}
 	int ammo = GetAmmo(attacker, Ammo_ClassSpecific) + 1;
 	if(i_HasBeenHeadShotted[victim])
 		ammo += 1;
@@ -364,7 +410,7 @@ public float Player_OnTakeDamage_Zealot(int victim, float &damage, int attacker,
 {
 	if(CheckInHud())
 		return damage;
-
+	
 	if(!(damagetype & DMG_TRUEDAMAGE))
 	{
 		if(LastMann)
@@ -413,6 +459,18 @@ public float Player_OnTakeDamage_Zealot(int victim, float &damage, int attacker,
 	else
 	{
 		TF2_RemoveCondition(victim, TFCond_RuneResist);
+	}
+	if(i_PaPLevel[victim] >= 3)
+	{
+		int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+		if(Zealot_OneshotProtection[victim] < GetGameTime() && damage >= flHealth)
+		{
+			damage = 0.0;
+			GiveCompleteInvul(victim, 2.0);
+			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.5, 70);
+			Zealot_OneshotProtection[victim] = GetGameTime() + 300.0; // 60 second cooldown
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 5");
+		}
 	}
 	return damage;
 }
@@ -575,9 +633,9 @@ public void Client_ZealotThink(int client)
 	{
 		case 1:
 			CooldownDo = 4.0;
-		case 2:
+		case 2,3:
 			CooldownDo = 3.5;
-		case 3:
+		case 4,5:
 			CooldownDo = 3.0;
 	}
 	if(LastMann)
@@ -642,6 +700,7 @@ public Action Timer_Management_Zealot(Handle timer, DataPack pack)
 			Attributes_SetMulti(weapon, 6, 1 / 0.75);
 		}
 	}
+	ApplyStatusEffect(client, client, "Fluid Movement", 0.5);
 	Zealot_Hud_Logic(client, weapon, false);
 		
 	return Plugin_Continue;
@@ -660,7 +719,16 @@ public void Zealot_Hud_Logic(int client, int weapon, bool ignoreCD)
 		GrenadeApplyCooldownHud(client, f_PotionCooldownDo[client] - GetGameTime());
 	}
 	char ZealotHud[255];
-	Format(ZealotHud, sizeof(ZealotHud), "Block Stamina %.0f％", ((f_StaminaLeftZealot[client] / Zealot_RegenerateStaminaMAx(client)) * 100.0));
+	int ammo = GetAmmo(client, Ammo_ClassSpecific);
+	int maxammodo = 10;
+	int WeaponPistol = EntRefToEntIndex(f_PistolGet[client]);
+	if(IsValidEntity(WeaponPistol))
+	{
+		maxammodo = RoundFloat(float(maxammodo) * Attributes_Get(WeaponPistol, 4, 0.0));
+	}
+	Format(ZealotHud, sizeof(ZealotHud), "Stamina %.0f％ | Ammo [%i/%i]", ((f_StaminaLeftZealot[client] / Zealot_RegenerateStaminaMAx(client)) * 100.0), ammo, maxammodo);
+	
+	
 	if(i_PaPLevel[client] >= 1)
 	{
 		if(f_PotionCooldownDo[client] > GetGameTime())
@@ -672,6 +740,25 @@ public void Zealot_Hud_Logic(int client, int weapon, bool ignoreCD)
 			Format(ZealotHud, sizeof(ZealotHud), "%s\nCurrent Potion\n%s", ZealotHud, PotionNames[i_RandomCurrentPotion[client]]);
 		}
 	}
+	if(i_PaPLevel[client] >= 3)
+	{
+		if(Zealot_OneshotProtection[client] > GetGameTime())
+		{
+			Format(ZealotHud, sizeof(ZealotHud), "%s\nOneshot Protection (%.1f)", ZealotHud, Zealot_OneshotProtection[client] - GetGameTime());
+		}
+		else
+		{
+			Format(ZealotHud, sizeof(ZealotHud), "%s\nOneshot Protection (Ready)", ZealotHud, PotionNames[i_RandomCurrentPotion[client]]);
+		}
+	}
+	if(i_PaPLevel[client] >= 4)
+	{
+		if(Zealot_BonusMeleeDamageWearoff[client] > GetGameTime())
+		{
+			Format(ZealotHud, sizeof(ZealotHud), "%s\nCalloused Strikes (x.%1f)", ZealotHud, Zealot_BonusMeleeDamage[client]);
+		}
+	}
+	
 	Zealot_HudDelay[client] = GetGameTime() + 0.5;
 	PrintHintText(client,"%s",ZealotHud);
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
@@ -685,9 +772,9 @@ float Zealot_RegenerateStaminaMAx(int client)
 	{
 		case 1:
 			MaxStamina *= 1.1;
-		case 2:
+		case 2,3:
 			MaxStamina *= 1.15;
-		case 3:
+		case 4,5:
 			MaxStamina *= 1.2;
 	}
 	return MaxStamina;
@@ -703,12 +790,15 @@ void Zealot_RegenerateStamina(int client, bool force, float multi)
 			ExtraMax *= 2.0;
 		}
 	}
-	if(!IsValidEntity(WeaponCheckExistBlock[client]) && (f_BlockRegenDelay[client] < GetGameTime() || force))
+	if(f_StaminaLeftZealot[client] < MaxStamina * ExtraMax)
 	{
-		f_StaminaLeftZealot[client] += (MaxStamina * ExtraMax * 0.035 * multi);
-		if(f_StaminaLeftZealot[client] > MaxStamina * ExtraMax)
+		if(!IsValidEntity(WeaponCheckExistBlock[client]) && (f_BlockRegenDelay[client] < GetGameTime() || force))
 		{
-			f_StaminaLeftZealot[client] = MaxStamina * ExtraMax;
+			f_StaminaLeftZealot[client] += (MaxStamina * ExtraMax * 0.035 * multi);
+			if(f_StaminaLeftZealot[client] > MaxStamina * ExtraMax)
+			{
+				f_StaminaLeftZealot[client] = MaxStamina * ExtraMax;
+			}
 		}
 	}
 }
