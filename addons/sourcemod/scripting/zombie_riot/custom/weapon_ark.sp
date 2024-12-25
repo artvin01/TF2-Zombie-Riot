@@ -11,6 +11,8 @@ static float RWI_LockOnAngle[MAXENTITIES];
 static float RMR_RocketVelocity[MAXENTITIES];
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static int Ark_Hits[MAXPLAYERS+1]={0, ...};
+static int Ark_AlreadyParried[MAXPLAYERS+1]={0, ...};
+static float Ark_ParryTiming[MAXPLAYERS+1];
 
 static int Ark_Level[MAXPLAYERS+1]={0, ...};
 
@@ -53,6 +55,7 @@ void Ark_autoaim_Map_Precache()
 	PrecacheSound(SOUND_QUIBAI_SHOT);
 	PrecacheSound(SOUND_LAPPLAND_ABILITY);
 	PrecacheSound("weapons/bombinomicon_explode1.wav");
+	PrecacheSound("weapons/tf2_back_scatter.wav");
 	Zero(f_AniSoundSpam);
 	Zero(h_TimerLappLandManagement);
 	Zero(i_LappLandHitsDone);
@@ -60,6 +63,7 @@ void Ark_autoaim_Map_Precache()
 	Zero(f_LappLandhuddelay);
 	Zero(h_TimerWeaponArkManagement);
 	Zero(f_WeaponArkhuddelay);
+	Zero(Ark_ParryTiming);
 }
 
 void Reset_stats_LappLand_Singular(int client) //This is on disconnect/connect
@@ -79,6 +83,7 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
 		Ark_Level[client] = 0;
 		
@@ -120,6 +125,7 @@ public void Ark_empower_ability_2(int client, int weapon, bool crit, int slot) /
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
 		Ark_Level[client] = 1;
 		
@@ -163,6 +169,7 @@ public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) /
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
 		Ark_Level[client] = 2;
 		
@@ -205,15 +212,17 @@ public void Ark_empower_ability_4(int client, int weapon, bool crit, int slot) /
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
 		Ark_Level[client] = 3;
 		
 		weapon_id[client] = weapon;
 
 		Ark_Hits[client] = 15;
+		Ark_AlreadyParried[client] = 0;
 				
 				
-		ApplyTempAttrib(weapon, 6, 0.75, 3.0);
+		ApplyTempAttrib(weapon, 6, 0.75, 5.0);
 
 		float flPos[3]; // original
 		float flAng[3]; // original
@@ -485,14 +494,30 @@ public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for
 //stuff that gets activated upon taking damage
 public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
-	if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
+	//if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
+	if (Ark_ParryTiming[victim] > GetGameTime())
 	{
 		if(!CheckInHud())
 		{
 			float damage_reflected = damage;
-			if(damage_reflected >= 300.0)
-				damage_reflected = 300.0;
-
+			if(Ark_AlreadyParried[victim] == 0 && Ark_Level[victim] == 3)
+			{
+				if(damage_reflected >= 500.0)
+				{
+					damage_reflected = 500.0;
+					//ClientCommand(victim, "playgamesound weapons/tf2_back_scatter.wav");
+					EmitSoundToClient(victim, "weapons/tf2_back_scatter.wav", victim, SNDCHAN_AUTO, 80, _, 1.0, 110);
+				}
+				damage_reflected = damage_reflected * 5;
+				Ark_AlreadyParried[victim] = 1;
+			}
+			else
+			{
+				if(damage_reflected >= 300.0)
+				{
+					damage_reflected = 300.0;
+				}
+			}
 			//PrintToChatAll("parry worked");
 			if(Ark_Level[victim] == 3)
 			{
@@ -528,9 +553,9 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 			{
 				damage_reflected *= 6.0;
 				
-				if(Ark_Hits[victim] < 3)
+				if(Ark_Hits[victim] < 6)
 				{
-					Ark_Hits[victim] = 3;
+					Ark_Hits[victim] = 6;
 				}
 				Ark_Hits[victim] += 1;	
 			}
