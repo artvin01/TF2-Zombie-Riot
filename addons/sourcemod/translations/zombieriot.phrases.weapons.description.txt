@@ -3422,15 +3422,15 @@
 	}
 	"Outlaw Railcannon Desc"
 	{
-		"en"	"Deals damage twice, 2nd damage instance deals 15%% of your damage as true damage.\nZoom with m2.\nHas poor pierce and low damage falloff, but a very thin laser."
+		"en"	"Deals damage twice, 2nd damage instance deals 10%% of your damage as true damage.\nZoom with m2.\nHas poor pierce and low damage falloff, but a very thin laser."
 	}
 	"Outlaw Railcannon Desc Pap 1"
 	{
-		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 20%%"
+		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 12%%"
 	}
 	"Outlaw Railcannon Desc Pap 2"
 	{
-		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 25%%"
+		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 15%%"
 	}
 	"Outlaw Railcannon Desc Pap 4"
 	{

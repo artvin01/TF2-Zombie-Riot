@@ -226,7 +226,7 @@ public void WandPotion_DoTrueDamageBleed(int entity, int enemy, float damage, in
 	if (!IsValidEntity(owner))
 		return;
 
-	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_TRUEDAMAGE);
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 32.0, 5, weapon, DMG_TRUEDAMAGE);
 }
 
 
