@@ -15,11 +15,15 @@ static float fl_fractal_last_known_loc[MAXTF2PLAYERS][3];
 static float fl_fractal_laser_trace_throttle[MAXTF2PLAYERS];
 static float fl_fractal_turn_throttle[MAXTF2PLAYERS];
 static float fl_fractal_dmg_throttle[MAXTF2PLAYERS];
-
+static bool b_overdrive_active[MAXTF2PLAYERS];
+static float fl_main_laser_distance[MAXTF2PLAYERS];
 static int i_cosmetic_effect[MAXTF2PLAYERS];
 
-#define FRACTAL_KIT_CRYSTAL_THROW_COST 25.0
-#define FRACTAL_KIT_CRYSTAL_REFLECTION 4.0	//how many targets the crysal can attack at the same time
+static float f_AniSoundSpam[MAXTF2PLAYERS];
+#define FRACTAL_KIT_SHIELDSOUND1 "weapons/rescue_ranger_charge_01.wav"
+#define FRACTAL_KIT_SHIELDSOUND2 "weapons/rescue_ranger_charge_02.wav"
+
+#define FRACTAL_KIT_PASSIVE_OVERDRIVE_COST 1.0
 #define FRACTAL_KIT_FANTASIA_COST 5.0
 #define FRACTAL_KIT_FANTASIA_GAIN 2.0
 #define FRACTAL_KIT_STARFALL_COST 75.0
@@ -28,9 +32,6 @@ static int i_cosmetic_effect[MAXTF2PLAYERS];
 #define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.05
 static float fl_max_crystal_amt[MAXTF2PLAYERS];
 static float fl_current_crystal_amt[MAXTF2PLAYERS];
-static bool b_is_crystal[MAXENTITIES];
-static int i_crystal_index[MAXTF2PLAYERS];
-static bool b_on_crystal[MAXTF2PLAYERS];
 
 /*
 	IDEA: Get the npc' angle vectors, and compare those to incoming damage, basically a directional shield that respects the anim!
@@ -43,51 +44,69 @@ static bool b_on_crystal[MAXTF2PLAYERS];
 
 	//the anim npc has the medic backpack, this annoys me greatly
 */
+void Fractal_Kit_MapStart()
+{
+	Zero(f_AniSoundSpam);
+	PrecacheSound(FRACTAL_KIT_SHIELDSOUND1, true);
+	PrecacheSound(FRACTAL_KIT_SHIELDSOUND2, true);
+}
 
 static void Adjust_Crystal_Stats(int client, int weapon)
 {
+	b_overdrive_active[client] = false;
+	fl_main_laser_distance[client] = 1000.0;
 	switch(Pap(weapon))
 	{
 		case -1:
 		{
 			fl_max_crystal_amt[client] = 50.0;
+			fl_main_laser_distance[client] = 1000.0;
 		}
 		case 0:
 		{
 			fl_max_crystal_amt[client] = 75.0;
+			fl_main_laser_distance[client] = 1111.0;
 		}
 		case 1:
 		{
 			fl_max_crystal_amt[client] = 80.0;
+			fl_main_laser_distance[client] = 1250.0;
 		}
 		case 2:
 		{
 			fl_max_crystal_amt[client] = 85.0;
+			fl_main_laser_distance[client] = 1325.0;
 		}
 		case 3:
 		{
 			fl_max_crystal_amt[client] = 90.0;
+			fl_main_laser_distance[client] = 1400.0;
 		}
 		case 4:
 		{
 			fl_max_crystal_amt[client] = 95.0;
+			fl_main_laser_distance[client] = 1450.0;
 		}
 		case 5:
 		{
 			fl_max_crystal_amt[client] = 100.0;
+			fl_main_laser_distance[client] = 1500.0;
 		}
 		case 6:
 		{
 			fl_max_crystal_amt[client] = 105.0;
+			fl_main_laser_distance[client] = 1750.0;
 		}	
 		case 7:
 		{
 			fl_max_crystal_amt[client] = 110.0;
+			fl_main_laser_distance[client] = 2000.0;
 		}	
 	}
 	if(b_TwirlHairpins[client])
 	{
 		fl_max_crystal_amt[client] += 25.0;
+		fl_main_laser_distance[client] += 250.0;
 	}
 		
 		
@@ -145,7 +164,6 @@ void Kit_Fractal_MapStart()
 	Zero(fl_hud_timer);
 	Zero(b_cannon_animation_active);
 	Zero(fl_animation_cooldown);
-	Zero(b_on_crystal);
 	PrecacheModel("models/props_moonbase/moon_gravel_crystal_blue.mdl", true);
 }
 
@@ -211,6 +229,8 @@ static void Turn_Animation(int client, int weapon)
 		Laser.client = client;
 		Laser.DoForwardTrace_Basic(1000.0);
 		fl_fractal_last_known_loc[client] = Laser.End_Point;
+
+		SetEntityMoveType(client, MOVETYPE_NONE);
 	}	
 	
 
@@ -223,6 +243,9 @@ static void Turn_Animation(int client, int weapon)
 	//double turn rate.
 	if(LastMann)
 		turn_speed *=2.0;
+
+	if(b_overdrive_active[client])
+		turn_speed *=1.2;
 	
 	npc.FaceTowards(fl_fractal_last_known_loc[client], turn_speed);
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -320,13 +343,25 @@ static void Fire_Beam(int client, int weapon, bool update)
 	color[1] = 250;
 	color[2] = 237;	
 	color[3] = 255;
+
+	bool Mouse2 = (GetClientButtons(client) & IN_ATTACK2) != 0;
+
+	if((b_overdrive_active[client] && !Mouse2) || fl_current_crystal_amt[client] <= FRACTAL_KIT_PASSIVE_OVERDRIVE_COST * 2.0)
+		b_overdrive_active[client] = false;
+
 	
 	if(update)
 	{
 		Player_Laser_Logic Laser;
 		Laser.client = client;
 		float dps = 100.0;
-		float range = 1250.0;
+		float range = fl_main_laser_distance[client];
+		
+		if(b_overdrive_active[client])
+		{
+			range *=1.25;
+			fl_current_crystal_amt[client] -=FRACTAL_KIT_PASSIVE_OVERDRIVE_COST;
+		}
 		range *= Attributes_Get(weapon, 103, 1.0);
 		range *= Attributes_Get(weapon, 104, 1.0);
 		range *= Attributes_Get(weapon, 475, 1.0);
@@ -337,31 +372,14 @@ static void Fire_Beam(int client, int weapon, bool update)
 		Laser.Damage = dps;
 		Laser.Radius = Radius;
 		Laser.damagetype = DMG_PLASMA;
-		int crystal = EntRefToEntIndex(i_crystal_index[client]);
-		if(IsValidEntity(crystal))
-		{
-			if(Crystal_Logic(client, weapon, Radius, Laser.Start_Point, Laser.End_Point, range))
-			{
-				WorldSpaceCenter(crystal, Laser.End_Point);
-			}
-		}
 		Laser.Deal_Damage();
 		fl_fractal_laser_dist[client] = GetVectorDistance(Laser.End_Point, flPos);
 		EndLoc = Laser.End_Point;
+		
 	}
 	else
 	{
-		int crystal = EntRefToEntIndex(i_crystal_index[client]);
-		if(IsValidEntity(crystal))
-		{
-			if(b_on_crystal[client])
-				WorldSpaceCenter(crystal, EndLoc);
-			else
-				Get_Fake_Forward_Vec(fl_fractal_laser_dist[client], Angles, EndLoc, flPos);
-		}
-		else
-			Get_Fake_Forward_Vec(fl_fractal_laser_dist[client], Angles, EndLoc, flPos);
-
+		Get_Fake_Forward_Vec(fl_fractal_laser_dist[client], Angles, EndLoc, flPos);
 	}
 	
 	float TE_Duration = 0.1;
@@ -390,6 +408,8 @@ static void Fire_Beam(int client, int weapon, bool update)
 			End_Diameter3 = ClampBeamWidth(diameter);
 
 	int Beam_Index = g_Ruina_BEAM_Combine_Blue;
+
+	colorLayer2[3] = 25;
 
 	TE_SetupBeamPoints(flPos, Offset_Loc, Beam_Index, 	0, 0, 66, TE_Duration, 0.0, Start_Diameter1, 0, 7.0, colorLayer2, 3);
 	TE_SendToAll(0.0);
@@ -889,8 +909,15 @@ static void OnFantasiaHit(int client, int target, int damagetype, float damage)
 	if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
 		fl_current_crystal_amt[client] = fl_max_crystal_amt[client];
 }
-public void Kit_Fractal_Throw_Crystal(int client, int weapon, bool &result, int slot)
+public void Kit_Fractal_OverDrive(int client, int weapon, bool &result, int slot)
 {
+	if(!b_cannon_animation_active[client])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "The Laser Cannon is Offline");
+	}
 	if(fl_animation_cooldown[client] > GetGameTime())
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -899,7 +926,7 @@ public void Kit_Fractal_Throw_Crystal(int client, int weapon, bool &result, int 
 		ShowSyncHudText(client,  SyncHud_Notifaction, "The Laser Cannon is Recharging [%.1fs]", fl_animation_cooldown[client]-GetGameTime());
 		return;
 	}
-	if(fl_current_crystal_amt[client] < FRACTAL_KIT_CRYSTAL_THROW_COST)
+	if(fl_current_crystal_amt[client] < FRACTAL_KIT_PASSIVE_OVERDRIVE_COST*2.0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -907,159 +934,10 @@ public void Kit_Fractal_Throw_Crystal(int client, int weapon, bool &result, int 
 		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
 		return;
 	}
-	int old_crystal = EntRefToEntIndex(i_crystal_index[client]);
-	if(IsValidEntity(old_crystal))
-	{
-		RemoveEntity(old_crystal);
-		b_is_crystal[old_crystal] = false;
-	}
-	b_on_crystal[client] = false;
-		
-	fl_current_crystal_amt[client] -=FRACTAL_KIT_CRYSTAL_THROW_COST;
-	
-	float speed = 1250.0;
-	float time = 5.0;
-	float damage = 100.0;
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "");
-	if(!IsValidEntity(projectile))
-		return;
 
-	ApplyCustomModelToWandProjectile(projectile, "models/props_moonbase/moon_gravel_crystal_blue.mdl", 2.0, "");
-	WandProjectile_ApplyFunctionToEntity(projectile, Projectile_Touch);
-	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
-	i_crystal_index[client] = EntIndexToEntRef(projectile);
-	b_is_crystal[projectile] = true;
-
+	b_overdrive_active[client] = true;
 }
-static bool Crystal_Logic(int client, int weapon, float Radius, float Start[3], float End[3], float Range)
-{
-	//CPrintToChatAll("Crystal Logic Active");
-	float hullMin[3], hullMax[3];
-	Set_HullTrace(Radius*1.2, hullMin, hullMax);
 
-	Range *= 0.75;
-
-	b_on_crystal[client] = false;
-	b_LagCompNPC_No_Layers = true;
-	StartLagCompensation_Base_Boss(client);
-	Handle trace = TR_TraceHullFilterEx(Start, End, hullMin, hullMax, 1073741824, Crystal_Find_Trace, client);	// 1073741824 is CONTENTS_LADDER?
-	delete trace;
-	FinishLagCompensation_Base_boss();
-
-	if(!b_on_crystal[client])
-		return false;
-
-	int crystal = EntRefToEntIndex(i_crystal_index[client]);
-
-	float pos2[3];
-	GetEntPropVector(crystal, Prop_Data, "m_vecAbsOrigin", pos2);
-
-	b_LagCompNPC_No_Layers = true;
-	StartLagCompensation_Base_Boss(client);
-		
-	for(int i=0; i < MAXENTITIES; i++)
-	{
-		HitEntitiesSphereMlynar[i] = false;
-	}
-	TR_EnumerateEntitiesSphere(pos2, Range, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Mlynar, client);
-	FinishLagCompensation_Base_boss();
-
-	float dps = 25.0;
-	dps *=Attributes_Get(weapon, 410, 1.0);
-
-//	bool Hit = false;
-	for (int entity_traced = 0; entity_traced < FRACTAL_KIT_CRYSTAL_REFLECTION; entity_traced++)
-	{
-		if (HitEntitiesSphereMlynar[entity_traced] > 0)
-		{
-			float pos1[3];
-			WorldSpaceCenter(HitEntitiesSphereMlynar[entity_traced], pos1);
-
-			// ensure no wall is obstructing
-			if(Can_I_See_Enemy_Only(crystal, HitEntitiesSphereMlynar[entity_traced]))
-			{
-				Player_Laser_Logic Laser;
-				Laser.client = client;
-				Laser.Damage = dps;
-				Laser.Radius = Radius;
-				Laser.damagetype = DMG_PLASMA;
-				Laser.Start_Point = pos2;
-				Laser.End_Point = pos1;
-				Laser.Deal_Damage();
-
-				if(!AtEdictLimit(EDICT_PLAYER))
-				{
-					int laser;
-					laser = ConnectWithBeam(crystal, HitEntitiesSphereMlynar[entity_traced], 175, 175, 175, 3.0, 1.0, 2.5, BEAM_COMBINE_BLACK);
-
-					CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-				}
-				
-			}
-		}
-		else
-		{
-			break;
-		}
-	}
-	return true;
-}
-static bool Crystal_Find_Trace(int entity, int contentsMask, int client)
-{
-	if (IsValidEntity(entity))
-	{
-		if(b_is_crystal[entity])
-		{
-			b_on_crystal[client] = true;
-		}
-	}
-	return false;
-}
-static void Projectile_Touch(int entity, int target)
-{
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if (target > 0)	
-	{
-		//Code to do damage position and ragdolls
-		static float angles[3];
-		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);
-
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
-		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-
-		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
-
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		b_is_crystal[entity] = false;
-		b_on_crystal[owner] = false;
-		i_crystal_index[owner] = INVALID_ENT_REFERENCE;
-		RemoveEntity(entity);
-
-	}
-	else if(target == 0)
-	{
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		
-		b_is_crystal[entity] = false;
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
-		i_crystal_index[owner] = INVALID_ENT_REFERENCE;
-		b_on_crystal[owner] = false;
-		RemoveEntity(entity);
-	}
-	
-}
 static int i_targeted_ID[MAXTF2PLAYERS][KRACTAL_KIT_STARFALL_JUMP_AMT];
 public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 {
@@ -1109,7 +987,7 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 	Radius *=Attributes_Get(weapon, 99, 1.0);
 	Radius *=Attributes_Get(weapon, 100, 1.0);
 	Laser.DoForwardTrace_Basic(Range);
-	float dps = 100.0;
+	float dps = 300.0;
 	dps *=Attributes_Get(weapon, 410, 1.0);
 	Check_StarfallAOE(client, Laser.End_Point, Radius, KRACTAL_KIT_STARFALL_JUMP_AMT-1, dps, true);
 
@@ -1344,6 +1222,11 @@ static Action Mana_Harvester_Tick(int client)
 	//we now have every valid target within range / within line of sight, comence the harvesting!
 	int color[4]; color = Kit_Color();
 
+	bool raid = RaidbossIgnoreBuildingsLogic(1);
+
+	if(i_CurrentEquippedPerk[client] == 4)
+		mana_cost *=1.33;
+
 	int Amt = Pap(weapon_holding);
 	if(Amt < 3)
 		Amt = 3;
@@ -1358,7 +1241,7 @@ static Action Mana_Harvester_Tick(int client)
 		
 		if(i <= Amt || LastMann)
 			if(Current_Mana[client] < max_mana[client]*1.2)
-				Current_Mana[client] += RoundToFloor(mana_cost*0.75);
+				Current_Mana[client] += (raid ? RoundToFloor(mana_cost*2.0) : RoundToFloor(mana_cost*0.75));
 
 		fl_current_crystal_amt[client] += FRACTAL_KIT_HARVESTER_CRYSTALGAIN;
 
@@ -1589,6 +1472,14 @@ static Action Timer_Weapon_Managment(Handle timer, DataPack pack)
 	{
 		fl_current_crystal_amt[client] +=0.1;
 	}
+	else
+	{
+		if(fl_current_crystal_amt[client] < fl_max_crystal_amt[client])
+			fl_current_crystal_amt[client] += (b_TwirlHairpins[client] ? 0.05 : 0.025);
+
+		if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
+			fl_current_crystal_amt[client] = fl_max_crystal_amt[client];
+	}
 
 	return Plugin_Continue;
 }
@@ -1615,7 +1506,15 @@ static void Hud(int client, int weapon)
 			{
 				Format(HUDText, sizeof(HUDText), "ĄHyper CannonČ Active Ę[M1] to DissableĖ");
 
-				Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Throw ĄCrystalČ [Cost:%.0f]",HUDText, FRACTAL_KIT_CRYSTAL_THROW_COST);
+				if(b_overdrive_active[client])
+				{
+					Format(HUDText, sizeof(HUDText), "%s\nĄOverDriveČ Active!",HUDText);
+				}
+				else
+				{
+					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Activate ĄOverDriveČ [Cost:%.0f]",HUDText, FRACTAL_KIT_PASSIVE_OVERDRIVE_COST);
+				}
+				
 			}
 			else
 			{
@@ -1626,7 +1525,6 @@ static void Hud(int client, int weapon)
 				else
 				{
 					Format(HUDText, sizeof(HUDText), "ĄHyper CannonČ Ready Ę[M1] to ActivateĖ");
-					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Throw ĄCrystalČ [Cost:%.0f]",HUDText, FRACTAL_KIT_CRYSTAL_THROW_COST);
 				}
 			}
 		}
@@ -1680,6 +1578,83 @@ static void Hud(int client, int weapon)
 
 	PrintHintText(client, HUDText);
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+}
+#define FRACTAL_SHIELD_YAW 60.0
+float Player_OnTakeDamage_Fractal(int victim, float &damage, float damagePosition[3], int attacker)
+{
+	//if cannon is active, base 25% dmg resist.
+	if(b_cannon_animation_active[victim])
+		damage *= 0.75;
+	else
+		return damage;
+
+	if(CheckInHud())
+		return damage;
+
+	int animation = EntRefToEntIndex(i_NPC_ID[victim]);
+	if(animation == -1)
+		return damage;
+
+	
+	// need position of either the inflictor or the attacker
+	float actualDamagePos[3];
+	float victimPos[3];
+	float angle[3];
+	float eyeAngles[3];
+	GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
+	
+	bool BlockAnyways = false;
+	if(damagePosition[0]) //Make sure if it doesnt
+	{
+		if(IsValidEntity(attacker))
+		{
+			GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", actualDamagePos);
+		}
+		else
+		{
+			BlockAnyways = true;
+		}
+	}
+	else
+	{
+		actualDamagePos = damagePosition;
+	}
+
+	GetVectorAnglesTwoPoints(victimPos, actualDamagePos, angle);
+
+	GetEntPropVector(animation, Prop_Data, "m_angRotation", eyeAngles);
+
+
+	// need the yaw offset from the player's POV, and set it up to be between (-180.0..180.0]
+	float yawOffset = fixAngle(angle[1]) - fixAngle(eyeAngles[1]);
+	if (yawOffset <= -180.0)
+		yawOffset += 360.0;
+	else if (yawOffset > 180.0)
+		yawOffset -= 360.0;
+		
+	// now it's a simple check
+	if ((yawOffset >= -FRACTAL_SHIELD_YAW && yawOffset <= FRACTAL_SHIELD_YAW) || BlockAnyways)
+	{
+		damage *= 0.5;	//50% dmg resist forward of where the npc is looking. not the actual player.
+		
+		if(f_AniSoundSpam[victim] < GetGameTime())
+		{
+			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
+			switch(GetRandomInt(1,2))
+			{
+				case 1:
+				{
+					EmitSoundToClient(victim, FRACTAL_KIT_SHIELDSOUND2, victim, _, 85, _, 0.8, GetRandomInt(90, 100));
+				}
+				case 2:
+				{
+					EmitSoundToClient(victim, FRACTAL_KIT_SHIELDSOUND1, victim, _, 85, _, 0.8, GetRandomInt(90, 100));
+				}
+			}
+		}
+	}
+	return damage;
+	
 }
 
 //stuff that im probably gonna use a lot in other future weapons.

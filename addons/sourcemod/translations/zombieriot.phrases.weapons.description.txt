@@ -4126,7 +4126,7 @@
 	}
 	"Magia Fractal Desc"
 	{
-		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nM2:Fire a crystal ball for 25 crystals that reflects your laser unto 4 targets\nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals\nTwirl's Hairpints give 25 extra crystals"
+		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increase distance, faster turn speed. uses 10 crystals/s \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals\nTwirl's Hairpints give 25 extra crystals"
 	}
 	"Fractal Kit Desc 1"
 	{

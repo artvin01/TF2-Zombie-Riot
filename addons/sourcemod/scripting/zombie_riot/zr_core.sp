@@ -835,6 +835,7 @@ void ZR_MapStart()
 	Reset_stats_Yamato_Global();	//acts as a reset/map precache
 	QuincyMapStart();
 	Fantasy_Blade_MapStart();
+	Fractal_Kit_MapStart();
 	Casino_MapStart();
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();
