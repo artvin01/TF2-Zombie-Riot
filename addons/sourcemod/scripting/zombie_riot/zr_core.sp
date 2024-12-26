@@ -850,7 +850,6 @@ void ZR_MapStart()
 	Trash_Cannon_Precache();
 	Rusty_Rifle_Precache();
 	Kit_Blitzkrieg_Precache();
-	Kit_Fractal_MapStart();
 	ResetMapStartRedBladeWeapon();
 	Mapstart_Chainsaw();
 	Gravaton_Wand_MapStart();

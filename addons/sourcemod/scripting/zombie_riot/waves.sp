@@ -1028,6 +1028,8 @@ void Waves_RoundStart()
 	
 	Waves_RoundEnd();
 	Freeplay_ResetAll();
+
+	Kit_Fractal_ResetRound();
 	
 	if(Rogue_Mode())
 	{
