@@ -272,12 +272,15 @@ enum
 	RUINA_TWIRL_CREST_4		= 8192,			//14
 	RUINA_QUINCY_BOW_3		= 16384			//15
 }
-#define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_1.mdl"
+#define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_2.mdl"
 enum
 {
 	RUINA_STELLA_CREST			= 1,			//1
 	RUINA_STELLA_CREST_CHARGING	= 2,			//2
-	RUINA_KARLAS_PROJECTILE		= 4				//4 ITS A SPACE SHIP, BUT ACTUALLY NOT!
+	RUINA_KARLAS_PROJECTILE		= 4,			//4 ITS A SPACE SHIP, BUT ACTUALLY NOT!
+	RUINA_FANTASY_BLADE			= 8,			//8 its a sword, that looks like a spaceship..
+	RUINA_FRACTAL_LENZ			= 16,			//16 the primary medic weapon animation is ASSSSSSSS for making a magic-spell weapon specifically for what I wanted. so the model effort is "eh". but I had no choice :(
+	RUINA_FRACTAL_HARVESTER		= 32
 }
 
 
