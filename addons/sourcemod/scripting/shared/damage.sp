@@ -744,6 +744,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 			if(!CheckInHud())
 				return Player_OnTakeDamage_Zealot(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
 		}
+		case WEAPON_KIT_FRACTAL:
+		{
+			if(!(damagetype & DMG_TRUEDAMAGE))
+				return Player_OnTakeDamage_Fractal(victim, damage, damagePosition,attacker);
+		}
 	}
 	return damage;
 }
