@@ -1495,8 +1495,8 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 35.0 * RaidModeScaling;
-	float FarDamage = 30.0 * RaidModeScaling;
+	float CloseDamage = 70.0 * RaidModeScaling;
+	float FarDamage = 60.0 * RaidModeScaling;
 	float MaxDistance = 5000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
@@ -1509,8 +1509,11 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 			if (damage < 0)
 				damage *= -1.0;
 
+			
+			if(victim > MaxClients) //make sure barracks units arent bad, they now get targetted too.
+				damage *= 0.25;
 
-			SDKHooks_TakeDamage(victim, entity, entity, damage * RaidModeScaling, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 				
 		}
 	}
