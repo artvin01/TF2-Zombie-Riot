@@ -128,8 +128,10 @@ static char gGlow1;	//blue
 
 #define TWIRL_MAGIA_OVERFLOW_DURATION 8.0
 
+static bool PrecacheTwirl;
 void Twirl_OnMapStart_NPC()
 {
+	PrecacheTwirl = false;
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Twirl");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_twirl");
@@ -139,8 +141,16 @@ void Twirl_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "twirl"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = true;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
-	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 	NPC_Add(data);
+}
+
+void PrecacheTwirlMusic()
+{
+	if(PrecacheTwirl)
+		return;
+
+	PrecacheTwirl = true;
+	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 }
 static void ClotPrecache()
 {
@@ -163,6 +173,7 @@ static void ClotPrecache()
 	PrecacheSound(TWIRL_COSMIC_GAZE_LOOP_SOUND1, true);
 	PrecacheSound(TWIRL_COSMIC_GAZE_END_SOUND1, true);
 	PrecacheSound(TWIRL_COSMIC_GAZE_END_SOUND2, true);
+	PrecacheTwirlMusic();
 
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM);
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM1);
@@ -3165,9 +3176,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			damage = 0.0;
 
 			b_NoKnockbackFromSources[npc.index] = true;
-			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 
 			ReviveAll(true);
 
@@ -3221,9 +3232,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		b_NoKnockbackFromSources[npc.index] = true;
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 
 		int color[4]; 
 		Ruina_Color(color);

@@ -1929,6 +1929,10 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-71", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
+	FormatEx(buffer, sizeof(buffer), "%s", buffer);
+	menu2.AddItem("-86", buffer);
+
 	FormatEx(buffer, sizeof(buffer), "%t", "Zombie In Battle Logic Setting", f_Data_InBattleHudDisableDelay[client] + 2.0);
 	menu2.AddItem("-72", buffer);
 
@@ -2337,6 +2341,10 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					b_EnableNumeralArmor[client] = !b_EnableNumeralArmor[client];
 					ReShowSettingsHud(client);
 					SetGlobalTransTarget(client);
+				}
+				case -86:
+				{
+					Manual_SoundcacheFixTest(client);
 				}
 				case -64: //Lower Volume
 				{

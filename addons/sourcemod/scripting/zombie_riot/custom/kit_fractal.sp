@@ -555,6 +555,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 			pack.WriteCell(EntIndexToEntRef(weapon));
 
 			Adjust_Crystal_Stats(client, weapon);
+			PrecacheTwirlMusic();
 			
 		}
 		return;
@@ -565,6 +566,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 		if(b_cannon_animation_active[client])
 			Kill_Cannon(client);
 
+		PrecacheTwirlMusic();
 		DataPack pack;
 		h_TimerManagement[client] = CreateDataTimer(0.1, Timer_Weapon_Managment, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -1910,12 +1912,12 @@ static bool Player_Laser_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
+
 static bool Player_Laser_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsValidEntity(entity))
 	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
+		if(IsValidEnemy(client, entity, true, true))
 		{
 			for(int i=0 ; i < i_maxtargets_hit ; i++)
 			{

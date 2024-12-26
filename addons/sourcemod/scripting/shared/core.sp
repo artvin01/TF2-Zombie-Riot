@@ -3035,7 +3035,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 			}
 			case TFCond_Taunting:
 			{
-				ViewChange_Update(client);
+				Viewchange_UpdateDelay(client);
 
 				if(!b_TauntSpeedIncreace[client])
 				{

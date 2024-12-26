@@ -73,6 +73,11 @@ methodmap VictoriaScorcher < CClotBody
 		
 	}
 	
+	property float m_flPulveriserAttackDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -337,6 +342,12 @@ public void VictoriaScorcher_NPCDeath(int entity)
 
 void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
 {
+	if(npc.m_flPulveriserAttackDelay > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flPulveriserAttackDelay = GetGameTime(npc.index) + 0.2;
+
 	int target;
 	target = npc.m_iTarget;
 	//some Ranged units will behave differently.
@@ -350,7 +361,7 @@ void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
 		npc.PlayMinigunSound(true);
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 4.0, 1000.0, 150.0, "m_brazier_flame", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 8.0, 1000.0, 150.0, "m_brazier_flame", true);
 		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
@@ -391,7 +402,7 @@ public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if(target > MaxClients)
 		{
-			StartBleedingTimer_Against_Client(target, entity, 4.0, 1);
+			StartBleedingTimer_Against_Client(target, entity, 8.0, 1);
 		}
 		else
 		{
@@ -402,7 +413,7 @@ public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 				{
 					Burntime *= 2;
 				}
-				StartBleedingTimer_Against_Client(target, entity, 4.0, Burntime);
+				StartBleedingTimer_Against_Client(target, entity, 8.0, Burntime);
 				TF2_IgnitePlayer(target, target, 2.0);
 			}
 		}

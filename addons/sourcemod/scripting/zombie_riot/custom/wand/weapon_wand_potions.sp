@@ -226,7 +226,7 @@ public void WandPotion_DoTrueDamageBleed(int entity, int enemy, float damage, in
 	if (!IsValidEntity(owner))
 		return;
 
-	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_TRUEDAMAGE);
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 32.0, 5, weapon, DMG_TRUEDAMAGE);
 }
 
 
@@ -831,7 +831,7 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 			float scale = GetEntPropFloat(enemy, Prop_Send, "m_flModelScale");
 			SetEntPropFloat(enemy, Prop_Send, "m_flModelScale", scale * 0.5);
 		}
-		ApplyStatusEffect(owner, enemy, "Shrinking", FAR_FUTURE);
+		ApplyStatusEffect(owner, enemy, "Shrinking", 999999.0);	
 		Stock_TakeDamage(enemy, owner, owner, GetEntProp(enemy, Prop_Data, "m_iHealth") / 2.0, DMG_TRUEDAMAGE, weapon);
 	}
 }

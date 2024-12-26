@@ -8,7 +8,7 @@
 #define RAILCANNONPAP4_ABILITY		"weapons/loose_cannon_charge.wav"
 #define RAILCANNONPAP4_HIT			"physics/glass/glass_largesheet_break1.wav"
 
-#define RAILCANNON_MAXTARGETS 4
+#define RAILCANNON_MAXTARGETS 3
 static float Strength[MAXTF2PLAYERS];
 
 static bool BEAM_CanUse[MAXTF2PLAYERS];
@@ -19,8 +19,6 @@ static int Beam_Glow;
 static int BEAM_MaxDistance[MAXTF2PLAYERS];
 static int BEAM_BeamRadius[MAXTF2PLAYERS];
 static int BEAM_ColorHex[MAXTF2PLAYERS];
-static int BEAM_ChargeUpTime[MAXTF2PLAYERS];
-static float BEAM_Duration[MAXTF2PLAYERS];
 static float BEAM_BeamOffset[MAXTF2PLAYERS][3];
 static float BEAM_ZOffset[MAXTF2PLAYERS];
 static bool BEAM_HitDetected[MAXTF2PLAYERS];
@@ -381,10 +379,8 @@ static void Attack_Railcannon(int client, int weapon, int pap, bool supercharged
 	{
 		BEAM_ColorHex[client] = ParseColor("00FFFF");
 	}
-	BEAM_ChargeUpTime[client] = 1;
-	BEAM_Duration[client] = 2.5;
 	BEAM_CloseBuildingDPT[client] = Strength[client];
-	BEAM_FarBuildingDPT[client] = Strength[client] * 0.65;
+	BEAM_FarBuildingDPT[client] = Strength[client] * 0.35;
 	
 	BEAM_BeamOffset[client][0] = 0.0;
 	BEAM_BeamOffset[client][1] = -8.0;
@@ -425,8 +421,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsValidEntity(entity))
 	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
+		if(IsValidEnemy(client, entity, true, true))
 		{
 			for(int i=0; i < (RAILCANNON_MAXTARGETS ); i++)
 			{
@@ -479,16 +474,16 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 		diameter *= 3;
 	}
 	float TruedamagePercentage;
-	TruedamagePercentage = 0.15;
+	TruedamagePercentage = 0.10;
 	switch(pap)
 	{
 		case 1:
 		{
-			TruedamagePercentage = 0.2;
+			TruedamagePercentage = 0.12;
 		}
 		case 2:
 		{
-			TruedamagePercentage = 0.25;
+			TruedamagePercentage = 0.15;
 		}
 	}
 
@@ -563,7 +558,7 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 					Damage_Railgun(BEAM_BuildingHit[building], client, damage, DMG_PLASMA, weapon_active, damage_force, playerPos);
 					Damage_Railgun(BEAM_BuildingHit[building], client, damage * TruedamagePercentage, DMG_TRUEDAMAGE, weapon_active, damage_force, playerPos);
 					//single target damage
-					BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF * 0.5);
+					BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF * 0.35);
 				}
 				else
 				{

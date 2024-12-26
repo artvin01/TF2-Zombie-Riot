@@ -141,7 +141,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 		
 		func_NPCDeath[npc.index] = AlliedLeperVisualiserAbility_NPCDeath;
 		func_NPCThink[npc.index] = AlliedLeperVisaluser_ClotThink;
