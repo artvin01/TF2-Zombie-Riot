@@ -1520,9 +1520,9 @@ void StatusEffects_MaimDebuff()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "↓");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.3;
+	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= 0.35;
+	data.MovementspeedModif			= 0.65;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored

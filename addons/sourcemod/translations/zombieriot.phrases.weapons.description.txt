@@ -1345,6 +1345,10 @@
 		"ru"	"Увеличенный урон и скорость атаки, потеря обнаружения камуфляжа."
 		"chi"   "增加伤害和攻击速度，失去伪装检测"
 	}
+	"Necromancy Staff Pap 2"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
 	
 	"Homing Staff Desc"
 	{

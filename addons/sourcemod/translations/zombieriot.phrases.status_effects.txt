@@ -130,7 +130,7 @@
 	}
 	"Cripple Desc"
 	{
-		"en"	"Increases Damage Taken by 30%%"
+		"en"	"Slows NPC speed by 65%"
 	}
 	"Stranglation I"
 	{
@@ -226,7 +226,7 @@
 	}
 	"Maimed Desc"
 	{
-		"en"	"Increases Damage Taken by 30%%,\nSlows down NPC's by 35%%"
+		"en"	"Increases Damage Taken by 30%%"
 	}
 	"Prosperity I"
 	{
