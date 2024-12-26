@@ -44,15 +44,10 @@ static float fl_current_crystal_amt[MAXTF2PLAYERS];
 
 	//the anim npc has the medic backpack, this annoys me greatly
 */
-void Fractal_Kit_MapStart()
-{
-	Zero(f_AniSoundSpam);
-	PrecacheSound(FRACTAL_KIT_SHIELDSOUND1, true);
-	PrecacheSound(FRACTAL_KIT_SHIELDSOUND2, true);
-}
 
 static void Adjust_Crystal_Stats(int client, int weapon)
 {
+	fl_hud_timer[client] = 0.0;
 	b_overdrive_active[client] = false;
 	fl_main_laser_distance[client] = 1000.0;
 	switch(Pap(weapon))
@@ -157,14 +152,26 @@ static void Delete_Halo(int client)
 	}
 }
 
-void Kit_Fractal_MapStart()
+void Fractal_Kit_MapStart()
 {
 	Zero(fl_max_crystal_amt);
 	Zero(fl_fractal_laser_trace_throttle);
 	Zero(fl_hud_timer);
 	Zero(b_cannon_animation_active);
 	Zero(fl_animation_cooldown);
-	PrecacheModel("models/props_moonbase/moon_gravel_crystal_blue.mdl", true);
+	Zero(f_AniSoundSpam);
+	Zero(fl_current_crystal_amt);
+	PrecacheSound(FRACTAL_KIT_SHIELDSOUND1, true);
+	PrecacheSound(FRACTAL_KIT_SHIELDSOUND2, true);
+}
+void Kit_Fractal_ResetRound()
+{	
+	Zero(fl_max_crystal_amt);
+	Zero(f_AniSoundSpam);
+	Zero(fl_fractal_laser_trace_throttle);
+	Zero(fl_hud_timer);
+	Zero(fl_animation_cooldown);
+	Zero(fl_current_crystal_amt);
 }
 
 static void Initiate_Animation(int client, int weapon)
@@ -1225,7 +1232,7 @@ static Action Mana_Harvester_Tick(int client)
 	bool raid = RaidbossIgnoreBuildingsLogic(1);
 
 	if(i_CurrentEquippedPerk[client] == 4)
-		mana_cost *=1.33;
+		mana_cost = RoundToFloor(mana_cost * 1.33);
 
 	int Amt = Pap(weapon_holding);
 	if(Amt < 3)
