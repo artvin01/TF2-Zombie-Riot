@@ -33,7 +33,7 @@ methodmap Fracatal_Kit_Animation < CClotBody
 		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime())
 			return;
 		
-		EmitCustomToAll(g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)], this.index, SNDCHAN_STATIC, 80, _, 0.9);
+		EmitCustomToAll(g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)], this.index, SNDCHAN_STATIC, 75, _, 0.85);
 		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
 	}
 	property int m_iWingSlot
@@ -245,6 +245,8 @@ static void NPC_Death(int entity)
 {
 	Fracatal_Kit_Animation npc = view_as<Fracatal_Kit_Animation>(entity);
 
+	StopCustomSound(npc.index, SNDCHAN_STATIC, g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)]);
+	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
