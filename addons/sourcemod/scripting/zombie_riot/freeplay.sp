@@ -273,6 +273,26 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "raid_time";
 			}
+			case 23:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_atomizer");
+				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 24:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_the_wall");
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 25:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_harrison");
+				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 26:	
+			{
+				enemy.Index = NPC_GetByPlugin("npc_castellan");
+				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
@@ -280,11 +300,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 		}
 		//raids otherwise have too much damage.
-		enemy.ExtraDamage *= 0.55;
+		enemy.ExtraDamage *= 0.65;
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
 		//some raids dont scale with DMG, fix it here
 
-		enemy.Credits += 5000.0;
+		enemy.Credits += 6500.0;
 		
 		//money fix
 		enemy.Does_Not_Scale = 1;
@@ -310,7 +330,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 3;
 
-		switch(GetRandomInt(1, 7)) // All super minibosses recieve a 65% damage boost, with the exception of Omega who gets 10% after a very... unfortunate testing session
+		switch(GetRandomInt(1, 7))
 		{
 			case 1: // Rogue cta doctor
 			{
@@ -373,7 +393,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
 		enemy.ExtraSpeed = 2.0;
-		enemy.ExtraSize = 0.25; // smol
+		enemy.ExtraSize = 0.2; // smol
 		enemy.Credits += 1.0;
 		strcopy(enemy.CustomName, sizeof(enemy.CustomName), "Antinel");
 
@@ -718,7 +738,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 90;
+		rand = GetURandomInt() % 69; // haha funny number
 
 	if(wrathofirln)
 	{
@@ -1059,117 +1079,112 @@ void Freeplay_SetupStart(bool extra = false)
 			RampartBuff++;
 		}
 
-		switch(GetRandomInt(1, 22))
+		RaidFight = GetRandomInt(1, 26);
+		switch(RaidFight)
 		{
 			case 1:
 			{
 				CPrintToChatAll("{yellow}The True Fusion Warrior will appear in the next wave!");
-				RaidFight = 1;
 			}
 			case 2:
 			{
 				CPrintToChatAll("{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
-				RaidFight = 2;
 			}
 			case 3:
 			{
 				CPrintToChatAll("{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
-				RaidFight = 3;
 			}
 			case 4:
 			{
 				CPrintToChatAll("{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
-				RaidFight = 4;
 			}
 			case 5:
 			{
 				CPrintToChatAll("{blue}Sensal is on his way to arrest you and your team in the next wave!");
-				RaidFight = 5;
 			}
 			case 6:
 			{
 				CPrintToChatAll("{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
-				RaidFight = 6;
 			}
 			case 7:
 			{
 				CPrintToChatAll("{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
-				RaidFight = 7;
 			}
 			case 8:
 			{
 				CPrintToChatAll("{lightblue}The Messenger will deliver you a deadly message next wave.");
-				RaidFight = 8;
 			}
 			case 9:
 			{
 				CPrintToChatAll("{white}????????????? is coming...");
-				RaidFight = 9;
 			}
 			case 10:
 			{
 				CPrintToChatAll("{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
-				RaidFight = 10;
 			}
 			case 11:
 			{
 				CPrintToChatAll("{green}Nemesis has come to spread the xeno infection on the next wave...");
-				RaidFight = 11;
 			}
 			case 12:
 			{
 				CPrintToChatAll("{green}Mr.X has come to spread the xeno infection on the next wave...");
-				RaidFight = 12;
 			}
 			case 13:
 			{
 				CPrintToChatAll("{midnightblue}Corrupted Barney is coming...");
-				RaidFight = 13;
 			}
 			case 14:
 			{
 				CPrintToChatAll("{crimson}Whiteflower, the Traitor, will appear in the next wave.");
-				RaidFight = 14;
 			}
 			case 15:
 			{
 				CPrintToChatAll("{purple}An Unspeakable entity is approaching...");
-				RaidFight = 15;
 			}
 			case 16:
 			{
 				CPrintToChatAll("{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
-				RaidFight = 16;
 			}
 			case 17:
 			{
 				CPrintToChatAll("{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
-				RaidFight = 17;
 			}
 			case 18:
 			{
 				CPrintToChatAll("{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
-				RaidFight = 18;
 			}
 			case 19:
 			{
 				CPrintToChatAll("{community}Agent Thompson will appear in the next wave.");
-				RaidFight = 19;
 			}
 			case 20:
 			{
 				CPrintToChatAll("{forestgreen}The Twins will appear in the next wave.");
-				RaidFight = 20;
 			}
 			case 21:
 			{
 				CPrintToChatAll("{community}Agent Jackson will appear in the next wave.");
-				RaidFight = 21;
 			}
 			case 22:
 			{
 				CPrintToChatAll("{darkgreen}Agent Smith will appear in the next wave.");
-				RaidFight = 22;
+			}
+			case 23:
+			{
+				CPrintToChatAll("{blue}The Atomizer has spotted your team, get ready next wave!");
+			}
+			case 24:
+			{
+				CPrintToChatAll("{lightblue}Huscarls is approaching to erradicate your team next wave!");
+			}
+			case 25:
+			{
+				CPrintToChatAll("{skyblue}Harrison and his fully-loaded arsenal will exterminate you next wave!");
+			}
+			case 26:
+			{
+				CPrintToChatAll("{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
 			}
 		}
 
@@ -1610,6 +1625,22 @@ void Freeplay_SetupStart(bool extra = false)
 					{
 						strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
 					}
+					case 23:
+					{
+						strcopy(message, sizeof(message), "{blue}The Atomizer has spotted your team, get ready next wave!");
+					}
+					case 24:
+					{
+						strcopy(message, sizeof(message), "{lightblue}Huscarls is approaching to erradicate your team next wave!");
+					}
+					case 25:
+					{
+						strcopy(message, sizeof(message), "{skyblue}Harrison and his fully-loaded arsenal will exterminate you next wave!");
+					}
+					case 26:
+					{
+						strcopy(message, sizeof(message), "{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
+					}
 					default:
 					{
 						strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
@@ -2009,7 +2040,7 @@ void Freeplay_SetupStart(bool extra = false)
 		if(RaidFight && !IsRaidWave)
 		{
 			IsRaidWave = true;
-			CPrintToChatAll("{green}Winning this wave will reward you with 5000 extra credits.");
+			CPrintToChatAll("{green}Winning this wave will reward you with 6500 extra credits.");
 			EmitSoundToAll("mvm/mvm_used_powerup.wav", _, _, _, _, 0.67);
 		}
 
