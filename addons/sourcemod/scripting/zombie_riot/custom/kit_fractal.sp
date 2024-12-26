@@ -1699,7 +1699,6 @@ enum struct Player_Laser_Logic
 	float Angles[3];
 	float Radius;
 	float Damage;
-	float Bonus_Damage;
 	int damagetype;
 	int max_targets;
 	float target_hitfalloff;
@@ -1799,7 +1798,7 @@ enum struct Player_Laser_Logic
 		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
 			int victim = Player_Laser_BEAM_HitDetected[loop];
-			if (victim && IsValidEnemy(this.client, victim))
+			if (victim)
 			{
 				this.trace_hit_enemy=true;
 
@@ -1856,7 +1855,7 @@ enum struct Player_Laser_Logic
 		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
 			int victim = Player_Laser_BEAM_HitDetected[loop];
-			if (victim && IsValidEnemy(this.client, victim))
+			if (victim)
 			{
 				this.trace_hit_enemy=true;
 
@@ -1864,9 +1863,6 @@ enum struct Player_Laser_Logic
 				WorldSpaceCenter(victim, playerPos);
 
 				float Dmg = this.Damage;
-
-				if(ShouldNpcDealBonusDamage(victim))
-					Dmg = this.Bonus_Damage;
 
 				Dmg *= TargetHitFalloff;
 
@@ -1882,7 +1878,6 @@ enum struct Player_Laser_Logic
 					Call_PushCell(this.damagetype);
 					Call_PushFloatRef(this.Damage);
 					Call_Finish();
-
 					//static void On_LaserHit(int client, int target, int damagetype, float &damage)
 				}
 			}
