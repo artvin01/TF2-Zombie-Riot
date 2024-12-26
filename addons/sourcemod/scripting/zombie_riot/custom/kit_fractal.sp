@@ -229,6 +229,8 @@ static void Turn_Animation(int client, int weapon)
 		Laser.client = client;
 		Laser.DoForwardTrace_Basic(1000.0);
 		fl_fractal_last_known_loc[client] = Laser.End_Point;
+
+		SetEntityMoveType(client, MOVETYPE_NONE);
 	}	
 	
 
