@@ -281,7 +281,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		}
 		//raids otherwise have too much damage.
 		enemy.ExtraDamage *= 0.55;
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
 		//some raids dont scale with DMG, fix it here
 
 		enemy.Credits += 5000.0;
@@ -1514,7 +1514,7 @@ void Freeplay_SetupStart(bool extra = false)
 				EnemyChance--;
 			}
 	
-			/// RAID SKULLS ///
+			/// RAID SKULL ///
 			case 33:
 			{
 				if(RaidFight)
@@ -1522,232 +1522,113 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
-				RaidFight = 1;
-			}
-			case 34:
-			{
-				if(RaidFight)
+				RaidFight = GetRandomInt(1, 26);
+
+				switch(RaidFight)
 				{
-					Freeplay_SetupStart();
-					return;
+					case 2:
+					{
+						strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
+					}
+					case 3:
+					{
+						strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
+					}
+					case 4:
+					{
+						strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
+					}
+					case 5:
+					{
+						strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
+					}
+					case 6:
+					{
+						strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
+					}
+					case 7:
+					{
+						strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
+					}
+					case 8:
+					{
+						strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave.");
+					}
+					case 9:
+					{
+						strcopy(message, sizeof(message), "{white}????????????? is coming...");
+					}
+					case 10:
+					{
+						strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
+					}
+					case 11:
+					{
+						strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave...");
+					}
+					case 12:
+					{
+						strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave...");
+					}
+					case 13:
+					{
+						strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming...");
+					}
+					case 14:
+					{
+						strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave.");
+					}
+					case 15:
+					{
+						strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching...");
+					}
+					case 16:
+					{
+						strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
+					}
+					case 17:
+					{
+						strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
+					}
+					case 18:
+					{
+						strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
+					}
+					case 19:
+					{
+						strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave.");
+					}
+					case 20:
+					{
+						strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave.");
+					}
+					case 21:
+					{
+						strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave.");
+					}
+					case 22:
+					{
+						strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
+					}
+					default:
+					{
+						strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
+					}
 				}
-				strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
-				RaidFight = 2;
-			}
-			case 35:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
-				RaidFight = 3;
-			}
-			case 36:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
-				RaidFight = 4;
-			}
-			case 37:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
-				RaidFight = 5;
-			}
-			case 38:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
-				RaidFight = 6;
-			}
-			case 39:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
-				RaidFight = 7;
-			}
-			case 40:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave.");
-				RaidFight = 8;
-			}
-			case 41:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{white}????????????? is coming...");
-				RaidFight = 9;
-			}
-			case 42:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
-				RaidFight = 10;
-			}
-			case 43:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave...");
-				RaidFight = 11;
-			}
-			case 44:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave...");
-				RaidFight = 12;
-			}
-			case 45:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming...");
-				RaidFight = 13;
-			}
-			case 46:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave.");
-				RaidFight = 14;
-			}
-			case 47:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching...");
-				RaidFight = 15;
-			}
-			case 48:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
-				RaidFight = 16;
-			}
-			case 49:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
-				RaidFight = 17;
-			}
-			case 50:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
-				RaidFight = 18;
-			}
-			case 51:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave.");
-				RaidFight = 19;
-			}
-			case 52:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave.");
-				RaidFight = 20;
-			}
-			case 53:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave.");
-				RaidFight = 21;
-			}
-			case 54:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
-				RaidFight = 22;
 			}
 	
 			/// SAMU'S SKULLS (new!) ///
-			case 55:
+			case 34:
 			{
 				strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
 				SpeedMult += 0.1;
 			}
-			case 56:
+			case 35:
 			{
 				strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
 				SpeedMult += 0.15;
 			}
-			case 57:
+			case 36:
 			{
 				if(SpeedMult < 0.35) // i'll go with a minimum of -65% movement speed since freeplay enemies move way faster than usual, and certain buffs make them faster
 				{
@@ -1757,7 +1638,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
 				SpeedMult -= 0.1;
 			}
-			case 58:
+			case 37:
 			{
 				if(SpeedMult < 0.35)
 				{
@@ -1767,17 +1648,17 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
 				SpeedMult -= 0.15;
 			}
-			case 59:
+			case 38:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more melee damage.");
 				MeleeMult += 0.2;
 			}
-			case 60:
+			case 39:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more melee damage.");
 				MeleeMult += 0.25;
 			}
-			case 61:
+			case 40:
 			{
 				if(MeleeMult < 0.05) // 95% melee res max
 				{
@@ -1791,7 +1672,7 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.05;
 				}
 			}
-			case 62:
+			case 41:
 			{
 				if(MeleeMult < 0.05)
 				{
@@ -1805,17 +1686,17 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.05;
 				}
 			}
-			case 63:
+			case 42:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more ranged damage.");
 				RangedMult += 0.20;
 			}
-			case 64:
+			case 43:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more ranged damage.");
 				RangedMult += 0.25;
 			}
-			case 65:
+			case 44:
 			{
 				if(RangedMult < 0.05) // 95% ranged res max
 				{
@@ -1829,7 +1710,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.05;
 				}
 			}
-			case 66:
+			case 45:
 			{
 				if(RangedMult < 0.05)
 				{
@@ -1843,7 +1724,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.05;
 				}
 			}
-			case 67:
+			case 46:
 			{
 				if(SuperMiniBoss)
 				{
@@ -1854,7 +1735,7 @@ void Freeplay_SetupStart(bool extra = false)
 				SuperMiniBoss = true;
 				EmitSoundToAll("mvm/mvm_warning.wav");
 			}
-			case 68:
+			case 47:
 			{
 				if(ExplodingNPC)
 				{
@@ -1866,7 +1747,7 @@ void Freeplay_SetupStart(bool extra = false)
 				ExplodingNPC = true;
 				EmitSoundToAll("ui/mm_medal_silver.wav");
 			}
-			case 69:
+			case 48:
 			{
 				if(EnemyShields >= 15)
 				{
@@ -1877,7 +1758,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
 				EnemyShields += 3;
 			}
-			case 70:
+			case 49:
 			{
 				if(EnemyShields >= 15)
 				{
@@ -1888,7 +1769,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
 				EnemyShields += 6;
 			}
-			case 71:
+			case 50:
 			{
 				if(EnemyShields <= 0)
 				{
@@ -1899,7 +1780,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
 				EnemyShields -= 2;
 			}
-			case 72:
+			case 51:
 			{
 				if(EnemyShields <= 0)
 				{
@@ -1910,7 +1791,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
 				EnemyShields -= 4;
 			}
-			case 73:
+			case 52:
 			{
 				if(VoidBuff > 2)
 				{
@@ -1923,7 +1804,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VoidBuff++;
 				}
 			}
-			case 74:
+			case 53:
 			{
 				if(VictoriaBuff)
 				{
@@ -1936,7 +1817,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VictoriaBuff = true;
 				}
 			}
-			case 75:
+			case 54:
 			{
 				if(SquadBuff)
 				{
@@ -1949,7 +1830,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SquadBuff = true;
 				}
 			}
-			case 76:
+			case 55:
 			{
 				if(Coffee)
 				{
@@ -1962,7 +1843,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Coffee = true;
 				}
 			}
-			case 77:
+			case 56:
 			{
 				if(StrangleDebuff > 3)
 				{
@@ -1975,7 +1856,7 @@ void Freeplay_SetupStart(bool extra = false)
 					StrangleDebuff++;
 				}
 			}
-			case 78:
+			case 57:
 			{
 				if(ProsperityDebuff > 3)
 				{
@@ -1988,7 +1869,7 @@ void Freeplay_SetupStart(bool extra = false)
 					ProsperityDebuff++;
 				}
 			}
-			case 79:
+			case 58:
 			{
 				if(SilenceDebuff)
 				{
@@ -2001,7 +1882,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SilenceDebuff = true;
 				}
 			}
-			case 80:
+			case 59:
 			{
 				if(ExtraEnemySize <= 0.35) // 65% less size max
 				{
@@ -2011,7 +1892,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes reduced by 10%");
 				ExtraEnemySize -= 0.10;
 			}
-			case 81:
+			case 60:
 			{
 				if(ExtraEnemySize <= 0.35) // 65% less size max
 				{
@@ -2021,7 +1902,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes reduced by 15%");
 				ExtraEnemySize -= 0.15;
 			}
-			case 82:
+			case 61:
 			{
 				if(ExtraEnemySize >= 4.0) // 300% more size max
 				{
@@ -2031,7 +1912,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 10%");
 				ExtraEnemySize += 0.10;
 			}
-			case 83:
+			case 62:
 			{
 				if(ExtraEnemySize >= 4.0) // 300% more size max
 				{
@@ -2041,7 +1922,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 15%");
 				ExtraEnemySize += 0.15;
 			}
-			case 84:
+			case 63:
 			{
 				//10% chance, otherwise retry.
 				if(GetRandomFloat(0.0, 1.0) <= 0.1)
@@ -2055,7 +1936,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 			}
-			case 85:
+			case 64:
 			{
 				if(UnlockedSpeed)
 				{
@@ -2066,7 +1947,7 @@ void Freeplay_SetupStart(bool extra = false)
 				Store_DiscountNamedItem("Adrenaline", 999);
 				strcopy(message, sizeof(message), "{green}Adrenaline is now buyable in the passive store!");
 			}
-			case 86:
+			case 65:
 			{
 				if(CheesyPresence)
 				{
@@ -2079,7 +1960,7 @@ void Freeplay_SetupStart(bool extra = false)
 					CheesyPresence = true;
 				}
 			}
-			case 87:
+			case 66:
 			{
 				if(EloquenceBuff > 2)
 				{
@@ -2092,7 +1973,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuff++;
 				}
 			}
-			case 88:
+			case 67:
 			{
 				if(RampartBuff > 2)
 				{
@@ -2105,7 +1986,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuff++;
 				}
 			}
-			case 89:
+			case 68:
 			{
 				if(AntinelNextWave)
 				{
