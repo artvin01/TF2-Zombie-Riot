@@ -134,7 +134,7 @@ public Action short_bonus_damage(Handle timer, int ref)
 	{
 		float chargerPos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", chargerPos);
-		mf_extra_damage[entity] = GetGameTime() + 0.30; //how much time is given for extra damage to apply for the flash appeared
+		mf_extra_damage[entity] = GetGameTime() + 0.7; //how much time is given for extra damage to apply for the flash appeared
 		ParticleEffectAt(chargerPos, "raygun_projectile_blue_crit", 0.3);
 	}
 	return Plugin_Stop;
@@ -430,6 +430,16 @@ stock void Do_Coin_calc(int victim)
 	SetTeam(victim, TFTeam_Red);
 	int Closest_entity = GetClosestTarget_Coin(victim);
 	SetTeam(victim, TFTeam_Spectator);
+	if(mf_extra_damage[victim] > GetGameTime()) //You got one second.
+	{
+		damage_multiplier[victim] *= 1.25;
+		float chargerPos2[3];
+		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos2);
+		if(IsValidClient(Entity_Owner[victim]))
+		{
+			DisplayCritAboveNpc(victim, Entity_Owner[victim], true,chargerPos2,_,true); //Display minicrit
+		}
+	}
 	if (IsValidEntity(Closest_entity))
 	{
 		damage_multiplier[victim] *= 1.6;
@@ -463,14 +473,7 @@ stock void Do_Coin_calc(int victim)
 					GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
 					if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
 					{
-						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1) //You got one second.
-						{
-							SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
-						}
-						else
-						{
-							SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
-						}
+						SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 					}
 					TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 3.0, 5.0, 1, 1.0, view_as<int>({255, 0, 0, 255}), 30);
 					TE_SendToAll();
@@ -504,14 +507,7 @@ stock void Do_Coin_calc(int victim)
 								GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
 								if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
 								{
-									if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
-									{
-										SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
-									}
+									SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 								}
 								TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 3.0, 5.0, 1, 1.0, view_as<int>({255, 0, 0, 255}), 30);
 								TE_SendToAll();
@@ -532,14 +528,7 @@ stock void Do_Coin_calc(int victim)
 							pack_boom.WriteCell(0);
 							RequestFrame(MakeExplosionFrameLater, pack_boom);
 				
-							if(mf_extra_damage[victim] > GetGameTime())
-							{
-								SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
-							}
+							SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 						}
 					}
 				}
@@ -567,14 +556,7 @@ stock void Do_Coin_calc(int victim)
 							GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
 							if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
 							{
-								if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
-								{
-									SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
-								}
-								else
-								{
-									SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
-								}
+								SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 							}
 							TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 3.0, 5.0, 1, 1.0, view_as<int>({255, 0, 0, 255}), 30);
 							TE_SendToAll();
@@ -595,14 +577,7 @@ stock void Do_Coin_calc(int victim)
 						pack_boom.WriteCell(0);
 						RequestFrame(MakeExplosionFrameLater, pack_boom);
 							
-						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
-						{
-							SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
-						}
-						else
-						{
-							SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
-						}
+						SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 					}
 				}
 			}

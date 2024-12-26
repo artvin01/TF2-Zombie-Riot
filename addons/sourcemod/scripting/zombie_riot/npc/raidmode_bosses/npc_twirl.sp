@@ -139,11 +139,11 @@ void Twirl_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "twirl"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = true;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
-	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 	NPC_Add(data);
 }
 static void ClotPrecache()
 {
+	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 	Zero(i_barrage_ammo);
 	Zero(fl_force_ranged);

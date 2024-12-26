@@ -3474,6 +3474,18 @@
 		"en" 	"Taunt Speed Increace"
 		"fr" 	"Vitesse des Railleries Augmuntée"
 	}
+	"Fix First Sound Play Manually"
+	{
+		"en" 	"Fix First Sound Play Manually"
+	}
+	"FixSoundManual Fail"
+	{
+		"en" 	"Looks like not all sounds have been downloaded yet, try again later.\nIt did try to precache all one before, though."
+	}
+	"FixSoundManual Success"
+	{
+		"en" 	"Done! All sounds when they actually play, should play just fine, sorry for the lag!"
+	}
 	"Must be below half health"
 	{
 		"en"	"You must be below half health of your max health"

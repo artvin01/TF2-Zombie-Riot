@@ -236,7 +236,7 @@
 	}
 	"Sniper Rifle Pap 3"
 	{
-		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged.\nDeals extreme damage to any enemy not hit by your rifle within 20 seconds!"
+		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged.\nDeals extreme damage to any enemy not hit by your rifle within 40 seconds!"
 	}
 	"Sniper Rifle Pap 4"
 	{

@@ -56,7 +56,6 @@ static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 {	
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-	
 	{
 		int new_ammo = GetAmmo(client, 23);
 		if(new_ammo >= 40)
