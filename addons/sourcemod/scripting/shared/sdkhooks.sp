@@ -583,6 +583,19 @@ public void OnPostThink(int client)
 			max_mana[client] *= 1.05;
 		}
 
+		/*int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		
+		if(IsValidEntity(weapon))
+		{
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_KIT_FRACTAL:
+				{
+					Fractal_Kit_Modify_Mana(client, weapon);
+				}
+			}
+		}*/
+
 		if(b_AggreviatedSilence[client])	
 		{
 			mana_regen[client] *= 0.30;

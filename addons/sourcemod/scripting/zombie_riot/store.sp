@@ -6026,6 +6026,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Trash_Cannon(client, entity);
 		Enable_Rusty_Rifle(client, entity);
 		Enable_Blitzkrieg_Kit(client, entity);
+		Activate_Fractal_Kit(client, entity);
 		Enable_Quibai(client, entity);
 		AngelicShotgun_Enable(client, entity);
 		FullMoon_Enable(client, entity);

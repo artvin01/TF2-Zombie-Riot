@@ -392,6 +392,8 @@ void NPC_ConfigSetup()
 
 #endif
 
+	Kit_Fractal_NPC_MapStart();
+
 	//Expidonsa Waves
 //wave 1-15:
 	Benera_OnMapStart_NPC();
@@ -1327,6 +1329,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 //#include "zombie_riot/npc/raidmode_bosses/npc_levita.sp"
 
 #endif
+
+#include "zombie_riot/npc/ally/npc_fractal_cannon_animation.sp"
 
 //Alt
 
