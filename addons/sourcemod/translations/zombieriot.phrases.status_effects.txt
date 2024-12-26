@@ -288,6 +288,14 @@
 	{
 		"en"	"Immune to all stuns"
 	}
+	"Shook Head"
+	{
+		"en"	"Shook Head"
+	}
+	"Shook Head Desc"
+	{
+		"en"	"Reduces all stuns by 50%"
+	}
 	"Solid Stance"
 	{
 		"en"	"Solid Stance"

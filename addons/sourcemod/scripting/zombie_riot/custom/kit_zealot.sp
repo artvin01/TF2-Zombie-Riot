@@ -260,6 +260,16 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 			HealEntityGlobal(client, client, MaxHealth / 2.0, 1.0, BuffDuration, HEAL_SELFHEAL);
 		}
 		//regen stamina to full.
+
+		HealEntityGlobal(client, client, MaxHealth / 2.0, 1.0, 2.0, HEAL_SELFHEAL);
+		EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
+		Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
+		ApplyStatusEffect(client, client, "Zealot's Random Drinks", BuffDuration);
+		f_PotionCooldownDo[client] = GetGameTime() + 60.0;
+		GrenadeApplyCooldownHud(client, f_PotionCooldownDo[client] - GetGameTime());
+		
+		i_WhatPotionDrink[client] = i_RandomCurrentPotion[client];
+		
 		if(i_WhatPotionDrink[client] == 2)
 			Zealot_RegenerateStamina(client, 2, 99.0);
 
@@ -268,14 +278,6 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 			ApplyTempAttrib(client, 442, 1.1, BuffDuration);
 			CreateTimer(BuffDuration + 0.1, Timer_UpdateMovementSpeed, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		}
-
-		HealEntityGlobal(client, client, MaxHealth / 2.0, 1.0, 2.0, HEAL_SELFHEAL);
-		i_WhatPotionDrink[client] = i_RandomCurrentPotion[client];
-		EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
-		Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
-		ApplyStatusEffect(client, client, "Zealot's Random Drinks", BuffDuration);
-		f_PotionCooldownDo[client] = GetGameTime() + 60.0;
-		GrenadeApplyCooldownHud(client, f_PotionCooldownDo[client] - GetGameTime());
 
 		i_RandomCurrentPotion[client] = GetRandomInt(0,3);
 	}

@@ -8964,18 +8964,21 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	}
 
 	float Duration_Stun_Post = Duration_Stun;
-	if(!IgnoreAllLogic && b_thisNpcIsARaid[npc]/* && Duration_Stun >= 1.0*/)
+	if(!IgnoreAllLogic)
 	{
 		if(f_RaidStunResistance[npc] > GameTime)
 		{
-			Duration_Stun_Post *= 0.5;
+			if(HasSpecificBuff(npc, "Shook Head"))
+				Duration_Stun_Post *= 0.5;
 		}
 	}
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun_Post - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
 	f_TimeFrozenStill[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
 	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun_Post;
-	f_RaidStunResistance[npc] = GameTime + Duration_Stun;
+	if(b_thisNpcIsARaid[npc])
+		ApplyStatusEffect(npc, npc, "Shook Head", Duration_Stun * 3.0);	
+
 	npcclot.Update();
 
 	Npc_DebuffWorldTextUpdate(view_as<CClotBody>(npc));
