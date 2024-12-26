@@ -128,8 +128,10 @@ static char gGlow1;	//blue
 
 #define TWIRL_MAGIA_OVERFLOW_DURATION 8.0
 
+static bool PrecacheTwirl;
 void Twirl_OnMapStart_NPC()
 {
+	PrecacheTwirl = false;
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Twirl");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_twirl");
@@ -141,9 +143,17 @@ void Twirl_OnMapStart_NPC()
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
+
+void PrecacheTwirlMusic()
+{
+	if(PrecacheTwirl)
+		return;
+
+	PrecacheTwirl = true;
+	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
+}
 static void ClotPrecache()
 {
-	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 	Zero(i_barrage_ammo);
 	Zero(fl_force_ranged);
@@ -163,6 +173,7 @@ static void ClotPrecache()
 	PrecacheSound(TWIRL_COSMIC_GAZE_LOOP_SOUND1, true);
 	PrecacheSound(TWIRL_COSMIC_GAZE_END_SOUND1, true);
 	PrecacheSound(TWIRL_COSMIC_GAZE_END_SOUND2, true);
+	PrecacheTwirlMusic();
 
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM);
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM1);

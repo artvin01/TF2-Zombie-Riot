@@ -555,6 +555,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 			pack.WriteCell(EntIndexToEntRef(weapon));
 
 			Adjust_Crystal_Stats(client, weapon);
+			PrecacheTwirlMusic();
 			
 		}
 		return;
@@ -565,6 +566,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 		if(b_cannon_animation_active[client])
 			Kill_Cannon(client);
 
+		PrecacheTwirlMusic();
 		DataPack pack;
 		h_TimerManagement[client] = CreateDataTimer(0.1, Timer_Weapon_Managment, pack, TIMER_REPEAT);
 		pack.WriteCell(client);

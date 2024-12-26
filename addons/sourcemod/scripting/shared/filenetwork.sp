@@ -468,6 +468,7 @@ public Action StartSoundCache_ManualLoop(Handle timer, DataPack pack)
 
 			char sound[PLATFORM_MAX_PATH];
 			SoundList.GetString(SoundListArrayLoc, sound, sizeof(sound));
+			ReplaceString(sound, sizeof(sound), "sound/", "");
 			EmitCustomToClient(client, sound, client, SNDCHAN_STATIC, .volume = 0.01);
 			SoundListArrayLoc++;
 			DataPack pack2;

@@ -4086,7 +4086,7 @@
 	}
 	"Potion of Swiftness Desc"
 	{
-		"en"	"Dash cooldown is reduced."
+		"en"	"Dash cooldown is reduced, gain 10%% movement speed."
 	}
 	"Potion of Resilience"
 	{
