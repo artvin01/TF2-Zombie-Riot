@@ -60,7 +60,6 @@ static int CurrentWeaponComboAt[MAXTF2PLAYERS];
 static float LastDamage[MAXTF2PLAYERS];
 static float LastSpeed[MAXTF2PLAYERS];
 static float CurrentlyInAttack[MAXTF2PLAYERS];
-static bool SpecialLastMan;
 static bool Precached;
 static float HeatActionCooldown[MAXTF2PLAYERS];
 static float HeatActionCooldownEnemy[MAXENTITIES];
@@ -74,7 +73,7 @@ void Yakuza_MapStart()
 	Zero(HeatActionCooldown);
 	Zero(HeatActionCooldownEnemy);
 	Precached = false;
-	SpecialLastMan = false;
+	SpecialLastMan = 0;
 	PrecacheSound("items/pegleg_01.wav");
 	PrecacheSound("items/pegleg_02.wav");
 	PrecacheSound("items/powerup_pickup_base.wav");
@@ -109,7 +108,7 @@ bool Yakuza_IsNotInJoint(int client)
 	return WeaponTimer[client] != null;	
 }
 
-bool Yakuza_Lastman(any toggle = -1)
+int Yakuza_Lastman(any toggle = -1)
 {
 	if(toggle != -1)
 		SpecialLastMan = view_as<bool>(toggle);

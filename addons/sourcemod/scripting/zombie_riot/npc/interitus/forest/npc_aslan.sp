@@ -200,8 +200,16 @@ static void ClotThink(int iNPC)
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
+						int flagsStun = 0;
+
+						if(Rogue_Paradox_RedMoon())
+							flagsStun |= TF_STUNFLAGS_LOSERSTATE;
+
+						if(!HasSpecificBuff(target, "Fluid Movement"))
+							flagsStun |= TF_STUNFLAG_SLOWDOWN;
+
 						if(target <= MaxClients)
-							TF2_StunPlayer(target, 0.6, 0.9, Rogue_Paradox_RedMoon() ? TF_STUNFLAGS_LOSERSTATE : TF_STUNFLAG_SLOWDOWN);
+							TF2_StunPlayer(target, 0.6, 0.9, flagsStun);
 					}
 				}
 

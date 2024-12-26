@@ -269,10 +269,14 @@ bool Waves_CallVote(int client, int force = 0)
 		menu.SetTitle("%t:\n ", Voting ? "Vote for the difficulty" : "Vote for the modifier");
 		
 		Vote vote;
+		Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
 		if(Voting)
 		{
-			Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
 			menu.AddItem(NULL_STRING, vote.Name);
+		}
+		else
+		{
+			menu.AddItem(NULL_STRING, vote.Name, ITEMDRAW_DISABLED);
 		}
 
 		if(Voting)
@@ -347,10 +351,6 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Select:
 		{
 			ArrayList list = Voting ? Voting : VotingMods;
-			if(VotingMods)
-			{
-				choice++;
-			}
 			if(list)
 			{
 				if(!choice || VotedFor[client] != choice)

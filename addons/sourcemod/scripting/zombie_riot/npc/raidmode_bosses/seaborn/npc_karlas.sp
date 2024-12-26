@@ -1293,6 +1293,10 @@ static void Projectile_Detect_Loop(DataPack pack)
 }
 static void On_LaserHit(int client, int target, int damagetype, float damage)
 {
+	for (int entity = 0; entity < MAXENTITIES; entity++)
+	{
+		f_GlobalHitDetectionLogic[client][entity] = 0.0;
+	}
 	if(f_GlobalHitDetectionLogic[client][target] > GetGameTime())
 		return;
 	

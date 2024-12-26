@@ -298,6 +298,10 @@ void RemoveSpecificBuff(int victim, const char[] name)
 //Got lazy, tired of doing so many indexs.
 bool HasSpecificBuff(int victim, const char[] name)
 {
+	//doesnt even have abuff...
+	if(!E_AL_StatusEffects[victim])
+		return false;
+
 	int index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
 	if(index == -1)
 	{
@@ -306,27 +310,24 @@ bool HasSpecificBuff(int victim, const char[] name)
 		return false;
 	}
 	E_StatusEffect Apply_StatusEffect;
-
 	int ArrayPosition;
-	if(E_AL_StatusEffects[victim])
+	bool Return = false;
+	ArrayPosition = E_AL_StatusEffects[victim].FindValue(index, E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		ArrayPosition = E_AL_StatusEffects[victim].FindValue(index, E_StatusEffect::BuffIndex);
-		if(ArrayPosition != -1)
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-			{
-				E_AL_StatusEffects[victim].Erase(ArrayPosition);
-			}
-			else
-			{
-				return true;
-			}
+			E_AL_StatusEffects[victim].Erase(ArrayPosition);
 		}
-		if(E_AL_StatusEffects[victim].Length < 1)
-			delete E_AL_StatusEffects[victim];
+		else
+		{
+			Return = true;
+		}
 	}
-	return false;
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+	return Return;
 }
 void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 {
@@ -2288,6 +2289,34 @@ void StatusEffects_SupportWeapons()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	AncientBannerIndex = StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Zealot's Random Drinks");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Z");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Zealot's Rush");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ź");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 stock bool NpcStats_AncientBanner(int victim)

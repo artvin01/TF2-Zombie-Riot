@@ -31,7 +31,7 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 		//LogEntryInvicibleTest(victim, attacker, damage, 7);
 #endif
 	}
-	else if(!b_NpcHasDied[victim])
+	else if(b_ThisWasAnNpc[victim])
 	{
 		if(Damage_NPCVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
@@ -58,7 +58,7 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 #endif
 			//LogEntryInvicibleTest(victim, attacker, damage, 14);
 		}
-		else if(!b_NpcHasDied[attacker])
+		else if(b_ThisWasAnNpc[attacker])
 		{
 			if(Damage_NPCAttacker(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
@@ -739,6 +739,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 			if(!(damagetype & DMG_TRUEDAMAGE))
 				WeaponCastleBreaker_OnTakeDamage(victim, damage);
 		}
+		case WEAPON_ZEALOT_MELEE, WEAPON_ZEALOT_GUN, WEAPON_ZEALOT_POTION:
+		{
+			if(!CheckInHud())
+				return Player_OnTakeDamage_Zealot(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
+		}
 	}
 	return damage;
 }
@@ -770,6 +775,7 @@ static stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflicto
 		}
 	}
 #endif
+//For huds, show anyways!
 	if(!b_NpcIsTeamkiller[attacker])
 	{
 		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
@@ -1069,6 +1075,16 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			if(!CheckInHud())
 				WeaponCastleBreaker_OnTakeDamageNpc(attacker, victim, damage, weapon, damagetype);
+		}
+		case WEAPON_ZEALOT_MELEE:
+		{
+			if(!CheckInHud())
+				WeaponZealot_OnTakeDamage(attacker, victim, damage);
+		}
+		case WEAPON_ZEALOT_GUN:
+		{
+			if(!CheckInHud())
+				WeaponZealot_OnTakeDamage_Gun(attacker, victim, damage);
 		}
 	}
 #endif
