@@ -40,6 +40,11 @@ static float Zealot_BonusMeleeDamageDuration[MAXPLAYERS+1];
 static float Zealot_BonusMeleeDamageWearoff[MAXPLAYERS+1];
 static float AmmoGiveWeapon[MAXPLAYERS+1];
 
+void Zealot_RoundStart()
+{
+	Zero(Zealot_OneshotProtection);
+	Zero(f_StaminaLeftZealot);
+}
 void OnMapStartZealot()
 {
 	PrecacheSound("passtime/projectile_swoosh3.wav");
