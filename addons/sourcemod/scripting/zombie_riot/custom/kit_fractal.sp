@@ -47,12 +47,15 @@ static float fl_current_crystal_amt[MAXTF2PLAYERS];
 void Fractal_Kit_MapStart()
 {
 	Zero(f_AniSoundSpam);
+	Zero(fl_hud_timer);
+	Zero(fl_current_crystal_amt);
 	PrecacheSound(FRACTAL_KIT_SHIELDSOUND1, true);
 	PrecacheSound(FRACTAL_KIT_SHIELDSOUND2, true);
 }
 
 static void Adjust_Crystal_Stats(int client, int weapon)
 {
+	fl_hud_timer[client] = 0.0;
 	b_overdrive_active[client] = false;
 	fl_main_laser_distance[client] = 1000.0;
 	switch(Pap(weapon))
@@ -1225,7 +1228,7 @@ static Action Mana_Harvester_Tick(int client)
 	bool raid = RaidbossIgnoreBuildingsLogic(1);
 
 	if(i_CurrentEquippedPerk[client] == 4)
-		mana_cost *=1.33;
+		mana_cost = RoundToFloor(mana_cost * 1.33);
 
 	int Amt = Pap(weapon_holding);
 	if(Amt < 3)
