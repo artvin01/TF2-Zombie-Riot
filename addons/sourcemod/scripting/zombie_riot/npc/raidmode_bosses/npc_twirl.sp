@@ -1643,7 +1643,8 @@ static void lunar_Radiance_Tick(int iNPC)
 	{
 		if(enemy_2[i])
 		{
-			i_te_used+=8;
+			//the actual amount of TE created is less then 9, doing 9 will allow for a bit of room just incase.
+			i_te_used+=9;
 			float Radius = (npc.Anger ? 225.0 : 150.0);
 			float dmg = Modify_Damage(-1, 12.0);
 			if(i_te_used > 31)

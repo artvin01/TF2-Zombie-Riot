@@ -120,8 +120,6 @@ static void HaloManagment(int client, bool force = false)
 	if(IsValidEntity(halo_particle))
 		return;
 
-	float flPos[3];
-	float flAng[3];
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 
@@ -134,12 +132,14 @@ static void HaloManagment(int client, bool force = false)
 		return;
 	}
 
-	GetAttachment(viewmodelModel, "head", flPos, flAng);
-	flPos[2] += 10.0;
-	int particle = ParticleEffectAt(flPos, "unusual_invasion_boogaloop_2", 0.0);
-	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(viewmodelModel, particle, "head");
-	i_cosmetic_effect[client] = EntIndexToEntRef(particle);
+	float pos[3]; GetClientAbsOrigin(client, pos);
+	pos[2] += 5.0;
+	int entity = ParticleEffectAt(pos, "utaunt_mysticfusion_base", -1.0);
+	if(entity > MaxClients)
+	{
+		SetParent(client, entity);
+		i_cosmetic_effect[client] = EntIndexToEntRef(entity);
+	}
 }
 static void Delete_Halo(int client)
 {
@@ -147,6 +147,7 @@ static void Delete_Halo(int client)
 	
 	if(IsValidEntity(halo_particle))
 	{
+		TeleportEntity(halo_particle, OFF_THE_MAP);
 		RemoveEntity(halo_particle);
 		i_cosmetic_effect[client] = INVALID_ENT_REFERENCE;
 	}
@@ -236,8 +237,15 @@ static void Turn_Animation(int client, int weapon)
 		Laser.client = client;
 		Laser.DoForwardTrace_Basic(1000.0);
 		fl_fractal_last_known_loc[client] = Laser.End_Point;
-
-		SetEntityMoveType(client, MOVETYPE_NONE);
+		
+		//weird bug: for some reason the movetype none sticks even though movetype_walk is set.
+		//this bug has only appeard when the player has run out of mana and was forced out of the animation.
+		//I have no clue why its only happened then.
+		//but if it happens again after this change, then clearly I was wrong. and I have zero clue how to fix it.
+		//and I can't make it set movetype none only once since every round start / raid spawn, movetype is reset
+		//meaning the player can move around fully while firing the deathray.
+		if(Current_Mana[client] > 100)
+			SetEntityMoveType(client, MOVETYPE_NONE);
 	}	
 	
 
@@ -355,7 +363,6 @@ static void Fire_Beam(int client, int weapon, bool update)
 
 	if((b_overdrive_active[client] && !Mouse2) || fl_current_crystal_amt[client] <= FRACTAL_KIT_PASSIVE_OVERDRIVE_COST * 2.0)
 		b_overdrive_active[client] = false;
-
 	
 	if(update)
 	{
@@ -391,7 +398,6 @@ static void Fire_Beam(int client, int weapon, bool update)
 	
 	float TE_Duration = 0.1;
 	
-
 	float Offset_Loc[3];
 	Get_Fake_Forward_Vec(50.0, Angles, Offset_Loc, flPos);
 
@@ -416,21 +422,22 @@ static void Fire_Beam(int client, int weapon, bool update)
 
 	int Beam_Index = g_Ruina_BEAM_Combine_Blue;
 
-	colorLayer2[3] = 25;
-
+	//the rest of the beam thats the long part
+	TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter1*0.9, End_Diameter1, 0, 0.1, colorLayer2, 3);
+	Send_Te_Client_ZR(client);
+	TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter2*0.9, End_Diameter2, 0, 0.1, colorLayer3, 3);
+	Send_Te_Client_ZR(client);
+	TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter3*0.9, End_Diameter3, 0, 0.1, colorLayer4, 3);
+	Send_Te_Client_ZR(client);
+	
+	//the tiny part of the beam thats at the start.
+	colorLayer2[3] = 150;
 	TE_SetupBeamPoints(flPos, Offset_Loc, Beam_Index, 	0, 0, 66, TE_Duration, 0.0, Start_Diameter1, 0, 7.0, colorLayer2, 3);
 	TE_SendToAll(0.0);
 	TE_SetupBeamPoints(flPos, Offset_Loc, Beam_Index, 	0, 0, 66, TE_Duration, 0.0, Start_Diameter2, 0, 7.0, colorLayer3, 3);
-	TE_SendToClient(client);
+	Send_Te_Client_ZR(client);
 	TE_SetupBeamPoints(flPos, Offset_Loc, Beam_Index,	0, 0, 66, TE_Duration, 0.0, Start_Diameter3, 0, 7.0, colorLayer4, 3);
-	TE_SendToClient(client);
-
-	TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter1*0.9, End_Diameter1, 0, 0.1, colorLayer2, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter2*0.9, End_Diameter2, 0, 0.1, colorLayer3, 3);
-	TE_SendToClient(client);
-	TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter3*0.9, End_Diameter3, 0, 0.1, colorLayer4, 3);
-	TE_SendToClient(client);
+	Send_Te_Client_ZR(client);
 
 	if(fl_magia_angle[client]>360.0)
 		fl_magia_angle[client] -=360.0;
@@ -514,7 +521,7 @@ static void Kill_Animation(int client)
 		Fracatal_Kit_Animation npc = view_as<Fracatal_Kit_Animation>(animation);
 		npc.m_iState = 1;
 
-		SmiteNpcToDeath(animation);
+		//SmiteNpcToDeath(animation);
 	}
 	if(!IsClientInGame(client))
 		return;
@@ -733,8 +740,8 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 static void Create_Fantasia(int client, float Loc[3])
 {
 	int color[3];
-	float Width[2]; Width[0] = fl_fantasia_radius*0.5; Width[1] = fl_fantasia_radius*0.5;
-	color = {0, 200, 255};
+	float Width[2]; Width[0] = fl_fantasia_radius*0.2; Width[1] = fl_fantasia_radius*0.2;
+	color = {0, 125, 180};
 	
 	float ang_Look[3];
 
@@ -994,7 +1001,7 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 	Radius *=Attributes_Get(weapon, 99, 1.0);
 	Radius *=Attributes_Get(weapon, 100, 1.0);
 	Laser.DoForwardTrace_Basic(Range);
-	float dps = 300.0;
+	float dps = 150.0;
 	dps *=Attributes_Get(weapon, 410, 1.0);
 	Check_StarfallAOE(client, Laser.End_Point, Radius, KRACTAL_KIT_STARFALL_JUMP_AMT-1, dps, true);
 
@@ -1111,11 +1118,19 @@ static Action Timer_StarfallIon(Handle Timer, DataPack pack)
 
 	return Plugin_Stop;
 }
+static Action SetTransmitHarvester(int entity, int target)
+{
+	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == target)
+		return Plugin_Continue;
+
+	return Plugin_Handled;
+}
+#define FRACTAL_HARVESTER_MAX_AMT 3
 enum struct Harvester_Enum
 {
 	int weapon;
 	float throttle;
-	int Enumerated_Ents[MAX_TARGETS_HIT];
+	int Enumerated_Ents[FRACTAL_HARVESTER_MAX_AMT];
 	bool Active;
 
 	float Lockout;
@@ -1140,7 +1155,7 @@ public void Kit_Fractal_Mana_Harvester(int client, int weapon, bool &result, int
 	if(struct_Harvester_Data[client].throttle > GetGameTime() + 10.0)
 		struct_Harvester_Data[client].throttle = 0.0;
 
-	for(int i=0 ; i < MAX_TARGETS_HIT ; i++)
+	for(int i=0 ; i < FRACTAL_HARVESTER_MAX_AMT ; i++)
 	{
 		struct_Harvester_Data[client].Enumerated_Ents[i] = 0;
 	}
@@ -1185,7 +1200,9 @@ static Action Mana_Harvester_Tick(int client)
 	if(struct_Harvester_Data[client].throttle > GameTime)
 		return Plugin_Continue;
 
-	struct_Harvester_Data[client].throttle = GameTime + 0.25;
+	float Time = 0.25 * Attributes_Get(weapon, 6, 1.0);
+
+	struct_Harvester_Data[client].throttle = GameTime + Time;
 
 	//we want to get like 10 entities infront of the player in a 45 degree angle within a set range.
 	//start with finding entities.
@@ -1193,7 +1210,7 @@ static Action Mana_Harvester_Tick(int client)
 
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0)*0.1);
-	float damage = 3.0 * Attributes_Get(weapon, 410, 1.0);
+	float damage = 9.0 * Attributes_Get(weapon, 410, 1.0);
 	if(Current_Mana[client] < mana_cost)
 	{
 		struct_Harvester_Data[client].Active = false;
@@ -1216,7 +1233,7 @@ static Action Mana_Harvester_Tick(int client)
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 		
-	for(int i=0 ; i < MAX_TARGETS_HIT ; i++)
+	for(int i=0 ; i < FRACTAL_HARVESTER_MAX_AMT ; i++)
 	{
 		struct_Harvester_Data[client].Enumerated_Ents[i] = 0;
 	}
@@ -1232,12 +1249,9 @@ static Action Mana_Harvester_Tick(int client)
 	bool raid = RaidbossIgnoreBuildingsLogic(1);
 
 	if(i_CurrentEquippedPerk[client] == 4)
-		mana_cost = RoundToFloor(mana_cost * 1.33);
+		mana_cost = RoundToFloor(mana_cost * 1.1);
 
-	int Amt = Pap(weapon_holding);
-	if(Amt < 3)
-		Amt = 3;
-	for(int i=0 ; i < MAX_TARGETS_HIT ; i++)
+	for(int i=0 ; i < FRACTAL_HARVESTER_MAX_AMT ; i++)
 	{
 		if(!struct_Harvester_Data[client].Enumerated_Ents[i])
 			break;	//we have run out of targets, abort loop.
@@ -1246,17 +1260,23 @@ static Action Mana_Harvester_Tick(int client)
 		//"effect_hand_l"
 		laser = ConnectWithBeam(client, struct_Harvester_Data[client].Enumerated_Ents[i], color[0], color[1], color[2], 5.0, 3.0, 2.0, BEAM_COMBINE_BLACK, _,_,"effect_hand_l");
 		
-		if(i <= Amt || LastMann)
-			if(Current_Mana[client] < max_mana[client]*1.2)
-				Current_Mana[client] += (raid ? RoundToFloor(mana_cost*2.0) : RoundToFloor(mana_cost*0.75));
+		if(Current_Mana[client] < max_mana[client]*1.2)
+			Current_Mana[client] += (raid ? RoundToFloor(mana_cost*2.0) : RoundToFloor(mana_cost*1.5));
 
 		fl_current_crystal_amt[client] += FRACTAL_KIT_HARVESTER_CRYSTALGAIN;
 
 		SDKHooks_TakeDamage(struct_Harvester_Data[client].Enumerated_Ents[i], client, client, damage, DMG_PLASMA);
 
-		damage *=0.8;
+		damage *=LASER_AOE_DAMAGE_FALLOFF;
+		
+		if(IsValidEntity(laser))
+		{
+			if(!LastMann)
+				SDKHook(laser, SDKHook_SetTransmit, SetTransmitHarvester);
 
-		CreateTimer(0.25, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(Time, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		
 	}
 	if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
 		fl_current_crystal_amt[client] = fl_max_crystal_amt[client];
@@ -1278,7 +1298,7 @@ static bool TraceEntityEnumerator_Fractal_Harvester(int entity, int client)
 	if(!IsTargetInfrontOfPlayer(client, entity))
 		return true;
 	
-	for(int i=0; i < MAX_TARGETS_HIT; i++)
+	for(int i=0; i < FRACTAL_HARVESTER_MAX_AMT; i++)
 	{
 		if(!struct_Harvester_Data[client].Enumerated_Ents[i])
 		{
@@ -1370,7 +1390,7 @@ public void Kit_Fractal_Primary_Cannon(int client, int weapon, bool &result, int
 		delay_hud[client] = 0.0;
 		b_cannon_animation_active[client] = true;
 		Initiate_Cannon(client, weapon);
-		Delete_Halo(client);
+		//Delete_Halo(client);
 	}
 }
 static void Kill_Cannon(int client)
@@ -1385,7 +1405,6 @@ static void Kill_Cannon(int client)
 	{
 		Attributes_Set(weapon, 698, 0.0);
 	}
-
 }
 
 static void Initiate_Cannon(int client, int weapon)
@@ -1448,7 +1467,6 @@ static void Fractal_Cannon_Tick(int client)
 	if(fl_fractal_turn_throttle[client] > GameTime)
 		return;
 	
-	
 	fl_fractal_turn_throttle[client] = GameTime + 0.05;
 
 	Turn_Animation(client, weapon_holding);
@@ -1498,8 +1516,8 @@ static void Hud(int client, int weapon)
 	if(fl_hud_timer[client] > GameTime)
 		return;
 
-	if(b_TwirlHairpins[client])
-		HaloManagment(client);
+	//if(b_TwirlHairpins[client])
+	//	HaloManagment(client);
 
 	fl_hud_timer[client] = GameTime + 0.5;
 
@@ -1586,12 +1604,12 @@ static void Hud(int client, int weapon)
 	PrintHintText(client, HUDText);
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 }
-#define FRACTAL_SHIELD_YAW 60.0
+#define FRACTAL_SHIELD_YAW 45.0
 float Player_OnTakeDamage_Fractal(int victim, float &damage, float damagePosition[3], int attacker)
 {
-	//if cannon is active, base 25% dmg resist.
+	//if cannon is active, base 20% dmg resist.
 	if(b_cannon_animation_active[victim])
-		damage *= 0.75;
+		damage *= 0.8;
 	else
 		return damage;
 
@@ -1642,7 +1660,7 @@ float Player_OnTakeDamage_Fractal(int victim, float &damage, float damagePositio
 	// now it's a simple check
 	if ((yawOffset >= -FRACTAL_SHIELD_YAW && yawOffset <= FRACTAL_SHIELD_YAW) || BlockAnyways)
 	{
-		damage *= 0.5;	//50% dmg resist forward of where the npc is looking. not the actual player.
+		damage *= 0.25;	//25% dmg resist forward of where the npc is looking. not the actual player.
 		
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{

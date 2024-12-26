@@ -383,7 +383,7 @@ static Action Cosmic_Heat_Tick(int client)
 	}
 	float GameTime = GetGameTime();
 	if(Cosmic_Terror_Hud_Delay[client] > GameTime)
-		Cosmic_Terror_Hud_Delay[client] = GameTime;
+		return Plugin_Continue;
 	
 	Cosmic_Terror_Hud_Delay[client] = GameTime + 0.5;
 
@@ -421,11 +421,11 @@ static Action Cosmic_Heat_Tick(int client)
 		//CPrintToChatAll("overheat: %i", fl_Cosmic_Heat[client]);
 		if(b_cosmic_overheat[client])	//if you overheat this thing, have fun cooling it down.
 		{
-			fl_Cosmic_Heat[client]-=2.0;
+			fl_Cosmic_Heat[client]-=2.5;
 		}
 		else
 		{
-			fl_Cosmic_Heat[client]-=6.0+(Cosmic_Terror_Pap[client]*1.25);
+			fl_Cosmic_Heat[client]-=7.0+(Cosmic_Terror_Pap[client]*1.25);
 		}
 	}
 	return Plugin_Continue;
