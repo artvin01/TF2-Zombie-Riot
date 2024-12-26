@@ -3176,9 +3176,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			damage = 0.0;
 
 			b_NoKnockbackFromSources[npc.index] = true;
-			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 
 			ReviveAll(true);
 
@@ -3232,9 +3232,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		b_NoKnockbackFromSources[npc.index] = true;
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 
 		int color[4]; 
 		Ruina_Color(color);

@@ -204,9 +204,9 @@ methodmap MedivalSonOfOsiris < CClotBody
 
 	//	b_CannotBeHeadshot[npc.index] = true;
 	//	b_CannotBeBackstabbed[npc.index] = true;
-		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 	//	Is_a_Medic[npc.index] = true; //cannot be healed
 		
 

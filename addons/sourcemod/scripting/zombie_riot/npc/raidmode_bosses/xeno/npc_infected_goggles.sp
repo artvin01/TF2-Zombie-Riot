@@ -753,7 +753,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				SetParent(npcally.index, npc.index, "");
 				b_NoGravity[npc.index] = true;
 				b_DoNotUnStuck[npc.index] = true;
-				ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+				ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);		
 				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
 				npc.SetVelocity({0.0,0.0,0.0});
 				GetEntPropVector(npcally.index, Prop_Data, "m_angRotation", eyePitch);

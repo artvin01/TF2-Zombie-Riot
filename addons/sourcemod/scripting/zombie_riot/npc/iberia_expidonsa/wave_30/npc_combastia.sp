@@ -129,7 +129,7 @@ methodmap IberiaCombastia < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(IberiaCombastia_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaCombastia_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(IberiaCombastia_ClotThink);
-		ApplyStatusEffect(npc.index, npc.index, "Thick Blood", FAR_FUTURE);
+		ApplyStatusEffect(npc.index, npc.index, "Thick Blood", 999999.0);	
 		
 		
 		npc.StartPathing();

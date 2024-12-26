@@ -1427,9 +1427,9 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 			npc.m_flSilvesterSlicerHappening = 0.0;	
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;

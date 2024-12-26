@@ -443,22 +443,22 @@ void Freeplay_SpawnEnemy(int entity)
 	//// BUFFS ////
 
 	if(HussarBuff)
-		ApplyStatusEffect(entity, entity, "Hussar's Warscream", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Hussar's Warscream", 999999.0);	
 
 	if(PernellBuff)
 		ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
 	
 	if(FusionBuff > 1)
-		ApplyStatusEffect(entity, entity, "Self Empowerment", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Self Empowerment", 999999.0);	
 	
 	if(FusionBuff == 1 || FusionBuff > 2)
-		ApplyStatusEffect(entity, entity, "Ally Empowerment", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Ally Empowerment", 999999.0);	
 	
 	if(OceanBuff > 1)
-		ApplyStatusEffect(entity, entity, "Oceanic Scream", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Oceanic Scream", 999999.0);	
 	
 	if(OceanBuff > 0)
-		ApplyStatusEffect(entity, entity, "Oceanic Singing", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Oceanic Singing", 999999.0);	
 
 	if(VoidBuff > 1)
 		ApplyStatusEffect(entity, entity, "Void Strength II", 12.0);
@@ -470,7 +470,7 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
 	
 	if(SquadBuff)
-		ApplyStatusEffect(entity, entity, "Squad Leader", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Squad Leader", 999999.0);	
 
 	if(Coffee)
 	{
@@ -492,47 +492,47 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Silenced", 10.0);
 
 	if(ProsperityDebuff > 2)
-		ApplyStatusEffect(entity, entity, "Prosperity III", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Prosperity III", 999999.0);	
 
 	if(ProsperityDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Prosperity II", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Prosperity II", 999999.0);	
 
 	if(ProsperityDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Prosperity I", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Prosperity I", 999999.0);	
 
 	if(StrangleDebuff > 2)
-		ApplyStatusEffect(entity, entity, "Stranglation III", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Stranglation III", 999999.0);	
 
 	if(StrangleDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Stranglation II", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Stranglation II", 999999.0);	
 
 	if(StrangleDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Stranglation I", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Stranglation I", 999999.0);	
 
 	if(IceDebuff > 2)
-		ApplyStatusEffect(entity, entity, "Near Zero", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Near Zero", 999999.0);	
 	
 	if(IceDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Cryo", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Cryo", 999999.0);	
 	
 	if(IceDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Freeze", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Freeze", 999999.0);	
 	
 	if(TeslarDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Teslar Electricution", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Teslar Electricution", 999999.0);	
 	
 	if(TeslarDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Teslar Shock", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Teslar Shock", 999999.0);	
 	
 	if(CrippleDebuff > 0)
 	{
-		ApplyStatusEffect(entity, entity, "Cripple", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Cripple", 999999.0);	
 		CrippleDebuff--;
 	}
 	
 	if(CudgelDebuff > 0)
 	{
-		ApplyStatusEffect(entity, entity, "Cudgelled", FAR_FUTURE);
+		ApplyStatusEffect(entity, entity, "Cudgelled", 999999.0);	
 		CudgelDebuff--;
 	}
 
@@ -560,7 +560,7 @@ void Freeplay_SpawnEnemy(int entity)
 		}
 		case 4:
 		{
-			ApplyStatusEffect(entity, entity, "Fluid Movement", FAR_FUTURE);	
+			ApplyStatusEffect(entity, entity, "Fluid Movement", 999999.0);		
 		}
 	}
 	fl_Extra_Speed[entity] *= SpeedMult;
