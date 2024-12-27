@@ -322,24 +322,57 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
 	
+	i_MeleeHitboxHit[client] = -1;
+	int HitTargetFilter = 0;
+	if(weapon > 0 && b_MeleeCanHeadshot[weapon])
+	{
+		Handle TempTrace;
+		TempTrace = TR_TraceRayFilterEx(vecSwingStart, ang, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+		if (TR_DidHit(TempTrace))
+		{
+			int target_temp = TR_GetEntityIndex(TempTrace);
+			//its confirmed to be a headshot.
+			if(target_temp > 0 && !b_CannotBeHeadshot[target_temp])
+			{
+				i_MeleeHitboxHit[client] = TR_GetHitGroup(TempTrace);
+				HitTargetFilter = target_temp;
+			}
+		} 	
+		delete TempTrace;
+	}
 	if(enemies_hit_aoe <= 1)
 	{
 		//not a cleave.
 		if(!Hit_ally)
 		{
-			// See if we hit anything.
-			/*
-				Inacse we want to hit, hitboxes.
-			*/
-
-			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
-			if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
+			bool FireNormalTrace = true;
+			if(HitTargetFilter)
 			{
-				delete trace;
-				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
-				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
-			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
+				BulletTraceFilterEntity(HitTargetFilter);
+				trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
+				if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
+				{
+					delete trace;
+					trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+					FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
+				}
+				if(HitTargetFilter == TR_GetEntityIndex(trace))
+				{
+					FireNormalTrace = false;
+				}
+				BulletTraceFilterEntity(0);
 			}
+			if(FireNormalTrace)
+			{
+				trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
+				if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
+				{
+					delete trace;
+					trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+					FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
+				}
+			}
+
 		}
 		else
 		{
@@ -350,7 +383,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTraceAlly, client );
 				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
-			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 			}			
 		}		
 	}
@@ -369,30 +401,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
 				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client);
-			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 			}
-		}
-	}
-	i_MeleeHitboxHit[client] = -1;
-	if(weapon > 0 && b_MeleeCanHeadshot[weapon])
-	{
-		int targetGet = TR_GetEntityIndex(trace);
-		//We hit an enemy, but did we aim at their head?
-		if(targetGet > 0 && !b_CannotBeHeadshot[targetGet])
-		{
-			Handle TempTrace;
-			TempTrace = TR_TraceRayFilterEx(vecSwingStart, ang, MASK_SHOT, RayType_Infinite, BEAM_TraceUsersConfirm_Melee, targetGet);
-			if (TR_DidHit(TempTrace))
-			{
-				int target_temp = TR_GetEntityIndex(TempTrace);
-				//its confirmed to hit the same target.
-				if (target_temp == targetGet)
-				{
-					//its confirmed to be a headshot.
-					i_MeleeHitboxHit[client] = TR_GetHitGroup(TempTrace);
-				}
-			} 	
-			delete TempTrace;
 		}
 	}
 }
@@ -934,14 +943,4 @@ void AOEHammerExtraLogic(int entity, int victim, float damage, int weapon)
 	{
 		damage *= 1.15;
 	}	
-}
-
-
-static bool BEAM_TraceUsersConfirm_Melee(int entity, int contentsMask, int confirmedTarget)
-{
-	if(entity == confirmedTarget)
-	{
-		return true;
-	}
-	return false;
 }
