@@ -119,27 +119,25 @@ static void HaloManagment(int client, bool force = false)
 	
 	if(IsValidEntity(halo_particle))
 		return;
-
+	/*
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-
+	
 	if(!IsValidEntity(viewmodelModel))
 		return;
-
+	*/
 	if(AtEdictLimit(EDICT_PLAYER))
 	{
 		Delete_Halo(client);
 		return;
 	}
 
-	float pos[3]; GetClientAbsOrigin(client, pos);
-	pos[2] += 5.0;
-	int entity = ParticleEffectAt(pos, "utaunt_mysticfusion_base", -1.0);
-	if(entity > MaxClients)
-	{
-		SetParent(client, entity);
-		i_cosmetic_effect[client] = EntIndexToEntRef(entity);
-	}
+	float flPos[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+	flPos[2] += 2.0;
+	int particle = ParticleEffectAt(flPos, "utaunt_treespiral_purple_base", -1.0);
+	SetParent(client, particle);
+	i_cosmetic_effect[client] = EntIndexToEntRef(particle);
 }
 static void Delete_Halo(int client)
 {
@@ -241,9 +239,12 @@ static void Turn_Animation(int client, int weapon)
 		turn_speed *=1.2;
 	
 	npc.FaceTowards(fl_fractal_last_known_loc[client], turn_speed);
+	float VecSelfNpc2[3]; 
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecSelfNpc2);
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float Tele_Loc[3]; Tele_Loc = Start_Loc; Tele_Loc[2]-=37.0;
-	TeleportEntity(npc.index, Tele_Loc, NULL_VECTOR, {0.0, 0.0, 0.0});	//make 200% sure it follows the player.
+
+	TeleportEntity(npc.index, VecSelfNpc2, NULL_VECTOR, {0.0, 0.0, 0.0});	//make 200% sure it follows the player.
 
 	int iPitch = npc.LookupPoseParameter("body_pitch");
 	if(iPitch < 0)
@@ -1096,10 +1097,13 @@ static Action Timer_StarfallIon(Handle Timer, DataPack pack)
 
 	return Plugin_Stop;
 }
-static Action SetTransmitHarvester(int entity, int target)
+public Action SetTransmitHarvester(int entity, int client)
 {
-	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == target)
+	int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+	if(owner == client)
+	{
 		return Plugin_Continue;
+	}
 
 	return Plugin_Handled;
 }
@@ -1188,7 +1192,7 @@ static Action Mana_Harvester_Tick(int client)
 
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0)*0.1);
-	float damage = 9.0 * Attributes_Get(weapon, 410, 1.0);
+	float damage = 7.5 * Attributes_Get(weapon, 410, 1.0);
 	if(Current_Mana[client] < mana_cost)
 	{
 		struct_Harvester_Data[client].Active = false;
@@ -1250,7 +1254,10 @@ static Action Mana_Harvester_Tick(int client)
 		if(IsValidEntity(laser))
 		{
 			if(!LastMann)
+			{
+				i_OwnerEntityEnvLaser[laser] = EntIndexToEntRef(client);
 				SDKHook(laser, SDKHook_SetTransmit, SetTransmitHarvester);
+			}
 
 			CreateTimer(Time, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -1494,8 +1501,8 @@ static void Hud(int client, int weapon)
 	if(fl_hud_timer[client] > GameTime)
 		return;
 
-	//if(b_TwirlHairpins[client])
-	//	HaloManagment(client);
+	if(b_TwirlHairpins[client])
+		HaloManagment(client);
 
 	fl_hud_timer[client] = GameTime + 0.5;
 

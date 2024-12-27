@@ -790,7 +790,7 @@ public void Zealot_Hud_Logic(int client, int weapon, bool ignoreCD)
 	{
 		if(Zealot_BonusMeleeDamageWearoff[client] > GetGameTime())
 		{
-			Format(ZealotHud, sizeof(ZealotHud), "%s\nCalloused Strikes (x.%1f)", ZealotHud, Zealot_BonusMeleeDamage[client]);
+			Format(ZealotHud, sizeof(ZealotHud), "%s\nCalloused Strikes (x%1.f)", ZealotHud, Zealot_BonusMeleeDamage[client]);
 		}
 	}
 	
