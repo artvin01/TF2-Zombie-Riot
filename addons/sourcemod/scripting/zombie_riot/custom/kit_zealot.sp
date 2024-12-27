@@ -608,7 +608,7 @@ public void Client_ZealotThink(int client)
 		if((buttons & IN_BACK))
 			AngleDeviate += 45.0;
 		else if((buttons & IN_FORWARD))
-			AngleDeviate += 45.0;
+			AngleDeviate -= 45.0;
 		//Dodge to left
 	}
 	if((buttons & IN_MOVERIGHT))
