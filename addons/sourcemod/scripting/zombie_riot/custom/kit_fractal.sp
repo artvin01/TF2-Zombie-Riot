@@ -153,28 +153,6 @@ static void Delete_Halo(int client)
 	}
 }
 
-void Fractal_Kit_MapStart()
-{
-	Zero(fl_max_crystal_amt);
-	Zero(fl_fractal_laser_trace_throttle);
-	Zero(fl_hud_timer);
-	Zero(b_cannon_animation_active);
-	Zero(fl_animation_cooldown);
-	Zero(f_AniSoundSpam);
-	Zero(fl_current_crystal_amt);
-	PrecacheSound(FRACTAL_KIT_SHIELDSOUND1, true);
-	PrecacheSound(FRACTAL_KIT_SHIELDSOUND2, true);
-}
-void Kit_Fractal_ResetRound()
-{	
-	Zero(fl_max_crystal_amt);
-	Zero(f_AniSoundSpam);
-	Zero(fl_fractal_laser_trace_throttle);
-	Zero(fl_hud_timer);
-	Zero(fl_animation_cooldown);
-	Zero(fl_current_crystal_amt);
-}
-
 static void Initiate_Animation(int client, int weapon)
 {
 	Attributes_Set(weapon, 698, 1.0);
@@ -1680,6 +1658,36 @@ float Player_OnTakeDamage_Fractal(int victim, float &damage, float damagePositio
 	}
 	return damage;
 	
+}
+void Fractal_Kit_MapStart()
+{
+	Zero(fl_max_crystal_amt);
+	Zero(fl_fractal_laser_trace_throttle);
+	Zero(fl_hud_timer);
+	Zero(b_cannon_animation_active);
+	Zero(fl_animation_cooldown);
+	Zero(f_AniSoundSpam);
+	Zero(fl_current_crystal_amt);
+	PrecacheSound(FRACTAL_KIT_SHIELDSOUND1, true);
+	PrecacheSound(FRACTAL_KIT_SHIELDSOUND2, true);
+	for(int i=0 ; i < MAXTF2PLAYERS ; i++)
+	{
+		struct_Harvester_Data[i].Lockout = 0.0;
+	}
+}
+void Kit_Fractal_ResetRound()
+{	
+	Zero(fl_max_crystal_amt);
+	Zero(f_AniSoundSpam);
+	Zero(fl_fractal_laser_trace_throttle);
+	Zero(fl_hud_timer);
+	Zero(fl_animation_cooldown);
+	Zero(fl_current_crystal_amt);
+
+	for(int i=0 ; i < MAXTF2PLAYERS ; i++)
+	{
+		struct_Harvester_Data[i].Lockout = 0.0;
+	}
 }
 
 //stuff that im probably gonna use a lot in other future weapons.
