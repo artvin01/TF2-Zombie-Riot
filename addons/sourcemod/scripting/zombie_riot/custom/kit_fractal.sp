@@ -1515,7 +1515,7 @@ static void Hud(int client, int weapon)
 				}
 				else
 				{
-					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Activate ĄOverDriveČ [Cost:%.0f]",HUDText, FRACTAL_KIT_PASSIVE_OVERDRIVE_COST);
+					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Activate ĄOverDriveČ [Cost:%.0f/s]",HUDText, FRACTAL_KIT_PASSIVE_OVERDRIVE_COST*10.0);
 				}
 				
 			}
