@@ -261,6 +261,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
 		f_GogglesHurtTeleport[npc.index] = 0.0;
 		i_GogglesHurtTalkMessage[npc.index] = 0;
+		WaldchEarsApply(npc.index);
 
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -1129,6 +1130,7 @@ public void RaidbossBlueGoggles_NPCDeath(int entity)
 	
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();
+	ExpidonsaRemoveEffects(entity);
 	
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.
@@ -1202,4 +1204,80 @@ bool IsPartnerGivingUpGoggles(int entity)
 		return true;
 
 	return b_angered_twice[entity];
+}
+
+
+void WaldchEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
+{
+	int red = 255;
+	int green = 25;
+	int blue = 25;
+	float flPos[3];
+	float flAng[3];
+	int particle_ears1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	
+	//fist ear
+	float DoApply[3];
+	DoApply = {0.0,-2.5,-5.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears2 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,-6.0,-10.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears3 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,-8.0,3.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears4 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	
+	//fist ear
+	DoApply = {0.0,2.5,-5.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears2_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,6.0,-10.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears3_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,8.0,3.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears4_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+
+	SetParent(particle_ears1, particle_ears2, "",_, true);
+	SetParent(particle_ears1, particle_ears3, "",_, true);
+	SetParent(particle_ears1, particle_ears4, "",_, true);
+	SetParent(particle_ears1, particle_ears2_r, "",_, true);
+	SetParent(particle_ears1, particle_ears3_r, "",_, true);
+	SetParent(particle_ears1, particle_ears4_r, "",_, true);
+	Custom_SDKCall_SetLocalOrigin(particle_ears1, flPos);
+	SetEntPropVector(particle_ears1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(iNpc, particle_ears1, attachment,_);
+
+
+	int Laser_ears_1 = ConnectWithBeamClient(particle_ears4, particle_ears2, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	int Laser_ears_2 = ConnectWithBeamClient(particle_ears4, particle_ears3, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+
+	int Laser_ears_1_r = ConnectWithBeamClient(particle_ears4_r, particle_ears2_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[iNpc][50] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][51] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][52] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][53] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][54] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][55] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][56] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][57] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][58] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
 }

@@ -386,7 +386,7 @@ public void LastKnight_ClotThink(int iNPC)
 			if(distance < npc.GetLeadRadius())
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos, true);
 			}
 			else 
 			{

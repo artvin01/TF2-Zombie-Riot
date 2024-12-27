@@ -650,7 +650,7 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 	
 	damage *= DamageRes;	
 	if(length < 1)
-		delete E_AL_StatusEffects[victim];
+		delete E_AL_StatusEffects[attacker];
 }
 
 //Damage vulnerabilities, when i get HURT, this means i TAKE more damage

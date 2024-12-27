@@ -714,6 +714,8 @@ methodmap Twirl < CClotBody
 		}
 		
 		b_allow_final[npc.index] = StrContains(data, "final_item") != -1;
+		TwirlEarsApply(npc.index,_,0.75);
+
 
 		if(b_allow_final[npc.index])
 		{
@@ -3395,6 +3397,7 @@ static void NPC_Death(int entity)
 	Kill_Abilities(npc);
 
 	Ruina_NPCDeath_Override(npc.index);
+	ExpidonsaRemoveEffects(entity);
 
 
 	int ent = EntRefToEntIndex(i_hand_particles[npc.index]);
@@ -3568,4 +3571,80 @@ void Twirl_OnStellaKarlasDeath(int karlas)
 	Karlas karl = view_as<Karlas>(karlas);
 	karl.m_flNextRangedBarrage_Singular -= 15.0;
 	stella.m_bKarlasRetreat = false;
+}
+
+
+void TwirlEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
+{
+	int red = 255;
+	int green = 255;
+	int blue = 255;
+	float flPos[3];
+	float flAng[3];
+	int particle_ears1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	
+	//fist ear
+	float DoApply[3];
+	DoApply = {0.0,-2.5,-7.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears2 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,0.0,-11.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears3 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,-12.0,-7.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears4 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	
+	//fist ear
+	DoApply = {0.0,2.5,-7.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears2_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,0.0,-11.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears3_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,12.0,-7.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears4_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+
+	SetParent(particle_ears1, particle_ears2, "",_, true);
+	SetParent(particle_ears1, particle_ears3, "",_, true);
+	SetParent(particle_ears1, particle_ears4, "",_, true);
+	SetParent(particle_ears1, particle_ears2_r, "",_, true);
+	SetParent(particle_ears1, particle_ears3_r, "",_, true);
+	SetParent(particle_ears1, particle_ears4_r, "",_, true);
+	Custom_SDKCall_SetLocalOrigin(particle_ears1, flPos);
+	SetEntPropVector(particle_ears1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(iNpc, particle_ears1, attachment,_);
+
+
+	int Laser_ears_1 = ConnectWithBeamClient(particle_ears4, particle_ears2, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	int Laser_ears_2 = ConnectWithBeamClient(particle_ears4, particle_ears3, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+
+	int Laser_ears_1_r = ConnectWithBeamClient(particle_ears4_r, particle_ears2_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[iNpc][50] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][51] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][52] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][53] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][54] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][55] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][56] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][57] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][58] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
 }

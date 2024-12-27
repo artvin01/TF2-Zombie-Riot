@@ -1645,7 +1645,7 @@ float Player_OnTakeDamage_Fractal(int victim, float &damage, float damagePositio
 	// now it's a simple check
 	if ((yawOffset >= -FRACTAL_SHIELD_YAW && yawOffset <= FRACTAL_SHIELD_YAW) || BlockAnyways)
 	{
-		damage *= 0.25;	//25% dmg resist forward of where the npc is looking. not the actual player.
+		damage *= 0.75;	//25% dmg resist forward of where the npc is looking. not the actual player.
 		
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
