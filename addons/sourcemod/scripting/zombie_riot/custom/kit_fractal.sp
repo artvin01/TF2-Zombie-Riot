@@ -29,7 +29,7 @@ static float f_AniSoundSpam[MAXTF2PLAYERS];
 #define FRACTAL_KIT_STARFALL_COST 75.0
 #define FRACTAL_KIT_FANTASIA_ONHIT_LOSS 0.8
 #define KRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
-#define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.05
+#define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.25
 static float fl_max_crystal_amt[MAXTF2PLAYERS];
 static float fl_current_crystal_amt[MAXTF2PLAYERS];
 
@@ -896,7 +896,7 @@ static void OnFantasiaHit(int client, int target, int damagetype, float damage)
 	float dps = fl_fantasia_damage[client]*fl_fantasia_targetshit[client];
 	fl_fantasia_targetshit[client] *= FRACTAL_KIT_FANTASIA_ONHIT_LOSS;
 	SDKHooks_TakeDamage(target, client, client, dps, DMG_PLASMA);
-	fl_current_crystal_amt[client] +=FRACTAL_KIT_FANTASIA_GAIN;
+	fl_current_crystal_amt[client] += (RaidbossIgnoreBuildingsLogic(1) ? FRACTAL_KIT_FANTASIA_GAIN * 4.0 : FRACTAL_KIT_FANTASIA_GAIN);
 
 	if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
 		fl_current_crystal_amt[client] = fl_max_crystal_amt[client];
@@ -1241,7 +1241,7 @@ static Action Mana_Harvester_Tick(int client)
 		if(Current_Mana[client] < max_mana[client]*1.2)
 			Current_Mana[client] += (raid ? RoundToFloor(mana_cost*2.0) : RoundToFloor(mana_cost*1.5));
 
-		fl_current_crystal_amt[client] += FRACTAL_KIT_HARVESTER_CRYSTALGAIN;
+		fl_current_crystal_amt[client] += (raid ? FRACTAL_KIT_HARVESTER_CRYSTALGAIN * 2.0 : FRACTAL_KIT_HARVESTER_CRYSTALGAIN);
 
 		SDKHooks_TakeDamage(struct_Harvester_Data[client].Enumerated_Ents[i], client, client, damage, DMG_PLASMA);
 
