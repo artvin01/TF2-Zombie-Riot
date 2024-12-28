@@ -554,13 +554,14 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 				/*
 					//When the sound is first played, it has an ugly ass reverb to it, this fixes it.
 				*/
-				if(IsValidClient(client))
+				if(!DoingSoundFix[client])
 				{
-					EmitCustomToClient(client, file, client, SNDCHAN_STATIC, .volume = 0.01);
-					DataPack pack1;
-					CreateDataTimer(0.5, Timer_FixSoundsCancelThem, pack1, TIMER_FLAG_NO_MAPCHANGE);
-					pack1.WriteString(file);
-					pack1.WriteCell(EntIndexToEntRef(client));
+					DataPack pack2;
+					CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
+					pack2.WriteCell(0);
+					pack2.WriteCell(EntIndexToEntRef(client));
+					pack2.WriteCell(0);
+					DoingSoundFix[client] = true;
 				}
 				SoundLevel[client]++;
 			}
