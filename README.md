@@ -123,6 +123,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 
 ## Optional plugins
 - [Max speed unlocker](https://github.com/FlaminSarge/tf_maxspeed_patch) (Used for zealot, although you dont need it, but i recommend it.)
+Set this to 720.0
 ## Credits
 
 Current coders that in anyway actively helped, in order of how much:
