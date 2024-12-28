@@ -1587,7 +1587,8 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if(!IsInvuln(target))
-			TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+			if(!HasSpecificBuff(target, "Fluid Movement"))
+				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
@@ -1819,10 +1820,9 @@ static bool Victoria_Support(Atomizer npc)
 		TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[npc.index]), position, NULL_VECTOR, NULL_VECTOR);
 		position[2] += 700.0;
 		
-		b_ThisNpcIsSawrunner[npc.index] = true;
-		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
 		Explode_Logic_Custom(100.0*RaidModeScaling, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
-		b_ThisNpcIsSawrunner[npc.index] = false;
+		
 		ParticleEffectAt(position, "hightower_explosion", 1.0);
 		i_ExplosiveProjectileHexArray[npc.index] = 0; 
 		npc.PlayBoomSound();

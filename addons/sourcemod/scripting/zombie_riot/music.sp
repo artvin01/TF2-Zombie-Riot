@@ -246,8 +246,15 @@ void Music_EndLastmann()
 		{
 			if(IsClientInGame(client))
 			{
-				if(Yakuza_Lastman())
-					StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/yakuza_lastman.mp3", 2.0);
+				switch(Yakuza_Lastman())
+				{
+					case 1:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/yakuza_lastman.mp3", 2.0);
+					case 2:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/zealot_lastman.mp3", 2.0);
+					case 3:
+						StopCustomSound(client, SNDCHAN_STATIC, RAIDBOSS_TWIRL_THEME, 2.0);
+				}
 
 				SetMusicTimer(client, 0);
 				StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
@@ -265,7 +272,7 @@ void Music_EndLastmann()
 			}
 		}
 		LastMann = false;
-		Yakuza_Lastman(false);
+		Yakuza_Lastman(0);
 	}
 }
 
@@ -686,15 +693,28 @@ void Music_PostThink(int client)
 		
 		if(LastMann)
 		{
-			if(Yakuza_Lastman())
+			switch(Yakuza_Lastman())
 			{
-				EmitCustomToClient(client, "#zombiesurvival/yakuza_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				SetMusicTimer(client, GetTime() + 163);		
-			}
-			else
-			{
-				EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				SetMusicTimer(client, GetTime() + 120);		
+				case 1:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/yakuza_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					SetMusicTimer(client, GetTime() + 163);		
+				}
+				case 2:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/zealot_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					SetMusicTimer(client, GetTime() + 115);		
+				}
+				case 3:
+				{
+					EmitCustomToClient(client, RAIDBOSS_TWIRL_THEME,client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					SetMusicTimer(client, GetTime() + 285);
+				}
+				default:
+				{	
+					EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					SetMusicTimer(client, GetTime() + 120);	
+				}
 			}
 		}
 		else if(f_intencity < 1.0)

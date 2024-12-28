@@ -100,9 +100,9 @@ methodmap VictorianFactory < CClotBody
 		npc.m_flMeleeArmor = 0.0;
 		npc.m_flRangedArmor = 0.0;
 		b_IgnorePlayerCollisionNPC[npc.index] = true;
-		b_CannotBeStunned[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeSlowed[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		npc.m_bDissapearOnDeath = true;
 		i_NpcIsABuilding[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -211,7 +211,7 @@ static void ClotThink(int iNPC)
 					{
 						float MaxHealth = float(ReturnEntityMaxHealth(entity));
 						float damage=(MaxHealth*2.0);
-						SDKHooks_TakeDamage(entity, npc.index, npc.index, damage, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+						SDKHooks_TakeDamage(entity, npc.index, npc.index, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 					}
 				}
 			}
@@ -224,7 +224,7 @@ static void ClotThink(int iNPC)
 					if(distance<=200.0)
 					{
 						int health = GetClientHealth(target);
-						SDKHooks_TakeDamage(target, npc.index, npc.index, float(health)*10.0, DMG_SLASH|DMG_CRIT);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, float(health)*10.0, DMG_TRUEDAMAGE|DMG_CRIT);
 					}
 				}
 			}

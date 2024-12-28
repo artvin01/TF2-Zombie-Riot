@@ -535,7 +535,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 
 					npc.PlaySnapSound();
 					b_NoGravity[client] = true;
-					b_CannotBeKnockedUp[client] = true;
+					ApplyStatusEffect(client, client, "Solid Stance", 999999.0);	
 					npc.SetVelocity({0.0,0.0,0.0});
 					if(IsValidClient(client))
 					{
@@ -616,7 +616,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 					else
 					{
 						b_NoGravity[Enemy_I_See] = true;
-						b_CannotBeKnockedUp[Enemy_I_See] = true;
+						ApplyStatusEffect(Enemy_I_See, Enemy_I_See, "Solid Stance", 999999.0);	
 						npcenemy.SetVelocity({0.0,0.0,0.0});
 					}
 					f_TankGrabbedStandStill[npcenemy.index] = GetGameTime() + 5.5;
@@ -933,8 +933,8 @@ public void RaidbossMrX_NPCDeath(int entity)
 	
 	if(IsValidEntity(client))
 	{
-		b_NoGravity[client] = true;
-		b_CannotBeKnockedUp[client] = true;
+		b_NoGravity[client] = false;
+		RemoveSpecificBuff(client, "Solid Stance");
 		npc.SetVelocity({0.0,0.0,0.0});
 		if(IsValidClient(client))
 		{
@@ -1021,7 +1021,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 			{
 				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
 				{
-					ApplyStatusEffect(npc.index, other, "Hussar's Warscream", FAR_FUTURE);
+					ApplyStatusEffect(npc.index, other, "Hussar's Warscream", 999999.0);	
 				}
 			}
 		}

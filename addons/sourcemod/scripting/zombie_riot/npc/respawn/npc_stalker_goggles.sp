@@ -567,7 +567,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 	if(attacker > 0 && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
 		return Plugin_Changed;
 	
-	if(damagetype & DMG_DROWN)
+	if(damagetype & DMG_OUTOFBOUNDS)
 	{
 		damage *= 10000.0;
 		return Plugin_Changed;

@@ -43,7 +43,7 @@ enum struct BrewEnum
 	float EntMulti[TINKER_LIMIT];
 }
 
-static const float Cooldowns[] = { 270.0, 240.0, 210.0, 180.0, 150.0, 120.0 };
+static const float Cooldowns[] = { 270.0, 240.0, 210.0, 180.0, 150.0, 120.0, 90.0 };
 
 static float Aspects[MAXTF2PLAYERS][Aspect_MAX];
 static int AspectMenu[MAXTF2PLAYERS][3];

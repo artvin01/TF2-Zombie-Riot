@@ -312,7 +312,7 @@ public Action Saga_DelayedExplode(Handle timer, int userid)
 			damage *= Attributes_Get(weapon, 2, 1.0);
 			
 			int value = i_ExplosiveProjectileHexArray[client];
-			i_ExplosiveProjectileHexArray[client] = EP_DEALS_SLASH_DAMAGE;
+			i_ExplosiveProjectileHexArray[client] = EP_DEALS_CLUB_DAMAGE;
 
 			b_LagCompNPC_No_Layers = true;
 			StartLagCompensation_Base_Boss(client);						
@@ -326,7 +326,7 @@ public Action Saga_DelayedExplode(Handle timer, int userid)
 
 void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, int damagetype)
 {
-	if(damagetype & DMG_SLASH)
+	if(damagetype & DMG_TRUEDAMAGE)
 	{
 		return;
 	}
@@ -362,7 +362,7 @@ public Action Saga_ExcuteTarget(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
 	if(entity != INVALID_ENT_REFERENCE)
-		SDKHooks_TakeDamage(entity, 0, 0, 9999.9, DMG_SLASH);
+		SDKHooks_TakeDamage(entity, 0, 0, 9999.9, DMG_TRUEDAMAGE);
 	
 	return Plugin_Continue;
 }
@@ -436,7 +436,7 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], 0, SNDCHAN_AUTO, 90, _,_,GetRandomInt(80,110),-1,VicLoc);
 		float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
-		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_SLASH, weapon, damage_force, VicLoc, _, _);
+		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_TRUEDAMAGE, weapon, damage_force, VicLoc, _, _);
 	}
 }
 

@@ -399,14 +399,14 @@ public void VictoriaTaser_Rocket_Particle_StartTouch(int entity, int target)
 			if(NpcStats_VictorianCallToArms(entity))
 			{
 				ApplyStatusEffect(owner, target, "Teslar Electricution", 4.0);
-
-				TF2_StunPlayer(target, 1.0, 0.8, TF_STUNFLAG_SLOWDOWN);
+				if(!HasSpecificBuff(target, "Fluid Movement"))
+					TF2_StunPlayer(target, 1.0, 0.8, TF_STUNFLAG_SLOWDOWN);
 			}
 			else
 			{
 				ApplyStatusEffect(owner, target, "Teslar Electricution", 3.0);	
-
-				TF2_StunPlayer(target, 1.0, 0.8, TF_STUNFLAG_SLOWDOWN);
+				if(!HasSpecificBuff(target, "Fluid Movement"))
+					TF2_StunPlayer(target, 1.0, 0.8, TF_STUNFLAG_SLOWDOWN);
 			}
 		}
 

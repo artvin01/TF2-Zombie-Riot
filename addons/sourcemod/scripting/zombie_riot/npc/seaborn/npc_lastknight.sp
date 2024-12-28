@@ -386,7 +386,7 @@ public void LastKnight_ClotThink(int iNPC)
 			if(distance < npc.GetLeadRadius())
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos, true);
 			}
 			else 
 			{
@@ -493,7 +493,8 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 	}
 	else if(!TF2_IsPlayerInCondition(attacker, TFCond_Dazed))
 	{
-		TF2_StunPlayer(attacker, 3.0, 0.8, TF_STUNFLAG_SLOWDOWN);
+		if(!HasSpecificBuff(attacker, "Fluid Movement"))
+			TF2_StunPlayer(attacker, 3.0, 0.8, TF_STUNFLAG_SLOWDOWN);
 
 		if(IsValidEntity(weapon))
 		{

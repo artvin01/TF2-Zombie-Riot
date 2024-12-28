@@ -128,8 +128,10 @@ static char gGlow1;	//blue
 
 #define TWIRL_MAGIA_OVERFLOW_DURATION 8.0
 
+static bool PrecacheTwirl;
 void Twirl_OnMapStart_NPC()
 {
+	PrecacheTwirl = false;
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Twirl");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_twirl");
@@ -139,8 +141,16 @@ void Twirl_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "twirl"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = true;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
-	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 	NPC_Add(data);
+}
+
+void PrecacheTwirlMusic()
+{
+	if(PrecacheTwirl)
+		return;
+
+	PrecacheTwirl = true;
+	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 }
 static void ClotPrecache()
 {
@@ -163,6 +173,7 @@ static void ClotPrecache()
 	PrecacheSound(TWIRL_COSMIC_GAZE_LOOP_SOUND1, true);
 	PrecacheSound(TWIRL_COSMIC_GAZE_END_SOUND1, true);
 	PrecacheSound(TWIRL_COSMIC_GAZE_END_SOUND2, true);
+	PrecacheTwirlMusic();
 
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM);
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM1);
@@ -309,7 +320,8 @@ methodmap Twirl < CClotBody
 		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
 		TE_SendToAll();
 
-		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Predicted_Pos);
+		Ruina_IonSoundInvoke(Predicted_Pos);
+		
 		DataPack pack;
 		CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(this.index));
@@ -702,6 +714,8 @@ methodmap Twirl < CClotBody
 		}
 		
 		b_allow_final[npc.index] = StrContains(data, "final_item") != -1;
+		TwirlEarsApply(npc.index,_,0.75);
+
 
 		if(b_allow_final[npc.index])
 		{
@@ -1082,6 +1096,11 @@ static void ClotThink(int iNPC)
 		}
 		fl_magia_overflow_recharge[npc.index] -= 15.0;
 		npc.m_flNextTeleport -= 10.0;
+
+		b_NoKnockbackFromSources[npc.index] = false;
+		RemoveSpecificBuff(npc.index, "Clear Head");
+		RemoveSpecificBuff(npc.index, "Solid Stance");
+		RemoveSpecificBuff(npc.index, "Fluid Movement");
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
@@ -1626,7 +1645,8 @@ static void lunar_Radiance_Tick(int iNPC)
 	{
 		if(enemy_2[i])
 		{
-			i_te_used+=8;
+			//the actual amount of TE created is less then 9, doing 9 will allow for a bit of room just incase.
+			i_te_used+=9;
 			float Radius = (npc.Anger ? 225.0 : 150.0);
 			float dmg = Modify_Damage(-1, 12.0);
 			if(i_te_used > 31)
@@ -2744,9 +2764,9 @@ static Action Retreat_Laser_Tick(int iNPC)
 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
-	Laser.Damage = Modify_Damage(-1, 15.0);
+	Laser.Damage = Modify_Damage(-1, 10.0);
 	Laser.Radius = Radius;
-	Laser.Bonus_Damage = Modify_Damage(-1, 15.0)*6.0;
+	Laser.Bonus_Damage = Modify_Damage(-1, 10.0)*6.0;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage();
 
@@ -2944,6 +2964,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 		return Plugin_Stop;
 	}
 	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 0.25);
+	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 
 	npc.m_flSpeed = 0.0;	//DON'T MOVE
 
@@ -3138,7 +3159,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(IsValidClient(attacker))
 	{
 		//doing it via "damage" instead of instances of damage so a player with a cheap high firerate weapon cant trick twirl into thinking they are a melee when they switch to a hyper bursty slow attacking weapon.
-		if(damagetype & DMG_SLASH || damagetype & DMG_CLUB)
+		if(damagetype & DMG_CLUB)
 			fl_player_weapon_score[attacker]+=damage;
 		else
 			fl_player_weapon_score[attacker]-=damage;
@@ -3156,6 +3177,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			npc.m_flNextThinkTime = FAR_FUTURE;
 			b_NpcIsInvulnerable[npc.index] = true;
 			damage = 0.0;
+
+			b_NoKnockbackFromSources[npc.index] = true;
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 
 			ReviveAll(true);
 
@@ -3208,6 +3234,10 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		RaidModeScaling *= 1.35;
 
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+		b_NoKnockbackFromSources[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 
 		int color[4]; 
 		Ruina_Color(color);
@@ -3267,13 +3297,14 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
+		case WEAPON_MAGNESIS: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "I've had it up to here MISTER {gold}%N{snow}.", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "How would you feel {gold}%N{snow} if I grabbed YOU?", client);}
 		
 		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, {gold}%N{snow}, you're trying to copy the Machine?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, how foolish {gold}%N{snow} Blitzkrieg was a poor mistake to copy...", client);}	//IT ACTUALLY WORKS, LMFAO
 		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, the Cosmic Terror, haven't seen that relic in a long while"); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "The moon is a deadly laser, am I right {gold}%N{snow}?",client);}
 		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, {gold}%N{snow}, Those drones, {crimson}how cute...", client); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "I applaud your efforts {gold}%N{snow} for trying to use the Lantean staff here...", client);}
 		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s a little {aqua}Motivated", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "Go fourth {gold}%N{snow}, AND BECOME {aqua}THE STORM THAT IS APROACHING{crimson}!", client);}
 		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, dual energy Pylons, nice choice {gold}%N", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "So, are you Team {aqua}Particle Cannon{snow} or Team{orange} Particle Beam{gold} %N{snow}?", client);}	
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh how {crimson}cute{gold} %N{snow}, you're using {crimson}Karlas's{snow} Old blade", client); 			case 1: Format(Text_Lines, sizeof(Text_Lines), "The Fantasy blade is quite the weapon, {gold}%N{snow} but you're not using it correctly.", client);}	
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh how {crimson}cute{gold} %N{snow}, you're using {crimson}Karlas's{snow} Old blade", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "The Fantasy blade is quite the weapon, {gold}%N{snow} but you're not using it correctly.", client);}	
 		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s being a {aqua}Quincy{snow}, quick call the {crimson}Shinigami{snow}!", client);	case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, what a shame {gold}%N{snow} Here I thought you were a true {aqua}Quincy", client);}	
 		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "That laser is still quite young {gold}%N{snow} It needs more upgrades",client); 						case 1: Format(Text_Lines, sizeof(Text_Lines), "Your Prismatic Laser has potential {gold}%N{snow}!", client);}	
 		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "I see, {gold}%N{snow}, You decided to go down the pulse path!", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I do quite enjoy a faster pulsating laser, just like you {gold}%N{snow} by the looks of it", client);}	
@@ -3284,8 +3315,36 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 
 		/*can't think of any lines */ //case WEAPON_HEAVY_PARTICLE_RIFLE: switch(GetRandomInt(0,1)) {case 0: Format(Text_Lines, sizeof(Text_Lines), ""); case 1: Format(Text_Lines, sizeof(Text_Lines), "");}		
 		
-		//case WEAPON_KIT_FRACTAL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so you're trying to use my own power's aggainst me {gold}%N{snow}?", client); 				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Have you mastered {gold}Nuclear Fusion{snow} that the Fractal Holds?", client);}
-
+		case WEAPON_KIT_FRACTAL: 
+		{
+			switch(GetRandomInt(0,4)) 		
+			{
+				case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so your trying to use my own power's against me {gold}%N{snow}?", client); 				
+				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Do you take pleasure in stealing other people's belongings?", client);
+				case 2: Format(Text_Lines, sizeof(Text_Lines), "So you {gold}%N{snow} just taught me that the people at the department of anti-theft are complete idiots, I'm firing them when I get home", client);
+				case 3:
+				{
+					if(!IsValidEntity(Cosmetic_WearableExtra[client]))
+						Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} You don't even have the wings, how dare you use that?", client);
+					else
+					{
+						if(MagiaWingsDo(client))
+						{
+							Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} You, you have OUR WINGS???, And your using the {aqua}Fractal{snow}, atleast that makes sense", client);
+						}
+						else if(SilvesterWingsDo(client))
+						{
+							Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} Wait a minute, those are {gold}Silvesters{snow} wings, and your using our spells?. That doesn't make sense", client);
+						}
+						else
+						{
+							Format(Text_Lines, sizeof(Text_Lines), "You Mr {gold}%N{snow} are using MY {aqua}Fractal{snow}, but you're wings aren't known to me.. huh?", client);
+						}
+					}
+				}
+				case 4: Format(Text_Lines, sizeof(Text_Lines), "Mr {gold}%N{snow}. I'm coming for you. {crimson}you cannot hide{snow}. You will pay for stealing the {aqua}Fractal{snow}.", client);
+			}
+		}
 		default:
 		{
 			valid = false;
@@ -3338,6 +3397,7 @@ static void NPC_Death(int entity)
 	Kill_Abilities(npc);
 
 	Ruina_NPCDeath_Override(npc.index);
+	ExpidonsaRemoveEffects(entity);
 
 
 	int ent = EntRefToEntIndex(i_hand_particles[npc.index]);
@@ -3346,6 +3406,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(ent);
 	}
 	i_hand_particles[npc.index] = INVALID_ENT_REFERENCE;
+
+	b_tripple_raid[npc.index] = false;
 
 
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
@@ -3389,13 +3451,25 @@ static void NPC_Death(int entity)
 		}
 		else
 		{
-			switch(GetRandomInt(0, 4))
+			if(b_tripple_raid[npc.index])
 			{
-				case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
-				case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
-				case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
-				case 3: Twirl_Lines(npc, "toodles!");
-				case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				switch(GetRandomInt(0, 2))
+				{
+					case 0: Twirl_Lines(npc, "Nice job.");
+					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
+					case 2: Twirl_Lines(npc, "Good luck with the rest~");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0, 4))
+				{
+					case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
+					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
+					case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
+					case 3: Twirl_Lines(npc, "toodles!");
+					case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				}
 			}
 		}
 	}
@@ -3447,4 +3521,130 @@ static void Twirl_Lines(Twirl npc, const char[] text)
 		return;
 
 	CPrintToChatAll("%s %s", npc.GetName(), text);
+}
+void Twirl_OnStellaKarlasDeath(int karlas)
+{
+	int Twirl_Index = -1;
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(IsValidEntity(entity))
+		{
+			char npc_classname[60];
+			NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+
+			if(entity != INVALID_ENT_REFERENCE && (StrEqual(npc_classname, "npc_ruina_twirl") && IsEntityAlive(entity)))
+			{
+				Twirl_Index = entity;
+				break;
+			}
+		}
+	}
+	
+	//twirl is dead, simple.
+	if(!IsValidEntity(Twirl_Index))
+		return;
+
+	Twirl npc = view_as<Twirl>(Twirl_Index);
+	//karlas is dead.
+	//-2 == karlas is dead 100%
+	//is valid ent is for when stella dies, we need to check if karlas is still valid or not.
+	//TECHNICALLY, its possible for karlas to die first, meaning stella is still alive when twirl unlocks herself.
+	//but like, when the fuck is karlas ever killed first????
+	if(karlas == -2 || !IsValidEntity(karlas))
+	{
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:Twirl_Lines(npc, "Ohoh, You think this is gonna end easily, you are {crimson}SORELY MISTAKEN");
+			case 1:Twirl_Lines(npc, "{crimson}I won't let you win");
+			case 2:Twirl_Lines(npc, "{crimson}This is where your story ends");
+		}
+		b_tripple_raid[Twirl_Index] = false;
+		return;
+	}
+	else
+	{
+		Twirl_Lines(npc, "{crimson}Karlas{snow}! Switch to me, I'm now your priority");
+	}
+	Set_Karlas_Ally(Twirl_Index, karlas, i_current_wave[Twirl_Index], false, true);
+	Stella stella = view_as<Stella>(Twirl_Index);
+	Karlas karl = view_as<Karlas>(karlas);
+	karl.m_flNextRangedBarrage_Singular -= 15.0;
+	stella.m_bKarlasRetreat = false;
+}
+
+
+void TwirlEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
+{
+	int red = 255;
+	int green = 255;
+	int blue = 255;
+	float flPos[3];
+	float flAng[3];
+	int particle_ears1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	
+	//fist ear
+	float DoApply[3];
+	DoApply = {0.0,-2.5,-7.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears2 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,0.0,-11.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears3 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,-12.0,-7.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears4 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	
+	//fist ear
+	DoApply = {0.0,2.5,-7.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears2_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,0.0,-11.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears3_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,12.0,-7.5};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears4_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+
+	SetParent(particle_ears1, particle_ears2, "",_, true);
+	SetParent(particle_ears1, particle_ears3, "",_, true);
+	SetParent(particle_ears1, particle_ears4, "",_, true);
+	SetParent(particle_ears1, particle_ears2_r, "",_, true);
+	SetParent(particle_ears1, particle_ears3_r, "",_, true);
+	SetParent(particle_ears1, particle_ears4_r, "",_, true);
+	Custom_SDKCall_SetLocalOrigin(particle_ears1, flPos);
+	SetEntPropVector(particle_ears1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(iNpc, particle_ears1, attachment,_);
+
+
+	int Laser_ears_1 = ConnectWithBeamClient(particle_ears4, particle_ears2, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	int Laser_ears_2 = ConnectWithBeamClient(particle_ears4, particle_ears3, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+
+	int Laser_ears_1_r = ConnectWithBeamClient(particle_ears4_r, particle_ears2_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[iNpc][50] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][51] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][52] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][53] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][54] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][55] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][56] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][57] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][58] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
 }

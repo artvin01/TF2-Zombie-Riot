@@ -1657,9 +1657,9 @@ bool SensalTransformation(Sensal npc)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			b_CannotBeStunned[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
-			b_CannotBeSlowed[npc.index] = true;
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 			npc.m_flAttackHappens_2 = 0.0;	
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -1685,9 +1685,9 @@ bool SensalTransformation(Sensal npc)
 			AcceptEntityInput(npc.index, "SetBodyGroup");
 			b_CannotBeHeadshot[npc.index] = false;
 			b_CannotBeBackstabbed[npc.index] = false;
-			b_CannotBeStunned[npc.index] = false;
-			b_CannotBeKnockedUp[npc.index] = false;
-			b_CannotBeSlowed[npc.index] = false;
+			RemoveSpecificBuff(npc.index, "Clear Head");
+			RemoveSpecificBuff(npc.index, "Solid Stance");
+			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			NPC_StartPathing(npc.index);
 			npc.m_bPathing = true;

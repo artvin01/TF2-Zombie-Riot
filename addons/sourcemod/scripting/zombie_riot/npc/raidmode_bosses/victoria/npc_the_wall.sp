@@ -991,7 +991,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	bool magic;
 	bool pierce;
 
-	if((damagetype & DMG_SLASH))
+	if((damagetype & DMG_TRUEDAMAGE))
 	{
 		pierce = true;
 	}
@@ -1715,7 +1715,7 @@ static void NPC_Go_away(int entity, int victim, float damage, int weapon)
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && !IsValidClient(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
-		SDKHooks_TakeDamage(victim, npc.index, npc.index, 1000.0, DMG_SLASH, -1, _, vecHit);
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, 1000.0, DMG_TRUEDAMAGE, -1, _, vecHit);
 		Custom_Knockback(npc.index, victim, 1500.0, true);
 	}
 }
@@ -1802,7 +1802,8 @@ static void Ground_Slam(int entity, int victim, float damage, int weapon)
 		if(!IsInvuln(victim))
 		{
 			if(IsValidClient(victim))
-				TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+				if(!HasSpecificBuff(victim, "Fluid Movement"))
+					TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 			Custom_Knockback(entity, victim, 70.0, true);
 		}
 		else Custom_Knockback(entity, victim, 140.0, true);
@@ -1919,10 +1920,9 @@ static bool Victoria_Support(Huscarls npc)
 		TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[npc.index]), position, NULL_VECTOR, NULL_VECTOR);
 		position[2] += 100.0;
 		
-		b_ThisNpcIsSawrunner[npc.index] = true;
-		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
 		Explode_Logic_Custom(100.0*RaidModeScaling, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
-		b_ThisNpcIsSawrunner[npc.index] = false;
+		
 		ParticleEffectAt(position, "hightower_explosion", 1.0);
 		i_ExplosiveProjectileHexArray[npc.index] = 0; 
 		npc.PlayBoomSound();
@@ -2030,7 +2030,8 @@ static void Shield_Knockback(int entity, int victim, float damage, int weapon)
 		if(!IsInvuln(victim))
 		{
 			if(IsValidClient(victim))
-				TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+				if(!HasSpecificBuff(victim, "Fluid Movement"))
+					TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 			Custom_Knockback(entity, victim, 70.0, true);
 		}
 		else Custom_Knockback(entity, victim, 140.0, true);

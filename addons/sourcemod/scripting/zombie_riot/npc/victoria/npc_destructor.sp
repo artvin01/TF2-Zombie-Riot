@@ -90,7 +90,7 @@ methodmap VictoriaDestructor < CSeaBody
 		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		b_CannotBeSlowed[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 		
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

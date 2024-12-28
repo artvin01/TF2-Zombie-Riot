@@ -225,7 +225,7 @@ public Action Timer_ChangePersonModel(Handle timer, any userid)
 		{
 			SetVariantInt(0);
 			AcceptEntityInput(client, "SetForcedTauntCam");
-			ViewChange_Update(client);
+			Viewchange_UpdateDelay(client);
 		}
 	}
 	return Plugin_Stop;

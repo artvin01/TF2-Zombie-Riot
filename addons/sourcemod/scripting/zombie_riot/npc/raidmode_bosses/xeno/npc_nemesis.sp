@@ -1136,7 +1136,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	if(IsValidEntity(client))
 	{
 		AcceptEntityInput(client, "ClearParent");
-		b_NoGravity[client] = true;
+		b_NoGravity[client] = false;
 		npc.SetVelocity({0.0,0.0,0.0});
 		if(IsValidClient(client))
 		{
@@ -1210,7 +1210,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 			{
 				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
 				{
-					ApplyStatusEffect(npc.index, other, "Hussar's Warscream", FAR_FUTURE);
+					ApplyStatusEffect(npc.index, other, "Hussar's Warscream", 999999.0);	
 				}
 			}
 		}

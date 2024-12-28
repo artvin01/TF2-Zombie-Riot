@@ -205,7 +205,7 @@ static void ClotThink(int iNPC)
 						else
 						{
 							b_NoGravity[target] = true;
-							b_CannotBeKnockedUp[target] = true;
+							ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
 							view_as<CClotBody>(target).SetVelocity({0.0,0.0,0.0});
 						}
 						f_TankGrabbedStandStill[target] = GetGameTime() + 1.5;

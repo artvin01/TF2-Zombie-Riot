@@ -45,8 +45,6 @@ static char g_RangedAttackSounds[][] = {
 
 static char gExplosive1;
 
-static int i_LaserEntityIndex[MAXENTITIES+1]={-1, ...};
-
 
 
 #define THEOCRACY_MELEE_DMG 100.0			//50%<hp%
@@ -61,15 +59,10 @@ static int i_LaserEntityIndex[MAXENTITIES+1]={-1, ...};
 #define THEOCRACY_STRING_THEORY_DMG_MULTI 1.0 //damage multi per target, 1= norma, 0.5 = half damage, 2 = 2 times dmg.
 #define THEOCRACY_STRING_THEORY_DURATION 10.0
 
-#define THEOCRACY_STRING_THEORY_BATTERY_COST 3000	//how much *in ticks* until the npc can use the ability. NOTE: each time the npc takes melee damage, the amount they took gets added to the battery
+#define THEOCRACY_STRING_THEORY_BATTERY_COST 3000.0
 
-#define THEOCRACY_PASSIVE_GAIN 4				//how much power gained per think
-#define THEOCRACY_ANGERED_PASSIVE_GAIN 6
-
-
-static bool bl_string_theory_active[MAXENTITIES];
-static int i_string_Theory_battery[MAXENTITIES];
-
+#define THEOCRACY_PASSIVE_GAIN 20.0				//how much power gained per think
+#define THEOCRACY_ANGERED_PASSIVE_GAIN 30.0
 
 public void Theocracy_OnMapStart_NPC()
 {
@@ -229,13 +222,13 @@ methodmap Theocracy < CClotBody
 		fl_rally_timer[npc.index] = GetGameTime(npc.index) + 5.0;
 		b_rally_active[npc.index] = false;
 		
-		bl_string_theory_active[npc.index] = false;
+		b_ruina_battery_ability_active[npc.index] = false;
 		
 		npc.m_flDoingAnimation = 0.0;
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
-		i_string_Theory_battery[npc.index] = 0;
+		fl_ruina_battery[npc.index] = 0.0;
 		npc.PlayChargeSound();
 		Theocracy_String_Theory(EntIndexToEntRef(npc.index));
 		
@@ -275,33 +268,9 @@ static void ClotThink(int iNPC)
 		return;
 	}
 	
-	if(!bl_string_theory_active[npc.index])
+	if(!b_ruina_battery_ability_active[npc.index])
 	{
-		if(npc.Anger)
-		{
-			if(NpcStats_IsEnemySilenced(npc.index))
-			{
-				i_string_Theory_battery[npc.index] += THEOCRACY_ANGERED_PASSIVE_GAIN*0.75;
-			}
-			else
-			{
-				i_string_Theory_battery[npc.index] += THEOCRACY_ANGERED_PASSIVE_GAIN;
-			}
-			
-		}
-		else
-		{
-			if(NpcStats_IsEnemySilenced(npc.index))
-			{
-				i_string_Theory_battery[npc.index] += THEOCRACY_PASSIVE_GAIN*0.75;
-			}
-			else
-			{
-				i_string_Theory_battery[npc.index] += THEOCRACY_PASSIVE_GAIN;
-			}
-			
-		}
-		
+		Ruina_Add_Battery(npc.index, (npc.Anger ? THEOCRACY_ANGERED_PASSIVE_GAIN : THEOCRACY_PASSIVE_GAIN));
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
@@ -359,6 +328,9 @@ static void ClotThink(int iNPC)
 			npc.m_flRangedArmor = 0.5;
 			npc.m_flMeleeArmor = 0.5;
 			npc.m_flDoingAnimation = GetGameTime() + 6.25;
+
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+
 			CreateTimer(3.6, Theocracy_Barrage_Anim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 			
 			CreateTimer(6.25, Theocracy_Barrage_Anim2, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
@@ -401,8 +373,7 @@ static void ClotThink(int iNPC)
 						
 						if(target > 0) 
 						{
-							
-							Theocracy_Melee_Hit(EntIndexToEntRef(npc.index), EntIndexToEntRef(target), vecHit);
+							Theocracy_Melee_Hit(npc.index, target, vecHit);
 							
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -435,9 +406,6 @@ static void ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
-
-
-
 static Action Theocracy_Barrage_Anim2(Handle timer, int ref)
 {
 	int client = EntRefToEntIndex(ref);
@@ -458,6 +426,8 @@ static Action Theocracy_Barrage_Anim2(Handle timer, int ref)
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_bPathing = true;
+
+		RemoveSpecificBuff(npc.index, "Solid Stance");
 		
 		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
@@ -465,8 +435,6 @@ static Action Theocracy_Barrage_Anim2(Handle timer, int ref)
 	}
 	return Plugin_Handled;
 }
-
-
 static Action Theocracy_Barrage_Anim(Handle timer, int ref)
 {
 	int client = EntRefToEntIndex(ref);
@@ -491,202 +459,117 @@ static Action Theocracy_Barrage_Anim(Handle timer, int ref)
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
 		TE_SetupExplosion(flPos, gExplosive1, 10.0, 1, 0, 0, 0);
 		TE_SendToAll();
+
+		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+		int enemy_2[30];
+		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
+		for(int i; i < sizeof(enemy_2); i++)
+		{
+			if(!enemy_2[i])
+				continue;
+			
+			float target_vec[3]; GetAbsOrigin(enemy_2[i], target_vec);
+				
+			target_vec[2] += 45.0;
+			
+			float projectile_speed = 400.0;
+			
+			npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);	//shot 1 at where there going, 1 at where they are exactly
+			
+			PredictSubjectPositionForProjectiles(npc, enemy_2[i], projectile_speed, _,target_vec);
+			
+			npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+		}
 		
-		for(int player=1 ; player<MAXTF2PLAYERS ; player++)	//get valid/within range players
-		{
-			if(IsValidClient(player) && IsClientInGame(player) && GetClientTeam(player)==2 && IsPlayerAlive(player) && TeutonType[player] == TEUTON_NONE && dieingstate[player] == 0)	//filter out: offline, blue/spec, dead, teuton, downed players!
-			{
-				float target_vec[3]; GetAbsOrigin(player, target_vec);
-				
-				target_vec[2] += 45.0;
-				
-				float projectile_speed = 400.0;
-				
-				npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);	//shot 1 at where there going, 1 at where they are exactly
-				
-				PredictSubjectPositionForProjectiles(npc, player, projectile_speed, _,target_vec);
-				
-				npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
-			}
-		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != GetTeam(client))
-			{
-				float target_vec[3]; GetAbsOrigin(ally, target_vec);
-					
-				target_vec[2] += 45.0;
-				
-				float projectile_speed = 400.0;
-				
-				npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
-				
-				PredictSubjectPositionForProjectiles(npc, ally, projectile_speed, _, target_vec);
-				
-				npc.FireParticleRocket(target_vec, dmg , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
-	
-			}
-		}
 	}
 	return Plugin_Handled;
 }
 
-static void Theocracy_Melee_Hit(int ref, int enemy, float vecHit[3])
+static int i_detected_ends[30];
+static void GetEntitiesForStringTheory(int entity, int victim, float damage, int weapon)
 {
-	int client = EntRefToEntIndex(ref);
-	int target = EntRefToEntIndex(enemy);
-	
+	for(int i=0 ; i < sizeof(i_detected_ends) ; i++)
+	{
+		if(!i_detected_ends[i])
+		{
+			i_detected_ends[i] = victim;
+			break;
+		}
+	}
+}
+static void Theocracy_Melee_Hit(int client, int target, float vecHit[3])
+{	
 	Theocracy npc = view_as<Theocracy>(client);
 	
-	float dmg = THEOCRACY_MELEE_DMG;
-	if(npc.Anger)
-	{
-		dmg = THEOCRACY_ANGERED_MELEE_DMG;
-	}
+	float dmg = (npc.Anger ? THEOCRACY_ANGERED_MELEE_DMG : THEOCRACY_MELEE_DMG);
 	
-	if(bl_string_theory_active[client])
+	SDKHooks_TakeDamage(target, npc.index, npc.index, (ShouldNpcDealBonusDamage(target) ? dmg * 2.0 : dmg), DMG_CLUB, -1, _, vecHit);
+
+	if(!b_ruina_battery_ability_active[npc.index])
+		return;
+
+	
+
+	float range = THEOCRACY_STRING_THEORY_RANGE;
+
+	Zero(i_detected_ends);
+	Explode_Logic_Custom(0.0, npc.index, npc.index, 0, _, range, _, _, true, sizeof(i_detected_ends), false, _, GetEntitiesForStringTheory);
+
+	int looped_amt = 0;
+	for(int i = 0 ; i < sizeof(i_detected_ends) ; i++)
 	{
-		float range = THEOCRACY_STRING_THEORY_RANGE;
-		float damage_multi = THEOCRACY_STRING_THEORY_DMG_MULTI;
-		range *= range; //turn into square.
+		if(!i_detected_ends[i])	
+			break;
 		
-		int valid_entity = 0;
-		bool valid_target[MAXENTITIES];	//what?
-		bool red_npc = false;
-		float flAng[3]; // original
-		float npc_loc[3];
-		GetAttachment(client, "effect_hand_r", npc_loc, flAng);
-		
-		for(int player=1 ; player<MAXTF2PLAYERS ; player++)	//get valid/within range players
-		{
-			if(IsValidClient(player) && IsClientInGame(player) && GetClientTeam(player)==2 && IsPlayerAlive(player) && TeutonType[player] == TEUTON_NONE && dieingstate[player] == 0)	//filter out: offline, blue/spec, dead, teuton, downed players!
-			{
-				float target_vec[3]; GetAbsOrigin(player, target_vec);
-				float dist=GetVectorDistance(npc_loc, target_vec, true);
-				
-				if(dist<=range)
-				{
-					valid_entity++;
-					valid_target[player] = true;
-				}
-				else
-				{
-					valid_target[player] = false;
-				}
-			}
-		}
-		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != GetTeam(client))
-			{
-				float target_vec[3]; GetAbsOrigin(ally, target_vec);
-				float dist=GetVectorDistance(npc_loc, target_vec, true);
-				
-				if(dist<=range)
-				{
-					red_npc = true;
-					valid_entity++;
-					valid_target[ally] = true;
-				}
-				else
-				{
-					valid_target[ally] = false;
-				}
-			}
-		}
-		int last_entity=npc.m_iWearable1;
-		int looped = 1;
-		int buffer;
-		if(valid_entity>0)	//incase of fuckup, default to normal melee
-		{
-			float damage = (dmg / valid_entity)*damage_multi;
-			int loop_for;
-			if(red_npc)	//might be dumb, might not save any preformance, but heck..
-			{
-				loop_for=MAXENTITIES;
-			}
-			else
-			{
-				loop_for=MAXTF2PLAYERS;
-			}
-			for(int entity=1 ; entity<loop_for ; entity++)	//deal damage/do effect to vaild targets. 
-			{
-				if(valid_target[entity])
-				{
-					int r, g, b;
-					r = 250;
-					g = 0;
-					b = 0;
-					
-					if(looped>1)	//slightly alternate the effect for fancyness!
-					{
-						if(looped>2)
-						{
-							last_entity = buffer;
-							looped = 1;
-						}
-						buffer = entity;
-					}
-					
-					looped++;
-					
-					if(!ShouldNpcDealBonusDamage(entity))
-					{
-						SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, -1, _, vecHit);	//kill!
-					}
-					else
-					{
-						SDKHooks_TakeDamage(entity, client, client, damage*1.25, DMG_CLUB, -1, _, vecHit);	//kill!
-					}
-					
-					int laser_entity = EntRefToEntIndex(i_LaserEntityIndex[entity]);
-					if(!IsValidEntity(laser_entity))
-					{
-						int red = r;
-						int green = g;
-						int blue = b;
-						if(IsValidEntity(laser_entity))
-						{
-							RemoveEntity(laser_entity);
-						}
+		//don't count the enemy we just smacked.
+		if(i_detected_ends[i] == target)
+			continue;
 
-						int laser;
-						
-						laser = ConnectWithBeam(last_entity, entity, red, green, blue, 3.0, 3.0, 2.35, LASERBEAM);
-			
-						i_LaserEntityIndex[entity] = EntIndexToEntRef(laser);
-
-						CreateTimer(0.5, Theocracy_String_Theory_Remove_Laser, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-					}
-				}
-			}
-		}
-		else
-		{
-			
-			//CPrintToChatAll("it somehow got 0 vaild targets even though it tried to hit something, unless it hit a fucking barricade without any players/red npc's nearby");
-			if(!ShouldNpcDealBonusDamage(target))
-			{
-				SDKHooks_TakeDamage(target, client, client, dmg, DMG_CLUB, -1, _, vecHit);
-			}
-			else
-			{
-				SDKHooks_TakeDamage(target, client, client, dmg*1.25, DMG_CLUB, -1, _, vecHit);
-			}
-		}
+		looped_amt++;
 	}
-	else
+	//no valid targets exist, abort abort abort.
+	if(looped_amt <=0)
+		return;
+
+	int color[4]; Ruina_Color(color);
+
+	float Thick_Start = GetRandomFloat(4.0, 8.0);
+	float Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
+	int laser = ConnectWithBeam(npc.m_iWearable1, target, color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
+	if(IsValidEntity(laser))
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+
+	float Dmg_deal =(dmg/looped_amt) * THEOCRACY_STRING_THEORY_DMG_MULTI;
+	
+	int Laser_Origin = target;
+
+	int offset = 0;
+	for(int i = 0 ; i < sizeof(i_detected_ends) ; i++)
 	{
-		if(!ShouldNpcDealBonusDamage(target))
+		if(!i_detected_ends[i])	
+			break;
+		
+		//don't count the enemy we just smacked.
+		if(i_detected_ends[i] == target)
+			continue;
+
+		if(offset > 2)
 		{
-			SDKHooks_TakeDamage(target, client, client, dmg, DMG_CLUB, -1, _, vecHit);
+			Laser_Origin = i_detected_ends[i];
+			offset = 0;
 		}
-		else
-		{
-			SDKHooks_TakeDamage(target, client, client, dmg*1.25, DMG_CLUB, -1, _, vecHit);
-		}
+		offset++;
+		
+		SDKHooks_TakeDamage(i_detected_ends[i], npc.index, npc.index, (ShouldNpcDealBonusDamage(i_detected_ends[i]) ? Dmg_deal * 2.0 : Dmg_deal), DMG_CLUB, -1, _, vecHit);
+
+		if(AtEdictLimit(EDICT_NPC))
+			continue;
+
+		Thick_Start = GetRandomFloat(4.0, 8.0);
+		Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
+		laser = ConnectWithBeam(Laser_Origin, i_detected_ends[i], color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
+		if(IsValidEntity(laser))
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 static int i_particle_wings_index[MAXENTITIES][10];
@@ -759,27 +642,24 @@ static void Theocracy_Destroy_Wings(int client)
 			RemoveEntity(entity);
 	}
 }
-static Action Theocracy_String_Theory_Remove_Laser(Handle timer, int ref)
-{
-	int laser = EntRefToEntIndex(ref);
-	if(IsValidEntity(laser))
-	{
-		RemoveEntity(laser);
-	}
-	return Plugin_Handled;
-}
-
 static void Theocracy_String_Theory(int ref)
 {
 	int client = EntRefToEntIndex(ref);
 	if(IsValidEntity(client))
 	{
 		Theocracy npc = view_as<Theocracy>(client);
-		bl_string_theory_active[client] = true;
+		b_ruina_battery_ability_active[client] = true;
+
+		if(IsValidEntity(npc.m_iWearable7))
+			RemoveEntity(npc.m_iWearable7);	
+
+		float flPos[3]; // original
+		npc.GetAttachment("", flPos, NULL_VECTOR);
+		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "utaunt_poweraura_yellow_parent", npc.index, "", {0.0,0.0,0.0});
 		
 		float duration = THEOCRACY_STRING_THEORY_DURATION;
 		
-		i_string_Theory_battery[client] = 0;
+		fl_ruina_battery[client] = 0.0;
 		
 		if(npc.Anger)
 		{
@@ -793,7 +673,11 @@ static Action Theocracy_String_Theory_Timer(Handle timer, int ref)
 	int client =  EntRefToEntIndex(ref);
 	if(IsValidEntity(client))
 	{
-		bl_string_theory_active[client] = false;
+		Theocracy npc = view_as<Theocracy>(client);
+		b_ruina_battery_ability_active[npc.index] = false;
+
+		if(IsValidEntity(npc.m_iWearable7))
+			RemoveEntity(npc.m_iWearable7);
 	}
 	return Plugin_Handled;
 	
@@ -814,22 +698,14 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	
-	if(!bl_string_theory_active[npc.index] && damagetype & DMG_CLUB)
+	if(!b_ruina_battery_ability_active[npc.index] && damagetype & DMG_CLUB)
 	{
-		if(NpcStats_IsEnemySilenced(npc.index))
-		{
-			i_string_Theory_battery[npc.index] += RoundToFloor(damage*0.75);
-		}
-		else
-		{
-			i_string_Theory_battery[npc.index] += RoundToFloor(damage);
-		}
-		
+		Ruina_Add_Battery(npc.index, damage);
 	}
-	if(i_string_Theory_battery[npc.index]>3000 && !bl_string_theory_active[npc.index])
+	if(fl_ruina_battery[npc.index]>THEOCRACY_STRING_THEORY_BATTERY_COST && !b_ruina_battery_ability_active[npc.index])
 	{
 		npc.PlayChargeSound();
-		i_string_Theory_battery[npc.index] = 0;
+		fl_ruina_battery[npc.index] = 0.0;
 		Theocracy_String_Theory(EntIndexToEntRef(npc.index));
 	}
 	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
@@ -868,15 +744,9 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
-		
-	for(int entity1=1 ; entity1<=MAXENTITIES ; entity1++)
-	{
-		int laser_entity = EntRefToEntIndex(i_LaserEntityIndex[entity1]);
-		if(IsValidEntity(laser_entity))
-		{
-			RemoveEntity(laser_entity);
-		}
-	}
+
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }
 
 

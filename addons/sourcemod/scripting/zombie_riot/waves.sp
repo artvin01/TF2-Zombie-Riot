@@ -127,6 +127,8 @@ static bool UpdateFramed;
 static int WaveGiftItem;
 static char LastWaveWas[64];
 
+static int Freeplay_Info;
+
 public Action Waves_ProgressTimer(Handle timer)
 {
 	if(Classic_Mode() && ProgressTimerType)
@@ -187,6 +189,7 @@ void Waves_MapStart()
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
+	Freeplay_Info = 0;
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -267,7 +270,14 @@ bool Waves_CallVote(int client, int force = 0)
 		
 		Vote vote;
 		Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
-		menu.AddItem(NULL_STRING, vote.Name);
+		if(Voting)
+		{
+			menu.AddItem(NULL_STRING, vote.Name);
+		}
+		else
+		{
+			menu.AddItem(NULL_STRING, vote.Name, ITEMDRAW_DISABLED);
+		}
 
 		if(Voting)
 		{
@@ -276,8 +286,8 @@ bool Waves_CallVote(int client, int force = 0)
 			{
 				Voting.GetArray(i, vote);
 				vote.Name[0] = CharToUpper(vote.Name[0]);
-				
-				if(vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
+				//There must be atleast 4 selections for the cooldown to work.
+				if(length >= 4 &&vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
 					menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
@@ -346,6 +356,7 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 				if(!choice || VotedFor[client] != choice)
 				{
 					VotedFor[client] = choice;
+					
 					if(VotedFor[client] == 0)
 					{
 						VotedFor[client] = -1;
@@ -1017,6 +1028,8 @@ void Waves_RoundStart()
 	
 	Waves_RoundEnd();
 	Freeplay_ResetAll();
+
+	Kit_Fractal_ResetRound();
 	
 	if(Rogue_Mode())
 	{
@@ -1934,14 +1947,18 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						}
 						else
 						{
-							Menu menu = new Menu(Waves_FreeplayVote);
-							menu.SetTitle("%t","Victory Menu");
-							menu.AddItem("", "Yes");
-							menu.AddItem("", "No");
-							menu.ExitButton = false;
-							menu.DisplayVote(players, total, 30);
+							for (int client = 0; client < MaxClients; client++)
+							{
+								if(IsValidClient(client) && GetClientTeam(client) == 2)
+								{
+									SetHudTextParams(-1.0, -1.0, 7.5, 0, 255, 255, 255);
+									SetGlobalTransTarget(client);
+									ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_1");
+								}
+							}
+							Freeplay_Info = 1;
+							CreateTimer(7.5, Freeplay_HudInfoTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 						}
-						
 					}
 					else
 					{
@@ -2092,6 +2109,62 @@ void Waves_Progress(bool donotAdvanceRound = false)
 //	PrintToChatAll("Wave: %d - %d", CurrentRound+1, CurrentWave+1);
 
 	Waves_UpdateMvMStats();
+}
+
+static Action Freeplay_HudInfoTimer(Handle timer)
+{
+	switch(Freeplay_Info)
+	{
+		case 0:
+		{
+			return Plugin_Stop;
+		}
+		case 1:
+		{
+			for (int client = 0; client < MaxClients; client++)
+			{
+				if(IsValidClient(client) && GetClientTeam(client) == 2)
+				{
+					SetHudTextParams(-1.0, -1.0, 7.5, 0, 255, 255, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_2");
+				}
+			}
+			Freeplay_Info = 2;
+		}
+		case 2:
+		{
+			for (int client = 0; client < MaxClients; client++)
+			{
+				if(IsValidClient(client) && GetClientTeam(client) == 2)
+				{
+					SetHudTextParams(-1.0, -1.0, 7.5, 255, 0, 0, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_3");
+				}
+			}
+			Freeplay_Info = 3;
+		}
+		case 3:
+		{
+			for (int client = 0; client < MaxClients; client++)
+			{
+				if(IsValidClient(client) && GetClientTeam(client) == 2)
+				{
+					SetHudTextParams(-1.0, -1.0, 7.5, 0, 255, 255, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_4");
+				}
+			}
+			Freeplay_Info = 0;
+		}
+		default:
+		{
+			return Plugin_Stop;
+		}
+	}
+
+	return Plugin_Continue;
 }
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)

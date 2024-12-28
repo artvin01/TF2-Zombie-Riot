@@ -310,12 +310,14 @@ void CrazyladySelfDefense(Crazylady npc, float gameTime, int target, float dista
 					if(npc.b_Nightmare)
 					{
 						if(target <= MaxClients)
-							TF2_StunPlayer(target, 1.5, 0.9, Rogue_Paradox_RedMoon() ? TF_STUNFLAGS_LOSERSTATE : TF_STUNFLAG_SLOWDOWN);
+							if(!HasSpecificBuff(target, "Fluid Movement"))
+								TF2_StunPlayer(target, 1.5, 0.9, Rogue_Paradox_RedMoon() ? TF_STUNFLAGS_LOSERSTATE : TF_STUNFLAG_SLOWDOWN);
 					}
 					else
 					{
 						if(target <= MaxClients)
-							TF2_StunPlayer(target, 0.8, 0.9, Rogue_Paradox_RedMoon() ? TF_STUNFLAGS_LOSERSTATE : TF_STUNFLAG_SLOWDOWN);
+							if(!HasSpecificBuff(target, "Fluid Movement"))
+								TF2_StunPlayer(target, 0.8, 0.9, Rogue_Paradox_RedMoon() ? TF_STUNFLAGS_LOSERSTATE : TF_STUNFLAG_SLOWDOWN);
 					}
 
 					// Hit sound

@@ -1877,7 +1877,7 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							DamageDeal *= 1.15;
 						}
-						SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.m_iGunSeller), DamageDeal, DMG_SLASH, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.m_iGunSeller), DamageDeal, DMG_TRUEDAMAGE, -1, _, vecHit);
 						
 						//Did we kill them?
 						if(GetEntProp(target, Prop_Data, "m_iHealth") < 1)
@@ -2225,7 +2225,7 @@ public void Citizen_ClotThink(int iNPC)
 								{
 									DamageDeal *= 1.15;
 								}
-								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _, "muzzle");
+								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_TRUEDAMAGE, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _, "muzzle");
 								npc.PlayPistolSound();
 								
 								if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -2327,7 +2327,7 @@ public void Citizen_ClotThink(int iNPC)
 								{
 									DamageDeal *= 1.15;
 								}
-								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
+								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_TRUEDAMAGE, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
 								npc.PlaySMGSound();
 								
 								if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -2424,7 +2424,7 @@ public void Citizen_ClotThink(int iNPC)
 								{
 									DamageDeal *= 1.15;
 								}
-								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
+								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_TRUEDAMAGE, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
 								npc.PlayARSound();
 								
 								if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -2520,7 +2520,7 @@ public void Citizen_ClotThink(int iNPC)
 								{
 									DamageDeal *= 1.15;
 								}
-								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
+								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, DamageDeal, 9000.0, DMG_TRUEDAMAGE, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
 								npc.PlayShotgunSound();
 								
 								if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -2597,7 +2597,7 @@ public void Citizen_ClotThink(int iNPC)
 								{
 									DamageDeal *= 1.15;
 								}
-								npc.FireRocket(vecTarget, DamageDeal, 1100.0, _, _, EP_DEALS_SLASH_DAMAGE, _, GetClientOfUserId(npc.m_iGunSeller));
+								npc.FireRocket(vecTarget, DamageDeal, 1100.0, _, _, EP_DEALS_CLUB_DAMAGE, _, GetClientOfUserId(npc.m_iGunSeller));
 								npc.PlayRPGSound();
 							}
 						}
@@ -3404,7 +3404,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			if(npc.m_iGunType == Cit_Melee)
 			{
 				damage *= 0.8;
-				if(damagetype & (DMG_CLUB|DMG_SLASH))
+				if(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))
 				{
 					if(npc.m_iGunValue > 10000)
 					{

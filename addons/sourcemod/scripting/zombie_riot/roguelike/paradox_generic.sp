@@ -537,7 +537,7 @@ static Action Timer_EternalNightTimer(Handle timer)
 				}
 				else
 				{
-					SDKHooks_TakeDamage(client, 0, 0, 999.9, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+					SDKHooks_TakeDamage(client, 0, 0, 999.9, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 				}
 			}
 		}

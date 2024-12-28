@@ -211,7 +211,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 						}
 						else if(!b_NpcHasDied[target])
 						{
-							if(!b_CannotBeKnockedUp[target])
+							if(!HasSpecificBuff(target, "Solid Stance"))
 							{
 								FreezeNpcInTime(target, 2.0);
 								

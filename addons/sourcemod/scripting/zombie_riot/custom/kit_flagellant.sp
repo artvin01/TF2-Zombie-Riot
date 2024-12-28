@@ -796,7 +796,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		
 		SDKHooks_TakeDamage(target, client, client, (3200.0 * multi), DMG_PLASMA, secondary);
 		if(extra)
-			SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+			SDKHooks_TakeDamage(target, client, client, extra, DMG_TRUEDAMAGE, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 		ParticleEffectAt(pos, PARTICLE_JARATE, 2.0);
 		Ability_Apply_Cooldown(client, slot, 50.0);

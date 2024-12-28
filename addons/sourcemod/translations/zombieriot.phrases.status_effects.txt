@@ -130,7 +130,7 @@
 	}
 	"Cripple Desc"
 	{
-		"en"	"Increases Damage Taken by 30%%"
+		"en"	"Increaced damage taken by 30%%"
 	}
 	"Stranglation I"
 	{
@@ -162,7 +162,7 @@
 	}
 	"Cheesy Presence Desc"
 	{
-		"en"	"May your Freeplay run be cheesy.\nIncreases damage and resistance by 15%%\nIncreases ALLY (not player) speed by 10%"
+		"en"	"May your Freeplay run be cheesy.\nIncreases damage and resistance by 15%%\nIncreases ALLY (not player) speed by 10%%"
 	}
 	"Freeplay Eloquence I"
 	{
@@ -170,7 +170,7 @@
 	}
 	"Freeplay Eloquence I Desc"
 	{
-		"en"	"Increases damage dealt by 10%"
+		"en"	"Increases damage dealt by 10%%"
 	}
 	"Freeplay Eloquence II"
 	{
@@ -178,7 +178,7 @@
 	}
 	"Freeplay Eloquence II Desc"
 	{
-		"en"	"Increases damage dealt by 20%"
+		"en"	"Increases damage dealt by 20%%"
 	}
 	"Freeplay Eloquence III"
 	{
@@ -186,7 +186,7 @@
 	}
 	"Freeplay Eloquence III Desc"
 	{
-		"en"	"Increases damage dealt by 30%"
+		"en"	"Increases damage dealt by 30%%"
 	}
 	"Freeplay Rampart I"
 	{
@@ -194,7 +194,7 @@
 	}
 	"Freeplay Rampart I Desc"
 	{
-		"en"	"Reduces damage taken by 10%"
+		"en"	"Reduces damage taken by 10%%"
 	}
 	"Freeplay Rampart II"
 	{
@@ -202,7 +202,7 @@
 	}
 	"Freeplay Rampart II Desc"
 	{
-		"en"	"Reduces damage taken by 20%"
+		"en"	"Reduces damage taken by 20%%"
 	}
 	"Freeplay Rampart III"
 	{
@@ -210,7 +210,7 @@
 	}
 	"Freeplay Rampart III Desc"
 	{
-		"en"	"Reduces damage taken by 30%"
+		"en"	"Reduces damage taken by 30%%"
 	}
 	"Cudgelled"
 	{
@@ -226,7 +226,7 @@
 	}
 	"Maimed Desc"
 	{
-		"en"	"Increases Damage Taken by 30%%,\nSlows down NPC's by 35%%"
+		"en"	"Slows NPC'S Movementspeed by 65%%"
 	}
 	"Prosperity I"
 	{
@@ -274,11 +274,43 @@
 	}
 	"Hardened Aura Desc"
 	{
-		"en"	"Immune to any and ALL debuffs.\nElemental Is excluded from this."
+		"en"	"Immune to any and ALL that debuffs.\nElemental Is excluded from this.\nStuns and movement displacements are not counted as bebuffs."
 	}
 	"Thick Blood"
 	{
 		"en"	"Thick Blood"
+	}
+	"Clear Head"
+	{
+		"en"	"Clear Head"
+	}
+	"Clear Head Desc"
+	{
+		"en"	"Immune to all stuns"
+	}
+	"Shook Head"
+	{
+		"en"	"Shook Head"
+	}
+	"Shook Head Desc"
+	{
+		"en"	"Reduces all stuns by 50%"
+	}
+	"Solid Stance"
+	{
+		"en"	"Solid Stance"
+	}
+	"Solid Stance Desc"
+	{
+		"en"	"Immune to knockback or displacements"
+	}
+	"Fluid Movement"
+	{
+		"en"	"Fluid Movement"
+	}
+	"Fluid Movement Desc"
+	{
+		"en"	"Immune to Slowness Effects"
 	}
 	"Thick Blood Desc"
 	{
@@ -739,5 +771,21 @@
 	"Burn Desc"
 	{
 		"en"	"Deals True damage overtime, upto a maximum of 20 seconds if not extended.\nEach hit extends its time.\nThe damage and owner depends on the weapon that delt the most fire damage.\nExtending does not weaken the buff."
+	}
+	"Zealot's Random Drinks"
+	{
+		"en" "Zealot's Random Drinks"
+	}
+	"Zealot's Random Drinks Desc"
+	{
+		"en" "Grants a random buff from the selected that the Zealot kit provides."
+	}
+	"Zealot's Rush"
+	{
+		"en" "Zealot's Extreme Rush"
+	}
+	"Zealot's Rush Desc"
+	{
+		"en" "Grants 25%% Attackspeed."
 	}
 }

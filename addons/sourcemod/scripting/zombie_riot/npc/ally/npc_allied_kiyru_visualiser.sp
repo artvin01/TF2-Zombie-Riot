@@ -253,7 +253,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 		npc.m_iNpcStepVariation = 0;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
-		b_CannotBeStunned[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 		
 		func_NPCDeath[npc.index] = AlliedKiryuVisualiserAbility_NPCDeath;
 		func_NPCThink[npc.index] = AlliedKiryuVisaluser_ClotThink;
@@ -289,7 +289,8 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				if(!VIPBuilding_Active())
 				{
 					FreezeNpcInTime(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim), true);
-					SetAirtimeNpc(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim));
+					if(!HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
+						SetAirtimeNpc(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim));
 				}
 			}
 			case 2:
@@ -304,7 +305,8 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				if(!VIPBuilding_Active())
 				{
 					FreezeNpcInTime(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim), true);
-					SetAirtimeNpc(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim));
+					if(!HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
+						SetAirtimeNpc(npc.m_iTarget, (1.9 * npc.f_SpeedAcelerateAnim));
 				}
 			}
 			case 3:
@@ -318,7 +320,8 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				if(!VIPBuilding_Active())
 				{
 					FreezeNpcInTime(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim), true);
-					SetAirtimeNpc(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim));
+					if(!HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
+						SetAirtimeNpc(npc.m_iTarget, (2.5 * npc.f_SpeedAcelerateAnim));
 				}
 			}
 			case 4:
@@ -342,7 +345,8 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				if(!VIPBuilding_Active())
 				{
 					FreezeNpcInTime(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim), true);
-					SetAirtimeNpc(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim));
+					if(!HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
+						SetAirtimeNpc(npc.m_iTarget, (1.35 * npc.f_SpeedAcelerateAnim));
 				}
 			}
 		}
@@ -388,9 +392,8 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 			TeleportEntity(npc.m_iTargetWalkTo, NULL_VECTOR, flAngles, NULL_VECTOR);
 		}
 	}
-	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active())
+	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active() && !HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
 	{	
-
 		if(f_NoUnstuckVariousReasons[npc.m_iTarget] < GetGameTime() + 0.5)
 			f_NoUnstuckVariousReasons[npc.m_iTarget] = GetGameTime() + 0.5;
 

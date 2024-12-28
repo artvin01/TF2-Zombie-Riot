@@ -111,6 +111,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			SpawnerList.Erase(i);
 			i--; //we try again.
 			length--;
+			SpawnWasDeleted = true;
 			continue;
 		}
 
@@ -195,8 +196,8 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				}
 				nonBossSpawners++;
 			}
-			
-			if(/*bestIndex == -1 || */(spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
+			//get atleast 1 spawnpont?
+			if(bestIndex == -1 || (spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
 			{
 				bestIndex = i;
 				bestPoints = spawn.Points;

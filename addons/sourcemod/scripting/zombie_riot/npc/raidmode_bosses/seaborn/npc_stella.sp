@@ -114,6 +114,8 @@ static bool b_tripple_raid[MAXENTITIES];
 #define STELLA_NC_TURNRATE_ANGER 400.0
 #define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/donner_schwert_5.mp3"
 
+#define STELLA_NORMAL_LASER_DURATION 0.7
+
 static float fl_npc_basespeed;
 static bool b_test_mode[MAXENTITIES];
 static int i_current_wave[MAXENTITIES];
@@ -144,7 +146,6 @@ void Stella_OnMapStart_NPC()
 	data.IconCustom = true;													//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;	
 	data.Precache = ClotPrecache;									//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
-	PrecacheSoundCustom(STELLA_KARLAS_THEME);
 	NPC_Add(data);
 
 }
@@ -176,6 +177,7 @@ static void ClotPrecache()
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 	PrecacheSound("misc/halloween/spell_mirv_explode_primary.wav", true);
 	PrecacheSound("ambient/energy/whiteflash.wav", true);
+	PrecacheSoundCustom(STELLA_KARLAS_THEME);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -511,7 +513,7 @@ methodmap Stella < CClotBody
 		if(spawn_index > MaxClients)
 		{
 			this.Ally = spawn_index;
-			Set_Karlas_Ally(spawn_index, this.index, i_current_wave[this.index], b_bobwave[this.index]);
+			Set_Karlas_Ally(spawn_index, this.index, i_current_wave[this.index], b_bobwave[this.index], b_tripple_raid[this.index]);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -729,6 +731,7 @@ methodmap Stella < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		TwirlEarsApply(npc.index,_,0.75);
 
 		if(!IsValidEntity(RaidBossActive))
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -894,7 +897,7 @@ methodmap Stella < CClotBody
 		if(b_test_mode[npc.index])
 			RaidModeTime = FAR_FUTURE;
 		
-		if(!b_bobwave[npc.index])
+		if(!b_bobwave[npc.index] && !b_tripple_raid[npc.index])
 		{
 			switch(GetRandomInt(0, 6))
 			{
@@ -1313,7 +1316,6 @@ static Action Lunar_Grace_Tick(int iNPC)
 		npc.m_bAllowBackWalking = false;
 		npc.m_bKarlasRetreat = false;
 
-
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -1333,6 +1335,8 @@ static Action Lunar_Grace_Tick(int iNPC)
 		
 		struct_Lunar_Grace_Data[npc.index].Throttle = GameTime + 0.1;
 		Update = true;
+
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 	}
 
 	int color[4]; Ruina_Color(color);
@@ -1732,7 +1736,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 
 			default: CPrintToChatAll("%s It seems my master forgot to set a proper dialogue line for this specific number, how peculiar. Anyway, here's the ID: [%i]", npc.GetName(), npc.m_iNC_Dialogue);
 		}
-
+		
 		npc.AddActivityViaSequence("taunt_mourning_mercs_medic");
 		npc.SetPlaybackRate(2.0);	
 		npc.SetCycle(0.0);
@@ -1820,6 +1824,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	{
 		fl_NC_thorttle[npc.index] = GameTime + 0.1;
 		update = true;
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);		//replace stun
 	}
 
 	bool Silence = NpcStats_IsEnemySilenced(npc.index);
@@ -2072,14 +2077,14 @@ static void Stella_Weapon_Lines(Stella npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg, that thing dared to disobey me, but will you {gold}%N{snow} do the same?", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I'll make you {gold}%N{snow} feel the same pain Blitzkrieg inflicted on us.", client);}
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{crimson}Karlas's Old blade, interesting choice {gold}%N", client); 															case 1: Format(Text_Lines, sizeof(Text_Lines), "So what if I told you {gold}%N{snow} that you're using the failed version..", client);}	
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{crimson}Karlas{snow}'s Old blade, interesting choice {gold}%N", client); 															case 1: Format(Text_Lines, sizeof(Text_Lines), "So what if I told you {gold}%N{snow} that you're using the failed version..", client);}	
 		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You're trying to copy me {gold}%N{snow}?", client); 																			case 1: Format(Text_Lines, sizeof(Text_Lines), "I don't approve of this {gold}%N", client);}
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Pointy stick go into enemy, right {gold}%N{snow}?", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You will never become as proficient with the lance as {crimson}Karlas", client);}	
 		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Laser based spell's are one of Ruina's specialties, {gold}%N{snow} You don't even know the first thing about them..",client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "Oi, {gold}%N{snow} I helped create that spell, you can't just steal it and use it aggainst me", client);}	
 		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "And you're using {purple}Twirl's{snow} prefered laser, I hope you know what you're getting yourself into {gold}%N", client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "If {purple}Twirl{snow} catches wing of what you're using {gold}%N{snow}, good luck", client);}	
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Gravity is a harness, you {gold} %N{snow} have not harnessed it", client); 													case 1: Format(Text_Lines, sizeof(Text_Lines), "Wonder how you'd react {gold}%N{snow}, if you saw the real one.", client);}
 		case WEAPON_ION_BEAM_FEED: 	Format(Text_Lines, sizeof(Text_Lines), "Here's some interesting information for you {gold}%N{snow} the feedback loop Prisim has been obsolete for AGES", client);
-		case WEAPON_BOBS_GUN:  		Format(Text_Lines, sizeof(Text_Lines), "Oh, bob's gun well might as well go and sleep... I give {gold}%N", client); 
+		case WEAPON_BOBS_GUN:  		Format(Text_Lines, sizeof(Text_Lines), "Oh, bob's gun well might as well go and sleep... I give up {gold}%N", client); 
 		default:
 		{
 			valid = false;
@@ -2101,6 +2106,7 @@ static void Internal_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+	ExpidonsaRemoveEffects(entity);
 
 	SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
 	SDKUnhook(npc.index, SDKHook_Think, Stella_Nightmare_Tick);
@@ -2112,6 +2118,11 @@ static void Internal_NPCDeath(int entity)
 	npc.m_bKarlasRetreat = false;
 
 	RaidModeScaling *= 1.2;
+
+	if(b_tripple_raid[npc.index])
+	{
+		Twirl_OnStellaKarlasDeath(npc.Ally);
+	}
 
 	if(!npc.m_bSaidWinLine)
 	{
@@ -2249,7 +2260,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 
 	float Attack_Speed = 3.3;	//how often she attacks.
 	float Attack_Delay = 1.0;	//how long until she actually attacks
-	float Attack_Time = 0.7;	//how long the normal attack laser lasts
+	float Attack_Time = STELLA_NORMAL_LASER_DURATION;	//how long the normal attack laser lasts
 
 	if(npc.m_flNorm_Attack_In > GameTime)
 		npc.m_bAllowBackWalking = true;
@@ -2339,9 +2350,14 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	
 	int target = i_Get_Laser_Target(npc, Range);
 
+	float Ratio = 1.0 - (npc.m_flNorm_Attack_Duration - GameTime) / STELLA_NORMAL_LASER_DURATION;
+
+	if(Ratio < 0.001)
+		Ratio = 0.001;
+
 	if(IsValidEnemy(npc.index, target))
 	{
-		//times these value has been altered: 31.
+		//times these value has been altered: 32.
 		//warp_turn_speed
 		float Bonus_Speed_Range = 500.0*500.0;
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
@@ -2366,22 +2382,29 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 		Turn_Speed /=TickrateModify;
 
+		float Turn_Extra = 0.94 + ((Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5));	
+		//this ^ what I did here is ass. NORMALLY what you would do is (Ratio+0.5)^4.0. BUT FOR WHATEVER REASON, doing that results in numbers that physically shouldn't be possible.
+		//CPrintToChatAll("Turn Extra: %f", Turn_Extra);
+		Turn_Speed *= Turn_Extra;
+
 		npc.FaceTowards(vecTarget, Turn_Speed);
 	}
 
 	if(update)
 	{
-		//11~ the same as twirl's Retreat laser. (the triangle one)
-		Laser.Damage = Modify_Damage(-1, 15.0);
+		float Dmg = Modify_Damage(-1, 15.0);
+		Dmg *= (0.75-Logarithm(Ratio));
+		//the 0.75 is min dmg it will reach at ability end.
+		Laser.Damage = Dmg;
 		Laser.Radius = radius;
-		Laser.Bonus_Damage = (Modify_Damage(-1, 15.0)*6.0);
+		Laser.Bonus_Damage = Dmg*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 	}
 
 	float startPoint[3], endPoint[3];
-	float flPos[3], flAng[3];
-	npc.GetAttachment("effect_hand_r", flPos, flAng);
+	float flPos[3];
+	npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
 	startPoint  = flPos;
 	endPoint	= Laser.End_Point;
 	float diameter = radius *1.0;

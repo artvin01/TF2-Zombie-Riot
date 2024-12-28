@@ -153,6 +153,9 @@ void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float p
 			if(weight < 0)
 				weight = 1;
 			
+			if(HasSpecificBuff(EnemiesHit[i], "Solid Stance"))
+				continue;
+
 			float knockback = ENFORCER_KNOCKBACK;
 			switch(weight)
 			{

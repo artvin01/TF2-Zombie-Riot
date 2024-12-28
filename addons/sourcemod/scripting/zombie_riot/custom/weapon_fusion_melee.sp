@@ -89,8 +89,11 @@ bool IsFusionWeapon(int Index)
 #define MINYAW_RAID_SHIELD -60.0
 #define MAXYAW_RAID_SHIELD 60.0
 
-public float Player_OnTakeDamage_Fusion(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float Player_OnTakeDamage_Fusion(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
+
 	// need position of either the inflictor or the attacker
 	float actualDamagePos[3];
 	float victimPos[3];
@@ -1462,8 +1465,7 @@ static bool Siccerino_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsValidEntity(entity))
 	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
+		if(IsValidEnemy(client, entity, true, true))
 		{
 			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{
@@ -1613,10 +1615,13 @@ void WeaponVoidBlade_OnTakeDamage(int attacker, int victim, int zr_damage_custom
 	VoidTimerHudShow(attacker);
 }
 
-public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
 	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
-	{
+	{	
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
+
 		if(i_VoidCurrentShields[victim] >= 1)
 		{
 			if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
@@ -1629,10 +1634,13 @@ public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attack
 	}
 	if(i_VoidCurrentShields[victim] >= 1)
 	{
-		if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
-			damage *= 0.6;
-		else
-			damage *= 0.25;
+		if(!(damagetype & DMG_TRUEDAMAGE))
+		{
+			if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
+				damage *= 0.6;
+			else
+				damage *= 0.25;
+		}
 			
 		if(!CheckInHud())
 			return damage;

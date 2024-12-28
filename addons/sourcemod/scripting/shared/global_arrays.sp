@@ -53,6 +53,7 @@ enum
 	Ammo_Hand_Grenade,		// 24 Hand Grenade types
 	Ammo_Potion_Supply,		// 25 Drink Types
 	Ammo_Metal_Sub,		// 26 Used to display metal on other types of weapons.
+	Ammo_ClassSpecific,		// 27 This is used for weapons that require their own ammo.
 	Ammo_MAX
 };
 
@@ -130,6 +131,7 @@ ConVar CvarMpSolidObjects; //mp_solidobjects
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
+ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
 #endif
 ConVar sv_cheats;
 ConVar nav_edit;
@@ -254,6 +256,7 @@ bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
 float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.7, ...};
 float f_Client_BackwardsWalkPenalty[MAXTF2PLAYERS]={0.7, ...};
+float f_Client_LostFriction[MAXTF2PLAYERS]={0.1, ...};
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
@@ -374,6 +377,7 @@ float f_PullStrength[MAXENTITIES];
 
 float ReplicateClient_Svairaccelerate[MAXTF2PLAYERS];
 float ReplicateClient_BackwardsWalk[MAXTF2PLAYERS];
+float ReplicateClient_LostFooting[MAXTF2PLAYERS];
 int ReplicateClient_Tfsolidobjects[MAXTF2PLAYERS];
 int ReplicateClient_RollAngle[MAXTF2PLAYERS];
 
@@ -565,9 +569,6 @@ bool b_IsAProjectile[MAXENTITIES];
 bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_CannotBeHeadshot[MAXENTITIES];
 bool b_CannotBeBackstabbed[MAXENTITIES];
-bool b_CannotBeStunned[MAXENTITIES];
-bool b_CannotBeKnockedUp[MAXENTITIES];
-bool b_CannotBeSlowed[MAXENTITIES];
 float f_NpcTurnPenalty[MAXENTITIES];
 float f_ClientInAirSince[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
@@ -580,12 +581,12 @@ int h_NpcCollissionHookType[MAXENTITIES];
 int h_NpcSolidHookType[MAXENTITIES];
 #define EP_GENERIC				  		0		  					// Nothing special.
 #define EP_NO_KNOCKBACK			  		(1 << 0)   					// No knockback
-#define EP_DEALS_SLASH_DAMAGE			  	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
-#define EP_DEALS_CLUB_DAMAGE			  	(1 << 2)   					// To deal melee damage.
+#define EP_DEALS_UNUSED_1			  	(1 << 1)   				// Slash Damage (For no npc scaling, or ignoring resistances.)
+#define EP_DEALS_CLUB_DAMAGE			  	(1 << 2)   				// To deal melee damage.
 #define EP_GIBS_REGARDLESS			  	(1 << 3)   					// Even if its anything then blast, it will still gib.
-#define EP_DEALS_PLASMA_DAMAGE			 	(1 << 4)   					// for wands to deal plasma dmg
-#define EP_DEALS_DROWN_DAMAGE			 	(1 << 5)
-#define EP_IS_ICE_DAMAGE			  		(1 << 6)   					// Even if its anything then blast, it will still gib.
+#define EP_DEALS_PLASMA_DAMAGE			 	(1 << 4)   				// for wands to deal plasma dmg
+#define EP_DEALS_TRUE_DAMAGE			 	(1 << 5)
+#define EP_IS_ICE_DAMAGE			  		(1 << 6)   				// Even if its anything then blast, it will still gib.
 
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];

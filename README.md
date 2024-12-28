@@ -6,9 +6,6 @@ If you wish to donate to support this project then concider subscribing to the p
 
 USE 32 BIT SERVER AS OF NOW!
 this gamemode is ready for 64bit, but it is not possible yet as dhooks and address saving doesnt work for 64bit yet.
-there are some things missing as its still a WIP fix:
-
--EDAlloc remover, i.e. edicts being reserved.
 
 # TF2 Zombie Riot
 
@@ -19,6 +16,7 @@ Compile zombie_riot.sp for this.
 
 THIS CODE IS COMPRISED OF MULTIPLE CODERS JUST ADDING THEIR THINGS!
 SO HOW THIS CODE WORKS CAN HEAVILY VARY FROM FILE TO FILE!!!
+I overall try to keep a standart across them all without bothering them too much.
 
 If you wish to use this plugin for your own server, please keep all the credits that are here or i WILL cry.
 Do not go above 14 players(you can have 32 slots, i recommend 16+) but dont allow more inside the plugin itself (Inside queue.sp), as the server doesnt support that interms of performance, the npc's are limited at 32 for a reason.
@@ -30,15 +28,22 @@ if you for some ungodly reason need 100 player zr, grab the 100 player version, 
 Use THIS compiler version if you dont want any wierd issues when coding yourself:
 1.12.0.7163
 
-Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.
-
 ### Where can I see this gamemode in action?
 
 IF you wish to see the plugin in action/or just are interrested in playing this gamemode rather then coding/messing with it, the main server for the plugin is this one hosted by disc.ff:
 
-Main Server:
+Main Servers:
 (American)
+
 74.91.119.154:27017 ( steam://connect/74.91.119.154:27017 )
+
+74.91.113.50:27016 ( steam://connect/74.91.113.50:27016 )
+
+(European)
+
+145.239.70.42:27015 ( steam://connect/145.239.70.42:27015 )
+
+
  
 ## cvar's
 
@@ -116,6 +121,9 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
 
+## Optional plugins
+- [Max speed unlocker](https://github.com/FlaminSarge/tf_maxspeed_patch) (Used for zealot, although you dont need it, but i recommend it.)
+Set this to 720.0
 ## Credits
 
 Current coders that in anyway actively helped, in order of how much:
@@ -132,7 +140,8 @@ Current coders that in anyway actively helped, in order of how much:
 - [Pelipoika](https://github.com/Pelipoika) (Npc base code that we heavily edited, thank you SO much for publishing it all.)
 - [backwards] (backwards#8236) on discord. (Helped with sdkcall lag compensation.)
 
-Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
-rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
+Some Code is borrowed/just takes from other plugins i or friends made, often with permission,
+rarely without because i couldnt contact the person or it was just open sourcecode, credited anyways when i did that inside the code.
+All was under the GLP3.0 lisence.
 
 IF YOU HAVE ANY QUESTIONS, CONTACT ME. My things are in my Bio.

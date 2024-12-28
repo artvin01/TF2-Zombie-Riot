@@ -160,7 +160,7 @@ public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int
 		damage *= 1.25;
 		//PrintToChatAll("speedbuff from headshot :D");
 		if(pap != 0)
-			StartBleedingTimer(victim, attacker, damage * 0.06, 4, weapon, DMG_SLASH);
+			StartBleedingTimer(victim, attacker, damage * 0.06, 4, weapon, DMG_TRUEDAMAGE);
 	}
 	switch(pap)
 	{

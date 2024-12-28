@@ -125,7 +125,7 @@ methodmap AlliedSensalAbility < CClotBody
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
-		b_CannotBeStunned[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 		func_NPCDeath[npc.index] = AlliedSensalAbility_NPCDeath;
 		func_NPCThink[npc.index] = AlliedSensalAbility_ClotThink;
 
@@ -360,7 +360,10 @@ void SensalCauseKnockback(int attacker, int victim, float RatioExtra = 1.0, bool
 	int weight = i_NpcWeight[victim];
 	if(weight > 5)
 		return;
-	
+		
+	if(HasSpecificBuff(victim, "Solid Stance"))
+		return;
+
 	if(weight < 0)
 		weight = 1;
 	

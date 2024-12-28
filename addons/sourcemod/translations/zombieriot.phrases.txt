@@ -2055,15 +2055,6 @@
 		"en"		"The Zombies have been defeated!\nDo you wish to go and do 1 extra wave..?"
 		"fr"		"Les zombies ont été éliminés!\nVoulez-vous faire une vague additionelle..?"
 	}
-	"Victory Menu"
-	{		
-		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitely.\nThe further you go, the harder it gets.\n"
-		"fr"		"Les zombies ont été éliminés!\nVoulez-vous jouer le mode Freeplay..?\nFreeplay continue à l'infini.\nLa difficulté monte avec votre progrès.\n"
-		"ru"		"Зомби побеждены!\nПерейти в режим свободной игры..?\nСвободный режим игры бесконечен.\nЧем дальше, тем сложнее.\n"
-		"pt"		"Os zumbis foram derrotados!\nAvançar para Modo Livre..?\nModo Livre irá continuar indefinidamente.\nO quão longe você for, mais dificil ficará.\n"
-		"nl"		"Gefeliciteerd! De zombies zijn verslagen!\nWil je naar Freeplay gaan?..\nFreeplay zal oneindig worden gespeeld.\nHoe verder je raakt, hoe moeilijker het wordt.\n" 
-		"chi"       "僵尸被打败了!\n是否进行自由回合…?\n自由回合无缘无尽。回合越靠后，就越难\n"
-	}
 	"M3 Ability Is Back"
 	{		
 		"en"		"Your MOUSE3 Ability is ready again to be used!"
@@ -3483,6 +3474,18 @@
 		"en" 	"Taunt Speed Increace"
 		"fr" 	"Vitesse des Railleries Augmuntée"
 	}
+	"Fix First Sound Play Manually"
+	{
+		"en" 	"Fix First Sound Play Manually"
+	}
+	"FixSoundManual Fail"
+	{
+		"en" 	"Looks like not all sounds have been downloaded yet, try again later.\nIt did try to precache all one before, though."
+	}
+	"FixSoundManual Success"
+	{
+		"en" 	"Done! All sounds when they actually play, should play just fine, sorry for the lag!"
+	}
 	"Must be below half health"
 	{
 		"en"	"You must be below half health of your max health"
@@ -4070,5 +4073,25 @@
 	"Ability already Active"
 	{
 		"en"	"Ability already Active"
+	}
+	"freeplay_intro"
+	{
+		"en"		"You shall not proceed further.\nProve you're worthy."
+	}
+	"freeplay_start_1"
+	{
+		"en"		"You've proved you're worthy.\nWorthy to take on the journey of Freeplay.\nAs you progress, more stronger enemies will come.\nEvery 5 waves, a setup will occur, and a skull will appear.\n"
+	}
+	"freeplay_start_2"
+	{
+		"en"		"Skulls are random events or effects that can be temporary or permanent.\nEach setup has a 20%% chance of adding an extra skull,\nand this stacks infinitely as you progress."
+	}
+	"freeplay_start_3"
+	{
+		"en"		"There is a 2%% chance for a catastrophic event to occur on on a setup..."
+	}
+	"freeplay_start_4"
+	{
+		"en"		"But neeh, pretty sure it'll never happen.\nAnyways, have fun...\nAnd good luck."
 	}
 }

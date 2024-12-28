@@ -29,7 +29,6 @@ bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 float Medival_Difficulty_Level = 0.0;
-bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
@@ -1432,7 +1431,7 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 
 #if defined RPG
-		if(!Is_Boss && !b_CannotBeSlowed[this.index]) //Make sure that any slow debuffs dont affect these.
+		if(!Is_Boss && !HasSpecificBuff(this.index, "Fluid Movement")) //Make sure that any slow debuffs dont affect these.
 		{
 			switch(BubbleProcStatusLogicCheck(this.index))
 			{
@@ -1472,7 +1471,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			GetPercentageAdjust *= 1.1;
 		}
-
 		if(GetTeam(this.index) != TFTeam_Red && Zombie_DelayExtraSpeed() != 1.0)
 		{
 			GetPercentageAdjust *= Zombie_DelayExtraSpeed();
@@ -1497,12 +1495,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 #endif
 		//in freeplay there should be a speed limit, otherwise they will just have infinite speed and youre screwed.
+		
+
 		if(Waves_InFreeplay())
 		{
 			if((this.m_flSpeed * GetPercentageAdjust) > 500.0)
-				return 500.0;
+				return (500.0 * Zombie_DelayExtraSpeed());
 		}
-
+		
 		return (this.m_flSpeed * GetPercentageAdjust);
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
@@ -6222,6 +6222,12 @@ stock void Custom_Knockback(int attacker,
 	 float RecievePullInfo[3] = {0.0,0.0,0.0},
 	 float OverrideLookAng[3] ={0.0,0.0,0.0})
 {
+	if(HasSpecificBuff(enemy, "Solid Stance"))
+	{
+		//dont be immune to self displacements
+		if(attacker != enemy)
+			return;
+	}
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{
 		float vAngles[3], vDirection[3];
@@ -8171,7 +8177,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
-	b_ThisNpcIsSawrunner[entity] = false;
 	f_AvoidObstacleNavTime[entity] = 0.0;
 	b_NameNoTranslation[entity] = false;
 #endif
@@ -8294,9 +8299,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_NextRangedBarrage_Singular[entity] = 0.0;
 	b_CannotBeHeadshot[entity] = false;
 	b_CannotBeBackstabbed[entity] = false;
-	b_CannotBeStunned[entity] = false;
-	b_CannotBeKnockedUp[entity] = false;
-	b_CannotBeSlowed[entity] = false;
 	b_AvoidObstacleType_Time[entity] = 0.0;
 
 	b_NextRangedBarrage_OnGoing[entity] = false;
@@ -8936,7 +8938,7 @@ public void KillNpc(int ref)
 
 stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = false)
 {
-	if(!IgnoreAllLogic && b_CannotBeStunned[npc])
+	if(HasSpecificBuff(npc, "Clear Head") && !IgnoreAllLogic)
 		return;
 
 	//Emergency incase it wasnt an npc.
@@ -8962,18 +8964,21 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	}
 
 	float Duration_Stun_Post = Duration_Stun;
-	if(!IgnoreAllLogic && b_thisNpcIsARaid[npc]/* && Duration_Stun >= 1.0*/)
+	if(!IgnoreAllLogic)
 	{
 		if(f_RaidStunResistance[npc] > GameTime)
 		{
-			Duration_Stun_Post *= 0.5;
+			if(HasSpecificBuff(npc, "Shook Head"))
+				Duration_Stun_Post *= 0.5;
 		}
 	}
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun_Post - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
 	f_TimeFrozenStill[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
 	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun_Post;
-	f_RaidStunResistance[npc] = GameTime + Duration_Stun;
+	if(b_thisNpcIsARaid[npc])
+		ApplyStatusEffect(npc, npc, "Shook Head", Duration_Stun * 3.0);	
+
 	npcclot.Update();
 
 	Npc_DebuffWorldTextUpdate(view_as<CClotBody>(npc));
@@ -9894,7 +9899,7 @@ stock void SmiteNpcToDeath(int entity)
 		return;
 		
 	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
-	CBaseCombatCharacter_EventKilledLocal(entity, 0, 0, 1.0, DMG_SLASH, -1, {0.0,0.0,0.0}, {0.0,0.0,0.0});
+	CBaseCombatCharacter_EventKilledLocal(entity, 0, 0, 1.0, DMG_TRUEDAMAGE, -1, {0.0,0.0,0.0}, {0.0,0.0,0.0});
 }
 
 void MapStartResetNpc()
@@ -10664,7 +10669,7 @@ stock void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 			NpcStuckZoneWarning(client, damage, 0);	
 			if(damage >= 0.25)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
 			}
 		}
 	}

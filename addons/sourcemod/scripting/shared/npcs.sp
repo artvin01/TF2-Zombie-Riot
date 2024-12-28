@@ -642,7 +642,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					value *= 1.2;
 				}
 				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
-				SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_SLASH, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
+				SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
 				
 				//Setting burn dmg to slash cus i want it to work with melee!!!
 				//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
@@ -738,12 +738,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
 			{
-#if defined ZR 
-				if(b_ThisNpcIsSawrunner[victim])
-				{
-					damage *= 2.0;
-				}
-#endif	// ZR
 				damage *= f_HeadshotDamageMultiNpc[victim];
 
 				if(i_HeadshotAffinity[attacker] == 1)
@@ -937,10 +931,12 @@ public void Func_Breakable_Post(int victim, int attacker, int inflictor, float d
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	
 #if defined ZR
+/*
+	Dont give hurt credit.
 	float damage_Caclulation = damage;
 		
 	//for some reason it doesnt do it by itself, im baffeled.
-
+	
 	if(Health < 0)
 		damage_Caclulation += float(Health);
 	
@@ -948,6 +944,7 @@ public void Func_Breakable_Post(int victim, int attacker, int inflictor, float d
 		Damage_dealt_in_total[attacker] += damage_Caclulation;	//otherwise alot of other issues pop up.
 	
 	Damage_dealt_in_total[attacker] += damage_Caclulation;
+*/
 #endif
 	
 	Event event = CreateEvent("npc_hurt");
@@ -1028,11 +1025,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		SetEntProp(victim, Prop_Data, "m_lifeState", 0);
 	}
 	
-#if defined ZR
-	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
-#else
-	if((damagetype & DMG_DROWN))
-#endif
+	//drown is out of map stuff.
+	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		damage = 5.0;
 		Damageaftercalc = 5.0;

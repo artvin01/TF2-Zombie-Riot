@@ -186,11 +186,28 @@ public void VoidIxufan_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed = 320.0;
 		fl_TotalArmor[iNPC] = 0.85;
-		SetEntityRenderFx(npc.index, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable3, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable4, RENDERFX_DISTORT);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 200, 0, 200, 125);
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 125);
+		}
+		if(IsValidEntity(npc.m_iWearable2))
+		{
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 125);
+		}
+		if(IsValidEntity(npc.m_iWearable3))
+		{
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 125);
+		}
+		if(IsValidEntity(npc.m_iWearable4))
+		{
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 125);
+		}
 	}
 	else
 	{
@@ -203,14 +220,26 @@ public void VoidIxufan_ClotThink(int iNPC)
 		SetEntityRenderFx(npc.m_iWearable4, RENDERFX_NONE);
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
+		}
+		if(IsValidEntity(npc.m_iWearable2))
+		{
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
+		}
+		if(IsValidEntity(npc.m_iWearable3))
+		{
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
+		}
+		if(IsValidEntity(npc.m_iWearable4))
+		{
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
+		}
 	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{

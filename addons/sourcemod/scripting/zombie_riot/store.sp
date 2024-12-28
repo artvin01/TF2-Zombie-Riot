@@ -545,7 +545,10 @@ static const char AmmoNames[][] =
 	"Medigun Fluid",
 	"Laser Battery",
 	"Hand Grenade",
-	"Potion Supply"
+	"Potion Supply",
+	"N/A",
+	"N/A",
+	"N/A"
 };
 
 static ArrayList StoreItems;
@@ -1926,6 +1929,10 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-71", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
+	FormatEx(buffer, sizeof(buffer), "%s", buffer);
+	menu2.AddItem("-86", buffer);
+
 	FormatEx(buffer, sizeof(buffer), "%t", "Zombie In Battle Logic Setting", f_Data_InBattleHudDisableDelay[client] + 2.0);
 	menu2.AddItem("-72", buffer);
 
@@ -2334,6 +2341,10 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					b_EnableNumeralArmor[client] = !b_EnableNumeralArmor[client];
 					ReShowSettingsHud(client);
 					SetGlobalTransTarget(client);
+				}
+				case -86:
+				{
+					Manual_SoundcacheFixTest(client);
 				}
 				case -64: //Lower Volume
 				{
@@ -2761,6 +2772,10 @@ public Action Access_StoreViaCommand(int client, int args)
 
 void Store_Menu(int client)
 {
+	if(CvarInfiniteCash.BoolValue)
+	{
+		StarterCashMode[client] = false;
+	}
 	Store_OnCached(client);
 	if(LastStoreMenu[client])
 	{
@@ -6013,11 +6028,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Activate_Neuvellete(client, entity);
 		SeaMelee_Enable(client, entity);
 		Enable_Leper(client, entity);
+		Enable_Zealot(client, entity);
 		Flagellant_Enable(client, entity);
 		Enable_Impact_Lance(client, entity);
 		Enable_Trash_Cannon(client, entity);
 		Enable_Rusty_Rifle(client, entity);
 		Enable_Blitzkrieg_Kit(client, entity);
+		Activate_Fractal_Kit(client, entity);
 		Enable_Quibai(client, entity);
 		AngelicShotgun_Enable(client, entity);
 		FullMoon_Enable(client, entity);
@@ -6297,9 +6314,12 @@ static void ItemCost(int client, Item item, int &cost)
 	cost += item.Scale * scaled; 
 	cost += item.CostPerWave * Rogue_GetRoundScale();
 
+
+	static ItemInfo info;
+	item.GetItemInfo(0, info);
 	if(StarterCashMode[client])
 	{
-		if(StartCash < 750 && cost <= 1000) //give super discount for normal waves
+		if(StartCash < 750 && (cost <= 1000 || info.Cost_Unlock <= 1000)) //give super discount for normal waves
 		{
 			cost = RoundToCeil(float(cost) * 0.35);
 		}
