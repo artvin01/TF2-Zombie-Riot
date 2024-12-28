@@ -251,7 +251,7 @@ void Music_EndLastmann()
 					case 1:
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/yakuza_lastman.mp3", 2.0);
 					case 2:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/zealot_lastman.mp3", 2.0);
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/zealot_lastman_1.mp3", 2.0);
 					case 3:
 						StopCustomSound(client, SNDCHAN_STATIC, RAIDBOSS_TWIRL_THEME, 2.0);
 				}
@@ -702,8 +702,8 @@ void Music_PostThink(int client)
 				}
 				case 2:
 				{
-					EmitCustomToClient(client, "#zombiesurvival/zealot_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-					SetMusicTimer(client, GetTime() + 115);		
+					EmitCustomToClient(client, "#zombiesurvival/zealot_lastman_1.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					SetMusicTimer(client, GetTime() + 80);		
 				}
 				case 3:
 				{

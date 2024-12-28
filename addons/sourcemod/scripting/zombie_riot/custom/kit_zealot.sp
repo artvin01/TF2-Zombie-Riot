@@ -266,11 +266,11 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 		float MaxHealth = float(ReturnEntityMaxHealth(client));
 		if(i_RandomCurrentPotion[client] == 0)
 		{
-			HealEntityGlobal(client, client, MaxHealth / 2.0, 1.0, BuffDuration, HEAL_SELFHEAL);
+			HealEntityGlobal(client, client, MaxHealth, 1.0, BuffDuration, HEAL_SELFHEAL);
 		}
 		//regen stamina to full.
 
-		HealEntityGlobal(client, client, MaxHealth / 2.0, 1.0, 2.0, HEAL_SELFHEAL);
+		HealEntityGlobal(client, client, MaxHealth / 4.0, 1.0, 2.0, HEAL_SELFHEAL);
 		EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 		Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 		ApplyStatusEffect(client, client, "Zealot's Random Drinks", BuffDuration);
@@ -536,7 +536,7 @@ public void Enable_Zealot(int client, int weapon) // Enable management, handle w
 		if(!Precached)
 		{
 			// MASS REPLACE THIS IN ALL FILES
-			PrecacheSoundCustom("#zombiesurvival/zealot_lastman.mp3",_,1);
+			PrecacheSoundCustom("#zombiesurvival/zealot_lastman_1.mp3",_,1);
 			Precached = true;
 		}
 	}
