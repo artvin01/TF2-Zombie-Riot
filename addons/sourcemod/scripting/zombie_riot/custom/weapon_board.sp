@@ -507,6 +507,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	else if(Board_Level[victim] == 3) //rookie
 	{
 		//PrintToChatAll("damage resist");
+		if(!CheckInHud())
 			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		if(!(damagetype & DMG_TRUEDAMAGE))
 			return damage;
