@@ -226,6 +226,8 @@ methodmap Donnerkrieg < CClotBody
 				RaidAllowsBuildings = true;
 			}
 		}
+		
+		TwirlEarsApply(npc.index,_,0.75);
 
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
@@ -939,6 +941,7 @@ static void Internal_NPCDeath(int entity)
 	
 	b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 	b_NpcIsInvulnerable[npc.index] = false;
+	ExpidonsaRemoveEffects(entity);
 			
 	if(EntRefToEntIndex(RaidBossActive)==npc.index)
 	{

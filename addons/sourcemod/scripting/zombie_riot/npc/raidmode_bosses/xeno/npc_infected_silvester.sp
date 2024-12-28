@@ -2373,6 +2373,8 @@ void SilvesterApplyEffects(int entity, bool withoutweapon = false)
 			RemoveEntity(npc.m_iWearable1);
 
 		ExpidonsaRemoveEffects(entity);
+		
+		SilvesterEarsApply(npc.index);
 		if(!withoutweapon)
 			SilvesterApplyEffectsForm1(entity);
 	}
@@ -2383,6 +2385,7 @@ void SilvesterApplyEffects(int entity, bool withoutweapon = false)
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
 		ExpidonsaRemoveEffects(entity);
+		SilvesterEarsApply(npc.index);
 		SilvesterApplyEffectsForm2(entity, withoutweapon);			
 	}
 }

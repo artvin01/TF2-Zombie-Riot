@@ -5,6 +5,9 @@
 static const char g_LaserLoop[][] = {
 	"zombiesurvival/seaborn/loop_laser.mp3"
 };
+static const char g_LaserStart[][] = {
+	"npc/combine_gunship/attack_start2.wav"
+};
 
 static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
 static int i_wingslot[MAXENTITIES];
@@ -22,6 +25,7 @@ void Kit_Fractal_NPC_MapStart()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 	Zero(fl_nightmare_cannon_core_sound_timer);
+	PrecacheSoundArray(g_LaserStart);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -36,6 +40,12 @@ methodmap Fracatal_Kit_Animation < CClotBody
 		EmitCustomToAll(g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)], this.index, SNDCHAN_STATIC, 75, _, 0.85);
 		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
 	}
+	public void PlayLaserStart() {
+
+		EmitSoundToAll(g_LaserStart[GetRandomInt(0, sizeof(g_LaserStart) - 1)], this.index, SNDCHAN_STATIC, 75, _, 0.85, 110);
+		
+	}
+	
 	property int m_iWingSlot
 	{
 		public get()		 
@@ -169,6 +179,7 @@ methodmap Fracatal_Kit_Animation < CClotBody
 				AcceptEntityInput(npc.m_iWingSlot, "SetBodyGroup");
 			}
 		}
+		npc.PlayLaserStart();
 		//if(b_TwirlHairpins[client])
 		//{
 		//	float flPos[3], flAng[3];

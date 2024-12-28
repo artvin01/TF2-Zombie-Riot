@@ -731,6 +731,7 @@ methodmap Stella < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		TwirlEarsApply(npc.index,_,0.75);
 
 		if(!IsValidEntity(RaidBossActive))
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -2105,6 +2106,7 @@ static void Internal_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+	ExpidonsaRemoveEffects(entity);
 
 	SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
 	SDKUnhook(npc.index, SDKHook_Think, Stella_Nightmare_Tick);

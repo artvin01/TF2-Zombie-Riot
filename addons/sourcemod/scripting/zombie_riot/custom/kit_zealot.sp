@@ -607,6 +607,8 @@ public void Client_ZealotThink(int client)
 		AngleDeviate += 90.0;
 		if((buttons & IN_BACK))
 			AngleDeviate += 45.0;
+		else if((buttons & IN_FORWARD))
+			AngleDeviate -= 45.0;
 		//Dodge to left
 	}
 	if((buttons & IN_MOVERIGHT))
@@ -614,12 +616,19 @@ public void Client_ZealotThink(int client)
 		AngleDeviate -= 90.0;
 		if((buttons & IN_BACK))
 			AngleDeviate -= 45.0;
+		else if((buttons & IN_FORWARD))
+			AngleDeviate += 45.0;
 		//Dodge to right
 	}
 	if(AngleDeviate == 0.0 && (buttons & IN_BACK))
 	{
 		AngleDeviate += 180.0;
 		//Dodge to back
+	}
+	if(AngleDeviate == 0.0 && (buttons & IN_FORWARD))
+	{
+		AngleDeviate += 0.01;
+		//Dodge to .... front?
 	}
 
 	//Not holding Reload. block.
@@ -649,13 +658,17 @@ public void Client_ZealotThink(int client)
 		Rogue_OnAbilityUse(weapon);
 
 	MaxDodgeCount[client]--;
+
+	//Punishment for dodging forwards.
+	if((buttons & IN_FORWARD))
+		MaxDodgeCount[client]--;
 	static float anglesB[3];
 	GetClientEyeAngles(client, anglesB);
 	anglesB[1] += AngleDeviate;
 	anglesB[0] = 0.0;
 	static float velocity[3];
 	GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-	float knockback = 700.0;
+	float knockback = 800.0;
 	TF2_AddCondition(client, TFCond_LostFooting, 0.25);
 	TF2_AddCondition(client, TFCond_AirCurrent, 0.25);
 	// knockback is the overall force with which you be pushed, don't touch other stuff
@@ -790,7 +803,7 @@ public void Zealot_Hud_Logic(int client, int weapon, bool ignoreCD)
 	{
 		if(Zealot_BonusMeleeDamageWearoff[client] > GetGameTime())
 		{
-			Format(ZealotHud, sizeof(ZealotHud), "%s\nCalloused Strikes (x.%1f)", ZealotHud, Zealot_BonusMeleeDamage[client]);
+			Format(ZealotHud, sizeof(ZealotHud), "%s\nCalloused Strikes (x%1.f)", ZealotHud, Zealot_BonusMeleeDamage[client]);
 		}
 	}
 	

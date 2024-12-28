@@ -3,6 +3,12 @@ enum
 	num_BulletTraceLogicHandle = 1,
 	num_TraverseInverse = 2,
 }
+int FilterEntityDo = 0;
+
+void BulletTraceFilterEntity(int entity)
+{
+	FilterEntityDo = entity;
+}
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 {
@@ -105,6 +111,9 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return NpcCollisionCheck(iExclude, entity, 1);
 	}
 
+	//Custom filter
+	if(FilterEntityDo > 0 && FilterEntityDo != entity)
+		return false;
 
 	return !(entity == iExclude);
 }

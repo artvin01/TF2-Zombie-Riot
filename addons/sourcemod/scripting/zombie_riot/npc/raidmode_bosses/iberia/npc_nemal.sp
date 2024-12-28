@@ -1686,6 +1686,7 @@ void NemalEffects(int iNpc, int colour = 0, char[] attachment = "head")
 	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_4_r);
 	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_2_r);
+	
 	NemalEffects2(iNpc, 0, "back_lower");
 }
 void NemalEffects2(int iNpc, int colour = 0, char[] attachment = "back_lower")
