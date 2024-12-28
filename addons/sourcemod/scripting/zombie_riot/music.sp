@@ -697,12 +697,12 @@ void Music_PostThink(int client)
 			{
 				case 1:
 				{
-					EmitCustomToClient(client, "#zombiesurvival/yakuza_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitCustomToClient(client, "#zombiesurvival/yakuza_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.15);
 					SetMusicTimer(client, GetTime() + 163);		
 				}
 				case 2:
 				{
-					EmitCustomToClient(client, "#zombiesurvival/zealot_lastman_1.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitCustomToClient(client, "#zombiesurvival/zealot_lastman_1.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.15);
 					SetMusicTimer(client, GetTime() + 80);		
 				}
 				case 3:
