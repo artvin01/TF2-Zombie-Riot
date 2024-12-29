@@ -2490,7 +2490,6 @@ enum struct Ruina_Laser_Logic
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
 
-				
 		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
 			int victim = Ruina_Laser_BEAM_HitDetected[loop];

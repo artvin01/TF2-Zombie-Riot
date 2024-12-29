@@ -395,6 +395,7 @@ void NPC_ConfigSetup()
 	Kit_Fractal_NPC_MapStart();
 
 	Lelouch_OnMapStart_NPC();
+	Manipulation_OnMapStart_NPC();
 
 	//Expidonsa Waves
 //wave 1-15:
@@ -1336,6 +1337,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 
 #include "zombie_riot/npc/rogue/chaos_expansion/npc_lelouch.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_manipulation_ent.sp"
 
 //Alt
 

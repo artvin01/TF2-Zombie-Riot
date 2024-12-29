@@ -59,6 +59,11 @@ static const char g_AngerSounds[][] = {
 /*
 	Notepad:
 
+	Blade initiation Logic someewhat done.
+	Blade loop logic not done.
+	Manipulation ENT created. not fully tested.
+	Figure out a good way to detect if players hit the blade
+
 	Base Model: Spy?
 
 	Theme?: https://www.youtube.com/watch?v=AoSUEMYzusc
@@ -181,6 +186,8 @@ static const char g_AngerSounds[][] = {
 
 */
 
+#define LELOUCH_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
+
 void Lelouch_OnMapStart_NPC()
 {
 	NPCData data;
@@ -189,8 +196,8 @@ void Lelouch_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "lelouch"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = true;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), ""); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -206,6 +213,8 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_AngerSounds);
 
+	PrecacheModel(LELOUCH_BLADE_MODEL, true);
+
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
@@ -214,7 +223,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 static float fl_npc_basespeed;
 methodmap Lelouch < CClotBody
 {
-	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -225,7 +233,6 @@ methodmap Lelouch < CClotBody
 		PrintToServer("CClot::PlayIdleSound()");
 		#endif
 	}
-	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
@@ -233,7 +240,6 @@ methodmap Lelouch < CClotBody
 		PrintToServer("CClot::PlayTeleportSound()");
 		#endif
 	}
-	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -243,7 +249,6 @@ methodmap Lelouch < CClotBody
 		
 		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
@@ -280,7 +285,6 @@ methodmap Lelouch < CClotBody
 		PrintToServer("CClot::Playnpc.AngerSound()");
 		#endif
 	}
-	
 	public void AdjustWalkCycle()
 	{
 		if(this.IsOnGround())
@@ -301,9 +305,15 @@ methodmap Lelouch < CClotBody
 		}
 	}
 
+	property float m_flBladeCoolDownTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+
 	public Lelouch(float vecPos[3], float vecAng[3], int ally)
 	{
-		Lelouch npc = view_as<Lelouch>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
+		Lelouch npc = view_as<Lelouch>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -313,6 +323,8 @@ methodmap Lelouch < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 1;
+
+		npc.m_flBladeCoolDownTimer = GetGameTime(npc.index) + 1.0; //GetRandomFloat(15.0, 30.0);
 		
 		
 		/*
@@ -336,7 +348,7 @@ methodmap Lelouch < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		static const char Items[][] = {	//temp
+	/*	static const char Items[][] = {	//temp
 			"models/workshop/player/items/all_class/jogon/jogon_medic.mdl",
 			"models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_medic.mdl",
 			"models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl",
@@ -344,12 +356,12 @@ methodmap Lelouch < CClotBody
 			"models/workshop/player/items/medic/dec17_coldfront_carapace/dec17_coldfront_carapace.mdl",
 			RUINA_CUSTOM_MODELS_3,
 			RUINA_CUSTOM_MODELS_2
-		};
+		};*/
 
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
+		/*npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
@@ -364,7 +376,7 @@ methodmap Lelouch < CClotBody
 
 
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");	
+		AcceptEntityInput(npc.index, "SetBodyGroup");	*/
 		
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
@@ -410,6 +422,13 @@ static void ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	//core animations
+	if(npc.m_flDoingAnimation > GameTime)
+		return;
+
+	if(Blade_Logic(npc))
+		return;
 
 	npc.AdjustWalkCycle();
 
@@ -463,6 +482,198 @@ static void ClotThink(int iNPC)
 	}
 
 	npc.PlayIdleAlertSound();
+}
+static int i_BladeLogic[MAXENTITIES];
+static float fl_BladeLogic_Duration[2];
+static float fl_BladeLogic_Timer[MAXENTITIES];
+static float fl_BladeLogic_WindUp[MAXENTITIES];
+static int i_BladeNPC_Ref[MAXENTITIES];
+static bool Blade_Logic(Lelouch npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	if(npc.m_flBladeCoolDownTimer > GameTime)
+		return false;
+	
+	int Forward = i_FindTargetsInfront(npc, 700.0, 50.0);
+	int Around = Nearby_Players(npc, 350.0);
+
+	i_BladeLogic[npc.index] = -1;
+
+	if(Forward <= 2 && Around <= 2)
+	{
+		npc.m_flBladeCoolDownTimer = GameTime + 5.0;
+		return false;
+	}
+
+	if(Forward > Around)
+	{
+		//do giant sword swing forward.
+		float Angles[3]; Angles = GetNPCAngles(npc);
+		Angles[0] = 90.0;
+		int Health = ReturnEntityMaxHealth(npc.index);
+		Health = RoundToFloor(Health*0.1);
+		float Loc[3]; GetAbsOrigin(npc.index, Loc);
+		int Blade_NPC = i_CreateManipulation(npc, Loc, Angles, LELOUCH_BLADE_MODEL, Health, 2.5);
+
+		if(!IsValidAlly(npc.index, Blade_NPC))
+		{
+			npc.m_flBladeCoolDownTimer = GameTime + 5.0;
+			return false;
+		}
+		Manipulation blade = view_as<Manipulation>(Blade_NPC);
+
+		float WindUp = 1.0;
+		float Time = 2.0;
+		fl_BladeLogic_Duration[0] = Time;
+		fl_BladeLogic_Timer[npc.index] = GameTime + WindUp + Time;
+		fl_BladeLogic_WindUp[npc.index] = GameTime + WindUp;
+
+		Initiate_Anim(npc, WindUp+Time, true);
+
+		i_BladeLogic[npc.index] = 0;
+
+		blade.m_flDoingAnimation = FAR_FUTURE;
+
+		i_BladeNPC_Ref[npc.index] = EntIndexToEntRef(blade.index);
+
+		SDKUnhook(npc.index, SDKHook_Think, BladeLogic_Tick);
+		SDKHook(npc.index, SDKHook_Think, BladeLogic_Tick);
+	}
+	else
+	{
+		// do giant sword spin.
+	}
+	npc.m_flBladeCoolDownTimer = GameTime + 120.0;
+	return true;
+}
+static void BladeLogic_Tick(int iNPC)
+{
+	Lelouch npc = view_as<Lelouch>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+	if(fl_BladeLogic_Timer[npc.index] < GameTime)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, BladeLogic_Tick);
+		End_Animation(npc);
+		return;
+	}
+
+	if(fl_BladeLogic_WindUp[npc.index] > GameTime)
+		return;
+
+	//float Ratio = fl_BladeLogic_Timer[npc.index] / fl_BladeLogic_Duration[i_BladeLogic[npc.index]];
+
+	int Blade_NPC = EntRefToEntIndex(i_BladeNPC_Ref[npc.index]);
+
+	if(!IsValidAlly(npc.index, Blade_NPC) || b_NpcHasDied[Blade_NPC] || i_BladeLogic[npc.index] == -1)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, BladeLogic_Tick);
+		//prematurly end the animation.
+		End_Animation(npc);
+		return;
+	}
+
+	//todo: blade SLAM or SPIN logic.
+}
+static int i_targets_found;
+static int i_FindTargetsInfront(Lelouch npc, float Dist, float Radius)
+{
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	Laser.DoForwardTrace_Basic(Dist);
+	Laser.Radius = Radius;
+	i_targets_found = 0;
+	Laser.Detect_Entities(FindTargets_OnLaserHit);
+	return i_targets_found;
+}
+static int Nearby_Players(Lelouch npc, float Radius)
+{
+	i_targets_found = 0;
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
+	return i_targets_found;
+}
+static void CountTargets(int entity, int victim, float damage, int weapon)
+{
+	i_targets_found++;
+}
+static void FindTargets_OnLaserHit(int client, int target, int damagetype, float damage)
+{
+	i_targets_found++;
+}
+static float[] GetNPCAngles(Lelouch npc)
+{
+	float Angles[3], startPoint[3];
+	WorldSpaceCenter(npc.index, startPoint);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+			
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	Angles[0] = flPitch;
+
+	return Angles;
+}
+static bool b_Buffs;
+static void Initiate_Anim(Lelouch npc, float time, bool immune = false)
+{
+	npc.m_flDoingAnimation = GetGameTime(npc.index) + time;
+
+	NPC_StopPathing(npc.index);
+	npc.m_bPathing = false;
+	npc.m_flGetClosestTargetTime = 0.0;
+	npc.m_flSpeed = 0.0;
+	npc.m_iChanged_WalkCycle  = -1;
+
+	//make sure the npc is 100% not moving anymore!
+	npc.SetVelocity({0.0,0.0,0.0});
+	b_Buffs = false;
+	if(!immune)
+		return;
+
+	b_Buffs = true;
+	ApplyStatusEffect(npc.index, npc.index, "Clear Head", time);	
+	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", time);	
+	ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", time);	
+}
+static void End_Animation(Lelouch npc)
+{
+	npc.m_flDoingAnimation = 0.0;
+	npc.m_flSpeed = fl_npc_basespeed;
+
+	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+	if(iActivity > 0) npc.StartActivity(iActivity);
+
+	npc.m_iChanged_WalkCycle = 1;
+
+	if(!b_Buffs)
+		return;
+
+	b_Buffs = false;
+
+	RemoveSpecificBuff(npc.index, "Clear Head");
+	RemoveSpecificBuff(npc.index, "Solid Stance");
+	RemoveSpecificBuff(npc.index, "Fluid Movement");
+}
+static int i_CreateManipulation(Lelouch npc, float Spawn_Loc[3], float Spawn_Ang[3], char[] Model, int Spawn_HP, float size = 1.0)
+{
+	int spawn_index = NPC_CreateByName("npc_ruina_manipulation", npc.index, Spawn_Loc, Spawn_Ang, GetTeam(npc.index), Model);
+	if(spawn_index > MaxClients)
+	{
+		if(GetTeam(npc.index) != TFTeam_Red)
+		{
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+		}
+		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Spawn_HP);
+		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Spawn_HP);
+
+		if(size != 1.0)
+		{
+			float scale = GetEntPropFloat(spawn_index, Prop_Send, "m_flModelScale");
+			SetEntPropFloat(spawn_index, Prop_Send, "m_flModelScale", scale * size);
+		}
+	}
+	return spawn_index;
 }
 static void Body_Pitch(Lelouch npc, float VecSelfNpc[3], float vecTarget[3])
 {
