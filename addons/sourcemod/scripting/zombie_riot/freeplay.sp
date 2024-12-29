@@ -273,6 +273,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "raid_time";
 			}
+    /*
 			case 23:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_atomizer");
@@ -293,6 +294,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Index = NPC_GetByPlugin("npc_castellan");
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
+    */
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
@@ -361,12 +363,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 6: // Lucius or lucian or luciaus or whatever the name is  i forgor
 			{
 				enemy.Index = NPC_GetByPlugin("npc_phantom_knight");
-				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 7: // Sawrunner
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
-				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 		}
 
@@ -1170,6 +1172,7 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				CPrintToChatAll("{darkgreen}Agent Smith will appear in the next wave.");
 			}
+    /*
 			case 23:
 			{
 				CPrintToChatAll("{blue}The Atomizer has spotted your team, get ready next wave!");
@@ -1186,6 +1189,7 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				CPrintToChatAll("{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
 			}
+    */
 		}
 
 		for (int client = 0; client < MaxClients; client++)
@@ -1537,7 +1541,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				RaidFight = GetRandomInt(1, 26);
+				RaidFight = GetRandomInt(1, 22);
 
 				switch(RaidFight)
 				{
@@ -1625,6 +1629,7 @@ void Freeplay_SetupStart(bool extra = false)
 					{
 						strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
 					}
+      /*
 					case 23:
 					{
 						strcopy(message, sizeof(message), "{blue}The Atomizer has spotted your team, get ready next wave!");
@@ -1641,6 +1646,7 @@ void Freeplay_SetupStart(bool extra = false)
 					{
 						strcopy(message, sizeof(message), "{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
 					}
+      */
 					default:
 					{
 						strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
