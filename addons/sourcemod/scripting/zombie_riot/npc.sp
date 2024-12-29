@@ -394,6 +394,8 @@ void NPC_ConfigSetup()
 
 	Kit_Fractal_NPC_MapStart();
 
+	Lelouch_OnMapStart_NPC();
+
 	//Expidonsa Waves
 //wave 1-15:
 	Benera_OnMapStart_NPC();
@@ -1331,6 +1333,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 
 #include "zombie_riot/npc/ally/npc_fractal_cannon_animation.sp"
+
+
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_lelouch.sp"
 
 //Alt
 
