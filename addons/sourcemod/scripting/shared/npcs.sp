@@ -1408,29 +1408,11 @@ void HudDamageIndicator(int client,int damagetype, bool wasattacker)
 {
 	if(damagetype & DMG_TRUEDAMAGE)
 	{
-		if(wasattacker)
-		{
-			f_ClientDoDamageHud[client][0] = GetGameTime() + 1.0;
-			f_ClientDoDamageHud[client][1] = GetGameTime() + 1.0;
-		}
-		else
-		{
-			f_ClientDoDamageHud_Hurt[client][0] = GetGameTime() + 1.0;
-			f_ClientDoDamageHud_Hurt[client][1] = GetGameTime() + 1.0;
-		}
+		return;
 	}
 	else if(damagetype & DMG_OUTOFBOUNDS)
 	{
-		if(wasattacker)
-		{
-			f_ClientDoDamageHud[client][0] = GetGameTime() + 1.0;
-			f_ClientDoDamageHud[client][1] = GetGameTime() + 1.0;
-		}
-		else
-		{
-			f_ClientDoDamageHud_Hurt[client][0] = GetGameTime() + 1.0;
-			f_ClientDoDamageHud_Hurt[client][1] = GetGameTime() + 1.0;
-		}
+		return;
 	}
 	else if(damagetype & DMG_CLUB)
 	{
