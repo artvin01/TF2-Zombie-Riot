@@ -302,8 +302,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 		}
 		//raids otherwise have too much damage.
-		enemy.ExtraDamage *= 0.65;
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
+		enemy.ExtraDamage *= 0.75;
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
 		//some raids dont scale with DMG, fix it here
 
 		enemy.Credits += 6500.0;
