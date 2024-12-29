@@ -236,7 +236,7 @@
 	}
 	"Sniper Rifle Pap 3"
 	{
-		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged.\nDeals extreme damage to any enemy not hit by your rifle within 20 seconds!"
+		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged.\nDeals extreme damage to any enemy not hit by your rifle within 40 seconds!"
 	}
 	"Sniper Rifle Pap 4"
 	{
@@ -1344,6 +1344,10 @@
 		"fr"	"Dégats et cadence des attaques améliorés, votre minion ne peut plus détecter le camouflage."
 		"ru"	"Увеличенный урон и скорость атаки, потеря обнаружения камуфляжа."
 		"chi"   "增加伤害和攻击速度，失去伪装检测"
+	}
+	"Necromancy Staff Pap 2"
+	{
+		"en"	"Increased damage and attackspeed"
 	}
 	
 	"Homing Staff Desc"
@@ -3422,15 +3426,15 @@
 	}
 	"Outlaw Railcannon Desc"
 	{
-		"en"	"Deals damage twice, 2nd damage instance deals 15%% of your damage as true damage.\nZoom with m2.\nHas poor pierce and low damage falloff, but a very thin laser."
+		"en"	"Deals damage twice, 2nd damage instance deals 10%% of your damage as true damage.\nZoom with m2.\nHas poor pierce and low damage falloff, but a very thin laser."
 	}
 	"Outlaw Railcannon Desc Pap 1"
 	{
-		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 20%%"
+		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 12%%"
 	}
 	"Outlaw Railcannon Desc Pap 2"
 	{
-		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 25%%"
+		"en"	"Boosts damage, clipsize, and attackspeed.\nPercentage of truedamage is now 15%%"
 	}
 	"Outlaw Railcannon Desc Pap 4"
 	{
@@ -4086,7 +4090,7 @@
 	}
 	"Potion of Swiftness Desc"
 	{
-		"en"	"Dash cooldown is reduced."
+		"en"	"Dash cooldown is reduced, gain 10%% movement speed."
 	}
 	"Potion of Resilience"
 	{
@@ -4103,5 +4107,29 @@
 	"Potion of Focus Desc"
 	{
 		"en"	"Your headshots deal more damage."
+	}
+	"Magia Fractal"
+	{
+		"en"	"Magia Fractal"
+	}
+	"Fractal-Lenz"
+	{
+		"en"	"Fractal-Lenz"
+	}
+	"Fractal-Harvester"
+	{
+		"en"	"Fractal-Harvester"
+	}
+	"Fractal-Fantasia"
+	{
+		"en"	"Fractal-Fantasia"
+	}
+	"Magia Fractal Desc"
+	{
+		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increase distance, faster turn speed. uses 10 crystals/s \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals\nTwirl's Hairpints give 25 extra crystals"
+	}
+	"Fractal Kit Desc 1"
+	{
+		"en"	"More Damage! And crystal capacity."
 	}
 }

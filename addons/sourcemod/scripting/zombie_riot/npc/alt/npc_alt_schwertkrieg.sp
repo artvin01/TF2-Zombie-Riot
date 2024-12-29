@@ -233,6 +233,8 @@ methodmap Schwertkrieg < CClotBody
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
 		npc.StartPathing();
+		
+		KarlasEarsApply(npc.index,_,0.75);
 
 		
 		npc.m_flMeleeArmor = 1.5;
@@ -742,6 +744,7 @@ static void Internal_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+	ExpidonsaRemoveEffects(entity);
 	
 	b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 	b_NpcIsInvulnerable[npc.index] = false;

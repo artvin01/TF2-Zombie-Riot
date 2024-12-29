@@ -1472,9 +1472,9 @@ bool SensalTransformation(Sensal npc)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);		
 			npc.m_flAttackHappens_2 = 0.0;	
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);

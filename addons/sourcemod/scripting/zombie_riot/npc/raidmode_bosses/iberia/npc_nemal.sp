@@ -1686,6 +1686,7 @@ void NemalEffects(int iNpc, int colour = 0, char[] attachment = "head")
 	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_4_r);
 	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_2_r);
+	
 	NemalEffects2(iNpc, 0, "back_lower");
 }
 void NemalEffects2(int iNpc, int colour = 0, char[] attachment = "back_lower")
@@ -1816,9 +1817,9 @@ bool NemalTransformation(Nemal npc)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);		
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 			npc.m_flNemalSlicerHappening = 0.0;	
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;

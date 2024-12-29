@@ -380,7 +380,8 @@ static void ClotThink(int iNPC)
 					TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
 					TE_SendToAll();
 		
-					EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Predicted_Pos);
+					Ruina_IonSoundInvoke(Predicted_Pos);
+					
 					DataPack pack;
 					CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
 					pack.WriteCell(EntIndexToEntRef(npc.index));
@@ -392,15 +393,27 @@ static void ClotThink(int iNPC)
 					pack.WriteCell(100);			//Sickness flat
 					pack.WriteCell(false);			//Override sickness timeout
 
-					float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
+					if(!AtEdictLimit(EDICT_NPC))
+					{
+						if(!IsValidEntity(npc.m_iWearable8))
+						{
+							float flPos[3]; // original
+							npc.GetAttachment("", flPos, NULL_VECTOR);
+							npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "utaunt_poweraura_teamcolor_blue", npc.index, "", {0.0,0.0,0.0});
+						}
+						float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
 
-					int laser;
-					laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
+						int laser;
+						laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
 
-					CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+					}
 				}
 				else
 				{
+					if(IsValidEntity(npc.m_iWearable8))
+						RemoveEntity(npc.m_iWearable8);
+
 					npc.m_iState = 0;
 					npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 20.0 : 30.0);
 				}	
@@ -513,4 +526,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 }

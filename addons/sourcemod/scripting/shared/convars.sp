@@ -64,6 +64,12 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_obj_upgrade_per_hit", "0");
 	ConVar_Add("tf_playergib", "0");
 
+	//Used for various things such as zealot dodge,
+	// See https://github.com/FlaminSarge/tf_maxspeed_patch
+	//if it doesnt exist, its ignored.
+	//Set it to 720.0
+//	ConVar_Add("tf_maxspeed_limit", "720.0");
+
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?");
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "0", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);

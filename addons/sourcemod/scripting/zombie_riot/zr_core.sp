@@ -213,7 +213,8 @@ enum
 	WEAPON_CASTLEBREAKER = 131,
 	WEAPON_ZEALOT_MELEE = 132,
 	WEAPON_ZEALOT_GUN = 133,
-	WEAPON_ZEALOT_POTION = 134
+	WEAPON_ZEALOT_POTION = 134,
+	WEAPON_KIT_FRACTAL	= 135
 }
 
 enum
@@ -548,6 +549,8 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/weapon_rusty_rifle.sp"
 #include "zombie_riot/custom/weapon_wrathful_blade.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
+#include "zombie_riot/custom/kit_fractal.sp"
+#include "zombie_riot/custom/weapon_laz_laser_cannon.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/weapon_fullmoon.sp"
 #include "zombie_riot/custom/red_blade.sp"
@@ -832,6 +835,7 @@ void ZR_MapStart()
 	Reset_stats_Yamato_Global();	//acts as a reset/map precache
 	QuincyMapStart();
 	Fantasy_Blade_MapStart();
+	Fractal_Kit_MapStart();
 	Casino_MapStart();
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();
@@ -1793,6 +1797,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							Yakuza_Lastman(2);
 							CPrintToChatAll("{crimson}%N descended into a fanatical worship of Sigmar, and set out to cleanse the unrighteous themselves.",client);
+						}
+						if(Fractal_LastMann(client))
+						{
+							//get some cool line.
+							Max_Fractal_Crystals(client);
+							CPrintToChatAll("{purple}Twirl{crimson}'s Essence enters %N...",client);
+							Yakuza_Lastman(3);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)

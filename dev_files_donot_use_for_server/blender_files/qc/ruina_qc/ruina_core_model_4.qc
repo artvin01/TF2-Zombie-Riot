@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_4_1.mdl"	//current one on the server: null
+$modelname "zombie_riot/weapons/ruina_models_4_2.mdl"	//current one on the server: 1
 
 $bodygroup "stella_crest_1"	
 {
@@ -18,6 +18,22 @@ $bodygroup "karlas_projectile"
 	blank
 	studio "v4/karlas_projectile.smd"
 }
+$bodygroup "fantasy_blade"	
+{
+	blank
+	studio "v4/fantasy_blade.smd"
+}
+$bodygroup "fractal_lenz"	
+{
+	blank
+	studio "v4/fractal_lenz.smd"
+}
+$bodygroup "fractal_harvester"	
+{
+	blank
+	studio "v4/fractal_harvester.smd"
+}
+
 
 
 
@@ -69,6 +85,8 @@ $cdmaterials "models\workshop\weapons\c_models\c_invasion_bat\"
 $cdmaterials "models\player\items\sniper\"
 //sniper_owl_white	//it can work as a replacement for glow inner, asuming its tiny objects.
 
+
+$cdmaterials "models\workshop_partner\weapons\c_models\c_ai_flamethrower\"
 
 
 

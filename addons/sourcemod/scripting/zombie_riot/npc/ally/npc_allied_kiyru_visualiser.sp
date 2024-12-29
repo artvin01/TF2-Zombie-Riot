@@ -253,7 +253,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 		npc.m_iNpcStepVariation = 0;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 		
 		func_NPCDeath[npc.index] = AlliedKiryuVisualiserAbility_NPCDeath;
 		func_NPCThink[npc.index] = AlliedKiryuVisaluser_ClotThink;
@@ -515,19 +515,21 @@ void BrawlerHeat2(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
 				npc.m_iChanged_WalkCycle = 3;
+				float EnemyVecPos[3]; 
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
-				{
-					npc.PlayHitSound();
-					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-				//	CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
-					float EnemyVecPos[3]; WorldSpaceCenter(npc.m_iTarget, EnemyVecPos);
-					i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
-					i_ExplosiveProjectileHexArray[npc.index] |= EP_GIBS_REGARDLESS;
-					Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 5, .FunctionToCallOnHit = DealAoeKnockbackBeastMode);
-					i_ExplosiveProjectileHexArray[npc.index] == 0;
-					c_KiyruAttachmentDo[npc.index] = "";
-					npc.b_NoLongerResetVel = true;
-				}
+					WorldSpaceCenter(npc.m_iTarget, EnemyVecPos);
+				else
+					WorldSpaceCenter(npc.index, EnemyVecPos);
+
+				npc.PlayHitSound();
+				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
+			//	CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+				i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
+				i_ExplosiveProjectileHexArray[npc.index] |= EP_GIBS_REGARDLESS;
+				Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 5, .FunctionToCallOnHit = DealAoeKnockbackBeastMode);
+				i_ExplosiveProjectileHexArray[npc.index] == 0;
+				c_KiyruAttachmentDo[npc.index] = "";
+				npc.b_NoLongerResetVel = true;
 			}
 		}
 	}
@@ -613,23 +615,25 @@ void BeastBuildingHeat1(int owner, AlliedKiryuVisualiserAbility npc, float GameT
 			if(npc.m_iChanged_WalkCycle != 3)
 			{
 				npc.m_iChanged_WalkCycle = 3;
+				float EnemyVecPos[3]; 
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
-				{
-					npc.PlayHitSound();
-					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-					float EnemyVecPos[3]; WorldSpaceCenter(npc.m_iTarget, EnemyVecPos);
-				//	CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
-					i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
-					i_ExplosiveProjectileHexArray[npc.index] |= EP_GIBS_REGARDLESS;
-					Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 5);
-					i_ExplosiveProjectileHexArray[npc.index] == 0;
-					c_KiyruAttachmentDo[npc.index] = "";
-					npc.b_NoLongerResetVel = true;
-					if(IsValidEntity(npc.m_iWearable8))
-						DestroyBuildingDo(npc.m_iWearable8);
+					WorldSpaceCenter(npc.m_iTarget, EnemyVecPos);
+				else
+					WorldSpaceCenter(npc.index, EnemyVecPos);
 
-					npc.SetPlaybackRate(0.25);
-				}
+				npc.PlayHitSound();
+				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
+			//	CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
+				i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
+				i_ExplosiveProjectileHexArray[npc.index] |= EP_GIBS_REGARDLESS;
+				Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 5);
+				i_ExplosiveProjectileHexArray[npc.index] == 0;
+				c_KiyruAttachmentDo[npc.index] = "";
+				npc.b_NoLongerResetVel = true;
+				if(IsValidEntity(npc.m_iWearable8))
+					DestroyBuildingDo(npc.m_iWearable8);
+
+				npc.SetPlaybackRate(0.25);
 			}
 		}
 		else

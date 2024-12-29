@@ -92,6 +92,10 @@ static const char g_PlayRocketshotready[][] = {
 static const char g_LaserBeamSounds[][] = {
 	"weapons/bumper_car_speed_boost_start.wav",
 };
+static const char g_LaserBeamSoundsStart[][] = {
+	"weapons/cow_mangler_over_charge_shot.wav",
+};
+
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
@@ -142,6 +146,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsPrepare)); i++) { PrecacheSound(g_RangedAttackSoundsPrepare[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MG42AttackSounds)); i++) { PrecacheSound(g_MG42AttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_LaserBeamSounds)); i++) { PrecacheSound(g_LaserBeamSounds[i]); }
+	for (int i = 0; i < (sizeof(g_LaserBeamSoundsStart)); i++) { PrecacheSound(g_LaserBeamSoundsStart[i]); }
+
 	PrecacheSound(g_DronShotHitSounds);
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
@@ -265,6 +272,10 @@ methodmap Harrison < CClotBody
 	public void PlayLaserBeamSound()
 	{
 		EmitSoundToAll(g_LaserBeamSounds[GetRandomInt(0, sizeof(g_LaserBeamSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
+	}
+	public void PlayLaserBeamSoundStart()
+	{
+		EmitSoundToAll(g_LaserBeamSoundsStart[GetRandomInt(0, sizeof(g_LaserBeamSoundsStart) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 110);
 	}
 	property float m_flTimeUntillSummonRocket
 	{
@@ -1113,7 +1124,6 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float projectile_speed = 800.0;
 
-		npc.PlayLaserBeamSound();
 
 		PredictSubjectPositionForProjectiles(npc, target, projectile_speed, 40.0, vecTarget);
 		if(!Can_I_See_Enemy_Only(npc.index, target)) //cant see enemy in the predicted position, we will instead just attack normally
@@ -1131,9 +1141,14 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		{
 			npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
 		}
+		if(npc.m_iOverlordComboAttack == 0)
+		{
+			npc.PlayLaserBeamSoundStart();
+		}
 		//float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		if(npc.m_iOverlordComboAttack < 12)
 		{
+			npc.PlayLaserBeamSound();
 			npc.m_iOverlordComboAttack += 1;
 			HarrisonInitiateLaserAttack(npc.index, vecTarget, flPos); //laser finger!
 			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
@@ -1495,8 +1510,8 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 35.0 * RaidModeScaling;
-	float FarDamage = 30.0 * RaidModeScaling;
+	float CloseDamage = 70.0 * RaidModeScaling;
+	float FarDamage = 60.0 * RaidModeScaling;
 	float MaxDistance = 5000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
@@ -1509,8 +1524,11 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 			if (damage < 0)
 				damage *= -1.0;
 
+			
+			if(victim > MaxClients) //make sure barracks units arent bad, they now get targetted too.
+				damage *= 0.25;
 
-			SDKHooks_TakeDamage(victim, entity, entity, damage * RaidModeScaling, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 				
 		}
 	}

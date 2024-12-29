@@ -481,7 +481,7 @@ static void Create_Halo_And_Wings(int client)
 
 	int pap = i_Current_Pap[client];
 
-	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));	//so the wings don't intefere with one another
+	bool HasWings = MagiaWingsDo(client);
 	if(HasWings)
 	{
 		if(pap>=2)
@@ -966,8 +966,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsValidEntity(entity))
 	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
+		if(IsValidEnemy(client, entity, true, true))
 		{
 			b_I_hit_something[client] = true;
 		}

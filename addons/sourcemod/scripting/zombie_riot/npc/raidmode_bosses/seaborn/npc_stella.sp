@@ -146,7 +146,6 @@ void Stella_OnMapStart_NPC()
 	data.IconCustom = true;													//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;	
 	data.Precache = ClotPrecache;									//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
-	PrecacheSoundCustom(STELLA_KARLAS_THEME);
 	NPC_Add(data);
 
 }
@@ -178,6 +177,7 @@ static void ClotPrecache()
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 	PrecacheSound("misc/halloween/spell_mirv_explode_primary.wav", true);
 	PrecacheSound("ambient/energy/whiteflash.wav", true);
+	PrecacheSoundCustom(STELLA_KARLAS_THEME);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -731,6 +731,7 @@ methodmap Stella < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		TwirlEarsApply(npc.index,_,0.75);
 
 		if(!IsValidEntity(RaidBossActive))
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -2076,14 +2077,14 @@ static void Stella_Weapon_Lines(Stella npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg, that thing dared to disobey me, but will you {gold}%N{snow} do the same?", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I'll make you {gold}%N{snow} feel the same pain Blitzkrieg inflicted on us.", client);}
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{crimson}Karlas's Old blade, interesting choice {gold}%N", client); 															case 1: Format(Text_Lines, sizeof(Text_Lines), "So what if I told you {gold}%N{snow} that you're using the failed version..", client);}	
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{crimson}Karlas{snow}'s Old blade, interesting choice {gold}%N", client); 															case 1: Format(Text_Lines, sizeof(Text_Lines), "So what if I told you {gold}%N{snow} that you're using the failed version..", client);}	
 		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You're trying to copy me {gold}%N{snow}?", client); 																			case 1: Format(Text_Lines, sizeof(Text_Lines), "I don't approve of this {gold}%N", client);}
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Pointy stick go into enemy, right {gold}%N{snow}?", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You will never become as proficient with the lance as {crimson}Karlas", client);}	
 		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Laser based spell's are one of Ruina's specialties, {gold}%N{snow} You don't even know the first thing about them..",client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "Oi, {gold}%N{snow} I helped create that spell, you can't just steal it and use it aggainst me", client);}	
 		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "And you're using {purple}Twirl's{snow} prefered laser, I hope you know what you're getting yourself into {gold}%N", client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "If {purple}Twirl{snow} catches wing of what you're using {gold}%N{snow}, good luck", client);}	
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Gravity is a harness, you {gold} %N{snow} have not harnessed it", client); 													case 1: Format(Text_Lines, sizeof(Text_Lines), "Wonder how you'd react {gold}%N{snow}, if you saw the real one.", client);}
 		case WEAPON_ION_BEAM_FEED: 	Format(Text_Lines, sizeof(Text_Lines), "Here's some interesting information for you {gold}%N{snow} the feedback loop Prisim has been obsolete for AGES", client);
-		case WEAPON_BOBS_GUN:  		Format(Text_Lines, sizeof(Text_Lines), "Oh, bob's gun well might as well go and sleep... I give {gold}%N", client); 
+		case WEAPON_BOBS_GUN:  		Format(Text_Lines, sizeof(Text_Lines), "Oh, bob's gun well might as well go and sleep... I give up {gold}%N", client); 
 		default:
 		{
 			valid = false;
@@ -2105,6 +2106,7 @@ static void Internal_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+	ExpidonsaRemoveEffects(entity);
 
 	SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
 	SDKUnhook(npc.index, SDKHook_Think, Stella_Nightmare_Tick);

@@ -186,7 +186,6 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 	
-	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert_5.mp3");
 
 	PrecacheSound("misc/halloween/gotohell.wav");
 
@@ -208,6 +207,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 
 	PrecacheSound("ambient/energy/whiteflash.wav", true);
 	
+	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert_5.mp3");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Donnerkrieg");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_donnerkrieg");
@@ -379,7 +379,6 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 		
-		//Music_SetRaidMusicSimple("#zombiesurvival/seaborn/donner_schwert_5.mp3", 290, true);
 		
 		b_thisNpcIsARaid[npc.index] = true;
 

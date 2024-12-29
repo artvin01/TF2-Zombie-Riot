@@ -120,7 +120,7 @@ methodmap AlliedKahmlAbility < CClotBody
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 450.0;

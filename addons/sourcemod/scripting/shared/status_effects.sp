@@ -650,7 +650,7 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 	
 	damage *= DamageRes;	
 	if(length < 1)
-		delete E_AL_StatusEffects[victim];
+		delete E_AL_StatusEffects[attacker];
 }
 
 //Damage vulnerabilities, when i get HURT, this means i TAKE more damage
@@ -1520,9 +1520,9 @@ void StatusEffects_MaimDebuff()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "↓");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.3;
+	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= 0.35;
+	data.MovementspeedModif			= 0.65;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -1664,6 +1664,20 @@ void StatusEffects_Silence()
 	//Immunity to stun effects
 	strcopy(data.BuffName, sizeof(data.BuffName), "Clear Head");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ֆ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	//Immunity to stun effects
+	strcopy(data.BuffName, sizeof(data.BuffName), "Shook Head");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "s");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;

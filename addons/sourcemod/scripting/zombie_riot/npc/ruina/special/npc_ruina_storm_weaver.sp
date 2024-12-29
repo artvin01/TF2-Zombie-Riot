@@ -705,7 +705,7 @@ static void ClotThink(int iNPC)
 	float GameTime = GetGameTime(npc.index);
 
 	//if(!b_storm_weaver_noclip[npc.index])
-	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);
+	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 100.0 * ((ZR_GetWaveCount()+1)/60.0));
 
 	if(!IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)) && fl_special_invuln_timer[npc.index] < GameTime)
 	{

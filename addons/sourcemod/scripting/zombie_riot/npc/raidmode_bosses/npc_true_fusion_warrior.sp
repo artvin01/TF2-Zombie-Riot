@@ -429,6 +429,8 @@ methodmap TrueFusionWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 2);
 		SetVariantInt(2048);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+		
+		SilvesterEarsApply(npc.index);
 	//	FusionApplyEffects(npc.index, 0);
 		return npc;
 	}
@@ -1016,7 +1018,6 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 			}
 			int skin = 1;
 			SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-			ExpidonsaRemoveEffects(npc.index);
 
 			if(IsValidEntity(npc.m_iWearable1))
 			{
@@ -1030,7 +1031,6 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 
 			SetVariantColor(view_as<int>({150, 150, 0, 150}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-			ExpidonsaRemoveEffects(npc.index);
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
 		}
