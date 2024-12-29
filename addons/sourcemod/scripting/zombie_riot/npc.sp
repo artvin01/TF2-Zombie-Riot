@@ -730,6 +730,7 @@ void NPC_ConfigSetup()
 	StalkerCombine_MapStart();
 	StalkerFather_MapStart();
 	StalkerGoggles_OnMapStart();
+	Wisp_Setup();
 
 	// COF Low Prio
 	Addiction_OnMapStart_NPC();
@@ -1860,3 +1861,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentwayne.sp"
 #include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentian.sp"
 #include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentspencer.sp"
+
+#include "zombie_riot/npc/voices/npc_stalker_wisp.sp"

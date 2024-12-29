@@ -2405,7 +2405,7 @@ public void Citizen_ClotThink(int iNPC)
 
 	// See if our target is still valid
 	int target = npc.m_iTarget;
-	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target, true))
+	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target, true, true))
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
 		i_Target[npc.index] = -1;
