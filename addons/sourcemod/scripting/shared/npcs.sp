@@ -34,6 +34,7 @@ void Npc_Sp_Precache()
 	g_particleMissText = PrecacheParticleSystem("miss_text");
 	g_particleCritText = PrecacheParticleSystem("crit_text");
 	g_particleMiniCritText = PrecacheParticleSystem("minicrit_text");
+	ResetDamageHuds();
 }
 
 void NPC_PluginStart()
@@ -1391,7 +1392,69 @@ stock void RemoveHudCooldown(int client)
 
 #define ZR_DEFAULT_HUD_OFFSET 0.15
 
-float RaidHudOffsetSave = 0.0;
+float RaidHudOffsetSave[MAXTF2PLAYERS];
+
+/*
+	0 is melee
+	1 is ranged
+	if true damage, do both.
+*/
+void ResetDamageHuds()
+{
+	Zero2(f_ClientDoDamageHud);
+	Zero2(f_ClientDoDamageHud_Hurt);
+}
+void HudDamageIndicator(int client,int damagetype, bool wasattacker)
+{
+	if(damagetype & DMG_TRUEDAMAGE)
+	{
+		if(wasattacker)
+		{
+			f_ClientDoDamageHud[client][0] = GetGameTime() + 1.0;
+			f_ClientDoDamageHud[client][1] = GetGameTime() + 1.0;
+		}
+		else
+		{
+			f_ClientDoDamageHud_Hurt[client][0] = GetGameTime() + 1.0;
+			f_ClientDoDamageHud_Hurt[client][1] = GetGameTime() + 1.0;
+		}
+	}
+	else if(damagetype & DMG_OUTOFBOUNDS)
+	{
+		if(wasattacker)
+		{
+			f_ClientDoDamageHud[client][0] = GetGameTime() + 1.0;
+			f_ClientDoDamageHud[client][1] = GetGameTime() + 1.0;
+		}
+		else
+		{
+			f_ClientDoDamageHud_Hurt[client][0] = GetGameTime() + 1.0;
+			f_ClientDoDamageHud_Hurt[client][1] = GetGameTime() + 1.0;
+		}
+	}
+	else if(damagetype & DMG_CLUB)
+	{
+		if(wasattacker)
+		{
+			f_ClientDoDamageHud[client][0] = GetGameTime() + 1.0;
+		}
+		else
+		{
+			f_ClientDoDamageHud_Hurt[client][0] = GetGameTime() + 1.0;
+		}
+	}
+	else
+	{
+		if(wasattacker)
+		{
+			f_ClientDoDamageHud[client][1] = GetGameTime() + 1.0;
+		}
+		else
+		{
+			f_ClientDoDamageHud_Hurt[client][1] = GetGameTime() + 1.0;
+		}
+	}
+}
 stock bool Calculate_And_Display_HP_Hud(int attacker)
 {
 	int victim = EntRefToEntIndex(i_HudVictimToDisplay[attacker]);
@@ -1533,17 +1596,21 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 
 		if(percentage_melee != 100.0 && !b_NpcIsInvulnerable[victim])
 		{
+			char NumberAdd[32];
+			ResAdded = true;
+			armor_added = true;
 			if(percentage_melee < 10.0)
 			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s[☛%.2f%%", Debuff_Adder, percentage_melee);
-				ResAdded = true;
+				Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f%%", percentage_melee);
 			}
 			else
 			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s[☛%.0f%%", Debuff_Adder, percentage_melee);
-				ResAdded = true;
+				Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f%%", percentage_melee);
 			}
-			armor_added = true;
+			if(f_ClientDoDamageHud[attacker][0] > GetGameTime())
+				Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
+
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, NumberAdd);
 		}
 		float DamagePercDo = 100.0;
 		if(!b_NpcIsInvulnerable[victim])
@@ -1594,30 +1661,35 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 
 		if(percentage_ranged != 100.0 && !b_NpcIsInvulnerable[victim])	
 		{
+			char NumberAdd[32];
 			if(ResAdded)
 			{
-				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
 				if(percentage_ranged < 10.0)
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s➶%.2f%%]", Debuff_Adder, percentage_ranged);
+					Format(NumberAdd, sizeof(NumberAdd), "|➶%.2f%%", percentage_ranged);
 				}
 				else
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s➶%.0f%%]", Debuff_Adder, percentage_ranged);
+					Format(NumberAdd, sizeof(NumberAdd), "|➶%.0f%%", percentage_ranged);
 				}
 			}
 			else
 			{	
 				if(percentage_ranged < 10.0)
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [➶%.2f%%]", Debuff_Adder, percentage_ranged);
+					Format(NumberAdd, sizeof(NumberAdd), "[➶%.2f%%", percentage_ranged);
 				}
 				else
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [➶%.0f%%]", Debuff_Adder, percentage_ranged);
+					Format(NumberAdd, sizeof(NumberAdd), "[➶%.0f%%", percentage_ranged);
 				}
 			}
+			if(f_ClientDoDamageHud[attacker][1] > GetGameTime())
+				Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
+
 			armor_added = true;
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, NumberAdd);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s]", Debuff_Adder);
 		}
 		else
 		{
@@ -1627,11 +1699,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		if(raidboss_active && raid_entity == victim)
 		{
 			//there is a raid, then this displays a hud below the raid hud.
-			RaidHudOffsetSave = 0.135;
+			RaidHudOffsetSave[attacker] = 0.135;
 
 			if(percentage_melee != 100.0 || percentage_ranged != 100.0 || DamagePercDo != 100.0 || DoesNpcHaveHudDebuffOrBuff(attacker, victim, GameTime))
 			{
-				RaidHudOffsetSave += 0.035;
+				RaidHudOffsetSave[attacker] += 0.035;
 			}
 		}
 	}
@@ -1655,7 +1727,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 #if defined ZR
 		if(raidboss_active)
 		{
-			HudOffset += RaidHudOffsetSave;
+			HudOffset += RaidHudOffsetSave[attacker];
 		}
 #endif
 		float HudY = -1.0;
@@ -2266,3 +2338,77 @@ stock void ThousandString(char[] buffer, int length)
 
 	strcopy(buffer, length, buffer2);
 }
+
+void Npcs_AddUnderscoreToText(char[] buffer, int lengthstring)
+{
+	static char AddUnderscore[4];
+	/*
+		hmmm....
+		it seems i cant underline in sp...
+		whis!
+		get the cringe code!
+	*/
+	if(!AddUnderscore[0])
+	{
+		//Init the wierd letter
+		Format(AddUnderscore, sizeof(AddUnderscore), "%s", "A͟");
+		ReplaceString(AddUnderscore, sizeof(AddUnderscore), "A", "");
+	}
+	int length = strlen(buffer);
+	char ExportChar[255];
+//	PrintToChatAll("-------------------");
+	for(int a; a<length; a++)
+	{
+		static char CharTemp[8];
+		//Do the letter
+
+		//Last Letter
+		//Subtract one as it overflows to the right a bit.
+		if(a == length - 1)
+		{
+			Format(CharTemp, sizeof(CharTemp), "%c", buffer[a]);
+		}
+		else
+		{
+			if(!IsCharMB(buffer[a]))
+			{
+				//Its a multi byte character
+		//		PrintToChatAll("Im a single byte");
+				//Its a single byte character
+				Format(CharTemp, sizeof(CharTemp), "%c%s", buffer[a], AddUnderscore);
+			}
+			else
+			{
+				static char CharAdd[4];
+				/*
+					Well multibyte is VERY special.
+					Cant use %c%c It just breaks it. beacuse screw you, i guess...
+				*/
+
+		//		PrintToChatAll("Im a Multibyte");
+				Format(CharAdd, sizeof(CharAdd), "%s", buffer[a]);
+				Format(CharTemp, sizeof(CharTemp), "%s%s", CharAdd, AddUnderscore);
+				a++;
+				a++;
+				//We cant skip 3 for some reason, idk, it just works, idc.
+			}
+		}
+
+		//Add letter to master
+		Format(ExportChar, sizeof(ExportChar), "%s%s", ExportChar, CharTemp);
+	}
+	//Send back into main string
+	Format(buffer, lengthstring, "%s", ExportChar);
+}
+/*
+stock int StrLenMB(const char[] str)
+{
+	int len = strlen(str);
+	int count;
+	for(int i; i < len; i++)
+	{
+		count += ((str[i] & 0xc0) != 0x80) ? 1 : 0;
+	}
+	return count;
+}  
+*/
