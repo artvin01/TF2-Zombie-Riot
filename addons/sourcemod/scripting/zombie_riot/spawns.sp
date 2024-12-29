@@ -163,16 +163,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		{
 			SpawnerList.GetArray(i, spawn);
 
-			if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
-			{
-				SpawnerList.Erase(i);
-				i--; //we try again.
-				length--;
-				SpawnWasDeleted = true;
-				continue;
-			}
-
-			if(StrContains(spawn.Name, name) == -1)	// Invalid name, ignore
+			if(StrContains(spawn.Name, name, false) == -1)	// Invalid name, ignore
 				continue;
 			
 			if(!spawn.BaseBoss)
