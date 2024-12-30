@@ -420,8 +420,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 
-		if(count > 40)
-			count = 40;
+		if(count > 45)
+			count = 45;
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
 			enemy.Is_Boss = 1;
