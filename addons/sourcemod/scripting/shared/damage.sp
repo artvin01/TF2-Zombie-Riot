@@ -453,21 +453,22 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	NpcArmorExtra(victim, attacker, inflictor, damage, damagetype);
 	if(!CheckInHud())
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-	//Do armor.
-	if(CheckInHud())
-		return false;
-
-	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
+	
+	if(!CheckInHud())
 	{
-		if(attacker <= MaxClients && attacker > 0)
+		//Do armor.
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
-			if(IsValidEntity(weapon))
-				NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
-		}
+			if(attacker <= MaxClients && attacker > 0)
+			{
+				if(IsValidEntity(weapon))
+					NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
+			}
 #if defined ZR
-		BarracksUnitAttack_NPCTakeDamagePost(victim, inflictor, damage, damagetype);
+			BarracksUnitAttack_NPCTakeDamagePost(victim, inflictor, damage, damagetype);
 #endif
+		}
+		
 	}
 
 	return false;
