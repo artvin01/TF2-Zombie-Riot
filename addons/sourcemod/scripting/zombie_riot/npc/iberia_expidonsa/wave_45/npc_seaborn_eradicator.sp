@@ -243,13 +243,14 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 					}
 					return;
 				}
+				//wait before trying again!
+				npc.m_flRecheckIfAlliesDead = GetGameTime() + 5.0;
 				npc.m_iChanged_WalkCycle = 1;
 				return;
 			}	
 			else
 			{
 				//5 second waiting time
-				npc.m_flRecheckIfAlliesDead = GetGameTime() + 5.0;
 				npc.m_iChanged_WalkCycle = 2;
 			}
 			
