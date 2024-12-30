@@ -64,9 +64,13 @@ static const char g_AngerSounds[][] = {
 	Manipulation ENT created. not fully tested.
 	Figure out a good way to detect if players hit the blade
 
-	Base Model: Spy?
+	Base Model: Spy
 
-	Theme?: https://www.youtube.com/watch?v=AoSUEMYzusc
+	Theme: https://www.youtube.com/watch?v=lwoG7Cg1f5I
+	
+	Make him more militaristic, sure he was a part of the same race/faction as Twirl.
+	But he was more focused on results (The ends justify the means)
+	his methods are more gritty, but are more "effective" - deadly.
 
 	
 
