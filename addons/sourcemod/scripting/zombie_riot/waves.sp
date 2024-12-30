@@ -90,6 +90,8 @@ enum struct Vote
 	int Level;
 	char Desc[256];
 	char Append[64];
+	char Unlock1[64];
+	char Unlock2[64];
 	bool Locked;
 }
 
@@ -279,6 +281,8 @@ bool Waves_CallVote(int client, int force = 0)
 			menu.AddItem(NULL_STRING, vote.Name, ITEMDRAW_DISABLED);
 		}
 
+		bool levels = CvarLeveling.BoolValue;
+
 		if(Voting)
 		{
 			int length = Voting.Length;
@@ -287,14 +291,22 @@ bool Waves_CallVote(int client, int force = 0)
 				Voting.GetArray(i, vote);
 				vote.Name[0] = CharToUpper(vote.Name[0]);
 				//There must be atleast 4 selections for the cooldown to work.
-				if(length >= 4 &&vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
+				if(length >= 4 && vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
 					menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
 				}
+				// Unlocks (atleast one player needs it)
+				else if(vote.Unlock1[0] && (!Items_HasNamedItem(client, vote.Unlock1) || (vote.Unlock2[0] && !Items_HasNamedItem(client, vote.Unlock2))))
+				{
+					Format(vote.Name, sizeof(vote.Name), "%s (%s)", vote.Name, vote.Append);
+					menu.AddItem(vote.Config, vote.Name, (Items_HasNamedItem(0, vote.Unlock1) && (!vote.Unlock2[0] || Items_HasNamedItem(0, vote.Unlock2))) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+				}
 				else
 				{
-					Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
+					if(levels)
+						Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
+
 					int MenuDo = ITEMDRAW_DISABLED;
 					if(!vote.Level)
 						MenuDo = ITEMDRAW_DEFAULT;
@@ -306,7 +318,15 @@ bool Waves_CallVote(int client, int force = 0)
 		}
 		else
 		{
-			Format(vote.Name, sizeof(vote.Name), "Standard (Lv %d)", WaveLevel);
+			if(levels)
+			{
+				Format(vote.Name, sizeof(vote.Name), "Standard (Lv %d)", WaveLevel);
+			}
+			else
+			{
+				strcopy(vote.Name, sizeof(vote.Name), "Standard");
+			}
+			
 			menu.AddItem(NULL_STRING, vote.Name);
 
 			int length = VotingMods.Length;
@@ -315,18 +335,19 @@ bool Waves_CallVote(int client, int force = 0)
 				VotingMods.GetArray(i, vote);
 				vote.Name[0] = CharToUpper(vote.Name[0]);
 				
-				float multi = float(vote.Level) / 1000.0;
-				
-				int level = WaveLevel;
-				if(level < 10)
-					level = 10;
-				
-				level = WaveLevel + RoundFloat(level * multi);
+				if(levels)
+				{
+					float multi = float(vote.Level) / 1000.0;
+					
+					int level = WaveLevel;
+					if(level < 10)
+						level = 10;
+					
+					level = WaveLevel + RoundFloat(level * multi);
 
-				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, level);
+					Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, level);
+				}
 				int MenuDo = ITEMDRAW_DISABLED;
-				if(!vote.Level)
-					MenuDo = ITEMDRAW_DEFAULT;
 				if(Level[client] >= 1)
 					MenuDo = ITEMDRAW_DEFAULT;
 				menu.AddItem(vote.Config, vote.Name, MenuDo);
@@ -563,6 +584,9 @@ void Waves_SetupVote(KeyValues map)
 			kv.GetSectionName(vote.Name, sizeof(vote.Name));
 			kv.GetString("file", vote.Config, sizeof(vote.Config));
 			kv.GetString("desc", vote.Desc, sizeof(vote.Desc));
+			kv.GetString("unlock", vote.Unlock1, sizeof(vote.Unlock1));
+			kv.GetString("unlock2", vote.Unlock2, sizeof(vote.Unlock2));
+			kv.GetString("unlockdesc", vote.Append, sizeof(vote.Append));
 			vote.Level = kv.GetNum("level");
 			Voting.PushArray(vote);
 		} while(kv.GotoNextKey());
@@ -1369,8 +1393,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			f_FreeplayDamageExtra = 1.0;
 			round.Waves.GetArray(CurrentWave, wave);
 
-			if(!CurrentWave && Classic_Mode())
-				Classic_NewRoundStart(round.Cash);
+			if(!CurrentWave)
+			{
+				Rogue_TriggerFunction(Artifact::FuncWaveStart);
+
+				if(Classic_Mode())
+					Classic_NewRoundStart(round.Cash);
+			}
 
 			if(wave.RelayName[0])
 				ExcuteRelay(wave.RelayName, wave.RelayFire);

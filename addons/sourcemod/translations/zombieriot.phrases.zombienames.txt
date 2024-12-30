@@ -3790,4 +3790,8 @@
 	{
 		"en"		"Negative"
 	}
+	"Major Voided"
+	{
+		"en"	"Major Voided"
+	}
 }

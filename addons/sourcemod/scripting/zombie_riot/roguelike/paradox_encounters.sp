@@ -286,7 +286,8 @@ public float Rogue_Encounter_Prophecy1()
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM1))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM1) &&
+				Items_HasNamedItem(client, "Bob's Curing Hand"))
 			{
 				found = true;
 				break;
@@ -304,9 +305,41 @@ public float Rogue_Encounter_Prophecy1()
 	else if(!found)
 	{
 		vote.Locked = true;
-		strcopy(vote.Append, sizeof(vote.Append), " (???)");
+		strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 1 and Defeat Stella & Karlas)");
 	}
 	list.PushArray(vote);
+
+	if(!easyMode)
+	{
+		bool rogue, runia;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM3))
+			{
+				rogue = true;
+				
+				if(Items_HasNamedItem(client, "Kahmlsteins Last Will") && Items_HasNamedItem(client, "Twirl's Hairpins"))
+				{
+					runia = true;
+					break;
+				}
+			}
+		}
+
+		if(rogue)
+		{
+			strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 1c");
+			strcopy(vote.Desc, sizeof(vote.Desc), "Prophecy Desc 1c");
+
+			if(!runia)
+			{
+				vote.Locked = true;
+				strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 3 and Defeat Unspeakable and Twirl)");
+			}
+
+			list.PushArray(vote);
+		}
+	}
 
 	Rogue_StartGenericVote(20.0);
 
@@ -356,7 +389,8 @@ public float Rogue_Encounter_Prophecy2()
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM2))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM2) &&
+				Items_HasNamedItem(client, "Kahml's Contained Chaos"))
 			{
 				kalm = true;
 				break;
@@ -390,7 +424,7 @@ public float Rogue_Encounter_Prophecy2()
 		if(waldch)
 		{
 			vote.Locked = true;
-			strcopy(vote.Append, sizeof(vote.Append), " (No Waldch)");
+			strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 2 and Defeat Kahmlstein)");
 		}
 
 		strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 2b");
@@ -399,6 +433,7 @@ public float Rogue_Encounter_Prophecy2()
 
 		strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 2c");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Prophecy Desc 2c");
+		vote.Append[0] = 0;
 		list.PushArray(vote);
 	}
 
@@ -427,7 +462,10 @@ public void Rogue_Vote_Prophecy2(const Vote vote, int index)
 			{
 				PrintToChatAll("%t", "Prophecy Lore 2b");
 				Rogue_AddChaos(20);
-				Store_RandomizeNPCStore(0, 10);
+
+				int recover = 10;
+				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+				Store_RandomizeNPCStore(0, recover);
 			}
 			case 2:
 			{
@@ -469,7 +507,10 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 			case 0:
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 1a");
-				Store_RandomizeNPCStore(0, 4);
+
+				int recover = 4;
+				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+				Store_RandomizeNPCStore(0, recover);
 			}
 			case 1:
 			{
@@ -520,7 +561,9 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 				Rogue_AddChaos(15);
 				GiveCash(2000);
 				Rogue_AddIngots(15);
-				Store_RandomizeNPCStore(0, 4);
+				int recover = 4;
+				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+				Store_RandomizeNPCStore(0, recover);
 			}
 		}
 	}
@@ -587,7 +630,10 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 				case 4, 5, 6:
 				{
 					Rogue_AddIngots(-4);
-					Store_RandomizeNPCStore(0, 1);
+
+					int recover = 1;
+					Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+					Store_RandomizeNPCStore(0, recover);
 					title = 'e';
 				}
 				case 7, 8:

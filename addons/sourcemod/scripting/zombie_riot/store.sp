@@ -3209,7 +3209,7 @@ static void MenuPage(int client, int section)
 			{
 				menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", cash);
 			}
-			else if(Database_IsLan())
+			else if(!CvarLeveling.BoolValue)
 			{
 				menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Credits_Menu", cash, GlobalExtraCash + CashRecievedNonWave[client]);
 			}
@@ -3228,7 +3228,7 @@ static void MenuPage(int client, int section)
 			{
 				menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", cash, "Store Discount");
 			}
-			else if(Database_IsLan())
+			else if(!CvarLeveling.BoolValue)
 			{
 				menu.SetTitle("%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Credits_Menu", cash, GlobalExtraCash + CashRecievedNonWave[client], "Store Discount");
 			}
@@ -3280,6 +3280,10 @@ static void MenuPage(int client, int section)
 	if(CvarInfiniteCash.BoolValue)
 	{
 		ClientLevel = 9999; //Set client lvl to 9999 for shop if infinite cash is enabled.
+	}
+	else if(!CvarLeveling.BoolValue)
+	{
+		ClientLevel = 999;
 	}
 	
 	for(int i; i<length; i++)
@@ -3583,9 +3587,6 @@ static void MenuPage(int client, int section)
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Loadouts");
 			menu.AddItem("-22", buffer);
-
-			FormatEx(buffer, sizeof(buffer), "%t", "Skill Tree");
-			menu.AddItem("-25", buffer);
 		}
 
 		if(Rogue_Mode())
@@ -3594,8 +3595,14 @@ static void MenuPage(int client, int section)
 			menu.AddItem("-24", buffer);
 		}
 
-		if(Level[client] > STARTER_WEAPON_LEVEL || Database_IsLan())
+		if(Level[client] > STARTER_WEAPON_LEVEL)
 		{
+			if(CvarSkillPoints.BoolValue)
+			{
+				FormatEx(buffer, sizeof(buffer), "%t", "Skill Tree");
+				menu.AddItem("-25", buffer);
+			}
+
 			FormatEx(buffer, sizeof(buffer), "%t", "Cherrypick Weapon");
 			menu.AddItem("-30", buffer);
 		}

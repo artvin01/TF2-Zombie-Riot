@@ -32,9 +32,9 @@ public float Rogue_Encounter_ParadoxShop()
 
 	bool rare = !(GetURandomInt() % 4);
 
-	if(ingots > 7)
+	if(!rare)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 8) != -1)
+		if(Rogue_GetRandomArtfiact(artifact, true, 6) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
@@ -43,7 +43,7 @@ public float Rogue_Encounter_ParadoxShop()
 		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 		
-		if(!rare && Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
@@ -189,7 +189,8 @@ void Rogue_ParadoxShop_Victory()
 		for(int i; i < length; i++)
 		{
 			ShopListing.GetArray(i, artifact);
-			Rogue_GiveNamedArtifact(artifact.Name);
+			if(artifact.ShopCost > 8)
+				Rogue_GiveNamedArtifact(artifact.Name);
 		}
 
 		delete ShopListing;
@@ -271,17 +272,23 @@ static void GiveMaxHealth(int entity, StringMap map, float amount)
 
 public void Rogue_Store1_Collect()
 {
-	Store_RandomizeNPCStore(0, 1);
+	int recover = 1;
+	Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+	Store_RandomizeNPCStore(0, recover);
 }
 
 public void Rogue_Store2_Collect()
 {
-	Store_RandomizeNPCStore(0, 2);
+	int recover = 2;
+	Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+	Store_RandomizeNPCStore(0, recover);
 }
 
 public void Rogue_Store3_Collect()
 {
-	Store_RandomizeNPCStore(0, 3);
+	int recover = 3;
+	Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+	Store_RandomizeNPCStore(0, recover);
 }
 
 public void Rogue_Shield1_Collect()

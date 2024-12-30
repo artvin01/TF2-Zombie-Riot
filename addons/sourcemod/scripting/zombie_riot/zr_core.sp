@@ -2360,32 +2360,35 @@ void GiveXP(int client, int xp)
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
 	{
-		if(Level[client] < STARTER_WEAPON_LEVEL)
+		if(!CvarLeveling.BoolValue)
 		{
-			static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
-			ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-
-			int maxhealth = SDKCall_GetMaxHealth(client) + 50;
-			if(GetClientHealth(client) < maxhealth)
-				SetEntityHealth(client, maxhealth);
-		}
-		
-		SetGlobalTransTarget(client);
-		PrintToChat(client, "%t", "Level Up", Level[client]);
-		
-		while(Level[client] < nextLevel)
-		{
-			Level[client]++;
-
-			if(Level[client] == STARTER_WEAPON_LEVEL)
+			if(Level[client] < STARTER_WEAPON_LEVEL)
 			{
-				CPrintToChat(client, "%t", "All Weapons Unlocked");
+				static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
+				ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
+
+				int maxhealth = SDKCall_GetMaxHealth(client) * 4 / 3;
+				if(GetClientHealth(client) < maxhealth)
+					SetEntityHealth(client, maxhealth);
 			}
 			
-			Store_PrintLevelItems(client, Level[client]);
+			SetGlobalTransTarget(client);
+			PrintToChat(client, "%t", "Level Up", Level[client]);
+			
+			while(Level[client] < nextLevel)
+			{
+				Level[client]++;
+
+				if(Level[client] == STARTER_WEAPON_LEVEL)
+				{
+					CPrintToChat(client, "%t", "All Weapons Unlocked");
+				}
+				
+				Store_PrintLevelItems(client, Level[client]);
+			}
 		}
 
-		if(Level[client] >= STARTER_WEAPON_LEVEL)
+		if(CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
 			CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
 	}
 }

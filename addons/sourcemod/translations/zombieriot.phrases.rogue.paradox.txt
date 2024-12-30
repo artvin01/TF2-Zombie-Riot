@@ -506,7 +506,79 @@
 	}
 	"Bob's Duck Desc"
 	{
-		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25%% damage bonus, +25%% max health, +15%% firing speed, +15%% reload speed, +10%% damage resistance, Whoever the duck follows gains insane buffs."
+		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25%% damage bonus, +25%% max health, +15%% firing speed, +15%% reload speed, +10%% damage resistance, Whoever the duck follows gains insane buffs"
+	}
+	"Underground Scorch"
+	{
+		"en"	"Underground Scorch"
+	}
+	"Underground Scorch Desc"
+	{
+		"en"	"The people of the sea are unconcerned with what happens on land...\n{green}Reduce Chaos Infliction by 6 if a stage is completed without gaining Chaos Infliction"
+	}
+	"Great Machinations"
+	{
+		"en"	"Great Machinations"
+	}
+	"Great Machinations Desc"
+	{
+		"en"	"Do not envy the sun on the surface. We can do better.\n{green}Reduce Chaos Infliction by 9 if a stage is completed without gaining Chaos Infliction."
+	}
+	"Solidified Lamp Oil"
+	{
+		"en"	"Solidified Lamp Oil"
+	}
+	"Solidified Lamp Oil Desc"
+	{
+		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Reduce Chaos Infliction gained from stages by 40%%"
+	}
+	"Sanctified Lamp Oil"
+	{
+		"en"	"Sanctified Lamp Oil"
+	}
+	"Sanctified Lamp Oil Desc"
+	{
+		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Reduce Chaos Infliction gained from stages by 60%%"
+	}
+	"Mercenary Insurance"
+	{
+		"en"	"Mercenary Insurance"
+	}
+	"Mercenary Insurance Desc"
+	{
+		"en"	"Special insurance offered to independent mercenaries.\nPlayers take 10%% less damage, increased to 35%% if Chaos Infliction is at least 60"
+	}
+	"Energy Life Vest"
+	{
+		"en"	"Energy Life Vest"
+	}
+	"Energy Life Vest Desc"
+	{
+		"en"	"A powered life vest to keep you safe, why does it run on power?\n{yellow}2 Australium Ingots are consumed to reduce 1 Chaos Infliction"
+	}
+	"The Scraper"
+	{
+		"en"	"The Scraper"
+	}
+	"The Scraper Desc"
+	{
+		"en"	"Grind the rest for some useful scrap.\n{yellow}Recovered weapon are instead converted into 2 Australium Ingots"
+	}
+	"Suspicious Shrimp Plate"
+	{
+		"en"	"Suspicious Shrimp Plate"
+	}
+	"Suspicious Shrimp Plate Desc"
+	{
+		"en"	"Apparently it applies to copied personalities.\n{red}Machina Waldch appears until defeated"
+	}
+	"Pack of Smokes"
+	{
+		"en"	"Pack of Smokes"
+	}
+	"Pack of Smokes Desc"
+	{
+		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20%% firing, reload, and healing speed {red}but gain 8 Chaos Infliction after a stage"
 	}
 
 	"Missing Mountains"
@@ -1124,6 +1196,10 @@
 	{
 		"en"	"Pre-Heated Oven ⚠"
 	}
+	"Pre-Heated Oven?"
+	{
+		"en"	"Pre-Heated Oven ☠"
+	}
 	"Yummer"
 	{
 		"en"	"Yummer"
@@ -1131,6 +1207,10 @@
 	"Yummer!"
 	{
 		"en"	"Yummer ⚠"
+	}
+	"Yummer?"
+	{
+		"en"	"Yummer ☠"
 	}
 	"Heavy Forest"
 	{
@@ -1140,6 +1220,10 @@
 	{
 		"en"	"Heavy Forest ⚠"
 	}
+	"Heavy Forest?"
+	{
+		"en"	"Heavy Forest ☠"
+	}
 	"Frostbite"
 	{
 		"en"	"Frostbite"
@@ -1147,6 +1231,10 @@
 	"Frostbite!"
 	{
 		"en"	"Frostbite ⚠"
+	}
+	"Frostbite?"
+	{
+		"en"	"Frostbite ☠"
 	}
 	"Heavy Jacket"
 	{
@@ -1156,6 +1244,10 @@
 	{
 		"en"	"Heavy Jacket ⚠"
 	}
+	"Heavy Jacket?"
+	{
+		"en"	"Heavy Jacket ☠"
+	}
 	"Freezer Water"
 	{
 		"en"	"Freezer Water"
@@ -1164,6 +1256,10 @@
 	{
 		"en"	"Freezer Water ⚠"
 	}
+	"Freezer Water ?"
+	{
+		"en"	"Freezer Water ☠"
+	}
 	"Home of the North"
 	{
 		"en"	"Home of the North"
@@ -1171,6 +1267,10 @@
 	"Home of the North!"
 	{
 		"en"	"Home of the North ⚠"
+	}
+	"Home of the North ?"
+	{
+		"en"	"Home of the North ☠"
 	}
 	"Das Concrete"
 	{

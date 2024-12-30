@@ -45,6 +45,11 @@ enum struct Artifact
 	Function FuncAlly;
 	Function FuncEnemy;
 	Function FuncWeapon;
+	Function FuncWaveStart;
+	Function FuncStageStart;
+	Function FuncIngotChanged;
+	Function FuncRecoverWeapon;
+	Function FuncStageEnd;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -65,6 +70,21 @@ enum struct Artifact
 		
 		kv.GetString("func_weapon", this.Name, 64);
 		this.FuncWeapon = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_wavestart", this.Name, 64);
+		this.FuncWaveStart = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_stagestart", this.Name, 64);
+		this.FuncStageStart = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_ingotchanged", this.Name, 64);
+		this.FuncIngotChanged = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_recoverweapon", this.Name, 64);
+		this.FuncRecoverWeapon = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_stageend", this.Name, 64);
+		this.FuncStageEnd = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
@@ -511,6 +531,7 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 	{
 		if(VoteFunc == INVALID_FUNCTION)
 		{
+			bool levels = CvarLeveling.BoolValue;
 			Menu menu = new Menu(Rogue_CallVoteH);
 			
 			SetGlobalTransTarget(client);
@@ -525,13 +546,17 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 			for(int i; i < length; i++)
 			{
 				Voting.GetArray(i, vote);
-				Format(vote.Config, sizeof(vote.Config), "%t (Lv %d)", vote.Name, vote.Level);
-				int MenuDo = ITEMDRAW_DISABLED;
-				if(!vote.Level)
-					MenuDo = ITEMDRAW_DEFAULT;
-				if(Level[client] >= 1)
-					MenuDo = ITEMDRAW_DEFAULT;
-				menu.AddItem(vote.Name, vote.Config, MenuDo);
+
+				if(levels)
+				{
+					Format(vote.Config, sizeof(vote.Config), "%t (Lv %d)", vote.Name, vote.Level);
+				}
+				else
+				{
+					Format(vote.Config, sizeof(vote.Config), "%t", vote.Name);
+				}
+
+				menu.AddItem(vote.Name, vote.Config);
 			}
 			
 			menu.ExitButton = false;
@@ -857,6 +882,8 @@ void Rogue_BattleVictory()
 {
 	ReviveAll();
 	Waves_RoundEnd();
+	bool victory = true;
+	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 	Store_RogueEndFightReset();
 	Rogue_ParadoxShop_Victory();
 
@@ -878,14 +905,21 @@ void Rogue_BattleVictory()
 			}
 			case BlueParadox:
 			{
+				int recover;
+
 				if(BattleIngots > 4)
 				{
-					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 4 : 5);
+					recover = CurrentFloor > 1 ? 4 : 5;
 				}
 				else if(BattleIngots > 1)
 				{
-					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 3 : 4);
+					recover = CurrentFloor > 1 ? 3 : 4;
 				}
+
+				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+
+				if(recover)
+					Store_RandomizeNPCStore(0, recover);
 
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
 				{
@@ -907,6 +941,10 @@ void Rogue_BattleVictory()
 	{
 		BattleChaos -= float(chaos);
 		Rogue_AddChaos(chaos);
+	}
+	else
+	{
+		Rogue_ParadoxDLC_Flawless();
 	}
 
 	if(CurrentType)
@@ -930,6 +968,8 @@ void Rogue_BattleVictory()
 bool Rogue_BattleLost()
 {
 	Rogue_ParadoxShop_Fail();
+	bool victory = false;
+	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 
 	if(RogueTheme == BlueParadox)
 		Rogue_Dome_WaveEnd();
@@ -1547,6 +1587,8 @@ void Rogue_StartThisBattle(float time = 10.0)
 
 static void StartBattle(const Stage stage, float time = 3.0)
 {
+	Rogue_TriggerFunction(Artifact::FuncStageStart);
+
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -2095,7 +2137,9 @@ void Rogue_PlayerDowned(int client)
 	if(!Waves_InSetup() && RogueTheme == BlueParadox)
 	{
 		// Gain 10.0 for the total of all players downing
-		BattleChaos += 10.0 / float(CurrentPlayers);
+		float chaos = 10.0 / float(CurrentPlayers);
+		Rogue_ParadoxDLC_BattleChaos(chaos);
+		BattleChaos += chaos;
 	}
 }
 
@@ -2275,6 +2319,26 @@ stock ArrayList Rogue_GetCurrentArtifacts()
 	return Artifacts;
 }
 
+void Rogue_TriggerFunction(int pos, any &data = 0)
+{
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = CurrentCollection.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			Function func = GetItemInArray(artifact, pos);
+			if(func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCellRef(data);
+				Call_Finish();
+			}
+		}
+	}
+}
+
 int Rogue_GetIngots()
 {
 	return CurrentIngots;
@@ -2283,20 +2347,23 @@ int Rogue_GetIngots()
 void Rogue_AddIngots(int amount, bool silent = false)
 {
 	int given = amount;
-	Rogue_Whiteflower_IngotGiven(given);
+	Rogue_TriggerFunction(Artifact::FuncIngotChanged, given);
 
-	CurrentIngots += given;
-	Waves_UpdateMvMStats();
-
-	if(!silent)
+	if(given)
 	{
-		if(amount < 0)
+		CurrentIngots += given;
+		Waves_UpdateMvMStats();
+
+		if(!silent)
 		{
-			CPrintToChatAll("%t", "Lost Ingots", -amount);
-		}
-		else
-		{
-			CPrintToChatAll("%t", "Gained Ingots", amount);
+			if(given < 0)
+			{
+				CPrintToChatAll("%t", "Lost Ingots", -given);
+			}
+			else
+			{
+				CPrintToChatAll("%t", "Gained Ingots", given);
+			}
 		}
 	}
 }
@@ -2726,3 +2793,4 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/paradox_dome.sp"
 
 #include "roguelike/item_whiteflower.sp"
+#include "roguelike/paradox_dlc.sp"
