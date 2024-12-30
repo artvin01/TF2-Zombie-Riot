@@ -296,22 +296,22 @@ void RemoveSpecificBuff(int victim, const char[] name)
 }
 
 //Got lazy, tired of doing so many indexs.
-bool HasSpecificBuff(int victim, const char[] name)
+int HasSpecificBuff(int victim, const char[] name)
 {
 	//doesnt even have abuff...
 	if(!E_AL_StatusEffects[victim])
-		return false;
+		return 0;
 
 	int index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
 	if(index == -1)
 	{
 		CPrintToChatAll("{crimson} A DEV FUCKED UP!!!!!!!!! Name %s GET AN ADMIN RIGHT NOWWWWWWWWWWWWWW!^!!!!!!!!!!!!!!!!!!one111 (more then 0)",name);
 		LogError("ApplyStatusEffect A DEV FUCKED UP!!!!!!!!! Name %s",name);
-		return false;
+		return 0;
 	}
 	E_StatusEffect Apply_StatusEffect;
 	int ArrayPosition;
-	bool Return = false;
+	int Return = false;
 	ArrayPosition = E_AL_StatusEffects[victim].FindValue(index, E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
@@ -322,7 +322,10 @@ bool HasSpecificBuff(int victim, const char[] name)
 		}
 		else
 		{
-			Return = true;
+			if(Apply_StatusEffect.TotalOwners[victim])
+				Return = 2;
+			else
+				Return = 1;
 		}
 	}
 	if(E_AL_StatusEffects[victim].Length < 1)
@@ -630,7 +633,7 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 			Call_PushCell(damagetype);
 			Call_Finish(DamageToNegate);
 		}
-		if(!Apply_MasterStatusEffect.ShouldScaleWithPlayerCount || Apply_StatusEffect.TotalOwners[victim])
+		if(!Apply_MasterStatusEffect.ShouldScaleWithPlayerCount || Apply_StatusEffect.TotalOwners[attacker])
 		{
 			damage *= DamageToNegate;
 		}
