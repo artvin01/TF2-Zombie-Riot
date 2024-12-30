@@ -565,6 +565,7 @@ void Freeplay_SpawnEnemy(int entity)
 		{
 			fl_Extra_MeleeArmor[entity] *= 0.85;
 			fl_Extra_RangedArmor[entity] *= 0.85;
+    SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.1));
 		}
 		case 2:
 		{
