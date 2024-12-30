@@ -565,7 +565,6 @@ void Freeplay_SpawnEnemy(int entity)
 		{
 			fl_Extra_MeleeArmor[entity] *= 0.85;
 			fl_Extra_RangedArmor[entity] *= 0.85;
-			SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 1.1);
 		}
 		case 2:
 		{
@@ -1405,7 +1404,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +15% resist and +10% health!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +15% resist!");
 				PerkMachine = 1;
 			}
 			case 22:
