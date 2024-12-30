@@ -2933,6 +2933,8 @@ float NemalMineExploderFriendly(int entity, int victim, float damage, int weapon
 		vDirection[2] = 1000.0;
 		
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, vDirection);
+		NPCStats_RemoveAllDebuffs(victim, 0.0);
+		//Cure off debuffs, oops forgot.
 	}
 	
 	return damage;

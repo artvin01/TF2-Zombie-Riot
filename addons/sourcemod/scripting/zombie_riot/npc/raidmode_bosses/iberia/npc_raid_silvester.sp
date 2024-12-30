@@ -1166,6 +1166,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 				flPos[2] += 500.0;
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
+				ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 3.25);	
 				npc.m_flSilvesterSlicerHappening = GetGameTime(npc.index) + 1.0;
 				float cooldownDo  = 30.0;
 				if(!NemalAssistance)

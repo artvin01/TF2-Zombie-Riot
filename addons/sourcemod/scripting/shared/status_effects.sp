@@ -2199,7 +2199,7 @@ void StatusEffects_SupportWeapons()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 1.25;
+	data.DamageDealMulti			= 0.25;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;

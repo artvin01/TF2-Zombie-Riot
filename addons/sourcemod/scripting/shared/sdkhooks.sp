@@ -954,48 +954,55 @@ public void OnPostThink(int client)
 			{
 				if(percentage_melee != 100.0 && percentage_melee > 0.0)
 				{
+					char NumberAdd[32];
+					had_An_ability = true;
 					if(percentage_melee < 10.0)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s[☛%.2f%%", buffer, percentage_melee);
-						had_An_ability = true;
+						Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f%%", percentage_melee);
 					}
 					else
 					{
-
-						FormatEx(buffer, sizeof(buffer), "%s[☛%.0f%%", buffer, percentage_melee);
-						had_An_ability = true;
+						Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f%%", percentage_melee);
 					}
+					
+					if(f_ClientDoDamageHud_Hurt[client][0] > GetGameTime())
+						Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
+
+					Format(buffer, sizeof(buffer), "%s%s", buffer, NumberAdd);
 				}
 				
 				if(percentage_ranged != 100.0 && percentage_ranged > 0.0)
 				{
+					char NumberAdd[32];
 					if(had_An_ability)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s|", buffer);
 						if(percentage_ranged < 10.0)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s➶%.2f%%]", buffer, percentage_ranged);
-							had_An_ability = true;
+							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.2f%%", percentage_ranged);
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%s➶%.0f%%]", buffer, percentage_ranged);
-							had_An_ability = true;
+							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.0f%%", percentage_ranged);
 						}
 					}
 					else
 					{
 						if(percentage_ranged < 10.0)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s [➶%.2f%%]", buffer, percentage_ranged);
-							had_An_ability = true;
+							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.2f%%", percentage_ranged);
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%s [➶%.0f%%]", buffer, percentage_ranged);
-							had_An_ability = true;
+							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.0f%%", percentage_ranged);
 						}
 					}
+
+					had_An_ability = true;
+					if(f_ClientDoDamageHud_Hurt[client][1] > GetGameTime())
+						Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
+
+					Format(buffer, sizeof(buffer), "%s%s", buffer, NumberAdd);
+					Format(buffer, sizeof(buffer), "%s]", buffer);
 				}
 				else
 				{
