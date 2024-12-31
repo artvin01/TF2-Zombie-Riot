@@ -59,10 +59,12 @@ static const char g_AngerSounds[][] = {
 /*
 	Notepad:
 
-	Blade initiation Logic someewhat done.
-	Blade loop logic not done.
-	Manipulation ENT created. not fully tested.
-	Figure out a good way to detect if players hit the blade
+	Blades:
+		Blade initiation Logic  done.
+		Blade loop logic done.
+		Manipulation ENT created. seems to work thus far
+		Blade Slam Done!
+		Blade Spin Done!
 
 	Base Model: Spy
 
@@ -192,6 +194,12 @@ static const char g_AngerSounds[][] = {
 
 #define LELOUCH_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
 
+static bool b_animation_set[MAXENTITIES];
+static bool b_test_mode[MAXENTITIES];
+
+static const char NameColour[] = "{black}";
+static const char TextColour[] = "{snow}";
+
 void Lelouch_OnMapStart_NPC()
 {
 	NPCData data;
@@ -217,12 +225,14 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_AngerSounds);
 
+	Zero(b_animation_set);
+
 	PrecacheModel(LELOUCH_BLADE_MODEL, true);
 
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, char[] data)
 {
-	return Lelouch(vecPos, vecAng, team);
+	return Lelouch(vecPos, vecAng, team, data);
 }
 static float fl_npc_basespeed;
 methodmap Lelouch < CClotBody
@@ -314,12 +324,20 @@ methodmap Lelouch < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	public char[] GetName()
+	{
+		char Name[255];
+		Format(Name, sizeof(Name), "%s%s%s:", NameColour, c_NpcName[this.index], TextColour);
+		return Name;
+	}
 
-	public Lelouch(float vecPos[3], float vecAng[3], int ally)
+	public Lelouch(float vecPos[3], float vecAng[3], int ally, char[] data)
 	{
 		Lelouch npc = view_as<Lelouch>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
+
+		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -327,6 +345,8 @@ methodmap Lelouch < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 1;
+
+		c_NpcName[npc.index] = "Lelouch";	//Lelouch Vi Britania.
 
 		npc.m_flBladeCoolDownTimer = GetGameTime(npc.index) + 1.0; //GetRandomFloat(15.0, 30.0);
 		
@@ -390,6 +410,7 @@ methodmap Lelouch < CClotBody
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		npc.Anger = false;
+		b_animation_set[npc.index] = false;
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 15);
@@ -487,11 +508,13 @@ static void ClotThink(int iNPC)
 
 	npc.PlayIdleAlertSound();
 }
+// Blade Logic
 static int i_BladeLogic[MAXENTITIES];
 static float fl_BladeLogic_Duration[2];
 static float fl_BladeLogic_Timer[MAXENTITIES];
 static float fl_BladeLogic_WindUp[MAXENTITIES];
 static int i_BladeNPC_Ref[MAXENTITIES];
+static bool b_Invert;
 static bool Blade_Logic(Lelouch npc)
 {
 	float GameTime = GetGameTime(npc.index);
@@ -503,51 +526,92 @@ static bool Blade_Logic(Lelouch npc)
 
 	i_BladeLogic[npc.index] = -1;
 
-	if(Forward <= 2 && Around <= 2)
+	if((Forward <= 2 && Around <= 2) && !b_test_mode[npc.index])
 	{
 		npc.m_flBladeCoolDownTimer = GameTime + 5.0;
 		return false;
 	}
 
+	//base settings incase somehow they don't get set properly.
+	float WindUp = 1.0;
+	float Time = 2.0;
+	float Recharge = 120.0;
+	//to configure them, scroll down.
+
+	int Blade_NPC = -1;
+
+	//Around = 99;
+
 	if(Forward > Around)
 	{
 		//do giant sword swing forward.
-		float Angles[3]; Angles = GetNPCAngles(npc);
-		Angles[0] = 90.0;
+		float Angles[3]; Angles = GetNPCAngles(npc.index);
 		int Health = ReturnEntityMaxHealth(npc.index);
 		Health = RoundToFloor(Health*0.1);
-		float Loc[3]; GetAbsOrigin(npc.index, Loc);
-		int Blade_NPC = i_CreateManipulation(npc, Loc, Angles, LELOUCH_BLADE_MODEL, Health, 2.5);
+		float Loc[3]; GetAbsOrigin(npc.index, Loc); 
+		Loc[2]+=150.0;	//make it spawn a bit up 
+		Angles[0] = 90.0;	//make it pitched.
+		Angles[2] = 90.0;	//turn it sideways.
+		Blade_NPC = i_CreateManipulation(npc, Loc, Angles, LELOUCH_BLADE_MODEL, Health, 4.5);
 
-		if(!IsValidAlly(npc.index, Blade_NPC))
-		{
-			npc.m_flBladeCoolDownTimer = GameTime + 5.0;
-			return false;
-		}
-		Manipulation blade = view_as<Manipulation>(Blade_NPC);
-
-		float WindUp = 1.0;
-		float Time = 2.0;
-		fl_BladeLogic_Duration[0] = Time;
-		fl_BladeLogic_Timer[npc.index] = GameTime + WindUp + Time;
-		fl_BladeLogic_WindUp[npc.index] = GameTime + WindUp;
-
-		Initiate_Anim(npc, WindUp+Time, true);
-
+		WindUp = 1.0;
+		Time = 1.5;
 		i_BladeLogic[npc.index] = 0;
 
-		blade.m_flDoingAnimation = FAR_FUTURE;
-
-		i_BladeNPC_Ref[npc.index] = EntIndexToEntRef(blade.index);
-
-		SDKUnhook(npc.index, SDKHook_Think, BladeLogic_Tick);
-		SDKHook(npc.index, SDKHook_Think, BladeLogic_Tick);
+		Recharge = 90.0;
 	}
 	else
 	{
 		// do giant sword spin.
+		i_BladeLogic[npc.index] = 1;
+		Recharge = 120.0;
+
+		if(GetRandomInt(1,2) == 1)
+			b_Invert = true;
+		else
+			b_Invert = false;
+
+		float Angles[3]; Angles = GetNPCAngles(npc.index);	Angles[0] = 0.0;	//nullify pitch.
+		int Health = ReturnEntityMaxHealth(npc.index);
+		Health = RoundToFloor(Health*0.1);
+		float Loc[3]; GetAbsOrigin(npc.index, Loc); Loc[2]+=25.0;
+		Get_Fake_Forward_Vec(150.0, Angles, Loc, Loc);
+		Angles[1]+=180.0;
+		Blade_NPC = i_CreateManipulation(npc, Loc, Angles, LELOUCH_BLADE_MODEL, Health, 4.5);
+
+		WindUp = 1.5;
+		Time = 3.75;
 	}
-	npc.m_flBladeCoolDownTimer = GameTime + 120.0;
+	//invalid blade npc. retry.
+	if(!IsValidAlly(npc.index, Blade_NPC))
+	{
+		npc.m_flBladeCoolDownTimer = GameTime + 5.0;
+		return false;
+	}
+
+	//MakeObjectIntangeable(Blade_NPC);
+
+	Manipulation blade = view_as<Manipulation>(Blade_NPC);
+
+	b_animation_set[npc.index] = false;
+
+	fl_BladeLogic_Duration[i_BladeLogic[npc.index]] = Time;
+
+	Initiate_Anim(npc, WindUp+Time, "taunt_highFiveStart", _,_, true);
+
+	c_NpcName[blade.index] = "Lelouch Blade";
+
+	fl_BladeLogic_Timer[npc.index] = GameTime + WindUp + Time;
+	fl_BladeLogic_WindUp[npc.index] = GameTime + WindUp;
+
+	blade.m_flDoingAnimation = FAR_FUTURE;
+
+	i_BladeNPC_Ref[npc.index] = EntIndexToEntRef(blade.index);
+
+	SDKUnhook(npc.index, SDKHook_Think, BladeLogic_Tick);
+	SDKHook(npc.index, SDKHook_Think, BladeLogic_Tick);
+
+	npc.m_flBladeCoolDownTimer = GameTime + Recharge;
 	return true;
 }
 static void BladeLogic_Tick(int iNPC)
@@ -555,30 +619,146 @@ static void BladeLogic_Tick(int iNPC)
 	Lelouch npc = view_as<Lelouch>(iNPC);
 
 	float GameTime = GetGameTime(npc.index);
-	if(fl_BladeLogic_Timer[npc.index] < GameTime)
+	if(fl_BladeLogic_Timer[npc.index] < GameTime || b_NpcHasDied[npc.index])
 	{
+		Kill_Manipulation(i_BladeNPC_Ref[npc.index]);
 		SDKUnhook(npc.index, SDKHook_Think, BladeLogic_Tick);
 		End_Animation(npc);
 		return;
 	}
-
 	if(fl_BladeLogic_WindUp[npc.index] > GameTime)
 		return;
-
-	//float Ratio = fl_BladeLogic_Timer[npc.index] / fl_BladeLogic_Duration[i_BladeLogic[npc.index]];
-
+	if(!b_animation_set[npc.index])
+	{
+		npc.SetPlaybackRate(0.0);
+		b_animation_set[npc.index] = true;
+	}
 	int Blade_NPC = EntRefToEntIndex(i_BladeNPC_Ref[npc.index]);
-
-	if(!IsValidAlly(npc.index, Blade_NPC) || b_NpcHasDied[Blade_NPC] || i_BladeLogic[npc.index] == -1)
+	//somehow the blade npc is no longer on our team. it has died. or we canceled/is invalid blade logic
+	bool death = b_NpcHasDied[Blade_NPC];
+	if(death)
+	{
+		//temp line for testing.
+		Lelouch_Lines(npc, "How dare you destroy my BLADE?");
+	}
+	if(!IsValidAlly(npc.index, Blade_NPC) || death || i_BladeLogic[npc.index] == -1)
 	{
 		SDKUnhook(npc.index, SDKHook_Think, BladeLogic_Tick);
+		Kill_Manipulation(i_BladeNPC_Ref[npc.index]);
 		//prematurly end the animation.
 		End_Animation(npc);
 		return;
 	}
+	//get the ratio between the start of the ability to the end of ability, and then scale upcoming stuff in relation to the ratio.
+	float Ratio = (fl_BladeLogic_Timer[npc.index]-GameTime) / fl_BladeLogic_Duration[i_BladeLogic[npc.index]];
+	switch(i_BladeLogic[npc.index])
+	{
+		case 0:
+		{
+			float Blade_Origin[3]; GetAbsOrigin(npc.index, Blade_Origin);
+			Blade_Origin[2] +=25.0;	//don't make it do everything inside the ground.
+			//-90 is straight up.
+			//90 is straight down.
+			float Angle_Ratio = -90.0*Ratio;
+			//so we want to get the angles of the HOST npc, not the blade, just incase the blade npc decides it wants to turn for some god awful reason!
+			float Blade_Angles[3]; Blade_Angles = GetNPCAngles(npc.index); Blade_Angles[0] = Angle_Ratio;
+			float Final_Vec[3];
+			//now offset the blade's location from origin to where the blade wants to be. respecting angles and such.
+			Get_Fake_Forward_Vec(150.0, Blade_Angles, Final_Vec, Blade_Origin);
+			Blade_Angles[0] += 180.0;	//make it pitched.
+			Blade_Angles[2] += 90.0;	//turn it sideways.
+			TeleportEntity(Blade_NPC, Final_Vec, Blade_Angles);
 
-	//todo: blade SLAM or SPIN logic.
+			//now that all the movement logic is done. now the damage logic.
+			//First, undo the offset angle logic.
+			Blade_Angles[0] -= 180.0;
+			Blade_Angles[2] -= 90.0;
+			//second, get an offset vector from the offset, this time trying to get to the end of the blade.
+			float Blade_EndVec[3];
+			Get_Fake_Forward_Vec(300.0, Blade_Angles, Blade_EndVec, Final_Vec);	
+			//oh yeah, it is safe to use the input/output as the same variable. however, we want to store the input vector so we can reuse it.
+
+			//now we make a TE to tell us if our vector is in the correct position!
+			if(b_test_mode[npc.index])
+			{
+				int color[4]; color = {255,255,255,255};
+				TE_SetupBeamPoints(Blade_EndVec, Final_Vec, g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.1, 15.0, 15.0, 0, 2.5, color, 0);
+				TE_SendToAll(0.0);
+			}
+			//300.0 was my first guess and it turns out to be perfect.
+			Ruina_Laser_Logic Laser;			//now reuse my beloved laser logic.
+			Laser.client = npc.index;			//whose using the laser?
+			Laser.Start_Point = Blade_EndVec;	//where does the laser start?
+			Laser.End_Point = Final_Vec;		//where does the laser end?
+			Laser.Damage = 100.0;				//how much dmg should it do?		//100.0*RaidModeScaling
+			Laser.Bonus_Damage = 500.0;			//dmg vs things that should take bonus dmg.
+			Laser.damagetype = DMG_PLASMA;		//dmg type.
+			Laser.Radius = 25.0;				//how big the radius is / hull.
+			Laser.Deal_Damage();				//and now we kill
+		}
+		case 1:
+		{
+			float Blade_Origin[3]; GetAbsOrigin(npc.index, Blade_Origin);
+			Blade_Origin[2] +=25.0;	//don't make it do everything inside the ground.
+			
+			//we want it to spin 3 times around the npc
+			float Spin_Angle = (360.0*3.0)*(b_Invert ? 1.0-Ratio : Ratio);
+
+			float Blade_Angles[3]; Blade_Angles = GetNPCAngles(npc.index); Blade_Angles[0] = 0.0;	//nullify pitch.
+			Blade_Angles[1] += Spin_Angle;
+			Get_Fake_Forward_Vec(150.0, Blade_Angles, Blade_Origin, Blade_Origin);
+			Blade_Angles[1]+=180.0;
+			TeleportEntity(Blade_NPC, Blade_Origin, Blade_Angles);
+
+			//now that all the movement logic is done. now the damage logic.
+			//First, undo the offset angle logic.
+			Blade_Angles[1] -= 180.0;
+			//second, get an offset vector from the offset, this time trying to get to the end of the blade.
+			float Blade_EndVec[3];
+			Get_Fake_Forward_Vec(300.0, Blade_Angles, Blade_EndVec, Blade_Origin);	
+			//oh yeah, it is safe to use the input/output as the same variable. however, we want to store the input vector so we can reuse it.
+
+			//now we make a TE to tell us if our vector is in the correct position!
+			if(b_test_mode[npc.index])
+			{
+				int color[4]; color = {255,255,255,255};
+				TE_SetupBeamPoints(Blade_EndVec, Blade_Origin, g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.1, 15.0, 15.0, 0, 2.5, color, 0);
+				TE_SendToAll(0.0);
+			}
+			//300.0 was my first guess and it turns out to be perfect.
+			Ruina_Laser_Logic Laser;			//now reuse my beloved laser logic.
+			Laser.client = npc.index;			//whose using the laser?
+			Laser.Start_Point = Blade_EndVec;	//where does the laser start?
+			Laser.End_Point = Blade_Origin;		//where does the laser end?
+			Laser.Damage = 100.0;				//how much dmg should it do?		//100.0*RaidModeScaling
+			Laser.Bonus_Damage = 500.0;			//dmg vs things that should take bonus dmg.
+			Laser.damagetype = DMG_PLASMA;		//dmg type.
+			Laser.Radius = 25.0;				//how big the radius is / hull.
+			Laser.Deal_Damage();				//and now we kill
+
+		}
+		default:
+		{
+			CPrintToChatAll("INVALID BLADE LOGIC, CANCELING | [%i]", i_BladeLogic[npc.index]);
+			i_BladeLogic[npc.index] = -1;
+		}
+	}
+
+	//todo: blade SPIN logic.
 }
+
+//Usefull stuff.
+
+static void Kill_Manipulation(int Manip_Ref)
+{
+	int Manip_NPC = EntRefToEntIndex(Manip_Ref);
+	if(!IsValidEntity(Manip_NPC))
+		return;
+	
+	Manipulation npc = view_as<Manipulation>(Manip_NPC);
+	npc.m_iState = -1;	//this tells the npc to nuke itself.
+}
+
 static int i_targets_found;
 static int i_FindTargetsInfront(Lelouch npc, float Dist, float Radius)
 {
@@ -605,8 +785,9 @@ static void FindTargets_OnLaserHit(int client, int target, int damagetype, float
 {
 	i_targets_found++;
 }
-static float[] GetNPCAngles(Lelouch npc)
+static float[] GetNPCAngles(int entity)
 {
+	CClotBody npc = view_as<CClotBody>(entity);
 	float Angles[3], startPoint[3];
 	WorldSpaceCenter(npc.index, startPoint);
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
@@ -619,7 +800,7 @@ static float[] GetNPCAngles(Lelouch npc)
 	return Angles;
 }
 static bool b_Buffs;
-static void Initiate_Anim(Lelouch npc, float time, bool immune = false)
+static void Initiate_Anim(Lelouch npc, float time, char[] Anim = "", float Rate = 1.0, float Cycle = 0.0, bool immune = false)
 {
 	npc.m_flDoingAnimation = GetGameTime(npc.index) + time;
 
@@ -628,6 +809,14 @@ static void Initiate_Anim(Lelouch npc, float time, bool immune = false)
 	npc.m_flGetClosestTargetTime = 0.0;
 	npc.m_flSpeed = 0.0;
 	npc.m_iChanged_WalkCycle  = -1;
+
+	if(Anim[0])
+	{
+		npc.m_bisWalking = false;
+		npc.AddActivityViaSequence(Anim);
+		npc.SetPlaybackRate(Rate);
+		npc.SetCycle(Cycle);
+	}
 
 	//make sure the npc is 100% not moving anymore!
 	npc.SetVelocity({0.0,0.0,0.0});
@@ -649,6 +838,8 @@ static void End_Animation(Lelouch npc)
 	if(iActivity > 0) npc.StartActivity(iActivity);
 
 	npc.m_iChanged_WalkCycle = 1;
+
+	npc.m_bisWalking = true;
 
 	if(!b_Buffs)
 		return;
@@ -694,6 +885,14 @@ static void Body_Pitch(Lelouch npc, float VecSelfNpc[3], float vecTarget[3])
 	float flPitch = npc.GetPoseParameter(iPitch);
 							
 	npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+}
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
 }
 
 /*
@@ -789,4 +988,11 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable9))
 		RemoveEntity(npc.m_iWearable9);
+}
+void Lelouch_Lines(Lelouch npc, const char[] text)
+{
+	if(b_test_mode[npc.index])
+		return;
+
+	CPrintToChatAll("%s %s", npc.GetName(), text);
 }

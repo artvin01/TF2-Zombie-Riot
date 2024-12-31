@@ -8,7 +8,7 @@
 void Manipulation_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "");
+	strcopy(data.Name, sizeof(data.Name), "nothing");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_manipulation");
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
@@ -77,6 +77,16 @@ methodmap Manipulation < CClotBody
 static void ClotThink(int iNPC)
 {
 	Manipulation npc = view_as<Manipulation>(iNPC);
+
+	//our state has been set to invalid, kill.
+	if(npc.m_iState == -1)
+	{
+		npc.m_bDissapearOnDeath = true;	
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		npc.m_iState = 0;
+		return;
+	}
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
@@ -95,6 +105,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	//the creator doesn't want us to do anything special, so don't.
 	if(npc.m_flDoingAnimation > GameTime)
 		return;
 
